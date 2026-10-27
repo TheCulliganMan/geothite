@@ -335,10 +335,13 @@ fn sync_visible_player_sprite(
         } else {
             &frames.standing
         };
-        sprite.flip_x = action_frame
+        let flip_x = action_frame
             && frames.mirror_walking
             && scripted_skyfall_action_phase
                 .map_or(runtime_shell.player_walk_mirror_stride, |phase| phase == 3);
+        if sprite.flip_x != flip_x {
+            sprite.flip_x = flip_x;
+        }
         if sprite.image.id() != next.id() {
             sprite.image = next.clone();
         }
@@ -636,12 +639,15 @@ fn sync_visible_object_sprites(
         } else {
             &frames.standing
         };
-        sprite.flip_x = action_frame
+        let flip_x = action_frame
             && frames.mirror_walking
             && autonomous_phase.map_or(
                 !runtime_shell.object_walk_stride,
                 object_walk_uses_mirrored_action_frame,
             );
+        if sprite.flip_x != flip_x {
+            sprite.flip_x = flip_x;
+        }
         if sprite.image.id() != next.id() {
             sprite.image = next.clone();
         }
@@ -662,17 +668,26 @@ fn render_screen_fade_overlay(
             } else {
                 16_u8.saturating_sub(flash.frame)
             };
-            sprite.color = Color::srgba(1.0, 1.0, 1.0, f32::from(step) / 8.0);
+            let color = Color::srgba(1.0, 1.0, 1.0, f32::from(step) / 8.0);
+            if sprite.color != color {
+                sprite.color = color;
+            }
             return;
         }
-        sprite.color = Color::srgba(0.0, 0.0, 0.0, 0.0);
+        let color = Color::srgba(0.0, 0.0, 0.0, 0.0);
+        if sprite.color != color {
+            sprite.color = color;
+        }
         return;
     };
     let (r, g, b) = match fade.color {
         ScriptFadeColor::Black => (0.0, 0.0, 0.0),
         ScriptFadeColor::White => (1.0, 1.0, 1.0),
     };
-    sprite.color = Color::srgba(r, g, b, f32::from(fade.alpha) / 255.0);
+    let color = Color::srgba(r, g, b, f32::from(fade.alpha) / 255.0);
+    if sprite.color != color {
+        sprite.color = color;
+    }
 }
 
 fn render_poison_flash_overlay(
@@ -692,14 +707,19 @@ fn render_poison_flash_overlay(
     };
     let [r, g, b, a] = visible_poison_bg_palette_rgba(runtime_shell.poison_flash_frames_remaining)
         .unwrap_or([230.0 / 255.0, 173.0 / 255.0, 1.0, 0.0]);
-    sprite.color = Color::srgba(r, g, b, a);
+    let color = Color::srgba(r, g, b, a);
+    if sprite.color != color {
+        sprite.color = color;
+    }
     let background_visibility = if a > 0.0 {
         Visibility::Hidden
     } else {
         Visibility::Inherited
     };
     for mut visibility in priority_backgrounds.iter_mut() {
-        *visibility = background_visibility;
+        if *visibility != background_visibility {
+            *visibility = background_visibility;
+        }
     }
 }
 
@@ -3024,10 +3044,21 @@ fn use_selected_party_item_on(
         runtime_shell,
         format!("party:item:{item_id}:pokemon:{party_index}"),
     )?;
-    let used = match runtime_shell
-        .shell
-        .use_bag_item_on_party_pokemon(&item_id, party_index)
-    {
+    let restores_all_pp = snapshot
+        .items
+        .iter()
+        .find(|item| item.item_id == item_id)
+        .is_some_and(|item| item.pp_restore_scope.as_deref() == Some("POKEMON"));
+    let effect = if restores_all_pp {
+        runtime_shell
+            .shell
+            .use_bag_item_on_party_move(&item_id, party_index, None)
+    } else {
+        runtime_shell
+            .shell
+            .use_bag_item_on_party_pokemon(&item_id, party_index)
+    };
+    let used = match effect {
         Ok(used) => used,
         Err(error) if field_item_error_is_play_refusal(&error) => {
             return handle_visible_field_item_refusal(runtime_shell, &item_id, error);
@@ -3055,6 +3086,13 @@ fn use_selected_party_item_on(
             "{pokemon_name} grew to level {}!",
             used.item_effect.level_after
         )
+    } else if used
+        .item_effect
+        .pp_changes
+        .iter()
+        .any(|change| change.pp_after > change.pp_before)
+    {
+        "PP was restored.".to_string()
     } else {
         format!("{pokemon_name}'s stats rose!")
     };
@@ -3116,7 +3154,13 @@ fn use_selected_pp_item_on(runtime_shell: &mut BevyRuntimeShell, party_index: us
         .with_context(|| format!("party index {party_index} has no move in slot {move_slot}"))?;
     let item_id = selected_carried_normal_item_matching(
         runtime_shell,
-        |item| item.pp_restore_points.is_some() || item.pp_up_stages.is_some(),
+        |item| {
+            item_targets_party_move_fields(
+                item.pp_restore_scope.as_deref(),
+                item.pp_restore_points,
+                item.pp_up_stages,
+            )
+        },
         "bag has no carried PP item",
     )?;
     record_visible_runtime_action(

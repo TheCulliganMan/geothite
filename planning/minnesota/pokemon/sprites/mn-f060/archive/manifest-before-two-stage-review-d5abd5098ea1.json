@@ -1,0 +1,233 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F060",
+  "status": "native-front-back-reviewed",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_131": {
+      "species_id": "MN_131",
+      "name": "Tugget",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          29,
+          17,
+          6
+        ],
+        [
+          7,
+          12,
+          16
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        6717,
+        16775,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          239,
+          140,
+          49
+        ],
+        [
+          57,
+          99,
+          132
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#EF8C31",
+        "#396384",
+        "#000000"
+      ]
+    },
+    "MN_132": {
+      "species_id": "MN_132",
+      "name": "Lakernaut",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          31,
+          19,
+          7
+        ],
+        [
+          6,
+          10,
+          15
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        7807,
+        15686,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          255,
+          156,
+          57
+        ],
+        [
+          49,
+          82,
+          123
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#FF9C39",
+        "#31527B",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f060/freighter-v2/prompt-v1.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "style_reference": {
+    "origin": "authentic local Crystal sprites",
+    "boards": [
+      "target/minnesota-pokemon/gen2-reference/starters.png",
+      "target/minnesota-pokemon/gen2-reference/bugs.png"
+    ]
+  },
+  "sprites": [
+    {
+      "id": "mn-131-tugget-v1",
+      "species_id": "MN_131",
+      "view": "front",
+      "source": "sprites/mn-f060/mn-131-132.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        690,
+        520
+      ],
+      "fit": [
+        38,
+        38
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        6717,
+        16775,
+        0
+      ]
+    },
+    {
+      "id": "mn-131-tugget-v1",
+      "species_id": "MN_131",
+      "view": "back",
+      "source": "sprites/mn-f060/mn-131-132.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        520,
+        690,
+        504
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        6717,
+        16775,
+        0
+      ]
+    },
+    {
+      "id": "mn-132-lakernaut-v1",
+      "species_id": "MN_132",
+      "view": "front",
+      "source": "sprites/mn-f060/mn-131-132.front-back.imagegen-v1.png",
+      "crop": [
+        690,
+        0,
+        846,
+        520
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        7807,
+        15686,
+        0
+      ]
+    },
+    {
+      "id": "mn-132-lakernaut-v1",
+      "species_id": "MN_132",
+      "view": "back",
+      "source": "sprites/mn-f060/mn-131-132.front-back.imagegen-v1.png",
+      "crop": [
+        690,
+        520,
+        846,
+        504
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        7807,
+        15686,
+        0
+      ]
+    }
+  ],
+  "visual_review": {
+    "status": "reviewed",
+    "outline_profile": "mixed-source-solid-v1",
+    "sheet_sha256": "08ec46faf341330a87b92a11c9a59f42a2f817fbc23f2e25dd2b8500e524bac3",
+    "notes": "Reviewed exact native56x56 front and48x48 back conversion; per-species four-color RGB555 palettes, corrected isolated crops and source-backed pixel outlines. Original earlier stages retained."
+  }
+}

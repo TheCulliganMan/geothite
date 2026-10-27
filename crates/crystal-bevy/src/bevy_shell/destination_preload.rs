@@ -152,7 +152,8 @@ pub(super) fn publish(
     snapshot.script_events.variable_sprites.hash(&mut hash);
     // Include all contributing map writes, including a connected neighbor.
     for (source, x, y) in
-        connected_render_map_placements(&map.map_name, &snapshot.maps).unwrap_or_default()
+        connected_render_map_placements_to_depth(&map.map_name, &snapshot.maps, None)
+            .unwrap_or_default()
     {
         source.blocks.hash(&mut hash);
         x.hash(&mut hash);
@@ -239,8 +240,14 @@ pub(super) fn source_frame(
     cache: &mut RenderedTilesetArt,
     images: &mut Assets<Image>,
 ) -> Result<crystal_render_api::VisualWorldFrame> {
+    let (width, height) = render_tile_bounds_i16(&map.map_name, map.attributes.width, map.attributes.height)?;
+    let (x, y) = connection_composite_viewport_origin(snapshot, map, arrival.x * 2, arrival.y * 2, width, height)
+        .context("destination viewport")?;
+    let window = visual_world_map_window(true, IVec2::new(i32::from(x), i32::from(y)), map);
     let mut sources = Vec::new();
-    for (map, x, y) in connected_render_map_placements(&map.map_name, &snapshot.maps)? {
+    for (map, x, y) in
+        connected_world_sources::placements(&map.map_name, &snapshot.maps, window)?
+    {
         let tileset = snapshot.tilesets.iter().find(|t| t.tileset_id == map.attributes.tileset_name)
             .context("destination tileset")?;
         let key = TilesetArtKey { tileset_id: tileset.tileset_id.clone(),
@@ -254,10 +261,6 @@ pub(super) fn source_frame(
         sources.push(ResolvedRenderSource { map, tileset, art_key: key, origin_x: x, origin_y: y,
             width: i32::from(map.attributes.width) * 4, height: i32::from(map.attributes.height) * 4 });
     }
-    let (width, height) = render_tile_bounds_i16(&map.map_name, map.attributes.width, map.attributes.height)?;
-    let (x, y) = connection_composite_viewport_origin(snapshot, map, arrival.x * 2, arrival.y * 2, width, height)
-        .context("destination viewport")?;
-    let window = visual_world_grid_window(true, IVec2::new(i32::from(x),i32::from(y)));
     let (w,h) = (window.size.x as i16,window.size.y as i16);
     let mut tiles = Vec::with_capacity(w as usize * h as usize);
     let mut handles = Vec::with_capacity(tiles.capacity());
@@ -409,9 +412,13 @@ mod tests {
                 live.map_id, built.grid_size, live.grid_size, built.grid_origin, live.grid_origin,
                 built.source_regions, live.source_regions);
             let mut changed = live.clone();
+            let player_cell = IVec2::new(
+                i32::from(after.overworld.tile.x) * 2,
+                i32::from(after.overworld.tile.y) * 2,
+            );
             let index = changed.tiles.iter().position(|tile| {
                 let p = changed.grid_origin + IVec2::new(tile.column as i32, tile.row as i32);
-                tile.column > 40 && tile.column < 75 && tile.row > 40 && tile.row < 75
+                p == player_cell
                     && changed.source_regions.iter().any(|r| {
                         let q = p-r.origin;
                         q.cmpge(IVec2::ZERO).all() && q.cmplt(r.size.as_ivec2()).all()

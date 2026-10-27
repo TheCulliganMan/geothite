@@ -1,0 +1,239 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F004",
+  "status": "partial-baby-adult-proposal-only",
+  "tool": "built-in image_gen",
+  "back_framing": "fullbody-rear-for-current-family-consistency",
+  "pokemon_palettes": {
+    "MN_010": {
+      "species_id": "MN_010",
+      "name": "Birchit",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          29,
+          23,
+          12
+        ],
+        [
+          11,
+          7,
+          4
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        13053,
+        4331,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          239,
+          189,
+          99
+        ],
+        [
+          90,
+          57,
+          33
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#EFBD63",
+        "#5A3921",
+        "#000000"
+      ]
+    },
+    "MN_012": {
+      "species_id": "MN_012",
+      "name": "Voyagear",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          20,
+          9,
+          5
+        ],
+        [
+          4,
+          8,
+          17
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        5428,
+        17668,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          165,
+          74,
+          41
+        ],
+        [
+          33,
+          66,
+          140
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#A54A29",
+        "#21428C",
+        "#000000"
+      ]
+    }
+  },
+  "sprites": [
+    {
+      "id": "mn-010-birchit-native-v2",
+      "species_id": "MN_010",
+      "view": "front",
+      "source": "sprites/mn-f004/native-refinement/birchit-front-back-v2.png",
+      "prompt_file": "sprites/mn-f004/native-refinement/prompt-birchit-v2.txt",
+      "crop": [
+        0,
+        0,
+        910,
+        887
+      ],
+      "fit": [
+        36,
+        36
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        13053,
+        4331,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "solid",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-010-birchit-native-v2",
+      "species_id": "MN_010",
+      "view": "back",
+      "source": "sprites/mn-f004/native-refinement/birchit-front-back-v2.png",
+      "prompt_file": "sprites/mn-f004/native-refinement/prompt-birchit-v2.txt",
+      "crop": [
+        910,
+        0,
+        864,
+        887
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        13053,
+        4331,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "solid",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-012-voyagear-native-v2",
+      "species_id": "MN_012",
+      "view": "front",
+      "source": "sprites/mn-f004/native-refinement/voyagear-front-back-v2.png",
+      "prompt_file": "sprites/mn-f004/native-refinement/prompt-voyagear-v2.txt",
+      "crop": [
+        0,
+        0,
+        925,
+        887
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        5428,
+        17668,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "solid",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-012-voyagear-native-v2",
+      "species_id": "MN_012",
+      "view": "back",
+      "source": "sprites/mn-f004/native-refinement/voyagear-front-back-v2.png",
+      "prompt_file": "sprites/mn-f004/native-refinement/prompt-voyagear-v2.txt",
+      "crop": [
+        925,
+        0,
+        849,
+        887
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        5428,
+        17668,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "solid",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32
+    }
+  ]
+}

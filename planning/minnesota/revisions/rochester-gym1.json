@@ -1,0 +1,246 @@
+{
+  "schema_version": 1,
+  "status": "Captured canonical Gym1 for the Rochester story publication; other gym drafts are outside this scope.",
+  "gyms": [
+    {
+      "slot": 1,
+      "id": "MnRochesterGym",
+      "constant": "MN_ROCHESTER_GYM",
+      "city": "ROCHESTER",
+      "leader": "VAREL",
+      "trainer_class": "COOLTRAINERF",
+      "leader_sprite": "SPRITE_COOLTRAINER_F",
+      "leader_at": [
+        6,
+        3
+      ],
+      "badge_flag": "ENGINE_ZEPHYRBADGE",
+      "requires": [
+        "EVENT_MN_DELIVERED_ROCHESTER_PARCEL"
+      ],
+      "reward": "TM_HEADBUTT",
+      "party": [
+        {
+          "species": "SENTRET",
+          "level": 10,
+          "moves": [
+            "TACKLE",
+            "DEFENSE_CURL"
+          ]
+        },
+        {
+          "species": "FURRET",
+          "level": 12,
+          "moves": [
+            "SCRATCH",
+            "QUICK_ATTACK",
+            "DEFENSE_CURL"
+          ]
+        }
+      ],
+      "rows": [
+        "dtttttf",
+        "l.....r",
+        "guuuu.r",
+        "lr.euuh",
+        "lruuc.r",
+        "gu..l.r",
+        "l.uul.r",
+        "leuuuuh",
+        "l.....r",
+        ".L.s.R."
+      ],
+      "art": {
+        ".": [
+          "elite_four_room",
+          "02"
+        ],
+        "a": [
+          "elite_four_room",
+          "0f"
+        ],
+        "b": [
+          "elite_four_room",
+          "11"
+        ],
+        "t": [
+          "elite_four_room",
+          "05"
+        ],
+        "c": [
+          "elite_four_room",
+          "0b"
+        ],
+        "l": [
+          "elite_four_room",
+          "08"
+        ],
+        "d": [
+          "elite_four_room",
+          "04"
+        ],
+        "e": [
+          "elite_four_room",
+          "13"
+        ],
+        "r": [
+          "elite_four_room",
+          "0a"
+        ],
+        "f": [
+          "elite_four_room",
+          "06"
+        ],
+        "u": [
+          "elite_four_room",
+          "0d"
+        ],
+        "g": [
+          "elite_four_room",
+          "0c"
+        ],
+        "h": [
+          "elite_four_room",
+          "0e"
+        ],
+        "#": [
+          "elite_four_room",
+          "07"
+        ],
+        "L": [
+          "elite_four_room",
+          "25"
+        ],
+        "R": [
+          "elite_four_room",
+          "26"
+        ],
+        "s": [
+          "elite_four_room",
+          "03"
+        ]
+      },
+      "trainers": [
+        {
+          "id": "MN_GYM_1_TRAINER_1",
+          "name": "TAVEL",
+          "trainer_class": "SCHOOLBOY",
+          "sprite": "SPRITE_YOUNGSTER",
+          "at": [
+            5,
+            16
+          ],
+          "party": [
+            {
+              "species": "SENTRET",
+              "level": 8
+            }
+          ],
+          "optional": false,
+          "before_lines": [
+            "I found the path!",
+            "Can you keep up?"
+          ],
+          "after_lines": [
+            "Look for the gap",
+            "at each turn."
+          ],
+          "requires": []
+        },
+        {
+          "id": "MN_GYM_1_TRAINER_2",
+          "name": "ELVIK",
+          "trainer_class": "SCHOOLBOY",
+          "sprite": "SPRITE_YOUNGSTER",
+          "at": [
+            5,
+            8
+          ],
+          "party": [
+            {
+              "species": "HOOTHOOT",
+              "level": 9
+            }
+          ],
+          "optional": false,
+          "before_lines": [
+            "You made it here.",
+            "Now get past me!"
+          ],
+          "after_lines": [
+            "Go right around",
+            "the last planter.",
+            "VAREL is ahead!"
+          ],
+          "requires": [
+            "EVENT_MN_GYM_1_TRAINER_1_DEFEATED"
+          ]
+        }
+      ],
+      "stations": [],
+      "gates": [],
+      "guide": [
+        "Follow the gaps",
+        "between planters.",
+        "Beat TAVEL, then",
+        "ELVIK. VAREL waits",
+        "at the far end."
+      ],
+      "walkthrough": [
+        "MN_GYM_1_TRAINER_1",
+        "MN_GYM_1_TRAINER_2"
+      ],
+      "dimensions_metatiles": [
+        7,
+        10
+      ],
+      "arrival_core": [
+        6,
+        17
+      ],
+      "exit_tiles_core": [
+        [
+          6,
+          19
+        ],
+        [
+          7,
+          19
+        ]
+      ],
+      "guide_at": [
+        9,
+        17
+      ],
+      "leader_court_locked": false,
+      "before_lines": [
+        "I am VAREL.",
+        "No fancy tricks.",
+        "Show me how well",
+        "you use your team!"
+      ],
+      "victory_lines": [
+        "You noticed when",
+        "the battle turned.",
+        "You earned this!"
+      ],
+      "after_lines": [
+        "Prairie Farm Road",
+        "leads to MANKATO.",
+        "Let your partners",
+        "rest on the way."
+      ],
+      "pads": [],
+      "routers": [],
+      "court_requires": [
+        "EVENT_MN_GYM_1_TRAINER_1_DEFEATED",
+        "EVENT_MN_GYM_1_TRAINER_2_DEFEATED"
+      ],
+      "court_denied_lines": [
+        "Beat TAVEL and",
+        "ELVIK first. Then",
+        "show me your team!"
+      ]
+    }
+  ]
+}

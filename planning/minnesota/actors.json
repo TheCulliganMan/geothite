@@ -1,0 +1,427 @@
+{
+  "schema_version": 1,
+  "status": "Authored anchor reservations. Fit source furniture and passable core tiles before exporting actors.",
+  "actors": [
+    {
+      "id": "MN_GUARDIAN",
+      "map": "MnWinonaHome1F",
+      "anchor_core": [
+        7,
+        4
+      ],
+      "trigger_core": [
+        9,
+        0
+      ],
+      "requires": [],
+      "scene": "MnWHomeArrival",
+      "repeat": "native free rest after EVENT_MN_HOME_INTRO",
+      "native_object_id": "MN_W_GUARDIAN"
+    },
+    {
+      "id": "MN_TAMARACK",
+      "map": "MnWinonaFieldStation",
+      "anchor_core": [
+        5,
+        2
+      ],
+      "requires": [
+        "EVENT_MN_HOME_INTRO"
+      ],
+      "scene": "MN_W_TAMARACK",
+      "repeat": "Rochester reminder and recoverable supplies after EVENT_MN_STARTER_RECEIVED",
+      "native_object_id": "MN_W_TAMARACK"
+    },
+    {
+      "id": "MN_ROCHESTER_RECIPIENT",
+      "map": "MnRochesterPokecenter1F",
+      "anchor_core": [
+        11,
+        8
+      ],
+      "requires": [
+        "EVENT_MN_R01_PARCEL_RECEIVED"
+      ],
+      "scene": "RochesterParcelDelivery",
+      "repeat": "local survey update"
+    },
+    {
+      "id": "MN_R01_FARMER",
+      "map": "MnR01Farmhouse",
+      "anchor_core": [
+        5,
+        3
+      ],
+      "requires": [
+        "EVENT_MN_STARTER_RECEIVED"
+      ],
+      "scene": "DriftlessGrassAndReturnTutorial",
+      "repeat": "brief route direction"
+    },
+    {
+      "id": "MN_MANKATO_NOTEBOOK",
+      "map": "MnMankato",
+      "anchor_core": [
+        26,
+        25
+      ],
+      "approach_core": [
+        26,
+        26
+      ],
+      "requires": [
+        "BADGE_1"
+      ],
+      "scene": "MS02",
+      "repeat": "same numbers for distant lakes; Mankato copy stays here",
+      "native_object_id": "MN_MANKATO_NOTEBOOK",
+      "source_file": "playable/prairie-story.json"
+    },
+    {
+      "id": "MN_CITY_COURIER",
+      "map": "MnStPaulUnionDepot",
+      "anchor_core": [
+        20,
+        16
+      ],
+      "requires": [
+        "BADGE_3",
+        "EVENT_MN_DISPATCH_NOTE"
+      ],
+      "battle": "MN_LODE_COURIER",
+      "repeat": "depot clue after victory",
+      "approach_core": [
+        19,
+        16
+      ],
+      "native_object_id": "MN_ST_PAUL_DEPOT_COURIER",
+      "source_file": "playable/courier-story.json"
+    },
+    {
+      "id": "MN_BRAINERD_RANGER",
+      "map": "MnBrainerd",
+      "anchor_core": [
+        25,
+        19
+      ],
+      "requires": [
+        "BADGE_6"
+      ],
+      "scene": "BrainerdSurfReward",
+      "repeat": "fishers' testimony belongs on record",
+      "approach_core": [
+        25,
+        20
+      ],
+      "native_object_id": "MN_BRAINERD_RANGER",
+      "source_file": "playable/lake-country-story.json"
+    },
+    {
+      "id": "MN_ITASCA_MARKER",
+      "map": "MnLakeItasca",
+      "anchor_core": [
+        19,
+        21
+      ],
+      "requires": [
+        "BADGE_7"
+      ],
+      "scene": "ReadHeadwaterMarker",
+      "repeat": "show saved reading"
+    },
+    {
+      "id": "MN_BEMIDJI_OFFICER",
+      "map": "MnBemidji",
+      "anchor_core": [
+        21,
+        19
+      ],
+      "requires": [
+        "BADGE_7",
+        "EVENT_MN_HEADWATERS_READING"
+      ],
+      "scene": "CompareHeadwaterReport",
+      "repeat": "Iron Range direction",
+      "native_script": "MN_BEMIDJI_OFFICER",
+      "native_status": "Pine plus independent reading; both comparison pages acknowledged before report. Optional notebook grants recognition only."
+    },
+    {
+      "id": "MN_DEPOT_FOREMAN",
+      "map": "MnR09Cave1F",
+      "anchor_core": [
+        9,
+        5
+      ],
+      "requires": [
+        "EVENT_MN_HEADWATERS_REPORT"
+      ],
+      "battle": "MN_LODE_FOREMAN",
+      "repeat": "post-win dialogue",
+      "native_object": "MN_R09_DEPOT_FOREMAN",
+      "native_script": "MN_R09_DEPOT_FOREMAN"
+    },
+    {
+      "id": "MN_DEPOT_RECIPIENT",
+      "map": "MnGrandRapidsSurveyDepot",
+      "anchor_core": [
+        11,
+        9
+      ],
+      "requires": [
+        "EVENT_MN_DEPOT_FOREMAN_DEFEATED",
+        "EVENT_MN_MINE_INSTRUMENT_RECOVERED"
+      ],
+      "scene": "GrandRapidsRecoveredInstrument",
+      "repeat": "harbor receiver direction",
+      "native_object": "MN_DEPOT_RECIPIENT",
+      "native_script": "MN_DEPOT_RECIPIENT"
+    },
+    {
+      "id": "MN_HARBOR_RECEIVER",
+      "map": "MnDuluthHarborWorkshop",
+      "anchor_core": [
+        11,
+        5
+      ],
+      "requires": [
+        "BADGE_1",
+        "BADGE_2",
+        "BADGE_3",
+        "BADGE_4",
+        "BADGE_5",
+        "BADGE_6",
+        "BADGE_7",
+        "BADGE_8",
+        "EVENT_MN_DEPOT_CLEARED"
+      ],
+      "scene": "DuluthReceiverActivation",
+      "repeat": "working signal text"
+    },
+    {
+      "id": "MN_SURVEY_CHIEF",
+      "map": "MnBoundaryWatersSurveyShelter",
+      "anchor_core": [
+        9,
+        5
+      ],
+      "requires": [
+        "BADGE_1",
+        "BADGE_2",
+        "BADGE_3",
+        "BADGE_4",
+        "BADGE_5",
+        "BADGE_6",
+        "BADGE_7",
+        "BADGE_8",
+        "EVENT_MN_LIGHTHOUSE_SIGNAL"
+      ],
+      "battle": "MN_LODE_CHIEF",
+      "repeat": "receiver restoration scene after victory"
+    },
+    {
+      "id": "MN_ICE_ENFORCER",
+      "map": "MnMinneapolisDispatchOffice",
+      "anchor_core": [
+        8,
+        9
+      ],
+      "trigger_core": [
+        9,
+        9
+      ],
+      "requires": [
+        "BADGE_2"
+      ],
+      "scene": "MS03_ICE",
+      "repeat": "hostile post-win line; no rematch or duplicate reward",
+      "native_source": "towns/MnMinneapolis.json"
+    },
+    {
+      "id": "MN_ICE_CAPTIVE_DISPATCHER",
+      "map": "MnMinneapolisDispatchOffice",
+      "anchor_core": [
+        15,
+        5
+      ],
+      "trigger_core": [
+        11,
+        6
+      ],
+      "interaction_target_core": [
+        12,
+        6
+      ],
+      "requires": [
+        "EVENT_MN_ICE_ENFORCER_DEFEATED"
+      ],
+      "scene": "MS03_RESCUE",
+      "hidden_after": "EVENT_MN_ICE_CAPTIVE_RESCUED",
+      "repeat": "separate latch says the cell is open; clerk returns home",
+      "native_source": "towns/MnMinneapolis.json"
+    },
+    {
+      "id": "MnMPDispatchCopy",
+      "kind": "background_interaction",
+      "map": "MnMinneapolisDispatchOffice",
+      "anchor_core": [
+        9,
+        11
+      ],
+      "trigger_core": [
+        10,
+        11
+      ],
+      "requires": [
+        "BADGE_2",
+        "EVENT_MN_ICE_ENFORCER_DEFEATED",
+        "EVENT_MN_ICE_CAPTIVE_RESCUED"
+      ],
+      "scene": "MS03",
+      "repeat": "ST PAUL direction; no further flag/reward",
+      "native_source": "towns/MnMinneapolis.json"
+    },
+    {
+      "id": "MN_MP_DISPATCHER_PARTNER",
+      "map": "MnMinneapolisDispatcherHouse",
+      "anchor_core": [
+        6,
+        3
+      ],
+      "trigger_core": [
+        6,
+        4
+      ],
+      "requires": [],
+      "scene": "DispatcherFamilyWitness",
+      "repeat": "native dialogue changes after EVENT_MN_ICE_CAPTIVE_RESCUED",
+      "native_source": "towns/MnMinneapolis.json"
+    },
+    {
+      "id": "MN_MP_RESCUED_DISPATCHER",
+      "map": "MnMinneapolisDispatcherHouse",
+      "anchor_core": [
+        7,
+        5
+      ],
+      "trigger_core": [
+        6,
+        5
+      ],
+      "requires": [
+        "EVENT_MN_ICE_CAPTIVE_RESCUED"
+      ],
+      "scene": "DispatcherReturnsHome",
+      "visible_when": "EVENT_MN_ICE_CAPTIVE_RESCUED",
+      "same_person_as": "MN_ICE_CAPTIVE_DISPATCHER",
+      "repeat": "no award; directs player to the recovered dispatch copy",
+      "native_source": "towns/MnMinneapolis.json"
+    },
+    {
+      "id": "MN_ITASCA_GATE_ATTENDANT",
+      "map": "MnItascaGatehouse",
+      "anchor_core": [
+        5,
+        2
+      ],
+      "requires": [],
+      "scene": "OrdinaryTestimony",
+      "native_script": "MN_ITASCA_GATE_ATTENDANT",
+      "repeat": "same testimony; no reward or progress"
+    },
+    {
+      "id": "MN_ITASCA_GATE_WALKER",
+      "map": "MnItascaGatehouse",
+      "anchor_core": [
+        1,
+        3
+      ],
+      "requires": [],
+      "scene": "OrdinaryTestimony",
+      "native_script": "MN_ITASCA_GATE_WALKER",
+      "repeat": "same testimony; no reward or progress"
+    },
+    {
+      "id": "MN_MARAIS_SHORE_WARDEN_NORTH",
+      "map": "MnGrandMarais",
+      "anchor_core": [
+        6,
+        18
+      ],
+      "requires": [],
+      "scene": "MnMaraisShoreCheck",
+      "repeat": "Outbound eight badges plus Duluth signal; inbound return free; local lamp/part not required.",
+      "source_file": "towns/MnGrandMarais.connections.json"
+    },
+    {
+      "id": "MN_MARAIS_SHORE_WARDEN_SOUTH",
+      "map": "MnGrandMarais",
+      "anchor_core": [
+        6,
+        19
+      ],
+      "requires": [],
+      "scene": "MnMaraisShoreCheck",
+      "repeat": "Outbound eight badges plus Duluth signal; inbound return free; local lamp/part not required.",
+      "source_file": "towns/MnGrandMarais.connections.json"
+    },
+    {
+      "id": "MN_MARAIS_GUNFLINT_WARDEN_NORTH",
+      "map": "MnGrandMarais",
+      "anchor_core": [
+        2,
+        8
+      ],
+      "requires": [],
+      "scene": "MnMaraisGunflintCheck",
+      "repeat": "Outbound eight badges plus Duluth signal; inbound return free; local lamp/part not required.",
+      "source_file": "towns/MnGrandMarais.connections.json"
+    },
+    {
+      "id": "MN_MARAIS_GUNFLINT_WARDEN_SOUTH",
+      "map": "MnGrandMarais",
+      "anchor_core": [
+        2,
+        9
+      ],
+      "requires": [],
+      "scene": "MnMaraisGunflintCheck",
+      "repeat": "Outbound eight badges plus Duluth signal; inbound return free; local lamp/part not required.",
+      "source_file": "towns/MnGrandMarais.connections.json"
+    },
+    {
+      "id": "MN_MARAIS_GATE_ATTENDANT",
+      "map": "MnGrandMaraisShoreGate",
+      "anchor_core": [
+        5,
+        2
+      ],
+      "approach_core": [
+        5,
+        4
+      ],
+      "requires": [],
+      "scene": "MnGrandMaraisShoreGateAttendant",
+      "repeat": "Native counter conversation; no reward or story result.",
+      "source_file": "towns/MnGrandMarais.connections.json",
+      "native_object_id": "MNGRANDMARAISSHOREGATE_NPC1"
+    },
+    {
+      "id": "MNGRANDMARAISFIELDSTATION_NPC1",
+      "map": "MnGrandMaraisFieldStation",
+      "anchor_core": [
+        5,
+        3
+      ],
+      "requires": [],
+      "scene": "MnGrandMaraisWelcome",
+      "repeat": "Optional spare part; decline/full-pocket retry; receipt flag only after acknowledgment; no demo starter or supply bundle.",
+      "source_file": "towns/MnGrandMarais.connections.json"
+    }
+  ],
+  "dialogue_rules": [
+    "Use actual game font and page-sized text.",
+    "Every trigger has an idempotent completion flag.",
+    "Loss/cancel paths return to a recoverable state.",
+    "No actor or item overlaps an arrival or mandatory lane."
+  ]
+}

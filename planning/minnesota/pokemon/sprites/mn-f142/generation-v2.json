@@ -1,0 +1,10 @@
+{
+  "tool": "built-in imagegen",
+  "status": "success",
+  "raw_source": "/Users/ryanculligan/.codex/generated_images/01a17aa2-ca0b-7cc0-8219-cddf2150b02b/exec-d81c1fa4-f3f7-4e5b-b097-bb4353132c39.png",
+  "saved_source": "planning/minnesota/pokemon/sprites/mn-f142/front-back.imagegen-v2.png",
+  "source_sha256": "3b5b229c1461842e323cc57c5638bdfdce986c76b068b2c129e4727116062690",
+  "prompt_file": "prompt-v2-face.txt",
+  "edit_target": "front-back.imagegen-v1.png",
+  "goal": "Enlarge true front face/pupils without changing leaf-gate identity."
+}

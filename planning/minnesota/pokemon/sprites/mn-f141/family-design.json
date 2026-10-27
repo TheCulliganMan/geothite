@@ -1,0 +1,418 @@
+{
+  "schema_version": 1,
+  "status": "root-approved-native-awaiting-global-integration",
+  "family_id": "MN_F141",
+  "roster_family": {
+    "id": "MN_F141",
+    "region": "hardwood_forest",
+    "theme": "White-tailed deer and discarded antlers returning as protective limbs; an original fantasy rather than a borrowed sacred being.",
+    "habitat": "Young hardwood edges, quiet deer trails and sheltered spring clearings.",
+    "members": [
+      {
+        "id": "MN_312",
+        "name": "Velvawn",
+        "types": [
+          "GRASS"
+        ],
+        "stage": 1,
+        "evolves_to": "MN_313"
+      },
+      {
+        "id": "MN_313",
+        "name": "Shedstag",
+        "types": [
+          "GRASS",
+          "GHOST"
+        ],
+        "stage": 2,
+        "evolves_to": null
+      }
+    ],
+    "sources": [
+      {
+        "url": "https://www.dnr.state.mn.us/mammals/index.html",
+        "publisher": "Minnesota regional primary source",
+        "evidence": "Regional animal natural history only.",
+        "fantasy_extension": "Soft velvet buds become empty antler bases; the shed antlers return as exactly two hovering guardian limbs. A connected white tail expands into a three-lobed warning fan. Original forest fantasy, not an adaptation of a sacred being."
+      }
+    ],
+    "design_status": "native-reviewed-expansion",
+    "replacement_context": "User authorized this original family among eleven proposals; root selects overlapping retirements and preserves the active count. No encounter or map event is changed."
+  },
+  "species_profiles": [
+    {
+      "id": "MN_312",
+      "classification": "Velvet Bud",
+      "height_inches": 21,
+      "weight_tenths_lb": 240,
+      "dex_pages": [
+        "Soft green buds @ crown its head. @ They smell of dew.",
+        "It leaves tiny @ hoofprints around @ new forest shoots."
+      ],
+      "base_stats": {
+        "hp": 50,
+        "attack": 50,
+        "defense": 45,
+        "speed": 70,
+        "special_attack": 45,
+        "special_defense": 50
+      },
+      "catch_rate": 190,
+      "base_exp": 65,
+      "gender_ratio": 127,
+      "hatch_cycles": 20,
+      "growth_rate": "GROWTH_MEDIUM_FAST",
+      "egg_groups": [
+        "EGG_GROUND",
+        "EGG_PLANT"
+      ],
+      "evolution": {
+        "method": "LEVEL",
+        "level": 32
+      },
+      "held_items": [
+        null,
+        null
+      ],
+      "menu_icon": "ICON_EQUINE",
+      "footprint_species": "STANTLER",
+      "cry": {
+        "cry": "CRY_GIRAFARIG",
+        "pitch": -24,
+        "length": 144
+      },
+      "shiny_rgb5": [
+        [
+          25,
+          16,
+          22
+        ],
+        [
+          12,
+          8,
+          16
+        ]
+      ],
+      "level_moves": [
+        [
+          1,
+          "TACKLE"
+        ],
+        [
+          1,
+          "GROWL"
+        ],
+        [
+          6,
+          "VINE_WHIP"
+        ],
+        [
+          11,
+          "LEECH_SEED"
+        ],
+        [
+          16,
+          "STOMP"
+        ],
+        [
+          21,
+          "RAZOR_LEAF"
+        ],
+        [
+          27,
+          "TAKE_DOWN"
+        ],
+        [
+          33,
+          "SYNTHESIS"
+        ],
+        [
+          40,
+          "SAFEGUARD"
+        ],
+        [
+          47,
+          "SOLARBEAM"
+        ]
+      ],
+      "tmhm_moves": [
+        "HEADBUTT",
+        "GIGA_DRAIN",
+        "SUNNY_DAY",
+        "SOLARBEAM",
+        "REST",
+        "PROTECT",
+        "RETURN",
+        "ATTRACT",
+        "FLASH"
+      ],
+      "egg_moves": [
+        "CHARM",
+        "DOUBLE_KICK",
+        "REFLECT"
+      ]
+    },
+    {
+      "id": "MN_313",
+      "classification": "Shed Guard",
+      "height_inches": 55,
+      "weight_tenths_lb": 1720,
+      "dex_pages": [
+        "Each spring, its @ shed antlers rise @ to guard the herd.",
+        "A pale tail fan @ guides lost young @ through dark woods"
+      ],
+      "base_stats": {
+        "hp": 75,
+        "attack": 95,
+        "defense": 75,
+        "speed": 90,
+        "special_attack": 75,
+        "special_defense": 90
+      },
+      "catch_rate": 60,
+      "base_exp": 175,
+      "gender_ratio": 127,
+      "hatch_cycles": 20,
+      "growth_rate": "GROWTH_MEDIUM_FAST",
+      "egg_groups": [
+        "EGG_GROUND",
+        "EGG_PLANT"
+      ],
+      "evolution": null,
+      "held_items": [
+        null,
+        null
+      ],
+      "menu_icon": "ICON_EQUINE",
+      "footprint_species": "STANTLER",
+      "cry": {
+        "cry": "CRY_GIRAFARIG",
+        "pitch": 0,
+        "length": 160
+      },
+      "shiny_rgb5": [
+        [
+          22,
+          17,
+          9
+        ],
+        [
+          8,
+          12,
+          18
+        ]
+      ],
+      "level_moves": [
+        [
+          1,
+          "TACKLE"
+        ],
+        [
+          1,
+          "GROWL"
+        ],
+        [
+          1,
+          "LEECH_SEED"
+        ],
+        [
+          6,
+          "VINE_WHIP"
+        ],
+        [
+          16,
+          "STOMP"
+        ],
+        [
+          21,
+          "RAZOR_LEAF"
+        ],
+        [
+          27,
+          "TAKE_DOWN"
+        ],
+        [
+          32,
+          "CONFUSE_RAY"
+        ],
+        [
+          36,
+          "SHADOW_BALL"
+        ],
+        [
+          41,
+          "SYNTHESIS"
+        ],
+        [
+          47,
+          "SAFEGUARD"
+        ],
+        [
+          54,
+          "MEGAHORN"
+        ]
+      ],
+      "tmhm_moves": [
+        "HEADBUTT",
+        "GIGA_DRAIN",
+        "SUNNY_DAY",
+        "SOLARBEAM",
+        "REST",
+        "PROTECT",
+        "RETURN",
+        "ATTRACT",
+        "FLASH",
+        "SHADOW_BALL",
+        "NIGHTMARE"
+      ],
+      "egg_moves": [
+        "CHARM",
+        "DOUBLE_KICK",
+        "REFLECT"
+      ]
+    }
+  ],
+  "pokemon_palettes": {
+    "MN_312": {
+      "species_id": "MN_312",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          25,
+          19,
+          11
+        ],
+        [
+          9,
+          16,
+          7
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        11897,
+        7689,
+        0
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#CE9C5A",
+        "#4A8439",
+        "#000000"
+      ],
+      "name": "Velvawn",
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          206,
+          156,
+          90
+        ],
+        [
+          74,
+          132,
+          57
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    "MN_313": {
+      "species_id": "MN_313",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          15,
+          20,
+          17
+        ],
+        [
+          10,
+          8,
+          15
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        18063,
+        15626,
+        0
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#7BA58C",
+        "#52427B",
+        "#000000"
+      ],
+      "name": "Shedstag",
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          123,
+          165,
+          140
+        ],
+        [
+          82,
+          66,
+          123
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ]
+    }
+  },
+  "evolution_design": "Soft velvet buds become empty antler bases; the shed antlers return as exactly two hovering guardian limbs. A connected white tail expands into a three-lobed warning fan. Original forest fantasy, not an adaptation of a sacred being.",
+  "balance_notes": "Ordinary two-stage family; no rare classification. Only existing move/effect IDs; native borrowed cry programs with distinct pitch/length. Stats and progression remain proposals for root integration.",
+  "selected_manifest": "sprites/mn-f141/manifest.json",
+  "selected_native_directory": "target/minnesota-pokemon/native/MN_F141",
+  "review": {
+    "status": "reviewed",
+    "reviewer": "root",
+    "sheet_sha256": "a542792813f9e97fb62ca3c3c1a10d92e47669b291008c246fec64961517cbcb",
+    "outline_profile": "solid-exterior-v1",
+    "notes": "Root approved AreaVote + Solid, white16/black12. Continuous black rims contain both white shed-antler planes and connected tail fan. Native front has four legs and two intentionally hovering antler limbs. Large rear ears/upper back with cropped lower body. All original sources, prompts and rejected variants retained. No pixel edits."
+  },
+  "source_hashes": {
+    "sprites/mn-f141/proposal-v1/front-back.imagegen-v1.png": "4d085d58c0347ee13a516e443ed0de68a2d4fd5dbf49ce502d8bc5b124c4d71d"
+  },
+  "variants": [
+    "area-source",
+    "area-solid",
+    "center-source",
+    "center-solid",
+    "area-white16"
+  ]
+}

@@ -19,6 +19,28 @@ fn retained_visual_windows_keep_whole_source_blocks_without_resizing_between_pha
 
 #[cfg(feature = "voxel-view")]
 #[test]
+fn outdoor_windows_preload_a_wide_radius_in_every_direction() {
+    for origin in [IVec2::ZERO, IVec2::new(-97, 29), IVec2::new(137, -63)] {
+        let window = visual_world_grid_window(true, origin);
+        assert!(window.origin.cmple(origin - IVec2::splat(96)).all());
+        assert!(
+            (window.origin + window.size.as_ivec2())
+                .cmpge(
+                    origin
+                        + IVec2::new(VIEWPORT_TILES_X as i32, VIEWPORT_TILES_Y as i32)
+                        + IVec2::splat(96)
+                )
+                .all()
+        );
+        assert!(
+            window.size.x as usize * window.size.y as usize > i16::MAX as usize,
+            "large windows must allocate without multiplying dimensions in i16"
+        );
+    }
+}
+
+#[cfg(feature = "voxel-view")]
+#[test]
 #[ignore = "requires an external production content pack"]
 fn aligned_source_windows_publish_the_player_on_its_authoritative_gameplay_tile() {
     let path=PathBuf::from(std::env::var_os("CRYSTAL_RENDER_TEST_PACK").unwrap());

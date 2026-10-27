@@ -1,0 +1,22 @@
+Use case: stylized-concept
+Asset type: exact Game Boy Color Generation 2 battle pixel sprite sheet, original Minnesota monster family.
+Primary request: Morton gneiss and deep time: a folded stone hatchling unfolds into an ancient dragon whose limbs follow its pink-and-black bands.
+Style reference: authentic Pokemon Crystal / Gold / Silver Gen 2 pixel art: coarse visibly square pixels, low native resolution, simple sculpted clusters, selective black outlines, restrained internal dark lines, sparse white highlights, readable eyes. Do not copy any existing Pokemon. No modern vector look, gradients, antialiasing, soft shadows, textures, excessive tiny details or dithering.
+Composition: 3 columns and exactly 2 rows on pure white, no labels, dividers or text. One species per column in evolutionary order. Top row whole-body FRONT battle view facing LEFT, all extremities inside its cell. Bottom row CLOSE REAR battle PORTRAIT of same species, facing UPPER RIGHT; head and upper back fill the cell, lower torso cut off at bottom. Backs are zoomed-in rear portraits, never small whole-body turnarounds. Maintain broad white gutters. Each cell behaves as a 64x64 logical grid enlarged by nearest neighbor. Fronts ultimately occupy 56x56; backs 48x48.
+GBC color definitions: palette indices 0..3; RGB5 channels are integers0..31; packed RGB555=r|(g<<5)|(b<<10); RGB8 expansion=(v<<3)|(v>>2). Each species has its OWN four-color palette, shared ONLY between its front/back. Do not share one palette across all stages. Use flat exact colors only. Index0 white is also the sheet background.
+Column 1: Pebgneiss (ROCK) — Compact pink folded-gneiss pebble hatchling, black rock bands form small jaw and four stubby feet. Front grows in size relative to previous stage. Back must retain its unique anatomy and palette.
+  palette index0: RGB5 [31, 31, 31], packedRGB555 32767 (0x7FFF), expandedRGB8 [255, 255, 255], hex #FFFFFF.
+  palette index1: RGB5 (27, 18, 20), packedRGB555 21083 (0x525B), expandedRGB8 [222, 148, 165], hex #DE94A5.
+  palette index2: RGB5 (12, 9, 12), packedRGB555 12588 (0x312C), expandedRGB8 [99, 74, 99], hex #634A63.
+  palette index3: RGB5 [0, 0, 0], packedRGB555 0 (0x0000), expandedRGB8 [0, 0, 0], hex #000000.
+Column 2: Foldgneiss (ROCK/DRAGON) — Low four-legged stone dragon with folded pink bands creating articulated neck, long tail and wedge-shaped shoulders. Front grows in size relative to previous stage. Back must retain its unique anatomy and palette.
+  palette index0: RGB5 [31, 31, 31], packedRGB555 32767 (0x7FFF), expandedRGB8 [255, 255, 255], hex #FFFFFF.
+  palette index1: RGB5 (28, 17, 20), packedRGB555 21052 (0x523C), expandedRGB8 [231, 140, 165], hex #E78CA5.
+  palette index2: RGB5 (10, 7, 11), packedRGB555 11498 (0x2CEA), expandedRGB8 [82, 57, 90], hex #52395A.
+  palette index3: RGB5 [0, 0, 0], packedRGB555 0 (0x0000), expandedRGB8 [0, 0, 0], hex #000000.
+Column 3: Mortyrant (ROCK/DRAGON) — Ancient powerful gneiss dragon, long neck, broad folded-rock chest, heavy curved tail and staggered stone horns; pink rock strata flow continuously across limbs, no gemstones. Front grows in size relative to previous stage. Back must retain its unique anatomy and palette.
+  palette index0: RGB5 [31, 31, 31], packedRGB555 32767 (0x7FFF), expandedRGB8 [255, 255, 255], hex #FFFFFF.
+  palette index1: RGB5 (26, 14, 17), packedRGB555 17882 (0x45DA), expandedRGB8 [214, 115, 140], hex #D6738C.
+  palette index2: RGB5 (9, 7, 10), packedRGB555 10473 (0x28E9), expandedRGB8 [74, 57, 82], hex #4A3952.
+  palette index3: RGB5 [0, 0, 0], packedRGB555 0 (0x0000), expandedRGB8 [0, 0, 0], hex #000000.
+All six/four views are ORIGINAL creature designs that embody the theme in their anatomy. No accessories held by humans, no costumes, no scenery, no ground shadows, no text or palette swatches. Prioritize Gen2 battle readability over illustration detail.

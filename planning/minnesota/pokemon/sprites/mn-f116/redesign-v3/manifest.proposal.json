@@ -1,0 +1,152 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F116",
+  "status": "proposal-only-do-not-run-against-shared-native-root",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_250": {
+      "species_id": "MN_250",
+      "name": "Flarkindle",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          27,
+          23,
+          29
+        ],
+        [
+          7,
+          13,
+          11
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        30459,
+        11687,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          222,
+          189,
+          239
+        ],
+        [
+          57,
+          107,
+          90
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#DEBDEF",
+        "#396B5A",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f116/redesign-v3/prompt-v1.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "source_sha256": "38ef7263d4c8dd28bf03a0a20ad88e263bcca54727434edf040c7f8ba53bf76e",
+  "sprites": [
+    {
+      "id": "mn-250-flarkindle-v3",
+      "species_id": "MN_250",
+      "view": "front",
+      "source": "sprites/mn-f116/redesign-v3/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        1199,
+        620
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        30459,
+        11687,
+        0
+      ],
+      "exterior_contour": "solid",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 24
+    },
+    {
+      "id": "mn-250-flarkindle-v3",
+      "species_id": "MN_250",
+      "view": "back",
+      "source": "sprites/mn-f116/redesign-v3/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        620,
+        1199,
+        692
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        30459,
+        11687,
+        0
+      ],
+      "exterior_contour": "solid",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 24
+    }
+  ],
+  "visual_review": {
+    "status": "native-proposal-reviewed-awaiting-root",
+    "notes": "New source exposes both large white eyes above the forward rib; three asymmetrical thick peat ribs enclose two broad black pool gaps. No extra fingers, cultural motifs, particles or props. Close rear retains lavender nape and cropped peat ribs; native conversion still requires inspection. Native56/48views inspected: both eye windows retain black pupils, lavender head stays separate from three peat ribs and two broad black pool gaps. Close rear crops the root tassel and enlarges the nape. Palette remains exact four inks. No canonical replacement performed.",
+    "sheet_sha256": "38ef7263d4c8dd28bf03a0a20ad88e263bcca54727434edf040c7f8ba53bf76e",
+    "outline_profile": "solid-exterior-v1"
+  },
+  "native_qa": {
+    "converter": "Current crates/crystal-assets/examples/minnesota_sprite_sheet.rs compiled directly with rustc and its exact current leaf modules; no external image exporter.",
+    "isolated_output": "target/agent-northwoods-animation/proposals/flarkindle-v3",
+    "durable_output": "planning/minnesota/renders/proposals-20261026-v1/flarkindle-v3",
+    "review": "planning/minnesota/renders/proposals-20261026-v1/flarkindle-v3/line.review.png",
+    "native": "planning/minnesota/renders/proposals-20261026-v1/flarkindle-v3/line.native.png",
+    "frame_sizes": {
+      "front": [
+        56,
+        56
+      ],
+      "back": [
+        48,
+        48
+      ]
+    },
+    "native_bytes": {
+      "front": 784,
+      "back": 576
+    },
+    "quantization": "exact per-species four-ink RGB555, source front/back crops independently converted",
+    "status": "proposal-only-native-inspected"
+  }
+}

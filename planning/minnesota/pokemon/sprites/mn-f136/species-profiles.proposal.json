@@ -1,0 +1,402 @@
+{
+  "schema_version": 1,
+  "species": [
+    {
+      "id": "MN_300",
+      "classification": "Curl Cub",
+      "height_inches": 16,
+      "weight_tenths_lb": 220,
+      "dex_pages": [
+        "It curls its paws @ around its belly @ and dreams softly.",
+        "Its crescent paws @ fold closed when @ it grows sleepy."
+      ],
+      "base_stats": {
+        "hp": 65,
+        "attack": 55,
+        "defense": 55,
+        "speed": 30,
+        "special_attack": 45,
+        "special_defense": 50
+      },
+      "catch_rate": 190,
+      "base_exp": 68,
+      "gender_ratio": 127,
+      "hatch_cycles": 20,
+      "growth_rate": "GROWTH_MEDIUM_FAST",
+      "egg_groups": [
+        "EGG_GROUND",
+        "EGG_GROUND"
+      ],
+      "level_moves": [
+        [
+          1,
+          "TACKLE"
+        ],
+        [
+          1,
+          "GROWL"
+        ],
+        [
+          5,
+          "LICK"
+        ],
+        [
+          9,
+          "DEFENSE_CURL"
+        ],
+        [
+          13,
+          "HEADBUTT"
+        ],
+        [
+          18,
+          "HYPNOSIS"
+        ],
+        [
+          20,
+          "REST"
+        ],
+        [
+          24,
+          "CONFUSION"
+        ],
+        [
+          28,
+          "SNORE"
+        ],
+        [
+          33,
+          "AMNESIA"
+        ],
+        [
+          38,
+          "SLEEP_TALK"
+        ],
+        [
+          44,
+          "BODY_SLAM"
+        ],
+        [
+          50,
+          "DREAM_EATER"
+        ]
+      ],
+      "tmhm_moves": [
+        "TOXIC",
+        "HIDDEN_POWER",
+        "RETURN",
+        "REST",
+        "PROTECT",
+        "ATTRACT",
+        "FRUSTRATION",
+        "ENDURE",
+        "SLEEP_TALK",
+        "SNORE",
+        "STRENGTH",
+        "HEADBUTT",
+        "DREAM_EATER"
+      ],
+      "egg_moves": [
+        "AMNESIA",
+        "COUNTER",
+        "CHARM"
+      ],
+      "evolution": {
+        "method": "LEVEL",
+        "level": 24
+      },
+      "held_items": [
+        null,
+        null
+      ],
+      "menu_icon": "ICON_SNORLAX",
+      "cry": {
+        "cry": "CRY_TEDDIURSA",
+        "pitch": 24,
+        "length": 128
+      },
+      "shiny_rgb5": [
+        [
+          23,
+          12,
+          8
+        ],
+        [
+          29,
+          23,
+          11
+        ]
+      ],
+      "footprint_species": "TEDDIURSA"
+    },
+    {
+      "id": "MN_301",
+      "classification": "Dream Den",
+      "height_inches": 39,
+      "weight_tenths_lb": 1450,
+      "dex_pages": [
+        "Its arms shelter @ a dark chest den. @ Dreams stir there.",
+        "It hears quiet @ thoughts while it @ naps in the woods."
+      ],
+      "base_stats": {
+        "hp": 85,
+        "attack": 65,
+        "defense": 65,
+        "speed": 35,
+        "special_attack": 75,
+        "special_defense": 85
+      },
+      "catch_rate": 90,
+      "base_exp": 142,
+      "gender_ratio": 127,
+      "hatch_cycles": 20,
+      "growth_rate": "GROWTH_MEDIUM_FAST",
+      "egg_groups": [
+        "EGG_GROUND",
+        "EGG_GROUND"
+      ],
+      "level_moves": [
+        [
+          1,
+          "TACKLE"
+        ],
+        [
+          1,
+          "GROWL"
+        ],
+        [
+          5,
+          "LICK"
+        ],
+        [
+          9,
+          "DEFENSE_CURL"
+        ],
+        [
+          13,
+          "HEADBUTT"
+        ],
+        [
+          18,
+          "HYPNOSIS"
+        ],
+        [
+          20,
+          "REST"
+        ],
+        [
+          24,
+          "PSYBEAM"
+        ],
+        [
+          29,
+          "SNORE"
+        ],
+        [
+          34,
+          "AMNESIA"
+        ],
+        [
+          38,
+          "SLEEP_TALK"
+        ],
+        [
+          40,
+          "PSYCHIC_M"
+        ],
+        [
+          46,
+          "BODY_SLAM"
+        ],
+        [
+          52,
+          "DREAM_EATER"
+        ]
+      ],
+      "tmhm_moves": [
+        "TOXIC",
+        "HIDDEN_POWER",
+        "RETURN",
+        "REST",
+        "PROTECT",
+        "ATTRACT",
+        "FRUSTRATION",
+        "ENDURE",
+        "SLEEP_TALK",
+        "SNORE",
+        "STRENGTH",
+        "HEADBUTT",
+        "DREAM_EATER",
+        "PSYCHIC_M",
+        "SHADOW_BALL"
+      ],
+      "egg_moves": [
+        "AMNESIA",
+        "COUNTER",
+        "CHARM"
+      ],
+      "evolution": {
+        "method": "LEVEL",
+        "level": 40
+      },
+      "held_items": [
+        null,
+        null
+      ],
+      "menu_icon": "ICON_SNORLAX",
+      "cry": {
+        "cry": "CRY_TEDDIURSA",
+        "pitch": -16,
+        "length": 160
+      },
+      "shiny_rgb5": [
+        [
+          7,
+          17,
+          18
+        ],
+        [
+          27,
+          24,
+          14
+        ]
+      ],
+      "footprint_species": "TEDDIURSA"
+    },
+    {
+      "id": "MN_302",
+      "classification": "Dream Den",
+      "height_inches": 70,
+      "weight_tenths_lb": 6050,
+      "dex_pages": [
+        "Its folded arms @ enclose a dream @ that has a face.",
+        "When danger nears @ it draws friends @ into a calm sleep."
+      ],
+      "base_stats": {
+        "hp": 110,
+        "attack": 85,
+        "defense": 80,
+        "speed": 40,
+        "special_attack": 105,
+        "special_defense": 110
+      },
+      "catch_rate": 45,
+      "base_exp": 230,
+      "gender_ratio": 127,
+      "hatch_cycles": 20,
+      "growth_rate": "GROWTH_MEDIUM_FAST",
+      "egg_groups": [
+        "EGG_GROUND",
+        "EGG_GROUND"
+      ],
+      "level_moves": [
+        [
+          1,
+          "TACKLE"
+        ],
+        [
+          1,
+          "GROWL"
+        ],
+        [
+          1,
+          "CONFUSION"
+        ],
+        [
+          5,
+          "LICK"
+        ],
+        [
+          9,
+          "DEFENSE_CURL"
+        ],
+        [
+          13,
+          "HEADBUTT"
+        ],
+        [
+          18,
+          "HYPNOSIS"
+        ],
+        [
+          20,
+          "REST"
+        ],
+        [
+          24,
+          "PSYBEAM"
+        ],
+        [
+          29,
+          "SNORE"
+        ],
+        [
+          34,
+          "AMNESIA"
+        ],
+        [
+          38,
+          "SLEEP_TALK"
+        ],
+        [
+          40,
+          "PSYCHIC_M"
+        ],
+        [
+          47,
+          "BODY_SLAM"
+        ],
+        [
+          55,
+          "DREAM_EATER"
+        ]
+      ],
+      "tmhm_moves": [
+        "TOXIC",
+        "HIDDEN_POWER",
+        "RETURN",
+        "REST",
+        "PROTECT",
+        "ATTRACT",
+        "FRUSTRATION",
+        "ENDURE",
+        "SLEEP_TALK",
+        "SNORE",
+        "STRENGTH",
+        "HEADBUTT",
+        "DREAM_EATER",
+        "PSYCHIC_M",
+        "SHADOW_BALL"
+      ],
+      "egg_moves": [
+        "AMNESIA",
+        "COUNTER",
+        "CHARM"
+      ],
+      "evolution": null,
+      "held_items": [
+        null,
+        null
+      ],
+      "menu_icon": "ICON_SNORLAX",
+      "cry": {
+        "cry": "CRY_TEDDIURSA",
+        "pitch": -48,
+        "length": 208
+      },
+      "shiny_rgb5": [
+        [
+          9,
+          17,
+          15
+        ],
+        [
+          27,
+          19,
+          26
+        ]
+      ],
+      "footprint_species": "TEDDIURSA"
+    }
+  ]
+}

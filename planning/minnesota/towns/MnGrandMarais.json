@@ -1,0 +1,124 @@
+{
+  "id": "MnGrandMarais",
+  "name": "GRAND MARAIS",
+  "dimensions_metatiles": [
+    20,
+    19
+  ],
+  "reference_anchor_percent": [
+    87,
+    26
+  ],
+  "role": "town",
+  "tileset": "mn_marais_shore",
+  "composition": "Fishing harbor, artist row and inland trailhead.",
+  "ports": [
+    {
+      "route": "MN_R11",
+      "side": "S",
+      "gate_metatile": [
+        2,
+        9
+      ],
+      "landing_metatile": [
+        4,
+        9
+      ],
+      "physical_facade": "west side building; paired east-west gate warps connect the northern coast trail"
+    },
+    {
+      "route": "MN_R12",
+      "side": "W",
+      "gate_metatile": [
+        0,
+        4
+      ],
+      "landing_metatile": [
+        2,
+        4
+      ],
+      "native_connection": "MnR12C01R01 east; offsets 0/0; core rows 8/9"
+    }
+  ],
+  "interiors": [
+    {
+      "id": "MnGrandMaraisFieldStation",
+      "kind": "field_station",
+      "dimensions_metatiles": [
+        5,
+        4
+      ],
+      "source_behavior": "Optional spare lamp part; native demo starter/supplies retired."
+    },
+    {
+      "id": "MnGrandMaraisPokecenter",
+      "kind": "pokecenter",
+      "dimensions_metatiles": [
+        5,
+        4
+      ],
+      "source_behavior": "Native nurse healing and visit-selected recovery in the shore successor."
+    },
+    {
+      "id": "MnGrandMaraisMart",
+      "kind": "mart",
+      "dimensions_metatiles": [
+        6,
+        4
+      ],
+      "source_behavior": "Original native shop inventory and clerk."
+    },
+    {
+      "id": "MnGrandMaraisArtistHouse",
+      "kind": "house",
+      "dimensions_metatiles": [
+        4,
+        4
+      ],
+      "source_behavior": "Original artist conversation."
+    },
+    {
+      "id": "MnGrandMaraisFisherHouse",
+      "kind": "house",
+      "dimensions_metatiles": [
+        4,
+        4
+      ],
+      "source_behavior": "Original fisher conversation."
+    },
+    {
+      "id": "MnGrandMaraisLighthouse",
+      "kind": "lighthouse",
+      "dimensions_metatiles": [
+        5,
+        5
+      ],
+      "source_behavior": "Optional part repair, distinct local lamp flag and once-only Super Potion."
+    },
+    {
+      "id": "MnGrandMaraisShoreGate",
+      "kind": "gatehouse",
+      "dimensions_metatiles": [
+        5,
+        4
+      ],
+      "source_behavior": "Authentic IlexForestAzaleaGate floorplan; two passive arrival lanes at each side."
+    }
+  ],
+  "walkable_destinations": [
+    "each port landing",
+    "every visible exterior door",
+    "central square",
+    "local story NPC"
+  ],
+  "door_contract": "Six original native indexed facade/room pairs are preserved, with automatic outdoor exit steps. The separate coast gate uses four passive room arrivals and two inside-checkpoint town returns.",
+  "implementation": {
+    "design": "../playable/grand-marais.json",
+    "map_constant": "MN_GRAND_MARAIS",
+    "scope": "Regional North Shore candidate; verification in playable/north-shore-story.md",
+    "interiors": 7,
+    "review": "../playable/north-shore-story.md",
+    "connections": "MnGrandMarais.connections.json"
+  },
+  "native_connections_source": "planning/minnesota/towns/MnGrandMarais.connections.json"
+}

@@ -5094,3 +5094,28 @@ fn runtime_save_rejects_script_runtime_references_missing_from_compiled_pack_imp
     );
     let _ = std::fs::remove_dir_all(root);
 }
+
+#[test]
+fn runtime_item_catalog_exposes_hp_medicine_without_confusing_pp_payloads() {
+    let id = "CUSTOM_MEDICINE".to_string();
+    let mut item = runtime_item(&id, item_pocket("ITEM"));
+    item.effect = "CUSTOM_HP_ROUTINE".into();
+    item.parameter = 35;
+    let evolutions = crystal_core::systems::evolution::EvolutionTable::default();
+    assert!(RuntimeItemCatalogSnapshot::from_item((&id, &item), &evolutions).party_hp_restore);
+
+    // PP medicine also carries a numeric parameter. It retains its move/party
+    // PP target instead of being exposed as HP recovery to frontend menus.
+    item.pp_restore_scope = Some("MOVE".into());
+    item.pp_restore_points = Some(10);
+    assert!(!RuntimeItemCatalogSnapshot::from_item((&id, &item), &evolutions).party_hp_restore);
+
+    item.pp_restore_scope = None;
+    item.pp_restore_points = None;
+    item.parameter = -1;
+    assert!(RuntimeItemCatalogSnapshot::from_item((&id, &item), &evolutions).party_hp_restore);
+
+    item.parameter = 0;
+    item.status_heals = vec!["POISON".into()];
+    assert!(!RuntimeItemCatalogSnapshot::from_item((&id, &item), &evolutions).party_hp_restore);
+}

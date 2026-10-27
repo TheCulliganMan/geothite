@@ -1,0 +1,237 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F122",
+  "status": "native-reviewed",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_261": {
+      "species_id": "MN_261",
+      "name": "Keypout",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          18,
+          25,
+          22
+        ],
+        [
+          8,
+          10,
+          15
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        23346,
+        15688,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          148,
+          206,
+          181
+        ],
+        [
+          66,
+          82,
+          123
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#94CEB5",
+        "#42527B",
+        "#000000"
+      ]
+    },
+    "MN_262": {
+      "species_id": "MN_262",
+      "name": "Latchusk",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          21,
+          20,
+          27
+        ],
+        [
+          6,
+          12,
+          11
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        28309,
+        11654,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          173,
+          165,
+          222
+        ],
+        [
+          49,
+          99,
+          90
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#ADA5DE",
+        "#31635A",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f122/prompt-v1.txt",
+  "reference_mapping": "sprites/mn-f122/reference-mapping-v1.json",
+  "back_framing": "gen2-close-rear-portrait",
+  "source_sha256": "4d06d0c37983444a9252037c76c4558dbd35bda3c314644dfaddbeddc90195e0",
+  "sprites": [
+    {
+      "id": "mn-261-keypout-v1",
+      "species_id": "MN_261",
+      "view": "front",
+      "source": "sprites/mn-f122/mn-261-262.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        730,
+        464
+      ],
+      "fit": [
+        40,
+        40
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        23346,
+        15688,
+        0
+      ],
+      "white_detail_min_samples": 32,
+      "interior_black_min_samples": 16
+    },
+    {
+      "id": "mn-261-keypout-v1",
+      "species_id": "MN_261",
+      "view": "back",
+      "source": "sprites/mn-f122/mn-261-262.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        464,
+        730,
+        560
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        23346,
+        15688,
+        0
+      ],
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 16
+    },
+    {
+      "id": "mn-262-latchusk-v1",
+      "species_id": "MN_262",
+      "view": "front",
+      "source": "sprites/mn-f122/mn-261-262.front-back.imagegen-v1.png",
+      "crop": [
+        730,
+        0,
+        806,
+        464
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        28309,
+        11654,
+        0
+      ],
+      "white_detail_min_samples": 32,
+      "interior_black_min_samples": 16
+    },
+    {
+      "id": "mn-262-latchusk-v1",
+      "species_id": "MN_262",
+      "view": "back",
+      "source": "sprites/mn-f122/mn-261-262.front-back.imagegen-v1.png",
+      "crop": [
+        730,
+        464,
+        806,
+        560
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        28309,
+        11654,
+        0
+      ],
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 16
+    }
+  ],
+  "visual_review": {
+    "status": "reviewed",
+    "reviewer": "root",
+    "notes": "Root inspected actual native four-view sheet: slender young key barbel grows to a broad curved burbot with shutter fins; legible eyes and close backs.",
+    "sheet_sha256": "0e3a32ade84944740c7313a94795430c7259cffe0ec26edbd0f00163a35fd354",
+    "outline_profile": "source-contour-v1"
+  }
+}

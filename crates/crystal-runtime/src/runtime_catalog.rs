@@ -4862,42 +4862,6 @@ impl CrystalRuntime {
             .get_or_init(|| self.build_static_catalog_cache())
     }
 
-    fn map_catalog_snapshot(
-        &self,
-        active_map: &crystal_core::world::map::OverworldMapData,
-        state: &GameState,
-    ) -> Vec<Arc<RuntimeMapCatalogSnapshot>> {
-        self.map_catalog
-            .iter()
-            .map(|base| {
-                let map_name = base.map_name.as_str();
-                if active_map.name == map_name {
-                    // The active OverworldSession carries callback/field-move
-                    // block writes.  Rendering immutable pack blocks here
-                    // erased those authoritative mutations, including the
-                    // default Town Map in the player's upstairs bedroom.
-                    let mut snapshot = (**base).clone();
-                    snapshot.blocks.clone_from(&active_map.metatile_ids);
-                    Arc::new(snapshot)
-                } else if let Some(overrides) = state.map_block_overrides.get(map_name) {
-                    // A connection can expose a neighboring map before it
-                    // becomes the active session. Keep block writes from an
-                    // earlier visit visible at that seam. `snapshot()` has
-                    // already validated these coordinates against this map.
-                    let mut snapshot = (**base).clone();
-                    for ((x, y), block_id) in overrides {
-                        let index = usize::from(*y) * usize::from(snapshot.attributes.width)
-                            + usize::from(*x);
-                        snapshot.blocks[index] = *block_id;
-                    }
-                    Arc::new(snapshot)
-                } else {
-                    Arc::clone(base)
-                }
-            })
-            .collect()
-    }
-
     fn tileset_catalog_snapshot(&self) -> Vec<RuntimeTilesetCatalogSnapshot> {
         self.data
             .tilesets

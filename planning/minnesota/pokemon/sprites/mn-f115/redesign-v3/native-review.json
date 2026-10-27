@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_249",
+  "selected_mode": "solid",
+  "selected_contour_profile": "solid-exterior-v1",
+  "review_notes": "The new gold-lit horizon roof is a continuous shallow wedge with two long shelf wings, a clearly sheltered expressive face and exactly three thick descending vent limbs. No head, beak, feathers or animal torso. Solid maintains the black wing and vent contours while preserving the two larger white eye clusters. Close rear enlarges the central pressure ridge and one visible eye; outer wing tips and lower limbs are deliberately cropped.",
+  "selected_review_sheet": "target/agent-roster-contour/new-renders/MN_F115/solid/line.review.png",
+  "selected_review_sha256": "8a8e4a4470e87e94bcdda04e6b4c6d99758fef4ecda69f7cd45382fd3ca070c5",
+  "alternatives": [
+    "target/agent-roster-contour/new-renders/MN_F115/source_backed/line.review.png",
+    "target/agent-roster-contour/new-renders/MN_F115/solid/line.review.png"
+  ],
+  "frames": [
+    {
+      "view": "front",
+      "native_size": [
+        56,
+        56
+      ],
+      "source_bounds": [
+        23,
+        121,
+        1241,
+        620
+      ],
+      "png": "target/agent-roster-contour/new-renders/MN_F115/solid/mn-249-frontagal-v3.front.png",
+      "png_sha256": "b871e22836d60db63dfda3fde228b01460de6403e37045d879a29e76fd8be9bf",
+      "four_ink_counts": {
+        "0": 2603,
+        "1": 103,
+        "2": 180,
+        "3": 250
+      }
+    },
+    {
+      "view": "back",
+      "native_size": [
+        48,
+        48
+      ],
+      "source_bounds": [
+        350,
+        726,
+        1090,
+        1236
+      ],
+      "png": "target/agent-roster-contour/new-renders/MN_F115/solid/mn-249-frontagal-v3.back.png",
+      "png_sha256": "5e2edbb9792444495078e8acaf74e6d0955bb5b476929256e5eb5f9c6f49fd79",
+      "four_ink_counts": {
+        "0": 1278,
+        "1": 334,
+        "2": 435,
+        "3": 257
+      }
+    }
+  ]
+}

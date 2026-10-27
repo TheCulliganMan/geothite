@@ -1,0 +1,233 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F067",
+  "status": "native-front-back-reviewed",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_145": {
+      "species_id": "MN_145",
+      "name": "Cartick",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          19,
+          24,
+          14
+        ],
+        [
+          9,
+          8,
+          13
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        15123,
+        13577,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          156,
+          198,
+          115
+        ],
+        [
+          74,
+          66,
+          107
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#9CC673",
+        "#4A426B",
+        "#000000"
+      ]
+    },
+    "MN_146": {
+      "species_id": "MN_146",
+      "name": "Haulgeist",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          22,
+          17,
+          28
+        ],
+        [
+          7,
+          10,
+          12
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        29238,
+        12615,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          181,
+          140,
+          231
+        ],
+        [
+          57,
+          82,
+          99
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#B58CE7",
+        "#395263",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f067/prompt-v1.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "style_reference": {
+    "origin": "authentic local Crystal sprites",
+    "boards": [
+      "target/minnesota-pokemon/gen2-reference/starters.png",
+      "target/minnesota-pokemon/gen2-reference/bugs.png"
+    ]
+  },
+  "sprites": [
+    {
+      "id": "mn-145-cartick-v1",
+      "species_id": "MN_145",
+      "view": "front",
+      "source": "sprites/mn-f067/mn-145-146.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        541,
+        650
+      ],
+      "fit": [
+        38,
+        38
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        15123,
+        13577,
+        0
+      ]
+    },
+    {
+      "id": "mn-145-cartick-v1",
+      "species_id": "MN_145",
+      "view": "back",
+      "source": "sprites/mn-f067/mn-145-146.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        650,
+        605,
+        549
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        15123,
+        13577,
+        0
+      ]
+    },
+    {
+      "id": "mn-146-haulgeist-v1",
+      "species_id": "MN_146",
+      "view": "front",
+      "source": "sprites/mn-f067/mn-145-146.front-back.imagegen-v1.png",
+      "crop": [
+        541,
+        0,
+        771,
+        650
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        29238,
+        12615,
+        0
+      ]
+    },
+    {
+      "id": "mn-146-haulgeist-v1",
+      "species_id": "MN_146",
+      "view": "back",
+      "source": "sprites/mn-f067/mn-145-146.front-back.imagegen-v1.png",
+      "crop": [
+        605,
+        650,
+        707,
+        549
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        29238,
+        12615,
+        0
+      ]
+    }
+  ],
+  "visual_review": {
+    "status": "reviewed",
+    "notes": "Final source-contour-v1 board visually inspected: ore-cart jaw and wheel feet grow hooked spectral hauling arms, fume curls and lower tendrils. Intentional dark ghost mass retains white eye slit and colored fume bands, with clear exterior shape and arm gaps. Rear cart rim and broad hauling shoulders fill frame, lower body cropped. No adjacent sprite fragments seen.",
+    "sheet_sha256": "9202f079109441dd611f2156f64d2958333d483ea343f5e8341aa575140c1611",
+    "outline_profile": "source-contour-v1"
+  }
+}

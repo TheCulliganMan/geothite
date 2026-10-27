@@ -2,15 +2,44 @@
 use std::sync::Arc;
 
 use bevy::prelude::{Commands, UVec2, Vec2};
-use crystal_render_api::{VisualActorId, VisualSourceRegion, VisualWorldFrame};
+use crystal_render_api::{
+    VisualActor, VisualActorId, VisualPokemonModelPalette, VisualSourceRegion, VisualWorldFrame,
+};
 
-use super::ModeledActors;
+use super::{ModeledActors, world_foot};
+
+struct Resident {
+    id: VisualActorId,
+    source: Arc<str>,
+    palette: Option<VisualPokemonModelPalette>,
+    size: Vec2,
+    foot: Vec2,
+}
+
+impl Resident {
+    fn matches(&self, actor: &VisualActor, foot: Vec2) -> bool {
+        let (VisualActorId::Object(old), VisualActorId::Object(next)) = (self.id, actor.id) else {
+            return false;
+        };
+        // Ordinary slots belong to different authoritative rosters. Only the
+        // connected presentation namespace supplies a cross-map identity.
+        if (old | next) & 0x8000_0000 == 0 || old & next & 0x8000_0000 != 0 && old != next {
+            return false;
+        }
+        old & 15 == next & 15
+            && self.source == actor.source_id
+            && self.palette == actor.model_palette
+            && self.size == actor.size
+            && self.foot.abs_diff_eq(foot, 0.01)
+    }
+}
 
 pub(super) struct Basis {
     map: Arc<str>,
     regions: Arc<[VisualSourceRegion]>,
     tile_size: Vec2,
     grid_size: UVec2,
+    residents: Vec<Resident>,
 }
 
 impl Basis {
@@ -20,6 +49,18 @@ impl Basis {
             regions: Arc::clone(&frame.source_regions),
             tile_size: frame.tile_size,
             grid_size: frame.grid_size,
+            residents: frame
+                .actors
+                .iter()
+                .filter(|actor| matches!(actor.id, VisualActorId::Object(_)))
+                .map(|actor| Resident {
+                    id: actor.id,
+                    source: Arc::clone(&actor.source_id),
+                    palette: actor.model_palette,
+                    size: actor.size,
+                    foot: world_foot(frame, actor),
+                })
+                .collect(),
         }
     }
 
@@ -42,6 +83,33 @@ impl Basis {
         // Motion already removes viewport scrolling via world_foot(). With
         // the same grid and scale, only this source-map translation remains.
         Some(shift.as_vec2() * self.tile_size * Vec2::new(1.0, -1.0))
+    }
+
+    fn resident_id(
+        &self,
+        id: VisualActorId,
+        next: &VisualWorldFrame,
+        shift: Vec2,
+    ) -> Option<VisualActorId> {
+        let old = self.residents.iter().find(|resident| resident.id == id)?;
+        let mut candidates = next
+            .actors
+            .iter()
+            .filter(|actor| old.matches(actor, world_foot(next, actor) - shift));
+        let candidate = candidates.next()?;
+        // A map-local slot alone is not identity. Require a unique matching
+        // source appearance and a proven, unchanged source ground position.
+        if candidates.next().is_some() {
+            return None;
+        }
+        let foot = world_foot(next, candidate) - shift;
+        (self
+            .residents
+            .iter()
+            .filter(|resident| resident.matches(candidate, foot))
+            .count()
+            == 1)
+            .then_some(candidate.id)
     }
 }
 
@@ -70,26 +138,44 @@ pub(super) fn handoff(
                     .and_then(|basis| basis.shift(frame))
             })
             .flatten();
-        state.instances.retain(|id, instance| {
-            if let Some(shift) = shift.filter(|_| persistent(*id)) {
-                instance.motion.last_world_foot += shift;
-                true
-            } else {
-                commands.entity(instance.entity).despawn();
-                false
-            }
-        });
-        state.props.retain(|id, instance| {
-            if let Some(shift) = shift.filter(|_| persistent(*id)) {
-                if let Some(skin) = &mut instance.skin {
-                    skin.motion.last_world_foot += shift;
+        let basis = state.motion_basis.as_ref();
+        let retained = |id| {
+            shift.and_then(|shift| {
+                if persistent(id) {
+                    Some((id, shift))
+                } else {
+                    basis?
+                        .resident_id(id, frame, shift)
+                        .map(|next| (next, shift))
                 }
-                true
-            } else {
-                commands.entity(instance.entity).despawn();
-                false
-            }
-        });
+            })
+        };
+        state.instances = std::mem::take(&mut state.instances)
+            .into_iter()
+            .filter_map(|(id, mut instance)| {
+                if let Some((id, shift)) = retained(id) {
+                    instance.motion.last_world_foot += shift;
+                    Some((id, instance))
+                } else {
+                    commands.entity(instance.entity).despawn();
+                    None
+                }
+            })
+            .collect();
+        state.props = std::mem::take(&mut state.props)
+            .into_iter()
+            .filter_map(|(id, mut instance)| {
+                if let Some((id, shift)) = retained(id) {
+                    if let Some(skin) = &mut instance.skin {
+                        skin.motion.last_world_foot += shift;
+                    }
+                    Some((id, instance))
+                } else {
+                    commands.entity(instance.entity).despawn();
+                    None
+                }
+            })
+            .collect();
         state.map_id = frame.map_id.to_string();
     }
     state.motion_basis = enabled.then(|| Basis::capture(frame));
@@ -160,6 +246,42 @@ mod tests {
         )));
         assert!(persistent(VisualActorId::Player));
         assert!(persistent(VisualActorId::SurfMount));
+    }
+
+    #[test]
+    fn connected_resident_keeps_its_rig_when_its_presentation_slot_changes() {
+        let mut before = frame("Route29", "CherrygroveCity", IVec2::new(-40, 0));
+        let resident = VisualActor {
+            id: VisualActorId::Object(5),
+            source_id: "cooltrainer_m".into(),
+            model_palette: None,
+            texture: Default::default(),
+            center: Vec2::new(16., 16.),
+            size: Vec2::splat(16.),
+            flip_x: false,
+            above_priority: false,
+            facing: Some(-Vec2::Y),
+        };
+        before.actors.push(resident.clone());
+        let basis = Basis::capture(&before);
+        let mut after = frame("CherrygroveCity", "Route29", IVec2::new(40, 0));
+        let shift = basis.shift(&after).expect("reciprocal connection");
+        let mut next = resident.clone();
+        next.id = VisualActorId::Object(0x8000_1235);
+        next.center += shift;
+        after.actors.push(next.clone());
+        assert_eq!(basis.resident_id(resident.id, &after, shift), Some(next.id));
+        after.actors[0].id = resident.id;
+        assert_eq!(basis.resident_id(resident.id, &after, shift), None);
+        after.actors[0] = next.clone();
+        after.actors[0].source_id = "teacher".into();
+        assert_eq!(basis.resident_id(resident.id, &after, shift), None);
+        after.actors[0] = next.clone();
+        after.actors[0].center += Vec2::X;
+        assert_eq!(basis.resident_id(resident.id, &after, shift), None);
+        after.actors[0] = next.clone();
+        after.actors.push(next);
+        assert_eq!(basis.resident_id(resident.id, &after, shift), None);
     }
 
     #[test]

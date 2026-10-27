@@ -1,0 +1,354 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F127",
+  "status": "native-front-back-reviewed",
+  "tool": "built-in image_gen",
+  "prompt_file": "sprites/mn-f127/prompt-v1.txt",
+  "pokemon_palettes": {
+    "MN_278": {
+      "species_id": "MN_278",
+      "name": "Berrcub",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          26,
+          20,
+          13
+        ],
+        [
+          8,
+          7,
+          9
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        13978,
+        9448,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          214,
+          165,
+          107
+        ],
+        [
+          66,
+          57,
+          74
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#D6A56B",
+        "#42394A",
+        "#000000"
+      ]
+    },
+    "MN_279": {
+      "species_id": "MN_279",
+      "name": "Forabear",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          23,
+          17,
+          10
+        ],
+        [
+          6,
+          7,
+          9
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        10807,
+        9446,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          189,
+          140,
+          82
+        ],
+        [
+          49,
+          57,
+          74
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#BD8C52",
+        "#31394A",
+        "#000000"
+      ]
+    },
+    "MN_280": {
+      "species_id": "MN_280",
+      "name": "Denwarden",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          21,
+          16,
+          10
+        ],
+        [
+          5,
+          6,
+          8
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        10773,
+        8389,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          173,
+          132,
+          82
+        ],
+        [
+          41,
+          49,
+          66
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#AD8452",
+        "#293142",
+        "#000000"
+      ]
+    }
+  },
+  "back_framing": "gen2-close-rear-portrait",
+  "style_reference": {
+    "origin": "authentic local Crystal sprites",
+    "boards": [
+      "target/minnesota-pokemon/gen2-reference/starters.png"
+    ]
+  },
+  "sprites": [
+    {
+      "id": "mn-278-berrcub-v1",
+      "species_id": "MN_278",
+      "view": "front",
+      "source": "sprites/mn-f127/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        500,
+        512
+      ],
+      "fit": [
+        34,
+        35
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        13978,
+        9448,
+        0
+      ],
+      "exterior_contour": "solid",
+      "interior_black_min_samples": 8,
+      "white_detail_min_samples": 4
+    },
+    {
+      "id": "mn-279-forabear-v1",
+      "species_id": "MN_279",
+      "view": "front",
+      "source": "sprites/mn-f127/front-back.imagegen-v1.png",
+      "crop": [
+        500,
+        0,
+        481,
+        512
+      ],
+      "fit": [
+        45,
+        44
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        10807,
+        9446,
+        0
+      ],
+      "exterior_contour": "solid",
+      "interior_black_min_samples": 8,
+      "white_detail_min_samples": 4
+    },
+    {
+      "id": "mn-280-denwarden-v1",
+      "species_id": "MN_280",
+      "view": "front",
+      "source": "sprites/mn-f127/front-back.imagegen-v1.png",
+      "crop": [
+        981,
+        0,
+        555,
+        512
+      ],
+      "fit": [
+        53,
+        49
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        10773,
+        8389,
+        0
+      ],
+      "exterior_contour": "solid",
+      "interior_black_min_samples": 8,
+      "white_detail_min_samples": 4
+    },
+    {
+      "id": "mn-278-berrcub-v1",
+      "species_id": "MN_278",
+      "view": "back",
+      "source": "sprites/mn-f127/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        512,
+        491,
+        512
+      ],
+      "fit": [
+        38,
+        40
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        13978,
+        9448,
+        0
+      ],
+      "exterior_contour": "solid",
+      "interior_black_min_samples": 8,
+      "white_detail_min_samples": 4
+    },
+    {
+      "id": "mn-279-forabear-v1",
+      "species_id": "MN_279",
+      "view": "back",
+      "source": "sprites/mn-f127/front-back.imagegen-v1.png",
+      "crop": [
+        491,
+        512,
+        490,
+        512
+      ],
+      "fit": [
+        46,
+        46
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        10807,
+        9446,
+        0
+      ],
+      "exterior_contour": "solid",
+      "interior_black_min_samples": 8,
+      "white_detail_min_samples": 4
+    },
+    {
+      "id": "mn-280-denwarden-v1",
+      "species_id": "MN_280",
+      "view": "back",
+      "source": "sprites/mn-f127/front-back.imagegen-v1.png",
+      "crop": [
+        981,
+        512,
+        555,
+        512
+      ],
+      "fit": [
+        46,
+        46
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        10773,
+        8389,
+        0
+      ],
+      "exterior_contour": "solid",
+      "interior_black_min_samples": 8,
+      "white_detail_min_samples": 4
+    }
+  ],
+  "visual_review": {
+    "status": "reviewed",
+    "outline_profile": "solid-exterior-v1",
+    "sheet_sha256": "6b4ac0d33aa64304eab44782418eed9463e70ffe3cf1ffd326c2a56c7456641f",
+    "review_note": "Inspected all six native views against the generated bear sheet and authentic Crystal style board. Round ears, short muzzles, scoop forepaws and growing shoulder ruffs remain distinct at native scale. All fronts stay quadrupedal; backs enlarge nape and shoulders without becoming whole-body rear views."
+  }
+}

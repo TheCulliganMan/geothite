@@ -3390,76 +3390,43 @@ fn selected_field_pack_item_label(
     }
 }
 
-// The engine's loaded object structs intentionally cover the original LCD and
-// govern movement, interaction and RNG. The expanded camera also presents map
-// objects outside that simulation range, retaining their last loaded pose.
-// Never insert these extra actors into the authoritative object roster.
-#[cfg(any(feature = "fullscreen-scaling", feature = "voxel-view"))]
-fn expand_fullscreen_object_presentation(
-    snapshot: &mut RuntimeShellSnapshot,
-    runtime: &BevyRuntimeShell,
-) -> Result<()> {
-    let world = runtime.shell.session().overworld();
-    if snapshot.battle.is_some() || snapshot.overworld.map_name != world.map.name {
-        return Ok(());
-    }
-    for (index, object) in world.objects.iter().enumerate() {
-        if snapshot.visible_object_slots.contains(&index)
-            || world.object_has_loaded_struct(index)
-            || !world.object_is_eligible_for_expanded_view(index)
-            || object
-                .object_identifier
-                .as_ref()
-                .is_some_and(|id| world.invisible_object_struct_identifiers.contains(id))
-        {
-            continue;
-        }
-        let mut tile = world
-            .object_runtime_tile_checked(index, object)
-            .context("resolve distant fullscreen NPC coordinates")?;
-        if let Some(id) = object.object_identifier.as_ref() {
-            let mut facing =
-                world.object_facings.get(id).copied().with_context(|| {
-                    format!("fullscreen NPC {id} has no source-initialized facing")
-                })?;
-            if let Some((last_tile, last_facing)) = world.unloaded_object_presentation.get(id) {
-                tile = *last_tile;
-                facing = *last_facing;
-            }
-            snapshot
-                .visible_object_runtime_tiles
-                .insert(id.clone(), tile);
-            snapshot.visible_object_facings.insert(id.clone(), facing);
-        }
-        snapshot.visible_objects.push(object.clone());
-        snapshot.visible_object_slots.push(index);
-    }
-    Ok(())
-}
-
 /// The ordinary compositor and speculative destination use identical source
 /// and foreground selection, including finite-map borders and animation art.
 fn source_tile_art(
-    source: &ResolvedRenderSource<'_>, art: &TilesetArt,
-    x: i32, y: i32, frame: u64, restless: bool,
+    source: &ResolvedRenderSource<'_>,
+    art: &TilesetArt,
+    x: i32,
+    y: i32,
+    frame: u64,
+    restless: bool,
 ) -> Result<(u16, usize, usize, u8, Handle<Image>, bool, bool)> {
     let sub_x = x.rem_euclid(4) as usize;
     let sub_y = y.rem_euclid(4) as usize;
     let block = if x >= 0 && y >= 0 && x < source.width && y < source.height {
         source.map.blocks[y as usize / 4 * source.map.attributes.width as usize + x as usize / 4]
     } else {
-        exterior_border_block(&source.map.map_name, &source.map.attributes.tileset_name,
-            source.map.attributes.border_block, source.width, x, y)
+        exterior_border_block(
+            &source.map.map_name,
+            &source.map.attributes.tileset_name,
+            source.map.attributes.border_block,
+            source.width,
+            x,
+            y,
+        )
     };
-    let index = *art.metatile_layout.get(block as usize * 16 + sub_y * 4 + sub_x)
+    let index = *art
+        .metatile_layout
+        .get(block as usize * 16 + sub_y * 4 + sub_x)
         .context("source metatile art")?;
-    let texture = art.tile_handle_at_frame(block, sub_x, sub_y, frame, restless)
+    let texture = art
+        .tile_handle_at_frame(block, sub_x, sub_y, frame, restless)
         .context("source tile image")?;
-    let collision = tileset_collision_tokens(source.tileset, block).context("source collision row")?;
-    anyhow::ensure!(collision.len() == 4, "source collision row must have four quadrants");
-    let foreground = collision[0] == "FLOOR" && collision[1] == "FLOOR"
-        && collision[2..4].iter().all(|token| token == "WALL" || priority_collision_token(token));
-    let priority = priority_collision_token(&collision[(if sub_y < 2 { 0 } else { 2 }) + usize::from(sub_x >= 2)])
-        || (foreground && sub_y >= 1);
+    let (priority, foreground) = art.render_flags.resolve(
+        source.tileset,
+        art.metatile_layout.len().div_ceil(METATILE_TILE_COUNT),
+        block,
+        sub_x,
+        sub_y,
+    )?;
     Ok((block, sub_x, sub_y, index, texture, priority, foreground))
 }

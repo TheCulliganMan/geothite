@@ -3406,7 +3406,23 @@ pub struct RuntimeSpawnPointRef {
     pub subtile_y: i16,
 }
 
+/// Number of entries in Crystal's original source spawn table.
 pub const CRYSTAL_NUM_SPAWN_POINTS: u16 = 28;
+
+/// First identifier reserved for additive native recovery destinations.
+///
+/// These catalog entries support blackout and Teleport recovery without
+/// replacing source spawn rows. They are not source Fly destinations.
+pub const FIRST_ADDON_RECOVERY_SPAWN: u16 = 256;
+
+/// Returns whether an identifier belongs to the source or addon recovery range.
+///
+/// Source identifiers are 0 through 27. The reserved gap 28 through 255 stays
+/// invalid so a source byte cannot accidentally select an addon destination.
+/// Catalog membership and map/coordinate validation are separate requirements.
+pub const fn is_runtime_recovery_spawn_identifier(identifier: u16) -> bool {
+    identifier < CRYSTAL_NUM_SPAWN_POINTS || identifier >= FIRST_ADDON_RECOVERY_SPAWN
+}
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum RuntimeSpawnPointCatalogIssue {
@@ -3508,7 +3524,7 @@ pub fn runtime_spawn_point_catalog_issues(
                 identifier: spawn.identifier,
             });
         }
-        if spawn.identifier >= CRYSTAL_NUM_SPAWN_POINTS {
+        if !is_runtime_recovery_spawn_identifier(spawn.identifier) {
             issues.push(RuntimeSpawnPointCatalogIssue::IdentifierOutOfRange {
                 key: key.clone(),
                 identifier: spawn.identifier,
@@ -11068,7 +11084,7 @@ fn check_time_capsule_compatibility(
                         move_id: learned.name.clone(),
                     }
                 })?;
-                if move_data.source_index >= FIRST_GEN_TWO_MOVE_SOURCE_INDEX {
+                if move_data.source_index >= u16::from(FIRST_GEN_TWO_MOVE_SOURCE_INDEX) {
                     result_code = 2;
                     mon_name = Some(pokemon.species.id.clone());
                     move_name = Some(learned.name.clone());

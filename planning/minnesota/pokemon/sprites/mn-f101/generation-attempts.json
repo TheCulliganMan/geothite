@@ -1,0 +1,24 @@
+{
+  "prompt": "prompt-v1.txt",
+  "failed_attempts": [
+    {
+      "request_id": "19db60d3-b1fe-493d-917e-9315c620e484",
+      "code": "moderation_blocked",
+      "stage": "output",
+      "categories": [
+        "other"
+      ],
+      "returned_image": null
+    }
+  ],
+  "successful_attempt": {
+    "source": "mn-218-220.front-back.imagegen-v1.png",
+    "sha256": "72373dc427ae02315c267a51df31e9213187eff6825bf23b56987e9f6902faa5",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "prompt_unchanged": true
+  },
+  "notes": "Built-in ImageGen only. Original full-resolution output retained immediately."
+}

@@ -1,0 +1,27 @@
+{
+  "id": "MN_F137",
+  "members": [
+    {
+      "id": "MN_303",
+      "name": "Ticklet",
+      "types": [
+        "WATER"
+      ],
+      "stage": 1,
+      "evolves_to": "MN_304"
+    },
+    {
+      "id": "MN_304",
+      "name": "Solstort",
+      "types": [
+        "WATER",
+        "PSYCHIC"
+      ],
+      "stage": 2,
+      "evolves_to": null
+    }
+  ],
+  "theme": "Freshwater turtle \u00d7 living sundial. One raised shell ridge develops into an asymmetric fan of scutes whose shadows form a second expression; its narrow real face remains sheltered beneath the overhang.",
+  "region": "lake_country",
+  "evolution_design": "Freshwater turtle \u00d7 living sundial. One raised shell ridge develops into an asymmetric fan of scutes whose shadows form a second expression; its narrow real face remains sheltered beneath the overhang."
+}

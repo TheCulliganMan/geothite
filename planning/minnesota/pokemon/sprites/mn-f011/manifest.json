@@ -1,0 +1,338 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F011",
+  "status": "native-front-back-reviewed",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_031": {
+      "species_id": "MN_031",
+      "name": "Pebgneiss",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          27,
+          18,
+          20
+        ],
+        [
+          12,
+          9,
+          12
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        21083,
+        12588,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          222,
+          148,
+          165
+        ],
+        [
+          99,
+          74,
+          99
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#DE94A5",
+        "#634A63",
+        "#000000"
+      ]
+    },
+    "MN_032": {
+      "species_id": "MN_032",
+      "name": "Foldgneiss",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          28,
+          17,
+          20
+        ],
+        [
+          10,
+          7,
+          11
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        21052,
+        11498,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          231,
+          140,
+          165
+        ],
+        [
+          82,
+          57,
+          90
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#E78CA5",
+        "#52395A",
+        "#000000"
+      ]
+    },
+    "MN_033": {
+      "species_id": "MN_033",
+      "name": "Mortyrant",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          26,
+          14,
+          17
+        ],
+        [
+          9,
+          7,
+          10
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        17882,
+        10473,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          214,
+          115,
+          140
+        ],
+        [
+          74,
+          57,
+          82
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#D6738C",
+        "#4A3952",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f011/prompt-v1.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "style_reference": {
+    "origin": "authentic local Crystal sprites",
+    "generator": "crates/crystal-assets/examples/minnesota_gen2_reference.rs",
+    "board": "target/minnesota-pokemon/gen2-reference/starters.png"
+  },
+  "sprites": [
+    {
+      "id": "mn-031-pebgneiss-v1",
+      "species_id": "MN_031",
+      "view": "front",
+      "source": "sprites/mn-f011/mn-031-033.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        480,
+        512
+      ],
+      "fit": [
+        36,
+        36
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        21083,
+        12588,
+        0
+      ]
+    },
+    {
+      "id": "mn-031-pebgneiss-v1",
+      "species_id": "MN_031",
+      "view": "back",
+      "source": "sprites/mn-f011/mn-031-033.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        512,
+        480,
+        512
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        21083,
+        12588,
+        0
+      ]
+    },
+    {
+      "id": "mn-032-foldgneiss-v1",
+      "species_id": "MN_032",
+      "view": "front",
+      "source": "sprites/mn-f011/mn-031-033.front-back.imagegen-v1.png",
+      "crop": [
+        480,
+        0,
+        510,
+        512
+      ],
+      "fit": [
+        44,
+        44
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        21052,
+        11498,
+        0
+      ]
+    },
+    {
+      "id": "mn-032-foldgneiss-v1",
+      "species_id": "MN_032",
+      "view": "back",
+      "source": "sprites/mn-f011/mn-031-033.front-back.imagegen-v1.png",
+      "crop": [
+        480,
+        512,
+        510,
+        512
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        21052,
+        11498,
+        0
+      ]
+    },
+    {
+      "id": "mn-033-mortyrant-v1",
+      "species_id": "MN_033",
+      "view": "front",
+      "source": "sprites/mn-f011/mn-031-033.front-back.imagegen-v1.png",
+      "crop": [
+        990,
+        0,
+        546,
+        512
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        17882,
+        10473,
+        0
+      ]
+    },
+    {
+      "id": "mn-033-mortyrant-v1",
+      "species_id": "MN_033",
+      "view": "back",
+      "source": "sprites/mn-f011/mn-031-033.front-back.imagegen-v1.png",
+      "crop": [
+        990,
+        512,
+        546,
+        512
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        17882,
+        10473,
+        0
+      ]
+    }
+  ],
+  "visual_review": {
+    "status": "reviewed",
+    "notes": [
+      "Inspected frozen source-contour-v1 sheet: pink gneiss bands remain colored inside consistent dark exterior contours; tall dragon growth, tail tips and layered feet stay readable.",
+      "Rear portraits retain neck bands and upper back, cropped cleanly at bottom; small front eye glints remain minimal but present. No stray cell pixels."
+    ],
+    "sheet_sha256": "4e4c5cf6b79ab0bdac5473da5e466544e0ce4b41d61e73ffb7ce127d42b94eae",
+    "outline_profile": "source-contour-v1"
+  }
+}

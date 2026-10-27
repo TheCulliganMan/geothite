@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F116",
+  "status": "art-proposal-only",
+  "species_id": "MN_250",
+  "name": "Flarkindle",
+  "preservation": "Keep all existing Flarkindle types, profile, moves, stats, shiny palette, narrative, and prior renders; replace art only after root review.",
+  "source_sha256": "38ef7263d4c8dd28bf03a0a20ad88e263bcca54727434edf040c7f8ba53bf76e",
+  "design_intent": "New source exposes both large white eyes above the forward rib; three asymmetrical thick peat ribs enclose two broad black pool gaps. No extra fingers, cultural motifs, particles or props. Close rear retains lavender nape and cropped peat ribs; native conversion still requires inspection."
+}

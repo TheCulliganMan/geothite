@@ -1,0 +1,7 @@
+{
+  "before_layout_sha256": "7bbc16c0cc7d328371b6d915dec3397ca1eb89395a3668f1e22402fc7854ccfd",
+  "candidate_sha256": "0beac1f249fee686bd6690719bb4f77e333b235918e14148e89ca7b9f0b4bb43",
+  "unchanged_dossier_sha256": "5a818e11016e1b6ef556e94b22967b5990e6de2081afa302dde6a991154044bf",
+  "pack_sha256": "c16af00c82167c809620b956981ee80641ddc9fd1eeaf1e2c91f59ab16a9cc7d",
+  "source_edit": "Only MN_R11.layout.json; seven appended reviewed strokes, sixteen native metatiles."
+}

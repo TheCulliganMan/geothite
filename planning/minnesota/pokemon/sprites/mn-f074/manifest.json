@@ -1,0 +1,335 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F074",
+  "status": "native-front-back-reviewed",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_157": {
+      "species_id": "MN_157",
+      "name": "Pufflow",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          31,
+          19,
+          8
+        ],
+        [
+          7,
+          12,
+          10
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        8831,
+        10631,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          255,
+          156,
+          66
+        ],
+        [
+          57,
+          99,
+          82
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#FF9C42",
+        "#396352",
+        "#000000"
+      ]
+    },
+    "MN_158": {
+      "species_id": "MN_158",
+      "name": "Lobasalt",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          31,
+          14,
+          6
+        ],
+        [
+          6,
+          10,
+          10
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        6623,
+        10566,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          255,
+          115,
+          49
+        ],
+        [
+          49,
+          82,
+          82
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#FF7331",
+        "#315252",
+        "#000000"
+      ]
+    },
+    "MN_159": {
+      "species_id": "MN_159",
+      "name": "Pyllowyrm",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          30,
+          11,
+          5
+        ],
+        [
+          6,
+          8,
+          11
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        5502,
+        11526,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          247,
+          90,
+          41
+        ],
+        [
+          49,
+          66,
+          90
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#F75A29",
+        "#31425A",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f074/prompt-v2.txt",
+  "reference_mapping": "sprites/mn-f074/reference-mapping-v1.json",
+  "back_framing": "gen2-close-rear-portrait",
+  "style_reference": {
+    "board": "target/minnesota-pokemon/gen2-reference/starters.png"
+  },
+  "sprites": [
+    {
+      "id": "mn-157-pufflow-v2",
+      "species_id": "MN_157",
+      "view": "front",
+      "source": "sprites/mn-f074/mn-157-159.front-back.imagegen-v2.png",
+      "crop": [
+        0,
+        0,
+        450,
+        510
+      ],
+      "fit": [
+        36,
+        36
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        8831,
+        10631,
+        0
+      ]
+    },
+    {
+      "id": "mn-157-pufflow-v2",
+      "species_id": "MN_157",
+      "view": "back",
+      "source": "sprites/mn-f074/mn-157-159.front-back.imagegen-v2.png",
+      "crop": [
+        0,
+        510,
+        470,
+        514
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        8831,
+        10631,
+        0
+      ]
+    },
+    {
+      "id": "mn-158-lobasalt-v2",
+      "species_id": "MN_158",
+      "view": "front",
+      "source": "sprites/mn-f074/mn-157-159.front-back.imagegen-v2.png",
+      "crop": [
+        450,
+        0,
+        480,
+        510
+      ],
+      "fit": [
+        44,
+        44
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        6623,
+        10566,
+        0
+      ]
+    },
+    {
+      "id": "mn-158-lobasalt-v2",
+      "species_id": "MN_158",
+      "view": "back",
+      "source": "sprites/mn-f074/mn-157-159.front-back.imagegen-v2.png",
+      "crop": [
+        470,
+        510,
+        520,
+        514
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        6623,
+        10566,
+        0
+      ]
+    },
+    {
+      "id": "mn-159-pyllowyrm-v2",
+      "species_id": "MN_159",
+      "view": "front",
+      "source": "sprites/mn-f074/mn-157-159.front-back.imagegen-v2.png",
+      "crop": [
+        930,
+        0,
+        606,
+        510
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        5502,
+        11526,
+        0
+      ]
+    },
+    {
+      "id": "mn-159-pyllowyrm-v2",
+      "species_id": "MN_159",
+      "view": "back",
+      "source": "sprites/mn-f074/mn-157-159.front-back.imagegen-v2.png",
+      "crop": [
+        990,
+        510,
+        546,
+        514
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        5502,
+        11526,
+        0
+      ]
+    }
+  ],
+  "visual_review": {
+    "status": "reviewed",
+    "reviewer": "root",
+    "outline_profile": "source-contour-v1",
+    "sheet_sha256": "e2933ca539a4ca9d3c894e93be73072b6f4eafeff5d207f87500da5a698c0d53",
+    "notes": "Root inspected native six-view board: squat quenched lobe grows a raised-neck three-lobe body then a longer four-finned wyrm with blunt split crown and segmented crust. Molten spine stays solid and readable between broad colored shell lobes; individual orange/teal\u2192red/slate palettes and close rear portraits remain coherent. Outer stepped black anchors and white highlights retain volume without black clumps. All raw attempts/prompts/variants saved."
+  }
+}

@@ -24,9 +24,9 @@ fn for_map(map: &str) -> RegionalAtmosphere {
         Color::WHITE
     };
     let (haze_scale, fog_start, fog_end) = if map.starts_with("Route") {
-        (0.12, 16.0, 40.0)
+        (0.12, 32.0, 64.0)
     } else {
-        (1.0, 8.0, 22.0)
+        (1.0, 24.0, 56.0)
     };
     RegionalAtmosphere {
         sun_tint,
@@ -200,7 +200,7 @@ mod tests {
         assert_same(before, after);
         let middle = sample_at(&frame, Vec2::new(40.0, 20.0)).expect("edge");
         assert!((middle.haze_scale - 0.56).abs() < 0.000001);
-        assert!((middle.fog_start - 12.0).abs() < 0.000001);
+        assert!((middle.fog_start - 28.0).abs() < 0.000001);
     }
 
     #[test]

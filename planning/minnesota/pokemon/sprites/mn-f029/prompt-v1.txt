@@ -1,0 +1,17 @@
+Use case: stylized-concept
+Asset type: exact Game Boy Color Generation 2 battle pixel sprite sheet, original Minnesota monster family.
+Primary request: Twin Cities skyways: a dangling cable creature becomes a suspended bridge body that joins its limbs into passages.
+Style reference: authentic 1999 handheld RPG Generation2 pixel art: coarse visibly square pixels, low native resolution, simple sculpted clusters, selective black outlines, restrained internal dark lines, sparse white highlights, readable eyes. All designs are entirely original. No modern vector look, gradients, antialiasing, soft shadows, textures, excessive tiny details or dithering.
+Composition: 2 columns and exactly 2 rows on pure white, no labels, dividers or text. One species per column in evolutionary order. Top row whole-body FRONT battle view facing LEFT, all extremities inside its cell. Bottom row CLOSE REAR battle PORTRAIT of same species, facing UPPER RIGHT; head and upper back fill the cell, lower torso cut off at bottom. Backs are zoomed-in rear portraits, never small whole-body turnarounds. Maintain broad white gutters. Each cell behaves as a 64x64 logical grid enlarged by nearest neighbor. Fronts ultimately occupy 56x56; backs 48x48.
+GBC color definitions: palette indices 0..3; RGB5 channels are integers0..31; packed RGB555=r|(g<<5)|(b<<10); RGB8 expansion=(v<<3)|(v>>2). Each species has its OWN four-color palette, shared ONLY between its front/back. Do not share one palette across all stages. Use flat exact colors only. Index0 white is also the sheet background.
+Column 1: Arclet (ELECTRIC) — A dangling electric cable sprite with a rounded plug-like head, big bright eye, bent wire arms and coiled cable tail; no written symbols. Front grows in size relative to previous stage. Back must retain its unique anatomy and palette.
+  palette index0: RGB5 [31, 31, 31], packedRGB555 32767 (0x7FFF), expandedRGB8 [255, 255, 255], hex #FFFFFF.
+  palette index1: RGB5 (30, 27, 10), packedRGB555 11134 (0x2B7E), expandedRGB8 [247, 222, 82], hex #F7DE52.
+  palette index2: RGB5 (8, 12, 18), packedRGB555 18824 (0x4988), expandedRGB8 [66, 99, 148], hex #426394.
+  palette index3: RGB5 [0, 0, 0], packedRGB555 0 (0x0000), expandedRGB8 [0, 0, 0], hex #000000.
+Column 2: Skyspan (ELECTRIC/STEEL) — A suspended skyway bridge creature whose angular arched torso joins two tower legs, conduit arms forming linked passages, bright eye windows and coiled electric tail. Strong compact animal-like stance. Front grows in size relative to previous stage. Back must retain its unique anatomy and palette.
+  palette index0: RGB5 [31, 31, 31], packedRGB555 32767 (0x7FFF), expandedRGB8 [255, 255, 255], hex #FFFFFF.
+  palette index1: RGB5 (20, 25, 28), packedRGB555 29492 (0x7334), expandedRGB8 [165, 206, 231], hex #A5CEE7.
+  palette index2: RGB5 (8, 10, 17), packedRGB555 17736 (0x4548), expandedRGB8 [66, 82, 140], hex #42528C.
+  palette index3: RGB5 [0, 0, 0], packedRGB555 0 (0x0000), expandedRGB8 [0, 0, 0], hex #000000.
+All six/four views are ORIGINAL creature designs that embody the theme in their anatomy. No accessories held by humans, no costumes, no scenery, no ground shadows, no text or palette swatches. Prioritize Gen2 battle readability over illustration detail.

@@ -1,0 +1,7 @@
+{
+  "status": "imagegen-output-moderation-blocked",
+  "request_id": "1afedf38-5027-4591-9dea-dbff2c1991de",
+  "prompt_file": "prompt-v2.txt",
+  "raw_returned": false,
+  "category": "other"
+}

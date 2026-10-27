@@ -1,0 +1,122 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F063",
+  "status": "proposal-only-do-not-run-against-shared-native-root",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_270": {
+      "species_id": "MN_270",
+      "name": "Knotitan",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          30,
+          23,
+          12
+        ],
+        [
+          13,
+          7,
+          3
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        13054,
+        3309,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          247,
+          189,
+          99
+        ],
+        [
+          107,
+          57,
+          24
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#F7BD63",
+        "#6B3918",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f063/twine-v2/prompt-v1.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "sprites": [
+    {
+      "id": "mn-270-knotitan-v2",
+      "species_id": "MN_270",
+      "view": "front",
+      "source": "sprites/mn-f063/twine-v2/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        1254,
+        702
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        13054,
+        3309,
+        0
+      ]
+    },
+    {
+      "id": "mn-270-knotitan-v2",
+      "species_id": "MN_270",
+      "view": "back",
+      "source": "sprites/mn-f063/twine-v2/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        702,
+        1254,
+        552
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        13054,
+        3309,
+        0
+      ]
+    }
+  ],
+  "visual_review": {
+    "status": "source-reviewed-native-conversion-pending",
+    "notes": "Source front/back inspected. Huge wound twine-ball torso dominates, five broad crossing bands remain clear, two large loop-arm holes, knotted feet and stopper-tail provide active grappler silhouette. Dragon face and braid neck continue Lasserp. Close rear wound shoulder portrait. Strong black contour; quantize minor source RGB variation onto exact4inks. Existing137/138 untouched.",
+    "sheet_sha256": "10e2aa17708967413ac885ca386e63e7591ae7eb066894443c5ff856cec5e128",
+    "outline_profile": "source-contour-v1"
+  }
+}

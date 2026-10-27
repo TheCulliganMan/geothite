@@ -1,0 +1,71 @@
+{
+  "id": "MN_F087",
+  "theme": "Minnesota removable adhesive and remembered promises: one living sticky-note sheet becomes three connected reminders, then a broad seven-note keeper that peels, reorders and reattaches its own sheets.",
+  "region": "twin_cities",
+  "habitat": "Research workshops, library noticeboards and sheltered skyway bulletin corners in Minneapolis/St Paul.",
+  "map_placement": {
+    "towns": [
+      "MINNEAPOLIS",
+      "ST_PAUL"
+    ],
+    "routes": [
+      "MN_R04"
+    ],
+    "status": "proposed habitat only; no new map or encounter mutation"
+  },
+  "sources": [
+    {
+      "url": "https://www.mnhs.org/mnopedia/search/index/thing/post-it-notes",
+      "institution": "Minnesota Historical Society",
+      "supports": "Minnesota development of a light removable adhesive and its adaptation from bookmarks into repositionable paper notes. Memory powers and creature design are original fiction."
+    }
+  ],
+  "members": [
+    {
+      "id": "MN_186",
+      "name": "Jotlet",
+      "types": [
+        "PSYCHIC"
+      ],
+      "stage": 1,
+      "evolves_to": "MN_187",
+      "body_growth": "Exactly one upright square sticky-note sheet is the whole creature. Its top edge bends backward to expose a broad adhesive strip. One lower corner peels forward and the opposite lower corner curls into a tiny balancing toe. The face consists of two separate eyes on the broad flat page, not on a projecting triangular animal muzzle.",
+      "silhouette": "One nearly square page, one peeled upper corner and two small curled lower corners; no separate animal head, tail, torso or added arms.",
+      "sheet_count": 1,
+      "back_portrait": "Close independent rear of the same single note, showing its rolled sticky top edge and blank square reverse. No face on the back."
+    },
+    {
+      "id": "MN_187",
+      "name": "Memofold",
+      "types": [
+        "PSYCHIC"
+      ],
+      "stage": 2,
+      "evolves_to": "MN_188",
+      "body_growth": "Exactly three square notes overlap at their sticky top edges. The original central upright face note is larger, with one side note peeling forward on each side as a broad reaching sheet. The two side notes hang slightly below the face and curl at their lower corners. There is no accordion animal spine or separate hood.",
+      "silhouette": "Three visibly square sheets in a short offset fan: one central face and two broad side sheets. Their overlap seams form the body; no hidden flesh, paper dinosaur, legs or long neck.",
+      "sheet_count": 3,
+      "back_portrait": "Close rear of the central page and two upper overlapping side-note roots; large sticky-edge fold seams, blank reverse sides."
+    },
+    {
+      "id": "MN_188",
+      "name": "Recallisk",
+      "types": [
+        "PSYCHIC"
+      ],
+      "stage": 3,
+      "evolves_to": null,
+      "body_growth": "Exactly seven broad sticky-note sheets form a self-sorting keeper. The original large face note remains central. A staggered stack of two notes sits to each side of it, with the near left and near right sheets peeling forward as exactly two square note hands. Two lower sheets form a low overlapping base, their outer lower corners curling forward. Total: one face, four side-stack sheets, two base sheets. The upper sticky-edge overlaps connect every part.",
+      "silhouette": "Broad stepped square-page keeper with a large central square face, two peel-forward square note hands and a short curled-page base. Wider than tall; no animal head, neck, horns, spines, quadruped body, tail or wings.",
+      "sheet_count": 7,
+      "back_portrait": "Independent close upper-rear portrait: blank reverse of central face note, tops of the two stepped side stacks and the near folded note-hand roots. Crop the lower base; do not fit all seven whole sheets into the rear box."
+    }
+  ],
+  "sprite_design": "Literal flat sticky-note sheets at every stage; exactly1/3/7pages, no dragon or animal body. Individual four-ink GBC palettes;56x56front and independent48x48close upper rear. Large paper planes, curled adhesive edges,2\u20133broad seam marks; no letters, logos, visible handwriting or gradients.",
+  "status": "proposal-unregistered-redesign",
+  "proposed_routes": [
+    "MN_R04"
+  ],
+  "design_status": "root-accepted-design-direction-awaiting-art",
+  "design_lock": "locked by root; first153identities fixed"
+}

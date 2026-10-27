@@ -1,0 +1,82 @@
+{
+  "schema_version": 1,
+  "manifest": "minnesota-prairie-story-v1",
+  "base_content_hash": "09dbcb239adf58805875b478ed837924f0084aa8ee85a215982231dabd752cae",
+  "links": [
+    {
+      "town": "MnRochester",
+      "town_direction": "west",
+      "route_direction": "east",
+      "offset": 2,
+      "mouth_metatile": [
+        0,
+        9
+      ],
+      "town_edge": [
+        [
+          0,
+          18
+        ],
+        [
+          0,
+          19
+        ]
+      ],
+      "route_edge": [
+        [
+          59,
+          14
+        ],
+        [
+          59,
+          15
+        ]
+      ]
+    },
+    {
+      "town": "MnMankato",
+      "town_direction": "east",
+      "route_direction": "west",
+      "offset": -6,
+      "mouth_metatile": [
+        23,
+        9
+      ],
+      "town_edge": [
+        [
+          47,
+          18
+        ],
+        [
+          47,
+          19
+        ]
+      ],
+      "route_edge": [
+        [
+          0,
+          30
+        ],
+        [
+          0,
+          31
+        ]
+      ]
+    }
+  ],
+  "notebook": {
+    "map": "MnMankato",
+    "id": "MN_MANKATO_NOTEBOOK",
+    "sprite": "SPRITE_PAPER",
+    "tile": [
+      26,
+      25
+    ],
+    "approach": [
+      26,
+      26
+    ],
+    "milestone": "MS02",
+    "hint_actor": "MN_MK_GARDENER"
+  }
+}

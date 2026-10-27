@@ -1,0 +1,239 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F095",
+  "status": "native-front-back-reviewed",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_207": {
+      "species_id": "MN_207",
+      "name": "Hushuff",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          24,
+          21,
+          27
+        ],
+        [
+          10,
+          7,
+          15
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        28344,
+        15594,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          198,
+          173,
+          222
+        ],
+        [
+          82,
+          57,
+          123
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#C6ADDE",
+        "#52397B",
+        "#000000"
+      ]
+    },
+    "MN_208": {
+      "species_id": "MN_208",
+      "name": "Scatacomb",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          26,
+          22,
+          28
+        ],
+        [
+          8,
+          6,
+          13
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        29402,
+        13512,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          214,
+          181,
+          231
+        ],
+        [
+          66,
+          49,
+          107
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#D6B5E7",
+        "#42316B",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f095/prompt-v1.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "style_reference": {
+    "origin": "authentic local Crystal sprites",
+    "generator": "crates/crystal-assets/examples/minnesota_gen2_reference.rs",
+    "boards": [
+      "target/minnesota-pokemon/gen2-reference/starters.png",
+      "target/minnesota-pokemon/gen2-reference/bugs.png"
+    ]
+  },
+  "sprites": [
+    {
+      "id": "mn-207-hushuff-v1",
+      "species_id": "MN_207",
+      "view": "front",
+      "source": "sprites/mn-f095/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        590,
+        637
+      ],
+      "fit": [
+        44,
+        44
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        28344,
+        15594,
+        0
+      ],
+      "interior_black_min_samples": 16
+    },
+    {
+      "id": "mn-207-hushuff-v1",
+      "species_id": "MN_207",
+      "view": "back",
+      "source": "sprites/mn-f095/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        637,
+        592,
+        562
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        28344,
+        15594,
+        0
+      ],
+      "interior_black_min_samples": 16
+    },
+    {
+      "id": "mn-208-scatacomb-v1",
+      "species_id": "MN_208",
+      "view": "front",
+      "source": "sprites/mn-f095/front-back.imagegen-v1.png",
+      "crop": [
+        590,
+        0,
+        722,
+        637
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        29402,
+        13512,
+        0
+      ],
+      "interior_black_min_samples": 16
+    },
+    {
+      "id": "mn-208-scatacomb-v1",
+      "species_id": "MN_208",
+      "view": "back",
+      "source": "sprites/mn-f095/front-back.imagegen-v1.png",
+      "crop": [
+        592,
+        637,
+        720,
+        562
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        29402,
+        13512,
+        0
+      ],
+      "interior_black_min_samples": 16
+    }
+  ],
+  "visual_review": {
+    "status": "reviewed",
+    "reviewer": "root",
+    "notes": "Root inspected front/back pairs: palm-ear cave hood grows open arch ribs, spring arms, clapping hands and broad dancing feet. White eye slits in dark surrounds and source-authored open torso arches remain legible. Pale stone planes and darker violet interiors preserve depth; enlarged rear shoulders/head/hand framing stays cropped.",
+    "sheet_sha256": "3cd9548ecbb2361008433b870a378cb0bcdb15c23344cb97edf71e5b86809eef",
+    "outline_profile": "source-contour-v1"
+  }
+}

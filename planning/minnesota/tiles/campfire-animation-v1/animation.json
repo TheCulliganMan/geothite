@@ -1,0 +1,27 @@
+{
+  "base_catalog": "../campfire-v2/catalog.json",
+  "base_source": "../campfire-v2/source.png",
+  "sources": [
+    {
+      "path": "flame-right.png",
+      "sha256": "be79ddaf36ab2d129ec4686bc2605cddc173c3516223d41ab9929bb105dc65a2"
+    },
+    {
+      "path": "flame-left.png",
+      "sha256": "531a94740f8509e20c4d95e5e96209f9a728d0856492c9ca51b714c216a2181c"
+    }
+  ],
+  "region": [
+    8,
+    0,
+    16,
+    14
+  ],
+  "frame_order": [
+    0,
+    1,
+    0,
+    2
+  ],
+  "frame_ticks": 8
+}

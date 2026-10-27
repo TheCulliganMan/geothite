@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "tool": "built-in image_gen",
+  "selected_source": "mn-241-242.front-back.imagegen-v2.png",
+  "selected_prompt": "prompt-v2.txt",
+  "previous_manifest": "redesign-20261027-v1/manifest-before.json",
+  "references": [
+    {
+      "path": "target/minnesota-pokemon/gen2-reference/starters.png",
+      "role": "Existing local handheld-game style/pixel-scale reference only; inspected, not copied into source or shipped art."
+    }
+  ],
+  "native_candidates": "target/honeydew-crayfish-redesign-20261027-v1/",
+  "notes": "Inspected both new honeydew fronts and close rear portraits at native size and 8x. Gold liquid-drop reservoirs dominate rounded purple ant bodies; small scoop jaws and cupped feet replace oversized tusks and rigid armor. White eye windows and black pupils remain readable; six Dewdant eye pixels and one Barricant eye pixel are guarded native refinements. Fronts face left and rear heads face away toward upper right. Exact original palettes retained."
+}

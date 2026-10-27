@@ -1,0 +1,17 @@
+{
+  "mode": "built-in image_gen",
+  "source_saved": "front-back.imagegen-v2.png",
+  "original": "/Users/ryanculligan/.codex/generated_images/01a178da-4cf1-7e01-8516-667a332dc790/exec-83b42833-d171-464e-9785-33bbf8aef61f.png",
+  "dimensions": [
+    1536,
+    1024
+  ],
+  "prompt": "prompt-v2.txt",
+  "collar_revision": {
+    "mode": "built-in image_gen edit",
+    "prompt": "prompt-collar-v3.txt",
+    "source_saved": "front-back.imagegen-collar-v3.png",
+    "original": "/Users/ryanculligan/.codex/generated_images/01a178da-4cf1-7e01-8516-667a332dc790/exec-a8db3bb5-15a6-406a-94f4-f009fad674e1.png",
+    "selection": "Use Brinebraze only; earlier Cinderfin retained."
+  }
+}

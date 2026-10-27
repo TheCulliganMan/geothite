@@ -1,0 +1,66 @@
+{
+  "id": "MN_F090",
+  "status": "proposal-awaiting-root-lock",
+  "theme": "Minnesota fair cookie pails and warm bakery crowds: a soft cookie imp becomes a crumb-pilfering bandit, then grows its own open-rim baked-crust hoard body.",
+  "region": "twin_cities",
+  "habitat": "Bakery back rooms and fair-food markets around St Paul; visiting fair vendors can supply a city habitat without assuming a new fairground map already exists.",
+  "map_placement": {
+    "towns": [
+      "ST_PAUL"
+    ],
+    "routes": [
+      "MN_R04"
+    ],
+    "status": "proposed habitat only; no map or encounter mutation"
+  },
+  "sources": [
+    {
+      "url": "https://www.sweetmarthas.com/about",
+      "institution": "Original cookie vendor",
+      "supports": "St Paul origin, fair cookie business and cookies sold by pail; generic creature names/design have no branding or vendor likeness."
+    }
+  ],
+  "members": [
+    {
+      "id": "MN_195",
+      "name": "Doughlin",
+      "types": [
+        "FIRE"
+      ],
+      "stage": 1,
+      "evolves_to": "MN_196",
+      "body_growth": "A squat dough imp has two uneven curled cookie ears, a pale raw center and a single dark chip covering one eye. Its little palm pads leave warm round impressions.",
+      "silhouette": "Round soft body, one tall curled ear and one chipped ear, short spreading palms."
+    },
+    {
+      "id": "MN_196",
+      "name": "Crumband",
+      "types": [
+        "FIRE",
+        "DARK"
+      ],
+      "stage": 2,
+      "evolves_to": "MN_197",
+      "body_growth": "Baked cookie segments separate into springy elbows/knees, the eye chip becomes a broad asymmetric mask and its hands close like tongs around stolen crumbs. Its belly has a deep pocket formed by overlapping crust.",
+      "silhouette": "Leaning bandit with crooked chip brow, long tong-like cookie hands and open crust belly pocket."
+    },
+    {
+      "id": "MN_197",
+      "name": "Jarbaron",
+      "types": [
+        "FIRE",
+        "DARK"
+      ],
+      "stage": 3,
+      "evolves_to": null,
+      "body_growth": "Its torso hardens into a broad open-rim crust chamber; a ring of thick cookie ridges rises behind its head and two rolled-dough handle arms grow from the sides. It hides warm crumbs under a slanted lid-like brow, slamming the rim when challenged.",
+      "silhouette": "Wide barrel-shaped baked body, tall ring of cookie ridges and two arched handle arms; the body is a living baked hoard, not a pail carried by a normal animal."
+    }
+  ],
+  "sprite_design": "Only3-4 large chip marks, no tiny crumbs/particles or readable branding. Original pail-shaped anatomy differs from Casserogre food shell and Stackajack pancake stack. Ember glow is flat orange ink, no gradients.",
+  "proposed_routes": [
+    "MN_R04"
+  ],
+  "design_status": "root-reviewed-locked-for-art",
+  "design_lock": "locked by root; first153identities fixed"
+}

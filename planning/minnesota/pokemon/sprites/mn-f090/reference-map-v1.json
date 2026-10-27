@@ -1,0 +1,15 @@
+{
+  "generation": "new original artwork",
+  "input_images": [],
+  "text_style_reference_boards": [
+    "target/minnesota-pokemon/gen2-reference/starters.png",
+    "target/minnesota-pokemon/gen2-reference/bugs.png"
+  ],
+  "regional_sources": [
+    {
+      "url": "https://www.sweetmarthas.com/about",
+      "institution": "Original cookie vendor",
+      "supports": "St Paul origin, fair cookie business and cookies sold by pail; generic creature names/design have no branding or vendor likeness."
+    }
+  ]
+}

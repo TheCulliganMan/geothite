@@ -456,6 +456,10 @@ fn write_comparison(
     prefix: &std::path::Path,
     temporal_3d: bool,
 ) -> Result<()> {
+    let output = suffixed_output(prefix, "compare").with_extension("png");
+    crystal_bevy::capture_archive::archive_existing(&output)?;
+    crystal_bevy::capture_archive::archive_existing(first)?;
+    crystal_bevy::capture_archive::archive_existing(second)?;
     let mut panels = vec![image::open(first)?];
     let has_previous = previous.is_some();
     panels.extend(previous);
@@ -464,13 +468,29 @@ fn write_comparison(
     let height = 576;
     let mut sheet = image::RgbImage::new(width * panels.len() as u32, height);
     for (index, panel) in panels.iter().enumerate() {
-        let panel = panel
-            .resize_exact(width, height, image::imageops::FilterType::Nearest)
-            .to_rgb8();
-        image::imageops::replace(&mut sheet, &panel, index as i64 * i64::from(width), 0);
+        crystal_bevy::capture_archive::archive_capture_image(
+            &output,
+            &format!("panel-{index}-original"),
+            panel,
+        )?;
+        let resized = panel.resize_exact(width, height, image::imageops::FilterType::Nearest);
+        crystal_bevy::capture_archive::archive_capture_image(
+            &output,
+            &format!("panel-{index}-resized"),
+            &resized,
+        )?;
+        let rgb = resized.to_rgb8();
+        crystal_bevy::capture_archive::archive_capture_image(
+            &output,
+            &format!("panel-{index}-rgb"),
+            &image::DynamicImage::ImageRgb8(rgb.clone()),
+        )?;
+        image::imageops::replace(&mut sheet, &rgb, index as i64 * i64::from(width), 0);
     }
-    let output = suffixed_output(prefix, "compare").with_extension("png");
-    sheet.save(&output)?;
+    crystal_bevy::capture_archive::write_capture_png(
+        &output,
+        &image::DynamicImage::ImageRgb8(sheet),
+    )?;
     let labels = if temporal_3d && has_previous {
         "Earlier 3D pose · Previous 3D pose · Later 3D pose"
     } else if temporal_3d {
@@ -639,7 +659,7 @@ fn print_usage() {
         r#"cargo run -p crystal-bevy --example render_at_location --features location-tester -- \
          --pack <game.crystalpack> [--list-maps | --map <id> [--x <tile>] [--y <tile>] \
          [--view 2d|2.5d|both] [--hour <0..23>] [--screenshot <output-or-prefix.png>] [--live] [--walk RDLU] \
-         [--preview-flag <verified-flag>] [--preview-doll <decoration-id>] | \
+         [--preview-flag <verified-flag,...>] [--preview-doll <decoration-id>] | \
          (--maps <id,id,...> | --all-maps | --outdoors | --kanto-interiors) --output-dir <directory> [--perimeter] \
          [--view 2d|2.5d|both] [--hour <0..23>]]
 Preview flags also support explicit --maps lists; each map gets a fresh disposable fixture."#

@@ -1,0 +1,123 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F143",
+  "status": "native-front-back-candidate",
+  "tool": "built-in image_gen",
+  "prompt_file": "sprites/mn-f143/prompt-v1.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "pokemon_palettes": {
+    "MN_316": {
+      "species_id": "MN_316",
+      "name": "Rondive",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          13,
+          24,
+          25
+        ],
+        [
+          5,
+          9,
+          13
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        26381,
+        13605,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          107,
+          198,
+          206
+        ],
+        [
+          41,
+          74,
+          107
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#6BC6CE",
+        "#294A6B",
+        "#000000"
+      ]
+    }
+  },
+  "source_sha256": "b045ea2cd4a99bfe050c93db7ac763acfcea25ed5fff181e456aa955be6f027e",
+  "sprites": [
+    {
+      "id": "mn-316-rondive-v1",
+      "species_id": "MN_316",
+      "view": "front",
+      "source": "sprites/mn-f143/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        887,
+        887
+      ],
+      "fit": [
+        53,
+        46
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        26381,
+        13605,
+        0
+      ],
+      "interior_black_min_samples": 8,
+      "white_detail_min_samples": 1,
+      "exterior_contour": "solid"
+    },
+    {
+      "id": "mn-316-rondive-v1",
+      "species_id": "MN_316",
+      "view": "back",
+      "source": "sprites/mn-f143/front-back.imagegen-v1.png",
+      "crop": [
+        887,
+        90,
+        887,
+        730
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        26381,
+        13605,
+        0
+      ],
+      "interior_black_min_samples": 8,
+      "white_detail_min_samples": 1,
+      "exterior_contour": "solid"
+    }
+  ]
+}

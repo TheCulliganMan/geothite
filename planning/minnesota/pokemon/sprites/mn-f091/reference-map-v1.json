@@ -1,0 +1,20 @@
+{
+  "generation": "new original artwork",
+  "input_images": [],
+  "text_style_reference_boards": [
+    "target/minnesota-pokemon/gen2-reference/starters.png",
+    "target/minnesota-pokemon/gen2-reference/bugs.png"
+  ],
+  "regional_sources": [
+    {
+      "url": "https://mnhs.gitlab.io/archive/medTech/www.mnhs.org/collections/medTech/transcript_bakken_2.html",
+      "institution": "Minnesota Historical Society oral history",
+      "supports": "First-person Bakken interview discusses development of battery-operated pacemakers."
+    },
+    {
+      "url": "https://www.vhlab.umn.edu/atlas/umn-cv-history/1957-58.shtml",
+      "institution": "University of Minnesota Visible Heart Laboratories",
+      "supports": "The portable battery-powered design used a modified transistorized metronome circuit."
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "attempts": [
+    {
+      "attempt": 1,
+      "status": "output_moderation_blocked",
+      "request_id": "1cf92bfa-b3f0-414e-bc66-58303a0bc4bd",
+      "prompt_file": "sprites/mn-f012/prompt-attempt-01-moderation-blocked.txt",
+      "returned_image": null
+    },
+    {
+      "attempt": 2,
+      "status": "successful",
+      "prompt_file": "sprites/mn-f012/prompt-v1.txt"
+    }
+  ]
+}

@@ -1,0 +1,1425 @@
+{
+  "id": "MN_R18",
+  "map_prefix": "MnR18",
+  "name": "Mille Lacs Shore",
+  "required_flags": [
+    "BADGE_6"
+  ],
+  "quest": "SQ04",
+  "encounters": {
+    "grass_rates": {
+      "morning": 10,
+      "day": 10,
+      "night": 10
+    },
+    "grass": {
+      "morning": [
+        {
+          "species": "WOOPER",
+          "level": 26
+        },
+        {
+          "species": "SKIPLOOM",
+          "level": 27
+        },
+        {
+          "species": "BELLSPROUT",
+          "level": 28
+        },
+        {
+          "species": "MARILL",
+          "level": 29
+        },
+        {
+          "species": "PIDGEOTTO",
+          "level": 30
+        },
+        {
+          "species": "GIRAFARIG",
+          "level": 31
+        },
+        {
+          "species": "YANMA",
+          "level": 32
+        }
+      ],
+      "day": [
+        {
+          "species": "WOOPER",
+          "level": 26
+        },
+        {
+          "species": "SKIPLOOM",
+          "level": 27
+        },
+        {
+          "species": "BELLSPROUT",
+          "level": 28
+        },
+        {
+          "species": "MARILL",
+          "level": 29
+        },
+        {
+          "species": "PIDGEOTTO",
+          "level": 30
+        },
+        {
+          "species": "GIRAFARIG",
+          "level": 31
+        },
+        {
+          "species": "YANMA",
+          "level": 32
+        }
+      ],
+      "night": [
+        {
+          "species": "NOCTOWL",
+          "level": 26
+        },
+        {
+          "species": "ARIADOS",
+          "level": 27
+        },
+        {
+          "species": "BELLSPROUT",
+          "level": 28
+        },
+        {
+          "species": "MARILL",
+          "level": 29
+        },
+        {
+          "species": "PIDGEOTTO",
+          "level": 30
+        },
+        {
+          "species": "GIRAFARIG",
+          "level": 31
+        },
+        {
+          "species": "YANMA",
+          "level": 32
+        }
+      ]
+    },
+    "water_rate": 4,
+    "water": [
+      {
+        "species": "POLIWAG",
+        "level": 26
+      },
+      {
+        "species": "WOOPER",
+        "level": 27
+      },
+      {
+        "species": "MARILL",
+        "level": 32
+      }
+    ]
+  },
+  "art_constraints": [
+    "Only original packed 8x8 source tiles.",
+    "No painted shadows, enlarged trees or perspective props.",
+    "Fit source shoreline/cliff quadrants; draw source trees in coherent metatile groups."
+  ],
+  "dimensions_metatiles": [
+    40,
+    24
+  ],
+  "chunk_metatiles": [
+    32,
+    24
+  ],
+  "chunk_columns": 2,
+  "chunk_rows": 1,
+  "tileset": "johto",
+  "source_references": [
+    "Route34",
+    "Route42",
+    "OlivineCity"
+  ],
+  "description": "A wide low lake with two working marina piers on the western bank and a narrow inhabited north shore. Three walking-access shore volunteers anchor SQ04. The central shore habitat has a real grass cost; optional meadow and eastern beach activities branch from it. Surf opens a separate low islet with a Revive. No decorative Cut gate or forced ridge sequence.",
+  "endpoints": [
+    {
+      "place": "BRAINERD",
+      "side": "W",
+      "gate_metatile": [
+        1,
+        5
+      ],
+      "landing_metatile": [
+        3,
+        5
+      ]
+    },
+    {
+      "place": "MILLE LACS",
+      "side": "E",
+      "gate_metatile": [
+        38,
+        5
+      ],
+      "landing_metatile": [
+        36,
+        5
+      ]
+    }
+  ],
+  "main_path_metatiles": [
+    [
+      1,
+      5
+    ],
+    [
+      6,
+      5
+    ],
+    [
+      6,
+      6
+    ],
+    [
+      22,
+      6
+    ],
+    [
+      22,
+      8
+    ],
+    [
+      24,
+      8
+    ],
+    [
+      24,
+      5
+    ],
+    [
+      38,
+      5
+    ]
+  ],
+  "main_lane_width_gameplay_tiles": 2,
+  "districts": [
+    {
+      "id": "WESTERN_MARINA",
+      "name": "Working marina and reed watch",
+      "bounds_metatiles": [
+        1,
+        4,
+        16,
+        19
+      ],
+      "landmark_metatile": [
+        13,
+        11
+      ],
+      "purpose": "Two protected walking piers, ranger reward, fishing battles, reed volunteer and bank resources"
+    },
+    {
+      "id": "NORTH_MEADOW",
+      "name": "North shore watch and meadow neck",
+      "bounds_metatiles": [
+        10,
+        2,
+        30,
+        10
+      ],
+      "landmark_metatile": [
+        19,
+        6
+      ],
+      "purpose": "Walking-access meadow volunteer, required habitat crossing and optional bird meadow reward"
+    },
+    {
+      "id": "EAST_BEACH",
+      "name": "Mille Lacs beach approach",
+      "bounds_metatiles": [
+        30,
+        2,
+        40,
+        11
+      ],
+      "landmark_metatile": [
+        37,
+        8
+      ],
+      "purpose": "Beach volunteer, local battles and open-lake view before the town"
+    },
+    {
+      "id": "OFFSHORE_ISLET",
+      "name": "Low offshore gravel",
+      "bounds_metatiles": [
+        29,
+        16,
+        33,
+        20
+      ],
+      "landmark_metatile": [
+        30,
+        17
+      ],
+      "purpose": "Optional Surf-only Revive; no story requirement"
+    }
+  ],
+  "loops": [
+    {
+      "id": "PUBLIC_SHORE_WATCH_LOOP",
+      "path_metatiles": [
+        [
+          26,
+          6
+        ],
+        [
+          35,
+          6
+        ],
+        [
+          35,
+          9
+        ],
+        [
+          26,
+          9
+        ],
+        [
+          26,
+          6
+        ]
+      ],
+      "joins_districts": [
+        "NORTH_MEADOW",
+        "EAST_BEACH"
+      ],
+      "entry_rule": "Existing public-launch shore bay and eastern beach are both walking accessible.",
+      "return_rule": "North meadow/dune road or lower two-core protected shorewalk; no Cut, Surf or ledge required.",
+      "tradeoff": "A safe shorewalk gives a direct lake view between existing activities. The northern road and habitat retain optional trainers and field resources."
+    }
+  ],
+  "minimum_optional_branches": 5,
+  "doors": [],
+  "interiors": [],
+  "shortcut": null,
+  "cut_gates": [],
+  "one_way_ledges": [],
+  "required_grass_crossings": [
+    {
+      "id": "SHORE_MEADOW_NECK",
+      "bounds_core": [
+        36,
+        10,
+        42,
+        18
+      ],
+      "minimum_grass_steps": 6
+    }
+  ],
+  "surf_only_actor_ids": [
+    "MN_R18_ITEM_04"
+  ],
+  "trainers": [
+    {
+      "id": "MN_R18_T01",
+      "display_name": "LEON",
+      "trainer_class": "FISHER",
+      "sprite": "SPRITE_FISHER",
+      "tile": [
+        17,
+        23
+      ],
+      "facing": "east",
+      "sight_range": 1,
+      "party": [
+        {
+          "species": "WOOPER",
+          "level": 26
+        },
+        {
+          "species": "SKIPLOOM",
+          "level": 26
+        },
+        {
+          "species": "MARILL",
+          "level": 25
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R18_TRAINER_01",
+      "before_lines": [
+        "The slips are calm",
+        "before the wind."
+      ],
+      "after_lines": [
+        "The timber rails",
+        "keep us on deck."
+      ],
+      "loss_lines": [
+        "Good shore sense!"
+      ]
+    },
+    {
+      "id": "MN_R18_T02",
+      "display_name": "BELA",
+      "trainer_class": "PICNICKER",
+      "sprite": "SPRITE_LASS",
+      "tile": [
+        19,
+        11
+      ],
+      "facing": "south",
+      "sight_range": 1,
+      "party": [
+        {
+          "species": "SKIPLOOM",
+          "level": 26
+        },
+        {
+          "species": "BELLSPROUT",
+          "level": 26
+        },
+        {
+          "species": "PIDGEOTTO",
+          "level": 25
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R18_TRAINER_02",
+      "before_lines": [
+        "I heard the calls",
+        "from the meadow."
+      ],
+      "after_lines": [
+        "A little patience",
+        "goes a long way."
+      ],
+      "loss_lines": [
+        "Good shore sense!"
+      ]
+    },
+    {
+      "id": "MN_R18_T03",
+      "display_name": "DORY",
+      "trainer_class": "LASS",
+      "sprite": "SPRITE_LASS",
+      "tile": [
+        53,
+        11
+      ],
+      "facing": "east",
+      "sight_range": 1,
+      "party": [
+        {
+          "species": "BELLSPROUT",
+          "level": 27
+        },
+        {
+          "species": "MARILL",
+          "level": 27
+        },
+        {
+          "species": "GIRAFARIG",
+          "level": 26
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R18_TRAINER_03",
+      "before_lines": [
+        "The shore changes",
+        "with every season."
+      ],
+      "after_lines": [
+        "The watch keeps",
+        "a careful record."
+      ],
+      "loss_lines": [
+        "Good shore sense!"
+      ]
+    },
+    {
+      "id": "MN_R18_T04",
+      "display_name": "KEMP",
+      "trainer_class": "BUG_CATCHER",
+      "sprite": "SPRITE_BUG_CATCHER",
+      "tile": [
+        11,
+        29
+      ],
+      "facing": "south",
+      "sight_range": 1,
+      "party": [
+        {
+          "species": "MARILL",
+          "level": 27
+        },
+        {
+          "species": "PIDGEOTTO",
+          "level": 27
+        },
+        {
+          "species": "YANMA",
+          "level": 26
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R18_TRAINER_04",
+      "before_lines": [
+        "Reeds make a home",
+        "for tiny fliers."
+      ],
+      "after_lines": [
+        "Watch your step",
+        "along the bank."
+      ],
+      "loss_lines": [
+        "Good shore sense!"
+      ]
+    },
+    {
+      "id": "MN_R18_T05",
+      "display_name": "FINN",
+      "trainer_class": "SAILOR",
+      "sprite": "SPRITE_SAILOR",
+      "tile": [
+        61,
+        13
+      ],
+      "facing": "east",
+      "sight_range": 1,
+      "party": [
+        {
+          "species": "PIDGEOTTO",
+          "level": 28
+        },
+        {
+          "species": "GIRAFARIG",
+          "level": 28
+        },
+        {
+          "species": "WOOPER",
+          "level": 27
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R18_TRAINER_05",
+      "before_lines": [
+        "Big water calls",
+        "for a steady team."
+      ],
+      "after_lines": [
+        "Take a good look",
+        "before you leave."
+      ],
+      "loss_lines": [
+        "Good shore sense!"
+      ]
+    },
+    {
+      "id": "MN_R18_T06",
+      "display_name": "HAL",
+      "trainer_class": "FISHER",
+      "sprite": "SPRITE_FISHER",
+      "tile": [
+        17,
+        35
+      ],
+      "facing": "east",
+      "sight_range": 1,
+      "party": [
+        {
+          "species": "WOOPER",
+          "level": 28
+        },
+        {
+          "species": "YANMA",
+          "level": 28
+        },
+        {
+          "species": "SKIPLOOM",
+          "level": 27
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R18_TRAINER_06",
+      "before_lines": [
+        "No rush out here.",
+        "Want a battle?"
+      ],
+      "after_lines": [
+        "The pier is fine",
+        "for waiting too."
+      ],
+      "loss_lines": [
+        "Good shore sense!"
+      ]
+    }
+  ],
+  "residents": [
+    {
+      "id": "MN_R18_WATCH_REED",
+      "sprite": "SPRITE_FISHER",
+      "tile": [
+        15,
+        33
+      ],
+      "facing": "south",
+      "lines": [
+        "Reed watch here.",
+        "The small fliers",
+        "are feeding well."
+      ]
+    },
+    {
+      "id": "MN_R18_WATCH_MEADOW",
+      "sprite": "SPRITE_LASS",
+      "tile": [
+        31,
+        9
+      ],
+      "facing": "west",
+      "lines": [
+        "Meadow watch here.",
+        "The nesting ground",
+        "is undisturbed."
+      ]
+    },
+    {
+      "id": "MN_R18_WATCH_BEACH",
+      "sprite": "SPRITE_GRAMPS",
+      "tile": [
+        75,
+        17
+      ],
+      "facing": "south",
+      "lines": [
+        "Beach watch here.",
+        "The shore is clear",
+        "after the wind."
+      ]
+    },
+    {
+      "id": "MN_R18_DOCK_RANGER",
+      "sprite": "SPRITE_OFFICER",
+      "tile": [
+        27,
+        23
+      ],
+      "facing": "west",
+      "lines": [
+        "Talk to all three",
+        "shore volunteers.",
+        "Bring their news",
+        "back to this pier."
+      ]
+    }
+  ],
+  "items": [
+    {
+      "id": "MN_R18_ITEM_01",
+      "item": "HYPER_POTION",
+      "quantity": 1,
+      "flag": "EVENT_MN_R18_ITEM_01",
+      "tile": [
+        11,
+        31
+      ]
+    },
+    {
+      "id": "MN_R18_ITEM_02",
+      "item": "ULTRA_BALL",
+      "quantity": 1,
+      "flag": "EVENT_MN_R18_ITEM_02",
+      "tile": [
+        27,
+        7
+      ]
+    },
+    {
+      "id": "MN_R18_ITEM_03",
+      "item": "MAX_REPEL",
+      "quantity": 1,
+      "flag": "EVENT_MN_R18_ITEM_03",
+      "tile": [
+        73,
+        9
+      ]
+    },
+    {
+      "id": "MN_R18_ITEM_04",
+      "item": "REVIVE",
+      "quantity": 1,
+      "flag": "EVENT_MN_R18_ITEM_04",
+      "tile": [
+        61,
+        35
+      ]
+    }
+  ],
+  "signs": [
+    {
+      "id": "MN_R18_WEST_SIGN",
+      "tile": [
+        4,
+        12
+      ],
+      "lines": [
+        "MILLE LACS SHORE",
+        "BRAINERD WEST"
+      ]
+    },
+    {
+      "id": "MN_R18_WATCH_SIGN",
+      "tile": [
+        10,
+        20
+      ],
+      "lines": [
+        "SHORE WATCH",
+        "Meadow, reed, sand",
+        "All stops on foot."
+      ]
+    },
+    {
+      "id": "MN_R18_MARINA_SIGN",
+      "tile": [
+        14,
+        28
+      ],
+      "lines": [
+        "PUBLIC MARINA",
+        "Rails close slips.",
+        "Launch to the east"
+      ]
+    },
+    {
+      "id": "MN_R18_EAST_SIGN",
+      "tile": [
+        74,
+        12
+      ],
+      "lines": [
+        "MILLE LACS EAST",
+        "Leave nests alone."
+      ]
+    },
+    {
+      "id": "MN_R18_GRASS_SIGN",
+      "tile": [
+        34,
+        12
+      ],
+      "lines": [
+        "MEADOW CROSSING",
+        "Watch for fliers."
+      ]
+    },
+    {
+      "id": "MN_R18_SURF_SIGN",
+      "tile": [
+        52,
+        16
+      ],
+      "lines": [
+        "PUBLIC LAUNCH",
+        "Use SURF here.",
+        "Rocks mark limits."
+      ]
+    }
+  ],
+  "viewpoints": [
+    {
+      "id": "BRAINERD_APPROACH",
+      "tile": [
+        7,
+        11
+      ]
+    },
+    {
+      "id": "MEADOW_WATCH",
+      "tile": [
+        29,
+        10
+      ]
+    },
+    {
+      "id": "HABITAT_CHOICE",
+      "tile": [
+        35,
+        13
+      ]
+    },
+    {
+      "id": "HARBOR_REGISTRATION",
+      "tile": [
+        25,
+        23
+      ]
+    },
+    {
+      "id": "TIMBER_PIER_END",
+      "tile": [
+        29,
+        23
+      ]
+    },
+    {
+      "id": "LOWER_FISHING_SLIP",
+      "tile": [
+        19,
+        35
+      ]
+    },
+    {
+      "id": "EASTERN_BEACH",
+      "tile": [
+        75,
+        18
+      ]
+    },
+    {
+      "id": "PUBLIC_SURF_LAUNCH",
+      "tile": [
+        49,
+        19
+      ]
+    },
+    {
+      "id": "WIDEST_ROUTINE_SHORE",
+      "tile": [
+        57,
+        11
+      ]
+    },
+    {
+      "id": "SHOREWALK_WEST_GATE",
+      "tile": [
+        59,
+        18
+      ]
+    },
+    {
+      "id": "SHOREWALK_LAKE_VIEW",
+      "tile": [
+        65,
+        18
+      ]
+    },
+    {
+      "id": "SHOREWALK_BEACH_GATE",
+      "tile": [
+        71,
+        18
+      ]
+    },
+    {
+      "id": "DUNE_ROAD",
+      "tile": [
+        65,
+        11
+      ]
+    },
+    {
+      "id": "DUNE_BEND_WEST",
+      "tile": [
+        45,
+        13
+      ]
+    },
+    {
+      "id": "DIRECT_MEADOW_CHOICE",
+      "tile": [
+        47,
+        13
+      ]
+    },
+    {
+      "id": "OFFSET_LAKE_LOOKOUT",
+      "tile": [
+        45,
+        16
+      ]
+    },
+    {
+      "id": "LOOKOUT_RETURN_FORK",
+      "tile": [
+        49,
+        15
+      ]
+    },
+    {
+      "id": "FORMER_CLEAR_LAWN",
+      "tile": [
+        47,
+        11
+      ]
+    }
+  ],
+  "surf_viewpoints": [
+    {
+      "id": "LOW_GRAVEL_ISLET",
+      "tile": [
+        59,
+        35
+      ]
+    },
+    {
+      "id": "SOUTHERN_ROCK_LINE",
+      "tile": [
+        53,
+        43
+      ]
+    },
+    {
+      "id": "EASTERN_ROCK_LINE",
+      "tile": [
+        75,
+        35
+      ]
+    }
+  ],
+  "quest_contract": {
+    "id": "SQ04",
+    "required_flags": [
+      "BADGE_6"
+    ],
+    "volunteers": [
+      {
+        "actor_id": "MN_R18_WATCH_REED",
+        "flag": "EVENT_MN_SHORE_WATCH_01",
+        "interaction": "faceplayer/opentext/writetext/waitbutton/closetext/setevent/end; flag only after dialogue acknowledgment"
+      },
+      {
+        "actor_id": "MN_R18_WATCH_MEADOW",
+        "flag": "EVENT_MN_SHORE_WATCH_02",
+        "interaction": "faceplayer/opentext/writetext/waitbutton/closetext/setevent/end; flag only after dialogue acknowledgment"
+      },
+      {
+        "actor_id": "MN_R18_WATCH_BEACH",
+        "flag": "EVENT_MN_SHORE_WATCH_03",
+        "interaction": "faceplayer/opentext/writetext/waitbutton/closetext/setevent/end; flag only after dialogue acknowledgment"
+      }
+    ],
+    "ranger_id": "MN_R18_DOCK_RANGER",
+    "reward_item": "GOOD_ROD",
+    "quantity": 1,
+    "reward_flag": "EVENT_MN_SHORE_WATCH_REWARDED",
+    "native_support": "Existing checkevent/setevent/checkitem/giveitem/text script commands; requires dedicated route builder script attachment. Generic Resident currently supports only dialogue or HealParty.",
+    "rules": [
+      "All three volunteers and ranger reachable by walking with no Surf/Cut.",
+      "Ranger checks all three watch flags and BADGE_6. Missing flags never grant rod or completion.",
+      "Already owning GOOD_ROD or SUPER_ROD acknowledges completion without a duplicate rod or downgrade. OLD_ROD remains in the bag.",
+      "Set completion only after successful GOOD_ROD delivery or existing adequate-rod acknowledgment. Full storage retains retry; completion is persistent and cannot duplicate reward.",
+      "Optional Surf islet and ITEM_04 are separate; never prerequisite for SQ04."
+    ],
+    "status": "Exact production commands available, typed quest attachment and new three event allocations pending root integration",
+    "badge_check": {
+      "command": "checkflag",
+      "args": [
+        "ENGINE_MINERALBADGE"
+      ],
+      "source_constant_value": 31,
+      "planning_badge": "BADGE_6",
+      "runtime_badge": {
+        "region": "johto",
+        "index": 5
+      }
+    },
+    "script_labels": {
+      "MN_R18_WATCH_REED": [
+        {
+          "command": "faceplayer",
+          "args": []
+        },
+        {
+          "command": "opentext",
+          "args": []
+        },
+        {
+          "command": "writetext",
+          "args": [
+            "MN_R18_WATCH_REEDText"
+          ]
+        },
+        {
+          "command": "waitbutton",
+          "args": []
+        },
+        {
+          "command": "closetext",
+          "args": []
+        },
+        {
+          "command": "setevent",
+          "args": [
+            "EVENT_MN_SHORE_WATCH_01"
+          ]
+        },
+        {
+          "command": "end",
+          "args": []
+        }
+      ],
+      "MN_R18_WATCH_MEADOW": [
+        {
+          "command": "faceplayer",
+          "args": []
+        },
+        {
+          "command": "opentext",
+          "args": []
+        },
+        {
+          "command": "writetext",
+          "args": [
+            "MN_R18_WATCH_MEADOWText"
+          ]
+        },
+        {
+          "command": "waitbutton",
+          "args": []
+        },
+        {
+          "command": "closetext",
+          "args": []
+        },
+        {
+          "command": "setevent",
+          "args": [
+            "EVENT_MN_SHORE_WATCH_02"
+          ]
+        },
+        {
+          "command": "end",
+          "args": []
+        }
+      ],
+      "MN_R18_WATCH_BEACH": [
+        {
+          "command": "faceplayer",
+          "args": []
+        },
+        {
+          "command": "opentext",
+          "args": []
+        },
+        {
+          "command": "writetext",
+          "args": [
+            "MN_R18_WATCH_BEACHText"
+          ]
+        },
+        {
+          "command": "waitbutton",
+          "args": []
+        },
+        {
+          "command": "closetext",
+          "args": []
+        },
+        {
+          "command": "setevent",
+          "args": [
+            "EVENT_MN_SHORE_WATCH_03"
+          ]
+        },
+        {
+          "command": "end",
+          "args": []
+        }
+      ],
+      "MN_R18_DOCK_RANGER": [
+        {
+          "command": "faceplayer",
+          "args": []
+        },
+        {
+          "command": "checkflag",
+          "args": [
+            "ENGINE_MINERALBADGE"
+          ]
+        },
+        {
+          "command": "iffalse",
+          "args": [
+            "MN_R18_WatchBadgeDenied"
+          ]
+        },
+        {
+          "command": "checkevent",
+          "args": [
+            "EVENT_MN_SHORE_WATCH_REWARDED"
+          ]
+        },
+        {
+          "command": "iftrue",
+          "args": [
+            "MN_R18_WatchAlreadyRewarded"
+          ]
+        },
+        {
+          "command": "checkevent",
+          "args": [
+            "EVENT_MN_SHORE_WATCH_01"
+          ]
+        },
+        {
+          "command": "iffalse",
+          "args": [
+            "MN_R18_WatchNeedsNews"
+          ]
+        },
+        {
+          "command": "checkevent",
+          "args": [
+            "EVENT_MN_SHORE_WATCH_02"
+          ]
+        },
+        {
+          "command": "iffalse",
+          "args": [
+            "MN_R18_WatchNeedsNews"
+          ]
+        },
+        {
+          "command": "checkevent",
+          "args": [
+            "EVENT_MN_SHORE_WATCH_03"
+          ]
+        },
+        {
+          "command": "iffalse",
+          "args": [
+            "MN_R18_WatchNeedsNews"
+          ]
+        },
+        {
+          "command": "checkitem",
+          "args": [
+            "SUPER_ROD"
+          ]
+        },
+        {
+          "command": "iftrue",
+          "args": [
+            "MN_R18_WatchHasRod"
+          ]
+        },
+        {
+          "command": "checkitem",
+          "args": [
+            "GOOD_ROD"
+          ]
+        },
+        {
+          "command": "iftrue",
+          "args": [
+            "MN_R18_WatchHasRod"
+          ]
+        },
+        {
+          "command": "opentext",
+          "args": []
+        },
+        {
+          "command": "writetext",
+          "args": [
+            "MN_R18_WatchRewardIntroText"
+          ]
+        },
+        {
+          "command": "promptbutton",
+          "args": []
+        },
+        {
+          "command": "giveitem",
+          "args": [
+            "GOOD_ROD",
+            "1"
+          ]
+        },
+        {
+          "command": "iffalse",
+          "args": [
+            "MN_R18_WatchBagFull"
+          ]
+        },
+        {
+          "command": "setevent",
+          "args": [
+            "EVENT_MN_SHORE_WATCH_REWARDED"
+          ]
+        },
+        {
+          "command": "writetext",
+          "args": [
+            "MN_R18_WatchRewardGivenText"
+          ]
+        },
+        {
+          "command": "waitbutton",
+          "args": []
+        },
+        {
+          "command": "closetext",
+          "args": []
+        },
+        {
+          "command": "end",
+          "args": []
+        }
+      ],
+      "MN_R18_WatchBadgeDenied": [
+        {
+          "command": "opentext",
+          "args": []
+        },
+        {
+          "command": "writetext",
+          "args": [
+            "MN_R18_WatchBadgeDeniedText"
+          ]
+        },
+        {
+          "command": "waitbutton",
+          "args": []
+        },
+        {
+          "command": "closetext",
+          "args": []
+        },
+        {
+          "command": "end",
+          "args": []
+        }
+      ],
+      "MN_R18_WatchAlreadyRewarded": [
+        {
+          "command": "opentext",
+          "args": []
+        },
+        {
+          "command": "writetext",
+          "args": [
+            "MN_R18_WatchAlreadyRewardedText"
+          ]
+        },
+        {
+          "command": "waitbutton",
+          "args": []
+        },
+        {
+          "command": "closetext",
+          "args": []
+        },
+        {
+          "command": "end",
+          "args": []
+        }
+      ],
+      "MN_R18_WatchNeedsNews": [
+        {
+          "command": "opentext",
+          "args": []
+        },
+        {
+          "command": "writetext",
+          "args": [
+            "MN_R18_WatchNeedsNewsText"
+          ]
+        },
+        {
+          "command": "waitbutton",
+          "args": []
+        },
+        {
+          "command": "closetext",
+          "args": []
+        },
+        {
+          "command": "end",
+          "args": []
+        }
+      ],
+      "MN_R18_WatchHasRod": [
+        {
+          "command": "opentext",
+          "args": []
+        },
+        {
+          "command": "writetext",
+          "args": [
+            "MN_R18_WatchHasRodText"
+          ]
+        },
+        {
+          "command": "waitbutton",
+          "args": []
+        },
+        {
+          "command": "closetext",
+          "args": []
+        },
+        {
+          "command": "setevent",
+          "args": [
+            "EVENT_MN_SHORE_WATCH_REWARDED"
+          ]
+        },
+        {
+          "command": "end",
+          "args": []
+        }
+      ],
+      "MN_R18_WatchBagFull": [
+        {
+          "command": "writetext",
+          "args": [
+            "MN_R18_WatchBagFullText"
+          ]
+        },
+        {
+          "command": "waitbutton",
+          "args": []
+        },
+        {
+          "command": "closetext",
+          "args": []
+        },
+        {
+          "command": "end",
+          "args": []
+        }
+      ]
+    },
+    "text_labels": {
+      "MN_R18_WatchBadgeDeniedText": [
+        "The shore watch",
+        "opens after your",
+        "sixth gym badge."
+      ],
+      "MN_R18_WatchAlreadyRewardedText": [
+        "The GOOD ROD is",
+        "yours to keep.",
+        "Thank you again."
+      ],
+      "MN_R18_WatchNeedsNewsText": [
+        "Talk to all three",
+        "shore volunteers.",
+        "Meadow, reed, sand"
+      ],
+      "MN_R18_WatchRewardIntroText": [
+        "All three reports!",
+        "Take this GOOD ROD",
+        "from the watch."
+      ],
+      "MN_R18_WatchRewardGivenText": [
+        "A GOOD ROD draws",
+        "a different catch.",
+        "Try it at the pier"
+      ],
+      "MN_R18_WatchHasRodText": [
+        "Your fishing rod",
+        "already does the",
+        "job. Many thanks!"
+      ],
+      "MN_R18_WatchBagFullText": [
+        "Make room for the",
+        "GOOD ROD and then",
+        "come see me again."
+      ]
+    }
+  },
+  "unused_reservations": {
+    "trainers": [
+      "MN_R18_T07",
+      "MN_R18_T08",
+      "MN_R18_T09",
+      "MN_R18_T10"
+    ],
+    "trainer_flags": [
+      "EVENT_MN_R18_TRAINER_07",
+      "EVENT_MN_R18_TRAINER_08",
+      "EVENT_MN_R18_TRAINER_09",
+      "EVENT_MN_R18_TRAINER_10"
+    ],
+    "shortcut": "MN_R18_SHORTCUT unused; no decorative tree gate",
+    "chunks": "Ten old empty chunks retired; no interior reserved or required"
+  },
+  "status": "Hand-authored source candidate visually reviewed; static traversal, closed marina rails and 13 negative regressions pass. SQ04 native script attachment, typed Surf-only validation, publication and controller play pending.",
+  "anchor_status": "Core actor and collision coordinates are authored exactly; source checks and actual controller evidence remain separate.",
+  "routine_width_probes": [
+    {
+      "id": "WEST_APPROACH",
+      "x": 3,
+      "y_start": 10,
+      "y_end": 14,
+      "walking_tiles": 4
+    },
+    {
+      "id": "EAST_SHORE",
+      "x": 57,
+      "y_start": 10,
+      "y_end": 14,
+      "walking_tiles": 4
+    }
+  ],
+  "review_contract": {
+    "status": "Unpublished separate source-only whole-shore topology candidate.",
+    "purpose": "Connect existing public-launch and beach bays into a two-core railed shorewalk, contrasting with the two wider working marina piers. The northern road and continuous dune habitat form the ordinary return and optional battle/field alternative. No new story or HM gate.",
+    "native_preimage_pack_sha256": "da27b381f69f64d6530383216077de0802c5b9dc42b12c316319cbc5daeb6d50",
+    "explicit_new_region_metatiles": [
+      29,
+      6,
+      36,
+      10
+    ],
+    "shore_fitting_halo_metatiles": [
+      28,
+      8,
+      37,
+      11
+    ],
+    "native_art": "Existing native paired north82/south81 rail halves,40/42/49 corners and original03grass; no new source pixels, broad deck rectangle, art recipe or palette.",
+    "preserve": [
+      "All existing actors, items, quest commands, flags, parties, badges, signs, story fields",
+      "Both western marina piers and their cap/rail/deck/approach cells",
+      "Original six-step shore grass neck and every original encounter-grass quadrant",
+      "Original public Surf launch49,19, external rock boundaries, Surf-only islet and reciprocal water seam",
+      "Flat shore: no Cut, stair or ledge quota."
+    ],
+    "inhabited_ribbon_epoch": {
+      "status": "Separate unpublished source-only central dune/low-shore approach; frozen approved shorewalk v04 unchanged in history.",
+      "purpose": "The meadow margin joins the original necessary habitat; a dry winding approach visits a small railed lake view before climbing the existing launch spine. A direct grass crossing shortens that bend. No isolated tree mass or additional pier.",
+      "explicit_region_metatiles": [
+        21,
+        3,
+        27,
+        10
+      ],
+      "preserve": "Every actor/quest/program/party/flag/item/sign and original grass/water/piers/Surf/islet/approved shorewalk. Six-grass regional neck unchanged; dry approach adds no required grass beyond it.",
+      "candidate_choices_core": {
+        "west": [
+          45,
+          13
+        ],
+        "east": [
+          48,
+          13
+        ],
+        "dry_via": [
+          [
+            45,
+            16
+          ],
+          [
+            48,
+            16
+          ]
+        ],
+        "grass_band": [
+          46,
+          12,
+          48,
+          16
+        ]
+      },
+      "native_art": "Only original03 grass/01road and native48/49 protective rail. No new pixels/palette/recipes or Cut/hops."
+    }
+  }
+}

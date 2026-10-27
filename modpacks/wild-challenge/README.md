@@ -22,13 +22,15 @@ scaled encounter. The catching tutorial and Bug-Catching Contest retain their
 original rules.
 
 Movesets are assembled from each species' level-up moves available at its actual
-encounter level, legal TM/HM and egg moves, and moves retained from its earlier
+encounter level, legal TM/HM moves, and moves retained from its earlier
 evolutions, all read from the supplied pack. The selector
 prefers reliable STAB, coverage appropriate to the species' offensive stats,
 recovery/status/setup, and complementary coverage. Bulky species can use paired
-Rest/Sleep Talk. TM and egg attack power is limited to 50 before level 10, 65 before 20,
+Rest/Sleep Talk. TM attack power is limited to 50 before level 10, 65 before 20,
 85 before 30, and 150 thereafter. Species with restricted move pools retain
-those restrictions. Captured Pokémon keep their level and moves.
+those restrictions. Egg moves are excluded from this expanded pool for both
+wild encounters and starter gifts. Multi-hit attacks, including Fury Swipes,
+are excluded below level 10 even when naturally available. Captured Pokémon keep their level and moves.
 Elm’s three starter gifts receive the same expanded movesets at their gift level
 when Wild Challenge is enabled, so both sides use the same move pool rules.
 Existing starters in saves keep their current moves.

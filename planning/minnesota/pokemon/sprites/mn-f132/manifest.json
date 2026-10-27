@@ -1,0 +1,244 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F132",
+  "status": "native-front-back-reviewed",
+  "tool": "built-in image_gen",
+  "prompt_file": "sprites/mn-f132/prompt-v1.txt",
+  "pokemon_palettes": {
+    "MN_291": {
+      "species_id": "MN_291",
+      "name": "Mudnip",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          21,
+          23,
+          14
+        ],
+        [
+          9,
+          13,
+          9
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        15093,
+        9641,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          173,
+          189,
+          115
+        ],
+        [
+          74,
+          107,
+          74
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#ADBD73",
+        "#4A6B4A",
+        "#000000"
+      ]
+    },
+    "MN_292": {
+      "species_id": "MN_292",
+      "name": "Bankmaw",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          18,
+          21,
+          12
+        ],
+        [
+          7,
+          10,
+          8
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        12978,
+        8519,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          148,
+          173,
+          99
+        ],
+        [
+          57,
+          82,
+          66
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#94AD63",
+        "#395242",
+        "#000000"
+      ]
+    }
+  },
+  "back_framing": "gen2-close-rear-portrait",
+  "style_reference": {
+    "origin": "authentic local Crystal sprites",
+    "boards": [
+      "target/minnesota-pokemon/gen2-reference/starters.png"
+    ]
+  },
+  "sprites": [
+    {
+      "id": "mn-291-mudnip-v1",
+      "species_id": "MN_291",
+      "view": "front",
+      "source": "sprites/mn-f132/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        692,
+        512
+      ],
+      "fit": [
+        38,
+        32
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        15093,
+        9641,
+        0
+      ],
+      "exterior_contour": "solid",
+      "interior_black_min_samples": 8,
+      "white_detail_min_samples": 4
+    },
+    {
+      "id": "mn-292-bankmaw-v1",
+      "species_id": "MN_292",
+      "view": "front",
+      "source": "sprites/mn-f132/front-back.imagegen-v1.png",
+      "crop": [
+        692,
+        0,
+        844,
+        512
+      ],
+      "fit": [
+        54,
+        43
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        12978,
+        8519,
+        0
+      ],
+      "exterior_contour": "solid",
+      "interior_black_min_samples": 8,
+      "white_detail_min_samples": 4
+    },
+    {
+      "id": "mn-291-mudnip-v1",
+      "species_id": "MN_291",
+      "view": "back",
+      "source": "sprites/mn-f132/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        512,
+        760,
+        512
+      ],
+      "fit": [
+        38,
+        40
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        15093,
+        9641,
+        0
+      ],
+      "exterior_contour": "solid",
+      "interior_black_min_samples": 8,
+      "white_detail_min_samples": 4
+    },
+    {
+      "id": "mn-292-bankmaw-v1",
+      "species_id": "MN_292",
+      "view": "back",
+      "source": "sprites/mn-f132/front-back.imagegen-v1.png",
+      "crop": [
+        760,
+        512,
+        776,
+        512
+      ],
+      "fit": [
+        46,
+        46
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        12978,
+        8519,
+        0
+      ],
+      "exterior_contour": "solid",
+      "interior_black_min_samples": 8,
+      "white_detail_min_samples": 4
+    }
+  ],
+  "visual_review": {
+    "status": "reviewed",
+    "outline_profile": "solid-exterior-v1",
+    "sheet_sha256": "9a6f575170005a0b15c07d75fbb5f1a3294661ef49b1ddc62e8b294b168bd625",
+    "review_note": "Inspected all four native views. Hatchling and adult retain low snapping-turtle silhouettes, broad hooked jaws, three shell ridges and long tails. Adult mouth and heavy neck remain distinct from the shell. Rear portraits show attached nape and upper shell rather than a miniature full body."
+  }
+}

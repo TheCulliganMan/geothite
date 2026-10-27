@@ -5,6 +5,7 @@
 
 pub mod frontpic_animation;
 pub mod hall_of_fame;
+mod map_catalog;
 mod music_catalog;
 mod outdoor_mods;
 mod runtime_presentation_text;
@@ -143,7 +144,8 @@ use crystal_core::state::{
 };
 use crystal_core::systems::battle_escape::{BattleEscapeAttempt, BattleEscapeRules};
 use crystal_core::systems::battle_items::{
-    BattleItemEffectPlan, BattleItemOutcome, PartyItemOutcome, active_battle_item_effect_plan,
+    BattleItemEffectPlan, BattleItemOutcome, ITEM_EFFECT_BEHAVIOR_FULL_RESTORE,
+    ITEM_EFFECT_BEHAVIOR_RESTORE_HP, PartyItemOutcome, active_battle_item_effect_plan,
     battle_pp_item_effect_plan, party_special_item_effect_plan, party_wide_item_effect_plan,
 };
 use crystal_core::systems::battle_rewards::{
@@ -354,7 +356,7 @@ pub struct CrystalRuntime {
     audio: RuntimeAudioCatalog,
     viewport: GameViewport,
     /// Immutable pack map catalogs shared by presentation snapshots. Runtime
-    /// snapshots clone only the active/overridden map instead of deep-cloning
+    /// snapshots clone maps with live block writes instead of deep-cloning
     /// every map, scene, event, object, and block table each movement frame.
     map_catalog: Vec<Arc<RuntimeMapCatalogSnapshot>>,
     catalog_cache: Arc<OnceLock<RuntimeStaticCatalogCache>>,
@@ -2018,6 +2020,8 @@ pub struct RuntimeItemCatalogSnapshot {
     pub vitamin_max_stat_exp: Option<u16>,
     pub rare_candy_level_gain: Option<u8>,
     pub party_special_effect: bool,
+    /// Whether the compiled effect restores HP on a selected party member.
+    pub party_hp_restore: bool,
     pub battle_stat_boost_stat: Option<String>,
     pub battle_stat_boost_stages: Option<u8>,
     pub battle_escape_mode: Option<String>,
@@ -2044,7 +2048,7 @@ pub struct RuntimeItemCatalogSnapshot {
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct RuntimeMoveCatalogSnapshot {
     pub move_id: String,
-    pub source_index: u8,
+    pub source_index: u16,
     pub name: String,
     pub move_type: String,
     pub power: u16,
@@ -2341,6 +2345,8 @@ pub struct RuntimeCompiledScriptStep {
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum RuntimeCompiledScriptBoundary {
+    /// The frontend must grant the gift and present its nickname/storage flow.
+    GiftPokemon,
     DayOfWeekPrompt,
     NameRaterPrompt,
     PhoneNumberPrompt,
@@ -3419,6 +3425,15 @@ impl RuntimeItemCatalogSnapshot {
             vitamin_max_stat_exp: item.vitamin_max_stat_exp,
             rare_candy_level_gain: item.rare_candy_level_gain,
             party_special_effect: party_special_item_effect_plan(item, evolutions).is_some(),
+            party_hp_restore: item.pp_restore_scope.is_none()
+                && item.pp_restore_points.is_none()
+                && item.pp_up_stages.is_none()
+                && active_battle_item_effect_plan(item).is_some_and(|plan| {
+                    matches!(
+                        plan.behavior_id.as_str(),
+                        ITEM_EFFECT_BEHAVIOR_RESTORE_HP | ITEM_EFFECT_BEHAVIOR_FULL_RESTORE
+                    )
+                }),
             battle_stat_boost_stat: item.battle_stat_boost_stat.clone(),
             battle_stat_boost_stages: item.battle_stat_boost_stages,
             battle_escape_mode: item.battle_escape_mode.clone(),

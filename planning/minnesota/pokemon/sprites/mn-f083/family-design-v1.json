@@ -1,0 +1,64 @@
+{
+  "id": "MN_F083",
+  "region": "duluth_smoked_fish",
+  "theme": "North Shore smoked lake fish becomes a brining-and-smoking creature with a coal-heart belly and kiln-rib fins.",
+  "members": [
+    {
+      "id": "MN_180",
+      "name": "Cinderfin",
+      "types": [
+        "FIRE"
+      ],
+      "stage": 1,
+      "evolves_to": "MN_181"
+    },
+    {
+      "id": "MN_181",
+      "name": "Brinebraze",
+      "types": [
+        "FIRE",
+        "DARK"
+      ],
+      "stage": 2,
+      "evolves_to": null
+    }
+  ],
+  "evolution_design": {
+    "regional_evidence": "Duluth-based Northern Waters Smokehaus describes its own smoked Lake Superior lake-trout practice and local smokehouse history. This is a first-person food-culture source, not an endorsement or claim that the dish originated there.",
+    "original_invention": "A fish-shaped cooking spirit grows its own broad smoker ribs and coal belly; no fish is shown burning or carrying a cooker. The dark typing expresses the creature hiding its coal-heart behind closed ribs.",
+    "body_growth": [
+      {
+        "species_id": "MN_180",
+        "body": "A compact fish-bodied ember with a broad curled tail, two thick cheek fins and one large pale salt-crust brow; a single dark belly opening contains its coal eye.",
+        "silhouette": "Compact sideways ember-fish, crescent tail and large salt brow."
+      },
+      {
+        "species_id": "MN_181",
+        "body": "The body becomes taller and deeper, supported by two thick fin-feet. Three broad hinged rib-plates curve over the belly like a smoke chamber, while a wide slotted tail acts as its bellows and the true face emerges above the chamber.",
+        "silhouette": "Upright deep-bodied fish spirit with solid rib chamber and a large fan-bellows tail; feet distinguish it from a swimming recolor."
+      }
+    ]
+  },
+  "silhouette_concept": "Compact sideways ember-fish, crescent tail and large salt brow. \u2192 Upright deep-bodied fish spirit with solid rib chamber and a large fan-bellows tail; feet distinguish it from a swimming recolor.",
+  "habitat": "Duluth harbor food stalls and inhabited shore-side cookfire areas.",
+  "proposed_routes": [
+    {
+      "id": "MN_R11",
+      "placement": "Southern rest district beside a future food NPC, outside the wild forest core.",
+      "status": "encounter proposal only; no map or story mutation"
+    }
+  ],
+  "sources": [
+    {
+      "title": "Northern Waters Smokehaus, About",
+      "url": "https://northernwaterssmokehaus.com/about/",
+      "supports": "First-person Duluth smokehouse history and Lake Superior smoked lake trout.",
+      "source_kind": "primary regional food producer account"
+    }
+  ],
+  "nonduplication": "Unlike ore-freighter boilerF060 or generic fire-fish: the family grows salt brow, hinged smoking ribs, fin-feet and bellows tail. No steel hull, funnel or conventional fish with flames pasted on.",
+  "classification": "ordinary",
+  "design_lock": "locked by root; first153identities fixed",
+  "sprite_constraints": "Native56x56 front full body facing left;48x48 close rear portrait facing upper-right. Four colors per species, individually planned after design lock. Large solid anatomical landmarks, stepped black exterior anchors, sparse internal marks; no gradients, particles or texture-dependent identity.",
+  "design_status": "root-reviewed-locked-for-art"
+}

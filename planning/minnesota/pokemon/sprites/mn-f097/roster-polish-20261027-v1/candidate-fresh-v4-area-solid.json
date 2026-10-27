@@ -1,0 +1,249 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F097",
+  "status": "fresh-paddlefish-art-native-proposal",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_211": {
+      "species_id": "MN_211",
+      "name": "Pinglet",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          29,
+          23,
+          9
+        ],
+        [
+          5,
+          14,
+          17
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        9981,
+        17861,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          239,
+          189,
+          74
+        ],
+        [
+          41,
+          115,
+          140
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#EFBD4A",
+        "#29738C",
+        "#000000"
+      ]
+    },
+    "MN_212": {
+      "species_id": "MN_212",
+      "name": "Paddarray",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          12,
+          25,
+          28
+        ],
+        [
+          11,
+          8,
+          21
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        29484,
+        21771,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          99,
+          206,
+          231
+        ],
+        [
+          90,
+          66,
+          173
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#63CEE7",
+        "#5A42AD",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f097/roster-polish-20261027-v1/prompt-fresh-swimming-line-v4.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "style_reference": {
+    "origin": "authentic local Crystal sprites",
+    "generator": "crates/crystal-assets/examples/minnesota_gen2_reference.rs",
+    "boards": [
+      "target/minnesota-pokemon/gen2-reference/starters.png",
+      "target/minnesota-pokemon/gen2-reference/bugs.png"
+    ]
+  },
+  "sprites": [
+    {
+      "id": "mn-211-pinglet-polish-v4",
+      "species_id": "MN_211",
+      "view": "front",
+      "source": "sprites/mn-f097/roster-polish-20261027-v1/front-back.fresh-swimming-v4.imagegen.png",
+      "crop": [
+        0,
+        0,
+        710,
+        520
+      ],
+      "fit": [
+        44,
+        42
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        9981,
+        17861,
+        0
+      ],
+      "interior_black_min_samples": 32,
+      "sampling": "area_vote",
+      "exterior_contour": "solid",
+      "white_detail_min_samples": 16
+    },
+    {
+      "id": "mn-211-pinglet-polish-v4",
+      "species_id": "MN_211",
+      "view": "back",
+      "source": "sprites/mn-f097/roster-polish-20261027-v1/front-back.fresh-swimming-v4.imagegen.png",
+      "crop": [
+        0,
+        520,
+        710,
+        504
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        9981,
+        17861,
+        0
+      ],
+      "interior_black_min_samples": 32,
+      "sampling": "area_vote",
+      "exterior_contour": "solid",
+      "white_detail_min_samples": 16
+    },
+    {
+      "id": "mn-212-paddarray-polish-v4",
+      "species_id": "MN_212",
+      "view": "front",
+      "source": "sprites/mn-f097/roster-polish-20261027-v1/front-back.fresh-swimming-v4.imagegen.png",
+      "crop": [
+        710,
+        0,
+        826,
+        520
+      ],
+      "fit": [
+        54,
+        52
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        29484,
+        21771,
+        0
+      ],
+      "interior_black_min_samples": 32,
+      "sampling": "area_vote",
+      "exterior_contour": "solid",
+      "white_detail_min_samples": 16
+    },
+    {
+      "id": "mn-212-paddarray-polish-v4",
+      "species_id": "MN_212",
+      "view": "back",
+      "source": "sprites/mn-f097/roster-polish-20261027-v1/front-back.fresh-swimming-v4.imagegen.png",
+      "crop": [
+        710,
+        520,
+        826,
+        504
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        29484,
+        21771,
+        0
+      ],
+      "interior_black_min_samples": 32,
+      "sampling": "area_vote",
+      "exterior_contour": "solid",
+      "white_detail_min_samples": 16
+    }
+  ],
+  "visual_review": {
+    "status": "awaiting-native-review",
+    "outline_profile": "solid-exterior-v1"
+  },
+  "source_sha256": "86df39b29b2b6e60eda6f8a9e2bff2a56bb6ad0630054bee48bf8f2542d2a562"
+}

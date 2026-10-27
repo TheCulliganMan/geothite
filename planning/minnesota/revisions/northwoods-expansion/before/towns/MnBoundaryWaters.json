@@ -1,0 +1,1036 @@
+{
+  "id": "MnBoundaryWaters",
+  "name": "BOUNDARY WATERS",
+  "dimensions_metatiles": [
+    32,
+    24
+  ],
+  "reference_anchor_percent": [
+    77,
+    16
+  ],
+  "role": "safari_basecamp_and_story_hub",
+  "tileset": "johto",
+  "composition": "Pine-wrapped free trail junction around a sheltered lake: protected public landing, rustic survey shelter, separate closed expedition check-in and a grassy portage rest grove.",
+  "ports": [
+    {
+      "route": "MN_R12",
+      "side": "E",
+      "gate_metatile": [
+        30,
+        12
+      ],
+      "landing_metatile": [
+        28,
+        12
+      ],
+      "native_connection": {
+        "target_map": "MnR12C00R01",
+        "direction": "east",
+        "offset_metatiles": 8,
+        "reciprocal_offset_metatiles": -8,
+        "checkpoint": "gunflint"
+      }
+    },
+    {
+      "route": "MN_R13",
+      "side": "S",
+      "gate_metatile": [
+        16,
+        22
+      ],
+      "landing_metatile": [
+        16,
+        20
+      ],
+      "native_connection": {
+        "target_map": "MnR13C00R00",
+        "direction": "south",
+        "offset_metatiles": 1,
+        "reciprocal_offset_metatiles": -1,
+        "checkpoint": "league"
+      }
+    },
+    {
+      "route": "MN_R20",
+      "side": "W",
+      "gate_metatile": [
+        1,
+        12
+      ],
+      "landing_metatile": [
+        3,
+        12
+      ],
+      "native_connection": {
+        "target_map": "MnR20C01R00",
+        "direction": "west",
+        "offset_metatiles": -6,
+        "reciprocal_offset_metatiles": 6,
+        "checkpoint": "voyageurs"
+      }
+    }
+  ],
+  "interiors": [
+    {
+      "id": "MnBoundaryWatersSurveyShelter",
+      "native_constant": "MN_BOUNDARY_WATERS_SURVEY_SHELTER",
+      "kind": "story",
+      "dimensions_metatiles": [
+        8,
+        6
+      ],
+      "template": "ElmsLab",
+      "tileset": "lab",
+      "border_block": 0,
+      "rows": [
+        "00 05 09 09 05 09 05 00",
+        "00 01 01 01 01 01 08 00",
+        "00 14 01 01 01 01 01 00",
+        "00 01 01 01 01 01 01 00",
+        "00 06 07 01 01 01 14 00",
+        "00 00 00 00 02 00 00 00"
+      ],
+      "arrival_core": [
+        8,
+        9
+      ],
+      "clear_arrival": [
+        8,
+        9
+      ],
+      "exits": [
+        [
+          8,
+          11
+        ],
+        [
+          9,
+          11
+        ]
+      ],
+      "return_trigger_core": [
+        8,
+        11
+      ],
+      "exit_collision": "WARP_CARPET_DOWN",
+      "residents": [
+        {
+          "id": "MN_SURVEY_CHIEF",
+          "object_identifier": "MN_SURVEY_CHIEF",
+          "script": "MN_SURVEY_CHIEF",
+          "object_type": "OBJECTTYPE_SCRIPT",
+          "sprite": "SPRITE_ROCKET",
+          "tile": [
+            9,
+            5
+          ],
+          "facing": "north",
+          "lines": [
+            "This receiver is",
+            "LODE property."
+          ],
+          "battle": "MN_LODE_CHIEF",
+          "requires": [
+            "BADGE_1",
+            "BADGE_2",
+            "BADGE_3",
+            "BADGE_4",
+            "BADGE_5",
+            "BADGE_6",
+            "BADGE_7",
+            "BADGE_8",
+            "EVENT_MN_LIGHTHOUSE_SIGNAL"
+          ],
+          "win_flag": "EVENT_MN_SURVEY_CHIEF_DEFEATED",
+          "party": [
+            {
+              "species": "MAGNETON",
+              "level": 44
+            },
+            {
+              "species": "WEEZING",
+              "level": 44
+            },
+            {
+              "species": "CROBAT",
+              "level": 46
+            }
+          ]
+        },
+        {
+          "id": "MN_BOUNDARY_SURVEY_ASSISTANT",
+          "object_identifier": "MN_BOUNDARY_SURVEY_ASSISTANT",
+          "script": "MN_BOUNDARY_SURVEY_ASSISTANT",
+          "object_type": "OBJECTTYPE_SCRIPT",
+          "sprite": "SPRITE_SCIENTIST",
+          "tile": [
+            3,
+            3
+          ],
+          "facing": "east",
+          "lines": [
+            "The receiver links",
+            "the shore stations",
+            "The chief blocks",
+            "its control panel."
+          ]
+        },
+        {
+          "id": "MN_BOUNDARY_SURVEY_MEDIC",
+          "object_identifier": "MN_BOUNDARY_SURVEY_MEDIC",
+          "script": "MN_BOUNDARY_SURVEY_MEDIC",
+          "object_type": "OBJECTTYPE_SCRIPT",
+          "sprite": "SPRITE_NURSE",
+          "tile": [
+            3,
+            7
+          ],
+          "facing": "east",
+          "lines": [
+            "Long portage?",
+            "I will treat your",
+            "team for free."
+          ],
+          "service": "heal_party"
+        }
+      ],
+      "signs": [
+        {
+          "id": "MN_BOUNDARY_SURVEY_RECEIVER",
+          "script": "MN_BOUNDARY_SURVEY_RECEIVER",
+          "tile": [
+            12,
+            3
+          ],
+          "lines": [
+            "SURVEY RECEIVER",
+            "The panel is dark."
+          ]
+        },
+        {
+          "id": "MN_BOUNDARY_SURVEY_ROUTE_MAP",
+          "script": "MN_BOUNDARY_SURVEY_ROUTE_MAP",
+          "tile": [
+            3,
+            0
+          ],
+          "lines": [
+            "TRAIL MAP",
+            "GUNFLINT: east",
+            "LEAGUE: south",
+            "VOYAGEURS: west"
+          ]
+        },
+        {
+          "id": "MN_BOUNDARY_SURVEY_SUPPLIES",
+          "script": "MN_BOUNDARY_SURVEY_SUPPLIES",
+          "tile": [
+            12,
+            8
+          ],
+          "lines": [
+            "FIELD SUPPLIES",
+            "Keep the aisle",
+            "clear for crews."
+          ]
+        }
+      ],
+      "receiver_contract": {
+        "id": "MN_BOUNDARY_SURVEY_RECEIVER",
+        "tile": [
+          12,
+          3
+        ],
+        "approach": [
+          12,
+          4
+        ],
+        "source_block": "08",
+        "source_metatile": [
+          6,
+          1
+        ],
+        "collision": "WALL",
+        "requires": [
+          "EVENT_MN_SURVEY_CHIEF_DEFEATED"
+        ],
+        "sets": [
+          "EVENT_MN_SURVEY_RESTORED"
+        ],
+        "scene": "MS12",
+        "implementation": "Pine-owned native binder; no flag is awarded by the terrain preview"
+      },
+      "passive_arrival": {
+        "index": 3,
+        "tile": [
+          8,
+          9
+        ]
+      }
+    }
+  ],
+  "walkable_destinations": [
+    "each route port landing without paid entry",
+    "survey shelter and Q07 story actor without paid entry",
+    "ranger check-in",
+    "protected public canoe dock",
+    "free early-return arrival"
+  ],
+  "door_contract": "Rustic native Johto2c/2d over2e/2f at meta21,8. Real DOOR43,19; passive FLOOR43,20. Exterior entry1/passive2 target room passive3 at8,9; active carpets8,11/9,11 return to exterior passive2. Source proposal checked separately from native publication.",
+  "safari_zone_file": "zones/boundary-waters-safari.json",
+  "compiled_tileset": "mn_boundary_safari",
+  "native_constant": "MN_BOUNDARY_WATERS",
+  "status": "Native town and shelter published; guarded regional walking overlay under production review; Safari capture expeditions closed",
+  "doors": [
+    {
+      "id": "MN_BOUNDARY_SURVEY_DOOR",
+      "tile": [
+        43,
+        19
+      ],
+      "collision": "DOOR",
+      "warp_index": 1,
+      "target": "MnBoundaryWatersSurveyShelter",
+      "target_warp": 3,
+      "arrival_tile": [
+        43,
+        20
+      ],
+      "return_tile": [
+        43,
+        20
+      ],
+      "return_warp_index": 2,
+      "interior_arrival": [
+        8,
+        9
+      ],
+      "interior_exits": [
+        [
+          8,
+          11
+        ],
+        [
+          9,
+          11
+        ]
+      ]
+    }
+  ],
+  "residents": [
+    {
+      "id": "MN_BOUNDARY_BORDER_RANGER",
+      "object_identifier": "MN_BOUNDARY_BORDER_RANGER",
+      "script": "MN_BOUNDARY_BORDER_RANGER",
+      "object_type": "OBJECTTYPE_SCRIPT",
+      "sprite": "SPRITE_OFFICER",
+      "tile": [
+        10,
+        27
+      ],
+      "facing": "east",
+      "lines": [
+        "VOYAGEURS is west.",
+        "The survey shelter",
+        "stands northeast.",
+        "This camp is free."
+      ]
+    },
+    {
+      "id": "MN_BOUNDARY_DOCKHAND",
+      "object_identifier": "MN_BOUNDARY_DOCKHAND",
+      "script": "MN_BOUNDARY_DOCKHAND",
+      "object_type": "OBJECTTYPE_SCRIPT",
+      "sprite": "SPRITE_FISHER",
+      "tile": [
+        20,
+        16
+      ],
+      "facing": "east",
+      "lines": [
+        "PUBLIC LANDING",
+        "Use Surf at the",
+        "north end. Keep",
+        "off the rails."
+      ]
+    },
+    {
+      "id": "MN_BOUNDARY_ADMISSION_RANGER",
+      "object_identifier": "MN_BOUNDARY_ADMISSION_RANGER",
+      "script": "MN_BOUNDARY_ADMISSION_RANGER",
+      "object_type": "OBJECTTYPE_SCRIPT",
+      "sprite": "SPRITE_OFFICER",
+      "tile": [
+        30,
+        9
+      ],
+      "facing": "east",
+      "lines": [
+        "EXPEDITIONS CLOSED",
+        "Safari permits are",
+        "not available yet.",
+        "No fee is charged."
+      ]
+    },
+    {
+      "id": "MN_BOUNDARY_PENDING_GATE_WEST",
+      "object_identifier": "MN_BOUNDARY_PENDING_GATE_WEST",
+      "script": "MN_BOUNDARY_PENDING_GATE_WEST",
+      "object_type": "OBJECTTYPE_SCRIPT",
+      "sprite": "SPRITE_OFFICER",
+      "tile": [
+        32,
+        6
+      ],
+      "facing": "south",
+      "lines": [
+        "EXPEDITIONS CLOSED",
+        "Safari permits are",
+        "not available yet.",
+        "No fee is charged."
+      ]
+    },
+    {
+      "id": "MN_BOUNDARY_PENDING_GATE_EAST",
+      "object_identifier": "MN_BOUNDARY_PENDING_GATE_EAST",
+      "script": "MN_BOUNDARY_PENDING_GATE_EAST",
+      "object_type": "OBJECTTYPE_SCRIPT",
+      "sprite": "SPRITE_OFFICER",
+      "tile": [
+        33,
+        6
+      ],
+      "facing": "south",
+      "lines": [
+        "EXPEDITIONS CLOSED",
+        "Safari permits are",
+        "not available yet.",
+        "No fee is charged."
+      ]
+    },
+    {
+      "id": "MN_BOUNDARY_PORTAGE_GUIDE",
+      "object_identifier": "MN_BOUNDARY_PORTAGE_GUIDE",
+      "script": "MN_BOUNDARY_PORTAGE_GUIDE",
+      "object_type": "OBJECTTYPE_SCRIPT",
+      "sprite": "SPRITE_POKEFAN_M",
+      "tile": [
+        46,
+        37
+      ],
+      "facing": "west",
+      "lines": [
+        "The shelter medic",
+        "treats your team.",
+        "GUNFLINT is north",
+        "then east of here."
+      ]
+    }
+  ],
+  "signs": [
+    {
+      "id": "MN_BOUNDARY_WEST_TRAILS",
+      "script": "MN_BOUNDARY_WEST_TRAILS",
+      "tile": [
+        8,
+        22
+      ],
+      "lines": [
+        "VOYAGEURS: west",
+        "GUNFLINT: east",
+        "LEAGUE: south"
+      ]
+    },
+    {
+      "id": "MN_BOUNDARY_EAST_TRAILS",
+      "script": "MN_BOUNDARY_EAST_TRAILS",
+      "tile": [
+        34,
+        26
+      ],
+      "lines": [
+        "PUBLIC DOCK: west",
+        "SURVEY: east",
+        "EXPEDITIONS: north"
+      ]
+    },
+    {
+      "id": "MN_BOUNDARY_SOUTH_TRAIL",
+      "script": "MN_BOUNDARY_SOUTH_TRAIL",
+      "tile": [
+        34,
+        40
+      ],
+      "lines": [
+        "LEAGUE APPROACH",
+        "Restore the survey",
+        "signal opens R13."
+      ]
+    },
+    {
+      "id": "MN_BOUNDARY_SURVEY_SIGN",
+      "script": "MN_BOUNDARY_SURVEY_SIGN",
+      "tile": [
+        42,
+        22
+      ],
+      "lines": [
+        "SURVEY SHELTER",
+        "Free team care.",
+        "Receiver station."
+      ]
+    },
+    {
+      "id": "MN_BOUNDARY_LANDING_SIGN",
+      "script": "MN_BOUNDARY_LANDING_SIGN",
+      "tile": [
+        24,
+        20
+      ],
+      "lines": [
+        "PUBLIC CANOE DOCK",
+        "Walk the boards.",
+        "Launch at the tip."
+      ]
+    },
+    {
+      "id": "MN_BOUNDARY_GATE_NOTICE",
+      "script": "MN_BOUNDARY_GATE_NOTICE",
+      "tile": [
+        28,
+        10
+      ],
+      "lines": [
+        "EXPEDITIONS CLOSED",
+        "No fee is charged.",
+        "The survey shelter",
+        "is open to all."
+      ]
+    },
+    {
+      "id": "MN_BOUNDARY_PORTAGE_BOARD",
+      "script": "MN_BOUNDARY_PORTAGE_BOARD",
+      "tile": [
+        46,
+        34
+      ],
+      "lines": [
+        "PORTAGE REST",
+        "Shelter medic: NW",
+        "LEAGUE: southwest"
+      ]
+    }
+  ],
+  "admission_contract": {
+    "status": "CLOSED_NO_FEE",
+    "admission_actor": "MN_BOUNDARY_ADMISSION_RANGER",
+    "physical_gate_actors": [
+      "MN_BOUNDARY_PENDING_GATE_WEST",
+      "MN_BOUNDARY_PENDING_GATE_EAST"
+    ],
+    "gate_tiles": [
+      [
+        32,
+        6
+      ],
+      [
+        33,
+        6
+      ]
+    ],
+    "free_approach": [
+      32,
+      8
+    ],
+    "early_return_safe_core": [
+      32,
+      10
+    ],
+    "pending_preserve_warp": {
+      "enabled": false,
+      "tile": [
+        32,
+        5
+      ],
+      "target": "MnBoundarySafariC00R01",
+      "arrival": [
+        15,
+        73
+      ],
+      "note": "Prospective preserve GLOBAL core anchor only; Root must resolve to native local15,25 and an actual safe arrival/session before activation."
+    },
+    "money_taken": 0,
+    "session_started": false
+  },
+  "public_dock": {
+    "id": "MN_BOUNDARY_PUBLIC_LANDING",
+    "north_rail_blocks": [
+      [
+        7,
+        7
+      ],
+      [
+        8,
+        7
+      ],
+      [
+        9,
+        7
+      ],
+      [
+        10,
+        7
+      ],
+      [
+        11,
+        7
+      ]
+    ],
+    "south_rail_blocks": [
+      [
+        7,
+        8
+      ],
+      [
+        8,
+        8
+      ],
+      [
+        9,
+        8
+      ],
+      [
+        10,
+        8
+      ],
+      [
+        11,
+        8
+      ]
+    ],
+    "closed_end_blocks": [
+      {
+        "position": [
+          6,
+          7
+        ],
+        "block": "44"
+      },
+      {
+        "position": [
+          6,
+          8
+        ],
+        "block": "48"
+      }
+    ],
+    "launch_tile": [
+      13,
+      14
+    ],
+    "water_target": [
+      13,
+      13
+    ],
+    "land_attachment": [
+      [
+        24,
+        15
+      ],
+      [
+        24,
+        16
+      ]
+    ],
+    "water_seam": null,
+    "mode": "Native Surf only; no canoe controller or preserve admission"
+  },
+  "story_contract": {
+    "Q07": {
+      "shelter": "MnBoundaryWatersSurveyShelter",
+      "chief_actor": "MN_SURVEY_CHIEF",
+      "battle": "MN_LODE_CHIEF",
+      "MS11_sets": "EVENT_MN_SURVEY_CHIEF_DEFEATED",
+      "MS12_sets": "EVENT_MN_SURVEY_RESTORED",
+      "free_access": true,
+      "paid_state_required": false
+    },
+    "SQ03": {
+      "scene": "MS17",
+      "arrival_core": [
+        6,
+        24
+      ],
+      "requires": [
+        "BADGE_1",
+        "BADGE_2",
+        "BADGE_3",
+        "BADGE_4",
+        "BADGE_5",
+        "BADGE_6",
+        "BADGE_7",
+        "BADGE_8",
+        "EVENT_MN_BORDER_REPORT",
+        "EVENT_MN_LIGHTHOUSE_SIGNAL"
+      ],
+      "reward_item": "PP_UP",
+      "quantity": 1,
+      "sets": "EVENT_MN_BORDER_CIRCUIT_REWARDED",
+      "status": "Preserved authoritative story contract; native arrival/reward transaction still Root-owned"
+    }
+  },
+  "viewpoints": [
+    {
+      "id": "FREE_THREE_WAY_JUNCTION",
+      "tile": [
+        32,
+        27
+      ]
+    },
+    {
+      "id": "PUBLIC_CANOE_DOCK",
+      "tile": [
+        19,
+        16
+      ]
+    },
+    {
+      "id": "SURVEY_SHELTER",
+      "tile": [
+        43,
+        22
+      ]
+    },
+    {
+      "id": "CLOSED_CHECK_IN",
+      "tile": [
+        32,
+        10
+      ]
+    },
+    {
+      "id": "PORTAGE_REST",
+      "tile": [
+        46,
+        38
+      ]
+    },
+    {
+      "id": "GUNFLINT_ARRIVAL",
+      "tile": [
+        56,
+        24
+      ]
+    },
+    {
+      "id": "LEAGUE_TRAIL",
+      "tile": [
+        32,
+        40
+      ]
+    },
+    {
+      "id": "WIDEST_SHELTER_YARD",
+      "tile": [
+        43,
+        22
+      ]
+    },
+    {
+      "id": "SURVEY_ROAD_JUNCTION",
+      "tile": [
+        44,
+        24
+      ]
+    }
+  ],
+  "regional_gate_contract": {
+    "id": "MN_BOUNDARY_LEAGUE_GATE",
+    "status": "Root-owned native story guard binding; source reserves physical anchors",
+    "requires": [
+      "BADGE_1",
+      "BADGE_2",
+      "BADGE_3",
+      "BADGE_4",
+      "BADGE_5",
+      "BADGE_6",
+      "BADGE_7",
+      "BADGE_8",
+      "EVENT_MN_LIGHTHOUSE_SIGNAL",
+      "EVENT_MN_SURVEY_RESTORED"
+    ],
+    "guard_tiles": [
+      [
+        32,
+        43
+      ],
+      [
+        33,
+        43
+      ]
+    ],
+    "guard_ids": [
+      "MN_BOUNDARY_LEAGUE_GUARD_WEST",
+      "MN_BOUNDARY_LEAGUE_GUARD_EAST"
+    ],
+    "free_town_landing": [
+      32,
+      40
+    ],
+    "fee": 0,
+    "ordinary_floor_seam": [
+      [
+        32,
+        47
+      ],
+      [
+        33,
+        47
+      ]
+    ],
+    "checkpoint": "league"
+  },
+  "regional_checkpoints": {
+    "implementation": "atomic Rust boundary_basecamp_connections overlay; separate from ordinary residents",
+    "status": "20 asset/core cases pass; connected production-controller acceptance pending",
+    "bare_town_actor_count": 6,
+    "connected_town_actor_count": 12,
+    "free_inward_care": true,
+    "capture_expeditions": "CLOSED_NO_FEE",
+    "checkpoints": [
+      {
+        "id": "gunflint",
+        "route": "MN_R12",
+        "native_target_map": "MnR12C00R01",
+        "direction": "east",
+        "offset_metatiles": 8,
+        "reciprocal_offset_metatiles": -8,
+        "requires": [
+          "BADGE_1",
+          "BADGE_2",
+          "BADGE_3",
+          "BADGE_4",
+          "BADGE_5",
+          "BADGE_6",
+          "BADGE_7",
+          "BADGE_8",
+          "EVENT_MN_LIGHTHOUSE_SIGNAL"
+        ],
+        "fee": 0,
+        "script_root": "MnBoundaryGunflintCheck",
+        "guards": [
+          {
+            "id": "MN_BOUNDARY_GUNFLINT_GUARD_NORTH",
+            "object_identifier": "MN_BOUNDARY_GUNFLINT_GUARD_NORTH",
+            "sprite": "SPRITE_OFFICER",
+            "tile": [
+              61,
+              24
+            ],
+            "facing": "west",
+            "event_flag": -1
+          },
+          {
+            "id": "MN_BOUNDARY_GUNFLINT_GUARD_SOUTH",
+            "object_identifier": "MN_BOUNDARY_GUNFLINT_GUARD_SOUTH",
+            "sprite": "SPRITE_OFFICER",
+            "tile": [
+              61,
+              25
+            ],
+            "facing": "west",
+            "event_flag": -1
+          }
+        ],
+        "inner_coord_tiles": [
+          [
+            60,
+            24
+          ],
+          [
+            60,
+            25
+          ]
+        ],
+        "outer_inward_coord_tiles": [
+          [
+            62,
+            24
+          ],
+          [
+            62,
+            25
+          ]
+        ],
+        "native_inward_movement": {
+          "command": "step",
+          "args": [
+            "LEFT"
+          ]
+        },
+        "outward_refusal_steps": 1,
+        "inbound_free_care_steps": 2,
+        "scene": "always_active",
+        "visibility": "temporary native appear/disappear; no saved permission grants",
+        "native_outward_facing": "RIGHT",
+        "outer_passage_policy": "Native ifequal OUTWARD skips the escort; inward and transverse arrivals receive two inward steps to free care"
+      },
+      {
+        "id": "league",
+        "route": "MN_R13",
+        "native_target_map": "MnR13C00R00",
+        "direction": "south",
+        "offset_metatiles": 1,
+        "reciprocal_offset_metatiles": -1,
+        "requires": [
+          "BADGE_1",
+          "BADGE_2",
+          "BADGE_3",
+          "BADGE_4",
+          "BADGE_5",
+          "BADGE_6",
+          "BADGE_7",
+          "BADGE_8",
+          "EVENT_MN_LIGHTHOUSE_SIGNAL",
+          "EVENT_MN_SURVEY_RESTORED"
+        ],
+        "fee": 0,
+        "script_root": "MnBoundaryLeagueCheck",
+        "guards": [
+          {
+            "id": "MN_BOUNDARY_LEAGUE_GUARD_WEST",
+            "object_identifier": "MN_BOUNDARY_LEAGUE_GUARD_WEST",
+            "sprite": "SPRITE_OFFICER",
+            "tile": [
+              32,
+              43
+            ],
+            "facing": "north",
+            "event_flag": -1
+          },
+          {
+            "id": "MN_BOUNDARY_LEAGUE_GUARD_EAST",
+            "object_identifier": "MN_BOUNDARY_LEAGUE_GUARD_EAST",
+            "sprite": "SPRITE_OFFICER",
+            "tile": [
+              33,
+              43
+            ],
+            "facing": "north",
+            "event_flag": -1
+          }
+        ],
+        "inner_coord_tiles": [
+          [
+            32,
+            42
+          ],
+          [
+            33,
+            42
+          ]
+        ],
+        "outer_inward_coord_tiles": [
+          [
+            32,
+            44
+          ],
+          [
+            33,
+            44
+          ]
+        ],
+        "native_inward_movement": {
+          "command": "step",
+          "args": [
+            "UP"
+          ]
+        },
+        "outward_refusal_steps": 1,
+        "inbound_free_care_steps": 2,
+        "scene": "always_active",
+        "visibility": "temporary native appear/disappear; no saved permission grants",
+        "native_outward_facing": "DOWN",
+        "outer_passage_policy": "Native ifequal OUTWARD skips the escort; inward and transverse arrivals receive two inward steps to free care"
+      },
+      {
+        "id": "voyageurs",
+        "route": "MN_R20",
+        "native_target_map": "MnR20C01R00",
+        "direction": "west",
+        "offset_metatiles": -6,
+        "reciprocal_offset_metatiles": 6,
+        "requires": [
+          "BADGE_1",
+          "BADGE_2",
+          "BADGE_3",
+          "BADGE_4",
+          "BADGE_5",
+          "BADGE_6",
+          "BADGE_7",
+          "BADGE_8",
+          "EVENT_MN_LIGHTHOUSE_SIGNAL"
+        ],
+        "fee": 0,
+        "script_root": "MnBoundaryVoyageursCheck",
+        "guards": [
+          {
+            "id": "MN_BOUNDARY_VOYAGEURS_GUARD_NORTH",
+            "object_identifier": "MN_BOUNDARY_VOYAGEURS_GUARD_NORTH",
+            "sprite": "SPRITE_OFFICER",
+            "tile": [
+              2,
+              24
+            ],
+            "facing": "east",
+            "event_flag": -1
+          },
+          {
+            "id": "MN_BOUNDARY_VOYAGEURS_GUARD_SOUTH",
+            "object_identifier": "MN_BOUNDARY_VOYAGEURS_GUARD_SOUTH",
+            "sprite": "SPRITE_OFFICER",
+            "tile": [
+              2,
+              25
+            ],
+            "facing": "east",
+            "event_flag": -1
+          }
+        ],
+        "inner_coord_tiles": [
+          [
+            3,
+            24
+          ],
+          [
+            3,
+            25
+          ]
+        ],
+        "outer_inward_coord_tiles": [
+          [
+            1,
+            24
+          ],
+          [
+            1,
+            25
+          ]
+        ],
+        "native_inward_movement": {
+          "command": "step",
+          "args": [
+            "RIGHT"
+          ]
+        },
+        "outward_refusal_steps": 1,
+        "inbound_free_care_steps": 2,
+        "scene": "always_active",
+        "visibility": "temporary native appear/disappear; no saved permission grants",
+        "native_outward_facing": "LEFT",
+        "outer_passage_policy": "Native ifequal OUTWARD skips the escort; inward and transverse arrivals receive two inward steps to free care"
+      }
+    ]
+  }
+}

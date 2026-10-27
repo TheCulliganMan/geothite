@@ -1,0 +1,337 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F053",
+  "status": "native-front-back-reviewed",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_110": {
+      "species_id": "MN_110",
+      "name": "Nibbin",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          27,
+          20,
+          11
+        ],
+        [
+          12,
+          8,
+          5
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        11931,
+        5388,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          222,
+          165,
+          90
+        ],
+        [
+          99,
+          66,
+          41
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#DEA55A",
+        "#634229",
+        "#000000"
+      ]
+    },
+    "MN_111": {
+      "species_id": "MN_111",
+      "name": "Cacheek",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          22,
+          17,
+          9
+        ],
+        [
+          7,
+          7,
+          8
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        9782,
+        8423,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          181,
+          140,
+          74
+        ],
+        [
+          57,
+          57,
+          66
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#B58C4A",
+        "#393942",
+        "#000000"
+      ]
+    },
+    "MN_112": {
+      "species_id": "MN_112",
+      "name": "Furrowbank",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          23,
+          18,
+          10
+        ],
+        [
+          8,
+          6,
+          5
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        10839,
+        5320,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          189,
+          148,
+          82
+        ],
+        [
+          66,
+          49,
+          41
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#BD9452",
+        "#423129",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f053/prompt-v1.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "style_reference": {
+    "origin": "authentic local Crystal sprites",
+    "boards": [
+      "target/minnesota-pokemon/gen2-reference/starters.png",
+      "target/minnesota-pokemon/gen2-reference/bugs.png"
+    ]
+  },
+  "sprites": [
+    {
+      "id": "mn-110-nibbin-v1",
+      "species_id": "MN_110",
+      "view": "front",
+      "source": "sprites/mn-f053/mn-110-112.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        480,
+        512
+      ],
+      "fit": [
+        36,
+        36
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        11931,
+        5388,
+        0
+      ]
+    },
+    {
+      "id": "mn-110-nibbin-v1",
+      "species_id": "MN_110",
+      "view": "back",
+      "source": "sprites/mn-f053/mn-110-112.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        512,
+        480,
+        512
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        11931,
+        5388,
+        0
+      ]
+    },
+    {
+      "id": "mn-111-cacheek-v1",
+      "species_id": "MN_111",
+      "view": "front",
+      "source": "sprites/mn-f053/mn-110-112.front-back.imagegen-v1.png",
+      "crop": [
+        480,
+        0,
+        500,
+        512
+      ],
+      "fit": [
+        44,
+        44
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        9782,
+        8423,
+        0
+      ]
+    },
+    {
+      "id": "mn-111-cacheek-v1",
+      "species_id": "MN_111",
+      "view": "back",
+      "source": "sprites/mn-f053/mn-110-112.front-back.imagegen-v1.png",
+      "crop": [
+        480,
+        512,
+        500,
+        512
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        9782,
+        8423,
+        0
+      ]
+    },
+    {
+      "id": "mn-112-furrowbank-v1",
+      "species_id": "MN_112",
+      "view": "front",
+      "source": "sprites/mn-f053/mn-110-112.front-back.imagegen-v1.png",
+      "crop": [
+        980,
+        0,
+        556,
+        512
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        10839,
+        5320,
+        0
+      ]
+    },
+    {
+      "id": "mn-112-furrowbank-v1",
+      "species_id": "MN_112",
+      "view": "back",
+      "source": "sprites/mn-f053/mn-110-112.front-back.imagegen-v1.png",
+      "crop": [
+        980,
+        512,
+        556,
+        512
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        10839,
+        5320,
+        0
+      ]
+    }
+  ],
+  "visual_review": {
+    "status": "reviewed",
+    "notes": "Final source-contour-v1 board visually inspected: cheek collector grows masked seed-vault burglar then broad arch-armored burrow beast. Native white cheek/claw patches and dark vault plates remain readable; color interiors and exterior stepped contours survive without heavy black flooding. Large rear shoulders show armor and cheek chambers, lower bodies cropped. No neighbor crop fragments observed.",
+    "sheet_sha256": "96eb978696015796c7c9340e331a72d7ac0aa16160c9019e735bfb79eda62091",
+    "outline_profile": "source-contour-v1"
+  }
+}

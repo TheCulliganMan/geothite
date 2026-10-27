@@ -1,0 +1,16 @@
+{
+  "prompt": "sprites/mosquito-line/mosquitan-back-prompt-v4.txt",
+  "output": "sprites/mosquito-line/mn-153-mosquitan.back.imagegen-v4.png",
+  "references": [
+    {
+      "path": "planning/minnesota/pokemon/sprites/mosquito-line/mn-153-mosquitan.back.imagegen-v3.png",
+      "role": "previous rear candidate, pixel readability edit target",
+      "sha256": "70fb87636df03a3effb0105405f723e62d63b77a862fd42fc2e2fa0f45a9cd1d"
+    },
+    {
+      "path": "target/minnesota-pokemon/native/MN_F072/mn-153-mosquitan-v2.front.review.png",
+      "role": "authoritative native front anatomy and individual palette",
+      "sha256": "e8b883ec93bc7e72a3909d1f481c5638206633ac18de622348222b2eafea7400"
+    }
+  ]
+}

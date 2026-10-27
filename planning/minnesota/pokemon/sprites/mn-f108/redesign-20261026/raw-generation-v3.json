@@ -1,0 +1,11 @@
+{
+  "original_tool_path": "/Users/ryanculligan/.codex/generated_images/01a179c0-286e-73f1-857b-6a9fe4430fc1/exec-df87d4aa-4f82-4ea0-8642-9f42b8c0847c.png",
+  "copy": "sprites/mn-f108/redesign-20261026/mirradian.front-back.imagegen-v3.png",
+  "sha256": "81e792b717f5bbdd2da922d63ebb361ef56326bd6d106f58db3c98e0769cdc07",
+  "prompt_file": "sprites/mn-f108/redesign-20261026/prompt-v3.txt",
+  "reference_mapping": "sprites/mn-f108/redesign-20261026/reference-mapping-v3.json",
+  "size": [
+    1165,
+    1350
+  ]
+}

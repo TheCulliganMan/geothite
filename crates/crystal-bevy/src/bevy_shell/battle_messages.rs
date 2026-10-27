@@ -3299,7 +3299,7 @@ fn use_visible_repel(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
     if snapshot.progression.repel_steps_remaining > 0 {
         runtime_shell.field_notice = Some(visible_asm_text(
             &snapshot,
-            "RepelUsedEarlierIsStillInEffectText",
+            "_RepelUsedEarlierIsStillInEffectText",
         )?);
         mark_runtime_snapshot_dirty(runtime_shell);
         set_shell_action_status(runtime_shell, "REPEL STILL IN EFFECT");
@@ -3712,6 +3712,9 @@ fn use_visible_surf(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
 }
 
 fn execute_visible_contextual_field_move(runtime_shell: &mut BevyRuntimeShell) -> Result<bool> {
+    if runtime_shell.visible_waterfall_animation.is_some() {
+        return Ok(false);
+    }
     if !visible_field_shortcut_allowed(runtime_shell)? {
         return Ok(false);
     }

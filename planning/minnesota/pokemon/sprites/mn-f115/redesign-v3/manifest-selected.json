@@ -1,0 +1,129 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F115",
+  "status": "proposal-native-reviewed",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_249": {
+      "species_id": "MN_249",
+      "name": "Frontagal",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          29,
+          25,
+          12
+        ],
+        [
+          5,
+          9,
+          17
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        13117,
+        17701,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          239,
+          206,
+          99
+        ],
+        [
+          41,
+          74,
+          140
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#EFCE63",
+        "#294A8C",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f115/redesign-v3/prompt-v1.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "sprites": [
+    {
+      "id": "mn-249-frontagal-v3",
+      "species_id": "MN_249",
+      "view": "front",
+      "source": "sprites/mn-f115/redesign-v3/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        1254,
+        680
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        13117,
+        17701,
+        0
+      ],
+      "white_detail_min_samples": 4,
+      "interior_black_min_samples": 16,
+      "exterior_contour": "solid"
+    },
+    {
+      "id": "mn-249-frontagal-v3",
+      "species_id": "MN_249",
+      "view": "back",
+      "source": "sprites/mn-f115/redesign-v3/front-back.imagegen-v1.png",
+      "crop": [
+        350,
+        700,
+        740,
+        554
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        13117,
+        17701,
+        0
+      ],
+      "white_detail_min_samples": 4,
+      "interior_black_min_samples": 16,
+      "exterior_contour": "solid"
+    }
+  ],
+  "visual_review": {
+    "status": "reviewed",
+    "outline_profile": "solid-exterior-v1",
+    "sheet_sha256": "8a8e4a4470e87e94bcdda04e6b4c6d99758fef4ecda69f7cd45382fd3ca070c5",
+    "notes": "The new gold-lit horizon roof is a continuous shallow wedge with two long shelf wings, a clearly sheltered expressive face and exactly three thick descending vent limbs. No head, beak, feathers or animal torso. Solid maintains the black wing and vent contours while preserving the two larger white eye clusters. Close rear enlarges the central pressure ridge and one visible eye; outer wing tips and lower limbs are deliberately cropped. This review covers only the newly rendered species; root must regenerate the full family review after merging.",
+    "reviewer": "roster_cut_review"
+  }
+}

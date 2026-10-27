@@ -1,0 +1,15 @@
+{
+  "generation": "new original artwork",
+  "input_images": [],
+  "text_style_reference_boards": [
+    "target/minnesota-pokemon/gen2-reference/starters.png",
+    "target/minnesota-pokemon/gen2-reference/bugs.png"
+  ],
+  "regional_sources": [
+    {
+      "url": "https://files.dnr.state.mn.us/mcvmagazine/young_naturalists/young-naturalists-article/wild_engineers/wild_engineers.pdf",
+      "institution": "Minnesota DNR Young Naturalists",
+      "supports": "Explains caddisfly larvae using silk to join stone/plant pieces into protective cases. Mosaic-powered wings and illusions are fiction."
+    }
+  ]
+}

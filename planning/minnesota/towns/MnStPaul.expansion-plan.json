@@ -1,0 +1,1301 @@
+{
+  "status": "SOURCE_ONLY_SCALE_AND_RELOCATION_PROPOSAL; requires full-city collision/visual iteration",
+  "id": "MnStPaulExpanded",
+  "baseline_pack": "content-packs/minnesota-northstar-seep-shelter-review.crystalpack",
+  "baseline_pack_sha256": "7e5f65b935b1f74766c810ee72f444ad60a7e71e096b5dec10c46f516595344a",
+  "baseline_map_count": 541,
+  "old_extent_metatiles": [
+    32,
+    24
+  ],
+  "proposed_extent_metatiles": [
+    96,
+    72
+  ],
+  "proposed_core_extent": [
+    192,
+    144
+  ],
+  "native_whole_pixels": [
+    3072,
+    2304
+  ],
+  "footprint_multiplier": 9,
+  "identity_recommendation": "Retain originalMnStPaul/MN_ST_PAUL/group76map1 as one96x72map. Every old room target constant/warp index, including completeUnionDepot room, remains exact. Relocate only exterior coordinates and runtime spawn271;Root owns native dimensions/connection offset27.",
+  "native_city_sha256": "2ce92ac1ece81bc9801ab48468221fd1fc9bced9bd666bc7774164e6eb66f675",
+  "native_rooms": {
+    "MnStPaulPokecenter1F": {
+      "native_module_sha256": "a2e020789152ff94e25e89a5c50eb6130fd31fb3619a6deb73dd47d1b9a4240b",
+      "extent": [
+        5,
+        4
+      ],
+      "typed_program_counts": {
+        "scripts": 9,
+        "script_item_grants": 0,
+        "script_item_checks": 0,
+        "script_item_takes": 0,
+        "script_economy_commands": 0,
+        "script_flag_commands": 0,
+        "script_scene_commands": 0,
+        "script_audio_commands": 0,
+        "script_block_changes": 0,
+        "script_object_commands": 1,
+        "script_movements": 0,
+        "script_map_commands": 0,
+        "script_text_commands": 9,
+        "script_text_bodies": 4,
+        "script_menu_definitions": 0,
+        "script_vertical_menus": 0,
+        "script_elevators": 0,
+        "script_variable_commands": 0,
+        "script_control_commands": 2,
+        "script_field_pickups": 0,
+        "script_shop_commands": 0,
+        "script_phone_commands": 0,
+        "script_runtime_commands": 3,
+        "script_swarm_commands": 0
+      }
+    },
+    "MnStPaulMart": {
+      "native_module_sha256": "d91d3dfc39877a602c52086f39efcc8758002e6246d6529293642db892c220f4",
+      "extent": [
+        6,
+        4
+      ],
+      "typed_program_counts": {
+        "scripts": 5,
+        "script_item_grants": 0,
+        "script_item_checks": 0,
+        "script_item_takes": 0,
+        "script_economy_commands": 0,
+        "script_flag_commands": 0,
+        "script_scene_commands": 0,
+        "script_audio_commands": 0,
+        "script_block_changes": 0,
+        "script_object_commands": 1,
+        "script_movements": 0,
+        "script_map_commands": 0,
+        "script_text_commands": 4,
+        "script_text_bodies": 2,
+        "script_menu_definitions": 0,
+        "script_vertical_menus": 0,
+        "script_elevators": 0,
+        "script_variable_commands": 0,
+        "script_control_commands": 1,
+        "script_field_pickups": 0,
+        "script_shop_commands": 1,
+        "script_phone_commands": 0,
+        "script_runtime_commands": 0,
+        "script_swarm_commands": 0
+      }
+    },
+    "MnStPaulCapitolHall": {
+      "native_module_sha256": "0ee96c5fcbd187295620278701677622225a4c29a451352943de2e27772a73de",
+      "extent": [
+        8,
+        4
+      ],
+      "typed_program_counts": {
+        "scripts": 4,
+        "script_item_grants": 0,
+        "script_item_checks": 0,
+        "script_item_takes": 0,
+        "script_economy_commands": 0,
+        "script_flag_commands": 0,
+        "script_scene_commands": 0,
+        "script_audio_commands": 0,
+        "script_block_changes": 0,
+        "script_object_commands": 0,
+        "script_movements": 0,
+        "script_map_commands": 0,
+        "script_text_commands": 2,
+        "script_text_bodies": 2,
+        "script_menu_definitions": 0,
+        "script_vertical_menus": 0,
+        "script_elevators": 0,
+        "script_variable_commands": 0,
+        "script_control_commands": 0,
+        "script_field_pickups": 0,
+        "script_shop_commands": 0,
+        "script_phone_commands": 0,
+        "script_runtime_commands": 0,
+        "script_swarm_commands": 0
+      }
+    },
+    "MnStPaulGym": {
+      "native_module_sha256": "ff6627b8aceefe4f016716aa7e245e19977a7c1bef4865f868409fbc60f6a8c6",
+      "extent": [
+        7,
+        10
+      ],
+      "typed_program_counts": {
+        "scripts": 29,
+        "script_item_grants": 1,
+        "script_item_checks": 0,
+        "script_item_takes": 0,
+        "script_economy_commands": 0,
+        "script_flag_commands": 15,
+        "script_scene_commands": 0,
+        "script_audio_commands": 0,
+        "script_block_changes": 2,
+        "script_object_commands": 3,
+        "script_movements": 0,
+        "script_map_commands": 3,
+        "script_text_commands": 22,
+        "script_text_bodies": 16,
+        "script_menu_definitions": 0,
+        "script_vertical_menus": 0,
+        "script_elevators": 0,
+        "script_variable_commands": 0,
+        "script_control_commands": 20,
+        "script_field_pickups": 0,
+        "script_shop_commands": 0,
+        "script_phone_commands": 0,
+        "script_runtime_commands": 6,
+        "script_swarm_commands": 0
+      }
+    },
+    "MnStPaulUnionDepot": {
+      "native_module_sha256": "c9f1d9d4658ab6ca465e6ad2dc4ee8d41526b560e01bd46806dce3d055cb66ff",
+      "extent": [
+        16,
+        12
+      ],
+      "typed_program_counts": {
+        "scripts": 27,
+        "script_item_grants": 0,
+        "script_item_checks": 0,
+        "script_item_takes": 0,
+        "script_economy_commands": 0,
+        "script_flag_commands": 7,
+        "script_scene_commands": 0,
+        "script_audio_commands": 0,
+        "script_block_changes": 0,
+        "script_object_commands": 1,
+        "script_movements": 0,
+        "script_map_commands": 1,
+        "script_text_commands": 23,
+        "script_text_bodies": 15,
+        "script_menu_definitions": 0,
+        "script_vertical_menus": 0,
+        "script_elevators": 0,
+        "script_variable_commands": 0,
+        "script_control_commands": 8,
+        "script_field_pickups": 0,
+        "script_shop_commands": 0,
+        "script_phone_commands": 0,
+        "script_runtime_commands": 2,
+        "script_swarm_commands": 0
+      }
+    }
+  },
+  "ports": [
+    {
+      "id": "R04_WEST",
+      "old_gate_metatile": [
+        1,
+        12
+      ],
+      "new_gate_metatile": [
+        1,
+        36
+      ],
+      "old_landing_core": [
+        6,
+        24
+      ],
+      "new_landing": {
+        "global_core": [
+          6,
+          72
+        ],
+        "native_map": "MnStPaul",
+        "native_core": [
+          6,
+          72
+        ]
+      },
+      "native_connection_before": [
+        {
+          "direction": "west",
+          "target_map": "MnR04C00R00",
+          "offset": 3
+        }
+      ],
+      "new_connection": "Root sets whole-city west connection offset27; R04y18/19 \u2194 cityy72/73. No playable expansion connection claimed."
+    },
+    {
+      "id": "FAIR_NORTH_ANNEX",
+      "old_edge_core": [
+        [
+          16,
+          0
+        ],
+        [
+          17,
+          0
+        ]
+      ],
+      "new_edge_core": [
+        [
+          48,
+          0
+        ],
+        [
+          49,
+          0
+        ]
+      ],
+      "old_guard_core": [
+        [
+          16,
+          2
+        ],
+        [
+          17,
+          2
+        ]
+      ],
+      "new_guard_core": [
+        [
+          48,
+          2
+        ],
+        [
+          49,
+          2
+        ]
+      ],
+      "closed": "Northern unbound annex remains closed. New public fair complex is south of it and accessible fromcity. No gate bypass/entry fee/quest added."
+    }
+  ],
+  "doors": [
+    {
+      "id": "MN_ST_PAUL_CLINIC_DOOR",
+      "original_source_record": {
+        "id": "MN_ST_PAUL_CLINIC_DOOR",
+        "tile": [
+          7,
+          15
+        ],
+        "arrival_tile": [
+          7,
+          16
+        ],
+        "return_tile": [
+          7,
+          16
+        ],
+        "warp_index": 3,
+        "return_warp_index": 4,
+        "target": "MnStPaulPokecenter1F",
+        "target_warp": 3,
+        "state": "Explicit proposed native ordering; production lowering/roundtrip proof pending",
+        "target_constant": "MN_ST_PAUL_POKECENTER_1F"
+      },
+      "native_indexed_preimages": [
+        {
+          "index": 3,
+          "x": 7,
+          "y": 15,
+          "target_map_constant": "MN_ST_PAUL_POKECENTER_1F",
+          "target_map": "MN_ST_PAUL_POKECENTER_1F",
+          "target_warp_id": 3
+        },
+        {
+          "index": 4,
+          "x": 7,
+          "y": 16,
+          "target_map_constant": "MN_ST_PAUL",
+          "target_map": "MN_ST_PAUL",
+          "target_warp_id": 4
+        }
+      ],
+      "new_active": {
+        "global_core": [
+          39,
+          57
+        ],
+        "native_map": "MnStPaul",
+        "native_core": [
+          39,
+          57
+        ]
+      },
+      "new_passive": {
+        "global_core": [
+          39,
+          58
+        ],
+        "native_map": "MnStPaul",
+        "native_core": [
+          39,
+          58
+        ]
+      },
+      "preserve_indices": [
+        3,
+        4
+      ],
+      "target_room_and_target_warp_unchanged": [
+        "MnStPaulPokecenter1F",
+        3
+      ]
+    },
+    {
+      "id": "MN_ST_PAUL_MART_DOOR",
+      "original_source_record": {
+        "id": "MN_ST_PAUL_MART_DOOR",
+        "tile": [
+          23,
+          15
+        ],
+        "arrival_tile": [
+          23,
+          16
+        ],
+        "return_tile": [
+          23,
+          16
+        ],
+        "warp_index": 5,
+        "return_warp_index": 6,
+        "target": "MnStPaulMart",
+        "target_warp": 3,
+        "state": "Explicit proposed native ordering; production lowering/roundtrip proof pending",
+        "target_constant": "MN_ST_PAUL_MART"
+      },
+      "native_indexed_preimages": [
+        {
+          "index": 5,
+          "x": 23,
+          "y": 15,
+          "target_map_constant": "MN_ST_PAUL_MART",
+          "target_map": "MN_ST_PAUL_MART",
+          "target_warp_id": 3
+        },
+        {
+          "index": 6,
+          "x": 23,
+          "y": 16,
+          "target_map_constant": "MN_ST_PAUL",
+          "target_map": "MN_ST_PAUL",
+          "target_warp_id": 6
+        }
+      ],
+      "new_active": {
+        "global_core": [
+          71,
+          65
+        ],
+        "native_map": "MnStPaul",
+        "native_core": [
+          71,
+          65
+        ]
+      },
+      "new_passive": {
+        "global_core": [
+          71,
+          66
+        ],
+        "native_map": "MnStPaul",
+        "native_core": [
+          71,
+          66
+        ]
+      },
+      "preserve_indices": [
+        5,
+        6
+      ],
+      "target_room_and_target_warp_unchanged": [
+        "MnStPaulMart",
+        3
+      ]
+    },
+    {
+      "id": "MN_ST_PAUL_CAPITOL_DOOR",
+      "original_source_record": {
+        "id": "MN_ST_PAUL_CAPITOL_DOOR",
+        "tile": [
+          34,
+          9
+        ],
+        "arrival_tile": [
+          34,
+          10
+        ],
+        "return_tile": [
+          34,
+          10
+        ],
+        "warp_index": 7,
+        "return_warp_index": 8,
+        "target": "MnStPaulCapitolHall",
+        "target_warp": 3,
+        "state": "Explicit proposed native ordering; production lowering/roundtrip proof pending",
+        "target_constant": "MN_ST_PAUL_CAPITOL_HALL"
+      },
+      "native_indexed_preimages": [
+        {
+          "index": 7,
+          "x": 34,
+          "y": 9,
+          "target_map_constant": "MN_ST_PAUL_CAPITOL_HALL",
+          "target_map": "MN_ST_PAUL_CAPITOL_HALL",
+          "target_warp_id": 3
+        },
+        {
+          "index": 8,
+          "x": 34,
+          "y": 10,
+          "target_map_constant": "MN_ST_PAUL",
+          "target_map": "MN_ST_PAUL",
+          "target_warp_id": 8
+        }
+      ],
+      "new_active": {
+        "global_core": [
+          98,
+          29
+        ],
+        "native_map": "MnStPaul",
+        "native_core": [
+          98,
+          29
+        ]
+      },
+      "new_passive": {
+        "global_core": [
+          98,
+          30
+        ],
+        "native_map": "MnStPaul",
+        "native_core": [
+          98,
+          30
+        ]
+      },
+      "preserve_indices": [
+        7,
+        8
+      ],
+      "target_room_and_target_warp_unchanged": [
+        "MnStPaulCapitolHall",
+        3
+      ]
+    },
+    {
+      "id": "MN_ST_PAUL_GYM_DOOR",
+      "original_source_record": {
+        "id": "MN_ST_PAUL_GYM_DOOR",
+        "tile": [
+          54,
+          15
+        ],
+        "arrival_tile": [
+          54,
+          16
+        ],
+        "return_tile": [
+          54,
+          16
+        ],
+        "warp_index": 9,
+        "return_warp_index": 10,
+        "target": "MnStPaulGym",
+        "target_warp": 3,
+        "state": "Explicit proposed native ordering; production lowering/roundtrip proof pending",
+        "target_constant": "MN_ST_PAUL_GYM"
+      },
+      "native_indexed_preimages": [
+        {
+          "index": 9,
+          "x": 54,
+          "y": 15,
+          "target_map_constant": "MN_ST_PAUL_GYM",
+          "target_map": "MN_ST_PAUL_GYM",
+          "target_warp_id": 3
+        },
+        {
+          "index": 10,
+          "x": 54,
+          "y": 16,
+          "target_map_constant": "MN_ST_PAUL",
+          "target_map": "MN_ST_PAUL",
+          "target_warp_id": 10
+        }
+      ],
+      "new_active": {
+        "global_core": [
+          150,
+          59
+        ],
+        "native_map": "MnStPaul",
+        "native_core": [
+          150,
+          59
+        ]
+      },
+      "new_passive": {
+        "global_core": [
+          150,
+          60
+        ],
+        "native_map": "MnStPaul",
+        "native_core": [
+          150,
+          60
+        ]
+      },
+      "preserve_indices": [
+        9,
+        10
+      ],
+      "target_room_and_target_warp_unchanged": [
+        "MnStPaulGym",
+        3
+      ]
+    },
+    {
+      "id": "MN_ST_PAUL_DEPOT_DOOR",
+      "original_source_record": {
+        "id": "MN_ST_PAUL_DEPOT_DOOR",
+        "tile": [
+          44,
+          37
+        ],
+        "arrival_tile": [
+          44,
+          38
+        ],
+        "return_tile": [
+          44,
+          38
+        ],
+        "warp_index": 1,
+        "return_warp_index": 2,
+        "target": "MnStPaulUnionDepot",
+        "target_warp": 5,
+        "state": "Explicit proposed native ordering; production lowering/roundtrip proof pending",
+        "target_constant": "MN_ST_PAUL_UNION_DEPOT"
+      },
+      "native_indexed_preimages": [
+        {
+          "index": 1,
+          "x": 44,
+          "y": 37,
+          "target_map_constant": "MN_ST_PAUL_UNION_DEPOT",
+          "target_map": "MN_ST_PAUL_UNION_DEPOT",
+          "target_warp_id": 5
+        },
+        {
+          "index": 2,
+          "x": 44,
+          "y": 38,
+          "target_map_constant": "MN_ST_PAUL",
+          "target_map": "MN_ST_PAUL",
+          "target_warp_id": 2
+        }
+      ],
+      "new_active": {
+        "global_core": [
+          140,
+          105
+        ],
+        "native_map": "MnStPaul",
+        "native_core": [
+          140,
+          105
+        ]
+      },
+      "new_passive": {
+        "global_core": [
+          140,
+          106
+        ],
+        "native_map": "MnStPaul",
+        "native_core": [
+          140,
+          106
+        ]
+      },
+      "preserve_indices": [
+        1,
+        2
+      ],
+      "target_room_and_target_warp_unchanged": [
+        "MnStPaulUnionDepot",
+        5
+      ]
+    }
+  ],
+  "native_objects": [
+    {
+      "native_object_index_zero_based": 0,
+      "id": "MN_ST_PAUL_CIVIC_GUIDE",
+      "native_record_sha256": "1dc2ee991bf1cbcbb04b56bd18c3ba70984917099e7b0545dc59b5b012958e5d",
+      "old_core": [
+        37,
+        14
+      ],
+      "new": {
+        "global_core": [
+          101,
+          34
+        ],
+        "native_map": "MnStPaul",
+        "native_core": [
+          101,
+          34
+        ]
+      },
+      "script_id_unchanged": "MN_ST_PAUL_CIVIC_GUIDE",
+      "source_lines_before": [
+        "CAPITOL HALL.",
+        "The bluff road",
+        "runs to the depot."
+      ]
+    },
+    {
+      "native_object_index_zero_based": 1,
+      "id": "MN_ST_PAUL_FAIR_STEWARD",
+      "native_record_sha256": "c6d420b3d68d72b31d433c5ec8b1a9c344bf4316d446db3e742ec8619697eea8",
+      "old_core": [
+        18,
+        7
+      ],
+      "new": {
+        "global_core": [
+          50,
+          7
+        ],
+        "native_map": "MnStPaul",
+        "native_core": [
+          50,
+          7
+        ]
+      },
+      "script_id_unchanged": "MN_ST_PAUL_FAIR_STEWARD",
+      "source_lines_before": [
+        "The fairgrounds",
+        "road is north.",
+        "The grounds are",
+        "still being built."
+      ],
+      "proposed_truthful_wayfinding_text": {
+        "old_status_conflict": "Old steward says grounds still built; active public fair now needs truthful wayfinding.",
+        "new_lines": [
+          "The public fair",
+          "is down this road.",
+          "North annex shut."
+        ],
+        "authorization": "Needs same bounded fair-wayfinding exception; all IDs/flags and ordinary dialogue command structure preserved."
+      }
+    },
+    {
+      "native_object_index_zero_based": 2,
+      "id": "MN_ST_PAUL_GARDENER",
+      "native_record_sha256": "85d195d7d0c083706082bf8b7dd801143ea6cdcf13256c44b31d3d5657f3f7b5",
+      "old_core": [
+        10,
+        19
+      ],
+      "new": {
+        "global_core": [
+          42,
+          61
+        ],
+        "native_map": "MnStPaul",
+        "native_core": [
+          42,
+          61
+        ]
+      },
+      "script_id_unchanged": "MN_ST_PAUL_GARDENER",
+      "source_lines_before": [
+        "A quiet garden",
+        "beside the clinic."
+      ]
+    },
+    {
+      "native_object_index_zero_based": 3,
+      "id": "MN_ST_PAUL_DEPOT_PASSENGER",
+      "native_record_sha256": "ce2b6bfa17cec5be4bf030c9b82347378f345cf30c726cb529ae97008241ce5a",
+      "old_core": [
+        47,
+        41
+      ],
+      "new": {
+        "global_core": [
+          143,
+          109
+        ],
+        "native_map": "MnStPaul",
+        "native_core": [
+          143,
+          109
+        ]
+      },
+      "script_id_unchanged": "MN_ST_PAUL_DEPOT_PASSENGER",
+      "source_lines_before": [
+        "UNION DEPOT.",
+        "The GLACIER LINE",
+        "links the towns."
+      ]
+    },
+    {
+      "native_object_index_zero_based": 4,
+      "id": "MN_ST_PAUL_BLUFF_WALKER",
+      "native_record_sha256": "824c78e784af602ca5cfbe5da7dae5aece5783c20657ac73a8d7cb0d12a83a43",
+      "old_core": [
+        31,
+        18
+      ],
+      "new": {
+        "global_core": [
+          95,
+          38
+        ],
+        "native_map": "MnStPaul",
+        "native_core": [
+          95,
+          38
+        ]
+      },
+      "script_id_unchanged": "MN_ST_PAUL_BLUFF_WALKER",
+      "source_lines_before": [
+        "Hop down the bank,",
+        "take the brick",
+        "path back uphill."
+      ]
+    },
+    {
+      "native_object_index_zero_based": 5,
+      "id": "MN_ST_PAUL_RIVER_FISHER",
+      "native_record_sha256": "d1321c8686c80b458b92073981f171751151ac4fff9b31c806a07e72c73e51b2",
+      "old_core": [
+        29,
+        36
+      ],
+      "new": {
+        "global_core": [
+          95,
+          91
+        ],
+        "native_map": "MnStPaul",
+        "native_core": [
+          95,
+          91
+        ]
+      },
+      "script_id_unchanged": "MN_ST_PAUL_RIVER_FISHER",
+      "source_lines_before": [
+        "Watch the river",
+        "from this bank."
+      ]
+    },
+    {
+      "native_object_index_zero_based": 6,
+      "id": "MN_ST_PAUL_STREET_READER",
+      "native_record_sha256": "475f217590006e1335324c100aab9f25f1d5d49302ed218f99b335bb26eee2bb",
+      "old_core": [
+        23,
+        24
+      ],
+      "new": {
+        "global_core": [
+          75,
+          72
+        ],
+        "native_map": "MnStPaul",
+        "native_core": [
+          75,
+          72
+        ]
+      },
+      "script_id_unchanged": "MN_ST_PAUL_STREET_READER",
+      "source_lines_before": [
+        "BRANNIC trains",
+        "STEEL types at",
+        "the city GYM."
+      ]
+    },
+    {
+      "native_object_index_zero_based": 7,
+      "id": "MN_ST_PAUL_FAIR_GUARD_WEST",
+      "native_record_sha256": "1db784fc19b45400eeca96951a28322bc4b6fe9ad2dc4365d8b68523c012dad3",
+      "old_core": [
+        16,
+        2
+      ],
+      "new": {
+        "global_core": [
+          48,
+          2
+        ],
+        "native_map": "MnStPaul",
+        "native_core": [
+          48,
+          2
+        ]
+      },
+      "script_id_unchanged": "MN_ST_PAUL_FAIR_GUARD_WEST",
+      "source_lines_before": [
+        "The fairgrounds",
+        "are not open yet.",
+        "The town is free."
+      ],
+      "authorized_text_exception": {
+        "why": "Public fair complex is active; same guards still close the unconnected northern annex.",
+        "new_lines": [
+          "North annex shut.",
+          "Public fair opens",
+          "south of this gate."
+        ]
+      }
+    },
+    {
+      "native_object_index_zero_based": 8,
+      "id": "MN_ST_PAUL_FAIR_GUARD_EAST",
+      "native_record_sha256": "2206830515704cd3bfb967f42ea7a7e8ef9910116430c187c61584c14c691998",
+      "old_core": [
+        17,
+        2
+      ],
+      "new": {
+        "global_core": [
+          49,
+          2
+        ],
+        "native_map": "MnStPaul",
+        "native_core": [
+          49,
+          2
+        ]
+      },
+      "script_id_unchanged": "MN_ST_PAUL_FAIR_GUARD_EAST",
+      "source_lines_before": [
+        "The fairgrounds",
+        "are not open yet.",
+        "The town is free."
+      ],
+      "authorized_text_exception": {
+        "why": "Public fair complex is active; same guards still close the unconnected northern annex.",
+        "new_lines": [
+          "North annex shut.",
+          "Public fair opens",
+          "south of this gate."
+        ]
+      }
+    }
+  ],
+  "native_bg_records": [
+    {
+      "native_bg_index_zero_based": 0,
+      "id": "MN_ST_PAUL_SIGN_CLINIC",
+      "native_record_sha256": "8b8cd5057762950c0c8c328a164c20ec239050437fcb6ed4300ea98de803283e",
+      "old_core": [
+        13,
+        17
+      ],
+      "new": {
+        "global_core": [
+          45,
+          59
+        ],
+        "native_map": "MnStPaul",
+        "native_core": [
+          45,
+          59
+        ]
+      },
+      "source_lines_before": [
+        "POKEMON CENTER",
+        "Free care and PC."
+      ]
+    },
+    {
+      "native_bg_index_zero_based": 1,
+      "id": "MN_ST_PAUL_SIGN_MART",
+      "native_record_sha256": "aff6efca516a3e2a81a5341a6f870963e1f61380cb1346ffe673e08d3b00c187",
+      "old_core": [
+        29,
+        17
+      ],
+      "new": {
+        "global_core": [
+          77,
+          67
+        ],
+        "native_map": "MnStPaul",
+        "native_core": [
+          77,
+          67
+        ]
+      },
+      "source_lines_before": [
+        "MART",
+        "Supplies here."
+      ]
+    },
+    {
+      "native_bg_index_zero_based": 2,
+      "id": "MN_ST_PAUL_SIGN_CAPITOL",
+      "native_record_sha256": "dfda992debf703d7fd8ebfca8108f3e7ab0758b466e486aa1c465520913ed224",
+      "old_core": [
+        31,
+        13
+      ],
+      "new": {
+        "global_core": [
+          95,
+          33
+        ],
+        "native_map": "MnStPaul",
+        "native_core": [
+          95,
+          33
+        ]
+      },
+      "source_lines_before": [
+        "CAPITOL HALL",
+        "Public records."
+      ]
+    },
+    {
+      "native_bg_index_zero_based": 3,
+      "id": "MN_ST_PAUL_SIGN_GYM",
+      "native_record_sha256": "e4479d1c0f2cc372c7eedeb46ffce73b6686804bf1a3ce27859bd75e049e40bf",
+      "old_core": [
+        57,
+        17
+      ],
+      "new": {
+        "global_core": [
+          153,
+          61
+        ],
+        "native_map": "MnStPaul",
+        "native_core": [
+          153,
+          61
+        ]
+      },
+      "source_lines_before": [
+        "ST PAUL GYM",
+        "BRANNIC - STEEL"
+      ]
+    },
+    {
+      "native_bg_index_zero_based": 4,
+      "id": "MN_ST_PAUL_SIGN_DEPOT",
+      "native_record_sha256": "54d2167276d0035f91ad9f3e6ee2c270e3d9dbfd30dd80149f72d0b7c707502e",
+      "old_core": [
+        47,
+        39
+      ],
+      "new": {
+        "global_core": [
+          143,
+          107
+        ],
+        "native_map": "MnStPaul",
+        "native_core": [
+          143,
+          107
+        ]
+      },
+      "source_lines_before": [
+        "UNION DEPOT",
+        "GLACIER LINE"
+      ]
+    },
+    {
+      "native_bg_index_zero_based": 5,
+      "id": "MN_ST_PAUL_SIGN_FAIR",
+      "native_record_sha256": "8c5e58edb2beb2a6f034254d5fd15cfa481cd86da6b0aa9c9ac56c63576f67bf",
+      "old_core": [
+        19,
+        7
+      ],
+      "new": {
+        "global_core": [
+          51,
+          7
+        ],
+        "native_map": "MnStPaul",
+        "native_core": [
+          51,
+          7
+        ]
+      },
+      "source_lines_before": [
+        "STATE FAIRGROUNDS",
+        "Northern street.",
+        "Opening pending."
+      ]
+    },
+    {
+      "native_bg_index_zero_based": 6,
+      "id": "MN_ST_PAUL_SIGN_RIVER",
+      "native_record_sha256": "5b6530c8b65eac2c90e15ceb1a251924f0d75ec52262f5addeb7be2c137caee6",
+      "old_core": [
+        27,
+        37
+      ],
+      "new": {
+        "global_core": [
+          93,
+          93
+        ],
+        "native_map": "MnStPaul",
+        "native_core": [
+          93,
+          93
+        ]
+      },
+      "source_lines_before": [
+        "RIVER PARK",
+        "Stay on the bank."
+      ]
+    },
+    {
+      "native_bg_index_zero_based": 7,
+      "id": "MN_ST_PAUL_SIGN_WAYFINDING",
+      "native_record_sha256": "5acc764749c2aaf067bc8ab7efdeb4f28399d5bce4c951ef9317cbea6e60945f",
+      "old_core": [
+        33,
+        27
+      ],
+      "new": {
+        "global_core": [
+          85,
+          75
+        ],
+        "native_map": "MnStPaul",
+        "native_core": [
+          85,
+          75
+        ]
+      },
+      "source_lines_before": [
+        "West: CITY CROSS",
+        "North: CAPITOL",
+        "South: UNION DEPOT"
+      ]
+    }
+  ],
+  "native_coord_events_before": 0,
+  "original_bluff_drop": {
+    "old_bounds_core": [
+      38,
+      20,
+      40,
+      22
+    ],
+    "new_bounds_core": [
+      102,
+      40,
+      104,
+      42
+    ],
+    "old_approach": [
+      39,
+      19
+    ],
+    "new_approach": [
+      103,
+      39
+    ],
+    "old_landing": [
+      39,
+      22
+    ],
+    "new_landing": [
+      103,
+      42
+    ],
+    "original_native_blocks_and_return_role_preserved": true
+  },
+  "native_only_or_separate_records": [
+    {
+      "kind": "exterior runtime spawn271",
+      "old": {
+        "identifier": 271,
+        "mapConstant": "MN_ST_PAUL",
+        "mapName": "MnStPaul",
+        "groupId": 76,
+        "mapId": 1,
+        "tileX": 6,
+        "tileY": 24,
+        "groupName": "MINNESOTA_ST_PAUL",
+        "metatileX": 3,
+        "metatileY": 12,
+        "subtileX": 0,
+        "subtileY": 0
+      },
+      "new": {
+        "global_core": [
+          6,
+          72
+        ],
+        "native_map": "MnStPaul",
+        "native_core": [
+          6,
+          72
+        ]
+      },
+      "action": "Root moves original271 exterior tile6,24\u21926,72 on sameMapMnStPaul; every other spawn record exact."
+    },
+    {
+      "kind": "clinic recovery272",
+      "old": {
+        "identifier": 272,
+        "mapConstant": "MN_ST_PAUL_POKECENTER_1F",
+        "mapName": "MnStPaulPokecenter1F",
+        "groupId": 76,
+        "mapId": 2,
+        "tileX": 3,
+        "tileY": 5,
+        "groupName": "MINNESOTA_ST_PAUL",
+        "metatileX": 1,
+        "metatileY": 2,
+        "subtileX": 1,
+        "subtileY": 1
+      },
+      "new": "Exact same room3,5/identifier272; nurse service and last-spawn command exact."
+    },
+    {
+      "kind": "Q03 actual courier",
+      "room": "MnStPaulUnionDepot",
+      "at": [
+        20,
+        16
+      ],
+      "approach": [
+        19,
+        16
+      ],
+      "flag": "EVENT_MN_COURIER_DEFEATED",
+      "flag_value": 2306,
+      "party": [
+        "MAGNEMITE23",
+        "DROWZEE22"
+      ],
+      "action": "Entire original room/program/party/checkpoint exact; do not copy courier outdoors."
+    },
+    {
+      "kind": "DEEP BORE separate manifest",
+      "room": "MnStPaulUnionDepot",
+      "at": [
+        18,
+        16
+      ],
+      "approach": [
+        19,
+        16
+      ],
+      "flag": "EVENT_MN_DEEP_BORE_MANIFEST_READ",
+      "flag_value": 2307,
+      "action": "Entire actual paper/acknowledgment and no reward/roadpermission side effects exact."
+    },
+    {
+      "kind": "actual train status",
+      "source": "planning/minnesota/transit/MnStPaulUnionDepot.json",
+      "status": "Existing depot/courier native; service not playable. No train travel claim."
+    },
+    {
+      "kind": "Fly destinations",
+      "before_count": 0,
+      "action": "Do not invent Fly registration; existing HOME/other recovery records preserved."
+    }
+  ],
+  "districts": [
+    {
+      "id": "FAIR_CAMPUS",
+      "bounds_meta": [
+        8,
+        2,
+        35,
+        23
+      ],
+      "activity": "Playable public exhibition/barns/food-booth economy/optional trainers; closed northern annex distinct."
+    },
+    {
+      "id": "CAPITOL_BLUFF",
+      "bounds_meta": [
+        40,
+        6,
+        66,
+        27
+      ],
+      "activity": "Original records hall, exact old drop/return role, acknowledged archive discovery and library."
+    },
+    {
+      "id": "SUMMIT_NEIGHBORHOOD",
+      "bounds_meta": [
+        69,
+        4,
+        91,
+        24
+      ],
+      "activity": "Dense enterable brick blocks, local move/item/activity rooms; no empty lawns."
+    },
+    {
+      "id": "WEST_SEVENTH",
+      "bounds_meta": [
+        7,
+        26,
+        31,
+        43
+      ],
+      "activity": "Original care/PC, residences, gardens, market approaches and actualR04arrival."
+    },
+    {
+      "id": "LOWERTOWN_EXCHANGE",
+      "bounds_meta": [
+        32,
+        26,
+        59,
+        44
+      ],
+      "activity": "OriginalMart plus multi-floor market, booth stock, optional exhibition and collection errand."
+    },
+    {
+      "id": "EAST_GYM_QUARTER",
+      "bounds_meta": [
+        66,
+        25,
+        91,
+        45
+      ],
+      "activity": "OriginalGym4, workshop, community hall, winding street and bluff climbs."
+    },
+    {
+      "id": "RIVER_WESTSIDE",
+      "bounds_meta": [
+        8,
+        54,
+        53,
+        70
+      ],
+      "activity": "Two actual river crossings, quay/boathouse, anglers, river ecology errand and neighborhood shops."
+    },
+    {
+      "id": "DEPOT_PRECINCT",
+      "bounds_meta": [
+        61,
+        44,
+        89,
+        61
+      ],
+      "activity": "ActualUnionDepot/hostilecourier/separatepaper, freightcourts and dispatch information; no fabricated rail service."
+    }
+  ],
+  "proposed_new_activity_namespace": "MN_SPX_* / EVENT_MN_SPX_*; Root checks exact native catalog allocation; no numeric story flags reserved here",
+  "native_changes_or_source_promotion_performed": false,
+  "native_map_model": "ONE existing96x72 native map MnStPaul/MN_ST_PAUL; no native chunk split or new exterior mapID."
+}

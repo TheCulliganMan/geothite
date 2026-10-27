@@ -1,0 +1,27 @@
+Use case: stylized-concept. Asset type: production Game Boy Color creature battle sprite sheet.
+
+Create ORIGINAL Gen2-era monster pixel art. This is actual sprite artwork with coarse square-pixel clusters, not an illustration to be pixelated later. Pure white background. NO captions/text/grid lines/palette swatches/shadows. Crisp stepped black exterior silhouettes; spare connected interior black structural seams; flat color planes. No gradients, antialiasing, soft edges, glossy rendering, tiny noisy texture, single-pixel confetti or smooth vector curves. Respect authentic late-1990s Pokemon Crystal sprite economy, readable eyes and structural evolution; do not copy any existing Pokemon identity.
+
+Layout exactly 3 columns by 2 rows. Columns left-to-right: Doughlin, Crumband, Jarbaron. Each column is ONE species. Upper row: full-body FRONT 3/4 facing LEFT at native56x56 language. Lower row: CLOSE REAR PORTRAIT facing UPPER RIGHT at native48x48 language. Back is a huge head/neck/near-shoulder view, lower body visibly cut at bottom, authentic Crystal battle framing. Enlarge each back head/shoulder strongly; do not draw a complete miniature full-body turnaround. Leave wide clean white gutters between cells, all artwork disjoint. Display artwork enlarged nearest-neighbor for source sheet; favor about5-7sourcepixels per nativepixel. Front stages show proportional growth; every back fills its cell as a close portrait.
+
+Theme: Minnesota fair cookie pails and warm bakery crowds: a soft cookie imp becomes a crumb-pilfering bandit, then grows its own open-rim baked-crust hoard body.
+
+Design constraints: Only3-4 large chip marks, no tiny crumbs/particles or readable branding. Original pail-shaped anatomy differs from Casserogre food shell and Stackajack pancake stack. Ember glow is flat orange ink, no gradients.
+
+Design original mischievous baked monsters, not a mouse or animal holding food. Three or four large chocolate chips only. Final body IS a broad crust hoard chamber with cookie ridge collar, lid brow and thick handle-like dough arms. Keep interior mask/pocket seams connected and purposeful. Never generic cookie holding a bucket.
+
+Species anatomy and each independent hardware palette (front and back MUST match). Each species uses EXACTLY FOUR inks: white, its own two chromatic colors and pure black. White is valid enclosed eye/body highlight ink; black also outlines white body parts. The sheet globally can exceed four colors because species use different palettes. Never share one palette across the whole evolution line. RGB555 packing is r|(g<<5)|(b<<10); RGB8 expansion is (v<<3)|(v>>2).
+
+MN_195 Doughlin FIRE: A squat dough imp has two uneven curled cookie ears, a pale raw center and a single dark chip covering one eye. Its little palm pads leave warm round impressions. SILHOUETTE: Round soft body, one tall curled ear and one chipped ear, short spreading palms.
+
+Exact Doughlin palette: RGB5=[(31, 31, 31), (30, 24, 15), (12, 6, 3), (0, 0, 0)]; RGB555=[32767, 16158, 3276, 0]; RGB8=[[255, 255, 255], [247, 198, 123], [99, 49, 24], [0, 0, 0]]; HEX=['#FFFFFF', '#F7C67B', '#633118', '#000000'].
+
+MN_196 Crumband FIRE/DARK: Baked cookie segments separate into springy elbows/knees, the eye chip becomes a broad asymmetric mask and its hands close like tongs around stolen crumbs. Its belly has a deep pocket formed by overlapping crust. SILHOUETTE: Leaning bandit with crooked chip brow, long tong-like cookie hands and open crust belly pocket.
+
+Exact Crumband palette: RGB5=[(31, 31, 31), (28, 18, 8), (10, 5, 3), (0, 0, 0)]; RGB555=[32767, 8796, 3242, 0]; RGB8=[[255, 255, 255], [231, 148, 66], [82, 41, 24], [0, 0, 0]]; HEX=['#FFFFFF', '#E79442', '#522918', '#000000'].
+
+MN_197 Jarbaron FIRE/DARK: Its torso hardens into a broad open-rim crust chamber; a ring of thick cookie ridges rises behind its head and two rolled-dough handle arms grow from the sides. It hides warm crumbs under a slanted lid-like brow, slamming the rim when challenged. SILHOUETTE: Wide barrel-shaped baked body, tall ring of cookie ridges and two arched handle arms; the body is a living baked hoard, not a pail carried by a normal animal.
+
+Exact Jarbaron palette: RGB5=[(31, 31, 31), (29, 16, 6), (9, 4, 3), (0, 0, 0)]; RGB555=[32767, 6685, 3209, 0]; RGB8=[[255, 255, 255], [239, 132, 49], [74, 33, 24], [0, 0, 0]]; HEX=['#FFFFFF', '#EF8431', '#4A2118', '#000000'].
+
+Final quality: original appealing themed monsters, clear eye whites, bold broad anatomical planes, readable limbs and deeply different evolutionary silhouettes. Black silhouette rims must be continuous wherever they border white paper; white highlights stay enclosed inside the rim. A few deliberate open colored contour accents may echo Gen2, but no fragmented dotted outlines. Keep open cropping of lower back at the bottom.

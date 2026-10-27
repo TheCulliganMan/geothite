@@ -1,0 +1,578 @@
+{
+  "schema_version": 3,
+  "tool": "built-in image_gen",
+  "families": [
+    {
+      "id": "MN_F001",
+      "manifest": "sprites/mn-f001/manifest.json"
+    },
+    {
+      "id": "MN_F002",
+      "manifest": "sprites/mn-f002/manifest.json"
+    },
+    {
+      "id": "MN_F003",
+      "manifest": "sprites/mn-f003/manifest.json"
+    },
+    {
+      "id": "MN_F004",
+      "manifest": "sprites/mn-f004/manifest.json"
+    },
+    {
+      "id": "MN_F005",
+      "manifest": "sprites/mn-f005/manifest.json"
+    },
+    {
+      "id": "MN_F006",
+      "manifest": "sprites/mn-f006/manifest.json"
+    },
+    {
+      "id": "MN_F007",
+      "manifest": "sprites/mn-f007/manifest.json"
+    },
+    {
+      "id": "MN_F008",
+      "manifest": "sprites/mn-f008/manifest.json"
+    },
+    {
+      "id": "MN_F009",
+      "manifest": "sprites/mn-f009/manifest.json"
+    },
+    {
+      "id": "MN_F010",
+      "manifest": "sprites/mn-f010/manifest.json"
+    },
+    {
+      "id": "MN_F011",
+      "manifest": "sprites/mn-f011/manifest.json"
+    },
+    {
+      "id": "MN_F012",
+      "manifest": "sprites/mn-f012/manifest.json"
+    },
+    {
+      "id": "MN_F013",
+      "manifest": "sprites/mn-f013/manifest.json"
+    },
+    {
+      "id": "MN_F014",
+      "manifest": "sprites/mn-f014/manifest.json"
+    },
+    {
+      "id": "MN_F015",
+      "manifest": "sprites/mn-f015/manifest.json"
+    },
+    {
+      "id": "MN_F016",
+      "manifest": "sprites/mn-f016/manifest.json"
+    },
+    {
+      "id": "MN_F017",
+      "manifest": "sprites/mn-f017/manifest.json"
+    },
+    {
+      "id": "MN_F018",
+      "manifest": "sprites/mn-f018/manifest.json"
+    },
+    {
+      "id": "MN_F019",
+      "manifest": "sprites/mn-f019/manifest.json"
+    },
+    {
+      "id": "MN_F020",
+      "manifest": "sprites/mn-f020/manifest.json"
+    },
+    {
+      "id": "MN_F021",
+      "manifest": "sprites/mn-f021/manifest.json"
+    },
+    {
+      "id": "MN_F022",
+      "manifest": "sprites/mn-f022/manifest.json"
+    },
+    {
+      "id": "MN_F023",
+      "manifest": "sprites/mn-f023/manifest.json"
+    },
+    {
+      "id": "MN_F024",
+      "manifest": "sprites/mn-f024/manifest.json"
+    },
+    {
+      "id": "MN_F025",
+      "manifest": "sprites/mn-f025/manifest.json"
+    },
+    {
+      "id": "MN_F026",
+      "manifest": "sprites/mn-f026/manifest.json"
+    },
+    {
+      "id": "MN_F027",
+      "manifest": "sprites/mn-f027/manifest.json"
+    },
+    {
+      "id": "MN_F028",
+      "manifest": "sprites/mn-f028/manifest.json"
+    },
+    {
+      "id": "MN_F029",
+      "manifest": "sprites/mn-f029/manifest.json"
+    },
+    {
+      "id": "MN_F030",
+      "manifest": "sprites/mn-f030/manifest.json"
+    },
+    {
+      "id": "MN_F031",
+      "manifest": "sprites/mn-f031/manifest.json"
+    },
+    {
+      "id": "MN_F032",
+      "manifest": "sprites/mn-f032/manifest.json"
+    },
+    {
+      "id": "MN_F033",
+      "manifest": "sprites/mn-f033/manifest.json"
+    },
+    {
+      "id": "MN_F034",
+      "manifest": "sprites/mn-f034/manifest.json"
+    },
+    {
+      "id": "MN_F035",
+      "manifest": "sprites/mn-f035/manifest.json"
+    },
+    {
+      "id": "MN_F036",
+      "manifest": "sprites/mn-f036/manifest.json"
+    },
+    {
+      "id": "MN_F037",
+      "manifest": "sprites/mn-f037/manifest.json"
+    },
+    {
+      "id": "MN_F038",
+      "manifest": "sprites/mn-f038/manifest.json"
+    },
+    {
+      "id": "MN_F039",
+      "manifest": "sprites/mn-f039/manifest.json"
+    },
+    {
+      "id": "MN_F040",
+      "manifest": "sprites/mn-f040/manifest.json"
+    },
+    {
+      "id": "MN_F041",
+      "manifest": "sprites/mn-f041/manifest.json"
+    },
+    {
+      "id": "MN_F042",
+      "manifest": "sprites/mn-f042/manifest.json"
+    },
+    {
+      "id": "MN_F043",
+      "manifest": "sprites/mn-f043/manifest.json"
+    },
+    {
+      "id": "MN_F044",
+      "manifest": "sprites/mn-f044/manifest.json"
+    },
+    {
+      "id": "MN_F045",
+      "manifest": "sprites/mn-f045/manifest.json"
+    },
+    {
+      "id": "MN_F046",
+      "manifest": "sprites/mn-f046/manifest.json"
+    },
+    {
+      "id": "MN_F047",
+      "manifest": "sprites/mn-f047/manifest.json"
+    },
+    {
+      "id": "MN_F048",
+      "manifest": "sprites/mn-f048/manifest.json"
+    },
+    {
+      "id": "MN_F049",
+      "manifest": "sprites/mn-f049/manifest.json"
+    },
+    {
+      "id": "MN_F050",
+      "manifest": "sprites/mn-f050/manifest.json"
+    },
+    {
+      "id": "MN_F051",
+      "manifest": "sprites/mn-f051/manifest.json"
+    },
+    {
+      "id": "MN_F052",
+      "manifest": "sprites/mn-f052/manifest.json"
+    },
+    {
+      "id": "MN_F053",
+      "manifest": "sprites/mn-f053/manifest.json"
+    },
+    {
+      "id": "MN_F054",
+      "manifest": "sprites/mn-f054/manifest.json"
+    },
+    {
+      "id": "MN_F055",
+      "manifest": "sprites/mn-f055/manifest.json"
+    },
+    {
+      "id": "MN_F056",
+      "manifest": "sprites/mn-f056/manifest.json"
+    },
+    {
+      "id": "MN_F057",
+      "manifest": "sprites/mn-f057/manifest.json"
+    },
+    {
+      "id": "MN_F058",
+      "manifest": "sprites/mn-f058/manifest.json"
+    },
+    {
+      "id": "MN_F059",
+      "manifest": "sprites/mn-f059/manifest.json"
+    },
+    {
+      "id": "MN_F060",
+      "manifest": "sprites/mn-f060/manifest.json"
+    },
+    {
+      "id": "MN_F061",
+      "manifest": "sprites/mn-f061/manifest.json"
+    },
+    {
+      "id": "MN_F062",
+      "manifest": "sprites/mn-f062/manifest.json"
+    },
+    {
+      "id": "MN_F063",
+      "manifest": "sprites/mn-f063/manifest.json"
+    },
+    {
+      "id": "MN_F064",
+      "manifest": "sprites/mn-f064/manifest.json"
+    },
+    {
+      "id": "MN_F065",
+      "manifest": "sprites/mn-f065/manifest.json"
+    },
+    {
+      "id": "MN_F066",
+      "manifest": "sprites/mn-f066/manifest.json"
+    },
+    {
+      "id": "MN_F067",
+      "manifest": "sprites/mn-f067/manifest.json"
+    },
+    {
+      "id": "MN_F068",
+      "manifest": "sprites/mn-f068/manifest.json"
+    },
+    {
+      "id": "MN_F069",
+      "manifest": "sprites/mn-f069/manifest.json"
+    },
+    {
+      "id": "MN_F070",
+      "manifest": "sprites/mn-f070/manifest.json"
+    },
+    {
+      "id": "MN_F071",
+      "manifest": "sprites/mn-f071/manifest.json"
+    },
+    {
+      "id": "MN_F072",
+      "manifest": "sprites/mosquito-line/manifest.json"
+    },
+    {
+      "id": "MN_F073",
+      "manifest": "sprites/mn-f073/manifest.json"
+    },
+    {
+      "id": "MN_F074",
+      "manifest": "sprites/mn-f074/manifest.json"
+    },
+    {
+      "id": "MN_F075",
+      "manifest": "sprites/mn-f075/manifest.json"
+    },
+    {
+      "id": "MN_F076",
+      "manifest": "sprites/mn-f076/manifest.json"
+    },
+    {
+      "id": "MN_F077",
+      "manifest": "sprites/mn-f077/manifest.json"
+    },
+    {
+      "id": "MN_F078",
+      "manifest": "sprites/mn-f078/manifest.json"
+    },
+    {
+      "id": "MN_F079",
+      "manifest": "sprites/mn-f079/manifest.json"
+    },
+    {
+      "id": "MN_F080",
+      "manifest": "sprites/mn-f080/manifest.json"
+    },
+    {
+      "id": "MN_F081",
+      "manifest": "sprites/mn-f081/manifest.json"
+    },
+    {
+      "id": "MN_F082",
+      "manifest": "sprites/mn-f082/manifest.json"
+    },
+    {
+      "id": "MN_F083",
+      "manifest": "sprites/mn-f083/manifest.json"
+    },
+    {
+      "id": "MN_F084",
+      "manifest": "sprites/mn-f084/manifest.json"
+    },
+    {
+      "id": "MN_F085",
+      "manifest": "sprites/mn-f085/manifest.json"
+    },
+    {
+      "id": "MN_F086",
+      "manifest": "sprites/mn-f086/manifest.json"
+    },
+    {
+      "id": "MN_F087",
+      "manifest": "sprites/mn-f087/manifest.json"
+    },
+    {
+      "id": "MN_F088",
+      "manifest": "sprites/mn-f088/manifest.json"
+    },
+    {
+      "id": "MN_F089",
+      "manifest": "sprites/mn-f089/manifest.json"
+    },
+    {
+      "id": "MN_F090",
+      "manifest": "sprites/mn-f090/manifest.json"
+    },
+    {
+      "id": "MN_F091",
+      "manifest": "sprites/mn-f091/manifest.json"
+    },
+    {
+      "id": "MN_F092",
+      "manifest": "sprites/mn-f092/manifest.json"
+    },
+    {
+      "id": "MN_F093",
+      "manifest": "sprites/mn-f093/manifest.json"
+    },
+    {
+      "id": "MN_F094",
+      "manifest": "sprites/mn-f094/manifest.json"
+    },
+    {
+      "id": "MN_F095",
+      "manifest": "sprites/mn-f095/manifest.json"
+    },
+    {
+      "id": "MN_F096",
+      "manifest": "sprites/mn-f096/manifest.json"
+    },
+    {
+      "id": "MN_F097",
+      "manifest": "sprites/mn-f097/manifest.json"
+    },
+    {
+      "id": "MN_F098",
+      "manifest": "sprites/mn-f098/manifest.json"
+    },
+    {
+      "id": "MN_F099",
+      "manifest": "sprites/mn-f099/manifest.json"
+    },
+    {
+      "id": "MN_F100",
+      "manifest": "sprites/mn-f100/manifest.json"
+    },
+    {
+      "id": "MN_F101",
+      "manifest": "sprites/mn-f101/manifest.json"
+    },
+    {
+      "id": "MN_F102",
+      "manifest": "sprites/mn-f102/manifest.json"
+    },
+    {
+      "id": "MN_F103",
+      "manifest": "sprites/mn-f103/manifest.json"
+    },
+    {
+      "id": "MN_F104",
+      "manifest": "sprites/mn-f104/manifest.json"
+    },
+    {
+      "id": "MN_F105",
+      "manifest": "sprites/mn-f105/manifest.json"
+    },
+    {
+      "id": "MN_F106",
+      "manifest": "sprites/mn-f106/manifest.json"
+    },
+    {
+      "id": "MN_F107",
+      "manifest": "sprites/mn-f107/manifest.json"
+    },
+    {
+      "id": "MN_F108",
+      "manifest": "sprites/mn-f108/manifest.json"
+    },
+    {
+      "id": "MN_F109",
+      "manifest": "sprites/mn-f109/manifest.json"
+    },
+    {
+      "id": "MN_F110",
+      "manifest": "sprites/mn-f110/manifest.json"
+    },
+    {
+      "id": "MN_F111",
+      "manifest": "sprites/mn-f111/manifest.json"
+    },
+    {
+      "id": "MN_F112",
+      "manifest": "sprites/mn-f112/manifest.json"
+    },
+    {
+      "id": "MN_F113",
+      "manifest": "sprites/mn-f113/manifest.json"
+    },
+    {
+      "id": "MN_F114",
+      "manifest": "sprites/mn-f114/manifest.json"
+    },
+    {
+      "id": "MN_F115",
+      "manifest": "sprites/mn-f115/manifest.json"
+    },
+    {
+      "id": "MN_F116",
+      "manifest": "sprites/mn-f116/manifest.json"
+    },
+    {
+      "id": "MN_F117",
+      "manifest": "sprites/mn-f117/manifest.json"
+    },
+    {
+      "id": "MN_F118",
+      "manifest": "sprites/mn-f118/manifest.json"
+    },
+    {
+      "id": "MN_F119",
+      "manifest": "sprites/mn-f119/manifest.json"
+    },
+    {
+      "id": "MN_F120",
+      "manifest": "sprites/mn-f120/manifest.json"
+    },
+    {
+      "id": "MN_F121",
+      "manifest": "sprites/mn-f121/manifest.json"
+    },
+    {
+      "id": "MN_F122",
+      "manifest": "sprites/mn-f122/manifest.json"
+    },
+    {
+      "id": "MN_F123",
+      "manifest": "sprites/mn-f123/manifest.json"
+    },
+    {
+      "id": "MN_F125",
+      "manifest": "sprites/mn-f125/manifest.json"
+    },
+    {
+      "id": "MN_F126",
+      "manifest": "sprites/mn-f126/manifest.json"
+    },
+    {
+      "id": "MN_F127",
+      "manifest": "sprites/mn-f127/manifest.json"
+    },
+    {
+      "id": "MN_F128",
+      "manifest": "sprites/mn-f128/manifest.json"
+    },
+    {
+      "id": "MN_F129",
+      "manifest": "sprites/mn-f129/manifest.json"
+    },
+    {
+      "id": "MN_F130",
+      "manifest": "sprites/mn-f130/manifest.json"
+    },
+    {
+      "id": "MN_F131",
+      "manifest": "sprites/mn-f131/manifest.json"
+    },
+    {
+      "id": "MN_F132",
+      "manifest": "sprites/mn-f132/manifest.json"
+    },
+    {
+      "id": "MN_F133",
+      "manifest": "sprites/mn-f133/manifest.json"
+    },
+    {
+      "id": "MN_F134",
+      "manifest": "sprites/mn-f134/manifest.json"
+    },
+    {
+      "id": "MN_F135",
+      "manifest": "sprites/mn-f135/manifest.json"
+    },
+    {
+      "id": "MN_F136",
+      "manifest": "sprites/mn-f136/manifest.json"
+    },
+    {
+      "id": "MN_F137",
+      "manifest": "sprites/mn-f137/manifest.json"
+    },
+    {
+      "id": "MN_F138",
+      "manifest": "sprites/mn-f138/manifest.json"
+    },
+    {
+      "id": "MN_F139",
+      "manifest": "sprites/mn-f139/manifest.json"
+    },
+    {
+      "id": "MN_F140",
+      "manifest": "sprites/mn-f140/manifest.json"
+    },
+    {
+      "id": "MN_F141",
+      "manifest": "sprites/mn-f141/manifest.json"
+    },
+    {
+      "id": "MN_F142",
+      "manifest": "sprites/mn-f142/manifest.json"
+    },
+    {
+      "id": "MN_F143",
+      "manifest": "sprites/mn-f143/manifest.json"
+    },
+    {
+      "id": "MN_F144",
+      "manifest": "sprites/mn-f144/manifest.json"
+    }
+  ]
+}

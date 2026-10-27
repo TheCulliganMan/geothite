@@ -1,0 +1,76 @@
+{
+  "id": "MnRochester",
+  "name": "ROCHESTER",
+  "dimensions_metatiles": [
+    24,
+    18
+  ],
+  "reference_anchor_percent": [
+    70,
+    86
+  ],
+  "role": "gym_1",
+  "tileset": "johto_modern",
+  "composition": "Clinic courtyard, first gym and two sheltered residential lanes.",
+  "ports": [
+    {
+      "route": "MN_R01",
+      "side": "E",
+      "gate_metatile": [
+        22,
+        9
+      ],
+      "landing_metatile": [
+        20,
+        9
+      ]
+    },
+    {
+      "route": "MN_R02",
+      "side": "W",
+      "gate_metatile": [
+        1,
+        9
+      ],
+      "landing_metatile": [
+        3,
+        9
+      ]
+    }
+  ],
+  "interiors": [
+    {
+      "id": "MnRochesterPokecenter1F",
+      "kind": "pokecenter",
+      "dimensions_metatiles": [
+        10,
+        8
+      ],
+      "source_behavior": "canonical healing, PC and blackout recovery"
+    },
+    {
+      "id": "MnRochesterMart",
+      "kind": "mart",
+      "dimensions_metatiles": [
+        6,
+        4
+      ],
+      "source_behavior": "canonical clerk, money deduction and inventory"
+    },
+    {
+      "id": "MnRochesterGym",
+      "kind": "gym_1",
+      "dimensions_metatiles": [
+        7,
+        10
+      ]
+    }
+  ],
+  "walkable_destinations": [
+    "each port landing",
+    "every visible exterior door",
+    "central square",
+    "local story NPC"
+  ],
+  "door_contract": "Assign exterior core-tile door coordinates only after selecting authentic facade quadrants; record reciprocal warp indices and indoor floor arrivals before export."
+}

@@ -1,0 +1,241 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F111",
+  "status": "native-front-back-reviewed",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_243": {
+      "species_id": "MN_243",
+      "name": "Prybit",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          25,
+          20,
+          14
+        ],
+        [
+          12,
+          9,
+          7
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        15001,
+        7468,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          206,
+          165,
+          115
+        ],
+        [
+          99,
+          74,
+          57
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#CEA573",
+        "#634A39",
+        "#000000"
+      ]
+    },
+    "MN_244": {
+      "species_id": "MN_244",
+      "name": "Heavraul",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          27,
+          22,
+          15
+        ],
+        [
+          11,
+          8,
+          6
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        16091,
+        6411,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          222,
+          181,
+          123
+        ],
+        [
+          90,
+          66,
+          49
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#DEB57B",
+        "#5A4231",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f111/prompt-v1.txt",
+  "reference_mapping": "sprites/mn-f111/reference-mapping-v1.json",
+  "back_framing": "gen2-close-rear-portrait",
+  "sprites": [
+    {
+      "id": "mn-243-prybit-v1",
+      "species_id": "MN_243",
+      "view": "front",
+      "source": "sprites/mn-f111/mn-243-244.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        725,
+        500
+      ],
+      "fit": [
+        40,
+        40
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        15001,
+        7468,
+        0
+      ],
+      "white_detail_min_samples": 32,
+      "interior_black_min_samples": 16
+    },
+    {
+      "id": "mn-243-prybit-v1",
+      "species_id": "MN_243",
+      "view": "back",
+      "source": "sprites/mn-f111/mn-243-244.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        500,
+        725,
+        524
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        15001,
+        7468,
+        0
+      ],
+      "white_detail_min_samples": 8
+    },
+    {
+      "id": "mn-244-heavraul-v1",
+      "species_id": "MN_244",
+      "view": "front",
+      "source": "sprites/mn-f111/mn-243-244.front-back.imagegen-v1.png",
+      "crop": [
+        725,
+        0,
+        811,
+        500
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        16091,
+        6411,
+        0
+      ],
+      "white_detail_min_samples": 32,
+      "interior_black_min_samples": 16
+    },
+    {
+      "id": "mn-244-heavraul-v1",
+      "species_id": "MN_244",
+      "view": "back",
+      "source": "sprites/mn-f111/mn-243-244.front-back.imagegen-v1.png",
+      "crop": [
+        725,
+        500,
+        811,
+        524
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        16091,
+        6411,
+        0
+      ],
+      "white_detail_min_samples": 8
+    }
+  ],
+  "source_sha256": "bef76038fb07459e3729e5396e3a6058cef0e5720788b74ca93892bfb6383dd6",
+  "candidate_review": {
+    "status": "native-review-pending",
+    "outline_profile": "source-contour-v1",
+    "sheet_sha256": "e9f2c59e4bf1c2195885b3b714a1bd8d23eab1e5aaef813b67f58e7d89400361",
+    "notes": "Actual native inspected: small soil wedge40 grows unequal massive pry arms and locking lever legs54, distinct triangular throat opening. Stone cap/shoulder rear portraits are enlarged and lower body cropped. Warm individual palettes and broad interior planes preserved. Flag for root: white eye windows survive but black pupil definition is weak in fronts and small rear eye, source has clear pupils; conversion detail may need refinement before acceptance."
+  },
+  "visual_review": {
+    "status": "reviewed",
+    "reviewer": "root",
+    "notes": "Root inspected all four native views after targeted front white32/interior16 conversion: dark pupils now read inside white eye windows. Small wedge grows strongly unequal pry forearms, lever legs and triangular throat opening. Broad warm stone planes and close rear cap/shoulders remain clear; previous conversions retained.",
+    "sheet_sha256": "2acb5fc55835d0de4cc58a0a9b7b156f7214044bb4b8c91a3ce361fbb5bf24b9",
+    "outline_profile": "source-contour-v1"
+  }
+}

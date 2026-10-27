@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_269",
+  "selected_mode": "source_backed",
+  "selected_contour_profile": "source-contour-v1",
+  "review_notes": "The new hull is long, legless and lake-going. The face is in the bow; open gantry elbows, three large ore holds and aft pressure stacks remain clear at56px. SourceBacked preserves both steam curls and the8-pixel enclosed bow-eye white without extra interior black. Close rear crops the stern/deck/gantry at deliberate portrait edges. Earlier131/132 untouched.",
+  "selected_review_sheet": "target/agent-roster-contour/new-renders/MN_F060/source_backed/line.review.png",
+  "selected_review_sha256": "d10bf1f004f98fd3332f57d87280223849759497574ed0d1a2dd3387ad9a27a9",
+  "alternatives": [
+    "target/agent-roster-contour/new-renders/MN_F060/source_backed/line.review.png",
+    "target/agent-roster-contour/new-renders/MN_F060/solid/line.review.png"
+  ],
+  "frames": [
+    {
+      "view": "front",
+      "native_size": [
+        56,
+        56
+      ],
+      "source_bounds": [
+        74,
+        56,
+        1268,
+        567
+      ],
+      "png": "target/agent-roster-contour/new-renders/MN_F060/source_backed/mn-269-oreviathan-v3.front.png",
+      "png_sha256": "fd15d19bced52b9f5359118681e04d4389e011909599ec96fbc6fed0a1ee0526",
+      "four_ink_counts": {
+        "0": 2448,
+        "1": 87,
+        "2": 214,
+        "3": 387
+      }
+    },
+    {
+      "view": "back",
+      "native_size": [
+        48,
+        48
+      ],
+      "source_bounds": [
+        145,
+        632,
+        905,
+        1144
+      ],
+      "png": "target/agent-roster-contour/new-renders/MN_F060/source_backed/mn-269-oreviathan-v3.back.png",
+      "png_sha256": "d22509291625b9bf5e8a99d63b1437191a78cddebe003c69603abc7bf580867c",
+      "four_ink_counts": {
+        "0": 1293,
+        "1": 170,
+        "2": 316,
+        "3": 525
+      }
+    }
+  ]
+}

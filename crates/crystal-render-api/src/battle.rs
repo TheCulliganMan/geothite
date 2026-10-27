@@ -252,6 +252,14 @@ impl Default for VisualBattleCanvas {
 #[derive(SystemSet, Clone, Copy, Debug, PartialEq, Eq, Hash)]
 pub struct BattleCanvasExtract;
 
+/// A controller-timed human participant, prepared even while its picture is hidden.
+#[derive(Clone, Debug, PartialEq)]
+pub struct VisualBattleTrainer {
+    /// Resolved trainer artwork identity, independent of its dialogue name.
+    pub source_id: Arc<str>,
+    pub visible: bool,
+}
+
 #[derive(Resource, Clone, Debug, Default, PartialEq)]
 pub struct VisualBattleFrame {
     pub active: bool,
@@ -263,6 +271,7 @@ pub struct VisualBattleFrame {
     pub map_id: Arc<str>,
     pub environment: VisualBattleEnvironment,
     pub battlers: [Option<VisualBattleBattler>; 2],
+    pub trainers: [Option<VisualBattleTrainer>; 2],
     pub cues: Vec<VisualBattleCue>,
     pub source: Option<VisualBattleSourceFrame>,
     /// The entire visible capture lifetime, independent of OAM or cue presence.

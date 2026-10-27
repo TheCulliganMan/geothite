@@ -1,0 +1,239 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F099",
+  "status": "native-front-back-reviewed",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_215": {
+      "species_id": "MN_215",
+      "name": "Tesslarv",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          24,
+          21,
+          13
+        ],
+        [
+          8,
+          13,
+          15
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        14008,
+        15784,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          198,
+          173,
+          107
+        ],
+        [
+          66,
+          107,
+          123
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#C6AD6B",
+        "#426B7B",
+        "#000000"
+      ]
+    },
+    "MN_216": {
+      "species_id": "MN_216",
+      "name": "Mothosaic",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          24,
+          19,
+          29
+        ],
+        [
+          8,
+          10,
+          20
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        30328,
+        20808,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          198,
+          156,
+          239
+        ],
+        [
+          66,
+          82,
+          165
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#C69CEF",
+        "#4252A5",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f099/prompt-v1.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "style_reference": {
+    "origin": "authentic local Crystal sprites",
+    "generator": "crates/crystal-assets/examples/minnesota_gen2_reference.rs",
+    "boards": [
+      "target/minnesota-pokemon/gen2-reference/starters.png",
+      "target/minnesota-pokemon/gen2-reference/bugs.png"
+    ]
+  },
+  "sprites": [
+    {
+      "id": "mn-215-tesslarv-v1",
+      "species_id": "MN_215",
+      "view": "front",
+      "source": "sprites/mn-f099/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        760,
+        490
+      ],
+      "fit": [
+        44,
+        44
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        14008,
+        15784,
+        0
+      ],
+      "interior_black_min_samples": 16
+    },
+    {
+      "id": "mn-215-tesslarv-v1",
+      "species_id": "MN_215",
+      "view": "back",
+      "source": "sprites/mn-f099/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        490,
+        745,
+        534
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        14008,
+        15784,
+        0
+      ],
+      "interior_black_min_samples": 16
+    },
+    {
+      "id": "mn-216-mothosaic-v1",
+      "species_id": "MN_216",
+      "view": "front",
+      "source": "sprites/mn-f099/front-back.imagegen-v1.png",
+      "crop": [
+        760,
+        0,
+        776,
+        490
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        30328,
+        20808,
+        0
+      ],
+      "interior_black_min_samples": 16
+    },
+    {
+      "id": "mn-216-mothosaic-v1",
+      "species_id": "MN_216",
+      "view": "back",
+      "source": "sprites/mn-f099/front-back.imagegen-v1.png",
+      "crop": [
+        745,
+        490,
+        791,
+        534
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        30328,
+        20808,
+        0
+      ],
+      "interior_black_min_samples": 16
+    }
+  ],
+  "visual_review": {
+    "status": "reviewed",
+    "reviewer": "root",
+    "notes": "Root inspected four native frames: three-slab protective case unfolds into four broad mosaic wing panels with strong hinge/silk divisions. Front feet and insect face are compact dark clusters at native scale, while white eye/silk marks remain visible; the dark insect center is source anatomy. Rear case/wing portraits keep the large colored tile planes and clear black outer corners.",
+    "sheet_sha256": "71f8ebf3d0ace02e6d41c7e2f7572c84c11b679d5b75b35a86dd8657660cde1b",
+    "outline_profile": "source-contour-v1"
+  }
+}

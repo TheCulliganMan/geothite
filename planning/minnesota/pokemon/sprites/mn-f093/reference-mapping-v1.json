@@ -1,0 +1,15 @@
+{
+  "family_id": "MN_F093",
+  "prompt_file": "sprites/mn-f093/prompt-v1.txt",
+  "references": [
+    {
+      "path": "target/minnesota-pokemon/gen2-reference/starters.png",
+      "role": "Authentic Gen2 pixel-scale, contour discipline and close back camera reference; not creature identity",
+      "sha256": "af61f720a75b7e1b8e80ba14e8944612556397eedddd719669dec68b0e0fd534"
+    }
+  ],
+  "regional_sources": [
+    "https://cse.umn.edu/mgs/fossils"
+  ],
+  "note": "Monster anatomy and powers are original fiction; the fossil source only grounds regional inspiration."
+}

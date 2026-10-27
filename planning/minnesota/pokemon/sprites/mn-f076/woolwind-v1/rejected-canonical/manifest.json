@@ -1,0 +1,410 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F076",
+  "status": "native-rejected-not-approved-for-publication",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_163": {
+      "species_id": "MN_163",
+      "name": "Mitwist",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          28,
+          25,
+          18
+        ],
+        [
+          8,
+          10,
+          15
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        19260,
+        15688,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          231,
+          206,
+          148
+        ],
+        [
+          66,
+          82,
+          123
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#E7CE94",
+        "#42527B",
+        "#000000"
+      ]
+    },
+    "MN_164": {
+      "species_id": "MN_164",
+      "name": "Hemhowl",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          24,
+          22,
+          28
+        ],
+        [
+          7,
+          8,
+          14
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        29400,
+        14599,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          198,
+          181,
+          231
+        ],
+        [
+          57,
+          66,
+          115
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#C6B5E7",
+        "#394273",
+        "#000000"
+      ]
+    },
+    "MN_165": {
+      "species_id": "MN_165",
+      "name": "Gustitch",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          19,
+          24,
+          26
+        ],
+        [
+          9,
+          7,
+          14
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        27411,
+        14569,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          156,
+          198,
+          214
+        ],
+        [
+          74,
+          57,
+          115
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#9CC6D6",
+        "#4A3973",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f076/woolwind-v1/prompt-v1.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "source_sha256": "a2d590aa87ea0acb6c81f6de01010c29a5882ecc73763b8fab57abf89ba4300b",
+  "sprites": [
+    {
+      "id": "mn-163-mitwist-v1",
+      "species_id": "MN_163",
+      "view": "front",
+      "source": "sprites/mn-f076/woolwind-v1/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        350,
+        560
+      ],
+      "fit": [
+        36,
+        38
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        19260,
+        15688,
+        0
+      ],
+      "exterior_contour": "solid",
+      "sampling": "source_center",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-163-mitwist-v1",
+      "species_id": "MN_163",
+      "view": "back",
+      "source": "sprites/mn-f076/woolwind-v1/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        560,
+        380,
+        464
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        19260,
+        15688,
+        0
+      ],
+      "exterior_contour": "solid",
+      "sampling": "source_center",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-164-hemhowl-v2",
+      "species_id": "MN_164",
+      "view": "front",
+      "source": "sprites/mn-f076/woolwind-v1/front-back.imagegen-face-v2.png",
+      "crop": [
+        350,
+        0,
+        580,
+        560
+      ],
+      "fit": [
+        46,
+        48
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        29400,
+        14599,
+        0
+      ],
+      "exterior_contour": "solid",
+      "sampling": "source_center",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-164-hemhowl-v2",
+      "species_id": "MN_164",
+      "view": "back",
+      "source": "sprites/mn-f076/woolwind-v1/front-back.imagegen-v1.png",
+      "crop": [
+        380,
+        560,
+        550,
+        464
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        29400,
+        14599,
+        0
+      ],
+      "exterior_contour": "solid",
+      "sampling": "source_center",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-165-gustitch-v1",
+      "species_id": "MN_165",
+      "view": "front",
+      "source": "sprites/mn-f076/woolwind-v1/front-back.imagegen-v1.png",
+      "crop": [
+        930,
+        0,
+        606,
+        560
+      ],
+      "fit": [
+        54,
+        52
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        27411,
+        14569,
+        0
+      ],
+      "exterior_contour": "solid",
+      "sampling": "source_center",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-165-gustitch-v1",
+      "species_id": "MN_165",
+      "view": "back",
+      "source": "sprites/mn-f076/woolwind-v1/front-back.imagegen-v1.png",
+      "crop": [
+        930,
+        560,
+        606,
+        464
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        27411,
+        14569,
+        0
+      ],
+      "exterior_contour": "solid",
+      "sampling": "source_center",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32
+    }
+  ],
+  "visual_review": {
+    "status": "user-rejected",
+    "notes": "All six native views inspected at 1x and 8x after exact source_center conversion. Mitten hook/cuff develops into lifted sleeve wings, then a broad three-panel quilt with rolled collar and squared hem tabs. Original other five views are retained. Hemhowl front uses a targeted built-in ImageGen face enlargement: two separate white eye windows of 10 and 16 native pixels remain visible with black pupils. No native pixels were painted. Every pixel and every row-major front/column-major rear 2bpp tile matches its four-ink PNG. Full sources, prompts and all fit46/48/50 attempts retained. Root approved the selected complete six-view family before canonical merge. User subsequently rejected the mitten/hood/quilt presentation as owl-like. This version is retained consistently for archive only and is NOT APPROVED FOR PUBLICATION. Redesign must remove round hood facial disk, beak-like center, bird feet and symmetric raised wing arms.",
+    "sheet_sha256": "a2d590aa87ea0acb6c81f6de01010c29a5882ecc73763b8fab57abf89ba4300b",
+    "outline_profile": "solid-exterior-v1",
+    "reviewer": "root",
+    "sampling": "source_center",
+    "coverage": "all-six-native-front-and-back-views",
+    "source_sha256_by_view": {
+      "MN_163:front": "a2d590aa87ea0acb6c81f6de01010c29a5882ecc73763b8fab57abf89ba4300b",
+      "MN_163:back": "a2d590aa87ea0acb6c81f6de01010c29a5882ecc73763b8fab57abf89ba4300b",
+      "MN_164:front": "09bc8da692a0f8e389c3948cfa2c46f24e603548378fff2ffd1a32eae02c466b",
+      "MN_164:back": "a2d590aa87ea0acb6c81f6de01010c29a5882ecc73763b8fab57abf89ba4300b",
+      "MN_165:front": "a2d590aa87ea0acb6c81f6de01010c29a5882ecc73763b8fab57abf89ba4300b",
+      "MN_165:back": "a2d590aa87ea0acb6c81f6de01010c29a5882ecc73763b8fab57abf89ba4300b"
+    },
+    "native_sheet_sha256": "d2e60132f3d09774269c534e00868574f4f568cf8ebc5e8d34cf674291daeb00",
+    "review_sheet_sha256": "d81bcefeb3ac30a2b8327ad0f39133733898f4f72dd49e71c6910b86a56805f4"
+  },
+  "source_edits": [
+    {
+      "species_id": "MN_164",
+      "view": "front",
+      "source": "sprites/mn-f076/woolwind-v1/front-back.imagegen-face-v2.png",
+      "source_sha256": "09bc8da692a0f8e389c3948cfa2c46f24e603548378fff2ffd1a32eae02c466b",
+      "prompt_file": "sprites/mn-f076/woolwind-v1/prompt-face-v2.txt",
+      "reason": "Enlarge the source face and exposed white eye windows so true black pupils survive native conversion; the other five views use the original source."
+    }
+  ],
+  "native_qa": {
+    "converter": "target/agent-roster-contour/minnesota_sprite_sampling_v5",
+    "sampling": "source_center",
+    "exterior_contour": "solid",
+    "isolated_output": "target/agent-northwoods-animation/proposals/woolwind-v2-center",
+    "durable_output": "planning/minnesota/renders/line076-woolwind-20261026-v1/selected-native",
+    "review": "planning/minnesota/renders/line076-woolwind-20261026-v1/selected-native/line.review.png",
+    "native": "planning/minnesota/renders/line076-woolwind-20261026-v1/selected-native/line.native.png",
+    "frame_sizes": {
+      "front": [
+        56,
+        56
+      ],
+      "back": [
+        48,
+        48
+      ]
+    },
+    "native_bytes": {
+      "front": 784,
+      "back": 576
+    },
+    "verification": "All 30 distinct proposed move IDs exist in the original 251 pack catalog. All six native PNGs have exactly four RGB555 inks; alpha is opaque, PNG pixels match indexed rows, and each decoded 2bpp pixel matches those rows. Front tiles are row-major and rear tiles column-major. Every front retains at least two enclosed white eye windows.",
+    "retained_attempts": [
+      "native-fit46-source-v1",
+      "native-fit48-source-v1",
+      "native-fit50-source-v1",
+      "selected-native"
+    ],
+    "status": "user-rejected-redesign-required",
+    "canonical_output": "target/minnesota-pokemon/native/MN_F076"
+  }
+}

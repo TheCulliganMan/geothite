@@ -1,0 +1,22 @@
+{
+  "family_id": "MN_F117",
+  "theme": "Perch, walleye and northern pike become winter-light ambush specialists: a perch scout grows a crescent eye lens, the walleye focuses under-ice light with a broad eye/gill lens, and the northern opens great ice-shutter fins around its pointed jaw to focus a decoy glint before lunging.",
+  "add_member": {
+    "id": "MN_263",
+    "name": "Pikethorn",
+    "types": [
+      "WATER",
+      "ICE"
+    ],
+    "stage": 3,
+    "evolves_to": null
+  },
+  "evolution_design_final": "Pikethorn is the final NORTHERN PIKE stage of a perch\u2192walleye\u2192northern ice-lens family, WATER/ICE. It is a powerful long fish with a broad flat duckbill snout, huge alert white eye and large black pupil, heavy forward shoulders and a long muscular body curved in a strong rising S so the tail sweeps UP behind instead of wasting horizontal width. Retain recognizable pike anatomy and a few broad pale side bars. The shared secondary theme is winter light focusing and ambush: an integral thick crescent ice-lens brow has grown into a long pointed focusing visor along the upper jaw. Two broad attached pectoral fins and a great sweeping dorsal fin become translucent-solid ICE SHUTTERS that fold around the head to focus a glint, then snap open like an ambush funnel. Show them OPEN as three broad curved ice blades, simple flat planes with white edges, not lots of spikes. Strong forked icy tail. Large face and confident cunning expression. All fins and lens are living body anatomy, no worn armor, plants, props, machines or detached effects. Full fish, no limbs. Enlarge close rear head/nape, long jaw turned upper-right, ice-shutter fin roots visible, lower body cropped. Powerful near-square silhouette designed to fill54x54 while retaining a long curved fish body.",
+  "sources": [
+    {
+      "title": "Minnesota DNR: Northern pike species profile",
+      "url": "https://www.dnr.state.mn.us/minnaqua/speciesprofile/northern_pike.html",
+      "supports": "Long-jawed lie-in-wait predator inhabits aquatic vegetation; core fish ecology only. Ice lenses, shutter fins and cross-species evolution are original fantasy."
+    }
+  ]
+}

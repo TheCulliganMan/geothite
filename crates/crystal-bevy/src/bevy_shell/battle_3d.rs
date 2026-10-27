@@ -9,6 +9,7 @@ use crystal_render_api::{
 
 include!("battle_measurements.rs");
 include!("battle_source_picture.rs");
+include!("battle_trainers.rs");
 
 #[derive(Component, Clone, Copy)]
 struct ImmersiveBattleReplaced;
@@ -62,6 +63,7 @@ fn capture_presented_battle(
         environment: immersive_battle_environment(&snapshot.overworld.map_name, environment),
         ..Default::default()
     };
+    frame.trainers = immersive_battle_trainers(snapshot, battle, shell);
     let animation = shell.visible_move_animations.front();
     let mut source_pictures: [Option<SpriteFrame>; 2] = [None, None];
     let (player_visible, enemy_visible) = visible_move_battler_visibility(animation);
@@ -324,8 +326,7 @@ fn capture_presented_battle(
             source_rect,
             source_opaque_rect,
             visible,
-            allow_species_model: !substitute && !minimize && reveal_tiles.is_none()
-                && pokedex_size_m.is_some(),
+            allow_species_model: !substitute && !minimize && pokedex_size_m.is_some(),
             shiny,
             model_palette: if shiny && !substitute && !minimize {
                 let asset_id = pokemon_asset_id_for_dvs(species, dvs);
@@ -1861,9 +1862,8 @@ fn publish_immersive_battle_canvas(
     });
 }
 
-/// Capture and the legacy per-line send-out palette retain their original
-/// full-canvas presentation until supported. Faints, withdrawals and row
-/// extraction use exact local picture banks over the retained 3D environment.
+/// The legacy per-line send-out palette still requires the source canvas.
+/// Captures, faints, withdrawals and row extraction retain the 3D environment.
 fn immersive_battle_requires_source_scene(shell: &BevyRuntimeShell) -> bool {
     immersive_battle_requires_source_scene_inner(shell, false)
 }
@@ -1886,9 +1886,10 @@ fn immersive_battle_requires_source_scene_supported(
         .visible_move_animations
         .front()
         .filter(|animation| animation.started);
-    let _ = allow_rows; // Modeled strips and exact source strips share the 3D scene.
-    (!allow_capture && shell.visible_capture_animation.is_some())
-        || visible_beta_send_out_mon1_line_bgps(animation).is_some()
+    // Capture uses the current sculpture and source ball OAM on every platform.
+    // The optional isolated-image experiment no longer owns scene admission.
+    let _ = (allow_rows, allow_capture);
+    visible_beta_send_out_mon1_line_bgps(animation).is_some()
 }
 
 fn visible_capture_present_state(capture: &VisibleCaptureAnimation) -> VisualBattleCapture {
@@ -1976,34 +1977,59 @@ struct ImmersiveBattleHudBacking {
 
 // Size source glyphs in display pixels. A fixed world-unit cap becomes an
 // eight-pixel font when the native LCD camera uses less than one pixel/unit.
-fn immersive_battle_source_ui_scale(view_width:f32,pixels_per_unit:f32,display_dpi:f32)->f32 {
-    let preferred=((view_width-48.0)/720.0)
-        .min(3.0*display_dpi/(4.0*pixels_per_unit));
-    let source_pixels=(4.0*pixels_per_unit*preferred)
-        .min(3.0*display_dpi).floor().max(1.0);
-    (source_pixels/(4.0*pixels_per_unit)).min(preferred)
+fn immersive_battle_source_ui_scale(
+    view_width: f32,
+    pixels_per_unit: f32,
+    display_dpi: f32,
+    display_height: f32,
+) -> f32 {
+    let limit = (display_height / 180.).floor().clamp(1., 3.) * display_dpi;
+    let preferred = ((view_width - 48.0) / 720.0).min(limit / (4.0 * pixels_per_unit));
+    let source_pixels = (4.0 * pixels_per_unit * preferred)
+        .min(limit)
+        .floor()
+        .max(1.0);
+    (source_pixels / (4.0 * pixels_per_unit)).min(preferred)
 }
 
-fn immersive_battle_board_scale(hud_scale:f32,pixels_per_unit:f32,display_dpi:f32)->f32 {
-    // Two display pixels per source pixel keep the eleven-row board readable
-    // without covering the whole battler strip. HP panels retain their larger font.
-    hud_scale.min(2.0*display_dpi/(4.0*pixels_per_unit))
+fn immersive_battle_board_scale(
+    hud_scale: f32,
+    pixels_per_unit: f32,
+    display_dpi: f32,
+    display_height: f32,
+) -> f32 {
+    // Keep the full eleven-row board near a third of the display height.
+    // Short landscape views use native-size glyphs; taller views use 2x.
+    let limit = (display_height / 280.).floor().clamp(1., 2.) * display_dpi;
+    hud_scale.min(limit / (4.0 * pixels_per_unit))
 }
 
 #[cfg(test)]
 #[test]
 fn native_battle_hud_glyphs_remain_readable_without_overlapping_panels() {
-    for (width,height) in [(640.0,576.0),(1280.0,800.0)] {
-        for dpi in [1.0,2.0,3.0] {
-            let physical=Vec2::new(width,height)*dpi;
-            #[cfg(feature="fullscreen-scaling")]
-            let pixels_per_unit=fullscreen_pixels_per_world_unit(physical,dpi)*dpi;
-            #[cfg(not(feature="fullscreen-scaling"))]
-            let pixels_per_unit=(physical/Vec2::new(640.0,576.0)).min_element();
-            let scale=immersive_battle_source_ui_scale(physical.x/pixels_per_unit,pixels_per_unit,dpi);
-            let glyph_css=TILE_SIZE*scale*pixels_per_unit/dpi;
-            assert!((16.0..=24.01).contains(&glyph_css),
-                "{width}x{height} at {dpi}x: glyph width {glyph_css} CSS pixels");
+    for (width, height) in [
+        (640.0, 360.0),
+        (640.0, 480.0),
+        (640.0, 576.0),
+        (1280.0, 800.0),
+    ] {
+        for dpi in [1.0, 2.0, 3.0] {
+            let physical = Vec2::new(width, height) * dpi;
+            #[cfg(feature = "fullscreen-scaling")]
+            let pixels_per_unit = fullscreen_pixels_per_world_unit(physical, dpi) * dpi;
+            #[cfg(not(feature = "fullscreen-scaling"))]
+            let pixels_per_unit = (physical / Vec2::new(640.0, 576.0)).min_element();
+            let scale = immersive_battle_source_ui_scale(
+                physical.x / pixels_per_unit,
+                pixels_per_unit,
+                dpi,
+                height,
+            );
+            let glyph_css = TILE_SIZE * scale * pixels_per_unit / dpi;
+            assert!(
+                (16.0..=24.01).contains(&glyph_css),
+                "{width}x{height} at {dpi}x: glyph width {glyph_css} CSS pixels"
+            );
             // Production HP panels span 96 and 80 source pixels. Include
             // both outer gutters; each name/HP panel must fit beside the other.
             let combined=(704.0*scale+64.0)*pixels_per_unit;
@@ -2015,30 +2041,55 @@ fn native_battle_hud_glyphs_remain_readable_without_overlapping_panels() {
 #[cfg(test)]
 #[test]
 fn native_competitive_board_retains_readable_text_inside_its_reserved_strip() {
-    for (width,height) in [(640.0,576.0),(1280.0,800.0)] {
-        for dpi in [1.0,2.0,3.0] {
-            let physical=Vec2::new(width,height)*dpi;
-            #[cfg(feature="fullscreen-scaling")]
-            let pixels_per_unit=fullscreen_pixels_per_world_unit(physical,dpi)*dpi;
-            #[cfg(not(feature="fullscreen-scaling"))]
-            let pixels_per_unit=(physical/Vec2::new(640.0,576.0)).min_element();
-            let hud=immersive_battle_source_ui_scale(physical.x/pixels_per_unit,pixels_per_unit,dpi);
-            let board=immersive_battle_board_scale(hud,pixels_per_unit,dpi);
-            let glyph_css=TILE_SIZE*board*pixels_per_unit/dpi;
-            assert!((15.99..=16.01).contains(&glyph_css));
-            let (_,source_center)=battle_window_center(0.,7.,20.,COMPETITIVE_MOVE_BOARD_HEIGHT_TILES);
-            let source_half=COMPETITIVE_MOVE_BOARD_HEIGHT_TILES*TILE_SIZE*0.5;
-            let view_height=physical.y/pixels_per_unit;
-            let command_center=-view_height*0.5+24.+96.*board;
-            let bottom=(command_center+(source_center-source_half+192.)*board+view_height*0.5)*pixels_per_unit;
-            let top=(command_center+(source_center+source_half+192.)*board+view_height*0.5)*pixels_per_unit;
-            assert!((bottom-24.*pixels_per_unit).abs()<0.01,
-                "the full board keeps the bottom gutter when the font changes");
-            let reserved=(24.+COMPETITIVE_MOVE_BOARD_HEIGHT_TILES*TILE_SIZE*board+8.)*pixels_per_unit;
-            assert!(top+7.99*pixels_per_unit<=reserved);
-            if width==1280. && height==800. {
-                assert!(reserved<=physical.y*0.25+0.01,
-                    "the dense board must stay below the established complete-battler strip");
+    for (width, height) in [
+        (640.0, 360.0),
+        (640.0, 480.0),
+        (640.0, 576.0),
+        (1280.0, 800.0),
+    ] {
+        for dpi in [1.0, 2.0, 3.0] {
+            let physical = Vec2::new(width, height) * dpi;
+            #[cfg(feature = "fullscreen-scaling")]
+            let pixels_per_unit = fullscreen_pixels_per_world_unit(physical, dpi) * dpi;
+            #[cfg(not(feature = "fullscreen-scaling"))]
+            let pixels_per_unit = (physical / Vec2::new(640.0, 576.0)).min_element();
+            let hud = immersive_battle_source_ui_scale(
+                physical.x / pixels_per_unit,
+                pixels_per_unit,
+                dpi,
+                height,
+            );
+            let board = immersive_battle_board_scale(hud, pixels_per_unit, dpi, height);
+            let glyph_css = TILE_SIZE * board * pixels_per_unit / dpi;
+            let expected = if height < 560. { 8. } else { 16. };
+            assert!((glyph_css - expected).abs() < 0.01);
+            let (_, source_center) =
+                battle_window_center(0., 7., 20., COMPETITIVE_MOVE_BOARD_HEIGHT_TILES);
+            let source_half = COMPETITIVE_MOVE_BOARD_HEIGHT_TILES * TILE_SIZE * 0.5;
+            let view_height = physical.y / pixels_per_unit;
+            let command_center = -view_height * 0.5 + 24. + 96. * board;
+            let bottom =
+                (command_center + (source_center - source_half + 192.) * board + view_height * 0.5)
+                    * pixels_per_unit;
+            let top =
+                (command_center + (source_center + source_half + 192.) * board + view_height * 0.5)
+                    * pixels_per_unit;
+            assert!(
+                (bottom - 24. * pixels_per_unit).abs() < 0.01,
+                "the full board keeps the bottom gutter when the font changes"
+            );
+            let reserved = (24. + COMPETITIVE_MOVE_BOARD_HEIGHT_TILES * TILE_SIZE * board + 8.)
+                * pixels_per_unit;
+            assert!(
+                reserved <= physical.y * 0.35,
+                "the board must leave room for the checked 3D camera at {width}x{height}"
+            );
+            assert!(top + 7.99 * pixels_per_unit <= reserved);
+            if width == 1280. && height == 800. {
+                assert!(
+                    reserved <= physical.y * 0.25 + 0.01,
+                    "the dense board must stay below the established complete-battler strip"
+                );
             }
         }
     }
@@ -2185,13 +2236,24 @@ Visibility::Hidden,),
         .filter(|dpi| dpi.is_finite() && *dpi > 0.0).unwrap_or(window.scale_factor());
     #[cfg(not(target_arch = "wasm32"))]
     let display_dpi = window.scale_factor();
-    let scale = immersive_battle_source_ui_scale(view.x, pixels_per_unit, display_dpi);
-    let board_scale = immersive_battle_board_scale(scale, pixels_per_unit, display_dpi);
-    let expanded_board = shell.battle_move_cursor.is_some() && ui.iter().any(|(_, sprite, _, _, _)|
-        sprite.custom_size == Some(Vec2::new(20.0 * TILE_SIZE,
-            COMPETITIVE_MOVE_BOARD_HEIGHT_TILES * TILE_SIZE)));
-    let competitive = expanded_board || shell.cached_snapshot.as_ref()
-        .is_some_and(|(_, snapshot)| snapshot.competitive_battle.is_some());
+    let display_height = physical.y / display_dpi;
+    let scale =
+        immersive_battle_source_ui_scale(view.x, pixels_per_unit, display_dpi, display_height);
+    let board_scale =
+        immersive_battle_board_scale(scale, pixels_per_unit, display_dpi, display_height);
+    let expanded_board = shell.battle_move_cursor.is_some()
+        && ui.iter().any(|(_, sprite, _, _, _)| {
+            sprite.custom_size
+                == Some(Vec2::new(
+                    20.0 * TILE_SIZE,
+                    COMPETITIVE_MOVE_BOARD_HEIGHT_TILES * TILE_SIZE,
+                ))
+        });
+    let competitive = expanded_board
+        || shell
+            .cached_snapshot
+            .as_ref()
+            .is_some_and(|(_, snapshot)| snapshot.competitive_battle.is_some());
     let command_scale = if expanded_board { board_scale } else { scale };
     let command_height = if competitive {
         COMPETITIVE_MOVE_BOARD_HEIGHT_TILES * TILE_SIZE * board_scale

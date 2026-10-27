@@ -239,6 +239,7 @@ fn grass_rustle_art_composes_the_complete_source_oam_canvas() {
     let frames = grass_rustle_frames_for_art(
         &mut rendered_art,
         &asset_root,
+        "johto",
         "day",
         &mut images,
     )
@@ -2545,21 +2546,21 @@ fn fullscreen_distant_npcs_respect_hidden_flags_without_mutating_gameplay() {
     let id = shell.shell.session().overworld().objects[index].object_identifier.clone().unwrap();
     let before = shell.shell.snapshot().unwrap();
     let mut expanded = before.clone();
-    expand_fullscreen_object_presentation(&mut expanded, &shell).unwrap();
+    object_presentation::expand_fullscreen_object_presentation(&mut expanded, &shell).unwrap();
     assert!(expanded.visible_object_runtime_tiles.contains_key(&id));
     let count = expanded.visible_objects.len();
-    expand_fullscreen_object_presentation(&mut expanded, &shell).unwrap();
+    object_presentation::expand_fullscreen_object_presentation(&mut expanded, &shell).unwrap();
     assert_eq!(expanded.visible_objects.len(), count);
     assert_eq!(before.state_checksum, shell.shell.snapshot().unwrap().state_checksum);
     assert!(!shell.shell.session().overworld().object_has_loaded_struct(index));
     shell.shell.session_mut().overworld_mut().hidden_object_identifiers.insert(id.clone());
     let mut hidden = before.clone();
-    expand_fullscreen_object_presentation(&mut hidden, &shell).unwrap();
+    object_presentation::expand_fullscreen_object_presentation(&mut hidden, &shell).unwrap();
     assert!(!hidden.visible_object_runtime_tiles.contains_key(&id));
     shell.shell.session_mut().overworld_mut().hidden_object_identifiers.remove(&id);
     shell.shell.session_mut().overworld_mut().invisible_object_struct_identifiers.insert(id.clone());
     let mut invisible = before;
-    expand_fullscreen_object_presentation(&mut invisible, &shell).unwrap();
+    object_presentation::expand_fullscreen_object_presentation(&mut invisible, &shell).unwrap();
     assert!(!invisible.visible_object_runtime_tiles.contains_key(&id));
 }
 
@@ -2581,7 +2582,7 @@ fn fullscreen_does_not_spawn_moms_next_map_load_replacement() {
     let original = snapshot.visible_object_slots.clone();
     assert!(original.contains(&0));
     assert!(!original.iter().any(|slot| (1..=3).contains(slot)));
-    expand_fullscreen_object_presentation(&mut snapshot, &shell).unwrap();
+    object_presentation::expand_fullscreen_object_presentation(&mut snapshot, &shell).unwrap();
     assert_eq!(snapshot.visible_object_slots, original, "fullscreen must not materialize Mom's replacement while the original is still talking");
 }
 
@@ -2604,7 +2605,7 @@ fn fullscreen_elm_keeps_his_position_when_leaving_the_lab() {
     assert!(!world.object_has_loaded_struct(index));
     let before = shell.shell.snapshot().unwrap();
     let mut expanded = before.clone();
-    expand_fullscreen_object_presentation(&mut expanded, &shell).unwrap();
+    object_presentation::expand_fullscreen_object_presentation(&mut expanded, &shell).unwrap();
     assert_eq!(expanded.visible_object_runtime_tiles.get("ELMSLAB_ELM"), Some(&TilePosition::new(5, 2)));
     assert_eq!(expanded.visible_object_facings.get("ELMSLAB_ELM"), Some(&Direction::Right));
     assert_eq!(before.state_checksum, shell.shell.snapshot().unwrap().state_checksum);

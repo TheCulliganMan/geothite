@@ -1,0 +1,486 @@
+{
+  "name": "Ticklet → Solstort",
+  "members": [
+    {
+      "id": "MN_303",
+      "name": "Ticklet",
+      "types": [
+        "WATER"
+      ],
+      "palette": {
+        "gbc_rgb5": [
+          [
+            31,
+            31,
+            31
+          ],
+          [
+            24,
+            20,
+            10
+          ],
+          [
+            7,
+            19,
+            20
+          ],
+          [
+            0,
+            0,
+            0
+          ]
+        ],
+        "gbc_rgb555_words": [
+          32767,
+          10904,
+          21095,
+          0
+        ],
+        "rgb8": [
+          [
+            255,
+            255,
+            255
+          ],
+          [
+            198,
+            165,
+            82
+          ],
+          [
+            57,
+            156,
+            165
+          ],
+          [
+            0,
+            0,
+            0
+          ]
+        ],
+        "hex": [
+          "#FFFFFF",
+          "#C6A552",
+          "#399CA5",
+          "#000000"
+        ]
+      },
+      "base_stats": {
+        "hp": 55,
+        "attack": 40,
+        "defense": 75,
+        "speed": 25,
+        "special_attack": 45,
+        "special_defense": 50
+      },
+      "evolution": {
+        "level": 32,
+        "to": "MN_304"
+      },
+      "level_moves": [
+        [
+          1,
+          "TACKLE"
+        ],
+        [
+          1,
+          "WITHDRAW"
+        ],
+        [
+          6,
+          "WATER_GUN"
+        ],
+        [
+          12,
+          "CONFUSION"
+        ],
+        [
+          18,
+          "PROTECT"
+        ],
+        [
+          24,
+          "BUBBLEBEAM"
+        ],
+        [
+          30,
+          "REFLECT"
+        ]
+      ],
+      "bst": 290,
+      "profile": {
+        "id": "MN_303",
+        "classification": "Shell Ridge",
+        "height_inches": 14,
+        "weight_tenths_lb": 160,
+        "dex_pages": [
+          "Its shell ridge @ points toward noon @ It follows shade.",
+          "When clouds come, @ it feels for light @ with its forefeet."
+        ],
+        "base_stats": {
+          "hp": 55,
+          "attack": 40,
+          "defense": 75,
+          "speed": 25,
+          "special_attack": 45,
+          "special_defense": 50
+        },
+        "catch_rate": 150,
+        "base_exp": 70,
+        "gender_ratio": 127,
+        "hatch_cycles": 20,
+        "growth_rate": "GROWTH_MEDIUM_FAST",
+        "egg_groups": [
+          "EGG_MONSTER",
+          "EGG_WATER_1"
+        ],
+        "evolution": {
+          "method": "LEVEL",
+          "level": 32
+        },
+        "held_items": [
+          null,
+          null
+        ],
+        "menu_icon": "ICON_SQUIRTLE",
+        "footprint_species": "SQUIRTLE",
+        "cry": {
+          "cry": "CRY_SQUIRTLE",
+          "pitch": -16,
+          "length": 128
+        },
+        "shiny_rgb5": [
+          [
+            22,
+            15,
+            24
+          ],
+          [
+            6,
+            16,
+            21
+          ]
+        ],
+        "level_moves": [
+          [
+            1,
+            "TACKLE"
+          ],
+          [
+            1,
+            "WITHDRAW"
+          ],
+          [
+            6,
+            "WATER_GUN"
+          ],
+          [
+            12,
+            "CONFUSION"
+          ],
+          [
+            18,
+            "PROTECT"
+          ],
+          [
+            24,
+            "BUBBLEBEAM"
+          ],
+          [
+            30,
+            "REFLECT"
+          ]
+        ],
+        "tmhm_moves": [
+          "SURF",
+          "WHIRLPOOL",
+          "WATERFALL",
+          "RAIN_DANCE",
+          "ICE_BEAM",
+          "BLIZZARD",
+          "PSYCHIC_M",
+          "PROTECT",
+          "REST",
+          "SLEEP_TALK",
+          "SNORE",
+          "RETURN",
+          "FRUSTRATION",
+          "TOXIC",
+          "HIDDEN_POWER",
+          "DOUBLE_TEAM"
+        ],
+        "egg_moves": [
+          "HAZE",
+          "AMNESIA"
+        ]
+      }
+    },
+    {
+      "id": "MN_304",
+      "name": "Solstort",
+      "types": [
+        "WATER",
+        "PSYCHIC"
+      ],
+      "palette": {
+        "gbc_rgb5": [
+          [
+            31,
+            31,
+            31
+          ],
+          [
+            29,
+            22,
+            9
+          ],
+          [
+            8,
+            11,
+            19
+          ],
+          [
+            0,
+            0,
+            0
+          ]
+        ],
+        "gbc_rgb555_words": [
+          32767,
+          9949,
+          19816,
+          0
+        ],
+        "rgb8": [
+          [
+            255,
+            255,
+            255
+          ],
+          [
+            239,
+            181,
+            74
+          ],
+          [
+            66,
+            90,
+            156
+          ],
+          [
+            0,
+            0,
+            0
+          ]
+        ],
+        "hex": [
+          "#FFFFFF",
+          "#EFB54A",
+          "#425A9C",
+          "#000000"
+        ]
+      },
+      "base_stats": {
+        "hp": 80,
+        "attack": 55,
+        "defense": 110,
+        "speed": 40,
+        "special_attack": 95,
+        "special_defense": 100
+      },
+      "evolution": null,
+      "level_moves": [
+        [
+          1,
+          "TACKLE"
+        ],
+        [
+          1,
+          "WITHDRAW"
+        ],
+        [
+          1,
+          "WATER_GUN"
+        ],
+        [
+          1,
+          "CONFUSION"
+        ],
+        [
+          18,
+          "PROTECT"
+        ],
+        [
+          24,
+          "BUBBLEBEAM"
+        ],
+        [
+          30,
+          "REFLECT"
+        ],
+        [
+          32,
+          "PSYBEAM"
+        ],
+        [
+          38,
+          "LIGHT_SCREEN"
+        ],
+        [
+          44,
+          "MORNING_SUN"
+        ],
+        [
+          50,
+          "PSYCHIC_M"
+        ],
+        [
+          56,
+          "HYDRO_PUMP"
+        ]
+      ],
+      "bst": 480,
+      "profile": {
+        "id": "MN_304",
+        "classification": "Shadow Dial",
+        "height_inches": 47,
+        "weight_tenths_lb": 1260,
+        "dex_pages": [
+          "Five shell plates @ cast a stern face. @ Its true eyes hide",
+          "under the rim. It @ predicts a strike @ from moving shade."
+        ],
+        "base_stats": {
+          "hp": 80,
+          "attack": 55,
+          "defense": 110,
+          "speed": 40,
+          "special_attack": 95,
+          "special_defense": 100
+        },
+        "catch_rate": 60,
+        "base_exp": 175,
+        "gender_ratio": 127,
+        "hatch_cycles": 20,
+        "growth_rate": "GROWTH_MEDIUM_FAST",
+        "egg_groups": [
+          "EGG_MONSTER",
+          "EGG_WATER_1"
+        ],
+        "evolution": null,
+        "held_items": [
+          null,
+          null
+        ],
+        "menu_icon": "ICON_SQUIRTLE",
+        "footprint_species": "BLASTOISE",
+        "cry": {
+          "cry": "CRY_BLASTOISE",
+          "pitch": -32,
+          "length": 160
+        },
+        "shiny_rgb5": [
+          [
+            25,
+            16,
+            24
+          ],
+          [
+            7,
+            15,
+            14
+          ]
+        ],
+        "level_moves": [
+          [
+            1,
+            "TACKLE"
+          ],
+          [
+            1,
+            "WITHDRAW"
+          ],
+          [
+            1,
+            "WATER_GUN"
+          ],
+          [
+            1,
+            "CONFUSION"
+          ],
+          [
+            18,
+            "PROTECT"
+          ],
+          [
+            24,
+            "BUBBLEBEAM"
+          ],
+          [
+            30,
+            "REFLECT"
+          ],
+          [
+            32,
+            "PSYBEAM"
+          ],
+          [
+            38,
+            "LIGHT_SCREEN"
+          ],
+          [
+            44,
+            "MORNING_SUN"
+          ],
+          [
+            50,
+            "PSYCHIC_M"
+          ],
+          [
+            56,
+            "HYDRO_PUMP"
+          ]
+        ],
+        "tmhm_moves": [
+          "SURF",
+          "WHIRLPOOL",
+          "WATERFALL",
+          "RAIN_DANCE",
+          "ICE_BEAM",
+          "BLIZZARD",
+          "PSYCHIC_M",
+          "PROTECT",
+          "REST",
+          "SLEEP_TALK",
+          "SNORE",
+          "RETURN",
+          "FRUSTRATION",
+          "TOXIC",
+          "HIDDEN_POWER",
+          "DOUBLE_TEAM"
+        ],
+        "egg_moves": [
+          "HAZE",
+          "AMNESIA"
+        ]
+      }
+    }
+  ],
+  "theme": "Freshwater turtle × living sundial. One raised shell ridge develops into an asymmetric fan of scutes whose shadows form a second expression; its narrow real face remains sheltered beneath the overhang.",
+  "identity_locks": [
+    "Water → Water/Psychic; never change to Grass.",
+    "Organic shell/scutes; no clock face, numbers, gears, carried sundial or costume.",
+    "Four planted turtle feet, short beaked face and low body. A single raised gnomon-like shell ridge persists into the mature fan."
+  ],
+  "schema_version": 1,
+  "family_id": "MN_F137",
+  "status": "proposal-only-unregistered",
+  "style_reference": "target/minnesota-pokemon/gen2-reference/starters.png",
+  "palette_policy": "Per-species exact4RGB555inks; no shared family palette; no native handpainting.",
+  "profiles_file": "proposed-species-profiles.json",
+  "palette_file": "palettes.proposal.json",
+  "roster_family_file": "roster-family.proposal.json",
+  "selected_manifest": "manifest.json",
+  "selected_native_review": "native-selected/line.review.png",
+  "review_file": "proposal-review.json",
+  "selection_status": "root-approved-unregistered-native-ready"
+}

@@ -1,0 +1,243 @@
+{
+  "id": "MnDuluth",
+  "town_source": "planning/minnesota/towns/MnDuluth.json",
+  "regional_connections": {
+    "manifest": "minnesota-duluth-connections-v2",
+    "status": "NATIVE VERIFIED on the current 56x96 North Shore composition: all three controller cases, second-lane MCP round trips, inbound free care/Continue and exact source/native review pass. See playable/duluth-links.md.",
+    "patches": [
+      {
+        "map": "MnR10C01R00",
+        "metatile": [
+          15,
+          10
+        ],
+        "expected": "02",
+        "block": "05"
+      },
+      {
+        "map": "MnR10C01R00",
+        "metatile": [
+          15,
+          11
+        ],
+        "expected": "02",
+        "block": "05"
+      },
+      {
+        "map": "MnR10C01R00",
+        "metatile": [
+          15,
+          12
+        ],
+        "expected": "02",
+        "block": "01"
+      },
+      {
+        "map": "MnR10C01R00",
+        "metatile": [
+          15,
+          13
+        ],
+        "expected": "02",
+        "block": "05"
+      },
+      {
+        "map": "MnDuluth",
+        "metatile": [
+          2,
+          11
+        ],
+        "expected": "05",
+        "block": "45"
+      },
+      {
+        "map": "MnDuluth",
+        "metatile": [
+          2,
+          12
+        ],
+        "expected": "45",
+        "block": "01"
+      }
+    ],
+    "passages": [
+      {
+        "route": "MnR10C01R00",
+        "outward": "west",
+        "reverse": "east",
+        "offset": 0,
+        "town_edge": [
+          [
+            0,
+            24
+          ],
+          [
+            0,
+            25
+          ]
+        ],
+        "route_edge": [
+          [
+            31,
+            24
+          ],
+          [
+            31,
+            25
+          ]
+        ],
+        "bodies": [
+          [
+            2,
+            24
+          ],
+          [
+            2,
+            25
+          ]
+        ],
+        "inside": [
+          [
+            3,
+            24
+          ],
+          [
+            3,
+            25
+          ]
+        ],
+        "outside": [
+          [
+            1,
+            24
+          ],
+          [
+            1,
+            25
+          ]
+        ],
+        "identifiers": [
+          "MN_DULUTH_RANGE_GUARD_NORTH",
+          "MN_DULUTH_RANGE_GUARD_SOUTH"
+        ],
+        "root": "MnDuluthRangeCheck",
+        "incoming_facing": "RIGHT",
+        "badge_flags": [
+          "ENGINE_GLACIERBADGE"
+        ],
+        "required_event": "EVENT_MN_DEPOT_CLEARED",
+        "badge_lines": [
+          "Earn the seventh",
+          "BADGE first.",
+          "The clinic is open"
+        ],
+        "evidence_lines": [
+          "File the meter log",
+          "at GRAND RAPIDS",
+          "before going west."
+        ]
+      },
+      {
+        "route": "MnR11C00R03",
+        "outward": "north",
+        "reverse": "south",
+        "offset": -7,
+        "town_edge": [
+          [
+            32,
+            0
+          ],
+          [
+            33,
+            0
+          ]
+        ],
+        "route_edge": [
+          [
+            46,
+            47
+          ],
+          [
+            47,
+            47
+          ]
+        ],
+        "bodies": [
+          [
+            32,
+            2
+          ],
+          [
+            33,
+            2
+          ]
+        ],
+        "inside": [
+          [
+            32,
+            3
+          ],
+          [
+            33,
+            3
+          ]
+        ],
+        "outside": [
+          [
+            32,
+            1
+          ],
+          [
+            33,
+            1
+          ]
+        ],
+        "identifiers": [
+          "MN_DULUTH_SHORE_GUARD_WEST",
+          "MN_DULUTH_SHORE_GUARD_EAST"
+        ],
+        "root": "MnDuluthShoreCheck",
+        "incoming_facing": "DOWN",
+        "badge_flags": [
+          "ENGINE_ZEPHYRBADGE",
+          "ENGINE_HIVEBADGE",
+          "ENGINE_PLAINBADGE",
+          "ENGINE_FOGBADGE",
+          "ENGINE_STORMBADGE",
+          "ENGINE_MINERALBADGE",
+          "ENGINE_GLACIERBADGE",
+          "ENGINE_RISINGBADGE"
+        ],
+        "required_event": "EVENT_MN_LIGHTHOUSE_SIGNAL",
+        "badge_lines": [
+          "Bring all eight",
+          "BADGES to take the",
+          "North Shore road."
+        ],
+        "evidence_lines": [
+          "Read the copied",
+          "log at the harbor.",
+          "We need its signal"
+        ]
+      }
+    ],
+    "contract": [
+      "Only six declared metatiles change. The west sign moves two tiles north with its native background interaction and unchanged text; all original actors remain exact.",
+      "Westbound departure checks badge 7 and acknowledged MS09 clearance.",
+      "Northbound departure checks all eight badges and the actual acknowledged MS10 signal.",
+      "Incoming travelers receive free city access through native facing, temporary guard visibility and two inward steps. No admission or reward flag is created.",
+      "Both complete guard planes must seal walking and Surf bypasses. The old city north guard keeps its original position, script and dialogue."
+    ],
+    "sign_relocation": {
+      "script": "MnDuluth_DULUTH_SIGN",
+      "original": [
+        4,
+        24
+      ],
+      "destination": [
+        4,
+        22
+      ]
+    }
+  }
+}

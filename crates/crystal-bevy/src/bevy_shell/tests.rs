@@ -31,6 +31,11 @@ include!("tests/fishing_presentation.rs");
 include!("tests/battle_timeline_clock.rs");
 include!("tests/battle_capture_palettes.rs");
 include!("tests/battle_oam_layers.rs");
+include!("tests/minnesota_signature_animations.rs");
+include!("tests/northwoods_signature_controller.rs");
+include!("tests/northwoods_fairy_controller.rs");
+include!("tests/northwoods_starter_battle_backs.rs");
+include!("tests/northwoods_sticky_progression.rs");
 include!("tests/battle_sliding_intro.rs");
 include!("tests/shop_rendering.rs");
 include!("tests/all_pokemon.rs");
@@ -145,6 +150,12 @@ fn external_oracle_fixture_text(name: &str) -> String {
 include!("tests/runtime_frontend_smoke.rs");
 #[path = "tests/controller_snapshots.rs"]
 mod controller_snapshots;
+#[path = "tests/grand_marais_rewards.rs"]
+mod grand_marais_rewards;
+#[path = "tests/north_shore.rs"]
+mod north_shore;
+#[path = "tests/north_shore_expansion.rs"]
+mod north_shore_expansion;
 #[cfg(feature = "voxel-view")]
 include!("tests/immersive_battle.rs");
 #[cfg(feature = "voxel-view")]
@@ -162,3 +173,141 @@ include!("tests/summit_backdrop.rs");
 include!("tests/shared_yes_no_layout.rs");
 
 include!("tests/pc_yes_no_timing.rs");
+
+#[path = "tests/gunflint_art.rs"]
+mod gunflint_art;
+
+#[path = "tests/authored_route_fixture.rs"]
+mod authored_route_fixture;
+#[path = "tests/gunflint.rs"]
+mod gunflint;
+
+#[path = "tests/league_approach.rs"]
+mod league_approach;
+
+#[path = "tests/border_pines.rs"]
+mod border_pines;
+#[path = "tests/grand_rapids.rs"]
+mod grand_rapids;
+#[path = "tests/iron_range.rs"]
+mod iron_range;
+#[path = "tests/iron_range_story.rs"]
+mod iron_range_story;
+#[path = "tests/iron_range_descent.rs"]
+mod iron_range_descent;
+#[path = "tests/r10_gallery.rs"]
+mod r10_gallery;
+#[path = "tests/r12_shelter.rs"]
+mod r12_shelter;
+#[path = "tests/r13_refuge.rs"]
+mod r13_refuge;
+#[path = "tests/r20_cleft.rs"]
+mod r20_cleft;
+#[path = "tests/r09_mine.rs"]
+mod r09_mine;
+#[path = "tests/r01_hollows.rs"]
+mod r01_hollows;
+#[path = "tests/r03_bank_cave.rs"]
+mod r03_bank_cave;
+#[path = "tests/r17_tor_cave.rs"]
+mod r17_tor_cave;
+#[path = "tests/r05_rockcut.rs"]
+mod r05_rockcut;
+#[path = "tests/mille_lacs_shore.rs"]
+mod mille_lacs_shore;
+#[path = "tests/leech_lake.rs"]
+mod leech_lake;
+#[path = "tests/northern_lakes.rs"]
+mod northern_lakes;
+#[path = "tests/pine_country.rs"]
+mod pine_country;
+#[path = "tests/minnesota_gyms.rs"]
+mod minnesota_gyms;
+#[path = "tests/boundary_basecamp_story.rs"]
+mod boundary_basecamp_story;
+#[path = "tests/boundary_basecamp_connections.rs"]
+mod boundary_basecamp_connections;
+#[path = "tests/prairie_forest_link.rs"]
+mod prairie_forest_link;
+#[path = "tests/route_quality_r19.rs"]
+mod route_quality_r19;
+#[path = "tests/route_quality_r08.rs"]
+mod route_quality_r08;
+#[path = "tests/route_quality_r18.rs"]
+mod route_quality_r18;
+#[path = "tests/red_river_prairie.rs"]
+mod red_river_prairie;
+#[path = "tests/voyageurs_border_loop.rs"]
+mod voyageurs_border_loop;
+
+#[path = "tests/central_lakes.rs"]
+mod central_lakes;
+#[path = "tests/central_lakes_journey.rs"]
+mod central_lakes_journey;
+#[path = "tests/driftless.rs"]
+mod driftless;
+#[path = "tests/headwaters.rs"]
+mod headwaters;
+#[path = "tests/headwaters_art.rs"]
+mod headwaters_art;
+
+#[path = "tests/prairie_farm.rs"]
+mod prairie_farm;
+
+#[path = "tests/prairie_farm_journey.rs"]
+mod prairie_farm_journey;
+
+#[path = "tests/river_valley.rs"]
+mod river_valley;
+
+#[path = "tests/river_valley_journey.rs"]
+mod river_valley_journey;
+
+#[path = "tests/twin_cities.rs"]
+mod twin_cities;
+
+#[path = "tests/twin_cities_journey.rs"]
+mod twin_cities_journey;
+#[path = "tests/brainerd_city.rs"]
+mod brainerd_city;
+#[path = "tests/duluth_connections.rs"]
+mod duluth_connections;
+#[path = "tests/duluth_story.rs"]
+mod duluth_story;
+#[path = "tests/minneapolis.rs"]
+mod minneapolis;
+#[path = "tests/winona.rs"]
+mod winona;
+#[path = "tests/rochester.rs"]
+mod rochester;
+#[path = "tests/rochester_earned.rs"]
+mod rochester_earned;
+#[path = "tests/prairie_story.rs"]
+mod prairie_story;
+#[path = "tests/courier_story.rs"]
+mod courier_story;
+#[path = "tests/battle_pack_navigation.rs"]
+mod battle_pack_navigation;
+#[path = "tests/ryans_house.rs"]
+mod ryans_house;
+#[path = "tests/duluth_city.rs"]
+mod duluth_city;
+#[path = "tests/bemidji_city.rs"]
+mod bemidji_city;
+#[path = "tests/prairie_grass_rustle.rs"]
+mod prairie_grass_rustle;
+
+#[path = "tests/river_bluffs.rs"]
+mod river_bluffs;
+
+#[path = "tests/river_bluffs_journey.rs"]
+mod river_bluffs_journey;
+
+#[path = "tests/cut_gated_routes.rs"]
+mod cut_gated_routes;
+#[path = "tests/root_beer_lady.rs"]
+mod root_beer_lady;
+#[path = "tests/boundary_waters.rs"]
+mod boundary_waters;
+#[path = "tests/boundary_safari_expansion.rs"]
+mod boundary_safari_expansion;

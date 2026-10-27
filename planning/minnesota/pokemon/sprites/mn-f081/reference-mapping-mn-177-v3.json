@@ -1,0 +1,93 @@
+{
+  "references": [
+    {
+      "path": "/Users/ryanculligan/GitHub/geothite/planning/minnesota/pokemon/sprites/mn-f081/mn-176-177.front-back.imagegen-v2.png",
+      "sha256": "28527bac1b6dc90618d6f887186fe88777ef881b3b8c7105832e774e1d80686d",
+      "role": "Preserve adult face, exact palette and kinship to young Runnelisk only; replace old adult rounded segmented torso with one triangular ridge prism."
+    }
+  ],
+  "authentic_style_basis_already_inspected": "target/minnesota-pokemon/gen2-reference/starters.png",
+  "pokemon_palette": {
+    "species_id": "MN_177",
+    "name": "Dividra",
+    "gbc_rgb5": [
+      [
+        31,
+        31,
+        31
+      ],
+      [
+        23,
+        20,
+        10
+      ],
+      [
+        8,
+        13,
+        13
+      ],
+      [
+        0,
+        0,
+        0
+      ]
+    ],
+    "gbc_rgb555_words": [
+      32767,
+      10903,
+      13736,
+      0
+    ],
+    "rgb8": [
+      [
+        255,
+        255,
+        255
+      ],
+      [
+        189,
+        165,
+        82
+      ],
+      [
+        66,
+        107,
+        107
+      ],
+      [
+        0,
+        0,
+        0
+      ]
+    ],
+    "hex": [
+      "#FFFFFF",
+      "#BDA552",
+      "#426B6B",
+      "#000000"
+    ]
+  },
+  "selected_for_main_manifest": false,
+  "status": "generated-native-review-pending",
+  "source": "sprites/mn-f081/mn-177-dividra.ridge-alternate-v3.imagegen.png",
+  "source_size": [
+    1199,
+    1312
+  ],
+  "source_sha256": "3d3bf42cd0c2e15b6e35895839b5bf202d440b071316d05fab38b44aa7e25657",
+  "proposed_crops": {
+    "front": [
+      0,
+      0,
+      1199,
+      640
+    ],
+    "back": [
+      0,
+      640,
+      1199,
+      672
+    ]
+  },
+  "candidate_manifest": "sprites/mn-f081/manifest.dividra-ridge-v3.json"
+}

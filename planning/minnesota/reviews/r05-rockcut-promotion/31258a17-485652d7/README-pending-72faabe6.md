@@ -1,0 +1,13 @@
+# RockCut guarded source promotion preflight
+
+**Prepared, not applied.** The promotion requires both actual production-controller cases to pass on the exact final100 pack and a matching successful execution receipt. Current Root execution has one genuine PASS for mouths/stair/healing/Continue and one genuine failure in the production Repel notice path (`RepelUseText` missing). No passing claim is made for that second case and no source write has occurred.
+
+`MN_R05.json.before` and `interiors.json.before` retain complete current shared sources. Complete `.proposed` files show the exact bounded replacement. Owned room/contract before/proposed JSON and frozen candidate/original, native163 proof, source61 proof and exact promotion-tool snapshot are retained. The candidate changes only RockCut's original rows and adds editorial purpose/status/review metadata. Original healer, service, Repel, flags, entrances, clear arrival and every other original field remain exact. Shared contract metadata describes the same original paired mouths; no exterior record is rewritten.
+
+Preflight `2e25cf8e8bb3b965bb56415b0f846269d990a1609b1e7c81da9428cffd7b52d6` records `applied:false` and `controller_acceptance_complete:false`. The guarded tool refuses application without both successful named cases, an actual matching final-pack receipt, exact original owned source and unchanged full shared source hashes since this review. Concurrent edits require a fresh preflight rather than being overwritten. Applied replacements, if later authorized, use staged writes with guarded rollback and full application snapshots.
+
+Independent readback `39ed24972f4f3425379bbcde6bed434842614d4b29e28e2c3434a4f85f0c47ae` verifies all bytes before/after each owned record, all unrelated parsed JSON values, preservation of every original non-row room field, and that both live files still equal their complete before snapshots. The independently written reader and output are retained here; it does not call the promotion splice helper.
+
+Final100 pack `31258a1788a986b158d0679e4f3a26c4dd476964311f707a6e09c9640cad48c6` is independently compared against actual geometry96a pack. Inheritance proof `746c96dc2d037c6b267f17596611c2b7502bb23a62b3d2f3f29aa7bd6f0845dc` confirms all510 map modules and every other pack/data/identity field exact after normalizing just Repel duration100→200 and derived content hash. Super Repel200 and Max Repel250 remain exact. Thus geometry96a's eight actual views remain valid for the final item-corrected pack. Source certification/parser tests are separately owned by Root.
+
+This is source planning work only. No Cargo, export, pack mutation, native registration or source promotion occurred.

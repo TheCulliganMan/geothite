@@ -1,0 +1,18 @@
+{
+  "status": "failed_no_image",
+  "tool": "built-in image_gen",
+  "prompt_file": "prompt-v1.txt",
+  "request_id": "1d1e0b08-149d-4513-92aa-2cd6e1133111",
+  "http_status": 400,
+  "code": "moderation_blocked",
+  "moderation_stage": "output",
+  "categories": [
+    "other"
+  ],
+  "message": "Your request was rejected by the safety system. If you believe this is an error, contact us at help.openai.com and include the request ID1d1e0b08-149d-4513-92aa-2cd6e1133111.",
+  "references": [
+    "../mn-172-173.front-back.imagegen-v1.png",
+    "target/minnesota-pokemon/gen2-reference/starters.png"
+  ],
+  "retry": "Exact same prompt, references and settings; no changes"
+}

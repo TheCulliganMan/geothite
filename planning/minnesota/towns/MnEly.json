@@ -1,0 +1,104 @@
+{
+  "id": "MnEly",
+  "name": "ELY",
+  "dimensions_metatiles": [
+    24,
+    24
+  ],
+  "reference_anchor_percent": [
+    68,
+    22
+  ],
+  "role": "league",
+  "tileset": "johto",
+  "composition": "League forecourt and northern expedition base.",
+  "ports": [
+    {
+      "route": "MN_R13",
+      "side": "N",
+      "gate_metatile": [
+        12,
+        1
+      ],
+      "landing_metatile": [
+        12,
+        3
+      ]
+    }
+  ],
+  "interiors": [
+    {
+      "id": "MnElyPokecenter1F",
+      "kind": "pokecenter",
+      "dimensions_metatiles": [
+        10,
+        8
+      ],
+      "source_behavior": "canonical healing, PC and blackout recovery"
+    },
+    {
+      "id": "MnElyMart",
+      "kind": "mart",
+      "dimensions_metatiles": [
+        6,
+        4
+      ],
+      "source_behavior": "canonical clerk, money deduction and inventory"
+    },
+    {
+      "id": "MnLeagueLobby",
+      "kind": "league",
+      "dimensions_metatiles": [
+        10,
+        8
+      ]
+    },
+    {
+      "id": "MnLeagueRoom1",
+      "kind": "league",
+      "dimensions_metatiles": [
+        10,
+        8
+      ]
+    },
+    {
+      "id": "MnLeagueRoom2",
+      "kind": "league",
+      "dimensions_metatiles": [
+        10,
+        8
+      ]
+    },
+    {
+      "id": "MnLeagueRoom3",
+      "kind": "league",
+      "dimensions_metatiles": [
+        10,
+        8
+      ]
+    },
+    {
+      "id": "MnLeagueRoom4",
+      "kind": "league",
+      "dimensions_metatiles": [
+        10,
+        8
+      ]
+    },
+    {
+      "id": "MnLeagueChampion",
+      "kind": "league",
+      "dimensions_metatiles": [
+        10,
+        8
+      ]
+    }
+  ],
+  "walkable_destinations": [
+    "each port landing",
+    "every visible exterior door",
+    "central square",
+    "local story NPC"
+  ],
+  "door_contract": "Assign exterior core-tile door coordinates only after selecting authentic facade quadrants; record reciprocal warp indices and indoor floor arrivals before export."
+}

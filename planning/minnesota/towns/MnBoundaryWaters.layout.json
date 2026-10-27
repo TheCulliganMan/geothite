@@ -1,0 +1,1042 @@
+{
+  "schema_version": 2,
+  "id": "MnBoundaryWaters",
+  "tileset": "johto",
+  "compiled_tileset": "mn_boundary_safari",
+  "dimensions_metatiles": [
+    32,
+    24
+  ],
+  "coordinate_units": "32px metatiles; event coordinates are16px core tiles",
+  "shore_fitting": "johto_8_neighbors",
+  "reject_cliff_cuts": true,
+  "additional_water_blocks": [
+    "80"
+  ],
+  "derived_blocks": [
+    {
+      "id": "80",
+      "source_tileset": "kanto",
+      "source_block": "78",
+      "collision": "WATER",
+      "required_typed_extension": "headwaters_art::build_headwaters_art_pack"
+    },
+    {
+      "id": "81",
+      "source_tileset": "kanto",
+      "source_block": "77",
+      "collision": "FLOOR/FLOOR/WALL/WALL",
+      "required_typed_extension": "headwaters_art::build_headwaters_art_pack"
+    },
+    {
+      "id": "82",
+      "source_tileset": "kanto",
+      "source_block": "77",
+      "tile_row_order": [
+        2,
+        3,
+        0,
+        1
+      ],
+      "collision_source_tileset": "johto",
+      "collision_source_block": "75",
+      "required_typed_extension": "headwaters_art::build_headwaters_art_pack"
+    },
+    {
+      "id": "83",
+      "source_tileset": "kanto",
+      "source_block": "08",
+      "required_typed_extension": "boundary_safari_art::build_boundary_safari_art_pack"
+    }
+  ],
+  "layers": [
+    {
+      "kind": "polygon",
+      "name": "Pine-edged free through-trail clearings",
+      "points": [
+        [
+          2,
+          11
+        ],
+        [
+          7,
+          11
+        ],
+        [
+          7,
+          13
+        ],
+        [
+          9,
+          13
+        ],
+        [
+          9,
+          15
+        ],
+        [
+          14,
+          15
+        ],
+        [
+          14,
+          13
+        ],
+        [
+          18,
+          13
+        ],
+        [
+          18,
+          11
+        ],
+        [
+          26,
+          11
+        ],
+        [
+          26,
+          10
+        ],
+        [
+          29,
+          10
+        ],
+        [
+          29,
+          14
+        ],
+        [
+          24,
+          14
+        ],
+        [
+          24,
+          16
+        ],
+        [
+          21,
+          16
+        ],
+        [
+          21,
+          18
+        ],
+        [
+          18,
+          18
+        ],
+        [
+          18,
+          21
+        ],
+        [
+          15,
+          21
+        ],
+        [
+          15,
+          18
+        ],
+        [
+          13,
+          18
+        ],
+        [
+          13,
+          16
+        ],
+        [
+          7,
+          16
+        ],
+        [
+          7,
+          14
+        ],
+        [
+          2,
+          14
+        ]
+      ],
+      "material": "lawn"
+    },
+    {
+      "kind": "rect",
+      "name": "Small public landing shore",
+      "bounds": [
+        12,
+        7,
+        15,
+        11
+      ],
+      "material": "lawn"
+    },
+    {
+      "kind": "rect",
+      "name": "Survey shelter green forecourt",
+      "bounds": [
+        20,
+        8,
+        24,
+        12
+      ],
+      "material": "lawn"
+    },
+    {
+      "kind": "rect",
+      "name": "Closed check-in forecourt",
+      "bounds": [
+        14,
+        3,
+        19,
+        6
+      ],
+      "material": "lawn"
+    },
+    {
+      "kind": "rect",
+      "name": "Future admission landing behind officers",
+      "bounds": [
+        16,
+        2,
+        17,
+        3
+      ],
+      "material": "lawn"
+    },
+    {
+      "kind": "polygon",
+      "name": "Portage rest grove",
+      "points": [
+        [
+          22,
+          15
+        ],
+        [
+          25,
+          15
+        ],
+        [
+          25,
+          19
+        ],
+        [
+          21,
+          19
+        ],
+        [
+          21,
+          17
+        ],
+        [
+          22,
+          17
+        ]
+      ],
+      "material": "lawn"
+    },
+    {
+      "kind": "polygon",
+      "name": "Sheltered free public lake",
+      "points": [
+        [
+          2,
+          2
+        ],
+        [
+          9,
+          2
+        ],
+        [
+          9,
+          3
+        ],
+        [
+          12,
+          3
+        ],
+        [
+          12,
+          5
+        ],
+        [
+          11,
+          5
+        ],
+        [
+          11,
+          9
+        ],
+        [
+          9,
+          9
+        ],
+        [
+          9,
+          10
+        ],
+        [
+          5,
+          10
+        ],
+        [
+          5,
+          9
+        ],
+        [
+          2,
+          9
+        ]
+      ],
+      "material": "water"
+    },
+    {
+      "kind": "path",
+      "name": "Voyageurs to Gunflint two-core walking lane",
+      "points": [
+        [
+          0,
+          12
+        ],
+        [
+          8,
+          12
+        ],
+        [
+          8,
+          14
+        ],
+        [
+          16,
+          14
+        ],
+        [
+          16,
+          12
+        ],
+        [
+          31,
+          12
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "kind": "path",
+      "name": "Free League approach",
+      "points": [
+        [
+          16,
+          23
+        ],
+        [
+          16,
+          14
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "kind": "path",
+      "name": "Free public landing trail",
+      "points": [
+        [
+          16,
+          12
+        ],
+        [
+          14,
+          12
+        ],
+        [
+          14,
+          8
+        ],
+        [
+          12,
+          8
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "kind": "path",
+      "name": "Free survey shelter approach",
+      "points": [
+        [
+          22,
+          12
+        ],
+        [
+          22,
+          10
+        ],
+        [
+          21,
+          10
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "kind": "path",
+      "name": "Check-in pine footpath",
+      "points": [
+        [
+          16,
+          12
+        ],
+        [
+          16,
+          5
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "kind": "path",
+      "name": "Portage rest branch",
+      "points": [
+        [
+          24,
+          12
+        ],
+        [
+          24,
+          15
+        ],
+        [
+          22,
+          15
+        ],
+        [
+          22,
+          18
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "kind": "rect",
+      "name": "Grassy check-in shoulder",
+      "bounds": [
+        15,
+        8,
+        17,
+        10
+      ],
+      "material": "encounter"
+    },
+    {
+      "kind": "path",
+      "name": "Worn free check-in path through grassy shoulder",
+      "points": [
+        [
+          16,
+          12
+        ],
+        [
+          16,
+          5
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "kind": "rect",
+      "name": "Grassy portage rest entrance",
+      "bounds": [
+        23,
+        15,
+        25,
+        17
+      ],
+      "material": "encounter"
+    },
+    {
+      "kind": "rect",
+      "name": "Shore reeds beside landing",
+      "bounds": [
+        12,
+        9,
+        14,
+        10
+      ],
+      "material": "encounter"
+    },
+    {
+      "kind": "rect",
+      "name": "South trail sedge verge",
+      "bounds": [
+        15,
+        18,
+        16,
+        20
+      ],
+      "material": "encounter"
+    },
+    {
+      "kind": "rect",
+      "name": "Pine finger shapes the shelter yard",
+      "bounds": [
+        19,
+        8,
+        20,
+        11
+      ],
+      "material": "forest"
+    },
+    {
+      "kind": "rect",
+      "name": "Pine screen behind the rest benches",
+      "bounds": [
+        25,
+        15,
+        27,
+        17
+      ],
+      "material": "forest"
+    },
+    {
+      "kind": "point",
+      "name": "Survey shelter complete rustic facade",
+      "position": [
+        21,
+        8
+      ],
+      "block": "2c"
+    },
+    {
+      "kind": "point",
+      "name": "Survey shelter complete rustic facade",
+      "position": [
+        22,
+        8
+      ],
+      "block": "2d"
+    },
+    {
+      "kind": "point",
+      "name": "Survey shelter complete rustic facade",
+      "position": [
+        21,
+        9
+      ],
+      "block": "2e"
+    },
+    {
+      "kind": "point",
+      "name": "Survey shelter complete rustic facade",
+      "position": [
+        22,
+        9
+      ],
+      "block": "2f"
+    },
+    {
+      "kind": "point",
+      "name": "Public dock north rail",
+      "position": [
+        7,
+        7
+      ],
+      "block": "82"
+    },
+    {
+      "kind": "point",
+      "name": "Public dock south rail",
+      "position": [
+        7,
+        8
+      ],
+      "block": "81"
+    },
+    {
+      "kind": "point",
+      "name": "Public dock north rail",
+      "position": [
+        8,
+        7
+      ],
+      "block": "82"
+    },
+    {
+      "kind": "point",
+      "name": "Public dock south rail",
+      "position": [
+        8,
+        8
+      ],
+      "block": "81"
+    },
+    {
+      "kind": "point",
+      "name": "Public dock north rail",
+      "position": [
+        9,
+        7
+      ],
+      "block": "82"
+    },
+    {
+      "kind": "point",
+      "name": "Public dock south rail",
+      "position": [
+        9,
+        8
+      ],
+      "block": "81"
+    },
+    {
+      "kind": "point",
+      "name": "Public dock north rail",
+      "position": [
+        10,
+        7
+      ],
+      "block": "82"
+    },
+    {
+      "kind": "point",
+      "name": "Public dock south rail",
+      "position": [
+        10,
+        8
+      ],
+      "block": "81"
+    },
+    {
+      "kind": "point",
+      "name": "Public dock north rail",
+      "position": [
+        11,
+        7
+      ],
+      "block": "82"
+    },
+    {
+      "kind": "point",
+      "name": "Public dock south rail",
+      "position": [
+        11,
+        8
+      ],
+      "block": "81"
+    },
+    {
+      "kind": "point",
+      "name": "Public dock closed west edge and north Surf mouth",
+      "position": [
+        6,
+        7
+      ],
+      "block": "44"
+    },
+    {
+      "kind": "point",
+      "name": "Public dock closed southwest corner",
+      "position": [
+        6,
+        8
+      ],
+      "block": "48"
+    },
+    {
+      "kind": "point",
+      "name": "Original water beneath dock",
+      "position": [
+        6,
+        9
+      ],
+      "block": "80"
+    },
+    {
+      "kind": "point",
+      "name": "Original water beneath dock",
+      "position": [
+        7,
+        9
+      ],
+      "block": "80"
+    },
+    {
+      "kind": "point",
+      "name": "Original water beneath dock",
+      "position": [
+        8,
+        9
+      ],
+      "block": "80"
+    },
+    {
+      "kind": "point",
+      "name": "Original water beneath dock",
+      "position": [
+        9,
+        9
+      ],
+      "block": "80"
+    },
+    {
+      "kind": "point",
+      "name": "Original water beneath dock",
+      "position": [
+        10,
+        9
+      ],
+      "block": "80"
+    },
+    {
+      "kind": "point",
+      "name": "Closed expedition fence shoulders",
+      "position": [
+        14,
+        3
+      ],
+      "block": "41"
+    },
+    {
+      "kind": "point",
+      "name": "Closed expedition fence shoulders",
+      "position": [
+        15,
+        3
+      ],
+      "block": "41"
+    },
+    {
+      "kind": "point",
+      "name": "Closed expedition fence shoulders",
+      "position": [
+        17,
+        3
+      ],
+      "block": "41"
+    },
+    {
+      "kind": "point",
+      "name": "Closed expedition fence shoulders",
+      "position": [
+        18,
+        3
+      ],
+      "block": "41"
+    },
+    {
+      "kind": "point",
+      "name": "Two-core expedition aperture sealed by officers",
+      "position": [
+        16,
+        3
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Portage wood seat west",
+      "position": [
+        21,
+        18
+      ],
+      "block": "83"
+    },
+    {
+      "kind": "point",
+      "name": "Portage wood seat east",
+      "position": [
+        24,
+        18
+      ],
+      "block": "83"
+    },
+    {
+      "kind": "rect",
+      "name": "Small shelter flowers",
+      "bounds": [
+        23,
+        10,
+        24,
+        11
+      ],
+      "material": "flowers"
+    },
+    {
+      "kind": "point",
+      "name": "Physical sign MN_BOUNDARY_WEST_TRAILS",
+      "position": [
+        4,
+        11
+      ],
+      "block": "45"
+    },
+    {
+      "kind": "point",
+      "name": "Physical sign MN_BOUNDARY_EAST_TRAILS",
+      "position": [
+        17,
+        13
+      ],
+      "block": "45"
+    },
+    {
+      "kind": "point",
+      "name": "Physical sign MN_BOUNDARY_SOUTH_TRAIL",
+      "position": [
+        17,
+        20
+      ],
+      "block": "45"
+    },
+    {
+      "kind": "point",
+      "name": "Physical sign MN_BOUNDARY_SURVEY_SIGN",
+      "position": [
+        21,
+        11
+      ],
+      "block": "45"
+    },
+    {
+      "kind": "point",
+      "name": "Physical sign MN_BOUNDARY_LANDING_SIGN",
+      "position": [
+        12,
+        10
+      ],
+      "block": "45"
+    },
+    {
+      "kind": "point",
+      "name": "Physical sign MN_BOUNDARY_GATE_NOTICE",
+      "position": [
+        14,
+        5
+      ],
+      "block": "45"
+    },
+    {
+      "kind": "point",
+      "name": "Physical sign MN_BOUNDARY_PORTAGE_BOARD",
+      "position": [
+        23,
+        17
+      ],
+      "block": "45"
+    },
+    {
+      "kind": "rect",
+      "name": "Pine finger separates dock approach from junction",
+      "bounds": [
+        12,
+        11,
+        14,
+        14
+      ],
+      "material": "forest"
+    },
+    {
+      "kind": "rect",
+      "name": "East road has a pine backstop below its passing lane",
+      "bounds": [
+        18,
+        13,
+        23,
+        15
+      ],
+      "material": "forest"
+    },
+    {
+      "kind": "rect",
+      "name": "Pines replace unused northeast road shoulder",
+      "bounds": [
+        24,
+        9,
+        28,
+        12
+      ],
+      "material": "forest"
+    },
+    {
+      "kind": "rect",
+      "name": "Voyageurs arrival south shoulder closes into forest",
+      "bounds": [
+        2,
+        13,
+        5,
+        14
+      ],
+      "material": "forest"
+    },
+    {
+      "kind": "rect",
+      "name": "Arrival north pine finger leaves the road open",
+      "bounds": [
+        6,
+        11,
+        8,
+        12
+      ],
+      "material": "forest"
+    },
+    {
+      "kind": "rect",
+      "name": "South trail left forest finger",
+      "bounds": [
+        13,
+        15,
+        15,
+        17
+      ],
+      "material": "forest"
+    },
+    {
+      "kind": "rect",
+      "name": "Forest wraps the southern rest grove",
+      "bounds": [
+        25,
+        19,
+        28,
+        21
+      ],
+      "material": "forest"
+    },
+    {
+      "kind": "rect",
+      "name": "Pine wraps west bench nook",
+      "bounds": [
+        20,
+        17,
+        21,
+        19
+      ],
+      "material": "forest"
+    },
+    {
+      "kind": "rect",
+      "name": "Pine backs the survey cabin east wall",
+      "bounds": [
+        23,
+        8,
+        25,
+        10
+      ],
+      "material": "forest"
+    },
+    {
+      "kind": "rect",
+      "name": "League guard western pine backstop",
+      "bounds": [
+        15,
+        21,
+        16,
+        24
+      ],
+      "material": "forest"
+    },
+    {
+      "kind": "rect",
+      "name": "League guard eastern pine backstop",
+      "bounds": [
+        17,
+        21,
+        19,
+        24
+      ],
+      "material": "forest"
+    },
+    {
+      "kind": "rect",
+      "name": "Survey yard southwest pine cheek",
+      "bounds": [
+        20,
+        10,
+        21,
+        12
+      ],
+      "material": "forest"
+    },
+    {
+      "kind": "rect",
+      "name": "Rest clearing east pine cheek",
+      "bounds": [
+        25,
+        17,
+        27,
+        18
+      ],
+      "material": "forest"
+    },
+    {
+      "kind": "rect",
+      "name": "Rest clearing southeast pine cheek",
+      "bounds": [
+        24,
+        19,
+        25,
+        20
+      ],
+      "material": "forest"
+    },
+    {
+      "kind": "rect",
+      "name": "Pines frame a small bench stop instead of a second yard",
+      "bounds": [
+        17,
+        15,
+        21,
+        18
+      ],
+      "material": "forest"
+    },
+    {
+      "kind": "rect",
+      "name": "Gunflint arrival north pine shoulder replaces unused lawn",
+      "bounds": [
+        28,
+        10,
+        30,
+        12
+      ],
+      "material": "forest"
+    },
+    {
+      "kind": "rect",
+      "name": "Gunflint arrival south pine shoulder replaces unused lawn",
+      "bounds": [
+        25,
+        13,
+        30,
+        15
+      ],
+      "material": "forest"
+    },
+    {
+      "kind": "point",
+      "name": "Close the unused offset central stem above the west fork",
+      "position": [
+        15,
+        13
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "rect",
+      "name": "Close the old offset League stem beside the aligned spine",
+      "bounds": [
+        15,
+        15,
+        16,
+        18
+      ],
+      "material": "forest"
+    }
+  ]
+}

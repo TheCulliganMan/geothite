@@ -6,6 +6,539 @@ exports runtime catalogs, compiles and verifies the packs, and publishes local
 agent inputs. Source checkouts, ROMs, intermediate exports, PCM, and packs stay
 outside tracked source.
 
+## Original Minnesota species packs
+
+The [lynx starter revision](../planning/minnesota/pokemon/sprites/mn-f125/DESIGN.md)
+selects Fire → Fire → Fire/Ice and retains Cindore's family as ordinary active
+species. Final native refinement11 has four colors in each of its six views.
+The approved-family review pack is `content-packs/minnesota-lynx-review.crystalpack`
+(260 species, including the original251 and three complete review families).
+Its runbook preserves the earlier focused review and its then-current art blocker.
+Packs remain ignored.
+
+The current roster has 223 active regional species across 101 families. Its
+[Fairy balance ruleset](northwoods-fairy.md) adds the eighteenth type, thirteen
+regional retypes, thirteen returning retypes, five Fairy attacks and physical
+Poison Jab. Follow that runbook's four-stage Rust pipeline, starting from the
+existing local native pack. Current authored Fairy types require the Fairy base
+overlay before `pack_minnesota_pokemon`.
+
+The earlier Fairy baseline is `content-packs/northwoods-fairy-v2.crystalpack`: 471 total
+species and 270 moves, with the modern physical/special split. The earlier
+`northwoods-balanced-v1.crystalpack` and `northwoods-moves-v6.crystalpack` are
+historical snapshots of earlier authoring. Keep generated packs ignored.
+
+The current completed [sticky-note restoration](northwoods-sticky-notes.md) is
+`content-packs/northwoods-sticky-v1.crystalpack`: 474 species and 270 moves. Its
+runbook records the full Fairy-base/species/moves/animation pipeline and verified
+native evolution, battle, audio-preservation and web checks.
+
+The [roster audit](../planning/minnesota/pokemon/BALANCE.md) constructs profiles
+in memory and exercises real battle and evolution rules. `audit_pokemon_balance
+PACK planning/minnesota/pokemon --check-pack` additionally compares the completed
+pack with current authoring, including both extension catalogs. This does not
+establish earned encounter availability or full campaign pacing; regional
+encounter placement remains separate work.
+
+The 266-species aggregate and commands below describe the earlier catalog milestone.
+
+The original [266-species Pokédex](../planning/minnesota/pokemon/README.md)
+contains complete entries, stats, evolution methods, individual normal/shiny
+palettes and level/TM/HM/tutor/egg move lists. The Rust
+[`pack_minnesota_pokemon` publisher](../modpacks/minnesota-pokemon/README.md)
+adds the reviewed native sprites and profiles to an existing verified local pack.
+It preserves the source pack, its original species, maps, runtime files and audio.
+
+The verified local base is `content-packs/minnesota-geography-review.crystalpack`.
+It contains 471 maps and 251 original species. The aggregate species extension is
+`content-packs/minnesota-pokemon.crystalpack`, with 517 species. Family outputs
+live in `content-packs/minnesota-pokemon-families/`; each includes the original
+game and one complete evolution family. These generated files remain ignored.
+
+```sh
+python3 -S planning/minnesota/tools/build_minnesota_pokedex.py
+CARGO_TARGET_DIR=target/agent-minnesota-species cargo build --locked -p crystal-assets --bin pack_minnesota_pokemon --config 'profile.dev.package.crystal-assets.opt-level=0'
+target/agent-minnesota-species/debug/pack_minnesota_pokemon \
+  content-packs/minnesota-geography-review.crystalpack \
+  planning/minnesota/pokemon target/minnesota-pokemon/native \
+  planning/minnesota/pokemon/species-profiles.json \
+  content-packs/minnesota-pokemon.crystalpack \
+  --families-dir content-packs/minnesota-pokemon-families --jobs 4
+target/runtime-fps/wasm-dev/verify_crystalpack content-packs/minnesota-pokemon.crystalpack --audio --desktop
+```
+
+The supplied-base catalog regression constructs all 266 species at levels 1, 50
+and 100, checks their dex/party/Day Care/capture references, exercises every level
+evolution, executes actual new-species battle turns and preserves original
+audio/runtime bytes. The publisher reads back every output and matches its
+identity. The detailed runbook includes the opt-in regression command.
+
+New regional encounter placement and fossil-choice/revival services remain
+separate map authoring. Front animation currently uses a valid static frame 0;
+menu icons, footprints and cries explicitly reuse existing base references.
+
+## Original Minnesota map tile items
+
+The [native tile-item workflow](../planning/minnesota/tiles/README.md) builds
+an additive Johto-compatible tileset from original ImageGen PNG art and its
+hash-pinned catalog using Rust `pack_minnesota_tiles`. Source crops, integer
+offsets, palettes and all four collision quadrants are explicit. Original blocks,
+runtime files, maps, species and audio are preserved. New tiles are available to
+map authors in a separate ignored pack; active map layouts are not republished
+by the art importer. The runbook contains the exact local inputs, build commands,
+item IDs and review paths.
+
+## Minnesota story review
+
+### Smaller, tighter major cities
+
+The660-map `content-packs/minnesota-three-cities-tight-final-v02.crystalpack`
+publishes hand-authored64×48 Minneapolis, St Paul and Duluth from the543-map
+Itasca/quality parent. Source contracts preserve old rooms/story programs and
+add117 rooms, indexed doors/stairs, distinct marts and optional local activities.
+The Rust `expand_authored_city PACK LAYOUT CONTRACT OUTPUT` command, exact
+publication receipts, ignored pack hash, fast source-review commands and separate
+native/controller evidence are documented in the
+[major-city runbook](../planning/minnesota/playable/major-cities.md).
+It is a separate reviewed lineage from the newer544-map North Shore successor
+below; no merger of that successor or original-species/art work is implied.
+
+### Grand Marais, native coast gate and Gunflint
+
+The 544-map `content-packs/minnesota-northstar-north-shore-story.crystalpack`
+is built from the exact 543-map Itasca story below. It adds the actual
+IlexForestAzaleaGate room with paired lane warps, an ordinary two-lane Gunflint
+connection and bounded native harbor reefs. Eight badges plus the Duluth
+signal permit either outbound checkpoint; both inbound returns and native
+care remain free. The optional spare-part/lamp repair replaces the old demo
+starter/supply handout and grants no regional progress. Six local controller
+checks, two preservation cases, three actual stdio replays, the full-bag keeper
+regression and all377 audio checks pass; the production client builds. Both
+regional clinics register actual blackout recovery, proved after healing,
+Continue and played losses. A complete local Brainerd-to-Harbor-to-Boundary
+Waters-and-home course also passes; initial six badges/Mew45/Cut remain setup.
+[Frozen identities, Rust build/run commands and current evidence](../planning/minnesota/playable/north-shore-story.md).
+
+### Itasca gatehouse, independent reading and Bemidji report
+
+The same544-map shore pack additionally passes the [earned northern
+finale](../planning/minnesota/playable/northstar-finale.md): Continue from its
+actually earned Boundary arrival, the real chief battle, separate receiver
+restoration and complete R13 traversal. Two actual stdio replays pass. The
+chief win alone cannot open the League gate. This is not an Ely publication
+or a completed fresh-start campaign; those remain open.
+
+The 543-map `content-packs/minnesota-northstar-itasca-story.crystalpack` is built
+from the shore parent below. SHA-256:
+`75e31a904065d00275b4ac932d38c77346485112e856ca5222d29b50055f8fc1`.
+It adds the actual IlexForestAzaleaGate room with two side-carpet lanes and
+safe returns, the dry headwaters plaque, the separately acknowledged officer
+comparison, Lake-only R14 and Pine/report-gated R09. Early visits grant no
+reading; reading alone grants no report or Iron Range access. Inbound care
+remains free. Five controller/two preservation cases, three actual stdio replays,
+four exact exterior views and all 377 audio checks pass. Explicit prior badges,
+partner and RNG are setup; the full earned campaign remains unfinished.
+[Source, exact frozen input, Rust build/run, saves and replay commands](../planning/minnesota/playable/itasca-story.md).
+
+The unchanged Itasca pack additionally passes the [continuous Pine-to-harbor
+story course](../planning/minnesota/playable/northstar-iron-course.md): actual
+Pine/report, mine victory and separate recovery, depot handover, Harbor and all
+ten reveal pages. A real wild loss preserves earned custody through native care
+and Continue. Four actual stdio earned-save replays pass. Six prior badges and
+Mew45/Cut are setup; this does not prove the full Winona campaign. The frozen
+parent has no Grand Marais regional links; the successor above adds them.
+Ely and the League remain unfinished.
+
+### Leech Lake shore, Bemidji and the Pine retry
+
+The541-map `content-packs/minnesota-northstar-leech-shore.crystalpack`, file
+SHA-256 `03c9d073629c60debc66368f07a4170d0b305026c84fd3d5fdcfd96f95c60a97`,
+adds the actual shore town and two cabins to the lake-country pack below.
+Native R07/R08 links check Lake only; ranger Surf/report and courier completion
+remain independent. Free care, both cabins' carpets, testimony, the closed pier,
+Surf launch/coast/dismount and actual recovery at the new care cabin pass.
+A continuous local course earns Pine after a played loss, native clinic recovery
+and retry with an existing Fire move. Six controller/two preservation cases,
+three actual stdio replays, source/native views and all377 audio checks pass.
+Prior badges, review partner and deterministic RNG are setup. This parent
+precedes the Itasca successor above; the full earned campaign remains open.
+[Exact source, Rust build/run and replay commands](../planning/minnesota/playable/leech-shore.md).
+
+### St Cloud, Brainerd and the ranger report
+
+The538-map `content-packs/minnesota-northstar-lake-country.crystalpack`, file
+SHA-256 `da27b381f69f64d6530383216077de0802c5b9dc42b12c316319cbc5daeb6d50`,
+extends the courier pack below. Minneapolis's north checkpoint checks Current
+and Capitol; St Cloud's checks Wind. Native R05/R06 crossings retain free inbound
+travel and permit postponing the courier. The existing ranger's canonical two
+report pages precede the successful once-only Surf gift and saved report flags.
+Five local controller/two preservation cases, actual stdio road/ranger replays,
+four exact native cameras and all377 PCM/frame/loop checks pass. Prior badges
+and strong partner are explicit setup. R07/R15/R18 remain visibly closed until
+their actual connections are published; the full earned campaign remains open.
+[Exact Rust build/run and review commands](../planning/minnesota/playable/lake-country-story.md).
+
+### St Paul courier, separate manifest and R04
+
+The538-map `content-packs/minnesota-northstar-courier-story.crystalpack`, file
+SHA-256 `37a569f7cd6cb46bca8c3d34d5deb096b108f8c2db6db38b07408e6add4d64c0`,
+adds the native Current-only Minneapolis/R04 crossing and binds Union Depot's
+existing courier. Current plus the ICE dispatch note permits his real
+Magnemite23/Drowzee22 battle. Victory and separately acknowledging three
+DEEP BORE manifest pages have distinct saved flags; neither grants a badge or
+later road permission. Both refusal lanes, free inbound care, missing-note
+refusal, gym access without courier completion, played loss and a continuous
+local win/read/return pass. Two preservation cases, actual stdio, source/native
+views and all377 PCM/frame/loop checks pass. Review party/prior badges/dispatch
+are setup; earned regional progression and rail remain unfinished. This chapter
+follows the progression contract: dispatch is a courier prerequisite, while
+Current alone opens R04. The corrected fourth-gym v2 candidate below also follows the Current-only
+road contract.
+[Exact sources, Rust commands and replays](../planning/minnesota/playable/courier-story.md).
+
+### Fourth-gym river approach
+
+`content-packs/minnesota-gym-four-approach.crystalpack` extends the River Valley
+candidate below and retains538 maps/all eight gyms. The new reciprocal
+Minneapolis/R04 mouth reaches St Paul's existing facade. Both lanes require
+the Current Badge alone, with free inbound return. Dispatch remains a separate
+courier prerequisite.
+Two preservation/rejection cases, three controller cases and actual stdio
+crossing/facade/Start/return pass. A separate continuous course actually earns
+the rescue/record, badges3/4 through their puzzles/trainers, restores spent PP
+at the clinic and walks home; its initial level45 partner and two prior badges
+are explicit setup. Both native views match source pixels and all377 audio
+checks pass. The courier, north departure and complete earned journey remain
+unfinished. [Exact identities, Rust build and evidence](../planning/minnesota/playable/gym-four-approach.md).
+
+### River Valley city links and consecutive gyms
+
+`content-packs/minnesota-northstar-river-story.crystalpack` extends the Prairie
+Road chapter below, retaining538 maps and all eight current gyms. Its two native
+R03 mouths link Mankato and Minneapolis; leaving Mankato north requires the
+second badge, while inbound return is free. Six visible south-bank caps close
+the partial candidate's stray floor exits. Two preservation/rejection cases
+and five production-controller cases pass, including earning badges2/3 through
+their puzzles/trainers and walking the complete route both ways. That continuous
+local course starts with the first badge and a strong legal party; it does not
+prove ordinary-party balance or a fresh earned regional journey. Matched native
+city frames and all377 audio checks pass. The second continuous fixture walks
+to the ICE battle, separately releases the captive and reads the dispatch, then
+returns without badge3. Actual stdio road/office return and rescue/record checks
+pass with byte-empty stderr. The earlier `river-cities` filename retains the
+uncapped v1 candidate for historical comparison.
+[Exact input, Rust publication command, coordinates and evidence](../planning/minnesota/playable/river-cities.md).
+
+### Prairie story and the copied-reading notebook
+
+`content-packs/minnesota-northstar-prairie-story.crystalpack` contains538 maps,
+file SHA-256 `f7efd72c181143eef61834343c5a2b9fd2664a0d8f14cb250ed3721f8259ed8c`.
+It binds native Rochester/R02/Mankato walking seams on a frozen current regional
+gym input. Care alone opens departure; inbound return remains free. The garden
+paper records optional MS02 after both pages are acknowledged. It awards no
+item/badge and adds no Gym2 prerequisite. Two exact preservation/rejection
+cases, three local controller cases, actual stdio and all377 PCM/frame/loop
+checks pass. Source/native notebook pixels match exactly. Explicit local setup
+does not prove earned progression; the strict New Game chapter audit remains
+unresolved before R02. [Inputs, executed Rust commands, contracts and limits](../planning/minnesota/playable/prairie-story.md).
+
+### Rochester delivery and R01 connections
+
+The 526-map `content-packs/minnesota-northstar-rochester.crystalpack`, SHA-256
+`51d455252b0b876a2a9d48a1b6666d72354f67bdb3cfc20f702e04382c421670`,
+adds the city and reciprocal R01/Winona seams to the opening input below.
+A New Game journey earns the starter/readings, walks the original trail,
+delivers both acknowledged pages at the clinic and returns home. Both lanes
+deny departure without a starter. Canonical Gym1 is explicitly refreshed and
+bound to the city; its battles, badge, one TM, returns and Continue pass a
+separate legal-partner combat fixture. One full New Game Cyndaquil/real-capture
+journey now earns the first badge and TM and passes stdio Continue. A later
+live-RNG run loses at the leader, so balance/retry coverage remains open alongside
+an earned R02/Mankato journey. Two exact-data/uncached/rejection cases, actual stdio opening and
+delivery, all 377 audio checks and shared controller/event regressions pass.
+The core matcher recognizes native `SCENE_ALWAYS`/`-1`, required by the
+serialized checkpoint. [Commands, evidence and limits](../planning/minnesota/playable/rochester.md).
+
+### Winona New Game opening
+
+The 521-map `content-packs/minnesota-northstar-winona.crystalpack`, SHA-256
+`2f8c74a72a51affc94fc416763505fca5e8842bbb52b17f5662ee212e40eb2da`,
+adds six Winona maps to the exact 515-map integrated input below. Native New
+Game starts upstairs; actual stairs lead to the guardian's three-page scene.
+All three level 5 starter choices, nickname choice/grid, acknowledged original
+readings, five balls once and Continue pass from New Game. A separate full-
+pocket fixture proves refusal/retry without losing or duplicating the reward.
+Actual stdio MCP and all 377 audio checks pass. Original maps/art/audio stay
+exact; HOME intentionally becomes Winona, with original house recovery retained
+under an addon identity. R01 remains unbound and the regional journey is
+unfinished. [Exact commands, contracts, limits and evidence](../planning/minnesota/playable/winona.md).
+
+### Integrated story, Minneapolis and Ryan's House
+
+The verified 515-map story candidate is
+`content-packs/minnesota-northstar-city-story.crystalpack`, SHA-256
+`fce69c6da8ad0d4579ef8aebc6b4922d8d6d2321c87891a572bde7b68150fb7d`.
+It combines Minneapolis's ICE battle, separately acknowledged rescue and record
+reading, the dispatcher's return home and the canonical Avrin switch gym with
+the northern story, revised mine/hollows and Ryan's Baptism River cabin.
+Guarded Grand Rapids/Duluth links and the harbor/chief/receiver drainage plot
+remain intact. The Rust build first imports the pinned reviewed Gym3 into the
+completed northern input, preserving unrelated content and native event numbers;
+it then installs the city. It does not silently accept the obsolete gym.
+
+Twenty chapter/travel/cabin controller cases, shared Mom and battle/PP checks,
+actual MCP, byte-empty stderr and all 377 audio PCM/frame/loop checks pass on
+this exact pack. The current single-gym import/city asset cases pass; the
+independent all-eight-room fixture now passes on the current 480-map remake
+pack. Its separate 488-map St. Paul successor preserves all four internal pad
+pairs, binds all five public facades and verifies the reciprocal R04 crossing;
+Mankato remains intact. The 492-map St. Cloud successor adds four facades,
+the complete canonical wind course, services and reciprocal R05/R06 crossings;
+see [St. Cloud's executed build and fixture scope](../planning/minnesota/playable/st-cloud.md).
+Exact native build inputs, commands and local fixture
+limits are in [the St. Paul runbook](../planning/minnesota/playable/st-paul.md)
+and [the gym circuit](../planning/minnesota/gyms/README.md). These gym/city
+candidates are now combined with the 526-map Rochester story successor in the
+[538-map eight-gym candidate](../planning/minnesota/playable/eight-gyms.md), which
+passes every actual city-facade gym course and the existing Rochester chapter
+regressions. Existing caught-location IDs stay stable; new cities share explicit
+regional areas if the native seven-bit table is full. Minneapolis's
+R03/R04/R05 ports remain unbound in that lineage. The southern
+opening, remaining regional links, courier, League finish and Kettlurk encounter
+still need implementation; local fixtures do not prove the full earned journey.
+
+See [the exact integrated inputs, build commands and playable saves](../planning/minnesota/playable/minneapolis.md),
+[the cabin's original native proof](../planning/minnesota/playable/ryans-house.md)
+and [the retained northern map lineage](../planning/minnesota/playable/mine-and-hollows.md).
+Generated packs, saves and every render generation remain ignored. Earlier
+records below retain their original pack/source scope.
+
+The [Rochester two-switch revision](../planning/minnesota/gyms/rochester-gates.md)
+publishes `content-packs/minnesota-rochester-gates.crystalpack` through Rust
+`revise_rochester_gates`, using the former readable-maze pack as its parent.
+The new7×7 room requires the left training bay, upper switch and a return to
+swap to the right lane. Its literal controller course, native closed/open
+views, both asset cases and all377 audio checks pass. Other maps and battles
+stay exact. The runbook records exact inputs/commands, current town bindings
+and the remaining lineage/design review scope.
+
+### Earlier Duluth harbor reveal
+
+The retained earlier local story candidate is
+`content-packs/minnesota-northstar-harbor.crystalpack`, SHA-256
+`c0526b238a9c2a8da74c69e22635b69ad9a0b27b2a60af154a5afb644acccacf`.
+It retains the 502-map Grand Rapids candidate below and binds MS10's three
+canonical text bodies to the existing harbor receiver. Its nine pages identify
+Kettlurk and establish that Team Lode continued despite its own warnings.
+The original eight-badge/depot gate and acknowledgment-before-signal script
+remain exact. No prerequisite, item or other reward is supplied by this overlay.
+
+Executed build, publication and verification:
+
+```sh
+CARGO_TARGET_DIR=target/northstar-story cargo test --profile wasm-dev --locked \
+  --config 'profile.wasm-dev.package.crystal-assets.opt-level=0' \
+  -p crystal-assets --test duluth_story --no-run
+CRYSTAL_DULUTH_STORY_BASE_PACK="$PWD/content-packs/minnesota-northstar-midgame-cities.crystalpack" \
+  target/northstar-story/wasm-dev/deps/duluth_story-2f4f4d8c4b3dda01 \
+  --ignored --test-threads=1
+target/northstar-story/wasm-dev/pack_duluth_story \
+  content-packs/minnesota-northstar-midgame-cities.crystalpack \
+  planning/minnesota/story.json content-packs/minnesota-northstar-harbor.crystalpack
+target/northstar-story/wasm-dev/verify_crystalpack \
+  content-packs/minnesota-northstar-harbor.crystalpack --audio --desktop
+CARGO_TARGET_DIR=target/northstar-story cargo test --profile wasm-dev --locked \
+  --config 'profile.wasm-dev.package.crystal-assets.opt-level=0' \
+  --config 'profile.wasm-dev.package.crystal-bevy.opt-level=0' \
+  -p crystal-bevy --lib duluth_story_controller_ --no-run
+RUST_MIN_STACK=33554432 \
+CRYSTAL_DULUTH_STORY_TEST_PACK="$PWD/content-packs/minnesota-northstar-harbor.crystalpack" \
+CRYSTAL_DULUTH_STORY_SAVE_DIR="$PWD/.local/northstar-harbor-review-saves" \
+  target/northstar-story/wasm-dev/deps/crystal_bevy-666c15187ce242ec \
+  duluth_story_controller_ --ignored --test-threads=1
+RUST_MIN_STACK=33554432 \
+CRYSTAL_DULUTH_CITY_CONTROLLER_PACK="$PWD/content-packs/minnesota-northstar-harbor.crystalpack" \
+  target/northstar-story/wasm-dev/deps/crystal_bevy-666c15187ce242ec \
+  duluth_city_controller_q07_ --ignored --test-threads=1
+CARGO_TARGET_DIR=target/northstar-story cargo build --profile wasm-dev --locked \
+  --config 'profile.wasm-dev.package.crystal-assets.opt-level=0' \
+  --config 'profile.wasm-dev.package.crystal-bevy.opt-level=0' -p geothite
+```
+
+All five targeted asset/controller cases pass, including every missing badge
+and missing depot, all nine visible pages, movement ownership, final-page signal,
+repeat and Continue. All 377 audio programs pass PCM/hash/frame/loop verification.
+Compiled executable hashes in filenames can change after dependency edits;
+the emitted paths above identify the actual checked build. At publication, source metadata and these three canonical text bodies agreed.
+The later ten-page drainage/ICE revision is documented above.
+
+The actual fullscreen client was run with the retained pre-reading fixture:
+
+```sh
+target/northstar-story/wasm-dev/geothite play \
+  content-packs/minnesota-northstar-harbor.crystalpack \
+  --load .local/northstar-harbor-review-saves/ms10-ready-82849-1793063368002897000.crystalsave
+```
+
+Press D to face the technician, then Z to read. Z advances each of nine pages.
+The same command with `mcp` instead of `play` starts the checked stdio server;
+its real JSON-RPC inputs read the reveal/repeat, open START and move the player.
+Both actual clients keep stderr empty. This local fixture supplies initial
+position, a legal partner, eight badges and upstream clearance; it does not
+prove earning them or regional travel. Duluth's R10/R11 links, earlier earned
+chapters, League completion and Kettlurk's encounter remain open. Broad lint
+and formatting limitations remain those recorded in the Grand Rapids section.
+
+### Grand Rapids and the repaired city composition
+
+The current candidate is
+`content-packs/minnesota-northstar-midgame-cities.crystalpack`: 502 maps.
+Its frozen input is `content-packs/minnesota-northstar-cities-base.crystalpack`,
+a copy of the repaired 498-map city pack with SHA-256
+`37a09cd52d95b7425711237a4014ec387555a27cc3d4df61e246581b4d108cf6`.
+The [city runbook](../planning/minnesota/playable/three-cities.md) records that
+input's captured gym/town epoch. The overlay preserves it and adds Grand
+Rapids, its native evidence handover and guarded reciprocal R09/R10 links.
+
+The current text client and offscreen capture example were built with this
+executed command. The per-package overrides apply only to the local
+verification build; `location-tester` is required by the capture example:
+
+```sh
+CARGO_TARGET_DIR=target/northstar-story cargo build --profile wasm-dev --locked \
+  --config 'profile.wasm-dev.package.crystal-assets.opt-level=0' \
+  --config 'profile.wasm-dev.package.crystal-bevy.opt-level=0' \
+  -p crystal-bevy -p geothite --features crystal-bevy/location-tester \
+  --example render_at_location --bin geothite
+target/northstar-story/wasm-dev/pack_grand_rapids \
+  content-packs/minnesota-northstar-cities-base.crystalpack \
+  planning/minnesota/towns/MnGrandRapids.json \
+  planning/minnesota/towns/MnGrandRapids.layout.json planning/minnesota/story.json \
+  content-packs/minnesota-northstar-midgame-cities.crystalpack --connect
+target/northstar-story/wasm-dev/verify_crystalpack \
+  content-packs/minnesota-northstar-midgame-cities.crystalpack --audio --desktop
+```
+
+The publisher was built by the `crystal-assets --test grand_rapids` Cargo
+invocation. Final replays used the emitted executables below, so the final
+JSON inputs and final city-based pack were checked without changing the
+compiled controller epoch:
+
+```sh
+CRYSTAL_GRAND_RAPIDS_BASE_PACK="$PWD/content-packs/minnesota-northstar-cities-base.crystalpack" \
+  target/northstar-story/wasm-dev/deps/grand_rapids-eb8f20e7ce56305c \
+  --ignored --test-threads=1
+RUST_MIN_STACK=33554432 \
+CRYSTAL_GRAND_RAPIDS_TEST_PACK="$PWD/content-packs/minnesota-northstar-midgame-cities.crystalpack" \
+CRYSTAL_GRAND_RAPIDS_SAVE_DIR="$PWD/.local/northstar-midgame-cities-review-saves" \
+  target/northstar-story/wasm-dev/deps/crystal_bevy-666c15187ce242ec \
+  grand_rapids_controller_ --ignored --test-threads=1
+RUST_MIN_STACK=33554432 \
+CRYSTAL_IRON_RANGE_STORY_TEST_PACK="$PWD/content-packs/minnesota-northstar-midgame-cities.crystalpack" \
+CRYSTAL_BOUNDARY_BASECAMP_TEST_PACK="$PWD/content-packs/minnesota-northstar-midgame-cities.crystalpack" \
+  target/northstar-story/wasm-dev/deps/crystal_bevy-666c15187ce242ec \
+  story_controller_ --ignored --test-threads=1
+```
+
+All four asset, six Grand Rapids controller and seven earlier story cases
+pass. All 377 audio comparisons pass. Fixture party, local placement, badges
+and upstream flags are explicit setup; battle outcomes, pickups, the handover,
+guarded crossings, services and Continue then use production input. This is
+not a verified earned Winona-to-Ely journey. The Duluth walking/story link,
+earlier chapters and Kettlurk's encounter remain open.
+
+The actual retained before-handover review is runnable from this checkout.
+Press Up then Z to speak to the technician; Enter opens Start.
+
+```sh
+target/northstar-story/wasm-dev/geothite play \
+  content-packs/minnesota-northstar-midgame-cities.crystalpack \
+  --load .local/northstar-midgame-cities-review-saves/ms09-declined-73695-1793062236643993000.crystalsave
+```
+
+The real MCP client also loads the earned handover save, reads the repeat
+direction and visible archive shelf, opens START/PACK and moves the
+authoritative player. Keyboard/alternate-screen play opens the real ITEMS
+pocket and exits normally. Both keep stderr byte-empty.
+
+The native exterior/checkpoint views and office use original source pixels;
+the office reference uses the native indoor palette. Every rejected pass,
+original, conversion, crop and native readback is retained in
+`planning/minnesota/renders/grand-rapids/`. The source review command is:
+
+```sh
+.local/minnesota-review-env/bin/python planning/minnesota/tools/review_grand_rapids.py \
+  --pack content-packs/minnesota-northstar-midgame-cities.crystalpack \
+  --connected --verify-published
+```
+
+Scoped Rust formatting passes. Workspace formatting retains the recorded
+existing differences; strict affected-package all-target Clippy stops at
+eleven existing `never_loop` errors in unchanged source files. These broad
+checks are not reported as passing.
+
+### Earlier mine-only review (retained)
+
+The earlier `content-packs/minnesota-northstar-story.crystalpack` extends the
+completed `content-packs/minnesota-prairie-review.crystalpack`. The source must
+contain the authored R09 mine, Grand Marais and native Boundary Waters finale.
+The Rust publisher adds the foreman/cache and refreshes existing dialogue;
+it does not invent replacement rooms or grant a player's progression.
+
+The following executed asset command builds the publishers and checks current
+source/native preservation. The per-package override belongs to this local
+verification build rather than distributable optimization settings:
+
+```sh
+CRYSTAL_IRON_RANGE_STORY_BASE_PACK="$PWD/content-packs/minnesota-prairie-review.crystalpack" \
+CARGO_TARGET_DIR=target/northstar-story cargo test --profile wasm-dev --locked \
+  --config 'profile.wasm-dev.package.crystal-assets.opt-level=0' \
+  -p crystal-assets --test iron_range_story -- --ignored --test-threads=1
+target/northstar-story/wasm-dev/pack_iron_range_story \
+  content-packs/minnesota-prairie-review.crystalpack \
+  planning/minnesota/routes/MN_R09.json planning/minnesota/story.json \
+  content-packs/minnesota-northstar-story.crystalpack \
+  --refresh-finale --grand-marais-dialogue planning/minnesota/playable/grand-marais.json
+target/northstar-story/wasm-dev/verify_crystalpack \
+  content-packs/minnesota-northstar-story.crystalpack --audio --desktop
+```
+
+All four asset cases and all 377 audio comparisons pass. The production
+controller tests were built and run with:
+
+```sh
+RUST_MIN_STACK=33554432 \
+CRYSTAL_IRON_RANGE_STORY_TEST_PACK="$PWD/content-packs/minnesota-northstar-story.crystalpack" \
+CRYSTAL_BOUNDARY_BASECAMP_TEST_PACK="$PWD/content-packs/minnesota-northstar-story.crystalpack" \
+CARGO_TARGET_DIR=target/northstar-story cargo test --profile wasm-dev --locked \
+  --config 'profile.wasm-dev.package.crystal-assets.opt-level=0' \
+  -p crystal-bevy --lib story_controller_ -- --ignored --test-threads=1
+```
+
+The emitted `crystal_bevy-8ddf5a560e93701b` executable was also replayed directly
+against the final prairie-based candidate: all seven story cases and both R09
+controller cases pass. The larger stack is a test-thread setting for this
+verification profile. Badges, upstream events, local position and legal
+partners are explicitly initialized; battles and recovery then use production
+inputs. This does not establish an earned eight-badge Minnesota journey.
+
+The production text client also passes stdio MCP and keyboard/alternate-screen
+checks on the earned recovery save, with byte-empty stderr. The actual local
+review can be opened with:
+
+```sh
+target/runtime-fps/wasm-dev/geothite play \
+  content-packs/minnesota-northstar-story.crystalpack \
+  --load .local/northstar-story-review-saves/q06-meter-recovered-38137-1793057500549669000.crystalsave
+```
+
+Packs, saves, captures and build products remain ignored. See
+[Minnesota status](../planning/minnesota/STATUS.md) for the exact output hash,
+the retained native/source image comparison and remaining chapter work.
+Grand Rapids handover and Duluth activation are not implemented by the mine
+binding. Workspace formatting and strict Clippy have the recorded pre-existing
+failures; those broad checks are not passing.
+
 ## Desktop app packaging
 
 The packaging commands consume the completed local native pack; they do not
@@ -240,6 +773,64 @@ All 377 PCM hash/frame/loop checks passed for each pack. Twelve Tower controls,
 early-game controller checks, earned Hall/Continue, MCP movement/menu and
 clean-stderr checks passed. The new pack identities require matching saves;
 existing saves were not rewritten.
+
+### Additive native field-script repair on 2026-10-26
+
+The pinned `engine/events/field_moves.asm` supplies the native Headbutt/Fly
+animation routines and their local branches. The Rust global-script exporter
+now retains these original bodies. In an **already prepared external
+workspace**, the following stages successfully exported the global scripts and
+compiled fresh native/browser source packs:
+
+```sh
+field_workspace="$HOME/.local/share/geothite/export-workspace"
+target/runtime-fps/wasm-dev/pack_core "$field_workspace" --export-global-scripts
+target/runtime-fps/wasm-dev/pack_core "$field_workspace" --pack-prepared-workspace
+```
+
+These are the built Rust tools from this checkout's warm `wasm-dev` target.
+The first stage refreshes the external global-script catalogs; the second
+compiles that workspace's existing prepared inputs into
+`$field_workspace/content-packs/core-modular{,.browser}.crystalpack`. This is
+targeted source creation, with the full initializer and its playable-core
+publication checks remaining a separate workflow. The fresh external packs
+retain vanilla source tables; existing modded packs remain the gameplay base.
+
+The additive repair takes **BASE SOURCE OUTPUT**. The executed 450-map Boundary
+Waters example used the existing local Minnesota pack as BASE and the fresh
+external browser source pack as SOURCE:
+
+```sh
+target/runtime-fps/wasm-dev/pack_native_field_scripts \
+  content-packs/minnesota-boundary-waters.crystalpack \
+  "$field_workspace/content-packs/core-modular.browser.crystalpack" \
+  content-packs/minnesota-boundary-waters-fields.crystalpack
+target/runtime-fps/wasm-dev/verify_crystalpack \
+  content-packs/minnesota-boundary-waters-fields.crystalpack --audio --desktop
+```
+
+The builder verifies both inputs, requires equality for every overlapping
+OverworldEvents body, and adds only the 40 missing native field definitions to
+the **existing** catalog. All 627 original bodies are preserved. Existing global
+root order is preserved, with Headbutt entries and `Script_UsedWaterfall` retained
+when absent. Native source certificates and the compiled Waterfall object,
+runtime and control-command slots are checked before publishing a distinct
+manifest/identity. Reapplying the repair is idempotent. Maps, art, encounters,
+items, event constants, HOME/recovery, runtime files and audio remain unchanged;
+BASE and SOURCE files remain intact. Outputs stay ignored under `content-packs/`.
+The canonical native/browser/TUI packs are separate publication targets of the
+full initializer, rather than destinations for these fresh source-only packs.
+
+Executed evidence: the pinned-source animation-closure/timing regression and all
+four repair tests passed, including native Headbutt `callasm` execution, complete
+Waterfall-loop retention, preservation/idempotence and valid-schema overlapping
+source/local-tail rejection. The published Boundary repair passed all **377**
+audio PCM hashes, frame counts and loop ranges. These source/component results
+do not establish menu-origin Headbutt fallthrough or a whole playable-core
+rebuild; field input, animations and regional gameplay require their production
+controller regressions. Source export/pack logs and the repair results are the
+ignored `.local/field-move-source-{export,pack}.log` and
+`.local/native-field-repair-assets.log` from this run.
 
 ### Solo-completion pack verification on 2026-10-16
 
@@ -584,3 +1175,350 @@ The verified outputs are `content-packs/natural-movement.crystalpack` and
 core modular packs. Both remain ignored. Native validation used the production
 `render_at_location` example in headless image mode; controller, battle, MCP,
 and clean-stdio regressions use the completed external text pack.
+
+## Grand Marais town overlay
+
+The town-only Minnesota prototype reads the completed TUI pack and an original
+hand-authored layout. Its Rust overlay retains the base maps, art and audio,
+adds one town and six interiors, and redirects this demo's HOME spawn. The
+pack stays ignored; this is not the complete Minnesota region.
+
+Verified local build and full-town source-art render commands:
+
+```sh
+CARGO_TARGET_DIR=target/runtime-fps cargo build --profile wasm-dev --locked -p crystal-assets --bin pack_grand_marais
+./target/runtime-fps/wasm-dev/pack_grand_marais \
+  content-packs/text-tui.crystalpack \
+  planning/minnesota/playable/grand-marais.json \
+  content-packs/minnesota-grand-marais.crystalpack
+.local/minnesota-review-env/bin/python planning/minnesota/tools/render_grand_marais_pack.py
+```
+
+The Python render requires Pillow and cbor2; it reads the published pack, checks
+its layout and event anchors against the design, and renders the complete town.
+It does not export packs. After building the production text client, run
+`./target/runtime-fps/release/geothite play content-packs/minnesota-grand-marais.crystalpack --save .local/grand-marais.crystalsave`.
+The [town runbook](../planning/minnesota/playable/README.md) contains the live
+review loop, gameplay regressions, local story and current review scope.
+
+## North Shore route overlay
+
+The adjoining hand-authored route now has a Rust publisher. It adds twelve
+connected chunks, the Split Rock keeper room, native opponents, dialogue,
+pickups, signs and encounter tables. It preserves the original HOME and all
+original maps/spawns; regional hub connections and the new-game journey remain
+unfinished. Generated packs stay ignored.
+
+```sh
+CARGO_TARGET_DIR=target/runtime-fps cargo run --profile wasm-dev --locked \
+  -p crystal-assets --bin pack_north_shore -- \
+  content-packs/text-tui.crystalpack \
+  planning/minnesota/routes/MN_R11.layout.json \
+  planning/minnesota/routes/MN_R11.json \
+  content-packs/minnesota-north-shore.crystalpack
+.local/minnesota-review-env/bin/python planning/minnesota/tools/review_north_shore.py \
+  --pack content-packs/minnesota-north-shore.crystalpack --verify-published
+```
+
+The executed build produces 401 maps. The checker compares all 9,216 authored
+metatiles and native event positions against the actual pack. The focused
+controller fixture proves traversal, interaction, a trainer battle and saved
+flags; its explicit late-game placement/team do not prove regional progression.
+See [the route runbook](../planning/minnesota/routes/MN_R11.md) for the fixture,
+headless captures, live review loop and remaining integration work.
+
+## Gunflint native route overlay
+
+The second individually authored Minnesota route now publishes twelve connected
+chunks, Raven Rock and the ranger hut. It preserves original HOME, source maps,
+spawns, files and audio. The complete 402-map overlay, native controller and stdio
+fixtures pass. The Boundary Waters port and Q07 now have separate connected-basecamp proof below; other hub ports and the earned regional journey remain open.
+
+```sh
+CARGO_TARGET_DIR=target/runtime-fps cargo run --profile wasm-dev --locked \
+  -p crystal-assets --bin pack_gunflint -- \
+  content-packs/text-tui.crystalpack \
+  planning/minnesota/routes/MN_R12.layout.json \
+  planning/minnesota/routes/MN_R12.json \
+  content-packs/minnesota-gunflint.crystalpack
+.local/minnesota-review-env/bin/python planning/minnesota/tools/review_gunflint.py \
+  --pack content-packs/minnesota-gunflint.crystalpack --verify-published
+```
+
+These commands were executed. Native publication matches all 9,216 authored
+metatiles and exact event/room anchors, and the pack passes all 377 PCM hashes,
+frame counts and loop ranges. The compiler also materializes the supplied exact
+Cut script definition, previously omitted from the executable root subset.
+North Shore's native Cut regression now passes alongside Gunflint's.
+
+For fast JSON edits, the art-only `minnesota-gunflint-art.crystalpack` still feeds
+`review_gunflint.py --serve` at port 8767 without Cargo or native publication.
+See [the Gunflint runbook](../planning/minnesota/routes/MN_R12.md) for native
+controller/MCP checks, actual headless 2D captures, the explicit late-route
+fixture-save review command and remaining regional integration. Packs, saves,
+renders and verification scratch output remain ignored.
+
+## League Approach native route overlay
+
+The supplied ignored TUI pack is the input to the individually authored League
+Approach overlay. No source checkout or exporter run is needed for this overlay.
+The JSONs contain hand-selected terrain strokes and exact events; the Rust
+publisher compiles all eighteen chunks and Cedar Shelter using unchanged Johto
+art and ordinary production scripts.
+
+```sh
+CARGO_TARGET_DIR=target/runtime-fps cargo run --profile wasm-dev --locked \
+  -p crystal-assets --bin pack_league_approach -- \
+  content-packs/text-tui.crystalpack \
+  planning/minnesota/routes/MN_R13.layout.json \
+  planning/minnesota/routes/MN_R13.json \
+  content-packs/minnesota-league-approach.crystalpack
+.local/minnesota-review-env/bin/python planning/minnesota/tools/review_league_approach.py \
+  --pack content-packs/minnesota-league-approach.crystalpack --verify-published
+```
+
+The executed build publishes a 407-map pack with original HOME/recovery, source
+maps, art and audio preserved. All 13,824 route metatiles and native event/room
+anchors match the editor. Desktop validation and all 377 audio PCM hashes,
+frame counts and loop ranges pass. A composition regression preserves North
+Shore and Gunflint when all three overlays are applied together.
+
+The source-art loop uses `review_league_approach.py --serve` at port 8768; it
+rerenders JSON edits without Cargo or publishing a pack. The separate native
+controller fixture tests late-route movement, interactions, shelter, Cut,
+battle PP and saved flags. Its placement, level-60 party and badges are explicit
+test setup. Actual Boundary Waters/Ely ports, Q08 gates and earned progression
+remain pending. See [the League Approach runbook](../planning/minnesota/routes/MN_R13.md)
+for exact test, review-save and local client commands. Packs remain ignored.
+
+## Headwaters native route overlay
+
+Headwaters adds all nine individually authored chunks to the supplied ignored
+TUI pack, retaining the original world, HOME/recovery destinations and audio.
+The Rust publisher adds a bounded derived Johto tileset with three native pier
+recipes. No glyphs are painted or recolored; original Johto water animation is
+retained beneath the wooden rail. There are no buildings or extra interiors.
+
+```sh
+CARGO_TARGET_DIR=target/runtime-fps cargo run --profile wasm-dev --locked \
+  -p crystal-assets --bin pack_headwaters -- \
+  content-packs/text-tui.crystalpack \
+  planning/minnesota/routes/MN_R14.layout.json \
+  planning/minnesota/routes/MN_R14.json \
+  content-packs/minnesota-headwaters.crystalpack
+.local/minnesota-review-env/bin/python planning/minnesota/tools/review_headwaters.py \
+  --pack content-packs/minnesota-headwaters.crystalpack --verify-published
+```
+
+The executed build publishes a 397-map pack. All 6,912 terrain metatiles,
+sixteen objects, signs, parties, dialogue and all 131 source/derived block images
+match the authoring/native PNG. Desktop validation and all 377 audio PCM hashes,
+frame counts and loop ranges pass. All four authored overlays compose together
+without replacing source/earlier maps, files, recovery or audio.
+
+The live JSON review is `review_headwaters.py --serve` at port 8769; it needs no
+Cargo build or pack publication for each edit. Native controller checks pass
+the five circuits, both boardwalk rows both ways, interactions, Cut, trainer
+battle/PP and saved flags; native Johto animation frames/timing and clean-stdio
+MCP also pass. The fixture explicitly supplies placement, a level-45 party and
+six badge bits. Real Bemidji/Itasca hub ports and the earned Q05 journey remain
+pending. See [the Headwaters runbook](../planning/minnesota/routes/MN_R14.md)
+for exact test, source-art recipe, review-save and interactive client commands.
+Packs and generated renders remain ignored.
+
+## Compact Central Lakes review overlay
+
+The user rejected the giant route direction. Central Lakes now adds one
+32×18-metatile exterior and one small cabin, rather than nine exterior chunks.
+It uses unchanged Kanto source art, a short required grass crossing, a directional
+meadow ledge, a railed bridge and one gated dock. It preserves original HOME,
+source maps, recovery and audio. Visual acceptance and regional progression
+remain open.
+
+Build the ignored native overlay with the verified command:
+
+```sh
+CARGO_TARGET_DIR=target/runtime-fps cargo run --profile wasm-dev --locked \
+  -p crystal-assets --bin pack_central_lakes -- \
+  content-packs/text-tui.crystalpack \
+  planning/minnesota/routes/MN_R15.layout.json \
+  planning/minnesota/routes/MN_R15.json \
+  content-packs/minnesota-central-lakes.crystalpack
+```
+
+See [the compact map, exact connections and review/test commands](../planning/minnesota/routes/MN_R15.md).
+The JSON review at port 8770 refreshes the whole map and player-scale views
+without a pack build. The published overlay contains 390 maps; all 377 audio
+programs retain their verified PCM hashes, frame counts and loop ranges.
+
+
+## Compact Driftless review overlay
+
+Driftless now adds one 32×20-metatile exterior and two interiors to the ignored
+source pack. Its native Johto ramp climbs the limestone bench; a HOP_DOWN ledge
+returns westbound traffic to the meadow and rejects reverse ascent. The central
+grass road is the short alternative, and the shared eastern grass gate remains
+mandatory. The dock uses actual directional rails and a closed end.
+
+```sh
+CARGO_TARGET_DIR=target/runtime-fps cargo run --profile wasm-dev --locked \
+  -p crystal-assets --bin pack_driftless -- \
+  content-packs/text-tui.crystalpack \
+  planning/minnesota/routes/MN_R01.layout.json \
+  planning/minnesota/routes/MN_R01.json \
+  content-packs/minnesota-driftless.crystalpack
+```
+
+The resulting pack contains 391 maps; exact publication and all 377 audio checks
+pass. See [the map, physical contract and native test commands](../planning/minnesota/routes/MN_R01.md).
+The geometry fixture uses explicit placement with an empty party. Real
+Winona/Rochester ports, trainer/encounter balance and the earned Q01 journey
+remain integration work. Do not describe the isolated pack as a playable region.
+
+
+## Compact Prairie Farm review overlay
+
+Prairie Farm Road adds one 30×22 exterior, Lind Farm and a native workshop.
+Its west-facing ledge is a real HOP_LEFT transition: the nursery shortcut works
+westbound, while the reverse trip uses the southern lane. A fenced drainage
+channel has one railed bridge, and the western pasture grass is unavoidable.
+
+```sh
+CARGO_TARGET_DIR=target/runtime-fps cargo run --profile wasm-dev --locked \
+  -p crystal-assets --bin pack_prairie_farm -- \
+  content-packs/text-tui.crystalpack \
+  planning/minnesota/routes/MN_R02.layout.json \
+  planning/minnesota/routes/MN_R02.json \
+  content-packs/minnesota-prairie-farm.crystalpack
+```
+
+The isolated pack has 391 maps and passes exact block/event publication and
+all 377 audio checks. See [the whole map, native captures and test commands](../planning/minnesota/routes/MN_R02.md).
+The populated-party fixture uses source-created Cyndaquil 12/Mareep 9 and one
+badge as explicit setup. Real Rochester/Mankato ports and earned Q02 progression
+remain integration work. Packs and derived renders stay ignored.
+
+
+## Compact Minnesota River Valley overlay
+
+River Valley adds two 24-metatile-wide maps (heights 24 and 8) and an 8×6 cave.
+The two timber bridges are both necessary, the lower-bank habitat is required,
+and an optional ramp/ledge terrace supplies an Ether and battle. It reuses the
+bounded native Headwaters rail extension and preserves every original Johto
+metatile and audio program.
+
+```sh
+CARGO_TARGET_DIR=target/runtime-fps cargo run --profile wasm-dev --locked \
+  -p crystal-assets --bin pack_river_valley -- \
+  content-packs/text-tui.crystalpack \
+  planning/minnesota/routes/MN_R03.layout.json \
+  planning/minnesota/routes/MN_R03.json \
+  content-packs/minnesota-river-valley.crystalpack
+```
+
+The isolated pack has 391 maps. Geometry and populated-party controller
+fixtures pass, including both bridges, native map seam, cave return, four
+trainer battles/PP and save/reload. The party, two badges and replay clock are
+explicit fixture setup. Real Mankato/Minneapolis ports and earned Q02 remain
+integration work. See [the whole map, native captures and exact test commands](../planning/minnesota/routes/MN_R03.md).
+
+
+The River Valley journey verifies the bridge's Super Potion through the
+production Pack, including HP restoration, consumption and saved pickup flag.
+The shared controller uses a compiled HP-effect capability from the runtime
+item snapshot; the supplied item catalog is unchanged. The route runbook also
+records a separate failing runtime battle-fixture setup test.
+
+## Twin Cities park review overlay
+
+The hand-authored crossing adds one 28×18 native exterior. It uses original
+Park art plus four bounded source-row recipes for paved gold rails and straight
+retaining banks. A dry trainer lane and a four-step grass alternative work in
+both directions; a protected bridge and picnic habitat provide distinct
+features. Map sizes remain individual design choices.
+
+```sh
+CARGO_TARGET_DIR=target/runtime-fps cargo run --profile wasm-dev --locked \
+  -p crystal-assets --bin pack_twin_cities -- \
+  content-packs/text-tui.crystalpack planning/minnesota/routes/MN_R04.layout.json \
+  planning/minnesota/routes/MN_R04.json content-packs/minnesota-twin-cities.crystalpack
+```
+
+The isolated 389-map pack passes exact terrain/events, native geometry,
+populated-party battles/PP, Ether use, save/reload and all 377 audio checks.
+Explicit third-badge placement/party setup is separate from earned Q03 and real
+Minneapolis/Saint Paul ports. See [the map, native captures and local review
+commands](../planning/minnesota/routes/MN_R04.md). Generated packs stay ignored.
+
+## Composed Minnesota map review
+
+The verified local `content-packs/minnesota-region-review.crystalpack` contains
+469 maps: all twenty current route layouts, Grand Marais and the preserve/cabin,
+in addition to the original game. See the [executed Rust composition commands](../planning/minnesota/playable/region-review.md).
+All previous450 map modules and runtime files, existing trainers, source
+catalogs, audio and the full HOME/recovery table are preserved. The added town
+uses `pack_grand_marais ... --preserve-home`; the isolated demo remains available
+without that option. Native verification and all 377audio checks pass.
+
+This is a review pack. Planned regional hub links are not playable connections,
+Safari admission remains closed, and local party/badge fixtures do not establish
+earned progression. The atlas can compare every current native slice against
+this one artifact with `render_progress_atlas.py --region-pack`.
+
+## Connected Boundary Waters basecamp
+
+The additive 471-map `content-packs/minnesota-boundary-basecamp-connected.crystalpack`
+publishes the hand-authored 32×24 free town, 8×6 Survey Shelter and three guarded
+native walking links to Gunflint, League Approach and Voyageurs. The verified
+content hash is `9cb8936dbd1afeeae3abe69e237aeddf12d5c8bccb3a8eb9f8b7ed53bdb45841`.
+The publisher preserves existing content, art, audio and HOME/recovery while
+adding the town/room and explicit checkpoint/connection bindings; no route
+terrain changes or port Floor warps are required.
+
+```sh
+CARGO_TARGET_DIR=target/runtime-fps cargo run --profile wasm-dev --locked \
+  -p crystal-assets --bin pack_boundary_basecamp -- \
+  content-packs/minnesota-region-review.crystalpack \
+  planning/minnesota/towns/MnBoundaryWaters.json \
+  planning/minnesota/towns/MnBoundaryWaters.layout.json \
+  content-packs/minnesota-boundary-basecamp-connected.crystalpack --connect-routes
+target/runtime-fps/wasm-dev/verify_crystalpack \
+  content-packs/minnesota-boundary-basecamp-connected.crystalpack --audio --desktop
+```
+
+The CLI writes and strictly reads back the full CBOR file. Twenty asset/core
+tests, all nine fresh production-controller cases and all 377 audio PCM
+hash/frame-count/loop-range checks pass. Real inputs traverse both lanes of all
+three seams in both directions, exercise28 prerequisite refusals, preserve
+unqualified inward/transverse access to free healing, and verify Surf boundaries
+and Continue. The Q07 case plays the chief victory, separately acknowledges the
+receiver, walks the unlocked South seam to `MnR13C00R00(30,0)` and Continues.
+No post-setup restoration injection is used.
+
+The legal level 80 Mew review partner, eight badges, upstream lighthouse signal and
+initial location remain explicit fixture setup. The complete earned regional
+journey and optional Safari capture expeditions remain open; admission is closed
+and charges nothing. Both bare-town and connected earned-save MCP/TUI input are
+verified with empty stderr; connected MCP walks the South seam in both directions.
+See the [current town runbook](../planning/minnesota/playable/boundary-basecamp.md)
+for commands, local logs and exact coverage. All full-resolution renders,
+preconversion originals, conversions, crops, previews and rejected passes remain
+archived for reuse. Generated packs stay external and ignored.
+
+### Revising installed authored terrain
+
+The current `content-packs/minnesota-quality-review.crystalpack` retains the
+471-map connected baseline and changes only R05's upper-ridge cleft and R08's
+pine peninsula. The Rust `revise_authored_route` command requires the exact
+previous layout, revised layout and existing dossier. It verifies installed
+typed/base64 terrain, source/native anchors and full revised geometry, preserves
+events/connections/art/catalogs/HOME, and strictly reads back its written pack.
+It does not generate terrain or install dialogue/story edits. Source-art recipe
+changes require the separate art/publication path.
+
+All seven revision tests pass with explicit and default pack inputs. Three R05
+and two R08 production-controller cases pass on the resulting pack, along with
+both actual-save MCP checks and all 377 audio hashes/frame counts/loop ranges.
+The complete before/after source inputs and every render stage remain saved.
+See the [executed revision commands and exact preservation report](../planning/minnesota/playable/terrain-quality-revisions.md).
+The full twenty-route visual and earned regional progression work remains open.

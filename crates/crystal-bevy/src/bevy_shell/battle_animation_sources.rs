@@ -270,7 +270,10 @@ fn execute_visible_battle_animation_script(
     for line in source {
         let trimmed = line.trim();
         if trimmed.starts_with('.') && !trimmed.contains(char::is_whitespace) {
-            labels.insert(trimmed.to_string(), commands.len());
+            // RGBDS local labels may retain their declaration colon in a
+            // verified pack; branch operands omit it. Older packs already
+            // store the same labels without colons.
+            labels.insert(trimmed.trim_end_matches(':').to_string(), commands.len());
         } else {
             commands.push(trimmed.to_string());
         }

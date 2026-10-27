@@ -1,0 +1,2351 @@
+{
+  "schema_version": 2,
+  "id": "MN_R16",
+  "tileset": "johto",
+  "compiled_tileset": "mn_prairie_headwaters",
+  "dimensions_metatiles": [
+    48,
+    24
+  ],
+  "shore_fitting": "johto_8_neighbors",
+  "reject_cliff_cuts": true,
+  "source_pixels_modified": false,
+  "derived_blocks": [
+    {
+      "id": "80",
+      "source_tileset": "kanto",
+      "source_block": "78",
+      "collision": "WATER",
+      "required_typed_extension": "headwaters_art::build_headwaters_art_pack"
+    },
+    {
+      "id": "81",
+      "source_tileset": "kanto",
+      "source_block": "77",
+      "collision": "FLOOR/FLOOR/WALL/WALL",
+      "required_typed_extension": "headwaters_art::build_headwaters_art_pack"
+    },
+    {
+      "id": "82",
+      "source_tileset": "kanto",
+      "source_block": "77",
+      "tile_row_order": [
+        2,
+        3,
+        0,
+        1
+      ],
+      "collision_source_tileset": "johto",
+      "collision_source_block": "75",
+      "required_typed_extension": "headwaters_art::build_headwaters_art_pack"
+    },
+    {
+      "id": "83",
+      "source_tileset": "johto",
+      "source_block": "02",
+      "palette_override": 7,
+      "collision": "FLOOR",
+      "required_typed_extension": "build_prairie_grass_art_pack"
+    },
+    {
+      "id": "84",
+      "source_tileset": "johto",
+      "source_block": "03",
+      "palette_override": 7,
+      "collision": "TALL_GRASS",
+      "required_typed_extension": "build_prairie_grass_art_pack"
+    }
+  ],
+  "additional_water_blocks": [
+    "30",
+    "31",
+    "32",
+    "38",
+    "39",
+    "3a"
+  ],
+  "crossings": [
+    {
+      "id": "RED_RIVER_BRIDGE",
+      "north_rail_blocks": [
+        [
+          5,
+          11
+        ],
+        [
+          6,
+          11
+        ],
+        [
+          7,
+          11
+        ],
+        [
+          8,
+          11
+        ],
+        [
+          9,
+          11
+        ],
+        [
+          10,
+          11
+        ],
+        [
+          11,
+          11
+        ],
+        [
+          12,
+          11
+        ],
+        [
+          13,
+          11
+        ]
+      ],
+      "south_rail_blocks": [
+        [
+          5,
+          12
+        ],
+        [
+          6,
+          12
+        ],
+        [
+          7,
+          12
+        ],
+        [
+          8,
+          12
+        ],
+        [
+          9,
+          12
+        ],
+        [
+          10,
+          12
+        ],
+        [
+          11,
+          12
+        ],
+        [
+          12,
+          12
+        ],
+        [
+          13,
+          12
+        ]
+      ],
+      "core_walk_line": [
+        [
+          10,
+          24
+        ],
+        [
+          11,
+          24
+        ],
+        [
+          12,
+          24
+        ],
+        [
+          13,
+          24
+        ],
+        [
+          14,
+          24
+        ],
+        [
+          15,
+          24
+        ],
+        [
+          16,
+          24
+        ],
+        [
+          17,
+          24
+        ],
+        [
+          18,
+          24
+        ],
+        [
+          19,
+          24
+        ],
+        [
+          20,
+          24
+        ],
+        [
+          21,
+          24
+        ],
+        [
+          22,
+          24
+        ],
+        [
+          23,
+          24
+        ],
+        [
+          24,
+          24
+        ],
+        [
+          25,
+          24
+        ],
+        [
+          26,
+          24
+        ],
+        [
+          27,
+          24
+        ]
+      ],
+      "deck_blocks": [],
+      "water_under_rail_blocks": []
+    },
+    {
+      "id": "DRAINAGE_FOOTBRIDGE",
+      "north_rail_blocks": [
+        [
+          30,
+          14
+        ],
+        [
+          31,
+          14
+        ],
+        [
+          32,
+          14
+        ],
+        [
+          33,
+          14
+        ]
+      ],
+      "south_rail_blocks": [
+        [
+          30,
+          15
+        ],
+        [
+          31,
+          15
+        ],
+        [
+          32,
+          15
+        ],
+        [
+          33,
+          15
+        ]
+      ],
+      "core_walk_line": [
+        [
+          60,
+          30
+        ],
+        [
+          61,
+          30
+        ],
+        [
+          62,
+          30
+        ],
+        [
+          63,
+          30
+        ],
+        [
+          64,
+          30
+        ],
+        [
+          65,
+          30
+        ],
+        [
+          66,
+          30
+        ],
+        [
+          67,
+          30
+        ]
+      ],
+      "deck_blocks": [],
+      "water_under_rail_blocks": []
+    }
+  ],
+  "layers": [
+    {
+      "name": "Prairie interior",
+      "kind": "rect",
+      "bounds": [
+        0,
+        1,
+        48,
+        23
+      ],
+      "material": "lawn"
+    },
+    {
+      "name": "Red River bend",
+      "kind": "polygon",
+      "points": [
+        [
+          6,
+          1
+        ],
+        [
+          11,
+          1
+        ],
+        [
+          11,
+          6
+        ],
+        [
+          12,
+          6
+        ],
+        [
+          12,
+          15
+        ],
+        [
+          13,
+          15
+        ],
+        [
+          13,
+          22
+        ],
+        [
+          7,
+          22
+        ],
+        [
+          7,
+          17
+        ],
+        [
+          5,
+          17
+        ],
+        [
+          5,
+          8
+        ],
+        [
+          6,
+          8
+        ]
+      ],
+      "material": "water"
+    },
+    {
+      "name": "Farm drainage channel",
+      "kind": "rect",
+      "bounds": [
+        31,
+        1,
+        33,
+        23
+      ],
+      "material": "water"
+    },
+    {
+      "name": "Drainage settling pool",
+      "kind": "polygon",
+      "points": [
+        [
+          31,
+          18
+        ],
+        [
+          31,
+          20
+        ],
+        [
+          30,
+          20
+        ],
+        [
+          30,
+          22
+        ],
+        [
+          34,
+          22
+        ],
+        [
+          34,
+          20
+        ],
+        [
+          33,
+          20
+        ],
+        [
+          33,
+          18
+        ]
+      ],
+      "material": "water"
+    },
+    {
+      "name": "river north left",
+      "kind": "point",
+      "position": [
+        6,
+        1
+      ],
+      "block": "30"
+    },
+    {
+      "name": "river north middle",
+      "kind": "block_rect",
+      "bounds": [
+        7,
+        1,
+        11,
+        2
+      ],
+      "block": "31"
+    },
+    {
+      "name": "river north right",
+      "kind": "point",
+      "position": [
+        11,
+        1
+      ],
+      "block": "32"
+    },
+    {
+      "name": "river south left",
+      "kind": "point",
+      "position": [
+        7,
+        22
+      ],
+      "block": "38"
+    },
+    {
+      "name": "river south middle",
+      "kind": "block_rect",
+      "bounds": [
+        8,
+        22,
+        13,
+        23
+      ],
+      "block": "39"
+    },
+    {
+      "name": "river south right",
+      "kind": "point",
+      "position": [
+        13,
+        22
+      ],
+      "block": "3a"
+    },
+    {
+      "name": "ditch north left",
+      "kind": "point",
+      "position": [
+        31,
+        1
+      ],
+      "block": "30"
+    },
+    {
+      "name": "ditch north right",
+      "kind": "point",
+      "position": [
+        32,
+        1
+      ],
+      "block": "32"
+    },
+    {
+      "name": "ditch south left",
+      "kind": "point",
+      "position": [
+        30,
+        22
+      ],
+      "block": "38"
+    },
+    {
+      "name": "ditch south middle",
+      "kind": "block_rect",
+      "bounds": [
+        31,
+        22,
+        33,
+        23
+      ],
+      "block": "39"
+    },
+    {
+      "name": "ditch south right",
+      "kind": "point",
+      "position": [
+        33,
+        22
+      ],
+      "block": "3a"
+    },
+    {
+      "name": "North cottonwood windbreak",
+      "kind": "rect",
+      "bounds": [
+        41,
+        0,
+        43,
+        9
+      ],
+      "material": "forest"
+    },
+    {
+      "name": "South cottonwood windbreak",
+      "kind": "rect",
+      "bounds": [
+        41,
+        14,
+        43,
+        24
+      ],
+      "material": "forest"
+    },
+    {
+      "name": "Mandatory prairie grass neck",
+      "kind": "rect",
+      "bounds": [
+        41,
+        9,
+        43,
+        14
+      ],
+      "material": "encounter"
+    },
+    {
+      "name": "Meadow north windbreak",
+      "kind": "rect",
+      "bounds": [
+        15,
+        1,
+        29,
+        2
+      ],
+      "material": "forest"
+    },
+    {
+      "name": "Meadow west windbreak",
+      "kind": "rect",
+      "bounds": [
+        15,
+        2,
+        16,
+        9
+      ],
+      "material": "forest"
+    },
+    {
+      "name": "Meadow east windbreak",
+      "kind": "rect",
+      "bounds": [
+        28,
+        2,
+        29,
+        10
+      ],
+      "material": "forest"
+    },
+    {
+      "name": "Upper hay meadow",
+      "kind": "rect",
+      "bounds": [
+        16,
+        2,
+        28,
+        8
+      ],
+      "material": "lawn"
+    },
+    {
+      "name": "Hay meadow encounter swath",
+      "kind": "polygon",
+      "points": [
+        [
+          18,
+          2
+        ],
+        [
+          26,
+          2
+        ],
+        [
+          26,
+          4
+        ],
+        [
+          27,
+          4
+        ],
+        [
+          27,
+          6
+        ],
+        [
+          24,
+          6
+        ],
+        [
+          24,
+          7
+        ],
+        [
+          19,
+          7
+        ],
+        [
+          19,
+          5
+        ],
+        [
+          18,
+          5
+        ]
+      ],
+      "material": "encounter"
+    },
+    {
+      "name": "Meadow uphill gate",
+      "kind": "path",
+      "points": [
+        [
+          14,
+          5
+        ],
+        [
+          17,
+          5
+        ],
+        [
+          17,
+          7
+        ]
+      ],
+      "material": "floor",
+      "width_metatiles": 1
+    },
+    {
+      "name": "Meadow interior footpath",
+      "kind": "path",
+      "points": [
+        [
+          17,
+          5
+        ],
+        [
+          21,
+          5
+        ],
+        [
+          21,
+          3
+        ],
+        [
+          25,
+          3
+        ]
+      ],
+      "material": "floor",
+      "width_metatiles": 1
+    },
+    {
+      "name": "Native low grass bank",
+      "kind": "block_rect",
+      "bounds": [
+        16,
+        8,
+        28,
+        9
+      ],
+      "block": "57"
+    },
+    {
+      "name": "Low bank left anchor",
+      "kind": "rect",
+      "bounds": [
+        15,
+        8,
+        16,
+        9
+      ],
+      "material": "forest"
+    },
+    {
+      "name": "Low bank right anchor",
+      "kind": "rect",
+      "bounds": [
+        28,
+        8,
+        29,
+        9
+      ],
+      "material": "forest"
+    },
+    {
+      "name": "Wild oat swale below hayfield",
+      "kind": "polygon",
+      "points": [
+        [
+          18,
+          9
+        ],
+        [
+          25,
+          9
+        ],
+        [
+          25,
+          10
+        ],
+        [
+          27,
+          10
+        ],
+        [
+          27,
+          12
+        ],
+        [
+          24,
+          12
+        ],
+        [
+          24,
+          11
+        ],
+        [
+          19,
+          11
+        ],
+        [
+          19,
+          10
+        ],
+        [
+          18,
+          10
+        ]
+      ],
+      "material": "encounter"
+    },
+    {
+      "name": "Northwestern cottonwood corner",
+      "kind": "polygon",
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          4,
+          0
+        ],
+        [
+          4,
+          2
+        ],
+        [
+          3,
+          2
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          1,
+          3
+        ],
+        [
+          1,
+          5
+        ],
+        [
+          0,
+          5
+        ]
+      ],
+      "material": "forest"
+    },
+    {
+      "name": "Southwestern cottonwood corner",
+      "kind": "polygon",
+      "points": [
+        [
+          0,
+          19
+        ],
+        [
+          2,
+          19
+        ],
+        [
+          2,
+          21
+        ],
+        [
+          4,
+          21
+        ],
+        [
+          4,
+          23
+        ],
+        [
+          0,
+          23
+        ]
+      ],
+      "material": "forest"
+    },
+    {
+      "name": "Meadow return landing",
+      "kind": "path",
+      "points": [
+        [
+          22,
+          9
+        ],
+        [
+          22,
+          12
+        ]
+      ],
+      "material": "floor",
+      "width_metatiles": 1
+    },
+    {
+      "name": "West riverside road",
+      "kind": "path",
+      "points": [
+        [
+          0,
+          12
+        ],
+        [
+          18,
+          12
+        ],
+        [
+          18,
+          15
+        ],
+        [
+          29,
+          15
+        ]
+      ],
+      "material": "floor",
+      "width_metatiles": 1
+    },
+    {
+      "name": "East farm lane",
+      "kind": "path",
+      "points": [
+        [
+          34,
+          15
+        ],
+        [
+          38,
+          15
+        ],
+        [
+          38,
+          12
+        ],
+        [
+          40,
+          12
+        ]
+      ],
+      "material": "floor",
+      "width_metatiles": 1
+    },
+    {
+      "name": "Detroit arrival road",
+      "kind": "path",
+      "points": [
+        [
+          43,
+          12
+        ],
+        [
+          47,
+          12
+        ]
+      ],
+      "material": "floor",
+      "width_metatiles": 1
+    },
+    {
+      "name": "West bank fishing walk",
+      "kind": "path",
+      "points": [
+        [
+          2,
+          12
+        ],
+        [
+          2,
+          5
+        ],
+        [
+          4,
+          5
+        ]
+      ],
+      "material": "floor",
+      "width_metatiles": 1
+    },
+    {
+      "name": "North river trail",
+      "kind": "path",
+      "points": [
+        [
+          14,
+          12
+        ],
+        [
+          14,
+          5
+        ],
+        [
+          15,
+          5
+        ]
+      ],
+      "material": "floor",
+      "width_metatiles": 1
+    },
+    {
+      "name": "South meadow walk",
+      "kind": "path",
+      "points": [
+        [
+          18,
+          15
+        ],
+        [
+          18,
+          19
+        ],
+        [
+          26,
+          19
+        ]
+      ],
+      "material": "floor",
+      "width_metatiles": 1
+    },
+    {
+      "name": "West flood meadow",
+      "kind": "polygon",
+      "points": [
+        [
+          14,
+          16
+        ],
+        [
+          17,
+          16
+        ],
+        [
+          17,
+          18
+        ],
+        [
+          20,
+          18
+        ],
+        [
+          20,
+          21
+        ],
+        [
+          24,
+          21
+        ],
+        [
+          24,
+          22
+        ],
+        [
+          14,
+          22
+        ]
+      ],
+      "material": "encounter"
+    },
+    {
+      "name": "Ditch meadow reeds",
+      "kind": "polygon",
+      "points": [
+        [
+          25,
+          17
+        ],
+        [
+          28,
+          17
+        ],
+        [
+          28,
+          19
+        ],
+        [
+          27,
+          19
+        ],
+        [
+          27,
+          22
+        ],
+        [
+          25,
+          22
+        ],
+        [
+          25,
+          20
+        ],
+        [
+          24,
+          20
+        ],
+        [
+          24,
+          18
+        ],
+        [
+          25,
+          18
+        ]
+      ],
+      "material": "encounter"
+    },
+    {
+      "name": "South meadow gathering aisle",
+      "kind": "path",
+      "points": [
+        [
+          18,
+          19
+        ],
+        [
+          26,
+          19
+        ]
+      ],
+      "material": "floor",
+      "width_metatiles": 1
+    },
+    {
+      "name": "West bank flowers",
+      "kind": "rect",
+      "bounds": [
+        1,
+        3,
+        4,
+        5
+      ],
+      "material": "flowers"
+    },
+    {
+      "name": "Moorhead cottonwood",
+      "kind": "point",
+      "position": [
+        3,
+        18
+      ],
+      "block": "5d"
+    },
+    {
+      "name": "Moorhead bank crown",
+      "kind": "point",
+      "position": [
+        2,
+        19
+      ],
+      "block": "61"
+    },
+    {
+      "name": "Floodplain cottonwood",
+      "kind": "point",
+      "position": [
+        15,
+        15
+      ],
+      "block": "5d"
+    },
+    {
+      "name": "Drain cottonwood",
+      "kind": "point",
+      "position": [
+        27,
+        12
+      ],
+      "block": "61"
+    },
+    {
+      "name": "Drain shade",
+      "kind": "point",
+      "position": [
+        27,
+        13
+      ],
+      "block": "65"
+    },
+    {
+      "name": "RED_RIVER_BRIDGE north rail",
+      "kind": "block_rect",
+      "bounds": [
+        5,
+        11,
+        14,
+        12
+      ],
+      "block": "82"
+    },
+    {
+      "name": "RED_RIVER_BRIDGE south rail",
+      "kind": "block_rect",
+      "bounds": [
+        5,
+        12,
+        14,
+        13
+      ],
+      "block": "81"
+    },
+    {
+      "name": "DRAINAGE_FOOTBRIDGE north rail",
+      "kind": "block_rect",
+      "bounds": [
+        30,
+        14,
+        34,
+        15
+      ],
+      "block": "82"
+    },
+    {
+      "name": "DRAINAGE_FOOTBRIDGE south rail",
+      "kind": "block_rect",
+      "bounds": [
+        30,
+        15,
+        34,
+        16
+      ],
+      "block": "81"
+    },
+    {
+      "name": "Fishing jetty north rail",
+      "kind": "block_rect",
+      "bounds": [
+        3,
+        7,
+        9,
+        8
+      ],
+      "block": "82"
+    },
+    {
+      "name": "Fishing jetty south rail",
+      "kind": "block_rect",
+      "bounds": [
+        3,
+        8,
+        9,
+        9
+      ],
+      "block": "81"
+    },
+    {
+      "name": "Fishing jetty closed tip",
+      "kind": "point",
+      "position": [
+        9,
+        7
+      ],
+      "block": "42"
+    },
+    {
+      "name": "Fishing jetty lower closed tip",
+      "kind": "point",
+      "position": [
+        9,
+        8
+      ],
+      "block": "4a"
+    },
+    {
+      "name": "Fishing jetty approach",
+      "kind": "path",
+      "points": [
+        [
+          2,
+          7
+        ],
+        [
+          2,
+          8
+        ]
+      ],
+      "material": "floor",
+      "width_metatiles": 1
+    },
+    {
+      "name": "West outer boundary",
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        0,
+        1,
+        24
+      ],
+      "block": "05"
+    },
+    {
+      "name": "East outer boundary",
+      "kind": "block_rect",
+      "bounds": [
+        47,
+        0,
+        48,
+        24
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Moorhead actual walking seam",
+      "kind": "point",
+      "position": [
+        0,
+        12
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Detroit actual walking seam",
+      "kind": "point",
+      "position": [
+        47,
+        12
+      ],
+      "block": "01"
+    },
+    {
+      "name": "West bank north apron fence",
+      "kind": "block_rect",
+      "bounds": [
+        1,
+        10,
+        4,
+        11
+      ],
+      "block": "41"
+    },
+    {
+      "name": "West bank south apron fence",
+      "kind": "block_rect",
+      "bounds": [
+        1,
+        14,
+        4,
+        15
+      ],
+      "block": "49"
+    },
+    {
+      "name": "South bank grass",
+      "kind": "rect",
+      "bounds": [
+        1,
+        16,
+        4,
+        19
+      ],
+      "material": "encounter"
+    },
+    {
+      "name": "West river pickup clearing",
+      "kind": "point",
+      "position": [
+        2,
+        18
+      ],
+      "block": "02"
+    },
+    {
+      "name": "Bridge-apron grass alternative",
+      "kind": "rect",
+      "bounds": [
+        14,
+        11,
+        15,
+        12
+      ],
+      "material": "encounter"
+    },
+    {
+      "name": "Bridge-apron southern barrier",
+      "kind": "block_rect",
+      "bounds": [
+        14,
+        13,
+        15,
+        14
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Middle hayfield south rail",
+      "kind": "block_rect",
+      "bounds": [
+        19,
+        13,
+        28,
+        14
+      ],
+      "block": "49"
+    },
+    {
+      "name": "Grass finger at drain west bank",
+      "kind": "polygon",
+      "points": [
+        [
+          28,
+          9
+        ],
+        [
+          30,
+          9
+        ],
+        [
+          30,
+          13
+        ],
+        [
+          28,
+          13
+        ],
+        [
+          28,
+          12
+        ],
+        [
+          27,
+          12
+        ],
+        [
+          27,
+          10
+        ],
+        [
+          28,
+          10
+        ]
+      ],
+      "material": "encounter"
+    },
+    {
+      "name": "Small flower seedling bed",
+      "kind": "rect",
+      "bounds": [
+        20,
+        14,
+        27,
+        15
+      ],
+      "material": "flowers"
+    },
+    {
+      "name": "Seedling tending gap",
+      "kind": "point",
+      "position": [
+        23,
+        13
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Seedling short work aisle",
+      "kind": "point",
+      "position": [
+        23,
+        14
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Seedbed north rail",
+      "kind": "block_rect",
+      "bounds": [
+        35,
+        3,
+        40,
+        4
+      ],
+      "block": "41"
+    },
+    {
+      "name": "Seedbed west rail",
+      "kind": "block_rect",
+      "bounds": [
+        35,
+        4,
+        36,
+        8
+      ],
+      "block": "44"
+    },
+    {
+      "name": "Seedbed east rail",
+      "kind": "block_rect",
+      "bounds": [
+        39,
+        4,
+        40,
+        7
+      ],
+      "block": "46"
+    },
+    {
+      "name": "Seedbed low south rail",
+      "kind": "block_rect",
+      "bounds": [
+        35,
+        8,
+        38,
+        9
+      ],
+      "block": "49"
+    },
+    {
+      "name": "Seedbed raised south rail",
+      "kind": "block_rect",
+      "bounds": [
+        38,
+        7,
+        40,
+        8
+      ],
+      "block": "49"
+    },
+    {
+      "name": "Stepped seedbed green base",
+      "kind": "polygon",
+      "points": [
+        [
+          36,
+          4
+        ],
+        [
+          38,
+          4
+        ],
+        [
+          38,
+          7
+        ],
+        [
+          37,
+          7
+        ],
+        [
+          37,
+          8
+        ],
+        [
+          36,
+          8
+        ]
+      ],
+      "material": "lawn"
+    },
+    {
+      "name": "Growing seed rows",
+      "kind": "rect",
+      "bounds": [
+        36,
+        4,
+        37,
+        7
+      ],
+      "material": "encounter"
+    },
+    {
+      "name": "Growing flower seeds",
+      "kind": "rect",
+      "bounds": [
+        37,
+        4,
+        39,
+        5
+      ],
+      "material": "flowers"
+    },
+    {
+      "name": "Seedbed eastern working gate",
+      "kind": "point",
+      "position": [
+        39,
+        5
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Seedbed work approach",
+      "kind": "path",
+      "points": [
+        [
+          38,
+          12
+        ],
+        [
+          38,
+          9
+        ],
+        [
+          40,
+          9
+        ],
+        [
+          40,
+          5
+        ],
+        [
+          38,
+          5
+        ]
+      ],
+      "material": "floor",
+      "width_metatiles": 1
+    },
+    {
+      "name": "Pollinator wet meadow",
+      "kind": "polygon",
+      "points": [
+        [
+          35,
+          17
+        ],
+        [
+          40,
+          17
+        ],
+        [
+          40,
+          22
+        ],
+        [
+          35,
+          22
+        ],
+        [
+          35,
+          20
+        ],
+        [
+          34,
+          20
+        ],
+        [
+          34,
+          18
+        ],
+        [
+          35,
+          18
+        ]
+      ],
+      "material": "encounter"
+    },
+    {
+      "name": "Pollinator flower clearing",
+      "kind": "polygon",
+      "points": [
+        [
+          36,
+          19
+        ],
+        [
+          39,
+          19
+        ],
+        [
+          39,
+          20
+        ],
+        [
+          40,
+          20
+        ],
+        [
+          40,
+          21
+        ],
+        [
+          38,
+          21
+        ],
+        [
+          38,
+          22
+        ],
+        [
+          36,
+          22
+        ]
+      ],
+      "material": "flowers"
+    },
+    {
+      "name": "Meadow north cottonwood shoulder",
+      "kind": "block_rect",
+      "bounds": [
+        40,
+        15,
+        41,
+        17
+      ],
+      "block": "61"
+    },
+    {
+      "name": "Meadow south cottonwood",
+      "kind": "point",
+      "position": [
+        39,
+        22
+      ],
+      "block": "61"
+    },
+    {
+      "name": "Meadow south canopy edge",
+      "kind": "point",
+      "position": [
+        38,
+        22
+      ],
+      "block": "65"
+    },
+    {
+      "name": "East north bird habitat",
+      "kind": "rect",
+      "bounds": [
+        44,
+        2,
+        47,
+        5
+      ],
+      "material": "encounter"
+    },
+    {
+      "name": "East flower approach",
+      "kind": "polygon",
+      "points": [
+        [
+          44,
+          5
+        ],
+        [
+          46,
+          5
+        ],
+        [
+          46,
+          7
+        ],
+        [
+          45,
+          7
+        ],
+        [
+          45,
+          8
+        ],
+        [
+          44,
+          8
+        ]
+      ],
+      "material": "flowers"
+    },
+    {
+      "name": "Eastern north overlook lane",
+      "kind": "path",
+      "points": [
+        [
+          45,
+          12
+        ],
+        [
+          45,
+          6
+        ],
+        [
+          46,
+          6
+        ]
+      ],
+      "material": "floor",
+      "width_metatiles": 1
+    },
+    {
+      "name": "East southern prairie habitat",
+      "kind": "polygon",
+      "points": [
+        [
+          44,
+          16
+        ],
+        [
+          46,
+          16
+        ],
+        [
+          46,
+          21
+        ],
+        [
+          43,
+          21
+        ],
+        [
+          43,
+          18
+        ],
+        [
+          44,
+          18
+        ]
+      ],
+      "material": "encounter"
+    },
+    {
+      "name": "Eastern south footpath",
+      "kind": "path",
+      "points": [
+        [
+          45,
+          12
+        ],
+        [
+          45,
+          16
+        ]
+      ],
+      "material": "floor",
+      "width_metatiles": 1
+    },
+    {
+      "name": "North farm windbreak finger",
+      "kind": "polygon",
+      "points": [
+        [
+          34,
+          0
+        ],
+        [
+          41,
+          0
+        ],
+        [
+          41,
+          2
+        ],
+        [
+          40,
+          2
+        ],
+        [
+          40,
+          3
+        ],
+        [
+          38,
+          3
+        ],
+        [
+          38,
+          2
+        ],
+        [
+          35,
+          2
+        ],
+        [
+          35,
+          3
+        ],
+        [
+          34,
+          3
+        ]
+      ],
+      "material": "forest"
+    },
+    {
+      "name": "East arrival north roadside rail",
+      "kind": "block_rect",
+      "bounds": [
+        43,
+        10,
+        47,
+        11
+      ],
+      "block": "41"
+    },
+    {
+      "name": "East arrival south roadside rail",
+      "kind": "block_rect",
+      "bounds": [
+        43,
+        14,
+        47,
+        15
+      ],
+      "block": "49"
+    },
+    {
+      "name": "West final outside boundary",
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        0,
+        1,
+        24
+      ],
+      "block": "05"
+    },
+    {
+      "name": "East final outside boundary",
+      "kind": "block_rect",
+      "bounds": [
+        47,
+        0,
+        48,
+        24
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West final port",
+      "kind": "point",
+      "position": [
+        0,
+        12
+      ],
+      "block": "01"
+    },
+    {
+      "name": "East final port",
+      "kind": "point",
+      "position": [
+        47,
+        12
+      ],
+      "block": "01"
+    },
+    {
+      "name": "MN_R16_T02 fixed standing tile",
+      "kind": "point",
+      "position": [
+        19,
+        4
+      ],
+      "block": "02"
+    },
+    {
+      "name": "MN_R16_T03 fixed standing tile",
+      "kind": "point",
+      "position": [
+        25,
+        6
+      ],
+      "block": "02"
+    },
+    {
+      "name": "MN_R16_T04 fixed standing tile",
+      "kind": "point",
+      "position": [
+        19,
+        19
+      ],
+      "block": "02"
+    },
+    {
+      "name": "MN_R16_T05 fixed standing tile",
+      "kind": "point",
+      "position": [
+        27,
+        19
+      ],
+      "block": "02"
+    },
+    {
+      "name": "MN_R16_T06 fixed standing tile",
+      "kind": "point",
+      "position": [
+        37,
+        5
+      ],
+      "block": "02"
+    },
+    {
+      "name": "MN_R16_T07 fixed standing tile",
+      "kind": "point",
+      "position": [
+        14,
+        12
+      ],
+      "block": "02"
+    },
+    {
+      "name": "MN_R16_T08 fixed standing tile",
+      "kind": "point",
+      "position": [
+        37,
+        19
+      ],
+      "block": "02"
+    },
+    {
+      "name": "MN_R16_T09 fixed standing tile",
+      "kind": "point",
+      "position": [
+        45,
+        6
+      ],
+      "block": "02"
+    },
+    {
+      "name": "MN_R16_T10 fixed standing tile",
+      "kind": "point",
+      "position": [
+        39,
+        20
+      ],
+      "block": "02"
+    },
+    {
+      "name": "MN_R16_RIVER_WARDEN fixed standing tile",
+      "kind": "point",
+      "position": [
+        1,
+        12
+      ],
+      "block": "02"
+    },
+    {
+      "name": "MN_R16_SEED_GROWER fixed standing tile",
+      "kind": "point",
+      "position": [
+        23,
+        14
+      ],
+      "block": "02"
+    },
+    {
+      "name": "MN_R16_TRAIL_GUIDE fixed standing tile",
+      "kind": "point",
+      "position": [
+        43,
+        11
+      ],
+      "block": "02"
+    },
+    {
+      "name": "MN_R16_ITEM_01 fixed standing tile",
+      "kind": "point",
+      "position": [
+        24,
+        3
+      ],
+      "block": "02"
+    },
+    {
+      "name": "MN_R16_ITEM_02 fixed standing tile",
+      "kind": "point",
+      "position": [
+        45,
+        3
+      ],
+      "block": "02"
+    },
+    {
+      "name": "MN_R16_ITEM_04 fixed standing tile",
+      "kind": "point",
+      "position": [
+        39,
+        19
+      ],
+      "block": "02"
+    },
+    {
+      "name": "MN_R16_SIGN_MOORHEAD fixed sign",
+      "kind": "point",
+      "position": [
+        2,
+        11
+      ],
+      "block": "45"
+    },
+    {
+      "name": "MN_R16_SIGN_LOW_BANK fixed sign",
+      "kind": "point",
+      "position": [
+        15,
+        10
+      ],
+      "block": "45"
+    },
+    {
+      "name": "MN_R16_SIGN_DRAIN fixed sign",
+      "kind": "point",
+      "position": [
+        28,
+        14
+      ],
+      "block": "45"
+    },
+    {
+      "name": "MN_R16_SIGN_SEED fixed sign",
+      "kind": "point",
+      "position": [
+        39,
+        11
+      ],
+      "block": "45"
+    },
+    {
+      "name": "MN_R16_SIGN_GRASS fixed sign",
+      "kind": "point",
+      "position": [
+        43,
+        11
+      ],
+      "block": "45"
+    },
+    {
+      "name": "RED_RIVER_BRIDGE final north_rail_blocks",
+      "kind": "block_rect",
+      "bounds": [
+        5,
+        11,
+        14,
+        12
+      ],
+      "block": "82"
+    },
+    {
+      "name": "RED_RIVER_BRIDGE final south_rail_blocks",
+      "kind": "block_rect",
+      "bounds": [
+        5,
+        12,
+        14,
+        13
+      ],
+      "block": "81"
+    },
+    {
+      "name": "DRAINAGE_FOOTBRIDGE final north_rail_blocks",
+      "kind": "block_rect",
+      "bounds": [
+        30,
+        14,
+        34,
+        15
+      ],
+      "block": "82"
+    },
+    {
+      "name": "DRAINAGE_FOOTBRIDGE final south_rail_blocks",
+      "kind": "block_rect",
+      "bounds": [
+        30,
+        15,
+        34,
+        16
+      ],
+      "block": "81"
+    },
+    {
+      "name": "Eastern prairie walking gate",
+      "kind": "point",
+      "position": [
+        45,
+        14
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Drain-to-farm lane north safety rail",
+      "kind": "block_rect",
+      "bounds": [
+        34,
+        14,
+        38,
+        15
+      ],
+      "block": "41"
+    },
+    {
+      "name": "Pollinator reeds at actual lane edge",
+      "kind": "rect",
+      "bounds": [
+        35,
+        16,
+        38,
+        18
+      ],
+      "material": "encounter"
+    },
+    {
+      "name": "Farm lane east hedge",
+      "kind": "block_rect",
+      "bounds": [
+        39,
+        13,
+        40,
+        15
+      ],
+      "block": "61"
+    },
+    {
+      "name": "Farm lane hedge soft edge",
+      "kind": "point",
+      "position": [
+        39,
+        15
+      ],
+      "block": "65"
+    },
+    {
+      "name": "Seed approach left rail",
+      "kind": "point",
+      "position": [
+        38,
+        11
+      ],
+      "block": "41"
+    },
+    {
+      "name": "Seed approach right rail",
+      "kind": "point",
+      "position": [
+        40,
+        11
+      ],
+      "block": "41"
+    },
+    {
+      "name": "Drain-margin bird-survey reedbed",
+      "kind": "polygon",
+      "points": [
+        [
+          33,
+          5
+        ],
+        [
+          34,
+          5
+        ],
+        [
+          34,
+          9
+        ],
+        [
+          36,
+          9
+        ],
+        [
+          36,
+          13
+        ],
+        [
+          34,
+          13
+        ],
+        [
+          34,
+          12
+        ],
+        [
+          33,
+          12
+        ]
+      ],
+      "material": "encounter"
+    },
+    {
+      "kind": "block_remap",
+      "name": "Golden dry prairie encounter grass; native encounter collision retained",
+      "bounds": [
+        0,
+        0,
+        48,
+        24
+      ],
+      "from": "03",
+      "to": "84"
+    },
+    {
+      "kind": "block_remap",
+      "name": "Golden prairie lawn field 1; surrounding riverbank and canopy stay green",
+      "bounds": [
+        15,
+        2,
+        29,
+        8
+      ],
+      "from": "02",
+      "to": "83"
+    },
+    {
+      "kind": "block_remap",
+      "name": "Golden prairie lawn field 2; surrounding riverbank and canopy stay green",
+      "bounds": [
+        14,
+        16,
+        29,
+        22
+      ],
+      "from": "02",
+      "to": "83"
+    },
+    {
+      "kind": "block_remap",
+      "name": "Golden prairie lawn field 3; surrounding riverbank and canopy stay green",
+      "bounds": [
+        1,
+        14,
+        5,
+        20
+      ],
+      "from": "02",
+      "to": "83"
+    },
+    {
+      "kind": "block_remap",
+      "name": "Golden prairie lawn field 4; surrounding riverbank and canopy stay green",
+      "bounds": [
+        35,
+        17,
+        45,
+        22
+      ],
+      "from": "02",
+      "to": "83"
+    },
+    {
+      "name": "Refinement: solid working-field retaining fence west of two-core hayfield hop",
+      "kind": "block_rect",
+      "bounds": [
+        16,
+        8,
+        26,
+        9
+      ],
+      "block": "49"
+    },
+    {
+      "name": "Refinement: solid retaining-fence east course end",
+      "kind": "point",
+      "position": [
+        27,
+        8
+      ],
+      "block": "49"
+    },
+    {
+      "name": "Refinement: farm bend western crop shoulder",
+      "kind": "point",
+      "position": [
+        37,
+        13
+      ],
+      "block": "46"
+    },
+    {
+      "name": "Refinement: farm bend north-to-west fitted corner",
+      "kind": "point",
+      "position": [
+        37,
+        14
+      ],
+      "block": "42"
+    },
+    {
+      "name": "Refinement: farm bend lower working-field fence",
+      "kind": "block_rect",
+      "bounds": [
+        35,
+        15,
+        38,
+        16
+      ],
+      "block": "49"
+    },
+    {
+      "name": "Refinement: farm turn south fitted corner",
+      "kind": "point",
+      "position": [
+        38,
+        16
+      ],
+      "block": "40"
+    },
+    {
+      "name": "Refinement: farm turn east end attached to existing cottonwood",
+      "kind": "point",
+      "position": [
+        39,
+        16
+      ],
+      "block": "41"
+    }
+  ],
+  "art_authority": "Native Route34/Route42 and Johto/Kanto source atlas; exact packed pixels, no new painted sprites."
+}

@@ -444,6 +444,26 @@ impl PeopleGpu {
         images: &mut Assets<Image>,
         binds: &mut Assets<SkinnedMeshInverseBindposes>,
     ) -> Person {
+        self.spawn_on_layer(name, kind, rig, root, remote, bicycle, uniform,
+            VOXEL_RENDER_LAYER, commands, meshes, materials, images, binds)
+    }
+    #[allow(clippy::too_many_arguments)]
+    pub(crate) fn spawn_on_layer(
+        &mut self,
+        name: &'static str,
+        kind: CharacterKind,
+        rig: Arc<PersonRig>,
+        root: Entity,
+        remote: bool,
+        bicycle: bool,
+        uniform: Option<[u8; 3]>,
+        render_layer: usize,
+        commands: &mut Commands,
+        meshes: &mut Assets<Mesh>,
+        materials: &mut Assets<StandardMaterial>,
+        images: &mut Assets<Image>,
+        binds: &mut Assets<SkinnedMeshInverseBindposes>,
+    ) -> Person {
         self.upload(name, kind, &rig, meshes, materials, images, binds);
         let gpu = self.0.get(&(name, kind)).expect("uploaded appearance");
         let gpu = if let Some(color) = uniform.filter(|_| crate::npc_uniform::supported(kind)) {
@@ -571,16 +591,16 @@ presented[rig.mesh_node],),
                 gpu.bounds.1 + Vec3::splat(0.02),
             ),
             NoAutoAabb,
-            RenderLayers::layer(VOXEL_RENDER_LAYER),
+            RenderLayers::layer(render_layer),
         ));
         if let Some(gpu) = &gpu.head {
             let accessory = commands.spawn(((Mesh3d(gpu.mesh.clone()),
-MeshMaterial3d(if remote { gpu.remote.clone() } else { gpu.material.clone() }),), ModeledActor, NotShadowReceiver, RenderLayers::layer(VOXEL_RENDER_LAYER))).id();
+MeshMaterial3d(if remote { gpu.remote.clone() } else { gpu.material.clone() }),), ModeledActor, NotShadowReceiver, RenderLayers::layer(render_layer))).id();
             commands.entity(nodes[rig.skin_nodes[rig.head_joint]]).add_child(accessory);
         }
         if let Some(pack) = &gpu.backpack {
             let accessory = commands.spawn(((Mesh3d(pack.mesh.clone()),
-MeshMaterial3d(if remote { pack.remote.clone() } else { pack.material.clone() }),), ModeledActor, NotShadowReceiver, RenderLayers::layer(VOXEL_RENDER_LAYER))).id();
+MeshMaterial3d(if remote { pack.remote.clone() } else { pack.material.clone() }),), ModeledActor, NotShadowReceiver, RenderLayers::layer(render_layer))).id();
             commands.entity(nodes[rig.skin_nodes[rig.chest_joint]]).add_child(accessory);
         }
         if let Some(costume) = &gpu.costume {
@@ -589,7 +609,7 @@ MeshMaterial3d(if remote { costume.remote.clone() } else { costume.material.clon
                 inverse_bindposes: gpu.source_binds.clone(),
                 joints: rig.skin_nodes.iter().map(|&i| nodes[i]).collect(),
             }, Aabb::from_min_max(rig.bounds.0-Vec3::splat(0.6), rig.bounds.1+Vec3::splat(0.6)), NoAutoAabb,
-                ModeledActor, NotShadowReceiver, RenderLayers::layer(VOXEL_RENDER_LAYER))).id();
+                ModeledActor, NotShadowReceiver, RenderLayers::layer(render_layer))).id();
             commands.entity(nodes[rig.mesh_node]).add_child(accessory);
             #[cfg(all(feature = "people-review", not(target_arch = "wasm32")))]
             if let Some((template, palette)) = &gpu.live_drape {

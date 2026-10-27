@@ -1,0 +1,145 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F045",
+  "status": "native-front-back-reviewed",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_096": {
+      "species_id": "MN_096",
+      "name": "Kettlurk",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          12,
+          25,
+          29
+        ],
+        [
+          7,
+          7,
+          20
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        30508,
+        20711,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          99,
+          206,
+          239
+        ],
+        [
+          57,
+          57,
+          165
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#63CEEF",
+        "#3939A5",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f045/roster-polish-v1/prompt-imagegen-v1.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "style_reference": {
+    "origin": "authentic local Crystal sprites",
+    "generator": "crates/crystal-assets/examples/minnesota_gen2_reference.rs",
+    "boards": [
+      "target/minnesota-pokemon/gen2-reference/starters.png",
+      "target/minnesota-pokemon/gen2-reference/bugs.png"
+    ]
+  },
+  "sprites": [
+    {
+      "id": "mn-096-kettlurk-polish-v1",
+      "species_id": "MN_096",
+      "view": "front",
+      "source": "sprites/mn-f045/roster-polish-v1/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        1000,
+        809
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        30508,
+        20711,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-096-kettlurk-polish-v1",
+      "species_id": "MN_096",
+      "view": "back",
+      "source": "sprites/mn-f045/roster-polish-v1/front-back.imagegen-v1.png",
+      "crop": [
+        1030,
+        0,
+        912,
+        809
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        30508,
+        20711,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32
+    }
+  ],
+  "visual_review": {
+    "status": "reviewed",
+    "reviewer": "roster_cut_review; root approved candidates",
+    "outline_profile": "source-contour-v1",
+    "sheet_sha256": "c7319e68ded6d14b328bedd6bdb93457b645dad0281a9fe1beed79b05d0184aa",
+    "notes": "Root approved identity-preserving ImageGen refinement: tiny detached droplets removed, broader continuous cyan/indigo currents and claw fingers, clear central torso opening and enlarged rear opening. SourceCenter/SourceBacked selected; heavier Solid rear rejected."
+  },
+  "source_sha256": "22a240d387c5a95f6a6bd5728df01d8ed3085ada2de7c244242f0fe16abb20b1",
+  "raw_generation": {
+    "original_tool_path": "/Users/ryanculligan/.codex/generated_images/01a17aa2-ca0b-7cc0-8219-cddf2150b02b/exec-ac572ebc-0a84-43e1-8ce8-5c23988d59ab.png",
+    "sha256": "22a240d387c5a95f6a6bd5728df01d8ed3085ada2de7c244242f0fe16abb20b1"
+  },
+  "reference_mapping": "sprites/mn-f045/roster-polish-v1/reference-mapping.json"
+}

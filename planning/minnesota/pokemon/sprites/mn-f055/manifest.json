@@ -1,0 +1,337 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F055",
+  "status": "native-front-back-reviewed",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_116": {
+      "species_id": "MN_116",
+      "name": "Bluestip",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          17,
+          24,
+          14
+        ],
+        [
+          6,
+          12,
+          10
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        15121,
+        10630,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          140,
+          198,
+          115
+        ],
+        [
+          49,
+          99,
+          82
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#8CC673",
+        "#316352",
+        "#000000"
+      ]
+    },
+    "MN_117": {
+      "species_id": "MN_117",
+      "name": "Stembolt",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          14,
+          23,
+          18
+        ],
+        [
+          5,
+          10,
+          11
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        19182,
+        11589,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          115,
+          189,
+          148
+        ],
+        [
+          41,
+          82,
+          90
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#73BD94",
+        "#29525A",
+        "#000000"
+      ]
+    },
+    "MN_118": {
+      "species_id": "MN_118",
+      "name": "Prairion",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          23,
+          25,
+          13
+        ],
+        [
+          5,
+          12,
+          13
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        14135,
+        13701,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          189,
+          206,
+          107
+        ],
+        [
+          41,
+          99,
+          107
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#BDCE6B",
+        "#29636B",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f055/prompt-v1.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "style_reference": {
+    "origin": "authentic local Crystal sprites",
+    "boards": [
+      "target/minnesota-pokemon/gen2-reference/starters.png",
+      "target/minnesota-pokemon/gen2-reference/bugs.png"
+    ]
+  },
+  "sprites": [
+    {
+      "id": "mn-116-bluestip-v1",
+      "species_id": "MN_116",
+      "view": "front",
+      "source": "sprites/mn-f055/mn-116-118.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        480,
+        525
+      ],
+      "fit": [
+        36,
+        36
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        15121,
+        10630,
+        0
+      ]
+    },
+    {
+      "id": "mn-116-bluestip-v1",
+      "species_id": "MN_116",
+      "view": "back",
+      "source": "sprites/mn-f055/mn-116-118.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        525,
+        480,
+        499
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        15121,
+        10630,
+        0
+      ]
+    },
+    {
+      "id": "mn-117-stembolt-v1",
+      "species_id": "MN_117",
+      "view": "front",
+      "source": "sprites/mn-f055/mn-116-118.front-back.imagegen-v1.png",
+      "crop": [
+        480,
+        0,
+        495,
+        525
+      ],
+      "fit": [
+        44,
+        44
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        19182,
+        11589,
+        0
+      ]
+    },
+    {
+      "id": "mn-117-stembolt-v1",
+      "species_id": "MN_117",
+      "view": "back",
+      "source": "sprites/mn-f055/mn-116-118.front-back.imagegen-v1.png",
+      "crop": [
+        480,
+        525,
+        495,
+        499
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        19182,
+        11589,
+        0
+      ]
+    },
+    {
+      "id": "mn-118-prairion-v1",
+      "species_id": "MN_118",
+      "view": "front",
+      "source": "sprites/mn-f055/mn-116-118.front-back.imagegen-v1.png",
+      "crop": [
+        975,
+        0,
+        561,
+        525
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        14135,
+        13701,
+        0
+      ]
+    },
+    {
+      "id": "mn-118-prairion-v1",
+      "species_id": "MN_118",
+      "view": "back",
+      "source": "sprites/mn-f055/mn-116-118.front-back.imagegen-v1.png",
+      "crop": [
+        975,
+        525,
+        561,
+        499
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        14135,
+        13701,
+        0
+      ]
+    }
+  ],
+  "visual_review": {
+    "status": "reviewed",
+    "notes": "Final source-contour-v1 board visually inspected after outline refinement: jointed bluestem blades and rooted stance retain green interiors, especially Stembolt limbs, while stepped black exterior edges stay connected. Three-pronged crowns, white eye slits and stage growth remain clear. Rear portraits show large napes, blade shoulders and swept crown, lower bodies cropped; no adjacent sprite debris observed.",
+    "sheet_sha256": "835ffa5c003e4a53586fccada153c0bfff768bc247578c58a00703eaefd23482",
+    "outline_profile": "source-contour-v1"
+  }
+}

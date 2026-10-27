@@ -2249,6 +2249,72 @@ fn runtime_applies_script_text_variable_and_control_commands_exactly() {
 }
 
 #[test]
+fn runtime_composed_script_leaves_gifts_for_frontend_presentation() {
+    let root = temp_repository_root("composed-gift-boundary");
+    write_floor_tileset(&root, "johto");
+    let asset_root = AssetRoot::new(&root);
+    let mut data = minimal_runtime_data();
+    let map = data.maps.get_mut("RuntimeMap").expect("runtime map");
+    for gift in ["givepoke", "giveegg"] {
+        let label = format!("Runtime{gift}");
+        map.scripts.insert(
+            label.clone(),
+            serde_json::json!([
+                {"command": "closetext", "args": []},
+                {"command": gift, "args": ["CHIKORITA", "5"]},
+                {"command": "end", "args": []}
+            ]),
+        );
+        map.script_text_commands.push(ScriptTextCommand {
+            command: "closetext".to_string(),
+            text_label: None,
+            source_script: label,
+            command_index: 0,
+        });
+    }
+    let runtime = CrystalRuntime::from_compiled_pack(
+        &asset_root,
+        CompiledGamePack::new_unchecked_for_tests(data, report()),
+        identity(),
+    )
+    .expect("runtime");
+    for gift in ["givepoke", "giveegg"] {
+        let mut shell =
+            RuntimeGameShell::new_game(asset_root.clone(), runtime.clone(), 0).expect("game shell");
+        let before = shell.session().state().storage.clone();
+        let cursor = RuntimeCompiledScriptCursor {
+            origin_map_name: "RuntimeMap".to_string(),
+            source_script: format!("Runtime{gift}"),
+            command_index: 0,
+        };
+        let run = shell
+            .run_compiled_script_until_boundary(
+                cursor.clone(),
+                8,
+                ScriptRuntimeInputs::default(),
+                ScriptPhoneInputs::default(),
+            )
+            .expect("stop before interactive gift");
+        assert_eq!(run.steps.len(), 1);
+        assert_eq!(run.steps[0].command, "closetext");
+        assert_eq!(
+            run.boundary,
+            Some(RuntimeCompiledScriptBoundary::GiftPokemon)
+        );
+        assert_eq!(
+            run.next_cursor,
+            Some(RuntimeCompiledScriptCursor {
+                command_index: 1,
+                ..cursor
+            })
+        );
+        assert!(!run.ended);
+        assert_eq!(shell.session().state().storage, before);
+    }
+    std::fs::remove_dir_all(root).expect("remove temporary fixture");
+}
+
+#[test]
 fn runtime_shell_steps_verified_compiled_script_commands_with_explicit_cursor() {
     let root = temp_repository_root("compiled-script-step");
     write_floor_tileset(&root, "johto");

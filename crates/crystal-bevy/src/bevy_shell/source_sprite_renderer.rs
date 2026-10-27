@@ -54,7 +54,8 @@ fn remove_mesh(
         }
     }
 }
-fn extract(
+/// Extract source sprites that can contribute pixels to the blended draw pass.
+pub(super) fn extract(
     mut commands: Commands,
     mut sprites: ResMut<ExtractedSprites>,
     mut slices: ResMut<ExtractedSlices>,
@@ -64,6 +65,14 @@ fn extract(
 ) {
     for (entity, sprite, global, visible, anchor) in &query {
         if !visible.get() {
+            continue;
+        }
+        let color = sprite.color.to_linear();
+        // The direct sprite pipeline blends without writing depth. A zero
+        // tint alpha contributes no pixels, including full-screen fade and
+        // poison planes while their effects are idle. Keep the entity alive
+        // so a later nonzero tint is extracted on its ordinary next frame.
+        if color.alpha == 0.0 {
             continue;
         }
         let Some(image) = images.get(&sprite.image) else {
@@ -95,7 +104,7 @@ fn extract(
             main_entity: entity,
             render_entity: commands.spawn(TemporaryRenderEntity::default()).id(),
             transform: *global * local,
-            color: sprite.color.to_linear(),
+            color,
             image_handle_id: sprite.image.id(),
             flip_y: sprite.flip_y,
             kind: ExtractedSpriteKind::Slices {

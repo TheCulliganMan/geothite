@@ -1,0 +1,839 @@
+{
+  "schema_version": 1,
+  "status": "root-reviewed-designs-locked",
+  "scope": {
+    "families": "MN_F087..MN_F100",
+    "species": "MN_186..MN_217",
+    "target_species_count": 32,
+    "mix": {
+      "three_stage_families": 5,
+      "two_stage_families": 8,
+      "single_stage_species": 1
+    }
+  },
+  "boundary": "Original creature proposals only. Real regional inspirations are sourced; powers and anatomy are fiction. No maps, catalogs, mechanics, encounters or runtime changed.",
+  "families": [
+    {
+      "id": "MN_F087",
+      "theme": "Removable adhesive notes and remembered promises: a tiny sticky paper creature records impressions in its creases, then folds remembered routes into a long recollecting dragon.",
+      "region": "twin_cities",
+      "habitat": "Research workshops, library noticeboards and sheltered skyway bulletin corners in Minneapolis/St Paul.",
+      "map_placement": {
+        "towns": [
+          "MINNEAPOLIS",
+          "ST_PAUL"
+        ],
+        "routes": [
+          "MN_R04"
+        ],
+        "status": "proposed habitat only; no new map or encounter mutation"
+      },
+      "sources": [
+        {
+          "url": "https://www.mnhs.org/mnopedia/search/index/thing/post-it-notes",
+          "institution": "Minnesota Historical Society",
+          "supports": "Minnesota development of a light removable adhesive and its adaptation from bookmarks into repositionable paper notes. Memory powers and creature design are original fiction."
+        }
+      ],
+      "members": [
+        {
+          "id": "MN_186",
+          "name": "Jotlet",
+          "types": [
+            "PSYCHIC"
+          ],
+          "stage": 1,
+          "evolves_to": "MN_187",
+          "body_growth": "A single square page folded into a squat triangular head/body; peeled lower corners form two sticky toes and one lifted corner acts as an expressive ear. Its eyes sit on the folded seam, without writing or logos.",
+          "silhouette": "Small square-backed wedge with one raised triangular corner and two broad tab feet."
+        },
+        {
+          "id": "MN_187",
+          "name": "Memofold",
+          "types": [
+            "PSYCHIC"
+          ],
+          "stage": 2,
+          "evolves_to": "MN_188",
+          "body_growth": "The page multiplies into a short accordion spine, four folded tab legs and a hood formed from overlapping memory leaves. It peels off a lost fold and reattaches it as an extra arm to retrieve objects.",
+          "silhouette": "Low four-legged accordion with broad hood, raised reaching paper arm and a fan of three rear tabs."
+        },
+        {
+          "id": "MN_188",
+          "name": "Recallisk",
+          "types": [
+            "PSYCHIC",
+            "DRAGON"
+          ],
+          "stage": 3,
+          "evolves_to": null,
+          "body_growth": "Accordion spine unfolds into a long arched dragon neck; layers become a broad pleated shoulder frill and four strong crease-jointed limbs. Its curled tail is a stack of peelable tabs. It rebuilds the position of its folds after each attack, remembering its previous shape.",
+          "silhouette": "Tall arched neck above a wide pleated frill, planted four-fold limbs and a curled stepped tab tail; recognizably a paper creature rather than a normal dragon wearing paper."
+        }
+      ],
+      "sprite_design": "Large flat folded planes and 2-3 broad crease marks; no letters, logos or tiny writing. Each species gets its own related four-color GBC palette, proposed pale yellow/brown -> lavender/deep teal -> cream/violet. Front56x56, back48x48 close portrait focused on hood/frill and neck. Preserve white paper with deliberate stepped dark seams.",
+      "status": "root-locked"
+    },
+    {
+      "id": "MN_F088",
+      "status": "proposal-awaiting-root-lock",
+      "theme": "St Anthony Falls water power and hydroelectric generation: a riffle-running spark creature grows biological runner paddles and a dragon body that turns its own tail into a generator.",
+      "region": "twin_cities",
+      "habitat": "Tailraces and sheltered riverworks pools below the Minneapolis falls. This is a hydroelectric creature, distinct from Flourgeist milling dust and Kettlurk returning ghost currents.",
+      "map_placement": {
+        "towns": [
+          "MINNEAPOLIS"
+        ],
+        "routes": [
+          "MN_R04"
+        ],
+        "status": "proposed habitat only; no map or encounter mutation"
+      },
+      "sources": [
+        {
+          "url": "https://www.nps.gov/miss/planyourvisit/stanfall.htm",
+          "institution": "National Park Service",
+          "supports": "Falls supplied power to riverfront lumber and flour mills."
+        },
+        {
+          "url": "https://www.usgs.gov/geology-and-ecology-of-national-parks/geology-mississippi-national-river-and-recreation-area",
+          "institution": "US Geological Survey",
+          "supports": "Describes the falls geology and hydroelectric dams. Rotating anatomy and electrical powers are original fiction."
+        }
+      ],
+      "members": [
+        {
+          "id": "MN_189",
+          "name": "Riffbit",
+          "types": [
+            "ELECTRIC"
+          ],
+          "stage": 1,
+          "evolves_to": "MN_190",
+          "body_growth": "A small squat runner has two scoop-shaped forepaws and a thick tail curled around one hip; one bright notch above its eyes resembles a falling-water lip. It charges while bracing its paws against a riffle.",
+          "silhouette": "Low broad head, two oversized scoops and one compact C-shaped hip tail."
+        },
+        {
+          "id": "MN_190",
+          "name": "Dynarill",
+          "types": [
+            "ELECTRIC",
+            "DRAGON"
+          ],
+          "stage": 2,
+          "evolves_to": "MN_191",
+          "body_growth": "Scoop paws become three-bladed wrist fans, the body rises on strong hind feet, and the tail gains three broad paddles around its curl. Its cheek ridges extend into a flume-shaped crest.",
+          "silhouette": "Compact upright dragon with broad wrist fans and a three-paddle tail wheel alongside its hips."
+        },
+        {
+          "id": "MN_191",
+          "name": "Cascavolt",
+          "types": [
+            "ELECTRIC",
+            "DRAGON"
+          ],
+          "stage": 3,
+          "evolves_to": null,
+          "body_growth": "The neck arches into a high flume crest, heavy overlapping chest scutes lock like runner blades, and the muscular paddle tail sweeps a complete circle beside its body. Charging current travels through solid bright body seams, without a hollow torso.",
+          "silhouette": "Tall crest, wide interlocking chest, two heavy scooped forelimbs and one huge curling paddle tail; no attached appliance or literal dam."
+        }
+      ],
+      "sprite_design": "Broad solid surfaces, three tail paddles at most, clear eye/crest. Keep distinct from Taconarch magnetic rails: organic scoop limbs and curled generator tail, no metal plates floating apart. Per-species electric blue/gold palette progression; no detached lightning clutter."
+    },
+    {
+      "id": "MN_F089",
+      "status": "proposal-awaiting-root-lock",
+      "theme": "Driftless karst, sinking streams and concealed cave windows: a drip-built pebble learns to hide beneath limestone shelves, then unfolds the shelf into an ambush jaw.",
+      "region": "driftless",
+      "habitat": "Cool limestone cave mouths, blind-valley banks and spring-fed ledges; early stage fits the existing R01 two-hollow cave without adding a new destination.",
+      "map_placement": {
+        "towns": [
+          "WINONA",
+          "ROCHESTER"
+        ],
+        "routes": [
+          "MN_R01"
+        ],
+        "status": "proposed habitat only; no map or encounter mutation"
+      },
+      "sources": [
+        {
+          "url": "https://www.dnr.state.mn.us/waters/groundwater_section/mapping/springs.html",
+          "institution": "Minnesota DNR",
+          "supports": "Karst includes caves, sinkholes, sinking drainage, springs and cave windows in southeast Minnesota; the hunting creature is fiction."
+        }
+      ],
+      "members": [
+        {
+          "id": "MN_192",
+          "name": "Driptip",
+          "types": [
+            "ROCK"
+          ],
+          "stage": 1,
+          "evolves_to": "MN_193",
+          "body_growth": "A little dripstone body has a blunt cone crown, two pebble feet and a face beneath an overhanging lip. A single deep notch makes its head seem like a harmless wet rock.",
+          "silhouette": "Uneven low cone with a broad lip and two tiny planted feet."
+        },
+        {
+          "id": "MN_193",
+          "name": "Sinknook",
+          "types": [
+            "ROCK",
+            "DARK"
+          ],
+          "stage": 2,
+          "evolves_to": "MN_194",
+          "body_growth": "The crown spreads into a long limestone shelf over a folded dark face. Four short pillar legs support its body, and a hinged lower jaw can close flush with the shelf.",
+          "silhouette": "Very low overhang with four short columns; one dark eye peeks through a triangular notch."
+        },
+        {
+          "id": "MN_194",
+          "name": "Karstalker",
+          "types": [
+            "ROCK",
+            "DARK"
+          ],
+          "stage": 3,
+          "evolves_to": null,
+          "body_growth": "A massive articulated shelf-head swings open above a deep jaw; three chunky stone teeth form cave columns. The front limbs become hooked braces and the back arches into a layered bluff. It waits with its head closed, then rises and opens like a cliff revealing a cave.",
+          "silhouette": "Wide layered overhang, huge vertical jaw opening and two hook braces; no ordinary reptile head or hollow torso portal."
+        }
+      ],
+      "sprite_design": "Large limestone layers and black jaw cavity, never tiny stalactite clutter. Face/teeth readable at56px. Back portrait is mostly shelf crown and near stone shoulder, not entire cave creature."
+    },
+    {
+      "id": "MN_F090",
+      "status": "proposal-awaiting-root-lock",
+      "theme": "Minnesota fair cookie pails and warm bakery crowds: a soft cookie imp becomes a crumb-pilfering bandit, then grows its own open-rim baked-crust hoard body.",
+      "region": "twin_cities",
+      "habitat": "Bakery back rooms and fair-food markets around St Paul; visiting fair vendors can supply a city habitat without assuming a new fairground map already exists.",
+      "map_placement": {
+        "towns": [
+          "ST_PAUL"
+        ],
+        "routes": [
+          "MN_R04"
+        ],
+        "status": "proposed habitat only; no map or encounter mutation"
+      },
+      "sources": [
+        {
+          "url": "https://www.sweetmarthas.com/about",
+          "institution": "Original cookie vendor",
+          "supports": "St Paul origin, fair cookie business and cookies sold by pail; generic creature names/design have no branding or vendor likeness."
+        }
+      ],
+      "members": [
+        {
+          "id": "MN_195",
+          "name": "Doughlin",
+          "types": [
+            "FIRE"
+          ],
+          "stage": 1,
+          "evolves_to": "MN_196",
+          "body_growth": "A squat dough imp has two uneven curled cookie ears, a pale raw center and a single dark chip covering one eye. Its little palm pads leave warm round impressions.",
+          "silhouette": "Round soft body, one tall curled ear and one chipped ear, short spreading palms."
+        },
+        {
+          "id": "MN_196",
+          "name": "Crumband",
+          "types": [
+            "FIRE",
+            "DARK"
+          ],
+          "stage": 2,
+          "evolves_to": "MN_197",
+          "body_growth": "Baked cookie segments separate into springy elbows/knees, the eye chip becomes a broad asymmetric mask and its hands close like tongs around stolen crumbs. Its belly has a deep pocket formed by overlapping crust.",
+          "silhouette": "Leaning bandit with crooked chip brow, long tong-like cookie hands and open crust belly pocket."
+        },
+        {
+          "id": "MN_197",
+          "name": "Jarbaron",
+          "types": [
+            "FIRE",
+            "DARK"
+          ],
+          "stage": 3,
+          "evolves_to": null,
+          "body_growth": "Its torso hardens into a broad open-rim crust chamber; a ring of thick cookie ridges rises behind its head and two rolled-dough handle arms grow from the sides. It hides warm crumbs under a slanted lid-like brow, slamming the rim when challenged.",
+          "silhouette": "Wide barrel-shaped baked body, tall ring of cookie ridges and two arched handle arms; the body is a living baked hoard, not a pail carried by a normal animal."
+        }
+      ],
+      "sprite_design": "Only3-4 large chip marks, no tiny crumbs/particles or readable branding. Original pail-shaped anatomy differs from Casserogre food shell and Stackajack pancake stack. Ember glow is flat orange ink, no gradients."
+    },
+    {
+      "id": "MN_F091",
+      "status": "proposal-awaiting-root-lock",
+      "theme": "Minnesota portable-pacemaker invention and the metronome circuit: a rhythm-helper creature learns to steady its own beat, then coordinates powerful protective movements through paired pulse limbs.",
+      "region": "twin_cities",
+      "habitat": "Quiet workshop gardens and clinic courtyards in Rochester/Minneapolis. Fictional companion-restoration theme, no human treatment, device brand or graphic anatomy.",
+      "map_placement": {
+        "towns": [
+          "ROCHESTER",
+          "MINNEAPOLIS"
+        ],
+        "routes": [
+          "MN_R04"
+        ],
+        "status": "proposed habitat only; no map or encounter mutation"
+      },
+      "sources": [
+        {
+          "url": "https://mnhs.gitlab.io/archive/medTech/www.mnhs.org/collections/medTech/transcript_bakken_2.html",
+          "institution": "Minnesota Historical Society oral history",
+          "supports": "First-person Bakken interview discusses development of battery-operated pacemakers."
+        },
+        {
+          "url": "https://www.vhlab.umn.edu/atlas/umn-cv-history/1957-58.shtml",
+          "institution": "University of Minnesota Visible Heart Laboratories",
+          "supports": "The portable battery-powered design used a modified transistorized metronome circuit."
+        }
+      ],
+      "members": [
+        {
+          "id": "MN_198",
+          "name": "Pipulse",
+          "types": [
+            "ELECTRIC"
+          ],
+          "stage": 1,
+          "evolves_to": "MN_199",
+          "body_growth": "A small warm two-lobed creature rocks on paired toe pads; a pendulum-tipped tail and unequal ear horns keep a steady beat. A broad simple chest chevron visibly pulses between its eyes and belly.",
+          "silhouette": "Two rounded chest lobes, tiny toe pads, one short ear and one long ear, pendulum tail."
+        },
+        {
+          "id": "MN_199",
+          "name": "Cadenset",
+          "types": [
+            "ELECTRIC",
+            "FIGHTING"
+          ],
+          "stage": 2,
+          "evolves_to": "MN_200",
+          "body_growth": "Two elastic chest bands loop into strong forearms, and the tail divides into counterbalanced beat paddles. It plants broad feet and uses alternating palm thrusts to keep companions moving in time.",
+          "silhouette": "Broad elastic chest, two looped muscular forearms and paired tail counterweights."
+        },
+        {
+          "id": "MN_200",
+          "name": "Valorythm",
+          "types": [
+            "ELECTRIC",
+            "FIGHTING"
+          ],
+          "stage": 3,
+          "evolves_to": null,
+          "body_growth": "A second pair of smaller stabilizing arms unfolds from beneath the shoulder bands; the long ear becomes a sweeping conductor crest. A strong rescuer stance and four open palms make its protective role clear.",
+          "silhouette": "Four-palmed compact guardian, high curved conductor crest and two sturdy rooted legs; no square appliance body, screen, needles or human heart diagram."
+        }
+      ],
+      "sprite_design": "Rhythm is embodied in asymmetric crest, chest bands and counterweights, never detached music-note particles. Each evolution has its own warm cream/orange/deep-blue hardware palette. Large face/chest forms and four broad hands only."
+    },
+    {
+      "id": "MN_F092",
+      "status": "root-locked",
+      "theme": "Minnesota trilobite fossils; compound eyes and articulating armor inspire an original living visor-shield. A low three-lobed crawler with a broad eye visor grows into a compact bastion; interlocking plates unfold around the face and paired shovel-like forelimbs brace its stance. No swords or scythes.",
+      "region": "driftless",
+      "habitat": "Fossil-bearing bluff layers and proposed Rochester revival courtyard service. Authored two-choice mechanic is specified in fossil-choice.json; it is not runtime registered.",
+      "map_placement": {
+        "towns": [
+          "WINONA",
+          "ROCHESTER"
+        ],
+        "routes": [
+          "MN_R01"
+        ],
+        "status": "proposed habitat only; no map or encounter mutation"
+      },
+      "sources": [
+        {
+          "url": "https://cse.umn.edu/mgs/fossils",
+          "institution": "Minnesota Geological Survey",
+          "supports": "Minnesota trilobite fossils and straight-shelled Ordovician cephalopods; fantastical visor/obelisk anatomy is original."
+        }
+      ],
+      "members": [
+        {
+          "id": "MN_201",
+          "name": "Trilume",
+          "types": [
+            "ROCK",
+            "BUG"
+          ],
+          "stage": 1,
+          "evolves_to": "MN_202",
+          "body_growth": "Low three-lobed crawler with broad compound-eye visor, raised central keel and segmented side lobes; short legs support the living eye shield.",
+          "silhouette": "Broad low visor head with two bright side windows and three shell lobes."
+        },
+        {
+          "id": "MN_202",
+          "name": "Panoplite",
+          "types": [
+            "ROCK",
+            "BUG"
+          ],
+          "stage": 2,
+          "evolves_to": null,
+          "body_growth": "Interlocking plates expand around the visor and fold like shutters; paired shovel forelimbs brace a compact curling bastion, with four short supporting legs.",
+          "silhouette": "Wide angular shield body, huge shovel forelimbs and short curled tail; no scythes or humanoid knight."
+        }
+      ],
+      "sprite_design": "Distinct species palettes. Gen2 fronts56x56, enlarged back portraits48x48, connected shell rims and readable structural interior seams. Root locked fossil names/types and level40 evolution; no existing Pokemon copies.",
+      "fossil_choice_item": "LENS FOSSIL",
+      "evolution_conditions": {
+        "method": "LEVEL",
+        "level": 40
+      },
+      "fossil_choice_design_file": "planning/minnesota/pokemon/fossil-choice.json"
+    },
+    {
+      "id": "MN_F093",
+      "status": "root-locked",
+      "theme": "Straight-shelled Ordovician cephalopods from southeastern Minnesota; chambered shell and jet movement inspire original ink-ambush anatomy. A squat chamber-cone youngster grows a long tapering obelisk shell angled above a hooded mantle; two broad grasping fins and a few thick tendrils form a clear triangular base. Ink forms a solid dark veil rather than particle clutter.",
+      "region": "driftless",
+      "habitat": "Fossil-bearing bluff layers and proposed Rochester revival courtyard service. Authored two-choice mechanic is specified in fossil-choice.json; it is not runtime registered.",
+      "map_placement": {
+        "towns": [
+          "WINONA",
+          "ROCHESTER"
+        ],
+        "routes": [
+          "MN_R01"
+        ],
+        "status": "proposed habitat only; no map or encounter mutation"
+      },
+      "sources": [
+        {
+          "url": "https://cse.umn.edu/mgs/fossils",
+          "institution": "Minnesota Geological Survey",
+          "supports": "Minnesota trilobite fossils and straight-shelled Ordovician cephalopods; fantastical visor/obelisk anatomy is original."
+        }
+      ],
+      "members": [
+        {
+          "id": "MN_203",
+          "name": "Siphlet",
+          "types": [
+            "ROCK",
+            "DARK"
+          ],
+          "stage": 1,
+          "evolves_to": "MN_204",
+          "body_growth": "Squat chamber-cone youngster with a hooded mantle, two broad gripping fins and a few thick tendrils; one side eye looks from beneath the shell rim.",
+          "silhouette": "Short upright cone over triangular mantle base."
+        },
+        {
+          "id": "MN_204",
+          "name": "Obelurk",
+          "types": [
+            "ROCK",
+            "DARK"
+          ],
+          "stage": 2,
+          "evolves_to": null,
+          "body_growth": "A long tapering obelisk shell angles above the mantle; broad grasping fins and thick tendrils brace its triangular base. Ink unfurls as one solid dark veil behind its face.",
+          "silhouette": "Long diagonal straight shell above a hooded broad base, contrasting the trilobite wide shield."
+        }
+      ],
+      "sprite_design": "Distinct species palettes. Gen2 fronts56x56, enlarged back portraits48x48, connected shell rims and readable structural interior seams. Root locked fossil names/types and level40 evolution; no existing Pokemon copies.",
+      "fossil_choice_item": "SPIRE FOSSIL",
+      "evolution_conditions": {
+        "method": "LEVEL",
+        "level": 40
+      },
+      "fossil_choice_design_file": "planning/minnesota/pokemon/fossil-choice.json"
+    },
+    {
+      "id": "MN_F094",
+      "status": "proposal-awaiting-root-lock",
+      "theme": "Red Wing clay craft and salt-glazed stoneware: a kneading clay creature fires its own surface into patterned protective pottery planes.",
+      "region": "river_bluffs",
+      "habitat": "Warm pottery sheds, clay-bank workshops and riverfront traders; Red Wing is a real inspiration, while the current graph supports visiting wares in Winona rather than an invented Red Wing route.",
+      "map_placement": {
+        "towns": [
+          "WINONA"
+        ],
+        "routes": [
+          "MN_R01"
+        ],
+        "status": "proposed habitat only; no map or encounter mutation"
+      },
+      "sources": [
+        {
+          "url": "https://www.redwingstoneware.com/",
+          "institution": "Red Wing Stoneware and Pottery",
+          "supports": "Manufacturer history traces stoneware production to local clay deposits and river transport."
+        },
+        {
+          "url": "https://potterymuseumredwing.org/about",
+          "institution": "Pottery Museum of Red Wing",
+          "supports": "Museum holds stoneware, pottery, manufacturing photographs and worker-made folk-art pieces."
+        },
+        {
+          "url": "https://redwingcollectors.org/red-wing-pottery-products/red-wing-stoneware/salt-glaze/",
+          "institution": "Red Wing Collectors Society",
+          "supports": "Tan salt glaze and cobalt decoration support restrained clay/blue palette inspiration."
+        }
+      ],
+      "members": [
+        {
+          "id": "MN_205",
+          "name": "Kilnook",
+          "types": [
+            "FIRE",
+            "GROUND"
+          ],
+          "stage": 1,
+          "evolves_to": "MN_206",
+          "body_growth": "A warm clay kneader has a broad hollow cheek, two thick loop arms and a curled clay ribbon tail; its belly stays soft and its footprints have a thumb-pressed spiral.",
+          "silhouette": "Low squashy mound with large loop elbows and one upright ribbon tail."
+        },
+        {
+          "id": "MN_206",
+          "name": "Glazaur",
+          "types": [
+            "FIRE",
+            "ROCK"
+          ],
+          "stage": 2,
+          "evolves_to": null,
+          "body_growth": "Firing gives it broad rigid glaze plates, a wide ceramic lip-mask with a short blunt muzzle and a heavy crock-like belly carried on four short legs. Handle-like shoulder loops lock down as armor, and cobalt-like marks follow the plate joints.",
+          "silhouette": "Squat broad-lipped blunt-muzzled ceramic beast with paired shoulder loops, round belly and upturned thick tail; no furnace door or chimney."
+        }
+      ],
+      "sprite_design": "No logos, numbers or copied pottery trademarks. Ceramic motifs are broad blue swirls, not fine glaze texture. Warm clay becomes lighter fired planes; keep visibly distinct from the metal furnace starter. Use a broad lip-mask, never the long spout/arched body of Contrakett."
+    },
+    {
+      "id": "MN_F095",
+      "status": "proposal-awaiting-root-lock",
+      "theme": "Wabasha sandstone caves, secret knocks and swing music: a muffled cave echo develops its own syncopated body and bends arches into dancing limbs.",
+      "region": "twin_cities",
+      "habitat": "Echoing sandstone rooms and old performance cellars on the St Paul riverfront. A fictional living musical echo, not the spirit of an actual person or historic death.",
+      "map_placement": {
+        "towns": [
+          "ST_PAUL"
+        ],
+        "routes": [
+          "MN_R04"
+        ],
+        "status": "proposed habitat only; no map or encounter mutation"
+      },
+      "sources": [
+        {
+          "url": "https://www.wabashacaves.com/tours",
+          "institution": "Wabasha Street Caves operator",
+          "supports": "Operator describes silica-mine/mushroom-farm/nightclub history, ghost-story tours and live swing dancing. Only venue/cultural inspiration is factual."
+        }
+      ],
+      "members": [
+        {
+          "id": "MN_207",
+          "name": "Hushuff",
+          "types": [
+            "GHOST",
+            "DARK"
+          ],
+          "stage": 1,
+          "evolves_to": "MN_208",
+          "body_growth": "A shy hollow sandstone head nestles between two large palm-like ear shells; its short arms press together to silence its own echo. Two offset eye slits resemble a half-open secret doorway.",
+          "silhouette": "Round hooded head, oversized ear-palms and a short kinked echo tail."
+        },
+        {
+          "id": "MN_208",
+          "name": "Scatacomb",
+          "types": [
+            "GHOST",
+            "DARK"
+          ],
+          "stage": 2,
+          "evolves_to": null,
+          "body_growth": "Ribbed torso arches stretch apart like a folded dance hall, two long spring arms end in clapping stone palms, and broad curved feet stamp syncopated steps. A cape-like rear arch and bent head make its shadow seem to dance a beat later.",
+          "silhouette": "Tall arched rib body, two huge raised palms and wide bent stamping feet; no human suit, gun, hat or separate instrument."
+        }
+      ],
+      "sprite_design": "Only3 torso arches, large hands and simple eyes. Music comes through pose and offbeat structural rhythm; no musical-note particles, tiny architecture or real-person likeness."
+    },
+    {
+      "id": "MN_F096",
+      "status": "proposal-awaiting-root-lock",
+      "theme": "Mississippi freshwater mussels and fishlike mantle lures: a shell-dwelling trickster grows its soft lure into an attached stage puppet, keeping its real face sheltered within.",
+      "region": "mississippi_river",
+      "habitat": "Quiet submerged river ledges and protected mussel beds along the Twin Cities Mississippi corridor; this is the natural soft-mantle counterpart to the metal Jiglet/Trollure fishing lure.",
+      "map_placement": {
+        "towns": [
+          "MINNEAPOLIS",
+          "ST_PAUL"
+        ],
+        "routes": [
+          "MN_R04",
+          "MN_R05"
+        ],
+        "status": "proposed habitat only; no map or encounter mutation"
+      },
+      "sources": [
+        {
+          "url": "https://www.nps.gov/miss/learn/nature/mussels.htm",
+          "institution": "National Park Service",
+          "supports": "Documents native mussels and their habitat in the Twin Cities Mississippi corridor."
+        },
+        {
+          "url": "https://molluskconservation.org/MUSSELS/Adaptation.html",
+          "institution": "Freshwater Mollusk Conservation Society",
+          "supports": "Explains fishlike mantle-lure adaptations; psychic puppetry is fictional."
+        }
+      ],
+      "members": [
+        {
+          "id": "MN_209",
+          "name": "Mimuss",
+          "types": [
+            "WATER",
+            "PSYCHIC"
+          ],
+          "stage": 1,
+          "evolves_to": "MN_210",
+          "body_growth": "A squat ribbed shell walks on one broad folded foot. A thick short mantle stalk above its hinge carries a tiny false fish face, while the real eyes peer through a narrow shell opening.",
+          "silhouette": "Compact shell with one large foot and one hooked fish-face lure stalk."
+        },
+        {
+          "id": "MN_210",
+          "name": "Mantasm",
+          "types": [
+            "WATER",
+            "PSYCHIC"
+          ],
+          "stage": 2,
+          "evolves_to": null,
+          "body_growth": "The shell opens into a wide theater-like hood; four thick mantle arms unfold around its true face, two supporting larger false fish heads with exaggerated eye spots. It manipulates opponents attention by moving the false faces in opposite directions.",
+          "silhouette": "Broad split shell canopy with two attached fish-puppet stalks and a dark central real face; no detached creatures, thin strings or metal hooks."
+        }
+      ],
+      "sprite_design": "Two fishlike puppet heads at most, thick attached soft stalks and large shell ribs. Make true eyes clear inside the shell. Per-species pearl/blue/ink palettes, no metallic spinner silhouette."
+    },
+    {
+      "id": "MN_F097",
+      "status": "proposal-awaiting-root-lock",
+      "theme": "Mississippi paddlefish electroreception and signal triangulation: a sensory spoon snout branches into an organic phased-array crest that reads hidden movement.",
+      "region": "mississippi_river",
+      "habitat": "Wide calm channels and plankton-rich bends near the riverfront cities; source paddlefish distribution includes the Mississippi below St Anthony Falls.",
+      "map_placement": {
+        "towns": [
+          "WINONA",
+          "MINNEAPOLIS",
+          "ST_PAUL"
+        ],
+        "routes": [
+          "MN_R04"
+        ],
+        "status": "proposed habitat only; no map or encounter mutation"
+      },
+      "sources": [
+        {
+          "url": "https://www.dnr.state.mn.us/fish/paddlefish/index.html",
+          "institution": "Minnesota DNR",
+          "supports": "Places paddlefish in the Mississippi and St Croix, including Lake Pepin."
+        },
+        {
+          "url": "https://www.nps.gov/miss/learn/nature/paddlefish-polydon-spathula.htm",
+          "institution": "National Park Service",
+          "supports": "Describes snout sensors detecting electrical signals from plankton and filtering gill rakers; generating electricity and psychic triangulation are fiction."
+        }
+      ],
+      "members": [
+        {
+          "id": "MN_211",
+          "name": "Pinglet",
+          "types": [
+            "ELECTRIC"
+          ],
+          "stage": 1,
+          "evolves_to": "MN_212",
+          "body_growth": "A chunky little river creature has a very broad rounded spoon snout, tiny side fins and a thick forked tail. A single notch down the paddle holds two luminous sensor pits, and the mouth is tucked beneath.",
+          "silhouette": "Low pill-shaped body behind an oversized rounded sensory paddle."
+        },
+        {
+          "id": "MN_212",
+          "name": "Paddarray",
+          "types": [
+            "ELECTRIC",
+            "PSYCHIC"
+          ],
+          "stage": 2,
+          "evolves_to": null,
+          "body_growth": "Its paddle branches into three broad blunt prongs arranged as a Y-shaped sensory fan; a thick pleated gill collar spreads behind the head and the tail grows three wide sculling lobes. It turns the prongs independently before darting along a chosen signal.",
+          "silhouette": "Huge three-pronged head fan, broad collar and short strong tail; not an ordinary paddlefish with a lightning mark or a fish attached to a radar dish."
+        }
+      ],
+      "sprite_design": "Keep three large solid prongs and collar folds, no tiny dots, waves or detached radar rings. Electrical cyan/amber and deep-violet inks distinguish species while staying related."
+    },
+    {
+      "id": "MN_F098",
+      "status": "proposal-awaiting-root-lock",
+      "theme": "Minnesota fair butter carving: a cold butter block carves its own limbs, then fights by reshaping broad sculptor forearms and curled butter-shaving armor.",
+      "region": "twin_cities",
+      "habitat": "Cold-storage corners of city dairy markets and traveling fair displays near St Paul. Separate from Lutebrisk: a solid self-sculpting butter creature, not jelly with a butter heart.",
+      "map_placement": {
+        "towns": [
+          "ST_PAUL"
+        ],
+        "routes": [
+          "MN_R04"
+        ],
+        "status": "proposed habitat only; no map or encounter mutation"
+      },
+      "sources": [
+        {
+          "url": "https://gallery.mnstatefair.org/media/SFP/content/17-butter-sculptures.html",
+          "institution": "Minnesota State Fair",
+          "supports": "Official fair account of butter sculptures carved in the Dairy Building; original creature has no real portrait or named royalty likeness."
+        }
+      ],
+      "members": [
+        {
+          "id": "MN_213",
+          "name": "Chislet",
+          "types": [
+            "ICE"
+          ],
+          "stage": 1,
+          "evolves_to": "MN_214",
+          "body_growth": "A small uneven butter block has two short wedge feet and a large chisel-shaped forearm; a curled shaving above one eye becomes a questioning eyebrow. It chips away a corner to free its other hand.",
+          "silhouette": "Asymmetric cuboid with one wedge arm, curled eyebrow and stub feet."
+        },
+        {
+          "id": "MN_214",
+          "name": "Buttermuse",
+          "types": [
+            "ICE",
+            "FIGHTING"
+          ],
+          "stage": 2,
+          "evolves_to": null,
+          "body_growth": "The block unfolds into a broad poised statue creature with two enormous wedge forearms, a curled shaving ruff and a spiral rosette crown. Its body stays thick and solid, its fighting stance planted, and it reforms damaged surfaces by pressing its arms together.",
+          "silhouette": "Broad sculpted torso, two triangular chisel fists and curled ruff/crown; no human dress, copied bust or ordinary butter stick with eyes."
+        }
+      ],
+      "sprite_design": "Use broad carved facets, 2-3 shaving curls, pale butter and cold blue shadows. No gradients, ice-spike overload or real-person face. Back portrait emphasizes rosette and carving shoulders."
+    },
+    {
+      "id": "MN_F099",
+      "status": "proposal-awaiting-root-lock",
+      "theme": "Minnesota caddisfly silk cases and mosaic assembly: a pebble-case larva learns to rearrange its shell pieces, then unfolds a broad tile-patterned wing canopy that confuses depth perception.",
+      "region": "driftless",
+      "habitat": "Clean rocky creeks and riparian shade on the Driftless Trail; case-building is a general caddisfly inspiration, not a claim that a particular rare species lives on the authored route.",
+      "map_placement": {
+        "towns": [
+          "WINONA",
+          "ROCHESTER"
+        ],
+        "routes": [
+          "MN_R01"
+        ],
+        "status": "proposed habitat only; no map or encounter mutation"
+      },
+      "sources": [
+        {
+          "url": "https://files.dnr.state.mn.us/mcvmagazine/young_naturalists/young-naturalists-article/wild_engineers/wild_engineers.pdf",
+          "institution": "Minnesota DNR Young Naturalists",
+          "supports": "Explains caddisfly larvae using silk to join stone/plant pieces into protective cases. Mosaic-powered wings and illusions are fiction."
+        }
+      ],
+      "members": [
+        {
+          "id": "MN_215",
+          "name": "Tesslarv",
+          "types": [
+            "BUG",
+            "ROCK"
+          ],
+          "stage": 1,
+          "evolves_to": "MN_216",
+          "body_growth": "A determined larva pulls a squat three-sided stone case with six little gripping feet. Three broad contrasting pebble slabs fit like tiles around its raised face, and two feelers act like short measuring arms.",
+          "silhouette": "Angular triangular case with a broad exposed face and short gripping front feet."
+        },
+        {
+          "id": "MN_216",
+          "name": "Mothosaic",
+          "types": [
+            "BUG",
+            "PSYCHIC"
+          ],
+          "stage": 2,
+          "evolves_to": null,
+          "body_growth": "The case tiles become four large wing panels joined by thick silk veins, folding into a tent over a compact insect body. The broad face and measuring feelers remain; it tilts the panels to make its outline seem farther away or broken into separate shapes.",
+          "silhouette": "Four tiled wing planes in a stepped canopy, stout center and two short measuring antennae; no ordinary butterfly pattern or detached tile swarm."
+        }
+      ],
+      "sprite_design": "Only3-4 large mosaic tiles per wing pair; no tiny tessellation or glass gradients. Larva stone case and adult panel hinges show actual transformation. Separate from Mayquip hatch/fishing-fly theme and Dakotaskip grass stitching."
+    },
+    {
+      "id": "MN_F100",
+      "status": "proposal-awaiting-root-lock",
+      "theme": "St Paul Winter Carnival torchlight pageantry and the staged victory of warmth over winter: a coal-bodied athletic jester stores heat in a springy bellows chest and rallies companions through lively motion.",
+      "region": "twin_cities",
+      "habitat": "Outdoor city festival courtyards and winter procession rehearsal yards in St Paul; ordinary singleton, not a new legendary or a named deity.",
+      "map_placement": {
+        "towns": [
+          "ST_PAUL"
+        ],
+        "routes": [
+          "MN_R04"
+        ],
+        "status": "proposed habitat only; no map or encounter mutation"
+      },
+      "sources": [
+        {
+          "url": "https://www.wintercarnival.com/events/legend-events",
+          "institution": "Saint Paul Festival and Heritage Foundation",
+          "supports": "Official program includes Vulcan Reveal, Victory Torchlight Parade and Overthrow of King Boreas. Original Torchcap anatomy and powers are fictional pageant inspiration, not a portrayal of a real performer."
+        }
+      ],
+      "members": [
+        {
+          "id": "MN_217",
+          "name": "Torchcap",
+          "types": [
+            "FIRE",
+            "FIGHTING"
+          ],
+          "stage": 1,
+          "evolves_to": null,
+          "body_growth": "A squat charcoal creature has a tall curled vent-cap grown from its head, two spring-bellows forearms and huge wick-knuckle fists. A broad warm chest and jaunty braced feet suggest a performer warming up; an angular grin sits under the cap, with one sweeping solid ember eyebrow.",
+          "silhouette": "Tall curved vent-cap above broad low chest, two giant rounded torch fists and short planted legs; no human costume, vehicle, carried torch or detached flame particles."
+        }
+      ],
+      "sprite_design": "One strong cap curl, two broad fists and a clear face. Black coal is colored dark-red/brown planes rather than an all-black body; bright orange heat seams stay flat. Distinct from Wickit candle spirit and furnace golems."
+    }
+  ],
+  "count_audit": {
+    "species": 32,
+    "families": 14,
+    "mix": {
+      "3": 5,
+      "2": 8,
+      "1": 1
+    },
+    "types": {
+      "BUG": 4,
+      "DARK": 8,
+      "DRAGON": 3,
+      "ELECTRIC": 8,
+      "FIGHTING": 4,
+      "FIRE": 6,
+      "GHOST": 2,
+      "GROUND": 1,
+      "ICE": 2,
+      "PSYCHIC": 7,
+      "ROCK": 9,
+      "WATER": 2
+    }
+  },
+  "research_notes": [
+    "Read current153 roster and route graph before drafting; original153 preserved.",
+    "St Croix potholes left available to prairie/glacial agent; northern folklore and weather rare species left to other agents.",
+    "Root owns the catalog, registry, global palettes and fossil-choice mechanic. F087/F092/F093 locked; remaining families require root judgment before image generation.",
+    "The exact Science Museum Endoceras URL supplied in parent brief returned404 on research read; MGS is the verified primary fossil source used here.",
+    "Habitat placements are proposals mapped to existing towns/routes, not claims of implemented encounters or real-world exact geography."
+  ]
+}

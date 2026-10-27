@@ -1,0 +1,234 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F029",
+  "status": "native-front-back-reviewed",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_071": {
+      "species_id": "MN_071",
+      "name": "Arclet",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          30,
+          27,
+          10
+        ],
+        [
+          8,
+          12,
+          18
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        11134,
+        18824,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          247,
+          222,
+          82
+        ],
+        [
+          66,
+          99,
+          148
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#F7DE52",
+        "#426394",
+        "#000000"
+      ]
+    },
+    "MN_072": {
+      "species_id": "MN_072",
+      "name": "Skyspan",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          20,
+          25,
+          28
+        ],
+        [
+          8,
+          10,
+          17
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        29492,
+        17736,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          165,
+          206,
+          231
+        ],
+        [
+          66,
+          82,
+          140
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#A5CEE7",
+        "#42528C",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f029/prompt-v1.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "style_reference": {
+    "origin": "authentic local Crystal sprites",
+    "generator": "crates/crystal-assets/examples/minnesota_gen2_reference.rs",
+    "board": "target/minnesota-pokemon/gen2-reference/starters.png"
+  },
+  "sprites": [
+    {
+      "id": "mn-071-arclet-v1",
+      "species_id": "MN_071",
+      "view": "front",
+      "source": "sprites/mn-f029/mn-071-072.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        838,
+        443
+      ],
+      "fit": [
+        40,
+        40
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        11134,
+        18824,
+        0
+      ]
+    },
+    {
+      "id": "mn-071-arclet-v1",
+      "species_id": "MN_071",
+      "view": "back",
+      "source": "sprites/mn-f029/mn-071-072.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        443,
+        838,
+        444
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        11134,
+        18824,
+        0
+      ]
+    },
+    {
+      "id": "mn-072-skyspan-v1",
+      "species_id": "MN_072",
+      "view": "front",
+      "source": "sprites/mn-f029/mn-071-072.front-back.imagegen-v1.png",
+      "crop": [
+        838,
+        0,
+        936,
+        443
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        29492,
+        17736,
+        0
+      ]
+    },
+    {
+      "id": "mn-072-skyspan-v1",
+      "species_id": "MN_072",
+      "view": "back",
+      "source": "sprites/mn-f029/mn-071-072.front-back.imagegen-v1.png",
+      "crop": [
+        838,
+        443,
+        936,
+        444
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        29492,
+        17736,
+        0
+      ]
+    }
+  ],
+  "visual_review": {
+    "status": "reviewed",
+    "notes": [
+      "Inspected frozen source-contour-v1 sheet: cable coils, plug fingers and tower limbs have firm dark anchors, while Skyspan retains its large open arch and colored suspended passage.",
+      "Individual yellow/navy versus pale-blue/navy palettes and enlarged rear plug/tower portraits remain intact. No neighboring cell fragments or added lower-crop seam."
+    ],
+    "sheet_sha256": "4a74082a1c196b407c13c5e06b4fa1312a0a1dfb28318b6c5558343c1d46c51c",
+    "outline_profile": "source-contour-v1"
+  }
+}

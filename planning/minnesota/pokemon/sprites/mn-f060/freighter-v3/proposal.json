@@ -1,0 +1,214 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F060",
+  "species_id": "MN_269",
+  "name": "Oreviathan",
+  "status": "native-reviewed-ready-for-root-integration",
+  "member": {
+    "id": "MN_269",
+    "name": "Oreviathan",
+    "types": [
+      "FIRE",
+      "WATER"
+    ],
+    "stage": 3,
+    "evolves_to": null
+  },
+  "profiles": [
+    {
+      "id": "MN_269",
+      "classification": "Ore Hauler",
+      "height_inches": 180,
+      "weight_tenths_lb": 31000,
+      "dex_pages": [
+        "Its boiler lets @ it haul ore too @ heavy for ships.",
+        "Twin steam horns @ sound before it @ enters a harbor."
+      ],
+      "base_stats": {
+        "hp": 110,
+        "attack": 85,
+        "defense": 100,
+        "speed": 35,
+        "special_attack": 115,
+        "special_defense": 95
+      },
+      "catch_rate": 45,
+      "base_exp": 230,
+      "gender_ratio": 127,
+      "hatch_cycles": 40,
+      "growth_rate": "GROWTH_SLOW",
+      "egg_groups": [
+        "EGG_WATER_1",
+        "EGG_MINERAL"
+      ],
+      "evolution": null,
+      "held_items": [
+        null,
+        null
+      ],
+      "menu_icon": "ICON_LAPRAS",
+      "footprint_species": "BLASTOISE",
+      "cry": {
+        "cry": "CRY_BLASTOISE",
+        "pitch": -12,
+        "length": 176
+      },
+      "shiny_rgb5": [
+        [
+          13,
+          29,
+          24
+        ],
+        [
+          15,
+          6,
+          10
+        ]
+      ],
+      "level_moves": [
+        [
+          1,
+          "TACKLE"
+        ],
+        [
+          1,
+          "LEER"
+        ],
+        [
+          1,
+          "EMBER"
+        ],
+        [
+          1,
+          "WATER_GUN"
+        ],
+        [
+          15,
+          "SMOKESCREEN"
+        ],
+        [
+          19,
+          "BUBBLEBEAM"
+        ],
+        [
+          24,
+          "STOMP"
+        ],
+        [
+          29,
+          "FIRE_SPIN"
+        ],
+        [
+          34,
+          "BODY_SLAM"
+        ],
+        [
+          39,
+          "RAIN_DANCE"
+        ],
+        [
+          44,
+          "FLAMETHROWER"
+        ],
+        [
+          50,
+          "VITAL_THROW"
+        ],
+        [
+          57,
+          "HYDRO_PUMP"
+        ],
+        [
+          64,
+          "FIRE_BLAST"
+        ]
+      ],
+      "tmhm_moves": [
+        "SURF",
+        "WATERFALL",
+        "WHIRLPOOL",
+        "FIRE_BLAST",
+        "FLAMETHROWER",
+        "ROCK_SMASH",
+        "STRENGTH",
+        "RAIN_DANCE",
+        "PROTECT",
+        "REST"
+      ],
+      "egg_moves": [
+        "AMNESIA",
+        "COUNTER",
+        "HAZE"
+      ]
+    }
+  ],
+  "profile_policy": "Preserve current canonical stats/types/evolution/moves; root integrates balance separately.",
+  "palettes": {
+    "MN_269": {
+      "species_id": "MN_269",
+      "name": "Oreviathan",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          27,
+          12,
+          4
+        ],
+        [
+          4,
+          11,
+          16
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        4507,
+        16740,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          222,
+          99,
+          33
+        ],
+        [
+          33,
+          90,
+          132
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#DE6321",
+        "#215A84",
+        "#000000"
+      ]
+    }
+  },
+  "design": "A long deep living ore-freighter hull replaces the rejected squat boiler humanoid. The bow bears the face; three ore-hold hatches, aft breathing stacks and two arched gantry arms are integral anatomy. No legs.",
+  "preservation": "All previous sources and native assets remain intact. Proposal-only; do not run with canonical output directory.",
+  "selected_manifest": "sprites/mn-f060/freighter-v3/manifest-selected.json",
+  "selected_contour": "source_backed",
+  "native_review_path": "target/agent-roster-contour/new-renders/MN_F060/source_backed/line.review.png",
+  "visual_review": "The new hull is long, legless and lake-going. The face is in the bow; open gantry elbows, three large ore holds and aft pressure stacks remain clear at56px. SourceBacked preserves both steam curls and the8-pixel enclosed bow-eye white without extra interior black. Close rear crops the stern/deck/gantry at deliberate portrait edges. Earlier131/132 untouched."
+}

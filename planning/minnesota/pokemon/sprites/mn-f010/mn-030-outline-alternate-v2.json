@@ -1,0 +1,126 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_030",
+  "status": "selected-for-native-outline-review",
+  "tool": "built-in image_gen",
+  "selected_for_main_manifest": true,
+  "prompt_file": "sprites/mn-f010/prompt-mn-030-outline-v2.txt",
+  "references": [
+    {
+      "path": "/Users/ryanculligan/GitHub/geothite/planning/minnesota/pokemon/sprites/mn-f010/mn-028-030.front-back.imagegen-v1.png",
+      "role": "Immutable original Flourgeist anatomy and front/back identity; only rightmost column.",
+      "sha256": "119f830e9a269b67bb571ddac615904481c975597878d366a5831095f7cc9654"
+    },
+    {
+      "path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/gen2-reference/starters.png",
+      "role": "Authentic Gen2 pixel scale, selective black contour and close rear camera style only; no character copying.",
+      "sha256": "af61f720a75b7e1b8e80ba14e8944612556397eedddd719669dec68b0e0fd534"
+    }
+  ],
+  "pokemon_palette": {
+    "species_id": "MN_030",
+    "name": "Flourgeist",
+    "gbc_rgb5": [
+      [
+        31,
+        31,
+        31
+      ],
+      [
+        26,
+        24,
+        21
+      ],
+      [
+        12,
+        10,
+        17
+      ],
+      [
+        0,
+        0,
+        0
+      ]
+    ],
+    "gbc_rgb555_words": [
+      32767,
+      22298,
+      17740,
+      0
+    ],
+    "rgb8": [
+      [
+        255,
+        255,
+        255
+      ],
+      [
+        214,
+        198,
+        173
+      ],
+      [
+        99,
+        82,
+        140
+      ],
+      [
+        0,
+        0,
+        0
+      ]
+    ],
+    "hex": [
+      "#FFFFFF",
+      "#D6C6AD",
+      "#63528C",
+      "#000000"
+    ]
+  },
+  "source": "sprites/mn-f010/mn-030-flourgeist.outline-alternate-v2.imagegen.png",
+  "proposed_crops": [
+    {
+      "species_id": "MN_030",
+      "view": "front",
+      "crop": [
+        0,
+        0,
+        1024,
+        820
+      ],
+      "fit": [
+        54,
+        54
+      ]
+    },
+    {
+      "species_id": "MN_030",
+      "view": "back",
+      "crop": [
+        0,
+        820,
+        1024,
+        716
+      ],
+      "fit": [
+        46,
+        47
+      ]
+    }
+  ],
+  "source_sha256": "d7e27ca972e6cff0b367d45ae8f837cca1bcd5bf936c05b43d046177c7344258",
+  "source_size": [
+    1024,
+    1536
+  ],
+  "source_review": {
+    "status": "candidate-inspected-not-native-accepted",
+    "notes": [
+      "Both views preserve the flour vortex, grain-tuft head, cream curl arms and violet ring shoulders.",
+      "Cream exterior ribbons now have deliberate connected black anchors around bends and tips; violet remains inside and on shadow folds.",
+      "Back is a close rear three-quarter portrait with lower body cropped and one far-side eye sliver.",
+      "Raw retains extra generated shades despite exact four-color prompt; native normalization remains required if parent accepts this alternate.",
+      "No main manifest or native export edited."
+    ]
+  }
+}

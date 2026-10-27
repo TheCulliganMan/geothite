@@ -83,7 +83,13 @@ pub(super) fn read(root: &Path) -> Result<Value> {
         "source topology Surf capability has no production travel rule"
     );
     for (file, item, command, key, move_id) in [
-        ("maps/IlexForest.asm", "HM_CUT", "verbosegiveitem", "cut", "CUT"),
+        (
+            "maps/IlexForest.asm",
+            "HM_CUT",
+            "verbosegiveitem",
+            "cut",
+            "CUT",
+        ),
         (
             "maps/IcePath1F.asm",
             "HM_WATERFALL",
@@ -159,11 +165,20 @@ pub(super) fn read(root: &Path) -> Result<Value> {
             let code = super::source_syntax::code_part(line);
             if code.trim_start().starts_with("warp_event ") {
                 warp_index += 1;
-                if line.split_once(';').is_some_and(|(_, comment)| comment.trim() == "inaccessible") {
+                if line
+                    .split_once(';')
+                    .is_some_and(|(_, comment)| comment.trim() == "inaccessible")
+                {
                     let parsed = super::source_scripts::parse(&format!("Certificate:\n{code}\n"))?;
                     for command in parsed.values().filter_map(Value::as_array).flatten() {
-                        if tokens.iter().any(|(_, constant)| command["args"][2].as_str() == Some(constant)) {
-                            inaccessible.entry(origin.to_owned()).or_default().push(warp_index);
+                        if tokens
+                            .iter()
+                            .any(|(_, constant)| command["args"][2].as_str() == Some(constant))
+                        {
+                            inaccessible
+                                .entry(origin.to_owned())
+                                .or_default()
+                                .push(warp_index);
                             certified_commands.push(command.clone());
                         }
                     }
@@ -172,7 +187,9 @@ pub(super) fn read(root: &Path) -> Result<Value> {
         }
         let source = super::source_scripts::parse(&raw)?;
         for command in source.values().filter_map(Value::as_array).flatten() {
-            if certified_commands.contains(command) { continue; }
+            if certified_commands.contains(command) {
+                continue;
+            }
             for argument in command["args"].as_array().into_iter().flatten() {
                 ensure!(
                     !tokens
@@ -215,11 +232,19 @@ pub fn export(root: &Path) -> Result<()> {
     Ok(())
 }
 
-fn connection_warp_routes(root: &Path) -> Result<std::collections::BTreeMap<String, std::collections::BTreeMap<String, Vec<String>>>> {
+fn connection_warp_routes(
+    root: &Path,
+) -> Result<std::collections::BTreeMap<String, std::collections::BTreeMap<String, Vec<String>>>> {
     let vendor = root.join("vendor/pokecrystal");
     let geometry = super::source_map_geometry::read(&vendor)?;
     let routes: &[&[&str]] = &[
-        &["AzaleaTown", "IlexForestAzaleaGate", "IlexForest", "Route34IlexForestGate", "Route34"],
+        &[
+            "AzaleaTown",
+            "IlexForestAzaleaGate",
+            "IlexForest",
+            "Route34IlexForestGate",
+            "Route34",
+        ],
         &["EcruteakCity", "Route38EcruteakGate", "Route38"],
         &["EcruteakCity", "Route42EcruteakGate", "Route42"],
         &["FuchsiaCity", "Route15FuchsiaGate", "Route15"],
@@ -229,26 +254,55 @@ fn connection_warp_routes(root: &Path) -> Result<std::collections::BTreeMap<Stri
         &["Route6", "Route6SaffronGate", "SaffronCity"],
         &["Route8", "Route8SaffronGate", "SaffronCity"],
     ];
-    let mut result = std::collections::BTreeMap::<String, std::collections::BTreeMap<String, Vec<String>>>::new();
+    let mut result =
+        std::collections::BTreeMap::<String, std::collections::BTreeMap<String, Vec<String>>>::new(
+        );
     for route in routes {
-        for names in [route.iter().map(|name| (*name).to_owned()).collect::<Vec<_>>(),
-            route.iter().rev().map(|name| (*name).to_owned()).collect::<Vec<_>>()] {
+        for names in [
+            route
+                .iter()
+                .map(|name| (*name).to_owned())
+                .collect::<Vec<_>>(),
+            route
+                .iter()
+                .rev()
+                .map(|name| (*name).to_owned())
+                .collect::<Vec<_>>(),
+        ] {
             let origin = &names[0];
             let destination = names.last().context("connection route destination")?;
-            ensure!(geometry.get(origin).is_some_and(|map| map.attributes.connections.iter()
-                .any(|connection| &connection.target_map == destination)),
-                "authored backdrop connection {origin} to {destination} is missing");
+            ensure!(
+                geometry.get(origin).is_some_and(|map| map
+                    .attributes
+                    .connections
+                    .iter()
+                    .any(|connection| &connection.target_map == destination)),
+                "authored backdrop connection {origin} to {destination} is missing"
+            );
             for pair in names.windows(2) {
-                let target = geometry.get(&pair[1]).and_then(|map| map.attributes.map_constant.as_deref())
+                let target = geometry
+                    .get(&pair[1])
+                    .and_then(|map| map.attributes.map_constant.as_deref())
                     .context("warp route target identity")?;
                 let source = std::fs::read_to_string(vendor.join(format!("maps/{}.asm", pair[0])))?;
-                ensure!(source.lines().any(|line| super::source_syntax::code_part(line)
-                    .strip_prefix("warp_event ").is_some_and(|args|
-                        super::source_syntax::source_arguments(args).is_ok_and(|args|
-                            args.get(2).is_some_and(|value| value == target)))),
-                    "authored connection detour lacks warp {} to {}", pair[0], pair[1]);
+                ensure!(
+                    source
+                        .lines()
+                        .any(|line| super::source_syntax::code_part(line)
+                            .strip_prefix("warp_event ")
+                            .is_some_and(|args| super::source_syntax::source_arguments(args)
+                                .is_ok_and(|args| args
+                                    .get(2)
+                                    .is_some_and(|value| value == target)))),
+                    "authored connection detour lacks warp {} to {}",
+                    pair[0],
+                    pair[1]
+                );
             }
-            result.entry(origin.clone()).or_default().insert(destination.clone(), names);
+            result
+                .entry(origin.clone())
+                .or_default()
+                .insert(destination.clone(), names);
         }
     }
     Ok(result)
@@ -257,25 +311,50 @@ fn connection_warp_routes(root: &Path) -> Result<std::collections::BTreeMap<Stri
 fn retired_gs_warps(root: &Path) -> Result<std::collections::BTreeMap<String, Vec<i32>>> {
     use std::collections::{BTreeMap, BTreeSet};
     #[derive(Clone)]
-    struct Warp { x: usize, y: usize, target: String, destination: usize, retired: bool }
+    struct Warp {
+        x: usize,
+        y: usize,
+        target: String,
+        destination: usize,
+        retired: bool,
+    }
     let vendor = root.join("vendor/pokecrystal");
     let geometry = super::source_map_geometry::read(&vendor)?;
-    let tilesets: Value = serde_json::from_slice(&std::fs::read(root.join("apps/web/assets/data/tilesets.json"))?)?;
-    let identities = geometry.iter().filter_map(|(name, map)| map.attributes.map_constant.as_ref()
-        .map(|constant| (constant.clone(), name.clone()))).collect::<BTreeMap<_, _>>();
+    let tilesets: Value = serde_json::from_slice(&std::fs::read(
+        root.join("apps/web/assets/data/tilesets.json"),
+    )?)?;
+    let identities = geometry
+        .iter()
+        .filter_map(|(name, map)| {
+            map.attributes
+                .map_constant
+                .as_ref()
+                .map(|constant| (constant.clone(), name.clone()))
+        })
+        .collect::<BTreeMap<_, _>>();
     let mut warps = BTreeMap::<String, Vec<Warp>>::new();
     for name in geometry.keys() {
         let source = std::fs::read_to_string(vendor.join(format!("maps/{name}.asm")))?;
         let mut rows = Vec::new();
         for line in source.lines() {
-            let Some(args) = super::source_syntax::code_part(line).trim().strip_prefix("warp_event ") else { continue; };
+            let Some(args) = super::source_syntax::code_part(line)
+                .trim()
+                .strip_prefix("warp_event ")
+            else {
+                continue;
+            };
             let args = super::source_syntax::source_arguments(args)?;
             ensure!(args.len() == 4, "retired source warp arity");
             let destination = args[3].parse::<i32>()?;
-            rows.push(Warp { x: args[0].parse()?, y: args[1].parse()?,
+            rows.push(Warp {
+                x: args[0].parse()?,
+                y: args[1].parse()?,
                 target: identities.get(&args[2]).cloned().unwrap_or(args[2].clone()),
                 destination: destination.max(0) as usize,
-                retired: line.split_once(';').is_some_and(|(_, comment)| comment.trim() == "inaccessible, left over from G/S") });
+                retired: line.split_once(';').is_some_and(|(_, comment)| {
+                    comment.trim() == "inaccessible, left over from G/S"
+                }),
+            });
         }
         warps.insert(name.clone(), rows);
     }
@@ -283,23 +362,46 @@ fn retired_gs_warps(root: &Path) -> Result<std::collections::BTreeMap<String, Ve
         let map = geometry.get(name).context("retired source map geometry")?;
         let index = (warp.y / 2) * usize::from(map.attributes.width) + warp.x / 2;
         let block = *map.blocks.get(index).context("retired warp block bounds")?;
-        let collision = tilesets[&map.attributes.tileset_name]["collision"].as_object().context("retired warp collision table")?;
-        let quadrants = collision.iter().find(|(key, _)| u16::from_str_radix(key, 16).ok() == Some(block))
-            .map(|(_, value)| value).context("retired warp collision block")?;
+        let collision = tilesets[&map.attributes.tileset_name]["collision"]
+            .as_object()
+            .context("retired warp collision table")?;
+        let quadrants = collision
+            .iter()
+            .find(|(key, _)| u16::from_str_radix(key, 16).ok() == Some(block))
+            .map(|(_, value)| value)
+            .context("retired warp collision block")?;
         Ok(quadrants[(warp.y % 2) * 2 + warp.x % 2] == "WALL")
     };
     let mut certified = BTreeMap::<String, BTreeSet<i32>>::new();
     for (name, rows) in &warps {
         for (index, warp) in rows.iter().enumerate().filter(|(_, warp)| warp.retired) {
-            let target = warps.get(&warp.target).context("retired warp target source")?;
-            let destination = target.get(warp.destination.checked_sub(1).context("retired warp requires destination")?)
+            let target = warps
+                .get(&warp.target)
+                .context("retired warp target source")?;
+            let destination = target
+                .get(
+                    warp.destination
+                        .checked_sub(1)
+                        .context("retired warp requires destination")?,
+                )
                 .context("retired warp target index")?;
-            if !blocked(name, warp)? && !blocked(&warp.target, destination)? { continue; }
-            certified.entry(name.clone()).or_default().insert((index + 1) as i32);
+            if !blocked(name, warp)? && !blocked(&warp.target, destination)? {
+                continue;
+            }
+            certified
+                .entry(name.clone())
+                .or_default()
+                .insert((index + 1) as i32);
             if destination.target == *name && destination.destination == index + 1 {
-                certified.entry(warp.target.clone()).or_default().insert(warp.destination as i32);
+                certified
+                    .entry(warp.target.clone())
+                    .or_default()
+                    .insert(warp.destination as i32);
             }
         }
     }
-    Ok(certified.into_iter().map(|(name, indices)| (name, indices.into_iter().collect())).collect())
+    Ok(certified
+        .into_iter()
+        .map(|(name, indices)| (name, indices.into_iter().collect()))
+        .collect())
 }

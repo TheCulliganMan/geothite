@@ -1,0 +1,137 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F100",
+  "status": "conversion-comparison-proposal",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_217": {
+      "species_id": "MN_217",
+      "name": "Torchcap",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          31,
+          16,
+          4
+        ],
+        [
+          12,
+          4,
+          3
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        4639,
+        3212,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          255,
+          132,
+          33
+        ],
+        [
+          99,
+          33,
+          24
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#FF8421",
+        "#632118",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f100/prompt-v1.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "style_reference": {
+    "origin": "authentic local Crystal sprites",
+    "generator": "crates/crystal-assets/examples/minnesota_gen2_reference.rs",
+    "boards": [
+      "target/minnesota-pokemon/gen2-reference/starters.png",
+      "target/minnesota-pokemon/gen2-reference/bugs.png"
+    ]
+  },
+  "sprites": [
+    {
+      "id": "mn-217-torchcap-v1",
+      "species_id": "MN_217",
+      "view": "front",
+      "source": "sprites/mn-f100/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        1161,
+        677
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        4639,
+        3212,
+        0
+      ],
+      "interior_black_min_samples": 16,
+      "sampling": "source_center",
+      "exterior_contour": "solid"
+    },
+    {
+      "id": "mn-217-torchcap-v1",
+      "species_id": "MN_217",
+      "view": "back",
+      "source": "sprites/mn-f100/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        677,
+        1161,
+        678
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        4639,
+        3212,
+        0
+      ],
+      "interior_black_min_samples": 16,
+      "sampling": "source_center",
+      "exterior_contour": "solid"
+    }
+  ],
+  "visual_review": {
+    "status": "reviewed",
+    "reviewer": "root",
+    "notes": "Root inspected front and close rear: curled coal cap, broad fists, orange bellows seams and compact white eye/grin marks survive. Dark red body remains colored with black rim rather than a solid black silhouette.",
+    "sheet_sha256": "4feec9002d6d1e3780cc34a36d1463f854eeb29d9bf8259f6dff44a405541055",
+    "outline_profile": "source-contour-v1"
+  }
+}

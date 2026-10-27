@@ -1,0 +1,268 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F090",
+  "status": "proposal-only-not-integrated",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_196": {
+      "species_id": "MN_196",
+      "name": "Crumcone",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          29,
+          21,
+          11
+        ],
+        [
+          10,
+          5,
+          2
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        11965,
+        2218,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          239,
+          173,
+          90
+        ],
+        [
+          82,
+          41,
+          16
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#EFAD5A",
+        "#522910",
+        "#000000"
+      ]
+    },
+    "MN_197": {
+      "species_id": "MN_197",
+      "name": "Pailbaron",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          30,
+          23,
+          12
+        ],
+        [
+          9,
+          4,
+          2
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        13054,
+        2185,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          247,
+          189,
+          99
+        ],
+        [
+          74,
+          33,
+          16
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#F7BD63",
+        "#4A2110",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f090/redesign-v3/prompt-v3.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "style_reference": {
+    "origin": "authentic local Crystal sprites",
+    "generator": "crates/crystal-assets/examples/minnesota_gen2_reference.rs",
+    "boards": [
+      "target/minnesota-pokemon/gen2-reference/starters.png",
+      "target/minnesota-pokemon/gen2-reference/bugs.png"
+    ]
+  },
+  "preserve_species": {
+    "MN_195": {
+      "name": "Doughlin",
+      "instruction": "Retain native front/back PNG, index JSON, 2bpp and source records byte-for-byte. Never regenerate or reconvert the first stage. This proposal only replaces MN196 and MN197.",
+      "front.png_sha256": "a5f1c4b0a6627366fb2119e5d18780d78f2a6fab342f68730f143db0c5a04b18",
+      "back.png_sha256": "aff4e3d0a11845a5b71d087721b83c63c5acf9df857a90f146fcea79d1fc63f1",
+      "front.json_sha256": "7f5f92bc0c5a5446e824d89a7f659c977b04617eac70983f463c74a6ff32adae",
+      "back.json_sha256": "64bf9a2ccbd09475644063301c98f1107c0691824571bba96861b0452f70b32c",
+      "front.2bpp_sha256": "aa5147052efaf1ccee0e4dfaff7593fb92f51e18a57f3493f804aeda588b07af",
+      "back.2bpp_sha256": "dde2c0b2e4a31308cf05e2d86be126f7b9b2f794c1e8bab55198ee7d29be779e"
+    }
+  },
+  "sources": [
+    {
+      "url": "https://www.sweetmarthas.com/about",
+      "grounding": "The vendor describes serving its fair cookies in cones and pails. The creature progression and all artwork are original."
+    },
+    {
+      "url": "https://www.sweetmarthas.com/ingredients",
+      "grounding": "White packaging and warm overflowing chocolate-chip cookies inspire the cone and bucket body colors; logos and printed artwork are omitted."
+    }
+  ],
+  "sprites": [
+    {
+      "id": "mn-196-crumcone-v3",
+      "species_id": "MN_196",
+      "view": "front",
+      "source": "sprites/mn-f090/redesign-v3/front-back.imagegen-v3.png",
+      "crop": [
+        0,
+        0,
+        700,
+        530
+      ],
+      "fit": [
+        40,
+        48
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        11965,
+        2218,
+        0
+      ],
+      "interior_black_min_samples": 12,
+      "exterior_contour": "solid",
+      "white_detail_min_samples": 4
+    },
+    {
+      "id": "mn-196-crumcone-v3",
+      "species_id": "MN_196",
+      "view": "back",
+      "source": "sprites/mn-f090/redesign-v3/front-back.imagegen-v3.png",
+      "crop": [
+        0,
+        530,
+        700,
+        494
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        11965,
+        2218,
+        0
+      ],
+      "interior_black_min_samples": 12,
+      "exterior_contour": "solid",
+      "white_detail_min_samples": 4
+    },
+    {
+      "id": "mn-197-pailbaron-v3",
+      "species_id": "MN_197",
+      "view": "front",
+      "source": "sprites/mn-f090/redesign-v3/front-back.imagegen-v3.png",
+      "crop": [
+        700,
+        0,
+        836,
+        530
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        13054,
+        2185,
+        0
+      ],
+      "interior_black_min_samples": 12,
+      "exterior_contour": "solid",
+      "white_detail_min_samples": 4
+    },
+    {
+      "id": "mn-197-pailbaron-v3",
+      "species_id": "MN_197",
+      "view": "back",
+      "source": "sprites/mn-f090/redesign-v3/front-back.imagegen-v3.png",
+      "crop": [
+        700,
+        530,
+        836,
+        494
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        13054,
+        2185,
+        0
+      ],
+      "interior_black_min_samples": 12,
+      "exterior_contour": "solid",
+      "white_detail_min_samples": 4
+    }
+  ],
+  "visual_review": {
+    "status": "native-qa-pending",
+    "reviewer": "future_moves",
+    "outline_profile": "solid-exterior-v1",
+    "source_sha256": "ce3603a5362db17b66f42cc2a1b8c4d0bb88acf0cb0a771f7116b48cb713c146"
+  }
+}

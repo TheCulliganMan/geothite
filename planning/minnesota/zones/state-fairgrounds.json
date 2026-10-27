@@ -1,0 +1,46 @@
+{
+  "id":"MN_STATE_FAIRGROUNDS",
+  "map_name":"MnStateFairgrounds",
+  "name":"MINNESOTA STATE FAIRGROUNDS",
+  "parent_hub":"MnStPaul",
+  "status":"In scope by explicit user request. Dedicated playable destination in design; terrain, native doors, scripts and pack publication are not implemented.",
+  "identity":"A fair to explore and do things in: a midway, livestock and 4-H barns, dairy exhibits, food stalls, a show ring and a fairground loop. Separate map, not a fair sign or one vendor in the city.",
+  "extent_policy":"Fit the actual activities and readable native player cameras before freezing dimensions. Do not reserve a huge empty rectangle or shrink every activity into one plaza.",
+  "access":{
+    "from_hub":"MnStPaul",
+    "kind":"Public walking gate from the current St. Paul exterior design, with an actual reciprocal return and room for two-way passage.",
+    "city_gate_anchor_core":[[16,0],[17,0]],
+    "city_gate_metatile":[8,1],
+    "city_landing_metatile":[8,3],
+    "city_side":"N",
+    "anchor_status":"St. Paul source reservation: contiguous two-core public street to the north edge. Neighbor fairgrounds south port, native offset and return remain unbound until the grounds are authored and reviewed.",
+    "rail_connection":"Walk from St. Paul Union Depot through the city to the fair gate; Glacier Line is useful access, not a teleport inside the grounds.",
+    "admission":"No new mandatory main-story fee or rail-pass requirement. Optional shop purchases and game costs must be shown before spending.",
+    "progression":"Optional regional destination. No badge, Q03 courier victory, Q06 depot flag, Safari permit or champion requirement is granted merely by entering."
+  },
+  "districts":[
+    {"id":"ENTRY_COMMON","purpose":"Recognizable gate, readable grounds map, information volunteer, fountain or planted meeting point and clear exits to both sides of the fair loop."},
+    {"id":"MIDWAY","purpose":"Distinct ride silhouettes, fenced queues, two native-script activities and a prize booth. All passable platforms must lead somewhere useful; moving ride presentation requires explicit Rust support and is not assumed to exist."},
+    {"id":"LIVESTOCK_4H","purpose":"At least one fully enterable barn, a small show ring, regional creature/handler pairs and a 4-H learning activity. Pens have solid native fences, real gates and connected public viewing paths."},
+    {"id":"DAIRY_BUILDING","purpose":"Enterable cold exhibit and butter-sculpture display tied to the existing Chislet/Buttermuse family. Dialogue or a demonstrator activity gives the exhibit a purpose; a building facade alone is insufficient."},
+    {"id":"FOOD_ROW","purpose":"Food-on-a-stick stalls, cookie stand and public picnic tables. Vendor menus use native inventory/money/shop behavior; do not scatter item balls as fake vendors. Doughlin/Crumband habitat follows the existing roster identities."},
+    {"id":"SHOW_RING_GREEN","purpose":"A visible trainer demonstration or optional small battle event, resting/seating space and a useful return connection to the entry. A grassy field must serve the ring or an encounter/activity rather than being avoidable filler."}
+  ],
+  "activity_contracts":[
+    {"id":"FAIR_STAMP_TRAIL","behavior":"Three distinct stations: barn volunteer, dairy demonstrator and midway host. Native flags record each interaction. Prize clerk awards once only after all three; a full bag must leave the reward claim recoverable.","status":"Planned; no reward or completion flags registered yet."},
+    {"id":"MIDWAY_QUIZ","behavior":"Original regional creature question with native menu choices and dialogue branches. Show any cost first, allow B cancellation, and prevent retry spam from duplicating a once-only reward.","status":"Planned; exact question, prize and cost require authored source."},
+    {"id":"SHOW_RING_BATTLE","behavior":"Optional legal trainer party with visible invitation, native battle outcome, selected move PP changes and repeat dialogue. A win cannot stand in for a regional gym badge.","status":"Planned; trainer party and levels not yet frozen."}
+  ],
+  "existing_creature_links":[
+    {"family":"MN_F090","members":["Doughlin","Crumband","Jarbaron"],"area":"FOOD_ROW","scope":"Use the existing cookie-family design and identities. No extra generic food creature or silent encounter mutation."},
+    {"family":"MN_F098","members":["Chislet","Buttermuse"],"area":"DAIRY_BUILDING","scope":"Use the existing butter-sculptor design. Native encounter/gift placement remains separately reviewable."}
+  ],
+  "map_acceptance":[
+    "Complete whole grounds render with every gate, district, pen, visible door and return loop; inspect actual160×144 approach and weakest routine segment.",
+    "Explicit native tile varieties distinguish midway, barns, dairy exhibit, food row and ring without prop scattering or wide vacant paving.",
+    "Connected roads and queues, ordinary return paths around any one-way ledges, physical fences/bollards and visible closure of reachable water boundaries.",
+    "Exact exterior DOOR quadrants, safe passive Floor arrivals and reciprocal room/gate exits; no decorative facade door promises.",
+    "Source collision and negative checks followed by native VisibleShellController entry/return, each activity, purchase/cancel, battle, reward-full-bag recovery and Save/Continue.",
+    "Retain every original render, rejected pass, source snapshot, conversion, crop, preview and native capture for reuse."
+  ]
+}

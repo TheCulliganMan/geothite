@@ -1,0 +1,27 @@
+Use case: stylized-concept. Asset type: production Game Boy Color creature battle sprite sheet.
+
+Create ORIGINAL Gen2-era monster pixel art. This is actual sprite artwork with coarse square-pixel clusters, not an illustration to be pixelated later. Pure white background. NO captions/text/grid lines/palette swatches/shadows. Crisp stepped black exterior silhouettes; spare connected interior black structural seams; flat color planes. No gradients, antialiasing, soft edges, glossy rendering, tiny noisy texture, single-pixel confetti or smooth vector curves. Respect authentic late-1990s Pokemon Crystal sprite economy, readable eyes and structural evolution; do not copy any existing Pokemon identity.
+
+Layout exactly 3 columns by 2 rows. Columns left-to-right: Driptip, Sinknook, Karstalker. Each column is ONE species. Upper row: full-body FRONT 3/4 facing LEFT at native56x56 language. Lower row: CLOSE REAR PORTRAIT facing UPPER RIGHT at native48x48 language. Back is a huge head/neck/near-shoulder view, lower body visibly cut at bottom, authentic Crystal battle framing. Enlarge each back head/shoulder strongly; do not draw a complete miniature full-body turnaround. Leave wide clean white gutters between cells, all artwork disjoint. Display artwork enlarged nearest-neighbor for source sheet; favor about5-7sourcepixels per nativepixel. Front stages show proportional growth; every back fills its cell as a close portrait.
+
+Theme: Driftless karst, sinking streams and concealed cave windows: a drip-built pebble learns to hide beneath limestone shelves, then unfolds the shelf into an ambush jaw.
+
+Design constraints: Large limestone layers and black jaw cavity, never tiny stalactite clutter. Face/teeth readable at56px. Back portrait is mostly shelf crown and near stone shoulder, not entire cave creature.
+
+Make evolution radical: squat drip pebble; low four-column shelf ambusher; enormous vertical opening shelf-jaw with three chunky column-teeth and hooked braces. Black mouth is an intentional cavity, not a hole through torso. The final should feel like a living layered limestone bluff rather than a crocodile. Rear portraits show thick shelf crown and large near shoulder.
+
+Species anatomy and each independent hardware palette (front and back MUST match). Each species uses EXACTLY FOUR inks: white, its own two chromatic colors and pure black. White is valid enclosed eye/body highlight ink; black also outlines white body parts. The sheet globally can exceed four colors because species use different palettes. Never share one palette across the whole evolution line. RGB555 packing is r|(g<<5)|(b<<10); RGB8 expansion is (v<<3)|(v>>2).
+
+MN_192 Driptip ROCK: A little dripstone body has a blunt cone crown, two pebble feet and a face beneath an overhanging lip. A single deep notch makes its head seem like a harmless wet rock. SILHOUETTE: Uneven low cone with a broad lip and two tiny planted feet.
+
+Exact Driptip palette: RGB5=[(31, 31, 31), (27, 25, 19), (12, 10, 12), (0, 0, 0)]; RGB555=[32767, 20283, 12620, 0]; RGB8=[[255, 255, 255], [222, 206, 156], [99, 82, 99], [0, 0, 0]]; HEX=['#FFFFFF', '#DECE9C', '#635263', '#000000'].
+
+MN_193 Sinknook ROCK/DARK: The crown spreads into a long limestone shelf over a folded dark face. Four short pillar legs support its body, and a hinged lower jaw can close flush with the shelf. SILHOUETTE: Very low overhang with four short columns; one dark eye peeks through a triangular notch.
+
+Exact Sinknook palette: RGB5=[(31, 31, 31), (25, 23, 16), (10, 8, 12), (0, 0, 0)]; RGB555=[32767, 17145, 12554, 0]; RGB8=[[255, 255, 255], [206, 189, 132], [82, 66, 99], [0, 0, 0]]; HEX=['#FFFFFF', '#CEBD84', '#524263', '#000000'].
+
+MN_194 Karstalker ROCK/DARK: A massive articulated shelf-head swings open above a deep jaw; three chunky stone teeth form cave columns. The front limbs become hooked braces and the back arches into a layered bluff. It waits with its head closed, then rises and opens like a cliff revealing a cave. SILHOUETTE: Wide layered overhang, huge vertical jaw opening and two hook braces; no ordinary reptile head or hollow torso portal.
+
+Exact Karstalker palette: RGB5=[(31, 31, 31), (28, 26, 20), (8, 7, 11), (0, 0, 0)]; RGB555=[32767, 21340, 11496, 0]; RGB8=[[255, 255, 255], [231, 214, 165], [66, 57, 90], [0, 0, 0]]; HEX=['#FFFFFF', '#E7D6A5', '#42395A', '#000000'].
+
+Final quality: original appealing themed monsters, clear eye whites, bold broad anatomical planes, readable limbs and deeply different evolutionary silhouettes. Black silhouette rims must be continuous wherever they border white paper; white highlights stay enclosed inside the rim. A few deliberate open colored contour accents may echo Gen2, but no fragmented dotted outlines. Keep open cropping of lower back at the bottom.

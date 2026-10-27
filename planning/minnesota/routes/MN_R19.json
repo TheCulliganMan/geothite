@@ -1,0 +1,1213 @@
+{
+  "id": "MN_R19",
+  "map_prefix": "MnR19",
+  "name": "Prairie Forest Link",
+  "required_flags": [
+    "BADGE_6"
+  ],
+  "quest": "SQ01",
+  "encounters": {
+    "grass_rates": {
+      "morning": 10,
+      "day": 10,
+      "night": 10
+    },
+    "grass": {
+      "morning": [
+        {
+          "species": "PINECO",
+          "level": 28
+        },
+        {
+          "species": "SKIPLOOM",
+          "level": 29
+        },
+        {
+          "species": "STANTLER",
+          "level": 30
+        },
+        {
+          "species": "WOOPER",
+          "level": 31
+        },
+        {
+          "species": "PIDGEOTTO",
+          "level": 32
+        },
+        {
+          "species": "GIRAFARIG",
+          "level": 33
+        },
+        {
+          "species": "HERACROSS",
+          "level": 34
+        }
+      ],
+      "day": [
+        {
+          "species": "PINECO",
+          "level": 28
+        },
+        {
+          "species": "SKIPLOOM",
+          "level": 29
+        },
+        {
+          "species": "STANTLER",
+          "level": 30
+        },
+        {
+          "species": "WOOPER",
+          "level": 31
+        },
+        {
+          "species": "PIDGEOTTO",
+          "level": 32
+        },
+        {
+          "species": "GIRAFARIG",
+          "level": 33
+        },
+        {
+          "species": "HERACROSS",
+          "level": 34
+        }
+      ],
+      "night": [
+        {
+          "species": "NOCTOWL",
+          "level": 28
+        },
+        {
+          "species": "ARIADOS",
+          "level": 29
+        },
+        {
+          "species": "STANTLER",
+          "level": 30
+        },
+        {
+          "species": "WOOPER",
+          "level": 31
+        },
+        {
+          "species": "PIDGEOTTO",
+          "level": 32
+        },
+        {
+          "species": "GIRAFARIG",
+          "level": 33
+        },
+        {
+          "species": "HERACROSS",
+          "level": 34
+        }
+      ]
+    },
+    "water_rate": 4,
+    "water": [
+      {
+        "species": "POLIWAG",
+        "level": 28
+      },
+      {
+        "species": "WOOPER",
+        "level": 29
+      },
+      {
+        "species": "MARILL",
+        "level": 34
+      }
+    ]
+  },
+  "art_constraints": [
+    "Only original packed 8x8 source tiles.",
+    "No painted shadows, enlarged trees or perspective props.",
+    "Fit source shoreline/cliff quadrants; draw source trees in coherent metatile groups."
+  ],
+  "dimensions_metatiles": [
+    32,
+    30
+  ],
+  "chunk_metatiles": [
+    32,
+    24
+  ],
+  "chunk_columns": 1,
+  "chunk_rows": 2,
+  "tileset": "johto",
+  "source_references": [
+    "Route29",
+    "Route42",
+    "IlexForest"
+  ],
+  "description": "An east-to-south ecotone: dense headwaters pines give way to native round oak openings, a small wetland, a two-ramp western inspection spur and flower prairie. Short fenced trainer lane versus a measured grass alternative, then a shared prairie habitat seam. All three observation signs remain walking-access; the existing Detroit Lakes ranger owns SQ01 reward.",
+  "endpoints": [
+    {
+      "place": "LAKE ITASCA",
+      "side": "E",
+      "gate_metatile": [
+        30,
+        6
+      ],
+      "landing_metatile": [
+        28,
+        6
+      ]
+    },
+    {
+      "place": "DETROIT LAKES",
+      "side": "S",
+      "gate_metatile": [
+        12,
+        28
+      ],
+      "landing_metatile": [
+        12,
+        26
+      ]
+    }
+  ],
+  "main_path_metatiles": [
+    [
+      30,
+      6
+    ],
+    [
+      24,
+      6
+    ],
+    [
+      24,
+      11
+    ],
+    [
+      17,
+      11
+    ],
+    [
+      17,
+      18
+    ],
+    [
+      12,
+      18
+    ],
+    [
+      12,
+      28
+    ]
+  ],
+  "main_lane_width_gameplay_tiles": 2,
+  "districts": [
+    {
+      "id": "PINE_ARRIVAL",
+      "name": "Itasca pine edge",
+      "bounds_metatiles": [
+        23,
+        3,
+        32,
+        12
+      ],
+      "landmark_metatile": [
+        27,
+        7
+      ],
+      "purpose": "Dense woodland arrival, pine observation, item turnout"
+    },
+    {
+      "id": "OAK_WETLAND",
+      "name": "Oak opening and spring wetland",
+      "bounds_metatiles": [
+        11,
+        9,
+        29,
+        22
+      ],
+      "landmark_metatile": [
+        20,
+        17
+      ],
+      "purpose": "Native round oaks, real battle-versus-grass decision, wetland bank and observation"
+    },
+    {
+      "id": "WESTERN_SPUR",
+      "name": "Two-ramp western spur",
+      "bounds_metatiles": [
+        3,
+        12,
+        12,
+        23
+      ],
+      "landmark_metatile": [
+        5,
+        14
+      ],
+      "purpose": "Two-way native ramps connect a nonempty inspection/cache loop"
+    },
+    {
+      "id": "FLOWER_PRAIRIE",
+      "name": "Prairie and Detroit approach",
+      "bounds_metatiles": [
+        4,
+        18,
+        19,
+        30
+      ],
+      "landmark_metatile": [
+        11,
+        22
+      ],
+      "purpose": "Flower meadow, prairie observation and unavoidable southern habitat"
+    }
+  ],
+  "loops": [],
+  "minimum_optional_branches": 5,
+  "doors": [],
+  "interiors": [],
+  "shortcut": null,
+  "cut_gates": [],
+  "one_way_ledges": [],
+  "required_grass_crossings": [
+    {
+      "id": "PRAIRIE_HABITAT_SEAM",
+      "bounds_core": [
+        22,
+        48,
+        28,
+        52
+      ],
+      "minimum_grass_steps": 4
+    }
+  ],
+  "battle_or_grass_choices": [
+    {
+      "id": "OAK_FRINGE_CHOICE",
+      "trainer_id": "MN_R19_T01",
+      "bounds_core": [
+        40,
+        26,
+        48,
+        30
+      ],
+      "approach_core": [
+        49,
+        23
+      ],
+      "exit_core": [
+        39,
+        23
+      ],
+      "minimum_grass_steps": 8
+    }
+  ],
+  "ramp_loop": {
+    "id": "WESTERN_TWO_RAMP_LOOP",
+    "ramps_metatiles": [
+      [
+        5,
+        18
+      ],
+      [
+        9,
+        18
+      ]
+    ],
+    "clear_upper_core": [
+      [
+        11,
+        35
+      ],
+      [
+        19,
+        35
+      ]
+    ],
+    "purpose": "Ordinary bidirectional walking only, never a cliff jump",
+    "walking_lower_core": [
+      [
+        11,
+        38
+      ],
+      [
+        19,
+        38
+      ]
+    ]
+  },
+  "trainers": [
+    {
+      "id": "MN_R19_T01",
+      "display_name": "MERRIT",
+      "trainer_class": "PICNICKER",
+      "sprite": "SPRITE_LASS",
+      "tile": [
+        43,
+        21
+      ],
+      "facing": "south",
+      "sight_range": 3,
+      "party": [
+        {
+          "species": "PINECO",
+          "level": 28
+        },
+        {
+          "species": "SKIPLOOM",
+          "level": 28
+        },
+        {
+          "species": "WOOPER",
+          "level": 27
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R19_TRAINER_01",
+      "before_lines": [
+        "Oak shade makes",
+        "a good rest stop."
+      ],
+      "after_lines": [
+        "The grassy fringe",
+        "is a way round."
+      ],
+      "loss_lines": [
+        "Good observations!"
+      ]
+    },
+    {
+      "id": "MN_R19_T02",
+      "display_name": "AVEN",
+      "trainer_class": "BIRD_KEEPER",
+      "sprite": "SPRITE_YOUNGSTER",
+      "tile": [
+        57,
+        13
+      ],
+      "facing": "west",
+      "sight_range": 1,
+      "party": [
+        {
+          "species": "SKIPLOOM",
+          "level": 28
+        },
+        {
+          "species": "STANTLER",
+          "level": 28
+        },
+        {
+          "species": "PIDGEOTTO",
+          "level": 27
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R19_TRAINER_02",
+      "before_lines": [
+        "The pines shelter",
+        "a different flock."
+      ],
+      "after_lines": [
+        "Listen as the",
+        "woodland changes."
+      ],
+      "loss_lines": [
+        "Good observations!"
+      ]
+    },
+    {
+      "id": "MN_R19_T03",
+      "display_name": "ELIN",
+      "trainer_class": "POKEFANF",
+      "sprite": "SPRITE_POKEFAN_F",
+      "tile": [
+        33,
+        29
+      ],
+      "facing": "north",
+      "sight_range": 1,
+      "party": [
+        {
+          "species": "STANTLER",
+          "level": 29
+        },
+        {
+          "species": "WOOPER",
+          "level": 29
+        },
+        {
+          "species": "GIRAFARIG",
+          "level": 28
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R19_TRAINER_03",
+      "before_lines": [
+        "These oak openings",
+        "are full of life."
+      ],
+      "after_lines": [
+        "A small clearing",
+        "can hold a lot."
+      ],
+      "loss_lines": [
+        "Good observations!"
+      ]
+    },
+    {
+      "id": "MN_R19_T04",
+      "display_name": "DANE",
+      "trainer_class": "HIKER",
+      "sprite": "SPRITE_POKEFAN_M",
+      "tile": [
+        19,
+        31
+      ],
+      "facing": "east",
+      "sight_range": 1,
+      "party": [
+        {
+          "species": "WOOPER",
+          "level": 29
+        },
+        {
+          "species": "PIDGEOTTO",
+          "level": 29
+        },
+        {
+          "species": "HERACROSS",
+          "level": 28
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R19_TRAINER_04",
+      "before_lines": [
+        "Both ramps lead",
+        "back to the field."
+      ],
+      "after_lines": [
+        "Keep to the steps",
+        "on the way down."
+      ],
+      "loss_lines": [
+        "Good observations!"
+      ]
+    },
+    {
+      "id": "MN_R19_T05",
+      "display_name": "TESS",
+      "trainer_class": "PICNICKER",
+      "sprite": "SPRITE_LASS",
+      "tile": [
+        11,
+        41
+      ],
+      "facing": "east",
+      "sight_range": 1,
+      "party": [
+        {
+          "species": "PIDGEOTTO",
+          "level": 30
+        },
+        {
+          "species": "GIRAFARIG",
+          "level": 30
+        },
+        {
+          "species": "PINECO",
+          "level": 29
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R19_TRAINER_05",
+      "before_lines": [
+        "Flowers bring out",
+        "all sorts of teams"
+      ],
+      "after_lines": [
+        "The meadow feels",
+        "different at dusk"
+      ],
+      "loss_lines": [
+        "Good observations!"
+      ]
+    },
+    {
+      "id": "MN_R19_T06",
+      "display_name": "LORNE",
+      "trainer_class": "FISHER",
+      "sprite": "SPRITE_FISHER",
+      "tile": [
+        39,
+        37
+      ],
+      "facing": "east",
+      "sight_range": 1,
+      "party": [
+        {
+          "species": "PINECO",
+          "level": 30
+        },
+        {
+          "species": "HERACROSS",
+          "level": 30
+        },
+        {
+          "species": "SKIPLOOM",
+          "level": 29
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R19_TRAINER_06",
+      "before_lines": [
+        "This spring pond",
+        "is quiet today."
+      ],
+      "after_lines": [
+        "There is plenty",
+        "worth observing."
+      ],
+      "loss_lines": [
+        "Good observations!"
+      ]
+    }
+  ],
+  "residents": [
+    {
+      "id": "MN_R19_OAK_READER",
+      "sprite": "SPRITE_SUPER_NERD",
+      "tile": [
+        27,
+        29
+      ],
+      "facing": "east",
+      "lines": [
+        "Pines give way to",
+        "oak openings here.",
+        "Read the three",
+        "observation signs."
+      ]
+    },
+    {
+      "id": "MN_R19_PRAIRIE_WALKER",
+      "sprite": "SPRITE_GRAMPS",
+      "tile": [
+        27,
+        39
+      ],
+      "facing": "west",
+      "lines": [
+        "The prairie meets",
+        "the lake country.",
+        "DETROIT LAKES is",
+        "south of the grass"
+      ]
+    }
+  ],
+  "items": [
+    {
+      "id": "MN_R19_ITEM_01",
+      "item": "HYPER_POTION",
+      "quantity": 1,
+      "flag": "EVENT_MN_R19_ITEM_01",
+      "tile": [
+        11,
+        29
+      ]
+    },
+    {
+      "id": "MN_R19_ITEM_02",
+      "item": "ULTRA_BALL",
+      "quantity": 1,
+      "flag": "EVENT_MN_R19_ITEM_02",
+      "tile": [
+        53,
+        13
+      ]
+    },
+    {
+      "id": "MN_R19_ITEM_03",
+      "item": "MAX_REPEL",
+      "quantity": 1,
+      "flag": "EVENT_MN_R19_ITEM_03",
+      "tile": [
+        29,
+        29
+      ]
+    },
+    {
+      "id": "MN_R19_ITEM_04",
+      "item": "REVIVE",
+      "quantity": 1,
+      "flag": "EVENT_MN_R19_ITEM_04",
+      "tile": [
+        33,
+        41
+      ]
+    }
+  ],
+  "signs": [
+    {
+      "id": "MN_R19_EAST_SIGN",
+      "tile": [
+        36,
+        20
+      ],
+      "lines": [
+        "LAKE ITASCA EAST",
+        "Fenced road west.",
+        "Grass path south.",
+        "DETROIT LAKES",
+        "South at prairie."
+      ]
+    },
+    {
+      "id": "MN_R19_OBSERVE_PINE",
+      "tile": [
+        54,
+        14
+      ],
+      "lines": [
+        "PINE EDGE",
+        "Dense needles keep",
+        "the ground shaded."
+      ]
+    },
+    {
+      "id": "MN_R19_OBSERVE_WETLAND",
+      "tile": [
+        40,
+        34
+      ],
+      "lines": [
+        "SPRING WETLAND",
+        "Clear spring water",
+        "joins the low pond"
+      ]
+    },
+    {
+      "id": "MN_R19_OBSERVE_PRAIRIE",
+      "tile": [
+        22,
+        44
+      ],
+      "lines": [
+        "FLOWER PRAIRIE",
+        "Open light favors",
+        "grass and flowers."
+      ]
+    },
+    {
+      "id": "MN_R19_RAMP_SIGN",
+      "tile": [
+        14,
+        36
+      ],
+      "lines": [
+        "WESTERN SPUR",
+        "Two ramps return",
+        "to the same meadow"
+      ]
+    },
+    {
+      "id": "MN_R19_SOUTH_SIGN",
+      "tile": [
+        26,
+        52
+      ],
+      "lines": [
+        "DETROIT LAKES",
+        "South through the",
+        "prairie habitat."
+      ]
+    }
+  ],
+  "viewpoints": [
+    {
+      "id": "ITASCA_PINE_ARRIVAL",
+      "tile": [
+        57,
+        12
+      ]
+    },
+    {
+      "id": "FENCED_BATTLE_LANE",
+      "tile": [
+        45,
+        23
+      ]
+    },
+    {
+      "id": "GRASS_ALTERNATIVE",
+      "tile": [
+        49,
+        27
+      ]
+    },
+    {
+      "id": "OAK_OPENING",
+      "tile": [
+        33,
+        27
+      ]
+    },
+    {
+      "id": "WESTERN_RAMP",
+      "tile": [
+        11,
+        38
+      ]
+    },
+    {
+      "id": "UPPER_TWO_WAY_SPUR",
+      "tile": [
+        11,
+        30
+      ]
+    },
+    {
+      "id": "WETLAND_OBSERVATION",
+      "tile": [
+        41,
+        34
+      ]
+    },
+    {
+      "id": "PRAIRIE_OBSERVATION",
+      "tile": [
+        23,
+        45
+      ]
+    },
+    {
+      "id": "PRAIRIE_HABITAT",
+      "tile": [
+        25,
+        47
+      ]
+    },
+    {
+      "id": "DETROIT_APPROACH",
+      "tile": [
+        25,
+        55
+      ]
+    },
+    {
+      "id": "WIDEST_ROUTINE_BEND",
+      "tile": [
+        35,
+        33
+      ]
+    }
+  ],
+  "surf_viewpoints": [
+    {
+      "id": "SPRING_POND",
+      "tile": [
+        49,
+        35
+      ]
+    }
+  ],
+  "quest_contract": {
+    "id": "SQ01",
+    "completion_flag": "EVENT_MN_LAKE_OBSERVATIONS_REWARDED",
+    "reward_item": "MAX_REPEL",
+    "quantity": 1,
+    "reward_map": "MnDetroitLakes",
+    "reward_actor": "Planned Detroit Lakes ranger role from SQ01; no native placed actor exists in the current town dossier.",
+    "observations": [
+      {
+        "sign_id": "MN_R19_OBSERVE_PINE",
+        "flag": "EVENT_MN_LAKE_OBSERVATION_01"
+      },
+      {
+        "sign_id": "MN_R19_OBSERVE_WETLAND",
+        "flag": "EVENT_MN_LAKE_OBSERVATION_02"
+      },
+      {
+        "sign_id": "MN_R19_OBSERVE_PRAIRIE",
+        "flag": "EVENT_MN_LAKE_OBSERVATION_03"
+      }
+    ],
+    "rules": [
+      "All three observation signs use walking access with no Surf/Cut.",
+      "Each read sets its own report event only after text acknowledgment.",
+      "Detroit Lakes ranger grants exactly one MAX_REPEL after BADGE_6 and all three events.",
+      "Successful delivery alone sets completion. Full bag retains retry; repeat talks cannot duplicate.",
+      "No observation or reward is required for Q05 or town through-travel."
+    ],
+    "native_support": "Existing native background sign/text/checkevent/setevent/giveitem commands; generic sign authoring currently emits text only, so typed quest hook/event allocation and actual Detroit ranger integration remain pending",
+    "reward_actor_id": "MN_DETROIT_LAKE_OBSERVATION_RANGER",
+    "reward_anchor_status": "MnDetroitLakes has no authored layout/resident anchor yet. Root must place the ranger on collision-checked town FLOOR and bind the source label; no exact physical NPC claim.",
+    "script_labels": {
+      "MN_R19_OBSERVE_PINE": [
+        {
+          "command": "opentext",
+          "args": []
+        },
+        {
+          "command": "writetext",
+          "args": [
+            "MN_R19_OBSERVE_PINEText"
+          ]
+        },
+        {
+          "command": "waitbutton",
+          "args": []
+        },
+        {
+          "command": "closetext",
+          "args": []
+        },
+        {
+          "command": "setevent",
+          "args": [
+            "EVENT_MN_LAKE_OBSERVATION_01"
+          ]
+        },
+        {
+          "command": "end",
+          "args": []
+        }
+      ],
+      "MN_R19_OBSERVE_WETLAND": [
+        {
+          "command": "opentext",
+          "args": []
+        },
+        {
+          "command": "writetext",
+          "args": [
+            "MN_R19_OBSERVE_WETLANDText"
+          ]
+        },
+        {
+          "command": "waitbutton",
+          "args": []
+        },
+        {
+          "command": "closetext",
+          "args": []
+        },
+        {
+          "command": "setevent",
+          "args": [
+            "EVENT_MN_LAKE_OBSERVATION_02"
+          ]
+        },
+        {
+          "command": "end",
+          "args": []
+        }
+      ],
+      "MN_R19_OBSERVE_PRAIRIE": [
+        {
+          "command": "opentext",
+          "args": []
+        },
+        {
+          "command": "writetext",
+          "args": [
+            "MN_R19_OBSERVE_PRAIRIEText"
+          ]
+        },
+        {
+          "command": "waitbutton",
+          "args": []
+        },
+        {
+          "command": "closetext",
+          "args": []
+        },
+        {
+          "command": "setevent",
+          "args": [
+            "EVENT_MN_LAKE_OBSERVATION_03"
+          ]
+        },
+        {
+          "command": "end",
+          "args": []
+        }
+      ],
+      "MN_DETROIT_LAKE_OBSERVATION_RANGER": [
+        {
+          "command": "faceplayer",
+          "args": []
+        },
+        {
+          "command": "checkflag",
+          "args": [
+            "ENGINE_MINERALBADGE"
+          ]
+        },
+        {
+          "command": "iffalse",
+          "args": [
+            "MN_LakeObsNeedsBadge"
+          ]
+        },
+        {
+          "command": "checkevent",
+          "args": [
+            "EVENT_MN_LAKE_OBSERVATIONS_REWARDED"
+          ]
+        },
+        {
+          "command": "iftrue",
+          "args": [
+            "MN_LakeObsDone"
+          ]
+        },
+        {
+          "command": "checkevent",
+          "args": [
+            "EVENT_MN_LAKE_OBSERVATION_01"
+          ]
+        },
+        {
+          "command": "iffalse",
+          "args": [
+            "MN_LakeObsNeedsNotes"
+          ]
+        },
+        {
+          "command": "checkevent",
+          "args": [
+            "EVENT_MN_LAKE_OBSERVATION_02"
+          ]
+        },
+        {
+          "command": "iffalse",
+          "args": [
+            "MN_LakeObsNeedsNotes"
+          ]
+        },
+        {
+          "command": "checkevent",
+          "args": [
+            "EVENT_MN_LAKE_OBSERVATION_03"
+          ]
+        },
+        {
+          "command": "iffalse",
+          "args": [
+            "MN_LakeObsNeedsNotes"
+          ]
+        },
+        {
+          "command": "opentext",
+          "args": []
+        },
+        {
+          "command": "writetext",
+          "args": [
+            "MN_LakeObsRewardIntroText"
+          ]
+        },
+        {
+          "command": "promptbutton",
+          "args": []
+        },
+        {
+          "command": "giveitem",
+          "args": [
+            "MAX_REPEL",
+            "1"
+          ]
+        },
+        {
+          "command": "iffalse",
+          "args": [
+            "MN_LakeObsBagFull"
+          ]
+        },
+        {
+          "command": "setevent",
+          "args": [
+            "EVENT_MN_LAKE_OBSERVATIONS_REWARDED"
+          ]
+        },
+        {
+          "command": "writetext",
+          "args": [
+            "MN_LakeObsRewardGivenText"
+          ]
+        },
+        {
+          "command": "waitbutton",
+          "args": []
+        },
+        {
+          "command": "closetext",
+          "args": []
+        },
+        {
+          "command": "end",
+          "args": []
+        }
+      ],
+      "MN_LakeObsNeedsBadge": [
+        {
+          "command": "opentext",
+          "args": []
+        },
+        {
+          "command": "writetext",
+          "args": [
+            "MN_LakeObsNeedsBadgeText"
+          ]
+        },
+        {
+          "command": "waitbutton",
+          "args": []
+        },
+        {
+          "command": "closetext",
+          "args": []
+        },
+        {
+          "command": "end",
+          "args": []
+        }
+      ],
+      "MN_LakeObsDone": [
+        {
+          "command": "opentext",
+          "args": []
+        },
+        {
+          "command": "writetext",
+          "args": [
+            "MN_LakeObsDoneText"
+          ]
+        },
+        {
+          "command": "waitbutton",
+          "args": []
+        },
+        {
+          "command": "closetext",
+          "args": []
+        },
+        {
+          "command": "end",
+          "args": []
+        }
+      ],
+      "MN_LakeObsNeedsNotes": [
+        {
+          "command": "opentext",
+          "args": []
+        },
+        {
+          "command": "writetext",
+          "args": [
+            "MN_LakeObsNeedsNotesText"
+          ]
+        },
+        {
+          "command": "waitbutton",
+          "args": []
+        },
+        {
+          "command": "closetext",
+          "args": []
+        },
+        {
+          "command": "end",
+          "args": []
+        }
+      ],
+      "MN_LakeObsBagFull": [
+        {
+          "command": "writetext",
+          "args": [
+            "MN_LakeObsBagFullText"
+          ]
+        },
+        {
+          "command": "waitbutton",
+          "args": []
+        },
+        {
+          "command": "closetext",
+          "args": []
+        },
+        {
+          "command": "end",
+          "args": []
+        }
+      ]
+    },
+    "text_labels": {
+      "MN_LakeObsNeedsBadgeText": [
+        "Bring your sixth",
+        "gym badge before",
+        "filing the report."
+      ],
+      "MN_LakeObsDoneText": [
+        "Your observations",
+        "are on the record.",
+        "Thank you again."
+      ],
+      "MN_LakeObsNeedsNotesText": [
+        "Read all three",
+        "observation signs.",
+        "Pines, pond, grass"
+      ],
+      "MN_LakeObsRewardIntroText": [
+        "Three observations",
+        "help us see change",
+        "across the region."
+      ],
+      "MN_LakeObsRewardGivenText": [
+        "A MAX REPEL for",
+        "your next walk.",
+        "Keep observing!"
+      ],
+      "MN_LakeObsBagFullText": [
+        "Make room for the",
+        "MAX REPEL and then",
+        "come see me again."
+      ]
+    }
+  },
+  "unused_reservations": {
+    "trainers": [
+      "MN_R19_T07",
+      "MN_R19_T08",
+      "MN_R19_T09",
+      "MN_R19_T10"
+    ],
+    "trainer_flags": [
+      "EVENT_MN_R19_TRAINER_07",
+      "EVENT_MN_R19_TRAINER_08",
+      "EVENT_MN_R19_TRAINER_09",
+      "EVENT_MN_R19_TRAINER_10"
+    ],
+    "shortcut": "MN_R19_SHORTCUT unused; no free-standing Cut tree",
+    "chunks": "Ten old empty chunks retired; no interior reserved"
+  },
+  "status": "Hand-authored source candidate visually inspected; independent battle/grass, two-ramp, habitat, observation, water checks and 12 negative fixtures pass. Native SQ01/Headbutt binding, publication/controller play pending.",
+  "anchor_status": "Exact native core coordinates replace district reservations; source rendering does not prove input.",
+  "optional_grass_rewards": [
+    {
+      "actor_id": "MN_R19_ITEM_04",
+      "bounds_core": [
+        30,
+        38,
+        36,
+        44
+      ],
+      "minimum_grass_steps": 2
+    }
+  ],
+  "headbutt_contract": {
+    "map_ids": [
+      "MnR19C00R00"
+    ],
+    "source_table_map": "Route29",
+    "source_table_kind": "headbutt",
+    "level_override": 28,
+    "preserve_native_weights_rare_tables_and_time_sleep_rules": true,
+    "party_move": "HEADBUTT",
+    "native_support": "Use existing typed field_encounters per-map table and native Headbutt field-move resolver. The generic authored route builder currently does not assign this table. Without binding it, source oak collision/art alone does not promise encounters.",
+    "status": "Actionable optional native binding pending root integration; original Route29 data stays unchanged"
+  }
+}

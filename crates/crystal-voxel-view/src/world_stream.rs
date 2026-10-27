@@ -7,7 +7,6 @@ use crystal_render_api::{VisualActorId, VisualWorldFrame};
 use crate::{TerrainRevisionCache, VoxelViewSettings, footing, loading_trace, sky};
 
 const WINDOW_STRIDE: f32 = 16.0;
-const LOOKAHEAD: f32 = WINDOW_STRIDE * 2.0;
 
 #[cfg(test)]
 #[path = "world_stream_fixture.rs"]
@@ -18,14 +17,14 @@ pub(crate) mod test_frames;
 pub struct WorldStreamTarget {
     /// Coordinate basis for `tile`; this does not select a gameplay map.
     pub map_id: Arc<str>,
-    /// Lookahead center in gameplay cells, including connected-map acreage.
+    /// Resident window center in gameplay cells, including connected-map acreage.
     pub tile: IVec2,
 }
 
 /// Progressive world-rendering demand and completed window promotions.
 #[derive(Resource, Default)]
 pub struct WorldStreamStatus {
-    /// Read-only lookahead requested ahead of the player's facing direction.
+    /// Read-only coverage requested around the player in every direction.
     pub target: Option<WorldStreamTarget>,
     /// Completed coverage windows adopted without a gameplay loading phase.
     pub promotions: u64,
@@ -78,20 +77,13 @@ impl WorldStreamStatus {
             + frame.grid_size.as_vec2() * 0.5
             + (footing::actor_ground_point(frame, player) - frame.center) / frame.tile_size
                 * Vec2::new(1.0, -1.0);
-        let facing = player.facing.unwrap_or(Vec2::X) * Vec2::new(1.0, -1.0);
-        if !source.is_finite() || !facing.is_finite() {
+        if !source.is_finite() {
             self.target = None;
             return;
         }
-        let direction = if facing.x.abs() >= facing.y.abs() {
-            Vec2::new(facing.x.signum(), 0.0)
-        } else {
-            Vec2::new(0.0, facing.y.signum())
-        };
         let global = source + self.origin.as_vec2();
-        let center = (global / WINDOW_STRIDE).floor() * WINDOW_STRIDE
-            + Vec2::splat(WINDOW_STRIDE * 0.5)
-            + direction * LOOKAHEAD;
+        let center =
+            (global / WINDOW_STRIDE).floor() * WINDOW_STRIDE + Vec2::splat(WINDOW_STRIDE * 0.5);
         self.target = Some(WorldStreamTarget {
             map_id: Arc::clone(&frame.map_id),
             tile: ((center - self.origin.as_vec2()) * 0.5).round().as_ivec2(),
@@ -136,8 +128,7 @@ pub(super) fn needs_refresh(built: &VisualWorldFrame, live: &VisualWorldFrame) -
         return true;
     };
     let delta = live.grid_origin - built.grid_origin - shift;
-    let visible = (live.viewport_size / live.tile_size).ceil().as_ivec2();
-    let allowance = ((live.grid_size.as_ivec2() - visible) / 4).max(IVec2::ZERO);
+    let allowance = crate::terrain_tracking::retention_allowance(live);
     // Promote inside the retained overlap, leaving room for pitched scenery
     // and worker variation before the old window's coverage is exhausted.
     delta.abs().cmpge((allowance / 2).max(IVec2::ONE)).any()
@@ -227,14 +218,46 @@ mod tests {
     }
 
     #[test]
-    fn lookahead_exists_inside_a_map_without_an_approaching_edge() {
+    fn coverage_stays_centered_when_the_trainer_turns() {
         let frame = outdoor();
         let mut stream = WorldStreamStatus::default();
         stream.update(&frame);
-        let target = stream
-            .target
-            .expect("outdoor player requests continuous lookahead");
-        assert!(target.tile.x as f32 > frame.grid_size.x as f32 * 0.25);
+        let target = stream.target.clone().expect("outdoor coverage");
+        let source = frame.grid_size.as_vec2() * 0.5;
+        assert!(
+            (target.tile.as_vec2() * 2.0 - source)
+                .abs()
+                .cmple(Vec2::splat(WINDOW_STRIDE * 0.5))
+                .all()
+        );
+        for facing in [Vec2::X, Vec2::Y, -Vec2::X, -Vec2::Y] {
+            let mut turned = frame.clone();
+            turned.actors[0].facing = Some(facing);
+            stream.update(&turned);
+            assert_eq!(stream.target.as_ref(), Some(&target));
+        }
+    }
+
+    #[test]
+    fn expanded_coverage_starts_replacement_before_its_outer_buffer_is_used() {
+        let mut resident = outdoor();
+        resident.viewport_size = Vec2::new(160., 144.);
+        resident.grid_size = UVec2::new(216, 212);
+        let allowance = crate::terrain_tracking::retention_allowance(&resident);
+        assert_eq!(allowance, IVec2::splat(16));
+        for direction in [IVec2::X, IVec2::Y, -IVec2::X, -IVec2::Y] {
+            let mut live = resident.clone();
+            live.grid_origin += direction * 7;
+            assert!(!needs_refresh(&resident, &live));
+            live.grid_origin += direction;
+            assert!(needs_refresh(&resident, &live));
+        }
+        let halo = (resident.grid_size.as_ivec2() - IVec2::new(20, 18)) / 2;
+        assert!(
+            (halo - allowance - IVec2::splat(16))
+                .cmpge(IVec2::splat(64))
+                .all()
+        );
     }
 
     #[test]

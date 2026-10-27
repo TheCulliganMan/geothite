@@ -1,0 +1,239 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F107",
+  "status": "native-front-back-reviewed",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_235": {
+      "species_id": "MN_235",
+      "name": "Nodcloak",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          27,
+          16,
+          21
+        ],
+        [
+          8,
+          14,
+          10
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        22043,
+        10696,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          222,
+          132,
+          173
+        ],
+        [
+          66,
+          115,
+          82
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#DE84AD",
+        "#427352",
+        "#000000"
+      ]
+    },
+    "MN_236": {
+      "species_id": "MN_236",
+      "name": "Plumourn",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          29,
+          23,
+          26
+        ],
+        [
+          12,
+          7,
+          17
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        27389,
+        17644,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          239,
+          189,
+          214
+        ],
+        [
+          99,
+          57,
+          140
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#EFBDD6",
+        "#63398C",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f107/prompt-v1.txt",
+  "reference_mapping": "sprites/mn-f107/reference-mapping-v1.json",
+  "back_framing": "gen2-close-rear-portrait",
+  "sprites": [
+    {
+      "id": "mn-235-nodcloak-v1",
+      "species_id": "MN_235",
+      "view": "front",
+      "source": "sprites/mn-f107/mn-235-236.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        645,
+        600
+      ],
+      "fit": [
+        40,
+        40
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        22043,
+        10696,
+        0
+      ],
+      "white_detail_min_samples": 8
+    },
+    {
+      "id": "mn-235-nodcloak-v1",
+      "species_id": "MN_235",
+      "view": "back",
+      "source": "sprites/mn-f107/mn-235-236.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        600,
+        645,
+        582
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        22043,
+        10696,
+        0
+      ],
+      "white_detail_min_samples": 8
+    },
+    {
+      "id": "mn-236-plumourn-v1",
+      "species_id": "MN_236",
+      "view": "front",
+      "source": "sprites/mn-f107/mn-235-236.front-back.imagegen-v1.png",
+      "crop": [
+        645,
+        0,
+        685,
+        600
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        27389,
+        17644,
+        0
+      ],
+      "white_detail_min_samples": 8
+    },
+    {
+      "id": "mn-236-plumourn-v1",
+      "species_id": "MN_236",
+      "view": "back",
+      "source": "sprites/mn-f107/mn-235-236.front-back.imagegen-v1.png",
+      "crop": [
+        645,
+        600,
+        685,
+        582
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        27389,
+        17644,
+        0
+      ],
+      "white_detail_min_samples": 8
+    }
+  ],
+  "source_sha256": "baf5a16c8c60fb9997d0ac7ce9e6332bb2132f95f5d22ec087e225c973b6ac9d",
+  "candidate_review": {
+    "status": "native-review-pending",
+    "outline_profile": "source-contour-v1",
+    "sheet_sha256": "c802940a49c6eda935f1efffee9feb822341512eb8ab1bb0b3b41edc00b9d166",
+    "notes": "Actual native inspected: three nodding buds and root fingers change to three broad lofting seed fans plus plume hands. Distinct rooted40 and airborne54 silhouettes, per-stage pink/green versus pale-pink/purple palette, white eye window on dark face and enlarged rear fan/bud portraits. Some thin seed trailing wisps reduce into small stepped clusters; the three principal fans remain distinct. Root final review pending."
+  },
+  "visual_review": {
+    "status": "reviewed",
+    "reviewer": "root",
+    "notes": "Root inspected both pairs: nodding bud hoods/root fingers become a floating seed-fan body with broad plume hands and a dark eye window. Rooted and airborne silhouettes differ clearly; thin trailing seed wisps simplify into small source-backed clusters without losing main fans. Individual green/pink and lavender palettes and cropped close backs retain readable planes.",
+    "sheet_sha256": "c802940a49c6eda935f1efffee9feb822341512eb8ab1bb0b3b41edc00b9d166",
+    "outline_profile": "source-contour-v1"
+  }
+}

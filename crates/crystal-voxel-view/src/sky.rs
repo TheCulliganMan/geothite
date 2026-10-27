@@ -368,7 +368,7 @@ mod tests {
         let target_distance = pose.eye.distance(pose.target);
         assert!(matches!(app.world().get::<DistanceFog>(entity).unwrap().falloff,
             FogFalloff::Linear { start, end }
-            if start == target_distance + 64. && end == target_distance + 176.));
+            if start == target_distance + 192. && end == target_distance + 448.));
         app.world_mut().resource_mut::<VisualWorldClock>().minute_of_day = Some(0);
         app.update();
         let night = app.world().get::<DistanceFog>(entity).unwrap().color;
@@ -410,7 +410,7 @@ mod tests {
             let pose = app.world().resource::<VoxelViewSettings>().camera.pose(Vec2::new(160.,144.));
             let distance = pose.eye.distance(pose.target);
             assert!(matches!(fog.falloff, FogFalloff::Linear { start, end }
-                if start == distance + 128. && end == distance + 320.));
+                if start == distance + 256. && end == distance + 512.));
         }
     }
 

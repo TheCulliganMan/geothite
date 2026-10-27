@@ -1,0 +1,419 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F004",
+  "status": "native-front-back-reviewed",
+  "tool": "built-in image_gen",
+  "prompt_file": "sprites/mn-f004/native-refinement/prompt-birchit-v2.txt",
+  "sprites": [
+    {
+      "id": "mn-010-birchit-native-v2",
+      "species_id": "MN_010",
+      "view": "front",
+      "source": "sprites/mn-f004/native-refinement/birchit-front-back-v2.png",
+      "prompt_file": "sprites/mn-f004/native-refinement/prompt-birchit-v2.txt",
+      "crop": [
+        0,
+        0,
+        910,
+        887
+      ],
+      "fit": [
+        36,
+        36
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        13053,
+        4331,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-010-birchit-native-v2",
+      "species_id": "MN_010",
+      "view": "back",
+      "source": "sprites/mn-f004/native-refinement/birchit-front-back-v2.png",
+      "prompt_file": "sprites/mn-f004/native-refinement/prompt-birchit-v2.txt",
+      "crop": [
+        910,
+        0,
+        864,
+        887
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        13053,
+        4331,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-011-portabeau-v11",
+      "species_id": "MN_011",
+      "view": "front",
+      "source": "sprites/mn-f004/sash-v4/portabeau-native-v11.png",
+      "crop": [
+        0,
+        0,
+        900,
+        887
+      ],
+      "fit": [
+        48,
+        48
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        7639,
+        15686,
+        0
+      ],
+      "prompt_file": "sprites/mn-f004/sash-v4/prompt-portabeau-native-v11.txt",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32,
+      "exterior_contour": "source_backed",
+      "sampling": "source_center"
+    },
+    {
+      "id": "mn-011-portabeau-v11",
+      "species_id": "MN_011",
+      "view": "back",
+      "source": "sprites/mn-f004/sash-v4/portabeau-native-v11.png",
+      "crop": [
+        900,
+        0,
+        874,
+        887
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        7639,
+        15686,
+        0
+      ],
+      "prompt_file": "sprites/mn-f004/sash-v4/prompt-portabeau-native-v11.txt",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32,
+      "exterior_contour": "source_backed",
+      "sampling": "source_center"
+    },
+    {
+      "id": "mn-012-voyagear-ferocity-v3",
+      "species_id": "MN_012",
+      "view": "front",
+      "source": "sprites/mn-f004/native-refinement/voyagear-front-back-ferocity-v3.png",
+      "prompt_file": "sprites/mn-f004/native-refinement/prompt-voyagear-ferocity-v3.txt",
+      "crop": [
+        0,
+        0,
+        925,
+        887
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        5428,
+        17668,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-012-voyagear-native-v2",
+      "species_id": "MN_012",
+      "view": "back",
+      "source": "sprites/mn-f004/native-refinement/voyagear-front-back-v2.png",
+      "prompt_file": "sprites/mn-f004/native-refinement/prompt-voyagear-v2.txt",
+      "crop": [
+        925,
+        0,
+        849,
+        887
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        5428,
+        17668,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32
+    }
+  ],
+  "visual_review": {
+    "status": "pending",
+    "sheet_sha256": "5f564c779a4ddfc17851f560b390daadc4f8d40932aa5d2d3fd497038ba722fe",
+    "outline_profile": "source-contour-v1",
+    "notes": "Root reviewed all6 native views. Distinct eyes and paired buckteeth survive source-center sampling. Portabeau barehead and canoe pack, small low attached tail; Voyagear rust tuque, arrow sash, one straight paddle and small low tail. Individual palettes maintained; all prior sources/native candidates retained."
+  },
+  "pokemon_palettes": {
+    "MN_010": {
+      "species_id": "MN_010",
+      "name": "Birchit",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          29,
+          23,
+          12
+        ],
+        [
+          11,
+          7,
+          4
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        13053,
+        4331,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          239,
+          189,
+          99
+        ],
+        [
+          90,
+          57,
+          33
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#EFBD63",
+        "#5A3921",
+        "#000000"
+      ]
+    },
+    "MN_011": {
+      "species_id": "MN_011",
+      "name": "Portabeau",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          23,
+          14,
+          7
+        ],
+        [
+          6,
+          10,
+          15
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        7639,
+        15686,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          189,
+          115,
+          57
+        ],
+        [
+          49,
+          82,
+          123
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#BD7339",
+        "#31527B",
+        "#000000"
+      ]
+    },
+    "MN_012": {
+      "species_id": "MN_012",
+      "name": "Voyagear",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          20,
+          9,
+          5
+        ],
+        [
+          4,
+          8,
+          17
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        5428,
+        17668,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          165,
+          74,
+          41
+        ],
+        [
+          33,
+          66,
+          140
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#A54A29",
+        "#21428C",
+        "#000000"
+      ]
+    }
+  },
+  "back_framing": "fullbody-rear-for-current-family-consistency",
+  "conversion_revision": "Native-grid source-center conversion retains source pupils and teeth separators; exact source, palette, geometry and sampling verified by Rust loader. Older renders retained.",
+  "original_source_palette": {
+    "gbc_rgb5": [
+      [
+        31,
+        31,
+        31
+      ],
+      [
+        27,
+        21,
+        11
+      ],
+      [
+        4,
+        7,
+        12
+      ],
+      [
+        0,
+        0,
+        0
+      ]
+    ],
+    "gbc_rgb555_words": [
+      32767,
+      11963,
+      12516,
+      0
+    ],
+    "rgb8": [
+      [
+        255,
+        255,
+        255
+      ],
+      [
+        222,
+        173,
+        90
+      ],
+      [
+        33,
+        57,
+        99
+      ],
+      [
+        0,
+        0,
+        0
+      ]
+    ],
+    "hex": [
+      "#FFFFFF",
+      "#DEAD5A",
+      "#213963",
+      "#000000"
+    ]
+  }
+}

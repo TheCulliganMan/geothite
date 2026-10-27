@@ -72,7 +72,8 @@ developer location preview in 3D, preserving story scripts and gates:
 ./scripts/cold-start-3d.sh preview --map CherrygroveCity
 ```
 
-For a browser host:
+For a browser host, also install Node.js/npm for the pinned painted-TUI asset
+in `tools/tui-ascii`:
 
 ```sh
 ./scripts/cold-start-3d.sh setup-web

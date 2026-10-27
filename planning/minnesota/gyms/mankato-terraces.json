@@ -1,0 +1,332 @@
+{
+  "schema_version": 1,
+  "status": "Mankato terrace readability revision; source review pending.",
+  "gyms": [
+    {
+      "slot": 2,
+      "id": "MnMankatoGym",
+      "constant": "MN_MANKATO_GYM",
+      "city": "MANKATO",
+      "leader": "TORVEN",
+      "trainer_class": "HIKER",
+      "leader_sprite": "SPRITE_POKEFAN_M",
+      "leader_at": [
+        11,
+        3
+      ],
+      "badge_flag": "ENGINE_HIVEBADGE",
+      "requires": [
+        "BADGE_1"
+      ],
+      "reward": "TM_MUD_SLAP",
+      "party": [
+        {
+          "species": "WOOPER",
+          "level": 14,
+          "moves": [
+            "WATER_GUN",
+            "TAIL_WHIP",
+            "SLAM"
+          ]
+        },
+        {
+          "species": "SANDSHREW",
+          "level": 15,
+          "moves": [
+            "SCRATCH",
+            "DEFENSE_CURL",
+            "SAND_ATTACK"
+          ]
+        },
+        {
+          "species": "PHANPY",
+          "level": 16,
+          "moves": [
+            "TACKLE",
+            "GROWL",
+            "DEFENSE_CURL",
+            "MUD_SLAP"
+          ]
+        }
+      ],
+      "rows": [
+        "zzzzTTTE",
+        "zzzz...r",
+        "zzzz..tr",
+        "STTEphBE",
+        "l.php..r",
+        "l.p....r",
+        "ltp....r",
+        "SAphhhhE",
+        "lLwwwwRr",
+        "###s####"
+      ],
+      "art": {
+        "#": [
+          "champions_room",
+          "2a"
+        ],
+        ".": [
+          "cave",
+          "02"
+        ],
+        "S": [
+          "tower",
+          "33"
+        ],
+        "E": [
+          "tower",
+          "34"
+        ],
+        "T": [
+          "tower",
+          "32"
+        ],
+        "l": [
+          "tower",
+          "35"
+        ],
+        "r": [
+          "tower",
+          "36"
+        ],
+        "p": [
+          "champions_room",
+          "2a"
+        ],
+        "h": [
+          "cave",
+          "39"
+        ],
+        "t": [
+          "champions_room",
+          "21"
+        ],
+        "A": [
+          "tower",
+          "0b"
+        ],
+        "B": [
+          "tower",
+          "0b"
+        ],
+        "L": [
+          "tower",
+          "19"
+        ],
+        "R": [
+          "tower",
+          "1a"
+        ],
+        "s": [
+          "tower",
+          "26"
+        ],
+        "w": [
+          "tower",
+          "09"
+        ],
+        "z": [
+          "game_corner",
+          "00"
+        ]
+      },
+      "trainers": [
+        {
+          "id": "MN_GYM_2_TRAINER_1",
+          "name": "CALDREN",
+          "trainer_class": "CAMPER",
+          "sprite": "SPRITE_YOUNGSTER",
+          "at": [
+            4,
+            17
+          ],
+          "party": [
+            {
+              "species": "SANDSHREW",
+              "level": 12
+            }
+          ],
+          "optional": false,
+          "before_lines": [
+            "Mind your footing.",
+            "These banks go",
+            "one way!"
+          ],
+          "after_lines": [
+            "The wooden gate",
+            "is open. Take the",
+            "left stair. Hop",
+            "off the low edge."
+          ]
+        },
+        {
+          "id": "MN_GYM_2_TRAINER_2",
+          "name": "JOREL",
+          "trainer_class": "PICNICKER",
+          "sprite": "SPRITE_LASS",
+          "at": [
+            11,
+            11
+          ],
+          "party": [
+            {
+              "species": "WOOPER",
+              "level": 13
+            }
+          ],
+          "optional": false,
+          "before_lines": [
+            "You found the drop",
+            "Now show me how",
+            "your team battles."
+          ],
+          "after_lines": [
+            "The upper gate",
+            "is open. Take the",
+            "stair to TORVEN."
+          ],
+          "requires": [
+            "EVENT_MN_GYM_2_TRAINER_1_DEFEATED"
+          ]
+        }
+      ],
+      "stations": [],
+      "gates": [
+        {
+          "at": [
+            1,
+            7
+          ],
+          "requires": [
+            "EVENT_MN_GYM_2_TRAINER_1_DEFEATED"
+          ],
+          "open_symbol": "w",
+          "event": "EVENT_MN_GYM_2_LOWER_STAIR_OPEN"
+        },
+        {
+          "at": [
+            6,
+            3
+          ],
+          "requires": [
+            "EVENT_MN_GYM_2_TRAINER_1_DEFEATED",
+            "EVENT_MN_GYM_2_TRAINER_2_DEFEATED"
+          ],
+          "open_symbol": ".",
+          "event": "EVENT_MN_GYM_2_COURT_OPEN"
+        }
+      ],
+      "guide": [
+        "Wooden gates guard",
+        "the stairs. Beat",
+        "their trainers.",
+        "Hop down the low",
+        "edges. You cannot",
+        "climb back up."
+      ],
+      "walkthrough": [
+        "MN_GYM_2_TRAINER_1",
+        "MN_GYM_2_TRAINER_2"
+      ],
+      "dimensions_metatiles": [
+        8,
+        10
+      ],
+      "arrival_core": [
+        6,
+        17
+      ],
+      "exit_tiles_core": [
+        [
+          6,
+          19
+        ],
+        [
+          7,
+          19
+        ]
+      ],
+      "guide_at": [
+        9,
+        16
+      ],
+      "leader_court_locked": true,
+      "before_lines": [
+        "The river moves.",
+        "The banks settle.",
+        "Can your team find",
+        "its footing?"
+      ],
+      "victory_lines": [
+        "You kept your feet",
+        "as plans changed."
+      ],
+      "after_lines": [
+        "The north road",
+        "crosses the fields",
+        "Look for partners",
+        "among the crops."
+      ],
+      "ledges": [
+        {
+          "id": "WEST_BANK_DROP",
+          "direction": "south",
+          "hop_from": [
+            6,
+            8
+          ],
+          "landing": [
+            6,
+            10
+          ],
+          "return_passage_core": [
+            2,
+            14,
+            4,
+            16
+          ],
+          "minimum_return_steps": 24
+        },
+        {
+          "id": "COURT_RETURN_DROP",
+          "direction": "south",
+          "hop_from": [
+            10,
+            6
+          ],
+          "landing": [
+            10,
+            8
+          ],
+          "return_passage_core": [
+            12,
+            6,
+            14,
+            8
+          ],
+          "minimum_return_steps": 6
+        },
+        {
+          "id": "LOWER_ESCAPE_DROP",
+          "direction": "south",
+          "hop_from": [
+            10,
+            14
+          ],
+          "landing": [
+            10,
+            16
+          ],
+          "return_passage_core": [
+            2,
+            14,
+            4,
+            16
+          ],
+          "minimum_return_steps": 28
+        }
+      ]
+    }
+  ]
+}

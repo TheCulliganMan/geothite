@@ -1,0 +1,456 @@
+{
+  "schema_version": 1,
+  "status": "root accepted design direction; unregistered art proposal only",
+  "decision": "Two-stage Psychic/Flying acoustic route-memory bat: Echolet evolves into Sonatlas at level28.",
+  "source_snapshot": {
+    "source_species": 313,
+    "active_species": 220,
+    "active_families": 100,
+    "roster_sha256": "19bd28755932b659ca913ffc07749f1d6ae0143e3198e7bf911cf724a4940478",
+    "profiles_sha256": "62f62cb33832ebfad087dddfee0271741bfe00ea0cec5c119f0569576717d65c"
+  },
+  "active_type_counts": {
+    "BUG": 27,
+    "DARK": 23,
+    "DRAGON": 11,
+    "ELECTRIC": 15,
+    "FAIRY": 13,
+    "FIGHTING": 22,
+    "FIRE": 27,
+    "FLYING": 17,
+    "GHOST": 15,
+    "GRASS": 28,
+    "GROUND": 17,
+    "ICE": 19,
+    "NORMAL": 29,
+    "POISON": 19,
+    "PSYCHIC": 13,
+    "ROCK": 17,
+    "STEEL": 21,
+    "WATER": 42
+  },
+  "type_role_audit": {
+    "PSYCHIC": {
+      "species": 13,
+      "speed100_plus": 0,
+      "max_speed": 95,
+      "special_attack100_plus": 6
+    },
+    "FLYING": {
+      "species": 17,
+      "speed100_plus": 7,
+      "max_speed": 115,
+      "special_attack100_plus": 0
+    },
+    "ELECTRIC": {
+      "species": 15,
+      "speed100_plus": 4,
+      "max_speed": 115,
+      "special_attack100_plus": 6
+    },
+    "ICE": {
+      "species": 19,
+      "speed100_plus": 1,
+      "max_speed": 105,
+      "special_attack100_plus": 5
+    },
+    "GHOST": {
+      "species": 15,
+      "speed100_plus": 2,
+      "max_speed": 100,
+      "special_attack100_plus": 8
+    },
+    "DARK": {
+      "species": 23,
+      "speed100_plus": 3,
+      "max_speed": 115,
+      "special_attack100_plus": 4
+    }
+  },
+  "existing_psychic_flying_regional_species": 0,
+  "recommended_type_reason": "Psychic and Fairy tie for the second-lowest regional count13, after Dragon11, but the new Fairy release already addressed Fairy. Psychic has no active regional user with Speed100+, and current Flying has no SpA100+ member. Psychic/Flying fills both a unique regional pair and a fast special-attacker/support role. This is a regional gap; returning native Natu/Xatu already use the pair.",
+  "alternatives_rejected": [
+    {
+      "types": [
+        "ELECTRIC",
+        "FLYING"
+      ],
+      "reason": "Electric15 is low, but already has4Speed100+ users and6SpA100+ users. Buoyostic/Paddarray already own electrical remote sensing; a radar bat would duplicate those themes."
+    },
+    {
+      "types": [
+        "ICE",
+        "FLYING"
+      ],
+      "reason": "Hibernation does not make a bat an ice animal. Ice19 and existing Ice/Psychic4 already cover winter perception."
+    },
+    {
+      "types": [
+        "GHOST",
+        "FLYING"
+      ],
+      "reason": "Ghost15 has8SpA100+ users; spooky echoes overlap existing loon/ghost roles without repairing fast Psychic availability."
+    },
+    {
+      "types": [
+        "DARK",
+        "FLYING"
+      ],
+      "reason": "Dark23 is already common and the pair already has3regional species, including aggressive goose/silo bird roles."
+    },
+    {
+      "types": [
+        "DRAGON",
+        "FLYING"
+      ],
+      "reason": "Dragon11 is the lowest count but neither anatomy nor regional ecology supports forcing a dragon theme. Strong type labels alone are not a concept."
+    }
+  ],
+  "count_effect_if_added_without_replacement": {
+    "active_species": 222,
+    "active_families": 101,
+    "PSYCHIC": 15,
+    "FLYING": 19,
+    "status": "not registered; root chooses final integration/replacement/count policy"
+  },
+  "family_theme": "Northern long-eared bat, echolocation and remembering a route through winter. A youngster wraps its wing membranes into two listening pockets; the adult unfolds them into three-rib sensory fans whose broad path-like folds focus echoes. It stores the remembered shape of a forest-to-cave route as Psychic impressions.",
+  "growth_read": "Closed small echo pockets \u2192 long folded listening ears plus broad open map-fan wings; a timid local listener becomes a fast pathfinder. Size, wing plan, ear depth and exposed anatomy all change together.",
+  "species": [
+    {
+      "name": "Echolet",
+      "name_origin": "echo + small suffix -let",
+      "types": [
+        "PSYCHIC",
+        "FLYING"
+      ],
+      "stage": 1,
+      "classification": "Echo Fold",
+      "base_stats": {
+        "hp": 45,
+        "attack": 30,
+        "defense": 40,
+        "speed": 65,
+        "special_attack": 60,
+        "special_defense": 50
+      },
+      "bst": 290,
+      "evolution": {
+        "method": "LEVEL",
+        "level": 28,
+        "to_name": "Sonatlas"
+      },
+      "anatomy": "A compact true bat with two large cup ears, an exposed short muzzle, two separate visible eyes, two wing-arms and two tiny hind feet. Each partly folded wing forms one broad concave listening pocket; the cupped tail membrane is a single lower scoop. The shoulders stay visible instead of disappearing into an undifferentiated round cloak.",
+      "secondary_theme_visible": "One broad bracket-shaped ridge inside each ear and the tucked wing pockets look like two incomplete remembered paths. These are grown sensory folds, not printed maps or equipment.",
+      "front_sprite": "34\u201340 native pixels tall inside56x56; asymmetrical partly open wing pose lets one clear pocket read beside the face. Broad ear openings, white eye windows with separated black pupils.",
+      "back_sprite": "Independent48x48 close rear of two cup-ear backs, neck and upper folded wing roots; lower body/tail cropped. Rear has no false face.",
+      "normal_palette": {
+        "rgb5": [
+          [
+            31,
+            31,
+            31
+          ],
+          [
+            28,
+            25,
+            29
+          ],
+          [
+            16,
+            11,
+            23
+          ],
+          [
+            0,
+            0,
+            0
+          ]
+        ],
+        "rgb555_words": [
+          32767,
+          30524,
+          23920,
+          0
+        ],
+        "hex_srgb": [
+          "#FFFFFF",
+          "#E7CEEF",
+          "#845ABD",
+          "#000000"
+        ],
+        "status": "selected for four-ink native proposal v1; no canonical palette edited"
+      },
+      "earlier_palette_proposal": {
+        "rgb5": [
+          [
+            31,
+            31,
+            31
+          ],
+          [
+            21,
+            15,
+            24
+          ],
+          [
+            8,
+            6,
+            13
+          ],
+          [
+            0,
+            0,
+            0
+          ]
+        ],
+        "rgb555_words": [
+          32767,
+          25077,
+          13512,
+          0
+        ],
+        "hex_srgb": [
+          "#FFFFFF",
+          "#AD7BC6",
+          "#42316B",
+          "#000000"
+        ],
+        "status": "proposed normal palette; no canonical palette edited"
+      }
+    },
+    {
+      "name": "Sonatlas",
+      "name_origin": "sonar + atlas",
+      "types": [
+        "PSYCHIC",
+        "FLYING"
+      ],
+      "stage": 2,
+      "classification": "Echo Atlas",
+      "base_stats": {
+        "hp": 70,
+        "attack": 45,
+        "defense": 60,
+        "speed": 115,
+        "special_attack": 110,
+        "special_defense": 80
+      },
+      "bst": 480,
+      "evolution": null,
+      "anatomy": "A larger alert bat with the same two ear cups now long and deeply folded. Its two wing-arms open into broad membrane fans, each built around exactly three major finger ribs. Two large stepped fold bands across each membrane form an open path-shaped pattern; small hooked thumbs remain attached at the wing wrists. A true short-muzzled face sits between the ears and above the cupped tail membrane. Two hind feet remain small; no extra forearms, second wing pair, feather crest or dragon tail.",
+      "secondary_theme_visible": "The juvenile two closed listening pockets unfold into a pair of wide echo-map fans. By changing the spacing of its finger ribs it focuses returning echoes, while Psychic memory preserves a route between hibernation seasons. The stored memory is fantasy, not a claimed bat ability.",
+      "front_sprite": "50\u201354 pixel-wide native silhouette inside56x56, with raised arched wing roots and lowered outer fingers. The face and ear openings remain large; three broad ribs per wing, two simple fold bands, no fine mesh/map texture.",
+      "back_sprite": "Independent48x48 close upper-rear portrait showing enlarged ear cups, nape and near wing shoulders; wing tips and all lower body cropped. Do not shrink the entire broad frontal wingspan into the back box.",
+      "normal_palette": {
+        "rgb5": [
+          [
+            31,
+            31,
+            31
+          ],
+          [
+            23,
+            27,
+            30
+          ],
+          [
+            8,
+            12,
+            19
+          ],
+          [
+            0,
+            0,
+            0
+          ]
+        ],
+        "rgb555_words": [
+          32767,
+          31607,
+          19848,
+          0
+        ],
+        "hex_srgb": [
+          "#FFFFFF",
+          "#BDDEF7",
+          "#42639C",
+          "#000000"
+        ],
+        "status": "selected for four-ink native proposal v1; no canonical palette edited"
+      },
+      "earlier_palette_proposal": {
+        "rgb5": [
+          [
+            31,
+            31,
+            31
+          ],
+          [
+            20,
+            17,
+            29
+          ],
+          [
+            7,
+            9,
+            16
+          ],
+          [
+            0,
+            0,
+            0
+          ]
+        ],
+        "rgb555_words": [
+          32767,
+          30260,
+          16679,
+          0
+        ],
+        "hex_srgb": [
+          "#FFFFFF",
+          "#A58CEF",
+          "#394A84",
+          "#000000"
+        ],
+        "status": "proposed normal palette; no canonical palette edited"
+      }
+    }
+  ],
+  "battle_role": {
+    "role": "Fast, frail special scout and disruption/support; Psychic STAB is the mature damage anchor, Flying supplies Ground immunity and mobility.",
+    "restraint": "Final480BST, Attack45/Defense60, no ability, no boosting custom mechanic. Five common2xweaknesses make switching in risky. Psychic immunity on Dark types remains meaningful in a roster with23Dark species.",
+    "weaknesses": {
+      "ELECTRIC": 2,
+      "ICE": 2,
+      "ROCK": 2,
+      "GHOST": 2,
+      "DARK": 2
+    },
+    "resistances": {
+      "FIGHTING": 0.25,
+      "GRASS": 0.5,
+      "PSYCHIC": 0.5
+    },
+    "immunities": [
+      "GROUND"
+    ],
+    "abilities": "NONE; do not introduce a new echolocation/hibernation ability.",
+    "proposed_native_level_moves": [
+      [
+        1,
+        "GUST"
+      ],
+      [
+        1,
+        "GROWL"
+      ],
+      [
+        7,
+        "CONFUSION"
+      ],
+      [
+        11,
+        "FORESIGHT"
+      ],
+      [
+        15,
+        "SUPERSONIC"
+      ],
+      [
+        20,
+        "PSYBEAM"
+      ],
+      [
+        25,
+        "REFLECT"
+      ],
+      [
+        28,
+        "AGILITY"
+      ],
+      [
+        33,
+        "MIMIC"
+      ],
+      [
+        38,
+        "SWIFT"
+      ],
+      [
+        44,
+        "PSYCHIC_M"
+      ],
+      [
+        48,
+        "REST"
+      ]
+    ],
+    "proposed_native_tmhm": [
+      "PSYCHIC_M",
+      "REST",
+      "SLEEP_TALK",
+      "TOXIC",
+      "PROTECT",
+      "DETECT",
+      "FLY"
+    ],
+    "existing_move_token_check": "All proposed native level tokens already occur in authored profiles. Reflect remains a level-up move. Reflect/LightScreen were removed from TM/HM suggestions after actual Crystal TM-table validation; neither is a native Crystal TM.",
+    "flying_damage_gap": "Gust40 is special in the actual modern-move-split catalog; WingAttack is physical. No ordinary strong special Flying move is present among the frozen19extension moves. Aeroblast is native special but should remain a legendary signature rather than solve this ordinary bat. Mature native-only output therefore leans on Psychic, not a fictional powerful Flying STAB.",
+    "future_only_move_recommendation": {
+      "id": "AIR_SLASH",
+      "introduced_generation": 4,
+      "type": "FLYING",
+      "category": "special",
+      "power": 75,
+      "accuracy": 95,
+      "pp": 15,
+      "effect": "FLINCH_HIT",
+      "effect_chance": 30,
+      "suggested_level": 36,
+      "reason": "Existing native FLINCH_HIT already powers imported IronHead, so no new battle mechanic is required. A later approved move addition could provide the missing real special Flying STAB. With Speed115 its flinch pressure matters; do not add boosting mechanics.",
+      "source_url": "https://github.com/smogon/pokemon-showdown/blob/8f9ab4949d0bf64d5a5ac985a298d1313f2b9a29/data/moves.ts",
+      "status": "proposal only; absent from current270move pack; requires separate implementation, animation and engine tests"
+    }
+  },
+  "habitat_proposal": "Nighttime forest edges and a fictional quiet cave-mouth side path; early/midgame Echolet availability could make Psychic accessible before the faster end-stage. Soudan/Mystery Cave are grounding references, not claims of existing authored encounters or a request to add mine machinery.",
+  "nonduplication": [
+    "No bat is currently present among active species. Names are unique across all313source species, including inactive records.",
+    "Keeps actual two-arm membrane flight and a cupped tail, distinguishing it from bird wings, samara squirrel gliding and butterfly wings.",
+    "Echoes create spatial route memory, not Reverloon\u2019s duplicate ghost silhouettes.",
+    "No resurrection of retired Hushuff/Scatacomb: no stone body, cave-hall torso arches, palm ears, musical performance or secret-knock theme.",
+    "Avoid Paddarray/Buoyostic sensory machinery: no antenna array, radio mast, glowing screen or electrical pulses."
+  ],
+  "sprite_feasibility": "Four flat inks per species with fixed black/white, independent stage colors, continuous black outer contours and broad internal clusters. Three ribs/two fold bands maximum per adult wing fit native56front geometry. Draw real eye windows as multi-pixel white islands with black pupils; no gradients, transparency, fine cartography or post-conversion invented pixels. ImageGen concept v1 and four native four-ink conversion candidates are saved; not registered.",
+  "primary_sources": [
+    {
+      "url": "https://www.dnr.state.mn.us/mammals/bats.html",
+      "publisher": "Minnesota DNR",
+      "supports": "Northern long-eared bats use forest-tree cavities/crevices in summer and caves/mines for hibernation. Minnesota bats catch insects using cupped tail membranes and navigate through echolocation.",
+      "fantasy_extension": "Sensory wing pockets and Psychic route memory are original invented anatomy/behavior."
+    },
+    {
+      "url": "https://www.nps.gov/subjects/bats/echolocation.htm",
+      "publisher": "U.S. National Park Service",
+      "supports": "Returning ultrasound guides navigation and prey location; calls differ between searching, feeding and social contexts.",
+      "fantasy_extension": "One remembered echo-path becomes a visible broad wing-fold pattern, not a literal biological claim."
+    },
+    {
+      "url": "https://www.dnr.state.mn.us/state-parks/tours/lake-vermilion-soudan.html",
+      "publisher": "Minnesota DNR",
+      "supports": "Soudan Mine remains a regional bat hibernation site with summer woodland roosting.",
+      "fantasy_extension": "A fictional cave-mouth path can support the seasonal route-memory theme; no encounter/map change is made."
+    }
+  ],
+  "mutations": "Design proposal and versioned original/native art only. No roster/profile/canonical-palette/registry/curation/pack/web registration changes.",
+  "art_proposal": {
+    "status": "unregistered concept and native conversion candidates saved",
+    "directory": "sprites/proposals/bat-20261027-v1",
+    "tool": "built-in image_gen followed by the existing Rust native sprite converter",
+    "source": "sprites/proposals/bat-20261027-v1/front-back.imagegen-v1.png",
+    "exact_prompt": "sprites/proposals/bat-20261027-v1/prompt-v1.txt",
+    "conversion": "sprites/proposals/bat-20261027-v1/conversion-v1.json",
+    "native_limits": "56x56 front,48x48 close rear,one independent four-ink RGB555 palette per Pokemon,2bpp bytes retained",
+    "not_registered": true
+  }
+}

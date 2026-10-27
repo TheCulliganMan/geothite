@@ -1,0 +1,1190 @@
+{
+  "schema_version": 2,
+  "id": "MN_R02",
+  "tileset": "kanto",
+  "compiled_tileset": "mn_prairie_kanto",
+  "dimensions_metatiles": [
+    30,
+    22
+  ],
+  "shore_fitting": "kanto_8_neighbors",
+  "reject_cliff_cuts": true,
+  "materials": {
+    "floor": "31",
+    "lawn": "01",
+    "encounter": "0b",
+    "flowers": "74",
+    "forest": "0f",
+    "water": "43",
+    "boulder": "13",
+    "sign": "56"
+  },
+  "additional_water_blocks": [
+    "78"
+  ],
+  "layers": [
+    {
+      "kind": "rect",
+      "name": "West farm clearing",
+      "bounds": [
+        3,
+        3,
+        14,
+        12
+      ],
+      "material": "lawn"
+    },
+    {
+      "kind": "rect",
+      "name": "East nursery and bank",
+      "bounds": [
+        18,
+        3,
+        28,
+        11
+      ],
+      "material": "lawn"
+    },
+    {
+      "kind": "rect",
+      "name": "East toolshed forecourt",
+      "bounds": [
+        22,
+        14,
+        29,
+        20
+      ],
+      "material": "lawn"
+    },
+    {
+      "kind": "block_rect",
+      "name": "West nursery worked soil",
+      "bounds": [
+        8,
+        3,
+        13,
+        10
+      ],
+      "block": "2c"
+    },
+    {
+      "kind": "block_rect",
+      "name": "East nursery worked soil",
+      "bounds": [
+        18,
+        3,
+        22,
+        10
+      ],
+      "block": "2c"
+    },
+    {
+      "kind": "path",
+      "name": "Main gravel farm lane",
+      "points": [
+        [
+          29,
+          7
+        ],
+        [
+          26,
+          7
+        ],
+        [
+          26,
+          13
+        ],
+        [
+          20,
+          13
+        ],
+        [
+          20,
+          12
+        ],
+        [
+          10,
+          12
+        ],
+        [
+          10,
+          15
+        ],
+        [
+          0,
+          15
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "kind": "path",
+      "name": "Western farmhouse approach",
+      "points": [
+        [
+          10,
+          12
+        ],
+        [
+          10,
+          9
+        ],
+        [
+          6,
+          9
+        ],
+        [
+          6,
+          6
+        ],
+        [
+          5,
+          6
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "kind": "path",
+      "name": "Nursery shortcut",
+      "points": [
+        [
+          26,
+          7
+        ],
+        [
+          24,
+          7
+        ],
+        [
+          23,
+          7
+        ],
+        [
+          20,
+          7
+        ],
+        [
+          20,
+          12
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "kind": "path",
+      "name": "Toolshed approach",
+      "points": [
+        [
+          26,
+          13
+        ],
+        [
+          26,
+          14
+        ],
+        [
+          24,
+          14
+        ],
+        [
+          24,
+          18
+        ],
+        [
+          26,
+          18
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "kind": "rect",
+      "name": "West grass gate",
+      "bounds": [
+        4,
+        14,
+        7,
+        17
+      ],
+      "material": "encounter"
+    },
+    {
+      "kind": "rect",
+      "name": "Western windbreak upper",
+      "bounds": [
+        1,
+        12,
+        4,
+        14
+      ],
+      "material": "forest"
+    },
+    {
+      "kind": "rect",
+      "name": "Western windbreak lower",
+      "bounds": [
+        1,
+        17,
+        8,
+        19
+      ],
+      "material": "forest"
+    },
+    {
+      "kind": "rect",
+      "name": "Straight farm drainage",
+      "bounds": [
+        15,
+        0,
+        17,
+        22
+      ],
+      "material": "water"
+    },
+    {
+      "kind": "block_rect",
+      "name": "Bridge northern bollards",
+      "bounds": [
+        14,
+        11,
+        18,
+        12
+      ],
+      "block": "51"
+    },
+    {
+      "kind": "block_rect",
+      "name": "Bridge gravel deck",
+      "bounds": [
+        14,
+        12,
+        18,
+        13
+      ],
+      "block": "31"
+    },
+    {
+      "kind": "block_rect",
+      "name": "Bridge southern stakes",
+      "bounds": [
+        14,
+        13,
+        18,
+        14
+      ],
+      "block": "77"
+    },
+    {
+      "kind": "block_rect",
+      "name": "Water directly below bridge rail",
+      "bounds": [
+        14,
+        14,
+        18,
+        15
+      ],
+      "block": "43"
+    },
+    {
+      "kind": "block_rect",
+      "name": "West drain fence north",
+      "bounds": [
+        14,
+        1,
+        15,
+        11
+      ],
+      "block": "5f"
+    },
+    {
+      "kind": "block_rect",
+      "name": "West drain fence south",
+      "bounds": [
+        14,
+        14,
+        15,
+        22
+      ],
+      "block": "5f"
+    },
+    {
+      "kind": "block_rect",
+      "name": "East drain fence north",
+      "bounds": [
+        17,
+        1,
+        18,
+        11
+      ],
+      "block": "1b"
+    },
+    {
+      "kind": "block_rect",
+      "name": "East drain fence south",
+      "bounds": [
+        17,
+        14,
+        18,
+        22
+      ],
+      "block": "1b"
+    },
+    {
+      "kind": "rect",
+      "name": "Nursery north row",
+      "bounds": [
+        18,
+        3,
+        22,
+        4
+      ],
+      "material": "encounter"
+    },
+    {
+      "kind": "rect",
+      "name": "Nursery middle row",
+      "bounds": [
+        18,
+        5,
+        22,
+        6
+      ],
+      "material": "encounter"
+    },
+    {
+      "kind": "rect",
+      "name": "Nursery south row",
+      "bounds": [
+        18,
+        8,
+        22,
+        10
+      ],
+      "material": "encounter"
+    },
+    {
+      "kind": "path",
+      "name": "Nursery clear aisle",
+      "points": [
+        [
+          18,
+          7
+        ],
+        [
+          22,
+          7
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "kind": "path",
+      "name": "Nursery vertical access",
+      "points": [
+        [
+          20,
+          4
+        ],
+        [
+          20,
+          7
+        ],
+        [
+          20,
+          11
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "lawn"
+    },
+    {
+      "kind": "rect",
+      "name": "Grass at bank landing",
+      "bounds": [
+        21,
+        7,
+        23,
+        8
+      ],
+      "material": "encounter"
+    },
+    {
+      "kind": "point",
+      "name": "Clear exact bank landing",
+      "position": [
+        22,
+        7
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "block_rect",
+      "name": "Field bank northern face",
+      "bounds": [
+        23,
+        2,
+        24,
+        7
+      ],
+      "block": "28"
+    },
+    {
+      "kind": "block_rect",
+      "name": "Field bank southern face",
+      "bounds": [
+        23,
+        9,
+        24,
+        12
+      ],
+      "block": "28"
+    },
+    {
+      "kind": "block_rect",
+      "name": "Field bank top closure",
+      "bounds": [
+        23,
+        1,
+        24,
+        2
+      ],
+      "block": "0f"
+    },
+    {
+      "kind": "block_rect",
+      "name": "Bank one-way west ledge",
+      "bounds": [
+        23,
+        7,
+        24,
+        9
+      ],
+      "block": "58"
+    },
+    {
+      "kind": "point",
+      "name": "Ledge north side closed",
+      "position": [
+        23,
+        6
+      ],
+      "block": "13"
+    },
+    {
+      "kind": "point",
+      "name": "Ledge south side closed",
+      "position": [
+        23,
+        9
+      ],
+      "block": "13"
+    },
+    {
+      "kind": "point",
+      "name": "West farmhouse roof left",
+      "position": [
+        5,
+        4
+      ],
+      "block": "38"
+    },
+    {
+      "kind": "point",
+      "name": "West farmhouse roof right",
+      "position": [
+        6,
+        4
+      ],
+      "block": "39"
+    },
+    {
+      "kind": "point",
+      "name": "West farmhouse door",
+      "position": [
+        5,
+        5
+      ],
+      "block": "3c"
+    },
+    {
+      "kind": "point",
+      "name": "West farmhouse wall",
+      "position": [
+        6,
+        5
+      ],
+      "block": "3d"
+    },
+    {
+      "kind": "block_rect",
+      "name": "West farm hardstanding",
+      "bounds": [
+        4,
+        6,
+        8,
+        8
+      ],
+      "block": "31"
+    },
+    {
+      "kind": "point",
+      "name": "Farm porch safe floor",
+      "position": [
+        5,
+        6
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "block_rect",
+      "name": "Farm west fence",
+      "bounds": [
+        2,
+        4,
+        3,
+        11
+      ],
+      "block": "5f"
+    },
+    {
+      "kind": "block_rect",
+      "name": "Farm east fence",
+      "bounds": [
+        13,
+        3,
+        14,
+        11
+      ],
+      "block": "1b"
+    },
+    {
+      "kind": "block_rect",
+      "name": "Farm lower fence west",
+      "bounds": [
+        3,
+        11,
+        10,
+        12
+      ],
+      "block": "77"
+    },
+    {
+      "kind": "block_rect",
+      "name": "Farm lower fence east",
+      "bounds": [
+        11,
+        11,
+        14,
+        12
+      ],
+      "block": "77"
+    },
+    {
+      "kind": "rect",
+      "name": "Small western herb bed",
+      "bounds": [
+        3,
+        8,
+        5,
+        10
+      ],
+      "material": "flowers"
+    },
+    {
+      "kind": "rect",
+      "name": "Pasture behind east fence",
+      "bounds": [
+        9,
+        3,
+        12,
+        5
+      ],
+      "material": "encounter"
+    },
+    {
+      "kind": "rect",
+      "name": "Pasture lower corner",
+      "bounds": [
+        10,
+        6,
+        13,
+        8
+      ],
+      "material": "encounter"
+    },
+    {
+      "kind": "path",
+      "name": "Pasture walking notch",
+      "points": [
+        [
+          9,
+          5
+        ],
+        [
+          9,
+          8
+        ],
+        [
+          10,
+          8
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "kind": "point",
+      "name": "Pasture tree one",
+      "position": [
+        12,
+        4
+      ],
+      "block": "4c"
+    },
+    {
+      "kind": "point",
+      "name": "Pasture tree two",
+      "position": [
+        11,
+        9
+      ],
+      "block": "4c"
+    },
+    {
+      "kind": "point",
+      "name": "Western fruit shade",
+      "position": [
+        3,
+        3
+      ],
+      "block": "4c"
+    },
+    {
+      "kind": "point",
+      "name": "Shed roof left",
+      "position": [
+        25,
+        15
+      ],
+      "block": "20"
+    },
+    {
+      "kind": "point",
+      "name": "Shed roof middle",
+      "position": [
+        26,
+        15
+      ],
+      "block": "54"
+    },
+    {
+      "kind": "point",
+      "name": "Shed roof right",
+      "position": [
+        27,
+        15
+      ],
+      "block": "21"
+    },
+    {
+      "kind": "point",
+      "name": "Shed wall left",
+      "position": [
+        25,
+        16
+      ],
+      "block": "37"
+    },
+    {
+      "kind": "point",
+      "name": "Shed door",
+      "position": [
+        26,
+        16
+      ],
+      "block": "3a"
+    },
+    {
+      "kind": "point",
+      "name": "Shed wall right",
+      "position": [
+        27,
+        16
+      ],
+      "block": "7e"
+    },
+    {
+      "kind": "block_rect",
+      "name": "Shed hardstanding",
+      "bounds": [
+        25,
+        17,
+        28,
+        19
+      ],
+      "block": "31"
+    },
+    {
+      "kind": "block_rect",
+      "name": "Shed yard west fence",
+      "bounds": [
+        22,
+        15,
+        23,
+        20
+      ],
+      "block": "5f"
+    },
+    {
+      "kind": "block_rect",
+      "name": "Shed yard bottom fence",
+      "bounds": [
+        23,
+        20,
+        29,
+        21
+      ],
+      "block": "77"
+    },
+    {
+      "kind": "block_rect",
+      "name": "Shed east windbreak",
+      "bounds": [
+        29,
+        15,
+        30,
+        21
+      ],
+      "block": "0f"
+    },
+    {
+      "kind": "point",
+      "name": "Shed yard tree",
+      "position": [
+        23,
+        17
+      ],
+      "block": "4c"
+    },
+    {
+      "kind": "rect",
+      "name": "Shed flowers beside gate",
+      "bounds": [
+        23,
+        14,
+        24,
+        16
+      ],
+      "material": "flowers"
+    },
+    {
+      "kind": "rect",
+      "name": "Shed small sowing patch",
+      "bounds": [
+        23,
+        18,
+        25,
+        20
+      ],
+      "material": "encounter"
+    },
+    {
+      "kind": "path",
+      "name": "Southern seed cache spur",
+      "points": [
+        [
+          11,
+          12
+        ],
+        [
+          11,
+          17
+        ],
+        [
+          12,
+          17
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "kind": "point",
+      "name": "Cache small tree",
+      "position": [
+        13,
+        16
+      ],
+      "block": "4c"
+    },
+    {
+      "kind": "rect",
+      "name": "Cache grass neck",
+      "bounds": [
+        10,
+        15,
+        13,
+        16
+      ],
+      "material": "encounter"
+    },
+    {
+      "kind": "point",
+      "name": "Clear below seed cache",
+      "position": [
+        12,
+        17
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Rochester arrival board",
+      "position": [
+        28,
+        6
+      ],
+      "block": "56"
+    },
+    {
+      "kind": "point",
+      "name": "Farmhouse board",
+      "position": [
+        7,
+        7
+      ],
+      "block": "56"
+    },
+    {
+      "kind": "point",
+      "name": "Nursery bank board",
+      "position": [
+        25,
+        9
+      ],
+      "block": "56"
+    },
+    {
+      "kind": "point",
+      "name": "Toolshed board",
+      "position": [
+        24,
+        18
+      ],
+      "block": "56"
+    },
+    {
+      "kind": "point",
+      "name": "Mankato direction board",
+      "position": [
+        2,
+        16
+      ],
+      "block": "56"
+    },
+    {
+      "kind": "point",
+      "name": "West board reading foot",
+      "position": [
+        2,
+        17
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Tool yard battle standing pad",
+      "position": [
+        23,
+        18
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Nursery hand standing pad",
+      "position": [
+        21,
+        5
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Drain keeper dry footing",
+      "position": [
+        18,
+        11
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "rect",
+      "name": "West small seed rows",
+      "bounds": [
+        8,
+        8,
+        10,
+        10
+      ],
+      "material": "encounter"
+    },
+    {
+      "kind": "point",
+      "name": "Eastern gate shade",
+      "position": [
+        26,
+        4
+      ],
+      "block": "4c"
+    },
+    {
+      "kind": "point",
+      "name": "Eastern gate second shade",
+      "position": [
+        25,
+        5
+      ],
+      "block": "4c"
+    },
+    {
+      "kind": "block_rect",
+      "name": "West farm shaded corner",
+      "bounds": [
+        3,
+        3,
+        5,
+        4
+      ],
+      "block": "0f"
+    },
+    {
+      "kind": "point",
+      "name": "West farm lower shade",
+      "position": [
+        3,
+        5
+      ],
+      "block": "4c"
+    },
+    {
+      "kind": "block_rect",
+      "name": "Herb bed upper stakes",
+      "bounds": [
+        3,
+        7,
+        5,
+        8
+      ],
+      "block": "77"
+    },
+    {
+      "kind": "point",
+      "name": "Yard western stone post",
+      "position": [
+        4,
+        6
+      ],
+      "block": "40"
+    },
+    {
+      "kind": "point",
+      "name": "Yard eastern stone post",
+      "position": [
+        7,
+        6
+      ],
+      "block": "41"
+    },
+    {
+      "kind": "block_remap",
+      "name": "Golden dry prairie encounter grass; native encounter collision retained",
+      "bounds": [
+        0,
+        0,
+        30,
+        22
+      ],
+      "from": "0b",
+      "to": "81"
+    },
+    {
+      "kind": "block_remap",
+      "name": "Golden prairie lawn field 1; surrounding riverbank and canopy stay green",
+      "bounds": [
+        3,
+        3,
+        14,
+        12
+      ],
+      "from": "01",
+      "to": "80"
+    },
+    {
+      "kind": "block_remap",
+      "name": "Golden prairie lawn field 2; surrounding riverbank and canopy stay green",
+      "bounds": [
+        18,
+        3,
+        28,
+        11
+      ],
+      "from": "01",
+      "to": "80"
+    }
+  ],
+  "source_pixels_modified": false,
+  "art_authority": "renders/source/kanto-atlas.png",
+  "crossings": [
+    {
+      "id": "DRAIN_BRIDGE",
+      "deck_blocks": [
+        [
+          14,
+          12
+        ],
+        [
+          15,
+          12
+        ],
+        [
+          16,
+          12
+        ],
+        [
+          17,
+          12
+        ]
+      ],
+      "north_rail_blocks": [
+        [
+          14,
+          11
+        ],
+        [
+          15,
+          11
+        ],
+        [
+          16,
+          11
+        ],
+        [
+          17,
+          11
+        ]
+      ],
+      "south_rail_blocks": [
+        [
+          14,
+          13
+        ],
+        [
+          15,
+          13
+        ],
+        [
+          16,
+          13
+        ],
+        [
+          17,
+          13
+        ]
+      ],
+      "water_under_rail_blocks": [
+        [
+          14,
+          14
+        ],
+        [
+          15,
+          14
+        ],
+        [
+          16,
+          14
+        ],
+        [
+          17,
+          14
+        ]
+      ],
+      "core_walk_line": [
+        [
+          26,
+          25
+        ],
+        [
+          27,
+          25
+        ],
+        [
+          28,
+          25
+        ],
+        [
+          29,
+          25
+        ],
+        [
+          30,
+          25
+        ],
+        [
+          31,
+          25
+        ],
+        [
+          32,
+          25
+        ],
+        [
+          33,
+          25
+        ],
+        [
+          34,
+          25
+        ],
+        [
+          35,
+          25
+        ],
+        [
+          36,
+          25
+        ],
+        [
+          37,
+          25
+        ]
+      ],
+      "deck_collision": "FLOOR"
+    }
+  ],
+  "derived_blocks": [
+    {
+      "id": "80",
+      "source_tileset": "kanto",
+      "source_block": "01",
+      "palette_override": 7,
+      "collision": "FLOOR",
+      "required_typed_extension": "build_prairie_grass_art_pack"
+    },
+    {
+      "id": "81",
+      "source_tileset": "kanto",
+      "source_block": "0b",
+      "palette_override": 7,
+      "collision": "TALL_GRASS",
+      "required_typed_extension": "build_prairie_grass_art_pack"
+    }
+  ]
+}

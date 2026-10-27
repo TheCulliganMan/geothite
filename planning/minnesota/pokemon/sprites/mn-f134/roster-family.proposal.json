@@ -1,0 +1,40 @@
+{
+  "families": [
+    {
+      "id": "MN_F134",
+      "members": [
+        {
+          "id": "MN_295",
+          "name": "Wadebud",
+          "types": [
+            "GRASS"
+          ],
+          "stage": 1,
+          "evolves_to": "MN_296"
+        },
+        {
+          "id": "MN_296",
+          "name": "Rakehorn",
+          "types": [
+            "GRASS",
+            "WATER"
+          ],
+          "stage": 2,
+          "evolves_to": "MN_297"
+        },
+        {
+          "id": "MN_297",
+          "name": "Marshrack",
+          "types": [
+            "GRASS",
+            "WATER"
+          ],
+          "stage": 3,
+          "evolves_to": null
+        }
+      ],
+      "theme": "Moose and underwater gardening. Real aquatic foraging becomes fictional living rake and root anatomy.",
+      "region": "northwoods"
+    }
+  ]
+}

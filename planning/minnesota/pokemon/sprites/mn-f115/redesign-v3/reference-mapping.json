@@ -1,0 +1,11 @@
+{
+  "references": [
+    {
+      "path": "target/minnesota-pokemon/gen2-reference/starters.png",
+      "sha256": "af61f720a75b7e1b8e80ba14e8944612556397eedddd719669dec68b0e0fd534",
+      "role": "authentic native Gen2 pixel clusters and battle framing only"
+    }
+  ],
+  "attached_to_imagegen": true,
+  "preservation": "No reference or existing source/native asset edited."
+}

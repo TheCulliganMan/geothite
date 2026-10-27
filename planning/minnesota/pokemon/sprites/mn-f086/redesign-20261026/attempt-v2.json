@@ -1,0 +1,12 @@
+{
+  "status": "returned-raw-preserved-selected-for-candidate",
+  "source": "sprites/mn-f086/redesign-20261026/mn-185-cragcloak.front-back.redesign-v2.png",
+  "source_sha256": "c7055a9fe66ec29809c4230661caef22298d34ffda419f608bbd99ca75356c36",
+  "source_size": [
+    1536,
+    1024
+  ],
+  "prompt_file": "sprites/mn-f086/redesign-20261026/prompt-v2.txt",
+  "reference_mapping": "sprites/mn-f086/redesign-20261026/reference-mapping-v2.json",
+  "candidate_manifest": "sprites/mn-f086/redesign-20261026/manifest.candidate.json"
+}

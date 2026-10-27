@@ -1,0 +1,244 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F137",
+  "status": "native-front-back-reviewed",
+  "tool": "built-in image_gen",
+  "prompt_file": "sprites/mn-f137/prompt-v1.txt",
+  "back_framing": "independent-gen2-close-upper-rear-portrait",
+  "pokemon_palettes": {
+    "MN_303": {
+      "species_id": "MN_303",
+      "name": "Ticklet",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          24,
+          20,
+          10
+        ],
+        [
+          7,
+          19,
+          20
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        10904,
+        21095,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          198,
+          165,
+          82
+        ],
+        [
+          57,
+          156,
+          165
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#C6A552",
+        "#399CA5",
+        "#000000"
+      ]
+    },
+    "MN_304": {
+      "species_id": "MN_304",
+      "name": "Solstort",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          29,
+          22,
+          9
+        ],
+        [
+          8,
+          11,
+          19
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        9949,
+        19816,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          239,
+          181,
+          74
+        ],
+        [
+          66,
+          90,
+          156
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#EFB54A",
+        "#425A9C",
+        "#000000"
+      ]
+    }
+  },
+  "sprites": [
+    {
+      "id": "mn-303-ticklet-v1",
+      "species_id": "MN_303",
+      "view": "front",
+      "source": "sprites/mn-f137/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        720,
+        550
+      ],
+      "fit": [
+        44,
+        44
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        10904,
+        21095,
+        0
+      ],
+      "sampling": "area_vote",
+      "exterior_contour": "solid",
+      "white_detail_min_samples": 4,
+      "interior_black_min_samples": 12
+    },
+    {
+      "id": "mn-303-ticklet-v1",
+      "species_id": "MN_303",
+      "view": "back",
+      "source": "sprites/mn-f137/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        550,
+        720,
+        474
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        10904,
+        21095,
+        0
+      ],
+      "sampling": "area_vote",
+      "exterior_contour": "solid",
+      "white_detail_min_samples": 4,
+      "interior_black_min_samples": 12
+    },
+    {
+      "id": "mn-304-solstort-v1",
+      "species_id": "MN_304",
+      "view": "front",
+      "source": "sprites/mn-f137/front-back.imagegen-v1.png",
+      "crop": [
+        720,
+        0,
+        816,
+        550
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        9949,
+        19816,
+        0
+      ],
+      "sampling": "area_vote",
+      "exterior_contour": "solid",
+      "white_detail_min_samples": 4,
+      "interior_black_min_samples": 12
+    },
+    {
+      "id": "mn-304-solstort-v1",
+      "species_id": "MN_304",
+      "view": "back",
+      "source": "sprites/mn-f137/front-back.imagegen-v1.png",
+      "crop": [
+        720,
+        550,
+        816,
+        474
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        9949,
+        19816,
+        0
+      ],
+      "sampling": "area_vote",
+      "exterior_contour": "solid",
+      "white_detail_min_samples": 4,
+      "interior_black_min_samples": 12
+    }
+  ],
+  "source_sha256": "69598f02982289d788a796ac6b8e3f986cb0d7876e37094f9fccef81b223888f",
+  "visual_review": {
+    "status": "reviewed",
+    "reviewer": "roster_cut_review; root independently approved",
+    "outline_profile": "solid-exterior-v1",
+    "sheet_sha256": "f410accf0e0887b821fcf4d2cd9935d66bbcea81b7d2db33976bafd7b728940a",
+    "notes": "Root approved AreaVote/Solid actual native board: turtle fan and shadow ridge grow visibly, real face clear, consistent independent close rear portraits. All source/candidate/rejected variants retained. No native pixel edits."
+  }
+}

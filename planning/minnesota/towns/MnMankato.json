@@ -1,0 +1,510 @@
+{
+  "id": "MnMankato",
+  "name": "MANKATO",
+  "dimensions_metatiles": [
+    24,
+    18
+  ],
+  "reference_anchor_percent": [
+    44,
+    84
+  ],
+  "role": "gym_2",
+  "tileset": "johto",
+  "composition": "A low gym terrace above the prairie lane. Hop down toward the university garden and mart; the eastern ramp is the ordinary uphill return.",
+  "ports": [
+    {
+      "route": "MN_R02",
+      "side": "E",
+      "gate_metatile": [
+        22,
+        9
+      ],
+      "landing_metatile": [
+        20,
+        9
+      ]
+    },
+    {
+      "route": "MN_R03",
+      "side": "N",
+      "gate_metatile": [
+        12,
+        1
+      ],
+      "landing_metatile": [
+        12,
+        3
+      ]
+    }
+  ],
+  "interiors": [
+    {
+      "kind": "pokecenter",
+      "dimensions_metatiles": [
+        10,
+        8
+      ],
+      "tileset": "pokecenter",
+      "rows": [
+        "00 00 00 00 00 00 00 00 00 00",
+        "00 00 01 02 03 13 08 00 00 00",
+        "00 00 05 06 07 04 0c 00 00 00",
+        "00 00 04 04 04 2e 2f 00 00 00",
+        "00 00 2d 04 04 04 2c 00 00 00",
+        "00 00 00 2e 2f 04 2b 00 00 00",
+        "00 00 00 00 04 04 00 00 00 00",
+        "00 00 00 00 00 24 00 00 00 00"
+      ],
+      "clear_arrival": [
+        10,
+        13
+      ],
+      "passive_arrival": {
+        "index": 3,
+        "tile": [
+          10,
+          13
+        ],
+        "collision": "FLOOR"
+      },
+      "exits": [
+        {
+          "index": 1,
+          "tile": [
+            10,
+            15
+          ],
+          "target": "MnMankato",
+          "target_warp": 2,
+          "collision": "WARP_CARPET_DOWN"
+        },
+        {
+          "index": 2,
+          "tile": [
+            11,
+            15
+          ],
+          "target": "MnMankato",
+          "target_warp": 2,
+          "collision": "WARP_CARPET_DOWN"
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_MK_NURSE",
+          "sprite": "SPRITE_NURSE",
+          "tile": [
+            7,
+            3
+          ],
+          "facing": "south",
+          "lines": [
+            "We can rest your",
+            "POKEMON here."
+          ],
+          "service": "heal_party",
+          "counter_tile": [
+            7,
+            4
+          ],
+          "approach": [
+            7,
+            5
+          ]
+        },
+        {
+          "id": "MN_MK_PATIENT",
+          "sprite": "SPRITE_TEACHER",
+          "tile": [
+            6,
+            7
+          ],
+          "facing": "south",
+          "lines": [
+            "A quick rest makes",
+            "the next climb easy."
+          ],
+          "service": null
+        }
+      ],
+      "pc": {
+        "tile": [
+          13,
+          3
+        ],
+        "approach": [
+          13,
+          4
+        ],
+        "collision": "PC",
+        "service": "native_pokemon_center_pc"
+      },
+      "id": "MnMankatoPokecenter1F",
+      "native_constant": "MN_MANKATO_POKECENTER_1F",
+      "template": "GoldenrodPokecenter1F",
+      "border_block": 0,
+      "source_behavior": "Native HealParty, PokemonCenterPC transfers and an additive clinic blackout destination."
+    },
+    {
+      "id": "MnMankatoMart",
+      "kind": "mart",
+      "native_constant": "MN_MANKATO_MART",
+      "template": "CherrygroveMart",
+      "tileset": "mart",
+      "dimensions_metatiles": [
+        6,
+        4
+      ],
+      "rows": [
+        "14 27 14 13 13 13",
+        "2b 22 2b 2b 2b 2b",
+        "15 29 13 2b 13 28",
+        "2b 2b 2b 2a 2b 23"
+      ],
+      "border_block": 0,
+      "passive_arrival": {
+        "index": 3,
+        "tile": [
+          6,
+          5
+        ]
+      },
+      "exits": [
+        {
+          "index": 1,
+          "tile": [
+            6,
+            7
+          ],
+          "target": "MnMankato",
+          "target_warp": 4,
+          "collision": "WARP_CARPET_DOWN"
+        },
+        {
+          "index": 2,
+          "tile": [
+            7,
+            7
+          ],
+          "target": "MnMankato",
+          "target_warp": 4,
+          "collision": "WARP_CARPET_DOWN"
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_MK_CLERK",
+          "sprite": "SPRITE_CLERK",
+          "tile": [
+            1,
+            3
+          ],
+          "facing": "south",
+          "lines": [],
+          "service": "pokemart",
+          "approach": [
+            3,
+            3
+          ],
+          "counter_tile": [
+            2,
+            3
+          ],
+          "stock": [
+            "POKE_BALL",
+            "POTION",
+            "SUPER_POTION",
+            "ANTIDOTE",
+            "PARLYZ_HEAL",
+            "ESCAPE_ROPE"
+          ]
+        },
+        {
+          "id": "MN_MK_SHOPPER",
+          "sprite": "SPRITE_GENTLEMAN",
+          "tile": [
+            9,
+            6
+          ],
+          "facing": "west",
+          "lines": [
+            "A few POTIONS help",
+            "on the prairie."
+          ],
+          "service": null
+        }
+      ],
+      "signs": [],
+      "pc": null
+    },
+    {
+      "id": "MnMankatoGym",
+      "kind": "gym_2",
+      "native_constant": "MN_MANKATO_GYM",
+      "template": "PewterGym",
+      "tileset": "mn_gym_2",
+      "border_block": 0,
+      "dimensions_metatiles": [
+        8,
+        10
+      ],
+      "rows": [],
+      "residents": [],
+      "signs": [],
+      "pc": null,
+      "passive_arrival": {
+        "index": 3,
+        "tile": [
+          6,
+          17
+        ]
+      },
+      "exits": [
+        {
+          "index": 1,
+          "tile": [
+            6,
+            19
+          ],
+          "target": "MnMankato",
+          "target_warp": 6
+        },
+        {
+          "index": 2,
+          "tile": [
+            7,
+            19
+          ],
+          "target": "MnMankato",
+          "target_warp": 6
+        }
+      ],
+      "source_reference": {
+        "path": "planning/minnesota/gyms/interiors.json",
+        "gym_id": "MnMankatoGym",
+        "room_sha256": "d9914b17de2d131573778234e5f8e6c5c247e787d06e9452f628e7253685a850",
+        "symbol_blocks": {
+          "#": "00",
+          ".": "01",
+          "A": "02",
+          "B": "03",
+          "E": "04",
+          "L": "05",
+          "R": "06",
+          "S": "07",
+          "T": "08",
+          "h": "09",
+          "l": "0a",
+          "p": "0b",
+          "r": "0c",
+          "s": "0d",
+          "t": "0e"
+        }
+      }
+    }
+  ],
+  "walkable_destinations": [
+    "each port landing",
+    "every visible exterior door",
+    "central square",
+    "local story NPC"
+  ],
+  "door_contract": "Clinic1/passive2, mart3/passive4, gym5/passive6. Each room retains two active carpets and passive arrival3. Every visible door is bound.",
+  "native_constant": "MN_MANKATO",
+  "compiled_tileset": "johto",
+  "status": "Native local candidate: three real facades, native terrace hop, complete Gym2 course/rewards/Continue, healing/PC/priced-mart/both-room-return controller checks pass. R02/R03 regional seams remain unbound.",
+  "residents": [
+    {
+      "id": "MN_MK_COACH",
+      "sprite": "SPRITE_POKEFAN_M",
+      "tile": [
+        16,
+        14
+      ],
+      "facing": "south",
+      "lines": [
+        "TORVEN trains on",
+        "the upper bank.",
+        "The east path leads",
+        "back up the slope."
+      ]
+    },
+    {
+      "id": "MN_MK_GARDENER",
+      "sprite": "SPRITE_TEACHER",
+      "tile": [
+        29,
+        25
+      ],
+      "facing": "south",
+      "lines": [
+        "Deep roots hold",
+        "this prairie soil.",
+        "Try the garden path",
+        "on your way back."
+      ]
+    }
+  ],
+  "signs": [
+    {
+      "id": "MnMKGymSign",
+      "tile": [
+        16,
+        12
+      ],
+      "lines": [
+        "MANKATO GYM",
+        "TORVEN - GROUND"
+      ]
+    },
+    {
+      "id": "MnMKClinicSign",
+      "tile": [
+        34,
+        12
+      ],
+      "lines": [
+        "POKEMON CENTER",
+        "Care and a PC."
+      ]
+    },
+    {
+      "id": "MnMKMartSign",
+      "tile": [
+        40,
+        26
+      ],
+      "lines": [
+        "MANKATO MART"
+      ]
+    },
+    {
+      "id": "MnMKGardenSign",
+      "tile": [
+        24,
+        28
+      ],
+      "lines": [
+        "UNIVERSITY GARDEN",
+        "Prairie flowers."
+      ]
+    }
+  ],
+  "doors": [
+    {
+      "warp_index": 1,
+      "return_warp_index": 2,
+      "tile": [
+        31,
+        13
+      ],
+      "target": "MnMankatoPokecenter1F",
+      "target_warp": 3,
+      "return_tile": [
+        31,
+        14
+      ],
+      "arrival_tile": [
+        10,
+        13
+      ],
+      "collision": "DOOR"
+    },
+    {
+      "warp_index": 3,
+      "return_warp_index": 4,
+      "tile": [
+        37,
+        27
+      ],
+      "target": "MnMankatoMart",
+      "target_warp": 3,
+      "return_tile": [
+        37,
+        28
+      ],
+      "arrival_tile": [
+        6,
+        5
+      ],
+      "collision": "DOOR"
+    },
+    {
+      "warp_index": 5,
+      "return_warp_index": 6,
+      "tile": [
+        10,
+        11
+      ],
+      "target": "MnMankatoGym",
+      "target_warp": 3,
+      "return_tile": [
+        10,
+        12
+      ],
+      "arrival_tile": [
+        6,
+        17
+      ],
+      "collision": "DOOR"
+    }
+  ],
+  "ledge_contract": {
+    "approach_core": [
+      10,
+      17
+    ],
+    "hop_core": [
+      10,
+      18
+    ],
+    "landing_core": [
+      10,
+      20
+    ],
+    "blocked_reverse_core": [
+      10,
+      19
+    ],
+    "minimum_ordinary_return_steps": 24,
+    "ordinary_return": "east end of low bank, then west across upper court"
+  },
+  "viewpoints": [
+    {
+      "id": "gym",
+      "tile": [
+        10,
+        12
+      ]
+    },
+    {
+      "id": "ledge",
+      "tile": [
+        10,
+        17
+      ]
+    },
+    {
+      "id": "arrival",
+      "tile": [
+        40,
+        18
+      ]
+    },
+    {
+      "id": "garden",
+      "tile": [
+        28,
+        26
+      ]
+    },
+    {
+      "id": "mart",
+      "tile": [
+        37,
+        28
+      ]
+    }
+  ]
+}

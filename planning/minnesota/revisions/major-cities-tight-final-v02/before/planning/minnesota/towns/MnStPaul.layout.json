@@ -1,0 +1,1343 @@
+{
+  "schema_version": 2,
+  "id": "MnStPaul",
+  "tileset": "kanto",
+  "compiled_tileset": "kanto",
+  "dimensions_metatiles": [
+    32,
+    24
+  ],
+  "shore_fitting": "kanto_8_neighbors",
+  "reject_cliff_cuts": true,
+  "materials": {
+    "forest": "0f",
+    "floor": "01",
+    "lawn": "0a",
+    "encounter": "0b",
+    "flowers": "74",
+    "water": "43",
+    "boulder": "13",
+    "sign": "79"
+  },
+  "additional_water_blocks": [
+    "14",
+    "18",
+    "19",
+    "1d",
+    "1e",
+    "1f",
+    "43",
+    "64",
+    "65",
+    "6a",
+    "6b"
+  ],
+  "layers": [
+    {
+      "name": "Civic town ground within stone boundary",
+      "kind": "polygon",
+      "material": "lawn",
+      "points": [
+        [
+          2,
+          2
+        ],
+        [
+          28,
+          2
+        ],
+        [
+          28,
+          5
+        ],
+        [
+          30,
+          5
+        ],
+        [
+          30,
+          20
+        ],
+        [
+          27,
+          20
+        ],
+        [
+          27,
+          22
+        ],
+        [
+          3,
+          22
+        ],
+        [
+          3,
+          18
+        ],
+        [
+          1,
+          18
+        ],
+        [
+          1,
+          9
+        ],
+        [
+          2,
+          9
+        ]
+      ]
+    },
+    {
+      "name": "R04 public avenue",
+      "kind": "path",
+      "material": "floor",
+      "points": [
+        [
+          0,
+          12
+        ],
+        [
+          28,
+          12
+        ]
+      ],
+      "width_metatiles": 1
+    },
+    {
+      "name": "Fairgrounds reserved northern public street",
+      "kind": "path",
+      "material": "floor",
+      "points": [
+        [
+          8,
+          0
+        ],
+        [
+          8,
+          12
+        ]
+      ],
+      "width_metatiles": 1
+    },
+    {
+      "name": "Clinic public approach",
+      "kind": "path",
+      "material": "floor",
+      "points": [
+        [
+          3,
+          8
+        ],
+        [
+          8,
+          8
+        ]
+      ],
+      "width_metatiles": 1
+    },
+    {
+      "name": "Mart approach from fair street",
+      "kind": "path",
+      "material": "floor",
+      "points": [
+        [
+          8,
+          8
+        ],
+        [
+          11,
+          8
+        ]
+      ],
+      "width_metatiles": 1
+    },
+    {
+      "name": "Capitol west brick stair return",
+      "kind": "path",
+      "material": "floor",
+      "points": [
+        [
+          13,
+          12
+        ],
+        [
+          13,
+          5
+        ],
+        [
+          17,
+          5
+        ]
+      ],
+      "width_metatiles": 1
+    },
+    {
+      "name": "Capitol front and upper civic walk",
+      "kind": "path",
+      "material": "floor",
+      "points": [
+        [
+          17,
+          5
+        ],
+        [
+          17,
+          8
+        ],
+        [
+          23,
+          8
+        ],
+        [
+          23,
+          9
+        ],
+        [
+          27,
+          9
+        ]
+      ],
+      "width_metatiles": 1
+    },
+    {
+      "name": "Gym approach and eastern street",
+      "kind": "path",
+      "material": "floor",
+      "points": [
+        [
+          27,
+          8
+        ],
+        [
+          27,
+          20
+        ],
+        [
+          22,
+          20
+        ],
+        [
+          22,
+          19
+        ]
+      ],
+      "width_metatiles": 1
+    },
+    {
+      "name": "Union Depot west public approach",
+      "kind": "path",
+      "material": "floor",
+      "points": [
+        [
+          18,
+          12
+        ],
+        [
+          18,
+          20
+        ],
+        [
+          22,
+          20
+        ]
+      ],
+      "width_metatiles": 1
+    },
+    {
+      "name": "River park approach",
+      "kind": "path",
+      "material": "floor",
+      "points": [
+        [
+          12,
+          12
+        ],
+        [
+          12,
+          15
+        ],
+        [
+          14,
+          15
+        ],
+        [
+          14,
+          19
+        ]
+      ],
+      "width_metatiles": 1
+    },
+    {
+      "name": "Fair entry small green turnout",
+      "kind": "rect",
+      "material": "lawn",
+      "bounds": [
+        8,
+        2,
+        11,
+        5
+      ]
+    },
+    {
+      "name": "Small Capitol public forecourt",
+      "kind": "block_rect",
+      "bounds": [
+        16,
+        5,
+        20,
+        8
+      ],
+      "block": "55"
+    },
+    {
+      "name": "Clinic small safe front yard",
+      "kind": "rect",
+      "material": "floor",
+      "bounds": [
+        3,
+        8,
+        6,
+        10
+      ]
+    },
+    {
+      "name": "Mart small safe front yard",
+      "kind": "rect",
+      "material": "floor",
+      "bounds": [
+        11,
+        8,
+        14,
+        10
+      ]
+    },
+    {
+      "name": "Union Depot active passenger forecourt",
+      "kind": "rect",
+      "material": "floor",
+      "bounds": [
+        20,
+        19,
+        27,
+        21
+      ]
+    },
+    {
+      "name": "Gym clear waiting yard",
+      "kind": "rect",
+      "material": "floor",
+      "bounds": [
+        26,
+        8,
+        29,
+        10
+      ]
+    },
+    {
+      "name": "Capitol bluff retaining edge",
+      "kind": "block_rect",
+      "bounds": [
+        14,
+        10,
+        26,
+        11
+      ],
+      "block": "1c"
+    },
+    {
+      "name": "Capitol actual low bank drop",
+      "kind": "point",
+      "position": [
+        19,
+        10
+      ],
+      "block": "07"
+    },
+    {
+      "name": "Retaining edge end pillar",
+      "kind": "point",
+      "position": [
+        13,
+        10
+      ],
+      "block": "13"
+    },
+    {
+      "name": "Retaining edge end pillar",
+      "kind": "point",
+      "position": [
+        26,
+        10
+      ],
+      "block": "13"
+    },
+    {
+      "name": "Brick stair return upper/lower run",
+      "kind": "block_rect",
+      "bounds": [
+        13,
+        8,
+        14,
+        12
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Upper low bank approach",
+      "kind": "path",
+      "material": "floor",
+      "points": [
+        [
+          19,
+          8
+        ],
+        [
+          19,
+          9
+        ]
+      ],
+      "width_metatiles": 1
+    },
+    {
+      "name": "Low bank landing rejoins avenue",
+      "kind": "path",
+      "material": "floor",
+      "points": [
+        [
+          19,
+          11
+        ],
+        [
+          19,
+          12
+        ]
+      ],
+      "width_metatiles": 1
+    },
+    {
+      "name": "North clinic garden",
+      "kind": "rect",
+      "material": "forest",
+      "bounds": [
+        2,
+        2,
+        7,
+        5
+      ]
+    },
+    {
+      "name": "Clinic west hedge",
+      "kind": "rect",
+      "material": "forest",
+      "bounds": [
+        1,
+        5,
+        3,
+        10
+      ]
+    },
+    {
+      "name": "Mart north planted block",
+      "kind": "rect",
+      "material": "forest",
+      "bounds": [
+        10,
+        2,
+        14,
+        5
+      ]
+    },
+    {
+      "name": "Civic northeast grove",
+      "kind": "rect",
+      "material": "forest",
+      "bounds": [
+        22,
+        2,
+        29,
+        5
+      ]
+    },
+    {
+      "name": "Depot avenue west grove",
+      "kind": "rect",
+      "material": "forest",
+      "bounds": [
+        15,
+        14,
+        18,
+        18
+      ]
+    },
+    {
+      "name": "Depot eastern sheltered grove",
+      "kind": "rect",
+      "material": "forest",
+      "bounds": [
+        28,
+        15,
+        31,
+        22
+      ]
+    },
+    {
+      "name": "Southwest riverbank trees",
+      "kind": "rect",
+      "material": "forest",
+      "bounds": [
+        2,
+        21,
+        13,
+        23
+      ]
+    },
+    {
+      "name": "River park north grove",
+      "kind": "rect",
+      "material": "forest",
+      "bounds": [
+        4,
+        14,
+        10,
+        16
+      ]
+    },
+    {
+      "name": "Capitol formal flowers west",
+      "kind": "rect",
+      "material": "flowers",
+      "bounds": [
+        14,
+        5,
+        16,
+        7
+      ]
+    },
+    {
+      "name": "Capitol formal flowers east",
+      "kind": "rect",
+      "material": "flowers",
+      "bounds": [
+        20,
+        5,
+        22,
+        7
+      ]
+    },
+    {
+      "name": "Fair garden flowers",
+      "kind": "rect",
+      "material": "flowers",
+      "bounds": [
+        10,
+        3,
+        12,
+        5
+      ]
+    },
+    {
+      "name": "Riverbank wildflowers",
+      "kind": "rect",
+      "material": "flowers",
+      "bounds": [
+        12,
+        20,
+        15,
+        21
+      ]
+    },
+    {
+      "name": "Mississippi bend enclosed in river park",
+      "kind": "polygon",
+      "material": "water",
+      "points": [
+        [
+          3,
+          16
+        ],
+        [
+          7,
+          16
+        ],
+        [
+          7,
+          17
+        ],
+        [
+          11,
+          17
+        ],
+        [
+          11,
+          19
+        ],
+        [
+          12,
+          19
+        ],
+        [
+          12,
+          21
+        ],
+        [
+          5,
+          21
+        ],
+        [
+          5,
+          20
+        ],
+        [
+          2,
+          20
+        ],
+        [
+          2,
+          18
+        ],
+        [
+          3,
+          18
+        ]
+      ]
+    },
+    {
+      "name": "Attached northeast civic grove frames Gym approach",
+      "kind": "polygon",
+      "material": "forest",
+      "points": [
+        [
+          22,
+          5
+        ],
+        [
+          25,
+          5
+        ],
+        [
+          25,
+          6
+        ],
+        [
+          24,
+          6
+        ],
+        [
+          24,
+          8
+        ],
+        [
+          22,
+          8
+        ]
+      ]
+    },
+    {
+      "name": "Preserve actual upper civic street through attached planted shoulder",
+      "kind": "path",
+      "material": "floor",
+      "points": [
+        [
+          17,
+          8
+        ],
+        [
+          23,
+          8
+        ],
+        [
+          23,
+          9
+        ],
+        [
+          27,
+          9
+        ]
+      ],
+      "width_metatiles": 1
+    },
+    {
+      "name": "Clinic native facade 0,0",
+      "kind": "point",
+      "position": [
+        3,
+        6
+      ],
+      "block": "20"
+    },
+    {
+      "name": "Clinic native facade 1,0",
+      "kind": "point",
+      "position": [
+        4,
+        6
+      ],
+      "block": "54"
+    },
+    {
+      "name": "Clinic native facade 2,0",
+      "kind": "point",
+      "position": [
+        5,
+        6
+      ],
+      "block": "21"
+    },
+    {
+      "name": "Clinic native facade 0,1",
+      "kind": "point",
+      "position": [
+        3,
+        7
+      ],
+      "block": "7c"
+    },
+    {
+      "name": "Clinic native facade 1,1",
+      "kind": "point",
+      "position": [
+        4,
+        7
+      ],
+      "block": "72"
+    },
+    {
+      "name": "Clinic native facade 2,1",
+      "kind": "point",
+      "position": [
+        5,
+        7
+      ],
+      "block": "7e"
+    },
+    {
+      "name": "Mart native facade 0,0",
+      "kind": "point",
+      "position": [
+        11,
+        6
+      ],
+      "block": "20"
+    },
+    {
+      "name": "Mart native facade 1,0",
+      "kind": "point",
+      "position": [
+        12,
+        6
+      ],
+      "block": "54"
+    },
+    {
+      "name": "Mart native facade 2,0",
+      "kind": "point",
+      "position": [
+        13,
+        6
+      ],
+      "block": "21"
+    },
+    {
+      "name": "Mart native facade 0,1",
+      "kind": "point",
+      "position": [
+        11,
+        7
+      ],
+      "block": "7c"
+    },
+    {
+      "name": "Mart native facade 1,1",
+      "kind": "point",
+      "position": [
+        12,
+        7
+      ],
+      "block": "73"
+    },
+    {
+      "name": "Mart native facade 2,1",
+      "kind": "point",
+      "position": [
+        13,
+        7
+      ],
+      "block": "7e"
+    },
+    {
+      "name": "Capitol public hall native facade 0,0",
+      "kind": "point",
+      "position": [
+        16,
+        2
+      ],
+      "block": "20"
+    },
+    {
+      "name": "Capitol public hall native facade 1,0",
+      "kind": "point",
+      "position": [
+        17,
+        2
+      ],
+      "block": "54"
+    },
+    {
+      "name": "Capitol public hall native facade 2,0",
+      "kind": "point",
+      "position": [
+        18,
+        2
+      ],
+      "block": "54"
+    },
+    {
+      "name": "Capitol public hall native facade 3,0",
+      "kind": "point",
+      "position": [
+        19,
+        2
+      ],
+      "block": "21"
+    },
+    {
+      "name": "Capitol public hall native facade 0,1",
+      "kind": "point",
+      "position": [
+        16,
+        3
+      ],
+      "block": "68"
+    },
+    {
+      "name": "Capitol public hall native facade 1,1",
+      "kind": "point",
+      "position": [
+        17,
+        3
+      ],
+      "block": "7f"
+    },
+    {
+      "name": "Capitol public hall native facade 2,1",
+      "kind": "point",
+      "position": [
+        18,
+        3
+      ],
+      "block": "7f"
+    },
+    {
+      "name": "Capitol public hall native facade 3,1",
+      "kind": "point",
+      "position": [
+        19,
+        3
+      ],
+      "block": "69"
+    },
+    {
+      "name": "Capitol public hall native facade 0,2",
+      "kind": "point",
+      "position": [
+        16,
+        4
+      ],
+      "block": "37"
+    },
+    {
+      "name": "Capitol public hall native facade 1,2",
+      "kind": "point",
+      "position": [
+        17,
+        4
+      ],
+      "block": "3a"
+    },
+    {
+      "name": "Capitol public hall native facade 2,2",
+      "kind": "point",
+      "position": [
+        18,
+        4
+      ],
+      "block": "7d"
+    },
+    {
+      "name": "Capitol public hall native facade 3,2",
+      "kind": "point",
+      "position": [
+        19,
+        4
+      ],
+      "block": "7e"
+    },
+    {
+      "name": "Gym4 native facade 0,0",
+      "kind": "point",
+      "position": [
+        25,
+        6
+      ],
+      "block": "0c"
+    },
+    {
+      "name": "Gym4 native facade 1,0",
+      "kind": "point",
+      "position": [
+        26,
+        6
+      ],
+      "block": "0d"
+    },
+    {
+      "name": "Gym4 native facade 2,0",
+      "kind": "point",
+      "position": [
+        27,
+        6
+      ],
+      "block": "0e"
+    },
+    {
+      "name": "Gym4 native facade 0,1",
+      "kind": "point",
+      "position": [
+        25,
+        7
+      ],
+      "block": "10"
+    },
+    {
+      "name": "Gym4 native facade 1,1",
+      "kind": "point",
+      "position": [
+        26,
+        7
+      ],
+      "block": "11"
+    },
+    {
+      "name": "Gym4 native facade 2,1",
+      "kind": "point",
+      "position": [
+        27,
+        7
+      ],
+      "block": "12"
+    },
+    {
+      "name": "Union Depot native facade 0,0",
+      "kind": "point",
+      "position": [
+        19,
+        16
+      ],
+      "block": "20"
+    },
+    {
+      "name": "Union Depot native facade 1,0",
+      "kind": "point",
+      "position": [
+        20,
+        16
+      ],
+      "block": "54"
+    },
+    {
+      "name": "Union Depot native facade 2,0",
+      "kind": "point",
+      "position": [
+        21,
+        16
+      ],
+      "block": "54"
+    },
+    {
+      "name": "Union Depot native facade 3,0",
+      "kind": "point",
+      "position": [
+        22,
+        16
+      ],
+      "block": "54"
+    },
+    {
+      "name": "Union Depot native facade 4,0",
+      "kind": "point",
+      "position": [
+        23,
+        16
+      ],
+      "block": "54"
+    },
+    {
+      "name": "Union Depot native facade 5,0",
+      "kind": "point",
+      "position": [
+        24,
+        16
+      ],
+      "block": "54"
+    },
+    {
+      "name": "Union Depot native facade 6,0",
+      "kind": "point",
+      "position": [
+        25,
+        16
+      ],
+      "block": "54"
+    },
+    {
+      "name": "Union Depot native facade 7,0",
+      "kind": "point",
+      "position": [
+        26,
+        16
+      ],
+      "block": "21"
+    },
+    {
+      "name": "Union Depot native facade 0,1",
+      "kind": "point",
+      "position": [
+        19,
+        17
+      ],
+      "block": "68"
+    },
+    {
+      "name": "Union Depot native facade 1,1",
+      "kind": "point",
+      "position": [
+        20,
+        17
+      ],
+      "block": "7f"
+    },
+    {
+      "name": "Union Depot native facade 2,1",
+      "kind": "point",
+      "position": [
+        21,
+        17
+      ],
+      "block": "7f"
+    },
+    {
+      "name": "Union Depot native facade 3,1",
+      "kind": "point",
+      "position": [
+        22,
+        17
+      ],
+      "block": "7f"
+    },
+    {
+      "name": "Union Depot native facade 4,1",
+      "kind": "point",
+      "position": [
+        23,
+        17
+      ],
+      "block": "7f"
+    },
+    {
+      "name": "Union Depot native facade 5,1",
+      "kind": "point",
+      "position": [
+        24,
+        17
+      ],
+      "block": "7f"
+    },
+    {
+      "name": "Union Depot native facade 6,1",
+      "kind": "point",
+      "position": [
+        25,
+        17
+      ],
+      "block": "7f"
+    },
+    {
+      "name": "Union Depot native facade 7,1",
+      "kind": "point",
+      "position": [
+        26,
+        17
+      ],
+      "block": "69"
+    },
+    {
+      "name": "Union Depot native facade 0,2",
+      "kind": "point",
+      "position": [
+        19,
+        18
+      ],
+      "block": "37"
+    },
+    {
+      "name": "Union Depot native facade 1,2",
+      "kind": "point",
+      "position": [
+        20,
+        18
+      ],
+      "block": "7d"
+    },
+    {
+      "name": "Union Depot native facade 2,2",
+      "kind": "point",
+      "position": [
+        21,
+        18
+      ],
+      "block": "7d"
+    },
+    {
+      "name": "Union Depot native facade 3,2",
+      "kind": "point",
+      "position": [
+        22,
+        18
+      ],
+      "block": "3a"
+    },
+    {
+      "name": "Union Depot native facade 4,2",
+      "kind": "point",
+      "position": [
+        23,
+        18
+      ],
+      "block": "7d"
+    },
+    {
+      "name": "Union Depot native facade 5,2",
+      "kind": "point",
+      "position": [
+        24,
+        18
+      ],
+      "block": "7d"
+    },
+    {
+      "name": "Union Depot native facade 6,2",
+      "kind": "point",
+      "position": [
+        25,
+        18
+      ],
+      "block": "7d"
+    },
+    {
+      "name": "Union Depot native facade 7,2",
+      "kind": "point",
+      "position": [
+        26,
+        18
+      ],
+      "block": "7e"
+    },
+    {
+      "name": "Capitol bench",
+      "kind": "point",
+      "position": [
+        20,
+        8
+      ],
+      "block": "08"
+    },
+    {
+      "name": "Depot waiting seat",
+      "kind": "point",
+      "position": [
+        25,
+        20
+      ],
+      "block": "08"
+    },
+    {
+      "name": "north urban stone limit",
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        0,
+        32,
+        1
+      ],
+      "block": "13"
+    },
+    {
+      "name": "south urban stone limit",
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        23,
+        32,
+        24
+      ],
+      "block": "13"
+    },
+    {
+      "name": "west urban stone limit",
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        0,
+        1,
+        24
+      ],
+      "block": "13"
+    },
+    {
+      "name": "east urban stone limit",
+      "kind": "block_rect",
+      "bounds": [
+        31,
+        0,
+        32,
+        24
+      ],
+      "block": "13"
+    },
+    {
+      "name": "R04 actual street mouth",
+      "kind": "point",
+      "position": [
+        0,
+        12
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Fairgrounds actual reserved street mouth",
+      "kind": "point",
+      "position": [
+        8,
+        0
+      ],
+      "block": "01"
+    },
+    {
+      "name": "CLINIC actual native sign",
+      "kind": "point",
+      "position": [
+        6,
+        8
+      ],
+      "block": "79"
+    },
+    {
+      "name": "MART actual native sign",
+      "kind": "point",
+      "position": [
+        14,
+        8
+      ],
+      "block": "79"
+    },
+    {
+      "name": "CAPITOL actual native sign",
+      "kind": "point",
+      "position": [
+        15,
+        6
+      ],
+      "block": "79"
+    },
+    {
+      "name": "GYM actual native sign",
+      "kind": "point",
+      "position": [
+        28,
+        8
+      ],
+      "block": "79"
+    },
+    {
+      "name": "DEPOT actual native sign",
+      "kind": "point",
+      "position": [
+        23,
+        19
+      ],
+      "block": "79"
+    },
+    {
+      "name": "FAIR actual native sign",
+      "kind": "point",
+      "position": [
+        9,
+        3
+      ],
+      "block": "79"
+    },
+    {
+      "name": "RIVER actual native sign",
+      "kind": "point",
+      "position": [
+        13,
+        18
+      ],
+      "block": "79"
+    },
+    {
+      "name": "WAYFINDING actual native sign",
+      "kind": "point",
+      "position": [
+        16,
+        13
+      ],
+      "block": "79"
+    },
+    {
+      "name": "Clinic frontage planted shoulder",
+      "kind": "rect",
+      "material": "forest",
+      "bounds": [
+        3,
+        10,
+        7,
+        12
+      ]
+    },
+    {
+      "name": "Market frontage flower border",
+      "kind": "rect",
+      "material": "flowers",
+      "bounds": [
+        10,
+        10,
+        13,
+        12
+      ]
+    },
+    {
+      "name": "River garden west city shoulder",
+      "kind": "rect",
+      "material": "forest",
+      "bounds": [
+        2,
+        13,
+        8,
+        15
+      ]
+    },
+    {
+      "name": "Depot rear planted privacy strip",
+      "kind": "rect",
+      "material": "forest",
+      "bounds": [
+        19,
+        14,
+        27,
+        16
+      ]
+    }
+  ]
+}

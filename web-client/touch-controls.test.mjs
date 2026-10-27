@@ -137,3 +137,31 @@ test('intercepted movement preserves the original gesture before synthetic game 
   assert.deepEqual(received[0].gameEvents, []);
   assert.deepEqual(pad.events, [['keydown', 'ArrowLeft']]);
 });
+
+test('the shipped page mounts all eight usable controls through the real touch module', async () => {
+  const { readFile } = await import('node:fs/promises');
+  const { JSDOM } = await import('jsdom');
+  const html = await readFile(new URL('./index.html', import.meta.url), 'utf8');
+  const dom = new JSDOM(html, { pretendToBeVisual: true });
+  const { window } = dom;
+  const { document } = window;
+  try {
+    const pad = document.querySelector('#touch-controls');
+    assert.equal(pad.hidden, false);
+    assert.equal(pad.disabled, true, 'loading must not send gameplay input');
+    assert.deepEqual([...pad.querySelectorAll('button')].map(b => b.dataset.gameButton).sort(),
+      ['a', 'b', 'down', 'left', 'right', 'select', 'start', 'up']);
+    const canvas = document.querySelector('#crystal-canvas');
+    const keys = [];
+    canvas.addEventListener('keydown', e => keys.push(e.code));
+    canvas.addEventListener('keyup', e => keys.push(`release:${e.code}`));
+    mountTouchControls({ document, window, canvas });
+    pad.disabled = false;
+    for (const [button, code] of [['a', 'KeyZ'], ['b', 'KeyX'], ['start', 'Enter'], ['select', 'ShiftRight'], ['up', 'ArrowUp']]) {
+      pad.querySelector(`[data-game-button="${button}"]`).click();
+      assert.equal(keys.at(-1), code);
+      window.dispatchEvent(new window.Event('blur'));
+      assert.equal(keys.at(-1), `release:${code}`);
+    }
+  } finally { window.close(); }
+});

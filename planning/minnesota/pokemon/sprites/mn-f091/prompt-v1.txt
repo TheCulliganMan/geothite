@@ -1,0 +1,27 @@
+Use case: stylized-concept. Asset type: production Game Boy Color creature battle sprite sheet.
+
+Create ORIGINAL Gen2-era monster pixel art. This is actual sprite artwork with coarse square-pixel clusters, not an illustration to be pixelated later. Pure white background. NO captions/text/grid lines/palette swatches/shadows. Crisp stepped black exterior silhouettes; spare connected interior black structural seams; flat color planes. No gradients, antialiasing, soft edges, glossy rendering, tiny noisy texture, single-pixel confetti or smooth vector curves. Respect authentic late-1990s Pokemon Crystal sprite economy, readable eyes and structural evolution; do not copy any existing Pokemon identity.
+
+Layout exactly 3 columns by 2 rows. Columns left-to-right: Pipulse, Cadenset, Valorythm. Each column is ONE species. Upper row: full-body FRONT 3/4 facing LEFT at native56x56 language. Lower row: CLOSE REAR PORTRAIT facing UPPER RIGHT at native48x48 language. Back is a huge head/neck/near-shoulder view, lower body visibly cut at bottom, authentic Crystal battle framing. Enlarge each back head/shoulder strongly; do not draw a complete miniature full-body turnaround. Leave wide clean white gutters between cells, all artwork disjoint. Display artwork enlarged nearest-neighbor for source sheet; favor about5-7sourcepixels per nativepixel. Front stages show proportional growth; every back fills its cell as a close portrait.
+
+Theme: Minnesota portable-pacemaker invention and the metronome circuit: a rhythm-helper creature learns to steady its own beat, then coordinates powerful protective movements through paired pulse limbs.
+
+Design constraints: Rhythm is embodied in asymmetric crest, chest bands and counterweights, never detached music-note particles. Each evolution has its own warm cream/orange/deep-blue hardware palette. Large face/chest forms and four broad hands only.
+
+Gentle but strong organic rhythm protectors. Rounded two-lobed baby; looped forearm middle; compact final guardian with exactly four open palms, two main arms and two smaller stabilizer arms. Unequal ear horns develop into a conductor crest. Broad cream/orange planes and dark-blue elastic bands. No actual appliance, screen, heart diagram or human figure.
+
+Species anatomy and each independent hardware palette (front and back MUST match). Each species uses EXACTLY FOUR inks: white, its own two chromatic colors and pure black. White is valid enclosed eye/body highlight ink; black also outlines white body parts. The sheet globally can exceed four colors because species use different palettes. Never share one palette across the whole evolution line. RGB555 packing is r|(g<<5)|(b<<10); RGB8 expansion is (v<<3)|(v>>2).
+
+MN_198 Pipulse ELECTRIC: A small warm two-lobed creature rocks on paired toe pads; a pendulum-tipped tail and unequal ear horns keep a steady beat. A broad simple chest chevron visibly pulses between its eyes and belly. SILHOUETTE: Two rounded chest lobes, tiny toe pads, one short ear and one long ear, pendulum tail.
+
+Exact Pipulse palette: RGB5=[(31, 31, 31), (30, 25, 15), (6, 13, 21), (0, 0, 0)]; RGB555=[32767, 16190, 21926, 0]; RGB8=[[255, 255, 255], [247, 206, 123], [49, 107, 173], [0, 0, 0]]; HEX=['#FFFFFF', '#F7CE7B', '#316BAD', '#000000'].
+
+MN_199 Cadenset ELECTRIC/FIGHTING: Two elastic chest bands loop into strong forearms, and the tail divides into counterbalanced beat paddles. It plants broad feet and uses alternating palm thrusts to keep companions moving in time. SILHOUETTE: Broad elastic chest, two looped muscular forearms and paired tail counterweights.
+
+Exact Cadenset palette: RGB5=[(31, 31, 31), (29, 21, 9), (5, 11, 20), (0, 0, 0)]; RGB555=[32767, 9917, 20837, 0]; RGB8=[[255, 255, 255], [239, 173, 74], [41, 90, 165], [0, 0, 0]]; HEX=['#FFFFFF', '#EFAD4A', '#295AA5', '#000000'].
+
+MN_200 Valorythm ELECTRIC/FIGHTING: A second pair of smaller stabilizing arms unfolds from beneath the shoulder bands; the long ear becomes a sweeping conductor crest. A strong rescuer stance and four open palms make its protective role clear. SILHOUETTE: Four-palmed compact guardian, high curved conductor crest and two sturdy rooted legs; no square appliance body, screen, needles or human heart diagram.
+
+Exact Valorythm palette: RGB5=[(31, 31, 31), (30, 23, 12), (4, 9, 18), (0, 0, 0)]; RGB555=[32767, 13054, 18724, 0]; RGB8=[[255, 255, 255], [247, 189, 99], [33, 74, 148], [0, 0, 0]]; HEX=['#FFFFFF', '#F7BD63', '#214A94', '#000000'].
+
+Final quality: original appealing themed monsters, clear eye whites, bold broad anatomical planes, readable limbs and deeply different evolutionary silhouettes. Black silhouette rims must be continuous wherever they border white paper; white highlights stay enclosed inside the rim. A few deliberate open colored contour accents may echo Gen2, but no fragmented dotted outlines. Keep open cropping of lower back at the bottom.

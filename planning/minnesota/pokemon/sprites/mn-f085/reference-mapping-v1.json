@@ -1,0 +1,19 @@
+{
+  "references": [
+    {
+      "path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/gen2-reference/starters.png",
+      "sha256": "af61f720a75b7e1b8e80ba14e8944612556397eedddd719669dec68b0e0fd534",
+      "role": "Authentic Gen2 pixel economy and close rear battle portrait camera, no character copying."
+    }
+  ],
+  "canonical_family_id": "MN_F085",
+  "regional_sources": [
+    {
+      "title": "Superior National Forest, April30 2024 bear-aware release and Q&A",
+      "url": "https://www.fs.usda.gov/sites/nfs/files/r09/superior/publication/alerts/20240430_SNF_BWCAW_Bear-Resistant-09-09-24-02.pdf",
+      "supports": "Historical regional hanging-food and container campcraft.",
+      "source_kind": "primary historical agency release"
+    }
+  ],
+  "palette_plan": "sprites/mn-f085/palette-plan.json"
+}

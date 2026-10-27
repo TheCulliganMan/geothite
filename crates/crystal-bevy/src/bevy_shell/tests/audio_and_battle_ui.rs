@@ -1887,6 +1887,13 @@ fn battle_move_menu_uses_asm_windows_and_cancel_row() {
     assert_eq!(battle_window_frame_tile_count(16, 6), 40);
     assert_eq!(battle_window_frame_tile_count(11, 5), 28);
     assert_eq!(source_type_display_name("FIRE").unwrap(), "FIRE");
+    assert_eq!(source_type_display_name("FAIRY").unwrap(), "FAIRY");
+    assert_eq!(POKEDEX_SEARCH_TYPES.len(), POKEDEX_SEARCH_LABELS.len());
+    let fairy_index = POKEDEX_SEARCH_TYPES
+        .iter()
+        .position(|kind| *kind == "FAIRY")
+        .expect("Fairy is a searchable overlay type");
+    assert_eq!(POKEDEX_SEARCH_LABELS[fairy_index].trim(), "FAIRY");
     assert_eq!(source_type_display_name("CURSE_TYPE").unwrap(), "???");
     assert_eq!(source_type_display_name("PSYCHIC_TYPE").unwrap(), "PSYCHIC");
     assert!(source_type_display_name("SPECIAL_ATTACK").is_err());

@@ -94,12 +94,12 @@ fn immersive_capture_source_lifetime_survives_expansion_cue_gap_and_retained_ret
 fn immersive_capture_bridge_keeps_all_other_source_fallback_reasons() {
     let mut shell = immersive_battle_fixture();
     shell.visible_capture_animation = Some(capture_clock_fixture("POKE_BALL", true, 4));
-    assert!(immersive_battle_requires_source_scene(&shell));
+    assert!(!immersive_battle_requires_source_scene(&shell));
     assert!(!immersive_battle_requires_source_scene_supported(&shell, false, true));
     shell.visible_trainer_exit_animation = Some(VisibleTrainerExitAnimation {
         side: crate::core::battle::turn::BattleSide::Enemy, frame: 0, send_out_after: false,
     });
-    assert!(immersive_battle_requires_source_scene_supported(&shell, false, true));
+    assert!(!immersive_battle_requires_source_scene_supported(&shell, false, true));
 }
 
 #[cfg(feature = "location-tester")]
@@ -175,7 +175,7 @@ fn immersive_capture_bridge_keeps_real_queued_enemy_response_eligible_until_it_s
                 // process-wide opt-in; no unsafe environment mutation is needed.
                 assert!(immersive_capture_source_supported(&controller.shell, &scene, &frame.battlers));
                 assert!(!immersive_battle_requires_source_scene_supported(&controller.shell, false, true));
-                assert_eq!(frame.use_source_scene, !immersive_capture_prototype_enabled());
+                assert!(!frame.use_source_scene, "captures retain the 3D scene by default");
                 assert_eq!(frame.capture.as_ref().unwrap(), &visible_capture_present_state(&capture));
                 assert!(!frame.cues.iter().any(|cue| cue.kind == VisualBattleCueKind::Move));
                 if capture.started {

@@ -1,0 +1,1099 @@
+{
+  "id": "MN_R16",
+  "map_prefix": "MnR16",
+  "name": "Red River Prairie",
+  "dimensions_metatiles": [
+    48,
+    24
+  ],
+  "chunk_metatiles": [
+    32,
+    24
+  ],
+  "chunk_columns": 2,
+  "chunk_rows": 1,
+  "endpoints": [
+    {
+      "place": "DETROIT LAKES",
+      "side": "E",
+      "gate_metatile": [
+        46,
+        12
+      ],
+      "landing_metatile": [
+        44,
+        12
+      ]
+    },
+    {
+      "place": "MOORHEAD",
+      "side": "W",
+      "gate_metatile": [
+        1,
+        12
+      ],
+      "landing_metatile": [
+        3,
+        12
+      ]
+    }
+  ],
+  "required_flags": [
+    "BADGE_6"
+  ],
+  "quest": "SQ02",
+  "tileset": "mn_headwaters",
+  "source_references": [
+    "Route34",
+    "Route42",
+    "Route29"
+  ],
+  "description": "A feature-scaled farm-country crossing: broad Red River, much smaller drainage channel, native low hayfield bank, narrow working lanes, a stepped seedbed, grass-gated pollinator basin and cottonwood habitat neck. The east farm half was materially reduced and reshaped after empty-camera review.",
+  "main_path_metatiles": [
+    [
+      46,
+      12
+    ],
+    [
+      43,
+      12
+    ],
+    [
+      40,
+      12
+    ],
+    [
+      38,
+      12
+    ],
+    [
+      38,
+      15
+    ],
+    [
+      34,
+      15
+    ],
+    [
+      29,
+      15
+    ],
+    [
+      18,
+      15
+    ],
+    [
+      18,
+      12
+    ],
+    [
+      13,
+      12
+    ],
+    [
+      1,
+      12
+    ]
+  ],
+  "main_lane_width_gameplay_tiles": 2,
+  "districts": [
+    {
+      "id": "RIVER",
+      "name": "Red River bank",
+      "bounds_metatiles": [
+        0,
+        1,
+        15,
+        23
+      ],
+      "purpose": "Necessary river crossing and closed fishing landing."
+    },
+    {
+      "id": "HAY",
+      "name": "Hay meadow and floodplain",
+      "bounds_metatiles": [
+        14,
+        1,
+        29,
+        23
+      ],
+      "purpose": "Hay meadow, directed low-bank return, real tending lane and floodplain habitat."
+    },
+    {
+      "id": "DITCH",
+      "name": "Prairie drainage",
+      "bounds_metatiles": [
+        28,
+        1,
+        34,
+        23
+      ],
+      "purpose": "Necessary narrow drainage crossing with a reed shoulder."
+    },
+    {
+      "id": "FARM",
+      "name": "Working seedbed and pollinator basin",
+      "bounds_metatiles": [
+        34,
+        1,
+        41,
+        23
+      ],
+      "purpose": "Small stepped seedbed; unfenced grass-gated flower habitat with Revive."
+    },
+    {
+      "id": "NECK",
+      "name": "Cottonwood neck",
+      "bounds_metatiles": [
+        41,
+        1,
+        48,
+        23
+      ],
+      "purpose": "Required four-step habitat and a short bounded arrival road."
+    }
+  ],
+  "loops": [],
+  "minimum_optional_branches": 5,
+  "trainers": [
+    {
+      "id": "MN_R16_T01",
+      "display_name": "LYLE",
+      "trainer_class": "FISHER",
+      "sprite": "SPRITE_FISHER",
+      "tile": [
+        13,
+        16
+      ],
+      "facing": "west",
+      "sight_range": 1,
+      "party": [
+        {
+          "species": "RATICATE",
+          "level": 26
+        },
+        {
+          "species": "SKIPLOOM",
+          "level": 26
+        },
+        {
+          "species": "MAREEP",
+          "level": 25
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R16_TRAINER_01",
+      "block_main_lane": false,
+      "before_lines": [
+        "The river bends.",
+        "So does my line!"
+      ],
+      "after_lines": [
+        "I follow the river",
+        "all the way home."
+      ],
+      "loss_lines": [
+        "You read the wind!"
+      ]
+    },
+    {
+      "id": "MN_R16_T02",
+      "display_name": "NELL",
+      "trainer_class": "BIRD_KEEPER",
+      "sprite": "SPRITE_YOUNGSTER",
+      "tile": [
+        39,
+        9
+      ],
+      "facing": "south",
+      "sight_range": 1,
+      "party": [
+        {
+          "species": "SKIPLOOM",
+          "level": 26
+        },
+        {
+          "species": "PIDGEOTTO",
+          "level": 26
+        },
+        {
+          "species": "SNUBBULL",
+          "level": 25
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R16_TRAINER_02",
+      "block_main_lane": false,
+      "before_lines": [
+        "Listen for wings",
+        "over the hayfield."
+      ],
+      "after_lines": [
+        "The low bank drops",
+        "to the farm road."
+      ],
+      "loss_lines": [
+        "You read the wind!"
+      ]
+    },
+    {
+      "id": "MN_R16_T03",
+      "display_name": "OTIS",
+      "trainer_class": "POKEFANM",
+      "sprite": "SPRITE_POKEFAN_M",
+      "tile": [
+        50,
+        13
+      ],
+      "facing": "west",
+      "sight_range": 1,
+      "party": [
+        {
+          "species": "PIDGEOTTO",
+          "level": 27
+        },
+        {
+          "species": "MAREEP",
+          "level": 27
+        },
+        {
+          "species": "GIRAFARIG",
+          "level": 26
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R16_TRAINER_03",
+      "block_main_lane": false,
+      "before_lines": [
+        "Wind from the west",
+        "keeps us honest."
+      ],
+      "after_lines": [
+        "Leave the hayfield",
+        "gates as you",
+        "found."
+      ],
+      "loss_lines": [
+        "You read the wind!"
+      ]
+    },
+    {
+      "id": "MN_R16_T04",
+      "display_name": "JUNE",
+      "trainer_class": "PICNICKER",
+      "sprite": "SPRITE_LASS",
+      "tile": [
+        38,
+        39
+      ],
+      "facing": "east",
+      "sight_range": 1,
+      "party": [
+        {
+          "species": "MAREEP",
+          "level": 27
+        },
+        {
+          "species": "SNUBBULL",
+          "level": 27
+        },
+        {
+          "species": "TAUROS",
+          "level": 26
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R16_TRAINER_04",
+      "block_main_lane": false,
+      "before_lines": [
+        "A little pollen",
+        "brings a big team."
+      ],
+      "after_lines": [
+        "No need to rush",
+        "the flower rows."
+      ],
+      "loss_lines": [
+        "You read the wind!"
+      ]
+    },
+    {
+      "id": "MN_R16_T05",
+      "display_name": "REED",
+      "trainer_class": "FISHER",
+      "sprite": "SPRITE_FISHER",
+      "tile": [
+        55,
+        39
+      ],
+      "facing": "west",
+      "sight_range": 1,
+      "party": [
+        {
+          "species": "SNUBBULL",
+          "level": 28
+        },
+        {
+          "species": "GIRAFARIG",
+          "level": 28
+        },
+        {
+          "species": "RATICATE",
+          "level": 27
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R16_TRAINER_05",
+      "block_main_lane": false,
+      "before_lines": [
+        "This ditch drains",
+        "the whole field."
+      ],
+      "after_lines": [
+        "A narrow channel",
+        "can change a",
+        "route."
+      ],
+      "loss_lines": [
+        "You read the wind!"
+      ]
+    },
+    {
+      "id": "MN_R16_T06",
+      "display_name": "TOM",
+      "trainer_class": "SCHOOLBOY",
+      "sprite": "SPRITE_YOUNGSTER",
+      "tile": [
+        75,
+        11
+      ],
+      "facing": "south",
+      "sight_range": 1,
+      "party": [
+        {
+          "species": "RATICATE",
+          "level": 28
+        },
+        {
+          "species": "TAUROS",
+          "level": 28
+        },
+        {
+          "species": "SKIPLOOM",
+          "level": 27
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R16_TRAINER_06",
+      "block_main_lane": false,
+      "before_lines": [
+        "I count seedlings.",
+        "Want to count HP?"
+      ],
+      "after_lines": [
+        "Give each seedling",
+        "room to grow."
+      ],
+      "loss_lines": [
+        "You read the wind!"
+      ]
+    },
+    {
+      "id": "MN_R16_T07",
+      "display_name": "BECK",
+      "trainer_class": "CAMPER",
+      "sprite": "SPRITE_YOUNGSTER",
+      "tile": [
+        29,
+        25
+      ],
+      "facing": "north",
+      "sight_range": 2,
+      "party": [
+        {
+          "species": "SKIPLOOM",
+          "level": 29
+        },
+        {
+          "species": "RATICATE",
+          "level": 29
+        },
+        {
+          "species": "PIDGEOTTO",
+          "level": 28
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R16_TRAINER_07",
+      "block_main_lane": false,
+      "before_lines": [
+        "The clear apron",
+        "is my battle lane!"
+      ],
+      "after_lines": [
+        "The grassy verge",
+        "goes round my",
+        "post."
+      ],
+      "loss_lines": [
+        "You read the wind!"
+      ]
+    },
+    {
+      "id": "MN_R16_T08",
+      "display_name": "VERA",
+      "trainer_class": "POKEFANF",
+      "sprite": "SPRITE_POKEFAN_F",
+      "tile": [
+        75,
+        39
+      ],
+      "facing": "north",
+      "sight_range": 1,
+      "party": [
+        {
+          "species": "PIDGEOTTO",
+          "level": 29
+        },
+        {
+          "species": "SKIPLOOM",
+          "level": 29
+        },
+        {
+          "species": "MAREEP",
+          "level": 28
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R16_TRAINER_08",
+      "block_main_lane": false,
+      "before_lines": [
+        "Flowers bring all",
+        "sorts of partners."
+      ],
+      "after_lines": [
+        "We keep this plot",
+        "for pollinators."
+      ],
+      "loss_lines": [
+        "You read the wind!"
+      ]
+    },
+    {
+      "id": "MN_R16_T09",
+      "display_name": "FINCH",
+      "trainer_class": "BIRD_KEEPER",
+      "sprite": "SPRITE_YOUNGSTER",
+      "tile": [
+        91,
+        13
+      ],
+      "facing": "south",
+      "sight_range": 1,
+      "party": [
+        {
+          "species": "MAREEP",
+          "level": 30
+        },
+        {
+          "species": "PIDGEOTTO",
+          "level": 30
+        },
+        {
+          "species": "SNUBBULL",
+          "level": 29
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R16_TRAINER_09",
+      "block_main_lane": false,
+      "before_lines": [
+        "I watch birds from",
+        "this prairie edge."
+      ],
+      "after_lines": [
+        "Flat land still",
+        "has hidden paths."
+      ],
+      "loss_lines": [
+        "You read the wind!"
+      ]
+    },
+    {
+      "id": "MN_R16_T10",
+      "display_name": "EVIE",
+      "trainer_class": "LASS",
+      "sprite": "SPRITE_LASS",
+      "tile": [
+        79,
+        41
+      ],
+      "facing": "east",
+      "sight_range": 1,
+      "party": [
+        {
+          "species": "SNUBBULL",
+          "level": 30
+        },
+        {
+          "species": "MAREEP",
+          "level": 30
+        },
+        {
+          "species": "GIRAFARIG",
+          "level": 29
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R16_TRAINER_10",
+      "block_main_lane": false,
+      "before_lines": [
+        "The tall grass",
+        "moves like waves."
+      ],
+      "after_lines": [
+        "That grass strip",
+        "guards the trail."
+      ],
+      "loss_lines": [
+        "You read the wind!"
+      ]
+    }
+  ],
+  "residents": [
+    {
+      "id": "MN_R16_RIVER_WARDEN",
+      "sprite": "SPRITE_OFFICER",
+      "tile": [
+        3,
+        25
+      ],
+      "facing": "east",
+      "lines": [
+        "MOORHEAD lies",
+        "west.",
+        "Cross between the",
+        "timber rails."
+      ]
+    },
+    {
+      "id": "MN_R16_SEED_GROWER",
+      "sprite": "SPRITE_POKEFAN_F",
+      "tile": [
+        47,
+        29
+      ],
+      "facing": "north",
+      "lines": [
+        "The west ditch",
+        "catches the",
+        "runoff.",
+        "Record the meadow",
+        "birds for our",
+        "prairie survey."
+      ]
+    },
+    {
+      "id": "MN_R16_TRAIL_GUIDE",
+      "sprite": "SPRITE_GRAMPS",
+      "tile": [
+        87,
+        23
+      ],
+      "facing": "west",
+      "lines": [
+        "The cottonwoods",
+        "shelter tall",
+        "grass.",
+        "There is no dry",
+        "way through it."
+      ]
+    }
+  ],
+  "items": [
+    {
+      "id": "MN_R16_ITEM_01",
+      "item": "HYPER_POTION",
+      "quantity": 1,
+      "flag": "EVENT_MN_R16_ITEM_01",
+      "tile": [
+        49,
+        7
+      ],
+      "access": "Walking discovery; no mandatory Surf or Cut."
+    },
+    {
+      "id": "MN_R16_ITEM_02",
+      "item": "ULTRA_BALL",
+      "quantity": 1,
+      "flag": "EVENT_MN_R16_ITEM_02",
+      "tile": [
+        91,
+        7
+      ],
+      "access": "Walking discovery; no mandatory Surf or Cut."
+    },
+    {
+      "id": "MN_R16_ITEM_03",
+      "item": "MAX_REPEL",
+      "quantity": 1,
+      "flag": "EVENT_MN_R16_ITEM_03",
+      "tile": [
+        5,
+        37
+      ],
+      "access": "Walking discovery; no mandatory Surf or Cut."
+    },
+    {
+      "id": "MN_R16_ITEM_04",
+      "item": "REVIVE",
+      "quantity": 1,
+      "flag": "EVENT_MN_R16_ITEM_04",
+      "tile": [
+        79,
+        39
+      ],
+      "access": "Walking discovery; no mandatory Surf or Cut."
+    }
+  ],
+  "signs": [
+    {
+      "id": "MN_R16_SIGN_MOORHEAD",
+      "tile": [
+        4,
+        22
+      ],
+      "lines": [
+        "MOORHEAD - WEST",
+        "DETROIT LAKES - E"
+      ]
+    },
+    {
+      "id": "MN_R16_SIGN_LOW_BANK",
+      "tile": [
+        30,
+        20
+      ],
+      "lines": [
+        "Low hayfield bank.",
+        "Hop down south.",
+        "Walk up at the",
+        "western gate."
+      ]
+    },
+    {
+      "id": "MN_R16_SIGN_DRAIN",
+      "tile": [
+        56,
+        28
+      ],
+      "lines": [
+        "DRAINAGE CROSSING",
+        "Keep to the rails."
+      ]
+    },
+    {
+      "id": "MN_R16_SIGN_SEED",
+      "tile": [
+        78,
+        22
+      ],
+      "lines": [
+        "PRAIRIE SEED PLOTS",
+        "Mind the",
+        "seedlings."
+      ]
+    },
+    {
+      "id": "MN_R16_SIGN_GRASS",
+      "tile": [
+        86,
+        22
+      ],
+      "lines": [
+        "COTTONWOOD NECK",
+        "Wild teams shelter",
+        "in this grass."
+      ]
+    }
+  ],
+  "doors": [],
+  "interiors": [],
+  "shortcut": null,
+  "cut_gates": [],
+  "one_way_ledges": [
+    {
+      "id": "HAYFIELD_BANK",
+      "bounds_core": [
+        52,
+        16,
+        54,
+        18
+      ],
+      "direction": "south",
+      "source_block": "57",
+      "upper_approach": [
+        53,
+        15
+      ],
+      "hop_from": [
+        53,
+        16
+      ],
+      "landing": [
+        53,
+        18
+      ],
+      "reverse_blocked": [
+        53,
+        17
+      ],
+      "side_barriers": [
+        [
+          51,
+          17
+        ],
+        [
+          54,
+          17
+        ]
+      ],
+      "return_passage_core": [
+        30,
+        10,
+        32,
+        12
+      ],
+      "minimum_return_steps": 25,
+      "purpose": "One-way descent from the hay meadow back toward the bridge road; ordinary uphill access uses the western working gate."
+    }
+  ],
+  "required_grass_crossings": [
+    {
+      "id": "COTTONWOOD_NECK",
+      "bounds_core": [
+        82,
+        18,
+        86,
+        28
+      ],
+      "minimum_grass_steps": 4,
+      "purpose": "The only land neck through the complete cottonwood windbreak."
+    }
+  ],
+  "encounters": {
+    "grass_rates": {
+      "morning": 10,
+      "day": 10,
+      "night": 10
+    },
+    "grass": {
+      "morning": [
+        {
+          "species": "RATICATE",
+          "level": 26
+        },
+        {
+          "species": "SKIPLOOM",
+          "level": 27
+        },
+        {
+          "species": "PIDGEOTTO",
+          "level": 28
+        },
+        {
+          "species": "MAREEP",
+          "level": 29
+        },
+        {
+          "species": "SNUBBULL",
+          "level": 30
+        },
+        {
+          "species": "GIRAFARIG",
+          "level": 31
+        },
+        {
+          "species": "TAUROS",
+          "level": 32
+        }
+      ],
+      "day": [
+        {
+          "species": "RATICATE",
+          "level": 26
+        },
+        {
+          "species": "SKIPLOOM",
+          "level": 27
+        },
+        {
+          "species": "PIDGEOTTO",
+          "level": 28
+        },
+        {
+          "species": "MAREEP",
+          "level": 29
+        },
+        {
+          "species": "SNUBBULL",
+          "level": 30
+        },
+        {
+          "species": "GIRAFARIG",
+          "level": 31
+        },
+        {
+          "species": "TAUROS",
+          "level": 32
+        }
+      ],
+      "night": [
+        {
+          "species": "NOCTOWL",
+          "level": 26
+        },
+        {
+          "species": "ARIADOS",
+          "level": 27
+        },
+        {
+          "species": "PIDGEOTTO",
+          "level": 28
+        },
+        {
+          "species": "MAREEP",
+          "level": 29
+        },
+        {
+          "species": "SNUBBULL",
+          "level": 30
+        },
+        {
+          "species": "GIRAFARIG",
+          "level": 31
+        },
+        {
+          "species": "TAUROS",
+          "level": 32
+        }
+      ]
+    },
+    "water_rate": 4,
+    "water": [
+      {
+        "species": "POLIWAG",
+        "level": 26
+      },
+      {
+        "species": "WOOPER",
+        "level": 27
+      },
+      {
+        "species": "MARILL",
+        "level": 32
+      }
+    ]
+  },
+  "viewpoints": [
+    {
+      "id": "RED_RIVER_BRIDGE",
+      "tile": [
+        19,
+        24
+      ]
+    },
+    {
+      "id": "FISHING_LANDING",
+      "tile": [
+        15,
+        16
+      ]
+    },
+    {
+      "id": "HAYFIELD_BANK",
+      "tile": [
+        53,
+        15
+      ]
+    },
+    {
+      "id": "FLOOD_MEADOW",
+      "tile": [
+        39,
+        37
+      ]
+    },
+    {
+      "id": "DRAINAGE_FOOTBRIDGE",
+      "tile": [
+        63,
+        30
+      ]
+    },
+    {
+      "id": "STEPPED_SEEDBED",
+      "tile": [
+        77,
+        11
+      ]
+    },
+    {
+      "id": "POLLINATOR_HABITAT",
+      "tile": [
+        77,
+        39
+      ]
+    },
+    {
+      "id": "COTTONWOOD_NECK",
+      "tile": [
+        83,
+        25
+      ]
+    },
+    {
+      "id": "EAST_PRAIRIE",
+      "tile": [
+        91,
+        35
+      ]
+    },
+    {
+      "id": "WIDEST_FARM_LANE",
+      "tile": [
+        75,
+        30
+      ]
+    },
+    {
+      "id": "BATTLE_OR_GRASS",
+      "tile": [
+        28,
+        24
+      ]
+    },
+    {
+      "id": "WIDEST_WEST_SHOULDER",
+      "tile": [
+        37,
+        25
+      ]
+    }
+  ],
+  "art_constraints": [
+    "Only original packed 8x8 source tiles.",
+    "No painted shadows, enlarged trees or perspective props.",
+    "Fit source shoreline/cliff quadrants; draw source trees in coherent metatile groups."
+  ],
+  "status": "Hand-authored source terrain in active visual review; native R16 publication and controller traversal pending.",
+  "anchor_status": "Exact core coordinates; preserve existing actor/flag identities. Story access BADGE_6 and SQ02 remain integration contracts, not implemented quest claims.",
+  "battle_or_grass_choices": [
+    {
+      "id": "BRIDGE_APRON_CHOICE",
+      "trainer_id": "MN_R16_T07",
+      "bounds_core": [
+        28,
+        22,
+        30,
+        24
+      ],
+      "minimum_grass_steps": 2,
+      "purpose": "An unbeaten Camper guards the three-row clear apron. Going around via the northern grassy shoulder costs at least two actual grass steps; the southern bank is closed."
+    }
+  ],
+  "review_contract": {
+    "status": "Installed native review candidate; both real local production-controller cases PASS on composed6071. User final approval and earned regional progression remain unclaimed.",
+    "baseline_native_pack_sha256": "31258a1788a986b158d0679e4f3a26c4dd476964311f707a6e09c9640cad48c6",
+    "bounded_regions_metatiles": [
+      [
+        16,
+        8,
+        28,
+        9
+      ],
+      [
+        35,
+        13,
+        40,
+        17
+      ]
+    ],
+    "intent": "Two-core original hayfield drop inside a fenced working-field retaining bank; a narrow fenced farm bend instead of a broad dry apron. No conifers, new actors, flags or art.",
+    "preserve_drop": {
+      "upper": [
+        53,
+        15
+      ],
+      "hop": [
+        53,
+        16
+      ],
+      "course": [
+        53,
+        17
+      ],
+      "landing": [
+        53,
+        18
+      ],
+      "minimum_grass_steps_to_farm_road": 6,
+      "road_target": [
+        56,
+        30
+      ],
+      "ordinary_return_via_original_western_working_gate": [
+        30,
+        10,
+        32,
+        12
+      ]
+    },
+    "farm_lane_cross_sections": [
+      {
+        "from": [
+          70,
+          29
+        ],
+        "to": [
+          70,
+          30
+        ]
+      },
+      {
+        "from": [
+          74,
+          29
+        ],
+        "to": [
+          74,
+          30
+        ]
+      },
+      {
+        "from": [
+          76,
+          27
+        ],
+        "to": [
+          77,
+          27
+        ]
+      },
+      {
+        "from": [
+          76,
+          29
+        ],
+        "to": [
+          77,
+          29
+        ]
+      }
+    ],
+    "native_review": {
+      "pack_sha256": "8826137c74842b68a184a957a14d15cdb3f9ed3bdaca349a046924a049a20a41",
+      "controller_pack_sha256": "6071912eeb2fde6982f9e857bed9157d8d86da0f7ae56dba38665c809ab100e1",
+      "preservation_checks": 188,
+      "gpu_captures": 7,
+      "full_lcd_exact_pixels": 161280,
+      "native_source_report_sha256": "d4ceed1653276505c496b0a22fabbcbcfb869794096a22bb64114871c17b2cea",
+      "controller_cases": [
+        "red_river_controller_walks_both_maps_bridges_bank_interactions_and_continue",
+        "red_river_controller_wins_real_camper_battle_mutates_pp_and_continues_party_flags"
+      ],
+      "return_contract": "Left52 ordinary return57 steps; original right53 return59 steps; both native hops/reverses and at least6grass after landing remain exact.",
+      "item_notice_limit": "Production settling internally prints automatic FoundText/fanfare; completed PocketText and actual quantities/flags/input ownership are the observed native evidence."
+    }
+  }
+}

@@ -1,0 +1,7 @@
+# Current-house R11 terrain merge
+
+The immutable reviewed candidate is [897d491e05181a05](../renders/north-shore/house-merge/897d491e05181a05/handoff.md). Its dossier preserves the current Oren correction and Ryan house. Its seven appended accepted strokes change only sixteen southern terrain cells. Root owns publication against the510-map `c0c15e1193c816bcf6e5272af5c3dc716deed588d5b0d2070c01a59e723e2dc5` lineage.
+
+Do not use historical1879's `baseline-MN_R11.layout.json` as the expanded preimage: that file is the32×72 legacy regression fixture. The correct505 preimage is `revisions/northwoods-expansion/after/MN_R11.layout.json` (56×96, SHA256 `7ebf908ee152597f27c240e800c8f9753df07da350f01bc42ab34e88eea631b0`). The new candidate's exact510 preimage is saved in its own `preimage/` directory. Full hashes, all preservation checks and visual evidence are in the linked handoff.
+
+Native terrain certification uses a separate [installed-identity dossier](../renders/north-shore/house-merge/897d491e05181a05/native-certification/MN_R11.c0c15e-certification.json), not the unpublished Sivren trainer name in active planning. Its SHA256 is `00ecdf18d89b6470279b4045ae594dc39eb4cfd558603ce2d55cc726168c5f30`; only T03 display_name is corrected to installed Mara relative to captured native-era2e04. House metadata and all parties are preserved. Root owns the strict native passive-target comparison correction and the four new `north_shore_bends` test runs.

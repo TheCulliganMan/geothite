@@ -53,6 +53,11 @@ opt-level = 3
 [profile.web-release.package.crystal-runtime]
 opt-level = 3
 
+# Damage preparation and competitive search execute inside a single frame.
+[profile.web-release.package.crystal-core]
+opt-level = 3
+codegen-units = 1
+
 [profile.web-release.package.crystal-voxel-view]
 opt-level = 3
 
@@ -64,6 +69,7 @@ opt-level = 3
 # retains download-oriented size optimization.
 [profile.web-release.package.crystal-assets]
 opt-level = 3
+codegen-units = 1
 
 [profile.web-release.package.ciborium]
 opt-level = 3

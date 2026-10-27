@@ -1,0 +1,5911 @@
+{
+  "schema_version": 1,
+  "city": "MnMinneapolis",
+  "native_module_sha256": "c6aca0597328d3ce5b209340d2a21b3362aab53ea334cc14f6e1ab8e45fdfb99",
+  "old_dimensions_metatiles": [
+    32,
+    24
+  ],
+  "dimensions_metatiles": [
+    64,
+    48
+  ],
+  "translation_core": [
+    32,
+    24
+  ],
+  "arrival_core": [
+    64,
+    64
+  ],
+  "clinic_constant": "MN_MINNEAPOLIS_POKECENTER_1F",
+  "default_mart": "MART_MN_MINNEAPOLIS",
+  "anchor_overrides": [
+    {
+      "kind": "object",
+      "index": 3,
+      "before": [
+        61,
+        24
+      ],
+      "after": [
+        125,
+        48
+      ]
+    },
+    {
+      "kind": "object",
+      "index": 4,
+      "before": [
+        61,
+        25
+      ],
+      "after": [
+        125,
+        49
+      ]
+    },
+    {
+      "kind": "object",
+      "index": 5,
+      "before": [
+        32,
+        2
+      ],
+      "after": [
+        64,
+        2
+      ]
+    },
+    {
+      "kind": "object",
+      "index": 6,
+      "before": [
+        33,
+        2
+      ],
+      "after": [
+        65,
+        2
+      ]
+    },
+    {
+      "kind": "coordinate",
+      "index": 0,
+      "before": [
+        60,
+        24
+      ],
+      "after": [
+        124,
+        48
+      ]
+    },
+    {
+      "kind": "coordinate",
+      "index": 1,
+      "before": [
+        62,
+        24
+      ],
+      "after": [
+        126,
+        48
+      ]
+    },
+    {
+      "kind": "coordinate",
+      "index": 2,
+      "before": [
+        60,
+        25
+      ],
+      "after": [
+        124,
+        49
+      ]
+    },
+    {
+      "kind": "coordinate",
+      "index": 3,
+      "before": [
+        62,
+        25
+      ],
+      "after": [
+        126,
+        49
+      ]
+    },
+    {
+      "kind": "coordinate",
+      "index": 4,
+      "before": [
+        32,
+        3
+      ],
+      "after": [
+        64,
+        3
+      ]
+    },
+    {
+      "kind": "coordinate",
+      "index": 5,
+      "before": [
+        32,
+        1
+      ],
+      "after": [
+        64,
+        1
+      ]
+    },
+    {
+      "kind": "coordinate",
+      "index": 6,
+      "before": [
+        33,
+        3
+      ],
+      "after": [
+        65,
+        3
+      ]
+    },
+    {
+      "kind": "coordinate",
+      "index": 7,
+      "before": [
+        33,
+        1
+      ],
+      "after": [
+        65,
+        1
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "direction": "north",
+      "target": "MnR05C00R02",
+      "old_offset": 5,
+      "offset": 21,
+      "town_edge": [
+        [
+          64,
+          0
+        ],
+        [
+          65,
+          0
+        ]
+      ],
+      "route_edge": [
+        [
+          22,
+          15
+        ],
+        [
+          23,
+          15
+        ]
+      ]
+    },
+    {
+      "direction": "south",
+      "target": "MnR03C00R00",
+      "old_offset": 6,
+      "offset": 22,
+      "town_edge": [
+        [
+          64,
+          95
+        ],
+        [
+          65,
+          95
+        ]
+      ],
+      "route_edge": [
+        [
+          20,
+          0
+        ],
+        [
+          21,
+          0
+        ]
+      ]
+    },
+    {
+      "direction": "east",
+      "target": "MnR04C00R00",
+      "old_offset": 3,
+      "offset": 15,
+      "town_edge": [
+        [
+          127,
+          48
+        ],
+        [
+          127,
+          49
+        ]
+      ],
+      "route_edge": [
+        [
+          0,
+          18
+        ],
+        [
+          0,
+          19
+        ]
+      ]
+    }
+  ],
+  "spawn_overrides": [],
+  "residents": [
+    {
+      "id": "MN_MP_UPPER_BRIDGE_GUIDE",
+      "sprite": "SPRITE_FISHER",
+      "tile": [
+        59,
+        21
+      ],
+      "facing": "west",
+      "lines": [
+        "The co-op and mill",
+        "hall are west.",
+        "Arts and books",
+        "are east."
+      ]
+    },
+    {
+      "id": "MN_MP_CEDAR_GUIDE",
+      "sprite": "SPRITE_TEACHER",
+      "tile": [
+        109,
+        51
+      ],
+      "facing": "west",
+      "lines": [
+        "Five shop floors,",
+        "one stair at a time.",
+        "The battle club",
+        "is just east."
+      ]
+    },
+    {
+      "id": "MN_MP_SOUTH_PARK_GUIDE",
+      "sprite": "SPRITE_GENTLEMAN",
+      "tile": [
+        46,
+        83
+      ],
+      "facing": "east",
+      "lines": [
+        "The south bridge",
+        "meets the GYM road.",
+        "The lake path is",
+        "the longer walk."
+      ]
+    },
+    {
+      "id": "MN_MP_LAKE_FISHER",
+      "sprite": "SPRITE_FISHER",
+      "tile": [
+        19,
+        49
+      ],
+      "facing": "south",
+      "lines": [
+        "This pier is quiet.",
+        "The river is busy."
+      ]
+    },
+    {
+      "id": "MN_MP_NORTH_LOOP_VENDOR",
+      "sprite": "SPRITE_GENTLEMAN",
+      "tile": [
+        33,
+        17
+      ],
+      "facing": "east",
+      "lines": [
+        "The co-op sells",
+        "travel supplies.",
+        "The exchange has",
+        "a print order."
+      ]
+    },
+    {
+      "id": "MN_MP_LIBRARY_READER",
+      "sprite": "SPRITE_LASS",
+      "tile": [
+        102,
+        17
+      ],
+      "facing": "west",
+      "lines": [
+        "Five shop floors",
+        "are downriver.",
+        "This library is",
+        "a quieter stop."
+      ]
+    },
+    {
+      "id": "MN_MP_MUSEUM_VISITOR",
+      "sprite": "SPRITE_TEACHER",
+      "tile": [
+        33,
+        27
+      ],
+      "facing": "west",
+      "lines": [
+        "The three plaques",
+        "tell one story.",
+        "The hall keeps",
+        "the old mill model."
+      ]
+    },
+    {
+      "id": "MN_MP_BATTLE_CLUB_FAN",
+      "sprite": "SPRITE_ROCKER",
+      "tile": [
+        115,
+        45
+      ],
+      "facing": "west",
+      "lines": [
+        "No badge at stake.",
+        "Just four friendly",
+        "practice trainers",
+        "in the club."
+      ]
+    },
+    {
+      "id": "MN_MP_LAKE_GARDENER",
+      "sprite": "SPRITE_TEACHER",
+      "tile": [
+        29,
+        69
+      ],
+      "facing": "north",
+      "lines": [
+        "The greenhouse",
+        "faces the lake.",
+        "Try the west walk",
+        "on the way home."
+      ]
+    },
+    {
+      "id": "MN_MP_NORTH_ARTIST",
+      "sprite": "SPRITE_LASS",
+      "tile": [
+        78,
+        17
+      ],
+      "facing": "south",
+      "lines": [
+        "Art and printing",
+        "share this street.",
+        "The old print shop",
+        "takes mill orders."
+      ]
+    },
+    {
+      "id": "MN_MP_MARKET_SNACK",
+      "sprite": "SPRITE_CLERK",
+      "tile": [
+        83,
+        49
+      ],
+      "facing": "south",
+      "lines": [
+        "May I help you?"
+      ],
+      "service": "pokemart",
+      "stock": [
+        "FRESH_WATER",
+        "SODA_POP",
+        "LEMONADE"
+      ]
+    },
+    {
+      "id": "MN_MP_MARKET_BERRY",
+      "sprite": "SPRITE_CLERK",
+      "tile": [
+        89,
+        49
+      ],
+      "facing": "south",
+      "lines": [
+        "May I help you?"
+      ],
+      "service": "pokemart",
+      "stock": [
+        "BERRY",
+        "PSNCUREBERRY",
+        "PRZCUREBERRY",
+        "BITTER_BERRY"
+      ]
+    },
+    {
+      "id": "MN_MP_MARKET_TRAIL",
+      "sprite": "SPRITE_CLERK",
+      "tile": [
+        95,
+        49
+      ],
+      "facing": "south",
+      "lines": [
+        "May I help you?"
+      ],
+      "service": "pokemart",
+      "stock": [
+        "REPEL",
+        "ESCAPE_ROPE"
+      ]
+    }
+  ],
+  "signs": [
+    {
+      "id": "MN_MP_SUPPLYCOOP_SIGN",
+      "tile": [
+        4,
+        14
+      ],
+      "lines": [
+        "NORTH LOOP CO-OP"
+      ]
+    },
+    {
+      "id": "MN_MP_GRAINEXCHANGE_SIGN",
+      "tile": [
+        14,
+        16
+      ],
+      "lines": [
+        "GRAIN EXCHANGE"
+      ]
+    },
+    {
+      "id": "MN_MP_TOOLWORKSHOP_SIGN",
+      "tile": [
+        28,
+        16
+      ],
+      "lines": [
+        "MILL TOOL WORKSHOP"
+      ]
+    },
+    {
+      "id": "MN_MP_PRINTSHOP_SIGN",
+      "tile": [
+        68,
+        12
+      ],
+      "lines": [
+        "RIVER PRINT SHOP"
+      ]
+    },
+    {
+      "id": "MN_MP_FOUNDRYMUSEUM_SIGN",
+      "tile": [
+        20,
+        26
+      ],
+      "lines": [
+        "MILL HISTORY HALL"
+      ]
+    },
+    {
+      "id": "MN_MP_ARTSSTUDIO_SIGN",
+      "tile": [
+        6,
+        26
+      ],
+      "lines": [
+        "NORTHEAST STUDIO"
+      ]
+    },
+    {
+      "id": "MN_MP_MUSICROOM_SIGN",
+      "tile": [
+        78,
+        12
+      ],
+      "lines": [
+        "RIVER MUSIC ROOM"
+      ]
+    },
+    {
+      "id": "MN_MP_COMMUNITYLIBRARY_SIGN",
+      "tile": [
+        90,
+        14
+      ],
+      "lines": [
+        "CENTRAL LIBRARY"
+      ]
+    },
+    {
+      "id": "MN_MP_NORTHEASTHOME_SIGN",
+      "tile": [
+        106,
+        14
+      ],
+      "lines": [
+        "NORTHEAST HOME"
+      ]
+    },
+    {
+      "id": "MN_MP_GARDENSHOP_SIGN",
+      "tile": [
+        68,
+        24
+      ],
+      "lines": [
+        "GARDEN CO-OP"
+      ]
+    },
+    {
+      "id": "MN_MP_RIVERNATURALIST_SIGN",
+      "tile": [
+        80,
+        24
+      ],
+      "lines": [
+        "RIVER FIELD ROOM"
+      ]
+    },
+    {
+      "id": "MN_MP_BOATHOUSE_SIGN",
+      "tile": [
+        4,
+        42
+      ],
+      "lines": [
+        "LAKE BOATHOUSE"
+      ]
+    },
+    {
+      "id": "MN_MP_ANGLERHOME_SIGN",
+      "tile": [
+        22,
+        38
+      ],
+      "lines": [
+        "ANGLER HOME"
+      ]
+    },
+    {
+      "id": "MN_MP_LAKECABIN_SIGN",
+      "tile": [
+        4,
+        64
+      ],
+      "lines": [
+        "LAKE COMMUNITY CAB",
+        "IN"
+      ]
+    },
+    {
+      "id": "MN_MP_GREENHOUSE_SIGN",
+      "tile": [
+        20,
+        68
+      ],
+      "lines": [
+        "LAKE GREENHOUSE"
+      ]
+    },
+    {
+      "id": "MN_MP_BRIDGEHOME_SIGN",
+      "tile": [
+        34,
+        56
+      ],
+      "lines": [
+        "BRIDGE KEEPER HOME"
+      ]
+    },
+    {
+      "id": "MN_MP_DEPARTMENTSTORE1F_SIGN",
+      "tile": [
+        96,
+        48
+      ],
+      "lines": [
+        "MINNEAPOLIS DEPT S",
+        "TORE"
+      ]
+    },
+    {
+      "id": "MN_MP_BATTLECLUB_SIGN",
+      "tile": [
+        110,
+        42
+      ],
+      "lines": [
+        "RIVERFRONT BATTLE ",
+        "CLUB"
+      ]
+    },
+    {
+      "id": "MN_MP_CEDARHOME_SIGN",
+      "tile": [
+        94,
+        60
+      ],
+      "lines": [
+        "CEDAR FAMILY HOME"
+      ]
+    },
+    {
+      "id": "MN_MP_COMMUNITYKITCHEN_SIGN",
+      "tile": [
+        106,
+        62
+      ],
+      "lines": [
+        "COMMUNITY KITCHEN"
+      ]
+    },
+    {
+      "id": "MN_MP_COURIERSDESK_SIGN",
+      "tile": [
+        116,
+        68
+      ],
+      "lines": [
+        "RIVER COURIER DESK"
+      ]
+    },
+    {
+      "id": "MN_MP_FIELDCLUB_SIGN",
+      "tile": [
+        8,
+        82
+      ],
+      "lines": [
+        "PARK FIELD CLUB"
+      ]
+    },
+    {
+      "id": "MN_MP_GARDENERSHOME_SIGN",
+      "tile": [
+        22,
+        84
+      ],
+      "lines": [
+        "GARDENER HOME"
+      ]
+    },
+    {
+      "id": "MN_MP_ARRIVALINFO_SIGN",
+      "tile": [
+        64,
+        88
+      ],
+      "lines": [
+        "SOUTH ARRIVAL DESK"
+      ]
+    },
+    {
+      "id": "MN_MP_RIVERINN_SIGN",
+      "tile": [
+        76,
+        80
+      ],
+      "lines": [
+        "MILL WORKERS INN"
+      ]
+    },
+    {
+      "id": "MN_MP_SOUTHMARKET_SIGN",
+      "tile": [
+        92,
+        80
+      ],
+      "lines": [
+        "SOUTH CITY MARKET"
+      ]
+    },
+    {
+      "id": "MN_MP_MILLWORKERSHOUSE_SIGN",
+      "tile": [
+        108,
+        84
+      ],
+      "lines": [
+        "MILL FAMILY HOUSE"
+      ]
+    },
+    {
+      "id": "MN_MP_MILL_WATER_PLAQUE",
+      "tile": [
+        38,
+        26
+      ],
+      "lines": [
+        "RIVER POWER",
+        "The current drove",
+        "the mill wheels."
+      ]
+    },
+    {
+      "id": "MN_MP_MILL_GRAIN_PLAQUE",
+      "tile": [
+        46,
+        58
+      ],
+      "lines": [
+        "GRAIN AND RAIL",
+        "Flour left the city",
+        "by the rail yards."
+      ]
+    },
+    {
+      "id": "MN_MP_MILL_WORKERS_PLAQUE",
+      "tile": [
+        66,
+        74
+      ],
+      "lines": [
+        "MILL WORKERS",
+        "Many hands built",
+        "this river city."
+      ]
+    }
+  ],
+  "doors": [
+    {
+      "id": "MnMinneapolisSupplyCoopDoor",
+      "target": "MnMinneapolisSupplyCoop",
+      "tile": [
+        9,
+        13
+      ],
+      "return_tile": [
+        9,
+        14
+      ],
+      "arrival_tile": [
+        9,
+        14
+      ],
+      "warp_index": 11,
+      "return_warp_index": 12,
+      "target_warp": 3
+    },
+    {
+      "id": "MnMinneapolisGrainExchangeDoor",
+      "target": "MnMinneapolisGrainExchange",
+      "tile": [
+        20,
+        15
+      ],
+      "return_tile": [
+        20,
+        16
+      ],
+      "arrival_tile": [
+        20,
+        16
+      ],
+      "warp_index": 13,
+      "return_warp_index": 14,
+      "target_warp": 3
+    },
+    {
+      "id": "MnMinneapolisToolWorkshopDoor",
+      "target": "MnMinneapolisToolWorkshop",
+      "tile": [
+        32,
+        15
+      ],
+      "return_tile": [
+        32,
+        16
+      ],
+      "arrival_tile": [
+        32,
+        16
+      ],
+      "warp_index": 15,
+      "return_warp_index": 16,
+      "target_warp": 3
+    },
+    {
+      "id": "MnMinneapolisPrintShopDoor",
+      "target": "MnMinneapolisPrintShop",
+      "tile": [
+        73,
+        11
+      ],
+      "return_tile": [
+        73,
+        12
+      ],
+      "arrival_tile": [
+        73,
+        12
+      ],
+      "warp_index": 17,
+      "return_warp_index": 18,
+      "target_warp": 3
+    },
+    {
+      "id": "MnMinneapolisFoundryMuseumDoor",
+      "target": "MnMinneapolisFoundryMuseum",
+      "tile": [
+        26,
+        25
+      ],
+      "return_tile": [
+        26,
+        26
+      ],
+      "arrival_tile": [
+        26,
+        26
+      ],
+      "warp_index": 19,
+      "return_warp_index": 20,
+      "target_warp": 3
+    },
+    {
+      "id": "MnMinneapolisArtsStudioDoor",
+      "target": "MnMinneapolisArtsStudio",
+      "tile": [
+        11,
+        25
+      ],
+      "return_tile": [
+        11,
+        26
+      ],
+      "arrival_tile": [
+        11,
+        26
+      ],
+      "warp_index": 21,
+      "return_warp_index": 22,
+      "target_warp": 3
+    },
+    {
+      "id": "MnMinneapolisMusicRoomDoor",
+      "target": "MnMinneapolisMusicRoom",
+      "tile": [
+        85,
+        11
+      ],
+      "return_tile": [
+        85,
+        12
+      ],
+      "arrival_tile": [
+        85,
+        12
+      ],
+      "warp_index": 23,
+      "return_warp_index": 24,
+      "target_warp": 3
+    },
+    {
+      "id": "MnMinneapolisCommunityLibraryDoor",
+      "target": "MnMinneapolisCommunityLibrary",
+      "tile": [
+        96,
+        13
+      ],
+      "return_tile": [
+        96,
+        14
+      ],
+      "arrival_tile": [
+        96,
+        14
+      ],
+      "warp_index": 25,
+      "return_warp_index": 26,
+      "target_warp": 3
+    },
+    {
+      "id": "MnMinneapolisNortheastHomeDoor",
+      "target": "MnMinneapolisNortheastHome",
+      "tile": [
+        110,
+        13
+      ],
+      "return_tile": [
+        110,
+        14
+      ],
+      "arrival_tile": [
+        110,
+        14
+      ],
+      "warp_index": 27,
+      "return_warp_index": 28,
+      "target_warp": 3
+    },
+    {
+      "id": "MnMinneapolisGardenShopDoor",
+      "target": "MnMinneapolisGardenShop",
+      "tile": [
+        73,
+        23
+      ],
+      "return_tile": [
+        73,
+        24
+      ],
+      "arrival_tile": [
+        73,
+        24
+      ],
+      "warp_index": 29,
+      "return_warp_index": 30,
+      "target_warp": 3
+    },
+    {
+      "id": "MnMinneapolisRiverNaturalistDoor",
+      "target": "MnMinneapolisRiverNaturalist",
+      "tile": [
+        85,
+        23
+      ],
+      "return_tile": [
+        85,
+        24
+      ],
+      "arrival_tile": [
+        85,
+        24
+      ],
+      "warp_index": 31,
+      "return_warp_index": 32,
+      "target_warp": 3
+    },
+    {
+      "id": "MnMinneapolisBoatHouseDoor",
+      "target": "MnMinneapolisBoatHouse",
+      "tile": [
+        11,
+        41
+      ],
+      "return_tile": [
+        11,
+        42
+      ],
+      "arrival_tile": [
+        11,
+        42
+      ],
+      "warp_index": 33,
+      "return_warp_index": 34,
+      "target_warp": 3
+    },
+    {
+      "id": "MnMinneapolisAnglerHomeDoor",
+      "target": "MnMinneapolisAnglerHome",
+      "tile": [
+        27,
+        37
+      ],
+      "return_tile": [
+        27,
+        38
+      ],
+      "arrival_tile": [
+        27,
+        38
+      ],
+      "warp_index": 35,
+      "return_warp_index": 36,
+      "target_warp": 3
+    },
+    {
+      "id": "MnMinneapolisLakeCabinDoor",
+      "target": "MnMinneapolisLakeCabin",
+      "tile": [
+        9,
+        63
+      ],
+      "return_tile": [
+        9,
+        64
+      ],
+      "arrival_tile": [
+        9,
+        64
+      ],
+      "warp_index": 37,
+      "return_warp_index": 38,
+      "target_warp": 3
+    },
+    {
+      "id": "MnMinneapolisGreenhouseDoor",
+      "target": "MnMinneapolisGreenhouse",
+      "tile": [
+        27,
+        67
+      ],
+      "return_tile": [
+        27,
+        68
+      ],
+      "arrival_tile": [
+        27,
+        68
+      ],
+      "warp_index": 39,
+      "return_warp_index": 40,
+      "target_warp": 3
+    },
+    {
+      "id": "MnMinneapolisBridgeHomeDoor",
+      "target": "MnMinneapolisBridgeHome",
+      "tile": [
+        39,
+        55
+      ],
+      "return_tile": [
+        39,
+        56
+      ],
+      "arrival_tile": [
+        39,
+        56
+      ],
+      "warp_index": 41,
+      "return_warp_index": 42,
+      "target_warp": 3
+    },
+    {
+      "id": "MnMinneapolisDepartmentStore1FDoor",
+      "target": "MnMinneapolisDepartmentStore1F",
+      "tile": [
+        102,
+        47
+      ],
+      "return_tile": [
+        102,
+        48
+      ],
+      "arrival_tile": [
+        102,
+        48
+      ],
+      "warp_index": 43,
+      "return_warp_index": 44,
+      "target_warp": 3
+    },
+    {
+      "id": "MnMinneapolisBattleClubDoor",
+      "target": "MnMinneapolisBattleClub",
+      "tile": [
+        116,
+        41
+      ],
+      "return_tile": [
+        116,
+        42
+      ],
+      "arrival_tile": [
+        116,
+        42
+      ],
+      "warp_index": 45,
+      "return_warp_index": 46,
+      "target_warp": 3
+    },
+    {
+      "id": "MnMinneapolisCedarHomeDoor",
+      "target": "MnMinneapolisCedarHome",
+      "tile": [
+        99,
+        59
+      ],
+      "return_tile": [
+        99,
+        60
+      ],
+      "arrival_tile": [
+        99,
+        60
+      ],
+      "warp_index": 47,
+      "return_warp_index": 48,
+      "target_warp": 3
+    },
+    {
+      "id": "MnMinneapolisCommunityKitchenDoor",
+      "target": "MnMinneapolisCommunityKitchen",
+      "tile": [
+        113,
+        61
+      ],
+      "return_tile": [
+        113,
+        62
+      ],
+      "arrival_tile": [
+        113,
+        62
+      ],
+      "warp_index": 49,
+      "return_warp_index": 50,
+      "target_warp": 3
+    },
+    {
+      "id": "MnMinneapolisCouriersDeskDoor",
+      "target": "MnMinneapolisCouriersDesk",
+      "tile": [
+        120,
+        67
+      ],
+      "return_tile": [
+        120,
+        68
+      ],
+      "arrival_tile": [
+        120,
+        68
+      ],
+      "warp_index": 51,
+      "return_warp_index": 52,
+      "target_warp": 3
+    },
+    {
+      "id": "MnMinneapolisFieldClubDoor",
+      "target": "MnMinneapolisFieldClub",
+      "tile": [
+        15,
+        81
+      ],
+      "return_tile": [
+        15,
+        82
+      ],
+      "arrival_tile": [
+        15,
+        82
+      ],
+      "warp_index": 53,
+      "return_warp_index": 54,
+      "target_warp": 3
+    },
+    {
+      "id": "MnMinneapolisGardenersHomeDoor",
+      "target": "MnMinneapolisGardenersHome",
+      "tile": [
+        27,
+        83
+      ],
+      "return_tile": [
+        27,
+        84
+      ],
+      "arrival_tile": [
+        27,
+        84
+      ],
+      "warp_index": 55,
+      "return_warp_index": 56,
+      "target_warp": 3
+    },
+    {
+      "id": "MnMinneapolisArrivalInfoDoor",
+      "target": "MnMinneapolisArrivalInfo",
+      "tile": [
+        69,
+        87
+      ],
+      "return_tile": [
+        69,
+        88
+      ],
+      "arrival_tile": [
+        69,
+        88
+      ],
+      "warp_index": 57,
+      "return_warp_index": 58,
+      "target_warp": 3
+    },
+    {
+      "id": "MnMinneapolisRiverInnDoor",
+      "target": "MnMinneapolisRiverInn",
+      "tile": [
+        83,
+        79
+      ],
+      "return_tile": [
+        83,
+        80
+      ],
+      "arrival_tile": [
+        83,
+        80
+      ],
+      "warp_index": 59,
+      "return_warp_index": 60,
+      "target_warp": 3
+    },
+    {
+      "id": "MnMinneapolisSouthMarketDoor",
+      "target": "MnMinneapolisSouthMarket",
+      "tile": [
+        98,
+        79
+      ],
+      "return_tile": [
+        98,
+        80
+      ],
+      "arrival_tile": [
+        98,
+        80
+      ],
+      "warp_index": 61,
+      "return_warp_index": 62,
+      "target_warp": 3
+    },
+    {
+      "id": "MnMinneapolisMillWorkersHouseDoor",
+      "target": "MnMinneapolisMillWorkersHouse",
+      "tile": [
+        113,
+        83
+      ],
+      "return_tile": [
+        113,
+        84
+      ],
+      "arrival_tile": [
+        113,
+        84
+      ],
+      "warp_index": 63,
+      "return_warp_index": 64,
+      "target_warp": 3
+    },
+    {
+      "id": "MnMinneapolisBookbinderDoor",
+      "target": "MnMinneapolisBookbinder",
+      "tile": [
+        92,
+        35
+      ],
+      "return_tile": [
+        92,
+        36
+      ],
+      "arrival_tile": [
+        92,
+        36
+      ],
+      "warp_index": 65,
+      "return_warp_index": 66,
+      "target_warp": 3
+    },
+    {
+      "id": "MnMinneapolisCooperativeFlatDoor",
+      "target": "MnMinneapolisCooperativeFlat",
+      "tile": [
+        78,
+        59
+      ],
+      "return_tile": [
+        78,
+        60
+      ],
+      "arrival_tile": [
+        78,
+        60
+      ],
+      "warp_index": 67,
+      "return_warp_index": 68,
+      "target_warp": 3
+    },
+    {
+      "id": "MnMinneapolisToolFlatDoor",
+      "target": "MnMinneapolisToolFlat",
+      "tile": [
+        71,
+        65
+      ],
+      "return_tile": [
+        71,
+        66
+      ],
+      "arrival_tile": [
+        71,
+        66
+      ],
+      "warp_index": 69,
+      "return_warp_index": 70,
+      "target_warp": 3
+    },
+    {
+      "id": "MnMinneapolisCornerHomeDoor",
+      "target": "MnMinneapolisCornerHome",
+      "tile": [
+        84,
+        69
+      ],
+      "return_tile": [
+        84,
+        70
+      ],
+      "arrival_tile": [
+        84,
+        70
+      ],
+      "warp_index": 71,
+      "return_warp_index": 72,
+      "target_warp": 3
+    },
+    {
+      "id": "MnMinneapolisRiverFamilyHomeDoor",
+      "target": "MnMinneapolisRiverFamilyHome",
+      "tile": [
+        57,
+        19
+      ],
+      "return_tile": [
+        57,
+        20
+      ],
+      "arrival_tile": [
+        57,
+        20
+      ],
+      "warp_index": 73,
+      "return_warp_index": 74,
+      "target_warp": 3
+    },
+    {
+      "id": "MnMinneapolisGardenFlatDoor",
+      "target": "MnMinneapolisGardenFlat",
+      "tile": [
+        94,
+        23
+      ],
+      "return_tile": [
+        94,
+        24
+      ],
+      "arrival_tile": [
+        94,
+        24
+      ],
+      "warp_index": 75,
+      "return_warp_index": 76,
+      "target_warp": 3
+    },
+    {
+      "id": "MnMinneapolisPatternStudioDoor",
+      "target": "MnMinneapolisPatternStudio",
+      "tile": [
+        105,
+        23
+      ],
+      "return_tile": [
+        105,
+        24
+      ],
+      "arrival_tile": [
+        105,
+        24
+      ],
+      "warp_index": 77,
+      "return_warp_index": 78,
+      "target_warp": 3
+    },
+    {
+      "id": "MnMinneapolisMillForemanHomeDoor",
+      "target": "MnMinneapolisMillForemanHome",
+      "tile": [
+        110,
+        31
+      ],
+      "return_tile": [
+        110,
+        32
+      ],
+      "arrival_tile": [
+        110,
+        32
+      ],
+      "warp_index": 79,
+      "return_warp_index": 80,
+      "target_warp": 3
+    }
+  ],
+  "rooms": [
+    {
+      "id": "MnMinneapolisSupplyCoop",
+      "native_constant": "MN_MINNEAPOLIS_SUPPLY_COOP",
+      "template": "OlivineMart",
+      "tileset": "mart",
+      "border_block": 0,
+      "dimensions_metatiles": [
+        6,
+        4
+      ],
+      "rows": [
+        "14 27 14 13 13 13",
+        "2b 22 2b 2b 2b 2b",
+        "15 29 13 2b 13 28",
+        "2b 2b 2b 2a 2b 23"
+      ],
+      "arrival_core": [
+        6,
+        5
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "tile": [
+            6,
+            7
+          ],
+          "target": "MN_MINNEAPOLIS",
+          "target_warp": 12,
+          "passive": false
+        },
+        {
+          "index": 2,
+          "tile": [
+            7,
+            7
+          ],
+          "target": "MN_MINNEAPOLIS",
+          "target_warp": 12,
+          "passive": false
+        },
+        {
+          "index": 3,
+          "tile": [
+            6,
+            5
+          ],
+          "target": "MN_MINNEAPOLIS_SUPPLY_COOP",
+          "target_warp": 3,
+          "passive": true
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_MP_SUPPLYCOOP_CLERK",
+          "sprite": "SPRITE_CLERK",
+          "tile": [
+            1,
+            3
+          ],
+          "facing": "east",
+          "lines": [
+            "May I help you?"
+          ],
+          "service": "pokemart",
+          "approach": [
+            3,
+            3
+          ],
+          "counter_tile": [
+            2,
+            3
+          ],
+          "stock": [
+            "POKE_BALL",
+            "GREAT_BALL",
+            "POTION",
+            "ANTIDOTE",
+            "ESCAPE_ROPE"
+          ]
+        }
+      ],
+      "signs": [],
+      "trainers": [],
+      "items": [],
+      "programs": {}
+    },
+    {
+      "id": "MnMinneapolisGrainExchange",
+      "native_constant": "MN_MINNEAPOLIS_GRAIN_EXCHANGE",
+      "template": "VioletNicknameSpeechHouse",
+      "tileset": "traditional_house",
+      "border_block": 0,
+      "dimensions_metatiles": [
+        5,
+        4
+      ],
+      "rows": [
+        "02 08 14 08 1a",
+        "1b 1c 20 20 1a",
+        "18 19 20 20 20",
+        "20 20 21 22 20"
+      ],
+      "arrival_core": [
+        5,
+        6
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "tile": [
+            5,
+            7
+          ],
+          "target": "MN_MINNEAPOLIS",
+          "target_warp": 14,
+          "passive": false
+        },
+        {
+          "index": 2,
+          "tile": [
+            6,
+            7
+          ],
+          "target": "MN_MINNEAPOLIS",
+          "target_warp": 14,
+          "passive": false
+        },
+        {
+          "index": 3,
+          "tile": [
+            5,
+            6
+          ],
+          "target": "MN_MINNEAPOLIS_GRAIN_EXCHANGE",
+          "target_warp": 3,
+          "passive": true
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_MP_GRAINEXCHANGE_HOST",
+          "sprite": "SPRITE_TEACHER",
+          "tile": [
+            6,
+            3
+          ],
+          "facing": "south",
+          "lines": [
+            "The river connects",
+            "our neighborhoods."
+          ]
+        }
+      ],
+      "signs": [],
+      "trainers": [],
+      "items": [],
+      "programs": {
+        "MnMPExpansionPrintGiveDoneText": [
+          {
+            "command": "text",
+            "args": [
+              "\"You delivered it.\""
+            ]
+          },
+          {
+            "command": "line",
+            "args": [
+              "\"Thank you.\""
+            ]
+          },
+          {
+            "command": "done",
+            "args": []
+          }
+        ],
+        "MnMPExpansionPrintGiveDone": [
+          {
+            "command": "jumptextfaceplayer",
+            "args": [
+              "MnMPExpansionPrintGiveDoneText"
+            ]
+          }
+        ],
+        "MnMPExpansionPrintGiveRepeatText": [
+          {
+            "command": "text",
+            "args": [
+              "\"The print shop is\""
+            ]
+          },
+          {
+            "command": "line",
+            "args": [
+              "\"across the upper\""
+            ]
+          },
+          {
+            "command": "para",
+            "args": [
+              "\"river bridge.\""
+            ]
+          },
+          {
+            "command": "done",
+            "args": []
+          }
+        ],
+        "MnMPExpansionPrintGiveRepeat": [
+          {
+            "command": "jumptextfaceplayer",
+            "args": [
+              "MnMPExpansionPrintGiveRepeatText"
+            ]
+          }
+        ],
+        "MnMPExpansionPrintGiveBagFullText": [
+          {
+            "command": "text",
+            "args": [
+              "\"Your PACK is full.\""
+            ]
+          },
+          {
+            "command": "line",
+            "args": [
+              "\"Come back later.\""
+            ]
+          },
+          {
+            "command": "done",
+            "args": []
+          }
+        ],
+        "MnMPExpansionPrintGiveBagFull": [
+          {
+            "command": "jumptextfaceplayer",
+            "args": [
+              "MnMPExpansionPrintGiveBagFullText"
+            ]
+          }
+        ],
+        "MnMPExpansionPrintGiveGivenText": [
+          {
+            "command": "text",
+            "args": [
+              "\"Take this print\""
+            ]
+          },
+          {
+            "command": "line",
+            "args": [
+              "\"order to the shop.\""
+            ]
+          },
+          {
+            "command": "para",
+            "args": [
+              "\"It is across the\""
+            ]
+          },
+          {
+            "command": "line",
+            "args": [
+              "\"upper river\""
+            ]
+          },
+          {
+            "command": "para",
+            "args": [
+              "\"bridge.\""
+            ]
+          },
+          {
+            "command": "done",
+            "args": []
+          }
+        ],
+        "MN_MP_GRAINEXCHANGE_HOST": [
+          {
+            "command": "faceplayer",
+            "args": []
+          },
+          {
+            "command": "checkevent",
+            "args": [
+              "EVENT_MN_MP_PRINT_MAIL_DELIVERED"
+            ]
+          },
+          {
+            "command": "iftrue",
+            "args": [
+              "MnMPExpansionPrintGiveDone"
+            ]
+          },
+          {
+            "command": "checkevent",
+            "args": [
+              "EVENT_MN_MP_PRINT_MAIL_GIVEN"
+            ]
+          },
+          {
+            "command": "iftrue",
+            "args": [
+              "MnMPExpansionPrintGiveRepeat"
+            ]
+          },
+          {
+            "command": "giveitem",
+            "args": [
+              "FLOWER_MAIL",
+              "1"
+            ]
+          },
+          {
+            "command": "iffalse",
+            "args": [
+              "MnMPExpansionPrintGiveBagFull"
+            ]
+          },
+          {
+            "command": "setevent",
+            "args": [
+              "EVENT_MN_MP_PRINT_MAIL_GIVEN"
+            ]
+          },
+          {
+            "command": "jumptext",
+            "args": [
+              "MnMPExpansionPrintGiveGivenText"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "MnMinneapolisToolWorkshop",
+      "native_constant": "MN_MINNEAPOLIS_TOOL_WORKSHOP",
+      "template": "GoldenrodPPSpeechHouse",
+      "tileset": "house",
+      "border_block": 0,
+      "dimensions_metatiles": [
+        4,
+        4
+      ],
+      "rows": [
+        "04 1e 05 1d",
+        "0f 01 02 0f",
+        "0f 0c 0d 0f",
+        "06 0b 0f 07"
+      ],
+      "arrival_core": [
+        2,
+        6
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "tile": [
+            2,
+            7
+          ],
+          "target": "MN_MINNEAPOLIS",
+          "target_warp": 16,
+          "passive": false
+        },
+        {
+          "index": 2,
+          "tile": [
+            3,
+            7
+          ],
+          "target": "MN_MINNEAPOLIS",
+          "target_warp": 16,
+          "passive": false
+        },
+        {
+          "index": 3,
+          "tile": [
+            2,
+            6
+          ],
+          "target": "MN_MINNEAPOLIS_TOOL_WORKSHOP",
+          "target_warp": 3,
+          "passive": true
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_MP_TOOLWORKSHOP_HOST",
+          "sprite": "SPRITE_GENTLEMAN",
+          "tile": [
+            2,
+            4
+          ],
+          "facing": "south",
+          "lines": [
+            "These mills used",
+            "river power.",
+            "The wheel could",
+            "turn all night."
+          ]
+        }
+      ],
+      "signs": [],
+      "trainers": [],
+      "items": [],
+      "programs": {}
+    },
+    {
+      "id": "MnMinneapolisPrintShop",
+      "native_constant": "MN_MINNEAPOLIS_PRINT_SHOP",
+      "template": "GoldenrodNameRater",
+      "tileset": "house",
+      "border_block": 0,
+      "dimensions_metatiles": [
+        4,
+        4
+      ],
+      "rows": [
+        "04 1e 1c 1d",
+        "0f 0f 14 1a",
+        "0f 0f 2d 1a",
+        "06 0b 0f 07"
+      ],
+      "arrival_core": [
+        2,
+        6
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "tile": [
+            2,
+            7
+          ],
+          "target": "MN_MINNEAPOLIS",
+          "target_warp": 18,
+          "passive": false
+        },
+        {
+          "index": 2,
+          "tile": [
+            3,
+            7
+          ],
+          "target": "MN_MINNEAPOLIS",
+          "target_warp": 18,
+          "passive": false
+        },
+        {
+          "index": 3,
+          "tile": [
+            2,
+            6
+          ],
+          "target": "MN_MINNEAPOLIS_PRINT_SHOP",
+          "target_warp": 3,
+          "passive": true
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_MP_PRINTSHOP_HOST",
+          "sprite": "SPRITE_TEACHER",
+          "tile": [
+            2,
+            4
+          ],
+          "facing": "south",
+          "lines": [
+            "The river connects",
+            "our neighborhoods."
+          ]
+        }
+      ],
+      "signs": [],
+      "trainers": [],
+      "items": [],
+      "programs": {
+        "MnMPExpansionPrintTakeDoneText": [
+          {
+            "command": "text",
+            "args": [
+              "\"The order is here.\""
+            ]
+          },
+          {
+            "command": "line",
+            "args": [
+              "\"The press is\""
+            ]
+          },
+          {
+            "command": "para",
+            "args": [
+              "\"ready.\""
+            ]
+          },
+          {
+            "command": "done",
+            "args": []
+          }
+        ],
+        "MnMPExpansionPrintTakeDone": [
+          {
+            "command": "jumptextfaceplayer",
+            "args": [
+              "MnMPExpansionPrintTakeDoneText"
+            ]
+          }
+        ],
+        "MnMPExpansionPrintTakeMissingText": [
+          {
+            "command": "text",
+            "args": [
+              "\"The exchange has\""
+            ]
+          },
+          {
+            "command": "line",
+            "args": [
+              "\"our new print\""
+            ]
+          },
+          {
+            "command": "para",
+            "args": [
+              "\"order.\""
+            ]
+          },
+          {
+            "command": "done",
+            "args": []
+          }
+        ],
+        "MnMPExpansionPrintTakeMissing": [
+          {
+            "command": "jumptextfaceplayer",
+            "args": [
+              "MnMPExpansionPrintTakeMissingText"
+            ]
+          }
+        ],
+        "MnMPExpansionPrintTakeBagFullText": [
+          {
+            "command": "text",
+            "args": [
+              "\"Make room for the\""
+            ]
+          },
+          {
+            "command": "line",
+            "args": [
+              "\"POTIONS first.\""
+            ]
+          },
+          {
+            "command": "done",
+            "args": []
+          }
+        ],
+        "MnMPExpansionPrintTakeBagFull": [
+          {
+            "command": "jumptextfaceplayer",
+            "args": [
+              "MnMPExpansionPrintTakeBagFullText"
+            ]
+          }
+        ],
+        "MnMPExpansionPrintTakeRewardText": [
+          {
+            "command": "text",
+            "args": [
+              "\"The new mill map!\""
+            ]
+          },
+          {
+            "command": "line",
+            "args": [
+              "\"Thanks for\""
+            ]
+          },
+          {
+            "command": "para",
+            "args": [
+              "\"bringing\""
+            ]
+          },
+          {
+            "command": "line",
+            "args": [
+              "\"the print order.\""
+            ]
+          },
+          {
+            "command": "para",
+            "args": [
+              "\"Take these\""
+            ]
+          },
+          {
+            "command": "line",
+            "args": [
+              "\"POTIONS.\""
+            ]
+          },
+          {
+            "command": "done",
+            "args": []
+          }
+        ],
+        "MN_MP_PRINTSHOP_HOST": [
+          {
+            "command": "faceplayer",
+            "args": []
+          },
+          {
+            "command": "checkevent",
+            "args": [
+              "EVENT_MN_MP_PRINT_MAIL_DELIVERED"
+            ]
+          },
+          {
+            "command": "iftrue",
+            "args": [
+              "MnMPExpansionPrintTakeDone"
+            ]
+          },
+          {
+            "command": "checkevent",
+            "args": [
+              "EVENT_MN_MP_PRINT_MAIL_GIVEN"
+            ]
+          },
+          {
+            "command": "iffalse",
+            "args": [
+              "MnMPExpansionPrintTakeMissing"
+            ]
+          },
+          {
+            "command": "checkitem",
+            "args": [
+              "FLOWER_MAIL"
+            ]
+          },
+          {
+            "command": "iffalse",
+            "args": [
+              "MnMPExpansionPrintTakeMissing"
+            ]
+          },
+          {
+            "command": "giveitem",
+            "args": [
+              "SUPER_POTION",
+              "3"
+            ]
+          },
+          {
+            "command": "iffalse",
+            "args": [
+              "MnMPExpansionPrintTakeBagFull"
+            ]
+          },
+          {
+            "command": "takeitem",
+            "args": [
+              "FLOWER_MAIL"
+            ]
+          },
+          {
+            "command": "setevent",
+            "args": [
+              "EVENT_MN_MP_PRINT_MAIL_DELIVERED"
+            ]
+          },
+          {
+            "command": "jumptext",
+            "args": [
+              "MnMPExpansionPrintTakeRewardText"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "MnMinneapolisFoundryMuseum",
+      "native_constant": "MN_MINNEAPOLIS_FOUNDRY_MUSEUM",
+      "template": "RuinsOfAlphResearchCenter",
+      "tileset": "facility",
+      "border_block": 0,
+      "dimensions_metatiles": [
+        4,
+        4
+      ],
+      "rows": [
+        "02 3b 01 02",
+        "08 07 07 19",
+        "07 28 29 06",
+        "0d 0c 07 0e"
+      ],
+      "arrival_core": [
+        2,
+        6
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "tile": [
+            2,
+            7
+          ],
+          "target": "MN_MINNEAPOLIS",
+          "target_warp": 20,
+          "passive": false
+        },
+        {
+          "index": 2,
+          "tile": [
+            3,
+            7
+          ],
+          "target": "MN_MINNEAPOLIS",
+          "target_warp": 20,
+          "passive": false
+        },
+        {
+          "index": 3,
+          "tile": [
+            2,
+            6
+          ],
+          "target": "MN_MINNEAPOLIS_FOUNDRY_MUSEUM",
+          "target_warp": 3,
+          "passive": true
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_MP_FOUNDRYMUSEUM_HOST",
+          "sprite": "SPRITE_SCIENTIST",
+          "tile": [
+            4,
+            5
+          ],
+          "facing": "south",
+          "lines": [
+            "The river connects",
+            "our neighborhoods."
+          ]
+        }
+      ],
+      "signs": [
+        {
+          "id": "MN_MP_MUSEUM_WHEEL_DISPLAY",
+          "tile": [
+            2,
+            4
+          ],
+          "lines": [
+            "MILL WHEEL MODEL",
+            "Current turns a",
+            "wheel, which turns",
+            "the grinding stones."
+          ]
+        },
+        {
+          "id": "MN_MP_MUSEUM_GRAIN_DISPLAY",
+          "tile": [
+            4,
+            4
+          ],
+          "lines": [
+            "FLOUR SACK MODEL",
+            "Grain became flour",
+            "beside this river."
+          ]
+        },
+        {
+          "id": "MN_MP_MUSEUM_ARCHIVE",
+          "tile": [
+            6,
+            5
+          ],
+          "lines": [
+            "WORKER ARCHIVE",
+            "Families from many",
+            "places built the",
+            "mill neighborhoods."
+          ]
+        }
+      ],
+      "trainers": [],
+      "items": [],
+      "programs": {
+        "MnMPExpansionMillTrailDoneText": [
+          {
+            "command": "text",
+            "args": [
+              "\"The model still\""
+            ]
+          },
+          {
+            "command": "line",
+            "args": [
+              "\"turns with help\""
+            ]
+          },
+          {
+            "command": "para",
+            "args": [
+              "\"from the river.\""
+            ]
+          },
+          {
+            "command": "done",
+            "args": []
+          }
+        ],
+        "MnMPExpansionMillTrailDone": [
+          {
+            "command": "jumptextfaceplayer",
+            "args": [
+              "MnMPExpansionMillTrailDoneText"
+            ]
+          }
+        ],
+        "MnMPExpansionMillTrailMissingText": [
+          {
+            "command": "text",
+            "args": [
+              "\"Three river signs\""
+            ]
+          },
+          {
+            "command": "line",
+            "args": [
+              "\"tell the mill\""
+            ]
+          },
+          {
+            "command": "para",
+            "args": [
+              "\"story.\""
+            ]
+          },
+          {
+            "command": "line",
+            "args": [
+              "\"Read all three,\""
+            ]
+          },
+          {
+            "command": "para",
+            "args": [
+              "\"then come back.\""
+            ]
+          },
+          {
+            "command": "done",
+            "args": []
+          }
+        ],
+        "MnMPExpansionMillTrailMissing": [
+          {
+            "command": "jumptextfaceplayer",
+            "args": [
+              "MnMPExpansionMillTrailMissingText"
+            ]
+          }
+        ],
+        "MnMPExpansionMillTrailBagFullText": [
+          {
+            "command": "text",
+            "args": [
+              "\"Your PACK is full.\""
+            ]
+          },
+          {
+            "command": "line",
+            "args": [
+              "\"Come back later.\""
+            ]
+          },
+          {
+            "command": "done",
+            "args": []
+          }
+        ],
+        "MnMPExpansionMillTrailBagFull": [
+          {
+            "command": "jumptextfaceplayer",
+            "args": [
+              "MnMPExpansionMillTrailBagFullText"
+            ]
+          }
+        ],
+        "MnMPExpansionMillTrailRewardText": [
+          {
+            "command": "text",
+            "args": [
+              "\"You followed the\""
+            ]
+          },
+          {
+            "command": "line",
+            "args": [
+              "\"whole mill walk.\""
+            ]
+          },
+          {
+            "command": "para",
+            "args": [
+              "\"This MAGNET kept\""
+            ]
+          },
+          {
+            "command": "line",
+            "args": [
+              "\"our model turning.\""
+            ]
+          },
+          {
+            "command": "done",
+            "args": []
+          }
+        ],
+        "MN_MP_FOUNDRYMUSEUM_HOST": [
+          {
+            "command": "faceplayer",
+            "args": []
+          },
+          {
+            "command": "checkevent",
+            "args": [
+              "EVENT_MN_MP_MILL_TRAIL_REWARDED"
+            ]
+          },
+          {
+            "command": "iftrue",
+            "args": [
+              "MnMPExpansionMillTrailDone"
+            ]
+          },
+          {
+            "command": "checkevent",
+            "args": [
+              "EVENT_MN_MP_PLAQUE_WATER_READ"
+            ]
+          },
+          {
+            "command": "iffalse",
+            "args": [
+              "MnMPExpansionMillTrailMissing"
+            ]
+          },
+          {
+            "command": "checkevent",
+            "args": [
+              "EVENT_MN_MP_PLAQUE_GRAIN_READ"
+            ]
+          },
+          {
+            "command": "iffalse",
+            "args": [
+              "MnMPExpansionMillTrailMissing"
+            ]
+          },
+          {
+            "command": "checkevent",
+            "args": [
+              "EVENT_MN_MP_PLAQUE_WORKERS_READ"
+            ]
+          },
+          {
+            "command": "iffalse",
+            "args": [
+              "MnMPExpansionMillTrailMissing"
+            ]
+          },
+          {
+            "command": "giveitem",
+            "args": [
+              "MAGNET",
+              "1"
+            ]
+          },
+          {
+            "command": "iffalse",
+            "args": [
+              "MnMPExpansionMillTrailBagFull"
+            ]
+          },
+          {
+            "command": "setevent",
+            "args": [
+              "EVENT_MN_MP_MILL_TRAIL_REWARDED"
+            ]
+          },
+          {
+            "command": "jumptext",
+            "args": [
+              "MnMPExpansionMillTrailRewardText"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "MnMinneapolisArtsStudio",
+      "native_constant": "MN_MINNEAPOLIS_ARTS_STUDIO",
+      "template": "GoldenrodHappinessRater",
+      "tileset": "house",
+      "border_block": 0,
+      "dimensions_metatiles": [
+        4,
+        4
+      ],
+      "rows": [
+        "04 1e 05 29",
+        "1f 0f 2e 0f",
+        "0f 0f 2d 07",
+        "06 0b 0f 07"
+      ],
+      "arrival_core": [
+        2,
+        6
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "tile": [
+            2,
+            7
+          ],
+          "target": "MN_MINNEAPOLIS",
+          "target_warp": 22,
+          "passive": false
+        },
+        {
+          "index": 2,
+          "tile": [
+            3,
+            7
+          ],
+          "target": "MN_MINNEAPOLIS",
+          "target_warp": 22,
+          "passive": false
+        },
+        {
+          "index": 3,
+          "tile": [
+            2,
+            6
+          ],
+          "target": "MN_MINNEAPOLIS_ARTS_STUDIO",
+          "target_warp": 3,
+          "passive": true
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_MP_ARTSSTUDIO_HOST",
+          "sprite": "SPRITE_TEACHER",
+          "tile": [
+            2,
+            4
+          ],
+          "facing": "south",
+          "lines": [
+            "The river turns",
+            "copper at dusk.",
+            "I keep painting",
+            "the same bend."
+          ]
+        }
+      ],
+      "signs": [],
+      "trainers": [],
+      "items": [],
+      "programs": {}
+    },
+    {
+      "id": "MnMinneapolisMusicRoom",
+      "native_constant": "MN_MINNEAPOLIS_MUSIC_ROOM",
+      "template": "DanceTheater",
+      "tileset": "traditional_house",
+      "border_block": 0,
+      "dimensions_metatiles": [
+        6,
+        7
+      ],
+      "rows": [
+        "2d 2d 2d 2d 2d 2d",
+        "2c 2c 2c 2c 2c 2c",
+        "2e 30 30 30 30 2f",
+        "10 10 15 11 0e 0e",
+        "10 10 04 04 0e 0e",
+        "10 10 04 04 0e 0e",
+        "05 2a 06 07 2b 2a"
+      ],
+      "arrival_core": [
+        5,
+        12
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "tile": [
+            5,
+            13
+          ],
+          "target": "MN_MINNEAPOLIS",
+          "target_warp": 24,
+          "passive": false
+        },
+        {
+          "index": 2,
+          "tile": [
+            6,
+            13
+          ],
+          "target": "MN_MINNEAPOLIS",
+          "target_warp": 24,
+          "passive": false
+        },
+        {
+          "index": 3,
+          "tile": [
+            5,
+            12
+          ],
+          "target": "MN_MINNEAPOLIS_MUSIC_ROOM",
+          "target_warp": 3,
+          "passive": true
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_MP_MUSICROOM_HOST",
+          "sprite": "SPRITE_KIMONO_GIRL",
+          "tile": [
+            6,
+            5
+          ],
+          "facing": "south",
+          "lines": [
+            "The river keeps",
+            "its own rhythm.",
+            "Our little stage",
+            "borrows the beat."
+          ]
+        },
+        {
+          "id": "MN_MP_MUSIC_AUDIENCE_1",
+          "sprite": "SPRITE_GENTLEMAN",
+          "tile": [
+            7,
+            10
+          ],
+          "facing": "north",
+          "lines": [
+            "The stage brings",
+            "neighbors together."
+          ]
+        },
+        {
+          "id": "MN_MP_MUSIC_AUDIENCE_2",
+          "sprite": "SPRITE_GRANNY",
+          "tile": [
+            3,
+            6
+          ],
+          "facing": "north",
+          "lines": [
+            "My grandchild",
+            "practices here."
+          ]
+        },
+        {
+          "id": "MN_MP_MUSIC_AUDIENCE_3",
+          "sprite": "SPRITE_COOLTRAINER_M",
+          "tile": [
+            10,
+            10
+          ],
+          "facing": "north",
+          "lines": [
+            "A quiet break",
+            "between battles."
+          ]
+        }
+      ],
+      "signs": [],
+      "trainers": [],
+      "items": [],
+      "programs": {}
+    },
+    {
+      "id": "MnMinneapolisCommunityLibrary",
+      "native_constant": "MN_MINNEAPOLIS_COMMUNITY_LIBRARY",
+      "template": "VioletNicknameSpeechHouse",
+      "tileset": "traditional_house",
+      "border_block": 0,
+      "dimensions_metatiles": [
+        6,
+        5
+      ],
+      "rows": [
+        "02 08 14 08 08 1a",
+        "1a 20 1a 0e 20 1a",
+        "1a 20 1a 20 20 1a",
+        "1a 0e 15 11 20 1a",
+        "20 20 21 22 20 20"
+      ],
+      "arrival_core": [
+        5,
+        8
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "tile": [
+            5,
+            9
+          ],
+          "target": "MN_MINNEAPOLIS",
+          "target_warp": 26,
+          "passive": false
+        },
+        {
+          "index": 2,
+          "tile": [
+            6,
+            9
+          ],
+          "target": "MN_MINNEAPOLIS",
+          "target_warp": 26,
+          "passive": false
+        },
+        {
+          "index": 3,
+          "tile": [
+            5,
+            8
+          ],
+          "target": "MN_MINNEAPOLIS_COMMUNITY_LIBRARY",
+          "target_warp": 3,
+          "passive": true
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_MP_COMMUNITYLIBRARY_HOST",
+          "sprite": "SPRITE_TEACHER",
+          "tile": [
+            8,
+            5
+          ],
+          "facing": "west",
+          "lines": [
+            "Three mill plaques",
+            "stand by the river.",
+            "Read them in any",
+            "order, then visit",
+            "the history hall."
+          ]
+        },
+        {
+          "id": "MN_MP_LIBRARY_QUIET_READER",
+          "sprite": "SPRITE_LASS",
+          "tile": [
+            3,
+            6
+          ],
+          "facing": "east",
+          "lines": [
+            "I like the stories",
+            "behind each street."
+          ]
+        }
+      ],
+      "signs": [
+        {
+          "id": "MN_MP_LIBRARY_RIVER_BOOK",
+          "tile": [
+            1,
+            3
+          ],
+          "lines": [
+            "RIVER HISTORY",
+            "Visit the mill hall",
+            "and three plaques",
+            "along the banks."
+          ]
+        },
+        {
+          "id": "MN_MP_LIBRARY_CITY_BOOK",
+          "tile": [
+            10,
+            5
+          ],
+          "lines": [
+            "CITY DIRECTORY",
+            "Five department",
+            "floors and a club",
+            "stand downriver."
+          ]
+        },
+        {
+          "id": "MN_MP_LIBRARY_FIELD_BOOK",
+          "tile": [
+            11,
+            7
+          ],
+          "lines": [
+            "PARTNER CARE",
+            "The clinic has a PC.",
+            "The kitchen offers",
+            "a place to rest."
+          ]
+        }
+      ],
+      "trainers": [],
+      "items": [],
+      "programs": {}
+    },
+    {
+      "id": "MnMinneapolisNortheastHome",
+      "native_constant": "MN_MINNEAPOLIS_NORTHEAST_HOME",
+      "template": "OlivinePunishmentSpeechHouse",
+      "tileset": "house",
+      "border_block": 0,
+      "dimensions_metatiles": [
+        4,
+        4
+      ],
+      "rows": [
+        "04 1e 05 1d",
+        "0f 01 02 0f",
+        "0f 0c 0d 0f",
+        "06 0b 0f 07"
+      ],
+      "arrival_core": [
+        2,
+        6
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "tile": [
+            2,
+            7
+          ],
+          "target": "MN_MINNEAPOLIS",
+          "target_warp": 28,
+          "passive": false
+        },
+        {
+          "index": 2,
+          "tile": [
+            3,
+            7
+          ],
+          "target": "MN_MINNEAPOLIS",
+          "target_warp": 28,
+          "passive": false
+        },
+        {
+          "index": 3,
+          "tile": [
+            2,
+            6
+          ],
+          "target": "MN_MINNEAPOLIS_NORTHEAST_HOME",
+          "target_warp": 3,
+          "passive": true
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_MP_NORTHEASTHOME_HOST",
+          "sprite": "SPRITE_GENTLEMAN",
+          "tile": [
+            1,
+            2
+          ],
+          "facing": "south",
+          "lines": [
+            "The north gate",
+            "leads to ST CLOUD.",
+            "Our family walks",
+            "the upper bridge."
+          ]
+        }
+      ],
+      "signs": [],
+      "trainers": [],
+      "items": [],
+      "programs": {}
+    },
+    {
+      "id": "MnMinneapolisGardenShop",
+      "native_constant": "MN_MINNEAPOLIS_GARDEN_SHOP",
+      "template": "OlivineMart",
+      "tileset": "mart",
+      "border_block": 0,
+      "dimensions_metatiles": [
+        6,
+        4
+      ],
+      "rows": [
+        "14 27 14 13 13 13",
+        "2b 22 2b 2b 2b 2b",
+        "15 29 13 2b 13 28",
+        "2b 2b 2b 2a 2b 23"
+      ],
+      "arrival_core": [
+        6,
+        5
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "tile": [
+            6,
+            7
+          ],
+          "target": "MN_MINNEAPOLIS",
+          "target_warp": 30,
+          "passive": false
+        },
+        {
+          "index": 2,
+          "tile": [
+            7,
+            7
+          ],
+          "target": "MN_MINNEAPOLIS",
+          "target_warp": 30,
+          "passive": false
+        },
+        {
+          "index": 3,
+          "tile": [
+            6,
+            5
+          ],
+          "target": "MN_MINNEAPOLIS_GARDEN_SHOP",
+          "target_warp": 3,
+          "passive": true
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_MP_GARDENSHOP_CLERK",
+          "sprite": "SPRITE_CLERK",
+          "tile": [
+            1,
+            3
+          ],
+          "facing": "east",
+          "lines": [
+            "May I help you?"
+          ],
+          "service": "pokemart",
+          "approach": [
+            3,
+            3
+          ],
+          "counter_tile": [
+            2,
+            3
+          ],
+          "stock": [
+            "ANTIDOTE",
+            "PARLYZ_HEAL",
+            "AWAKENING",
+            "BURN_HEAL",
+            "ICE_HEAL"
+          ]
+        }
+      ],
+      "signs": [],
+      "trainers": [],
+      "items": [],
+      "programs": {}
+    },
+    {
+      "id": "MnMinneapolisRiverNaturalist",
+      "native_constant": "MN_MINNEAPOLIS_RIVER_NATURALIST",
+      "template": "OlivineGoodRodHouse",
+      "tileset": "house",
+      "border_block": 0,
+      "dimensions_metatiles": [
+        4,
+        4
+      ],
+      "rows": [
+        "04 1e 05 29",
+        "0f 0f 0f 1f",
+        "30 0f 2c 31",
+        "06 0b 0f 07"
+      ],
+      "arrival_core": [
+        2,
+        6
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "tile": [
+            2,
+            7
+          ],
+          "target": "MN_MINNEAPOLIS",
+          "target_warp": 32,
+          "passive": false
+        },
+        {
+          "index": 2,
+          "tile": [
+            3,
+            7
+          ],
+          "target": "MN_MINNEAPOLIS",
+          "target_warp": 32,
+          "passive": false
+        },
+        {
+          "index": 3,
+          "tile": [
+            2,
+            6
+          ],
+          "target": "MN_MINNEAPOLIS_RIVER_NATURALIST",
+          "target_warp": 3,
+          "passive": true
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_MP_RIVERNATURALIST_HOST",
+          "sprite": "SPRITE_GENTLEMAN",
+          "tile": [
+            2,
+            3
+          ],
+          "facing": "south",
+          "lines": [
+            "The river joins",
+            "several habitats.",
+            "WOOPER favors",
+            "the quiet banks."
+          ]
+        }
+      ],
+      "signs": [],
+      "trainers": [],
+      "items": [],
+      "programs": {}
+    },
+    {
+      "id": "MnMinneapolisBoatHouse",
+      "native_constant": "MN_MINNEAPOLIS_BOAT_HOUSE",
+      "template": "OlivinePunishmentSpeechHouse",
+      "tileset": "house",
+      "border_block": 0,
+      "dimensions_metatiles": [
+        4,
+        4
+      ],
+      "rows": [
+        "04 1e 05 1d",
+        "0f 01 02 0f",
+        "0f 0c 0d 0f",
+        "06 0b 0f 07"
+      ],
+      "arrival_core": [
+        2,
+        6
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "tile": [
+            2,
+            7
+          ],
+          "target": "MN_MINNEAPOLIS",
+          "target_warp": 34,
+          "passive": false
+        },
+        {
+          "index": 2,
+          "tile": [
+            3,
+            7
+          ],
+          "target": "MN_MINNEAPOLIS",
+          "target_warp": 34,
+          "passive": false
+        },
+        {
+          "index": 3,
+          "tile": [
+            2,
+            6
+          ],
+          "target": "MN_MINNEAPOLIS_BOAT_HOUSE",
+          "target_warp": 3,
+          "passive": true
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_MP_BOATHOUSE_HOST",
+          "sprite": "SPRITE_TEACHER",
+          "tile": [
+            1,
+            2
+          ],
+          "facing": "south",
+          "lines": [
+            "The lake piers",
+            "are open to all.",
+            "The rock line",
+            "closes the river."
+          ]
+        }
+      ],
+      "signs": [],
+      "trainers": [],
+      "items": [],
+      "programs": {}
+    },
+    {
+      "id": "MnMinneapolisAnglerHome",
+      "native_constant": "MN_MINNEAPOLIS_ANGLER_HOME",
+      "template": "OlivineGoodRodHouse",
+      "tileset": "house",
+      "border_block": 0,
+      "dimensions_metatiles": [
+        4,
+        4
+      ],
+      "rows": [
+        "04 1e 05 1d",
+        "0f 01 02 0f",
+        "0f 0c 0d 0f",
+        "06 0b 0f 07"
+      ],
+      "arrival_core": [
+        2,
+        6
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "tile": [
+            2,
+            7
+          ],
+          "target": "MN_MINNEAPOLIS",
+          "target_warp": 36,
+          "passive": false
+        },
+        {
+          "index": 2,
+          "tile": [
+            3,
+            7
+          ],
+          "target": "MN_MINNEAPOLIS",
+          "target_warp": 36,
+          "passive": false
+        },
+        {
+          "index": 3,
+          "tile": [
+            2,
+            6
+          ],
+          "target": "MN_MINNEAPOLIS_ANGLER_HOME",
+          "target_warp": 3,
+          "passive": true
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_MP_ANGLERHOME_HOST",
+          "sprite": "SPRITE_GENTLEMAN",
+          "tile": [
+            2,
+            3
+          ],
+          "facing": "south",
+          "lines": [
+            "Cast from a clear",
+            "bank or a pier.",
+            "Never climb over",
+            "the bridge rails."
+          ]
+        }
+      ],
+      "signs": [],
+      "trainers": [],
+      "items": [],
+      "programs": {}
+    },
+    {
+      "id": "MnMinneapolisLakeCabin",
+      "native_constant": "MN_MINNEAPOLIS_LAKE_CABIN",
+      "template": "GoldenrodHappinessRater",
+      "tileset": "house",
+      "border_block": 0,
+      "dimensions_metatiles": [
+        4,
+        4
+      ],
+      "rows": [
+        "04 1e 05 1d",
+        "0f 01 02 0f",
+        "0f 0c 0d 0f",
+        "06 0b 0f 07"
+      ],
+      "arrival_core": [
+        2,
+        6
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "tile": [
+            2,
+            7
+          ],
+          "target": "MN_MINNEAPOLIS",
+          "target_warp": 38,
+          "passive": false
+        },
+        {
+          "index": 2,
+          "tile": [
+            3,
+            7
+          ],
+          "target": "MN_MINNEAPOLIS",
+          "target_warp": 38,
+          "passive": false
+        },
+        {
+          "index": 3,
+          "tile": [
+            2,
+            6
+          ],
+          "target": "MN_MINNEAPOLIS_LAKE_CABIN",
+          "target_warp": 3,
+          "passive": true
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_MP_LAKECABIN_HOST",
+          "sprite": "SPRITE_TEACHER",
+          "tile": [
+            2,
+            4
+          ],
+          "facing": "south",
+          "lines": [
+            "A short walk can",
+            "clear your head.",
+            "The east pier is",
+            "our meeting spot."
+          ]
+        }
+      ],
+      "signs": [],
+      "trainers": [],
+      "items": [],
+      "programs": {}
+    },
+    {
+      "id": "MnMinneapolisGreenhouse",
+      "native_constant": "MN_MINNEAPOLIS_GREENHOUSE",
+      "template": "GoldenrodFlowerShop",
+      "tileset": "house",
+      "border_block": 0,
+      "dimensions_metatiles": [
+        4,
+        4
+      ],
+      "rows": [
+        "0e 32 16 32",
+        "30 0f 0f 2f",
+        "2c 2e 2d 07",
+        "06 0b 0f 07"
+      ],
+      "arrival_core": [
+        2,
+        6
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "tile": [
+            2,
+            7
+          ],
+          "target": "MN_MINNEAPOLIS",
+          "target_warp": 40,
+          "passive": false
+        },
+        {
+          "index": 2,
+          "tile": [
+            3,
+            7
+          ],
+          "target": "MN_MINNEAPOLIS",
+          "target_warp": 40,
+          "passive": false
+        },
+        {
+          "index": 3,
+          "tile": [
+            2,
+            6
+          ],
+          "target": "MN_MINNEAPOLIS_GREENHOUSE",
+          "target_warp": 3,
+          "passive": true
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_MP_GREENHOUSE_HOST",
+          "sprite": "SPRITE_GENTLEMAN",
+          "tile": [
+            2,
+            4
+          ],
+          "facing": "south",
+          "lines": [
+            "City gardens help",
+            "bugs and birds.",
+            "Please leave room",
+            "for both to rest."
+          ]
+        }
+      ],
+      "signs": [],
+      "trainers": [],
+      "items": [],
+      "programs": {}
+    },
+    {
+      "id": "MnMinneapolisBridgeHome",
+      "native_constant": "MN_MINNEAPOLIS_BRIDGE_HOME",
+      "template": "EcruteakItemfinderHouse",
+      "tileset": "traditional_house",
+      "border_block": 0,
+      "dimensions_metatiles": [
+        4,
+        4
+      ],
+      "rows": [
+        "13 01 08 29",
+        "04 1b 1c 04",
+        "04 18 19 04",
+        "05 06 07 2a"
+      ],
+      "arrival_core": [
+        3,
+        6
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "tile": [
+            3,
+            7
+          ],
+          "target": "MN_MINNEAPOLIS",
+          "target_warp": 42,
+          "passive": false
+        },
+        {
+          "index": 2,
+          "tile": [
+            4,
+            7
+          ],
+          "target": "MN_MINNEAPOLIS",
+          "target_warp": 42,
+          "passive": false
+        },
+        {
+          "index": 3,
+          "tile": [
+            3,
+            6
+          ],
+          "target": "MN_MINNEAPOLIS_BRIDGE_HOME",
+          "target_warp": 3,
+          "passive": true
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_MP_BRIDGEHOME_HOST",
+          "sprite": "SPRITE_TEACHER",
+          "tile": [
+            2,
+            3
+          ],
+          "facing": "south",
+          "lines": [
+            "Three bridges make",
+            "one connected city.",
+            "The middle bridge",
+            "meets the GYM road."
+          ]
+        }
+      ],
+      "signs": [],
+      "trainers": [],
+      "items": [],
+      "programs": {}
+    },
+    {
+      "id": "MnMinneapolisDepartmentStore1F",
+      "native_constant": "MN_MINNEAPOLIS_DEPARTMENT_STORE_1F",
+      "template": "GoldenrodDeptStore1F",
+      "tileset": "mart",
+      "border_block": 0,
+      "dimensions_metatiles": [
+        8,
+        4
+      ],
+      "rows": [
+        "03 03 03 03 08 09 0a 02",
+        "0b 04 04 04 0c 0d 0e 04",
+        "04 07 07 04 04 04 04 04",
+        "0b 07 07 06 25 04 04 04"
+      ],
+      "arrival_core": [
+        10,
+        3
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "tile": [
+            7,
+            7
+          ],
+          "target": "MN_MINNEAPOLIS",
+          "target_warp": 44,
+          "passive": false
+        },
+        {
+          "index": 2,
+          "tile": [
+            8,
+            7
+          ],
+          "target": "MN_MINNEAPOLIS",
+          "target_warp": 44,
+          "passive": false
+        },
+        {
+          "index": 3,
+          "tile": [
+            10,
+            3
+          ],
+          "target": "MN_MINNEAPOLIS_DEPARTMENT_STORE_1F",
+          "target_warp": 3,
+          "passive": true
+        },
+        {
+          "index": 4,
+          "tile": [
+            15,
+            0
+          ],
+          "target": "MN_MINNEAPOLIS_DEPARTMENT_STORE_2F",
+          "target_warp": 2,
+          "passive": false
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_MP_DEPT_1_CLERK",
+          "sprite": "SPRITE_CLERK",
+          "tile": [
+            10,
+            1
+          ],
+          "facing": "south",
+          "lines": [
+            "May I help you?"
+          ],
+          "service": "pokemart",
+          "approach": [
+            10,
+            3
+          ],
+          "counter_tile": [
+            10,
+            2
+          ],
+          "stock": [
+            "POKE_BALL",
+            "GREAT_BALL",
+            "REPEL",
+            "ESCAPE_ROPE"
+          ]
+        }
+      ],
+      "signs": [],
+      "trainers": [],
+      "items": [],
+      "programs": {}
+    },
+    {
+      "id": "MnMinneapolisBattleClub",
+      "native_constant": "MN_MINNEAPOLIS_BATTLE_CLUB",
+      "template": "GoldenrodUndergroundWarehouse",
+      "tileset": "underground",
+      "border_block": 0,
+      "dimensions_metatiles": [
+        10,
+        8
+      ],
+      "rows": [
+        "00 00 00 00 00 00 00 00 00 00",
+        "00 0b 0b 20 20 20 20 20 20 00",
+        "00 05 05 05 05 05 05 05 05 00",
+        "00 05 05 05 05 05 05 05 05 00",
+        "00 0b 05 05 05 05 05 05 0b 00",
+        "00 0b 05 05 05 05 05 05 0b 00",
+        "00 05 05 05 05 05 05 05 05 00",
+        "00 00 00 00 00 24 00 00 00 00"
+      ],
+      "arrival_core": [
+        10,
+        14
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "tile": [
+            10,
+            15
+          ],
+          "target": "MN_MINNEAPOLIS",
+          "target_warp": 46,
+          "passive": false
+        },
+        {
+          "index": 2,
+          "tile": [
+            11,
+            15
+          ],
+          "target": "MN_MINNEAPOLIS",
+          "target_warp": 46,
+          "passive": false
+        },
+        {
+          "index": 3,
+          "tile": [
+            10,
+            14
+          ],
+          "target": "MN_MINNEAPOLIS_BATTLE_CLUB",
+          "target_warp": 3,
+          "passive": true
+        }
+      ],
+      "residents": [],
+      "signs": [],
+      "trainers": [
+        {
+          "id": "MN_MP_CLUB_RIVET",
+          "display_name": "RIVET",
+          "trainer_class": "GUITARIST",
+          "sprite": "SPRITE_ROCKER",
+          "tile": [
+            5,
+            5
+          ],
+          "facing": "south",
+          "sight_range": 0,
+          "defeated_flag": "EVENT_MN_MP_CLUB_RIVET_BEATEN",
+          "party": [
+            {
+              "species": "MAGNEMITE",
+              "level": 20
+            },
+            {
+              "species": "VOLTORB",
+              "level": 20
+            }
+          ],
+          "before_lines": [
+            "Care for a friendly",
+            "practice battle?"
+          ],
+          "after_lines": [
+            "A solid practice!",
+            "Thanks for the match."
+          ],
+          "loss_lines": [
+            "I need more",
+            "practice too."
+          ]
+        },
+        {
+          "id": "MN_MP_CLUB_BANKS",
+          "display_name": "BANKS",
+          "trainer_class": "FISHER",
+          "sprite": "SPRITE_FISHER",
+          "tile": [
+            14,
+            5
+          ],
+          "facing": "south",
+          "sight_range": 0,
+          "defeated_flag": "EVENT_MN_MP_CLUB_BANKS_BEATEN",
+          "party": [
+            {
+              "species": "WOOPER",
+              "level": 21
+            },
+            {
+              "species": "SLOWPOKE",
+              "level": 21
+            }
+          ],
+          "before_lines": [
+            "Care for a friendly",
+            "practice battle?"
+          ],
+          "after_lines": [
+            "A solid practice!",
+            "Thanks for the match."
+          ],
+          "loss_lines": [
+            "I need more",
+            "practice too."
+          ]
+        },
+        {
+          "id": "MN_MP_CLUB_CEDAR",
+          "display_name": "CEDAR",
+          "trainer_class": "LASS",
+          "sprite": "SPRITE_LASS",
+          "tile": [
+            5,
+            10
+          ],
+          "facing": "south",
+          "sight_range": 0,
+          "defeated_flag": "EVENT_MN_MP_CLUB_CEDAR_BEATEN",
+          "party": [
+            {
+              "species": "SNUBBULL",
+              "level": 22
+            },
+            {
+              "species": "NOCTOWL",
+              "level": 22
+            }
+          ],
+          "before_lines": [
+            "Care for a friendly",
+            "practice battle?"
+          ],
+          "after_lines": [
+            "A solid practice!",
+            "Thanks for the match."
+          ],
+          "loss_lines": [
+            "I need more",
+            "practice too."
+          ]
+        },
+        {
+          "id": "MN_MP_CLUB_COACH_INEZ",
+          "display_name": "INEZ",
+          "trainer_class": "COOLTRAINERF",
+          "sprite": "SPRITE_COOLTRAINER_F",
+          "tile": [
+            14,
+            10
+          ],
+          "facing": "south",
+          "sight_range": 0,
+          "defeated_flag": "EVENT_MN_MP_CLUB_COACH_INEZ_BEATEN",
+          "party": [
+            {
+              "species": "MACHOP",
+              "level": 23
+            },
+            {
+              "species": "MURKROW",
+              "level": 23
+            }
+          ],
+          "before_lines": [
+            "Care for a friendly",
+            "practice battle?"
+          ],
+          "after_lines": [
+            "A solid practice!",
+            "Thanks for the match."
+          ],
+          "loss_lines": [
+            "I need more",
+            "practice too."
+          ]
+        }
+      ],
+      "items": [],
+      "programs": {}
+    },
+    {
+      "id": "MnMinneapolisCedarHome",
+      "native_constant": "MN_MINNEAPOLIS_CEDAR_HOME",
+      "template": "VioletNicknameSpeechHouse",
+      "tileset": "traditional_house",
+      "border_block": 0,
+      "dimensions_metatiles": [
+        4,
+        4
+      ],
+      "rows": [
+        "13 01 08 29",
+        "04 1b 1c 04",
+        "04 18 19 04",
+        "05 06 07 2a"
+      ],
+      "arrival_core": [
+        3,
+        6
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "tile": [
+            3,
+            7
+          ],
+          "target": "MN_MINNEAPOLIS",
+          "target_warp": 48,
+          "passive": false
+        },
+        {
+          "index": 2,
+          "tile": [
+            4,
+            7
+          ],
+          "target": "MN_MINNEAPOLIS",
+          "target_warp": 48,
+          "passive": false
+        },
+        {
+          "index": 3,
+          "tile": [
+            3,
+            6
+          ],
+          "target": "MN_MINNEAPOLIS_CEDAR_HOME",
+          "target_warp": 3,
+          "passive": true
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_MP_CEDARHOME_HOST",
+          "sprite": "SPRITE_GENTLEMAN",
+          "tile": [
+            2,
+            3
+          ],
+          "facing": "south",
+          "lines": [
+            "Our neighbors cook",
+            "at the kitchen.",
+            "It is a safe place",
+            "to rest a partner."
+          ]
+        }
+      ],
+      "signs": [],
+      "trainers": [],
+      "items": [],
+      "programs": {}
+    },
+    {
+      "id": "MnMinneapolisCommunityKitchen",
+      "native_constant": "MN_MINNEAPOLIS_COMMUNITY_KITCHEN",
+      "template": "OlivineCafe",
+      "tileset": "game_corner",
+      "border_block": 0,
+      "dimensions_metatiles": [
+        4,
+        4
+      ],
+      "rows": [
+        "02 02 02 13",
+        "2a 15 06 16",
+        "01 19 01 17",
+        "2a 0c 01 19"
+      ],
+      "arrival_core": [
+        2,
+        6
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "tile": [
+            2,
+            7
+          ],
+          "target": "MN_MINNEAPOLIS",
+          "target_warp": 50,
+          "passive": false
+        },
+        {
+          "index": 2,
+          "tile": [
+            3,
+            7
+          ],
+          "target": "MN_MINNEAPOLIS",
+          "target_warp": 50,
+          "passive": false
+        },
+        {
+          "index": 3,
+          "tile": [
+            2,
+            6
+          ],
+          "target": "MN_MINNEAPOLIS_COMMUNITY_KITCHEN",
+          "target_warp": 3,
+          "passive": true
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_MP_COMMUNITYKITCHEN_HOST",
+          "sprite": "SPRITE_TEACHER",
+          "tile": [
+            7,
+            3
+          ],
+          "facing": "west",
+          "lines": [
+            "Warm food and a",
+            "rest for partners."
+          ],
+          "service": "heal_party",
+          "counter_tile": [
+            6,
+            3
+          ],
+          "approach": [
+            5,
+            3
+          ]
+        },
+        {
+          "id": "MN_MP_KITCHEN_DINER",
+          "sprite": "SPRITE_SAILOR",
+          "tile": [
+            4,
+            3
+          ],
+          "facing": "south",
+          "lines": [
+            "The kitchen looks",
+            "after everyone.",
+            "My partners needed",
+            "a rest as much as I."
+          ]
+        }
+      ],
+      "signs": [],
+      "trainers": [],
+      "items": [],
+      "programs": {}
+    },
+    {
+      "id": "MnMinneapolisCouriersDesk",
+      "native_constant": "MN_MINNEAPOLIS_COURIERS_DESK",
+      "template": "GoldenrodPPSpeechHouse",
+      "tileset": "house",
+      "border_block": 0,
+      "dimensions_metatiles": [
+        4,
+        4
+      ],
+      "rows": [
+        "04 1e 05 1d",
+        "0f 01 02 0f",
+        "0f 0c 0d 0f",
+        "06 0b 0f 07"
+      ],
+      "arrival_core": [
+        2,
+        6
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "tile": [
+            2,
+            7
+          ],
+          "target": "MN_MINNEAPOLIS",
+          "target_warp": 52,
+          "passive": false
+        },
+        {
+          "index": 2,
+          "tile": [
+            3,
+            7
+          ],
+          "target": "MN_MINNEAPOLIS",
+          "target_warp": 52,
+          "passive": false
+        },
+        {
+          "index": 3,
+          "tile": [
+            2,
+            6
+          ],
+          "target": "MN_MINNEAPOLIS_COURIERS_DESK",
+          "target_warp": 3,
+          "passive": true
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_MP_COURIERSDESK_HOST",
+          "sprite": "SPRITE_GENTLEMAN",
+          "tile": [
+            2,
+            4
+          ],
+          "facing": "south",
+          "lines": [
+            "The print shop is",
+            "across the river.",
+            "Take the upper",
+            "bridge for a view."
+          ]
+        }
+      ],
+      "signs": [],
+      "trainers": [],
+      "items": [],
+      "programs": {}
+    },
+    {
+      "id": "MnMinneapolisFieldClub",
+      "native_constant": "MN_MINNEAPOLIS_FIELD_CLUB",
+      "template": "VioletNicknameSpeechHouse",
+      "tileset": "traditional_house",
+      "border_block": 0,
+      "dimensions_metatiles": [
+        6,
+        5
+      ],
+      "rows": [
+        "02 08 14 08 08 1a",
+        "1b 1c 20 20 20 1a",
+        "18 19 20 20 20 20",
+        "20 20 20 20 20 20",
+        "20 20 21 22 20 20"
+      ],
+      "arrival_core": [
+        5,
+        8
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "tile": [
+            5,
+            9
+          ],
+          "target": "MN_MINNEAPOLIS",
+          "target_warp": 54,
+          "passive": false
+        },
+        {
+          "index": 2,
+          "tile": [
+            6,
+            9
+          ],
+          "target": "MN_MINNEAPOLIS",
+          "target_warp": 54,
+          "passive": false
+        },
+        {
+          "index": 3,
+          "tile": [
+            5,
+            8
+          ],
+          "target": "MN_MINNEAPOLIS_FIELD_CLUB",
+          "target_warp": 3,
+          "passive": true
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_MP_FIELDCLUB_HOST",
+          "sprite": "SPRITE_TEACHER",
+          "tile": [
+            6,
+            3
+          ],
+          "facing": "south",
+          "lines": [
+            "We count the birds",
+            "around the lake.",
+            "MURKROW visits",
+            "after sunset."
+          ]
+        }
+      ],
+      "signs": [],
+      "trainers": [],
+      "items": [],
+      "programs": {}
+    },
+    {
+      "id": "MnMinneapolisGardenersHome",
+      "native_constant": "MN_MINNEAPOLIS_GARDENERS_HOME",
+      "template": "GoldenrodFlowerShop",
+      "tileset": "house",
+      "border_block": 0,
+      "dimensions_metatiles": [
+        4,
+        4
+      ],
+      "rows": [
+        "0e 32 16 32",
+        "30 0f 0f 2f",
+        "2c 2e 2d 07",
+        "06 0b 0f 07"
+      ],
+      "arrival_core": [
+        2,
+        6
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "tile": [
+            2,
+            7
+          ],
+          "target": "MN_MINNEAPOLIS",
+          "target_warp": 56,
+          "passive": false
+        },
+        {
+          "index": 2,
+          "tile": [
+            3,
+            7
+          ],
+          "target": "MN_MINNEAPOLIS",
+          "target_warp": 56,
+          "passive": false
+        },
+        {
+          "index": 3,
+          "tile": [
+            2,
+            6
+          ],
+          "target": "MN_MINNEAPOLIS_GARDENERS_HOME",
+          "target_warp": 3,
+          "passive": true
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_MP_GARDENERSHOME_HOST",
+          "sprite": "SPRITE_GENTLEMAN",
+          "tile": [
+            2,
+            4
+          ],
+          "facing": "south",
+          "lines": [
+            "The pond was here",
+            "before our street.",
+            "A garden can fit",
+            "around a shore."
+          ]
+        }
+      ],
+      "signs": [],
+      "trainers": [],
+      "items": [],
+      "programs": {}
+    },
+    {
+      "id": "MnMinneapolisArrivalInfo",
+      "native_constant": "MN_MINNEAPOLIS_ARRIVAL_INFO",
+      "template": "GoldenrodNameRater",
+      "tileset": "house",
+      "border_block": 0,
+      "dimensions_metatiles": [
+        4,
+        4
+      ],
+      "rows": [
+        "04 1e 05 1d",
+        "0f 01 02 0f",
+        "0f 0c 0d 0f",
+        "06 0b 0f 07"
+      ],
+      "arrival_core": [
+        2,
+        6
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "tile": [
+            2,
+            7
+          ],
+          "target": "MN_MINNEAPOLIS",
+          "target_warp": 58,
+          "passive": false
+        },
+        {
+          "index": 2,
+          "tile": [
+            3,
+            7
+          ],
+          "target": "MN_MINNEAPOLIS",
+          "target_warp": 58,
+          "passive": false
+        },
+        {
+          "index": 3,
+          "tile": [
+            2,
+            6
+          ],
+          "target": "MN_MINNEAPOLIS_ARRIVAL_INFO",
+          "target_warp": 3,
+          "passive": true
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_MP_ARRIVALINFO_HOST",
+          "sprite": "SPRITE_TEACHER",
+          "tile": [
+            2,
+            4
+          ],
+          "facing": "south",
+          "lines": [
+            "Welcome to the city.",
+            "The clinic is north",
+            "of the powerhouse",
+            "GYM in the center."
+          ]
+        }
+      ],
+      "signs": [],
+      "trainers": [],
+      "items": [],
+      "programs": {}
+    },
+    {
+      "id": "MnMinneapolisRiverInn",
+      "native_constant": "MN_MINNEAPOLIS_RIVER_INN",
+      "template": "EcruteakItemfinderHouse",
+      "tileset": "traditional_house",
+      "border_block": 0,
+      "dimensions_metatiles": [
+        4,
+        4
+      ],
+      "rows": [
+        "13 01 08 29",
+        "04 1b 1c 04",
+        "04 18 19 04",
+        "05 06 07 2a"
+      ],
+      "arrival_core": [
+        3,
+        6
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "tile": [
+            3,
+            7
+          ],
+          "target": "MN_MINNEAPOLIS",
+          "target_warp": 60,
+          "passive": false
+        },
+        {
+          "index": 2,
+          "tile": [
+            4,
+            7
+          ],
+          "target": "MN_MINNEAPOLIS",
+          "target_warp": 60,
+          "passive": false
+        },
+        {
+          "index": 3,
+          "tile": [
+            3,
+            6
+          ],
+          "target": "MN_MINNEAPOLIS_RIVER_INN",
+          "target_warp": 3,
+          "passive": true
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_MP_RIVERINN_HOST",
+          "sprite": "SPRITE_GENTLEMAN",
+          "tile": [
+            2,
+            3
+          ],
+          "facing": "south",
+          "lines": [
+            "Workers once came",
+            "for the flour mills.",
+            "Now friends come",
+            "for the river walk."
+          ]
+        }
+      ],
+      "signs": [],
+      "trainers": [],
+      "items": [],
+      "programs": {}
+    },
+    {
+      "id": "MnMinneapolisSouthMarket",
+      "native_constant": "MN_MINNEAPOLIS_SOUTH_MARKET",
+      "template": "OlivineMart",
+      "tileset": "mart",
+      "border_block": 0,
+      "dimensions_metatiles": [
+        6,
+        4
+      ],
+      "rows": [
+        "14 27 14 13 13 13",
+        "2b 22 2b 2b 2b 2b",
+        "15 29 13 2b 13 28",
+        "2b 2b 2b 2a 2b 23"
+      ],
+      "arrival_core": [
+        6,
+        5
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "tile": [
+            6,
+            7
+          ],
+          "target": "MN_MINNEAPOLIS",
+          "target_warp": 62,
+          "passive": false
+        },
+        {
+          "index": 2,
+          "tile": [
+            7,
+            7
+          ],
+          "target": "MN_MINNEAPOLIS",
+          "target_warp": 62,
+          "passive": false
+        },
+        {
+          "index": 3,
+          "tile": [
+            6,
+            5
+          ],
+          "target": "MN_MINNEAPOLIS_SOUTH_MARKET",
+          "target_warp": 3,
+          "passive": true
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_MP_SOUTHMARKET_CLERK",
+          "sprite": "SPRITE_CLERK",
+          "tile": [
+            1,
+            3
+          ],
+          "facing": "east",
+          "lines": [
+            "May I help you?"
+          ],
+          "service": "pokemart",
+          "approach": [
+            3,
+            3
+          ],
+          "counter_tile": [
+            2,
+            3
+          ],
+          "stock": [
+            "SUPER_POTION",
+            "REPEL",
+            "ESCAPE_ROPE",
+            "GREAT_BALL"
+          ]
+        }
+      ],
+      "signs": [],
+      "trainers": [],
+      "items": [],
+      "programs": {}
+    },
+    {
+      "id": "MnMinneapolisMillWorkersHouse",
+      "native_constant": "MN_MINNEAPOLIS_MILL_WORKERS_HOUSE",
+      "template": "OlivinePunishmentSpeechHouse",
+      "tileset": "house",
+      "border_block": 0,
+      "dimensions_metatiles": [
+        4,
+        4
+      ],
+      "rows": [
+        "04 1e 05 1d",
+        "0f 01 02 0f",
+        "0f 0c 0d 0f",
+        "06 0b 0f 07"
+      ],
+      "arrival_core": [
+        2,
+        6
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "tile": [
+            2,
+            7
+          ],
+          "target": "MN_MINNEAPOLIS",
+          "target_warp": 64,
+          "passive": false
+        },
+        {
+          "index": 2,
+          "tile": [
+            3,
+            7
+          ],
+          "target": "MN_MINNEAPOLIS",
+          "target_warp": 64,
+          "passive": false
+        },
+        {
+          "index": 3,
+          "tile": [
+            2,
+            6
+          ],
+          "target": "MN_MINNEAPOLIS_MILL_WORKERS_HOUSE",
+          "target_warp": 3,
+          "passive": true
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_MP_MILLWORKERSHOUSE_HOST",
+          "sprite": "SPRITE_GENTLEMAN",
+          "tile": [
+            1,
+            2
+          ],
+          "facing": "south",
+          "lines": [
+            "My family worked",
+            "beside the river.",
+            "The city changed;",
+            "the current stays."
+          ]
+        }
+      ],
+      "signs": [],
+      "trainers": [],
+      "items": [],
+      "programs": {}
+    },
+    {
+      "id": "MnMinneapolisDepartmentStore2F",
+      "native_constant": "MN_MINNEAPOLIS_DEPARTMENT_STORE_2F",
+      "template": "GoldenrodDeptStore2F",
+      "tileset": "mart",
+      "border_block": 0,
+      "dimensions_metatiles": [
+        8,
+        4
+      ],
+      "rows": [
+        "03 03 13 13 13 03 18 19",
+        "04 04 04 04 04 04 04 04",
+        "04 12 04 12 04 04 10 2c",
+        "04 12 04 12 04 04 2e 2d"
+      ],
+      "arrival_core": [
+        10,
+        3
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "tile": [
+            12,
+            0
+          ],
+          "target": "MN_MINNEAPOLIS_DEPARTMENT_STORE_3F",
+          "target_warp": 1,
+          "passive": false
+        },
+        {
+          "index": 2,
+          "tile": [
+            15,
+            0
+          ],
+          "target": "MN_MINNEAPOLIS_DEPARTMENT_STORE_1F",
+          "target_warp": 4,
+          "passive": false
+        },
+        {
+          "index": 3,
+          "tile": [
+            10,
+            3
+          ],
+          "target": "MN_MINNEAPOLIS_DEPARTMENT_STORE_2F",
+          "target_warp": 3,
+          "passive": true
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_MP_DEPT_2_CLERK",
+          "sprite": "SPRITE_CLERK",
+          "tile": [
+            13,
+            5
+          ],
+          "facing": "west",
+          "lines": [
+            "May I help you?"
+          ],
+          "service": "pokemart",
+          "approach": [
+            11,
+            5
+          ],
+          "counter_tile": [
+            12,
+            5
+          ],
+          "stock": [
+            "POTION",
+            "SUPER_POTION",
+            "ANTIDOTE",
+            "PARLYZ_HEAL",
+            "AWAKENING"
+          ]
+        }
+      ],
+      "signs": [],
+      "trainers": [],
+      "items": [],
+      "programs": {}
+    },
+    {
+      "id": "MnMinneapolisDepartmentStore3F",
+      "native_constant": "MN_MINNEAPOLIS_DEPARTMENT_STORE_3F",
+      "template": "GoldenrodDeptStore3F",
+      "tileset": "mart",
+      "border_block": 0,
+      "dimensions_metatiles": [
+        8,
+        4
+      ],
+      "rows": [
+        "03 03 17 09 0a 03 01 02",
+        "04 04 0c 0d 0e 04 04 04",
+        "12 04 12 04 12 04 04 04",
+        "12 04 12 04 12 04 13 13"
+      ],
+      "arrival_core": [
+        10,
+        3
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "tile": [
+            12,
+            0
+          ],
+          "target": "MN_MINNEAPOLIS_DEPARTMENT_STORE_2F",
+          "target_warp": 1,
+          "passive": false
+        },
+        {
+          "index": 2,
+          "tile": [
+            15,
+            0
+          ],
+          "target": "MN_MINNEAPOLIS_DEPARTMENT_STORE_4F",
+          "target_warp": 2,
+          "passive": false
+        },
+        {
+          "index": 3,
+          "tile": [
+            10,
+            3
+          ],
+          "target": "MN_MINNEAPOLIS_DEPARTMENT_STORE_3F",
+          "target_warp": 3,
+          "passive": true
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_MP_DEPT_3_CLERK",
+          "sprite": "SPRITE_CLERK",
+          "tile": [
+            6,
+            1
+          ],
+          "facing": "south",
+          "lines": [
+            "May I help you?"
+          ],
+          "service": "pokemart",
+          "approach": [
+            6,
+            3
+          ],
+          "counter_tile": [
+            6,
+            2
+          ],
+          "stock": [
+            "X_ATTACK",
+            "X_DEFEND",
+            "X_SPEED",
+            "X_SPECIAL",
+            "X_ACCURACY"
+          ]
+        }
+      ],
+      "signs": [],
+      "trainers": [],
+      "items": [],
+      "programs": {}
+    },
+    {
+      "id": "MnMinneapolisDepartmentStore4F",
+      "native_constant": "MN_MINNEAPOLIS_DEPARTMENT_STORE_4F",
+      "template": "GoldenrodDeptStore4F",
+      "tileset": "mart",
+      "border_block": 0,
+      "dimensions_metatiles": [
+        8,
+        4
+      ],
+      "rows": [
+        "03 03 03 14 14 03 18 19",
+        "04 04 04 04 04 04 04 04",
+        "04 15 15 13 13 04 10 11",
+        "04 04 04 04 04 04 15 14"
+      ],
+      "arrival_core": [
+        10,
+        3
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "tile": [
+            12,
+            0
+          ],
+          "target": "MN_MINNEAPOLIS_DEPARTMENT_STORE_5F",
+          "target_warp": 1,
+          "passive": false
+        },
+        {
+          "index": 2,
+          "tile": [
+            15,
+            0
+          ],
+          "target": "MN_MINNEAPOLIS_DEPARTMENT_STORE_3F",
+          "target_warp": 2,
+          "passive": false
+        },
+        {
+          "index": 3,
+          "tile": [
+            10,
+            3
+          ],
+          "target": "MN_MINNEAPOLIS_DEPARTMENT_STORE_4F",
+          "target_warp": 3,
+          "passive": true
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_MP_DEPT_4_CLERK",
+          "sprite": "SPRITE_CLERK",
+          "tile": [
+            13,
+            5
+          ],
+          "facing": "west",
+          "lines": [
+            "May I help you?"
+          ],
+          "service": "pokemart",
+          "approach": [
+            11,
+            5
+          ],
+          "counter_tile": [
+            12,
+            5
+          ],
+          "stock": [
+            "PROTEIN",
+            "IRON",
+            "CARBOS",
+            "CALCIUM",
+            "HP_UP"
+          ]
+        }
+      ],
+      "signs": [],
+      "trainers": [],
+      "items": [],
+      "programs": {}
+    },
+    {
+      "id": "MnMinneapolisDepartmentStore5F",
+      "native_constant": "MN_MINNEAPOLIS_DEPARTMENT_STORE_5F",
+      "template": "GoldenrodDeptStore5F",
+      "tileset": "mart",
+      "border_block": 0,
+      "dimensions_metatiles": [
+        8,
+        4
+      ],
+      "rows": [
+        "03 03 03 03 03 03 01 03",
+        "04 04 04 2b 2b 04 04 04",
+        "07 04 04 1a 1b 04 04 04",
+        "07 04 04 1c 1d 04 04 04"
+      ],
+      "arrival_core": [
+        10,
+        3
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "tile": [
+            12,
+            0
+          ],
+          "target": "MN_MINNEAPOLIS_DEPARTMENT_STORE_4F",
+          "target_warp": 1,
+          "passive": false
+        },
+        {
+          "index": 2,
+          "tile": [
+            10,
+            3
+          ],
+          "target": "MN_MINNEAPOLIS_DEPARTMENT_STORE_5F",
+          "target_warp": 2,
+          "passive": true
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_MP_DEPT_5_CLERK",
+          "sprite": "SPRITE_CLERK",
+          "tile": [
+            8,
+            5
+          ],
+          "facing": "north",
+          "lines": [
+            "May I help you?"
+          ],
+          "service": "pokemart",
+          "approach": [
+            8,
+            3
+          ],
+          "counter_tile": [
+            8,
+            4
+          ],
+          "stock": [
+            "TM_HIDDEN_POWER",
+            "TM_PROTECT",
+            "TM_RAIN_DANCE",
+            "TM_ICE_PUNCH"
+          ]
+        }
+      ],
+      "signs": [],
+      "trainers": [],
+      "items": [],
+      "programs": {}
+    },
+    {
+      "id": "MnMinneapolisBookbinder",
+      "native_constant": "MN_MINNEAPOLIS_BOOKBINDER",
+      "template": "GoldenrodPPSpeechHouse",
+      "tileset": "house",
+      "border_block": 0,
+      "dimensions_metatiles": [
+        4,
+        4
+      ],
+      "rows": [
+        "04 1e 05 1a",
+        "1a 0f 2d 1a",
+        "0f 0f 0f 1a",
+        "06 0b 0f 07"
+      ],
+      "arrival_core": [
+        2,
+        6
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "tile": [
+            2,
+            7
+          ],
+          "target": "MN_MINNEAPOLIS",
+          "target_warp": 66,
+          "passive": false
+        },
+        {
+          "index": 2,
+          "tile": [
+            3,
+            7
+          ],
+          "target": "MN_MINNEAPOLIS",
+          "target_warp": 66,
+          "passive": false
+        },
+        {
+          "index": 3,
+          "tile": [
+            2,
+            6
+          ],
+          "target": "MN_MINNEAPOLIS_BOOKBINDER",
+          "target_warp": 3,
+          "passive": true
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_MP_BOOKBINDER_HOST",
+          "sprite": "SPRITE_GENTLEMAN",
+          "tile": [
+            2,
+            4
+          ],
+          "facing": "south",
+          "lines": [
+            "The history hall",
+            "keeps our mill map.",
+            "Read the three",
+            "river plaques."
+          ]
+        }
+      ],
+      "signs": [],
+      "trainers": [],
+      "items": [],
+      "programs": {}
+    },
+    {
+      "id": "MnMinneapolisCooperativeFlat",
+      "native_constant": "MN_MINNEAPOLIS_COOPERATIVE_FLAT",
+      "template": "GoldenrodHappinessRater",
+      "tileset": "house",
+      "border_block": 0,
+      "dimensions_metatiles": [
+        4,
+        4
+      ],
+      "rows": [
+        "04 1e 05 1d",
+        "0f 01 02 0f",
+        "0f 0c 0d 0f",
+        "06 0b 0f 07"
+      ],
+      "arrival_core": [
+        2,
+        6
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "tile": [
+            2,
+            7
+          ],
+          "target": "MN_MINNEAPOLIS",
+          "target_warp": 68,
+          "passive": false
+        },
+        {
+          "index": 2,
+          "tile": [
+            3,
+            7
+          ],
+          "target": "MN_MINNEAPOLIS",
+          "target_warp": 68,
+          "passive": false
+        },
+        {
+          "index": 3,
+          "tile": [
+            2,
+            6
+          ],
+          "target": "MN_MINNEAPOLIS_COOPERATIVE_FLAT",
+          "target_warp": 3,
+          "passive": true
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_MP_COOPERATIVEFLAT_HOST",
+          "sprite": "SPRITE_TEACHER",
+          "tile": [
+            2,
+            4
+          ],
+          "facing": "south",
+          "lines": [
+            "Neighbors share",
+            "this quiet room.",
+            "Your partners can",
+            "rest here too."
+          ],
+          "service": "heal_party"
+        }
+      ],
+      "signs": [],
+      "trainers": [],
+      "items": [],
+      "programs": {}
+    },
+    {
+      "id": "MnMinneapolisToolFlat",
+      "native_constant": "MN_MINNEAPOLIS_TOOL_FLAT",
+      "template": "OlivinePunishmentSpeechHouse",
+      "tileset": "house",
+      "border_block": 0,
+      "dimensions_metatiles": [
+        4,
+        4
+      ],
+      "rows": [
+        "04 1e 05 1d",
+        "0f 01 02 0f",
+        "0f 0c 0d 0f",
+        "06 0b 0f 07"
+      ],
+      "arrival_core": [
+        2,
+        6
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "tile": [
+            2,
+            7
+          ],
+          "target": "MN_MINNEAPOLIS",
+          "target_warp": 70,
+          "passive": false
+        },
+        {
+          "index": 2,
+          "tile": [
+            3,
+            7
+          ],
+          "target": "MN_MINNEAPOLIS",
+          "target_warp": 70,
+          "passive": false
+        },
+        {
+          "index": 3,
+          "tile": [
+            2,
+            6
+          ],
+          "target": "MN_MINNEAPOLIS_TOOL_FLAT",
+          "target_warp": 3,
+          "passive": true
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_MP_TOOLFLAT_HOST",
+          "sprite": "SPRITE_GENTLEMAN",
+          "tile": [
+            1,
+            2
+          ],
+          "facing": "south",
+          "lines": [
+            "A POKE DOLL can",
+            "help on the road.",
+            "Keep one for a",
+            "safe retreat."
+          ]
+        }
+      ],
+      "signs": [],
+      "trainers": [],
+      "items": [],
+      "programs": {
+        "MN_MP_TOOLFLAT_HOSTGiftDoneText": [
+          {
+            "command": "text",
+            "args": [
+              "\"Make good use\""
+            ]
+          },
+          {
+            "command": "line",
+            "args": [
+              "\"of it out there.\""
+            ]
+          },
+          {
+            "command": "done",
+            "args": []
+          }
+        ],
+        "MN_MP_TOOLFLAT_HOSTGiftDone": [
+          {
+            "command": "jumptextfaceplayer",
+            "args": [
+              "MN_MP_TOOLFLAT_HOSTGiftDoneText"
+            ]
+          }
+        ],
+        "MN_MP_TOOLFLAT_HOSTGiftBagFullText": [
+          {
+            "command": "text",
+            "args": [
+              "\"Your PACK is full.\""
+            ]
+          },
+          {
+            "command": "line",
+            "args": [
+              "\"Come back later.\""
+            ]
+          },
+          {
+            "command": "done",
+            "args": []
+          }
+        ],
+        "MN_MP_TOOLFLAT_HOSTGiftBagFull": [
+          {
+            "command": "jumptextfaceplayer",
+            "args": [
+              "MN_MP_TOOLFLAT_HOSTGiftBagFullText"
+            ]
+          }
+        ],
+        "MN_MP_TOOLFLAT_HOSTGiftGivenText": [
+          {
+            "command": "text",
+            "args": [
+              "\"A POKE DOLL can\""
+            ]
+          },
+          {
+            "command": "line",
+            "args": [
+              "\"help on the road.\""
+            ]
+          },
+          {
+            "command": "para",
+            "args": [
+              "\"Keep one for a\""
+            ]
+          },
+          {
+            "command": "line",
+            "args": [
+              "\"safe retreat.\""
+            ]
+          },
+          {
+            "command": "done",
+            "args": []
+          }
+        ],
+        "MN_MP_TOOLFLAT_HOST": [
+          {
+            "command": "faceplayer",
+            "args": []
+          },
+          {
+            "command": "checkevent",
+            "args": [
+              "EVENT_MN_MP_GIFT_TOOLFLAT"
+            ]
+          },
+          {
+            "command": "iftrue",
+            "args": [
+              "MN_MP_TOOLFLAT_HOSTGiftDone"
+            ]
+          },
+          {
+            "command": "giveitem",
+            "args": [
+              "POKE_DOLL",
+              "1"
+            ]
+          },
+          {
+            "command": "iffalse",
+            "args": [
+              "MN_MP_TOOLFLAT_HOSTGiftBagFull"
+            ]
+          },
+          {
+            "command": "setevent",
+            "args": [
+              "EVENT_MN_MP_GIFT_TOOLFLAT"
+            ]
+          },
+          {
+            "command": "jumptext",
+            "args": [
+              "MN_MP_TOOLFLAT_HOSTGiftGivenText"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "MnMinneapolisCornerHome",
+      "native_constant": "MN_MINNEAPOLIS_CORNER_HOME",
+      "template": "VioletNicknameSpeechHouse",
+      "tileset": "traditional_house",
+      "border_block": 0,
+      "dimensions_metatiles": [
+        4,
+        4
+      ],
+      "rows": [
+        "13 01 08 29",
+        "04 1b 1c 04",
+        "04 18 19 04",
+        "05 06 07 2a"
+      ],
+      "arrival_core": [
+        3,
+        6
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "tile": [
+            3,
+            7
+          ],
+          "target": "MN_MINNEAPOLIS",
+          "target_warp": 72,
+          "passive": false
+        },
+        {
+          "index": 2,
+          "tile": [
+            4,
+            7
+          ],
+          "target": "MN_MINNEAPOLIS",
+          "target_warp": 72,
+          "passive": false
+        },
+        {
+          "index": 3,
+          "tile": [
+            3,
+            6
+          ],
+          "target": "MN_MINNEAPOLIS_CORNER_HOME",
+          "target_warp": 3,
+          "passive": true
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_MP_CORNERHOME_HOST",
+          "sprite": "SPRITE_TEACHER",
+          "tile": [
+            2,
+            3
+          ],
+          "facing": "south",
+          "lines": [
+            "The market sells",
+            "drinks and BERRIES.",
+            "The clinic is",
+            "north of the GYM."
+          ]
+        }
+      ],
+      "signs": [],
+      "trainers": [],
+      "items": [],
+      "programs": {}
+    },
+    {
+      "id": "MnMinneapolisRiverFamilyHome",
+      "native_constant": "MN_MINNEAPOLIS_RIVER_FAMILY_HOME",
+      "template": "OlivineGoodRodHouse",
+      "tileset": "house",
+      "border_block": 0,
+      "dimensions_metatiles": [
+        4,
+        4
+      ],
+      "rows": [
+        "04 1e 05 1d",
+        "0f 01 02 0f",
+        "0f 0c 0d 0f",
+        "06 0b 0f 07"
+      ],
+      "arrival_core": [
+        2,
+        6
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "tile": [
+            2,
+            7
+          ],
+          "target": "MN_MINNEAPOLIS",
+          "target_warp": 74,
+          "passive": false
+        },
+        {
+          "index": 2,
+          "tile": [
+            3,
+            7
+          ],
+          "target": "MN_MINNEAPOLIS",
+          "target_warp": 74,
+          "passive": false
+        },
+        {
+          "index": 3,
+          "tile": [
+            2,
+            6
+          ],
+          "target": "MN_MINNEAPOLIS_RIVER_FAMILY_HOME",
+          "target_warp": 3,
+          "passive": true
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_MP_RIVERFAMILYHOME_HOST",
+          "sprite": "SPRITE_GENTLEMAN",
+          "tile": [
+            2,
+            3
+          ],
+          "facing": "south",
+          "lines": [
+            "We found this on",
+            "the quiet bank.",
+            "A water partner",
+            "can hold it."
+          ]
+        }
+      ],
+      "signs": [],
+      "trainers": [],
+      "items": [],
+      "programs": {
+        "MN_MP_RIVERFAMILYHOME_HOSTGiftDoneText": [
+          {
+            "command": "text",
+            "args": [
+              "\"Make good use\""
+            ]
+          },
+          {
+            "command": "line",
+            "args": [
+              "\"of it out there.\""
+            ]
+          },
+          {
+            "command": "done",
+            "args": []
+          }
+        ],
+        "MN_MP_RIVERFAMILYHOME_HOSTGiftDone": [
+          {
+            "command": "jumptextfaceplayer",
+            "args": [
+              "MN_MP_RIVERFAMILYHOME_HOSTGiftDoneText"
+            ]
+          }
+        ],
+        "MN_MP_RIVERFAMILYHOME_HOSTGiftBagFullText": [
+          {
+            "command": "text",
+            "args": [
+              "\"Your PACK is full.\""
+            ]
+          },
+          {
+            "command": "line",
+            "args": [
+              "\"Come back later.\""
+            ]
+          },
+          {
+            "command": "done",
+            "args": []
+          }
+        ],
+        "MN_MP_RIVERFAMILYHOME_HOSTGiftBagFull": [
+          {
+            "command": "jumptextfaceplayer",
+            "args": [
+              "MN_MP_RIVERFAMILYHOME_HOSTGiftBagFullText"
+            ]
+          }
+        ],
+        "MN_MP_RIVERFAMILYHOME_HOSTGiftGivenText": [
+          {
+            "command": "text",
+            "args": [
+              "\"We found this on\""
+            ]
+          },
+          {
+            "command": "line",
+            "args": [
+              "\"the quiet bank.\""
+            ]
+          },
+          {
+            "command": "para",
+            "args": [
+              "\"A water partner\""
+            ]
+          },
+          {
+            "command": "line",
+            "args": [
+              "\"can hold it.\""
+            ]
+          },
+          {
+            "command": "done",
+            "args": []
+          }
+        ],
+        "MN_MP_RIVERFAMILYHOME_HOST": [
+          {
+            "command": "faceplayer",
+            "args": []
+          },
+          {
+            "command": "checkevent",
+            "args": [
+              "EVENT_MN_MP_GIFT_RIVERFAMILYHOME"
+            ]
+          },
+          {
+            "command": "iftrue",
+            "args": [
+              "MN_MP_RIVERFAMILYHOME_HOSTGiftDone"
+            ]
+          },
+          {
+            "command": "giveitem",
+            "args": [
+              "MYSTIC_WATER",
+              "1"
+            ]
+          },
+          {
+            "command": "iffalse",
+            "args": [
+              "MN_MP_RIVERFAMILYHOME_HOSTGiftBagFull"
+            ]
+          },
+          {
+            "command": "setevent",
+            "args": [
+              "EVENT_MN_MP_GIFT_RIVERFAMILYHOME"
+            ]
+          },
+          {
+            "command": "jumptext",
+            "args": [
+              "MN_MP_RIVERFAMILYHOME_HOSTGiftGivenText"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "MnMinneapolisGardenFlat",
+      "native_constant": "MN_MINNEAPOLIS_GARDEN_FLAT",
+      "template": "GoldenrodFlowerShop",
+      "tileset": "house",
+      "border_block": 0,
+      "dimensions_metatiles": [
+        4,
+        4
+      ],
+      "rows": [
+        "0e 32 16 32",
+        "30 0f 0f 2f",
+        "2c 2e 2d 07",
+        "06 0b 0f 07"
+      ],
+      "arrival_core": [
+        2,
+        6
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "tile": [
+            2,
+            7
+          ],
+          "target": "MN_MINNEAPOLIS",
+          "target_warp": 76,
+          "passive": false
+        },
+        {
+          "index": 2,
+          "tile": [
+            3,
+            7
+          ],
+          "target": "MN_MINNEAPOLIS",
+          "target_warp": 76,
+          "passive": false
+        },
+        {
+          "index": 3,
+          "tile": [
+            2,
+            6
+          ],
+          "target": "MN_MINNEAPOLIS_GARDEN_FLAT",
+          "target_warp": 3,
+          "passive": true
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_MP_GARDENFLAT_HOST",
+          "sprite": "SPRITE_TEACHER",
+          "tile": [
+            2,
+            4
+          ],
+          "facing": "south",
+          "lines": [
+            "A little garden",
+            "feeds our partners.",
+            "Take some BERRIES",
+            "for your trip."
+          ]
+        }
+      ],
+      "signs": [],
+      "trainers": [],
+      "items": [],
+      "programs": {
+        "MN_MP_GARDENFLAT_HOSTGiftDoneText": [
+          {
+            "command": "text",
+            "args": [
+              "\"Make good use\""
+            ]
+          },
+          {
+            "command": "line",
+            "args": [
+              "\"of it out there.\""
+            ]
+          },
+          {
+            "command": "done",
+            "args": []
+          }
+        ],
+        "MN_MP_GARDENFLAT_HOSTGiftDone": [
+          {
+            "command": "jumptextfaceplayer",
+            "args": [
+              "MN_MP_GARDENFLAT_HOSTGiftDoneText"
+            ]
+          }
+        ],
+        "MN_MP_GARDENFLAT_HOSTGiftBagFullText": [
+          {
+            "command": "text",
+            "args": [
+              "\"Your PACK is full.\""
+            ]
+          },
+          {
+            "command": "line",
+            "args": [
+              "\"Come back later.\""
+            ]
+          },
+          {
+            "command": "done",
+            "args": []
+          }
+        ],
+        "MN_MP_GARDENFLAT_HOSTGiftBagFull": [
+          {
+            "command": "jumptextfaceplayer",
+            "args": [
+              "MN_MP_GARDENFLAT_HOSTGiftBagFullText"
+            ]
+          }
+        ],
+        "MN_MP_GARDENFLAT_HOSTGiftGivenText": [
+          {
+            "command": "text",
+            "args": [
+              "\"A little garden\""
+            ]
+          },
+          {
+            "command": "line",
+            "args": [
+              "\"feeds our\""
+            ]
+          },
+          {
+            "command": "para",
+            "args": [
+              "\"partners.\""
+            ]
+          },
+          {
+            "command": "line",
+            "args": [
+              "\"Take some BERRIES\""
+            ]
+          },
+          {
+            "command": "para",
+            "args": [
+              "\"for your trip.\""
+            ]
+          },
+          {
+            "command": "done",
+            "args": []
+          }
+        ],
+        "MN_MP_GARDENFLAT_HOST": [
+          {
+            "command": "faceplayer",
+            "args": []
+          },
+          {
+            "command": "checkevent",
+            "args": [
+              "EVENT_MN_MP_GIFT_GARDENFLAT"
+            ]
+          },
+          {
+            "command": "iftrue",
+            "args": [
+              "MN_MP_GARDENFLAT_HOSTGiftDone"
+            ]
+          },
+          {
+            "command": "giveitem",
+            "args": [
+              "BERRY",
+              "3"
+            ]
+          },
+          {
+            "command": "iffalse",
+            "args": [
+              "MN_MP_GARDENFLAT_HOSTGiftBagFull"
+            ]
+          },
+          {
+            "command": "setevent",
+            "args": [
+              "EVENT_MN_MP_GIFT_GARDENFLAT"
+            ]
+          },
+          {
+            "command": "jumptext",
+            "args": [
+              "MN_MP_GARDENFLAT_HOSTGiftGivenText"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "MnMinneapolisPatternStudio",
+      "native_constant": "MN_MINNEAPOLIS_PATTERN_STUDIO",
+      "template": "EcruteakItemfinderHouse",
+      "tileset": "traditional_house",
+      "border_block": 0,
+      "dimensions_metatiles": [
+        4,
+        4
+      ],
+      "rows": [
+        "13 01 08 29",
+        "04 1b 1c 04",
+        "04 18 19 04",
+        "05 06 07 2a"
+      ],
+      "arrival_core": [
+        3,
+        6
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "tile": [
+            3,
+            7
+          ],
+          "target": "MN_MINNEAPOLIS",
+          "target_warp": 78,
+          "passive": false
+        },
+        {
+          "index": 2,
+          "tile": [
+            4,
+            7
+          ],
+          "target": "MN_MINNEAPOLIS",
+          "target_warp": 78,
+          "passive": false
+        },
+        {
+          "index": 3,
+          "tile": [
+            3,
+            6
+          ],
+          "target": "MN_MINNEAPOLIS_PATTERN_STUDIO",
+          "target_warp": 3,
+          "passive": true
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_MP_PATTERNSTUDIO_HOST",
+          "sprite": "SPRITE_GENTLEMAN",
+          "tile": [
+            2,
+            3
+          ],
+          "facing": "south",
+          "lines": [
+            "We print designs",
+            "one line at a time.",
+            "Move with care in",
+            "the narrow alleys."
+          ]
+        }
+      ],
+      "signs": [],
+      "trainers": [],
+      "items": [],
+      "programs": {}
+    },
+    {
+      "id": "MnMinneapolisMillForemanHome",
+      "native_constant": "MN_MINNEAPOLIS_MILL_FOREMAN_HOME",
+      "template": "GoldenrodNameRater",
+      "tileset": "house",
+      "border_block": 0,
+      "dimensions_metatiles": [
+        4,
+        4
+      ],
+      "rows": [
+        "04 1e 05 1d",
+        "0f 01 02 0f",
+        "0f 0c 0d 0f",
+        "06 0b 0f 07"
+      ],
+      "arrival_core": [
+        2,
+        6
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "tile": [
+            2,
+            7
+          ],
+          "target": "MN_MINNEAPOLIS",
+          "target_warp": 80,
+          "passive": false
+        },
+        {
+          "index": 2,
+          "tile": [
+            3,
+            7
+          ],
+          "target": "MN_MINNEAPOLIS",
+          "target_warp": 80,
+          "passive": false
+        },
+        {
+          "index": 3,
+          "tile": [
+            2,
+            6
+          ],
+          "target": "MN_MINNEAPOLIS_MILL_FOREMAN_HOME",
+          "target_warp": 3,
+          "passive": true
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_MP_MILLFOREMANHOME_HOST",
+          "sprite": "SPRITE_TEACHER",
+          "tile": [
+            2,
+            4
+          ],
+          "facing": "south",
+          "lines": [
+            "The office is on",
+            "the central bank.",
+            "Workers gather at",
+            "the kitchen later."
+          ]
+        }
+      ],
+      "signs": [],
+      "trainers": [],
+      "items": [],
+      "programs": {}
+    }
+  ],
+  "event_flags": [
+    "EVENT_MN_MP_CLUB_BANKS_BEATEN",
+    "EVENT_MN_MP_CLUB_CEDAR_BEATEN",
+    "EVENT_MN_MP_CLUB_COACH_INEZ_BEATEN",
+    "EVENT_MN_MP_CLUB_RIVET_BEATEN",
+    "EVENT_MN_MP_FIND_CEDAR_COURT",
+    "EVENT_MN_MP_FIND_LOWER_BRIDGE",
+    "EVENT_MN_MP_FIND_MUSEUM_ALLEY",
+    "EVENT_MN_MP_FIND_NORTH_GARDEN",
+    "EVENT_MN_MP_FIND_PARK_POND",
+    "EVENT_MN_MP_FIND_SOUTH_LANE",
+    "EVENT_MN_MP_FIND_UPPER_BANK",
+    "EVENT_MN_MP_FIND_WEST_LAKE",
+    "EVENT_MN_MP_GIFT_GARDENFLAT",
+    "EVENT_MN_MP_GIFT_RIVERFAMILYHOME",
+    "EVENT_MN_MP_GIFT_TOOLFLAT",
+    "EVENT_MN_MP_MILL_TRAIL_REWARDED",
+    "EVENT_MN_MP_PLAQUE_GRAIN_READ",
+    "EVENT_MN_MP_PLAQUE_WATER_READ",
+    "EVENT_MN_MP_PLAQUE_WORKERS_READ",
+    "EVENT_MN_MP_PRINT_MAIL_DELIVERED",
+    "EVENT_MN_MP_PRINT_MAIL_GIVEN"
+  ],
+  "programs": {
+    "MN_MP_MILL_WATER_PLAQUETrailText": [
+      {
+        "command": "text",
+        "args": [
+          "\"RIVER POWER\""
+        ]
+      },
+      {
+        "command": "line",
+        "args": [
+          "\"The current drove\""
+        ]
+      },
+      {
+        "command": "para",
+        "args": [
+          "\"the mill wheels.\""
+        ]
+      },
+      {
+        "command": "done",
+        "args": []
+      }
+    ],
+    "MN_MP_MILL_WATER_PLAQUE": [
+      {
+        "command": "setevent",
+        "args": [
+          "EVENT_MN_MP_PLAQUE_WATER_READ"
+        ]
+      },
+      {
+        "command": "jumptext",
+        "args": [
+          "MN_MP_MILL_WATER_PLAQUETrailText"
+        ]
+      }
+    ],
+    "MN_MP_MILL_GRAIN_PLAQUETrailText": [
+      {
+        "command": "text",
+        "args": [
+          "\"GRAIN AND RAIL\""
+        ]
+      },
+      {
+        "command": "line",
+        "args": [
+          "\"Flour left the\""
+        ]
+      },
+      {
+        "command": "para",
+        "args": [
+          "\"city\""
+        ]
+      },
+      {
+        "command": "line",
+        "args": [
+          "\"by the rail yards.\""
+        ]
+      },
+      {
+        "command": "done",
+        "args": []
+      }
+    ],
+    "MN_MP_MILL_GRAIN_PLAQUE": [
+      {
+        "command": "setevent",
+        "args": [
+          "EVENT_MN_MP_PLAQUE_GRAIN_READ"
+        ]
+      },
+      {
+        "command": "jumptext",
+        "args": [
+          "MN_MP_MILL_GRAIN_PLAQUETrailText"
+        ]
+      }
+    ],
+    "MN_MP_MILL_WORKERS_PLAQUETrailText": [
+      {
+        "command": "text",
+        "args": [
+          "\"MILL WORKERS\""
+        ]
+      },
+      {
+        "command": "line",
+        "args": [
+          "\"Many hands built\""
+        ]
+      },
+      {
+        "command": "para",
+        "args": [
+          "\"this river city.\""
+        ]
+      },
+      {
+        "command": "done",
+        "args": []
+      }
+    ],
+    "MN_MP_MILL_WORKERS_PLAQUE": [
+      {
+        "command": "setevent",
+        "args": [
+          "EVENT_MN_MP_PLAQUE_WORKERS_READ"
+        ]
+      },
+      {
+        "command": "jumptext",
+        "args": [
+          "MN_MP_MILL_WORKERS_PLAQUETrailText"
+        ]
+      }
+    ]
+  },
+  "trainers": [],
+  "items": [
+    {
+      "id": "MN_MP_FIND_UPPER_BANK",
+      "item": "SUPER_POTION",
+      "quantity": 1,
+      "flag": "EVENT_MN_MP_FIND_UPPER_BANK",
+      "tile": [
+        39,
+        13
+      ]
+    },
+    {
+      "id": "MN_MP_FIND_MUSEUM_ALLEY",
+      "item": "REVIVE",
+      "quantity": 1,
+      "flag": "EVENT_MN_MP_FIND_MUSEUM_ALLEY",
+      "tile": [
+        35,
+        23
+      ]
+    },
+    {
+      "id": "MN_MP_FIND_WEST_LAKE",
+      "item": "GREAT_BALL",
+      "quantity": 2,
+      "flag": "EVENT_MN_MP_FIND_WEST_LAKE",
+      "tile": [
+        13,
+        57
+      ]
+    },
+    {
+      "id": "MN_MP_FIND_LOWER_BRIDGE",
+      "item": "ESCAPE_ROPE",
+      "quantity": 1,
+      "flag": "EVENT_MN_MP_FIND_LOWER_BRIDGE",
+      "tile": [
+        65,
+        75
+      ]
+    },
+    {
+      "id": "MN_MP_FIND_CEDAR_COURT",
+      "item": "REPEL",
+      "quantity": 1,
+      "flag": "EVENT_MN_MP_FIND_CEDAR_COURT",
+      "tile": [
+        117,
+        69
+      ]
+    },
+    {
+      "id": "MN_MP_FIND_PARK_POND",
+      "item": "SUPER_POTION",
+      "quantity": 1,
+      "flag": "EVENT_MN_MP_FIND_PARK_POND",
+      "tile": [
+        45,
+        85
+      ]
+    },
+    {
+      "id": "MN_MP_FIND_NORTH_GARDEN",
+      "item": "PARLYZ_HEAL",
+      "quantity": 1,
+      "flag": "EVENT_MN_MP_FIND_NORTH_GARDEN",
+      "tile": [
+        107,
+        23
+      ]
+    },
+    {
+      "id": "MN_MP_FIND_SOUTH_LANE",
+      "item": "NUGGET",
+      "quantity": 1,
+      "flag": "EVENT_MN_MP_FIND_SOUTH_LANE",
+      "tile": [
+        107,
+        85
+      ]
+    }
+  ],
+  "text_revisions": []
+}

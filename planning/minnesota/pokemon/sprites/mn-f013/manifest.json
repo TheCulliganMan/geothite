@@ -1,0 +1,338 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F013",
+  "status": "native-front-back-reviewed",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_037": {
+      "species_id": "MN_037",
+      "name": "Sparkveil",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          22,
+          29,
+          14
+        ],
+        [
+          6,
+          14,
+          20
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        15286,
+        20934,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          181,
+          239,
+          115
+        ],
+        [
+          49,
+          115,
+          165
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#B5EF73",
+        "#3173A5",
+        "#000000"
+      ]
+    },
+    "MN_038": {
+      "species_id": "MN_038",
+      "name": "Aurorill",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          13,
+          29,
+          23
+        ],
+        [
+          12,
+          8,
+          24
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        24493,
+        24844,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          107,
+          239,
+          189
+        ],
+        [
+          99,
+          66,
+          198
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#6BEFBD",
+        "#6342C6",
+        "#000000"
+      ]
+    },
+    "MN_039": {
+      "species_id": "MN_039",
+      "name": "Polarisma",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          20,
+          26,
+          30
+        ],
+        [
+          12,
+          7,
+          23
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        31572,
+        23788,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          165,
+          214,
+          247
+        ],
+        [
+          99,
+          57,
+          189
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#A5D6F7",
+        "#6339BD",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f013/prompt-v1.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "style_reference": {
+    "origin": "authentic local Crystal sprites",
+    "generator": "crates/crystal-assets/examples/minnesota_gen2_reference.rs",
+    "board": "target/minnesota-pokemon/gen2-reference/starters.png"
+  },
+  "sprites": [
+    {
+      "id": "mn-037-sparkveil-v1",
+      "species_id": "MN_037",
+      "view": "front",
+      "source": "sprites/mn-f013/mn-037-039.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        500,
+        512
+      ],
+      "fit": [
+        36,
+        36
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        15286,
+        20934,
+        0
+      ]
+    },
+    {
+      "id": "mn-037-sparkveil-v1",
+      "species_id": "MN_037",
+      "view": "back",
+      "source": "sprites/mn-f013/mn-037-039.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        512,
+        500,
+        512
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        15286,
+        20934,
+        0
+      ]
+    },
+    {
+      "id": "mn-038-aurorill-v1",
+      "species_id": "MN_038",
+      "view": "front",
+      "source": "sprites/mn-f013/mn-037-039.front-back.imagegen-v1.png",
+      "crop": [
+        500,
+        0,
+        480,
+        512
+      ],
+      "fit": [
+        44,
+        44
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        24493,
+        24844,
+        0
+      ]
+    },
+    {
+      "id": "mn-038-aurorill-v1",
+      "species_id": "MN_038",
+      "view": "back",
+      "source": "sprites/mn-f013/mn-037-039.front-back.imagegen-v1.png",
+      "crop": [
+        500,
+        512,
+        480,
+        512
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        24493,
+        24844,
+        0
+      ]
+    },
+    {
+      "id": "mn-039-polarisma-v1",
+      "species_id": "MN_039",
+      "view": "front",
+      "source": "sprites/mn-f013/mn-037-039.front-back.imagegen-v1.png",
+      "crop": [
+        980,
+        0,
+        556,
+        512
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        31572,
+        23788,
+        0
+      ]
+    },
+    {
+      "id": "mn-039-polarisma-v1",
+      "species_id": "MN_039",
+      "view": "back",
+      "source": "sprites/mn-f013/mn-037-039.front-back.imagegen-v1.png",
+      "crop": [
+        980,
+        512,
+        556,
+        512
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        31572,
+        23788,
+        0
+      ]
+    }
+  ],
+  "visual_review": {
+    "status": "reviewed",
+    "notes": [
+      "Inspected frozen source-contour-v1 sheet: star core and flowing curtain shapes retain clear stepped exterior anchors, with violet internal folds and separate themed palettes.",
+      "Rear portraits keep broad colored auroral panels and open lower crop; no new black knots at ribbon bends or clipped extremities."
+    ],
+    "sheet_sha256": "6f6bad8daa79c7834debaea5bd0db1226a3839ff30a3bc97c4528b29266d4709",
+    "outline_profile": "source-contour-v1"
+  }
+}

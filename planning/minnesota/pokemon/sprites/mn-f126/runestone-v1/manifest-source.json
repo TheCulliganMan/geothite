@@ -1,0 +1,120 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F126",
+  "status": "native-review-pending",
+  "tool": "built-in image_gen",
+  "prompt_file": "sprites/mn-f126/runestone-v1/prompt-v1.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "pokemon_palettes": {
+    "MN_277": {
+      "species_id": "MN_277",
+      "name": "Kensigard",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          24,
+          21,
+          16
+        ],
+        [
+          9,
+          10,
+          13
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        17080,
+        13641,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          198,
+          173,
+          132
+        ],
+        [
+          74,
+          82,
+          107
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#C6AD84",
+        "#4A526B",
+        "#000000"
+      ]
+    }
+  },
+  "sprites": [
+    {
+      "id": "mn-277-kensigard-v1",
+      "species_id": "MN_277",
+      "view": "front",
+      "source": "sprites/mn-f126/runestone-v1/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        887,
+        887
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        17080,
+        13641,
+        0
+      ],
+      "interior_black_min_samples": 12,
+      "white_detail_min_samples": 4
+    },
+    {
+      "id": "mn-277-kensigard-v1",
+      "species_id": "MN_277",
+      "view": "back",
+      "source": "sprites/mn-f126/runestone-v1/front-back.imagegen-v1.png",
+      "crop": [
+        887,
+        135,
+        887,
+        680
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        17080,
+        13641,
+        0
+      ],
+      "interior_black_min_samples": 12,
+      "white_detail_min_samples": 4
+    }
+  ]
+}

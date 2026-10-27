@@ -1,0 +1,378 @@
+{
+  "id": "MnLakeItasca",
+  "name": "LAKE ITASCA",
+  "native_constant": "MN_LAKE_ITASCA",
+  "compiled_tileset": "mn_headwaters",
+  "dimensions_metatiles": [
+    24,
+    24
+  ],
+  "reference_anchor_percent": [
+    24,
+    33
+  ],
+  "role": "landmark",
+  "composition": "A quiet reference site: pine banks, a northern lake feeding a narrow brook, one short railed crossing and a dry-land survey plaque. Visiting is possible after Lake; only the Pine-qualified, acknowledged marker records the independent reading. The future western trail remains visibly closed. The eastern arrival passes through the authentic Ilex Forest\u2013Azalea gatehouse floorplan, with two native side-carpet lanes and separate safe arrivals on both sides.",
+  "ports": [
+    {
+      "route": "MN_R14",
+      "side": "E",
+      "gate_metatile": [
+        21,
+        12
+      ],
+      "landing_metatile": [
+        20,
+        12
+      ]
+    },
+    {
+      "route": "MN_R19",
+      "side": "W",
+      "gate_metatile": [
+        1,
+        12
+      ],
+      "landing_metatile": [
+        3,
+        12
+      ]
+    }
+  ],
+  "interiors": [
+    {
+      "id": "MnItascaGatehouse",
+      "native_constant": "MN_ITASCA_GATEHOUSE",
+      "template": "IlexForestAzaleaGate",
+      "tileset": "gate",
+      "border_block": 0,
+      "dimensions_metatiles": [
+        5,
+        4
+      ],
+      "rows": [
+        "39 0e 02 13 39",
+        "01 0c 0b 3f 01",
+        "23 01 01 01 24",
+        "01 08 10 3e 01"
+      ],
+      "passive_arrival": {
+        "index": 5,
+        "tile": [
+          1,
+          4
+        ]
+      },
+      "exits": [
+        {
+          "index": 1,
+          "tile": [
+            0,
+            4
+          ],
+          "target": "MnLakeItasca",
+          "target_warp": 3
+        },
+        {
+          "index": 2,
+          "tile": [
+            0,
+            5
+          ],
+          "target": "MnLakeItasca",
+          "target_warp": 4
+        },
+        {
+          "index": 3,
+          "tile": [
+            9,
+            4
+          ],
+          "target": "MnR14C00R00",
+          "target_warp": 3
+        },
+        {
+          "index": 4,
+          "tile": [
+            9,
+            5
+          ],
+          "target": "MnR14C00R00",
+          "target_warp": 4
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_ITASCA_GATE_ATTENDANT",
+          "sprite": "SPRITE_TEACHER",
+          "tile": [
+            5,
+            2
+          ],
+          "facing": "south",
+          "counter_tile": [
+            5,
+            3
+          ],
+          "approach": [
+            5,
+            4
+          ],
+          "lines": [
+            "LAKE ITASCA: west.",
+            "BEMIDJI: east.",
+            "The survey marker",
+            "is past the brook."
+          ]
+        },
+        {
+          "id": "MN_ITASCA_GATE_WALKER",
+          "sprite": "SPRITE_GRANNY",
+          "tile": [
+            1,
+            3
+          ],
+          "facing": "south",
+          "lines": [
+            "They asked who had",
+            "copied the logs.",
+            "I kept my copy.",
+            "So did my sister."
+          ]
+        }
+      ],
+      "signs": []
+    }
+  ],
+  "doors": [],
+  "residents": [
+    {
+      "id": "MN_ITASCA_OBSERVER",
+      "sprite": "SPRITE_TEACHER",
+      "tile": [
+        15,
+        33
+      ],
+      "facing": "east",
+      "lines": [
+        "Write the place,",
+        "date, and value.",
+        "A clean copy keeps",
+        "all three."
+      ]
+    },
+    {
+      "id": "MN_ITASCA_TRAIL_WALKER",
+      "sprite": "SPRITE_FISHER",
+      "tile": [
+        34,
+        29
+      ],
+      "facing": "west",
+      "lines": [
+        "One bridge back.",
+        "BEMIDJI is east."
+      ]
+    }
+  ],
+  "signs": [
+    {
+      "id": "MN_ITASCA_MARKER",
+      "tile": [
+        19,
+        21
+      ],
+      "lines": [
+        "HEADWATERS MARKER",
+        "Reading recorded."
+      ]
+    },
+    {
+      "id": "MN_ITASCA_ENTRY",
+      "tile": [
+        38,
+        24
+      ],
+      "lines": [
+        "LAKE ITASCA",
+        "HEADWATERS MARKER",
+        "Cross on foot."
+      ]
+    },
+    {
+      "id": "MN_ITASCA_WEST_CLOSED",
+      "tile": [
+        4,
+        24
+      ],
+      "lines": [
+        "DETROIT LAKES",
+        "Trail closed here.",
+        "Return east."
+      ]
+    }
+  ],
+  "marker_contract": {
+    "tile": [
+      19,
+      21
+    ],
+    "approach": [
+      19,
+      22
+    ],
+    "milestone": "MS06",
+    "requires": [
+      "BADGE_7"
+    ],
+    "sets": [
+      "EVENT_MN_HEADWATERS_READING"
+    ]
+  },
+  "bridge_contract": {
+    "walk_rows_core": [
+      25,
+      26
+    ],
+    "walk_x_core": [
+      20,
+      25
+    ],
+    "top_rail_core_y": 24,
+    "bottom_rail_core_y": 27,
+    "west_target_core": [
+      19,
+      22
+    ],
+    "east_arrival_core": [
+      42,
+      24
+    ]
+  },
+  "viewpoints": [
+    {
+      "id": "marker-and-brook",
+      "tile": [
+        19,
+        22
+      ]
+    },
+    {
+      "id": "short-crossing",
+      "tile": [
+        21,
+        25
+      ]
+    },
+    {
+      "id": "lake-view",
+      "tile": [
+        28,
+        21
+      ]
+    }
+  ],
+  "status": "NATIVE VERIFIED: original IlexForestAzaleaGate floorplan and both side-entry lanes, early visit, marker acknowledgment, separate officer comparison, R09 round trip, Continue and actual stdio. See playable/itasca-story.md; full earned campaign remains unfinished.",
+  "gatehouse_contract": {
+    "reference": "IlexForestAzaleaGate",
+    "park": {
+      "entrances": [
+        [
+          43,
+          24
+        ],
+        [
+          43,
+          25
+        ]
+      ],
+      "returns": [
+        [
+          42,
+          24
+        ],
+        [
+          42,
+          25
+        ]
+      ],
+      "active_indices": [
+        1,
+        2
+      ],
+      "passive_indices": [
+        3,
+        4
+      ]
+    },
+    "route": {
+      "map": "MnR14C00R00",
+      "entrances": [
+        [
+          4,
+          42
+        ],
+        [
+          4,
+          43
+        ]
+      ],
+      "returns": [
+        [
+          5,
+          42
+        ],
+        [
+          5,
+          43
+        ]
+      ],
+      "active_indices": [
+        1,
+        2
+      ],
+      "passive_indices": [
+        3,
+        4
+      ]
+    },
+    "passive_arrivals": [
+      {
+        "index": 5,
+        "tile": [
+          1,
+          4
+        ],
+        "target": "MN_LAKE_ITASCA",
+        "target_warp": 3
+      },
+      {
+        "index": 6,
+        "tile": [
+          1,
+          5
+        ],
+        "target": "MN_LAKE_ITASCA",
+        "target_warp": 4
+      },
+      {
+        "index": 7,
+        "tile": [
+          8,
+          4
+        ],
+        "target": "MnR14C00R00",
+        "target_warp": 3
+      },
+      {
+        "index": 8,
+        "tile": [
+          8,
+          5
+        ],
+        "target": "MnR14C00R00",
+        "target_warp": 4
+      }
+    ]
+  }
+}

@@ -4426,6 +4426,41 @@ fn visual_world_grid_window(enabled: bool, viewport_origin: IVec2) -> VisualWorl
     }
 }
 
+// Rooms keep their existing context; the larger resident acreage belongs to
+// outdoor views, including forests whose environment is distinct from routes.
+fn visual_world_map_window(
+    enabled: bool,
+    viewport_origin: IVec2,
+    map: &crate::RuntimeMapCatalogSnapshot,
+) -> VisualWorldWindow {
+    let outdoor = map
+        .attributes
+        .environment
+        .as_deref()
+        .or_else(|| {
+            map.metadata
+                .as_ref()
+                .map(|metadata| metadata.environment.as_str())
+        })
+        .is_some_and(|environment| {
+            ["town", "route", "forest"]
+                .iter()
+                .any(|kind| environment.eq_ignore_ascii_case(kind))
+        });
+    if enabled && !outdoor && cfg!(feature = "voxel-view") {
+        let halo = CLASSIC_SCROLL_HALO_TILES.max(32);
+        let native = viewport_origin - IVec2::splat(i32::from(halo));
+        return VisualWorldWindow {
+            origin: IVec2::new(native.x.div_euclid(4) * 4, native.y.div_euclid(4) * 4),
+            size: UVec2::new(
+                (VIEWPORT_TILES_X as u32 + halo as u32 * 2 + 6) / 4 * 4,
+                (VIEWPORT_TILES_Y as u32 + halo as u32 * 2 + 6) / 4 * 4,
+            ),
+        };
+    }
+    visual_world_grid_window(enabled, viewport_origin)
+}
+
 fn retained_field_dialog_structure_matches(
     text_box_background_count: usize,
     frame_tile_count: usize,
@@ -4615,6 +4650,13 @@ fn render_playfield(
                     }
                 }
                 None => {
+                    for entity in scene_dialogs.iter() {
+                        queue_existing_entity_despawn(
+                            &mut commands,
+                            &mut queued_despawns,
+                            entity,
+                        );
+                    }
                     let key = intro_scene_art_key(&intro);
                     let error = tileset_art
                         .intro_scene_errors
@@ -5289,8 +5331,7 @@ fn render_playfield(
     };
     #[cfg(any(feature = "fullscreen-scaling", feature = "voxel-view"))]
     if snapshot.battle.is_none()
-        && let Err(error) =
-            expand_fullscreen_object_presentation(Arc::make_mut(&mut snapshot), &runtime_shell)
+        && let Err(error) = object_presentation::expand_shared(&mut snapshot, &runtime_shell)
     {
         record_visible_render_error(&mut commands, &mut runtime_shell, error);
         return;
@@ -5339,7 +5380,11 @@ fn render_playfield(
     let state_hash = snapshot.visual_state_hash;
     runtime_shell.battle_lcd_animation_active = snapshot.battle.is_some();
     let shell_render_key = battle_animated_shell_render_key(&snapshot, &runtime_shell);
-    let map_block_identity = visible_map_block_identity(&snapshot);
+    let map_block_identity = if cfg!(feature = "voxel-view") && visual_world_enabled {
+        connected_world_sources::block_identity(&snapshot.overworld.map_name, &snapshot.maps)
+    } else {
+        visible_map_block_identity(&snapshot)
+    };
     let position_key = overworld_render_position_key(&snapshot);
     let appearance_key = overworld_render_appearance_key(&snapshot);
     let world_key = overworld_render_world_key_from_parts(
@@ -5951,7 +5996,21 @@ Transform::from_xyz(0.0, 0.0, 2.7),),
         time_of_day: effective_time_of_day.to_string(),
         palette_map: tileset.palette_map.clone(),
     };
-    let connected_maps = match connected_render_map_placements(&map.map_name, &snapshot.maps) {
+    // Resolve every region inside the preload area, even when several small
+    // intervening maps put it beyond the regular connection neighborhood.
+    let connected_maps = match if cfg!(feature = "voxel-view") && visual_world_enabled {
+        connected_world_sources::placements(
+            &map.map_name,
+            &snapshot.maps,
+            visual_world_map_window(
+                true,
+                IVec2::new(i32::from(start_x), i32::from(start_y)),
+                map,
+            ),
+        )
+    } else {
+        connected_render_map_placements(&map.map_name, &snapshot.maps)
+    } {
         Ok(maps) => maps,
         Err(error) => {
             record_visible_render_error(&mut commands, &mut runtime_shell, error);
@@ -5970,9 +6029,15 @@ Transform::from_xyz(0.0, 0.0, 2.7),),
             map.attributes.tileset_name.hash(&mut hasher);
             tileset_art_key.time_of_day.hash(&mut hasher);
             map.attributes.border_block.hash(&mut hasher);
+            snapshot
+                .progression
+                .active_engine_flags
+                .contains("ENGINE_FOREST_IS_RESTLESS")
+                .hash(&mut hasher);
             tileset.palette_map.hash(&mut hasher);
             for &(target_map, origin_x, origin_y) in connected_maps.iter().skip(1) {
                 target_map.map_name.hash(&mut hasher);
+                target_map.blocks.hash(&mut hasher);
                 (origin_x,origin_y).hash(&mut hasher);
                 target_map.attributes.tileset_name.hash(&mut hasher);
                 target_map.attributes.border_block.hash(&mut hasher);
@@ -6302,19 +6367,43 @@ Transform::from_xyz(0.0, 0.0, 2.7),),
     let mut priority_viewport_tiles = Vec::with_capacity(
         usize::try_from(CLASSIC_SCROLL_TILES_X * CLASSIC_SCROLL_TILES_Y).unwrap_or_default(),
     );
-    let visual_window = visual_world_grid_window(visual_world_enabled,
-        IVec2::new(i32::from(start_x), i32::from(start_y)));
+    let visual_window = visual_world_map_window(
+        visual_world_enabled,
+        IVec2::new(i32::from(start_x), i32::from(start_y)),
+        map,
+    );
+    #[cfg(feature = "voxel-view")]
+    let (visual_window, retain_visual_world) = source_window::select(
+        rendered
+            .visual_world_texture
+            .as_ref()
+            .map(|_| VisualWorldWindow {
+                origin: rendered.visual_world_grid_origin,
+                size: rendered.visual_world_grid_size,
+            }),
+        visual_window,
+        visual_world_enabled
+            && rendered.visual_world_enabled
+            && rendered.map_name.as_deref() == Some(map.map_name.as_str())
+            && rendered.map_visual_key == Some(map_visual_key)
+            && rendered.visual_tiles_revision.is_some()
+            && !rendered.visual_tiles.is_empty(),
+    );
+    #[cfg(not(feature = "voxel-view"))]
+    let retain_visual_world = false;
     let visual_world_tiles_x = visual_window.size.x as i16;
     let visual_world_tiles_y = visual_window.size.y as i16;
     let visual_padding_x = i32::from(start_x) - visual_window.origin.x;
     let visual_padding_y = i32::from(start_y) - visual_window.origin.y;
     #[cfg(any(test, feature = "voxel-view"))]
-    let mut visual_tiles = Vec::with_capacity(
-        usize::try_from(visual_world_tiles_x * visual_world_tiles_y).unwrap_or_default(),
-    );
+    let mut visual_tiles = if retain_visual_world {
+        std::mem::take(&mut rendered.visual_tiles)
+    } else {
+        Vec::with_capacity(visual_window.size.x as usize * visual_window.size.y as usize)
+    };
     #[cfg(feature = "voxel-view")]
     let mut visual_world_tile_handles = Vec::with_capacity(if visual_world_enabled {
-        usize::try_from(visual_world_tiles_x * visual_world_tiles_y).unwrap_or_default()
+        visual_window.size.x as usize * visual_window.size.y as usize
     } else {
         0
     });
@@ -6324,8 +6413,20 @@ Transform::from_xyz(0.0, 0.0, 2.7),),
     {
         rendered.terrain_scan_count = rendered.terrain_scan_count.saturating_add(1);
     }
-    for visual_y in 0..visual_world_tiles_y {
-        for visual_x in 0..visual_world_tiles_x {
+    // Retained outdoor source art stays anchored while the LCD scrolls. Only
+    // scan the classic surface here; it must keep exact source animation/OAM.
+    let (scan_min, scan_max) = if retain_visual_world {
+        let min = IVec2::new(visual_padding_x, visual_padding_y)
+            - IVec2::splat(i32::from(CLASSIC_SCROLL_HALO_TILES));
+        (
+            min,
+            min + IVec2::new(CLASSIC_SCROLL_TILES_X as i32, CLASSIC_SCROLL_TILES_Y as i32),
+        )
+    } else {
+        (IVec2::ZERO, visual_window.size.as_ivec2())
+    };
+    for visual_y in scan_min.y as i16..scan_max.y as i16 {
+        for visual_x in scan_min.x as i16..scan_max.x as i16 {
             let x = visual_x - visual_padding_x as i16;
             let y = visual_y - visual_padding_y as i16;
             let inside_scroll_surface = x >= -CLASSIC_SCROLL_HALO_TILES
@@ -6374,7 +6475,7 @@ Transform::from_xyz(0.0, 0.0, 2.7),),
                 }
             }
             #[cfg(any(test, feature = "voxel-view"))]
-            {
+            if !retain_visual_world {
                 let (visual_source,sx,sy)=if visual_world_enabled {
                     resolved_visual_render_source_at(&render_sources,map_x,map_y)
                 } else {(source,source_x,source_y)};
@@ -6451,6 +6552,44 @@ Transform::from_xyz(0.0, 0.0, 2.7),),
                     tile.priority_from_row = priority_spec.as_ref().map(|(_, row)| *row as u8);
                 }
                 priority_viewport_tiles.push(priority_spec);
+            }
+        }
+    }
+    #[cfg(feature = "voxel-view")]
+    if retain_visual_world {
+        // Refresh only authenticated animated cells. The renderer publishes
+        // these sparse phases into its retained immutable terrain atlas.
+        for tile in visual_tiles
+            .iter_mut()
+            .filter(|tile| tile.animation_frames.is_some())
+        {
+            let point = visual_window.origin + IVec2::new(tile.column as i32, tile.row as i32);
+            let (source, x, y) =
+                resolved_visual_render_source_at(&render_sources, point.x, point.y);
+            let resolved = source_art_by_map
+                .get(source.map.map_name.as_str())
+                .copied()
+                .flatten()
+                .context("retained source animation art is missing")
+                .and_then(|art| {
+                    source_tile_art(
+                        source,
+                        art,
+                        x,
+                        y,
+                        runtime_shell.lcd_animation_frame,
+                        snapshot
+                            .progression
+                            .active_engine_flags
+                            .contains("ENGINE_FOREST_IS_RESTLESS"),
+                    )
+                });
+            match resolved {
+                Ok((_, _, _, _, texture, _, _)) => tile.texture = texture,
+                Err(error) => {
+                    record_visible_render_error(&mut commands, &mut runtime_shell, error);
+                    return;
+                }
             }
         }
     }
@@ -6535,7 +6674,11 @@ Transform::from_xyz(0.0, 0.0, 2.7),),
     rendered.map_priority_texture = Some(priority_viewport_texture.clone());
     #[cfg(feature = "voxel-view")]
     {
-        if visual_world_enabled && !facing_only_redraw && !retained_texture_content {
+        if visual_world_enabled
+            && !retain_visual_world
+            && !facing_only_redraw
+            && !retained_texture_content
+        {
             // Fullscreen 2D and 2.5D often request exactly the same grid.
             // Reuse its complete image instead of composing and uploading a
             // second identical multi-megabyte atlas on every camera step.
@@ -6584,8 +6727,12 @@ Transform::from_xyz(0.0, 0.0, 2.7),),
             Ok(datum)=>datum,
             Err(error)=>{record_visible_render_error(&mut commands,&mut runtime_shell,error);return;}
         }; }
-        rendered.visual_tiles_revision = visual_tile_grid_is_complete(&visual_tiles, visual_window.size)
-            .then(|| visual_terrain_revision(map_visual_key, (start_x, start_y), &visual_tiles));
+        if !retain_visual_world {
+            rendered.visual_tiles_revision =
+                visual_tile_grid_is_complete(&visual_tiles, visual_window.size).then(|| {
+                    visual_terrain_revision(map_visual_key, (start_x, start_y), &visual_tiles)
+                });
+        }
         rendered.visual_tiles = visual_tiles;
         rendered.visual_source_regions = visual_source_regions(&render_sources);
         // Capture the verified bounds of the map used for THIS terrain build.
@@ -7804,10 +7951,11 @@ Transform::from_xyz(
             let Some(frames) = grass_rustle_frames_for_art(
                 &mut tileset_art,
                 &runtime_shell.asset_root,
+                &tileset_art_key.tileset_id,
                 time_of_day,
                 &mut images,
             ) else {
-                let key = normalize_tileset_time_of_day(time_of_day);
+                let key = grass_rustle_art_key(&tileset_art_key.tileset_id, time_of_day);
                 let error = tileset_art
                     .grass_rustle_errors
                     .get(&key)

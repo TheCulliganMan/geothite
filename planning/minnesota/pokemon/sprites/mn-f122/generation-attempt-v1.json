@@ -1,0 +1,13 @@
+{
+  "status": "returned-image",
+  "tool": "built-in image_gen",
+  "original_path": "/Users/ryanculligan/.codex/generated_images/01a178da-4cf1-7e01-8516-667a332dc790/exec-f30bf157-1a56-415a-9df9-aa51615cf890.png",
+  "saved_path": "planning/minnesota/pokemon/sprites/mn-f122/mn-261-262.front-back.imagegen-v1.png",
+  "sha256": "4d06d0c37983444a9252037c76c4558dbd35bda3c314644dfaddbeddc90195e0",
+  "dimensions": [
+    1536,
+    1024
+  ],
+  "prompt_file": "sprites/mn-f122/prompt-v1.txt",
+  "reference_mapping": "sprites/mn-f122/reference-mapping-v1.json"
+}

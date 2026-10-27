@@ -23,6 +23,43 @@ python3 tools/performance_audit.py \
   --output .local/performance-audit/baseline --repeats 3 --timings-only
 ```
 
+Add `--view 2d` to measure the production source compositor; the default is
+`--view 3d`. The runner forwards `--2d` to the Rust example and verifies the
+requested renderer against both the executable metadata and the actual capture.
+Renderer identity is part of baseline compatibility. Source 2D waits for the
+compositor receipt for the current snapshot/map/tile, followed by the same GPU
+completion and warmup image checks used for 3D. Modeled-world residency and
+modeled-camera drift are inapplicable to 2D. External model-tree hashing is also
+skipped for 2D; pack verification is unchanged.
+
+For a sustained source-view walk, derive a temporary suite from the existing
+land-movement recipe. This repeats ordinary production inputs at the normal game
+cadence; `continuous_movement` avoids an artificial GPU drain at each waypoint:
+
+```sh
+mkdir -p target/source-2d-audit
+python3 - <<'PY'
+import json
+from pathlib import Path
+recipes = json.loads(Path('tools/performance-scenarios.json').read_text())
+walk = next(recipe for recipe in recipes if recipe['name'] == 'land-movement')
+walk.update(name='source-2d-local-walking', continuous_movement=True, seconds=4)
+walk['steps'] *= 8
+Path('target/source-2d-audit/suite.json').write_text(json.dumps([walk]))
+PY
+python3 tools/performance_audit.py \
+  --binary target/performance-audit/release/examples/performance_audit \
+  --pack content-packs/core-modular.crystalpack --view 2d \
+  --suite target/source-2d-audit/suite.json --repeats 1 --timings-only \
+  --quiet-host --gpu-backend metal \
+  --output target/source-2d-audit/run-1
+```
+
+The explicit Metal backend above requires macOS and Xcode's `xctrace`; use the
+platform-appropriate backend elsewhere. Repeat into fresh directories, alternating
+baseline and candidate executables after compilation finishes. An incomplete or
+ambiguous GPU trace is a failed measurement and must be excluded and rerun.
+
 Open `.local/performance-audit/baseline/index.html`. It is a standalone offline
 report with scenario/repeat selection, frame timings, slow-frame inspection,
 controller versus render-settling latency, CPU operation attribution with detailed

@@ -1,0 +1,329 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F073",
+  "status": "candidate-final-growth-v2-awaiting-root-review",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_154": {
+      "species_id": "MN_154",
+      "name": "Hissip",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          31,
+          21,
+          9
+        ],
+        [
+          12,
+          7,
+          6
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        9919,
+        6380,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          255,
+          173,
+          74
+        ],
+        [
+          99,
+          57,
+          49
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#FFAD4A",
+        "#633931",
+        "#000000"
+      ]
+    },
+    "MN_155": {
+      "species_id": "MN_155",
+      "name": "Crosspout",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          30,
+          15,
+          6
+        ],
+        [
+          9,
+          6,
+          8
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        6654,
+        8393,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          247,
+          123,
+          49
+        ],
+        [
+          74,
+          49,
+          66
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#F77B31",
+        "#4A3142",
+        "#000000"
+      ]
+    },
+    "MN_156": {
+      "species_id": "MN_156",
+      "name": "Contrakett",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          29,
+          12,
+          7
+        ],
+        [
+          8,
+          6,
+          10
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        7581,
+        10440,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          239,
+          99,
+          57
+        ],
+        [
+          66,
+          49,
+          82
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#EF6339",
+        "#423152",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f073/prompt-mn-156-final-alternate-v2.txt",
+  "reference_mapping": "sprites/mn-f073/mn-156-final-alternate-v2.json",
+  "back_framing": "gen2-close-rear-portrait",
+  "style_reference": {
+    "origin": "authentic local Crystal sprite board inspected by authoring agent",
+    "board": "target/minnesota-pokemon/gen2-reference/starters.png"
+  },
+  "sprites": [
+    {
+      "id": "mn-154-hissip-v1",
+      "species_id": "MN_154",
+      "view": "front",
+      "source": "sprites/mn-f073/mn-154-156.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        440,
+        530
+      ],
+      "fit": [
+        36,
+        36
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        9919,
+        6380,
+        0
+      ]
+    },
+    {
+      "id": "mn-154-hissip-v1",
+      "species_id": "MN_154",
+      "view": "back",
+      "source": "sprites/mn-f073/mn-154-156.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        530,
+        440,
+        494
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        9919,
+        6380,
+        0
+      ]
+    },
+    {
+      "id": "mn-155-crosspout-v1",
+      "species_id": "MN_155",
+      "view": "front",
+      "source": "sprites/mn-f073/mn-154-156.front-back.imagegen-v1.png",
+      "crop": [
+        440,
+        0,
+        520,
+        530
+      ],
+      "fit": [
+        44,
+        44
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        6654,
+        8393,
+        0
+      ]
+    },
+    {
+      "id": "mn-155-crosspout-v1",
+      "species_id": "MN_155",
+      "view": "back",
+      "source": "sprites/mn-f073/mn-154-156.front-back.imagegen-v1.png",
+      "crop": [
+        440,
+        530,
+        520,
+        494
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        6654,
+        8393,
+        0
+      ]
+    },
+    {
+      "id": "mn-156-contrakett-v2",
+      "species_id": "MN_156",
+      "view": "front",
+      "source": "sprites/mn-f073/mn-156-contrakett.final-alternate-v2.imagegen.png",
+      "crop": [
+        0,
+        0,
+        1199,
+        643
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        7581,
+        10440,
+        0
+      ]
+    },
+    {
+      "id": "mn-156-contrakett-v2",
+      "species_id": "MN_156",
+      "view": "back",
+      "source": "sprites/mn-f073/mn-156-contrakett.final-alternate-v2.imagegen.png",
+      "crop": [
+        0,
+        643,
+        1199,
+        669
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        7581,
+        10440,
+        0
+      ]
+    }
+  ]
+}

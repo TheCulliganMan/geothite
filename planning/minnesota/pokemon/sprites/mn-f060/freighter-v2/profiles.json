@@ -1,0 +1,131 @@
+{
+  "schema_version": 1,
+  "species": [
+    {
+      "id": "MN_269",
+      "classification": "Ore Freighter",
+      "height_inches": 180,
+      "weight_tenths_lb": 31000,
+      "dex_pages": [
+        "Its boiler drives @ giant arms that @ lift sunken ore.",
+        "Steam horns sound @ across the lake @ before it sails."
+      ],
+      "base_stats": {
+        "hp": 120,
+        "attack": 95,
+        "defense": 105,
+        "speed": 35,
+        "special_attack": 120,
+        "special_defense": 85
+      },
+      "catch_rate": 45,
+      "base_exp": 240,
+      "gender_ratio": 127,
+      "hatch_cycles": 40,
+      "growth_rate": "GROWTH_SLOW",
+      "egg_groups": [
+        "EGG_WATER_1",
+        "EGG_MINERAL"
+      ],
+      "evolution": null,
+      "held_items": [
+        null,
+        null
+      ],
+      "menu_icon": "ICON_LAPRAS",
+      "footprint_species": "BLASTOISE",
+      "cry": {
+        "cry": "CRY_BLASTOISE",
+        "pitch": -12,
+        "length": 176
+      },
+      "shiny_rgb5": [
+        [
+          13,
+          29,
+          24
+        ],
+        [
+          15,
+          6,
+          10
+        ]
+      ],
+      "level_moves": [
+        [
+          1,
+          "TACKLE"
+        ],
+        [
+          1,
+          "LEER"
+        ],
+        [
+          1,
+          "EMBER"
+        ],
+        [
+          1,
+          "WATER_GUN"
+        ],
+        [
+          15,
+          "SMOKESCREEN"
+        ],
+        [
+          19,
+          "BUBBLEBEAM"
+        ],
+        [
+          24,
+          "STOMP"
+        ],
+        [
+          29,
+          "FIRE_SPIN"
+        ],
+        [
+          34,
+          "BODY_SLAM"
+        ],
+        [
+          39,
+          "RAIN_DANCE"
+        ],
+        [
+          44,
+          "FLAMETHROWER"
+        ],
+        [
+          50,
+          "VITAL_THROW"
+        ],
+        [
+          57,
+          "HYDRO_PUMP"
+        ],
+        [
+          64,
+          "FIRE_BLAST"
+        ]
+      ],
+      "tmhm_moves": [
+        "SURF",
+        "WATERFALL",
+        "WHIRLPOOL",
+        "FIRE_BLAST",
+        "FLAMETHROWER",
+        "ROCK_SMASH",
+        "STRENGTH",
+        "RAIN_DANCE",
+        "PROTECT",
+        "REST"
+      ],
+      "egg_moves": [
+        "AMNESIA",
+        "COUNTER",
+        "HAZE"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,247 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F097",
+  "status": "conversion-comparison-proposal",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_211": {
+      "species_id": "MN_211",
+      "name": "Pinglet",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          29,
+          23,
+          9
+        ],
+        [
+          5,
+          14,
+          17
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        9981,
+        17861,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          239,
+          189,
+          74
+        ],
+        [
+          41,
+          115,
+          140
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#EFBD4A",
+        "#29738C",
+        "#000000"
+      ]
+    },
+    "MN_212": {
+      "species_id": "MN_212",
+      "name": "Paddarray",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          12,
+          25,
+          28
+        ],
+        [
+          11,
+          8,
+          21
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        29484,
+        21771,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          99,
+          206,
+          231
+        ],
+        [
+          90,
+          66,
+          173
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#63CEE7",
+        "#5A42AD",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f097/prompt-v1.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "style_reference": {
+    "origin": "authentic local Crystal sprites",
+    "generator": "crates/crystal-assets/examples/minnesota_gen2_reference.rs",
+    "boards": [
+      "target/minnesota-pokemon/gen2-reference/starters.png",
+      "target/minnesota-pokemon/gen2-reference/bugs.png"
+    ]
+  },
+  "sprites": [
+    {
+      "id": "mn-211-pinglet-v1",
+      "species_id": "MN_211",
+      "view": "front",
+      "source": "sprites/mn-f097/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        620,
+        555
+      ],
+      "fit": [
+        44,
+        44
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        9981,
+        17861,
+        0
+      ],
+      "interior_black_min_samples": 8,
+      "sampling": "area_vote",
+      "exterior_contour": "solid"
+    },
+    {
+      "id": "mn-211-pinglet-v1",
+      "species_id": "MN_211",
+      "view": "back",
+      "source": "sprites/mn-f097/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        555,
+        636,
+        639
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        9981,
+        17861,
+        0
+      ],
+      "interior_black_min_samples": 8,
+      "sampling": "area_vote",
+      "exterior_contour": "solid"
+    },
+    {
+      "id": "mn-212-paddarray-v1",
+      "species_id": "MN_212",
+      "view": "front",
+      "source": "sprites/mn-f097/front-back.imagegen-v1.png",
+      "crop": [
+        620,
+        0,
+        697,
+        555
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        29484,
+        21771,
+        0
+      ],
+      "interior_black_min_samples": 8,
+      "sampling": "area_vote",
+      "exterior_contour": "solid"
+    },
+    {
+      "id": "mn-212-paddarray-v1",
+      "species_id": "MN_212",
+      "view": "back",
+      "source": "sprites/mn-f097/front-back.imagegen-v1.png",
+      "crop": [
+        636,
+        555,
+        681,
+        639
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        29484,
+        21771,
+        0
+      ],
+      "interior_black_min_samples": 8,
+      "sampling": "area_vote",
+      "exterior_contour": "solid"
+    }
+  ],
+  "visual_review": {
+    "status": "reviewed",
+    "reviewer": "root",
+    "notes": "Root inspected native paddlefish pair: large sensory spoon becomes a Y-shaped crest with two outward tips and a supporting third stem, broad gill collar and three-lobed tail. That source-authored Y geometry retains the signal-array theme without needing three free tips. Pale eye/sensor accents and colored body cores remain legible; close back crops and individual palettes accepted.",
+    "sheet_sha256": "c1bbb04318fb5dfcbd6ff1977fc3b7cad7eb37e06fb9ed02ab0d23c26316d34a",
+    "outline_profile": "source-contour-v1"
+  }
+}

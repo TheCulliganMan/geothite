@@ -1,0 +1,173 @@
+{
+  "id": "MnR10Cave1F",
+  "template": "UnionCave1F",
+  "dimensions_metatiles": [
+    18,
+    14
+  ],
+  "rows": [
+    "01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01",
+    "01 01 01 04 05 05 05 05 06 01 01 01 01 01 01 01 01 01",
+    "01 01 01 08 09 09 02 02 02 05 05 06 01 01 01 01 01 01",
+    "01 01 01 08 21 21 39 21 21 21 36 0a 01 01 01 01 01 01",
+    "01 04 05 12 02 02 02 2e 2f 08 36 02 05 05 06 01 01 01",
+    "01 08 02 02 02 0a 2d 2e 2e 2f 02 02 02 02 02 06 01 01",
+    "01 07 21 02 02 0a 2d 2e 2e 2f 08 02 18 19 02 0a 01 01",
+    "01 01 01 12 01 01 2d 2e 2f 08 02 02 02 3e 3d 0a 01 01",
+    "01 01 01 08 02 05 2d 2f 04 05 08 02 3e 0f 25 0a 01 01",
+    "01 01 01 08 02 02 31 01 08 02 02 02 26 0f 33 0a 01 01",
+    "01 01 01 20 21 02 02 02 02 02 02 02 32 33 02 0a 01 01",
+    "01 01 01 01 01 20 21 21 21 21 21 02 02 02 02 0a 01 01",
+    "01 01 01 01 01 01 01 01 01 01 01 20 21 21 21 22 01 01",
+    "01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01"
+  ],
+  "exits": [
+    [
+      3,
+      13
+    ]
+  ],
+  "clear_arrival": [
+    3,
+    12
+  ],
+  "exit_collision": "LADDER",
+  "border_block": 1,
+  "residents": [
+    {
+      "id": "MN_R10_GALLERY_READER",
+      "sprite": "SPRITE_SUPER_NERD",
+      "tile": [
+        9,
+        5
+      ],
+      "facing": "east",
+      "lines": [
+        "Both passages",
+        "circle the pillar.",
+        "The foreman was",
+        "at the west mine."
+      ]
+    }
+  ],
+  "items": [
+    {
+      "id": "MN_R10_ITEM_04",
+      "item": "REVIVE",
+      "quantity": 1,
+      "flag": "EVENT_MN_R10_ITEM_04",
+      "tile": [
+        29,
+        23
+      ]
+    }
+  ],
+  "signs": [],
+  "purpose": "Stepped seam gallery: a small entry fork climbs to the ore reader, a tapered rock spine folds the eastern descent, an irregular spring bites into the lower walkway and a dry west stair returns to the mouth. Both passages visibly circle the pillar.",
+  "candidate_status": "Native review candidate installed; all three local production-controller cases pass. User visual approval and earned regional progress are not claimed.",
+  "review_contract": {
+    "entry_core": [
+      3,
+      12
+    ],
+    "exit_core": [
+      3,
+      13
+    ],
+    "native_stair_blocks": [
+      [
+        3,
+        4
+      ],
+      [
+        10,
+        3
+      ],
+      [
+        10,
+        4
+      ],
+      [
+        3,
+        7
+      ]
+    ],
+    "loop_waypoints_core": [
+      [
+        7,
+        11
+      ],
+      [
+        7,
+        5
+      ],
+      [
+        20,
+        5
+      ],
+      [
+        22,
+        11
+      ],
+      [
+        22,
+        21
+      ],
+      [
+        8,
+        19
+      ]
+    ],
+    "retained_return_exterior_core": [
+      36,
+      18
+    ],
+    "unpublished": false,
+    "quality_revision": "brainerd-gallery-v04",
+    "one_way_ledges": [
+      {
+        "id": "GALLERY_MOUTH_DROP",
+        "source_block": "39",
+        "bounds_core": [
+          12,
+          6,
+          14,
+          8
+        ],
+        "direction": "south",
+        "upper_approach": [
+          12,
+          5
+        ],
+        "hop_from": [
+          12,
+          6
+        ],
+        "landing": [
+          12,
+          8
+        ],
+        "reverse_blocked": [
+          12,
+          7
+        ],
+        "side_barriers": [
+          [
+            11,
+            7
+          ],
+          [
+            14,
+            7
+          ]
+        ],
+        "ordinary_return_via_stair_metatile": [
+          3,
+          4
+        ],
+        "minimum_return_steps": 9,
+        "purpose": "Drop from the ore gallery toward the mouth after reading the pillar clue; ordinary ascent uses the nearby visible stone stair, not a second hop."
+      }
+    ]
+  }
+}

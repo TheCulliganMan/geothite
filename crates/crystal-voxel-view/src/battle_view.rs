@@ -67,6 +67,9 @@ const PARTICLES: usize = 32;
 #[derive(Component)]
 pub struct BattleCompositeImageCamera;
 
+#[path = "battle_trainers.rs"]
+pub(crate) mod trainers;
+
 #[path = "battle_capture_bridge.rs"]
 mod capture_bridge;
 #[cfg(test)]
@@ -126,6 +129,7 @@ impl Plugin for BattleViewPlugin {
             .init_resource::<VisualBattleCanvas>()
             .init_resource::<BattleViewStatus>()
             .init_resource::<BattleScene>()
+            .init_resource::<trainers::BattleTrainers>()
             .init_resource::<BattleGrassMask>()
             .init_resource::<BattleSceneLayout>()
             .init_resource::<BattleUiBounds>()
@@ -161,9 +165,11 @@ impl Plugin for BattleViewPlugin {
                 (
                     toggle_battle_flash_mode,
                     encounter_terrain::prepare,
+                    trainers::prepare,
                     sync_battle_layout,
                     capture_bridge::select_capture_bridge,
                     sync_battle_scene,
+                    trainers::sync,
                     sync_battle_source_registration,
                     skinning::sync,
                     aura::sync,
@@ -175,6 +181,7 @@ impl Plugin for BattleViewPlugin {
                     .chain()
                     .after(crate::toggle_voxel_view)
                     .after(crate::sync_voxel_view)
+                    .after(crate::new_bark_actors::sync)
                     .in_set(WorldRenderSet::RenderSync),
             );
         app.add_plugins(row_capture::BattleRowCapturePlugin);
@@ -188,8 +195,11 @@ pub struct BattleViewStatus {
     pub active: bool,
     /// Offscreen scene ready for rendering, independently of field ownership.
     pub prepared: bool,
+    /// A witnessed encounter is still preparing its scenery or camera.
+    pub preparation_pending: bool,
     pub active_frames: u32,
     pub modeled_species: Vec<String>,
+    pub modeled_trainers: Vec<String>,
     pub source_art_species: Vec<String>,
     pub last_error: Option<String>,
     /// Literal retained map currently supplying the battle scenery.
@@ -719,11 +729,27 @@ fn camera_pose() -> Transform {
 }
 /// Prepare both immutable neutral bodies before fitting one shared camera.
 fn normal_send_out_reveal(frame: &VisualBattleFrame, battler: &VisualBattleBattler) -> bool {
-    !battler.allow_species_model
-        && matches!(battler.texture_size, size if size == Vec2::splat(48.0) || size == Vec2::splat(56.0))
-        && frame.source.as_ref().is_some_and(|source| matches!(source.frame, 4 | 5))
-        && frame.cues.iter().any(|cue| cue.kind == VisualBattleCueKind::SendOut
-            && cue.side == battler.side && cue.move_id.as_ref() == "SEND_OUT")
+    normal_send_out_envelope(frame, battler)
+        && frame
+            .source
+            .as_ref()
+            .is_some_and(|source| matches!(source.frame, 4 | 5))
+}
+
+fn normal_send_out_envelope(frame: &VisualBattleFrame, battler: &VisualBattleBattler) -> bool {
+    matches!(battler.texture_size, size if size == Vec2::splat(48.0) || size == Vec2::splat(56.0))
+        && frame
+            .source
+            .as_ref()
+            .is_some_and(|source| source.frame <= 5)
+        && frame.cues.iter().any(|cue| {
+            cue.kind == VisualBattleCueKind::SendOut
+                && cue.side == battler.side
+                && cue.move_id.as_ref() == "SEND_OUT"
+                // Shiny sparkle playback restarts the source interpreter at
+                // zero after tick 36; it must never resize the sent-out body.
+                && cue.progress <= 5. / 36.
+        })
 }
 
 fn has_picture_clipping(frame: &VisualBattleFrame, battler: &VisualBattleBattler) -> bool {
@@ -758,8 +784,52 @@ fn battler_displacement(frame: &VisualBattleFrame, battler: &VisualBattleBattler
     delta
 }
 
+/// Source reveal ticks resize the same retained sculpture around its ground
+/// contact. The full neutral envelope and establishing camera stay unchanged.
+fn presented_battler_pose(
+    frame: &VisualBattleFrame,
+    battler: &VisualBattleBattler,
+    layout: &BattleSceneLayout,
+    bounds: Option<BattleModelBounds>,
+    base: Transform,
+    capture_image_active: bool,
+) -> Transform {
+    let mut pose = base;
+    pose.translation += battler_displacement(frame, battler, layout, bounds, base);
+    if normal_send_out_reveal(frame, battler) && bounds.is_some() {
+        let tick = frame.source.as_ref().expect("send-out source frame").frame;
+        let tiles = match (battler.side, tick) {
+            (VisualBattleSide::Player, 4) => 2.,
+            (VisualBattleSide::Player, _) => 4.,
+            (VisualBattleSide::Enemy, 4) => 3.,
+            (VisualBattleSide::Enemy, _) => 5.,
+        };
+        let factor = tiles * 8. / battler.texture_size.y;
+        pose.translation = layout.origins[battler.side.index()]
+            + (pose.translation - layout.origins[battler.side.index()]) * factor;
+        pose.scale *= factor;
+    }
+    if !capture_image_active
+        && battler.side == VisualBattleSide::Enemy
+        && bounds.is_some()
+        && let Some(capture) = &frame.capture
+    {
+        let factor = match capture.enemy_picture {
+            crystal_render_api::VisualCapturePicture::Full => 1.,
+            crystal_render_api::VisualCapturePicture::Tiles(tiles) => f32::from(tiles.min(7)) / 7.,
+            crystal_render_api::VisualCapturePicture::Hidden => 0.,
+        };
+        pose.translation = layout.origins[1] + (pose.translation - layout.origins[1]) * factor;
+        pose.scale *= factor;
+    }
+    pose
+}
+
 fn layout_uses_species_model(frame: &VisualBattleFrame, battler: &VisualBattleBattler) -> bool {
-    battler.allow_species_model || normal_send_out_reveal(frame, battler)
+    // The first four smoke frames hide the picture but still reserve its
+    // complete neutral body. Switching to a billboard envelope there forced
+    // a new fit and could discard an already proven 3D encounter camera.
+    battler.allow_species_model || normal_send_out_envelope(frame, battler)
 }
 
 fn modeled_layout_body(scene: &mut BattleScene, battler: &VisualBattleBattler) -> Option<BattleBody> {
@@ -833,8 +903,22 @@ fn sync_battle_layout(
                 window.physical_height() as f32,
             )
         });
-    let bodies = std::array::from_fn(|index| {
-        let battler = frame.battlers[index].as_ref()?;
+    let bodies: [Option<BattleBody>; 2] = std::array::from_fn(|index| {
+        let Some(battler) = frame.battlers[index].as_ref() else {
+            // A temporarily empty active-party slot is not a renderer switch.
+            // Keep this encounter's established envelope through replacement
+            // selection, or fit its real trainer before the first send-out.
+            let generation = scenery.layout_key().0;
+            if let Some(previous) = previous
+                .as_ref()
+                .filter(|previous| generation.is_some() && previous.4.0 == generation)
+            {
+                return previous.0[index];
+            }
+            return frame.trainers[index]
+                .as_ref()
+                .and_then(|trainer| trainers::body(&trainer.source_id));
+        };
         if layout_uses_species_model(&frame, battler)
             && let Some(body) = modeled_layout_body(&mut scene, battler)
         {
@@ -844,22 +928,53 @@ fn sync_battle_layout(
             battler.texture_size.x / battler.texture_size.y,
         ))
     });
-    let supported = scenery.supported_bodies(bodies,
-        std::array::from_fn(|index| frame.battlers[index].as_ref().map(|b| b.species_id.as_ref())));
-    let supported = supported.map(|pair| std::array::from_fn(|index| pair[index].map(|mut body| {
-        if !body.modeled {
-            // A square horizontal envelope proves every upright billboard yaw.
-            // The actual source mesh remains the original textured flat card.
-            body.min.z = body.min.x;
-            body.max.z = body.max.x;
-            body.scale.z = body.scale.x;
-        } else if let Some(battler) = &frame.battlers[index] {
-            // Water stances can move the contact datum. The picture bank
-            // stands at that same surface, not at the model's original min Y.
-            body = body.with_source_card_envelope(battler.texture_size.x / battler.texture_size.y);
-        }
-        body
-    })));
+    let bodies = std::array::from_fn(|index| {
+        bodies[index].map(|body| {
+            frame.trainers[index]
+                .as_ref()
+                .map_or(body, |trainer| trainers::reserve(body, &trainer.source_id))
+        })
+    });
+    let retained_generation = scenery.generation().is_some()
+        && previous
+            .as_ref()
+            .is_some_and(|previous| previous.4.0 == scenery.generation());
+    let supported = scenery.supported_bodies(
+        bodies,
+        std::array::from_fn(|index| {
+            frame.battlers[index]
+                .as_ref()
+                .map(|b| b.species_id.as_ref())
+                .or_else(|| {
+                    if retained_generation {
+                        scene.actors[index]
+                            .as_ref()
+                            .map(|actor| actor.key.species.as_ref())
+                    } else {
+                        None
+                    }
+                })
+        }),
+    );
+    let supported = supported.map(|pair| {
+        std::array::from_fn(|index| {
+            pair[index].map(|mut body| {
+                if !body.modeled {
+                    // A square horizontal envelope proves every upright billboard yaw.
+                    // The actual source mesh remains the original textured flat card.
+                    body.min.z = body.min.x;
+                    body.max.z = body.max.x;
+                    body.scale.z = body.scale.x;
+                } else if let Some(battler) = &frame.battlers[index] {
+                    // Water stances can move the contact datum. The picture bank
+                    // stands at that same surface, not at the model's original min Y.
+                    body = body
+                        .with_source_card_envelope(battler.texture_size.x / battler.texture_size.y);
+                }
+                body
+            })
+        })
+    });
     let safe_y = ui_bounds.for_viewport(viewport);
     let key = (bodies, supported, viewport, safe_y, scenery.layout_key());
     if previous.as_ref() != Some(&key) {
@@ -1219,7 +1334,7 @@ Visibility::Hidden,),
             .expect("valid low-poly particle"),
     );
     for element in [
-        "NORMAL", "FIRE", "WATER", "GRASS", "ELECTRIC", "ICE", "PSYCHIC", "POISON",
+        "NORMAL", "FIRE", "WATER", "GRASS", "ELECTRIC", "ICE", "PSYCHIC", "POISON", "FAIRY",
     ] {
         let color = element_color(element);
         let material = materials.add(StandardMaterial {
@@ -1624,6 +1739,7 @@ fn sync_battle_scene(
         Res<capture_bridge::BattleCaptureBridge>,
         ResMut<Assets<SkinnedMeshInverseBindposes>>,
         Res<EncounterTerrain>,
+        Res<trainers::BattleTrainers>,
     ),
     flash_mode: Res<BattleFlashMode>,
     time: Res<Time>,
@@ -1715,7 +1831,7 @@ fn sync_battle_scene(
         ),
     >,
 ) {
-    let (settings, layout, captures, capture_bridge, mut inverse_binds, scenery) = presentation;
+    let (settings, layout, captures, capture_bridge, mut inverse_binds, scenery, trainers) = presentation;
     #[cfg(feature = "operation-trace")]
     let _span = bevy::log::info_span!("crystal_battle_render_sync").entered();
     let valid = frame.validate();
@@ -1741,8 +1857,16 @@ fn sync_battle_scene(
         && map_ready
         && valid.is_ok()
         && capture_bridge.allows_scene()
-        && ground_clearance;
+        && trainers.ready;
+    status.modeled_trainers = if active {
+        frame.trainers.iter().flatten().filter(|trainer| trainer.visible)
+            .filter(|trainer| trainers::kind(&trainer.source_id).is_some())
+            .map(|trainer| trainer.source_id.to_string()).collect()
+    } else { Vec::new() };
     status.prepared = active;
+    status.preparation_pending =
+        settings.enabled && frame.preparing && !active
+            && (scenery.preparation_pending() || !trainers.ready);
     status.active = active && !frame.preparing;
     status.active_frames = if status.active {
         status.active_frames.saturating_add(1)
@@ -1857,7 +1981,14 @@ fn sync_battle_scene(
     for side in [VisualBattleSide::Player, VisualBattleSide::Enemy] {
         let index = side.index();
         let Some(battler) = frame.battlers[index].as_ref() else {
-            if let Some(instance) = scene.actors[index].take() {
+            if frame.trainers[index].is_some() {
+                // Replacement selection temporarily has no active Pokémon.
+                // Retain its checked water stance and uploaded rig until the
+                // controller selects the next identity; never flash a card.
+                if let Some(instance) = &scene.actors[index] {
+                    commands.entity(instance.entity).insert(Visibility::Hidden);
+                }
+            } else if let Some(instance) = scene.actors[index].take() {
                 instance.retire(&mut commands, &mut meshes, &mut materials);
             }
             continue;
@@ -1875,7 +2006,7 @@ fn sync_battle_scene(
                 .species_meshes
                 .insert(Arc::from(battler.model_id()), mesh);
         }
-        let modeled_data = if battler.allow_species_model
+        let modeled_data = if layout_uses_species_model(&frame, battler)
             && !uses_source_picture(&frame, battler)
             && (!battler.shiny || battler.model_palette.is_some())
             && battler
@@ -1946,8 +2077,7 @@ fn sync_battle_scene(
                 modeled_support);
             // Deferred entities cannot be reached by the actor query below
             // until the next update. Present this source offset on spawn too.
-            let mut transform = base_pose;
-            transform.translation += battler_displacement(&frame, battler, &layout, modeled_bounds, base_pose);
+            let transform = presented_battler_pose(&frame, battler, &layout, modeled_bounds, base_pose, capture_bridge.image_active());
             let contact_bounds = if crate::species_rig::motion::battle_hovers(battler.model_id()) {
                 None
             } else {
@@ -2094,8 +2224,7 @@ if battler.visible {
                     index,
                     captures.prewarm_actor(&frame, index) && modeled && !instance.is_articulated(),
                 ));
-                let mut pose = instance.base_pose;
-                pose.translation += battler_displacement(&frame, battler, &layout, modeled_bounds, instance.base_pose);
+                let pose = presented_battler_pose(&frame, battler, &layout, modeled_bounds, instance.base_pose, capture_bridge.image_active());
                 transform.set_if_neq(pose);
                 visibility.set_if_neq(if battler.visible {
                     Visibility::Visible
@@ -2168,6 +2297,16 @@ if battler.visible {
                 transform.rotation = Quat::IDENTITY;
                 transform.scale = Vec3::new(0.38, 1.0, 0.23) * MODEL_SCALE;
             }
+        }
+        if shadow.0 == VisualBattleSide::Enemy && !capture_bridge.image_active()
+            && let Some(capture) = &frame.capture {
+            let factor = match capture.enemy_picture {
+                crystal_render_api::VisualCapturePicture::Full => 1.,
+                crystal_render_api::VisualCapturePicture::Tiles(tiles) => f32::from(tiles.min(7)) / 7.,
+                crystal_render_api::VisualCapturePicture::Hidden => 0.,
+            };
+            transform.scale.x *= factor;
+            transform.scale.z *= factor;
         }
         visibility.set_if_neq(Visibility::Visible);
     }
@@ -2250,7 +2389,8 @@ fn sync_battle_source_registration(
     }
     let bodies = std::array::from_fn(|index| {
         let battler = frame.battlers[index].as_ref()?;
-        if normal_send_out_reveal(&frame, battler) {
+        if normal_send_out_reveal(&frame, battler)
+            && scene.actors[index].as_ref().is_some_and(|actor| !actor.key.modeled) {
             let actor = scene.actors[index].as_ref()?;
             // The card's full allocation, not the model's hit anchor or the
             // changing opaque reveal bounds, owns its smoke/OAM registration.
@@ -2779,6 +2919,7 @@ fn element_index(element: &str) -> usize {
         "ICE" => 5,
         "PSYCHIC" | "GHOST" | "DRAGON" => 6,
         "POISON" => 7,
+        "FAIRY" => 8,
         _ => 0,
     }
 }
@@ -2791,6 +2932,7 @@ fn element_color(element: &str) -> [f32; 4] {
         5 => [0.59, 0.96, 1.0, 1.0],
         6 => [0.95, 0.43, 1.0, 1.0],
         7 => [0.62, 0.24, 0.8, 1.0],
+        8 => [1.0, 0.58, 0.76, 1.0],
         _ => [1.0, 0.85, 0.59, 1.0],
     }
 }
@@ -3177,6 +3319,60 @@ pub(super) mod tests {
     }
 
     #[test]
+    fn normal_capture_keeps_the_model_camera_and_scene_without_a_pilot_flag() {
+        let mut app = headless_battle_app();
+        {
+            let mut frame = app.world_mut().resource_mut::<VisualBattleFrame>();
+            let enemy = frame.battlers[1].as_mut().expect("enemy");
+            enemy.species_id = "RATTATA".into();
+            enemy.pokedex_size_m = Some(0.3);
+        }
+        app.update();
+        let entity = app.world().resource::<BattleScene>().actors[1]
+            .as_ref()
+            .expect("model")
+            .entity;
+        let camera = app.world().resource::<BattleSceneLayout>().camera;
+        for tiles in [7, 5, 3, 0, 3, 5, 7] {
+            app.world_mut().resource_mut::<VisualBattleFrame>().capture =
+                Some(crystal_render_api::VisualBattleCapture {
+                    frame: 80,
+                    ball_id: "POKE_BALL".into(),
+                    presented: true,
+                    enemy_picture: if tiles == 0 {
+                        crystal_render_api::VisualCapturePicture::Hidden
+                    } else {
+                        crystal_render_api::VisualCapturePicture::Tiles(tiles)
+                    },
+                });
+            let presented = app.world().resource::<VisualBattleFrame>().clone();
+            app.update();
+            assert!(
+                app.world().resource::<BattleViewStatus>().active,
+                "capture tiles {tiles}"
+            );
+            assert!(
+                app.world()
+                    .resource::<BattleViewStatus>()
+                    .source_art_species
+                    .is_empty()
+            );
+            let scene = app.world().resource::<BattleScene>();
+            let actor = scene.actors[1].as_ref().expect("retained model");
+            assert!(actor.key.modeled);
+            assert_eq!(actor.entity, entity);
+            let actual = app.world().get::<Transform>(entity).expect("model pose");
+            assert!(
+                actual
+                    .scale
+                    .abs_diff_eq(actor.base_pose.scale * (f32::from(tiles) / 7.), 0.00001)
+            );
+            assert_eq!(app.world().resource::<BattleSceneLayout>().camera, camera);
+            assert_eq!(*app.world().resource::<VisualBattleFrame>(), presented);
+        }
+    }
+
+    #[test]
     fn send_out_handoff_fits_once_and_registers_the_grounded_source_bank() {
         for side in [VisualBattleSide::Player, VisualBattleSide::Enemy] {
             let mut app = headless_battle_app();
@@ -3193,12 +3389,13 @@ pub(super) mod tests {
             }
             app.update();
             let original = app.world().resource::<BattleSceneLayout>().clone();
+            let mut retained_entity = None;
             for tick in 0..=36 {
                 {
                     let mut frame = app.world_mut().resource_mut::<VisualBattleFrame>();
                     let reveal = matches!(tick, 4 | 5);
                     let battler = frame.battlers[side.index()].as_mut().unwrap();
-                    battler.allow_species_model = !reveal;
+                    battler.allow_species_model = tick >= 6;
                     battler.visible = tick >= 4;
                     battler.texture = Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(1000 + tick as u128), std::marker::PhantomData);
                     battler.source_opaque_rect = if reveal {
@@ -3223,35 +3420,16 @@ pub(super) mod tests {
                 let layout = app.world().resource::<BattleSceneLayout>().clone();
                 assert_eq!(layout.origins, original.origins);
                 assert_eq!(layout.body_poses, original.body_poses);
-                if matches!(tick, 4 | 5) {
-                    let scene = app.world().resource::<BattleScene>();
-                    let actor = scene.actors[side.index()].as_ref().unwrap();
-                    assert!(!actor.key.modeled);
-                    let pose = actor.base_pose;
-                    let foot = pose.transform_point(Vec3::new(0.0, -0.95, 0.0));
-                    assert!(foot.abs_diff_eq(layout.origins[side.index()], 0.00001));
-                    assert_eq!(pose.scale, Vec3::ONE, "the source bank must not inherit model scale");
-                    let chart = app.world().resource::<BattleSourceBodyRegistrations>().clone();
-                    let registration = chart.bodies[side.index()].unwrap();
-                    assert_eq!(registration.source, presented.battlers[side.index()].as_ref().unwrap().source_rect);
-                    let projection = chart.projection(
-                        crystal_render_api::VisualBattleSourcePlacement::BattlerLocal { side },
-                        &layout, chart.viewport,
-                    ).unwrap();
-                    let bottom = Vec2::new(registration.source.center().x, registration.source.max.y);
-                    assert!(projection.project(bottom).unwrap().abs_diff_eq(
-                        layout.project_point(foot, chart.viewport), 0.00001));
-                    let source_texture = app.world().resource::<Assets<StandardMaterial>>()
-                        .get(&actor.material).unwrap().base_color_texture.as_ref().unwrap();
-                    assert_eq!(*source_texture, presented.source.as_ref().unwrap().battler_textures[side.index()]);
-                    app.world_mut().resource_mut::<VoxelViewSettings>().enabled = false;
-                    app.update();
-                    app.world_mut().resource_mut::<VoxelViewSettings>().enabled = true;
-                    app.update();
-                    assert_eq!(*app.world().resource::<BattleSourceBodyRegistrations>(), chart,
-                        "F3 at a held reveal frame must restore the same source/OAM registration");
-                    assert_eq!(*app.world().resource::<VisualBattleFrame>(), presented);
+                let scene = app.world().resource::<BattleScene>();
+                let actor = scene.actors[side.index()].as_ref().unwrap();
+                assert!(actor.key.modeled, "send-out tick {tick} must retain the model");
+                assert!(app.world().resource::<BattleViewStatus>().source_art_species.is_empty());
+                let entity = actor.entity;
+                if tick > 0 {
+                    assert_eq!(entity, retained_entity.expect("initial modeled entity"));
                 }
+                retained_entity = Some(entity);
+
             }
             let viewport = {
                 let world = app.world_mut();
@@ -3983,6 +4161,20 @@ hud_transform,),
             damaging: true,
         };
         assert!(particle_pose(&[cue], 0, 0.5).is_none());
+    }
+    #[test]
+    fn fairy_cues_use_the_registered_rose_material() {
+        assert_eq!(element_index("FAIRY"), 8);
+        assert_ne!(element_color("FAIRY"), element_color("NORMAL"));
+        let cue = VisualBattleCue {
+            kind: VisualBattleCueKind::Move,
+            side: VisualBattleSide::Player,
+            move_id: Arc::from("FAIRY_WIND"),
+            element: Arc::from("FAIRY"),
+            progress: 0.5,
+            damaging: true,
+        };
+        assert_eq!(particle_pose(&[cue], 0, 0.5).map(|pose| pose.2), Some(8));
     }
     #[test]
     fn faint_and_switch_poses_never_produce_invalid_transforms() {

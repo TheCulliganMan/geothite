@@ -305,10 +305,13 @@ existing fallback. The candidate does not publish a battle during seen text.
 The trainer's occupied tile is separate from a derived Pokémon support. A
 bounded set of original-map, unoccupied floor cells supplies the presentation
 corridor. The consumer checks exact settled feet, the separate trainer witness,
-actual built elevations and every cell under the complete animated body. Source
-attack displacements use that same clearance without rescaling or repositioning
-a creature. Entry preparation preserves the bound witness; terminal narration
-retains it until the ordinary visible exit.
+actual built elevations and every cell under the complete neutral/animated body.
+Source attack displacements are presentation offsets, rather than overworld
+movement; they no longer replace the entire encounter with a classic canvas
+when they cross the neutral support boundary. The checked contacts and
+controller state stay fixed. Entry preparation preserves the bound witness and
+preloads human participants; terminal narration retains it until the ordinary
+visible exit.
 
 The first native gate used `--gym-encounter`: a fresh player at VioletGym (5,11)
 walked Up into Abe's original sight line. Abe moved from (2,10) to (4,10), facing

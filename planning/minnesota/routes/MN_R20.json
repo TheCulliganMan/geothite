@@ -1,0 +1,1483 @@
+{
+  "id": "MN_R20",
+  "map_prefix": "MnR20",
+  "name": "Voyageurs Border Loop",
+  "dimensions_metatiles": [
+    64,
+    32
+  ],
+  "chunk_metatiles": [
+    32,
+    24
+  ],
+  "chunk_columns": 2,
+  "chunk_rows": 2,
+  "endpoints": [
+    {
+      "place": "INTERNATIONAL FALLS",
+      "side": "W",
+      "gate_metatile": [
+        1,
+        22
+      ],
+      "landing_metatile": [
+        3,
+        22
+      ]
+    },
+    {
+      "place": "BOUNDARY WATERS",
+      "side": "E",
+      "gate_metatile": [
+        62,
+        18
+      ],
+      "landing_metatile": [
+        60,
+        18
+      ]
+    }
+  ],
+  "required_flags": [
+    "BADGE_1",
+    "BADGE_2",
+    "BADGE_3",
+    "BADGE_4",
+    "BADGE_5",
+    "BADGE_6",
+    "BADGE_7",
+    "BADGE_8",
+    "EVENT_MN_LIGHTHOUSE_SIGNAL"
+  ],
+  "quest": "SQ03",
+  "tileset": "mn_headwaters",
+  "source_references": [
+    "Route44",
+    "Route27",
+    "Route42"
+  ],
+  "description": "Free endgame border shore: a connected northern lake with two bridged outlets, a granite peninsula and optional two-mouth shelter, wind-sheltered southern habitats and a continuous walking story path. This is not an expedition preserve, paid Safari or boat route.",
+  "main_path_metatiles": [
+    [
+      1,
+      22
+    ],
+    [
+      7,
+      22
+    ],
+    [
+      7,
+      18
+    ],
+    [
+      9,
+      18
+    ],
+    [
+      9,
+      21
+    ],
+    [
+      19,
+      21
+    ],
+    [
+      24,
+      21
+    ],
+    [
+      28,
+      21
+    ],
+    [
+      28,
+      18
+    ],
+    [
+      41,
+      18
+    ],
+    [
+      41,
+      15
+    ],
+    [
+      45,
+      15
+    ],
+    [
+      45,
+      18
+    ],
+    [
+      55,
+      18
+    ],
+    [
+      58,
+      18
+    ],
+    [
+      62,
+      18
+    ]
+  ],
+  "main_lane_width_gameplay_tiles": 2,
+  "districts": [
+    {
+      "id": "FALLS",
+      "name": "Falls shore and sheltered grove",
+      "bounds_metatiles": [
+        0,
+        12,
+        20,
+        30
+      ],
+      "purpose": "Free arrival, closed lake pier and directed southern camp return."
+    },
+    {
+      "id": "GRANITE",
+      "name": "Granite narrows",
+      "bounds_metatiles": [
+        24,
+        9,
+        46,
+        23
+      ],
+      "purpose": "Mainland path under a true native granite face; two cave mouths and lake lookout."
+    },
+    {
+      "id": "MEADOW",
+      "name": "Southern border habitats",
+      "bounds_metatiles": [
+        27,
+        22,
+        46,
+        31
+      ],
+      "purpose": "Optional rare-encounter meadow and outlet watching spur across clipped lower maps."
+    },
+    {
+      "id": "BOUNDARY",
+      "name": "Boundary shore neck",
+      "bounds_metatiles": [
+        49,
+        10,
+        64,
+        28
+      ],
+      "purpose": "Required walking habitat and free onward story port."
+    }
+  ],
+  "loops": [],
+  "minimum_optional_branches": 5,
+  "trainers": [
+    {
+      "id": "MN_R20_T01",
+      "display_name": "PARKER",
+      "trainer_class": "OFFICER",
+      "sprite": "SPRITE_OFFICER",
+      "tile": [
+        11,
+        43
+      ],
+      "facing": "east",
+      "sight_range": 1,
+      "party": [
+        {
+          "species": "URSARING",
+          "level": 42
+        },
+        {
+          "species": "NOCTOWL",
+          "level": 42
+        },
+        {
+          "species": "TANGELA",
+          "level": 41
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R20_TRAINER_01",
+      "block_main_lane": false,
+      "before_lines": [
+        "The border trail",
+        "tests a full team."
+      ],
+      "after_lines": [
+        "Keep the border",
+        "trail open to all."
+      ],
+      "loss_lines": [
+        "A strong crossing!"
+      ]
+    },
+    {
+      "id": "MN_R20_T02",
+      "display_name": "LOON",
+      "trainer_class": "BIRD_KEEPER",
+      "sprite": "SPRITE_YOUNGSTER",
+      "tile": [
+        55,
+        31
+      ],
+      "facing": "south",
+      "sight_range": 1,
+      "party": [
+        {
+          "species": "NOCTOWL",
+          "level": 42
+        },
+        {
+          "species": "QUAGSIRE",
+          "level": 42
+        },
+        {
+          "species": "SNEASEL",
+          "level": 41
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R20_TRAINER_02",
+      "block_main_lane": false,
+      "before_lines": [
+        "The lake carries",
+        "every distant",
+        "call."
+      ],
+      "after_lines": [
+        "Take a moment",
+        "at the lake edge."
+      ],
+      "loss_lines": [
+        "A strong crossing!"
+      ]
+    },
+    {
+      "id": "MN_R20_T03",
+      "display_name": "BASALT",
+      "trainer_class": "HIKER",
+      "sprite": "SPRITE_POKEFAN_M",
+      "tile": [
+        65,
+        37
+      ],
+      "facing": "east",
+      "sight_range": 1,
+      "party": [
+        {
+          "species": "QUAGSIRE",
+          "level": 43
+        },
+        {
+          "species": "TANGELA",
+          "level": 43
+        },
+        {
+          "species": "SKARMORY",
+          "level": 42
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R20_TRAINER_03",
+      "block_main_lane": false,
+      "before_lines": [
+        "Granite takes",
+        "time.",
+        "So do good teams."
+      ],
+      "after_lines": [
+        "The tunnel links",
+        "both granite",
+        "faces."
+      ],
+      "loss_lines": [
+        "A strong crossing!"
+      ]
+    },
+    {
+      "id": "MN_R20_T04",
+      "display_name": "LENA",
+      "trainer_class": "PICNICKER",
+      "sprite": "SPRITE_LASS",
+      "tile": [
+        21,
+        55
+      ],
+      "facing": "north",
+      "sight_range": 1,
+      "party": [
+        {
+          "species": "TANGELA",
+          "level": 43
+        },
+        {
+          "species": "SNEASEL",
+          "level": 43
+        },
+        {
+          "species": "DRAGONAIR",
+          "level": 42
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R20_TRAINER_04",
+      "block_main_lane": false,
+      "before_lines": [
+        "This grove breaks",
+        "the northern wind."
+      ],
+      "after_lines": [
+        "Hop down the bank.",
+        "Walk up westward."
+      ],
+      "loss_lines": [
+        "A strong crossing!"
+      ]
+    },
+    {
+      "id": "MN_R20_T05",
+      "display_name": "DREW",
+      "trainer_class": "FISHER",
+      "sprite": "SPRITE_FISHER",
+      "tile": [
+        37,
+        49
+      ],
+      "facing": "east",
+      "sight_range": 1,
+      "party": [
+        {
+          "species": "SNEASEL",
+          "level": 44
+        },
+        {
+          "species": "SKARMORY",
+          "level": 44
+        },
+        {
+          "species": "URSARING",
+          "level": 43
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R20_TRAINER_05",
+      "block_main_lane": false,
+      "before_lines": [
+        "Quiet water hides",
+        "a determined team."
+      ],
+      "after_lines": [
+        "Stay on the pier",
+        "until you launch."
+      ],
+      "loss_lines": [
+        "A strong crossing!"
+      ]
+    },
+    {
+      "id": "MN_R20_T06",
+      "display_name": "RAINY",
+      "trainer_class": "FISHER",
+      "sprite": "SPRITE_FISHER",
+      "tile": [
+        73,
+        53
+      ],
+      "facing": "north",
+      "sight_range": 1,
+      "party": [
+        {
+          "species": "URSARING",
+          "level": 44
+        },
+        {
+          "species": "DRAGONAIR",
+          "level": 44
+        },
+        {
+          "species": "NOCTOWL",
+          "level": 43
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R20_TRAINER_06",
+      "block_main_lane": false,
+      "before_lines": [
+        "The outlet and",
+        "the lake differ."
+      ],
+      "after_lines": [
+        "The trail crosses",
+        "between the rails."
+      ],
+      "loss_lines": [
+        "A strong crossing!"
+      ]
+    },
+    {
+      "id": "MN_R20_T07",
+      "display_name": "IRIS",
+      "trainer_class": "COOLTRAINERF",
+      "sprite": "SPRITE_COOLTRAINER_F",
+      "tile": [
+        85,
+        49
+      ],
+      "facing": "west",
+      "sight_range": 1,
+      "party": [
+        {
+          "species": "NOCTOWL",
+          "level": 45
+        },
+        {
+          "species": "URSARING",
+          "level": 45
+        },
+        {
+          "species": "QUAGSIRE",
+          "level": 44
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R20_TRAINER_07",
+      "block_main_lane": false,
+      "before_lines": [
+        "Rare partners like",
+        "this quiet meadow."
+      ],
+      "after_lines": [
+        "Night brings new",
+        "meadow partners."
+      ],
+      "loss_lines": [
+        "A strong crossing!"
+      ]
+    },
+    {
+      "id": "MN_R20_T08",
+      "display_name": "GNEISS",
+      "trainer_class": "HIKER",
+      "sprite": "SPRITE_POKEFAN_M",
+      "tile": [
+        73,
+        23
+      ],
+      "facing": "east",
+      "sight_range": 1,
+      "party": [
+        {
+          "species": "QUAGSIRE",
+          "level": 45
+        },
+        {
+          "species": "NOCTOWL",
+          "level": 45
+        },
+        {
+          "species": "TANGELA",
+          "level": 44
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R20_TRAINER_08",
+      "block_main_lane": false,
+      "before_lines": [
+        "We climb by skill,",
+        "not by hurry."
+      ],
+      "after_lines": [
+        "The stone shelter",
+        "has two exits."
+      ],
+      "loss_lines": [
+        "A strong crossing!"
+      ]
+    },
+    {
+      "id": "MN_R20_T09",
+      "display_name": "KITE",
+      "trainer_class": "BIRD_KEEPER",
+      "sprite": "SPRITE_YOUNGSTER",
+      "tile": [
+        107,
+        27
+      ],
+      "facing": "south",
+      "sight_range": 1,
+      "party": [
+        {
+          "species": "TANGELA",
+          "level": 46
+        },
+        {
+          "species": "QUAGSIRE",
+          "level": 46
+        },
+        {
+          "species": "SNEASEL",
+          "level": 45
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R20_TRAINER_09",
+      "block_main_lane": false,
+      "before_lines": [
+        "Wings over water!",
+        "Watch my partners."
+      ],
+      "after_lines": [
+        "A clear lake day",
+        "is worth the walk."
+      ],
+      "loss_lines": [
+        "A strong crossing!"
+      ]
+    },
+    {
+      "id": "MN_R20_T10",
+      "display_name": "LAUREL",
+      "trainer_class": "COOLTRAINERM",
+      "sprite": "SPRITE_COOLTRAINER_M",
+      "tile": [
+        121,
+        43
+      ],
+      "facing": "west",
+      "sight_range": 1,
+      "party": [
+        {
+          "species": "SNEASEL",
+          "level": 46
+        },
+        {
+          "species": "TANGELA",
+          "level": 46
+        },
+        {
+          "species": "SKARMORY",
+          "level": 45
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R20_TRAINER_10",
+      "block_main_lane": false,
+      "before_lines": [
+        "One last challenge",
+        "before the forest."
+      ],
+      "after_lines": [
+        "The border loop",
+        "leads safely east."
+      ],
+      "loss_lines": [
+        "A strong crossing!"
+      ]
+    }
+  ],
+  "residents": [
+    {
+      "id": "MN_R20_FALLS_WARDEN",
+      "sprite": "SPRITE_OFFICER",
+      "tile": [
+        5,
+        45
+      ],
+      "facing": "east",
+      "lines": [
+        "The border trail",
+        "runs to the east.",
+        "Report your",
+        "circuit",
+        "at the Falls desk."
+      ]
+    },
+    {
+      "id": "MN_R20_RANGER",
+      "sprite": "SPRITE_GRAMPS",
+      "tile": [
+        55,
+        43
+      ],
+      "facing": "north",
+      "lines": [
+        "This mainland path",
+        "is free to walk.",
+        "The lake outlets",
+        "have safe bridges."
+      ]
+    },
+    {
+      "id": "MN_R20_BORDER_GUIDE",
+      "sprite": "SPRITE_POKEFAN_F",
+      "tile": [
+        119,
+        37
+      ],
+      "facing": "west",
+      "lines": [
+        "BOUNDARY WATERS",
+        "is east of here.",
+        "Keep your survey",
+        "report for the",
+        "desk."
+      ]
+    }
+  ],
+  "items": [
+    {
+      "id": "MN_R20_ITEM_02",
+      "item": "ULTRA_BALL",
+      "quantity": 1,
+      "flag": "EVENT_MN_R20_ITEM_02",
+      "tile": [
+        13,
+        26
+      ],
+      "access": "Optional shore/grass discovery; ordinary free route remains available."
+    },
+    {
+      "id": "MN_R20_ITEM_03",
+      "item": "MAX_REPEL",
+      "quantity": 1,
+      "flag": "EVENT_MN_R20_ITEM_03",
+      "tile": [
+        83,
+        55
+      ],
+      "access": "Optional shore/grass discovery; ordinary free route remains available."
+    },
+    {
+      "id": "MN_R20_ITEM_04",
+      "item": "REVIVE",
+      "quantity": 1,
+      "flag": "EVENT_MN_R20_ITEM_04",
+      "tile": [
+        119,
+        25
+      ],
+      "access": "Optional north-shore habitat discovery beyond the required neck; ordinary free story path remains open."
+    }
+  ],
+  "signs": [
+    {
+      "id": "MN_R20_SIGN_FALLS",
+      "tile": [
+        4,
+        42
+      ],
+      "lines": [
+        "INTERNATIONAL",
+        "FALLS",
+        "BORDER TRAIL - E"
+      ]
+    },
+    {
+      "id": "MN_R20_SIGN_LAKE",
+      "tile": [
+        8,
+        28
+      ],
+      "lines": [
+        "BORDER LAKE",
+        "Keep to the rails."
+      ]
+    },
+    {
+      "id": "MN_R20_SIGN_GRANITE",
+      "tile": [
+        58,
+        34
+      ],
+      "lines": [
+        "GRANITE NARROWS",
+        "Two mouths connect",
+        "beneath the stone."
+      ]
+    },
+    {
+      "id": "MN_R20_SIGN_MEADOW",
+      "tile": [
+        84,
+        40
+      ],
+      "lines": [
+        "SHELTERED MEADOW",
+        "Watch for rare",
+        "night partners."
+      ]
+    },
+    {
+      "id": "MN_R20_SIGN_EAST",
+      "tile": [
+        118,
+        34
+      ],
+      "lines": [
+        "BOUNDARY WATERS",
+        "Free trail - east."
+      ]
+    }
+  ],
+  "doors": [
+    {
+      "id": "MN_R20_GRANITE_WEST",
+      "tile": [
+        60,
+        33
+      ],
+      "collision": "CAVE",
+      "return_tile": [
+        60,
+        34
+      ],
+      "arrival_tile": [
+        60,
+        34
+      ],
+      "target": "MnR20Cave1F",
+      "warp_index": 1,
+      "return_warp_index": 2,
+      "target_warp": 1
+    },
+    {
+      "id": "MN_R20_GRANITE_EAST",
+      "tile": [
+        76,
+        31
+      ],
+      "collision": "CAVE",
+      "return_tile": [
+        76,
+        32
+      ],
+      "arrival_tile": [
+        76,
+        32
+      ],
+      "target": "MnR20Cave1F",
+      "warp_index": 1,
+      "return_warp_index": 2,
+      "target_warp": 2
+    }
+  ],
+  "interiors": [
+    {
+      "id": "MnR20Cave1F",
+      "template": "UnionCave1F",
+      "dimensions_metatiles": [
+        9,
+        8
+      ],
+      "width_metatiles": 9,
+      "height_metatiles": 8,
+      "tileset": "cave",
+      "border_block": 1,
+      "rows": [
+        "01 01 01 01 01 01 01 01 01",
+        "01 01 04 06 01 01 01 01 01",
+        "01 04 02 0a 01 01 01 01 01",
+        "01 20 30 21 2d 04 06 01 01",
+        "01 08 02 02 3b 02 0a 01 01",
+        "01 20 02 0a 2d 12 22 01 01",
+        "01 01 07 21 21 21 07 01 01",
+        "01 01 01 01 01 01 01 01 01"
+      ],
+      "exits": [
+        [
+          5,
+          13
+        ],
+        [
+          13,
+          13
+        ]
+      ],
+      "clear_arrival": [
+        5,
+        12
+      ],
+      "exit_collision": "LADDER",
+      "exit_doors": [
+        [
+          60,
+          33
+        ],
+        [
+          76,
+          31
+        ]
+      ],
+      "residents": [],
+      "items": [
+        {
+          "id": "MN_R20_ITEM_01",
+          "item": "HYPER_POTION",
+          "quantity": 1,
+          "flag": "EVENT_MN_R20_ITEM_01",
+          "tile": [
+            5,
+            5
+          ],
+          "access": "Optional two-chamber granite passage; saved pickup flag retained."
+        }
+      ],
+      "signs": [],
+      "mandatory": false,
+      "purpose": "An optional transverse glacial cleft through the Voyageurs granite: two original exterior mouths open onto a low connecting stone slot. The west supply shelf uses a fitted native stair; the narrow east shelf offers a short leftward drop across the bedrock blade and an ordinary stair return through the lower slot. Original Hyper Potion and all mouth pairings remain exact. No field move is required and no faster regional crossing is promised.",
+      "candidate_status": "Installed 510-map native review; all three local production-controller cases PASS.",
+      "review_contract": {
+        "palette_group": "nite",
+        "quality_revision": "r20-v02-sealed-stair-toe",
+        "clear_arrivals_core": [
+          [
+            5,
+            12
+          ],
+          [
+            13,
+            12
+          ]
+        ],
+        "ordinary_waypoints_core": [
+          [
+            5,
+            12
+          ],
+          [
+            4,
+            9
+          ],
+          [
+            4,
+            7
+          ],
+          [
+            4,
+            5
+          ],
+          [
+            7,
+            8
+          ],
+          [
+            7,
+            12
+          ],
+          [
+            11,
+            12
+          ],
+          [
+            11,
+            9
+          ],
+          [
+            10,
+            8
+          ],
+          [
+            13,
+            12
+          ]
+        ],
+        "viewpoints": [
+          {
+            "id": "west_mouth",
+            "tile": [
+              5,
+              12
+            ]
+          },
+          {
+            "id": "supply_stair",
+            "tile": [
+              4,
+              7
+            ]
+          },
+          {
+            "id": "potion_shelf",
+            "tile": [
+              4,
+              5
+            ]
+          },
+          {
+            "id": "left_drop_approach",
+            "tile": [
+              10,
+              8
+            ]
+          },
+          {
+            "id": "left_drop_landing",
+            "tile": [
+              7,
+              8
+            ]
+          },
+          {
+            "id": "lower_slot",
+            "tile": [
+              9,
+              12
+            ]
+          },
+          {
+            "id": "east_stair",
+            "tile": [
+              11,
+              10
+            ]
+          },
+          {
+            "id": "east_mouth",
+            "tile": [
+              13,
+              12
+            ]
+          },
+          {
+            "id": "weakest_east_shelf",
+            "tile": [
+              11,
+              8
+            ]
+          }
+        ],
+        "controller_probes": {
+          "stairs": [
+            {
+              "id": "WEST_SUPPLY_SHELF",
+              "metatile": [
+                2,
+                3
+              ],
+              "block": "30",
+              "before": [
+                4,
+                5
+              ],
+              "lane": [
+                [
+                  4,
+                  6
+                ],
+                [
+                  4,
+                  7
+                ]
+              ],
+              "after": [
+                4,
+                8
+              ],
+              "blocked_from": [
+                4,
+                7
+              ],
+              "blocked_target": [
+                5,
+                7
+              ],
+              "destination": [
+                4,
+                5
+              ]
+            },
+            {
+              "id": "EAST_RETURN_CLIMB",
+              "metatile": [
+                5,
+                5
+              ],
+              "block": "12",
+              "before": [
+                11,
+                9
+              ],
+              "lane": [
+                [
+                  11,
+                  10
+                ],
+                [
+                  11,
+                  11
+                ]
+              ],
+              "after": [
+                11,
+                12
+              ],
+              "blocked_from": [
+                11,
+                11
+              ],
+              "blocked_target": [
+                10,
+                11
+              ],
+              "destination": [
+                10,
+                8
+              ]
+            }
+          ],
+          "ledge_lanes": [
+            {
+              "approach": [
+                10,
+                8
+              ],
+              "hop_from": [
+                9,
+                8
+              ],
+              "landing": [
+                7,
+                8
+              ],
+              "reverse_target": [
+                8,
+                8
+              ],
+              "direction": "LEFT"
+            },
+            {
+              "approach": [
+                10,
+                9
+              ],
+              "hop_from": [
+                9,
+                9
+              ],
+              "landing": [
+                7,
+                9
+              ],
+              "reverse_target": [
+                8,
+                9
+              ],
+              "direction": "LEFT"
+            }
+          ],
+          "ledge_shoulders": [
+            [
+              8,
+              7
+            ],
+            [
+              9,
+              7
+            ],
+            [
+              8,
+              10
+            ],
+            [
+              9,
+              10
+            ]
+          ],
+          "potion_approach": [
+            4,
+            5
+          ],
+          "potion_facing": "right",
+          "ordinary_return_waypoints": [
+            [
+              7,
+              12
+            ],
+            [
+              11,
+              12
+            ],
+            [
+              11,
+              9
+            ],
+            [
+              10,
+              8
+            ]
+          ],
+          "mouths": [
+            {
+              "inside": [
+                5,
+                13
+              ],
+              "clear": [
+                5,
+                12
+              ],
+              "target": "MnR20C00R00",
+              "target_warp": 2,
+              "outside_active_global": [
+                60,
+                33
+              ],
+              "outside_return_global": [
+                60,
+                34
+              ]
+            },
+            {
+              "inside": [
+                13,
+                13
+              ],
+              "clear": [
+                13,
+                12
+              ],
+              "target": "MnR20C01R00",
+              "target_warp": 2,
+              "outside_active_global": [
+                76,
+                31
+              ],
+              "outside_return_global": [
+                76,
+                32
+              ]
+            }
+          ],
+          "exterior_return_semantics": "Original west room warp1 returns to MnR20C00R00 passive warp2 global60,34 FLOOR; east room warp2 returns to MnR20C01R00 passive warp2 global76,32/local12,32 FLOOR. Active west60,33 targets roomwarp1; active east76,31 targets roomwarp2. Preserve the existing inactive east Floor record's own targetwarp1; no warp records are normalized."
+        },
+        "visual_revision": "Closed the east stair toe bypass: native22 replaces0a beside the stair, retaining upper Floor12,10 and blocking12,11. Both original mouths and the cleft silhouette stay exact.",
+        "unpublished": false,
+        "native_review": {
+          "pack_sha256": "1630ad063aa4a1cf252087bdf743ca48a2a8cb6c9c46ad95cb7aceb1c74c3b05",
+          "palette": "nite",
+          "candidate_sha256": "05617d4863db095ed7664ce6408f1d7f35e4ce3c6ed360d08bdfd36a35db2577",
+          "preservation_checks": 150,
+          "asset_cases_passed": 6,
+          "controller_cases": [
+            "r20_cleft_controller_both_mouths_passive_returns_and_two_stairs_bidirectional",
+            "r20_cleft_controller_both_left_hop_lanes_reverse_denial_and_ordinary_returns",
+            "r20_cleft_controller_original_hyper_potion_prints_once_heals_and_continues"
+          ],
+          "controller_cases_passed": [
+            "r20_cleft_controller_both_left_hop_lanes_reverse_denial_and_ordinary_returns",
+            "r20_cleft_controller_both_mouths_passive_returns_and_two_stairs_bidirectional",
+            "r20_cleft_controller_original_hyper_potion_prints_once_heals_and_continues"
+          ],
+          "earned_SQ03_progression_claimed": false
+        }
+      }
+    }
+  ],
+  "shortcut": null,
+  "cut_gates": [],
+  "one_way_ledges": [
+    {
+      "id": "WIND_SHELTER_RETURN",
+      "bounds_core": [
+        18,
+        50,
+        22,
+        52
+      ],
+      "direction": "south",
+      "source_block": "56",
+      "upper_approach": [
+        19,
+        49
+      ],
+      "hop_from": [
+        19,
+        50
+      ],
+      "landing": [
+        19,
+        52
+      ],
+      "reverse_blocked": [
+        19,
+        51
+      ],
+      "side_barriers": [
+        [
+          17,
+          51
+        ],
+        [
+          22,
+          51
+        ]
+      ],
+      "return_passage_core": [
+        12,
+        50,
+        14,
+        52
+      ],
+      "minimum_return_steps": 15,
+      "purpose": "Directed descent into the sheltered camp pocket; uphill travel returns through the western opening."
+    }
+  ],
+  "required_grass_crossings": [
+    {
+      "id": "BOUNDARY_SHORE_NECK",
+      "bounds_core": [
+        112,
+        30,
+        116,
+        42
+      ],
+      "minimum_grass_steps": 4,
+      "purpose": "A complete forest neck separates the last free shore lane from the Boundary Waters approach."
+    }
+  ],
+  "encounters": {
+    "grass_rates": {
+      "morning": 10,
+      "day": 10,
+      "night": 10
+    },
+    "grass": {
+      "morning": [
+        {
+          "species": "URSARING",
+          "level": 42
+        },
+        {
+          "species": "NOCTOWL",
+          "level": 43
+        },
+        {
+          "species": "QUAGSIRE",
+          "level": 44
+        },
+        {
+          "species": "TANGELA",
+          "level": 45
+        },
+        {
+          "species": "SNEASEL",
+          "level": 46
+        },
+        {
+          "species": "SKARMORY",
+          "level": 47
+        },
+        {
+          "species": "DRAGONAIR",
+          "level": 48
+        }
+      ],
+      "day": [
+        {
+          "species": "URSARING",
+          "level": 42
+        },
+        {
+          "species": "NOCTOWL",
+          "level": 43
+        },
+        {
+          "species": "QUAGSIRE",
+          "level": 44
+        },
+        {
+          "species": "TANGELA",
+          "level": 45
+        },
+        {
+          "species": "SNEASEL",
+          "level": 46
+        },
+        {
+          "species": "SKARMORY",
+          "level": 47
+        },
+        {
+          "species": "DRAGONAIR",
+          "level": 48
+        }
+      ],
+      "night": [
+        {
+          "species": "NOCTOWL",
+          "level": 42
+        },
+        {
+          "species": "ARIADOS",
+          "level": 43
+        },
+        {
+          "species": "QUAGSIRE",
+          "level": 44
+        },
+        {
+          "species": "TANGELA",
+          "level": 45
+        },
+        {
+          "species": "SNEASEL",
+          "level": 46
+        },
+        {
+          "species": "SKARMORY",
+          "level": 47
+        },
+        {
+          "species": "DRAGONAIR",
+          "level": 48
+        }
+      ]
+    },
+    "water_rate": 4,
+    "water": [
+      {
+        "species": "POLIWAG",
+        "level": 42
+      },
+      {
+        "species": "WOOPER",
+        "level": 43
+      },
+      {
+        "species": "MARILL",
+        "level": 48
+      }
+    ]
+  },
+  "viewpoints": [
+    {
+      "id": "FALLS_ENTRY",
+      "tile": [
+        9,
+        44
+      ]
+    },
+    {
+      "id": "WEST_LAKE_PIER",
+      "tile": [
+        15,
+        26
+      ]
+    },
+    {
+      "id": "WEST_OUTLET",
+      "tile": [
+        43,
+        42
+      ]
+    },
+    {
+      "id": "WIND_SHELTER",
+      "tile": [
+        19,
+        53
+      ]
+    },
+    {
+      "id": "WEST_OUTLET_WATCH",
+      "tile": [
+        37,
+        48
+      ]
+    },
+    {
+      "id": "GRANITE_LOOKOUT",
+      "tile": [
+        55,
+        29
+      ]
+    },
+    {
+      "id": "WEST_CAVE",
+      "tile": [
+        60,
+        34
+      ]
+    },
+    {
+      "id": "EAST_CAVE",
+      "tile": [
+        76,
+        32
+      ]
+    },
+    {
+      "id": "CLIFF_FOOT_LANE",
+      "tile": [
+        69,
+        36
+      ]
+    },
+    {
+      "id": "SOUTH_MEADOW",
+      "tile": [
+        81,
+        53
+      ]
+    },
+    {
+      "id": "EAST_OUTLET",
+      "tile": [
+        95,
+        36
+      ]
+    },
+    {
+      "id": "BORDER_NECK",
+      "tile": [
+        113,
+        36
+      ]
+    },
+    {
+      "id": "EASTERN_WATCH",
+      "tile": [
+        121,
+        47
+      ]
+    },
+    {
+      "id": "NORTH_GRANITE_HABITAT",
+      "tile": [
+        75,
+        23
+      ]
+    },
+    {
+      "id": "EASTERN_SHORE_DISCOVERY",
+      "tile": [
+        119,
+        26
+      ]
+    },
+    {
+      "id": "GRANITE_PINE_NOTCH",
+      "tile": [
+        71,
+        23
+      ]
+    }
+  ],
+  "story_contract": {
+    "quest": "SQ03",
+    "check_in": "International Falls ranger desk sets EVENT_MN_BORDER_REPORT; route residents do not grant or replace this check-in.",
+    "requires": [
+      "BADGE_1",
+      "BADGE_2",
+      "BADGE_3",
+      "BADGE_4",
+      "BADGE_5",
+      "BADGE_6",
+      "BADGE_7",
+      "BADGE_8",
+      "EVENT_MN_LIGHTHOUSE_SIGNAL"
+    ],
+    "completion": "Report completed circuit for one PP_UP at the authoritative Falls desk; EVENT_MN_BORDER_CIRCUIT_REWARDED prevents a repeat gift.",
+    "league_guard": "Voyageurs never bypasses EVENT_MN_SURVEY_RESTORED/Q07 on the League approach.",
+    "travel": "Ordinary free mainland walking; no admission, Safari balls, Safari steps or paid boat renewal."
+  },
+  "art_constraints": [
+    "Only original packed 8x8 source tiles.",
+    "No painted shadows, enlarged trees or perspective props.",
+    "Fit source shoreline/cliff quadrants; draw source trees in coherent metatile groups."
+  ],
+  "status": "Individually hand-authored source proposal in active visual review; native publication/controller/regional circuit pending.",
+  "anchor_status": "Exact native collision/event coordinates; source checks do not prove earned badges, story completion or native gameplay."
+}

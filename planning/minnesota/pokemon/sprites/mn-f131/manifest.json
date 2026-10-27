@@ -1,0 +1,244 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F131",
+  "status": "native-front-back-reviewed",
+  "tool": "built-in image_gen",
+  "prompt_file": "sprites/mn-f131/prompt-v1.txt",
+  "pokemon_palettes": {
+    "MN_289": {
+      "species_id": "MN_289",
+      "name": "Taplet",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          29,
+          10,
+          7
+        ],
+        [
+          7,
+          9,
+          12
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        7517,
+        12583,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          239,
+          82,
+          57
+        ],
+        [
+          57,
+          74,
+          99
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#EF5239",
+        "#394A63",
+        "#000000"
+      ]
+    },
+    "MN_290": {
+      "species_id": "MN_290",
+      "name": "Drumcrest",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          26,
+          7,
+          6
+        ],
+        [
+          5,
+          8,
+          11
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        6394,
+        11525,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          214,
+          57,
+          49
+        ],
+        [
+          41,
+          66,
+          90
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#D63931",
+        "#29425A",
+        "#000000"
+      ]
+    }
+  },
+  "back_framing": "gen2-close-rear-portrait",
+  "style_reference": {
+    "origin": "authentic local Crystal sprites",
+    "boards": [
+      "target/minnesota-pokemon/gen2-reference/starters.png"
+    ]
+  },
+  "sprites": [
+    {
+      "id": "mn-289-taplet-v1",
+      "species_id": "MN_289",
+      "view": "front",
+      "source": "sprites/mn-f131/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        768,
+        528
+      ],
+      "fit": [
+        34,
+        38
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        7517,
+        12583,
+        0
+      ],
+      "exterior_contour": "solid",
+      "interior_black_min_samples": 8,
+      "white_detail_min_samples": 4
+    },
+    {
+      "id": "mn-290-drumcrest-v1",
+      "species_id": "MN_290",
+      "view": "front",
+      "source": "sprites/mn-f131/front-back.imagegen-v1.png",
+      "crop": [
+        768,
+        0,
+        768,
+        528
+      ],
+      "fit": [
+        49,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        6394,
+        11525,
+        0
+      ],
+      "exterior_contour": "solid",
+      "interior_black_min_samples": 8,
+      "white_detail_min_samples": 4
+    },
+    {
+      "id": "mn-289-taplet-v1",
+      "species_id": "MN_289",
+      "view": "back",
+      "source": "sprites/mn-f131/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        528,
+        768,
+        496
+      ],
+      "fit": [
+        38,
+        40
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        7517,
+        12583,
+        0
+      ],
+      "exterior_contour": "solid",
+      "interior_black_min_samples": 8,
+      "white_detail_min_samples": 4
+    },
+    {
+      "id": "mn-290-drumcrest-v1",
+      "species_id": "MN_290",
+      "view": "back",
+      "source": "sprites/mn-f131/front-back.imagegen-v1.png",
+      "crop": [
+        768,
+        528,
+        768,
+        496
+      ],
+      "fit": [
+        46,
+        46
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        6394,
+        11525,
+        0
+      ],
+      "exterior_contour": "solid",
+      "interior_black_min_samples": 8,
+      "white_detail_min_samples": 4
+    }
+  ],
+  "visual_review": {
+    "status": "reviewed",
+    "outline_profile": "solid-exterior-v1",
+    "sheet_sha256": "9b9ceae44a84d2b00360c07b042cacd39c7296affc047c8e0bdd3e675bec1577",
+    "review_note": "Inspected all four native views. Red crests, wedge beaks, white wing panels and gripping feet read as woodpeckers. Adult neck folds and balance wings remain avian rather than humanoid. Backs preserve crest direction and shoulder panels; eye pupils survive conversion."
+  }
+}

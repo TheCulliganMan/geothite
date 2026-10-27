@@ -1,0 +1,291 @@
+# Original Crystal-style entries. ID|classification|page one|page two.
+001|Pouch Bloom|It stores dew inside its pouch. The water|keeps it alive when the bog freezes in winter.
+002|Petal Dance|Insects drawn to its sweet scent grow drowsy|as they watch the slow movements of its petals.
+003|Waltz|Anyone who watches its dance too closely|will keep walking until it stops at sunrise.
+004|Warm Ore|It must eat iron-rich stones every day.|Without them, the ember in its chest goes out.
+005|Ore Pellet|Ore swallowed by this POKEMON is rolled into hot|pellets, which it spits at its enemies.
+006|Furnace|Its fists are cast from iron melted in|its chest. It cools them in snow after a battle.
+007|Stone Skip|Its smooth belly lets it bounce across ponds. It|sinks if it stops moving before reaching land.
+008|Ripple Run|It waits near boats to catch their wakes.|A large wave can carry it across a whole lake.
+009|Lake Skim|After gaining speed on water, it spreads its fins|and glides over the trees to the next lake.
+010|Paddle Kit|It chews birch twigs to sharpen its teeth.|Even young ones try to dam small streams.
+011|Portage|It carries heavy loads between lakes. Its broad|tail keeps it balanced on muddy paths.
+012|Voyageur|It strikes the water with its paddle to set|a steady rhythm that others follow through fog.
+013|Rice Seed|When the seed on its head ripens, it buries|itself in shallow mud and waits for spring.
+014|Root Raft|Small fish eat the pests caught in its roots.|It shelters their eggs in return.
+015|Reed Haven|Wind passing through its hollow reeds makes a low|whistle before a storm reaches the marsh.
+016|Banded Gem|It rolls in the surf to polish its stone body.|Its bands grow brighter as the outer layer wears.
+017|Stone Eye|Its eye can detect movement through stone.|It knows when anyone approaches its hidden nest.
+018|Ring Shield|When its young are threatened, its rings close|around them to form a thick stone shell.
+019|Stripe Grub|The bitter leaves it eats make its body|taste so bad that most birds leave it alone.
+020|Gilt Case|The gold spots on its case sense shadows.|It stops moving before an enemy draws near.
+021|Cape Wing|It can find its way south without following others.|Its antennae sense the change of season.
+022|Rust Patch|Heat stored in the rusty patch on its back|keeps the other members of its hive warm.
+023|Wax Rivet|It uses wax to repair cracks in its shell.|The wax grows as hard as metal when it cools.
+024|Hive Smith|It inspects the shells of every worker.|It repairs damaged ones before tending its own.
+025|Pine Cone|Sticky resin collects between its scales.|Insects trapped there provide most of its food.
+026|Resin Wick|The resin in its branches burns even in rain.|Its damp outer bark protects the living trunk.
+027|Camp Pine|It allows small POKEMON to sleep beneath its warm|branches, but drives away those that fight.
+028|Grain Imp|It enters mills through gaps too small|for its body. Only scattered flour shows its path.
+029|Millstone|Grain is crushed between its turning limbs.|It leaves a trail of flour after a large meal.
+030|Flour Dust|Even when wind scatters its dusty body, its stones|keep turning until the flour gathers again.
+031|Fold Stone|Its folded body appears soft, but ordinary|tools cannot scratch even its thinnest layer.
+032|Layer Wyrm|Each long sleep adds a fold to its neck. Some|have slept for more than a hundred years.
+033|Deep Time|It may sleep without moving for centuries.|Trees growing on its back do not wake it.
+034|Ice Puck|Its flat belly spreads its weight over ice.|It can cross thin patches that break under people.
+035|Skate Guard|It skates in tight circles to sharpen|its steel feet. The grooves mark its territory.
+036|Goal Wall|A new mask grows over its face each night.|It will not leave its nest even if the mask breaks.
+037|Star Spark|It drifts toward the north when left alone.|Its spark grows weak if it is kept underground.
+038|Sky Ribbon|The light in its body changes with currents|in the sky, even when no aurora can be seen.
+039|Pole Star|Its star-shaped core always points north.|Travelers once used its position to find their way.
+040|Lake Call|It repeats its call until an echo answers.|It will not stay on a lake where no echo returns.
+041|Echo Loon|Its call can be heard after it has dived.|The sound seems to rise from deep under the water.
+042|Lake Echo|Calls heard on deserted lakes are sometimes|the voices it left behind many years earlier.
+043|Jig Fish|It hides among fishing hooks on the lake bed.|Its twitching tail attracts fish looking for food.
+044|Spinner|It spins its metal fins to look like a weak|fish. It attacks when a larger fish draws close.
+045|Flap Cake|It turns itself over while sleeping|so that both sides of its body stay equally warm.
+046|Hot Stack|Sap becomes thick syrup inside its body. It refuses|to share any with people it distrusts.
+047|Hatchet|The sound of chopping wakes it immediately. It|moves toward the sound by hopping on its grip.
+048|Twin Bit|Each blade remembers a different owner.|The arms sometimes fight over which way to swing.
+049|Stone Gnaw|Its fossil teeth match marks found in logs buried|long ago. It can still bite through stone.
+050|Dam Fossil|Dams made by this ancient POKEMON were so large|that they changed the course of rivers.
+051|Sucker|The suckers on its belly let it cling to larger|POKEMON and travel without being noticed.
+052|Bellows|By folding its body shut, it can suck all|the water and small prey out of a shallow pool.
+053|Crisp Fruit|It hides ripe fruit in cool tree hollows.|It makes a sharp snapping sound to warn thieves.
+054|Cider Maw|Fruit kept in its cheeks slowly ferments.|It releases sour gas before the pressure builds.
+055|Hollow Cap|It stops moving when people look for it. Its cap|is almost impossible to spot among leaves.
+056|Maze Cap|The passages inside its cap are much longer|than its body. No one has found where they end.
+057|Bog Sprout|It grows best with its roots in cold water.|Its needles turn gold before the first frost.
+058|Gold Mourne|Its fallen needles move without any wind.|They gather over young plants buried in snow.
+059|Stone Spot|It begins to rock before a change in weather. Rain|usually follows even if the sky is clear.
+060|Nodule Eye|Its eyes watch different possible futures. It closes|each eye when that future cannot occur.
+061|Soft Stone|Its red body stays soft beneath hard plates.|In dry weather, it becomes too stiff to move.
+062|Stone Lock|It softens its joints to squeeze into rock cracks,|then locks its armor so it cannot be pulled out.
+063|Thread Fly|It gathers above still water at dusk. Its long|tails touch the surface as it seeks a mate.
+064|Mass Hatch|Its broad wing fans make it look like many|insects. Fish strike the false shapes instead.
+065|Needle Pest|It waits until a hand has passed before it bites.|After feeding, it is too heavy to dodge well.
+066|Cape Gnat|It folds its wings like a cloak to approach sleeping|prey. A full belly makes its whine louder.
+067|Clink Claw|It snaps its claws to warn others away.|The sound is much louder inside its rocky den.
+068|Cage Shell|Prey that tug the claw outside its shell|are trapped when the shell snaps shut.
+069|Barn Puff|Its soft feathers make its flight silent. It can|hear a mouse moving behind a wall of straw.
+070|Silo Owl|Its hollow chest makes even a soft call carry|for miles. Faint replies guide it to prey.
+071|Live Cable|It hangs by one limb to keep its two ends apart.|A bright spark jumps when the ends touch.
+072|Sky Link|Several join their limbs to span gaps|between roofs. Each lends power to the next.
+073|Fold Truss|It folds its limbs close when danger nears. Its heavy|counterweight keeps floods from tipping it.
+074|Lift Span|It raises its arms to let boats pass through its body.|It remembers any that strike its sides.
+075|Wick Glow|Its flame can be seen through thick fog.|It walks along the shore when boats lose their way.
+076|Twin Beam|Its eyes cast beams in different directions.|Hidden rocks are revealed where the beams cross.
+077|Crisp Tot|It stays close to others to conserve heat.|A lost one rolls toward the nearest fire.
+078|Baked Dish|Heat trapped beneath its crust keeps it warm|all night. Small POKEMON gather beside it.
+079|Squeak Curd|Its body squeaks when squeezed or bounced.|Groups use the sound to find one another in snow.
+080|Batter Fist|The more its fists are compressed by a blow, the harder|they spring back against the attacker.
+081|Fold Bread|It folds tightly around its soft butter|core. Cold air makes its body stiff and slow.
+082|Warm Wrap|It wraps its body around those that shiver.|The inner folds stay warm even on cold nights.
+083|Berry Imp|When frightened, it gives off a strong berry|scent. This often attracts more hungry birds.
+084|Crumb Grin|Stolen berries are hidden in its soft shell.|Purple juice around its mouth gives it away.
+085|Bark Chip|Water rolls off its pale bark. It uses sap|to seal small tears before they reach its body.
+086|Bark Hull|It folds its limbs inside its hollow shell.|Even rough water cannot overturn the sealed hull.
+087|Scrap Plow|It pushes snow aside to search for metal.|A pebble caught in its mouth makes it sneeze rust.
+088|Snow Dozer|The snow it clears hardens on its shoulders.|Its armor is thickest after a severe blizzard.
+089|Butter Gel|Butter flowing beneath its white flesh|keeps its body soft in water cold enough to freeze.
+090|Road Slush|It feeds on the dirty slush beside roads.|Fresh, clean snow causes it to hide underground.
+091|Welcome|It greets strangers with a gentle wingbeat.|Those who approach its nest are chased for miles.
+092|Gray Tag|It always tags the fastest member of a group.|Its broad feet let it turn without slowing down.
+093|Level Spin|Its face stays level while its body spins.|People watching it soon lose their balance.
+094|Wreck Bell|Its bell is said to ring before a shipwreck.|The sound can be heard even from deep water.
+095|Blue Ox|According to old tales, the lakes were made|when rain filled the footprints of this giant ox.
+096|Lost Falls|Water flowing into its hollow body vanishes.|Where the missing current goes is still unknown.
+097|Wake Drake|Its low back looks like the wake of a boat.|It stays submerged whenever people are nearby.
+098|Timber|Trees grow in its beard while it sleeps.|It pulls up fallen trunks to reopen forest paths.
+099|Moss Veil|Although its tracks are often found, few|people have ever seen the face beneath its moss.
+100|Clouded Ice|People who saw it inside the ice describe|different faces. None recall seeing it move.
+101|Ore Whelp|It draws iron pellets onto its back.|Before a fight, it shakes off those that do not stick.
+102|Rail Armor|Its armor plates are held by magnetism.|A plate knocked loose is pulled back into place.
+103|Iron Wyrm|Its magnetic force can bend iron rails. It can|replace damaged armor without touching it.
+104|Dust Calf|It charges through dry soil to raise dust. The cloud|hides it from enemies until help arrives.
+105|Rumble Hide|Its hump picks up faint sounds from the soil.|It can tell how far away its herd is running.
+106|Thunder Run|A charge gathers between its horns as it runs.|Large herds can be heard like distant thunder.
+107|Grass Clip|It cuts fresh grass to build its shelter. Dry|or damaged blades are thrown out each morning.
+108|Sod Stitch|The grass woven into its case stays alive.|Its roots hold the sleeping body firmly in place.
+109|Grass Skip|Seeds caught on its legs are carried far across|the prairie. Flowers grow along its routes.
+110|Seed Cheek|It buries more seeds than it can remember. Many|sprout before it finds them again in spring.
+111|Cache Thief|It keeps stolen seeds in separate cheek pouches|so it can sort them after reaching its den.
+112|Seed Vault|Its armored back covers the mouth of its den.|When it moves away, it seals the hole with soil.
+113|Drum Chick|It practices its throat drum before dawn. Other|young join in until the whole flock wakes.
+114|Boom Ruff|Its throat sacs produce a deep booming call.|Rivals can judge its size without approaching it.
+115|Drum Fan|It spreads its tail to direct the sound|of its stamping feet toward other flocks far away.
+116|Three Stem|Its stems bend flat instead of breaking in|strong winds. They soon stand upright again.
+117|Stem Blade|It roots one foot before swinging its blades.|A firm grip on the soil gives its blows strength.
+118|Grass Duel|Its flexible blades bend around heavy blows. It|loses a duel only when its roots are loosened.
+119|Frost Bud|It senses warmth deep beneath frozen soil.|Its buds begin to grow before the snow melts.
+120|Thaw Hood|Its hood turns toward the coming sunrise|even while it is buried beneath a thick snowbank.
+121|Spring Cape|Its petals draw frost away from nearby buds.|Plants under its cape survive late cold spells.
+122|Dust Knot|Warm winds gather dust into its body.|When the air grows still, it falls apart.
+123|Spiral Soil|Air turning inside its hollow spine keeps soil|aloft. Heavy rain can pin it to the ground.
+124|Loess Wyrm|It takes in dust above fields during droughts.|The soil left behind by its body is very fertile.
+125|Sticky Pod|Its sticky sap traps insects that bite its pod.|It unfolds only after the surface has dried.
+126|Floss Sail|It tilts its broad sail to land on passing|animals. Its sticky body makes it hard to remove.
+127|Down Drift|The down shed by its body irritates the skin. Grazing|animals avoid places where it has landed.
+128|Frost Peg|It plants itself facing into the wind.|Snow builds up behind it without blowing away.
+129|Snow Slat|Snow caught between its arms turns to ice.|Each storm adds another slat to its growing body.
+130|Rime Wall|It braces against blizzards all night long.|Small POKEMON sleep in the calm air behind it.
+131|Harbor Heat|It takes in cold water to cool its boiler. A high|whistle means its water supply is running low.
+132|Lake Hauler|Steam produced in its belly moves its arms.|It can raise heavy ore from the bottom of a lake.
+133|Silk Glint|Sunlight is stored in the threads inside its stone|body. The threads remain bright at night.
+134|Silk Flare|Heat kept in its mineral mane lasts through winter.|Snow melts before it touches the strands.
+135|Vane Chick|It watches fields from the highest perch. Its tail|points toward anyone nearing the grain.
+136|Silo Toll|It demands grain from those passing its roost.|It hides every payment beneath its broad wings.
+137|Hay Knot|Before sleeping, it ties its body in a knot.|It will not loosen until it hears a familiar voice.
+138|Rope Drake|It drops loops of its body over passing prey.|Struggling causes the loops to tighten further.
+139|Chorus|It changes its note to match nearby calls.|The listeners grow sleepy when the notes agree.
+140|Bog Choir|Three throat sacs produce different notes.|The combined sound puts even large foes to sleep.
+141|Spring Ear|When startled, it jumps higher than it can see.|It often lands too far away to find its den.
+142|Vault Hare|Its long ears can be bent like springs. Pushing|them into the ground helps it clear fences.
+143|Click Leg|Its clicking legs warn others of wind changes.|An entire group can turn before a gust arrives.
+144|Wind Pump|Wind turning its wings produces electricity.|It jumps farther after facing a strong headwind.
+145|Fume Cart|It collects poisonous fumes in abandoned mines.|Its body rattles along tracks buried long ago.
+146|Ghost Load|The gas in its ghostly load glows in the dark.|It can pass through the walls of sealed mines.
+147|Crow Shade|The crow-shaped shadow is its true body. At sunrise,|it returns to hide inside a straw head.
+148|Twin Halo|Two warm images appear beside its real head.|Prey approach the images without seeing its jaws.
+149|Filter Pool|It keeps dirt and poison in a separate sac.|The water held on its back remains clear.
+150|Mine Alarm|It flashes when dangerous gas fills the air.|Miners used to follow its light toward safety.
+151|Siphon Grub|It breathes through a tube at the surface.|Even a small ripple makes it curl up and sink.
+152|Marsh Pump|Air entering its twin tubes makes its case pulse.|The movement grows faster before it hatches.
+153|Bog Pump|The pressure in its swollen belly can flatten reeds.|Its loud whine carries across whole marshes.
+154|Warm Spout|It whistles through its warm spout when alone.|Its strangely placed feet leave misleading tracks.
+155|Cross Track|It walks backward when no one is watching. Steam|rising from its chest often reveals its path.
+156|False Trail|Its tracks point in opposite directions.|People following them usually walk in circles.
+157|Lava Pillow|Cold water hardens the skin over its molten|body. A new lobe pushes through as it grows.
+158|Basalt Lobe|Its stone lobes hold enough heat to warm nearby|water. New lobes hiss when they break out.
+159|Pillow Wyrm|Its molten spine keeps growing through its crust.|Shed plates form ridges on the lake bottom.
+160|Layer Dome|Thin layers grow on its back in shallow water.|Each one preserves the light of a single day.
+161|Colony|Faint voices can be heard between its layers.|They are thought to belong to an ancient colony.
+162|Stone Choir|Many vanished lives share its stone body.|Their combined voices describe a long-lost sea.
+163|Lost Mitten|It drifts through old camps looking for its missing|mate. It ignores hands offered to it.
+164|Lost Pair|Though the two mittens do not match, they refuse|to part. Pulling them apart brings bad luck.
+165|Shawl Set|Its shawl catches the wind to carry both mittens.|No one knows who once wore the clothes.
+166|Ice Clapper|Its ice plates snap together as the air cools.|The sound carries a long way on still nights.
+167|Crack Spark|Static builds up between its dry ice plates. It|releases a spark when it claps them together.
+168|Rift Storm|Its slabs store a powerful electric charge.|A sudden clap can split the ice across a lake.
+169|Branch Knot|It hides in hollow trees and throws twigs|at anyone who passes beneath its resting place.
+170|Bough Bow|Its arms bend back to store the force of a falling|branch. One arm braces while the other fires.
+171|Branch Cast|It attacks those who damage old pine trees.|A heavy branch often falls before it is seen.
+172|Buoy Spark|Its submerged tail detects very small waves.|It begins to bob before a distant storm is visible.
+173|Wave Oracle|The patterns of distant waves tell it when a storm|will arrive. Its crown flashes a warning.
+174|False Shape|Its false face appears above its real body.|Enemies often leap too high and miss it entirely.
+175|High Mirage|It bends warm air into a larger image of itself.|Ships have turned aside to avoid the image.
+176|Runoff|A ridge on its back divides falling water.|It dislikes resting where the two streams meet.
+177|Divide|Rain drains down opposite sides of its back.|Its forked tail keeps the two currents apart.
+178|Auger Foot|It burrows into soil on its spiral foot.|It leaves a single round track on the surface.
+179|Counterturn|Its arms turn against the twist of its foot.|It can dig for hours without turning its head.
+180|Coal Fry|Warm smoke escapes from its gills. Other fish|gather near it when the lake grows cold.
+181|Smoke Gill|It cures stored food with salty smoke|from its gills. The scent carries to shore.
+182|Scute Scout|Its barbels feel every hollow in the lake bed. It|can find feeding spots without using its eyes.
+183|Lake Chart|Its armor grows in ridges shaped like lake channels.|Old ones show channels buried under silt.
+184|Cache Snare|It hangs by its looped tail near stores of food.|Pulling the food brings its heavy fists down.
+185|Lichen Fold|It opens its cloak to absorb water from mist.|The folds underneath always remain dry.
+186|Sticky Note|Things it touches leave marks in its folds.|It clings to people whose touch it remembers.
+187|Memo Fold|A promise spoken near it makes a new crease.|The crease opens when the speaker returns.
+188|Recall Wyrm|The folds of its body record every turn|of a trail. It can follow paths lost to floods.
+189|Riffle|Water rushing over its fins makes its tail glow.|It seeks faster currents when the light fades.
+190|Runner Coil|The current spins its paddles to store power.|It swims upstream to charge itself before resting.
+191|Hydro Tail|Its tail turns in falling water to generate|electricity. Groups can light a whole riverbank.
+192|Drip Stone|A grain of stone forms on its hood with each drop|of water. Older ones have much heavier hoods.
+193|Sink Shelf|It hides under ledges near sinking streams.|The dripping water conceals the sound of its breath.
+194|Karst Jaw|It opens its wide jaw where streams enter|caves. The current carries prey straight inside.
+195|Warm Crumb|It gathers crumbs that fall from its own body. It|becomes restless near the smell of fresh cookies.
+196|Cookie Cone|It hides warm cookies inside its cone.|The rim snaps shut on hands reaching inside.
+197|Cookie Pail|It tempts people with cookies in its bucket.|The handle snaps shut on anyone who takes too many.
+198|Small Pulse|Its palms give off a steady pulse. Nervous|young calm down when it holds them close.
+199|Beat Guide|It matches the pulse of those it touches, then|slows its own beat until they begin to relax.
+200|Pulse Guard|Its movements follow the beat of its heart. Its|timing never slips while protecting its young.
+201|Visor|Its wide visor detects shadows on all sides.|It rolls into a ball before an enemy can descend.
+202|Plate Guard|Its plates spread to shield the soft face. Marks|on fossils show few attacks reached its eyes.
+203|Chamber|Air in the chambers of its shell lets it rise|or sink. It releases ink to cover its escape.
+204|Ink Spire|Its thick ink hangs like a curtain in water.|It hides behind the ink until prey draw close.
+205|Clay Knead|It presses wet clay into cracks in its back.|Heat from its body hardens the clay into armor.
+206|Glaze Hide|Rain makes the glaze on its shell shine. Potters|study the patterns that appear when it dries.
+207|Muffled Tap|It answers knocks from inside cave walls.|Each reply seems to come from a different place.
+208|Cave Swing|Its body moves in time with echoes in caves. People|nearby begin to dance without realizing it.
+209|Mantle Lure|A small part of its mantle looks like food.|It waits inside its shell for a fish to bite.
+210|Shell Stage|The puppet on its mantle moves by itself. Fish|watching the puppet fail to notice the shell.
+211|Sense Spoon|Its snout senses the weak electric signals|of prey. Muddy water does not interfere with it.
+212|Array Snout|It compares signals from the branches|of its snout to find prey hidden deep beneath silt.
+213|Butter Chip|It carves its own body with its wedge arm.|Cold nights harden the newly exposed surfaces.
+214|Dairy Royal|It carves a fresh crown from its butter body each|morning. Warm weather makes it lose shape.
+215|Tile Case|It binds smooth pebbles into a case with silk.|Larger stones are added as its body grows.
+216|Wing Mosaic|The pattern on its wings makes it appear farther|away. Attacks aimed at it often fall short.
+217|Torch Revel|Each leap pumps air into its hot chest. The heat|it gives off drives nearby frost away.
+218|Root Spark|Its taproot draws power from the soil. Touching|its leaves produces a small electric shock.
+219|Tap Charge|Its root swells as electricity builds inside. Its leaves|stand straight up when fully charged.
+220|Beet Dynamo|It plants four roots before releasing stored|power. The ground stays warm long after it leaves.
+221|Peat Ember|A coat of damp soil hides the ember in its body.|The snow above its burrow melts slowly.
+222|Smolder|It can smolder beneath wet soil for months. A|crack in its crust releases thick, bitter smoke.
+223|Peat Memory|The layers of its peat body preserve old|scents. It seeks trees like those in buried forests.
+224|Hail Seed|It is blown into storm clouds again and again.|Each trip adds another layer of hard ice.
+225|Hail Fist|Each trip through a storm adds ice to its fists.|Sparks fly when the heavy fists collide.
+226|Storm Anvil|Strong winds hold its heavy body in the sky.|The ice grinding inside it makes a low rumble.
+227|Gravel Hook|It follows buried channels beneath gravel.|Its hooked back bends where the old stream turned.
+228|Ridge Walk|Its six feet sense hollows deep in the soil.|It avoids ground that an ancient river left alone.
+229|Lost River|Water runs inside its long gravel body. It still|follows rivers that vanished long ago.
+230|Hot Kernel|Heat raises the pressure inside its hard hull.|It begins to hop just before the hull bursts.
+231|Puff Fist|It keeps pieces of its broken seed hull|on its fists to add weight to its light body.
+232|Pop Punch|Its light body springs back after a blow.|The hard hulls on its fists crack loudly on impact.
+233|False Face|It spreads its neck to frighten foes.|If they stay, it rolls over and plays dead.
+234|Neck Stage|A false face appears when it spreads its neck.|Rolling over lets it show two faces in succession.
+235|Nod Bloom|It hides beneath its drooping flower buds.|It sways with the wind so that it is not noticed.
+236|Plume Shade|When threatened, its body breaks into plumes. Each|one casts a shape that confuses its enemy.
+237|Prism|Its prisms reflect faint light into a tall column.|Even a candle can make the column appear.
+238|Light Stack|It lines up its mirrors on clear winter nights.|The light can be mistaken for a distant dawn.
+239|Glass Fork|A spark is trapped inside its glass body. It begins|to hum when a thunderstorm approaches.
+240|Glass Root|Electricity runs through its glass bones. The heat|melts nearby sand into new branching roots.
+241|Sap Toll|It demands sweet sap from passing insects.|Those that pay are allowed across its trail.
+242|Living Gate|Its legs lock together to block a path. It sprays|sour fluid at those who try to steal sap.
+243|Soil Wedge|It pushes its wedge-shaped head beneath|frozen soil, then slowly raises the crust above it.
+244|Ground Jack|Its uneven arms let it lift great weights.|A group working below can raise a buried boulder.
+245|Wind Facet|Wind has worn its body into three flat sides.|It uses the smooth faces to skim over loose sand.
+246|Stone Vane|Air forced beneath its stone vanes keeps it aloft.|It can remain still in a strong headwind.
+247|Loose Knot|Its glowing body comes undone to pass through small|gaps. It has been seen inside locked rooms.
+248|Old Shore|The ridges on its back mark the shores of|an ancient lake. It appears when the land floods.
+249|Shelf Storm|Its broad wings bring storms to the prairie.|The air beneath its body is strangely calm.
+250|Fen Memory|Each layer of its body recalls a past summer.|It can join paths that were lost many years ago.
+251|Alert Fin|Its flag fin moves when it notices food.|Other fish watch the fin to learn when to hunt.
+252|Ice Flag|Its icy brow collects light under frozen|lakes. Its flag rises as soon as its jaws close.
+253|Murk Fry|Its barbels find food in very muddy water. A sour|fluid on its fin spines keeps enemies away.
+254|Spine Store|Three large fin spines hold a foul fluid. It spreads|them when an enemy tries to swallow it.
+255|Seed Glide|Its broad tail turns like a falling seed.|It slows its descent by turning faster in the air.
+256|Samara|It tilts its broad membranes to turn between trees.|Seeds caught in its fur fall far from home.
+257|Soft Rattle|It gives a soft warning with its hollow tail.|It strikes only if the intruder comes closer.
+258|Tail Cups|The two cups of its tail make different sounds.|Large enemies are warned by the lower note.
+259|Spring Fin|It bends its fins against a strong current.|Releasing the bend sends it over shallow rapids.
+260|Recoil|Its curved body stores the force of flowing water.|A sudden release can carry it up a waterfall.
+261|Key Barbel|Its chin barbel feels for gaps in lake ice. It taps|each opening before swimming through it.
+262|Shutter|Its key-shaped barbel finds hidden gaps under|ice. Its fins fold flat to let it slip through.
+263|Spear Fry|Its pointed snout parts weeds without making|ripples. Small fish do not notice until it strikes.
+264|Lance Jaw|It braces its fins before a straight charge.|Once its long jaws close, prey have no room to turn.
+265|Pressure|Its gill chambers squeeze water into a dense|shot. The recoil sends it backward through reeds.
+266|Tip-Up|It waits under the ice with its flag held low.|The flag snaps up when prey struggle in its jaws.
+267|Tiptoe Tag|It taps others with its soft wing to start|a chase. It will keep playing until everyone tires.
+268|Pivot Tag|Its wide feet grip the ground during turns.|It can change direction without losing much speed.
+269|Ore Hauler|Steam from its boiler powers its huge arms.|Its horns are heard before it reaches a harbor.
+270|Twine Titan|Its entire body is made of one long braid.|It winds itself tighter to hold struggling foes.
+274|Ember Kit|It curls around its warm belly when sleeping.|Its ear flames grow taller as the air turns cold.
+275|Banked Coal|Flames along its shoulders warm its muscles.|It can run through deep snow without slowing down.
+276|Winter Fire|Its icy mantle keeps heat inside its chest.|Its broad frozen paws let it run over soft snow.
+278|Forage Cub|It remembers every berry patch it finds.|Its broad paws dig roots without breaking them.
+279|Scoop Paw|It gathers dry leaves beneath its thick ruff.|A few quiet steps can carry it past a sleeping foe.
+280|Den Keeper|Small POKEMON shelter beneath its heavy ruff.|It remembers the scent of anyone near its den.
+281|Bog Calf|Its wide hooves keep it from sinking in mud.|Tiny buds on its head turn toward fresh reeds.
+282|Reed Palm|It parts thick reeds with its growing antlers.|It can find tender roots beneath cloudy water.
+283|Fen Crown|Its broad antlers shelter calves as they feed.|Seeds caught in its antlers fall along old trails.
+284|Pack Pup|It answers distant calls before opening its eyes.|Its ears turn toward the nearest pack member.
+285|Trail Ear|Its ruff guides faint sounds toward its ears.|It follows old trails without leaving a sound.
+286|Pack Call|It knows each pack member by a single footstep.|Its low call echoes through the deep woods.
+287|River Slide|It makes smooth slides along muddy riverbanks.|It returns to a favorite bend after every meal.
+288|Current Roll|Its rolling body slips through the fastest water.|The folds at its neck guide water past its ears.
+289|Tap Beak|It taps hollow trunks to hear what hides inside.|Its stiff tail braces it while it climbs bark.
+290|Drum Crest|Its thick neck folds absorb each drumming blow.|It can split a fallen log with a short beak strike.
+291|Mud Snap|It waits beneath mud with only its nose showing.|The ridges on its shell catch drifting leaves.
+292|Bank Jaw|Its folded neck reaches far beyond its shell.|It holds the bank until a flood has passed.
+293|Burr Seed|Its fringed cup catches dew before dawn.|It plants one tiny root whenever it stops to rest.
+294|Root Hold|Its roots hold soil against rushing water.|Small POKEMON hide beneath its broad leaf fans.

@@ -1,0 +1,1457 @@
+{
+  "id": "MN_R09",
+  "map_prefix": "MnR09",
+  "name": "Iron Range West",
+  "dimensions_metatiles": [
+    64,
+    36
+  ],
+  "chunk_metatiles": [
+    32,
+    24
+  ],
+  "chunk_columns": 2,
+  "chunk_rows": 2,
+  "endpoints": [
+    {
+      "place": "BEMIDJI",
+      "side": "W",
+      "gate_metatile": [
+        1,
+        25
+      ],
+      "landing_metatile": [
+        3,
+        25
+      ]
+    },
+    {
+      "place": "GRAND RAPIDS",
+      "side": "E",
+      "gate_metatile": [
+        62,
+        12
+      ],
+      "landing_metatile": [
+        60,
+        12
+      ]
+    }
+  ],
+  "required_flags": [
+    "BADGE_7",
+    "EVENT_MN_HEADWATERS_REPORT"
+  ],
+  "quest": "Q06",
+  "tileset": "johto",
+  "source_references": [
+    "Route34",
+    "Route42",
+    "Route45"
+  ],
+  "description": "Iron Range bedrock route: spruce creek, narrow flooded quarry rim, stepped ore ribs and attached erratic groups, mine cache, crushed-ore haul track, abandoned rail crossing and a field-medic turnout.",
+  "main_path_metatiles": [
+    [
+      1,
+      25
+    ],
+    [
+      5,
+      25
+    ],
+    [
+      5,
+      24
+    ],
+    [
+      10,
+      24
+    ],
+    [
+      10,
+      21
+    ],
+    [
+      18,
+      21
+    ],
+    [
+      25,
+      21
+    ],
+    [
+      25,
+      23
+    ],
+    [
+      44,
+      23
+    ],
+    [
+      44,
+      19
+    ],
+    [
+      50,
+      19
+    ],
+    [
+      50,
+      12
+    ],
+    [
+      54,
+      12
+    ],
+    [
+      54,
+      10
+    ],
+    [
+      60,
+      10
+    ],
+    [
+      60,
+      12
+    ],
+    [
+      62,
+      12
+    ]
+  ],
+  "main_lane_width_gameplay_tiles": 2,
+  "districts": [
+    {
+      "id": "WEST_SPRUCE",
+      "name": "Spruce approach",
+      "bounds_metatiles": [
+        0,
+        16,
+        11,
+        33
+      ],
+      "purpose": "Grass neck, west lookout, optional Cut-sealed sample camp"
+    },
+    {
+      "id": "CREEK",
+      "name": "West creek",
+      "bounds_metatiles": [
+        7,
+        5,
+        20,
+        33
+      ],
+      "purpose": "Granite creek spine, spring rock crown, single timber bridge and fishing hollow"
+    },
+    {
+      "id": "QUARRY",
+      "name": "Reclaimed quarry",
+      "bounds_metatiles": [
+        18,
+        4,
+        43,
+        29
+      ],
+      "purpose": "Flooded quarry rim, stepped ore ribs, attached rubble toes, narrow haul track, mine cache and one-way spoil return"
+    },
+    {
+      "id": "RAIL",
+      "name": "Rail keeper crossing",
+      "bounds_metatiles": [
+        43,
+        5,
+        64,
+        29
+      ],
+      "purpose": "Rock cutting and dumped-ore crown above one actual rail crossing; battle versus habitat and free field medic"
+    },
+    {
+      "id": "EAST_PINES",
+      "name": "Grand Rapids pines",
+      "bounds_metatiles": [
+        54,
+        7,
+        64,
+        14
+      ],
+      "purpose": "Optional capture/reward meadow and clear eastern exit"
+    }
+  ],
+  "loops": [],
+  "minimum_optional_branches": 0,
+  "trainers": [
+    {
+      "id": "MN_R09_T01",
+      "display_name": "ARDEN",
+      "trainer_class": "HIKER",
+      "sprite": "SPRITE_POKEFAN_M",
+      "tile": [
+        7,
+        37
+      ],
+      "facing": "east",
+      "sight_range": 3,
+      "party": [
+        {
+          "species": "GEODUDE",
+          "level": 32
+        },
+        {
+          "species": "MACHOP",
+          "level": 32
+        },
+        {
+          "species": "GRAVELER",
+          "level": 31
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R09_TRAINER_01",
+      "before_lines": [
+        "The creek cuts",
+        "through the iron.",
+        "My team can hold",
+        "its footing!"
+      ],
+      "after_lines": [
+        "You kept your",
+        "footing well."
+      ],
+      "loss_lines": [
+        "The ground shifts.",
+        "Try another way."
+      ]
+    },
+    {
+      "id": "MN_R09_T02",
+      "display_name": "WALT",
+      "trainer_class": "FISHER",
+      "sprite": "SPRITE_FISHER",
+      "tile": [
+        39,
+        55
+      ],
+      "facing": "west",
+      "sight_range": 3,
+      "party": [
+        {
+          "species": "MACHOP",
+          "level": 32
+        },
+        {
+          "species": "MAGNEMITE",
+          "level": 32
+        },
+        {
+          "species": "TEDDIURSA",
+          "level": 31
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R09_TRAINER_02",
+      "before_lines": [
+        "The old pit filled",
+        "with spring water.",
+        "I fish downstream."
+      ],
+      "after_lines": [
+        "You kept your",
+        "footing well."
+      ],
+      "loss_lines": [
+        "The ground shifts.",
+        "Try another way."
+      ]
+    },
+    {
+      "id": "MN_R09_T03",
+      "display_name": "MINA",
+      "trainer_class": "HIKER",
+      "sprite": "SPRITE_POKEFAN_M",
+      "tile": [
+        41,
+        37
+      ],
+      "facing": "north",
+      "sight_range": 3,
+      "party": [
+        {
+          "species": "MAGNEMITE",
+          "level": 33
+        },
+        {
+          "species": "GRAVELER",
+          "level": 33
+        },
+        {
+          "species": "ONIX",
+          "level": 32
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R09_TRAINER_03",
+      "before_lines": [
+        "The mine lies just",
+        "below this bench.",
+        "Watch your step!"
+      ],
+      "after_lines": [
+        "You kept your",
+        "footing well."
+      ],
+      "loss_lines": [
+        "The ground shifts.",
+        "Try another way."
+      ]
+    },
+    {
+      "id": "MN_R09_T04",
+      "display_name": "TESS",
+      "trainer_class": "HIKER",
+      "sprite": "SPRITE_POKEFAN_M",
+      "tile": [
+        81,
+        37
+      ],
+      "facing": "west",
+      "sight_range": 3,
+      "party": [
+        {
+          "species": "GRAVELER",
+          "level": 33
+        },
+        {
+          "species": "TEDDIURSA",
+          "level": 33
+        },
+        {
+          "species": "SKARMORY",
+          "level": 32
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R09_TRAINER_04",
+      "before_lines": [
+        "I survey the rim",
+        "before descending.",
+        "Ready for a test?"
+      ],
+      "after_lines": [
+        "You kept your",
+        "footing well."
+      ],
+      "loss_lines": [
+        "The ground shifts.",
+        "Try another way."
+      ]
+    },
+    {
+      "id": "MN_R09_T05",
+      "display_name": "NELL",
+      "trainer_class": "POKEFANM",
+      "sprite": "SPRITE_POKEFAN_M",
+      "tile": [
+        67,
+        45
+      ],
+      "facing": "west",
+      "sight_range": 3,
+      "party": [
+        {
+          "species": "TEDDIURSA",
+          "level": 34
+        },
+        {
+          "species": "ONIX",
+          "level": 34
+        },
+        {
+          "species": "GEODUDE",
+          "level": 33
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R09_TRAINER_05",
+      "before_lines": [
+        "New grass grows",
+        "on old tailings.",
+        "Strong teams do,",
+        "too!"
+      ],
+      "after_lines": [
+        "You kept your",
+        "footing well."
+      ],
+      "loss_lines": [
+        "The ground shifts.",
+        "Try another way."
+      ]
+    },
+    {
+      "id": "MN_R09_T06",
+      "display_name": "RAFE",
+      "trainer_class": "HIKER",
+      "sprite": "SPRITE_POKEFAN_M",
+      "tile": [
+        98,
+        37
+      ],
+      "facing": "east",
+      "sight_range": 4,
+      "party": [
+        {
+          "species": "GEODUDE",
+          "level": 34
+        },
+        {
+          "species": "SKARMORY",
+          "level": 34
+        },
+        {
+          "species": "MACHOP",
+          "level": 33
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R09_TRAINER_06",
+      "before_lines": [
+        "Cross the track",
+        "at the clear gap.",
+        "Battle me, or try",
+        "the grass detour!"
+      ],
+      "after_lines": [
+        "Keep the rail",
+        "crossing clear."
+      ],
+      "loss_lines": [
+        "The ground shifts.",
+        "Try another way."
+      ]
+    },
+    {
+      "id": "MN_R09_T07",
+      "display_name": "ORIN",
+      "trainer_class": "HIKER",
+      "sprite": "SPRITE_POKEFAN_M",
+      "tile": [
+        61,
+        23
+      ],
+      "facing": "south",
+      "sight_range": 3,
+      "party": [
+        {
+          "species": "MACHOP",
+          "level": 35
+        },
+        {
+          "species": "GEODUDE",
+          "level": 35
+        },
+        {
+          "species": "MAGNEMITE",
+          "level": 34
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R09_TRAINER_07",
+      "before_lines": [
+        "From this bend I",
+        "can see the lake.",
+        "Try this rocky",
+        "team!"
+      ],
+      "after_lines": [
+        "You kept your",
+        "footing well."
+      ],
+      "loss_lines": [
+        "The ground shifts.",
+        "Try another way."
+      ]
+    },
+    {
+      "id": "MN_R09_T08",
+      "display_name": "JUNE",
+      "trainer_class": "POKEFANF",
+      "sprite": "SPRITE_POKEFAN_F",
+      "tile": [
+        113,
+        19
+      ],
+      "facing": "west",
+      "sight_range": 3,
+      "party": [
+        {
+          "species": "MAGNEMITE",
+          "level": 35
+        },
+        {
+          "species": "MACHOP",
+          "level": 35
+        },
+        {
+          "species": "GRAVELER",
+          "level": 34
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R09_TRAINER_08",
+      "before_lines": [
+        "The pine meadow",
+        "holds tough birds.",
+        "Let me show you!"
+      ],
+      "after_lines": [
+        "You kept your",
+        "footing well."
+      ],
+      "loss_lines": [
+        "The ground shifts.",
+        "Try another way."
+      ]
+    }
+  ],
+  "items": [
+    {
+      "id": "MN_R09_ITEM_01",
+      "item": "HYPER_POTION",
+      "quantity": 1,
+      "flag": "EVENT_MN_R09_ITEM_01",
+      "access": "Optional walking branch; Surf not required",
+      "tile": [
+        39,
+        29
+      ]
+    },
+    {
+      "id": "MN_R09_ITEM_02",
+      "item": "ULTRA_BALL",
+      "quantity": 1,
+      "flag": "EVENT_MN_R09_ITEM_02",
+      "access": "Optional walking branch; Surf not required",
+      "tile": [
+        119,
+        19
+      ]
+    },
+    {
+      "id": "MN_R09_ITEM_03",
+      "item": "MAX_REPEL",
+      "quantity": 1,
+      "flag": "EVENT_MN_R09_ITEM_03",
+      "access": "Optional walking branch; Surf not required",
+      "tile": [
+        7,
+        39
+      ]
+    },
+    {
+      "id": "MN_R09_ITEM_04",
+      "item": "REVIVE",
+      "quantity": 1,
+      "flag": "EVENT_MN_R09_ITEM_04",
+      "access": "Cut-sealed sample camp",
+      "tile": [
+        11,
+        63
+      ]
+    }
+  ],
+  "encounters": {
+    "grass_rates": {
+      "morning": 10,
+      "day": 10,
+      "night": 10
+    },
+    "grass": {
+      "morning": [
+        {
+          "species": "GEODUDE",
+          "level": 32
+        },
+        {
+          "species": "MACHOP",
+          "level": 33
+        },
+        {
+          "species": "MAGNEMITE",
+          "level": 34
+        },
+        {
+          "species": "GRAVELER",
+          "level": 35
+        },
+        {
+          "species": "TEDDIURSA",
+          "level": 36
+        },
+        {
+          "species": "ONIX",
+          "level": 36
+        },
+        {
+          "species": "SKARMORY",
+          "level": 36
+        }
+      ],
+      "day": [
+        {
+          "species": "GEODUDE",
+          "level": 32
+        },
+        {
+          "species": "MACHOP",
+          "level": 33
+        },
+        {
+          "species": "MAGNEMITE",
+          "level": 34
+        },
+        {
+          "species": "GRAVELER",
+          "level": 35
+        },
+        {
+          "species": "TEDDIURSA",
+          "level": 36
+        },
+        {
+          "species": "ONIX",
+          "level": 36
+        },
+        {
+          "species": "SKARMORY",
+          "level": 36
+        }
+      ],
+      "night": [
+        {
+          "species": "GEODUDE",
+          "level": 32
+        },
+        {
+          "species": "ARIADOS",
+          "level": 33
+        },
+        {
+          "species": "MAGNEMITE",
+          "level": 34
+        },
+        {
+          "species": "GRAVELER",
+          "level": 35
+        },
+        {
+          "species": "TEDDIURSA",
+          "level": 36
+        },
+        {
+          "species": "ONIX",
+          "level": 36
+        },
+        {
+          "species": "SKARMORY",
+          "level": 36
+        }
+      ]
+    },
+    "water_rate": 4,
+    "water": [
+      {
+        "species": "POLIWAG",
+        "level": 32
+      },
+      {
+        "species": "WOOPER",
+        "level": 33
+      },
+      {
+        "species": "MARILL",
+        "level": 36
+      }
+    ]
+  },
+  "interiors": [
+    {
+      "id": "MnR09Cave1F",
+      "template": "UnionCave1F",
+      "dimensions_metatiles": [
+        12,
+        11
+      ],
+      "width_metatiles": 12,
+      "height_metatiles": 11,
+      "tileset": "cave",
+      "border_block": 1,
+      "rows": [
+        "01 01 01 01 01 01 01 01 01 01 01 01",
+        "01 01 04 05 05 05 06 01 01 01 01 01",
+        "01 01 08 02 02 02 0a 01 04 05 06 01",
+        "01 01 20 21 30 02 0a 01 08 02 0a 01",
+        "01 01 01 04 0a 39 2f 2d 08 02 0a 01",
+        "01 01 08 02 02 02 0a 2e 30 02 0a 01",
+        "01 01 20 21 20 02 2b 21 21 22 01 01",
+        "01 01 01 01 04 30 2f 01 01 01 01 01",
+        "01 01 01 01 08 02 0a 01 01 01 01 01",
+        "01 01 01 01 20 21 07 22 01 01 01 01",
+        "01 01 01 01 01 01 01 01 01 01 01 01"
+      ],
+      "exits": [
+        [
+          13,
+          19
+        ]
+      ],
+      "clear_arrival": [
+        13,
+        18
+      ],
+      "exit_collision": "LADDER",
+      "exit_doors": [
+        [
+          40,
+          41
+        ]
+      ],
+      "residents": [
+        {
+          "id": "MN_R09_MINE_SCOUT",
+          "sprite": "SPRITE_SCIENTIST",
+          "tile": [
+            19,
+            7
+          ],
+          "facing": "south",
+          "lines": [
+            "The foreman took",
+            "the instrument.",
+            "The upper passage",
+            "reaches his cache."
+          ]
+        }
+      ],
+      "items": [],
+      "signs": [],
+      "mandatory": true,
+      "purpose": "Q06 mine confrontation and separate instrument recovery; Grand Rapids depot handover remains separate.",
+      "story_trainers": [
+        {
+          "id": "MN_R09_DEPOT_FOREMAN",
+          "tile": [
+            9,
+            5
+          ],
+          "approach": [
+            9,
+            6
+          ],
+          "sprite": "SPRITE_ROCKET",
+          "trainer_class": "GRUNTM",
+          "facing": "south",
+          "sight_range": 0,
+          "party": [
+            {
+              "species": "GRAVELER",
+              "level": 35
+            },
+            {
+              "species": "MACHOKE",
+              "level": 35
+            },
+            {
+              "species": "MAGNETON",
+              "level": 36
+            }
+          ],
+          "defeated_flag": "EVENT_MN_DEPOT_FOREMAN_DEFEATED",
+          "before_lines": [
+            "I read the report.",
+            "We run the test.",
+            "Copper and nickel",
+            "come first.",
+            "That meter stays.",
+            "Move aside."
+          ],
+          "after_lines": [
+            "The meter is in",
+            "the crate.",
+            "The receiver went",
+            "farther north."
+          ],
+          "loss_lines": [
+            "We are still on",
+            "schedule."
+          ],
+          "native_status": "Native prerequisite-checked talk battle in iron_range_story.rs; actual selected PP, victory/loss, repeat and Continue verified. The main story roster is authoritative.",
+          "battle": "MN_LODE_FOREMAN",
+          "interaction": "talk"
+        }
+      ],
+      "story_objects": [
+        {
+          "id": "MN_R09_SURVEY_CACHE",
+          "tile": [
+            7,
+            5
+          ],
+          "approach": [
+            7,
+            4
+          ],
+          "sprite": "SPRITE_POKE_BALL",
+          "kind": "quest instrument cache",
+          "requires": [
+            "EVENT_MN_DEPOT_FOREMAN_DEFEATED"
+          ],
+          "payload": "survey meter and original test log",
+          "denied_lines": [
+            "The foreman guards",
+            "this meter."
+          ],
+          "success_lines": [
+            "You take the meter",
+            "and its test log.",
+            "GRAND RAPIDS can",
+            "read the log."
+          ],
+          "native_status": "Native separate yes/no recovery using EVENT_MN_MINE_INSTRUMENT_RECOVERED; decline, acknowledgment, repeat, Continue and mine return verified. Grand Rapids handover remains separate.",
+          "facing": "south",
+          "recovered_flag": "EVENT_MN_MINE_INSTRUMENT_RECOVERED",
+          "payload_storage": "saved_event"
+        }
+      ],
+      "review_contract": {
+        "status": "Installed native CURRENT510 mine candidate; all original Q06 programs/party/flags preserved and four local production-controller cases PASS.",
+        "palette_group": "nite",
+        "native_stair_blocks": [
+          [
+            4,
+            3
+          ],
+          [
+            8,
+            5
+          ],
+          [
+            5,
+            7
+          ]
+        ],
+        "loop_waypoints_core": [
+          [
+            13,
+            18
+          ],
+          [
+            7,
+            4
+          ],
+          [
+            9,
+            6
+          ],
+          [
+            19,
+            8
+          ],
+          [
+            10,
+            16
+          ]
+        ],
+        "one_way_ledges": [
+          {
+            "id": "FOREMAN_BENCH_DROP",
+            "source_block": "39",
+            "bounds_core": [
+              10,
+              8,
+              12,
+              10
+            ],
+            "direction": "south",
+            "upper_approach": [
+              10,
+              7
+            ],
+            "hop_from": [
+              10,
+              8
+            ],
+            "landing": [
+              10,
+              10
+            ],
+            "reverse_blocked": [
+              10,
+              9
+            ],
+            "side_barriers": [
+              [
+                9,
+                9
+              ],
+              [
+                12,
+                9
+              ]
+            ],
+            "ordinary_return_to_upper": [
+              10,
+              7
+            ],
+            "minimum_return_steps": 7
+          }
+        ],
+        "decision_views": [
+          {
+            "id": "MOUTH_OFFSET_STAIR",
+            "tile": [
+              13,
+              18
+            ]
+          },
+          {
+            "id": "FOREMAN_APPROACH",
+            "tile": [
+              9,
+              6
+            ]
+          },
+          {
+            "id": "METER_CACHE",
+            "tile": [
+              7,
+              4
+            ]
+          },
+          {
+            "id": "SCOUT_BAY",
+            "tile": [
+              19,
+              8
+            ]
+          },
+          {
+            "id": "BENCH_DROP",
+            "tile": [
+              10,
+              7
+            ]
+          },
+          {
+            "id": "WORKING_DRIFT",
+            "tile": [
+              12,
+              12
+            ]
+          }
+        ],
+        "quality_pass": "Fitted entrance rock face and lower corner narrow the working drift; all story anchors retained",
+        "unpublished": false,
+        "controller_probes": {
+          "exterior_return_semantics": "Original mine warp1 at13,19 LADDER returns directly to exterior passive warp2 at40,42 FLOOR; stable after native frames and walking away/back. Exterior active CAVE warp1 at40,41 deliberately reenters. Clear indoor arrival13,18 is distinct from actual warp arrival13,19."
+        },
+        "native_review": {
+          "pack_sha256": "b3b0c67847b6fa2ac1f65ba0e5075a55f5b7372657a9d69c7193b2a41ba15e69",
+          "palette": "nite",
+          "candidate_sha256": "243f04da49a01f59e6fe8fb004049fd942c3acac1e1e6a5ad6c865f89b650d43",
+          "preservation_checks": 199,
+          "controller_cases": [
+            "r09_mine_controller_original_mouth_three_stairs_two_short_hops_scout_and_continue",
+            "iron_range_story_controller_actual_win_separate_recovery_decline_repeat_and_continue",
+            "iron_range_story_controller_played_loss_never_awards_victory_or_evidence",
+            "iron_range_story_controller_refuses_missing_prerequisites_and_locked_cache"
+          ],
+          "source_promoted_after_explicit_root_pass": true
+        }
+      },
+      "candidate_status": "Installed CURRENT510 native review candidate; four local production-controller cases PASS. User visual acceptance and earned regional Q06 progress remain unclaimed."
+    }
+  ],
+  "shortcut": null,
+  "art_constraints": [
+    "Only original packed 8x8 source tiles.",
+    "No painted shadows, enlarged trees or perspective props.",
+    "Fit source shoreline/cliff quadrants; draw source trees in coherent metatile groups."
+  ],
+  "status": "Native terrain revision published in the 471-map geography review pack f9b04e67f2bf; current geometry, populated battle/PP/rest/Continue and native Cut fixtures pass. Final visual acceptance and earned regional progression remain open.",
+  "anchor_status": "Exact existing native actors, doors, parties and story preserved; terrain-only geography revision and current production-controller proof recorded in playable/geography-revisions.md.",
+  "cut_gates": [
+    {
+      "id": "MN_R09_SAMPLE_CAMP_CUT",
+      "tile": [
+        12,
+        57
+      ],
+      "approach": [
+        12,
+        56
+      ],
+      "source_block": "63",
+      "replacement_block": "3f",
+      "targets": [
+        [
+          12,
+          63
+        ],
+        [
+          14,
+          63
+        ]
+      ],
+      "gated_actor_ids": [
+        "MN_R09_ITEM_04"
+      ],
+      "requires": [
+        "MOVE_CUT",
+        "ENGINE_HIVEBADGE"
+      ],
+      "purpose": "Cut seals the optional Revive supply and old sample-camp notice. The old sample keeper reservation was relocated to the north rim as an ore inspection interaction, so it is not a gated actor."
+    }
+  ],
+  "required_grass_crossings": [
+    {
+      "id": "MN_R09_SPRUCE_NECK",
+      "bounds_core": [
+        14,
+        46,
+        18,
+        52
+      ],
+      "minimum_grass_steps": 4
+    }
+  ],
+  "one_way_ledges": [
+    {
+      "id": "MN_R09_SPOIL_RETURN",
+      "bounds_core": [
+        80,
+        40,
+        82,
+        42
+      ],
+      "direction": "south",
+      "upper_approach": [
+        81,
+        39
+      ],
+      "hop_from": [
+        81,
+        40
+      ],
+      "landing": [
+        81,
+        42
+      ],
+      "reverse_blocked": [
+        81,
+        41
+      ],
+      "side_barriers": [
+        [
+          79,
+          41
+        ],
+        [
+          82,
+          41
+        ]
+      ],
+      "return_passage_core": [
+        48,
+        40,
+        50,
+        42
+      ],
+      "minimum_return_steps": 9
+    }
+  ],
+  "battle_or_grass_choices": [
+    {
+      "id": "MN_R09_RAIL_APPROACH_CHOICE",
+      "trainer_id": "MN_R09_T06",
+      "bounds_core": [
+        104,
+        34,
+        108,
+        44
+      ],
+      "minimum_grass_steps": 4
+    }
+  ],
+  "doors": [
+    {
+      "id": "MN_R09_SURVEY_MINE",
+      "warp_index": 1,
+      "return_warp_index": 2,
+      "tile": [
+        40,
+        41
+      ],
+      "collision": "CAVE",
+      "return_tile": [
+        40,
+        42
+      ],
+      "arrival_tile": [
+        40,
+        42
+      ],
+      "target": "MnR09Cave1F",
+      "target_warp": 1
+    }
+  ],
+  "reserved_trainers": [
+    {
+      "id": "MN_R09_T09",
+      "district": "D3",
+      "anchor_metatile": [
+        81,
+        22
+      ],
+      "facing": "south",
+      "sight_range": 4,
+      "party": [
+        {
+          "species": "GRAVELER",
+          "level": 36
+        },
+        {
+          "species": "MAGNEMITE",
+          "level": 36
+        },
+        {
+          "species": "TEDDIURSA",
+          "level": 35
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R09_TRAINER_09",
+      "block_main_lane": false,
+      "before_text": "Iron Range West rewards a careful trainer. Show me how you travel!",
+      "after_text": "A good team knows when to take the long way home.",
+      "loss_text": "Keep your footing and try another route.",
+      "status": "Unused reservation in this source revision; flag and party retained for future review."
+    },
+    {
+      "id": "MN_R09_T10",
+      "district": "D4",
+      "anchor_metatile": [
+        20,
+        56
+      ],
+      "facing": "east",
+      "sight_range": 4,
+      "party": [
+        {
+          "species": "TEDDIURSA",
+          "level": 36
+        },
+        {
+          "species": "GRAVELER",
+          "level": 36
+        },
+        {
+          "species": "ONIX",
+          "level": 35
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R09_TRAINER_10",
+      "block_main_lane": false,
+      "before_text": "Iron Range West rewards a careful trainer. Show me how you travel!",
+      "after_text": "A good team knows when to take the long way home.",
+      "loss_text": "Keep your footing and try another route.",
+      "status": "Unused reservation in this source revision; flag and party retained for future review."
+    }
+  ],
+  "residents": [
+    {
+      "id": "MN_R09_ORE_GEOLOGIST",
+      "sprite": "SPRITE_SCIENTIST",
+      "tile": [
+        55,
+        19
+      ],
+      "facing": "south",
+      "lines": [
+        "These bands mark",
+        "the old pit edge.",
+        "LODE hid a survey",
+        "kit in the west",
+        "mine below us."
+      ]
+    },
+    {
+      "id": "MN_R09_RAIL_KEEPER",
+      "sprite": "SPRITE_OFFICER",
+      "tile": [
+        95,
+        27
+      ],
+      "facing": "west",
+      "lines": [
+        "Cross only at the",
+        "paved gap below.",
+        "GRAND RAPIDS lies",
+        "east on this lane."
+      ]
+    },
+    {
+      "id": "MN_R09_QUARRY_GUIDE",
+      "sprite": "SPRITE_POKEFAN_M",
+      "tile": [
+        91,
+        53
+      ],
+      "facing": "west",
+      "lines": [
+        "I tend the survey",
+        "crew on the trail.",
+        "Rest your team.",
+        "The mine is north."
+      ],
+      "service": "heal_party"
+    }
+  ],
+  "signs": [
+    {
+      "id": "MN_R09_SIGN_01",
+      "tile": [
+        4,
+        46
+      ],
+      "lines": [
+        "IRON RANGE WEST",
+        "EAST: GRAND RAPIDS"
+      ]
+    },
+    {
+      "id": "MN_R09_SIGN_02",
+      "tile": [
+        20,
+        44
+      ],
+      "lines": [
+        "TIMBER CREEK",
+        "USE THE BRIDGE"
+      ]
+    },
+    {
+      "id": "MN_R09_SIGN_03",
+      "tile": [
+        38,
+        42
+      ],
+      "lines": [
+        "SURVEY MINE",
+        "EQUIPMENT MISSING"
+      ]
+    },
+    {
+      "id": "MN_R09_SIGN_04",
+      "tile": [
+        60,
+        44
+      ],
+      "lines": [
+        "RECLAIMED QUARRY",
+        "STAY BEHIND RAIL"
+      ]
+    },
+    {
+      "id": "MN_R09_SIGN_05",
+      "tile": [
+        96,
+        40
+      ],
+      "lines": [
+        "RAIL CROSSING",
+        "USE THE PAVED GAP"
+      ]
+    },
+    {
+      "id": "MN_R09_SIGN_06",
+      "tile": [
+        120,
+        22
+      ],
+      "lines": [
+        "GRAND RAPIDS: EAST",
+        "SURVEY DEPOT"
+      ]
+    },
+    {
+      "id": "MN_R09_SAMPLE_NOTICE",
+      "tile": [
+        14,
+        62
+      ],
+      "lines": [
+        "OLD SAMPLE CAMP",
+        "REVIVE IN CACHE"
+      ]
+    },
+    {
+      "id": "MN_R09_RAIL_INSPECTION",
+      "tile": [
+        96,
+        26
+      ],
+      "lines": [
+        "MINE RAIL SIDING",
+        "CROSS AT THE GAP"
+      ]
+    }
+  ],
+  "viewpoints": [
+    {
+      "id": "SPRUCE_NECK",
+      "tile": [
+        18,
+        49
+      ]
+    },
+    {
+      "id": "WEST_LOOKOUT",
+      "tile": [
+        6,
+        37
+      ]
+    },
+    {
+      "id": "TIMBER_BRIDGE",
+      "tile": [
+        29,
+        43
+      ]
+    },
+    {
+      "id": "CREEK_HOLLOW",
+      "tile": [
+        35,
+        55
+      ]
+    },
+    {
+      "id": "MINE_MOUTH",
+      "tile": [
+        40,
+        42
+      ]
+    },
+    {
+      "id": "QUARRY_RIM",
+      "tile": [
+        41,
+        31
+      ]
+    },
+    {
+      "id": "NORTH_RIM",
+      "tile": [
+        63,
+        23
+      ]
+    },
+    {
+      "id": "SPOIL_DROP",
+      "tile": [
+        81,
+        39
+      ]
+    },
+    {
+      "id": "PIT_SHORE",
+      "tile": [
+        63,
+        43
+      ]
+    },
+    {
+      "id": "RAIL_CHALLENGE",
+      "tile": [
+        100,
+        39
+      ]
+    },
+    {
+      "id": "RAIL_CROSSING",
+      "tile": [
+        101,
+        30
+      ]
+    },
+    {
+      "id": "EAST_PINE_MEADOW",
+      "tile": [
+        117,
+        21
+      ]
+    },
+    {
+      "id": "SAMPLE_CAMP",
+      "tile": [
+        12,
+        63
+      ]
+    },
+    {
+      "id": "FIELD_MEDIC",
+      "tile": [
+        90,
+        53
+      ]
+    },
+    {
+      "id": "WIDEST_NORTH_BENCH",
+      "tile": [
+        53,
+        19
+      ]
+    },
+    {
+      "id": "RAIL_INSPECTION_TURNOUT",
+      "tile": [
+        94,
+        27
+      ]
+    },
+    {
+      "id": "MINE_APRON_ROCK_PASS",
+      "tile": [
+        45,
+        43
+      ]
+    },
+    {
+      "id": "ORE_HAUL_TRACK",
+      "tile": [
+        65,
+        47
+      ]
+    }
+  ],
+  "story_contract": {
+    "quest": "Q06",
+    "entry_requires": [
+      "BADGE_7",
+      "EVENT_MN_HEADWATERS_REPORT"
+    ],
+    "mine": "MnR09Cave1F",
+    "foreman": "MN_R09_DEPOT_FOREMAN",
+    "victory_sets": "EVENT_MN_DEPOT_FOREMAN_DEFEATED",
+    "instrument_delivery": "Only after persistent foreman victory; no source preview grants inventory or flags.",
+    "handoff": "Return instrument at MnGrandRapidsSurveyDepot; EVENT_MN_DEPOT_CLEARED opens R10.",
+    "loss": "Losing leaves recovered instrument unavailable; repeat battle/dialogue and post-victory branch require controller tests.",
+    "native_status": "Story transaction is an exact proposal, not implemented by renderer."
+  },
+  "reservation_changes": [
+    "Replaced96\u00d772nine-chunk district lattice with64\u00d736fourclippedchunks. BemidjiW andGrandRapidsE identities retained; endpoint rows changed to25 and12 for mine-country traversal. Sharedworld updates belong to integration owner.",
+    "Trainer09/10 remain unused reservations; original IDs/parties/flags retained under reserved_trainers. Eight exterior trainers retain original IDs/parties/flags.",
+    "Original generic Cut return-loop reservation replaced by an optional sealed sample-camp reward. shortcut is null; cut_gates names exact post-Cut targets.",
+    "Rail uses exact native JohtoModern7e/7f through proposed mn_iron_range83/84 import; static rail scenery only.",
+    "MnR09Cave1F identity retained, resized to12\u00d711 to avoid empty room bands; native LADDER13,19 /safeFLOOR13,18. Sharedinteriors reservation must be synchronized."
+  ],
+  "rock_revision": {
+    "status": "SOURCE_CANDIDATE_PENDING_ROOT_REVIEW_AND_NATIVE_PUBLICATION",
+    "reason": "User explicitly requested a much rockier Iron Range.",
+    "native_art": "Unchanged Johto 68\u201373 cliff faces, 71 exposed stone and 0a grouped erratics; existing mn_iron_range recipes retained.",
+    "gameplay_anchor_changes": [],
+    "dimensions_ports_actors_parties_rooms_rail_and_cut": "Preserved exactly; only explicit terrain strokes and review viewpoints change."
+  }
+}

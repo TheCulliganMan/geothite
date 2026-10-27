@@ -1,0 +1,402 @@
+{
+  "species": [
+    {
+      "id": "MN_163",
+      "classification": "Lost Mitten",
+      "height_inches": 10,
+      "weight_tenths_lb": 8,
+      "dex_pages": [
+        "It hides a draft @ inside its thumb @ and follows wool.",
+        "An empty mitten @ may twitch when @ this one is near."
+      ],
+      "base_stats": {
+        "hp": 45,
+        "attack": 50,
+        "defense": 45,
+        "speed": 60,
+        "special_attack": 55,
+        "special_defense": 45
+      },
+      "catch_rate": 190,
+      "base_exp": 62,
+      "gender_ratio": 127,
+      "hatch_cycles": 25,
+      "growth_rate": "GROWTH_MEDIUM_FAST",
+      "egg_groups": [
+        "EGG_INDETERMINATE",
+        "EGG_INDETERMINATE"
+      ],
+      "evolution": {
+        "method": "LEVEL",
+        "level": 22
+      },
+      "held_items": [
+        null,
+        null
+      ],
+      "menu_icon": "ICON_GHOST",
+      "footprint_species": "GRIMER",
+      "cry": {
+        "cry": "CRY_GRIMER",
+        "pitch": 48,
+        "length": 112
+      },
+      "shiny_rgb5": [
+        [
+          16,
+          26,
+          22
+        ],
+        [
+          11,
+          7,
+          15
+        ]
+      ],
+      "level_moves": [
+        [
+          1,
+          "LICK"
+        ],
+        [
+          1,
+          "GROWL"
+        ],
+        [
+          5,
+          "GUST"
+        ],
+        [
+          9,
+          "SPITE"
+        ],
+        [
+          13,
+          "NIGHT_SHADE"
+        ],
+        [
+          17,
+          "WHIRLWIND"
+        ],
+        [
+          22,
+          "WING_ATTACK"
+        ],
+        [
+          27,
+          "SCARY_FACE"
+        ],
+        [
+          32,
+          "SWIFT"
+        ],
+        [
+          37,
+          "CONFUSE_RAY"
+        ],
+        [
+          42,
+          "SHADOW_BALL"
+        ],
+        [
+          48,
+          "AGILITY"
+        ],
+        [
+          55,
+          "SKY_ATTACK"
+        ],
+        [
+          62,
+          "DESTINY_BOND"
+        ]
+      ],
+      "tmhm_moves": [
+        "SHADOW_BALL",
+        "TOXIC",
+        "HIDDEN_POWER",
+        "PROTECT",
+        "FRUSTRATION",
+        "RETURN",
+        "DOUBLE_TEAM",
+        "REST",
+        "ATTRACT",
+        "THIEF",
+        "DETECT",
+        "ENDURE",
+        "SWIFT",
+        "DREAM_EATER"
+      ],
+      "egg_moves": [
+        "HYPNOSIS",
+        "DISABLE",
+        "HAZE"
+      ]
+    },
+    {
+      "id": "MN_164",
+      "classification": "Drying Hem",
+      "height_inches": 38,
+      "weight_tenths_lb": 40,
+      "dex_pages": [
+        "It joins old hems @ into wide sleeves @ that trap a gust.",
+        "Its lifted sleeves @ hum through seams @ when night falls."
+      ],
+      "base_stats": {
+        "hp": 65,
+        "attack": 65,
+        "defense": 60,
+        "speed": 80,
+        "special_attack": 75,
+        "special_defense": 60
+      },
+      "catch_rate": 90,
+      "base_exp": 125,
+      "gender_ratio": 127,
+      "hatch_cycles": 25,
+      "growth_rate": "GROWTH_MEDIUM_FAST",
+      "egg_groups": [
+        "EGG_INDETERMINATE",
+        "EGG_INDETERMINATE"
+      ],
+      "evolution": {
+        "method": "LEVEL",
+        "level": 40
+      },
+      "held_items": [
+        null,
+        null
+      ],
+      "menu_icon": "ICON_GHOST",
+      "footprint_species": "GRIMER",
+      "cry": {
+        "cry": "CRY_GRIMER",
+        "pitch": 12,
+        "length": 148
+      },
+      "shiny_rgb5": [
+        [
+          28,
+          22,
+          14
+        ],
+        [
+          8,
+          14,
+          12
+        ]
+      ],
+      "level_moves": [
+        [
+          1,
+          "LICK"
+        ],
+        [
+          1,
+          "GROWL"
+        ],
+        [
+          1,
+          "GUST"
+        ],
+        [
+          1,
+          "SPITE"
+        ],
+        [
+          13,
+          "NIGHT_SHADE"
+        ],
+        [
+          18,
+          "WHIRLWIND"
+        ],
+        [
+          22,
+          "WING_ATTACK"
+        ],
+        [
+          28,
+          "SCARY_FACE"
+        ],
+        [
+          34,
+          "SWIFT"
+        ],
+        [
+          39,
+          "CONFUSE_RAY"
+        ],
+        [
+          45,
+          "SHADOW_BALL"
+        ],
+        [
+          51,
+          "AGILITY"
+        ],
+        [
+          58,
+          "SKY_ATTACK"
+        ],
+        [
+          65,
+          "DESTINY_BOND"
+        ]
+      ],
+      "tmhm_moves": [
+        "SHADOW_BALL",
+        "TOXIC",
+        "HIDDEN_POWER",
+        "PROTECT",
+        "FRUSTRATION",
+        "RETURN",
+        "DOUBLE_TEAM",
+        "REST",
+        "ATTRACT",
+        "THIEF",
+        "DETECT",
+        "ENDURE",
+        "SWIFT",
+        "DREAM_EATER",
+        "FLY"
+      ],
+      "egg_moves": [
+        "HYPNOSIS",
+        "DISABLE",
+        "HAZE"
+      ]
+    },
+    {
+      "id": "MN_165",
+      "classification": "Wind Quilt",
+      "height_inches": 80,
+      "weight_tenths_lb": 140,
+      "dex_pages": [
+        "It stitches lost @ wool into wings @ wider than a bed.",
+        "Three thick panels @ catch separate @ currents of air."
+      ],
+      "base_stats": {
+        "hp": 80,
+        "attack": 90,
+        "defense": 75,
+        "speed": 100,
+        "special_attack": 95,
+        "special_defense": 75
+      },
+      "catch_rate": 45,
+      "base_exp": 215,
+      "gender_ratio": 127,
+      "hatch_cycles": 25,
+      "growth_rate": "GROWTH_MEDIUM_FAST",
+      "egg_groups": [
+        "EGG_INDETERMINATE",
+        "EGG_INDETERMINATE"
+      ],
+      "evolution": null,
+      "held_items": [
+        null,
+        null
+      ],
+      "menu_icon": "ICON_GHOST",
+      "footprint_species": "GRIMER",
+      "cry": {
+        "cry": "CRY_GRIMER",
+        "pitch": -24,
+        "length": 184
+      },
+      "shiny_rgb5": [
+        [
+          27,
+          16,
+          22
+        ],
+        [
+          6,
+          13,
+          14
+        ]
+      ],
+      "level_moves": [
+        [
+          1,
+          "LICK"
+        ],
+        [
+          1,
+          "GROWL"
+        ],
+        [
+          1,
+          "GUST"
+        ],
+        [
+          1,
+          "SPITE"
+        ],
+        [
+          13,
+          "NIGHT_SHADE"
+        ],
+        [
+          18,
+          "WHIRLWIND"
+        ],
+        [
+          22,
+          "WING_ATTACK"
+        ],
+        [
+          28,
+          "SCARY_FACE"
+        ],
+        [
+          34,
+          "SWIFT"
+        ],
+        [
+          40,
+          "SHADOW_BALL"
+        ],
+        [
+          44,
+          "CONFUSE_RAY"
+        ],
+        [
+          50,
+          "AGILITY"
+        ],
+        [
+          57,
+          "SKY_ATTACK"
+        ],
+        [
+          64,
+          "DESTINY_BOND"
+        ]
+      ],
+      "tmhm_moves": [
+        "SHADOW_BALL",
+        "TOXIC",
+        "HIDDEN_POWER",
+        "PROTECT",
+        "FRUSTRATION",
+        "RETURN",
+        "DOUBLE_TEAM",
+        "REST",
+        "ATTRACT",
+        "THIEF",
+        "DETECT",
+        "ENDURE",
+        "SWIFT",
+        "DREAM_EATER",
+        "FLY"
+      ],
+      "egg_moves": [
+        "HYPNOSIS",
+        "DISABLE",
+        "HAZE"
+      ]
+    }
+  ]
+}

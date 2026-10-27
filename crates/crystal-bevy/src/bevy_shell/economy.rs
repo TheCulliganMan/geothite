@@ -792,7 +792,7 @@ fn use_visible_field_bag_item_by_id(
             )?;
             runtime_shell.field_notice = Some(visible_asm_text(
                 &snapshot,
-                "RepelUsedEarlierIsStillInEffectText",
+                "_RepelUsedEarlierIsStillInEffectText",
             )?);
             mark_runtime_snapshot_dirty(runtime_shell);
             set_shell_action_status(runtime_shell, "REPEL STILL IN EFFECT");
@@ -822,7 +822,11 @@ fn use_visible_field_bag_item_by_id(
             format!("REPEL ACTIVE {} STEPS", item_use.repel_steps_after),
         );
         close_visible_field_pack_without_log(runtime_shell);
-        runtime_shell.field_notice = Some(visible_asm_text(&snapshot, "RepelUseText")?);
+        runtime_shell.field_notice = Some(
+            // The source _ItemUsedText uses text_low before the item name.
+            visible_asm_text(&snapshot, "_ItemUsedText")?
+                .replace("<STRING_BUFFER_2>", &format!("\n{}", item.name.replace('_', " "))),
+        );
         mark_runtime_snapshot_dirty(runtime_shell);
         continue_visible_script_after_prompt(runtime_shell)?;
         return Ok(());
@@ -1312,24 +1316,6 @@ fn handle_visible_field_action_refusal(
     set_shell_action_status(runtime_shell, status);
     trim_event_log(&mut runtime_shell.last_audio_events);
     Ok(())
-}
-
-fn item_targets_party_move_fields(
-    pp_restore_scope: Option<&str>,
-    pp_restore_points: Option<u8>,
-    pp_up_stages: Option<u8>,
-) -> bool {
-    pp_up_stages.is_some() || (pp_restore_scope == Some("MOVE") && pp_restore_points.is_some())
-}
-
-fn item_targets_party_pokemon_fields(item: &crate::RuntimeItemCatalogSnapshot) -> bool {
-    item.revive_hp_percent.is_some()
-        || !item.status_heals.is_empty()
-        || item.confusion_heal == Some(true)
-        || (item.pp_restore_scope.as_deref() == Some("ALL") && item.pp_restore_points.is_some())
-        || item.vitamin_stat.is_some()
-        || item.rare_candy_level_gain.is_some()
-        || item.party_special_effect
 }
 
 fn item_targets_active_battle_pokemon_fields(item: &crate::RuntimeItemCatalogSnapshot) -> bool {

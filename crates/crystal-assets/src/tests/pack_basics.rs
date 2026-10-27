@@ -3465,7 +3465,7 @@ fn add_runtime_species_and_move(data: &mut GameDataSet) {
         });
     }
     for (source_index, move_data) in data.moves.values_mut().enumerate() {
-        move_data.source_index = u8::try_from(source_index + 1).expect("test move source index");
+        move_data.source_index = u16::try_from(source_index + 1).expect("test move source index");
     }
     data.battle_stat_multipliers = test_battle_stat_multipliers();
     data.battle_escape_rules = test_battle_escape_rules();

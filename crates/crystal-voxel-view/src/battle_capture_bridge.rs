@@ -373,6 +373,10 @@ pub(super) fn select_capture_bridge(
     });
     let shader_dirty = events.shaders.read().count() > 0;
     let changed = mesh_dirty || material_dirty || image_dirty || shader_dirty;
+    if !bridge.enabled {
+        bridge.retire();
+        return;
+    }
     let Some(capture) = frame.capture.as_ref().filter(|_| frame.active) else {
         bridge.retire();
         return;

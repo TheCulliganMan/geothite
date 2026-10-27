@@ -1,0 +1,1263 @@
+{
+  "id": "MnBrainerd",
+  "name": "BRAINERD",
+  "dimensions_metatiles": [
+    32,
+    24
+  ],
+  "reference_anchor_percent": [
+    47,
+    46
+  ],
+  "role": "gym_6",
+  "tileset": "johto",
+  "composition": "Pine-rimmed four-way lake hub. Short clinic porches west, ranger report north, inset fishing lake northeast, raised Water Gym southwest and camp-supply cabin southeast.",
+  "ports": [
+    {
+      "route": "MN_R06",
+      "side": "S",
+      "gate_metatile": [
+        16,
+        22
+      ],
+      "landing_metatile": [
+        16,
+        20
+      ]
+    },
+    {
+      "route": "MN_R07",
+      "side": "N",
+      "gate_metatile": [
+        16,
+        1
+      ],
+      "landing_metatile": [
+        16,
+        3
+      ]
+    },
+    {
+      "route": "MN_R15",
+      "side": "W",
+      "gate_metatile": [
+        1,
+        12
+      ],
+      "landing_metatile": [
+        3,
+        12
+      ]
+    },
+    {
+      "route": "MN_R18",
+      "side": "E",
+      "gate_metatile": [
+        30,
+        12
+      ],
+      "landing_metatile": [
+        28,
+        12
+      ]
+    }
+  ],
+  "interiors": [
+    {
+      "id": "MnBrainerdPokecenter1F",
+      "kind": "pokecenter",
+      "tileset": "pokecenter",
+      "template": "GoldenrodPokecenter1F",
+      "dimensions_metatiles": [
+        10,
+        8
+      ],
+      "rows": [
+        "00 00 00 00 00 00 00 00 00 00",
+        "00 00 01 02 03 13 04 08 00 00",
+        "00 00 05 06 07 04 04 04 00 00",
+        "00 00 04 04 04 2e 2f 04 00 00",
+        "00 00 2d 04 04 04 04 04 00 00",
+        "00 00 00 00 04 04 04 2c 00 00",
+        "00 00 00 00 04 04 04 00 00 00",
+        "00 00 00 00 00 24 00 00 00 00"
+      ],
+      "clear_arrival": [
+        10,
+        13
+      ],
+      "passive_arrival": {
+        "index": 3,
+        "tile": [
+          10,
+          13
+        ],
+        "collision": "FLOOR"
+      },
+      "exits": [
+        {
+          "index": 1,
+          "tile": [
+            10,
+            15
+          ],
+          "target": "MnBrainerd",
+          "target_warp": 2,
+          "collision": "WARP_CARPET_DOWN"
+        },
+        {
+          "index": 2,
+          "tile": [
+            11,
+            15
+          ],
+          "target": "MnBrainerd",
+          "target_warp": 2,
+          "collision": "WARP_CARPET_DOWN"
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_BRAINERD_NURSE",
+          "sprite": "SPRITE_NURSE",
+          "tile": [
+            7,
+            3
+          ],
+          "facing": "south",
+          "lines": [
+            "Welcome! Your team",
+            "can rest here."
+          ],
+          "service": "heal_party",
+          "counter_tile": [
+            7,
+            4
+          ],
+          "approach": [
+            7,
+            5
+          ]
+        },
+        {
+          "id": "MN_BRAINERD_CLINIC_WALKER",
+          "sprite": "SPRITE_FISHER",
+          "tile": [
+            6,
+            8
+          ],
+          "facing": "east",
+          "lines": [
+            "The fish are gone.",
+            "The report is",
+            "wrong."
+          ]
+        },
+        {
+          "id": "MN_BRAINERD_CLINIC_READER",
+          "sprite": "SPRITE_TEACHER",
+          "tile": [
+            12,
+            11
+          ],
+          "facing": "west",
+          "lines": [
+            "SIVREN waits above",
+            "the southern ramp."
+          ]
+        }
+      ],
+      "signs": [],
+      "status": "SOURCE ONLY; native doors/services/rewards uninstalled",
+      "pc": {
+        "tile": [
+          15,
+          3
+        ],
+        "approach": [
+          15,
+          4
+        ],
+        "collision": "PC",
+        "service": "canonical_pc_pending"
+      },
+      "recovery_contract": {
+        "spawn_tile": [
+          10,
+          13
+        ],
+        "status": "Native blackout recovery binding pending; no spawn registered"
+      },
+      "native_constant": "MN_BRAINERD_POKECENTER_1F",
+      "source_behavior": "Native HealParty at nurse, PC at actual PC quadrant and honest future blackout registration",
+      "viewpoints": [
+        {
+          "id": "nurse-approach",
+          "tile": [
+            7,
+            5
+          ]
+        },
+        {
+          "id": "pc-approach",
+          "tile": [
+            15,
+            4
+          ]
+        },
+        {
+          "id": "quiet-waiting-room",
+          "tile": [
+            10,
+            9
+          ]
+        },
+        {
+          "id": "arrival",
+          "tile": [
+            10,
+            13
+          ]
+        }
+      ],
+      "border_block": 0
+    },
+    {
+      "id": "MnBrainerdMart",
+      "kind": "mart",
+      "tileset": "mart",
+      "template": "OlivineMart",
+      "dimensions_metatiles": [
+        6,
+        4
+      ],
+      "rows": [
+        "14 27 13 13 13 13",
+        "0b 22 2b 2b 2b 28",
+        "0b 29 13 2b 2b 28",
+        "00 00 00 2a 00 00"
+      ],
+      "clear_arrival": [
+        6,
+        5
+      ],
+      "passive_arrival": {
+        "index": 3,
+        "tile": [
+          6,
+          5
+        ],
+        "collision": "FLOOR"
+      },
+      "exits": [
+        {
+          "index": 1,
+          "tile": [
+            6,
+            7
+          ],
+          "target": "MnBrainerd",
+          "target_warp": 4,
+          "collision": "WARP_CARPET_DOWN"
+        },
+        {
+          "index": 2,
+          "tile": [
+            7,
+            7
+          ],
+          "target": "MnBrainerd",
+          "target_warp": 4,
+          "collision": "WARP_CARPET_DOWN"
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_BRAINERD_MART_CLERK",
+          "sprite": "SPRITE_CLERK",
+          "tile": [
+            1,
+            3
+          ],
+          "facing": "east",
+          "lines": [
+            "May I help you?"
+          ],
+          "service": "canonical_pokemart_pending",
+          "counter_tile": [
+            2,
+            3
+          ],
+          "approach": [
+            3,
+            3
+          ]
+        },
+        {
+          "id": "MN_BRAINERD_MART_CUSTOMER",
+          "sprite": "SPRITE_GENTLEMAN",
+          "tile": [
+            9,
+            5
+          ],
+          "facing": "south",
+          "lines": [
+            "REPELs for roads.",
+            "BALLs for the",
+            "shore."
+          ]
+        }
+      ],
+      "signs": [],
+      "status": "SOURCE ONLY; native doors/services/rewards uninstalled",
+      "inventory_contract": [
+        "SUPER_POTION",
+        "HYPER_POTION",
+        "GREAT_BALL",
+        "ULTRA_BALL",
+        "SUPER_REPEL",
+        "ANTIDOTE",
+        "PARLYZ_HEAL",
+        "AWAKENING"
+      ],
+      "native_constant": "MN_BRAINERD_MART",
+      "source_behavior": "Normal native Pokemart; pack prices, money deduction, inventory and refusal behavior pending installation",
+      "viewpoints": [
+        {
+          "id": "clerk-approach",
+          "tile": [
+            3,
+            3
+          ]
+        },
+        {
+          "id": "arrival",
+          "tile": [
+            6,
+            5
+          ]
+        }
+      ],
+      "border_block": 0
+    },
+    {
+      "id": "MnBrainerdGym",
+      "native_constant": "MN_BRAINERD_GYM",
+      "kind": "gym_6",
+      "dimensions_metatiles": [
+        5,
+        8
+      ],
+      "canonical_source": "planning/minnesota/gyms/interiors.json",
+      "canonical_id": "MnBrainerdGym",
+      "canonical_gym_sha256": "c85cb1967b29948462758774b24ae892816c631bae22a816fa83644eb2e96b32",
+      "status": "Canonical pool gym bound in the current northern candidate; native facade/carpet checks pass. Its complete course is separately controller-verified in the interior review pack.",
+      "source_behavior": "Preview canonical closed and open puzzle directly from source; no alternative room rows, art recipes, actors, parties, stations or reward owned by city dossier.",
+      "passive_arrival": {
+        "index": 3,
+        "tile": [
+          4,
+          14
+        ],
+        "collision": "FLOOR"
+      },
+      "exits": [
+        {
+          "index": 1,
+          "tile": [
+            4,
+            15
+          ],
+          "target": "MnBrainerd",
+          "target_warp": 6,
+          "collision": "WARP_CARPET_DOWN"
+        },
+        {
+          "index": 2,
+          "tile": [
+            5,
+            15
+          ],
+          "target": "MnBrainerd",
+          "target_warp": 6,
+          "collision": "WARP_CARPET_DOWN"
+        }
+      ],
+      "native_rebinding_contract": "Preserve the existing canonical Gym6 module/art/scripts/flags/trainers and three warp indices; replace review-hall destination on indices1,2,3 with MN_BRAINERD exterior passive6. City entry targets native room arrival3; this source reference does not change native pack.",
+      "viewpoints": [
+        {
+          "id": "arrival-closed",
+          "tile": [
+            4,
+            14
+          ]
+        },
+        {
+          "id": "nessa-closed",
+          "tile": [
+            3,
+            10
+          ]
+        },
+        {
+          "id": "left-walk-open",
+          "tile": [
+            3,
+            9
+          ],
+          "phase": "court_open"
+        },
+        {
+          "id": "leader-court-open",
+          "tile": [
+            5,
+            4
+          ],
+          "phase": "court_open"
+        }
+      ]
+    },
+    {
+      "id": "MnBrainerdRangerStation",
+      "native_constant": "MN_BRAINERD_RANGER_STATION",
+      "kind": "ranger_station",
+      "dimensions_metatiles": [
+        8,
+        6
+      ],
+      "template": "ElmsLab",
+      "tileset": "lab",
+      "border_block": 0,
+      "rows": [
+        "00 05 09 09 05 09 05 00",
+        "00 01 01 01 01 01 08 00",
+        "00 14 01 01 01 01 01 00",
+        "00 01 01 01 01 01 01 00",
+        "00 06 07 01 01 01 14 00",
+        "00 00 00 00 02 00 00 00"
+      ],
+      "arrival_core": [
+        8,
+        9
+      ],
+      "clear_arrival": [
+        8,
+        9
+      ],
+      "exits": [
+        {
+          "index": 1,
+          "tile": [
+            8,
+            11
+          ],
+          "target": "MnBrainerd",
+          "target_warp": 8,
+          "collision": "WARP_CARPET_DOWN"
+        },
+        {
+          "index": 2,
+          "tile": [
+            9,
+            11
+          ],
+          "target": "MnBrainerd",
+          "target_warp": 8,
+          "collision": "WARP_CARPET_DOWN"
+        }
+      ],
+      "return_trigger_core": [
+        8,
+        11
+      ],
+      "exit_collision": "WARP_CARPET_DOWN",
+      "residents": [
+        {
+          "id": "MN_BRAINERD_ARCHIVIST",
+          "sprite": "SPRITE_SCIENTIST",
+          "tile": [
+            8,
+            5
+          ],
+          "facing": "south",
+          "lines": [
+            "The same number",
+            "on three reports?",
+            "That is no survey."
+          ]
+        },
+        {
+          "id": "MN_BRAINERD_VOLUNTEER",
+          "sprite": "SPRITE_TEACHER",
+          "tile": [
+            11,
+            9
+          ],
+          "facing": "south",
+          "lines": [
+            "The ranger outside",
+            "can take your",
+            "report."
+          ]
+        }
+      ],
+      "signs": [
+        {
+          "id": "MN_BRAINERD_HABITAT_LOG",
+          "tile": [
+            12,
+            3
+          ],
+          "approach": [
+            12,
+            4
+          ],
+          "lines": [
+            "HABITAT LOG",
+            "Copies all read:",
+            "NO CHANGE."
+          ]
+        }
+      ],
+      "passive_arrival": {
+        "index": 3,
+        "tile": [
+          8,
+          9
+        ]
+      },
+      "status": "SOURCE ONLY; archive signs and native return pending",
+      "viewpoints": [
+        {
+          "id": "archive-desk",
+          "tile": [
+            9,
+            6
+          ]
+        },
+        {
+          "id": "habitat-log",
+          "tile": [
+            12,
+            4
+          ]
+        },
+        {
+          "id": "arrival",
+          "tile": [
+            8,
+            9
+          ]
+        }
+      ],
+      "source_behavior": "Hand-authored survey archive interior using exact native lab workbench, lockers and report cabinet. Story reward remains outdoors at25,19."
+    },
+    {
+      "id": "MnBrainerdOutfitter",
+      "native_constant": "MN_BRAINERD_OUTFITTER",
+      "kind": "camp_supply",
+      "dimensions_metatiles": [
+        6,
+        4
+      ],
+      "template": "GuideGentsHouse",
+      "tileset": "house",
+      "border_block": 10,
+      "rows": [
+        "0a 03 04 0e 08 0a",
+        "0a 00 01 02 00 0a",
+        "0a 00 00 00 00 0a",
+        "0a 0a 0a 0b 0a 0a"
+      ],
+      "arrival_core": [
+        6,
+        5
+      ],
+      "clear_arrival": [
+        6,
+        5
+      ],
+      "exits": [
+        {
+          "index": 1,
+          "tile": [
+            6,
+            7
+          ],
+          "target": "MnBrainerd",
+          "target_warp": 10,
+          "collision": "WARP_CARPET_DOWN"
+        },
+        {
+          "index": 2,
+          "tile": [
+            7,
+            7
+          ],
+          "target": "MnBrainerd",
+          "target_warp": 10,
+          "collision": "WARP_CARPET_DOWN"
+        }
+      ],
+      "return_trigger_core": [
+        6,
+        7
+      ],
+      "exit_collision": "WARP_CARPET_DOWN",
+      "residents": [
+        {
+          "id": "MN_BRAINERD_GEAR_KEEPER",
+          "sprite": "SPRITE_GENTLEMAN",
+          "tile": [
+            3,
+            3
+          ],
+          "facing": "south",
+          "lines": [
+            "Check your gear",
+            "before the lakes."
+          ],
+          "service": "give_item_once",
+          "reward": {
+            "item": "SUPER_REPEL",
+            "quantity": 1,
+            "once_flag": "EVENT_MN_BRAINERD_CAMP_REPEL",
+            "transaction": "Set flag only on successful giveitem; full Bag retry"
+          }
+        },
+        {
+          "id": "MN_BRAINERD_CAMP_HELPER",
+          "sprite": "SPRITE_YOUNGSTER",
+          "tile": [
+            9,
+            4
+          ],
+          "facing": "south",
+          "lines": [
+            "Stay on dry roads",
+            "until you can",
+            "SURF."
+          ]
+        }
+      ],
+      "signs": [
+        {
+          "id": "MN_BRAINERD_CAMP_GUIDE",
+          "tile": [
+            4,
+            1
+          ],
+          "approach": [
+            4,
+            2
+          ],
+          "lines": [
+            "CAMP CHECKLIST",
+            "Food, light,",
+            "REPEL.",
+            "Pack out the rest."
+          ]
+        }
+      ],
+      "passive_arrival": {
+        "index": 3,
+        "tile": [
+          6,
+          5
+        ],
+        "collision": "FLOOR"
+      },
+      "status": "SOURCE ONLY; native return and success-only item grant pending",
+      "viewpoints": [
+        {
+          "id": "gear-keeper",
+          "tile": [
+            3,
+            4
+          ]
+        },
+        {
+          "id": "checklist",
+          "tile": [
+            4,
+            2
+          ]
+        },
+        {
+          "id": "arrival",
+          "tile": [
+            6,
+            5
+          ]
+        }
+      ],
+      "source_behavior": "Hand-authored small camp-supply cabin: table, gear lockers, map, two residents and success-only first aid gift; no duplicate laboratory interior."
+    }
+  ],
+  "walkable_destinations": [
+    "each of four reserved port landings",
+    "all five actual exterior door/return pairs",
+    "four-way route crossing",
+    "outdoor story ranger25,19 and archive",
+    "public fishing pier and separate Surf launch",
+    "raised Water Gym via ordinary ramp",
+    "camp supply cabin and pine sitting pocket"
+  ],
+  "door_contract": "All five real facade DOOR quadrants paired with passive exterior FLOOR and room arrival3. Native installation pending.",
+  "status": "SOURCE ONLY; complete hand-authored town and rooms pending native publication",
+  "native_constant": "MN_BRAINERD",
+  "layout_source": "MnBrainerd.layout.json",
+  "doors": [
+    {
+      "id": "clinic",
+      "tile": [
+        9,
+        21
+      ],
+      "return_tile": [
+        9,
+        22
+      ],
+      "arrival_tile": [
+        9,
+        22
+      ],
+      "target": "MnBrainerdPokecenter1F",
+      "warp_index": 1,
+      "return_warp_index": 2,
+      "target_warp": 3
+    },
+    {
+      "id": "mart",
+      "tile": [
+        19,
+        21
+      ],
+      "return_tile": [
+        19,
+        22
+      ],
+      "arrival_tile": [
+        19,
+        22
+      ],
+      "target": "MnBrainerdMart",
+      "warp_index": 3,
+      "return_warp_index": 4,
+      "target_warp": 3
+    },
+    {
+      "id": "gym",
+      "tile": [
+        12,
+        35
+      ],
+      "return_tile": [
+        12,
+        36
+      ],
+      "arrival_tile": [
+        12,
+        36
+      ],
+      "target": "MnBrainerdGym",
+      "warp_index": 5,
+      "return_warp_index": 6,
+      "target_warp": 3
+    },
+    {
+      "id": "ranger",
+      "tile": [
+        23,
+        15
+      ],
+      "return_tile": [
+        23,
+        16
+      ],
+      "arrival_tile": [
+        23,
+        16
+      ],
+      "target": "MnBrainerdRangerStation",
+      "warp_index": 7,
+      "return_warp_index": 8,
+      "target_warp": 3
+    },
+    {
+      "id": "outfitter",
+      "tile": [
+        47,
+        35
+      ],
+      "return_tile": [
+        47,
+        36
+      ],
+      "arrival_tile": [
+        47,
+        36
+      ],
+      "target": "MnBrainerdOutfitter",
+      "warp_index": 9,
+      "return_warp_index": 10,
+      "target_warp": 3
+    }
+  ],
+  "residents": [
+    {
+      "id": "MN_BRAINERD_RANGER",
+      "sprite": "SPRITE_OFFICER",
+      "tile": [
+        25,
+        19
+      ],
+      "facing": "south",
+      "lines": [
+        "The fish moved on.",
+        "Our report says",
+        "nothing changed."
+      ],
+      "requires": [
+        "BADGE_6"
+      ],
+      "scene": "BrainerdSurfReward",
+      "before_lines": [
+        "SIVREN knows these",
+        "lakes. Show her",
+        "what you learned."
+      ],
+      "reward": {
+        "item": "HM_SURF",
+        "quantity": 1,
+        "once_flag": "EVENT_MN_SURF_GIFT_RECEIVED",
+        "sets": [
+          "EVENT_MN_BRAINERD_REPORT",
+          "EVENT_MN_SURF_GIFT_RECEIVED"
+        ],
+        "transaction": "Grant existing teaching item, then set flags only after successful grant; no new boating mechanic."
+      },
+      "repeat_lines": [
+        "Take the land road",
+        "to LEECH LAKE.",
+        "The piers can",
+        "wait."
+      ]
+    },
+    {
+      "id": "MN_BRAINERD_FISHER",
+      "sprite": "SPRITE_FISHER",
+      "tile": [
+        48,
+        16
+      ],
+      "facing": "south",
+      "lines": [
+        "Used to catch fish",
+        "off this old pier.",
+        "Now the net is",
+        "bare."
+      ]
+    },
+    {
+      "id": "MN_BRAINERD_CAMPER",
+      "sprite": "SPRITE_YOUNGSTER",
+      "tile": [
+        9,
+        12
+      ],
+      "facing": "south",
+      "lines": [
+        "The pines block",
+        "the worst wind.",
+        "Leave no fire."
+      ]
+    },
+    {
+      "id": "MN_BRAINERD_OUTFITTER",
+      "sprite": "SPRITE_GENTLEMAN",
+      "tile": [
+        51,
+        29
+      ],
+      "facing": "south",
+      "lines": [
+        "The west road goes",
+        "to DETROIT LAKES.",
+        "No train stops",
+        "here."
+      ]
+    },
+    {
+      "id": "MN_BRAINERD_WALKER",
+      "sprite": "SPRITE_TEACHER",
+      "tile": [
+        36,
+        25
+      ],
+      "facing": "south",
+      "lines": [
+        "East: MILLE LACS.",
+        "North: LEECH LAKE.",
+        "South: ST CLOUD."
+      ]
+    },
+    {
+      "id": "MN_BRAINERD_GYM_SPECTATOR",
+      "sprite": "SPRITE_LASS",
+      "tile": [
+        16,
+        37
+      ],
+      "facing": "south",
+      "lines": [
+        "SIVREN builds",
+        "teams",
+        "that weather",
+        "storms."
+      ]
+    }
+  ],
+  "signs": [
+    {
+      "id": "MN_BRAINERD_CLINIC",
+      "tile": [
+        6,
+        22
+      ],
+      "lines": [
+        "POKEMON CENTER",
+        "Rest before the",
+        "lake-country",
+        "roads."
+      ]
+    },
+    {
+      "id": "MN_BRAINERD_GYM_SIGN",
+      "tile": [
+        8,
+        38
+      ],
+      "lines": [
+        "BRAINERD GYM",
+        "SIVREN - Water",
+        "The patient",
+        "current"
+      ]
+    },
+    {
+      "id": "MN_BRAINERD_LAKE",
+      "tile": [
+        54,
+        22
+      ],
+      "lines": [
+        "PUBLIC FISHING",
+        "Keep the pier",
+        "clear.",
+        "Launch at the gap."
+      ]
+    },
+    {
+      "id": "MN_BRAINERD_RANGER_SIGN",
+      "tile": [
+        22,
+        18
+      ],
+      "lines": [
+        "RANGER STATION",
+        "Habitat reports",
+        "and lake safety"
+      ]
+    },
+    {
+      "id": "MN_BRAINERD_CAMP_SIGN",
+      "tile": [
+        12,
+        14
+      ],
+      "lines": [
+        "PINE CAMP",
+        "Leave the shore",
+        "better than found."
+      ]
+    },
+    {
+      "id": "MN_BRAINERD_SOUTH_SIGN",
+      "tile": [
+        34,
+        42
+      ],
+      "lines": [
+        "ST CLOUD - south",
+        "GYM - ramp west"
+      ]
+    },
+    {
+      "id": "MN_BRAINERD_EAST_SIGN",
+      "tile": [
+        56,
+        26
+      ],
+      "lines": [
+        "MILLE LACS - east",
+        "Supplies - south"
+      ]
+    }
+  ],
+  "viewpoints": [
+    {
+      "id": "clinic-porches",
+      "tile": [
+        14,
+        23
+      ]
+    },
+    {
+      "id": "ranger-report",
+      "tile": [
+        25,
+        20
+      ]
+    },
+    {
+      "id": "fishing-pier",
+      "tile": [
+        47,
+        18
+      ]
+    },
+    {
+      "id": "lake-launch",
+      "tile": [
+        44,
+        21
+      ]
+    },
+    {
+      "id": "gym-terrace",
+      "tile": [
+        18,
+        37
+      ]
+    },
+    {
+      "id": "gym-ramp-foot",
+      "tile": [
+        21,
+        42
+      ]
+    },
+    {
+      "id": "four-way-decision",
+      "tile": [
+        32,
+        24
+      ]
+    },
+    {
+      "id": "pine-camp",
+      "tile": [
+        11,
+        13
+      ]
+    },
+    {
+      "id": "camp-supply-lane",
+      "tile": [
+        51,
+        34
+      ]
+    }
+  ],
+  "gym_contract": {
+    "canonical_source": "planning/minnesota/gyms/interiors.json",
+    "canonical_id": "MnBrainerdGym",
+    "canonical_gym_sha256": "c85cb1967b29948462758774b24ae892816c631bae22a816fa83644eb2e96b32",
+    "requires": [
+      "BADGE_5"
+    ],
+    "native_badge_index": 5,
+    "win_only": [
+      "BADGE_6",
+      "EVENT_MN_GYM_6_DEFEATED"
+    ],
+    "reward_source": "canonical gym6 reward field and success-only native script",
+    "no_surf_required": true,
+    "status": "Canonical authority; native city rebinding pending. City author must not allocate alternate gym trainer, puzzle or reward identities."
+  },
+  "public_dock": {
+    "deck_core_x": [
+      47,
+      48
+    ],
+    "deck_core_y": [
+      14,
+      15,
+      16,
+      17,
+      18,
+      19
+    ],
+    "north_cap_metatiles": [
+      [
+        23,
+        6
+      ],
+      [
+        24,
+        6
+      ]
+    ],
+    "west_rail_metatiles": [
+      [
+        23,
+        7
+      ],
+      [
+        23,
+        8
+      ],
+      [
+        23,
+        9
+      ]
+    ],
+    "east_rail_metatiles": [
+      [
+        24,
+        7
+      ],
+      [
+        24,
+        8
+      ],
+      [
+        24,
+        9
+      ]
+    ],
+    "launch_tile": [
+      44,
+      20
+    ],
+    "water_target": [
+      44,
+      19
+    ],
+    "outer_water": "Inset lake; no WATER touches perimeter, no unconnected Surf seam."
+  },
+  "gym_terrace": {
+    "ramp_metatile": [
+      10,
+      20
+    ],
+    "ramp_approach": [
+      21,
+      42
+    ],
+    "ledge_metatile": [
+      12,
+      19
+    ],
+    "ledge_approach": [
+      23,
+      38
+    ],
+    "ledge_landing": [
+      26,
+      38
+    ],
+    "direction": "east",
+    "ordinary_return": "From landing east along short spur to south spine; south to y42; west to x21; north through native74 ramp; across terrace to approach.",
+    "no_cut_gate": true,
+    "ledge_collision": [
+      24,
+      38
+    ]
+  },
+  "story_contract": {
+    "chapter": "Q04",
+    "scene": "MS05",
+    "ranger_anchor_core": [
+      25,
+      19
+    ],
+    "requires": [
+      "BADGE_6"
+    ],
+    "give_existing_item": "HM_SURF",
+    "once_flag": "EVENT_MN_SURF_GIFT_RECEIVED",
+    "sets": [
+      "EVENT_MN_BRAINERD_REPORT",
+      "EVENT_MN_SURF_GIFT_RECEIVED"
+    ],
+    "no_gate_on_land_route": "R07\u2192LeechLake\u2192R08\u2192Bemidji remains a dry-land route. No Surf requirement to enter Water Gym or earn badge6.",
+    "native_permission": "Inherited HM Surf move/badge permission remains authoritative; badge6 gift is not a new HM engine rule.",
+    "root_shared_handoff": "Root must reserve RangerStation and Outfitter interiors, native constants/flags/services and exact reciprocal regional seams before claiming playable."
+  },
+  "one_way_ledges": [
+    {
+      "id": "GYM_EAST_RETURN_DROP",
+      "bounds_core": [
+        24,
+        38,
+        26,
+        40
+      ],
+      "direction": "east",
+      "source_block": "4d",
+      "upper_approach": [
+        23,
+        38
+      ],
+      "hop_from": [
+        24,
+        38
+      ],
+      "landing": [
+        26,
+        38
+      ],
+      "reverse_blocked": [
+        25,
+        38
+      ],
+      "side_barriers": [
+        [
+          25,
+          37
+        ],
+        [
+          25,
+          40
+        ]
+      ],
+      "purpose": "Leave the raised gym directly toward the south spine after the challenge; return uphill through the southern native74 ramp.",
+      "return_passage_core": [
+        20,
+        40,
+        22,
+        42
+      ],
+      "minimum_return_steps": 17
+    }
+  ],
+  "native_registration_handoff": {
+    "new_optional_rooms": [
+      "MnBrainerdRangerStation",
+      "MnBrainerdOutfitter"
+    ],
+    "new_local_flags": [
+      "EVENT_MN_BRAINERD_CAMP_REPEL"
+    ],
+    "existing_story_flags": [
+      "EVENT_MN_GYM_6_DEFEATED",
+      "EVENT_MN_BRAINERD_REPORT",
+      "EVENT_MN_SURF_GIFT_RECEIVED"
+    ],
+    "source_publication_owner": "Root; no shared edits made by city author",
+    "runtime_scope": "VisibleShellController native scripts, trainers, services, item grants, flags and warps; no separate dispatcher",
+    "canonical_gym": "Reuse existing MnBrainerdGym via planning/minnesota/gyms/interiors.json; no replacement functional room or fresh gym flag/trainer allocation."
+  }
+}

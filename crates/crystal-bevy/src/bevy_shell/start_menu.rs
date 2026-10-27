@@ -8605,11 +8605,11 @@ fn item_display_name(snapshot: &RuntimeShellSnapshot, item_id: &str) -> String {
 }
 
 fn source_type_display_name(type_id: &str) -> Result<&str> {
-    // constants/type_constants.asm indexes data/types/names.asm.
+    // Native names follow TypeNames; Fairy is the explicit modern overlay extension.
     match type_id {
         "NORMAL" | "FIGHTING" | "FLYING" | "POISON" | "GROUND" | "ROCK" | "BIRD" | "BUG"
         | "GHOST" | "STEEL" | "FIRE" | "WATER" | "GRASS" | "ELECTRIC" | "ICE" | "DRAGON"
-        | "DARK" => Ok(type_id),
+        | "DARK" | "FAIRY" => Ok(type_id),
         "PSYCHIC_TYPE" => Ok("PSYCHIC"),
         "CURSE_TYPE" => Ok("???"),
         _ => anyhow::bail!("type {type_id:?} has no source TypeNames entry"),

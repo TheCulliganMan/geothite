@@ -10,5 +10,5 @@ rust-version.workspace = true
 crate-type = ["cdylib", "rlib"]
 
 [dependencies]
-crystal-voxel-view = { path = "../crystal-voxel-view", features = ["actor-worker", "scenery-full-detail"] }
+crystal-voxel-view = { path = "../crystal-voxel-view", features = ["actor-worker"] }
 wasm-bindgen.workspace = true

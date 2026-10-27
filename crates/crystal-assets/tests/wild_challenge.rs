@@ -56,11 +56,6 @@ fn can_know_move(
             .tmhm_learnset
             .iter()
             .any(|id| id == move_id)
-        || data
-            .egg_moves
-            .get(species)
-            .and_then(|value| value.as_array())
-            .is_some_and(|moves| moves.iter().any(|value| value.as_str() == Some(move_id)))
     {
         return true;
     }
@@ -68,6 +63,55 @@ fn can_know_move(
         evolutions.iter().any(|entry| entry.species == species)
             && can_know_move(data, parent, level, move_id, visited)
     })
+}
+
+#[test]
+fn early_expanded_pool_excludes_multi_hit_attacks() {
+    let data = packs().1.data();
+    for id in data.pokemon.keys() {
+        for level in [3, 5, 9] {
+            let moves = data
+                .competitive_wild_moves(&mon(id, level))
+                .expect("early moves");
+            assert!(
+                !moves.iter().any(|learned| matches!(
+                    learned.name.as_str(),
+                    "DOUBLESLAP"
+                        | "COMET_PUNCH"
+                        | "FURY_ATTACK"
+                        | "PIN_MISSILE"
+                        | "BARRAGE"
+                        | "FURY_SWIPES"
+                        | "BONE_RUSH"
+                        | "DOUBLE_KICK"
+                        | "BONEMERANG"
+                        | "TWINEEDLE"
+                        | "TRIPLE_KICK"
+                )),
+                "{id} level {level} received a multi-hit attack"
+            );
+        }
+    }
+}
+
+#[test]
+fn egg_catalog_does_not_change_wild_or_starter_move_selection() {
+    let data = packs().1.data();
+    let mut without_eggs = data.clone();
+    without_eggs.egg_moves.clear();
+    for id in data.pokemon.keys() {
+        for level in [5, 15, 25, 50, 100] {
+            let pokemon = mon(id, level);
+            assert_eq!(
+                data.competitive_wild_moves(&pokemon)
+                    .expect("expanded moves"),
+                without_eggs
+                    .competitive_wild_moves(&pokemon)
+                    .expect("moves without egg catalog"),
+                "{id} level {level} must not depend on egg moves"
+            );
+        }
+    }
 }
 
 #[test]
@@ -260,8 +304,8 @@ fn wild_challenge_sets_are_legal_and_sane_for_every_species_and_level_band() {
     assert!(alakazam.iter().any(|m| m.name == "RECOVER"));
     let skarmory = data.competitive_wild_moves(&mon("SKARMORY", 50)).unwrap();
     assert!(
-        skarmory.iter().any(|m| m.name == "DRILL_PECK"),
-        "legal egg coverage must be available: {skarmory:?}"
+        !skarmory.iter().any(|m| m.name == "DRILL_PECK"),
+        "egg-only coverage must not be granted: {skarmory:?}"
     );
     let arcanine = data.competitive_wild_moves(&mon("ARCANINE", 50)).unwrap();
     assert!(

@@ -15,6 +15,7 @@ pub(super) struct Stream {
     active: HashMap<usize, Entity>,
     visible: HashSet<usize>,
     stable: Option<StableSelection>,
+    battle_area: Option<Rect>,
     #[cfg(not(target_arch = "wasm32"))]
     jobs: HashMap<usize, Task<Vec<occluder_fade::PreparedGroup>>>,
 }
@@ -44,6 +45,7 @@ impl Stream {
             active: HashMap::new(),
             visible: HashSet::new(),
             stable: None,
+            battle_area: None,
             #[cfg(not(target_arch = "wasm32"))]
             jobs: HashMap::new(),
         }
@@ -51,6 +53,14 @@ impl Stream {
     pub(super) fn missing_bounds(&self) -> impl Iterator<Item = (Vec3, Vec3)> + '_ {
         self.bounds.iter().enumerate().filter_map(|(index, bounds)|
             (!self.active.contains_key(&index)).then_some(*bounds))
+    }
+}
+
+pub(super) fn clear_battle_interest(cache: &mut TerrainRevisionCache) {
+    if let Some(stream) = cache.groves.as_mut()
+        && stream.battle_area.take().is_some()
+    {
+        stream.stable = None;
     }
 }
 fn corners(low: Vec3, high: Vec3) -> [Vec3; 8] {
@@ -181,33 +191,58 @@ pub(super) fn sync(
         serde_json::json!({
         "map":frame.map_id.as_ref(),"available":stream.source.len(),"resident":stream.active.len()})
     });
-    let key = CameraKey { matrix, offset, sun, ground };
+    let key = CameraKey {
+        matrix,
+        offset,
+        sun,
+        ground,
+    };
     // Stable selections exist only after every requested placement has
     // settled and draw visibility has been applied. No geometry, visibility
     // or shadow input changed, so even cloning/sorting the resident set and
     // retesting every tree is redundant. Battle warming invalidates this key.
-    if stream.stable.as_ref().is_some_and(|selection| selection.for_key(key).is_some()) {
+    if stream
+        .stable
+        .as_ref()
+        .is_some_and(|selection| selection.for_key(key).is_some())
+    {
         return false;
     }
-    // Prepare ahead of the view, and retain a wider band to avoid destroying
-    // and rebuilding exact meshes when the camera reverses near an edge.
-    let interest = stream.bounds.iter().enumerate()
-        .filter_map(|(i, (low, high))| {
-            let margin = if stream.active.contains_key(&i) { 1.45 } else { 1.30 };
-            needed_margin(*low + offset, *high + offset, matrix, sun, ground, margin).then_some(i)
-        })
-        .collect::<HashSet<_>>();
+    // The complete bounded window was warmed before publication. Retain it
+    // through camera turns; draw visibility below still culls off-camera trees.
+    // Releasing trees behind the camera discarded that preload on every turn.
+    let fully_resident = stream.active.len() == stream.source.len();
+    let interest = if fully_resident {
+        HashSet::new()
+    } else {
+        (0..stream.source.len()).collect::<HashSet<_>>()
+    };
     let mut camera_count = None;
     let _interest_trace = crate::loading_trace::span("region.grove_interest", || {
-        let camera = *camera_count.get_or_insert_with(|| stream.bounds.iter()
-            .filter(|(low, high)| visible(*low + offset, *high + offset, matrix)).count());
+        let camera = *camera_count.get_or_insert_with(|| {
+            stream
+                .bounds
+                .iter()
+                .filter(|(low, high)| visible(*low + offset, *high + offset, matrix))
+                .count()
+        });
         serde_json::json!({
-        "map":frame.map_id.as_ref(),"available":stream.source.len(),"requested":interest.len(),"camera":camera,"sun":sun.map(|v| v.to_array()),"ground":ground,"resident":stream.active.len(),"selection_cache_hit":false,
+        "map":frame.map_id.as_ref(),"available":stream.source.len(),"requested":stream.source.len(),"camera":camera,"sun":sun.map(|v| v.to_array()),"ground":ground,"resident":stream.active.len(),"selection_cache_hit":false,
         "view_projection":matrix.to_cols_array(),"source_offset":offset.to_array()})
     });
-    let pending = sync_interest(cache, interest, commands, meshes, materials, |low, high|
-        needed_margin(low+offset, high+offset, matrix, sun, ground, 1.45),
-        |low, high| camera_priority(low + offset, high + offset, matrix));
+    let pending = if fully_resident {
+        false
+    } else {
+        sync_interest(
+            cache,
+            interest,
+            commands,
+            meshes,
+            materials,
+            |_, _| true,
+            |low, high| camera_priority(low + offset, high + offset, matrix),
+        )
+    };
     let stream = cache.groves.as_mut().unwrap();
     // Preloading retains assets, not extra draw/shadow work. Only the original
     // camera/shadow footprint is visible; ready outer-band trees stay hidden.
@@ -215,8 +250,16 @@ pub(super) fn sync(
         let (low, high) = stream.bounds[index];
         let draw = needed_margin(low + offset, high + offset, matrix, sun, ground, 1.15);
         if draw != stream.visible.contains(&index) {
-            commands.entity(entity).insert(if draw { Visibility::Inherited } else { Visibility::Hidden });
-            if draw { stream.visible.insert(index); } else { stream.visible.remove(&index); }
+            commands.entity(entity).insert(if draw {
+                Visibility::Inherited
+            } else {
+                Visibility::Hidden
+            });
+            if draw {
+                stream.visible.insert(index);
+            } else {
+                stream.visible.remove(&index);
+            }
         }
     }
     if pending {
@@ -224,24 +267,39 @@ pub(super) fn sync(
     } else {
         // Preparation can tighten conservative recipe bounds. Publish only
         // the final active set after every requested object has settled.
-        stream.stable = Some(StableSelection {
-            key, interest: stream.active.keys().copied().collect(),
-        });
+        let interest = stream.stable.take().map_or_else(
+            || stream.active.keys().copied().collect(),
+            |selection| selection.interest,
+        );
+        stream.stable = Some(StableSelection { key, interest });
     }
-    // The wider preload band is speculative. Keep preparing it, but do not
-    // hold a doorway fade/input for trees outside the draw/shadow footprint.
-    pending && presentation_pending(stream.missing_bounds(), offset, matrix, sun, ground)
+    // Readiness includes every direction, not just the current camera view.
+    pending
 }
 
-fn presentation_pending(
-    mut missing: impl Iterator<Item = (Vec3, Vec3)>,
-    offset: Vec3,
-    matrix: Mat4,
-    sun: Option<Vec3>,
-    ground: f32,
+/// Prepare every placement in a bounded hidden terrain window. The live view
+/// applies its own draw/shadow selection when the window is promoted, so a
+/// different camera position cannot reveal missing trees at publication.
+pub(super) fn warm_window(
+    cache: &mut TerrainRevisionCache,
+    commands: &mut Commands,
+    meshes: &mut Assets<Mesh>,
+    materials: &mut Assets<VoxelMaterial>,
 ) -> bool {
-    missing.any(|(low, high)|
-        needed_margin(low + offset, high + offset, matrix, sun, ground, 1.15))
+    let Some(stream) = cache.groves.as_mut() else {
+        return false;
+    };
+    stream.stable = None;
+    let interest = (0..stream.source.len()).collect();
+    sync_interest(
+        cache,
+        interest,
+        commands,
+        meshes,
+        materials,
+        |_, _| true,
+        |low, high| ((low + high) * 0.5).length_squared(),
+    )
 }
 
 /// Warm the existing source grove recipes for the authentic battle neighborhood,
@@ -254,10 +312,17 @@ pub(super) fn warm_battle(
     meshes: &mut Assets<Mesh>,
     materials: &mut Assets<VoxelMaterial>,
 ) -> bool {
-    if let Some(stream) = &mut cache.groves { stream.stable = None; }
+    if let Some(stream) = &mut cache.groves {
+        stream.stable = None;
+        stream.battle_area = Some(area);
+    }
     let Some(stream) = &cache.groves else { return false; };
     if cache.instances_root.is_none() || cache.solid_material.is_none() { return true; }
-    let interest = battle_interest(&stream.bounds, area);
+    let mut interest = battle_interest(&stream.bounds, area);
+    // The retained field still renders the entry wipe. Its trees and the
+    // battle neighborhood must coexist until the handoff, rather than each
+    // streamer cancelling the other's placements and cold jobs every frame.
+    interest.extend(stream.active.keys().copied());
     let pending = sync_interest(cache, interest, commands, meshes, materials, |low, high|
         high.x >= area.min.x && low.x <= area.max.x && high.z >= area.min.y && low.z <= area.max.y,
         |low, high| ((low + high).xz() * 0.5 - area.center()).length_squared());
@@ -273,10 +338,15 @@ pub(super) fn warm_battle(
 }
 
 fn battle_interest(bounds: &[(Vec3, Vec3)], area: Rect) -> HashSet<usize> {
-    bounds.iter().enumerate().filter_map(|(index, (low, high))| {
-        (high.x >= area.min.x && low.x <= area.max.x
-            && high.z >= area.min.y && low.z <= area.max.y).then_some(index)
-    }).collect()
+    bounds
+        .iter()
+        .enumerate()
+        .filter_map(|(index, (low, high))| intersects_area(*low, *high, area).then_some(index))
+        .collect()
+}
+
+fn intersects_area(low: Vec3, high: Vec3, area: Rect) -> bool {
+    high.x >= area.min.x && low.x <= area.max.x && high.z >= area.min.y && low.z <= area.max.y
 }
 
 // Rank by the camera's projected footprint, independently of map coordinates.
@@ -311,7 +381,9 @@ fn publish_native_instance(stream: &mut Stream, index: usize,
     }
     let tree = commands.spawn((Transform::default(), Visibility::default())).id();
     commands.entity(root).add_child(tree);
-    occluder_fade::spawn_groups(commands, meshes, materials, tree, groups, opaque.clone(), None);
+    // Each resident tree is a bounded fade region. Off-camera preloads
+    // must not join the per-frame exact ray checks for ordinary loose groups.
+    occluder_fade::spawn_region_groups(commands, meshes, materials, tree, groups, opaque.clone());
     stream.active.insert(index, tree);
     stream.visible.insert(index);
     true
@@ -427,7 +499,7 @@ fn sync_interest(
             if needed_now(bounds.0, bounds.1) {
                 let tree = commands.spawn((Transform::default(), Visibility::default())).id();
                 commands.entity(root).add_child(tree);
-                occluder_fade::spawn_groups(commands, meshes, materials, tree, groups, opaque.clone(), None);
+                occluder_fade::spawn_region_groups(commands, meshes, materials, tree, groups, opaque.clone());
                 stream.active.insert(index, tree);
             stream.visible.insert(index);
             } else { interest.remove(&index); }
@@ -441,6 +513,167 @@ fn sync_interest(
 
 #[cfg(test)]
 mod tests {
+    #[cfg(not(target_arch = "wasm32"))]
+    #[test]
+    fn field_updates_keep_the_battle_neighborhood_resident_during_entry() {
+        use bevy::math::proj;
+        let (frame, source) = crate::world_stream::test_frames::grove_window();
+        let mut app = App::new();
+        app.add_plugins(MinimalPlugins)
+            .init_resource::<Assets<Mesh>>()
+            .init_resource::<Assets<VoxelMaterial>>();
+        let root = app
+            .world_mut()
+            .spawn((Transform::default(), Visibility::Visible))
+            .id();
+        let material = app
+            .world_mut()
+            .resource_mut::<Assets<VoxelMaterial>>()
+            .add(crate::solid_terrain_material());
+        let library = Arc::new(crate::forest_instances::Library::default());
+        // Complete the source recipes once, then exercise actual cached ECS
+        // publication while the field camera looks away from the encounter.
+        for index in 0..source.len() {
+            source.prepare(index, &library);
+        }
+        app.insert_resource(TerrainRevisionCache {
+            built_frame: Some(frame.clone()),
+            instances_root: Some(root),
+            solid_material: Some(material),
+            groves: Some(Stream::new(source, library)),
+            ..default()
+        })
+        .insert_resource(frame)
+        .add_systems(
+            Update,
+            |frame: Res<crystal_render_api::VisualWorldFrame>,
+             mut cache: ResMut<TerrainRevisionCache>,
+             mut commands: Commands,
+             mut meshes: ResMut<Assets<Mesh>>,
+             mut materials: ResMut<Assets<VoxelMaterial>>| {
+                let area = Rect::from_corners(Vec2::splat(-1000.), Vec2::splat(1000.));
+                warm_battle(&mut cache, area, &mut commands, &mut meshes, &mut materials);
+                let matrix = proj::orthographic(-1., 1., -1., 1., 0.1, 100.)
+                    * Mat4::from_translation(Vec3::new(-2000., 0., -20.));
+                sync(
+                    &frame,
+                    matrix,
+                    None,
+                    &mut cache,
+                    &mut commands,
+                    &mut meshes,
+                    &mut materials,
+                );
+            },
+        );
+        for _ in 0..16 {
+            app.update();
+        }
+        let stream = app
+            .world()
+            .resource::<TerrainRevisionCache>()
+            .groves
+            .as_ref()
+            .expect("stream");
+        assert_eq!(
+            stream.active.len(),
+            stream.source.len(),
+            "field sync must not cancel or discard off-camera battle trees"
+        );
+        assert!(stream.jobs.is_empty());
+    }
+
+    #[cfg(not(target_arch = "wasm32"))]
+    #[test]
+    fn off_camera_trees_stay_preloaded_across_camera_reversals() {
+        use bevy::math::proj;
+        let (frame, source) = crate::world_stream::test_frames::grove_window();
+        let mut app = App::new();
+        app.add_plugins(MinimalPlugins)
+            .init_resource::<Assets<Mesh>>()
+            .init_resource::<Assets<VoxelMaterial>>();
+        let root = app
+            .world_mut()
+            .spawn((Transform::default(), Visibility::Visible))
+            .id();
+        let material = app
+            .world_mut()
+            .resource_mut::<Assets<VoxelMaterial>>()
+            .add(crate::solid_terrain_material());
+        let library = Arc::new(crate::forest_instances::Library::default());
+        for index in 0..source.len() {
+            source.prepare(index, &library);
+        }
+        app.insert_resource(TerrainRevisionCache {
+            built_frame: Some(frame.clone()),
+            instances_root: Some(root),
+            solid_material: Some(material),
+            groves: Some(Stream::new(source, library)),
+            ..default()
+        })
+        .insert_resource(frame)
+        .insert_resource(CameraTurn::default())
+        .add_systems(
+            Update,
+            |frame: Res<crystal_render_api::VisualWorldFrame>,
+             turn: Res<CameraTurn>,
+             mut cache: ResMut<TerrainRevisionCache>,
+             mut commands: Commands,
+             mut meshes: ResMut<Assets<Mesh>>,
+             mut materials: ResMut<Assets<VoxelMaterial>>| {
+                let matrix = proj::orthographic(-1., 1., -1., 1., 0.1, 100.)
+                    * Mat4::from_translation(Vec3::new(turn.0, 0., -20.));
+                let pending = sync(
+                    &frame,
+                    matrix,
+                    None,
+                    &mut cache,
+                    &mut commands,
+                    &mut meshes,
+                    &mut materials,
+                );
+                if cache
+                    .groves
+                    .as_ref()
+                    .is_some_and(|stream| stream.active.len() == stream.source.len())
+                {
+                    assert!(!pending);
+                }
+            },
+        );
+        #[derive(Resource, Default)]
+        struct CameraTurn(f32);
+        app.world_mut().resource_mut::<CameraTurn>().0 = -2000.;
+        for _ in 0..16 {
+            app.update();
+        }
+        let residents = app
+            .world()
+            .resource::<TerrainRevisionCache>()
+            .groves
+            .as_ref()
+            .expect("resident grove")
+            .active
+            .clone();
+        assert!(!residents.is_empty());
+        for position in [2000., 0., -2000., 2000.] {
+            app.world_mut().resource_mut::<CameraTurn>().0 = position;
+            app.update();
+            let stream = app
+                .world()
+                .resource::<TerrainRevisionCache>()
+                .groves
+                .as_ref()
+                .expect("resident grove");
+            assert_eq!(
+                stream.active, residents,
+                "turning must reuse every resident tree entity"
+            );
+            assert_eq!(stream.active.len(), stream.source.len());
+            assert!(stream.jobs.is_empty());
+        }
+    }
+
     #[cfg(not(target_arch = "wasm32"))]
     #[test]
     fn cached_publication_stops_at_cpu_deadline_and_has_a_finite_fast_path_cap() {
@@ -465,26 +698,6 @@ mod tests {
         assert!(needed_margin(lo, hi, matrix, None, 0., 1.45));
         let (lo, hi) = bounds(16.);
         assert!(!needed_margin(lo, hi, matrix, None, 0., 1.45));
-    }
-
-    #[test]
-    fn doorway_releases_after_visible_and_shadow_work_without_waiting_for_preload_band() {
-        let matrix=Mat4::orthographic_rh(-10.,10.,-10.,10.,0.1,100.)
-            * Mat4::look_at_rh(Vec3::new(0.,0.,20.),Vec3::ZERO,Vec3::Y);
-        let remote=(Vec3::new(12.,-0.1,-0.1),Vec3::new(12.1,0.1,0.1));
-        assert!(needed_margin(remote.0,remote.1,matrix,None,0.,1.30));
-        assert!(!presentation_pending([remote].into_iter(),Vec3::ZERO,matrix,None,0.));
-        assert!(presentation_pending([(Vec3::splat(-1.),Vec3::splat(1.)),remote].into_iter(),
-            Vec3::ZERO,matrix,None,0.));
-        assert!(presentation_pending([remote].into_iter(),Vec3::new(-4.,0.,0.),matrix,None,0.),
-            "rebased foreground geometry still holds the fade");
-        let matrix=Mat4::orthographic_rh(-10.,10.,-10.,10.,0.1,100.)
-            * Mat4::look_at_rh(Vec3::new(0.,20.,20.),Vec3::ZERO,Vec3::Y);
-        let caster=(Vec3::new(14.,0.,-1.),Vec3::new(16.,8.,1.));
-        assert!(!visible(caster.0,caster.1,matrix));
-        assert!(presentation_pending([caster].into_iter(),Vec3::ZERO,matrix,
-            Some(Vec3::new(1.,1.,0.).normalize()),0.),"visible shadows must not pop into a finished fade");
-        assert!(!presentation_pending(std::iter::empty(),Vec3::ZERO,matrix,None,0.));
     }
 
     #[test]

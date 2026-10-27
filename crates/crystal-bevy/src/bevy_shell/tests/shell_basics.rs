@@ -2090,7 +2090,7 @@ fn interactive_bevy_schedule_performance_benchmark() {
         )
     }
     let repo_root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("../../..")
+        .join("../..")
         .canonicalize()
         .expect("repository root");
     let asset_root = AssetRoot::new(repo_root);

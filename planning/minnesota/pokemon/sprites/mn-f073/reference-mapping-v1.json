@@ -1,0 +1,14 @@
+{
+  "family_id": "MN_F073",
+  "references": [
+    {
+      "path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/gen2-reference/starters.png",
+      "sha256": "af61f720a75b7e1b8e80ba14e8944612556397eedddd719669dec68b0e0fd534",
+      "role": "Authentic Gen2 scale, contour and rear-camera board inspected by authoring agent; not passed as ImageGen input because this is new original art."
+    },
+    {
+      "url": "https://storage.googleapis.com/mnhs-org-support/mn_history_articles/21/v21i04p353-356.pdf",
+      "role": "Primary historical wild-teakettle spout-mouth and opposing-footprint theme; body design is original invention."
+    }
+  ]
+}

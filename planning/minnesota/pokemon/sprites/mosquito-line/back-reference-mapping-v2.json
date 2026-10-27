@@ -1,0 +1,20 @@
+{
+  "prompt": "sprites/mosquito-line/back-prompt-v2.txt",
+  "references": [
+    {
+      "path": "/Users/ryanculligan/GitHub/geothite/planning/minnesota/pokemon/sprites/mosquito-line/mn-151-153.imagegen-v1.png",
+      "sha256": "8b2b01b3f3236e80bc9e73c8c1e95ce2ae7de94c391dd53587635171292af729",
+      "role": "original creature anatomy"
+    },
+    {
+      "path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F072/line.review.png",
+      "sha256": "312ea24851848dc33d2499e176455ccf63ca37b152b1b8151f0a8f5260b4d333",
+      "role": "native individual front palettes"
+    },
+    {
+      "path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/gen2-reference/starters.png",
+      "sha256": "af61f720a75b7e1b8e80ba14e8944612556397eedddd719669dec68b0e0fd534",
+      "role": "authentic Gen2 camera and clusters"
+    }
+  ]
+}

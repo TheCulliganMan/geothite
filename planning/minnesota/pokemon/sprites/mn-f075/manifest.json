@@ -1,0 +1,341 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F075",
+  "status": "native-front-back-reviewed",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_160": {
+      "species_id": "MN_160",
+      "name": "Stromit",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          25,
+          16,
+          13
+        ],
+        [
+          14,
+          8,
+          10
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        13849,
+        10510,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          206,
+          132,
+          107
+        ],
+        [
+          115,
+          66,
+          82
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#CE846B",
+        "#734252",
+        "#000000"
+      ]
+    },
+    "MN_161": {
+      "species_id": "MN_161",
+      "name": "Lamivive",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          25,
+          17,
+          24
+        ],
+        [
+          11,
+          7,
+          16
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        25145,
+        16619,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          206,
+          140,
+          198
+        ],
+        [
+          90,
+          57,
+          132
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#CE8CC6",
+        "#5A3984",
+        "#000000"
+      ]
+    },
+    "MN_162": {
+      "species_id": "MN_162",
+      "name": "Chertheon",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          24,
+          13,
+          21
+        ],
+        [
+          9,
+          6,
+          14
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        21944,
+        14537,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          198,
+          107,
+          173
+        ],
+        [
+          74,
+          49,
+          115
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#C66BAD",
+        "#4A3173",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f075/prompt-v1.txt",
+  "reference_mapping": "sprites/mn-f075/reference-mapping-v1.json",
+  "back_framing": "gen2-close-rear-portrait",
+  "sprites": [
+    {
+      "id": "mn-160-stromit-v1",
+      "species_id": "MN_160",
+      "view": "front",
+      "source": "sprites/mn-f075/mn-160-162.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        500,
+        520
+      ],
+      "fit": [
+        36,
+        36
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        13849,
+        10510,
+        0
+      ],
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-160-stromit-v1",
+      "species_id": "MN_160",
+      "view": "back",
+      "source": "sprites/mn-f075/mn-160-162.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        520,
+        500,
+        504
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        13849,
+        10510,
+        0
+      ],
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-161-lamivive-v1",
+      "species_id": "MN_161",
+      "view": "front",
+      "source": "sprites/mn-f075/mn-160-162.front-back.imagegen-v1.png",
+      "crop": [
+        500,
+        0,
+        485,
+        520
+      ],
+      "fit": [
+        44,
+        44
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        25145,
+        16619,
+        0
+      ],
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-161-lamivive-v1",
+      "species_id": "MN_161",
+      "view": "back",
+      "source": "sprites/mn-f075/mn-160-162.front-back.imagegen-v1.png",
+      "crop": [
+        500,
+        520,
+        485,
+        370
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        25145,
+        16619,
+        0
+      ],
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-162-chertheon-v1",
+      "species_id": "MN_162",
+      "view": "front",
+      "source": "sprites/mn-f075/mn-160-162.front-back.imagegen-v1.png",
+      "crop": [
+        985,
+        0,
+        551,
+        520
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        21944,
+        14537,
+        0
+      ],
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-162-chertheon-v1",
+      "species_id": "MN_162",
+      "view": "back",
+      "source": "sprites/mn-f075/mn-160-162.front-back.imagegen-v1.png",
+      "crop": [
+        985,
+        520,
+        551,
+        370
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        21944,
+        14537,
+        0
+      ],
+      "interior_black_min_samples": 32
+    }
+  ],
+  "conversion_adjustments": [
+    "Rear crops focus upper domes/face and exclude lower base mounds. Interior-black8 trial did not materially recover thin source pupils and introduced terrace flecks; restored ordinary32 for final candidate. Original native trial is archived."
+  ],
+  "visual_review": {
+    "status": "reviewed",
+    "reviewer": "root",
+    "notes": "Root inspected current native board: terraced single Stromit becomes a split floating Lamivive dome/base, then a wide five-dome Chertheon colony with two open arch windows and central ghost face. Source-authored pale ghost arms remain colored and airy; white eye glints in dark face surrounds read as spirit eyes. Close backs preserve the crown while cropping lower bases. Individually distinct stone/ghost palettes and all rejected seam experiments retained.",
+    "sheet_sha256": "5d28a33a55d75ab885525dc9307204ff9f9eb4e62d7d0466ba6d84b4cccb5959",
+    "outline_profile": "source-contour-v1"
+  }
+}

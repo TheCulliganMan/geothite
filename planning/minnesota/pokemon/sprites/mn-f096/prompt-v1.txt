@@ -1,0 +1,23 @@
+Use case: stylized-concept. Asset type: production Game Boy Color creature battle sprite sheet.
+
+Create ORIGINAL Gen2-era monster pixel art. This is actual sprite artwork with coarse square-pixel clusters, not an illustration to be pixelated later. Pure white background. NO captions/text/grid lines/palette swatches/shadows. Crisp stepped black exterior silhouettes; spare connected interior black structural seams; flat color planes. No gradients, antialiasing, soft edges, glossy rendering, tiny noisy texture, single-pixel confetti or smooth vector curves. Respect authentic late-1990s Pokemon Crystal sprite economy, readable eyes and structural evolution; do not copy any existing Pokemon identity.
+
+Layout exactly 2 columns by 2 rows. Columns left-to-right: Mimuss, Mantasm. Each column is ONE species. Upper row: full-body FRONT 3/4 facing LEFT at native56x56 language. Lower row: CLOSE REAR PORTRAIT facing UPPER RIGHT at native48x48 language. Back is a huge head/neck/near-shoulder view, lower body visibly cut at bottom, authentic Crystal battle framing. Enlarge each back head/shoulder strongly; do not draw a complete miniature full-body turnaround. Leave wide clean white gutters between cells, all artwork disjoint. Display artwork enlarged nearest-neighbor for source sheet; favor about5-7sourcepixels per nativepixel. Front stages show proportional growth; every back fills its cell as a close portrait.
+
+Theme: Mississippi freshwater mussels and fishlike mantle lures: a shell-dwelling trickster grows its soft lure into an attached stage puppet, keeping its real face sheltered within.
+
+Design constraints: Two fishlike puppet heads at most, thick attached soft stalks and large shell ribs. Make true eyes clear inside the shell. Per-species pearl/blue/ink palettes, no metallic spinner silhouette.
+
+Distinguish real eyes inside the dark shell slit from FALSE FISH FACES growing on thick attached mantle stalks. Baby one false fish head. Final TWO false fish-head puppets only attached to four broad mantle arms around real central face, open wide split-shell theater canopy. No thin strings, fishing hooks, separate fish or metal. Thick organic soft anatomy and pearl-blue planes.
+
+Species anatomy and each independent hardware palette (front and back MUST match). Each species uses EXACTLY FOUR inks: white, its own two chromatic colors and pure black. White is valid enclosed eye/body highlight ink; black also outlines white body parts. The sheet globally can exceed four colors because species use different palettes. Never share one palette across the whole evolution line. RGB555 packing is r|(g<<5)|(b<<10); RGB8 expansion is (v<<3)|(v>>2).
+
+MN_209 Mimuss WATER/PSYCHIC: A squat ribbed shell walks on one broad folded foot. A thick short mantle stalk above its hinge carries a tiny false fish face, while the real eyes peer through a narrow shell opening. SILHOUETTE: Compact shell with one large foot and one hooked fish-face lure stalk.
+
+Exact Mimuss palette: RGB5=[(31, 31, 31), (23, 27, 29), (9, 10, 20), (0, 0, 0)]; RGB555=[32767, 30583, 20809, 0]; RGB8=[[255, 255, 255], [189, 222, 239], [74, 82, 165], [0, 0, 0]]; HEX=['#FFFFFF', '#BDDEEF', '#4A52A5', '#000000'].
+
+MN_210 Mantasm WATER/PSYCHIC: The shell opens into a wide theater-like hood; four thick mantle arms unfold around its true face, two supporting larger false fish heads with exaggerated eye spots. It manipulates opponents attention by moving the false faces in opposite directions. SILHOUETTE: Broad split shell canopy with two attached fish-puppet stalks and a dark central real face; no detached creatures, thin strings or metal hooks.
+
+Exact Mantasm palette: RGB5=[(31, 31, 31), (25, 27, 30), (7, 8, 18), (0, 0, 0)]; RGB555=[32767, 31609, 18695, 0]; RGB8=[[255, 255, 255], [206, 222, 247], [57, 66, 148], [0, 0, 0]]; HEX=['#FFFFFF', '#CEDEF7', '#394294', '#000000'].
+
+Final quality: original appealing themed monsters, clear eye whites, bold broad anatomical planes, readable limbs and deeply different evolutionary silhouettes. Black silhouette rims must be continuous wherever they border white paper; white highlights stay enclosed inside the rim. A few deliberate open colored contour accents may echo Gen2, but no fragmented dotted outlines. Keep open cropping of lower back at the bottom.

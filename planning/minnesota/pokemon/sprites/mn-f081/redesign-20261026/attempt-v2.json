@@ -1,0 +1,12 @@
+{
+  "status": "returned-raw-preserved-selected-for-candidate",
+  "source": "sprites/mn-f081/redesign-20261026/mn-177-dividra.front-back.redesign-v2.png",
+  "source_sha256": "5fed5b5a9d73172d73269dda626597b54d0d385f8c1311a5ace00087c46e397a",
+  "source_size": [
+    1536,
+    1024
+  ],
+  "prompt_file": "sprites/mn-f081/redesign-20261026/prompt-v2.txt",
+  "reference_mapping": "sprites/mn-f081/redesign-20261026/reference-mapping-v2.json",
+  "candidate_manifest": "sprites/mn-f081/redesign-20261026/manifest.candidate.json"
+}

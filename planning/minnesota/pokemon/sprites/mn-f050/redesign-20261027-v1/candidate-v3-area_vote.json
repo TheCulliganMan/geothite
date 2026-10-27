@@ -1,0 +1,346 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F050",
+  "status": "native-front-back-reviewed",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_101": {
+      "species_id": "MN_101",
+      "name": "Taconib",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          19,
+          15,
+          13
+        ],
+        [
+          8,
+          11,
+          15
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        13811,
+        15720,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          156,
+          123,
+          107
+        ],
+        [
+          66,
+          90,
+          123
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#9C7B6B",
+        "#425A7B",
+        "#000000"
+      ]
+    },
+    "MN_102": {
+      "species_id": "MN_102",
+      "name": "Pelletank",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          17,
+          20,
+          24
+        ],
+        [
+          6,
+          9,
+          13
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        25233,
+        13606,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          140,
+          165,
+          198
+        ],
+        [
+          49,
+          74,
+          107
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#8CA5C6",
+        "#314A6B",
+        "#000000"
+      ]
+    },
+    "MN_103": {
+      "species_id": "MN_103",
+      "name": "Taconarch",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          15,
+          22,
+          25
+        ],
+        [
+          5,
+          7,
+          12
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        26319,
+        12517,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          123,
+          181,
+          206
+        ],
+        [
+          41,
+          57,
+          99
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#7BB5CE",
+        "#293963",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f050/redesign-20261027-v1/prompt-taconarch-fresh-v3.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "style_reference": {
+    "origin": "authentic local Crystal sprites",
+    "generator": "crates/crystal-assets/examples/minnesota_gen2_reference.rs",
+    "boards": [
+      "target/minnesota-pokemon/gen2-reference/starters.png",
+      "target/minnesota-pokemon/gen2-reference/bugs.png"
+    ]
+  },
+  "sprites": [
+    {
+      "id": "mn-101-taconib-v1",
+      "species_id": "MN_101",
+      "view": "front",
+      "source": "sprites/mn-f050/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        460,
+        512
+      ],
+      "fit": [
+        36,
+        36
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        13811,
+        15720,
+        0
+      ]
+    },
+    {
+      "id": "mn-101-taconib-v1",
+      "species_id": "MN_101",
+      "view": "back",
+      "source": "sprites/mn-f050/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        512,
+        460,
+        512
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        13811,
+        15720,
+        0
+      ]
+    },
+    {
+      "id": "mn-102-pelletank-v1",
+      "species_id": "MN_102",
+      "view": "front",
+      "source": "sprites/mn-f050/front-back.imagegen-v1.png",
+      "crop": [
+        460,
+        0,
+        570,
+        512
+      ],
+      "fit": [
+        50,
+        50
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        25233,
+        13606,
+        0
+      ],
+      "white_detail_min_samples": 8
+    },
+    {
+      "id": "mn-102-pelletank-v1",
+      "species_id": "MN_102",
+      "view": "back",
+      "source": "sprites/mn-f050/front-back.imagegen-v1.png",
+      "crop": [
+        460,
+        512,
+        530,
+        512
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        25233,
+        13606,
+        0
+      ],
+      "white_detail_min_samples": 8
+    },
+    {
+      "id": "mn-103-taconarch-redesign-v3",
+      "species_id": "MN_103",
+      "view": "front",
+      "source": "sprites/mn-f050/redesign-20261027-v1/taconarch.front-back.fresh-v3.imagegen.png",
+      "crop": [
+        0,
+        0,
+        1254,
+        590
+      ],
+      "fit": [
+        54,
+        52
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        26319,
+        12517,
+        0
+      ],
+      "white_detail_min_samples": 8,
+      "sampling": "area_vote",
+      "exterior_contour": "solid",
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-103-taconarch-redesign-v3",
+      "species_id": "MN_103",
+      "view": "back",
+      "source": "sprites/mn-f050/redesign-20261027-v1/taconarch.front-back.fresh-v3.imagegen.png",
+      "crop": [
+        0,
+        590,
+        1254,
+        664
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        26319,
+        12517,
+        0
+      ],
+      "white_detail_min_samples": 8,
+      "sampling": "area_vote",
+      "exterior_contour": "solid",
+      "interior_black_min_samples": 32
+    }
+  ],
+  "visual_review": {
+    "status": "awaiting-native-review",
+    "outline_profile": "mixed-source-solid-v1"
+  }
+}

@@ -1,0 +1,234 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F025",
+  "status": "native-front-back-reviewed",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_063": {
+      "species_id": "MN_063",
+      "name": "Mayquip",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          21,
+          26,
+          19
+        ],
+        [
+          9,
+          14,
+          15
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        20309,
+        15817,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          173,
+          214,
+          156
+        ],
+        [
+          74,
+          115,
+          123
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#ADD69C",
+        "#4A737B",
+        "#000000"
+      ]
+    },
+    "MN_064": {
+      "species_id": "MN_064",
+      "name": "Hatchrush",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          22,
+          27,
+          26
+        ],
+        [
+          8,
+          11,
+          18
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        27510,
+        18792,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          181,
+          222,
+          214
+        ],
+        [
+          66,
+          90,
+          148
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#B5DED6",
+        "#425A94",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f025/prompt-v1.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "style_reference": {
+    "origin": "authentic local Crystal sprites",
+    "generator": "crates/crystal-assets/examples/minnesota_gen2_reference.rs",
+    "board": "target/minnesota-pokemon/gen2-reference/bugs.png"
+  },
+  "sprites": [
+    {
+      "id": "mn-063-mayquip-v1",
+      "species_id": "MN_063",
+      "view": "front",
+      "source": "sprites/mn-f025/mn-063-064.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        691,
+        594
+      ],
+      "fit": [
+        40,
+        40
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        20309,
+        15817,
+        0
+      ]
+    },
+    {
+      "id": "mn-063-mayquip-v1",
+      "species_id": "MN_063",
+      "view": "back",
+      "source": "sprites/mn-f025/mn-063-064.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        594,
+        691,
+        528
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        20309,
+        15817,
+        0
+      ]
+    },
+    {
+      "id": "mn-064-hatchrush-v1",
+      "species_id": "MN_064",
+      "view": "front",
+      "source": "sprites/mn-f025/mn-063-064.front-back.imagegen-v1.png",
+      "crop": [
+        691,
+        0,
+        711,
+        594
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        27510,
+        18792,
+        0
+      ]
+    },
+    {
+      "id": "mn-064-hatchrush-v1",
+      "species_id": "MN_064",
+      "view": "back",
+      "source": "sprites/mn-f025/mn-063-064.front-back.imagegen-v1.png",
+      "crop": [
+        691,
+        594,
+        711,
+        528
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        27510,
+        18792,
+        0
+      ]
+    }
+  ],
+  "visual_review": {
+    "status": "reviewed",
+    "notes": [
+      "Inspected frozen source-contour-v1 sheet: Mayquip tail fork now retains a colored central segment and clear strand tips, and the body/gills remain colored instead of black-filled.",
+      "Hatchrush fan wings retain colored panels and lighter internal veins; thin feet and antennae are simplified to native-scale dark strokes. Rear wing-root portraits remain cleanly cropped and separated."
+    ],
+    "sheet_sha256": "2f33132ec7654e3d45b25ee67f4094b9d18b4371810c119327d3ac0214f4621d",
+    "outline_profile": "source-contour-v1"
+  }
+}

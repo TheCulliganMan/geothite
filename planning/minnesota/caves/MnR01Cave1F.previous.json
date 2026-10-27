@@ -1,0 +1,69 @@
+{
+  "id": "MnR01Cave1F",
+  "template": "UnionCave1F",
+  "dimensions_metatiles": [
+    8,
+    7
+  ],
+  "width_metatiles": 8,
+  "height_metatiles": 7,
+  "tileset": "cave",
+  "border_block": 1,
+  "exterior_anchor_metatile": [
+    9,
+    8
+  ],
+  "mandatory": false,
+  "purpose": "Two small limestone hollows connect through a lower passage; optional Antidote.",
+  "rows": [
+    "01 01 01 01 01 01 01 01",
+    "01 04 05 06 04 05 06 01",
+    "01 08 02 0a 08 02 0a 01",
+    "01 08 02 02 02 02 0a 01",
+    "01 08 02 02 02 02 0a 01",
+    "01 20 21 21 07 21 22 01",
+    "01 01 01 01 01 01 01 01"
+  ],
+  "exits": [
+    [
+      9,
+      11
+    ]
+  ],
+  "clear_arrival": [
+    9,
+    10
+  ],
+  "exit_collision": "LADDER",
+  "residents": [
+    {
+      "id": "MN_R01_HOLLOW_GUIDE",
+      "sprite": "SPRITE_POKEFAN_M",
+      "tile": [
+        5,
+        5
+      ],
+      "facing": "south",
+      "lines": [
+        "Two small hollows",
+        "meet by the exit.",
+        "Take either path.",
+        "The little ball",
+        "holds an ANTIDOTE."
+      ]
+    }
+  ],
+  "items": [
+    {
+      "id": "MN_R01_ITEM_03",
+      "item": "ANTIDOTE",
+      "quantity": 1,
+      "tile": [
+        11,
+        5
+      ],
+      "flag": "EVENT_MN_R01_ITEM_03"
+    }
+  ],
+  "signs": []
+}

@@ -1,0 +1,129 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F071",
+  "status": "native-front-back-reviewed",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_150": {
+      "species_id": "MN_150",
+      "name": "Canalarm",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          30,
+          25,
+          7
+        ],
+        [
+          9,
+          10,
+          15
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        7998,
+        15689,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          247,
+          206,
+          57
+        ],
+        [
+          74,
+          82,
+          123
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#F7CE39",
+        "#4A527B",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f071/prompt-v1.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "style_reference": {
+    "origin": "authentic local Crystal sprites",
+    "boards": [
+      "target/minnesota-pokemon/gen2-reference/starters.png",
+      "target/minnesota-pokemon/gen2-reference/bugs.png"
+    ]
+  },
+  "sprites": [
+    {
+      "id": "mn-150-canalarm-v1",
+      "species_id": "MN_150",
+      "view": "front",
+      "source": "sprites/mn-f071/mn-150.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        1145,
+        701
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        7998,
+        15689,
+        0
+      ]
+    },
+    {
+      "id": "mn-150-canalarm-v1",
+      "species_id": "MN_150",
+      "view": "back",
+      "source": "sprites/mn-f071/mn-150.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        701,
+        1145,
+        673
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        7998,
+        15689,
+        0
+      ]
+    }
+  ],
+  "visual_review": {
+    "status": "reviewed",
+    "notes": "Final source-contour-v1 board visually inspected: warning canary retains two large air sacs, chest gauge, lantern crest and lightning tail. White gauge and sac highlights stay legible, dark wing tips and exterior edges remain distinct without broad black flooding. Close rear crest/nape/wing portrait correctly omits front gauge and crops lower body. No crop debris observed.",
+    "sheet_sha256": "cae1c785597b1324816796f6eb2904a053f56378e47794af44705d53882565a5",
+    "outline_profile": "source-contour-v1"
+  }
+}

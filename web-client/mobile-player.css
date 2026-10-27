@@ -168,3 +168,40 @@ body.chat-open #mute { visibility: hidden; }
   #social-chat.editing { border-color: #78674980; background: #101114f5; }
   #social-chat.editing.compact .leaderboard-note { display: none; }
 }
+
+/* A separate control deck leaves the game readable and the camera gesture area clear. */
+#touch-controls { margin: 0; border: 0; min-inline-size: 0; touch-action: none; user-select: none; -webkit-user-select: none; }
+#touch-controls button { touch-action: none; color: #e9edf5; font: 650 14px system-ui, sans-serif; border: 1px solid #ffffff22; background: #252936; box-shadow: inset 0 1px #ffffff12, 0 3px 0 #080a10; }
+#touch-controls button.held { background: #53617d; transform: translateY(2px); box-shadow: inset 0 1px 4px #0005; }
+#touch-controls:disabled { opacity: .4; }
+#dpad { display: grid; grid-template: repeat(3, 44px) / repeat(3, 44px); touch-action: none; filter: drop-shadow(0 4px 8px #0004); }
+#dpad button { border-radius: 10px; font-size: 16px; }
+#dpad [data-game-button=up] { grid-area: 1 / 2; border-bottom: 0; border-radius: 10px 10px 0 0; }
+#dpad [data-game-button=left] { grid-area: 2 / 1; border-right: 0; border-radius: 10px 0 0 10px; }
+#dpad [data-game-button=right] { grid-area: 2 / 3; border-left: 0; border-radius: 0 10px 10px 0; }
+#dpad [data-game-button=down] { grid-area: 3 / 2; border-top: 0; border-radius: 0 0 10px 10px; }
+.dpad-center { grid-area: 2 / 2; background: #252936; }
+.touch-actions { display: flex; align-items: center; gap: 12px; }
+.touch-actions button { width: 60px; height: 60px; border-radius: 50%; font-size: 23px !important; }
+.touch-actions [data-game-button=a] { margin-top: -38px; background: #44415e !important; }
+.touch-actions [data-game-button=a].held { background: #777395 !important; }
+.touch-system { display: flex; gap: 12px; }
+.touch-system button { min-width: 64px; height: 44px; padding: 0 10px; border-radius: 22px; font-size: 10px !important; letter-spacing: .08em; }
+@media (pointer: coarse), (max-width: 760px), (max-width: 960px) and (max-height: 600px) {
+  body { --control-deck-height: calc(214px + env(safe-area-inset-bottom, 0px)); }
+  #game-stage, body.controller-active #game-stage { top: calc(60px + env(safe-area-inset-top, 0px)); bottom: var(--control-deck-height); }
+  #touch-controls { display: flex; position: fixed; z-index: 5; top: auto; bottom: 0; left: 0; right: 0; height: var(--control-deck-height); box-sizing: border-box; align-items: flex-start; justify-content: space-between; padding: 18px max(20px, env(safe-area-inset-right)) calc(12px + env(safe-area-inset-bottom)) max(20px, env(safe-area-inset-left)); background: linear-gradient(#11121b, #0c0d13); border-top: 1px solid #ffffff12; }
+  .touch-actions { margin-top: 48px; }
+  .touch-system { position: absolute; bottom: calc(12px + env(safe-area-inset-bottom)); left: 50%; transform: translateX(-50%); }
+  body.chat-open #touch-controls { visibility: hidden; }
+}
+@media (orientation: landscape) and (max-height: 600px) and (pointer: coarse), (orientation: landscape) and (max-height: 600px) and (max-width: 960px) {
+  #game-stage, body.controller-active #game-stage { left: calc(156px + env(safe-area-inset-left)); right: calc(156px + env(safe-area-inset-right)); top: max(8px, env(safe-area-inset-top)); bottom: calc(54px + env(safe-area-inset-bottom)); }
+  #touch-controls { inset: 0; height: auto; padding: 0; background: none; border: 0; pointer-events: none; }
+  #dpad { position: absolute; left: max(12px, env(safe-area-inset-left)); top: 50%; transform: translateY(-40%); pointer-events: auto; }
+  .touch-actions { position: absolute; right: max(12px, env(safe-area-inset-right)); top: 50%; margin: 0; transform: translateY(-10%); pointer-events: auto; }
+  .touch-system { pointer-events: auto; bottom: max(8px, env(safe-area-inset-bottom)); }
+}
+@media (pointer: coarse), (max-width: 760px), (max-width: 960px) and (max-height: 600px) {
+  #tui-surface { position: absolute; inset: 0; }
+}

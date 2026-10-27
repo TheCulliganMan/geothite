@@ -1,0 +1,71 @@
+{
+  "references": [
+    {
+      "path": "/Users/ryanculligan/GitHub/geothite/planning/minnesota/pokemon/sprites/mn-f120/mn-257-258.front-back.imagegen-v1.png",
+      "sha256": "ed957b6bb13ee45e4b8b395b1f07e13833482c40b2a3538f0fd73f5cba4e7a89",
+      "role": "Right-column adult head/body/bands/palette kept; replace only adult rattle with asymmetric two-cup resonator. Young old raw remains immutable."
+    }
+  ],
+  "authentic_gen2_style_basis_inspected": "target/minnesota-pokemon/gen2-reference/starters.png",
+  "species_id": "MN_258",
+  "palette": {
+    "species_id": "MN_258",
+    "name": "Castanake",
+    "gbc_rgb5": [
+      [
+        31,
+        31,
+        31
+      ],
+      [
+        28,
+        19,
+        9
+      ],
+      [
+        10,
+        7,
+        8
+      ],
+      [
+        0,
+        0,
+        0
+      ]
+    ],
+    "gbc_rgb555_words": [
+      32767,
+      9852,
+      8426,
+      0
+    ],
+    "rgb8": [
+      [
+        255,
+        255,
+        255
+      ],
+      [
+        231,
+        156,
+        74
+      ],
+      [
+        82,
+        57,
+        66
+      ],
+      [
+        0,
+        0,
+        0
+      ]
+    ],
+    "hex": [
+      "#FFFFFF",
+      "#E79C4A",
+      "#523942",
+      "#000000"
+    ]
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "id": "MN_F116",
+  "region": "peatlands",
+  "theme": "Original mythical keeper of patterned-fen memory: three thick peat-rib fingers hover around a small teardrop tree-island head, with two clean dark pool gaps between them. It reads a past season from each layer and can fold one forgotten path into another. The name refers to flark pools, not an existing sacred spirit. Its spectral recollections and path-folding are an original Ghost/Fairy enchantment.",
+  "members": [
+    {
+      "id": "MN_250",
+      "name": "Flarkindle",
+      "types": [
+        "GHOST",
+        "FAIRY"
+      ],
+      "stage": 1,
+      "evolves_to": null
+    }
+  ],
+  "evolution_design": [
+    "Single-stage mythical: three broad offset peat-rib fingers form a cupped hand around the teardrop head; two large pool gaps stay open, one short root tassel hangs below. Keep three ribs only for native readability."
+  ],
+  "silhouettes": [
+    {
+      "species_id": "MN_250",
+      "front": "Small cupped three-rib peat hand with teardrop island head and two pool gaps.",
+      "back": "Large back of upper peat ribs and tree-island nape, lower tassel cropped."
+    }
+  ],
+  "habitat": "A proposed Big Bog-inspired patterned-fen side area, geographically a northwest optional spur from the Bemidji/Border Pines area rather than an invented claim that Waskish is already on MN_R17.",
+  "proposed_routes": [
+    "MN_R17"
+  ],
+  "sources": [
+    {
+      "url": "https://www.dnr.state.mn.us/snas/peatlands.html",
+      "publisher": "Minnesota DNR",
+      "evidence": "Patterned peatlands include raised bogs, transverse peat ribs, pools and water tracks.",
+      "fantasy_extension": "Peat patterns become visible creature anatomy and fictional memory channels."
+    },
+    {
+      "url": "https://www.dnr.state.mn.us/state-parks/virtual-tours/big-bog/dialup.html",
+      "publisher": "Minnesota DNR Big Bog State Recreation Area",
+      "evidence": "Big Bog near Waskish includes extensive patterned peatland and a boardwalk viewpoint.",
+      "fantasy_extension": "The fictional memory encounter is viewed from an authored boardwalk-inspired safe path; no real protected land is altered."
+    }
+  ],
+  "design_lock": "locked by root; first153identities fixed",
+  "rarity": "mythical",
+  "location": "Proposed Memory Flark, a fictional optional boardwalk vista in a future Big Bog-inspired side area; no existing authored map/encounter is asserted.",
+  "mythical_narrative": "A short optional survey records three rib/pool patterns at different times. Flarkindle appears only when the player restores the pattern on a small map, representing peatland time and memory. Its lore is wholly original and does not reinterpret an Indigenous sacred being.",
+  "design_status": "root-reviewed-locked-for-art"
+}

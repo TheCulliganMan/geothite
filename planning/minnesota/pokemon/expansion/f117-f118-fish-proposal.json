@@ -1,0 +1,131 @@
+{
+  "families": [
+    {
+      "id": "MN_F117",
+      "region": "central_lakes",
+      "theme": "Winter lake walleye and refracted light: a low, long fish develops a broad ice-lens eye cover and continuous lens-shaped fins that bend winter light. The body remains a full swimming fish at both stages; the only fantasy hook is living ice-lens anatomy.",
+      "members": [
+        {
+          "id": "MN_251",
+          "name": "Winkfin",
+          "types": [
+            "WATER",
+            "ICE"
+          ],
+          "stage": 1,
+          "evolves_to": "MN_252"
+        },
+        {
+          "id": "MN_252",
+          "name": "Glaciris",
+          "types": [
+            "WATER",
+            "ICE"
+          ],
+          "stage": 2,
+          "evolves_to": null
+        }
+      ],
+      "evolution_design": [
+        "A small slim torpedo fish has one very large pearlescent eye under a single thick crescent ice-lens brow, one low dorsal fin, two small rounded pectoral fins and a deeply forked tail with a pale lower tip. No feet or arms.",
+        "The long fish becomes deeper through its shoulders and strongly forked tail; the eye lens grows into one broad biconvex eye-and-gill cover while two wide lens-shaped pectoral fins and a long low continuous ice dorsal give a sweeping horizontal silhouette. The fish has a visible mouth, large white eyes and dark pupils; no humanoid limbs or crown of icicles."
+      ],
+      "silhouettes": [
+        {
+          "species_id": "MN_251",
+          "front": "Small horizontal torpedo, large eye/crescent lens, forked tail.",
+          "back": "Enlarged rear head/gill nape and one ice-lens edge, far eye turns upper-right; long lower body cropped."
+        },
+        {
+          "species_id": "MN_252",
+          "front": "Long deep-shouldered fish, broad eye/gill lens, two wide continuous lens fins and forked tail.",
+          "back": "Enlarged rear nape and broad lens-fin roots, near lens shows its rear rim and a little far eye; lower body/tail cropped."
+        }
+      ],
+      "habitat": "Fictional winter fishing encounters in large central/northern Minnesota lakes; proposed existing lakeshore encounter pockets, no map changes.",
+      "proposed_routes": [
+        "MN_R15",
+        "MN_R20"
+      ],
+      "sources": [
+        {
+          "url": "https://www.dnr.state.mn.us/fish/walleye/index.html",
+          "publisher": "Minnesota DNR",
+          "evidence": "Walleye have a reflective eye layer aiding vision in low light.",
+          "fantasy_extension": "Living broad ice lenses and redirected winter light are original invented anatomy."
+        },
+        {
+          "url": "https://www.dnr.state.mn.us/gofishing/ice-fishing-walleye.html",
+          "publisher": "Minnesota DNR",
+          "evidence": "Documents walleye winter fishing, low-light eye adaptation and pale lower tail tip.",
+          "fantasy_extension": "The Ice type is a winter-lake fantasy extension, not a claim that real fish grow ice."
+        }
+      ],
+      "design_status": "root-directed-new-family-for-art"
+    },
+    {
+      "id": "MN_F118",
+      "region": "prairie_rivers",
+      "theme": "Bullhead defensive fin spines and murky-water resilience: a broad flat-bottomed fish grows three large fleshy spine reservoirs that store one fictional murky defensive secretion. Its barbels stay soft and expressive; secretion belongs to the dorsal/pectoral spines. No machinery, armor suit or costume.",
+      "members": [
+        {
+          "id": "MN_253",
+          "name": "Murkib",
+          "types": [
+            "WATER",
+            "POISON"
+          ],
+          "stage": 1,
+          "evolves_to": "MN_254"
+        },
+        {
+          "id": "MN_254",
+          "name": "Barbastion",
+          "types": [
+            "WATER",
+            "POISON"
+          ],
+          "stage": 2,
+          "evolves_to": null
+        }
+      ],
+      "evolution_design": [
+        "A small broad-headed flat-bottomed bullhead has a rounded unforked tail, a wide soft mouth, two thick drooping cheek barbels and two short chin barbels, small pectoral fins and one blunt dorsal spine with a little swollen fleshy base. Large clear white eyes and dark pupils.",
+        "The fish becomes much wider and deeper through the head and shoulder while retaining its full low swimming body and rounded tail. One dorsal and two pectoral spines grow large thick reservoir bases, giving a broad three-pronged defensive spread. Four thick soft barbels fan expressively around the wide mouth; no venom barbels, feet, fists or separate tanks."
+      ],
+      "silhouettes": [
+        {
+          "species_id": "MN_253",
+          "front": "Small wide flattened head, short low fish body, rounded tail and four thick barbels.",
+          "back": "Close rear broad nape, dorsal spine base and one gill/pectoral root; mouth turns upper-right, lower body cropped."
+        },
+        {
+          "species_id": "MN_254",
+          "front": "Massive broad-headed low fish with three stout spine reservoirs, soft barbels and rounded tail; wide not serpentine.",
+          "back": "Enlarged rear head/shoulder and dorsal/pectoral reservoir roots; one far eye turns upper-right, tail/lower body cropped."
+        }
+      ],
+      "habitat": "Slow soft-bottomed prairie lakes and rivers, especially central/southern/western habitat; ordinary fishing line.",
+      "proposed_routes": [
+        "MN_R02",
+        "MN_R16"
+      ],
+      "sources": [
+        {
+          "url": "https://www.dnr.state.mn.us/minnaqua/speciesprofile/bullheads.html",
+          "publisher": "Minnesota DNR",
+          "evidence": "Bullheads have rounded tails, food-sensing barbels and dorsal/pectoral spines, and tolerate muddy soft-bottom waters.",
+          "fantasy_extension": "Large visible spine reservoirs and their fictional murky secretion are invented; no biological toxicity claim is required."
+        },
+        {
+          "url": "https://www.dnr.state.mn.us/fish/catfish/biology.html",
+          "publisher": "Minnesota DNR",
+          "evidence": "Black bullheads occur in central/southern Minnesota shallow lakes and muddy streams and tolerate low oxygen.",
+          "fantasy_extension": "The youngster-to-adult reservoir growth is original creature anatomy, not external equipment."
+        }
+      ],
+      "design_status": "root-directed-new-family-for-art"
+    }
+  ],
+  "scope": "Two new two-stage families, four species, explicitly directed by root after user authorizes new fish. No canonical catalog mutation."
+}

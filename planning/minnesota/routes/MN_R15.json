@@ -1,0 +1,733 @@
+{
+  "id": "MN_R15",
+  "map_prefix": "MnR15",
+  "name": "Central Lakes West",
+  "dimensions_metatiles": [
+    32,
+    18
+  ],
+  "chunk_metatiles": [
+    32,
+    24
+  ],
+  "chunk_columns": 1,
+  "chunk_rows": 1,
+  "endpoints": [
+    {
+      "place": "BRAINERD",
+      "side": "E",
+      "gate_metatile": [
+        30,
+        12
+      ],
+      "landing_metatile": [
+        28,
+        12
+      ]
+    },
+    {
+      "place": "DETROIT LAKES",
+      "side": "W",
+      "gate_metatile": [
+        1,
+        12
+      ],
+      "landing_metatile": [
+        2,
+        12
+      ]
+    }
+  ],
+  "required_flags": [
+    "BADGE_6"
+  ],
+  "quest": "SQ02",
+  "tileset": "kanto",
+  "source_references": [
+    "Route12",
+    "Route13",
+    "Route14",
+    "Route34"
+  ],
+  "description": "Compact 32 by 18 metatile route, one twelfth of the rejected layout. One short grass gate leads to a real choice: Rons battle on the short road or a longer grass detour with a cache. A railed bridge reaches one optional fishing dock and one enterable cabin. The meadow return has a south-facing one-way ledge, closed by trees and lake on either side.",
+  "main_path_metatiles": [
+    [
+      30,
+      12
+    ],
+    [
+      27,
+      12
+    ],
+    [
+      27,
+      10
+    ],
+    [
+      23,
+      10
+    ],
+    [
+      23,
+      14
+    ],
+    [
+      10,
+      14
+    ],
+    [
+      10,
+      12
+    ],
+    [
+      1,
+      12
+    ]
+  ],
+  "main_lane_width_gameplay_tiles": 2,
+  "districts": [
+    {
+      "id": "WEST_FORK",
+      "name": "West grass gate and choice",
+      "bounds_metatiles": [
+        0,
+        4,
+        13,
+        16
+      ],
+      "landmark_metatile": [
+        7,
+        12
+      ],
+      "purpose": "One required short grass crossing, then battle on the short lane or grass and an item on the detour."
+    },
+    {
+      "id": "LAKE_BANK",
+      "name": "Shiner Lake bridge and dock",
+      "bounds_metatiles": [
+        11,
+        0,
+        25,
+        18
+      ],
+      "landmark_metatile": [
+        16,
+        14
+      ],
+      "purpose": "A single obligatory bridge and a gated dead-end dock with a reward."
+    },
+    {
+      "id": "CABIN",
+      "name": "East cabin and Brainerd entry",
+      "bounds_metatiles": [
+        25,
+        4,
+        32,
+        16
+      ],
+      "landmark_metatile": [
+        26,
+        6
+      ],
+      "purpose": "One compact enterable cabin, optional trainer and a short approach."
+    }
+  ],
+  "loops": [
+    {
+      "id": "MEADOW_DETOUR",
+      "path_metatiles": [
+        [
+          7,
+          12
+        ],
+        [
+          7,
+          6
+        ],
+        [
+          11,
+          6
+        ],
+        [
+          11,
+          12
+        ],
+        [
+          10,
+          12
+        ],
+        [
+          7,
+          12
+        ]
+      ],
+      "joins_districts": [
+        "WEST_FORK",
+        "LAKE_BANK"
+      ],
+      "entry_rule": "western path at [7,12]",
+      "return_rule": "southward native ledge hop; reverse entry uses the western uphill path",
+      "tradeoff": "From the west, a longer grass path and cache bypass Ron and drop back to the road. From the east, the ledge prevents entering the detour in reverse, so Ron must be faced."
+    }
+  ],
+  "minimum_optional_branches": 6,
+  "trainers": [
+    {
+      "id": "MN_R15_T02",
+      "display_name": "RON",
+      "trainer_class": "FISHER",
+      "sprite": "SPRITE_FISHER",
+      "tile": [
+        17,
+        24
+      ],
+      "anchor_metatile": [
+        8,
+        12
+      ],
+      "facing": "south",
+      "sight_range": 1,
+      "party": [
+        {
+          "species": "POLIWHIRL",
+          "level": 29
+        },
+        {
+          "species": "GOLDEEN",
+          "level": 28
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R15_TRAINER_02",
+      "block_main_lane": true,
+      "before_lines": [
+        "The short road",
+        "passes my spot.",
+        "Let us battle!"
+      ],
+      "after_lines": [
+        "Take the bridge.",
+        "The cabin is east."
+      ],
+      "loss_lines": [
+        "The meadow path",
+        "goes round me."
+      ]
+    },
+    {
+      "id": "MN_R15_T03",
+      "display_name": "NIKO",
+      "trainer_class": "CAMPER",
+      "sprite": "SPRITE_YOUNGSTER",
+      "tile": [
+        55,
+        17
+      ],
+      "anchor_metatile": [
+        27,
+        8
+      ],
+      "facing": "east",
+      "sight_range": 1,
+      "party": [
+        {
+          "species": "NIDORINO",
+          "level": 29
+        },
+        {
+          "species": "PINECO",
+          "level": 28
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R15_TRAINER_03",
+      "block_main_lane": false,
+      "before_lines": [
+        "Rested from camp?",
+        "Try my team!"
+      ],
+      "after_lines": [
+        "The lake is a",
+        "fine rest stop."
+      ],
+      "loss_lines": [
+        "Ida runs the",
+        "office up north."
+      ]
+    }
+  ],
+  "items": [
+    {
+      "id": "MN_R15_ITEM_01",
+      "item": "HYPER_POTION",
+      "quantity": 1,
+      "tile": [
+        23,
+        9
+      ],
+      "anchor_metatile": [
+        11,
+        4
+      ],
+      "flag": "EVENT_MN_R15_ITEM_01",
+      "access": "Reward for taking the longer meadow detour."
+    },
+    {
+      "id": "MN_R15_ITEM_04",
+      "item": "REVIVE",
+      "quantity": 1,
+      "tile": [
+        37,
+        15
+      ],
+      "anchor_metatile": [
+        18,
+        7
+      ],
+      "flag": "EVENT_MN_R15_ITEM_04",
+      "access": "At the closed dock end, reached through the bank gate."
+    }
+  ],
+  "encounters": {
+    "grass_rates": {
+      "morning": 10,
+      "day": 10,
+      "night": 10
+    },
+    "grass": {
+      "morning": [
+        {
+          "species": "HOPPIP",
+          "level": 25
+        },
+        {
+          "species": "PIDGEOTTO",
+          "level": 26
+        },
+        {
+          "species": "MAREEP",
+          "level": 27
+        },
+        {
+          "species": "WOOPER",
+          "level": 28
+        },
+        {
+          "species": "PINECO",
+          "level": 29
+        },
+        {
+          "species": "MARILL",
+          "level": 30
+        },
+        {
+          "species": "GIRAFARIG",
+          "level": 31
+        }
+      ],
+      "day": [
+        {
+          "species": "HOPPIP",
+          "level": 25
+        },
+        {
+          "species": "PIDGEOTTO",
+          "level": 26
+        },
+        {
+          "species": "MAREEP",
+          "level": 27
+        },
+        {
+          "species": "WOOPER",
+          "level": 28
+        },
+        {
+          "species": "PINECO",
+          "level": 29
+        },
+        {
+          "species": "MARILL",
+          "level": 30
+        },
+        {
+          "species": "GIRAFARIG",
+          "level": 31
+        }
+      ],
+      "night": [
+        {
+          "species": "NOCTOWL",
+          "level": 25
+        },
+        {
+          "species": "ARIADOS",
+          "level": 26
+        },
+        {
+          "species": "MAREEP",
+          "level": 27
+        },
+        {
+          "species": "WOOPER",
+          "level": 28
+        },
+        {
+          "species": "PINECO",
+          "level": 29
+        },
+        {
+          "species": "MARILL",
+          "level": 30
+        },
+        {
+          "species": "GIRAFARIG",
+          "level": 31
+        }
+      ]
+    },
+    "water_rate": 4,
+    "water": [
+      {
+        "species": "POLIWAG",
+        "level": 25
+      },
+      {
+        "species": "WOOPER",
+        "level": 26
+      },
+      {
+        "species": "MARILL",
+        "level": 31
+      }
+    ]
+  },
+  "interiors": [
+    {
+      "id": "MnR15LakeCabin",
+      "template": "VioletNicknameSpeechHouse",
+      "width_metatiles": 5,
+      "height_metatiles": 4,
+      "dimensions_metatiles": [
+        5,
+        4
+      ],
+      "tileset": "traditional_house",
+      "border_block": 0,
+      "exterior_anchor_metatile": [
+        26,
+        5
+      ],
+      "mandatory": false,
+      "purpose": "The single small lakeside cabin; fisher, chart and a road cache.",
+      "rows": [
+        "02 08 14 08 1a",
+        "1b 1c 20 20 20",
+        "18 19 20 20 1a",
+        "20 20 21 22 20"
+      ],
+      "exits": [
+        [
+          5,
+          7
+        ],
+        [
+          6,
+          7
+        ]
+      ],
+      "clear_arrival": [
+        5,
+        6
+      ],
+      "exit_collision": "WARP_CARPET_DOWN",
+      "residents": [
+        {
+          "id": "MN_R15_ELI",
+          "sprite": "SPRITE_FISHER",
+          "tile": [
+            7,
+            3
+          ],
+          "facing": "south",
+          "lines": [
+            "Camp Lake changes",
+            "with every breeze.",
+            "The long pier",
+            "stays put for us.",
+            "The small ball",
+            "by the shelf is",
+            "for the road home."
+          ]
+        }
+      ],
+      "items": [
+        {
+          "id": "MN_R15_CABIN_CACHE",
+          "tile": [
+            7,
+            5
+          ],
+          "item": "MAX_ETHER",
+          "quantity": 1,
+          "flag": "EVENT_MN_R15_CABIN_ETHER"
+        }
+      ],
+      "signs": [
+        {
+          "id": "MN_R15_LAKE_CHART",
+          "tile": [
+            4,
+            0
+          ],
+          "lines": [
+            "CHAIN OF LAKES",
+            "DETROIT LAKES: W",
+            "ASK AT THE DEPOT",
+            "ABOUT THE PRAIRIE"
+          ]
+        }
+      ]
+    }
+  ],
+  "shortcut": null,
+  "art_constraints": [
+    "Only original packed 8x8 source tiles.",
+    "No painted shadows, enlarged trees or perspective props.",
+    "Fit source shoreline/cliff quadrants; draw source trees in coherent metatile groups."
+  ],
+  "status": "Existing compact mechanics retained; bounded water-closure SOURCE proposal pending native republication",
+  "anchor_status": "Existing actor/room/grass/ledge geometry unchanged; 19 water-edge metatiles revised. Native Surf closure/captures pending.",
+  "residents": [
+    {
+      "id": "MN_R15_PIER_WATCHER",
+      "sprite": "SPRITE_FISHER",
+      "tile": [
+        45,
+        17
+      ],
+      "facing": "east",
+      "lines": [
+        "The rail ends",
+        "at the dock gate.",
+        "A little walk",
+        "gets a lake view."
+      ],
+      "anchor_metatile": [
+        22,
+        8
+      ]
+    },
+    {
+      "id": "MN_R15_ROAD_WALKER",
+      "sprite": "SPRITE_GRAMPS",
+      "tile": [
+        57,
+        13
+      ],
+      "facing": "west",
+      "lines": [
+        "Eli lives here.",
+        "You may go inside.",
+        "The road west",
+        "uses the bridge."
+      ],
+      "anchor_metatile": [
+        28,
+        6
+      ]
+    }
+  ],
+  "signs": [
+    {
+      "id": "MN_R15_SIGN_01",
+      "tile": [
+        3,
+        21
+      ],
+      "lines": [
+        "CENTRAL LAKES",
+        "WEST: DETROIT",
+        "EAST: BRAINERD"
+      ]
+    },
+    {
+      "id": "MN_R15_SIGN_02",
+      "tile": [
+        49,
+        25
+      ],
+      "lines": [
+        "SHINER LAKE",
+        "DOCK: NORTH",
+        "KEEP TO THE RAILS"
+      ]
+    },
+    {
+      "id": "MN_R15_SIGN_03",
+      "tile": [
+        57,
+        19
+      ],
+      "lines": [
+        "LAKE CABIN",
+        "VISITORS WELCOME"
+      ]
+    }
+  ],
+  "doors": [
+    {
+      "id": "LAKE_CABIN",
+      "warp_index": 1,
+      "tile": [
+        53,
+        11
+      ],
+      "arrival_tile": [
+        53,
+        12
+      ],
+      "return_tile": [
+        53,
+        12
+      ],
+      "target": "MnR15LakeCabin",
+      "target_warp": 1,
+      "collision": "DOOR",
+      "return_warp_index": 2
+    }
+  ],
+  "viewpoints": [
+    {
+      "id": "WEST_GRASS_GATE",
+      "tile": [
+        5,
+        25
+      ]
+    },
+    {
+      "id": "ROAD_OR_MEADOW",
+      "tile": [
+        15,
+        25
+      ]
+    },
+    {
+      "id": "MEADOW_CACHE",
+      "tile": [
+        23,
+        11
+      ]
+    },
+    {
+      "id": "OUTLET_BRIDGE",
+      "tile": [
+        33,
+        29
+      ]
+    },
+    {
+      "id": "FISHING_DOCK",
+      "tile": [
+        39,
+        15
+      ]
+    },
+    {
+      "id": "LAKE_CABIN",
+      "tile": [
+        53,
+        15
+      ]
+    },
+    {
+      "id": "MEADOW_ONE_WAY_LEDGE",
+      "tile": [
+        23,
+        17
+      ]
+    }
+  ],
+  "implementation": {
+    "layout": "MN_R15.layout.json",
+    "scope": "One 32 by 18 metatile exterior and one small cabin; six unused lower rows removed.",
+    "art_review": "../renders/central-lakes/whole-route.png",
+    "state": "32 by 18 native exterior published; grass, directional ledge, trainer battles and persistence executed through production input.",
+    "trainer_density": "Two purposeful trainers; unused reservations do not create padding."
+  },
+  "required_grass_crossings": [
+    {
+      "id": "WEST_MEADOW_GATE",
+      "bounds_core": [
+        6,
+        22,
+        12,
+        28
+      ],
+      "minimum_grass_steps": 6
+    }
+  ],
+  "one_way_ledges": [
+    {
+      "id": "MEADOW_RETURN_DROP",
+      "bounds_core": [
+        22,
+        18,
+        26,
+        20
+      ],
+      "direction": "south",
+      "source_block": "07",
+      "upper_approach": [
+        22,
+        17
+      ],
+      "hop_from": [
+        22,
+        18
+      ],
+      "landing": [
+        22,
+        20
+      ],
+      "reverse_blocked": [
+        22,
+        19
+      ],
+      "side_barriers": [
+        [
+          21,
+          18
+        ],
+        [
+          26,
+          18
+        ]
+      ],
+      "purpose": "The rewarded northern detour drops onto the road; it cannot be entered from its lower return.",
+      "return_passage_core": [
+        14,
+        18,
+        16,
+        20
+      ],
+      "minimum_return_steps": 25
+    }
+  ],
+  "mandatory_trainer_lanes": [
+    {
+      "trainer": "MN_R15_T02",
+      "blocked_direction": "east_to_west",
+      "bypass_direction": "west_to_east",
+      "ledge": "MEADOW_RETURN_DROP"
+    }
+  ],
+  "water_boundary_revision": {
+    "status": "Source closure proposal; existing published pack and previous native captures predate the closure. Preserve existing route/room/ledge/trainer contracts.",
+    "layout_water_boundaries": [
+      "SHINER_NORTH_ROCKS",
+      "OUTLET_SOUTH_ROCKS"
+    ],
+    "native_art": "Existing Kanto6b water rocks, unchanged source pixels. No new art.",
+    "native_required": "Republish, capture both joins and prove Surf cannot leave the map through production controller.",
+    "north_closure": "Kanto forest0f cap at meta row0, x12..19; Kanto6b rocks at row1. No actual boundary WATER remains; the above-rock interior water strip is sealed."
+  }
+}

@@ -1,0 +1,60 @@
+{
+  "id": "MnR10Cave1F",
+  "template": "UnionCave1F",
+  "dimensions_metatiles": [
+    12,
+    8
+  ],
+  "rows": [
+    "01 01 01 01 01 01 01 01 01 01 01 01",
+    "01 04 05 05 05 05 06 04 05 05 06 01",
+    "01 08 02 02 02 02 0a 08 02 02 0a 01",
+    "01 08 02 18 1a 02 02 02 02 02 0a 01",
+    "01 08 02 02 02 02 0a 08 02 02 0a 01",
+    "01 08 02 02 02 02 02 02 18 1a 0a 01",
+    "01 07 21 21 21 21 22 20 21 21 22 01",
+    "01 01 01 01 01 01 01 01 01 01 01 01"
+  ],
+  "exits": [
+    [
+      3,
+      13
+    ]
+  ],
+  "clear_arrival": [
+    3,
+    12
+  ],
+  "exit_collision": "LADDER",
+  "border_block": 1,
+  "residents": [
+    {
+      "id": "MN_R10_GALLERY_READER",
+      "sprite": "SPRITE_SUPER_NERD",
+      "tile": [
+        9,
+        5
+      ],
+      "facing": "east",
+      "lines": [
+        "Both passages",
+        "circle the pillar.",
+        "The foreman was",
+        "at the west mine."
+      ]
+    }
+  ],
+  "items": [
+    {
+      "id": "MN_R10_ITEM_04",
+      "item": "REVIVE",
+      "quantity": 1,
+      "flag": "EVENT_MN_R10_ITEM_04",
+      "tile": [
+        17,
+        5
+      ]
+    }
+  ],
+  "signs": []
+}

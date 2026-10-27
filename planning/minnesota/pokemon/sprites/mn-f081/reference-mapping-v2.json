@@ -1,0 +1,11 @@
+{
+  "references": [
+    {
+      "path": "/Users/ryanculligan/GitHub/geothite/planning/minnesota/pokemon/sprites/mn-f074/mn-157-159.front-back.imagegen-v2.png",
+      "sha256": "342297996ccb1d2c8e56f740f17637d5834b37eea3bb8b76d90acbb7c2fdf6f7",
+      "role": "Original prior family used only for chunky pixel style and close rear portrait framing; no volcanic anatomy copying."
+    }
+  ],
+  "authentic_style_basis_already_inspected": "target/minnesota-pokemon/gen2-reference/starters.png",
+  "palette_plan": "sprites/mn-f081/palette-plan.json"
+}

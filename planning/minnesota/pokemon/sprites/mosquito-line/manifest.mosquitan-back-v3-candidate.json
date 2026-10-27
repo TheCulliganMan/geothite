@@ -1,0 +1,410 @@
+{
+  "schema_version": 3,
+  "status": "mosquitan-back-v3-review-pending",
+  "tool": "built-in image_gen",
+  "prompt": "Use case: stylized-concept. Asset type: ONE original Game Boy Color monster evolution SPRITE SHEET, three species only. Original Minnesota giant-mosquito pseudo-legendary line, not existing game characters.\nCANVAS AND PIXELS: landscape 1536x512, representing a logical 192x64 pixel sheet enlarged exactly 8x with nearest-neighbor blocks. EXACTLY three equal 64x64 logical cells in one row. Each cell contains one 56x56 battle canvas centered with four logical pixels of white padding. No creature may cross into another cell. White background, no labels, text, borders, panels, shadow or scenery. All three sprites face left in a front three-quarter battle view.\nHARD GBC 2BPP PALETTE: FOUR SOLID COLORS TOTAL, INCLUDING BACKGROUND. Color index 0 RGB5(31,31,31), RGB555 word 0x7FFF = RGB8(255,255,255) #FFFFFF, background and highlights. Index 1 RGB5(24,27,10), word 0x2B78 = RGB8(198,222,82) #C6DE52, light acid yellow-green. Index 2 RGB5(10,5,15), word 0x3CAA = RGB8(82,41,123) #52297B, dark bog violet. Index 3 RGB5(0,0,0), word 0x0000 = RGB8(0,0,0) #000000, contour and pupils. RGB555 uses r | (g<<5) | (b<<10); expand five-bit channels as (v<<3)|(v>>2). No fifth color, transparency, color ramps, soft shading, gradients, antialiasing, dithering or texture. Use ONLY large flat color clusters, sparse white highlights, one logical-pixel black outlines, and economical expressions. This is coarse native pixel art, not a pixel-styled illustration.\nLEFT CELL, WRIGGLET, Bug type, 300 stat total: small charming mosquito larva, about 26x26 logical pixels. A dark-violet round head with two bold mischievous eyes, acid-green chunky curved segmented body, little mouth brushes, one short blunt breathing siphon pointing up. Its body folds into a compact J shape. No wings, no adult proboscis, no arms or legs.\nMIDDLE CELL, PUPUMP, Bug/Poison, 420 stat total: distinct stout pupa, about 38x38 logical pixels. A comma-shaped violet protective case with a broad green reservoir belly, two short trumpet breathing tubes on top, folded wing-case plates visible as two large shapes, and a chunky curled paddle tail. A single narrow eye peers through the case. Strong compact tank silhouette, not a bigger larva. No adult wings or limbs yet.\nRIGHT CELL, MOSQUITAN, Bug/Poison, 600 stat total: enormous imposing mosquito fantasy monster, occupying at most 54x54 logical pixels. Broad hunched violet thorax, one huge bulbous acid-green reservoir abdomen, a narrow waist and two broad swept white-and-violet wings behind the shoulders, exactly TWO wings. Six thick readable jointed insect legs: four supporting legs with wide splayed feet, and the front pair held as curved graspers. Long blunt lance-shaped organic proboscis projects left from a small angular face with two confident white eyes. Its heavy abdomen and ribbed bellows underbody suggest a marsh pressure-pump, its antennae are short bent reeds. Make it look huge and powerful despite the small canvas. NO human muscular torso, no bodybuilder pose, no costume, weapon, gun, syringe, crown or extra floating effects. Keep wing/leg gaps at least two logical pixels wide. Adult silhouette is wide and hunched with a raised reservoir; not a generic real mosquito and not a dragonfly.\nEvolution must visibly change anatomy: tiny J-shaped larva -> compact protected comma-shaped pupa -> massive six-legged, two-winged marsh tyrant. Clear shared green reservoir and violet head/case connect the line. Every sprite is entirely inside its own equal cell, adult wings do not overlap the pupa cell.",
+  "sprites": [
+    {
+      "id": "mn-151-wrigglet-v2",
+      "source": "sprites/mosquito-line/mn-151-153.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        600,
+        724
+      ],
+      "fit": [
+        36,
+        36
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        9044,
+        5512,
+        0
+      ],
+      "view": "front",
+      "species_id": "MN_151",
+      "source_palette_rgb555": [
+        32767,
+        11128,
+        15530,
+        0
+      ]
+    },
+    {
+      "id": "mn-152-pupump-v2",
+      "source": "sprites/mosquito-line/mn-151-153.imagegen-v1.png",
+      "crop": [
+        600,
+        0,
+        600,
+        724
+      ],
+      "fit": [
+        38,
+        38
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        22382,
+        14505,
+        0
+      ],
+      "view": "front",
+      "species_id": "MN_152",
+      "source_palette_rgb555": [
+        32767,
+        11128,
+        15530,
+        0
+      ]
+    },
+    {
+      "id": "mn-153-mosquitan-v2",
+      "source": "sprites/mosquito-line/mn-151-153.imagegen-v1.png",
+      "crop": [
+        1200,
+        0,
+        972,
+        724
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        9081,
+        10381,
+        0
+      ],
+      "view": "front",
+      "species_id": "MN_153",
+      "source_palette_rgb555": [
+        32767,
+        11128,
+        15530,
+        0
+      ]
+    },
+    {
+      "id": "mn-151-wrigglet-v2",
+      "species_id": "MN_151",
+      "view": "back",
+      "source": "sprites/mosquito-line/mn-151-153.back.imagegen-v2.png",
+      "crop": [
+        0,
+        0,
+        680,
+        724
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        9044,
+        5512,
+        0
+      ]
+    },
+    {
+      "id": "mn-152-pupump-v2",
+      "species_id": "MN_152",
+      "view": "back",
+      "source": "sprites/mosquito-line/mn-151-153.back.imagegen-v2.png",
+      "crop": [
+        680,
+        0,
+        715,
+        724
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        22382,
+        14505,
+        0
+      ]
+    },
+    {
+      "id": "mn-153-mosquitan-v3",
+      "species_id": "MN_153",
+      "view": "back",
+      "source": "sprites/mosquito-line/mn-153-mosquitan.back.imagegen-v3.png",
+      "crop": [
+        0,
+        0,
+        1254,
+        1254
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        9081,
+        10381,
+        0
+      ]
+    }
+  ],
+  "conversion_notes": "Original front ImageGen anatomy is retained. Rust maps the original front source palette into each Pokemon target palette. New back-only v2 portraits were generated with target palettes individually and imported directly with reviewed crops. Every source, prompt/reference mapping and prior native/crop version is preserved; static56x56 fronts and48x48 backs are authored, animation and pack registration remain separate.",
+  "family_id": "MN_F072",
+  "back_prompt_file": "sprites/mosquito-line/mosquitan-back-prompt-v3.txt",
+  "visual_review": {
+    "status": "pending",
+    "notes": "Final source-contour-v1 board visually inspected: larva, protected reservoir pupa and enormous two-wing adult show clear anatomical growth and individual moss/lime, violet/mint and plum/acid palettes. White adult wing rims now connect around readable panels, leg/thorax colored interiors restored. Adult leg crossings remain dense at this native scale but preserve source anatomy and separated feet. Large rear nape/case/upper-thorax portraits crop lower bodies, adult legs and lower abdomen, matching each front palette. No neighboring source fragments seen.",
+    "sheet_sha256": "41eb5eee87c671d5353a5e0506e75aa547f397b5d424b9dcc87a2d270c651f15",
+    "outline_profile": "source-contour-v1"
+  },
+  "pokemon_palettes": {
+    "MN_151": {
+      "species_id": "MN_151",
+      "name": "Wrigglet",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          20,
+          26,
+          8
+        ],
+        [
+          8,
+          12,
+          5
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        9044,
+        5512,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          165,
+          214,
+          66
+        ],
+        [
+          66,
+          99,
+          41
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#A5D642",
+        "#426329",
+        "#000000"
+      ]
+    },
+    "MN_152": {
+      "species_id": "MN_152",
+      "name": "Pupump",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          14,
+          27,
+          21
+        ],
+        [
+          9,
+          5,
+          14
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        22382,
+        14505,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          115,
+          222,
+          173
+        ],
+        [
+          74,
+          41,
+          115
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#73DEAD",
+        "#4A2973",
+        "#000000"
+      ]
+    },
+    "MN_153": {
+      "species_id": "MN_153",
+      "name": "Mosquitan",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          25,
+          27,
+          8
+        ],
+        [
+          13,
+          4,
+          10
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        9081,
+        10381,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          206,
+          222,
+          66
+        ],
+        [
+          107,
+          33,
+          82
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#CEDE42",
+        "#6B2152",
+        "#000000"
+      ]
+    }
+  },
+  "back_framing": "gen2-close-rear-portrait",
+  "conversion_revision": "Individual palette mapping from original ink indices; close rear crop from separately authored back view. Original source and all prior native renders retained.",
+  "original_source_palette": {
+    "gbc_rgb5": [
+      [
+        31,
+        31,
+        31
+      ],
+      [
+        24,
+        27,
+        10
+      ],
+      [
+        10,
+        5,
+        15
+      ],
+      [
+        0,
+        0,
+        0
+      ]
+    ],
+    "gbc_rgb555_words": [
+      32767,
+      11128,
+      15530,
+      0
+    ],
+    "rgb8": [
+      [
+        255,
+        255,
+        255
+      ],
+      [
+        198,
+        222,
+        82
+      ],
+      [
+        82,
+        41,
+        123
+      ],
+      [
+        0,
+        0,
+        0
+      ]
+    ],
+    "hex": [
+      "#FFFFFF",
+      "#C6DE52",
+      "#52297B",
+      "#000000"
+    ]
+  },
+  "back_reference_mapping": "sprites/mosquito-line/back-reference-mapping-v2.json"
+}

@@ -1,0 +1,129 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F069",
+  "status": "native-front-back-reviewed",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_148": {
+      "species_id": "MN_148",
+      "name": "Halound",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          30,
+          22,
+          9
+        ],
+        [
+          10,
+          17,
+          24
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        9950,
+        25130,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          247,
+          181,
+          74
+        ],
+        [
+          82,
+          140,
+          198
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#F7B54A",
+        "#528CC6",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f069/prompt-v1.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "style_reference": {
+    "origin": "authentic local Crystal sprites",
+    "boards": [
+      "target/minnesota-pokemon/gen2-reference/starters.png",
+      "target/minnesota-pokemon/gen2-reference/bugs.png"
+    ]
+  },
+  "sprites": [
+    {
+      "id": "mn-148-halound-v1",
+      "species_id": "MN_148",
+      "view": "front",
+      "source": "sprites/mn-f069/mn-148.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        887,
+        910
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        9950,
+        25130,
+        0
+      ]
+    },
+    {
+      "id": "mn-148-halound-v1",
+      "species_id": "MN_148",
+      "view": "back",
+      "source": "sprites/mn-f069/mn-148.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        910,
+        887,
+        864
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        9950,
+        25130,
+        0
+      ]
+    }
+  ],
+  "visual_review": {
+    "status": "reviewed",
+    "notes": "Final source-contour-v1 board visually inspected: ice-white hound retains blue shadow planes, crystalline ears, crescent tail and two gold sundog decoys. Former detached ear-rim fragments now connect; white body, tail and rear ear contours remain legible with less black flooding. Back is close nape/collar portrait with lower body cropped. Tiny detached blue accents are intentional markings, not outline defects.",
+    "sheet_sha256": "29d355e753fdbdc5db62b7e5828a5aa10d79636149a7ec786c5fa8af3f511709",
+    "outline_profile": "source-contour-v1"
+  }
+}

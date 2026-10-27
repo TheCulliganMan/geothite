@@ -1,0 +1,103 @@
+{
+  "id": "MnMinneapolis",
+  "name": "MINNEAPOLIS",
+  "dimensions_metatiles": [
+    32,
+    24
+  ],
+  "reference_anchor_percent": [
+    54,
+    70
+  ],
+  "role": "gym_3",
+  "tileset": "johto_modern",
+  "composition": "Compact river city with three distinct blocks and riverfront park.",
+  "ports": [
+    {
+      "route": "MN_R03",
+      "side": "S",
+      "gate_metatile": [
+        16,
+        22
+      ],
+      "landing_metatile": [
+        16,
+        20
+      ]
+    },
+    {
+      "route": "MN_R04",
+      "side": "E",
+      "gate_metatile": [
+        30,
+        12
+      ],
+      "landing_metatile": [
+        28,
+        12
+      ]
+    },
+    {
+      "route": "MN_R05",
+      "side": "N",
+      "gate_metatile": [
+        16,
+        1
+      ],
+      "landing_metatile": [
+        16,
+        3
+      ]
+    }
+  ],
+  "interiors": [
+    {
+      "id": "MnMinneapolisPokecenter1F",
+      "kind": "pokecenter",
+      "dimensions_metatiles": [
+        10,
+        8
+      ],
+      "source_behavior": "canonical healing, PC and blackout recovery"
+    },
+    {
+      "id": "MnMinneapolisMart",
+      "kind": "mart",
+      "dimensions_metatiles": [
+        6,
+        4
+      ],
+      "source_behavior": "canonical clerk, money deduction and inventory"
+    },
+    {
+      "id": "MnMinneapolisGym",
+      "kind": "gym_3",
+      "dimensions_metatiles": [
+        12,
+        10
+      ]
+    }
+  ],
+  "walkable_destinations": [
+    "each port landing",
+    "every visible exterior door",
+    "central square",
+    "local story NPC",
+    "Team ICE counterfeit inspection and dispatcher witness",
+    "separate dispatch-copy interaction after the enforcer battle"
+  ],
+  "door_contract": "Assign exterior core-tile door coordinates only after selecting authentic facade quadrants; record reciprocal warp indices and indoor floor arrivals before export.",
+  "story_factions": [
+    {
+      "name": "Team ICE",
+      "allied_to": "Team Lode",
+      "actor": "MN_ICE_ENFORCER",
+      "milestone": "MS03_ICE",
+      "battle": "MN_ICE_ENFORCER",
+      "activity": "A counterfeit police inspection at the rail dispatch office. The crew seizes survey records, threatens a dispatcher and shields Lode shipments.",
+      "placement_status": "Fit the actor, witness and separate dispatch copy to authored native city geometry before export; no coordinates are claimed yet.",
+      "progression": "Actual enforcer victory opens access to the copy; acknowledging the separate note records EVENT_MN_DISPATCH_NOTE. No gym badge, meter, depot clearance or later story result is granted here.",
+      "kidnapping": "ICE kidnaps anybody it suspects of opposition. The rail dispatcher is held captive; after the actual enforcer battle, a separate release interaction precedes reading the dispatch copy. Authored only: native placement and custody/release implementation pending."
+    }
+  ]
+}

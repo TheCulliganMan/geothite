@@ -363,8 +363,9 @@ fn compose_tile_grid(
             }
 
             let destination_offset = ((tile_y + source_y) * width + tile_x) * 4;
-            data[destination_offset..destination_offset + SOURCE_TILE_SIZE * 4]
-                .copy_from_slice(&tile.data.as_ref().expect("CPU image pixels")[source_row_start..source_row_end]);
+            data[destination_offset..destination_offset + SOURCE_TILE_SIZE * 4].copy_from_slice(
+                &tile.data.as_ref().expect("CPU image pixels")[source_row_start..source_row_end],
+            );
         }
     }
     if let Some(handle) = existing {
@@ -424,8 +425,9 @@ fn compose_visual_world_tiles(
                 continue;
             }
             let destination = ((tile_y + source_y) * width + tile_x) * 4;
-            data[destination..destination + SOURCE_TILE_SIZE * 4]
-                .copy_from_slice(&tile.data.as_ref().expect("CPU image pixels")[source_start..source_end]);
+            data[destination..destination + SOURCE_TILE_SIZE * 4].copy_from_slice(
+                &tile.data.as_ref().expect("CPU image pixels")[source_start..source_end],
+            );
         }
     }
     if let Some(handle) = existing {
@@ -500,8 +502,9 @@ fn compose_priority_tile_grid(
                 continue;
             }
             let destination_offset = ((tile_y + source_y) * width + tile_x) * 4;
-            data[destination_offset..destination_offset + SOURCE_TILE_SIZE * 4]
-                .copy_from_slice(&tile.data.as_ref().expect("CPU image pixels")[source_row_start..source_row_end]);
+            data[destination_offset..destination_offset + SOURCE_TILE_SIZE * 4].copy_from_slice(
+                &tile.data.as_ref().expect("CPU image pixels")[source_row_start..source_row_end],
+            );
         }
     }
     if let Some(handle) = existing {
@@ -568,6 +571,16 @@ fn load_tileset_art(
     let source_tile_count =
         (width as usize / SOURCE_TILE_SIZE) * (height as usize / SOURCE_TILE_SIZE);
     let palette_bank = load_tileset_palette_bank(asset_root, tileset_id, time_of_day)?;
+    let foreground_path = runtime_assets
+        .join("data/tilesets")
+        .join(format!("{tileset_id}_foregrounds.json"));
+    let foregrounds: std::collections::BTreeMap<usize, [[u8; 3]; 3]> =
+        if crate::runtime_asset_exists(&foreground_path) {
+            serde_json::from_str(&crate::read_runtime_asset_to_string(&foreground_path)?)
+                .context("parse authored tile foreground colors")?
+        } else {
+            std::collections::BTreeMap::new()
+        };
     let renderable_tile_count = source_tile_count.max(palette_map.len()).max(1);
     let mut tile_handles = Vec::with_capacity(renderable_tile_count);
     let mut priority_tile_handles = Vec::with_capacity(renderable_tile_count);
@@ -578,9 +591,13 @@ fn load_tileset_art(
         let vram_bank = (palette_value >> 3) & 0x01;
         let source_tile_index =
             resolve_tileset_tile_index(source_tile_count, tile_index, vram_bank);
-        let palette = palette_bank
-            .as_ref()
-            .and_then(|bank| bank.get(palette_index).or_else(|| bank.first()));
+        let resolved_palette = tile_foreground::resolve(
+            tile_index,
+            palette_index,
+            palette_bank.as_deref(),
+            &foregrounds,
+        );
+        let palette = resolved_palette.as_ref();
         let mut data = vec![0_u8; SOURCE_TILE_SIZE * SOURCE_TILE_SIZE * 4];
         copy_source_tile_rgba(
             &source,
@@ -652,6 +669,7 @@ fn load_tileset_art(
         tileset_id,
         palette_map,
         palette_bank.as_ref(),
+        &foregrounds,
         &tile_handles,
         images,
     )?;
@@ -661,6 +679,7 @@ fn load_tileset_art(
         tile_handles,
         priority_tile_handles,
         animated_tiles,
+        render_flags: metatile_render_flags::MetatileRenderFlags::default(),
     })
 }
 
@@ -711,26 +730,39 @@ fn load_common_tileset_animations(
     tileset_id: &str,
     palette_map: &[u8],
     palette_bank: Option<&Vec<Palette>>,
+    foregrounds: &BTreeMap<usize, [[u8; 3]; 3]>,
     tile_handles: &[Handle<Image>],
     images: &mut Assets<Image>,
 ) -> Result<HashMap<usize, TilesetAnimatedTile>> {
     const FLOWER_TILE: usize = 0x03;
     const WATER_TILE: usize = 0x14;
-    const FLOWER_TILESETS: [&str; 6] = [
+    const FLOWER_TILESETS: [&str; 12] = [
         "johto",
+        "mn_north_shore",
+        "mn_headwaters",
+        "mn_prairie_kanto",
+        "mn_prairie_headwaters",
+        "mn_bemidji",
         "johto_modern",
         "johto_modern_generated",
         "kanto",
         "park",
         "forest",
+        "mn_gunflint",
     ];
-    const WATER_TILESETS: [&str; 10] = [
+    const WATER_TILESETS: [&str; 16] = [
         "johto",
+        "mn_north_shore",
+        "mn_headwaters",
+        "mn_prairie_kanto",
+        "mn_prairie_headwaters",
+        "mn_bemidji",
         "johto_modern",
         "johto_modern_generated",
         "kanto",
         "park",
         "forest",
+        "mn_gunflint",
         "port",
         "cave",
         "dark_cave",
@@ -738,7 +770,12 @@ fn load_common_tileset_animations(
     ];
     let mut animated = HashMap::new();
     let root = asset_root.runtime_assets().join("gfx/tilesets");
-    if FLOWER_TILESETS.contains(&tileset_id) {
+    let animation_source = match tileset_id {
+        "mn_northwoods_props" | "mn_marais_shore" | "mn_campfire" => "johto",
+        "mn_minneapolis_city" | "mn_duluth_expanded" => "johto_modern",
+        _ => tileset_id,
+    };
+    if FLOWER_TILESETS.contains(&animation_source) {
         let palette = tileset_animation_palette(FLOWER_TILE, palette_map, palette_bank);
         let mut frames = Vec::with_capacity(2);
         for name in ["cgb_1.2bpp", "cgb_2.2bpp"] {
@@ -751,7 +788,7 @@ fn load_common_tileset_animations(
         }
         animated.insert(FLOWER_TILE, sequential_tileset_animation(frames, 60, 0));
     }
-    if WATER_TILESETS.contains(&tileset_id) {
+    if WATER_TILESETS.contains(&animation_source) {
         let palette = tileset_animation_palette(WATER_TILE, palette_map, palette_bank);
         let frames =
             load_2bpp_animation_frames(&root.join("water/water.2bpp"), 4, palette, images)?;
@@ -825,7 +862,7 @@ fn load_common_tileset_animations(
             );
         }
     }
-    if tileset_id == "forest" {
+    if matches!(tileset_id, "forest" | "mn_gunflint") {
         const LEFT_TILE: usize = 0x0c;
         const RIGHT_TILE: usize = 0x0f;
         let directory = root.join("forest-tree");
@@ -902,6 +939,18 @@ fn load_common_tileset_animations(
             scrolled_tileset_animation(vertical_source, false, 3, 19, 16, images)?,
         );
     }
+    if tileset_id == "mn_north_shore" {
+        // The bounded Rust extension places the native cave waterfall in the
+        // unused Johto tile $20; retain its source scroll phase and cadence.
+        const WATERFALL_TILE: usize = 0x20;
+        let source = tile_handles
+            .get(WATERFALL_TILE)
+            .context("North Shore waterfall requires its derived tile $20")?;
+        animated.insert(
+            WATERFALL_TILE,
+            scrolled_tileset_animation(source, false, 3, 19, 16, images)?,
+        );
+    }
     if tileset_id == "ice_path" {
         const HORIZONTAL_VISIBLE_TILE: usize = 0xb5;
         const VERTICAL_VISIBLE_TILE: usize = 0xb1;
@@ -919,6 +968,44 @@ fn load_common_tileset_animations(
             VERTICAL_VISIBLE_TILE,
             scrolled_tileset_animation(vertical_source, false, 3, 19, 16, images)?,
         );
+    }
+    let authored_path = asset_root
+        .runtime_assets()
+        .join("data/tilesets")
+        .join(format!("{tileset_id}_animations.json"));
+    if crate::runtime_asset_exists(&authored_path) {
+        let clips: BTreeMap<u8, AuthoredTileAnimation> =
+            serde_json::from_str(&crate::read_runtime_asset_to_string(&authored_path)?)
+                .context("parse authored ambient tile animation")?;
+        for (tile, clip) in clips {
+            clip.validate()?;
+            anyhow::ensure!(
+                !animated.contains_key(&usize::from(tile)),
+                "authored tile animation overlaps a native animation"
+            );
+            let palette_index = usize::from(
+                *palette_map
+                    .get(usize::from(tile))
+                    .context("authored animation palette")?
+                    & 7,
+            );
+            let palette = tile_foreground::resolve(
+                usize::from(tile),
+                palette_index,
+                palette_bank.map(Vec::as_slice),
+                foregrounds,
+            );
+            let frames = decode_2bpp_animation_frames(
+                clip.frames.as_flattened(),
+                clip.frames.len(),
+                palette.as_ref(),
+                images,
+            )?;
+            animated.insert(
+                usize::from(tile),
+                sequential_tileset_animation(frames, clip.frame_ticks, 0),
+            );
+        }
     }
     Ok(animated)
 }
@@ -977,7 +1064,9 @@ fn shifted_tileset_tile_handle(
     let source_data = images
         .get(source)
         .context("tileset scroll animation source image is unavailable")?
-        .data.as_ref().expect("CPU image pixels")
+        .data
+        .as_ref()
+        .expect("CPU image pixels")
         .clone();
     if source_data.len() != SOURCE_TILE_SIZE * SOURCE_TILE_SIZE * 4 {
         anyhow::bail!(
@@ -1047,11 +1136,19 @@ fn load_2bpp_animation_frames(
 ) -> Result<Vec<Handle<Image>>> {
     let bytes = crate::read_runtime_asset(path)
         .with_context(|| format!("read tileset animation {}", path.display()))?;
+    decode_2bpp_animation_frames(&bytes, frame_count, palette, images)
+}
+
+fn decode_2bpp_animation_frames(
+    bytes: &[u8],
+    frame_count: usize,
+    palette: Option<&Palette>,
+    images: &mut Assets<Image>,
+) -> Result<Vec<Handle<Image>>> {
     let expected = frame_count * SOURCE_TILE_SIZE * 2;
     if bytes.len() != expected {
         anyhow::bail!(
-            "tileset animation {} must contain {} bytes ({} frames), found {}",
-            path.display(),
+            "tileset animation must contain {} bytes ({} frames), found {}",
             expected,
             frame_count,
             bytes.len()
@@ -1693,14 +1790,38 @@ fn draw_visible_intro_sprites(
             let tile_id = sprite
                 .tile_id
                 .wrapping_add((piece_tile + tile_offset).rem_euclid(256) as u8);
+            // OBJ $80..$ff and signed BG $80..$ff address the same
+            // $8800..$8fff VRAM. Resolve that shared region through the
+            // authored VRAM bindings, including single-tile grass uploads.
+            let shared_binding = intro.background_binding.as_ref().and_then(|background| {
+                background.tile_bindings.iter().find(|binding| {
+                    tile_id >= 0x80
+                        && binding.target_vram_bank == ((attr >> 3) & 1)
+                        && tile_id >= binding.tile_id_start
+                        && tile_id <= binding.tile_id_end
+                })
+            });
+            let shared_graphic_name;
+            let (graphic_name, source_tile, tile_base) = if let Some(binding) = shared_binding {
+                let source_tile =
+                    binding.resource_tile_start + u16::from(tile_id - binding.tile_id_start);
+                shared_graphic_name = visible_intro_resource_stem(&binding.resource, ".2bpp")?;
+                (
+                    shared_graphic_name.as_str(),
+                    u8::try_from(source_tile).context("intro OBJ source tile exceeds one byte")?,
+                    0,
+                )
+            } else {
+                (sprite.gfx_name.as_str(), tile_id, sprite.gfx_tile_base)
+            };
             draw_intro_sprite_tile(
                 &intro_root,
                 intro,
-                &sprite.gfx_name,
+                graphic_name,
                 &palette_name,
-                tile_id,
+                source_tile,
                 attr,
-                sprite.gfx_tile_base,
+                tile_base,
                 IntroTileIndexMode::Offset,
                 true,
                 rendered_art,
@@ -1782,7 +1903,8 @@ fn draw_intro_sprite_tile(
         true,
     )?;
     let source_tile_index =
-        resolve_intro_tile_index(tile_id, tile_shift, tile_mode, source_tile_count)?;
+        resolve_intro_tile_index(tile_id, tile_shift, tile_mode, source_tile_count)
+            .with_context(|| format!("intro graphic {graphic_name}, shift {tile_shift:#04x}"))?;
     blit_intro_sprite_source_tile(
         source,
         width as usize,
@@ -1977,7 +2099,8 @@ fn draw_intro_tile(
             .checked_sub(1)
             .context("intro crystal_unowns sheet has no blank terminal tile")?
     } else {
-        resolve_intro_tile_index(tile_id, tile_shift, tile_mode, source_tile_count)?
+        resolve_intro_tile_index(tile_id, tile_shift, tile_mode, source_tile_count)
+            .with_context(|| format!("intro graphic {graphic_name}, shift {tile_shift:#04x}"))?
     };
     let xflip = (attr & 0x20) != 0;
     let yflip = (attr & 0x40) != 0;
@@ -4245,13 +4368,22 @@ const GRASS_RUSTLE_OAM_LAYOUTS: [[GrassRustleOamPiece; 2]; 2] = [
     ],
 ];
 
+fn grass_rustle_art_key(tileset_id: &str, time_of_day: &str) -> (String, String) {
+    let style = match tileset_id {
+        "mn_prairie_kanto" | "mn_prairie_headwaters" => tileset_id,
+        _ => "native",
+    };
+    (style.to_owned(), normalize_tileset_time_of_day(time_of_day))
+}
+
 fn grass_rustle_frames_for_art(
     rendered_art: &mut RenderedTilesetArt,
     asset_root: &AssetRoot,
+    tileset_id: &str,
     time_of_day: &str,
     images: &mut Assets<Image>,
 ) -> Option<[SpriteFrame; 2]> {
-    let key = normalize_tileset_time_of_day(time_of_day);
+    let key = grass_rustle_art_key(tileset_id, time_of_day);
     if !rendered_art.grass_rustle_cache.contains_key(&key)
         && !rendered_art.grass_rustle_errors.contains_key(&key)
     {
@@ -4274,10 +4406,18 @@ fn grass_rustle_frames_for_art(
                 );
             }
             let background = *source.get_pixel(0, 0);
-            let palette_bank = load_npc_sprite_palette_bank(asset_root, &key)?;
+            let (palette_bank, palette_index) = if key.0 == "native" {
+                (load_npc_sprite_palette_bank(asset_root, &key.1)?, 6)
+            } else {
+                (
+                    load_tileset_palette_bank(asset_root, tileset_id, &key.1)?
+                        .context("prairie grass rustle has no background palette bank")?,
+                    7,
+                )
+            };
             let palette = palette_bank
-                .get(6)
-                .context("grass rustle palette bank has no palette 6")?;
+                .get(palette_index)
+                .context("grass rustle palette bank lacks its authored palette")?;
             let build = |layout: [GrassRustleOamPiece; 2],
                          images: &mut Assets<Image>|
              -> SpriteFrame {
@@ -4470,15 +4610,28 @@ fn visible_map_object_model_source_from_data(
     variable_sprites: &BTreeMap<String, String>,
     menu_icons: &BTreeMap<String, String>,
 ) -> String {
-    let trainer_class = data.maps.get(map)
+    let trainer_class = data
+        .maps
+        .get(map)
         .and_then(|module| module.trainer_scripts.get(&object.script))
         .map(|trainer| trainer.trainer_class.as_str());
-    if let Some(source) = shared_swimmer_model_source(object, visible_sprite,
-        bitmap_source, variable_sprites, trainer_class) {
+    if let Some(source) = shared_swimmer_model_source(
+        object,
+        visible_sprite,
+        bitmap_source,
+        variable_sprites,
+        trainer_class,
+    ) {
         return source.into();
     }
-    visible_map_object_model_source_id(map, object, visible_sprite, bitmap_source,
-        variable_sprites, menu_icons)
+    visible_map_object_model_source_id(
+        map,
+        object,
+        visible_sprite,
+        bitmap_source,
+        variable_sprites,
+        menu_icons,
+    )
 }
 
 fn shared_swimmer_model_source(
@@ -4497,8 +4650,10 @@ fn shared_swimmer_model_source(
         && object.sprite == "SPRITE_OLIVINE_RIVAL"
         && visible_sprite == object.sprite
         && bitmap_source == "rival"
-        && variable_sprites.get(visible_sprite).is_some_and(|s| s == "SPRITE_RIVAL"))
-        .then_some("swimmer_guy")
+        && variable_sprites
+            .get(visible_sprite)
+            .is_some_and(|s| s == "SPRITE_RIVAL"))
+    .then_some("swimmer_guy")
 }
 
 fn visible_map_object_model_source_id(
@@ -4564,7 +4719,11 @@ fn visible_map_object_model_source_id(
         ("CeladonMansion1F", Some("CELADONMANSION1F_GROWLITHE2"), "CeladonMansion1FNidoranF") => {
             Some(("NIDORAN_F", "SPRITE_GROWLITHE", "growlithe"))
         }
-        ("CeruleanTradeSpeechHouse", Some("CERULEANTRADESPEECHHOUSE_RHYDON"), "CeruleanTradeSpeechHouseRhydonScript") => Some(("KANGASKHAN", "SPRITE_RHYDON", "rhydon")),
+        (
+            "CeruleanTradeSpeechHouse",
+            Some("CERULEANTRADESPEECHHOUSE_RHYDON"),
+            "CeruleanTradeSpeechHouseRhydonScript",
+        ) => Some(("KANGASKHAN", "SPRITE_RHYDON", "rhydon")),
         _ => None,
     };
     if let Some((species, sprite, bitmap)) = named_pokemon {
@@ -4628,7 +4787,9 @@ fn visible_map_object_model_palette(
         // native menu icon. That bitmap fallback must retain shiny identity.
         || !matches!(source_id,"species:GYARADOS:gyarados"|"species:GYARADOS:icon_gyarados")
         || variable_sprites.contains_key(visible_sprite)
-    { return Ok(None); }
+    {
+        return Ok(None);
+    }
     Ok(Some(crystal_render_api::VisualPokemonModelPalette {
         normal: load_pokemon_palette(root, "gyarados", PokemonSpriteSide::Front, false)?,
         appearance: load_pokemon_palette(root, "gyarados", PokemonSpriteSide::Front, true)?,
@@ -4652,15 +4813,21 @@ fn visible_object_model_source_id(
         .unwrap_or(visible_sprite);
     let normalized = requested.trim().to_ascii_uppercase();
     let species = normalized.strip_prefix("SPRITE_").unwrap_or(&normalized);
-    let doll_slot=map=="PlayersHouse2F"
-        && matches!(original_sprite,"SPRITE_DOLL_1"|"SPRITE_DOLL_2"|"SPRITE_BIG_DOLL");
-    let surfing_doll=doll_slot
-        && matches!(original_sprite,"SPRITE_DOLL_1"|"SPRITE_DOLL_2")
-        && species=="SURFING_PIKACHU" && bitmap_source=="surfing_pikachu";
-    let species=if surfing_doll {"PIKACHU"} else {species};
-    let species=if doll_slot && original_sprite=="SPRITE_BIG_DOLL" {
+    let doll_slot = map == "PlayersHouse2F"
+        && matches!(
+            original_sprite,
+            "SPRITE_DOLL_1" | "SPRITE_DOLL_2" | "SPRITE_BIG_DOLL"
+        );
+    let surfing_doll = doll_slot
+        && matches!(original_sprite, "SPRITE_DOLL_1" | "SPRITE_DOLL_2")
+        && species == "SURFING_PIKACHU"
+        && bitmap_source == "surfing_pikachu";
+    let species = if surfing_doll { "PIKACHU" } else { species };
+    let species = if doll_slot && original_sprite == "SPRITE_BIG_DOLL" {
         species.strip_prefix("BIG_").unwrap_or(species)
-    } else {species};
+    } else {
+        species
+    };
     // The original decoration catalog calls the STARYU doll SPRITE_STARMIE.
     // This exception belongs only to the two bedroom doll slots. A visible
     // Starmie elsewhere remains Starmie, including Day Care and variable NPCs.
@@ -4673,7 +4840,7 @@ fn visible_object_model_source_id(
         species
     };
     if menu_icons.contains_key(species) {
-        let role=if doll_slot {"display"}else{"species"};
+        let role = if doll_slot { "display" } else { "species" };
         format!("{role}:{species}:{bitmap_source}")
     } else {
         bitmap_source.to_string()
@@ -5052,59 +5219,174 @@ mod visible_species_source_tests {
             ("STARYU".into(), "ICON_STARYU".into()),
         ]);
         let mut variables = BTreeMap::from([("SPRITE_COPYCAT".into(), "SPRITE_MAGIKARP".into())]);
-        assert_eq!(visible_object_model_source_id("CopycatsHouse2F", "SPRITE_COPYCAT",
-            "SPRITE_COPYCAT", "icon_fish", &variables, &icons), "species:MAGIKARP:icon_fish");
+        assert_eq!(
+            visible_object_model_source_id(
+                "CopycatsHouse2F",
+                "SPRITE_COPYCAT",
+                "SPRITE_COPYCAT",
+                "icon_fish",
+                &variables,
+                &icons
+            ),
+            "species:MAGIKARP:icon_fish"
+        );
         variables.insert("SPRITE_COPYCAT".into(), "SPRITE_GENGAR".into());
-        assert_eq!(visible_object_model_source_id("CopycatsHouse2F", "SPRITE_COPYCAT",
-            "SPRITE_COPYCAT", "icon_ghost", &variables, &icons), "species:GENGAR:icon_ghost");
+        assert_eq!(
+            visible_object_model_source_id(
+                "CopycatsHouse2F",
+                "SPRITE_COPYCAT",
+                "SPRITE_COPYCAT",
+                "icon_ghost",
+                &variables,
+                &icons
+            ),
+            "species:GENGAR:icon_ghost"
+        );
         variables.insert("SPRITE_COPYCAT".into(), "SPRITE_LASS".into());
-        assert_eq!(visible_object_model_source_id("CopycatsHouse2F", "SPRITE_COPYCAT",
-            "SPRITE_COPYCAT", "lass", &variables, &icons), "lass");
-        assert_eq!(visible_object_model_source_id("DayCare", "SPRITE_DAY_CARE_MON_1",
-            "MAGIKARP", "icon_fish", &variables, &icons), "species:MAGIKARP:icon_fish");
+        assert_eq!(
+            visible_object_model_source_id(
+                "CopycatsHouse2F",
+                "SPRITE_COPYCAT",
+                "SPRITE_COPYCAT",
+                "lass",
+                &variables,
+                &icons
+            ),
+            "lass"
+        );
+        assert_eq!(
+            visible_object_model_source_id(
+                "DayCare",
+                "SPRITE_DAY_CARE_MON_1",
+                "MAGIKARP",
+                "icon_fish",
+                &variables,
+                &icons
+            ),
+            "species:MAGIKARP:icon_fish"
+        );
         // A generic shared icon conveys no exact species and stays generic.
-        assert_eq!(visible_object_model_source_id("Route30", "SPRITE_MONSTER",
-            "SPRITE_MONSTER", "monster", &variables, &icons), "monster");
+        assert_eq!(
+            visible_object_model_source_id(
+                "Route30",
+                "SPRITE_MONSTER",
+                "SPRITE_MONSTER",
+                "monster",
+                &variables,
+                &icons
+            ),
+            "monster"
+        );
     }
     #[test]
     fn doll_slots_publish_inert_species_models_and_doll_labels() {
-        let icons=BTreeMap::from([
-            ("LAPRAS".into(),"ICON_LAPRAS".into()),
-            ("SNORLAX".into(),"ICON_SNORLAX".into()),
-            ("ONIX".into(),"ICON_SERPENT".into()),
-            ("BLASTOISE".into(),"ICON_SQUIRTLE".into()),
+        let icons = BTreeMap::from([
+            ("LAPRAS".into(), "ICON_LAPRAS".into()),
+            ("SNORLAX".into(), "ICON_SNORLAX".into()),
+            ("ONIX".into(), "ICON_SERPENT".into()),
+            ("BLASTOISE".into(), "ICON_SQUIRTLE".into()),
         ]);
-        for (slot,sprite,art,species) in [
-            ("SPRITE_BIG_DOLL","SPRITE_BIG_LAPRAS","big_lapras","LAPRAS"),
-            ("SPRITE_BIG_DOLL","SPRITE_BIG_SNORLAX","big_snorlax","SNORLAX"),
-            ("SPRITE_BIG_DOLL","SPRITE_BIG_ONIX","big_onix","ONIX"),
-            ("SPRITE_DOLL_1","SPRITE_BLASTOISE","icon_squirtle","BLASTOISE"),
+        for (slot, sprite, art, species) in [
+            (
+                "SPRITE_BIG_DOLL",
+                "SPRITE_BIG_LAPRAS",
+                "big_lapras",
+                "LAPRAS",
+            ),
+            (
+                "SPRITE_BIG_DOLL",
+                "SPRITE_BIG_SNORLAX",
+                "big_snorlax",
+                "SNORLAX",
+            ),
+            ("SPRITE_BIG_DOLL", "SPRITE_BIG_ONIX", "big_onix", "ONIX"),
+            (
+                "SPRITE_DOLL_1",
+                "SPRITE_BLASTOISE",
+                "icon_squirtle",
+                "BLASTOISE",
+            ),
         ] {
-            let variables=BTreeMap::from([(slot.into(),sprite.into())]);
-            let source=visible_object_model_source_id("PlayersHouse2F",slot,slot,art,&variables,&icons);
-            assert_eq!(source,format!("display:{species}:{art}"));
-            assert_eq!(resolved_object_species_label(&source),Some(format!("{species} DOLL")));
+            let variables = BTreeMap::from([(slot.into(), sprite.into())]);
+            let source = visible_object_model_source_id(
+                "PlayersHouse2F",
+                slot,
+                slot,
+                art,
+                &variables,
+                &icons,
+            );
+            assert_eq!(source, format!("display:{species}:{art}"));
+            assert_eq!(
+                resolved_object_species_label(&source),
+                Some(format!("{species} DOLL"))
+            );
         }
-        assert_eq!(visible_object_model_source_id("DayCare","SPRITE_LAPRAS",
-            "SPRITE_LAPRAS","icon_lapras",&BTreeMap::new(),&icons),"species:LAPRAS:icon_lapras");
+        assert_eq!(
+            visible_object_model_source_id(
+                "DayCare",
+                "SPRITE_LAPRAS",
+                "SPRITE_LAPRAS",
+                "icon_lapras",
+                &BTreeMap::new(),
+                &icons
+            ),
+            "species:LAPRAS:icon_lapras"
+        );
     }
 
     #[test]
     fn surfing_pikachu_identity_is_scoped_to_bedroom_ornaments() {
-        let icons=BTreeMap::from([("PIKACHU".into(),"ICON_PIKACHU".into())]);
-        for slot in ["SPRITE_DOLL_1","SPRITE_DOLL_2"] {
-            let variables=BTreeMap::from([(slot.into(),"SPRITE_SURFING_PIKACHU".into())]);
-            let source=visible_object_model_source_id("PlayersHouse2F",slot,slot,
-                "surfing_pikachu",&variables,&icons);
-            assert_eq!(source,"display:PIKACHU:surfing_pikachu");
-            assert_eq!(resolved_object_species_label(&source),Some("SURFING PIKACHU DOLL".into()));
-            assert_eq!(visible_object_model_source_id("DayCare",slot,slot,
-                "surfing_pikachu",&variables,&icons),"surfing_pikachu");
+        let icons = BTreeMap::from([("PIKACHU".into(), "ICON_PIKACHU".into())]);
+        for slot in ["SPRITE_DOLL_1", "SPRITE_DOLL_2"] {
+            let variables = BTreeMap::from([(slot.into(), "SPRITE_SURFING_PIKACHU".into())]);
+            let source = visible_object_model_source_id(
+                "PlayersHouse2F",
+                slot,
+                slot,
+                "surfing_pikachu",
+                &variables,
+                &icons,
+            );
+            assert_eq!(source, "display:PIKACHU:surfing_pikachu");
+            assert_eq!(
+                resolved_object_species_label(&source),
+                Some("SURFING PIKACHU DOLL".into())
+            );
+            assert_eq!(
+                visible_object_model_source_id(
+                    "DayCare",
+                    slot,
+                    slot,
+                    "surfing_pikachu",
+                    &variables,
+                    &icons
+                ),
+                "surfing_pikachu"
+            );
         }
-        assert_eq!(visible_object_model_source_id("PlayersHouse2F","SPRITE_SURFING_PIKACHU",
-            "SPRITE_SURFING_PIKACHU","surfing_pikachu",&BTreeMap::new(),&icons),"surfing_pikachu");
-        assert_eq!(visible_object_model_source_id("PlayersHouse2F","SPRITE_DOLL_1",
-            "SPRITE_SURFING_PIKACHU","unknown_art",&BTreeMap::new(),&icons),"unknown_art");
+        assert_eq!(
+            visible_object_model_source_id(
+                "PlayersHouse2F",
+                "SPRITE_SURFING_PIKACHU",
+                "SPRITE_SURFING_PIKACHU",
+                "surfing_pikachu",
+                &BTreeMap::new(),
+                &icons
+            ),
+            "surfing_pikachu"
+        );
+        assert_eq!(
+            visible_object_model_source_id(
+                "PlayersHouse2F",
+                "SPRITE_DOLL_1",
+                "SPRITE_SURFING_PIKACHU",
+                "unknown_art",
+                &BTreeMap::new(),
+                &icons
+            ),
+            "unknown_art"
+        );
     }
 
     #[test]
@@ -5136,16 +5418,35 @@ mod visible_species_source_tests {
             };
             let variables = BTreeMap::from([(slot.into(), decoration.sprite.clone())]);
             let bitmap = resolve_visible_object_sprite_asset_id(&assets, slot, &variables, icons);
-            let model = visible_object_model_source_id("PlayersHouse2F", slot, slot, &bitmap, &variables, icons);
+            let model = visible_object_model_source_id(
+                "PlayersHouse2F",
+                slot,
+                slot,
+                &bitmap,
+                &variables,
+                icons,
+            );
             assert!(!model.contains(slot), "unresolved {}", decoration.id);
             let requested = decoration.sprite.strip_prefix("SPRITE_").unwrap();
-            let requested=requested.strip_prefix("BIG_").unwrap_or(requested);
-            if requested=="SURFING_PIKACHU" {
-                assert_eq!(model,"display:PIKACHU:surfing_pikachu");
-                assert_eq!(resolved_object_species_label(&model),Some("SURFING PIKACHU DOLL".into()));
+            let requested = requested.strip_prefix("BIG_").unwrap_or(requested);
+            if requested == "SURFING_PIKACHU" {
+                assert_eq!(model, "display:PIKACHU:surfing_pikachu");
+                assert_eq!(
+                    resolved_object_species_label(&model),
+                    Some("SURFING PIKACHU DOLL".into())
+                );
             } else if icons.contains_key(requested) {
-                let species = if decoration.id == "DECO_STARYU_DOLL" { "STARYU" } else { requested };
-                assert_eq!(model, format!("display:{species}:{bitmap}"), "{}", decoration.id);
+                let species = if decoration.id == "DECO_STARYU_DOLL" {
+                    "STARYU"
+                } else {
+                    requested
+                };
+                assert_eq!(
+                    model,
+                    format!("display:{species}:{bitmap}"),
+                    "{}",
+                    decoration.id
+                );
             } else {
                 assert_eq!(model, bitmap, "{}", decoration.id);
             }
@@ -5155,14 +5456,34 @@ mod visible_species_source_tests {
     }
     #[test]
     fn catalog_staryu_alias_is_limited_to_the_current_bedroom_doll_slots() {
-        let icons = BTreeMap::from([("STARMIE".into(), "ICON_STARYU".into()),
-            ("STARYU".into(), "ICON_STARYU".into())]);
+        let icons = BTreeMap::from([
+            ("STARMIE".into(), "ICON_STARYU".into()),
+            ("STARYU".into(), "ICON_STARYU".into()),
+        ]);
         for slot in ["SPRITE_DOLL_1", "SPRITE_DOLL_2"] {
             let variables = BTreeMap::from([(slot.into(), "SPRITE_STARMIE".into())]);
-            assert_eq!(visible_object_model_source_id("PlayersHouse2F", slot, slot,
-                "icon_staryu", &variables, &icons), "display:STARYU:icon_staryu");
-            assert_eq!(visible_object_model_source_id("DayCare", slot, slot,
-                "icon_staryu", &variables, &icons), "species:STARMIE:icon_staryu");
+            assert_eq!(
+                visible_object_model_source_id(
+                    "PlayersHouse2F",
+                    slot,
+                    slot,
+                    "icon_staryu",
+                    &variables,
+                    &icons
+                ),
+                "display:STARYU:icon_staryu"
+            );
+            assert_eq!(
+                visible_object_model_source_id(
+                    "DayCare",
+                    slot,
+                    slot,
+                    "icon_staryu",
+                    &variables,
+                    &icons
+                ),
+                "species:STARMIE:icon_staryu"
+            );
         }
     }
 }
@@ -5195,48 +5516,135 @@ mod named_object_species_source_tests {
 
     #[test]
     fn shared_rival_art_needs_a_compiled_male_swimmer_role_before_adaptation() {
-        let mut object=amphy();
-        object.sprite="SPRITE_OLIVINE_RIVAL".into();object.object_type="OBJECTTYPE_TRAINER".into();
-        let variables=BTreeMap::from([("SPRITE_OLIVINE_RIVAL".into(),"SPRITE_RIVAL".into())]);
-        let before=(object.clone(),variables.clone());
-        assert_eq!(shared_swimmer_model_source(&object,&object.sprite,"rival",&variables,Some("SWIMMERM")),
-            Some("swimmer_guy"));
-        for role in [None,Some("RIVAL1"),Some("SWIMMERF"),Some("LASS")] {
-            assert_eq!(shared_swimmer_model_source(&object,&object.sprite,"rival",&variables,role),None);
+        let mut object = amphy();
+        object.sprite = "SPRITE_OLIVINE_RIVAL".into();
+        object.object_type = "OBJECTTYPE_TRAINER".into();
+        let variables = BTreeMap::from([("SPRITE_OLIVINE_RIVAL".into(), "SPRITE_RIVAL".into())]);
+        let before = (object.clone(), variables.clone());
+        assert_eq!(
+            shared_swimmer_model_source(
+                &object,
+                &object.sprite,
+                "rival",
+                &variables,
+                Some("SWIMMERM")
+            ),
+            Some("swimmer_guy")
+        );
+        for role in [None, Some("RIVAL1"), Some("SWIMMERF"), Some("LASS")] {
+            assert_eq!(
+                shared_swimmer_model_source(&object, &object.sprite, "rival", &variables, role),
+                None
+            );
         }
-        for replacement in ["SPRITE_ROCKET","SPRITE_SWIMMER_GUY"] {
-            let replaced=BTreeMap::from([("SPRITE_OLIVINE_RIVAL".into(),replacement.into())]);
-            assert_eq!(shared_swimmer_model_source(&object,&object.sprite,"rival",&replaced,Some("SWIMMERM")),None);
+        for replacement in ["SPRITE_ROCKET", "SPRITE_SWIMMER_GUY"] {
+            let replaced = BTreeMap::from([("SPRITE_OLIVINE_RIVAL".into(), replacement.into())]);
+            assert_eq!(
+                shared_swimmer_model_source(
+                    &object,
+                    &object.sprite,
+                    "rival",
+                    &replaced,
+                    Some("SWIMMERM")
+                ),
+                None
+            );
         }
-        assert_eq!(shared_swimmer_model_source(&object,"SPRITE_LASS","lass",&variables,Some("SWIMMERM")),None);
-        assert_eq!(shared_swimmer_model_source(&object,&object.sprite,"swimmer_guy",&variables,Some("SWIMMERM")),None);
-        let mut other=object.clone();other.sprite="SPRITE_RIVAL".into();
-        assert_eq!(shared_swimmer_model_source(&other,&other.sprite,"rival",&variables,Some("SWIMMERM")),None);
-        other=object.clone();other.object_type="OBJECTTYPE_SCRIPT".into();
-        assert_eq!(shared_swimmer_model_source(&other,&other.sprite,"rival",&variables,Some("SWIMMERM")),None);
-        assert_eq!((object,variables),before,"model identity cannot mutate source art or variable state");
+        assert_eq!(
+            shared_swimmer_model_source(
+                &object,
+                "SPRITE_LASS",
+                "lass",
+                &variables,
+                Some("SWIMMERM")
+            ),
+            None
+        );
+        assert_eq!(
+            shared_swimmer_model_source(
+                &object,
+                &object.sprite,
+                "swimmer_guy",
+                &variables,
+                Some("SWIMMERM")
+            ),
+            None
+        );
+        let mut other = object.clone();
+        other.sprite = "SPRITE_RIVAL".into();
+        assert_eq!(
+            shared_swimmer_model_source(
+                &other,
+                &other.sprite,
+                "rival",
+                &variables,
+                Some("SWIMMERM")
+            ),
+            None
+        );
+        other = object.clone();
+        other.object_type = "OBJECTTYPE_SCRIPT".into();
+        assert_eq!(
+            shared_swimmer_model_source(
+                &other,
+                &other.sprite,
+                "rival",
+                &variables,
+                Some("SWIMMERM")
+            ),
+            None
+        );
+        assert_eq!(
+            (object, variables),
+            before,
+            "model identity cannot mutate source art or variable state"
+        );
     }
 
     #[test]
     fn vermilion_snorlax_is_living_but_its_bedroom_doll_is_a_display() {
-        let mut object=amphy();
-        object.sprite="SPRITE_BIG_SNORLAX".into();
-        object.script="VermilionSnorlax".into();
-        object.object_identifier=Some("VERMILIONCITY_BIG_SNORLAX".into());
-        let icons=BTreeMap::from([("SNORLAX".into(),"ICON_SNORLAX".into())]);
-        let source=visible_map_object_model_source_id("VermilionCity",&object,
-            &object.sprite,"big_snorlax",&BTreeMap::new(),&icons);
-        assert_eq!(source,"species:SNORLAX:big_snorlax");
-        assert_eq!(resolved_object_scene_label(&object,&source),"SNORLAX");
-        assert_eq!(field_object_prompt_for_source(&object,&source),"A SNORLAX");
-        let variables=BTreeMap::from([("SPRITE_BIG_DOLL".into(),"SPRITE_BIG_SNORLAX".into())]);
-        let doll=visible_object_model_source_id("PlayersHouse2F","SPRITE_BIG_DOLL",
-            "SPRITE_BIG_DOLL","big_snorlax",&variables,&icons);
-        assert_eq!(doll,"display:SNORLAX:big_snorlax");
-        assert_eq!(resolved_object_scene_label(&object,&doll),"SNORLAX DOLL");
-        object.script="OtherObject".into();
-        assert_eq!(visible_map_object_model_source_id("VermilionCity",&object,
-            &object.sprite,"big_snorlax",&BTreeMap::new(),&icons),"big_snorlax");
+        let mut object = amphy();
+        object.sprite = "SPRITE_BIG_SNORLAX".into();
+        object.script = "VermilionSnorlax".into();
+        object.object_identifier = Some("VERMILIONCITY_BIG_SNORLAX".into());
+        let icons = BTreeMap::from([("SNORLAX".into(), "ICON_SNORLAX".into())]);
+        let source = visible_map_object_model_source_id(
+            "VermilionCity",
+            &object,
+            &object.sprite,
+            "big_snorlax",
+            &BTreeMap::new(),
+            &icons,
+        );
+        assert_eq!(source, "species:SNORLAX:big_snorlax");
+        assert_eq!(resolved_object_scene_label(&object, &source), "SNORLAX");
+        assert_eq!(
+            field_object_prompt_for_source(&object, &source),
+            "A SNORLAX"
+        );
+        let variables = BTreeMap::from([("SPRITE_BIG_DOLL".into(), "SPRITE_BIG_SNORLAX".into())]);
+        let doll = visible_object_model_source_id(
+            "PlayersHouse2F",
+            "SPRITE_BIG_DOLL",
+            "SPRITE_BIG_DOLL",
+            "big_snorlax",
+            &variables,
+            &icons,
+        );
+        assert_eq!(doll, "display:SNORLAX:big_snorlax");
+        assert_eq!(resolved_object_scene_label(&object, &doll), "SNORLAX DOLL");
+        object.script = "OtherObject".into();
+        assert_eq!(
+            visible_map_object_model_source_id(
+                "VermilionCity",
+                &object,
+                &object.sprite,
+                "big_snorlax",
+                &BTreeMap::new(),
+                &icons
+            ),
+            "big_snorlax"
+        );
     }
 
     #[test]
@@ -5252,8 +5660,14 @@ mod named_object_species_source_tests {
             source("OlivineLighthouse6F", &object, "SPRITE_MONSTER", "monster"),
             "species:AMPHAROS:monster"
         );
-        assert_eq!(resolved_object_scene_label(&object, "species:AMPHAROS:monster"), "AMPHAROS");
-        assert_eq!(resolved_object_scene_label(&object, "monster"), object_scene_label(&object));
+        assert_eq!(
+            resolved_object_scene_label(&object, "species:AMPHAROS:monster"),
+            "AMPHAROS"
+        );
+        assert_eq!(
+            resolved_object_scene_label(&object, "monster"),
+            object_scene_label(&object)
+        );
         assert_eq!(
             object, before,
             "presentation must not change the source object"
@@ -5330,11 +5744,13 @@ mod named_object_species_source_tests {
             let label = resolved_object_scene_label(&object, expected);
             if replacement == "SPRITE_GENGAR" {
                 assert_eq!(label, "GENGAR");
-                assert_eq!(field_object_prompt_for_source(&object, expected), "A GENGAR");
+                assert_eq!(
+                    field_object_prompt_for_source(&object, expected),
+                    "A GENGAR"
+                );
             } else {
                 assert_eq!(label, object_scene_label(&object));
             }
-
         }
     }
 }
@@ -5345,23 +5761,40 @@ mod compiled_amphy_identity_tests {
 
     #[test]
     fn compiled_vermilion_snorlax_keeps_species_identity_and_source_object() {
-        let root=std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../..").canonicalize().unwrap();
-        let pack=std::env::var_os("CRYSTAL_RENDER_TEST_PACK").map(std::path::PathBuf::from)
-            .unwrap_or_else(||root.join("content-packs/core-modular.browser.crystalpack"));
-        let loaded=crystal_assets::read_loaded_verified_compiled_game_pack(&pack).unwrap();
-        let runtime=CrystalRuntime::from_loaded_compiled_pack(&AssetRoot::new(root),loaded).unwrap();
-        let map=&runtime.data().maps["VermilionCity"];
-        let object=map.objects.iter().find(|o|o.object_identifier.as_deref()==Some("VERMILIONCITY_BIG_SNORLAX")).unwrap();
-        assert_eq!(object.script,"VermilionSnorlax");
-        assert_eq!(object.sprite,"SPRITE_BIG_SNORLAX");
-        assert!(map.scripted_wild_battles.iter().any(|battle|
-            battle.source_script.starts_with("VermilionSnorlax") && battle.request.species=="SNORLAX"));
-        let before=object.clone();
-        let source=visible_map_object_model_source_id("VermilionCity",object,
-            &object.sprite,"big_snorlax",&BTreeMap::new(),&runtime.data().menu_icons);
-        assert_eq!(source,"species:SNORLAX:big_snorlax");
-        assert_eq!(resolved_object_scene_label(object,&source),"SNORLAX");
-        assert_eq!(object,&before);
+        let root = std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+            .join("../..")
+            .canonicalize()
+            .unwrap();
+        let pack = std::env::var_os("CRYSTAL_RENDER_TEST_PACK")
+            .map(std::path::PathBuf::from)
+            .unwrap_or_else(|| root.join("content-packs/core-modular.browser.crystalpack"));
+        let loaded = crystal_assets::read_loaded_verified_compiled_game_pack(&pack).unwrap();
+        let runtime =
+            CrystalRuntime::from_loaded_compiled_pack(&AssetRoot::new(root), loaded).unwrap();
+        let map = &runtime.data().maps["VermilionCity"];
+        let object = map
+            .objects
+            .iter()
+            .find(|o| o.object_identifier.as_deref() == Some("VERMILIONCITY_BIG_SNORLAX"))
+            .unwrap();
+        assert_eq!(object.script, "VermilionSnorlax");
+        assert_eq!(object.sprite, "SPRITE_BIG_SNORLAX");
+        assert!(map.scripted_wild_battles.iter().any(|battle| {
+            battle.source_script.starts_with("VermilionSnorlax")
+                && battle.request.species == "SNORLAX"
+        }));
+        let before = object.clone();
+        let source = visible_map_object_model_source_id(
+            "VermilionCity",
+            object,
+            &object.sprite,
+            "big_snorlax",
+            &BTreeMap::new(),
+            &runtime.data().menu_icons,
+        );
+        assert_eq!(source, "species:SNORLAX:big_snorlax");
+        assert_eq!(resolved_object_scene_label(object, &source), "SNORLAX");
+        assert_eq!(object, &before);
     }
 
     #[test]
@@ -5478,7 +5911,13 @@ mod compiled_amphy_identity_tests {
                 "CeladonMansion1FNidoranFText",
                 "NIDORAN_F",
             ),
-            ("CeruleanTradeSpeechHouse", "CERULEANTRADESPEECHHOUSE_RHYDON", "CeruleanTradeSpeechHouseRhydonScript", "CeruleanTradeSpeechHouseRhydonText", "KANGASKHAN"),
+            (
+                "CeruleanTradeSpeechHouse",
+                "CERULEANTRADESPEECHHOUSE_RHYDON",
+                "CeruleanTradeSpeechHouseRhydonScript",
+                "CeruleanTradeSpeechHouseRhydonText",
+                "KANGASKHAN",
+            ),
         ] {
             let map = &runtime.data().maps[map_name];
             let object = map
@@ -5527,11 +5966,19 @@ mod compiled_amphy_identity_tests {
             assert_eq!(bitmap, icons[original_species].to_ascii_lowercase());
             let original_model = format!("species:{original_species}:{bitmap}");
             let resolved = visible_map_object_model_source_id(
-                map_name, object, &object.sprite, &bitmap, &variables, icons,
+                map_name,
+                object,
+                &object.sprite,
+                &bitmap,
+                &variables,
+                icons,
             );
             let display = crate::core::models::pokemon_species_display_name(species);
             assert_eq!(resolved_object_scene_label(object, &resolved), display);
-            assert_eq!(field_object_prompt_for_source(object, &resolved), format!("A {display}"));
+            assert_eq!(
+                field_object_prompt_for_source(object, &resolved),
+                format!("A {display}")
+            );
             let before = object.clone();
             assert_eq!(
                 visible_map_object_model_source_id(
@@ -5607,7 +6054,10 @@ mod compiled_amphy_identity_tests {
             }
         }
         let mut expected = vec![
-            ("CeruleanTradeSpeechHouse", "CeruleanTradeSpeechHouseRhydonScript"),
+            (
+                "CeruleanTradeSpeechHouse",
+                "CeruleanTradeSpeechHouseRhydonScript",
+            ),
             ("CopycatsHouse2F", "CopycatsDodrio"),
             ("MrFujisHouse", "MrFujisPsyduck"),
             ("MrFujisHouse", "MrFujisNidorino"),

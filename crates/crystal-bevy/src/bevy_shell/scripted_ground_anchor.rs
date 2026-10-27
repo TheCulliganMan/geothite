@@ -31,7 +31,9 @@ fn bind_visible_scripted_ground(
     let mut field_snapshot = snapshot;
     field_snapshot.battle = None;
     #[cfg(any(feature = "fullscreen-scaling", feature = "voxel-view"))]
-    if expand_fullscreen_object_presentation(&mut field_snapshot, shell).is_err() { return; }
+    if object_presentation::expand_fullscreen_object_presentation(&mut field_snapshot, shell).is_err() {
+        return;
+    }
     for (id, tile) in &shell.follower_visible_tile_overrides {
         field_snapshot.visible_object_runtime_tiles.insert(id.clone(), *tile);
     }

@@ -1,0 +1,138 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F114",
+  "status": "conversion-comparison-proposal",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_248": {
+      "species_id": "MN_248",
+      "name": "Strandrak",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          27,
+          23,
+          13
+        ],
+        [
+          9,
+          13,
+          12
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        14075,
+        12713,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          222,
+          189,
+          107
+        ],
+        [
+          74,
+          107,
+          99
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#DEBD6B",
+        "#4A6B63",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f114/prompt-v1.txt",
+  "reference_mapping": "sprites/mn-f114/reference-mapping-v1.json",
+  "back_framing": "gen2-close-rear-portrait",
+  "sprites": [
+    {
+      "id": "mn-248-strandrak-v1",
+      "species_id": "MN_248",
+      "view": "front",
+      "source": "sprites/mn-f114/mn-248-248.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        1024,
+        800
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        14075,
+        12713,
+        0
+      ],
+      "white_detail_min_samples": 32,
+      "interior_black_min_samples": 16,
+      "sampling": "source_center",
+      "exterior_contour": "source_backed"
+    },
+    {
+      "id": "mn-248-strandrak-v1",
+      "species_id": "MN_248",
+      "view": "back",
+      "source": "sprites/mn-f114/mn-248-248.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        800,
+        1024,
+        736
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        14075,
+        12713,
+        0
+      ],
+      "white_detail_min_samples": 8,
+      "sampling": "source_center",
+      "exterior_contour": "source_backed"
+    }
+  ],
+  "source_sha256": "4a932a475fe48cc1f9a80ff6fa1fec8803f70f434ce6a55a38274e576da7e9ca",
+  "candidate_review": {
+    "status": "native-review-pending",
+    "outline_profile": "source-contour-v1",
+    "sheet_sha256": "3b27e0d92397a5e952c9b340563a7d88f454b5ccd296201efc7d72f89161110c",
+    "notes": "Actual raw and two native variants inspected. Correct four-limb anatomy: two enormous fork palms and pair short heels, solid broad crescent shell with three nested stepped ridges, bifurcated outlet tail; no six ordinary walking legs. Front white_detail32/interior16 restores tiny dark eye mark; source face is small beneath the very large shell. Rear enlarged ridge carapace and dragon nape crop lower body. Root should judge solid-shell gate-beast identity versus overly tall separate-looking terrace ridges; candidate pending."
+  },
+  "visual_review": {
+    "status": "reviewed",
+    "reviewer": "root",
+    "notes": "Root inspected both native views: connected stepped crescent shell dominates a low dragon face; two fork-palmed forearms brace short rear heels and a bifurcated outlet tail. The tall nested ridge silhouette is intentionally the primary landmark; face detail is small but dark eye marks remain. Ochre/green slope planes, clear negative gaps and close rear ridge/turned-head framing distinguish the shoreline guardian from the ordinary esker line. Both tested native versions retained.",
+    "sheet_sha256": "3b27e0d92397a5e952c9b340563a7d88f454b5ccd296201efc7d72f89161110c",
+    "outline_profile": "source-contour-v1"
+  }
+}

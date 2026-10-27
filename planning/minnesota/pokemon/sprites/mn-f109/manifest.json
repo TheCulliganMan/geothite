@@ -1,0 +1,241 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F109",
+  "status": "native-front-back-reviewed",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_239": {
+      "species_id": "MN_239",
+      "name": "Fulglet",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          29,
+          24,
+          12
+        ],
+        [
+          10,
+          10,
+          16
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        13085,
+        16714,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          239,
+          198,
+          99
+        ],
+        [
+          82,
+          82,
+          132
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#EFC663",
+        "#525284",
+        "#000000"
+      ]
+    },
+    "MN_240": {
+      "species_id": "MN_240",
+      "name": "Fulgrawl",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          30,
+          25,
+          15
+        ],
+        [
+          9,
+          8,
+          18
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        16190,
+        18697,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          247,
+          206,
+          123
+        ],
+        [
+          74,
+          66,
+          148
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#F7CE7B",
+        "#4A4294",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f109/prompt-v1.txt",
+  "reference_mapping": "sprites/mn-f109/reference-mapping-v1.json",
+  "back_framing": "gen2-close-rear-portrait",
+  "sprites": [
+    {
+      "id": "mn-239-fulglet-v1",
+      "species_id": "MN_239",
+      "view": "front",
+      "source": "sprites/mn-f109/mn-239-240.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        630,
+        656
+      ],
+      "fit": [
+        40,
+        40
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        13085,
+        16714,
+        0
+      ],
+      "white_detail_min_samples": 32,
+      "interior_black_min_samples": 16
+    },
+    {
+      "id": "mn-239-fulglet-v1",
+      "species_id": "MN_239",
+      "view": "back",
+      "source": "sprites/mn-f109/mn-239-240.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        656,
+        630,
+        543
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        13085,
+        16714,
+        0
+      ],
+      "white_detail_min_samples": 8
+    },
+    {
+      "id": "mn-240-fulgrawl-v1",
+      "species_id": "MN_240",
+      "view": "front",
+      "source": "sprites/mn-f109/mn-239-240.front-back.imagegen-v1.png",
+      "crop": [
+        630,
+        0,
+        682,
+        656
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        16190,
+        18697,
+        0
+      ],
+      "white_detail_min_samples": 32,
+      "interior_black_min_samples": 16
+    },
+    {
+      "id": "mn-240-fulgrawl-v1",
+      "species_id": "MN_240",
+      "view": "back",
+      "source": "sprites/mn-f109/mn-239-240.front-back.imagegen-v1.png",
+      "crop": [
+        630,
+        656,
+        682,
+        543
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        16190,
+        18697,
+        0
+      ],
+      "white_detail_min_samples": 8
+    }
+  ],
+  "source_sha256": "570fc8166d9dacf4fc8f9874132f0d2b6b47a7341810e147ab15721195f0427f",
+  "candidate_review": {
+    "status": "native-review-pending",
+    "outline_profile": "source-contour-v1",
+    "sheet_sha256": "96e531456565220fe1a1b98115fc2f54c52d8c9d1b747b53583401f3207a401f",
+    "notes": "Actual native inspected default32 and8 variants;8 darkened long glass branches excessively, so canonical restored32 and both renders archived. Strong Y-fork to powerful branching dragon body growth, glass sockets and broad upper-right rear portraits. Blocking candidate issue for root: front pupil detail largely absent even though raw white eye/pupil is clear. Keep raw art and target palette; root converter/detail judgment needed."
+  },
+  "visual_review": {
+    "status": "reviewed",
+    "reviewer": "root",
+    "notes": "Root inspected front threshold32/16 compromise and original back settings: Y glass fork grows into a branching glass-boned body with actual limb forks and open sockets. The eye cue remains a small bright/black socket mark at the branch head, with clearer centers than default; purple branch interiors avoid the excessive black of seam8 trial. Rear pupils and cropped branch shoulders stay legible. All alternatives saved.",
+    "sheet_sha256": "97a9bb61b04f51732ee70100341e97a133c546ab293e90d62ac89d1c294dc3e2",
+    "outline_profile": "source-contour-v1"
+  }
+}

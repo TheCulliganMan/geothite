@@ -1,0 +1,1408 @@
+{
+  "family_id": "MN_F142",
+  "candidate_file_count": 350,
+  "files": [
+    {
+      "path": "candidates/v2-area-solid/mn-315-glisnare-v2.front.review.png",
+      "sha256": "ba903df3d2e88a69c7e8fb3c4aab786874793e1f8c4a390d4b330ca70ba40709"
+    },
+    {
+      "path": "candidates/v2-area-solid/mn-314-dewbit-v2.front.2bpp",
+      "sha256": "481792ccab790b5d54bdea6814ffd2ab305be0b2be7e94ba6ba42a421dba5d10"
+    },
+    {
+      "path": "candidates/v2-area-solid/source-manifest.json",
+      "sha256": "3b267d1fb0ac71d83b7c70d4e400b9172d766f3ed0afa81467464d9c66db08d8"
+    },
+    {
+      "path": "candidates/v2-area-solid/mn-315-glisnare-v2.back.json",
+      "sha256": "f1b5b406a243275c6563a995897d4c65450421f7288ac0daaa0f9d7d125aa8bd"
+    },
+    {
+      "path": "candidates/v2-area-solid/line.native.png",
+      "sha256": "6e13098d9de8d42254d32440c88d6592ed846ab370f4f5141e91985e3e521307"
+    },
+    {
+      "path": "candidates/v2-area-solid/mn-314-dewbit-v2.front.png",
+      "sha256": "721e6c89b9f1bb838c8c6953385e40f12e187f8f5b7af6e1188e1ce6803384dc"
+    },
+    {
+      "path": "candidates/v2-area-solid/line.review.png",
+      "sha256": "78942e786ee6bf98374e2b19d86e3bfcdf16f510df5052db943b9917e33394a8"
+    },
+    {
+      "path": "candidates/v2-area-solid/mn-315-glisnare-v2.front.2bpp",
+      "sha256": "cea316de26d49b58b3559378b5bded9c85c853d6050752708a3bf0d6ce20e9ec"
+    },
+    {
+      "path": "candidates/v2-area-solid/mn-314-dewbit-v2.front.review.png",
+      "sha256": "6e2e52ffb0f74ef8bada36101d27233a54d09fcbecfe1c20ed0875d349665558"
+    },
+    {
+      "path": "candidates/v2-area-solid/mn-314-dewbit-v2.back.json",
+      "sha256": "cb8e0012ab229444cad7a4a840f0351ee7b4efc9e932bf9cefb784164e8423cc"
+    },
+    {
+      "path": "candidates/v2-area-solid/source-prompt.txt",
+      "sha256": "6f20ad7803d4185ea591c9e63548227c633dacc575d751d1a73ec526762b66a4"
+    },
+    {
+      "path": "candidates/v2-area-solid/mn-314-dewbit-v2.back.source-crop.png",
+      "sha256": "ae566f814200012f9715b2120e0928fce0532f7261ec5e52c450edd4c776e930"
+    },
+    {
+      "path": "candidates/v2-area-solid/mn-314-dewbit-v2.front.source-crop.png",
+      "sha256": "23cdc8b553fb3a3f212cef398fdab5213789c25c242b86908ea6bcd07e4fb891"
+    },
+    {
+      "path": "candidates/v2-area-solid/mn-315-glisnare-v2.front.png",
+      "sha256": "18eb315c4b46a8c0e923c3f32be60a412f754042dcab85583a97a3d80ac72151"
+    },
+    {
+      "path": "candidates/v2-area-solid/mn-315-glisnare-v2.back.review.png",
+      "sha256": "c79065d6be92d62f10474e38d490ec4a6313be895e84e5b1fe3dd4ba1515529c"
+    },
+    {
+      "path": "candidates/v2-area-solid/mn-314-dewbit-v2.back.2bpp",
+      "sha256": "d9e14977c16d238a1b50061abb87000c199466b039ad780f1df50280d87f533e"
+    },
+    {
+      "path": "candidates/v2-area-solid/mn-314-dewbit-v2.back.png",
+      "sha256": "868540fe60f59961d7e19a6d4c4c90d008c8941f954d8b3e546f4783767a1e2c"
+    },
+    {
+      "path": "candidates/v2-area-solid/mn-315-glisnare-v2.front.source-crop.png",
+      "sha256": "fb6472c413874ced368d1bd5e4cee592a03da4ee2df2fbc042aa24b679b7929a"
+    },
+    {
+      "path": "candidates/v2-area-solid/mn-315-glisnare-v2.back.png",
+      "sha256": "06774defe842a4a0389dfe4d7b0f8d675065c2556bb2f17cea405086a75b0f92"
+    },
+    {
+      "path": "candidates/v2-area-solid/source-3b5b229c1461842e323cc57c5638bdfdce986c76b068b2c129e4727116062690.png",
+      "sha256": "3b5b229c1461842e323cc57c5638bdfdce986c76b068b2c129e4727116062690"
+    },
+    {
+      "path": "candidates/v2-area-solid/mn-315-glisnare-v2.back.source-crop.png",
+      "sha256": "61d429450243cbc0c9168fb6615951f5d740cf234580da6931ec6818e5757be5"
+    },
+    {
+      "path": "candidates/v2-area-solid/mn-315-glisnare-v2.back.2bpp",
+      "sha256": "c267d6c5bad65cef7765962a2c24be7e9d823316f88251d7e8351d34a24570d4"
+    },
+    {
+      "path": "candidates/v2-area-solid/mn-314-dewbit-v2.front.json",
+      "sha256": "ef34a7c65860f4b0719d893b772fdf8b61c95ce2aff51d6ec567a85b4fe3b085"
+    },
+    {
+      "path": "candidates/v2-area-solid/mn-314-dewbit-v2.back.review.png",
+      "sha256": "8ee7cb30dd72422b3a919d3fdcb35265acf0003d2f77c803cca007018619fa4d"
+    },
+    {
+      "path": "candidates/v2-area-solid/mn-315-glisnare-v2.front.json",
+      "sha256": "07ea3a1b9688dc40d303dbfde851ac4047197412f02a75eed86b3996c2bd4333"
+    },
+    {
+      "path": "candidates/v2-area-solid/versions/868540fe60f59961d7e19a6d4c4c90d008c8941f954d8b3e546f4783767a1e2c.mn-314-dewbit-v2.back.png",
+      "sha256": "868540fe60f59961d7e19a6d4c4c90d008c8941f954d8b3e546f4783767a1e2c"
+    },
+    {
+      "path": "candidates/v2-area-solid/versions/ba903df3d2e88a69c7e8fb3c4aab786874793e1f8c4a390d4b330ca70ba40709.mn-315-glisnare-v2.front.review.png",
+      "sha256": "ba903df3d2e88a69c7e8fb3c4aab786874793e1f8c4a390d4b330ca70ba40709"
+    },
+    {
+      "path": "candidates/v2-area-solid/versions/c267d6c5bad65cef7765962a2c24be7e9d823316f88251d7e8351d34a24570d4.mn-315-glisnare-v2.back.2bpp",
+      "sha256": "c267d6c5bad65cef7765962a2c24be7e9d823316f88251d7e8351d34a24570d4"
+    },
+    {
+      "path": "candidates/v2-area-solid/versions/06774defe842a4a0389dfe4d7b0f8d675065c2556bb2f17cea405086a75b0f92.mn-315-glisnare-v2.back.png",
+      "sha256": "06774defe842a4a0389dfe4d7b0f8d675065c2556bb2f17cea405086a75b0f92"
+    },
+    {
+      "path": "candidates/v2-area-solid/versions/07ea3a1b9688dc40d303dbfde851ac4047197412f02a75eed86b3996c2bd4333.mn-315-glisnare-v2.front.json",
+      "sha256": "07ea3a1b9688dc40d303dbfde851ac4047197412f02a75eed86b3996c2bd4333"
+    },
+    {
+      "path": "candidates/v2-area-solid/versions/f1b5b406a243275c6563a995897d4c65450421f7288ac0daaa0f9d7d125aa8bd.mn-315-glisnare-v2.back.json",
+      "sha256": "f1b5b406a243275c6563a995897d4c65450421f7288ac0daaa0f9d7d125aa8bd"
+    },
+    {
+      "path": "candidates/v2-area-solid/versions/6e13098d9de8d42254d32440c88d6592ed846ab370f4f5141e91985e3e521307.line.native.png",
+      "sha256": "6e13098d9de8d42254d32440c88d6592ed846ab370f4f5141e91985e3e521307"
+    },
+    {
+      "path": "candidates/v2-area-solid/versions/8ee7cb30dd72422b3a919d3fdcb35265acf0003d2f77c803cca007018619fa4d.mn-314-dewbit-v2.back.review.png",
+      "sha256": "8ee7cb30dd72422b3a919d3fdcb35265acf0003d2f77c803cca007018619fa4d"
+    },
+    {
+      "path": "candidates/v2-area-solid/versions/23cdc8b553fb3a3f212cef398fdab5213789c25c242b86908ea6bcd07e4fb891.mn-314-dewbit-v2.front.source-crop.png",
+      "sha256": "23cdc8b553fb3a3f212cef398fdab5213789c25c242b86908ea6bcd07e4fb891"
+    },
+    {
+      "path": "candidates/v2-area-solid/versions/6e2e52ffb0f74ef8bada36101d27233a54d09fcbecfe1c20ed0875d349665558.mn-314-dewbit-v2.front.review.png",
+      "sha256": "6e2e52ffb0f74ef8bada36101d27233a54d09fcbecfe1c20ed0875d349665558"
+    },
+    {
+      "path": "candidates/v2-area-solid/versions/3b267d1fb0ac71d83b7c70d4e400b9172d766f3ed0afa81467464d9c66db08d8.source-manifest.json",
+      "sha256": "3b267d1fb0ac71d83b7c70d4e400b9172d766f3ed0afa81467464d9c66db08d8"
+    },
+    {
+      "path": "candidates/v2-area-solid/versions/c79065d6be92d62f10474e38d490ec4a6313be895e84e5b1fe3dd4ba1515529c.mn-315-glisnare-v2.back.review.png",
+      "sha256": "c79065d6be92d62f10474e38d490ec4a6313be895e84e5b1fe3dd4ba1515529c"
+    },
+    {
+      "path": "candidates/v2-area-solid/versions/3b5b229c1461842e323cc57c5638bdfdce986c76b068b2c129e4727116062690.source-3b5b229c1461842e323cc57c5638bdfdce986c76b068b2c129e4727116062690.png",
+      "sha256": "3b5b229c1461842e323cc57c5638bdfdce986c76b068b2c129e4727116062690"
+    },
+    {
+      "path": "candidates/v2-area-solid/versions/61d429450243cbc0c9168fb6615951f5d740cf234580da6931ec6818e5757be5.mn-315-glisnare-v2.back.source-crop.png",
+      "sha256": "61d429450243cbc0c9168fb6615951f5d740cf234580da6931ec6818e5757be5"
+    },
+    {
+      "path": "candidates/v2-area-solid/versions/ef34a7c65860f4b0719d893b772fdf8b61c95ce2aff51d6ec567a85b4fe3b085.mn-314-dewbit-v2.front.json",
+      "sha256": "ef34a7c65860f4b0719d893b772fdf8b61c95ce2aff51d6ec567a85b4fe3b085"
+    },
+    {
+      "path": "candidates/v2-area-solid/versions/ae566f814200012f9715b2120e0928fce0532f7261ec5e52c450edd4c776e930.mn-314-dewbit-v2.back.source-crop.png",
+      "sha256": "ae566f814200012f9715b2120e0928fce0532f7261ec5e52c450edd4c776e930"
+    },
+    {
+      "path": "candidates/v2-area-solid/versions/6f20ad7803d4185ea591c9e63548227c633dacc575d751d1a73ec526762b66a4.source-prompt.txt",
+      "sha256": "6f20ad7803d4185ea591c9e63548227c633dacc575d751d1a73ec526762b66a4"
+    },
+    {
+      "path": "candidates/v2-area-solid/versions/cea316de26d49b58b3559378b5bded9c85c853d6050752708a3bf0d6ce20e9ec.mn-315-glisnare-v2.front.2bpp",
+      "sha256": "cea316de26d49b58b3559378b5bded9c85c853d6050752708a3bf0d6ce20e9ec"
+    },
+    {
+      "path": "candidates/v2-area-solid/versions/721e6c89b9f1bb838c8c6953385e40f12e187f8f5b7af6e1188e1ce6803384dc.mn-314-dewbit-v2.front.png",
+      "sha256": "721e6c89b9f1bb838c8c6953385e40f12e187f8f5b7af6e1188e1ce6803384dc"
+    },
+    {
+      "path": "candidates/v2-area-solid/versions/18eb315c4b46a8c0e923c3f32be60a412f754042dcab85583a97a3d80ac72151.mn-315-glisnare-v2.front.png",
+      "sha256": "18eb315c4b46a8c0e923c3f32be60a412f754042dcab85583a97a3d80ac72151"
+    },
+    {
+      "path": "candidates/v2-area-solid/versions/cb8e0012ab229444cad7a4a840f0351ee7b4efc9e932bf9cefb784164e8423cc.mn-314-dewbit-v2.back.json",
+      "sha256": "cb8e0012ab229444cad7a4a840f0351ee7b4efc9e932bf9cefb784164e8423cc"
+    },
+    {
+      "path": "candidates/v2-area-solid/versions/fb6472c413874ced368d1bd5e4cee592a03da4ee2df2fbc042aa24b679b7929a.mn-315-glisnare-v2.front.source-crop.png",
+      "sha256": "fb6472c413874ced368d1bd5e4cee592a03da4ee2df2fbc042aa24b679b7929a"
+    },
+    {
+      "path": "candidates/v2-area-solid/versions/78942e786ee6bf98374e2b19d86e3bfcdf16f510df5052db943b9917e33394a8.line.review.png",
+      "sha256": "78942e786ee6bf98374e2b19d86e3bfcdf16f510df5052db943b9917e33394a8"
+    },
+    {
+      "path": "candidates/v2-area-solid/versions/d9e14977c16d238a1b50061abb87000c199466b039ad780f1df50280d87f533e.mn-314-dewbit-v2.back.2bpp",
+      "sha256": "d9e14977c16d238a1b50061abb87000c199466b039ad780f1df50280d87f533e"
+    },
+    {
+      "path": "candidates/v2-area-solid/versions/481792ccab790b5d54bdea6814ffd2ab305be0b2be7e94ba6ba42a421dba5d10.mn-314-dewbit-v2.front.2bpp",
+      "sha256": "481792ccab790b5d54bdea6814ffd2ab305be0b2be7e94ba6ba42a421dba5d10"
+    },
+    {
+      "path": "candidates/v2-area-solid-w16b8/mn-315-glisnare-v2.front.review.png",
+      "sha256": "a40fb1ecd7575e6fb8f551e105e2a7fecd691ebe84203734dbf5d8dccb2a0960"
+    },
+    {
+      "path": "candidates/v2-area-solid-w16b8/mn-314-dewbit-v2.front.2bpp",
+      "sha256": "4add1fa300f991ab765ae692693c807ca886b82a37ab302d64b25c80047593c0"
+    },
+    {
+      "path": "candidates/v2-area-solid-w16b8/source-manifest.json",
+      "sha256": "26e56dbbe0125a328107ad18e38cabe9c869ce56bd835270d11ac3984c89a144"
+    },
+    {
+      "path": "candidates/v2-area-solid-w16b8/mn-315-glisnare-v2.back.json",
+      "sha256": "75d13dbc4a55ee57f7932d8d181553998aac8770bac26ca5fa75843c976103f4"
+    },
+    {
+      "path": "candidates/v2-area-solid-w16b8/line.native.png",
+      "sha256": "3ba3959ed405a384d481ce60f6cd9a5e20e4c13240823d5f03817293eb50b138"
+    },
+    {
+      "path": "candidates/v2-area-solid-w16b8/mn-314-dewbit-v2.front.png",
+      "sha256": "3340ecf898fa2e04f4491f31d9a88a63416a8a449970baab2a02a998a86123e7"
+    },
+    {
+      "path": "candidates/v2-area-solid-w16b8/line.review.png",
+      "sha256": "2d7aad2c76ecca3f9ba824de1bad6f989346c16925501fee9a7e1415b125e70a"
+    },
+    {
+      "path": "candidates/v2-area-solid-w16b8/mn-315-glisnare-v2.front.2bpp",
+      "sha256": "1b12390f5ed239837cb2b5a13cf6e366fc73526700fd2176da9028d2f6451832"
+    },
+    {
+      "path": "candidates/v2-area-solid-w16b8/mn-314-dewbit-v2.front.review.png",
+      "sha256": "0eed4cd894e2c620fcc90a5c2bdf062fc6f10ae1d001482a9d31eea3a6a9f2ea"
+    },
+    {
+      "path": "candidates/v2-area-solid-w16b8/mn-314-dewbit-v2.back.json",
+      "sha256": "5534f19d35b51f7a08bb38dcfe83a0826270ebe42dae4e73a5b6b171f04fd4ec"
+    },
+    {
+      "path": "candidates/v2-area-solid-w16b8/source-prompt.txt",
+      "sha256": "6f20ad7803d4185ea591c9e63548227c633dacc575d751d1a73ec526762b66a4"
+    },
+    {
+      "path": "candidates/v2-area-solid-w16b8/mn-314-dewbit-v2.back.source-crop.png",
+      "sha256": "ae566f814200012f9715b2120e0928fce0532f7261ec5e52c450edd4c776e930"
+    },
+    {
+      "path": "candidates/v2-area-solid-w16b8/mn-314-dewbit-v2.front.source-crop.png",
+      "sha256": "23cdc8b553fb3a3f212cef398fdab5213789c25c242b86908ea6bcd07e4fb891"
+    },
+    {
+      "path": "candidates/v2-area-solid-w16b8/mn-315-glisnare-v2.front.png",
+      "sha256": "f74bda85d756378dccc0b1d27958cf5a5fbb27d5863cd52ef48bf68bb34bccd5"
+    },
+    {
+      "path": "candidates/v2-area-solid-w16b8/mn-315-glisnare-v2.back.review.png",
+      "sha256": "820f3889825fac58033ee81f49d25d251210c9857cb8f8cc8c3a8567315963e6"
+    },
+    {
+      "path": "candidates/v2-area-solid-w16b8/mn-314-dewbit-v2.back.2bpp",
+      "sha256": "f1ddcfd7fa75c62667c4b2a66cb50ab4606d59765b6a5f5ed7ce569420a61841"
+    },
+    {
+      "path": "candidates/v2-area-solid-w16b8/mn-314-dewbit-v2.back.png",
+      "sha256": "afe2610748b95f7a058c3fcc0df4c9e12506796565957a820eb82521c2010f59"
+    },
+    {
+      "path": "candidates/v2-area-solid-w16b8/mn-315-glisnare-v2.front.source-crop.png",
+      "sha256": "fb6472c413874ced368d1bd5e4cee592a03da4ee2df2fbc042aa24b679b7929a"
+    },
+    {
+      "path": "candidates/v2-area-solid-w16b8/mn-315-glisnare-v2.back.png",
+      "sha256": "2409583d08235b213993065fc156369055b7e1ada8d1fe3abab71f0544b8b429"
+    },
+    {
+      "path": "candidates/v2-area-solid-w16b8/source-3b5b229c1461842e323cc57c5638bdfdce986c76b068b2c129e4727116062690.png",
+      "sha256": "3b5b229c1461842e323cc57c5638bdfdce986c76b068b2c129e4727116062690"
+    },
+    {
+      "path": "candidates/v2-area-solid-w16b8/mn-315-glisnare-v2.back.source-crop.png",
+      "sha256": "61d429450243cbc0c9168fb6615951f5d740cf234580da6931ec6818e5757be5"
+    },
+    {
+      "path": "candidates/v2-area-solid-w16b8/mn-315-glisnare-v2.back.2bpp",
+      "sha256": "0a8cec775e0dcb550fc8bc5d37b4815a67ab3658438e44b9c0dbf16df8353a3c"
+    },
+    {
+      "path": "candidates/v2-area-solid-w16b8/mn-314-dewbit-v2.front.json",
+      "sha256": "a4008d475049ebb3746ca925f0d9507f7d48563c84417fb01b0ab77c7e0e234f"
+    },
+    {
+      "path": "candidates/v2-area-solid-w16b8/mn-314-dewbit-v2.back.review.png",
+      "sha256": "4adb6a8350eee8b7738c970bff1b539a13b58b2cec17bad0c72d8cfd068e429b"
+    },
+    {
+      "path": "candidates/v2-area-solid-w16b8/mn-315-glisnare-v2.front.json",
+      "sha256": "54eb5f604061f4198254ed59b9e83a8efb5bbf4cfa0dea455a24cb999824df58"
+    },
+    {
+      "path": "candidates/v2-area-solid-w16b8/versions/2d7aad2c76ecca3f9ba824de1bad6f989346c16925501fee9a7e1415b125e70a.line.review.png",
+      "sha256": "2d7aad2c76ecca3f9ba824de1bad6f989346c16925501fee9a7e1415b125e70a"
+    },
+    {
+      "path": "candidates/v2-area-solid-w16b8/versions/820f3889825fac58033ee81f49d25d251210c9857cb8f8cc8c3a8567315963e6.mn-315-glisnare-v2.back.review.png",
+      "sha256": "820f3889825fac58033ee81f49d25d251210c9857cb8f8cc8c3a8567315963e6"
+    },
+    {
+      "path": "candidates/v2-area-solid-w16b8/versions/3ba3959ed405a384d481ce60f6cd9a5e20e4c13240823d5f03817293eb50b138.line.native.png",
+      "sha256": "3ba3959ed405a384d481ce60f6cd9a5e20e4c13240823d5f03817293eb50b138"
+    },
+    {
+      "path": "candidates/v2-area-solid-w16b8/versions/54eb5f604061f4198254ed59b9e83a8efb5bbf4cfa0dea455a24cb999824df58.mn-315-glisnare-v2.front.json",
+      "sha256": "54eb5f604061f4198254ed59b9e83a8efb5bbf4cfa0dea455a24cb999824df58"
+    },
+    {
+      "path": "candidates/v2-area-solid-w16b8/versions/5534f19d35b51f7a08bb38dcfe83a0826270ebe42dae4e73a5b6b171f04fd4ec.mn-314-dewbit-v2.back.json",
+      "sha256": "5534f19d35b51f7a08bb38dcfe83a0826270ebe42dae4e73a5b6b171f04fd4ec"
+    },
+    {
+      "path": "candidates/v2-area-solid-w16b8/versions/0a8cec775e0dcb550fc8bc5d37b4815a67ab3658438e44b9c0dbf16df8353a3c.mn-315-glisnare-v2.back.2bpp",
+      "sha256": "0a8cec775e0dcb550fc8bc5d37b4815a67ab3658438e44b9c0dbf16df8353a3c"
+    },
+    {
+      "path": "candidates/v2-area-solid-w16b8/versions/4add1fa300f991ab765ae692693c807ca886b82a37ab302d64b25c80047593c0.mn-314-dewbit-v2.front.2bpp",
+      "sha256": "4add1fa300f991ab765ae692693c807ca886b82a37ab302d64b25c80047593c0"
+    },
+    {
+      "path": "candidates/v2-area-solid-w16b8/versions/75d13dbc4a55ee57f7932d8d181553998aac8770bac26ca5fa75843c976103f4.mn-315-glisnare-v2.back.json",
+      "sha256": "75d13dbc4a55ee57f7932d8d181553998aac8770bac26ca5fa75843c976103f4"
+    },
+    {
+      "path": "candidates/v2-area-solid-w16b8/versions/4adb6a8350eee8b7738c970bff1b539a13b58b2cec17bad0c72d8cfd068e429b.mn-314-dewbit-v2.back.review.png",
+      "sha256": "4adb6a8350eee8b7738c970bff1b539a13b58b2cec17bad0c72d8cfd068e429b"
+    },
+    {
+      "path": "candidates/v2-area-solid-w16b8/versions/23cdc8b553fb3a3f212cef398fdab5213789c25c242b86908ea6bcd07e4fb891.mn-314-dewbit-v2.front.source-crop.png",
+      "sha256": "23cdc8b553fb3a3f212cef398fdab5213789c25c242b86908ea6bcd07e4fb891"
+    },
+    {
+      "path": "candidates/v2-area-solid-w16b8/versions/a40fb1ecd7575e6fb8f551e105e2a7fecd691ebe84203734dbf5d8dccb2a0960.mn-315-glisnare-v2.front.review.png",
+      "sha256": "a40fb1ecd7575e6fb8f551e105e2a7fecd691ebe84203734dbf5d8dccb2a0960"
+    },
+    {
+      "path": "candidates/v2-area-solid-w16b8/versions/a4008d475049ebb3746ca925f0d9507f7d48563c84417fb01b0ab77c7e0e234f.mn-314-dewbit-v2.front.json",
+      "sha256": "a4008d475049ebb3746ca925f0d9507f7d48563c84417fb01b0ab77c7e0e234f"
+    },
+    {
+      "path": "candidates/v2-area-solid-w16b8/versions/3b5b229c1461842e323cc57c5638bdfdce986c76b068b2c129e4727116062690.source-3b5b229c1461842e323cc57c5638bdfdce986c76b068b2c129e4727116062690.png",
+      "sha256": "3b5b229c1461842e323cc57c5638bdfdce986c76b068b2c129e4727116062690"
+    },
+    {
+      "path": "candidates/v2-area-solid-w16b8/versions/3340ecf898fa2e04f4491f31d9a88a63416a8a449970baab2a02a998a86123e7.mn-314-dewbit-v2.front.png",
+      "sha256": "3340ecf898fa2e04f4491f31d9a88a63416a8a449970baab2a02a998a86123e7"
+    },
+    {
+      "path": "candidates/v2-area-solid-w16b8/versions/f74bda85d756378dccc0b1d27958cf5a5fbb27d5863cd52ef48bf68bb34bccd5.mn-315-glisnare-v2.front.png",
+      "sha256": "f74bda85d756378dccc0b1d27958cf5a5fbb27d5863cd52ef48bf68bb34bccd5"
+    },
+    {
+      "path": "candidates/v2-area-solid-w16b8/versions/61d429450243cbc0c9168fb6615951f5d740cf234580da6931ec6818e5757be5.mn-315-glisnare-v2.back.source-crop.png",
+      "sha256": "61d429450243cbc0c9168fb6615951f5d740cf234580da6931ec6818e5757be5"
+    },
+    {
+      "path": "candidates/v2-area-solid-w16b8/versions/0eed4cd894e2c620fcc90a5c2bdf062fc6f10ae1d001482a9d31eea3a6a9f2ea.mn-314-dewbit-v2.front.review.png",
+      "sha256": "0eed4cd894e2c620fcc90a5c2bdf062fc6f10ae1d001482a9d31eea3a6a9f2ea"
+    },
+    {
+      "path": "candidates/v2-area-solid-w16b8/versions/f1ddcfd7fa75c62667c4b2a66cb50ab4606d59765b6a5f5ed7ce569420a61841.mn-314-dewbit-v2.back.2bpp",
+      "sha256": "f1ddcfd7fa75c62667c4b2a66cb50ab4606d59765b6a5f5ed7ce569420a61841"
+    },
+    {
+      "path": "candidates/v2-area-solid-w16b8/versions/26e56dbbe0125a328107ad18e38cabe9c869ce56bd835270d11ac3984c89a144.source-manifest.json",
+      "sha256": "26e56dbbe0125a328107ad18e38cabe9c869ce56bd835270d11ac3984c89a144"
+    },
+    {
+      "path": "candidates/v2-area-solid-w16b8/versions/ae566f814200012f9715b2120e0928fce0532f7261ec5e52c450edd4c776e930.mn-314-dewbit-v2.back.source-crop.png",
+      "sha256": "ae566f814200012f9715b2120e0928fce0532f7261ec5e52c450edd4c776e930"
+    },
+    {
+      "path": "candidates/v2-area-solid-w16b8/versions/6f20ad7803d4185ea591c9e63548227c633dacc575d751d1a73ec526762b66a4.source-prompt.txt",
+      "sha256": "6f20ad7803d4185ea591c9e63548227c633dacc575d751d1a73ec526762b66a4"
+    },
+    {
+      "path": "candidates/v2-area-solid-w16b8/versions/afe2610748b95f7a058c3fcc0df4c9e12506796565957a820eb82521c2010f59.mn-314-dewbit-v2.back.png",
+      "sha256": "afe2610748b95f7a058c3fcc0df4c9e12506796565957a820eb82521c2010f59"
+    },
+    {
+      "path": "candidates/v2-area-solid-w16b8/versions/1b12390f5ed239837cb2b5a13cf6e366fc73526700fd2176da9028d2f6451832.mn-315-glisnare-v2.front.2bpp",
+      "sha256": "1b12390f5ed239837cb2b5a13cf6e366fc73526700fd2176da9028d2f6451832"
+    },
+    {
+      "path": "candidates/v2-area-solid-w16b8/versions/fb6472c413874ced368d1bd5e4cee592a03da4ee2df2fbc042aa24b679b7929a.mn-315-glisnare-v2.front.source-crop.png",
+      "sha256": "fb6472c413874ced368d1bd5e4cee592a03da4ee2df2fbc042aa24b679b7929a"
+    },
+    {
+      "path": "candidates/v2-area-solid-w16b8/versions/2409583d08235b213993065fc156369055b7e1ada8d1fe3abab71f0544b8b429.mn-315-glisnare-v2.back.png",
+      "sha256": "2409583d08235b213993065fc156369055b7e1ada8d1fe3abab71f0544b8b429"
+    },
+    {
+      "path": "candidates/area-solid/source-manifest.json",
+      "sha256": "955fe28832ac31d9e3fac1b8363139dc34d22883f4cda18a6ffd2d58abb72a61"
+    },
+    {
+      "path": "candidates/area-solid/mn-315-glisnare-v1.back.2bpp",
+      "sha256": "c6dd10dcf04a90c371aae8f977508a45b565168a9a9032c9c15ef6e3af7489ba"
+    },
+    {
+      "path": "candidates/area-solid/mn-315-glisnare-v1.front.json",
+      "sha256": "a2e0cb98aba6d919be6801e2f3bbd69e510d00588971f53b994e8d57c237f776"
+    },
+    {
+      "path": "candidates/area-solid/mn-315-glisnare-v1.back.png",
+      "sha256": "487a8a09a974a5b195bee93129077231ad024669edcf295daa4389d6dc19aebb"
+    },
+    {
+      "path": "candidates/area-solid/mn-314-dewbit-v1.front.json",
+      "sha256": "1aa9ff098c2391811493bdd5a35c52c6a63b59981dd230e3a6a2b3a4f60c93cf"
+    },
+    {
+      "path": "candidates/area-solid/mn-315-glisnare-v1.front.source-crop.png",
+      "sha256": "dca2d00eb047e02a040beabb3696105385b5380bb0e3d98e7274cae2a8d9e649"
+    },
+    {
+      "path": "candidates/area-solid/line.native.png",
+      "sha256": "9f7879f5064eb16ba86da1af749c8123effe14ddc5e0af2c3621e02d804107b8"
+    },
+    {
+      "path": "candidates/area-solid/line.review.png",
+      "sha256": "8beac52806f8497894748538d942233b7aa7eaffeb8e98d57b949e2a1fcdddcd"
+    },
+    {
+      "path": "candidates/area-solid/mn-314-dewbit-v1.back.png",
+      "sha256": "2afdc089aff41cdd1df62d08a3f48d02ea38b15129b09812bbeec281ea5b089e"
+    },
+    {
+      "path": "candidates/area-solid/mn-314-dewbit-v1.back.review.png",
+      "sha256": "14bd7f015de386dffaf9106ae2c5cc68c4c45c13e12dc2339735fa1c4a46d4f1"
+    },
+    {
+      "path": "candidates/area-solid/mn-314-dewbit-v1.back.2bpp",
+      "sha256": "4e5aba867ebe8bb549f3c468dad9246849e577c3c0dbd1c585a7d76c7d842b50"
+    },
+    {
+      "path": "candidates/area-solid/mn-315-glisnare-v1.back.source-crop.png",
+      "sha256": "6758bda43368d7e39914deb4cda4045d88e9c7142d79f901494d9fc1360675a0"
+    },
+    {
+      "path": "candidates/area-solid/source-prompt.txt",
+      "sha256": "37e18187c872a9958c9e8c726b1fba857754cca2ebd0244c5c18e75c47fa434c"
+    },
+    {
+      "path": "candidates/area-solid/mn-314-dewbit-v1.back.json",
+      "sha256": "b67d773f6412177c451825be86d49b6d00a05628fa995c80fac847a5bab9e125"
+    },
+    {
+      "path": "candidates/area-solid/mn-314-dewbit-v1.front.review.png",
+      "sha256": "32eede4d22d309d8307e01e8afd7ed0a50bc3a6ea15056c0134c78817a424b64"
+    },
+    {
+      "path": "candidates/area-solid/source-0d5be8e756ba4ed4257d0db47600ae72559a68cdace6a15717827532197c7b7b.png",
+      "sha256": "0d5be8e756ba4ed4257d0db47600ae72559a68cdace6a15717827532197c7b7b"
+    },
+    {
+      "path": "candidates/area-solid/mn-315-glisnare-v1.front.png",
+      "sha256": "ade33b45984b71bf960a178e45b32ae2ad0a5b5ff19b3ca043d723fb7987caea"
+    },
+    {
+      "path": "candidates/area-solid/mn-314-dewbit-v1.back.source-crop.png",
+      "sha256": "b674a85fcd51b69b7b35540bf1d9d473b69afa167f5187ca16027605e5ee1775"
+    },
+    {
+      "path": "candidates/area-solid/mn-315-glisnare-v1.back.review.png",
+      "sha256": "9f5a1ec0a5a9b73733c4526f7c3d5da8eec42601b7751134d8c5038b5c313ba3"
+    },
+    {
+      "path": "candidates/area-solid/mn-315-glisnare-v1.back.json",
+      "sha256": "fb887af63c8a6c292c931037e5528d7313de94789581f649cee20f2109c20857"
+    },
+    {
+      "path": "candidates/area-solid/mn-315-glisnare-v1.front.review.png",
+      "sha256": "a696df0fed605aec6387ec5da2541fb773056ab455f82ca8cf0a6c15fa0d3b1c"
+    },
+    {
+      "path": "candidates/area-solid/mn-315-glisnare-v1.front.2bpp",
+      "sha256": "8fcf60fc99523791a3b8311212b0906aae5e2795894e19ca13ac3f3154279f7e"
+    },
+    {
+      "path": "candidates/area-solid/mn-314-dewbit-v1.front.png",
+      "sha256": "708a13b00323f85e3f6cfcee7f1d88e5c84a1e36e4a2116d4bec6032493c5a3c"
+    },
+    {
+      "path": "candidates/area-solid/mn-314-dewbit-v1.front.source-crop.png",
+      "sha256": "30453b003b3e58313e0eb72452a1d87193372ec285a1b77e4078aa933977b152"
+    },
+    {
+      "path": "candidates/area-solid/mn-314-dewbit-v1.front.2bpp",
+      "sha256": "ea36809780124cec8d00e7f9eb7aaafce256939bf792cc94632cc058fd6e3adc"
+    },
+    {
+      "path": "candidates/area-solid/versions/fb887af63c8a6c292c931037e5528d7313de94789581f649cee20f2109c20857.mn-315-glisnare-v1.back.json",
+      "sha256": "fb887af63c8a6c292c931037e5528d7313de94789581f649cee20f2109c20857"
+    },
+    {
+      "path": "candidates/area-solid/versions/b674a85fcd51b69b7b35540bf1d9d473b69afa167f5187ca16027605e5ee1775.mn-314-dewbit-v1.back.source-crop.png",
+      "sha256": "b674a85fcd51b69b7b35540bf1d9d473b69afa167f5187ca16027605e5ee1775"
+    },
+    {
+      "path": "candidates/area-solid/versions/32eede4d22d309d8307e01e8afd7ed0a50bc3a6ea15056c0134c78817a424b64.mn-314-dewbit-v1.front.review.png",
+      "sha256": "32eede4d22d309d8307e01e8afd7ed0a50bc3a6ea15056c0134c78817a424b64"
+    },
+    {
+      "path": "candidates/area-solid/versions/2afdc089aff41cdd1df62d08a3f48d02ea38b15129b09812bbeec281ea5b089e.mn-314-dewbit-v1.back.png",
+      "sha256": "2afdc089aff41cdd1df62d08a3f48d02ea38b15129b09812bbeec281ea5b089e"
+    },
+    {
+      "path": "candidates/area-solid/versions/dca2d00eb047e02a040beabb3696105385b5380bb0e3d98e7274cae2a8d9e649.mn-315-glisnare-v1.front.source-crop.png",
+      "sha256": "dca2d00eb047e02a040beabb3696105385b5380bb0e3d98e7274cae2a8d9e649"
+    },
+    {
+      "path": "candidates/area-solid/versions/37e18187c872a9958c9e8c726b1fba857754cca2ebd0244c5c18e75c47fa434c.source-prompt.txt",
+      "sha256": "37e18187c872a9958c9e8c726b1fba857754cca2ebd0244c5c18e75c47fa434c"
+    },
+    {
+      "path": "candidates/area-solid/versions/ade33b45984b71bf960a178e45b32ae2ad0a5b5ff19b3ca043d723fb7987caea.mn-315-glisnare-v1.front.png",
+      "sha256": "ade33b45984b71bf960a178e45b32ae2ad0a5b5ff19b3ca043d723fb7987caea"
+    },
+    {
+      "path": "candidates/area-solid/versions/487a8a09a974a5b195bee93129077231ad024669edcf295daa4389d6dc19aebb.mn-315-glisnare-v1.back.png",
+      "sha256": "487a8a09a974a5b195bee93129077231ad024669edcf295daa4389d6dc19aebb"
+    },
+    {
+      "path": "candidates/area-solid/versions/8fcf60fc99523791a3b8311212b0906aae5e2795894e19ca13ac3f3154279f7e.mn-315-glisnare-v1.front.2bpp",
+      "sha256": "8fcf60fc99523791a3b8311212b0906aae5e2795894e19ca13ac3f3154279f7e"
+    },
+    {
+      "path": "candidates/area-solid/versions/0d5be8e756ba4ed4257d0db47600ae72559a68cdace6a15717827532197c7b7b.source-0d5be8e756ba4ed4257d0db47600ae72559a68cdace6a15717827532197c7b7b.png",
+      "sha256": "0d5be8e756ba4ed4257d0db47600ae72559a68cdace6a15717827532197c7b7b"
+    },
+    {
+      "path": "candidates/area-solid/versions/9f7879f5064eb16ba86da1af749c8123effe14ddc5e0af2c3621e02d804107b8.line.native.png",
+      "sha256": "9f7879f5064eb16ba86da1af749c8123effe14ddc5e0af2c3621e02d804107b8"
+    },
+    {
+      "path": "candidates/area-solid/versions/708a13b00323f85e3f6cfcee7f1d88e5c84a1e36e4a2116d4bec6032493c5a3c.mn-314-dewbit-v1.front.png",
+      "sha256": "708a13b00323f85e3f6cfcee7f1d88e5c84a1e36e4a2116d4bec6032493c5a3c"
+    },
+    {
+      "path": "candidates/area-solid/versions/955fe28832ac31d9e3fac1b8363139dc34d22883f4cda18a6ffd2d58abb72a61.source-manifest.json",
+      "sha256": "955fe28832ac31d9e3fac1b8363139dc34d22883f4cda18a6ffd2d58abb72a61"
+    },
+    {
+      "path": "candidates/area-solid/versions/a2e0cb98aba6d919be6801e2f3bbd69e510d00588971f53b994e8d57c237f776.mn-315-glisnare-v1.front.json",
+      "sha256": "a2e0cb98aba6d919be6801e2f3bbd69e510d00588971f53b994e8d57c237f776"
+    },
+    {
+      "path": "candidates/area-solid/versions/4e5aba867ebe8bb549f3c468dad9246849e577c3c0dbd1c585a7d76c7d842b50.mn-314-dewbit-v1.back.2bpp",
+      "sha256": "4e5aba867ebe8bb549f3c468dad9246849e577c3c0dbd1c585a7d76c7d842b50"
+    },
+    {
+      "path": "candidates/area-solid/versions/a696df0fed605aec6387ec5da2541fb773056ab455f82ca8cf0a6c15fa0d3b1c.mn-315-glisnare-v1.front.review.png",
+      "sha256": "a696df0fed605aec6387ec5da2541fb773056ab455f82ca8cf0a6c15fa0d3b1c"
+    },
+    {
+      "path": "candidates/area-solid/versions/1aa9ff098c2391811493bdd5a35c52c6a63b59981dd230e3a6a2b3a4f60c93cf.mn-314-dewbit-v1.front.json",
+      "sha256": "1aa9ff098c2391811493bdd5a35c52c6a63b59981dd230e3a6a2b3a4f60c93cf"
+    },
+    {
+      "path": "candidates/area-solid/versions/9f5a1ec0a5a9b73733c4526f7c3d5da8eec42601b7751134d8c5038b5c313ba3.mn-315-glisnare-v1.back.review.png",
+      "sha256": "9f5a1ec0a5a9b73733c4526f7c3d5da8eec42601b7751134d8c5038b5c313ba3"
+    },
+    {
+      "path": "candidates/area-solid/versions/14bd7f015de386dffaf9106ae2c5cc68c4c45c13e12dc2339735fa1c4a46d4f1.mn-314-dewbit-v1.back.review.png",
+      "sha256": "14bd7f015de386dffaf9106ae2c5cc68c4c45c13e12dc2339735fa1c4a46d4f1"
+    },
+    {
+      "path": "candidates/area-solid/versions/6758bda43368d7e39914deb4cda4045d88e9c7142d79f901494d9fc1360675a0.mn-315-glisnare-v1.back.source-crop.png",
+      "sha256": "6758bda43368d7e39914deb4cda4045d88e9c7142d79f901494d9fc1360675a0"
+    },
+    {
+      "path": "candidates/area-solid/versions/30453b003b3e58313e0eb72452a1d87193372ec285a1b77e4078aa933977b152.mn-314-dewbit-v1.front.source-crop.png",
+      "sha256": "30453b003b3e58313e0eb72452a1d87193372ec285a1b77e4078aa933977b152"
+    },
+    {
+      "path": "candidates/area-solid/versions/c6dd10dcf04a90c371aae8f977508a45b565168a9a9032c9c15ef6e3af7489ba.mn-315-glisnare-v1.back.2bpp",
+      "sha256": "c6dd10dcf04a90c371aae8f977508a45b565168a9a9032c9c15ef6e3af7489ba"
+    },
+    {
+      "path": "candidates/area-solid/versions/8beac52806f8497894748538d942233b7aa7eaffeb8e98d57b949e2a1fcdddcd.line.review.png",
+      "sha256": "8beac52806f8497894748538d942233b7aa7eaffeb8e98d57b949e2a1fcdddcd"
+    },
+    {
+      "path": "candidates/area-solid/versions/b67d773f6412177c451825be86d49b6d00a05628fa995c80fac847a5bab9e125.mn-314-dewbit-v1.back.json",
+      "sha256": "b67d773f6412177c451825be86d49b6d00a05628fa995c80fac847a5bab9e125"
+    },
+    {
+      "path": "candidates/area-solid/versions/ea36809780124cec8d00e7f9eb7aaafce256939bf792cc94632cc058fd6e3adc.mn-314-dewbit-v1.front.2bpp",
+      "sha256": "ea36809780124cec8d00e7f9eb7aaafce256939bf792cc94632cc058fd6e3adc"
+    },
+    {
+      "path": "candidates/center-source/source-manifest.json",
+      "sha256": "a75c3a33e96f0801c9bb0639bdfe2ab6b2be190252a30ea90ccf3913812ff301"
+    },
+    {
+      "path": "candidates/center-source/mn-315-glisnare-v1.back.2bpp",
+      "sha256": "289563ab2b7cc94b6759a5d480903591bea141f6c087f7c97a1e1223645b8da0"
+    },
+    {
+      "path": "candidates/center-source/mn-315-glisnare-v1.front.json",
+      "sha256": "27154e51b845e65509d24135851fdeb2c874e4c19b5c79f9767dbfc85fa77e0f"
+    },
+    {
+      "path": "candidates/center-source/mn-315-glisnare-v1.back.png",
+      "sha256": "0d9445cf79f668471b7e0b3cfbb3f132ac1dc4ca996800bf838686c069e0e725"
+    },
+    {
+      "path": "candidates/center-source/mn-314-dewbit-v1.front.json",
+      "sha256": "41cdd425277f2a47c5d7faf976aafe421d78c5cc08784428ac5ccd82a7b34f5f"
+    },
+    {
+      "path": "candidates/center-source/mn-315-glisnare-v1.front.source-crop.png",
+      "sha256": "dca2d00eb047e02a040beabb3696105385b5380bb0e3d98e7274cae2a8d9e649"
+    },
+    {
+      "path": "candidates/center-source/line.native.png",
+      "sha256": "0fd1b1cc3ca15962d88d52a3bfb95ad91358e15f11644d9b9afcc00364a8dbea"
+    },
+    {
+      "path": "candidates/center-source/line.review.png",
+      "sha256": "13454e61f672f9891bb2af4a7388f0a4a416c2a7e54266baf22ee7e4c49158f0"
+    },
+    {
+      "path": "candidates/center-source/mn-314-dewbit-v1.back.png",
+      "sha256": "8556a9edfe5ac2d734049c80502516eb80d87b1a89bfb24cf459b7c6098d2362"
+    },
+    {
+      "path": "candidates/center-source/mn-314-dewbit-v1.back.review.png",
+      "sha256": "f88f4df5515bab0ec80420e0e05b6fc422310b3b8635daf00430dae8204dba9f"
+    },
+    {
+      "path": "candidates/center-source/mn-314-dewbit-v1.back.2bpp",
+      "sha256": "e2592ba81696b918fb797dcb97ecee4ecb0f83cf2966d32e17aad89af143e741"
+    },
+    {
+      "path": "candidates/center-source/mn-315-glisnare-v1.back.source-crop.png",
+      "sha256": "6758bda43368d7e39914deb4cda4045d88e9c7142d79f901494d9fc1360675a0"
+    },
+    {
+      "path": "candidates/center-source/source-prompt.txt",
+      "sha256": "37e18187c872a9958c9e8c726b1fba857754cca2ebd0244c5c18e75c47fa434c"
+    },
+    {
+      "path": "candidates/center-source/mn-314-dewbit-v1.back.json",
+      "sha256": "69337b6c62997344e1b671baa127b278e0221f6156ec890c09a359ac72ec0086"
+    },
+    {
+      "path": "candidates/center-source/mn-314-dewbit-v1.front.review.png",
+      "sha256": "ef3f05f00d86565e91ae1ecbe94873b595c7f5c295fa26f1cf61404cf9f16761"
+    },
+    {
+      "path": "candidates/center-source/source-0d5be8e756ba4ed4257d0db47600ae72559a68cdace6a15717827532197c7b7b.png",
+      "sha256": "0d5be8e756ba4ed4257d0db47600ae72559a68cdace6a15717827532197c7b7b"
+    },
+    {
+      "path": "candidates/center-source/mn-315-glisnare-v1.front.png",
+      "sha256": "2399422c8af7619c813302c3ca94b1a6a978e84ef559699351085af1d91adfce"
+    },
+    {
+      "path": "candidates/center-source/mn-314-dewbit-v1.back.source-crop.png",
+      "sha256": "b674a85fcd51b69b7b35540bf1d9d473b69afa167f5187ca16027605e5ee1775"
+    },
+    {
+      "path": "candidates/center-source/mn-315-glisnare-v1.back.review.png",
+      "sha256": "cc2654e103292c3fa8f52213733499bba0097582b5b3157c9a3e78bfab848c80"
+    },
+    {
+      "path": "candidates/center-source/mn-315-glisnare-v1.back.json",
+      "sha256": "719b983666b0f8cfea8f87168f47330ca31808a777f281543864c3dc70d053c9"
+    },
+    {
+      "path": "candidates/center-source/mn-315-glisnare-v1.front.review.png",
+      "sha256": "31dc3d2feff1b81ea480c66464172da2fbd2b3b80ca42e6ffb692a166b2c38ff"
+    },
+    {
+      "path": "candidates/center-source/mn-315-glisnare-v1.front.2bpp",
+      "sha256": "3cafb01e4f6c92d12181da75d8865be9a56cfcd50a008439df75eba12627b449"
+    },
+    {
+      "path": "candidates/center-source/mn-314-dewbit-v1.front.png",
+      "sha256": "0eee31e532468cc0e334468ba568e8accd52502185b629680d650f12e0d552c5"
+    },
+    {
+      "path": "candidates/center-source/mn-314-dewbit-v1.front.source-crop.png",
+      "sha256": "30453b003b3e58313e0eb72452a1d87193372ec285a1b77e4078aa933977b152"
+    },
+    {
+      "path": "candidates/center-source/mn-314-dewbit-v1.front.2bpp",
+      "sha256": "7ed4f28f5a76949f3f974866548f42e3306169f188e2f43c5deb74497072bf62"
+    },
+    {
+      "path": "candidates/center-source/versions/719b983666b0f8cfea8f87168f47330ca31808a777f281543864c3dc70d053c9.mn-315-glisnare-v1.back.json",
+      "sha256": "719b983666b0f8cfea8f87168f47330ca31808a777f281543864c3dc70d053c9"
+    },
+    {
+      "path": "candidates/center-source/versions/27154e51b845e65509d24135851fdeb2c874e4c19b5c79f9767dbfc85fa77e0f.mn-315-glisnare-v1.front.json",
+      "sha256": "27154e51b845e65509d24135851fdeb2c874e4c19b5c79f9767dbfc85fa77e0f"
+    },
+    {
+      "path": "candidates/center-source/versions/b674a85fcd51b69b7b35540bf1d9d473b69afa167f5187ca16027605e5ee1775.mn-314-dewbit-v1.back.source-crop.png",
+      "sha256": "b674a85fcd51b69b7b35540bf1d9d473b69afa167f5187ca16027605e5ee1775"
+    },
+    {
+      "path": "candidates/center-source/versions/41cdd425277f2a47c5d7faf976aafe421d78c5cc08784428ac5ccd82a7b34f5f.mn-314-dewbit-v1.front.json",
+      "sha256": "41cdd425277f2a47c5d7faf976aafe421d78c5cc08784428ac5ccd82a7b34f5f"
+    },
+    {
+      "path": "candidates/center-source/versions/f88f4df5515bab0ec80420e0e05b6fc422310b3b8635daf00430dae8204dba9f.mn-314-dewbit-v1.back.review.png",
+      "sha256": "f88f4df5515bab0ec80420e0e05b6fc422310b3b8635daf00430dae8204dba9f"
+    },
+    {
+      "path": "candidates/center-source/versions/7ed4f28f5a76949f3f974866548f42e3306169f188e2f43c5deb74497072bf62.mn-314-dewbit-v1.front.2bpp",
+      "sha256": "7ed4f28f5a76949f3f974866548f42e3306169f188e2f43c5deb74497072bf62"
+    },
+    {
+      "path": "candidates/center-source/versions/dca2d00eb047e02a040beabb3696105385b5380bb0e3d98e7274cae2a8d9e649.mn-315-glisnare-v1.front.source-crop.png",
+      "sha256": "dca2d00eb047e02a040beabb3696105385b5380bb0e3d98e7274cae2a8d9e649"
+    },
+    {
+      "path": "candidates/center-source/versions/37e18187c872a9958c9e8c726b1fba857754cca2ebd0244c5c18e75c47fa434c.source-prompt.txt",
+      "sha256": "37e18187c872a9958c9e8c726b1fba857754cca2ebd0244c5c18e75c47fa434c"
+    },
+    {
+      "path": "candidates/center-source/versions/a75c3a33e96f0801c9bb0639bdfe2ab6b2be190252a30ea90ccf3913812ff301.source-manifest.json",
+      "sha256": "a75c3a33e96f0801c9bb0639bdfe2ab6b2be190252a30ea90ccf3913812ff301"
+    },
+    {
+      "path": "candidates/center-source/versions/cc2654e103292c3fa8f52213733499bba0097582b5b3157c9a3e78bfab848c80.mn-315-glisnare-v1.back.review.png",
+      "sha256": "cc2654e103292c3fa8f52213733499bba0097582b5b3157c9a3e78bfab848c80"
+    },
+    {
+      "path": "candidates/center-source/versions/0d5be8e756ba4ed4257d0db47600ae72559a68cdace6a15717827532197c7b7b.source-0d5be8e756ba4ed4257d0db47600ae72559a68cdace6a15717827532197c7b7b.png",
+      "sha256": "0d5be8e756ba4ed4257d0db47600ae72559a68cdace6a15717827532197c7b7b"
+    },
+    {
+      "path": "candidates/center-source/versions/13454e61f672f9891bb2af4a7388f0a4a416c2a7e54266baf22ee7e4c49158f0.line.review.png",
+      "sha256": "13454e61f672f9891bb2af4a7388f0a4a416c2a7e54266baf22ee7e4c49158f0"
+    },
+    {
+      "path": "candidates/center-source/versions/289563ab2b7cc94b6759a5d480903591bea141f6c087f7c97a1e1223645b8da0.mn-315-glisnare-v1.back.2bpp",
+      "sha256": "289563ab2b7cc94b6759a5d480903591bea141f6c087f7c97a1e1223645b8da0"
+    },
+    {
+      "path": "candidates/center-source/versions/0d9445cf79f668471b7e0b3cfbb3f132ac1dc4ca996800bf838686c069e0e725.mn-315-glisnare-v1.back.png",
+      "sha256": "0d9445cf79f668471b7e0b3cfbb3f132ac1dc4ca996800bf838686c069e0e725"
+    },
+    {
+      "path": "candidates/center-source/versions/0fd1b1cc3ca15962d88d52a3bfb95ad91358e15f11644d9b9afcc00364a8dbea.line.native.png",
+      "sha256": "0fd1b1cc3ca15962d88d52a3bfb95ad91358e15f11644d9b9afcc00364a8dbea"
+    },
+    {
+      "path": "candidates/center-source/versions/0eee31e532468cc0e334468ba568e8accd52502185b629680d650f12e0d552c5.mn-314-dewbit-v1.front.png",
+      "sha256": "0eee31e532468cc0e334468ba568e8accd52502185b629680d650f12e0d552c5"
+    },
+    {
+      "path": "candidates/center-source/versions/6758bda43368d7e39914deb4cda4045d88e9c7142d79f901494d9fc1360675a0.mn-315-glisnare-v1.back.source-crop.png",
+      "sha256": "6758bda43368d7e39914deb4cda4045d88e9c7142d79f901494d9fc1360675a0"
+    },
+    {
+      "path": "candidates/center-source/versions/30453b003b3e58313e0eb72452a1d87193372ec285a1b77e4078aa933977b152.mn-314-dewbit-v1.front.source-crop.png",
+      "sha256": "30453b003b3e58313e0eb72452a1d87193372ec285a1b77e4078aa933977b152"
+    },
+    {
+      "path": "candidates/center-source/versions/8556a9edfe5ac2d734049c80502516eb80d87b1a89bfb24cf459b7c6098d2362.mn-314-dewbit-v1.back.png",
+      "sha256": "8556a9edfe5ac2d734049c80502516eb80d87b1a89bfb24cf459b7c6098d2362"
+    },
+    {
+      "path": "candidates/center-source/versions/69337b6c62997344e1b671baa127b278e0221f6156ec890c09a359ac72ec0086.mn-314-dewbit-v1.back.json",
+      "sha256": "69337b6c62997344e1b671baa127b278e0221f6156ec890c09a359ac72ec0086"
+    },
+    {
+      "path": "candidates/center-source/versions/ef3f05f00d86565e91ae1ecbe94873b595c7f5c295fa26f1cf61404cf9f16761.mn-314-dewbit-v1.front.review.png",
+      "sha256": "ef3f05f00d86565e91ae1ecbe94873b595c7f5c295fa26f1cf61404cf9f16761"
+    },
+    {
+      "path": "candidates/center-source/versions/e2592ba81696b918fb797dcb97ecee4ecb0f83cf2966d32e17aad89af143e741.mn-314-dewbit-v1.back.2bpp",
+      "sha256": "e2592ba81696b918fb797dcb97ecee4ecb0f83cf2966d32e17aad89af143e741"
+    },
+    {
+      "path": "candidates/center-source/versions/3cafb01e4f6c92d12181da75d8865be9a56cfcd50a008439df75eba12627b449.mn-315-glisnare-v1.front.2bpp",
+      "sha256": "3cafb01e4f6c92d12181da75d8865be9a56cfcd50a008439df75eba12627b449"
+    },
+    {
+      "path": "candidates/center-source/versions/2399422c8af7619c813302c3ca94b1a6a978e84ef559699351085af1d91adfce.mn-315-glisnare-v1.front.png",
+      "sha256": "2399422c8af7619c813302c3ca94b1a6a978e84ef559699351085af1d91adfce"
+    },
+    {
+      "path": "candidates/center-source/versions/31dc3d2feff1b81ea480c66464172da2fbd2b3b80ca42e6ffb692a166b2c38ff.mn-315-glisnare-v1.front.review.png",
+      "sha256": "31dc3d2feff1b81ea480c66464172da2fbd2b3b80ca42e6ffb692a166b2c38ff"
+    },
+    {
+      "path": "candidates/v2-area-source/mn-315-glisnare-v2.front.review.png",
+      "sha256": "c6ec896b6e395843302928765f4ac2ea008c9ef8e634128157edbd97731fac36"
+    },
+    {
+      "path": "candidates/v2-area-source/mn-314-dewbit-v2.front.2bpp",
+      "sha256": "0afd9fb81f79c00f5ccf54ac2fe3a2c32b40d16a78243d467784d18444c7e496"
+    },
+    {
+      "path": "candidates/v2-area-source/source-manifest.json",
+      "sha256": "dc328b94f7f8b68d541613a2df209f7008e9fcb7c0987f984b778409775b63a3"
+    },
+    {
+      "path": "candidates/v2-area-source/mn-315-glisnare-v2.back.json",
+      "sha256": "f9e7fb6d52334779f2032b370cec8bf420e648b2833aee03f712be663649c069"
+    },
+    {
+      "path": "candidates/v2-area-source/line.native.png",
+      "sha256": "1716e7aa4a7f818c436ec9e3054cf5458fb71896d1e6a1aabcef90e14f4dad0e"
+    },
+    {
+      "path": "candidates/v2-area-source/mn-314-dewbit-v2.front.png",
+      "sha256": "d8be097f410975088fc8cc933cffb063abb385ec48584f15dfdc56ecbeef16ae"
+    },
+    {
+      "path": "candidates/v2-area-source/line.review.png",
+      "sha256": "e594a3346f5e37d52ac1b8675879540a8f585a8da33c35ecc30381102fefb87a"
+    },
+    {
+      "path": "candidates/v2-area-source/mn-315-glisnare-v2.front.2bpp",
+      "sha256": "7a98e6e4d3969a36f4a6a1f6c994caa91ff3f07a480c88e5ebad22f1a8c18644"
+    },
+    {
+      "path": "candidates/v2-area-source/mn-314-dewbit-v2.front.review.png",
+      "sha256": "e024c81b7d33ec2f702dab8eeee26e26e21d6e7bc67cbf04161476112db8cf7d"
+    },
+    {
+      "path": "candidates/v2-area-source/mn-314-dewbit-v2.back.json",
+      "sha256": "7df481475e1f8bd410d70cc49b555e930c5aa71bcb58f23681e510f5b4f31e0c"
+    },
+    {
+      "path": "candidates/v2-area-source/source-prompt.txt",
+      "sha256": "6f20ad7803d4185ea591c9e63548227c633dacc575d751d1a73ec526762b66a4"
+    },
+    {
+      "path": "candidates/v2-area-source/mn-314-dewbit-v2.back.source-crop.png",
+      "sha256": "ae566f814200012f9715b2120e0928fce0532f7261ec5e52c450edd4c776e930"
+    },
+    {
+      "path": "candidates/v2-area-source/mn-314-dewbit-v2.front.source-crop.png",
+      "sha256": "23cdc8b553fb3a3f212cef398fdab5213789c25c242b86908ea6bcd07e4fb891"
+    },
+    {
+      "path": "candidates/v2-area-source/mn-315-glisnare-v2.front.png",
+      "sha256": "689fa61f03b1e66c208ef7f15542d92a146ddd2839e82166f1dd18c59e8635bd"
+    },
+    {
+      "path": "candidates/v2-area-source/mn-315-glisnare-v2.back.review.png",
+      "sha256": "08af9819f2918364205029737bfd420e3488c9b263c88c00558fe45825117c4a"
+    },
+    {
+      "path": "candidates/v2-area-source/mn-314-dewbit-v2.back.2bpp",
+      "sha256": "853f8fffd8a8c68088fdc082e0008cae932b87a22fe67f990d7a3d4659061a1e"
+    },
+    {
+      "path": "candidates/v2-area-source/mn-314-dewbit-v2.back.png",
+      "sha256": "fca686adc1868dc0f13c9d9bea6bfd5e3599154ca565f23d837fba8bcbadba8b"
+    },
+    {
+      "path": "candidates/v2-area-source/mn-315-glisnare-v2.front.source-crop.png",
+      "sha256": "fb6472c413874ced368d1bd5e4cee592a03da4ee2df2fbc042aa24b679b7929a"
+    },
+    {
+      "path": "candidates/v2-area-source/mn-315-glisnare-v2.back.png",
+      "sha256": "f554314bc1466f37260ba3ae2d5db34822b3157b2d6a7562e06b13a538ba1950"
+    },
+    {
+      "path": "candidates/v2-area-source/source-3b5b229c1461842e323cc57c5638bdfdce986c76b068b2c129e4727116062690.png",
+      "sha256": "3b5b229c1461842e323cc57c5638bdfdce986c76b068b2c129e4727116062690"
+    },
+    {
+      "path": "candidates/v2-area-source/mn-315-glisnare-v2.back.source-crop.png",
+      "sha256": "61d429450243cbc0c9168fb6615951f5d740cf234580da6931ec6818e5757be5"
+    },
+    {
+      "path": "candidates/v2-area-source/mn-315-glisnare-v2.back.2bpp",
+      "sha256": "71c2b2f04157a242ebc64a39668ff7443acb32b2ff8af6b7a6cdd768bb5b1f8e"
+    },
+    {
+      "path": "candidates/v2-area-source/mn-314-dewbit-v2.front.json",
+      "sha256": "00980abe9a867f62c1c917b4a5785e9b5e3de3612b0c1e53b08299f32e570034"
+    },
+    {
+      "path": "candidates/v2-area-source/mn-314-dewbit-v2.back.review.png",
+      "sha256": "c4c978488a4b42a85a7d167997ca1a6bfe5059b34e43d2d20dde8594b1ba0641"
+    },
+    {
+      "path": "candidates/v2-area-source/mn-315-glisnare-v2.front.json",
+      "sha256": "b18fb310b6da4d2d19375b09dc140e943f62273eb4fcd0fda0d500492d07974f"
+    },
+    {
+      "path": "candidates/v2-area-source/versions/f9e7fb6d52334779f2032b370cec8bf420e648b2833aee03f712be663649c069.mn-315-glisnare-v2.back.json",
+      "sha256": "f9e7fb6d52334779f2032b370cec8bf420e648b2833aee03f712be663649c069"
+    },
+    {
+      "path": "candidates/v2-area-source/versions/00980abe9a867f62c1c917b4a5785e9b5e3de3612b0c1e53b08299f32e570034.mn-314-dewbit-v2.front.json",
+      "sha256": "00980abe9a867f62c1c917b4a5785e9b5e3de3612b0c1e53b08299f32e570034"
+    },
+    {
+      "path": "candidates/v2-area-source/versions/c4c978488a4b42a85a7d167997ca1a6bfe5059b34e43d2d20dde8594b1ba0641.mn-314-dewbit-v2.back.review.png",
+      "sha256": "c4c978488a4b42a85a7d167997ca1a6bfe5059b34e43d2d20dde8594b1ba0641"
+    },
+    {
+      "path": "candidates/v2-area-source/versions/c6ec896b6e395843302928765f4ac2ea008c9ef8e634128157edbd97731fac36.mn-315-glisnare-v2.front.review.png",
+      "sha256": "c6ec896b6e395843302928765f4ac2ea008c9ef8e634128157edbd97731fac36"
+    },
+    {
+      "path": "candidates/v2-area-source/versions/7a98e6e4d3969a36f4a6a1f6c994caa91ff3f07a480c88e5ebad22f1a8c18644.mn-315-glisnare-v2.front.2bpp",
+      "sha256": "7a98e6e4d3969a36f4a6a1f6c994caa91ff3f07a480c88e5ebad22f1a8c18644"
+    },
+    {
+      "path": "candidates/v2-area-source/versions/e024c81b7d33ec2f702dab8eeee26e26e21d6e7bc67cbf04161476112db8cf7d.mn-314-dewbit-v2.front.review.png",
+      "sha256": "e024c81b7d33ec2f702dab8eeee26e26e21d6e7bc67cbf04161476112db8cf7d"
+    },
+    {
+      "path": "candidates/v2-area-source/versions/d8be097f410975088fc8cc933cffb063abb385ec48584f15dfdc56ecbeef16ae.mn-314-dewbit-v2.front.png",
+      "sha256": "d8be097f410975088fc8cc933cffb063abb385ec48584f15dfdc56ecbeef16ae"
+    },
+    {
+      "path": "candidates/v2-area-source/versions/23cdc8b553fb3a3f212cef398fdab5213789c25c242b86908ea6bcd07e4fb891.mn-314-dewbit-v2.front.source-crop.png",
+      "sha256": "23cdc8b553fb3a3f212cef398fdab5213789c25c242b86908ea6bcd07e4fb891"
+    },
+    {
+      "path": "candidates/v2-area-source/versions/689fa61f03b1e66c208ef7f15542d92a146ddd2839e82166f1dd18c59e8635bd.mn-315-glisnare-v2.front.png",
+      "sha256": "689fa61f03b1e66c208ef7f15542d92a146ddd2839e82166f1dd18c59e8635bd"
+    },
+    {
+      "path": "candidates/v2-area-source/versions/1716e7aa4a7f818c436ec9e3054cf5458fb71896d1e6a1aabcef90e14f4dad0e.line.native.png",
+      "sha256": "1716e7aa4a7f818c436ec9e3054cf5458fb71896d1e6a1aabcef90e14f4dad0e"
+    },
+    {
+      "path": "candidates/v2-area-source/versions/3b5b229c1461842e323cc57c5638bdfdce986c76b068b2c129e4727116062690.source-3b5b229c1461842e323cc57c5638bdfdce986c76b068b2c129e4727116062690.png",
+      "sha256": "3b5b229c1461842e323cc57c5638bdfdce986c76b068b2c129e4727116062690"
+    },
+    {
+      "path": "candidates/v2-area-source/versions/08af9819f2918364205029737bfd420e3488c9b263c88c00558fe45825117c4a.mn-315-glisnare-v2.back.review.png",
+      "sha256": "08af9819f2918364205029737bfd420e3488c9b263c88c00558fe45825117c4a"
+    },
+    {
+      "path": "candidates/v2-area-source/versions/fca686adc1868dc0f13c9d9bea6bfd5e3599154ca565f23d837fba8bcbadba8b.mn-314-dewbit-v2.back.png",
+      "sha256": "fca686adc1868dc0f13c9d9bea6bfd5e3599154ca565f23d837fba8bcbadba8b"
+    },
+    {
+      "path": "candidates/v2-area-source/versions/dc328b94f7f8b68d541613a2df209f7008e9fcb7c0987f984b778409775b63a3.source-manifest.json",
+      "sha256": "dc328b94f7f8b68d541613a2df209f7008e9fcb7c0987f984b778409775b63a3"
+    },
+    {
+      "path": "candidates/v2-area-source/versions/61d429450243cbc0c9168fb6615951f5d740cf234580da6931ec6818e5757be5.mn-315-glisnare-v2.back.source-crop.png",
+      "sha256": "61d429450243cbc0c9168fb6615951f5d740cf234580da6931ec6818e5757be5"
+    },
+    {
+      "path": "candidates/v2-area-source/versions/e594a3346f5e37d52ac1b8675879540a8f585a8da33c35ecc30381102fefb87a.line.review.png",
+      "sha256": "e594a3346f5e37d52ac1b8675879540a8f585a8da33c35ecc30381102fefb87a"
+    },
+    {
+      "path": "candidates/v2-area-source/versions/ae566f814200012f9715b2120e0928fce0532f7261ec5e52c450edd4c776e930.mn-314-dewbit-v2.back.source-crop.png",
+      "sha256": "ae566f814200012f9715b2120e0928fce0532f7261ec5e52c450edd4c776e930"
+    },
+    {
+      "path": "candidates/v2-area-source/versions/f554314bc1466f37260ba3ae2d5db34822b3157b2d6a7562e06b13a538ba1950.mn-315-glisnare-v2.back.png",
+      "sha256": "f554314bc1466f37260ba3ae2d5db34822b3157b2d6a7562e06b13a538ba1950"
+    },
+    {
+      "path": "candidates/v2-area-source/versions/0afd9fb81f79c00f5ccf54ac2fe3a2c32b40d16a78243d467784d18444c7e496.mn-314-dewbit-v2.front.2bpp",
+      "sha256": "0afd9fb81f79c00f5ccf54ac2fe3a2c32b40d16a78243d467784d18444c7e496"
+    },
+    {
+      "path": "candidates/v2-area-source/versions/6f20ad7803d4185ea591c9e63548227c633dacc575d751d1a73ec526762b66a4.source-prompt.txt",
+      "sha256": "6f20ad7803d4185ea591c9e63548227c633dacc575d751d1a73ec526762b66a4"
+    },
+    {
+      "path": "candidates/v2-area-source/versions/853f8fffd8a8c68088fdc082e0008cae932b87a22fe67f990d7a3d4659061a1e.mn-314-dewbit-v2.back.2bpp",
+      "sha256": "853f8fffd8a8c68088fdc082e0008cae932b87a22fe67f990d7a3d4659061a1e"
+    },
+    {
+      "path": "candidates/v2-area-source/versions/b18fb310b6da4d2d19375b09dc140e943f62273eb4fcd0fda0d500492d07974f.mn-315-glisnare-v2.front.json",
+      "sha256": "b18fb310b6da4d2d19375b09dc140e943f62273eb4fcd0fda0d500492d07974f"
+    },
+    {
+      "path": "candidates/v2-area-source/versions/fb6472c413874ced368d1bd5e4cee592a03da4ee2df2fbc042aa24b679b7929a.mn-315-glisnare-v2.front.source-crop.png",
+      "sha256": "fb6472c413874ced368d1bd5e4cee592a03da4ee2df2fbc042aa24b679b7929a"
+    },
+    {
+      "path": "candidates/v2-area-source/versions/71c2b2f04157a242ebc64a39668ff7443acb32b2ff8af6b7a6cdd768bb5b1f8e.mn-315-glisnare-v2.back.2bpp",
+      "sha256": "71c2b2f04157a242ebc64a39668ff7443acb32b2ff8af6b7a6cdd768bb5b1f8e"
+    },
+    {
+      "path": "candidates/v2-area-source/versions/7df481475e1f8bd410d70cc49b555e930c5aa71bcb58f23681e510f5b4f31e0c.mn-314-dewbit-v2.back.json",
+      "sha256": "7df481475e1f8bd410d70cc49b555e930c5aa71bcb58f23681e510f5b4f31e0c"
+    },
+    {
+      "path": "candidates/v2-center-source/mn-315-glisnare-v2.front.review.png",
+      "sha256": "fc78d4fd88aa4fa6ca32ae2b673191f773dfb702c1694d3703bd952bac882d0b"
+    },
+    {
+      "path": "candidates/v2-center-source/mn-314-dewbit-v2.front.2bpp",
+      "sha256": "702b3c90728b1cb3c29de3e3ce37c23955d752d4b5f1618488ed2d87ff908d0c"
+    },
+    {
+      "path": "candidates/v2-center-source/source-manifest.json",
+      "sha256": "8230a7317cbaa539062c65f47b3ca5e34dc0a852dfeeb2636dba2ae5f64b85f6"
+    },
+    {
+      "path": "candidates/v2-center-source/mn-315-glisnare-v2.back.json",
+      "sha256": "34959605eb6a0f3e6e96f8ab08caa630ba7089b34cb87e01ded85462eafa5f96"
+    },
+    {
+      "path": "candidates/v2-center-source/line.native.png",
+      "sha256": "f23a5d7eb53dffc2fec81a17240f018a2269c8d03e1b952cb15faa048f28d5dd"
+    },
+    {
+      "path": "candidates/v2-center-source/mn-314-dewbit-v2.front.png",
+      "sha256": "a9feddb4e925455a9b2f8e8862a0c9ced896a5d555287c1a0ba5fa7315de535f"
+    },
+    {
+      "path": "candidates/v2-center-source/line.review.png",
+      "sha256": "c900c9846121a5026e2eeba637ae3973a554b2c23022abf3a89555a73b849e47"
+    },
+    {
+      "path": "candidates/v2-center-source/mn-315-glisnare-v2.front.2bpp",
+      "sha256": "ab06ffe8567d575d58836a1e10f967e2745d4b13ae5429c12319665352e806d1"
+    },
+    {
+      "path": "candidates/v2-center-source/mn-314-dewbit-v2.front.review.png",
+      "sha256": "cf1e3fda780021ff0c45a64928656898d550edc7e65d55fe887591be7b1ddced"
+    },
+    {
+      "path": "candidates/v2-center-source/mn-314-dewbit-v2.back.json",
+      "sha256": "eb2ad30d6430da81989ade7e5b44abf66e6a4b1f0629485bc77a75ed2d79b890"
+    },
+    {
+      "path": "candidates/v2-center-source/source-prompt.txt",
+      "sha256": "6f20ad7803d4185ea591c9e63548227c633dacc575d751d1a73ec526762b66a4"
+    },
+    {
+      "path": "candidates/v2-center-source/mn-314-dewbit-v2.back.source-crop.png",
+      "sha256": "ae566f814200012f9715b2120e0928fce0532f7261ec5e52c450edd4c776e930"
+    },
+    {
+      "path": "candidates/v2-center-source/mn-314-dewbit-v2.front.source-crop.png",
+      "sha256": "23cdc8b553fb3a3f212cef398fdab5213789c25c242b86908ea6bcd07e4fb891"
+    },
+    {
+      "path": "candidates/v2-center-source/mn-315-glisnare-v2.front.png",
+      "sha256": "bce7d255ae9dc4c242fa618d5e4aa6c07bece0cf04c507d117b708bf0c6f4281"
+    },
+    {
+      "path": "candidates/v2-center-source/mn-315-glisnare-v2.back.review.png",
+      "sha256": "a0ac7b43f08b63c3d6b6749baed03ca1cf1ea20d0bb02bc33f4a3892709f6b33"
+    },
+    {
+      "path": "candidates/v2-center-source/mn-314-dewbit-v2.back.2bpp",
+      "sha256": "5b982394fa5bcc52ade7dc0ab6613200a70fd32b07a9ea02388b04379a65c88c"
+    },
+    {
+      "path": "candidates/v2-center-source/mn-314-dewbit-v2.back.png",
+      "sha256": "a74f3135acf05909bdbbd1cf407a8832d6e72026bef0956142c6637e4c94d01f"
+    },
+    {
+      "path": "candidates/v2-center-source/mn-315-glisnare-v2.front.source-crop.png",
+      "sha256": "fb6472c413874ced368d1bd5e4cee592a03da4ee2df2fbc042aa24b679b7929a"
+    },
+    {
+      "path": "candidates/v2-center-source/mn-315-glisnare-v2.back.png",
+      "sha256": "7bfd73463ef3e85a1730e6cca2fb46e5cae6c97d87eeb791c8b2e0c0288f7979"
+    },
+    {
+      "path": "candidates/v2-center-source/source-3b5b229c1461842e323cc57c5638bdfdce986c76b068b2c129e4727116062690.png",
+      "sha256": "3b5b229c1461842e323cc57c5638bdfdce986c76b068b2c129e4727116062690"
+    },
+    {
+      "path": "candidates/v2-center-source/mn-315-glisnare-v2.back.source-crop.png",
+      "sha256": "61d429450243cbc0c9168fb6615951f5d740cf234580da6931ec6818e5757be5"
+    },
+    {
+      "path": "candidates/v2-center-source/mn-315-glisnare-v2.back.2bpp",
+      "sha256": "42da72b5b60141d087191695ce0071838a2627bdca7931cdc54d36d097e81786"
+    },
+    {
+      "path": "candidates/v2-center-source/mn-314-dewbit-v2.front.json",
+      "sha256": "3fc83d45e6173fd07d2d67792e8fdb3b715bf413039d592d640bcb7b1cf154ab"
+    },
+    {
+      "path": "candidates/v2-center-source/mn-314-dewbit-v2.back.review.png",
+      "sha256": "e6adaea75eae696dfa187518a1d38eef34054c2d156ef9d5d6d74067714bf123"
+    },
+    {
+      "path": "candidates/v2-center-source/mn-315-glisnare-v2.front.json",
+      "sha256": "ed09be2a0693fa0733b5f4d498c1f07a39d73a4b9d48a2f81ee632625109899e"
+    },
+    {
+      "path": "candidates/v2-center-source/versions/a74f3135acf05909bdbbd1cf407a8832d6e72026bef0956142c6637e4c94d01f.mn-314-dewbit-v2.back.png",
+      "sha256": "a74f3135acf05909bdbbd1cf407a8832d6e72026bef0956142c6637e4c94d01f"
+    },
+    {
+      "path": "candidates/v2-center-source/versions/f23a5d7eb53dffc2fec81a17240f018a2269c8d03e1b952cb15faa048f28d5dd.line.native.png",
+      "sha256": "f23a5d7eb53dffc2fec81a17240f018a2269c8d03e1b952cb15faa048f28d5dd"
+    },
+    {
+      "path": "candidates/v2-center-source/versions/a9feddb4e925455a9b2f8e8862a0c9ced896a5d555287c1a0ba5fa7315de535f.mn-314-dewbit-v2.front.png",
+      "sha256": "a9feddb4e925455a9b2f8e8862a0c9ced896a5d555287c1a0ba5fa7315de535f"
+    },
+    {
+      "path": "candidates/v2-center-source/versions/7bfd73463ef3e85a1730e6cca2fb46e5cae6c97d87eeb791c8b2e0c0288f7979.mn-315-glisnare-v2.back.png",
+      "sha256": "7bfd73463ef3e85a1730e6cca2fb46e5cae6c97d87eeb791c8b2e0c0288f7979"
+    },
+    {
+      "path": "candidates/v2-center-source/versions/eb2ad30d6430da81989ade7e5b44abf66e6a4b1f0629485bc77a75ed2d79b890.mn-314-dewbit-v2.back.json",
+      "sha256": "eb2ad30d6430da81989ade7e5b44abf66e6a4b1f0629485bc77a75ed2d79b890"
+    },
+    {
+      "path": "candidates/v2-center-source/versions/42da72b5b60141d087191695ce0071838a2627bdca7931cdc54d36d097e81786.mn-315-glisnare-v2.back.2bpp",
+      "sha256": "42da72b5b60141d087191695ce0071838a2627bdca7931cdc54d36d097e81786"
+    },
+    {
+      "path": "candidates/v2-center-source/versions/23cdc8b553fb3a3f212cef398fdab5213789c25c242b86908ea6bcd07e4fb891.mn-314-dewbit-v2.front.source-crop.png",
+      "sha256": "23cdc8b553fb3a3f212cef398fdab5213789c25c242b86908ea6bcd07e4fb891"
+    },
+    {
+      "path": "candidates/v2-center-source/versions/bce7d255ae9dc4c242fa618d5e4aa6c07bece0cf04c507d117b708bf0c6f4281.mn-315-glisnare-v2.front.png",
+      "sha256": "bce7d255ae9dc4c242fa618d5e4aa6c07bece0cf04c507d117b708bf0c6f4281"
+    },
+    {
+      "path": "candidates/v2-center-source/versions/3b5b229c1461842e323cc57c5638bdfdce986c76b068b2c129e4727116062690.source-3b5b229c1461842e323cc57c5638bdfdce986c76b068b2c129e4727116062690.png",
+      "sha256": "3b5b229c1461842e323cc57c5638bdfdce986c76b068b2c129e4727116062690"
+    },
+    {
+      "path": "candidates/v2-center-source/versions/cf1e3fda780021ff0c45a64928656898d550edc7e65d55fe887591be7b1ddced.mn-314-dewbit-v2.front.review.png",
+      "sha256": "cf1e3fda780021ff0c45a64928656898d550edc7e65d55fe887591be7b1ddced"
+    },
+    {
+      "path": "candidates/v2-center-source/versions/61d429450243cbc0c9168fb6615951f5d740cf234580da6931ec6818e5757be5.mn-315-glisnare-v2.back.source-crop.png",
+      "sha256": "61d429450243cbc0c9168fb6615951f5d740cf234580da6931ec6818e5757be5"
+    },
+    {
+      "path": "candidates/v2-center-source/versions/a0ac7b43f08b63c3d6b6749baed03ca1cf1ea20d0bb02bc33f4a3892709f6b33.mn-315-glisnare-v2.back.review.png",
+      "sha256": "a0ac7b43f08b63c3d6b6749baed03ca1cf1ea20d0bb02bc33f4a3892709f6b33"
+    },
+    {
+      "path": "candidates/v2-center-source/versions/ae566f814200012f9715b2120e0928fce0532f7261ec5e52c450edd4c776e930.mn-314-dewbit-v2.back.source-crop.png",
+      "sha256": "ae566f814200012f9715b2120e0928fce0532f7261ec5e52c450edd4c776e930"
+    },
+    {
+      "path": "candidates/v2-center-source/versions/5b982394fa5bcc52ade7dc0ab6613200a70fd32b07a9ea02388b04379a65c88c.mn-314-dewbit-v2.back.2bpp",
+      "sha256": "5b982394fa5bcc52ade7dc0ab6613200a70fd32b07a9ea02388b04379a65c88c"
+    },
+    {
+      "path": "candidates/v2-center-source/versions/6f20ad7803d4185ea591c9e63548227c633dacc575d751d1a73ec526762b66a4.source-prompt.txt",
+      "sha256": "6f20ad7803d4185ea591c9e63548227c633dacc575d751d1a73ec526762b66a4"
+    },
+    {
+      "path": "candidates/v2-center-source/versions/ed09be2a0693fa0733b5f4d498c1f07a39d73a4b9d48a2f81ee632625109899e.mn-315-glisnare-v2.front.json",
+      "sha256": "ed09be2a0693fa0733b5f4d498c1f07a39d73a4b9d48a2f81ee632625109899e"
+    },
+    {
+      "path": "candidates/v2-center-source/versions/34959605eb6a0f3e6e96f8ab08caa630ba7089b34cb87e01ded85462eafa5f96.mn-315-glisnare-v2.back.json",
+      "sha256": "34959605eb6a0f3e6e96f8ab08caa630ba7089b34cb87e01ded85462eafa5f96"
+    },
+    {
+      "path": "candidates/v2-center-source/versions/c900c9846121a5026e2eeba637ae3973a554b2c23022abf3a89555a73b849e47.line.review.png",
+      "sha256": "c900c9846121a5026e2eeba637ae3973a554b2c23022abf3a89555a73b849e47"
+    },
+    {
+      "path": "candidates/v2-center-source/versions/702b3c90728b1cb3c29de3e3ce37c23955d752d4b5f1618488ed2d87ff908d0c.mn-314-dewbit-v2.front.2bpp",
+      "sha256": "702b3c90728b1cb3c29de3e3ce37c23955d752d4b5f1618488ed2d87ff908d0c"
+    },
+    {
+      "path": "candidates/v2-center-source/versions/8230a7317cbaa539062c65f47b3ca5e34dc0a852dfeeb2636dba2ae5f64b85f6.source-manifest.json",
+      "sha256": "8230a7317cbaa539062c65f47b3ca5e34dc0a852dfeeb2636dba2ae5f64b85f6"
+    },
+    {
+      "path": "candidates/v2-center-source/versions/ab06ffe8567d575d58836a1e10f967e2745d4b13ae5429c12319665352e806d1.mn-315-glisnare-v2.front.2bpp",
+      "sha256": "ab06ffe8567d575d58836a1e10f967e2745d4b13ae5429c12319665352e806d1"
+    },
+    {
+      "path": "candidates/v2-center-source/versions/fb6472c413874ced368d1bd5e4cee592a03da4ee2df2fbc042aa24b679b7929a.mn-315-glisnare-v2.front.source-crop.png",
+      "sha256": "fb6472c413874ced368d1bd5e4cee592a03da4ee2df2fbc042aa24b679b7929a"
+    },
+    {
+      "path": "candidates/v2-center-source/versions/3fc83d45e6173fd07d2d67792e8fdb3b715bf413039d592d640bcb7b1cf154ab.mn-314-dewbit-v2.front.json",
+      "sha256": "3fc83d45e6173fd07d2d67792e8fdb3b715bf413039d592d640bcb7b1cf154ab"
+    },
+    {
+      "path": "candidates/v2-center-source/versions/fc78d4fd88aa4fa6ca32ae2b673191f773dfb702c1694d3703bd952bac882d0b.mn-315-glisnare-v2.front.review.png",
+      "sha256": "fc78d4fd88aa4fa6ca32ae2b673191f773dfb702c1694d3703bd952bac882d0b"
+    },
+    {
+      "path": "candidates/v2-center-source/versions/e6adaea75eae696dfa187518a1d38eef34054c2d156ef9d5d6d74067714bf123.mn-314-dewbit-v2.back.review.png",
+      "sha256": "e6adaea75eae696dfa187518a1d38eef34054c2d156ef9d5d6d74067714bf123"
+    },
+    {
+      "path": "candidates/area-source/source-manifest.json",
+      "sha256": "21aba97adbb25f8edd7ed3fe7d9e0945be577e461a4a91b59524ac0f82aebd92"
+    },
+    {
+      "path": "candidates/area-source/mn-315-glisnare-v1.back.2bpp",
+      "sha256": "d756ea0d70845299700d323dbb8095a6fcea9e1ba9264a74803e21e2b139d1ac"
+    },
+    {
+      "path": "candidates/area-source/mn-315-glisnare-v1.front.json",
+      "sha256": "5c128ab43340962db42a2e5497ba43a463584ce7a9253bdab8d81f89ab658268"
+    },
+    {
+      "path": "candidates/area-source/mn-315-glisnare-v1.back.png",
+      "sha256": "5bbe2c8bf2491ccac54b72c1b247e115fac1b2dca1dbc7db9dfd752f13c0a8c0"
+    },
+    {
+      "path": "candidates/area-source/mn-314-dewbit-v1.front.json",
+      "sha256": "2b0de01162111ddc192abddd9e328372cd8a1c006c45139d293386c8b2935b25"
+    },
+    {
+      "path": "candidates/area-source/mn-315-glisnare-v1.front.source-crop.png",
+      "sha256": "dca2d00eb047e02a040beabb3696105385b5380bb0e3d98e7274cae2a8d9e649"
+    },
+    {
+      "path": "candidates/area-source/line.native.png",
+      "sha256": "0617d55b4992dd197b5e49e7c2531a051f8891afa600a42269f0d92444ef04c7"
+    },
+    {
+      "path": "candidates/area-source/line.review.png",
+      "sha256": "560020d7ff6352b11c7687cac640512bd41cb4afc8f0eeff0eef4cb57c70eafe"
+    },
+    {
+      "path": "candidates/area-source/mn-314-dewbit-v1.back.png",
+      "sha256": "5abbf8baeaf818770d596f339c8972473f43d96954c223d00b4c07a1d7db3118"
+    },
+    {
+      "path": "candidates/area-source/mn-314-dewbit-v1.back.review.png",
+      "sha256": "98df01910a7baf8b4bc2d53492152be69fabfd0bfd93edd3916546c7d9c5dd93"
+    },
+    {
+      "path": "candidates/area-source/mn-314-dewbit-v1.back.2bpp",
+      "sha256": "b3ef253a717f685bd539a19fe774270acbbb25abbc9f0bb9f9e1467c4979e287"
+    },
+    {
+      "path": "candidates/area-source/mn-315-glisnare-v1.back.source-crop.png",
+      "sha256": "6758bda43368d7e39914deb4cda4045d88e9c7142d79f901494d9fc1360675a0"
+    },
+    {
+      "path": "candidates/area-source/source-prompt.txt",
+      "sha256": "37e18187c872a9958c9e8c726b1fba857754cca2ebd0244c5c18e75c47fa434c"
+    },
+    {
+      "path": "candidates/area-source/mn-314-dewbit-v1.back.json",
+      "sha256": "88c9ad08688cc16697b2fbcf5525b4eba6952890f1cd5e493a300359fce5503b"
+    },
+    {
+      "path": "candidates/area-source/mn-314-dewbit-v1.front.review.png",
+      "sha256": "269c2bf038ebe25c466cd76cc3ba934c7476e7e56195a5606dc91454383faceb"
+    },
+    {
+      "path": "candidates/area-source/source-0d5be8e756ba4ed4257d0db47600ae72559a68cdace6a15717827532197c7b7b.png",
+      "sha256": "0d5be8e756ba4ed4257d0db47600ae72559a68cdace6a15717827532197c7b7b"
+    },
+    {
+      "path": "candidates/area-source/mn-315-glisnare-v1.front.png",
+      "sha256": "5690a789345617092546033ab6cb605c6537f389c0d70509fcfb4ae44e5ae1c8"
+    },
+    {
+      "path": "candidates/area-source/mn-314-dewbit-v1.back.source-crop.png",
+      "sha256": "b674a85fcd51b69b7b35540bf1d9d473b69afa167f5187ca16027605e5ee1775"
+    },
+    {
+      "path": "candidates/area-source/mn-315-glisnare-v1.back.review.png",
+      "sha256": "76e28f0e1192672eb7816904ec9af369ec82e034af1898550f9c6a0a4ce0f05b"
+    },
+    {
+      "path": "candidates/area-source/mn-315-glisnare-v1.back.json",
+      "sha256": "9512e2ae33a1c815634beabc43a537fb2881e18890df09b39aa4f9c848767abd"
+    },
+    {
+      "path": "candidates/area-source/mn-315-glisnare-v1.front.review.png",
+      "sha256": "e47fd5fc03d407556b06e16fc79261ab64370447b205de77c5f2dffec2104878"
+    },
+    {
+      "path": "candidates/area-source/mn-315-glisnare-v1.front.2bpp",
+      "sha256": "82104a770e0664b4ae84d6f579645159dec17836860ecfda3d10c23bba1a5854"
+    },
+    {
+      "path": "candidates/area-source/mn-314-dewbit-v1.front.png",
+      "sha256": "6636646fafac71c73bf4701007957baf0c4df31d1d3f789c4d7bf6c6a3356ee2"
+    },
+    {
+      "path": "candidates/area-source/mn-314-dewbit-v1.front.source-crop.png",
+      "sha256": "30453b003b3e58313e0eb72452a1d87193372ec285a1b77e4078aa933977b152"
+    },
+    {
+      "path": "candidates/area-source/mn-314-dewbit-v1.front.2bpp",
+      "sha256": "0f74a29ac34ddf18265d13310148e8a440b570bd80d744f6335b4b3acbe29877"
+    },
+    {
+      "path": "candidates/area-source/versions/82104a770e0664b4ae84d6f579645159dec17836860ecfda3d10c23bba1a5854.mn-315-glisnare-v1.front.2bpp",
+      "sha256": "82104a770e0664b4ae84d6f579645159dec17836860ecfda3d10c23bba1a5854"
+    },
+    {
+      "path": "candidates/area-source/versions/b3ef253a717f685bd539a19fe774270acbbb25abbc9f0bb9f9e1467c4979e287.mn-314-dewbit-v1.back.2bpp",
+      "sha256": "b3ef253a717f685bd539a19fe774270acbbb25abbc9f0bb9f9e1467c4979e287"
+    },
+    {
+      "path": "candidates/area-source/versions/9512e2ae33a1c815634beabc43a537fb2881e18890df09b39aa4f9c848767abd.mn-315-glisnare-v1.back.json",
+      "sha256": "9512e2ae33a1c815634beabc43a537fb2881e18890df09b39aa4f9c848767abd"
+    },
+    {
+      "path": "candidates/area-source/versions/b674a85fcd51b69b7b35540bf1d9d473b69afa167f5187ca16027605e5ee1775.mn-314-dewbit-v1.back.source-crop.png",
+      "sha256": "b674a85fcd51b69b7b35540bf1d9d473b69afa167f5187ca16027605e5ee1775"
+    },
+    {
+      "path": "candidates/area-source/versions/88c9ad08688cc16697b2fbcf5525b4eba6952890f1cd5e493a300359fce5503b.mn-314-dewbit-v1.back.json",
+      "sha256": "88c9ad08688cc16697b2fbcf5525b4eba6952890f1cd5e493a300359fce5503b"
+    },
+    {
+      "path": "candidates/area-source/versions/dca2d00eb047e02a040beabb3696105385b5380bb0e3d98e7274cae2a8d9e649.mn-315-glisnare-v1.front.source-crop.png",
+      "sha256": "dca2d00eb047e02a040beabb3696105385b5380bb0e3d98e7274cae2a8d9e649"
+    },
+    {
+      "path": "candidates/area-source/versions/76e28f0e1192672eb7816904ec9af369ec82e034af1898550f9c6a0a4ce0f05b.mn-315-glisnare-v1.back.review.png",
+      "sha256": "76e28f0e1192672eb7816904ec9af369ec82e034af1898550f9c6a0a4ce0f05b"
+    },
+    {
+      "path": "candidates/area-source/versions/37e18187c872a9958c9e8c726b1fba857754cca2ebd0244c5c18e75c47fa434c.source-prompt.txt",
+      "sha256": "37e18187c872a9958c9e8c726b1fba857754cca2ebd0244c5c18e75c47fa434c"
+    },
+    {
+      "path": "candidates/area-source/versions/269c2bf038ebe25c466cd76cc3ba934c7476e7e56195a5606dc91454383faceb.mn-314-dewbit-v1.front.review.png",
+      "sha256": "269c2bf038ebe25c466cd76cc3ba934c7476e7e56195a5606dc91454383faceb"
+    },
+    {
+      "path": "candidates/area-source/versions/0f74a29ac34ddf18265d13310148e8a440b570bd80d744f6335b4b3acbe29877.mn-314-dewbit-v1.front.2bpp",
+      "sha256": "0f74a29ac34ddf18265d13310148e8a440b570bd80d744f6335b4b3acbe29877"
+    },
+    {
+      "path": "candidates/area-source/versions/5abbf8baeaf818770d596f339c8972473f43d96954c223d00b4c07a1d7db3118.mn-314-dewbit-v1.back.png",
+      "sha256": "5abbf8baeaf818770d596f339c8972473f43d96954c223d00b4c07a1d7db3118"
+    },
+    {
+      "path": "candidates/area-source/versions/2b0de01162111ddc192abddd9e328372cd8a1c006c45139d293386c8b2935b25.mn-314-dewbit-v1.front.json",
+      "sha256": "2b0de01162111ddc192abddd9e328372cd8a1c006c45139d293386c8b2935b25"
+    },
+    {
+      "path": "candidates/area-source/versions/e47fd5fc03d407556b06e16fc79261ab64370447b205de77c5f2dffec2104878.mn-315-glisnare-v1.front.review.png",
+      "sha256": "e47fd5fc03d407556b06e16fc79261ab64370447b205de77c5f2dffec2104878"
+    },
+    {
+      "path": "candidates/area-source/versions/0d5be8e756ba4ed4257d0db47600ae72559a68cdace6a15717827532197c7b7b.source-0d5be8e756ba4ed4257d0db47600ae72559a68cdace6a15717827532197c7b7b.png",
+      "sha256": "0d5be8e756ba4ed4257d0db47600ae72559a68cdace6a15717827532197c7b7b"
+    },
+    {
+      "path": "candidates/area-source/versions/5c128ab43340962db42a2e5497ba43a463584ce7a9253bdab8d81f89ab658268.mn-315-glisnare-v1.front.json",
+      "sha256": "5c128ab43340962db42a2e5497ba43a463584ce7a9253bdab8d81f89ab658268"
+    },
+    {
+      "path": "candidates/area-source/versions/5bbe2c8bf2491ccac54b72c1b247e115fac1b2dca1dbc7db9dfd752f13c0a8c0.mn-315-glisnare-v1.back.png",
+      "sha256": "5bbe2c8bf2491ccac54b72c1b247e115fac1b2dca1dbc7db9dfd752f13c0a8c0"
+    },
+    {
+      "path": "candidates/area-source/versions/98df01910a7baf8b4bc2d53492152be69fabfd0bfd93edd3916546c7d9c5dd93.mn-314-dewbit-v1.back.review.png",
+      "sha256": "98df01910a7baf8b4bc2d53492152be69fabfd0bfd93edd3916546c7d9c5dd93"
+    },
+    {
+      "path": "candidates/area-source/versions/21aba97adbb25f8edd7ed3fe7d9e0945be577e461a4a91b59524ac0f82aebd92.source-manifest.json",
+      "sha256": "21aba97adbb25f8edd7ed3fe7d9e0945be577e461a4a91b59524ac0f82aebd92"
+    },
+    {
+      "path": "candidates/area-source/versions/560020d7ff6352b11c7687cac640512bd41cb4afc8f0eeff0eef4cb57c70eafe.line.review.png",
+      "sha256": "560020d7ff6352b11c7687cac640512bd41cb4afc8f0eeff0eef4cb57c70eafe"
+    },
+    {
+      "path": "candidates/area-source/versions/d756ea0d70845299700d323dbb8095a6fcea9e1ba9264a74803e21e2b139d1ac.mn-315-glisnare-v1.back.2bpp",
+      "sha256": "d756ea0d70845299700d323dbb8095a6fcea9e1ba9264a74803e21e2b139d1ac"
+    },
+    {
+      "path": "candidates/area-source/versions/6758bda43368d7e39914deb4cda4045d88e9c7142d79f901494d9fc1360675a0.mn-315-glisnare-v1.back.source-crop.png",
+      "sha256": "6758bda43368d7e39914deb4cda4045d88e9c7142d79f901494d9fc1360675a0"
+    },
+    {
+      "path": "candidates/area-source/versions/30453b003b3e58313e0eb72452a1d87193372ec285a1b77e4078aa933977b152.mn-314-dewbit-v1.front.source-crop.png",
+      "sha256": "30453b003b3e58313e0eb72452a1d87193372ec285a1b77e4078aa933977b152"
+    },
+    {
+      "path": "candidates/area-source/versions/6636646fafac71c73bf4701007957baf0c4df31d1d3f789c4d7bf6c6a3356ee2.mn-314-dewbit-v1.front.png",
+      "sha256": "6636646fafac71c73bf4701007957baf0c4df31d1d3f789c4d7bf6c6a3356ee2"
+    },
+    {
+      "path": "candidates/area-source/versions/5690a789345617092546033ab6cb605c6537f389c0d70509fcfb4ae44e5ae1c8.mn-315-glisnare-v1.front.png",
+      "sha256": "5690a789345617092546033ab6cb605c6537f389c0d70509fcfb4ae44e5ae1c8"
+    },
+    {
+      "path": "candidates/area-source/versions/0617d55b4992dd197b5e49e7c2531a051f8891afa600a42269f0d92444ef04c7.line.native.png",
+      "sha256": "0617d55b4992dd197b5e49e7c2531a051f8891afa600a42269f0d92444ef04c7"
+    }
+  ],
+  "all_source_prompts_and_renders_preserved": true,
+  "no_generation_failures": true
+}

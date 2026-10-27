@@ -29,14 +29,17 @@ export CARGO_BUILD_JOBS="${CARGO_BUILD_JOBS:-1}"
 FEATURES=fullscreen-scaling,voxel-view,location-tester
 set --
 if [ "$TERRAIN_WORKER" = 1 ]; then
-    FEATURES=$FEATURES,terrain-worker-qa,crystal-voxel-view/scenery-full-detail
+    FEATURES=$FEATURES,terrain-worker-qa
     set -- "$@" -p crystal-terrain-worker
 fi
 if [ "$ACTOR_WORKER" = 1 ]; then
-    FEATURES=$FEATURES,actor-worker-qa,crystal-voxel-view/scenery-full-detail
+    FEATURES=$FEATURES,actor-worker-qa
     set -- "$@" -p crystal-actor-worker
 fi
 if [ "$#" -gt 0 ]; then
+    if [ "${CRYSTAL_SCENERY_FULL_DETAIL:-0}" = 1 ]; then
+        set -- "$@" --features crystal-voxel-view/scenery-full-detail
+    fi
     cargo build --locked --profile "$PROFILE" "$@" --target wasm32-unknown-unknown
 fi
 if [ "${CRYSTAL_ALLOCATIONS:-0}" = 1 ]; then
@@ -74,6 +77,14 @@ fi
 "$BINDGEN" --target web --no-typescript --remove-name-section --out-dir "$OUT" --out-name crystal-audio \
     "$TARGET/wasm32-unknown-unknown/$PROFILE/crystal_audio.wasm"
 cp web-client/*.js web-client/*.css web-client/index.html "$OUT/"
+# The renderer chooser loads the painted TUI integration on demand.
+if [ -d web-client/tui ]; then
+    mkdir -p "$OUT/tui"
+    cp -R web-client/tui/. "$OUT/tui/"
+    npm ci --prefix tools/tui-ascii --ignore-scripts --no-audit
+    cp tools/tui-ascii/node_modules/ascii.rest/dist/mount.js "$OUT/tui/ascii-mount.js"
+    cp tools/tui-ascii/node_modules/ascii.rest/LICENSE "$OUT/tui/ASCII-LICENSE.txt"
+fi
 # The server derives its clock/customization pack from the core-named input;
 # the browser-named copy also makes a static disposable preview self-contained.
 cp "$PACK" "$OUT/core-modular.browser.crystalpack"

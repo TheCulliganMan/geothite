@@ -10,7 +10,7 @@ RUN rustup target add wasm32-unknown-unknown \
     && cargo install wasm-bindgen-cli --version 0.2.128 --locked
 
 WORKDIR /source/rust
-COPY Cargo.toml Cargo.lock ./
+COPY Cargo.toml Cargo.lock rust-toolchain.toml ./
 COPY .cargo ./.cargo
 COPY crates ./crates
 COPY assets ./assets
@@ -19,6 +19,7 @@ COPY modpacks/modern-move-split/data.json ./modpacks/modern-move-split/data.json
 COPY modpacks/all-pokemon/encounters.json ./modpacks/all-pokemon/encounters.json
 COPY modpacks/voxel-view/profiles.json ./modpacks/voxel-view/profiles.json
 ARG CARGO_BUILD_JOBS=2
+ARG CRYSTAL_RENDER_FEATURES=fullscreen-scaling,voxel-view,location-tester,terrain-worker-qa,actor-worker-qa
 # Keep dependency and target caches across source edits. Run from the workspace
 # so Cargo reads its WASM target configuration.
 # Git archive mtimes can predate cached artifacts; refresh workspace inputs so
@@ -28,17 +29,27 @@ RUN --mount=type=cache,target=/usr/local/cargo/registry,sharing=locked \
     --mount=type=cache,target=/source/rust/target,sharing=locked \
     find crates -type f -exec touch {} + \
     && cargo build --locked --release --package crystal-web-server --bin crystal-web-server \
+    && cargo build --locked --profile web-release --package crystal-terrain-worker \
+        --package crystal-actor-worker --target wasm32-unknown-unknown \
     && cargo build --locked --profile web-release --package crystal-bevy \
-        --bin crystal-bevy --features fullscreen-scaling,voxel-view --target wasm32-unknown-unknown \
+        --bin crystal-bevy --features "$CRYSTAL_RENDER_FEATURES" --target wasm32-unknown-unknown \
+    && mkdir -p /out/web/flygon /out/web/tui \
+    && wasm-bindgen --target web --no-typescript --out-dir /out/web --out-name crystal-bevy \
+        target/wasm32-unknown-unknown/web-release/crystal-bevy.wasm \
+    && cargo build --locked --profile web-release --package crystal-bevy \
+        --bin crystal-bevy --features "$CRYSTAL_RENDER_FEATURES,browser-webgpu" --target wasm32-unknown-unknown \
+    && wasm-bindgen --target web --no-typescript --out-dir /out/web --out-name crystal-bevy-webgpu \
+        target/wasm32-unknown-unknown/web-release/crystal-bevy.wasm \
+    && wasm-bindgen --target web --no-typescript --out-dir /out/web --out-name crystal-terrain-worker \
+        target/wasm32-unknown-unknown/web-release/crystal_terrain_worker.wasm \
+    && wasm-bindgen --target web --no-typescript --out-dir /out/web --out-name crystal-actor-worker \
+        target/wasm32-unknown-unknown/web-release/crystal_actor_worker.wasm \
     && cargo rustc --locked --profile web-release --package crystal-audio --lib --crate-type cdylib \
         --features browser-synth --target wasm32-unknown-unknown \
     && cargo build --locked --profile web-release --package crystal-flygon --lib --target wasm32-unknown-unknown \
-    && mkdir -p /out/web/flygon /out/web/tui \
     && cargo run --locked --release -p crystal-voxel-view --bin bundle_open_models -- assets/open-models /out/web/open-models.json \
     && cargo run --locked --release -p crystal-voxel-view --bin bundle_open_people -- assets/open-models /out/web/open-people.json \
     && cp target/release/crystal-web-server /out/crystal-web-server \
-    && wasm-bindgen --target web --no-typescript --out-dir /out/web --out-name crystal-bevy \
-        target/wasm32-unknown-unknown/web-release/crystal-bevy.wasm \
     && wasm-bindgen --target web --no-typescript --out-dir /out/web --out-name crystal-audio \
         target/wasm32-unknown-unknown/web-release/crystal_audio.wasm \
     && wasm-bindgen --target web --no-typescript --out-dir /out/web/flygon \
@@ -55,7 +66,8 @@ COPY tools/version-browser-bundle.sh /source/version-browser-bundle.sh
 # Supply this ignored file locally; see docs/game-content.md.
 COPY --from=game_content /core-modular.browser.crystalpack /out/web/core-modular.browser.crystalpack
 COPY modpacks/flygon /source/flygon-config
-RUN cp /source/web-client/index.html /out/web/ \
+RUN cp /source/web-client/install.sh /out/web/install.sh \
+    && cp /source/web-client/index.html /out/web/ \
     && cp /source/web-client/audio-unlock.js /out/web/ \
     && cp /source/web-client/*.js /source/web-client/*.css /out/web/ \
     && gzip -9 -k /out/web/core-modular.browser.crystalpack \

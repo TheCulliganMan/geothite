@@ -1,0 +1,74 @@
+{
+  "id": "MN_F080",
+  "region": "lake_superior_cold_air",
+  "theme": "Superior-mirage inversion becomes a two-level trickster whose apparent face is displaced above its real body.",
+  "members": [
+    {
+      "id": "MN_174",
+      "name": "Loomlet",
+      "types": [
+        "DARK"
+      ],
+      "stage": 1,
+      "evolves_to": "MN_175"
+    },
+    {
+      "id": "MN_175",
+      "name": "Inverveil",
+      "types": [
+        "DARK",
+        "FLYING"
+      ],
+      "stage": 2,
+      "evolves_to": null
+    }
+  ],
+  "evolution_design": {
+    "regional_evidence": "WMO describes superior mirages over cold surfaces with warmer air above, sometimes lifting or inverting distant images. NPS documents cold water and fog on Lake Superior; the local creature placement is an inference from suitable lake conditions, not a sourced specific sighting.",
+    "original_invention": "The fake hovering face is an original solid body lobe supported by a narrow bent neck; no transparency, gradient or rendering trick is required for the sprite.",
+    "body_growth": [
+      {
+        "species_id": "MN_174",
+        "body": "A low dark mask-shaped body stands on two short feet; an inverted pale false-face flap rises just above it on a short S-neck. Real eyes peek from the lower rim.",
+        "silhouette": "Two stacked unequal masks connected by a visible short bent neck."
+      },
+      {
+        "species_id": "MN_175",
+        "body": "The false-face flap expands into a broad inverted crown above a small low body. Two folded side vanes open like flat horizon bars; the real lower eyes remain visible beneath a broad collar. Its broad horizon vanes carry the real body on rising shore winds beneath the displaced false face.",
+        "silhouette": "Wide high inverted crown over a very low narrow body, with two horizon-bar side vanes; no ghost wisps."
+      }
+    ]
+  },
+  "silhouette_concept": "Two stacked unequal masks connected by a visible short bent neck. \u2192 Wide high inverted crown over a very low narrow body, with two horizon-bar side vanes; no ghost wisps.",
+  "habitat": "Cold lake lookouts and sheltered shore ledges during inversion-like weather.",
+  "proposed_routes": [
+    {
+      "id": "MN_R11",
+      "placement": "Lake-facing lookout above the pebble/basalt district; no new mirage visual-effect system assumed.",
+      "status": "encounter proposal only; no map or story mutation"
+    }
+  ],
+  "sources": [
+    {
+      "title": "WMO International Cloud Atlas, Mirage",
+      "url": "https://cloudatlas.wmo.int/en/mirage.html",
+      "supports": "Cold-surface superior mirage, inversion and apparent image displacement.",
+      "source_kind": "primary scientific definition"
+    },
+    {
+      "title": "NPS Apostle Islands, Weather",
+      "url": "https://www.nps.gov/apis/planyourvisit/weather.htm",
+      "supports": "Regional Lake Superior cold-water weather and fog; this source is a Wisconsin park, not a Minnesota sighting.",
+      "source_kind": "primary regional institutional source"
+    }
+  ],
+  "nonduplication": "Unlike auroraF013 and sundogF069, the design uses an inverted false horizon and two solid stacked body lobes, without glowing curtains, sun halos or decoy-hound anatomy.",
+  "classification": "ordinary",
+  "design_lock": "locked by root; first153identities fixed",
+  "sprite_constraints": "Native56x56 front full body facing left;48x48 close rear portrait facing upper-right. Four colors per species, individually planned after design lock. Large solid anatomical landmarks, stepped black exterior anchors, sparse internal marks; no gradients, particles or texture-dependent identity.",
+  "root_review": {
+    "status": "design-locked",
+    "note": "Adult rides inversion-layer winds with actual lift vanes: Dark/Flying adds ordinary Flying coverage while preserving its false-face misdirection theme."
+  },
+  "design_status": "root-reviewed-locked-for-art"
+}

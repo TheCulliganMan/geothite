@@ -1,0 +1,416 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F001",
+  "status": "native-front-back-reviewed",
+  "tool": "built-in image_gen",
+  "prompt_file": "sprites/mn-f001/render-improvement-20261026-v1/prompt-v2.txt",
+  "sprites": [
+    {
+      "id": "mn-001-pouchid-render-20261026-v2",
+      "species_id": "MN_001",
+      "view": "front",
+      "source": "sprites/mn-f001/render-improvement-20261026-v1/front-back.imagegen-v2.png",
+      "crop": [
+        0,
+        0,
+        475,
+        555
+      ],
+      "fit": [
+        36,
+        36
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        13151,
+        7686,
+        0
+      ],
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 16,
+      "exterior_contour": "source_backed"
+    },
+    {
+      "id": "mn-001-pouchid-render-20261026-v2",
+      "species_id": "MN_001",
+      "view": "back",
+      "source": "sprites/mn-f001/render-improvement-20261026-v1/front-back.imagegen-v2.png",
+      "crop": [
+        0,
+        555,
+        475,
+        469
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        13151,
+        7686,
+        0
+      ],
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 16,
+      "exterior_contour": "source_backed"
+    },
+    {
+      "id": "mn-002-slipperina-render-20261026-v2",
+      "species_id": "MN_002",
+      "view": "front",
+      "source": "sprites/mn-f001/render-improvement-20261026-v1/front-back.imagegen-v2.png",
+      "crop": [
+        475,
+        0,
+        540,
+        555
+      ],
+      "fit": [
+        44,
+        44
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        30264,
+        12675,
+        0
+      ],
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 16,
+      "exterior_contour": "source_backed"
+    },
+    {
+      "id": "mn-002-slipperina-render-20261026-v2",
+      "species_id": "MN_002",
+      "view": "back",
+      "source": "sprites/mn-f001/render-improvement-20261026-v1/front-back.imagegen-v2.png",
+      "crop": [
+        475,
+        555,
+        540,
+        469
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        30264,
+        12675,
+        0
+      ],
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 16,
+      "exterior_contour": "source_backed"
+    },
+    {
+      "id": "mn-003-cyprielle-render-20261026-v2",
+      "species_id": "MN_003",
+      "view": "front",
+      "source": "sprites/mn-f001/render-improvement-20261026-v1/front-back.imagegen-v2.png",
+      "crop": [
+        1015,
+        0,
+        521,
+        555
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        24031,
+        7492,
+        0
+      ],
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 16,
+      "exterior_contour": "source_backed"
+    },
+    {
+      "id": "mn-003-cyprielle-render-20261026-v2",
+      "species_id": "MN_003",
+      "view": "back",
+      "source": "sprites/mn-f001/render-improvement-20261026-v1/front-back.imagegen-v2.png",
+      "crop": [
+        1015,
+        555,
+        521,
+        469
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        24031,
+        7492,
+        0
+      ],
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 16,
+      "exterior_contour": "source_backed"
+    }
+  ],
+  "visual_review": {
+    "status": "reviewed",
+    "reviewer": "root",
+    "notes": "Visually inspected all six refined source views, the staged native board and the identical canonical board. Pouchid retains its gold pouch, white orchid hood and rounded green mantle with clearer dark eyes and happy mouth. Slipperina retains its lilac hood, awkward S-stem and paired slipper pouches; eye, petal roots and shoulder outlines remain legible. Cyprielle has a broader distinct green face, two separated white eyes below the three-sepal crown, continuous curling leaf arms, separate hip petals and pouch feet. Close rear views retain the corresponding crown/hood, nape and shoulders and crop lower bodies. Existing individual palettes and species identities are unchanged. Covers static normal front/back art only; game packs and animations were not rebuilt.",
+    "sheet_sha256": "bd3d00dc0396f5cae3a11c8f543e99f30dee2aa2d0da6124924310287ba8f7ed",
+    "outline_profile": "source-contour-v1"
+  },
+  "pokemon_palettes": {
+    "MN_001": {
+      "species_id": "MN_001",
+      "name": "Pouchid",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          31,
+          26,
+          12
+        ],
+        [
+          6,
+          16,
+          7
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        13151,
+        7686,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          255,
+          214,
+          99
+        ],
+        [
+          49,
+          132,
+          57
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#FFD663",
+        "#318439",
+        "#000000"
+      ]
+    },
+    "MN_002": {
+      "species_id": "MN_002",
+      "name": "Slipperina",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          24,
+          17,
+          29
+        ],
+        [
+          3,
+          12,
+          12
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        30264,
+        12675,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          198,
+          140,
+          239
+        ],
+        [
+          24,
+          99,
+          99
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#C68CEF",
+        "#186363",
+        "#000000"
+      ]
+    },
+    "MN_003": {
+      "species_id": "MN_003",
+      "name": "Cyprielle",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          31,
+          14,
+          23
+        ],
+        [
+          4,
+          10,
+          7
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        24031,
+        7492,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          255,
+          115,
+          189
+        ],
+        [
+          33,
+          82,
+          57
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#FF73BD",
+        "#215239",
+        "#000000"
+      ]
+    }
+  },
+  "back_framing": "gen2-close-rear-portrait",
+  "conversion_revision": "Identity-preserving render improvement v2: readable front faces, continuous botanical forms and sparse rock/metal highlights. Each accepted individual palette, all prior sources and every native conversion version are retained. Source-backed contours with white16/black16 preserve colored surfaces.",
+  "original_source_palette": {
+    "gbc_rgb5": [
+      [
+        31,
+        31,
+        31
+      ],
+      [
+        31,
+        18,
+        24
+      ],
+      [
+        5,
+        13,
+        8
+      ],
+      [
+        0,
+        0,
+        0
+      ]
+    ],
+    "gbc_rgb555_words": [
+      32767,
+      25183,
+      8613,
+      0
+    ],
+    "rgb8": [
+      [
+        255,
+        255,
+        255
+      ],
+      [
+        255,
+        148,
+        198
+      ],
+      [
+        41,
+        107,
+        66
+      ],
+      [
+        0,
+        0,
+        0
+      ]
+    ],
+    "hex": [
+      "#FFFFFF",
+      "#FF94C6",
+      "#296B42",
+      "#000000"
+    ]
+  },
+  "back_prompt_file": "sprites/mn-f001/render-improvement-20261026-v1/prompt-v2.txt",
+  "back_reference_mapping": "sprites/mn-f001/render-improvement-20261026-v1/reference-mapping-v2.json",
+  "reference_mapping": "sprites/mn-f001/render-improvement-20261026-v1/reference-mapping-v2.json",
+  "source_sha256": "39761d0860818ae2bf26c764ab928472f5031d834b36f4e679e6ec1da6eb60e0",
+  "raw_generation": {
+    "original_tool_path": "/Users/ryanculligan/.codex/generated_images/01a17abf-77f2-7b80-bc2a-d5aed1c72b88/exec-ceda22ef-38af-4dde-bd4a-9c62b0770117.png",
+    "sha256": "39761d0860818ae2bf26c764ab928472f5031d834b36f4e679e6ec1da6eb60e0"
+  }
+}

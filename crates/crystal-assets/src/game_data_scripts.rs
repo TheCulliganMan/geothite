@@ -979,11 +979,17 @@ impl GameDataSet {
         Ok(())
     }
 
+    /// Looks up a source spawn or an additive recovery destination by full identifier.
+    ///
+    /// # Errors
+    /// Returns an error for the reserved gap 28 through 255 or for an identifier
+    /// absent from this pack's catalog. Fly eligibility is checked separately.
     pub fn runtime_spawn_point(&self, spawn_identifier: u16) -> Result<&RuntimeSpawnPoint> {
         anyhow::ensure!(
-            spawn_identifier
-                < crystal_core::systems::special_routines::CRYSTAL_NUM_SPAWN_POINTS,
-            "spawn point {spawn_identifier} is outside Crystal's SpawnPoints table"
+            crystal_core::systems::special_routines::is_runtime_recovery_spawn_identifier(
+                spawn_identifier
+            ),
+            "spawn point {spawn_identifier} is in the reserved gap between source and addon recovery identifiers"
         );
         self.runtime_spawn_points
             .get(&spawn_identifier.to_string())

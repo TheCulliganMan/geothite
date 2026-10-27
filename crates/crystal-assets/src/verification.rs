@@ -5946,6 +5946,7 @@ fn verify_runtime_pack_data(data: &GameDataSet, diagnostics: &mut Vec<Verificati
             .map(pokegear_landmark_issue_diagnostic),
     );
     verify_unique_pokegear_landmark_constants(&data.pokegear_landmarks, diagnostics);
+    diagnostics.extend(crate::runtime_landmark_verification::issues(data));
     let (_, _, cry_audio) = script_audio_catalog_ids(data);
     for (species_id, cry) in &data.pokemon_cries {
         if species_id.trim().is_empty() || cry.cry.trim().is_empty() {
@@ -6444,8 +6445,9 @@ fn runtime_spawn_point_catalog_issue_diagnostic(
                 "runtime_spawn_point_identifier_out_of_range",
                 &key,
                 format!(
-                    "runtime spawn point identifier {identifier} is outside Crystal's 0..{} table",
-                    crystal_core::systems::special_routines::CRYSTAL_NUM_SPAWN_POINTS
+                    "runtime spawn point identifier {identifier} is outside source range 0..{} and addon recovery range {}..=65535",
+                    crystal_core::systems::special_routines::CRYSTAL_NUM_SPAWN_POINTS,
+                    crystal_core::systems::special_routines::FIRST_ADDON_RECOVERY_SPAWN
                 ),
             )
         }

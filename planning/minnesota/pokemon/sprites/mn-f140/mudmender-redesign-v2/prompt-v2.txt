@@ -1,0 +1,8 @@
+Use case: precise-object-edit. Asset: Mudmender two-view GBC battle sprite sheet. Edit target: attached new adult-only blue salamander source. Keep the improved broad friendly head, exposed blue torso, short planted feet, side-curved paddle tail, body pose, palette and layout.
+
+Correct the GILL COUNT ONLY. Mudmender has EXACTLY THREE external gill branches on EACH SIDE, six total.
+TOP FRONT: the large near-side plum fan on the RIGHT of the head currently has FOUR branches. REMOVE THE LOWEST branch that hangs diagonally down over the shoulder/foreleg. Keep the THREE upper branches, separated and slightly smaller, revealing blue shoulder below. The smaller far-side fan on image LEFT already has three: keep those three.
+BOTTOM REAR: the large fan on image LEFT currently has FOUR branches. REMOVE THE LOWEST branch beside the shoulder. Keep exactly THREE upper branches. The smaller fan on image RIGHT already has three: retain them.
+Make the same anatomy consistent across both views. Do not add branches, duplicate gills, extra legs or objects. Replace the removed lowest branches with clean blue neck/shoulder or white paper where appropriate. Preserve clear single stepped black rims and open limb gaps.
+
+Keep two rows, front facing LEFT above, enlarged close rear facing upper RIGHT below, roomy white gutter and pure white background. Authentic chunky Pokémon Crystal-era 56px/48px pixel language, EXACT four inks #FFFFFF #94B5EF #7B298C #000000; no gradients, antialiasing, glossy shading, dithering, labels, borders or extra colors.

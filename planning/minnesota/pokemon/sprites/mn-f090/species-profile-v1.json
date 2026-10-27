@@ -1,0 +1,386 @@
+[
+  {
+    "id": "MN_195",
+    "classification": "Warm Crumb",
+    "height_inches": 8,
+    "weight_tenths_lb": 75,
+    "dex_pages": [
+      "It gathers the @ crumbs shed by @ its own soft body.",
+      "A hungry one @ may follow its @ trail in circles."
+    ],
+    "base_stats": {
+      "hp": 51,
+      "attack": 54,
+      "defense": 43,
+      "speed": 35,
+      "special_attack": 49,
+      "special_defense": 40
+    },
+    "catch_rate": 190,
+    "base_exp": 60,
+    "gender_ratio": 127,
+    "hatch_cycles": 20,
+    "growth_rate": "GROWTH_MEDIUM_FAST",
+    "egg_groups": [
+      "EGG_FAIRY",
+      "EGG_GROUND"
+    ],
+    "evolution": {
+      "method": "LEVEL",
+      "level": 20
+    },
+    "held_items": [
+      null,
+      null
+    ],
+    "menu_icon": "ICON_BLOB",
+    "footprint_species": "TEDDIURSA",
+    "cry": {
+      "cry": "CRY_TEDDIURSA",
+      "pitch": -48,
+      "length": 144
+    },
+    "shiny_rgb5": [
+      [
+        15,
+        30,
+        24
+      ],
+      [
+        3,
+        12,
+        6
+      ]
+    ],
+    "level_moves": [
+      [
+        1,
+        "POUND"
+      ],
+      [
+        1,
+        "SWEET_SCENT"
+      ],
+      [
+        5,
+        "EMBER"
+      ],
+      [
+        9,
+        "DEFENSE_CURL"
+      ],
+      [
+        13,
+        "BITE"
+      ],
+      [
+        17,
+        "THIEF"
+      ],
+      [
+        22,
+        "SMOKESCREEN"
+      ],
+      [
+        27,
+        "FAINT_ATTACK"
+      ],
+      [
+        32,
+        "BODY_SLAM"
+      ],
+      [
+        37,
+        "FIRE_SPIN"
+      ],
+      [
+        42,
+        "MINIMIZE"
+      ],
+      [
+        48,
+        "CRUNCH"
+      ],
+      [
+        55,
+        "FLAMETHROWER"
+      ],
+      [
+        62,
+        "FIRE_BLAST"
+      ]
+    ],
+    "tmhm_moves": [
+      "THIEF",
+      "FIRE_BLAST",
+      "FLAMETHROWER",
+      "SUNNY_DAY",
+      "SWEET_SCENT",
+      "HEADBUTT",
+      "RETURN",
+      "SWAGGER",
+      "PROTECT",
+      "REST"
+    ],
+    "egg_moves": [
+      "ENCORE",
+      "BELLY_DRUM",
+      "CHARM"
+    ]
+  },
+  {
+    "id": "MN_196",
+    "classification": "Crumb Raid",
+    "height_inches": 28,
+    "weight_tenths_lb": 440,
+    "dex_pages": [
+      "It slips through @ crowds in search @ of warm cookies.",
+      "Crumbs on its @ hood reveal its @ latest theft."
+    ],
+    "base_stats": {
+      "hp": 72,
+      "attack": 76,
+      "defense": 61,
+      "speed": 49,
+      "special_attack": 68,
+      "special_defense": 57
+    },
+    "catch_rate": 90,
+    "base_exp": 84,
+    "gender_ratio": 127,
+    "hatch_cycles": 20,
+    "growth_rate": "GROWTH_MEDIUM_FAST",
+    "egg_groups": [
+      "EGG_FAIRY",
+      "EGG_GROUND"
+    ],
+    "evolution": {
+      "method": "LEVEL",
+      "level": 38
+    },
+    "held_items": [
+      null,
+      null
+    ],
+    "menu_icon": "ICON_BLOB",
+    "footprint_species": "TEDDIURSA",
+    "cry": {
+      "cry": "CRY_TEDDIURSA",
+      "pitch": -24,
+      "length": 160
+    },
+    "shiny_rgb5": [
+      [
+        8,
+        28,
+        18
+      ],
+      [
+        3,
+        10,
+        5
+      ]
+    ],
+    "level_moves": [
+      [
+        1,
+        "POUND"
+      ],
+      [
+        1,
+        "SWEET_SCENT"
+      ],
+      [
+        1,
+        "EMBER"
+      ],
+      [
+        11,
+        "DEFENSE_CURL"
+      ],
+      [
+        15,
+        "BITE"
+      ],
+      [
+        19,
+        "THIEF"
+      ],
+      [
+        24,
+        "SMOKESCREEN"
+      ],
+      [
+        29,
+        "FAINT_ATTACK"
+      ],
+      [
+        34,
+        "BODY_SLAM"
+      ],
+      [
+        39,
+        "FIRE_SPIN"
+      ],
+      [
+        44,
+        "MINIMIZE"
+      ],
+      [
+        50,
+        "CRUNCH"
+      ],
+      [
+        57,
+        "FLAMETHROWER"
+      ],
+      [
+        64,
+        "FIRE_BLAST"
+      ]
+    ],
+    "tmhm_moves": [
+      "THIEF",
+      "FIRE_BLAST",
+      "FLAMETHROWER",
+      "SUNNY_DAY",
+      "SWEET_SCENT",
+      "HEADBUTT",
+      "RETURN",
+      "SWAGGER",
+      "PROTECT",
+      "REST"
+    ],
+    "egg_moves": [
+      "ENCORE",
+      "BELLY_DRUM",
+      "CHARM"
+    ]
+  },
+  {
+    "id": "MN_197",
+    "classification": "Cookie Jar",
+    "height_inches": 54,
+    "weight_tenths_lb": 1350,
+    "dex_pages": [
+      "It seals its crumb @ hoard beneath @ a hard lid.",
+      "It opens only for @ a cookie larger @ than the last."
+    ],
+    "base_stats": {
+      "hp": 95,
+      "attack": 100,
+      "defense": 80,
+      "speed": 65,
+      "special_attack": 90,
+      "special_defense": 75
+    },
+    "catch_rate": 45,
+    "base_exp": 212,
+    "gender_ratio": 127,
+    "hatch_cycles": 20,
+    "growth_rate": "GROWTH_MEDIUM_FAST",
+    "egg_groups": [
+      "EGG_FAIRY",
+      "EGG_GROUND"
+    ],
+    "evolution": null,
+    "held_items": [
+      null,
+      null
+    ],
+    "menu_icon": "ICON_BLOB",
+    "footprint_species": "TEDDIURSA",
+    "cry": {
+      "cry": "CRY_TEDDIURSA",
+      "pitch": 0,
+      "length": 176
+    },
+    "shiny_rgb5": [
+      [
+        6,
+        29,
+        16
+      ],
+      [
+        3,
+        9,
+        4
+      ]
+    ],
+    "level_moves": [
+      [
+        1,
+        "POUND"
+      ],
+      [
+        1,
+        "SWEET_SCENT"
+      ],
+      [
+        1,
+        "EMBER"
+      ],
+      [
+        1,
+        "DEFENSE_CURL"
+      ],
+      [
+        17,
+        "BITE"
+      ],
+      [
+        21,
+        "THIEF"
+      ],
+      [
+        26,
+        "SMOKESCREEN"
+      ],
+      [
+        31,
+        "FAINT_ATTACK"
+      ],
+      [
+        36,
+        "BODY_SLAM"
+      ],
+      [
+        41,
+        "FIRE_SPIN"
+      ],
+      [
+        46,
+        "MINIMIZE"
+      ],
+      [
+        52,
+        "CRUNCH"
+      ],
+      [
+        59,
+        "FLAMETHROWER"
+      ],
+      [
+        66,
+        "FIRE_BLAST"
+      ]
+    ],
+    "tmhm_moves": [
+      "THIEF",
+      "FIRE_BLAST",
+      "FLAMETHROWER",
+      "SUNNY_DAY",
+      "SWEET_SCENT",
+      "HEADBUTT",
+      "RETURN",
+      "SWAGGER",
+      "PROTECT",
+      "REST"
+    ],
+    "egg_moves": [
+      "ENCORE",
+      "BELLY_DRUM",
+      "CHARM"
+    ]
+  }
+]

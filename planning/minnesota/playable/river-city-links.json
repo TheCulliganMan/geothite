@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "manifest": "minnesota-river-city-links-v2",
+  "base_content_hash": "f9853ad3269c91f53871f50ce766e4d59b8228bcfdbbeded44243ccad48981be",
+  "route_edge_closures": [
+    { "metatile": [7, 31], "from": 2, "to": 5 },
+    { "metatile": [8, 31], "from": 2, "to": 5 },
+    { "metatile": [10, 31], "from": 2, "to": 5 },
+    { "metatile": [11, 31], "from": 2, "to": 5 },
+    { "metatile": [13, 31], "from": 70, "to": 5 },
+    { "metatile": [18, 31], "from": 68, "to": 5 }
+  ],
+  "links": [
+    {
+      "town": "MnMankato",
+      "route": "MnR03C00R01",
+      "town_direction": "north",
+      "route_direction": "south",
+      "offset": 3,
+      "mouth_metatile": [12, 0],
+      "town_edge": [[24, 0], [25, 0]],
+      "route_edge": [[18, 15], [19, 15]]
+    },
+    {
+      "town": "MnMinneapolis",
+      "route": "MnR03C00R00",
+      "town_direction": "south",
+      "route_direction": "north",
+      "offset": 6,
+      "mouth_metatile": [16, 23],
+      "town_edge": [[32, 47], [33, 47]],
+      "route_edge": [[20, 0], [21, 0]]
+    }
+  ]
+}

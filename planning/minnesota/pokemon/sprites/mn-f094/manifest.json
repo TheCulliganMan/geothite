@@ -1,0 +1,239 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F094",
+  "status": "native-front-back-reviewed",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_205": {
+      "species_id": "MN_205",
+      "name": "Kilnook",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          25,
+          15,
+          9
+        ],
+        [
+          8,
+          11,
+          18
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        9721,
+        18792,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          206,
+          123,
+          74
+        ],
+        [
+          66,
+          90,
+          148
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#CE7B4A",
+        "#425A94",
+        "#000000"
+      ]
+    },
+    "MN_206": {
+      "species_id": "MN_206",
+      "name": "Glazaur",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          28,
+          24,
+          17
+        ],
+        [
+          5,
+          10,
+          20
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        18204,
+        20805,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          231,
+          198,
+          140
+        ],
+        [
+          41,
+          82,
+          165
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#E7C68C",
+        "#2952A5",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f094/prompt-v2.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "style_reference": {
+    "origin": "authentic local Crystal sprites",
+    "generator": "crates/crystal-assets/examples/minnesota_gen2_reference.rs",
+    "boards": [
+      "target/minnesota-pokemon/gen2-reference/starters.png",
+      "target/minnesota-pokemon/gen2-reference/bugs.png"
+    ]
+  },
+  "sprites": [
+    {
+      "id": "mn-205-kilnook-v2",
+      "species_id": "MN_205",
+      "view": "front",
+      "source": "sprites/mn-f094/front-back.imagegen-v2.png",
+      "crop": [
+        0,
+        0,
+        720,
+        510
+      ],
+      "fit": [
+        44,
+        44
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        9721,
+        18792,
+        0
+      ],
+      "interior_black_min_samples": 16
+    },
+    {
+      "id": "mn-205-kilnook-v2",
+      "species_id": "MN_205",
+      "view": "back",
+      "source": "sprites/mn-f094/front-back.imagegen-v2.png",
+      "crop": [
+        0,
+        510,
+        740,
+        514
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        9721,
+        18792,
+        0
+      ],
+      "interior_black_min_samples": 16
+    },
+    {
+      "id": "mn-206-glazaur-v2",
+      "species_id": "MN_206",
+      "view": "front",
+      "source": "sprites/mn-f094/front-back.imagegen-v2.png",
+      "crop": [
+        720,
+        0,
+        816,
+        510
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        18204,
+        20805,
+        0
+      ],
+      "interior_black_min_samples": 16
+    },
+    {
+      "id": "mn-206-glazaur-v2",
+      "species_id": "MN_206",
+      "view": "back",
+      "source": "sprites/mn-f094/front-back.imagegen-v2.png",
+      "crop": [
+        740,
+        510,
+        796,
+        514
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        18204,
+        20805,
+        0
+      ],
+      "interior_black_min_samples": 16
+    }
+  ],
+  "visual_review": {
+    "status": "reviewed",
+    "reviewer": "root",
+    "notes": "Root inspected all four native views: soft terracotta loop arms and upright clay tail develop into cream fired plates, open shoulder handles and a stout four-legged ceramic body. Short broad lip-mask avoids a spout silhouette. Large white eye openings and black pupils survive; enlarged rear retains handles, tail and plate boundaries. Distinct individual palettes and clean gutters.",
+    "sheet_sha256": "fb3ded86370b7fbdb884bfcb4271bd2a86cbfaabd983cd5b286eb754361db902",
+    "outline_profile": "source-contour-v1"
+  }
+}

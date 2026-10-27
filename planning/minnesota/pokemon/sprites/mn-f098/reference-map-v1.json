@@ -1,0 +1,15 @@
+{
+  "generation": "new original artwork",
+  "input_images": [],
+  "text_style_reference_boards": [
+    "target/minnesota-pokemon/gen2-reference/starters.png",
+    "target/minnesota-pokemon/gen2-reference/bugs.png"
+  ],
+  "regional_sources": [
+    {
+      "url": "https://gallery.mnstatefair.org/media/SFP/content/17-butter-sculptures.html",
+      "institution": "Minnesota State Fair",
+      "supports": "Official fair account of butter sculptures carved in the Dairy Building; original creature has no real portrait or named royalty likeness."
+    }
+  ]
+}

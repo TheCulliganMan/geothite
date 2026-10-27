@@ -1,0 +1,706 @@
+{
+  "schema_version": 2,
+  "id": "MnMinneapolis",
+  "tileset": "johto_modern",
+  "compiled_tileset": "johto_modern",
+  "dimensions_metatiles": [
+    32,
+    24
+  ],
+  "coordinate_units": "32px metatiles; native actor/door coordinates use16px core tiles",
+  "shore_fitting": "johto_8_neighbors",
+  "reject_cliff_cuts": true,
+  "source_pixels_modified": false,
+  "layers": [
+    {
+      "name": "East-bank city within the pine boundary",
+      "kind": "rect",
+      "bounds": [
+        12,
+        2,
+        30,
+        22
+      ],
+      "material": "lawn"
+    },
+    {
+      "name": "West-bank river park",
+      "kind": "rect",
+      "bounds": [
+        2,
+        6,
+        8,
+        18
+      ],
+      "material": "lawn"
+    },
+    {
+      "name": "Mississippi channel bends around the public bank",
+      "kind": "polygon",
+      "material": "water",
+      "points": [
+        [
+          8,
+          1
+        ],
+        [
+          10,
+          1
+        ],
+        [
+          10,
+          6
+        ],
+        [
+          11,
+          6
+        ],
+        [
+          11,
+          14
+        ],
+        [
+          10,
+          14
+        ],
+        [
+          10,
+          22
+        ],
+        [
+          8,
+          22
+        ],
+        [
+          8,
+          16
+        ],
+        [
+          9,
+          16
+        ],
+        [
+          9,
+          8
+        ],
+        [
+          8,
+          8
+        ]
+      ]
+    },
+    {
+      "name": "Northern pine backstop to the clinic block",
+      "kind": "rect",
+      "bounds": [
+        25,
+        2,
+        30,
+        6
+      ],
+      "material": "forest"
+    },
+    {
+      "name": "Clinic district southern canopy",
+      "kind": "rect",
+      "bounds": [
+        19,
+        7,
+        24,
+        9
+      ],
+      "material": "forest"
+    },
+    {
+      "name": "Eastern mart pine shoulder",
+      "kind": "rect",
+      "bounds": [
+        28,
+        6,
+        30,
+        11
+      ],
+      "material": "forest"
+    },
+    {
+      "name": "Southern city pine district avoids a filler lawn",
+      "kind": "rect",
+      "bounds": [
+        18,
+        15,
+        30,
+        22
+      ],
+      "material": "forest"
+    },
+    {
+      "name": "Southern dispatch street pine shoulder",
+      "kind": "rect",
+      "bounds": [
+        12,
+        19,
+        15,
+        22
+      ],
+      "material": "forest"
+    },
+    {
+      "name": "River park flower bed",
+      "kind": "rect",
+      "bounds": [
+        3,
+        7,
+        5,
+        9
+      ],
+      "material": "flowers"
+    },
+    {
+      "name": "River park lower flower bed",
+      "kind": "rect",
+      "bounds": [
+        3,
+        14,
+        5,
+        16
+      ],
+      "material": "flowers"
+    },
+    {
+      "name": "Civic walking spine between the reserved north and south approaches",
+      "kind": "path",
+      "points": [
+        [
+          16,
+          1
+        ],
+        [
+          16,
+          22
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "name": "East park road to St Paul",
+      "kind": "path",
+      "points": [
+        [
+          16,
+          12
+        ],
+        [
+          30,
+          12
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "name": "Clinic path",
+      "kind": "path",
+      "points": [
+        [
+          16,
+          6
+        ],
+        [
+          22,
+          6
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "name": "Mart side street",
+      "kind": "path",
+      "points": [
+        [
+          24,
+          12
+        ],
+        [
+          27,
+          12
+        ],
+        [
+          27,
+          9
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "name": "Powerhouse gym forecourt",
+      "kind": "path",
+      "points": [
+        [
+          16,
+          12
+        ],
+        [
+          21,
+          12
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "name": "Rail dispatch street",
+      "kind": "path",
+      "points": [
+        [
+          16,
+          17
+        ],
+        [
+          13,
+          17
+        ],
+        [
+          13,
+          18
+        ],
+        [
+          16,
+          18
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "name": "River park branch",
+      "kind": "path",
+      "points": [
+        [
+          16,
+          12
+        ],
+        [
+          13,
+          12
+        ],
+        [
+          13,
+          10
+        ],
+        [
+          5,
+          10
+        ],
+        [
+          5,
+          15
+        ],
+        [
+          7,
+          15
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "name": "Complete native brick river crossing",
+      "kind": "point",
+      "position": [
+        8,
+        10
+      ],
+      "block": "06"
+    },
+    {
+      "name": "Complete native brick river crossing",
+      "kind": "point",
+      "position": [
+        9,
+        10
+      ],
+      "block": "06"
+    },
+    {
+      "name": "Complete native brick river crossing",
+      "kind": "point",
+      "position": [
+        10,
+        10
+      ],
+      "block": "06"
+    },
+    {
+      "name": "Complete native brick river crossing",
+      "kind": "point",
+      "position": [
+        11,
+        10
+      ],
+      "block": "06"
+    },
+    {
+      "name": "North river rock closure",
+      "kind": "point",
+      "position": [
+        8,
+        1
+      ],
+      "block": "0a"
+    },
+    {
+      "name": "South river rock closure",
+      "kind": "point",
+      "position": [
+        8,
+        22
+      ],
+      "block": "0a"
+    },
+    {
+      "name": "North river rock closure",
+      "kind": "point",
+      "position": [
+        9,
+        1
+      ],
+      "block": "0a"
+    },
+    {
+      "name": "South river rock closure",
+      "kind": "point",
+      "position": [
+        9,
+        22
+      ],
+      "block": "0a"
+    },
+    {
+      "name": "North river rock closure",
+      "kind": "point",
+      "position": [
+        10,
+        1
+      ],
+      "block": "0a"
+    },
+    {
+      "name": "South river rock closure",
+      "kind": "point",
+      "position": [
+        10,
+        22
+      ],
+      "block": "0a"
+    },
+    {
+      "name": "Clinic complete native facade",
+      "kind": "point",
+      "position": [
+        22,
+        4
+      ],
+      "block": "18"
+    },
+    {
+      "name": "Clinic complete native facade",
+      "kind": "point",
+      "position": [
+        23,
+        4
+      ],
+      "block": "19"
+    },
+    {
+      "name": "Clinic complete native facade",
+      "kind": "point",
+      "position": [
+        22,
+        5
+      ],
+      "block": "1a"
+    },
+    {
+      "name": "Clinic complete native facade",
+      "kind": "point",
+      "position": [
+        23,
+        5
+      ],
+      "block": "1b"
+    },
+    {
+      "name": "Powerhouse gym complete native facade",
+      "kind": "point",
+      "position": [
+        20,
+        9
+      ],
+      "block": "18"
+    },
+    {
+      "name": "Powerhouse gym complete native facade",
+      "kind": "point",
+      "position": [
+        21,
+        9
+      ],
+      "block": "18"
+    },
+    {
+      "name": "Powerhouse gym complete native facade",
+      "kind": "point",
+      "position": [
+        22,
+        9
+      ],
+      "block": "19"
+    },
+    {
+      "name": "Powerhouse gym complete native facade",
+      "kind": "point",
+      "position": [
+        20,
+        10
+      ],
+      "block": "20"
+    },
+    {
+      "name": "Powerhouse gym complete native facade",
+      "kind": "point",
+      "position": [
+        21,
+        10
+      ],
+      "block": "20"
+    },
+    {
+      "name": "Powerhouse gym complete native facade",
+      "kind": "point",
+      "position": [
+        22,
+        10
+      ],
+      "block": "20"
+    },
+    {
+      "name": "Powerhouse gym complete native facade",
+      "kind": "point",
+      "position": [
+        20,
+        11
+      ],
+      "block": "1c"
+    },
+    {
+      "name": "Powerhouse gym complete native facade",
+      "kind": "point",
+      "position": [
+        21,
+        11
+      ],
+      "block": "1d"
+    },
+    {
+      "name": "Powerhouse gym complete native facade",
+      "kind": "point",
+      "position": [
+        22,
+        11
+      ],
+      "block": "1e"
+    },
+    {
+      "name": "Mart complete native facade",
+      "kind": "point",
+      "position": [
+        26,
+        6
+      ],
+      "block": "18"
+    },
+    {
+      "name": "Mart complete native facade",
+      "kind": "point",
+      "position": [
+        27,
+        6
+      ],
+      "block": "19"
+    },
+    {
+      "name": "Mart complete native facade",
+      "kind": "point",
+      "position": [
+        26,
+        7
+      ],
+      "block": "33"
+    },
+    {
+      "name": "Mart complete native facade",
+      "kind": "point",
+      "position": [
+        27,
+        7
+      ],
+      "block": "1a"
+    },
+    {
+      "name": "Rail dispatch complete native facade",
+      "kind": "point",
+      "position": [
+        12,
+        14
+      ],
+      "block": "21"
+    },
+    {
+      "name": "Rail dispatch complete native facade",
+      "kind": "point",
+      "position": [
+        13,
+        14
+      ],
+      "block": "26"
+    },
+    {
+      "name": "Rail dispatch complete native facade",
+      "kind": "point",
+      "position": [
+        14,
+        14
+      ],
+      "block": "21"
+    },
+    {
+      "name": "Rail dispatch complete native facade",
+      "kind": "point",
+      "position": [
+        12,
+        15
+      ],
+      "block": "22"
+    },
+    {
+      "name": "Rail dispatch complete native facade",
+      "kind": "point",
+      "position": [
+        13,
+        15
+      ],
+      "block": "25"
+    },
+    {
+      "name": "Rail dispatch complete native facade",
+      "kind": "point",
+      "position": [
+        14,
+        15
+      ],
+      "block": "22"
+    },
+    {
+      "name": "Rail dispatch complete native facade",
+      "kind": "point",
+      "position": [
+        12,
+        16
+      ],
+      "block": "20"
+    },
+    {
+      "name": "Rail dispatch complete native facade",
+      "kind": "point",
+      "position": [
+        13,
+        16
+      ],
+      "block": "1a"
+    },
+    {
+      "name": "Rail dispatch complete native facade",
+      "kind": "point",
+      "position": [
+        14,
+        16
+      ],
+      "block": "20"
+    },
+    {
+      "name": "Readable MN_MP_TOWN_SIGN",
+      "kind": "point",
+      "position": [
+        15,
+        19
+      ],
+      "block": "45"
+    },
+    {
+      "name": "Readable MN_MP_DISPATCH_SIGN",
+      "kind": "point",
+      "position": [
+        12,
+        17
+      ],
+      "block": "45"
+    },
+    {
+      "name": "Readable MN_MP_GYM_SIGN",
+      "kind": "point",
+      "position": [
+        23,
+        12
+      ],
+      "block": "45"
+    },
+    {
+      "name": "Readable MN_MP_EAST_SIGN",
+      "kind": "point",
+      "position": [
+        28,
+        13
+      ],
+      "block": "45"
+    },
+    {
+      "name": "Dispatcher family home complete native facade",
+      "kind": "point",
+      "position": [
+        13,
+        5
+      ],
+      "block": "18"
+    },
+    {
+      "name": "Dispatcher family home complete native facade",
+      "kind": "point",
+      "position": [
+        14,
+        5
+      ],
+      "block": "19"
+    },
+    {
+      "name": "Dispatcher family home complete native facade",
+      "kind": "point",
+      "position": [
+        13,
+        6
+      ],
+      "block": "1a"
+    },
+    {
+      "name": "Dispatcher family home complete native facade",
+      "kind": "point",
+      "position": [
+        14,
+        6
+      ],
+      "block": "10"
+    }
+  ]
+}

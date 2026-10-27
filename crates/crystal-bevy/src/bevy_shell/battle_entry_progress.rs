@@ -4159,10 +4159,26 @@ fn connected_render_map_placements<'a, M: VisibleMapCatalogEntry>(
 fn connected_render_map_placements_to_depth<'a, M: VisibleMapCatalogEntry>(
     active_map_name: &str, maps: &'a [M], max_depth: Option<usize>,
 ) -> Result<Vec<(&'a crate::RuntimeMapCatalogSnapshot, i32, i32)>> {
+    connected_render_map_placements_with_window(active_map_name, maps, max_depth, None)
+}
+
+fn connected_render_map_placements_with_window<'a, M: VisibleMapCatalogEntry>(
+    active_map_name: &str, maps: &'a [M], max_depth: Option<usize>,
+    window: Option<VisualWorldWindow>,
+) -> Result<Vec<(&'a crate::RuntimeMapCatalogSnapshot, i32, i32)>> {
     let lookup = |name: &str| maps.iter().map(VisibleMapCatalogEntry::visible_map)
         .find(|map| map.map_name == name);
     let active = lookup(active_map_name)
         .ok_or_else(|| anyhow::anyhow!("render map {active_map_name} is missing"))?;
+    let intersects = |target: &crate::RuntimeMapCatalogSnapshot, x: i32, y: i32| {
+        window.is_none_or(|window| {
+            let origin = IVec2::new(x, y);
+            let size = IVec2::new(i32::from(target.attributes.width) * 4,
+                i32::from(target.attributes.height) * 4);
+            origin.cmplt(window.origin + window.size.as_ivec2()).all()
+                && (origin + size).cmpgt(window.origin).all()
+        })
+    };
     // The two outdoor gate drawings flank one interior warp room. Compose
     // their real scenery across that visual seam without adding a game map
     // connection or changing collision/warp ownership.
@@ -4202,7 +4218,8 @@ fn connected_render_map_placements_to_depth<'a, M: VisibleMapCatalogEntry>(
                 else if source.map_name==tower.map_name {Some((route,-dx,-dy))}else{None};
             if let Some((target,dx,dy))=link {
                 let next=(target.map_name.as_str(),x.saturating_add(dx),y.saturating_add(dy));
-                if visited.insert(visit_key(next.0, next.1, next.2)) {pending.push((target,next.1,next.2,depth+1));}
+                if intersects(target, next.1, next.2)
+                    && visited.insert(visit_key(next.0, next.1, next.2)) {pending.push((target,next.1,next.2,depth+1));}
             }
         }
         for connection in &source.attributes.connections {
@@ -4219,10 +4236,11 @@ fn connected_render_map_placements_to_depth<'a, M: VisibleMapCatalogEntry>(
                 _ => continue,
             };
             let next = (target.map_name.as_str(), x.saturating_add(dx), y.saturating_add(dy));
-            if visited.insert(visit_key(next.0, next.1, next.2)) { pending.push((target, next.1, next.2, depth+1)); }
+            if intersects(target, next.1, next.2)
+                && visited.insert(visit_key(next.0, next.1, next.2)) { pending.push((target, next.1, next.2, depth+1)); }
         }
     }
-    if max_depth.is_some() {
+    if max_depth.is_some() || window.is_some() {
         pending.sort_by_key(|(_,_,_,depth)| (*depth != 0, std::cmp::Reverse(*depth)));
     }
     Ok(pending.into_iter().map(|(map,x,y,_)|(map,x,y)).collect())

@@ -354,14 +354,23 @@ fn a_proven_connection_keeps_resident_geometry_while_a_late_replacement_is_pendi
         .resource_mut::<VisualWorldFrame>()
         .source_regions = Arc::from([]);
     app.update();
-    assert!(app.world().get_entity(root).is_err());
-    assert!(app.world().resource::<TerrainRevisionCache>().key.is_none());
+    assert!(
+        app.world().get_entity(root).is_ok(),
+        "keep the previous field resident until replacement publication"
+    );
+    assert!(
+        !retain_connected_terrain(
+            &app.world().resource::<VisualWorldFrame>().clone(),
+            &mut app.world_mut().resource_mut::<TerrainRevisionCache>()
+        ),
+        "holding the old scene must not authenticate the changed graph"
+    );
     assert!(
         app.world()
             .resource::<TerrainRevisionCache>()
             .uploads
             .gpu_required(),
-        "retiring an unproven window must preserve render-residency verification"
+        "holding an unproven window must preserve render-residency verification"
     );
 }
 

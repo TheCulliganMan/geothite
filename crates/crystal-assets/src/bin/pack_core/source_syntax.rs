@@ -57,18 +57,24 @@ pub(super) fn source_arguments(source: &str) -> Result<Vec<String>> {
 
 #[cfg(test)]
 pub fn test_workspace() -> std::path::PathBuf {
-    std::path::PathBuf::from(std::env::var_os("CRYSTAL_EXPORT_WORKSPACE")
-        .expect("source tests require the initialized pinned external workspace"))
+    std::path::PathBuf::from(
+        std::env::var_os("CRYSTAL_EXPORT_WORKSPACE")
+            .expect("source tests require the initialized pinned external workspace"),
+    )
 }
 
 #[cfg(test)]
 pub fn test_rom_offset(workspace: &std::path::Path, name: &str) -> usize {
-    let symbols = std::fs::read_to_string(workspace.join("vendor/pokecrystal/pokecrystal.sym")).unwrap();
-    let address = symbols.lines().find_map(|line| {
-        let mut fields = line.split_whitespace();
-        let address = fields.next()?;
-        (fields.next()? == name).then_some(address)
-    }).unwrap_or_else(|| panic!("missing pinned ROM symbol {name}"));
+    let symbols =
+        std::fs::read_to_string(workspace.join("vendor/pokecrystal/pokecrystal.sym")).unwrap();
+    let address = symbols
+        .lines()
+        .find_map(|line| {
+            let mut fields = line.split_whitespace();
+            let address = fields.next()?;
+            (fields.next()? == name).then_some(address)
+        })
+        .unwrap_or_else(|| panic!("missing pinned ROM symbol {name}"));
     let (bank, address) = address.split_once(':').unwrap();
     let bank = usize::from_str_radix(bank, 16).unwrap();
     let address = usize::from_str_radix(address, 16).unwrap();

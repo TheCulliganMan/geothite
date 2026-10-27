@@ -1,0 +1,248 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F108",
+  "status": "native-redesign-candidate-reviewed",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_237": {
+      "species_id": "MN_237",
+      "name": "Prismip",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          24,
+          27,
+          31
+        ],
+        [
+          13,
+          9,
+          23
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        32632,
+        23853,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          198,
+          222,
+          255
+        ],
+        [
+          107,
+          74,
+          189
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#C6DEFF",
+        "#6B4ABD",
+        "#000000"
+      ]
+    },
+    "MN_238": {
+      "species_id": "MN_238",
+      "name": "Mirradian",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          29,
+          25,
+          30
+        ],
+        [
+          10,
+          12,
+          23
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        31549,
+        23946,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          239,
+          206,
+          247
+        ],
+        [
+          82,
+          99,
+          189
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#EFCEF7",
+        "#5263BD",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f108/redesign-20261026/prompt-v3.txt",
+  "reference_mapping": "sprites/mn-f108/redesign-20261026/reference-mapping-v3.json",
+  "back_framing": "gen2-close-rear-portrait",
+  "sprites": [
+    {
+      "id": "mn-237-prismip-v1",
+      "species_id": "MN_237",
+      "view": "front",
+      "source": "sprites/mn-f108/mn-237-238.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        755,
+        500
+      ],
+      "fit": [
+        40,
+        40
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        32632,
+        23853,
+        0
+      ],
+      "white_detail_min_samples": 8,
+      "interior_black_min_samples": 8
+    },
+    {
+      "id": "mn-237-prismip-v1",
+      "species_id": "MN_237",
+      "view": "back",
+      "source": "sprites/mn-f108/mn-237-238.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        500,
+        755,
+        524
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        32632,
+        23853,
+        0
+      ],
+      "white_detail_min_samples": 8,
+      "interior_black_min_samples": 8
+    },
+    {
+      "id": "mn-238-mirradian-redesign-v1",
+      "species_id": "MN_238",
+      "view": "front",
+      "source": "sprites/mn-f108/redesign-20261026/mirradian.front-back.imagegen-v3.png",
+      "crop": [
+        0,
+        0,
+        1165,
+        670
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        31549,
+        23946,
+        0
+      ],
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 16
+    },
+    {
+      "id": "mn-238-mirradian-redesign-v1",
+      "species_id": "MN_238",
+      "view": "back",
+      "source": "sprites/mn-f108/redesign-20261026/mirradian.front-back.imagegen-v3.png",
+      "crop": [
+        0,
+        670,
+        1165,
+        680
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        31549,
+        23946,
+        0
+      ],
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 16
+    }
+  ],
+  "candidate_note": "Separate Mirradian redesign candidate only. Prismip frames are exact canonical imports; candidate prompt covers Mirradian only. Canonical manifest/palettes/registration unchanged.",
+  "candidate_review": {
+    "status": "pending-root-judgment",
+    "outline_profile": "source-contour-v1",
+    "sheet_sha256": "6f120444675f16f1f8ee3fdde85fa14c5a7beb3c92c7b3864bc2390c7d6e5c5d",
+    "notes": "Viewed actual mixed family candidate versus old board and raw. Prismip imports unchanged. Mirradian has large central expressive face on compact continuous wedge core, low shield mirror and high redirect mirror physically attached at unequal levels. Much clearer character/eye than original columns. One solid light ribbon curls behind high panel; caveat reflection gesture reads as curled band rather than explicit incoming/outgoing right-angle bend. Close rear core/near panel enlarged, lower crop open. Canonical aliases restored byte-identically; candidate not published."
+  },
+  "candidate_exports": {
+    "native_sheet": "line.redesign-20261026.native.png",
+    "review_sheet": "line.redesign-20261026.review.png"
+  },
+  "comparison_before": "line.before-redesign-20261026.review.png",
+  "visual_review": {
+    "status": "reviewed",
+    "reviewer": "root",
+    "notes": "Root inspected all four native views: Prismip unchanged. Mirradian has a large clear central face, lower shielding mirror and high redirecting mirror on unequal attached arms, with curled solid reflection band. Exact right-angle beam behavior is not depicted, but face and asymmetric connected body now read clearly. Close back shows panel roots and core.",
+    "sheet_sha256": "6f120444675f16f1f8ee3fdde85fa14c5a7beb3c92c7b3864bc2390c7d6e5c5d",
+    "outline_profile": "source-contour-v1"
+  }
+}

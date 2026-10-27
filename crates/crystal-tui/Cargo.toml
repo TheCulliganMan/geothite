@@ -15,7 +15,9 @@ crystal-assets.workspace = true
 crystal-bevy.workspace = true
 crystal-core.workspace = true
 crystal-runtime.workspace = true
-crossterm = "0.29"
+# macOS kqueue rejects a terminal reopened after curl's piped stdin. Use the
+# portable /dev/tty poller so the downloaded client can read real keyboard input.
+crossterm = { version = "0.29", features = ["use-dev-tty"] }
 ratatui = { version = "0.30", default-features = false, features = ["crossterm"] }
 serde.workspace = true
 serde_json.workspace = true

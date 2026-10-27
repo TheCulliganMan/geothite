@@ -8,12 +8,40 @@ from pathlib import Path
 import tempfile
 import unittest
 
-from performance_audit import analyze, compare, continuous_presentation, cpu_census, digest_tree, frame_budget, repeat_stability, run_suite, stats
+from performance_audit import analyze, compare, compatibility, continuous_presentation, cpu_census, digest_tree, frame_budget, repeat_stability, run_suite, stats
 
 from trace_stream import spans as stream_spans
 
 
 class AuditTests(unittest.TestCase):
+    def test_source_2d_capture_does_not_require_a_3d_presentation_scale(self):
+        report = dict(schema=1, renderer='2d', success=True, failure=None,
+                      frames=[dict(id=i, measured=True, interval_ms=1, main_cpu_ms=.5,
+                                   motion=dict(tile_size=[0., 0.])) for i in range(40)],
+                      gpu=dict(samples=[], supported=False, reason='disabled', errors=0, skipped=0),
+                      render_diagnostics=[], checkpoints=[])
+        with tempfile.TemporaryDirectory() as directory:
+            result = analyze(report, Path(directory), detailed_cpu=False)
+        self.assertTrue(result['success'])
+        self.assertEqual(result['renderer'], '2d')
+        self.assertFalse(result['world_residency']['available'])
+        self.assertIsNone(result['stationary_camera'])
+
+    def test_source_2d_and_modeled_captures_are_not_comparable(self):
+        metadata = dict.fromkeys((
+            'measurement_revision', 'warmup_cadence', 'native_capture_mode',
+            'trace_filter', 'gpu_backend', 'scenario', 'pack_identity', 'os',
+            'arch', 'debug_assertions', 'operation_trace', 'gpu_instrumentation',
+            'viewport', 'hour', 'target', 'pipeline_compilation', 'simulation',
+            'cache_policy'))
+        modeled = compatibility(metadata, {})
+        source = compatibility(dict(metadata, renderer='2d'), {})
+        self.assertEqual(modeled['renderer'], '3d')
+        self.assertEqual(source['renderer'], '2d')
+        self.assertNotEqual(source, modeled)
+        self.assertFalse(compare(dict(compatibility=source, runs=[]),
+                                 dict(compatibility=modeled, runs=[]), 10, .2)['comparable'])
+
     def test_a_render_stall_cannot_hide_behind_continuously_active_3d(self):
         run = dict(world_residency=dict(available=True, unavailable_frames=0,
                                        unknown_camera_frames=0, unknown_intervals=0),

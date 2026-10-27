@@ -1,0 +1,10 @@
+{
+  "tool": "built-in image_gen",
+  "status": "no-image-returned",
+  "prompt_file": "prompt-v1.txt",
+  "request_id": "9dfa025c-29a4-488c-a999-d46ebfc9c145",
+  "error": "HTTP400 moderation_blocked, output stage, category other",
+  "referenced_image_paths": [
+    "target/minnesota-pokemon/gen2-reference/starters.png"
+  ]
+}

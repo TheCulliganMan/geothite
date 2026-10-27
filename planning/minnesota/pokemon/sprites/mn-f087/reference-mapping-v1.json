@@ -1,0 +1,19 @@
+{
+  "family_id": "MN_F087",
+  "prompt_file": "sprites/mn-f087/prompt-v1.txt",
+  "references": [
+    {
+      "path": "target/minnesota-pokemon/gen2-reference/starters.png",
+      "role": "Authentic Gen2 pixel scale, contours and close back framing only",
+      "sha256": "af61f720a75b7e1b8e80ba14e8944612556397eedddd719669dec68b0e0fd534"
+    }
+  ],
+  "source_evidence": [
+    {
+      "url": "https://www.mnhs.org/mnopedia/search/index/thing/post-it-notes",
+      "institution": "Minnesota Historical Society",
+      "supports": "Minnesota development of a light removable adhesive and its adaptation from bookmarks into repositionable paper notes. Memory powers and creature design are original fiction."
+    }
+  ],
+  "design_lock": "Root accepted memory-paper evolution concept; all creature anatomy and powers are original fiction."
+}

@@ -284,6 +284,7 @@ where
 include!("game_data_scripts.rs");
 include!("game_data_mutations.rs");
 include!("game_data_overworld_and_saves.rs");
+include!("game_data_connections.rs");
 include!("game_data_items_and_battles.rs");
 include!("game_data_encounters_and_loading.rs");
 
@@ -1524,7 +1525,23 @@ pub(crate) fn certify_tree_mon_encounter_callasm_target(
     ];
     certify_exact_callasm_body(definitions, start_label, MAIN)?;
     certify_exact_callasm_body(definitions, ".no_battle@TreeMonEncounter", NO_BATTLE)?;
-    certify_exact_callasm_body(definitions, "HeadbuttScript", HEADBUTT_SCRIPT)?;
+    // Source exports can retain the local no-battle tail both on its parent
+    // body and under the qualified local label. Accept that exact source form
+    // without accepting arbitrary commands after the terminating `end`.
+    if definitions
+        .get("HeadbuttScript")
+        .and_then(Value::as_array)
+        .is_some_and(|body| body.len() == HEADBUTT_SCRIPT.len() + NO_BATTLE_SCRIPT.len())
+    {
+        let flattened = HEADBUTT_SCRIPT
+            .iter()
+            .chain(NO_BATTLE_SCRIPT)
+            .copied()
+            .collect::<Vec<_>>();
+        certify_exact_callasm_body(definitions, "HeadbuttScript", &flattened)?;
+    } else {
+        certify_exact_callasm_body(definitions, "HeadbuttScript", HEADBUTT_SCRIPT)?;
+    }
     let resolved_no_battle =
         resolve_script_target_label(definitions, "HeadbuttScript", ".no_battle").ok_or_else(
             || {
@@ -1981,7 +1998,17 @@ fn exact_overworld_visual_callasm_effect(
         _ => return Ok(None),
     };
     let actual_fingerprint = callasm_source_body_fingerprint(definitions, labels)?;
-    if actual_fingerprint != expected_fingerprint {
+    // The pinned 3bc8daa source exported by the Rust parser retains complete
+    // local-label tails. Keep that reviewed representation distinct from the
+    // older exact bodies; neither accepts arbitrary visual CPU programs.
+    let complete_source_fingerprint = match effect {
+        ExactOverworldVisualCallasmEffect::ShakeHeadbuttTree => Some(0xa90c_c02d_c5d2_56b8),
+        ExactOverworldVisualCallasmEffect::FlyAnimation => Some(0x5ee8_d7c2_0db9_5f56),
+        _ => None,
+    };
+    if actual_fingerprint != expected_fingerprint
+        && complete_source_fingerprint != Some(actual_fingerprint)
+    {
         return Err(ScriptCallasmCertificateFailure::at(
             start_label,
             0,

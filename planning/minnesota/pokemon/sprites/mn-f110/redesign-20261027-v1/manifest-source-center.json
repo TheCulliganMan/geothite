@@ -1,0 +1,248 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F110",
+  "status": "native-redesign-review-pending",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_241": {
+      "species_id": "MN_241",
+      "name": "Dewdant",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          29,
+          22,
+          11
+        ],
+        [
+          14,
+          7,
+          15
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        11997,
+        15598,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          239,
+          181,
+          90
+        ],
+        [
+          115,
+          57,
+          123
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#EFB55A",
+        "#73397B",
+        "#000000"
+      ]
+    },
+    "MN_242": {
+      "species_id": "MN_242",
+      "name": "Barricant",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          30,
+          23,
+          13
+        ],
+        [
+          12,
+          6,
+          16
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        14078,
+        16588,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          247,
+          189,
+          107
+        ],
+        [
+          99,
+          49,
+          132
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#F7BD6B",
+        "#633184",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f110/prompt-v2.txt",
+  "reference_mapping": "sprites/mn-f110/reference-mapping-v1.json",
+  "back_framing": "gen2-close-rear-portrait",
+  "sprites": [
+    {
+      "id": "mn-241-dewdant-redesign-v2",
+      "species_id": "MN_241",
+      "view": "front",
+      "source": "sprites/mn-f110/mn-241-242.front-back.imagegen-v2.png",
+      "crop": [
+        0,
+        0,
+        768,
+        512
+      ],
+      "fit": [
+        40,
+        40
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        11997,
+        15598,
+        0
+      ],
+      "white_detail_min_samples": 8,
+      "sampling": "source_center",
+      "exterior_contour": "solid",
+      "pixel_edits": []
+    },
+    {
+      "id": "mn-241-dewdant-redesign-v2",
+      "species_id": "MN_241",
+      "view": "back",
+      "source": "sprites/mn-f110/mn-241-242.front-back.imagegen-v2.png",
+      "crop": [
+        0,
+        512,
+        768,
+        512
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        11997,
+        15598,
+        0
+      ],
+      "white_detail_min_samples": 8,
+      "sampling": "source_center",
+      "exterior_contour": "solid",
+      "pixel_edits": []
+    },
+    {
+      "id": "mn-242-barricant-redesign-v2",
+      "species_id": "MN_242",
+      "view": "front",
+      "source": "sprites/mn-f110/mn-241-242.front-back.imagegen-v2.png",
+      "crop": [
+        768,
+        0,
+        768,
+        512
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        14078,
+        16588,
+        0
+      ],
+      "white_detail_min_samples": 8,
+      "sampling": "source_center",
+      "exterior_contour": "solid",
+      "pixel_edits": []
+    },
+    {
+      "id": "mn-242-barricant-redesign-v2",
+      "species_id": "MN_242",
+      "view": "back",
+      "source": "sprites/mn-f110/mn-241-242.front-back.imagegen-v2.png",
+      "crop": [
+        768,
+        512,
+        768,
+        512
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        14078,
+        16588,
+        0
+      ],
+      "white_detail_min_samples": 8,
+      "sampling": "source_center",
+      "exterior_contour": "solid",
+      "pixel_edits": []
+    }
+  ],
+  "source_sha256": "324a19572e9f7bcb1fef83779c495c5ca73916ae11269f765fab37ebfd27e1be",
+  "candidate_review": {
+    "status": "native-review-pending",
+    "outline_profile": "source-contour-v1",
+    "sheet_sha256": "6ff9de2f270071f0c756ac169b401d7cce1232ffbd6d1fbb98ecf1d97c402612",
+    "notes": "Actual native inspected: six-legged scoop-jawed collector grows massive curved jaw shields and raised drop reservoir with interlocking low rear-leg bars. Rear portraits show reservoir/head/hinges from behind with lower legs cropped. Gold/purple target palettes differ by stage and front/back match. Source antennae are thin and reduce to segmented dark bends at native resolution; white eye windows remain but pupils are tiny. Root final judgment pending."
+  },
+  "visual_review": {
+    "status": "pending",
+    "notes": "User requested a stronger and more appealing redesign of this line."
+  }
+}

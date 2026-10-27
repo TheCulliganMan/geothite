@@ -1,0 +1,261 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F121",
+  "status": "native-reviewed",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_259": {
+      "species_id": "MN_259",
+      "name": "Rillbow",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          23,
+          26,
+          25
+        ],
+        [
+          6,
+          13,
+          15
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        26455,
+        15782,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          189,
+          214,
+          206
+        ],
+        [
+          49,
+          107,
+          123
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#BDD6CE",
+        "#316B7B",
+        "#000000"
+      ]
+    },
+    "MN_260": {
+      "species_id": "MN_260",
+      "name": "Torrout",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          27,
+          25,
+          17
+        ],
+        [
+          7,
+          12,
+          9
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        18235,
+        9607,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          222,
+          206,
+          140
+        ],
+        [
+          57,
+          99,
+          74
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#DECE8C",
+        "#39634A",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f121/prompt-v1.txt",
+  "reference_mapping": "sprites/mn-f121/reference-mapping-v1.json",
+  "back_framing": "gen2-close-rear-portrait",
+  "style_reference": {
+    "origin": "authentic local Crystal sprites",
+    "boards": [
+      "target/minnesota-pokemon/gen2-reference/starters.png",
+      "target/minnesota-pokemon/gen2-reference/bugs.png"
+    ]
+  },
+  "regional_sources": [
+    "https://www.dnr.state.mn.us/minnaqua/speciesprofile/brooktrout.html",
+    "https://files.dnr.state.mn.us/recreation/fishing/fin/fish_id_placemat.pdf?v=2025.06.30-12.11.14"
+  ],
+  "sprites": [
+    {
+      "id": "mn-259-rillbow-v1",
+      "species_id": "MN_259",
+      "view": "front",
+      "source": "sprites/mn-f121/rillbow-torrout.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        625,
+        610
+      ],
+      "fit": [
+        44,
+        44
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        26455,
+        15782,
+        0
+      ],
+      "interior_black_min_samples": 16,
+      "white_detail_min_samples": 8
+    },
+    {
+      "id": "mn-259-rillbow-v1",
+      "species_id": "MN_259",
+      "view": "back",
+      "source": "sprites/mn-f121/rillbow-torrout.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        610,
+        645,
+        589
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        26455,
+        15782,
+        0
+      ],
+      "interior_black_min_samples": 16,
+      "white_detail_min_samples": 8
+    },
+    {
+      "id": "mn-260-torrout-v1",
+      "species_id": "MN_260",
+      "view": "front",
+      "source": "sprites/mn-f121/rillbow-torrout.front-back.imagegen-v1.png",
+      "crop": [
+        625,
+        0,
+        687,
+        610
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        18235,
+        9607,
+        0
+      ],
+      "interior_black_min_samples": 16,
+      "white_detail_min_samples": 8
+    },
+    {
+      "id": "mn-260-torrout-v1",
+      "species_id": "MN_260",
+      "view": "back",
+      "source": "sprites/mn-f121/rillbow-torrout.front-back.imagegen-v1.png",
+      "crop": [
+        645,
+        610,
+        667,
+        589
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        18235,
+        9607,
+        0
+      ],
+      "interior_black_min_samples": 16,
+      "white_detail_min_samples": 8
+    }
+  ],
+  "raw_generation": {
+    "original_tool_path": "/Users/ryanculligan/.codex/generated_images/01a179c0-286e-73f1-857b-6a9fe4430fc1/exec-bcb15e33-f83a-4edf-bbd7-a9c12361617e.png",
+    "sha256": "78efb67142f1cb379e4b5a573936ff38e4bdc006089caeaa77db36d98abd21ec",
+    "source_size": [
+      1312,
+      1199
+    ]
+  },
+  "candidate_review": {
+    "status": "pending-root-judgment",
+    "outline_profile": "source-contour-v1",
+    "sheet_sha256": "77a34ad192f79da224aba4ec1e48f9ccf015d7756e720358c8b921fef63d96fb",
+    "notes": "Viewed actual raw/native4view board. Both species clearly blunt-snouted trout with small adipose fins, squared braced tails and large readable eyes; no pike jaw or cross-species evolution. Juvenile bow-shaped fin/body curve develops into dominant attached deep underbelly bow-fin with broad pale membrane, stronger gill/forward body and drawn-up tail. No held bow/arrow, thin strings, machine parts or detached particles. Individual silver-teal and pale-gold/deep-green palettes. Source cells disjoint, enlarged close rear head/gill/near-fin crops. Interior16 preserves gill/fin structure and white8 eye glints. Native fine fin rays simplify into broad clusters with a few interior dots; parent should judge silhouette/theme, not detailed rays."
+  },
+  "visual_review": {
+    "status": "reviewed",
+    "reviewer": "root",
+    "notes": "Root inspected actual native four-view sheet: blunt trout heads, light bellies and substantial recoil bow fins; no pike jaw. Individual palettes and close rear portraits retained.",
+    "sheet_sha256": "77a34ad192f79da224aba4ec1e48f9ccf015d7756e720358c8b921fef63d96fb",
+    "outline_profile": "source-contour-v1"
+  }
+}

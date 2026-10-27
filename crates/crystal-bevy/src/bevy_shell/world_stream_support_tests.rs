@@ -59,9 +59,9 @@ fn connected_world_windows_publish_identical_walking_support() {
         assert_eq!(
             frame.grid_origin,
             if name == "Route28" {
-                IVec2::new(-84, -32)
+                IVec2::new(-132, -80)
             } else {
-                IVec2::new(20, 4)
+                IVec2::new(-28, -44)
             }
         );
         let mesh = crystal_voxel_view::audit_terrain_mesh_with_images(&frame, &images)

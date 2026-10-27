@@ -1,0 +1,23 @@
+Use case: stylized-concept. Asset type: production Game Boy Color creature battle sprite sheet.
+
+Create ORIGINAL Gen2-era monster pixel art. This is actual sprite artwork with coarse square-pixel clusters, not an illustration to be pixelated later. Pure white background. NO captions/text/grid lines/palette swatches/shadows. Crisp stepped black exterior silhouettes; spare connected interior black structural seams; flat color planes. No gradients, antialiasing, soft edges, glossy rendering, tiny noisy texture, single-pixel confetti or smooth vector curves. Respect authentic late-1990s Pokemon Crystal sprite economy, readable eyes and structural evolution; do not copy any existing Pokemon identity.
+
+Layout exactly 2 columns by 2 rows. Columns left-to-right: Chislet, Buttermuse. Each column is ONE species. Upper row: full-body FRONT 3/4 facing LEFT at native56x56 language. Lower row: CLOSE REAR PORTRAIT facing UPPER RIGHT at native48x48 language. Back is a huge head/neck/near-shoulder view, lower body visibly cut at bottom, authentic Crystal battle framing. Enlarge each back head/shoulder strongly; do not draw a complete miniature full-body turnaround. Leave wide clean white gutters between cells, all artwork disjoint. Display artwork enlarged nearest-neighbor for source sheet; favor about5-7sourcepixels per nativepixel. Front stages show proportional growth; every back fills its cell as a close portrait.
+
+Theme: Minnesota fair butter carving: a cold butter block carves its own limbs, then fights by reshaping broad sculptor forearms and curled butter-shaving armor.
+
+Design constraints: Use broad carved facets, 2-3 shaving curls, pale butter and cold blue shadows. No gradients, ice-spike overload or real-person face. Back portrait emphasizes rosette and carving shoulders.
+
+Solid carved butter, visibly blocky and heavy. Baby cuboid with asymmetric large chisel forearm, two wedge feet and curled shaving brow. Final broad sculpted torso, two enormous wedge fists, curled shaving ruff and spiral rosette crown. Abstract creature face, no real human bust/royalty/portrait/dress. Two or three broad curls only; not icicle monster. Pale gold/blue shadow palette.
+
+Species anatomy and each independent hardware palette (front and back MUST match). Each species uses EXACTLY FOUR inks: white, its own two chromatic colors and pure black. White is valid enclosed eye/body highlight ink; black also outlines white body parts. The sheet globally can exceed four colors because species use different palettes. Never share one palette across the whole evolution line. RGB555 packing is r|(g<<5)|(b<<10); RGB8 expansion is (v<<3)|(v>>2).
+
+MN_213 Chislet ICE: A small uneven butter block has two short wedge feet and a large chisel-shaped forearm; a curled shaving above one eye becomes a questioning eyebrow. It chips away a corner to free its other hand. SILHOUETTE: Asymmetric cuboid with one wedge arm, curled eyebrow and stub feet.
+
+Exact Chislet palette: RGB5=[(31, 31, 31), (31, 28, 17), (11, 17, 23), (0, 0, 0)]; RGB555=[32767, 18335, 24107, 0]; RGB8=[[255, 255, 255], [255, 231, 140], [90, 140, 189], [0, 0, 0]]; HEX=['#FFFFFF', '#FFE78C', '#5A8CBD', '#000000'].
+
+MN_214 Buttermuse ICE/FIGHTING: The block unfolds into a broad poised statue creature with two enormous wedge forearms, a curled shaving ruff and a spiral rosette crown. Its body stays thick and solid, its fighting stance planted, and it reforms damaged surfaces by pressing its arms together. SILHOUETTE: Broad sculpted torso, two triangular chisel fists and curled ruff/crown; no human dress, copied bust or ordinary butter stick with eyes.
+
+Exact Buttermuse palette: RGB5=[(31, 31, 31), (30, 27, 15), (8, 14, 22), (0, 0, 0)]; RGB555=[32767, 16254, 22984, 0]; RGB8=[[255, 255, 255], [247, 222, 123], [66, 115, 181], [0, 0, 0]]; HEX=['#FFFFFF', '#F7DE7B', '#4273B5', '#000000'].
+
+Final quality: original appealing themed monsters, clear eye whites, bold broad anatomical planes, readable limbs and deeply different evolutionary silhouettes. Black silhouette rims must be continuous wherever they border white paper; white highlights stay enclosed inside the rim. A few deliberate open colored contour accents may echo Gen2, but no fragmented dotted outlines. Keep open cropping of lower back at the bottom.

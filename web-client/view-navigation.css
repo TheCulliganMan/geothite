@@ -14,3 +14,5 @@
 body[data-view="tui"] #crystal-canvas { opacity: 0; }
 @media (pointer: coarse) { #tui-surface { bottom: 180px; } }
 #game-stage #tui-canvas { width: var(--tui-width, 100%) !important; image-rendering: auto; }
+/* Fullscreen 3D battles own both upper corners for their HP panels. */
+body[data-view="3d"] #view-navigation { left: 50%; transform: translateX(-50%); }

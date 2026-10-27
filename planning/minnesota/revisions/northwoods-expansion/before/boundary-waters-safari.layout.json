@@ -1,0 +1,5676 @@
+{
+  "schema_version": 2,
+  "id": "MN_BOUNDARY_WATERS_SAFARI",
+  "tileset": "johto",
+  "compiled_tileset": "mn_boundary_safari",
+  "dimensions_metatiles": [
+    48,
+    40
+  ],
+  "coordinate_units": "32px metatiles, zero based",
+  "shore_fitting": "johto_8_neighbors",
+  "reject_cliff_cuts": true,
+  "additional_water_blocks": [
+    "30",
+    "31",
+    "32",
+    "34",
+    "36",
+    "38",
+    "39",
+    "3a"
+  ],
+  "derived_blocks": [
+    {
+      "id": "80",
+      "source_tileset": "kanto",
+      "source_block": "78",
+      "collision": "WATER",
+      "required_typed_extension": "headwaters_art::build_headwaters_art_pack"
+    },
+    {
+      "id": "81",
+      "source_tileset": "kanto",
+      "source_block": "77",
+      "collision": "FLOOR/FLOOR/WALL/WALL",
+      "required_typed_extension": "headwaters_art::build_headwaters_art_pack"
+    },
+    {
+      "id": "82",
+      "source_tileset": "kanto",
+      "source_block": "77",
+      "tile_row_order": [
+        2,
+        3,
+        0,
+        1
+      ],
+      "collision_source_tileset": "johto",
+      "collision_source_block": "75",
+      "required_typed_extension": "headwaters_art::build_headwaters_art_pack"
+    },
+    {
+      "id": "83",
+      "source_tileset": "kanto",
+      "source_block": "08",
+      "required_typed_extension": "boundary_safari_art::build_boundary_safari_art_pack"
+    }
+  ],
+  "layers": [
+    {
+      "kind": "rect",
+      "material": "water",
+      "bounds": [
+        0,
+        0,
+        48,
+        40
+      ],
+      "name": "Connected Boundary Waters lake chain"
+    },
+    {
+      "kind": "point",
+      "position": [
+        0,
+        0
+      ],
+      "block": "34",
+      "name": "West native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        47,
+        0
+      ],
+      "block": "36",
+      "name": "East native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        0,
+        1
+      ],
+      "block": "34",
+      "name": "West native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        47,
+        1
+      ],
+      "block": "36",
+      "name": "East native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        0,
+        2
+      ],
+      "block": "34",
+      "name": "West native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        47,
+        2
+      ],
+      "block": "36",
+      "name": "East native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        0,
+        3
+      ],
+      "block": "34",
+      "name": "West native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        47,
+        3
+      ],
+      "block": "36",
+      "name": "East native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        0,
+        4
+      ],
+      "block": "34",
+      "name": "West native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        47,
+        4
+      ],
+      "block": "36",
+      "name": "East native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        0,
+        5
+      ],
+      "block": "34",
+      "name": "West native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        47,
+        5
+      ],
+      "block": "36",
+      "name": "East native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        0,
+        6
+      ],
+      "block": "34",
+      "name": "West native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        47,
+        6
+      ],
+      "block": "36",
+      "name": "East native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        0,
+        7
+      ],
+      "block": "34",
+      "name": "West native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        47,
+        7
+      ],
+      "block": "36",
+      "name": "East native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        0,
+        8
+      ],
+      "block": "34",
+      "name": "West native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        47,
+        8
+      ],
+      "block": "36",
+      "name": "East native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        0,
+        9
+      ],
+      "block": "34",
+      "name": "West native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        47,
+        9
+      ],
+      "block": "36",
+      "name": "East native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        0,
+        10
+      ],
+      "block": "34",
+      "name": "West native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        47,
+        10
+      ],
+      "block": "36",
+      "name": "East native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        0,
+        11
+      ],
+      "block": "34",
+      "name": "West native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        47,
+        11
+      ],
+      "block": "36",
+      "name": "East native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        0,
+        12
+      ],
+      "block": "34",
+      "name": "West native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        47,
+        12
+      ],
+      "block": "36",
+      "name": "East native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        0,
+        13
+      ],
+      "block": "34",
+      "name": "West native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        47,
+        13
+      ],
+      "block": "36",
+      "name": "East native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        0,
+        14
+      ],
+      "block": "34",
+      "name": "West native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        47,
+        14
+      ],
+      "block": "36",
+      "name": "East native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        0,
+        15
+      ],
+      "block": "34",
+      "name": "West native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        47,
+        15
+      ],
+      "block": "36",
+      "name": "East native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        0,
+        16
+      ],
+      "block": "34",
+      "name": "West native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        47,
+        16
+      ],
+      "block": "36",
+      "name": "East native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        0,
+        17
+      ],
+      "block": "34",
+      "name": "West native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        47,
+        17
+      ],
+      "block": "36",
+      "name": "East native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        0,
+        18
+      ],
+      "block": "34",
+      "name": "West native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        47,
+        18
+      ],
+      "block": "36",
+      "name": "East native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        0,
+        19
+      ],
+      "block": "34",
+      "name": "West native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        47,
+        19
+      ],
+      "block": "36",
+      "name": "East native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        0,
+        20
+      ],
+      "block": "34",
+      "name": "West native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        47,
+        20
+      ],
+      "block": "36",
+      "name": "East native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        0,
+        21
+      ],
+      "block": "34",
+      "name": "West native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        47,
+        21
+      ],
+      "block": "36",
+      "name": "East native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        0,
+        22
+      ],
+      "block": "34",
+      "name": "West native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        47,
+        22
+      ],
+      "block": "36",
+      "name": "East native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        0,
+        23
+      ],
+      "block": "34",
+      "name": "West native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        47,
+        23
+      ],
+      "block": "36",
+      "name": "East native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        0,
+        24
+      ],
+      "block": "34",
+      "name": "West native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        47,
+        24
+      ],
+      "block": "36",
+      "name": "East native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        0,
+        25
+      ],
+      "block": "34",
+      "name": "West native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        47,
+        25
+      ],
+      "block": "36",
+      "name": "East native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        0,
+        26
+      ],
+      "block": "34",
+      "name": "West native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        47,
+        26
+      ],
+      "block": "36",
+      "name": "East native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        0,
+        27
+      ],
+      "block": "34",
+      "name": "West native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        47,
+        27
+      ],
+      "block": "36",
+      "name": "East native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        0,
+        28
+      ],
+      "block": "34",
+      "name": "West native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        47,
+        28
+      ],
+      "block": "36",
+      "name": "East native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        0,
+        29
+      ],
+      "block": "34",
+      "name": "West native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        47,
+        29
+      ],
+      "block": "36",
+      "name": "East native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        0,
+        30
+      ],
+      "block": "34",
+      "name": "West native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        47,
+        30
+      ],
+      "block": "36",
+      "name": "East native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        0,
+        31
+      ],
+      "block": "34",
+      "name": "West native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        47,
+        31
+      ],
+      "block": "36",
+      "name": "East native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        0,
+        32
+      ],
+      "block": "34",
+      "name": "West native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        47,
+        32
+      ],
+      "block": "36",
+      "name": "East native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        0,
+        33
+      ],
+      "block": "34",
+      "name": "West native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        47,
+        33
+      ],
+      "block": "36",
+      "name": "East native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        0,
+        34
+      ],
+      "block": "34",
+      "name": "West native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        47,
+        34
+      ],
+      "block": "36",
+      "name": "East native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        0,
+        35
+      ],
+      "block": "34",
+      "name": "West native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        47,
+        35
+      ],
+      "block": "36",
+      "name": "East native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        0,
+        36
+      ],
+      "block": "34",
+      "name": "West native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        47,
+        36
+      ],
+      "block": "36",
+      "name": "East native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        0,
+        37
+      ],
+      "block": "34",
+      "name": "West native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        47,
+        37
+      ],
+      "block": "36",
+      "name": "East native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        0,
+        38
+      ],
+      "block": "34",
+      "name": "West native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        47,
+        38
+      ],
+      "block": "36",
+      "name": "East native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        0,
+        39
+      ],
+      "block": "34",
+      "name": "West native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        47,
+        39
+      ],
+      "block": "36",
+      "name": "East native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        0,
+        0
+      ],
+      "block": "31",
+      "name": "North native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        0,
+        39
+      ],
+      "block": "39",
+      "name": "South native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        1,
+        0
+      ],
+      "block": "31",
+      "name": "North native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        1,
+        39
+      ],
+      "block": "39",
+      "name": "South native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        2,
+        0
+      ],
+      "block": "31",
+      "name": "North native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        2,
+        39
+      ],
+      "block": "39",
+      "name": "South native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        3,
+        0
+      ],
+      "block": "31",
+      "name": "North native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        3,
+        39
+      ],
+      "block": "39",
+      "name": "South native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        4,
+        0
+      ],
+      "block": "31",
+      "name": "North native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        4,
+        39
+      ],
+      "block": "39",
+      "name": "South native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        5,
+        0
+      ],
+      "block": "31",
+      "name": "North native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        5,
+        39
+      ],
+      "block": "39",
+      "name": "South native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        6,
+        0
+      ],
+      "block": "31",
+      "name": "North native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        6,
+        39
+      ],
+      "block": "39",
+      "name": "South native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        7,
+        0
+      ],
+      "block": "31",
+      "name": "North native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        7,
+        39
+      ],
+      "block": "39",
+      "name": "South native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        8,
+        0
+      ],
+      "block": "31",
+      "name": "North native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        8,
+        39
+      ],
+      "block": "39",
+      "name": "South native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        9,
+        0
+      ],
+      "block": "31",
+      "name": "North native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        9,
+        39
+      ],
+      "block": "39",
+      "name": "South native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        10,
+        0
+      ],
+      "block": "31",
+      "name": "North native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        10,
+        39
+      ],
+      "block": "39",
+      "name": "South native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        11,
+        0
+      ],
+      "block": "31",
+      "name": "North native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        11,
+        39
+      ],
+      "block": "39",
+      "name": "South native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        12,
+        0
+      ],
+      "block": "31",
+      "name": "North native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        12,
+        39
+      ],
+      "block": "39",
+      "name": "South native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        13,
+        0
+      ],
+      "block": "31",
+      "name": "North native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        13,
+        39
+      ],
+      "block": "39",
+      "name": "South native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        14,
+        0
+      ],
+      "block": "31",
+      "name": "North native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        14,
+        39
+      ],
+      "block": "39",
+      "name": "South native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        15,
+        0
+      ],
+      "block": "31",
+      "name": "North native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        15,
+        39
+      ],
+      "block": "39",
+      "name": "South native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        16,
+        0
+      ],
+      "block": "31",
+      "name": "North native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        16,
+        39
+      ],
+      "block": "39",
+      "name": "South native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        17,
+        0
+      ],
+      "block": "31",
+      "name": "North native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        17,
+        39
+      ],
+      "block": "39",
+      "name": "South native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        18,
+        0
+      ],
+      "block": "31",
+      "name": "North native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        18,
+        39
+      ],
+      "block": "39",
+      "name": "South native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        19,
+        0
+      ],
+      "block": "31",
+      "name": "North native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        19,
+        39
+      ],
+      "block": "39",
+      "name": "South native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        20,
+        0
+      ],
+      "block": "31",
+      "name": "North native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        20,
+        39
+      ],
+      "block": "39",
+      "name": "South native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        21,
+        0
+      ],
+      "block": "31",
+      "name": "North native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        21,
+        39
+      ],
+      "block": "39",
+      "name": "South native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        22,
+        0
+      ],
+      "block": "31",
+      "name": "North native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        22,
+        39
+      ],
+      "block": "39",
+      "name": "South native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        23,
+        0
+      ],
+      "block": "31",
+      "name": "North native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        23,
+        39
+      ],
+      "block": "39",
+      "name": "South native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        24,
+        0
+      ],
+      "block": "31",
+      "name": "North native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        24,
+        39
+      ],
+      "block": "39",
+      "name": "South native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        25,
+        0
+      ],
+      "block": "31",
+      "name": "North native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        25,
+        39
+      ],
+      "block": "39",
+      "name": "South native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        26,
+        0
+      ],
+      "block": "31",
+      "name": "North native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        26,
+        39
+      ],
+      "block": "39",
+      "name": "South native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        27,
+        0
+      ],
+      "block": "31",
+      "name": "North native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        27,
+        39
+      ],
+      "block": "39",
+      "name": "South native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        28,
+        0
+      ],
+      "block": "31",
+      "name": "North native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        28,
+        39
+      ],
+      "block": "39",
+      "name": "South native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        29,
+        0
+      ],
+      "block": "31",
+      "name": "North native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        29,
+        39
+      ],
+      "block": "39",
+      "name": "South native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        30,
+        0
+      ],
+      "block": "31",
+      "name": "North native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        30,
+        39
+      ],
+      "block": "39",
+      "name": "South native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        31,
+        0
+      ],
+      "block": "31",
+      "name": "North native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        31,
+        39
+      ],
+      "block": "39",
+      "name": "South native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        32,
+        0
+      ],
+      "block": "31",
+      "name": "North native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        32,
+        39
+      ],
+      "block": "39",
+      "name": "South native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        33,
+        0
+      ],
+      "block": "31",
+      "name": "North native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        33,
+        39
+      ],
+      "block": "39",
+      "name": "South native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        34,
+        0
+      ],
+      "block": "31",
+      "name": "North native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        34,
+        39
+      ],
+      "block": "39",
+      "name": "South native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        35,
+        0
+      ],
+      "block": "31",
+      "name": "North native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        35,
+        39
+      ],
+      "block": "39",
+      "name": "South native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        36,
+        0
+      ],
+      "block": "31",
+      "name": "North native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        36,
+        39
+      ],
+      "block": "39",
+      "name": "South native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        37,
+        0
+      ],
+      "block": "31",
+      "name": "North native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        37,
+        39
+      ],
+      "block": "39",
+      "name": "South native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        38,
+        0
+      ],
+      "block": "31",
+      "name": "North native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        38,
+        39
+      ],
+      "block": "39",
+      "name": "South native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        39,
+        0
+      ],
+      "block": "31",
+      "name": "North native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        39,
+        39
+      ],
+      "block": "39",
+      "name": "South native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        40,
+        0
+      ],
+      "block": "31",
+      "name": "North native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        40,
+        39
+      ],
+      "block": "39",
+      "name": "South native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        41,
+        0
+      ],
+      "block": "31",
+      "name": "North native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        41,
+        39
+      ],
+      "block": "39",
+      "name": "South native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        42,
+        0
+      ],
+      "block": "31",
+      "name": "North native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        42,
+        39
+      ],
+      "block": "39",
+      "name": "South native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        43,
+        0
+      ],
+      "block": "31",
+      "name": "North native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        43,
+        39
+      ],
+      "block": "39",
+      "name": "South native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        44,
+        0
+      ],
+      "block": "31",
+      "name": "North native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        44,
+        39
+      ],
+      "block": "39",
+      "name": "South native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        45,
+        0
+      ],
+      "block": "31",
+      "name": "North native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        45,
+        39
+      ],
+      "block": "39",
+      "name": "South native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        46,
+        0
+      ],
+      "block": "31",
+      "name": "North native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        46,
+        39
+      ],
+      "block": "39",
+      "name": "South native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        47,
+        0
+      ],
+      "block": "31",
+      "name": "North native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        47,
+        39
+      ],
+      "block": "39",
+      "name": "South native BUOY edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        0,
+        0
+      ],
+      "block": "30",
+      "name": "Native water BUOY corner"
+    },
+    {
+      "kind": "point",
+      "position": [
+        47,
+        0
+      ],
+      "block": "32",
+      "name": "Native water BUOY corner"
+    },
+    {
+      "kind": "point",
+      "position": [
+        0,
+        39
+      ],
+      "block": "38",
+      "name": "Native water BUOY corner"
+    },
+    {
+      "kind": "point",
+      "position": [
+        47,
+        39
+      ],
+      "block": "3a",
+      "name": "Native water BUOY corner"
+    },
+    {
+      "kind": "polygon",
+      "material": "forest",
+      "points": [
+        [
+          1,
+          4
+        ],
+        [
+          10,
+          4
+        ],
+        [
+          10,
+          5
+        ],
+        [
+          14,
+          5
+        ],
+        [
+          14,
+          8
+        ],
+        [
+          18,
+          8
+        ],
+        [
+          18,
+          9
+        ],
+        [
+          14,
+          9
+        ],
+        [
+          14,
+          12
+        ],
+        [
+          18,
+          12
+        ],
+        [
+          18,
+          13
+        ],
+        [
+          15,
+          13
+        ],
+        [
+          15,
+          17
+        ],
+        [
+          10,
+          17
+        ],
+        [
+          10,
+          20
+        ],
+        [
+          1,
+          20
+        ]
+      ],
+      "name": "Western pine headland with a narrow overland neck"
+    },
+    {
+      "kind": "polygon",
+      "material": "water",
+      "points": [
+        [
+          3,
+          7
+        ],
+        [
+          7,
+          7
+        ],
+        [
+          7,
+          8
+        ],
+        [
+          10,
+          8
+        ],
+        [
+          10,
+          12
+        ],
+        [
+          7,
+          12
+        ],
+        [
+          7,
+          14
+        ],
+        [
+          3,
+          14
+        ]
+      ],
+      "name": "Isolated Pine Pocket Lake"
+    },
+    {
+      "kind": "polygon",
+      "material": "forest",
+      "points": [
+        [
+          3,
+          26
+        ],
+        [
+          9,
+          26
+        ],
+        [
+          9,
+          25
+        ],
+        [
+          16,
+          25
+        ],
+        [
+          16,
+          28
+        ],
+        [
+          18,
+          28
+        ],
+        [
+          18,
+          35
+        ],
+        [
+          15,
+          35
+        ],
+        [
+          15,
+          38
+        ],
+        [
+          6,
+          38
+        ],
+        [
+          6,
+          37
+        ],
+        [
+          3,
+          37
+        ]
+      ],
+      "name": "Reed base island around its pocket lake"
+    },
+    {
+      "kind": "polygon",
+      "material": "water",
+      "points": [
+        [
+          7,
+          28
+        ],
+        [
+          11,
+          28
+        ],
+        [
+          11,
+          29
+        ],
+        [
+          14,
+          29
+        ],
+        [
+          14,
+          32
+        ],
+        [
+          11,
+          32
+        ],
+        [
+          11,
+          34
+        ],
+        [
+          7,
+          34
+        ]
+      ],
+      "name": "Isolated Reed Pocket Lake"
+    },
+    {
+      "kind": "polygon",
+      "material": "forest",
+      "points": [
+        [
+          21,
+          3
+        ],
+        [
+          25,
+          3
+        ],
+        [
+          25,
+          5
+        ],
+        [
+          28,
+          5
+        ],
+        [
+          28,
+          10
+        ],
+        [
+          26,
+          10
+        ],
+        [
+          26,
+          13
+        ],
+        [
+          22,
+          13
+        ],
+        [
+          22,
+          11
+        ],
+        [
+          19,
+          11
+        ],
+        [
+          19,
+          7
+        ],
+        [
+          21,
+          7
+        ]
+      ],
+      "name": "Northern mature-pine island"
+    },
+    {
+      "kind": "polygon",
+      "material": "forest",
+      "points": [
+        [
+          21,
+          18
+        ],
+        [
+          27,
+          18
+        ],
+        [
+          27,
+          17
+        ],
+        [
+          30,
+          17
+        ],
+        [
+          30,
+          20
+        ],
+        [
+          32,
+          20
+        ],
+        [
+          32,
+          23
+        ],
+        [
+          28,
+          23
+        ],
+        [
+          28,
+          24
+        ],
+        [
+          23,
+          24
+        ],
+        [
+          23,
+          22
+        ],
+        [
+          20,
+          22
+        ],
+        [
+          20,
+          20
+        ],
+        [
+          21,
+          20
+        ]
+      ],
+      "name": "Central conifer island divides two connected lake channels"
+    },
+    {
+      "kind": "polygon",
+      "material": "forest",
+      "points": [
+        [
+          37,
+          5
+        ],
+        [
+          43,
+          5
+        ],
+        [
+          43,
+          7
+        ],
+        [
+          46,
+          7
+        ],
+        [
+          46,
+          15
+        ],
+        [
+          43,
+          15
+        ],
+        [
+          43,
+          18
+        ],
+        [
+          38,
+          18
+        ],
+        [
+          38,
+          15
+        ],
+        [
+          36,
+          15
+        ],
+        [
+          36,
+          10
+        ],
+        [
+          37,
+          10
+        ]
+      ],
+      "name": "Granite Shore wooded headland"
+    },
+    {
+      "kind": "polygon",
+      "material": "forest",
+      "points": [
+        [
+          32,
+          29
+        ],
+        [
+          36,
+          29
+        ],
+        [
+          36,
+          30
+        ],
+        [
+          39,
+          30
+        ],
+        [
+          39,
+          33
+        ],
+        [
+          37,
+          33
+        ],
+        [
+          37,
+          35
+        ],
+        [
+          33,
+          35
+        ],
+        [
+          33,
+          34
+        ],
+        [
+          31,
+          34
+        ],
+        [
+          31,
+          31
+        ],
+        [
+          32,
+          31
+        ]
+      ],
+      "name": "Quiet Water island with pine heart and grass shore"
+    },
+    {
+      "kind": "rect",
+      "material": "water",
+      "bounds": [
+        18,
+        8,
+        19,
+        14
+      ],
+      "name": "Real narrow Surf channel connects the pine-side inlet to main chain"
+    },
+    {
+      "kind": "path",
+      "material": "lawn",
+      "points": [
+        [
+          7,
+          36
+        ],
+        [
+          6,
+          36
+        ],
+        [
+          6,
+          30
+        ]
+      ],
+      "width_metatiles": 1,
+      "name": "Entry to Reed portage east landing"
+    },
+    {
+      "kind": "path",
+      "material": "lawn",
+      "points": [
+        [
+          6,
+          36
+        ],
+        [
+          5,
+          36
+        ]
+      ],
+      "width_metatiles": 1,
+      "name": "Welcome return ranger spur"
+    },
+    {
+      "kind": "rect",
+      "material": "floor",
+      "bounds": [
+        7,
+        36,
+        8,
+        37
+      ],
+      "name": "Safe paid-entry arrival square"
+    },
+    {
+      "kind": "rect",
+      "material": "flowers",
+      "bounds": [
+        7,
+        35,
+        9,
+        36
+      ],
+      "name": "Welcome turnout flowers"
+    },
+    {
+      "kind": "path",
+      "material": "lawn",
+      "points": [
+        [
+          3,
+          30
+        ],
+        [
+          6,
+          30
+        ]
+      ],
+      "width_metatiles": 1,
+      "name": "Short Reed overland portage"
+    },
+    {
+      "kind": "rect",
+      "material": "encounter",
+      "bounds": [
+        4,
+        30,
+        6,
+        31
+      ],
+      "name": "Reed portage grass neck"
+    },
+    {
+      "kind": "point",
+      "position": [
+        1,
+        29
+      ],
+      "block": "41",
+      "name": "Reed launch north rail"
+    },
+    {
+      "kind": "point",
+      "position": [
+        1,
+        30
+      ],
+      "block": "49",
+      "name": "Reed launch south rail"
+    },
+    {
+      "kind": "point",
+      "position": [
+        2,
+        29
+      ],
+      "block": "41",
+      "name": "Reed launch north rail"
+    },
+    {
+      "kind": "point",
+      "position": [
+        2,
+        30
+      ],
+      "block": "49",
+      "name": "Reed launch south rail"
+    },
+    {
+      "kind": "point",
+      "position": [
+        3,
+        29
+      ],
+      "block": "41",
+      "name": "Reed launch north rail"
+    },
+    {
+      "kind": "point",
+      "position": [
+        3,
+        30
+      ],
+      "block": "49",
+      "name": "Reed launch south rail"
+    },
+    {
+      "kind": "point",
+      "position": [
+        6,
+        30
+      ],
+      "block": "01",
+      "name": "Reed pocket lake safe eastern landing"
+    },
+    {
+      "kind": "path",
+      "material": "lawn",
+      "points": [
+        [
+          11,
+          10
+        ],
+        [
+          14,
+          10
+        ]
+      ],
+      "width_metatiles": 1,
+      "name": "Short Pine Pocket overland portage"
+    },
+    {
+      "kind": "rect",
+      "material": "encounter",
+      "bounds": [
+        12,
+        10,
+        14,
+        11
+      ],
+      "name": "Pine portage grass neck"
+    },
+    {
+      "kind": "point",
+      "position": [
+        11,
+        10
+      ],
+      "block": "01",
+      "name": "Pine pocket lake western landing"
+    },
+    {
+      "kind": "point",
+      "position": [
+        14,
+        10
+      ],
+      "block": "01",
+      "name": "Main lake eastern pine landing"
+    },
+    {
+      "kind": "polygon",
+      "material": "encounter",
+      "points": [
+        [
+          3,
+          16
+        ],
+        [
+          5,
+          16
+        ],
+        [
+          5,
+          17
+        ],
+        [
+          7,
+          17
+        ],
+        [
+          7,
+          18
+        ],
+        [
+          3,
+          18
+        ]
+      ],
+      "name": "Rare thicket behind the native Cut tree"
+    },
+    {
+      "kind": "point",
+      "position": [
+        5,
+        15
+      ],
+      "block": "63",
+      "name": "Cut tree seals the Pine Pocket thicket"
+    },
+    {
+      "kind": "path",
+      "material": "lawn",
+      "points": [
+        [
+          19,
+          8
+        ],
+        [
+          22,
+          8
+        ],
+        [
+          22,
+          11
+        ],
+        [
+          24,
+          11
+        ]
+      ],
+      "width_metatiles": 1,
+      "name": "North island landing and short pine shore trail"
+    },
+    {
+      "kind": "rect",
+      "material": "encounter",
+      "bounds": [
+        22,
+        11,
+        26,
+        13
+      ],
+      "name": "North pine island capture shore"
+    },
+    {
+      "kind": "point",
+      "position": [
+        19,
+        8
+      ],
+      "block": "01",
+      "name": "North pine island landing"
+    },
+    {
+      "kind": "path",
+      "material": "lawn",
+      "points": [
+        [
+          24,
+          24
+        ],
+        [
+          24,
+          21
+        ]
+      ],
+      "width_metatiles": 1,
+      "name": "Central island narrow landing trail"
+    },
+    {
+      "kind": "polygon",
+      "material": "encounter",
+      "points": [
+        [
+          23,
+          19
+        ],
+        [
+          26,
+          19
+        ],
+        [
+          26,
+          20
+        ],
+        [
+          27,
+          20
+        ],
+        [
+          27,
+          22
+        ],
+        [
+          23,
+          22
+        ]
+      ],
+      "name": "Central pine island encounter pocket"
+    },
+    {
+      "kind": "point",
+      "position": [
+        24,
+        24
+      ],
+      "block": "01",
+      "name": "Central island safe landing"
+    },
+    {
+      "kind": "cliff_polygon",
+      "points": [
+        [
+          36,
+          8
+        ],
+        [
+          38,
+          8
+        ],
+        [
+          38,
+          9
+        ],
+        [
+          40,
+          9
+        ],
+        [
+          40,
+          12
+        ],
+        [
+          36,
+          12
+        ]
+      ],
+      "name": "Small granite shoreline shelf"
+    },
+    {
+      "kind": "rect",
+      "material": "encounter",
+      "bounds": [
+        37,
+        9,
+        39,
+        11
+      ],
+      "name": "Granite shelf capture grass"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        37,
+        11,
+        40,
+        12
+      ],
+      "block": "02",
+      "name": "Granite shelf interior grass walking rim"
+    },
+    {
+      "kind": "path",
+      "material": "lawn",
+      "points": [
+        [
+          36,
+          14
+        ],
+        [
+          41,
+          14
+        ],
+        [
+          41,
+          13
+        ]
+      ],
+      "width_metatiles": 1,
+      "name": "Granite landing to early-return ranger"
+    },
+    {
+      "kind": "path",
+      "material": "lawn",
+      "points": [
+        [
+          39,
+          14
+        ],
+        [
+          39,
+          13
+        ]
+      ],
+      "width_metatiles": 1,
+      "name": "Granite ramp lower approach"
+    },
+    {
+      "kind": "point",
+      "position": [
+        39,
+        12
+      ],
+      "block": "74",
+      "name": "Native Granite ramp"
+    },
+    {
+      "kind": "point",
+      "position": [
+        37,
+        12
+      ],
+      "block": "57",
+      "name": "Useful Granite one-way drop"
+    },
+    {
+      "kind": "point",
+      "position": [
+        36,
+        12
+      ],
+      "block": "0a",
+      "name": "Granite ledge west shoulder"
+    },
+    {
+      "kind": "point",
+      "position": [
+        38,
+        12
+      ],
+      "block": "0a",
+      "name": "Granite ledge east shoulder"
+    },
+    {
+      "kind": "point",
+      "position": [
+        34,
+        13
+      ],
+      "block": "82",
+      "name": "Granite return dock north rail"
+    },
+    {
+      "kind": "point",
+      "position": [
+        34,
+        14
+      ],
+      "block": "81",
+      "name": "Granite return dock south rail"
+    },
+    {
+      "kind": "point",
+      "position": [
+        35,
+        13
+      ],
+      "block": "82",
+      "name": "Granite return dock north rail"
+    },
+    {
+      "kind": "point",
+      "position": [
+        35,
+        14
+      ],
+      "block": "81",
+      "name": "Granite return dock south rail"
+    },
+    {
+      "kind": "point",
+      "position": [
+        36,
+        13
+      ],
+      "block": "82",
+      "name": "Granite return dock north rail"
+    },
+    {
+      "kind": "point",
+      "position": [
+        36,
+        14
+      ],
+      "block": "81",
+      "name": "Granite return dock south rail"
+    },
+    {
+      "kind": "rect",
+      "material": "encounter",
+      "bounds": [
+        40,
+        15,
+        42,
+        17
+      ],
+      "name": "Low Granite shore encounter pocket"
+    },
+    {
+      "kind": "path",
+      "material": "lawn",
+      "points": [
+        [
+          31,
+          32
+        ],
+        [
+          33,
+          32
+        ],
+        [
+          33,
+          34
+        ],
+        [
+          35,
+          34
+        ],
+        [
+          35,
+          33
+        ]
+      ],
+      "width_metatiles": 1,
+      "name": "Quiet island grass-shore landing and retirement spur"
+    },
+    {
+      "kind": "rect",
+      "material": "encounter",
+      "bounds": [
+        32,
+        31,
+        34,
+        34
+      ],
+      "name": "Quiet island western encounter shore"
+    },
+    {
+      "kind": "rect",
+      "material": "encounter",
+      "bounds": [
+        34,
+        33,
+        37,
+        35
+      ],
+      "name": "Quiet island southern rare grass"
+    },
+    {
+      "kind": "point",
+      "position": [
+        31,
+        32
+      ],
+      "block": "01",
+      "name": "Quiet island safe western landing"
+    },
+    {
+      "kind": "point",
+      "position": [
+        2,
+        24
+      ],
+      "block": "3a",
+      "name": "Native blue water-rock navigation marker"
+    },
+    {
+      "kind": "point",
+      "position": [
+        19,
+        23
+      ],
+      "block": "3a",
+      "name": "Native blue water-rock navigation marker"
+    },
+    {
+      "kind": "point",
+      "position": [
+        33,
+        27
+      ],
+      "block": "3a",
+      "name": "Native blue water-rock navigation marker"
+    },
+    {
+      "kind": "point",
+      "position": [
+        43,
+        23
+      ],
+      "block": "3a",
+      "name": "Native blue water-rock navigation marker"
+    },
+    {
+      "kind": "point",
+      "position": [
+        28,
+        34
+      ],
+      "block": "3a",
+      "name": "Native blue water-rock navigation marker"
+    },
+    {
+      "kind": "point",
+      "position": [
+        5,
+        36
+      ],
+      "block": "01",
+      "name": "Safe retirement ranger footing"
+    },
+    {
+      "kind": "point",
+      "position": [
+        41,
+        13
+      ],
+      "block": "01",
+      "name": "Safe retirement ranger footing"
+    },
+    {
+      "kind": "point",
+      "position": [
+        35,
+        33
+      ],
+      "block": "01",
+      "name": "Safe retirement ranger footing"
+    },
+    {
+      "kind": "point",
+      "position": [
+        8,
+        36
+      ],
+      "block": "45",
+      "name": "Native source sign quadrant"
+    },
+    {
+      "kind": "point",
+      "position": [
+        6,
+        31
+      ],
+      "block": "45",
+      "name": "Native source sign quadrant"
+    },
+    {
+      "kind": "point",
+      "position": [
+        13,
+        9
+      ],
+      "block": "45",
+      "name": "Native source sign quadrant"
+    },
+    {
+      "kind": "point",
+      "position": [
+        6,
+        15
+      ],
+      "block": "45",
+      "name": "Native source sign quadrant"
+    },
+    {
+      "kind": "point",
+      "position": [
+        40,
+        14
+      ],
+      "block": "45",
+      "name": "Native source sign quadrant"
+    },
+    {
+      "kind": "point",
+      "position": [
+        34,
+        34
+      ],
+      "block": "45",
+      "name": "Native source sign quadrant"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        37,
+        13,
+        40,
+        14
+      ],
+      "block": "02",
+      "name": "Safe granite ledge landing and ordinary walking return"
+    },
+    {
+      "kind": "polygon",
+      "material": "forest",
+      "points": [
+        [
+          20,
+          0
+        ],
+        [
+          27,
+          0
+        ],
+        [
+          27,
+          1
+        ],
+        [
+          25,
+          1
+        ],
+        [
+          25,
+          3
+        ],
+        [
+          22,
+          3
+        ],
+        [
+          22,
+          1
+        ],
+        [
+          20,
+          1
+        ]
+      ],
+      "name": "Northern pine shore joins the north island as a peninsula"
+    },
+    {
+      "kind": "rect",
+      "material": "forest",
+      "bounds": [
+        0,
+        5,
+        2,
+        20
+      ],
+      "name": "Western pine headland meets actual west shore"
+    },
+    {
+      "kind": "polygon",
+      "material": "forest",
+      "points": [
+        [
+          46,
+          7
+        ],
+        [
+          47,
+          7
+        ],
+        [
+          47,
+          15
+        ],
+        [
+          45,
+          15
+        ],
+        [
+          45,
+          13
+        ],
+        [
+          46,
+          13
+        ]
+      ],
+      "name": "Granite pines attach to the eastern shore"
+    },
+    {
+      "kind": "point",
+      "position": [
+        1,
+        29
+      ],
+      "block": "44",
+      "name": "Closed western walking end with a deliberate north Surf mouth"
+    },
+    {
+      "kind": "point",
+      "position": [
+        1,
+        30
+      ],
+      "block": "48",
+      "name": "Closed southwest dock corner"
+    },
+    {
+      "kind": "polygon",
+      "material": "forest",
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          47,
+          0
+        ],
+        [
+          47,
+          2
+        ],
+        [
+          40,
+          2
+        ],
+        [
+          40,
+          1
+        ],
+        [
+          31,
+          1
+        ],
+        [
+          31,
+          3
+        ],
+        [
+          27,
+          3
+        ],
+        [
+          27,
+          1
+        ],
+        [
+          20,
+          1
+        ],
+        [
+          20,
+          3
+        ],
+        [
+          15,
+          3
+        ],
+        [
+          15,
+          2
+        ],
+        [
+          7,
+          2
+        ],
+        [
+          7,
+          1
+        ],
+        [
+          0,
+          1
+        ]
+      ],
+      "name": "Northern pine shoreline surrounds the linked lakes"
+    },
+    {
+      "kind": "polygon",
+      "material": "forest",
+      "points": [
+        [
+          46,
+          0
+        ],
+        [
+          47,
+          0
+        ],
+        [
+          47,
+          39
+        ],
+        [
+          45,
+          39
+        ],
+        [
+          45,
+          34
+        ],
+        [
+          46,
+          34
+        ],
+        [
+          46,
+          28
+        ],
+        [
+          44,
+          28
+        ],
+        [
+          44,
+          24
+        ],
+        [
+          46,
+          24
+        ],
+        [
+          46,
+          17
+        ],
+        [
+          45,
+          17
+        ],
+        [
+          45,
+          7
+        ],
+        [
+          46,
+          7
+        ]
+      ],
+      "name": "Eastern pine shoreline with sheltered inlets"
+    },
+    {
+      "kind": "polygon",
+      "material": "forest",
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          1,
+          4
+        ],
+        [
+          0,
+          4
+        ],
+        [
+          0,
+          20
+        ],
+        [
+          2,
+          20
+        ],
+        [
+          2,
+          25
+        ],
+        [
+          1,
+          25
+        ],
+        [
+          1,
+          27
+        ],
+        [
+          0,
+          27
+        ],
+        [
+          0,
+          32
+        ],
+        [
+          2,
+          32
+        ],
+        [
+          2,
+          39
+        ],
+        [
+          0,
+          39
+        ]
+      ],
+      "name": "Western pine shore keeps a narrow real Surf launch cove"
+    },
+    {
+      "kind": "polygon",
+      "material": "forest",
+      "points": [
+        [
+          0,
+          38
+        ],
+        [
+          8,
+          38
+        ],
+        [
+          8,
+          37
+        ],
+        [
+          13,
+          37
+        ],
+        [
+          13,
+          38
+        ],
+        [
+          22,
+          38
+        ],
+        [
+          22,
+          36
+        ],
+        [
+          25,
+          36
+        ],
+        [
+          25,
+          38
+        ],
+        [
+          33,
+          38
+        ],
+        [
+          33,
+          37
+        ],
+        [
+          37,
+          37
+        ],
+        [
+          37,
+          38
+        ],
+        [
+          47,
+          38
+        ],
+        [
+          47,
+          39
+        ],
+        [
+          0,
+          39
+        ]
+      ],
+      "name": "Southern pine shoreline wraps the Quiet Water basin"
+    },
+    {
+      "kind": "rect",
+      "material": "lawn",
+      "bounds": [
+        12,
+        34,
+        17,
+        37
+      ],
+      "name": "Reed Landing Camp pine-sheltered clearing"
+    },
+    {
+      "kind": "point",
+      "position": [
+        15,
+        35
+      ],
+      "block": "83",
+      "name": "Reed Landing Camp authenticated native wooden bench"
+    },
+    {
+      "kind": "rect",
+      "material": "lawn",
+      "bounds": [
+        13,
+        12,
+        17,
+        15
+      ],
+      "name": "Pine Portage Camp pine-sheltered clearing"
+    },
+    {
+      "kind": "point",
+      "position": [
+        16,
+        13
+      ],
+      "block": "83",
+      "name": "Pine Portage Camp authenticated native wooden bench"
+    },
+    {
+      "kind": "rect",
+      "material": "lawn",
+      "bounds": [
+        40,
+        15,
+        44,
+        18
+      ],
+      "name": "Granite Bay Camp pine-sheltered clearing"
+    },
+    {
+      "kind": "point",
+      "position": [
+        43,
+        16
+      ],
+      "block": "83",
+      "name": "Granite Bay Camp authenticated native wooden bench"
+    },
+    {
+      "kind": "rect",
+      "material": "lawn",
+      "bounds": [
+        34,
+        31,
+        37,
+        34
+      ],
+      "name": "Quiet Island Camp pine-sheltered clearing"
+    },
+    {
+      "kind": "point",
+      "position": [
+        36,
+        32
+      ],
+      "block": "83",
+      "name": "Quiet Island Camp authenticated native wooden bench"
+    },
+    {
+      "kind": "path",
+      "material": "lawn",
+      "points": [
+        [
+          18,
+          33
+        ],
+        [
+          14,
+          33
+        ],
+        [
+          14,
+          34
+        ]
+      ],
+      "width_metatiles": 1,
+      "name": "Reed shore camp landing path"
+    },
+    {
+      "kind": "path",
+      "material": "lawn",
+      "points": [
+        [
+          14,
+          10
+        ],
+        [
+          14,
+          12
+        ],
+        [
+          15,
+          12
+        ],
+        [
+          15,
+          13
+        ]
+      ],
+      "width_metatiles": 1,
+      "name": "Pine portage camp short approach"
+    },
+    {
+      "kind": "path",
+      "material": "lawn",
+      "points": [
+        [
+          41,
+          14
+        ],
+        [
+          41,
+          16
+        ]
+      ],
+      "width_metatiles": 1,
+      "name": "Granite camp ranger approach"
+    },
+    {
+      "kind": "path",
+      "material": "lawn",
+      "points": [
+        [
+          33,
+          32
+        ],
+        [
+          35,
+          32
+        ]
+      ],
+      "width_metatiles": 1,
+      "name": "Quiet camp short approach"
+    },
+    {
+      "kind": "point",
+      "position": [
+        18,
+        33
+      ],
+      "block": "01",
+      "name": "Reed Landing Camp safe native Surf landing"
+    },
+    {
+      "kind": "point",
+      "position": [
+        14,
+        10
+      ],
+      "block": "01",
+      "name": "Pine Portage Camp safe native Surf landing"
+    },
+    {
+      "kind": "point",
+      "position": [
+        43,
+        17
+      ],
+      "block": "01",
+      "name": "Granite Bay Camp safe native Surf landing"
+    },
+    {
+      "kind": "point",
+      "position": [
+        31,
+        32
+      ],
+      "block": "01",
+      "name": "Quiet Island Camp safe native Surf landing"
+    },
+    {
+      "kind": "rect",
+      "material": "lawn",
+      "bounds": [
+        24,
+        20,
+        28,
+        23
+      ],
+      "name": "Dorothy Molter welcoming pine-sheltered yard"
+    },
+    {
+      "kind": "point",
+      "position": [
+        25,
+        18
+      ],
+      "block": "2c",
+      "name": "Isle of Pines complete native cabin facade"
+    },
+    {
+      "kind": "point",
+      "position": [
+        26,
+        18
+      ],
+      "block": "2d",
+      "name": "Isle of Pines complete native cabin facade"
+    },
+    {
+      "kind": "point",
+      "position": [
+        25,
+        19
+      ],
+      "block": "2e",
+      "name": "Isle of Pines complete native cabin facade"
+    },
+    {
+      "kind": "point",
+      "position": [
+        26,
+        19
+      ],
+      "block": "2f",
+      "name": "Isle of Pines complete native cabin facade"
+    },
+    {
+      "kind": "path",
+      "material": "lawn",
+      "points": [
+        [
+          24,
+          24
+        ],
+        [
+          24,
+          22
+        ],
+        [
+          25,
+          22
+        ],
+        [
+          25,
+          20
+        ]
+      ],
+      "width_metatiles": 1,
+      "name": "Isle of Pines cabin pine footpath"
+    },
+    {
+      "kind": "path",
+      "material": "lawn",
+      "points": [
+        [
+          21,
+          21
+        ],
+        [
+          24,
+          21
+        ]
+      ],
+      "width_metatiles": 1,
+      "name": "Isle of Pines dock to welcoming yard"
+    },
+    {
+      "kind": "point",
+      "position": [
+        18,
+        20
+      ],
+      "block": "82",
+      "name": "Dorothy returning dock north rail"
+    },
+    {
+      "kind": "point",
+      "position": [
+        18,
+        21
+      ],
+      "block": "81",
+      "name": "Dorothy returning dock south rail"
+    },
+    {
+      "kind": "point",
+      "position": [
+        19,
+        20
+      ],
+      "block": "82",
+      "name": "Dorothy returning dock north rail"
+    },
+    {
+      "kind": "point",
+      "position": [
+        19,
+        21
+      ],
+      "block": "81",
+      "name": "Dorothy returning dock south rail"
+    },
+    {
+      "kind": "point",
+      "position": [
+        20,
+        20
+      ],
+      "block": "82",
+      "name": "Dorothy returning dock north rail"
+    },
+    {
+      "kind": "point",
+      "position": [
+        20,
+        21
+      ],
+      "block": "81",
+      "name": "Dorothy returning dock south rail"
+    },
+    {
+      "kind": "point",
+      "position": [
+        23,
+        22
+      ],
+      "block": "45",
+      "name": "Isle of Pines signed landmark"
+    },
+    {
+      "kind": "point",
+      "position": [
+        24,
+        21
+      ],
+      "block": "01",
+      "name": "Root Beer Lady safe outdoor footing"
+    },
+    {
+      "kind": "rect",
+      "bounds": [
+        2,
+        25,
+        3,
+        26
+      ],
+      "material": "water",
+      "name": "Reed launch cove narrows reconnect to the main lake chain"
+    },
+    {
+      "kind": "rect",
+      "bounds": [
+        21,
+        2,
+        22,
+        3
+      ],
+      "material": "forest",
+      "name": "Close accidental tiny pond inside north pine canopy"
+    },
+    {
+      "kind": "point",
+      "position": [
+        16,
+        36
+      ],
+      "block": "45",
+      "name": "Reed Landing Camp discovery marker"
+    },
+    {
+      "kind": "point",
+      "position": [
+        16,
+        14
+      ],
+      "block": "45",
+      "name": "Pine Portage Camp discovery marker"
+    },
+    {
+      "kind": "point",
+      "position": [
+        42,
+        17
+      ],
+      "block": "45",
+      "name": "Granite Bay Camp discovery marker"
+    },
+    {
+      "kind": "point",
+      "position": [
+        36,
+        31
+      ],
+      "block": "45",
+      "name": "Quiet Island Camp discovery marker"
+    },
+    {
+      "kind": "rect",
+      "name": "Reed checkpoint enclosed arrival forecourt",
+      "material": "lawn",
+      "bounds": [
+        4,
+        35,
+        9,
+        37
+      ]
+    },
+    {
+      "kind": "rect",
+      "name": "Reed checkpoint pine backstop closes side approaches",
+      "material": "forest",
+      "bounds": [
+        3,
+        33,
+        10,
+        35
+      ]
+    },
+    {
+      "kind": "rect",
+      "name": "Reed checkpoint north approach",
+      "material": "lawn",
+      "bounds": [
+        6,
+        32,
+        7,
+        35
+      ]
+    },
+    {
+      "kind": "point",
+      "name": "Reed checkpoint left fence end",
+      "position": [
+        4,
+        34
+      ],
+      "block": "40"
+    },
+    {
+      "kind": "point",
+      "name": "Reed checkpoint west gatepost",
+      "position": [
+        5,
+        34
+      ],
+      "block": "44"
+    },
+    {
+      "kind": "point",
+      "name": "Reed checkpoint east gatepost",
+      "position": [
+        6,
+        34
+      ],
+      "block": "46"
+    },
+    {
+      "kind": "point",
+      "name": "Reed checkpoint right fence run",
+      "position": [
+        7,
+        34
+      ],
+      "block": "41"
+    },
+    {
+      "kind": "point",
+      "name": "Reed checkpoint right fence end",
+      "position": [
+        8,
+        34
+      ],
+      "block": "42"
+    },
+    {
+      "kind": "point",
+      "name": "Reed checkpoint ranger safe footing",
+      "position": [
+        5,
+        35
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Reed checkpoint safe paid arrival",
+      "position": [
+        7,
+        36
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "rect",
+      "name": "Reed portage wider grassy approach",
+      "material": "encounter",
+      "bounds": [
+        5,
+        31,
+        7,
+        33
+      ]
+    },
+    {
+      "kind": "rect",
+      "name": "Reed portage grass fills the crossing",
+      "material": "encounter",
+      "bounds": [
+        4,
+        30,
+        6,
+        32
+      ]
+    },
+    {
+      "kind": "point",
+      "name": "Reed portage preserves the main launch south rail",
+      "position": [
+        3,
+        30
+      ],
+      "block": "49"
+    },
+    {
+      "kind": "point",
+      "name": "Reed portage east landing stays dry",
+      "position": [
+        6,
+        30
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "rect",
+      "name": "Pine Pocket portage thicker grassy neck",
+      "material": "encounter",
+      "bounds": [
+        12,
+        10,
+        14,
+        12
+      ]
+    },
+    {
+      "kind": "path",
+      "name": "North Pine arms overland portage",
+      "material": "lawn",
+      "points": [
+        [
+          19,
+          8
+        ],
+        [
+          21,
+          8
+        ],
+        [
+          21,
+          9
+        ],
+        [
+          27,
+          9
+        ],
+        [
+          27,
+          10
+        ],
+        [
+          28,
+          10
+        ]
+      ],
+      "width_metatiles": 1
+    },
+    {
+      "kind": "rect",
+      "name": "North Pine arms grassy saddle",
+      "material": "encounter",
+      "bounds": [
+        22,
+        8,
+        26,
+        10
+      ]
+    },
+    {
+      "kind": "point",
+      "name": "North Pine arms eastern relaunch",
+      "position": [
+        28,
+        10
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "path",
+      "name": "Isle of Pines eastern portage shore",
+      "material": "lawn",
+      "points": [
+        [
+          26,
+          22
+        ],
+        [
+          28,
+          22
+        ],
+        [
+          28,
+          23
+        ],
+        [
+          31,
+          23
+        ],
+        [
+          31,
+          22
+        ],
+        [
+          32,
+          22
+        ]
+      ],
+      "width_metatiles": 1
+    },
+    {
+      "kind": "rect",
+      "name": "Isle of Pines portage grass neck",
+      "material": "encounter",
+      "bounds": [
+        28,
+        22,
+        31,
+        24
+      ]
+    },
+    {
+      "kind": "point",
+      "name": "Isle of Pines eastern relaunch",
+      "position": [
+        32,
+        22
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Restore checkpoint admission sign",
+      "position": [
+        8,
+        36
+      ],
+      "block": "45"
+    },
+    {
+      "kind": "point",
+      "name": "Restore Reed portage sign above pocket landing",
+      "position": [
+        6,
+        31
+      ],
+      "block": "45"
+    },
+    {
+      "kind": "point",
+      "name": "North Pine overland portage marker",
+      "position": [
+        27,
+        8
+      ],
+      "block": "45"
+    },
+    {
+      "kind": "point",
+      "name": "Isle of Pines east portage marker",
+      "position": [
+        31,
+        21
+      ],
+      "block": "45"
+    }
+  ],
+  "status": "Source proposal revised with a real fenced entry checkpoint and four grassy portages; native Safari lifecycle, gates and services still pending.",
+  "source_pixels_modified": false,
+  "entry_contract": {
+    "from_map": "MnBoundaryWaters",
+    "arrival_tile": [
+      15,
+      73
+    ],
+    "arrival_collision": "FLOOR",
+    "return_interaction": "BWS_REED_RETURN_RANGER",
+    "return_safe_tile": [
+      15,
+      73
+    ],
+    "warp_cost_steps": 0,
+    "preflight_requires": [
+      "MOVE_SURF",
+      "ENGINE_FOGBADGE"
+    ],
+    "native_lifecycle_status": "Not implemented. Free story hub remains outside paid preserve."
+  },
+  "retire_anchors": [
+    {
+      "id": "BWS_REED_RETURN_RANGER",
+      "tile": [
+        10,
+        71
+      ],
+      "approach": [
+        11,
+        71
+      ],
+      "sprite": "SPRITE_OFFICER",
+      "facing": "east",
+      "lines": [
+        "PRESERVE ENTRY",
+        "Ready to return?",
+        "I can guide you",
+        "back to basecamp."
+      ]
+    },
+    {
+      "id": "BWS_GRANITE_RETURN_RANGER",
+      "tile": [
+        83,
+        27
+      ],
+      "approach": [
+        82,
+        27
+      ],
+      "sprite": "SPRITE_FISHER",
+      "facing": "west",
+      "lines": [
+        "This dock returns",
+        "to the free camp."
+      ]
+    },
+    {
+      "id": "BWS_QUIET_RETURN_RANGER",
+      "tile": [
+        71,
+        67
+      ],
+      "approach": [
+        70,
+        67
+      ],
+      "sprite": "SPRITE_FISHER",
+      "facing": "west",
+      "lines": [
+        "End the visit here",
+        "if steps run low."
+      ]
+    }
+  ],
+  "signs": [
+    {
+      "id": "BWS_SIGN_01",
+      "tile": [
+        16,
+        72
+      ],
+      "lines": [
+        "BOUNDARY WATERS",
+        "SAFARI ENTRY",
+        "USE THE GATE",
+        "TO REACH THE LAKE."
+      ]
+    },
+    {
+      "id": "BWS_SIGN_02",
+      "tile": [
+        12,
+        62
+      ],
+      "lines": [
+        "REED PORTAGE",
+        "LAND / WALK / SURF"
+      ]
+    },
+    {
+      "id": "BWS_SIGN_03",
+      "tile": [
+        26,
+        18
+      ],
+      "lines": [
+        "PINE PORTAGE",
+        "POCKET LAKE WEST"
+      ]
+    },
+    {
+      "id": "BWS_SIGN_04",
+      "tile": [
+        12,
+        30
+      ],
+      "lines": [
+        "RARE PINE THICKET",
+        "CUT FROM THE LAKE"
+      ]
+    },
+    {
+      "id": "BWS_SIGN_05",
+      "tile": [
+        80,
+        28
+      ],
+      "lines": [
+        "GRANITE LANDING",
+        "DROP TO RETURN"
+      ]
+    },
+    {
+      "id": "BWS_SIGN_06",
+      "tile": [
+        68,
+        68
+      ],
+      "lines": [
+        "QUIET ISLAND",
+        "CHECK STEPS HERE"
+      ]
+    },
+    {
+      "id": "BWS_ISLE_OF_PINES_SIGN",
+      "tile": [
+        46,
+        44
+      ],
+      "lines": [
+        "DOROTHY MOLTER",
+        "ISLE OF PINES"
+      ]
+    },
+    {
+      "id": "BWS_REED_CAMP_MARKER",
+      "tile": [
+        32,
+        72
+      ],
+      "lines": [
+        "REED CAMP",
+        "Leave no trace."
+      ]
+    },
+    {
+      "id": "BWS_PINE_CAMP_MARKER",
+      "tile": [
+        32,
+        28
+      ],
+      "lines": [
+        "PINE CAMP",
+        "Leave no trace."
+      ]
+    },
+    {
+      "id": "BWS_GRANITE_CAMP_MARKER",
+      "tile": [
+        84,
+        34
+      ],
+      "lines": [
+        "GRANITE BAY CAMP",
+        "Leave no trace."
+      ]
+    },
+    {
+      "id": "BWS_QUIET_CAMP_MARKER",
+      "tile": [
+        72,
+        62
+      ],
+      "lines": [
+        "QUIET ISLAND CAMP",
+        "Leave no trace."
+      ]
+    },
+    {
+      "id": "BWS_SIGN_NORTH_PORTAGE",
+      "tile": [
+        54,
+        16
+      ],
+      "lines": [
+        "NORTH PINE PORTAGE",
+        "WEST: LAND TRAIL",
+        "EAST: LAKE LAUNCH"
+      ]
+    },
+    {
+      "id": "BWS_SIGN_ISLE_PORTAGE",
+      "tile": [
+        62,
+        42
+      ],
+      "lines": [
+        "ISLE OF PINES",
+        "WEST: CABIN / DOCK",
+        "EAST: LAKE LAUNCH"
+      ]
+    }
+  ],
+  "habitat_anchors": [
+    {
+      "id": "REED_MARSH",
+      "tile": [
+        19,
+        61
+      ],
+      "bounds_core": [
+        6,
+        50,
+        38,
+        76
+      ],
+      "requires": "SURF"
+    },
+    {
+      "id": "PINE_PORTAGE",
+      "tile": [
+        45,
+        23
+      ],
+      "bounds_core": [
+        2,
+        6,
+        64,
+        50
+      ],
+      "requires": "SURF"
+    },
+    {
+      "id": "GRANITE_SHORE",
+      "tile": [
+        77,
+        21
+      ],
+      "bounds_core": [
+        72,
+        10,
+        94,
+        38
+      ],
+      "requires": "SURF"
+    },
+    {
+      "id": "QUIET_WATER",
+      "tile": [
+        73,
+        69
+      ],
+      "bounds_core": [
+        62,
+        58,
+        80,
+        72
+      ],
+      "requires": "SURF"
+    }
+  ],
+  "cut_gates": [
+    {
+      "id": "BWS_PINE_THICKET_CUT",
+      "tile": [
+        10,
+        31
+      ],
+      "approach": [
+        10,
+        30
+      ],
+      "source_block": "63",
+      "replacement_block": "3f",
+      "requires": [
+        "MOVE_CUT",
+        "ENGINE_HIVEBADGE",
+        "MOVE_SURF",
+        "ENGINE_FOGBADGE"
+      ],
+      "targets": [
+        [
+          9,
+          35
+        ]
+      ],
+      "gated_habitat": "PINE_THICKET",
+      "blocks_surf_landing": true
+    }
+  ],
+  "one_way_ledges": [
+    {
+      "id": "GRANITE_RETURN",
+      "bounds_core": [
+        74,
+        24,
+        76,
+        26
+      ],
+      "direction": "south",
+      "source_block": "57",
+      "upper_approach": [
+        75,
+        23
+      ],
+      "hop_from": [
+        75,
+        24
+      ],
+      "landing": [
+        75,
+        26
+      ],
+      "reverse_blocked": [
+        75,
+        25
+      ],
+      "side_barriers": [
+        [
+          73,
+          25
+        ],
+        [
+          76,
+          25
+        ]
+      ],
+      "return_passage_core": [
+        78,
+        24,
+        80,
+        26
+      ],
+      "minimum_return_steps": 9
+    }
+  ],
+  "docks": [
+    {
+      "id": "REED_MAIN_LAUNCH",
+      "north_rail_blocks": [
+        [
+          2,
+          29
+        ],
+        [
+          3,
+          29
+        ]
+      ],
+      "south_rail_blocks": [
+        [
+          2,
+          30
+        ],
+        [
+          3,
+          30
+        ]
+      ],
+      "water_under_rail_blocks": [
+        [
+          1,
+          31
+        ],
+        [
+          2,
+          31
+        ]
+      ],
+      "launch_tiles": [
+        [
+          3,
+          58
+        ]
+      ],
+      "water_targets": [
+        [
+          3,
+          57
+        ]
+      ],
+      "role": "Closed west walking end; one intentional north-facing native Surf mouth beside the cap. No basecamp edge warp.",
+      "closed_end_blocks": [
+        {
+          "position": [
+            1,
+            29
+          ],
+          "block": "44"
+        },
+        {
+          "position": [
+            1,
+            30
+          ],
+          "block": "48"
+        }
+      ]
+    },
+    {
+      "id": "GRANITE_RETURN_DOCK",
+      "north_rail_blocks": [
+        [
+          34,
+          13
+        ],
+        [
+          35,
+          13
+        ],
+        [
+          36,
+          13
+        ]
+      ],
+      "south_rail_blocks": [
+        [
+          34,
+          14
+        ],
+        [
+          35,
+          14
+        ],
+        [
+          36,
+          14
+        ]
+      ],
+      "water_under_rail_blocks": [
+        [
+          34,
+          15
+        ],
+        [
+          35,
+          15
+        ]
+      ],
+      "launch_tiles": [
+        [
+          68,
+          27
+        ],
+        [
+          68,
+          28
+        ]
+      ],
+      "water_targets": [
+        [
+          67,
+          27
+        ],
+        [
+          67,
+          28
+        ]
+      ],
+      "role": "West-facing Surf landing; land connects east to safe retirement ranger."
+    },
+    {
+      "id": "ISLE_OF_PINES_DOCK",
+      "north_rail_blocks": [
+        [
+          18,
+          20
+        ],
+        [
+          19,
+          20
+        ],
+        [
+          20,
+          20
+        ]
+      ],
+      "south_rail_blocks": [
+        [
+          18,
+          21
+        ],
+        [
+          19,
+          21
+        ],
+        [
+          20,
+          21
+        ]
+      ],
+      "water_under_rail_blocks": [
+        [
+          18,
+          22
+        ],
+        [
+          19,
+          22
+        ]
+      ],
+      "launch_tiles": [
+        [
+          36,
+          41
+        ],
+        [
+          36,
+          42
+        ]
+      ],
+      "water_targets": [
+        [
+          35,
+          41
+        ],
+        [
+          35,
+          42
+        ]
+      ],
+      "role": "West-facing Surf dock returning to the main lake, linked to Dorothy's yard by a short pine footpath."
+    }
+  ],
+  "portages": [
+    {
+      "id": "REED_POCKET_PORTAGE",
+      "west_land": [
+        3,
+        58
+      ],
+      "west_water": [
+        3,
+        57
+      ],
+      "east_land": [
+        13,
+        60
+      ],
+      "east_water": [
+        14,
+        60
+      ],
+      "grass_bounds_core": [
+        8,
+        60,
+        12,
+        64
+      ],
+      "minimum_grass_steps": 4,
+      "role": "Reed pocket portage and a longer grassy approach from the fenced checkpoint; both launches remain dry."
+    },
+    {
+      "id": "PINE_POCKET_PORTAGE",
+      "west_land": [
+        22,
+        21
+      ],
+      "west_water": [
+        21,
+        21
+      ],
+      "east_land": [
+        29,
+        21
+      ],
+      "east_water": [
+        30,
+        21
+      ],
+      "grass_bounds_core": [
+        24,
+        20,
+        28,
+        24
+      ],
+      "minimum_grass_steps": 4,
+      "role": "Dismount from connected main water, cross a pine/grass neck, relaunch into Pine Pocket Lake."
+    },
+    {
+      "id": "NORTH_PINE_ARMS_PORTAGE",
+      "west_land": [
+        38,
+        17
+      ],
+      "west_water": [
+        37,
+        17
+      ],
+      "east_land": [
+        57,
+        21
+      ],
+      "east_water": [
+        58,
+        21
+      ],
+      "grass_bounds_core": [
+        44,
+        16,
+        52,
+        20
+      ],
+      "minimum_grass_steps": 8,
+      "water_relation": "connected_arms_shortcut",
+      "minimum_water_detour_steps": 35,
+      "role": "Cross the pine peninsula through thick grass instead of paddling around its southern tip; the two lake arms remain connected."
+    },
+    {
+      "id": "ISLE_OF_PINES_PORTAGE",
+      "west_land": [
+        36,
+        42
+      ],
+      "west_water": [
+        35,
+        42
+      ],
+      "east_land": [
+        65,
+        45
+      ],
+      "east_water": [
+        66,
+        45
+      ],
+      "grass_bounds_core": [
+        56,
+        44,
+        62,
+        48
+      ],
+      "minimum_grass_steps": 6,
+      "water_relation": "connected_arms_shortcut",
+      "minimum_water_detour_steps": 35,
+      "role": "Land at Dorothy\u2019s dock, pass the cabin yard and cross the grassy eastern neck to relaunch on the other side of the island."
+    }
+  ],
+  "surf_landings": [
+    {
+      "id": "NORTH_PINE_ISLAND",
+      "land": [
+        38,
+        17
+      ],
+      "water": [
+        37,
+        17
+      ],
+      "habitat_target": [
+        45,
+        23
+      ]
+    },
+    {
+      "id": "ISLE_OF_PINES",
+      "land": [
+        36,
+        42
+      ],
+      "water": [
+        35,
+        42
+      ],
+      "habitat_target": [
+        51,
+        40
+      ]
+    },
+    {
+      "id": "QUIET_ISLAND",
+      "land": [
+        62,
+        65
+      ],
+      "water": [
+        61,
+        65
+      ],
+      "habitat_target": [
+        73,
+        69
+      ]
+    }
+  ],
+  "circuits": [],
+  "expedition_itinerary": [
+    [
+      15,
+      73
+    ],
+    [
+      19,
+      61
+    ],
+    [
+      13,
+      60
+    ],
+    [
+      3,
+      58
+    ],
+    [
+      29,
+      21
+    ],
+    [
+      22,
+      21
+    ],
+    [
+      10,
+      30
+    ],
+    [
+      9,
+      35
+    ],
+    [
+      45,
+      23
+    ],
+    [
+      77,
+      21
+    ],
+    [
+      68,
+      28
+    ],
+    [
+      73,
+      69
+    ],
+    [
+      15,
+      73
+    ]
+  ],
+  "viewpoints": [
+    {
+      "id": "ENTRY_RETURN",
+      "tile": [
+        15,
+        73
+      ]
+    },
+    {
+      "id": "REED_MAIN_LAUNCH",
+      "tile": [
+        7,
+        60
+      ]
+    },
+    {
+      "id": "REED_GRASS_PORTAGE",
+      "tile": [
+        13,
+        60
+      ]
+    },
+    {
+      "id": "REED_POCKET_LAKE",
+      "tile": [
+        19,
+        61
+      ]
+    },
+    {
+      "id": "PINE_GRASS_PORTAGE",
+      "tile": [
+        25,
+        21
+      ]
+    },
+    {
+      "id": "PINE_CUT_LANDING",
+      "tile": [
+        10,
+        30
+      ]
+    },
+    {
+      "id": "PINE_RARE_THICKET",
+      "tile": [
+        9,
+        35
+      ]
+    },
+    {
+      "id": "NORTH_PINE_SHORE",
+      "tile": [
+        45,
+        23
+      ]
+    },
+    {
+      "id": "CENTRAL_CHANNEL",
+      "tile": [
+        61,
+        31
+      ]
+    },
+    {
+      "id": "GRANITE_LEDGE",
+      "tile": [
+        75,
+        23
+      ]
+    },
+    {
+      "id": "GRANITE_RETURN_DOCK",
+      "tile": [
+        73,
+        28
+      ]
+    },
+    {
+      "id": "QUIET_ISLAND",
+      "tile": [
+        69,
+        69
+      ]
+    },
+    {
+      "id": "PINE_LAKE_BOUNDARY",
+      "tile": [
+        87,
+        73
+      ]
+    },
+    {
+      "id": "BWS_REED_CAMP_CAMP",
+      "tile": [
+        27,
+        70
+      ]
+    },
+    {
+      "id": "BWS_PINE_CAMP_CAMP",
+      "tile": [
+        29,
+        27
+      ]
+    },
+    {
+      "id": "BWS_GRANITE_CAMP_CAMP",
+      "tile": [
+        83,
+        32
+      ]
+    },
+    {
+      "id": "BWS_QUIET_CAMP_CAMP",
+      "tile": [
+        69,
+        64
+      ]
+    },
+    {
+      "id": "ROOT_BEER_LADY",
+      "tile": [
+        50,
+        43
+      ]
+    },
+    {
+      "id": "ISLE_OF_PINES_DOCK",
+      "tile": [
+        41,
+        42
+      ]
+    },
+    {
+      "id": "RUSTIC_CABIN_ENTRY",
+      "tile": [
+        51,
+        40
+      ]
+    },
+    {
+      "id": "ENTRY_GATE",
+      "tile": [
+        12,
+        70
+      ]
+    },
+    {
+      "id": "NORTH_PINE_ARMS_PORTAGE",
+      "tile": [
+        48,
+        19
+      ]
+    },
+    {
+      "id": "ISLE_OF_PINES_GRASS_PORTAGE",
+      "tile": [
+        59,
+        45
+      ]
+    }
+  ],
+  "sample_expeditions": [
+    {
+      "id": "SHORT_REED_POCKET",
+      "waypoints": [
+        [
+          15,
+          73
+        ],
+        [
+          13,
+          60
+        ],
+        [
+          19,
+          61
+        ],
+        [
+          13,
+          60
+        ],
+        [
+          15,
+          73
+        ]
+      ]
+    },
+    {
+      "id": "PINE_PORTAGE_AND_CUT",
+      "waypoints": [
+        [
+          15,
+          73
+        ],
+        [
+          3,
+          58
+        ],
+        [
+          29,
+          21
+        ],
+        [
+          22,
+          21
+        ],
+        [
+          10,
+          30
+        ],
+        [
+          9,
+          35
+        ],
+        [
+          22,
+          21
+        ],
+        [
+          29,
+          21
+        ],
+        [
+          15,
+          73
+        ]
+      ]
+    },
+    {
+      "id": "MAIN_CHAIN_GRANITE_QUIET",
+      "waypoints": [
+        [
+          15,
+          73
+        ],
+        [
+          3,
+          58
+        ],
+        [
+          45,
+          23
+        ],
+        [
+          77,
+          21
+        ],
+        [
+          68,
+          28
+        ],
+        [
+          73,
+          69
+        ],
+        [
+          15,
+          73
+        ]
+      ]
+    },
+    {
+      "id": "ALL_HABITATS_AND_CUT",
+      "waypoints": [
+        [
+          15,
+          73
+        ],
+        [
+          19,
+          61
+        ],
+        [
+          13,
+          60
+        ],
+        [
+          3,
+          58
+        ],
+        [
+          29,
+          21
+        ],
+        [
+          22,
+          21
+        ],
+        [
+          10,
+          30
+        ],
+        [
+          9,
+          35
+        ],
+        [
+          45,
+          23
+        ],
+        [
+          77,
+          21
+        ],
+        [
+          68,
+          28
+        ],
+        [
+          73,
+          69
+        ],
+        [
+          15,
+          73
+        ]
+      ]
+    },
+    {
+      "id": "FOUR_GRASS_PORTAGES",
+      "waypoints": [
+        [
+          15,
+          73
+        ],
+        [
+          3,
+          58
+        ],
+        [
+          13,
+          60
+        ],
+        [
+          3,
+          58
+        ],
+        [
+          29,
+          21
+        ],
+        [
+          22,
+          21
+        ],
+        [
+          29,
+          21
+        ],
+        [
+          38,
+          17
+        ],
+        [
+          57,
+          21
+        ],
+        [
+          36,
+          42
+        ],
+        [
+          50,
+          43
+        ],
+        [
+          65,
+          45
+        ],
+        [
+          15,
+          73
+        ]
+      ]
+    }
+  ],
+  "native_event_lowering_notes": [
+    "Terrain proposal only: no Safari lifecycle, capture-only battle kind, 500-step accounting or expedition HUD exists yet.",
+    "Free MnBoundaryWaters story basecamp is external to this paid preserve. Accepted entry requires native Surf move and Fog Badge before charging; no new canoe movement mode.",
+    "Arrival15,73 is safe FLOOR in MnBoundarySafariC00R01 local15,25. Never treat the dock cap as an edge warp.",
+    "Retire ranger interactions must end the expedition transaction and warp to the free basecamp; actor footings/approaches are exact safe FLOOR metadata.",
+    "Main water crosses candidate chunk seams; publish all four reciprocal offset0 connections before claiming native traversal.",
+    "Pine thicket has a real native Cut63->3f gate approached from the pocket lake. Preserve its other Headbutt quadrant and native reset semantics.",
+    "The four ordinary habitat anchors are reachable with Surf and without Cut. Rare PINE_THICKET uses a separate optional capture patch; its rare weighting needs root approval/config binding.",
+    "500-step sample routes are source shortest-path projections; they do not prove implemented accounting or pacing under live capture choices.",
+    "Four camp discovery signposts, sixteen noninteractive SPRITE_ROCK unlit ring stones and Dorothy outdoor SPRITE_GRANNY must be lowered as source actors. The source viewer blocks stone/NPC bodies; native object blocking remains root integration work."
+  ],
+  "landmark_actors": [
+    {
+      "id": "BWS_ROOT_BEER_LADY",
+      "display_name": "DOROTHY MOLTER",
+      "landmark": "ISLE OF PINES",
+      "tile": [
+        49,
+        43
+      ],
+      "approach": [
+        50,
+        43
+      ],
+      "sprite": "SPRITE_GRANNY",
+      "facing": "east",
+      "lines": [
+        "Welcome to my",
+        "Isle of Pines!",
+        "Have some root",
+        "beer by the lake."
+      ],
+      "service": "ROOT_BEER_SERVICE",
+      "native_status": "Source proposal. Root owns item/service behavior; no fake service executes here."
+    }
+  ],
+  "root_beer_lady": {
+    "name": "Dorothy Molter / Root Beer Lady",
+    "landmark": "Isle of Pines",
+    "npc": "BWS_ROOT_BEER_LADY",
+    "cabin_origin_metatiles": [
+      25,
+      18
+    ],
+    "door": {
+      "id": "BWS_ROOT_BEER_CABIN_DOOR",
+      "tile": [
+        51,
+        39
+      ],
+      "collision": "DOOR",
+      "return_tile": [
+        51,
+        40
+      ],
+      "arrival_tile": [
+        51,
+        40
+      ],
+      "warp_index": 1,
+      "return_warp_index": 2,
+      "target": "MnBoundaryRootBeerCabin",
+      "target_warp": 3,
+      "native_status": "Passive interior FLOOR arrival3 is the authored target; generic room builder requires explicit support before publication."
+    },
+    "room_proposal": {
+      "id": "MnBoundaryRootBeerCabin",
+      "dimensions_metatiles": [
+        5,
+        4
+      ],
+      "status": "Source-native interior authored and rendered separately; native room/warp/service/controller lowering pending.",
+      "template": "VioletNicknameSpeechHouse",
+      "file": "playable/root-beer-cabin.json"
+    },
+    "yard_bounds_metatiles": [
+      24,
+      20,
+      28,
+      23
+    ],
+    "service": "Root owns new ROOT_BEER item/service",
+    "dock": "ISLE_OF_PINES_DOCK",
+    "source_facade": [
+      [
+        "2c",
+        "2d"
+      ],
+      [
+        "2e",
+        "2f"
+      ]
+    ]
+  },
+  "campsites": [
+    {
+      "id": "BWS_REED_CAMP",
+      "name": "Reed Landing Camp",
+      "footprint_metatiles": [
+        12,
+        34,
+        17,
+        37
+      ],
+      "center": [
+        27,
+        70
+      ],
+      "bench": [
+        15,
+        35
+      ],
+      "landing": [
+        37,
+        67
+      ],
+      "water": [
+        38,
+        67
+      ],
+      "role": "Entry-island shore camp; marker/discovery and persistent reward binding proposed.",
+      "fire_ring": {
+        "kind": "unlit stone ring",
+        "center_tile": [
+          27,
+          70
+        ],
+        "sprite": "SPRITE_ROCK",
+        "stone_tiles": [
+          [
+            26,
+            69
+          ],
+          [
+            28,
+            69
+          ],
+          [
+            26,
+            71
+          ],
+          [
+            28,
+            71
+          ]
+        ],
+        "native_status": "No fire animation; four native blocking rock objects surround a walkable center."
+      },
+      "interaction_contract": {
+        "kind": "camp discovery marker",
+        "script": "BWS_REED_CAMP_MARKER",
+        "native_status": "Proposed root binding; no reward emitted by source preview.",
+        "tile": [
+          32,
+          72
+        ],
+        "collision": "WALL",
+        "approach": [
+          31,
+          72
+        ]
+      }
+    },
+    {
+      "id": "BWS_PINE_CAMP",
+      "name": "Pine Portage Camp",
+      "footprint_metatiles": [
+        13,
+        12,
+        17,
+        15
+      ],
+      "center": [
+        29,
+        27
+      ],
+      "bench": [
+        16,
+        13
+      ],
+      "landing": [
+        29,
+        21
+      ],
+      "water": [
+        30,
+        21
+      ],
+      "role": "Main-chain landing beyond Pine portage; nearby capture patch and camp marker.",
+      "fire_ring": {
+        "kind": "unlit stone ring",
+        "center_tile": [
+          29,
+          27
+        ],
+        "sprite": "SPRITE_ROCK",
+        "stone_tiles": [
+          [
+            28,
+            26
+          ],
+          [
+            30,
+            26
+          ],
+          [
+            28,
+            28
+          ],
+          [
+            30,
+            28
+          ]
+        ],
+        "native_status": "No fire animation; four native blocking rock objects surround a walkable center."
+      },
+      "interaction_contract": {
+        "kind": "camp discovery marker",
+        "script": "BWS_PINE_CAMP_MARKER",
+        "native_status": "Proposed root binding; no reward emitted by source preview.",
+        "tile": [
+          32,
+          28
+        ],
+        "collision": "WALL",
+        "approach": [
+          31,
+          28
+        ]
+      }
+    },
+    {
+      "id": "BWS_GRANITE_CAMP",
+      "name": "Granite Bay Camp",
+      "footprint_metatiles": [
+        40,
+        15,
+        44,
+        18
+      ],
+      "center": [
+        83,
+        32
+      ],
+      "bench": [
+        43,
+        16
+      ],
+      "landing": [
+        87,
+        35
+      ],
+      "water": [
+        88,
+        35
+      ],
+      "role": "Sheltered granite-shore camp connected to the early-return ranger.",
+      "fire_ring": {
+        "kind": "unlit stone ring",
+        "center_tile": [
+          83,
+          32
+        ],
+        "sprite": "SPRITE_ROCK",
+        "stone_tiles": [
+          [
+            82,
+            31
+          ],
+          [
+            84,
+            31
+          ],
+          [
+            82,
+            33
+          ],
+          [
+            84,
+            33
+          ]
+        ],
+        "native_status": "No fire animation; four native blocking rock objects surround a walkable center."
+      },
+      "interaction_contract": {
+        "kind": "camp discovery marker",
+        "script": "BWS_GRANITE_CAMP_MARKER",
+        "native_status": "Proposed root binding; no reward emitted by source preview.",
+        "tile": [
+          84,
+          34
+        ],
+        "collision": "WALL",
+        "approach": [
+          83,
+          34
+        ]
+      }
+    },
+    {
+      "id": "BWS_QUIET_CAMP",
+      "name": "Quiet Island Camp",
+      "footprint_metatiles": [
+        34,
+        31,
+        37,
+        34
+      ],
+      "center": [
+        69,
+        64
+      ],
+      "bench": [
+        36,
+        32
+      ],
+      "landing": [
+        62,
+        65
+      ],
+      "water": [
+        61,
+        65
+      ],
+      "role": "Quiet Island retirement ranger and protected shore-encounter camp.",
+      "fire_ring": {
+        "kind": "unlit stone ring",
+        "center_tile": [
+          69,
+          64
+        ],
+        "sprite": "SPRITE_ROCK",
+        "stone_tiles": [
+          [
+            68,
+            63
+          ],
+          [
+            70,
+            63
+          ],
+          [
+            68,
+            65
+          ],
+          [
+            70,
+            65
+          ]
+        ],
+        "native_status": "No fire animation; four native blocking rock objects surround a walkable center."
+      },
+      "interaction_contract": {
+        "kind": "camp discovery marker",
+        "script": "BWS_QUIET_CAMP_MARKER",
+        "native_status": "Proposed root binding; no reward emitted by source preview.",
+        "tile": [
+          72,
+          62
+        ],
+        "collision": "WALL",
+        "approach": [
+          71,
+          62
+        ]
+      }
+    }
+  ],
+  "decorations": [
+    {
+      "id": "BWS_REED_CAMP_STONE_1",
+      "tile": [
+        26,
+        69
+      ],
+      "sprite": "SPRITE_ROCK",
+      "facing": "south",
+      "lines": [],
+      "role": "Native rock object around an unlit fire ring; no trainer/battle."
+    },
+    {
+      "id": "BWS_REED_CAMP_STONE_2",
+      "tile": [
+        28,
+        69
+      ],
+      "sprite": "SPRITE_ROCK",
+      "facing": "south",
+      "lines": [],
+      "role": "Native rock object around an unlit fire ring; no trainer/battle."
+    },
+    {
+      "id": "BWS_REED_CAMP_STONE_3",
+      "tile": [
+        26,
+        71
+      ],
+      "sprite": "SPRITE_ROCK",
+      "facing": "south",
+      "lines": [],
+      "role": "Native rock object around an unlit fire ring; no trainer/battle."
+    },
+    {
+      "id": "BWS_REED_CAMP_STONE_4",
+      "tile": [
+        28,
+        71
+      ],
+      "sprite": "SPRITE_ROCK",
+      "facing": "south",
+      "lines": [],
+      "role": "Native rock object around an unlit fire ring; no trainer/battle."
+    },
+    {
+      "id": "BWS_PINE_CAMP_STONE_1",
+      "tile": [
+        28,
+        26
+      ],
+      "sprite": "SPRITE_ROCK",
+      "facing": "south",
+      "lines": [],
+      "role": "Native rock object around an unlit fire ring; no trainer/battle."
+    },
+    {
+      "id": "BWS_PINE_CAMP_STONE_2",
+      "tile": [
+        30,
+        26
+      ],
+      "sprite": "SPRITE_ROCK",
+      "facing": "south",
+      "lines": [],
+      "role": "Native rock object around an unlit fire ring; no trainer/battle."
+    },
+    {
+      "id": "BWS_PINE_CAMP_STONE_3",
+      "tile": [
+        28,
+        28
+      ],
+      "sprite": "SPRITE_ROCK",
+      "facing": "south",
+      "lines": [],
+      "role": "Native rock object around an unlit fire ring; no trainer/battle."
+    },
+    {
+      "id": "BWS_PINE_CAMP_STONE_4",
+      "tile": [
+        30,
+        28
+      ],
+      "sprite": "SPRITE_ROCK",
+      "facing": "south",
+      "lines": [],
+      "role": "Native rock object around an unlit fire ring; no trainer/battle."
+    },
+    {
+      "id": "BWS_GRANITE_CAMP_STONE_1",
+      "tile": [
+        82,
+        31
+      ],
+      "sprite": "SPRITE_ROCK",
+      "facing": "south",
+      "lines": [],
+      "role": "Native rock object around an unlit fire ring; no trainer/battle."
+    },
+    {
+      "id": "BWS_GRANITE_CAMP_STONE_2",
+      "tile": [
+        84,
+        31
+      ],
+      "sprite": "SPRITE_ROCK",
+      "facing": "south",
+      "lines": [],
+      "role": "Native rock object around an unlit fire ring; no trainer/battle."
+    },
+    {
+      "id": "BWS_GRANITE_CAMP_STONE_3",
+      "tile": [
+        82,
+        33
+      ],
+      "sprite": "SPRITE_ROCK",
+      "facing": "south",
+      "lines": [],
+      "role": "Native rock object around an unlit fire ring; no trainer/battle."
+    },
+    {
+      "id": "BWS_GRANITE_CAMP_STONE_4",
+      "tile": [
+        84,
+        33
+      ],
+      "sprite": "SPRITE_ROCK",
+      "facing": "south",
+      "lines": [],
+      "role": "Native rock object around an unlit fire ring; no trainer/battle."
+    },
+    {
+      "id": "BWS_QUIET_CAMP_STONE_1",
+      "tile": [
+        68,
+        63
+      ],
+      "sprite": "SPRITE_ROCK",
+      "facing": "south",
+      "lines": [],
+      "role": "Native rock object around an unlit fire ring; no trainer/battle."
+    },
+    {
+      "id": "BWS_QUIET_CAMP_STONE_2",
+      "tile": [
+        70,
+        63
+      ],
+      "sprite": "SPRITE_ROCK",
+      "facing": "south",
+      "lines": [],
+      "role": "Native rock object around an unlit fire ring; no trainer/battle."
+    },
+    {
+      "id": "BWS_QUIET_CAMP_STONE_3",
+      "tile": [
+        68,
+        65
+      ],
+      "sprite": "SPRITE_ROCK",
+      "facing": "south",
+      "lines": [],
+      "role": "Native rock object around an unlit fire ring; no trainer/battle."
+    },
+    {
+      "id": "BWS_QUIET_CAMP_STONE_4",
+      "tile": [
+        70,
+        65
+      ],
+      "sprite": "SPRITE_ROCK",
+      "facing": "south",
+      "lines": [],
+      "role": "Native rock object around an unlit fire ring; no trainer/battle."
+    }
+  ],
+  "entry_gate": {
+    "id": "BWS_REED_ENTRY_GATE",
+    "kind": "Native metal fence checkpoint with two blocking gateposts and a two-tile throat",
+    "gate_tiles": [
+      [
+        11,
+        68
+      ],
+      [
+        12,
+        68
+      ],
+      [
+        11,
+        69
+      ],
+      [
+        12,
+        69
+      ]
+    ],
+    "forecourt_tile": [
+      15,
+      73
+    ],
+    "inside_tile": [
+      12,
+      66
+    ],
+    "launch_target": [
+      3,
+      58
+    ],
+    "fence_blocks": [
+      {
+        "position": [
+          4,
+          34
+        ],
+        "block": "40"
+      },
+      {
+        "position": [
+          5,
+          34
+        ],
+        "block": "44"
+      },
+      {
+        "position": [
+          6,
+          34
+        ],
+        "block": "46"
+      },
+      {
+        "position": [
+          7,
+          34
+        ],
+        "block": "41"
+      },
+      {
+        "position": [
+          8,
+          34
+        ],
+        "block": "42"
+      }
+    ],
+    "attendant": "BWS_REED_RETURN_RANGER",
+    "admission_contract": "The free basecamp ranger checks native Surf, storage, fee and confirmation before this preserve arrival. Entry without an active paid session must not enter this map; exiting never charges again. The visible gate throat must separate the arrival court from the launch path.",
+    "native_status": "Source geometry checked; native entry/end event and authoritative session admission remain pending."
+  }
+}

@@ -707,6 +707,13 @@ impl EncounterTerrain {
     pub(super) fn reason(&self) -> Option<&'static str> {
         self.reason
     }
+
+    pub(super) fn preparation_pending(&self) -> bool {
+        self.generation.is_some()
+            && self.reason.is_none_or(|reason| {
+                preparation_pending(reason) || reason == "battle camera is preparing offscreen"
+            })
+    }
     pub(super) fn reject_layout(&mut self, reason: &'static str) {
         self.accepted = false;
         self.fog = None;

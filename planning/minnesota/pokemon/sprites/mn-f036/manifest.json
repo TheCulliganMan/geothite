@@ -1,0 +1,235 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F036",
+  "status": "native-front-back-reviewed",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_085": {
+      "species_id": "MN_085",
+      "name": "Birchip",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          29,
+          28,
+          21
+        ],
+        [
+          9,
+          17,
+          9
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        22429,
+        9769,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          239,
+          231,
+          173
+        ],
+        [
+          74,
+          140,
+          74
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#EFE7AD",
+        "#4A8C4A",
+        "#000000"
+      ]
+    },
+    "MN_086": {
+      "species_id": "MN_086",
+      "name": "Canoarmor",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          22,
+          27,
+          20
+        ],
+        [
+          8,
+          15,
+          13
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        21366,
+        13800,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          181,
+          222,
+          165
+        ],
+        [
+          66,
+          123,
+          107
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#B5DEA5",
+        "#427B6B",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f036/prompt-v3.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "style_reference": {
+    "origin": "authentic local Crystal sprites",
+    "generator": "crates/crystal-assets/examples/minnesota_gen2_reference.rs",
+    "boards": [
+      "target/minnesota-pokemon/gen2-reference/starters.png",
+      "target/minnesota-pokemon/gen2-reference/bugs.png"
+    ]
+  },
+  "sprites": [
+    {
+      "id": "mn-085-birchip-v1",
+      "species_id": "MN_085",
+      "view": "front",
+      "source": "sprites/mn-f036/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        520,
+        615
+      ],
+      "fit": [
+        44,
+        44
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        22429,
+        9769,
+        0
+      ]
+    },
+    {
+      "id": "mn-085-birchip-v1",
+      "species_id": "MN_085",
+      "view": "back",
+      "source": "sprites/mn-f036/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        615,
+        520,
+        615
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        22429,
+        9769,
+        0
+      ]
+    },
+    {
+      "id": "mn-086-canoarmor-v1",
+      "species_id": "MN_086",
+      "view": "front",
+      "source": "sprites/mn-f036/front-back.imagegen-v1.png",
+      "crop": [
+        520,
+        0,
+        758,
+        615
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        21366,
+        13800,
+        0
+      ],
+      "mirror_horizontal": true
+    },
+    {
+      "id": "mn-086-canoarmor-v1",
+      "species_id": "MN_086",
+      "view": "back",
+      "source": "sprites/mn-f036/front-back.imagegen-v1.png",
+      "crop": [
+        520,
+        615,
+        758,
+        615
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        21366,
+        13800,
+        0
+      ]
+    }
+  ],
+  "visual_review": {
+    "status": "reviewed",
+    "notes": "Inspected frozen v1: Birchip curled bark and Canoarmor long canoe shell show structural growth and their own green palettes. Front Canoarmor now faces left; all outlines and enlarged rear shell/head portraits are clean.",
+    "sheet_sha256": "5d6cdd56959205f7d5a00b32f856d75b40ee524f0359b8cf07643c42b44fe756",
+    "outline_profile": "source-contour-v1"
+  }
+}

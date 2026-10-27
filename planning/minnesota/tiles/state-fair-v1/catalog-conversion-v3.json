@@ -1,0 +1,502 @@
+{
+  "schema_version": 1,
+  "tileset_id": "mn_state_fair_props",
+  "source_sha256": "46e20b2e571a7d8f72820cec21f1c6effa21b0a17b178f5635fc1a832f20e2f1",
+  "items": [
+    {
+      "id": "wheel_nw",
+      "name": "Ferris wheel NW",
+      "crop": [
+        0,
+        0,
+        640,
+        640
+      ],
+      "neighbors": {
+        "E": "wheel_ne",
+        "S": "wheel_sw"
+      },
+      "palette": 5,
+      "source_colors": [
+        [
+          0,
+          0,
+          0
+        ],
+        [
+          214,
+          156,
+          66
+        ],
+        [
+          165,
+          74,
+          66
+        ],
+        [
+          57,
+          57,
+          57
+        ]
+      ],
+      "transparent_background": true,
+      "palette_foregrounds": {
+        "5": [
+          [
+            214,
+            156,
+            66
+          ],
+          [
+            165,
+            74,
+            66
+          ],
+          [
+            57,
+            57,
+            57
+          ]
+        ]
+      },
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ],
+      "placement": "Part of solid 2x2 Ferris wheel assembly. Keep NW/NE above SW/SE; clear public loading approach immediately south. Static ride scenery."
+    },
+    {
+      "id": "wheel_ne",
+      "name": "Ferris wheel NE",
+      "crop": [
+        640,
+        0,
+        640,
+        640
+      ],
+      "neighbors": {
+        "W": "wheel_nw",
+        "S": "wheel_se"
+      },
+      "palette": 5,
+      "source_colors": [
+        [
+          0,
+          0,
+          0
+        ],
+        [
+          214,
+          156,
+          66
+        ],
+        [
+          165,
+          74,
+          66
+        ],
+        [
+          57,
+          57,
+          57
+        ]
+      ],
+      "transparent_background": true,
+      "palette_foregrounds": {
+        "5": [
+          [
+            214,
+            156,
+            66
+          ],
+          [
+            165,
+            74,
+            66
+          ],
+          [
+            57,
+            57,
+            57
+          ]
+        ]
+      },
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ],
+      "placement": "Part of solid 2x2 Ferris wheel assembly. Keep NW/NE above SW/SE; clear public loading approach immediately south. Static ride scenery."
+    },
+    {
+      "id": "wheel_sw",
+      "name": "Ferris wheel SW",
+      "crop": [
+        0,
+        640,
+        640,
+        640
+      ],
+      "neighbors": {
+        "N": "wheel_nw",
+        "E": "wheel_se"
+      },
+      "palette": 5,
+      "source_colors": [
+        [
+          0,
+          0,
+          0
+        ],
+        [
+          214,
+          156,
+          66
+        ],
+        [
+          165,
+          74,
+          66
+        ],
+        [
+          57,
+          57,
+          57
+        ]
+      ],
+      "transparent_background": true,
+      "palette_foregrounds": {
+        "5": [
+          [
+            214,
+            156,
+            66
+          ],
+          [
+            165,
+            74,
+            66
+          ],
+          [
+            57,
+            57,
+            57
+          ]
+        ]
+      },
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ],
+      "placement": "Part of solid 2x2 Ferris wheel assembly. Keep NW/NE above SW/SE; clear public loading approach immediately south. Static ride scenery."
+    },
+    {
+      "id": "wheel_se",
+      "name": "Ferris wheel SE",
+      "crop": [
+        640,
+        640,
+        640,
+        640
+      ],
+      "neighbors": {
+        "N": "wheel_ne",
+        "W": "wheel_sw"
+      },
+      "palette": 5,
+      "source_colors": [
+        [
+          0,
+          0,
+          0
+        ],
+        [
+          214,
+          156,
+          66
+        ],
+        [
+          165,
+          74,
+          66
+        ],
+        [
+          57,
+          57,
+          57
+        ]
+      ],
+      "transparent_background": true,
+      "palette_foregrounds": {
+        "5": [
+          [
+            214,
+            156,
+            66
+          ],
+          [
+            165,
+            74,
+            66
+          ],
+          [
+            57,
+            57,
+            57
+          ]
+        ]
+      },
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ],
+      "placement": "Part of solid 2x2 Ferris wheel assembly. Keep NW/NE above SW/SE; clear public loading approach immediately south. Static ride scenery."
+    },
+    {
+      "id": "corn_roast",
+      "name": "Corn-roast and food-on-a-stick kiosk",
+      "crop": [
+        1280,
+        0,
+        1280,
+        1280
+      ],
+      "palette": 5,
+      "source_colors": [
+        [
+          0,
+          0,
+          0
+        ],
+        [
+          255,
+          243,
+          189
+        ],
+        [
+          165,
+          74,
+          66
+        ],
+        [
+          57,
+          57,
+          57
+        ]
+      ],
+      "transparent_background": true,
+      "palette_foregrounds": {
+        "5": [
+          [
+            255,
+            243,
+            189
+          ],
+          [
+            165,
+            74,
+            66
+          ],
+          [
+            57,
+            57,
+            57
+          ]
+        ]
+      },
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ],
+      "placement": "Food row; service counter faces south. Native vendor script belongs on the south approach, outside the solid block."
+    },
+    {
+      "id": "cookie_stand",
+      "name": "Cookie-pail stand",
+      "crop": [
+        0,
+        1280,
+        1280,
+        1280
+      ],
+      "palette": 5,
+      "source_colors": [
+        [
+          0,
+          0,
+          0
+        ],
+        [
+          255,
+          243,
+          189
+        ],
+        [
+          214,
+          156,
+          66
+        ],
+        [
+          57,
+          57,
+          57
+        ]
+      ],
+      "transparent_background": true,
+      "palette_foregrounds": {
+        "5": [
+          [
+            255,
+            243,
+            189
+          ],
+          [
+            214,
+            156,
+            66
+          ],
+          [
+            57,
+            57,
+            57
+          ]
+        ],
+        "0": [
+          [
+            214,
+            156,
+            66
+          ],
+          [
+            165,
+            74,
+            66
+          ],
+          [
+            57,
+            57,
+            57
+          ]
+        ]
+      },
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ],
+      "placement": "Food row; face north from adjacent southern floor. Pair with existing Doughlin/Crumband family; no item balls or automatic shop.",
+      "tile_palettes": [
+        5,
+        5,
+        5,
+        5,
+        0,
+        0,
+        0,
+        0,
+        5,
+        5,
+        5,
+        5,
+        5,
+        5,
+        5,
+        5
+      ],
+      "source_colors_by_palette": {
+        "0": [
+          [
+            0,
+            0,
+            0
+          ],
+          [
+            214,
+            156,
+            66
+          ],
+          [
+            165,
+            74,
+            66
+          ],
+          [
+            57,
+            57,
+            57
+          ]
+        ]
+      }
+    },
+    {
+      "id": "butter_display",
+      "name": "Refrigerated butter-sculpture display",
+      "crop": [
+        1280,
+        1280,
+        1280,
+        1280
+      ],
+      "palette": 5,
+      "source_colors": [
+        [
+          0,
+          0,
+          0
+        ],
+        [
+          255,
+          243,
+          189
+        ],
+        [
+          214,
+          156,
+          66
+        ],
+        [
+          57,
+          57,
+          57
+        ]
+      ],
+      "transparent_background": true,
+      "palette_foregrounds": {
+        "5": [
+          [
+            255,
+            243,
+            189
+          ],
+          [
+            214,
+            156,
+            66
+          ],
+          [
+            57,
+            57,
+            57
+          ]
+        ]
+      },
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ],
+      "placement": "Dairy exhibit with adjacent south viewing floor. Pair with Chislet/Buttermuse demonstrator; no native door or implicit gift."
+    }
+  ]
+}

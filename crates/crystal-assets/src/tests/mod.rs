@@ -1,3 +1,6 @@
+#[path = "../deferred_evolution_tests.rs"]
+mod deferred_evolution_tests;
+
 fn roaming_catalog_for_tests(first_species: &str, second_species: &str) -> RoamingPokemonCatalog {
     let routes = (0_u8..16)
         .map(|index| RoamingPokemonRoute {
@@ -131,3 +134,5 @@ include!("content_tables.rs");
 include!("playability.rs");
 include!("items.rs");
 include!("script_execution.rs");
+
+include!("connection_collision.rs");

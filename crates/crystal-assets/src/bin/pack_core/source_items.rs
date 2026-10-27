@@ -25,6 +25,10 @@ fn rows(source: &str, instruction: &str) -> Vec<Vec<String>> {
         .collect()
 }
 
+fn repel_steps(source: &str, source_effect: &str) -> Result<i64> {
+    crystal_assets::parse_source_repel_duration(source, source_effect).map(i64::from)
+}
+
 fn status_table(source: &str) -> Result<BTreeMap<String, Vec<String>>> {
     let mut result = BTreeMap::new();
     for row in rows(source, "db") {
@@ -153,20 +157,7 @@ pub(super) fn generate(
             "BitterBerryEffect" => item["confusion_heal"] = json!(true),
             "FullRestoreEffect" | "HealPowderEffect" => item["confusion_heal"] = json!(true),
             "RepelEffect" | "SuperRepelEffect" | "MaxRepelEffect" => {
-                let routine = effects_source
-                    .split_once(&format!("{source_effect}:"))
-                    .context("missing source repel routine")?
-                    .1;
-                let instruction = routine
-                    .lines()
-                    .map(code)
-                    .find(|line| !line.is_empty())
-                    .context("empty repel routine")?;
-                item["repel_steps"] = json!(integer(
-                    instruction
-                        .strip_prefix("ld b, ")
-                        .context("repel duration is not a source literal")?
-                )?);
+                item["repel_steps"] = json!(repel_steps(&effects_source, source_effect)?);
             }
             "RareCandyEffect" => item["rare_candy_level_gain"] = json!(1),
             "SacredAshEffect" => item["party_revive_hp_percent"] = json!(100),
@@ -249,6 +240,39 @@ pub(super) fn generate(
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn source_repel_durations_match_exact_labels_despite_shared_suffix() {
+        let source = "SuperRepelEffect:\n\tld b, 200\n\tret\n\
+                      MaxRepelEffect:\n\tld b, 250\n\tret\n\
+                      RepelEffect:\n\tld b, $64 ; duration\n\tret\n";
+        for (effect, expected) in [
+            ("RepelEffect", 100),
+            ("SuperRepelEffect", 200),
+            ("MaxRepelEffect", 250),
+        ] {
+            assert_eq!(
+                repel_steps(source, effect).expect("exact synthetic routine duration"),
+                expected,
+                "{effect} must not match another routine's suffix"
+            );
+        }
+    }
+
+    #[test]
+    fn source_repel_duration_ignores_comments_and_rejects_missing_or_empty_routine() {
+        let source = "; RepelEffect:\nSuperRepelEffect:\n\tld b, 200\n";
+        assert!(repel_steps(source, "RepelEffect").is_err());
+        let source = "RepelEffect: ; exact declaration\n; ld b, 200\n\n\tld b, 101\n";
+        assert_eq!(
+            repel_steps(source, "RepelEffect").expect("actual first instruction literal"),
+            101,
+            "read the literal rather than hardcoding an item duration"
+        );
+        assert!(repel_steps("RepelEffect:\n", "RepelEffect").is_err());
+        assert!(repel_steps("RepelEffect:\nOtherEffect:\nld b, 200", "RepelEffect").is_err());
+    }
+
     #[test]
     fn source_status_masks_preserve_actual_burnt_and_ice_berry_actions() {
         let table = status_table("db BURNT_BERRY, PARTYMENUTEXT_HEAL_FRZ, 1 << FRZ\ndb ICE_BERRY, PARTYMENUTEXT_HEAL_BRN, 1 << BRN\ndb -1, 0, 0").unwrap();

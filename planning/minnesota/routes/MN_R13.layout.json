@@ -1,0 +1,1698 @@
+{
+  "schema_version": 2,
+  "id": "MN_R13",
+  "tileset": "johto",
+  "compiled_tileset": "johto",
+  "dimensions_metatiles": [
+    32,
+    64
+  ],
+  "coordinate_units": "32px metatiles, zero based",
+  "shore_fitting": "johto_8_neighbors",
+  "reject_cliff_cuts": true,
+  "layers": [
+    {
+      "kind": "polygon",
+      "name": "Border Lake sheltered below pine bank",
+      "material": "water",
+      "points": [
+        [
+          2,
+          4
+        ],
+        [
+          7,
+          4
+        ],
+        [
+          7,
+          5
+        ],
+        [
+          9,
+          5
+        ],
+        [
+          9,
+          9
+        ],
+        [
+          8,
+          9
+        ],
+        [
+          8,
+          11
+        ],
+        [
+          3,
+          11
+        ],
+        [
+          3,
+          10
+        ],
+        [
+          2,
+          10
+        ]
+      ]
+    },
+    {
+      "kind": "polygon",
+      "name": "Long Lake enclosed granite basin",
+      "material": "water",
+      "points": [
+        [
+          22,
+          20
+        ],
+        [
+          27,
+          20
+        ],
+        [
+          27,
+          22
+        ],
+        [
+          29,
+          22
+        ],
+        [
+          29,
+          28
+        ],
+        [
+          30,
+          28
+        ],
+        [
+          30,
+          34
+        ],
+        [
+          28,
+          34
+        ],
+        [
+          28,
+          36
+        ],
+        [
+          23,
+          36
+        ],
+        [
+          23,
+          34
+        ],
+        [
+          21,
+          34
+        ],
+        [
+          21,
+          28
+        ],
+        [
+          20,
+          28
+        ],
+        [
+          20,
+          24
+        ],
+        [
+          22,
+          24
+        ]
+      ]
+    },
+    {
+      "kind": "polygon",
+      "name": "North pine threshold",
+      "material": "lawn",
+      "points": [
+        [
+          13,
+          0
+        ],
+        [
+          17,
+          0
+        ],
+        [
+          17,
+          4
+        ],
+        [
+          18,
+          4
+        ],
+        [
+          18,
+          7
+        ],
+        [
+          16,
+          7
+        ],
+        [
+          16,
+          10
+        ],
+        [
+          13,
+          10
+        ]
+      ]
+    },
+    {
+      "kind": "path",
+      "name": "Connected passage spine",
+      "material": "floor",
+      "points": [
+        [
+          15,
+          1
+        ],
+        [
+          15,
+          10
+        ],
+        [
+          16,
+          10
+        ],
+        [
+          16,
+          17
+        ],
+        [
+          10,
+          17
+        ],
+        [
+          10,
+          27
+        ],
+        [
+          17,
+          27
+        ],
+        [
+          17,
+          35
+        ],
+        [
+          12,
+          35
+        ],
+        [
+          12,
+          40
+        ],
+        [
+          23,
+          40
+        ],
+        [
+          23,
+          46
+        ],
+        [
+          17,
+          46
+        ],
+        [
+          17,
+          62
+        ]
+      ],
+      "width_metatiles": 1
+    },
+    {
+      "kind": "rect",
+      "name": "Lake bank lookout clearing",
+      "material": "lawn",
+      "bounds": [
+        4,
+        12,
+        13,
+        15
+      ]
+    },
+    {
+      "kind": "path",
+      "name": "Lake bank spur",
+      "material": "floor",
+      "points": [
+        [
+          16,
+          13
+        ],
+        [
+          9,
+          13
+        ],
+        [
+          6,
+          13
+        ]
+      ],
+      "width_metatiles": 1
+    },
+    {
+      "kind": "rect",
+      "name": "Lake landing tiny trainer turnout",
+      "material": "lawn",
+      "bounds": [
+        10,
+        11,
+        14,
+        14
+      ]
+    },
+    {
+      "kind": "rect",
+      "name": "Wind Tor lower apron",
+      "material": "lawn",
+      "bounds": [
+        17,
+        13,
+        26,
+        15
+      ]
+    },
+    {
+      "kind": "path",
+      "name": "Wind Tor lower approach",
+      "material": "floor",
+      "points": [
+        [
+          16,
+          14
+        ],
+        [
+          23,
+          14
+        ],
+        [
+          23,
+          12
+        ]
+      ],
+      "width_metatiles": 1
+    },
+    {
+      "kind": "rect",
+      "name": "Saddle north turnout",
+      "material": "lawn",
+      "bounds": [
+        8,
+        18,
+        12,
+        21
+      ]
+    },
+    {
+      "kind": "rect",
+      "name": "Saddle south turnout",
+      "material": "lawn",
+      "bounds": [
+        8,
+        25,
+        13,
+        29
+      ]
+    },
+    {
+      "kind": "rect",
+      "name": "Saddle narrow pine neck",
+      "material": "lawn",
+      "bounds": [
+        9,
+        20,
+        11,
+        26
+      ]
+    },
+    {
+      "kind": "rect",
+      "name": "Required six-step saddle grass",
+      "material": "encounter",
+      "bounds": [
+        9,
+        21,
+        11,
+        24
+      ]
+    },
+    {
+      "kind": "path",
+      "name": "Shelter side approach",
+      "material": "floor",
+      "points": [
+        [
+          10,
+          27
+        ],
+        [
+          7,
+          27
+        ]
+      ],
+      "width_metatiles": 1
+    },
+    {
+      "kind": "rect",
+      "name": "Shelter safe front apron",
+      "material": "lawn",
+      "bounds": [
+        6,
+        27,
+        9,
+        29
+      ]
+    },
+    {
+      "kind": "polygon",
+      "name": "Long Lake high-bank shore",
+      "material": "lawn",
+      "points": [
+        [
+          17,
+          27
+        ],
+        [
+          19,
+          27
+        ],
+        [
+          19,
+          29
+        ],
+        [
+          20,
+          29
+        ],
+        [
+          20,
+          33
+        ],
+        [
+          19,
+          33
+        ],
+        [
+          19,
+          35
+        ],
+        [
+          17,
+          35
+        ],
+        [
+          17,
+          33
+        ],
+        [
+          16,
+          33
+        ],
+        [
+          16,
+          29
+        ],
+        [
+          17,
+          29
+        ]
+      ]
+    },
+    {
+      "kind": "path",
+      "name": "High-bank resource spur",
+      "material": "floor",
+      "points": [
+        [
+          17,
+          30
+        ],
+        [
+          18,
+          30
+        ]
+      ],
+      "width_metatiles": 1
+    },
+    {
+      "kind": "path",
+      "name": "High-bank ordinary return",
+      "material": "lawn",
+      "points": [
+        [
+          17,
+          28
+        ],
+        [
+          18,
+          28
+        ],
+        [
+          18,
+          33
+        ],
+        [
+          17,
+          33
+        ]
+      ],
+      "width_metatiles": 1
+    },
+    {
+      "kind": "rect",
+      "name": "Long Lake bank encounter alternate",
+      "material": "encounter",
+      "bounds": [
+        18,
+        29,
+        19,
+        32
+      ]
+    },
+    {
+      "kind": "polygon",
+      "name": "Dry saddle clearing",
+      "material": "lawn",
+      "points": [
+        [
+          10,
+          34
+        ],
+        [
+          15,
+          34
+        ],
+        [
+          15,
+          36
+        ],
+        [
+          14,
+          36
+        ],
+        [
+          14,
+          38
+        ],
+        [
+          20,
+          38
+        ],
+        [
+          20,
+          39
+        ],
+        [
+          25,
+          39
+        ],
+        [
+          25,
+          44
+        ],
+        [
+          24,
+          44
+        ],
+        [
+          24,
+          47
+        ],
+        [
+          20,
+          47
+        ],
+        [
+          20,
+          48
+        ],
+        [
+          16,
+          48
+        ],
+        [
+          16,
+          43
+        ],
+        [
+          11,
+          43
+        ],
+        [
+          11,
+          39
+        ],
+        [
+          9,
+          39
+        ],
+        [
+          9,
+          36
+        ],
+        [
+          10,
+          36
+        ]
+      ]
+    },
+    {
+      "kind": "path",
+      "name": "Dry pass boulder-turn floor",
+      "material": "floor",
+      "points": [
+        [
+          12,
+          35
+        ],
+        [
+          12,
+          40
+        ],
+        [
+          23,
+          40
+        ],
+        [
+          23,
+          46
+        ],
+        [
+          17,
+          46
+        ]
+      ],
+      "width_metatiles": 1
+    },
+    {
+      "kind": "rect",
+      "name": "Final pass habitat shoulder",
+      "material": "encounter",
+      "bounds": [
+        21,
+        42,
+        23,
+        45
+      ]
+    },
+    {
+      "kind": "rect",
+      "name": "Cedar low approach bend",
+      "material": "lawn",
+      "bounds": [
+        15,
+        48,
+        20,
+        52
+      ]
+    },
+    {
+      "kind": "path",
+      "name": "Refuge upper approach",
+      "material": "lawn",
+      "points": [
+        [
+          17,
+          50
+        ],
+        [
+          9,
+          50
+        ],
+        [
+          9,
+          51
+        ]
+      ],
+      "width_metatiles": 1
+    },
+    {
+      "kind": "rect",
+      "name": "Refuge entirely sealed clearing",
+      "material": "lawn",
+      "bounds": [
+        7,
+        52,
+        12,
+        55
+      ]
+    },
+    {
+      "kind": "rect",
+      "name": "Refuge western rare grass",
+      "material": "encounter",
+      "bounds": [
+        7,
+        52,
+        9,
+        54
+      ]
+    },
+    {
+      "kind": "point",
+      "name": "Refuge single native Cut entrance",
+      "position": [
+        9,
+        51
+      ],
+      "block": "63"
+    },
+    {
+      "kind": "polygon",
+      "name": "Ely last practice turnout",
+      "material": "lawn",
+      "points": [
+        [
+          15,
+          56
+        ],
+        [
+          19,
+          56
+        ],
+        [
+          19,
+          57
+        ],
+        [
+          21,
+          57
+        ],
+        [
+          21,
+          60
+        ],
+        [
+          19,
+          60
+        ],
+        [
+          19,
+          63
+        ],
+        [
+          15,
+          63
+        ],
+        [
+          15,
+          60
+        ],
+        [
+          14,
+          60
+        ],
+        [
+          14,
+          58
+        ],
+        [
+          15,
+          58
+        ]
+      ]
+    },
+    {
+      "kind": "path",
+      "name": "Ely final road",
+      "material": "floor",
+      "points": [
+        [
+          17,
+          55
+        ],
+        [
+          17,
+          63
+        ]
+      ],
+      "width_metatiles": 1
+    },
+    {
+      "kind": "cliff_polygon",
+      "name": "Wind Tor stepped granite cap",
+      "points": [
+        [
+          18,
+          3
+        ],
+        [
+          24,
+          3
+        ],
+        [
+          24,
+          4
+        ],
+        [
+          27,
+          4
+        ],
+        [
+          27,
+          8
+        ],
+        [
+          28,
+          8
+        ],
+        [
+          28,
+          10
+        ],
+        [
+          26,
+          10
+        ],
+        [
+          26,
+          12
+        ],
+        [
+          18,
+          12
+        ]
+      ]
+    },
+    {
+      "kind": "rect",
+      "name": "Wind Tor native grassy crown",
+      "material": "encounter",
+      "bounds": [
+        19,
+        6,
+        23,
+        9
+      ]
+    },
+    {
+      "kind": "rect",
+      "name": "Wind Tor eastern worn ledge",
+      "material": "floor",
+      "bounds": [
+        23,
+        6,
+        25,
+        11
+      ]
+    },
+    {
+      "kind": "point",
+      "name": "Wind Tor native climbing ramp",
+      "position": [
+        23,
+        12
+      ],
+      "block": "74"
+    },
+    {
+      "kind": "point",
+      "name": "Wind Tor native one-way south lip",
+      "position": [
+        19,
+        12
+      ],
+      "block": "57"
+    },
+    {
+      "kind": "point",
+      "name": "Wind Tor drop left closure",
+      "position": [
+        18,
+        12
+      ],
+      "block": "0a"
+    },
+    {
+      "kind": "point",
+      "name": "Wind Tor drop right closure",
+      "position": [
+        20,
+        12
+      ],
+      "block": "0a"
+    },
+    {
+      "kind": "cliff_polygon",
+      "name": "Saddle western granite rib",
+      "points": [
+        [
+          3,
+          17
+        ],
+        [
+          6,
+          17
+        ],
+        [
+          6,
+          19
+        ],
+        [
+          7,
+          19
+        ],
+        [
+          7,
+          25
+        ],
+        [
+          6,
+          25
+        ],
+        [
+          6,
+          26
+        ],
+        [
+          3,
+          26
+        ]
+      ]
+    },
+    {
+      "kind": "cliff_polygon",
+      "name": "Shelter rock shoulder",
+      "points": [
+        [
+          4,
+          24
+        ],
+        [
+          7,
+          24
+        ],
+        [
+          7,
+          25
+        ],
+        [
+          8,
+          25
+        ],
+        [
+          8,
+          26
+        ],
+        [
+          4,
+          26
+        ]
+      ]
+    },
+    {
+      "kind": "point",
+      "name": "Cedar Shelter genuine source cave mouth",
+      "position": [
+        7,
+        26
+      ],
+      "block": "73"
+    },
+    {
+      "kind": "cliff_polygon",
+      "name": "Saddle eastern granite finger",
+      "points": [
+        [
+          13,
+          18
+        ],
+        [
+          16,
+          18
+        ],
+        [
+          16,
+          21
+        ],
+        [
+          17,
+          21
+        ],
+        [
+          17,
+          24
+        ],
+        [
+          15,
+          24
+        ],
+        [
+          15,
+          25
+        ],
+        [
+          13,
+          25
+        ]
+      ]
+    },
+    {
+      "kind": "cliff_polygon",
+      "name": "Dry pass west shield",
+      "points": [
+        [
+          3,
+          35
+        ],
+        [
+          6,
+          35
+        ],
+        [
+          6,
+          36
+        ],
+        [
+          8,
+          36
+        ],
+        [
+          8,
+          40
+        ],
+        [
+          6,
+          40
+        ],
+        [
+          6,
+          42
+        ],
+        [
+          3,
+          42
+        ]
+      ]
+    },
+    {
+      "kind": "cliff_polygon",
+      "name": "Dry pass inner rib",
+      "points": [
+        [
+          14,
+          36
+        ],
+        [
+          17,
+          36
+        ],
+        [
+          17,
+          37
+        ],
+        [
+          19,
+          37
+        ],
+        [
+          19,
+          38
+        ],
+        [
+          16,
+          38
+        ],
+        [
+          16,
+          39
+        ],
+        [
+          14,
+          39
+        ]
+      ]
+    },
+    {
+      "kind": "cliff_polygon",
+      "name": "Dry pass eastern windbreak",
+      "points": [
+        [
+          26,
+          38
+        ],
+        [
+          29,
+          38
+        ],
+        [
+          29,
+          42
+        ],
+        [
+          28,
+          42
+        ],
+        [
+          28,
+          47
+        ],
+        [
+          26,
+          47
+        ]
+      ]
+    },
+    {
+      "kind": "point",
+      "name": "Long Lake native shoreline rail",
+      "position": [
+        20,
+        28
+      ],
+      "block": "46"
+    },
+    {
+      "kind": "point",
+      "name": "Long Lake native shoreline rail",
+      "position": [
+        20,
+        29
+      ],
+      "block": "46"
+    },
+    {
+      "kind": "point",
+      "name": "Long Lake native shoreline rail",
+      "position": [
+        20,
+        30
+      ],
+      "block": "46"
+    },
+    {
+      "kind": "point",
+      "name": "Long Lake native shoreline rail",
+      "position": [
+        20,
+        31
+      ],
+      "block": "46"
+    },
+    {
+      "kind": "point",
+      "name": "Long Lake native shoreline rail",
+      "position": [
+        20,
+        32
+      ],
+      "block": "46"
+    },
+    {
+      "kind": "point",
+      "name": "Long Lake rail north closure",
+      "position": [
+        20,
+        27
+      ],
+      "block": "0a"
+    },
+    {
+      "kind": "point",
+      "name": "Long Lake rail south closure",
+      "position": [
+        20,
+        33
+      ],
+      "block": "0a"
+    },
+    {
+      "kind": "point",
+      "name": "Border Lake overlook north fence",
+      "position": [
+        5,
+        12
+      ],
+      "block": "41"
+    },
+    {
+      "kind": "point",
+      "name": "Border Lake overlook north fence",
+      "position": [
+        6,
+        12
+      ],
+      "block": "41"
+    },
+    {
+      "kind": "point",
+      "name": "Border Lake overlook north fence",
+      "position": [
+        7,
+        12
+      ],
+      "block": "41"
+    },
+    {
+      "kind": "point",
+      "name": "Border Lake overlook north fence",
+      "position": [
+        8,
+        12
+      ],
+      "block": "41"
+    },
+    {
+      "kind": "point",
+      "name": "Native erratic at a route shoulder",
+      "position": [
+        4,
+        14
+      ],
+      "block": "0a"
+    },
+    {
+      "kind": "point",
+      "name": "Native erratic at a route shoulder",
+      "position": [
+        12,
+        15
+      ],
+      "block": "0a"
+    },
+    {
+      "kind": "point",
+      "name": "Native erratic at a route shoulder",
+      "position": [
+        13,
+        18
+      ],
+      "block": "0a"
+    },
+    {
+      "kind": "point",
+      "name": "Native erratic at a route shoulder",
+      "position": [
+        15,
+        32
+      ],
+      "block": "0a"
+    },
+    {
+      "kind": "point",
+      "name": "Native erratic at a route shoulder",
+      "position": [
+        10,
+        36
+      ],
+      "block": "0a"
+    },
+    {
+      "kind": "point",
+      "name": "Native erratic at a route shoulder",
+      "position": [
+        20,
+        39
+      ],
+      "block": "0a"
+    },
+    {
+      "kind": "point",
+      "name": "Native erratic at a route shoulder",
+      "position": [
+        24,
+        45
+      ],
+      "block": "0a"
+    },
+    {
+      "kind": "point",
+      "name": "Native erratic at a route shoulder",
+      "position": [
+        19,
+        49
+      ],
+      "block": "0a"
+    },
+    {
+      "kind": "point",
+      "name": "Native erratic at a route shoulder",
+      "position": [
+        15,
+        57
+      ],
+      "block": "0a"
+    },
+    {
+      "kind": "point",
+      "name": "Native erratic at a route shoulder",
+      "position": [
+        20,
+        60
+      ],
+      "block": "0a"
+    },
+    {
+      "kind": "rect",
+      "name": "Small flowers at a rest or arrival",
+      "material": "flowers",
+      "bounds": [
+        13,
+        5,
+        14,
+        7
+      ]
+    },
+    {
+      "kind": "rect",
+      "name": "Small flowers at a rest or arrival",
+      "material": "flowers",
+      "bounds": [
+        8,
+        25,
+        9,
+        26
+      ]
+    },
+    {
+      "kind": "rect",
+      "name": "Small flowers at a rest or arrival",
+      "material": "flowers",
+      "bounds": [
+        6,
+        28,
+        7,
+        29
+      ]
+    },
+    {
+      "kind": "rect",
+      "name": "Small flowers at a rest or arrival",
+      "material": "flowers",
+      "bounds": [
+        12,
+        35,
+        13,
+        36
+      ]
+    },
+    {
+      "kind": "rect",
+      "name": "Small flowers at a rest or arrival",
+      "material": "flowers",
+      "bounds": [
+        15,
+        59,
+        16,
+        60
+      ]
+    },
+    {
+      "kind": "rect",
+      "name": "Small flowers at a rest or arrival",
+      "material": "flowers",
+      "bounds": [
+        19,
+        59,
+        20,
+        60
+      ]
+    },
+    {
+      "kind": "point",
+      "name": "Ordinary native pine toe without Cut",
+      "position": [
+        12,
+        12
+      ],
+      "block": "5d"
+    },
+    {
+      "kind": "point",
+      "name": "Ordinary native pine toe without Cut",
+      "position": [
+        8,
+        28
+      ],
+      "block": "5d"
+    },
+    {
+      "kind": "point",
+      "name": "Ordinary native pine toe without Cut",
+      "position": [
+        16,
+        32
+      ],
+      "block": "5d"
+    },
+    {
+      "kind": "point",
+      "name": "Ordinary native pine toe without Cut",
+      "position": [
+        18,
+        36
+      ],
+      "block": "5d"
+    },
+    {
+      "kind": "point",
+      "name": "Ordinary native pine toe without Cut",
+      "position": [
+        24,
+        44
+      ],
+      "block": "5d"
+    },
+    {
+      "kind": "point",
+      "name": "Ordinary native pine toe without Cut",
+      "position": [
+        14,
+        56
+      ],
+      "block": "5d"
+    },
+    {
+      "kind": "point",
+      "name": "MN_R13_SIGN_01",
+      "position": [
+        14,
+        6
+      ],
+      "block": "45"
+    },
+    {
+      "kind": "point",
+      "name": "MN_R13_SIGN_03",
+      "position": [
+        9,
+        20
+      ],
+      "block": "45"
+    },
+    {
+      "kind": "point",
+      "name": "MN_R13_SIGN_04",
+      "position": [
+        8,
+        28
+      ],
+      "block": "45"
+    },
+    {
+      "kind": "point",
+      "name": "MN_R13_SIGN_05",
+      "position": [
+        19,
+        31
+      ],
+      "block": "45"
+    },
+    {
+      "kind": "point",
+      "name": "MN_R13_SIGN_06",
+      "position": [
+        18,
+        60
+      ],
+      "block": "45"
+    },
+    {
+      "kind": "path",
+      "name": "Visible connected main road final stroke",
+      "material": "floor",
+      "points": [
+        [
+          15,
+          1
+        ],
+        [
+          15,
+          10
+        ],
+        [
+          16,
+          10
+        ],
+        [
+          16,
+          17
+        ],
+        [
+          10,
+          17
+        ],
+        [
+          10,
+          27
+        ],
+        [
+          17,
+          27
+        ],
+        [
+          17,
+          35
+        ],
+        [
+          12,
+          35
+        ],
+        [
+          12,
+          40
+        ],
+        [
+          23,
+          40
+        ],
+        [
+          23,
+          46
+        ],
+        [
+          17,
+          46
+        ],
+        [
+          17,
+          62
+        ]
+      ],
+      "width_metatiles": 1
+    },
+    {
+      "kind": "rect",
+      "name": "Saddle habitat retained across final road",
+      "material": "encounter",
+      "bounds": [
+        9,
+        21,
+        11,
+        24
+      ]
+    },
+    {
+      "kind": "point",
+      "name": "Ivy native dry battle footing in refuge",
+      "position": [
+        8,
+        53
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "High bank dry resource footing",
+      "position": [
+        18,
+        30
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "rect",
+      "name": "Wind Tor pine crest removes empty upper slab",
+      "material": "forest",
+      "bounds": [
+        19,
+        4,
+        23,
+        7
+      ]
+    },
+    {
+      "kind": "rect",
+      "name": "Wind Tor crown rough grass instead of empty rock",
+      "material": "encounter",
+      "bounds": [
+        19,
+        7,
+        23,
+        10
+      ]
+    },
+    {
+      "kind": "rect",
+      "name": "North approach western pine bank brings lane to player scale",
+      "material": "forest",
+      "bounds": [
+        13,
+        0,
+        15,
+        5
+      ]
+    },
+    {
+      "kind": "rect",
+      "name": "North approach eastern pine bank",
+      "material": "forest",
+      "bounds": [
+        16,
+        0,
+        18,
+        4
+      ]
+    },
+    {
+      "kind": "rect",
+      "name": "Dry pass western shoulder joins granite windbreak",
+      "material": "forest",
+      "bounds": [
+        9,
+        36,
+        12,
+        40
+      ]
+    },
+    {
+      "kind": "cliff_polygon",
+      "name": "Dry pass inner granite cleft removes empty clearing",
+      "points": [
+        [
+          16,
+          41
+        ],
+        [
+          19,
+          41
+        ],
+        [
+          19,
+          42
+        ],
+        [
+          20,
+          42
+        ],
+        [
+          20,
+          44
+        ],
+        [
+          19,
+          44
+        ],
+        [
+          19,
+          45
+        ],
+        [
+          16,
+          45
+        ]
+      ]
+    },
+    {
+      "kind": "rect",
+      "name": "Ely practice turnout east pine shoulder",
+      "material": "forest",
+      "bounds": [
+        19,
+        57,
+        21,
+        60
+      ]
+    },
+    {
+      "kind": "rect",
+      "name": "Ely approach upper west pine finger",
+      "material": "forest",
+      "bounds": [
+        15,
+        56,
+        17,
+        58
+      ]
+    },
+    {
+      "kind": "rect",
+      "name": "Ely approach lower west pine finger",
+      "material": "forest",
+      "bounds": [
+        14,
+        59,
+        16,
+        62
+      ]
+    },
+    {
+      "kind": "rect",
+      "name": "Ely gate eastern closing bank",
+      "material": "forest",
+      "bounds": [
+        18,
+        61,
+        20,
+        64
+      ]
+    },
+    {
+      "kind": "rect",
+      "name": "North walking lane west bank closes empty shoulder",
+      "material": "forest",
+      "bounds": [
+        13,
+        7,
+        15,
+        11
+      ]
+    },
+    {
+      "kind": "rect",
+      "name": "North walking lane east bank",
+      "material": "forest",
+      "bounds": [
+        16,
+        7,
+        17,
+        10
+      ]
+    },
+    {
+      "kind": "rect",
+      "name": "Dry pass east bank seals free trainer bypass",
+      "material": "forest",
+      "bounds": [
+        24,
+        41,
+        26,
+        46
+      ]
+    },
+    {
+      "kind": "point",
+      "name": "MN_R13_SIGN_02",
+      "position": [
+        16,
+        12
+      ],
+      "block": "45"
+    }
+  ],
+  "status": "Hand-authored source replacement; native publication pending.",
+  "source_pixels_modified": false
+}

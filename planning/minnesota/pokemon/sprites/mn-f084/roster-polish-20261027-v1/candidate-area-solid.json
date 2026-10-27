@@ -1,0 +1,240 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F084",
+  "status": "conversion-comparison-proposal",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_182": {
+      "species_id": "MN_182",
+      "name": "Scutlet",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          20,
+          24,
+          20
+        ],
+        [
+          7,
+          12,
+          14
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        21268,
+        14727,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          165,
+          198,
+          165
+        ],
+        [
+          57,
+          99,
+          115
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#A5C6A5",
+        "#396373",
+        "#000000"
+      ]
+    },
+    "MN_183": {
+      "species_id": "MN_183",
+      "name": "Barbelisk",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          17,
+          23,
+          24
+        ],
+        [
+          6,
+          10,
+          17
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        25329,
+        17734,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          140,
+          189,
+          198
+        ],
+        [
+          49,
+          82,
+          140
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#8CBDC6",
+        "#31528C",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f084/prompt-v1.txt",
+  "reference_mapping": "sprites/mn-f084/reference-mapping-v1.json",
+  "back_framing": "gen2-close-rear-portrait",
+  "sprites": [
+    {
+      "id": "mn-182-scutlet-v1",
+      "species_id": "MN_182",
+      "view": "front",
+      "source": "sprites/mn-f084/mn-182-183.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        700,
+        520
+      ],
+      "fit": [
+        40,
+        40
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        21268,
+        14727,
+        0
+      ],
+      "interior_black_min_samples": 32,
+      "sampling": "area_vote",
+      "exterior_contour": "solid"
+    },
+    {
+      "id": "mn-182-scutlet-v1",
+      "species_id": "MN_182",
+      "view": "back",
+      "source": "sprites/mn-f084/mn-182-183.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        520,
+        768,
+        504
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        21268,
+        14727,
+        0
+      ],
+      "interior_black_min_samples": 32,
+      "sampling": "area_vote",
+      "exterior_contour": "solid"
+    },
+    {
+      "id": "mn-183-barbelisk-v1",
+      "species_id": "MN_183",
+      "view": "front",
+      "source": "sprites/mn-f084/mn-182-183.front-back.imagegen-v1.png",
+      "crop": [
+        700,
+        0,
+        836,
+        520
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        25329,
+        17734,
+        0
+      ],
+      "interior_black_min_samples": 32,
+      "sampling": "area_vote",
+      "exterior_contour": "solid"
+    },
+    {
+      "id": "mn-183-barbelisk-v1",
+      "species_id": "MN_183",
+      "view": "back",
+      "source": "sprites/mn-f084/mn-182-183.front-back.imagegen-v1.png",
+      "crop": [
+        700,
+        520,
+        836,
+        504
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        25329,
+        17734,
+        0
+      ],
+      "interior_black_min_samples": 32,
+      "sampling": "area_vote",
+      "exterior_contour": "solid"
+    }
+  ],
+  "visual_review": {
+    "status": "reviewed",
+    "reviewer": "root",
+    "notes": "Root inspected both native pairs: shovel snout, uneven tail and sensory barbels become a longer plated cartographer with raised contour-like scutes and strong bracing fins. Three near-side prongs are separated; fourth overlaps on the far side in source perspective. Small white eye glints and sage/teal\u2192teal/navy armor planes remain readable; close backs preserve large head/shoulder armor.",
+    "sheet_sha256": "e15677f3ddc47f1f30924c4da9fedbe4b4878cf1489c5482778e6a99bb9ec9c3",
+    "outline_profile": "source-contour-v1"
+  }
+}

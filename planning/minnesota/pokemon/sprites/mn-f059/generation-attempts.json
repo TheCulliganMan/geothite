@@ -1,0 +1,47 @@
+{
+  "family_id": "MN_F059",
+  "prompt": "prompt-v1.txt",
+  "failed_attempts": [
+    {
+      "request_id": "072ed615-5ba5-4dc3-bdd2-970fdcbf1cd8",
+      "code": "moderation_blocked",
+      "stage": "output",
+      "categories": [
+        "other"
+      ],
+      "returned_image": null
+    },
+    {
+      "request_id": "97d76c52-394c-457f-9fa9-bb2ac561fb74",
+      "code": "moderation_blocked",
+      "stage": "output",
+      "categories": [
+        "other"
+      ],
+      "returned_image": null
+    },
+    {
+      "request_id": "666b3416-e0a8-4c0f-a7a3-3eda35243c42",
+      "code": "moderation_blocked",
+      "stage": "output",
+      "categories": [
+        "other"
+      ],
+      "returned_image": null
+    },
+    {
+      "request_id": "e85ca86d-7c1b-4072-b743-b1a1013d62c9",
+      "code": "moderation_blocked",
+      "stage": "output",
+      "categories": [
+        "other"
+      ],
+      "returned_image": null,
+      "prompt": "prompt-v2.txt"
+    }
+  ],
+  "eventual_success": true,
+  "notes": "Four failed benign output-moderation attempts returned no image. Fifth attempt used a fresh concise low quadrupedal snow-fence design with exact existing individual palettes and succeeded. All original prompts retained; no CLI.",
+  "successful_prompt": "prompt-v3.txt",
+  "returned_image": "mn-128-130.front-back.imagegen-v3.png"
+}

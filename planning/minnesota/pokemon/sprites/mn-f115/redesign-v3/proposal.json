@@ -1,0 +1,210 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F115",
+  "species_id": "MN_249",
+  "name": "Frontagal",
+  "status": "native-reviewed-ready-for-root-integration",
+  "member": {
+    "id": "MN_249",
+    "name": "Frontagal",
+    "types": [
+      "ELECTRIC",
+      "FLYING"
+    ],
+    "stage": 1,
+    "evolves_to": null
+  },
+  "profiles": [
+    {
+      "id": "MN_249",
+      "classification": "Shelf Storm",
+      "height_inches": 156,
+      "weight_tenths_lb": 2420,
+      "dex_pages": [
+        "Its wings stretch @ across the @ prairie horizon.",
+        "Beneath the storm, @ its breath leaves @ one calm refuge."
+      ],
+      "base_stats": {
+        "hp": 90,
+        "attack": 85,
+        "defense": 85,
+        "speed": 125,
+        "special_attack": 125,
+        "special_defense": 90
+      },
+      "catch_rate": 3,
+      "base_exp": 255,
+      "gender_ratio": 255,
+      "hatch_cycles": 120,
+      "growth_rate": "GROWTH_SLOW",
+      "egg_groups": [
+        "EGG_NONE",
+        "EGG_NONE"
+      ],
+      "evolution": null,
+      "held_items": [
+        null,
+        null
+      ],
+      "menu_icon": "ICON_LUGIA",
+      "footprint_species": "LUGIA",
+      "cry": {
+        "cry": "CRY_RAIKOU",
+        "pitch": 0,
+        "length": 144
+      },
+      "shiny_rgb5": [
+        [
+          30,
+          24,
+          27
+        ],
+        [
+          21,
+          9,
+          10
+        ]
+      ],
+      "level_moves": [
+        [
+          1,
+          "GUST"
+        ],
+        [
+          1,
+          "LEER"
+        ],
+        [
+          5,
+          "THUNDERSHOCK"
+        ],
+        [
+          9,
+          "THUNDER_WAVE"
+        ],
+        [
+          13,
+          "WHIRLWIND"
+        ],
+        [
+          17,
+          "SPARK"
+        ],
+        [
+          22,
+          "WING_ATTACK"
+        ],
+        [
+          27,
+          "RAIN_DANCE"
+        ],
+        [
+          32,
+          "LIGHT_SCREEN"
+        ],
+        [
+          37,
+          "THUNDERBOLT"
+        ],
+        [
+          42,
+          "RAZOR_WIND"
+        ],
+        [
+          48,
+          "SKY_ATTACK"
+        ],
+        [
+          55,
+          "THUNDER"
+        ],
+        [
+          62,
+          "HYPER_BEAM"
+        ]
+      ],
+      "tmhm_moves": [
+        "FLY",
+        "THUNDERBOLT",
+        "THUNDER",
+        "ZAP_CANNON",
+        "RAIN_DANCE",
+        "FLASH",
+        "SWIFT",
+        "DOUBLE_TEAM",
+        "PROTECT",
+        "REST"
+      ],
+      "egg_moves": []
+    }
+  ],
+  "profile_policy": "Preserve current canonical stats/types/evolution/moves; root integrates balance separately.",
+  "palettes": {
+    "MN_249": {
+      "species_id": "MN_249",
+      "name": "Frontagal",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          29,
+          25,
+          12
+        ],
+        [
+          5,
+          9,
+          17
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        13117,
+        17701,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          239,
+          206,
+          99
+        ],
+        [
+          41,
+          74,
+          140
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#EFCE63",
+        "#294A8C",
+        "#000000"
+      ]
+    }
+  },
+  "design": "A low continuous gold-lit prairie shelf horizon has a sheltered clear-eyed face and exactly three thick vent-channel limbs. Broad non-feathered wing planes and flat wedge body replace tiny-face abstract glider and rejected bird-like experiments.",
+  "preservation": "All previous sources and native assets remain intact. Proposal-only; do not run with canonical output directory.",
+  "selected_manifest": "sprites/mn-f115/redesign-v3/manifest-selected.json",
+  "selected_contour": "solid",
+  "native_review_path": "target/agent-roster-contour/new-renders/MN_F115/solid/line.review.png",
+  "visual_review": "The new gold-lit horizon roof is a continuous shallow wedge with two long shelf wings, a clearly sheltered expressive face and exactly three thick descending vent limbs. No head, beak, feathers or animal torso. Solid maintains the black wing and vent contours while preserving the two larger white eye clusters. Close rear enlarges the central pressure ridge and one visible eye; outer wing tips and lower limbs are deliberately cropped."
+}

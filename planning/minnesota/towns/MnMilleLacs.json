@@ -1,0 +1,37 @@
+{
+  "id": "MnMilleLacs",
+  "name": "MILLE LACS",
+  "dimensions_metatiles": [
+    32,
+    24
+  ],
+  "reference_anchor_percent": [
+    57,
+    53
+  ],
+  "role": "landmark",
+  "tileset": "johto",
+  "composition": "Shore park, dock and optional water circuit.",
+  "ports": [
+    {
+      "route": "MN_R18",
+      "side": "W",
+      "gate_metatile": [
+        1,
+        12
+      ],
+      "landing_metatile": [
+        3,
+        12
+      ]
+    }
+  ],
+  "interiors": [],
+  "walkable_destinations": [
+    "each port landing",
+    "every visible exterior door",
+    "central square",
+    "local story NPC"
+  ],
+  "door_contract": "Assign exterior core-tile door coordinates only after selecting authentic facade quadrants; record reciprocal warp indices and indoor floor arrivals before export."
+}

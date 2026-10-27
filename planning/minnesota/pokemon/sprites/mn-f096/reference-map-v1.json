@@ -1,0 +1,20 @@
+{
+  "generation": "new original artwork",
+  "input_images": [],
+  "text_style_reference_boards": [
+    "target/minnesota-pokemon/gen2-reference/starters.png",
+    "target/minnesota-pokemon/gen2-reference/bugs.png"
+  ],
+  "regional_sources": [
+    {
+      "url": "https://www.nps.gov/miss/learn/nature/mussels.htm",
+      "institution": "National Park Service",
+      "supports": "Documents native mussels and their habitat in the Twin Cities Mississippi corridor."
+    },
+    {
+      "url": "https://molluskconservation.org/MUSSELS/Adaptation.html",
+      "institution": "Freshwater Mollusk Conservation Society",
+      "supports": "Explains fishlike mantle-lure adaptations; psychic puppetry is fictional."
+    }
+  ]
+}

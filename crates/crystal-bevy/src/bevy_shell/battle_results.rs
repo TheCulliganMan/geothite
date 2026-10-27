@@ -5624,6 +5624,20 @@ fn restore_visible_loaded_runtime_state(
     runtime_shell: &mut BevyRuntimeShell,
     reason: &str,
 ) -> Result<()> {
+    // Resuming the bedroom reapplies its decoration callback. These specials
+    // finish synchronously and have no input surface to restore on Continue.
+    if matches!(
+        runtime_shell
+            .shell
+            .snapshot()?
+            .ui
+            .menu
+            .as_ref()
+            .map(|menu| menu.menu_id.as_str()),
+        Some("ToggleMaptileDecorations" | "ToggleDecorationsVisibility")
+    ) {
+        runtime_shell.shell.close_active_menu()?;
+    }
     reset_visible_navigation_state(runtime_shell);
     runtime_shell.visible_player_sprite_y_offset = 0;
     reset_visible_deterministic_session_history(runtime_shell)?;

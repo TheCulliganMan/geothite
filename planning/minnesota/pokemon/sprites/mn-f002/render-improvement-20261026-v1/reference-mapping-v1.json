@@ -1,0 +1,24 @@
+{
+  "tool": "built-in image_gen",
+  "prompt": "sprites/mn-f002/render-improvement-20261026-v1/prompt-v1.txt",
+  "output": "sprites/mn-f002/render-improvement-20261026-v1/front-back.imagegen-v1.png",
+  "output_sha256": "1c53eb7c57feecc701ff540fba63f1726666927329499ef4a83c7562594e9e2d",
+  "original_tool_path": "/Users/ryanculligan/.codex/generated_images/01a17abf-77f2-7b80-bc2a-d5aed1c72b88/exec-a4d8fa0d-cfed-4157-828e-658c7faa10bf.png",
+  "references": [
+    {
+      "path": "planning/minnesota/pokemon/sprites/mn-f002/refinement-v6/front-back.imagegen-v6.png",
+      "role": "authoritative source, edit target",
+      "sha256": "b0cc7718152e4e0a5f5a11e93cdb8c64f4b8bfaabde23ceaa69e89a7b9100a71"
+    },
+    {
+      "path": "target/minnesota-pokemon/native/MN_F002/line.review.png",
+      "role": "native baseline showing downconversion defects",
+      "sha256": "d4f00bc76d6a820cae3447dae7b68d03f56450cc2bda69e228ec14ca3fc31700"
+    },
+    {
+      "path": "target/minnesota-pokemon/gen2-reference/starters.png",
+      "role": "authentic Gen2 cluster language and camera only",
+      "sha256": "af61f720a75b7e1b8e80ba14e8944612556397eedddd719669dec68b0e0fd534"
+    }
+  ]
+}

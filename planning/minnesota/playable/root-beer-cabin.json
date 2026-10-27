@@ -1,0 +1,326 @@
+{
+  "schema_version": 1,
+  "id": "MnBoundaryRootBeerCabin",
+  "name": "Isle of Pines Root Beer Cabin",
+  "status": "Actual 5x4 native-source room is published with an empty interior, one outside Dorothy, passive Floor arrival3 and both working carpet returns. Native Root Beer item/gift/shop/rest and actual-location controller/Continue/audio preservation proofs pass. Conditional indoor relocation and Safari runtime remain pending.",
+  "template": "VioletNicknameSpeechHouse",
+  "tileset": "traditional_house",
+  "dimensions_metatiles": [
+    5,
+    4
+  ],
+  "border_block": 0,
+  "coordinate_units": "rows are 32px metatiles; actors, interactions and warps use zero-based 16px core tiles",
+  "rows": [
+    "02 08 14 08 1a",
+    "1b 1c 12 20 1a",
+    "18 19 12 20 20",
+    "20 20 21 22 20"
+  ],
+  "source_art_contract": {
+    "source_pixels_modified": false,
+    "authentic_recipes": [
+      {
+        "name": "back wall and native hanging picture",
+        "blocks": [
+          "08",
+          "14"
+        ]
+      },
+      {
+        "name": "storage shelves and cupboards",
+        "blocks": [
+          "02",
+          "1a"
+        ]
+      },
+      {
+        "name": "complete dining table and cushion recipe",
+        "rows": [
+          [
+            "1b",
+            "1c"
+          ],
+          [
+            "18",
+            "19"
+          ]
+        ],
+        "origin_metatiles": [
+          0,
+          1
+        ]
+      },
+      {
+        "name": "wood serving counter with woven-mat customer strip",
+        "block": "12",
+        "metatiles": [
+          [
+            2,
+            1
+          ],
+          [
+            2,
+            2
+          ]
+        ]
+      },
+      {
+        "name": "brown wood floor",
+        "block": "20"
+      },
+      {
+        "name": "paired native exit carpets",
+        "blocks": [
+          "21",
+          "22"
+        ]
+      }
+    ],
+    "stove": "No authenticated stove exists in the inspected house/traditional_house recipes. Do not label INCENSE_BURNER or a radio as a stove; this room deliberately omits one.",
+    "style": "Small wood-lined hospitality cabin, complete table/seating to the west, pantry cupboards behind a narrow counter and clear two-core-tile customer aisle to the east. No invented pixels or oversized furniture."
+  },
+  "clear_arrival": [
+    5,
+    6
+  ],
+  "entry_facing": "up",
+  "exits": [
+    [
+      5,
+      7
+    ],
+    [
+      6,
+      7
+    ]
+  ],
+  "exit_collision": "WARP_CARPET_DOWN",
+  "warp_contract": {
+    "interior_exit_warp_indices": [
+      1,
+      2
+    ],
+    "interior_passive_arrival_warp": {
+      "index": 3,
+      "tile": [
+        5,
+        6
+      ],
+      "collision": "FLOOR",
+      "active_trigger": false
+    },
+    "exterior_door_target_warp": 3,
+    "both_exit_targets": "The current exterior cabin door's separate safe-FLOOR return warp, never the active DOOR quadrant.",
+    "exterior_binding": "Root/exterior author resolves BWS_ROOT_BEER_CABIN_DOOR from the current preserve layout; do not copy provisional coordinates into the publisher.",
+    "required_native_change": "Append the passive third interior arrival record and point the exterior DOOR at it. The current generic single-mouth builder requires target_warp 1, so it cannot be used unchanged to promise a FLOOR arrival.",
+    "required_verification": [
+      "door enters exact safe core [5,6]",
+      "both carpet exits return to exact exterior passive FLOOR",
+      "walking over either passive arrival does not warp",
+      "entry and exits do not bounce after Continue"
+    ]
+  },
+  "residents": [],
+  "items": [],
+  "signs": [],
+  "dorothy_presence": {
+    "logical_actor": "BWS_DOROTHY_MOLTER",
+    "outside_object_id": "BWS_ROOT_BEER_LADY",
+    "inside_object_id": "BWS_DOROTHY_COUNTER",
+    "default_review_state": "outside_present_inside_empty",
+    "rule": "Dorothy is visibly outside in the ordinary preserve overview. Only an implemented cabin-entry scene may relocate that same logical person to the counter; suppress her outside appearance for that serving state. No second simultaneous Dorothy.",
+    "derivation": "Derive intended presence from authoritative current map and service availability, using native map-entry/exit object commands. Do not add an unrelated permanent story flag or let an interrupted warp strand both appearances.",
+    "before_service_implementation": "Keep the interior empty. The supplied serving portrait is a separately labeled future entry-scene preview, not an already working NPC.",
+    "serving_preview": {
+      "id": "BWS_DOROTHY_COUNTER",
+      "sprite": "SPRITE_GRANNY",
+      "tile": [
+        3,
+        3
+      ],
+      "facing": "east",
+      "visible_when": "inside_serving_after_entry_scene_only"
+    }
+  },
+  "service_counter": {
+    "native_counter_tiles": [
+      [
+        4,
+        2
+      ],
+      [
+        4,
+        3
+      ],
+      [
+        4,
+        4
+      ],
+      [
+        4,
+        5
+      ]
+    ],
+    "dorothy_anchor": [
+      3,
+      3
+    ],
+    "customer_approach": [
+      5,
+      3
+    ],
+    "customer_facing": "left",
+    "interaction_counter_tile": [
+      4,
+      3
+    ],
+    "interaction_distance_core_tiles": 2,
+    "required_native_behavior": "Use OverworldSession's actual counter interaction extension, not a label/event that pretends the counter is walkable.",
+    "dialogue": {
+      "welcome": [
+        "Welcome, paddler!",
+        "Rest your feet.",
+        "Try my root beer."
+      ],
+      "first_offer": [
+        "The first one's",
+        "on the house.",
+        "Would you like it?"
+      ],
+      "gift_delivered": [
+        "Here you are!",
+        "Sip by the lake."
+      ],
+      "bag_full": [
+        "Your PACK is full.",
+        "Make a little room",
+        "and come back."
+      ],
+      "gift_declined": [
+        "Another time.",
+        "The door is open."
+      ],
+      "purchase_intro": [
+        "Root beer is 300.",
+        "A bottle restores",
+        "60 HP."
+      ],
+      "no_money": [
+        "Not enough money.",
+        "You can still sit",
+        "and rest a while."
+      ],
+      "rest_offer": [
+        "Would you like me",
+        "to tend your team?"
+      ],
+      "rest_complete": [
+        "Your team is well.",
+        "Mind the portage!"
+      ],
+      "farewell": [
+        "Safe paddling!",
+        "Come back anytime."
+      ],
+      "counter_unstaffed": [
+        "Cups are set out.",
+        "DOROTHY is out."
+      ]
+    }
+  },
+  "hospitality_contract": {
+    "backend": "New typed Rust root-beer hospitality service shared by the outside and conditional indoor actor; do not register the string as if an existing service already implements it.",
+    "first_gift": {
+      "item": "ROOT_BEER",
+      "quantity": 1,
+      "event_flag": "EVENT_MN_ROOT_BEER_FIRST_GIFT",
+      "commit": "Set only after actual inventory delivery in the same successful transaction. Decline/full bag leaves the offer available. Inside and outside share the same flag."
+    },
+    "purchase": {
+      "item": "ROOT_BEER",
+      "quantity": 1,
+      "unit_price": 300,
+      "commit": "Native money/bag/shop flow with explicit confirmation; insufficient funds or full bag consumes nothing. A delivered bottle debits exactly 300 once.",
+      "native_shop_binding": {
+        "mart_type": "MARTTYPE_STANDARD",
+        "new_mart_id": "MART_MN_ROOT_BEER",
+        "items": [
+          "ROOT_BEER"
+        ],
+        "script_commands": [
+          {
+            "command": "opentext",
+            "args": []
+          },
+          {
+            "command": "pokemart",
+            "args": [
+              "MARTTYPE_STANDARD",
+              "MART_MN_ROOT_BEER"
+            ]
+          },
+          {
+            "command": "closetext",
+            "args": []
+          },
+          {
+            "command": "end",
+            "args": []
+          }
+        ],
+        "required_registration": "Register the new mart inventory and ROOT_BEER item in typed Rust before parsing these native commands. This is an unimplemented binding, not an existing shop."
+      }
+    },
+    "consumption": {
+      "native_base_item": "LEMONADE",
+      "new_item_id": "ROOT_BEER",
+      "effect": "RestoreHPEffect",
+      "hp_restore_points": 60,
+      "pocket": "ITEM",
+      "field_menu": "ITEMMENU_PARTY",
+      "battle_menu": "ITEMMENU_PARTY",
+      "consumable": true,
+      "preservation": "Add a new item definition; leave LEMONADE, FRESH_WATER and all original native items unchanged.",
+      "verify": "Actually target an injured party member through Pack, restore min(60, missing HP), consume one bottle and return input. Full HP/cancel must not consume it. Safari capture-only encounters still forbid ordinary battle items."
+    },
+    "optional_nursing_rest": {
+      "native_special": "HealParty",
+      "party_effect": "Actual HP/status/PP restoration through the parsed native special, once service is implemented.",
+      "expedition_effect": "Preserve active Safari phase, entry charge, balls, steps and encounter/reward state exactly; never call Safari initialization or replenish counters."
+    },
+    "step_budget": "Treat this cabin as an allowed interior of the active expedition. Actual native player movement inside still costs one successful transition under Safari travel accounting. Entering the door costs the successful movement once; the scripted safe arrival costs no extra transition. Dialogue, shop menus and nursing animation cost zero and never refill anything. Last-step expiration inside uses the same safe retirement policy.",
+    "story": "Optional hospitality; neither gift, purchase nor rest grants Q07 or blocks early retirement/through-travel."
+  },
+  "implementation_handoff": {
+    "room_authoring": [
+      "Blank the native template to remove its original actors/scripts/warps",
+      "Use authoring::blocks with these exact dimensions and rows",
+      "Set traditional_house tileset and border block 0",
+      "Publish carpet exits 1/2 and separate passive FLOOR arrival 3",
+      "Bind exits to the current exterior safe return record",
+      "Leave residents empty until single-Dorothy relocation and typed hospitality are implemented",
+      "Compile each inserted script with the existing authoring::finish/native command parsers, including faceplayer and special HealParty; a JSON script body alone is not executable support."
+    ],
+    "required_regressions": [
+      "Every floor/counter approach and both exits reachable without walking through furniture",
+      "Real A interaction across COUNTER [4,3] from [5,3] reaches Dorothy [3,3]",
+      "No simultaneous exterior/interior Dorothy in default/entry/exit/retire/Continue states",
+      "First gift full-bag refusal/retry/single award survives Continue",
+      "300-price purchase/refusal/cancel uses actual inventory and money",
+      "ROOT_BEER restores exactly capped 60HP via native party targeting and consumes once",
+      "Optional HealParty changes actual HP/status/PP while all Safari counters remain identical",
+      "Both carpet exits, passive arrivals, save/reload and retirement from inside are safe",
+      "Original items/maps/assets/audio and all external pack content remain preserved"
+    ],
+    "native_status": "Published and verified: actual empty cabin, uppercase native warp constants, passive arrival3, both carpets to exterior Floor2, one outside Dorothy, native ROOT_BEER gift/drink/shop/rest, five actual preserve controller cases, all377audio programs, actual stdio MCP walking/Start/cabin exit, and actual fullscreen TUI Start/Pack showing the bought drink. Both frontends keep stderr byte-empty. Conditional Dorothy relocation and Safari admission/session/capture remain pending."
+  },
+  "source_review": {
+    "tool": "planning/minnesota/tools/review_root_beer_cabin.py",
+    "command": ".local/minnesota-review-env/bin/python planning/minnesota/tools/review_root_beer_cabin.py --serve",
+    "url": "http://127.0.0.1:8781/",
+    "default_image": "renders/root-beer-cabin/cabin-empty-1f3ebec5.png",
+    "conditional_serving_image": "renders/root-beer-cabin/cabin-serving-ca150a5a.png",
+    "static_evidence": "52 reachable FLOOR cells empty,51 while serving,4 genuine COUNTER quadrants,exact two native carpets and separate FLOOR arrival; every dialogue line fits18columns. Native gameplay remains unproved."
+  }
+}

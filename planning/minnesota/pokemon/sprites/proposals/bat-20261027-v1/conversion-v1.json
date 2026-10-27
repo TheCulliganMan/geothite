@@ -1,0 +1,102 @@
+[
+  {
+    "canvas": [
+      56,
+      56
+    ],
+    "crop": [
+      100,
+      80,
+      480,
+      520
+    ],
+    "fit": [
+      40,
+      40
+    ],
+    "name": "echolet-front",
+    "palette_rgb555": [
+      32767,
+      30524,
+      23920,
+      0
+    ],
+    "status": "unregistered native proposal, visual review pending",
+    "view": "front"
+  },
+  {
+    "canvas": [
+      48,
+      48
+    ],
+    "crop": [
+      690,
+      90,
+      550,
+      490
+    ],
+    "fit": [
+      46,
+      47
+    ],
+    "name": "echolet-back",
+    "palette_rgb555": [
+      32767,
+      30524,
+      23920,
+      0
+    ],
+    "status": "unregistered native proposal, visual review pending",
+    "view": "back"
+  },
+  {
+    "canvas": [
+      56,
+      56
+    ],
+    "crop": [
+      0,
+      620,
+      710,
+      590
+    ],
+    "fit": [
+      54,
+      52
+    ],
+    "name": "sonatlas-front",
+    "palette_rgb555": [
+      32767,
+      31607,
+      19848,
+      0
+    ],
+    "status": "unregistered native proposal, visual review pending",
+    "view": "front"
+  },
+  {
+    "canvas": [
+      48,
+      48
+    ],
+    "crop": [
+      710,
+      620,
+      540,
+      590
+    ],
+    "fit": [
+      46,
+      47
+    ],
+    "name": "sonatlas-back",
+    "palette_rgb555": [
+      32767,
+      31607,
+      19848,
+      0
+    ],
+    "status": "unregistered native proposal, visual review pending",
+    "view": "back"
+  }
+]

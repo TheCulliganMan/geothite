@@ -1,0 +1,410 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F006",
+  "status": "native-front-back-reviewed",
+  "tool": "built-in image_gen",
+  "prompt_file": "sprites/mn-f006/prompt-v2.txt",
+  "generation_note": "The first attempt failed in the image service; this sheet is the successful simplified original-creature prompt.",
+  "sprites": [
+    {
+      "id": "mn-016-agatot-v2-v2",
+      "species_id": "MN_016",
+      "view": "front",
+      "source": "sprites/mn-f006/mn-016-018.front-back.imagegen-v2.png",
+      "crop": [
+        0,
+        0,
+        410,
+        550
+      ],
+      "fit": [
+        36,
+        36
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        7709,
+        15754,
+        0
+      ],
+      "source_palette_rgb555": [
+        32767,
+        7579,
+        18855,
+        0
+      ]
+    },
+    {
+      "id": "mn-016-agatot-v2-v2",
+      "species_id": "MN_016",
+      "view": "back",
+      "source": "sprites/mn-f006/mn-016-018.back.imagegen-v2.png",
+      "crop": [
+        0,
+        0,
+        690,
+        724
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        7709,
+        15754,
+        0
+      ]
+    },
+    {
+      "id": "mn-017-bandrake-v2-v2",
+      "species_id": "MN_017",
+      "view": "front",
+      "source": "sprites/mn-f006/mn-016-018.front-back.imagegen-v2.png",
+      "crop": [
+        410,
+        0,
+        520,
+        550
+      ],
+      "fit": [
+        44,
+        44
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        10520,
+        21001,
+        0
+      ],
+      "source_palette_rgb555": [
+        32767,
+        7579,
+        18855,
+        0
+      ]
+    },
+    {
+      "id": "mn-017-bandrake-v2-v2",
+      "species_id": "MN_017",
+      "view": "back",
+      "source": "sprites/mn-f006/mn-016-018.back.imagegen-v2.png",
+      "crop": [
+        690,
+        0,
+        695,
+        724
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        10520,
+        21001,
+        0
+      ]
+    },
+    {
+      "id": "mn-018-fortigard-v2-v2",
+      "species_id": "MN_018",
+      "view": "front",
+      "source": "sprites/mn-f006/mn-016-018.front-back.imagegen-v2.png",
+      "crop": [
+        930,
+        0,
+        606,
+        550
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        6524,
+        14628,
+        0
+      ],
+      "source_palette_rgb555": [
+        32767,
+        7579,
+        18855,
+        0
+      ]
+    },
+    {
+      "id": "mn-018-fortigard-v2-v2",
+      "species_id": "MN_018",
+      "view": "back",
+      "source": "sprites/mn-f006/mn-016-018.back.imagegen-v2.png",
+      "crop": [
+        1385,
+        0,
+        787,
+        724
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        6524,
+        14628,
+        0
+      ]
+    }
+  ],
+  "visual_review": {
+    "status": "reviewed",
+    "notes": "Root inspected v1 front/back board: agate bodies keep clean enclosing rims, separate white bands and visible eye shapes; rear concentric stones remain crisp. Clean control shows no damaging contour expansion.",
+    "sheet_sha256": "91d7161ae9a830503b2d36ebd38087a6b73ae2751a6de569cd90f85c4f87edab",
+    "outline_profile": "source-contour-v1"
+  },
+  "pokemon_palettes": {
+    "MN_016": {
+      "species_id": "MN_016",
+      "name": "Agatot",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          29,
+          16,
+          7
+        ],
+        [
+          10,
+          12,
+          15
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        7709,
+        15754,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          239,
+          132,
+          57
+        ],
+        [
+          82,
+          99,
+          123
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#EF8439",
+        "#52637B",
+        "#000000"
+      ]
+    },
+    "MN_017": {
+      "species_id": "MN_017",
+      "name": "Bandrake",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          24,
+          8,
+          10
+        ],
+        [
+          9,
+          16,
+          20
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        10520,
+        21001,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          198,
+          66,
+          82
+        ],
+        [
+          74,
+          132,
+          165
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#C64252",
+        "#4A84A5",
+        "#000000"
+      ]
+    },
+    "MN_018": {
+      "species_id": "MN_018",
+      "name": "Fortigard",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          28,
+          11,
+          6
+        ],
+        [
+          4,
+          9,
+          14
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        6524,
+        14628,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          231,
+          90,
+          49
+        ],
+        [
+          33,
+          74,
+          115
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#E75A31",
+        "#214A73",
+        "#000000"
+      ]
+    }
+  },
+  "back_framing": "gen2-close-rear-portrait",
+  "conversion_revision": "Approved original front ink indices mapped to individual normal palettes; newly authored ImageGen close rear portraits use those target palettes directly. Original sheets, crop candidates and all native versions retained.",
+  "original_source_palette": {
+    "gbc_rgb5": [
+      [
+        31,
+        31,
+        31
+      ],
+      [
+        27,
+        12,
+        7
+      ],
+      [
+        7,
+        13,
+        18
+      ],
+      [
+        0,
+        0,
+        0
+      ]
+    ],
+    "gbc_rgb555_words": [
+      32767,
+      7579,
+      18855,
+      0
+    ],
+    "rgb8": [
+      [
+        255,
+        255,
+        255
+      ],
+      [
+        222,
+        99,
+        57
+      ],
+      [
+        57,
+        107,
+        148
+      ],
+      [
+        0,
+        0,
+        0
+      ]
+    ],
+    "hex": [
+      "#FFFFFF",
+      "#DE6339",
+      "#396B94",
+      "#000000"
+    ]
+  },
+  "back_prompt_file": "sprites/mn-f006/back-prompt-v2.txt",
+  "back_reference_mapping": "sprites/mn-f006/back-reference-mapping-v2.json"
+}

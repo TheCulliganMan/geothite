@@ -93,6 +93,9 @@ pub(crate) struct Warmup {
     failed: bool,
 }
 impl Warmup {
+    pub(crate) fn synchronous_fallback(&self) -> bool {
+        self.failed || js_ready(false).unwrap_or(0) == 0
+    }
     pub(crate) fn prepared_uploads_enabled(&self) -> bool {
         !self.failed && js_ready(false).unwrap_or(0) == 2
     }

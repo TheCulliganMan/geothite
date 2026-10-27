@@ -4572,13 +4572,27 @@ impl RuntimeGameShell {
         })
     }
 
+    /// Writes a save with the live map-object roster and movement state.
+    ///
+    /// # Errors
+    /// Returns an error for invalid object or pack state, or a failed save write.
+    /// The original game-logic pause flag is restored after the save attempt.
     pub fn save(&mut self, path: impl AsRef<Path>) -> Result<()> {
         let paused_before = self.session.state.game_logic_paused;
         self.set_game_logic_paused(true)?;
-        let save_result = self
-            .runtime
-            .save_game(path, self.session.state.clone())
-            .context("save runtime game shell state");
+        // Ordinary walking can load NPCs after the last scripted object write.
+        // Capture that live roster now instead of restoring a stale entry-time
+        // roster at a later player position where those NPCs can no longer load.
+        let save_result = crystal_core::systems::map_context::sync_state_object_overrides(
+            &mut self.session.state,
+            &self.session.overworld,
+        )
+        .context("capture live map objects for save")
+        .and_then(|()| {
+            self.runtime
+                .save_game(path, self.session.state.clone())
+                .context("save runtime game shell state")
+        });
         let restore_result = self.set_game_logic_paused(paused_before);
         match (save_result, restore_result) {
             (Ok(()), Ok(_)) => Ok(()),

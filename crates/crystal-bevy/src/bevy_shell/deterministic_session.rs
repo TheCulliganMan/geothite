@@ -123,6 +123,7 @@ const SERVER_CLOCK_UNAVAILABLE: &str = "Server clock unavailable. Restore the co
 
 fn apply_keyboard_input(
     #[cfg(feature = "voxel-view")] voxel: Option<Res<crystal_voxel_view::VoxelViewSettings>>,
+    #[cfg(feature = "voxel-view")] battle_view: Option<Res<crystal_voxel_view::BattleViewStatus>>,
     #[cfg(feature = "voxel-view")] mut mouse_movement: mouse_movement::MouseMovement,
     time: Res<Time>,
     #[cfg(feature = "location-tester")] capture_hold: Option<Res<render_capture::PairedCaptureHold>>,
@@ -643,102 +644,14 @@ fn apply_keyboard_input(
         }
         mark_runtime_snapshot_dirty(&mut runtime_shell);
     }
-    if runtime_shell.field_notice.is_none() && runtime_shell.visible_waterfall_animation.is_some() {
-        for _ in 0..elapsed_input_ticks {
-            let Some(animation) = runtime_shell.visible_waterfall_animation else {
-                break;
-            };
-            let Some(total_frames) = animation.steps.checked_mul(4) else {
-                let error = anyhow::anyhow!(
-                    "WATERFALL visual duration overflows for {} steps",
-                    animation.steps
-                );
-                record_visible_runtime_error(&mut runtime_shell, &error);
-                runtime_shell.last_error = Some(error.to_string());
-                return;
-            };
-            if animation.frame >= total_frames {
-                runtime_shell.visible_waterfall_animation = None;
-                runtime_shell.field_notice_scene = None;
-                runtime_shell.player_walk_from = None;
-                runtime_shell.player_walk_frame_ticks = 0;
-                runtime_shell.player_walk_total_ticks = WALK_FRAME_HOLD_TICKS;
-                runtime_shell.player_walk_stride = false;
-                runtime_shell.player_walk_mirror_stride = false;
-            } else {
-                let step_index = animation.frame / 4;
-                let phase = (animation.frame % 4) as u8;
-                if phase == 0
-                    && let Err(error) = execute_visible_pending_waterfall_step(
-                        &mut runtime_shell,
-                        step_index,
-                        animation.steps,
-                    )
-                {
-                    record_visible_runtime_error(&mut runtime_shell, &error);
-                    runtime_shell.last_error = Some(error.to_string());
-                    return;
-                }
-                let Ok(step_index_i16) = i16::try_from(step_index) else {
-                    let error = anyhow::anyhow!(
-                        "WATERFALL visual step {step_index} exceeds runtime tile coordinates"
-                    );
-                    record_visible_runtime_error(&mut runtime_shell, &error);
-                    runtime_shell.last_error = Some(error.to_string());
-                    return;
-                };
-                let step_offset = step_index_i16;
-                let Some(segment_from_y) = animation.from_tile.y.checked_sub(step_offset) else {
-                    let error =
-                        anyhow::anyhow!("WATERFALL visual origin underflows at step {step_index}");
-                    record_visible_runtime_error(&mut runtime_shell, &error);
-                    runtime_shell.last_error = Some(error.to_string());
-                    return;
-                };
-                let Some(segment_to_y) = segment_from_y.checked_sub(1) else {
-                    let error = anyhow::anyhow!(
-                        "WATERFALL visual destination underflows at step {step_index}"
-                    );
-                    record_visible_runtime_error(&mut runtime_shell, &error);
-                    runtime_shell.last_error = Some(error.to_string());
-                    return;
-                };
-                let segment_from = TilePosition {
-                    x: animation.from_tile.x,
-                    y: segment_from_y,
-                };
-                let segment_to = TilePosition {
-                    x: segment_from.x,
-                    y: segment_to_y,
-                };
-                if step_index + 1 == animation.steps && segment_to != animation.to_tile {
-                    let error = anyhow::anyhow!(
-                        "WATERFALL visual path ended at ({}, {}) instead of authoritative ({}, {})",
-                        segment_to.x,
-                        segment_to.y,
-                        animation.to_tile.x,
-                        animation.to_tile.y,
-                    );
-                    record_visible_runtime_error(&mut runtime_shell, &error);
-                    runtime_shell.last_error = Some(error.to_string());
-                    return;
-                }
-                if let Some(scene) = runtime_shell.field_notice_scene.as_mut() {
-                    Arc::make_mut(scene).overworld.tile = segment_to;
-                }
-                runtime_shell.player_walk_from = Some(segment_from);
-                runtime_shell.player_walk_total_ticks = WALK_FRAME_HOLD_TICKS;
-                runtime_shell.player_walk_frame_ticks =
-                    WALK_FRAME_HOLD_TICKS.saturating_sub(phase.saturating_mul(2));
-                runtime_shell.player_walk_stride = step_index & 1 == 0;
-                runtime_shell.player_walk_mirror_stride = step_index % 4 >= 2;
-                if let Some(animation) = runtime_shell.visible_waterfall_animation.as_mut() {
-                    animation.frame = animation.frame.saturating_add(1);
-                }
-            }
-            mark_runtime_snapshot_dirty(&mut runtime_shell);
+    match field_waterfall::advance(&mut runtime_shell, elapsed_input_ticks) {
+        Ok(true) => return,
+        Ok(false) => {}
+        Err(error) => {
+            record_visible_runtime_error(&mut runtime_shell, &error);
+            runtime_shell.last_error = Some(error.to_string());
+            return;
         }
-        return;
     }
     if runtime_shell.visible_fly_animation.is_some() {
         for _ in 0..elapsed_input_ticks {
@@ -1029,6 +942,11 @@ fn apply_keyboard_input(
                 return;
             }
         } else {
+            #[cfg(feature = "voxel-view")]
+            let waiting_for_scene = voxel.as_ref().is_some_and(|settings| settings.enabled)
+                && battle_view
+                    .as_ref()
+                    .is_some_and(|status| status.preparation_pending);
             // Transition drawing can be one of the most expensive retained
             // LCD surfaces (the cave sine wave composes every scanline). A
             // slow host update may therefore contain several elapsed Game
@@ -1036,6 +954,20 @@ fn apply_keyboard_input(
             // rendering cost cannot stretch battle entry or make its motion
             // alternate between stalls and single-frame steps.
             for _ in 0..elapsed_input_ticks {
+                #[cfg(feature = "voxel-view")]
+                if waiting_for_scene
+                    && runtime_shell
+                        .visible_battle_transition
+                        .is_some_and(|transition| {
+                            let prefix = if transition.trainer_battle { 4 } else { 3 };
+                            transition.frame >= prefix + 74
+                        })
+                {
+                    // Keep the neutral field after the flashes until the 3D
+                    // target is ready, then play the wipe once. This avoids
+                    // both a long black loading hold and a classic canvas.
+                    break;
+                }
                 advance_visible_battle_transition(&mut runtime_shell);
                 if runtime_shell
                     .visible_battle_transition
@@ -1223,97 +1155,7 @@ fn apply_keyboard_input(
         return;
     }
     for _ in 0..elapsed_input_ticks {
-        let mut exp_segment_finished = false;
-        let mut exp_animation_finished = false;
-        let mut exp_pixels_changed = false;
-        if let Some(tween) = runtime_shell.battle_exp_tween.as_mut()
-            && tween.started
-        {
-            if tween.frames_until_step > 0 {
-                tween.frames_until_step -= 1;
-            } else if tween.pixels < tween.target_pixels {
-                tween.pixels += 1;
-                tween.steps_in_segment += 1;
-                tween.frames_until_step = if tween.steps_in_segment <= 2 {
-                    2
-                } else if tween.steps_in_segment <= 4 {
-                    1
-                } else {
-                    0
-                };
-                exp_pixels_changed = true;
-                if tween.pixels == tween.target_pixels {
-                    exp_segment_finished = !tween.remaining_targets.is_empty();
-                    exp_animation_finished = tween.remaining_targets.is_empty();
-                    if exp_segment_finished {
-                        tween.level = tween.level.saturating_add(1).min(100);
-                    }
-                    tween.started = false;
-                }
-            } else {
-                exp_segment_finished = !tween.remaining_targets.is_empty();
-                exp_animation_finished = tween.remaining_targets.is_empty();
-                if exp_segment_finished {
-                    tween.level = tween.level.saturating_add(1).min(100);
-                }
-                tween.started = false;
-            }
-        }
-        if exp_pixels_changed {
-            mark_runtime_snapshot_dirty(&mut runtime_shell);
-        }
-        if exp_segment_finished {
-            if let Err(error) =
-                queue_visible_shell_sound_effect(&mut runtime_shell, "SFX_HIT_END_OF_EXP_BAR")
-            {
-                record_visible_runtime_error(&mut runtime_shell, &error);
-            }
-            if runtime_shell
-                .battle_fanfare_messages
-                .front()
-                .is_some_and(|fanfare| runtime_shell.battle_messages.front() == Some(fanfare))
-            {
-                runtime_shell.battle_fanfare_messages.pop_front();
-                if let Err(error) =
-                    queue_visible_shell_sound_effect(&mut runtime_shell, "SFX_DEX_FANFARE_50_79")
-                {
-                    record_visible_runtime_error(&mut runtime_shell, &error);
-                }
-            }
-        }
-        if exp_animation_finished {
-            runtime_shell.battle_exp_tween = runtime_shell.pending_battle_exp_tweens.pop_front();
-            if let Some(stats) = runtime_shell.battle_level_stats.front_mut()
-                && stats.triggered
-            {
-                stats.active = true;
-                // This activation occurs before the per-frame countdown below.
-                stats.frames_before_input = 31;
-                mark_runtime_snapshot_dirty(&mut runtime_shell);
-            }
-            if let Err(error) = finish_visible_empty_battle_reward_presentation(&mut runtime_shell)
-            {
-                record_visible_runtime_error(&mut runtime_shell, &error);
-            }
-            if runtime_shell
-                .battle_fanfare_messages
-                .front()
-                .is_some_and(|fanfare| runtime_shell.battle_messages.front() == Some(fanfare))
-            {
-                runtime_shell.battle_fanfare_messages.pop_front();
-                if let Err(error) =
-                    queue_visible_shell_sound_effect(&mut runtime_shell, "SFX_DEX_FANFARE_50_79")
-                {
-                    record_visible_runtime_error(&mut runtime_shell, &error);
-                }
-            }
-        }
-        if let Some(stats) = runtime_shell.battle_level_stats.front_mut()
-            && stats.active
-            && stats.frames_before_input > 0
-        {
-            stats.frames_before_input -= 1;
-        }
+        advance_visible_battle_reward_frame(&mut runtime_shell);
     }
     if runtime_shell.visible_catch_tutorial.is_some() {
         if let Err(error) = advance_visible_catch_tutorial(&mut runtime_shell, elapsed_input_ticks) {
@@ -3590,7 +3432,9 @@ fn log_visible_movement_event(
         "crystal-bevy movement frame={} event={} object={} dialogue={} script={} {}",
         runtime_shell.lcd_animation_frame, event_kind, object_id, dialogue, script, detail,
     );
-    eprintln!("{event}");
+    if std::env::var_os("CRYSTAL_MOVEMENT_TRACE").is_some() {
+        eprintln!("{event}");
+    }
     runtime_shell.movement_log_events.push_back(event);
     if runtime_shell.movement_log_events.len() > 4096 {
         runtime_shell.movement_log_events.pop_front();

@@ -1,0 +1,132 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F948",
+  "status": "isolated-eye-fit-prototype",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_099": {
+      "species_id": "MN_099",
+      "name": "Vergloom",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          15,
+          22,
+          10
+        ],
+        [
+          5,
+          10,
+          9
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        10959,
+        9541,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          123,
+          181,
+          82
+        ],
+        [
+          41,
+          82,
+          74
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#7BB552",
+        "#29524A",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f048/prompt-v1.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "style_reference": {
+    "origin": "authentic local Crystal sprites",
+    "generator": "crates/crystal-assets/examples/minnesota_gen2_reference.rs",
+    "boards": [
+      "target/minnesota-pokemon/gen2-reference/starters.png",
+      "target/minnesota-pokemon/gen2-reference/bugs.png"
+    ]
+  },
+  "sprites": [
+    {
+      "id": "mn-099-vergloom-v1",
+      "species_id": "MN_099",
+      "view": "front",
+      "source": "sprites/mn-f048/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        1223,
+        700
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        10959,
+        9541,
+        0
+      ],
+      "white_detail_min_samples": 8
+    },
+    {
+      "id": "mn-099-vergloom-v1",
+      "species_id": "MN_099",
+      "view": "back",
+      "source": "sprites/mn-f048/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        700,
+        1223,
+        586
+      ],
+      "fit": [
+        45,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        10959,
+        9541,
+        0
+      ],
+      "white_detail_min_samples": 16
+    }
+  ],
+  "visual_review": {
+    "status": "reviewed-prototype",
+    "outline_profile": "source-contour-v1",
+    "sheet_sha256": "0583a664c601fdaa0ac51e4c57db179bf0437e76e6e51e3cf6c02a5ed857866c",
+    "notes": "Inspected isolated v1 fit45 back at threshold16: only one white eye survives atx39,y29. Not recommended."
+  }
+}

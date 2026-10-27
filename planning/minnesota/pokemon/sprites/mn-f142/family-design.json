@@ -1,0 +1,475 @@
+{
+  "name": "Dewbit → Glisnare",
+  "members": [
+    {
+      "id": "MN_314",
+      "name": "Dewbit",
+      "types": [
+        "GRASS"
+      ],
+      "palette": {
+        "gbc_rgb5": [
+          [
+            31,
+            31,
+            31
+          ],
+          [
+            18,
+            25,
+            7
+          ],
+          [
+            20,
+            5,
+            12
+          ],
+          [
+            0,
+            0,
+            0
+          ]
+        ],
+        "gbc_rgb555_words": [
+          32767,
+          7986,
+          12468,
+          0
+        ],
+        "rgb8": [
+          [
+            255,
+            255,
+            255
+          ],
+          [
+            148,
+            206,
+            57
+          ],
+          [
+            165,
+            41,
+            99
+          ],
+          [
+            0,
+            0,
+            0
+          ]
+        ],
+        "hex": [
+          "#FFFFFF",
+          "#94CE39",
+          "#A52963",
+          "#000000"
+        ]
+      },
+      "base_stats": {
+        "hp": 45,
+        "attack": 45,
+        "defense": 50,
+        "speed": 40,
+        "special_attack": 70,
+        "special_defense": 40
+      },
+      "evolution": {
+        "level": 28,
+        "to": "MN_315"
+      },
+      "level_moves": [
+        [
+          1,
+          "ABSORB"
+        ],
+        [
+          1,
+          "GROWTH"
+        ],
+        [
+          7,
+          "WRAP"
+        ],
+        [
+          13,
+          "SWEET_SCENT"
+        ],
+        [
+          19,
+          "VINE_WHIP"
+        ],
+        [
+          25,
+          "STUN_SPORE"
+        ]
+      ],
+      "bst": 290,
+      "profile": {
+        "id": "MN_314",
+        "classification": "Sticky Bud",
+        "height_inches": 9,
+        "weight_tenths_lb": 35,
+        "dex_pages": [
+          "Its sticky leaves @ hide its face. @ Sweet scent draws",
+          "lure tiny insects. @ Its real eyes peek @ beneath the bud."
+        ],
+        "base_stats": {
+          "hp": 45,
+          "attack": 45,
+          "defense": 50,
+          "speed": 40,
+          "special_attack": 70,
+          "special_defense": 40
+        },
+        "catch_rate": 150,
+        "base_exp": 70,
+        "gender_ratio": 127,
+        "hatch_cycles": 20,
+        "growth_rate": "GROWTH_MEDIUM_FAST",
+        "egg_groups": [
+          "EGG_PLANT",
+          "EGG_PLANT"
+        ],
+        "evolution": {
+          "method": "LEVEL",
+          "level": 28
+        },
+        "held_items": [
+          null,
+          null
+        ],
+        "menu_icon": "ICON_ODDISH",
+        "footprint_species": "ODDISH",
+        "cry": {
+          "cry": "CRY_ODDISH",
+          "pitch": -16,
+          "length": 128
+        },
+        "shiny_rgb5": [
+          [
+            22,
+            18,
+            8
+          ],
+          [
+            6,
+            11,
+            19
+          ]
+        ],
+        "level_moves": [
+          [
+            1,
+            "ABSORB"
+          ],
+          [
+            1,
+            "GROWTH"
+          ],
+          [
+            7,
+            "WRAP"
+          ],
+          [
+            13,
+            "SWEET_SCENT"
+          ],
+          [
+            19,
+            "VINE_WHIP"
+          ],
+          [
+            25,
+            "STUN_SPORE"
+          ]
+        ],
+        "tmhm_moves": [
+          "GIGA_DRAIN",
+          "SOLARBEAM",
+          "SUNNY_DAY",
+          "CUT",
+          "PROTECT",
+          "REST",
+          "SLEEP_TALK",
+          "SNORE",
+          "RETURN",
+          "FRUSTRATION",
+          "TOXIC",
+          "HIDDEN_POWER",
+          "DOUBLE_TEAM",
+          "ATTRACT"
+        ],
+        "egg_moves": [
+          "LEECH_SEED",
+          "SYNTHESIS"
+        ]
+      }
+    },
+    {
+      "id": "MN_315",
+      "name": "Glisnare",
+      "types": [
+        "GRASS",
+        "DARK"
+      ],
+      "palette": {
+        "gbc_rgb5": [
+          [
+            31,
+            31,
+            31
+          ],
+          [
+            29,
+            17,
+            6
+          ],
+          [
+            4,
+            13,
+            9
+          ],
+          [
+            0,
+            0,
+            0
+          ]
+        ],
+        "gbc_rgb555_words": [
+          32767,
+          6717,
+          9636,
+          0
+        ],
+        "rgb8": [
+          [
+            255,
+            255,
+            255
+          ],
+          [
+            239,
+            140,
+            49
+          ],
+          [
+            33,
+            107,
+            74
+          ],
+          [
+            0,
+            0,
+            0
+          ]
+        ],
+        "hex": [
+          "#FFFFFF",
+          "#EF8C31",
+          "#216B4A",
+          "#000000"
+        ]
+      },
+      "base_stats": {
+        "hp": 75,
+        "attack": 80,
+        "defense": 85,
+        "speed": 45,
+        "special_attack": 115,
+        "special_defense": 80
+      },
+      "evolution": null,
+      "level_moves": [
+        [
+          1,
+          "ABSORB"
+        ],
+        [
+          1,
+          "GROWTH"
+        ],
+        [
+          1,
+          "WRAP"
+        ],
+        [
+          13,
+          "SWEET_SCENT"
+        ],
+        [
+          19,
+          "VINE_WHIP"
+        ],
+        [
+          25,
+          "STUN_SPORE"
+        ],
+        [
+          28,
+          "BITE"
+        ],
+        [
+          34,
+          "MEGA_DRAIN"
+        ],
+        [
+          40,
+          "FAINT_ATTACK"
+        ],
+        [
+          46,
+          "GIGA_DRAIN"
+        ],
+        [
+          52,
+          "MEAN_LOOK"
+        ],
+        [
+          58,
+          "CRUNCH"
+        ]
+      ],
+      "bst": 480,
+      "profile": {
+        "id": "MN_315",
+        "classification": "Leaf Snare",
+        "height_inches": 40,
+        "weight_tenths_lb": 280,
+        "dex_pages": [
+          "Its curved leaves @ form a false grin. @ When prey lean in,",
+          "six arms close. @ Its true eyes stay @ behind the snare."
+        ],
+        "base_stats": {
+          "hp": 75,
+          "attack": 80,
+          "defense": 85,
+          "speed": 45,
+          "special_attack": 115,
+          "special_defense": 80
+        },
+        "catch_rate": 60,
+        "base_exp": 175,
+        "gender_ratio": 127,
+        "hatch_cycles": 20,
+        "growth_rate": "GROWTH_MEDIUM_FAST",
+        "egg_groups": [
+          "EGG_PLANT",
+          "EGG_PLANT"
+        ],
+        "evolution": null,
+        "held_items": [
+          null,
+          null
+        ],
+        "menu_icon": "ICON_ODDISH",
+        "footprint_species": "VICTREEBEL",
+        "cry": {
+          "cry": "CRY_VILEPLUME",
+          "pitch": -32,
+          "length": 160
+        },
+        "shiny_rgb5": [
+          [
+            25,
+            13,
+            19
+          ],
+          [
+            7,
+            15,
+            17
+          ]
+        ],
+        "level_moves": [
+          [
+            1,
+            "ABSORB"
+          ],
+          [
+            1,
+            "GROWTH"
+          ],
+          [
+            1,
+            "WRAP"
+          ],
+          [
+            13,
+            "SWEET_SCENT"
+          ],
+          [
+            19,
+            "VINE_WHIP"
+          ],
+          [
+            25,
+            "STUN_SPORE"
+          ],
+          [
+            28,
+            "BITE"
+          ],
+          [
+            34,
+            "MEGA_DRAIN"
+          ],
+          [
+            40,
+            "FAINT_ATTACK"
+          ],
+          [
+            46,
+            "GIGA_DRAIN"
+          ],
+          [
+            52,
+            "MEAN_LOOK"
+          ],
+          [
+            58,
+            "CRUNCH"
+          ]
+        ],
+        "tmhm_moves": [
+          "GIGA_DRAIN",
+          "SOLARBEAM",
+          "SUNNY_DAY",
+          "CUT",
+          "PROTECT",
+          "REST",
+          "SLEEP_TALK",
+          "SNORE",
+          "RETURN",
+          "FRUSTRATION",
+          "TOXIC",
+          "HIDDEN_POWER",
+          "DOUBLE_TEAM",
+          "ATTRACT"
+        ],
+        "egg_moves": [
+          "LEECH_SEED",
+          "SYNTHESIS"
+        ]
+      }
+    }
+  ],
+  "theme": "Sundew × finger trap. A sticky three-leaf rosette grows six broad curling leaf arms. Their gland-tipped margins interlock around an apparent inviting face, while small real eyes stay sheltered beneath the central leaf.",
+  "identity_locks": [
+    "Grass → Grass/Dark.",
+    "Broad spoon-shaped sticky sundew leaves, not a toothed Venus flytrap mouth or animal costume.",
+    "Three big curled leaves grow into six interlocking leaf arms; use a few large sticky bulb tips instead of fine hairs.",
+    "One central true face with clearly readable two eye whites and black pupils, plus one deceptive opening implied by curled leaf shapes."
+  ],
+  "schema_version": 1,
+  "family_id": "MN_F142",
+  "status": "proposal-only-unregistered",
+  "style_reference": "target/minnesota-pokemon/gen2-reference/starters.png",
+  "palette_policy": "Per-species exact4RGB555inks; no shared family palette; no native handpainting.",
+  "profiles_file": "proposed-species-profiles.json",
+  "palette_file": "palettes.proposal.json",
+  "roster_family_file": "roster-family.proposal.json",
+  "selected_manifest": "manifest.json",
+  "selected_native_review": "native-selected/line.review.png",
+  "review_file": "proposal-review.json",
+  "selection_status": "root-approved-unregistered-native-ready"
+}

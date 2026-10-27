@@ -1,0 +1,35 @@
+{
+  "family_id": "MN_F002",
+  "only_import_change": {
+    "species_id": "MN_006",
+    "view": "back",
+    "old_crop": [
+      955,
+      535,
+      581,
+      489
+    ],
+    "new_crop": [
+      955,
+      545,
+      581,
+      479
+    ]
+  },
+  "source_evidence": {
+    "front_foot_ink_final_row": 542,
+    "chosen_white_gap_start": 545,
+    "rear_chimney_first_row": 567
+  },
+  "protected_views": 5,
+  "protected_native_files": 20,
+  "protected_files_byte_identical": true,
+  "sheet_sha256": "550741fa3b3feef4415c5dedc86f1cbdfbcb81889c14183bf8063680e149b6bd",
+  "pixel_edits": [],
+  "strict_current_graphics_leaf": {
+    "result": "passed",
+    "runtime_files": 21,
+    "species": 3,
+    "log": "target/agent-roster-contour/F002-back-audit/production-graphics-validation.log"
+  }
+}

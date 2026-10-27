@@ -1,0 +1,7 @@
+{
+  "status": "user-rejected-unregistered",
+  "name": "Vanesail",
+  "reason": "User does not like the dragon and requests a Normal type instead. Neither identity nor art is registered in the active catalog. Preserve both source renders, exact prompts and native v1 for reuse.",
+  "reserved_family_candidate": "MN_F126",
+  "reserved_species_candidate": "MN_277"
+}

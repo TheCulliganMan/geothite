@@ -837,21 +837,26 @@ fn capture(
     commands
         .spawn(screenshot)
         .observe(move |event: On<ScreenshotCaptured>| {
-            let result = event
-                .image
-                .clone()
-                .try_into_dynamic()
-                .map_err(|error| format!("decode GPU image: {error}"))
-                .and_then(|image| {
-                    // Keep the actual readback alpha for explicit diagnostics.
-                    // Ordinary captures retain their existing RGB output.
-                    let saved = if preserve_alpha {
-                        image.to_rgba8().save(&path)
-                    } else {
-                        image.to_rgb8().save(&path)
-                    };
-                    saved.map_err(|error| error.to_string())
-                });
+            let result = (|| -> anyhow::Result<()> {
+                crate::capture_archive::archive_existing(&path)?;
+                crate::capture_archive::archive_gpu_readback(&path, &event.image)?;
+                let image = event
+                    .image
+                    .clone()
+                    .try_into_dynamic()
+                    .map_err(|error| anyhow::anyhow!("decode GPU image: {error}"))?;
+                crate::capture_archive::archive_capture_image(&path, "original", &image)?;
+                // Retain the existing RGB/RGBA latest-image contract while the
+                // complete native readback and original alpha remain archived.
+                let output = if preserve_alpha {
+                    image::DynamicImage::ImageRgba8(image.to_rgba8())
+                } else {
+                    image::DynamicImage::ImageRgb8(image.to_rgb8())
+                };
+                crate::capture_archive::write_capture_png(&path, &output)?;
+                Ok(())
+            })()
+            .map_err(|error| format!("{error:#}"));
             *completion.lock().unwrap() = Some(result);
         });
     capture.requested = true;
@@ -878,14 +883,22 @@ fn parse_camera_request(value: &str) -> Result<crystal_voxel_view::VoxelCameraCo
 }
 
 fn live_comparison(capture: &mut Capture) -> Result<()> {
+    let path = capture.first_path.with_extension("compare.png");
+    crate::capture_archive::archive_existing(&path)?;
+    crate::capture_archive::archive_existing(&capture.first_path)?;
     validate_render_test_screenshot(&capture.first_path)?;
     let second = capture
         .second_path
         .as_ref()
         .context("live review needs paired views")?;
+    crate::capture_archive::archive_existing(second)?;
     validate_render_test_screenshot(second)?;
-    let current = image::open(second)?.to_rgb8();
-    let reference = image::open(&capture.first_path)?.to_rgb8();
+    let current_native = image::open(second)?;
+    let reference_native = image::open(&capture.first_path)?;
+    crate::capture_archive::archive_capture_image(&path, "current-original", &current_native)?;
+    crate::capture_archive::archive_capture_image(&path, "reference-original", &reference_native)?;
+    let current = current_native.to_rgb8();
+    let reference = reference_native.to_rgb8();
     let previous = capture
         .previous
         .as_ref()
@@ -897,11 +910,20 @@ fn live_comparison(capture: &mut Capture) -> Result<()> {
     panels.push(&current);
     let mut sheet = image::RgbImage::new(640 * panels.len() as u32, 576);
     for (index, panel) in panels.iter().enumerate() {
+        crate::capture_archive::archive_capture_image(
+            &path,
+            &format!("panel-{index}-rgb-original"),
+            &image::DynamicImage::ImageRgb8((**panel).clone()),
+        )?;
         let panel = image::imageops::resize(*panel, 640, 576, image::imageops::FilterType::Nearest);
+        crate::capture_archive::archive_capture_image(
+            &path,
+            &format!("panel-{index}-resized"),
+            &image::DynamicImage::ImageRgb8(panel.clone()),
+        )?;
         image::imageops::replace(&mut sheet, &panel, index as i64 * 640, 0);
     }
-    let path = capture.first_path.with_extension("compare.png");
-    sheet.save(&path)?;
+    crate::capture_archive::write_capture_png(&path, &image::DynamicImage::ImageRgb8(sheet))?;
     println!(
         "review {} — 2D reference / {}current 2.5D",
         path.display(),

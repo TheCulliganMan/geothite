@@ -6,7 +6,11 @@ use serde::{Deserialize, Deserializer, Serialize, Serializer};
 use std::{any::Any, cell::RefCell, collections::VecDeque, sync::Arc};
 
 pub(crate) const PAGE_BYTES: usize = 256 * 1024;
-const MAX_BYTES: usize = 512 * 1024 * 1024;
+// A 216x216 outdoor window includes connected scenery and collision data.
+// Its completed buffers can exceed the former 512 MiB scene limit. Paging
+// still transfers at most two 256 KiB pages before acknowledgment and releases
+// acknowledged source buffers; this is not a monolithic message allocation.
+const MAX_BYTES: usize = 768 * 1024 * 1024;
 const MAX_BUFFERS: usize = 262_144;
 const HEADER_MAGIC: &[u8; 8] = b"GTRNH003";
 const PAGE_MAGIC: &[u8; 8] = b"GTRNB003";
@@ -94,7 +98,12 @@ impl Sources {
             || std::mem::size_of::<T>() == 0
             || std::mem::size_of::<T>() > PAGE_BYTES
         {
-            return Err("terrain buffers exceed protocol bounds".into());
+            return Err(format!(
+                "terrain buffers exceed protocol bounds: {} bytes, {} buffers, {} byte elements",
+                self.total,
+                self.buffers.len(),
+                std::mem::size_of::<T>(),
+            ));
         }
         let id = self.buffers.len() as u32;
         self.buffers.push(Some(Box::new(TypedSource(values))));
@@ -415,6 +424,20 @@ pub(crate) fn append_packet(
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn wide_windows_fit_the_paged_budget_and_oversized_declarations_still_fail() {
+        let mut store = BlobStore::default();
+        let wide_scene_bytes = 512 * 1024 * 1024 + PAGE_BYTES;
+        store
+            .declare::<u8>(0, wide_scene_bytes)
+            .expect("wide outdoor scene");
+        // Declarations retain no initialized bulk allocation until a page is
+        // received. They must not reserve the complete advertised scene.
+        assert_eq!(store.declared_bytes(), wide_scene_bytes);
+        assert!(!store.completed(0));
+        assert!(store.declare::<u8>(1, MAX_BYTES).is_err());
+    }
     #[derive(Serialize, Deserialize)]
     struct Header {
         positions: Bulk<[u32; 3]>,

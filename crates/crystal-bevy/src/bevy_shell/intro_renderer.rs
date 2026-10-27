@@ -36,7 +36,7 @@ pub(super) fn compose_frame(
         Err(error) => {
             rendered_art
                 .intro_scene_errors
-                .insert(key, error.to_string());
+                .insert(key, format!("{error:#}"));
             return None;
         }
     };

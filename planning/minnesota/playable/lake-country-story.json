@@ -1,0 +1,150 @@
+{
+  "schema_version": 1,
+  "manifest": "minnesota-lake-country-story-v1",
+  "base_content_hash": "58a1dc84c01d3c5d7d0c5efb849a024a5c6ece1daadb525a69055a32c55b4047",
+  "links": [
+    {
+      "town": "MnMinneapolis",
+      "route": "MnR05C00R02",
+      "direction": "north",
+      "offset": 5,
+      "mouth": [
+        16,
+        0
+      ],
+      "town_edge": [
+        [
+          32,
+          0
+        ],
+        [
+          33,
+          0
+        ]
+      ],
+      "route_edge": [
+        [
+          22,
+          15
+        ],
+        [
+          23,
+          15
+        ]
+      ]
+    },
+    {
+      "town": "MnBrainerd",
+      "route": "MnR06C00R00",
+      "direction": "south",
+      "offset": -5,
+      "mouth": [
+        16,
+        23
+      ],
+      "town_edge": [
+        [
+          32,
+          47
+        ],
+        [
+          33,
+          47
+        ]
+      ],
+      "route_edge": [
+        [
+          42,
+          0
+        ],
+        [
+          43,
+          0
+        ]
+      ]
+    }
+  ],
+  "caps": [
+    {
+      "map": "MnR06C00R00",
+      "metatile": [
+        20,
+        0
+      ],
+      "previous": 2,
+      "replacement": 5
+    },
+    {
+      "map": "MnR06C00R00",
+      "metatile": [
+        22,
+        0
+      ],
+      "previous": 2,
+      "replacement": 5
+    },
+    {
+      "map": "MnR06C00R01",
+      "metatile": [
+        6,
+        19
+      ],
+      "previous": 2,
+      "replacement": 5
+    },
+    {
+      "map": "MnR06C00R01",
+      "metatile": [
+        7,
+        19
+      ],
+      "previous": 2,
+      "replacement": 5
+    },
+    {
+      "map": "MnR06C00R01",
+      "metatile": [
+        9,
+        19
+      ],
+      "previous": 2,
+      "replacement": 5
+    },
+    {
+      "map": "MnR06C00R01",
+      "metatile": [
+        10,
+        19
+      ],
+      "previous": 2,
+      "replacement": 5
+    },
+    {
+      "map": "MnBrainerd",
+      "metatile": [
+        16,
+        0
+      ],
+      "previous": 1,
+      "replacement": 5
+    },
+    {
+      "map": "MnBrainerd",
+      "metatile": [
+        0,
+        12
+      ],
+      "previous": 1,
+      "replacement": 5
+    },
+    {
+      "map": "MnBrainerd",
+      "metatile": [
+        31,
+        12
+      ],
+      "previous": 1,
+      "replacement": 5
+    }
+  ]
+}

@@ -1,0 +1,168 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F001",
+  "status": "reviewed",
+  "selected_manifest": "sprites/mn-f001/starter-refinement-v4/manifest-selected.json",
+  "selected_native_review": "target/agent-roster-contour/starter-refinement/MN_F001/eyes-8/line.review.png",
+  "native_review_sha256": "18489da859da4fee6b15a2d87678dd0dd367920c439a7f77dfa3d71d43cdf7aa",
+  "notes": "Identity-preserving six-view refinement: golden round leaf-pouch and hood, lilac S-stem dancer with two white shoulder petals and two pouch slippers, then forest-green orchid dancer with three white/pink crown sepals, two leaf arms, three separate pink hip petals and two slipper feet. Exact existing individual palettes retained. SourceBacked avoids dense black leaf interiors; white8 on Slipperina/Cyprielle fronts keeps eye and face separators while all rear portraits use white4. The large white petals have closed dark anchors and broad colored roots; no extra limbs, generic gown or full-body rear. Front native sizes56x56, backs48x48; silhouettes36/44/54 and close46x47maximum.",
+  "comparisons": [
+    "target/agent-roster-contour/starter-refinement/MN_F001/source_backed/line.review.png",
+    "target/agent-roster-contour/starter-refinement/MN_F001/solid/line.review.png",
+    "target/agent-roster-contour/starter-refinement/MN_F001/eyes-8/line.review.png",
+    "target/agent-roster-contour/starter-refinement/MN_F001/eyes-16/line.review.png"
+  ],
+  "frames": [
+    {
+      "species_id": "MN_001",
+      "view": "front",
+      "size": [
+        56,
+        56
+      ],
+      "source_bounds": [
+        95,
+        223,
+        372,
+        534
+      ],
+      "native_png": "target/agent-roster-contour/starter-refinement/MN_F001/eyes-8/mn-001-pouchid-v4.front.png",
+      "png_sha256": "d9b7c94686c93444a47259933de58291f516aba559e950620a489c0fe7be9101",
+      "white_detail_min_samples": 4,
+      "interior_black_min_samples": 16,
+      "contour": "source_backed",
+      "palette_rgb555": [
+        32767,
+        13151,
+        7686,
+        0
+      ]
+    },
+    {
+      "species_id": "MN_001",
+      "view": "back",
+      "size": [
+        48,
+        48
+      ],
+      "source_bounds": [
+        26,
+        582,
+        436,
+        992
+      ],
+      "native_png": "target/agent-roster-contour/starter-refinement/MN_F001/eyes-8/mn-001-pouchid-v4.back.png",
+      "png_sha256": "19a76220da4a4d56ed0ebcf8bc06bda55035997877fb422accf84f1e7d5648aa",
+      "white_detail_min_samples": 4,
+      "interior_black_min_samples": 16,
+      "contour": "source_backed",
+      "palette_rgb555": [
+        32767,
+        13151,
+        7686,
+        0
+      ]
+    },
+    {
+      "species_id": "MN_002",
+      "view": "front",
+      "size": [
+        56,
+        56
+      ],
+      "source_bounds": [
+        545,
+        85,
+        921,
+        536
+      ],
+      "native_png": "target/agent-roster-contour/starter-refinement/MN_F001/eyes-8/mn-002-slipperina-v4.front.png",
+      "png_sha256": "4115424d7781c91f5e51356dd38c80442aca57ca5ee0b80ae44a4fb49576367a",
+      "white_detail_min_samples": 8,
+      "interior_black_min_samples": 16,
+      "contour": "source_backed",
+      "palette_rgb555": [
+        32767,
+        30264,
+        12675,
+        0
+      ]
+    },
+    {
+      "species_id": "MN_002",
+      "view": "back",
+      "size": [
+        48,
+        48
+      ],
+      "source_bounds": [
+        508,
+        611,
+        995,
+        992
+      ],
+      "native_png": "target/agent-roster-contour/starter-refinement/MN_F001/eyes-8/mn-002-slipperina-v4.back.png",
+      "png_sha256": "5207cd8d4511ab63b0a611e417467da919d285c6fa702b9baf3a7998a46184a8",
+      "white_detail_min_samples": 4,
+      "interior_black_min_samples": 16,
+      "contour": "source_backed",
+      "palette_rgb555": [
+        32767,
+        30264,
+        12675,
+        0
+      ]
+    },
+    {
+      "species_id": "MN_003",
+      "view": "front",
+      "size": [
+        56,
+        56
+      ],
+      "source_bounds": [
+        1025,
+        11,
+        1506,
+        540
+      ],
+      "native_png": "target/agent-roster-contour/starter-refinement/MN_F001/eyes-8/mn-003-cyprielle-v4.front.png",
+      "png_sha256": "f1f3f33d4192ea6041fffa7493b5e09d8cabd6d4ce97d767cfe8359679ddb488",
+      "white_detail_min_samples": 8,
+      "interior_black_min_samples": 16,
+      "contour": "source_backed",
+      "palette_rgb555": [
+        32767,
+        24031,
+        7492,
+        0
+      ]
+    },
+    {
+      "species_id": "MN_003",
+      "view": "back",
+      "size": [
+        48,
+        48
+      ],
+      "source_bounds": [
+        1039,
+        568,
+        1504,
+        992
+      ],
+      "native_png": "target/agent-roster-contour/starter-refinement/MN_F001/eyes-8/mn-003-cyprielle-v4.back.png",
+      "png_sha256": "f2b5bddc4325d567890c5ea8254abb510ac5a2f130c142cfbbfe4f4e2d3f6aac",
+      "white_detail_min_samples": 4,
+      "interior_black_min_samples": 16,
+      "contour": "source_backed",
+      "palette_rgb555": [
+        32767,
+        24031,
+        7492,
+        0
+      ]
+    }
+  ],
+  "test_scope_note": "tools/test_grass_starter_fidelity.py was read. It tests stored Chikorita/Bayleef/Meganium GLB volumes, attachment roots and moving facial surfaces; it is not a regression for these original MN001-MN003 pixel sprites. No GLBs or tests were changed; no claim is made that this image refinement runs those3D tests."
+}

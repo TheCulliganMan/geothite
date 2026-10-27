@@ -358,7 +358,7 @@ pub(crate) struct ModeledActors {
     destination_people: DestinationPeople,
     #[cfg(all(target_arch = "wasm32", feature = "actor-worker-browser"))]
     actor_warmup: crate::actor_worker::browser::Warmup,
-    people_gpu: crate::open_people_skin::PeopleGpu,
+    pub(crate) people_gpu: crate::open_people_skin::PeopleGpu,
     material: Option<Handle<StandardMaterial>>,
     remote_material: Option<Handle<StandardMaterial>>,
     perched_wing_material: Option<Handle<StandardMaterial>>,
@@ -381,6 +381,20 @@ pub(crate) struct ModeledActors {
 
 #[cfg(not(target_arch = "wasm32"))]
 type ActorAssetInterest = (&'static str, Vec<&'static str>);
+#[cfg(target_arch = "wasm32")]
+impl ModeledActors {
+    pub(crate) fn synchronous_battle_people(&self) -> bool {
+        #[cfg(feature = "actor-worker-browser")]
+        {
+            self.actor_warmup.synchronous_fallback()
+        }
+        #[cfg(not(feature = "actor-worker-browser"))]
+        {
+            true
+        }
+    }
+}
+
 #[cfg(not(target_arch = "wasm32"))]
 #[derive(Default)]
 struct NativeAssetWarmup {
@@ -815,6 +829,10 @@ pub(crate) fn worker_interests(frame: &VisualWorldFrame) -> Vec<crate::actor_wor
     keys
 }
 
+pub(crate) fn is_human(actor: &VisualActor) -> bool {
+    character_kind(actor).is_some()
+}
+
 fn character_kind(actor: &VisualActor) -> Option<CharacterKind> {
     if matches!(actor.id, VisualActorId::Effect(_)) {
         return None;
@@ -983,6 +1001,7 @@ pub(crate) fn sync(
         Option<Res<crystal_render_api::VisualPlayerTraversal>>,
         Option<Res<crystal_render_api::VisualPokemonDimensions>>,
         Option<Res<crate::DestinationPreload>>,
+        Option<Res<crystal_render_api::VisualBattleFrame>>,
     ),
     footing: Res<TerrainRevisionCache>,
     cards: Res<ActorIdCache>,
@@ -997,15 +1016,34 @@ pub(crate) fn sync(
     mut transforms: Query<&mut Transform, With<ModeledActor>>,
 ) {
     let _trace = crate::loading_trace::span("frame.modeled_actors", || serde_json::json!({"map":frame.map_id.as_ref()}));
-    let (surf_rider, traversal, dimensions, _destination) = presentation;
+    let (surf_rider, traversal, dimensions, _destination, battle) = presentation;
+    let battle = battle.as_deref().filter(|battle| battle.active);
+    let battle_kinds = battle
+        .into_iter()
+        .flat_map(|battle| battle.trainers.iter().flatten())
+        .filter_map(|trainer| crate::battle_view::trainers::kind(&trainer.source_id))
+        .collect::<Vec<_>>();
+    let needed_kinds = || {
+        frame
+            .actors
+            .iter()
+            .filter_map(character_kind)
+            .chain(battle_kinds.iter().copied())
+            .collect::<Vec<_>>()
+    };
     let player_visibility = if settings.as_ref().is_some_and(|s| s.camera.first_person) {
         Visibility::Hidden
     } else { Visibility::Inherited };
     #[cfg(all(target_arch = "wasm32", feature = "actor-worker-browser"))]
     {
-        let requested = frame.active && enabled_map(&frame.map_id)
+        let requested = ((frame.active && enabled_map(&frame.map_id)) || battle.is_some())
             && settings.as_ref().is_none_or(|settings| settings.enabled);
-        let current = worker_interests(&frame);
+        let mut current = worker_interests(&frame);
+        for &kind in &battle_kinds {
+            let source = crate::npc_appearance::look(kind).texture_key;
+            if let Ok(key) = crate::actor_worker::key_for_source(source)
+                && !current.contains(&key) { current.push(key); }
+        }
         let mut interests = current.clone();
         // Share the single worker queue with the approaching destination.
         // Current roles stay first; preparing future roles must never freeze
@@ -1030,7 +1068,7 @@ pub(crate) fn sync(
         let uploaded_before = people_gpu.0.len();
         let upload_pending = requested && actor_warmup.prepared_uploads_enabled()
             && !people_gpu.upload_next_prepared(
-                &frame.actors.iter().filter_map(character_kind).collect::<Vec<_>>(),
+                &needed_kinds(),
                 &mut meshes, &mut materials, &mut images, &mut binds);
         let foreground_ready = current.iter().all(|key| people_gpu.0.contains_key(&(key.base, key.kind)));
         if requested && foreground_ready && people_gpu.0.len() == uploaded_before
@@ -1047,12 +1085,12 @@ pub(crate) fn sync(
         }
     }
     #[cfg(not(target_arch = "wasm32"))]
-    if frame.active && enabled_map(&frame.map_id)
+    if ((frame.active && enabled_map(&frame.map_id)) || battle.is_some())
         && settings.as_ref().is_none_or(|settings| settings.enabled)
         && {
             let ModeledActors { asset_warmup, people_gpu, destination_people, gpu_map_id, .. } = &mut *state;
             destination_people.promote_uploaded(gpu_map_id, &frame.map_id, people_gpu);
-            let kinds=frame.actors.iter().filter_map(character_kind).collect::<Vec<_>>();
+            let kinds=needed_kinds();
             let staged=destination_people.adopt_lookahead(&kinds,people_gpu);
             asset_warmup.pending_kinds(kinds, people_gpu, staged)
         } && status.active {
@@ -1062,7 +1100,9 @@ pub(crate) fn sync(
     }
     // Background body preparation may advance for the destination, but its
     // instances must stay with the retained room until terrain publication.
-    if status.active && crate::retain_lighthouse_room(&frame,&footing) {return;}
+    if status.scene_held || (status.active && crate::retain_lighthouse_room(&frame, &footing)) {
+        return;
+    }
     let enabled = frame.active && status.active && enabled_map(&frame.map_id);
     connected_motion::handoff(&mut state, &frame, enabled, &mut commands);
     if !enabled {
@@ -1074,7 +1114,7 @@ pub(crate) fn sync(
         // Entity handles keep the retiring frame alive until deferred despawns.
         #[cfg(not(all(target_arch = "wasm32", feature = "actor-worker-browser")))]
         {
-            let needed = frame.actors.iter().filter_map(character_kind).collect();
+            let needed = needed_kinds().into_iter().collect();
             state.people_gpu.retain_kinds(&needed);
         }
         state.gpu_map_id = frame.map_id.to_string();
@@ -1861,6 +1901,36 @@ mod tests {
             .init_resource::<Assets<bevy::mesh::skinning::SkinnedMeshInverseBindposes>>()
             .add_systems(Update, (wait_for_actor_assets, sync).chain());
         app
+    }
+
+    #[cfg(not(target_arch = "wasm32"))]
+    #[test]
+    fn battle_people_prepare_after_the_field_publication_is_cleared() {
+        let mut app = actor_test_app();
+        app.add_plugins(MinimalPlugins);
+        *app.world_mut().resource_mut::<VisualWorldFrame>() = VisualWorldFrame::default();
+        app.world_mut().resource_mut::<VoxelViewStatus>().active = false;
+        app.insert_resource(crate::VoxelViewSettings { enabled: true, ..default() });
+        app.insert_resource(crystal_render_api::VisualBattleFrame {
+            active: true, map_id: "VioletGym".into(),
+            trainers: [Some(crystal_render_api::VisualBattleTrainer {
+                source_id: "falkner".into(), visible: false,
+            }), None], ..default()
+        });
+        let deadline = std::time::Instant::now() + std::time::Duration::from_secs(60);
+        loop {
+            app.update();
+            let state = app.world().resource::<ModeledActors>();
+            let key = (person_name(CharacterKind::Falkner), CharacterKind::Falkner);
+            if state.people_gpu.0.contains_key(&key)
+                || state.people_gpu.2.lock().expect("prepared appearances").contains_key(&key) {
+                break;
+            }
+            assert!(std::time::Instant::now() < deadline, "battle trainer preparation never started");
+            std::thread::sleep(std::time::Duration::from_millis(1));
+        }
+        assert!(!app.world().resource::<VisualWorldFrame>().active);
+        assert!(app.world().resource::<ModeledActors>().instances.is_empty());
     }
 
     #[test]

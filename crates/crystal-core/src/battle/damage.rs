@@ -1,5 +1,9 @@
 use std::collections::{BTreeMap, BTreeSet};
 
+#[path = "damage_inputs.rs"]
+mod damage_inputs;
+pub(crate) use damage_inputs::DamagePokemon;
+
 use serde::{Deserialize, Deserializer, Serialize, de::Error as _};
 
 use crate::battle::stats::{BattleStatMultiplierTables, apply_stage};
@@ -974,6 +978,32 @@ pub fn calculate_damage(
     weather_modifiers: &WeatherModifiers,
     context: DamageContext,
 ) -> Result<DamageResult, DamageCalculationError> {
+    calculate_damage_with_inputs(
+        &DamagePokemon::from(attacker),
+        &DamagePokemon::from(defender),
+        move_data,
+        stat_multipliers,
+        type_categories,
+        type_effectiveness,
+        weather_modifiers,
+        context,
+    )
+}
+
+#[expect(
+    clippy::too_many_arguments,
+    reason = "Shares the public damage formula boundary"
+)]
+pub(crate) fn calculate_damage_with_inputs(
+    attacker: &DamagePokemon<'_>,
+    defender: &DamagePokemon<'_>,
+    move_data: &Move,
+    stat_multipliers: &BattleStatMultiplierTables,
+    type_categories: &TypeCategories,
+    type_effectiveness: &TypeEffectivenessTable,
+    weather_modifiers: &WeatherModifiers,
+    context: DamageContext,
+) -> Result<DamageResult, DamageCalculationError> {
     if move_data.power == 0 {
         return Ok(DamageResult {
             damage: 0,
@@ -992,15 +1022,15 @@ pub fn calculate_damage(
     } else {
         Stat::SpecialDefense
     };
-    let attack_stage = *attacker.stat_boosts.get(&attack_stat).ok_or_else(|| {
+    let attack_stage = *attacker.stages.get(&attack_stat).ok_or_else(|| {
         DamageCalculationError::MissingStatStage {
-            pokemon_id: attacker.species.id.clone(),
+            pokemon_id: attacker.id.to_string(),
             stat: attack_stat,
         }
     })?;
-    let defense_stage = *defender.stat_boosts.get(&defense_stat).ok_or_else(|| {
+    let defense_stage = *defender.stages.get(&defense_stat).ok_or_else(|| {
         DamageCalculationError::MissingStatStage {
-            pokemon_id: defender.species.id.clone(),
+            pokemon_id: defender.id.to_string(),
             stat: defense_stat,
         }
     })?;
@@ -1082,7 +1112,7 @@ pub fn calculate_damage(
         truncate_damage_stats(attack_value, defense_value, context.link_colosseum);
     if !context.is_confusion_damage
         && (context.defender_metal_powder
-            || (defender.species.id == "DITTO" && defender.item.as_deref() == Some("METAL_POWDER")))
+            || (defender.id == "DITTO" && defender.item.as_deref() == Some("METAL_POWDER")))
     {
         (attack_value, defense_value) =
             apply_metal_powder_damage_stats(attack_value, defense_value);
@@ -1121,8 +1151,8 @@ pub fn calculate_damage(
             damage = damage.saturating_add((damage / 8).max(1));
         }
 
-        if move_data.move_type == attacker.species.type1
-            || move_data.move_type == attacker.species.type2
+        if move_data.move_type == attacker.type1.as_ref()
+            || move_data.move_type == attacker.type2.as_ref()
         {
             damage = ((damage as u32 * 3) / 2) as u16;
         }
@@ -1245,10 +1275,10 @@ pub fn apply_weather_type_modifier(
         .map_or(damage, |entry| entry.apply_floor(damage)))
 }
 
-fn distinct_defender_types(defender: &Pokemon) -> Vec<PokemonType> {
-    let mut types = vec![defender.species.type1.clone()];
-    if defender.species.type2 != defender.species.type1 {
-        types.push(defender.species.type2.clone());
+fn distinct_defender_types(defender: &DamagePokemon<'_>) -> Vec<PokemonType> {
+    let mut types = vec![defender.type1.to_string()];
+    if defender.type2 != defender.type1 {
+        types.push(defender.type2.to_string());
     }
     types
 }
@@ -1258,7 +1288,7 @@ fn clamp_stat(value: u16) -> u16 {
 }
 
 fn apply_burn_attack_penalty(
-    attacker: &Pokemon,
+    attacker: &DamagePokemon<'_>,
     physical: bool,
     attack_value: u16,
     cached_penalty: bool,

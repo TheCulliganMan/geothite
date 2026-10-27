@@ -1,0 +1,234 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F032",
+  "status": "native-front-back-reviewed",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_077": {
+      "species_id": "MN_077",
+      "name": "Totlit",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          29,
+          21,
+          9
+        ],
+        [
+          17,
+          10,
+          4
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        9917,
+        4433,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          239,
+          173,
+          74
+        ],
+        [
+          140,
+          82,
+          33
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#EFAD4A",
+        "#8C5221",
+        "#000000"
+      ]
+    },
+    "MN_078": {
+      "species_id": "MN_078",
+      "name": "Casserogre",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          31,
+          23,
+          8
+        ],
+        [
+          19,
+          6,
+          3
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        8959,
+        3283,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          255,
+          189,
+          66
+        ],
+        [
+          156,
+          49,
+          24
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#FFBD42",
+        "#9C3118",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f032/prompt-v1.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "style_reference": {
+    "origin": "authentic local Crystal sprites",
+    "generator": "crates/crystal-assets/examples/minnesota_gen2_reference.rs",
+    "boards": [
+      "target/minnesota-pokemon/gen2-reference/starters.png",
+      "target/minnesota-pokemon/gen2-reference/bugs.png"
+    ]
+  },
+  "sprites": [
+    {
+      "id": "mn-077-totlit-v1",
+      "species_id": "MN_077",
+      "view": "front",
+      "source": "sprites/mn-f032/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        620,
+        599
+      ],
+      "fit": [
+        44,
+        44
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        9917,
+        4433,
+        0
+      ]
+    },
+    {
+      "id": "mn-077-totlit-v1",
+      "species_id": "MN_077",
+      "view": "back",
+      "source": "sprites/mn-f032/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        599,
+        620,
+        600
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        9917,
+        4433,
+        0
+      ]
+    },
+    {
+      "id": "mn-078-casserogre-v1",
+      "species_id": "MN_078",
+      "view": "front",
+      "source": "sprites/mn-f032/front-back.imagegen-v1.png",
+      "crop": [
+        620,
+        0,
+        692,
+        599
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        8959,
+        3283,
+        0
+      ]
+    },
+    {
+      "id": "mn-078-casserogre-v1",
+      "species_id": "MN_078",
+      "view": "back",
+      "source": "sprites/mn-f032/front-back.imagegen-v1.png",
+      "crop": [
+        620,
+        599,
+        692,
+        600
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        8959,
+        3283,
+        0
+      ]
+    }
+  ],
+  "visual_review": {
+    "status": "reviewed",
+    "notes": "Inspected frozen v1: Totlit eyes/tooth and Casserogre tot ridges, crust fists and filling read clearly; black contours preserve full hands/feet and rear dome portraits without stray neighbor fragments.",
+    "sheet_sha256": "67293d72725031235dd8eb0093197ce4f3c1754e5bb88ce8afbcc31bed9638b1",
+    "outline_profile": "source-contour-v1"
+  }
+}

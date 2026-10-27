@@ -1,0 +1,25 @@
+{
+  "references": [
+    {
+      "path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/gen2-reference/starters.png",
+      "sha256": "af61f720a75b7e1b8e80ba14e8944612556397eedddd719669dec68b0e0fd534",
+      "role": "Authentic Gen2 pixel economy and close rear battle portrait camera, no character copying."
+    }
+  ],
+  "canonical_family_id": "MN_F076",
+  "regional_sources": [
+    {
+      "title": "NOAA, What is a seiche?",
+      "url": "https://oceanservice.noaa.gov/facts/seiche.html",
+      "supports": "Standing basin oscillations after meteorological forcing.",
+      "source_kind": "primary scientific explanation"
+    },
+    {
+      "title": "Lake Superior NERR, Water-quality monitoring metadata",
+      "url": "https://cdmo.baruch.sc.edu/waf/YearlyFiles/Lake%20Superior/water%20quality/metadata/lkswq01-12.22m.pdf",
+      "supports": "Lake Superior seiche effects and estuary flow reversals.",
+      "source_kind": "primary regional institutional source"
+    }
+  ],
+  "palette_plan": "sprites/mn-f076/palette-plan.json"
+}

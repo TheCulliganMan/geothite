@@ -1,0 +1,411 @@
+{
+  "schema_version": 1,
+  "species": [
+    {
+      "id": "MN_295",
+      "classification": "Sprout Calf",
+      "height_inches": 18,
+      "weight_tenths_lb": 180,
+      "dex_pages": [
+        "Its brow buds fork @ when it finds @ clean marsh soil.",
+        "It splays its feet @ to plant shoots in @ soft shore mud."
+      ],
+      "base_stats": {
+        "hp": 55,
+        "attack": 50,
+        "defense": 60,
+        "speed": 35,
+        "special_attack": 45,
+        "special_defense": 45
+      },
+      "catch_rate": 190,
+      "base_exp": 65,
+      "gender_ratio": 127,
+      "hatch_cycles": 20,
+      "growth_rate": "GROWTH_MEDIUM_SLOW",
+      "egg_groups": [
+        "EGG_GROUND",
+        "EGG_PLANT"
+      ],
+      "level_moves": [
+        [
+          1,
+          "TACKLE"
+        ],
+        [
+          1,
+          "GROWL"
+        ],
+        [
+          5,
+          "ABSORB"
+        ],
+        [
+          9,
+          "DEFENSE_CURL"
+        ],
+        [
+          13,
+          "RAZOR_LEAF"
+        ],
+        [
+          17,
+          "HEADBUTT"
+        ],
+        [
+          20,
+          "WATER_GUN"
+        ],
+        [
+          25,
+          "MEGA_DRAIN"
+        ],
+        [
+          29,
+          "GROWTH"
+        ],
+        [
+          34,
+          "TAKE_DOWN"
+        ],
+        [
+          38,
+          "BUBBLEBEAM"
+        ],
+        [
+          43,
+          "SYNTHESIS"
+        ],
+        [
+          48,
+          "BODY_SLAM"
+        ],
+        [
+          55,
+          "SOLARBEAM"
+        ]
+      ],
+      "tmhm_moves": [
+        "CUT",
+        "TOXIC",
+        "HIDDEN_POWER",
+        "SUNNY_DAY",
+        "SOLARBEAM",
+        "RAIN_DANCE",
+        "GIGA_DRAIN",
+        "RETURN",
+        "REST",
+        "PROTECT",
+        "ATTRACT",
+        "FRUSTRATION",
+        "ENDURE",
+        "SLEEP_TALK",
+        "STRENGTH",
+        "HEADBUTT"
+      ],
+      "egg_moves": [
+        "LEECH_SEED",
+        "HAZE",
+        "AMNESIA"
+      ],
+      "evolution": {
+        "method": "LEVEL",
+        "level": 20
+      },
+      "held_items": [
+        null,
+        null
+      ],
+      "menu_icon": "ICON_EQUINE",
+      "cry": {
+        "cry": "CRY_DONPHAN",
+        "pitch": 24,
+        "length": 128
+      },
+      "shiny_rgb5": [
+        [
+          24,
+          17,
+          24
+        ],
+        [
+          9,
+          14,
+          22
+        ]
+      ],
+      "footprint_species": "TAUROS"
+    },
+    {
+      "id": "MN_296",
+      "classification": "Rake Antler",
+      "height_inches": 44,
+      "weight_tenths_lb": 1400,
+      "dex_pages": [
+        "The brow channels @ guide pond water @ over young roots.",
+        "It combs lake beds @ with broad antlers @ for fresh shoots."
+      ],
+      "base_stats": {
+        "hp": 75,
+        "attack": 70,
+        "defense": 80,
+        "speed": 45,
+        "special_attack": 60,
+        "special_defense": 50
+      },
+      "catch_rate": 90,
+      "base_exp": 138,
+      "gender_ratio": 127,
+      "hatch_cycles": 20,
+      "growth_rate": "GROWTH_MEDIUM_SLOW",
+      "egg_groups": [
+        "EGG_GROUND",
+        "EGG_PLANT"
+      ],
+      "level_moves": [
+        [
+          1,
+          "TACKLE"
+        ],
+        [
+          1,
+          "GROWL"
+        ],
+        [
+          5,
+          "ABSORB"
+        ],
+        [
+          9,
+          "DEFENSE_CURL"
+        ],
+        [
+          13,
+          "RAZOR_LEAF"
+        ],
+        [
+          17,
+          "HEADBUTT"
+        ],
+        [
+          20,
+          "WATER_GUN"
+        ],
+        [
+          26,
+          "MEGA_DRAIN"
+        ],
+        [
+          31,
+          "GROWTH"
+        ],
+        [
+          35,
+          "STOMP"
+        ],
+        [
+          38,
+          "BUBBLEBEAM"
+        ],
+        [
+          44,
+          "SYNTHESIS"
+        ],
+        [
+          50,
+          "BODY_SLAM"
+        ],
+        [
+          57,
+          "SOLARBEAM"
+        ]
+      ],
+      "tmhm_moves": [
+        "CUT",
+        "TOXIC",
+        "HIDDEN_POWER",
+        "SUNNY_DAY",
+        "SOLARBEAM",
+        "RAIN_DANCE",
+        "GIGA_DRAIN",
+        "RETURN",
+        "REST",
+        "PROTECT",
+        "ATTRACT",
+        "FRUSTRATION",
+        "ENDURE",
+        "SLEEP_TALK",
+        "STRENGTH",
+        "HEADBUTT",
+        "SURF",
+        "WHIRLPOOL"
+      ],
+      "egg_moves": [
+        "LEECH_SEED",
+        "HAZE",
+        "AMNESIA"
+      ],
+      "evolution": {
+        "method": "LEVEL",
+        "level": 38
+      },
+      "held_items": [
+        null,
+        null
+      ],
+      "menu_icon": "ICON_EQUINE",
+      "cry": {
+        "cry": "CRY_DONPHAN",
+        "pitch": -16,
+        "length": 160
+      },
+      "shiny_rgb5": [
+        [
+          24,
+          19,
+          9
+        ],
+        [
+          7,
+          11,
+          20
+        ]
+      ],
+      "footprint_species": "TAUROS"
+    },
+    {
+      "id": "MN_297",
+      "classification": "Marsh Rake",
+      "height_inches": 83,
+      "weight_tenths_lb": 8800,
+      "dex_pages": [
+        "Its antler grooves @ comb hidden beds @ of lake plants.",
+        "It grips the mud @ with living roots @ against currents."
+      ],
+      "base_stats": {
+        "hp": 105,
+        "attack": 105,
+        "defense": 100,
+        "speed": 55,
+        "special_attack": 95,
+        "special_defense": 65
+      },
+      "catch_rate": 45,
+      "base_exp": 225,
+      "gender_ratio": 127,
+      "hatch_cycles": 20,
+      "growth_rate": "GROWTH_MEDIUM_SLOW",
+      "egg_groups": [
+        "EGG_GROUND",
+        "EGG_PLANT"
+      ],
+      "level_moves": [
+        [
+          1,
+          "TACKLE"
+        ],
+        [
+          1,
+          "GROWL"
+        ],
+        [
+          1,
+          "WATER_GUN"
+        ],
+        [
+          5,
+          "ABSORB"
+        ],
+        [
+          9,
+          "DEFENSE_CURL"
+        ],
+        [
+          13,
+          "RAZOR_LEAF"
+        ],
+        [
+          17,
+          "HEADBUTT"
+        ],
+        [
+          26,
+          "MEGA_DRAIN"
+        ],
+        [
+          31,
+          "GROWTH"
+        ],
+        [
+          35,
+          "STOMP"
+        ],
+        [
+          38,
+          "BUBBLEBEAM"
+        ],
+        [
+          45,
+          "SYNTHESIS"
+        ],
+        [
+          51,
+          "BODY_SLAM"
+        ],
+        [
+          59,
+          "SOLARBEAM"
+        ]
+      ],
+      "tmhm_moves": [
+        "CUT",
+        "TOXIC",
+        "HIDDEN_POWER",
+        "SUNNY_DAY",
+        "SOLARBEAM",
+        "RAIN_DANCE",
+        "GIGA_DRAIN",
+        "RETURN",
+        "REST",
+        "PROTECT",
+        "ATTRACT",
+        "FRUSTRATION",
+        "ENDURE",
+        "SLEEP_TALK",
+        "STRENGTH",
+        "HEADBUTT",
+        "SURF",
+        "WHIRLPOOL"
+      ],
+      "egg_moves": [
+        "LEECH_SEED",
+        "HAZE",
+        "AMNESIA"
+      ],
+      "evolution": null,
+      "held_items": [
+        null,
+        null
+      ],
+      "menu_icon": "ICON_EQUINE",
+      "cry": {
+        "cry": "CRY_DONPHAN",
+        "pitch": -48,
+        "length": 208
+      },
+      "shiny_rgb5": [
+        [
+          23,
+          17,
+          27
+        ],
+        [
+          4,
+          14,
+          16
+        ]
+      ],
+      "footprint_species": "TAUROS"
+    }
+  ]
+}

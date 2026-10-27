@@ -1,0 +1,14 @@
+{
+  "status": "success",
+  "original_tool_path": "/Users/ryanculligan/.codex/generated_images/01a179c0-8064-7d62-9f6b-2356ce51b543/exec-1a58ce7d-160f-494a-8798-7174d8857b54.png",
+  "raw_copy": "sprites/mn-f116/mn-250-250.front-back.imagegen-v2.png",
+  "sha256": "1ebcf7f5790b048c7668482bd326c5da2549fa739729d3dcfa6c6db7b7c3a248",
+  "full_resolution": [
+    1161,
+    1355
+  ],
+  "prompt_file": "prompt-v2.txt",
+  "reference_mapping": "reference-mapping-v1.json",
+  "superseded_by": "generation-attempt-v3.json",
+  "note": "Initial automatic metadata before correcting successful compact-prompt version label; exact bytes preserved in v2 PNG."
+}

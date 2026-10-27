@@ -1,0 +1,36 @@
+{
+  "id": "MN_F130",
+  "region": "mississippi_river",
+  "theme": "Minnesota river otters and riverbank sliding: a playful web-pawed youngster develops a long flexible swimming body, broad shoulder folds and a thick looping rudder tail. The adult rolls its own body through currents; no held stones, shells, weapons or clothes.",
+  "habitat": "Restored riverbanks, wooded streams and northern lake outlets.",
+  "members": [
+    {
+      "id": "MN_287",
+      "name": "Rivvit",
+      "types": [
+        "WATER"
+      ],
+      "stage": 1,
+      "evolves_to": "MN_288"
+    },
+    {
+      "id": "MN_288",
+      "name": "Slidewake",
+      "types": [
+        "WATER"
+      ],
+      "stage": 2,
+      "evolves_to": null
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.dnr.state.mn.us/mammals/riverotter.html",
+      "publisher": "Minnesota regional primary source",
+      "evidence": "River-otter anatomy, dark back and pale cheeks, aquatic habitat and regional restoration.",
+      "fantasy_extension": "All powers, anatomy changes and discovery scenes are original fiction."
+    }
+  ],
+  "design_status": "authored-wildlife-replacement",
+  "replacement_context": "User requested forest wildlife in place of rejected weather families while retaining exactly220 active species. No encounter table or map event is changed."
+}

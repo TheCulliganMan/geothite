@@ -1,0 +1,130 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F144",
+  "status": "native-front-back-reviewed",
+  "tool": "built-in image_gen",
+  "prompt_file": "sprites/mn-f144/prompt-v1.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "pokemon_palettes": {
+    "MN_317": {
+      "species_id": "MN_317",
+      "name": "Driftile",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          20,
+          25,
+          13
+        ],
+        [
+          12,
+          8,
+          15
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        14132,
+        15628,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          165,
+          206,
+          107
+        ],
+        [
+          99,
+          66,
+          123
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#A5CE6B",
+        "#63427B",
+        "#000000"
+      ]
+    }
+  },
+  "source_sha256": "633e2ac76b01bb5a486b3062abddd402cd47cd0e66d1e8d2a0b32ac596544487",
+  "sprites": [
+    {
+      "id": "mn-317-driftile-v1",
+      "species_id": "MN_317",
+      "view": "front",
+      "source": "sprites/mn-f144/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        887,
+        887
+      ],
+      "fit": [
+        52,
+        51
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        14132,
+        15628,
+        0
+      ],
+      "interior_black_min_samples": 12,
+      "white_detail_min_samples": 4,
+      "exterior_contour": "solid"
+    },
+    {
+      "id": "mn-317-driftile-v1",
+      "species_id": "MN_317",
+      "view": "back",
+      "source": "sprites/mn-f144/front-back.imagegen-v1.png",
+      "crop": [
+        887,
+        90,
+        887,
+        680
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        14132,
+        15628,
+        0
+      ],
+      "interior_black_min_samples": 12,
+      "white_detail_min_samples": 4,
+      "exterior_contour": "solid"
+    }
+  ],
+  "visual_review": {
+    "status": "reviewed",
+    "reviewer": "root",
+    "sheet_sha256": "7da119634416f751399651e6aa5ff4ef94b725c7feb3965e64a5d49191924c93",
+    "outline_profile": "solid-exterior-v1",
+    "notes": "Root inspected native56front and48close rear. Eight overlapping rounded leafplates form a coherent offset puzzle colony; one broad white eye under a leaf brow, distinct curled rootfeet, connected violet joints. Rear fillsframewithupperleafbodyandcroppedfeet, matchingthefront. Continuousblackrims, fourRGB555inks, nohandpixelchanges. Originalsource retained."
+  }
+}

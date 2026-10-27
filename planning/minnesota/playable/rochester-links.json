@@ -1,0 +1,65 @@
+{
+  "manifest": "minnesota-winona-rochester-links-v1",
+  "links": [
+    {
+      "town": "MnWinona",
+      "town_direction": "west",
+      "route_direction": "east",
+      "offset": -3,
+      "patch": [
+        0,
+        9
+      ],
+      "town_edge": [
+        [
+          0,
+          18
+        ],
+        [
+          0,
+          19
+        ]
+      ],
+      "route_edge": [
+        [
+          63,
+          24
+        ],
+        [
+          63,
+          25
+        ]
+      ]
+    },
+    {
+      "town": "MnRochester",
+      "town_direction": "east",
+      "route_direction": "west",
+      "offset": -3,
+      "patch": [
+        19,
+        9
+      ],
+      "town_edge": [
+        [
+          39,
+          18
+        ],
+        [
+          39,
+          19
+        ]
+      ],
+      "route_edge": [
+        [
+          0,
+          24
+        ],
+        [
+          0,
+          25
+        ]
+      ]
+    }
+  ]
+}

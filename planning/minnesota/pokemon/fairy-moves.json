@@ -1,0 +1,557 @@
+{
+  "schema_version": 1,
+  "id": "northwoods-fairy-moves-v1",
+  "source": {
+    "repository": "https://github.com/smogon/pokemon-showdown",
+    "commit": "8f9ab4949d0bf64d5a5ac985a298d1313f2b9a29",
+    "url": "https://github.com/smogon/pokemon-showdown/blob/8f9ab4949d0bf64d5a5ac985a298d1313f2b9a29/data/moves.ts"
+  },
+  "rules": "Five Gen6 Fairy attacks and Gen4 Poison Jab adapted to existing single-battle mechanics. Native donor animation programs, explicit per-move categories and actual secondary effects; no abilities, sound/contact flags, terrain or doubles targeting. Authored regional and returning-species progression. Metronome and Hidden Power keep their native pools.",
+  "moves": [
+    {
+      "id": "FAIRY_WIND",
+      "display_name": "Fairy Wind",
+      "kind": "imported",
+      "introduced_generation": 6,
+      "canonical_number": 584,
+      "category": "special",
+      "description": "A light enchanted breeze deals Fairy damage.",
+      "animation_donor": "GUST",
+      "battle": {
+        "source_index": 265,
+        "name": "FAIRY_WIND",
+        "type": "FAIRY",
+        "power": 40,
+        "accuracy": 100,
+        "pp": 30,
+        "effect": "NORMAL_HIT",
+        "effect_chance": 0,
+        "stat": null,
+        "amount": null
+      },
+      "learners": [
+        {
+          "species_id": "MN_002",
+          "runtime_name": "SLIPPERINA",
+          "level": 16
+        },
+        {
+          "species_id": "MN_003",
+          "runtime_name": "CYPRIELLE",
+          "level": 16
+        },
+        {
+          "species_id": "MN_093",
+          "runtime_name": "TILTAWISP",
+          "level": 12
+        },
+        {
+          "species_id": "MN_163",
+          "runtime_name": "MITWIST",
+          "level": 9
+        },
+        {
+          "species_id": "MN_164",
+          "runtime_name": "MISPAIR",
+          "level": 9
+        },
+        {
+          "species_id": "MN_165",
+          "runtime_name": "SHAWLTER",
+          "level": 9
+        },
+        {
+          "species_id": "MN_213",
+          "runtime_name": "CHISLET",
+          "level": 9
+        },
+        {
+          "species_id": "MN_214",
+          "runtime_name": "BUTTERMUSE",
+          "level": 9
+        },
+        {
+          "species_id": "MN_250",
+          "runtime_name": "FLARKINDLE",
+          "level": 12
+        },
+        {
+          "species_id": "NAT_175",
+          "runtime_name": "TOGEPI",
+          "national_number": 175,
+          "level": 9
+        },
+        {
+          "species_id": "NAT_176",
+          "runtime_name": "TOGETIC",
+          "national_number": 176,
+          "level": 9
+        },
+        {
+          "species_id": "NAT_122",
+          "runtime_name": "MR_MIME",
+          "national_number": 122,
+          "level": 11
+        }
+      ]
+    },
+    {
+      "id": "DISARMING_VOICE",
+      "display_name": "Disarming Voice",
+      "kind": "imported",
+      "introduced_generation": 6,
+      "canonical_number": 574,
+      "category": "special",
+      "description": "An enchanting voice deals Fairy damage without an accuracy check.",
+      "animation_donor": "GROWL",
+      "battle": {
+        "source_index": 266,
+        "name": "DISARMING_VOICE",
+        "type": "FAIRY",
+        "power": 40,
+        "accuracy": 100,
+        "pp": 15,
+        "effect": "ALWAYS_HIT",
+        "effect_chance": 0,
+        "stat": null,
+        "amount": null
+      },
+      "learners": [
+        {
+          "species_id": "MN_140",
+          "runtime_name": "CHOIRBOG",
+          "level": 30
+        },
+        {
+          "species_id": "MN_163",
+          "runtime_name": "MITWIST",
+          "level": 16
+        },
+        {
+          "species_id": "MN_164",
+          "runtime_name": "MISPAIR",
+          "level": 16
+        },
+        {
+          "species_id": "MN_165",
+          "runtime_name": "SHAWLTER",
+          "level": 16
+        },
+        {
+          "species_id": "MN_213",
+          "runtime_name": "CHISLET",
+          "level": 14
+        },
+        {
+          "species_id": "MN_214",
+          "runtime_name": "BUTTERMUSE",
+          "level": 14
+        },
+        {
+          "species_id": "MN_301",
+          "runtime_name": "DOZEBEAR",
+          "level": 28
+        },
+        {
+          "species_id": "MN_302",
+          "runtime_name": "DENUMBRA",
+          "level": 16
+        },
+        {
+          "species_id": "NAT_173",
+          "runtime_name": "CLEFFA",
+          "national_number": 173,
+          "level": 9
+        },
+        {
+          "species_id": "NAT_035",
+          "runtime_name": "CLEFAIRY",
+          "national_number": 35,
+          "level": 8
+        },
+        {
+          "species_id": "NAT_036",
+          "runtime_name": "CLEFABLE",
+          "national_number": 36,
+          "level": 9
+        },
+        {
+          "species_id": "NAT_174",
+          "runtime_name": "IGGLYBUFF",
+          "national_number": 174,
+          "level": 9
+        },
+        {
+          "species_id": "NAT_039",
+          "runtime_name": "JIGGLYPUFF",
+          "national_number": 39,
+          "level": 9
+        },
+        {
+          "species_id": "NAT_040",
+          "runtime_name": "WIGGLYTUFF",
+          "national_number": 40,
+          "level": 9
+        },
+        {
+          "species_id": "NAT_175",
+          "runtime_name": "TOGEPI",
+          "national_number": 175,
+          "level": 17
+        },
+        {
+          "species_id": "NAT_209",
+          "runtime_name": "SNUBBULL",
+          "national_number": 209,
+          "level": 9
+        },
+        {
+          "species_id": "NAT_210",
+          "runtime_name": "GRANBULL",
+          "national_number": 210,
+          "level": 9
+        },
+        {
+          "species_id": "NAT_183",
+          "runtime_name": "MARILL",
+          "national_number": 183,
+          "level": 12
+        },
+        {
+          "species_id": "NAT_184",
+          "runtime_name": "AZUMARILL",
+          "national_number": 184,
+          "level": 12
+        },
+        {
+          "species_id": "MN_139",
+          "runtime_name": "CHORIP",
+          "level": 18
+        },
+        {
+          "species_id": "MN_300",
+          "runtime_name": "DENSY",
+          "level": 16
+        }
+      ]
+    },
+    {
+      "id": "DAZZLING_GLEAM",
+      "display_name": "Dazzling Gleam",
+      "kind": "imported",
+      "introduced_generation": 6,
+      "canonical_number": 605,
+      "category": "special",
+      "description": "A brilliant flash deals Fairy damage.",
+      "animation_donor": "FLASH",
+      "battle": {
+        "source_index": 267,
+        "name": "DAZZLING_GLEAM",
+        "type": "FAIRY",
+        "power": 80,
+        "accuracy": 100,
+        "pp": 10,
+        "effect": "NORMAL_HIT",
+        "effect_chance": 0,
+        "stat": null,
+        "amount": null
+      },
+      "learners": [
+        {
+          "species_id": "MN_002",
+          "runtime_name": "SLIPPERINA",
+          "level": 30
+        },
+        {
+          "species_id": "MN_003",
+          "runtime_name": "CYPRIELLE",
+          "level": 30
+        },
+        {
+          "species_id": "MN_093",
+          "runtime_name": "TILTAWISP",
+          "level": 32
+        },
+        {
+          "species_id": "MN_140",
+          "runtime_name": "CHOIRBOG",
+          "level": 34
+        },
+        {
+          "species_id": "MN_164",
+          "runtime_name": "MISPAIR",
+          "level": 32
+        },
+        {
+          "species_id": "MN_165",
+          "runtime_name": "SHAWLTER",
+          "level": 32
+        },
+        {
+          "species_id": "MN_213",
+          "runtime_name": "CHISLET",
+          "level": 32
+        },
+        {
+          "species_id": "MN_214",
+          "runtime_name": "BUTTERMUSE",
+          "level": 32
+        },
+        {
+          "species_id": "MN_250",
+          "runtime_name": "FLARKINDLE",
+          "level": 36
+        },
+        {
+          "species_id": "MN_301",
+          "runtime_name": "DOZEBEAR",
+          "level": 34
+        },
+        {
+          "species_id": "MN_302",
+          "runtime_name": "DENUMBRA",
+          "level": 34
+        },
+        {
+          "species_id": "NAT_035",
+          "runtime_name": "CLEFAIRY",
+          "national_number": 35,
+          "level": 28
+        },
+        {
+          "species_id": "NAT_036",
+          "runtime_name": "CLEFABLE",
+          "national_number": 36,
+          "level": 32
+        },
+        {
+          "species_id": "NAT_039",
+          "runtime_name": "JIGGLYPUFF",
+          "national_number": 39,
+          "level": 32
+        },
+        {
+          "species_id": "NAT_040",
+          "runtime_name": "WIGGLYTUFF",
+          "national_number": 40,
+          "level": 32
+        },
+        {
+          "species_id": "NAT_175",
+          "runtime_name": "TOGEPI",
+          "national_number": 175,
+          "level": 32
+        },
+        {
+          "species_id": "NAT_176",
+          "runtime_name": "TOGETIC",
+          "national_number": 176,
+          "level": 32
+        },
+        {
+          "species_id": "NAT_122",
+          "runtime_name": "MR_MIME",
+          "national_number": 122,
+          "level": 32
+        }
+      ]
+    },
+    {
+      "id": "PLAY_ROUGH",
+      "display_name": "Play Rough",
+      "kind": "imported",
+      "introduced_generation": 6,
+      "canonical_number": 583,
+      "category": "physical",
+      "description": "Rough play deals Fairy damage and may lower Attack.",
+      "animation_donor": "THRASH",
+      "battle": {
+        "source_index": 268,
+        "name": "PLAY_ROUGH",
+        "type": "FAIRY",
+        "power": 90,
+        "accuracy": 90,
+        "pp": 10,
+        "effect": "ATTACK_DOWN_HIT",
+        "effect_chance": 10,
+        "stat": "ATTACK",
+        "amount": -1
+      },
+      "learners": [
+        {
+          "species_id": "MN_095",
+          "runtime_name": "BABEHEMOTH",
+          "level": 30
+        },
+        {
+          "species_id": "MN_164",
+          "runtime_name": "MISPAIR",
+          "level": 40
+        },
+        {
+          "species_id": "MN_165",
+          "runtime_name": "SHAWLTER",
+          "level": 40
+        },
+        {
+          "species_id": "MN_301",
+          "runtime_name": "DOZEBEAR",
+          "level": 38
+        },
+        {
+          "species_id": "MN_302",
+          "runtime_name": "DENUMBRA",
+          "level": 38
+        },
+        {
+          "species_id": "NAT_039",
+          "runtime_name": "JIGGLYPUFF",
+          "national_number": 39,
+          "level": 44
+        },
+        {
+          "species_id": "NAT_040",
+          "runtime_name": "WIGGLYTUFF",
+          "national_number": 40,
+          "level": 44
+        },
+        {
+          "species_id": "NAT_209",
+          "runtime_name": "SNUBBULL",
+          "national_number": 209,
+          "level": 35
+        },
+        {
+          "species_id": "NAT_210",
+          "runtime_name": "GRANBULL",
+          "national_number": 210,
+          "level": 35
+        },
+        {
+          "species_id": "NAT_183",
+          "runtime_name": "MARILL",
+          "national_number": 183,
+          "level": 36
+        },
+        {
+          "species_id": "NAT_184",
+          "runtime_name": "AZUMARILL",
+          "national_number": 184,
+          "level": 36
+        }
+      ]
+    },
+    {
+      "id": "MOONBLAST",
+      "display_name": "Moonblast",
+      "kind": "imported",
+      "introduced_generation": 6,
+      "canonical_number": 585,
+      "category": "special",
+      "description": "Moonlight strikes for Fairy damage and may lower Special Attack.",
+      "animation_donor": "MOONLIGHT",
+      "battle": {
+        "source_index": 269,
+        "name": "MOONBLAST",
+        "type": "FAIRY",
+        "power": 95,
+        "accuracy": 100,
+        "pp": 15,
+        "effect": "SPECIAL_ATTACK_DOWN_HIT",
+        "effect_chance": 30,
+        "stat": "SPECIAL_ATTACK",
+        "amount": -1
+      },
+      "learners": [
+        {
+          "species_id": "MN_003",
+          "runtime_name": "CYPRIELLE",
+          "level": 46
+        },
+        {
+          "species_id": "MN_165",
+          "runtime_name": "SHAWLTER",
+          "level": 46
+        },
+        {
+          "species_id": "MN_214",
+          "runtime_name": "BUTTERMUSE",
+          "level": 46
+        },
+        {
+          "species_id": "MN_250",
+          "runtime_name": "FLARKINDLE",
+          "level": 52
+        },
+        {
+          "species_id": "MN_302",
+          "runtime_name": "DENUMBRA",
+          "level": 48
+        },
+        {
+          "species_id": "NAT_035",
+          "runtime_name": "CLEFAIRY",
+          "national_number": 35,
+          "level": 46
+        },
+        {
+          "species_id": "NAT_036",
+          "runtime_name": "CLEFABLE",
+          "national_number": 36,
+          "level": 48
+        },
+        {
+          "species_id": "NAT_176",
+          "runtime_name": "TOGETIC",
+          "national_number": 176,
+          "level": 46
+        },
+        {
+          "species_id": "NAT_122",
+          "runtime_name": "MR_MIME",
+          "national_number": 122,
+          "level": 48
+        }
+      ]
+    },
+    {
+      "id": "POISON_JAB",
+      "display_name": "Poison Jab",
+      "kind": "imported",
+      "introduced_generation": 4,
+      "canonical_number": 398,
+      "category": "physical",
+      "description": "A physical Poison strike may poison its target; a counter for enchanted foes.",
+      "animation_donor": "POISON_STING",
+      "battle": {
+        "source_index": 270,
+        "name": "POISON_JAB",
+        "type": "POISON",
+        "power": 80,
+        "accuracy": 100,
+        "pp": 20,
+        "effect": "POISON_HIT",
+        "effect_chance": 30,
+        "stat": null,
+        "amount": null
+      },
+      "learners": [
+        {
+          "species_id": "MN_242",
+          "runtime_name": "BARRICANT",
+          "level": 32
+        },
+        {
+          "species_id": "MN_258",
+          "runtime_name": "CASTANAKE",
+          "level": 32
+        },
+        {
+          "species_id": "MN_153",
+          "runtime_name": "MOSQUITAN",
+          "level": 46
+        }
+      ]
+    }
+  ]
+}

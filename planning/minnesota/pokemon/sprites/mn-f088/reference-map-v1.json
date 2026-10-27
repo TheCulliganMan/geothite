@@ -1,0 +1,20 @@
+{
+  "generation": "new original artwork",
+  "input_images": [],
+  "text_style_reference_boards": [
+    "target/minnesota-pokemon/gen2-reference/starters.png",
+    "target/minnesota-pokemon/gen2-reference/bugs.png"
+  ],
+  "regional_sources": [
+    {
+      "url": "https://www.nps.gov/miss/planyourvisit/stanfall.htm",
+      "institution": "National Park Service",
+      "supports": "Falls supplied power to riverfront lumber and flour mills."
+    },
+    {
+      "url": "https://www.usgs.gov/geology-and-ecology-of-national-parks/geology-mississippi-national-river-and-recreation-area",
+      "institution": "US Geological Survey",
+      "supports": "Describes the falls geology and hydroelectric dams. Rotating anatomy and electrical powers are original fiction."
+    }
+  ]
+}

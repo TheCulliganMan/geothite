@@ -1,0 +1,148 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F041",
+  "status": "native-redesign-candidate-reviewed",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_092": {
+      "species_id": "MN_092",
+      "name": "Graytag",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          20,
+          22,
+          24
+        ],
+        [
+          10,
+          13,
+          18
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        25300,
+        18858,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          165,
+          181,
+          198
+        ],
+        [
+          82,
+          107,
+          148
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#A5B5C6",
+        "#526B94",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f041/redesign-20261026/prompt-v2.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "style_reference": {
+    "origin": "authentic local Crystal sprites",
+    "generator": "crates/crystal-assets/examples/minnesota_gen2_reference.rs",
+    "boards": [
+      "target/minnesota-pokemon/gen2-reference/starters.png",
+      "target/minnesota-pokemon/gen2-reference/bugs.png"
+    ]
+  },
+  "sprites": [
+    {
+      "id": "mn-092-graytag-redesign-v1",
+      "species_id": "MN_092",
+      "view": "front",
+      "source": "sprites/mn-f041/redesign-20261026/graytag.front-back.imagegen-v2.png",
+      "crop": [
+        0,
+        0,
+        1161,
+        690
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        25300,
+        18858,
+        0
+      ],
+      "interior_black_min_samples": 16,
+      "white_detail_min_samples": 16
+    },
+    {
+      "id": "mn-092-graytag-redesign-v1",
+      "species_id": "MN_092",
+      "view": "back",
+      "source": "sprites/mn-f041/redesign-20261026/graytag.front-back.imagegen-v2.png",
+      "crop": [
+        0,
+        690,
+        1161,
+        665
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        25300,
+        18858,
+        0
+      ],
+      "interior_black_min_samples": 16,
+      "white_detail_min_samples": 16
+    }
+  ],
+  "reference_mapping": "sprites/mn-f041/redesign-20261026/reference-mapping-v2.json",
+  "candidate_note": "Separate Graytag redesign candidate only; canonical manifest/palette/registration unchanged.",
+  "candidate_review": {
+    "status": "pending-root-judgment",
+    "outline_profile": "source-contour-v1",
+    "sheet_sha256": "6303d37f0fd86af78b89cc4d1e06dbdb55e026ecb2d8a4587425a8fd2f920287",
+    "notes": "Viewed actual native candidate against old board and raw: recognizable flat duck bill/webfeet, large raised three-feather wing-hand, long spring stride and mischievous eye. Hand/stride theme now embodied; face remains small within wide54px running silhouette and grin compresses into dark bill line. Back clearly rear shoulder/head with raised near hand, solid rims; no canonical publication. Original line aliases restored byte-identically."
+  },
+  "candidate_exports": {
+    "native_sheet": "line.redesign-20261026.native.png",
+    "review_sheet": "line.redesign-20261026.review.png"
+  },
+  "comparison_before": "line.before-redesign-20261026.review.png",
+  "visual_review": {
+    "status": "reviewed",
+    "reviewer": "root",
+    "notes": "Root inspected both native views: broad three-finger tapping wing-hand and stretched runner stance express tag/chase clearly. Flat duck bill and webbed feet remain recognizable. Compact grin simplifies, but eye/window and gesture remain readable; close rear preserves raised hand.",
+    "sheet_sha256": "6303d37f0fd86af78b89cc4d1e06dbdb55e026ecb2d8a4587425a8fd2f920287",
+    "outline_profile": "source-contour-v1"
+  }
+}

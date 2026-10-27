@@ -1,0 +1,80 @@
+{
+  "id": "MnWinona",
+  "name": "WINONA",
+  "dimensions_metatiles": [
+    20,
+    18
+  ],
+  "reference_anchor_percent": [
+    87,
+    87
+  ],
+  "role": "starter",
+  "tileset": "johto",
+  "composition": "Riverbank home, field station and oak square.",
+  "ports": [
+    {
+      "route": "MN_R01",
+      "side": "W",
+      "gate_metatile": [
+        1,
+        9
+      ],
+      "landing_metatile": [
+        3,
+        9
+      ]
+    }
+  ],
+  "interiors": [
+    {
+      "id": "MnWinonaPokecenter1F",
+      "kind": "pokecenter",
+      "dimensions_metatiles": [
+        10,
+        8
+      ],
+      "source_behavior": "canonical healing, PC and blackout recovery"
+    },
+    {
+      "id": "MnWinonaMart",
+      "kind": "mart",
+      "dimensions_metatiles": [
+        6,
+        4
+      ],
+      "source_behavior": "canonical clerk, money deduction and inventory"
+    },
+    {
+      "id": "MnWinonaHome1F",
+      "kind": "home",
+      "dimensions_metatiles": [
+        6,
+        4
+      ]
+    },
+    {
+      "id": "MnWinonaHome2F",
+      "kind": "start",
+      "dimensions_metatiles": [
+        4,
+        4
+      ]
+    },
+    {
+      "id": "MnWinonaFieldStation",
+      "kind": "starter_lab",
+      "dimensions_metatiles": [
+        10,
+        6
+      ]
+    }
+  ],
+  "walkable_destinations": [
+    "each port landing",
+    "every visible exterior door",
+    "central square",
+    "local story NPC"
+  ],
+  "door_contract": "Assign exterior core-tile door coordinates only after selecting authentic facade quadrants; record reciprocal warp indices and indoor floor arrivals before export."
+}

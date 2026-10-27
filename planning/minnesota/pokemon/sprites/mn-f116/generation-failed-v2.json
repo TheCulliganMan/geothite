@@ -1,0 +1,7 @@
+{
+  "status": "output-moderation-other",
+  "request_id": "722122e9-10f7-4bd8-9b00-c1a05a421d34",
+  "prompt_file": "prompt-v1.txt",
+  "raw_returned": false,
+  "retry": "identical prompt"
+}

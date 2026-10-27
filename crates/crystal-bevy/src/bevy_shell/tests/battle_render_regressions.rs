@@ -6759,7 +6759,7 @@ fn battle_anim_substitute_wrappers_preserve_source_move_identity_and_oam() {
         visible_move_animation_definition(&snapshot, "SUBSTITUTE", 2).unwrap();
     assert!(lower_objects.is_empty() && raise_objects.is_empty());
     for (move_id, source_id) in [
-        ("KINESIS", 134_u8),
+        ("KINESIS", 134_u16),
         ("SOFTBOILED", 135),
         ("MILK_DRINK", 208),
     ] {
@@ -6800,7 +6800,7 @@ fn battle_anim_substitute_wrappers_preserve_source_move_identity_and_oam() {
                 let mut expected = new_visible_battle_objects(&bundle, &bare).unwrap();
                 // Independent source-register oracle: the catalog index, not a
                 // display label or the production identity-to-register match.
-                let [lo, hi] = u16::from(catalog_move.source_index).to_le_bytes();
+                let [lo, hi] = catalog_move.source_index.to_le_bytes();
                 expected.machine.write(battle_program::W_F_X_ANIM_I_D, lo);
                 expected
                     .machine

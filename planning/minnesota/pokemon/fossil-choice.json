@@ -1,0 +1,92 @@
+{
+  "schema_version": 1,
+  "status": "species-compiled-in-local-pack; fossil-choice-and-revival-service-proposed",
+  "choice_id": "MN_FOSSIL_CHOICE",
+  "choice_prompt": "Which ancient creature should we restore?",
+  "count_toward_roster": 4,
+  "options": [
+    {
+      "item_name": "LENS FOSSIL",
+      "family_id": "MN_F092",
+      "revives_species_id": "MN_201",
+      "species": [
+        {
+          "id": "MN_201",
+          "name": "Trilume",
+          "types": [
+            "ROCK",
+            "BUG"
+          ]
+        },
+        {
+          "id": "MN_202",
+          "name": "Panoplite",
+          "types": [
+            "ROCK",
+            "BUG"
+          ]
+        }
+      ],
+      "inspiration": "Minnesota trilobite fossils; compound eyes and articulating armor inspire an original living visor-shield.",
+      "growth": "A low three-lobed crawler with a broad eye visor grows into a compact bastion; interlocking plates unfold around the face and paired shovel-like forelimbs brace its stance. No swords or scythes.",
+      "proposed_role": "Physical defender; shielded front, readable side-eye windows and a compact curling silhouette.",
+      "evolution": {
+        "method": "LEVEL",
+        "level": 34
+      }
+    },
+    {
+      "item_name": "SPIRE FOSSIL",
+      "family_id": "MN_F093",
+      "revives_species_id": "MN_203",
+      "species": [
+        {
+          "id": "MN_203",
+          "name": "Siphlet",
+          "types": [
+            "ROCK",
+            "DARK"
+          ]
+        },
+        {
+          "id": "MN_204",
+          "name": "Obelurk",
+          "types": [
+            "ROCK",
+            "DARK"
+          ]
+        }
+      ],
+      "inspiration": "Straight-shelled Ordovician cephalopods from southeastern Minnesota; chambered shell and jet movement inspire original ink-ambush anatomy.",
+      "growth": "A squat chamber-cone youngster grows a long tapering obelisk shell angled above a hooded mantle; two broad grasping fins and a few thick tendrils form a clear triangular base. Ink forms a solid dark veil rather than particle clutter.",
+      "proposed_role": "Mixed ink ambusher: special Rock and water-ink moves with physical Dark pressure under the base pack modern move split; long diagonal shell contrasts the trilobite broad shield.",
+      "evolution": {
+        "method": "LEVEL",
+        "level": 34
+      }
+    }
+  ],
+  "acquisition_proposal": {
+    "map_basis": "MN_R01 Driftless Trail between Winona and Rochester",
+    "scene": "An optional fossiliferous bluff alcove contains one paired slab. A visiting researcher offers the player one recoverable specimen; selecting one records a single irreversible choice for that run. No random destruction or paid rerolls.",
+    "revival": "A fossil researcher in Rochester clinic courtyard can restore the chosen fossil at level10 after the first badge. This is a proposed NPC service, not an existing authored event.",
+    "inventory": "Check party room before completing revival; if full, leave the fossil with the researcher and allow a later return. Preserve the item until a creature is actually received.",
+    "other_choice": "The unchosen line becomes available through a proposed post-League research exchange, preserving the early choice while allowing collection completion.",
+    "runtime_status": "No map, item ID, script, encounter or save flag has been registered."
+  },
+  "existing_fossil_line": {
+    "family_id": "MN_F018",
+    "names": [
+      "Castorock",
+      "Castoroar"
+    ],
+    "handling": "Retained as a separate prehistoric giant-beaver line; it does not replace either item choice."
+  },
+  "sources": [
+    {
+      "title": "Minnesota Geological Survey: Fossils",
+      "url": "https://cse.umn.edu/mgs/fossils",
+      "supports": "Minnesota trilobites and straight-shelled Ordovician cephalopods; fictional species, types, armor and powers are original."
+    }
+  ]
+}

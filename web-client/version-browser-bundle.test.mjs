@@ -1,81 +1,57 @@
-import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtemp, writeFile, readFile, readdir, rm } from 'node:fs/promises';
-import { tmpdir } from 'node:os';
-import { join } from 'node:path';
-import { execFileSync } from 'node:child_process';
-import { gunzipSync } from 'node:zlib';
+import { execFile } from 'node:child_process';
+import { createHash } from 'node:crypto';
+import { cp, mkdtemp, readFile, readdir, rm, writeFile } from 'node:fs/promises';
+import os from 'node:os';
+import path from 'node:path';
+import { promisify } from 'node:util';
+import test from 'node:test';
 
-test('published page selects an inseparable content-versioned JS and WASM pair', async () => {
- const dir=await mkdtemp(join(tmpdir(),'crystal-bundle-'));
- try {
-  const publish=async (bytes, workerSuffix="")=>{
-   await writeFile(join(dir,'index.html'),"const wasm = await import('./crystal-bevy.js'); new Worker(new URL('./audio-worker.js', import.meta.url));");
-   await writeFile(join(dir,'crystal-bevy.js'),"const path = new URL('crystal-bevy_bg.wasm', import.meta.url);");
-   await writeFile(join(dir,'crystal-bevy_bg.wasm'),bytes);
-   await writeFile(join(dir,'crystal-audio.js'),"const path = new URL('crystal-audio_bg.wasm', import.meta.url);");
-   await writeFile(join(dir,'crystal-audio_bg.wasm'),bytes);
-   await writeFile(join(dir,'audio-worker.js'),"import init from './crystal-audio.js';"+workerSuffix);
-   execFileSync('sh',[new URL('../tools/version-browser-bundle.sh',import.meta.url).pathname,dir]);
-   const page=await readFile(join(dir,'index.html'),'utf8');
-   const name=page.match(/import\('\.\/(crystal-bevy-[a-f0-9]{64})\.js'\)/)?.[1];
-   assert.ok(name,'page must use content-versioned glue');
-   const js=await readFile(join(dir,name+'.js'),'utf8');
-   assert.ok(js.includes(`new URL('${name}.wasm', import.meta.url)`));
-   assert.deepEqual(await readFile(join(dir,name+'.wasm')),bytes);
-   assert.deepEqual(gunzipSync(await readFile(join(dir,name+'.wasm.gz'))),bytes);
-   assert.ok(!(await readdir(dir)).includes('crystal-bevy.js'));
-   assert.ok(!(await readdir(dir)).includes('crystal-bevy_bg.wasm'));
-   const workerName=page.match(/new URL\('\.\/(audio-worker-[a-f0-9]{64})\.js'/)?.[1];
-   assert.ok(workerName,'page must version the audio worker');
-   const worker=await readFile(join(dir,workerName+'.js'),'utf8');
-   const audioName=worker.match(/from '\.\/(crystal-audio-[a-f0-9]{64})\.js'/)?.[1];
-   assert.ok(audioName,'worker must select versioned Rust audio');
-   assert.deepEqual(gunzipSync(await readFile(join(dir,audioName+'.wasm.gz'))),bytes);
-   assert.ok((await readFile(join(dir,audioName+'.js'),'utf8')).includes(audioName+'.wasm'));
-   return {name,workerName};
-  };
-  const first=await publish(Buffer.from('build-one'));
-  const second=await publish(Buffer.from('build-two'));
-  assert.notEqual(first.name,second.name,'a new WASM must never reuse a cached JS URL');
-  assert.notEqual(first.workerName,second.workerName);
-  const third=await publish(Buffer.from('build-two'),'// worker update');
-  assert.equal(second.name,third.name);
-  assert.notEqual(second.workerName,third.workerName,'worker-only edits must invalidate the worker URL');
- }finally{await rm(dir,{recursive:true,force:true});}
-});
+const run = promisify(execFile);
+const root = path.resolve(import.meta.dirname, '..');
 
-test('Docker ships the content-versioning script and runs it after page assembly', async () => {
- const docker=await readFile(new URL('../Dockerfile',import.meta.url),'utf8');
- const ignore=await readFile(new URL('../Dockerfile.dockerignore',import.meta.url),'utf8');
- assert.match(ignore,/^!tools\/version-browser-bundle\.sh$/m);
- assert.match(docker,/COPY tools\/version-browser-bundle\.sh/);
- assert.ok(docker.indexOf('sh /source/version-browser-bundle.sh /out/web') > docker.indexOf('cp /source/web-client/index.html'));
-});
-
-
-test('production renderer selector resolves the versioned game pair', async () => {
- const dir = await mkdtemp(join(tmpdir(), 'crystal-selector-'));
- try {
-  await writeFile(join(dir, 'index.html'), "await import('./renderer-bundle.js'); new Worker(new URL('./audio-worker.js', import.meta.url));");
-  await writeFile(join(dir, 'renderer-bundle.js'), await readFile(new URL('./renderer-bundle.js', import.meta.url)));
-  for (const name of ['crystal-bevy', 'crystal-audio']) {
-   await writeFile(join(dir, name + '.js'), `new URL('${name}_bg.wasm', import.meta.url);`);
-   await writeFile(join(dir, name + '_bg.wasm'), 'wasm-fixture');
-  }
-  await writeFile(join(dir, 'audio-worker.js'), "import init from './crystal-audio.js';");
-  execFileSync('sh', [new URL('../tools/version-browser-bundle.sh', import.meta.url).pathname, dir]);
-  const page = await readFile(join(dir, 'index.html'), 'utf8');
-  const selector = page.match(/renderer-bundle-[a-f0-9]{64}\.js/)?.[0];
-  assert.ok(selector);
-  const source = await readFile(join(dir, selector), 'utf8');
-  const { selectRendererBundle } = await import('data:text/javascript,' + encodeURIComponent(source));
-  const manifest = JSON.parse(await readFile(join(dir, 'renderer-bundles.json'), 'utf8'));
-  const bundle = await selectRendererBundle({fetch: async () => ({ok: true, json: async () => manifest}), navigator: {}, url: 'https://game.test/'});
-  assert.deepEqual(bundle, manifest.webgl);
-  assert.match(bundle.module, /crystal-bevy-[a-f0-9]{64}\.js$/);
-  assert.match(bundle.binary, /crystal-bevy-[a-f0-9]{64}\.wasm$/);
-  await readFile(join(dir, bundle.module));
-  await readFile(join(dir, bundle.binary));
- } finally { await rm(dir, {recursive: true, force: true}); }
-});
+for (const workers of [false, true]) {
+  test(`versioned renderer bundles preserve WebGPU and matching workers=${workers}`, async t => {
+    const directory = await mkdtemp(path.join(os.tmpdir(), 'geothite-bundle-'));
+    t.after(() => rm(directory, { recursive: true, force: true }));
+    for (const file of await readdir(path.join(root, 'web-client'))) {
+      if (file.endsWith('.js') || file === 'index.html') {
+        await cp(path.join(root, 'web-client', file), path.join(directory, file));
+      }
+    }
+    const modules = ['crystal-bevy', 'crystal-bevy-webgpu', 'crystal-audio'];
+    if (workers) modules.push('crystal-terrain-worker', 'crystal-actor-worker');
+    for (const module of modules) {
+      await writeFile(path.join(directory, `${module}.js`), `const binary = '${module}_bg.wasm';\n`);
+      await writeFile(path.join(directory, `${module}_bg.wasm`), `test bytes for ${module}`);
+    }
+    await run('sh', [path.join(root, 'tools/version-browser-bundle.sh'), directory]);
+    const files = await readdir(directory);
+    const manifest = JSON.parse(await readFile(path.join(directory, 'renderer-bundles.json'), 'utf8'));
+    assert.deepEqual(Object.keys(manifest), ['webgl', 'webgpu']);
+    assert.notEqual(manifest.webgl.binary, manifest.webgpu.binary);
+    for (const renderer of Object.values(manifest)) {
+      for (const file of [renderer.module, renderer.binary]) {
+        assert.ok(files.includes(file.slice(2)), `missing renderer asset ${file}`);
+      }
+      const glue = await readFile(path.join(directory, renderer.module), 'utf8');
+      assert.ok(glue.includes(renderer.binary.slice(2)), 'glue must use its matching binary');
+    }
+    if (!workers) return;
+    const page = await readFile(path.join(directory, 'index.html'), 'utf8');
+    for (const name of ['terrain-worker-client', 'terrain-worker-bridge', 'actor-worker-bridge']) {
+      const file = files.find(file => new RegExp(`^${name}-[a-f0-9]{64}\\.js$`).test(file));
+      assert.ok(file && page.includes(`./${file}`), `page must load the versioned ${name}`);
+    }
+    for (const file of files.filter(file => /(?:worker|bridge|client|pool|lifecycle)-[a-f0-9]{64}\.js$/.test(file))) {
+      const content = await readFile(path.join(directory, file), 'utf8');
+      for (const [, reference] of content.matchAll(/['"]\.\/([^'"]+\.(?:js|wasm))['"]/g)) {
+        assert.ok(files.includes(reference), `${file} refers to missing ${reference}`);
+      }
+      if (/^(?:cpu-worker-|terrain-worker-(?:client|bridge)-|actor-worker-bridge-)/.test(file)) {
+        const digest = createHash('sha256').update(content).digest('hex');
+        assert.ok(file.endsWith(`-${digest}.js`), `changed dependencies invalidated ${file}`);
+      }
+    }
+  });
+}

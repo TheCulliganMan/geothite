@@ -246,6 +246,9 @@ pub(crate) fn sync(
     mut materials: ResMut<Assets<crate::VoxelMaterial>>,
     mut previous: Local<Option<material_sync::Lighting>>,
 ) {
+    if status.scene_held {
+        return;
+    }
     if !frame.is_changed()
         && !cache.is_changed()
         && !status.is_changed()

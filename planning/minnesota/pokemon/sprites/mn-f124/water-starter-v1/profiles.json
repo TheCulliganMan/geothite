@@ -1,0 +1,395 @@
+{
+  "schema_version": 1,
+  "species": [
+    {
+      "id": "MN_271",
+      "classification": "Spring Pup",
+      "height_inches": 14,
+      "weight_tenths_lb": 120,
+      "dex_pages": [
+        "It stores thawed @ water in the curl @ of its soft tail.",
+        "Cheek scoops close @ when it burrows @ below dry leaves."
+      ],
+      "base_stats": {
+        "hp": 60,
+        "attack": 58,
+        "defense": 58,
+        "speed": 40,
+        "special_attack": 54,
+        "special_defense": 48
+      },
+      "catch_rate": 45,
+      "base_exp": 65,
+      "gender_ratio": 31,
+      "hatch_cycles": 20,
+      "growth_rate": "GROWTH_MEDIUM_SLOW",
+      "egg_groups": [
+        "EGG_WATER_1",
+        "EGG_MONSTER"
+      ],
+      "evolution": {
+        "method": "LEVEL",
+        "level": 16
+      },
+      "held_items": [
+        null,
+        null
+      ],
+      "menu_icon": "ICON_SQUIRTLE",
+      "footprint_species": "SQUIRTLE",
+      "cry": {
+        "cry": "CRY_SLOWPOKE",
+        "pitch": 64,
+        "length": 128
+      },
+      "shiny_rgb5": [
+        [
+          27,
+          20,
+          26
+        ],
+        [
+          10,
+          9,
+          17
+        ]
+      ],
+      "level_moves": [
+        [
+          1,
+          "TACKLE"
+        ],
+        [
+          1,
+          "GROWL"
+        ],
+        [
+          5,
+          "WATER_GUN"
+        ],
+        [
+          9,
+          "MUD_SLAP"
+        ],
+        [
+          13,
+          "DEFENSE_CURL"
+        ],
+        [
+          18,
+          "BUBBLEBEAM"
+        ],
+        [
+          24,
+          "DIG"
+        ],
+        [
+          30,
+          "SLAM"
+        ],
+        [
+          37,
+          "RAIN_DANCE"
+        ],
+        [
+          44,
+          "AMNESIA"
+        ],
+        [
+          51,
+          "HYDRO_PUMP"
+        ]
+      ],
+      "tmhm_moves": [
+        "CURSE",
+        "TOXIC",
+        "HEADBUTT",
+        "HIDDEN_POWER",
+        "PROTECT",
+        "RAIN_DANCE",
+        "FRUSTRATION",
+        "RETURN",
+        "DIG",
+        "MUD_SLAP",
+        "DOUBLE_TEAM",
+        "REST",
+        "ATTRACT",
+        "BLIZZARD",
+        "SURF",
+        "WHIRLPOOL",
+        "WATERFALL"
+      ],
+      "egg_moves": [
+        "BODY_SLAM",
+        "HAZE",
+        "MIST",
+        "MIRROR_COAT"
+      ]
+    },
+    {
+      "id": "MN_272",
+      "classification": "Water Track",
+      "height_inches": 34,
+      "weight_tenths_lb": 750,
+      "dex_pages": [
+        "Its shoulder vents @ draw water along @ hidden soil paths.",
+        "It braces all four @ paws before its @ tail pours a jet."
+      ],
+      "base_stats": {
+        "hp": 75,
+        "attack": 75,
+        "defense": 75,
+        "speed": 50,
+        "special_attack": 70,
+        "special_defense": 60
+      },
+      "catch_rate": 45,
+      "base_exp": 143,
+      "gender_ratio": 31,
+      "hatch_cycles": 20,
+      "growth_rate": "GROWTH_MEDIUM_SLOW",
+      "egg_groups": [
+        "EGG_WATER_1",
+        "EGG_MONSTER"
+      ],
+      "evolution": {
+        "method": "LEVEL",
+        "level": 36
+      },
+      "held_items": [
+        null,
+        null
+      ],
+      "menu_icon": "ICON_SQUIRTLE",
+      "footprint_species": "SQUIRTLE",
+      "cry": {
+        "cry": "CRY_SLOWPOKE",
+        "pitch": 16,
+        "length": 160
+      },
+      "shiny_rgb5": [
+        [
+          25,
+          14,
+          23
+        ],
+        [
+          7,
+          12,
+          14
+        ]
+      ],
+      "level_moves": [
+        [
+          1,
+          "TACKLE"
+        ],
+        [
+          1,
+          "GROWL"
+        ],
+        [
+          1,
+          "WATER_GUN"
+        ],
+        [
+          1,
+          "MUD_SLAP"
+        ],
+        [
+          13,
+          "DEFENSE_CURL"
+        ],
+        [
+          18,
+          "BUBBLEBEAM"
+        ],
+        [
+          24,
+          "DIG"
+        ],
+        [
+          31,
+          "SLAM"
+        ],
+        [
+          38,
+          "RAIN_DANCE"
+        ],
+        [
+          45,
+          "AMNESIA"
+        ],
+        [
+          52,
+          "HYDRO_PUMP"
+        ],
+        [
+          59,
+          "EARTHQUAKE"
+        ]
+      ],
+      "tmhm_moves": [
+        "CURSE",
+        "TOXIC",
+        "HEADBUTT",
+        "HIDDEN_POWER",
+        "PROTECT",
+        "RAIN_DANCE",
+        "FRUSTRATION",
+        "RETURN",
+        "DIG",
+        "MUD_SLAP",
+        "DOUBLE_TEAM",
+        "REST",
+        "ATTRACT",
+        "BLIZZARD",
+        "SURF",
+        "WHIRLPOOL",
+        "WATERFALL",
+        "STRENGTH",
+        "ROCK_SMASH",
+        "EARTHQUAKE"
+      ],
+      "egg_moves": [
+        "BODY_SLAM",
+        "HAZE",
+        "MIST",
+        "MIRROR_COAT"
+      ]
+    },
+    {
+      "id": "MN_273",
+      "classification": "Artesian",
+      "height_inches": 64,
+      "weight_tenths_lb": 2430,
+      "dex_pages": [
+        "It senses trapped @ water far below @ the frozen ground.",
+        "Its hollow arches @ hold the pressure @ to feed a spring."
+      ],
+      "base_stats": {
+        "hp": 100,
+        "attack": 100,
+        "defense": 100,
+        "speed": 65,
+        "special_attack": 85,
+        "special_defense": 80
+      },
+      "catch_rate": 45,
+      "base_exp": 208,
+      "gender_ratio": 31,
+      "hatch_cycles": 20,
+      "growth_rate": "GROWTH_MEDIUM_SLOW",
+      "egg_groups": [
+        "EGG_WATER_1",
+        "EGG_MONSTER"
+      ],
+      "evolution": null,
+      "held_items": [
+        null,
+        null
+      ],
+      "menu_icon": "ICON_SQUIRTLE",
+      "footprint_species": "SQUIRTLE",
+      "cry": {
+        "cry": "CRY_SLOWPOKE",
+        "pitch": -32,
+        "length": 192
+      },
+      "shiny_rgb5": [
+        [
+          21,
+          10,
+          20
+        ],
+        [
+          12,
+          20,
+          13
+        ]
+      ],
+      "level_moves": [
+        [
+          1,
+          "TACKLE"
+        ],
+        [
+          1,
+          "GROWL"
+        ],
+        [
+          1,
+          "WATER_GUN"
+        ],
+        [
+          1,
+          "MUD_SLAP"
+        ],
+        [
+          13,
+          "DEFENSE_CURL"
+        ],
+        [
+          18,
+          "BUBBLEBEAM"
+        ],
+        [
+          24,
+          "DIG"
+        ],
+        [
+          31,
+          "SLAM"
+        ],
+        [
+          36,
+          "SURF"
+        ],
+        [
+          42,
+          "RAIN_DANCE"
+        ],
+        [
+          49,
+          "AMNESIA"
+        ],
+        [
+          56,
+          "HYDRO_PUMP"
+        ],
+        [
+          63,
+          "EARTHQUAKE"
+        ]
+      ],
+      "tmhm_moves": [
+        "CURSE",
+        "TOXIC",
+        "HEADBUTT",
+        "HIDDEN_POWER",
+        "PROTECT",
+        "RAIN_DANCE",
+        "FRUSTRATION",
+        "RETURN",
+        "DIG",
+        "MUD_SLAP",
+        "DOUBLE_TEAM",
+        "REST",
+        "ATTRACT",
+        "BLIZZARD",
+        "SURF",
+        "WHIRLPOOL",
+        "WATERFALL",
+        "STRENGTH",
+        "ROCK_SMASH",
+        "EARTHQUAKE"
+      ],
+      "egg_moves": [
+        "BODY_SLAM",
+        "HAZE",
+        "MIST",
+        "MIRROR_COAT"
+      ]
+    }
+  ]
+}

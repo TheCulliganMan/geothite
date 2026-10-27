@@ -9,7 +9,8 @@ use crystal_bevy::VisibleShellController as RuntimeGameShell;
 use crystal_core::input::GameButton;
 use crystal_runtime::{CrystalRuntime, RuntimeCompiledScriptCursor};
 use geothite::{
-    RuntimeTextRenderer, TerminalAction, TerminalUi, TuiTheme, map_key_event, render_snapshot_text,
+    RuntimeTextRenderer, TerminalAction, TerminalUi, TextSnapshot, TuiTheme, map_key_event,
+    render_snapshot_text,
 };
 use ratatui::{Terminal, backend::CrosstermBackend};
 use serde_json::{Value, json};
@@ -26,7 +27,7 @@ struct Options {
     pack: PathBuf,
     load: Option<PathBuf>,
     save: Option<PathBuf>,
-    theme: PathBuf,
+    theme: Option<PathBuf>,
     compact: bool,
     player_name: String,
 }
@@ -60,13 +61,16 @@ fn main() -> Result<()> {
         )?,
     };
     game.set_runtime_journal_enabled(false);
-    let theme = TuiTheme::from_path(&options.theme)?;
+    let theme = match &options.theme {
+        Some(path) => TuiTheme::from_path(path)?,
+        None => TuiTheme::default(),
+    };
     if options.command == Command::Dump {
         let mut renderer = RuntimeTextRenderer::default();
         let mut active_cursor = None;
         finish_noninteractive_work(&mut game, &mut active_cursor, &mut renderer)?;
         let runtime_snapshot = game.snapshot()?;
-        let snapshot = renderer.render(&runtime_snapshot);
+        let snapshot = render_controller_snapshot(&game, &mut renderer, &runtime_snapshot);
         println!("{}", render_snapshot_text(&snapshot, options.compact));
         return Ok(());
     }
@@ -87,8 +91,7 @@ fn parse_options(arguments: impl IntoIterator<Item = String>) -> Result<Options>
     let mut save = None;
     let mut compact = false;
     let mut player_name = "CHRIS".to_string();
-    let mut theme =
-        PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../modpacks/text-tui/theme.json");
+    let mut theme = None;
     let mut arguments = arguments.into_iter();
     let command = match arguments.next().as_deref() {
         Some("play") => Command::Play,
@@ -123,7 +126,9 @@ fn parse_options(arguments: impl IntoIterator<Item = String>) -> Result<Options>
                 );
             }
             "--theme" => {
-                theme = PathBuf::from(arguments.next().context("--theme requires a path")?)
+                theme = Some(PathBuf::from(
+                    arguments.next().context("--theme requires a path")?,
+                ))
             }
             "--compact" => compact = true,
             "-h" | "--help" => {
@@ -322,7 +327,7 @@ fn call_mcp_tool(
     match name.context("MCP tools/call is missing params.name")? {
         "observe" => {
             let source = game.presentation_snapshot()?;
-            let snapshot = renderer.render(&source);
+            let snapshot = render_controller_snapshot(game, renderer, &source);
             let compact = arguments.get("detail").and_then(Value::as_str) == Some("compact");
             let text = render_snapshot_text(&snapshot, compact);
             Ok(json!({
@@ -440,7 +445,7 @@ fn call_mcp_tool(
         }
         "recent_events" | "journal" => {
             let source = game.presentation_snapshot()?;
-            let snapshot = renderer.render(&source);
+            let snapshot = render_controller_snapshot(game, renderer, &source);
             let payload = json!({
                 "actions": snapshot.action_log,
                 "status": mcp_status_payload(&source)
@@ -508,7 +513,7 @@ fn mcp_status_result(
 ) -> Result<Value> {
     let source = game.presentation_snapshot()?;
     let payload = mcp_status_payload(&source);
-    renderer.render(&source);
+    render_controller_snapshot(game, renderer, &source);
     Ok(mcp_json_result(payload))
 }
 
@@ -662,7 +667,7 @@ fn run_tui(mut game: RuntimeGameShell, theme: TuiTheme, save_path: Option<PathBu
     finish_noninteractive_work(&mut game, &mut active_cursor, &mut renderer)?;
     'tui: loop {
         let runtime_snapshot = game.presentation_snapshot()?;
-        let snapshot = renderer.render(&runtime_snapshot);
+        let snapshot = render_controller_snapshot(&game, &mut renderer, &runtime_snapshot);
         terminal
             .terminal
             .draw(|frame| ui.draw(frame, &snapshot))
@@ -740,11 +745,6 @@ fn run_tui(mut game: RuntimeGameShell, theme: TuiTheme, save_path: Option<PathBu
                 None => ui.notice = Some("Start with --save PATH to enable F5 saves".to_string()),
             },
             TerminalAction::MoveSelection(delta) => {
-                if !snapshot.prompt.is_empty() {
-                    renderer.move_selection(delta, 2, true);
-                } else {
-                    renderer.move_selection(delta, snapshot.menu.len(), false);
-                }
                 game.press(if delta < 0 {
                     GameButton::Up
                 } else {
@@ -768,6 +768,16 @@ fn run_tui(mut game: RuntimeGameShell, theme: TuiTheme, save_path: Option<PathBu
     Ok(())
 }
 
+fn render_controller_snapshot(
+    game: &RuntimeGameShell,
+    renderer: &mut RuntimeTextRenderer,
+    source: &crystal_runtime::RuntimeShellSnapshot,
+) -> TextSnapshot {
+    let (menu_index, yes_no_index) = game.text_view_selection_indices(source);
+    renderer.set_selection(menu_index, yes_no_index);
+    renderer.render(source)
+}
+
 fn finish_noninteractive_work(
     _game: &mut RuntimeGameShell,
     _active_cursor: &mut Option<RuntimeCompiledScriptCursor>,
@@ -782,25 +792,13 @@ fn apply_button(
     _active_cursor: &mut Option<RuntimeCompiledScriptCursor>,
     button: GameButton,
 ) -> Result<()> {
-    if matches!(button, GameButton::Up | GameButton::Down) {
-        let snapshot = game.presentation_snapshot()?;
-        let delta = if button == GameButton::Up { -1 } else { 1 };
-        if snapshot.ui.pending_yes_no.is_some() {
-            renderer.move_selection(delta, 2, true);
-        } else if let Some(menu) = snapshot.ui.menu.as_ref()
-            && let Some(vertical) = menu.layout.vertical_menus.first()
-            && !vertical
-                .options
-                .iter()
-                .any(|option| option.trim_start().starts_with('>'))
-        {
-            renderer.move_selection(delta, vertical.options.len(), false);
-        }
-    }
     game.press(button)?;
     renderer.record_action(format!("input: {:?}", button));
     Ok(())
 }
+
+#[cfg(test)]
+mod minneapolis_text_tests;
 
 #[cfg(test)]
 mod tests {

@@ -294,6 +294,12 @@ pub fn has_authored_battle_species(species: &str) -> bool {
     battle_species_models::supported_species().any(|id| id.eq_ignore_ascii_case(species))
 }
 
+/// Whether resolved battle trainer artwork has a weighted human adaptation.
+/// Accepts normalized battle artwork identifiers, including trainer-class aliases.
+pub fn has_modeled_battle_trainer(source: &str) -> bool {
+    battle_view::trainers::kind(source).is_some()
+}
+
 /// Parking layer used to keep the classic overworld out of every active
 /// camera while the user has manually selected 2.5D.
 pub const HIDDEN_CLASSIC_WORLD_RENDER_LAYER: usize = 30;
@@ -527,6 +533,8 @@ pub struct VoxelViewStatus {
     pub terrain_map: Option<String>,
     /// The desired terrain revision has not reached the scene yet.
     pub terrain_pending: bool,
+    /// Keep the previous complete camera, terrain and actors during a handoff.
+    pub scene_held: bool,
     /// Authored connected acreage remains visible while its new scene builds.
     pub connected_terrain: bool,
     /// True until the current profile revision has reached the GPU scene.
@@ -1122,6 +1130,7 @@ fn sync_voxel_view(
         Option<ResMut<destination_preload::PreparedDestination>>,
         Option<ResMut<destination_preload::PreparedWorld>>,
         Option<ResMut<WorldStreamStatus>>,
+        Option<Res<crystal_render_api::VisualBattleFrame>>,
     ),
     mut status: ResMut<VoxelViewStatus>,
     mut last_failure: Local<Option<String>>,
@@ -1161,10 +1170,15 @@ fn sync_voxel_view(
         mut prepared_destination,
         mut prepared_world,
         mut streaming,
+        battle_frame,
     ) = presentation;
+    if battle_frame.as_ref().is_none_or(|frame| !frame.active) {
+        grove_stream::clear_battle_interest(&mut terrain_cache);
+    }
     let previous_root = destination_preload::roots(&terrain_cache).next();
     let previous_build_pending = terrain_builds.key.is_some();
     status.connected_terrain = false;
+    status.scene_held = false;
     if settings.enabled && frame.active {
         if let (Some(world), Some(streaming)) = (prepared_world.as_mut(), streaming.as_mut()) {
             destination_preload::activate_world(
@@ -1292,9 +1306,18 @@ fn sync_voxel_view(
     {
         terrain_builds.speculative = false;
         terrain_builds.defer_to_world_preload = terrain_cache.built_frame.is_some()
-            && prepared_world.as_mut().is_some_and(|world|
-                destination_preload::pending_world_covers(&frame, &profiles, world));
+            && (prepared_world.as_mut().is_some_and(|world| {
+                destination_preload::pending_world_covers(&frame, &profiles, world)
+            }) || prepared_destination.as_mut().is_some_and(|destination| {
+                destination_preload::pending_destination_covers(&frame, &profiles, destination)
+            }));
     }
+    terrain_publication::prepare_scenery(
+        &mut terrain_builds.publication,
+        &mut commands,
+        &mut meshes,
+        &mut materials,
+    );
     let terrain_state = match sync_terrain(
         &frame,
         &profiles,
@@ -1321,6 +1344,27 @@ fn sync_voxel_view(
             return;
         }
     };
+    if terrain_cache.uploads.gpu_required()
+        && terrain_cache
+            .built_frame
+            .as_ref()
+            .is_some_and(|built| !terrain_tracking::can_reuse(built, &frame))
+        && matches!(terrain_state, TerrainSyncState::Pending)
+    {
+        // Keep the last complete field, camera and actors together while its
+        // replacement warms. Rebasing an exhausted window exposed empty sky
+        // at route boundaries before the next scene reached the GPU.
+        for (mut camera, _, _) in &mut cameras {
+            camera.is_active = true;
+        }
+        status.active = true;
+        status.inactive_reason = None;
+        status.terrain_builds = terrain_builds.started;
+        status.terrain_pending = true;
+        status.scene_held = true;
+        status.active_frames = 0;
+        return;
+    }
     status.connected_terrain = retain_connected_terrain(&frame, &mut terrain_cache);
     if !holding_lighthouse || matches!(terrain_state, TerrainSyncState::Ready) {
         let _trace = loading_trace::span(
@@ -1525,6 +1569,9 @@ fn sync_cave_water_phases(
     mut applied: Local<Option<(Option<TerrainCacheKey>, Option<bevy::asset::AssetId<Image>>, bevy::asset::AssetId<Image>)>>,
     mut ripples: Local<water_ripples::WaterRipples>,
 ) {
+    if status.scene_held {
+        return;
+    }
     if !status.active || !frame.active {
         *applied = None;
         *ripples = default();
@@ -1615,6 +1662,7 @@ fn sync_cave_water_phases(
 
 fn sync_voxel_atmosphere(
     frame: Res<VisualWorldFrame>,
+    status: Option<Res<VoxelViewStatus>>,
     lighting: Option<Res<crystal_render_api::VisualWorldLighting>>,
     clock: Option<Res<crystal_render_api::VisualWorldClock>>,
     profiles: Res<live_profiles::LiveProfiles>,
@@ -1625,6 +1673,9 @@ fn sync_voxel_atmosphere(
     mut ambient: Option<ResMut<GlobalAmbientLight>>,
     mut woodland: Local<(Option<(TerrainCacheKey, bool)>, f32)>,
 ) {
+    if status.as_ref().is_some_and(|status| status.scene_held) {
+        return;
+    }
     let source_key = (TerrainCacheKey::from_frame(&frame), frame.active);
     if woodland.0.as_ref() != Some(&source_key) {
         woodland.1 = sky::woodland_strength(&frame);
@@ -1679,8 +1730,8 @@ fn sync_voxel_atmosphere(
         // and nearby scenery clear, then dissolve the finite forest edge.
         .or_else(|| (woodland_haze > 0.0).then_some(
             regional.map_or_else(
-                || if frame.map_id.starts_with("Route") { (16.0, 40.0, woodland_haze) }
-                    else { (8.0, 22.0, woodland_haze) },
+                || if frame.map_id.starts_with("Route") { (32.0, 64.0, woodland_haze) }
+                    else { (24.0, 56.0, woodland_haze) },
                 |regional| (regional.fog_start, regional.fog_end, woodland_haze))));
     let cavern_lit = cave && frame.active && settings.enabled;
     let dark = cavern_lit && frame.tiles.first().is_some_and(|tile| tile.source.tileset_id.as_ref() == "dark_cave");
@@ -1961,6 +2012,7 @@ fn sync_terrain(
         .is_some_and(|built| built.map_id != frame.map_id)
         && !retained_logical_map
         && !retain_lighthouse_room(frame,cache)
+        && !cache.uploads.gpu_required()
         && !(cache.key.as_ref().is_some_and(|key| key.profiles_revision == profiles.revision)
             && retain_connected_terrain(frame, cache))
     {
@@ -2278,7 +2330,15 @@ fn sync_terrain(
     }
     // Geometry and atlas keep their built grid origin; only camera motion
     // transforms them while a replacement is pending.
-    if let Some(live_transform) = retained_terrain_transform(frame, cache) {
+    let hold_resident = !ready
+        && cache.uploads.gpu_required()
+        && cache
+            .built_frame
+            .as_ref()
+            .is_some_and(|built| !terrain_tracking::can_reuse(built, frame));
+    if let Some(live_transform) =
+        retained_terrain_transform(frame, cache).filter(|_| !hold_resident)
+    {
         for entity in [
             cache.instances_root,
             cache.textured_entity,
@@ -3028,6 +3088,9 @@ fn sync_interior_cutaway(
     images: Res<Assets<Image>>,
     mut materials: ResMut<Assets<VoxelMaterial>>,
 ) {
+    if status.scene_held {
+        return;
+    }
     let Some(handle) = cache.solid_material.as_ref() else {
         return;
     };
@@ -3127,6 +3190,10 @@ fn sync_actor_cards(
         // canonical body. Neither the source avatar nor a mount sprite is a
         // substitute while identity/artwork is unavailable.
         if new_bark_actors::is_surf_avatar(actor) || actor.id == VisualActorId::SurfMount { continue; }
+        // A human has one presentation in 3D mode. Creating a billboard here
+        // exposes it for a frame before the deferred model spawn, and again
+        // whenever asynchronous appearance preparation returns early.
+        if new_bark_actors::is_human(actor) { continue; }
         // Native blades consume this event; the source sprite belongs to 2D.
         if grass_rustle::is_rustle(actor) { continue; }
         if healing_effects::is_healing(actor)&&!healing_allowed {continue;}
@@ -5406,3 +5473,7 @@ fn native_model_camera(
         settings.camera = camera;
     }
 }
+
+#[cfg(test)]
+#[path = "actor_card_tests.rs"]
+mod actor_card_tests;

@@ -1,0 +1,245 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F063",
+  "status": "proposal-ready-for-root-merge",
+  "members": [
+    {
+      "id": "MN_137",
+      "name": "Knotlet",
+      "types": [
+        "DRAGON"
+      ],
+      "stage": 1,
+      "evolves_to": "MN_138"
+    },
+    {
+      "id": "MN_138",
+      "name": "Lasserp",
+      "types": [
+        "DRAGON",
+        "FIGHTING"
+      ],
+      "stage": 2,
+      "evolves_to": "MN_270"
+    },
+    {
+      "id": "MN_270",
+      "name": "Knotitan",
+      "types": [
+        "DRAGON",
+        "FIGHTING"
+      ],
+      "stage": 3,
+      "evolves_to": null
+    }
+  ],
+  "theme": "Prairie twine and the giant Minnesota twine-ball landmark: a little knotted wyrm uncoils into a lasso-serpent, then winds its long body into an enormous dense ball. Continuous rope-loop arms grapple opponents around the giant wound torso, with a braided dragon neck and stopper-knot tail.",
+  "profiles": [
+    {
+      "id": "MN_270",
+      "classification": "Twine Titan",
+      "height_inches": 144,
+      "weight_tenths_lb": 16800,
+      "dex_pages": [
+        "Its giant body @ is wound from @ one long braid.",
+        "Loop arms pin @ rivals while its @ body rolls tight."
+      ],
+      "base_stats": {
+        "hp": 105,
+        "attack": 125,
+        "defense": 100,
+        "speed": 95,
+        "special_attack": 45,
+        "special_defense": 90
+      },
+      "catch_rate": 45,
+      "base_exp": 240,
+      "gender_ratio": 127,
+      "hatch_cycles": 20,
+      "growth_rate": "GROWTH_MEDIUM_SLOW",
+      "egg_groups": [
+        "EGG_DRAGON",
+        "EGG_HUMANSHAPE"
+      ],
+      "evolution": null,
+      "held_items": [
+        null,
+        null
+      ],
+      "menu_icon": "ICON_SERPENT",
+      "footprint_species": "EKANS",
+      "cry": {
+        "cry": "CRY_EKANS",
+        "pitch": -16,
+        "length": 176
+      },
+      "shiny_rgb5": [
+        [
+          14,
+          28,
+          24
+        ],
+        [
+          5,
+          10,
+          13
+        ]
+      ],
+      "level_moves": [
+        [
+          1,
+          "WRAP"
+        ],
+        [
+          1,
+          "LEER"
+        ],
+        [
+          1,
+          "DRAGON_RAGE"
+        ],
+        [
+          1,
+          "DEFENSE_CURL"
+        ],
+        [
+          11,
+          "FOCUS_ENERGY"
+        ],
+        [
+          15,
+          "BIND"
+        ],
+        [
+          19,
+          "TWISTER"
+        ],
+        [
+          24,
+          "SLAM"
+        ],
+        [
+          29,
+          "GLARE"
+        ],
+        [
+          34,
+          "DRAGONBREATH"
+        ],
+        [
+          39,
+          "VITAL_THROW"
+        ],
+        [
+          44,
+          "ROLLOUT"
+        ],
+        [
+          49,
+          "SUBMISSION"
+        ],
+        [
+          54,
+          "ENDURE"
+        ],
+        [
+          59,
+          "OUTRAGE"
+        ],
+        [
+          66,
+          "REVERSAL"
+        ]
+      ],
+      "tmhm_moves": [
+        "DRAGONBREATH",
+        "ROCK_SMASH",
+        "STRENGTH",
+        "IRON_TAIL",
+        "HEADBUTT",
+        "ENDURE",
+        "PROTECT",
+        "REST"
+      ],
+      "egg_moves": [
+        "COUNTER",
+        "CRUNCH",
+        "SCREECH"
+      ]
+    }
+  ],
+  "palettes": {
+    "MN_270": {
+      "species_id": "MN_270",
+      "name": "Knotitan",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          30,
+          23,
+          12
+        ],
+        [
+          13,
+          7,
+          3
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        13054,
+        3309,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          247,
+          189,
+          99
+        ],
+        [
+          107,
+          57,
+          24
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#F7BD63",
+        "#6B3918",
+        "#000000"
+      ]
+    }
+  },
+  "evolution_updates": {
+    "MN_138": {
+      "method": "LEVEL",
+      "level": 44
+    }
+  },
+  "preserve_originals": [
+    "MN_137",
+    "MN_138"
+  ],
+  "preservation": "Keep Knotlet/Lasserp art, palettes, types, stats, moves and previous renders intact; only Lasserp gains evolution at44.",
+  "design_balance": "560BST final gains bulk and physical power; dense winding lowers Speed from100 to95. DefenseCurl andRollout express winding/rolling anatomy using existing native moves."
+}

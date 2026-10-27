@@ -67,6 +67,7 @@ pub(super) fn read(vendor: &Path) -> Result<(Value, Value)> {
         "engine/overworld/player_object.asm",
         "engine/pokemon/breeding.asm",
         "engine/events/treemons.asm",
+        "engine/events/field_moves.asm",
     ] {
         let path = vendor.join(relative);
         for (label, body) in super::source_scripts::parse(&std::fs::read_to_string(&path)?)

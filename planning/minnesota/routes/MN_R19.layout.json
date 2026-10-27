@@ -1,0 +1,1106 @@
+{
+  "schema_version": 2,
+  "id": "MN_R19",
+  "tileset": "johto",
+  "compiled_tileset": "johto",
+  "dimensions_metatiles": [
+    32,
+    30
+  ],
+  "coordinate_units": "32px metatiles, zero based",
+  "shore_fitting": "johto_8_neighbors",
+  "reject_cliff_cuts": true,
+  "materials": {
+    "floor": "01",
+    "lawn": "02",
+    "encounter": "03",
+    "flowers": "04",
+    "forest": "05",
+    "water": "35",
+    "boulder": "0a",
+    "sign": "45",
+    "oak": "61"
+  },
+  "layers": [
+    {
+      "kind": "path",
+      "name": "Narrow pine arrival and bent prairie corridor",
+      "material": "lawn",
+      "width_metatiles": 2,
+      "points": [
+        [
+          30,
+          6
+        ],
+        [
+          24,
+          6
+        ],
+        [
+          24,
+          11
+        ],
+        [
+          17,
+          11
+        ],
+        [
+          17,
+          18
+        ],
+        [
+          12,
+          18
+        ],
+        [
+          12,
+          28
+        ]
+      ]
+    },
+    {
+      "kind": "polygon",
+      "name": "Oak opening and grass alternative",
+      "material": "lawn",
+      "points": [
+        [
+          13,
+          10
+        ],
+        [
+          17,
+          10
+        ],
+        [
+          17,
+          9
+        ],
+        [
+          21,
+          9
+        ],
+        [
+          21,
+          11
+        ],
+        [
+          25,
+          11
+        ],
+        [
+          25,
+          14
+        ],
+        [
+          22,
+          14
+        ],
+        [
+          22,
+          16
+        ],
+        [
+          19,
+          16
+        ],
+        [
+          19,
+          18
+        ],
+        [
+          16,
+          18
+        ],
+        [
+          16,
+          17
+        ],
+        [
+          13,
+          17
+        ],
+        [
+          13,
+          15
+        ],
+        [
+          11,
+          15
+        ],
+        [
+          11,
+          13
+        ],
+        [
+          13,
+          13
+        ]
+      ]
+    },
+    {
+      "kind": "polygon",
+      "name": "Western prairie and two-ramp loop approaches",
+      "material": "lawn",
+      "points": [
+        [
+          4,
+          18
+        ],
+        [
+          8,
+          18
+        ],
+        [
+          8,
+          19
+        ],
+        [
+          10,
+          19
+        ],
+        [
+          10,
+          22
+        ],
+        [
+          7,
+          22
+        ],
+        [
+          7,
+          23
+        ],
+        [
+          4,
+          23
+        ]
+      ]
+    },
+    {
+      "kind": "polygon",
+      "name": "Dry western wetland bank",
+      "material": "lawn",
+      "points": [
+        [
+          19,
+          15
+        ],
+        [
+          23,
+          15
+        ],
+        [
+          23,
+          17
+        ],
+        [
+          21,
+          17
+        ],
+        [
+          21,
+          20
+        ],
+        [
+          19,
+          20
+        ]
+      ]
+    },
+    {
+      "kind": "polygon",
+      "name": "Prairie main observation corridor",
+      "material": "lawn",
+      "points": [
+        [
+          10,
+          18
+        ],
+        [
+          14,
+          18
+        ],
+        [
+          14,
+          21
+        ],
+        [
+          15,
+          21
+        ],
+        [
+          15,
+          23
+        ],
+        [
+          14,
+          23
+        ],
+        [
+          14,
+          26
+        ],
+        [
+          13,
+          26
+        ],
+        [
+          13,
+          29
+        ],
+        [
+          11,
+          29
+        ],
+        [
+          11,
+          26
+        ],
+        [
+          10,
+          26
+        ]
+      ]
+    },
+    {
+      "kind": "polygon",
+      "name": "Eastern tall meadow reward pocket",
+      "material": "lawn",
+      "points": [
+        [
+          15,
+          18
+        ],
+        [
+          18,
+          18
+        ],
+        [
+          18,
+          22
+        ],
+        [
+          15,
+          22
+        ],
+        [
+          15,
+          21
+        ],
+        [
+          14,
+          21
+        ],
+        [
+          14,
+          19
+        ],
+        [
+          15,
+          19
+        ]
+      ]
+    },
+    {
+      "kind": "polygon",
+      "name": "Small spring wetland with two lobes",
+      "material": "water",
+      "points": [
+        [
+          23,
+          15
+        ],
+        [
+          26,
+          15
+        ],
+        [
+          26,
+          16
+        ],
+        [
+          28,
+          16
+        ],
+        [
+          28,
+          19
+        ],
+        [
+          26,
+          19
+        ],
+        [
+          26,
+          21
+        ],
+        [
+          23,
+          21
+        ],
+        [
+          23,
+          19
+        ],
+        [
+          21,
+          19
+        ],
+        [
+          21,
+          17
+        ],
+        [
+          23,
+          17
+        ]
+      ]
+    },
+    {
+      "kind": "path",
+      "name": "Connected two-way through road",
+      "material": "floor",
+      "width_metatiles": 1,
+      "points": [
+        [
+          30,
+          6
+        ],
+        [
+          24,
+          6
+        ],
+        [
+          24,
+          11
+        ],
+        [
+          17,
+          11
+        ],
+        [
+          17,
+          18
+        ],
+        [
+          12,
+          18
+        ],
+        [
+          12,
+          28
+        ]
+      ]
+    },
+    {
+      "kind": "path",
+      "name": "Oak opening reward approach",
+      "material": "floor",
+      "width_metatiles": 1,
+      "points": [
+        [
+          17,
+          14
+        ],
+        [
+          14,
+          14
+        ]
+      ]
+    },
+    {
+      "kind": "path",
+      "name": "Western loop foot approach",
+      "material": "floor",
+      "width_metatiles": 1,
+      "points": [
+        [
+          12,
+          18
+        ],
+        [
+          5,
+          18
+        ]
+      ]
+    },
+    {
+      "kind": "path",
+      "name": "Western prairie inspection track",
+      "material": "floor",
+      "width_metatiles": 1,
+      "points": [
+        [
+          5,
+          18
+        ],
+        [
+          5,
+          21
+        ],
+        [
+          10,
+          21
+        ],
+        [
+          10,
+          22
+        ],
+        [
+          12,
+          22
+        ]
+      ]
+    },
+    {
+      "kind": "path",
+      "name": "Wetland observation bank",
+      "material": "floor",
+      "width_metatiles": 1,
+      "points": [
+        [
+          17,
+          18
+        ],
+        [
+          20,
+          18
+        ],
+        [
+          20,
+          16
+        ],
+        [
+          21,
+          16
+        ]
+      ]
+    },
+    {
+      "kind": "path",
+      "name": "Habitat alternative east approach",
+      "material": "floor",
+      "width_metatiles": 1,
+      "points": [
+        [
+          24,
+          11
+        ],
+        [
+          24,
+          14
+        ],
+        [
+          19,
+          14
+        ],
+        [
+          19,
+          11
+        ]
+      ]
+    },
+    {
+      "kind": "rect",
+      "name": "Attached native oak grove",
+      "material": "oak",
+      "bounds": [
+        11,
+        10,
+        16,
+        13
+      ]
+    },
+    {
+      "kind": "rect",
+      "name": "Western oak finger narrows through passage",
+      "material": "oak",
+      "bounds": [
+        12,
+        16,
+        16,
+        18
+      ]
+    },
+    {
+      "kind": "rect",
+      "name": "Eastern oak finger against the wetland",
+      "material": "oak",
+      "bounds": [
+        18,
+        15,
+        20,
+        18
+      ]
+    },
+    {
+      "kind": "rect",
+      "name": "Eastern meadow reward habitat",
+      "material": "encounter",
+      "bounds": [
+        15,
+        19,
+        18,
+        22
+      ]
+    },
+    {
+      "kind": "rect",
+      "name": "Pine-side battle channel north closure",
+      "material": "forest",
+      "bounds": [
+        20,
+        0,
+        24,
+        10
+      ]
+    },
+    {
+      "kind": "rect",
+      "name": "Habitat alternative south closure",
+      "material": "forest",
+      "bounds": [
+        20,
+        15,
+        23,
+        16
+      ]
+    },
+    {
+      "kind": "rect",
+      "name": "Necessary eight-step oak fringe alternative",
+      "material": "encounter",
+      "bounds": [
+        20,
+        13,
+        24,
+        15
+      ]
+    },
+    {
+      "kind": "rect",
+      "name": "Western prairie meadow habitat",
+      "material": "encounter",
+      "bounds": [
+        8,
+        19,
+        11,
+        21
+      ]
+    },
+    {
+      "kind": "rect",
+      "name": "Southern prairie seam barrier",
+      "material": "forest",
+      "bounds": [
+        0,
+        24,
+        32,
+        26
+      ]
+    },
+    {
+      "kind": "rect",
+      "name": "Four-step southern prairie habitat",
+      "material": "encounter",
+      "bounds": [
+        11,
+        24,
+        14,
+        26
+      ]
+    },
+    {
+      "kind": "rect",
+      "name": "Prairie wildflower tongue",
+      "material": "flowers",
+      "bounds": [
+        6,
+        20,
+        8,
+        22
+      ]
+    },
+    {
+      "kind": "rect",
+      "name": "Oak observation flowers",
+      "material": "flowers",
+      "bounds": [
+        12,
+        15,
+        14,
+        16
+      ]
+    },
+    {
+      "kind": "rect",
+      "name": "Detroit approach flowers",
+      "material": "flowers",
+      "bounds": [
+        13,
+        27,
+        14,
+        28
+      ]
+    },
+    {
+      "kind": "cliff_polygon",
+      "name": "Low western two-ramp inspection spur",
+      "points": [
+        [
+          4,
+          13
+        ],
+        [
+          7,
+          13
+        ],
+        [
+          7,
+          14
+        ],
+        [
+          10,
+          14
+        ],
+        [
+          10,
+          15
+        ],
+        [
+          11,
+          15
+        ],
+        [
+          11,
+          17
+        ],
+        [
+          10,
+          17
+        ],
+        [
+          10,
+          18
+        ],
+        [
+          8,
+          18
+        ],
+        [
+          8,
+          16
+        ],
+        [
+          7,
+          16
+        ],
+        [
+          7,
+          15
+        ],
+        [
+          6,
+          15
+        ],
+        [
+          6,
+          18
+        ],
+        [
+          4,
+          18
+        ]
+      ]
+    },
+    {
+      "kind": "point",
+      "name": "West native ramp",
+      "position": [
+        5,
+        18
+      ],
+      "block": "74"
+    },
+    {
+      "kind": "point",
+      "name": "East native ramp",
+      "position": [
+        9,
+        18
+      ],
+      "block": "74"
+    },
+    {
+      "kind": "point",
+      "name": "Native oak opening edge",
+      "position": [
+        7,
+        18
+      ],
+      "block": "3d"
+    },
+    {
+      "kind": "point",
+      "name": "Native oak opening edge",
+      "position": [
+        7,
+        19
+      ],
+      "block": "62"
+    },
+    {
+      "kind": "point",
+      "name": "Native oak opening edge",
+      "position": [
+        11,
+        20
+      ],
+      "block": "3c"
+    },
+    {
+      "kind": "point",
+      "name": "Native oak opening edge",
+      "position": [
+        16,
+        20
+      ],
+      "block": "3d"
+    },
+    {
+      "kind": "point",
+      "name": "Battle lane north rail",
+      "position": [
+        20,
+        10
+      ],
+      "block": "41"
+    },
+    {
+      "kind": "point",
+      "name": "Battle lane south rail",
+      "position": [
+        20,
+        12
+      ],
+      "block": "49"
+    },
+    {
+      "kind": "point",
+      "name": "Battle lane north rail",
+      "position": [
+        21,
+        10
+      ],
+      "block": "41"
+    },
+    {
+      "kind": "point",
+      "name": "Battle lane south rail",
+      "position": [
+        21,
+        12
+      ],
+      "block": "49"
+    },
+    {
+      "kind": "point",
+      "name": "Battle lane north rail",
+      "position": [
+        22,
+        10
+      ],
+      "block": "41"
+    },
+    {
+      "kind": "point",
+      "name": "Battle lane south rail",
+      "position": [
+        22,
+        12
+      ],
+      "block": "49"
+    },
+    {
+      "kind": "point",
+      "name": "Battle lane north rail",
+      "position": [
+        23,
+        10
+      ],
+      "block": "41"
+    },
+    {
+      "kind": "point",
+      "name": "Battle lane south rail",
+      "position": [
+        23,
+        12
+      ],
+      "block": "49"
+    },
+    {
+      "kind": "point",
+      "name": "Protected wetland bank rail",
+      "position": [
+        21,
+        18
+      ],
+      "block": "46"
+    },
+    {
+      "kind": "point",
+      "name": "Protected wetland bank rail",
+      "position": [
+        21,
+        19
+      ],
+      "block": "46"
+    },
+    {
+      "kind": "point",
+      "name": "Oak fork direction and path-choice board",
+      "position": [
+        18,
+        10
+      ],
+      "block": "45"
+    },
+    {
+      "kind": "point",
+      "name": "Pine observation board",
+      "position": [
+        27,
+        7
+      ],
+      "block": "45"
+    },
+    {
+      "kind": "point",
+      "name": "Wetland observation board",
+      "position": [
+        20,
+        17
+      ],
+      "block": "45"
+    },
+    {
+      "kind": "point",
+      "name": "Prairie observation board",
+      "position": [
+        11,
+        22
+      ],
+      "block": "45"
+    },
+    {
+      "kind": "point",
+      "name": "Ramp-loop directions",
+      "position": [
+        7,
+        18
+      ],
+      "block": "45"
+    },
+    {
+      "kind": "point",
+      "name": "Detroit direction board",
+      "position": [
+        13,
+        26
+      ],
+      "block": "45"
+    },
+    {
+      "kind": "point",
+      "name": "Upper loop item footing",
+      "position": [
+        5,
+        14
+      ],
+      "block": "71"
+    },
+    {
+      "kind": "point",
+      "name": "Pine item turnout",
+      "position": [
+        26,
+        6
+      ],
+      "block": "02"
+    },
+    {
+      "kind": "point",
+      "name": "Oak item footing",
+      "position": [
+        14,
+        14
+      ],
+      "block": "02"
+    },
+    {
+      "kind": "point",
+      "name": "Oak grove south edge",
+      "position": [
+        11,
+        12
+      ],
+      "block": "5d"
+    },
+    {
+      "kind": "point",
+      "name": "Oak grove south edge",
+      "position": [
+        12,
+        12
+      ],
+      "block": "5d"
+    },
+    {
+      "kind": "point",
+      "name": "Oak grove south edge",
+      "position": [
+        13,
+        12
+      ],
+      "block": "5d"
+    },
+    {
+      "kind": "point",
+      "name": "Oak grove south edge",
+      "position": [
+        14,
+        12
+      ],
+      "block": "5d"
+    },
+    {
+      "kind": "point",
+      "name": "Oak grove south edge",
+      "position": [
+        15,
+        12
+      ],
+      "block": "5d"
+    },
+    {
+      "kind": "point",
+      "name": "Meadow reward dry footing",
+      "position": [
+        16,
+        20
+      ],
+      "block": "02"
+    },
+    {
+      "kind": "rect",
+      "name": "Oak cut-in closes empty northern junction shoulder",
+      "material": "oak",
+      "bounds": [
+        18,
+        12,
+        20,
+        14
+      ]
+    },
+    {
+      "kind": "point",
+      "name": "Oak edge above existing prairie specimen",
+      "position": [
+        11,
+        19
+      ],
+      "block": "61"
+    },
+    {
+      "kind": "point",
+      "name": "Attach original oak specimen into field shoulder",
+      "position": [
+        11,
+        20
+      ],
+      "block": "61"
+    },
+    {
+      "kind": "point",
+      "name": "Southern oak edge retains western loop below canopy",
+      "position": [
+        11,
+        21
+      ],
+      "block": "5d"
+    },
+    {
+      "kind": "point",
+      "name": "Oak hook turns main road around attached canopy",
+      "position": [
+        12,
+        21
+      ],
+      "block": "5d"
+    },
+    {
+      "kind": "point",
+      "name": "Road turns east beside oak hook",
+      "position": [
+        13,
+        20
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Road beside short oak hook",
+      "position": [
+        13,
+        21
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Road returns toward prairie observation nook",
+      "position": [
+        13,
+        22
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Eastern oak field edge begins above observation nook",
+      "position": [
+        14,
+        21
+      ],
+      "block": "61"
+    },
+    {
+      "kind": "point",
+      "name": "Eastern oak field edge narrows lower dry shoulder",
+      "position": [
+        14,
+        22
+      ],
+      "block": "61"
+    },
+    {
+      "kind": "point",
+      "name": "Oak field edge attaches to existing southern forest",
+      "position": [
+        14,
+        23
+      ],
+      "block": "61"
+    },
+    {
+      "kind": "point",
+      "name": "Southern oak toe returns road toward habitat gate",
+      "position": [
+        13,
+        23
+      ],
+      "block": "61"
+    }
+  ]
+}

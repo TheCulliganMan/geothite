@@ -32,6 +32,16 @@ determine physical game size; normalized authoring heights do not replace them.
 Presentation preserves source-specific fallback for transformations and forms
 the exact model does not represent.
 
+Normal send-outs retain the same species mesh through the two reveal ticks,
+using the controller's source frame to scale it around its checked contact.
+Capture uses that same model and the source ball animation by default; the
+isolated-image capture experiment is optional. Neither effect replaces the
+whole encounter with the classic LCD. Human participants reuse the field's
+weighted character rigs and paintings, preloaded through the shared actor queue
+before the battle-entry wipe. Their visibility follows the retained entry,
+trainer-exit and result narration, without advancing the controller.
+
+
 Coverage and numerical validation do not establish appearance. The
 [roster review](pokemon-authoring-portability.md) records windowless GPU pose
 inspection and its limits. The [angle review](pokemon-roster-angle-review.md)

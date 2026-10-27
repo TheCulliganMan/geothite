@@ -1,0 +1,8 @@
+{
+  "status": "returned-raw-preserved-aesthetic-rejected",
+  "source": "sprites/mn-f081/redesign-20261026/mn-177-dividra.front-back.redesign-v1.png",
+  "source_sha256": "69d6436d9fd8c302bdfbab24f125931d318f6dc89456c2231d009235f902a72a",
+  "prompt_file": "sprites/mn-f081/redesign-20261026/prompt-v1.txt",
+  "reference_mapping": "sprites/mn-f081/redesign-20261026/reference-mapping-v1.json",
+  "critique": "Slightly taller ridge but retains old long low body ratio and small face; insufficient silhouette redesign. Keep as reusable alternate, not selected."
+}

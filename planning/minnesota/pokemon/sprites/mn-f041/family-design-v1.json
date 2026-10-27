@@ -1,0 +1,17 @@
+{
+  "id": "MN_F041",
+  "members": [
+    {
+      "id": "MN_092",
+      "name": "Graytag",
+      "types": [
+        "NORMAL",
+        "FIGHTING"
+      ],
+      "stage": 1,
+      "evolves_to": null
+    }
+  ],
+  "theme": "Duck, duck, gray duck: a fast-footed gray duck challenges opponents with a head tap and dares them to catch it.",
+  "region": "towns"
+}

@@ -1,0 +1,88 @@
+{
+  "schema_version": 1,
+  "status": "root-assigned-proposal-authored",
+  "families": [
+    {
+      "id": "MN_F120",
+      "region": "southeast_blufflands",
+      "theme": "Minnesota timber rattlesnake and living warning percussion: a long fluid serpent grows a hollow keratin rattle into two interlocking resonant lobes that give contrasting warning tones.",
+      "members": [
+        {
+          "id": "MN_257",
+          "name": "Hushiss",
+          "types": [
+            "POISON",
+            "NORMAL"
+          ],
+          "stage": 1,
+          "evolves_to": "MN_258"
+        },
+        {
+          "id": "MN_258",
+          "name": "Castanake",
+          "types": [
+            "POISON",
+            "NORMAL"
+          ],
+          "stage": 2,
+          "evolves_to": null
+        }
+      ],
+      "classification": "ordinary",
+      "design_status": "root-assigned-locked-for-art",
+      "evolution_design": {
+        "regional_evidence": "Minnesota DNR describes timber rattlesnakes in southeastern blufflands, using limestone cavities and sunny bluff prairie. Juveniles are gray with dark chevrons, adults develop warmer colors, and shed skin adds rattle segments. Smithsonian explains the hollow keratin sections and warning sound.",
+        "original_invention": "The enlarged chamber shape, interlocking unequal adult rattle lobes, contrasting warning tones and exact creature faces are original fantasy anatomy. They are not a claimed real rattlesnake adaptation.",
+        "body_growth": [
+          {
+            "species_id": "MN_257",
+            "body": "A small long fluid gray-ash snake in a loose S curve, expressive blunt triangular head, two broad natural dark bands and a short black-tipped tail ending in one oversized hollow keratin warning chamber with two broad segment joints.",
+            "silhouette": "Low continuous S body, raised alert head to the left and one rounded rattle chamber lifted at the tail end; no hood or limbs."
+          },
+          {
+            "species_id": "MN_258",
+            "body": "A longer heavier warm-ochre snake with a broader expressive head and three broad natural bands. Its single attached tail stalk supports two interlocking unequal hollow rattle lobes, one broad deep chamber and one shorter high chamber, held raised in a warning stance.",
+            "silhouette": "Long flowing serpentine curve with a broad triangular head and a distinctive two-lobe interlocked rattle cluster; real serpent anatomy rather than a person or instrument prop."
+          }
+        ]
+      },
+      "silhouette_concept": "One chamber on a small ash-gray flowing serpent becomes a clearly larger interlocking two-chamber rattle on a heavier ochre serpent. Head, body thickness, stance and attached resonator all grow.",
+      "habitat": "Sunlit south- and west-facing southeastern bluff prairie, limestone ledges and adjacent forest margins.",
+      "proposed_routes": [
+        {
+          "id": "MN_R01",
+          "placement": "Optional bluff ledge encounter branch, away from mandatory starter-path grass.",
+          "status": "encounter proposal only; no map changes"
+        },
+        {
+          "id": "MN_R05",
+          "placement": "Sunny lower-bluff meadow and rocky forest edge.",
+          "status": "encounter proposal only; no map changes"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Minnesota DNR, Minnesota Profile: Timber Rattlesnake,2016",
+          "url": "https://www.dnr.state.mn.us/mcvmagazine/issues/2016/jul-aug/minnesota-profile-timber-rattlesnake.html",
+          "supports": "Southeastern bluff habitat, natural bands, juvenile gray/adult warm colors, rattle segment growth.",
+          "source_kind": "primary regional wildlife account"
+        },
+        {
+          "title": "Minnesota DNR, Timber rattlesnake survey and habitat improvement",
+          "url": "https://www.dnr.state.mn.us/eco/nongame/projects/timber_rattle.html",
+          "supports": "Minnesota bluff-prairie and associated forest habitat.",
+          "source_kind": "primary regional agency account"
+        },
+        {
+          "title": "Smithsonian National Zoo, Timber rattlesnake",
+          "url": "https://nationalzoo.si.edu/animals/timber-rattlesnake",
+          "supports": "Keratin rattle sections, physical contact producing warning sound.",
+          "source_kind": "primary zoo biological explanation"
+        }
+      ],
+      "nonduplication": "Hissario uses false-face hognose misdirection, while Lasserp uses braided hay-rope anatomy. This pair is an actual fluid-bodied rattlesnake with sparse natural bands and a grown warning resonator; no false face, braided rope, dragon limbs or held instrument.",
+      "type_rationale": "POISON expresses venomous viper biology; NORMAL expresses physical body resonance and warning percussion. Both stages retain assigned POISON/NORMAL, no Dragon.",
+      "sprite_constraints": "One two-column/two-row sheet. Front56x56 full body left-facing; close rear48x48 upper head/neck portrait looking upper-right, lower coils cropped. Exact separate four-color GBC palettes per species; sparse flat bands, stepped black rims, broad dark eyes with sparse white glints."
+    }
+  ]
+}

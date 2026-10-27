@@ -5424,7 +5424,7 @@ fn move_visible_primary_cursor(runtime_shell: &mut BevyRuntimeShell, delta: isiz
     if runtime_shell.pokegear_menu_open {
         return move_visible_pokegear_cursor(runtime_shell, delta);
     }
-    if visible_field_pack_is_open(runtime_shell) {
+    if snapshot.battle.is_none() && visible_field_pack_is_open(runtime_shell) {
         if runtime_shell.field_pack_target_mode.is_some() {
             return move_visible_field_pack_target_cursor(runtime_shell, delta);
         }

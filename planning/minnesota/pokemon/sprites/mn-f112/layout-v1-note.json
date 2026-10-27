@@ -1,0 +1,4 @@
+{
+  "issue": "Raw v1 final front keel and upper rear vane overlap their row bounding boxes; retain original, request clean rectangular gutter variant.",
+  "prompt_file": "prompt-v1.txt"
+}

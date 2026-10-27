@@ -1,0 +1,77 @@
+{
+  "use_case": "precise-object-edit",
+  "references": [
+    {
+      "path": "/Users/ryanculligan/GitHub/geothite/planning/minnesota/pokemon/sprites/mn-f086/mn-185.front-back.imagegen-v1.png",
+      "sha256": "294e168b6c41211e45d12fa25b20da5b2d418f19937411bd31d33feb87f8667f",
+      "role": "Old original species art: identity, palette and theme context only; replace weak anatomy as specified, do not preserve flattened silhouette."
+    },
+    {
+      "path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/gen2-reference/starters.png",
+      "sha256": "af61f720a75b7e1b8e80ba14e8944612556397eedddd719669dec68b0e0fd534",
+      "role": "Authentic Gen2 coarse logical pixel clusters, selective black rims and cropped close-rear battle camera only. Do not copy reference characters."
+    }
+  ],
+  "species_id": "MN_185",
+  "palette": {
+    "species_id": "MN_185",
+    "name": "Cragcloak",
+    "gbc_rgb5": [
+      [
+        31,
+        31,
+        31
+      ],
+      [
+        20,
+        24,
+        15
+      ],
+      [
+        9,
+        12,
+        12
+      ],
+      [
+        0,
+        0,
+        0
+      ]
+    ],
+    "gbc_rgb555_words": [
+      32767,
+      16148,
+      12681,
+      0
+    ],
+    "rgb8": [
+      [
+        255,
+        255,
+        255
+      ],
+      [
+        165,
+        198,
+        123
+      ],
+      [
+        74,
+        99,
+        99
+      ],
+      [
+        0,
+        0,
+        0
+      ]
+    ],
+    "hex": [
+      "#FFFFFF",
+      "#A5C67B",
+      "#4A6363",
+      "#000000"
+    ]
+  },
+  "canonical_manifest_sha256": "0344ace29bf1e23f2f966d4ef5197aaf6eb41a0437ac6430e9c0bc4778a06502"
+}

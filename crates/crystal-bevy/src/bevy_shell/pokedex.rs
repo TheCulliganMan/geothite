@@ -635,7 +635,7 @@ fn press_visible_pokedex_select(runtime_shell: &mut BevyRuntimeShell) -> Result<
 
 const POKEDEX_SEARCH_TYPES: &[&str] = &[
     "----", "NORMAL", "FIRE", "WATER", "GRASS", "ELECTRIC", "ICE", "FIGHTING", "POISON", "GROUND",
-    "FLYING", "PSYCHIC", "BUG", "ROCK", "GHOST", "DRAGON", "DARK", "STEEL",
+    "FLYING", "PSYCHIC", "BUG", "ROCK", "GHOST", "DRAGON", "DARK", "STEEL", "FAIRY",
 ];
 
 fn visible_pokedex_listing(
@@ -960,5 +960,5 @@ fn advance_visible_pokedex_search(shell: &mut BevyRuntimeShell, frames: u32) {
 const POKEDEX_SEARCH_LABELS: &[&str] = &[
     "  ----  ", " NORMAL ", "  FIRE  ", " WATER  ", " GRASS  ", "ELECTRIC", "  ICE   ", "FIGHTING",
     " POISON ", " GROUND ", " FLYING ", "PSYCHIC ", "  BUG   ", "  ROCK  ", " GHOST  ", " DRAGON ",
-    "  DARK  ", " STEEL  ",
+    "  DARK  ", " STEEL  ", " FAIRY  ",
 ];

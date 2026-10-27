@@ -1,0 +1,21 @@
+{
+  "prompt": "sprites/mosquito-line/mosquitan-back-prompt-v3.txt",
+  "output": "sprites/mosquito-line/mn-153-mosquitan.back.imagegen-v3.png",
+  "references": [
+    {
+      "path": "target/minnesota-pokemon/native/MN_F072/mn-153-mosquitan-v2.front.review.png",
+      "role": "authoritative native front anatomy and target palette",
+      "sha256": "e8b883ec93bc7e72a3909d1f481c5638206633ac18de622348222b2eafea7400"
+    },
+    {
+      "path": "target/minnesota-pokemon/native/MN_F072/mn-153-mosquitan-v2.back.source-crop.png",
+      "role": "superseded rear portrait and camera",
+      "sha256": "a0a2c736e4343575db26d83a82529b23949f7a0605e6b4505e668cfa73c8f7c0"
+    },
+    {
+      "path": "target/minnesota-pokemon/gen2-reference/bugs.png",
+      "role": "authentic Gen2 camera and cluster style only",
+      "sha256": "407fe86151d762ca6a2e4dfaa9e556a7da55fc9eecdf927c3c1600798b4e0884"
+    }
+  ]
+}

@@ -1,0 +1,64 @@
+{
+  "id": "MnR20Cave1F",
+  "template": "UnionCave1F",
+  "dimensions_metatiles": [
+    9,
+    8
+  ],
+  "width_metatiles": 9,
+  "height_metatiles": 8,
+  "tileset": "cave",
+  "border_block": 1,
+  "rows": [
+    "01 01 01 01 01 01 01 01 01",
+    "01 04 05 06 01 04 05 06 01",
+    "01 08 02 0a 01 08 02 0a 01",
+    "01 08 02 02 05 02 02 0a 01",
+    "01 08 02 1d 02 02 02 0a 01",
+    "01 08 02 02 0a 08 02 0a 01",
+    "01 20 07 22 01 20 07 22 01",
+    "01 01 01 01 01 01 01 01 01"
+  ],
+  "exits": [
+    [
+      5,
+      13
+    ],
+    [
+      13,
+      13
+    ]
+  ],
+  "clear_arrival": [
+    5,
+    12
+  ],
+  "exit_collision": "LADDER",
+  "exit_doors": [
+    [
+      60,
+      33
+    ],
+    [
+      76,
+      31
+    ]
+  ],
+  "residents": [],
+  "items": [
+    {
+      "id": "MN_R20_ITEM_01",
+      "item": "HYPER_POTION",
+      "quantity": 1,
+      "flag": "EVENT_MN_R20_ITEM_01",
+      "tile": [
+        5,
+        5
+      ],
+      "access": "Optional two-chamber granite passage; saved pickup flag retained."
+    }
+  ],
+  "signs": [],
+  "mandatory": false,
+  "purpose": "Two authored stone chambers with a narrow connecting seam, persistent Hyper Potion and two honest exterior mouth returns; optional indoor discovery loop, not a promised faster crossing."
+}

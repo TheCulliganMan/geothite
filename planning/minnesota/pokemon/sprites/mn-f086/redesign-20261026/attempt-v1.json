@@ -1,0 +1,8 @@
+{
+  "status": "returned-raw-preserved-aesthetic-rejected",
+  "source": "sprites/mn-f086/redesign-20261026/mn-185-cragcloak.front-back.redesign-v1.png",
+  "source_sha256": "422ddfc7d6af8c1177b30a34a5759d6f8cd2f6c674386e26abd29289cf2d5cc7",
+  "prompt_file": "sprites/mn-f086/redesign-20261026/prompt-v1.txt",
+  "reference_mapping": "sprites/mn-f086/redesign-20261026/reference-mapping-v1.json",
+  "critique": "Stone face is more explicit but old merged green silhouette is retained. Does not show requested two open protective mantle lobes and central opening clearly enough."
+}

@@ -7,7 +7,7 @@
   },
   "name": "geothite-browser-checks",
   "scripts": {
-    "test:browser": "node --test web-client/*.test.mjs",
+    "test:browser": "node --test web-client/*.test.mjs tools/terminal-install.test.mjs",
     "bench:walking": "node tools/browser-walking-performance.mjs"
   }
 }

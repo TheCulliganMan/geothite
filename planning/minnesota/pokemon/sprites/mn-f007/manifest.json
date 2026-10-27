@@ -1,0 +1,409 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F007",
+  "status": "native-front-back-reviewed",
+  "tool": "built-in image_gen",
+  "prompt_file": "sprites/mn-f007/prompt-v1.txt",
+  "sprites": [
+    {
+      "id": "mn-019-stripillar-v2",
+      "species_id": "MN_019",
+      "view": "front",
+      "source": "sprites/mn-f007/mn-019-021.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        480,
+        530
+      ],
+      "fit": [
+        36,
+        36
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        9079,
+        13481,
+        0
+      ],
+      "source_palette_rgb555": [
+        32767,
+        4735,
+        12424,
+        0
+      ]
+    },
+    {
+      "id": "mn-019-stripillar-v2",
+      "species_id": "MN_019",
+      "view": "back",
+      "source": "sprites/mn-f007/mn-019-021.back.imagegen-v2.png",
+      "crop": [
+        0,
+        0,
+        700,
+        724
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        9079,
+        13481,
+        0
+      ]
+    },
+    {
+      "id": "mn-020-giltalis-v2",
+      "species_id": "MN_020",
+      "view": "front",
+      "source": "sprites/mn-f007/mn-019-021.front-back.imagegen-v1.png",
+      "crop": [
+        480,
+        0,
+        400,
+        530
+      ],
+      "fit": [
+        40,
+        40
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        21356,
+        12707,
+        0
+      ],
+      "source_palette_rgb555": [
+        32767,
+        4735,
+        12424,
+        0
+      ]
+    },
+    {
+      "id": "mn-020-giltalis-v2",
+      "species_id": "MN_020",
+      "view": "back",
+      "source": "sprites/mn-f007/mn-019-021.back.imagegen-v2.png",
+      "crop": [
+        700,
+        0,
+        700,
+        724
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        21356,
+        12707,
+        0
+      ]
+    },
+    {
+      "id": "mn-021-regalarch-v2",
+      "species_id": "MN_021",
+      "view": "front",
+      "source": "sprites/mn-f007/mn-019-021.front-back.imagegen-v1.png",
+      "crop": [
+        880,
+        0,
+        656,
+        530
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        4703,
+        13449,
+        0
+      ],
+      "source_palette_rgb555": [
+        32767,
+        4735,
+        12424,
+        0
+      ]
+    },
+    {
+      "id": "mn-021-regalarch-v2",
+      "species_id": "MN_021",
+      "view": "back",
+      "source": "sprites/mn-f007/mn-019-021.back.imagegen-v2.png",
+      "crop": [
+        1400,
+        0,
+        772,
+        724
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        4703,
+        13449,
+        0
+      ]
+    }
+  ],
+  "visual_review": {
+    "status": "reviewed",
+    "notes": "Root inspected v1 front/back board: monarch wings retain connected outer corners and white spots; purple venation remains colored rather than broad black fill. Cocoon and larval rear silhouettes are clear.",
+    "sheet_sha256": "220fb1939c5ea61cc262185d9efe3e73ae09c6c954e82868d40879a06fbeee9d",
+    "outline_profile": "source-contour-v1"
+  },
+  "pokemon_palettes": {
+    "MN_019": {
+      "species_id": "MN_019",
+      "name": "Stripillar",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          23,
+          27,
+          8
+        ],
+        [
+          9,
+          5,
+          13
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        9079,
+        13481,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          189,
+          222,
+          66
+        ],
+        [
+          74,
+          41,
+          107
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#BDDE42",
+        "#4A296B",
+        "#000000"
+      ]
+    },
+    "MN_020": {
+      "species_id": "MN_020",
+      "name": "Giltalis",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          12,
+          27,
+          20
+        ],
+        [
+          3,
+          13,
+          12
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        21356,
+        12707,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          99,
+          222,
+          165
+        ],
+        [
+          24,
+          107,
+          99
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#63DEA5",
+        "#186B63",
+        "#000000"
+      ]
+    },
+    "MN_021": {
+      "species_id": "MN_021",
+      "name": "Regalarch",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          31,
+          18,
+          4
+        ],
+        [
+          9,
+          4,
+          13
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        4703,
+        13449,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          255,
+          148,
+          33
+        ],
+        [
+          74,
+          33,
+          107
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#FF9421",
+        "#4A216B",
+        "#000000"
+      ]
+    }
+  },
+  "back_framing": "gen2-close-rear-portrait",
+  "conversion_revision": "Approved original front ink indices mapped to individual normal palettes; newly authored ImageGen close rear portraits use target palettes directly. All original sheets and conversion alternatives retained.",
+  "original_source_palette": {
+    "gbc_rgb5": [
+      [
+        31,
+        31,
+        31
+      ],
+      [
+        31,
+        19,
+        4
+      ],
+      [
+        8,
+        4,
+        12
+      ],
+      [
+        0,
+        0,
+        0
+      ]
+    ],
+    "gbc_rgb555_words": [
+      32767,
+      4735,
+      12424,
+      0
+    ],
+    "rgb8": [
+      [
+        255,
+        255,
+        255
+      ],
+      [
+        255,
+        156,
+        33
+      ],
+      [
+        66,
+        33,
+        99
+      ],
+      [
+        0,
+        0,
+        0
+      ]
+    ],
+    "hex": [
+      "#FFFFFF",
+      "#FF9C21",
+      "#422163",
+      "#000000"
+    ]
+  },
+  "back_prompt_file": "sprites/mn-f007/back-prompt-v2.txt",
+  "back_reference_mapping": "sprites/mn-f007/back-reference-mapping-v2.json"
+}

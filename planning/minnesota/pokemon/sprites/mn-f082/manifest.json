@@ -1,0 +1,232 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F082",
+  "status": "native-front-back-reviewed",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_178": {
+      "species_id": "MN_178",
+      "name": "Augrub",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          26,
+          18,
+          10
+        ],
+        [
+          12,
+          8,
+          7
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        10842,
+        7436,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          214,
+          148,
+          82
+        ],
+        [
+          99,
+          66,
+          57
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#D69452",
+        "#634239",
+        "#000000"
+      ]
+    },
+    "MN_179": {
+      "species_id": "MN_179",
+      "name": "Heliknock",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          24,
+          15,
+          8
+        ],
+        [
+          9,
+          7,
+          10
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        8696,
+        10473,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          198,
+          123,
+          66
+        ],
+        [
+          74,
+          57,
+          82
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#C67B42",
+        "#4A3952",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f082/prompt-v1.txt",
+  "reference_mapping": "sprites/mn-f082/reference-mapping-v1.json",
+  "back_framing": "gen2-close-rear-portrait",
+  "sprites": [
+    {
+      "id": "mn-178-augrub-v1",
+      "species_id": "MN_178",
+      "view": "front",
+      "source": "sprites/mn-f082/mn-178-179.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        768,
+        530
+      ],
+      "fit": [
+        40,
+        40
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        10842,
+        7436,
+        0
+      ],
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-178-augrub-v1",
+      "species_id": "MN_178",
+      "view": "back",
+      "source": "sprites/mn-f082/mn-178-179.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        530,
+        768,
+        494
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        10842,
+        7436,
+        0
+      ],
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-179-heliknock-v1",
+      "species_id": "MN_179",
+      "view": "front",
+      "source": "sprites/mn-f082/mn-178-179.front-back.imagegen-v1.png",
+      "crop": [
+        768,
+        0,
+        768,
+        530
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        8696,
+        10473,
+        0
+      ],
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-179-heliknock-v1",
+      "species_id": "MN_179",
+      "view": "back",
+      "source": "sprites/mn-f082/mn-178-179.front-back.imagegen-v1.png",
+      "crop": [
+        768,
+        530,
+        768,
+        494
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        8696,
+        10473,
+        0
+      ],
+      "interior_black_min_samples": 32
+    }
+  ],
+  "visual_review": {
+    "status": "reviewed",
+    "reviewer": "root",
+    "notes": "Root inspected both pairs: single grounded spiral pedestal and shoulder nubs become taller three-turn anatomy with two enormous grown hook shoulders. The hook gaps and thick colored spiral bands remain open and readable; it has no separate feet or held drill. Dark eyes with corner glints, distinct earth palettes and enlarged cropped backs accepted.",
+    "sheet_sha256": "5002d46cade5ed93f81b790e9c71bd9a2c129a53cfd5a30faaf3353e8a69ffeb",
+    "outline_profile": "source-contour-v1"
+  }
+}

@@ -1,0 +1,345 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F090",
+  "status": "native-front-back-reviewed",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_195": {
+      "species_id": "MN_195",
+      "name": "Doughlin",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          30,
+          24,
+          15
+        ],
+        [
+          12,
+          6,
+          3
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        16158,
+        3276,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          247,
+          198,
+          123
+        ],
+        [
+          99,
+          49,
+          24
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#F7C67B",
+        "#633118",
+        "#000000"
+      ]
+    },
+    "MN_196": {
+      "species_id": "MN_196",
+      "name": "Crumband",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          28,
+          18,
+          8
+        ],
+        [
+          10,
+          5,
+          3
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        8796,
+        3242,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          231,
+          148,
+          66
+        ],
+        [
+          82,
+          41,
+          24
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#E79442",
+        "#522918",
+        "#000000"
+      ]
+    },
+    "MN_197": {
+      "species_id": "MN_197",
+      "name": "Jarbaron",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          29,
+          16,
+          6
+        ],
+        [
+          9,
+          4,
+          3
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        6685,
+        3209,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          239,
+          132,
+          49
+        ],
+        [
+          74,
+          33,
+          24
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#EF8431",
+        "#4A2118",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f090/prompt-v1.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "style_reference": {
+    "origin": "authentic local Crystal sprites",
+    "generator": "crates/crystal-assets/examples/minnesota_gen2_reference.rs",
+    "boards": [
+      "target/minnesota-pokemon/gen2-reference/starters.png",
+      "target/minnesota-pokemon/gen2-reference/bugs.png"
+    ]
+  },
+  "sprites": [
+    {
+      "id": "mn-195-doughlin-v1",
+      "species_id": "MN_195",
+      "view": "front",
+      "source": "sprites/mn-f090/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        480,
+        495
+      ],
+      "fit": [
+        36,
+        36
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        16158,
+        3276,
+        0
+      ],
+      "interior_black_min_samples": 16
+    },
+    {
+      "id": "mn-195-doughlin-v1",
+      "species_id": "MN_195",
+      "view": "back",
+      "source": "sprites/mn-f090/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        495,
+        480,
+        529
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        16158,
+        3276,
+        0
+      ],
+      "interior_black_min_samples": 16
+    },
+    {
+      "id": "mn-196-crumband-v1",
+      "species_id": "MN_196",
+      "view": "front",
+      "source": "sprites/mn-f090/front-back.imagegen-v1.png",
+      "crop": [
+        480,
+        0,
+        518,
+        495
+      ],
+      "fit": [
+        44,
+        44
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        8796,
+        3242,
+        0
+      ],
+      "interior_black_min_samples": 16
+    },
+    {
+      "id": "mn-196-crumband-v1",
+      "species_id": "MN_196",
+      "view": "back",
+      "source": "sprites/mn-f090/front-back.imagegen-v1.png",
+      "crop": [
+        480,
+        495,
+        498,
+        529
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        8796,
+        3242,
+        0
+      ],
+      "interior_black_min_samples": 16
+    },
+    {
+      "id": "mn-197-jarbaron-v1",
+      "species_id": "MN_197",
+      "view": "front",
+      "source": "sprites/mn-f090/front-back.imagegen-v1.png",
+      "crop": [
+        998,
+        0,
+        538,
+        495
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        6685,
+        3209,
+        0
+      ],
+      "interior_black_min_samples": 16
+    },
+    {
+      "id": "mn-197-jarbaron-v1",
+      "species_id": "MN_197",
+      "view": "back",
+      "source": "sprites/mn-f090/front-back.imagegen-v1.png",
+      "crop": [
+        978,
+        495,
+        558,
+        529
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        6685,
+        3209,
+        0
+      ],
+      "interior_black_min_samples": 16
+    }
+  ],
+  "visual_review": {
+    "status": "reviewed",
+    "reviewer": "root",
+    "notes": "Root inspected native cookie line: dough imp grows mask/tong hands then an open crust chamber with large handle arms and a lid brow. Source has extra broad chip patches, but they remain distinct colored shapes rather than noisy pixels. White eye glints and cream/orange/brown field divisions are legible on front and close rear crops.",
+    "sheet_sha256": "6faccf1abc0a58b7a21c29d525f77e2bc7f36b4d791c73fa87eda3886899279e",
+    "outline_profile": "source-contour-v1"
+  }
+}

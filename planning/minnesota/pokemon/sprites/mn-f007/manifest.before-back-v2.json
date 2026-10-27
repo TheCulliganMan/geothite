@@ -1,0 +1,425 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F007",
+  "status": "front-recolored-back-revision-pending",
+  "tool": "built-in image_gen",
+  "prompt_file": "sprites/mn-f007/prompt-v1.txt",
+  "sprites": [
+    {
+      "id": "mn-019-stripillar-v2",
+      "species_id": "MN_019",
+      "view": "front",
+      "source": "sprites/mn-f007/mn-019-021.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        480,
+        530
+      ],
+      "fit": [
+        36,
+        36
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        9079,
+        13481,
+        0
+      ],
+      "source_palette_rgb555": [
+        32767,
+        4735,
+        12424,
+        0
+      ]
+    },
+    {
+      "id": "mn-019-stripillar-v2",
+      "species_id": "MN_019",
+      "view": "back",
+      "source": "sprites/mn-f007/mn-019-021.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        530,
+        480,
+        348
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        9079,
+        13481,
+        0
+      ],
+      "source_palette_rgb555": [
+        32767,
+        4735,
+        12424,
+        0
+      ]
+    },
+    {
+      "id": "mn-020-giltalis-v2",
+      "species_id": "MN_020",
+      "view": "front",
+      "source": "sprites/mn-f007/mn-019-021.front-back.imagegen-v1.png",
+      "crop": [
+        480,
+        0,
+        400,
+        530
+      ],
+      "fit": [
+        40,
+        40
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        21356,
+        12707,
+        0
+      ],
+      "source_palette_rgb555": [
+        32767,
+        4735,
+        12424,
+        0
+      ]
+    },
+    {
+      "id": "mn-020-giltalis-v2",
+      "species_id": "MN_020",
+      "view": "back",
+      "source": "sprites/mn-f007/mn-019-021.front-back.imagegen-v1.png",
+      "crop": [
+        480,
+        530,
+        400,
+        296
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        21356,
+        12707,
+        0
+      ],
+      "source_palette_rgb555": [
+        32767,
+        4735,
+        12424,
+        0
+      ]
+    },
+    {
+      "id": "mn-021-regalarch-v2",
+      "species_id": "MN_021",
+      "view": "front",
+      "source": "sprites/mn-f007/mn-019-021.front-back.imagegen-v1.png",
+      "crop": [
+        880,
+        0,
+        656,
+        530
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        4703,
+        13449,
+        0
+      ],
+      "source_palette_rgb555": [
+        32767,
+        4735,
+        12424,
+        0
+      ]
+    },
+    {
+      "id": "mn-021-regalarch-v2",
+      "species_id": "MN_021",
+      "view": "back",
+      "source": "sprites/mn-f007/mn-019-021.front-back.imagegen-v1.png",
+      "crop": [
+        880,
+        530,
+        656,
+        308
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        4703,
+        13449,
+        0
+      ],
+      "source_palette_rgb555": [
+        32767,
+        4735,
+        12424,
+        0
+      ]
+    }
+  ],
+  "visual_review": {
+    "status": "pending",
+    "notes": [
+      "Individual front palettes reviewed and coherent. Early stages rear crops are enlarged, but later stages remain too small; new authored close back portraits are required. All earlier source/crop/native versions retained."
+    ]
+  },
+  "pokemon_palettes": {
+    "MN_019": {
+      "species_id": "MN_019",
+      "name": "Stripillar",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          23,
+          27,
+          8
+        ],
+        [
+          9,
+          5,
+          13
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        9079,
+        13481,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          189,
+          222,
+          66
+        ],
+        [
+          74,
+          41,
+          107
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#BDDE42",
+        "#4A296B",
+        "#000000"
+      ]
+    },
+    "MN_020": {
+      "species_id": "MN_020",
+      "name": "Giltalis",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          12,
+          27,
+          20
+        ],
+        [
+          3,
+          13,
+          12
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        21356,
+        12707,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          99,
+          222,
+          165
+        ],
+        [
+          24,
+          107,
+          99
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#63DEA5",
+        "#186B63",
+        "#000000"
+      ]
+    },
+    "MN_021": {
+      "species_id": "MN_021",
+      "name": "Regalarch",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          31,
+          18,
+          4
+        ],
+        [
+          9,
+          4,
+          13
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        4703,
+        13449,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          255,
+          148,
+          33
+        ],
+        [
+          74,
+          33,
+          107
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#FF9421",
+        "#4A216B",
+        "#000000"
+      ]
+    }
+  },
+  "back_framing": "rear-crop-candidate-revision-pending",
+  "conversion_revision": "Individual palette mapping from original ink indices; close rear crop from separately authored back view. Original source and all prior native renders retained.",
+  "original_source_palette": {
+    "gbc_rgb5": [
+      [
+        31,
+        31,
+        31
+      ],
+      [
+        31,
+        19,
+        4
+      ],
+      [
+        8,
+        4,
+        12
+      ],
+      [
+        0,
+        0,
+        0
+      ]
+    ],
+    "gbc_rgb555_words": [
+      32767,
+      4735,
+      12424,
+      0
+    ],
+    "rgb8": [
+      [
+        255,
+        255,
+        255
+      ],
+      [
+        255,
+        156,
+        33
+      ],
+      [
+        66,
+        33,
+        99
+      ],
+      [
+        0,
+        0,
+        0
+      ]
+    ],
+    "hex": [
+      "#FFFFFF",
+      "#FF9C21",
+      "#422163",
+      "#000000"
+    ]
+  }
+}

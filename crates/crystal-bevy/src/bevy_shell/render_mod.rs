@@ -1,3 +1,10 @@
+#[cfg(feature = "voxel-view")]
+type ConnectedActorParams<'world, 'state> = (
+    Option<ResMut<'world, RenderedTilesetArt>>,
+    Option<ResMut<'world, Assets<Image>>>,
+    Local<'state, connected_actors::History>,
+);
+
 /// Publish the rendered overworld and controller-owned continuous pose as a
 /// read-only frame for optional presentation plugins. Extraction runs after
 /// `render_playfield`; gameplay movement, collisions, scripts and input ownership
@@ -47,10 +54,14 @@ fn publish_visual_world_frame(
         Option<Res<RuntimeTickTimer>>,
         Option<ResMut<crystal_render_api::VisualPlayerTraversal>>,
     ),
-    phases: Option<ResMut<crystal_render_api::VisualTileAnimationFrame>>,
-    clock: Option<ResMut<crystal_render_api::VisualWorldClock>>,
+    timing: (
+        Option<ResMut<crystal_render_api::VisualTileAnimationFrame>>,
+        Option<ResMut<crystal_render_api::VisualWorldClock>>,
+    ),
+    #[cfg(feature = "voxel-view")] connected_assets: ConnectedActorParams<'_, '_>,
 ) {
     let (lighting, tick_timer, mut traversal) = presentation;
+    let (phases, clock) = timing;
     #[cfg(feature = "voxel-view")]
     let _trace = crystal_voxel_view::loading_trace::span("frame.publish_world", || serde_json::json!({"map": rendered.map_name.as_deref()}));
     if let Some(mut lighting) = lighting {
@@ -535,6 +546,31 @@ fn publish_visual_world_frame(
     let camera_movement = rendered.tile.map_or(Vec2::ZERO, |tile| runtime_shell.natural_movement.displacement(map_id,tile));
     let center = anchored_center;
     for actor in &mut actors { actor.center += view_center; }
+    #[cfg(feature = "voxel-view")]
+    if let (Some(mut art), Some(mut images), mut history) = connected_assets {
+        let window = crystal_render_api::VisualWorldFrame {
+            map_id: Arc::from(map_id),
+            source_regions: rendered.visual_source_regions.clone(),
+            grid_origin,
+            grid_size: published_grid_size,
+            center,
+            tile_size: Vec2::splat(TILE_SIZE),
+            ..default()
+        };
+        if let Err(error) = connected_actors::append(
+            &runtime_shell,
+            &window,
+            settings
+                .as_ref()
+                .map_or(0., |settings| settings.camera.rotation_step),
+            &mut art,
+            &mut images,
+            &mut actors,
+            &mut history,
+        ) {
+            bevy::log::warn!("connected actor presentation unavailable: {error:#}");
+        }
+    }
     if let Some(traversal) = traversal.as_mut() {
         if let Some(step) = traversal.step.as_mut() {
             step.from += view_center;

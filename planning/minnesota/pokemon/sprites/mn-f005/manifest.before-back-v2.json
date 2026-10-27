@@ -1,0 +1,425 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F005",
+  "status": "front-recolored-back-revision-pending",
+  "tool": "built-in image_gen",
+  "prompt_file": "sprites/mn-f005/prompt-v1.txt",
+  "sprites": [
+    {
+      "id": "mn-013-riceling-v2",
+      "species_id": "MN_013",
+      "view": "front",
+      "source": "sprites/mn-f005/mn-013-015.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        360,
+        518
+      ],
+      "fit": [
+        36,
+        36
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        10103,
+        5609,
+        0
+      ],
+      "source_palette_rgb555": [
+        32767,
+        13083,
+        10691,
+        0
+      ]
+    },
+    {
+      "id": "mn-013-riceling-v2",
+      "species_id": "MN_013",
+      "view": "back",
+      "source": "sprites/mn-f005/mn-013-015.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        518,
+        360,
+        363
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        10103,
+        5609,
+        0
+      ],
+      "source_palette_rgb555": [
+        32767,
+        13083,
+        10691,
+        0
+      ]
+    },
+    {
+      "id": "mn-014-reedraft-v2",
+      "species_id": "MN_014",
+      "view": "front",
+      "source": "sprites/mn-f005/mn-013-015.front-back.imagegen-v1.png",
+      "crop": [
+        360,
+        0,
+        515,
+        518
+      ],
+      "fit": [
+        44,
+        44
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        14108,
+        7587,
+        0
+      ],
+      "source_palette_rgb555": [
+        32767,
+        13083,
+        10691,
+        0
+      ]
+    },
+    {
+      "id": "mn-014-reedraft-v2",
+      "species_id": "MN_014",
+      "view": "back",
+      "source": "sprites/mn-f005/mn-013-015.front-back.imagegen-v1.png",
+      "crop": [
+        360,
+        518,
+        515,
+        324
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        14108,
+        7587,
+        0
+      ],
+      "source_palette_rgb555": [
+        32767,
+        13083,
+        10691,
+        0
+      ]
+    },
+    {
+      "id": "mn-015-zizalith-v2",
+      "species_id": "MN_015",
+      "view": "front",
+      "source": "sprites/mn-f005/mn-013-015.front-back.imagegen-v1.png",
+      "crop": [
+        875,
+        0,
+        661,
+        518
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        7805,
+        12643,
+        0
+      ],
+      "source_palette_rgb555": [
+        32767,
+        13083,
+        10691,
+        0
+      ]
+    },
+    {
+      "id": "mn-015-zizalith-v2",
+      "species_id": "MN_015",
+      "view": "back",
+      "source": "sprites/mn-f005/mn-013-015.front-back.imagegen-v1.png",
+      "crop": [
+        875,
+        518,
+        661,
+        299
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        7805,
+        12643,
+        0
+      ],
+      "source_palette_rgb555": [
+        32767,
+        13083,
+        10691,
+        0
+      ]
+    }
+  ],
+  "visual_review": {
+    "status": "pending",
+    "notes": [
+      "Individual front palettes reviewed and coherent. Early stages rear crops are enlarged, but later stages remain too small; new authored close back portraits are required. All earlier source/crop/native versions retained."
+    ]
+  },
+  "pokemon_palettes": {
+    "MN_013": {
+      "species_id": "MN_013",
+      "name": "Riceling",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          23,
+          27,
+          9
+        ],
+        [
+          9,
+          15,
+          5
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        10103,
+        5609,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          189,
+          222,
+          74
+        ],
+        [
+          74,
+          123,
+          41
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#BDDE4A",
+        "#4A7B29",
+        "#000000"
+      ]
+    },
+    "MN_014": {
+      "species_id": "MN_014",
+      "name": "Reedraft",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          28,
+          24,
+          13
+        ],
+        [
+          3,
+          13,
+          7
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        14108,
+        7587,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          231,
+          198,
+          107
+        ],
+        [
+          24,
+          107,
+          57
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#E7C66B",
+        "#186B39",
+        "#000000"
+      ]
+    },
+    "MN_015": {
+      "species_id": "MN_015",
+      "name": "Zizalith",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          29,
+          19,
+          7
+        ],
+        [
+          3,
+          11,
+          12
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        7805,
+        12643,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          239,
+          156,
+          57
+        ],
+        [
+          24,
+          90,
+          99
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#EF9C39",
+        "#185A63",
+        "#000000"
+      ]
+    }
+  },
+  "back_framing": "rear-crop-candidate-revision-pending",
+  "conversion_revision": "Individual palette mapping from original ink indices; close rear crop from separately authored back view. Original source and all prior native renders retained.",
+  "original_source_palette": {
+    "gbc_rgb5": [
+      [
+        31,
+        31,
+        31
+      ],
+      [
+        27,
+        24,
+        12
+      ],
+      [
+        3,
+        14,
+        10
+      ],
+      [
+        0,
+        0,
+        0
+      ]
+    ],
+    "gbc_rgb555_words": [
+      32767,
+      13083,
+      10691,
+      0
+    ],
+    "rgb8": [
+      [
+        255,
+        255,
+        255
+      ],
+      [
+        222,
+        198,
+        99
+      ],
+      [
+        24,
+        115,
+        82
+      ],
+      [
+        0,
+        0,
+        0
+      ]
+    ],
+    "hex": [
+      "#FFFFFF",
+      "#DEC663",
+      "#187352",
+      "#000000"
+    ]
+  }
+}

@@ -1,0 +1,345 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F088",
+  "status": "native-front-back-reviewed",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_189": {
+      "species_id": "MN_189",
+      "name": "Riffbit",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          29,
+          24,
+          9
+        ],
+        [
+          4,
+          11,
+          21
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        10013,
+        21860,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          239,
+          198,
+          74
+        ],
+        [
+          33,
+          90,
+          173
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#EFC64A",
+        "#215AAD",
+        "#000000"
+      ]
+    },
+    "MN_190": {
+      "species_id": "MN_190",
+      "name": "Dynarill",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          28,
+          22,
+          7
+        ],
+        [
+          5,
+          14,
+          23
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        7900,
+        24005,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          231,
+          181,
+          57
+        ],
+        [
+          41,
+          115,
+          189
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#E7B539",
+        "#2973BD",
+        "#000000"
+      ]
+    },
+    "MN_191": {
+      "species_id": "MN_191",
+      "name": "Cascavolt",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          26,
+          24,
+          12
+        ],
+        [
+          3,
+          9,
+          20
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        13082,
+        20771,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          214,
+          198,
+          99
+        ],
+        [
+          24,
+          74,
+          165
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#D6C663",
+        "#184AA5",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f088/prompt-v1.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "style_reference": {
+    "origin": "authentic local Crystal sprites",
+    "generator": "crates/crystal-assets/examples/minnesota_gen2_reference.rs",
+    "boards": [
+      "target/minnesota-pokemon/gen2-reference/starters.png",
+      "target/minnesota-pokemon/gen2-reference/bugs.png"
+    ]
+  },
+  "sprites": [
+    {
+      "id": "mn-189-riffbit-v1",
+      "species_id": "MN_189",
+      "view": "front",
+      "source": "sprites/mn-f088/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        480,
+        527
+      ],
+      "fit": [
+        36,
+        36
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        10013,
+        21860,
+        0
+      ],
+      "interior_black_min_samples": 16
+    },
+    {
+      "id": "mn-189-riffbit-v1",
+      "species_id": "MN_189",
+      "view": "back",
+      "source": "sprites/mn-f088/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        527,
+        495,
+        497
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        10013,
+        21860,
+        0
+      ],
+      "interior_black_min_samples": 16
+    },
+    {
+      "id": "mn-190-dynarill-v1",
+      "species_id": "MN_190",
+      "view": "front",
+      "source": "sprites/mn-f088/front-back.imagegen-v1.png",
+      "crop": [
+        480,
+        0,
+        500,
+        527
+      ],
+      "fit": [
+        44,
+        44
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        7900,
+        24005,
+        0
+      ],
+      "interior_black_min_samples": 16
+    },
+    {
+      "id": "mn-190-dynarill-v1",
+      "species_id": "MN_190",
+      "view": "back",
+      "source": "sprites/mn-f088/front-back.imagegen-v1.png",
+      "crop": [
+        495,
+        527,
+        487,
+        497
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        7900,
+        24005,
+        0
+      ],
+      "interior_black_min_samples": 16
+    },
+    {
+      "id": "mn-191-cascavolt-v1",
+      "species_id": "MN_191",
+      "view": "front",
+      "source": "sprites/mn-f088/front-back.imagegen-v1.png",
+      "crop": [
+        980,
+        0,
+        556,
+        527
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        13082,
+        20771,
+        0
+      ],
+      "interior_black_min_samples": 16
+    },
+    {
+      "id": "mn-191-cascavolt-v1",
+      "species_id": "MN_191",
+      "view": "back",
+      "source": "sprites/mn-f088/front-back.imagegen-v1.png",
+      "crop": [
+        982,
+        527,
+        554,
+        497
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        13082,
+        20771,
+        0
+      ],
+      "interior_black_min_samples": 16
+    }
+  ],
+  "visual_review": {
+    "status": "reviewed",
+    "reviewer": "root",
+    "notes": "Root inspected revised interior16 native board: scoop paws become fan wrists and a curled paddle tail, then a flume crest with chest scutes and larger tail rotor. Blue/gold interiors remain clear after reducing the dense seam8 candidate; source-supported black pupil and mouth anchors survive. Distinct per-species palettes and close rear portraits preserved; all threshold variants archived.",
+    "sheet_sha256": "50a36a7c579067925fbef3be90e9033f633334beb2cf6686460b4961105e51bb",
+    "outline_profile": "source-contour-v1"
+  }
+}

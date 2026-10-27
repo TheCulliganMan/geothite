@@ -12,6 +12,199 @@ The source exporter also includes Battle Tower's dynamically selected trainer
 dialogue. See the verified [source-text repair runbook](docs/game-content.md#targeted-source-text-repair-on-2026-10-17)
 for refreshing a prepared external workspace and preserving the default mods.
 
+The [additive native field-script repair runbook](docs/game-content.md#additive-native-field-script-repair-on-2026-10-26)
+covers importing pinned field-animation source while preserving an existing
+modded pack and its audio.
+
+The [original Minnesota Pokédex](planning/minnesota/pokemon/README.md) contains 223 active original species with individual GBC palettes and native front/back sprites. The [quadrupedal lynx starter revision](planning/minnesota/pokemon/sprites/mn-f125/DESIGN.md) adds Kindlit → Rimepelt → Borealynx while retaining the furnace family as ordinary Iron Range Pokémon. The [Rust species-pack publisher](modpacks/minnesota-pokemon/README.md) compiles full entries, learnsets, stats and complete evolution families against a supplied local base. The [roster balance review](planning/minnesota/pokemon/BALANCE.md) covers all 223 active species against the campaign level curve, preserves strong Bugs, and requires the modern physical/special split. Generated packs stay ignored; regional encounter placement remains separate authoring. The [Fairy ruleset](docs/northwoods-fairy.md) introduces thirteen regional Fairies, earned attacks and practical Poison/Steel counterplay while preserving its frozen 220-species baseline. The [sticky-note restoration](docs/northwoods-sticky-notes.md) restores Jotlet → Memofold → Recallisk, with a verified 474-species/270-move pack, native evolution/battle checks and the published 223-species Pokédex (`20261027-sticky-13`).
+
+The [Northwoods animation overlay](docs/northwoods-move-animations.md) gives all
+nineteen added moves native Gen II attack programs and exports their battle
+previews through the production renderer.
+
+Current [Minnesota tile art](planning/minnesota/tiles/campfire-animation-v1/README.md)
+focuses on a transparent 32×32 campfire with a gray stone ring and flickering warm flames.
+Rust imports its native per-glyph palettes and preserves the original map art.
+The earlier six-prop batch remains rejected history.
+
+The [Minnesota map review pack](planning/minnesota/playable/region-review.md)
+composes all twenty authored routes, Grand Marais and the Boundary Waters
+preserve/cabin. The [Boundary Waters basecamp milestone](planning/minnesota/playable/boundary-basecamp.md)
+adds a real town, Survey Shelter and three guarded walking links to Gunflint,
+League Approach and Voyageurs. The connected 471-map pack passes native file
+read-back,377 audio checks,20 asset/core tests and all nine production-controller
+cases, including earned local chief victory, receiver restoration and South
+departure with Continue. Review party, badges and upstream signal are explicit
+fixture setup; the full regional journey and Safari capture expeditions remain
+open. All original renders, conversions and rejected passes are retained.
+
+The [smaller, tighter major cities](planning/minnesota/playable/major-cities.md)
+publish whole64×48 Minneapolis, St Paul and Duluth in a660-map review pack,
+with117 new rooms, native shops and local activities. Canonical planning files,
+whole-town/player-camera reviews and a measured2.11-second warm street-render
+loop are available in the runbook. Local controller evidence and final visual
+acceptance remain separate from source and pixel checks.
+
+The [Northstar story review](planning/minnesota/playable/minneapolis.md) now
+combines Minneapolis's ICE battle, separate captive release/dispatch reading
+and canonical Avrin gym with the northern story and Ryan's waterfall cabin.
+The 515-map `content-packs/minnesota-northstar-city-story.crystalpack` retains
+the revised mine/hollows, expanded Northwoods and guarded Grand Rapids/Duluth
+links. Twenty targeted chapter/travel/cabin cases, actual MCP and all 377 audio
+checks pass on the combined pack.
+
+The [Rochester successor](planning/minnesota/playable/rochester.md) connects
+Winona through R01 to the original-readings delivery and Lode-stamped shipment
+clue. The 526-map `content-packs/minnesota-northstar-rochester.crystalpack`
+passes an earned New Game delivery/return, both starter-checkpoint lanes,
+separate native Gym1 battles/reward, actual stdio and all 377 audio checks.
+One complete earned Cyndaquil-to-Care-Badge run and its stdio Continue now pass;
+balance/retry coverage and the remaining earned regional journey stay open.
+Start with `target/northstar-story/wasm-dev/geothite play content-packs/minnesota-northstar-rochester.crystalpack`.
+
+The [538-map regional gym successor](planning/minnesota/playable/eight-gyms.md)
+now combines all eight current gym rooms and actual city facades with this
+opening/story lineage. One production suite passes all eight local gym courses,
+including trainer wins, puzzles, badges/TMs, saves and both returns. The earned
+Winona/R01/Rochester chapter checks still pass. The merged native cities retain
+the verified care/PC/mart and R04/R05/R06 seams. Missing regional links, the
+courier, rail and the continuous earned badge journey remain unfinished.
+The linked runbook contains exact Rust inputs, build commands and fixture limits.
+
+The [Rochester two-switch revision](planning/minnesota/gyms/rochester-gates.md)
+replaces the rejected planter maze with a smaller room: open the left lane,
+reach the upper switch, then return and swap to the right lane for the leader.
+Its separate541-map pack passes a literal control course, gate reversals,
+saving and both city exits with Totodile16/Hoothoot14. The runbook records the
+executed Rust publication and native state views. The other seven designs
+still need this new review.
+
+The [prairie story successor](planning/minnesota/playable/prairie-story.md)
+connects Rochester through R02 to Mankato. Care permits departure; return is
+free. A paper notebook beside the garden exposes copied readings after both
+pages are acknowledged, without becoming a gym prerequisite. Two preservation
+cases, three local controller cases, actual stdio round-trip and all 377 audio
+checks pass. The local setup supplies Care and an empty party; a continuous
+earned trip remains unproven. Run
+`target/northstar-story/wasm-dev/geothite play content-packs/minnesota-northstar-prairie-story.crystalpack`.
+
+The [River Valley successor](planning/minnesota/playable/river-cities.md) connects
+Mankato through R03 to Minneapolis, with a native second-badge departure gate and
+free inbound return. A continuous local test earns Torven's badge, walks the
+valley, earns Avrin's badge and returns to Mankato. Its first badge, initial
+placement and strong party are fixtures; an earned starter journey remains open.
+The second continuous fixture follows the road into the ICE rescue/dispatch
+chapter and returns without badge3. Five controller cases, two preservation
+cases, actual stdio round trips and all377 audio checks pass on the v2
+`content-packs/minnesota-northstar-river-story.crystalpack`; six native forest
+caps close the partial candidate's stray south-bank exits.
+The runbook records the exact Rust build, preservation and native-view checks.
+
+The [courier story successor](planning/minnesota/playable/courier-story.md)
+connects Minneapolis through R04 to St Paul. Current opens the road; the actual
+ICE dispatch copy separately permits the courier fight. Victory and reading
+the DEEP BORE manifest are saved independently. Five local controller cases,
+two preservation cases, actual stdio and all377 audio checks pass. Prior badges,
+dispatch and review party remain explicit setup; the full earned journey is
+unfinished. Run
+`target/northstar-story/wasm-dev/geothite play content-packs/minnesota-northstar-courier-story.crystalpack`.
+
+The [lake-country successor](planning/minnesota/playable/lake-country-story.md)
+connects Minneapolis/R05/St Cloud/R06/Brainerd. Current and Capitol open R05;
+Wind opens R06, with free inbound return and no courier requirement. A continuous
+local course earns Wind and Lake, reads the ranger's conflicting report and
+receives Surf once. Five controller cases, two preservation cases, actual stdio,
+four matched native cameras and all377 audio checks pass. Initial prior badges
+and review party are setup; Brainerd's later branches and the full earned
+campaign remain unfinished. Run
+`target/northstar-story/wasm-dev/geothite play content-packs/minnesota-northstar-lake-country.crystalpack`.
+
+The [Leech Lake shore successor](planning/minnesota/playable/leech-shore.md)
+adds the actual shore settlement, two usable cabins, free care and local
+testimony. Lake-only R07/R08 connections now reach Bemidji. A continuous local
+course earns Pine after a played loss, native clinic recovery and Fire-move
+retry, then walks home. Six controller/two preservation cases, three actual
+stdio replays, matched native views and all377 audio checks pass. Prior badges,
+partner and RNG are fixtures; this parent precedes the Itasca successor below.
+The full earned campaign remains unfinished. Run
+`target/northstar-story/wasm-dev/geothite play content-packs/minnesota-northstar-leech-shore.crystalpack`.
+
+The [544-map North Shore successor](planning/minnesota/playable/north-shore-story.md)
+connects Grand Marais through the actual Ilex–Azalea gatehouse and the two-lane
+Gunflint walking seam. Both town departures check eight badges and the Duluth
+signal; inbound care is free. The optional local lamp repair grants no starter
+or regional signal and cannot block either road. Six local controller cases,
+two preservation cases, three actual stdio replays, the existing full-bag keeper
+regression and all377 audio checks pass. Both clinics now register real blackout
+recovery, proved through played losses and Continue. The complete earned course
+from Brainerd through Harbor to Boundary Waters and back also passes, with no
+downstream flags or reserve partner inserted. The client builds. Run `target/northstar-story/wasm-dev/geothite play content-packs/minnesota-northstar-north-shore-story.crystalpack`.
+
+The [earned northern finale](planning/minnesota/playable/northstar-finale.md)
+now continues that actual arrival save through the chief battle, separate
+receiver decline/accept/acknowledgment and the full reopened R13 road. The chief
+win alone does not open the League gate. Two actual stdio replays also pass.
+Ely and its League remain unbuilt in this frozen pack; no full campaign is claimed.
+
+The earlier [Itasca story successor](planning/minnesota/playable/itasca-story.md) adds the
+actual Ilex Forest–Azalea gatehouse, the headwaters marker and the separately
+acknowledged Bemidji comparison. Lake permits an early R14 visit; Pine plus the
+completed report opens R09. Five controller/two preservation cases, three stdio
+replays and all 377 audio checks pass on the 543-map pack. Prior badges/partner
+remain fixtures; the full earned campaign and remaining links are unfinished.
+Run `target/northstar-story/wasm-dev/geothite play content-packs/minnesota-northstar-itasca-story.crystalpack`.
+
+A [continuous Pine-to-harbor course](planning/minnesota/playable/northstar-iron-course.md)
+now earns the report, mine victory/recovery, depot handover, Harbor and the full
+drainage reveal in one local session. Played blackout preserves earned custody;
+four actual stdio replays pass. Six prior badges/Mew45 remain setup. That frozen
+parent has no Grand Marais regional links; the successor above adds them.
+Ely/League and the full earned campaign remain unfinished.
+
+The separate [fourth-gym approach](planning/minnesota/playable/gym-four-approach.md) opens
+Minneapolis's east road through R04 to St Paul. A Current Badge
+checkpoint preserves free inbound return. One local level45/two-prior-badge
+course earns the rescue, third and fourth badges through their trainers and
+puzzles, uses native clinic care, and walks home. Asset, controller, actual
+stdio facade/return, matched native views and all377 audio checks pass.
+This remains explicit local setup; courier, later links and the full earned
+regional journey remain unfinished.
+
+The [Winona opening successor](planning/minnesota/playable/winona.md) adds real
+New Game, the guardian scene, three starter choices with native naming, and
+the original survey readings/five-ball handover. The 521-map
+`content-packs/minnesota-northstar-winona.crystalpack` passes three earned local
+opening journeys, a separate full-pocket retry case, actual stdio MCP and all 377
+audio checks. R01/Rochester, remaining regional links, St. Paul courier, League
+finish and Kettlurk's encounter remain unfinished. Start locally with
+`target/northstar-story/wasm-dev/geothite play content-packs/minnesota-northstar-winona.crystalpack`.
+
+The cabin's actual door, Ryan dialogue, sign, both exits and Continue pass
+production input and MCP; original content/art and all 377 audio programs are
+preserved. The [cabin runbook](planning/minnesota/playable/ryans-house.md) records
+exact sources and proof. This local fixture starts beside the falls with an
+explicit review partner and no badges; walk up to enter the house:
+
+```sh
+target/northstar-story/wasm-dev/geothite play \
+  content-packs/minnesota-northstar-city-story.crystalpack \
+  --load .local/minneapolis-integrated-north-saves/ms10-ryans-house-porch-54327-1793073003729602000.crystalsave
+```
+
+The [current Iron Range and North Shore revision](planning/minnesota/playable/geography-revisions.md)
+adds rock ribs, ore aprons, two rivers, new bridges and real native cascades to
+the471-map review pack. Thirteen targeted controller cases, both actual journey
+MCP sessions, exact unrelated-content preservation and all 377 audio checks pass.
+The Glacier Line cities and Minnesota State Fairgrounds remain active authoring
+work. All source and native render generations are retained for reuse.
+
+The [preceding terrain quality pass](planning/minnesota/playable/terrain-quality-revisions.md)
+adds a hand-authored limestone cleft in River Bluffs and a connected pine
+peninsula in Northern Lakes. That preserved471-map review pack retains all other
+content, passes five focused route-controller cases and retains every render
+and its complete authoring inputs for reuse. The twenty-route quality goal
+remains in progress.
+
 ## Features
 
 - Classic 2D presentation with a switchable 2.5D overworld view.
@@ -25,6 +218,21 @@ This is an actively developed project. See the [fidelity audit](FIDELITY_AUDIT.m
 for implementation status and remaining differences from the original game.
 
 ## Setup
+
+### Terminal install
+
+Install the prebuilt Rust client and start playing:
+
+```sh
+curl -fsSL https://geothite.ryanculligan.com/install.sh | sh
+```
+
+Downloads are published for Apple Silicon macOS and Linux x86_64. The installer
+checks executable, launcher and content SHA-256 hashes. It installs under
+`~/.local/share/geothite`; rerunning it preserves `saves/`. Use
+`sh -s -- --no-play` at the end of the pipeline to install without starting.
+Run `~/.local/share/geothite/bin/geothite` later, or append `mcp` for the stdio
+server. See the [text-client guide](modpacks/text-tui/README.md).
 
 ### Native desktop app
 
@@ -200,7 +408,10 @@ Rebind Chat, Start, and Select in **Personalization → Keyboard bindings**;
 Select require different keys. Enter still sends messages while typing in chat.
 Nearby Say messages appear briefly above the speaking trainer in 2D and 2.5D.
 Whispers and global channels stay in the chat panel.
-Phones expose touch controls; standard gamepads are supported.
+Phones show a D-pad, A/B, Start and Select below the game. Hold or slide on the
+D-pad to move; Start opens the game menu and skips the opening movie. Rotate the
+phone for controls beside the game. The same controls work in 2D, 3D and TUI;
+standard gamepads are also supported.
 Click or press a key in the game to enable browser audio.
 
 Use the **2.5D** control to switch the overworld renderer. Battles and menus
@@ -473,8 +684,19 @@ screenshots for visual changes and the checks you ran in pull requests.
 - [Meshtastic battle/trade profile](modpacks/meshtastic/README.md)
 - [Flygon modpack](modpacks/flygon/README.md)
 - [Native Rust text renderer and TUI](modpacks/text-tui/README.md)
+- [Grand Marais town prototype and fast 2D review loop](planning/minnesota/playable/README.md)
+- [Hand-authored North Shore route, native overlay and review evidence](planning/minnesota/routes/MN_R11.md)
+- [Hand-authored Gunflint Trail, native overlay and production 2D review](planning/minnesota/routes/MN_R12.md)
+- [Hand-authored League Approach, eighteen native chunks and Cedar Shelter](planning/minnesota/routes/MN_R13.md)
+- [Hand-authored Headwaters Trail, nine native chunks and wooden-rail crossing](planning/minnesota/routes/MN_R14.md)
+- [Compact Minnesota River Valley: two timber bridges, optional terrace and cave pocket](planning/minnesota/routes/MN_R03.md)
+- [Twin Cities park crossing: protected bridge, battle-or-grass lane and picnic spur](planning/minnesota/routes/MN_R04.md)
+- [Compact Prairie Farm Road: westward nursery ledge, drainage bridge and two farm rooms](planning/minnesota/routes/MN_R02.md)
+- [Compact Driftless Trail: native uphill ramp, one-way bluff descent and two rooms](planning/minnesota/routes/MN_R01.md)
+- [Compact Central Lakes review: one map, one-way ledge, gated dock and lake cabin](planning/minnesota/routes/MN_R15.md)
 - [Wild Challenge: player-relative levels and competitive wild movesets](modpacks/wild-challenge/README.md)
 - [Trainer rematches with level and moveset scaling](modpacks/trainer-rematches/README.md)
+- [Northwoods Pokédex: live app](https://geothite.ryanculligan.com/pokedex/) · [build and deployment notes](docs/pokedex-web.md)
 - [Deployment and maintenance](docs/deployment.md)
 - [Game fidelity audit](FIDELITY_AUDIT.md)
 - [Renderer inspection](RENDER_AT_LOCATION.md)

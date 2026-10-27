@@ -1,0 +1,345 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F104",
+  "status": "native-front-back-reviewed",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_227": {
+      "species_id": "MN_227",
+      "name": "Eskit",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          26,
+          22,
+          14
+        ],
+        [
+          11,
+          12,
+          8
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        15066,
+        8587,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          214,
+          181,
+          115
+        ],
+        [
+          90,
+          99,
+          66
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#D6B573",
+        "#5A6342",
+        "#000000"
+      ]
+    },
+    "MN_228": {
+      "species_id": "MN_228",
+      "name": "Ridgear",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          25,
+          21,
+          12
+        ],
+        [
+          9,
+          13,
+          10
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        12985,
+        10665,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          206,
+          173,
+          99
+        ],
+        [
+          74,
+          107,
+          82
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#CEAD63",
+        "#4A6B52",
+        "#000000"
+      ]
+    },
+    "MN_229": {
+      "species_id": "MN_229",
+      "name": "Eskavern",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          27,
+          23,
+          15
+        ],
+        [
+          10,
+          11,
+          7
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        16123,
+        7530,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          222,
+          189,
+          123
+        ],
+        [
+          82,
+          90,
+          57
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#DEBD7B",
+        "#525A39",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f104/prompt-v1.txt",
+  "reference_mapping": "sprites/mn-f104/reference-mapping-v1.json",
+  "back_framing": "gen2-close-rear-portrait",
+  "sprites": [
+    {
+      "id": "mn-227-eskit-v1",
+      "species_id": "MN_227",
+      "view": "front",
+      "source": "sprites/mn-f104/mn-227-229.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        450,
+        480
+      ],
+      "fit": [
+        36,
+        36
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        15066,
+        8587,
+        0
+      ],
+      "white_detail_min_samples": 8
+    },
+    {
+      "id": "mn-227-eskit-v1",
+      "species_id": "MN_227",
+      "view": "back",
+      "source": "sprites/mn-f104/mn-227-229.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        480,
+        450,
+        544
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        15066,
+        8587,
+        0
+      ],
+      "white_detail_min_samples": 8
+    },
+    {
+      "id": "mn-228-ridgear-v1",
+      "species_id": "MN_228",
+      "view": "front",
+      "source": "sprites/mn-f104/mn-227-229.front-back.imagegen-v1.png",
+      "crop": [
+        450,
+        0,
+        440,
+        480
+      ],
+      "fit": [
+        48,
+        48
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        12985,
+        10665,
+        0
+      ],
+      "white_detail_min_samples": 8
+    },
+    {
+      "id": "mn-228-ridgear-v1",
+      "species_id": "MN_228",
+      "view": "back",
+      "source": "sprites/mn-f104/mn-227-229.front-back.imagegen-v1.png",
+      "crop": [
+        450,
+        480,
+        525,
+        544
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        12985,
+        10665,
+        0
+      ],
+      "white_detail_min_samples": 8
+    },
+    {
+      "id": "mn-229-eskavern-v1",
+      "species_id": "MN_229",
+      "view": "front",
+      "source": "sprites/mn-f104/mn-227-229.front-back.imagegen-v1.png",
+      "crop": [
+        890,
+        0,
+        646,
+        480
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        16123,
+        7530,
+        0
+      ],
+      "white_detail_min_samples": 8
+    },
+    {
+      "id": "mn-229-eskavern-v1",
+      "species_id": "MN_229",
+      "view": "back",
+      "source": "sprites/mn-f104/mn-227-229.front-back.imagegen-v1.png",
+      "crop": [
+        975,
+        480,
+        561,
+        544
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        16123,
+        7530,
+        0
+      ],
+      "white_detail_min_samples": 8
+    }
+  ],
+  "source_sha256": "508a659517149d988e337e8f65919df3fb5b35fd031d74eb0bfbb8eeb72278bc",
+  "candidate_review": {
+    "status": "native-review-pending",
+    "outline_profile": "source-contour-v1",
+    "sheet_sha256": "ee4ea57de2aecd6db8a3c3cea3dde116c6604f0002712e56140416e8004c5c8f",
+    "notes": "Native sheet inspected: hooked gravel wedge evolves into visibly articulated arches and heavy multi-ridge dragon with fan tail. Broad sand/olive planes and stepped contours remain clear; backs enlarge ridge napes and crop lower bodies. Front tiny eye pupils are low contrast at final native scale; six-foot design has occluded far limbs in the source. Row-specific crop boundaries prevent neighboring rear portraits entering cells. Root final judgment pending."
+  },
+  "visual_review": {
+    "status": "reviewed",
+    "reviewer": "root",
+    "notes": "Root inspected native gravel-ridge sequence: hooked wedge becomes three arched segments, then a long heavy interlocked landform crawler. Broad white belly arches, stepped ridge planes and small recessed eye glints remain readable. Far legs overlap in source perspective; visible near limbs and close rear ridge/shoulder crops preserve the intended anatomy. Individual palettes and original source retained.",
+    "sheet_sha256": "ee4ea57de2aecd6db8a3c3cea3dde116c6604f0002712e56140416e8004c5c8f",
+    "outline_profile": "source-contour-v1"
+  }
+}

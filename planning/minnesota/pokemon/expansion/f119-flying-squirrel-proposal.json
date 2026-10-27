@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "family": {
+    "id": "MN_F119",
+    "status": "new-family-proposal-for-root-review",
+    "region": "hardwood_canopy",
+    "theme": "Flying-squirrel gliding and maple-samara autorotation: a large-eyed canopy youngster unfolds soft paired membranes into broad turning surfaces and steers with its maple-key tail, carrying fictional seed-dispersal winds through the treetops.",
+    "habitat": "Hardwood forest margins and tree hollows, active at dusk/night. Proposed tree-canopy or Headbutt habitats along MN_R01 and wooded MN_R05 margins; no new map or encounter registration.",
+    "proposed_routes": [
+      "MN_R01",
+      "MN_R05"
+    ],
+    "members": [
+      {
+        "id": "MN_255",
+        "name": "Whirlnut",
+        "types": [
+          "NORMAL",
+          "FLYING"
+        ],
+        "stage": 1,
+        "evolves_to": "MN_256",
+        "evolution_condition": {
+          "method": "LEVEL",
+          "level": 24
+        },
+        "body_growth": "Small round-eared mouse-like flying squirrel, huge expressive eyes, small folded wrist-to-ankle patagia that form two short rounded lobes at its sides. A broad flattened maple-key tail curves beside the body with one rounded paddle tip and a nutlet-like thick root. It can unfold the lobes for a short controlled spiral descent.",
+        "silhouette": "Cute large round head and tiny paws, paired folded teardrop side flaps and a short rounded key-shaped steering tail."
+      },
+      {
+        "id": "MN_256",
+        "name": "Samurrel",
+        "types": [
+          "NORMAL",
+          "FLYING"
+        ],
+        "stage": 2,
+        "evolves_to": null,
+        "evolution_condition": null,
+        "body_growth": "Two broad samara-shaped gliding membranes stretch continuously from wrist to ankle; each has a thick rounded outer leading lobe and tapered trailing fold. It banks in an asymmetric turning glide, one membrane high/open and the other lower/curved. The flattened steering tail broadens into a long rounded maple-key paddle, visibly counterturning behind its cute central squirrel head/body. Huge eyes and rounded ears remain.",
+        "silhouette": "Two broad unequal-height maple-key patagia around a compact big-eyed squirrel, small feet on membrane corners and one flattened countersteering tail."
+      }
+    ],
+    "sprite_design": "Actual cute mouse-like flying-squirrel anatomy; no Electric cheek patches or lightning, costumes, bags, held seeds, wings separate from body or ordinary squirrel wearing leaf gear. Paired samara membranes are living wrist-to-ankle anatomy; tail is an integral rounded steering paddle. Coarse four-ink tan/cocoa pixel planes; large readable eyes. Fronts56x56 full, backs48x48 close head/shoulder and near membrane, lower body cropped. Each species own palette.",
+    "sources": [
+      {
+        "url": "https://www.dnr.state.mn.us/mammals/flyingsquirrel.html",
+        "publisher": "Minnesota DNR",
+        "supports": "Both northern and southern flying squirrels occur in Minnesota; broad planing membrane extends front to hind feet, flattened tail and large eyes, tree-hollow/forest habitat.",
+        "fantasy_extension": "The maple-key tail and samara-shaped autorotating patagia/seed-dispersal winds are original monster anatomy/powers, not documented squirrel behavior."
+      },
+      {
+        "url": "https://www.dnr.state.mn.us/trees/sugar-maple.html",
+        "publisher": "Minnesota DNR",
+        "supports": "Sugar-maple seeds form paired slightly connected winged samaras carried by wind; sugar maple grows in cool rich eastern Minnesota locations.",
+        "fantasy_extension": "The creature borrows the paired seed-wing silhouette; it is neither a plant costume nor a claim of natural squirrel-controlled autorotation."
+      }
+    ],
+    "implementation_boundary": "Original authoring proposal and sprite candidate only. Root owns roster, registry, palettes and any gameplay registration."
+  }
+}

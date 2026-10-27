@@ -448,6 +448,36 @@ pub mod radio_text_memory;
 
 mod gen3_modpack;
 pub use gen3_modpack::{GEN3_MANIFEST_ID, GEN3_SPECIES_COUNT, build_gen3_modpack};
+mod fairy_modpack;
+mod minnesota_pokemon_curation;
+mod minnesota_pokemon_graphics;
+mod minnesota_pokemon_modpack;
+#[allow(dead_code)]
+mod minnesota_pokemon_pixel_art;
+mod minnesota_pokemon_profiles;
+#[allow(dead_code)]
+pub mod minnesota_signature_animations;
+pub use fairy_modpack::{
+    FAIRY_MOVES_MANIFEST_ID, FAIRY_TYPES_MANIFEST_ID, build_fairy_moves_modpack,
+    build_fairy_moves_modpack_from_json, build_fairy_type_modpack,
+};
+pub mod northwoods_move_animations;
+pub use northwoods_move_animations::{NORTHWOODS_ANIMATIONS_MANIFEST_ID, build_northwoods_animations_modpack};
+mod northwoods_moves_modpack;
+pub use northwoods_moves_modpack::{NORTHWOODS_MOVES_MANIFEST_ID, build_northwoods_moves_modpack};
+mod minnesota_sprite_refinement;
+mod minnesota_sprite_sheet;
+mod minnesota_tile_art;
+mod minnesota_tile_animation;
+pub use minnesota_tile_animation::{
+    AuthoredTileAnimation, MinnesotaTileAnimationRecipe, TileAnimationSource,
+    with_minnesota_tile_animation,
+};
+pub use minnesota_tile_art::{
+    MinnesotaTileCatalog, MinnesotaTileItem, MinnesotaTilePixels, build_minnesota_tile_art_pack,
+    minnesota_tile_item_preview, minnesota_tile_preview,
+};
+pub use minnesota_pokemon_modpack::MinnesotaPokemonCatalog;
 mod nuzlocke;
 pub use nuzlocke::{NUZLOCKE_MANIFEST_ID, NuzlockeRules};
 mod realtime_clock_modpack;
@@ -549,22 +579,25 @@ include!("script_parsing.rs");
 #[path = "tests/mod.rs"]
 mod tests;
 
-mod modern_move_split_modpack;
 mod competitive_battle_modpack;
 mod competitive_trainer_profiles;
 mod default_battle_modpack;
-pub use default_battle_modpack::build_default_battle_modpack;
-pub use competitive_trainer_profiles::TrainerBattleProfile;
+mod deferred_evolution;
+mod modern_move_split_modpack;
 pub use competitive_battle_modpack::{
     COMPETITIVE_BATTLES_MANIFEST_ID, build_competitive_battle_modpack,
 };
+pub use competitive_trainer_profiles::TrainerBattleProfile;
+pub use default_battle_modpack::build_default_battle_modpack;
 mod wild_challenge;
-pub use wild_challenge::{WILD_CHALLENGE_MANIFEST_ID, WildChallengeRules, build_wild_challenge_modpack};
+pub use wild_challenge::{
+    WILD_CHALLENGE_MANIFEST_ID, WildChallengeRules, build_wild_challenge_modpack,
+};
 mod trainer_rematches;
-pub use trainer_rematches::{TRAINER_REMATCHES_MANIFEST_ID, build_trainer_rematches_modpack};
 pub use modern_move_split_modpack::{
     MODERN_MOVE_SPLIT_MANIFEST_ID, build_modern_move_split_modpack,
 };
+pub use trainer_rematches::{TRAINER_REMATCHES_MANIFEST_ID, build_trainer_rematches_modpack};
 
 mod player_customization_modpack;
 pub use player_customization_modpack::{
@@ -576,10 +609,247 @@ pub use text_tui_modpack::{TEXT_TUI_MANIFEST_ID, build_text_tui_modpack};
 
 mod all_pokemon_modpack;
 pub use all_pokemon_modpack::{
-    ALL_251_MANIFEST_ID, SOLO_EVOLUTION_MANIFEST_ID, LINK_CABLE_ITEM_ID,
-    STONE_MART_ID, EVOLUTION_STONES, build_all_251_catchable_modpack,
-    build_solo_evolution_modpack, build_all_pokemon_modpack, verify_all_251_coverage,
+    ALL_251_MANIFEST_ID, EVOLUTION_STONES, LINK_CABLE_ITEM_ID, SOLO_EVOLUTION_MANIFEST_ID,
+    STONE_MART_ID, build_all_251_catchable_modpack, build_all_pokemon_modpack,
+    build_solo_evolution_modpack, verify_all_251_coverage,
 };
 
 mod natural_movement_modpack;
-pub use natural_movement_modpack::{build_natural_movement_modpack, NATURAL_MOVEMENT_MANIFEST_ID};
+pub use natural_movement_modpack::{NATURAL_MOVEMENT_MANIFEST_ID, build_natural_movement_modpack};
+
+mod grand_marais_modpack;
+pub use grand_marais_modpack::{
+    build_grand_marais_modpack, build_grand_marais_region_extension,
+    refresh_grand_marais_story_dialogue,
+};
+mod gym_art;
+mod gym_cut;
+mod gym_design;
+mod gym_ledges;
+mod gym_lifts;
+mod gym_publication;
+mod gym_routing;
+mod gym_scripts;
+mod gym_switches;
+mod gym_wind;
+mod minnesota_gyms;
+pub use minnesota_gyms::{build_minnesota_gym_review_pack, build_minnesota_gym_review_room};
+mod boundary_basecamp_story;
+pub use boundary_basecamp_story::refresh_boundary_basecamp_story_dialogue;
+mod boundary_basecamp_connections;
+mod boundary_basecamp_modpack;
+pub use boundary_basecamp_connections::connect_boundary_basecamp;
+pub use boundary_basecamp_modpack::{
+    BOUNDARY_BASECAMP_CONSTANT, BOUNDARY_BASECAMP_GROUP, BOUNDARY_BASECAMP_MANIFEST,
+    BOUNDARY_BASECAMP_MAP, build_boundary_basecamp_modpack,
+};
+
+mod north_shore_art;
+pub use north_shore_art::build_north_shore_art_pack;
+
+mod gunflint_art;
+mod native_field_scripts_modpack;
+mod native_tile_png;
+pub use gunflint_art::build_gunflint_art_pack;
+pub use native_field_scripts_modpack::build_native_field_scripts_modpack;
+
+mod north_shore_modpack;
+pub use north_shore_modpack::{build_north_shore_modpack, expand_north_shore_modpack};
+
+mod authored_cave_revision;
+mod authored_route_cut_gates;
+mod authored_route_design;
+mod authored_route_events;
+mod authored_route_layout;
+mod authored_route_modpack;
+mod authored_route_revision;
+mod original_repel_revision;
+mod r09_mine_revision;
+mod r10_gallery_revision;
+mod r10_stairs_revision;
+pub use authored_cave_revision::revise_authored_cave_terrain;
+pub use authored_route_revision::revise_authored_route_terrain;
+pub use original_repel_revision::{parse_source_repel_duration, repair_original_repel_duration};
+pub use r09_mine_revision::revise_r09_mine_terrain;
+pub use r10_gallery_revision::revise_r10_gallery_modpack;
+pub use r10_stairs_revision::revise_r10_rock_stairs;
+mod authored_route_surface;
+mod authored_route_traversal;
+mod gunflint_modpack;
+pub use gunflint_modpack::build_gunflint_modpack;
+mod league_approach_modpack;
+pub use league_approach_modpack::build_league_approach_modpack;
+mod boundary_safari_art;
+mod boundary_safari_modpack;
+pub use boundary_safari_modpack::{
+    BOUNDARY_SAFARI_GROUP, BOUNDARY_SAFARI_MANIFEST, BOUNDARY_SAFARI_PENDING_GUARDS,
+    build_boundary_safari_modpack, expand_boundary_safari_modpack,
+};
+mod headwaters_art;
+pub use boundary_safari_art::build_boundary_safari_art_pack;
+mod iron_range_modpack;
+pub use iron_range_modpack::build_iron_range_modpack;
+mod iron_range_story;
+pub use iron_range_story::build_iron_range_story_modpack;
+mod grand_rapids_modpack;
+pub use grand_rapids_modpack::build_grand_rapids_modpack;
+mod authored_checkpoint;
+mod authored_town_design;
+mod authored_town_geometry;
+mod authored_town_scripts;
+mod authored_town_publication;
+mod authored_town_rooms;
+mod authored_city_expansion;
+mod authored_city_expansion_anchors;
+mod authored_city_expansion_art;
+mod authored_city_expansion_design;
+mod authored_city_expansion_events;
+mod authored_city_expansion_geometry;
+pub use authored_city_expansion::expand_authored_city;
+mod authored_region_geometry;
+mod leech_shore;
+mod leech_shore_connections;
+mod leech_shore_geometry;
+mod itasca_story;
+mod itasca_geometry;
+mod itasca_events;
+mod itasca_connections;
+mod itasca_gatehouse;
+mod marais_shore_art;
+mod marais_regional_services;
+mod north_shore_story;
+pub use north_shore_story::build_north_shore_story_modpack;
+pub use itasca_story::build_itasca_story_modpack;
+pub use leech_shore::build_leech_shore_modpack;
+mod canonical_city_gym;
+mod gym_refresh;
+mod gym_refresh_names;
+mod gym_refresh_roster;
+pub use gym_refresh::refresh_installed_minnesota_gyms;
+mod regional_gyms_modpack;
+mod runtime_landmark_verification;
+pub use regional_gyms_modpack::{RegionalGymSources,build_regional_gyms_modpack};
+mod st_paul_design;
+mod st_paul_modpack;
+mod st_paul_connections;
+pub use st_paul_modpack::build_st_paul_modpack;
+mod st_cloud_design;
+mod st_cloud_modpack;
+mod st_cloud_connections;
+pub use st_cloud_modpack::build_st_cloud_modpack;
+mod mankato_gym;
+mod mankato_modpack;
+mod mankato_publication;
+pub use mankato_modpack::build_mankato_modpack;
+mod minneapolis_modpack;
+mod rochester_connections;
+pub use rochester_connections::connect_winona_rochester;
+mod rochester_modpack;
+mod rochester_gym;
+mod rochester_publication;
+mod rochester_story;
+mod prairie_story;
+mod prairie_story_connections;
+mod river_city_connections;
+mod river_city_geometry;
+mod courier_story;
+mod courier_trainer;
+mod courier_events;
+mod courier_connections;
+pub use courier_story::build_courier_story_modpack;
+mod lake_country_story;
+mod lake_country_geometry;
+mod lake_country_checkpoints;
+pub use lake_country_story::build_lake_country_story_modpack;
+pub use river_city_connections::connect_river_cities;
+mod gym_four_approach;
+pub use gym_four_approach::build_gym_four_approach;
+mod prairie_notebook;
+pub use prairie_story::build_prairie_story_modpack;
+pub use rochester_modpack::build_rochester_modpack;
+mod winona_modpack;
+mod winona_opening;
+mod winona_publication;
+pub use winona_modpack::build_winona_opening_modpack;
+mod minneapolis_gym;
+mod minneapolis_gym_revision;
+pub use minneapolis_gym_revision::replace_installed_minneapolis_gym;
+pub use minneapolis_modpack::build_minneapolis_modpack;
+mod grand_rapids_connections;
+pub use grand_rapids_connections::connect_grand_rapids;
+mod iron_range_descent_modpack;
+pub use iron_range_descent_modpack::build_iron_range_descent_modpack;
+mod red_river_prairie_modpack;
+pub use red_river_prairie_modpack::build_red_river_prairie_modpack;
+mod border_pines_art;
+pub use border_pines_art::build_border_pines_art_pack;
+mod border_pines_modpack;
+pub use border_pines_modpack::build_border_pines_modpack;
+mod mille_lacs_shore_modpack;
+pub use mille_lacs_shore_modpack::{
+    SHORE_WATCH_REPORT_EVENTS, SHORE_WATCH_REWARDED_EVENT, build_mille_lacs_shore_modpack,
+};
+mod voyageurs_border_loop_modpack;
+pub use voyageurs_border_loop_modpack::build_voyageurs_border_loop_modpack;
+mod prairie_forest_link_modpack;
+pub use prairie_forest_link_modpack::{LAKE_OBSERVATION_EVENTS, build_prairie_forest_link_modpack};
+mod root_beer_cabin;
+pub use root_beer_cabin::{
+    PreparedRootBeerCabin, ROOT_BEER_CABIN_CONSTANT, ROOT_BEER_CABIN_MAP, prepare_root_beer_cabin,
+};
+mod iron_range_art;
+pub use iron_range_art::build_iron_range_art_pack;
+mod prairie_grass_art;
+pub use prairie_grass_art::build_prairie_grass_art_pack;
+mod prairie_grass_modpack;
+pub use prairie_grass_modpack::{PrairieGrassRevision, build_prairie_grass_modpack};
+mod duluth_connections;
+pub use duluth_connections::connect_duluth;
+mod duluth_story;
+pub use duluth_story::{build_duluth_story_modpack, refresh_duluth_story_dialogue};
+
+mod ryans_house;
+pub use ryans_house::build_ryans_house_modpack;
+mod duluth_city_modpack;
+pub use duluth_city_modpack::build_duluth_city_modpack;
+mod brainerd_city_geometry;
+mod brainerd_city_modpack;
+mod brainerd_city_publication;
+mod brainerd_city_scripts;
+pub use brainerd_city_modpack::build_brainerd_city_modpack;
+mod bemidji_city_art;
+mod bemidji_city_modpack;
+pub use bemidji_city_modpack::{BEMIDJI_CITY_GROUP, BEMIDJI_CITY_MAP, build_bemidji_city_modpack};
+mod root_beer_lady_modpack;
+pub use root_beer_lady_modpack::{
+    PreparedRootBeerLadyService, ROOT_BEER_FIRST_GIFT_EVENT, ROOT_BEER_ITEM_ID,
+    ROOT_BEER_MANIFEST_ID, ROOT_BEER_MART_ID, ROOT_BEER_SERVICE_MANIFEST_ID, RootBeerRestPolicy,
+    build_root_beer_lady_modpack, prepare_root_beer_lady_service,
+    publish_root_beer_lady_service_map,
+};
+mod headwaters_modpack;
+pub use headwaters_modpack::build_headwaters_modpack;
+mod driftless_modpack;
+mod leech_lake_modpack;
+mod northern_lakes_modpack;
+mod pine_country_modpack;
+mod prairie_farm_modpack;
+mod river_bluffs_modpack;
+mod river_valley_modpack;
+mod twin_cities_art;
+mod twin_cities_modpack;
+pub use driftless_modpack::build_driftless_modpack;
+pub use leech_lake_modpack::build_leech_lake_modpack;
+pub use northern_lakes_modpack::build_northern_lakes_modpack;
+pub use pine_country_modpack::build_pine_country_modpack;
+pub use prairie_farm_modpack::build_prairie_farm_modpack;
+pub use river_bluffs_modpack::build_river_bluffs_modpack;
+pub use river_valley_modpack::build_river_valley_modpack;
+pub use twin_cities_modpack::build_twin_cities_modpack;
+mod central_lakes_modpack;
+pub use central_lakes_modpack::build_central_lakes_modpack;
+
+mod rochester_maze_revision;
+pub use rochester_maze_revision::revise_rochester_maze;
+mod rochester_gate_revision;
+pub use rochester_gate_revision::revise_rochester_gates;

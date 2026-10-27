@@ -1,0 +1,349 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F001",
+  "status": "proposal-native-reviewed",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_001": {
+      "species_id": "MN_001",
+      "name": "Pouchid",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          31,
+          26,
+          12
+        ],
+        [
+          6,
+          16,
+          7
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        13151,
+        7686,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          255,
+          214,
+          99
+        ],
+        [
+          49,
+          132,
+          57
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#FFD663",
+        "#318439",
+        "#000000"
+      ]
+    },
+    "MN_002": {
+      "species_id": "MN_002",
+      "name": "Slipperina",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          24,
+          17,
+          29
+        ],
+        [
+          3,
+          12,
+          12
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        30264,
+        12675,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          198,
+          140,
+          239
+        ],
+        [
+          24,
+          99,
+          99
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#C68CEF",
+        "#186363",
+        "#000000"
+      ]
+    },
+    "MN_003": {
+      "species_id": "MN_003",
+      "name": "Cyprielle",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          31,
+          14,
+          23
+        ],
+        [
+          4,
+          10,
+          7
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        24031,
+        7492,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          255,
+          115,
+          189
+        ],
+        [
+          33,
+          82,
+          57
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#FF73BD",
+        "#215239",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f001/starter-refinement-v4/prompt-v1.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "sprites": [
+    {
+      "id": "mn-001-pouchid-v4",
+      "species_id": "MN_001",
+      "view": "front",
+      "source": "sprites/mn-f001/starter-refinement-v4/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        475,
+        555
+      ],
+      "fit": [
+        36,
+        36
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        13151,
+        7686,
+        0
+      ],
+      "white_detail_min_samples": 4,
+      "interior_black_min_samples": 16,
+      "exterior_contour": "source_backed"
+    },
+    {
+      "id": "mn-001-pouchid-v4",
+      "species_id": "MN_001",
+      "view": "back",
+      "source": "sprites/mn-f001/starter-refinement-v4/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        555,
+        475,
+        469
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        13151,
+        7686,
+        0
+      ],
+      "white_detail_min_samples": 4,
+      "interior_black_min_samples": 16,
+      "exterior_contour": "source_backed"
+    },
+    {
+      "id": "mn-002-slipperina-v4",
+      "species_id": "MN_002",
+      "view": "front",
+      "source": "sprites/mn-f001/starter-refinement-v4/front-back.imagegen-v1.png",
+      "crop": [
+        475,
+        0,
+        540,
+        555
+      ],
+      "fit": [
+        44,
+        44
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        30264,
+        12675,
+        0
+      ],
+      "white_detail_min_samples": 8,
+      "interior_black_min_samples": 16,
+      "exterior_contour": "source_backed"
+    },
+    {
+      "id": "mn-002-slipperina-v4",
+      "species_id": "MN_002",
+      "view": "back",
+      "source": "sprites/mn-f001/starter-refinement-v4/front-back.imagegen-v1.png",
+      "crop": [
+        475,
+        555,
+        540,
+        469
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        30264,
+        12675,
+        0
+      ],
+      "white_detail_min_samples": 4,
+      "interior_black_min_samples": 16,
+      "exterior_contour": "source_backed"
+    },
+    {
+      "id": "mn-003-cyprielle-v4",
+      "species_id": "MN_003",
+      "view": "front",
+      "source": "sprites/mn-f001/starter-refinement-v4/front-back.imagegen-v1.png",
+      "crop": [
+        1015,
+        0,
+        521,
+        555
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        24031,
+        7492,
+        0
+      ],
+      "white_detail_min_samples": 8,
+      "interior_black_min_samples": 16,
+      "exterior_contour": "source_backed"
+    },
+    {
+      "id": "mn-003-cyprielle-v4",
+      "species_id": "MN_003",
+      "view": "back",
+      "source": "sprites/mn-f001/starter-refinement-v4/front-back.imagegen-v1.png",
+      "crop": [
+        1015,
+        555,
+        521,
+        469
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        24031,
+        7492,
+        0
+      ],
+      "white_detail_min_samples": 4,
+      "interior_black_min_samples": 16,
+      "exterior_contour": "source_backed"
+    }
+  ],
+  "visual_review": {
+    "status": "reviewed",
+    "outline_profile": "source-contour-v1",
+    "sheet_sha256": "18489da859da4fee6b15a2d87678dd0dd367920c439a7f77dfa3d71d43cdf7aa",
+    "notes": "Identity-preserving six-view refinement: golden round leaf-pouch and hood, lilac S-stem dancer with two white shoulder petals and two pouch slippers, then forest-green orchid dancer with three white/pink crown sepals, two leaf arms, three separate pink hip petals and two slipper feet. Exact existing individual palettes retained. SourceBacked avoids dense black leaf interiors; white8 on Slipperina/Cyprielle fronts keeps eye and face separators while all rear portraits use white4. The large white petals have closed dark anchors and broad colored roots; no extra limbs, generic gown or full-body rear. Front native sizes56x56, backs48x48; silhouettes36/44/54 and close46x47maximum.",
+    "reviewer": "roster_cut_review"
+  }
+}

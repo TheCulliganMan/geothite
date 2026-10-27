@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "tool": "built-in image_gen",
+  "selected_source": "mn-067-068.front-back.imagegen-v3.png",
+  "selected_prompt": "prompt-v3.txt",
+  "previous_manifest": "redesign-20261027-v1/manifest-before.json",
+  "references": [
+    {
+      "path": "target/minnesota-pokemon/gen2-reference/starters.png",
+      "role": "Existing local handheld-game style/pixel-scale reference only; inspected, not copied into source or shipped art."
+    }
+  ],
+  "native_candidates": "target/honeydew-crayfish-redesign-20261027-v1/",
+  "notes": "Inspected both new crayfish fronts and close rear portraits at native size and 8x. Source v3 fixes the v2 silhouette that reduced too flat: enlarged white eye windows and thick stalks stay readable, broad pincers retain open gaps, domed shell bands suggest the living bait trap, and compact fanned tails stay low rather than upright. Fronts face left, rear portraits turn toward upper right; no native pixel edits and exact original palettes retained."
+}

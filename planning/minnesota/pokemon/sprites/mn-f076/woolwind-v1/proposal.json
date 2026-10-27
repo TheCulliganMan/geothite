@@ -1,0 +1,725 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F076",
+  "status": "user-rejected-after-merge-not-for-publication",
+  "family": {
+    "id": "MN_F076",
+    "region": "north_shore",
+    "classification": "ordinary",
+    "theme": "Winter logging-camp wool and overhead drying lines become a living patchwork ghost. A mitten-shaped hollow grows two sleeve-lift wings, then a broad three-panel quilt body with mitten-hook tips. Solid sewn cloth is the actual creature, not clothing on a hidden person or an animal carrying a prop.",
+    "members": [
+      {
+        "id": "MN_163",
+        "name": "Mitwist",
+        "types": [
+          "GHOST"
+        ],
+        "stage": 1,
+        "evolves_to": "MN_164"
+      },
+      {
+        "id": "MN_164",
+        "name": "Hemhowl",
+        "types": [
+          "GHOST",
+          "FLYING"
+        ],
+        "stage": 2,
+        "evolves_to": "MN_165"
+      },
+      {
+        "id": "MN_165",
+        "name": "Gustitch",
+        "types": [
+          "GHOST",
+          "FLYING"
+        ],
+        "stage": 3,
+        "evolves_to": null
+      }
+    ],
+    "evolution_design": {
+      "regional_evidence": "Minnesota DNR describes wool clothing, including hand coverings, and difficulty drying wet wool overnight in logging camps. MNHS describes garments suspended overhead in bunkhouses.",
+      "original_invention": "A self-sewing ghost turns leftover wool into a wind-catching body. The supernatural being, flight, names and behavior are original fiction; no real haunting, human victim or sacred being is represented.",
+      "body_growth": [
+        {
+          "species_id": "MN_163",
+          "body": "One small rounded mitten body with a large hooked thumb, curled lower cuff and one broad patch seam. A paired large-eyed face belongs to the solid cloth body.",
+          "silhouette": "Compact upright mitten hook with one curled cuff."
+        },
+        {
+          "species_id": "MN_164",
+          "body": "Mitten body unfolds into a hooded center, two broad sleeve-lift wings with curled mitten tips, two offset panels and a short square-cut hem.",
+          "silhouette": "Tall folded center between two lifted rectangular sleeve wings; flight begins."
+        },
+        {
+          "species_id": "MN_165",
+          "body": "Three broad sewn quilt panels form a large kite-like glider body, topped by a rolled collar face. Two thick mitten-hook wing tips and three square-cut lower tabs remain solid, distinct anatomy.",
+          "silhouette": "Wide substantial quilt kite, huge hooked tips, rolled collar head and three squared hem tabs."
+        }
+      ]
+    },
+    "habitat": "Windy clearings and old winter logging-camp margins in the North Shore forest; encounter placement remains a proposal.",
+    "proposed_routes": [
+      {
+        "id": "MN_R11",
+        "placement": "Proposed optional forest-camp clearing branch near the coastal route, subject to separate map authoring.",
+        "status": "encounter concept only; no existing map or script is changed"
+      }
+    ],
+    "sources": [
+      {
+        "title": "Minnesota DNR \u2014 Logging Camps: The Early Years",
+        "url": "https://www.dnr.state.mn.us/forestry/history/logging-camps.html",
+        "supports": "Wool work clothing and hand coverings; wet wool could fail to dry in the bunkhouse overnight.",
+        "source_kind": "primary Minnesota institutional history",
+        "fantasy_extension": "The wool becomes a living mitten, sleeve and quilt-bodied ghost."
+      },
+      {
+        "title": "Minnesota Historical Society \u2014 Logging Industry",
+        "url": "https://www.mnhs.org/foresthistory/learn/logging",
+        "supports": "Logging-camp garments were suspended overhead to dry in bunkhouses.",
+        "source_kind": "primary Minnesota institutional history",
+        "fantasy_extension": "Suspended fabric becomes sleeve-lift flight and a wind-catching patchwork body."
+      }
+    ],
+    "nonduplication": "Unlike Nodcloak's prairie-smoke plant plume, this is dense stitched wool with conspicuous mitten hooks, sleeve wings and broad quilt panels. No generic wisp cloak, feathered bird, cloud, balloon, sacred regalia or human inside a garment. It replaces the seiche wrestler with the same stable F076/MN163\u2013165 identities.",
+    "sprite_constraints": "Native 56\u00d756 front full body facing left; 48\u00d748 close rear portrait facing upper-right. Exactly four flat inks per species, independent stage palettes; large exposed eye windows and black pupils; stepped solid black contours. Current native source_center sampling; no painted facial pixels after conversion.",
+    "design_status": "concept-approved-by-root-native-art-review-pending"
+  },
+  "profiles": [
+    {
+      "id": "MN_163",
+      "classification": "Lost Mitten",
+      "height_inches": 10,
+      "weight_tenths_lb": 8,
+      "dex_pages": [
+        "It hides a draft @ inside its thumb @ and follows wool.",
+        "An empty mitten @ may twitch when @ this one is near."
+      ],
+      "base_stats": {
+        "hp": 45,
+        "attack": 50,
+        "defense": 45,
+        "speed": 60,
+        "special_attack": 55,
+        "special_defense": 45
+      },
+      "catch_rate": 190,
+      "base_exp": 62,
+      "gender_ratio": 127,
+      "hatch_cycles": 25,
+      "growth_rate": "GROWTH_MEDIUM_FAST",
+      "egg_groups": [
+        "EGG_INDETERMINATE",
+        "EGG_INDETERMINATE"
+      ],
+      "evolution": {
+        "method": "LEVEL",
+        "level": 22
+      },
+      "held_items": [
+        null,
+        null
+      ],
+      "menu_icon": "ICON_GHOST",
+      "footprint_species": "GRIMER",
+      "cry": {
+        "cry": "CRY_GRIMER",
+        "pitch": 48,
+        "length": 112
+      },
+      "shiny_rgb5": [
+        [
+          16,
+          26,
+          22
+        ],
+        [
+          11,
+          7,
+          15
+        ]
+      ],
+      "level_moves": [
+        [
+          1,
+          "LICK"
+        ],
+        [
+          1,
+          "GROWL"
+        ],
+        [
+          5,
+          "GUST"
+        ],
+        [
+          9,
+          "SPITE"
+        ],
+        [
+          13,
+          "NIGHT_SHADE"
+        ],
+        [
+          17,
+          "WHIRLWIND"
+        ],
+        [
+          22,
+          "WING_ATTACK"
+        ],
+        [
+          27,
+          "SCARY_FACE"
+        ],
+        [
+          32,
+          "SWIFT"
+        ],
+        [
+          37,
+          "CONFUSE_RAY"
+        ],
+        [
+          42,
+          "SHADOW_BALL"
+        ],
+        [
+          48,
+          "AGILITY"
+        ],
+        [
+          55,
+          "SKY_ATTACK"
+        ],
+        [
+          62,
+          "DESTINY_BOND"
+        ]
+      ],
+      "tmhm_moves": [
+        "SHADOW_BALL",
+        "TOXIC",
+        "HIDDEN_POWER",
+        "PROTECT",
+        "FRUSTRATION",
+        "RETURN",
+        "DOUBLE_TEAM",
+        "REST",
+        "ATTRACT",
+        "THIEF",
+        "DETECT",
+        "ENDURE",
+        "SWIFT",
+        "DREAM_EATER"
+      ],
+      "egg_moves": [
+        "HYPNOSIS",
+        "DISABLE",
+        "HAZE"
+      ]
+    },
+    {
+      "id": "MN_164",
+      "classification": "Drying Hem",
+      "height_inches": 38,
+      "weight_tenths_lb": 40,
+      "dex_pages": [
+        "It joins old hems @ into wide sleeves @ that trap a gust.",
+        "Its lifted sleeves @ hum through seams @ when night falls."
+      ],
+      "base_stats": {
+        "hp": 65,
+        "attack": 65,
+        "defense": 60,
+        "speed": 80,
+        "special_attack": 75,
+        "special_defense": 60
+      },
+      "catch_rate": 90,
+      "base_exp": 125,
+      "gender_ratio": 127,
+      "hatch_cycles": 25,
+      "growth_rate": "GROWTH_MEDIUM_FAST",
+      "egg_groups": [
+        "EGG_INDETERMINATE",
+        "EGG_INDETERMINATE"
+      ],
+      "evolution": {
+        "method": "LEVEL",
+        "level": 40
+      },
+      "held_items": [
+        null,
+        null
+      ],
+      "menu_icon": "ICON_GHOST",
+      "footprint_species": "GRIMER",
+      "cry": {
+        "cry": "CRY_GRIMER",
+        "pitch": 12,
+        "length": 148
+      },
+      "shiny_rgb5": [
+        [
+          28,
+          22,
+          14
+        ],
+        [
+          8,
+          14,
+          12
+        ]
+      ],
+      "level_moves": [
+        [
+          1,
+          "LICK"
+        ],
+        [
+          1,
+          "GROWL"
+        ],
+        [
+          1,
+          "GUST"
+        ],
+        [
+          1,
+          "SPITE"
+        ],
+        [
+          13,
+          "NIGHT_SHADE"
+        ],
+        [
+          18,
+          "WHIRLWIND"
+        ],
+        [
+          22,
+          "WING_ATTACK"
+        ],
+        [
+          28,
+          "SCARY_FACE"
+        ],
+        [
+          34,
+          "SWIFT"
+        ],
+        [
+          39,
+          "CONFUSE_RAY"
+        ],
+        [
+          45,
+          "SHADOW_BALL"
+        ],
+        [
+          51,
+          "AGILITY"
+        ],
+        [
+          58,
+          "SKY_ATTACK"
+        ],
+        [
+          65,
+          "DESTINY_BOND"
+        ]
+      ],
+      "tmhm_moves": [
+        "SHADOW_BALL",
+        "TOXIC",
+        "HIDDEN_POWER",
+        "PROTECT",
+        "FRUSTRATION",
+        "RETURN",
+        "DOUBLE_TEAM",
+        "REST",
+        "ATTRACT",
+        "THIEF",
+        "DETECT",
+        "ENDURE",
+        "SWIFT",
+        "DREAM_EATER",
+        "FLY"
+      ],
+      "egg_moves": [
+        "HYPNOSIS",
+        "DISABLE",
+        "HAZE"
+      ]
+    },
+    {
+      "id": "MN_165",
+      "classification": "Wind Quilt",
+      "height_inches": 80,
+      "weight_tenths_lb": 140,
+      "dex_pages": [
+        "It stitches lost @ wool into wings @ wider than a bed.",
+        "Three thick panels @ catch separate @ currents of air."
+      ],
+      "base_stats": {
+        "hp": 80,
+        "attack": 90,
+        "defense": 75,
+        "speed": 100,
+        "special_attack": 95,
+        "special_defense": 75
+      },
+      "catch_rate": 45,
+      "base_exp": 215,
+      "gender_ratio": 127,
+      "hatch_cycles": 25,
+      "growth_rate": "GROWTH_MEDIUM_FAST",
+      "egg_groups": [
+        "EGG_INDETERMINATE",
+        "EGG_INDETERMINATE"
+      ],
+      "evolution": null,
+      "held_items": [
+        null,
+        null
+      ],
+      "menu_icon": "ICON_GHOST",
+      "footprint_species": "GRIMER",
+      "cry": {
+        "cry": "CRY_GRIMER",
+        "pitch": -24,
+        "length": 184
+      },
+      "shiny_rgb5": [
+        [
+          27,
+          16,
+          22
+        ],
+        [
+          6,
+          13,
+          14
+        ]
+      ],
+      "level_moves": [
+        [
+          1,
+          "LICK"
+        ],
+        [
+          1,
+          "GROWL"
+        ],
+        [
+          1,
+          "GUST"
+        ],
+        [
+          1,
+          "SPITE"
+        ],
+        [
+          13,
+          "NIGHT_SHADE"
+        ],
+        [
+          18,
+          "WHIRLWIND"
+        ],
+        [
+          22,
+          "WING_ATTACK"
+        ],
+        [
+          28,
+          "SCARY_FACE"
+        ],
+        [
+          34,
+          "SWIFT"
+        ],
+        [
+          40,
+          "SHADOW_BALL"
+        ],
+        [
+          44,
+          "CONFUSE_RAY"
+        ],
+        [
+          50,
+          "AGILITY"
+        ],
+        [
+          57,
+          "SKY_ATTACK"
+        ],
+        [
+          64,
+          "DESTINY_BOND"
+        ]
+      ],
+      "tmhm_moves": [
+        "SHADOW_BALL",
+        "TOXIC",
+        "HIDDEN_POWER",
+        "PROTECT",
+        "FRUSTRATION",
+        "RETURN",
+        "DOUBLE_TEAM",
+        "REST",
+        "ATTRACT",
+        "THIEF",
+        "DETECT",
+        "ENDURE",
+        "SWIFT",
+        "DREAM_EATER",
+        "FLY"
+      ],
+      "egg_moves": [
+        "HYPNOSIS",
+        "DISABLE",
+        "HAZE"
+      ]
+    }
+  ],
+  "palettes": {
+    "MN_163": {
+      "species_id": "MN_163",
+      "name": "Mitwist",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          28,
+          25,
+          18
+        ],
+        [
+          8,
+          10,
+          15
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        19260,
+        15688,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          231,
+          206,
+          148
+        ],
+        [
+          66,
+          82,
+          123
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#E7CE94",
+        "#42527B",
+        "#000000"
+      ]
+    },
+    "MN_164": {
+      "species_id": "MN_164",
+      "name": "Hemhowl",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          24,
+          22,
+          28
+        ],
+        [
+          7,
+          8,
+          14
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        29400,
+        14599,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          198,
+          181,
+          231
+        ],
+        [
+          57,
+          66,
+          115
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#C6B5E7",
+        "#394273",
+        "#000000"
+      ]
+    },
+    "MN_165": {
+      "species_id": "MN_165",
+      "name": "Gustitch",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          19,
+          24,
+          26
+        ],
+        [
+          9,
+          7,
+          14
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        27411,
+        14569,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          156,
+          198,
+          214
+        ],
+        [
+          74,
+          57,
+          115
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#9CC6D6",
+        "#4A3973",
+        "#000000"
+      ]
+    }
+  },
+  "archive": {
+    "source": "sprites/mn-f076/retired-seiche-v1",
+    "native": "planning/minnesota/renders/line076-seiche-archive-20261026-v1",
+    "preservation": "Full previous family, profiles, palettes, manifest, source, prompt and native renders retained before any replacement. Canonical roster/profile/palette/manifest remain unchanged until root reviews."
+  },
+  "design_balance": "300\u2192405\u2192515 BST at levels 22/40. Ghost\u2192Ghost/Flying\u2192Ghost/Flying replaces three Water and two Fighting species with three Ghost and two Flying. Final 80/90/75/100/95/75 supports physical Wing Attack/Fly and special Shadow Ball under the installed modern split; Wing Attack at 22 and Shadow Ball at 40 reward each evolution. All 30 distinct move IDs were verified in the original 251 catalog; no new IDs or mechanics.",
+  "tooling": "Built-in ImageGen for all six authored views; exact per-species RGB555 palette conversion through current Rust source_center sampler; original image and all conversion renders retained.",
+  "generation": {
+    "mode": "built-in image_gen",
+    "source_sha256": "a2d590aa87ea0acb6c81f6de01010c29a5882ecc73763b8fab57abf89ba4300b",
+    "prompt_file": "sprites/mn-f076/woolwind-v1/prompt-v1.txt",
+    "source_edits": [
+      {
+        "species_id": "MN_164",
+        "view": "front",
+        "source": "sprites/mn-f076/woolwind-v1/front-back.imagegen-face-v2.png",
+        "source_sha256": "09bc8da692a0f8e389c3948cfa2c46f24e603548378fff2ffd1a32eae02c466b",
+        "prompt_file": "sprites/mn-f076/woolwind-v1/prompt-face-v2.txt",
+        "reason": "Enlarge the source face and exposed white eye windows so true black pupils survive native conversion; the other five views use the original source."
+      }
+    ]
+  },
+  "native_qa": {
+    "converter": "target/agent-roster-contour/minnesota_sprite_sampling_v5",
+    "sampling": "source_center",
+    "exterior_contour": "solid",
+    "isolated_output": "target/agent-northwoods-animation/proposals/woolwind-v2-center",
+    "durable_output": "planning/minnesota/renders/line076-woolwind-20261026-v1/selected-native",
+    "review": "planning/minnesota/renders/line076-woolwind-20261026-v1/selected-native/line.review.png",
+    "native": "planning/minnesota/renders/line076-woolwind-20261026-v1/selected-native/line.native.png",
+    "frame_sizes": {
+      "front": [
+        56,
+        56
+      ],
+      "back": [
+        48,
+        48
+      ]
+    },
+    "native_bytes": {
+      "front": 784,
+      "back": 576
+    },
+    "verification": "All 30 distinct proposed move IDs exist in the original 251 pack catalog. All six native PNGs have exactly four RGB555 inks; alpha is opaque, PNG pixels match indexed rows, and each decoded 2bpp pixel matches those rows. Front tiles are row-major and rear tiles column-major. Every front retains at least two enclosed white eye windows.",
+    "retained_attempts": [
+      "native-fit46-source-v1",
+      "native-fit48-source-v1",
+      "native-fit50-source-v1",
+      "selected-native"
+    ],
+    "status": "user-rejected-redesign-required"
+  }
+}

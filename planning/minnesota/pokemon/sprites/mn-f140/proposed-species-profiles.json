@@ -1,0 +1,230 @@
+{
+  "schema_version": 1,
+  "species": [
+    {
+      "id": "MN_310",
+      "classification": "Gill Fan",
+      "height_inches": 16,
+      "weight_tenths_lb": 85,
+      "dex_pages": [
+        "Its gills spread @ round tired young. @ Each gentle pulse",
+        "makes a safe place @ under its chin. It @ rests in lakebeds."
+      ],
+      "base_stats": {
+        "hp": 60,
+        "attack": 35,
+        "defense": 45,
+        "speed": 45,
+        "special_attack": 45,
+        "special_defense": 55
+      },
+      "catch_rate": 150,
+      "base_exp": 70,
+      "gender_ratio": 127,
+      "hatch_cycles": 20,
+      "growth_rate": "GROWTH_MEDIUM_FAST",
+      "egg_groups": [
+        "EGG_MONSTER",
+        "EGG_WATER_1"
+      ],
+      "evolution": {
+        "method": "LEVEL",
+        "level": 30
+      },
+      "held_items": [
+        null,
+        null
+      ],
+      "menu_icon": "ICON_POLIWAG",
+      "footprint_species": "WOOPER",
+      "cry": {
+        "cry": "CRY_WOOPER",
+        "pitch": -16,
+        "length": 128
+      },
+      "shiny_rgb5": [
+        [
+          24,
+          21,
+          11
+        ],
+        [
+          9,
+          9,
+          22
+        ]
+      ],
+      "level_moves": [
+        [
+          1,
+          "TACKLE"
+        ],
+        [
+          1,
+          "GROWL"
+        ],
+        [
+          6,
+          "WATER_GUN"
+        ],
+        [
+          12,
+          "CONFUSION"
+        ],
+        [
+          18,
+          "SAFEGUARD"
+        ],
+        [
+          24,
+          "BUBBLEBEAM"
+        ]
+      ],
+      "tmhm_moves": [
+        "SURF",
+        "WHIRLPOOL",
+        "WATERFALL",
+        "RAIN_DANCE",
+        "ICE_BEAM",
+        "BLIZZARD",
+        "PSYCHIC_M",
+        "PROTECT",
+        "REST",
+        "SLEEP_TALK",
+        "SNORE",
+        "RETURN",
+        "FRUSTRATION",
+        "TOXIC",
+        "HIDDEN_POWER",
+        "DOUBLE_TEAM"
+      ],
+      "egg_moves": [
+        "HAZE",
+        "AMNESIA"
+      ]
+    },
+    {
+      "id": "MN_311",
+      "classification": "Cradle Gill",
+      "height_inches": 48,
+      "weight_tenths_lb": 420,
+      "dex_pages": [
+        "Six gill fans fold @ to form a cradle. @ Its tail steadies",
+        "the shelter while @ calm pulses soothe @ frightened allies."
+      ],
+      "base_stats": {
+        "hp": 95,
+        "attack": 45,
+        "defense": 85,
+        "speed": 50,
+        "special_attack": 95,
+        "special_defense": 110
+      },
+      "catch_rate": 60,
+      "base_exp": 175,
+      "gender_ratio": 127,
+      "hatch_cycles": 20,
+      "growth_rate": "GROWTH_MEDIUM_FAST",
+      "egg_groups": [
+        "EGG_MONSTER",
+        "EGG_WATER_1"
+      ],
+      "evolution": null,
+      "held_items": [
+        null,
+        null
+      ],
+      "menu_icon": "ICON_POLIWAG",
+      "footprint_species": "QUAGSIRE",
+      "cry": {
+        "cry": "CRY_WOOPER",
+        "pitch": -32,
+        "length": 160
+      },
+      "shiny_rgb5": [
+        [
+          23,
+          24,
+          13
+        ],
+        [
+          6,
+          14,
+          16
+        ]
+      ],
+      "level_moves": [
+        [
+          1,
+          "TACKLE"
+        ],
+        [
+          1,
+          "GROWL"
+        ],
+        [
+          1,
+          "WATER_GUN"
+        ],
+        [
+          1,
+          "CONFUSION"
+        ],
+        [
+          18,
+          "SAFEGUARD"
+        ],
+        [
+          24,
+          "BUBBLEBEAM"
+        ],
+        [
+          30,
+          "LIGHT_SCREEN"
+        ],
+        [
+          36,
+          "RECOVER"
+        ],
+        [
+          42,
+          "PSYBEAM"
+        ],
+        [
+          48,
+          "AMNESIA"
+        ],
+        [
+          54,
+          "PSYCHIC_M"
+        ],
+        [
+          60,
+          "HYDRO_PUMP"
+        ]
+      ],
+      "tmhm_moves": [
+        "SURF",
+        "WHIRLPOOL",
+        "WATERFALL",
+        "RAIN_DANCE",
+        "ICE_BEAM",
+        "BLIZZARD",
+        "PSYCHIC_M",
+        "PROTECT",
+        "REST",
+        "SLEEP_TALK",
+        "SNORE",
+        "RETURN",
+        "FRUSTRATION",
+        "TOXIC",
+        "HIDDEN_POWER",
+        "DOUBLE_TEAM"
+      ],
+      "egg_moves": [
+        "HAZE",
+        "AMNESIA"
+      ]
+    }
+  ]
+}

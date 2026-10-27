@@ -94,6 +94,51 @@ jobs by default; override with `docker compose -f docker-compose.production.yml
 build --build-arg CARGO_BUILD_JOBS=4` when resources allow. The browser build
 uses the `web-release` profile to limit linker memory use.
 
+## Keep terminal downloads available
+
+The Dockerfile explicitly includes `web-client/install.sh`. Release publishing
+also requires a native executable for each supported platform and a manifest:
+
+```sh
+docker buildx build --build-arg CARGO_BUILD_JOBS=1 \
+  -f tools/terminal-build.Dockerfile \
+  --output type=local,dest=.local/terminal-linux .
+sh tools/terminal-release.sh RELEASE .local/terminal-distribution \
+  content-packs/realtime-clock.browser.crystalpack \
+  aarch64-apple-darwin=target/release/geothite \
+  x86_64-unknown-linux-gnu=.local/terminal-linux/geothite
+```
+
+Build the macOS executable on that host with `cargo build --release --locked
+-p geothite`. Hash the actual pack served by `/realtime-clock.browser.crystalpack`
+when it differs from the input pack. Publish binaries and launcher before
+atomically replacing `downloads/terminal/current.txt`; retain previous releases.
+Generated downloads and game packs remain outside tracked source.
+
+The homelab deployment keeps these files in
+`/mnt/homelab/config/geothite/terminal-distribution`, with read-only service mounts:
+
+```yaml
+- /mnt/homelab/config/geothite/terminal-distribution/install.sh:/srv/crystal/web/install.sh:ro
+- /mnt/homelab/config/geothite/terminal-distribution/downloads:/srv/crystal/web/downloads:ro
+```
+
+Preserve both mounts when replacing the web image. They keep the curl installer
+and native downloads available across browser releases. Verify the actual curl
+pipeline from a fresh directory on each published platform:
+
+```sh
+node --test tools/terminal-install.test.mjs
+python3 tools/terminal-curl-smoke.py https://geothite.ryanculligan.com
+```
+
+The process check enters fullscreen play, opens Start, saves, reinstalls without
+changing that save, then loads it and drives authoritative movement and Start
+through MCP. The controller also has an external-pack regression for bedroom
+Continue: completed decoration callbacks must release input before movement.
+The macOS binary enables crossterm's portable `/dev/tty` poller because the
+installer reopens terminal input after reading its script from curl's pipe.
+
 ## Persistence and cleanup
 
 Multiplayer ratings persist in the `crystal_multiplayer_data` volume. Game saves
@@ -147,7 +192,7 @@ browsers with `npx playwright install chromium webkit`. Validate the candidate
 and then repeat against the public HTTPS URL:
 
 ```sh
-node tools/browser-deployment-smoke.mjs \
+BROWSER_HEADLESS=1 node tools/browser-deployment-smoke.mjs \
   'https://your-game.example/?multiplayer=off' \
   /path/to/previous-release/crystal-bevy.js /tmp/deployment-proof.json
 ```
@@ -157,6 +202,123 @@ fresh assets and an intentionally stale unversioned JavaScript response. It
 fails on startup errors or missing game state and records screenshots. This is
 WebKit with an iPhone viewport, not a physical-device Safari test. A container
 healthcheck or a localhost-only check does not validate public cache behavior.
+
+## Verified homelab release, 2026-10-25
+
+Deployed `geothite:9f40b434-battle-latency-20261025t170024z-speed` to
+`sshpop:/mnt/homelab`. The image ID is
+`sha256:0cd6af0aa0905a950704cd06b7b0820e81bd63bf51afe174da43c913eb88dc40`.
+It includes working-tree changes over `9f40b434`; its recorded compile-input
+tree digest is `2ff587eb185d7dfe2435bee7eaa612c6813c491ef45e577a1bdfffe68bf9d678`.
+The release directory retains source, build recipe, previous service configuration
+and guarded rollback helper. Only the Geothite service was recreated; its signing
+configuration, data volume and Flygon data mount were preserved.
+
+Public HTTPS checks passed health, exact WASM release, fresh/stale startup in
+Chromium and mobile WebKit, nine renderer swaps, Start and Mom's dialogue/input
+ownership. Real curl installs passed on macOS ARM64 and Linux x86_64, including
+Continue, save preservation and authoritative MCP movement/Start. Installer and
+downloads are served through the persistent mounts above. The served pack SHA-256
+remains `a625e367ee7000e6968cf017264d5178c237887c5a63e1d9fc6883b7f079007c`.
+See [battle latency measurements and existing limitations](runtime-input-performance.md#battle-search-frame-latency).
+
+The macOS app was built and installed with:
+
+```sh
+python3 tools/desktop.py build --target-dir target/runtime-fps --profile release --jobs 4
+python3 tools/desktop.py install --target-dir target/runtime-fps --profile release --skip-build
+```
+
+`~/Applications/Geothite.app` passed signature verification and
+`--check-installation` from outside the checkout. Its external save location is
+unchanged.
+
+### Mobile controls and intro follow-up, 2026-10-25
+
+The follow-up image is
+`geothite:9f40b434-mobile-intro-20261025t225948z-final`, ID
+`sha256:4744c4246393b1e1db24c4f66c5b8937ced83f8ce7b74c3acad57159dc201dc1`.
+It restores the actual touch buttons, reserves space for them in both orientations,
+and resolves intro OBJ tiles through the pack's shared BG/OBJ VRAM bindings.
+No content pack, battle engine, signing configuration or persistent mount changed.
+The updated Mac app passed signature verification and `--check-installation`
+from `/tmp`, retaining the same external save path. Public curl installs passed
+on both macOS ARM64 and Linux x86_64 after rollout.
+
+The headless mobile regression uses trusted touches for gameplay; MCP only
+observes. It watches the complete movie, starts CHRIS, moves the player, selects
+and closes the production menu, checks small portrait/landscape layouts in all
+three views, and checks multi-touch cancellation in Chromium:
+
+```sh
+node tools/browser-mobile-smoke.mjs https://geothite.ryanculligan.com /tmp/mobile-proof.json
+```
+
+Both public browser runs passed with no page or console errors, including a 3D
+start in mobile WebKit and a 2D start in Chromium. WebKit uses an iPhone viewport;
+these are browser-engine tests, not a physical iPhone run.
+
+The full-frame intro regression and ROM pixel checkpoints pass with the external
+TUI pack. Comparing the same 92 intro tests with the earlier native test binary
+shows 42 failures before and 40 after; the two fixed tests are the full-frame
+replay and ROM pixel checkpoints, with no new failures. The remaining failures
+use older source fixtures or setup assumptions. Workspace formatting and
+all-target Clippy still report existing failures; production-library Clippy passes
+with the existing `bad_bit_mask` and `never_loop` lints allowed.
+
+### Region preloading and 3D transitions, 2026-10-26
+
+Deployed `geothite:9f40b434-region-preload-20261026t090056z-final`, image ID
+`sha256:e0958be88074ead5e01cf2dec9401bea3799042f1c86f2d241bb22274e666249`.
+The frozen working-tree source over `9f40b434` has compile-input digest
+`5d2103fa718663ee062c3e2e4727369bf15a2abfcadeb17abb6c44114afa5d5c`.
+The release is retained under
+`/mnt/homelab/config/geothite/releases/9f40b434-region-preload-20261026t090056z`
+on `100.101.29.133`, including source, build recipes, verification summaries,
+and the previous service configuration. Only Geothite was recreated; signing
+configuration, persistent data, Flygon data and terminal download mounts remain
+unchanged. The served content pack retains the SHA-256 recorded above.
+
+Connected-region preloading now follows the complete visible source window,
+including chains beyond four small regions, and retains terrain and actors
+through camera turns. The release also includes prepared 3D route/battle
+transitions and modeled battle trainers. Both WebGL and WebGPU ship with terrain
+and actor workers. Their normal scenery detail selection remains enabled, and
+the bounded paged worker protocol accepts the larger preloaded scene. Existing
+immutable browser assets are retained for tabs using the previous release.
+
+Before rollout, headless production-candidate checks passed 33 camera positions
+at the Route 29/New Bark boundary on each renderer, with no terrain rebuild,
+pending terrain, additional worker submissions, worker failures or fallback.
+A production Falkner battle displayed both modeled trainers and reached the
+battle menu with modeled creatures. Fresh/stale startup checks passed in
+Chromium and mobile WebKit. Local controller and browser checks also crossed
+connected routes in both directions and preserved state when switching to 2D.
+
+After rollout, the public HTTPS endpoint passed health and clock checks, exact
+JavaScript/WASM hashes for both renderers, the unchanged pack hash, the same
+33-position WebGPU boundary sweep and a modeled Falkner battle. The installer,
+terminal release pointer and Flygon routes remain available. The preceding
+release's immutable JavaScript URL also remains available.
+All four public fresh/stale startup runs reached New Game without page errors
+in Chromium and mobile WebKit. These checks ran headlessly with
+`BROWSER_HEADLESS=1 node tools/browser-deployment-smoke.mjs`, using the public
+game URL, the preceding release's JavaScript and a temporary JSON output path.
+
+The release's guarded deployment commands are:
+
+```sh
+release=/mnt/homelab/config/geothite/releases/9f40b434-region-preload-20261026t090056z
+python3 "$release/deploy.py" rollout
+# Restore the captured previous service only if its configuration still matches:
+python3 "$release/deploy.py" rollback
+```
+
+Targeted Rust streaming/controller tests, worker paging tests, browser unit tests
+and bundle-versioning tests passed. Workspace formatting and unrestricted
+all-target Clippy still fail on existing code; scoped Clippy passes with the
+existing `bad_bit_mask`, `approx_constant`, `never_loop` and `erasing_op` lints
+allowed. This is not a claim that the entire repository test suite passes.
 
 ## Optional Flygon
 

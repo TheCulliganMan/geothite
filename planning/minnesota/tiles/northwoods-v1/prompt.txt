@@ -1,0 +1,14 @@
+Use case: stylized-concept
+Asset type: original Minnesota overworld prop tiles, production source sheet for a Game Boy Color era top-down RPG.
+Create ONE exact 3-column by 2-row sprite sheet at 1536x1024 pixels. Each 512x512 cell represents an EXACT 32x32 native-pixel metatile, enlarged 16x nearest-neighbor. Align every pixel to this common 16px lattice. No grid lines. No labels, no text, no drop shadows beyond the sprite, no frames. Orthographic Crystal-style top-down overworld view, front surfaces visible just like classic 16px-tall player RPG maps; never isometric.
+Each object occupies only its own 32x32 native cell and stays 2 native pixels away from every cell edge. Small, simple, readable clusters; modest game prop scale. Clean hard square edges, NO smoothing or gradients.
+Row 1 left to right:
+1) northwoods canoe storage rack: one slim wooden canoe horizontal on two short timber trestles, overhead interior and narrow front lip visible, canoe bow and stern pointed, 26x16 native pixels centered.
+2) stacked firewood: a low compact orderly stack of split logs, pale circular cut ends and dark bark, 24x16 native pixels centered.
+3) picnic table: a simple rectangular wood picnic table viewed from above with two attached parallel benches and visible short legs, 26x22 native pixels centered, long axis horizontal.
+Row 2 left to right:
+4) portage trail marker: a short wooden post with a rectangular board bearing only a simple dark canoe silhouette, NO lettering, 14x24 native pixels centered.
+5) Lake Superior cobble cluster: three modest rounded gray cobbles with angular 1-pixel highlights, biggest 14x12 native pixels, entire grouping 24x20 pixels.
+6) cattail clump: three upright dark seedheads on green stems and narrow green blade leaves, compact 22x24 native pixels.
+Colors: first FOUR cells only four flat colors: pale ground #DEFFDE, light ochre wood #C69439, darker wood #A57B18, dark outline #393939. Fifth cell only #DEFFDE #ADADAD #6B6B6B #393939. Sixth cell only #B5FF52 #63CE08 #297300 #393939. Entire empty area of each cell is its lightest color. Every cell is opaque, with a solid flat ground background. Do not add ground texture. These four-color constraints and the exact 32x32 sprite grid matter more than detail.
+Original generic props only. No existing game sprites, characters, logos or watermark.

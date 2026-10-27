@@ -119,15 +119,30 @@ pub(super) fn activate(
     // A resident base scene is reusable even while its grove pages settle.
     // The active streamer can finish those pages without rebuilding the town.
     let ready = destination.cache.uploads.ready()
-        && destination.cache.key.as_ref().is_some_and(|key| key.profiles_revision == profiles.revision)
-        && destination.cache.built_frame.as_ref().is_some_and(|old| compatible(old, frame));
-    let in_flight = destination.builds.key.as_ref().is_some_and(|key|
-        key.profiles_revision == profiles.revision && key.map_id == frame.map_id)
-        && destination.source_frame.as_ref().is_some_and(|old| compatible(old, frame));
-    if !ready && !in_flight { return; }
+        && (destination.cache.groves.is_none() || destination.ready_frames >= 3)
+        && destination
+            .cache
+            .key
+            .as_ref()
+            .is_some_and(|key| key.profiles_revision == profiles.revision)
+        && destination
+            .cache
+            .built_frame
+            .as_ref()
+            .is_some_and(|old| compatible(old, frame));
+    let in_flight = destination.builds.key.as_ref().is_some_and(|key| {
+        key.profiles_revision == profiles.revision && key.map_id == frame.map_id
+    }) && destination
+        .source_frame
+        .as_ref()
+        .is_some_and(|old| compatible(old, frame));
+    if !ready && (!in_flight || destination.cache.groves.is_some()) {
+        return;
+    }
     crate::terrain_publication::discard(&mut builds.publication, commands);
     crate::terrain_publication::discard(&mut destination.builds.publication, commands);
-    if in_flight && !ready && retain_connected_terrain(frame, live) {
+    if in_flight && !ready && (live.uploads.gpu_required() || retain_connected_terrain(frame, live))
+    {
         // Adopt only the work queue. The completed old scene covers the shared
         // authored acreage and keeps its immutable atlas until publication.
         // Swapping an empty pending cache here used to expose the classic view.
@@ -499,19 +514,7 @@ pub(super) fn prepare(
         }
         match terrain_state {
             Ok(TerrainSyncState::Ready) => {
-                let pose = settings.camera.world_pose(frame, &cache.footing_heights);
-                let projection =
-                    Mat4::perspective_rh(pose.vertical_fov_radians, aspect, pose.near, pose.far);
-                let matrix = projection * Mat4::look_at_rh(pose.eye, pose.target, pose.up);
-                if grove_stream::sync(
-                    frame,
-                    matrix,
-                    sunlight,
-                    cache,
-                    &mut commands,
-                    &mut meshes,
-                    &mut materials,
-                ) {
+                if grove_stream::warm_window(cache, &mut commands, &mut meshes, &mut materials) {
                     *ready_frames = 0;
                 } else {
                     *ready_frames = ready_frames.saturating_add(1);
@@ -544,11 +547,18 @@ pub(super) fn pending_world_covers(
     profiles: &live_profiles::LiveProfiles,
     world: &mut PreparedWorld,
 ) -> bool {
-    let next = &mut world.next;
+    crate::sky::outdoors(frame) && pending_destination_covers(frame, profiles, &mut world.next)
+}
+
+pub(super) fn pending_destination_covers(
+    frame: &VisualWorldFrame,
+    profiles: &live_profiles::LiveProfiles,
+    next: &mut PreparedDestination,
+) -> bool {
     let key = next.builds.key.as_ref().or(next.cache.key.as_ref());
     let pending = next.builds.key.is_some()
         || (next.cache.built_frame.is_some() && next.ready_frames < 3);
-    crate::sky::outdoors(frame) && pending
+    pending
         && key.is_some_and(|key| key.profiles_revision == profiles.revision)
         && next.source_frame.as_ref().is_some_and(|source| {
             cached_compatible(source, frame, &mut next.live_compatibility)

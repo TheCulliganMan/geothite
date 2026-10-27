@@ -1,0 +1,7 @@
+# Keep reusable generated proposal previews and game-ready exports local.
+*.2bpp
+*.native.png
+*.zoom8.png
+*.indices.json
+native-review-board.png
+art-receipt-v1.json

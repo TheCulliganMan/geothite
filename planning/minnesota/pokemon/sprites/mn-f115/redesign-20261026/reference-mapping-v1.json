@@ -1,0 +1,15 @@
+{
+  "references": [
+    {
+      "path": "target/minnesota-pokemon/gen2-reference/starters.png",
+      "sha256": "af61f720a75b7e1b8e80ba14e8944612556397eedddd719669dec68b0e0fd534",
+      "role": "Style and camera only; original new species anatomy, no character copying."
+    }
+  ],
+  "attached_to_imagegen": [
+    "target/minnesota-pokemon/gen2-reference/starters.png"
+  ],
+  "canonical_species_id": "MN_249",
+  "canonical_family_id": "MN_F115",
+  "purpose": "New redesign candidate; published art remains saved."
+}

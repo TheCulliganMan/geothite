@@ -1,5 +1,122 @@
 // External-pack regressions for the render-only bridge, alongside the existing
 // production controller tests. These use the exact same Route36 battle fixture.
+#[test]
+fn production_world_entry_publishes_flash_wipe_and_release() {
+    let shell = route36_battle_shell_for_render_regression();
+    let mut app = App::new();
+    app.insert_resource(shell)
+        .insert_resource(crystal_voxel_view::VoxelViewSettings {
+            enabled: true,
+            ..default()
+        })
+        .insert_resource(crystal_render_api::VisualWorldFrame {
+            active: true,
+            ..default()
+        })
+        .init_resource::<crystal_render_api::VisualWorldLighting>()
+        .init_resource::<crystal_render_api::BattleFlashMode>()
+        .init_resource::<crystal_render_api::VisualWorldEntryEffect>()
+        .add_systems(Update, publish_visual_world_entry_effect);
+    // The first palette write darkens the real field; the final wipe
+    // covers it completely while the hidden battle target finishes.
+    for frame in [3, 144] {
+        let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+        shell.visible_battle_transition = Some(VisibleBattleTransition {
+            frame,
+            cave_environment: false,
+            stronger_enemy: false,
+            trainer_battle: false,
+        });
+        app.update();
+        let effect = app
+            .world()
+            .resource::<crystal_render_api::VisualWorldEntryEffect>();
+        assert!(effect.active);
+        if frame == 3 {
+            assert!(effect.dark > 0.0);
+        } else {
+            assert_eq!(
+                effect
+                    .black_cells
+                    .iter()
+                    .flat_map(|mask| mask.to_array())
+                    .map(u32::count_ones)
+                    .sum::<u32>(),
+                360
+            );
+        }
+    }
+    app.world_mut()
+        .resource_mut::<BevyRuntimeShell>()
+        .visible_battle_transition = None;
+    app.update();
+    assert_eq!(
+        *app.world()
+            .resource::<crystal_render_api::VisualWorldEntryEffect>(),
+        crystal_render_api::VisualWorldEntryEffect::default()
+    );
+}
+
+#[test]
+fn immersive_entry_keeps_transition_until_the_hidden_scene_is_prepared() {
+    let mut shell = route36_battle_shell_for_render_regression();
+    let transition = shell
+        .visible_battle_transition
+        .as_mut()
+        .expect("battle entry");
+    transition.frame = (if transition.trainer_battle { 4 } else { 3 }) + 74;
+    let terminal = transition.frame;
+    let messages = shell.battle_messages.clone();
+    let battle = shell.shell.snapshot().expect("battle snapshot").battle;
+    let mut app = integrated_shell_test_app(shell);
+    app.insert_resource(crystal_voxel_view::VoxelViewSettings {
+        enabled: true,
+        ..default()
+    })
+    .insert_resource(crystal_voxel_view::BattleViewStatus {
+        preparation_pending: true,
+        ..default()
+    });
+    for _ in 0..4 {
+        app.update();
+        let shell = app.world().resource::<BevyRuntimeShell>();
+        assert_eq!(
+            shell
+                .visible_battle_transition
+                .expect("retained entry")
+                .frame,
+            terminal
+        );
+        assert!(shell.visible_battle_sliding_intro.is_none());
+        assert_eq!(shell.battle_messages, messages);
+        assert_eq!(
+            shell.shell.snapshot().expect("unchanged battle").battle,
+            battle
+        );
+    }
+    *app.world_mut()
+        .resource_mut::<crystal_voxel_view::BattleViewStatus>() =
+        crystal_voxel_view::BattleViewStatus {
+            prepared: true,
+            ..default()
+        };
+    for _ in 0..80 {
+        app.update();
+        if app
+            .world()
+            .resource::<BevyRuntimeShell>()
+            .visible_battle_transition
+            .is_none()
+        {
+            break;
+        }
+    }
+    let shell = app.world().resource::<BevyRuntimeShell>();
+    assert!(shell.visible_battle_transition.is_none());
+    assert_eq!(shell.visible_battle_sliding_intro, Some(0));
+    assert_eq!(shell.battle_messages, messages);
+}
+
 fn immersive_battle_fixture() -> BevyRuntimeShell {
     let mut shell = route36_battle_shell_for_render_regression();
     shell.visible_battle_transition = None;
@@ -250,7 +367,7 @@ fn immersive_battle_send_out_keeps_arena_and_source_reveal_clock() {
             assert!(frame.active && !frame.use_source_scene, "send-out frame {tick}");
             let battler = frame.battlers[index].as_ref().unwrap();
             assert_eq!(battler.visible, tick >= 4);
-            assert_eq!(battler.allow_species_model, tick != 4 && tick != 5);
+            assert!(battler.allow_species_model, "send-out must retain its 3D species identity");
             let source = frame.source.as_ref().unwrap();
             assert_eq!(source.frame, u16::from(tick));
             assert_eq!(source.objects.len(), usize::from(tick < 12));
@@ -2435,4 +2552,79 @@ fn immersive_battle_faint_and_return_keep_three_dimensional_scene() {
             }
         }
     }
+}
+
+#[test]
+fn every_pack_trainer_class_has_a_modeled_battle_costume() {
+    let shell = immersive_battle_fixture();
+    let classes = &shell.runtime.data().trainer_class_names;
+    assert!(
+        !classes.is_empty(),
+        "external pack must expose trainer classes"
+    );
+    let missing = classes
+        .keys()
+        .filter_map(|class| {
+            let source = normalize_battle_trainer_sprite_id(class);
+            (!crystal_voxel_view::has_modeled_battle_trainer(&source)).then_some((class, source))
+        })
+        .collect::<Vec<_>>();
+    assert!(
+        missing.is_empty(),
+        "trainer classes without 3D costumes: {missing:?}"
+    );
+}
+
+#[test]
+fn immersive_trainer_participants_follow_entry_exit_and_result_visibility() {
+    let mut shell = immersive_battle_fixture();
+    let mut snapshot = shell.shell.snapshot().expect("retained battle");
+    let mut battle = snapshot.battle.take().expect("battle");
+    battle.kind = RuntimeBattleKind::Trainer {
+        trainer_class: "FALKNER".into(),
+        trainer_id: "FALKNER1".into(),
+        trainer_name: "FALKNER".into(),
+        event_flag: String::new(),
+        seen_text: String::new(),
+        win_text: String::new(),
+        loss_text: String::new(),
+        callback: String::new(),
+        source_script: String::new(),
+        reward: 0,
+        encounter_music: String::new(),
+        ai_move_flags: 0,
+        ai_item_switch_flags: 0,
+        ai_layers: Vec::new(),
+    };
+    snapshot.battle = Some(battle);
+    let checksum = shell.shell.state_checksum().expect("checksum");
+    for (remaining, expected) in [
+        (3, [true, true]),
+        (2, [true, false]),
+        (1, [true, false]),
+        (0, [false, false]),
+    ] {
+        shell.battle_entry_messages_remaining = remaining;
+        let frame = extract_immersive_battle_fixture(&shell, &snapshot, true);
+        assert_eq!(
+            frame
+                .trainers
+                .each_ref()
+                .map(|trainer| trainer.as_ref().expect("trainer").visible),
+            expected
+        );
+        assert_eq!(
+            frame.trainers[1]
+                .as_ref()
+                .expect("enemy trainer")
+                .source_id
+                .as_ref(),
+            "falkner"
+        );
+    }
+    shell.battle_trainer_result = Some(("Result".into(), 24));
+    let frame = extract_immersive_battle_fixture(&shell, &snapshot, true);
+    assert!(frame.trainers[1].as_ref().expect("result trainer").visible);
+    assert!(!frame.use_source_scene);
+    assert_eq!(shell.shell.state_checksum().expect("checksum"), checksum);
 }

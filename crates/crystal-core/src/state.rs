@@ -1,4 +1,8 @@
 use serde::{Deserialize, Deserializer, Serialize, de::Error as _};
+
+#[cfg(test)]
+#[path = "state_object_identity_tests.rs"]
+mod object_identity_tests;
 use std::collections::{BTreeMap, BTreeSet};
 
 use crate::battle::turn::BattleCombatState;
@@ -2167,9 +2171,12 @@ impl OverworldObjectMapMemory {
                     object_struct.slot
                 ));
             }
-            if !(1..=15).contains(&object_struct.map_object_index) {
+            // Active struct slots are limited above. This is the independent
+            // one-based map-event identity, which authored maps store in a byte.
+            // Pack-aware restore separately checks it against the event count.
+            if object_struct.map_object_index == 0 {
                 return Err(format!(
-                    "map_object_overrides[{map_name}].object_structs map-object index {} is outside 1..=15",
+                    "map_object_overrides[{map_name}].object_structs map-object index {} must be nonzero",
                     object_struct.map_object_index
                 ));
             }

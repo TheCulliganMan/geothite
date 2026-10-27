@@ -145,6 +145,7 @@ def analyze(report, directory, detailed_cpu=True, measurement_revision=0):
     if report.get('schema') != 1:
         raise ValueError('Unsupported capture schema')
     frames = [frame for frame in report['frames'] if frame['measured']]
+    source_2d = report.get('renderer', '3d') == '2d'
     ids = {frame['id'] for frame in frames}
     gpu = report['gpu']
     excluded = set(gpu.get('invalid_frames', []))
@@ -213,12 +214,14 @@ def analyze(report, directory, detailed_cpu=True, measurement_revision=0):
         issues.append('Incomplete GPU capture: errors or less than 99% frame coverage')
     intervals = stats([f['interval_ms'] for f in frames])
     return dict(success=not issues, issues=issues, interval_ms=intervals,
+                renderer=report.get('renderer', '3d'),
                 frame_budget=frame_budget(intervals),
                 frame_ceiling_exceedances=sum(f['interval_ms'] > 45. for f in frames),
                 main_cpu_ms=stats([f['main_cpu_ms'] for f in frames]),
-                world_residency=summarize_residency(report),
+                world_residency=(dict(available=False, reason='3D residency is not applicable to source 2D')
+                                 if source_2d else summarize_residency(report)),
                 stationary_camera=(stationary_camera_drift(motion_series(report))
-                    if report['success'] and frames and all(frame.get('motion') for frame in report['frames']) else None),
+                    if not source_2d and report['success'] and frames and all(frame.get('motion') for frame in report['frames']) else None),
                 gpu_ms=stats([sample['elapsed_ms'] for sample in samples]),
                 completion_latency_ms=stats([sample['completion_latency_ms'] for sample in samples if sample.get('completion_latency_ms') is not None]),
                 marker_gpu_ms=stats([sample['marker_gpu_ms'] for sample in samples if sample.get('marker_gpu_ms') is not None]),
@@ -238,6 +241,7 @@ def compatibility(metadata, hardware):
     fields = ('measurement_revision', 'warmup_cadence', 'native_capture_mode', 'trace_filter', 'gpu_backend', 'scenario', 'pack_identity', 'os', 'arch', 'debug_assertions', 'operation_trace',
               'gpu_instrumentation', 'viewport', 'hour', 'target', 'pipeline_compilation', 'simulation', 'cache_policy')
     return dict(**{field:metadata[field] for field in fields}, hardware=hardware,
+                renderer=metadata.get('renderer', '3d'),
                 analysis_revision=ANALYSIS_REVISION, analysis_sources_sha256=dict(ANALYSIS_SOURCES_SHA256))
 
 
@@ -350,7 +354,8 @@ def run_suite(args):
         raise ValueError('Suite must contain unique scenario names')
     hardware=dict(system=platform.platform(),node=platform.node(),machine=platform.machine(),processor=platform.processor(),cpu_count=os.cpu_count())
     provenance=dict(created_at_utc=datetime.now(timezone.utc).isoformat(),binary_sha256=digest(binary),pack_sha256=digest(pack),binary=str(binary),pack=str(pack),hardware=hardware)
-    model_root=getattr(args,'model_root',None)
+    view=getattr(args,'view','3d')
+    model_root=getattr(args,'model_root',None) if view == '3d' else None
     model_root=model_root.resolve(strict=True) if model_root is not None else None
     provenance['artwork_root']=str(model_root) if model_root else None
     provenance['artwork_sha256']=digest_tree(model_root) if model_root else None
@@ -386,6 +391,8 @@ def run_suite(args):
             directory=folder/f'run-{repeat+1}'
             directory.mkdir()
             command=[str(binary),str(pack),str(folder/'scenario.json'),str(directory)]
+            if view == '2d':
+                command.append('--2d')
             if args.cpu_only:
                 command.append('--cpu-only')
             elif metal:
@@ -417,6 +424,8 @@ def run_suite(args):
                 load_after=list(os.getloadavg()) if hasattr(os,'getloadavg') else None
                 report=json.loads((directory/'audit.json').read_text())
                 metadata=json.loads((directory/'metadata.json').read_text())
+                if metadata.get('renderer', '3d') != view or report.get('renderer', '3d') != view:
+                    raise ValueError('Captured renderer differs from the requested view')
                 if metal:
                     (directory/'audit-rust.json').write_text(json.dumps(report))
                     report['gpu'].update(export_gpu(native_trace, directory, metadata['process_id']))
@@ -505,6 +514,7 @@ def main():
     parser.add_argument('--scenario',action='append')
     parser.add_argument('--baseline',type=Path)
     parser.add_argument('--cpu-only',action='store_true')
+    parser.add_argument('--view',choices=('2d','3d'),default='3d',help='Production source 2D compositor or modeled 3D renderer')
     parser.add_argument('--quiet-host',action='store_true',help='Wait for quiet macOS GPU/CPU and flag competing compiler/render jobs during capture')
     parser.add_argument('--gpu-backend',choices=('auto','timestamps','metal'),default='auto',help='Native Metal System Trace on macOS; timestamp queries elsewhere')
     parser.add_argument('--timings-only',action='store_true',help='Filter detailed CPU tracing in the same executable; retain frame, GPU and checkpoint timings')

@@ -2,6 +2,44 @@
 use bevy::prelude::{Handle, IVec2, UVec2, Vec2};
 use crystal_render_api::{VisualSourceRegion, VisualTile, VisualTileSource, VisualWorldFrame};
 
+pub(crate) fn grove_window() -> (
+    VisualWorldFrame,
+    std::sync::Arc<crate::mesh::StreamedGroves>,
+) {
+    let (mut frame, _) = connected_frames(IVec2::new(40, 0));
+    frame.grid_size = UVec2::new(5, 4);
+    frame.grid_origin = IVec2::ZERO;
+    frame.tiles.retain(|tile| tile.column < 5 && tile.row < 4);
+    for tile in &mut frame.tiles {
+        if tile.column < 4 {
+            tile.source.metatile_id = 0x05;
+            tile.source.subtile_column = tile.column as u8;
+            tile.source.subtile_row = tile.row as u8;
+            tile.source.tile_index = (if tile.row == 0 {
+                0x1e
+            } else if tile.row == 3 {
+                0x3e
+            } else {
+                0x2e
+            }) + (tile.column % 2) as u16;
+        } else {
+            tile.source.tile_index = 0x05;
+        }
+    }
+    let profiles = crate::live_profiles::LiveProfiles::default();
+    let source = crate::mesh::begin_runtime_terrain_mesh_with_profiles(
+        &frame,
+        &crate::mesh::TerrainImageSamples::default(),
+        &profiles.document,
+    )
+    .expect("authored tree terrain")
+    .into_streamed()
+    .streamed_groves
+    .expect("deferred source groves");
+    assert!(source.len() > 0);
+    (frame, source)
+}
+
 pub(crate) fn connected_frames(offset: IVec2) -> (VisualWorldFrame, VisualWorldFrame) {
     let texture = Handle::Uuid(
         bevy::asset::uuid::Uuid::from_u128(1),

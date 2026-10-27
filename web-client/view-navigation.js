@@ -49,8 +49,9 @@ export function mountRendererViews(wasm, viewControls, { document, window, canva
   let sync=()=>{};
   const configure=()=>{
     const coarse=window.matchMedia('(pointer: coarse)').matches;
-    const width=window.innerWidth;
-    const height=Math.max(180,window.innerHeight-72-(coarse?180:0));
+    const bounds=surface.getBoundingClientRect?.();
+    const width=bounds?.width||window.innerWidth;
+    const height=Math.max(180,bounds?.height||(window.innerHeight-72-(coarse?180:0)));
     const cell=Math.min(11,width/40,height/52);
     currentColumns=Math.max(40,Math.min(128,Math.floor(width/cell)));
     currentRows=Math.max(26,Math.min(70,Math.floor(height/(cell*2))));

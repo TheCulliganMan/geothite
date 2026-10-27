@@ -1,0 +1,244 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F079",
+  "status": "native-conversion-pending",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_172": {
+      "species_id": "MN_172",
+      "name": "Bobcast",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          31,
+          25,
+          7
+        ],
+        [
+          7,
+          13,
+          18
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        7999,
+        18855,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          255,
+          206,
+          57
+        ],
+        [
+          57,
+          107,
+          148
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#FFCE39",
+        "#396B94",
+        "#000000"
+      ]
+    },
+    "MN_173": {
+      "species_id": "MN_173",
+      "name": "Buoyostic",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          29,
+          22,
+          9
+        ],
+        [
+          10,
+          8,
+          22
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        9949,
+        22794,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          239,
+          181,
+          74
+        ],
+        [
+          82,
+          66,
+          181
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#EFB54A",
+        "#5242B5",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f079/redesign-v2/prompt-v2.txt",
+  "reference_mapping": "sprites/mn-f079/redesign-v2/reference-mapping.json",
+  "back_framing": "gen2-close-rear-portrait",
+  "sprites": [
+    {
+      "id": "mn-172-bobcast-v2",
+      "species_id": "MN_172",
+      "view": "front",
+      "source": "sprites/mn-f079/redesign-v2/front-back.imagegen-v2.png",
+      "crop": [
+        0,
+        0,
+        760,
+        530
+      ],
+      "fit": [
+        40,
+        40
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        7999,
+        18855,
+        0
+      ],
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32,
+      "exterior_contour": "solid",
+      "sampling": "area_vote"
+    },
+    {
+      "id": "mn-172-bobcast-v2",
+      "species_id": "MN_172",
+      "view": "back",
+      "source": "sprites/mn-f079/redesign-v2/front-back.imagegen-v2.png",
+      "crop": [
+        0,
+        530,
+        760,
+        330
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        7999,
+        18855,
+        0
+      ],
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32,
+      "exterior_contour": "solid",
+      "sampling": "area_vote"
+    },
+    {
+      "id": "mn-173-buoyostic-v2",
+      "species_id": "MN_173",
+      "view": "front",
+      "source": "sprites/mn-f079/redesign-v2/front-back.imagegen-v2.png",
+      "crop": [
+        760,
+        0,
+        776,
+        530
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        9949,
+        22794,
+        0
+      ],
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32,
+      "exterior_contour": "solid",
+      "sampling": "area_vote"
+    },
+    {
+      "id": "mn-173-buoyostic-v2",
+      "species_id": "MN_173",
+      "view": "back",
+      "source": "sprites/mn-f079/redesign-v2/front-back.imagegen-v2.png",
+      "crop": [
+        760,
+        530,
+        776,
+        330
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        9949,
+        22794,
+        0
+      ],
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32,
+      "exterior_contour": "solid",
+      "sampling": "area_vote"
+    }
+  ],
+  "visual_review": {
+    "status": "pending",
+    "outline_profile": "solid-exterior-v1",
+    "sheet_sha256": "",
+    "notes": "All4views pending native inspection. Close rear crop excludes weighted tail and cuts lower float rim; per-species palettes unchanged."
+  },
+  "source_sha256": "d4d9f92dc16d3558a744c1185459d7d6b4d3df475c7d80e9e33e9d799539ebb2"
+}

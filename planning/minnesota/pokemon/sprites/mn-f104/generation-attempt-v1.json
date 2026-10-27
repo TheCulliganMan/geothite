@@ -1,0 +1,12 @@
+{
+  "status": "success",
+  "original_tool_path": "/Users/ryanculligan/.codex/generated_images/01a179c0-8064-7d62-9f6b-2356ce51b543/exec-142c38e8-8e68-4045-83d2-9baadc8ea3fd.png",
+  "raw_copy": "sprites/mn-f104/mn-227-229.front-back.imagegen-v1.png",
+  "sha256": "508a659517149d988e337e8f65919df3fb5b35fd031d74eb0bfbb8eeb72278bc",
+  "full_resolution": [
+    1536,
+    1024
+  ],
+  "prompt_file": "prompt-v1.txt",
+  "reference_mapping": "reference-mapping-v1.json"
+}

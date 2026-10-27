@@ -1,0 +1,283 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F076",
+  "status": "root-approved-canonically-merged",
+  "family": {
+    "id": "MN_F076",
+    "region": "north_shore",
+    "classification": "ordinary",
+    "theme": "Lost mismatched winter clothes find one another. One mitten becomes a floating pair of two visibly mismatched mittens; the same two mittens then gather one mismatched triangular shawl, whose billowing cloth grants flight. A collective ghost wardrobe with no hidden body, animal anatomy, hood or hat.",
+    "members": [
+      {
+        "id": "MN_163",
+        "name": "Mitwist",
+        "types": [
+          "GHOST"
+        ],
+        "stage": 1,
+        "evolves_to": "MN_164"
+      },
+      {
+        "id": "MN_164",
+        "name": "Mispair",
+        "types": [
+          "GHOST"
+        ],
+        "stage": 2,
+        "evolves_to": "MN_165"
+      },
+      {
+        "id": "MN_165",
+        "name": "Shawlter",
+        "types": [
+          "GHOST",
+          "FLYING"
+        ],
+        "stage": 3,
+        "evolves_to": null
+      }
+    ],
+    "evolution_design": {
+      "regional_evidence": "Minnesota DNR describes wool clothing, including hand coverings, and difficulty drying wet wool overnight in logging camps. MNHS describes garments suspended overhead in bunkhouses.",
+      "original_invention": "Original fantasy collective: mismatched lost wool items find each other and form one ghost species. The third-stage shawl provides actual wind-catching flight; earlier mitten stages remain pure Ghost.",
+      "body_growth": [
+        {
+          "species_id": "MN_163",
+          "body": "One lost cream mitten matching the shorter mitten in its later pair: broad rounded fingers, side thumb, one small side-palm eye, short flat dusty-blue cuff and one blue block stripe. No mouth.",
+          "silhouette": "Exactly one simple cream mitten with side thumb and short flat cuff."
+        },
+        {
+          "species_id": "MN_164",
+          "body": "Two unequal mittens float together: a tall blue mitten with cream cuff and a shorter cream mitten with blue block stripe and cuff. Each has one palm eye and its own thumb.",
+          "silhouette": "Exactly two separated mismatched mittens at unequal heights; no shared torso."
+        },
+        {
+          "species_id": "MN_165",
+          "body": "The same two mismatched mittens are fully knitted and complete, each with a closed rounded finger pouch, distinct thumb, intact cuff and one palm eye, floating entirely in front of one white triangular shawl. A gentle smiling fabric fold crosses the shawl front; rear shows eye-free mitten backs and an unsmiling rear seam.",
+          "silhouette": "Exactly two recognizable mittens plus one asymmetric three-cornered shawl; no head, body, wings or feet."
+        }
+      ]
+    },
+    "habitat": "Windy clearings and old winter logging-camp margins in the North Shore forest; encounter placement remains a proposal.",
+    "proposed_routes": [
+      {
+        "id": "MN_R11",
+        "placement": "Proposed optional forest-camp clearing branch near the coastal route, subject to separate map authoring.",
+        "status": "encounter concept only; no existing map or script is changed"
+      }
+    ],
+    "sources": [
+      {
+        "title": "Minnesota DNR \u2014 Logging Camps: The Early Years",
+        "url": "https://www.dnr.state.mn.us/forestry/history/logging-camps.html",
+        "supports": "Wool work clothing and hand coverings; wet wool could fail to dry in the bunkhouse overnight.",
+        "source_kind": "primary Minnesota institutional history",
+        "fantasy_extension": "The wool becomes a living mitten, sleeve and quilt-bodied ghost."
+      },
+      {
+        "title": "Minnesota Historical Society \u2014 Logging Industry",
+        "url": "https://www.mnhs.org/foresthistory/learn/logging",
+        "supports": "Logging-camp garments were suspended overhead to dry in bunkhouses.",
+        "source_kind": "primary Minnesota institutional history",
+        "fantasy_extension": "Suspended fabric becomes sleeve-lift flight and a wind-catching patchwork body."
+      }
+    ],
+    "nonduplication": "Exact user-directed clothing count, not an animal wearing garments. No hood, head, coat body, sleeve or quilt creature, owl disk, beak, hat, claws or feet. The mismatches remain visible through all stages.",
+    "sprite_constraints": "Native 56\u00d756 front full body facing left; 48\u00d748 close rear portrait facing upper-right. Exactly four flat inks per species, independent stage palettes; large exposed eye windows and black pupils; stepped solid black contours. Current native source_center sampling; no painted facial pixels after conversion.",
+    "design_status": "root-reviewed-locked-for-art",
+    "silhouette_concept": "One mitten -> two mismatched mittens -> same pair plus one mismatched shawl.",
+    "design_lock": "Root approved complete exact wardrobe family and revised first mitten identity front/rear; stable IDs and all other views retained."
+  },
+  "palettes": {
+    "MN_163": {
+      "species_id": "MN_163",
+      "name": "Mitwist",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          29,
+          27,
+          19
+        ],
+        [
+          10,
+          15,
+          19
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        20349,
+        19946,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          239,
+          222,
+          156
+        ],
+        [
+          82,
+          123,
+          156
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#EFDE9C",
+        "#527B9C",
+        "#000000"
+      ]
+    },
+    "MN_164": {
+      "species_id": "MN_164",
+      "name": "Mispair",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          28,
+          25,
+          18
+        ],
+        [
+          12,
+          19,
+          24
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        19260,
+        25196,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          231,
+          206,
+          148
+        ],
+        [
+          99,
+          156,
+          198
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#E7CE94",
+        "#639CC6",
+        "#000000"
+      ]
+    },
+    "MN_165": {
+      "species_id": "MN_165",
+      "name": "Shawlter",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          30,
+          24,
+          12
+        ],
+        [
+          8,
+          19,
+          23
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        13086,
+        24168,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          247,
+          198,
+          99
+        ],
+        [
+          66,
+          156,
+          189
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#F7C663",
+        "#429CBD",
+        "#000000"
+      ]
+    }
+  },
+  "native_qa": {
+    "status": "root-approved-canonical",
+    "converter": "target/agent-roster-contour/minnesota_sprite_sampling_v5",
+    "sampling": "source_center",
+    "exterior_contour": "solid",
+    "durable_output": "planning/minnesota/renders/line076-wardrobe-20261026-v7/selected-native",
+    "review": "planning/minnesota/renders/line076-wardrobe-20261026-v7/selected-native/line.review.png",
+    "native": "planning/minnesota/renders/line076-wardrobe-20261026-v7/selected-native/line.native.png",
+    "verification": "All6indexed/2bpp pixels agree;4protectednativePNG/2bpp views exact. Front56x56/784bytes,back48x48/576bytes;4independentRGB555inkspermon. Whole mitten pouches/thumbs/cuffs, smile and rear anatomy inspected at1x/8x."
+  }
+}

@@ -1,0 +1,1050 @@
+{
+  "id": "MN_R03",
+  "map_prefix": "MnR03",
+  "name": "Minnesota River Valley",
+  "required_flags": [
+    "BADGE_2"
+  ],
+  "quest": "Q02",
+  "encounters": {
+    "grass_rates": {
+      "morning": 10,
+      "day": 10,
+      "night": 10
+    },
+    "grass": {
+      "morning": [
+        {
+          "species": "WOOPER",
+          "level": 10
+        },
+        {
+          "species": "POLIWAG",
+          "level": 11
+        },
+        {
+          "species": "HOPPIP",
+          "level": 12
+        },
+        {
+          "species": "PIDGEY",
+          "level": 13
+        },
+        {
+          "species": "BELLSPROUT",
+          "level": 14
+        },
+        {
+          "species": "MAREEP",
+          "level": 14
+        },
+        {
+          "species": "SLOWPOKE",
+          "level": 14
+        }
+      ],
+      "day": [
+        {
+          "species": "WOOPER",
+          "level": 10
+        },
+        {
+          "species": "POLIWAG",
+          "level": 11
+        },
+        {
+          "species": "HOPPIP",
+          "level": 12
+        },
+        {
+          "species": "PIDGEY",
+          "level": 13
+        },
+        {
+          "species": "BELLSPROUT",
+          "level": 14
+        },
+        {
+          "species": "MAREEP",
+          "level": 14
+        },
+        {
+          "species": "SLOWPOKE",
+          "level": 14
+        }
+      ],
+      "night": [
+        {
+          "species": "HOOTHOOT",
+          "level": 10
+        },
+        {
+          "species": "SPINARAK",
+          "level": 11
+        },
+        {
+          "species": "HOPPIP",
+          "level": 12
+        },
+        {
+          "species": "PIDGEY",
+          "level": 13
+        },
+        {
+          "species": "BELLSPROUT",
+          "level": 14
+        },
+        {
+          "species": "MAREEP",
+          "level": 14
+        },
+        {
+          "species": "SLOWPOKE",
+          "level": 14
+        }
+      ]
+    },
+    "water_rate": 4,
+    "water": [
+      {
+        "species": "POLIWAG",
+        "level": 10
+      },
+      {
+        "species": "WOOPER",
+        "level": 11
+      },
+      {
+        "species": "MARILL",
+        "level": 14
+      }
+    ]
+  },
+  "art_constraints": [
+    "Only original packed 8x8 source tiles.",
+    "No painted shadows, enlarged trees or perspective props.",
+    "Fit source shoreline/cliff quadrants; draw source trees in coherent metatile groups."
+  ],
+  "dimensions_metatiles": [
+    24,
+    32
+  ],
+  "chunk_metatiles": [
+    32,
+    24
+  ],
+  "chunk_columns": 1,
+  "chunk_rows": 2,
+  "tileset": "johto",
+  "source_references": [
+    "Route32",
+    "Route42",
+    "Route30"
+  ],
+  "description": "A narrow two-map river valley with two real timber crossings, unavoidable lower-bank habitat, a small optional limestone terrace and a cave pocket. No field move or one-way hop is required to traverse the route.",
+  "endpoints": [
+    {
+      "place": "MANKATO",
+      "side": "S",
+      "gate_metatile": [
+        9,
+        30
+      ],
+      "landing_metatile": [
+        9,
+        28
+      ]
+    },
+    {
+      "place": "MINNEAPOLIS",
+      "side": "N",
+      "gate_metatile": [
+        10,
+        1
+      ],
+      "landing_metatile": [
+        10,
+        3
+      ]
+    }
+  ],
+  "main_path_metatiles": [
+    [
+      9,
+      31
+    ],
+    [
+      9,
+      28
+    ],
+    [
+      12,
+      28
+    ],
+    [
+      12,
+      27
+    ],
+    [
+      19,
+      27
+    ],
+    [
+      19,
+      21
+    ],
+    [
+      15,
+      21
+    ],
+    [
+      15,
+      14
+    ],
+    [
+      7,
+      14
+    ],
+    [
+      7,
+      11
+    ],
+    [
+      5,
+      11
+    ],
+    [
+      5,
+      7
+    ],
+    [
+      10,
+      7
+    ],
+    [
+      10,
+      0
+    ]
+  ],
+  "main_lane_width_gameplay_tiles": 2,
+  "districts": [
+    {
+      "id": "SOUTH_BANK",
+      "name": "Mankato bend and lower footbridge",
+      "bounds_metatiles": [
+        5,
+        23,
+        22,
+        32
+      ],
+      "landmark_metatile": [
+        15,
+        27
+      ],
+      "purpose": "First crossing and two short reward turnouts"
+    },
+    {
+      "id": "EAST_SHELF",
+      "name": "Lower habitat and limestone terrace",
+      "bounds_metatiles": [
+        13,
+        13,
+        23,
+        24
+      ],
+      "landmark_metatile": [
+        20,
+        20
+      ],
+      "purpose": "Required habitat, optional high-bank cache and one-way return"
+    },
+    {
+      "id": "UPPER_VALLEY",
+      "name": "Upper crossing and bird meadow",
+      "bounds_metatiles": [
+        1,
+        1,
+        16,
+        20
+      ],
+      "landmark_metatile": [
+        10,
+        14
+      ],
+      "purpose": "Second crossing, cave pocket and northern approach"
+    }
+  ],
+  "loops": [
+    {
+      "id": "TERRACE_RETURN",
+      "path_metatiles": [
+        [
+          20,
+          21
+        ],
+        [
+          20,
+          20
+        ],
+        [
+          20,
+          19
+        ],
+        [
+          19,
+          19
+        ],
+        [
+          19,
+          20
+        ],
+        [
+          19,
+          21
+        ],
+        [
+          20,
+          21
+        ]
+      ],
+      "joins_districts": [
+        "EAST_SHELF",
+        "SOUTH_BANK"
+      ],
+      "entry_rule": "Native eastern ramp",
+      "return_rule": "Optional southward ledge",
+      "tradeoff": "A short ascent gives an Ether and optional battle; the required route remains bidirectional below."
+    }
+  ],
+  "minimum_optional_branches": 3,
+  "trainers": [
+    {
+      "id": "MN_R03_T01",
+      "display_name": "CAL",
+      "trainer_class": "FISHER",
+      "sprite": "SPRITE_FISHER",
+      "tile": [
+        37,
+        49
+      ],
+      "facing": "east",
+      "sight_range": 1,
+      "party": [
+        {
+          "species": "WOOPER",
+          "level": 10
+        },
+        {
+          "species": "POLIWAG",
+          "level": 10
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R03_TRAINER_01",
+      "before_lines": [
+        "The river bends.",
+        "My line follows.",
+        "Want to battle?"
+      ],
+      "after_lines": [
+        "The lower bridge",
+        "takes you across."
+      ],
+      "loss_lines": [
+        "A strong current!"
+      ],
+      "block_main_lane": false
+    },
+    {
+      "id": "MN_R03_T02",
+      "display_name": "JO",
+      "trainer_class": "LASS",
+      "sprite": "SPRITE_LASS",
+      "tile": [
+        15,
+        17
+      ],
+      "facing": "east",
+      "sight_range": 1,
+      "party": [
+        {
+          "species": "HOPPIP",
+          "level": 11
+        },
+        {
+          "species": "PIDGEY",
+          "level": 11
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R03_TRAINER_02",
+      "before_lines": [
+        "See that shadow?",
+        "A bird overhead!"
+      ],
+      "after_lines": [
+        "I keep a count",
+        "of passing wings."
+      ],
+      "loss_lines": [
+        "I lost my count!"
+      ],
+      "block_main_lane": false
+    },
+    {
+      "id": "MN_R03_T03",
+      "display_name": "RUTH",
+      "trainer_class": "PICNICKER",
+      "sprite": "SPRITE_LASS",
+      "tile": [
+        15,
+        29
+      ],
+      "facing": "north",
+      "sight_range": 2,
+      "party": [
+        {
+          "species": "BELLSPROUT",
+          "level": 12
+        },
+        {
+          "species": "MAREEP",
+          "level": 12
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R03_TRAINER_03",
+      "before_lines": [
+        "Our picnic spot",
+        "has a great view."
+      ],
+      "after_lines": [
+        "The cave nearby",
+        "is a short trip."
+      ],
+      "loss_lines": [
+        "That woke us up!"
+      ],
+      "block_main_lane": false
+    },
+    {
+      "id": "MN_R03_T04",
+      "display_name": "ED",
+      "trainer_class": "CAMPER",
+      "sprite": "SPRITE_YOUNGSTER",
+      "tile": [
+        37,
+        37
+      ],
+      "facing": "east",
+      "sight_range": 1,
+      "party": [
+        {
+          "species": "SLOWPOKE",
+          "level": 12
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R03_TRAINER_04",
+      "before_lines": [
+        "SLOWPOKE likes",
+        "the quiet up here."
+      ],
+      "after_lines": [
+        "The ledge returns",
+        "to the lower road."
+      ],
+      "loss_lines": [
+        "A slow goodbye!"
+      ],
+      "block_main_lane": false
+    }
+  ],
+  "residents": [
+    {
+      "id": "MN_R03_BIRDWATCHER",
+      "sprite": "SPRITE_TEACHER",
+      "tile": [
+        13,
+        13
+      ],
+      "facing": "east",
+      "lines": [
+        "Over the bridge,",
+        "the meadow is full",
+        "of passing wings.",
+        "North is the city."
+      ]
+    },
+    {
+      "id": "MN_R03_ANGLER",
+      "sprite": "SPRITE_FISHER",
+      "tile": [
+        25,
+        53
+      ],
+      "facing": "west",
+      "lines": [
+        "The rails mark",
+        "the walking bank.",
+        "Use both bridges.",
+        "Follow the road."
+      ]
+    }
+  ],
+  "items": [
+    {
+      "id": "MN_R03_ITEM_01",
+      "item": "SUPER_POTION",
+      "quantity": 1,
+      "flag": "EVENT_MN_R03_ITEM_01",
+      "tile": [
+        41,
+        55
+      ]
+    },
+    {
+      "id": "MN_R03_ITEM_03",
+      "item": "REPEL",
+      "quantity": 1,
+      "flag": "EVENT_MN_R03_ITEM_03",
+      "tile": [
+        13,
+        55
+      ]
+    },
+    {
+      "id": "MN_R03_ITEM_04",
+      "item": "ETHER",
+      "quantity": 1,
+      "flag": "EVENT_MN_R03_ITEM_04",
+      "tile": [
+        39,
+        35
+      ]
+    }
+  ],
+  "signs": [
+    {
+      "id": "MN_R03_SOUTH_SIGN",
+      "tile": [
+        20,
+        60
+      ],
+      "lines": [
+        "MINNESOTA VALLEY",
+        "NORTH: MINNEAPOLIS",
+        "SOUTH: MANKATO"
+      ]
+    },
+    {
+      "id": "MN_R03_NORTH_SIGN",
+      "tile": [
+        22,
+        4
+      ],
+      "lines": [
+        "MINNEAPOLIS NORTH",
+        "Two footbridges",
+        "back to MANKATO."
+      ]
+    },
+    {
+      "id": "MN_R03_CAVE_SIGN",
+      "tile": [
+        12,
+        36
+      ],
+      "lines": [
+        "RIVER POCKET CAVE",
+        "A short dry loop."
+      ]
+    },
+    {
+      "id": "MN_R03_CROSSING_SIGN",
+      "tile": [
+        28,
+        26
+      ],
+      "lines": [
+        "UPPER FOOTBRIDGE",
+        "Keep to the deck."
+      ]
+    },
+    {
+      "id": "MN_R03_TERRACE_SIGN",
+      "tile": [
+        40,
+        44
+      ],
+      "lines": [
+        "LOW BANK TERRACE",
+        "Ramp to the east.",
+        "Ledge returns down"
+      ]
+    }
+  ],
+  "doors": [
+    {
+      "id": "RIVER_POCKET_CAVE",
+      "warp_index": 1,
+      "return_warp_index": 2,
+      "tile": [
+        8,
+        37
+      ],
+      "arrival_tile": [
+        8,
+        38
+      ],
+      "return_tile": [
+        8,
+        38
+      ],
+      "target": "MnR03Cave1F",
+      "target_warp": 1,
+      "collision": "CAVE"
+    }
+  ],
+  "interiors": [
+    {
+      "id": "MnR03Cave1F",
+      "template": "UnionCave1F",
+      "dimensions_metatiles": [
+        8,
+        6
+      ],
+      "rows": [
+        "01 01 01 01 01 01 01 01",
+        "01 01 04 05 05 05 06 01",
+        "01 04 02 0a 34 08 0a 01",
+        "01 20 02 0a 2d 20 22 01",
+        "01 01 20 07 2d 01 01 01",
+        "01 01 01 01 01 01 01 01"
+      ],
+      "exits": [
+        [
+          7,
+          9
+        ]
+      ],
+      "clear_arrival": [
+        7,
+        8
+      ],
+      "exit_collision": "LADDER",
+      "border_block": 1,
+      "residents": [
+        {
+          "id": "MN_R03_CAVE_WALKER",
+          "sprite": "SPRITE_POKEFAN_M",
+          "tile": [
+            5,
+            5
+          ],
+          "facing": "south",
+          "lines": [
+            "A pocket of dry",
+            "stone by the bank.",
+            "The path curves",
+            "around that rock.",
+            "Take the far cache",
+            "and circle back."
+          ]
+        }
+      ],
+      "items": [
+        {
+          "id": "MN_R03_ITEM_02",
+          "item": "GREAT_BALL",
+          "quantity": 1,
+          "flag": "EVENT_MN_R03_ITEM_02",
+          "tile": [
+            12,
+            5
+          ]
+        }
+      ],
+      "signs": [],
+      "purpose": "Small dry-bank cave: an attached granite nose makes the far Great Ball pocket a short blind bend around real rock, as the original walker describes. One continuous ordinary walking route follows the curved lip from the original mouth past the original resident to the far cache and back. The rock nose is attached to the south boundary, not a loose central boulder ring. No stair or field-move requirement is invented for this flat pocket.",
+      "candidate_status": "Installed 510-map native review; the local production-controller case PASS.",
+      "review_contract": {
+        "palette_group": "nite",
+        "quality_revision": "r03-v02-native-directional-roof-audit",
+        "clear_arrivals_core": [
+          [
+            7,
+            8
+          ]
+        ],
+        "ordinary_waypoints_core": [
+          [
+            7,
+            8
+          ],
+          [
+            6,
+            7
+          ],
+          [
+            4,
+            6
+          ],
+          [
+            6,
+            5
+          ],
+          [
+            6,
+            3
+          ],
+          [
+            9,
+            3
+          ],
+          [
+            11,
+            3
+          ],
+          [
+            11,
+            5
+          ],
+          [
+            12,
+            6
+          ]
+        ],
+        "viewpoints": [
+          {
+            "id": "mouth_bend",
+            "tile": [
+              7,
+              8
+            ]
+          },
+          {
+            "id": "walker_approach",
+            "tile": [
+              5,
+              6
+            ]
+          },
+          {
+            "id": "granite_nose_turn",
+            "tile": [
+              7,
+              3
+            ]
+          },
+          {
+            "id": "far_cache_approach",
+            "tile": [
+              11,
+              5
+            ]
+          },
+          {
+            "id": "cache_back_corner",
+            "tile": [
+              12,
+              6
+            ]
+          },
+          {
+            "id": "weakest_north_lip",
+            "tile": [
+              9,
+              3
+            ]
+          }
+        ],
+        "controller_probes": {
+          "stairs": [],
+          "ledge_lanes": [],
+          "ledge_shoulders": [],
+          "mouth": [
+            7,
+            9
+          ],
+          "clear_arrival": [
+            7,
+            8
+          ],
+          "walker_approach": [
+            5,
+            6
+          ],
+          "walker_facing": "up",
+          "cache_approach": [
+            11,
+            5
+          ],
+          "cache_facing": "right",
+          "nose_wall_core": [
+            [
+              8,
+              4
+            ],
+            [
+              9,
+              4
+            ],
+            [
+              8,
+              5
+            ],
+            [
+              9,
+              5
+            ],
+            [
+              8,
+              6
+            ],
+            [
+              9,
+              6
+            ],
+            [
+              8,
+              7
+            ],
+            [
+              9,
+              7
+            ],
+            [
+              8,
+              8
+            ],
+            [
+              9,
+              8
+            ]
+          ],
+          "exterior_active": [
+            8,
+            37
+          ],
+          "exterior_passive_return": [
+            8,
+            38
+          ],
+          "upper_neck_barrier_core": [
+            [
+              8,
+              2
+            ],
+            [
+              9,
+              2
+            ],
+            [
+              8,
+              3
+            ],
+            [
+              9,
+              3
+            ]
+          ],
+          "native_navigation_model": "Stock UP_WALL roof quadrants remain directional land. Native reachability includes them: entering Down is blocked; leaving Up is blocked. The complete two-row upper neck, not one Floor row alone, is the necessary bend around the attached rock nose.",
+          "roof_boundary_probes": [
+            {
+              "from": [
+                8,
+                2
+              ],
+              "direction": "UP",
+              "target": [
+                8,
+                1
+              ],
+              "source_collision": "UP_WALL",
+              "target_collision": "WALL"
+            },
+            {
+              "from": [
+                8,
+                3
+              ],
+              "direction": "UP",
+              "target": [
+                8,
+                2
+              ],
+              "source_collision": "FLOOR",
+              "target_collision": "UP_WALL"
+            }
+          ],
+          "exterior_return_semantics": "Original room warp1 at7,9 returns directly to MnR03C00R00 passive exteriorwarp2 at8,38 FLOOR. Active CAVE8,37 exteriorwarp1 targets roomwarp1; inside clear Floor7,8 remains exact. Waiting on or revisiting passive Floor does not reenter; no warp record is changed."
+        },
+        "unpublished": false,
+        "native_review": {
+          "pack_sha256": "5fc652a6310beaf52d95e4ac339b4c12279e6fdae339d39c8c9597dc9b7a2df6",
+          "palette": "nite",
+          "candidate_sha256": "50738c06417b03802e513a6076b5fbfba301c9b3698723e3588f0ab4fcd92243",
+          "preservation_checks": 147,
+          "source_checks_passed": 31,
+          "controller_cases": [
+            "r03_bank_cave_controller_native_roof_walker_three_pages_great_ball_once_and_continue"
+          ],
+          "controller_cases_passed": [
+            "r03_bank_cave_controller_native_roof_walker_three_pages_great_ball_once_and_continue"
+          ],
+          "earned_regional_progression_claimed": false
+        }
+      }
+    }
+  ],
+  "shortcut": null,
+  "viewpoints": [
+    {
+      "id": "MANKATO_BEND",
+      "tile": [
+        18,
+        57
+      ]
+    },
+    {
+      "id": "LOWER_BRIDGE",
+      "tile": [
+        31,
+        55
+      ]
+    },
+    {
+      "id": "EAST_SEAM",
+      "tile": [
+        38,
+        48
+      ]
+    },
+    {
+      "id": "LOWER_HABITAT",
+      "tile": [
+        30,
+        39
+      ]
+    },
+    {
+      "id": "TERRACE_RAMP",
+      "tile": [
+        41,
+        42
+      ]
+    },
+    {
+      "id": "TERRACE_RETURN",
+      "tile": [
+        37,
+        39
+      ]
+    },
+    {
+      "id": "UPPER_BRIDGE",
+      "tile": [
+        21,
+        29
+      ]
+    },
+    {
+      "id": "CAVE_APPROACH",
+      "tile": [
+        10,
+        38
+      ]
+    },
+    {
+      "id": "BIRD_MEADOW",
+      "tile": [
+        12,
+        14
+      ]
+    },
+    {
+      "id": "CITY_APPROACH",
+      "tile": [
+        20,
+        6
+      ]
+    }
+  ],
+  "required_grass_crossings": [
+    {
+      "id": "LOWER_BANK_HABITAT",
+      "bounds_core": [
+        26,
+        34,
+        34,
+        40
+      ],
+      "minimum_grass_steps": 6
+    }
+  ],
+  "one_way_ledges": [
+    {
+      "id": "TERRACE_DROP",
+      "bounds_core": [
+        36,
+        40,
+        40,
+        42
+      ],
+      "direction": "south",
+      "source_block": "57",
+      "upper_approach": [
+        37,
+        39
+      ],
+      "hop_from": [
+        37,
+        40
+      ],
+      "landing": [
+        37,
+        42
+      ],
+      "reverse_blocked": [
+        37,
+        41
+      ],
+      "side_barriers": [
+        [
+          35,
+          41
+        ],
+        [
+          40,
+          40
+        ]
+      ],
+      "purpose": "Optional terrace return; both gates remain connected through the two-way lower path and eastern ramp.",
+      "return_passage_core": [
+        40,
+        40,
+        42,
+        42
+      ],
+      "minimum_return_steps": 9
+    }
+  ],
+  "status": "Existing two-crossing native design with bounded north/south river closure and ordinary canopy repair. Previous populated journey evidence is historical; this source revision awaits native republication.",
+  "anchor_status": "Original actor, party, port, room and native ledge/ramp coordinates preserved. New source checks pass; changed boundary/canopy blocks require native comparison/controller checks.",
+  "cut_gates": [],
+  "surf_viewpoints": [
+    {
+      "id": "NORTH_RIVER_ROCKS",
+      "tile": [
+        33,
+        5
+      ],
+      "setup": "Reachable ordinary walk+Surf water"
+    },
+    {
+      "id": "SOUTH_RIVER_ROCKS",
+      "tile": [
+        31,
+        59
+      ],
+      "setup": "Explicit Surf fixture placement in separated38-cell southern water pocket; no ordinary launch promised"
+    }
+  ]
+}

@@ -1,0 +1,1464 @@
+{
+  "id": "MnDuluth",
+  "name": "DULUTH",
+  "dimensions_metatiles": [
+    32,
+    24
+  ],
+  "reference_anchor_percent": [
+    72,
+    45
+  ],
+  "role": "gym_8",
+  "tileset": "johto_modern",
+  "composition": "A steep west civic bluff drops into a working harbor. The real Canal Park bridge crosses a navigable enclosed basin to the receiver workshop and shore lookout.",
+  "ports": [
+    {
+      "route": "MN_R10",
+      "side": "W",
+      "gate_metatile": [
+        1,
+        12
+      ],
+      "landing_metatile": [
+        3,
+        12
+      ]
+    },
+    {
+      "route": "MN_R11",
+      "side": "N",
+      "gate_metatile": [
+        16,
+        1
+      ],
+      "landing_metatile": [
+        16,
+        3
+      ]
+    }
+  ],
+  "interiors": [
+    {
+      "id": "MnDuluthPokecenter1F",
+      "kind": "pokecenter",
+      "dimensions_metatiles": [
+        10,
+        8
+      ],
+      "source_behavior": "canonical healing, PC and blackout recovery",
+      "tileset": "pokecenter",
+      "rows": [
+        "00 00 00 00 00 00 00 00 00 00",
+        "00 00 01 02 03 13 08 00 00 00",
+        "00 00 05 06 07 04 0c 00 00 00",
+        "00 00 04 04 04 2e 2f 00 00 00",
+        "00 00 2d 04 04 04 2c 00 00 00",
+        "00 00 00 2e 2f 04 2b 00 00 00",
+        "00 00 00 00 04 04 00 00 00 00",
+        "00 00 00 00 00 24 00 00 00 00"
+      ],
+      "clear_arrival": [
+        10,
+        13
+      ],
+      "passive_arrival": {
+        "index": 3,
+        "tile": [
+          10,
+          13
+        ],
+        "collision": "FLOOR"
+      },
+      "exits": [
+        {
+          "index": 1,
+          "tile": [
+            10,
+            15
+          ],
+          "target": "MnDuluth",
+          "target_warp": 6,
+          "collision": "WARP_CARPET_DOWN"
+        },
+        {
+          "index": 2,
+          "tile": [
+            11,
+            15
+          ],
+          "target": "MnDuluth",
+          "target_warp": 6,
+          "collision": "WARP_CARPET_DOWN"
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_DULUTH_NURSE",
+          "sprite": "SPRITE_NURSE",
+          "tile": [
+            7,
+            3
+          ],
+          "facing": "south",
+          "lines": [
+            "Welcome! We can",
+            "rest your POKEMON."
+          ],
+          "service": "heal_party",
+          "approach": [
+            7,
+            5
+          ],
+          "counter_tile": [
+            7,
+            4
+          ]
+        },
+        {
+          "id": "MN_DULUTH_CLINIC_PATIENT",
+          "sprite": "SPRITE_FISHER",
+          "tile": [
+            6,
+            7
+          ],
+          "facing": "east",
+          "lines": [
+            "The hillside walk",
+            "makes me hungry."
+          ]
+        },
+        {
+          "id": "MN_DULUTH_CLINIC_VISITOR",
+          "sprite": "SPRITE_TEACHER",
+          "tile": [
+            10,
+            10
+          ],
+          "facing": "west",
+          "lines": [
+            "The harbor signal",
+            "guides us north."
+          ]
+        }
+      ],
+      "signs": [],
+      "status": "SOURCE ONLY; canonical nurse, PC and recovery registration pending",
+      "pc": {
+        "tile": [
+          13,
+          3
+        ],
+        "approach": [
+          13,
+          4
+        ],
+        "collision": "PC",
+        "service": "canonical_pc_pending"
+      },
+      "recovery_contract": {
+        "spawn_tile": [
+          10,
+          13
+        ],
+        "status": "Register as native blackout recovery only during publication; currently uninstalled."
+      },
+      "native_constant": "MN_DULUTH_POKECENTER_1F"
+    },
+    {
+      "id": "MnDuluthMart",
+      "kind": "mart",
+      "dimensions_metatiles": [
+        6,
+        4
+      ],
+      "tileset": "mart",
+      "rows": [
+        "14 27 14 13 13 13",
+        "2b 22 2b 2b 2b 2b",
+        "15 29 13 2b 13 28",
+        "2b 2b 2b 2a 2b 23"
+      ],
+      "clear_arrival": [
+        6,
+        5
+      ],
+      "passive_arrival": {
+        "index": 3,
+        "tile": [
+          6,
+          5
+        ],
+        "collision": "FLOOR"
+      },
+      "exits": [
+        {
+          "index": 1,
+          "tile": [
+            6,
+            7
+          ],
+          "target": "MnDuluth",
+          "target_warp": 8,
+          "collision": "WARP_CARPET_DOWN"
+        },
+        {
+          "index": 2,
+          "tile": [
+            7,
+            7
+          ],
+          "target": "MnDuluth",
+          "target_warp": 8,
+          "collision": "WARP_CARPET_DOWN"
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_DULUTH_MART_CLERK",
+          "sprite": "SPRITE_CLERK",
+          "tile": [
+            1,
+            3
+          ],
+          "facing": "east",
+          "lines": [
+            "May I help you?"
+          ],
+          "service": "canonical_pokemart_pending",
+          "approach": [
+            3,
+            3
+          ],
+          "counter_tile": [
+            2,
+            3
+          ],
+          "stock": [
+            "ULTRA_BALL",
+            "HYPER_POTION",
+            "FULL_HEAL",
+            "REVIVE",
+            "MAX_REPEL"
+          ]
+        },
+        {
+          "id": "MN_DULUTH_MART_CUSTOMER",
+          "sprite": "SPRITE_GENTLEMAN",
+          "tile": [
+            9,
+            6
+          ],
+          "facing": "west",
+          "lines": [
+            "I wear warm gear.",
+            "I pack medicine."
+          ]
+        }
+      ],
+      "signs": [],
+      "status": "SOURCE ONLY; native binding and gameplay verification pending",
+      "native_constant": "MN_DULUTH_MART",
+      "source_behavior": "canonical clerk, money deduction and inventory"
+    },
+    {
+      "id": "MnDuluthGym",
+      "dimensions_metatiles": [
+        7,
+        10
+      ],
+      "clear_arrival": [
+        6,
+        17
+      ],
+      "passive_arrival": {
+        "index": 3,
+        "tile": [
+          6,
+          17
+        ],
+        "collision": "FLOOR"
+      },
+      "exits": [
+        {
+          "index": 1,
+          "tile": [
+            6,
+            19
+          ],
+          "target": "MnDuluth",
+          "target_warp": 4,
+          "collision": "WARP_CARPET_DOWN"
+        },
+        {
+          "index": 2,
+          "tile": [
+            7,
+            19
+          ],
+          "target": "MnDuluth",
+          "target_warp": 4,
+          "collision": "WARP_CARPET_DOWN"
+        }
+      ],
+      "kind": "canonical_gym_reference",
+      "native_constant": "MN_DULUTH_GYM",
+      "tileset": "mn_gym_8",
+      "source_reference": {
+        "path": "planning/minnesota/gyms/interiors.json",
+        "gym_id": "MnDuluthGym",
+        "room_sha256": "1e16fc8a72cff43af098f8f630e2ef9cece5df1c877f74e8c25a1098c0cc1f68",
+        "file_sha256_informational": "69e7d9e5d54f7752570f2a90ffb100576a1255194b9867a102f9580b7d5e7aec",
+        "symbol_blocks": {
+          "#": "00",
+          ".": "01",
+          "B": "02",
+          "I": "03",
+          "L": "04",
+          "R": "05",
+          "V": "06",
+          "W": "07",
+          "X": "08",
+          "Y": "09",
+          "Z": "0a",
+          "a": "0b",
+          "b": "0c",
+          "l": "0d",
+          "r": "0e",
+          "s": "0f"
+        },
+        "native_builder": "gym_art::install + gym_publication::room + gym_scripts",
+        "scope": "Canonical Gym8 object alone is authoritative; unrelated gyms and whole-file metadata do not invalidate this reference."
+      },
+      "status": "Canonical 7x10 ice-course remake and native Duluth facade published and controller-verified, including earned badge8 and receiver acknowledgement after explicit upstream fixtures.",
+      "native_rebinding_contract": "Preserve canonical Gym8 module rows, art, objects, flags, scripts, parties, TM and warp indices. Root must retarget existing review-hall destinations on native warp indices1,2,3 to MN_DULUTH passive exterior warp4; exterior gym door3 continues targeting native room passive3.",
+      "source_behavior": "Resolve canonical Gym8 directly. No alternative rows, art, residents, party, stations, gates or reward are owned by this city source.",
+      "viewpoints": [
+        {
+          "id": "arrival",
+          "tile": [
+            6,
+            17
+          ],
+          "phase": "ARRIVAL_CLOSED"
+        },
+        {
+          "id": "west-ice-launch",
+          "tile": [
+            2,
+            16
+          ],
+          "phase": "ARRIVAL_CLOSED"
+        },
+        {
+          "id": "west-ice-stop",
+          "tile": [
+            2,
+            8
+          ],
+          "phase": "ARRIVAL_CLOSED"
+        },
+        {
+          "id": "west-patch",
+          "tile": [
+            4,
+            8
+          ],
+          "phase": "ARRIVAL_CLOSED"
+        },
+        {
+          "id": "east-ice-launch",
+          "tile": [
+            11,
+            16
+          ],
+          "phase": "MN_GYM_8_TRAINER_1"
+        },
+        {
+          "id": "east-patch",
+          "tile": [
+            9,
+            10
+          ],
+          "phase": "MN_GYM_8_TRAINER_1"
+        },
+        {
+          "id": "cross-passage",
+          "tile": [
+            6,
+            7
+          ],
+          "phase": "MN_GYM_8_TRAINER_2"
+        },
+        {
+          "id": "leader",
+          "tile": [
+            7,
+            3
+          ],
+          "phase": "MN_GYM_8_TRAINER_3"
+        }
+      ]
+    },
+    {
+      "id": "MnDuluthHarborWorkshop",
+      "kind": "story",
+      "dimensions_metatiles": [
+        8,
+        6
+      ],
+      "tileset": "house",
+      "rows": [
+        "0a 0a 0a 0a 0a 0a 0a 0a",
+        "0a 04 1e 05 1d 04 04 0a",
+        "0a 0f 0f 0f 0f 0f 0f 0a",
+        "0a 01 02 0f 0f 01 02 0a",
+        "0a 0c 0d 0f 0f 0c 0d 0a",
+        "0a 0a 0a 0a 0b 0a 0a 0a"
+      ],
+      "clear_arrival": [
+        8,
+        9
+      ],
+      "passive_arrival": {
+        "index": 3,
+        "tile": [
+          8,
+          9
+        ],
+        "collision": "FLOOR"
+      },
+      "exits": [
+        {
+          "index": 1,
+          "tile": [
+            8,
+            11
+          ],
+          "target": "MnDuluth",
+          "target_warp": 14,
+          "collision": "WARP_CARPET_DOWN"
+        },
+        {
+          "index": 2,
+          "tile": [
+            9,
+            11
+          ],
+          "target": "MnDuluth",
+          "target_warp": 14,
+          "collision": "WARP_CARPET_DOWN"
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_HARBOR_RECEIVER",
+          "sprite": "SPRITE_SCIENTIST",
+          "tile": [
+            11,
+            5
+          ],
+          "facing": "south",
+          "lines": [
+            "The instrument is",
+            "ready for a test.",
+            "Let us tune it."
+          ],
+          "service": "harbor_receiver",
+          "requires": [
+            "BADGE_1",
+            "BADGE_2",
+            "BADGE_3",
+            "BADGE_4",
+            "BADGE_5",
+            "BADGE_6",
+            "BADGE_7",
+            "BADGE_8",
+            "EVENT_MN_DEPOT_CLEARED"
+          ],
+          "sets": [
+            "EVENT_MN_LIGHTHOUSE_SIGNAL"
+          ],
+          "repeat_lines": [
+            "Our signal works.",
+            "North is ready."
+          ]
+        },
+        {
+          "id": "MN_DULUTH_WORKSHOP_KEEPER",
+          "sprite": "SPRITE_FISHER",
+          "tile": [
+            5,
+            5
+          ],
+          "facing": "south",
+          "lines": [
+            "Our receiver can",
+            "listen, then send",
+            "the harbor signal."
+          ]
+        }
+      ],
+      "signs": [],
+      "status": "NATIVE VERIFIED: original room/warps, all eight badges plus depot clearance, ten-page canonical MS10 reveal, separate signal, repeat and Continue. See playable/northstar-iron-course.md.",
+      "native_constant": "MN_DULUTH_HARBOR_WORKSHOP",
+      "native_dialogue_source": "story.json milestone MS10; duluth_story refresh replaces the base room placeholder text."
+    },
+    {
+      "id": "MnDuluthHillHouse",
+      "kind": "house",
+      "dimensions_metatiles": [
+        5,
+        4
+      ],
+      "tileset": "traditional_house",
+      "rows": [
+        "00 02 03 1a 00",
+        "00 04 0a 04 00",
+        "00 04 04 04 00",
+        "00 06 07 00 00"
+      ],
+      "clear_arrival": [
+        4,
+        5
+      ],
+      "passive_arrival": {
+        "index": 3,
+        "tile": [
+          4,
+          5
+        ],
+        "collision": "FLOOR"
+      },
+      "exits": [
+        {
+          "index": 1,
+          "tile": [
+            3,
+            7
+          ],
+          "target": "MnDuluth",
+          "target_warp": 2,
+          "collision": "WARP_CARPET_DOWN"
+        },
+        {
+          "index": 2,
+          "tile": [
+            4,
+            7
+          ],
+          "target": "MnDuluth",
+          "target_warp": 2,
+          "collision": "WARP_CARPET_DOWN"
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_DULUTH_HILL_HOST",
+          "sprite": "SPRITE_GRANNY",
+          "tile": [
+            3,
+            3
+          ],
+          "facing": "south",
+          "lines": [
+            "My knees prefer",
+            "the east ramp.",
+            "One hop gets me",
+            "down to the docks."
+          ]
+        }
+      ],
+      "signs": [],
+      "status": "SOURCE ONLY; native binding and gameplay verification pending",
+      "native_constant": "MN_DULUTH_HILL_HOUSE"
+    },
+    {
+      "id": "MnDuluthHarborHouse",
+      "kind": "house",
+      "dimensions_metatiles": [
+        5,
+        4
+      ],
+      "tileset": "house",
+      "rows": [
+        "04 1e 05 1d 0a",
+        "0f 01 02 0f 0a",
+        "0f 0c 0d 0f 0a",
+        "06 0b 0f 07 0a"
+      ],
+      "clear_arrival": [
+        3,
+        5
+      ],
+      "passive_arrival": {
+        "index": 3,
+        "tile": [
+          3,
+          5
+        ],
+        "collision": "FLOOR"
+      },
+      "exits": [
+        {
+          "index": 1,
+          "tile": [
+            2,
+            7
+          ],
+          "target": "MnDuluth",
+          "target_warp": 10,
+          "collision": "WARP_CARPET_DOWN"
+        },
+        {
+          "index": 2,
+          "tile": [
+            3,
+            7
+          ],
+          "target": "MnDuluth",
+          "target_warp": 10,
+          "collision": "WARP_CARPET_DOWN"
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_DULUTH_HARBOR_HOST",
+          "sprite": "SPRITE_FISHER",
+          "tile": [
+            1,
+            3
+          ],
+          "facing": "east",
+          "lines": [
+            "The wind can turn.",
+            "Our pier has rails",
+            "and a closed end.",
+            "Fish with care."
+          ]
+        }
+      ],
+      "signs": [],
+      "status": "SOURCE ONLY; native binding and gameplay verification pending",
+      "native_constant": "MN_DULUTH_HARBOR_HOUSE"
+    },
+    {
+      "id": "MnDuluthHistoryHouse",
+      "kind": "house",
+      "dimensions_metatiles": [
+        6,
+        5
+      ],
+      "tileset": "house",
+      "rows": [
+        "0a 0a 0a 0a 0a 0a",
+        "0a 04 1e 1a 04 0a",
+        "0a 0f 0f 0f 1f 0a",
+        "0a 0f 0f 0f 0f 0a",
+        "0a 0a 0b 0a 0a 0a"
+      ],
+      "clear_arrival": [
+        4,
+        7
+      ],
+      "passive_arrival": {
+        "index": 3,
+        "tile": [
+          4,
+          7
+        ],
+        "collision": "FLOOR"
+      },
+      "exits": [
+        {
+          "index": 1,
+          "tile": [
+            4,
+            9
+          ],
+          "target": "MnDuluth",
+          "target_warp": 12,
+          "collision": "WARP_CARPET_DOWN"
+        },
+        {
+          "index": 2,
+          "tile": [
+            5,
+            9
+          ],
+          "target": "MnDuluth",
+          "target_warp": 12,
+          "collision": "WARP_CARPET_DOWN"
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_DULUTH_HISTORY_HOST",
+          "sprite": "SPRITE_GENTLEMAN",
+          "tile": [
+            3,
+            5
+          ],
+          "facing": "south",
+          "lines": [
+            "Ore came from the",
+            "rocky Iron Range.",
+            "Ships carried it",
+            "across this lake."
+          ]
+        }
+      ],
+      "signs": [
+        {
+          "id": "MN_DULUTH_ORE_SAMPLE",
+          "tile": [
+            8,
+            4
+          ],
+          "approach": [
+            7,
+            4
+          ],
+          "lines": [
+            "TACONITE SAMPLE",
+            "A hard ore from",
+            "the Iron Range."
+          ]
+        }
+      ],
+      "status": "SOURCE ONLY; native binding and gameplay verification pending",
+      "native_constant": "MN_DULUTH_HISTORY_HOUSE"
+    }
+  ],
+  "walkable_destinations": [
+    "both original route landings",
+    "seven exterior doors and passive returns",
+    "upper hillside gym/home",
+    "ordinary east ramp and downhill ledge",
+    "staffed Canal Park bridge",
+    "receiver workbench scene",
+    "railed public fishing pier",
+    "enclosed harbor low Surf launch",
+    "shore viewpoint"
+  ],
+  "door_contract": "Every source-native facade DOOR has one active exterior warp and a separate safe FLOOR return; rooms have two carpet exits and passive FLOOR warp3. Runtime lowering is pending.",
+  "status": "Native city/services/guarded R10-R11 links and canonical gym verified on the Itasca story lineage. The continuous local Pine/report/mine/handover/Harbor/reveal course passes; full Winona campaign and final visual approval remain open. See playable/northstar-iron-course.md.",
+  "native_constant": "MN_DULUTH",
+  "compiled_tileset": "mn_duluth",
+  "residents": [
+    {
+      "id": "MN_DULUTH_HILL_WALKER",
+      "sprite": "SPRITE_GRAMPS",
+      "tile": [
+        9,
+        14
+      ],
+      "facing": "south",
+      "lines": [
+        "The gym is uphill.",
+        "Hop down to town.",
+        "The ramp leads up."
+      ]
+    },
+    {
+      "id": "MN_DULUTH_HARBOR_WORKER",
+      "sprite": "SPRITE_FISHER",
+      "tile": [
+        24,
+        34
+      ],
+      "facing": "south",
+      "lines": [
+        "Ore ships tied up",
+        "beside this walk.",
+        "The lake is deep."
+      ]
+    },
+    {
+      "id": "MN_DULUTH_BRIDGE_KEEPER",
+      "sprite": "SPRITE_OFFICER",
+      "tile": [
+        29,
+        32
+      ],
+      "facing": "south",
+      "lines": [
+        "The bridge is down",
+        "Stay in the middle",
+        "The rails are firm"
+      ]
+    },
+    {
+      "id": "MN_DULUTH_ISLAND_ARTIST",
+      "sprite": "SPRITE_TEACHER",
+      "tile": [
+        44,
+        38
+      ],
+      "facing": "south",
+      "lines": [
+        "Lake SUPERIOR has",
+        "so many blues.",
+        "Each wave differs."
+      ]
+    },
+    {
+      "id": "MN_DULUTH_PIER_FISHER",
+      "sprite": "SPRITE_FISHER",
+      "tile": [
+        15,
+        42
+      ],
+      "facing": "south",
+      "lines": [
+        "I fish right here.",
+        "The low launch is",
+        "east of our homes."
+      ]
+    },
+    {
+      "id": "MN_DULUTH_NORTH_GUARD",
+      "sprite": "SPRITE_OFFICER",
+      "tile": [
+        33,
+        5
+      ],
+      "facing": "south",
+      "lines": [
+        "The North Shore",
+        "needs eight badges",
+        "and the signal."
+      ],
+      "progression_guard": {
+        "quest": "Q07",
+        "requires": [
+          "BADGE_1",
+          "BADGE_2",
+          "BADGE_3",
+          "BADGE_4",
+          "BADGE_5",
+          "BADGE_6",
+          "BADGE_7",
+          "BADGE_8",
+          "EVENT_MN_LIGHTHOUSE_SIGNAL"
+        ],
+        "controlled_exit": "MN_R11",
+        "source_only": true
+      }
+    },
+    {
+      "id": "MN_DULUTH_CLINIC_VISITOR",
+      "sprite": "SPRITE_LASS",
+      "tile": [
+        40,
+        13
+      ],
+      "facing": "west",
+      "lines": [
+        "Rest, then battle.",
+        "Ice is slippery!"
+      ]
+    },
+    {
+      "id": "MN_DULUTH_GARDEN_HOST",
+      "sprite": "SPRITE_GRANNY",
+      "tile": [
+        13,
+        7
+      ],
+      "facing": "east",
+      "lines": [
+        "Our hardy flowers",
+        "like the cool air."
+      ]
+    }
+  ],
+  "doors": [
+    {
+      "id": "HILL_HOUSE",
+      "tile": [
+        9,
+        11
+      ],
+      "return_tile": [
+        9,
+        12
+      ],
+      "arrival_tile": [
+        9,
+        12
+      ],
+      "target": "MnDuluthHillHouse",
+      "warp_index": 1,
+      "return_warp_index": 2,
+      "target_warp": 3
+    },
+    {
+      "id": "GYM",
+      "tile": [
+        16,
+        11
+      ],
+      "return_tile": [
+        16,
+        12
+      ],
+      "arrival_tile": [
+        16,
+        12
+      ],
+      "target": "MnDuluthGym",
+      "warp_index": 3,
+      "return_warp_index": 4,
+      "target_warp": 3
+    },
+    {
+      "id": "CLINIC",
+      "tile": [
+        37,
+        11
+      ],
+      "return_tile": [
+        37,
+        12
+      ],
+      "arrival_tile": [
+        37,
+        12
+      ],
+      "target": "MnDuluthPokecenter1F",
+      "warp_index": 5,
+      "return_warp_index": 6,
+      "target_warp": 3
+    },
+    {
+      "id": "MART",
+      "tile": [
+        48,
+        19
+      ],
+      "return_tile": [
+        48,
+        20
+      ],
+      "arrival_tile": [
+        48,
+        20
+      ],
+      "target": "MnDuluthMart",
+      "warp_index": 7,
+      "return_warp_index": 8,
+      "target_warp": 3
+    },
+    {
+      "id": "HARBOR_HOUSE",
+      "tile": [
+        7,
+        31
+      ],
+      "return_tile": [
+        7,
+        32
+      ],
+      "arrival_tile": [
+        7,
+        32
+      ],
+      "target": "MnDuluthHarborHouse",
+      "warp_index": 9,
+      "return_warp_index": 10,
+      "target_warp": 3
+    },
+    {
+      "id": "HISTORY_HOUSE",
+      "tile": [
+        19,
+        29
+      ],
+      "return_tile": [
+        19,
+        30
+      ],
+      "arrival_tile": [
+        19,
+        30
+      ],
+      "target": "MnDuluthHistoryHouse",
+      "warp_index": 11,
+      "return_warp_index": 12,
+      "target_warp": 3
+    },
+    {
+      "id": "RECEIVER",
+      "tile": [
+        48,
+        35
+      ],
+      "return_tile": [
+        48,
+        36
+      ],
+      "arrival_tile": [
+        48,
+        36
+      ],
+      "target": "MnDuluthHarborWorkshop",
+      "warp_index": 13,
+      "return_warp_index": 14,
+      "target_warp": 3
+    }
+  ],
+  "signs": [
+    {
+      "id": "DULUTH_SIGN",
+      "tile": [
+        4,
+        24
+      ],
+      "lines": [
+        "DULUTH",
+        "Bluff and harbor."
+      ]
+    },
+    {
+      "id": "GYM_SIGN",
+      "tile": [
+        20,
+        14
+      ],
+      "lines": [
+        "DULUTH GYM",
+        "NOREK: Harbor Ice"
+      ]
+    },
+    {
+      "id": "HILL_HOP_SIGN",
+      "tile": [
+        12,
+        18
+      ],
+      "lines": [
+        "Downhill shortcut.",
+        "Use the east ramp",
+        "to walk back up."
+      ]
+    },
+    {
+      "id": "NORTH_GATE_SIGN",
+      "tile": [
+        34,
+        2
+      ],
+      "lines": [
+        "NORTH SHORE PATH",
+        "All badges and the",
+        "harbor signal."
+      ]
+    },
+    {
+      "id": "CANAL_SIGN",
+      "tile": [
+        28,
+        30
+      ],
+      "lines": [
+        "CANAL PARK BRIDGE",
+        "Receiver workshop",
+        "across the water."
+      ]
+    },
+    {
+      "id": "LAUNCH_SIGN",
+      "tile": [
+        24,
+        36
+      ],
+      "lines": [
+        "LOW HARBOR LAUNCH",
+        "SURF at the bank.",
+        "Stay inside rocks."
+      ]
+    },
+    {
+      "id": "DOCK_SIGN",
+      "tile": [
+        12,
+        38
+      ],
+      "lines": [
+        "PUBLIC LAKE PIER",
+        "Rails close ahead."
+      ]
+    },
+    {
+      "id": "HISTORY_SIGN",
+      "tile": [
+        22,
+        30
+      ],
+      "lines": [
+        "ORE HISTORY HOUSE",
+        "Ask about the lake",
+        "and the Iron Range"
+      ]
+    },
+    {
+      "id": "CLINIC_SIGN",
+      "tile": [
+        34,
+        12
+      ],
+      "lines": [
+        "POKEMON CENTER",
+        "Healing and PC."
+      ]
+    },
+    {
+      "id": "MART_SIGN",
+      "tile": [
+        50,
+        18
+      ],
+      "lines": [
+        "POKEMON MART",
+        "Harbor provisions."
+      ]
+    },
+    {
+      "id": "RECEIVER_SIGN",
+      "tile": [
+        44,
+        36
+      ],
+      "lines": [
+        "HARBOR WORKSHOP",
+        "Receiver service."
+      ]
+    },
+    {
+      "id": "SUPERIOR_LOOKOUT_SIGN",
+      "tile": [
+        48,
+        24
+      ],
+      "lines": [
+        "LAKE SUPERIOR",
+        "The water is vast.",
+        "Keep behind rails."
+      ]
+    }
+  ],
+  "one_way_ledges": [
+    {
+      "id": "MN_DULUTH_HILL_RETURN",
+      "upper_approach": [
+        14,
+        19
+      ],
+      "hop_core": [
+        14,
+        20
+      ],
+      "reverse_blocked": [
+        14,
+        21
+      ],
+      "landing": [
+        14,
+        22
+      ],
+      "minimum_return_steps": 24,
+      "return_passage_core": [
+        24,
+        16,
+        26,
+        18
+      ],
+      "contract": "South hop from upper gym/home shelf to Iron Range service street; return by actual east ramp, never a reverse climb.",
+      "source_blocks": [
+        [
+          6,
+          10
+        ],
+        [
+          7,
+          10
+        ],
+        [
+          8,
+          10
+        ]
+      ]
+    }
+  ],
+  "harbor": {
+    "bridge_metatiles": [
+      16,
+      15,
+      20,
+      17
+    ],
+    "north_rail_blocks": [
+      [
+        16,
+        15
+      ],
+      [
+        17,
+        15
+      ],
+      [
+        18,
+        15
+      ],
+      [
+        19,
+        15
+      ]
+    ],
+    "south_rail_blocks": [
+      [
+        16,
+        16
+      ],
+      [
+        17,
+        16
+      ],
+      [
+        18,
+        16
+      ],
+      [
+        19,
+        16
+      ]
+    ],
+    "walking_lane_core_y": [
+      31,
+      32
+    ],
+    "pier_left_rail": [
+      [
+        7,
+        20
+      ],
+      [
+        7,
+        21
+      ]
+    ],
+    "pier_right_rail": [
+      [
+        8,
+        20
+      ],
+      [
+        8,
+        21
+      ]
+    ],
+    "pier_approach": [
+      15,
+      39
+    ],
+    "pier_end": [
+      15,
+      43
+    ],
+    "launch_tile": [
+      31,
+      37
+    ],
+    "water_target": [
+      32,
+      37
+    ],
+    "surf_contract": "Only the explicitly recorded six bank-to-water edges in one low working-harbor cove allow launch/landing. Steel rails, pines and stone close the other shores; native BUOY rocks close all outer lake boundaries.",
+    "bridge_contract": "Fixed lowered city bridge drawn with original native steel railings; no lifting animation, vessel or schedule mechanic is installed.",
+    "allowed_surf_edges": [
+      {
+        "bank": [
+          28,
+          37
+        ],
+        "water": [
+          28,
+          38
+        ]
+      },
+      {
+        "bank": [
+          29,
+          37
+        ],
+        "water": [
+          29,
+          38
+        ]
+      },
+      {
+        "bank": [
+          30,
+          37
+        ],
+        "water": [
+          30,
+          38
+        ]
+      },
+      {
+        "bank": [
+          31,
+          36
+        ],
+        "water": [
+          32,
+          36
+        ]
+      },
+      {
+        "bank": [
+          31,
+          37
+        ],
+        "water": [
+          31,
+          38
+        ]
+      },
+      {
+        "bank": [
+          31,
+          37
+        ],
+        "water": [
+          32,
+          37
+        ]
+      }
+    ]
+  },
+  "viewpoints": [
+    {
+      "id": "BLUFF_STREET",
+      "tile": [
+        17,
+        14
+      ]
+    },
+    {
+      "id": "HILL_HOP",
+      "tile": [
+        14,
+        19
+      ]
+    },
+    {
+      "id": "CLINIC_CROSSING",
+      "tile": [
+        33,
+        13
+      ]
+    },
+    {
+      "id": "CANAL_BRIDGE",
+      "tile": [
+        36,
+        31
+      ]
+    },
+    {
+      "id": "RECEIVER_PORCH",
+      "tile": [
+        48,
+        36
+      ]
+    },
+    {
+      "id": "PUBLIC_PIER",
+      "tile": [
+        15,
+        43
+      ]
+    },
+    {
+      "id": "WIDEST_THROUGH_SEGMENT",
+      "tile": [
+        25,
+        24
+      ]
+    },
+    {
+      "id": "LOWER_BRIDGE_APPROACH",
+      "tile": [
+        27,
+        35
+      ]
+    },
+    {
+      "id": "WORKSHOP_GATHERING",
+      "tile": [
+        45,
+        36
+      ]
+    },
+    {
+      "id": "EAST_HARBOR_LOOKOUT",
+      "tile": [
+        50,
+        26
+      ]
+    },
+    {
+      "id": "HILL_GARDEN",
+      "tile": [
+        17,
+        7
+      ]
+    },
+    {
+      "id": "WEST_CIVIC_CROSSROAD",
+      "tile": [
+        31,
+        24
+      ]
+    }
+  ],
+  "north_checkpoint_contract": {
+    "status": "SOURCE ONLY; root must lower native outbound coordinate events before declaring the route guard installed",
+    "requires": [
+      "BADGE_1",
+      "BADGE_2",
+      "BADGE_3",
+      "BADGE_4",
+      "BADGE_5",
+      "BADGE_6",
+      "BADGE_7",
+      "BADGE_8",
+      "EVENT_MN_LIGHTHOUSE_SIGNAL"
+    ],
+    "outbound_direction": "north",
+    "trigger_core": [
+      [
+        32,
+        2
+      ],
+      [
+        33,
+        2
+      ]
+    ],
+    "refusal_return_core": [
+      32,
+      4
+    ],
+    "inbound_access": "free",
+    "guard_actor": "MN_DULUTH_NORTH_GUARD",
+    "denial_lines": [
+      "The North Shore",
+      "needs eight badges",
+      "and our signal."
+    ]
+  }
+}

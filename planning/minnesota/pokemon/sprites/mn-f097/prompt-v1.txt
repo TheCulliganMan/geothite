@@ -1,0 +1,23 @@
+Use case: stylized-concept. Asset type: production Game Boy Color creature battle sprite sheet.
+
+Create ORIGINAL Gen2-era monster pixel art. This is actual sprite artwork with coarse square-pixel clusters, not an illustration to be pixelated later. Pure white background. NO captions/text/grid lines/palette swatches/shadows. Crisp stepped black exterior silhouettes; spare connected interior black structural seams; flat color planes. No gradients, antialiasing, soft edges, glossy rendering, tiny noisy texture, single-pixel confetti or smooth vector curves. Respect authentic late-1990s Pokemon Crystal sprite economy, readable eyes and structural evolution; do not copy any existing Pokemon identity.
+
+Layout exactly 2 columns by 2 rows. Columns left-to-right: Pinglet, Paddarray. Each column is ONE species. Upper row: full-body FRONT 3/4 facing LEFT at native56x56 language. Lower row: CLOSE REAR PORTRAIT facing UPPER RIGHT at native48x48 language. Back is a huge head/neck/near-shoulder view, lower body visibly cut at bottom, authentic Crystal battle framing. Enlarge each back head/shoulder strongly; do not draw a complete miniature full-body turnaround. Leave wide clean white gutters between cells, all artwork disjoint. Display artwork enlarged nearest-neighbor for source sheet; favor about5-7sourcepixels per nativepixel. Front stages show proportional growth; every back fills its cell as a close portrait.
+
+Theme: Mississippi paddlefish electroreception and signal triangulation: a sensory spoon snout branches into an organic phased-array crest that reads hidden movement.
+
+Design constraints: Keep three large solid prongs and collar folds, no tiny dots, waves or detached radar rings. Electrical cyan/amber and deep-violet inks distinguish species while staying related.
+
+The oversized sensory snout must drive anatomy. Baby broad round spoon with two large sensor pits, tiny side fins and thick fork tail. Final THREE broad blunt Y-prongs are integral snout, broad pleated gill collar and three-lobed sculling tail. No fish attached to radar dish, detached waves or tiny sensor-dot noise. Robust compact fish-monsters with broad eyes, not realistic animals.
+
+Species anatomy and each independent hardware palette (front and back MUST match). Each species uses EXACTLY FOUR inks: white, its own two chromatic colors and pure black. White is valid enclosed eye/body highlight ink; black also outlines white body parts. The sheet globally can exceed four colors because species use different palettes. Never share one palette across the whole evolution line. RGB555 packing is r|(g<<5)|(b<<10); RGB8 expansion is (v<<3)|(v>>2).
+
+MN_211 Pinglet ELECTRIC: A chunky little river creature has a very broad rounded spoon snout, tiny side fins and a thick forked tail. A single notch down the paddle holds two luminous sensor pits, and the mouth is tucked beneath. SILHOUETTE: Low pill-shaped body behind an oversized rounded sensory paddle.
+
+Exact Pinglet palette: RGB5=[(31, 31, 31), (29, 23, 9), (5, 14, 17), (0, 0, 0)]; RGB555=[32767, 9981, 17861, 0]; RGB8=[[255, 255, 255], [239, 189, 74], [41, 115, 140], [0, 0, 0]]; HEX=['#FFFFFF', '#EFBD4A', '#29738C', '#000000'].
+
+MN_212 Paddarray ELECTRIC/PSYCHIC: Its paddle branches into three broad blunt prongs arranged as a Y-shaped sensory fan; a thick pleated gill collar spreads behind the head and the tail grows three wide sculling lobes. It turns the prongs independently before darting along a chosen signal. SILHOUETTE: Huge three-pronged head fan, broad collar and short strong tail; not an ordinary paddlefish with a lightning mark or a fish attached to a radar dish.
+
+Exact Paddarray palette: RGB5=[(31, 31, 31), (12, 25, 28), (11, 8, 21), (0, 0, 0)]; RGB555=[32767, 29484, 21771, 0]; RGB8=[[255, 255, 255], [99, 206, 231], [90, 66, 173], [0, 0, 0]]; HEX=['#FFFFFF', '#63CEE7', '#5A42AD', '#000000'].
+
+Final quality: original appealing themed monsters, clear eye whites, bold broad anatomical planes, readable limbs and deeply different evolutionary silhouettes. Black silhouette rims must be continuous wherever they border white paper; white highlights stay enclosed inside the rim. A few deliberate open colored contour accents may echo Gen2, but no fragmented dotted outlines. Keep open cropping of lower back at the bottom.

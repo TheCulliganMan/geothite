@@ -1,0 +1,430 @@
+{
+  "schema_version": 1,
+  "name": "Grand Marais",
+  "tileset": "johto",
+  "width": 20,
+  "height": 19,
+  "rows": [
+    "05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05",
+    "05 05 5d 5d 5d 5d 05 05 5d 5d 5d 5d 5d 05 05 05 05 05 05 05",
+    "05 01 18 1f 19 02 05 05 02 02 02 02 02 05 05 05 05 05 01 05",
+    "05 01 1c 77 1e 02 04 18 19 04 18 19 02 03 03 02 05 05 01 05",
+    "05 01 04 01 02 04 02 1a 1b 02 16 17 02 03 03 02 05 05 01 05",
+    "05 01 03 01 03 45 02 01 02 02 01 01 02 02 02 02 05 05 01 05",
+    "05 01 03 02 22 23 02 01 01 01 01 01 04 18 19 02 04 02 01 05",
+    "05 01 02 02 28 29 45 01 01 01 01 01 01 16 1e 02 02 02 01 54",
+    "55 01 01 02 02 02 54 76 76 76 76 76 55 01 01 02 02 02 01 58",
+    "59 01 01 02 01 0a 79 08 09 35 35 35 59 45 01 02 02 02 01 58",
+    "59 01 01 01 54 76 35 7e 7f 35 35 35 59 01 05 05 05 05 01 58",
+    "59 49 4a 54 79 35 35 13 0f 35 35 35 59 01 05 05 05 05 01 58",
+    "7a 76 76 79 35 35 59 13 0f 01 01 01 01 01 02 05 05 05 01 58",
+    "35 35 35 35 35 35 59 1a 11 01 01 01 01 02 02 02 3c 3d 01 58",
+    "35 35 35 35 35 35 59 01 01 49 49 49 49 02 02 02 02 01 54 79",
+    "35 35 35 35 35 35 7a 76 76 76 76 76 55 01 01 01 01 0a 58 35",
+    "35 35 35 35 35 35 35 35 35 35 35 35 7a 76 76 76 76 76 79 35",
+    "35 35 35 35 35 35 35 35 35 35 35 35 35 35 35 35 35 35 35 35",
+    "35 35 35 35 35 35 35 35 35 35 35 35 35 35 35 35 35 35 35 35"
+  ],
+  "doors": [
+    {
+      "id": 1,
+      "tile": [
+        6,
+        7
+      ],
+      "target": "MN_GRAND_MARAIS_FIELD_STATION",
+      "label": "Field Station"
+    },
+    {
+      "id": 2,
+      "tile": [
+        15,
+        9
+      ],
+      "target": "MN_GRAND_MARAIS_POKECENTER",
+      "label": "Pokémon Center"
+    },
+    {
+      "id": 3,
+      "tile": [
+        21,
+        9
+      ],
+      "target": "MN_GRAND_MARAIS_MART",
+      "label": "Mart"
+    },
+    {
+      "id": 4,
+      "tile": [
+        9,
+        15
+      ],
+      "target": "MN_GRAND_MARAIS_ARTIST_HOUSE",
+      "label": "Folk School"
+    },
+    {
+      "id": 5,
+      "tile": [
+        27,
+        15
+      ],
+      "target": "MN_GRAND_MARAIS_FISHER_HOUSE",
+      "label": "Fisher’s Cottage"
+    },
+    {
+      "id": 6,
+      "tile": [
+        15,
+        27
+      ],
+      "target": "MN_GRAND_MARAIS_LIGHTHOUSE",
+      "label": "Lighthouse"
+    }
+  ],
+  "actors": [
+    {
+      "id": "HarborMaster",
+      "sprite": "SPRITE_FISHER",
+      "tile": [
+        7,
+        17
+      ],
+      "lines": [
+        "Fog on the harbor.",
+        "Boats wait at sea.",
+        "Our keeper needs a",
+        "new signal part."
+      ],
+      "signal_lines": [
+        "The beacon turns!",
+        "Boats can return.",
+        "I'll keep the pier",
+        "clear for them."
+      ]
+    },
+    {
+      "id": "Walker",
+      "sprite": "SPRITE_GRAMPS",
+      "tile": [
+        24,
+        15
+      ],
+      "lines": [
+        "Use the stone walk",
+        "to the lighthouse.",
+        "Keep the harbor on",
+        "your right side."
+      ]
+    },
+    {
+      "id": "Student",
+      "sprite": "SPRITE_YOUNGSTER",
+      "tile": [
+        12,
+        11
+      ],
+      "lines": [
+        "DR. TAMARACK works",
+        "northwest of here.",
+        "CENTER and MART",
+        "are just up north."
+      ],
+      "signal_lines": [
+        "TAMARACK heard our",
+        "good news!",
+        "I want to learn",
+        "how signals work."
+      ]
+    },
+    {
+      "id": "Painter",
+      "sprite": "SPRITE_TEACHER",
+      "tile": [
+        30,
+        29
+      ],
+      "lines": [
+        "ARTISTS POINT:",
+        "Pines and basalt.",
+        "Head west along",
+        "the breakwater."
+      ],
+      "signal_lines": [
+        "The beacon draws a",
+        "gold line at sea.",
+        "My harbor sketch",
+        "is done at last."
+      ]
+    },
+    {
+      "id": "TrailWorker",
+      "sprite": "SPRITE_POKEFAN_M",
+      "tile": [
+        30,
+        13
+      ],
+      "lines": [
+        "We're surveying",
+        "the inland trail.",
+        "Try the harbor and",
+        "ARTISTS POINT."
+      ]
+    },
+    {
+      "id": "HarborChild",
+      "sprite": "SPRITE_LASS",
+      "tile": [
+        19,
+        13
+      ],
+      "lines": [
+        "Boats are late.",
+        "Fog hides a reef.",
+        "Can the keeper fix",
+        "our harbor light?"
+      ],
+      "signal_lines": [
+        "There! A boat is",
+        "coming through!",
+        "The keeper's light",
+        "brought them home."
+      ]
+    },
+    {
+      "id": "BirdWatcher",
+      "sprite": "SPRITE_COOLTRAINER_F",
+      "tile": [
+        6,
+        13
+      ],
+      "lines": [
+        "The pine grove is",
+        "full of POKEMON.",
+        "Bring your partner",
+        "when you step in."
+      ]
+    }
+  ],
+  "signs": [
+    {
+      "tile": [
+        10,
+        10
+      ],
+      "label": "Field Station",
+      "lines": [
+        "GRAND MARAIS",
+        "NORTHSTAR LAB"
+      ]
+    },
+    {
+      "tile": [
+        12,
+        14
+      ],
+      "label": "Harbor Park",
+      "lines": [
+        "HARBOR PARK",
+        "FOLLOW SHORE EAST"
+      ]
+    },
+    {
+      "tile": [
+        26,
+        18
+      ],
+      "label": "Artists Point",
+      "lines": [
+        "ARTISTS POINT",
+        "LIGHTHOUSE: SOUTH"
+      ]
+    }
+  ],
+  "notes": [
+    "Explicit hand-authored 20×19 exterior. No geography generator or random scenery. Shore quadrants follow the supplied Johto source-art conventions.",
+    "Keep the civic promenade open. Do not restore the fenced center pocket or introduce a Cut gate in the town.",
+    "The northwest field station has a wide facade. The harbor lighthouse uses its native crown and lantern room; Artists Point has a continuous pine fringe and stone shore.",
+    "Town-only slice: all six doors have reciprocal working interiors. Regional trail ports are deferred.",
+    "Event coordinates use 16px gameplay tiles; authored rows use 32px metatiles. Sign events sit on the visible sign quadrant, with a clear reading position.",
+    "Four original interior arrangements: research benches, school worktable and shelves, cottage dining nook, stone lighthouse maintenance room. Service rooms retain the native Center and Mart."
+  ],
+  "interiors": [
+    {
+      "map": "MnGrandMaraisFieldStation",
+      "template": "ElmsLab",
+      "width": 5,
+      "height": 4,
+      "rows": [
+        "17 08 09 04 04",
+        "18 0c 01 06 07",
+        "01 01 01 0a 0b",
+        "01 02 01 01 01"
+      ],
+      "exits": [
+        [
+          2,
+          7
+        ],
+        [
+          3,
+          7
+        ]
+      ]
+    },
+    {
+      "map": "MnGrandMaraisArtistHouse",
+      "template": "VioletNicknameSpeechHouse",
+      "width": 4,
+      "height": 4,
+      "rows": [
+        "13 01 08 29",
+        "1b 1c 04 04",
+        "18 19 04 1a",
+        "05 06 07 2a"
+      ],
+      "exits": [
+        [
+          3,
+          7
+        ],
+        [
+          4,
+          7
+        ]
+      ]
+    },
+    {
+      "map": "MnGrandMaraisFisherHouse",
+      "template": "GuideGentsHouse",
+      "width": 4,
+      "height": 4,
+      "rows": [
+        "1e 05 1d 04",
+        "01 02 0f 0f",
+        "0c 0d 0f 06",
+        "0f 0b 0f 0f"
+      ],
+      "exits": [
+        [
+          2,
+          7
+        ],
+        [
+          3,
+          7
+        ]
+      ]
+    },
+    {
+      "map": "MnGrandMaraisLighthouse",
+      "template": "OlivineLighthouse1F",
+      "width": 5,
+      "height": 5,
+      "rows": [
+        "0c 3e 29 3e 0c",
+        "3e 27 27 27 3e",
+        "3e 27 27 2f 3e",
+        "3e 27 27 18 3e",
+        "3c 3d 2e 3d 3c"
+      ],
+      "exits": [
+        [
+          4,
+          9
+        ],
+        [
+          5,
+          9
+        ]
+      ]
+    }
+  ],
+  "dialogue": {
+    "MnGrandMaraisFieldStation": {
+      "MnGrandMaraisTamarackThanksText": [
+        "My thanks! The",
+        "harbor lamp turns.",
+        "The keeper heard",
+        "a pulse offshore.",
+        "Your first survey",
+        "readings are safe."
+      ],
+      "MnGrandMaraisWelcomeText": [
+        "I'm DR. TAMARACK.",
+        "Welcome to town!",
+        "TOTODILE will help",
+        "you explore here.",
+        "Our light is out.",
+        "Take this spare",
+        "part to the keeper",
+        "at the LIGHTHOUSE."
+      ],
+      "MnGrandMaraisPartnerText": [
+        "TOTODILE joined!",
+        "POTIONS and BALLS",
+        "are in your PACK.",
+        "Visit the CENTER",
+        "to heal your team.",
+        "Use START to SAVE."
+      ],
+      "MnGrandMaraisReminderText": [
+        "Give the keeper",
+        "our signal part.",
+        "The LIGHTHOUSE is",
+        "across the harbor.",
+        "Visit the CENTER",
+        "if you need rest."
+      ]
+    },
+    "MnGrandMaraisLighthouse": {
+      "MnGrandMaraisSignalBagFullText": [
+        "Your PACK is full.",
+        "Keep the part.",
+        "Make room for one",
+        "SUPER POTION."
+      ],
+      "MnGrandMaraisSignalFixedText": [
+        "The spare part!",
+        "The lamp can turn!",
+        "The harbor's safe.",
+        "Take SUPER POTION."
+      ],
+      "MnGrandMaraisSignalDoneText": [
+        "The beacon turns!",
+        "Thanks, partner!"
+      ],
+      "MnGrandMaraisSignalMissingText": [
+        "Our light is out.",
+        "DR. TAMARACK has",
+        "a spare part for",
+        "the harbor signal."
+      ]
+    },
+    "MnGrandMaraisArtistHouse": {
+      "MnGrandMaraisArtistHouseArtistText": [
+        "The lake changes",
+        "with every cloud.",
+        "I paint from the",
+        "pier at dawn."
+      ]
+    },
+    "MnGrandMaraisFisherHouse": {
+      "MnGrandMaraisFisherHouseFisherText": [
+        "Near the falls, a",
+        "current vanished.",
+        "Then it returned.",
+        "I felt a pulse.",
+        "Learn SURF before",
+        "taking to water."
+      ]
+    },
+    "MnGrandMaraisPokecenter": {
+      "MnGrandMaraisPokecenterHikerText": [
+        "Long walks wear",
+        "out my POKEMON.",
+        "NURSE JOY gives",
+        "a warm welcome."
+      ]
+    }
+  }
+}

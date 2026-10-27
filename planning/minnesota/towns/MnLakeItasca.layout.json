@@ -1,0 +1,487 @@
+{
+  "schema_version": 2,
+  "id": "MnLakeItasca",
+  "tileset": "johto",
+  "compiled_tileset": "mn_headwaters",
+  "dimensions_metatiles": [
+    24,
+    24
+  ],
+  "shore_fitting": "johto_8_neighbors",
+  "reject_cliff_cuts": true,
+  "source_pixels_modified": false,
+  "layers": [
+    {
+      "name": "West reference glade",
+      "kind": "polygon",
+      "points": [
+        [
+          6,
+          8
+        ],
+        [
+          9,
+          8
+        ],
+        [
+          9,
+          9
+        ],
+        [
+          11,
+          9
+        ],
+        [
+          11,
+          15
+        ],
+        [
+          9,
+          15
+        ],
+        [
+          9,
+          18
+        ],
+        [
+          8,
+          18
+        ],
+        [
+          8,
+          20
+        ],
+        [
+          4,
+          20
+        ],
+        [
+          4,
+          17
+        ],
+        [
+          5,
+          17
+        ],
+        [
+          5,
+          14
+        ],
+        [
+          7,
+          14
+        ],
+        [
+          7,
+          13
+        ],
+        [
+          2,
+          13
+        ],
+        [
+          2,
+          11
+        ],
+        [
+          6,
+          11
+        ]
+      ],
+      "material": "lawn"
+    },
+    {
+      "name": "Eastern trail bank",
+      "kind": "polygon",
+      "points": [
+        [
+          12,
+          9
+        ],
+        [
+          15,
+          9
+        ],
+        [
+          15,
+          11
+        ],
+        [
+          20,
+          11
+        ],
+        [
+          20,
+          12
+        ],
+        [
+          23,
+          12
+        ],
+        [
+          23,
+          13
+        ],
+        [
+          20,
+          13
+        ],
+        [
+          20,
+          15
+        ],
+        [
+          18,
+          15
+        ],
+        [
+          18,
+          17
+        ],
+        [
+          14,
+          17
+        ],
+        [
+          14,
+          19
+        ],
+        [
+          12,
+          19
+        ]
+      ],
+      "material": "lawn"
+    },
+    {
+      "name": "Sheltered northern lake",
+      "kind": "polygon",
+      "points": [
+        [
+          11,
+          3
+        ],
+        [
+          18,
+          3
+        ],
+        [
+          18,
+          4
+        ],
+        [
+          20,
+          4
+        ],
+        [
+          20,
+          8
+        ],
+        [
+          18,
+          8
+        ],
+        [
+          18,
+          9
+        ],
+        [
+          12,
+          9
+        ],
+        [
+          12,
+          10
+        ],
+        [
+          11,
+          10
+        ]
+      ],
+      "material": "water"
+    },
+    {
+      "name": "Narrow outlet brook",
+      "kind": "rect",
+      "bounds": [
+        11,
+        9,
+        12,
+        22
+      ],
+      "material": "water"
+    },
+    {
+      "name": "Small southern pool",
+      "kind": "rect",
+      "bounds": [
+        11,
+        18,
+        14,
+        21
+      ],
+      "material": "water"
+    },
+    {
+      "name": "East public approach",
+      "kind": "path",
+      "points": [
+        [
+          23,
+          12
+        ],
+        [
+          13,
+          12
+        ],
+        [
+          13,
+          13
+        ],
+        [
+          12,
+          13
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "name": "West public path",
+      "kind": "path",
+      "points": [
+        [
+          10,
+          12
+        ],
+        [
+          1,
+          12
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "name": "Survey plaque spur",
+      "kind": "path",
+      "points": [
+        [
+          8,
+          12
+        ],
+        [
+          8,
+          10
+        ],
+        [
+          9,
+          10
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "name": "Short west observation loop",
+      "kind": "path",
+      "points": [
+        [
+          7,
+          12
+        ],
+        [
+          7,
+          17
+        ],
+        [
+          5,
+          17
+        ],
+        [
+          5,
+          14
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "name": "East bank return nook",
+      "kind": "path",
+      "points": [
+        [
+          16,
+          12
+        ],
+        [
+          16,
+          16
+        ],
+        [
+          14,
+          16
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "name": "Upper bridge posts",
+      "kind": "point",
+      "position": [
+        10,
+        12
+      ],
+      "block": "82"
+    },
+    {
+      "name": "Lower bridge posts",
+      "kind": "point",
+      "position": [
+        10,
+        13
+      ],
+      "block": "81"
+    },
+    {
+      "name": "Upper bridge posts",
+      "kind": "point",
+      "position": [
+        11,
+        12
+      ],
+      "block": "82"
+    },
+    {
+      "name": "Lower bridge posts",
+      "kind": "point",
+      "position": [
+        11,
+        13
+      ],
+      "block": "81"
+    },
+    {
+      "name": "Upper bridge posts",
+      "kind": "point",
+      "position": [
+        12,
+        12
+      ],
+      "block": "82"
+    },
+    {
+      "name": "Lower bridge posts",
+      "kind": "point",
+      "position": [
+        12,
+        13
+      ],
+      "block": "81"
+    },
+    {
+      "name": "Survey plaque on dry ground",
+      "kind": "point",
+      "position": [
+        9,
+        10
+      ],
+      "block": "78"
+    },
+    {
+      "name": "MN_ITASCA_ENTRY",
+      "kind": "point",
+      "position": [
+        19,
+        12
+      ],
+      "block": "45"
+    },
+    {
+      "name": "MN_ITASCA_WEST_CLOSED",
+      "kind": "point",
+      "position": [
+        2,
+        12
+      ],
+      "block": "45"
+    },
+    {
+      "name": "Wildflowers at the quiet west bend",
+      "kind": "rect",
+      "bounds": [
+        4,
+        18,
+        6,
+        19
+      ],
+      "material": "flowers"
+    },
+    {
+      "name": "Northern lake outcrop",
+      "kind": "point",
+      "position": [
+        17,
+        5
+      ],
+      "block": "0a"
+    },
+    {
+      "name": "Visible eastern forest boundary",
+      "kind": "rect",
+      "bounds": [
+        23,
+        0,
+        24,
+        24
+      ],
+      "material": "forest"
+    },
+    {
+      "name": "Native gatehouse roof",
+      "kind": "point",
+      "position": [
+        22,
+        11
+      ],
+      "block": "08"
+    },
+    {
+      "name": "Native gatehouse roof",
+      "kind": "point",
+      "position": [
+        23,
+        11
+      ],
+      "block": "09"
+    },
+    {
+      "name": "Native west-facing gatehouse entrance and facade",
+      "kind": "point",
+      "position": [
+        21,
+        12
+      ],
+      "block": "0e"
+    },
+    {
+      "name": "Native west-facing gatehouse entrance and facade",
+      "kind": "point",
+      "position": [
+        22,
+        12
+      ],
+      "block": "10"
+    },
+    {
+      "name": "Native west-facing gatehouse entrance and facade",
+      "kind": "point",
+      "position": [
+        23,
+        12
+      ],
+      "block": "11"
+    }
+  ]
+}

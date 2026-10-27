@@ -1,0 +1,280 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F087",
+  "status": "root approved purePsychic sheet-based design and285/390/500BST direction; proposed files only",
+  "stable_species": [
+    {
+      "id": "MN_186",
+      "name": "Jotlet"
+    },
+    {
+      "id": "MN_187",
+      "name": "Memofold"
+    },
+    {
+      "id": "MN_188",
+      "name": "Recallisk"
+    }
+  ],
+  "decision": "Restore after successful redesign as pure Psychic at all three stages. Remove Recallisk Dragon typing and dragon anatomy. Preserve species IDs/names and existing level24/44evolutions.",
+  "audit_of_current_native": "Actual existing native board was inspected: first resembles a folded animal head, middle a small dinosaur, last a long-neck paper dragon. Recognizable sticky-note sheet geometry disappears across evolution, so contour polish alone cannot fix it.",
+  "native_before_board": "target/minnesota-pokemon/native/MN_F087/line.review.png",
+  "native_before_board_sha256": "1c199160c7947b365619beb14821ecccc5ae1d4890ee5ae94f33e5099a8809c2",
+  "approved_shape_progression": [
+    {
+      "count": 1,
+      "body_growth": "Exactly one upright square sticky-note sheet is the whole creature. Its top edge bends backward to expose a broad adhesive strip. One lower corner peels forward and the opposite lower corner curls into a tiny balancing toe. The face consists of two separate eyes on the broad flat page, not on a projecting triangular animal muzzle.",
+      "silhouette": "One nearly square page, one peeled upper corner and two small curled lower corners; no separate animal head, tail, torso or added arms.",
+      "back": "Close independent rear of the same single note, showing its rolled sticky top edge and blank square reverse. No face on the back."
+    },
+    {
+      "count": 3,
+      "body_growth": "Exactly three square notes overlap at their sticky top edges. The original central upright face note is larger, with one side note peeling forward on each side as a broad reaching sheet. The two side notes hang slightly below the face and curl at their lower corners. There is no accordion animal spine or separate hood.",
+      "silhouette": "Three visibly square sheets in a short offset fan: one central face and two broad side sheets. Their overlap seams form the body; no hidden flesh, paper dinosaur, legs or long neck.",
+      "back": "Close rear of the central page and two upper overlapping side-note roots; large sticky-edge fold seams, blank reverse sides."
+    },
+    {
+      "count": 7,
+      "body_growth": "Exactly seven broad sticky-note sheets form a self-sorting keeper. The original large face note remains central. A staggered stack of two notes sits to each side of it, with the near left and near right sheets peeling forward as exactly two square note hands. Two lower sheets form a low overlapping base, their outer lower corners curling forward. Total: one face, four side-stack sheets, two base sheets. The upper sticky-edge overlaps connect every part.",
+      "silhouette": "Broad stepped square-page keeper with a large central square face, two peel-forward square note hands and a short curled-page base. Wider than tall; no animal head, neck, horns, spines, quadruped body, tail or wings.",
+      "back": "Independent close upper-rear portrait: blank reverse of central face note, tops of the two stepped side stacks and the near folded note-hand roots. Crop the lower base; do not fit all seven whole sheets into the rear box."
+    }
+  ],
+  "battle_role": "Slow tactical Psychic reminder/control keeper: adhesive StringShot slows; Encore/Disable exploit a predicted repeated action; Mimic/PsychUp recall observed patterns; screens protect its paper structure. Native Psychic/Psybeam supply ordinary damage, FutureSight is a delayed reminder. No new ability, trapping rule, new move or special signature mechanic.",
+  "balance": {
+    "bst": [
+      285,
+      390,
+      500
+    ],
+    "final_stats": {
+      "hp": 90,
+      "attack": 50,
+      "defense": 80,
+      "speed": 45,
+      "special_attack": 110,
+      "special_defense": 125
+    },
+    "final_speed35_superseded_by_root45": true,
+    "preserved_evolution_levels": [
+      24,
+      44
+    ],
+    "physical_counterplay": "FinalDefense80 andSpeed45 leave clear physical Bug/Dark/Ghost pressure. HighSpecialDefense125 supports its deliberate wall/control role without giving an ability or new resistance.",
+    "removed_unearned_coverage": [
+      "DRAGONBREATH",
+      "OUTRAGE"
+    ],
+    "removed_nonfunctional_or_overloaded_tools": [
+      "DREAM_EATER removed because the line has no dedicated sleep setup.",
+      "BATON_PASS andAMNESIA removed to avoid combining broad boost passing withhighspecialbulk, screens andRecover.",
+      "DOUBLE_TEAM omitted from the new narrow control proposal."
+    ],
+    "no_direct_boost_move": "PsychUp only copies existing stage changes; no standalone CalmMind/new boost mechanic.",
+    "limits": "Encore/Disable/Mimic require the actual native engine state and can fail. MindReader maps to existing LOCK_ON effect and only affects accuracy; it is not telepathy or an invented instant-hit damage mechanic. FutureSight retains native quirks. SlowSpeed means the line must take a hit or predict correctly."
+  },
+  "profiles_patch_summary": [
+    {
+      "id": "MN_186",
+      "changed_fields": [
+        "weight_tenths_lb",
+        "dex_pages",
+        "base_stats",
+        "level_moves",
+        "tmhm_moves"
+      ],
+      "before_bst": 281,
+      "after_bst": 285,
+      "before_speed": 51,
+      "after_speed": 25
+    },
+    {
+      "id": "MN_187",
+      "changed_fields": [
+        "height_inches",
+        "weight_tenths_lb",
+        "dex_pages",
+        "base_stats",
+        "base_exp",
+        "level_moves",
+        "tmhm_moves"
+      ],
+      "before_bst": 395,
+      "after_bst": 390,
+      "before_speed": 72,
+      "after_speed": 30
+    },
+    {
+      "id": "MN_188",
+      "changed_fields": [
+        "classification",
+        "height_inches",
+        "weight_tenths_lb",
+        "dex_pages",
+        "base_stats",
+        "base_exp",
+        "level_moves",
+        "tmhm_moves"
+      ],
+      "before_bst": 520,
+      "after_bst": 500,
+      "before_speed": 95,
+      "after_speed": 45
+    }
+  ],
+  "metadata_scope": "Updated classification, two valid3x18-character dex pages, stats, level/TM moves, modest paper-body height/weight andbase_exp. Preserved all cry/menu/footprint/shiny/growth/gender/egg/evolution/held metadata.",
+  "engine_token_review": {
+    "source": "Current native species profiles and crates/crystal-core/src/battle/turn.rs",
+    "existing_supported_effects": [
+      "STRING_SHOT viaSPEED_DOWN",
+      "ENCORE",
+      "DISABLE",
+      "MIMIC",
+      "PSYCH_UP",
+      "REFLECT",
+      "LIGHT_SCREEN",
+      "LOCK_ON (MindReader)",
+      "FUTURE_SIGHT"
+    ],
+    "profile_validation": "PASSED: actual strict Rust load_profiles schema validates all3; every level move/native move and actual TM/HM token verified against northwoods-moves-v6.crystalpack. See strict-profile-validation.log. No gameplay/pack build was run.",
+    "tm_correction": "Reflect and LightScreen are valid native moves but not Crystal TM/HMs; they are level-up moves only in the corrected proposed profiles."
+  },
+  "palette_proposal": {
+    "MN_186": {
+      "species_id": "MN_186",
+      "name": "Jotlet",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          30,
+          28,
+          16
+        ],
+        [
+          13,
+          9,
+          6
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        17310,
+        6445,
+        0
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#F7E784",
+        "#6B4A31",
+        "#000000"
+      ]
+    },
+    "MN_187": {
+      "species_id": "MN_187",
+      "name": "Memofold",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          28,
+          21,
+          26
+        ],
+        [
+          12,
+          7,
+          14
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        27324,
+        14572,
+        0
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#E7ADD6",
+        "#633973",
+        "#000000"
+      ]
+    },
+    "MN_188": {
+      "species_id": "MN_188",
+      "name": "Recallisk",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          29,
+          27,
+          22
+        ],
+        [
+          8,
+          18,
+          15
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        23421,
+        15944,
+        0
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#EFDEB5",
+        "#42947B",
+        "#000000"
+      ]
+    }
+  },
+  "render_limits": "Exact4flatinks perPokemon includingwhite/black, actual56front/48closeback, strongclosedblackoutlines, broadsquarepaperfaces. Count sheets throughsilhouette and2\u20133overlap seams, not tiny stacks orwriting. Both eyes belong tocentralnote; other sheets remain faceless.",
+  "primary_sources": [
+    {
+      "url": "https://www.mnhs.org/mnopedia/search/index/thing/post-it-notes",
+      "publisher": "Minnesota Historical Society",
+      "supports": "Spencer Silver developed a lightly adhering removable material at3M inMaplewood; Art Fry adapted it froma reusable bookmark to notes.",
+      "fantasy_extension": "Remembered promises and self-sorting sheets are original fiction."
+    },
+    {
+      "url": "https://www.post-it.com/3M/en_US/post-it/contact-us/about-us/",
+      "publisher": "3M/Post-it manufacturer",
+      "supports": "Adhesive microspheres allow repeated attachment and easy removal; bookmarks became removable office messages.",
+      "fantasy_extension": "Peeling and reattaching sheet limbs supplies physical growth, not permanent glue or poison."
+    }
+  ],
+  "integration_warning": "Retired source currently remains intact. These files do not reactivate the family or mutate globalJSON. Root ownsart approval/registration/count policy and final engine/pack validation.",
+  "proposal_sha256": {
+    "roster-family.proposal.json": "ae503a340e5ac3c85ac991493bb54872115304cb7c322c9303dc8f1473ece836",
+    "palettes.proposal.json": "7b9edfb0746ab4fea108e5d7554d3203b96645fc1dc39434b7e4b25f22335a49",
+    "proposed-species-profiles.json": "248f9056a58accc724462dcaa1e8161bfb2f18ec56fb30a73199fa2e78620227",
+    "strict-profile-validation.log": "ed7e2d3623f7d27dd39ae71703a3a7a310fe6f24a50c0f43737662b65665d449"
+  }
+}

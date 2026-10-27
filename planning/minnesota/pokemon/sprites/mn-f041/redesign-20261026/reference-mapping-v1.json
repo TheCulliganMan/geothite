@@ -1,0 +1,19 @@
+{
+  "species_id": "MN_092",
+  "intent": "new design candidate, preserved canonical identity/type/theme/palette",
+  "prompt_file": "sprites/mn-f041/redesign-20261026/prompt-v1.txt",
+  "input_images": [],
+  "textual_style_reference": [
+    {
+      "path": "target/minnesota-pokemon/gen2-reference/starters.png",
+      "sha256": "af61f720a75b7e1b8e80ba14e8944612556397eedddd719669dec68b0e0fd534",
+      "role": "inspected authentic Gen2 pixel-cluster and close-rear framing reference, not copied anatomy"
+    },
+    {
+      "path": "target/minnesota-pokemon/gen2-reference/bugs.png",
+      "sha256": "407fe86151d762ca6a2e4dfaa9e556a7da55fc9eecdf927c3c1600798b4e0884",
+      "role": "inspected authentic Gen2 pixel-cluster and close-rear framing reference, not copied anatomy"
+    }
+  ],
+  "canonical_manifest_reference": "sprites/mn-f041/manifest.json"
+}

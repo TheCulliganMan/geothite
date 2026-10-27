@@ -203,11 +203,6 @@ impl GameDataSet {
             if let Some(species) = self.pokemon.get(ancestor) {
                 bonus.extend(species.tmhm_learnset.iter().cloned());
             }
-            if let Some(moves) = self.egg_moves.get(ancestor) {
-                let moves: Vec<String> = serde_json::from_value(moves.clone())
-                    .with_context(|| format!("invalid egg move pool for {ancestor}"))?;
-                bonus.extend(moves);
-            }
         }
         for id in &bonus {
             if self.moves.get(id).is_some_and(|m| {
@@ -218,6 +213,26 @@ impl GameDataSet {
             }) {
                 legal.insert(id.clone());
             }
+        }
+        // Multi-hit attacks can overwhelm early teams despite low listed power.
+        // Apply this to the full pool, including naturally learned moves.
+        if pokemon.level < 10 {
+            legal.retain(|id| {
+                !matches!(
+                    id.as_str(),
+                    "DOUBLESLAP"
+                        | "COMET_PUNCH"
+                        | "FURY_ATTACK"
+                        | "PIN_MISSILE"
+                        | "BARRAGE"
+                        | "FURY_SWIPES"
+                        | "BONE_RUSH"
+                        | "DOUBLE_KICK"
+                        | "BONEMERANG"
+                        | "TWINEEDLE"
+                        | "TRIPLE_KICK"
+                )
+            });
         }
         let mut chosen: Vec<String> = Vec::new();
         // Reliable STAB, coverage, a useful support move, then complementary coverage.

@@ -1,0 +1,128 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F060",
+  "status": "proposal-only-native-review-pending",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_269": {
+      "species_id": "MN_269",
+      "name": "Oreviathan",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          27,
+          12,
+          4
+        ],
+        [
+          4,
+          11,
+          16
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        4507,
+        16740,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          222,
+          99,
+          33
+        ],
+        [
+          33,
+          90,
+          132
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#DE6321",
+        "#215A84",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f060/freighter-v3/prompt-v1.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "sprites": [
+    {
+      "id": "mn-269-oreviathan-v3",
+      "species_id": "MN_269",
+      "view": "front",
+      "source": "sprites/mn-f060/freighter-v3/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        1312,
+        600
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        4507,
+        16740,
+        0
+      ],
+      "white_detail_min_samples": 4,
+      "interior_black_min_samples": 16,
+      "exterior_contour": "solid"
+    },
+    {
+      "id": "mn-269-oreviathan-v3",
+      "species_id": "MN_269",
+      "view": "back",
+      "source": "sprites/mn-f060/freighter-v3/front-back.imagegen-v1.png",
+      "crop": [
+        145,
+        605,
+        760,
+        560
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        4507,
+        16740,
+        0
+      ],
+      "white_detail_min_samples": 4,
+      "interior_black_min_samples": 16,
+      "exterior_contour": "solid"
+    }
+  ],
+  "visual_review": {
+    "status": "pending",
+    "outline_profile": "solid-exterior-v1",
+    "sheet_sha256": "c61a9db93e3d65e0a548678dd59ca0198aca1f603c8fbe0e03e83f252792f7e6",
+    "notes": "A long deep living ore-freighter hull replaces the rejected squat boiler humanoid. The bow bears the face; three ore-hold hatches, aft breathing stacks and two arched gantry arms are integral anatomy. No legs."
+  }
+}

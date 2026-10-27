@@ -1,7 +1,7 @@
 //! Keep foreground replacements hidden until their staged GPU uploads finish.
 
 use bevy::asset::{AssetId, Assets};
-use bevy::prelude::{Commands, Image, Mesh, Visibility};
+use bevy::prelude::{Commands, Image, Mesh, ResMut, Visibility};
 use crystal_render_api::VisualWorldFrame;
 
 use crate::{TerrainCacheKey, TerrainRevisionCache, destination_preload, terrain_disposal};
@@ -12,6 +12,8 @@ pub(super) struct Pending {
     pub(super) cache: TerrainRevisionCache,
     compatibility: Compatibility,
     settled_frames: u8,
+    scenery_pending: bool,
+    scenery_prepared: bool,
 }
 
 impl Pending {
@@ -27,6 +29,8 @@ impl Pending {
             cache,
             compatibility: None,
             settled_frames: 0,
+            scenery_pending: false,
+            scenery_prepared: false,
         }
     }
 
@@ -39,6 +43,26 @@ impl Pending {
                 destination_preload::cached_compatible(source, frame, &mut self.compatibility)
             })
     }
+}
+
+/// Finish the replacement window's scenery while its roots are hidden.
+pub(super) fn prepare_scenery(
+    pending: &mut Option<Pending>,
+    commands: &mut Commands,
+    meshes: &mut Assets<Mesh>,
+    materials: &mut ResMut<Assets<crate::VoxelMaterial>>,
+) {
+    let Some(replacement) = pending.as_mut() else {
+        return;
+    };
+    let cache = &mut replacement.cache;
+    replacement.scenery_pending =
+        crate::grove_stream::warm_window(cache, commands, meshes, materials);
+    replacement.scenery_prepared = true;
+    if replacement.scenery_pending {
+        replacement.settled_frames = 0;
+    }
+    destination_preload::hide(cache, commands);
 }
 
 pub(super) fn discard(pending: &mut Option<Pending>, commands: &mut Commands) {
@@ -63,7 +87,10 @@ pub(super) fn advance(
     };
     replacement.cache.uploads.advance(meshes);
     destination_preload::hide(&replacement.cache, commands);
-    if !replacement.cache.uploads.ready() {
+    if !replacement.cache.uploads.ready() || replacement.scenery_pending
+        // A newly inserted scene has not had a scenery preparation pass yet.
+        || (replacement.cache.groves.is_some() && !replacement.scenery_prepared)
+    {
         replacement.settled_frames = 0;
         return false;
     }
@@ -103,6 +130,94 @@ mod tests {
 
     #[derive(Resource)]
     struct Publication(Option<Pending>);
+
+    #[test]
+    #[cfg(not(target_arch = "wasm32"))]
+    fn replacement_keeps_the_previous_scene_until_cold_trees_are_complete() {
+        let (frame, source) = crate::world_stream::test_frames::grove_window();
+        let mut app = App::new();
+        app.add_plugins(MinimalPlugins)
+            .init_resource::<Assets<Mesh>>()
+            .init_resource::<Assets<crate::VoxelMaterial>>();
+        let old_root = app
+            .world_mut()
+            .spawn((Visibility::Visible, Transform::default()))
+            .id();
+        let new_root = app
+            .world_mut()
+            .spawn((Visibility::Hidden, Transform::default()))
+            .id();
+        let material = app
+            .world_mut()
+            .resource_mut::<Assets<crate::VoxelMaterial>>()
+            .add(crate::solid_terrain_material());
+        let live = TerrainRevisionCache {
+            solid_entity: Some(old_root),
+            ..default()
+        };
+        let mut replacement = Pending::new(&live);
+        replacement.cache.key = Some(TerrainCacheKey::from_frame(&frame));
+        replacement.cache.built_frame = Some(frame);
+        replacement.cache.instances_root = Some(new_root);
+        replacement.cache.solid_material = Some(material);
+        replacement.cache.groves = Some(crate::grove_stream::Stream::new(
+            source,
+            replacement.cache.forest_library.clone(),
+        ));
+        app.insert_resource(live)
+            .insert_resource(Publication(Some(replacement)))
+            .add_systems(
+                Update,
+                |mut publication: ResMut<Publication>,
+                 mut live: ResMut<TerrainRevisionCache>,
+                 mut meshes: ResMut<Assets<Mesh>>,
+                 mut materials: ResMut<Assets<crate::VoxelMaterial>>,
+                 mut commands: Commands| {
+                    prepare_scenery(
+                        &mut publication.0,
+                        &mut commands,
+                        &mut meshes,
+                        &mut materials,
+                    );
+                    advance(&mut publication.0, &mut live, &mut meshes, &mut commands);
+                },
+            );
+        let deadline = std::time::Instant::now() + std::time::Duration::from_secs(30);
+        loop {
+            app.update();
+            if app.world().resource::<Publication>().0.is_none() {
+                break;
+            }
+            assert!(
+                std::time::Instant::now() < deadline,
+                "cold grove publication did not finish"
+            );
+            assert_eq!(
+                app.world().get::<Visibility>(old_root),
+                Some(&Visibility::Visible)
+            );
+            assert_eq!(
+                app.world().get::<Visibility>(new_root),
+                Some(&Visibility::Hidden)
+            );
+            std::thread::yield_now();
+        }
+        assert!(app.world().get_entity(old_root).is_err());
+        assert_eq!(
+            app.world().get::<Visibility>(new_root),
+            Some(&Visibility::Visible)
+        );
+        let cache = app.world().resource::<TerrainRevisionCache>();
+        assert!(
+            cache
+                .groves
+                .as_ref()
+                .expect("resident groves")
+                .missing_bounds()
+                .next()
+                .is_none()
+        );
+    }
 
     #[test]
     fn a_source_or_profile_change_rejects_a_hidden_replacement() {

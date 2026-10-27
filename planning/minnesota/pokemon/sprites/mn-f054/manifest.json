@@ -1,0 +1,337 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F054",
+  "status": "native-front-back-reviewed",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_113": {
+      "species_id": "MN_113",
+      "name": "Pipboom",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          30,
+          24,
+          12
+        ],
+        [
+          14,
+          8,
+          4
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        13086,
+        4366,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          247,
+          198,
+          99
+        ],
+        [
+          115,
+          66,
+          33
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#F7C663",
+        "#734221",
+        "#000000"
+      ]
+    },
+    "MN_114": {
+      "species_id": "MN_114",
+      "name": "Boomruff",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          30,
+          18,
+          7
+        ],
+        [
+          10,
+          7,
+          4
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        7774,
+        4330,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          247,
+          148,
+          57
+        ],
+        [
+          82,
+          57,
+          33
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#F79439",
+        "#523921",
+        "#000000"
+      ]
+    },
+    "MN_115": {
+      "species_id": "MN_115",
+      "name": "Prairondo",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          27,
+          15,
+          6
+        ],
+        [
+          11,
+          6,
+          4
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        6651,
+        4299,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          222,
+          123,
+          49
+        ],
+        [
+          90,
+          49,
+          33
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#DE7B31",
+        "#5A3121",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f054/prompt-v1.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "style_reference": {
+    "origin": "authentic local Crystal sprites",
+    "boards": [
+      "target/minnesota-pokemon/gen2-reference/starters.png",
+      "target/minnesota-pokemon/gen2-reference/bugs.png"
+    ]
+  },
+  "sprites": [
+    {
+      "id": "mn-113-pipboom-v1",
+      "species_id": "MN_113",
+      "view": "front",
+      "source": "sprites/mn-f054/mn-113-115.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        450,
+        512
+      ],
+      "fit": [
+        36,
+        36
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        13086,
+        4366,
+        0
+      ]
+    },
+    {
+      "id": "mn-113-pipboom-v1",
+      "species_id": "MN_113",
+      "view": "back",
+      "source": "sprites/mn-f054/mn-113-115.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        512,
+        450,
+        512
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        13086,
+        4366,
+        0
+      ]
+    },
+    {
+      "id": "mn-114-boomruff-v1",
+      "species_id": "MN_114",
+      "view": "front",
+      "source": "sprites/mn-f054/mn-113-115.front-back.imagegen-v1.png",
+      "crop": [
+        450,
+        0,
+        510,
+        512
+      ],
+      "fit": [
+        44,
+        44
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        7774,
+        4330,
+        0
+      ]
+    },
+    {
+      "id": "mn-114-boomruff-v1",
+      "species_id": "MN_114",
+      "view": "back",
+      "source": "sprites/mn-f054/mn-113-115.front-back.imagegen-v1.png",
+      "crop": [
+        450,
+        512,
+        510,
+        512
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        7774,
+        4330,
+        0
+      ]
+    },
+    {
+      "id": "mn-115-prairondo-v1",
+      "species_id": "MN_115",
+      "view": "front",
+      "source": "sprites/mn-f054/mn-113-115.front-back.imagegen-v1.png",
+      "crop": [
+        960,
+        0,
+        576,
+        512
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        6651,
+        4299,
+        0
+      ]
+    },
+    {
+      "id": "mn-115-prairondo-v1",
+      "species_id": "MN_115",
+      "view": "back",
+      "source": "sprites/mn-f054/mn-113-115.front-back.imagegen-v1.png",
+      "crop": [
+        960,
+        512,
+        576,
+        512
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        6651,
+        4299,
+        0
+      ]
+    }
+  ],
+  "visual_review": {
+    "status": "reviewed",
+    "notes": "Final source-contour-v1 board visually inspected: small throat pouch develops paired drum sacs, broad ruff and large semicircular reflector tail. Eye whites, stamping feet and broad tail wedges remain legible; exterior contours and colored chest interiors read cleanly. Rear portraits show nape, ruff and back fan with lower bodies cropped. Distinct species palettes remain theme-consistent.",
+    "sheet_sha256": "272cf446572e565f2226407131a41063422dbb58a34896c7b1bbbb43e3450f69",
+    "outline_profile": "source-contour-v1"
+  }
+}

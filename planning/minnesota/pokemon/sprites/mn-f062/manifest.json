@@ -1,0 +1,233 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F062",
+  "status": "native-front-back-reviewed",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_135": {
+      "species_id": "MN_135",
+      "name": "Vanechick",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          23,
+          19,
+          10
+        ],
+        [
+          8,
+          7,
+          9
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        10871,
+        9448,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          189,
+          156,
+          82
+        ],
+        [
+          66,
+          57,
+          74
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#BD9C52",
+        "#42394A",
+        "#000000"
+      ]
+    },
+    "MN_136": {
+      "species_id": "MN_136",
+      "name": "Silohawk",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          26,
+          20,
+          9
+        ],
+        [
+          6,
+          5,
+          9
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        9882,
+        9382,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          214,
+          165,
+          74
+        ],
+        [
+          49,
+          41,
+          74
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#D6A54A",
+        "#31294A",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f062/prompt-v1.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "style_reference": {
+    "origin": "authentic local Crystal sprites",
+    "boards": [
+      "target/minnesota-pokemon/gen2-reference/starters.png",
+      "target/minnesota-pokemon/gen2-reference/bugs.png"
+    ]
+  },
+  "sprites": [
+    {
+      "id": "mn-135-vanechick-v1",
+      "species_id": "MN_135",
+      "view": "front",
+      "source": "sprites/mn-f062/mn-135-136.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        666,
+        550
+      ],
+      "fit": [
+        38,
+        38
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        10871,
+        9448,
+        0
+      ]
+    },
+    {
+      "id": "mn-135-vanechick-v1",
+      "species_id": "MN_135",
+      "view": "back",
+      "source": "sprites/mn-f062/mn-135-136.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        550,
+        666,
+        537
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        10871,
+        9448,
+        0
+      ]
+    },
+    {
+      "id": "mn-136-silohawk-v1",
+      "species_id": "MN_136",
+      "view": "front",
+      "source": "sprites/mn-f062/mn-135-136.front-back.imagegen-v1.png",
+      "crop": [
+        666,
+        0,
+        781,
+        550
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        9882,
+        9382,
+        0
+      ]
+    },
+    {
+      "id": "mn-136-silohawk-v1",
+      "species_id": "MN_136",
+      "view": "back",
+      "source": "sprites/mn-f062/mn-135-136.front-back.imagegen-v1.png",
+      "crop": [
+        666,
+        550,
+        781,
+        537
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        9882,
+        9382,
+        0
+      ]
+    }
+  ],
+  "visual_review": {
+    "status": "reviewed",
+    "notes": "Final source-contour-v1 board visually inspected: small vane-tailed lookout grows hooked raptor beak, silo chest and broad cloaklike wings. Dark feather interiors retain shape, white eye/chest glints and arrow tail remain legible; stepping outline follows body without extra floating black fragments. Large rear feather shoulders and napes crop lower bodies consistently.",
+    "sheet_sha256": "bcce7a65ec5de2ec13671839e97849b1517cacb494c460436ada1cf018dd234d",
+    "outline_profile": "source-contour-v1"
+  }
+}

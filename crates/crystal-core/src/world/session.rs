@@ -2777,6 +2777,13 @@ impl OverworldSession {
         )
     }
 
+    /// Returns the first event at the player tile matching the current scene.
+    ///
+    /// Empty scenes and native `SCENE_ALWAYS`/`-1` match every scene, including
+    /// a map without a current scene value.
+    ///
+    /// # Errors
+    /// Returns an error when a matching event has invalid runtime coordinates.
     pub fn check_coord_event_checked(
         &self,
         current_scene: Option<&str>,
@@ -2788,7 +2795,10 @@ impl OverworldSession {
                 if matched.is_some() {
                     return Ok(matched);
                 }
-                let scene_matches = if event.scene_id.is_empty() {
+                // Native SCENE_ALWAYS (-1) survives serialized map sections;
+                // authored cached maps may also use the empty wildcard.
+                let scene_matches = if matches!(event.scene_id.as_str(), "" | "-1" | "SCENE_ALWAYS")
+                {
                     true
                 } else {
                     current_scene
@@ -7202,6 +7212,30 @@ mod tests {
                 script_name: "AlwaysScript".to_string(),
             })
         );
+    }
+
+    #[test]
+    fn coord_event_native_always_sentinel_ignores_missing_and_other_scenes() {
+        for scene_id in ["-1", "SCENE_ALWAYS"] {
+            let events = MapEvents {
+                coord_events: vec![coord_event(0, 1, scene_id, "AlwaysScript")],
+                ..MapEvents::default()
+            };
+            let session = OverworldSession::with_events(
+                map_with_blocks(2, 3, vec![0, 0, 0, 0, 0, 0]),
+                events,
+                tileset(),
+                TilePosition::new(0, 1),
+            );
+            for current_scene in [None, Some("SCENE_OTHER")] {
+                let trigger = session
+                    .check_coord_event_checked(current_scene)
+                    .expect("checked native wildcard")
+                    .expect("always-active event");
+                assert_eq!(trigger.scene_id, scene_id);
+                assert_eq!(trigger.script_name, "AlwaysScript");
+            }
+        }
     }
 
     #[test]

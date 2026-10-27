@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "families": [
+    {
+      "id": "MN_F122",
+      "region": "central_lakes",
+      "theme": "Burbot and under-ice locksmiths: a smooth eel-bodied fish grows its single chin barbel into a key-bit organ and opens paired shutter-like fin folds to slip through sealed winter channels. The key is living anatomy, not a carried object.",
+      "members": [
+        {
+          "id": "MN_261",
+          "name": "Keypout",
+          "types": [
+            "WATER",
+            "GHOST"
+          ],
+          "stage": 1,
+          "evolves_to": "MN_262",
+          "evolution_condition": {
+            "method": "LEVEL",
+            "level": 30
+          }
+        },
+        {
+          "id": "MN_262",
+          "name": "Latchusk",
+          "types": [
+            "WATER",
+            "GHOST"
+          ],
+          "stage": 2,
+          "evolves_to": null,
+          "evolution_condition": null
+        }
+      ],
+      "evolution_design": [
+        "Small smooth long burbot with a broad flat head, one thick curved chin barbel ending in one broad key-tooth, a short soft dorsal fold and a rounded tail. A watchful curious face and large white eye. Full fish, no arms or feet.",
+        "Longer heavier eel-bodied burbot curves in one loose C; the SINGLE chin barbel thickens into a blunt two-bit key-shaped organ. Two broad soft pleated dorsal/anal fin folds open like paired curved shutters along the body. Long rounded tail, large expressive fish face; no metal key, lock prop, clothing, machinery or tiny details."
+      ],
+      "habitat": "Cold lake floors and winter under-ice channels, inspired by Minnesota burbot ecology.",
+      "proposed_routes": [
+        "MN_R06",
+        "MN_R10"
+      ],
+      "sources": [
+        {
+          "title": "Minnesota DNR: Burbot (Eelpout)",
+          "url": "https://www.dnr.state.mn.us/fish/burbot.html",
+          "supports": "Long smooth eel/catfish-like body with a single chin barbel.",
+          "fantasy_extension": "Key-bit barbel, shutter fins and ghostly opening of sealed channels are original fantasy."
+        },
+        {
+          "title": "Minnesota DNR: Burbot species profile",
+          "url": "https://www.dnr.state.mn.us/minnaqua/speciesprofile/burbot.html",
+          "supports": "Bottom-oriented fish active during low light in winter; midwinter spawning before ice-out.",
+          "fantasy_extension": "Under-ice locksmith role is original, not a claim about real fish."
+        }
+      ],
+      "design_status": "root-authored-locked-for-art"
+    }
+  ]
+}

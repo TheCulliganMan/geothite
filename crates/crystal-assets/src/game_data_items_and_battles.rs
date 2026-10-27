@@ -1927,14 +1927,8 @@ impl GameDataSet {
         if !resolution.defer_level_evolution {
             return Ok(None);
         }
-        if let (
-            BattleMemory::Trainer { enemy_party, .. },
-            Some(active_enemy_index),
-        ) = (&state.battle, state.battle_active_enemy_party_index)
-            && enemy_party
-                .iter()
-                .enumerate()
-                .any(|(index, pokemon)| index != active_enemy_index && pokemon.hp > 0)
+        if !matches!(state.battle, BattleMemory::Inactive)
+            && !crate::deferred_evolution::completed_reward(state, resolution.party_index)
         {
             return Ok(None);
         }
@@ -1989,6 +1983,16 @@ impl GameDataSet {
         Ok(())
     }
 
+    /// Checks level evolution after a pending move decision has finished.
+    ///
+    /// No eligible evolution is a successful check with no target species.
+    /// A battle reward may finish this check while its defeated battle still
+    /// owns cleanup; ordinary field requests cannot bypass a live opponent.
+    ///
+    /// # Errors
+    /// Returns an error for an unresolved move choice, missing party member,
+    /// an active battle outside its completed reward boundary, or invalid
+    /// evolution/learnset data.
     pub fn resolve_deferred_level_evolution(
         &self,
         state: &mut GameState,
@@ -2010,15 +2014,9 @@ impl GameDataSet {
             link_mode: LinkMode::None,
         };
         let (report, pending_move_learn) = {
-            let pokemon = require_field_party_pokemon_mut(state, party_index)
-                .map_err(|error| anyhow::anyhow!("resolve deferred level evolution: {error:?}"))?;
+            let pokemon = crate::deferred_evolution::party_member(state, party_index)?;
             let report = check_and_evolve(pokemon, &self.evolutions, &context, true)
                 .map_err(|error| anyhow::anyhow!("resolve deferred level evolution: {error:?}"))?;
-            if report.target_species.is_none() {
-                anyhow::bail!(
-                    "deferred level evolution did not resolve for party index {party_index}"
-                );
-            }
             let pending_move_learn = if let Some(learned_move) = report.pending_move_learns.first()
             {
                 if pokemon.moves.len() < 4 {
@@ -2045,7 +2043,7 @@ impl GameDataSet {
         if let Some(pending_move_learn) = pending_move_learn {
             state.pending_move_learn = Some(pending_move_learn);
         }
-        if report.cancel_snapshot.is_none() {
+        if report.target_species.is_some() && report.cancel_snapshot.is_none() {
             let evolved_pokemon = state.storage.party.pokemon[party_index]
                 .as_ref()
                 .context("deferred evolved party Pokemon disappeared")?

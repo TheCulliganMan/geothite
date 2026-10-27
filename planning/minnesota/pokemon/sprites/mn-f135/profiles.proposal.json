@@ -1,0 +1,234 @@
+{
+  "schema_version": 1,
+  "species": [
+    {
+      "id": "MN_298",
+      "classification": "Quill Brace",
+      "height_inches": 13,
+      "weight_tenths_lb": 180,
+      "dex_pages": [
+        "It braces its tail @ against bark to @ climb high trees.",
+        "Its blunt quills @ bend together @ into a snug frame."
+      ],
+      "base_stats": {
+        "hp": 55,
+        "attack": 55,
+        "defense": 65,
+        "speed": 30,
+        "special_attack": 35,
+        "special_defense": 60
+      },
+      "catch_rate": 190,
+      "base_exp": 65,
+      "gender_ratio": 127,
+      "hatch_cycles": 20,
+      "growth_rate": "GROWTH_MEDIUM_FAST",
+      "egg_groups": [
+        "EGG_GROUND",
+        "EGG_GROUND"
+      ],
+      "evolution": {
+        "method": "LEVEL",
+        "level": 28
+      },
+      "held_items": [
+        null,
+        null
+      ],
+      "menu_icon": "ICON_MONSTER",
+      "footprint_species": "SANDSHREW",
+      "cry": {
+        "cry": "CRY_RATTATA",
+        "pitch": -24,
+        "length": 144
+      },
+      "shiny_rgb5": [
+        [
+          24,
+          17,
+          25
+        ],
+        [
+          9,
+          6,
+          12
+        ]
+      ],
+      "level_moves": [
+        [
+          1,
+          "TACKLE"
+        ],
+        [
+          1,
+          "DEFENSE_CURL"
+        ],
+        [
+          6,
+          "GROWL"
+        ],
+        [
+          10,
+          "ROLLOUT"
+        ],
+        [
+          15,
+          "BIND"
+        ],
+        [
+          20,
+          "HARDEN"
+        ],
+        [
+          25,
+          "TAKE_DOWN"
+        ],
+        [
+          30,
+          "PROTECT"
+        ],
+        [
+          36,
+          "COUNTER"
+        ],
+        [
+          43,
+          "DOUBLE_EDGE"
+        ]
+      ],
+      "tmhm_moves": [
+        "HEADBUTT",
+        "ROLLOUT",
+        "DEFENSE_CURL",
+        "PROTECT",
+        "REST",
+        "RETURN",
+        "ATTRACT",
+        "STRENGTH"
+      ],
+      "egg_moves": [
+        "ENDURE",
+        "BODY_SLAM",
+        "SAFEGUARD"
+      ]
+    },
+    {
+      "id": "MN_299",
+      "classification": "Latch Frame",
+      "height_inches": 36,
+      "weight_tenths_lb": 1250,
+      "dex_pages": [
+        "Hooked quill bars @ lock around its @ thick brace tail.",
+        "It can sleep on @ a sheer trunk @ without slipping."
+      ],
+      "base_stats": {
+        "hp": 85,
+        "attack": 95,
+        "defense": 115,
+        "speed": 35,
+        "special_attack": 45,
+        "special_defense": 105
+      },
+      "catch_rate": 60,
+      "base_exp": 175,
+      "gender_ratio": 127,
+      "hatch_cycles": 20,
+      "growth_rate": "GROWTH_MEDIUM_FAST",
+      "egg_groups": [
+        "EGG_GROUND",
+        "EGG_GROUND"
+      ],
+      "evolution": null,
+      "held_items": [
+        null,
+        null
+      ],
+      "menu_icon": "ICON_MONSTER",
+      "footprint_species": "SANDSHREW",
+      "cry": {
+        "cry": "CRY_RATTATA",
+        "pitch": 0,
+        "length": 160
+      },
+      "shiny_rgb5": [
+        [
+          24,
+          18,
+          11
+        ],
+        [
+          11,
+          7,
+          13
+        ]
+      ],
+      "level_moves": [
+        [
+          1,
+          "TACKLE"
+        ],
+        [
+          1,
+          "DEFENSE_CURL"
+        ],
+        [
+          1,
+          "BIND"
+        ],
+        [
+          6,
+          "GROWL"
+        ],
+        [
+          10,
+          "ROLLOUT"
+        ],
+        [
+          20,
+          "HARDEN"
+        ],
+        [
+          25,
+          "TAKE_DOWN"
+        ],
+        [
+          28,
+          "METAL_CLAW"
+        ],
+        [
+          33,
+          "PROTECT"
+        ],
+        [
+          39,
+          "COUNTER"
+        ],
+        [
+          45,
+          "IRON_TAIL"
+        ],
+        [
+          52,
+          "DOUBLE_EDGE"
+        ]
+      ],
+      "tmhm_moves": [
+        "HEADBUTT",
+        "ROLLOUT",
+        "DEFENSE_CURL",
+        "PROTECT",
+        "REST",
+        "RETURN",
+        "ATTRACT",
+        "STRENGTH",
+        "IRON_TAIL",
+        "CURSE"
+      ],
+      "egg_moves": [
+        "ENDURE",
+        "BODY_SLAM",
+        "SAFEGUARD"
+      ]
+    }
+  ]
+}

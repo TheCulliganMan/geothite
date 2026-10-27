@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#234b3b"><meta name="description" content="{{DESCRIPTION}}">
+  <title>{{NAME}} · Northwoods Pokédex · Geothite</title>
+  <link rel="icon" href="{{ASSET_BASE}}/mark.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="{{ASSET_BASE}}/style.css"><script defer src="{{ASSET_BASE}}/app.js"></script>
+</head>
+<body data-page="entry" data-species="{{ID}}">
+  <a class="skip" href="#entry">Skip to Pokémon details</a>
+  {{HEADER}}
+  <main class="wrap entry" id="entry">
+    <div class="breadcrumb"><a href="{{INDEX_LINK}}">← Back to the Pokédex</a><span>{{ENTRY_LABEL}}</span></div>
+    {{CUT_NOTICE}}
+    <div class="entry-hero">
+      <div class="portrait-panel">
+        <div class="portrait-meta"><span>{{PORTRAIT_LABEL}}</span><button class="save-button" type="button" data-save="{{ID}}" data-name="{{NAME}}" aria-label="Save {{NAME}} to notebook" aria-pressed="false">☆</button></div>
+        <div class="portrait-stage">{{PORTRAIT}}</div>
+        <div class="portrait-controls"><div class="view-switch"><button type="button" data-facing="front" aria-pressed="true">Front</button><button type="button" data-facing="back" aria-pressed="false">Back</button></div><button class="shiny-button" type="button" id="shiny-toggle" aria-pressed="false">✦ Shiny</button></div>
+        <div class="palette-strip">{{PALETTES}}<span>GBC / RGB555 / FOUR COLORS</span></div>
+      </div>
+      <div class="entry-intro"><span class="eyebrow">{{CLASSIFICATION}} POKÉMON {{RARITY}}</span><h1>{{NAME}}</h1>{{STARTER_ROLE}}<div class="entry-types">{{TYPES}}</div><div class="dex-prose">{{DEX}}</div><dl class="measurements"><div><dt>HEIGHT</dt><dd>{{HEIGHT}}</dd></div><div><dt>WEIGHT</dt><dd>{{WEIGHT}}</dd></div><div><dt>LANDSCAPE</dt><dd>{{REGION}}</dd></div></dl><div class="theme-note"><span class="eyebrow">DESIGN THEME</span><p>{{THEME}}</p></div></div>
+    </div>
+    <div class="entry-content">
+      <section class="stat-panel" aria-labelledby="stats-title"><div class="panel-title"><div><span class="eyebrow">BATTLE DATA</span><h2 id="stats-title">Base stats</h2></div><div class="stat-total"><b>{{TOTAL}}</b><span>TOTAL</span></div></div><dl class="stat-bars">{{STATS}}</dl><details class="training-notes"><summary>Training &amp; breeding notes <span>＋</span></summary>{{TRAINING}}</details></section>
+      <section class="evolution-panel" aria-labelledby="evo-title"><span class="eyebrow">EVOLUTION</span><h2 id="evo-title">{{EVOLUTION_TITLE}}</h2><div class="evolution-line">{{EVOLUTION}}</div><div class="habitat-note"><span class="eyebrow">HABITAT NOTES</span><p>{{HABITAT}}</p>{{LOCATION}}</div></section>
+    </div>
+    {{MOVE_ANIMATIONS}}
+    <section class="move-panel" aria-labelledby="moves-title"><div class="panel-title"><div><span class="eyebrow">LEARNSETS</span><h2 id="moves-title">Moves &amp; techniques</h2></div><span class="move-note">From the Geothite move catalog</span></div><div class="move-tabs" role="tablist" aria-label="Move learning methods"><button role="tab" id="tab-level" aria-selected="true" aria-controls="moves-level" data-tab="level">Level up <span>{{LEVEL_COUNT}}</span></button><button role="tab" id="tab-machine" aria-selected="false" aria-controls="moves-machine" data-tab="machine" tabindex="-1">TM / HM / tutor <span>{{MACHINE_COUNT}}</span></button><button role="tab" id="tab-egg" aria-selected="false" aria-controls="moves-egg" data-tab="egg" tabindex="-1">Egg moves <span>{{EGG_COUNT}}</span></button></div><div role="tabpanel" id="moves-level" aria-labelledby="tab-level" class="move-table-wrap">{{LEVEL_MOVES}}</div><div role="tabpanel" id="moves-machine" aria-labelledby="tab-machine" class="move-table-wrap" hidden>{{MACHINE_MOVES}}</div><div role="tabpanel" id="moves-egg" aria-labelledby="tab-egg" class="move-table-wrap" hidden>{{EGG_MOVES}}</div></section>
+    {{SOURCES}}
+    <nav class="entry-pager" aria-label="Adjacent Pokédex entries">{{PREVIOUS}}<a href="{{INDEX_LINK}}">REGIONAL INDEX</a>{{NEXT}}</nav>
+  </main>
+  {{FOOTER}}
+</body>
+</html>

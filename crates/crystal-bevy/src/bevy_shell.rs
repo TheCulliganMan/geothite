@@ -21,6 +21,7 @@ mod render_walk;
 #[cfg(feature = "location-tester")]
 mod model_preview;
 mod battle_anim_graphics;
+mod field_waterfall;
 #[cfg(not(target_arch = "wasm32"))]
 mod native_tasks;
 use std::collections::{BTreeMap, BTreeSet, HashMap, HashSet, VecDeque};
@@ -52,12 +53,16 @@ use bevy::window::PrimaryWindow;
 use bevy::window::{PresentMode, WindowFocused, WindowResolution};
 use bevy::winit::{UpdateMode, WinitSettings};
 mod source_sprite_renderer;
+#[cfg(not(target_arch = "wasm32"))]
+mod source_view_schedule;
+#[cfg(test)]
+mod sprite_sync_tests;
 use chrono::{Datelike, Local as ChronoLocal, Timelike};
 use crystal_assets::{
-    RuntimeBadgeRegion, RuntimeBugContestAction, RuntimeCurrencyAccount, RuntimeDayCareAction,
-    RuntimeDayCareCaretaker, RuntimeGameCornerService, RuntimeGenderMenuDefinition,
-    RuntimeGraphicsSpecial, RuntimeHappinessServiceRoutine, RuntimeIntroFrameClock,
-    RuntimeIntroInterruptTiming, RuntimeIntroPresentationParameters,
+    AuthoredTileAnimation, RuntimeBadgeRegion, RuntimeBugContestAction, RuntimeCurrencyAccount,
+    RuntimeDayCareAction, RuntimeDayCareCaretaker, RuntimeGameCornerService,
+    RuntimeGenderMenuDefinition, RuntimeGraphicsSpecial, RuntimeHappinessServiceRoutine,
+    RuntimeIntroFrameClock, RuntimeIntroInterruptTiming, RuntimeIntroPresentationParameters,
     RuntimeIntroSpriteSchedulerFrameCrossing, RuntimeLinkBattleResult, RuntimeMysteryGiftAction,
     RuntimePartyCheckSpecial, RuntimePhoneRandomSpecial, RuntimePresentation2bppTransferMode,
     RuntimePresentationInterpreter, RuntimePresentationPhaseMachine, RuntimePresentationPhaseRun,
@@ -146,18 +151,14 @@ const CLASSIC_SCROLL_HALO_TILES: i16 = 48;
 const CLASSIC_SCROLL_TILES_X: i16 = VIEWPORT_TILES_X + CLASSIC_SCROLL_HALO_TILES * 2;
 const CLASSIC_SCROLL_TILES_Y: i16 = VIEWPORT_TILES_Y + CLASSIC_SCROLL_HALO_TILES * 2;
 #[cfg(feature = "voxel-view")]
-// The pitched camera needs enough real map context behind the 20x18 LCD to
-// keep the far plane from cutting through structures. The optional renderer
-// deliberately publishes a broad map halo so pitched views can keep drawing
-// streets, trees, landmarks, and connected-map terrain far beyond the LCD
-// window instead of exposing a clipped background edge.
-const VISUAL_WORLD_HALO_TILES: i16 = if CLASSIC_SCROLL_HALO_TILES > 32 {
-    CLASSIC_SCROLL_HALO_TILES
-} else {
-    32
-};
+// Keep 48 gameplay cells of terrain beyond each LCD edge. The outer band
+// covers movement while the next complete window warms in the background.
+const VISUAL_WORLD_HALO_TILES: i16 = 96;
 #[cfg(not(feature = "voxel-view"))]
 const VISUAL_WORLD_HALO_TILES: i16 = CLASSIC_SCROLL_HALO_TILES;
+#[cfg(feature = "voxel-view")]
+mod source_window;
+mod connected_world_sources;
 const VISUAL_WORLD_TILES_X: i16 = VIEWPORT_TILES_X + VISUAL_WORLD_HALO_TILES * 2;
 const VISUAL_WORLD_TILES_Y: i16 = VIEWPORT_TILES_Y + VISUAL_WORLD_HALO_TILES * 2;
 // The Game Boy Color LCD is exactly 20 by 18 tiles.  Render source tiles at a
@@ -385,8 +386,8 @@ pub struct BevyShellConfig {
     /// Normal play continues to use the live/new-game clock path.
     #[cfg(feature = "location-tester")]
     pub render_test_hour: Option<u8>,
-    /// Disposable location fixture only: seed a verified flag and rerun normal
-    /// entry callbacks. This is visual-state evidence, not progression.
+    /// Disposable location fixture only: seed comma-separated verified flags and
+    /// rerun normal entry callbacks. This is visual-state evidence, not progression.
     #[cfg(feature = "location-tester")]
     pub render_test_preview_flag: Option<String>,
     /// Select an owned doll through the normal decoration mutation in a
@@ -672,6 +673,30 @@ impl VisibleShellController {
         self.snapshot()
     }
 
+    /// Read the production menu and yes/no selections for a text presentation.
+    ///
+    /// Returns `(menu_index, yes_no_index)`, using zero for inactive surfaces.
+    /// This only mirrors cursors; it never advances input or changes gameplay.
+    pub fn text_view_selection_indices(&self, snapshot: &RuntimeShellSnapshot) -> (usize, usize) {
+        let menu_index = snapshot
+            .ui
+            .menu
+            .as_ref()
+            .and_then(|menu| {
+                menu.layout.vertical_menus.first().and_then(|vertical| {
+                    strict_readonly_cursor_index(
+                        &self.shell.menu_cursor,
+                        &vertical_menu_surface_id(menu, vertical),
+                        vertical.options.len(),
+                    )
+                })
+            })
+            .unwrap_or(0);
+        let yes_no_index =
+            strict_readonly_cursor_index(&self.shell.yes_no_cursor, "ui:yes-no", 2).unwrap_or(0);
+        (menu_index, yes_no_index)
+    }
+
     pub fn set_runtime_journal_enabled(&mut self, enabled: bool) {
         self.shell.shell.set_runtime_journal_enabled(enabled);
     }
@@ -698,6 +723,11 @@ impl VisibleShellController {
         // directions and Start must never fall through to the runtime map.
         if self.shell.credits_screen.is_some() {
             buttons.retain(|button| matches!(button, GameButton::A | GameButton::B));
+        }
+        if self.shell.field_notice.is_none() && self.shell.visible_waterfall_animation.is_some() {
+            // Acknowledged native climbs own input until their shared clock
+            // completes. Empty input still advances that production clock.
+            buttons.clear();
         }
         // A modal B dismissal owns the chord; do not move after closing it.
         if buttons.contains(&GameButton::B) && has_visible_shell_b_action(&mut self.shell) {
@@ -4777,8 +4807,8 @@ struct RenderedTilesetArt {
     emote_errors: HashMap<String, String>,
     ledge_shadow: Option<SpriteFrame>,
     ledge_shadow_error: Option<String>,
-    grass_rustle_cache: HashMap<String, [SpriteFrame; 2]>,
-    grass_rustle_errors: HashMap<String, String>,
+    grass_rustle_cache: HashMap<(String, String), [SpriteFrame; 2]>,
+    grass_rustle_errors: HashMap<(String, String), String>,
     boulder_dust_cache: HashMap<String, [SpriteFrame; 2]>,
     boulder_dust_errors: HashMap<String, String>,
     field_move_tile_cache: HashMap<(String, String, u8), SpriteFrame>,
@@ -5198,6 +5228,7 @@ struct TilesetArt {
     tile_handles: Vec<Handle<Image>>,
     priority_tile_handles: Vec<Handle<Image>>,
     animated_tiles: HashMap<usize, TilesetAnimatedTile>,
+    render_flags: metatile_render_flags::MetatileRenderFlags,
 }
 
 struct TilesetAnimatedTile {
@@ -6434,6 +6465,8 @@ pub fn run_bevy_shell(
     let verified_pc_lcd=VerifiedPcLcdCapture::default();
     #[cfg(feature = "location-tester")]
     app.insert_resource(verified_pc_lcd.clone());
+    #[cfg(not(target_arch = "wasm32"))]
+    source_view_schedule::install(&mut app);
     let app_exit = app.run();
     #[cfg(target_os = "macos")]
     // The runner has now returned/dropped its render world. Release the final
@@ -7628,6 +7661,12 @@ fn apply_visible_shell_smoke_frame(
     let mut interaction = false;
     for button in buttons.iter().copied() {
         match button {
+            GameButton::Up | GameButton::Left if runtime_shell.pending_name_choice.is_some() => {
+                move_visible_name_choice(runtime_shell, -1)?;
+            }
+            GameButton::Down | GameButton::Right if runtime_shell.pending_name_choice.is_some() => {
+                move_visible_name_choice(runtime_shell, 1)?;
+            }
             GameButton::Start if has_visible_shell_start_action(runtime_shell) => {
                 press_visible_start_button(runtime_shell)?;
             }
@@ -7691,7 +7730,17 @@ fn apply_visible_shell_smoke_frame(
         }
     }
     let overworld_a = overworld_buttons.contains(&GameButton::A);
-    let frame = if overworld_buttons.is_empty() {
+    // Empty renderer-neutral frames still reach CheckTile on ice and currents.
+    // Modal owners keep those frames; an idle floor needs no extra game tick.
+    let forced_idle_frame = buttons.is_empty()
+        && runtime_shell
+            .shell
+            .session()
+            .overworld()
+            .forced_movement_direction()
+            .is_some()
+        && !has_visible_shell_direction_action(runtime_shell);
+    let frame = if overworld_buttons.is_empty() && !forced_idle_frame {
         None
     } else {
         Some(runtime_shell.shell.tick(overworld_buttons)?.clone())
@@ -7711,6 +7760,7 @@ fn apply_visible_shell_smoke_frame(
         interaction = true;
         execute_last_interaction_script(runtime_shell)?;
     } else if overworld_a
+        && runtime_shell.visible_waterfall_animation.is_none()
         && runtime_shell.player_walk_frame_ticks == 0
         && runtime_shell.visible_ledge_jump.is_none()
         && frame.as_ref().is_some_and(|frame| {
@@ -7784,6 +7834,11 @@ fn settle_visible_shell_controller(
             if let Some(error) = runtime_shell.last_error.as_ref() {
                 anyhow::bail!("advance whiteout recovery: {error}");
             }
+            continue;
+        }
+        // The graphical and renderer-neutral hosts advance the same native
+        // climb commands and visual clock before accepting another input.
+        if field_waterfall::advance(runtime_shell, 1)? {
             continue;
         }
         if advance_visible_smoke_walk_warp_phase(runtime_shell)? {
@@ -7920,6 +7975,21 @@ fn settle_visible_shell_controller(
             mark_runtime_presentation_dirty(runtime_shell);
             continue;
         }
+        // The native update advances EXP and the level-stat input delay every
+        // frame. A renderer-neutral host must run that same finite clock before
+        // returning, or the retained reward surface permanently owns movement.
+        if runtime_shell
+            .battle_exp_tween
+            .as_ref()
+            .is_some_and(|tween| tween.started)
+            || runtime_shell
+                .battle_level_stats
+                .front()
+                .is_some_and(|stats| stats.active && stats.frames_before_input > 0)
+        {
+            advance_visible_battle_reward_frame(runtime_shell);
+            continue;
+        }
         let field_travel_delay_finished =
             if let Some(frames) = runtime_shell.pending_field_travel_delay_frames.as_mut() {
                 *frames = frames.saturating_sub(1);
@@ -7961,6 +8031,9 @@ fn settle_visible_shell_controller(
             }
             let presentation = runtime_shell.shell.presentation_snapshot()?;
             if !visible_field_dialogue_is_fully_revealed(runtime_shell, &presentation) {
+                continue;
+            }
+            if advance_visible_controller_item_notice(runtime_shell)? {
                 continue;
             }
             if runtime_shell.visible_wait_sfx_boundary {
@@ -8051,7 +8124,7 @@ fn settle_visible_shell_controller(
             return Ok(());
         }
         if runtime_shell.pending_name_choice.is_some() {
-            if runtime_shell.pending_gift_pokemon_nickname.is_some() {
+            if auto_input && runtime_shell.pending_gift_pokemon_nickname.is_some() {
                 finish_visible_gift_pokemon_nickname(runtime_shell, None)?;
                 continue;
             }
@@ -8470,7 +8543,9 @@ fn initialize_bevy_runtime_shell(
     if let Some(flag) = config.render_test_preview_flag.as_deref() {
         anyhow::ensure!(runtime_tile_start && config.quick_save_path.is_none(),
             "preview flag requires a fresh disposable location session without saving");
-        shell.set_script_flag_for_smoke(flag)?;
+        for name in flag.split(',').map(str::trim) {
+            shell.set_script_flag_for_smoke(name)?;
+        }
     }
     #[cfg(feature = "location-tester")]
     if config.render_test_preview_doll.is_some() {
@@ -8901,7 +8976,9 @@ fn initialize_bevy_runtime_shell(
         for refresh in 0..if preview_flag.is_some() || preview_doll.is_some(){2}else{1} {
             if refresh==1 {
                 if let Some(flag) = preview_flag {
-                    runtime_shell.shell.set_script_flag_for_smoke(flag)?;
+                    for name in flag.split(',').map(str::trim) {
+                        runtime_shell.shell.set_script_flag_for_smoke(name)?;
+                    }
                 }
                 if let Some(id) = preview_doll {
                     let decoration = runtime_shell.runtime.data().decorations.decorations.iter()
@@ -8932,8 +9009,12 @@ fn initialize_bevy_runtime_shell(
             }
             close_visible_noninteractive_runtime_surfaces_until_idle(&mut runtime_shell)?;
         }
-        if preview_flag==Some("ENGINE_GOLDENROD_DEPT_STORE_SALE_IS_ON")
-            && runtime_shell.shell.current_map_name()=="GoldenrodDeptStoreRoof" {
+        if preview_flag.is_some_and(|flags| {
+            flags
+                .split(',')
+                .any(|flag| flag.trim() == "ENGINE_GOLDENROD_DEPT_STORE_SALE_IS_ON")
+        }) && runtime_shell.shell.current_map_name() == "GoldenrodDeptStoreRoof"
+        {
             let declared=&runtime_shell.runtime.data().maps["GoldenrodDeptStoreRoof"].script_block_changes;
             let state=runtime_shell.shell.session().state();
             let actual=state.map_block_overrides.get("GoldenrodDeptStoreRoof")
@@ -8955,6 +9036,7 @@ fn initialize_bevy_runtime_shell(
 }
 
 include!("bevy_shell/deterministic_session.rs");
+include!("bevy_shell/battle_reward_clock.rs");
 include!("bevy_shell/multiplayer.rs");
 include!("bevy_shell/player_customization.rs");
 include!("bevy_shell/save_management.rs");
@@ -8995,6 +9077,9 @@ include!("bevy_shell/battle_3d.rs");
 #[cfg(feature = "voxel-view")]
 include!("bevy_shell/world_entry.rs");
 #[cfg(feature = "voxel-view")]
+#[path = "bevy_shell/connected_actors.rs"]
+mod connected_actors;
+#[cfg(feature = "voxel-view")]
 include!("bevy_shell/party_follower.rs");
 #[cfg(feature = "voxel-view")]
 include!("bevy_shell/surf_mount.rs");
@@ -9020,9 +9105,17 @@ pub fn authored_visual_jump_ledges(width:u16,blocks:&[u16],
 include!("bevy_shell/overworld_rendering.rs");
 include!("bevy_shell/start_menu.rs");
 include!("bevy_shell/competitive_battle.rs");
+mod tile_foreground;
 include!("bevy_shell/bitmap_font.rs");
+#[path = "bevy_shell/metatile_render_flags.rs"]
+mod metatile_render_flags;
+#[path = "bevy_shell/object_presentation.rs"]
+mod object_presentation;
+
 include!("bevy_shell/graphics_assets.rs");
 include!("bevy_shell/field_pack.rs");
+include!("bevy_shell/field_item_controller_clock.rs");
+include!("bevy_shell/item_target_capabilities.rs");
 
 #[cfg(test)]
 #[path = "bevy_shell/tests.rs"]
@@ -9060,6 +9153,18 @@ mod mouse_movement;
 
 fn visible_controller_snapshot(runtime_shell: &mut BevyRuntimeShell) -> Result<RuntimeShellSnapshot> {
         let mut snapshot = runtime_shell.shell.presentation_snapshot()?;
+        if runtime_shell.pending_gift_pokemon_nickname.is_some()
+            && (runtime_shell.pending_name_choice.is_some()
+                || runtime_shell.pending_name_input.is_some())
+        {
+            // The gift's nickname surface owns input above the suspended
+            // source script. Its earlier confirmation is no longer visible.
+            snapshot.ui.pending_yes_no = None;
+            snapshot.ui.menu = None;
+            snapshot.ui.text = None;
+            snapshot.ui.text_window_open = false;
+            snapshot.ui.window_open = false;
+        }
         if let Some(pages) = visible_field_dialog_pages(&snapshot, &runtime_shell)
             && let Some(reveal) = runtime_shell.field_text_reveal.as_ref()
             && reveal.text == pages.join("\u{1e}")
@@ -9127,6 +9232,26 @@ fn visible_controller_snapshot(runtime_shell: &mut BevyRuntimeShell) -> Result<R
                 asm_text: Some(visible_battle_message_text(&runtime_shell, message)),
                 body: None,
                 queued_text_events: runtime_shell.battle_messages.len().saturating_sub(1),
+            });
+            snapshot.ui.text_window_open = true;
+        }
+        if let Some(stats) = runtime_shell
+            .battle_level_stats
+            .front()
+            .filter(|stats| stats.active)
+        {
+            snapshot.phase = RuntimeShellPhase::Text;
+            snapshot.ui.menu = None;
+            snapshot.ui.text = Some(RuntimeTextSnapshot {
+                label: "visible-shell:level-up-stats".into(),
+                source: RuntimeTextSource::AsmText,
+                asm_text: Some(format!(
+                    "ATTACK {}\nDEFENSE {}\nSPEED {}\nSPCL.ATK {}\nSPCL.DEF {}",
+                    stats.attack, stats.defense, stats.speed, stats.special_attack,
+                    stats.special_defense,
+                )),
+                body: None,
+                queued_text_events: 0,
             });
             snapshot.ui.text_window_open = true;
         }

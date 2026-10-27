@@ -1,0 +1,121 @@
+{
+  "id": "MN_089",
+  "classification": "Butter Gel",
+  "height_inches": 28,
+  "weight_tenths_lb": 420,
+  "dex_pages": [
+    "A golden butter @ heart floats @ in cold jelly.",
+    "Its curled @ feet leave soft @ ribbons of butter."
+  ],
+  "base_stats": {
+    "hp": 100,
+    "attack": 65,
+    "defense": 70,
+    "speed": 35,
+    "special_attack": 95,
+    "special_defense": 115
+  },
+  "catch_rate": 60,
+  "base_exp": 202,
+  "gender_ratio": 127,
+  "hatch_cycles": 20,
+  "growth_rate": "GROWTH_MEDIUM_FAST",
+  "egg_groups": [
+    "EGG_WATER_1",
+    "EGG_INDETERMINATE"
+  ],
+  "evolution": null,
+  "held_items": [
+    null,
+    null
+  ],
+  "menu_icon": "ICON_BLOB",
+  "footprint_species": "GRIMER",
+  "cry": {
+    "cry": "CRY_SEEL",
+    "pitch": 0,
+    "length": 144
+  },
+  "shiny_rgb5": [
+    [
+      12,
+      29,
+      27
+    ],
+    [
+      25,
+      11,
+      20
+    ]
+  ],
+  "level_moves": [
+    [
+      1,
+      "POUND"
+    ],
+    [
+      1,
+      "MIST"
+    ],
+    [
+      5,
+      "POWDER_SNOW"
+    ],
+    [
+      9,
+      "ACID_ARMOR"
+    ],
+    [
+      13,
+      "ICY_WIND"
+    ],
+    [
+      17,
+      "HAZE"
+    ],
+    [
+      22,
+      "BODY_SLAM"
+    ],
+    [
+      27,
+      "AURORA_BEAM"
+    ],
+    [
+      32,
+      "AMNESIA"
+    ],
+    [
+      37,
+      "REST"
+    ],
+    [
+      42,
+      "ICE_BEAM"
+    ],
+    [
+      48,
+      "LIGHT_SCREEN"
+    ],
+    [
+      55,
+      "RECOVER"
+    ],
+    [
+      62,
+      "BLIZZARD"
+    ]
+  ],
+  "tmhm_moves": [
+    "ICE_BEAM",
+    "BLIZZARD",
+    "ICY_WIND",
+    "SURF",
+    "WHIRLPOOL",
+    "RAIN_DANCE",
+    "SNORE",
+    "REST",
+    "PROTECT"
+  ],
+  "egg_moves": []
+}

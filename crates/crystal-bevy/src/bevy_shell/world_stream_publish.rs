@@ -5,7 +5,7 @@ use bevy::prelude::{Assets, Image};
 
 use super::{
     BevyRuntimeShell, PublishedDestination, RenderedTilesetArt, RuntimeShellSnapshot, TilePosition,
-    connected_render_map_placements, source_frame,
+    connected_render_map_placements_to_depth, source_frame,
 };
 
 pub(super) fn publish(
@@ -47,7 +47,8 @@ pub(super) fn publish(
         .contains("ENGINE_FOREST_IS_RESTLESS")
         .hash(&mut hash);
     for (source, x, y) in
-        connected_render_map_placements(&map.map_name, &snapshot.maps).unwrap_or_default()
+        connected_render_map_placements_to_depth(&map.map_name, &snapshot.maps, None)
+            .unwrap_or_default()
     {
         source.blocks.hash(&mut hash);
         x.hash(&mut hash);

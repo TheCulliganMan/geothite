@@ -2917,10 +2917,18 @@ fn visible_intro_never_loses_its_lcd_surface_during_a_full_sequence() {
     let mut rendered_art = RenderedTilesetArt::default();
     let mut images = Assets::<Image>::default();
     let mut saw_lit_lcd_pixel = false;
+    let mut composed_scenes = std::collections::BTreeSet::new();
 
     // The ROM completes CrystalIntro on frame 2442, followed by eight cleanup frames.
     for _ in 0..2450 {
-        if let Some(intro) = runtime_shell.intro_screen.as_ref() {
+        if let Some(current) = runtime_shell.intro_screen.as_ref() {
+            let mut intro = runtime_shell
+                .intro_display_screen
+                .clone()
+                .unwrap_or_else(|| current.clone());
+            intro.ly_overrides.clone_from(&current.ly_overrides);
+            intro.lcdc_pointer = current.lcdc_pointer;
+            composed_scenes.insert(intro.jumptable_index);
             let frame = intro_scene_frame_for_art_with_bundle(
                 &mut rendered_art,
                 &runtime_shell.asset_root,
@@ -2930,11 +2938,11 @@ fn visible_intro_never_loses_its_lcd_surface_during_a_full_sequence() {
                     .data()
                     .sprite_anim_bundle
                     .as_str(),
-                intro,
+                &intro,
                 &mut images,
             )
             .unwrap_or_else(|| {
-                let key = intro_scene_art_key(intro);
+                let key = intro_scene_art_key(&intro);
                 let error = rendered_art
                     .intro_scene_errors
                     .get(&key)
@@ -2951,7 +2959,9 @@ fn visible_intro_never_loses_its_lcd_surface_during_a_full_sequence() {
                 .get(&frame.handle)
                 .expect("composed intro frame must retain its image handle");
             saw_lit_lcd_pixel |= image
-                .data.as_ref().expect("CPU image pixels")
+                .data
+                .as_ref()
+                .expect("CPU image pixels")
                 .chunks_exact(4)
                 .any(|rgba| rgba[0] > 12 || rgba[1] > 12 || rgba[2] > 12);
             assert!(
@@ -2962,6 +2972,8 @@ fn visible_intro_never_loses_its_lcd_surface_during_a_full_sequence() {
         }
         tick_visible_intro_screen(&mut runtime_shell).expect("tick intro state machine");
         if runtime_shell.intro_screen.is_none() {
+            // Dispatcher 28 is the source return/cleanup after all 28 scenes.
+            assert_eq!(composed_scenes, (0..=28).collect());
             assert!(
                 saw_lit_lcd_pixel,
                 "the complete intro must show visible LCD pixels"

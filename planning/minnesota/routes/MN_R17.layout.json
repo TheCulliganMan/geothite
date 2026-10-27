@@ -1,0 +1,1417 @@
+{
+  "materials": {
+    "floor": "36",
+    "lawn": "01",
+    "encounter": "37",
+    "flowers": "04",
+    "forest": "05",
+    "water": "02",
+    "boulder": "28",
+    "sign": "13"
+  },
+  "cliff_blocks": {
+    "68": "29",
+    "69": "2a",
+    "6a": "2b",
+    "6b": "2c",
+    "6c": "2d",
+    "6d": "2e",
+    "6e": "2f",
+    "6f": "30",
+    "70": "31",
+    "71": "32",
+    "72": "33",
+    "73": "34"
+  },
+  "shore_fitting": "forest_8_neighbors",
+  "reject_cliff_cuts": true,
+  "derived_blocks": [
+    {
+      "id": "28",
+      "source_tileset": "johto",
+      "source_block": "0a"
+    },
+    {
+      "id": "29",
+      "source_tileset": "johto",
+      "source_block": "68"
+    },
+    {
+      "id": "2a",
+      "source_tileset": "johto",
+      "source_block": "69"
+    },
+    {
+      "id": "2b",
+      "source_tileset": "johto",
+      "source_block": "6a"
+    },
+    {
+      "id": "2c",
+      "source_tileset": "johto",
+      "source_block": "6b"
+    },
+    {
+      "id": "2d",
+      "source_tileset": "johto",
+      "source_block": "6c"
+    },
+    {
+      "id": "2e",
+      "source_tileset": "johto",
+      "source_block": "6d"
+    },
+    {
+      "id": "2f",
+      "source_tileset": "johto",
+      "source_block": "6e"
+    },
+    {
+      "id": "30",
+      "source_tileset": "johto",
+      "source_block": "6f"
+    },
+    {
+      "id": "31",
+      "source_tileset": "johto",
+      "source_block": "70"
+    },
+    {
+      "id": "32",
+      "source_tileset": "johto",
+      "source_block": "71"
+    },
+    {
+      "id": "33",
+      "source_tileset": "johto",
+      "source_block": "72"
+    },
+    {
+      "id": "34",
+      "source_tileset": "johto",
+      "source_block": "73"
+    },
+    {
+      "id": "35",
+      "source_tileset": "johto",
+      "source_block": "06"
+    },
+    {
+      "id": "36",
+      "source_tileset": "johto",
+      "source_block": "01"
+    },
+    {
+      "id": "37",
+      "source_tileset": "johto",
+      "source_block": "03"
+    },
+    {
+      "id": "38",
+      "source_tileset": "johto",
+      "source_block": "79"
+    },
+    {
+      "id": "39",
+      "source_tileset": "johto",
+      "source_block": "7a"
+    },
+    {
+      "id": "3a",
+      "source_tileset": "kanto",
+      "source_block": "77",
+      "required_typed_extension": "border_pines_art::build_border_pines_art_pack"
+    },
+    {
+      "id": "3b",
+      "source_tileset": "kanto",
+      "source_block": "77",
+      "tile_row_order": [
+        2,
+        3,
+        0,
+        1
+      ],
+      "collision_source_tileset": "johto",
+      "collision_source_block": "75",
+      "required_typed_extension": "border_pines_art::build_border_pines_art_pack"
+    }
+  ],
+  "schema_version": 2,
+  "id": "MN_R17",
+  "tileset": "forest",
+  "compiled_tileset": "mn_border_pines",
+  "dimensions_metatiles": [
+    32,
+    56
+  ],
+  "coordinate_units": "32px metatiles, zero based",
+  "layers": [
+    {
+      "name": "Continuous Bemidji to International Falls woodland passage",
+      "kind": "path",
+      "material": "lawn",
+      "points": [
+        [
+          16,
+          55
+        ],
+        [
+          16,
+          48
+        ],
+        [
+          12,
+          48
+        ],
+        [
+          12,
+          41
+        ],
+        [
+          9,
+          41
+        ],
+        [
+          9,
+          33
+        ],
+        [
+          15,
+          33
+        ],
+        [
+          15,
+          26
+        ],
+        [
+          20,
+          26
+        ],
+        [
+          20,
+          17
+        ],
+        [
+          24,
+          17
+        ],
+        [
+          24,
+          10
+        ],
+        [
+          18,
+          10
+        ],
+        [
+          18,
+          0
+        ]
+      ],
+      "width_metatiles": 1
+    },
+    {
+      "name": "Southern birdwatch clearing",
+      "kind": "polygon",
+      "material": "lawn",
+      "points": [
+        [
+          15,
+          50
+        ],
+        [
+          18,
+          50
+        ],
+        [
+          18,
+          51
+        ],
+        [
+          19,
+          51
+        ],
+        [
+          19,
+          53
+        ],
+        [
+          15,
+          53
+        ]
+      ]
+    },
+    {
+      "name": "South grove discovery spur",
+      "kind": "path",
+      "material": "lawn",
+      "points": [
+        [
+          12,
+          47
+        ],
+        [
+          8,
+          47
+        ],
+        [
+          8,
+          45
+        ]
+      ],
+      "width_metatiles": 1
+    },
+    {
+      "name": "Old south cedar pocket",
+      "kind": "polygon",
+      "material": "lawn",
+      "points": [
+        [
+          6,
+          44
+        ],
+        [
+          9,
+          44
+        ],
+        [
+          9,
+          45
+        ],
+        [
+          10,
+          45
+        ],
+        [
+          10,
+          47
+        ],
+        [
+          6,
+          47
+        ]
+      ]
+    },
+    {
+      "name": "Southern roost capture pocket",
+      "kind": "rect",
+      "material": "encounter",
+      "bounds": [
+        6,
+        45,
+        8,
+        47
+      ]
+    },
+    {
+      "name": "Shared sedge forest grass neck",
+      "kind": "rect",
+      "material": "encounter",
+      "bounds": [
+        11,
+        44,
+        14,
+        46
+      ]
+    },
+    {
+      "name": "Southern end of the optional Cut return lane",
+      "kind": "path",
+      "material": "lawn",
+      "points": [
+        [
+          12,
+          41
+        ],
+        [
+          18,
+          41
+        ],
+        [
+          18,
+          35
+        ]
+      ],
+      "width_metatiles": 1
+    },
+    {
+      "name": "Northern end of the optional Cut return lane",
+      "kind": "path",
+      "material": "lawn",
+      "points": [
+        [
+          15,
+          30
+        ],
+        [
+          18,
+          30
+        ],
+        [
+          18,
+          33
+        ]
+      ],
+      "width_metatiles": 1
+    },
+    {
+      "name": "Ranger rest hut short branch",
+      "kind": "path",
+      "material": "lawn",
+      "points": [
+        [
+          20,
+          26
+        ],
+        [
+          22,
+          26
+        ],
+        [
+          22,
+          25
+        ]
+      ],
+      "width_metatiles": 1
+    },
+    {
+      "name": "Ranger yard and map reading turnout",
+      "kind": "polygon",
+      "material": "lawn",
+      "points": [
+        [
+          20,
+          25
+        ],
+        [
+          24,
+          25
+        ],
+        [
+          24,
+          26
+        ],
+        [
+          25,
+          26
+        ],
+        [
+          25,
+          28
+        ],
+        [
+          22,
+          28
+        ],
+        [
+          22,
+          27
+        ],
+        [
+          20,
+          27
+        ]
+      ]
+    },
+    {
+      "name": "Ranger rest flowers",
+      "kind": "rect",
+      "material": "flowers",
+      "bounds": [
+        23,
+        27,
+        25,
+        28
+      ]
+    },
+    {
+      "name": "West granite den and marsh-side reward approach",
+      "kind": "path",
+      "material": "lawn",
+      "points": [
+        [
+          20,
+          22
+        ],
+        [
+          5,
+          22
+        ]
+      ],
+      "width_metatiles": 1
+    },
+    {
+      "name": "West marsh habitat hook",
+      "kind": "path",
+      "material": "lawn",
+      "points": [
+        [
+          5,
+          22
+        ],
+        [
+          5,
+          24
+        ],
+        [
+          4,
+          24
+        ],
+        [
+          4,
+          29
+        ],
+        [
+          5,
+          29
+        ]
+      ],
+      "width_metatiles": 1
+    },
+    {
+      "name": "West marsh habitat",
+      "kind": "rect",
+      "material": "encounter",
+      "bounds": [
+        4,
+        27,
+        7,
+        30
+      ]
+    },
+    {
+      "name": "Wetland viewing deck bank approach",
+      "kind": "path",
+      "material": "lawn",
+      "points": [
+        [
+          15,
+          33
+        ],
+        [
+          15,
+          30
+        ],
+        [
+          15,
+          29
+        ]
+      ],
+      "width_metatiles": 1
+    },
+    {
+      "name": "Marsh lookout grass bank",
+      "kind": "polygon",
+      "material": "lawn",
+      "points": [
+        [
+          15,
+          28
+        ],
+        [
+          17,
+          28
+        ],
+        [
+          17,
+          29
+        ],
+        [
+          18,
+          29
+        ],
+        [
+          18,
+          31
+        ],
+        [
+          15,
+          31
+        ]
+      ]
+    },
+    {
+      "name": "Northern pine grass roost discovery",
+      "kind": "path",
+      "material": "lawn",
+      "points": [
+        [
+          18,
+          10
+        ],
+        [
+          12,
+          10
+        ],
+        [
+          12,
+          12
+        ],
+        [
+          8,
+          12
+        ]
+      ],
+      "width_metatiles": 1
+    },
+    {
+      "name": "Old northern pines",
+      "kind": "polygon",
+      "material": "lawn",
+      "points": [
+        [
+          7,
+          10
+        ],
+        [
+          10,
+          10
+        ],
+        [
+          10,
+          11
+        ],
+        [
+          12,
+          11
+        ],
+        [
+          12,
+          14
+        ],
+        [
+          8,
+          14
+        ],
+        [
+          8,
+          13
+        ],
+        [
+          7,
+          13
+        ]
+      ]
+    },
+    {
+      "name": "Northern roost habitat",
+      "kind": "rect",
+      "material": "encounter",
+      "bounds": [
+        8,
+        11,
+        11,
+        14
+      ]
+    },
+    {
+      "name": "Eastern fern alcove reward",
+      "kind": "path",
+      "material": "lawn",
+      "points": [
+        [
+          24,
+          14
+        ],
+        [
+          27,
+          14
+        ],
+        [
+          27,
+          13
+        ]
+      ],
+      "width_metatiles": 1
+    },
+    {
+      "name": "Fern alcove",
+      "kind": "polygon",
+      "material": "lawn",
+      "points": [
+        [
+          26,
+          12
+        ],
+        [
+          28,
+          12
+        ],
+        [
+          28,
+          15
+        ],
+        [
+          26,
+          15
+        ]
+      ]
+    },
+    {
+      "name": "Fern alcove encounter neck",
+      "kind": "rect",
+      "material": "encounter",
+      "bounds": [
+        25,
+        14,
+        27,
+        15
+      ]
+    },
+    {
+      "name": "International Falls road clearing",
+      "kind": "polygon",
+      "material": "lawn",
+      "points": [
+        [
+          17,
+          4
+        ],
+        [
+          20,
+          4
+        ],
+        [
+          20,
+          7
+        ],
+        [
+          18,
+          7
+        ],
+        [
+          18,
+          6
+        ],
+        [
+          17,
+          6
+        ]
+      ]
+    },
+    {
+      "name": "Sedge and cedar wetland channel",
+      "kind": "polygon",
+      "material": "water",
+      "points": [
+        [
+          6,
+          25
+        ],
+        [
+          10,
+          25
+        ],
+        [
+          10,
+          27
+        ],
+        [
+          13,
+          27
+        ],
+        [
+          13,
+          31
+        ],
+        [
+          14,
+          31
+        ],
+        [
+          14,
+          35
+        ],
+        [
+          16,
+          35
+        ],
+        [
+          16,
+          39
+        ],
+        [
+          13,
+          39
+        ],
+        [
+          13,
+          37
+        ],
+        [
+          11,
+          37
+        ],
+        [
+          11,
+          30
+        ],
+        [
+          8,
+          30
+        ],
+        [
+          8,
+          28
+        ],
+        [
+          6,
+          28
+        ]
+      ]
+    },
+    {
+      "name": "Small granite den face",
+      "kind": "cliff_polygon",
+      "points": [
+        [
+          3,
+          19
+        ],
+        [
+          6,
+          19
+        ],
+        [
+          6,
+          20
+        ],
+        [
+          7,
+          20
+        ],
+        [
+          7,
+          21
+        ],
+        [
+          3,
+          21
+        ]
+      ]
+    },
+    {
+      "name": "Authentic cave face",
+      "kind": "point",
+      "position": [
+        5,
+        21
+      ],
+      "block": "34"
+    },
+    {
+      "name": "Complete native forest ranger hut",
+      "kind": "point",
+      "position": [
+        22,
+        22
+      ],
+      "block": "1d"
+    },
+    {
+      "name": "Complete native forest ranger hut",
+      "kind": "point",
+      "position": [
+        23,
+        22
+      ],
+      "block": "1e"
+    },
+    {
+      "name": "Complete native forest ranger hut",
+      "kind": "point",
+      "position": [
+        24,
+        22
+      ],
+      "block": "1f"
+    },
+    {
+      "name": "Complete native forest ranger hut",
+      "kind": "point",
+      "position": [
+        22,
+        23
+      ],
+      "block": "21"
+    },
+    {
+      "name": "Complete native forest ranger hut",
+      "kind": "point",
+      "position": [
+        23,
+        23
+      ],
+      "block": "22"
+    },
+    {
+      "name": "Complete native forest ranger hut",
+      "kind": "point",
+      "position": [
+        24,
+        23
+      ],
+      "block": "23"
+    },
+    {
+      "name": "Complete native forest ranger hut",
+      "kind": "point",
+      "position": [
+        22,
+        24
+      ],
+      "block": "24"
+    },
+    {
+      "name": "Complete native forest ranger hut",
+      "kind": "point",
+      "position": [
+        23,
+        24
+      ],
+      "block": "26"
+    },
+    {
+      "name": "Complete native forest ranger hut",
+      "kind": "point",
+      "position": [
+        24,
+        24
+      ],
+      "block": "27"
+    },
+    {
+      "name": "Wetland timber bridge north rail",
+      "kind": "point",
+      "position": [
+        11,
+        32
+      ],
+      "block": "3b"
+    },
+    {
+      "name": "Wetland timber bridge south rail",
+      "kind": "point",
+      "position": [
+        11,
+        33
+      ],
+      "block": "3a"
+    },
+    {
+      "name": "Wetland timber bridge north rail",
+      "kind": "point",
+      "position": [
+        12,
+        32
+      ],
+      "block": "3b"
+    },
+    {
+      "name": "Wetland timber bridge south rail",
+      "kind": "point",
+      "position": [
+        12,
+        33
+      ],
+      "block": "3a"
+    },
+    {
+      "name": "Wetland timber bridge north rail",
+      "kind": "point",
+      "position": [
+        13,
+        32
+      ],
+      "block": "3b"
+    },
+    {
+      "name": "Wetland timber bridge south rail",
+      "kind": "point",
+      "position": [
+        13,
+        33
+      ],
+      "block": "3a"
+    },
+    {
+      "name": "Wetland timber bridge north rail",
+      "kind": "point",
+      "position": [
+        14,
+        32
+      ],
+      "block": "3b"
+    },
+    {
+      "name": "Wetland timber bridge south rail",
+      "kind": "point",
+      "position": [
+        14,
+        33
+      ],
+      "block": "3a"
+    },
+    {
+      "name": "Wetland lookout timber north rail",
+      "kind": "point",
+      "position": [
+        14,
+        29
+      ],
+      "block": "3b"
+    },
+    {
+      "name": "Wetland lookout timber south rail",
+      "kind": "point",
+      "position": [
+        14,
+        30
+      ],
+      "block": "3a"
+    },
+    {
+      "name": "Closed lookout west stone stop",
+      "kind": "point",
+      "position": [
+        13,
+        29
+      ],
+      "block": "28"
+    },
+    {
+      "name": "Closed lookout southwest stone stop",
+      "kind": "point",
+      "position": [
+        13,
+        30
+      ],
+      "block": "28"
+    },
+    {
+      "name": "Native forest Cut shortcut tree",
+      "kind": "point",
+      "position": [
+        18,
+        34
+      ],
+      "block": "0f"
+    },
+    {
+      "name": "Fitted ordinary canopy corner",
+      "kind": "point",
+      "position": [
+        7,
+        44
+      ],
+      "block": "00"
+    },
+    {
+      "name": "Fitted ordinary canopy corner",
+      "kind": "point",
+      "position": [
+        6,
+        46
+      ],
+      "block": "00"
+    },
+    {
+      "name": "Fitted ordinary canopy corner",
+      "kind": "point",
+      "position": [
+        7,
+        10
+      ],
+      "block": "00"
+    },
+    {
+      "name": "Fitted ordinary canopy corner",
+      "kind": "point",
+      "position": [
+        9,
+        10
+      ],
+      "block": "00"
+    },
+    {
+      "name": "Fitted ordinary canopy corner",
+      "kind": "point",
+      "position": [
+        10,
+        13
+      ],
+      "block": "00"
+    },
+    {
+      "name": "Fitted ordinary canopy corner",
+      "kind": "point",
+      "position": [
+        16,
+        50
+      ],
+      "block": "14"
+    },
+    {
+      "name": "Fitted ordinary canopy corner",
+      "kind": "point",
+      "position": [
+        18,
+        52
+      ],
+      "block": "0e"
+    },
+    {
+      "name": "Fitted ordinary canopy corner",
+      "kind": "point",
+      "position": [
+        10,
+        46
+      ],
+      "block": "10"
+    },
+    {
+      "name": "Fitted ordinary canopy corner",
+      "kind": "point",
+      "position": [
+        16,
+        28
+      ],
+      "block": "11"
+    },
+    {
+      "name": "Fitted ordinary canopy corner",
+      "kind": "point",
+      "position": [
+        17,
+        30
+      ],
+      "block": "12"
+    },
+    {
+      "name": "Fitted ordinary canopy corner",
+      "kind": "point",
+      "position": [
+        21,
+        27
+      ],
+      "block": "14"
+    },
+    {
+      "name": "Fitted ordinary canopy corner",
+      "kind": "point",
+      "position": [
+        21,
+        19
+      ],
+      "block": "0e"
+    },
+    {
+      "name": "Fitted ordinary canopy corner",
+      "kind": "point",
+      "position": [
+        23,
+        19
+      ],
+      "block": "16"
+    },
+    {
+      "name": "Fitted ordinary canopy corner",
+      "kind": "point",
+      "position": [
+        25,
+        16
+      ],
+      "block": "10"
+    },
+    {
+      "name": "Fitted ordinary canopy corner",
+      "kind": "point",
+      "position": [
+        17,
+        7
+      ],
+      "block": "15"
+    },
+    {
+      "name": "Fitted ordinary canopy corner",
+      "kind": "point",
+      "position": [
+        20,
+        6
+      ],
+      "block": "0e"
+    },
+    {
+      "name": "Safe interaction floor",
+      "kind": "point",
+      "position": [
+        17,
+        51
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Safe interaction floor",
+      "kind": "point",
+      "position": [
+        8,
+        46
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Safe interaction floor",
+      "kind": "point",
+      "position": [
+        5,
+        22
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Safe interaction floor",
+      "kind": "point",
+      "position": [
+        8,
+        12
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Safe interaction floor",
+      "kind": "point",
+      "position": [
+        19,
+        5
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Safe interaction floor",
+      "kind": "point",
+      "position": [
+        27,
+        13
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Safe interaction floor",
+      "kind": "point",
+      "position": [
+        5,
+        29
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Safe interaction floor",
+      "kind": "point",
+      "position": [
+        8,
+        45
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Safe interaction floor",
+      "kind": "point",
+      "position": [
+        7,
+        13
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Safe interaction floor",
+      "kind": "point",
+      "position": [
+        23,
+        26
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Native timber signpost",
+      "kind": "point",
+      "position": [
+        17,
+        53
+      ],
+      "block": "13"
+    },
+    {
+      "name": "Native timber signpost",
+      "kind": "point",
+      "position": [
+        13,
+        42
+      ],
+      "block": "13"
+    },
+    {
+      "name": "Native timber signpost",
+      "kind": "point",
+      "position": [
+        9,
+        32
+      ],
+      "block": "13"
+    },
+    {
+      "name": "Native timber signpost",
+      "kind": "point",
+      "position": [
+        23,
+        25
+      ],
+      "block": "13"
+    },
+    {
+      "name": "Native timber signpost",
+      "kind": "point",
+      "position": [
+        6,
+        21
+      ],
+      "block": "13"
+    },
+    {
+      "name": "Native timber signpost",
+      "kind": "point",
+      "position": [
+        12,
+        12
+      ],
+      "block": "13"
+    },
+    {
+      "name": "Native timber signpost",
+      "kind": "point",
+      "position": [
+        18,
+        3
+      ],
+      "block": "13"
+    },
+    {
+      "name": "Native timber signpost",
+      "kind": "point",
+      "position": [
+        26,
+        14
+      ],
+      "block": "13"
+    },
+    {
+      "name": "Woodland junction direction marker",
+      "kind": "point",
+      "position": [
+        13,
+        22
+      ],
+      "block": "13"
+    }
+  ],
+  "source_pixels_modified": false,
+  "status": "First hand-authored forest passage source proposal; native lowering remains separate.",
+  "crossings": [
+    {
+      "id": "SEDGE_CHANNEL_TIMBER_BRIDGE",
+      "north_rail_blocks": [
+        [
+          11,
+          32
+        ],
+        [
+          12,
+          32
+        ],
+        [
+          13,
+          32
+        ],
+        [
+          14,
+          32
+        ]
+      ],
+      "south_rail_blocks": [
+        [
+          11,
+          33
+        ],
+        [
+          12,
+          33
+        ],
+        [
+          13,
+          33
+        ],
+        [
+          14,
+          33
+        ]
+      ],
+      "water_under_rail_blocks": [
+        [
+          11,
+          34
+        ],
+        [
+          12,
+          34
+        ],
+        [
+          13,
+          34
+        ],
+        [
+          14,
+          34
+        ]
+      ]
+    }
+  ],
+  "docks": [
+    {
+      "id": "WETLAND_LOOKOUT",
+      "north_rail_blocks": [
+        [
+          14,
+          29
+        ]
+      ],
+      "south_rail_blocks": [
+        [
+          14,
+          30
+        ]
+      ],
+      "water_under_rail_blocks": [
+        [
+          14,
+          31
+        ]
+      ],
+      "closed_end_blocks": [
+        {
+          "position": [
+            13,
+            29
+          ],
+          "block": "28"
+        },
+        {
+          "position": [
+            13,
+            30
+          ],
+          "block": "28"
+        }
+      ]
+    }
+  ]
+}

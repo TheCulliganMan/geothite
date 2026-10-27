@@ -1,0 +1,236 @@
+{
+  "id": "MnStPaulUnionDepot",
+  "native_constant": "MN_ST_PAUL_UNION_DEPOT",
+  "status": "Native station room installed with four carpets/passive arrival5. The courier-story overlay binds the actual courier battle and separate manifest; no playable train service yet.",
+  "tileset": "train_station",
+  "dimensions_metatiles": [
+    16,
+    12
+  ],
+  "border_block": "0f",
+  "rows": [
+    "0a 16 0a 16 0a 16 0a 16 0a 16 0a 16 0a 16 0a 16",
+    "0f 0b 0b 0b 0b 0b 0b 0b 0b 0b 0b 0b 0b 0b 0b 0f",
+    "0f 14 14 14 14 10 11 15 12 13 14 14 14 14 14 0f",
+    "0f 04 04 04 04 04 04 04 04 04 04 04 04 04 04 0f",
+    "0f 06 06 06 06 06 06 06 07 08 06 06 06 06 06 0f",
+    "0f 0f 24 25 24 24 03 03 03 03 03 20 20 20 0f 0f",
+    "0f 0f 1c 1c 26 27 03 2f 2f 03 03 21 19 22 0f 0f",
+    "0f 0f 1c 1c 1c 1c 03 01 01 03 2c 21 19 22 0f 0f",
+    "0f 0f 2f 2f 03 03 03 03 03 03 2d 33 19 22 0f 0f",
+    "0f 0f 0f 0f 0c 01 01 03 03 01 01 0e 20 20 0f 0f",
+    "0f 0f 0f 0f 0c 03 03 03 03 03 03 0e 0f 0f 0f 0f",
+    "0f 0f 0f 0f 0f 0f 0f 09 09 0f 0f 0f 0f 0f 0f 0f"
+  ],
+  "public_arrival_core": [
+    15,
+    21
+  ],
+  "exit_tiles_core": [
+    [
+      14,
+      23
+    ],
+    [
+      15,
+      23
+    ],
+    [
+      16,
+      23
+    ],
+    [
+      17,
+      23
+    ]
+  ],
+  "passive_return_core": [
+    15,
+    21
+  ],
+  "warp_contract": {
+    "exit_warp_indices": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "passive_arrival_warp_index": 5,
+    "exterior_door_warp_index": 1,
+    "exterior_passive_return_warp_index": 2,
+    "status": "Native station ordering installed; all four carpets return to the safe city tile, passive arrival5 stays on FLOOR. Rail boarding remains unimplemented."
+  },
+  "boarding": {
+    "conductor_core": [
+      17,
+      9
+    ],
+    "approach_core": [
+      17,
+      10
+    ],
+    "platform_core": [
+      17,
+      7
+    ],
+    "train_door_core": [
+      12,
+      5
+    ],
+    "other_train_door_core": [
+      17,
+      5
+    ],
+    "ride_arrival_core": [
+      17,
+      11
+    ],
+    "note": "Both train doors are north of the one blocked platform throat. No public warp may target either train door."
+  },
+  "residents": [
+    {
+      "id": "MN_ST_PAUL_GLACIER_CONDUCTOR",
+      "sprite": "SPRITE_OFFICER",
+      "tile": [
+        17,
+        9
+      ],
+      "facing": "south",
+      "lines": [
+        "GLACIER LINE.",
+        "No trains today."
+      ]
+    },
+    {
+      "id": "MN_ST_PAUL_DEPOT_CLERK",
+      "sprite": "SPRITE_RECEPTIONIST",
+      "tile": [
+        7,
+        13
+      ],
+      "facing": "south",
+      "lines": [
+        "Been there before?",
+        "We can take you",
+        "back by train."
+      ]
+    },
+    {
+      "id": "MN_ST_PAUL_DEPOT_COURIER",
+      "sprite": "SPRITE_ROCKET",
+      "tile": [
+        20,
+        16
+      ],
+      "facing": "west",
+      "lines": [
+        "These survey notes",
+        "are LODE property!"
+      ],
+      "story": "Q03 courier; source encounter anchor only, no defeated flag awarded by talking."
+    },
+    {
+      "id": "MN_ST_PAUL_DEPOT_GARDENER",
+      "sprite": "SPRITE_GRAMPS",
+      "tile": [
+        25,
+        15
+      ],
+      "facing": "west",
+      "lines": [
+        "A quiet garden",
+        "between trains."
+      ]
+    },
+    {
+      "id": "MN_ST_PAUL_DEPOT_WAITING_PASSENGER",
+      "sprite": "SPRITE_TEACHER",
+      "tile": [
+        12,
+        20
+      ],
+      "facing": "south",
+      "lines": [
+        "North to lakes.",
+        "South to bluffs."
+      ]
+    }
+  ],
+  "signs": [
+    {
+      "id": "MN_GLACIER_LINE_TIMETABLE",
+      "tile": [
+        21,
+        15
+      ],
+      "lines": [
+        "GLACIER LINE",
+        "DETROIT LAKES",
+        "STAPLES",
+        "ST CLOUD",
+        "ST PAUL",
+        "RED WING",
+        "WINONA",
+        "Return to stops",
+        "you have visited."
+      ]
+    }
+  ],
+  "viewpoints": [
+    {
+      "name": "boarding throat",
+      "core": [
+        17,
+        11
+      ]
+    },
+    {
+      "name": "ticket room",
+      "core": [
+        9,
+        15
+      ]
+    },
+    {
+      "name": "courier junction",
+      "core": [
+        17,
+        16
+      ]
+    },
+    {
+      "name": "garden entrance",
+      "core": [
+        24,
+        17
+      ]
+    },
+    {
+      "name": "waiting hall, widest segment",
+      "core": [
+        16,
+        20
+      ]
+    }
+  ],
+  "exterior_binding": {
+    "hub": "MnStPaul",
+    "door_core": [
+      92,
+      69
+    ],
+    "safe_return_core": [
+      92,
+      70
+    ],
+    "status": "Original depot room preserved; relocated whole-city facade published in tight-final-v02. Rail service remains separate."
+  },
+  "native_script_binding": {
+    "status": "Not installed",
+    "network": "glacier-line.json",
+    "entry_callback": "EVENT_MN_STATION_ST_PAUL_VISITED",
+    "service_requires": "EVENT_MN_COURIER_DEFEATED",
+    "courier_battle": "Existing Q03 regional trainer/party must be authored and won through the production battle engine before granting service."
+  },
+  "story_overlay": "playable/courier-story.json"
+}

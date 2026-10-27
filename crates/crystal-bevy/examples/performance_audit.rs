@@ -11,7 +11,7 @@ fn main() -> Result<()> {
     let mut args = std::env::args().skip(1);
     let pack = PathBuf::from(
         args.next()
-            .context("expected PACK SCENARIO.json OUTPUT_DIR [--cpu-only]")?,
+            .context("expected PACK SCENARIO.json OUTPUT_DIR [--2d] [--cpu-only]")?,
     )
     .canonicalize()?;
     let recipe = args.next().context("missing scenario file or --catalog")?;
@@ -34,7 +34,9 @@ fn main() -> Result<()> {
     }
     let scenario_path = PathBuf::from(recipe);
     let directory = PathBuf::from(args.next().context("missing output directory")?);
-    let flags: Vec<_> = args.collect();
+    let mut flags: Vec<_> = args.collect();
+    let source_2d = flags.iter().any(|flag| flag == "--2d");
+    flags.retain(|flag| flag != "--2d");
     let flags: Vec<_> = flags.iter().map(String::as_str).collect();
     let (gpu, metal_trace, wait_for_metal_capture) = match flags.as_slice() {
         [] => (true, false, false),
@@ -69,7 +71,8 @@ fn main() -> Result<()> {
         CrystalRuntime::from_loaded_compiled_pack(&asset_root, loaded)?
     };
     let metadata = serde_json::json!({
-        "schema":1,"measurement_revision":9,"trace_filter":std::env::var("RUST_LOG").unwrap_or_default(),"scenario":scenario,"pack_identity":runtime.pack_identity(),
+        "schema":1,"measurement_revision":10,"trace_filter":std::env::var("RUST_LOG").unwrap_or_default(),"scenario":scenario,"pack_identity":runtime.pack_identity(),
+        "renderer":if source_2d {"2d"} else {"3d"},
         "process_id":std::process::id(),"gpu_backend":if metal_trace {"metal_system_trace"} else if gpu {"timestamp_query"} else {"disabled"},
         "os":std::env::consts::OS,"arch":std::env::consts::ARCH,
         "debug_assertions":cfg!(debug_assertions),"operation_trace":cfg!(feature="operation-trace"),
@@ -96,7 +99,7 @@ fn main() -> Result<()> {
         },
         BevyShellConfig {
             smoke_player_name: Some("CHRIS".into()),
-            voxel_view_enabled: Some(true),
+            voxel_view_enabled: Some(!source_2d),
             render_test_window_size: Some((960, 864)),
             render_test_hour: Some(12),
 

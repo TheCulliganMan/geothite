@@ -163,47 +163,108 @@ pub(super) fn parse(source: &str) -> Result<BTreeMap<String, Value>> {
 /// Preserve authored event-bytecode fallthrough across source labels. An
 /// explicit jump retains each label's own command indices for battle resumes.
 pub(super) fn materialize_event_fallthroughs(
-    vendor: &Path, source: &str, scripts: &mut BTreeMap<String, Value>,
+    vendor: &Path,
+    source: &str,
+    scripts: &mut BTreeMap<String, Value>,
 ) -> Result<()> {
     let macros = std::fs::read_to_string(vendor.join("macros/scripts/events.asm"))?;
-    let opcodes = macros.lines().map(code_part).filter_map(|line|
-        line.strip_prefix("MACRO ").map(str::to_owned)).collect::<BTreeSet<_>>();
-    ensure!(opcodes.contains("closetext") && opcodes.contains("sjump"), "source event opcode macros incomplete");
+    let opcodes = macros
+        .lines()
+        .map(code_part)
+        .filter_map(|line| line.strip_prefix("MACRO ").map(str::to_owned))
+        .collect::<BTreeSet<_>>();
+    ensure!(
+        opcodes.contains("closetext") && opcodes.contains("sjump"),
+        "source event opcode macros incomplete"
+    );
     let source = expand_underground_doors(source)?;
     let mut ordered = Vec::<String>::new();
     let mut parent = String::new();
     let mut in_macro = false;
     for line in source.lines().map(code_part) {
-        if line.starts_with("MACRO ") { in_macro = true; continue; }
-        if line == "ENDM" { in_macro = false; continue; }
-        if in_macro { continue; }
-        let label = if line.ends_with(':') { Some(line.trim_end_matches(':')) }
-            else if line.starts_with('.') && !line.contains(char::is_whitespace) { Some(line) }
-            else { None };
-        let Some(label) = label else { continue; };
-        let scoped = if label.starts_with('.') { format!("{label}@{parent}") }
-            else { parent = label.to_owned(); label.to_owned() };
-        if scripts.contains_key(&scoped) { ordered.push(scoped); }
+        if line.starts_with("MACRO ") {
+            in_macro = true;
+            continue;
+        }
+        if line == "ENDM" {
+            in_macro = false;
+            continue;
+        }
+        if in_macro {
+            continue;
+        }
+        let label = if line.ends_with(':') {
+            Some(line.trim_end_matches(':'))
+        } else if line.starts_with('.') && !line.contains(char::is_whitespace) {
+            Some(line)
+        } else {
+            None
+        };
+        let Some(label) = label else {
+            continue;
+        };
+        let scoped = if label.starts_with('.') {
+            format!("{label}@{parent}")
+        } else {
+            parent = label.to_owned();
+            label.to_owned()
+        };
+        if scripts.contains_key(&scoped) {
+            ordered.push(scoped);
+        }
     }
     let mut jumps = Vec::new();
     for (index, label) in ordered.iter().enumerate() {
         let body = scripts[label].as_array().context("event source body")?;
-        let Some(last) = body.last().and_then(|entry| entry["command"].as_str()) else { continue; };
-        if matches!(last, "end" | "endall" | "endcallback" | "reloadend" | "sjump"
-            | "farsjump" | "memjump" | "stopandsjump" | "jumpstd" | "jumptext"
-            | "jumptextfaceplayer" | "farjumptext" | "sret")
-            || !body.iter().all(|entry| entry["command"].as_str().is_some_and(|command| opcodes.contains(command))) { continue; }
+        let Some(last) = body.last().and_then(|entry| entry["command"].as_str()) else {
+            continue;
+        };
+        if matches!(
+            last,
+            "end"
+                | "endall"
+                | "endcallback"
+                | "reloadend"
+                | "sjump"
+                | "farsjump"
+                | "memjump"
+                | "stopandsjump"
+                | "jumpstd"
+                | "jumptext"
+                | "jumptextfaceplayer"
+                | "farjumptext"
+                | "sret"
+        ) || !body.iter().all(|entry| {
+            entry["command"]
+                .as_str()
+                .is_some_and(|command| opcodes.contains(command))
+        }) {
+            continue;
+        }
         // Global bodies also contain their local labels; their physical tail
         // follows the final local label rather than restarting the first one.
-        let next = ordered[index + 1..].iter().find(|next|
-            label.starts_with('.') || !next.starts_with('.'));
-        let Some(next) = next else { continue; };
-        if !scripts[next].as_array().and_then(|body| body.first())
-            .and_then(|entry| entry["command"].as_str()).is_some_and(|command| opcodes.contains(command)) { continue; }
+        let next = ordered[index + 1..]
+            .iter()
+            .find(|next| label.starts_with('.') || !next.starts_with('.'));
+        let Some(next) = next else {
+            continue;
+        };
+        if !scripts[next]
+            .as_array()
+            .and_then(|body| body.first())
+            .and_then(|entry| entry["command"].as_str())
+            .is_some_and(|command| opcodes.contains(command))
+        {
+            continue;
+        }
         jumps.push((label.clone(), next.clone()));
     }
     for (label, next) in jumps {
-        scripts.get_mut(&label).unwrap().as_array_mut().unwrap()
+        scripts
+            .get_mut(&label)
+            .unwrap()
+            .as_array_mut()
+            .unwrap()
             .push(json!({"command":"sjump", "args":[next]}));
     }
     Ok(())
@@ -342,29 +403,54 @@ mod rebuild_tests {
 
     #[test]
     fn standard_scripts_rebuild_with_stale_aggregate_and_missing_modular_file() {
-        let root = std::env::temp_dir().join(format!("geothite-standard-rebuild-{}-{}",std::process::id(),
-            std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).unwrap().as_nanos()));
+        let root = std::env::temp_dir().join(format!(
+            "geothite-standard-rebuild-{}-{}",
+            std::process::id(),
+            std::time::SystemTime::now()
+                .duration_since(std::time::UNIX_EPOCH)
+                .unwrap()
+                .as_nanos()
+        ));
         let result = (|| -> Result<()> {
             let source = root.join("vendor/pokecrystal/engine/events/std_scripts.asm");
             std::fs::create_dir_all(source.parent().unwrap())?;
             std::fs::create_dir_all(root.join("vendor/pokecrystal/data/text"))?;
-            std::fs::write(&source,"StdScripts:\n add_stdscript FreshScript\nFreshScript:\n return\n")?;
+            std::fs::write(
+                &source,
+                "StdScripts:\n add_stdscript FreshScript\nFreshScript:\n return\n",
+            )?;
             let data = root.join("apps/web/assets/data");
             std::fs::create_dir_all(data.join("story_events"))?;
             std::fs::create_dir_all(data.join("content-packs"))?;
-            std::fs::write(data.join("story_events/StandardScripts.json"),"stale")?;
-            std::fs::write(data.join("content-packs/core-modular.generated.json"),"stale")?;
+            std::fs::write(data.join("story_events/StandardScripts.json"), "stale")?;
+            std::fs::write(
+                data.join("content-packs/core-modular.generated.json"),
+                "stale",
+            )?;
             ensure_standard_catalog(&root)?;
             let aggregate = std::fs::read(data.join("story_events/StandardScripts.json"))?;
-            let modular = std::fs::read(data.join("content-packs/core-modular/story_events/StandardScripts.json"))?;
-            ensure!(aggregate == modular,"standard script copies differ");
+            let modular = std::fs::read(
+                data.join("content-packs/core-modular/story_events/StandardScripts.json"),
+            )?;
+            ensure!(aggregate == modular, "standard script copies differ");
             let catalog: Value = serde_json::from_slice(&aggregate)?;
-            ensure!(catalog["StandardScripts"]["FreshScript"].is_array(),"fresh source standard script missing");
-            std::fs::write(&source,"StdScripts:\n add_stdscript ChangedScript\nChangedScript:\n end\n")?;
+            ensure!(
+                catalog["StandardScripts"]["FreshScript"].is_array(),
+                "fresh source standard script missing"
+            );
+            std::fs::write(
+                &source,
+                "StdScripts:\n add_stdscript ChangedScript\nChangedScript:\n end\n",
+            )?;
             ensure_standard_catalog(&root)?;
-            let changed: Value = serde_json::from_slice(&std::fs::read(data.join("story_events/StandardScripts.json"))?)?;
-            ensure!(changed["StandardScripts"]["ChangedScript"].is_array()
-                && changed["StandardScripts"].get("FreshScript").is_none(),"existing outputs masked changed source");
+            let changed: Value = serde_json::from_slice(&std::fs::read(
+                data.join("story_events/StandardScripts.json"),
+            )?)?;
+            ensure!(
+                changed["StandardScripts"]["ChangedScript"].is_array()
+                    && changed["StandardScripts"].get("FreshScript").is_none(),
+                "existing outputs masked changed source"
+            );
             Ok(())
         })();
         let _ = std::fs::remove_dir_all(root);

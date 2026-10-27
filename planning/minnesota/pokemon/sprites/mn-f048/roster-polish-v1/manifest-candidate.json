@@ -1,0 +1,136 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F048",
+  "status": "native-conversion-pending",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_099": {
+      "species_id": "MN_099",
+      "name": "Vergloom",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          15,
+          22,
+          10
+        ],
+        [
+          5,
+          10,
+          9
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        10959,
+        9541,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          123,
+          181,
+          82
+        ],
+        [
+          41,
+          82,
+          74
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#7BB552",
+        "#29524A",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f048/prompt-v1.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "style_reference": {
+    "origin": "authentic local Crystal sprites",
+    "generator": "crates/crystal-assets/examples/minnesota_gen2_reference.rs",
+    "boards": [
+      "target/minnesota-pokemon/gen2-reference/starters.png",
+      "target/minnesota-pokemon/gen2-reference/bugs.png"
+    ]
+  },
+  "sprites": [
+    {
+      "id": "mn-099-vergloom-v1",
+      "species_id": "MN_099",
+      "view": "front",
+      "source": "sprites/mn-f048/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        1223,
+        700
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        10959,
+        9541,
+        0
+      ],
+      "white_detail_min_samples": 8,
+      "exterior_contour": "source_backed",
+      "sampling": "source_center"
+    },
+    {
+      "id": "mn-099-vergloom-v1",
+      "species_id": "MN_099",
+      "view": "back",
+      "source": "sprites/mn-f048/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        700,
+        1223,
+        586
+      ],
+      "fit": [
+        44,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        10959,
+        9541,
+        0
+      ],
+      "white_detail_min_samples": 16,
+      "exterior_contour": "source_backed",
+      "sampling": "source_center"
+    }
+  ],
+  "visual_review": {
+    "status": "pending",
+    "notes": "Root inspected final fit44 back against isolated prototype and original sheet: two separate eye glints survive with a dark separator; moss hood, branching arms and hanging forebody retain coherent contours. Front remains the reviewed fit54. Candidate bytes match the inspected prototype exactly; all phase/fit alternatives and original source preserved.",
+    "sheet_sha256": "",
+    "outline_profile": "source-contour-v1"
+  }
+}

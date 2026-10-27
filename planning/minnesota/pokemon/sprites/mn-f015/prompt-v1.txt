@@ -1,0 +1,17 @@
+Use case: stylized-concept
+Asset type: exact Game Boy Color Generation 2 battle pixel sprite sheet, original Minnesota monster family.
+Primary request: Living fishing lure: a painted jig with a hook tail becomes a spinner whose metal fins imitate an injured fish.
+Style reference: authentic 1999 handheld RPG Generation2 pixel art: coarse visibly square pixels, low native resolution, simple sculpted clusters, selective black outlines, restrained internal dark lines, sparse white highlights, readable eyes. All designs are entirely original. No modern vector look, gradients, antialiasing, soft shadows, textures, excessive tiny details or dithering.
+Composition: 2 columns and exactly 2 rows on pure white, no labels, dividers or text. One species per column in evolutionary order. Top row whole-body FRONT battle view facing LEFT, all extremities inside its cell. Bottom row CLOSE REAR battle PORTRAIT of same species, facing UPPER RIGHT; head and upper back fill the cell, lower torso cut off at bottom. Backs are zoomed-in rear portraits, never small whole-body turnarounds. Maintain broad white gutters. Each cell behaves as a 64x64 logical grid enlarged by nearest neighbor. Fronts ultimately occupy 56x56; backs 48x48.
+GBC color definitions: palette indices 0..3; RGB5 channels are integers0..31; packed RGB555=r|(g<<5)|(b<<10); RGB8 expansion=(v<<3)|(v>>2). Each species has its OWN four-color palette, shared ONLY between its front/back. Do not share one palette across all stages. Use flat exact colors only. Index0 white is also the sheet background.
+Column 1: Jiglet (STEEL/WATER) — Tiny living fishing jig: teardrop metal body with bright eye, one curved blunt hook tail, tiny fin pair, painted lure cheek. Front grows in size relative to previous stage. Back must retain its unique anatomy and palette.
+  palette index0: RGB5 [31, 31, 31], packedRGB555 32767 (0x7FFF), expandedRGB8 [255, 255, 255], hex #FFFFFF.
+  palette index1: RGB5 (29, 21, 8), packedRGB555 8893 (0x22BD), expandedRGB8 [239, 173, 66], hex #EFAD42.
+  palette index2: RGB5 (7, 14, 19), packedRGB555 19911 (0x4DC7), expandedRGB8 [57, 115, 156], hex #39739C.
+  palette index3: RGB5 [0, 0, 0], packedRGB555 0 (0x0000), expandedRGB8 [0, 0, 0], hex #000000.
+Column 2: Trollure (STEEL/WATER) — Large predatory spinner lure creature with broad oval metal body, articulated spinner-blade fins, blunt treble-hook tail shaped as three separated curved prongs, fierce oversized lure eye; clean original fish-lure anatomy. Front grows in size relative to previous stage. Back must retain its unique anatomy and palette.
+  palette index0: RGB5 [31, 31, 31], packedRGB555 32767 (0x7FFF), expandedRGB8 [255, 255, 255], hex #FFFFFF.
+  palette index1: RGB5 (28, 17, 8), packedRGB555 8764 (0x223C), expandedRGB8 [231, 140, 66], hex #E78C42.
+  palette index2: RGB5 (5, 10, 16), packedRGB555 16709 (0x4145), expandedRGB8 [41, 82, 132], hex #295284.
+  palette index3: RGB5 [0, 0, 0], packedRGB555 0 (0x0000), expandedRGB8 [0, 0, 0], hex #000000.
+All six/four views are ORIGINAL creature designs that embody the theme in their anatomy. No accessories held by humans, no costumes, no scenery, no ground shadows, no text or palette swatches. Prioritize Gen2 battle readability over illustration detail.

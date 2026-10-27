@@ -1,0 +1,23 @@
+Use case: stylized-concept. Asset type: production Game Boy Color creature battle sprite sheet.
+
+Create ORIGINAL Gen2-era monster pixel art. This is actual sprite artwork with coarse square-pixel clusters, not an illustration to be pixelated later. Pure white background. NO captions/text/grid lines/palette swatches/shadows. Crisp stepped black exterior silhouettes; spare connected interior black structural seams; flat color planes. No gradients, antialiasing, soft edges, glossy rendering, tiny noisy texture, single-pixel confetti or smooth vector curves. Respect authentic late-1990s Pokemon Crystal sprite economy, readable eyes and structural evolution; do not copy any existing Pokemon identity.
+
+Layout exactly 2 columns by 2 rows. Columns left-to-right: Kilnook, Glazaur. Each column is ONE species. Upper row: full-body FRONT 3/4 facing LEFT at native56x56 language. Lower row: CLOSE REAR PORTRAIT facing UPPER RIGHT at native48x48 language. Back is a huge head/neck/near-shoulder view, lower body visibly cut at bottom, authentic Crystal battle framing. Enlarge each back head/shoulder strongly; do not draw a complete miniature full-body turnaround. Leave wide clean white gutters between cells, all artwork disjoint. Display artwork enlarged nearest-neighbor for source sheet; favor about5-7sourcepixels per nativepixel. Front stages show proportional growth; every back fills its cell as a close portrait.
+
+Theme: Red Wing clay craft and salt-glazed stoneware: a kneading clay creature fires its own surface into patterned protective pottery planes.
+
+Design constraints: No logos, numbers or copied pottery trademarks. Ceramic motifs are broad blue swirls, not fine glaze texture. Warm clay becomes lighter fired planes; keep visibly distinct from the metal furnace starter. Use a broad lip-mask, never the long spout/arched body of Contrakett.
+
+IMPORTANT: Glazaur has a WIDE CERAMIC LIP-MASK and SHORT BLUNT MUZZLE, not a long snout/spout, not arched teapot. Four short planted legs, broad fired-glaze plates, squat crock belly, shoulder handle-loops that become armor. Kilnook low soft clay mound with thick loop elbows and ribbon tail. Keep cobalt motifs to one or two broad swirls, no logo or number.
+
+Species anatomy and each independent hardware palette (front and back MUST match). Each species uses EXACTLY FOUR inks: white, its own two chromatic colors and pure black. White is valid enclosed eye/body highlight ink; black also outlines white body parts. The sheet globally can exceed four colors because species use different palettes. Never share one palette across the whole evolution line. RGB555 packing is r|(g<<5)|(b<<10); RGB8 expansion is (v<<3)|(v>>2).
+
+MN_205 Kilnook FIRE/GROUND: A warm clay kneader has a broad hollow cheek, two thick loop arms and a curled clay ribbon tail; its belly stays soft and its footprints have a thumb-pressed spiral. SILHOUETTE: Low squashy mound with large loop elbows and one upright ribbon tail.
+
+Exact Kilnook palette: RGB5=[(31, 31, 31), (25, 15, 9), (8, 11, 18), (0, 0, 0)]; RGB555=[32767, 9721, 18792, 0]; RGB8=[[255, 255, 255], [206, 123, 74], [66, 90, 148], [0, 0, 0]]; HEX=['#FFFFFF', '#CE7B4A', '#425A94', '#000000'].
+
+MN_206 Glazaur FIRE/ROCK: Firing gives it broad rigid glaze plates, a wide ceramic lip-mask with a short blunt muzzle and a heavy crock-like belly carried on four short legs. Handle-like shoulder loops lock down as armor, and cobalt-like marks follow the plate joints. SILHOUETTE: Squat broad-lipped blunt-muzzled ceramic beast with paired shoulder loops, round belly and upturned thick tail; no furnace door or chimney.
+
+Exact Glazaur palette: RGB5=[(31, 31, 31), (28, 24, 17), (5, 10, 20), (0, 0, 0)]; RGB555=[32767, 18204, 20805, 0]; RGB8=[[255, 255, 255], [231, 198, 140], [41, 82, 165], [0, 0, 0]]; HEX=['#FFFFFF', '#E7C68C', '#2952A5', '#000000'].
+
+Final quality: original appealing themed monsters, clear eye whites, bold broad anatomical planes, readable limbs and deeply different evolutionary silhouettes. Black silhouette rims must be continuous wherever they border white paper; white highlights stay enclosed inside the rim. A few deliberate open colored contour accents may echo Gen2, but no fragmented dotted outlines. Keep open cropping of lower back at the bottom.

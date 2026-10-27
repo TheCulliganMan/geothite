@@ -1,0 +1,15 @@
+{
+  "generation": "new original artwork",
+  "input_images": [],
+  "text_style_reference_boards": [
+    "target/minnesota-pokemon/gen2-reference/starters.png",
+    "target/minnesota-pokemon/gen2-reference/bugs.png"
+  ],
+  "regional_sources": [
+    {
+      "url": "https://www.wintercarnival.com/events/legend-events",
+      "institution": "Saint Paul Festival and Heritage Foundation",
+      "supports": "Official program includes Vulcan Reveal, Victory Torchlight Parade and Overthrow of King Boreas. Original Torchcap anatomy and powers are fictional pageant inspiration, not a portrayal of a real performer."
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+# Northern route visual audit — 2026-10-26
+
+Read-only review of the current R08, R11, R12 and R14 whole maps and walking-camera compositions. No terrain, actors, scripts, ports, packs or renderer code changed. The two hand edits below are proposals for Root's selection, not applied revisions. The evidence uses native source-art pixels; cropped source images do not prove native input, current collision reachability, earned progression or user visual acceptance.
+
+Compared authentic Johto [Route30](../renders/headwaters-trail/source-Route30.png), [Route29](../renders/headwaters-trail/source-Route29.png), [Route42](../renders/mille-lacs-shore/reference-Route42.png) and [Ilex Forest](../renders/headwaters-trail/source-IlexForest.png) by sight. Route30's coherent grass edges and pine fingers make the walking space legible; Route42's wider spaces serve visible shore/cliff choices. Ilex's tighter forest framing supports quieter passages. These references do not imply that every route must be equally narrow or use the same palette.
+
+Generated crops and previews are retained under `renders/quality-audit-lakes-headwaters/`, with exact160×144 originals,4× previews and both sides of each crop/resize in `stages/`. Shared `save_render` retains exact encoded bytes and all prior aliases in full-SHA history. Two inspected comparison sheets: [R08/R14 and Johto](../renders/quality-audit-lakes-headwaters/route-player-scale-review.png) and [R11/R12](../renders/quality-audit-lakes-headwaters/north-shore-gunflint-player-review.png). No image was deleted.
+
+## R08 Northern Lake Circuit — highest-priority bounded correction
+
+Inspected [current whole acf04716](../renders/northern-lakes/whole-route-acf04716.png), [all thirteen authored viewpoints](../renders/northern-lakes/viewpoints.png), the exact existing emptiest-ground crop and three newly retained walking-camera crops: [core55,47](../renders/quality-audit-lakes-headwaters/R08-empty-lawn-55-47-160.png), [42,35](../renders/quality-audit-lakes-headwaters/R08-main-approach-42-35-160.png) and [47,49](../renders/quality-audit-lakes-headwaters/R08-bridge-east-47-49-160.png).
+
+The railed Cut island, narrow grass bank, Cedar shore marsh and fishing pier have readable individual identities. The weakness is the connector immediately southeast of Long Lake: `(55,47)` shows almost a complete frame of lawn between two parallel pale paths. `(47,49)` shows another large rectangular pale elbow surrounding unused grass. Neither frame communicates the nearby lakes or a meaningful choice. The whole map reveals the two lake circuits; the walking camera loses that structure here. Adding an isolated prop would leave the underlying empty span intact.
+
+**Proposed exact hand stroke:** one named `kind:polygon`, `material:forest`, metatile points `[[25,22],[32,22],[32,21],[37,21],[37,24],[25,24]]`, including an orthogonal closing edge. This extends the existing eastern cedar mass into the unused middle lawn. Keep its western tip at meta25 so the main vertical lane at meta24 stays clear. Keep the Long Lake return at y21/x24–31 and Cedar shore return at y25, plus the x34 east-return bend, unchanged. Existing eastern forest begins at x37; the new northern arm joins that boundary instead of becoming a floating tree island. This changes the blank connector into distinct north/south shore corridors while preserving the overall extent and lake identities.
+
+No actor, pickup, sign, port, bridge, native Cut quadrant, island rail or ledge anchor lies in the proposed polygon. This is a coordinate inspection, not a completed topology proof. Before accepting an implementation, rerun actual native walking+Surf/Cut/grass/ledge checks, inspect both former blank positions from their nearest remaining walking Floor and inspect the two retained path junctions. Do not treat an inaccessible former lawn viewpoint as a new quality proof.
+
+## R11 North Shore — secondary shoulder correction
+
+Inspected [current report whole4072258f](../renders/north-shore/whole-route-4072258f.png), [its complete camera sheet](../renders/north-shore/viewpoints-4072258f.png), [core37,27](../renders/quality-audit-lakes-headwaters/R11-empty-37-27-160.png), [routine shore39,53](../renders/quality-audit-lakes-headwaters/R11-routine-shore-39-53-160.png) and [lighthouse lookout53,104](../renders/quality-audit-lakes-headwaters/R11-lookout-53-104-160.png). This current report image is used instead of silently relying on the runbook's earlier5137eb4a whole.
+
+The whole coast is a coherent sequence: fishing bend, basalt rib, waterfall inlet, gorge bridge and lighthouse. The basalt camera already has a meaningful rock obstacle and adjoining habitat; the lighthouse's broader paved lookout serves its facade, resident and shore rail, so it is not equivalent to R08's empty inland lawn. The weaker routine camera is `(37,27)`: a clear vertical path occupies the left half while an uninterrupted lawn apron occupies most of the right half; the fishing interaction lies farther down.
+
+**Optional exact hand stroke:** named `kind:rect`, `material:forest`, metatile bounds `[19,11,21,14]` (half-open). This joins the northern woodland and brings its edge into the routine walking view while retaining the road at x17, the green shoulder at x18 and the south fishing turn at y16. It avoids the existing NPC `(35,31)`, fishing actors/pickup/sign and all coast/waterfall/bridge anchors. This is a smaller composition issue than R08, and the proposal needs a new whole/walking-camera review plus actual topology checks before selection. No new rocks, signs or rewards are proposed.
+
+## R12 Gunflint — retain geometry in this pass
+
+Inspected [wholeb85c90e4](../renders/gunflint/whole-route-b85c90e4.png), [all ten current cameras](../renders/gunflint/viewpoints-b85c90e4.png), [north Loons108,12](../renders/quality-audit-lakes-headwaters/R12-north-loons-108-12-160.png), [west bank46,37](../renders/quality-audit-lakes-headwaters/R12-west-bank-46-37-160.png) and [ranger yard85,87](../renders/quality-audit-lakes-headwaters/R12-ranger-yard-85-87-160.png).
+
+The north Loons frame is the quietest: a straight unoccupied grass trail between close forest edges. The neighboring watcher and item lie beyond this particular frame, and repeated canopy can feel monotonous. Unlike R08's broad central lawn, however, the passage has a clear edge and short directional purpose. The west-bank frame still shows lake water along its left edge, so the tree buffer does not erase the lake identity completely. The ranger yard is framed by its cabin, sign, understory and a small clear door landing. The whole map's two distinct lake/portage areas and room excursions remain legible. No sufficiently concrete bounded improvement justifies changing frozen geometry here; retain it rather than adding a prop to every quiet camera.
+
+## R14 Headwaters — retain geometry in this pass
+
+Inspected [whole64c05a5b](../renders/headwaters-trail/whole-route-64c05a5b.png), [all fourteen camera views](../renders/headwaters-trail/viewpoints-389905a5.png), existing exact emptiest-ground RGB and new [worst71,17](../renders/quality-audit-lakes-headwaters/R14-worst-71-17-160.png) / [survey bank29,23](../renders/quality-audit-lakes-headwaters/R14-shore-bank-29-23-160.png).
+
+The upper pine circuit is the weakest composition, but its worst frame still contains the trainer at the top, close pine boundaries, the old-pine crown band and a visible pale return spur. The negative space belongs to a local walking/shortcut decision; it does not span an anonymous clearing. The survey-bank frame combines encounter grass, a clear approach and the ledge face with the lower path visible beyond it. Whole-map river/boardwalk separation, pond landing and southern fen remain distinct. No concrete correction is proposed. This is a visual judgment of these frames, not acceptance based on tile counts or test results.
+
+## Selection and limits
+
+Prioritize the R08 pine peninsula if Root selects one improvement; consider the R11 attached shoulder finger separately. R12 and R14 remain unchanged in this audit. No quota of edits, props, grass or compactness is applied. Root owns source selection, native integration, publication and production controller verification; the human's final visual approval remains open.

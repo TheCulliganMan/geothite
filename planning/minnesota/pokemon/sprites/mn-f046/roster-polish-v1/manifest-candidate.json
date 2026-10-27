@@ -1,0 +1,134 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F046",
+  "status": "native-conversion-pending",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_097": {
+      "species_id": "MN_097",
+      "name": "Pepivern",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          12,
+          23,
+          29
+        ],
+        [
+          7,
+          8,
+          19
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        30444,
+        19719,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          99,
+          189,
+          239
+        ],
+        [
+          57,
+          66,
+          156
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#63BDEF",
+        "#39429C",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f046/prompt-v1.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "style_reference": {
+    "origin": "authentic local Crystal sprites",
+    "generator": "crates/crystal-assets/examples/minnesota_gen2_reference.rs",
+    "boards": [
+      "target/minnesota-pokemon/gen2-reference/starters.png",
+      "target/minnesota-pokemon/gen2-reference/bugs.png"
+    ]
+  },
+  "sprites": [
+    {
+      "id": "mn-097-pepivern-v1",
+      "species_id": "MN_097",
+      "view": "front",
+      "source": "sprites/mn-f046/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        1161,
+        677
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        30444,
+        19719,
+        0
+      ],
+      "exterior_contour": "solid",
+      "sampling": "area_vote"
+    },
+    {
+      "id": "mn-097-pepivern-v1",
+      "species_id": "MN_097",
+      "view": "back",
+      "source": "sprites/mn-f046/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        677,
+        1161,
+        678
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        30444,
+        19719,
+        0
+      ],
+      "exterior_contour": "solid",
+      "sampling": "area_vote"
+    }
+  ],
+  "visual_review": {
+    "status": "pending",
+    "notes": "Inspected frozen v1: Pepivern white crest and paddle-fin rims now form readable connected contours; wake-shaped back ridge and blue neck planes remain clear. Close rear crest/fin shoulder keeps lower coil cropped.",
+    "sheet_sha256": "",
+    "outline_profile": "solid-exterior-v1"
+  }
+}

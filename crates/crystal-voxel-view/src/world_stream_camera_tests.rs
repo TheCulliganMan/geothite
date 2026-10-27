@@ -2,6 +2,19 @@
 #[test]
 #[cfg(not(target_arch = "wasm32"))]
 fn pending_world_window_aligns_support_before_resolving_the_camera() {
+    check_pending_window(false, "SupportTest");
+}
+
+#[test]
+#[cfg(not(target_arch = "wasm32"))]
+fn production_route_and_doorway_keep_the_complete_view_while_replacement_loads() {
+    for map in ["SupportTest", "RouteB", "GateHouse"] {
+        check_pending_window(true, map);
+    }
+}
+
+#[cfg(not(target_arch = "wasm32"))]
+fn check_pending_window(gpu_required: bool, map: &str) {
     let (mut built, _) = crate::world_stream::test_frames::connected_frames(IVec2::new(40, 0));
     built.map_id = "SupportTest".into();
     std::sync::Arc::make_mut(&mut built.source_regions)[0].map_id = built.map_id.clone();
@@ -42,8 +55,28 @@ fn pending_world_window_aligns_support_before_resolving_the_camera() {
         .world_pose(&built, &heights)
         .transform();
     let mut live = built.clone();
+    live.map_id = map.into();
     live.grid_origin.x += 8;
     live.center.x += live.tile_size.x * 8.;
+    if map == "RouteB" {
+        live.grid_origin.x -= 40;
+        live.source_regions = vec![
+            crystal_render_api::VisualSourceRegion {
+                map_id: map.into(),
+                origin: IVec2::ZERO,
+                size: UVec2::splat(40),
+            },
+            crystal_render_api::VisualSourceRegion {
+                map_id: built.map_id.clone(),
+                origin: IVec2::new(-40, 0),
+                size: UVec2::splat(40),
+            },
+        ]
+        .into();
+    } else {
+        std::sync::Arc::make_mut(&mut live.source_regions)[0].map_id = live.map_id.clone();
+    }
+    live.validate().expect("complete destination frame");
     assert!(
         !terrain_tracking::can_reuse(&built, &live),
         "replacement work stays pending"
@@ -61,7 +94,7 @@ fn pending_world_window_aligns_support_before_resolving_the_camera() {
         .spawn((
             Camera::default(),
             Projection::default(),
-            Transform::IDENTITY,
+            expected,
             VoxelWorldCamera,
         ))
         .id();
@@ -69,10 +102,16 @@ fn pending_world_window_aligns_support_before_resolving_the_camera() {
         .world_mut()
         .resource_mut::<Assets<Mesh>>()
         .add(Mesh::from(Rectangle::new(1., 1.)));
+    let root_pose = terrain_transform(&built);
+    let root = app
+        .world_mut()
+        .spawn((VoxelTerrain, Visibility::Visible, root_pose))
+        .id();
     app.insert_resource(builds)
         .insert_resource(TerrainRevisionCache {
             key: Some(TerrainCacheKey::from_frame(&built)),
             built_frame: Some(built),
+            solid_entity: Some(root),
             built_footing_heights: heights.clone(),
             footing_heights: heights,
             painted_stone: Some(atlas.clone()),
@@ -85,11 +124,24 @@ fn pending_world_window_aligns_support_before_resolving_the_camera() {
         })
         .insert_resource(live)
         .add_systems(Update, sync_voxel_view);
+    app.world_mut()
+        .resource_mut::<TerrainRevisionCache>()
+        .uploads
+        .require_gpu(gpu_required);
+    if gpu_required {
+        app.world_mut().resource_mut::<VoxelViewStatus>().active = true;
+    }
     for _ in 0..2 {
         app.update();
         let status = app.world().resource::<VoxelViewStatus>();
         assert!(status.active, "{:?}", status.inactive_reason);
         assert!(status.terrain_pending);
+        assert_eq!(status.scene_held, gpu_required);
+        assert_eq!(
+            app.world().get::<Visibility>(root),
+            Some(&Visibility::Visible)
+        );
+        assert_eq!(app.world().get::<Transform>(root), Some(&root_pose));
         assert_eq!(
             *app.world().get::<Transform>(camera).expect("world camera"),
             expected,

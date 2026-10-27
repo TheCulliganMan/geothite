@@ -1,0 +1,652 @@
+{
+  "schema_version": 1,
+  "id": "MN_BOUNDARY_WATERS_SAFARI",
+  "name": "Boundary Waters Safari Preserve",
+  "status": "Authored preserve terrain and actual cabin are published in the 450-map local pack; five production-controller cases pass. Safari runtime and earned regional entry remain pending, so native expedition admission is closed without charging.",
+  "parent_hub": "MnBoundaryWaters",
+  "design_runbook": "../playable/boundary-waters-safari.md",
+  "style": "Water-first canoe-country preserve: mostly connected lakes, pine-lined shores, grass habitat pockets and real portages, using original Johto/Kanto source tiles.",
+  "free_basecamp": {
+    "map": "MnBoundaryWaters",
+    "dimensions_metatiles": [
+      32,
+      24
+    ],
+    "destinations": [
+      "MN_R12 Gunflint arrival",
+      "MN_R13 League departure",
+      "MN_R20 Voyageurs arrival",
+      "MnBoundaryWatersSurveyShelter Q07 receiver scene",
+      "ranger check-in and free early return"
+    ],
+    "story_access": "All three route ports and the Q07 shelter are reachable without a Safari fee, active permit, step counter or remaining balls."
+  },
+  "expedition": {
+    "entry_fee": 500,
+    "ball_id": "SAFARI_BALL",
+    "initial_balls": 30,
+    "initial_steps": 500,
+    "budget_unit": "one successful authoritative player movement action inside the preserve: ordinary step, Surf step, ledge hop or map-connection crossing step",
+    "entry_policy": "Charge once after confirmation and all entry/storage checks; transactionally initialize a fresh expedition and warp to safe arrival.",
+    "continue_policy": "Resume saved balls, steps, habitat and position without a new charge or reroll.",
+    "end_reasons": [
+      "manual early return",
+      "last ball resolves",
+      "last walking/Surf tile step resolves"
+    ],
+    "end_policy": "Finish the current capture/flee result, preserve every caught Pok\u00e9mon and earned item, clear expedition-only resources and return to free ranger basecamp.",
+    "special_ball_storage": "Dedicated expedition state, never normal bag inventory.",
+    "real_time_limit": false,
+    "party_retained": true,
+    "ordinary_trainer_battles_inside": false,
+    "step_accounting": {
+      "ordinary_step": 1,
+      "surf_step": 1,
+      "ledge_hop": 1,
+      "connection_crossing_step": 1,
+      "surf_mount_movement_inside_preserve": 1,
+      "blocked_input": 0,
+      "facing_turn": 0,
+      "menu_or_dialogue": 0,
+      "battle_turn_or_animation": 0,
+      "npc_movement": 0,
+      "entry_or_return_warp": 0
+    },
+    "required_movement": "Native Surf access for the optional preserve: preflight a known SURF partner and the native badge before charging. Mandatory regional through-travel and Q07 remain free and walkable outside."
+  },
+  "capture_encounters": {
+    "commands": [
+      "SAFARI_BALL",
+      "BAIT",
+      "ROCK",
+      "RUN"
+    ],
+    "player_attacks": false,
+    "ordinary_bag_items": false,
+    "opponent_attacks": false,
+    "pokemon_can_flee": true,
+    "bait": "For 2\u20135 wildlife responses: catch-rate factor 1/2 and flee-threshold factor 1/2; replaces prior disposition.",
+    "rock": "For 2\u20135 wildlife responses: catch-rate factor 2 and flee-threshold factor 2; replaces prior disposition.",
+    "storage": "Use authoritative capture/Pok\u00e9dex/party/PC delivery. Validate room before entry and handle storage exhaustion inside an encounter without deleting a catch."
+  },
+  "candidate_extent_metatiles": [
+    48,
+    40
+  ],
+  "candidate_chunks": [
+    {
+      "id": "MnBoundarySafariC00R00",
+      "column": 0,
+      "row": 0,
+      "dimensions_metatiles": [
+        32,
+        24
+      ]
+    },
+    {
+      "id": "MnBoundarySafariC01R00",
+      "column": 1,
+      "row": 0,
+      "dimensions_metatiles": [
+        16,
+        24
+      ]
+    },
+    {
+      "id": "MnBoundarySafariC00R01",
+      "column": 0,
+      "row": 1,
+      "dimensions_metatiles": [
+        32,
+        16
+      ]
+    },
+    {
+      "id": "MnBoundarySafariC01R01",
+      "column": 1,
+      "row": 1,
+      "dimensions_metatiles": [
+        16,
+        16
+      ]
+    }
+  ],
+  "candidate_neighbors": [
+    {
+      "a": "MnBoundarySafariC00R00",
+      "direction": "east",
+      "b": "MnBoundarySafariC01R00"
+    },
+    {
+      "a": "MnBoundarySafariC00R00",
+      "direction": "south",
+      "b": "MnBoundarySafariC00R01"
+    },
+    {
+      "a": "MnBoundarySafariC01R00",
+      "direction": "south",
+      "b": "MnBoundarySafariC01R01"
+    },
+    {
+      "a": "MnBoundarySafariC00R01",
+      "direction": "east",
+      "b": "MnBoundarySafariC01R01"
+    }
+  ],
+  "candidate_habitats": [
+    {
+      "id": "REED_MARSH",
+      "name": "Reed Marsh",
+      "reserved_bounds_metatiles": [
+        [
+          0,
+          24
+        ],
+        [
+          24,
+          40
+        ]
+      ],
+      "play": "Entry lake and reed-fringed shores, pine islands and a protected landing; a short grassy portage changes lakes.",
+      "weighted_encounters": [
+        {
+          "species": "WOOPER",
+          "level": 30,
+          "weight": 30,
+          "surfaces": [
+            "grass",
+            "water"
+          ]
+        },
+        {
+          "species": "QUAGSIRE",
+          "level": 32,
+          "weight": 20,
+          "surfaces": [
+            "grass",
+            "water"
+          ]
+        },
+        {
+          "species": "YANMA",
+          "level": 29,
+          "weight": 15,
+          "surfaces": [
+            "grass"
+          ]
+        },
+        {
+          "species": "PSYDUCK",
+          "level": 30,
+          "weight": 15,
+          "surfaces": [
+            "grass",
+            "water"
+          ]
+        },
+        {
+          "species": "GOLDUCK",
+          "level": 33,
+          "weight": 10,
+          "surfaces": [
+            "grass",
+            "water"
+          ]
+        },
+        {
+          "species": "SUNKERN",
+          "level": 28,
+          "weight": 8,
+          "surfaces": [
+            "grass"
+          ]
+        },
+        {
+          "species": "SUDOWOODO",
+          "level": 33,
+          "weight": 2,
+          "surfaces": [
+            "grass"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "PINE_PORTAGE",
+      "name": "Pine Portage",
+      "reserved_bounds_metatiles": [
+        [
+          0,
+          0
+        ],
+        [
+          24,
+          24
+        ]
+      ],
+      "play": "Pine-lined upper lake and grassy shoreline pockets; a real landing-to-landing portage and optional Cut-gated thicket.",
+      "weighted_encounters": [
+        {
+          "species": "STANTLER",
+          "level": 33,
+          "weight": 25,
+          "surfaces": [
+            "grass"
+          ]
+        },
+        {
+          "species": "PINECO",
+          "level": 30,
+          "weight": 20,
+          "surfaces": [
+            "grass"
+          ]
+        },
+        {
+          "species": "ARIADOS",
+          "level": 31,
+          "weight": 15,
+          "surfaces": [
+            "grass"
+          ]
+        },
+        {
+          "species": "NOCTOWL",
+          "level": 32,
+          "weight": 15,
+          "surfaces": [
+            "grass"
+          ]
+        },
+        {
+          "species": "GIRAFARIG",
+          "level": 33,
+          "weight": 12,
+          "surfaces": [
+            "grass"
+          ]
+        },
+        {
+          "species": "TEDDIURSA",
+          "level": 32,
+          "weight": 10,
+          "surfaces": [
+            "grass"
+          ]
+        },
+        {
+          "species": "HERACROSS",
+          "level": 34,
+          "weight": 3,
+          "surfaces": [
+            "grass"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "GRANITE_SHORE",
+      "name": "Granite Shore",
+      "reserved_bounds_metatiles": [
+        [
+          24,
+          0
+        ],
+        [
+          48,
+          20
+        ]
+      ],
+      "play": "Northeastern lake cove with small granite outcrops, grassy shore and pine shelter. Rock is shoreline punctuation, not a broad dry plateau.",
+      "weighted_encounters": [
+        {
+          "species": "PHANPY",
+          "level": 31,
+          "weight": 25,
+          "surfaces": [
+            "grass"
+          ]
+        },
+        {
+          "species": "RHYHORN",
+          "level": 34,
+          "weight": 20,
+          "surfaces": [
+            "grass"
+          ]
+        },
+        {
+          "species": "TEDDIURSA",
+          "level": 32,
+          "weight": 18,
+          "surfaces": [
+            "grass"
+          ]
+        },
+        {
+          "species": "DUNSPARCE",
+          "level": 30,
+          "weight": 15,
+          "surfaces": [
+            "grass"
+          ]
+        },
+        {
+          "species": "SHUCKLE",
+          "level": 32,
+          "weight": 12,
+          "surfaces": [
+            "grass"
+          ]
+        },
+        {
+          "species": "ONIX",
+          "level": 33,
+          "weight": 8,
+          "surfaces": [
+            "grass"
+          ]
+        },
+        {
+          "species": "LARVITAR",
+          "level": 35,
+          "weight": 2,
+          "surfaces": [
+            "grass"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "QUIET_WATER",
+      "name": "Quiet Water Islands",
+      "reserved_bounds_metatiles": [
+        [
+          24,
+          20
+        ],
+        [
+          48,
+          40
+        ]
+      ],
+      "play": "Large linked lake basins, navigable narrows and low grassy/pine islands; deliberate optional island landings and visible water boundaries.",
+      "weighted_encounters": [
+        {
+          "species": "SLOWPOKE",
+          "level": 32,
+          "weight": 30,
+          "surfaces": [
+            "water"
+          ]
+        },
+        {
+          "species": "REMORAID",
+          "level": 30,
+          "weight": 25,
+          "surfaces": [
+            "water"
+          ]
+        },
+        {
+          "species": "CORSOLA",
+          "level": 32,
+          "weight": 18,
+          "surfaces": [
+            "water"
+          ]
+        },
+        {
+          "species": "MANTINE",
+          "level": 34,
+          "weight": 12,
+          "surfaces": [
+            "water"
+          ]
+        },
+        {
+          "species": "DRATINI",
+          "level": 34,
+          "weight": 8,
+          "surfaces": [
+            "water"
+          ]
+        },
+        {
+          "species": "LAPRAS",
+          "level": 35,
+          "weight": 5,
+          "surfaces": [
+            "water"
+          ]
+        },
+        {
+          "species": "DRAGONAIR",
+          "level": 36,
+          "weight": 2,
+          "surfaces": [
+            "water"
+          ]
+        }
+      ]
+    }
+  ],
+  "navigation_contracts": [
+    "One connected complete preserve, rendered at once at native proportions. Four habitats are composition regions, not four copied rectangles.",
+    "The optional preserve is designed around native Surf travel; verify known move/native badge before taking admission. Do not invent a canoe movement mode or bypass HM permissions.",
+    "Measure genuine connected-water lake channels, paired portage landings and walking/Surf transfer reachability. Preserve safe early retirement from accessible landings.",
+    "Water islands require native Surf; canoe is the map theme, not an implemented new movement mode or free HM bypass.",
+    "Every unconnected Surf edge uses visible native buoys or water rocks with actual blocking collision.",
+    "Only actual reciprocal neighboring map water seams stay open.",
+    "Each Cut tree seals a rare habitat/reward/shortcut; full walking+Surf reachability must prove no unintended bypass.",
+    "Ledges provide useful one-way returns and honest walking routes back.",
+    "Short accessible grass/water choices trade encounter opportunity against the remaining step budget.",
+    "The entry gate must be visibly authored and control the only walking approach from paid arrival to the lake launch. Keep admission checks in the free basecamp before charging/warping.",
+    "Use four genuine grassy portages with safe lake landings. Two isolate pocket lakes; two connect different arms of the same connected chain with a shorter land crossing and measured paddle alternative. No dry walking bypass around each declared grass neck."
+  ],
+  "story_contract": {
+    "quest": "Q07",
+    "shelter": "MnBoundaryWatersSurveyShelter",
+    "required_flag_for_R13": "EVENT_MN_SURVEY_RESTORED",
+    "paid_expedition_required_for_story": false,
+    "chief_battle_location": "Free survey shelter outside Safari rules",
+    "sidequest_rule": "Voyageurs arrival and border-circuit reward fire at the free hub; no paid session or captured rare species required."
+  },
+  "implementation": {
+    "existing": [
+      "Native Safari Ball capture rule",
+      "Native capture/Pok\u00e9dex/storage path",
+      "Native Surf/Cut/ledges and production controller",
+      "Bug Contest lifecycle patterns for reference"
+    ],
+    "required": [
+      "Serialized Safari expedition state and pack configuration",
+      "Explicit capture-only Safari battle kind and command handling",
+      "Typed Safari start/end scripts, transactional entry and safe return",
+      "Authoritative successful-step accounting including Surf, ledges and connections",
+      "Snapshot/HUD/Start surfaces shared by native/2D/TUI/MCP through VisibleShellController",
+      "Safari-specific habitat tables, conditional entry/retirement bindings and actual regional basecamp access; existing preserve terrain and cabin publication are complete.",
+      "Backward-compatible inactive defaults for older saves; active-session zone, map, counter, pending-result and return-destination validation."
+    ]
+  },
+  "acceptance": [
+    "No money/balls/steps spent when declining entry or failing preflight.",
+    "One accepted entry deducts500 once and gives30 session balls/500 steps.",
+    "Blocked movement, turns, dialogue, menus, battle animation and AFK do not spend walking steps.",
+    "Actual movement, Surf, ledge and connected-map crossings decrement the documented cost exactly once per transition.",
+    "Safari encounters expose Ball/Bait/Rock/Run; normal attack/move/Pack commands are unavailable.",
+    "Capture/flee and bait/rock state use deterministic authoritative battle random sources.",
+    "Caught Pok\u00e9mon and earned pickups survive session end and save/Continue.",
+    "Exhaustion and early return reach safe free basecamp after the current result without input traps.",
+    "Save/Continue cannot refresh the step/ball budget or charge again.",
+    "R12\u2192Q07 shelter\u2192R13 and R20 arrival work with zero money and no active Safari session.",
+    "Whole-map/player-camera inspection plus Cut/Surf/ledge collision, native gameplay and clean MCP/TUI checks.",
+    "Older saves without Safari state load inactive with unchanged party/bag/story. Invalid active zone references or impossible counters fail recoverably, without corrupting the save or losing captured Pok\u00e9mon.",
+    "Whole-map inspection confirms mostly connected lakes with grass/pines around them; actual portage requires dismount, land traversal and relaunch at another landing, and cannot be replaced by a broad dry ring."
+  ],
+  "safari_balance": {
+    "version": "mn_safari_v1",
+    "status": "Original mod design values, not a claim of disassembly-exact Safari behavior.",
+    "capture": {
+      "base": "Use native species catch rate, full-HP/no-status encounter and supplied SAFARI_BALL rule in an explicit Safari capture context. Keep native wobble and storage resolution.",
+      "effective_catch_rate": "clamp(1,255,floor(native_species_catch_rate*disposition_numerator/disposition_denominator))",
+      "normal": [
+        1,
+        1
+      ],
+      "bait": [
+        1,
+        2
+      ],
+      "rock": [
+        2,
+        1
+      ]
+    },
+    "flee": {
+      "rng": "One authoritative unsigned 8-bit draw after every failed Ball or completed Bait/Rock command; flee iff draw < threshold. Successful capture and Run do not draw flee RNG.",
+      "denominator": 256,
+      "default_threshold": 64,
+      "species_threshold_overrides": {
+        "HERACROSS": 96,
+        "LARVITAR": 128,
+        "LAPRAS": 96,
+        "DRATINI": 96,
+        "DRAGONAIR": 128
+      },
+      "threshold_formula": "clamp(1,255,floor(base_threshold*disposition_numerator/disposition_denominator))",
+      "normal": [
+        1,
+        1
+      ],
+      "bait": [
+        1,
+        2
+      ],
+      "rock": [
+        2,
+        1
+      ]
+    },
+    "disposition": {
+      "states": [
+        "neutral",
+        "eating",
+        "angry"
+      ],
+      "duration": "On Bait or Rock, draw one native random byte and set 2+(byte &3) response turns.",
+      "stacking": "Replace the previous disposition; repeated commands refresh duration without multiplying modifiers.",
+      "response_order": "Validate command. Bait/Rock draw duration and set disposition; Ball uses native capture RNG. If uncaught, draw flee using current disposition, then decrement its remaining response turns once. At zero return to neutral.",
+      "reset": "Clear on encounter completion; save active state and RNG position on Continue."
+    }
+  },
+  "composition_contract": {
+    "primary_geography": "Linked lakes enclosed by pine forest, with more land, grassy shoreline habitat, wider useful portages and primitive campsites. Water travel defines the preserve; no fixed water-percentage quota overrides the user\u2019s composition.",
+    "lake_connections": "Most lake basins remain connected through navigable narrows. Four grass portages: two join isolated pocket lakes to the main chain; two cross pine headlands/islands to shorten a real alternative paddle.",
+    "portage_definition": "Each portage pairs dry dismount/relaunch tiles with actual WATER neighbors and a continuous land path through encounter grass. Pocket-lake crossings have no all-water alternative. Connected-arm crossings must measurably shorten the all-water detour; they need not falsely isolate connected lakes.",
+    "shores": "Surround the lakes with pine forest. Make land broad enough for real portages, distinct campsite clearings and the Root Beer Lady island; preserve readable navigable lake channels.",
+    "entry_gate": "A visible native metal fence checkpoint controls the Reed arrival-to-launch path. Closing its two-tile throat must disconnect the forecourt from the launch; no walking bypass through the pine shoulders."
+  },
+  "terrain_layout_file": "zones/boundary-waters-safari.layout.json",
+  "terrain_review_command": ".local/minnesota-review-env/bin/python planning/minnesota/tools/review_boundary_safari.py",
+  "terrain_status": "All four clipped native chunks match the complete 48x40 source with enclosed pine shores, four campsites, four grassy portages and Dorothy outside the working cabin/dock. Native source-art, walking/Surf closures, portage input, both cabin returns and all377audio programs are verified.",
+  "campsite_contract": {
+    "count_proposal": 4,
+    "distribution": "At distinct shore/portage/island stops rather than evenly scattered props.",
+    "features": [
+      "safe canoe/Surf landing",
+      "pine shelter",
+      "reachable clearing",
+      "unlit native-stone fire ring",
+      "native seating or log-like fitted scenery",
+      "habitat observation, persistent discovery or recovery reward"
+    ],
+    "constraints": [
+      "No unsupported tent/campfire artwork. Native source art must be inspected before use.",
+      "Fire ring and seats must leave a walking approach and passing tile.",
+      "Campsites should sit on useful excursion/portage paths and offer a reason to stop.",
+      "No trainer gauntlet inside the Safari preserve."
+    ]
+  },
+  "root_beer_lady": {
+    "id": "BWS_ROOT_BEER_LADY",
+    "display_name": "DOROTHY",
+    "title": "ROOT BEER LADY",
+    "identity_reference": {
+      "name": "Dorothy Molter Museum educational guide",
+      "url": "https://www.rootbeerlady.com/wp-content/uploads/2016/04/Dorothy-Molter-Ed-Guide.pdf",
+      "supported_identity": "Dorothy Molter on Knife Lake/Isle of Pines, homemade root beer and wilderness nursing care."
+    },
+    "landmark": "ISLE OF PINES",
+    "sprite": "SPRITE_GRANNY",
+    "location_contract": "A pine-sheltered island cabin and yard reached by a real dock/Surf landing and short walking approach. Place Dorothy visibly outside for whole-map review; cabin door has a real authored room/return.",
+    "service": {
+      "first_visit": "Offer one ROOT_BEER free with original dialogue; set EVENT_MN_ROOT_BEER_FIRST_GIFT only after actual inventory delivery. Full bag preserves the offer.",
+      "repeat_visit": "Root beer available for300 each; inspect drink/refuse/buy flow through native shop/item handling.",
+      "rest": "Native HealParty service may be offered for her nursing-care role; preserve expedition balls/steps and paid-session state.",
+      "session_rule": "Visiting never renews Safari counters or blocks early retirement/Q07."
+    },
+    "item": {
+      "id": "ROOT_BEER",
+      "name": "ROOT BEER",
+      "base_native_item": "LEMONADE",
+      "native_effect": "RestoreHPEffect",
+      "parameter": 60,
+      "price": 300,
+      "pocket": "ITEM",
+      "consumable": true,
+      "field_menu": "ITEMMENU_PARTY",
+      "battle_menu": "ITEMMENU_PARTY",
+      "implementation_status": "New typed Rust item definition required; do not relabel or alter existing LEMONADE/FRESH_WATER for other maps."
+    },
+    "dialogue": [
+      "Welcome, paddler!",
+      "Rest your feet.",
+      "Try my root beer."
+    ],
+    "story_role": "Optional hospitality/discovery landmark. No Safari score or rare capture required; never gates main-story flags.",
+    "cabin_interior": {
+      "id": "MnBoundaryRootBeerCabin",
+      "file": "playable/root-beer-cabin.json",
+      "status": "Source-native interior authoring and two scene previews checked; passive arrival/door/event/controller integration pending.",
+      "exterior_door_core": [
+        51,
+        39
+      ],
+      "safe_exterior_return_core": [
+        51,
+        40
+      ]
+    }
+  },
+  "entry_gate_contract": {
+    "layout_anchor": "BWS_REED_ENTRY_GATE",
+    "from_map": "MnBoundaryWaters",
+    "preserve_arrival_core": [
+      15,
+      73
+    ],
+    "physical_gate_core": [
+      [
+        11,
+        68
+      ],
+      [
+        12,
+        68
+      ],
+      [
+        11,
+        69
+      ],
+      [
+        12,
+        69
+      ]
+    ],
+    "free_basecamp_approach": "Admission ranger remains in the free hub, before any preserve warp or movement counter.",
+    "admission": "Confirm fee, native Surf access and storage first. An inactive expedition may not enter the paid preserve. Charge once and atomically start the session with the arrival warp; denied/declined admission stays in the free basecamp.",
+    "return": "The fenced entry court has a reachable return ranger. Returning clears the expedition after capture resolution, warps safely to the free hub and never charges or refreshes counters.",
+    "source_status": "Visible fence/post geometry checked; native admission and return session scripts remain required."
+  }
+}

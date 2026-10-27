@@ -151,7 +151,7 @@ fn webmcp_observation(
     #[cfg(feature = "fullscreen-scaling")]
     let snapshot = {
         let mut snapshot = snapshot;
-        expand_fullscreen_object_presentation(&mut snapshot, runtime)?;
+        object_presentation::expand_fullscreen_object_presentation(&mut snapshot, runtime)?;
         snapshot
     };
     let (screen, text) = if runtime.intro_screen.is_some() {
@@ -344,6 +344,7 @@ fn finish_webmcp_request(
                             "cues":battle_frame.as_ref().map(|frame| frame.cues.iter()
                                 .map(|cue|format!("{:?}:{}",cue.kind,cue.move_id)).collect::<Vec<_>>()),
                             "active":status.active,"prepared":status.prepared,
+                            "preparation_pending":status.preparation_pending,
                             "last_error":status.last_error,
                             "scenery":status.map_scenery_id,
                             "scenery_error":status.map_scenery_fallback_reason,
@@ -351,6 +352,7 @@ fn finish_webmcp_request(
                             "capture_ready":status.row_capture_ready,
                             "capture_pending":status.row_capture_pending,
                             "modeled_species":status.modeled_species,
+                            "modeled_trainers":status.modeled_trainers,
                             "source_art_species":status.source_art_species,
                         });
                     }

@@ -1,0 +1,354 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F128",
+  "status": "native-front-back-candidate",
+  "tool": "built-in image_gen",
+  "prompt_file": "sprites/mn-f128/prompt-v1.txt",
+  "pokemon_palettes": {
+    "MN_281": {
+      "species_id": "MN_281",
+      "name": "Bogcalf",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          25,
+          20,
+          12
+        ],
+        [
+          10,
+          16,
+          9
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        12953,
+        9738,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          206,
+          165,
+          99
+        ],
+        [
+          82,
+          132,
+          74
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#CEA563",
+        "#52844A",
+        "#000000"
+      ]
+    },
+    "MN_282": {
+      "species_id": "MN_282",
+      "name": "Reedrack",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          21,
+          18,
+          10
+        ],
+        [
+          8,
+          15,
+          10
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        10837,
+        10728,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          173,
+          148,
+          82
+        ],
+        [
+          66,
+          123,
+          82
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#AD9452",
+        "#427B52",
+        "#000000"
+      ]
+    },
+    "MN_283": {
+      "species_id": "MN_283",
+      "name": "Mirecrown",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          19,
+          20,
+          11
+        ],
+        [
+          7,
+          12,
+          9
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        11923,
+        9607,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          156,
+          165,
+          90
+        ],
+        [
+          57,
+          99,
+          74
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#9CA55A",
+        "#39634A",
+        "#000000"
+      ]
+    }
+  },
+  "back_framing": "gen2-close-rear-portrait",
+  "style_reference": {
+    "origin": "authentic local Crystal sprites",
+    "boards": [
+      "target/minnesota-pokemon/gen2-reference/starters.png"
+    ]
+  },
+  "sprites": [
+    {
+      "id": "mn-281-bogcalf-v1",
+      "species_id": "MN_281",
+      "view": "front",
+      "source": "sprites/mn-f128/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        512,
+        528
+      ],
+      "fit": [
+        35,
+        41
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        12953,
+        9738,
+        0
+      ],
+      "exterior_contour": "solid",
+      "interior_black_min_samples": 8,
+      "white_detail_min_samples": 4,
+      "sampling": "source_center"
+    },
+    {
+      "id": "mn-282-reedrack-v1",
+      "species_id": "MN_282",
+      "view": "front",
+      "source": "sprites/mn-f128/front-back.imagegen-v1.png",
+      "crop": [
+        512,
+        0,
+        486,
+        528
+      ],
+      "fit": [
+        46,
+        49
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        10837,
+        10728,
+        0
+      ],
+      "exterior_contour": "solid",
+      "interior_black_min_samples": 8,
+      "white_detail_min_samples": 4,
+      "sampling": "source_center"
+    },
+    {
+      "id": "mn-283-mirecrown-v1",
+      "species_id": "MN_283",
+      "view": "front",
+      "source": "sprites/mn-f128/front-back.imagegen-v1.png",
+      "crop": [
+        998,
+        0,
+        538,
+        528
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        11923,
+        9607,
+        0
+      ],
+      "exterior_contour": "solid",
+      "interior_black_min_samples": 8,
+      "white_detail_min_samples": 4,
+      "sampling": "source_center"
+    },
+    {
+      "id": "mn-281-bogcalf-v1",
+      "species_id": "MN_281",
+      "view": "back",
+      "source": "sprites/mn-f128/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        528,
+        498,
+        496
+      ],
+      "fit": [
+        38,
+        40
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        12953,
+        9738,
+        0
+      ],
+      "exterior_contour": "solid",
+      "interior_black_min_samples": 8,
+      "white_detail_min_samples": 4,
+      "sampling": "source_center"
+    },
+    {
+      "id": "mn-282-reedrack-v1",
+      "species_id": "MN_282",
+      "view": "back",
+      "source": "sprites/mn-f128/front-back.imagegen-v1.png",
+      "crop": [
+        498,
+        528,
+        503,
+        496
+      ],
+      "fit": [
+        46,
+        46
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        10837,
+        10728,
+        0
+      ],
+      "exterior_contour": "solid",
+      "interior_black_min_samples": 8,
+      "white_detail_min_samples": 4,
+      "sampling": "source_center"
+    },
+    {
+      "id": "mn-283-mirecrown-v1",
+      "species_id": "MN_283",
+      "view": "back",
+      "source": "sprites/mn-f128/front-back.imagegen-v1.png",
+      "crop": [
+        1001,
+        528,
+        535,
+        496
+      ],
+      "fit": [
+        46,
+        46
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        11923,
+        9607,
+        0
+      ],
+      "exterior_contour": "solid",
+      "interior_black_min_samples": 8,
+      "white_detail_min_samples": 4,
+      "sampling": "source_center"
+    }
+  ]
+}

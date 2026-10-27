@@ -1,4 +1,13 @@
 use super::*;
+
+#[path = "fairy_type_tests.rs"]
+mod fairy_type_tests;
+
+#[path = "native_stat_change_tests.rs"]
+mod native_stat_change_tests;
+
+#[path = "northwoods_move_tests.rs"]
+mod northwoods_move_tests;
 use crate::battle::damage::TypeEffectivenessEntry;
 use crate::battle::stats::BattleStatMultiplier;
 use crate::models::{
@@ -22690,7 +22699,7 @@ fn metronome_selects_pack_move_deterministically_without_extra_pp_spend() {
         ),
     ]);
     for (source_index, move_data) in moves.values_mut().enumerate() {
-        move_data.source_index = (source_index + 1) as u8;
+        move_data.source_index = (source_index + 1) as u16;
     }
     moves.get_mut("EMBER").unwrap().source_index = 64;
     let mut rng = Random::new(1);
@@ -31432,3 +31441,6 @@ fn contest_last_failed_ball_ends_after_the_turn_without_overriding_capture_or_fa
         }
     }
 }
+
+#[path = "move_preview_tests.rs"]
+mod move_preview_tests;

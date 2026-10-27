@@ -1,0 +1,234 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F023",
+  "status": "native-front-back-reviewed",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_059": {
+      "species_id": "MN_059",
+      "name": "Thomblip",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          29,
+          21,
+          19
+        ],
+        [
+          14,
+          11,
+          10
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        20157,
+        10606,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          239,
+          173,
+          156
+        ],
+        [
+          115,
+          90,
+          82
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#EFAD9C",
+        "#735A52",
+        "#000000"
+      ]
+    },
+    "MN_060": {
+      "species_id": "MN_060",
+      "name": "Thomseer",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          27,
+          20,
+          24
+        ],
+        [
+          12,
+          8,
+          17
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        25243,
+        17676,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          222,
+          165,
+          198
+        ],
+        [
+          99,
+          66,
+          140
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#DEA5C6",
+        "#63428C",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f023/prompt-v1.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "style_reference": {
+    "origin": "authentic local Crystal sprites",
+    "generator": "crates/crystal-assets/examples/minnesota_gen2_reference.rs",
+    "board": "target/minnesota-pokemon/gen2-reference/starters.png"
+  },
+  "sprites": [
+    {
+      "id": "mn-059-thomblip-v1",
+      "species_id": "MN_059",
+      "view": "front",
+      "source": "sprites/mn-f023/mn-059-060.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        733,
+        512
+      ],
+      "fit": [
+        40,
+        40
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        20157,
+        10606,
+        0
+      ]
+    },
+    {
+      "id": "mn-059-thomblip-v1",
+      "species_id": "MN_059",
+      "view": "back",
+      "source": "sprites/mn-f023/mn-059-060.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        512,
+        733,
+        512
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        20157,
+        10606,
+        0
+      ]
+    },
+    {
+      "id": "mn-060-thomseer-v1",
+      "species_id": "MN_060",
+      "view": "front",
+      "source": "sprites/mn-f023/mn-059-060.front-back.imagegen-v1.png",
+      "crop": [
+        733,
+        0,
+        803,
+        512
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        25243,
+        17676,
+        0
+      ]
+    },
+    {
+      "id": "mn-060-thomseer-v1",
+      "species_id": "MN_060",
+      "view": "back",
+      "source": "sprites/mn-f023/mn-059-060.front-back.imagegen-v1.png",
+      "crop": [
+        733,
+        512,
+        803,
+        512
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        25243,
+        17676,
+        0
+      ]
+    }
+  ],
+  "visual_review": {
+    "status": "reviewed",
+    "notes": [
+      "Inspected frozen source-contour-v1 sheet: concentric stone rings retain their two-color bands, dark pupils and white glints within clean outer nodule contours.",
+      "Articulated side-eye arms keep distinct gaps; rear nodule backs and upper arms crop cleanly without a black baseline."
+    ],
+    "sheet_sha256": "b5330b56a2f25b284d6e4945de6bff3a82ba0159551ab1da69835365b22714e2",
+    "outline_profile": "source-contour-v1"
+  }
+}

@@ -4,6 +4,21 @@ use bevy::asset::RenderAssetUsages;
 use bevy::prelude::*;
 use crystal_render_api::VisualWorldFrame;
 
+/// Leave at least 64 source cells of the expanded outdoor halo resident even
+/// when worker publication falls behind movement. Smaller fixtures and rooms
+/// retain their existing proportional margin.
+pub(super) fn retention_allowance(frame: &VisualWorldFrame) -> IVec2 {
+    let visible = (frame.viewport_size / frame.tile_size).ceil().as_ivec2();
+    let allowance = ((frame.grid_size.as_ivec2() - visible) / 4).max(IVec2::ZERO);
+    if frame.grid_size.min_element() >= 192 {
+        // The host retains its source atlas through another 16 cells of LCD
+        // scrolling. Together these reserves leave the distant view resident.
+        allowance.min(IVec2::splat(16))
+    } else {
+        allowance
+    }
+}
+
 pub(super) fn offset(built: &VisualWorldFrame, live: &VisualWorldFrame) -> Vec2 {
     let shift = built.connected_source_shift(live).unwrap_or(IVec2::ZERO);
     (built.grid_origin + shift - live.grid_origin).as_vec2() * live.tile_size
@@ -26,8 +41,7 @@ pub fn connected_frame_shift(built: &VisualWorldFrame, live: &VisualWorldFrame) 
         return Err("connected retention requires outdoor terrain");
     }
     let delta = live.grid_origin - built.grid_origin - shift;
-    let visible = (live.viewport_size / live.tile_size).ceil().as_ivec2();
-    let allowance = ((live.grid_size.as_ivec2() - visible) / 4).max(IVec2::ZERO);
+    let allowance = retention_allowance(live);
     if delta.abs().cmpgt(allowance).any() { return Err("connected view exhausts retained halo"); }
     let owned = |frame: &VisualWorldFrame, p: IVec2| frame.source_regions.iter().any(|r| {
         let q = p - r.origin;
@@ -116,8 +130,7 @@ pub(super) fn can_reuse(built: &VisualWorldFrame, live: &VisualWorldFrame) -> bo
     let delta = live.grid_origin - built.grid_origin
         - built.connected_source_shift(live).unwrap_or(IVec2::ZERO);
     // Retain half the authored halo for camera pitch and complete objects.
-    let visible = (live.viewport_size / live.tile_size).ceil().as_ivec2();
-    let allowance = ((live.grid_size.as_ivec2() - visible) / 4).max(IVec2::ZERO);
+    let allowance = retention_allowance(live);
     if delta.abs().cmpgt(allowance).any() {
         return false;
     }

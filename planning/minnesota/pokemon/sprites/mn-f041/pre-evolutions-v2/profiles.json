@@ -1,0 +1,238 @@
+{
+  "schema_version": 1,
+  "species": [
+    {
+      "id": "MN_267",
+      "classification": "Tiptoe Tag",
+      "height_inches": 12,
+      "weight_tenths_lb": 30,
+      "dex_pages": [
+        "It reaches up @ with a soft wing @ to tap a friend.",
+        "Its wide feet @ wobble whenever @ it rushes ahead."
+      ],
+      "base_stats": {
+        "hp": 45,
+        "attack": 50,
+        "defense": 40,
+        "speed": 70,
+        "special_attack": 25,
+        "special_defense": 50
+      },
+      "catch_rate": 200,
+      "base_exp": 70,
+      "gender_ratio": 127,
+      "hatch_cycles": 20,
+      "growth_rate": "GROWTH_MEDIUM_FAST",
+      "egg_groups": [
+        "EGG_FLYING",
+        "EGG_HUMANSHAPE"
+      ],
+      "evolution": {
+        "method": "LEVEL",
+        "level": 16
+      },
+      "held_items": [
+        null,
+        null
+      ],
+      "menu_icon": "ICON_BIRD",
+      "footprint_species": "FARFETCH_D",
+      "cry": {
+        "cry": "CRY_SPEAROW",
+        "pitch": 32,
+        "length": 112
+      },
+      "shiny_rgb5": [
+        [
+          10,
+          28,
+          30
+        ],
+        [
+          10,
+          5,
+          19
+        ]
+      ],
+      "level_moves": [
+        [
+          1,
+          "POUND"
+        ],
+        [
+          1,
+          "GROWL"
+        ],
+        [
+          5,
+          "QUICK_ATTACK"
+        ],
+        [
+          9,
+          "FOCUS_ENERGY"
+        ],
+        [
+          13,
+          "DOUBLESLAP"
+        ],
+        [
+          17,
+          "PURSUIT"
+        ],
+        [
+          22,
+          "HEADBUTT"
+        ],
+        [
+          27,
+          "AGILITY"
+        ],
+        [
+          32,
+          "ENCORE"
+        ],
+        [
+          37,
+          "DOUBLE_EDGE"
+        ],
+        [
+          42,
+          "DETECT"
+        ]
+      ],
+      "tmhm_moves": [
+        "HEADBUTT",
+        "RETURN",
+        "ENDURE",
+        "SWAGGER",
+        "ATTRACT",
+        "PROTECT"
+      ],
+      "egg_moves": []
+    },
+    {
+      "id": "MN_268",
+      "classification": "Pivot Tag",
+      "height_inches": 24,
+      "weight_tenths_lb": 145,
+      "dex_pages": [
+        "It tags a rival @ with one wing, @ then pivots away.",
+        "A planted foot @ lets it turn in @ a single hop."
+      ],
+      "base_stats": {
+        "hp": 60,
+        "attack": 75,
+        "defense": 55,
+        "speed": 90,
+        "special_attack": 35,
+        "special_defense": 75
+      },
+      "catch_rate": 100,
+      "base_exp": 135,
+      "gender_ratio": 127,
+      "hatch_cycles": 20,
+      "growth_rate": "GROWTH_MEDIUM_FAST",
+      "egg_groups": [
+        "EGG_FLYING",
+        "EGG_HUMANSHAPE"
+      ],
+      "evolution": {
+        "method": "LEVEL",
+        "level": 34
+      },
+      "held_items": [
+        null,
+        null
+      ],
+      "menu_icon": "ICON_BIRD",
+      "footprint_species": "FARFETCH_D",
+      "cry": {
+        "cry": "CRY_SPEAROW",
+        "pitch": 16,
+        "length": 128
+      },
+      "shiny_rgb5": [
+        [
+          30,
+          18,
+          9
+        ],
+        [
+          12,
+          5,
+          17
+        ]
+      ],
+      "level_moves": [
+        [
+          1,
+          "POUND"
+        ],
+        [
+          1,
+          "LEER"
+        ],
+        [
+          1,
+          "QUICK_ATTACK"
+        ],
+        [
+          9,
+          "FOCUS_ENERGY"
+        ],
+        [
+          13,
+          "DOUBLESLAP"
+        ],
+        [
+          16,
+          "LOW_KICK"
+        ],
+        [
+          22,
+          "PURSUIT"
+        ],
+        [
+          27,
+          "AGILITY"
+        ],
+        [
+          32,
+          "SLAM"
+        ],
+        [
+          37,
+          "ENCORE"
+        ],
+        [
+          42,
+          "DOUBLE_EDGE"
+        ],
+        [
+          48,
+          "DETECT"
+        ],
+        [
+          55,
+          "REVERSAL"
+        ],
+        [
+          62,
+          "EXTREMESPEED"
+        ]
+      ],
+      "tmhm_moves": [
+        "HEADBUTT",
+        "RETURN",
+        "ENDURE",
+        "DETECT",
+        "ROCK_SMASH",
+        "STRENGTH",
+        "SWAGGER",
+        "ATTRACT",
+        "PROTECT"
+      ],
+      "egg_moves": []
+    }
+  ]
+}

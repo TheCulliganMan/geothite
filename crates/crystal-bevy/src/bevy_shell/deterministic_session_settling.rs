@@ -4906,6 +4906,12 @@ fn close_visible_diploma(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
 fn continue_visible_script_after_prompt(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
     const MAX_CONTINUE_STEPS: usize = 2048;
     for _ in 0..MAX_CONTINUE_STEPS {
+        // The gift handler retains the next source cursor while naming owns
+        // input. Only completing that owner may advance the quest commands.
+        if runtime_shell.pending_name_choice.is_some() || runtime_shell.pending_name_input.is_some()
+        {
+            return Ok(());
+        }
         if !runtime_shell.battle_messages.is_empty() { return Ok(()); }
         // PokemonCenterPC owns its synchronous special until the user exits.
         if runtime_shell.pc_hub_session_open { return Ok(()); }

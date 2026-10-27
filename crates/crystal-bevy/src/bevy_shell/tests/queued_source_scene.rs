@@ -206,8 +206,8 @@ fn queued_source_scene_preserves_capture_send_out_and_trainer_exit_gates() {
         for allow_capture in [false, true] {
             assert_eq!(
                 immersive_battle_requires_source_scene_supported(&shell, allow_rows, allow_capture),
-                !allow_capture,
-                "only the explicit capture allowance may bypass capture's independent gate"
+                false,
+                "capture retains its 3D scene independently of the optional image pilot"
             );
         }
     }

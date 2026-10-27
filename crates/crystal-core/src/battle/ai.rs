@@ -581,13 +581,7 @@ fn smart_sp_def_up_2_delta(state: &BattleCombatState, rng: &mut dyn BattleRandom
         return 0;
     }
     let player = trainer_ai_effective_pokemon(state, false);
-    let special_type = |type_id: &str| {
-        matches!(
-            type_id,
-            "FIRE" | "WATER" | "GRASS" | "ELECTRIC" | "PSYCHIC_TYPE" | "ICE" | "DRAGON" | "DARK"
-        )
-    };
-    if (special_type(&player.species.type1) || special_type(&player.species.type2))
+    if (smart_special_type(&player.species.type1) || smart_special_type(&player.species.type2))
         && rng.battle_random_byte() >= 50
     {
         -2
@@ -1065,7 +1059,15 @@ fn smart_weather_delta(
 fn smart_special_type(type_id: &str) -> bool {
     matches!(
         type_id,
-        "FIRE" | "WATER" | "GRASS" | "ELECTRIC" | "PSYCHIC_TYPE" | "ICE" | "DRAGON" | "DARK"
+        "FIRE"
+            | "WATER"
+            | "GRASS"
+            | "ELECTRIC"
+            | "PSYCHIC_TYPE"
+            | "ICE"
+            | "DRAGON"
+            | "DARK"
+            | "FAIRY"
     )
 }
 
@@ -2020,6 +2022,26 @@ mod tests {
         let player = Pokemon::new_for_tests(species("PLAYER"), 20, Dv::from_non_hp(10, 10, 10, 10));
         let enemy = Pokemon::new_for_tests(species("ENEMY"), 20, Dv::from_non_hp(10, 10, 10, 10));
         BattleCombatState::new(player, enemy)
+    }
+
+    #[test]
+    fn smart_setup_heuristics_recognize_either_fairy_type_slot() {
+        for secondary in [false, true] {
+            let mut state = ai_test_state();
+            if secondary {
+                state.player.species.type2 = pokemon_type("FAIRY");
+            } else {
+                state.player.species.type1 = pokemon_type("FAIRY");
+            }
+            let mut rng = ScriptedRandom(VecDeque::from([50]));
+            assert_eq!(smart_sp_def_up_2_delta(&state, &mut rng), -2);
+            assert!(rng.0.is_empty());
+
+            // Fairy follows the special-type branch without sampling the
+            // physical-opponent Curse encouragement roll.
+            let mut rng = ScriptedRandom(VecDeque::new());
+            assert_eq!(smart_curse_delta(&state, &mut rng), 0);
+        }
     }
 
     #[test]

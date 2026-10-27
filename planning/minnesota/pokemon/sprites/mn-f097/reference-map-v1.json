@@ -1,0 +1,20 @@
+{
+  "generation": "new original artwork",
+  "input_images": [],
+  "text_style_reference_boards": [
+    "target/minnesota-pokemon/gen2-reference/starters.png",
+    "target/minnesota-pokemon/gen2-reference/bugs.png"
+  ],
+  "regional_sources": [
+    {
+      "url": "https://www.dnr.state.mn.us/fish/paddlefish/index.html",
+      "institution": "Minnesota DNR",
+      "supports": "Places paddlefish in the Mississippi and St Croix, including Lake Pepin."
+    },
+    {
+      "url": "https://www.nps.gov/miss/learn/nature/paddlefish-polydon-spathula.htm",
+      "institution": "National Park Service",
+      "supports": "Describes snout sensors detecting electrical signals from plankton and filtering gill rakers; generating electricity and psychic triangulation are fiction."
+    }
+  ]
+}

@@ -1401,17 +1401,8 @@ fn representative_intro_latched_scene_boundaries_match_the_asm_rom_oracle() {
     use sha2::{Digest, Sha256};
 
     let mut runtime_shell = core_modular_title_shell_for_test();
-    let repo_root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("../../..")
-        .canonicalize()
-        .expect("repository root");
-    let asset_root = AssetRoot::new(repo_root);
-    let sprite_bundle = crate::read_runtime_asset_to_string(
-        &asset_root
-            .runtime_assets()
-            .join("data/sprite_anim_bundle.json"),
-    )
-    .expect("read sprite animation bundle");
+    let asset_root = runtime_shell.asset_root.clone();
+    let sprite_bundle = runtime_shell.runtime.data().sprite_anim_bundle.clone();
     for (scene_index, frame_counter, expected_hash) in [
         (
             3,

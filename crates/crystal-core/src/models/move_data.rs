@@ -7,7 +7,9 @@ use super::pokemon::{PokemonType, Stat};
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct Move {
-    pub source_index: u8,
+    /// One-based presentation index. Native Crystal moves retain indices 1..=251;
+    /// engine extensions use subsequent indices without aliasing native moves.
+    pub source_index: u16,
     #[serde(deserialize_with = "required_move_token")]
     pub name: String,
     #[serde(rename = "type")]
@@ -31,7 +33,7 @@ impl<'de> Deserialize<'de> for Move {
         #[derive(Deserialize)]
         #[serde(deny_unknown_fields)]
         struct RawMove {
-            source_index: u8,
+            source_index: u16,
             #[serde(deserialize_with = "required_move_token")]
             name: String,
             #[serde(rename = "type")]
@@ -67,9 +69,9 @@ impl<'de> Deserialize<'de> for Move {
 
 impl Move {
     fn validate_shape(&self) -> Result<(), String> {
-        if !(1..=251).contains(&self.source_index) {
+        if self.source_index == 0 {
             return Err(format!(
-                "move {} source index {} must be in 1..=251",
+                "move {} source index {} must be positive",
                 self.name, self.source_index
             ));
         }
@@ -135,7 +137,7 @@ pub fn move_payload_issues(move_data: &Move) -> Vec<MovePayloadIssue> {
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum MoveSourceIndexCatalogIssue {
     DuplicateSourceIndex {
-        source_index: u8,
+        source_index: u16,
         first_move: String,
         second_move: String,
     },
@@ -144,7 +146,7 @@ pub enum MoveSourceIndexCatalogIssue {
 pub fn move_source_index_catalog_issues(
     moves: &BTreeMap<String, Move>,
 ) -> Vec<MoveSourceIndexCatalogIssue> {
-    let mut source_moves = BTreeMap::<u8, String>::new();
+    let mut source_moves = BTreeMap::<u16, String>::new();
     let mut issues = Vec::new();
 
     for (move_id, move_data) in moves {
@@ -359,15 +361,33 @@ mod tests {
 
     #[test]
     fn move_source_index_rejects_no_move_and_out_of_range_ids() {
-        for source_index in [0, 252] {
+        for source_index in [0, 65536] {
             let mut move_json = valid_move_json();
             move_json["source_index"] = serde_json::json!(source_index);
 
             let error = serde_json::from_value::<Move>(move_json)
-                .expect_err("move source ids must stay in the Crystal move table")
+                .expect_err("move source ids must be positive u16 values")
                 .to_string();
 
-            assert!(error.contains("source index"), "{error}");
+            assert!(
+                error.contains("source index") || error.contains("u16"),
+                "{error}"
+            );
+        }
+    }
+
+    #[test]
+    fn extended_move_indices_round_trip_without_truncation() {
+        for source_index in [251, 252, 256, 264, 65535] {
+            let mut value = valid_move_json();
+            value["source_index"] = serde_json::json!(source_index);
+            let parsed: Move = serde_json::from_value(value).expect("valid extension index");
+            assert_eq!(parsed.source_index, source_index);
+            let bytes = serde_json::to_vec(&parsed).expect("serialize extended move");
+            assert_eq!(
+                serde_json::from_slice::<Move>(&bytes).expect("round trip"),
+                parsed
+            );
         }
     }
 

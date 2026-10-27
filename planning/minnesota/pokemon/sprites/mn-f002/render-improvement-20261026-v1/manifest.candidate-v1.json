@@ -1,0 +1,356 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F002",
+  "status": "render-improvement-review-pending",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_004": {
+      "species_id": "MN_004",
+      "name": "Cindore",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          31,
+          13,
+          3
+        ],
+        [
+          8,
+          7,
+          8
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        3519,
+        8424,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          255,
+          107,
+          24
+        ],
+        [
+          66,
+          57,
+          66
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#FF6B18",
+        "#423942",
+        "#000000"
+      ]
+    },
+    "MN_005": {
+      "species_id": "MN_005",
+      "name": "Pelletor",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          31,
+          21,
+          5
+        ],
+        [
+          12,
+          8,
+          7
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        5823,
+        7436,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          255,
+          173,
+          41
+        ],
+        [
+          99,
+          66,
+          57
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#FFAD29",
+        "#634239",
+        "#000000"
+      ]
+    },
+    "MN_006": {
+      "species_id": "MN_006",
+      "name": "Mesablast",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          31,
+          9,
+          5
+        ],
+        [
+          5,
+          10,
+          16
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        5439,
+        16709,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          255,
+          74,
+          41
+        ],
+        [
+          41,
+          82,
+          132
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#FF4A29",
+        "#295284",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f002/render-improvement-20261026-v1/prompt-v1.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "sprites": [
+    {
+      "id": "mn-004-cindore-render-20261026-v1",
+      "species_id": "MN_004",
+      "view": "front",
+      "source": "sprites/mn-f002/render-improvement-20261026-v1/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        400,
+        535
+      ],
+      "fit": [
+        36,
+        36
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        3519,
+        8424,
+        0
+      ],
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 4,
+      "interior_black_min_samples": 16
+    },
+    {
+      "id": "mn-004-cindore-render-20261026-v1",
+      "species_id": "MN_004",
+      "view": "back",
+      "source": "sprites/mn-f002/render-improvement-20261026-v1/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        535,
+        440,
+        489
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        3519,
+        8424,
+        0
+      ],
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 4,
+      "interior_black_min_samples": 16
+    },
+    {
+      "id": "mn-005-pelletor-render-20261026-v1",
+      "species_id": "MN_005",
+      "view": "front",
+      "source": "sprites/mn-f002/render-improvement-20261026-v1/front-back.imagegen-v1.png",
+      "crop": [
+        400,
+        0,
+        515,
+        535
+      ],
+      "fit": [
+        44,
+        44
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        5823,
+        7436,
+        0
+      ],
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 4,
+      "interior_black_min_samples": 16
+    },
+    {
+      "id": "mn-005-pelletor-render-20261026-v1",
+      "species_id": "MN_005",
+      "view": "back",
+      "source": "sprites/mn-f002/render-improvement-20261026-v1/front-back.imagegen-v1.png",
+      "crop": [
+        440,
+        535,
+        515,
+        489
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        5823,
+        7436,
+        0
+      ],
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 4,
+      "interior_black_min_samples": 16
+    },
+    {
+      "id": "mn-006-mesablast-render-20261026-v1",
+      "species_id": "MN_006",
+      "view": "front",
+      "source": "sprites/mn-f002/render-improvement-20261026-v1/front-back.imagegen-v1.png",
+      "crop": [
+        915,
+        0,
+        621,
+        535
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        5439,
+        16709,
+        0
+      ],
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 4,
+      "interior_black_min_samples": 16
+    },
+    {
+      "id": "mn-006-mesablast-render-20261026-v1",
+      "species_id": "MN_006",
+      "view": "back",
+      "source": "sprites/mn-f002/render-improvement-20261026-v1/front-back.imagegen-v1.png",
+      "crop": [
+        955,
+        535,
+        581,
+        489
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        5439,
+        16709,
+        0
+      ],
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 4,
+      "interior_black_min_samples": 16
+    }
+  ],
+  "reference_mapping": "sprites/mn-f002/render-improvement-20261026-v1/reference-mapping-v1.json",
+  "raw_generation": {
+    "original_tool_path": "/Users/ryanculligan/.codex/generated_images/01a17abf-77f2-7b80-bc2a-d5aed1c72b88/exec-a4d8fa0d-cfed-4157-828e-658c7faa10bf.png",
+    "sha256": "1c53eb7c57feecc701ff540fba63f1726666927329499ef4a83c7562594e9e2d"
+  },
+  "visual_review": {
+    "status": "pending",
+    "outline_profile": "source-contour-v1",
+    "notes": "New identity-preserving rendering; native inspection pending."
+  },
+  "conversion_revision": "Render improvement: exact existing palettes, stronger readable faces and colored planes; previous sources and native versions retained.",
+  "back_prompt_file": "sprites/mn-f002/render-improvement-20261026-v1/prompt-v1.txt",
+  "back_reference_mapping": "sprites/mn-f002/render-improvement-20261026-v1/reference-mapping-v1.json",
+  "source_sha256": "1c53eb7c57feecc701ff540fba63f1726666927329499ef4a83c7562594e9e2d"
+}

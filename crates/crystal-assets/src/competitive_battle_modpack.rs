@@ -7,8 +7,9 @@ use crystal_core::{
     battle::{
         damage::MoveCategory,
         turn::{
-            BattleAction, BattleCombatState, BattleSide, BattleTurnInput, EnemyMoveSelection,
-            battle_action_locked_before_menu, battle_moves, select_wild_enemy_move_slot,
+            BattleAction, BattleCombatState, BattleMovePreviewer, BattleSide, BattleTurnInput,
+            EnemyMoveSelection, battle_action_locked_before_menu, battle_moves,
+            select_wild_enemy_move_slot,
         },
     },
     models::{LearnedMove, Pokemon, Stat},
@@ -23,6 +24,13 @@ use crate::{
 pub const COMPETITIVE_BATTLES_MANIFEST_ID: &str = "competitive-battles";
 const INVALID_SCORE: i32 = -1_000_000;
 const SAMPLES: u32 = 8;
+
+// All cached values expire with one decision and are bound to its rules/profile.
+struct CompetitiveSearch<'a> {
+    previews: BattleMovePreviewer<'a>,
+    continuations: Vec<(BattleCombatState, TrainerBattleProfile, i32)>,
+    continuation_limit: usize,
+}
 
 /// Compose with the exhaustive move split; stock data and audio stay intact.
 /// Idempotent so the hosted default can consume an already modded local pack.
@@ -125,13 +133,15 @@ impl GameDataSet {
         profile: TrainerBattleProfile,
         rng: &mut dyn BattleRandomSource,
     ) -> Result<EnemyMoveSelection> {
+        let mut search = self.competitive_search();
         if battle_action_locked_before_menu(combat, BattleSide::Enemy) {
             return Ok(EnemyMoveSelection {
                 slot: select_wild_enemy_move_slot(combat, rng),
                 ai_damage_register: 0,
             });
         }
-        let planning = self.competitive_planning_state(combat)?;
+        let mut planning = self.competitive_planning_state(combat, &mut search)?;
+        compact_planning_species(&mut planning);
         let mut scored = Vec::new();
         let mut matrix = Vec::new();
         for slot in competitive_move_slots(&planning, BattleSide::Enemy) {
@@ -140,6 +150,7 @@ impl GameDataSet {
                 &BattleAction::Move { slot },
                 true,
                 profile,
+                &mut search,
             )?;
             let score = competitive_response_value(&responses);
             #[cfg(not(target_arch = "wasm32"))]
@@ -153,7 +164,12 @@ impl GameDataSet {
             let expected = battle_moves(&planning, BattleSide::Enemy)
                 .get(slot)
                 .and_then(|m| {
-                    self.competitive_move_expected_damage(&planning, BattleSide::Enemy, m)
+                    self.competitive_move_expected_damage(
+                        &planning,
+                        BattleSide::Enemy,
+                        m,
+                        &mut search,
+                    )
                 })
                 .unwrap_or(0)
                 .min(u32::from(planning.player.hp) * 100);
@@ -222,14 +238,17 @@ impl GameDataSet {
         profile: TrainerBattleProfile,
         items: &[String],
     ) -> Result<BattleAction> {
+        let mut search = self.competitive_search();
         let selected = BattleAction::Move {
             slot: selected_move_slot,
         };
         if battle_action_locked_before_menu(combat, BattleSide::Enemy) {
             return Ok(selected);
         }
-        let planning = self.competitive_planning_state(combat)?;
-        let mut best_score = self.competitive_action_score(&planning, &selected, true, profile)?;
+        let mut planning = self.competitive_planning_state(combat, &mut search)?;
+        compact_planning_species(&mut planning);
+        let mut best_score =
+            self.competitive_action_score(&planning, &selected, true, profile, &mut search)?;
         let mut best = selected;
         for (party_index, pokemon) in planning.enemy_party.iter().enumerate() {
             if combat.enemy_escape_trap.is_some() || combat.enemy_trap.is_some() {
@@ -242,7 +261,8 @@ impl GameDataSet {
                 selected_move_slot,
                 party_index,
             };
-            let score = self.competitive_action_score(&planning, &action, true, profile)?;
+            let score =
+                self.competitive_action_score(&planning, &action, true, profile, &mut search)?;
             // A switch must repay its lost turn and a margin. This also prevents
             // oscillating between equally good resistances and pays entry hazards.
             let margin = if profile == TrainerBattleProfile::Switching {
@@ -263,7 +283,8 @@ impl GameDataSet {
             // Preserve a finite consumable unless it makes a meaningful gain.
             // A small opportunity cost also breaks equal outcomes in favor of
             // a move or the earlier, cheaper owned healing item.
-            let score = self.competitive_action_score(&planning, &action, true, profile)? - 80;
+            let score =
+                self.competitive_action_score(&planning, &action, true, profile, &mut search)? - 80;
             if score > best_score {
                 best_score = score;
                 best = action;
@@ -376,7 +397,9 @@ impl GameDataSet {
         combat: &BattleCombatState,
         profile: TrainerBattleProfile,
     ) -> Result<Option<usize>> {
-        let planning = self.competitive_planning_state(combat)?;
+        let mut search = self.competitive_search();
+        let mut planning = self.competitive_planning_state(combat, &mut search)?;
+        compact_planning_species(&mut planning);
         let mut best = None;
         for (index, pokemon) in planning.enemy_party.iter().enumerate() {
             if index == planning.enemy_party_index || pokemon.hp == 0 || pokemon.is_egg {
@@ -389,7 +412,7 @@ impl GameDataSet {
             )
             .map_err(|error| anyhow::anyhow!("plan trainer replacement: {error:?}"))?;
             // Forced replacement does not give the player a free attack.
-            let mut score = self.competitive_position_value(&entered);
+            let mut score = self.competitive_position_value(&entered, &mut search);
             if entered.enemy.hp > 0 && entered.player.hp > 0 {
                 score = INVALID_SCORE;
                 for slot in competitive_move_slots(&entered, BattleSide::Enemy) {
@@ -398,6 +421,7 @@ impl GameDataSet {
                         &BattleAction::Move { slot },
                         true,
                         profile,
+                        &mut search,
                     )?);
                 }
             }
@@ -408,7 +432,11 @@ impl GameDataSet {
         Ok(best.map(|(index, _)| index))
     }
 
-    fn competitive_planning_state(&self, combat: &BattleCombatState) -> Result<BattleCombatState> {
+    fn competitive_planning_state(
+        &self,
+        combat: &BattleCombatState,
+        search: &mut CompetitiveSearch<'_>,
+    ) -> Result<BattleCombatState> {
         let mut planning = combat.clone();
         planning.player.item = None;
         // Never inspect the player's selected command, unrevealed moves, PP,
@@ -463,6 +491,7 @@ impl GameDataSet {
                         &planning,
                         BattleSide::Player,
                         &learned,
+                        search,
                     )?;
                     Some((threat, id))
                 })
@@ -508,6 +537,21 @@ impl GameDataSet {
         Ok(planning)
     }
 
+    fn competitive_search(&self) -> CompetitiveSearch<'_> {
+        CompetitiveSearch {
+            previews: BattleMovePreviewer::new(
+                &self.items,
+                &self.move_priorities,
+                &self.battle_stat_multipliers,
+                &self.type_categories,
+                &self.type_effectiveness,
+                &self.weather_modifiers,
+            ),
+            continuations: Vec::new(),
+            continuation_limit: 128,
+        }
+    }
+
     /// Risk-aware two-turn search: average sampled chance outcomes for each
     /// opposing response, then favor the worst response over the mean response.
     /// The continuation reconsiders every legal attack, including support moves.
@@ -517,9 +561,10 @@ impl GameDataSet {
         action: &BattleAction,
         continuation: bool,
         profile: TrainerBattleProfile,
+        search: &mut CompetitiveSearch<'_>,
     ) -> Result<i32> {
         Ok(competitive_response_value(
-            &self.competitive_action_values(state, action, continuation, profile)?,
+            &self.competitive_action_values(state, action, continuation, profile, search)?,
         ))
     }
 
@@ -529,6 +574,7 @@ impl GameDataSet {
         action: &BattleAction,
         continuation: bool,
         profile: TrainerBattleProfile,
+        search: &mut CompetitiveSearch<'_>,
     ) -> Result<Vec<i32>> {
         let mut responses = Vec::new();
         for slot in competitive_move_slots(state, BattleSide::Player) {
@@ -548,20 +594,43 @@ impl GameDataSet {
                         // An action can become illegal after a simulated KO/lock.
                         Err(_) => continue,
                     };
-                let immediate = self.competitive_position_value(&outcome.state)
+                let immediate = self.competitive_position_value(&outcome.state, search)
                     + self.competitive_style_value(&outcome.state, profile);
                 let value =
                     if continuation && outcome.state.player.hp > 0 && outcome.state.enemy.hp > 0 {
-                        let mut next = INVALID_SCORE;
-                        for enemy_slot in competitive_move_slots(&outcome.state, BattleSide::Enemy)
-                        {
-                            next = next.max(self.competitive_action_score(
-                                &outcome.state,
-                                &BattleAction::Move { slot: enemy_slot },
-                                false,
-                                profile,
-                            )?);
-                        }
+                        // Continuations always restart their private chance
+                        // stream. Identical complete combat states therefore
+                        // have identical values for this decision and profile.
+                        let cached = search
+                            .continuations
+                            .iter()
+                            .find(|(state, cached_profile, _)| {
+                                *cached_profile == profile
+                                    && state.player.hp == outcome.state.player.hp
+                                    && state.enemy.hp == outcome.state.enemy.hp
+                                    && *state == outcome.state
+                            })
+                            .map(|(_, _, value)| *value);
+                        let next = if let Some(value) = cached {
+                            value
+                        } else {
+                            let mut next = INVALID_SCORE;
+                            for enemy_slot in
+                                competitive_move_slots(&outcome.state, BattleSide::Enemy)
+                            {
+                                next = next.max(self.competitive_action_score(
+                                    &outcome.state,
+                                    &BattleAction::Move { slot: enemy_slot },
+                                    false,
+                                    profile,
+                                    search,
+                                )?);
+                            }
+                            if search.continuations.len() < search.continuation_limit {
+                                search.continuations.push((outcome.state, profile, next));
+                            }
+                            next
+                        };
                         if next > INVALID_SCORE {
                             (immediate + next * 3) / 4
                         } else {
@@ -582,7 +651,11 @@ impl GameDataSet {
         Ok(responses)
     }
 
-    fn competitive_position_value(&self, state: &BattleCombatState) -> i32 {
+    fn competitive_position_value(
+        &self,
+        state: &BattleCombatState,
+        search: &mut CompetitiveSearch<'_>,
+    ) -> i32 {
         let own = state
             .enemy_party
             .iter()
@@ -647,8 +720,8 @@ impl GameDataSet {
             // attack look better than a reliable two-hit attack, or hide the
             // later payoff of Reflect. Use the real damage preparation rather
             // than base power or a second damage formula for this race estimate.
-            let incoming = self.competitive_expected_damage(state, BattleSide::Player);
-            let outgoing = self.competitive_expected_damage(state, BattleSide::Enemy);
+            let incoming = self.competitive_expected_damage(state, BattleSide::Player, search);
+            let outgoing = self.competitive_expected_damage(state, BattleSide::Enemy, search);
             let turns = |hp: u16, damage: u32| -> i32 {
                 if damage == 0 {
                     12_000
@@ -734,11 +807,18 @@ impl GameDataSet {
         value.clamp(-100, 100)
     }
 
-    fn competitive_expected_damage(&self, state: &BattleCombatState, side: BattleSide) -> u32 {
+    fn competitive_expected_damage(
+        &self,
+        state: &BattleCombatState,
+        side: BattleSide,
+        search: &mut CompetitiveSearch<'_>,
+    ) -> u32 {
         competitive_move_slots(state, side)
             .into_iter()
             .filter_map(|slot| battle_moves(state, side).get(slot))
-            .filter_map(|learned| self.competitive_move_expected_damage(state, side, learned))
+            .filter_map(|learned| {
+                self.competitive_move_expected_damage(state, side, learned, search)
+            })
             .max()
             .unwrap_or(0)
     }
@@ -748,6 +828,8 @@ impl GameDataSet {
         state: &BattleCombatState,
         side: BattleSide,
         learned: &LearnedMove,
+
+        search: &mut CompetitiveSearch<'_>,
     ) -> Option<u32> {
         if learned.current_pp == 0 {
             return None;
@@ -761,19 +843,7 @@ impl GameDataSet {
         {
             return None;
         }
-        let preview = crystal_core::battle::turn::preview_battle_move(
-            state,
-            side,
-            m,
-            &self.items,
-            &self.move_priorities,
-            &self.battle_stat_multipliers,
-            &self.type_categories,
-            &self.type_effectiveness,
-            &self.weather_modifiers,
-        )
-        .ok()?;
-        let [min, max] = preview.damage_on_hit?;
+        let [min, max] = search.previews.damage_on_hit(state, side, m).ok()??;
         let hits = match m.effect.as_str() {
             "DOUBLE_HIT" | "POISON_MULTI_HIT" => 2,
             "MULTI_HIT" => 3,
@@ -920,3 +990,25 @@ fn pokemon_value(p: &Pokemon) -> i32 {
             0
         }
 }
+
+// Move-learning compatibility is catalog data, never an input to a battle turn.
+// Drop it only from private simulations so their repeated clones stay small.
+fn compact_planning_species(state: &mut BattleCombatState) {
+    for pokemon in std::iter::once(&mut state.player)
+        .chain(std::iter::once(&mut state.enemy))
+        .chain(state.player_party.iter_mut())
+        .chain(state.enemy_party.iter_mut())
+    {
+        pokemon.species.tmhm_learnset.clear();
+    }
+    for transform in [&mut state.player_transform, &mut state.enemy_transform]
+        .into_iter()
+        .flatten()
+    {
+        transform.species.tmhm_learnset.clear();
+    }
+}
+
+#[cfg(test)]
+#[path = "competitive_search_tests.rs"]
+mod search_tests;

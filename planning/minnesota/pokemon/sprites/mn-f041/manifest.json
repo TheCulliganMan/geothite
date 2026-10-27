@@ -1,0 +1,340 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F041",
+  "status": "native-front-back-reviewed",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_092": {
+      "species_id": "MN_092",
+      "name": "Greytag",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          20,
+          22,
+          24
+        ],
+        [
+          10,
+          13,
+          18
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        25300,
+        18858,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          165,
+          181,
+          198
+        ],
+        [
+          82,
+          107,
+          148
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#A5B5C6",
+        "#526B94",
+        "#000000"
+      ]
+    },
+    "MN_267": {
+      "species_id": "MN_267",
+      "name": "Tapduck",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          31,
+          25,
+          6
+        ],
+        [
+          18,
+          9,
+          3
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        6975,
+        3378,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          255,
+          206,
+          49
+        ],
+        [
+          148,
+          74,
+          24
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#FFCE31",
+        "#944A18",
+        "#000000"
+      ]
+    },
+    "MN_268": {
+      "species_id": "MN_268",
+      "name": "Dartduck",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          13,
+          27,
+          18
+        ],
+        [
+          3,
+          12,
+          9
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        19309,
+        9603,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          107,
+          222,
+          148
+        ],
+        [
+          24,
+          99,
+          74
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#6BDE94",
+        "#18634A",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f041/prompt-v1.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "style_reference": {
+    "origin": "authentic local Crystal sprites",
+    "generator": "crates/crystal-assets/examples/minnesota_gen2_reference.rs",
+    "boards": [
+      "target/minnesota-pokemon/gen2-reference/starters.png",
+      "target/minnesota-pokemon/gen2-reference/bugs.png"
+    ]
+  },
+  "sprites": [
+    {
+      "id": "mn-092-graytag-v1",
+      "species_id": "MN_092",
+      "view": "front",
+      "source": "sprites/mn-f041/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        1214,
+        647
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        25300,
+        18858,
+        0
+      ]
+    },
+    {
+      "id": "mn-092-graytag-v1",
+      "species_id": "MN_092",
+      "view": "back",
+      "source": "sprites/mn-f041/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        647,
+        1214,
+        648
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        25300,
+        18858,
+        0
+      ]
+    },
+    {
+      "id": "mn-267-taplet-v2",
+      "species_id": "MN_267",
+      "view": "front",
+      "source": "sprites/mn-f041/pre-evolutions-v2/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        627,
+        714
+      ],
+      "fit": [
+        38,
+        38
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        6975,
+        3378,
+        0
+      ]
+    },
+    {
+      "id": "mn-267-taplet-v2",
+      "species_id": "MN_267",
+      "view": "back",
+      "source": "sprites/mn-f041/pre-evolutions-v2/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        714,
+        627,
+        540
+      ],
+      "fit": [
+        44,
+        44
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        6975,
+        3378,
+        0
+      ]
+    },
+    {
+      "id": "mn-268-dartduck-v2",
+      "species_id": "MN_268",
+      "view": "front",
+      "source": "sprites/mn-f041/pre-evolutions-v2/front-back.imagegen-v1.png",
+      "crop": [
+        627,
+        0,
+        627,
+        714
+      ],
+      "fit": [
+        48,
+        52
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        19309,
+        9603,
+        0
+      ]
+    },
+    {
+      "id": "mn-268-dartduck-v2",
+      "species_id": "MN_268",
+      "view": "back",
+      "source": "sprites/mn-f041/pre-evolutions-v2/front-back.imagegen-v1.png",
+      "crop": [
+        627,
+        714,
+        627,
+        540
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        19309,
+        9603,
+        0
+      ]
+    }
+  ],
+  "visual_review": {
+    "status": "reviewed",
+    "sheet_sha256": "073e2e1ac52e911fe5d163694f32989d3baeec1692e28e5235159f015d16a837",
+    "outline_profile": "source-contour-v1",
+    "notes": "Inspected all six native views: warm gold/chestnut Taplet, moss-green Dartduck and unchanged gray Graytag. Clear growth in size, crest fingers, wing hands and pivoting feet; each species has its own RGB555 palette. Existing Graytag PNG,2bpp,metadata,crops unchanged byte-for-byte."
+  },
+  "back_prompt_file": "sprites/mn-f041/pre-evolutions-v2/prompt-v1.txt",
+  "name_revision": "Renamed the active family to Tapduck -> Dartduck -> Greytag. Stable source IDs, original sprite filenames, source prompts, historical review notes, native pixels and palettes are preserved."
+}

@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "families": [
+    {
+      "id": "MN_F123",
+      "region": "northern_lakes",
+      "theme": "Pikeman to musket: a spear-snouted fry becomes a lance-jawed northern pike, then a muskellunge with pressure-chamber cheeks and a broad muzzle that releases compressed water. Every martial shape is living jaw, gill or fin anatomy, without held weapons or costume.",
+      "members": [
+        {
+          "id": "MN_263",
+          "name": "Pikeling",
+          "types": [
+            "WATER"
+          ],
+          "stage": 1,
+          "evolves_to": "MN_264",
+          "evolution_condition": {
+            "method": "LEVEL",
+            "level": 25
+          }
+        },
+        {
+          "id": "MN_264",
+          "name": "Pikeman",
+          "types": [
+            "WATER",
+            "FIGHTING"
+          ],
+          "stage": 2,
+          "evolves_to": "MN_265",
+          "evolution_condition": {
+            "method": "LEVEL",
+            "level": 44
+          }
+        },
+        {
+          "id": "MN_265",
+          "name": "Musketunge",
+          "types": [
+            "WATER",
+            "STEEL"
+          ],
+          "stage": 3,
+          "evolves_to": null,
+          "evolution_condition": null
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.dnr.state.mn.us/minnaqua/speciesprofile/northern_pike.html",
+          "supports": "Long flattened pike jaw, weedbed ambush and rapid acceleration; fantasy pressure chambers and evolutionary forms are original."
+        }
+      ],
+      "status": "original-art-native-review-pending"
+    }
+  ]
+}

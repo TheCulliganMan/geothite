@@ -1,0 +1,426 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F003",
+  "status": "native-front-back-reviewed",
+  "tool": "built-in image_gen",
+  "prompt_file": "sprites/mn-f003/prompt-v1.txt",
+  "sprites": [
+    {
+      "id": "mn-007-skiplit-v2",
+      "species_id": "MN_007",
+      "view": "front",
+      "source": "sprites/mn-f003/mn-007-009.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        410,
+        540
+      ],
+      "fit": [
+        36,
+        36
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        32556,
+        17606,
+        0
+      ],
+      "source_palette_rgb555": [
+        32767,
+        30538,
+        17635,
+        0
+      ]
+    },
+    {
+      "id": "mn-007-skiplit-v2",
+      "species_id": "MN_007",
+      "view": "back",
+      "source": "sprites/mn-f003/back-portraits.imagegen-v3.png",
+      "crop": [
+        0,
+        0,
+        725,
+        724
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        32556,
+        17606,
+        0
+      ],
+      "prompt_file": "sprites/mn-f003/prompt-back-v3.txt"
+    },
+    {
+      "id": "mn-008-ripplisk-v2",
+      "species_id": "MN_008",
+      "view": "front",
+      "source": "sprites/mn-f003/mn-007-009.front-back.imagegen-v1.png",
+      "crop": [
+        410,
+        0,
+        477,
+        540
+      ],
+      "fit": [
+        44,
+        44
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        24457,
+        18819,
+        0
+      ],
+      "source_palette_rgb555": [
+        32767,
+        30538,
+        17635,
+        0
+      ]
+    },
+    {
+      "id": "mn-008-ripplisk-v2",
+      "species_id": "MN_008",
+      "view": "back",
+      "source": "sprites/mn-f003/back-portraits.imagegen-v3.png",
+      "crop": [
+        725,
+        0,
+        713,
+        724
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        24457,
+        18819,
+        0
+      ],
+      "prompt_file": "sprites/mn-f003/prompt-back-v3.txt"
+    },
+    {
+      "id": "mn-009-skimoray-v2",
+      "species_id": "MN_009",
+      "view": "front",
+      "source": "sprites/mn-f003/mn-007-009.front-back.imagegen-v1.png",
+      "crop": [
+        887,
+        0,
+        649,
+        540
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        32626,
+        22821,
+        0
+      ],
+      "source_palette_rgb555": [
+        32767,
+        30538,
+        17635,
+        0
+      ]
+    },
+    {
+      "id": "mn-009-skimoray-v2",
+      "species_id": "MN_009",
+      "view": "back",
+      "source": "sprites/mn-f003/back-portraits.imagegen-v3.png",
+      "crop": [
+        1438,
+        0,
+        734,
+        724
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        32626,
+        22821,
+        0
+      ],
+      "prompt_file": "sprites/mn-f003/prompt-back-v3.txt"
+    }
+  ],
+  "conversion_notes": "The low, wide first stage uses 36px front / 32px back fit to preserve its face; growth is conveyed by the much longer blade limbs and broad final wings.",
+  "visual_review": {
+    "status": "reviewed",
+    "notes": "Root inspected v1 front/back board: hydrofoil tips and necks retain thin stepped contour anchors; cyan and blue body planes stay broad and readable. Rear foil silhouettes remain distinct.",
+    "sheet_sha256": "d1eb1c22083d7c8995411adac4dfce2d74684f1ece46e70d1073e537138a551f",
+    "outline_profile": "source-contour-v1"
+  },
+  "pokemon_palettes": {
+    "MN_007": {
+      "species_id": "MN_007",
+      "name": "Skiplit",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          12,
+          25,
+          31
+        ],
+        [
+          6,
+          6,
+          17
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        32556,
+        17606,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          99,
+          206,
+          255
+        ],
+        [
+          49,
+          49,
+          140
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#63CEFF",
+        "#31318C",
+        "#000000"
+      ]
+    },
+    "MN_008": {
+      "species_id": "MN_008",
+      "name": "Ripplisk",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          9,
+          28,
+          23
+        ],
+        [
+          3,
+          12,
+          18
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        24457,
+        18819,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          74,
+          231,
+          189
+        ],
+        [
+          24,
+          99,
+          148
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#4AE7BD",
+        "#186394",
+        "#000000"
+      ]
+    },
+    "MN_009": {
+      "species_id": "MN_009",
+      "name": "Skimoray",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          18,
+          27,
+          31
+        ],
+        [
+          5,
+          9,
+          22
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        32626,
+        22821,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          148,
+          222,
+          255
+        ],
+        [
+          41,
+          74,
+          181
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#94DEFF",
+        "#294AB5",
+        "#000000"
+      ]
+    }
+  },
+  "back_framing": "gen2-close-rear-portrait",
+  "conversion_revision": "Approved original front ink indices mapped to individual normal palettes; newly authored ImageGen close rear portraits use target palettes directly. All original sheets and conversion alternatives retained.",
+  "original_source_palette": {
+    "gbc_rgb5": [
+      [
+        31,
+        31,
+        31
+      ],
+      [
+        10,
+        26,
+        29
+      ],
+      [
+        3,
+        7,
+        17
+      ],
+      [
+        0,
+        0,
+        0
+      ]
+    ],
+    "gbc_rgb555_words": [
+      32767,
+      30538,
+      17635,
+      0
+    ],
+    "rgb8": [
+      [
+        255,
+        255,
+        255
+      ],
+      [
+        82,
+        214,
+        239
+      ],
+      [
+        24,
+        57,
+        140
+      ],
+      [
+        0,
+        0,
+        0
+      ]
+    ],
+    "hex": [
+      "#FFFFFF",
+      "#52D6EF",
+      "#18398C",
+      "#000000"
+    ]
+  },
+  "back_prompt_file": "sprites/mn-f003/prompt-back-v3.txt",
+  "back_reference_mapping": [
+    {
+      "role": "original anatomy",
+      "path": "sprites/mn-f003/mn-007-009.front-back.imagegen-v1.png"
+    },
+    {
+      "role": "target front colors and anatomy; top row authoritative",
+      "path": "sprites/mn-f003/reference-front-colors-before-back-v3.png"
+    },
+    {
+      "role": "authentic Gen2 cluster/framing reference only",
+      "path": "target/minnesota-pokemon/gen2-reference/starters.png"
+    }
+  ]
+}

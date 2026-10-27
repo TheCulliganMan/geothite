@@ -1,0 +1,134 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F113",
+  "status": "native-front-back-reviewed",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_247": {
+      "species_id": "MN_247",
+      "name": "Lumalint",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          30,
+          27,
+          12
+        ],
+        [
+          13,
+          8,
+          23
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        13182,
+        23821,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          247,
+          222,
+          99
+        ],
+        [
+          107,
+          66,
+          189
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#F7DE63",
+        "#6B42BD",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f113/prompt-v1.txt",
+  "reference_mapping": "sprites/mn-f113/reference-mapping-v1.json",
+  "back_framing": "gen2-close-rear-portrait",
+  "sprites": [
+    {
+      "id": "mn-247-lumalint-v1",
+      "species_id": "MN_247",
+      "view": "front",
+      "source": "sprites/mn-f113/mn-247-247.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        1161,
+        700
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        13182,
+        23821,
+        0
+      ],
+      "white_detail_min_samples": 32,
+      "interior_black_min_samples": 16
+    },
+    {
+      "id": "mn-247-lumalint-v1",
+      "species_id": "MN_247",
+      "view": "back",
+      "source": "sprites/mn-f113/mn-247-247.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        700,
+        1161,
+        655
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        13182,
+        23821,
+        0
+      ],
+      "white_detail_min_samples": 8
+    }
+  ],
+  "source_sha256": "293db4a6cd92727d2d1bef3a2dc8e0cd0d59ab123a95ed2cc4b8366474de6c52",
+  "candidate_review": {
+    "status": "native-review-pending",
+    "outline_profile": "source-contour-v1",
+    "sheet_sha256": "41140d050ad1cdf181e6f701116b82bc9cc2db2ad734e1955347f848adc4bf87",
+    "notes": "Actual native inspected default and front white_detail32/interior_black16 variant. Revised front retains black eye marks inside white windows in the small dark core; luminous knot has three thick bands/two blunt ends with solid yellow/purple planes and stepped outer rim. Back is enlarged rear loops/core turned away, ends cropped at bottom. Both variants retained; root final review pending."
+  },
+  "visual_review": {
+    "status": "reviewed",
+    "reviewer": "root",
+    "notes": "Root inspected both native views: three thick yellow/purple bands interlock around a dark eye core with two blunt trailing ends. White negative gaps retain the knot structure; clear paired face marks anchor the front. Enlarged rear reads as connected loop planes with cropped lower bands. Targeted front white32/interior16 preserves dark eye marks; prior variant retained.",
+    "sheet_sha256": "41140d050ad1cdf181e6f701116b82bc9cc2db2ad734e1955347f848adc4bf87",
+    "outline_profile": "source-contour-v1"
+  }
+}

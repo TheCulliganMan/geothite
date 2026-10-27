@@ -732,6 +732,9 @@ impl GameDataSet {
         self.sync_current_map_music(state, destination_map, mode, music_ids)?;
         self.sync_current_map_scene(state, destination_map)?;
         self.init_map_name_sign(state, destination_map)?;
+        // Callback specials use GameState's current map for relative writes,
+        // including bedroom decorations when a blackout returns home.
+        self.commit_overworld_snapshot(state, session, SpawnMemoryUpdate::Preserve);
         self.apply_map_setup_callbacks(state, session, destination_map, map_setup)?;
         finish_map_object_setup(session, state)?;
         let callback_mode = self.map_entry_movement_mode(state, session, session.player.mode)?;
@@ -1181,11 +1184,13 @@ impl GameDataSet {
             let direct_forced_step = tile_forced_permission.is_some_and(|permission| {
                 !matches!(permission, permissions::ICE | permissions::ICE_2B)
             });
-            let blocked_connection_edge = if direct_forced_step {
-                None
-            } else {
-                self.blocked_connection_edge_target(&staged_session, direction)?
-            };
+            let force_step_after_turn = tile_forced_direction.is_some() || continuous_step;
+            let blocked_connection_edge = self.blocked_connection_edge_target(
+                &staged_state,
+                &staged_session,
+                direction,
+                force_step_after_turn,
+            )?;
             let mut warp_trigger = None;
             if let Some(target) = blocked_connection_edge {
                 staged_session.player.facing = direction;
@@ -1204,7 +1209,7 @@ impl GameDataSet {
                     // continue directly. Downhill instead enters through the
                     // joypad path and must preserve CheckTurning's four-frame
                     // facing change before its forced downward step.
-                    force_step_after_turn: tile_forced_direction.is_some() || continuous_step,
+                    force_step_after_turn,
                     ..StepOptions::default()
                 };
                 let strength_active = staged_state
@@ -1342,6 +1347,14 @@ impl GameDataSet {
                     staged_session.player.mode,
                     music_ids,
                 )?;
+            }
+            // A wall or object ends STEP_ICE. Retaining the old direction
+            // would override every later turn with the same blocked slide.
+            if tile_forced_permission.is_some_and(|permission| {
+                matches!(permission, permissions::ICE | permissions::ICE_2B)
+            }) && !matches!(movement, Some(StepOutcome::Moved { .. }))
+            {
+                staged_session.last_step_direction = None;
             }
             let moved = matches!(movement, Some(StepOutcome::Moved { .. }));
             // Door/cave carpet warps at a map edge activate from the tile the
@@ -1622,54 +1635,6 @@ impl GameDataSet {
             wild_encounter,
             wild_battle,
         })
-    }
-
-    fn blocked_connection_edge_target(
-        &self,
-        session: &OverworldSession,
-        direction: Direction,
-    ) -> Result<Option<TilePosition>> {
-        if session.player.facing != direction {
-            return Ok(None);
-        }
-        let Some(target) = checked_move_by_stride(
-            session.player.tile,
-            direction,
-            StepOptions::default().stride_tiles,
-        ) else {
-            return Ok(None);
-        };
-        let mut probe = session.clone();
-        probe.player.tile = target;
-        let Some(trigger) = probe
-            .check_connection_checked()
-            .with_context(|| format!("check connection on {}", probe.map.name))?
-        else {
-            return Ok(None);
-        };
-        if self.connection_trigger_has_destination(&trigger)? {
-            Ok(None)
-        } else {
-            Ok(Some(target))
-        }
-    }
-
-    fn connection_trigger_has_destination(&self, trigger: &ConnectionTrigger) -> Result<bool> {
-        let target_attributes = self
-            .map_attributes
-            .get(&trigger.connection.target_map)
-            .with_context(|| {
-                format!(
-                    "connection target '{}' missing attributes (referenced by {})",
-                    trigger.connection.target_map, trigger.map_name
-                )
-            })?;
-        connection_destination_tile_in_bounds(
-            trigger.tile,
-            &trigger.connection.direction,
-            trigger.connection.offset,
-            target_attributes,
-        )
     }
 
     fn game_state_blocks_overworld_input(state: &GameState) -> bool {
@@ -3573,11 +3538,15 @@ impl GameDataSet {
                 .iter()
                 .chain(&standard_global_roots)
                 .map(String::as_str)
-                // Surf is entered by the field-move dispatcher rather than
-                // StdScripts or PlayerEventScriptPointers. Its authored body
-                // and movement/local definitions already live in the pack.
-                .chain(["UsedSurfScript"].into_iter()
-                    .filter(|label| definitions.contains_key(*label))),
+                // These field entries are invoked directly by the visible
+                // controller, outside the standard/player pointer tables.
+                // Keep their existing source bodies executable so deferred
+                // native block changes can reach their callasm boundary.
+                .chain(
+                    ["UsedSurfScript", "Script_Cut"]
+                        .into_iter()
+                        .filter(|label| definitions.contains_key(*label)),
+                ),
             false,
         );
         for (label, body) in decoration_description_scripts() {

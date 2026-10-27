@@ -1,0 +1,241 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F117",
+  "status": "native-front-back-reviewed",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_251": {
+      "species_id": "MN_251",
+      "name": "Winkfin",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          21,
+          28,
+          29
+        ],
+        [
+          8,
+          14,
+          12
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        30613,
+        12744,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          173,
+          231,
+          239
+        ],
+        [
+          66,
+          115,
+          99
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#ADE7EF",
+        "#427363",
+        "#000000"
+      ]
+    },
+    "MN_252": {
+      "species_id": "MN_252",
+      "name": "Glaciris",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          19,
+          27,
+          31
+        ],
+        [
+          8,
+          11,
+          18
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        32627,
+        18792,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          156,
+          222,
+          255
+        ],
+        [
+          66,
+          90,
+          148
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#9CDEFF",
+        "#425A94",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f117/prompt-v1.txt",
+  "reference_mapping": "sprites/mn-f117/reference-mapping-v1.json",
+  "back_framing": "gen2-close-rear-portrait",
+  "sprites": [
+    {
+      "id": "mn-251-winkfin-v1",
+      "species_id": "MN_251",
+      "view": "front",
+      "source": "sprites/mn-f117/mn-251-252.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        690,
+        500
+      ],
+      "fit": [
+        40,
+        40
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        30613,
+        12744,
+        0
+      ],
+      "white_detail_min_samples": 32,
+      "interior_black_min_samples": 16
+    },
+    {
+      "id": "mn-251-winkfin-v1",
+      "species_id": "MN_251",
+      "view": "back",
+      "source": "sprites/mn-f117/mn-251-252.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        500,
+        690,
+        524
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        30613,
+        12744,
+        0
+      ],
+      "white_detail_min_samples": 8
+    },
+    {
+      "id": "mn-252-glaciris-v1",
+      "species_id": "MN_252",
+      "view": "front",
+      "source": "sprites/mn-f117/mn-251-252.front-back.imagegen-v1.png",
+      "crop": [
+        690,
+        0,
+        846,
+        500
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        32627,
+        18792,
+        0
+      ],
+      "white_detail_min_samples": 32,
+      "interior_black_min_samples": 16
+    },
+    {
+      "id": "mn-252-glaciris-v1",
+      "species_id": "MN_252",
+      "view": "back",
+      "source": "sprites/mn-f117/mn-251-252.front-back.imagegen-v1.png",
+      "crop": [
+        690,
+        500,
+        846,
+        524
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        32627,
+        18792,
+        0
+      ],
+      "white_detail_min_samples": 8
+    }
+  ],
+  "source_sha256": "bd25bf6bd315707f5b0394ae88a64a02f59af96f9b5748330ececcfa4a233fc7",
+  "candidate_review": {
+    "status": "native-review-pending",
+    "outline_profile": "source-contour-v1",
+    "sheet_sha256": "b289b748c297b346ae2d3df378f842621877b8e649a557ec003d46227400a728",
+    "notes": "Actual native inspected: Winkfin40 is a slim full swimming fish with forked tail and small crescent lens; Glaciris54 gains deeper shoulder, large biconvex eye/gill lens and broad continuous lens fins while retaining fish anatomy. No humanoid limbs. Strong horizontal silhouettes, visible white eyes/dark pupils, stepped outer rims. Close backs show napes and lens-fin roots enlarged, lower fish bodies cropped. Distinct cyan/green and cyan/blue species palettes match front/back. Root final review pending."
+  },
+  "visual_review": {
+    "status": "reviewed",
+    "reviewer": "root",
+    "notes": "Root inspected all four native views: full horizontal walleye-like fish grow from small crescent eye lens to broad eye/gill lens and sweeping ice fins. Strong forked tails, visible mouths and dark pupils read at40/54 fits. Enlarged turned rear portraits show lens/nape and fin roots. Species have distinct green/cyan and blue/cyan GBC palettes; no legs or machinery.",
+    "sheet_sha256": "b289b748c297b346ae2d3df378f842621877b8e649a557ec003d46227400a728",
+    "outline_profile": "source-contour-v1"
+  }
+}

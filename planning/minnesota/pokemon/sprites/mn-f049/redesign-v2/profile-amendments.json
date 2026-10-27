@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "status": "proposal-amendments-only",
+  "preserve": [
+    "Icemyth MN_100 identity, Ice/Psychic types, mythical classification, rarity, stats, learnsets and normal/shiny palettes remain unchanged.",
+    "Existing Clouded Ice classification and both dex pages remain accurate."
+  ],
+  "species": [
+    {
+      "id": "MN_100",
+      "classification": "Clouded Ice",
+      "visual_theme": "An asymmetrical walking cloudy ice carapace with a sloped crown, sleepy viewing-window eyes, low protective ice paddles and short shard feet. A single ambiguous curled cryptid shadow is enclosed under broad frosting bands; the rear view reveals a differently read shadow through the cloudy ice."
+    }
+  ]
+}

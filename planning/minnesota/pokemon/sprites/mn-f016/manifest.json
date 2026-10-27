@@ -1,0 +1,234 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F016",
+  "status": "native-front-back-reviewed",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_045": {
+      "species_id": "MN_045",
+      "name": "Flapip",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          30,
+          24,
+          11
+        ],
+        [
+          17,
+          10,
+          5
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        12062,
+        5457,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          247,
+          198,
+          90
+        ],
+        [
+          140,
+          82,
+          41
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#F7C65A",
+        "#8C5229",
+        "#000000"
+      ]
+    },
+    "MN_046": {
+      "species_id": "MN_046",
+      "name": "Stackajack",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          31,
+          22,
+          8
+        ],
+        [
+          16,
+          7,
+          4
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        8927,
+        4336,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          255,
+          181,
+          66
+        ],
+        [
+          132,
+          57,
+          33
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#FFB542",
+        "#843921",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f016/prompt-v1.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "style_reference": {
+    "origin": "authentic local Crystal sprites",
+    "generator": "crates/crystal-assets/examples/minnesota_gen2_reference.rs",
+    "board": "target/minnesota-pokemon/gen2-reference/starters.png"
+  },
+  "sprites": [
+    {
+      "id": "mn-045-flapip-v1",
+      "species_id": "MN_045",
+      "view": "front",
+      "source": "sprites/mn-f016/mn-045-046.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        846,
+        443
+      ],
+      "fit": [
+        40,
+        40
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        12062,
+        5457,
+        0
+      ]
+    },
+    {
+      "id": "mn-045-flapip-v1",
+      "species_id": "MN_045",
+      "view": "back",
+      "source": "sprites/mn-f016/mn-045-046.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        443,
+        846,
+        444
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        12062,
+        5457,
+        0
+      ]
+    },
+    {
+      "id": "mn-046-stackajack-v1",
+      "species_id": "MN_046",
+      "view": "front",
+      "source": "sprites/mn-f016/mn-045-046.front-back.imagegen-v1.png",
+      "crop": [
+        846,
+        0,
+        928,
+        443
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        8927,
+        4336,
+        0
+      ]
+    },
+    {
+      "id": "mn-046-stackajack-v1",
+      "species_id": "MN_046",
+      "view": "back",
+      "source": "sprites/mn-f016/mn-045-046.front-back.imagegen-v1.png",
+      "crop": [
+        846,
+        443,
+        928,
+        444
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        8927,
+        4336,
+        0
+      ]
+    }
+  ],
+  "visual_review": {
+    "status": "reviewed",
+    "notes": [
+      "Inspected frozen source-contour-v1 sheet: black exterior follows pancake edges and limbs while syrup interiors remain warm brown instead of black clumps.",
+      "Single disk grows into layered stack, butter brows and griddle belly; rear stack layers and lower-body crop remain readable. No contour regression seen."
+    ],
+    "sheet_sha256": "c528886bb82a090f3b30e8a9c83d5119a3d270d090cdb5284cc7adbe54c2fc55",
+    "outline_profile": "source-contour-v1"
+  }
+}

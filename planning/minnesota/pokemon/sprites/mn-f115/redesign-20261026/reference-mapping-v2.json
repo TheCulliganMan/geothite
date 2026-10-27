@@ -1,0 +1,14 @@
+{
+  "references": [
+    {
+      "path": "planning/minnesota/pokemon/sprites/mn-f115/redesign-20261026/mn-249-frontagal.front-back.redesign-v1.png",
+      "sha256": "73c786e8fa3c362775fba740e697da6bd57d38c5db74deae939e890a522a74e5",
+      "role": "Edit target; preserve sheet/style/body, replace hooked beak with blunt expressive storm-prow muzzle."
+    }
+  ],
+  "attached_to_imagegen": [
+    "planning/minnesota/pokemon/sprites/mn-f115/redesign-20261026/mn-249-frontagal.front-back.redesign-v1.png"
+  ],
+  "canonical_species_id": "MN_249",
+  "canonical_family_id": "MN_F115"
+}

@@ -1,0 +1,11 @@
+{
+  "status": "returned-raw-preserved",
+  "source": "sprites/mn-f120/mn-257-258.front-back.imagegen-v1.png",
+  "source_sha256": "ed957b6bb13ee45e4b8b395b1f07e13833482c40b2a3538f0fd73f5cba4e7a89",
+  "source_size": [
+    1536,
+    1024
+  ],
+  "prompt_file": "sprites/mn-f120/prompt-v1.txt",
+  "reference_mapping": "sprites/mn-f120/reference-mapping-v1.json"
+}

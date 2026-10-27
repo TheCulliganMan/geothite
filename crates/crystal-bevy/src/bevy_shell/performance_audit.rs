@@ -18,11 +18,13 @@ use bevy::render::renderer::{RenderAdapterInfo, RenderDevice};
 use bevy::render::view::screenshot::ScreenshotCaptured;
 use bevy::window::PrimaryWindow;
 use crystal_render_api::{VisualBattleFrame, VisualWorldFrame, WorldRenderSet};
-use crystal_voxel_view::{BattleViewStatus, VoxelViewStatus};
+use crystal_voxel_view::{BattleViewStatus, VoxelViewSettings, VoxelViewStatus};
 use serde::Serialize;
 
 use super::handheld_input::HandheldInput;
-use super::{BevyRuntimeShell, apply_keyboard_input, handheld_input, render_capture};
+use super::{
+    BevyRuntimeShell, RenderedViewport, apply_keyboard_input, handheld_input, render_capture,
+};
 use crate::performance_audit::{AuditExpectation, AuditFixture, AuditRequest};
 use crystal_core::models::Dv;
 
@@ -388,6 +390,8 @@ fn expectation_matches(
 #[derive(bevy::ecs::system::SystemParam)]
 struct Scene<'w, 's> {
     runtime: Res<'w, BevyRuntimeShell>,
+    rendered: Res<'w, RenderedViewport>,
+    settings: Res<'w, VoxelViewSettings>,
     status: Res<'w, VoxelViewStatus>,
     battle_status: Res<'w, BattleViewStatus>,
     battle: Res<'w, VisualBattleFrame>,
@@ -471,7 +475,23 @@ fn observe(mut audit: ResMut<Audit>, clock: Res<FrameClock>, scene: Scene, mut c
         audit.initial_pp = Some(pp);
     }
     let initial_pp = *audit.initial_pp.get_or_insert(pp);
-    let scene_ready = if battle {
+    let scene_ready = if !scene.settings.enabled {
+        // Source presentation has no modeled terrain publication. Require the
+        // compositor's receipt for this exact state, then use the same GPU
+        // pipeline/completion gate and warmup image verification as 3D.
+        scene.rendered.snapshot_revision == Some(scene.runtime.snapshot_revision)
+            && scene.rendered.map_name.as_ref() == Some(&snapshot.overworld.map_name)
+            && scene.rendered.tile == Some(snapshot.overworld.tile)
+            && !scene.rendered.title_active
+            && scene.runtime.visible_walk_warp_phase.is_none()
+            && scene.runtime.player_walk_frame_ticks == 0
+            && if battle {
+                scene.runtime.battle_lcd_animation_active
+            } else {
+                scene.rendered.map_texture.is_some()
+                    && scene.rendered.map_priority_texture.is_some()
+            }
+    } else if battle {
         scene.battle.active && !scene.battle.preparing && scene.battle_status.active
     } else {
         scene.status.active
@@ -596,7 +616,9 @@ fn observe(mut audit: ResMut<Audit>, clock: Res<FrameClock>, scene: Scene, mut c
                     key: step.key.clone(),
                     latency_ms: elapsed * 1000.0,
                     controller_ms: audit.committed_ms.unwrap_or(elapsed * 1000.0),
-                    render_settle_ms: if continuous { 0. } else {
+                    render_settle_ms: if continuous {
+                        0.
+                    } else {
                         elapsed * 1000.0 - audit.committed_ms.unwrap_or(elapsed * 1000.0)
                     },
                     renderer_waited: !continuous,
@@ -736,6 +758,11 @@ fn end_frame(world: &mut World) {
     let device_features = world
         .get_resource::<RenderDevice>()
         .map(|device| format!("{:?}", device.features()));
+    let renderer = if world.resource::<VoxelViewSettings>().enabled {
+        "3d"
+    } else {
+        "2d"
+    };
     let mut audit = world.resource_mut::<Audit>();
     let elapsed = audit.frame_start.elapsed().as_secs_f64() * 1000.0;
     if let Some(frame) = audit.frames.last_mut().filter(|frame| frame.id == clock.id) {
@@ -782,7 +809,7 @@ fn end_frame(world: &mut World) {
     let adapter = adapter.or_else(|| Some(gpu.adapter.clone()));
     let device_features = device_features.or_else(|| Some(gpu.features.clone()));
     let report = serde_json::json!({"schema":1,"success":audit.failure.is_none(),"failure":audit.failure,
-        "scenario":audit.request.scenario,"adapter":adapter,"features":device_features,
+        "scenario":audit.request.scenario,"adapter":adapter,"features":device_features,"renderer":renderer,
         "frames":audit.frames,"checkpoints":audit.checkpoints,"gpu":gpu,
         "motion_capture":audit.motion_capture.receipt(),
         "render_diagnostics":audit.render_diagnostics,

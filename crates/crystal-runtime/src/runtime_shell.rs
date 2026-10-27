@@ -1250,6 +1250,14 @@ impl RuntimeGameShell {
         })
     }
 
+    /// Runs from the supplied cursor until a presentation or input boundary.
+    ///
+    /// Gift opcodes remain unexecuted at a `GiftPokemon` boundary so the
+    /// frontend can grant them and retain nickname/storage input ownership.
+    ///
+    /// # Errors
+    /// Returns an error for an invalid cursor or command, failed mutation, or
+    /// a zero/exhausted step limit.
     pub fn run_compiled_script_until_boundary(
         &mut self,
         start: RuntimeCompiledScriptCursor,
@@ -1288,6 +1296,22 @@ impl RuntimeGameShell {
             }
             let commands = self.runtime.compiled_script_commands(&current.source_script)?;
             let command = commands.get(current.command_index);
+            // Gifts own a nickname or storage presentation in the production
+            // controller. A composed continuation must leave the opcode for
+            // that controller, just as a directly reached gift command does.
+            if matches!(
+                command
+                    .and_then(|command| command.get("command"))
+                    .and_then(serde_json::Value::as_str),
+                Some("givepoke" | "giveegg")
+            ) {
+                return Ok(RuntimeCompiledScriptRun {
+                    steps,
+                    next_cursor: Some(current),
+                    boundary: Some(RuntimeCompiledScriptBoundary::GiftPokemon),
+                    ended: false,
+                });
+            }
             // Registration is a synchronous choice, including when reached
             // through a jump or a returned common script. Leave the opcode
             // unexecuted until the frontend supplies the player's response.

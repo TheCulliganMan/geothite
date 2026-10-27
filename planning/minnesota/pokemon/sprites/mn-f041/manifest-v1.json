@@ -1,0 +1,130 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F041",
+  "status": "native-front-back-reviewed",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_092": {
+      "species_id": "MN_092",
+      "name": "Graytag",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          20,
+          22,
+          24
+        ],
+        [
+          10,
+          13,
+          18
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        25300,
+        18858,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          165,
+          181,
+          198
+        ],
+        [
+          82,
+          107,
+          148
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#A5B5C6",
+        "#526B94",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f041/prompt-v1.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "style_reference": {
+    "origin": "authentic local Crystal sprites",
+    "generator": "crates/crystal-assets/examples/minnesota_gen2_reference.rs",
+    "boards": [
+      "target/minnesota-pokemon/gen2-reference/starters.png",
+      "target/minnesota-pokemon/gen2-reference/bugs.png"
+    ]
+  },
+  "sprites": [
+    {
+      "id": "mn-092-graytag-v1",
+      "species_id": "MN_092",
+      "view": "front",
+      "source": "sprites/mn-f041/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        1214,
+        647
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        25300,
+        18858,
+        0
+      ]
+    },
+    {
+      "id": "mn-092-graytag-v1",
+      "species_id": "MN_092",
+      "view": "back",
+      "source": "sprites/mn-f041/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        647,
+        1214,
+        648
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        25300,
+        18858,
+        0
+      ]
+    }
+  ],
+  "visual_review": {
+    "status": "reviewed",
+    "notes": "Inspected frozen v1: Graytag hand crest, runner wings and spring web feet read distinctly; small face remains legible. Connected silhouette edges and close rear shoulder/head framing match target gray palette.",
+    "sheet_sha256": "9fdbb1f9693c863b7145080b1610bb6421711a335a99cd9ec1bb6b7bc671aa3d",
+    "outline_profile": "source-contour-v1"
+  }
+}

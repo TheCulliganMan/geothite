@@ -1,0 +1,37 @@
+{
+  "canvas_size": [
+    2560,
+    2560
+  ],
+  "placements": [
+    {
+      "source": "wheel.imagegen-v1.png",
+      "offset": [
+        13,
+        13
+      ]
+    },
+    {
+      "source": "food.imagegen-v1.png",
+      "offset": [
+        1293,
+        13
+      ]
+    },
+    {
+      "source": "cookie.imagegen-v1.png",
+      "offset": [
+        13,
+        1293
+      ]
+    },
+    {
+      "source": "butter.imagegen-v1.png",
+      "offset": [
+        1293,
+        1293
+      ]
+    }
+  ],
+  "operation": "Paste unchanged RGBA pixels into a transparent atlas. No resizing, resampling, painting or alpha flattening."
+}

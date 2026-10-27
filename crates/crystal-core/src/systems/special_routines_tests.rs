@@ -12308,6 +12308,47 @@ fn runtime_spawn_point_catalog_rejects_identifiers_past_num_spawns() {
 }
 
 #[test]
+fn runtime_spawn_point_catalog_accepts_addon_recovery_without_accepting_reserved_gap() {
+    let runtime_map_names = [("ROUTE_29".to_string(), "Route29".to_string())]
+        .into_iter()
+        .collect();
+    for identifier in [0, 27, FIRST_ADDON_RECOVERY_SPAWN, u16::MAX] {
+        let spawn_points = [(
+            identifier.to_string(),
+            RuntimeSpawnPointRef {
+                map_constant: "ROUTE_29".to_string(),
+                map_name: "Route29".to_string(),
+                group_name: "GROUP_ROUTE_29".to_string(),
+                ..spawn_point(identifier, "ROUTE_29", 1, 1, 0, 0)
+            },
+        )]
+        .into_iter()
+        .collect();
+        assert!(runtime_spawn_point_catalog_issues(&spawn_points, &runtime_map_names).is_empty());
+    }
+    for identifier in [28, 255] {
+        let spawn_points = [(
+            identifier.to_string(),
+            RuntimeSpawnPointRef {
+                map_constant: "ROUTE_29".to_string(),
+                map_name: "Route29".to_string(),
+                group_name: "GROUP_ROUTE_29".to_string(),
+                ..spawn_point(identifier, "ROUTE_29", 1, 1, 0, 0)
+            },
+        )]
+        .into_iter()
+        .collect();
+        assert_eq!(
+            runtime_spawn_point_catalog_issues(&spawn_points, &runtime_map_names),
+            vec![RuntimeSpawnPointCatalogIssue::IdentifierOutOfRange {
+                key: identifier.to_string(),
+                identifier,
+            }]
+        );
+    }
+}
+
+#[test]
 fn runtime_spawn_point_catalog_issues_reject_inconsistent_tile_fields() {
     let spawn_points = [(
         "1".to_string(),

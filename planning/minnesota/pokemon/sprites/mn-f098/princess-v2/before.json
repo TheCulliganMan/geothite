@@ -1,0 +1,315 @@
+{
+  "family": {
+    "id": "MN_F098",
+    "status": "proposal-awaiting-root-lock",
+    "theme": "Minnesota fair butter carving: a cold butter block carves its own limbs, then fights by reshaping broad sculptor forearms and curled butter-shaving armor.",
+    "region": "twin_cities",
+    "habitat": "Cold-storage corners of city dairy markets and traveling fair displays near St Paul. Separate from Lutebrisk: a solid self-sculpting butter creature, not jelly with a butter heart.",
+    "map_placement": {
+      "towns": [
+        "ST_PAUL"
+      ],
+      "routes": [
+        "MN_R04"
+      ],
+      "status": "proposed habitat only; no map or encounter mutation"
+    },
+    "sources": [
+      {
+        "url": "https://gallery.mnstatefair.org/media/SFP/content/17-butter-sculptures.html",
+        "institution": "Minnesota State Fair",
+        "supports": "Official fair account of butter sculptures carved in the Dairy Building; original creature has no real portrait or named royalty likeness."
+      }
+    ],
+    "members": [
+      {
+        "id": "MN_213",
+        "name": "Chislet",
+        "types": [
+          "ICE"
+        ],
+        "stage": 1,
+        "evolves_to": "MN_214",
+        "body_growth": "A small uneven butter block has two short wedge feet and a large chisel-shaped forearm; a curled shaving above one eye becomes a questioning eyebrow. It chips away a corner to free its other hand.",
+        "silhouette": "Asymmetric cuboid with one wedge arm, curled eyebrow and stub feet."
+      },
+      {
+        "id": "MN_214",
+        "name": "Buttermuse",
+        "types": [
+          "ICE",
+          "FIGHTING"
+        ],
+        "stage": 2,
+        "evolves_to": null,
+        "body_growth": "The block unfolds into a broad poised statue creature with two enormous wedge forearms, a curled shaving ruff and a spiral rosette crown. Its body stays thick and solid, its fighting stance planted, and it reforms damaged surfaces by pressing its arms together.",
+        "silhouette": "Broad sculpted torso, two triangular chisel fists and curled ruff/crown; no human dress, copied bust or ordinary butter stick with eyes."
+      }
+    ],
+    "sprite_design": "Use broad carved facets, 2-3 shaving curls, pale butter and cold blue shadows. No gradients, ice-spike overload or real-person face. Back portrait emphasizes rosette and carving shoulders.",
+    "proposed_routes": [
+      "MN_R04"
+    ],
+    "design_status": "root-reviewed-locked-for-art",
+    "design_lock": "locked by root; first153identities fixed"
+  },
+  "profiles": [
+    {
+      "id": "MN_213",
+      "classification": "Butter Chip",
+      "height_inches": 12,
+      "weight_tenths_lb": 190,
+      "dex_pages": [
+        "It carves @ shavings from @ its chilled body.",
+        "A cold night @ restores the parts @ it carved away."
+      ],
+      "base_stats": {
+        "hp": 48,
+        "attack": 62,
+        "defense": 50,
+        "speed": 39,
+        "special_attack": 25,
+        "special_defense": 53
+      },
+      "catch_rate": 190,
+      "base_exp": 61,
+      "gender_ratio": 127,
+      "hatch_cycles": 20,
+      "growth_rate": "GROWTH_MEDIUM_FAST",
+      "egg_groups": [
+        "EGG_FAIRY",
+        "EGG_HUMANSHAPE"
+      ],
+      "evolution": {
+        "method": "LEVEL",
+        "level": 30
+      },
+      "held_items": [
+        null,
+        null
+      ],
+      "menu_icon": "ICON_FIGHTER",
+      "footprint_species": "CLEFAIRY",
+      "cry": {
+        "cry": "CRY_CLEFAIRY",
+        "pitch": -24,
+        "length": 144
+      },
+      "shiny_rgb5": [
+        [
+          17,
+          31,
+          28
+        ],
+        [
+          23,
+          11,
+          17
+        ]
+      ],
+      "level_moves": [
+        [
+          1,
+          "POUND"
+        ],
+        [
+          1,
+          "DEFENSE_CURL"
+        ],
+        [
+          5,
+          "POWDER_SNOW"
+        ],
+        [
+          9,
+          "HARDEN"
+        ],
+        [
+          13,
+          "KARATE_CHOP"
+        ],
+        [
+          17,
+          "ICY_WIND"
+        ],
+        [
+          22,
+          "FOCUS_ENERGY"
+        ],
+        [
+          27,
+          "LOW_KICK"
+        ],
+        [
+          32,
+          "ICE_PUNCH"
+        ],
+        [
+          37,
+          "COUNTER"
+        ],
+        [
+          42,
+          "ICE_BEAM"
+        ],
+        [
+          48,
+          "CROSS_CHOP"
+        ],
+        [
+          55,
+          "BARRIER"
+        ],
+        [
+          62,
+          "BLIZZARD"
+        ]
+      ],
+      "tmhm_moves": [
+        "ICE_BEAM",
+        "BLIZZARD",
+        "ICY_WIND",
+        "ICE_PUNCH",
+        "DYNAMICPUNCH",
+        "ROCK_SMASH",
+        "STRENGTH",
+        "HEADBUTT",
+        "ENDURE",
+        "PROTECT",
+        "REST"
+      ],
+      "egg_moves": [
+        "MEDITATE",
+        "ENCORE",
+        "REVERSAL"
+      ]
+    },
+    {
+      "id": "MN_214",
+      "classification": "Butter Art",
+      "height_inches": 48,
+      "weight_tenths_lb": 1570,
+      "dex_pages": [
+        "It reshapes its @ forearms before @ each bout.",
+        "No rival faces @ the same pair @ of fists twice."
+      ],
+      "base_stats": {
+        "hp": 85,
+        "attack": 110,
+        "defense": 90,
+        "speed": 70,
+        "special_attack": 45,
+        "special_defense": 95
+      },
+      "catch_rate": 90,
+      "base_exp": 208,
+      "gender_ratio": 127,
+      "hatch_cycles": 20,
+      "growth_rate": "GROWTH_MEDIUM_FAST",
+      "egg_groups": [
+        "EGG_FAIRY",
+        "EGG_HUMANSHAPE"
+      ],
+      "evolution": null,
+      "held_items": [
+        null,
+        null
+      ],
+      "menu_icon": "ICON_FIGHTER",
+      "footprint_species": "CLEFAIRY",
+      "cry": {
+        "cry": "CRY_CLEFAIRY",
+        "pitch": 0,
+        "length": 160
+      },
+      "shiny_rgb5": [
+        [
+          15,
+          30,
+          27
+        ],
+        [
+          22,
+          8,
+          14
+        ]
+      ],
+      "level_moves": [
+        [
+          1,
+          "POUND"
+        ],
+        [
+          1,
+          "DEFENSE_CURL"
+        ],
+        [
+          1,
+          "POWDER_SNOW"
+        ],
+        [
+          11,
+          "HARDEN"
+        ],
+        [
+          15,
+          "KARATE_CHOP"
+        ],
+        [
+          19,
+          "ICY_WIND"
+        ],
+        [
+          24,
+          "FOCUS_ENERGY"
+        ],
+        [
+          29,
+          "LOW_KICK"
+        ],
+        [
+          34,
+          "ICE_BEAM"
+        ],
+        [
+          39,
+          "COUNTER"
+        ],
+        [
+          44,
+          "ICE_PUNCH"
+        ],
+        [
+          50,
+          "CROSS_CHOP"
+        ],
+        [
+          57,
+          "BARRIER"
+        ],
+        [
+          64,
+          "BLIZZARD"
+        ]
+      ],
+      "tmhm_moves": [
+        "ICE_BEAM",
+        "BLIZZARD",
+        "ICY_WIND",
+        "ICE_PUNCH",
+        "DYNAMICPUNCH",
+        "ROCK_SMASH",
+        "STRENGTH",
+        "HEADBUTT",
+        "ENDURE",
+        "PROTECT",
+        "REST"
+      ],
+      "egg_moves": [
+        "MEDITATE",
+        "ENCORE",
+        "REVERSAL"
+      ]
+    }
+  ]
+}

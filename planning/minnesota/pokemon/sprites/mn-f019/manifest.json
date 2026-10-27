@@ -1,0 +1,234 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F019",
+  "status": "native-front-back-reviewed",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_051": {
+      "species_id": "MN_051",
+      "name": "Leechimp",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          16,
+          24,
+          22
+        ],
+        [
+          8,
+          10,
+          16
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        23312,
+        16712,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          132,
+          198,
+          181
+        ],
+        [
+          66,
+          82,
+          132
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#84C6B5",
+        "#425284",
+        "#000000"
+      ]
+    },
+    "MN_052": {
+      "species_id": "MN_052",
+      "name": "Leechurge",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          18,
+          18,
+          25
+        ],
+        [
+          7,
+          5,
+          12
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        26194,
+        12455,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          148,
+          148,
+          206
+        ],
+        [
+          57,
+          41,
+          99
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#9494CE",
+        "#392963",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f019/prompt-v1.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "style_reference": {
+    "origin": "authentic local Crystal sprites",
+    "generator": "crates/crystal-assets/examples/minnesota_gen2_reference.rs",
+    "board": "target/minnesota-pokemon/gen2-reference/starters.png"
+  },
+  "sprites": [
+    {
+      "id": "mn-051-leechimp-v1",
+      "species_id": "MN_051",
+      "view": "front",
+      "source": "sprites/mn-f019/mn-051-052.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        712,
+        512
+      ],
+      "fit": [
+        40,
+        40
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        23312,
+        16712,
+        0
+      ]
+    },
+    {
+      "id": "mn-051-leechimp-v1",
+      "species_id": "MN_051",
+      "view": "back",
+      "source": "sprites/mn-f019/mn-051-052.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        512,
+        712,
+        512
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        23312,
+        16712,
+        0
+      ]
+    },
+    {
+      "id": "mn-052-leechurge-v1",
+      "species_id": "MN_052",
+      "view": "front",
+      "source": "sprites/mn-f019/mn-051-052.front-back.imagegen-v1.png",
+      "crop": [
+        712,
+        0,
+        824,
+        512
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        26194,
+        12455,
+        0
+      ]
+    },
+    {
+      "id": "mn-052-leechurge-v1",
+      "species_id": "MN_052",
+      "view": "back",
+      "source": "sprites/mn-f019/mn-051-052.front-back.imagegen-v1.png",
+      "crop": [
+        712,
+        512,
+        824,
+        512
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        26194,
+        12455,
+        0
+      ]
+    }
+  ],
+  "visual_review": {
+    "status": "reviewed",
+    "notes": [
+      "Inspected frozen source-contour-v1 sheet: leech disc arms and accordion folds retain distinct gaps, with firmer exterior anchors and reduced solid-black internal masses.",
+      "Close rear portraits preserve bellows direction and crop cleanly. Adult front eye remains a minimal white mark at native scale, already present as a small source feature; ring-mouth silhouette remains readable."
+    ],
+    "sheet_sha256": "7c0f32d06a76818160c27bbc0c6acb4a76738705773c01c3fa00597e424279c5",
+    "outline_profile": "source-contour-v1"
+  }
+}

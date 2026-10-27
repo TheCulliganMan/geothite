@@ -1,0 +1,38 @@
+{
+  "id": "MN_F131",
+  "region": "hardwood_canopy",
+  "theme": "Minnesota pileated woodpeckers and rhythmic drumming: a wedge-beaked chick develops a tall swept crest, stiff prop tail, powerful gripping toes and broad shock-bracing throat folds. Fighting anatomy remains a climbing bird with wings, not a boxer wearing feathers.",
+  "habitat": "Mature hardwood trunks, oak savanna edges and standing deadwood.",
+  "members": [
+    {
+      "id": "MN_289",
+      "name": "Taplet",
+      "types": [
+        "NORMAL",
+        "FLYING"
+      ],
+      "stage": 1,
+      "evolves_to": "MN_290"
+    },
+    {
+      "id": "MN_290",
+      "name": "Drumcrest",
+      "types": [
+        "FIGHTING",
+        "FLYING"
+      ],
+      "stage": 2,
+      "evolves_to": null
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.dnr.state.mn.us/birds/woodpeckers.html",
+      "publisher": "Minnesota regional primary source",
+      "evidence": "Regional woodpeckers, pileated identity, drumming and oak-savanna association.",
+      "fantasy_extension": "All powers, anatomy changes and discovery scenes are original fiction."
+    }
+  ],
+  "design_status": "authored-wildlife-replacement",
+  "replacement_context": "User requested forest wildlife in place of rejected weather families while retaining exactly220 active species. No encounter table or map event is changed."
+}

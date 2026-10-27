@@ -11,7 +11,9 @@
 //! outstanding readbacks before completion polling or after admission.
 //! `capture-clock.csv` correlates the unchanged Bevy real clock to Unix UTC;
 //! callback timestamps use that same monotonic origin. PNG timing includes file
-//! creation, encoding, and writing, not an fsync. A timeout is never a drain.
+//! creation, encoding and archival writes, not an fsync. Original readback
+//! archival occurs before RGB conversion and is included in that measured phase.
+//! A timeout is never a drain.
 //! Probe PNGs and timestamps are evidence, not a continuous video, so the probe
 //! deliberately emits no ffconcat manifest across its nonrecorded windows.
 use super::*;
@@ -186,17 +188,20 @@ struct CaptureTicket {
 fn save_capture(image: Image, path: PathBuf, ticket: Option<CaptureTicket>) -> CaptureCompletion {
     let callback_at = ticket.map(|_| CaptureInstant::now());
     let mut rgb_finished_at = None;
-    let result = (|| {
-        let rgb = image
+    let result = (|| -> anyhow::Result<()> {
+        crate::capture_archive::archive_existing(&path)?;
+        crate::capture_archive::archive_gpu_readback(&path, &image)?;
+        let native = image
             .try_into_dynamic()
-            .map_err(|error| format!("decode GPU frame: {error}"))?
-            .to_rgb8();
+            .map_err(|error| anyhow::anyhow!("decode GPU frame: {error}"))?;
+        crate::capture_archive::archive_capture_image(&path, "original", &native)?;
+        let rgb = native.to_rgb8();
         if ticket.is_some() {
             rgb_finished_at = Some(CaptureInstant::now());
         }
-        let file = std::fs::File::create(path).map_err(|error| error.to_string())?;
+        let mut encoded = Vec::new();
         image::codecs::png::PngEncoder::new_with_quality(
-            file,
+            &mut encoded,
             image::codecs::png::CompressionType::Fast,
             image::codecs::png::FilterType::NoFilter,
         )
@@ -205,9 +210,11 @@ fn save_capture(image: Image, path: PathBuf, ticket: Option<CaptureTicket>) -> C
             rgb.width(),
             rgb.height(),
             image::ExtendedColorType::Rgb8,
-        )
-        .map_err(|error| error.to_string())
-    })();
+        )?;
+        crate::capture_archive::write_capture_bytes(&path, &encoded)?;
+        Ok(())
+    })()
+    .map_err(|error| format!("{error:#}"));
     let timing = ticket.zip(callback_at).map(|(ticket, callback_at)| {
         let completed_at = CaptureInstant::now();
         let rgb_ms = rgb_finished_at.map_or_else(String::new, |at| {
@@ -419,7 +426,7 @@ pub(super) fn install(
         frames: vec![],
         trace: header.into(),
         update_trace: header.into(),
-        battle_trace: "frame,seconds,map,player_species,enemy_species,cues,modeled,source_art,source_frame,bgp,source_objects,flash_mode,image_assets,mesh_assets,material_assets,lighting,quality,software_renderer,scene_width,scene_height,window_width,window_height,requested_capture_hz,view_mode,source_line_x,source_line_y,player_size_m,enemy_size_m,row_capture_ready,row_capture_pending,capture_ball,capture_frame,capture_caught,capture_blocked,capture_shakes,capture_started,capture_complete,capture_image_active,capture_fallback_reason,map_scenery_id,map_scenery_fallback_reason\n"
+        battle_trace: "frame,seconds,map,player_species,enemy_species,cues,modeled,source_art,source_frame,bgp,source_objects,flash_mode,image_assets,mesh_assets,material_assets,lighting,quality,software_renderer,scene_width,scene_height,window_width,window_height,requested_capture_hz,view_mode,source_line_x,source_line_y,player_size_m,enemy_size_m,row_capture_ready,row_capture_pending,capture_ball,capture_frame,capture_caught,capture_blocked,capture_shakes,capture_started,capture_complete,capture_image_active,capture_fallback_reason,map_scenery_id,map_scenery_fallback_reason,modeled_trainers\n"
             .into(),
         update_times: vec![],
         outstanding: 0,
@@ -777,7 +784,7 @@ fn record(
         };
         let flags = |values: [bool; 2]| format!("{}|{}", u8::from(values[0]), u8::from(values[1]));
         recording.battle_trace.push_str(&format!(
-            "{index},{elapsed:.6},{},{},{},{},{},{},{},{},{},{:?},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}\n",
+            "{index},{elapsed:.6},{},{},{},{},{},{},{},{},{},{:?},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}\n",
             battle_frame.map_id,
             species(0),
             species(1),
@@ -811,6 +818,7 @@ fn record(
             format!("\"{}\"", battle_status.capture_fallback_reason.unwrap_or("").replace('"', "\"\"")),
             format!("\"{}\"", battle_status.map_scenery_id.as_deref().unwrap_or("").replace('"', "\"\"")),
             format!("\"{}\"", battle_status.map_scenery_fallback_reason.unwrap_or("").replace('"', "\"\"")),
+            battle_status.modeled_trainers.join("|"),
         ));
     }
     if !recording.capture_images

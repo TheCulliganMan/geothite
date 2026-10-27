@@ -1,0 +1,19 @@
+Use case: stylized-concept. Asset type: production Game Boy Color creature battle sprite sheet.
+
+Create ORIGINAL Gen2-era monster pixel art. This is actual sprite artwork with coarse square-pixel clusters, not an illustration to be pixelated later. Pure white background. NO captions/text/grid lines/palette swatches/shadows. Crisp stepped black exterior silhouettes; spare connected interior black structural seams; flat color planes. No gradients, antialiasing, soft edges, glossy rendering, tiny noisy texture, single-pixel confetti or smooth vector curves. Respect authentic late-1990s Pokemon Crystal sprite economy, readable eyes and structural evolution; do not copy any existing Pokemon identity.
+
+Layout exactly 1 columns by 2 rows. Columns left-to-right: Torchcap. Each column is ONE species. Upper row: full-body FRONT 3/4 facing LEFT at native56x56 language. Lower row: CLOSE REAR PORTRAIT facing UPPER RIGHT at native48x48 language. Back is a huge head/neck/near-shoulder view, lower body visibly cut at bottom, authentic Crystal battle framing. Enlarge each back head/shoulder strongly; do not draw a complete miniature full-body turnaround. Leave wide clean white gutters between cells, all artwork disjoint. Display artwork enlarged nearest-neighbor for source sheet; favor about5-7sourcepixels per nativepixel. Front stages show proportional growth; every back fills its cell as a close portrait.
+
+Theme: St Paul Winter Carnival torchlight pageantry and the staged victory of warmth over winter: a coal-bodied athletic jester stores heat in a springy bellows chest and rallies companions through lively motion.
+
+Design constraints: One strong cap curl, two broad fists and a clear face. Black coal is colored dark-red/brown planes rather than an all-black body; bright orange heat seams stay flat. Distinct from Wickit candle spirit and furnace golems.
+
+ONE ordinary species, not a legendary: original squat coal athlete with tall curved vent-cap grown from head, two spring bellows forearms, TWO giant rounded wick-knuckle fists, broad warm chest and short rooted feet. Angular grin and one solid sweeping ember eyebrow. Dark-red coal planes with flat orange heat seams. No human costume, carried torch, appliance or detached flames.
+
+Species anatomy and each independent hardware palette (front and back MUST match). Each species uses EXACTLY FOUR inks: white, its own two chromatic colors and pure black. White is valid enclosed eye/body highlight ink; black also outlines white body parts. The sheet globally can exceed four colors because species use different palettes. Never share one palette across the whole evolution line. RGB555 packing is r|(g<<5)|(b<<10); RGB8 expansion is (v<<3)|(v>>2).
+
+MN_217 Torchcap FIRE/FIGHTING: A squat charcoal creature has a tall curled vent-cap grown from its head, two spring-bellows forearms and huge wick-knuckle fists. A broad warm chest and jaunty braced feet suggest a performer warming up; an angular grin sits under the cap, with one sweeping solid ember eyebrow. SILHOUETTE: Tall curved vent-cap above broad low chest, two giant rounded torch fists and short planted legs; no human costume, vehicle, carried torch or detached flame particles.
+
+Exact Torchcap palette: RGB5=[(31, 31, 31), (31, 16, 4), (12, 4, 3), (0, 0, 0)]; RGB555=[32767, 4639, 3212, 0]; RGB8=[[255, 255, 255], [255, 132, 33], [99, 33, 24], [0, 0, 0]]; HEX=['#FFFFFF', '#FF8421', '#632118', '#000000'].
+
+Final quality: original appealing themed monsters, clear eye whites, bold broad anatomical planes, readable limbs and deeply different evolutionary silhouettes. Black silhouette rims must be continuous wherever they border white paper; white highlights stay enclosed inside the rim. A few deliberate open colored contour accents may echo Gen2, but no fragmented dotted outlines. Keep open cropping of lower back at the bottom.

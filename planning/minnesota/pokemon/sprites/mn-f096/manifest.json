@@ -1,0 +1,239 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F096",
+  "status": "native-front-back-reviewed",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_209": {
+      "species_id": "MN_209",
+      "name": "Mimuss",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          23,
+          27,
+          29
+        ],
+        [
+          9,
+          10,
+          20
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        30583,
+        20809,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          189,
+          222,
+          239
+        ],
+        [
+          74,
+          82,
+          165
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#BDDEEF",
+        "#4A52A5",
+        "#000000"
+      ]
+    },
+    "MN_210": {
+      "species_id": "MN_210",
+      "name": "Mantasm",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          25,
+          27,
+          30
+        ],
+        [
+          7,
+          8,
+          18
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        31609,
+        18695,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          206,
+          222,
+          247
+        ],
+        [
+          57,
+          66,
+          148
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#CEDEF7",
+        "#394294",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f096/prompt-v1.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "style_reference": {
+    "origin": "authentic local Crystal sprites",
+    "generator": "crates/crystal-assets/examples/minnesota_gen2_reference.rs",
+    "boards": [
+      "target/minnesota-pokemon/gen2-reference/starters.png",
+      "target/minnesota-pokemon/gen2-reference/bugs.png"
+    ]
+  },
+  "sprites": [
+    {
+      "id": "mn-209-mimuss-v1",
+      "species_id": "MN_209",
+      "view": "front",
+      "source": "sprites/mn-f096/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        600,
+        608
+      ],
+      "fit": [
+        44,
+        44
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        30583,
+        20809,
+        0
+      ],
+      "interior_black_min_samples": 16
+    },
+    {
+      "id": "mn-209-mimuss-v1",
+      "species_id": "MN_209",
+      "view": "back",
+      "source": "sprites/mn-f096/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        608,
+        610,
+        591
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        30583,
+        20809,
+        0
+      ],
+      "interior_black_min_samples": 16
+    },
+    {
+      "id": "mn-210-mantasm-v1",
+      "species_id": "MN_210",
+      "view": "front",
+      "source": "sprites/mn-f096/front-back.imagegen-v1.png",
+      "crop": [
+        600,
+        0,
+        712,
+        608
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        31609,
+        18695,
+        0
+      ],
+      "interior_black_min_samples": 16
+    },
+    {
+      "id": "mn-210-mantasm-v1",
+      "species_id": "MN_210",
+      "view": "back",
+      "source": "sprites/mn-f096/front-back.imagegen-v1.png",
+      "crop": [
+        610,
+        608,
+        702,
+        591
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        31609,
+        18695,
+        0
+      ],
+      "interior_black_min_samples": 16
+    }
+  ],
+  "visual_review": {
+    "status": "reviewed",
+    "reviewer": "root",
+    "notes": "Root inspected native mussel line: one attached fish-face lure becomes two thick lure heads framing a split-shell theater canopy, with true eyes inside the shell. Broad pearl ribs and soft mantle arms remain distinct. Final front is intentionally near-frontal/symmetric in source; its posture is readable. Rear portraits show shell/shoulders and the attached lure backs.",
+    "sheet_sha256": "7e0589e034458a64f4a611ca62810483b09c495dda5ba3d6dbc6c6c64874d811",
+    "outline_profile": "source-contour-v1"
+  }
+}
