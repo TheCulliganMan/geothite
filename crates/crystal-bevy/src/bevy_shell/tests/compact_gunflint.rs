@@ -21,7 +21,7 @@ use super::authored_route_fixture::{
 };
 
 const SOURCE: &str = include_str!(
-    "../../../../../planning/minnesota/revisions/gunflint-quality-v01/source-v08/MN_R12.candidate.json"
+    "../../../../../planning/minnesota/revisions/gunflint-quality-v01/source-v09/MN_R12.candidate.json"
 );
 const UPPER: &str = "MnR12C00R00";
 const LOWER: &str = "MnR12C00R01";
@@ -283,7 +283,8 @@ fn compact_gunflint_controller_both_real_ports_all_ordinary_actor_approaches_and
         step(&mut c, GameButton::Right, CEDAR, (0, y + 8));
         step(&mut c, GameButton::Left, LOWER, (63, y));
         if y == 6 {
-            step(&mut c, GameButton::Down, LOWER, (63, 7));
+            step(&mut c, GameButton::Left, LOWER, (62, 6));
+            step(&mut c, GameButton::Down, LOWER, (62, 7));
         }
     }
     let route = grid(&runtime, position(&mut c));

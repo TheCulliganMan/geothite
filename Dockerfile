@@ -18,6 +18,12 @@ COPY art/battles/arena-palettes.json ./art/battles/arena-palettes.json
 COPY modpacks/modern-move-split/data.json ./modpacks/modern-move-split/data.json
 COPY modpacks/all-pokemon/encounters.json ./modpacks/all-pokemon/encounters.json
 COPY modpacks/voxel-view/profiles.json ./modpacks/voxel-view/profiles.json
+COPY modpacks/flygon/operant.json ./modpacks/flygon/operant.json
+# Compile-time authoring inputs used by the shared Rust libraries.
+COPY planning/minnesota/story.json ./planning/minnesota/story.json
+COPY planning/minnesota/pokemon/starter-signature-moves.json planning/minnesota/pokemon/northwoods-moves.json planning/minnesota/pokemon/fairy-moves.json ./planning/minnesota/pokemon/
+COPY planning/minnesota/regions/ice/winter-art-v01.json ./planning/minnesota/regions/ice/winter-art-v01.json
+COPY planning/minnesota/revisions/north-shore-ely-geography-v01/inland-winter-r12-r13/source-v02/art-and-geography.preimages.json ./planning/minnesota/revisions/north-shore-ely-geography-v01/inland-winter-r12-r13/source-v02/art-and-geography.preimages.json
 ARG CARGO_BUILD_JOBS=2
 ARG CRYSTAL_RENDER_FEATURES=fullscreen-scaling,voxel-view,location-tester,terrain-worker-qa,actor-worker-qa
 # Keep dependency and target caches across source edits. Run from the workspace

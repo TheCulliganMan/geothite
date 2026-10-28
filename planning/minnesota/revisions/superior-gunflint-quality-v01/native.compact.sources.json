@@ -1,6 +1,6 @@
 {
   "coast": "planning/minnesota/revisions/north-shore-ely-geography-v01/coast-quality-v01/source-v03/compact-bend.contract.json",
-  "r12_layout": "planning/minnesota/revisions/gunflint-quality-v01/source-v08/MN_R12.candidate.layout.json",
-  "r12_dossier": "planning/minnesota/revisions/gunflint-quality-v01/source-v08/MN_R12.candidate.json",
+  "r12_layout": "planning/minnesota/revisions/gunflint-quality-v01/source-v09/MN_R12.candidate.layout.json",
+  "r12_dossier": "planning/minnesota/revisions/gunflint-quality-v01/source-v09/MN_R12.candidate.json",
   "cedar": "planning/minnesota/revisions/superior-gunflint-quality-v01/cedar-source-v02/contract.json"
 }

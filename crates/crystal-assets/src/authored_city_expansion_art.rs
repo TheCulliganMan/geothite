@@ -133,6 +133,11 @@ pub(super) fn install(
                 .then_some((glyph, physical, bank))
         });
     let mut matching = BTreeMap::new();
+    let mut foregrounds = BTreeMap::<u8, [[u8; 3]; 3]>::new();
+    ensure!(
+        !files.contains_key(&format!("data/tilesets/{expected}_foregrounds.json")),
+        "city base art requires ordinary native foregrounds"
+    );
     for &glyph in &referenced {
         // These inherited destinations animate. Identical static imported
         // pixels must not accidentally become flowers or water at runtime.
@@ -145,6 +150,7 @@ pub(super) fn install(
             (
                 graphics[physical * 16..(physical + 1) * 16].to_vec(),
                 palette & 7,
+                None,
             ),
             glyph,
         );
@@ -169,6 +175,15 @@ pub(super) fn install(
             .tilesets
             .get(&recipe.source_tileset)
             .context("city imported native art")?;
+        let source_foregrounds: BTreeMap<u8, [[u8; 3]; 3]> = files
+            .get(&format!(
+                "data/tilesets/{}_foregrounds.json",
+                recipe.source_tileset
+            ))
+            .map(|bytes| serde_json::from_slice(bytes))
+            .transpose()
+            .context("city imported foreground colors")?
+            .unwrap_or_default();
         let collision = source
             .collision
             .get(&format!("{source_id:02x}"))
@@ -201,7 +216,12 @@ pub(super) fn install(
             let physical = slot(glyph, palette, source_graphics.len() / 16)?;
             let pixels = &source_graphics[physical * 16..(physical + 1) * 16];
             let color = recipe.palette_override.unwrap_or(palette & 7);
-            let key = (pixels.to_vec(), color);
+            let foreground = source_foregrounds.get(&glyph).copied();
+            ensure!(
+                foreground.is_none() || recipe.palette_override.is_none(),
+                "private native foregrounds cannot be replaced by a palette override"
+            );
+            let key = (pixels.to_vec(), color, foreground);
             let destination = if let Some(&existing) = matching.get(&key) {
                 existing
             } else {
@@ -210,6 +230,9 @@ pub(super) fn install(
                     .context("city imported art exhausts unused native glyph slots")?;
                 graphics[physical * 16..(physical + 1) * 16].copy_from_slice(pixels);
                 definition.palette_map[usize::from(new_glyph)] = color | bank;
+                if let Some(colors) = foreground {
+                    foregrounds.insert(new_glyph, colors);
+                }
                 matching.insert(key, new_glyph);
                 new_glyph
             };
@@ -223,7 +246,7 @@ pub(super) fn install(
             "occupied city collision block"
         );
     }
-    base.with_tileset_extension(CompiledTilesetExtension {
+    let mut pack = base.with_tileset_extension(CompiledTilesetExtension {
         manifest_id: format!("{}-expanded-city-art", city.to_ascii_lowercase()),
         tileset_id: alias.into(),
         behavior_source_tileset_id: Some(expected.into()),
@@ -231,5 +254,23 @@ pub(super) fn install(
         metatiles,
         tile_graphics_png: crate::native_tile_png::from_2bpp(&graphics)?,
         tile_graphics_2bpp: graphics,
-    })
+    })?;
+    if !foregrounds.is_empty() {
+        let path = format!("data/tilesets/{alias}_foregrounds.json");
+        ensure!(
+            !pack.runtime_files.contains_key(&path),
+            "occupied city foreground identity"
+        );
+        pack.runtime_files
+            .insert(path, serde_json::to_vec(&foregrounds)?);
+        pack.identity = crate::derive_compiled_game_pack_identity_from_manifest(
+            pack.format_version,
+            &pack.data,
+            &pack.audio_manifest,
+            &pack.runtime_files,
+            &pack.report,
+        )?;
+        crate::verify_compiled_game_pack_for_runtime(&pack)?;
+    }
+    Ok(pack)
 }
