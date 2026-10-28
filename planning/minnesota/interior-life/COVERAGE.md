@@ -10,11 +10,11 @@ unregistered stations: Staples, Red Wing and Winona. The objective retains those
 planned interiors too, for at least 214 rooms; the reservation catalog alone is
 not the full completion boundary. These counts do not claim visual/gameplay acceptance.
 
-The [Moorhead child](MOORHEAD.md),
-`minnesota-moorhead-v01.crystalpack`, contains 208 of those rooms: the
+The [International Falls child](INTERNATIONAL-FALLS.md),
+`minnesota-international-falls-v02.crystalpack`, contains 210 of those rooms: the
 187-room narrative parent, Ely's nine interiors, three fair rooms, two ice
-floors, five Detroit Lakes interiors and two Moorhead interiors. Moorhead's four
-production cases, strict preservation and all thirteen native camera checks pass;
+floors, five Detroit Lakes interiors, two Moorhead interiors and two Falls rooms.
+Falls' four production cases, strict preservation and thirteen native 2D checks pass;
 the earlier regional checks remain recorded in their publication runbooks.
 The current native indoor/gate/dungeon inventory contains no additional
 Minnesota rooms outside this union. Every installed room except the deliberate
@@ -39,7 +39,7 @@ The existing ice publisher supplies `MnVoyageursIce1F` and
 `MnVoyageursIceB1F`, with their native sliding, rewards, ladder and return
 contracts. The two floors now pass composition preservation, actual controller
 replay and full native camera comparison on the same lineage. The final output still
-lacks the International Falls rooms, older shore-gate contract and three planned
+lacks the older shore-gate contract and three planned
 stations below.
 
 ## Remaining registered rooms and transit source contracts
@@ -48,7 +48,7 @@ stations below.
 | --- | --- | --- |
 | Detroit Lakes | Published clinic, Mart, station, canoe cabin and ranger cabin | All five rooms, residents, carpets and three reciprocal roads pass production input. Care/PC/poison recovery, priced shop and SQ01 retry/persistence pass. Full Glacier Line service remains unfinished. See the separate runbook. |
 | Moorhead | Published clinic and Mart | Both rooms, ten town/indoor residents, free care/PC/recovery, priced stock, the remembered flood-notebook gift and both R16 lanes pass production input. Thirteen full native frames and the complete levee Surf barrier pass. See [Moorhead](MOORHEAD.md). |
-| International Falls | Clinic and Mart | Neither the town nor its two rooms is installed. The source reserves services and southern R17/eastern R20 ports. Native exterior, rooms, residents and local-story authoring remain. |
+| International Falls | Published clinic/ranger desk and Mart | Nine residents, both service rooms, all carpets, both road lanes, care/PC/recovery and priced stock pass. The complete actual icefield/Voyageurs round trip, both far-camp entry lanes, full-pocket reward retry and Save/Continue pass. See [Falls](INTERNATIONAL-FALLS.md). Regional 3D review remains open. |
 | Glacier Line | Staples, Red Wing and Winona stations | These three names are present in the six-stop network source but absent from the shared room reservations and current native pack. Distinct station/outpost geometry, real entrances, residents, visited callbacks and the full guarded ride network remain to author and verify. |
 | Grand Marais | Older shore-gate contract | `MnGrandMaraisShoreGate` is absent from the current pack. Concurrent source revisions have removed it from the live reservation list and replaced the old connection dossier with direct-seam geography. This does not itself resolve the baseline interior requirement. Reconcile the physical/story contract explicitly against the actual town, entrances and route connections. |
 
@@ -65,10 +65,11 @@ while integrating them.
 
 The original 705-map endpoint audit found R16's western connection unbound;
 Moorhead now binds both lanes while preserving its eastern Detroit Lakes
-approach. R17's northern chunk has no northern connection. R20's west edge
+approach. Falls now binds R17's north and a bounded western icefield approach.
+R20's west edge
 already connects to `MnRainyRiverIcefields`; do not overwrite that working
-connection to fit the older International Falls source diagram. Fit the town
-and its services into the actual northern/icefield topology and retain its gates.
+connection to fit the older International Falls source diagram. The published
+town fits the actual northern/icefield topology and preserves its gates.
 
 ## Remaining acceptance
 
@@ -90,7 +91,14 @@ both fresh full frames were personally inspected. Missing-town publication,
 room-quality review and the final completion audit remain active.
 
 The current live registry has 217 distinct entries, including eight gyms:
-209 non-gym reservations, with only the two International Falls rooms absent.
+209 non-gym reservations, all now installed in the current child.
 The additional warming hut, baseline shore-gate requirement and three planned
 stations retain the full minimum 214-room scope above. Removing a reservation
 from a concurrent source file is not evidence of completed gameplay or review.
+
+Fresh regional 3D acceptance is still open. The headless St. Paul capture
+times out while building authored terrain and repeatedly reports a neighboring
+map exceeding the connected-actor 16-slot presentation namespace. The actual
+command and log are retained in `renders/interior-life/voxel-follow-up-v01/`.
+Authored art aliases also need their complete native building provenance checked
+in 3D. Passing 2D pixels and room counts do not close those defects.

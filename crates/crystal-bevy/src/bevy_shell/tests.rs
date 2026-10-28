@@ -221,6 +221,8 @@ mod interior_layouts;
 mod city_refinement;
 #[path = "tests/detroit_lakes.rs"]
 mod detroit_lakes;
+#[path = "tests/international_falls.rs"]
+mod international_falls;
 #[path = "tests/moorhead.rs"]
 mod moorhead;
 #[path = "tests/cave_quality.rs"]

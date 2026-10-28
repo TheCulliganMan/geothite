@@ -1,6 +1,47 @@
 # Northwoods Pokédex web app
 
-## Current State Fair showcase
+## Real-time State Fair recapture
+
+Release `20261027-state-fair-realtime-22` publishes a fresh58-second native tour
+with255 characters,35 battle trainers and28 walking/running circuits. It adds
+a fifth close-up of the Pokémon judging ring. All224 species, cry URLs and
+existing catalog/browser controls remain frozen from release21.
+
+The previous recorder preserved wall time, while a slow host could drop
+bounded simulation catch-up ticks. `CRYSTAL_CAPTURE_CLOCK=game` now opts video
+recording into60Hz simulation updates; the30Hz recorder retains that clock's
+actual timestamps. It cannot be used for timing-only or pacing-probe runs.
+Default wall-clock measurements retain their previous behavior. These offline
+captures establish normal-speed gameplay playback, not host performance.
+Authored fair circuits also skip the random rest after every tile: runners
+use8-frame steps and walkers16-frame steps. Native wandering NPCs retain their
+original random rests, and collision/interaction pauses remain active.
+
+Each of the five scenes has300 captured frames over ten game-clock seconds.
+Food row, midway, picnic and garden have293,290,247 and290 distinct native
+images; the judging scene repeats its four ordinary turning poses. The food
+camera is(79,14), keeping the complete runner circuit within native NPC bounds;
+the other scenes are(21,27),(58,27),(59,55) and(32,55), all at noon.
+
+The encoded H.264 movie is1536×1152,30fps,58seconds and1,740 frames, without
+motion interpolation or audio. Full PNGs, readbacks and manifests remain in
+`target/fair-maze/recapture-v3`; rejected earlier passes remain retained too.
+Final MP4/PNG files are outside source under
+`$HOME/Movies/Geothite/state-fair-chaos-v3`, published at
+`/pokedex/media/showcases/20261027-state-fair-v2/`. Both public files match local
+bytes, and HTTP206 seeking is verified. Desktop1280px and mobile390px browser
+checks pass playback at normal wall speed, all six chapters,58-second duration,
+correct counts, no autoplay, no overflow and no page errors. The mobile view
+was inspected. Fourteen recorder regressions,129 browser unit tests, the
+continuous-circuit core regression and original four controller patrols with
+interaction/Continue pass. The frozen showcase publication regression passes.
+
+Reproduce a scene with the existing recorder command below, the current
+`minnesota-state-fair-maze-trainers-v7.crystalpack`, a fresh output directory,
+`--x 79 --y 14`, and `CRYSTAL_CAPTURE_CLOCK=game`. Use the wall clock for
+performance investigations. The records below describe the previous release.
+
+## Previous State Fair showcase
 
 Release **`20261027-state-fair-21`** is live. The new
 [State Fair tab](https://geothite.ryanculligan.com/pokedex/state-fair.html) appears

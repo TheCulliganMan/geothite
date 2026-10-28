@@ -456,28 +456,61 @@ fn compact_superior_cedar_controller_ledge_is_one_way_with_short_walking_return(
 
 #[test]
 #[ignore = "requires completed compact native pack in CRYSTAL_COMPACT_SUPERIOR_TEST_PACK"]
-fn compact_superior_coast_controller_lower_neighbor_overhang_reef_blocks_all_north_water_approaches() {
+fn compact_superior_coast_controller_lower_neighbor_overhang_reef_blocks_all_north_water_approaches()
+ {
     let (_, r, mut c) = fixture(COAST, (0, 13), true, true);
     use_max_repel(&mut c, &r);
     mount(&mut c, GameButton::Down, COAST, (0, 14));
     path(&r, &mut c, (0, 47), true);
-    step(&mut c, GameButton::Down, "MnR11C01R01", (0, 0), "actual narrow upper-to-lower Superior aperture");
+    step(
+        &mut c,
+        GameButton::Down,
+        "MnR11C01R01",
+        (0, 0),
+        "actual narrow upper-to-lower Superior aperture",
+    );
     path(&r, &mut c, (8, 2), true);
     for x in 8..47 {
         path(&r, &mut c, (x, 2), true);
-        assert_eq!(kind(&r, "MnR11C01R01", (x, 1)), "WALL", "visible native rock closes the clipped north neighbor span");
+        assert_eq!(
+            kind(&r, "MnR11C01R01", (x, 1)),
+            "WALL",
+            "visible native rock closes the clipped north neighbor span"
+        );
         for _ in 0..2 {
-            c.press(GameButton::Up).expect("real Surf attempt toward the retired northern extent");
-            c.wait_frames(16).expect("native reef collision presentation");
+            c.press(GameButton::Up)
+                .expect("real Surf attempt toward the retired northern extent");
+            c.wait_frames(16)
+                .expect("native reef collision presentation");
             settle(&mut c);
-            assert_at(&mut c, "MnR11C01R01", (x, 2), "lower neighbor cannot Surf into missing upper-map terrain");
-            assert_eq!(c.snapshot().expect("reef approach mode").overworld.mode, MovementMode::Surf);
+            assert_at(
+                &mut c,
+                "MnR11C01R01",
+                (x, 2),
+                "lower neighbor cannot Surf into missing upper-map terrain",
+            );
+            assert_eq!(
+                c.snapshot().expect("reef approach mode").overworld.mode,
+                MovementMode::Surf
+            );
         }
     }
     save(&mut c, "lower-north-reef-all-approaches");
     path(&r, &mut c, (0, 0), true);
-    step(&mut c, GameButton::Up, COAST, (0, 47), "actual lower-to-upper Superior aperture remains open");
+    step(
+        &mut c,
+        GameButton::Up,
+        COAST,
+        (0, 47),
+        "actual lower-to-upper Superior aperture remains open",
+    );
     path(&r, &mut c, (0, 14), true);
-    step(&mut c, GameButton::Up, COAST, (0, 13), "ordinary bank return after reciprocal Surf boundary audit");
+    step(
+        &mut c,
+        GameButton::Up,
+        COAST,
+        (0, 13),
+        "ordinary bank return after reciprocal Surf boundary audit",
+    );
     save(&mut c, "lower-north-reef-return");
 }

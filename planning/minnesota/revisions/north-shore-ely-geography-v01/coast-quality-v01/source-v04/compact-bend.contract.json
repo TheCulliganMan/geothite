@@ -1,0 +1,307 @@
+{
+  "schema_version": 1,
+  "status": "DETACHED_GEOMETRY_PROPOSAL_NOT_NATIVE_PUBLISHED",
+  "parent_sha256": "65cf6f98e65ada839ec5afaa57728bf8289d3a50ba53ba6b9b50f08d3620bb17",
+  "old_module_sha256": "5624e112405638ff1695377b490e3656eff0187c7a639025bfc22d6d08b83716",
+  "proposed_map": "MnR11C01R00",
+  "dimensions_metatiles": [
+    4,
+    24
+  ],
+  "origin_metatiles": [
+    222,
+    -400
+  ],
+  "rows": [
+    "05 05 05 05",
+    "05 05 05 05",
+    "05 05 05 05",
+    "05 05 05 05",
+    "05 05 01 01",
+    "05 01 01 05",
+    "01 01 05 05",
+    "76 76 76 05",
+    "35 35 35 35",
+    "35 35 35 35",
+    "35 35 35 35",
+    "35 35 35 35",
+    "35 35 35 35",
+    "35 35 35 35",
+    "35 35 35 35",
+    "35 35 35 35",
+    "35 35 35 35",
+    "35 35 35 35",
+    "35 35 35 0a",
+    "35 35 35 0a",
+    "35 35 35 0a",
+    "35 35 35 0a",
+    "35 35 35 0a",
+    "35 35 35 0a"
+  ],
+  "town_origin_metatiles": [
+    226,
+    -400
+  ],
+  "walking_seams_core": {
+    "west": [
+      [
+        0,
+        12
+      ],
+      [
+        0,
+        13
+      ]
+    ],
+    "east": [
+      [
+        7,
+        8
+      ],
+      [
+        7,
+        9
+      ]
+    ]
+  },
+  "shared_superior_east_core_rows": [
+    16,
+    35
+  ],
+  "footprints_fixed": [
+    "MnR11C00R00",
+    "all lower R11 chunks (C01R01 north reef terrain changes only)"
+  ],
+  "limitations": [
+    "C00 original terminal approach still retained; root may choose further crop after reviewing.",
+    "No new long path, grass quota, encounter, reward or elevation is introduced into this four-metatile turn.",
+    "Source/native controller and production-camera acceptance pending; lower C01R01 now has an explicit20-cell north reef correction."
+  ],
+  "lower_north_boundary": {
+    "map": "MnR11C01R01",
+    "old_module_sha256": "63814e705845a9f9872d0aacfbb2a82b43fd9f529a5b5aa48df03bbf16e8834a",
+    "cells": [
+      {
+        "metatile": [
+          4,
+          0
+        ],
+        "before": 53,
+        "after": 10
+      },
+      {
+        "metatile": [
+          5,
+          0
+        ],
+        "before": 53,
+        "after": 10
+      },
+      {
+        "metatile": [
+          6,
+          0
+        ],
+        "before": 53,
+        "after": 10
+      },
+      {
+        "metatile": [
+          7,
+          0
+        ],
+        "before": 53,
+        "after": 10
+      },
+      {
+        "metatile": [
+          8,
+          0
+        ],
+        "before": 53,
+        "after": 10
+      },
+      {
+        "metatile": [
+          9,
+          0
+        ],
+        "before": 53,
+        "after": 10
+      },
+      {
+        "metatile": [
+          10,
+          0
+        ],
+        "before": 53,
+        "after": 10
+      },
+      {
+        "metatile": [
+          11,
+          0
+        ],
+        "before": 53,
+        "after": 10
+      },
+      {
+        "metatile": [
+          12,
+          0
+        ],
+        "before": 53,
+        "after": 10
+      },
+      {
+        "metatile": [
+          13,
+          0
+        ],
+        "before": 53,
+        "after": 10
+      },
+      {
+        "metatile": [
+          14,
+          0
+        ],
+        "before": 53,
+        "after": 10
+      },
+      {
+        "metatile": [
+          15,
+          0
+        ],
+        "before": 53,
+        "after": 10
+      },
+      {
+        "metatile": [
+          16,
+          0
+        ],
+        "before": 53,
+        "after": 10
+      },
+      {
+        "metatile": [
+          17,
+          0
+        ],
+        "before": 53,
+        "after": 10
+      },
+      {
+        "metatile": [
+          18,
+          0
+        ],
+        "before": 53,
+        "after": 10
+      },
+      {
+        "metatile": [
+          19,
+          0
+        ],
+        "before": 53,
+        "after": 10
+      },
+      {
+        "metatile": [
+          20,
+          0
+        ],
+        "before": 53,
+        "after": 10
+      },
+      {
+        "metatile": [
+          21,
+          0
+        ],
+        "before": 53,
+        "after": 10
+      },
+      {
+        "metatile": [
+          22,
+          0
+        ],
+        "before": 53,
+        "after": 10
+      },
+      {
+        "metatile": [
+          23,
+          0
+        ],
+        "before": 54,
+        "after": 10
+      }
+    ]
+  },
+  "selected_inland_integration": {
+    "owner": "root",
+    "Cedar_origin_metatiles": [
+      222,
+      -412
+    ],
+    "Cedar_dimensions_metatiles": [
+      20,
+      12
+    ],
+    "R12_origin_metatiles": [
+      190,
+      -432
+    ],
+    "R12_dimensions_metatiles": [
+      32,
+      32
+    ],
+    "BoundaryWaters_origin_metatiles": [
+      158,
+      -430
+    ],
+    "western_exterior_component_count": 17,
+    "western_component_rigid_translation_metatiles": [
+      92,
+      -3
+    ],
+    "retired_map": "MnMaraisInlandNeck",
+    "note": "R12/R13/BoundaryWaters footprints are not fixed; western component translates while preserving internal relationships. This contract owns only the two coast chunk changes."
+  },
+  "shore_art_correction": {
+    "source_epoch": "source-v03",
+    "cells": [
+      {
+        "metatile": [
+          0,
+          7
+        ],
+        "before": "58",
+        "after": "76"
+      },
+      {
+        "metatile": [
+          1,
+          7
+        ],
+        "before": "58",
+        "after": "76"
+      },
+      {
+        "metatile": [
+          2,
+          7
+        ],
+        "before": "58",
+        "after": "76"
+      }
+    ],
+    "collision_preserved": "WATER in all4quadrants for both native recipes",
+    "reason": "Replace repeated side-bank corner posts with native horizontal bank continuation matching unchanged C00eastshore."
+  }
+}

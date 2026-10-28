@@ -25,10 +25,10 @@
         12
       ],
       "native_connection": {
-        "target_map": "MnR12C00R01",
+        "target_map": "MnR12C00R00",
         "direction": "east",
-        "offset_metatiles": 8,
-        "reciprocal_offset_metatiles": -8,
+        "offset_metatiles": -2,
+        "reciprocal_offset_metatiles": 2,
         "checkpoint": "gunflint"
       }
     },
@@ -802,10 +802,10 @@
       {
         "id": "gunflint",
         "route": "MN_R12",
-        "native_target_map": "MnR12C00R01",
+        "native_target_map": "MnR12C00R00",
         "direction": "east",
-        "offset_metatiles": 8,
-        "reciprocal_offset_metatiles": -8,
+        "offset_metatiles": -2,
+        "reciprocal_offset_metatiles": 2,
         "requires": [
           "BADGE_1",
           "BADGE_2",

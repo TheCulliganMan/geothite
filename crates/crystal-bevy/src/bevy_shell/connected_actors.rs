@@ -267,16 +267,20 @@ pub(super) fn append(
 fn identifier(map: usize, slot: usize) -> Result<VisualActorId> {
     // Current-map slot IDs remain unchanged: encounter proofs consume them.
     // Neighbor identities occupy a separate, checked presentation namespace.
+    // Authored regional cities exceed the original sixteen visible slots.
+    // These are presentation identities, so reserve a full u16 for their
+    // source index without changing the current map's authoritative slot IDs.
     ensure!(
-        slot < 16,
-        "neighbor map exceeds the source object-slot limit"
+        slot <= usize::from(u16::MAX),
+        "neighbor object index exceeds presentation identity range"
     );
     let map = u32::try_from(map).context("neighbor map index")?;
     ensure!(
-        map < 1 << 27,
+        map < 1 << 15,
         "neighbor map index exceeds presentation identity range"
     );
-    Ok(VisualActorId::Object(0x8000_0000 | map << 4 | slot as u32))
+    let slot = u32::try_from(slot).context("neighbor object index")?;
+    Ok(VisualActorId::Object(0x8000_0000 | map << 16 | slot))
 }
 
 fn sprite_source<'a>(snapshot: &'a RuntimeShellSnapshot, source: &'a str) -> Option<&'a str> {
@@ -302,6 +306,27 @@ mod tests {
 
     use super::super::{BevyShellConfig, BevyShellStart, initialize_bevy_runtime_shell};
     use super::*;
+
+    #[test]
+    fn expanded_neighbor_cities_keep_distinct_ids_beyond_sixteen_slots() {
+        let mut ids = std::collections::HashSet::new();
+        for map in [0, 1, 32767] {
+            for slot in [0, 15, 16, 31, 255, 65535] {
+                let id = identifier(map, slot).expect("authored city presentation identity");
+                assert!(
+                    ids.insert(id),
+                    "neighbor objects must never share a rig identity"
+                );
+                assert_ne!(
+                    id,
+                    VisualActorId::Object(slot as u32),
+                    "active-map IDs stay separate"
+                );
+            }
+        }
+        assert!(identifier(32768, 0).is_err());
+        assert!(identifier(0, 65536).is_err());
+    }
 
     #[test]
     fn connected_people_are_present_before_the_seam_and_respect_event_flags() {

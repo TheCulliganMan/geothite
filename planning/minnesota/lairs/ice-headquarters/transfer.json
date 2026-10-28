@@ -2,7 +2,7 @@
   "id": "MnIceTransfer",
   "template": "TeamRocketBaseB2F",
   "tileset": "facility",
-  "status": "IMPLEMENTING; graph and native course required",
+  "status": "Published in complex-story-v5; full native eight-pair/six-door card, optional rooms, battle, shutdown, rescue and Continue course passed. Declared geometry fixture, not a fresh-campaign or intended-level gauntlet balance claim.",
   "dimensions_metatiles": [
     16,
     12

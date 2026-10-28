@@ -320,6 +320,39 @@ all-target Clippy still fail on existing code; scoped Clippy passes with the
 existing `bad_bit_mask`, `approx_constant`, `never_loop` and `erasing_op` lints
 allowed. This is not a claim that the entire repository test suite passes.
 
+## State Fair normal-speed release (2026-10-27)
+
+The game service now uses `geothite:19688108-state-fair-realtime-20261027-final`,
+built from committed source `19688108f2652d05a25f090aa7b7f976fac3dc66`.
+Its image ID is
+`sha256:fdff078cfd764e8f6625e23e623a61cbffd7ad577a07ea54fd0c2d702cd2a633`.
+The build used one Cargo job and the existing external browser content pack.
+Save data, signing configuration, downloads, Flygon data and the Pokedex mount
+were preserved. Previous immutable browser bundles remain in the image.
+
+The frozen source, hydrated LFS inputs, build recipe and rollback configuration
+are retained in
+`/mnt/homelab/config/geothite/releases/19688108-state-fair-realtime-20261027`.
+The guarded candidate passed fresh/stale startup in headless Chromium and mobile
+WebKit; all four sessions reached the production New Game menu without page
+errors. The rollout reported healthy, and public health and clock checks passed.
+
+The independently published fair showcase is
+`20261027-state-fair-realtime-22`, with media under
+`/pokedex/media/showcases/20261027-state-fair-v2/`.
+The 58-second, 30-fps capture uses the explicitly labeled offline game clock for
+normal-speed playback. It is not a host rendering-performance measurement.
+Desktop and mobile playback, chapter seeking, media byte equality and HTTP Range
+requests passed before publication. The frozen 224-species catalog and its cries
+were preserved. See [the Pokedex runbook](pokedex-web.md) for publication details.
+
+Recorder tests (14), browser unit tests (129), continuous patrol movement,
+controller interaction/save/Continue and frozen showcase publication passed.
+Workspace formatting still reports pre-existing offset-allocator differences;
+all-target Clippy remains blocked by the existing `bad_bit_mask` in
+`crystal-core/src/multiplayer/mod.rs`. Changed capture Rust files passed scoped
+formatting. This is not a claim that unrelated shared work passes every test.
+
 ## Optional Flygon
 
 `/flygon` serves the local neural controller. It has no link from the root game.

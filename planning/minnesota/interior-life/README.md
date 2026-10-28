@@ -5,10 +5,12 @@ registered in other publication branches. This pass authors the 187 non-gym
 interiors actually installed in the northern-winter parent. It does not merge
 the other branches or claim their absent rooms are finished.
 
-The current publication is [Moorhead v01](MOORHEAD.md), with 208 installed
-interiors and the repaired St. Paul city. It adds a levee town and two rooms
-over [Detroit Lakes v01](DETROIT-LAKES.md), whose five-room town follows
-[harbor-care v02](HARBOR-CARE.md) and protected canonical chapter dialogue. Earlier v03 story and
+The current publication is [International Falls v02](INTERNATIONAL-FALLS.md),
+with 210 installed non-gym interiors and the repaired St. Paul city. Its two-room
+winter town and real ranger circuit follow [Moorhead](MOORHEAD.md),
+[Detroit Lakes](DETROIT-LAKES.md) and the protected canonical chapter lineage.
+Four Falls controller cases, strict preservation, audio and native 2D review
+pass. Regional 3D acceptance remains open after the fresh city capture timeout. Earlier v03 story and
 fair/ice v01 outputs are historical: the receiver chapter test later exposed one
 flavor-text collision, corrected throughout the current lineage.
 
@@ -19,8 +21,7 @@ pack below. It retains the same 187-room story coverage and original services.
 The subsequent [Duluth club pass](CLUBS.md) adds 13 more room contracts and
 16 readable details over the St. Paul repair/Ely child, keeping the existing
 weather and labor errands. The [coverage record](COVERAGE.md) tracks the
-remaining International Falls rooms, older shore-gate contract and three
-planned stations. The earlier
+older shore-gate contract, three planned stations and regional 3D review. The earlier
 [699-map composition](INTEGRATION.md) contains 201 interiors and passes all
 20 targeted controller cases, native room/seam review and all 377 audio checks.
 The all-interiors objective remains active.

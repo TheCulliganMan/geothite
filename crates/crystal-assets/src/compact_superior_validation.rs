@@ -218,7 +218,7 @@ fn graph(pack: &CompiledGamePack) -> Result<()> {
                     && c.offset == -edge.offset),
                 "missing reciprocal compact connection"
             );
-            let offset = i32::from(edge.offset);
+            let offset = edge.offset;
             let next = match edge.direction.as_str() {
                 "north" => [x + offset, y - i32::from(b.height)],
                 "south" => [x + offset, y + i32::from(a.height)],
@@ -344,7 +344,7 @@ fn water_boundaries(pack: &CompiledGamePack) -> Result<()> {
                     .find(|c| c.direction == direction)
                     .with_context(|| format!("unconnected WATER edge {name} {direction} {lane}"))?;
                 let target = &pack.data.maps[&connection.target_map].attributes;
-                let mapped = i32::from(lane) - i32::from(connection.offset) * 2;
+                let mapped = i32::from(lane) - connection.offset * 2;
                 let extent = if ["north", "south"].contains(&direction) {
                     target.width * 2
                 } else {

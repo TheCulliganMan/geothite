@@ -1,0 +1,1446 @@
+{
+  "schema_version": 2,
+  "id": "MN_R03",
+  "tileset": "johto",
+  "compiled_tileset": "mn_headwaters",
+  "dimensions_metatiles": [
+    24,
+    32
+  ],
+  "shore_fitting": "johto_8_neighbors",
+  "reject_cliff_cuts": true,
+  "source_pixels_modified": false,
+  "derived_blocks": [
+    {
+      "id": "80",
+      "source_tileset": "kanto",
+      "source_block": "78",
+      "collision": "WATER",
+      "required_typed_extension": "headwaters_art::build_headwaters_art_pack"
+    },
+    {
+      "id": "81",
+      "source_tileset": "kanto",
+      "source_block": "77",
+      "collision": "FLOOR/FLOOR/WALL/WALL",
+      "required_typed_extension": "headwaters_art::build_headwaters_art_pack"
+    },
+    {
+      "id": "82",
+      "source_tileset": "kanto",
+      "source_block": "77",
+      "tile_row_order": [
+        2,
+        3,
+        0,
+        1
+      ],
+      "collision_source_tileset": "johto",
+      "collision_source_block": "75",
+      "required_typed_extension": "headwaters_art::build_headwaters_art_pack"
+    }
+  ],
+  "layers": [
+    {
+      "kind": "polygon",
+      "name": "Southern west bank",
+      "points": [
+        [
+          7,
+          25
+        ],
+        [
+          13,
+          25
+        ],
+        [
+          13,
+          29
+        ],
+        [
+          11,
+          29
+        ],
+        [
+          11,
+          31
+        ],
+        [
+          7,
+          31
+        ]
+      ],
+      "material": "lawn"
+    },
+    {
+      "kind": "polygon",
+      "name": "Eastern lower landing",
+      "points": [
+        [
+          18,
+          23
+        ],
+        [
+          20,
+          23
+        ],
+        [
+          20,
+          28
+        ],
+        [
+          18,
+          28
+        ]
+      ],
+      "material": "lawn"
+    },
+    {
+      "kind": "polygon",
+      "name": "East bank walking shelf",
+      "points": [
+        [
+          14,
+          13
+        ],
+        [
+          16,
+          13
+        ],
+        [
+          16,
+          21
+        ],
+        [
+          20,
+          21
+        ],
+        [
+          20,
+          25
+        ],
+        [
+          18,
+          25
+        ],
+        [
+          18,
+          22
+        ],
+        [
+          14,
+          22
+        ]
+      ],
+      "material": "lawn"
+    },
+    {
+      "kind": "polygon",
+      "name": "Northern bird meadow",
+      "points": [
+        [
+          4,
+          3
+        ],
+        [
+          11,
+          3
+        ],
+        [
+          11,
+          8
+        ],
+        [
+          8,
+          8
+        ],
+        [
+          8,
+          11
+        ],
+        [
+          4,
+          11
+        ]
+      ],
+      "material": "lawn"
+    },
+    {
+      "kind": "rect",
+      "name": "Upper bridge west approach",
+      "bounds": [
+        6,
+        12,
+        9,
+        17
+      ],
+      "material": "lawn"
+    },
+    {
+      "kind": "path",
+      "name": "Connected river-valley road",
+      "points": [
+        [
+          9,
+          31
+        ],
+        [
+          9,
+          28
+        ],
+        [
+          12,
+          28
+        ],
+        [
+          12,
+          27
+        ],
+        [
+          19,
+          27
+        ],
+        [
+          19,
+          21
+        ],
+        [
+          15,
+          21
+        ],
+        [
+          15,
+          14
+        ],
+        [
+          7,
+          14
+        ],
+        [
+          7,
+          11
+        ],
+        [
+          5,
+          11
+        ],
+        [
+          5,
+          7
+        ],
+        [
+          10,
+          7
+        ],
+        [
+          10,
+          0
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "kind": "path",
+      "name": "Lower angler turnout",
+      "points": [
+        [
+          12,
+          28
+        ],
+        [
+          12,
+          25
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "kind": "path",
+      "name": "Cave turnout",
+      "points": [
+        [
+          7,
+          14
+        ],
+        [
+          7,
+          19
+        ],
+        [
+          4,
+          19
+        ],
+        [
+          4,
+          18
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "kind": "path",
+      "name": "Low terrace stair spur",
+      "points": [
+        [
+          19,
+          21
+        ],
+        [
+          20,
+          21
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "kind": "polygon",
+      "name": "Minnesota river bends",
+      "points": [
+        [
+          15,
+          0
+        ],
+        [
+          18,
+          0
+        ],
+        [
+          18,
+          8
+        ],
+        [
+          17,
+          8
+        ],
+        [
+          17,
+          10
+        ],
+        [
+          15,
+          10
+        ],
+        [
+          15,
+          12
+        ],
+        [
+          12,
+          12
+        ],
+        [
+          12,
+          21
+        ],
+        [
+          13,
+          21
+        ],
+        [
+          13,
+          23
+        ],
+        [
+          15,
+          23
+        ],
+        [
+          15,
+          25
+        ],
+        [
+          17,
+          25
+        ],
+        [
+          17,
+          31
+        ],
+        [
+          14,
+          31
+        ],
+        [
+          14,
+          26
+        ],
+        [
+          12,
+          26
+        ],
+        [
+          12,
+          24
+        ],
+        [
+          10,
+          24
+        ],
+        [
+          10,
+          22
+        ],
+        [
+          9,
+          22
+        ],
+        [
+          9,
+          11
+        ],
+        [
+          12,
+          11
+        ],
+        [
+          12,
+          9
+        ],
+        [
+          14,
+          9
+        ],
+        [
+          14,
+          7
+        ],
+        [
+          15,
+          7
+        ]
+      ],
+      "material": "water"
+    },
+    {
+      "kind": "cliff_polygon",
+      "name": "Cave bank limestone",
+      "points": [
+        [
+          2,
+          15
+        ],
+        [
+          3,
+          15
+        ],
+        [
+          3,
+          14
+        ],
+        [
+          5,
+          14
+        ],
+        [
+          5,
+          18
+        ],
+        [
+          2,
+          18
+        ]
+      ]
+    },
+    {
+      "kind": "cliff_polygon",
+      "name": "Small east-bank terrace",
+      "points": [
+        [
+          17,
+          16
+        ],
+        [
+          21,
+          16
+        ],
+        [
+          21,
+          20
+        ],
+        [
+          17,
+          20
+        ]
+      ]
+    },
+    {
+      "kind": "point",
+      "name": "Native cave entrance",
+      "position": [
+        4,
+        18
+      ],
+      "block": "73"
+    },
+    {
+      "kind": "point",
+      "name": "Cave safe exterior floor",
+      "position": [
+        4,
+        19
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Native terrace ramp",
+      "position": [
+        20,
+        20
+      ],
+      "block": "74"
+    },
+    {
+      "kind": "block_rect",
+      "name": "Optional terrace one-way return",
+      "bounds": [
+        18,
+        20,
+        20,
+        21
+      ],
+      "block": "57"
+    },
+    {
+      "kind": "rect",
+      "name": "Unavoidable lower-bank habitat",
+      "bounds": [
+        13,
+        17,
+        17,
+        20
+      ],
+      "material": "encounter"
+    },
+    {
+      "kind": "rect",
+      "name": "Northern habitat patch",
+      "bounds": [
+        8,
+        4,
+        11,
+        6
+      ],
+      "material": "encounter"
+    },
+    {
+      "kind": "rect",
+      "name": "Northern lower habitat",
+      "bounds": [
+        6,
+        9,
+        8,
+        11
+      ],
+      "material": "encounter"
+    },
+    {
+      "kind": "rect",
+      "name": "Cave optional grass neck",
+      "bounds": [
+        6,
+        17,
+        8,
+        19
+      ],
+      "material": "encounter"
+    },
+    {
+      "kind": "rect",
+      "name": "South arrival side grass",
+      "bounds": [
+        7,
+        26,
+        9,
+        29
+      ],
+      "material": "encounter"
+    },
+    {
+      "kind": "rect",
+      "name": "Upper river flowers",
+      "bounds": [
+        4,
+        5,
+        5,
+        7
+      ],
+      "material": "flowers"
+    },
+    {
+      "kind": "rect",
+      "name": "South bank flowers",
+      "bounds": [
+        10,
+        29,
+        12,
+        30
+      ],
+      "material": "flowers"
+    },
+    {
+      "kind": "block_rect",
+      "name": "UPPER_FOOTBRIDGE upper timber rail",
+      "bounds": [
+        9,
+        13,
+        13,
+        14
+      ],
+      "block": "82"
+    },
+    {
+      "kind": "block_rect",
+      "name": "UPPER_FOOTBRIDGE deck",
+      "bounds": [
+        9,
+        14,
+        13,
+        15
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "block_rect",
+      "name": "UPPER_FOOTBRIDGE lower timber rail",
+      "bounds": [
+        9,
+        15,
+        13,
+        16
+      ],
+      "block": "81"
+    },
+    {
+      "kind": "block_rect",
+      "name": "UPPER_FOOTBRIDGE water under lower rail",
+      "bounds": [
+        9,
+        16,
+        13,
+        17
+      ],
+      "block": "80"
+    },
+    {
+      "kind": "block_rect",
+      "name": "LOWER_FOOTBRIDGE upper timber rail",
+      "bounds": [
+        14,
+        26,
+        18,
+        27
+      ],
+      "block": "82"
+    },
+    {
+      "kind": "block_rect",
+      "name": "LOWER_FOOTBRIDGE deck",
+      "bounds": [
+        14,
+        27,
+        18,
+        28
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "block_rect",
+      "name": "LOWER_FOOTBRIDGE lower timber rail",
+      "bounds": [
+        14,
+        28,
+        18,
+        29
+      ],
+      "block": "81"
+    },
+    {
+      "kind": "block_rect",
+      "name": "LOWER_FOOTBRIDGE water under lower rail",
+      "bounds": [
+        14,
+        29,
+        18,
+        30
+      ],
+      "block": "80"
+    },
+    {
+      "kind": "block_rect",
+      "name": "Lower west bank fence",
+      "bounds": [
+        13,
+        25,
+        14,
+        27
+      ],
+      "block": "46"
+    },
+    {
+      "kind": "block_rect",
+      "name": "Lower west bank fence below bridge",
+      "bounds": [
+        13,
+        29,
+        14,
+        32
+      ],
+      "block": "46"
+    },
+    {
+      "kind": "block_rect",
+      "name": "Lower east bank fence",
+      "bounds": [
+        18,
+        29,
+        19,
+        32
+      ],
+      "block": "44"
+    },
+    {
+      "kind": "block_rect",
+      "name": "Upper east river fence",
+      "bounds": [
+        13,
+        15,
+        14,
+        17
+      ],
+      "block": "44"
+    },
+    {
+      "kind": "point",
+      "name": "Small stone on west bank",
+      "position": [
+        8,
+        26
+      ],
+      "block": "0a"
+    },
+    {
+      "kind": "point",
+      "name": "Terrace north outcrop",
+      "position": [
+        18,
+        17
+      ],
+      "block": "0a"
+    },
+    {
+      "kind": "point",
+      "name": "Terrace east outcrop",
+      "position": [
+        20,
+        18
+      ],
+      "block": "0a"
+    },
+    {
+      "kind": "point",
+      "name": "Northern shade",
+      "position": [
+        3,
+        8
+      ],
+      "block": "62"
+    },
+    {
+      "kind": "point",
+      "name": "Ordinary bird meadow tree toe without decorative Cut",
+      "position": [
+        11,
+        6
+      ],
+      "block": "3d"
+    },
+    {
+      "kind": "point",
+      "name": "Ordinary bird meadow tree toe without decorative Cut",
+      "position": [
+        6,
+        28
+      ],
+      "block": "3d"
+    },
+    {
+      "kind": "path",
+      "name": "Southern cache spur",
+      "points": [
+        [
+          9,
+          28
+        ],
+        [
+          6,
+          28
+        ],
+        [
+          6,
+          27
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "kind": "point",
+      "name": "Cache clear footing",
+      "position": [
+        6,
+        27
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "path",
+      "name": "Lower east bridge cache spur",
+      "points": [
+        [
+          19,
+          27
+        ],
+        [
+          20,
+          27
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "kind": "point",
+      "name": "East landing clear footing",
+      "position": [
+        20,
+        27
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Southern road sign",
+      "position": [
+        10,
+        30
+      ],
+      "block": "45"
+    },
+    {
+      "kind": "point",
+      "name": "Minneapolis sign",
+      "position": [
+        11,
+        2
+      ],
+      "block": "45"
+    },
+    {
+      "kind": "point",
+      "name": "Cave direction board",
+      "position": [
+        6,
+        18
+      ],
+      "block": "45"
+    },
+    {
+      "kind": "point",
+      "name": "Upper crossing board",
+      "position": [
+        14,
+        13
+      ],
+      "block": "45"
+    },
+    {
+      "kind": "point",
+      "name": "Terrace return board",
+      "position": [
+        20,
+        22
+      ],
+      "block": "45"
+    },
+    {
+      "kind": "point",
+      "name": "Terrace cache clear pad",
+      "position": [
+        19,
+        17
+      ],
+      "block": "71"
+    },
+    {
+      "kind": "point",
+      "name": "Terrace trainer clear pad",
+      "position": [
+        18,
+        18
+      ],
+      "block": "71"
+    },
+    {
+      "kind": "point",
+      "name": "North trainer standing pad",
+      "position": [
+        7,
+        8
+      ],
+      "block": "02"
+    },
+    {
+      "kind": "point",
+      "name": "North birdwatcher pad",
+      "position": [
+        6,
+        6
+      ],
+      "block": "02"
+    },
+    {
+      "kind": "point",
+      "name": "Southern angler pad",
+      "position": [
+        12,
+        26
+      ],
+      "block": "02"
+    },
+    {
+      "kind": "point",
+      "name": "East bridge trainer pad",
+      "position": [
+        18,
+        24
+      ],
+      "block": "02"
+    },
+    {
+      "kind": "point",
+      "name": "Cave bank exposed stone",
+      "position": [
+        3,
+        15
+      ],
+      "block": "0a"
+    },
+    {
+      "kind": "point",
+      "name": "Cave bank chalk outcrop",
+      "position": [
+        4,
+        16
+      ],
+      "block": "0a"
+    },
+    {
+      "kind": "point",
+      "name": "North river visible native water-rock closure",
+      "position": [
+        15,
+        0
+      ],
+      "block": "30"
+    },
+    {
+      "kind": "point",
+      "name": "North river visible native water-rock closure",
+      "position": [
+        16,
+        0
+      ],
+      "block": "31"
+    },
+    {
+      "kind": "point",
+      "name": "North river visible native water-rock closure",
+      "position": [
+        17,
+        0
+      ],
+      "block": "31"
+    },
+    {
+      "kind": "point",
+      "name": "North river visible native water-rock closure",
+      "position": [
+        18,
+        0
+      ],
+      "block": "32"
+    },
+    {
+      "kind": "point",
+      "name": "South river visible native water-rock closure",
+      "position": [
+        14,
+        31
+      ],
+      "block": "38"
+    },
+    {
+      "kind": "point",
+      "name": "South river visible native water-rock closure",
+      "position": [
+        15,
+        31
+      ],
+      "block": "39"
+    },
+    {
+      "kind": "point",
+      "name": "South river visible native water-rock closure",
+      "position": [
+        16,
+        31
+      ],
+      "block": "39"
+    },
+    {
+      "kind": "point",
+      "name": "South river visible native water-rock closure",
+      "position": [
+        17,
+        31
+      ],
+      "block": "3a"
+    },
+    {
+      "kind": "point",
+      "name": "Existing1186native south-edge forest cap; source reconciliation only",
+      "position": [
+        7,
+        31
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Existing1186native south-edge forest cap; source reconciliation only",
+      "position": [
+        8,
+        31
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Existing1186native south-edge forest cap; source reconciliation only",
+      "position": [
+        10,
+        31
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Existing1186native south-edge forest cap; source reconciliation only",
+      "position": [
+        11,
+        31
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Existing1186native south-edge forest cap; source reconciliation only",
+      "position": [
+        13,
+        31
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Existing1186native south-edge forest cap; source reconciliation only",
+      "position": [
+        18,
+        31
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact native Minneapolis river continuation hook",
+      "position": [
+        6,
+        0
+      ],
+      "block": "58"
+    },
+    {
+      "kind": "point",
+      "name": "Exact native Minneapolis river continuation hook",
+      "position": [
+        7,
+        0
+      ],
+      "block": "35"
+    },
+    {
+      "kind": "point",
+      "name": "Exact native Minneapolis river continuation hook",
+      "position": [
+        8,
+        0
+      ],
+      "block": "59"
+    },
+    {
+      "kind": "point",
+      "name": "Exact native Minneapolis river continuation hook",
+      "position": [
+        6,
+        1
+      ],
+      "block": "58"
+    },
+    {
+      "kind": "point",
+      "name": "Exact native Minneapolis river continuation hook",
+      "position": [
+        7,
+        1
+      ],
+      "block": "35"
+    },
+    {
+      "kind": "point",
+      "name": "Exact native Minneapolis river continuation hook",
+      "position": [
+        8,
+        1
+      ],
+      "block": "59"
+    },
+    {
+      "kind": "point",
+      "name": "Exact native Minneapolis river continuation hook",
+      "position": [
+        9,
+        1
+      ],
+      "block": "44"
+    },
+    {
+      "kind": "point",
+      "name": "Exact native Minneapolis river continuation hook",
+      "position": [
+        11,
+        1
+      ],
+      "block": "46"
+    },
+    {
+      "kind": "point",
+      "name": "Exact native Minneapolis river continuation hook",
+      "position": [
+        12,
+        1
+      ],
+      "block": "54"
+    },
+    {
+      "kind": "point",
+      "name": "Exact native Minneapolis river continuation hook",
+      "position": [
+        13,
+        1
+      ],
+      "block": "76"
+    },
+    {
+      "kind": "point",
+      "name": "Exact native Minneapolis river continuation hook",
+      "position": [
+        14,
+        1
+      ],
+      "block": "76"
+    },
+    {
+      "kind": "point",
+      "name": "Exact native Minneapolis river continuation hook",
+      "position": [
+        15,
+        1
+      ],
+      "block": "79"
+    }
+  ],
+  "crossings": [
+    {
+      "id": "UPPER_FOOTBRIDGE",
+      "deck_blocks": [
+        [
+          9,
+          14
+        ],
+        [
+          10,
+          14
+        ],
+        [
+          11,
+          14
+        ],
+        [
+          12,
+          14
+        ]
+      ],
+      "north_rail_blocks": [
+        [
+          9,
+          13
+        ],
+        [
+          10,
+          13
+        ],
+        [
+          11,
+          13
+        ],
+        [
+          12,
+          13
+        ]
+      ],
+      "south_rail_blocks": [
+        [
+          9,
+          15
+        ],
+        [
+          10,
+          15
+        ],
+        [
+          11,
+          15
+        ],
+        [
+          12,
+          15
+        ]
+      ],
+      "water_under_rail_blocks": [
+        [
+          9,
+          16
+        ],
+        [
+          10,
+          16
+        ],
+        [
+          11,
+          16
+        ],
+        [
+          12,
+          16
+        ]
+      ],
+      "core_walk_line": [
+        [
+          16,
+          29
+        ],
+        [
+          17,
+          29
+        ],
+        [
+          18,
+          29
+        ],
+        [
+          19,
+          29
+        ],
+        [
+          20,
+          29
+        ],
+        [
+          21,
+          29
+        ],
+        [
+          22,
+          29
+        ],
+        [
+          23,
+          29
+        ],
+        [
+          24,
+          29
+        ],
+        [
+          25,
+          29
+        ],
+        [
+          26,
+          29
+        ],
+        [
+          27,
+          29
+        ]
+      ]
+    },
+    {
+      "id": "LOWER_FOOTBRIDGE",
+      "deck_blocks": [
+        [
+          14,
+          27
+        ],
+        [
+          15,
+          27
+        ],
+        [
+          16,
+          27
+        ],
+        [
+          17,
+          27
+        ]
+      ],
+      "north_rail_blocks": [
+        [
+          14,
+          26
+        ],
+        [
+          15,
+          26
+        ],
+        [
+          16,
+          26
+        ],
+        [
+          17,
+          26
+        ]
+      ],
+      "south_rail_blocks": [
+        [
+          14,
+          28
+        ],
+        [
+          15,
+          28
+        ],
+        [
+          16,
+          28
+        ],
+        [
+          17,
+          28
+        ]
+      ],
+      "water_under_rail_blocks": [
+        [
+          14,
+          29
+        ],
+        [
+          15,
+          29
+        ],
+        [
+          16,
+          29
+        ],
+        [
+          17,
+          29
+        ]
+      ],
+      "core_walk_line": [
+        [
+          26,
+          55
+        ],
+        [
+          27,
+          55
+        ],
+        [
+          28,
+          55
+        ],
+        [
+          29,
+          55
+        ],
+        [
+          30,
+          55
+        ],
+        [
+          31,
+          55
+        ],
+        [
+          32,
+          55
+        ],
+        [
+          33,
+          55
+        ],
+        [
+          34,
+          55
+        ],
+        [
+          35,
+          55
+        ],
+        [
+          36,
+          55
+        ],
+        [
+          37,
+          55
+        ]
+      ]
+    }
+  ],
+  "additional_water_blocks": [
+    "30",
+    "31",
+    "32",
+    "34",
+    "36",
+    "38",
+    "39",
+    "3a",
+    "54",
+    "55",
+    "58",
+    "59",
+    "76",
+    "79",
+    "7a"
+  ]
+}

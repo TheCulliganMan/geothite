@@ -47,6 +47,13 @@ fn load() -> (AssetRoot, CrystalRuntime) {
             )
             .expect("native composed runtime");
             let town = &r.data().maps[TOWN];
+            let coast = &r.data().maps[COAST].attributes;
+            let inland = &r.data().maps[INLAND].attributes;
+            let inland_offset = match (coast.width, coast.height, inland.width, inland.height) {
+                (24, 24, 32, 19) => 19,
+                (4, 24, 20, 12) => 4,
+                profile => panic!("unreviewed Superior geometry profile: {profile:?}"),
+            };
             assert_eq!(town.attributes.tileset_name, "mn_marais_shore");
             assert!(
                 town.attributes
@@ -58,7 +65,9 @@ fn load() -> (AssetRoot, CrystalRuntime) {
                 town.attributes
                     .connections
                     .iter()
-                    .any(|c| c.direction == "north" && c.target_map == INLAND && c.offset == -19)
+                    .any(|c| c.direction == "north"
+                        && c.target_map == INLAND
+                        && c.offset == -inland_offset)
             );
             assert!(
                 r.data().maps[COAST]
@@ -72,7 +81,9 @@ fn load() -> (AssetRoot, CrystalRuntime) {
                     .attributes
                     .connections
                     .iter()
-                    .any(|c| c.direction == "south" && c.target_map == TOWN && c.offset == 19)
+                    .any(|c| c.direction == "south"
+                        && c.target_map == TOWN
+                        && c.offset == inland_offset)
             );
             (root, r)
         })
@@ -370,13 +381,26 @@ fn grand_marais_superior_controller_closed_foot_checks_badges_and_duluth_signal(
 #[test]
 #[ignore = "requires final composed native geography pack and caller save directory"]
 fn grand_marais_superior_controller_open_west_north_and_both_free_inward_care() {
+    let (_, runtime) = load();
+    let coast_x =
+        i16::try_from(runtime.data().maps[COAST].attributes.width).expect("coast width") * 2 - 1;
+    let north = runtime.data().maps[TOWN]
+        .attributes
+        .connections
+        .iter()
+        .find(|edge| edge.direction == "north")
+        .expect("reviewed town north seam");
+    let inland_x = 18 - i16::try_from(north.offset).expect("guarded native north offset") * 2;
+    let inland_y =
+        i16::try_from(runtime.data().maps[INLAND].attributes.height).expect("inland height") * 2
+            - 1;
     for (point, input, edge, neighbor, target, back, inside) in [
         (
             (4, 8),
             GameButton::Left,
             (0, 8),
             COAST,
-            (47, 8),
+            (coast_x, 8),
             GameButton::Right,
             (3, 8),
         ),
@@ -385,7 +409,7 @@ fn grand_marais_superior_controller_open_west_north_and_both_free_inward_care() 
             GameButton::Up,
             (18, 0),
             INLAND,
-            (56, 37),
+            (inland_x, inland_y),
             GameButton::Down,
             (18, 3),
         ),
@@ -394,7 +418,7 @@ fn grand_marais_superior_controller_open_west_north_and_both_free_inward_care() 
             GameButton::Left,
             (0, 9),
             COAST,
-            (47, 9),
+            (coast_x, 9),
             GameButton::Right,
             (3, 9),
         ),
@@ -403,7 +427,7 @@ fn grand_marais_superior_controller_open_west_north_and_both_free_inward_care() 
             GameButton::Up,
             (19, 0),
             INLAND,
-            (57, 37),
+            (inland_x + 1, inland_y),
             GameButton::Down,
             (19, 3),
         ),
@@ -437,10 +461,22 @@ fn grand_marais_superior_controller_open_west_north_and_both_free_inward_care() 
         save(&mut c, "open-seam");
     }
     for (neighbor, point, input, edge, inside) in [
-        (COAST, (47, 8), GameButton::Right, (0, 8), (3, 8)),
-        (INLAND, (56, 37), GameButton::Down, (18, 0), (18, 3)),
-        (COAST, (47, 9), GameButton::Right, (0, 9), (3, 9)),
-        (INLAND, (57, 37), GameButton::Down, (19, 0), (19, 3)),
+        (COAST, (coast_x, 8), GameButton::Right, (0, 8), (3, 8)),
+        (
+            INLAND,
+            (inland_x, inland_y),
+            GameButton::Down,
+            (18, 0),
+            (18, 3),
+        ),
+        (COAST, (coast_x, 9), GameButton::Right, (0, 9), (3, 9)),
+        (
+            INLAND,
+            (inland_x + 1, inland_y),
+            GameButton::Down,
+            (19, 0),
+            (19, 3),
+        ),
     ] {
         let (_, r, mut c) = fixture(neighbor, point, false, false, true);
         step(

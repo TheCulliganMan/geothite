@@ -1,0 +1,58 @@
+[
+  {
+    "id": "MnInternationalFallsPokecenter1F-arrival",
+    "map": "MnInternationalFallsPokecenter1F",
+    "core": [
+      3,
+      8
+    ]
+  },
+  {
+    "id": "MnInternationalFallsPokecenter1F-nurse",
+    "map": "MnInternationalFallsPokecenter1F",
+    "core": [
+      3,
+      3
+    ]
+  },
+  {
+    "id": "MnInternationalFallsPokecenter1F-ranger",
+    "map": "MnInternationalFallsPokecenter1F",
+    "core": [
+      2,
+      6
+    ]
+  },
+  {
+    "id": "MnInternationalFallsPokecenter1F-pc",
+    "map": "MnInternationalFallsPokecenter1F",
+    "core": [
+      9,
+      2
+    ]
+  },
+  {
+    "id": "MnInternationalFallsMart-arrival",
+    "map": "MnInternationalFallsMart",
+    "core": [
+      3,
+      6
+    ]
+  },
+  {
+    "id": "MnInternationalFallsMart-counter",
+    "map": "MnInternationalFallsMart",
+    "core": [
+      3,
+      3
+    ]
+  },
+  {
+    "id": "MnInternationalFallsMart-neighbor",
+    "map": "MnInternationalFallsMart",
+    "core": [
+      8,
+      6
+    ]
+  }
+]

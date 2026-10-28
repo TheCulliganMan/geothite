@@ -9092,6 +9092,9 @@ mod projected_source_oam;
 include!("bevy_shell/battle_3d.rs");
 #[cfg(feature = "voxel-view")]
 include!("bevy_shell/world_entry.rs");
+#[cfg(any(test, feature = "voxel-view"))]
+#[path = "bevy_shell/authored_visual_sources.rs"]
+mod authored_visual_sources;
 #[cfg(feature = "voxel-view")]
 #[path = "bevy_shell/connected_actors.rs"]
 mod connected_actors;

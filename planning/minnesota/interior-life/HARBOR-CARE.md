@@ -3,8 +3,8 @@
 This care-stage output is
 `content-packs/minnesota-harbor-care-v02.crystalpack`: 699 maps, 475 species,
 270 moves, 377 audio programs and 201 non-gym Minnesota interiors. The subsequent
-verified [Moorhead child](MOORHEAD.md) contains 708 maps and 208
-interiors. International Falls, the older shore-gate contract, three planned stations, full rail
+verified [International Falls child](INTERNATIONAL-FALLS.md) contains 711 maps
+and 210 interiors. The older shore-gate contract, three planned stations, full rail
 service and the regional quality audit remain in [COVERAGE.md](COVERAGE.md) and
 belong to the active all-interiors objective.
 

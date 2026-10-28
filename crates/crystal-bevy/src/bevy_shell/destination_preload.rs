@@ -273,6 +273,7 @@ pub(super) fn source_frame(
     }
     let (w,h) = (window.size.x as i16,window.size.y as i16);
     let mut tiles = Vec::with_capacity(w as usize * h as usize);
+    let mut visual_sources=authored_visual_sources::Projection::default();
     let mut handles = Vec::with_capacity(tiles.capacity());
     let restless = snapshot.progression.active_engine_flags.contains("ENGINE_FOREST_IS_RESTLESS");
     for row in 0..h { for column in 0..w {
@@ -283,9 +284,8 @@ pub(super) fn source_frame(
             source, art, sx, sy, runtime.lcd_animation_frame, restless)?;
         handles.push(texture.clone());
         tiles.push(crystal_render_api::VisualTile { column: column as u32, row: row as u32,
-            source: crystal_render_api::VisualTileSource {
-                tileset_id: source.tileset.tileset_id.as_str().into(), metatile_id: block,
-                subtile_column: sub_x as u8, subtile_row: sub_y as u8, tile_index: index.into() },
+            source: visual_sources.source(&runtime.asset_root,&source.tileset.tileset_id,
+                block,sub_x,sub_y,index)?,
             texture, priority, animation_frames: art.animated_tiles.get(&(index as usize))
                 .filter(|a| !a.frames.is_empty()).map(|a| a.frames.clone()) });
     }}

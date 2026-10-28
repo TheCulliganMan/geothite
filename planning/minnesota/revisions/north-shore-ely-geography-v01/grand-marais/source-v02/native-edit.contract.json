@@ -1,0 +1,1141 @@
+{
+  "schema_version": 2,
+  "status": "WEST_ENTRY_SOURCE_PROPOSAL_NOT_NATIVE",
+  "base_pack_sha256": "1c6ba5d59097546ff8b94e09c809d270727ce1272acb93759b89f3b3c7d9b90a",
+  "base_identity": "317e9c039914d27c83dfed01ef55b4720023867fd9d8d5aef9ea1b1a452aec3e",
+  "map": "MnGrandMarais",
+  "base_module_sha256": "377210a771f41efaa9c5bd18a9035462a61a14da7e34e0967d79421b5e6c93c1",
+  "dimensions_metatiles": [
+    20,
+    19
+  ],
+  "world_origin_proposed": [
+    246,
+    -400
+  ],
+  "native_alias": "mn_marais_shore",
+  "behavior_source": "johto",
+  "native_art_recipes": [
+    {
+      "id": "80",
+      "base": "54",
+      "quadrants": [
+        {
+          "index": 1,
+          "source": "36"
+        },
+        {
+          "index": 3,
+          "source": "36"
+        }
+      ],
+      "glyphs": [
+        92,
+        76,
+        88,
+        88,
+        61,
+        20,
+        88,
+        88,
+        61,
+        20,
+        88,
+        88,
+        61,
+        20,
+        88,
+        88
+      ],
+      "collision": [
+        "WATER",
+        "BUOY",
+        "WATER",
+        "BUOY"
+      ]
+    },
+    {
+      "id": "81",
+      "base": "58",
+      "quadrants": [
+        {
+          "index": 1,
+          "source": "36"
+        },
+        {
+          "index": 3,
+          "source": "36"
+        }
+      ],
+      "glyphs": [
+        61,
+        20,
+        88,
+        88,
+        61,
+        20,
+        88,
+        88,
+        61,
+        20,
+        88,
+        88,
+        61,
+        20,
+        88,
+        88
+      ],
+      "collision": [
+        "WATER",
+        "BUOY",
+        "WATER",
+        "BUOY"
+      ]
+    },
+    {
+      "id": "82",
+      "base": "59",
+      "quadrants": [
+        {
+          "index": 0,
+          "source": "34"
+        },
+        {
+          "index": 2,
+          "source": "34"
+        }
+      ],
+      "glyphs": [
+        88,
+        88,
+        20,
+        59,
+        88,
+        88,
+        20,
+        59,
+        88,
+        88,
+        20,
+        59,
+        88,
+        88,
+        20,
+        59
+      ],
+      "collision": [
+        "BUOY",
+        "WATER",
+        "BUOY",
+        "WATER"
+      ]
+    },
+    {
+      "id": "83",
+      "base": "7a",
+      "quadrants": [
+        {
+          "index": 0,
+          "source": "34"
+        },
+        {
+          "index": 2,
+          "source": "34"
+        }
+      ],
+      "glyphs": [
+        88,
+        88,
+        20,
+        75,
+        88,
+        88,
+        20,
+        20,
+        88,
+        88,
+        20,
+        20,
+        88,
+        88,
+        20,
+        20
+      ],
+      "collision": [
+        "BUOY",
+        "WATER",
+        "BUOY",
+        "WATER"
+      ]
+    },
+    {
+      "id": "84",
+      "base": "35",
+      "quadrants": [
+        {
+          "index": 0,
+          "source": "34"
+        },
+        {
+          "index": 2,
+          "source": "34"
+        }
+      ],
+      "glyphs": [
+        88,
+        88,
+        20,
+        20,
+        88,
+        88,
+        20,
+        20,
+        88,
+        88,
+        20,
+        20,
+        88,
+        88,
+        20,
+        20
+      ],
+      "collision": [
+        "BUOY",
+        "WATER",
+        "BUOY",
+        "WATER"
+      ]
+    },
+    {
+      "id": "85",
+      "base": "79",
+      "quadrants": [
+        {
+          "index": 1,
+          "source": "36"
+        },
+        {
+          "index": 3,
+          "source": "36"
+        }
+      ],
+      "glyphs": [
+        77,
+        20,
+        88,
+        88,
+        20,
+        20,
+        88,
+        88,
+        20,
+        20,
+        88,
+        88,
+        20,
+        20,
+        88,
+        88
+      ],
+      "collision": [
+        "WATER",
+        "BUOY",
+        "WATER",
+        "BUOY"
+      ]
+    },
+    {
+      "id": "86",
+      "base": "35",
+      "quadrants": [
+        {
+          "index": 1,
+          "source": "36"
+        },
+        {
+          "index": 3,
+          "source": "36"
+        }
+      ],
+      "glyphs": [
+        20,
+        20,
+        88,
+        88,
+        20,
+        20,
+        88,
+        88,
+        20,
+        20,
+        88,
+        88,
+        20,
+        20,
+        88,
+        88
+      ],
+      "collision": [
+        "WATER",
+        "BUOY",
+        "WATER",
+        "BUOY"
+      ]
+    },
+    {
+      "id": "87",
+      "base": "35",
+      "quadrants": [
+        {
+          "index": 0,
+          "source": "34"
+        },
+        {
+          "index": 2,
+          "source": "39"
+        },
+        {
+          "index": 3,
+          "source": "39"
+        }
+      ],
+      "glyphs": [
+        88,
+        88,
+        20,
+        20,
+        88,
+        88,
+        20,
+        20,
+        88,
+        88,
+        88,
+        88,
+        88,
+        88,
+        88,
+        88
+      ],
+      "collision": [
+        "BUOY",
+        "WATER",
+        "BUOY",
+        "BUOY"
+      ]
+    },
+    {
+      "id": "88",
+      "base": "35",
+      "quadrants": [
+        {
+          "index": 2,
+          "source": "39"
+        },
+        {
+          "index": 3,
+          "source": "39"
+        }
+      ],
+      "glyphs": [
+        20,
+        20,
+        20,
+        20,
+        20,
+        20,
+        20,
+        20,
+        88,
+        88,
+        88,
+        88,
+        88,
+        88,
+        88,
+        88
+      ],
+      "collision": [
+        "WATER",
+        "WATER",
+        "BUOY",
+        "BUOY"
+      ]
+    },
+    {
+      "id": "89",
+      "base": "35",
+      "quadrants": [
+        {
+          "index": 1,
+          "source": "36"
+        },
+        {
+          "index": 2,
+          "source": "39"
+        },
+        {
+          "index": 3,
+          "source": "39"
+        }
+      ],
+      "glyphs": [
+        20,
+        20,
+        88,
+        88,
+        20,
+        20,
+        88,
+        88,
+        88,
+        88,
+        88,
+        88,
+        88,
+        88,
+        88,
+        88
+      ],
+      "collision": [
+        "WATER",
+        "BUOY",
+        "BUOY",
+        "BUOY"
+      ]
+    }
+  ],
+  "cells": [
+    {
+      "metatile": [
+        9,
+        0
+      ],
+      "before": "05",
+      "after": "01",
+      "purpose": "north inland lane between Center and Mart; green coastal town ends at this port"
+    },
+    {
+      "metatile": [
+        9,
+        1
+      ],
+      "before": "5d",
+      "after": "01",
+      "purpose": "north inland lane between Center and Mart; green coastal town ends at this port"
+    },
+    {
+      "metatile": [
+        9,
+        2
+      ],
+      "before": "02",
+      "after": "01",
+      "purpose": "north inland lane between Center and Mart; green coastal town ends at this port"
+    },
+    {
+      "metatile": [
+        9,
+        3
+      ],
+      "before": "04",
+      "after": "01",
+      "purpose": "north inland lane between Center and Mart; green coastal town ends at this port"
+    },
+    {
+      "metatile": [
+        9,
+        4
+      ],
+      "before": "02",
+      "after": "01",
+      "purpose": "north inland lane between Center and Mart; green coastal town ends at this port"
+    },
+    {
+      "metatile": [
+        9,
+        5
+      ],
+      "before": "02",
+      "after": "01",
+      "purpose": "north inland lane between Center and Mart; green coastal town ends at this port"
+    },
+    {
+      "metatile": [
+        19,
+        6
+      ],
+      "before": "01",
+      "after": "05",
+      "purpose": "close former east Foot exit with ordinary native pines"
+    },
+    {
+      "metatile": [
+        19,
+        7
+      ],
+      "before": "54",
+      "after": "80",
+      "purpose": "native reefs close unmatched east water boundary"
+    },
+    {
+      "metatile": [
+        0,
+        8
+      ],
+      "before": "55",
+      "after": "35",
+      "purpose": "open Superior water outside the shifted west lookout bank"
+    },
+    {
+      "metatile": [
+        1,
+        8
+      ],
+      "before": "01",
+      "after": "55",
+      "purpose": "shift existing west bank inward; retain inner lookout walking lane and native shoreline corners"
+    },
+    {
+      "metatile": [
+        19,
+        8
+      ],
+      "before": "58",
+      "after": "81",
+      "purpose": "native reefs close unmatched east water boundary"
+    },
+    {
+      "metatile": [
+        0,
+        9
+      ],
+      "before": "59",
+      "after": "35",
+      "purpose": "open Superior water outside the shifted west lookout bank"
+    },
+    {
+      "metatile": [
+        1,
+        9
+      ],
+      "before": "01",
+      "after": "59",
+      "purpose": "shift existing west bank inward; retain inner lookout walking lane and native shoreline corners"
+    },
+    {
+      "metatile": [
+        19,
+        9
+      ],
+      "before": "58",
+      "after": "81",
+      "purpose": "native reefs close unmatched east water boundary"
+    },
+    {
+      "metatile": [
+        0,
+        10
+      ],
+      "before": "59",
+      "after": "35",
+      "purpose": "open Superior water outside the shifted west lookout bank"
+    },
+    {
+      "metatile": [
+        1,
+        10
+      ],
+      "before": "01",
+      "after": "59",
+      "purpose": "shift existing west bank inward; retain inner lookout walking lane and native shoreline corners"
+    },
+    {
+      "metatile": [
+        19,
+        10
+      ],
+      "before": "58",
+      "after": "81",
+      "purpose": "native reefs close unmatched east water boundary"
+    },
+    {
+      "metatile": [
+        0,
+        11
+      ],
+      "before": "59",
+      "after": "35",
+      "purpose": "open Superior water outside the shifted west lookout bank"
+    },
+    {
+      "metatile": [
+        1,
+        11
+      ],
+      "before": "49",
+      "after": "59",
+      "purpose": "shift existing west bank inward; retain inner lookout walking lane and native shoreline corners"
+    },
+    {
+      "metatile": [
+        19,
+        11
+      ],
+      "before": "58",
+      "after": "81",
+      "purpose": "native reefs close unmatched east water boundary"
+    },
+    {
+      "metatile": [
+        0,
+        12
+      ],
+      "before": "7a",
+      "after": "35",
+      "purpose": "open Superior water outside the shifted west lookout bank"
+    },
+    {
+      "metatile": [
+        1,
+        12
+      ],
+      "before": "76",
+      "after": "7a",
+      "purpose": "shift existing west bank inward; retain inner lookout walking lane and native shoreline corners"
+    },
+    {
+      "metatile": [
+        19,
+        12
+      ],
+      "before": "58",
+      "after": "81",
+      "purpose": "native reefs close unmatched east water boundary"
+    },
+    {
+      "metatile": [
+        19,
+        13
+      ],
+      "before": "58",
+      "after": "81",
+      "purpose": "native reefs close unmatched east water boundary"
+    },
+    {
+      "metatile": [
+        19,
+        14
+      ],
+      "before": "79",
+      "after": "85",
+      "purpose": "native reefs close unmatched east water boundary"
+    },
+    {
+      "metatile": [
+        19,
+        15
+      ],
+      "before": "35",
+      "after": "86",
+      "purpose": "native reefs close unmatched east water boundary"
+    },
+    {
+      "metatile": [
+        19,
+        16
+      ],
+      "before": "35",
+      "after": "86",
+      "purpose": "native reefs close unmatched east water boundary"
+    },
+    {
+      "metatile": [
+        19,
+        17
+      ],
+      "before": "35",
+      "after": "86",
+      "purpose": "native reefs close unmatched east water boundary"
+    }
+  ],
+  "attributes_before": {
+    "tileset_name": "johto",
+    "border_block": 53,
+    "width": 20,
+    "height": 19,
+    "connections": [
+      {
+        "direction": "east",
+        "target_map": "MnMaraisCedarApproach",
+        "offset": 0
+      },
+      {
+        "direction": "west",
+        "target_map": "MnR12C01R01",
+        "offset": 0
+      }
+    ],
+    "time_of_day": null,
+    "phone_service": 0,
+    "phone_flag": false,
+    "environment": "TOWN",
+    "location": "LANDMARK_MN_GRAND_MARAIS",
+    "music": "MUSIC_CHERRYGROVE_CITY",
+    "palette": "PALETTE_AUTO",
+    "fishing_group": "FISHGROUP_SHORE",
+    "map_constant": "MN_GRAND_MARAIS",
+    "map_group_constant": "MAPGROUP_MINNESOTA",
+    "blocks_label": "MnGrandMarais_Blocks",
+    "map_scripts_label": "MnGrandMarais_MapScripts",
+    "map_events_label": "MnGrandMarais_MapEvents",
+    "connection_flags": "EAST | WEST"
+  },
+  "attributes_after": {
+    "tileset_name": "mn_marais_shore",
+    "border_block": 53,
+    "width": 20,
+    "height": 19,
+    "connections": [
+      {
+        "direction": "north",
+        "target_map": "MnMaraisCedarApproach",
+        "offset": -19
+      },
+      {
+        "direction": "west",
+        "target_map": "MnR11C01R00",
+        "offset": 0
+      }
+    ],
+    "time_of_day": null,
+    "phone_service": 0,
+    "phone_flag": false,
+    "environment": "TOWN",
+    "location": "LANDMARK_MN_GRAND_MARAIS",
+    "music": "MUSIC_CHERRYGROVE_CITY",
+    "palette": "PALETTE_AUTO",
+    "fishing_group": "FISHGROUP_SHORE",
+    "map_constant": "MN_GRAND_MARAIS",
+    "map_group_constant": "MAPGROUP_MINNESOTA",
+    "blocks_label": "MnGrandMarais_Blocks",
+    "map_scripts_label": "MnGrandMarais_MapScripts",
+    "map_events_label": "MnGrandMarais_MapEvents",
+    "connection_flags": "NORTH | WEST"
+  },
+  "guards": [
+    {
+      "id": "MNCOHESIONMARAISEAST_A",
+      "before_core": [
+        37,
+        12
+      ],
+      "after_core": [
+        18,
+        2
+      ],
+      "after_movement": "SPRITEMOVEDATA_STANDING_DOWN"
+    },
+    {
+      "id": "MNCOHESIONMARAISEAST_B",
+      "before_core": [
+        37,
+        13
+      ],
+      "after_core": [
+        19,
+        2
+      ],
+      "after_movement": "SPRITEMOVEDATA_STANDING_DOWN"
+    }
+  ],
+  "preserved_doors": [
+    {
+      "index": 1,
+      "core": [
+        6,
+        7
+      ],
+      "approach_core": [
+        6,
+        8
+      ],
+      "target": "MN_GRAND_MARAIS_FIELD_STATION",
+      "unchanged": true
+    },
+    {
+      "index": 2,
+      "core": [
+        15,
+        9
+      ],
+      "approach_core": [
+        15,
+        10
+      ],
+      "target": "MN_GRAND_MARAIS_POKECENTER",
+      "unchanged": true
+    },
+    {
+      "index": 3,
+      "core": [
+        21,
+        9
+      ],
+      "approach_core": [
+        21,
+        10
+      ],
+      "target": "MN_GRAND_MARAIS_MART",
+      "unchanged": true
+    },
+    {
+      "index": 4,
+      "core": [
+        9,
+        15
+      ],
+      "approach_core": [
+        9,
+        16
+      ],
+      "target": "MN_GRAND_MARAIS_ARTIST_HOUSE",
+      "unchanged": true
+    },
+    {
+      "index": 5,
+      "core": [
+        27,
+        15
+      ],
+      "approach_core": [
+        27,
+        16
+      ],
+      "target": "MN_GRAND_MARAIS_FISHER_HOUSE",
+      "unchanged": true
+    },
+    {
+      "index": 6,
+      "core": [
+        15,
+        27
+      ],
+      "approach_core": [
+        15,
+        28
+      ],
+      "target": "MN_GRAND_MARAIS_LIGHTHOUSE",
+      "unchanged": true
+    }
+  ],
+  "preserved_rooms_sha256": {
+    "MnGrandMaraisArtistHouse": "8648320530764f0bbd340510aec38b75423692b8a56d8425f50d620d7751f03b",
+    "MnGrandMaraisFieldStation": "c69cd1d45327462fdf422ee804efc4bbd9d45dcce1bcb71390b1a67420b9eea2",
+    "MnGrandMaraisFisherHouse": "acea7fcbbfba733d6310a362b7a81d9bde5b99a87be486b196cd511c28c14d26",
+    "MnGrandMaraisLighthouse": "9eba9a7ce9f2308d9e1883d87f0e5bb3efa1a810df6bcf217978610b3e22e0e4",
+    "MnGrandMaraisMart": "1d890bf859d3b5df69f4cf062a6e6b34716d23382dc9a1dddfda1eb45215f66e",
+    "MnGrandMaraisPokecenter": "c67da0dab59c865c4ac2166be59ca95a0bc0de4c6a6a795e510ebe74e84b8dc2"
+  },
+  "west_gate_programs": "Preserve installed west programs, bodies2,8/9, outbound3/inward1 and flag predicates exactly; now the coast entry.",
+  "north_rotation": {
+    "old_root": "MnCohesionMaraisEast",
+    "guards_core": [
+      [
+        18,
+        2
+      ],
+      [
+        19,
+        2
+      ]
+    ],
+    "outbound_land_core": [
+      [
+        18,
+        3
+      ],
+      [
+        19,
+        3
+      ]
+    ],
+    "inward_land_core": [
+      [
+        18,
+        1
+      ],
+      [
+        19,
+        1
+      ]
+    ],
+    "argument_edits": [
+      {
+        "label": "MnCohesionMaraisEastInward",
+        "command_index": 1,
+        "arg_index": 0,
+        "before": "RIGHT",
+        "after": "UP"
+      },
+      {
+        "label": "MnCohesionMaraisEastOneStep",
+        "command_index": 0,
+        "arg_index": 0,
+        "before": "LEFT",
+        "after": "DOWN"
+      },
+      {
+        "label": "MnCohesionMaraisEastTwoSteps",
+        "command_index": 0,
+        "arg_index": 0,
+        "before": "LEFT",
+        "after": "DOWN"
+      },
+      {
+        "label": "MnCohesionMaraisEastTwoSteps",
+        "command_index": 1,
+        "arg_index": 0,
+        "before": "LEFT",
+        "after": "DOWN"
+      }
+    ]
+  },
+  "water_gate": {
+    "outbound_core": [
+      [
+        2,
+        16
+      ],
+      [
+        2,
+        17
+      ],
+      [
+        2,
+        18
+      ],
+      [
+        2,
+        19
+      ],
+      [
+        2,
+        20
+      ],
+      [
+        2,
+        21
+      ],
+      [
+        2,
+        22
+      ],
+      [
+        2,
+        23
+      ],
+      [
+        2,
+        24
+      ],
+      [
+        2,
+        25
+      ],
+      [
+        2,
+        26
+      ],
+      [
+        2,
+        27
+      ],
+      [
+        2,
+        28
+      ],
+      [
+        2,
+        29
+      ],
+      [
+        2,
+        30
+      ],
+      [
+        2,
+        31
+      ],
+      [
+        2,
+        32
+      ],
+      [
+        2,
+        33
+      ],
+      [
+        2,
+        34
+      ],
+      [
+        2,
+        35
+      ],
+      [
+        2,
+        36
+      ]
+    ],
+    "outbound_existing_script": "MnCohesionMaraisWest",
+    "outbound_any_facing": true,
+    "inward_core": [
+      [
+        1,
+        16
+      ],
+      [
+        1,
+        17
+      ],
+      [
+        1,
+        18
+      ],
+      [
+        1,
+        19
+      ],
+      [
+        1,
+        20
+      ],
+      [
+        1,
+        21
+      ],
+      [
+        1,
+        22
+      ],
+      [
+        1,
+        23
+      ],
+      [
+        1,
+        24
+      ],
+      [
+        1,
+        25
+      ],
+      [
+        1,
+        26
+      ],
+      [
+        1,
+        27
+      ],
+      [
+        1,
+        28
+      ],
+      [
+        1,
+        29
+      ],
+      [
+        1,
+        30
+      ],
+      [
+        1,
+        31
+      ],
+      [
+        1,
+        32
+      ],
+      [
+        1,
+        33
+      ],
+      [
+        1,
+        34
+      ],
+      [
+        1,
+        35
+      ],
+      [
+        1,
+        36
+      ]
+    ],
+    "inward_wrapper": {
+      "label": "MnMaraisCoastWaterIn",
+      "native_commands": [
+        {
+          "command": "readvar",
+          "args": [
+            "VAR_FACING"
+          ]
+        },
+        {
+          "command": "ifequal",
+          "args": [
+            "RIGHT",
+            "MnCohesionMaraisWestInward"
+          ]
+        },
+        {
+          "command": "end",
+          "args": []
+        }
+      ]
+    },
+    "native_mode": "Allpositions1→2→3 and denial2→3 areWater; existing native movement must preserveSurf mode in production tests."
+  },
+  "wayfinding_sign": {
+    "label": "MnGrandMaraisSign1Text",
+    "core": [
+      12,
+      14
+    ],
+    "before_lines": [
+      "HARBOR PARK",
+      "FOLLOW SHORE EAST"
+    ],
+    "after_lines": [
+      "SUPERIOR HARBOR",
+      "NORTH SHORE: WEST",
+      "GUNFLINT: NORTH",
+      "ELY: INLAND SNOW"
+    ]
+  },
+  "shared_geometry": "west-entry-placement-v02: GM246,-400; Cedar227,-419; N offsets-19/+19, W offsets0/0. R11terminal headland source is owned by river_native and must supply real Floor+Water counterpart apertures before publication.",
+  "canonical_and_world_writes": 0,
+  "all_other_native_programs_services_quests_warps_and_rooms": "exactly preserved",
+  "source_guards": {
+    "johto_definition_sha256": "d49be2437d396e1a5f69905a3297254b30d6b73d04bbba49ec4e39383dcc1c40",
+    "johto_runtime_sha256": {
+      "data/tilesets/johto_metatiles.bin": "4af44f22edf06b8c4dd949c0acfad0a74a05554d63278d8f5791ba0e7bf13017",
+      "gfx/tilesets/johto.2bpp": "da7c80d2d52999f84deb38789eba3758a8a3aba25aaf24d1d2da699683cfd019",
+      "gfx/tilesets/johto.png": "1d6ef5d49b5937a1dddeafea52e306544aab210cde10e2e0a7f22d0a6d644f6e"
+    },
+    "raw_labels_sha256": {
+      "MnGrandMarais_MapEvents": "ff2a529566755f46ef81e8abc9b46da765d1d613521a37cbb9e60928e4d242af",
+      "MnCohesionMaraisEastInward": "aaccc2a72f93685faeb930799f725dc2234ac1d427bcc9633fce119cc62870ca",
+      "MnCohesionMaraisEastOneStep": "eb2f320c5ed9b950b7c1832a1839e2295b9d4e0530f357dac92a32a20480acf3",
+      "MnCohesionMaraisEastTwoSteps": "23469dab0ea3f85ac0453324eeee49276e85eb6c451f8b3a2f8454efde172ad7",
+      "MnGrandMaraisSign1Text": "f34391cfd0d658f4249baf42bf36a5f285279213b43a571e23f7931d08bbe24e"
+    },
+    "native_attributes_sha256": "8666fbbef8f02633ad532238b051fe197fc23cddfb036047a0daf4e7597ce331",
+    "native_npcs_sha256": "0f6ef98799ffbaef7c7303ad38fd320371e7bef1a5f30f0363b2f303bc2962c3",
+    "layout_sha256": "c642b822afe7864282d615d6a0ed296447c0a2999a09f7add0ec63161d8719c6"
+  }
+}

@@ -103,9 +103,51 @@ remain in `renders/story-events-v2/ice-headquarters-*`.
 
 ## Acceptance
 
-Publication, native traversal, strict preservation, stdio and scene review
-are in progress. The earlier v5 test record remains attached to its original
-pack. It does not establish this successor's acceptance.
+The final 563-map `minnesota-northstar-complex-story-v5.crystalpack` runtime-verified.
+The full native course passed with the final floor/pad distinction: all eight
+panel pairs, all six doors, native sight encounters, card refusal/retry and
+repeat handling, optional recovery/supplies/captive, actual Reed/enforcer
+battles, separate holding shutdown, return and Ellis release. Completed-scene
+Save/Continue is exercised repeatedly; no state is written after the declared
+fixture. Safe arrivals remain ordinary floor and do not act as extra pads.
+
+The compiled graph audit checks every stair/pad record's destination and
+landing against the source, not just abstract floor adjacency. It proves
+that stairs alone cannot reach Ada, the relay stays sealed before the card,
+optional rooms become reachable, and every reached arrival can get back.
+
+The strict preservation test passed against the immutable drilling parent:
+every original runtime file, tileset, trainer, unrelated map and executable
+program is preserved. Only the two existing floor event-wire sections change
+warp destinations. New runtime files are confined to the local native panel
+art. Audio programs/manifests and recovery destinations remain unchanged.
+Both final-parent regional binding/preservation tests also passed.
+
+The actual production stdio replay passed Ada refusal/retry, the card grant,
+repeat dialogue and Start, with clean exit and byte-empty stderr. Five other
+native story regressions passed on the v4 candidate: opening/egg/loss, Mina,
+and the complete Iron Range course. The v5 revision changes opened-door floor
+art only; those maps and their scripts remain untouched by this overlay.
+
+Whole-floor source previews were visually reviewed and revised to remove
+repeated partitions. Native 2D/2.5D captures at the same position, facing and
+noon were reviewed for Ada's isolated office and the returned Operations
+pocket. The v4 return image exposed an ambiguity between opened doors and
+pads; v5 fixes it with ordinary doorway floor. All versions remain archived.
+
+- [Complete source floor plans](../renders/story-events-v2/ice-headquarters-1793154497269928000/whole-complex.png)
+- [Final native returned-pocket comparison](../renders/story-events-v2/native-hq-v5/return-pocket-compare.png)
+- [Final native Ada office comparison](../renders/story-events-v2/native-hq-v5/ada-office-compare.png)
+
+Scoped Rust formatting and both-crate/all-target Clippy checks passed with
+the location-tester feature and existing baseline lint allowances
+(`never_loop`, `bad_bit_mask`, `approx_constant`, `useless_conversion`).
+Unrelated existing warnings remain. Full workspace formatting still fails on
+pre-existing `offset-allocator` formatting starting at `src/lib.rs:408`.
+A one-line `MovementMode::Walking` to `Normal` correction in the concurrently
+authored Moorhead test was required to compile the shared test target.
+The Iron Range remains the simpler industrial maze; this larger cross-floor
+redesign applies to ICE headquarters.
 
 ## Local publication and replay
 

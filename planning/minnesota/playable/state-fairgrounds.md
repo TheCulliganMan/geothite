@@ -21,7 +21,8 @@ There are12 slower walkers,16 brisk runners (including the original four),
 54 rotating characters (six are exhibition Pokémon), and173 standing characters.
 Walking and running use collision-checked clockwise floor circuits with16- and
 8-frame steps respectively. Rotation stays on the actor's tile. Original
-merchants, trainers and judging pairs retain fixed positions. Trainer sight
+merchants, trainers and judging pairs retain fixed positions. Fair circuits run
+continuously without the random rest used by ordinary native wandering NPCs. Trainer sight
 corridors, doors, customer approaches, review anchors and original loops remain
 clear. Source review reaches4870 tiles and every actor/entrance/customer tile.
 

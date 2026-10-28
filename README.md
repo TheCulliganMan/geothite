@@ -55,8 +55,8 @@ judgment. All 224 revision-8 cries are now live in the
 profiles, sprites and starter signature moves.
 
 The [State Fair Chaos tab](https://geothite.ryanculligan.com/pokedex/state-fair.html)
-plays a 48-second native showcase with four crowd close-ups, scene buttons and a
-full-resolution fairgrounds map. Release `20261027-state-fair-21` preserves the
+plays a 58-second normal-speed native showcase with five crowd close-ups, scene buttons and a
+full-resolution fairgrounds map. Release `20261027-state-fair-realtime-22` preserves the
 latest 224 cries and all existing species and battle-animation content.
 
 Current [Minnesota tile art](planning/minnesota/tiles/campfire-animation-v1/README.md)
@@ -93,16 +93,15 @@ replaces mixed house/clinic assemblies with complete native buildings and
 rebuilds the waterfront banks, quay and working basin while retaining its rooms.
 The [Duluth club pass](planning/minnesota/interior-life/CLUBS.md) adds working
 sail/letter rooms, a timber kitchen, lodge spaces and 16 readable local details.
-The [current interior composition](planning/minnesota/interior-life/MOORHEAD.md)
-brings 208 non-gym interiors, including the fair and ice floors, into
-`content-packs/minnesota-moorhead-v01.crystalpack`. It adds the levee town,
-clinic, Mart and flood-notebook errand over the verified
-[Detroit Lakes parent](planning/minnesota/interior-life/DETROIT-LAKES.md).
-Four new production controller cases, thirteen complete native camera comparisons
-and all 377 audio checks pass. The lineage retains its repaired St. Paul facades,
-waterfront and protected chapter dialogue. International Falls' two rooms, the
-older shore-gate contract, three planned stations, full Glacier Line service and
-the remaining regional quality audit are still open.
+The [current interior composition](planning/minnesota/interior-life/INTERNATIONAL-FALLS.md)
+brings 210 non-gym interiors into
+`content-packs/minnesota-international-falls-v02.crystalpack`. It adds winter care,
+supplies and the actual ranger circuit over [Moorhead](planning/minnesota/interior-life/MOORHEAD.md).
+Four new production controller cases, strict preservation, thirteen retained
+native 2D comparisons and all 377 audio checks pass. The repaired St. Paul
+facades, waterfront and protected chapter dialogue remain intact. The older
+shore-gate contract, three planned stations, full Glacier Line service and
+regional quality audit remain open; the fresh city 3D check still times out.
 
 The [smaller, tighter major cities](planning/minnesota/playable/major-cities.md)
 publish whole64×48 Minneapolis, St Paul and Duluth in a660-map review pack,
@@ -223,7 +222,16 @@ partner and RNG are fixtures; this parent precedes the Itasca successor below.
 The full earned campaign remains unfinished. Run
 `target/northstar-story/wasm-dev/geothite play content-packs/minnesota-northstar-leech-shore.crystalpack`.
 
-The [Superior coast and inland winter correction](planning/minnesota/revisions/north-shore-ely-geography-v01/VERIFICATION.md)
+The latest [short coast and compact Gunflint revision](planning/minnesota/revisions/superior-gunflint-quality-v01/VERIFICATION.md)
+publishes `content-packs/minnesota-superior-compact-v03.crystalpack` with689maps.
+It removes twenty metatiles of the straight Grand Marais approach, retains a
+short warm coastal bend into town's west side, shortens Gunflint to32×32 and
+retires the long inland Neck. Thirteen production controller cases, native
+source parity, all377 audio checks and byte-identical replay pass. The runbook
+includes the actual connected render, headless player views and exact replay
+inputs. Earlier designs, packs and rejected renders remain history.
+
+The earlier [Superior coast and inland winter correction](planning/minnesota/revisions/north-shore-ely-geography-v01/VERIFICATION.md)
 publishes the 694-map `content-packs/minnesota-superior-inland-winter-v01.crystalpack`
 from the supplied native-art parent through three guarded Rust stages. North
 Shore enters Grand Marais from the west over shared Superior water; both stay
@@ -306,6 +314,16 @@ active Minnesota species in its regional story. ICE mixes parasites and road
 slush with Cindore/Cartick coverage and Wrigglet-line boss aces. The runbook
 records the executed Rust publication commands, native and stdio checks,
 paired scene renders, and the separate limits of battle and geometry fixtures.
+
+The later [cross-floor ICE headquarters](planning/minnesota/playable/ice-headquarters.md)
+replaces the linear cargo/relay connection with six dungeon floors, eight
+paired transfer routes, six persistent card doors, isolated offices and
+optional recovery/supply/captive rooms. Its ignored
+`content-packs/minnesota-northstar-complex-story-v5.crystalpack` runtime-verifies
+with 563 maps. The full native card-to-rescue course, actual stdio card replay,
+compiled connection audit and content/audio preservation checks pass. This
+successor addresses the Gen 1 Silph Co. navigation reference; the preserved
+Iron Range remains the simpler industrial maze. Prior packs/saves are retained.
 
 The [earned northern finale](planning/minnesota/playable/northstar-finale.md)
 now continues that actual arrival save through the chief battle, separate

@@ -309,7 +309,16 @@ meter case cannot award these spoken quest results.
 
 ### Published chapters and verification
 
-The runtime-verified final candidate is the ignored
+The later [cross-floor ICE headquarters revision](playable/ice-headquarters.md)
+addresses the user's Gen 1 Silph Co. comparison. The current ignored
+`content-packs/minnesota-northstar-complex-story-v5.crystalpack` has 563 maps,
+six ICE dungeon floors, eight panel pairs and six persistent card doors.
+Its native card/optional rooms/battle/shutdown/rescue/Continue course passes,
+as do strict content/audio preservation and actual stdio card refusal/retry.
+The following 559-map record remains the frozen predecessor; its saves are
+not migrated. The Iron Range chapter is preserved and remains simpler.
+
+The preceding runtime-verified candidate is the ignored
 `content-packs/minnesota-northstar-character-story-v5.crystalpack` (559 maps).
 It includes both cargo/relay floors and the crosscut/pump-gallery/drill chapter.
 Its piston holds opposite strokes during crew and foreman dialogue so the

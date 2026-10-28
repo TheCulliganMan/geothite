@@ -6,7 +6,18 @@ exports runtime catalogs, compiles and verifies the packs, and publishes local
 agent inputs. Source checkouts, ROMs, intermediate exports, PCM, and packs stay
 outside tracked source.
 
-## Superior coast and inland winter correction
+## Short coast and compact Gunflint
+
+The current [verified compact publication](../planning/minnesota/revisions/superior-gunflint-quality-v01/VERIFICATION.md)
+is `content-packs/minnesota-superior-compact-v03.crystalpack` (689maps).
+The guarded Rust `build_compact_superior` stage consumes the exact earlier
+694-map winter pack, removes the straight coastal approach and long inland Neck,
+and publishes the reviewed32×32 Gunflint. Its runbook records all input/output
+hashes, the executed fresh-output replay command, canonical-source promotion,
+thirteen passing controller cases, audio verification and actual headless views.
+The native pack and every render remain ignored.
+
+## Earlier Superior coast and inland winter correction
 
 The [publication runbook](../planning/minnesota/revisions/north-shore-ely-geography-v01/VERIFICATION.md)
 records the executed three-stage Rust build from the exact supplied
@@ -139,19 +150,19 @@ The [club continuation](../planning/minnesota/interior-life/CLUBS.md) applies
 13 additional contracts and 16 details. Original actors, service programs, stairs,
 door indices and river connections remain in place.
 
-The [current composition runbook](../planning/minnesota/interior-life/MOORHEAD.md)
-adds Moorhead's levee town and two interiors over the verified
-[Detroit Lakes publication](../planning/minnesota/interior-life/DETROIT-LAKES.md).
-The completed local output is `content-packs/minnesota-moorhead-v01.crystalpack`:
-708 maps, 475 species, 270 moves, 377 audio programs and 208 non-gym interiors.
-Its executed Rust `pack_moorhead` command and exact inputs are in the runbook.
+The [current composition runbook](../planning/minnesota/interior-life/INTERNATIONAL-FALLS.md)
+adds International Falls' winter town, two interiors and native ranger circuit
+over [Moorhead](../planning/minnesota/interior-life/MOORHEAD.md).
+The completed local output is `content-packs/minnesota-international-falls-v02.crystalpack`:
+711 maps, 475 species, 270 moves, 377 audio programs and 210 non-gym interiors.
+Its executed Rust `pack_international_falls` command and exact inputs are in the runbook.
 Four new production controller cases, preservation/rejection checks, thirteen
-native frame comparisons and all 377 audio checks pass. The earlier town and
+retained native 2D comparisons and all 377 audio checks pass. The earlier town and
 regional acceptance records remain in their linked runbooks. Forty earlier
 physical-refinement contracts provide 47 furniture details alongside the new
-town rooms. International Falls' two rooms, the older shore-gate contract, three
-planned stations, full Glacier Line service and regional quality acceptance
-remain open. Packs, saves and every
+town rooms. The older shore-gate contract, three planned stations, full Glacier
+Line service and regional quality acceptance remain open. The fresh city 3D
+capture times out; this is not a completed 3D acceptance record. Packs, saves and every
 render remain ignored. Use a fresh save for the resulting pack identity.
 
 The [city-life runbook](../planning/minnesota/playable/city-life.md) records the
@@ -1829,3 +1840,27 @@ RUST_MIN_STACK=67108864 target/northstar-story/wasm-dev/geothite mcp \
 Those saves are verification output, remain ignored, and are not distributed.
 See the runbook for source inputs and chapter checks rather than treating a
 pack dump as gameplay evidence.
+
+### Cross-floor ICE headquarters successor
+
+The [ICE headquarters runbook](../planning/minnesota/playable/ice-headquarters.md)
+records the subsequent Silph-inspired navigation revision. Apply its Rust
+`pack_northstar_ice_headquarters` publisher to the immutable unbound
+`minnesota-northstar-drill-lair-v4.crystalpack`, then run the regional caster
+last. The final local output is
+`content-packs/minnesota-northstar-complex-story-v5.crystalpack` (563 maps).
+Do not apply the overlay to an already regionally bound pack or migrate a save.
+
+Four new floors bring the ICE dungeon to six floors plus the public office.
+Eight native panel pairs and six individually persistent card doors create
+cross-floor compartment access and useful returns. Optional staff recovery,
+supplies and a second captive remain separate from Reed, holding shutdown,
+the enforcer and Ellis's release. A local native-art variant adds real warp
+collision without changing original facility behavior or source art files.
+All original audio remains unchanged.
+
+The full native course, strict preservation and final-parent regional audits,
+actual clean-stdio card replay, and paired native scene review pass. The runbook
+contains the exact executed publication/replay commands and declares the
+prior-access/party fixtures; the larger gauntlet is not an unboosted full-game
+balance or Hall of Fame acceptance claim.

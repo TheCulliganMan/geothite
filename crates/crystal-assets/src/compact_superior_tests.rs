@@ -7,15 +7,15 @@ use crate::CompiledGamePack;
 const CONTRACT: &str = include_str!(
     "../../../planning/minnesota/revisions/superior-gunflint-quality-v01/native.compact.contract.json"
 );
-const SHA: &str = "8750bac468a34041f6cf639dbee538eea44c96aeeb344004fd0bbd0aeb863045";
+const SHA: &str = "fec56ec1141f91bb3d3ae7d371990ba8bf0b4ea22cc6505e5b0e58c3a636e135";
 const COAST: &str = include_str!(
-    "../../../planning/minnesota/revisions/north-shore-ely-geography-v01/coast-quality-v01/source-v03/compact-bend.contract.json"
+    "../../../planning/minnesota/revisions/north-shore-ely-geography-v01/coast-quality-v01/source-v04/compact-bend.contract.json"
 );
 const R12_LAYOUT: &str = include_str!(
-    "../../../planning/minnesota/revisions/gunflint-quality-v01/source-v09/MN_R12.candidate.layout.json"
+    "../../../planning/minnesota/revisions/gunflint-quality-v01/source-v10/MN_R12.candidate.layout.json"
 );
 const R12_DOSSIER: &str = include_str!(
-    "../../../planning/minnesota/revisions/gunflint-quality-v01/source-v09/MN_R12.candidate.json"
+    "../../../planning/minnesota/revisions/gunflint-quality-v01/source-v10/MN_R12.candidate.json"
 );
 const CEDAR: &str = include_str!(
     "../../../planning/minnesota/revisions/superior-gunflint-quality-v01/cedar-source-v02/contract.json"

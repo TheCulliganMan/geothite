@@ -89,7 +89,7 @@
     "environment": "ROUTE",
     "phoneService": 0
   },
-  "status": "MATCHES_COMPOSED_NATIVE_GEOGRAPHY",
+  "status": "RETIRED_HISTORY_NOT_ACTIVE_NATIVE_GEOGRAPHY",
   "native_geography_publication": {
     "final_pack_sha256": "65cf6f98e65ada839ec5afaa57728bf8289d3a50ba53ba6b9b50f08d3620bb17",
     "content_identity": "f34280a5fc5d6ab8ccc3ec4ef4317a6ea9321070df342ea95aca5745514a0223",
@@ -98,5 +98,7 @@
     "verification": "revisions/north-shore-ely-geography-v01/VERIFICATION.md",
     "progression_scope": "Local explicit fixtures and production inputs; earned campaign progression is not established."
   },
-  "retained_recovery": null
+  "retained_recovery": null,
+  "retirement_reason": "Long snowy connector removed; camp pickup/flag retained in compact Gunflint.",
+  "retired_by_pack_sha256": "032304d0fd1d51863a2c3bf2562b20728e22c7535d1c194555621bc8e85b4899"
 }

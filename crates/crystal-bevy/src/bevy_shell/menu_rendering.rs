@@ -6422,7 +6422,7 @@ Transform::from_xyz(0.0, 0.0, 2.7),),
         0
     });
     #[cfg(any(test, feature = "voxel-view"))]
-    let mut visual_tileset_ids = HashMap::<&str, Arc<str>>::new();
+    let mut visual_sources = authored_visual_sources::Projection::default();
     #[cfg(test)]
     {
         rendered.terrain_scan_count = rendered.terrain_scan_count.saturating_add(1);
@@ -6523,21 +6523,15 @@ Transform::from_xyz(0.0, 0.0, 2.7),),
                 };
                 #[cfg(feature="voxel-view")]
                 if visual_world_enabled {visual_world_tile_handles.push(tile_handle.clone());}
-                let visual_tileset_id = visual_tileset_ids
-                    .entry(source_tileset.tileset_id.as_str())
-                    .or_insert_with(|| Arc::from(source_tileset.tileset_id.as_str()))
-                    .clone();
+                let visual_source=match visual_sources.source(&runtime_shell.asset_root,
+                    &source_tileset.tileset_id,block,sub_x,sub_y,source_tile_index) {
+                    Ok(source)=>source,
+                    Err(error)=>{record_visible_render_error(&mut commands,&mut runtime_shell,error);return;}
+                };
                 visual_tiles.push(crystal_render_api::VisualTile {
                     column: visual_x as u32,
                     row: visual_y as u32,
-                    source: crystal_render_api::VisualTileSource {
-                        tileset_id: visual_tileset_id,
-                        metatile_id: block,
-                        subtile_column: u8::try_from(sub_x)
-                            .expect("4x4 metatile column always fits u8"),
-                        subtile_row: u8::try_from(sub_y).expect("4x4 metatile row always fits u8"),
-                        tile_index: u16::from(source_tile_index),
-                    },
+                    source: visual_source,
                     texture: tile_handle.clone(),
                     animation_frames: source_art.and_then(|art| {
                         art.animated_tiles

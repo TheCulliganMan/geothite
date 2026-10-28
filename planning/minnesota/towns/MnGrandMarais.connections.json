@@ -3,7 +3,7 @@
   "status": "MATCHES_COMPOSED_NATIVE_PACK",
   "map": "MnGrandMarais",
   "world_origin_proposed": [
-    246,
+    226,
     -400
   ],
   "attributes_before": {
@@ -47,7 +47,7 @@
       {
         "direction": "north",
         "target_map": "MnMaraisCedarApproach",
-        "offset": -19
+        "offset": -4
       },
       {
         "direction": "west",
@@ -86,11 +86,11 @@
       "target_map": "MnR11C01R00",
       "target_core": [
         [
-          47,
+          7,
           8
         ],
         [
-          47,
+          7,
           9
         ]
       ],
@@ -111,21 +111,21 @@
       "target_map": "MnMaraisCedarApproach",
       "target_core": [
         [
-          56,
-          37
+          26,
+          23
         ],
         [
-          57,
-          37
+          27,
+          23
         ]
       ],
-      "offset": -19
+      "offset": -4
     }
   ],
   "surf_seam": {
     "side": "west",
     "town_core_x": 0,
-    "target_core_x": 47,
+    "target_core_x": 7,
     "core_y": [
       16,
       17,
@@ -159,6 +159,6 @@
   ],
   "new_rooms": [],
   "canonical_world_edited": true,
-  "pack_sha256": "65cf6f98e65ada839ec5afaa57728bf8289d3a50ba53ba6b9b50f08d3620bb17",
-  "content_identity": "f34280a5fc5d6ab8ccc3ec4ef4317a6ea9321070df342ea95aca5745514a0223"
+  "pack_sha256": "032304d0fd1d51863a2c3bf2562b20728e22c7535d1c194555621bc8e85b4899",
+  "content_identity": "f2ac93f14af05a2935947e1696385a26a16b2d2bd509e5da3e9223af02f98d63"
 }

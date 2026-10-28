@@ -3,38 +3,38 @@
   "map_prefix": "MnR12",
   "name": "Gunflint Trail",
   "dimensions_metatiles": [
-    64,
-    56
+    32,
+    32
   ],
   "chunk_metatiles": [
     32,
     24
   ],
-  "chunk_columns": 2,
-  "chunk_rows": 3,
+  "chunk_columns": 1,
+  "chunk_rows": 2,
   "endpoints": [
     {
-      "place": "GUNFLINT INLAND CONNECTOR",
+      "place": "CEDAR APPROACH",
       "side": "E",
       "gate_metatile": [
-        62,
-        28
+        31,
+        27
       ],
       "landing_metatile": [
-        60,
-        28
+        29,
+        27
       ]
     },
     {
       "place": "BOUNDARY WATERS",
       "side": "W",
       "gate_metatile": [
-        1,
-        28
+        0,
+        14
       ],
       "landing_metatile": [
-        3,
-        28
+        2,
+        14
       ]
     }
   ],
@@ -56,367 +56,124 @@
     "Route30",
     "Route42"
   ],
-  "description": "A westbound Northwoods crossing between two asymmetric enclosed lakes. Narrow forest saddle, actual grassy bog portage, a small Raven Rock shelter excursion and a sheltered ranger trail provide distinct travel and return choices.",
+  "description": "A shorter inland winter route around the Loons lake shore: a Raven Rock shelter, coherent frost basin with dry rim, two useful bog banks and the ranger hut. The Cut herb clearing is optional and actually sealed.",
   "main_path_metatiles": [
     [
-      62,
-      28
+      31,
+      27
     ],
     [
-      54,
-      28
+      27,
+      27
     ],
     [
-      54,
-      31
+      25,
+      27
     ],
     [
-      44,
-      31
+      25,
+      25
     ],
     [
-      44,
-      33
+      23,
+      25
     ],
     [
-      36,
-      33
+      23,
+      21
     ],
     [
-      36,
-      29
+      22,
+      21
     ],
     [
-      28,
-      29
+      22,
+      19
     ],
     [
-      28,
-      35
+      24,
+      19
     ],
     [
-      16,
-      35
+      24,
+      17
     ],
     [
-      16,
-      31
+      25,
+      17
     ],
     [
-      5,
-      31
+      25,
+      10
     ],
     [
-      5,
-      28
+      21,
+      10
     ],
     [
-      1,
-      28
+      21,
+      9
+    ],
+    [
+      18,
+      9
+    ],
+    [
+      18,
+      8
+    ],
+    [
+      15,
+      8
+    ],
+    [
+      15,
+      9
+    ],
+    [
+      12,
+      9
+    ],
+    [
+      12,
+      12
+    ],
+    [
+      10,
+      12
+    ],
+    [
+      10,
+      14
+    ],
+    [
+      0,
+      14
     ]
   ],
   "main_lane_width_gameplay_tiles": 2,
   "districts": [
     {
-      "id": "D1",
-      "name": "West Portage lake",
-      "bounds_metatiles": [
-        0,
-        0,
-        25,
-        34
-      ],
-      "landmark_metatile": [
-        16,
-        26
-      ],
-      "purpose": "Long shaded shore discovery; northern Revive and Signe rest"
+      "id": "LOONS_SHORES",
+      "purpose": "One open lake with connected opposite walking banks, useful lookout and short main trail."
     },
     {
-      "id": "D2",
-      "name": "Windthrow and Raven Rock",
-      "bounds_metatiles": [
-        24,
-        0,
-        39,
-        35
-      ],
-      "landmark_metatile": [
-        32,
-        12
-      ],
-      "purpose": "Short granite shelter excursion and a sealed Cut herb cache"
+      "id": "RAVEN_FROST_BROW",
+      "purpose": "Real shelter cave beside a coherent slippery basin; continuous dry rim and clear native slide stops."
     },
     {
-      "id": "D3",
-      "name": "Loons Lake",
-      "bounds_metatiles": [
-        39,
-        0,
-        64,
-        32
-      ],
-      "landmark_metatile": [
-        54,
-        25
-      ],
-      "purpose": "Narrow high bank circuit with listening cove and Ultra Ball"
-    },
-    {
-      "id": "D4",
-      "name": "Stone Bog",
-      "bounds_metatiles": [
-        0,
-        34,
-        32,
-        56
-      ],
-      "landmark_metatile": [
-        16,
-        42
-      ],
-      "purpose": "Grass portage between two bog pools; hammock and fisher"
-    },
-    {
-      "id": "D5",
-      "name": "Ranger Hollow",
-      "bounds_metatiles": [
-        32,
-        32,
-        49,
-        56
-      ],
-      "landmark_metatile": [
-        42,
-        42
-      ],
-      "purpose": "Real hut door and Q07 navigation; spring-side return"
-    },
-    {
-      "id": "D6",
-      "name": "Bear Hollow trailhead",
-      "bounds_metatiles": [
-        49,
-        27,
-        64,
-        56
-      ],
-      "landmark_metatile": [
-        54,
-        38
-      ],
-      "purpose": "Bear encounter cove and stone inspection off the eastern approach"
+      "id": "STONE_BOG_RANGER",
+      "purpose": "Dry-access sign and trainer pocket, real grass neck, hammock resource and nearby ranger room."
     }
   ],
   "loops": [
     {
-      "id": "WEST_SHORE",
-      "path_metatiles": [
-        [
-          5,
-          28
-        ],
-        [
-          5,
-          9
-        ],
-        [
-          14,
-          9
-        ],
-        [
-          14,
-          6
-        ],
-        [
-          23,
-          6
-        ],
-        [
-          23,
-          26
-        ],
-        [
-          16,
-          26
-        ],
-        [
-          16,
-          31
-        ],
-        [
-          5,
-          31
-        ],
-        [
-          5,
-          28
-        ]
-      ],
-      "joins_districts": [
-        "D1"
-      ],
-      "entry_rule": "open; encounter grass where painted",
-      "return_rule": "two_way"
+      "id": "LOONS_CIRCUIT",
+      "purpose": "North shelter/ice visit rejoins both walking banks without an empty route-wide detour."
     },
     {
-      "id": "LOONS_HIGH_BANK",
-      "path_metatiles": [
-        [
-          54,
-          28
-        ],
-        [
-          54,
-          25
-        ],
-        [
-          60,
-          25
-        ],
-        [
-          60,
-          9
-        ],
-        [
-          57,
-          9
-        ],
-        [
-          57,
-          6
-        ],
-        [
-          46,
-          6
-        ],
-        [
-          46,
-          10
-        ],
-        [
-          41,
-          10
-        ],
-        [
-          41,
-          28
-        ],
-        [
-          44,
-          28
-        ],
-        [
-          44,
-          31
-        ],
-        [
-          54,
-          31
-        ],
-        [
-          54,
-          28
-        ]
-      ],
-      "joins_districts": [
-        "D3"
-      ],
-      "entry_rule": "open; encounter grass where painted",
-      "return_rule": "two_way"
-    },
-    {
-      "id": "RANGER_HOLLOW",
-      "path_metatiles": [
-        [
-          44,
-          33
-        ],
-        [
-          36,
-          33
-        ],
-        [
-          36,
-          42
-        ],
-        [
-          41,
-          42
-        ],
-        [
-          41,
-          49
-        ],
-        [
-          49,
-          49
-        ],
-        [
-          49,
-          40
-        ],
-        [
-          54,
-          40
-        ],
-        [
-          54,
-          31
-        ],
-        [
-          44,
-          31
-        ],
-        [
-          44,
-          33
-        ]
-      ],
-      "joins_districts": [
-        "D5",
-        "D6"
-      ],
-      "entry_rule": "open; encounter grass where painted",
-      "return_rule": "two_way"
-    },
-    {
-      "id": "BOG_HAMMOCK",
-      "path_metatiles": [
-        [
-          16,
-          35
-        ],
-        [
-          16,
-          48
-        ],
-        [
-          25,
-          48
-        ],
-        [
-          25,
-          42
-        ],
-        [
-          28,
-          42
-        ],
-        [
-          28,
-          35
-        ],
-        [
-          16,
-          35
-        ]
-      ],
-      "joins_districts": [
-        "D4"
-      ],
-      "entry_rule": "open; encounter grass where painted",
-      "return_rule": "two_way"
+      "id": "BOG_BANK_RETURN",
+      "purpose": "Walkable southern discovery circuit; every sign/trainer has ordinary dry access."
     }
   ],
   "trainers": [
@@ -424,8 +181,8 @@
       "id": "MN_R12_T01",
       "district": "D6",
       "anchor_metatile": [
-        55,
-        41
+        27,
+        24
       ],
       "facing": "north",
       "sight_range": 2,
@@ -452,8 +209,8 @@
       "trainer_class": "HIKER",
       "sprite": "SPRITE_POKEFAN_M",
       "tile": [
-        111,
-        83
+        55,
+        49
       ],
       "before_lines": [
         "These stones warm",
@@ -473,8 +230,8 @@
       "id": "MN_R12_T02",
       "district": "D3",
       "anchor_metatile": [
-        53,
-        25
+        25,
+        14
       ],
       "facing": "east",
       "sight_range": 2,
@@ -497,8 +254,8 @@
       "trainer_class": "BIRD_KEEPER",
       "sprite": "SPRITE_YOUNGSTER",
       "tile": [
-        107,
-        51
+        51,
+        29
       ],
       "before_lines": [
         "Wings above us,",
@@ -515,8 +272,8 @@
       "id": "MN_R12_T03",
       "district": "D3",
       "anchor_metatile": [
-        41,
-        21
+        25,
+        10
       ],
       "facing": "east",
       "sight_range": 2,
@@ -539,8 +296,8 @@
       "trainer_class": "COOLTRAINERF",
       "sprite": "SPRITE_COOLTRAINER_F",
       "tile": [
-        83,
-        43
+        51,
+        21
       ],
       "before_lines": [
         "Quiet water hides",
@@ -558,8 +315,8 @@
       "id": "MN_R12_T04",
       "district": "D2",
       "anchor_metatile": [
-        35,
-        18
+        18,
+        9
       ],
       "facing": "south",
       "sight_range": 2,
@@ -582,8 +339,8 @@
       "trainer_class": "HIKER",
       "sprite": "SPRITE_POKEFAN_M",
       "tile": [
-        71,
-        37
+        37,
+        19
       ],
       "before_lines": [
         "That cleft is old.",
@@ -602,8 +359,8 @@
       "id": "MN_R12_T05",
       "district": "D2",
       "anchor_metatile": [
-        26,
-        20
+        9,
+        12
       ],
       "facing": "east",
       "sight_range": 2,
@@ -626,8 +383,8 @@
       "trainer_class": "PICNICKER",
       "sprite": "SPRITE_LASS",
       "tile": [
-        53,
-        41
+        19,
+        25
       ],
       "before_lines": [
         "Seeds on the wind!",
@@ -645,8 +402,8 @@
       "id": "MN_R12_T06",
       "district": "D5",
       "anchor_metatile": [
-        36,
-        40
+        19,
+        21
       ],
       "facing": "east",
       "sight_range": 2,
@@ -669,8 +426,8 @@
       "trainer_class": "COOLTRAINERF",
       "sprite": "SPRITE_COOLTRAINER_F",
       "tile": [
-        73,
-        81
+        39,
+        43
       ],
       "before_lines": [
         "The ranger knows",
@@ -688,8 +445,8 @@
       "id": "MN_R12_T07",
       "district": "D5",
       "anchor_metatile": [
-        43,
-        49
+        12,
+        27
       ],
       "facing": "west",
       "sight_range": 2,
@@ -716,8 +473,8 @@
       "trainer_class": "BUG_CATCHER",
       "sprite": "SPRITE_YOUNGSTER",
       "tile": [
-        87,
-        99
+        25,
+        55
       ],
       "before_lines": [
         "The old trees hide",
@@ -735,8 +492,8 @@
       "id": "MN_R12_T08",
       "district": "D4",
       "anchor_metatile": [
-        18,
-        39
+        12,
+        23
       ],
       "facing": "south",
       "sight_range": 2,
@@ -763,8 +520,8 @@
       "trainer_class": "FISHER",
       "sprite": "SPRITE_FISHER",
       "tile": [
-        37,
-        79
+        25,
+        47
       ],
       "before_lines": [
         "A still pool can",
@@ -782,8 +539,8 @@
       "id": "MN_R12_T09",
       "district": "D4",
       "anchor_metatile": [
-        27,
-        41
+        8,
+        21
       ],
       "facing": "west",
       "sight_range": 2,
@@ -806,8 +563,8 @@
       "trainer_class": "CAMPER",
       "sprite": "SPRITE_YOUNGSTER",
       "tile": [
-        55,
-        83
+        17,
+        43
       ],
       "before_lines": [
         "Leave no trace.",
@@ -824,8 +581,8 @@
       "id": "MN_R12_T10",
       "district": "D1",
       "anchor_metatile": [
-        17,
-        6
+        8,
+        10
       ],
       "facing": "west",
       "sight_range": 2,
@@ -852,8 +609,8 @@
       "trainer_class": "COOLTRAINERF",
       "sprite": "SPRITE_COOLTRAINER_F",
       "tile": [
-        35,
-        13
+        17,
+        21
       ],
       "before_lines": [
         "The long way has",
@@ -874,14 +631,14 @@
       "item": "HYPER_POTION",
       "quantity": 1,
       "anchor_metatile": [
-        26,
-        9
+        6,
+        5
       ],
       "flag": "EVENT_MN_R12_ITEM_01",
       "access": "Cut-sealed herb clearing; native party CUT + HiveBadge",
       "tile": [
-        53,
-        19
+        13,
+        11
       ]
     },
     {
@@ -889,14 +646,14 @@
       "item": "ULTRA_BALL",
       "quantity": 1,
       "anchor_metatile": [
-        56,
-        6
+        27,
+        5
       ],
       "flag": "EVENT_MN_R12_ITEM_02",
       "access": "Walking optional excursion; no Surf required",
       "tile": [
-        113,
-        13
+        55,
+        11
       ]
     },
     {
@@ -904,14 +661,14 @@
       "item": "MAX_REPEL",
       "quantity": 1,
       "anchor_metatile": [
-        22,
-        48
+        11,
+        27
       ],
       "flag": "EVENT_MN_R12_ITEM_03",
       "access": "Walking optional excursion; no Surf required",
       "tile": [
-        45,
-        97
+        23,
+        55
       ]
     },
     {
@@ -919,15 +676,26 @@
       "item": "REVIVE",
       "quantity": 1,
       "anchor_metatile": [
-        22,
+        17,
         8
       ],
       "flag": "EVENT_MN_R12_ITEM_04",
-      "access": "Walking optional excursion; no Surf required",
+      "access": "Reachable cave forecourt, outside the terminal cave warp; original REVIVE and event preserved.",
       "tile": [
-        45,
+        35,
         17
       ]
+    },
+    {
+      "id": "MN_INLAND_CAMP_SUPPLY",
+      "item": "BERRY",
+      "quantity": 3,
+      "flag": "EVENT_MN_GUNFLINT_CAMP_SUPPLY",
+      "tile": [
+        51,
+        53
+      ],
+      "access": "Ranger junction trail stock; native event2387 moved from retired inland Neck."
     }
   ],
   "encounters": {
@@ -1056,15 +824,15 @@
       "tileset": "cave",
       "template": "UnionCave1F",
       "exterior_anchor_metatile": [
-        33,
-        11
+        20,
+        7
       ],
       "exterior_door_core": [
-        66,
-        23
+        40,
+        15
       ],
       "entrance_event": "CAVE",
-      "return": "Native exterior warp (66, 23), then walk to (66, 24).",
+      "return": "Native paired exterior warp(40, 15) settles onto clear footprint(40, 16); room rows/events are unchanged.",
       "mandatory": false,
       "purpose": "A stone brow shelters Otta, a rock shoulder turns the main traverse and a fitted lower roof shapes the approach beside the seep basin. Cache and shelter remain distinct branches rather than matching rooms.",
       "rows": [
@@ -1231,15 +999,15 @@
       "tileset": "house",
       "template": "GuideGentsHouse",
       "exterior_anchor_metatile": [
-        42,
-        41
+        24,
+        23
       ],
       "exterior_door_core": [
-        85,
-        83
+        49,
+        47
       ],
       "entrance_event": "DOOR",
-      "return": "Native exterior warp (85, 83), then walk to (85, 84).",
+      "return": "Native paired exterior warp(49, 47) settles onto clear footprint(49, 48); room rows/events are unchanged.",
       "mandatory": false,
       "purpose": "June offers navigation for Q07, with a table and readable map wall. Healing service requires native script lowering.",
       "rows": [
@@ -1312,16 +1080,16 @@
     "No painted shadows, enlarged trees or perspective props.",
     "Fit source shoreline/cliff quadrants; draw source trees in coherent metatile groups."
   ],
-  "status": "Canonical seasonal source matches all native terrain in the verified final geography publication.",
-  "anchor_status": "Frozen original/candidate bytes and all nine native module guards checked during source promotion; controller and visual evidence are recorded in the final geography receipt.",
+  "status": "MATCHES_COMPOSED_NATIVE_GEOGRAPHY",
+  "anchor_status": "Exact source/native anchor and paired-warp parity checked during this promotion; 14 original native module preimages are bound by the Rust replay contract. The final pack SHA and source bindings are recorded in native_geography_publication and active world replay metadata.",
   "residents": [
     {
       "id": "MN_R12_N01",
       "name": "Bram",
       "sprite": "SPRITE_GRAMPS",
       "tile": [
-        117,
-        57
+        59,
+        55
       ],
       "facing": "west",
       "lines": [
@@ -1336,8 +1104,8 @@
       "name": "Bea",
       "sprite": "SPRITE_TEACHER",
       "tile": [
-        101,
-        13
+        48,
+        9
       ],
       "facing": "south",
       "lines": [
@@ -1351,8 +1119,8 @@
       "name": "Edda",
       "sprite": "SPRITE_TEACHER",
       "tile": [
-        53,
-        39
+        25,
+        33
       ],
       "facing": "north",
       "lines": [
@@ -1367,8 +1135,8 @@
       "name": "Alma",
       "sprite": "SPRITE_POKEFAN_F",
       "tile": [
-        43,
-        97
+        22,
+        55
       ],
       "facing": "east",
       "lines": [
@@ -1383,8 +1151,8 @@
       "name": "Jory",
       "sprite": "SPRITE_YOUNGSTER",
       "tile": [
-        109,
-        77
+        51,
+        37
       ],
       "facing": "west",
       "lines": [
@@ -1398,8 +1166,8 @@
       "name": "Hollis",
       "sprite": "SPRITE_FISHER",
       "tile": [
-        11,
-        39
+        23,
+        27
       ],
       "facing": "west",
       "lines": [
@@ -1414,7 +1182,7 @@
     {
       "id": "MN_R12_SIGN_01",
       "tile": [
-        119,
+        61,
         53
       ],
       "lines": [
@@ -1425,8 +1193,8 @@
     {
       "id": "MN_R12_SIGN_02",
       "tile": [
-        81,
-        25
+        49,
+        33
       ],
       "lines": [
         "LOONS LAKE",
@@ -1436,8 +1204,8 @@
     {
       "id": "MN_R12_SIGN_03",
       "tile": [
-        69,
-        25
+        43,
+        17
       ],
       "lines": [
         "RAVEN ROCK SHELTER",
@@ -1447,8 +1215,8 @@
     {
       "id": "MN_R12_SIGN_04",
       "tile": [
-        81,
-        87
+        47,
+        49
       ],
       "lines": [
         "RANGER CLEARING",
@@ -1458,8 +1226,8 @@
     {
       "id": "MN_R12_SIGN_05",
       "tile": [
-        35,
-        75
+        23,
+        45
       ],
       "lines": [
         "STONE BOG PORTAGE",
@@ -1469,12 +1237,24 @@
     {
       "id": "MN_R12_SIGN_06",
       "tile": [
-        7,
-        55
+        5,
+        27
       ],
       "lines": [
         "CANOE LANDING: W",
         "GRAND MARAIS: EAST"
+      ]
+    },
+    {
+      "id": "MN_INLAND_CAMP_SIGN",
+      "tile": [
+        55,
+        53
+      ],
+      "lines": [
+        "PORTAGE CAMP",
+        "Three BERRIES for",
+        "the trail ahead."
       ]
     }
   ],
@@ -1483,16 +1263,16 @@
       "id": "RAVEN_ROCK",
       "warp_index": 1,
       "tile": [
-        66,
-        23
+        40,
+        15
       ],
       "arrival_tile": [
-        66,
-        23
+        40,
+        15
       ],
       "return_tile": [
-        66,
-        24
+        40,
+        16
       ],
       "target": "MnR12Cave1F",
       "target_warp": 1,
@@ -1500,18 +1280,18 @@
     },
     {
       "id": "RANGER_HUT",
-      "warp_index": 1,
+      "warp_index": 2,
       "tile": [
-        85,
-        83
+        49,
+        45
       ],
       "arrival_tile": [
-        85,
-        83
+        49,
+        45
       ],
       "return_tile": [
-        85,
-        84
+        49,
+        46
       ],
       "target": "MnR12RangerHut",
       "target_warp": 1,
@@ -1520,112 +1300,93 @@
   ],
   "viewpoints": [
     {
-      "id": "WEST_LAKE",
+      "id": "LAKE_WEST_BANK",
       "tile": [
-        11,
-        43
+        23,
+        27
       ]
     },
     {
       "id": "LOONS_BANK",
       "tile": [
-        104,
-        36
+        50,
+        28
       ]
     },
     {
       "id": "CLEFT_APPROACH",
       "tile": [
-        66,
-        25
+        40,
+        16
       ]
     },
     {
       "id": "RANGER_PORCH",
       "tile": [
-        86,
-        85
+        49,
+        49
       ]
     },
     {
       "id": "BOG_BANK",
       "tile": [
-        32,
-        85
-      ]
-    },
-    {
-      "id": "BEAR_HOLLOW",
-      "tile": [
-        108,
-        79
-      ]
-    },
-    {
-      "id": "WIDEST_RANGER_YARD",
-      "tile": [
-        85,
-        87
+        22,
+        49
       ]
     },
     {
       "id": "CUT_APPROACH",
       "tile": [
-        54,
-        24
+        14,
+        18
       ]
     },
     {
-      "id": "WEAK_WEST_BANK",
+      "id": "WIDEST_MAIN_CLEARING",
       "tile": [
-        46,
+        32,
         37
       ]
     },
     {
-      "id": "WEAK_NORTH_LOONS",
+      "id": "FROST_RIM",
       "tile": [
-        108,
-        12
+        55,
+        19
       ]
     }
   ],
-  "implementation": {
-    "layout": "MN_R12.layout.json",
-    "scope": "64×56 metatiles, six clipped native chunks; eight maps including preserved rooms",
-    "art_review": "../renders/gunflint/whole-route.png",
-    "state": "Current six-chunk native publication matches all 3584 exterior blocks and preserved rooms. Three native asset suites and Cut/battle controller tests pass; revised complete geometry controller rerun pending. Hub gates and earned regional travel remain pending."
-  },
+  "implementation": "Published compact32x32 Gunflint native route. Exact source terrain, endpoints, actor/item/sign anchors, room entries and clear returns match the bound final pack. Original room content, parties, flags, rewards and story identities are retained. Local production controller and visual acceptance are recorded in revisions/superior-gunflint-quality-v01/VERIFICATION.md; earned campaign progression is separate.",
   "main_lane_width_note": "Two core tiles through forest and portages, with wider event/listening/arrival pockets. Native collision determines actual clear width.",
   "required_grass_crossings": [
     {
-      "id": "WINDTHROW_SEDGE",
+      "id": "WEST_PINE_SEDGE",
       "bounds_core": [
-        56,
-        64,
-        58,
-        68
+        4,
+        28,
+        6,
+        30
       ],
-      "minimum_grass_steps": 4
+      "minimum_grass_steps": 2
     }
   ],
   "cut_gates": [
     {
       "id": "MN_R12_SHORTCUT",
       "tile": [
-        54,
-        23
+        14,
+        17
       ],
       "approach": [
-        54,
-        24
+        14,
+        18
       ],
       "source_block": "0f",
       "replacement_block": "17",
       "targets": [
         [
-          54,
-          19
+          14,
+          11
         ]
       ],
       "gated_actor_ids": [
@@ -1641,69 +1402,28 @@
   ],
   "one_way_ledges": [],
   "revision_contract_changes": [
-    "96×96 twelve-chunk reserve replaced by 64×56 six-chunk source proposal. Shared world registration requires integration.",
-    "Both room IDs, exact interior rows, all ten original trainer IDs/parties/defeat flags, six residents and five total item identities retained; outdoor coordinates revised.",
-    "Old unmeasured Loons Cut return replaced by actual sealed optional Hyper Potion clearing. shortcut:null; exact cut_gates source forest0f→17.",
-    "Pink masonry bridge removed; Stone Bog is an actual short grassy land portage between two enclosed pools, not an invented wooden-deck tile.",
-    "Prior native publication/captures/controller tests describe historical geometry and must be rerun on this revision."
+    "Gunflint shortened64x56 to32x32; source-v02 inland winter epoch retained as immutable history.",
+    "External ports are proposed east63,54/55 and west0,28/29; root integrates actual regional footprints.",
+    "All actor/room/reward/script identities retained with explicit relocated exterior anchors; old regional fixtures need new coordinates.",
+    "Pine8b copied from installed native winter art as one declared derived block49; Cut replacement prefix remains original."
   ],
   "portages": [
     {
-      "id": "LOONS_ISTHMUS",
-      "north_or_west": [
-        82,
-        36
+      "id": "BOG_GRASS_NECK",
+      "bounds_core": [
+        22,
+        44,
+        24,
+        52
       ],
-      "south_or_east": [
-        120,
-        36
-      ],
-      "grass_bounds_core": [
-        98,
-        36,
-        108,
-        38
-      ],
-      "direct_walk_steps": 38,
-      "dry_bank_alternative_steps": 86,
-      "minimum_grass_steps": 10,
-      "purpose": "Short sedge isthmus between Loons lake lobes, versus the longer clear bank. Native Surf remains an intentional optional alternative, not a canoe controller."
-    },
-    {
-      "id": "STONE_BOG",
-      "north_or_west": [
-        32,
-        78
-      ],
-      "south_or_east": [
-        32,
-        90
-      ],
-      "grass_bounds_core": [
-        32,
-        80,
-        34,
-        90
-      ],
-      "direct_walk_steps": 12,
-      "dry_bank_alternative_steps": 86,
-      "minimum_grass_steps": 10,
-      "purpose": "Actual short dry grass neck between distinct enclosed bog pools; usable north/south resting footing."
+      "purpose": "Useful shorter passage between two ponds, with a dry outer circuit and an actual shore landing."
     }
   ],
   "native_integration": {
     "compiled_tileset": "mn_winter_gunflint",
-    "new_art_ids": [],
-    "chunks": [
+    "proposed_chunks": [
       {
         "id": "MnR12C00R00",
-        "dimensions": [
-          32,
-          24
-        ]
-      },
-      {
-        "id": "MnR12C01R00",
         "dimensions": [
           32,
           24
@@ -1713,61 +1433,60 @@
         "id": "MnR12C00R01",
         "dimensions": [
           32,
-          24
-        ]
-      },
-      {
-        "id": "MnR12C01R01",
-        "dimensions": [
-          32,
-          24
-        ]
-      },
-      {
-        "id": "MnR12C00R02",
-        "dimensions": [
-          32,
-          8
-        ]
-      },
-      {
-        "id": "MnR12C01R02",
-        "dimensions": [
-          32,
           8
         ]
       }
     ],
-    "old_unused_chunks": [
-      "MnR12C02R00",
-      "MnR12C02R01",
-      "MnR12C02R02",
-      "MnR12C02R03",
-      "MnR12C00R03",
-      "MnR12C01R03"
-    ],
-    "native_status": "Native seasonal terrain and six clipped modules match the verified publication. Original source review history is retained in source-v02."
+    "native_status": "PUBLISHED: two native chunks32x24 and32x8 match final pack 032304d0fd1d51863a2c3bf2562b20728e22c7535d1c194555621bc8e85b4899. Terrain, relocated anchors and paired room returns are checked against the actual pack; controller/visual evidence is recorded separately in the verification report."
   },
   "compiled_tileset": "mn_winter_gunflint",
-  "inland_winter_review": {
-    "status": "NATIVE_TERRAIN_VERIFIED_CANONICAL_SOURCE",
-    "instruction": "Warm Superior coast and Grand Marais; substantial winter inland near Ely.",
-    "baseline_pack_sha256": "1c6ba5d59097546ff8b94e09c809d270727ce1272acb93759b89f3b3c7d9b90a",
-    "full_region_metatiles": [
-      64,
-      56
+  "quality_revision": "gunflint-quality-v01",
+  "proposed_ports": {
+    "east_core": [
+      [
+        63,
+        54
+      ],
+      [
+        63,
+        55
+      ]
     ],
-    "unchanged": "Native water, cliffs, gates, actors, scripts, story, rooms, ledges and ports. Ice alters only listed original Floor quadrants.",
-    "authored_strokes_retained": 109,
-    "native_reconciliation_points": 147,
-    "seasonal_points": 3033,
-    "published_pack_sha256": "65cf6f98e65ada839ec5afaa57728bf8289d3a50ba53ba6b9b50f08d3620bb17",
-    "published_identity": "f34280a5fc5d6ab8ccc3ec4ef4317a6ea9321070df342ea95aca5745514a0223",
-    "verification_scope": "Full native modules, exact source raster, seasonal cells and final inland connection. Production controller and visual acceptance remain separate evidence in the final geography receipt."
+    "west_core": [
+      [
+        0,
+        28
+      ],
+      [
+        0,
+        29
+      ]
+    ],
+    "origin_metatiles": [
+      190,
+      -432
+    ],
+    "east_native_map": "MnR12C00R01",
+    "east_local_core": [
+      [
+        63,
+        6
+      ],
+      [
+        63,
+        7
+      ]
+    ],
+    "east_offset": -4,
+    "west_native_map": "MnR12C00R00",
+    "west_offset": 2,
+    "global_geometry_owner": "root"
   },
-  "coastal_geography_binding": {
-    "east_neighbor": "MnMaraisInlandNeck",
-    "offset": 0,
-    "journey": "East through the inland connector and Cedar approach, then south into Grand Marais; the warm North Shore enters town from the west."
+  "native_geography_publication": {
+    "status": "MATCHES_COMPOSED_NATIVE_GEOGRAPHY",
+    "final_pack_sha256": "032304d0fd1d51863a2c3bf2562b20728e22c7535d1c194555621bc8e85b4899",
+    "content_identity": "f2ac93f14af05a2935947e1696385a26a16b2d2bd509e5da3e9223af02f98d63",
+    "verification": "revisions/superior-gunflint-quality-v01/VERIFICATION.md",
+    "progression_scope": "Explicit local fixtures do not establish earned campaign progression."
   }
 }

@@ -1777,31 +1777,77 @@
       "interior": "MnInternationalFallsPokecenter1F",
       "parent": "MnInternationalFalls",
       "arrival_core": [
-        10,
-        13
+        3,
+        8
       ],
       "return_trigger_core": [
-        10,
-        15
+        3,
+        9
       ],
-      "exterior_door_status": "Select a complete authenticated source facade, then freeze its core door and safe exterior floor in this record before export.",
+      "exterior_door_status": "Published complete native facade, passive return and both carpets; production rooms/services and exact native 2D frames pass. See interior-life/INTERNATIONAL-FALLS.md.",
       "reserved_town_district": "north clinic/shop street",
-      "requires_real_collision_check": true
+      "requires_real_collision_check": true,
+      "arrival_warp_index": 3,
+      "return_triggers_core": [
+        [
+          3,
+          9
+        ],
+        [
+          4,
+          9
+        ]
+      ],
+      "exterior_door_core": [
+        9,
+        7
+      ],
+      "exterior_safe_return_core": [
+        9,
+        8
+      ],
+      "exterior_warp_index": 1,
+      "exterior_return_warp_index": 2,
+      "source_file": "towns/MnInternationalFalls.json",
+      "source_room_id": "MnInternationalFallsPokecenter1F"
     },
     {
       "interior": "MnInternationalFallsMart",
       "parent": "MnInternationalFalls",
       "arrival_core": [
-        6,
-        5
+        3,
+        6
       ],
       "return_trigger_core": [
-        6,
+        2,
         7
       ],
-      "exterior_door_status": "Select a complete authenticated source facade, then freeze its core door and safe exterior floor in this record before export.",
+      "exterior_door_status": "Published complete native facade, passive return and both carpets; production rooms/services and exact native 2D frames pass. See interior-life/INTERNATIONAL-FALLS.md.",
       "reserved_town_district": "east residential street",
-      "requires_real_collision_check": true
+      "requires_real_collision_check": true,
+      "arrival_warp_index": 3,
+      "return_triggers_core": [
+        [
+          2,
+          7
+        ],
+        [
+          3,
+          7
+        ]
+      ],
+      "exterior_door_core": [
+        23,
+        9
+      ],
+      "exterior_safe_return_core": [
+        23,
+        10
+      ],
+      "exterior_warp_index": 3,
+      "exterior_return_warp_index": 4,
+      "source_file": "towns/MnInternationalFalls.json",
+      "source_room_id": "MnInternationalFallsMart"
     },
     {
       "interior": "MnR09Cave1F",
@@ -2166,53 +2212,53 @@
         ]
       ],
       "exterior_anchor_metatile": [
-        33,
-        11
+        20,
+        7
       ],
       "exterior_door_core": [
-        66,
-        23
+        40,
+        15
       ],
       "exterior_arrival_core": [
-        66,
-        23
+        40,
+        15
       ],
       "exterior_clear_return_core": [
-        66,
-        24
+        40,
+        16
       ],
       "requires_real_collision_check": true,
-      "validation": "Actual CURRENT510 native terrain/preservation and three production-controller cases PASS; original whole Otta/text, MAX_ETHER1 event/program and all warp/art/attribute records retained.",
+      "validation": "Exact final native paired warp and clear-return collision checked by source promotion.",
       "source_design": "routes/MN_R12.json",
       "source_collision_checked": true,
       "mouths": [
         {
           "exterior_door_core": [
-            66,
-            23
+            40,
+            15
           ],
           "interior_target_warp": 1,
           "exterior_entry_warp": 1,
           "exterior_return_warp": 1,
           "safe_exterior_return_core": [
-            66,
-            24
+            40,
+            16
           ]
         }
       ],
-      "native_status": "Installed16x12 R12 native review candidate on c16af00c CURRENT510; original forced NITE. Native four stairs/two hop lanes/ordinary returns, Otta pages, real Max Ether PP use/once/Continue and PP-item refusal coverage PASS. Regional earned progression and final visual approval remain separate.",
+      "native_status": "Compact exterior paired return matches final native pack; room local content preserved.",
       "dimensions_metatiles": [
         16,
         12
       ],
       "native_palette": "nite",
       "candidate_source_sha256": "7fe83d8e9bd69f01f57c77dd1ea1a7c759de3e6d4ceefdb33d9f42fed8dd9048",
-      "native_review_pack_sha256": "c16af00c82167c809620b956981ee80641ddc9fd1eeaf1e2c91f59ab16a9cc7d",
+      "native_review_pack_sha256": "032304d0fd1d51863a2c3bf2562b20728e22c7535d1c194555621bc8e85b4899",
       "runtime_settled_exterior_core": [
-        66,
-        24
+        40,
+        16
       ],
-      "return_semantics": "Original active exterior CAVE warp1 at global66,23/local2,23; native CheckTile may advance Down during presentation frames. If still on the active arrival, explicit Down reaches safe Floor66,24/local2,24 without reentry. Deliberate north input reenters. No passive exterior warp is added."
+      "return_semantics": "Original room exits return to compact exterior paired entry; ordinary Down reaches the recorded clear Floor."
     },
     {
       "interior": "MnR12RangerHut",
@@ -2240,41 +2286,47 @@
         ]
       ],
       "exterior_anchor_metatile": [
-        42,
-        41
+        24,
+        22
       ],
       "exterior_door_core": [
-        85,
-        83
+        49,
+        45
       ],
       "exterior_arrival_core": [
-        85,
-        83
+        49,
+        45
       ],
       "exterior_clear_return_core": [
-        85,
-        84
+        49,
+        46
       ],
       "requires_real_collision_check": true,
-      "validation": "Current source rows/doors/safe returns checked; old native captures and fixtures are historical. Native publication/controller verification pending.",
+      "validation": "Exact final native paired warp and clear-return collision checked by source promotion.",
       "source_design": "routes/MN_R12.json",
       "source_collision_checked": true,
       "mouths": [
         {
           "exterior_door_core": [
-            85,
-            83
+            49,
+            45
           ],
           "interior_target_warp": 1,
-          "exterior_entry_warp": 1,
-          "exterior_return_warp": 1,
+          "exterior_entry_warp": 2,
+          "exterior_return_warp": 2,
           "safe_exterior_return_core": [
-            85,
-            84
+            49,
+            46
           ]
         }
       ],
-      "native_status": "Source candidate; native revision pending."
+      "native_status": "Compact exterior paired return matches final native pack; room local content preserved.",
+      "runtime_settled_exterior_core": [
+        49,
+        46
+      ],
+      "native_review_pack_sha256": "032304d0fd1d51863a2c3bf2562b20728e22c7535d1c194555621bc8e85b4899",
+      "return_semantics": "Original room exits return to compact exterior paired entry; ordinary Down reaches the recorded clear Floor."
     },
     {
       "interior": "MnR15LakeCabin",

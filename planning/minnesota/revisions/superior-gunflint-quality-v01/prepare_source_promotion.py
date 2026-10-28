@@ -20,7 +20,7 @@ sys.path.insert(0, str(ROOT / 'planning/minnesota/tools'))
 from render_reference import layout_blocks, load_pack
 
 REV = 'planning/minnesota/revisions/superior-gunflint-quality-v01'
-COAST = 'planning/minnesota/revisions/north-shore-ely-geography-v01/coast-quality-v01/source-v03'
+COAST = 'planning/minnesota/revisions/north-shore-ely-geography-v01/coast-quality-v01/source-v04'
 CEDAR = REV + '/cedar-source-v02'
 RETIRED = {'MnR12C01R00', 'MnR12C01R01', 'MnR12C00R02', 'MnR12C01R02', 'MnMaraisInlandNeck'}
 PARITY_TEST = 'superior_inland_canonical_rust_source_matches_every_published_terrain_cell'
@@ -272,6 +272,21 @@ def main():
         if key.endswith('dossier'):
             value['status'] = publication['status']
             value['native_geography_publication'] = publication
+        if key == 'r12_dossier':
+            value['native_integration']['native_status'] = (
+                'PUBLISHED: two native chunks32x24 and32x8 match final pack '
+                + args.expected_pack_sha256 + '. Terrain, relocated anchors and paired room returns '
+                'are checked against the actual pack; controller/visual evidence is recorded separately in the verification report.')
+            value['implementation'] = (
+                'Published compact32x32 Gunflint native route. Exact source terrain, endpoints, '
+                'actor/item/sign anchors, room entries and clear returns match the bound final pack. '
+                'Original room content, parties, flags, rewards and story identities are retained. '
+                'Local production controller and visual acceptance are recorded in '
+                'revisions/superior-gunflint-quality-v01/VERIFICATION.md; earned campaign progression is separate.')
+            value['anchor_status'] = (
+                'Exact source/native anchor and paired-warp parity checked during this promotion; '
+                + str(len(replay['module_preimages'])) + ' original native module preimages are bound by the Rust replay contract. '
+                'The final pack SHA and source bindings are recorded in native_geography_publication and active world replay metadata.')
         replace('planning/minnesota/' + destination, value)
     town = edit('planning/minnesota/towns/MnGrandMarais.json')
     town['native_geography_publication'] = publication
@@ -303,6 +318,23 @@ def main():
             seam.update(target_core=[[26, 23], [27, 23]], offset=-4)
     if 'surf_seam' in town_connections:
         town_connections['surf_seam']['target_core_x'] = 7
+    def compact_boundary_port(record):
+        ports = [v for v in record['ports'] if v.get('route') == 'MN_R12' and v.get('side') == 'E']
+        assert len(ports) == 1, 'exact Boundary Waters Gunflint port required'
+        native = ports[0]['native_connection']
+        assert native['target_map'] == 'MnR12C00R01' and native['direction'] == 'east'
+        assert native['offset_metatiles'] == 8 and native['reciprocal_offset_metatiles'] == -8
+        native.update(target_map='MnR12C00R00', offset_metatiles=-2, reciprocal_offset_metatiles=2)
+
+    boundary = edit('planning/minnesota/towns/MnBoundaryWaters.json')
+    compact_boundary_port(boundary)
+    checkpoints = [v for v in boundary['regional_checkpoints']['checkpoints'] if v['id'] == 'gunflint']
+    assert len(checkpoints) == 1
+    checkpoint = checkpoints[0]
+    assert checkpoint['native_target_map'] == 'MnR12C00R01' and checkpoint['direction'] == 'east'
+    assert checkpoint['offset_metatiles'] == 8 and checkpoint['reciprocal_offset_metatiles'] == -8
+    checkpoint.update(native_target_map='MnR12C00R00', offset_metatiles=-2, reciprocal_offset_metatiles=2)
+    # R13/league and R20/Voyageurs ports, flags, officers and programs stay exact.
     neck = edit('planning/minnesota/towns/MnMaraisInlandNeck.json')
     neck.update(status='RETIRED_HISTORY_NOT_ACTIVE_NATIVE_GEOGRAPHY',
                 retirement_reason='Long snowy connector removed; camp pickup/flag retained in compact Gunflint.',
@@ -339,6 +371,9 @@ def main():
             for field in ['native_geography_publication', 'world_origin_proposed', 'ports']:
                 entry[field] = copy.deepcopy(town[field])
             entry.setdefault('implementation', {})['review'] = town['implementation']['review']
+    boundary_entries = [v for v in world['towns'] if v['id'] == 'MnBoundaryWaters']
+    assert len(boundary_entries) == 1
+    compact_boundary_port(boundary_entries[0])
     updated = []
     for edge in world['connections']:
         if edge.get('a') in RETIRED or edge.get('b') in RETIRED:
@@ -359,12 +394,25 @@ def main():
     assert len(camps) == 1 and camps[0]['item'] == 'BERRY' and camps[0]['quantity'] == 3
     camp_map, _ = aggregate_anchor(data, 'MnR12', camps[0]['tile'])
     assert data['story_event_script_constants']['global']['EVENT_MN_GUNFLINT_CAMP_SUPPLY'] == 2387
+    def repo_path(path):
+        resolved = path.resolve()
+        return str(resolved.relative_to(ROOT)) if resolved.is_relative_to(ROOT) else str(resolved)
+
+    replay_output = 'content-packs/' + args.pack.stem + '-replay.crystalpack'
+    replay_command = ['target/runtime-fps/wasm-dev/build_compact_superior',
+                      'content-packs/minnesota-superior-inland-winter-v01.crystalpack',
+                      repo_path(args.replay_contract), digest(args.replay_contract.read_bytes()),
+                      repo_path(bound_inputs['coast']), repo_path(bound_inputs['r12_layout']),
+                      repo_path(bound_inputs['r12_dossier']), repo_path(bound_inputs['cedar']), replay_output]
     world['superior_inland_source'] = dict(
         parent='content-packs/minnesota-superior-inland-winter-v01.crystalpack',
         final_pack_sha256=args.expected_pack_sha256, content_identity=pack['identity']['content_hash'],
         builder='build_compact_superior_pack', cli='build_compact_superior',
         replay_contract=str(args.replay_contract.relative_to(ROOT)) if args.replay_contract.is_relative_to(ROOT) else str(args.replay_contract),
         replay_contract_sha256=digest(args.replay_contract.read_bytes()),
+        replay_source_files={key: repo_path(path) for key, path in bound_inputs.items()},
+        replay_source_sha256={key: digest(path.read_bytes()) for key, path in bound_inputs.items()},
+        replay_command=replay_command, replay_output_must_be_fresh=True,
         extra_layouts=['towns/MnMaraisCedarApproach.layout.json'],
         camp_event=dict(name='EVENT_MN_GUNFLINT_CAMP_SUPPLY', value=2387, active_map=camp_map),
         actual_owned_origins_metatiles=native_positions,

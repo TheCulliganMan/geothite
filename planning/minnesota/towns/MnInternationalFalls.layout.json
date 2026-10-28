@@ -1,0 +1,293 @@
+{
+  "schema_version": 2,
+  "id": "MnInternationalFalls",
+  "tileset": "johto_modern",
+  "compiled_tileset": "mn_international_falls",
+  "dimensions_metatiles": [
+    16,
+    14
+  ],
+  "coordinate_units": "32px metatiles, zero based, explicit native strokes",
+  "shore_fitting": "explicit_source_edges",
+  "reject_cliff_cuts": true,
+  "source_pixels_modified": false,
+  "extended_graphics": true,
+  "derived_blocks": [
+    {
+      "id": "80",
+      "source_tileset": "mn_winter_outdoor",
+      "source_block": "3c",
+      "collision": [
+        "FLOOR",
+        "FLOOR",
+        "FLOOR",
+        "FLOOR"
+      ]
+    },
+    {
+      "id": "81",
+      "source_tileset": "mn_winter_outdoor",
+      "source_block": "3f",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ]
+    }
+  ],
+  "materials": {
+    "floor": "80",
+    "lawn": "80",
+    "forest": "81",
+    "encounter": "03",
+    "water": "35",
+    "boulder": "14",
+    "flowers": "04",
+    "sign": "45"
+  },
+  "layers": [
+    {
+      "name": "Continuous snowy evergreen perimeter",
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        0,
+        16,
+        14
+      ],
+      "block": "81"
+    },
+    {
+      "name": "Sheltered plowed town court",
+      "kind": "block_rect",
+      "bounds": [
+        2,
+        3,
+        14,
+        11
+      ],
+      "block": "80"
+    },
+    {
+      "name": "R17 southern road",
+      "kind": "block_rect",
+      "bounds": [
+        10,
+        10,
+        11,
+        14
+      ],
+      "block": "80"
+    },
+    {
+      "name": "Protected eastern warming-hut trail",
+      "kind": "block_rect",
+      "bounds": [
+        12,
+        7,
+        16,
+        8
+      ],
+      "block": "80"
+    },
+    {
+      "name": "Clinic backing grove",
+      "kind": "block_rect",
+      "bounds": [
+        3,
+        1,
+        7,
+        3
+      ],
+      "block": "81"
+    },
+    {
+      "name": "Shop backing grove",
+      "kind": "block_rect",
+      "bounds": [
+        10,
+        2,
+        14,
+        4
+      ],
+      "block": "81"
+    },
+    {
+      "name": "Clinic complete native facade",
+      "kind": "point",
+      "position": [
+        4,
+        2
+      ],
+      "block": "18"
+    },
+    {
+      "name": "Clinic complete native facade",
+      "kind": "point",
+      "position": [
+        5,
+        2
+      ],
+      "block": "19"
+    },
+    {
+      "name": "Clinic complete native facade",
+      "kind": "point",
+      "position": [
+        4,
+        3
+      ],
+      "block": "1a"
+    },
+    {
+      "name": "Clinic complete native facade",
+      "kind": "point",
+      "position": [
+        5,
+        3
+      ],
+      "block": "1b"
+    },
+    {
+      "name": "Mart complete native facade",
+      "kind": "point",
+      "position": [
+        11,
+        3
+      ],
+      "block": "18"
+    },
+    {
+      "name": "Mart complete native facade",
+      "kind": "point",
+      "position": [
+        12,
+        3
+      ],
+      "block": "19"
+    },
+    {
+      "name": "Mart complete native facade",
+      "kind": "point",
+      "position": [
+        11,
+        4
+      ],
+      "block": "1a"
+    },
+    {
+      "name": "Mart complete native facade",
+      "kind": "point",
+      "position": [
+        12,
+        4
+      ],
+      "block": "33"
+    },
+    {
+      "name": "Left snowy shoulder",
+      "kind": "block_rect",
+      "bounds": [
+        2,
+        3,
+        3,
+        5
+      ],
+      "block": "81"
+    },
+    {
+      "name": "Library-side sheltered grove",
+      "kind": "block_rect",
+      "bounds": [
+        2,
+        9,
+        4,
+        11
+      ],
+      "block": "81"
+    },
+    {
+      "name": "Eastern evergreen windbreak",
+      "kind": "block_rect",
+      "bounds": [
+        12,
+        9,
+        14,
+        11
+      ],
+      "block": "81"
+    },
+    {
+      "name": "Plowed main street",
+      "kind": "block_rect",
+      "bounds": [
+        4,
+        7,
+        16,
+        8
+      ],
+      "block": "06"
+    },
+    {
+      "name": "Southern road paving",
+      "kind": "block_rect",
+      "bounds": [
+        10,
+        8,
+        11,
+        14
+      ],
+      "block": "06"
+    },
+    {
+      "name": "Clinic entry paving",
+      "kind": "block_rect",
+      "bounds": [
+        4,
+        4,
+        5,
+        7
+      ],
+      "block": "06"
+    },
+    {
+      "name": "Winter supply entry paving",
+      "kind": "block_rect",
+      "bounds": [
+        11,
+        5,
+        12,
+        7
+      ],
+      "block": "06"
+    },
+    {
+      "name": "MN_FALLS_WEATHER_BOARD",
+      "kind": "point",
+      "position": [
+        3,
+        6
+      ],
+      "block": "45"
+    },
+    {
+      "name": "MN_FALLS_WELCOME",
+      "kind": "point",
+      "position": [
+        9,
+        11
+      ],
+      "block": "45"
+    },
+    {
+      "name": "MN_FALLS_TRAIL_NOTICE",
+      "kind": "point",
+      "position": [
+        13,
+        6
+      ],
+      "block": "45"
+    }
+  ]
+}

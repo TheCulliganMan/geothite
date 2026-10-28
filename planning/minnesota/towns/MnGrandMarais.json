@@ -37,7 +37,7 @@
         9,
         0
       ],
-      "native_connection": "Town north offset-19 to Cedar south+19; town core18/19 to Cedar56/57. Winter begins inland."
+      "native_connection": "Town north offset-4 to Cedar south+4; town core18/19 to Cedar26/27. Winter begins inland."
     }
   ],
   "interiors": [
@@ -108,9 +108,20 @@
     "map_constant": "MN_GRAND_MARAIS",
     "scope": "Warm west-entry Superior town; north inland branch.",
     "interiors": 6,
-    "review": "../revisions/north-shore-ely-geography-v01/VERIFICATION.md",
+    "review": "../revisions/superior-gunflint-quality-v01/VERIFICATION.md",
     "connections": "MnGrandMarais.connections.json"
   },
   "native_connections_source": "MnGrandMarais.connections.json",
-  "layout": "MnGrandMarais.layout.json"
+  "layout": "MnGrandMarais.layout.json",
+  "native_geography_publication": {
+    "status": "MATCHES_COMPOSED_NATIVE_GEOGRAPHY",
+    "final_pack_sha256": "032304d0fd1d51863a2c3bf2562b20728e22c7535d1c194555621bc8e85b4899",
+    "content_identity": "f2ac93f14af05a2935947e1696385a26a16b2d2bd509e5da3e9223af02f98d63",
+    "verification": "revisions/superior-gunflint-quality-v01/VERIFICATION.md",
+    "progression_scope": "Explicit local fixtures do not establish earned campaign progression."
+  },
+  "world_origin_proposed": [
+    226,
+    -400
+  ]
 }

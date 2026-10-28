@@ -1,5 +1,9 @@
 # Direct coastal arrival and shorter Gunflint
 
+Final status: implemented in native compact v03; canonical sources promoted.
+See [verified result and actual render](VERIFICATION.md). The source-stage
+notes below preserve the design history and earlier acceptance gates.
+
 The user's quality feedback supersedes acceptance of the previous geography's
 composition. Its pack remains a verified technical baseline and immutable
 history, not the desired final route design.

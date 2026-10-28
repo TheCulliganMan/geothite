@@ -6,11 +6,11 @@
       "core": [
         [
           0,
-          12
+          14
         ],
         [
           0,
-          13
+          15
         ]
       ]
     },
@@ -18,12 +18,12 @@
       "side": "south",
       "core": [
         [
-          56,
-          37
+          26,
+          23
         ],
         [
-          57,
-          37
+          27,
+          23
         ]
       ]
     }
@@ -32,8 +32,8 @@
     {
       "id": "MN_COHESION_MARAIS_KEEPER",
       "tile": [
-        29,
-        19
+        15,
+        11
       ],
       "sprite": "SPRITE_YOUNGSTER",
       "facing": "south",
@@ -59,8 +59,8 @@
     {
       "id": "MN_COHESION_MARAIS_WALKER",
       "tile": [
-        53,
-        31
+        31,
+        15
       ],
       "sprite": "SPRITE_LASS",
       "facing": "south",
@@ -88,8 +88,8 @@
     {
       "id": "MN_COHESION_MARAIS_SIGN",
       "tile": [
-        7,
-        9
+        4,
+        12
       ],
       "lines": [
         "CEDAR APPROACH",
@@ -102,60 +102,92 @@
     {
       "id": "west-arrival",
       "core": [
-        7,
-        12
+        5,
+        14
       ]
     },
     {
-      "id": "cedar-meadow",
+      "id": "grass-turn",
       "core": [
-        31,
-        19
+        14,
+        10
       ]
     },
     {
-      "id": "south-pine-turn",
+      "id": "ledge-choice",
       "core": [
-        49,
-        32
+        26,
+        16
+      ]
+    },
+    {
+      "id": "south-arrival",
+      "core": [
+        26,
+        21
       ]
     }
   ],
   "native_connections": [
     {
       "direction": "west",
-      "target_map": "MnMaraisInlandNeck",
-      "offset": 0
+      "target_map": "MnR12C00R01",
+      "offset": 4
     },
     {
       "direction": "south",
       "target_map": "MnGrandMarais",
-      "offset": 19
+      "offset": 4
     }
   ],
   "revision": "west-entry-v02",
-  "geography_contract": "planning/minnesota/revisions/north-shore-ely-geography-v01/geography/native-west-v02/contract.json",
-  "sign_direction_corrections": [
-    {
-      "label": "MN_COHESION_MARAIS_SIGNText",
-      "command_index": 1,
-      "before": "\"GRAND MARAIS west.\"",
-      "after": "\"GRAND MARAIS south\""
-    },
-    {
-      "label": "MN_COHESION_MARAIS_SIGNText",
-      "command_index": 2,
-      "before": "\"NORTH SHORE south.\"",
-      "after": "\"GUNFLINT west.\""
-    }
-  ],
   "status": "MATCHES_COMPOSED_NATIVE_GEOGRAPHY",
+  "dimensions_metatiles": [
+    20,
+    12
+  ],
+  "ledge": {
+    "block": [
+      13,
+      9
+    ],
+    "upper_core": [
+      26,
+      17
+    ],
+    "jump_core": [
+      26,
+      18
+    ],
+    "landing_core": [
+      26,
+      20
+    ],
+    "reverse_blocked": true,
+    "ordinary_return_metatiles": [
+      [
+        13,
+        10
+      ],
+      [
+        16,
+        10
+      ],
+      [
+        16,
+        7
+      ],
+      [
+        13,
+        7
+      ]
+    ]
+  },
   "native_geography_publication": {
-    "final_pack_sha256": "65cf6f98e65ada839ec5afaa57728bf8289d3a50ba53ba6b9b50f08d3620bb17",
-    "content_identity": "f34280a5fc5d6ab8ccc3ec4ef4317a6ea9321070df342ea95aca5745514a0223",
-    "source_contract": "revisions/north-shore-ely-geography-v01/geography/native-west-v02/contract.json",
-    "source_contract_sha256": "ee195bcfc318fa55e5c31d6f37f75ebbf1bb033760c98267303bc46a6beecc5c",
-    "verification": "revisions/north-shore-ely-geography-v01/VERIFICATION.md",
-    "progression_scope": "Local explicit fixtures and production inputs; earned campaign progression is not established."
+    "status": "MATCHES_COMPOSED_NATIVE_GEOGRAPHY",
+    "final_pack_sha256": "032304d0fd1d51863a2c3bf2562b20728e22c7535d1c194555621bc8e85b4899",
+    "content_identity": "f2ac93f14af05a2935947e1696385a26a16b2d2bd509e5da3e9223af02f98d63",
+    "verification": "revisions/superior-gunflint-quality-v01/VERIFICATION.md",
+    "progression_scope": "Explicit local fixtures do not establish earned campaign progression."
   }
 }

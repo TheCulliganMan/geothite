@@ -21,7 +21,7 @@ use super::authored_route_fixture::{
 };
 
 const SOURCE: &str = include_str!(
-    "../../../../../planning/minnesota/revisions/gunflint-quality-v01/source-v09/MN_R12.candidate.json"
+    "../../../../../planning/minnesota/revisions/gunflint-quality-v01/source-v10/MN_R12.candidate.json"
 );
 const UPPER: &str = "MnR12C00R00";
 const LOWER: &str = "MnR12C00R01";
@@ -82,6 +82,12 @@ enum Setup {
 
 fn fixture(at: Point, setup: Setup) -> (AssetRoot, CrystalRuntime, VisibleShellController) {
     let (root, runtime) = load();
+    let source: Value = serde_json::from_str(SOURCE).expect("frozen compact actors");
+    for family in ["residents", "trainers", "items", "signs"] {
+        for actor in source[family].as_array().expect("authored actor family") {
+            assert_ne!(point(&actor["tile"]), at, "fixture starts on actor {actor}");
+        }
+    }
     let shell = initialize_bevy_runtime_shell(
         root.clone(),
         runtime.clone(),
@@ -98,6 +104,17 @@ fn fixture(at: Point, setup: Setup) -> (AssetRoot, CrystalRuntime, VisibleShellC
     )
     .expect("explicit compact route placement");
     let mut c = VisibleShellController { shell };
+    let block = c
+        .shell
+        .shell
+        .session()
+        .overworld()
+        .map
+        .metatile_at(at.0 / 2, (at.1 % 48) / 2)
+        .expect("fixture ground block");
+    let ground = &runtime.data().tilesets["mn_winter_gunflint"].collision[&format!("{block:02x}")]
+        [((at.1 % 2) * 2 + at.0 % 2) as usize];
+    assert_eq!(ground, "FLOOR", "fixture must begin on ordinary dry ground");
     complete_visible_smoke_player_name_if_needed(&mut c.shell, Some("CHRIS"))
         .expect("fixture name");
     if !matches!(setup, Setup::Empty) {
@@ -174,7 +191,7 @@ fn grid(runtime: &CrystalRuntime, at: Point) -> RouteGrid {
             rows: 2,
             tileset: "mn_winter_gunflint",
             start: at,
-            doors: BTreeMap::from([((40, 15), "MnR12Cave1F"), ((49, 47), "MnR12RangerHut")]),
+            doors: BTreeMap::from([((40, 15), "MnR12Cave1F"), ((49, 45), "MnR12RangerHut")]),
         },
     )
 }
@@ -333,7 +350,7 @@ fn compact_gunflint_controller_both_real_ports_all_ordinary_actor_approaches_and
 
 #[test]
 #[ignore = "requires published compact pack in CRYSTAL_COMPACT_SUPERIOR_TEST_PACK"]
-fn compact_gunflint_controller_original_rooms_pp_resource_and_hut_passive_return_crosses_chunk() {
+fn compact_gunflint_controller_original_rooms_pp_resource_and_both_hut_carpet_returns() {
     let (_, runtime, mut c) = fixture((62, 54), Setup::Cut);
     super::minneapolis_falls::grand_marais_harbor::use_max_repel(&mut c, &runtime);
     let route = grid(&runtime, position(&mut c));
@@ -386,8 +403,26 @@ fn compact_gunflint_controller_original_rooms_pp_resource_and_hut_passive_return
     c.wait_frames(60).expect("native cave clear step");
     assert_eq!(local(&mut c), (UPPER.into(), (40, 16)));
     for carpet_x in [4, 5] {
-        route.walk(&mut c, (49, 47));
-        assert_eq!(local(&mut c).0, "MnR12RangerHut");
+        // Enter the original door from its ordinary southern clear tile.
+        // V10 keeps both the door and its passive return in the upper chunk.
+        route.walk(&mut c, (49, 46));
+        assert_eq!(local(&mut c), (UPPER.into(), (49, 46)));
+        c.wait_frames(60).expect("settled southern hut approach");
+        let mut entry_trace = Vec::new();
+        for _ in 0..8 {
+            c.press(GameButton::Up)
+                .expect("enter original hut from south");
+            c.wait_frames(60).expect("settle native hut arrival");
+            entry_trace.push(local(&mut c));
+            if local(&mut c).0 == "MnR12RangerHut" {
+                break;
+            }
+        }
+        assert_eq!(
+            local(&mut c).0,
+            "MnR12RangerHut",
+            "front-door entry trace: {entry_trace:?}"
+        );
         indoor_walk(&mut c, &runtime, (7, 4));
         let before = c.snapshot().expect("before June").party;
         c.press(GameButton::Up).expect("face original June");
@@ -407,18 +442,17 @@ fn compact_gunflint_controller_original_rooms_pp_resource_and_hut_passive_return
         }
         assert_eq!(
             local(&mut c),
-            (UPPER.into(), (49, 47)),
+            (UPPER.into(), (49, 45)),
             "both carpets return through upper exterior warp2"
         );
-        c.wait_frames(60)
-            .expect("native passive hut return across actual chunk seam");
+        c.wait_frames(60).expect("native passive hut clear step");
         assert_eq!(
             local(&mut c),
-            (LOWER.into(), (49, 0)),
-            "clear return is lower chunk, not invalid upper y48"
+            (UPPER.into(), (49, 46)),
+            "both carpets settle on ordinary southern clear tile"
         );
     }
-    retain(&mut c, "rooms-pp-and-cross-chunk-return");
+    retain(&mut c, "rooms-pp-and-both-hut-carpet-returns");
 }
 
 #[test]
@@ -428,6 +462,18 @@ fn compact_gunflint_controller_cut_denial_native_open_reward_continue_and_map_re
         let (_, runtime, mut c) = fixture((14, 18), setup);
         c.press(GameButton::Up).expect("face sealed tree");
         c.press(GameButton::A).expect("native denial");
+        c.wait_frames(128).expect("print actual field-move denial");
+        assert!(
+            c.snapshot()
+                .expect("denial page")
+                .ui
+                .text
+                .and_then(|t| t.asm_text)
+                .is_some_and(|t| t.contains("CUT"))
+        );
+        let held = local(&mut c);
+        c.press(GameButton::Up).expect("denial text owns movement");
+        assert_eq!(local(&mut c), held);
         finish_text(&mut c);
         assert_eq!(tree(&c), 0x0f);
         assert_eq!(position(&mut c), (14, 18));
@@ -539,6 +585,17 @@ fn compact_gunflint_controller_meaningful_frost_courses_force_dry_and_wall_stops
                 }
             }
             assert_ne!(position(&mut c), start);
+            if position(&mut c) != end {
+                let opposite = match input {
+                    GameButton::Left => GameButton::Right,
+                    GameButton::Right => GameButton::Left,
+                    GameButton::Up => GameButton::Down,
+                    GameButton::Down => GameButton::Up,
+                    _ => unreachable!("cardinal frost input"),
+                };
+                c.press(opposite)
+                    .expect("opposing input during native forced slide");
+            }
             c.wait_frames(400).expect("native forced movement settles");
             assert_eq!(position(&mut c), end, "exact authored native frost stop");
             c.wait_frames(80).expect("stable resting frost stop");

@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
-"""Capture exact connected-route pixels using installed immediate neighbor maps.
+"""Capture exact connected-route pixels using authored native neighbor maps.
 
 Camera bounds follow the production connection-composite clamp. Source art and
 native border blocks are reused; actual GPU images are never modified. Every
 water glyph uses one consistent native animation phase across the full frame.
+Views may explicitly request the ordinary native compositor's two-hop context.
 """
 import argparse
 import json

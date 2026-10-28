@@ -4,143 +4,14 @@
   "tileset": "johto",
   "compiled_tileset": "mn_winter_north_shore",
   "dimensions_metatiles": [
-    32,
-    19
+    20,
+    12
   ],
   "shore_fitting": "explicit_source_edges",
-  "reject_cliff_cuts": true,
-  "source_pixels_modified": false,
   "layers": [
     {
-      "name": "West reading turnout attached to path",
-      "kind": "rect",
-      "bounds": [
-        2,
-        4,
-        5,
-        8
-      ],
-      "material": "lawn"
-    },
-    {
-      "name": "Cedar crossing small occupied meadow",
-      "kind": "rect",
-      "bounds": [
-        14,
-        8,
-        18,
-        11
-      ],
-      "material": "lawn"
-    },
-    {
-      "name": "Coastal cedar trail around attached forest fingers",
-      "kind": "path",
-      "points": [
-        [
-          0,
-          6
-        ],
-        [
-          6,
-          6
-        ],
-        [
-          6,
-          4
-        ],
-        [
-          11,
-          4
-        ],
-        [
-          11,
-          9
-        ],
-        [
-          17,
-          9
-        ],
-        [
-          17,
-          13
-        ],
-        [
-          23,
-          13
-        ],
-        [
-          23,
-          16
-        ],
-        [
-          28,
-          16
-        ],
-        [
-          28,
-          18
-        ]
-      ],
-      "width_metatiles": 1,
-      "material": "floor"
-    },
-    {
-      "name": "Required west grass neck",
-      "kind": "rect",
-      "bounds": [
-        9,
-        4,
-        10,
-        5
-      ],
-      "material": "encounter"
-    },
-    {
-      "name": "Full cedar-meadow grass strip",
-      "kind": "rect",
-      "bounds": [
-        16,
-        8,
-        17,
-        11
-      ],
-      "material": "encounter"
-    },
-    {
-      "name": "Return-side flower bank",
-      "kind": "rect",
-      "bounds": [
-        14,
-        8,
-        15,
-        9
-      ],
-      "material": "flowers"
-    },
-    {
-      "name": "South approach attached turnout",
-      "kind": "rect",
-      "bounds": [
-        26,
-        15,
-        28,
-        17
-      ],
-      "material": "lawn"
-    },
-    {
-      "name": "MN_COHESION_MARAIS_SIGN authentic signpost",
       "kind": "point",
-      "position": [
-        3,
-        4
-      ],
-      "block": "45"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         0,
         0
@@ -148,8 +19,8 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         1,
         0
@@ -157,8 +28,8 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         2,
         0
@@ -166,8 +37,8 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         3,
         0
@@ -175,8 +46,8 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         4,
         0
@@ -184,8 +55,8 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         5,
         0
@@ -193,8 +64,8 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         6,
         0
@@ -202,8 +73,8 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         7,
         0
@@ -211,8 +82,8 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         8,
         0
@@ -220,8 +91,8 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         9,
         0
@@ -229,8 +100,8 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         10,
         0
@@ -238,8 +109,8 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         11,
         0
@@ -247,8 +118,8 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         12,
         0
@@ -256,8 +127,8 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         13,
         0
@@ -265,8 +136,8 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         14,
         0
@@ -274,8 +145,8 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         15,
         0
@@ -283,8 +154,8 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         16,
         0
@@ -292,8 +163,8 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         17,
         0
@@ -301,8 +172,8 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         18,
         0
@@ -310,8 +181,8 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         19,
         0
@@ -319,116 +190,8 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
-      "position": [
-        20,
-        0
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        21,
-        0
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        22,
-        0
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        23,
-        0
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        24,
-        0
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        25,
-        0
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        26,
-        0
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        27,
-        0
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        28,
-        0
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        29,
-        0
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        30,
-        0
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        31,
-        0
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         0,
         1
@@ -436,8 +199,8 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         1,
         1
@@ -445,8 +208,8 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         2,
         1
@@ -454,8 +217,8 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         3,
         1
@@ -463,8 +226,8 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         4,
         1
@@ -472,8 +235,8 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         5,
         1
@@ -481,8 +244,8 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         6,
         1
@@ -490,8 +253,8 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         7,
         1
@@ -499,8 +262,8 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         8,
         1
@@ -508,8 +271,8 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         9,
         1
@@ -517,8 +280,8 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         10,
         1
@@ -526,8 +289,8 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         11,
         1
@@ -535,8 +298,8 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         12,
         1
@@ -544,8 +307,8 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         13,
         1
@@ -553,8 +316,8 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         14,
         1
@@ -562,8 +325,8 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         15,
         1
@@ -571,8 +334,8 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         16,
         1
@@ -580,8 +343,8 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         17,
         1
@@ -589,8 +352,8 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         18,
         1
@@ -598,8 +361,8 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         19,
         1
@@ -607,116 +370,8 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
-      "position": [
-        20,
-        1
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        21,
-        1
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        22,
-        1
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        23,
-        1
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        24,
-        1
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        25,
-        1
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        26,
-        1
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        27,
-        1
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        28,
-        1
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        29,
-        1
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        30,
-        1
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        31,
-        1
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         0,
         2
@@ -724,8 +379,8 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         1,
         2
@@ -733,8 +388,8 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         2,
         2
@@ -742,8 +397,8 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         3,
         2
@@ -751,8 +406,8 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         4,
         2
@@ -760,8 +415,8 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         5,
         2
@@ -769,8 +424,8 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         6,
         2
@@ -778,8 +433,8 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         7,
         2
@@ -787,8 +442,8 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         8,
         2
@@ -796,8 +451,8 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         9,
         2
@@ -805,8 +460,8 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         10,
         2
@@ -814,8 +469,8 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         11,
         2
@@ -823,8 +478,8 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         12,
         2
@@ -832,8 +487,8 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         13,
         2
@@ -841,8 +496,8 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         14,
         2
@@ -850,8 +505,8 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         15,
         2
@@ -859,8 +514,8 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         16,
         2
@@ -868,8 +523,8 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         17,
         2
@@ -877,8 +532,8 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         18,
         2
@@ -886,8 +541,8 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         19,
         2
@@ -895,116 +550,8 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
-      "position": [
-        20,
-        2
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        21,
-        2
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        22,
-        2
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        23,
-        2
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        24,
-        2
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        25,
-        2
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        26,
-        2
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        27,
-        2
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        28,
-        2
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        29,
-        2
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        30,
-        2
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        31,
-        2
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         0,
         3
@@ -1012,8 +559,8 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         1,
         3
@@ -1021,8 +568,8 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         2,
         3
@@ -1030,8 +577,8 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         3,
         3
@@ -1039,8 +586,8 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         4,
         3
@@ -1048,8 +595,8 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         5,
         3
@@ -1057,8 +604,8 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         6,
         3
@@ -1066,8 +613,8 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         7,
         3
@@ -1075,8 +622,8 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         8,
         3
@@ -1084,8 +631,8 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         9,
         3
@@ -1093,8 +640,8 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         10,
         3
@@ -1102,8 +649,8 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         11,
         3
@@ -1111,8 +658,8 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         12,
         3
@@ -1120,8 +667,8 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         13,
         3
@@ -1129,8 +676,8 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         14,
         3
@@ -1138,8 +685,8 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         15,
         3
@@ -1147,8 +694,8 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         16,
         3
@@ -1156,8 +703,8 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         17,
         3
@@ -1165,8 +712,8 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         18,
         3
@@ -1174,8 +721,8 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         19,
         3
@@ -1183,116 +730,8 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
-      "position": [
-        20,
-        3
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        21,
-        3
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        22,
-        3
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        23,
-        3
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        24,
-        3
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        25,
-        3
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        26,
-        3
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        27,
-        3
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        28,
-        3
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        29,
-        3
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        30,
-        3
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        31,
-        3
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         0,
         4
@@ -1300,8 +739,8 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         1,
         4
@@ -1309,593 +748,377 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         2,
+        4
+      ],
+      "block": "8b"
+    },
+    {
+      "kind": "point",
+      "name": "Explicit short snowline cell",
+      "position": [
+        3,
+        4
+      ],
+      "block": "8b"
+    },
+    {
+      "kind": "point",
+      "name": "Explicit short snowline cell",
+      "position": [
+        4,
+        4
+      ],
+      "block": "8b"
+    },
+    {
+      "kind": "point",
+      "name": "Explicit short snowline cell",
+      "position": [
+        5,
+        4
+      ],
+      "block": "8b"
+    },
+    {
+      "kind": "point",
+      "name": "Explicit short snowline cell",
+      "position": [
+        6,
         4
       ],
       "block": "83"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
+      "position": [
+        7,
+        4
+      ],
+      "block": "83"
+    },
+    {
+      "kind": "point",
+      "name": "Explicit short snowline cell",
+      "position": [
+        8,
+        4
+      ],
+      "block": "8b"
+    },
+    {
+      "kind": "point",
+      "name": "Explicit short snowline cell",
+      "position": [
+        9,
+        4
+      ],
+      "block": "8b"
+    },
+    {
+      "kind": "point",
+      "name": "Explicit short snowline cell",
+      "position": [
+        10,
+        4
+      ],
+      "block": "8b"
+    },
+    {
+      "kind": "point",
+      "name": "Explicit short snowline cell",
+      "position": [
+        11,
+        4
+      ],
+      "block": "8b"
+    },
+    {
+      "kind": "point",
+      "name": "Explicit short snowline cell",
+      "position": [
+        12,
+        4
+      ],
+      "block": "8b"
+    },
+    {
+      "kind": "point",
+      "name": "Explicit short snowline cell",
+      "position": [
+        13,
+        4
+      ],
+      "block": "8b"
+    },
+    {
+      "kind": "point",
+      "name": "Explicit short snowline cell",
+      "position": [
+        14,
+        4
+      ],
+      "block": "8b"
+    },
+    {
+      "kind": "point",
+      "name": "Explicit short snowline cell",
+      "position": [
+        15,
+        4
+      ],
+      "block": "8b"
+    },
+    {
+      "kind": "point",
+      "name": "Explicit short snowline cell",
+      "position": [
+        16,
+        4
+      ],
+      "block": "8b"
+    },
+    {
+      "kind": "point",
+      "name": "Explicit short snowline cell",
+      "position": [
+        17,
+        4
+      ],
+      "block": "8b"
+    },
+    {
+      "kind": "point",
+      "name": "Explicit short snowline cell",
+      "position": [
+        18,
+        4
+      ],
+      "block": "8b"
+    },
+    {
+      "kind": "point",
+      "name": "Explicit short snowline cell",
+      "position": [
+        19,
+        4
+      ],
+      "block": "8b"
+    },
+    {
+      "kind": "point",
+      "name": "Explicit short snowline cell",
+      "position": [
+        0,
+        5
+      ],
+      "block": "8b"
+    },
+    {
+      "kind": "point",
+      "name": "Explicit short snowline cell",
+      "position": [
+        1,
+        5
+      ],
+      "block": "8b"
+    },
+    {
+      "kind": "point",
+      "name": "Explicit short snowline cell",
+      "position": [
+        2,
+        5
+      ],
+      "block": "8b"
+    },
+    {
+      "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         3,
-        4
+        5
+      ],
+      "block": "83"
+    },
+    {
+      "kind": "point",
+      "name": "Explicit short snowline cell",
+      "position": [
+        4,
+        5
+      ],
+      "block": "83"
+    },
+    {
+      "kind": "point",
+      "name": "Explicit short snowline cell",
+      "position": [
+        5,
+        5
+      ],
+      "block": "84"
+    },
+    {
+      "kind": "point",
+      "name": "Explicit short snowline cell",
+      "position": [
+        6,
+        5
+      ],
+      "block": "84"
+    },
+    {
+      "kind": "point",
+      "name": "Explicit short snowline cell",
+      "position": [
+        7,
+        5
+      ],
+      "block": "83"
+    },
+    {
+      "kind": "point",
+      "name": "Explicit short snowline cell",
+      "position": [
+        8,
+        5
+      ],
+      "block": "83"
+    },
+    {
+      "kind": "point",
+      "name": "Explicit short snowline cell",
+      "position": [
+        9,
+        5
+      ],
+      "block": "8b"
+    },
+    {
+      "kind": "point",
+      "name": "Explicit short snowline cell",
+      "position": [
+        10,
+        5
+      ],
+      "block": "8b"
+    },
+    {
+      "kind": "point",
+      "name": "Explicit short snowline cell",
+      "position": [
+        11,
+        5
+      ],
+      "block": "8b"
+    },
+    {
+      "kind": "point",
+      "name": "Explicit short snowline cell",
+      "position": [
+        12,
+        5
+      ],
+      "block": "8b"
+    },
+    {
+      "kind": "point",
+      "name": "Explicit short snowline cell",
+      "position": [
+        13,
+        5
+      ],
+      "block": "8b"
+    },
+    {
+      "kind": "point",
+      "name": "Explicit short snowline cell",
+      "position": [
+        14,
+        5
+      ],
+      "block": "8b"
+    },
+    {
+      "kind": "point",
+      "name": "Explicit short snowline cell",
+      "position": [
+        15,
+        5
+      ],
+      "block": "8b"
+    },
+    {
+      "kind": "point",
+      "name": "Explicit short snowline cell",
+      "position": [
+        16,
+        5
+      ],
+      "block": "8b"
+    },
+    {
+      "kind": "point",
+      "name": "Explicit short snowline cell",
+      "position": [
+        17,
+        5
+      ],
+      "block": "8b"
+    },
+    {
+      "kind": "point",
+      "name": "Explicit short snowline cell",
+      "position": [
+        18,
+        5
+      ],
+      "block": "8b"
+    },
+    {
+      "kind": "point",
+      "name": "Explicit short snowline cell",
+      "position": [
+        19,
+        5
+      ],
+      "block": "8b"
+    },
+    {
+      "kind": "point",
+      "name": "Explicit short snowline cell",
+      "position": [
+        0,
+        6
+      ],
+      "block": "8b"
+    },
+    {
+      "kind": "point",
+      "name": "Explicit short snowline cell",
+      "position": [
+        1,
+        6
+      ],
+      "block": "8b"
+    },
+    {
+      "kind": "point",
+      "name": "Explicit short snowline cell",
+      "position": [
+        2,
+        6
       ],
       "block": "88"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
-      "position": [
-        4,
-        4
-      ],
-      "block": "83"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        5,
-        4
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        6,
-        4
-      ],
-      "block": "83"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        7,
-        4
-      ],
-      "block": "83"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        8,
-        4
-      ],
-      "block": "83"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        9,
-        4
-      ],
-      "block": "84"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        10,
-        4
-      ],
-      "block": "83"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        11,
-        4
-      ],
-      "block": "83"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        12,
-        4
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        13,
-        4
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        14,
-        4
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        15,
-        4
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        16,
-        4
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        17,
-        4
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        18,
-        4
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        19,
-        4
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        20,
-        4
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        21,
-        4
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        22,
-        4
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        23,
-        4
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        24,
-        4
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        25,
-        4
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        26,
-        4
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        27,
-        4
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        28,
-        4
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        29,
-        4
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        30,
-        4
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        31,
-        4
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        0,
-        5
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        1,
-        5
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        2,
-        5
-      ],
-      "block": "83"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        3,
-        5
-      ],
-      "block": "83"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        4,
-        5
-      ],
-      "block": "83"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        5,
-        5
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        6,
-        5
-      ],
-      "block": "83"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        7,
-        5
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        8,
-        5
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        9,
-        5
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        10,
-        5
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        11,
-        5
-      ],
-      "block": "83"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        12,
-        5
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        13,
-        5
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        14,
-        5
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        15,
-        5
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        16,
-        5
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        17,
-        5
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        18,
-        5
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        19,
-        5
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        20,
-        5
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        21,
-        5
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        22,
-        5
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        23,
-        5
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        24,
-        5
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        25,
-        5
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        26,
-        5
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        27,
-        5
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        28,
-        5
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        29,
-        5
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        30,
-        5
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        31,
-        5
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        0,
-        6
-      ],
-      "block": "83"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        1,
-        6
-      ],
-      "block": "83"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        2,
-        6
-      ],
-      "block": "83"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         3,
         6
@@ -1903,44 +1126,44 @@
       "block": "83"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         4,
-        6
-      ],
-      "block": "83"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        5,
-        6
-      ],
-      "block": "83"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        6,
-        6
-      ],
-      "block": "83"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        7,
         6
       ],
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
+      "position": [
+        5,
+        6
+      ],
+      "block": "8b"
+    },
+    {
+      "kind": "point",
+      "name": "Explicit short snowline cell",
+      "position": [
+        6,
+        6
+      ],
+      "block": "8b"
+    },
+    {
+      "kind": "point",
+      "name": "Explicit short snowline cell",
+      "position": [
+        7,
+        6
+      ],
+      "block": "83"
+    },
+    {
+      "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         8,
         6
@@ -1948,8 +1171,8 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         9,
         6
@@ -1957,8 +1180,8 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         10,
         6
@@ -1966,17 +1189,17 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         11,
         6
       ],
-      "block": "83"
+      "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         12,
         6
@@ -1984,8 +1207,8 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         13,
         6
@@ -1993,26 +1216,26 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         14,
         6
       ],
-      "block": "8b"
+      "block": "83"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         15,
         6
       ],
-      "block": "8b"
+      "block": "83"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         16,
         6
@@ -2020,8 +1243,8 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         17,
         6
@@ -2029,8 +1252,8 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         18,
         6
@@ -2038,8 +1261,8 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         19,
         6
@@ -2047,134 +1270,26 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
-      "position": [
-        20,
-        6
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        21,
-        6
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        22,
-        6
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        23,
-        6
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        24,
-        6
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        25,
-        6
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        26,
-        6
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        27,
-        6
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        28,
-        6
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        29,
-        6
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        30,
-        6
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        31,
-        6
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         0,
         7
       ],
-      "block": "8b"
+      "block": "83"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         1,
         7
       ],
-      "block": "8b"
+      "block": "83"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         2,
         7
@@ -2182,8 +1297,8 @@
       "block": "83"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         3,
         7
@@ -2191,17 +1306,17 @@
       "block": "83"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         4,
         7
       ],
-      "block": "83"
+      "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         5,
         7
@@ -2209,8 +1324,8 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         6,
         7
@@ -2218,44 +1333,44 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         7,
         7
       ],
-      "block": "8b"
+      "block": "83"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         8,
         7
       ],
-      "block": "8b"
+      "block": "83"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         9,
         7
       ],
-      "block": "8b"
+      "block": "83"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         10,
         7
       ],
-      "block": "8b"
+      "block": "83"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         11,
         7
@@ -2263,53 +1378,53 @@
       "block": "83"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         12,
         7
       ],
-      "block": "8b"
+      "block": "83"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         13,
         7
       ],
-      "block": "8b"
+      "block": "83"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         14,
         7
       ],
-      "block": "8b"
+      "block": "83"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         15,
         7
       ],
-      "block": "8b"
+      "block": "83"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         16,
         7
       ],
-      "block": "8b"
+      "block": "83"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         17,
         7
@@ -2317,8 +1432,8 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         18,
         7
@@ -2326,8 +1441,8 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         19,
         7
@@ -2335,116 +1450,8 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
-      "position": [
-        20,
-        7
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        21,
-        7
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        22,
-        7
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        23,
-        7
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        24,
-        7
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        25,
-        7
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        26,
-        7
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        27,
-        7
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        28,
-        7
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        29,
-        7
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        30,
-        7
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        31,
-        7
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         0,
         8
@@ -2452,8 +1459,8 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         1,
         8
@@ -2461,8 +1468,8 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         2,
         8
@@ -2470,8 +1477,8 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         3,
         8
@@ -2479,8 +1486,8 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         4,
         8
@@ -2488,8 +1495,8 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         5,
         8
@@ -2497,8 +1504,8 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         6,
         8
@@ -2506,8 +1513,8 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         7,
         8
@@ -2515,8 +1522,8 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         8,
         8
@@ -2524,8 +1531,8 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         9,
         8
@@ -2533,8 +1540,8 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         10,
         8
@@ -2542,17 +1549,17 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         11,
         8
       ],
-      "block": "83"
+      "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         12,
         8
@@ -2560,35 +1567,35 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         13,
+        8
+      ],
+      "block": "83"
+    },
+    {
+      "kind": "point",
+      "name": "Explicit short snowline cell",
+      "position": [
+        14,
         8
       ],
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
-      "position": [
-        14,
-        8
-      ],
-      "block": "83"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         15,
         8
       ],
-      "block": "83"
+      "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         16,
         8
@@ -2596,17 +1603,17 @@
       "block": "84"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         17,
         8
       ],
-      "block": "83"
+      "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         18,
         8
@@ -2614,8 +1621,8 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         19,
         8
@@ -2623,116 +1630,8 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
-      "position": [
-        20,
-        8
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        21,
-        8
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        22,
-        8
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        23,
-        8
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        24,
-        8
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        25,
-        8
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        26,
-        8
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        27,
-        8
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        28,
-        8
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        29,
-        8
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        30,
-        8
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        31,
-        8
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         0,
         9
@@ -2740,8 +1639,8 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         1,
         9
@@ -2749,8 +1648,8 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         2,
         9
@@ -2758,8 +1657,8 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         3,
         9
@@ -2767,8 +1666,8 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         4,
         9
@@ -2776,8 +1675,8 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         5,
         9
@@ -2785,8 +1684,8 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         6,
         9
@@ -2794,8 +1693,8 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         7,
         9
@@ -2803,8 +1702,8 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         8,
         9
@@ -2812,8 +1711,8 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         9,
         9
@@ -2821,8 +1720,8 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         10,
         9
@@ -2830,53 +1729,53 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         11,
         9
       ],
-      "block": "83"
+      "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         12,
         9
       ],
-      "block": "83"
+      "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         13,
         9
       ],
-      "block": "83"
+      "block": "56"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         14,
         9
       ],
-      "block": "83"
+      "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         15,
         9
       ],
-      "block": "83"
+      "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         16,
         9
@@ -2884,17 +1783,17 @@
       "block": "84"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         17,
         9
       ],
-      "block": "83"
+      "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         18,
         9
@@ -2902,8 +1801,8 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         19,
         9
@@ -2911,2704 +1810,365 @@
       "block": "8b"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
-      "position": [
-        20,
-        9
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        21,
-        9
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        22,
-        9
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        23,
-        9
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        24,
-        9
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        25,
-        9
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        26,
-        9
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        27,
-        9
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        28,
-        9
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        29,
-        9
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        30,
-        9
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        31,
-        9
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         0,
         10
       ],
-      "block": "8b"
+      "block": "05"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         1,
         10
       ],
-      "block": "8b"
+      "block": "05"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         2,
         10
       ],
-      "block": "8b"
+      "block": "05"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         3,
         10
       ],
-      "block": "8b"
+      "block": "05"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         4,
         10
       ],
-      "block": "8b"
+      "block": "05"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         5,
         10
       ],
-      "block": "8b"
+      "block": "05"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         6,
         10
       ],
-      "block": "8b"
+      "block": "05"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         7,
         10
       ],
-      "block": "8b"
+      "block": "05"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         8,
         10
       ],
-      "block": "8b"
+      "block": "05"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         9,
         10
       ],
-      "block": "8b"
+      "block": "05"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         10,
         10
       ],
-      "block": "8b"
+      "block": "05"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         11,
         10
       ],
-      "block": "8b"
+      "block": "05"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         12,
         10
       ],
-      "block": "8b"
+      "block": "05"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         13,
         10
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        14,
-        10
-      ],
-      "block": "83"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        15,
-        10
-      ],
-      "block": "83"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        16,
-        10
-      ],
-      "block": "84"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        17,
-        10
-      ],
-      "block": "83"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        18,
-        10
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        19,
-        10
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        20,
-        10
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        21,
-        10
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        22,
-        10
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        23,
-        10
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        24,
-        10
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        25,
-        10
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        26,
-        10
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        27,
-        10
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        28,
-        10
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        29,
-        10
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        30,
-        10
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        31,
-        10
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        0,
-        11
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        1,
-        11
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        2,
-        11
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        3,
-        11
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        4,
-        11
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        5,
-        11
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        6,
-        11
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        7,
-        11
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        8,
-        11
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        9,
-        11
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        10,
-        11
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        11,
-        11
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        12,
-        11
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        13,
-        11
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        14,
-        11
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        15,
-        11
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        16,
-        11
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        17,
-        11
-      ],
-      "block": "83"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        18,
-        11
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        19,
-        11
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        20,
-        11
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        21,
-        11
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        22,
-        11
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        23,
-        11
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        24,
-        11
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        25,
-        11
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        26,
-        11
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        27,
-        11
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        28,
-        11
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        29,
-        11
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        30,
-        11
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        31,
-        11
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        0,
-        12
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        1,
-        12
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        2,
-        12
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        3,
-        12
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        4,
-        12
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        5,
-        12
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        6,
-        12
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        7,
-        12
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        8,
-        12
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        9,
-        12
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        10,
-        12
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        11,
-        12
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        12,
-        12
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        13,
-        12
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        14,
-        12
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        15,
-        12
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        16,
-        12
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        17,
-        12
-      ],
-      "block": "83"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        18,
-        12
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        19,
-        12
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        20,
-        12
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        21,
-        12
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        22,
-        12
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        23,
-        12
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        24,
-        12
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        25,
-        12
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        26,
-        12
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        27,
-        12
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        28,
-        12
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        29,
-        12
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        30,
-        12
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        31,
-        12
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        0,
-        13
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        1,
-        13
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        2,
-        13
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        3,
-        13
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        4,
-        13
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        5,
-        13
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        6,
-        13
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        7,
-        13
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        8,
-        13
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        9,
-        13
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        10,
-        13
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        11,
-        13
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        12,
-        13
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        13,
-        13
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        14,
-        13
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        15,
-        13
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        16,
-        13
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        17,
-        13
-      ],
-      "block": "83"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        18,
-        13
-      ],
-      "block": "83"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        19,
-        13
-      ],
-      "block": "83"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        20,
-        13
-      ],
-      "block": "83"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        21,
-        13
-      ],
-      "block": "83"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        22,
-        13
-      ],
-      "block": "83"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        23,
-        13
-      ],
-      "block": "83"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        24,
-        13
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        25,
-        13
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        26,
-        13
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        27,
-        13
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        28,
-        13
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        29,
-        13
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        30,
-        13
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        31,
-        13
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        0,
-        14
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        1,
-        14
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        2,
-        14
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        3,
-        14
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        4,
-        14
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        5,
-        14
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        6,
-        14
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        7,
-        14
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        8,
-        14
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        9,
-        14
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        10,
-        14
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        11,
-        14
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        12,
-        14
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        13,
-        14
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        14,
-        14
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        15,
-        14
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        16,
-        14
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        17,
-        14
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        18,
-        14
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        19,
-        14
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        20,
-        14
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        21,
-        14
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        22,
-        14
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        23,
-        14
-      ],
-      "block": "83"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        24,
-        14
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        25,
-        14
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        26,
-        14
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        27,
-        14
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        28,
-        14
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        29,
-        14
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        30,
-        14
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        31,
-        14
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        0,
-        15
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        1,
-        15
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        2,
-        15
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        3,
-        15
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        4,
-        15
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        5,
-        15
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        6,
-        15
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        7,
-        15
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        8,
-        15
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        9,
-        15
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        10,
-        15
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        11,
-        15
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        12,
-        15
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        13,
-        15
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        14,
-        15
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        15,
-        15
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        16,
-        15
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        17,
-        15
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        18,
-        15
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        19,
-        15
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        20,
-        15
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        21,
-        15
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        22,
-        15
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        23,
-        15
-      ],
-      "block": "83"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        24,
-        15
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        25,
-        15
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        26,
-        15
-      ],
-      "block": "02"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        27,
-        15
-      ],
-      "block": "02"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        28,
-        15
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        29,
-        15
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        30,
-        15
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        31,
-        15
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        0,
-        16
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        1,
-        16
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        2,
-        16
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        3,
-        16
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        4,
-        16
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        5,
-        16
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        6,
-        16
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        7,
-        16
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        8,
-        16
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        9,
-        16
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        10,
-        16
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        11,
-        16
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        12,
-        16
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        13,
-        16
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        14,
-        16
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        15,
-        16
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        16,
-        16
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        17,
-        16
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        18,
-        16
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        19,
-        16
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        20,
-        16
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        21,
-        16
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        22,
-        16
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        23,
-        16
-      ],
-      "block": "83"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        24,
-        16
       ],
       "block": "01"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
-      "position": [
-        25,
-        16
-      ],
-      "block": "01"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        26,
-        16
-      ],
-      "block": "02"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        27,
-        16
-      ],
-      "block": "02"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        28,
-        16
-      ],
-      "block": "01"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        29,
-        16
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        30,
-        16
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        31,
-        16
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        0,
-        17
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        1,
-        17
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        2,
-        17
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        3,
-        17
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        4,
-        17
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        5,
-        17
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        6,
-        17
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        7,
-        17
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        8,
-        17
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        9,
-        17
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        10,
-        17
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        11,
-        17
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        12,
-        17
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        13,
-        17
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         14,
-        17
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        15,
-        17
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        16,
-        17
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        17,
-        17
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        18,
-        17
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        19,
-        17
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        20,
-        17
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        21,
-        17
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        22,
-        17
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        23,
-        17
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        24,
-        17
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        25,
-        17
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        26,
-        17
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        27,
-        17
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        28,
-        17
+        10
       ],
       "block": "01"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
-        29,
-        17
+        15,
+        10
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Explicit short snowline cell",
+      "position": [
+        16,
+        10
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Explicit short snowline cell",
+      "position": [
+        17,
+        10
       ],
       "block": "05"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
-        30,
-        17
+        18,
+        10
       ],
       "block": "05"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
-        31,
-        17
+        19,
+        10
       ],
       "block": "05"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         0,
-        18
+        11
       ],
-      "block": "8b"
+      "block": "05"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         1,
-        18
+        11
       ],
-      "block": "8b"
+      "block": "05"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         2,
-        18
+        11
       ],
-      "block": "8b"
+      "block": "05"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         3,
-        18
+        11
       ],
-      "block": "8b"
+      "block": "05"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         4,
-        18
+        11
       ],
-      "block": "8b"
+      "block": "05"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         5,
-        18
+        11
       ],
-      "block": "8b"
+      "block": "05"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         6,
-        18
+        11
       ],
-      "block": "8b"
+      "block": "05"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         7,
-        18
+        11
       ],
-      "block": "8b"
+      "block": "05"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         8,
-        18
+        11
       ],
-      "block": "8b"
+      "block": "05"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         9,
-        18
+        11
       ],
-      "block": "8b"
+      "block": "05"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         10,
-        18
+        11
       ],
-      "block": "8b"
+      "block": "05"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         11,
-        18
+        11
       ],
-      "block": "8b"
+      "block": "05"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         12,
-        18
+        11
       ],
-      "block": "8b"
+      "block": "05"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
         13,
-        18
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        14,
-        18
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        15,
-        18
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        16,
-        18
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        17,
-        18
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        18,
-        18
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        19,
-        18
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        20,
-        18
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        21,
-        18
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        22,
-        18
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        23,
-        18
-      ],
-      "block": "8b"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        24,
-        18
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        25,
-        18
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        26,
-        18
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        27,
-        18
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Frozen west-entry Cedar native terrain",
-      "kind": "point",
-      "position": [
-        28,
-        18
+        11
       ],
       "block": "01"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
-        29,
-        18
+        14,
+        11
       ],
       "block": "05"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
-        30,
-        18
+        15,
+        11
       ],
       "block": "05"
     },
     {
-      "name": "Frozen west-entry Cedar native terrain",
       "kind": "point",
+      "name": "Explicit short snowline cell",
       "position": [
-        31,
-        18
+        16,
+        11
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Explicit short snowline cell",
+      "position": [
+        17,
+        11
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Explicit short snowline cell",
+      "position": [
+        18,
+        11
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Explicit short snowline cell",
+      "position": [
+        19,
+        11
       ],
       "block": "05"
     }
-  ]
+  ],
+  "reject_cliff_cuts": true
 }

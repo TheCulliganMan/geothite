@@ -2801,7 +2801,7 @@
             9,
             0
           ],
-          "native_connection": "Town north offset-19 to Cedar south+19; town core18/19 to Cedar56/57. Winter begins inland."
+          "native_connection": "Town north offset-4 to Cedar south+4; town core18/19 to Cedar26/27. Winter begins inland."
         }
       ],
       "interiors": [
@@ -2872,11 +2872,22 @@
         "map_constant": "MN_GRAND_MARAIS",
         "scope": "Warm west-entry Superior town; north inland branch.",
         "interiors": 6,
-        "review": "../revisions/north-shore-ely-geography-v01/VERIFICATION.md",
+        "review": "../revisions/superior-gunflint-quality-v01/VERIFICATION.md",
         "connections": "MnGrandMarais.connections.json"
       },
       "native_connections_source": "MnGrandMarais.connections.json",
-      "layout": "MnGrandMarais.layout.json"
+      "layout": "MnGrandMarais.layout.json",
+      "native_geography_publication": {
+        "status": "MATCHES_COMPOSED_NATIVE_GEOGRAPHY",
+        "final_pack_sha256": "032304d0fd1d51863a2c3bf2562b20728e22c7535d1c194555621bc8e85b4899",
+        "content_identity": "f2ac93f14af05a2935947e1696385a26a16b2d2bd509e5da3e9223af02f98d63",
+        "verification": "revisions/superior-gunflint-quality-v01/VERIFICATION.md",
+        "progression_scope": "Explicit local fixtures do not establish earned campaign progression."
+      },
+      "world_origin_proposed": [
+        226,
+        -400
+      ]
     },
     {
       "id": "MnBoundaryWaters",
@@ -2905,10 +2916,10 @@
             12
           ],
           "native_connection": {
-            "target_map": "MnR12C00R01",
+            "target_map": "MnR12C00R00",
             "direction": "east",
-            "offset_metatiles": 8,
-            "reciprocal_offset_metatiles": -8,
+            "offset_metatiles": -2,
+            "reciprocal_offset_metatiles": 2,
             "checkpoint": "gunflint"
           }
         },
@@ -4008,39 +4019,39 @@
       "id": "MnInternationalFalls",
       "name": "INTERNATIONAL FALLS",
       "dimensions_metatiles": [
-        24,
-        24
+        16,
+        14
       ],
       "reference_anchor_percent": [
         46,
         13
       ],
       "role": "town",
-      "tileset": "johto",
-      "composition": "Border-side ranger base, colder palette and south/east walking exits.",
+      "tileset": "johto_modern",
+      "composition": "A plowed border town with a public clinic/ranger desk, winter supplies, weather notebook and neighborly cold-weather checks.",
       "ports": [
         {
           "route": "MN_R17",
           "side": "S",
           "gate_metatile": [
-            12,
-            22
+            10,
+            12
           ],
           "landing_metatile": [
-            12,
-            20
+            10,
+            10
           ]
         },
         {
           "route": "MN_R20",
           "side": "E",
           "gate_metatile": [
-            22,
-            12
+            14,
+            7
           ],
           "landing_metatile": [
-            20,
-            12
+            12,
+            7
           ]
         }
       ],
@@ -4049,10 +4060,11 @@
           "id": "MnInternationalFallsPokecenter1F",
           "kind": "pokecenter",
           "dimensions_metatiles": [
-            10,
-            8
+            5,
+            5
           ],
-          "source_behavior": "canonical healing, PC and blackout recovery"
+          "source_behavior": "canonical healing, PC and blackout recovery",
+          "authoring_file": "towns/MnInternationalFalls.json"
         },
         {
           "id": "MnInternationalFallsMart",
@@ -4061,7 +4073,8 @@
             6,
             4
           ],
-          "source_behavior": "canonical clerk, money deduction and inventory"
+          "source_behavior": "canonical clerk, money deduction and inventory",
+          "authoring_file": "towns/MnInternationalFalls.json"
         }
       ],
       "walkable_destinations": [
@@ -4070,7 +4083,70 @@
         "central square",
         "local story NPC"
       ],
-      "door_contract": "Assign exterior core-tile door coordinates only after selecting authentic facade quadrants; record reciprocal warp indices and indoor floor arrivals before export."
+      "door_contract": "Complete native JohtoModern clinic/Mart assemblies, safe passive exterior returns and paired native carpets. Actual door returns, both roads and all room services pass production input; see interior-life/INTERNATIONAL-FALLS.md.",
+      "compiled_tileset": "mn_international_falls",
+      "native_constant": "MN_INTERNATIONAL_FALLS",
+      "layout_file": "towns/MnInternationalFalls.layout.json",
+      "native_publication": {
+        "pack": "content-packs/minnesota-international-falls-v02.crystalpack",
+        "status": "Strict preservation, four controller cases, thirteen preserved native 2D frames and 377 audio checks pass; regional 3D acceptance remains open.",
+        "source": "interior-life/INTERNATIONAL-FALLS.md",
+        "rooms": 2,
+        "doors": 2
+      },
+      "native_ports": [
+        {
+          "side": "south",
+          "target": "MnR17C00R00",
+          "offset": -8,
+          "core_lanes": [
+            [
+              20,
+              27
+            ],
+            [
+              21,
+              27
+            ]
+          ],
+          "destination_lanes": [
+            [
+              36,
+              0
+            ],
+            [
+              37,
+              0
+            ]
+          ]
+        },
+        {
+          "side": "east",
+          "target": "MnRainyRiverIcefields",
+          "offset": -7,
+          "core_lanes": [
+            [
+              31,
+              14
+            ],
+            [
+              31,
+              15
+            ]
+          ],
+          "destination_lanes": [
+            [
+              0,
+              28
+            ],
+            [
+              0,
+              29
+            ]
+          ],
+          "gate": "MnFallsTrailCheck"
+        }
+      ]
     },
     {
       "id": "MnMilleLacs",
@@ -4204,8 +4280,8 @@
       "id": "MN_R12",
       "file": "routes/MN_R12.json",
       "dimensions_metatiles": [
-        64,
-        56
+        32,
+        32
       ]
     },
     {
@@ -4535,50 +4611,10 @@
       ]
     },
     {
-      "id": "MnR12C01R00",
-      "route": "MN_R12",
-      "column": 1,
-      "row": 0,
-      "dimensions_metatiles": [
-        32,
-        24
-      ]
-    },
-    {
       "id": "MnR12C00R01",
       "route": "MN_R12",
       "column": 0,
       "row": 1,
-      "dimensions_metatiles": [
-        32,
-        24
-      ]
-    },
-    {
-      "id": "MnR12C01R01",
-      "route": "MN_R12",
-      "column": 1,
-      "row": 1,
-      "dimensions_metatiles": [
-        32,
-        24
-      ]
-    },
-    {
-      "id": "MnR12C00R02",
-      "route": "MN_R12",
-      "column": 0,
-      "row": 2,
-      "dimensions_metatiles": [
-        32,
-        8
-      ]
-    },
-    {
-      "id": "MnR12C01R02",
-      "route": "MN_R12",
-      "column": 1,
-      "row": 2,
       "dimensions_metatiles": [
         32,
         8
@@ -4800,8 +4836,12 @@
       "column": 1,
       "row": 0,
       "dimensions_metatiles": [
-        24,
+        4,
         24
+      ],
+      "source_origin_metatiles": [
+        32,
+        0
       ]
     },
     {
@@ -5741,21 +5781,21 @@
     {
       "kind": "guarded_connection",
       "route": "MN_R12",
-      "a": "MnR12C00R01",
+      "a": "MnR12C00R00",
       "b": "MnBoundaryWaters",
       "direction_a": "west",
       "direction_b": "east",
-      "offset_a": -8,
-      "offset_b": 8,
+      "offset_a": 2,
+      "offset_b": -2,
       "offset_units": "32px_metatiles",
       "a_edge_core": [
         [
           0,
-          8
+          28
         ],
         [
           0,
-          9
+          29
         ]
       ],
       "b_edge_core": [
@@ -6140,31 +6180,39 @@
       "warp_index_status": "Allocate from authored map events; target safe FLOOR arrival event rather than source trigger."
     },
     {
-      "kind": "gatehouse_warp",
+      "kind": "native_map_connection",
       "route": "MN_R16",
       "a": "MnR16C00R00",
-      "a_gate_local_metatile": [
-        1,
-        12
-      ],
-      "a_arrival_local_metatile": [
-        3,
-        12
-      ],
       "b": "MnMoorhead",
-      "b_gate_metatile": [
-        22,
-        9
-      ],
-      "b_arrival_metatile": [
-        20,
-        9
-      ],
       "requires_flags": [
         "BADGE_6"
       ],
-      "gate_script": "MnR16EntryGateScript",
-      "warp_index_status": "Allocate from authored map events; target safe FLOOR arrival event rather than source trigger."
+      "a_side": "west",
+      "a_offset": 6,
+      "a_core_lanes": [
+        [
+          0,
+          24
+        ],
+        [
+          0,
+          25
+        ]
+      ],
+      "b_side": "east",
+      "b_offset": -6,
+      "b_core_lanes": [
+        [
+          31,
+          12
+        ],
+        [
+          31,
+          13
+        ]
+      ],
+      "source": "interior-life/MOORHEAD.md",
+      "native_status": "Both lanes and both directions verified; no extra gatehouse warp."
     },
     {
       "kind": "gatehouse_warp",
@@ -6194,31 +6242,39 @@
       "warp_index_status": "Allocate from authored map events; target safe FLOOR arrival event rather than source trigger."
     },
     {
-      "kind": "gatehouse_warp",
+      "kind": "native_map_connection",
       "route": "MN_R17",
       "a": "MnR17C00R00",
-      "a_gate_local_metatile": [
-        18,
-        1
-      ],
-      "a_arrival_local_metatile": [
-        18,
-        3
-      ],
       "b": "MnInternationalFalls",
-      "b_gate_metatile": [
-        12,
-        22
-      ],
-      "b_arrival_metatile": [
-        12,
-        20
-      ],
       "requires_flags": [
         "BADGE_7"
       ],
-      "gate_script": "MnR17EntryGateScript",
-      "warp_index_status": "Allocate from authored map events; target safe FLOOR arrival event rather than source trigger."
+      "a_side": "north",
+      "a_offset": 8,
+      "a_core_lanes": [
+        [
+          36,
+          0
+        ],
+        [
+          37,
+          0
+        ]
+      ],
+      "b_side": "south",
+      "b_offset": -8,
+      "b_core_lanes": [
+        [
+          20,
+          27
+        ],
+        [
+          21,
+          27
+        ]
+      ],
+      "source": "interior-life/INTERNATIONAL-FALLS.md",
+      "native_status": "Both lanes and both directions verified; original R17 southern links and regional progression preserved."
     },
     {
       "kind": "gatehouse_warp",
@@ -6329,26 +6385,10 @@
       "warp_index_status": "Allocate from authored map events; target safe FLOOR arrival event rather than source trigger."
     },
     {
-      "kind": "gatehouse_warp",
+      "kind": "native_map_connection",
       "route": "MN_R20",
-      "a": "MnR20C00R00",
-      "a_gate_local_metatile": [
-        1,
-        22
-      ],
-      "a_arrival_local_metatile": [
-        3,
-        22
-      ],
+      "a": "MnRainyRiverIcefields",
       "b": "MnInternationalFalls",
-      "b_gate_metatile": [
-        22,
-        12
-      ],
-      "b_arrival_metatile": [
-        20,
-        12
-      ],
       "requires_flags": [
         "BADGE_1",
         "BADGE_2",
@@ -6358,10 +6398,36 @@
         "BADGE_6",
         "BADGE_7",
         "BADGE_8",
+        "EVENT_MN_BORDER_REPORT",
         "EVENT_MN_LIGHTHOUSE_SIGNAL"
       ],
-      "gate_script": "MnR20EntryGateScript",
-      "warp_index_status": "Allocate from authored map events; target safe FLOOR arrival event rather than source trigger."
+      "a_side": "west",
+      "a_offset": 7,
+      "a_core_lanes": [
+        [
+          0,
+          28
+        ],
+        [
+          0,
+          29
+        ]
+      ],
+      "b_side": "east",
+      "b_offset": -7,
+      "b_core_lanes": [
+        [
+          31,
+          14
+        ],
+        [
+          31,
+          15
+        ]
+      ],
+      "gate_script": "MnFallsTrailCheck",
+      "source": "interior-life/INTERNATIONAL-FALLS.md",
+      "native_status": "Actual guarded town/icefield seam; original icefield/R20 link preserved. Both lanes, free inbound return and full native circuit pass."
     },
     {
       "kind": "guarded_connection",
@@ -6624,87 +6690,9 @@
     {
       "kind": "connection",
       "a": "MnR12C00R00",
-      "direction_a": "east",
-      "b": "MnR12C01R00",
-      "direction_b": "west",
-      "offset_a": 0,
-      "offset_b": 0,
-      "requires": [
-        "continuous matching authored border quadrants",
-        "no seam NPC or warp overlap"
-      ]
-    },
-    {
-      "kind": "connection",
-      "a": "MnR12C00R00",
       "direction_a": "south",
       "b": "MnR12C00R01",
       "direction_b": "north",
-      "offset_a": 0,
-      "offset_b": 0,
-      "requires": [
-        "continuous matching authored border quadrants",
-        "no seam NPC or warp overlap"
-      ]
-    },
-    {
-      "kind": "connection",
-      "a": "MnR12C01R00",
-      "direction_a": "south",
-      "b": "MnR12C01R01",
-      "direction_b": "north",
-      "offset_a": 0,
-      "offset_b": 0,
-      "requires": [
-        "continuous matching authored border quadrants",
-        "no seam NPC or warp overlap"
-      ]
-    },
-    {
-      "kind": "connection",
-      "a": "MnR12C00R01",
-      "direction_a": "east",
-      "b": "MnR12C01R01",
-      "direction_b": "west",
-      "offset_a": 0,
-      "offset_b": 0,
-      "requires": [
-        "continuous matching authored border quadrants",
-        "no seam NPC or warp overlap"
-      ]
-    },
-    {
-      "kind": "connection",
-      "a": "MnR12C00R01",
-      "direction_a": "south",
-      "b": "MnR12C00R02",
-      "direction_b": "north",
-      "offset_a": 0,
-      "offset_b": 0,
-      "requires": [
-        "continuous matching authored border quadrants",
-        "no seam NPC or warp overlap"
-      ]
-    },
-    {
-      "kind": "connection",
-      "a": "MnR12C01R01",
-      "direction_a": "south",
-      "b": "MnR12C01R02",
-      "direction_b": "north",
-      "offset_a": 0,
-      "offset_b": 0,
-      "requires": [
-        "continuous matching authored border quadrants",
-        "no seam NPC or warp overlap"
-      ]
-    },
-    {
-      "kind": "connection",
-      "a": "MnR12C00R02",
-      "direction_a": "east",
-      "b": "MnR12C01R02",
-      "direction_b": "west",
       "offset_a": 0,
       "offset_b": 0,
       "requires": [
@@ -7027,29 +7015,19 @@
       "b": "MnMaraisCedarApproach",
       "direction_a": "north",
       "direction_b": "south",
-      "offset_a": -19,
-      "offset_b": 19,
+      "offset_a": -4,
+      "offset_b": 4,
       "native_source": "revisions/north-shore-ely-geography-v01/geography/native-west-v02/contract.json"
     },
     {
       "kind": "connection",
       "a": "MnMaraisCedarApproach",
-      "b": "MnMaraisInlandNeck",
+      "b": "MnR12C00R01",
       "direction_a": "west",
       "direction_b": "east",
-      "offset_a": 0,
-      "offset_b": 0,
-      "native_source": "revisions/north-shore-ely-geography-v01/geography/native-west-v02/contract.json"
-    },
-    {
-      "kind": "connection",
-      "a": "MnMaraisInlandNeck",
-      "b": "MnR12C01R01",
-      "direction_a": "west",
-      "direction_b": "east",
-      "offset_a": 0,
-      "offset_b": 0,
-      "native_source": "revisions/north-shore-ely-geography-v01/geography/native-west-v02/contract.json"
+      "offset_a": 4,
+      "offset_b": -4,
+      "native_source": "revisions/superior-gunflint-quality-v01/BRIEF.md"
     }
   ],
   "map_id_policy": "Allocate unused group/map/spawn IDs from the actual base; persist the registry; do not hard-code 250 or collide with other overlays.",
@@ -7437,32 +7415,83 @@
     }
   ],
   "superior_inland_source": {
-    "replay_order": [
-      "build_grand_marais_superior",
-      "build_superior_inland_geography",
-      "build_inland_winter"
-    ],
-    "parent": "content-packs/minnesota-superior-inland-art-v01.crystalpack",
-    "final_pack_sha256": "65cf6f98e65ada839ec5afaa57728bf8289d3a50ba53ba6b9b50f08d3620bb17",
-    "content_identity": "f34280a5fc5d6ab8ccc3ec4ef4317a6ea9321070df342ea95aca5745514a0223",
-    "extra_layouts": [
-      "towns/MnMaraisCedarApproach.layout.json",
-      "towns/MnMaraisInlandNeck.layout.json"
-    ],
-    "new_map_registration": {
-      "constant": "MN_MARAIS_INLAND_NECK",
-      "name": "MnMaraisInlandNeck",
-      "groupName": "MINNESOTA",
-      "groupId": 40,
-      "mapId": 8,
-      "width": 65,
-      "height": 19,
-      "environment": "ROUTE",
-      "phoneService": 0
+    "parent": "content-packs/minnesota-superior-inland-winter-v01.crystalpack",
+    "final_pack_sha256": "032304d0fd1d51863a2c3bf2562b20728e22c7535d1c194555621bc8e85b4899",
+    "content_identity": "f2ac93f14af05a2935947e1696385a26a16b2d2bd509e5da3e9223af02f98d63",
+    "builder": "build_compact_superior_pack",
+    "cli": "build_compact_superior",
+    "replay_contract": "planning/minnesota/revisions/superior-gunflint-quality-v01/native.compact.contract.json",
+    "replay_contract_sha256": "fec56ec1141f91bb3d3ae7d371990ba8bf0b4ea22cc6505e5b0e58c3a636e135",
+    "replay_source_files": {
+      "coast": "planning/minnesota/revisions/north-shore-ely-geography-v01/coast-quality-v01/source-v04/compact-bend.contract.json",
+      "r12_layout": "planning/minnesota/revisions/gunflint-quality-v01/source-v10/MN_R12.candidate.layout.json",
+      "r12_dossier": "planning/minnesota/revisions/gunflint-quality-v01/source-v10/MN_R12.candidate.json",
+      "cedar": "planning/minnesota/revisions/superior-gunflint-quality-v01/cedar-source-v02/contract.json"
     },
+    "replay_source_sha256": {
+      "coast": "eb6ca2cb2934f5f0620f2e2eac90b0358b1a18a65c3460d113660282f30ffa57",
+      "r12_layout": "84475431f4c62a4d8eb13b02e01dd78f1473bc0c1b4c9e7abcdb9f16be91846b",
+      "r12_dossier": "36b84d6838eadeba4560247750d591bcf910aee1b2a7e71c2bc7cbdabf83a44b",
+      "cedar": "aca76077490a83ad12fe60e1a3447ed19ecb0f5665c39b3903e4d9be0bff8b05"
+    },
+    "replay_command": [
+      "target/runtime-fps/wasm-dev/build_compact_superior",
+      "content-packs/minnesota-superior-inland-winter-v01.crystalpack",
+      "planning/minnesota/revisions/superior-gunflint-quality-v01/native.compact.contract.json",
+      "fec56ec1141f91bb3d3ae7d371990ba8bf0b4ea22cc6505e5b0e58c3a636e135",
+      "planning/minnesota/revisions/north-shore-ely-geography-v01/coast-quality-v01/source-v04/compact-bend.contract.json",
+      "planning/minnesota/revisions/gunflint-quality-v01/source-v10/MN_R12.candidate.layout.json",
+      "planning/minnesota/revisions/gunflint-quality-v01/source-v10/MN_R12.candidate.json",
+      "planning/minnesota/revisions/superior-gunflint-quality-v01/cedar-source-v02/contract.json",
+      "content-packs/minnesota-superior-compact-v03-replay.crystalpack"
+    ],
+    "replay_output_must_be_fresh": true,
+    "extra_layouts": [
+      "towns/MnMaraisCedarApproach.layout.json"
+    ],
     "camp_event": {
       "name": "EVENT_MN_GUNFLINT_CAMP_SUPPLY",
-      "value": 2387
+      "value": 2387,
+      "active_map": "MnR12C00R01"
+    },
+    "actual_owned_origins_metatiles": {
+      "MnGrandMarais": [
+        226,
+        -400
+      ],
+      "MnR11C01R00": [
+        222,
+        -400
+      ],
+      "MnMaraisCedarApproach": [
+        222,
+        -412
+      ],
+      "MnR12C00R00": [
+        190,
+        -432
+      ],
+      "MnR12C00R01": [
+        190,
+        -408
+      ],
+      "MnBoundaryWaters": [
+        158,
+        -430
+      ]
+    },
+    "source_canvas": {
+      "route": "MN_R11",
+      "dimensions": [
+        56,
+        96
+      ],
+      "unpublished_bounds": [
+        36,
+        0,
+        56,
+        24
+      ]
     }
   }
 }
