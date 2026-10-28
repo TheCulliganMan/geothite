@@ -336,6 +336,15 @@ are retained in
 The guarded candidate passed fresh/stale startup in headless Chromium and mobile
 WebKit; all four sessions reached the production New Game menu without page
 errors. The rollout reported healthy, and public health and clock checks passed.
+All four fresh/stale startup checks also passed against the public HTTPS URL,
+using WebGL in Chromium and WebGPU in mobile WebKit. Both new renderer
+JavaScript/WASM pairs and the preceding WebGL JavaScript returned HTTP 200;
+the public bundle manifest exactly matched the tested candidate. Temporary
+candidate containers and secret files were removed after rollout.
+
+The build snapshot was frozen before later shared authoring edits. Those edits
+and required source fixtures were also committed and pushed in `be0ac4da`;
+they are not part of the deployed `19688108` image.
 
 The independently published fair showcase is
 `20261027-state-fair-realtime-22`, with media under
