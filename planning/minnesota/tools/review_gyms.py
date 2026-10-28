@@ -6,6 +6,7 @@ from pathlib import Path
 
 from PIL import Image, ImageDraw
 from render_archive import save_render
+from gym_wind_art import marked_wind
 from render_reference import SourceArt, load_pack
 from review_north_shore import oriented_sprite
 
@@ -52,7 +53,10 @@ def render(pack, design, output, verify_published=False, events=()):
         for y, row in enumerate(rows):
             for x, symbol in enumerate(row):
                 source, block = gym['art'][symbol]
-                terrain.paste(art.blocks(source, 'indoor')[int(block, 16)], (x * 32, y * 32))
+                native = art.blocks(source, 'indoor')[int(block, 16)]
+                if gym.get('wind_arrows') and symbol in gym.get('winds', {}):
+                    native = marked_wind(pack, native, gym['winds'][symbol])
+                terrain.paste(native, (x * 32, y * 32))
         save_render(terrain, output / f'{gym["id"]}-terrain.png')
         if verify_published:
             room = pack['data']['maps'][gym['id']]
@@ -65,7 +69,8 @@ def render(pack, design, output, verify_published=False, events=()):
                 for x,symbol in enumerate(row):
                     source,block = gym['art'][symbol]
                     actual = collision[f'{room["blocks"][y*width+x]:02x}']
-                    expected = ([gym['winds'][symbol]] * 4 if symbol in gym.get('winds', {})
+                    expected = (['WALL'] * 4 if symbol in gym.get('barriers', [])
+                                else [gym['winds'][symbol]] * 4 if symbol in gym.get('winds', {})
                                 else pack['data']['tilesets'][source]['collision'][block])
                     assert actual == expected, (gym['id'],x,y)
         scene = terrain.convert('RGBA')

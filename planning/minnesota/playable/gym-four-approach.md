@@ -126,3 +126,39 @@ balance or the complete earned starter-to-League journey. The [courier](courier-
 [Leech shore](leech-shore.md) successors now implement their separate later
 chapters. This focused overlay never awards their completion. Rail and the
 complete earned starter-to-League journey remain unfinished.
+
+## Earned Current and St. Paul arrival — 2026-10-27
+
+The frozen 554-map [Ely story pack](ely-league.md), file SHA-256
+`ab049e907b8712f5ee5f174b474c38fcc52460f272e60336aff17445d62cb6c4`,
+now passes `northstar_campaign_earned_current_badge_and_walks_to_st_paul`
+in 140.39 seconds. This invocation continues the actual dispatcher-home save
+from the [fresh Winona-to-ICE course](minneapolis.md#new-game-through-two-badges-and-ice--2026-10-27).
+No position, party, level, resources, badge, quest flags or RNG are supplied.
+
+The same Quilava/Rattata party wins Lenvi, Jossa and Avrin through the actual
+battle engine. Both qualifying victories precede the adjacent switch pair and
+court opening. The native level-up question is answered without discarding
+Headbutt or Mud-Slap; actual selected-move PP, experience and native rewards are
+observed. Each fight wins on its first attempt in this run. Current and one
+ThunderPunch TM are earned, care restores HP/status/PP, and the party crosses
+the real R04 road into St. Paul. Courier, manifest and Capitol remain unearned
+at this checkpoint. Save/Continue preserves the earned state at each stage.
+
+```sh
+RUST_MIN_STACK=67108864 CARGO_TARGET_DIR=target/northstar-story \
+CARGO_PROFILE_WASM_DEV_OPT_LEVEL=0 \
+CRYSTAL_WINONA_TEST_PACK="$PWD/content-packs/minnesota-northstar-ely-league.crystalpack" \
+CRYSTAL_WINONA_SAVE_DIR="$PWD/.local/northstar-current-campaign-saves" \
+CRYSTAL_NORTHSTAR_CURRENT_SAVE="$PWD/.local/northstar-campaign-earned-final-saves/winona-campaign-earned-ice-dispatcher-home-64348-1793118978678766000.crystalsave" \
+cargo test --lib --locked --profile wasm-dev -p crystal-bevy \
+  northstar_campaign_earned_current_badge_and_walks_to_st_paul \
+  -- --ignored --test-threads=1 --nocapture
+```
+
+The log is `.local/northstar-earned-current.log`. Its resulting saved arrival is
+`.local/northstar-current-campaign-saves/winona-campaign-earned-st-paul-arrival-73673-1793120113107775000.crystalsave`.
+This proves continuation of the recorded fresh campaign, rather than independently
+replaying Winona in this invocation. Without the checkpoint override, the test
+starts through the full preceding New Game course. The pack remains unchanged;
+later city/gym recompositions are separate lineages.

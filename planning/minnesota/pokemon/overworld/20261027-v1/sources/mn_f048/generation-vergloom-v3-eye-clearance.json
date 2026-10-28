@@ -1,0 +1,9 @@
+{
+  "generation_tool": "built-in image_gen",
+  "version": "v3-eye-clearance",
+  "default_path": "/Users/ryanculligan/.codex/generated_images/01a17f9b-ed77-7d71-b5f3-0c5fcf365412/exec-deaf0209-3f25-484d-946a-3b6c94779e25.png",
+  "saved_path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f048/vergloom.overworld.imagegen-v3-eye-clearance.png",
+  "sha256": "becce4d02f92a8fe65acd56bd6647602a48caa2d8257f23b2d4ff81bf58a14fc",
+  "prompt": "Use case: precise-object-edit. Preserve this exact six-pose Gen2 moss cryptid: huge draping moss hump, twig shoulders, two long root-knuckle arms, two short actual feet, complete faceless rear views and gait. Refine ONLY eye planes. Front upper-left and lower-left must each retain TWO LIGHT GREEN25x25 eye windows at existing spacing in an opaque BLACK cavity. Trim only fringe immediately around eyes so each window has at least35sourcepx uninterrupted BLACK above, below, left and right, including between window and green moss. Upper-right/lower-right LEFT profiles must each show ONE LIGHT GREEN28x28 window in a broadened opaque BLACK110x110 cheek cavity with35px uninterrupted BLACK on every side. Current profile window is only14pixels wide and crowded by fringe: make cheek cavity broader while retaining one-eye profile, no extra face. Keep all eye locations aligned between idle and step. Rear stays dense shaggy moss, no face. Palette ONLY LIGHT#7BB552 RGB55510959,DARK#29524A RGB5559541,BLACK#000000. Real alpha0 background and holes. Crisp block pixels and stepped BLACK contours, no gradients/glow/haze/antialiasing/white glints/text. Transparent1536x1024six-cell sheet.\n",
+  "accepted": false
+}

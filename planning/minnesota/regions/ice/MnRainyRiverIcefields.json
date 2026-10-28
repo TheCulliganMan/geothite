@@ -1,0 +1,454 @@
+{
+  "schema_version": 1,
+  "id": "MnRainyRiverIcefields",
+  "map_prefix": "MnRainyRiverIcefields",
+  "map_constant": "MN_RAINY_RIVER_ICEFIELDS",
+  "name": "Rainy River Icefields",
+  "status": "DETACHED_SOURCE_DRAFT_NOT_NATIVE",
+  "dimensions_metatiles": [
+    32,
+    24
+  ],
+  "tileset": "mn_winter_outdoor",
+  "environment": "ROUTE",
+  "music": "MUSIC_LAKE_OF_RAGE",
+  "region_identity": "A frozen Rainy River backwater west of the Voyageurs border trail: a broad upper ice bend, stepped mid-channel, useful lower glide and evergreen snow banks. Separate from the Boundary Waters Safari.",
+  "ports": [
+    {
+      "direction": "east",
+      "target": "MnR20C00R00",
+      "offset": 0,
+      "reverse_offset": 0,
+      "core": [
+        [
+          63,
+          44
+        ],
+        [
+          63,
+          45
+        ]
+      ],
+      "target_core": [
+        [
+          0,
+          44
+        ],
+        [
+          0,
+          45
+        ]
+      ],
+      "arrival_core": [
+        60,
+        44
+      ],
+      "ordinary_return": true
+    }
+  ],
+  "arrival_core": [
+    60,
+    44
+  ],
+  "unimplemented_links": [
+    {
+      "target": "MnInternationalFalls",
+      "reason": "Town remains source-only; this region does not claim to implement its story desk or recovery services."
+    },
+    {
+      "target": "MnR17C00R00",
+      "reason": "Native embedding has a77-metatile north/south gap; no stretched filler or imaginary seam is added."
+    }
+  ],
+  "main_course": "From the actual R20 west port follow snow to the lower frozen river, slide west to the safe bank and choose icy bank grass or the long snow-side return to the warming shelter. The northern bank gives a reached view of the frozen bend and the original river shape guides the return.",
+  "trainers": [
+    {
+      "id": "MN_ICE_SKIER_ELSA",
+      "trainer_class": "SKIER",
+      "sprite": "SPRITE_COOLTRAINER_F",
+      "tile": [
+        47,
+        22
+      ],
+      "facing": "south",
+      "sight_range": 1,
+      "party": [
+        {
+          "species": "PILOSWINE",
+          "level": 48
+        },
+        {
+          "species": "JYNX",
+          "level": 49
+        }
+      ],
+      "display_name": "ELSA",
+      "defeated_flag": "EVENT_MN_ICE_SKIER_ELSA",
+      "before_lines": [
+        "Ice makes speed.",
+        "Snow makes turns."
+      ],
+      "after_lines": [
+        "Use the snow bank."
+      ],
+      "loss_lines": [
+        "The ice is quick."
+      ]
+    },
+    {
+      "id": "MN_ICE_BOARDER_NILS",
+      "trainer_class": "BOARDER",
+      "sprite": "SPRITE_COOLTRAINER_M",
+      "tile": [
+        9,
+        19
+      ],
+      "facing": "east",
+      "sight_range": 1,
+      "party": [
+        {
+          "species": "SNEASEL",
+          "level": 49
+        }
+      ],
+      "display_name": "NILS",
+      "defeated_flag": "EVENT_MN_ICE_BOARDER_NILS",
+      "before_lines": [
+        "Follow the banks.",
+        "Or take the ice."
+      ],
+      "after_lines": [
+        "Take the bank."
+      ],
+      "loss_lines": [
+        "The ice is quick."
+      ]
+    }
+  ],
+  "residents": [
+    {
+      "id": "MN_ICE_RANGER_MARA",
+      "sprite": "SPRITE_POKEFAN_F",
+      "tile": [
+        57,
+        41
+      ],
+      "facing": "west",
+      "lines": [
+        "Snow ends a slide.",
+        "Ice carries you.",
+        "Banks lead back."
+      ]
+    }
+  ],
+  "items": [
+    {
+      "id": "MN_ICE_NEVERMELTICE",
+      "item": "NEVERMELTICE",
+      "quantity": 1,
+      "tile": [
+        21,
+        11
+      ],
+      "approach": [
+        20,
+        11
+      ],
+      "flag": "EVENT_MN_ICE_NEVERMELTICE"
+    }
+  ],
+  "signs": [],
+  "doors": [
+    {
+      "warp_index": 1,
+      "return_warp_index": 2,
+      "tile": [
+        9,
+        27
+      ],
+      "collision": "DOOR",
+      "arrival_tile": [
+        9,
+        28
+      ],
+      "return_tile": [
+        9,
+        28
+      ],
+      "target": "MnRainyRiverWarmingHut",
+      "target_warp": 2
+    }
+  ],
+  "interiors": [
+    {
+      "id": "MnRainyRiverWarmingHut",
+      "map_constant": "MN_RAINY_RIVER_WARMING_HUT",
+      "template": "VioletNicknameSpeechHouse",
+      "dimensions_metatiles": [
+        5,
+        4
+      ],
+      "width_metatiles": 5,
+      "height_metatiles": 4,
+      "tileset": "traditional_house",
+      "border_block": 0,
+      "rows": [
+        "00 02 08 2d 00",
+        "00 12 04 15 00",
+        "00 0d 04 04 00",
+        "00 20 06 20 00"
+      ],
+      "exits": [
+        [
+          5,
+          7
+        ]
+      ],
+      "clear_arrival": [
+        5,
+        6
+      ],
+      "exit_collision": "WARP_CARPET_DOWN",
+      "exit_doors": [
+        [
+          9,
+          27
+        ]
+      ],
+      "residents": [
+        {
+          "id": "MN_ICE_WARMING_KEEPER",
+          "sprite": "SPRITE_POKEFAN_F",
+          "tile": [
+            5,
+            5
+          ],
+          "facing": "south",
+          "service": "heal_party",
+          "lines": [
+            "Shelter's open.",
+            "Warm up your team.",
+            "No border report",
+            "is handled here."
+          ]
+        }
+      ],
+      "items": [],
+      "signs": [],
+      "purpose": "Optional native HealParty shelter. Does not set SQ03 border report or reward flags.",
+      "exit_target_warps": [
+        2
+      ],
+      "passive_arrival": {
+        "index": 2,
+        "tile": [
+          5,
+          6
+        ]
+      }
+    }
+  ],
+  "encounters": {
+    "grass_rates": {
+      "morning": 8,
+      "day": 8,
+      "night": 6
+    },
+    "grass": {
+      "morning": [
+        {
+          "species": "SWINUB",
+          "level": 45
+        },
+        {
+          "species": "SNEASEL",
+          "level": 46
+        },
+        {
+          "species": "NOCTOWL",
+          "level": 46
+        },
+        {
+          "species": "PILOSWINE",
+          "level": 48
+        },
+        {
+          "species": "JYNX",
+          "level": 47
+        },
+        {
+          "species": "DELIBIRD",
+          "level": 46
+        },
+        {
+          "species": "URSARING",
+          "level": 48
+        }
+      ],
+      "day": [
+        {
+          "species": "SWINUB",
+          "level": 45
+        },
+        {
+          "species": "SNEASEL",
+          "level": 46
+        },
+        {
+          "species": "NOCTOWL",
+          "level": 46
+        },
+        {
+          "species": "PILOSWINE",
+          "level": 48
+        },
+        {
+          "species": "JYNX",
+          "level": 47
+        },
+        {
+          "species": "DELIBIRD",
+          "level": 46
+        },
+        {
+          "species": "URSARING",
+          "level": 48
+        }
+      ],
+      "night": [
+        {
+          "species": "SWINUB",
+          "level": 45
+        },
+        {
+          "species": "SNEASEL",
+          "level": 46
+        },
+        {
+          "species": "NOCTOWL",
+          "level": 46
+        },
+        {
+          "species": "PILOSWINE",
+          "level": 48
+        },
+        {
+          "species": "JYNX",
+          "level": 47
+        },
+        {
+          "species": "DELIBIRD",
+          "level": 46
+        },
+        {
+          "species": "URSARING",
+          "level": 48
+        }
+      ]
+    },
+    "water_rate": null,
+    "water": null
+  },
+  "field_mechanics": {
+    "FLOOR": "Snow stops sliding and is safe ordinary travel.",
+    "TALL_GRASS": "Icy grass retains native encounters; not slippery.",
+    "ICE": "Native automatic directional movement, closed banks and deliberate snow stops.",
+    "no_new_HM_gate": true,
+    "no_cut_trees": true,
+    "no_Surf_water": true,
+    "upper_discovery": "Two-core native ice gap separates the reached northern snow launch from the cache snow island. Both directions end on visible ordinary snow; the attached granite nose closes the island south side."
+  },
+  "viewpoints": [
+    {
+      "id": "R20_ENTRY",
+      "tile": [
+        60,
+        44
+      ]
+    },
+    {
+      "id": "LOWER_ICE_START",
+      "tile": [
+        54,
+        36
+      ]
+    },
+    {
+      "id": "LOWER_ICE_STOP",
+      "tile": [
+        37,
+        36
+      ]
+    },
+    {
+      "id": "GRASS_CHOICE",
+      "tile": [
+        23,
+        33
+      ]
+    },
+    {
+      "id": "HUT_MOUTH",
+      "tile": [
+        9,
+        28
+      ]
+    },
+    {
+      "id": "WEST_RETURN",
+      "tile": [
+        8,
+        21
+      ]
+    },
+    {
+      "id": "UPPER_BEND",
+      "tile": [
+        16,
+        5
+      ]
+    },
+    {
+      "id": "CACHE_TONGUE",
+      "tile": [
+        20,
+        11
+      ]
+    },
+    {
+      "id": "MID_CHANNEL",
+      "tile": [
+        43,
+        20
+      ]
+    },
+    {
+      "id": "EAST_SNOW_RETURN",
+      "tile": [
+        48,
+        26
+      ]
+    },
+    {
+      "id": "WEAKEST_SOUTH_BANK",
+      "tile": [
+        29,
+        36
+      ]
+    },
+    {
+      "id": "NORTHERN_STOPPING_BANK",
+      "tile": [
+        27,
+        7
+      ]
+    }
+  ],
+  "future_habitat_reservation": {
+    "species": "LUTEBRISK",
+    "type": "ICE",
+    "area": "optional upper frostgrass pocket",
+    "status": "NOT_IN_INSTALLED_251_SPECIES_NATIVE_CATALOG",
+    "implementation": "Only replace a specifically reviewed optional encounter slot after existing F038 Rust catalog closure is integrated; current authored encounters use native species only."
+  }
+}

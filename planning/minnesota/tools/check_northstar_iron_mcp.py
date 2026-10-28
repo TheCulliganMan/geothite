@@ -84,6 +84,7 @@ def main():
     p.add_argument("--save", type=Path, required=True)
     p.add_argument("--mode", choices=["cache", "depot", "reveal", "custody-loss"], required=True)
     p.add_argument("--client", type=Path, default=ROOT / "target/northstar-story/wasm-dev/geothite")
+    p.add_argument("--boosted-review", action="store_true", help="Label evidence from the user-authorized level review.")
     args = p.parse_args()
     pack = load_pack(args.pack)
     with tempfile.TemporaryFile() as stderr:
@@ -105,7 +106,8 @@ def main():
             assert process.wait(timeout=30) == 0
         stderr.seek(0)
         assert stderr.read() == b"", "gameplay stderr must remain byte-empty"
-    print(f"PASS: actual stdio earned {args.mode}, native inputs/Start, unchanged money/badges and byte-empty stderr.")
+    scope = "boosted story review" if args.boosted_review else "earned"
+    print(f"PASS: actual stdio {scope} {args.mode}, native inputs/Start, unchanged money/badges and byte-empty stderr.")
 
 
 if __name__ == "__main__":

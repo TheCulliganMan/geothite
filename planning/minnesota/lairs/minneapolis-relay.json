@@ -1,0 +1,59 @@
+{
+  "id": "MnIceRelayFloor",
+  "template": "TeamRocketBaseB2F",
+  "tileset": "facility",
+  "status": "SOURCE CANDIDATE; native traversal pending",
+  "dimensions_metatiles": [
+    13,
+    10
+  ],
+  "border_block": "17",
+  "rows": [
+    "17 17 17 17 17 17 17 17 17 17 17 17 17",
+    "17 21 01 01 02 01 01 02 01 02 28 3c 17",
+    "17 22 07 07 02 07 07 02 02 07 07 33 17",
+    "17 22 07 07 02 07 07 02 02 02 07 33 17",
+    "17 22 07 02 02 07 02 02 07 02 07 33 17",
+    "17 22 07 07 07 07 07 07 07 02 07 33 17",
+    "17 22 07 02 02 02 02 02 07 02 07 33 17",
+    "17 22 04 07 07 07 07 02 07 07 07 33 17",
+    "17 23 20 20 20 20 20 02 20 20 20 24 17",
+    "17 17 17 17 17 17 17 17 17 17 17 17 17"
+  ],
+  "entrance": {
+    "active": [
+      5,
+      14
+    ],
+    "passive": [
+      4,
+      15
+    ]
+  },
+  "reed": {
+    "tile": [
+      21,
+      4
+    ],
+    "approach": [
+      21,
+      5
+    ]
+  },
+  "holding_switch": {
+    "read_tile": [
+      20,
+      2
+    ],
+    "approach": [
+      20,
+      3
+    ]
+  },
+  "contract": [
+    "The two server banks force a winding lower/upper route.",
+    "Reed is encountered in person at the controls; his defeat alone does not cut holding power.",
+    "The switch requires cargo feed off and Reed defeated, then separately enables the office cell latch.",
+    "The player can walk back to the original public office at every stage."
+  ]
+}

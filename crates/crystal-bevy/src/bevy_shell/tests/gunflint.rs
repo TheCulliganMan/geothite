@@ -61,7 +61,13 @@ fn grid(runtime: &CrystalRuntime, at: Point, grass: bool) -> RouteGrid {
         prefix: "MnR12",
         columns: 2,
         rows: 3,
-        tileset: "mn_gunflint",
+        tileset: if runtime.data().maps["MnR12C00R00"].attributes.tileset_name
+            == "mn_winter_gunflint"
+        {
+            "mn_winter_gunflint"
+        } else {
+            "mn_gunflint"
+        },
         start: at,
         doors: BTreeMap::from([((66, 23), "MnR12Cave1F"), ((85, 83), "MnR12RangerHut")]),
     };
@@ -118,7 +124,7 @@ fn opened_grid(runtime: &CrystalRuntime, controller: &mut VisibleShellController
         .data()
         .assemble_map_module_from_compiled_payloads(&snapshot.overworld.map_name)
         .expect("current chunk");
-    let collision = &runtime.data().tilesets["mn_gunflint"].collision;
+    let collision = &runtime.data().tilesets[&module.attributes.tileset_name].collision;
     for y in 0..i16::try_from(module.attributes.height)
         .expect("native chunk height fits core coordinates")
         * 2
@@ -215,6 +221,14 @@ fn gunflint_controller_walks_six_clipped_maps_portages_and_original_rooms() {
         ((35, 75), "STONE BOG"),
         ((7, 55), "CANOE"),
     ] {
+        if at == (35, 75)
+            && runtime.data().maps["MnR12C00R01"].attributes.tileset_name == "mn_winter_gunflint"
+        {
+            // The frozen rime lane makes this optional bay a Surf discovery.
+            // Its actual sign and trainer approach are tested from the lake
+            // below, rather than claiming a dry mid-slide turning point.
+            continue;
+        }
         assert!(
             grid.talk(&mut controller, at).contains(text),
             "interaction {at:?}"
@@ -261,17 +275,29 @@ fn gunflint_controller_walks_six_clipped_maps_portages_and_original_rooms() {
         indoor_walk(&mut controller, &runtime, at);
     }
     assert_eq!(position(&mut controller), (66, 23));
-    // Returns target native entrance warp1. Its arrival suppression must permit
-    // a clear step out before deliberate re-entry; no passive record is claimed.
+    // The native return arrives at entrance warp1, then presentation settles
+    // one tile south on the clear footprint before deliberate re-entry.
     controller
         .wait_frames(60)
         .expect("native exterior return settling");
-    assert_eq!(position(&mut controller), (66, 23));
+    assert_eq!(position(&mut controller), (66, 24));
     grid.walk(&mut controller, (66, 24));
     grid.walk(&mut controller, (66, 23));
     indoor_walk(&mut controller, &runtime, (17, 22));
     indoor_walk(&mut controller, &runtime, (17, 23));
-    assert_eq!(position(&mut controller), (66, 23));
+    assert_eq!(
+        position(&mut controller),
+        (66, 23),
+        "second cave return arrives at native warp"
+    );
+    controller
+        .wait_frames(60)
+        .expect("second cave passive return settles");
+    assert_eq!(
+        position(&mut controller),
+        (66, 24),
+        "second cave return clears entrance"
+    );
     grid.walk(&mut controller, (66, 24));
     grid.walk(&mut controller, (85, 83));
     assert_eq!(
@@ -323,7 +349,7 @@ fn gunflint_controller_walks_six_clipped_maps_portages_and_original_rooms() {
     controller
         .wait_frames(60)
         .expect("native hut return settling");
-    assert_eq!(position(&mut controller), (85, 83));
+    assert_eq!(position(&mut controller), (85, 84));
     grid.walk(&mut controller, (85, 84));
     grid.walk(&mut controller, (85, 83));
     indoor_walk(&mut controller, &runtime, (5, 8));
@@ -341,7 +367,19 @@ fn gunflint_controller_walks_six_clipped_maps_portages_and_original_rooms() {
             break;
         }
     }
-    assert_eq!(position(&mut controller), (85, 83));
+    assert_eq!(
+        position(&mut controller),
+        (85, 83),
+        "second hut return arrives at native warp"
+    );
+    controller
+        .wait_frames(60)
+        .expect("second hut passive return settles");
+    assert_eq!(
+        position(&mut controller),
+        (85, 84),
+        "second hut return clears entrance"
+    );
     grid.walk(&mut controller, (85, 84));
     for flag in [
         "EVENT_MN_R12_ITEM_02",
@@ -415,7 +453,11 @@ fn gunflint_cut_cache_denies_opens_collects_and_continues_native_tree_reset() {
     assert_eq!(tree(&controller), 0x17);
     let opened = opened_grid(&runtime, &mut controller);
     opened.walk(&mut controller, (54, 19));
-    assert!(opened.talk(&mut controller, (53, 19)).contains("found"));
+    let pickup_text = opened.talk(&mut controller, (53, 19));
+    assert!(
+        pickup_text.contains("found"),
+        "actual herb pickup page: {pickup_text}"
+    );
     opened.walk(&mut controller, (54, 19));
     let collected = controller.snapshot().expect("actual herb reward");
     assert!(
@@ -439,7 +481,9 @@ fn gunflint_cut_cache_denies_opens_collects_and_continues_native_tree_reset() {
         .duration_since(UNIX_EPOCH)
         .expect("fixture save clock")
         .as_nanos();
-    let save = std::env::temp_dir().join(format!("geothite-gunflint-herb-{stamp}.crystalsave"));
+    let save = super::authored_route_fixture::reached_save_path(&format!(
+        "geothite-gunflint-herb-{stamp}.crystalsave"
+    ));
     controller.save(&save).expect("save actual reward and Cut");
     let mut controller =
         VisibleShellController::load_save(root.clone(), runtime.clone(), save.clone(), None)
@@ -463,10 +507,19 @@ fn gunflint_cut_cache_denies_opens_collects_and_continues_native_tree_reset() {
             .is_event_flag_set("EVENT_MN_R12_ITEM_01")
             .expect("continued reward flag")
     );
-    controller.save(&save).expect("save escaped herb clearing");
-    let mut loaded =
-        VisibleShellController::load_save(root.clone(), runtime.clone(), save.clone(), None)
-            .expect("Continue escaped clearing");
+    let escaped_save = super::authored_route_fixture::reached_save_path(&format!(
+        "geothite-gunflint-herb-escaped-{stamp}.crystalsave"
+    ));
+    controller
+        .save(&escaped_save)
+        .expect("save escaped herb clearing");
+    let mut loaded = VisibleShellController::load_save(
+        root.clone(),
+        runtime.clone(),
+        escaped_save.clone(),
+        None,
+    )
+    .expect("Continue escaped clearing");
     assert_eq!(position(&mut loaded), (54, 24));
     assert_eq!(tree(&loaded), 0x0f);
     assert_eq!(
@@ -518,14 +571,22 @@ fn gunflint_cut_cache_denies_opens_collects_and_continues_native_tree_reset() {
         after_hut.party.slots[0].pokemon.moves,
         before_june.party.slots[0].pokemon.moves
     );
-    loaded.save(&save).expect("save native room-return journey");
-    let mut continued = VisibleShellController::load_save(root, runtime, save.clone(), None)
-        .expect("Continue room return");
+    let returned_save = super::authored_route_fixture::reached_save_path(&format!(
+        "geothite-gunflint-herb-room-return-{stamp}.crystalsave"
+    ));
+    loaded
+        .save(&returned_save)
+        .expect("save native room-return journey");
+    let mut continued =
+        VisibleShellController::load_save(root, runtime, returned_save.clone(), None)
+            .expect("Continue room return");
     assert_eq!(position(&mut continued), (85, 84));
     let final_snapshot = continued.snapshot().expect("continued partner after June");
     assert_eq!(final_snapshot.party, after_hut.party);
     assert_eq!(final_snapshot.bag, collected.bag);
-    std::fs::remove_file(save).expect("remove disposable Cut save");
+    super::authored_route_fixture::cleanup_reached_save(&save);
+    super::authored_route_fixture::cleanup_reached_save(&escaped_save);
+    super::authored_route_fixture::cleanup_reached_save(&returned_save);
 }
 
 fn complete_battle(controller: &mut VisibleShellController) -> BTreeSet<String> {
@@ -708,7 +769,9 @@ fn gunflint_populated_fixture_wins_spends_selected_pp_and_continues() {
         .duration_since(UNIX_EPOCH)
         .expect("fixture save clock")
         .as_nanos();
-    let save = std::env::temp_dir().join(format!("geothite-gunflint-battle-{stamp}.crystalsave"));
+    let save = super::authored_route_fixture::reached_save_path(&format!(
+        "geothite-gunflint-battle-{stamp}.crystalsave"
+    ));
     controller.save(&save).expect("save real trainer victory");
     let mut loaded = VisibleShellController::load_save(root, runtime, save.clone(), None)
         .expect("Continue battle result");
@@ -730,5 +793,152 @@ fn gunflint_populated_fixture_wins_spends_selected_pp_and_continues() {
             .save(PathBuf::from(path))
             .expect("optional controller fixture save");
     }
-    std::fs::remove_file(save).expect("remove disposable battle save");
+    super::authored_route_fixture::cleanup_reached_save(&save);
+}
+
+#[test]
+#[ignore = "requires final winter pack; explicit legal Surf/party/badge setup"]
+fn gunflint_winter_bog_side_bay_surfs_from_main_bank_reads_sign_and_approaches_trainer() {
+    use crystal_core::world::movement::MovementMode;
+    use std::collections::VecDeque;
+
+    let (root, runtime) = runtime();
+    assert_eq!(
+        runtime.data().maps["MnR12C00R01"].attributes.tileset_name,
+        "mn_winter_gunflint"
+    );
+    assert!(
+        grid(&runtime, (124, 56), true).floor.contains(&(50, 84)),
+        "departure belongs to main route Foot component"
+    );
+    let mut controller = fixture(&root, &runtime, (50, 84));
+    initial_partner(&runtime, &mut controller, "SURF", true);
+    assert!(
+        controller
+            .shell
+            .shell
+            .session_mut()
+            .state_mut()
+            .bag
+            .add_item(&runtime.data().items["MAX_REPEL"], 5)
+            .expect("initial legal Repel fixture")
+    );
+    mark_runtime_snapshot_dirty(&mut controller.shell);
+    // Initial setup ends here. The cold side pocket is reached only by native
+    // mount, paddling and automatic dismount; no terrain or position writes.
+    super::minneapolis_falls::grand_marais_harbor::use_max_repel(&mut controller, &runtime);
+    let map = "MnR12C00R01";
+    super::minneapolis_falls::mount(&mut controller, GameButton::Left, map, (49, 36));
+    let module = &runtime.data().maps[map];
+    let collision = &runtime.data().tilesets[&module.attributes.tileset_name].collision;
+    let start = (49_i16, 36_i16);
+    let target = (38_i16, 30_i16);
+    let mut previous = BTreeMap::from([(start, None)]);
+    let mut queue = VecDeque::from([start]);
+    while let Some(at) = queue.pop_front() {
+        for (next, button) in super::authored_route_fixture::neighbors(at) {
+            if next.0 < 0
+                || next.1 < 0
+                || next.0 >= 64
+                || next.1 >= 48
+                || previous.contains_key(&next)
+            {
+                continue;
+            }
+            let block = module.blocks[(next.1 as usize / 2) * usize::from(module.attributes.width)
+                + next.0 as usize / 2];
+            if collision[&format!("{block:02x}")][(next.1 as usize % 2) * 2 + next.0 as usize % 2]
+                != "WATER"
+            {
+                continue;
+            }
+            previous.insert(next, Some((at, button)));
+            queue.push_back(next);
+        }
+    }
+    assert!(
+        previous.contains_key(&target),
+        "real connected lake reaches optional side bay"
+    );
+    let mut cursor = target;
+    let mut path = Vec::new();
+    while let Some((prior, button)) = previous[&cursor] {
+        path.push((cursor, button));
+        cursor = prior;
+    }
+    for (at, button) in path.into_iter().rev() {
+        super::minneapolis_falls::step(
+            &mut controller,
+            button,
+            map,
+            at,
+            "actual bog lake paddling",
+        );
+    }
+    super::minneapolis_falls::step(
+        &mut controller,
+        GameButton::Left,
+        map,
+        (37, 30),
+        "native bay bank dismount",
+    );
+    assert_eq!(
+        controller
+            .snapshot()
+            .expect("dismounted bog bay")
+            .overworld
+            .mode,
+        MovementMode::Normal
+    );
+    let pocket = grid(&runtime, (37, 78), false);
+    assert!(
+        pocket.talk(&mut controller, (35, 75)).contains("STONE BOG"),
+        "native optional bay sign remains useful"
+    );
+    pocket.walk(&mut controller, (36, 79));
+    assert_eq!(
+        position(&mut controller),
+        (36, 79),
+        "actual safe trainer approach in side bay"
+    );
+    let stamp = SystemTime::now()
+        .duration_since(UNIX_EPOCH)
+        .expect("reached bay clock")
+        .as_nanos();
+    let save = super::authored_route_fixture::reached_save_path(&format!(
+        "gunflint-winter-bog-side-bay-{stamp}.crystalsave"
+    ));
+    controller
+        .save(&save)
+        .expect("preserve reached sign and native trainer approach");
+    controller
+        .press(GameButton::Right)
+        .expect("face retained bay trainer");
+    controller
+        .press(GameButton::A)
+        .expect("interact with original bay trainer");
+    for _ in 0..64 {
+        if controller
+            .snapshot()
+            .expect("native trainer transition")
+            .battle
+            .is_some()
+        {
+            break;
+        }
+        controller
+            .press(GameButton::A)
+            .expect("original trainer challenge page");
+        controller
+            .wait_frames(16)
+            .expect("native trainer transition frames");
+    }
+    assert!(
+        controller
+            .snapshot()
+            .expect("real bay trainer challenge")
+            .battle
+            .is_some()
+    );
+    super::authored_route_fixture::cleanup_reached_save(&save);
 }

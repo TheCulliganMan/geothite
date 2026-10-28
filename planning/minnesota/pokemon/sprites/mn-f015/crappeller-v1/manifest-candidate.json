@@ -1,0 +1,337 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F015",
+  "status": "native-front-back-reviewed",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_043": {
+      "species_id": "MN_043",
+      "name": "Jiglet",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          29,
+          21,
+          8
+        ],
+        [
+          7,
+          14,
+          19
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        8893,
+        19911,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          239,
+          173,
+          66
+        ],
+        [
+          57,
+          115,
+          156
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#EFAD42",
+        "#39739C",
+        "#000000"
+      ]
+    },
+    "MN_044": {
+      "species_id": "MN_044",
+      "name": "Trollure",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          28,
+          17,
+          8
+        ],
+        [
+          5,
+          10,
+          16
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        8764,
+        16709,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          231,
+          140,
+          66
+        ],
+        [
+          41,
+          82,
+          132
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#E78C42",
+        "#295284",
+        "#000000"
+      ]
+    },
+    "MN_318": {
+      "species_id": "MN_318",
+      "name": "Crappeller",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          30,
+          23,
+          10
+        ],
+        [
+          4,
+          12,
+          17
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        11006,
+        17796,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          247,
+          189,
+          82
+        ],
+        [
+          33,
+          99,
+          140
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#F7BD52",
+        "#21638C",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f015/crappeller-v1/prompt-v1.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "style_reference": {
+    "origin": "authentic local Crystal sprites",
+    "generator": "crates/crystal-assets/examples/minnesota_gen2_reference.rs",
+    "board": "target/minnesota-pokemon/gen2-reference/starters.png"
+  },
+  "sprites": [
+    {
+      "id": "mn-043-jiglet-v1",
+      "species_id": "MN_043",
+      "view": "front",
+      "source": "sprites/mn-f015/mn-043-044.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        873,
+        443
+      ],
+      "fit": [
+        40,
+        40
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        8893,
+        19911,
+        0
+      ]
+    },
+    {
+      "id": "mn-043-jiglet-v1",
+      "species_id": "MN_043",
+      "view": "back",
+      "source": "sprites/mn-f015/mn-043-044.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        443,
+        873,
+        444
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        8893,
+        19911,
+        0
+      ]
+    },
+    {
+      "id": "mn-044-trollure-v1",
+      "species_id": "MN_044",
+      "view": "front",
+      "source": "sprites/mn-f015/mn-043-044.front-back.imagegen-v1.png",
+      "crop": [
+        873,
+        0,
+        901,
+        443
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        8764,
+        16709,
+        0
+      ]
+    },
+    {
+      "id": "mn-044-trollure-v1",
+      "species_id": "MN_044",
+      "view": "back",
+      "source": "sprites/mn-f015/mn-043-044.front-back.imagegen-v1.png",
+      "crop": [
+        873,
+        443,
+        901,
+        444
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        8764,
+        16709,
+        0
+      ]
+    },
+    {
+      "id": "mn-318-crappeller-v1",
+      "species_id": "MN_318",
+      "view": "front",
+      "source": "sprites/mn-f015/crappeller-v1/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        1024,
+        790
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        11006,
+        17796,
+        0
+      ],
+      "sampling": "area_vote",
+      "exterior_contour": "solid",
+      "white_detail_min_samples": 4,
+      "interior_black_min_samples": 12
+    },
+    {
+      "id": "mn-318-crappeller-v1",
+      "species_id": "MN_318",
+      "view": "back",
+      "source": "sprites/mn-f015/crappeller-v1/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        790,
+        1024,
+        746
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        11006,
+        17796,
+        0
+      ],
+      "sampling": "area_vote",
+      "exterior_contour": "solid",
+      "white_detail_min_samples": 4,
+      "interior_black_min_samples": 12
+    }
+  ]
+}

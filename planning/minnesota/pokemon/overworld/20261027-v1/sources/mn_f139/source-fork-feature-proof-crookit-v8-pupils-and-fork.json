@@ -1,0 +1,723 @@
+{
+  "species_id": "MN_308",
+  "result": "pass",
+  "manifest_sha256": "0888f385ec06557f3fdab4b0b71579df327f9cf8b01401ecd32dae27882ea0fa",
+  "bank_sha256": "b22ec7558773c81c5b1d89d8e9216c78ff7c1527116d64b63e28c12ae8c872e7",
+  "source_sha256": {
+    "crookit.overworld.imagegen-v3-clear-alpha.png": "84f4c5db3ba9db927f2112b139368a3bd9020c4adead4d0154e83c1ccd783d5e",
+    "crookit.overworld.imagegen-v1.png": "815b0b934830082c60cc182a73f3e8d9fc26e5788198936eaeb80454a65f629e"
+  },
+  "two_tail_tips_and_true_alpha0_open_fork_gap_all6": true,
+  "canonical_enclosed_holes": 0,
+  "quadrupedal_anatomy_notes": "Four-paw marten body; near/far legs naturally overlap in true front/rear/profile projection. No arms or held branch; the body itself bends into the branch shape.",
+  "proof": [
+    {
+      "pose": "down_idle",
+      "actual_tail_features": [
+        {
+          "feature": "tail_branch_tip_one",
+          "source_anatomical_region": [
+            302,
+            140,
+            339,
+            185
+          ],
+          "samples": [
+            {
+              "native": [
+                8,
+                5
+              ],
+              "source_sample": [
+                320,
+                158
+              ],
+              "source_rgba": [
+                252,
+                133,
+                44,
+                253
+              ]
+            }
+          ]
+        },
+        {
+          "feature": "tail_branch_tip_two",
+          "source_anatomical_region": [
+            378,
+            128,
+            429,
+            181
+          ],
+          "samples": [
+            {
+              "native": [
+                10,
+                5
+              ],
+              "source_sample": [
+                393,
+                158
+              ],
+              "source_rgba": [
+                252,
+                136,
+                46,
+                253
+              ]
+            }
+          ]
+        },
+        {
+          "feature": "open_V_fork_gap",
+          "source_anatomical_region": [
+            340,
+            140,
+            378,
+            194
+          ],
+          "samples": [
+            {
+              "native": [
+                9,
+                5
+              ],
+              "source_sample": [
+                357,
+                158
+              ],
+              "source_rgba": [
+                88,
+                50,
+                18,
+                0
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "up_idle",
+      "actual_tail_features": [
+        {
+          "feature": "tail_branch_tip_one",
+          "source_anatomical_region": [
+            700,
+            144,
+            748,
+            199
+          ],
+          "samples": [
+            {
+              "native": [
+                7,
+                4
+              ],
+              "source_sample": [
+                731,
+                152
+              ],
+              "source_rgba": [
+                208,
+                124,
+                57,
+                253
+              ]
+            },
+            {
+              "native": [
+                7,
+                5
+              ],
+              "source_sample": [
+                731,
+                188
+              ],
+              "source_rgba": [
+                207,
+                121,
+                54,
+                253
+              ]
+            }
+          ]
+        },
+        {
+          "feature": "tail_branch_tip_two",
+          "source_anatomical_region": [
+            791,
+            144,
+            838,
+            199
+          ],
+          "samples": [
+            {
+              "native": [
+                9,
+                4
+              ],
+              "source_sample": [
+                804,
+                152
+              ],
+              "source_rgba": [
+                208,
+                123,
+                57,
+                253
+              ]
+            },
+            {
+              "native": [
+                9,
+                5
+              ],
+              "source_sample": [
+                804,
+                188
+              ],
+              "source_rgba": [
+                206,
+                120,
+                54,
+                253
+              ]
+            }
+          ]
+        },
+        {
+          "feature": "open_V_fork_gap",
+          "source_anatomical_region": [
+            751,
+            145,
+            789,
+            202
+          ],
+          "samples": [
+            {
+              "native": [
+                8,
+                4
+              ],
+              "source_sample": [
+                767,
+                152
+              ],
+              "source_rgba": [
+                49,
+                28,
+                12,
+                1
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "actual_tail_features": [
+        {
+          "feature": "tail_branch_tip_one",
+          "source_anatomical_region": [
+            1295,
+            179,
+            1343,
+            230
+          ],
+          "samples": [
+            {
+              "native": [
+                10,
+                5
+              ],
+              "source_sample": [
+                1301,
+                211
+              ],
+              "source_rgba": [
+                252,
+                135,
+                45,
+                254
+              ]
+            },
+            {
+              "native": [
+                11,
+                5
+              ],
+              "source_sample": [
+                1338,
+                211
+              ],
+              "source_rgba": [
+                246,
+                138,
+                43,
+                253
+              ]
+            }
+          ]
+        },
+        {
+          "feature": "tail_branch_tip_two",
+          "source_anatomical_region": [
+            1369,
+            164,
+            1421,
+            224
+          ],
+          "samples": [
+            {
+              "native": [
+                12,
+                4
+              ],
+              "source_sample": [
+                1375,
+                175
+              ],
+              "source_rgba": [
+                250,
+                134,
+                46,
+                253
+              ]
+            },
+            {
+              "native": [
+                13,
+                4
+              ],
+              "source_sample": [
+                1411,
+                175
+              ],
+              "source_rgba": [
+                251,
+                137,
+                48,
+                253
+              ]
+            },
+            {
+              "native": [
+                12,
+                5
+              ],
+              "source_sample": [
+                1375,
+                211
+              ],
+              "source_rgba": [
+                252,
+                136,
+                47,
+                253
+              ]
+            },
+            {
+              "native": [
+                13,
+                5
+              ],
+              "source_sample": [
+                1411,
+                211
+              ],
+              "source_rgba": [
+                248,
+                133,
+                44,
+                254
+              ]
+            }
+          ]
+        },
+        {
+          "feature": "open_V_fork_gap",
+          "source_anatomical_region": [
+            1328,
+            164,
+            1373,
+            200
+          ],
+          "samples": [
+            {
+              "native": [
+                11,
+                4
+              ],
+              "source_sample": [
+                1338,
+                175
+              ],
+              "source_rgba": [
+                45,
+                25,
+                8,
+                0
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "actual_tail_features": [
+        {
+          "feature": "tail_branch_tip_one",
+          "source_anatomical_region": [
+            302,
+            573,
+            339,
+            626
+          ],
+          "samples": [
+            {
+              "native": [
+                8,
+                5
+              ],
+              "source_sample": [
+                320,
+                589
+              ],
+              "source_rgba": [
+                251,
+                135,
+                47,
+                253
+              ]
+            }
+          ]
+        },
+        {
+          "feature": "tail_branch_tip_two",
+          "source_anatomical_region": [
+            378,
+            558,
+            429,
+            618
+          ],
+          "samples": [
+            {
+              "native": [
+                10,
+                5
+              ],
+              "source_sample": [
+                393,
+                589
+              ],
+              "source_rgba": [
+                251,
+                136,
+                48,
+                253
+              ]
+            }
+          ]
+        },
+        {
+          "feature": "open_V_fork_gap",
+          "source_anatomical_region": [
+            340,
+            575,
+            378,
+            635
+          ],
+          "samples": [
+            {
+              "native": [
+                9,
+                5
+              ],
+              "source_sample": [
+                357,
+                589
+              ],
+              "source_rgba": [
+                86,
+                48,
+                17,
+                1
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "up_step",
+      "actual_tail_features": [
+        {
+          "feature": "tail_branch_tip_one",
+          "source_anatomical_region": [
+            700,
+            577,
+            748,
+            638
+          ],
+          "samples": [
+            {
+              "native": [
+                7,
+                4
+              ],
+              "source_sample": [
+                731,
+                586
+              ],
+              "source_rgba": [
+                205,
+                118,
+                51,
+                253
+              ]
+            },
+            {
+              "native": [
+                7,
+                5
+              ],
+              "source_sample": [
+                731,
+                622
+              ],
+              "source_rgba": [
+                207,
+                123,
+                55,
+                253
+              ]
+            }
+          ]
+        },
+        {
+          "feature": "tail_branch_tip_two",
+          "source_anatomical_region": [
+            791,
+            577,
+            838,
+            638
+          ],
+          "samples": [
+            {
+              "native": [
+                9,
+                4
+              ],
+              "source_sample": [
+                804,
+                586
+              ],
+              "source_rgba": [
+                205,
+                116,
+                49,
+                253
+              ]
+            },
+            {
+              "native": [
+                9,
+                5
+              ],
+              "source_sample": [
+                804,
+                622
+              ],
+              "source_rgba": [
+                206,
+                120,
+                52,
+                253
+              ]
+            }
+          ]
+        },
+        {
+          "feature": "open_V_fork_gap",
+          "source_anatomical_region": [
+            751,
+            577,
+            789,
+            641
+          ],
+          "samples": [
+            {
+              "native": [
+                8,
+                4
+              ],
+              "source_sample": [
+                767,
+                586
+              ],
+              "source_rgba": [
+                48,
+                28,
+                12,
+                1
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "actual_tail_features": [
+        {
+          "feature": "tail_branch_tip_one",
+          "source_anatomical_region": [
+            1286,
+            608,
+            1340,
+            663
+          ],
+          "samples": [
+            {
+              "native": [
+                10,
+                5
+              ],
+              "source_sample": [
+                1301,
+                640
+              ],
+              "source_rgba": [
+                252,
+                137,
+                48,
+                254
+              ]
+            },
+            {
+              "native": [
+                11,
+                5
+              ],
+              "source_sample": [
+                1338,
+                640
+              ],
+              "source_rgba": [
+                165,
+                89,
+                32,
+                253
+              ]
+            }
+          ]
+        },
+        {
+          "feature": "tail_branch_tip_two",
+          "source_anatomical_region": [
+            1369,
+            595,
+            1421,
+            660
+          ],
+          "samples": [
+            {
+              "native": [
+                12,
+                4
+              ],
+              "source_sample": [
+                1375,
+                604
+              ],
+              "source_rgba": [
+                252,
+                140,
+                52,
+                253
+              ]
+            },
+            {
+              "native": [
+                13,
+                4
+              ],
+              "source_sample": [
+                1411,
+                604
+              ],
+              "source_rgba": [
+                249,
+                146,
+                56,
+                253
+              ]
+            },
+            {
+              "native": [
+                12,
+                5
+              ],
+              "source_sample": [
+                1375,
+                640
+              ],
+              "source_rgba": [
+                252,
+                138,
+                49,
+                253
+              ]
+            },
+            {
+              "native": [
+                13,
+                5
+              ],
+              "source_sample": [
+                1411,
+                640
+              ],
+              "source_rgba": [
+                245,
+                139,
+                51,
+                253
+              ]
+            }
+          ]
+        },
+        {
+          "feature": "open_V_fork_gap",
+          "source_anatomical_region": [
+            1328,
+            592,
+            1373,
+            632
+          ],
+          "samples": [
+            {
+              "native": [
+                11,
+                4
+              ],
+              "source_sample": [
+                1338,
+                604
+              ],
+              "source_rgba": [
+                45,
+                25,
+                9,
+                0
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

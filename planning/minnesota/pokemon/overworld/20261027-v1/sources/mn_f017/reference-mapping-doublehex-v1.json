@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "species": "doublehex",
+  "fit": 14,
+  "input_images": [
+    {
+      "role": "native16 style only",
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/references/native-pack-16px/native-six-frame-style-board.8x.png",
+      "sha256": "4354a639ed1a80fd6686e43b273443ed894e58a84307a8049f638ee9ffa2a099"
+    }
+  ],
+  "identity_review": "Canonical battle board reviewed for anatomy, not supplied to fresh generation. Root authored raw retained with original generation receipt.",
+  "root_generation_receipt": "generation-doublehex-v1.json",
+  "source_alpha_threshold": 128
+}

@@ -1,0 +1,339 @@
+{
+  "species_id": "MN_223",
+  "name": "cinderfen",
+  "status": "HELD: actual pupils pass, but native upper and middle levels touch; source gap repair required",
+  "selected_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f102/cinderfen.manifest-native-joint-phase-v5.json",
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/true16-cinderfen-joint-phase-v5",
+  "shared_transform": {
+    "source_bounds": [
+      45,
+      30,
+      379,
+      408
+    ],
+    "native_size": [
+      13,
+      14
+    ],
+    "native_origin": [
+      1,
+      1
+    ]
+  },
+  "all_four_nonrear_poses_actual_pupils_pass": true,
+  "each_native_eye_cluster_maps_to_one_actual_small_source_pupil_component": true,
+  "actual_source_pupil_proofs": [
+    {
+      "pose": "down_idle",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f102/cinderfen.overworld.imagegen-v3-eye-plane.png",
+      "crop": [
+        84,
+        61,
+        480,
+        450
+      ],
+      "actual_source_eye_bounds": [
+        [
+          265,
+          228,
+          31,
+          31
+        ],
+        [
+          332,
+          228,
+          31,
+          31
+        ]
+      ],
+      "eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              6,
+              6
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                0,
+                0,
+                0,
+                253
+              ],
+              "bounds": [
+                265,
+                228,
+                31,
+                31
+              ],
+              "pixels": 961,
+              "truncated_contour": false,
+              "native_pixel": [
+                6,
+                6
+              ],
+              "source_sample_pixel": [
+                289,
+                251
+              ]
+            }
+          ]
+        },
+        {
+          "native_cluster": [
+            [
+              8,
+              6
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                1,
+                1,
+                0,
+                253
+              ],
+              "bounds": [
+                332,
+                228,
+                31,
+                31
+              ],
+              "pixels": 961,
+              "truncated_contour": false,
+              "native_pixel": [
+                8,
+                6
+              ],
+              "source_sample_pixel": [
+                347,
+                251
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f102/cinderfen.overworld.imagegen-v3-eye-plane.png",
+      "crop": [
+        1004,
+        54,
+        480,
+        450
+      ],
+      "actual_source_eye_bounds": [
+        [
+          1161,
+          229,
+          30,
+          31
+        ]
+      ],
+      "eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              5,
+              6
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                0,
+                0,
+                0,
+                253
+              ],
+              "bounds": [
+                1161,
+                229,
+                30,
+                31
+              ],
+              "pixels": 930,
+              "truncated_contour": false,
+              "native_pixel": [
+                5,
+                6
+              ],
+              "source_sample_pixel": [
+                1180,
+                244
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f102/cinderfen.overworld.imagegen-v3-eye-plane.png",
+      "crop": [
+        76,
+        515,
+        480,
+        450
+      ],
+      "actual_source_eye_bounds": [
+        [
+          265,
+          691,
+          31,
+          32
+        ],
+        [
+          331,
+          691,
+          32,
+          32
+        ]
+      ],
+      "eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              6,
+              6
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                0,
+                0,
+                0,
+                253
+              ],
+              "bounds": [
+                265,
+                691,
+                31,
+                32
+              ],
+              "pixels": 992,
+              "truncated_contour": false,
+              "native_pixel": [
+                6,
+                6
+              ],
+              "source_sample_pixel": [
+                281,
+                705
+              ]
+            }
+          ]
+        },
+        {
+          "native_cluster": [
+            [
+              8,
+              6
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                0,
+                0,
+                0,
+                253
+              ],
+              "bounds": [
+                331,
+                691,
+                32,
+                32
+              ],
+              "pixels": 998,
+              "truncated_contour": false,
+              "native_pixel": [
+                8,
+                6
+              ],
+              "source_sample_pixel": [
+                339,
+                705
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f102/cinderfen.overworld.imagegen-v3-eye-plane.png",
+      "crop": [
+        1013,
+        518,
+        480,
+        450
+      ],
+      "actual_source_eye_bounds": [
+        [
+          1161,
+          693,
+          30,
+          31
+        ]
+      ],
+      "eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              5,
+              6
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                2,
+                1,
+                1,
+                253
+              ],
+              "bounds": [
+                1161,
+                693,
+                30,
+                31
+              ],
+              "pixels": 930,
+              "truncated_contour": false,
+              "native_pixel": [
+                5,
+                6
+              ],
+              "source_sample_pixel": [
+                1189,
+                708
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "old_native_poses_preserved_exactly": [],
+  "normal_shiny_runtime_parity": "all1536pixels exact each",
+  "canonical_palette_bytes": "exact",
+  "all_three_walk_pairs_distinct": true,
+  "rear_review": "both rear native poses viewed; no copied face",
+  "normal_shiny_native_boards_actually_viewed": true,
+  "accepted_coverage_native_pack_untouched": true,
+  "manifest_sha256": "a79682a4705a4fa28147124a5c35afb2545d23fb6410d3dd1e4ec918a54c4f74",
+  "compiled_index_sha256": "2d467748a8b4ed90aa5876306ad8679733a7745ad7c86aff42bec2f06d30798a",
+  "anatomy_review": "Native upper face and middle slab are connected; not ready for acceptance."
+}

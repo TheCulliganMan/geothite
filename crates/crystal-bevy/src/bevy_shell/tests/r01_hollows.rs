@@ -1,5 +1,8 @@
 //! Explicit local position/legal party/status/RNG setup, then production input only.
 //! These cases do not earn a starter, route access or regional progression.
+#[path = "r01_upper_loop.rs"]
+mod upper_loop;
+
 use std::collections::{BTreeMap, VecDeque};
 use std::path::PathBuf;
 use std::sync::OnceLock;

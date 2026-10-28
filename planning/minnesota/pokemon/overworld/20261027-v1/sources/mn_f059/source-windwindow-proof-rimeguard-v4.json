@@ -1,0 +1,810 @@
+{
+  "species_id": "MN_130",
+  "result": "pass",
+  "manifest_sha256": "941cf905021374a5e02b56a56189a6de2906720063cca598fb57457ba098c65c",
+  "bank_sha256": "d5c77b3e6b34bf55fe7e1e5c07f0639f043e2ef4b8b83ffc697f751a889daed1",
+  "source_preserves_three_actual_horizontal_ice_rails": true,
+  "two_separate_windwindow_levels_all6_poses": true,
+  "both_sides_of_middlepost_checked_in_south_and_north": true,
+  "source_alpha_threshold": 245,
+  "native_window_index": 0,
+  "note": "Native windows are actual alpha0; retained ImageGen source has low-opacity haze inside some windows. Source is not edited; documented Rust alpha cutoff rejects haze. Three rails remain joined to supportposts; center face occludes only middlepost portion.",
+  "window_proofs": [
+    {
+      "pose": "down_idle",
+      "source_window_box": [
+        140,
+        242,
+        70,
+        29
+      ],
+      "actual_native_alpha0_samples": [
+        {
+          "native": [
+            4,
+            9
+          ],
+          "source_sample": [
+            160,
+            266
+          ],
+          "source_rgba": [
+            47,
+            52,
+            55,
+            79
+          ]
+        },
+        {
+          "native": [
+            5,
+            9
+          ],
+          "source_sample": [
+            192,
+            266
+          ],
+          "source_rgba": [
+            66,
+            76,
+            82,
+            6
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_idle",
+      "source_window_box": [
+        335,
+        242,
+        75,
+        29
+      ],
+      "actual_native_alpha0_samples": [
+        {
+          "native": [
+            10,
+            9
+          ],
+          "source_sample": [
+            354,
+            266
+          ],
+          "source_rgba": [
+            66,
+            76,
+            82,
+            4
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_idle",
+      "source_window_box": [
+        140,
+        327,
+        70,
+        25
+      ],
+      "actual_native_alpha0_samples": [
+        {
+          "native": [
+            4,
+            11
+          ],
+          "source_sample": [
+            160,
+            335
+          ],
+          "source_rgba": [
+            52,
+            63,
+            69,
+            2
+          ]
+        },
+        {
+          "native": [
+            5,
+            11
+          ],
+          "source_sample": [
+            192,
+            335
+          ],
+          "source_rgba": [
+            55,
+            64,
+            71,
+            5
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_idle",
+      "source_window_box": [
+        335,
+        327,
+        75,
+        25
+      ],
+      "actual_native_alpha0_samples": [
+        {
+          "native": [
+            10,
+            11
+          ],
+          "source_sample": [
+            354,
+            335
+          ],
+          "source_rgba": [
+            51,
+            61,
+            67,
+            4
+          ]
+        },
+        {
+          "native": [
+            11,
+            11
+          ],
+          "source_sample": [
+            386,
+            335
+          ],
+          "source_rgba": [
+            49,
+            58,
+            64,
+            4
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "source_window_box": [
+        140,
+        687,
+        70,
+        29
+      ],
+      "actual_native_alpha0_samples": [
+        {
+          "native": [
+            5,
+            9
+          ],
+          "source_sample": [
+            192,
+            712
+          ],
+          "source_rgba": [
+            6,
+            6,
+            7,
+            238
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "source_window_box": [
+        335,
+        687,
+        75,
+        29
+      ],
+      "actual_native_alpha0_samples": [
+        {
+          "native": [
+            10,
+            9
+          ],
+          "source_sample": [
+            354,
+            712
+          ],
+          "source_rgba": [
+            5,
+            6,
+            7,
+            239
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "source_window_box": [
+        140,
+        772,
+        70,
+        25
+      ],
+      "actual_native_alpha0_samples": [
+        {
+          "native": [
+            4,
+            11
+          ],
+          "source_sample": [
+            160,
+            781
+          ],
+          "source_rgba": [
+            53,
+            63,
+            69,
+            3
+          ]
+        },
+        {
+          "native": [
+            5,
+            11
+          ],
+          "source_sample": [
+            192,
+            781
+          ],
+          "source_rgba": [
+            52,
+            63,
+            68,
+            3
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "source_window_box": [
+        335,
+        772,
+        75,
+        25
+      ],
+      "actual_native_alpha0_samples": [
+        {
+          "native": [
+            10,
+            11
+          ],
+          "source_sample": [
+            354,
+            781
+          ],
+          "source_rgba": [
+            52,
+            62,
+            68,
+            2
+          ]
+        },
+        {
+          "native": [
+            11,
+            11
+          ],
+          "source_sample": [
+            386,
+            781
+          ],
+          "source_rgba": [
+            48,
+            59,
+            64,
+            5
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "up_idle",
+      "source_window_box": [
+        650,
+        242,
+        80,
+        29
+      ],
+      "actual_native_alpha0_samples": [
+        {
+          "native": [
+            4,
+            9
+          ],
+          "source_sample": [
+            670,
+            261
+          ],
+          "source_rgba": [
+            64,
+            74,
+            81,
+            2
+          ]
+        },
+        {
+          "native": [
+            5,
+            9
+          ],
+          "source_sample": [
+            702,
+            261
+          ],
+          "source_rgba": [
+            53,
+            63,
+            69,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "up_idle",
+      "source_window_box": [
+        840,
+        242,
+        60,
+        29
+      ],
+      "actual_native_alpha0_samples": [
+        {
+          "native": [
+            10,
+            9
+          ],
+          "source_sample": [
+            864,
+            261
+          ],
+          "source_rgba": [
+            61,
+            72,
+            77,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "up_idle",
+      "source_window_box": [
+        650,
+        327,
+        80,
+        25
+      ],
+      "actual_native_alpha0_samples": [
+        {
+          "native": [
+            4,
+            11
+          ],
+          "source_sample": [
+            670,
+            330
+          ],
+          "source_rgba": [
+            59,
+            71,
+            79,
+            10
+          ]
+        },
+        {
+          "native": [
+            5,
+            11
+          ],
+          "source_sample": [
+            702,
+            330
+          ],
+          "source_rgba": [
+            56,
+            70,
+            77,
+            7
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "up_idle",
+      "source_window_box": [
+        840,
+        327,
+        60,
+        25
+      ],
+      "actual_native_alpha0_samples": [
+        {
+          "native": [
+            10,
+            11
+          ],
+          "source_sample": [
+            864,
+            330
+          ],
+          "source_rgba": [
+            57,
+            71,
+            79,
+            6
+          ]
+        },
+        {
+          "native": [
+            11,
+            11
+          ],
+          "source_sample": [
+            896,
+            330
+          ],
+          "source_rgba": [
+            48,
+            58,
+            65,
+            7
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "up_step",
+      "source_window_box": [
+        650,
+        686,
+        80,
+        29
+      ],
+      "actual_native_alpha0_samples": [
+        {
+          "native": [
+            4,
+            9
+          ],
+          "source_sample": [
+            670,
+            703
+          ],
+          "source_rgba": [
+            58,
+            69,
+            76,
+            2
+          ]
+        },
+        {
+          "native": [
+            5,
+            9
+          ],
+          "source_sample": [
+            702,
+            703
+          ],
+          "source_rgba": [
+            55,
+            65,
+            70,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "up_step",
+      "source_window_box": [
+        840,
+        686,
+        60,
+        29
+      ],
+      "actual_native_alpha0_samples": [
+        {
+          "native": [
+            10,
+            9
+          ],
+          "source_sample": [
+            864,
+            703
+          ],
+          "source_rgba": [
+            58,
+            68,
+            73,
+            2
+          ]
+        },
+        {
+          "native": [
+            11,
+            9
+          ],
+          "source_sample": [
+            896,
+            703
+          ],
+          "source_rgba": [
+            22,
+            24,
+            26,
+            165
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "up_step",
+      "source_window_box": [
+        650,
+        771,
+        80,
+        25
+      ],
+      "actual_native_alpha0_samples": [
+        {
+          "native": [
+            4,
+            11
+          ],
+          "source_sample": [
+            670,
+            772
+          ],
+          "source_rgba": [
+            54,
+            65,
+            71,
+            52
+          ]
+        },
+        {
+          "native": [
+            5,
+            11
+          ],
+          "source_sample": [
+            702,
+            772
+          ],
+          "source_rgba": [
+            57,
+            70,
+            77,
+            48
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "up_step",
+      "source_window_box": [
+        840,
+        771,
+        60,
+        25
+      ],
+      "actual_native_alpha0_samples": [
+        {
+          "native": [
+            10,
+            11
+          ],
+          "source_sample": [
+            864,
+            772
+          ],
+          "source_rgba": [
+            51,
+            64,
+            69,
+            51
+          ]
+        },
+        {
+          "native": [
+            11,
+            11
+          ],
+          "source_sample": [
+            896,
+            772
+          ],
+          "source_rgba": [
+            50,
+            63,
+            71,
+            11
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "source_window_box": [
+        1250,
+        251,
+        140,
+        29
+      ],
+      "actual_native_alpha0_samples": [
+        {
+          "native": [
+            8,
+            8
+          ],
+          "source_sample": [
+            1294,
+            251
+          ],
+          "source_rgba": [
+            43,
+            53,
+            58,
+            142
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "source_window_box": [
+        1250,
+        337,
+        140,
+        26
+      ],
+      "actual_native_alpha0_samples": [
+        {
+          "native": [
+            8,
+            11
+          ],
+          "source_sample": [
+            1294,
+            354
+          ],
+          "source_rgba": [
+            51,
+            62,
+            69,
+            6
+          ]
+        },
+        {
+          "native": [
+            9,
+            11
+          ],
+          "source_sample": [
+            1326,
+            354
+          ],
+          "source_rgba": [
+            59,
+            71,
+            78,
+            1
+          ]
+        },
+        {
+          "native": [
+            10,
+            11
+          ],
+          "source_sample": [
+            1359,
+            354
+          ],
+          "source_rgba": [
+            57,
+            68,
+            75,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "source_window_box": [
+        1250,
+        692,
+        140,
+        29
+      ],
+      "actual_native_alpha0_samples": [
+        {
+          "native": [
+            8,
+            8
+          ],
+          "source_sample": [
+            1294,
+            694
+          ],
+          "source_rgba": [
+            62,
+            78,
+            87,
+            16
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "source_window_box": [
+        1250,
+        778,
+        140,
+        26
+      ],
+      "actual_native_alpha0_samples": [
+        {
+          "native": [
+            8,
+            11
+          ],
+          "source_sample": [
+            1294,
+            797
+          ],
+          "source_rgba": [
+            48,
+            59,
+            65,
+            4
+          ]
+        },
+        {
+          "native": [
+            9,
+            11
+          ],
+          "source_sample": [
+            1326,
+            797
+          ],
+          "source_rgba": [
+            58,
+            71,
+            78,
+            4
+          ]
+        },
+        {
+          "native": [
+            10,
+            11
+          ],
+          "source_sample": [
+            1359,
+            797
+          ],
+          "source_rgba": [
+            58,
+            70,
+            77,
+            3
+          ]
+        }
+      ]
+    }
+  ]
+}

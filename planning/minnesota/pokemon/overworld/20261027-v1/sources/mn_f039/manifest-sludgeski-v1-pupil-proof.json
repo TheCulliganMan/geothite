@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F039",
+  "species": [
+    {
+      "species_id": "MN_090",
+      "runtime_token": "SLUDGESKI",
+      "palette_rgb555": [
+        32767,
+        28468,
+        15659,
+        0
+      ],
+      "shiny_palette_rgb555": [
+        32767,
+        26267,
+        9583,
+        0
+      ],
+      "fit": [
+        14,
+        14
+      ],
+      "alpha_threshold": 128,
+      "sampling": "source_center",
+      "minimum_foreground_samples": 16,
+      "black_priority_samples": 64,
+      "interior_black_samples": 64,
+      "opaque_interior_minimum_samples": 64,
+      "frames": [
+        {
+          "pose": "down_idle",
+          "source": "sludgeski.overworld.imagegen-v1.png",
+          "crop": [
+            5,
+            71,
+            500,
+            440
+          ]
+        },
+        {
+          "pose": "up_idle",
+          "source": "sludgeski.overworld.imagegen-v1.png",
+          "crop": [
+            534,
+            109,
+            500,
+            440
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "source": "sludgeski.overworld.imagegen-v1.png",
+          "crop": [
+            1003,
+            52,
+            500,
+            440
+          ]
+        },
+        {
+          "pose": "down_step",
+          "source": "sludgeski.overworld.imagegen-v1.png",
+          "crop": [
+            8,
+            541,
+            500,
+            440
+          ]
+        },
+        {
+          "pose": "up_step",
+          "source": "sludgeski.overworld.imagegen-v1.png",
+          "crop": [
+            523,
+            571,
+            500,
+            440
+          ]
+        },
+        {
+          "pose": "left_step",
+          "source": "sludgeski.overworld.imagegen-v1.png",
+          "crop": [
+            1003,
+            510,
+            500,
+            440
+          ]
+        }
+      ]
+    }
+  ]
+}

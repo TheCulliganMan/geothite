@@ -1,0 +1,270 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F008",
+  "species": [
+    {
+      "species_id": "MN_022",
+      "runtime_token": "RUSTLEBEE",
+      "palette_rgb555": [
+        32767,
+        5885,
+        4330,
+        0
+      ],
+      "shiny_palette_rgb555": [
+        32767,
+        24485,
+        7492,
+        0
+      ],
+      "fit": [
+        12,
+        12
+      ],
+      "alpha_threshold": 128,
+      "sampling": "source_center",
+      "minimum_foreground_samples": 16,
+      "black_priority_samples": 64,
+      "interior_black_samples": 64,
+      "opaque_interior_minimum_samples": 64,
+      "frames": [
+        {
+          "pose": "down_idle",
+          "source": "rustlebee.overworld.imagegen-v2.png",
+          "crop": [
+            125,
+            170,
+            360,
+            330
+          ]
+        },
+        {
+          "pose": "up_idle",
+          "source": "rustlebee.overworld.imagegen-v2.png",
+          "crop": [
+            595,
+            170,
+            360,
+            330
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "source": "rustlebee.overworld.imagegen-v2.png",
+          "crop": [
+            1065,
+            178,
+            360,
+            330
+          ]
+        },
+        {
+          "pose": "down_step",
+          "source": "rustlebee.overworld.imagegen-v2.png",
+          "crop": [
+            125,
+            583,
+            360,
+            330
+          ]
+        },
+        {
+          "pose": "up_step",
+          "source": "rustlebee.overworld.imagegen-v2.png",
+          "crop": [
+            595,
+            583,
+            360,
+            330
+          ]
+        },
+        {
+          "pose": "left_step",
+          "source": "rustlebee.overworld.imagegen-v2.png",
+          "crop": [
+            1065,
+            583,
+            360,
+            330
+          ]
+        }
+      ]
+    },
+    {
+      "species_id": "MN_023",
+      "runtime_token": "PATCHEBEE",
+      "palette_rgb555": [
+        32767,
+        5561,
+        13637,
+        0
+      ],
+      "shiny_palette_rgb555": [
+        32767,
+        14117,
+        10413,
+        0
+      ],
+      "fit": [
+        14,
+        14
+      ],
+      "alpha_threshold": 128,
+      "sampling": "source_center",
+      "minimum_foreground_samples": 16,
+      "black_priority_samples": 64,
+      "interior_black_samples": 64,
+      "opaque_interior_minimum_samples": 64,
+      "frames": [
+        {
+          "pose": "down_idle",
+          "source": "patchebee.overworld.imagegen-v3.png",
+          "crop": [
+            121,
+            143,
+            360,
+            370
+          ]
+        },
+        {
+          "pose": "up_idle",
+          "source": "patchebee.overworld.imagegen-v3.png",
+          "crop": [
+            606,
+            143,
+            360,
+            370
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "source": "patchebee.overworld.imagegen-v3.png",
+          "crop": [
+            1080,
+            139,
+            360,
+            370
+          ]
+        },
+        {
+          "pose": "down_step",
+          "source": "patchebee.overworld.imagegen-v3.png",
+          "crop": [
+            121,
+            576,
+            360,
+            370
+          ]
+        },
+        {
+          "pose": "up_step",
+          "source": "patchebee.overworld.imagegen-v3.png",
+          "crop": [
+            606,
+            576,
+            360,
+            370
+          ]
+        },
+        {
+          "pose": "left_step",
+          "source": "patchebee.overworld.imagegen-v3.png",
+          "crop": [
+            1080,
+            572,
+            360,
+            370
+          ]
+        }
+      ]
+    },
+    {
+      "species_id": "MN_024",
+      "runtime_token": "RIVETQUEEN",
+      "palette_rgb555": [
+        32767,
+        4379,
+        23183,
+        0
+      ],
+      "shiny_palette_rgb555": [
+        32767,
+        9060,
+        20982,
+        0
+      ],
+      "fit": [
+        14,
+        14
+      ],
+      "alpha_threshold": 128,
+      "sampling": "source_center",
+      "minimum_foreground_samples": 16,
+      "black_priority_samples": 64,
+      "interior_black_samples": 64,
+      "opaque_interior_minimum_samples": 64,
+      "frames": [
+        {
+          "pose": "down_idle",
+          "source": "rivetqueen.overworld.imagegen-v3.png",
+          "crop": [
+            70,
+            80,
+            420,
+            380
+          ]
+        },
+        {
+          "pose": "up_idle",
+          "source": "rivetqueen.overworld.imagegen-v3.png",
+          "crop": [
+            550,
+            80,
+            420,
+            380
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "source": "rivetqueen.overworld.imagegen-v3.png",
+          "crop": [
+            1050,
+            80,
+            420,
+            380
+          ]
+        },
+        {
+          "pose": "down_step",
+          "source": "rivetqueen.overworld.imagegen-v3.png",
+          "crop": [
+            70,
+            560,
+            420,
+            380
+          ]
+        },
+        {
+          "pose": "up_step",
+          "source": "rivetqueen.overworld.imagegen-v3.png",
+          "crop": [
+            550,
+            560,
+            420,
+            380
+          ]
+        },
+        {
+          "pose": "left_step",
+          "source": "rivetqueen.overworld.imagegen-v3.png",
+          "crop": [
+            1050,
+            560,
+            420,
+            380
+          ]
+        }
+      ]
+    }
+  ]
+}

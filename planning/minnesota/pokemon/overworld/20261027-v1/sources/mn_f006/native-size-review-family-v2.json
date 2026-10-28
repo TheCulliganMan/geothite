@@ -1,0 +1,877 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F006",
+  "status": "native-review-recommended; root independent visual and production context review required",
+  "selected_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f006/family.manifest-native-candidate-v2.json",
+  "runtime_output": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/true16-agate-family-v2/MN_F006",
+  "tool": "built-in image_gen",
+  "normal_shiny_boards_actually_viewed": true,
+  "proof": [
+    {
+      "species_id": "MN_016",
+      "name": "Agatot",
+      "runtime_token": "AGATOT",
+      "native_frame_size": [
+        16,
+        16
+      ],
+      "runtime_stack_size": [
+        16,
+        96
+      ],
+      "normal_shiny_runtime_pixel_parity": "all1536pixels exact each",
+      "canonical_palettes_and_little_endian_bytes": "exact",
+      "all_three_walk_pairs_distinct": true,
+      "source_to_native_pupil_proof": [
+        {
+          "pose": "down_idle",
+          "shared_transform": {
+            "source_union": [
+              12,
+              12,
+              333,
+              311
+            ],
+            "sampled_native_size": [
+              14,
+              13
+            ],
+            "native_origin": [
+              1,
+              2
+            ]
+          },
+          "eyes": [
+            {
+              "native_eye_cluster": [
+                [
+                  6,
+                  7
+                ]
+              ],
+              "samples": [
+                {
+                  "native_pixel": [
+                    6,
+                    7
+                  ],
+                  "source_sample_pixel": [
+                    185,
+                    392
+                  ],
+                  "source_sample_rgba": [
+                    1,
+                    0,
+                    0,
+                    254
+                  ],
+                  "source_pupil_component_bounds": [
+                    171,
+                    387,
+                    23,
+                    29
+                  ],
+                  "source_pupil_component_pixels": 665
+                }
+              ]
+            },
+            {
+              "native_eye_cluster": [
+                [
+                  9,
+                  7
+                ]
+              ],
+              "samples": [
+                {
+                  "native_pixel": [
+                    9,
+                    7
+                  ],
+                  "source_sample_pixel": [
+                    257,
+                    392
+                  ],
+                  "source_sample_rgba": [
+                    1,
+                    0,
+                    0,
+                    253
+                  ],
+                  "source_pupil_component_bounds": [
+                    250,
+                    387,
+                    22,
+                    29
+                  ],
+                  "source_pupil_component_pixels": 637
+                }
+              ]
+            }
+          ],
+          "all_orthogonal_native_neighbors_outside_eyes": "primaryink1; no pupil joins contour/arm/mouth",
+          "source_pupils": "two distinct small black components, explicitly sampled by literal Rust source-center transform"
+        },
+        {
+          "pose": "down_step",
+          "shared_transform": {
+            "source_union": [
+              12,
+              12,
+              333,
+              311
+            ],
+            "sampled_native_size": [
+              14,
+              13
+            ],
+            "native_origin": [
+              1,
+              2
+            ]
+          },
+          "eyes": [
+            {
+              "native_eye_cluster": [
+                [
+                  6,
+                  7
+                ],
+                [
+                  6,
+                  8
+                ]
+              ],
+              "samples": [
+                {
+                  "native_pixel": [
+                    6,
+                    7
+                  ],
+                  "source_sample_pixel": [
+                    185,
+                    817
+                  ],
+                  "source_sample_rgba": [
+                    6,
+                    3,
+                    1,
+                    253
+                  ],
+                  "source_pupil_component_bounds": [
+                    171,
+                    815,
+                    23,
+                    28
+                  ],
+                  "source_pupil_component_pixels": 644
+                },
+                {
+                  "native_pixel": [
+                    6,
+                    8
+                  ],
+                  "source_sample_pixel": [
+                    185,
+                    841
+                  ],
+                  "source_sample_rgba": [
+                    6,
+                    2,
+                    0,
+                    253
+                  ],
+                  "source_pupil_component_bounds": [
+                    171,
+                    815,
+                    23,
+                    28
+                  ],
+                  "source_pupil_component_pixels": 644
+                }
+              ]
+            },
+            {
+              "native_eye_cluster": [
+                [
+                  9,
+                  7
+                ],
+                [
+                  9,
+                  8
+                ]
+              ],
+              "samples": [
+                {
+                  "native_pixel": [
+                    9,
+                    7
+                  ],
+                  "source_sample_pixel": [
+                    257,
+                    817
+                  ],
+                  "source_sample_rgba": [
+                    6,
+                    3,
+                    0,
+                    253
+                  ],
+                  "source_pupil_component_bounds": [
+                    250,
+                    815,
+                    22,
+                    28
+                  ],
+                  "source_pupil_component_pixels": 616
+                },
+                {
+                  "native_pixel": [
+                    9,
+                    8
+                  ],
+                  "source_sample_pixel": [
+                    257,
+                    841
+                  ],
+                  "source_sample_rgba": [
+                    1,
+                    1,
+                    1,
+                    254
+                  ],
+                  "source_pupil_component_bounds": [
+                    250,
+                    815,
+                    22,
+                    28
+                  ],
+                  "source_pupil_component_pixels": 616
+                }
+              ]
+            }
+          ],
+          "all_orthogonal_native_neighbors_outside_eyes": "primaryink1; no pupil joins contour/arm/mouth",
+          "source_pupils": "two distinct small black components, explicitly sampled by literal Rust source-center transform"
+        }
+      ],
+      "frames": [
+        {
+          "pose": "down_idle",
+          "native_bounds": [
+            1,
+            2,
+            14,
+            13
+          ],
+          "pixel_sha256": "4280ff00dddae0083088f4d5778d090f3f456a4d613278250676fa78bbb207e0"
+        },
+        {
+          "pose": "up_idle",
+          "native_bounds": [
+            1,
+            2,
+            14,
+            13
+          ],
+          "pixel_sha256": "15f011dac0e7c1c63148ffedcdd0c367ecb32e5b985f8df6a72d22d0d5844b88"
+        },
+        {
+          "pose": "left_idle",
+          "native_bounds": [
+            1,
+            2,
+            14,
+            13
+          ],
+          "pixel_sha256": "c58e194b0cf3ee8053b6f858ef6f8f30c4af4bfb619d9913a47b6700fc54aa8d"
+        },
+        {
+          "pose": "down_step",
+          "native_bounds": [
+            1,
+            2,
+            14,
+            13
+          ],
+          "pixel_sha256": "98274edf46f83ee6861f30329b07bd4fc8e2315228812326071f84c43e71d9bb"
+        },
+        {
+          "pose": "up_step",
+          "native_bounds": [
+            1,
+            2,
+            14,
+            13
+          ],
+          "pixel_sha256": "5909760b6e57f1844a2bb5436012d6ba913ea8252ce89dc8e0f37310f69df200"
+        },
+        {
+          "pose": "left_step",
+          "native_bounds": [
+            1,
+            2,
+            14,
+            13
+          ],
+          "pixel_sha256": "1b5242e71320e3150e5152606fb9be134236b16a49bf0e6b9b646b2fa7cec2e6"
+        }
+      ]
+    },
+    {
+      "species_id": "MN_017",
+      "name": "Bandrake",
+      "runtime_token": "BANDRAKE",
+      "native_frame_size": [
+        16,
+        16
+      ],
+      "runtime_stack_size": [
+        16,
+        96
+      ],
+      "normal_shiny_runtime_pixel_parity": "all1536pixels exact each",
+      "canonical_palettes_and_little_endian_bytes": "exact",
+      "all_three_walk_pairs_distinct": true,
+      "source_to_native_pupil_proof": [
+        {
+          "pose": "down_idle",
+          "shared_transform": {
+            "source_union": [
+              12,
+              12,
+              320,
+              314
+            ],
+            "sampled_native_size": [
+              14,
+              13
+            ],
+            "native_origin": [
+              1,
+              2
+            ]
+          },
+          "eyes": [
+            {
+              "native_eye_cluster": [
+                [
+                  6,
+                  6
+                ]
+              ],
+              "samples": [
+                {
+                  "native_pixel": [
+                    6,
+                    6
+                  ],
+                  "source_sample_pixel": [
+                    156,
+                    269
+                  ],
+                  "source_sample_rgba": [
+                    5,
+                    2,
+                    2,
+                    254
+                  ],
+                  "source_pupil_component_bounds": [
+                    140,
+                    259,
+                    20,
+                    29
+                  ],
+                  "source_pupil_component_pixels": 579
+                }
+              ]
+            },
+            {
+              "native_eye_cluster": [
+                [
+                  9,
+                  6
+                ]
+              ],
+              "samples": [
+                {
+                  "native_pixel": [
+                    9,
+                    6
+                  ],
+                  "source_sample_pixel": [
+                    225,
+                    269
+                  ],
+                  "source_sample_rgba": [
+                    2,
+                    1,
+                    1,
+                    253
+                  ],
+                  "source_pupil_component_bounds": [
+                    224,
+                    259,
+                    19,
+                    29
+                  ],
+                  "source_pupil_component_pixels": 551
+                }
+              ]
+            }
+          ],
+          "all_orthogonal_native_neighbors_outside_eyes": "primaryink1; no pupil joins contour/arm/mouth",
+          "source_pupils": "two distinct small black components, explicitly sampled by literal Rust source-center transform"
+        },
+        {
+          "pose": "down_step",
+          "shared_transform": {
+            "source_union": [
+              12,
+              12,
+              320,
+              314
+            ],
+            "sampled_native_size": [
+              14,
+              13
+            ],
+            "native_origin": [
+              1,
+              2
+            ]
+          },
+          "eyes": [
+            {
+              "native_eye_cluster": [
+                [
+                  6,
+                  6
+                ]
+              ],
+              "samples": [
+                {
+                  "native_pixel": [
+                    6,
+                    6
+                  ],
+                  "source_sample_pixel": [
+                    156,
+                    672
+                  ],
+                  "source_sample_rgba": [
+                    2,
+                    0,
+                    1,
+                    253
+                  ],
+                  "source_pupil_component_bounds": [
+                    140,
+                    668,
+                    20,
+                    28
+                  ],
+                  "source_pupil_component_pixels": 560
+                }
+              ]
+            },
+            {
+              "native_eye_cluster": [
+                [
+                  9,
+                  6
+                ],
+                [
+                  9,
+                  7
+                ]
+              ],
+              "samples": [
+                {
+                  "native_pixel": [
+                    9,
+                    6
+                  ],
+                  "source_sample_pixel": [
+                    225,
+                    672
+                  ],
+                  "source_sample_rgba": [
+                    6,
+                    1,
+                    2,
+                    254
+                  ],
+                  "source_pupil_component_bounds": [
+                    223,
+                    668,
+                    20,
+                    29
+                  ],
+                  "source_pupil_component_pixels": 555
+                },
+                {
+                  "native_pixel": [
+                    9,
+                    7
+                  ],
+                  "source_sample_pixel": [
+                    225,
+                    696
+                  ],
+                  "source_sample_rgba": [
+                    94,
+                    31,
+                    37,
+                    254
+                  ],
+                  "source_pupil_component_bounds": [
+                    223,
+                    668,
+                    20,
+                    29
+                  ],
+                  "source_pupil_component_pixels": 555
+                }
+              ]
+            }
+          ],
+          "all_orthogonal_native_neighbors_outside_eyes": "primaryink1; no pupil joins contour/arm/mouth",
+          "source_pupils": "two distinct small black components, explicitly sampled by literal Rust source-center transform"
+        }
+      ],
+      "frames": [
+        {
+          "pose": "down_idle",
+          "native_bounds": [
+            1,
+            2,
+            14,
+            13
+          ],
+          "pixel_sha256": "57ba02f5d9e90be588d8a6ee6d6c6426ab5f861f6325c44e515df0fca6482bad"
+        },
+        {
+          "pose": "up_idle",
+          "native_bounds": [
+            1,
+            2,
+            14,
+            13
+          ],
+          "pixel_sha256": "4b9fca5c7e35620f578a7f4cd3ec7c0075e0dd9650083763ee0a3c7b63d15a1b"
+        },
+        {
+          "pose": "left_idle",
+          "native_bounds": [
+            1,
+            2,
+            14,
+            13
+          ],
+          "pixel_sha256": "15f23414490ed746ae2c4be099249b2bdb3b0dc078dd1a5f47656fffbb766803"
+        },
+        {
+          "pose": "down_step",
+          "native_bounds": [
+            1,
+            2,
+            14,
+            13
+          ],
+          "pixel_sha256": "72f8787d7b1a63dd8400bbfe1809013d5f58d19e601798cb56e80fbb6f340af5"
+        },
+        {
+          "pose": "up_step",
+          "native_bounds": [
+            1,
+            2,
+            14,
+            13
+          ],
+          "pixel_sha256": "e4c63e478e83d3f5574214dac6ed105cd35d0539165c11ede0366f3ca1cf9958"
+        },
+        {
+          "pose": "left_step",
+          "native_bounds": [
+            1,
+            2,
+            14,
+            13
+          ],
+          "pixel_sha256": "7515669769272bb5b4c2aa008a524393a3496dbcde2dd3847b62855f2e4fa3ab"
+        }
+      ]
+    },
+    {
+      "species_id": "MN_018",
+      "name": "Fortigard",
+      "runtime_token": "FORTIGARD",
+      "native_frame_size": [
+        16,
+        16
+      ],
+      "runtime_stack_size": [
+        16,
+        96
+      ],
+      "normal_shiny_runtime_pixel_parity": "all1536pixels exact each",
+      "canonical_palettes_and_little_endian_bytes": "exact",
+      "all_three_walk_pairs_distinct": true,
+      "source_to_native_pupil_proof": [
+        {
+          "pose": "down_idle",
+          "shared_transform": {
+            "source_union": [
+              12,
+              12,
+              461,
+              395
+            ],
+            "sampled_native_size": [
+              14,
+              11
+            ],
+            "native_origin": [
+              1,
+              4
+            ]
+          },
+          "eyes": [
+            {
+              "native_eye_cluster": [
+                [
+                  6,
+                  6
+                ]
+              ],
+              "samples": [
+                {
+                  "native_pixel": [
+                    6,
+                    6
+                  ],
+                  "source_sample_pixel": [
+                    240,
+                    107
+                  ],
+                  "source_sample_rgba": [
+                    0,
+                    0,
+                    0,
+                    253
+                  ],
+                  "source_pupil_component_bounds": [
+                    226,
+                    82,
+                    35,
+                    35
+                  ],
+                  "source_pupil_component_pixels": 1225
+                }
+              ]
+            },
+            {
+              "native_eye_cluster": [
+                [
+                  9,
+                  6
+                ]
+              ],
+              "samples": [
+                {
+                  "native_pixel": [
+                    9,
+                    6
+                  ],
+                  "source_sample_pixel": [
+                    338,
+                    107
+                  ],
+                  "source_sample_rgba": [
+                    0,
+                    0,
+                    0,
+                    253
+                  ],
+                  "source_pupil_component_bounds": [
+                    313,
+                    82,
+                    35,
+                    35
+                  ],
+                  "source_pupil_component_pixels": 1225
+                }
+              ]
+            }
+          ],
+          "all_orthogonal_native_neighbors_outside_eyes": "primaryink1; no pupil joins contour/arm/mouth",
+          "source_pupils": "two distinct small black components, explicitly sampled by literal Rust source-center transform"
+        },
+        {
+          "pose": "down_step",
+          "shared_transform": {
+            "source_union": [
+              12,
+              12,
+              461,
+              395
+            ],
+            "sampled_native_size": [
+              14,
+              11
+            ],
+            "native_origin": [
+              1,
+              4
+            ]
+          },
+          "eyes": [
+            {
+              "native_eye_cluster": [
+                [
+                  6,
+                  6
+                ]
+              ],
+              "samples": [
+                {
+                  "native_pixel": [
+                    6,
+                    6
+                  ],
+                  "source_sample_pixel": [
+                    240,
+                    522
+                  ],
+                  "source_sample_rgba": [
+                    0,
+                    0,
+                    0,
+                    254
+                  ],
+                  "source_pupil_component_bounds": [
+                    228,
+                    504,
+                    35,
+                    35
+                  ],
+                  "source_pupil_component_pixels": 1219
+                }
+              ]
+            },
+            {
+              "native_eye_cluster": [
+                [
+                  9,
+                  6
+                ]
+              ],
+              "samples": [
+                {
+                  "native_pixel": [
+                    9,
+                    6
+                  ],
+                  "source_sample_pixel": [
+                    338,
+                    522
+                  ],
+                  "source_sample_rgba": [
+                    0,
+                    0,
+                    0,
+                    253
+                  ],
+                  "source_pupil_component_bounds": [
+                    315,
+                    504,
+                    34,
+                    35
+                  ],
+                  "source_pupil_component_pixels": 1180
+                }
+              ]
+            }
+          ],
+          "all_orthogonal_native_neighbors_outside_eyes": "primaryink1; no pupil joins contour/arm/mouth",
+          "source_pupils": "two distinct small black components, explicitly sampled by literal Rust source-center transform"
+        }
+      ],
+      "frames": [
+        {
+          "pose": "down_idle",
+          "native_bounds": [
+            1,
+            4,
+            14,
+            11
+          ],
+          "pixel_sha256": "87c345ffa57ad9c7e49a5440b1f1a7d95b9701c848ec92916c115cafaaebdd99"
+        },
+        {
+          "pose": "up_idle",
+          "native_bounds": [
+            1,
+            4,
+            14,
+            11
+          ],
+          "pixel_sha256": "090ef6cedb3c57ef92d97d0d66d1a0b4599524049219c51546254ba16dc9ea54"
+        },
+        {
+          "pose": "left_idle",
+          "native_bounds": [
+            2,
+            5,
+            12,
+            10
+          ],
+          "pixel_sha256": "5361347c39194aa193ce590ae05c43bb97e9035661e5ebeb010d5899df16a491"
+        },
+        {
+          "pose": "down_step",
+          "native_bounds": [
+            1,
+            4,
+            14,
+            11
+          ],
+          "pixel_sha256": "668e70bfac25219af3f8a60a397b95f113dbc1427d930f1d19b95ddffe3e876f"
+        },
+        {
+          "pose": "up_step",
+          "native_bounds": [
+            1,
+            4,
+            14,
+            11
+          ],
+          "pixel_sha256": "4912c76a4e5c8d3613b17020257e2590f9807a1b756e59bd22d98f8cdad0a6a9"
+        },
+        {
+          "pose": "left_step",
+          "native_bounds": [
+            2,
+            5,
+            12,
+            10
+          ],
+          "pixel_sha256": "11681ad0dbb9801144e971b84e7171bcb59a3c0104a0d43ec0043b699faed9b5"
+        }
+      ]
+    }
+  ],
+  "no_roster_registry_or_pack_mutations": true,
+  "all_raw_prompts_unused_frames_and_rejected_candidates_retained": true,
+  "sha256": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f006/family.manifest-native-candidate-v2.json": "17ff6d96261933f939e56820ecc9ce63e09f0262ae4cd72924a036a90b072c24",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/true16-agate-family-v2/MN_F006/compiled-index.json": "55abfa631cab42faafed41eab8e5b527ef1b4b126fe101bc008ed9110e7c0f84",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/true16-agate-family-v2/MN_F006/review/line.normal-8x.png": "ca66344f00b8f56981178212381b62f85dde5b0436ff2e844c686f21c125a047",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/true16-agate-family-v2/MN_F006/review/line.shiny-8x.png": "7186501f3e72efe17afdb4dbe3a2c3bf16f71dd678850bd708933152b3a16f57",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f006/agatot.overworld.imagegen-v2.png": "97e4f960a06651056e1f5de9a343bf74430ea89659c2ff8c03cdd63874c084f8",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f006/bandrake.overworld.imagegen-v2.png": "b7baa128f7b7de9dfa6a7a8de2fb18a18eac7d987e946b825ce36dfa4b87fc49",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f006/fortigard.overworld.imagegen-v5.png": "93399dba54e64920a7b678a05753e34ebe24446e10de22ada88c9274376f3300"
+  }
+}

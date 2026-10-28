@@ -1,0 +1,796 @@
+{
+  "species_id": "MN_314",
+  "manifest_sha256": "a6fe602059d5e45ebde7c326200c4ca9302d1ab8e078c88270ffede951203f5e",
+  "bank_sha256": "355f61ccf25efbf1aa1fc4cf1842ef159fe96815aa85cc1d5106c210afefe950",
+  "result": "pass",
+  "six_pose_source_to_native_gland_proof": [
+    {
+      "pose": "down_idle",
+      "three_actual_magenta_curled_leaf_glands": [
+        {
+          "source_bounds": [
+            256,
+            122,
+            68,
+            60
+          ],
+          "source_pixels": 3220,
+          "native_samples": [
+            {
+              "native": [
+                7,
+                4
+              ],
+              "source": [
+                275,
+                125
+              ]
+            },
+            {
+              "native": [
+                8,
+                4
+              ],
+              "source": [
+                307,
+                125
+              ]
+            },
+            {
+              "native": [
+                7,
+                5
+              ],
+              "source": [
+                275,
+                157
+              ]
+            },
+            {
+              "native": [
+                8,
+                5
+              ],
+              "source": [
+                307,
+                157
+              ]
+            }
+          ]
+        },
+        {
+          "source_bounds": [
+            127,
+            238,
+            65,
+            67
+          ],
+          "source_pixels": 3182,
+          "native_samples": [
+            {
+              "native": [
+                3,
+                8
+              ],
+              "source": [
+                150,
+                255
+              ]
+            },
+            {
+              "native": [
+                4,
+                8
+              ],
+              "source": [
+                181,
+                255
+              ]
+            },
+            {
+              "native": [
+                3,
+                9
+              ],
+              "source": [
+                150,
+                287
+              ]
+            }
+          ]
+        },
+        {
+          "source_bounds": [
+            391,
+            238,
+            66,
+            67
+          ],
+          "source_pixels": 3260,
+          "native_samples": [
+            {
+              "native": [
+                11,
+                8
+              ],
+              "source": [
+                401,
+                255
+              ]
+            },
+            {
+              "native": [
+                12,
+                8
+              ],
+              "source": [
+                432,
+                255
+              ]
+            },
+            {
+              "native": [
+                12,
+                9
+              ],
+              "source": [
+                432,
+                287
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "up_idle",
+      "three_actual_magenta_curled_leaf_glands": [
+        {
+          "source_bounds": [
+            735,
+            122,
+            68,
+            58
+          ],
+          "source_pixels": 3184,
+          "native_samples": [
+            {
+              "native": [
+                7,
+                5
+              ],
+              "source": [
+                751,
+                147
+              ]
+            },
+            {
+              "native": [
+                8,
+                5
+              ],
+              "source": [
+                783,
+                147
+              ]
+            }
+          ]
+        },
+        {
+          "source_bounds": [
+            598,
+            232,
+            62,
+            54
+          ],
+          "source_pixels": 2787,
+          "native_samples": [
+            {
+              "native": [
+                3,
+                8
+              ],
+              "source": [
+                626,
+                245
+              ]
+            },
+            {
+              "native": [
+                4,
+                8
+              ],
+              "source": [
+                657,
+                245
+              ]
+            },
+            {
+              "native": [
+                3,
+                9
+              ],
+              "source": [
+                626,
+                277
+              ]
+            }
+          ]
+        },
+        {
+          "source_bounds": [
+            877,
+            232,
+            60,
+            67
+          ],
+          "source_pixels": 2856,
+          "native_samples": [
+            {
+              "native": [
+                11,
+                8
+              ],
+              "source": [
+                877,
+                245
+              ]
+            },
+            {
+              "native": [
+                12,
+                8
+              ],
+              "source": [
+                908,
+                245
+              ]
+            },
+            {
+              "native": [
+                12,
+                9
+              ],
+              "source": [
+                908,
+                277
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "three_actual_magenta_curled_leaf_glands": [
+        {
+          "source_bounds": [
+            1184,
+            121,
+            61,
+            59
+          ],
+          "source_pixels": 3017,
+          "native_samples": [
+            {
+              "native": [
+                5,
+                5
+              ],
+              "source": [
+                1187,
+                151
+              ]
+            },
+            {
+              "native": [
+                6,
+                5
+              ],
+              "source": [
+                1219,
+                151
+              ]
+            }
+          ]
+        },
+        {
+          "source_bounds": [
+            1115,
+            232,
+            62,
+            58
+          ],
+          "source_pixels": 2958,
+          "native_samples": [
+            {
+              "native": [
+                3,
+                8
+              ],
+              "source": [
+                1125,
+                249
+              ]
+            },
+            {
+              "native": [
+                4,
+                8
+              ],
+              "source": [
+                1156,
+                249
+              ]
+            },
+            {
+              "native": [
+                3,
+                9
+              ],
+              "source": [
+                1125,
+                281
+              ]
+            },
+            {
+              "native": [
+                4,
+                9
+              ],
+              "source": [
+                1156,
+                281
+              ]
+            }
+          ]
+        },
+        {
+          "source_bounds": [
+            1353,
+            248,
+            64,
+            70
+          ],
+          "source_pixels": 3195,
+          "native_samples": [
+            {
+              "native": [
+                11,
+                8
+              ],
+              "source": [
+                1376,
+                249
+              ]
+            },
+            {
+              "native": [
+                11,
+                9
+              ],
+              "source": [
+                1376,
+                281
+              ]
+            },
+            {
+              "native": [
+                12,
+                9
+              ],
+              "source": [
+                1407,
+                281
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "three_actual_magenta_curled_leaf_glands": [
+        {
+          "source_bounds": [
+            256,
+            596,
+            67,
+            59
+          ],
+          "source_pixels": 3128,
+          "native_samples": [
+            {
+              "native": [
+                7,
+                4
+              ],
+              "source": [
+                273,
+                597
+              ]
+            },
+            {
+              "native": [
+                8,
+                4
+              ],
+              "source": [
+                305,
+                597
+              ]
+            },
+            {
+              "native": [
+                7,
+                5
+              ],
+              "source": [
+                273,
+                629
+              ]
+            },
+            {
+              "native": [
+                8,
+                5
+              ],
+              "source": [
+                305,
+                629
+              ]
+            }
+          ]
+        },
+        {
+          "source_bounds": [
+            117,
+            706,
+            64,
+            65
+          ],
+          "source_pixels": 3153,
+          "native_samples": [
+            {
+              "native": [
+                3,
+                8
+              ],
+              "source": [
+                148,
+                727
+              ]
+            },
+            {
+              "native": [
+                4,
+                8
+              ],
+              "source": [
+                179,
+                727
+              ]
+            },
+            {
+              "native": [
+                3,
+                9
+              ],
+              "source": [
+                148,
+                759
+              ]
+            }
+          ]
+        },
+        {
+          "source_bounds": [
+            397,
+            706,
+            63,
+            65
+          ],
+          "source_pixels": 3133,
+          "native_samples": [
+            {
+              "native": [
+                11,
+                8
+              ],
+              "source": [
+                399,
+                727
+              ]
+            },
+            {
+              "native": [
+                12,
+                8
+              ],
+              "source": [
+                430,
+                727
+              ]
+            },
+            {
+              "native": [
+                12,
+                9
+              ],
+              "source": [
+                430,
+                759
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "up_step",
+      "three_actual_magenta_curled_leaf_glands": [
+        {
+          "source_bounds": [
+            735,
+            596,
+            68,
+            56
+          ],
+          "source_pixels": 3054,
+          "native_samples": [
+            {
+              "native": [
+                7,
+                5
+              ],
+              "source": [
+                757,
+                618
+              ]
+            },
+            {
+              "native": [
+                8,
+                5
+              ],
+              "source": [
+                789,
+                618
+              ]
+            },
+            {
+              "native": [
+                7,
+                6
+              ],
+              "source": [
+                757,
+                651
+              ]
+            }
+          ]
+        },
+        {
+          "source_bounds": [
+            598,
+            707,
+            65,
+            58
+          ],
+          "source_pixels": 2887,
+          "native_samples": [
+            {
+              "native": [
+                3,
+                8
+              ],
+              "source": [
+                632,
+                716
+              ]
+            },
+            {
+              "native": [
+                2,
+                9
+              ],
+              "source": [
+                600,
+                748
+              ]
+            },
+            {
+              "native": [
+                3,
+                9
+              ],
+              "source": [
+                632,
+                748
+              ]
+            }
+          ]
+        },
+        {
+          "source_bounds": [
+            884,
+            715,
+            64,
+            58
+          ],
+          "source_pixels": 2873,
+          "native_samples": [
+            {
+              "native": [
+                12,
+                8
+              ],
+              "source": [
+                914,
+                716
+              ]
+            },
+            {
+              "native": [
+                12,
+                9
+              ],
+              "source": [
+                914,
+                748
+              ]
+            },
+            {
+              "native": [
+                13,
+                9
+              ],
+              "source": [
+                946,
+                748
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "three_actual_magenta_curled_leaf_glands": [
+        {
+          "source_bounds": [
+            1190,
+            595,
+            62,
+            59
+          ],
+          "source_pixels": 3017,
+          "native_samples": [
+            {
+              "native": [
+                6,
+                4
+              ],
+              "source": [
+                1230,
+                595
+              ]
+            },
+            {
+              "native": [
+                5,
+                5
+              ],
+              "source": [
+                1198,
+                627
+              ]
+            },
+            {
+              "native": [
+                6,
+                5
+              ],
+              "source": [
+                1230,
+                627
+              ]
+            }
+          ]
+        },
+        {
+          "source_bounds": [
+            1127,
+            715,
+            62,
+            56
+          ],
+          "source_pixels": 2825,
+          "native_samples": [
+            {
+              "native": [
+                4,
+                8
+              ],
+              "source": [
+                1167,
+                725
+              ]
+            },
+            {
+              "native": [
+                3,
+                9
+              ],
+              "source": [
+                1136,
+                757
+              ]
+            },
+            {
+              "native": [
+                4,
+                9
+              ],
+              "source": [
+                1167,
+                757
+              ]
+            }
+          ]
+        },
+        {
+          "source_bounds": [
+            1360,
+            741,
+            67,
+            66
+          ],
+          "source_pixels": 3283,
+          "native_samples": [
+            {
+              "native": [
+                11,
+                9
+              ],
+              "source": [
+                1387,
+                757
+              ]
+            },
+            {
+              "native": [
+                12,
+                9
+              ],
+              "source": [
+                1418,
+                757
+              ]
+            },
+            {
+              "native": [
+                11,
+                10
+              ],
+              "source": [
+                1387,
+                789
+              ]
+            },
+            {
+              "native": [
+                12,
+                10
+              ],
+              "source": [
+                1418,
+                789
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

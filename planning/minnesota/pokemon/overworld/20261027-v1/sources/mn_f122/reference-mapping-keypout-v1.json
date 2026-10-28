@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_261",
+  "family_id": "MN_F122",
+  "prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f122/prompt-keypout-v1.txt",
+  "input_images": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/references/native-pack-16px/native-six-frame-style-board.8x.png",
+      "role": "ONLY authenticnative16STYLE; no battleart input",
+      "sha256": "4354a639ed1a80fd6686e43b273443ed894e58a84307a8049f638ee9ffa2a099"
+    }
+  ],
+  "identity_reviewed_not_supplied_to_imagegen": [
+    {
+      "path": "target/minnesota-pokemon/native/MN_F122/mn-261-keypout-v1.front.png",
+      "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F122/mn-261-keypout-v1.front.png",
+      "sha256": "d6ef2ca8f3b97cef5b85eab860cfbe8a48c50d474f98949d50bfedaf447d5bd3"
+    },
+    {
+      "path": "target/minnesota-pokemon/native/MN_F122/mn-261-keypout-v1.back.png",
+      "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F122/mn-261-keypout-v1.back.png",
+      "sha256": "963168568be842a134d44a80e508fd10a5552583b6d05b873a8398a52aefd3af"
+    }
+  ],
+  "canonical_theme": "Burbot and under-ice locksmiths: a smooth eel-bodied fish grows its single chin barbel into a key-bit organ and opens paired shutter-like fin folds to slip through sealed winter channels. The key is living anatomy, not a carried object.",
+  "canonical_eye_form": "SOUTH exactly TWO isolated blacksquare pupils, WEST exactly ONE actual near pupil, all on broad LIGHT cheek/sclera. No mouth/nose dots, eye masks or goggle frames. Eyeplane clear of bodybars and barbels.",
+  "palette_binding": {
+    "transparent_index": 0,
+    "visible_indices": [
+      1,
+      2,
+      3
+    ],
+    "normal_rgb555_words": [
+      32767,
+      23346,
+      15688,
+      0
+    ],
+    "shiny_rgb555_words": [
+      32767,
+      26198,
+      10511,
+      0
+    ],
+    "white_body_region_policy": "Simplify formerly white body/highlight regions to light ink1. Index0 is transparent everywhere, not an opaque white paint color."
+  },
+  "fit": 12,
+  "motion_contract": "FISH SWIMMING, NO feet/legs/hands/ground. SOUTH head/snout toward bottom with tail behind towardtop; NORTH head points UP/AWAY, visible smooth back/headback NOeye dots, tail towardbottom; WEST true horizontal fish profile headLEFT/tailRIGHT. Foreshortened front/rear fish, never upright humanoid. Secondrow only tailfin and pectoralfin tips flex1logicalpixel for swimgait, same head/eye anchor, no bodybob. Fins are flat tapered appendages, no toes."
+}

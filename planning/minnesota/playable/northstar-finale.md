@@ -28,7 +28,7 @@ continuation closes the distinct upstream-to-finale integration gap.
 ## Verified production input
 
 `northstar_finale_controller_earned_chief_separate_receiver_and_league_release`
-passes in29.32 seconds. Every action uses `VisibleShellController::press` and
+passes in 29.32 seconds. Every action uses `VisibleShellController::press` and
 ordinary presentation waits:
 
 - The southern League checkpoint refuses before the chief encounter. The
@@ -89,6 +89,17 @@ render or build product is staged. No map/render was changed in this step.
 
 An unrelated sprite-test compile error (`u16 & i32`) was repaired with the
 explicit `31_u16` mask, preserving the intended RGB555 conversion. Scoped Rust
-formatting and diff whitespace checks pass. Full workspace formatting retains
-the known offset-allocator difference; current lint/planning results are recorded
-alongside this run's logs.
+formatting and diff whitespace checks pass. Bevy all-target Clippy with the
+location tester and four established allowances passes with existing warnings
+and no warning in the new finale/helper modules. Planning validation passes
+287 planned maps/88 links, including separate expanded-city sources. Full
+workspace formatting retains the known offset-allocator difference.
+
+
+## Ely successor
+
+The separate [554-map Ely/League publication](ely-league.md) now continues the
+regional map beyond this frozen frontier, with five native battles, Hall of Fame
+and postgame Continue. Its League tests use explicit prior-access/party/medicine
+fixtures; this earlier earned save remains on its544-map identity. No migration
+or fresh Winona campaign is claimed.

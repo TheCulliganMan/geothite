@@ -1,0 +1,5 @@
+{
+  "manifest": "manifest-hatchrush-v1-center.json",
+  "status": "compile_rejected",
+  "reason": "LeftIdle alpha bounds touch top crop; source wing top clipped. No runtime assets accepted."
+}

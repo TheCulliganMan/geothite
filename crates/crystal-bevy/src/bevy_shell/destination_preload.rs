@@ -184,6 +184,13 @@ pub(super) fn publish(
             previous.anchor = Some((map.map_name.clone(), arrival));
             previous.key = Some(key);
         }
+        Err(error) if error.is::<bridge_source_overlay::BridgePrewarmUnavailable>() => {
+            // Never leave a previous two-layer request available for a bridge.
+            request.frame = None;
+            previous.anchor = None;
+            previous.last_error = None;
+            previous.key = Some(key);
+        }
         Err(error) => {
             // Speculation must not block a real warp. The ordinary renderer
             // still validates and builds its actual destination on arrival.
@@ -260,6 +267,9 @@ pub(super) fn source_frame(
         }
         sources.push(ResolvedRenderSource { map, tileset, art_key: key, origin_x: x, origin_y: y,
             width: i32::from(map.attributes.width) * 4, height: i32::from(map.attributes.height) * 4 });
+    }
+    if bridge_source_overlay::scene_has_bridge(&sources)? {
+        return Err(bridge_source_overlay::BridgePrewarmUnavailable.into());
     }
     let (w,h) = (window.size.x as i16,window.size.y as i16);
     let mut tiles = Vec::with_capacity(w as usize * h as usize);

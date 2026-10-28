@@ -2942,12 +2942,12 @@ fn verifier_rejects_map_object_and_event_records_that_do_not_fit_asm_storage() {
     too_many.attributes.width = 8;
     too_many.blocks = vec![1; 8];
     too_many.scripts = BTreeMap::from([("ObjectScript".to_string(), Value::Array(Vec::new()))]);
-    too_many.objects = (0..16)
+    too_many.objects = (0..256)
         .map(|index| {
             test_object(
                 &format!("OBJECT_{index}"),
                 &format!("EVENT_OBJECT_{index}"),
-                index,
+                index % 16,
                 0,
             )
         })
@@ -3014,7 +3014,7 @@ fn verifier_rejects_map_object_and_event_records_that_do_not_fit_asm_storage() {
     assert!(report.diagnostics.iter().any(|diagnostic| {
         diagnostic.code == "too_many_map_objects"
             && diagnostic.subject == "TooMany"
-            && diagnostic.message.contains("16")
+            && diagnostic.message.contains("256")
     }));
     assert!(report.diagnostics.iter().any(|diagnostic| {
         diagnostic.code == "object_event_coordinate_storage_overflow"
@@ -6364,6 +6364,7 @@ fn modpack_manifest_supports_typed_pokemon_and_map_additions() {
                 battle_focus_energy: None,
                 battle_stat_drop_guard: None,
                 confusion_heal: None,
+                confusion_inflict_turns: None,
                 repel_steps: None,
                 escape_rope_mode: None,
                 price: 100,

@@ -1,0 +1,9 @@
+{
+  "tool": "built-in image_gen",
+  "original_tool_render": "/Users/ryanculligan/.codex/generated_images/01a179bf-dc2b-7352-8975-8b8f3a32e33b/exec-a2939eee-3f67-403c-9278-e66079be2f0d.png",
+  "preserved_raw": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f051/rumblehide.overworld.imagegen-v3-profile-step-eye.png",
+  "source_sha256": "317d70e178b5a7a63d00e608f3b032ba3524e7bbf8ba0bc369823ce8baa5d8c1",
+  "exact_prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f051/prompt-rumblehide-profile-step-eye-v3.txt",
+  "reference_mapping": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f051/reference-mapping-rumblehide-profile-step-eye-v3.json",
+  "selection": "bottom west frame only; canonical original rear frames retained, front/top profile use v2"
+}

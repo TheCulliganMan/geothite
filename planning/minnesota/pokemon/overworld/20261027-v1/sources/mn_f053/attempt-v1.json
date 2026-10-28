@@ -1,0 +1,26 @@
+{
+  "status": "source_generated_awaiting_native_conversion",
+  "family_id": "MN_F053",
+  "active_family_confirmed": true,
+  "prompt_file": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f053/prompt-v1.txt",
+  "reference": "target/minnesota-pokemon/native/MN_F053/line.review.png",
+  "frame_order": [
+    "down_standing",
+    "up_standing",
+    "left_standing",
+    "down_walk",
+    "up_walk",
+    "left_walk"
+  ],
+  "native_cell": [
+    16,
+    16
+  ],
+  "source_result": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f053/overworld.imagegen-v1.png",
+  "sha256": "8478ef095dad78e34b780861c3443a33abda1bb56d041bc0b06119797d6afed9",
+  "source_size": [
+    1774,
+    887
+  ],
+  "original_generated_path": "/Users/ryanculligan/.codex/generated_images/01a17aa2-ca0b-7cc0-8219-cddf2150b02b/exec-88d33834-0b6c-4227-8549-dce9a191cfb2.png"
+}

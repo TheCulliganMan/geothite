@@ -1,0 +1,129 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F008",
+  "species_id": "MN_023",
+  "name": "Patchebee",
+  "status": "native_compiled_author_inspected_root_world_context_review_pending",
+  "generation_tool": "built-in image_gen",
+  "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f008/patchebee.overworld.imagegen-v3.png",
+  "source_sha256": "8f1e393cae794ef4a508ace3a4a1b639d867a2fc09ea69e19e3d8d8e86ee9d7d",
+  "original_default_output": "/Users/ryanculligan/.codex/generated_images/01a179bf-dc2b-7352-8975-8b8f3a32e33b/exec-085be7b4-378c-40f1-82d9-524160df6e23.png",
+  "dimensions": [
+    1536,
+    1024
+  ],
+  "prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f008/prompt-patchebee-v3.txt",
+  "prompt_sha256": "7f9a6a5cc131667af8851d4057cd2d95e0f3c9143398d07ac53a020b59dfdda2",
+  "reference_mapping": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f008/reference-mapping-patchebee-v3.json",
+  "only_input_image": "planning/minnesota/pokemon/overworld/20261027-v1/references/native-pack-16px/native-six-frame-style-board.8x.png",
+  "proposed_native_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f008/manifest-patchebee-v3-phase-eyes.json",
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f008/patchebee-v3-phase-eyes",
+  "six_frame_layout": "3columns2rows; down/up/left idle then down/up/left wing-cycle",
+  "conversion": "Rust source_center with equal360x370 crop windows; shared scale/anchor across6poses; no pixel painting",
+  "conversion_result": {
+    "exit_code": 0,
+    "stdout": "Compiled MN_F008: 1 species, 4 literal OBJ runtime files; retained reviews in planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f008/patchebee-v3-center\n",
+    "stderr": ""
+  },
+  "manifest_sha256": "6e7fca862a194438adec6e8df8b9679e6cb3a22554e72dcb57324443b26ab771",
+  "normal_review": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f008/patchebee-v3-phase-eyes/review/line.normal-8x.png",
+  "review_sha256": "1c780dd14293d7fc4993a8099c630e3072087a4f03323457c59a755ef55a7081",
+  "native_bounds": [
+    [
+      3,
+      1,
+      11,
+      13
+    ],
+    [
+      2,
+      1,
+      11,
+      13
+    ],
+    [
+      2,
+      1,
+      12,
+      14
+    ],
+    [
+      1,
+      1,
+      14,
+      13
+    ],
+    [
+      1,
+      1,
+      14,
+      13
+    ],
+    [
+      2,
+      1,
+      12,
+      14
+    ]
+  ],
+  "palette_rgb555": [
+    32767,
+    5561,
+    13637,
+    0
+  ],
+  "shiny_palette_rgb555": [
+    32767,
+    14117,
+    10413,
+    0
+  ],
+  "sampling": "source_center",
+  "validation_results": {
+    "six_frames_16x16": true,
+    "runtime_png_16x96": true,
+    "native_2bpp_bytes": 384,
+    "tile_decode_matches_png_and_indexed_rows": true,
+    "binary_alpha": true,
+    "transparent_border": true,
+    "three_opaque_inks_only": true,
+    "normal_shiny_palette_words_exact": true,
+    "idle_step_pairs_different": true,
+    "isolated_face_black_points_4connected": {
+      "down_idle": [
+        [
+          6,
+          8
+        ],
+        [
+          9,
+          8
+        ]
+      ],
+      "left_idle": [
+        [
+          4,
+          8
+        ]
+      ],
+      "down_step": [
+        [
+          6,
+          8
+        ],
+        [
+          9,
+          8
+        ]
+      ],
+      "left_step": [
+        [
+          4,
+          8
+        ]
+      ]
+    }
+  },
+  "notes": "Actual six-frame normal native board inspected after open-face correction. South views have two separated pupils in broad exposed face; west one pupil; north no false face. All source/first-native variants retained. Source-only equal-window crop registration and one shared source_center transform; zero painted native pixels. Root actual map context acceptance pending.",
+  "accepted": false
+}

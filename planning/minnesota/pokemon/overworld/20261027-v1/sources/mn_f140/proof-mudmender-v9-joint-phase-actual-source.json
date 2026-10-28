@@ -1,0 +1,209 @@
+{
+  "species": "mudmender",
+  "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f140/mudmender-v9-joint-phase",
+  "status": "actual-source native proof passes; root visual/context acceptance pending",
+  "all_four_nonrear_actual_isolated_source_pupils": true,
+  "six16px_alpha_border_normal_shiny_runtime_parity": true,
+  "canonical_palettes": true,
+  "proof": [
+    {
+      "pose": "down_idle",
+      "actual_small_isolated_pupils": [
+        {
+          "native": [
+            6,
+            8
+          ],
+          "source_sample": [
+            279,
+            309
+          ],
+          "source_component": [
+            260,
+            307,
+            24,
+            24
+          ],
+          "component_pixels": 575,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            9,
+            11,
+            14,
+            254
+          ]
+        },
+        {
+          "native": [
+            9,
+            8
+          ],
+          "source_sample": [
+            357,
+            309
+          ],
+          "source_component": [
+            336,
+            307,
+            23,
+            24
+          ],
+          "component_pixels": 552,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            6,
+            7,
+            9,
+            254
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "actual_small_isolated_pupils": [
+        {
+          "native": [
+            4,
+            9
+          ],
+          "source_sample": [
+            1155,
+            321
+          ],
+          "source_component": [
+            1143,
+            307,
+            17,
+            24
+          ],
+          "component_pixels": 408,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            4,
+            5,
+            5,
+            253
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "actual_small_isolated_pupils": [
+        {
+          "native": [
+            6,
+            8
+          ],
+          "source_sample": [
+            279,
+            702
+          ],
+          "source_component": [
+            260,
+            701,
+            24,
+            23
+          ],
+          "component_pixels": 552,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            2,
+            2,
+            3,
+            253
+          ]
+        },
+        {
+          "native": [
+            9,
+            8
+          ],
+          "source_sample": [
+            357,
+            702
+          ],
+          "source_component": [
+            336,
+            701,
+            23,
+            24
+          ],
+          "component_pixels": 552,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            5,
+            6,
+            8,
+            253
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "actual_small_isolated_pupils": [
+        {
+          "native": [
+            4,
+            9
+          ],
+          "source_sample": [
+            1155,
+            727
+          ],
+          "source_component": [
+            1142,
+            714,
+            16,
+            23
+          ],
+          "component_pixels": 366,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            5,
+            6,
+            8,
+            254
+          ]
+        }
+      ]
+    }
+  ],
+  "hashes": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f140/mudmender-v9-joint-phase/compiled-index.json": "48d142436f35baf80409b95175222ad20d2bbd6441db49a9befbc870ab954f79",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f140/mudmender.overworld.imagegen-v2-inset-front-eyes.png": "3d144f8d34392b45cdc6d0489a14d02eea70ba482d559b28af78dd009726c543"
+  },
+  "no_native_pixel_painting": true
+}

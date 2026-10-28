@@ -1,0 +1,9 @@
+{
+  "tool": "built-in image_gen",
+  "original": "/Users/ryanculligan/.codex/generated_images/01a179bf-dc2b-7352-8975-8b8f3a32e33b/exec-a032bf66-ee69-4bdc-9eeb-20b7436689a1.png",
+  "preserved_raw": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f031/wickit.overworld.imagegen-v1.png",
+  "sha256": "350faf41eb2529eb079ce040528bf87d5ecebfb17c0687a3380e5f72af8a3ebf",
+  "exact_prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f031/prompt-wickit-v1.txt",
+  "reference_mapping": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f031/reference-mapping-wickit-v1.json",
+  "status": "preserved; selected frames recorded in frozen manifest"
+}

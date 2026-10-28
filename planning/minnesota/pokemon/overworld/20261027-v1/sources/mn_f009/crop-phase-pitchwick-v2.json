@@ -1,0 +1,413 @@
+{
+  "kind": "source_crop_registration_only_no_painted_pixels",
+  "common_crop_dimensions": [
+    380,
+    370
+  ],
+  "west_pair_source_antenna_gap": 448,
+  "results": [
+    {
+      "name": "pitchwick-v2-west-y92",
+      "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f009/manifest-pitchwick-v2-west-y92.json",
+      "output": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f009/pitchwick-v2-west-y92",
+      "exit_code": 0,
+      "stderr": "",
+      "eyes": {
+        "down_idle": [
+          [
+            6,
+            10
+          ],
+          [
+            9,
+            10
+          ]
+        ],
+        "left_idle": [],
+        "down_step": [
+          [
+            6,
+            10
+          ],
+          [
+            9,
+            10
+          ]
+        ],
+        "left_step": []
+      },
+      "all_visible_faces_have_required_isolated_pupils": false,
+      "native_bounds": [
+        [
+          1,
+          2,
+          14,
+          12
+        ],
+        [
+          1,
+          3,
+          14,
+          11
+        ],
+        [
+          3,
+          2,
+          11,
+          13
+        ],
+        [
+          1,
+          2,
+          14,
+          12
+        ],
+        [
+          1,
+          3,
+          14,
+          11
+        ],
+        [
+          3,
+          2,
+          11,
+          13
+        ]
+      ]
+    },
+    {
+      "name": "pitchwick-v2-west-y96",
+      "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f009/manifest-pitchwick-v2-west-y96.json",
+      "output": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f009/pitchwick-v2-west-y96",
+      "exit_code": 0,
+      "stderr": "",
+      "eyes": {
+        "down_idle": [
+          [
+            6,
+            10
+          ],
+          [
+            9,
+            10
+          ]
+        ],
+        "left_idle": [],
+        "down_step": [
+          [
+            6,
+            10
+          ],
+          [
+            9,
+            10
+          ]
+        ],
+        "left_step": []
+      },
+      "all_visible_faces_have_required_isolated_pupils": false,
+      "native_bounds": [
+        [
+          1,
+          2,
+          14,
+          12
+        ],
+        [
+          1,
+          3,
+          14,
+          11
+        ],
+        [
+          3,
+          2,
+          11,
+          13
+        ],
+        [
+          1,
+          2,
+          14,
+          12
+        ],
+        [
+          1,
+          3,
+          14,
+          12
+        ],
+        [
+          3,
+          2,
+          11,
+          13
+        ]
+      ]
+    },
+    {
+      "name": "pitchwick-v2-west-y100",
+      "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f009/manifest-pitchwick-v2-west-y100.json",
+      "output": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f009/pitchwick-v2-west-y100",
+      "exit_code": 0,
+      "stderr": "",
+      "eyes": {
+        "down_idle": [
+          [
+            6,
+            10
+          ],
+          [
+            9,
+            10
+          ]
+        ],
+        "left_idle": [],
+        "down_step": [
+          [
+            6,
+            10
+          ],
+          [
+            9,
+            10
+          ]
+        ],
+        "left_step": []
+      },
+      "all_visible_faces_have_required_isolated_pupils": false,
+      "native_bounds": [
+        [
+          1,
+          3,
+          14,
+          11
+        ],
+        [
+          1,
+          3,
+          14,
+          12
+        ],
+        [
+          3,
+          2,
+          11,
+          13
+        ],
+        [
+          1,
+          3,
+          14,
+          12
+        ],
+        [
+          1,
+          3,
+          14,
+          12
+        ],
+        [
+          3,
+          2,
+          11,
+          13
+        ]
+      ]
+    },
+    {
+      "name": "pitchwick-v2-west-y104",
+      "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f009/manifest-pitchwick-v2-west-y104.json",
+      "output": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f009/pitchwick-v2-west-y104",
+      "exit_code": 0,
+      "stderr": "",
+      "eyes": {
+        "down_idle": [],
+        "left_idle": [],
+        "down_step": [
+          [
+            6,
+            10
+          ],
+          [
+            9,
+            10
+          ]
+        ],
+        "left_step": []
+      },
+      "all_visible_faces_have_required_isolated_pupils": false,
+      "native_bounds": [
+        [
+          1,
+          3,
+          14,
+          11
+        ],
+        [
+          1,
+          3,
+          14,
+          12
+        ],
+        [
+          3,
+          2,
+          11,
+          13
+        ],
+        [
+          1,
+          3,
+          14,
+          12
+        ],
+        [
+          1,
+          3,
+          14,
+          12
+        ],
+        [
+          3,
+          2,
+          11,
+          13
+        ]
+      ]
+    },
+    {
+      "name": "pitchwick-v2-west-y108",
+      "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f009/manifest-pitchwick-v2-west-y108.json",
+      "output": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f009/pitchwick-v2-west-y108",
+      "exit_code": 0,
+      "stderr": "",
+      "eyes": {
+        "down_idle": [],
+        "left_idle": [],
+        "down_step": [],
+        "left_step": []
+      },
+      "all_visible_faces_have_required_isolated_pupils": false,
+      "native_bounds": [
+        [
+          1,
+          3,
+          14,
+          12
+        ],
+        [
+          1,
+          3,
+          14,
+          12
+        ],
+        [
+          3,
+          2,
+          11,
+          13
+        ],
+        [
+          1,
+          3,
+          14,
+          12
+        ],
+        [
+          1,
+          3,
+          14,
+          12
+        ],
+        [
+          3,
+          2,
+          11,
+          13
+        ]
+      ]
+    },
+    {
+      "name": "pitchwick-v2-west-y112",
+      "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f009/manifest-pitchwick-v2-west-y112.json",
+      "output": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f009/pitchwick-v2-west-y112",
+      "exit_code": 0,
+      "stderr": "",
+      "eyes": {
+        "down_idle": [
+          [
+            6,
+            10
+          ],
+          [
+            9,
+            10
+          ]
+        ],
+        "left_idle": [
+          [
+            5,
+            9
+          ]
+        ],
+        "down_step": [
+          [
+            6,
+            10
+          ],
+          [
+            9,
+            10
+          ]
+        ],
+        "left_step": [
+          [
+            5,
+            9
+          ]
+        ]
+      },
+      "all_visible_faces_have_required_isolated_pupils": true,
+      "native_bounds": [
+        [
+          1,
+          2,
+          14,
+          12
+        ],
+        [
+          1,
+          2,
+          14,
+          13
+        ],
+        [
+          3,
+          1,
+          11,
+          14
+        ],
+        [
+          1,
+          2,
+          14,
+          13
+        ],
+        [
+          1,
+          2,
+          14,
+          13
+        ],
+        [
+          3,
+          1,
+          11,
+          13
+        ]
+      ]
+    }
+  ]
+}

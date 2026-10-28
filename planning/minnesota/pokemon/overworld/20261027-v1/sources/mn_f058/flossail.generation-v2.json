@@ -1,0 +1,13 @@
+{
+  "tool": "image_gen.imagegen",
+  "original_path": "/Users/ryanculligan/.codex/generated_images/01a17dcc-4f1a-77a2-9d21-0df036061346/exec-5b63a54e-061b-4986-9a35-c40d87f0449a.png",
+  "source_size": [
+    1536,
+    1024
+  ],
+  "sha256": "75117f240a16f8b0c7f70785cb320e5286c63d9895ae2984a6bf4e0dbd3075a5",
+  "reference_paths": [
+    "/Users/ryanculligan/GitHub/geothite/planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f058/flossail.overworld.imagegen-v1.png"
+  ],
+  "prompt": "flossail.prompt-v2.txt"
+}

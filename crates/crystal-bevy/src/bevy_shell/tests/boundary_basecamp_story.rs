@@ -1,5 +1,8 @@
 //! Free shelter/Q07 through production input after explicit initial fixtures.
 //! Badges, upstream signal and a legal review party are setup, not earned play.
+#[path = "northstar_relay.rs"]
+mod northstar_relay;
+
 use std::collections::BTreeSet;
 use std::path::PathBuf;
 use std::time::{SystemTime, UNIX_EPOCH};
@@ -588,12 +591,12 @@ fn play_chief_battle(controller: &mut VisibleShellController, losing: bool) -> B
         saw_battle && selected_attacks > 0,
         "must actually enter and choose a move in the chief battle"
     );
-    for line in [
-        "Copper and nickel.",
-        "Drain them anyway.",
-        "ICE takes anyone",
-    ] {
-        assert!(admission.contains(line), "missing native admission: {line}");
+    for page in super::northstar_dialogue::canonical_pages("MS11", "MnBoundarySurveyChiefSeenText")
+    {
+        assert!(
+            admission.contains(&page),
+            "missing native chief page: {page}"
+        );
     }
     let after = controller.snapshot().expect("actual battle terminal state");
     assert!(after.battle.is_none(), "chief battle did not finish");

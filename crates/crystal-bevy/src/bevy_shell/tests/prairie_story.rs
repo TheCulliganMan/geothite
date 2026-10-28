@@ -60,7 +60,19 @@ fn fixture(
     (root, r, c)
 }
 
-fn road(c: &mut VisibleShellController, r: &CrystalRuntime, target: (i16, i16)) {
+pub(super) fn road(c: &mut VisibleShellController, r: &CrystalRuntime, target: (i16, i16)) {
+    assert!(
+        try_road_with(c, r, target, flee),
+        "R02 walk ended at recovery"
+    );
+}
+
+pub(super) fn try_road_with(
+    c: &mut VisibleShellController,
+    r: &CrystalRuntime,
+    target: (i16, i16),
+    mut encounter: impl FnMut(&mut VisibleShellController),
+) -> bool {
     let s = c.snapshot().expect("R02 start");
     let start = (s.overworld.tile.x, s.overworld.tile.y);
     let grid = RouteGrid::new_with_grass(
@@ -79,16 +91,19 @@ fn road(c: &mut VisibleShellController, r: &CrystalRuntime, target: (i16, i16)) 
         for _ in 0..8 {
             press(c, button);
             if c.snapshot().expect("road encounter").battle.is_some() {
-                flee(c);
+                encounter(c);
             }
             let s = c.snapshot().expect("road movement");
-            assert_eq!(s.overworld.map_name, "MnR02C00R00");
+            if s.overworld.map_name != "MnR02C00R00" {
+                return false;
+            }
             if s.overworld.tile != old {
                 break;
             }
         }
     }
     at(c, "MnR02C00R00", target);
+    true
 }
 
 fn read_notebook(c: &mut VisibleShellController, r: &CrystalRuntime) {
@@ -97,13 +112,14 @@ fn read_notebook(c: &mut VisibleShellController, r: &CrystalRuntime) {
     let before = c.snapshot().expect("before notebook");
     press(c, GameButton::A);
     assert!(!event(c, NOTE));
-    assert!(
+    let expected = super::northstar_dialogue::canonical_pages("MS02", "MnMKNotebookText");
+    assert_eq!(
         c.snapshot()
             .expect("first page")
             .ui
             .text
-            .and_then(|t| t.asm_text)
-            .is_some_and(|s| s.contains("Different lakes"))
+            .and_then(|t| t.asm_text),
+        Some(expected[0].clone())
     );
     press(c, GameButton::Down);
     at(c, "MnMankato", (26, 26));
@@ -113,13 +129,13 @@ fn read_notebook(c: &mut VisibleShellController, r: &CrystalRuntime) {
         !event(c, NOTE),
         "one acknowledgment cannot finish two pages"
     );
-    assert!(
+    assert_eq!(
         c.snapshot()
             .expect("second page")
             .ui
             .text
-            .and_then(|t| t.asm_text)
-            .is_some_and(|s| s.contains("Who copied"))
+            .and_then(|t| t.asm_text),
+        Some(expected[1].clone())
     );
     finish(c);
     assert!(event(c, NOTE));
@@ -245,6 +261,17 @@ fn prairie_story_local_route_notebook_rooms_return_and_continue() {
 #[test]
 #[ignore = "manual live-RNG New Game to Mankato audit; requires prairie story via CRYSTAL_WINONA_TEST_PACK"]
 fn prairie_story_earned_new_game_care_r02_notebook_and_return() {
+    let (root, r, mut c) = mankato_arrival();
+    indoor_walk(&mut c, &r, (46, 18));
+    travel(&mut c, GameButton::Right, "MnR02C00R00", (0, 30));
+    road(&mut c, &r, (59, 14));
+    travel(&mut c, GameButton::Right, "MnRochester", (0, 18));
+    travel(&mut c, GameButton::Right, "MnRochester", (4, 18));
+    assert!(event(&c, NOTE));
+    let _ = continued(c, &root, &r, "prairie-earned-return");
+}
+
+pub(super) fn mankato_arrival() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
     let (root, r, mut c) = super::rochester_earned::care_badge();
     indoor_walk(&mut c, &r, (15, 8));
     travel(&mut c, GameButton::Up, "MnRochesterPokecenter1F", (10, 13));
@@ -271,11 +298,5 @@ fn prairie_story_earned_new_game_care_r02_notebook_and_return() {
     read_notebook(&mut c, &r);
     c = continued(c, &root, &r, "mankato-earned-notebook");
     assert!(event(&c, NOTE));
-    indoor_walk(&mut c, &r, (46, 18));
-    travel(&mut c, GameButton::Right, "MnR02C00R00", (0, 30));
-    road(&mut c, &r, (59, 14));
-    travel(&mut c, GameButton::Right, "MnRochester", (0, 18));
-    travel(&mut c, GameButton::Right, "MnRochester", (4, 18));
-    assert!(event(&c, NOTE));
-    let _ = continued(c, &root, &r, "prairie-earned-return");
+    (root, r, c)
 }

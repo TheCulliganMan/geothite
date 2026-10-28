@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F073",
+  "species": [
+    {
+      "species_id": "MN_155",
+      "runtime_token": "CROSSPOUT",
+      "palette_rgb555": [
+        32767,
+        6654,
+        8393,
+        0
+      ],
+      "shiny_palette_rgb555": [
+        32767,
+        16326,
+        6440,
+        0
+      ],
+      "fit": [
+        13,
+        13
+      ],
+      "alpha_threshold": 128,
+      "sampling": "source_center",
+      "minimum_foreground_samples": 16,
+      "black_priority_samples": 64,
+      "interior_black_samples": 64,
+      "opaque_interior_minimum_samples": 64,
+      "frames": [
+        {
+          "pose": "down_idle",
+          "source": "crosspout.overworld.imagegen-v1.png",
+          "crop": [
+            19,
+            94,
+            500,
+            440
+          ]
+        },
+        {
+          "pose": "up_idle",
+          "source": "crosspout.overworld.imagegen-v1.png",
+          "crop": [
+            529,
+            61,
+            500,
+            440
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "source": "crosspout.overworld.imagegen-v1.png",
+          "crop": [
+            1003,
+            68,
+            500,
+            440
+          ]
+        },
+        {
+          "pose": "down_step",
+          "source": "crosspout.overworld.imagegen-v1.png",
+          "crop": [
+            21,
+            554,
+            500,
+            440
+          ]
+        },
+        {
+          "pose": "up_step",
+          "source": "crosspout.overworld.imagegen-v1.png",
+          "crop": [
+            539,
+            520,
+            500,
+            440
+          ]
+        },
+        {
+          "pose": "left_step",
+          "source": "crosspout.overworld.imagegen-v1.png",
+          "crop": [
+            1004,
+            522,
+            500,
+            440
+          ]
+        }
+      ]
+    }
+  ]
+}

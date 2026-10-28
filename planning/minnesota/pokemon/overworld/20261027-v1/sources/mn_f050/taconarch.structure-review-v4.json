@@ -1,0 +1,86 @@
+{
+  "species_id": "MN_103",
+  "manifest_sha256": "36321470505f7725d5d94d737a5b00731cc42f60abe8a3ffc9a0b9d3061e9882",
+  "bank_sha256": "1e1c3bdce34fefa9c777f70ef23391002710ccb34a227a6b22a0938bedb01ccf",
+  "structure": [
+    {
+      "pose": "down_idle",
+      "native_bounds": [
+        1,
+        5,
+        13,
+        10
+      ],
+      "eight_connected_component_sizes": [
+        87
+      ],
+      "opaque_pixel_count": 87
+    },
+    {
+      "pose": "up_idle",
+      "native_bounds": [
+        2,
+        5,
+        11,
+        10
+      ],
+      "eight_connected_component_sizes": [
+        78
+      ],
+      "opaque_pixel_count": 78
+    },
+    {
+      "pose": "left_idle",
+      "native_bounds": [
+        1,
+        6,
+        14,
+        9
+      ],
+      "eight_connected_component_sizes": [
+        85
+      ],
+      "opaque_pixel_count": 85
+    },
+    {
+      "pose": "down_step",
+      "native_bounds": [
+        2,
+        5,
+        11,
+        10
+      ],
+      "eight_connected_component_sizes": [
+        77
+      ],
+      "opaque_pixel_count": 77
+    },
+    {
+      "pose": "up_step",
+      "native_bounds": [
+        2,
+        5,
+        11,
+        9
+      ],
+      "eight_connected_component_sizes": [
+        71
+      ],
+      "opaque_pixel_count": 71
+    },
+    {
+      "pose": "left_step",
+      "native_bounds": [
+        1,
+        6,
+        14,
+        9
+      ],
+      "eight_connected_component_sizes": [
+        82
+      ],
+      "opaque_pixel_count": 82
+    }
+  ],
+  "notes": "All six armor/joint/leg/tail silhouettes stay one eight-connected body; no native paint or per-view rescaling."
+}

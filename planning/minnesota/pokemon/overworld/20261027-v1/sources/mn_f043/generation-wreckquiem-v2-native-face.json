@@ -1,0 +1,8 @@
+{
+  "tool": "built-in image_gen",
+  "default_path": "/Users/ryanculligan/.codex/generated_images/01a178da-4cf1-7e01-8516-667a332dc790/exec-7f4c0aa2-ffeb-4d92-a677-5cfb8764c020.png",
+  "retained_raw": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f043/wreckquiem.overworld.imagegen-v2-native-face.png",
+  "sha256": "08e2de0bda722d73f0d325e807e2fd26e3f531d47b0ee8d0e7b6e3907ccc73d9",
+  "prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f043/prompt-wreckquiem-native-face-v2.txt",
+  "accepted": false
+}

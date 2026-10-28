@@ -1,0 +1,508 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_182",
+  "status": "source-proof-pass; root visual/context acceptance required",
+  "selected_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f084/manifest-scutlet-v5-pupil-proof.json",
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f084/scutlet-v5-pupil-proof",
+  "shared_transform": {
+    "source_bounds": [
+      58,
+      32,
+      432,
+      390
+    ],
+    "native_size": [
+      13,
+      11
+    ],
+    "native_origin": [
+      1,
+      4
+    ]
+  },
+  "all_four_nonrear_poses_have_actual_source_pupils": true,
+  "every_native_eye_cluster_maps_to_same_small_anatomical_source_pupil_component": true,
+  "actual_source_pupil_proofs": [
+    {
+      "pose": "down_idle",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f084/scutlet.overworld.imagegen-v5-wide-front-prongs.png",
+      "crop": [
+        0,
+        76,
+        520,
+        440
+      ],
+      "anatomically_identified_source_eye_boxes_xywh": [
+        [
+          192,
+          402,
+          25,
+          24
+        ],
+        [
+          327,
+          402,
+          24,
+          24
+        ]
+      ],
+      "actual_eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              5,
+              12
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                0,
+                0,
+                0,
+                253
+              ],
+              "bounds": [
+                192,
+                402,
+                25,
+                24
+              ],
+              "pixels": 600,
+              "truncated_contour": false,
+              "native_pixel": [
+                5,
+                12
+              ],
+              "source_sample_pixel": [
+                207,
+                409
+              ]
+            }
+          ]
+        },
+        {
+          "native_cluster": [
+            [
+              9,
+              12
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                1,
+                1,
+                0,
+                253
+              ],
+              "bounds": [
+                327,
+                402,
+                24,
+                24
+              ],
+              "pixels": 576,
+              "truncated_contour": false,
+              "native_pixel": [
+                9,
+                12
+              ],
+              "source_sample_pixel": [
+                340,
+                409
+              ]
+            }
+          ]
+        }
+      ],
+      "signature_feature_proof": {
+        "anatomy": "FOUR actual undersnout sensory prongs, not feet; source-shovel face above, body/tail extends behind. Four separated light native tips atx4,6,8,10, transparentgapsx5,7,9.",
+        "samples": [
+          {
+            "barbel_number_left_to_right": 1,
+            "native_pixel": [
+              4,
+              14
+            ],
+            "native_ink": 1,
+            "source_sample_pixel": [
+              174,
+              480
+            ],
+            "source_rgba": [
+              181,
+              205,
+              172,
+              253
+            ]
+          },
+          {
+            "barbel_number_left_to_right": 2,
+            "native_pixel": [
+              6,
+              14
+            ],
+            "native_ink": 1,
+            "source_sample_pixel": [
+              240,
+              480
+            ],
+            "source_rgba": [
+              174,
+              201,
+              165,
+              253
+            ]
+          },
+          {
+            "barbel_number_left_to_right": 3,
+            "native_pixel": [
+              8,
+              14
+            ],
+            "native_ink": 1,
+            "source_sample_pixel": [
+              307,
+              480
+            ],
+            "source_rgba": [
+              173,
+              200,
+              165,
+              253
+            ]
+          },
+          {
+            "barbel_number_left_to_right": 4,
+            "native_pixel": [
+              10,
+              14
+            ],
+            "native_ink": 1,
+            "source_sample_pixel": [
+              373,
+              480
+            ],
+            "source_rgba": [
+              175,
+              202,
+              167,
+              253
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "pose": "left_idle",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f084/scutlet.overworld.imagegen-v1.png",
+      "crop": [
+        1016,
+        112,
+        520,
+        440
+      ],
+      "anatomically_identified_source_eye_boxes_xywh": [
+        [
+          1153,
+          360,
+          18,
+          27
+        ]
+      ],
+      "actual_eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              3,
+              10
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                0,
+                0,
+                0,
+                254
+              ],
+              "bounds": [
+                1153,
+                360,
+                18,
+                27
+              ],
+              "pixels": 486,
+              "truncated_contour": false,
+              "native_pixel": [
+                3,
+                10
+              ],
+              "source_sample_pixel": [
+                1157,
+                374
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f084/scutlet.overworld.imagegen-v5-wide-front-prongs.png",
+      "crop": [
+        0,
+        520,
+        520,
+        440
+      ],
+      "anatomically_identified_source_eye_boxes_xywh": [
+        [
+          191,
+          846,
+          25,
+          25
+        ],
+        [
+          327,
+          846,
+          24,
+          25
+        ]
+      ],
+      "actual_eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              5,
+              12
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                3,
+                2,
+                1,
+                253
+              ],
+              "bounds": [
+                191,
+                846,
+                25,
+                25
+              ],
+              "pixels": 625,
+              "truncated_contour": false,
+              "native_pixel": [
+                5,
+                12
+              ],
+              "source_sample_pixel": [
+                207,
+                853
+              ]
+            }
+          ]
+        },
+        {
+          "native_cluster": [
+            [
+              9,
+              12
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                0,
+                0,
+                0,
+                253
+              ],
+              "bounds": [
+                327,
+                846,
+                24,
+                25
+              ],
+              "pixels": 600,
+              "truncated_contour": false,
+              "native_pixel": [
+                9,
+                12
+              ],
+              "source_sample_pixel": [
+                340,
+                853
+              ]
+            }
+          ]
+        }
+      ],
+      "signature_feature_proof": {
+        "anatomy": "FOUR actual undersnout sensory prongs, not feet; source-shovel face above, body/tail extends behind. Four separated light native tips atx4,6,8,10, transparentgapsx5,7,9.",
+        "samples": [
+          {
+            "barbel_number_left_to_right": 1,
+            "native_pixel": [
+              4,
+              14
+            ],
+            "native_ink": 1,
+            "source_sample_pixel": [
+              174,
+              924
+            ],
+            "source_rgba": [
+              193,
+              214,
+              184,
+              253
+            ]
+          },
+          {
+            "barbel_number_left_to_right": 2,
+            "native_pixel": [
+              6,
+              14
+            ],
+            "native_ink": 1,
+            "source_sample_pixel": [
+              240,
+              924
+            ],
+            "source_rgba": [
+              174,
+              201,
+              164,
+              253
+            ]
+          },
+          {
+            "barbel_number_left_to_right": 3,
+            "native_pixel": [
+              8,
+              14
+            ],
+            "native_ink": 1,
+            "source_sample_pixel": [
+              307,
+              924
+            ],
+            "source_rgba": [
+              175,
+              203,
+              166,
+              253
+            ]
+          },
+          {
+            "barbel_number_left_to_right": 4,
+            "native_pixel": [
+              10,
+              14
+            ],
+            "native_ink": 1,
+            "source_sample_pixel": [
+              373,
+              924
+            ],
+            "source_rgba": [
+              175,
+              201,
+              165,
+              253
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "pose": "left_step",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f084/scutlet.overworld.imagegen-v1.png",
+      "crop": [
+        1016,
+        570,
+        520,
+        440
+      ],
+      "anatomically_identified_source_eye_boxes_xywh": [
+        [
+          1153,
+          818,
+          18,
+          27
+        ]
+      ],
+      "actual_eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              3,
+              10
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                0,
+                0,
+                0,
+                253
+              ],
+              "bounds": [
+                1153,
+                818,
+                18,
+                27
+              ],
+              "pixels": 486,
+              "truncated_contour": false,
+              "native_pixel": [
+                3,
+                10
+              ],
+              "source_sample_pixel": [
+                1157,
+                832
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "native_head_anchors_idle_walk_equal": true,
+  "validation": {
+    "runtime_2bpp_384_bytes_exact_allpixels": true,
+    "runtime_png16x96_index_parity": true,
+    "normal_shiny_palettebanks_exact": true,
+    "normal_shiny_all1536pixels_exact": true,
+    "transparent_border": true,
+    "idle_walk_pairs_distinct": true
+  },
+  "sha256": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f084/manifest-scutlet-v5-pupil-proof.json": "2fae656236340d9e22c402be272bf017e30add1d99afae43705b22cf0e3cada4",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f084/scutlet-v5-pupil-proof/gfx/pokemon/scutlet/overworld.2bpp": "9b283197919190d2d5d0242c50e09d33bef114187537287bb43702a66febd963",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f084/scutlet-v5-pupil-proof/gfx/pokemon/scutlet/overworld.png": "33762bebc66374a323fe95579b66955301d1e6f30b065779144382bcae0cb19e",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f084/scutlet-v5-pupil-proof/review/line.shiny-8x.png": "de953d304f46722e3ca3966d4200c34a20719142d272637308f9dae27c23bfe0",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f084/scutlet.overworld.imagegen-v5-wide-front-prongs.png": "0193b43db5e7fdcaf81a044e8abe6bada430143e6f81474796a0de203cd76136",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f084/scutlet-v5-pupil-proof/compiled-index.json": "40dafbe48b4d03a63594c7e89614754d9bb01d4d721f3a1bb5f146d59ef09dc8",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f084/scutlet-v5-pupil-proof/review/line.normal-8x.png": "5e5a7002016099f01c1a3019b6b9ae971e01c875c0d0ed71211be6d4089dde7e",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f084/scutlet.overworld.imagegen-v1.png": "0369f861830587f8fccc85a4013bdadf1ec6e988dd2c04369a92d611774a12ed",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f084/scutlet-v5-pupil-proof/gfx/pokemon/scutlet/overworld-shiny.gbcpal": "b96eed174e3260cb8801b99c3d607285e81f637b4f3b359c2dacb4e302833e6f",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f084/scutlet-v5-pupil-proof/gfx/pokemon/scutlet/overworld.gbcpal": "be3fc32e9c556379b60e027ea42586677008bea8e69cfaf668b265e639f72bb7"
+  },
+  "actual_native_boards_viewed": true,
+  "rear_review": "Both actual normal/shiny rear poses viewed: blank broad headtop, scuteback/fins and asymmetric tailbottom, no eye/face. Actual eye anchors stable.",
+  "canonical_eye_form": "TWO real black pupils SOUTH/ONE near black pupil WEST, all whole native eye pixels map to actual source pupil component; no armor/scute marks counted.",
+  "signature_anatomy_review": "All6 native normal/shiny views actually inspected. Native13x11. Broad shovelhead FOUR separate light sensoryprong tips (source/native samples recorded) belowface, three big shieldbands, paired fins/asymmetric tail. Newfront/rearv5, originalcleanprofilev1 selectedhybrid. Genuine rear headtop/tailbottom blankhead; fin/tail swim gait, nofeet. Scale note: babyfront broader than adultv4front projection; adultprofile longer and armor morepronounced, root familycontext judgment needed."
+}

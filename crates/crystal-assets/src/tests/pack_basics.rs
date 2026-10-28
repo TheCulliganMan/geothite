@@ -2094,6 +2094,7 @@ fn intro_audio_command_boundary_rejects_non_asm_or_malformed_programs() {
         },
         cry_pitch: None,
         cry_length: None,
+        output_envelope: None,
     };
     assert!(
         program
@@ -3181,6 +3182,7 @@ fn test_item(id: &str) -> Item {
         battle_focus_energy: None,
         battle_stat_drop_guard: None,
         confusion_heal: None,
+        confusion_inflict_turns: None,
         repel_steps: None,
         escape_rope_mode: None,
         price: 0,
@@ -8412,6 +8414,27 @@ fn saved_roaming_battle_requires_selected_slot_map_and_normal_battles_never_refi
             ),
             "{normal_error}"
         );
+}
+
+#[test]
+fn saved_wild_origins_include_authored_grass_zones() {
+    let slots = serde_json::json!([{"species":"NEW_MON","level":23}]);
+    let encounters = serde_json::from_value(serde_json::json!({
+        "map_name":"Fair", "grass_rates":null, "grass":null,
+        "water_rate":null, "water":null,
+        "zones":[{"id":"dairy", "minX":2, "minY":2, "maxX":5, "maxY":5,
+            "grassRates":{"morning":25,"day":25,"night":25},
+            "grass":{"morning":slots,"day":slots,"night":slots}}]
+    }))
+    .expect("authored zone catalog");
+    let data = GameDataSet {
+        wild_encounters: [("Fair".into(), encounters)].into_iter().collect(),
+        ..GameDataSet::default()
+    };
+    assert!(data.saved_wild_encounter_exists("Fair", "NEW_MON", 23));
+    assert!(!data.saved_wild_encounter_exists("Fair", "NEW_MON", 24));
+    assert!(!data.saved_wild_encounter_exists("Fair", "OTHER_MON", 23));
+    assert!(!data.saved_wild_encounter_exists("OtherMap", "NEW_MON", 23));
 }
 
 #[test]

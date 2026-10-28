@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_154",
+  "fit": 12,
+  "input_images": [
+    {
+      "role": "native16 style/logicalpixel reference only",
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/references/native-pack-16px/native-six-frame-style-board.8x.png",
+      "sha256": "4354a639ed1a80fd6686e43b273443ed894e58a84307a8049f638ee9ffa2a099"
+    }
+  ],
+  "canonical_identity_reviewed": {
+    "front": {
+      "path": "target/minnesota-pokemon/native/MN_F073/mn-154-hissip-v1.front.png",
+      "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F073/mn-154-hissip-v1.front.png",
+      "sha256": "f0396beaa2fe63940121f1dc5479b74b8e8a01b5f6a439202f913ac20f425b39"
+    },
+    "back": {
+      "path": "target/minnesota-pokemon/native/MN_F073/mn-154-hissip-v1.back.png",
+      "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F073/mn-154-hissip-v1.back.png",
+      "sha256": "a22e3577f22e85a8f3eb562f9e79b8d981ccb12f361f38515011609afb45e1fa"
+    }
+  },
+  "design_authority": "Actual current front/back PNGs authoritative: finalContrakett lowhorizontalarch/crouchedpivotbeast supersedes firstuprightproposal.",
+  "canonical_eye_form": "Two actual black pupils SOUTH/one WEST, blankrear. Spoutopening/foot slots/chest vents darkink2, never actualeyes.",
+  "prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f073/prompt-hissip-v1.txt"
+}

@@ -95,8 +95,8 @@ pub(crate) fn validate_design(gym: &Gym) -> Result<()> {
     }
     ensure!(
         gym.cut_gates.is_empty()
-            || (gym.gates.is_empty() && gym.lifts.is_empty() && gym.winds.is_empty()),
-        "{}: Cut gardens use static terrain",
+            || (gym.only_victory_gates() && gym.lifts.is_empty() && gym.winds.is_empty()),
+        "{}: Cut gardens permit only victory return gates",
         gym.id
     );
     Ok(())

@@ -1,0 +1,265 @@
+{
+  "species_id": "MN_223",
+  "result": "pass: exactly THREE separated native slab bands in ALL six poses; both air gaps source-backed across full projected body width, not black bridges",
+  "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f102/manifest-cinderfen-v20-pupil-proof.json",
+  "manifest_sha256": "3ff65b8efb2e410ad4aa02675c5e18006eddd2a00feb89f47b544a8b21d81639",
+  "bank_sha256": "306009f0d5bd4c09deb5ad0b0a9b5feae8820fcaf243e406f23c7fba36d2b630",
+  "source_sha256": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f102/cinderfen.overworld.imagegen-v20-compressed-levels.png": "fdab1efea6a7f9c53df404dc293e3eaabce9ed6a628e2cda48478c913d75bbdb"
+  },
+  "actual_native_normal_and_shiny_viewed": true,
+  "poses": [
+    {
+      "pose": "down_idle",
+      "result": "pass",
+      "three_separate_native_row_bands_y_exclusive": [
+        [
+          1,
+          6
+        ],
+        [
+          7,
+          10
+        ],
+        [
+          11,
+          15
+        ]
+      ],
+      "source_backed_air_gaps": [
+        {
+          "native_full_transparent_row": 6,
+          "native_row": "0000000000000000",
+          "actual_source_full_gap_row": 260,
+          "source_x_range": [
+            146,
+            515
+          ],
+          "max_actual_source_alpha": 0,
+          "threshold": 128
+        },
+        {
+          "native_full_transparent_row": 10,
+          "native_row": "0000000000000000",
+          "actual_source_full_gap_row": 382,
+          "source_x_range": [
+            146,
+            515
+          ],
+          "max_actual_source_alpha": 0,
+          "threshold": 128
+        }
+      ]
+    },
+    {
+      "pose": "up_idle",
+      "result": "pass",
+      "three_separate_native_row_bands_y_exclusive": [
+        [
+          1,
+          5
+        ],
+        [
+          7,
+          10
+        ],
+        [
+          11,
+          15
+        ]
+      ],
+      "source_backed_air_gaps": [
+        {
+          "native_full_transparent_row": 5,
+          "native_row": "0000000000000000",
+          "actual_source_full_gap_row": 232,
+          "source_x_range": [
+            615,
+            984
+          ],
+          "max_actual_source_alpha": 6,
+          "threshold": 128
+        },
+        {
+          "native_full_transparent_row": 10,
+          "native_row": "0000000000000000",
+          "actual_source_full_gap_row": 385,
+          "source_x_range": [
+            615,
+            984
+          ],
+          "max_actual_source_alpha": 0,
+          "threshold": 128
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "result": "pass",
+      "three_separate_native_row_bands_y_exclusive": [
+        [
+          1,
+          5
+        ],
+        [
+          7,
+          10
+        ],
+        [
+          11,
+          15
+        ]
+      ],
+      "source_backed_air_gaps": [
+        {
+          "native_full_transparent_row": 5,
+          "native_row": "0000000000000000",
+          "actual_source_full_gap_row": 230,
+          "source_x_range": [
+            1022,
+            1391
+          ],
+          "max_actual_source_alpha": 110,
+          "threshold": 128
+        },
+        {
+          "native_full_transparent_row": 10,
+          "native_row": "0000000000000000",
+          "actual_source_full_gap_row": 383,
+          "source_x_range": [
+            1022,
+            1391
+          ],
+          "max_actual_source_alpha": 1,
+          "threshold": 128
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "result": "pass",
+      "three_separate_native_row_bands_y_exclusive": [
+        [
+          1,
+          5
+        ],
+        [
+          6,
+          9
+        ],
+        [
+          10,
+          13
+        ]
+      ],
+      "source_backed_air_gaps": [
+        {
+          "native_full_transparent_row": 5,
+          "native_row": "0000000000000000",
+          "actual_source_full_gap_row": 711,
+          "source_x_range": [
+            152,
+            521
+          ],
+          "max_actual_source_alpha": 0,
+          "threshold": 128
+        },
+        {
+          "native_full_transparent_row": 9,
+          "native_row": "0000000000000000",
+          "actual_source_full_gap_row": 833,
+          "source_x_range": [
+            152,
+            521
+          ],
+          "max_actual_source_alpha": 1,
+          "threshold": 128
+        }
+      ]
+    },
+    {
+      "pose": "up_step",
+      "result": "pass",
+      "three_separate_native_row_bands_y_exclusive": [
+        [
+          1,
+          5
+        ],
+        [
+          6,
+          9
+        ],
+        [
+          10,
+          14
+        ]
+      ],
+      "source_backed_air_gaps": [
+        {
+          "native_full_transparent_row": 5,
+          "native_row": "0000000000000000",
+          "actual_source_full_gap_row": 708,
+          "source_x_range": [
+            619,
+            988
+          ],
+          "max_actual_source_alpha": 0,
+          "threshold": 128
+        },
+        {
+          "native_full_transparent_row": 9,
+          "native_row": "0000000000000000",
+          "actual_source_full_gap_row": 830,
+          "source_x_range": [
+            619,
+            988
+          ],
+          "max_actual_source_alpha": 0,
+          "threshold": 128
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "result": "pass",
+      "three_separate_native_row_bands_y_exclusive": [
+        [
+          1,
+          5
+        ],
+        [
+          6,
+          9
+        ],
+        [
+          10,
+          14
+        ]
+      ],
+      "source_backed_air_gaps": [
+        {
+          "native_full_transparent_row": 5,
+          "native_row": "0000000000000000",
+          "actual_source_full_gap_row": 707,
+          "source_x_range": [
+            1006,
+            1375
+          ],
+          "max_actual_source_alpha": 3,
+          "threshold": 128
+        },
+        {
+          "native_full_transparent_row": 9,
+          "native_row": "0000000000000000",
+          "actual_source_full_gap_row": 829,
+          "source_x_range": [
+            1006,
+            1375
+          ],
+          "max_actual_source_alpha": 1,
+          "threshold": 128
+        }
+      ]
+    }
+  ]
+}

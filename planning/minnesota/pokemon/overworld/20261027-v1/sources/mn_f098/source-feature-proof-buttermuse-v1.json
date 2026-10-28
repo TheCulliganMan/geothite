@@ -1,0 +1,215 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_214",
+  "result": "pass",
+  "manifest_sha256": "4d185ea93389dfc12da01979dc33ed59566d71b798020e87c88ef97d0e1fc0b8",
+  "bank_sha256": "5850e8e0a31d6f511e96eb21b50391d5b96ec66de565687b923d52838ae1d7f7",
+  "source_sha256": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f098/buttermuse.overworld.imagegen-v1.png": "9545400ca9ab3ae4bbec16582b068b722fd5a72042bed1d57760f42954b58eea"
+  },
+  "canonical_eye_form": "Two actual front pupils; one visible west-profile pupil; rear contains no pupil organs. Canonical carved curl outline remains.",
+  "nonrear_poses": [
+    {
+      "pose": "down_idle",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            6,
+            6
+          ],
+          "source_sample": [
+            286,
+            230
+          ],
+          "source_rgba": [
+            0,
+            0,
+            0,
+            253
+          ],
+          "actual_source_pupil_component": [
+            274,
+            218,
+            20,
+            29
+          ],
+          "component_pixels": 580,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "native": [
+            8,
+            6
+          ],
+          "source_sample": [
+            349,
+            230
+          ],
+          "source_rgba": [
+            7,
+            6,
+            1,
+            253
+          ],
+          "actual_source_pupil_component": [
+            349,
+            218,
+            20,
+            29
+          ],
+          "component_pixels": 580,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            4,
+            6
+          ],
+          "source_sample": [
+            1157,
+            240
+          ],
+          "source_rgba": [
+            2,
+            1,
+            0,
+            253
+          ],
+          "actual_source_pupil_component": [
+            1148,
+            218,
+            19,
+            29
+          ],
+          "component_pixels": 551,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            6,
+            6
+          ],
+          "source_sample": [
+            287,
+            699
+          ],
+          "source_rgba": [
+            2,
+            1,
+            0,
+            253
+          ],
+          "actual_source_pupil_component": [
+            273,
+            687,
+            20,
+            29
+          ],
+          "component_pixels": 573,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "native": [
+            8,
+            6
+          ],
+          "source_sample": [
+            350,
+            699
+          ],
+          "source_rgba": [
+            2,
+            1,
+            1,
+            253
+          ],
+          "actual_source_pupil_component": [
+            348,
+            687,
+            20,
+            29
+          ],
+          "component_pixels": 580,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            4,
+            6
+          ],
+          "source_sample": [
+            1158,
+            699
+          ],
+          "source_rgba": [
+            0,
+            0,
+            0,
+            253
+          ],
+          "actual_source_pupil_component": [
+            1148,
+            687,
+            19,
+            29
+          ],
+          "component_pixels": 551,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ]
+        }
+      ]
+    }
+  ],
+  "rear_anatomy": {
+    "result": "pass",
+    "notes": "Both rear native poses viewed: no copied face or actual pupil components. Black curl/tuft notches are anatomical butter-shaving outlines, not eyes; blank broad rear head plane.. All six exact normal/shiny native poses inspected, three movement pairs distinct, transparent one-pixel border and max14x14 body verified."
+  }
+}

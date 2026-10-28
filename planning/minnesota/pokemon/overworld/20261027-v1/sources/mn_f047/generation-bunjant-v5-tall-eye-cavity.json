@@ -1,0 +1,8 @@
+{
+  "tool": "built-in image_gen",
+  "default_path": "/Users/ryanculligan/.codex/generated_images/01a17f9b-beff-7771-977d-2d3d7b14de43/exec-21363b59-512f-4696-bf0e-6a4bc5261335.png",
+  "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f047/bunjant.overworld.imagegen-v5-tall-eye-cavity.png",
+  "sha256": "0a7d19cab9a7f16ad50dd67e40d69c5b1d3d67877ca1c99bfae4132f93153a72",
+  "prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f047/prompt-bunjant-v5-tall-eye-cavity.txt",
+  "accepted": false
+}

@@ -2506,6 +2506,349 @@
         40
       ],
       "block": "60"
+    },
+    {
+      "name": "Attached cedar headland closes the former broad eastern road court",
+      "kind": "polygon",
+      "material": "forest",
+      "points": [
+        [
+          25,
+          24
+        ],
+        [
+          36,
+          24
+        ],
+        [
+          36,
+          27
+        ],
+        [
+          37,
+          27
+        ],
+        [
+          37,
+          28
+        ],
+        [
+          27,
+          28
+        ],
+        [
+          27,
+          26
+        ],
+        [
+          25,
+          26
+        ]
+      ]
+    },
+    {
+      "name": "Lake-revealing walk follows the existing upper Cedar cove",
+      "kind": "path",
+      "material": "floor",
+      "points": [
+        [
+          24,
+          25
+        ],
+        [
+          26,
+          25
+        ],
+        [
+          26,
+          28
+        ],
+        [
+          31,
+          28
+        ],
+        [
+          31,
+          27
+        ],
+        [
+          34,
+          27
+        ],
+        [
+          34,
+          29
+        ],
+        [
+          36,
+          29
+        ],
+        [
+          36,
+          31
+        ]
+      ],
+      "width_metatiles": 1
+    },
+    {
+      "name": "Southern cedar mass reaches from the existing lower forest",
+      "kind": "polygon",
+      "material": "forest",
+      "points": [
+        [
+          16,
+          44
+        ],
+        [
+          19,
+          44
+        ],
+        [
+          19,
+          43
+        ],
+        [
+          22,
+          43
+        ],
+        [
+          22,
+          44
+        ],
+        [
+          26,
+          44
+        ],
+        [
+          26,
+          45
+        ],
+        [
+          16,
+          45
+        ]
+      ]
+    },
+    {
+      "name": "Southern bank walk bends to the natural shallow cove",
+      "kind": "path",
+      "material": "floor",
+      "points": [
+        [
+          15,
+          44
+        ],
+        [
+          16,
+          44
+        ],
+        [
+          16,
+          43
+        ],
+        [
+          19,
+          43
+        ],
+        [
+          19,
+          42
+        ],
+        [
+          22,
+          42
+        ],
+        [
+          22,
+          44
+        ],
+        [
+          28,
+          44
+        ]
+      ],
+      "width_metatiles": 1
+    },
+    {
+      "name": "South cove north shoulder closes spare lawn behind the walk",
+      "kind": "rect",
+      "material": "forest",
+      "bounds": [
+        16,
+        41,
+        18,
+        43
+      ]
+    },
+    {
+      "name": "South cove east shoulder joins lower cedar mass",
+      "kind": "point",
+      "position": [
+        21,
+        43
+      ],
+      "block": "60"
+    },
+    {
+      "name": "Pier southern bank native two-lane downhill ledge",
+      "kind": "point",
+      "position": [
+        36,
+        39
+      ],
+      "block": "57"
+    },
+    {
+      "name": "Granite shoulder closes the ledge west side beside the shore rail",
+      "kind": "point",
+      "position": [
+        35,
+        39
+      ],
+      "block": "0a"
+    },
+    {
+      "name": "Grassy upper lip on the ordinary uphill bank return",
+      "kind": "rect",
+      "material": "encounter",
+      "bounds": [
+        37,
+        37,
+        38,
+        39
+      ]
+    },
+    {
+      "name": "Permanent native Headbutt pine closes east side of the drop beside its ordinary return lane",
+      "kind": "point",
+      "position": [
+        37,
+        39
+      ],
+      "block": "60"
+    },
+    {
+      "name": "Attached native pine shoulder carries the ordinary outer lane to its lower landing",
+      "kind": "point",
+      "position": [
+        37,
+        40
+      ],
+      "block": "60"
+    },
+    {
+      "name": "Grassy lower landing makes the ordinary uphill return a real encounter choice",
+      "kind": "point",
+      "position": [
+        37,
+        41
+      ],
+      "block": "03"
+    },
+    {
+      "name": "Old outer Long Lake road rejoins the attached eastern cedar forest",
+      "kind": "block_rect",
+      "bounds": [
+        35,
+        13,
+        37,
+        19
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Southern end of old broad Long Lake corner closes into its forest shoulder",
+      "kind": "block_rect",
+      "bounds": [
+        34,
+        18,
+        35,
+        19
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Long Lake shore walk takes the inner bank beside real water",
+      "kind": "path",
+      "material": "floor",
+      "points": [
+        [
+          36,
+          11
+        ],
+        [
+          36,
+          12
+        ],
+        [
+          34,
+          12
+        ],
+        [
+          34,
+          17
+        ],
+        [
+          33,
+          17
+        ],
+        [
+          33,
+          18
+        ],
+        [
+          31,
+          18
+        ]
+      ],
+      "width_metatiles": 1
+    },
+    {
+      "name": "Repel turnout stays joined to the new inner-bank walk",
+      "kind": "point",
+      "position": [
+        34,
+        13
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Southern bank lower cedar shoulder first narrows the path to its lakeward half",
+      "kind": "point",
+      "position": [
+        25,
+        44
+      ],
+      "block": "65"
+    },
+    {
+      "name": "Southern bank attached lower cedar shoulder narrows the approach before the reward pocket",
+      "kind": "point",
+      "position": [
+        27,
+        44
+      ],
+      "block": "65"
+    },
+    {
+      "name": "Southern bank lower cedar shoulder releases at the Ether passing pocket",
+      "kind": "point",
+      "position": [
+        30,
+        44
+      ],
+      "block": "65"
+    },
+    {
+      "name": "Southeast bank closes spare grass below the existing Nell approach",
+      "kind": "block_rect",
+      "bounds": [
+        32,
+        44,
+        37,
+        45
+      ],
+      "block": "05"
     }
   ],
   "art_authority": "Exact local Johto / Kanto source blocks; Route42 lake partitions and Route30 shoreline pacing studied.",

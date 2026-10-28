@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F017",
+  "species": [
+    {
+      "species_id": "MN_047",
+      "runtime_token": "HATCHIT",
+      "palette_rgb555": [
+        32767,
+        25367,
+        7467,
+        0
+      ],
+      "shiny_palette_rgb555": [
+        32767,
+        25336,
+        9575,
+        0
+      ],
+      "fit": [
+        12,
+        12
+      ],
+      "alpha_threshold": 128,
+      "sampling": "source_center",
+      "minimum_foreground_samples": 16,
+      "black_priority_samples": 64,
+      "interior_black_samples": 64,
+      "opaque_interior_minimum_samples": 64,
+      "frames": [
+        {
+          "pose": "down_idle",
+          "source": "hatchit.overworld.imagegen-v1.png",
+          "crop": [
+            73,
+            80,
+            400,
+            410
+          ]
+        },
+        {
+          "pose": "up_idle",
+          "source": "hatchit.overworld.imagegen-v1.png",
+          "crop": [
+            592,
+            93,
+            400,
+            410
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "source": "hatchit.overworld.imagegen-v1.png",
+          "crop": [
+            1093,
+            87,
+            400,
+            410
+          ]
+        },
+        {
+          "pose": "down_step",
+          "source": "hatchit.overworld.imagegen-v1.png",
+          "crop": [
+            73,
+            542,
+            400,
+            410
+          ]
+        },
+        {
+          "pose": "up_step",
+          "source": "hatchit.overworld.imagegen-v1.png",
+          "crop": [
+            592,
+            552,
+            400,
+            410
+          ]
+        },
+        {
+          "pose": "left_step",
+          "source": "hatchit.overworld.imagegen-v1.png",
+          "crop": [
+            1093,
+            545,
+            400,
+            410
+          ]
+        }
+      ]
+    }
+  ]
+}

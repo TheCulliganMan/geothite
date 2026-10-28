@@ -1,0 +1,13 @@
+{
+  "prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f117/prompt-winkfin-profile-three-bars-v3.txt",
+  "input_images": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f117/winkfin.overworld.imagegen-v2-three-palette-bars.png",
+      "sha256": "54a6ac28254b4420a83fbc6e0557a8c368d067e44ae7b2d67e9f580ed27794dc"
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/references/native-pack-16px/native-six-frame-style-board.8x.png",
+      "sha256": "4354a639ed1a80fd6686e43b273443ed894e58a84307a8049f638ee9ffa2a099"
+    }
+  ]
+}

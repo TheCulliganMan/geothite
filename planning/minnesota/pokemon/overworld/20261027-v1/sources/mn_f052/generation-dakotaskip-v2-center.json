@@ -1,0 +1,87 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_109",
+  "name": "Dakotaskip",
+  "family_id": "MN_F052",
+  "status": "native_candidate_compiled_and_sent_for_root_visual_review",
+  "generation_tool": "built-in image_gen",
+  "prompts": [
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f052/prompt-dakotaskip-v2.txt"
+  ],
+  "sources_selected": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f052/dakotaskip.overworld.imagegen-v2.png",
+      "sha256": "5980f7a99476eec10c88f43db03727c2bdd8b0101365f7597c27af39a1178da6",
+      "dimensions": [
+        1536,
+        1024
+      ]
+    }
+  ],
+  "source_v2_original_default_output": "/Users/ryanculligan/.codex/generated_images/01a17dc4-dd75-7642-a1c6-4bf13fda70c6/exec-ee7733c1-d146-4769-be96-202fa22e4ca1.png",
+  "generation_reference_only": "planning/minnesota/pokemon/overworld/20261027-v1/references/native-pack-16px/native-six-frame-style-board.8x.png",
+  "identity_authority": "Exactcurrentcoverage.json active identity/palette and visualinspection of selectednativefront; NOhighresbattleinputs used for generation",
+  "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f052/manifest-dakotaskip-v2-center.json",
+  "manifest_sha256": "2b1d41dc65a601237ac419f86ecad7d0addc5f3293a907b09508aeeff7eb5e43",
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f052/dakotaskip-v2-center",
+  "normal_review": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f052/dakotaskip-v2-center/review/line.normal-8x.png",
+  "sampling": "Rust source_center",
+  "alpha_threshold": 128,
+  "frame_size": [
+    16,
+    16
+  ],
+  "native_bounds": [
+    [
+      1,
+      3,
+      13,
+      12
+    ],
+    [
+      1,
+      3,
+      13,
+      11
+    ],
+    [
+      2,
+      3,
+      11,
+      12
+    ],
+    [
+      1,
+      3,
+      14,
+      11
+    ],
+    [
+      1,
+      3,
+      13,
+      11
+    ],
+    [
+      2,
+      3,
+      11,
+      12
+    ]
+  ],
+  "normal_rgb555": [
+    32767,
+    7902,
+    4332,
+    0
+  ],
+  "shiny_rgb555": [
+    32767,
+    23495,
+    7556,
+    0
+  ],
+  "native_pixels_painted": false,
+  "contract": "Sixposesdown/up/leftidle then down/up/leftstep;3opaquecanonicalinks+transparentindex0;max14pxopaquefootprintwithborder;onesharedspeciesworldscale andpairedheadregistration",
+  "notes": "Generatedraws andallvariantsretained. Nativeboards inspected locally and handed to root; finalacceptance/context/runtimeproof ownedbyroot."
+}

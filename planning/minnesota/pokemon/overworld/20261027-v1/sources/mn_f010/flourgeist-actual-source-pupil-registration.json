@@ -1,0 +1,2548 @@
+[
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/flourgeist-v2-registered-x8-y12",
+    "actual_eye_hits": 6,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            7,
+            7
+          ],
+          "source": [
+            268,
+            278
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            7
+          ],
+          "source": [
+            325,
+            278
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            7,
+            7
+          ],
+          "source": [
+            268,
+            718
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            7
+          ],
+          "source": [
+            325,
+            718
+          ]
+        }
+      ],
+      "left_idle": [
+        {
+          "eye": 0,
+          "native": [
+            4,
+            7
+          ],
+          "source": [
+            1174,
+            266
+          ]
+        }
+      ],
+      "left_step": [
+        {
+          "eye": 0,
+          "native": [
+            4,
+            7
+          ],
+          "source": [
+            1174,
+            706
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/flourgeist-v2-registered-x12-y12",
+    "actual_eye_hits": 6,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            7,
+            7
+          ],
+          "source": [
+            270,
+            278
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            7
+          ],
+          "source": [
+            327,
+            278
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            7,
+            7
+          ],
+          "source": [
+            270,
+            718
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            7
+          ],
+          "source": [
+            327,
+            718
+          ]
+        }
+      ],
+      "left_idle": [
+        {
+          "eye": 0,
+          "native": [
+            4,
+            7
+          ],
+          "source": [
+            1173,
+            266
+          ]
+        }
+      ],
+      "left_step": [
+        {
+          "eye": 0,
+          "native": [
+            4,
+            7
+          ],
+          "source": [
+            1173,
+            706
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/flourgeist-v2-registered-x12-y8",
+    "actual_eye_hits": 6,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            7,
+            7
+          ],
+          "source": [
+            270,
+            277
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            7
+          ],
+          "source": [
+            327,
+            277
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            7,
+            7
+          ],
+          "source": [
+            270,
+            717
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            7
+          ],
+          "source": [
+            327,
+            717
+          ]
+        }
+      ],
+      "left_idle": [
+        {
+          "eye": 0,
+          "native": [
+            4,
+            7
+          ],
+          "source": [
+            1173,
+            269
+          ]
+        }
+      ],
+      "left_step": [
+        {
+          "eye": 0,
+          "native": [
+            4,
+            7
+          ],
+          "source": [
+            1173,
+            709
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/flourgeist-v2-registered-x8-y8",
+    "actual_eye_hits": 6,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            7,
+            7
+          ],
+          "source": [
+            268,
+            277
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            7
+          ],
+          "source": [
+            325,
+            277
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            7,
+            7
+          ],
+          "source": [
+            268,
+            717
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            7
+          ],
+          "source": [
+            325,
+            717
+          ]
+        }
+      ],
+      "left_idle": [
+        {
+          "eye": 0,
+          "native": [
+            4,
+            7
+          ],
+          "source": [
+            1174,
+            269
+          ]
+        }
+      ],
+      "left_step": [
+        {
+          "eye": 0,
+          "native": [
+            4,
+            7
+          ],
+          "source": [
+            1174,
+            709
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/flourgeist-v2-registered-x12-y-4",
+    "actual_eye_hits": 5,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            7,
+            7
+          ],
+          "source": [
+            270,
+            270
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            7
+          ],
+          "source": [
+            327,
+            270
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            7,
+            7
+          ],
+          "source": [
+            270,
+            710
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            7
+          ],
+          "source": [
+            327,
+            710
+          ]
+        }
+      ],
+      "left_idle": [],
+      "left_step": [
+        {
+          "eye": 0,
+          "native": [
+            4,
+            7
+          ],
+          "source": [
+            1173,
+            714
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/flourgeist-v2-registered-x12-y-12",
+    "actual_eye_hits": 5,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            7,
+            7
+          ],
+          "source": [
+            270,
+            265
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            7
+          ],
+          "source": [
+            327,
+            265
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            7,
+            7
+          ],
+          "source": [
+            270,
+            705
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            7
+          ],
+          "source": [
+            327,
+            705
+          ]
+        }
+      ],
+      "left_idle": [
+        {
+          "eye": 0,
+          "native": [
+            4,
+            6
+          ],
+          "source": [
+            1173,
+            248
+          ]
+        }
+      ],
+      "left_step": []
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/flourgeist-v2-registered-x8-y-4",
+    "actual_eye_hits": 5,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            7,
+            7
+          ],
+          "source": [
+            268,
+            270
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            7
+          ],
+          "source": [
+            325,
+            270
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            7,
+            7
+          ],
+          "source": [
+            268,
+            710
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            7
+          ],
+          "source": [
+            325,
+            710
+          ]
+        }
+      ],
+      "left_idle": [],
+      "left_step": [
+        {
+          "eye": 0,
+          "native": [
+            4,
+            7
+          ],
+          "source": [
+            1174,
+            714
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/flourgeist-v2-registered-x12-y0",
+    "actual_eye_hits": 5,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            7,
+            7
+          ],
+          "source": [
+            270,
+            273
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            7
+          ],
+          "source": [
+            327,
+            273
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            7,
+            7
+          ],
+          "source": [
+            270,
+            713
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            7
+          ],
+          "source": [
+            327,
+            713
+          ]
+        }
+      ],
+      "left_idle": [],
+      "left_step": [
+        {
+          "eye": 0,
+          "native": [
+            4,
+            7
+          ],
+          "source": [
+            1173,
+            713
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/flourgeist-v2-registered-x8-y4",
+    "actual_eye_hits": 5,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            7,
+            7
+          ],
+          "source": [
+            268,
+            275
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            7
+          ],
+          "source": [
+            325,
+            275
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            7,
+            7
+          ],
+          "source": [
+            268,
+            715
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            7
+          ],
+          "source": [
+            325,
+            715
+          ]
+        }
+      ],
+      "left_idle": [],
+      "left_step": [
+        {
+          "eye": 0,
+          "native": [
+            4,
+            7
+          ],
+          "source": [
+            1174,
+            711
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/flourgeist-v2-registered-x12-y-8",
+    "actual_eye_hits": 5,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            7,
+            7
+          ],
+          "source": [
+            270,
+            268
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            7
+          ],
+          "source": [
+            327,
+            268
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            7,
+            7
+          ],
+          "source": [
+            270,
+            708
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            7
+          ],
+          "source": [
+            327,
+            708
+          ]
+        }
+      ],
+      "left_idle": [
+        {
+          "eye": 0,
+          "native": [
+            4,
+            6
+          ],
+          "source": [
+            1173,
+            246
+          ]
+        }
+      ],
+      "left_step": []
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/flourgeist-v2-registered-x8-y-8",
+    "actual_eye_hits": 5,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            7,
+            7
+          ],
+          "source": [
+            268,
+            268
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            7
+          ],
+          "source": [
+            325,
+            268
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            7,
+            7
+          ],
+          "source": [
+            268,
+            708
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            7
+          ],
+          "source": [
+            325,
+            708
+          ]
+        }
+      ],
+      "left_idle": [
+        {
+          "eye": 0,
+          "native": [
+            4,
+            6
+          ],
+          "source": [
+            1174,
+            246
+          ]
+        }
+      ],
+      "left_step": []
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/flourgeist-v2-registered-x8-y-12",
+    "actual_eye_hits": 5,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            7,
+            7
+          ],
+          "source": [
+            268,
+            265
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            7
+          ],
+          "source": [
+            325,
+            265
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            7,
+            7
+          ],
+          "source": [
+            268,
+            705
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            7
+          ],
+          "source": [
+            325,
+            705
+          ]
+        }
+      ],
+      "left_idle": [
+        {
+          "eye": 0,
+          "native": [
+            4,
+            6
+          ],
+          "source": [
+            1174,
+            248
+          ]
+        }
+      ],
+      "left_step": []
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/flourgeist-v2-registered-x12-y4",
+    "actual_eye_hits": 5,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            7,
+            7
+          ],
+          "source": [
+            270,
+            275
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            7
+          ],
+          "source": [
+            327,
+            275
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            7,
+            7
+          ],
+          "source": [
+            270,
+            715
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            7
+          ],
+          "source": [
+            327,
+            715
+          ]
+        }
+      ],
+      "left_idle": [],
+      "left_step": [
+        {
+          "eye": 0,
+          "native": [
+            4,
+            7
+          ],
+          "source": [
+            1173,
+            711
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/flourgeist-v2-registered-x8-y0",
+    "actual_eye_hits": 5,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            7,
+            7
+          ],
+          "source": [
+            268,
+            273
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            7
+          ],
+          "source": [
+            325,
+            273
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            7,
+            7
+          ],
+          "source": [
+            268,
+            713
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            7
+          ],
+          "source": [
+            325,
+            713
+          ]
+        }
+      ],
+      "left_idle": [],
+      "left_step": [
+        {
+          "eye": 0,
+          "native": [
+            4,
+            7
+          ],
+          "source": [
+            1174,
+            713
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/flourgeist-v2-registered-x-4-y-8",
+    "actual_eye_hits": 4,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            7,
+            8
+          ],
+          "source": [
+            261,
+            281
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            8
+          ],
+          "source": [
+            320,
+            281
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            7,
+            8
+          ],
+          "source": [
+            261,
+            721
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            8
+          ],
+          "source": [
+            320,
+            721
+          ]
+        }
+      ],
+      "left_idle": [],
+      "left_step": []
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/flourgeist-v2-registered-x0-y-8",
+    "actual_eye_hits": 4,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            7,
+            7
+          ],
+          "source": [
+            263,
+            268
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            7
+          ],
+          "source": [
+            322,
+            268
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            7,
+            7
+          ],
+          "source": [
+            263,
+            708
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            7
+          ],
+          "source": [
+            322,
+            708
+          ]
+        }
+      ],
+      "left_idle": [],
+      "left_step": []
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/flourgeist-v2-registered-x-12-y-8",
+    "actual_eye_hits": 4,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            7,
+            8
+          ],
+          "source": [
+            257,
+            281
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            8
+          ],
+          "source": [
+            317,
+            281
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            7,
+            8
+          ],
+          "source": [
+            257,
+            721
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            8
+          ],
+          "source": [
+            317,
+            721
+          ]
+        }
+      ],
+      "left_idle": [],
+      "left_step": []
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/flourgeist-v2-registered-x4-y-8",
+    "actual_eye_hits": 4,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            7,
+            7
+          ],
+          "source": [
+            266,
+            268
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            7
+          ],
+          "source": [
+            323,
+            268
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            7,
+            7
+          ],
+          "source": [
+            266,
+            708
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            7
+          ],
+          "source": [
+            323,
+            708
+          ]
+        }
+      ],
+      "left_idle": [],
+      "left_step": []
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/flourgeist-v2-registered-x-12-y-12",
+    "actual_eye_hits": 4,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            7,
+            8
+          ],
+          "source": [
+            257,
+            279
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            8
+          ],
+          "source": [
+            317,
+            279
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            7,
+            8
+          ],
+          "source": [
+            257,
+            719
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            8
+          ],
+          "source": [
+            317,
+            719
+          ]
+        }
+      ],
+      "left_idle": [],
+      "left_step": []
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/flourgeist-v2-registered-x-8-y-12",
+    "actual_eye_hits": 4,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            7,
+            8
+          ],
+          "source": [
+            259,
+            279
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            8
+          ],
+          "source": [
+            319,
+            279
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            7,
+            8
+          ],
+          "source": [
+            259,
+            719
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            8
+          ],
+          "source": [
+            319,
+            719
+          ]
+        }
+      ],
+      "left_idle": [],
+      "left_step": []
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/flourgeist-v2-registered-x0-y-12",
+    "actual_eye_hits": 4,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            7,
+            7
+          ],
+          "source": [
+            263,
+            265
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            7
+          ],
+          "source": [
+            322,
+            265
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            7,
+            7
+          ],
+          "source": [
+            263,
+            705
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            7
+          ],
+          "source": [
+            322,
+            705
+          ]
+        }
+      ],
+      "left_idle": [],
+      "left_step": []
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/flourgeist-v2-registered-x4-y8",
+    "actual_eye_hits": 4,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            7,
+            7
+          ],
+          "source": [
+            266,
+            277
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            7
+          ],
+          "source": [
+            323,
+            277
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            7,
+            7
+          ],
+          "source": [
+            266,
+            717
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            7
+          ],
+          "source": [
+            323,
+            717
+          ]
+        }
+      ],
+      "left_idle": [],
+      "left_step": []
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/flourgeist-v2-registered-x-4-y-12",
+    "actual_eye_hits": 4,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            7,
+            7
+          ],
+          "source": [
+            261,
+            265
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            7
+          ],
+          "source": [
+            320,
+            265
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            7,
+            7
+          ],
+          "source": [
+            261,
+            705
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            7
+          ],
+          "source": [
+            320,
+            705
+          ]
+        }
+      ],
+      "left_idle": [],
+      "left_step": []
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/flourgeist-v2-registered-x0-y8",
+    "actual_eye_hits": 4,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            7,
+            7
+          ],
+          "source": [
+            263,
+            277
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            7
+          ],
+          "source": [
+            322,
+            277
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            7,
+            7
+          ],
+          "source": [
+            263,
+            717
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            7
+          ],
+          "source": [
+            322,
+            717
+          ]
+        }
+      ],
+      "left_idle": [],
+      "left_step": []
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/flourgeist-v2-registered-x4-y-4",
+    "actual_eye_hits": 4,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            7,
+            7
+          ],
+          "source": [
+            266,
+            270
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            7
+          ],
+          "source": [
+            323,
+            270
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            7,
+            7
+          ],
+          "source": [
+            266,
+            710
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            7
+          ],
+          "source": [
+            323,
+            710
+          ]
+        }
+      ],
+      "left_idle": [],
+      "left_step": []
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/flourgeist-v2-registered-x0-y12",
+    "actual_eye_hits": 4,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            7,
+            7
+          ],
+          "source": [
+            263,
+            278
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            7
+          ],
+          "source": [
+            322,
+            278
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            7,
+            7
+          ],
+          "source": [
+            263,
+            718
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            7
+          ],
+          "source": [
+            322,
+            718
+          ]
+        }
+      ],
+      "left_idle": [],
+      "left_step": []
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/flourgeist-v2-registered-x-4-y12",
+    "actual_eye_hits": 4,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            7,
+            7
+          ],
+          "source": [
+            261,
+            278
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            7
+          ],
+          "source": [
+            320,
+            278
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            7,
+            7
+          ],
+          "source": [
+            261,
+            718
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            7
+          ],
+          "source": [
+            320,
+            718
+          ]
+        }
+      ],
+      "left_idle": [],
+      "left_step": []
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/flourgeist-v2-registered-x-8-y-8",
+    "actual_eye_hits": 4,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            7,
+            8
+          ],
+          "source": [
+            259,
+            281
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            8
+          ],
+          "source": [
+            319,
+            281
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            7,
+            8
+          ],
+          "source": [
+            259,
+            721
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            8
+          ],
+          "source": [
+            319,
+            721
+          ]
+        }
+      ],
+      "left_idle": [],
+      "left_step": []
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/flourgeist-v2-registered-x4-y4",
+    "actual_eye_hits": 4,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            7,
+            7
+          ],
+          "source": [
+            266,
+            275
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            7
+          ],
+          "source": [
+            323,
+            275
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            7,
+            7
+          ],
+          "source": [
+            266,
+            715
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            7
+          ],
+          "source": [
+            323,
+            715
+          ]
+        }
+      ],
+      "left_idle": [],
+      "left_step": []
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/flourgeist-v2-registered-x4-y-12",
+    "actual_eye_hits": 4,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            7,
+            7
+          ],
+          "source": [
+            266,
+            265
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            7
+          ],
+          "source": [
+            323,
+            265
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            7,
+            7
+          ],
+          "source": [
+            266,
+            705
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            7
+          ],
+          "source": [
+            323,
+            705
+          ]
+        }
+      ],
+      "left_idle": [],
+      "left_step": []
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/flourgeist-v2-registered-x4-y12",
+    "actual_eye_hits": 4,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            7,
+            7
+          ],
+          "source": [
+            266,
+            278
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            7
+          ],
+          "source": [
+            323,
+            278
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            7,
+            7
+          ],
+          "source": [
+            266,
+            718
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            7
+          ],
+          "source": [
+            323,
+            718
+          ]
+        }
+      ],
+      "left_idle": [],
+      "left_step": []
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/flourgeist-v2-registered-x-8-y12",
+    "actual_eye_hits": 2,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            7,
+            7
+          ],
+          "source": [
+            259,
+            260
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            7
+          ],
+          "source": [
+            319,
+            260
+          ]
+        }
+      ],
+      "down_step": [],
+      "left_idle": [],
+      "left_step": []
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/flourgeist-v2-registered-x-12-y8",
+    "actual_eye_hits": 2,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            7,
+            7
+          ],
+          "source": [
+            257,
+            258
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            7
+          ],
+          "source": [
+            317,
+            258
+          ]
+        }
+      ],
+      "down_step": [],
+      "left_idle": [],
+      "left_step": []
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/flourgeist-v2-registered-x-12-y0",
+    "actual_eye_hits": 2,
+    "proof": {
+      "down_idle": [],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            7,
+            8
+          ],
+          "source": [
+            257,
+            726
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            8
+          ],
+          "source": [
+            317,
+            726
+          ]
+        }
+      ],
+      "left_idle": [],
+      "left_step": []
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/flourgeist-v2-registered-x-4-y8",
+    "actual_eye_hits": 2,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            7,
+            7
+          ],
+          "source": [
+            261,
+            258
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            7
+          ],
+          "source": [
+            320,
+            258
+          ]
+        }
+      ],
+      "down_step": [],
+      "left_idle": [],
+      "left_step": []
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/flourgeist-v2-registered-x-8-y-4",
+    "actual_eye_hits": 2,
+    "proof": {
+      "down_idle": [],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            7,
+            8
+          ],
+          "source": [
+            259,
+            723
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            8
+          ],
+          "source": [
+            319,
+            723
+          ]
+        }
+      ],
+      "left_idle": [],
+      "left_step": []
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/flourgeist-v2-registered-x0-y0",
+    "actual_eye_hits": 2,
+    "proof": {
+      "down_idle": [],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            7,
+            8
+          ],
+          "source": [
+            263,
+            726
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            8
+          ],
+          "source": [
+            322,
+            726
+          ]
+        }
+      ],
+      "left_idle": [],
+      "left_step": []
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/flourgeist-v2-registered-x-8-y4",
+    "actual_eye_hits": 2,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            7,
+            7
+          ],
+          "source": [
+            259,
+            257
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            7
+          ],
+          "source": [
+            319,
+            257
+          ]
+        }
+      ],
+      "down_step": [],
+      "left_idle": [],
+      "left_step": []
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/flourgeist-v2-registered-x-4-y0",
+    "actual_eye_hits": 2,
+    "proof": {
+      "down_idle": [],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            7,
+            8
+          ],
+          "source": [
+            261,
+            726
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            8
+          ],
+          "source": [
+            320,
+            726
+          ]
+        }
+      ],
+      "left_idle": [],
+      "left_step": []
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/flourgeist-v2-registered-x4-y0",
+    "actual_eye_hits": 2,
+    "proof": {
+      "down_idle": [],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            7,
+            8
+          ],
+          "source": [
+            266,
+            726
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            8
+          ],
+          "source": [
+            323,
+            726
+          ]
+        }
+      ],
+      "left_idle": [],
+      "left_step": []
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/flourgeist-v2-registered-x-12-y-4",
+    "actual_eye_hits": 2,
+    "proof": {
+      "down_idle": [],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            7,
+            8
+          ],
+          "source": [
+            257,
+            723
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            8
+          ],
+          "source": [
+            317,
+            723
+          ]
+        }
+      ],
+      "left_idle": [],
+      "left_step": []
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/flourgeist-v2-registered-x0-y-4",
+    "actual_eye_hits": 2,
+    "proof": {
+      "down_idle": [],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            7,
+            8
+          ],
+          "source": [
+            263,
+            723
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            8
+          ],
+          "source": [
+            322,
+            723
+          ]
+        }
+      ],
+      "left_idle": [],
+      "left_step": []
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/flourgeist-v2-registered-x-4-y-4",
+    "actual_eye_hits": 2,
+    "proof": {
+      "down_idle": [],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            7,
+            8
+          ],
+          "source": [
+            261,
+            723
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            8
+          ],
+          "source": [
+            320,
+            723
+          ]
+        }
+      ],
+      "left_idle": [],
+      "left_step": []
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/flourgeist-v2-registered-x-12-y12",
+    "actual_eye_hits": 2,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            7,
+            7
+          ],
+          "source": [
+            257,
+            260
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            7
+          ],
+          "source": [
+            317,
+            260
+          ]
+        }
+      ],
+      "down_step": [],
+      "left_idle": [],
+      "left_step": []
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/flourgeist-v2-registered-x-12-y4",
+    "actual_eye_hits": 2,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            7,
+            7
+          ],
+          "source": [
+            257,
+            257
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            7
+          ],
+          "source": [
+            317,
+            257
+          ]
+        }
+      ],
+      "down_step": [],
+      "left_idle": [],
+      "left_step": []
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/flourgeist-v2-registered-x0-y4",
+    "actual_eye_hits": 2,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            7,
+            7
+          ],
+          "source": [
+            263,
+            257
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            7
+          ],
+          "source": [
+            322,
+            257
+          ]
+        }
+      ],
+      "down_step": [],
+      "left_idle": [],
+      "left_step": []
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/flourgeist-v2-registered-x-8-y8",
+    "actual_eye_hits": 2,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            7,
+            7
+          ],
+          "source": [
+            259,
+            258
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            7
+          ],
+          "source": [
+            319,
+            258
+          ]
+        }
+      ],
+      "down_step": [],
+      "left_idle": [],
+      "left_step": []
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/flourgeist-v2-registered-x-4-y4",
+    "actual_eye_hits": 2,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            7,
+            7
+          ],
+          "source": [
+            261,
+            257
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            7
+          ],
+          "source": [
+            320,
+            257
+          ]
+        }
+      ],
+      "down_step": [],
+      "left_idle": [],
+      "left_step": []
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/flourgeist-v2-registered-x-8-y0",
+    "actual_eye_hits": 2,
+    "proof": {
+      "down_idle": [],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            7,
+            8
+          ],
+          "source": [
+            259,
+            726
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            8
+          ],
+          "source": [
+            319,
+            726
+          ]
+        }
+      ],
+      "left_idle": [],
+      "left_step": []
+    }
+  }
+]

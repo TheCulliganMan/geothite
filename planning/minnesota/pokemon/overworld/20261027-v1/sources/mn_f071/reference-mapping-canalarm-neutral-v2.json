@@ -1,0 +1,97 @@
+{
+  "use_case": "stylized-concept",
+  "image_inputs": [
+    {
+      "role": "native16coarsestyleONLY",
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/references/native-pack-16px/native-six-frame-style-board.8x.png"
+    }
+  ],
+  "canonical_identity_refs_actually_viewed": {
+    "front": {
+      "native_png": {
+        "path": "target/minnesota-pokemon/native/MN_F071/mn-150-canalarm-v1.front.png",
+        "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F071/mn-150-canalarm-v1.front.png",
+        "sha256": "8bec3f026e7eb14fe7b0e8b3444410e503894457983afd811dd6ffce83ff749e"
+      },
+      "native_indexed_json": {
+        "path": "target/minnesota-pokemon/native/MN_F071/mn-150-canalarm-v1.front.json",
+        "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F071/mn-150-canalarm-v1.front.json",
+        "sha256": "283a367fc5277412b0916d3123abf301b096ee8b9ea3d0f94bc8b2cb18ee52f0"
+      },
+      "native_2bpp": {
+        "path": "target/minnesota-pokemon/native/MN_F071/mn-150-canalarm-v1.front.2bpp",
+        "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F071/mn-150-canalarm-v1.front.2bpp",
+        "sha256": "00826a96b5c4bb937ec23e4db54d42deb1ff32585dd4d0816c78183b52525772"
+      },
+      "source_image": {
+        "path": "planning/minnesota/pokemon/sprites/mn-f071/mn-150.front-back.imagegen-v1.png",
+        "absolute_path": "/Users/ryanculligan/GitHub/geothite/planning/minnesota/pokemon/sprites/mn-f071/mn-150.front-back.imagegen-v1.png",
+        "sha256": "c8da20aea2897fd907ae9482b403a47322dca46a621fb1139e37eff55bce881a"
+      },
+      "source_crop": [
+        0,
+        0,
+        1145,
+        701
+      ],
+      "native_fit": [
+        54,
+        54
+      ],
+      "generation_prompt": {
+        "path": "planning/minnesota/pokemon/sprites/mn-f071/prompt-v1.txt",
+        "absolute_path": "/Users/ryanculligan/GitHub/geothite/planning/minnesota/pokemon/sprites/mn-f071/prompt-v1.txt",
+        "sha256": "906845e5e89d85e70a24ec9361db405a2f062809ca7c827c463c895f01a7c1d2",
+        "reference_kind": "declared_design_prompt_reference; authoritative view record takes precedence over family default"
+      },
+      "sampling": "area_vote",
+      "exterior_contour": "source_backed",
+      "has_guarded_native_refinements": false,
+      "authority_note": "The current selected native PNG is the design authority; original source may contain detail simplified or refined in canonical conversion."
+    },
+    "back": {
+      "native_png": {
+        "path": "target/minnesota-pokemon/native/MN_F071/mn-150-canalarm-v1.back.png",
+        "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F071/mn-150-canalarm-v1.back.png",
+        "sha256": "44d196e2c275d451ef52889cad2d5a361309da5a3ded2ed622d049efd673ca7e"
+      },
+      "native_indexed_json": {
+        "path": "target/minnesota-pokemon/native/MN_F071/mn-150-canalarm-v1.back.json",
+        "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F071/mn-150-canalarm-v1.back.json",
+        "sha256": "daf1e12d7f28dc61789b434461ccbf5a3b1effd32eed2a161239656d407d83db"
+      },
+      "native_2bpp": {
+        "path": "target/minnesota-pokemon/native/MN_F071/mn-150-canalarm-v1.back.2bpp",
+        "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F071/mn-150-canalarm-v1.back.2bpp",
+        "sha256": "fb59e04df32a1c17cd615fc01574243b2f4143479d2657b58bd95bf59fba2684"
+      },
+      "source_image": {
+        "path": "planning/minnesota/pokemon/sprites/mn-f071/mn-150.front-back.imagegen-v1.png",
+        "absolute_path": "/Users/ryanculligan/GitHub/geothite/planning/minnesota/pokemon/sprites/mn-f071/mn-150.front-back.imagegen-v1.png",
+        "sha256": "c8da20aea2897fd907ae9482b403a47322dca46a621fb1139e37eff55bce881a"
+      },
+      "source_crop": [
+        0,
+        701,
+        1145,
+        673
+      ],
+      "native_fit": [
+        46,
+        47
+      ],
+      "generation_prompt": {
+        "path": "planning/minnesota/pokemon/sprites/mn-f071/prompt-v1.txt",
+        "absolute_path": "/Users/ryanculligan/GitHub/geothite/planning/minnesota/pokemon/sprites/mn-f071/prompt-v1.txt",
+        "sha256": "906845e5e89d85e70a24ec9361db405a2f062809ca7c827c463c895f01a7c1d2",
+        "reference_kind": "declared_design_prompt_reference; authoritative view record takes precedence over family default"
+      },
+      "sampling": "area_vote",
+      "exterior_contour": "source_backed",
+      "has_guarded_native_refinements": false,
+      "authority_note": "The current selected native PNG is the design authority; original source may contain detail simplified or refined in canonical conversion."
+    }
+  },
+  "design_note": "CANALARM Poison/Electric: squatround yellowcanaryWARNING-LAMP creature, TWOlargeinflatedluminousCHEEKAIRSACS grownbesidehead, ONEshortconicaldarktippedLANTERNCREST, shortsmallBEAK, TWO pointedWINGS, TWObroadgripping BIRDFEET, ONEjaggedLIGHTNINGTAIL. Largeactualblackpupilswithinlightyellowface, cheeksalwaysyellowink1 notopaquewhite. ChestcarriesONEsimplelargecircularGAUGEMARKING withdarkblueink2center/line, noblackdotpretendingeye. Noheldlamps/equipment/humanhands/extraarms. SOUTHrealchestgauge/2cheeks/twopupils, WESTbeakLEFT/ONEnearpupil/ONEnearwing/fartailRIGHT, NORTHblankbackofcrest/head/wingsandtailNOeyes/face/CHESTGAUGE. Stepgaitactualfeetalternateandwingscounterbalance, head/pupilsfixed, tailflexonepixel. Maxnative14x14.",
+  "attempt_note": "Ordinary original fantasy bird native16 sheet retry after output other failure; no image returned in first attempt."
+}

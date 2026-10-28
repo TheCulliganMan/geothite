@@ -11,6 +11,7 @@ use super::{
 
 pub(super) fn walk(c: &mut VisibleShellController, instructions: &str) -> Vec<[u16; 2]> {
     let start = at(c);
+    let map = c.snapshot().expect("literal walk map").overworld.map_name;
     let mut points = vec![[start.0, start.1]];
     for instruction in instructions.chars() {
         let (button, dx, dy) = match instruction {
@@ -25,7 +26,7 @@ pub(super) fn walk(c: &mut VisibleShellController, instructions: &str) -> Vec<[u
         for _ in 0..8 {
             press(c, button);
             let snapshot = c.snapshot().expect("normal movement");
-            assert_eq!(snapshot.overworld.map_name, "MnRochesterGym");
+            assert_eq!(snapshot.overworld.map_name, map);
             assert!(snapshot.battle.is_none() && !snapshot.ui.text_window_open);
             if at(c) != before {
                 break;

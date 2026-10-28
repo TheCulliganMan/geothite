@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F064",
+  "species": [
+    {
+      "species_id": "MN_140",
+      "runtime_token": "CHOIRBOG",
+      "palette_rgb555": [
+        32767,
+        27159,
+        16618,
+        0
+      ],
+      "shiny_palette_rgb555": [
+        32767,
+        17146,
+        7504,
+        0
+      ],
+      "fit": [
+        14,
+        14
+      ],
+      "alpha_threshold": 245,
+      "sampling": "source_center",
+      "minimum_foreground_samples": 16,
+      "black_priority_samples": 32,
+      "interior_black_samples": null,
+      "opaque_interior_minimum_samples": 60,
+      "frames": [
+        {
+          "pose": "down_idle",
+          "source": "choirbog.overworld.imagegen-v1.png",
+          "crop": [
+            58,
+            121,
+            397,
+            324
+          ]
+        },
+        {
+          "pose": "up_idle",
+          "source": "choirbog.overworld.imagegen-v1.png",
+          "crop": [
+            570,
+            118,
+            397,
+            324
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "source": "choirbog.overworld.imagegen-v1.png",
+          "crop": [
+            1091,
+            136,
+            397,
+            324
+          ]
+        },
+        {
+          "pose": "down_step",
+          "source": "choirbog.overworld.imagegen-v1.png",
+          "crop": [
+            63,
+            619,
+            397,
+            324
+          ]
+        },
+        {
+          "pose": "up_step",
+          "source": "choirbog.overworld.imagegen-v1.png",
+          "crop": [
+            569,
+            619,
+            397,
+            324
+          ]
+        },
+        {
+          "pose": "left_step",
+          "source": "choirbog.overworld.imagegen-v1.png",
+          "crop": [
+            1091,
+            625,
+            397,
+            324
+          ]
+        }
+      ]
+    }
+  ]
+}

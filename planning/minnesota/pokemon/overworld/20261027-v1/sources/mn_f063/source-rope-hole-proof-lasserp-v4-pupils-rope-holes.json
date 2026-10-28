@@ -1,0 +1,396 @@
+{
+  "species": "lasserp",
+  "manifest_sha256": "af73e295f1317ea0a176913479ee050dfcaab1d716db38daf7ff6e4711673088",
+  "bank_sha256": "771f4b0b21f3fc2bd9ea74abf9a9fdf15b381c08a9503a6cf0ef56022a53e9fe",
+  "result": "pass",
+  "two_front_rear_loop_holes_one_visible_west_loop_hole": true,
+  "proof": [
+    {
+      "pose": "down_idle",
+      "loop_holes": [
+        {
+          "source_hole_region": [
+            90,
+            265,
+            165,
+            330
+          ],
+          "transparent_native_samples": [
+            {
+              "native": [
+                3,
+                9
+              ],
+              "source_sample": [
+                140,
+                282
+              ],
+              "source_rgba": [
+                52,
+                37,
+                7,
+                0
+              ]
+            }
+          ]
+        },
+        {
+          "source_hole_region": [
+            390,
+            265,
+            450,
+            330
+          ],
+          "transparent_native_samples": [
+            {
+              "native": [
+                11,
+                9
+              ],
+              "source_sample": [
+                417,
+                282
+              ],
+              "source_rgba": [
+                49,
+                35,
+                7,
+                0
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "up_idle",
+      "loop_holes": [
+        {
+          "source_hole_region": [
+            600,
+            265,
+            665,
+            330
+          ],
+          "transparent_native_samples": [
+            {
+              "native": [
+                3,
+                8
+              ],
+              "source_sample": [
+                652,
+                275
+              ],
+              "source_rgba": [
+                53,
+                37,
+                8,
+                1
+              ]
+            },
+            {
+              "native": [
+                3,
+                9
+              ],
+              "source_sample": [
+                652,
+                312
+              ],
+              "source_rgba": [
+                46,
+                31,
+                8,
+                75
+              ]
+            }
+          ]
+        },
+        {
+          "source_hole_region": [
+            900,
+            265,
+            960,
+            330
+          ],
+          "transparent_native_samples": [
+            {
+              "native": [
+                11,
+                8
+              ],
+              "source_sample": [
+                929,
+                275
+              ],
+              "source_rgba": [
+                59,
+                41,
+                9,
+                0
+              ]
+            },
+            {
+              "native": [
+                11,
+                9
+              ],
+              "source_sample": [
+                929,
+                312
+              ],
+              "source_rgba": [
+                65,
+                46,
+                10,
+                1
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "loop_holes": [
+        {
+          "source_hole_region": [
+            1125,
+            280,
+            1195,
+            345
+          ],
+          "transparent_native_samples": [
+            {
+              "native": [
+                3,
+                9
+              ],
+              "source_sample": [
+                1136,
+                304
+              ],
+              "source_rgba": [
+                71,
+                51,
+                12,
+                2
+              ]
+            },
+            {
+              "native": [
+                4,
+                9
+              ],
+              "source_sample": [
+                1171,
+                304
+              ],
+              "source_rgba": [
+                60,
+                42,
+                11,
+                87
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "loop_holes": [
+        {
+          "source_hole_region": [
+            80,
+            755,
+            160,
+            820
+          ],
+          "transparent_native_samples": [
+            {
+              "native": [
+                3,
+                9
+              ],
+              "source_sample": [
+                140,
+                762
+              ],
+              "source_rgba": [
+                78,
+                54,
+                12,
+                8
+              ]
+            },
+            {
+              "native": [
+                2,
+                10
+              ],
+              "source_sample": [
+                105,
+                798
+              ],
+              "source_rgba": [
+                63,
+                44,
+                10,
+                1
+              ]
+            },
+            {
+              "native": [
+                3,
+                10
+              ],
+              "source_sample": [
+                140,
+                798
+              ],
+              "source_rgba": [
+                60,
+                43,
+                10,
+                0
+              ]
+            }
+          ]
+        },
+        {
+          "source_hole_region": [
+            400,
+            745,
+            460,
+            800
+          ],
+          "transparent_native_samples": [
+            {
+              "native": [
+                11,
+                9
+              ],
+              "source_sample": [
+                417,
+                762
+              ],
+              "source_rgba": [
+                57,
+                39,
+                7,
+                0
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "up_step",
+      "loop_holes": [
+        {
+          "source_hole_region": [
+            590,
+            755,
+            660,
+            820
+          ],
+          "transparent_native_samples": [
+            {
+              "native": [
+                3,
+                8
+              ],
+              "source_sample": [
+                652,
+                755
+              ],
+              "source_rgba": [
+                59,
+                42,
+                9,
+                0
+              ]
+            }
+          ]
+        },
+        {
+          "source_hole_region": [
+            920,
+            735,
+            980,
+            795
+          ],
+          "transparent_native_samples": [
+            {
+              "native": [
+                11,
+                8
+              ],
+              "source_sample": [
+                929,
+                755
+              ],
+              "source_rgba": [
+                56,
+                39,
+                6,
+                0
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "loop_holes": [
+        {
+          "source_hole_region": [
+            1120,
+            770,
+            1200,
+            840
+          ],
+          "transparent_native_samples": [
+            {
+              "native": [
+                3,
+                9
+              ],
+              "source_sample": [
+                1136,
+                784
+              ],
+              "source_rgba": [
+                69,
+                49,
+                9,
+                1
+              ]
+            },
+            {
+              "native": [
+                3,
+                10
+              ],
+              "source_sample": [
+                1136,
+                820
+              ],
+              "source_rgba": [
+                71,
+                51,
+                14,
+                0
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "no_native_painting": true
+}

@@ -1,0 +1,13 @@
+{
+  "tool": "built-in image_gen",
+  "original_tool_path": "/Users/ryanculligan/.codex/generated_images/01a17dcc-4f1a-77a2-9d21-0df036061346/exec-798268f5-a6f6-4482-9eb3-b0b6b3f3274e.png",
+  "source_size": [
+    2172,
+    724
+  ],
+  "sha256": "5d7810e3c38934007766b7c592acc9ac067baa1b768f3ca419cdf0257f22061c",
+  "reference_paths": [
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/true16-center-v2/MN_F119/review/line.normal-8x.png"
+  ],
+  "prompt": "prompt-v3.txt"
+}

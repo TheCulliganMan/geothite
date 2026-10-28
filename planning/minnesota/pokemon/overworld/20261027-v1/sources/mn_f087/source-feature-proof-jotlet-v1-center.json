@@ -1,0 +1,635 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_186",
+  "result": "pass",
+  "manifest_sha256": "5a47c8c49cf2a42f036e3ac7d129acbb71e76b22042137b9a2fab06a928af3c2",
+  "bank_sha256": "ba41ea283e1647a0c6f4cc50ff33135d5da4ce12abe92714e65b5b3c4c233170",
+  "source_sha256": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f087/jotlet.overworld.imagegen-v1.png": "bccaa22aeb2316764c9f75a1d8f107ff515e91e559b50532883ff0f3381ba9eb"
+  },
+  "canonical_eye_form": "Two isolated actual source pupil squares south, represented by complete1x2 native clusters; one actual source pupil west, represented by complete2x1 native cluster. Every black cluster pixel samples its same source pupil; external native boundary is bodycolor.",
+  "nonrear_poses": [
+    {
+      "pose": "down_idle",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native_cluster": [
+            [
+              6,
+              8
+            ],
+            [
+              6,
+              9
+            ]
+          ],
+          "actual_source_pupil_component": [
+            209,
+            241,
+            42,
+            46
+          ],
+          "component_pixels": 1928,
+          "samples": [
+            {
+              "native": [
+                6,
+                8
+              ],
+              "source_sample": [
+                231,
+                241
+              ],
+              "source_rgba": [
+                32,
+                29,
+                13,
+                253
+              ],
+              "actual_source_pupil_component": [
+                209,
+                241,
+                42,
+                46
+              ],
+              "component_pixels": 1928
+            },
+            {
+              "native": [
+                6,
+                9
+              ],
+              "source_sample": [
+                231,
+                270
+              ],
+              "source_rgba": [
+                0,
+                0,
+                0,
+                254
+              ],
+              "actual_source_pupil_component": [
+                209,
+                241,
+                42,
+                46
+              ],
+              "component_pixels": 1928
+            }
+          ],
+          "native_boundary_neighbors": [
+            [
+              5,
+              8,
+              1
+            ],
+            [
+              5,
+              9,
+              1
+            ],
+            [
+              6,
+              7,
+              1
+            ],
+            [
+              6,
+              10,
+              1
+            ],
+            [
+              7,
+              8,
+              1
+            ],
+            [
+              7,
+              9,
+              1
+            ]
+          ]
+        },
+        {
+          "native_cluster": [
+            [
+              9,
+              8
+            ],
+            [
+              9,
+              9
+            ]
+          ],
+          "actual_source_pupil_component": [
+            294,
+            241,
+            41,
+            46
+          ],
+          "component_pixels": 1886,
+          "samples": [
+            {
+              "native": [
+                9,
+                8
+              ],
+              "source_sample": [
+                315,
+                241
+              ],
+              "source_rgba": [
+                33,
+                31,
+                14,
+                254
+              ],
+              "actual_source_pupil_component": [
+                294,
+                241,
+                41,
+                46
+              ],
+              "component_pixels": 1886
+            },
+            {
+              "native": [
+                9,
+                9
+              ],
+              "source_sample": [
+                315,
+                270
+              ],
+              "source_rgba": [
+                0,
+                0,
+                0,
+                254
+              ],
+              "actual_source_pupil_component": [
+                294,
+                241,
+                41,
+                46
+              ],
+              "component_pixels": 1886
+            }
+          ],
+          "native_boundary_neighbors": [
+            [
+              8,
+              8,
+              1
+            ],
+            [
+              8,
+              9,
+              1
+            ],
+            [
+              9,
+              7,
+              1
+            ],
+            [
+              9,
+              10,
+              1
+            ],
+            [
+              10,
+              8,
+              1
+            ],
+            [
+              10,
+              9,
+              1
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native_cluster": [
+            [
+              6,
+              9
+            ],
+            [
+              7,
+              9
+            ]
+          ],
+          "actual_source_pupil_component": [
+            1227,
+            248,
+            43,
+            46
+          ],
+          "component_pixels": 1966,
+          "samples": [
+            {
+              "native": [
+                6,
+                9
+              ],
+              "source_sample": [
+                1241,
+                270
+              ],
+              "source_rgba": [
+                0,
+                0,
+                0,
+                253
+              ],
+              "actual_source_pupil_component": [
+                1227,
+                248,
+                43,
+                46
+              ],
+              "component_pixels": 1966
+            },
+            {
+              "native": [
+                7,
+                9
+              ],
+              "source_sample": [
+                1269,
+                270
+              ],
+              "source_rgba": [
+                1,
+                1,
+                0,
+                253
+              ],
+              "actual_source_pupil_component": [
+                1227,
+                248,
+                43,
+                46
+              ],
+              "component_pixels": 1966
+            }
+          ],
+          "native_boundary_neighbors": [
+            [
+              5,
+              9,
+              1
+            ],
+            [
+              6,
+              8,
+              1
+            ],
+            [
+              6,
+              10,
+              1
+            ],
+            [
+              7,
+              8,
+              1
+            ],
+            [
+              7,
+              10,
+              1
+            ],
+            [
+              8,
+              9,
+              1
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native_cluster": [
+            [
+              6,
+              8
+            ],
+            [
+              6,
+              9
+            ]
+          ],
+          "actual_source_pupil_component": [
+            212,
+            730,
+            42,
+            45
+          ],
+          "component_pixels": 1846,
+          "samples": [
+            {
+              "native": [
+                6,
+                8
+              ],
+              "source_sample": [
+                231,
+                732
+              ],
+              "source_rgba": [
+                5,
+                5,
+                2,
+                253
+              ],
+              "actual_source_pupil_component": [
+                212,
+                730,
+                42,
+                45
+              ],
+              "component_pixels": 1846
+            },
+            {
+              "native": [
+                6,
+                9
+              ],
+              "source_sample": [
+                231,
+                761
+              ],
+              "source_rgba": [
+                0,
+                0,
+                0,
+                253
+              ],
+              "actual_source_pupil_component": [
+                212,
+                730,
+                42,
+                45
+              ],
+              "component_pixels": 1846
+            }
+          ],
+          "native_boundary_neighbors": [
+            [
+              5,
+              8,
+              1
+            ],
+            [
+              5,
+              9,
+              1
+            ],
+            [
+              6,
+              7,
+              1
+            ],
+            [
+              6,
+              10,
+              1
+            ],
+            [
+              7,
+              8,
+              1
+            ],
+            [
+              7,
+              9,
+              1
+            ]
+          ]
+        },
+        {
+          "native_cluster": [
+            [
+              9,
+              8
+            ],
+            [
+              9,
+              9
+            ]
+          ],
+          "actual_source_pupil_component": [
+            296,
+            729,
+            42,
+            46
+          ],
+          "component_pixels": 1902,
+          "samples": [
+            {
+              "native": [
+                9,
+                8
+              ],
+              "source_sample": [
+                315,
+                732
+              ],
+              "source_rgba": [
+                4,
+                4,
+                2,
+                253
+              ],
+              "actual_source_pupil_component": [
+                296,
+                729,
+                42,
+                46
+              ],
+              "component_pixels": 1902
+            },
+            {
+              "native": [
+                9,
+                9
+              ],
+              "source_sample": [
+                315,
+                761
+              ],
+              "source_rgba": [
+                0,
+                1,
+                0,
+                253
+              ],
+              "actual_source_pupil_component": [
+                296,
+                729,
+                42,
+                46
+              ],
+              "component_pixels": 1902
+            }
+          ],
+          "native_boundary_neighbors": [
+            [
+              8,
+              8,
+              1
+            ],
+            [
+              8,
+              9,
+              1
+            ],
+            [
+              9,
+              7,
+              1
+            ],
+            [
+              9,
+              10,
+              1
+            ],
+            [
+              10,
+              8,
+              1
+            ],
+            [
+              10,
+              9,
+              1
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native_cluster": [
+            [
+              6,
+              9
+            ],
+            [
+              7,
+              9
+            ]
+          ],
+          "actual_source_pupil_component": [
+            1228,
+            732,
+            42,
+            45
+          ],
+          "component_pixels": 1890,
+          "samples": [
+            {
+              "native": [
+                6,
+                9
+              ],
+              "source_sample": [
+                1241,
+                757
+              ],
+              "source_rgba": [
+                0,
+                0,
+                0,
+                253
+              ],
+              "actual_source_pupil_component": [
+                1228,
+                732,
+                42,
+                45
+              ],
+              "component_pixels": 1890
+            },
+            {
+              "native": [
+                7,
+                9
+              ],
+              "source_sample": [
+                1269,
+                757
+              ],
+              "source_rgba": [
+                1,
+                2,
+                0,
+                254
+              ],
+              "actual_source_pupil_component": [
+                1228,
+                732,
+                42,
+                45
+              ],
+              "component_pixels": 1890
+            }
+          ],
+          "native_boundary_neighbors": [
+            [
+              5,
+              9,
+              1
+            ],
+            [
+              6,
+              8,
+              1
+            ],
+            [
+              6,
+              10,
+              1
+            ],
+            [
+              7,
+              8,
+              1
+            ],
+            [
+              7,
+              10,
+              1
+            ],
+            [
+              8,
+              9,
+              1
+            ]
+          ]
+        }
+      ]
+    }
+  ],
+  "rear_anatomy": {
+    "result": "pass",
+    "notes": "One single square sticky-note body, top adhesive curl and curled lower corners retained; genuine rear is one plain broad brown adhesive plane, no animal anatomy or false rear eyes. Source pupils produce complete1x2 vertical front clusters and2x1 west clusters, each entirely the same actual source pupil with full light/brown boundary. No source edit or registration was needed. Baby commonfit12 and literal16 frames; normal/shiny boards actually reviewed."
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_231",
+  "name": "Pufflare",
+  "family_id": "MN_F105",
+  "generation_tool": "built-in image_gen",
+  "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f105/pufflare.overworld.imagegen-v1.png",
+  "original_default_output": "/Users/ryanculligan/.codex/generated_images/01a179bf-dc2b-7352-8975-8b8f3a32e33b/exec-b87e052a-a120-49c5-b3d5-c42e30174cd6.png",
+  "source_sha256": "7e813b4117c26c3bdcd38cfd60aea5285d6d42c6fc234930c086fff818ae0997",
+  "dimensions": [
+    1536,
+    1024
+  ],
+  "prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f105/prompt-pufflare-v1.txt",
+  "prompt_sha256": "532d4a0034138738e77e517001f879999e849e45138fa2bb93043e03a0b95f9a",
+  "reference_mapping": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f105/reference-mapping-pufflare-v1.json",
+  "selected_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f105/manifest-pufflare-v1-pupil-proof.json",
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f105/pufflare-v1-pupil-proof",
+  "source_pupil_proof": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f105/manifest-pufflare-v1-pupil-proof.proof.json",
+  "status": "frozen candidate; author actual normal/shiny and source pupils reviewed, root context pending",
+  "accepted": false
+}

@@ -1,0 +1,215 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_310",
+  "result": "pass",
+  "manifest_sha256": "3fcc92dd95af0d926b2f158f5a4b41a429c8cd1537aabdcf808a8236cf61ffac",
+  "bank_sha256": "6801e4865bb1292e1b2a1f0dd2a2664cab209bb64017775e9f5e1cce9bcea3c9",
+  "source_sha256": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f140/gillpup.overworld.imagegen-v1.png": "2cbbf2a789367d52faff3b60ceae5dfee0f8db43a924853d9bcc63c5aa10af49"
+  },
+  "canonical_eye_form": "Two south dot pupils, one west profile pupil; actual small source pupil components isolated in all four nonrear poses.",
+  "nonrear_poses": [
+    {
+      "pose": "down_idle",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            6,
+            10
+          ],
+          "source_sample": [
+            267,
+            335
+          ],
+          "source_component": [
+            248,
+            334,
+            24,
+            28
+          ],
+          "component_pixels": 665,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            10,
+            11,
+            11,
+            254
+          ]
+        },
+        {
+          "native": [
+            8,
+            10
+          ],
+          "source_sample": [
+            328,
+            335
+          ],
+          "source_component": [
+            322,
+            334,
+            24,
+            28
+          ],
+          "component_pixels": 672,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            7,
+            7,
+            7,
+            253
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            4,
+            10
+          ],
+          "source_sample": [
+            1127,
+            355
+          ],
+          "source_component": [
+            1127,
+            329,
+            23,
+            29
+          ],
+          "component_pixels": 667,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            22,
+            35,
+            34,
+            253
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            6,
+            10
+          ],
+          "source_sample": [
+            267,
+            723
+          ],
+          "source_component": [
+            246,
+            717,
+            24,
+            27
+          ],
+          "component_pixels": 648,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            1,
+            1,
+            2,
+            253
+          ]
+        },
+        {
+          "native": [
+            8,
+            10
+          ],
+          "source_sample": [
+            328,
+            723
+          ],
+          "source_component": [
+            322,
+            717,
+            24,
+            28
+          ],
+          "component_pixels": 672,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            3,
+            2,
+            1,
+            253
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            4,
+            10
+          ],
+          "source_sample": [
+            1127,
+            737
+          ],
+          "source_component": [
+            1126,
+            711,
+            24,
+            27
+          ],
+          "component_pixels": 648,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            1,
+            2,
+            2,
+            254
+          ]
+        }
+      ]
+    }
+  ],
+  "rear_anatomy": {
+    "result": "pass",
+    "notes": "Both rears viewed. Plain cyan head/back with pink gill fans and curved paddle tail; lower dark cuts are separated legs, no copied face or paired eye-like interior dots."
+  }
+}

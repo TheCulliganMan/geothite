@@ -1742,6 +1742,356 @@
         18
       ],
       "block": "48"
+    },
+    {
+      "kind": "block_rect",
+      "name": "Dune ecology margin beside north road, ordinary meadow report alternative",
+      "bounds": [
+        31,
+        6,
+        35,
+        8
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "block_rect",
+      "name": "Narrow public shorewalk native north timber rail",
+      "bounds": [
+        30,
+        8,
+        35,
+        9
+      ],
+      "block": "82"
+    },
+    {
+      "kind": "block_rect",
+      "name": "Narrow public shorewalk native south timber rail",
+      "bounds": [
+        30,
+        9,
+        36,
+        10
+      ],
+      "block": "81"
+    },
+    {
+      "kind": "point",
+      "name": "Narrow shorewalk northwest closed headland corner",
+      "position": [
+        29,
+        8
+      ],
+      "block": "40"
+    },
+    {
+      "kind": "point",
+      "name": "Narrow shorewalk west protected bank entrance",
+      "position": [
+        29,
+        9
+      ],
+      "block": "49"
+    },
+    {
+      "kind": "point",
+      "name": "Narrow shorewalk northeast closed headland corner",
+      "position": [
+        35,
+        8
+      ],
+      "block": "42"
+    },
+    {
+      "kind": "block_rect",
+      "name": "Inhabited ribbon native meadow margin row3, joined to existing habitat",
+      "bounds": [
+        21,
+        3,
+        25,
+        4
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "block_rect",
+      "name": "Inhabited ribbon native meadow margin row4, joined to existing habitat",
+      "bounds": [
+        21,
+        4,
+        26,
+        5
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "block_rect",
+      "name": "Inhabited ribbon native meadow margin row5, joined to existing habitat",
+      "bounds": [
+        21,
+        5,
+        27,
+        6
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "block_rect",
+      "name": "Inhabited ribbon native meadow margin row6, joined to existing habitat",
+      "bounds": [
+        21,
+        6,
+        27,
+        7
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "block_rect",
+      "name": "Inhabited ribbon native meadow margin row7, joined to existing habitat",
+      "bounds": [
+        21,
+        7,
+        27,
+        8
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "block_rect",
+      "name": "Inhabited ribbon native meadow margin row8, joined to existing habitat",
+      "bounds": [
+        21,
+        8,
+        26,
+        9
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "path",
+      "name": "Inhabited ribbon dry approach via low lake lookout and launch spine",
+      "material": "floor",
+      "points": [
+        [
+          21,
+          6
+        ],
+        [
+          22,
+          6
+        ],
+        [
+          22,
+          8
+        ],
+        [
+          24,
+          8
+        ],
+        [
+          24,
+          5
+        ],
+        [
+          27,
+          5
+        ]
+      ],
+      "width_metatiles": 1
+    },
+    {
+      "kind": "block_rect",
+      "name": "Inhabited ribbon original public launch spine retained dry",
+      "bounds": [
+        24,
+        8,
+        25,
+        10
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Inhabited ribbon offset lookout west closed rail cap",
+      "position": [
+        21,
+        8
+      ],
+      "block": "48"
+    },
+    {
+      "kind": "block_rect",
+      "name": "Inhabited ribbon small lake lookout rail beside low dry course",
+      "bounds": [
+        22,
+        8,
+        24,
+        9
+      ],
+      "block": "49"
+    },
+    {
+      "kind": "point",
+      "name": "Inhabited ribbon public shorewalk sign approach kept dry",
+      "position": [
+        25,
+        8
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Inhabited ribbon exact original public launch sign",
+      "position": [
+        26,
+        8
+      ],
+      "block": "45"
+    },
+    {
+      "kind": "block_rect",
+      "name": "Brainerd approach attached north wood shoulder",
+      "bounds": [
+        4,
+        3,
+        6,
+        5
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "block_rect",
+      "name": "Brainerd marina fork attached western wood shoulder",
+      "bounds": [
+        4,
+        7,
+        5,
+        9
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "block_rect",
+      "name": "Marina registration approach fitted western wood shoulder",
+      "bounds": [
+        4,
+        10,
+        5,
+        13
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "block_rect",
+      "name": "Western meadow headland rooted to existing north grove",
+      "bounds": [
+        10,
+        4,
+        11,
+        7
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "block_rect",
+      "name": "Western meadow headland fitted lower east shoulder",
+      "bounds": [
+        11,
+        5,
+        12,
+        7
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Western meadow headland tapered last shoreline shoulder",
+      "position": [
+        12,
+        6
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "path",
+      "name": "Western trip bends to actual lake before the meadow report fork",
+      "material": "floor",
+      "points": [
+        [
+          6,
+          6
+        ],
+        [
+          9,
+          6
+        ],
+        [
+          9,
+          7
+        ],
+        [
+          13,
+          7
+        ],
+        [
+          13,
+          6
+        ],
+        [
+          15,
+          6
+        ]
+      ],
+      "width_metatiles": 1
+    },
+    {
+      "kind": "block_rect",
+      "name": "Western lake bend protected native south bank",
+      "bounds": [
+        10,
+        7,
+        16,
+        8
+      ],
+      "block": "49"
+    },
+    {
+      "kind": "point",
+      "name": "Western lake bend landward protected bank joint",
+      "position": [
+        9,
+        7
+      ],
+      "block": "49"
+    },
+    {
+      "kind": "point",
+      "name": "Western lake bend fitted southeast bank cap",
+      "position": [
+        16,
+        7
+      ],
+      "block": "4a"
+    },
+    {
+      "kind": "point",
+      "name": "Optional offshore islet native pine crown",
+      "position": [
+        29,
+        16
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Optional offshore islet flower verge beside retained reward",
+      "position": [
+        30,
+        16
+      ],
+      "block": "04"
     }
   ],
   "piers": [

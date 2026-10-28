@@ -1,0 +1,19 @@
+{
+  "species_id": "MN_223",
+  "name": "Cinderfen",
+  "family_id": "MN_F102",
+  "tool": "built-in image_gen",
+  "selected_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f102/manifest-cinderfen-v20-pupil-proof.json",
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f102/cinderfen-v20-pupil-proof",
+  "normalized_proof": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f102/source-feature-proof-cinderfen-v20.json",
+  "detailed_proof": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f102/manifest-cinderfen-v20-pupil-proof.proof.json",
+  "sources": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f102/cinderfen.overworld.imagegen-v20-compressed-levels.png": "fdab1efea6a7f9c53df404dc293e3eaabce9ed6a628e2cda48478c913d75bbdb"
+  },
+  "preserved_attempt_receipts": [
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f102/attempt-cinderfen-v19.json",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f102/attempt-cinderfen-v20.json"
+  ],
+  "status": "frozen native candidate; actual normal/shiny source features reviewed; root context pending",
+  "accepted": false
+}

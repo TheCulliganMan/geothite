@@ -1,0 +1,9 @@
+{
+  "tool": "built-in image_gen",
+  "original": "/Users/ryanculligan/.codex/generated_images/01a179bf-dc2b-7352-8975-8b8f3a32e33b/exec-f9c9c232-e617-4dc8-bea6-415e0c6d5d75.png",
+  "preserved_raw": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f038/lutebrisk.overworld.imagegen-v1.png",
+  "sha256": "742802dff2ef4abd663cacc94b0bed185db56420ee69ca3a2de84eefb559d7d4",
+  "exact_prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f038/prompt-lutebrisk-v1.txt",
+  "reference_mapping": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f038/reference-mapping-lutebrisk-v1.json",
+  "status": "preserved; selected frames recorded in frozen manifest"
+}

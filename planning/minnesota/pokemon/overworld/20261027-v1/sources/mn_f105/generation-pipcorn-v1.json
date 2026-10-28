@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_230",
+  "name": "Pipcorn",
+  "family_id": "MN_F105",
+  "generation_tool": "built-in image_gen",
+  "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f105/pipcorn.overworld.imagegen-v1.png",
+  "original_default_output": "/Users/ryanculligan/.codex/generated_images/01a179bf-dc2b-7352-8975-8b8f3a32e33b/exec-95e5cf3e-fbd3-4e27-98e1-eecc0d9d81c9.png",
+  "source_sha256": "baf142f420054545c4d3af54d84ae599984848832b6589a679f02c1cbd90cb15",
+  "dimensions": [
+    1536,
+    1024
+  ],
+  "prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f105/prompt-pipcorn-v1.txt",
+  "prompt_sha256": "f5f55d93a8eda3d6a28e69c30a111623a66abd36ab0532ab5401fde95ff5948b",
+  "reference_mapping": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f105/reference-mapping-pipcorn-v1.json",
+  "selected_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f105/manifest-pipcorn-v1-pupil-proof.json",
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f105/pipcorn-v1-pupil-proof",
+  "source_pupil_proof": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f105/manifest-pipcorn-v1-pupil-proof.proof.json",
+  "status": "frozen candidate; author actual normal/shiny and source pupils reviewed, root context pending",
+  "accepted": false
+}

@@ -89,6 +89,11 @@
           "species_id": "MN_010",
           "runtime_name": "BIRCHIT",
           "level": 18
+        },
+        {
+          "species_id": "MN_318",
+          "runtime_name": "CRAPPELLER",
+          "level": 24
         }
       ]
     },
@@ -507,12 +512,12 @@
         {
           "species_id": "MN_043",
           "runtime_name": "JIGLET",
-          "level": 34
+          "level": 44
         },
         {
           "species_id": "MN_044",
           "runtime_name": "TROLLURE",
-          "level": 34
+          "level": 40
         },
         {
           "species_id": "MN_047",
@@ -563,6 +568,11 @@
           "species_id": "MN_299",
           "runtime_name": "LATCHQUILL",
           "level": 36
+        },
+        {
+          "species_id": "MN_318",
+          "runtime_name": "CRAPPELLER",
+          "level": 40
         }
       ]
     },

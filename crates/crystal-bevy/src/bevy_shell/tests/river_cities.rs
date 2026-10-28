@@ -18,7 +18,16 @@ fn placement(gym: &Value, map: &str, tile: [u16; 2]) -> Value {
     initial
 }
 
-fn road(c: &mut VisibleShellController, r: &CrystalRuntime, to: (i16, i16)) {
+pub(super) fn road(c: &mut VisibleShellController, r: &CrystalRuntime, to: (i16, i16)) {
+    assert!(try_road_with(c, r, to, flee), "R03 walk ended at recovery");
+}
+
+pub(super) fn try_road_with(
+    c: &mut VisibleShellController,
+    r: &CrystalRuntime,
+    to: (i16, i16),
+    mut encounter: impl FnMut(&mut VisibleShellController),
+) -> bool {
     let from = position(c);
     let grid = RouteGrid::new_with_grass(
         r,
@@ -36,7 +45,16 @@ fn road(c: &mut VisibleShellController, r: &CrystalRuntime, to: (i16, i16)) {
         for _ in 0..8 {
             press(c, button);
             if c.snapshot().expect("route encounter").battle.is_some() {
-                flee(c);
+                encounter(c);
+            }
+            if !c
+                .snapshot()
+                .expect("road outcome")
+                .overworld
+                .map_name
+                .starts_with("MnR03C00R")
+            {
+                return false;
             }
             if position(c) != old {
                 break;
@@ -52,6 +70,7 @@ fn road(c: &mut VisibleShellController, r: &CrystalRuntime, to: (i16, i16)) {
         );
     }
     assert_eq!(position(c), to);
+    true
 }
 
 fn refusal(c: &mut VisibleShellController, x: u16) {

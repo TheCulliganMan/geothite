@@ -1,0 +1,9 @@
+{
+  "tool": "built-in image_gen",
+  "original": "/Users/ryanculligan/.codex/generated_images/01a179bf-dc2b-7352-8975-8b8f3a32e33b/exec-0b8b9429-0334-4c94-aac0-e135c3d4ca17.png",
+  "preserved_raw": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f051/thundraze.overworld.imagegen-v2-compact-profiles.png",
+  "sha256": "4c5996f70918ab0838e4d6599e6be00e2ade3eec168864174a5989d8a4861b5b",
+  "exact_prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f051/prompt-thundraze-compact-profiles-v2.txt",
+  "reference_mapping": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f051/reference-mapping-thundraze-compact-profiles-v2.json",
+  "status": "preserved; selection pending native source-proof"
+}

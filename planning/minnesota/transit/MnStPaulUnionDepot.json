@@ -216,12 +216,12 @@
   "exterior_binding": {
     "hub": "MnStPaul",
     "door_core": [
-      92,
-      69
+      66,
+      47
     ],
     "safe_return_core": [
-      92,
-      70
+      66,
+      48
     ],
     "status": "Original depot room preserved; relocated whole-city facade published in tight-final-v02. Rail service remains separate."
   },

@@ -1,0 +1,9 @@
+{
+  "tool": "built-in image_gen",
+  "original": "/Users/ryanculligan/.codex/generated_images/01a179bf-dc2b-7352-8975-8b8f3a32e33b/exec-b87e052a-a120-49c5-b3d5-c42e30174cd6.png",
+  "preserved_raw": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f105/pufflare.overworld.imagegen-v1.png",
+  "sha256": "7e813b4117c26c3bdcd38cfd60aea5285d6d42c6fc234930c086fff818ae0997",
+  "exact_prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f105/prompt-pufflare-v1.txt",
+  "reference_mapping": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f105/reference-mapping-pufflare-v1.json",
+  "status": "preserved selected source"
+}

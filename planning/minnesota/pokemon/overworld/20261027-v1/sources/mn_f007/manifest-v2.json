@@ -1,0 +1,264 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F007",
+  "species": [
+    {
+      "species_id": "MN_019",
+      "runtime_token": "STRIPILLAR",
+      "palette_rgb555": [
+        32767,
+        9079,
+        13481,
+        0
+      ],
+      "shiny_palette_rgb555": [
+        32767,
+        28392,
+        5421,
+        0
+      ],
+      "fit": [
+        14,
+        11
+      ],
+      "alpha_threshold": 128,
+      "sampling": "area_vote",
+      "minimum_foreground_samples": 16,
+      "black_priority_samples": 8,
+      "frames": [
+        {
+          "pose": "down_idle",
+          "source": "overworld.imagegen-v1.png",
+          "crop": [
+            0,
+            0,
+            256,
+            445
+          ]
+        },
+        {
+          "pose": "up_idle",
+          "source": "overworld.imagegen-v1.png",
+          "crop": [
+            256,
+            0,
+            256,
+            445
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "source": "overworld.imagegen-v1.png",
+          "crop": [
+            512,
+            0,
+            256,
+            445
+          ]
+        },
+        {
+          "pose": "down_step",
+          "source": "overworld.imagegen-v1.png",
+          "crop": [
+            768,
+            0,
+            256,
+            445
+          ]
+        },
+        {
+          "pose": "up_step",
+          "source": "overworld.imagegen-v1.png",
+          "crop": [
+            1024,
+            0,
+            256,
+            445
+          ]
+        },
+        {
+          "pose": "left_step",
+          "source": "overworld.imagegen-v1.png",
+          "crop": [
+            1280,
+            0,
+            256,
+            445
+          ]
+        }
+      ]
+    },
+    {
+      "species_id": "MN_020",
+      "runtime_token": "GILTALIS",
+      "palette_rgb555": [
+        32767,
+        21356,
+        12707,
+        0
+      ],
+      "shiny_palette_rgb555": [
+        32767,
+        28052,
+        13420,
+        0
+      ],
+      "fit": [
+        14,
+        13
+      ],
+      "alpha_threshold": 128,
+      "sampling": "area_vote",
+      "minimum_foreground_samples": 16,
+      "black_priority_samples": 8,
+      "frames": [
+        {
+          "pose": "down_idle",
+          "source": "overworld.imagegen-v1.png",
+          "crop": [
+            0,
+            445,
+            256,
+            271
+          ]
+        },
+        {
+          "pose": "up_idle",
+          "source": "overworld.imagegen-v1.png",
+          "crop": [
+            256,
+            445,
+            256,
+            271
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "source": "overworld.imagegen-v1.png",
+          "crop": [
+            512,
+            445,
+            256,
+            271
+          ]
+        },
+        {
+          "pose": "down_step",
+          "source": "overworld.imagegen-v1.png",
+          "crop": [
+            768,
+            445,
+            256,
+            271
+          ]
+        },
+        {
+          "pose": "up_step",
+          "source": "overworld.imagegen-v1.png",
+          "crop": [
+            1024,
+            445,
+            256,
+            271
+          ]
+        },
+        {
+          "pose": "left_step",
+          "source": "overworld.imagegen-v1.png",
+          "crop": [
+            1280,
+            445,
+            256,
+            271
+          ]
+        }
+      ]
+    },
+    {
+      "species_id": "MN_021",
+      "runtime_token": "REGALARCH",
+      "palette_rgb555": [
+        32767,
+        4703,
+        13449,
+        0
+      ],
+      "shiny_palette_rgb555": [
+        32767,
+        19428,
+        4397,
+        0
+      ],
+      "fit": [
+        14,
+        14
+      ],
+      "alpha_threshold": 128,
+      "sampling": "area_vote",
+      "minimum_foreground_samples": 16,
+      "black_priority_samples": 8,
+      "frames": [
+        {
+          "pose": "down_idle",
+          "source": "overworld.imagegen-v1.png",
+          "crop": [
+            0,
+            716,
+            256,
+            308
+          ]
+        },
+        {
+          "pose": "up_idle",
+          "source": "overworld.imagegen-v1.png",
+          "crop": [
+            256,
+            716,
+            256,
+            308
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "source": "overworld.imagegen-v1.png",
+          "crop": [
+            512,
+            716,
+            256,
+            308
+          ]
+        },
+        {
+          "pose": "down_step",
+          "source": "overworld.imagegen-v1.png",
+          "crop": [
+            768,
+            716,
+            256,
+            308
+          ]
+        },
+        {
+          "pose": "up_step",
+          "source": "overworld.imagegen-v1.png",
+          "crop": [
+            1024,
+            716,
+            256,
+            308
+          ]
+        },
+        {
+          "pose": "left_step",
+          "source": "overworld.imagegen-v1.png",
+          "crop": [
+            1280,
+            716,
+            256,
+            308
+          ]
+        }
+      ]
+    }
+  ]
+}

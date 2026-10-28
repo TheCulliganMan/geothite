@@ -1,891 +1,164 @@
 {
   "schema_version": 1,
-  "water_encounter_reference": "MnR11C00R00",
-  "recovery_clinics": [
-    {"map": "MnDuluthPokecenter1F", "nurse": "MN_DULUTH_NURSE", "floor": [10, 13]},
-    {"map": "MnGrandMaraisPokecenter", "nurse": "MnGrandMaraisNurse", "floor": [3, 5]}
+  "status": "MATCHES_COMPOSED_NATIVE_PACK",
+  "map": "MnGrandMarais",
+  "world_origin_proposed": [
+    246,
+    -400
   ],
-  "manifest": "minnesota-north-shore-story-v1",
-  "base_content_hash": "4b9dbd5018544719027de20886cafd1a662699d69c9e39e5f3a8562cc8be8bc2",
-  "town": "MnGrandMarais",
-  "reference_gate": "IlexForestAzaleaGate",
-  "gate_name": "MnGrandMaraisShoreGate",
-  "gate_constant": "MN_GRAND_MARAIS_SHORE_GATE",
-  "tileset": "mn_marais_shore",
-  "reef_recipes": [
-    {
-      "id": "80",
-      "base": "54",
-      "quadrants": [
-        {
-          "index": 1,
-          "source": "36"
-        },
-        {
-          "index": 3,
-          "source": "36"
-        }
-      ]
-    },
-    {
-      "id": "81",
-      "base": "58",
-      "quadrants": [
-        {
-          "index": 1,
-          "source": "36"
-        },
-        {
-          "index": 3,
-          "source": "36"
-        }
-      ]
-    },
-    {
-      "id": "82",
-      "base": "59",
-      "quadrants": [
-        {
-          "index": 0,
-          "source": "34"
-        },
-        {
-          "index": 2,
-          "source": "34"
-        }
-      ]
-    },
-    {
-      "id": "83",
-      "base": "7a",
-      "quadrants": [
-        {
-          "index": 0,
-          "source": "34"
-        },
-        {
-          "index": 2,
-          "source": "34"
-        }
-      ]
-    },
-    {
-      "id": "84",
-      "base": "35",
-      "quadrants": [
-        {
-          "index": 0,
-          "source": "34"
-        },
-        {
-          "index": 2,
-          "source": "34"
-        }
-      ]
-    },
-    {
-      "id": "85",
-      "base": "79",
-      "quadrants": [
-        {
-          "index": 1,
-          "source": "36"
-        },
-        {
-          "index": 3,
-          "source": "36"
-        }
-      ]
-    },
-    {
-      "id": "86",
-      "base": "35",
-      "quadrants": [
-        {
-          "index": 1,
-          "source": "36"
-        },
-        {
-          "index": 3,
-          "source": "36"
-        }
-      ]
-    },
-    {
-      "id": "87",
-      "base": "35",
-      "quadrants": [
-        {
-          "index": 0,
-          "source": "34"
-        },
-        {
-          "index": 2,
-          "source": "39"
-        },
-        {
-          "index": 3,
-          "source": "39"
-        }
-      ]
-    },
-    {
-      "id": "88",
-      "base": "35",
-      "quadrants": [
-        {
-          "index": 2,
-          "source": "39"
-        },
-        {
-          "index": 3,
-          "source": "39"
-        }
-      ]
-    },
-    {
-      "id": "89",
-      "base": "35",
-      "quadrants": [
-        {
-          "index": 1,
-          "source": "36"
-        },
-        {
-          "index": 2,
-          "source": "39"
-        },
-        {
-          "index": 3,
-          "source": "39"
-        }
-      ]
-    }
-  ],
-  "patches": [
-    {
-      "map": "MnGrandMarais",
-      "metatile": [
-        0,
-        4
-      ],
-      "expected": "05",
-      "block": "01"
-    },
-    {
-      "map": "MnGrandMarais",
-      "metatile": [
-        0,
-        8
-      ],
-      "expected": "55",
-      "block": "08"
-    },
-    {
-      "map": "MnGrandMarais",
-      "metatile": [
-        1,
-        8
-      ],
-      "expected": "01",
-      "block": "09"
-    },
-    {
-      "map": "MnGrandMarais",
-      "metatile": [
-        0,
-        9
-      ],
-      "expected": "59",
-      "block": "10"
-    },
-    {
-      "map": "MnGrandMarais",
-      "metatile": [
-        1,
-        9
-      ],
-      "expected": "01",
-      "block": "11"
-    },
-    {
-      "map": "MnGrandMarais",
-      "metatile": [
-        2,
-        9
-      ],
-      "expected": "01",
-      "block": "0b"
-    },
-    {
-      "map": "MnR11C00R00",
-      "metatile": [
-        21,
-        2
-      ],
-      "expected": "05",
-      "block": "0e"
-    },
-    {
-      "map": "MnR11C00R00",
-      "metatile": [
-        22,
-        1
-      ],
-      "expected": "05",
-      "block": "08"
-    },
-    {
-      "map": "MnR11C00R00",
-      "metatile": [
-        23,
-        1
-      ],
-      "expected": "05",
-      "block": "09"
-    },
-    {
-      "map": "MnR11C00R00",
-      "metatile": [
-        22,
-        2
-      ],
-      "expected": "05",
-      "block": "10"
-    },
-    {
-      "map": "MnR11C00R00",
-      "metatile": [
-        23,
-        2
-      ],
-      "expected": "05",
-      "block": "11"
-    },
-    {
-      "map": "MnGrandMarais",
-      "metatile": [
-        19,
-        7
-      ],
-      "expected": "54",
-      "block": "80"
-    },
-    {
-      "map": "MnGrandMarais",
-      "metatile": [
-        19,
-        8
-      ],
-      "expected": "58",
-      "block": "81"
-    },
-    {
-      "map": "MnGrandMarais",
-      "metatile": [
-        19,
-        9
-      ],
-      "expected": "58",
-      "block": "81"
-    },
-    {
-      "map": "MnGrandMarais",
-      "metatile": [
-        0,
-        10
-      ],
-      "expected": "59",
-      "block": "82"
-    },
-    {
-      "map": "MnGrandMarais",
-      "metatile": [
-        19,
-        10
-      ],
-      "expected": "58",
-      "block": "81"
-    },
-    {
-      "map": "MnGrandMarais",
-      "metatile": [
-        0,
-        11
-      ],
-      "expected": "59",
-      "block": "82"
-    },
-    {
-      "map": "MnGrandMarais",
-      "metatile": [
-        19,
-        11
-      ],
-      "expected": "58",
-      "block": "81"
-    },
-    {
-      "map": "MnGrandMarais",
-      "metatile": [
-        0,
-        12
-      ],
-      "expected": "7a",
-      "block": "83"
-    },
-    {
-      "map": "MnGrandMarais",
-      "metatile": [
-        19,
-        12
-      ],
-      "expected": "58",
-      "block": "81"
-    },
-    {
-      "map": "MnGrandMarais",
-      "metatile": [
-        0,
-        13
-      ],
-      "expected": "35",
-      "block": "84"
-    },
-    {
-      "map": "MnGrandMarais",
-      "metatile": [
-        19,
-        13
-      ],
-      "expected": "58",
-      "block": "81"
-    },
-    {
-      "map": "MnGrandMarais",
-      "metatile": [
-        0,
-        14
-      ],
-      "expected": "35",
-      "block": "84"
-    },
-    {
-      "map": "MnGrandMarais",
-      "metatile": [
-        19,
-        14
-      ],
-      "expected": "79",
-      "block": "85"
-    },
-    {
-      "map": "MnGrandMarais",
-      "metatile": [
-        0,
-        15
-      ],
-      "expected": "35",
-      "block": "84"
-    },
-    {
-      "map": "MnGrandMarais",
-      "metatile": [
-        19,
-        15
-      ],
-      "expected": "35",
-      "block": "86"
-    },
-    {
-      "map": "MnGrandMarais",
-      "metatile": [
-        0,
-        16
-      ],
-      "expected": "35",
-      "block": "84"
-    },
-    {
-      "map": "MnGrandMarais",
-      "metatile": [
-        19,
-        16
-      ],
-      "expected": "35",
-      "block": "86"
-    },
-    {
-      "map": "MnGrandMarais",
-      "metatile": [
-        0,
-        17
-      ],
-      "expected": "35",
-      "block": "84"
-    },
-    {
-      "map": "MnGrandMarais",
-      "metatile": [
-        19,
-        17
-      ],
-      "expected": "35",
-      "block": "86"
-    },
-    {
-      "map": "MnGrandMarais",
-      "metatile": [
-        0,
-        18
-      ],
-      "expected": "35",
-      "block": "87"
-    },
-    {
-      "map": "MnGrandMarais",
-      "metatile": [
-        1,
-        18
-      ],
-      "expected": "35",
-      "block": "88"
-    },
-    {
-      "map": "MnGrandMarais",
-      "metatile": [
-        2,
-        18
-      ],
-      "expected": "35",
-      "block": "88"
-    },
-    {
-      "map": "MnGrandMarais",
-      "metatile": [
-        3,
-        18
-      ],
-      "expected": "35",
-      "block": "88"
-    },
-    {
-      "map": "MnGrandMarais",
-      "metatile": [
-        4,
-        18
-      ],
-      "expected": "35",
-      "block": "88"
-    },
-    {
-      "map": "MnGrandMarais",
-      "metatile": [
-        5,
-        18
-      ],
-      "expected": "35",
-      "block": "88"
-    },
-    {
-      "map": "MnGrandMarais",
-      "metatile": [
-        6,
-        18
-      ],
-      "expected": "35",
-      "block": "88"
-    },
-    {
-      "map": "MnGrandMarais",
-      "metatile": [
-        7,
-        18
-      ],
-      "expected": "35",
-      "block": "88"
-    },
-    {
-      "map": "MnGrandMarais",
-      "metatile": [
-        8,
-        18
-      ],
-      "expected": "35",
-      "block": "88"
-    },
-    {
-      "map": "MnGrandMarais",
-      "metatile": [
-        9,
-        18
-      ],
-      "expected": "35",
-      "block": "88"
-    },
-    {
-      "map": "MnGrandMarais",
-      "metatile": [
-        10,
-        18
-      ],
-      "expected": "35",
-      "block": "88"
-    },
-    {
-      "map": "MnGrandMarais",
-      "metatile": [
-        11,
-        18
-      ],
-      "expected": "35",
-      "block": "88"
-    },
-    {
-      "map": "MnGrandMarais",
-      "metatile": [
-        12,
-        18
-      ],
-      "expected": "35",
-      "block": "88"
-    },
-    {
-      "map": "MnGrandMarais",
-      "metatile": [
-        13,
-        18
-      ],
-      "expected": "35",
-      "block": "88"
-    },
-    {
-      "map": "MnGrandMarais",
-      "metatile": [
-        14,
-        18
-      ],
-      "expected": "35",
-      "block": "88"
-    },
-    {
-      "map": "MnGrandMarais",
-      "metatile": [
-        15,
-        18
-      ],
-      "expected": "35",
-      "block": "88"
-    },
-    {
-      "map": "MnGrandMarais",
-      "metatile": [
-        16,
-        18
-      ],
-      "expected": "35",
-      "block": "88"
-    },
-    {
-      "map": "MnGrandMarais",
-      "metatile": [
-        17,
-        18
-      ],
-      "expected": "35",
-      "block": "88"
-    },
-    {
-      "map": "MnGrandMarais",
-      "metatile": [
-        18,
-        18
-      ],
-      "expected": "35",
-      "block": "88"
-    },
-    {
-      "map": "MnGrandMarais",
-      "metatile": [
-        19,
-        18
-      ],
-      "expected": "35",
-      "block": "89"
-    },
-    {
-      "map": "MnGrandMarais",
-      "metatile": [
-        2,
-        8
-      ],
-      "expected": "01",
-      "block": "05"
-    },
-    {
-      "map": "MnGrandMarais",
-      "metatile": [
-        2,
-        10
-      ],
-      "expected": "01",
-      "block": "05"
-    },
-    {
-      "map": "MnGrandMarais",
-      "metatile": [
-        2,
-        11
-      ],
-      "expected": "4a",
-      "block": "49"
-    },
-    {
-      "map": "MnGrandMarais",
-      "metatile": [
-        3,
-        11
-      ],
-      "expected": "54",
-      "block": "4a"
-    },
-    {
-      "map": "MnGrandMarais",
-      "metatile": [
-        4,
-        10
-      ],
-      "expected": "54",
-      "block": "4a"
-    }
-  ],
-  "gate_pairs": [
-    {
-      "map": "MnR11C00R00",
-      "entrances": [
-        [
-          43,
-          4
-        ],
-        [
-          43,
-          5
-        ]
-      ],
-      "returns": [
-        [
-          42,
-          4
-        ],
-        [
-          42,
-          5
-        ]
-      ],
-      "first_active": 3,
-      "first_passive": 5,
-      "room_arrivals": [
-        [
-          1,
-          4
-        ],
-        [
-          1,
-          5
-        ]
-      ],
-      "room_passive_indices": [
-        5,
-        6
-      ],
-      "room_exits": [
-        [
-          0,
-          4
-        ],
-        [
-          0,
-          5
-        ]
-      ],
-      "room_exit_indices": [
-        1,
-        2
-      ]
-    },
-    {
-      "map": "MnGrandMarais",
-      "entrances": [
-        [
-          4,
-          18
-        ],
-        [
-          4,
-          19
-        ]
-      ],
-      "returns": [
-        [
-          8,
-          18
-        ],
-        [
-          8,
-          19
-        ]
-      ],
-      "first_active": 7,
-      "first_passive": 9,
-      "room_arrivals": [
-        [
-          8,
-          4
-        ],
-        [
-          8,
-          5
-        ]
-      ],
-      "room_passive_indices": [
-        7,
-        8
-      ],
-      "room_exits": [
-        [
-          9,
-          4
-        ],
-        [
-          9,
-          5
-        ]
-      ],
-      "room_exit_indices": [
-        3,
-        4
-      ]
-    }
-  ],
-  "r12_link": {
-    "town_edge": [
-      [
-        0,
-        8
-      ],
-      [
-        0,
-        9
-      ]
+  "attributes_before": {
+    "tileset_name": "johto",
+    "border_block": 53,
+    "width": 20,
+    "height": 19,
+    "connections": [
+      {
+        "direction": "east",
+        "target_map": "MnMaraisCedarApproach",
+        "offset": 0
+      },
+      {
+        "direction": "west",
+        "target_map": "MnR12C01R01",
+        "offset": 0
+      }
     ],
-    "route": "MnR12C01R01",
-    "route_edge": [
-      [
-        63,
-        8
-      ],
-      [
-        63,
-        9
-      ]
-    ],
-    "town_offset": 0
+    "time_of_day": null,
+    "phone_service": 0,
+    "phone_flag": false,
+    "environment": "TOWN",
+    "location": "LANDMARK_MN_GRAND_MARAIS",
+    "music": "MUSIC_CHERRYGROVE_CITY",
+    "palette": "PALETTE_AUTO",
+    "fishing_group": "FISHGROUP_SHORE",
+    "map_constant": "MN_GRAND_MARAIS",
+    "map_group_constant": "MAPGROUP_MINNESOTA",
+    "blocks_label": "MnGrandMarais_Blocks",
+    "map_scripts_label": "MnGrandMarais_MapScripts",
+    "map_events_label": "MnGrandMarais_MapEvents",
+    "connection_flags": "EAST | WEST"
   },
-  "checkpoints": [
+  "attributes_after": {
+    "tileset_name": "mn_marais_shore",
+    "border_block": 53,
+    "width": 20,
+    "height": 19,
+    "connections": [
+      {
+        "direction": "north",
+        "target_map": "MnMaraisCedarApproach",
+        "offset": -19
+      },
+      {
+        "direction": "west",
+        "target_map": "MnR11C01R00",
+        "offset": 0
+      }
+    ],
+    "time_of_day": null,
+    "phone_service": 0,
+    "phone_flag": false,
+    "environment": "TOWN",
+    "location": "LANDMARK_MN_GRAND_MARAIS",
+    "music": "MUSIC_CHERRYGROVE_CITY",
+    "palette": "PALETTE_AUTO",
+    "fishing_group": "FISHGROUP_SHORE",
+    "map_constant": "MN_GRAND_MARAIS",
+    "map_group_constant": "MAPGROUP_MINNESOTA",
+    "blocks_label": "MnGrandMarais_Blocks",
+    "map_scripts_label": "MnGrandMarais_MapScripts",
+    "map_events_label": "MnGrandMarais_MapEvents",
+    "connection_flags": "NORTH | WEST"
+  },
+  "foot_seams": [
     {
-      "root": "MnMaraisShoreCheck",
-      "ids": [
-        "MN_MARAIS_SHORE_WARDEN_NORTH",
-        "MN_MARAIS_SHORE_WARDEN_SOUTH"
-      ],
-      "bodies": [
+      "side": "west",
+      "town_core": [
         [
-          6,
-          18
+          0,
+          8
         ],
         [
-          6,
-          19
+          0,
+          9
         ]
       ],
-      "inside": [
+      "target_map": "MnR11C01R00",
+      "target_core": [
         [
-          7,
-          18
+          47,
+          8
         ],
         [
-          7,
-          19
+          47,
+          9
         ]
       ],
-      "outside": [
-        [
-          5,
-          18
-        ],
-        [
-          5,
-          19
-        ]
-      ]
+      "offset": 0
     },
     {
-      "root": "MnMaraisGunflintCheck",
-      "ids": [
-        "MN_MARAIS_GUNFLINT_WARDEN_NORTH",
-        "MN_MARAIS_GUNFLINT_WARDEN_SOUTH"
-      ],
-      "bodies": [
+      "side": "north",
+      "town_core": [
         [
-          2,
-          8
+          18,
+          0
         ],
         [
-          2,
-          9
+          19,
+          0
         ]
       ],
-      "inside": [
+      "target_map": "MnMaraisCedarApproach",
+      "target_core": [
         [
-          3,
-          8
+          56,
+          37
         ],
         [
-          3,
-          9
+          57,
+          37
         ]
       ],
-      "outside": [
-        [
-          1,
-          8
-        ],
-        [
-          1,
-          9
-        ]
-      ]
+      "offset": -19
     }
   ],
-  "required_flags": [
-    "BADGE_1",
-    "BADGE_2",
-    "BADGE_3",
-    "BADGE_4",
-    "BADGE_5",
-    "BADGE_6",
-    "BADGE_7",
-    "BADGE_8",
-    "EVENT_MN_LIGHTHOUSE_SIGNAL"
+  "surf_seam": {
+    "side": "west",
+    "town_core_x": 0,
+    "target_core_x": 47,
+    "core_y": [
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+      30,
+      31,
+      32,
+      33,
+      34,
+      35
+    ]
+  },
+  "preserved_room_ids": [
+    "MnGrandMaraisArtistHouse",
+    "MnGrandMaraisFieldStation",
+    "MnGrandMaraisFisherHouse",
+    "MnGrandMaraisLighthouse",
+    "MnGrandMaraisMart",
+    "MnGrandMaraisPokecenter"
   ],
-  "local_lamp_required": false,
-  "notes": [
-    "The coastal road turns east into the native Ilex-Azalea gate before the town west facade; this is a warp connection, not an outdoor walking seam.",
-    "Retain land and shoreline quadrants. Only outward WATER quadrants gain original native reef/BUOY art.",
-    "Replace the field station demo starter/balls/Old Rod bundle with an optional spare-part offer. The local lamp never gates either road.",
-    "Candidate only: native publication, controller/Continue, care/blackout, full R11/R12 travel, source/native captures and story continuity remain required.",
-    "Three native railed-promenade blocks retain dry public access to the old western quay around the gate collar; they never open the outside guard pocket.",
-    "Coast-gate returns land inside the checkpoint at (8,18)/(8,19); arrival must not rely on stepping onto the outside coordinate plane.",
-    "Retire the demo exit coordinate interception. The spare part is an optional scientist conversation."
-  ]
+  "new_rooms": [],
+  "canonical_world_edited": true,
+  "pack_sha256": "65cf6f98e65ada839ec5afaa57728bf8289d3a50ba53ba6b9b50f08d3620bb17",
+  "content_identity": "f34280a5fc5d6ab8ccc3ec4ef4317a6ea9321070df342ea95aca5745514a0223"
 }

@@ -1,0 +1,7 @@
+{
+  "tool": "built-in imagegen",
+  "default_path": "/Users/ryanculligan/.codex/generated_images/01a178da-4cf1-7e01-8516-667a332dc790/exec-43720472-0ace-4e3d-9a15-80e7104ede68.png",
+  "workspace_path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f079/bobcast.overworld.imagegen-v1.png",
+  "sha256": "e8b1a79dee0ca2b3670218d1af6a534555379708e5006ca72815c26ee96159ea",
+  "prompt": "prompt-bobcast-v1.txt"
+}

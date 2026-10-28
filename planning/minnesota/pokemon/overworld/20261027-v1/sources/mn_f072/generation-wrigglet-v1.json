@@ -1,0 +1,7 @@
+{
+  "tool": "built-in imagegen",
+  "default_path": "/Users/ryanculligan/.codex/generated_images/01a178da-4cf1-7e01-8516-667a332dc790/exec-50843314-53fc-4926-a45c-e861a7eb7d18.png",
+  "workspace_path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f072/wrigglet.overworld.imagegen-v1.png",
+  "sha256": "a53c1e20e31bf4c2b9b8d1fd1e9f88ecd2d3e44d9cf779e8dec9e4965ecdc762",
+  "prompt": "prompt-wrigglet-v1.txt"
+}

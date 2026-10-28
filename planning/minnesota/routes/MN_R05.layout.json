@@ -1520,6 +1520,384 @@
         55
       ],
       "block": "3a"
+    },
+    {
+      "kind": "point",
+      "name": "Exact native Minneapolis river continuation hook",
+      "position": [
+        13,
+        53
+      ],
+      "block": "54"
+    },
+    {
+      "kind": "point",
+      "name": "Exact native Minneapolis river continuation hook",
+      "position": [
+        14,
+        53
+      ],
+      "block": "76"
+    },
+    {
+      "kind": "point",
+      "name": "Exact native Minneapolis river continuation hook",
+      "position": [
+        15,
+        53
+      ],
+      "block": "76"
+    },
+    {
+      "kind": "point",
+      "name": "Exact native Minneapolis river continuation hook",
+      "position": [
+        16,
+        53
+      ],
+      "block": "55"
+    },
+    {
+      "kind": "point",
+      "name": "Exact native Minneapolis river continuation hook",
+      "position": [
+        20,
+        53
+      ],
+      "block": "54"
+    },
+    {
+      "kind": "point",
+      "name": "Exact native Minneapolis river continuation hook",
+      "position": [
+        21,
+        53
+      ],
+      "block": "76"
+    },
+    {
+      "kind": "point",
+      "name": "Exact native Minneapolis river continuation hook",
+      "position": [
+        22,
+        53
+      ],
+      "block": "76"
+    },
+    {
+      "kind": "point",
+      "name": "Exact native Minneapolis river continuation hook",
+      "position": [
+        23,
+        53
+      ],
+      "block": "76"
+    },
+    {
+      "kind": "point",
+      "name": "Exact native Minneapolis river continuation hook",
+      "position": [
+        24,
+        53
+      ],
+      "block": "76"
+    },
+    {
+      "kind": "point",
+      "name": "Exact native Minneapolis river continuation hook",
+      "position": [
+        25,
+        53
+      ],
+      "block": "76"
+    },
+    {
+      "kind": "point",
+      "name": "Exact native Minneapolis river continuation hook",
+      "position": [
+        26,
+        53
+      ],
+      "block": "76"
+    },
+    {
+      "kind": "point",
+      "name": "Exact native Minneapolis river continuation hook",
+      "position": [
+        27,
+        53
+      ],
+      "block": "76"
+    },
+    {
+      "kind": "point",
+      "name": "Exact native Minneapolis river continuation hook",
+      "position": [
+        28,
+        53
+      ],
+      "block": "79"
+    },
+    {
+      "kind": "point",
+      "name": "Exact native Minneapolis river continuation hook",
+      "position": [
+        7,
+        54
+      ],
+      "block": "54"
+    },
+    {
+      "kind": "point",
+      "name": "Exact native Minneapolis river continuation hook",
+      "position": [
+        8,
+        54
+      ],
+      "block": "76"
+    },
+    {
+      "kind": "point",
+      "name": "Exact native Minneapolis river continuation hook",
+      "position": [
+        9,
+        54
+      ],
+      "block": "55"
+    },
+    {
+      "kind": "point",
+      "name": "Exact native Minneapolis river continuation hook",
+      "position": [
+        10,
+        54
+      ],
+      "block": "44"
+    },
+    {
+      "kind": "point",
+      "name": "Exact native Minneapolis river continuation hook",
+      "position": [
+        12,
+        54
+      ],
+      "block": "46"
+    },
+    {
+      "kind": "point",
+      "name": "Exact native Minneapolis river continuation hook",
+      "position": [
+        13,
+        54
+      ],
+      "block": "58"
+    },
+    {
+      "kind": "point",
+      "name": "Exact native Minneapolis river continuation hook",
+      "position": [
+        14,
+        54
+      ],
+      "block": "35"
+    },
+    {
+      "kind": "point",
+      "name": "Exact native Minneapolis river continuation hook",
+      "position": [
+        15,
+        54
+      ],
+      "block": "35"
+    },
+    {
+      "kind": "point",
+      "name": "Exact native Minneapolis river continuation hook",
+      "position": [
+        16,
+        54
+      ],
+      "block": "7a"
+    },
+    {
+      "kind": "point",
+      "name": "Exact native Minneapolis river continuation hook",
+      "position": [
+        17,
+        54
+      ],
+      "block": "76"
+    },
+    {
+      "kind": "point",
+      "name": "Exact native Minneapolis river continuation hook",
+      "position": [
+        18,
+        54
+      ],
+      "block": "76"
+    },
+    {
+      "kind": "point",
+      "name": "Exact native Minneapolis river continuation hook",
+      "position": [
+        19,
+        54
+      ],
+      "block": "76"
+    },
+    {
+      "kind": "point",
+      "name": "Exact native Minneapolis river continuation hook",
+      "position": [
+        20,
+        54
+      ],
+      "block": "79"
+    },
+    {
+      "kind": "point",
+      "name": "Exact native Minneapolis river continuation hook",
+      "position": [
+        21,
+        54
+      ],
+      "block": "35"
+    },
+    {
+      "kind": "point",
+      "name": "Exact native Minneapolis river continuation hook",
+      "position": [
+        22,
+        54
+      ],
+      "block": "35"
+    },
+    {
+      "kind": "point",
+      "name": "Exact native Minneapolis river continuation hook",
+      "position": [
+        23,
+        54
+      ],
+      "block": "35"
+    },
+    {
+      "kind": "point",
+      "name": "Exact native Minneapolis river continuation hook",
+      "position": [
+        24,
+        54
+      ],
+      "block": "35"
+    },
+    {
+      "kind": "point",
+      "name": "Exact native Minneapolis river continuation hook",
+      "position": [
+        25,
+        54
+      ],
+      "block": "35"
+    },
+    {
+      "kind": "point",
+      "name": "Exact native Minneapolis river continuation hook",
+      "position": [
+        26,
+        54
+      ],
+      "block": "35"
+    },
+    {
+      "kind": "point",
+      "name": "Exact native Minneapolis river continuation hook",
+      "position": [
+        27,
+        54
+      ],
+      "block": "35"
+    },
+    {
+      "kind": "point",
+      "name": "Exact native Minneapolis river continuation hook",
+      "position": [
+        28,
+        54
+      ],
+      "block": "35"
+    },
+    {
+      "kind": "point",
+      "name": "Exact native Minneapolis river continuation hook",
+      "position": [
+        7,
+        55
+      ],
+      "block": "58"
+    },
+    {
+      "kind": "point",
+      "name": "Exact native Minneapolis river continuation hook",
+      "position": [
+        8,
+        55
+      ],
+      "block": "35"
+    },
+    {
+      "kind": "point",
+      "name": "Exact native Minneapolis river continuation hook",
+      "position": [
+        9,
+        55
+      ],
+      "block": "59"
+    },
+    {
+      "kind": "point",
+      "name": "Exact native Minneapolis river continuation hook",
+      "position": [
+        16,
+        55
+      ],
+      "block": "38"
+    },
+    {
+      "kind": "point",
+      "name": "Exact native Minneapolis river continuation hook",
+      "position": [
+        17,
+        55
+      ],
+      "block": "39"
+    },
+    {
+      "kind": "point",
+      "name": "Exact native Minneapolis river continuation hook",
+      "position": [
+        18,
+        55
+      ],
+      "block": "39"
+    },
+    {
+      "kind": "point",
+      "name": "Exact native Minneapolis river continuation hook",
+      "position": [
+        19,
+        55
+      ],
+      "block": "39"
+    },
+    {
+      "kind": "point",
+      "name": "Exact native Minneapolis river continuation hook",
+      "position": [
+        20,
+        55
+      ],
+      "block": "3a"
     }
   ],
   "crossings": [
@@ -1682,7 +2060,14 @@
     "32",
     "36",
     "39",
-    "3a"
+    "3a",
+    "54",
+    "55",
+    "58",
+    "59",
+    "76",
+    "79",
+    "7a"
   ],
   "outer_water_barriers": [
     {

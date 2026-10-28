@@ -1,0 +1,87 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_019",
+  "name": "Stripillar",
+  "family_id": "MN_F007",
+  "status": "native_candidate_compiled_and_sent_for_root_visual_review",
+  "generation_tool": "built-in image_gen",
+  "prompts": [
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f007/prompt-stripillar-v2.txt"
+  ],
+  "sources_selected": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f007/stripillar.overworld.imagegen-v2.png",
+      "sha256": "1ba8a86be9779ed5d12fd8daf31ea3a2b8b45125f953b73bafecb3ac3f010d8c",
+      "dimensions": [
+        1536,
+        1024
+      ]
+    }
+  ],
+  "source_v2_original_default_output": "/Users/ryanculligan/.codex/generated_images/01a17dc4-dd75-7642-a1c6-4bf13fda70c6/exec-3f77f5cc-c404-4ba1-a2e6-cc535d5ce58a.png",
+  "generation_reference_only": "planning/minnesota/pokemon/overworld/20261027-v1/references/native-pack-16px/native-six-frame-style-board.8x.png",
+  "identity_authority": "Exactcurrentcoverage.json active identity/palette and visualinspection of selectednativefront; NOhighresbattleinputs used for generation",
+  "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f007/manifest-stripillar-v2-phase-eyes.json",
+  "manifest_sha256": "b12b1df68e77994c7cc72a9153cf72aadfd001f443e181982b3ae181bb94972e",
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f007/stripillar-v2-phase-eyes",
+  "normal_review": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f007/stripillar-v2-phase-eyes/review/line.normal-8x.png",
+  "sampling": "Rust source_center",
+  "alpha_threshold": 128,
+  "frame_size": [
+    16,
+    16
+  ],
+  "native_bounds": [
+    [
+      3,
+      3,
+      8,
+      12
+    ],
+    [
+      4,
+      3,
+      7,
+      12
+    ],
+    [
+      2,
+      3,
+      11,
+      12
+    ],
+    [
+      3,
+      3,
+      8,
+      11
+    ],
+    [
+      4,
+      3,
+      7,
+      12
+    ],
+    [
+      2,
+      3,
+      11,
+      12
+    ]
+  ],
+  "normal_rgb555": [
+    32767,
+    9079,
+    13481,
+    0
+  ],
+  "shiny_rgb555": [
+    32767,
+    28392,
+    5421,
+    0
+  ],
+  "native_pixels_painted": false,
+  "contract": "Sixposesdown/up/leftidle then down/up/leftstep;3opaquecanonicalinks+transparentindex0;max14pxopaquefootprintwithborder;onesharedspeciesworldscale andpairedheadregistration",
+  "notes": "Generatedraws andallvariantsretained. Nativeboards inspected locally and handed to root; finalacceptance/context/runtimeproof ownedbyroot."
+}

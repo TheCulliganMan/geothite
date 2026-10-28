@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F018",
+  "species": [
+    {
+      "species_id": "MN_049",
+      "runtime_token": "CASTOROCK",
+      "palette_rgb555": [
+        32767,
+        16023,
+        8524,
+        0
+      ],
+      "shiny_palette_rgb555": [
+        32767,
+        21231,
+        10632,
+        0
+      ],
+      "fit": [
+        12,
+        12
+      ],
+      "alpha_threshold": 128,
+      "sampling": "source_center",
+      "minimum_foreground_samples": 16,
+      "black_priority_samples": 64,
+      "interior_black_samples": 64,
+      "opaque_interior_minimum_samples": 64,
+      "frames": [
+        {
+          "pose": "down_idle",
+          "source": "castorock.overworld.imagegen-v1.png",
+          "crop": [
+            0,
+            247,
+            438,
+            406
+          ]
+        },
+        {
+          "pose": "up_idle",
+          "source": "castorock.overworld.imagegen-v1.png",
+          "crop": [
+            350,
+            288,
+            438,
+            406
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "source": "castorock.overworld.imagegen-v2-profile-eyes.png",
+          "crop": [
+            775,
+            328,
+            438,
+            406
+          ]
+        },
+        {
+          "pose": "down_step",
+          "source": "castorock.overworld.imagegen-v1.png",
+          "crop": [
+            0,
+            673,
+            438,
+            406
+          ]
+        },
+        {
+          "pose": "up_step",
+          "source": "castorock.overworld.imagegen-v1.png",
+          "crop": [
+            350,
+            711,
+            438,
+            406
+          ]
+        },
+        {
+          "pose": "left_step",
+          "source": "castorock.overworld.imagegen-v2-profile-eyes.png",
+          "crop": [
+            775,
+            752,
+            438,
+            406
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+[
+  {
+    "id": "MnDuluthBoatClub2F-worktable",
+    "map": "MnDuluthBoatClub2F",
+    "core": [
+      8,
+      9
+    ]
+  },
+  {
+    "id": "MnDuluthSailorClub2F-worktable",
+    "map": "MnDuluthSailorClub2F",
+    "core": [
+      8,
+      9
+    ]
+  },
+  {
+    "id": "MnDuluthLookoutLodge2F-worktable",
+    "map": "MnDuluthLookoutLodge2F",
+    "core": [
+      8,
+      9
+    ]
+  },
+  {
+    "id": "MnDuluthUnionHall2F-worktable",
+    "map": "MnDuluthUnionHall2F",
+    "core": [
+      8,
+      9
+    ]
+  }
+]

@@ -1,0 +1,9 @@
+{
+  "tool": "built-in image_gen",
+  "original": "/Users/ryanculligan/.codex/generated_images/01a179bf-dc2b-7352-8975-8b8f3a32e33b/exec-dcf8796f-84c2-4862-9284-aba65ab1a179.png",
+  "preserved_raw": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f122/latchusk.overworld.imagegen-v3-front-cheek-clearance.png",
+  "sha256": "5c9fecdeee9d4243dee1549cea0d51078dc0034286315a675cbba4b137fbd37d",
+  "exact_prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f122/prompt-latchusk-front-cheek-clearance-v3.txt",
+  "reference_mapping": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f122/reference-mapping-latchusk-front-cheek-clearance-v3.json",
+  "status": "preserved; selected frames recorded in frozen manifest"
+}

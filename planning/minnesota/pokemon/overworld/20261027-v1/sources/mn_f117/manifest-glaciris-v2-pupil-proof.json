@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F117",
+  "species": [
+    {
+      "species_id": "MN_252",
+      "runtime_token": "GLACIRIS",
+      "palette_rgb555": [
+        32767,
+        32627,
+        18792,
+        0
+      ],
+      "shiny_palette_rgb555": [
+        32767,
+        28287,
+        11538,
+        0
+      ],
+      "fit": [
+        13,
+        13
+      ],
+      "alpha_threshold": 128,
+      "sampling": "source_center",
+      "minimum_foreground_samples": 16,
+      "black_priority_samples": 64,
+      "interior_black_samples": 64,
+      "opaque_interior_minimum_samples": 64,
+      "frames": [
+        {
+          "pose": "down_idle",
+          "source": "glaciris.overworld.imagegen-v1.png",
+          "crop": [
+            2,
+            84,
+            470,
+            420
+          ]
+        },
+        {
+          "pose": "up_idle",
+          "source": "glaciris.overworld.imagegen-v1.png",
+          "crop": [
+            462,
+            89,
+            470,
+            420
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "source": "glaciris.overworld.imagegen-v2-compact-profile.png",
+          "crop": [
+            977,
+            146,
+            470,
+            420
+          ]
+        },
+        {
+          "pose": "down_step",
+          "source": "glaciris.overworld.imagegen-v1.png",
+          "crop": [
+            2,
+            538,
+            470,
+            420
+          ]
+        },
+        {
+          "pose": "up_step",
+          "source": "glaciris.overworld.imagegen-v1.png",
+          "crop": [
+            462,
+            544,
+            470,
+            420
+          ]
+        },
+        {
+          "pose": "left_step",
+          "source": "glaciris.overworld.imagegen-v2-compact-profile.png",
+          "crop": [
+            976,
+            604,
+            470,
+            420
+          ]
+        }
+      ]
+    }
+  ]
+}

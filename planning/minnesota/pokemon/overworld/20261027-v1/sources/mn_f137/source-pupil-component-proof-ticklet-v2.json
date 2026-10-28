@@ -1,0 +1,350 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_303",
+  "name": "Ticklet",
+  "family_id": "MN_F137",
+  "status": "source-proof-pass; root visual/context acceptance required",
+  "selected_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f137/manifest-ticklet-v2-pupil-proof.json",
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f137/ticklet-v2-pupil-proof",
+  "shared_transform": {
+    "source_bounds": [
+      17,
+      21,
+      362,
+      294
+    ],
+    "native_size": [
+      13,
+      10
+    ],
+    "native_origin": [
+      1,
+      5
+    ]
+  },
+  "all_four_nonrear_poses_have_actual_source_pupils": true,
+  "every_native_eye_cluster_maps_to_same_small_anatomical_source_pupil_component": true,
+  "actual_source_pupil_proofs": [
+    {
+      "pose": "down_idle",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f137/ticklet.overworld.imagegen-v2.png",
+      "source_sha256": "8f1c0fe129011ed8fdd047f66cab2fa6fc2be926292ef23db1c4bcfeda816b8f",
+      "crop": [
+        99,
+        130,
+        420,
+        340
+      ],
+      "actual_eye_proofs": [
+        {
+          "anatomically_identified_source_eye_box_ltrb": [
+            241,
+            360,
+            253,
+            383
+          ],
+          "native_cluster": [
+            [
+              5,
+              12
+            ]
+          ],
+          "every_cluster_pixel_maps_to_same_actual_source_component": true,
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                0,
+                0,
+                0,
+                253
+              ],
+              "bounds": [
+                240,
+                360,
+                13,
+                24
+              ],
+              "pixels": 304,
+              "truncated_contour": false,
+              "native_pixel": [
+                5,
+                12
+              ],
+              "source_sample_pixel": [
+                241,
+                371
+              ]
+            }
+          ]
+        },
+        {
+          "anatomically_identified_source_eye_box_ltrb": [
+            313,
+            360,
+            325,
+            383
+          ],
+          "native_cluster": [
+            [
+              8,
+              12
+            ]
+          ],
+          "every_cluster_pixel_maps_to_same_actual_source_component": true,
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                15,
+                12,
+                4,
+                253
+              ],
+              "bounds": [
+                312,
+                360,
+                13,
+                23
+              ],
+              "pixels": 299,
+              "truncated_contour": false,
+              "native_pixel": [
+                8,
+                12
+              ],
+              "source_sample_pixel": [
+                324,
+                371
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f137/ticklet.overworld.imagegen-v2.png",
+      "source_sha256": "8f1c0fe129011ed8fdd047f66cab2fa6fc2be926292ef23db1c4bcfeda816b8f",
+      "crop": [
+        1050,
+        130,
+        420,
+        340
+      ],
+      "actual_eye_proofs": [
+        {
+          "anatomically_identified_source_eye_box_ltrb": [
+            1129,
+            336,
+            1141,
+            359
+          ],
+          "native_cluster": [
+            [
+              3,
+              11
+            ]
+          ],
+          "every_cluster_pixel_maps_to_same_actual_source_component": true,
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                5,
+                4,
+                1,
+                253
+              ],
+              "bounds": [
+                1128,
+                335,
+                13,
+                24
+              ],
+              "pixels": 304,
+              "truncated_contour": false,
+              "native_pixel": [
+                3,
+                11
+              ],
+              "source_sample_pixel": [
+                1136,
+                342
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f137/ticklet.overworld.imagegen-v2.png",
+      "source_sha256": "8f1c0fe129011ed8fdd047f66cab2fa6fc2be926292ef23db1c4bcfeda816b8f",
+      "crop": [
+        99,
+        580,
+        420,
+        340
+      ],
+      "actual_eye_proofs": [
+        {
+          "anatomically_identified_source_eye_box_ltrb": [
+            241,
+            804,
+            253,
+            827
+          ],
+          "native_cluster": [
+            [
+              5,
+              12
+            ]
+          ],
+          "every_cluster_pixel_maps_to_same_actual_source_component": true,
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                11,
+                8,
+                3,
+                254
+              ],
+              "bounds": [
+                240,
+                804,
+                13,
+                23
+              ],
+              "pixels": 297,
+              "truncated_contour": false,
+              "native_pixel": [
+                5,
+                12
+              ],
+              "source_sample_pixel": [
+                241,
+                821
+              ]
+            }
+          ]
+        },
+        {
+          "anatomically_identified_source_eye_box_ltrb": [
+            313,
+            804,
+            325,
+            827
+          ],
+          "native_cluster": [
+            [
+              8,
+              12
+            ]
+          ],
+          "every_cluster_pixel_maps_to_same_actual_source_component": true,
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                7,
+                6,
+                2,
+                253
+              ],
+              "bounds": [
+                312,
+                804,
+                13,
+                23
+              ],
+              "pixels": 299,
+              "truncated_contour": false,
+              "native_pixel": [
+                8,
+                12
+              ],
+              "source_sample_pixel": [
+                324,
+                821
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f137/ticklet.overworld.imagegen-v2.png",
+      "source_sha256": "8f1c0fe129011ed8fdd047f66cab2fa6fc2be926292ef23db1c4bcfeda816b8f",
+      "crop": [
+        1050,
+        580,
+        420,
+        340
+      ],
+      "actual_eye_proofs": [
+        {
+          "anatomically_identified_source_eye_box_ltrb": [
+            1129,
+            779,
+            1141,
+            803
+          ],
+          "native_cluster": [
+            [
+              3,
+              11
+            ]
+          ],
+          "every_cluster_pixel_maps_to_same_actual_source_component": true,
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                4,
+                3,
+                1,
+                254
+              ],
+              "bounds": [
+                1128,
+                779,
+                13,
+                24
+              ],
+              "pixels": 306,
+              "truncated_contour": false,
+              "native_pixel": [
+                3,
+                11
+              ],
+              "source_sample_pixel": [
+                1136,
+                792
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "rear_review": "Both actual native rears viewed; plain genuine rear without copied facial eyes.",
+  "frozen_runtime_files_unchanged": true,
+  "no_queue_registry_or_pack_mutations": true,
+  "sha256": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f137/generation-ticklet-v2.json": "31cba9c150750f1a43f61f9c8944aafa4833e4b751955a17680bca5b2bed1305",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f137/manifest-ticklet-v2-pupil-proof.json": "560e33b73bee92c11e1f866d562f27e1fd23279e80fe247e8e8cbb81adcaf95d",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f137/ticklet-v2-pupil-proof/compiled-index.json": "6853c89c34a3d20c64032e8d2d7a9ab1a903fca2489fffa197ecd86fb65336fd",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f137/ticklet.overworld.imagegen-v2.png": "8f1c0fe129011ed8fdd047f66cab2fa6fc2be926292ef23db1c4bcfeda816b8f",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f137/prompt-ticklet-v2.txt": "c96e3160230076995e3da7bf0c3071ce932c8a6e96c7893b4fccfe76d4a75a70",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f137/reference-mapping-ticklet-v2.json": "599f291b4e9a73990fffb2246d6715b7342130c4b9b2aceafec068dd7c6e6734",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f137/ticklet-v2-pupil-proof/gfx/pokemon/ticklet/overworld.png": "bd7bb60dc9db79728d42141d23c23ac95f700230f521670b1c6eb2bb9f94c681",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f137/ticklet-v2-pupil-proof/gfx/pokemon/ticklet/overworld.2bpp": "cb2c3ba5c8727412efe94a5353fdb14f0d0b7ff821594c526a958ce53d5797e4",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f137/ticklet-v2-pupil-proof/gfx/pokemon/ticklet/overworld.gbcpal": "fa8e9c071e6d26208134b5f44617a5bef45404230caa66ef3580f5b7c8591903",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f137/ticklet-v2-pupil-proof/gfx/pokemon/ticklet/overworld-shiny.gbcpal": "f25c7ad74307bbbb9cce7a7cff8ad876086c1c35f25a4dcb5277162c0fbd6143",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f137/ticklet-v2-pupil-proof/review/line.normal-8x.png": "212dbad67d8d906c3c507c86ce472f520d8ef15d82912006df4577aa4c26421e",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f137/ticklet-v2-pupil-proof/review/line.shiny-8x.png": "ef79b516b79dcc9921bc6749866ec7ba3e3b737ea4b0fdc4402a15c411403930"
+  }
+}

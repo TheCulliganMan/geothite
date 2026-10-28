@@ -1,0 +1,80 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F041",
+  "species_id": "MN_268",
+  "name": "Dartduck",
+  "status": "native_compiled_root_visual_and_world_context_review_pending",
+  "generation_tool": "built-in image_gen",
+  "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f041/dartduck.overworld.imagegen-v3.png",
+  "source_sha256": "e819e759a105224d25dc46e0084f8b15df44f8aba46a99355af577369e692200",
+  "original_default_output": "/Users/ryanculligan/.codex/generated_images/01a17dc4-dd75-7642-a1c6-4bf13fda70c6/exec-431992e4-59b8-4e21-8804-9f3e801ca88e.png",
+  "dimensions": [
+    1254,
+    1254
+  ],
+  "prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f041/prompt-dartduck-v3.txt",
+  "only_input_image": "planning/minnesota/pokemon/overworld/20261027-v1/references/native-pack-16px/native-six-frame-style-board.8x.png",
+  "identity_source": "coverage.json current textual body locks and visual inspection of exact selected native battle fronts; battle images NOT ImageGen input",
+  "six_frame_layout": "3columns2rows; down/up/left idle then down/up/left step",
+  "proposed_native_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f041/manifest-dartduck-v3-phase-eyes.json",
+  "manifest_sha256": "d16bba16b84891ee4bc93fb150e7319998f859bf3d16c9f68ce9a53f485df80f",
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f041/dartduck-v3-phase-eyes",
+  "normal_review": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f041/dartduck-v3-phase-eyes/review/line.normal-8x.png",
+  "native_frame_size": [
+    16,
+    16
+  ],
+  "native_bounds": [
+    [
+      3,
+      2,
+      10,
+      13
+    ],
+    [
+      3,
+      2,
+      10,
+      13
+    ],
+    [
+      3,
+      2,
+      10,
+      13
+    ],
+    [
+      3,
+      2,
+      10,
+      13
+    ],
+    [
+      3,
+      2,
+      10,
+      13
+    ],
+    [
+      3,
+      2,
+      10,
+      13
+    ]
+  ],
+  "palette_rgb555": [
+    32767,
+    19309,
+    9603,
+    0
+  ],
+  "shiny_palette_rgb555": [
+    32767,
+    9822,
+    17580,
+    0
+  ],
+  "alpha_threshold": 128,
+  "conversion": "Rust compile_minnesota_overworld source_center, equal-sized crop windows per species, common world scale; registration adjustment only, zero native painted pixels",
+  "notes": "Native boards inspected; both south poses retain two separated black dot eyes, up backs have no face, west profile. Max14px footprint; source bank retains all six idle-step differences. No shared queue or pack writes. Root acceptance/context proof pending."
+}

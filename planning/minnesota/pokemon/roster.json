@@ -1,10 +1,10 @@
 {
   "schema_version": 2,
   "status": "canonical_original_species_authoring",
-  "species_count": 313,
+  "species_count": 314,
   "evolution_mix": {
-    "three_stage_families": 52,
-    "two_stage_families": 66,
+    "three_stage_families": 53,
+    "two_stage_families": 65,
     "single_stage_species": 25,
     "legendary_species": 7,
     "mythical_species": 2
@@ -901,10 +901,20 @@
             "WATER"
           ],
           "stage": 2,
+          "evolves_to": "MN_318"
+        },
+        {
+          "id": "MN_318",
+          "name": "Crappeller",
+          "types": [
+            "STEEL",
+            "WATER"
+          ],
+          "stage": 3,
           "evolves_to": null
         }
       ],
-      "theme": "Living fishing lure: a painted jig with a hook tail becomes a spinner whose metal fins imitate an injured fish.",
+      "theme": "Living fishing lure: a painted jig with a hook tail becomes a fin-spinning lure, then a broad crappie-patterned adult with a large crown spinner blade.",
       "region": "central_lakes"
     },
     {

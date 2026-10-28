@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "reason": "Additive publication guards preserve original source epochs and bind unrelated current world edits after coast-subtree review.",
+  "canonical_world_sha256": "e89769b5ead3e05fe7b1f9175aa7b8e8fd3cec332d7f7b3405e35b478c9c1c0a",
+  "current_world_scope_proof": "../geography/canonical-source-v01/current-source-guards-v01.json",
+  "candidate_sha256": {
+    "MnGrandMarais.layout.candidate.json": "c642b822afe7864282d615d6a0ed296447c0a2999a09f7add0ec63161d8719c6",
+    "MnGrandMarais.dossier.candidate.json": "aa4bba32cd41679bf22a8b34729d7da44ae20ade28ace673d286c5c4e5de3eed",
+    "MnGrandMarais.connections.candidate.json": "fa742e4342b173682ec1e221c4e0c1fd9a721712960d6581ff59c041f236e3ef"
+  }
+}

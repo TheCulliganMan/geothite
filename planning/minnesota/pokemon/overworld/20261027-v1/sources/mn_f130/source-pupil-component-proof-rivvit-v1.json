@@ -1,0 +1,350 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_287",
+  "name": "Rivvit",
+  "family_id": "MN_F130",
+  "status": "source-proof-pass; root visual/context acceptance required",
+  "selected_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f130/manifest-rivvit-v1-pupil-proof.json",
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f130/rivvit-v1-pupil-proof",
+  "shared_transform": {
+    "source_bounds": [
+      37,
+      29,
+      376,
+      358
+    ],
+    "native_size": [
+      12,
+      11
+    ],
+    "native_origin": [
+      2,
+      4
+    ]
+  },
+  "all_four_nonrear_poses_have_actual_source_pupils": true,
+  "every_native_eye_cluster_maps_to_same_small_anatomical_source_pupil_component": true,
+  "actual_source_pupil_proofs": [
+    {
+      "pose": "down_idle",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f130/rivvit.overworld.imagegen-v1.png",
+      "source_sha256": "5ec58d3da2e00bc8e08b4a1d915ece2d7623de8274cd78daee0c2de33be0044e",
+      "crop": [
+        70,
+        90,
+        440,
+        400
+      ],
+      "actual_eye_proofs": [
+        {
+          "anatomically_identified_source_eye_box_ltrb": [
+            238,
+            322,
+            259,
+            343
+          ],
+          "native_cluster": [
+            [
+              6,
+              10
+            ]
+          ],
+          "every_cluster_pixel_maps_to_same_actual_source_component": true,
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                0,
+                0,
+                0,
+                254
+              ],
+              "bounds": [
+                238,
+                322,
+                21,
+                21
+              ],
+              "pixels": 441,
+              "truncated_contour": false,
+              "native_pixel": [
+                6,
+                10
+              ],
+              "source_sample_pixel": [
+                248,
+                330
+              ]
+            }
+          ]
+        },
+        {
+          "anatomically_identified_source_eye_box_ltrb": [
+            324,
+            322,
+            345,
+            343
+          ],
+          "native_cluster": [
+            [
+              9,
+              10
+            ]
+          ],
+          "every_cluster_pixel_maps_to_same_actual_source_component": true,
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                0,
+                0,
+                0,
+                253
+              ],
+              "bounds": [
+                323,
+                322,
+                22,
+                21
+              ],
+              "pixels": 449,
+              "truncated_contour": false,
+              "native_pixel": [
+                9,
+                10
+              ],
+              "source_sample_pixel": [
+                342,
+                330
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f130/rivvit.overworld.imagegen-v1.png",
+      "source_sha256": "5ec58d3da2e00bc8e08b4a1d915ece2d7623de8274cd78daee0c2de33be0044e",
+      "crop": [
+        1040,
+        140,
+        440,
+        400
+      ],
+      "actual_eye_proofs": [
+        {
+          "anatomically_identified_source_eye_box_ltrb": [
+            1140,
+            310,
+            1162,
+            333
+          ],
+          "native_cluster": [
+            [
+              4,
+              8
+            ]
+          ],
+          "every_cluster_pixel_maps_to_same_actual_source_component": true,
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                0,
+                0,
+                0,
+                254
+              ],
+              "bounds": [
+                1140,
+                310,
+                22,
+                23
+              ],
+              "pixels": 506,
+              "truncated_contour": false,
+              "native_pixel": [
+                4,
+                8
+              ],
+              "source_sample_pixel": [
+                1155,
+                315
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f130/rivvit.overworld.imagegen-v1.png",
+      "source_sha256": "5ec58d3da2e00bc8e08b4a1d915ece2d7623de8274cd78daee0c2de33be0044e",
+      "crop": [
+        70,
+        560,
+        440,
+        400
+      ],
+      "actual_eye_proofs": [
+        {
+          "anatomically_identified_source_eye_box_ltrb": [
+            238,
+            792,
+            259,
+            814
+          ],
+          "native_cluster": [
+            [
+              6,
+              10
+            ]
+          ],
+          "every_cluster_pixel_maps_to_same_actual_source_component": true,
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                0,
+                0,
+                0,
+                254
+              ],
+              "bounds": [
+                238,
+                792,
+                21,
+                22
+              ],
+              "pixels": 462,
+              "truncated_contour": false,
+              "native_pixel": [
+                6,
+                10
+              ],
+              "source_sample_pixel": [
+                248,
+                800
+              ]
+            }
+          ]
+        },
+        {
+          "anatomically_identified_source_eye_box_ltrb": [
+            324,
+            792,
+            345,
+            814
+          ],
+          "native_cluster": [
+            [
+              9,
+              10
+            ]
+          ],
+          "every_cluster_pixel_maps_to_same_actual_source_component": true,
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                0,
+                0,
+                0,
+                254
+              ],
+              "bounds": [
+                323,
+                792,
+                22,
+                22
+              ],
+              "pixels": 469,
+              "truncated_contour": false,
+              "native_pixel": [
+                9,
+                10
+              ],
+              "source_sample_pixel": [
+                342,
+                800
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f130/rivvit.overworld.imagegen-v1.png",
+      "source_sha256": "5ec58d3da2e00bc8e08b4a1d915ece2d7623de8274cd78daee0c2de33be0044e",
+      "crop": [
+        1040,
+        610,
+        440,
+        400
+      ],
+      "actual_eye_proofs": [
+        {
+          "anatomically_identified_source_eye_box_ltrb": [
+            1139,
+            782,
+            1162,
+            805
+          ],
+          "native_cluster": [
+            [
+              4,
+              8
+            ]
+          ],
+          "every_cluster_pixel_maps_to_same_actual_source_component": true,
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                6,
+                3,
+                1,
+                253
+              ],
+              "bounds": [
+                1139,
+                782,
+                23,
+                23
+              ],
+              "pixels": 529,
+              "truncated_contour": false,
+              "native_pixel": [
+                4,
+                8
+              ],
+              "source_sample_pixel": [
+                1155,
+                785
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "rear_review": "Both actual native rears viewed; plain genuine rear without copied facial eyes.",
+  "frozen_runtime_files_unchanged": true,
+  "no_queue_registry_or_pack_mutations": true,
+  "sha256": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f130/generation-rivvit-v1.json": "9cea7233cc3de941024397a08a366e4e59201ca4cc6fc95ef2b7fe080a0739a7",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f130/manifest-rivvit-v1-pupil-proof.json": "2b193c1f6a3331ffc616fe67379c2c5875e5e51ff24ac2c05ac9ddcc12f791f4",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f130/rivvit-v1-pupil-proof/compiled-index.json": "905e4bb067a2756424a4e4e22e182ac7b3ae7a6c50a37a4d60dc9ad11368865e",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f130/rivvit.overworld.imagegen-v1.png": "5ec58d3da2e00bc8e08b4a1d915ece2d7623de8274cd78daee0c2de33be0044e",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f130/prompt-rivvit-v1.txt": "59ad45680c373acb9f9df8bdcd6af492d7baa0e52541dfd02b01d7ae300f42d4",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f130/reference-mapping-rivvit-v1.json": "dba90ff8137a85f96939a4fd4cb6b5532787f91dc25fb824eebdd4f427f1f786",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f130/rivvit-v1-pupil-proof/gfx/pokemon/rivvit/overworld.png": "3d57eb65602b1b4a16240aa3c4edb725c8139d437af33245aa7ecd8508f09cb0",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f130/rivvit-v1-pupil-proof/gfx/pokemon/rivvit/overworld.2bpp": "de49260aa625ab8fa105e0d3b6f2956986f448c2b4c7cadd2a062a7f5a3cf53c",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f130/rivvit-v1-pupil-proof/gfx/pokemon/rivvit/overworld.gbcpal": "4e945107b5dcdfd4535af64712ef1bbf4771262e19f2e8a3363085d15dc1aac8",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f130/rivvit-v1-pupil-proof/gfx/pokemon/rivvit/overworld-shiny.gbcpal": "1257286ba3360c978770aa4408278ed127fe1b148a0c52c416941d3b4d87f4c5",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f130/rivvit-v1-pupil-proof/review/line.normal-8x.png": "13e3ae57275d2814a7a9de1ba6deebf904b162422cf97f3425056ede1e44d64c",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f130/rivvit-v1-pupil-proof/review/line.shiny-8x.png": "399364f70a4afa6edebfd4c0feb2f7d4353fd5f0f2b5d4e1ab5c3efef6cfa4dc"
+  }
+}

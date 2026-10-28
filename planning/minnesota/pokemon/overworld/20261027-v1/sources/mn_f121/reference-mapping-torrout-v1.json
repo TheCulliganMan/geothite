@@ -1,0 +1,51 @@
+{
+  "family_id": "MN_F121",
+  "species_id": "MN_260",
+  "prompt_file": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f121/prompt-torrout-v1.txt",
+  "input_references": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/references/native-pack-16px/native-six-frame-style-board.8x.png",
+      "sha256": "4354a639ed1a80fd6686e43b273443ed894e58a84307a8049f638ee9ffa2a099",
+      "role": "Only tool input: authentic native16 map camera, coarse clusters, dot-eye style."
+    }
+  ],
+  "inspected_identity_context": {
+    "canonical_front": {
+      "path": "target/minnesota-pokemon/native/MN_F121/mn-260-torrout-v1.front.png",
+      "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F121/mn-260-torrout-v1.front.png",
+      "sha256": "6f9926ca25869ca7ec3af5c39dc2e81900f6afaed843e3903f99db69cbf0b7bb"
+    },
+    "canonical_back": {
+      "path": "target/minnesota-pokemon/native/MN_F121/mn-260-torrout-v1.back.png",
+      "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F121/mn-260-torrout-v1.back.png",
+      "sha256": "bae9ce668517ee5ccac64d57bcc0c6c0989f645b10e2a9427a76c06882c3f0e1"
+    },
+    "invariants": [
+      "Heavy gold/olive compact C-shaped trout with blunt broad head and gill collar, squared tail braced upward.",
+      "One huge attached underbelly bow-fin membrane, short dorsal plus tiny rounded adipose fin, two broad pale patches maximum.",
+      "No held props, bows, weapons, machinery, human limbs or white opaque regions. Broad light face with isolated dot pupils; plain north."
+    ]
+  },
+  "battle_refs_passed_to_tool": false,
+  "palette_binding": {
+    "transparent_index": 0,
+    "visible_indices": [
+      1,
+      2,
+      3
+    ],
+    "normal_rgb555_words": [
+      32767,
+      18235,
+      9607,
+      0
+    ],
+    "shiny_rgb555_words": [
+      32767,
+      26481,
+      12521,
+      0
+    ],
+    "white_body_region_policy": "Simplify formerly white body/highlight regions to light ink1. Index0 is transparent everywhere, not an opaque white paint color."
+  }
+}

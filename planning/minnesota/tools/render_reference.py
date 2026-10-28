@@ -53,7 +53,8 @@ class SourceArt:
             return self.cache[key]
         files = self.pack['runtime_files']
         own = f'gfx/tilesets/{tileset}.pal'
-        text = bytes(files.get(own, files['gfx/tilesets/bg_tiles.pal'])).decode()
+        special = own in files and not (tileset == 'ice_path' and group == 'indoor')
+        text = bytes(files[own] if special else files['gfx/tilesets/bg_tiles.pal']).decode()
         colors = []
         current = 'default'
         for raw in text.splitlines():
@@ -61,7 +62,7 @@ class SourceArt:
             if line.startswith(';') and 'RGB' not in line.upper():
                 current = line[1:].strip().lower().replace(' ', '_')
             line = line.split(';')[0].strip()
-            if line.upper().startswith('RGB') and (own in files or current == group):
+            if line.upper().startswith('RGB') and (special or current == group):
                 values = list(map(int, re.findall(r'\d+', line)))
                 colors.extend(tuple((v << 3) | (v >> 2) if v <= 31 else v
                                     for v in values[i:i+3]) for i in range(0,len(values),3))

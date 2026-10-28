@@ -257,7 +257,7 @@ fn register_clinic_recovery(pack: &mut CompiledGamePack, plan: &Expansion) -> Re
     Ok(())
 }
 
-fn merge_new_content(city: &mut MapModule, new: MapModule) -> Result<()> {
+pub(super) fn merge_new_content(city: &mut MapModule, new: MapModule) -> Result<()> {
     let mut old_value = serde_json::to_value(&*city)?;
     let new_value = serde_json::to_value(&new)?;
     let old_fields = old_value.as_object_mut().context("native city object")?;

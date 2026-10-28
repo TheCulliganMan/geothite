@@ -62,6 +62,30 @@ fn fixture(
     (root, r, design, c)
 }
 fn road(c: &mut VisibleShellController, r: &CrystalRuntime, n: u8, target: (i16, i16)) {
+    assert!(try_road_with(c, r, n, target, |c| {
+        if matches!(
+            c.snapshot()
+                .expect("road encounter")
+                .battle
+                .expect("battle")
+                .kind,
+            RuntimeBattleKind::Wild { .. }
+        ) {
+            flee(c);
+        } else {
+            battle(c, false);
+            finish(c);
+        }
+    }));
+}
+
+pub(super) fn try_road_with(
+    c: &mut VisibleShellController,
+    r: &CrystalRuntime,
+    n: u8,
+    target: (i16, i16),
+    mut encounter: impl FnMut(&mut VisibleShellController),
+) -> bool {
     let start = position(c);
     let (prefix, rows, doors) = if n == 5 {
         (
@@ -87,13 +111,17 @@ fn road(c: &mut VisibleShellController, r: &CrystalRuntime, n: u8, target: (i16,
         let old = position(c);
         for _ in 0..8 {
             press(c, button);
-            if let Some(b) = c.snapshot().expect("road encounter").battle {
-                if matches!(b.kind, RuntimeBattleKind::Wild { .. }) {
-                    flee(c);
-                } else {
-                    battle(c, false);
-                    finish(c);
-                }
+            if c.snapshot().expect("road encounter").battle.is_some() {
+                encounter(c);
+            }
+            if !c
+                .snapshot()
+                .expect("road outcome")
+                .overworld
+                .map_name
+                .starts_with(prefix)
+            {
+                return false;
             }
             if position(c) != old {
                 break;
@@ -102,6 +130,7 @@ fn road(c: &mut VisibleShellController, r: &CrystalRuntime, n: u8, target: (i16,
         assert_ne!(position(c), old, "real road input must move");
     }
     assert_eq!(position(c), target);
+    true
 }
 fn unchanged_story(c: &VisibleShellController) {
     for name in [

@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "status": "DETACHED_HAND_AUTHORED_SOURCE_NOT_NATIVE",
+  "parent_pack_sha256": "92bb645535db23c78491b6982ddf5fa17b72b1f0434dfb6456a395fbf8fdbd33",
+  "design": "One quiet wooded river itinerary with unequal reaches, close banks and retained original trainer landings. Fixed native rectangles/ports remain; old R05 is separated lookout/fishing coves rather than a visually continuous parallel river.",
+  "regions": {
+    "MnMississippiUpstreamWoods": {
+      "dimensions_metatiles": [64, 68],
+      "purpose": "Long lower run, one east-bank quiet pool, a narrow south-facing pine tongue, and the final landing at the northern woods keeper. This is not a copy of the lower river silhouette.",
+      "layers": [
+        {"name": "South landing reach", "kind": "path", "material": "water", "points": [[0,66],[12,66],[12,61],[28,61],[28,55],[48,55]], "width_metatiles": 3},
+        {"name": "East-bank quiet reach and unequal bend", "kind": "path", "material": "water", "points": [[48,55],[48,44],[56,44],[56,35],[43,35]], "width_metatiles": 3},
+        {"name": "Pine tongue return upstream", "kind": "path", "material": "water", "points": [[43,35],[43,29],[49,29],[49,20],[41,20],[41,15],[35,15],[35,14]], "width_metatiles": 3},
+        {"name": "Keeper bank and northbound finishing reaches", "kind": "path", "material": "water", "points": [[35,14],[30,14],[30,18],[21,18],[21,24],[9,24],[9,20],[0,20]], "width_metatiles": 3},
+        {"name": "Quiet pool widens into the east bank", "kind": "polygon", "material": "water", "points": [[53,35],[58,35],[58,40],[59,40],[59,43],[57,43],[57,45],[53,45]]},
+        {"name": "Attached north pool bank nose", "kind": "block_rect", "bounds": [53,34,55,37], "block": "05"}
+      ]
+    },
+    "MnMississippiLowerWoods": {
+      "dimensions_metatiles": [64, 68],
+      "purpose": "St Paul leaves through a short angler approach, opens into a northern still reach, passes the existing southeast pine-bank trainer, then descends through a longer wooded southern course toward Winona.",
+      "layers": [
+        {"name": "St Paul and the existing angler bank", "kind": "path", "material": "water", "points": [[0,36],[10,36],[10,33],[14,33],[14,26]], "width_metatiles": 3},
+        {"name": "Angler's natural broad landing", "kind": "path", "material": "water", "points": [[14,32],[14,26],[25,26]], "width_metatiles": 5},
+        {"name": "Long northern still reach", "kind": "path", "material": "water", "points": [[25,26],[25,17],[39,17],[39,12],[49,12],[49,21],[56,21],[56,34]], "width_metatiles": 3},
+        {"name": "Existing pine-bank trainer frontage", "kind": "path", "material": "water", "points": [[56,34],[53,34],[53,45],[43,45],[43,53],[31,53]], "width_metatiles": 3},
+        {"name": "Southwestern wooded descent", "kind": "path", "material": "water", "points": [[31,53],[31,49],[24,49],[24,59],[18,59],[18,67]], "width_metatiles": 3},
+        {"name": "Northern still reach with fitted wooded shoulders", "kind": "polygon", "material": "water", "points": [[29,15],[35,15],[35,14],[39,14],[39,19],[34,19],[34,20],[29,20]]},
+        {"name": "Attached south-bank cottonwood nose", "kind": "block_rect", "bounds": [43,47,45,49], "block": "05"}
+      ]
+    }
+  },
+  "r05_water_only_closures": [
+    {"bounds_metatiles": [26,14,32,41], "replacement": "05", "purpose": "Native forest closes only original Water cells between the lookout cove and southern fishing cove; all original land, bridges, piers, actors, gates and room mouths remain exact."}
+  ],
+  "preservation": [
+    "Restore every old landing FLOOR/TALL_GRASS metatile exactly after hand-authoring the woods channel.",
+    "Keep the two-metatile outer ring of both woods sources exactly, including every actual native external water port.",
+    "All15 native map identities, extents, world placements, connections, programs, actors, items, flags, rooms and art remain exact; candidate changes only explicit terrain cells.",
+    "R05 edits are restricted to cells whose four original quadrants are native Water. No original Foot bridge or land/ledge/gate terrain may change."
+  ]
+}

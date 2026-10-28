@@ -1,0 +1,118 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_300",
+  "name": "Densy",
+  "family_id": "MN_F136",
+  "status": "compiled_native_candidate_root_visual_context_acceptance_authoritative",
+  "generation_tool": "built-in image_gen",
+  "prompts": [
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f136/prompt-densy-v1.txt"
+  ],
+  "sources_selected": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f136/densy.overworld.imagegen-v1.png",
+      "sha256": "9f47b7fe2115cba7c74661dd715e04273fe5525895f6f38bdff32a09a2f0ec66",
+      "dimensions": [
+        1254,
+        1254
+      ]
+    }
+  ],
+  "default_output_originals": [
+    {
+      "record": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f136/densy.v1.original-path.txt",
+      "path": "/Users/ryanculligan/.codex/generated_images/01a17dc4-dd75-7642-a1c6-4bf13fda70c6/exec-efba8fe2-aa0c-4041-aaab-d08dc37d9981.png"
+    }
+  ],
+  "generation_style_reference_only": "planning/minnesota/pokemon/overworld/20261027-v1/references/native-pack-16px/native-six-frame-style-board.8x.png",
+  "identity_authority": "Currentactivecoverage.json exactcanonicalpalettes,textbodylocks,andvisualinspectionofselectednativefront; no battleartinputforgeneration",
+  "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f136/manifest-densy-v1-center.json",
+  "manifest_sha256": "f03ca4b2e9f90ba9014a12dfbc049a474a8b3e84b355fe16ca7b0d19419c749f",
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f136/densy-v1-center",
+  "normal_review": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f136/densy-v1-center/review/line.normal-8x.png",
+  "frame_size": [
+    16,
+    16
+  ],
+  "native_bounds": [
+    [
+      2,
+      3,
+      11,
+      12
+    ],
+    [
+      2,
+      3,
+      11,
+      12
+    ],
+    [
+      2,
+      3,
+      11,
+      12
+    ],
+    [
+      2,
+      3,
+      11,
+      12
+    ],
+    [
+      3,
+      3,
+      9,
+      12
+    ],
+    [
+      2,
+      3,
+      11,
+      12
+    ]
+  ],
+  "sampling": "source_center",
+  "normal_palette_rgb555": [
+    32767,
+    11831,
+    16744,
+    0
+  ],
+  "shiny_palette_rgb555": [
+    32767,
+    8599,
+    12029,
+    0
+  ],
+  "alpha_threshold": 128,
+  "transparent_index": 0,
+  "visible_indices": [
+    1,
+    2,
+    3
+  ],
+  "native_pixels_painted": false,
+  "notes": "All6frames strictRustcompiled andretained. Sameper-speciesworldscale/equalcropwindowswithpairedheadregistration. Max14pxopaquefootprint+transparentborder. Rootreviewandruntimecontextproofsdetermineacceptance; thisreceiptisnotacceptance. Noqueue/registry/packwrites.",
+  "selected_sources": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f136/densy.overworld.imagegen-v1.png",
+      "sha256": "9f47b7fe2115cba7c74661dd715e04273fe5525895f6f38bdff32a09a2f0ec66",
+      "dimensions": [
+        1254,
+        1254
+      ]
+    }
+  ],
+  "default_output_records": [
+    {
+      "record": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f136/densy.v1.original-path.txt",
+      "path": "/Users/ryanculligan/.codex/generated_images/01a17dc4-dd75-7642-a1c6-4bf13fda70c6/exec-efba8fe2-aa0c-4041-aaab-d08dc37d9981.png"
+    }
+  ],
+  "only_generation_reference": "planning/minnesota/pokemon/overworld/20261027-v1/references/native-pack-16px/native-six-frame-style-board.8x.png",
+  "native_frame_size": [
+    16,
+    16
+  ]
+}

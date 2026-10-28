@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F078",
+  "species": [
+    {
+      "species_id": "MN_170",
+      "runtime_token": "BOUGHLASH",
+      "palette_rgb555": [
+        32767,
+        8629,
+        9416,
+        0
+      ],
+      "shiny_palette_rgb555": [
+        32767,
+        13992,
+        6409,
+        0
+      ],
+      "fit": [
+        14,
+        14
+      ],
+      "alpha_threshold": 245,
+      "sampling": "source_center",
+      "minimum_foreground_samples": 16,
+      "black_priority_samples": 32,
+      "interior_black_samples": null,
+      "opaque_interior_minimum_samples": 60,
+      "frames": [
+        {
+          "pose": "down_idle",
+          "source": "boughlash.overworld.imagegen-v1.png",
+          "crop": [
+            85,
+            75,
+            407,
+            417
+          ]
+        },
+        {
+          "pose": "up_idle",
+          "source": "boughlash.overworld.imagegen-v1.png",
+          "crop": [
+            541,
+            75,
+            407,
+            417
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "source": "boughlash.overworld.imagegen-v1.png",
+          "crop": [
+            1063,
+            75,
+            407,
+            417
+          ]
+        },
+        {
+          "pose": "down_step",
+          "source": "boughlash.overworld.imagegen-v1.png",
+          "crop": [
+            103,
+            530,
+            407,
+            417
+          ]
+        },
+        {
+          "pose": "up_step",
+          "source": "boughlash.overworld.imagegen-v1.png",
+          "crop": [
+            541,
+            542,
+            407,
+            417
+          ]
+        },
+        {
+          "pose": "left_step",
+          "source": "boughlash.overworld.imagegen-v1.png",
+          "crop": [
+            1057,
+            542,
+            407,
+            417
+          ]
+        }
+      ]
+    }
+  ]
+}

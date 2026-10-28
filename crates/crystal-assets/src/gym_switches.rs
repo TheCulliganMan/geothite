@@ -32,6 +32,9 @@ pub(crate) fn install(module: &mut MapModule, gym: &Gym, refresh: &str) -> Resul
     let Some(puzzle) = &gym.switch_puzzle else {
         return Ok(());
     };
+    if !puzzle.first_requires.is_empty() {
+        return install_staged(module, gym, puzzle, refresh);
+    }
     let prefix = format!("{}Switch", gym.id);
     let denied = format!("{prefix}Denied");
     let first = format!("{prefix}First");
@@ -104,6 +107,94 @@ pub(crate) fn install(module: &mut MapModule, gym: &Gym, refresh: &str) -> Resul
     Ok(())
 }
 
+fn install_staged(
+    module: &mut MapModule,
+    gym: &Gym,
+    puzzle: &crate::gym_design::SwitchPuzzle,
+    refresh: &str,
+) -> Result<()> {
+    let prefix = format!("{}Switch", gym.id);
+    let denied = format!("{prefix}Denied");
+    let idle = format!("{prefix}Idle");
+    let first = format!("{prefix}First");
+    let second = format!("{prefix}Second");
+    let reset = format!("{prefix}Reset");
+    let solved = format!("{prefix}Solved");
+    for (label, lines) in [
+        (&denied, &puzzle.denied_lines),
+        (&idle, &puzzle.idle_lines),
+        (&first, &puzzle.first_lines),
+        (&second, &puzzle.second_lines),
+        (&solved, &puzzle.solved_lines),
+    ] {
+        message(module, label, lines);
+    }
+    let reset_text = format!("{reset}Text");
+    text(
+        module,
+        &reset_text,
+        &puzzle
+            .reset_lines
+            .iter()
+            .map(String::as_str)
+            .collect::<Vec<_>>(),
+    );
+    module.scripts.insert(
+        reset.clone(),
+        json!([
+            command("clearevent", &[&puzzle.events[0]]),
+            command("clearevent", &[&puzzle.events[1]]),
+            command("scall", &[refresh]),
+            command("writetext", &[&reset_text]),
+            command("waitbutton", &[]),
+            command("closetext", &[]),
+            command("end", &[])
+        ]),
+    );
+    for control in &puzzle.controls {
+        let label = format!("{prefix}{}", control.id);
+        let mut body = vec![
+            command("opentext", &[]),
+            command("checkevent", &[&gym.court_event()]),
+            command("iftrue", &[&solved]),
+        ];
+        for token in puzzle.step_requires(0) {
+            requirement(&mut body, token, &denied)?;
+        }
+        body.push(command("checkevent", &[&puzzle.events[0]]));
+        if control.id == puzzle.sequence[0] {
+            body.extend([
+                command("iftrue", &[&reset]),
+                command("setevent", &[&puzzle.events[0]]),
+                command("scall", &[refresh]),
+                command("sjump", &[&first]),
+            ]);
+        } else {
+            body.push(command("iffalse", &[&idle]));
+            for token in puzzle.step_requires(1) {
+                requirement(&mut body, token, &denied)?;
+            }
+            if control.id == puzzle.sequence[1] {
+                body.extend([
+                    command("setevent", &[&puzzle.events[1]]),
+                    command("scall", &[refresh]),
+                    command("sjump", &[&second]),
+                ]);
+            } else {
+                body.push(command("sjump", &[&reset]));
+            }
+        }
+        module.scripts.insert(label.clone(), Value::Array(body));
+        module.events.bg_events.push(BackgroundEvent {
+            x: control.at[0],
+            y: control.at[1],
+            event_type: "BGEVENT_READ".into(),
+            script: label,
+        });
+    }
+    Ok(())
+}
+
 /// Checks fixture identities, the hinted adjacent pair and reset-safe event ownership.
 pub(crate) fn validate_design(
     gym: &Gym,
@@ -112,6 +203,17 @@ pub(crate) fn validate_design(
 ) -> Result<()> {
     let [width, height] = gym.dimensions_metatiles;
     if let Some(puzzle) = &gym.switch_puzzle {
+        ensure!(
+            puzzle.first_requires.is_empty()
+                || (!puzzle.idle_lines.is_empty()
+                    && puzzle
+                        .first_requires
+                        .iter()
+                        .all(|r| puzzle.requires.contains(r))
+                    && puzzle.first_requires.len() < puzzle.requires.len()),
+            "{}: staged switches need a strict early prerequisite and idle feedback",
+            gym.id
+        );
         let mut controls = BTreeMap::new();
         for control in &puzzle.controls {
             ensure!(

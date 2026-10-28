@@ -1,0 +1,142 @@
+[
+  {
+    "name": "crookit",
+    "variant": "v8-pupils-and-fork",
+    "fit": [
+      12,
+      12
+    ],
+    "poses": [
+      {
+        "pose": "down_idle",
+        "native_bounds": [
+          5,
+          4,
+          7,
+          11
+        ],
+        "opaque": 43
+      },
+      {
+        "pose": "up_idle",
+        "native_bounds": [
+          5,
+          4,
+          7,
+          10
+        ],
+        "opaque": 50
+      },
+      {
+        "pose": "left_idle",
+        "native_bounds": [
+          2,
+          4,
+          12,
+          10
+        ],
+        "opaque": 65
+      },
+      {
+        "pose": "down_step",
+        "native_bounds": [
+          5,
+          4,
+          7,
+          11
+        ],
+        "opaque": 43
+      },
+      {
+        "pose": "up_step",
+        "native_bounds": [
+          5,
+          4,
+          7,
+          10
+        ],
+        "opaque": 43
+      },
+      {
+        "pose": "left_step",
+        "native_bounds": [
+          2,
+          4,
+          12,
+          10
+        ],
+        "opaque": 62
+      }
+    ]
+  },
+  {
+    "name": "crookveil",
+    "variant": "v5-native-pupils",
+    "fit": [
+      14,
+      14
+    ],
+    "poses": [
+      {
+        "pose": "down_idle",
+        "native_bounds": [
+          4,
+          4,
+          8,
+          11
+        ],
+        "opaque": 57
+      },
+      {
+        "pose": "up_idle",
+        "native_bounds": [
+          4,
+          4,
+          8,
+          10
+        ],
+        "opaque": 56
+      },
+      {
+        "pose": "left_idle",
+        "native_bounds": [
+          1,
+          4,
+          14,
+          9
+        ],
+        "opaque": 64
+      },
+      {
+        "pose": "down_step",
+        "native_bounds": [
+          4,
+          4,
+          8,
+          11
+        ],
+        "opaque": 57
+      },
+      {
+        "pose": "up_step",
+        "native_bounds": [
+          4,
+          4,
+          8,
+          11
+        ],
+        "opaque": 54
+      },
+      {
+        "pose": "left_step",
+        "native_bounds": [
+          1,
+          4,
+          14,
+          10
+        ],
+        "opaque": 71
+      }
+    ]
+  }
+]

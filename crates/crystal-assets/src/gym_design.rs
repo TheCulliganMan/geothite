@@ -1,5 +1,5 @@
 //! Authored gym rooms and their native progression contracts.
-use std::collections::BTreeMap;
+use std::collections::{BTreeMap, BTreeSet};
 
 use anyhow::{Result, ensure};
 use serde::Deserialize;
@@ -32,6 +32,12 @@ pub(crate) struct Gym {
     /// Native directional walk collision on visibly distinct slatted bridges.
     #[serde(default)]
     pub winds: BTreeMap<char, String>,
+    /// Paint native directional chevrons on every walking tile in wind lanes.
+    #[serde(default)]
+    pub wind_arrows: bool,
+    /// Full native electric-grid art used as a solid charged barrier.
+    #[serde(default)]
+    pub barriers: BTreeSet<char>,
     /// A contained indoor pool may have native walk-to-water access like Cerulean.
     #[serde(default)]
     pub enclosed_pool: bool,
@@ -148,11 +154,26 @@ pub(crate) struct SwitchPuzzle {
     pub sequence: [String; 2],
     pub events: [String; 2],
     pub requires: Vec<String>,
+    /// An optional first circuit which grants access to the next trainer.
+    #[serde(default)]
+    pub first_requires: Vec<String>,
+    #[serde(default)]
+    pub idle_lines: Vec<String>,
     pub denied_lines: Vec<String>,
     pub first_lines: Vec<String>,
     pub second_lines: Vec<String>,
     pub reset_lines: Vec<String>,
     pub solved_lines: Vec<String>,
+}
+
+impl SwitchPuzzle {
+    pub fn step_requires(&self, index: usize) -> &[String] {
+        if index == 0 && !self.first_requires.is_empty() {
+            &self.first_requires
+        } else {
+            &self.requires
+        }
+    }
 }
 
 #[derive(Debug, Deserialize)]
@@ -214,6 +235,13 @@ pub(crate) struct CutGate {
 }
 
 impl Gym {
+    /// Open-court gardens may add return doors that unlock only after victory.
+    pub fn only_victory_gates(&self) -> bool {
+        self.gates
+            .iter()
+            .all(|gate| gate.requires == [self.defeated()] && gate.event != self.court_event())
+    }
+
     pub fn defeated(&self) -> String {
         format!("EVENT_MN_GYM_{}_DEFEATED", self.slot)
     }
@@ -290,6 +318,15 @@ impl GymDesign {
                 gym.id
             );
             ensure!(
+                gym.barriers.iter().all(|symbol| {
+                    gym.art.contains_key(symbol)
+                        && gym.rows.iter().any(|row| row.contains(*symbol))
+                        && !gym.winds.contains_key(symbol)
+                }),
+                "{}: solid barriers require visible, unambiguous art",
+                gym.id
+            );
+            ensure!(
                 gym.rows
                     .iter()
                     .flat_map(|r| r.chars())
@@ -306,7 +343,7 @@ impl GymDesign {
             if !gym.court_requires.is_empty() {
                 ensure!(
                     (!gym.leader_court_locked || !gym.cut_gates.is_empty())
-                        && gym.gates.is_empty()
+                        && gym.only_victory_gates()
                         && gym.court_requires.iter().all(|token| gym
                             .trainers
                             .iter()
@@ -326,6 +363,10 @@ impl GymDesign {
                     gym.id
                 );
             }
+            ensure!(
+                !gym.wind_arrows || !gym.winds.is_empty(),
+                "marked wind needs declared lanes"
+            );
             crate::gym_cut::validate_design(gym)?;
             let mut actors = std::collections::BTreeSet::from([gym.guide_at, gym.leader_at]);
             for at in gym

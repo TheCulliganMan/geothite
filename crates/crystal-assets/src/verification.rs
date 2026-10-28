@@ -813,6 +813,11 @@ fn item_payload_issue_diagnostic(
             item_id,
             "battle_focus_energy must be true when declared",
         ),
+        ItemPayloadIssue::InvalidConfusionDuration { turns } => VerificationError::error(
+            "invalid_item_confusion_duration",
+            item_id,
+            format!("confusion_inflict_turns must be in 1..=5, found {turns}"),
+        ),
         ItemPayloadIssue::InvalidConfusionHeal => VerificationError::error(
             "invalid_item_confusion_heal",
             item_id,
@@ -3443,12 +3448,12 @@ fn script_block_change_issue_diagnostic(
 
 fn verify_script_object_commands(data: &GameDataSet, diagnostics: &mut Vec<VerificationError>) {
     for (map_name, module) in &data.maps {
-        if module.objects.len() > 15 {
+        if module.objects.len() > crystal_core::world::object_capacity::MAX_MAP_OBJECTS {
             diagnostics.push(VerificationError::error(
                 "too_many_map_objects",
                 map_name,
                 format!(
-                    "map declares {} non-player object records, but wMapObjects has only indexes 1..=15",
+                    "map declares {} non-player object records, but byte-sized non-player indexes support 1..=255",
                     module.objects.len()
                 ),
             ));

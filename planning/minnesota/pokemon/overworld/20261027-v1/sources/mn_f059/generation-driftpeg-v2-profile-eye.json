@@ -1,0 +1,12 @@
+{
+  "name": "driftpeg",
+  "version": "v2-profile-eye",
+  "folder": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f059",
+  "prompt": "Precise edit only ONE actual black eye in TOP RIGHT and BOTTOM RIGHT pureWEST profiles of this baby3palisade-peg icefence sheet. Keep every outer silhouette, THREE uprightbody slats, snowcaps, fourshortfeet withnaturalocclusion, cellpositions andscale unchanged. Current profilepupil sits too close to left contour for native12px. Restore oldeye to samepaleice, move the ONE solid32x32blackpupil16sourcepxRIGHT: new top x1153..1184,y345..376; new lower x1153..1184,y735..766. Keep full30-34sourcepx LIGHTICE orBLUE bodycolorbuffer onall4sides, especiallyleft, stillinsidefrontpegface. No extraeyes ormouthdots, no face elsewhere. Otherfourcells unchanged: southtwoactualeyes, northplainpalisadebacks. Strict3flatinks frostice#A5D6EF deepblue#426B94 black#000000, truealpha0outside, no shading/glow/resize/newdetails. Remain3slatquadruped, not ladderperson.\n",
+  "refs": [
+    "/Users/ryanculligan/GitHub/geothite/planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f059/driftpeg.overworld.imagegen-v1.png"
+  ],
+  "default_path": "/Users/ryanculligan/.codex/generated_images/01a17f9b-beff-7771-977d-2d3d7b14de43/exec-c15dd6e4-6da4-45d4-9cc2-e38a01eb4202.png",
+  "sha256": "2f78e7c2082d9789dc506c018c2ac263d4cda7c03caa8d5d323fa681bb22cad5",
+  "tool": "built-in image_gen"
+}

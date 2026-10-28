@@ -1,0 +1,339 @@
+{
+  "schema_version": 1,
+  "status": "All eight interiors rebuilt and native-reviewed against original Crystal gyms with original character names. The 538-map regional story candidate now contains every current room and real city facade; one production suite passes all eight local city courses, badges/TMs, saves and both returns. Earned opening/R01/Rochester regressions also pass. Missing regional links, required story gates and a continuous earned badge journey remain unproved.",
+  "gyms": [
+    {
+      "slot": 8,
+      "id": "MnDuluthGym",
+      "constant": "MN_DULUTH_GYM",
+      "city": "DULUTH",
+      "leader": "NOREK",
+      "trainer_class": "SAILOR",
+      "leader_sprite": "SPRITE_SAILOR",
+      "leader_at": [
+        8,
+        3
+      ],
+      "badge_flag": "ENGINE_RISINGBADGE",
+      "requires": [
+        "BADGE_7"
+      ],
+      "reward": "TM_ICY_WIND",
+      "party": [
+        {
+          "species": "DEWGONG",
+          "level": 42,
+          "moves": [
+            "AURORA_BEAM",
+            "SURF",
+            "HEADBUTT",
+            "ICY_WIND"
+          ]
+        },
+        {
+          "species": "PILOSWINE",
+          "level": 43,
+          "moves": [
+            "POWDER_SNOW",
+            "EARTHQUAKE",
+            "TAKE_DOWN",
+            "MIST"
+          ]
+        },
+        {
+          "species": "SNEASEL",
+          "level": 44,
+          "moves": [
+            "FAINT_ATTACK",
+            "QUICK_ATTACK",
+            "SCREECH",
+            "ICE_PUNCH"
+          ]
+        },
+        {
+          "species": "LAPRAS",
+          "level": 45,
+          "moves": [
+            "ICE_BEAM",
+            "SURF",
+            "BODY_SLAM",
+            "RAIN_DANCE"
+          ]
+        }
+      ],
+      "rows": [
+        "WWWWWWW",
+        "l.#...r",
+        "l..XWWW",
+        "BB.V.rr",
+        "lIa#lBr",
+        "lIr#bIB",
+        "lIr#lIr",
+        "BrY#BZB",
+        "..L.R..",
+        "...s..."
+      ],
+      "art": {
+        "#": [
+          "elite_four_room",
+          "17"
+        ],
+        "W": [
+          "elite_four_room",
+          "27"
+        ],
+        ".": [
+          "elite_four_room",
+          "2d"
+        ],
+        "B": [
+          "elite_four_room",
+          "14"
+        ],
+        "I": [
+          "elite_four_room",
+          "39"
+        ],
+        "a": [
+          "elite_four_room",
+          "31"
+        ],
+        "b": [
+          "elite_four_room",
+          "32"
+        ],
+        "l": [
+          "elite_four_room",
+          "36"
+        ],
+        "r": [
+          "elite_four_room",
+          "35"
+        ],
+        "X": [
+          "underground",
+          "0b"
+        ],
+        "Y": [
+          "underground",
+          "0b"
+        ],
+        "Z": [
+          "underground",
+          "0b"
+        ],
+        "V": [
+          "underground",
+          "0b"
+        ],
+        "L": [
+          "elite_four_room",
+          "1e"
+        ],
+        "R": [
+          "elite_four_room",
+          "1d"
+        ],
+        "s": [
+          "elite_four_room",
+          "1c"
+        ]
+      },
+      "trainers": [
+        {
+          "id": "MN_GYM_8_TRAINER_1",
+          "name": "LIVRA",
+          "trainer_class": "COOLTRAINERF",
+          "sprite": "SPRITE_COOLTRAINER_F",
+          "at": [
+            3,
+            4
+          ],
+          "party": [
+            {
+              "species": "SEEL",
+              "level": 39
+            },
+            {
+              "species": "SWINUB",
+              "level": 40
+            }
+          ],
+          "optional": false,
+          "before_lines": [
+            "Choose your line",
+            "before you move."
+          ],
+          "after_lines": [
+            "The gold gates at",
+            "the east launch",
+            "and west return",
+            "are open."
+          ]
+        },
+        {
+          "id": "MN_GYM_8_TRAINER_2",
+          "name": "TORDEL",
+          "trainer_class": "SAILOR",
+          "sprite": "SPRITE_SAILOR",
+          "at": [
+            9,
+            6
+          ],
+          "party": [
+            {
+              "species": "SNEASEL",
+              "level": 40
+            }
+          ],
+          "optional": false,
+          "before_lines": [
+            "A good landing",
+            "takes planning."
+          ],
+          "after_lines": [
+            "The gold cross",
+            "gate is open.",
+            "ANVER is waiting."
+          ],
+          "requires": [
+            "EVENT_MN_GYM_8_TRAINER_1_DEFEATED"
+          ]
+        },
+        {
+          "id": "MN_GYM_8_TRAINER_3",
+          "name": "ANVER",
+          "trainer_class": "COOLTRAINERM",
+          "sprite": "SPRITE_COOLTRAINER_M",
+          "at": [
+            5,
+            6
+          ],
+          "party": [
+            {
+              "species": "DEWGONG",
+              "level": 41
+            }
+          ],
+          "optional": false,
+          "requires": [
+            "EVENT_MN_GYM_8_TRAINER_2_DEFEATED"
+          ],
+          "before_lines": [
+            "One last bout",
+            "before NOREK."
+          ],
+          "after_lines": [
+            "The last gold",
+            "gate is open.",
+            "NOREK is waiting."
+          ]
+        }
+      ],
+      "stations": [],
+      "gates": [
+        {
+          "at": [
+            2,
+            7
+          ],
+          "requires": [
+            "EVENT_MN_GYM_8_TRAINER_1_DEFEATED"
+          ],
+          "open_symbol": ".",
+          "event": "EVENT_MN_GYM_8_WEST_RETURN_OPEN"
+        },
+        {
+          "at": [
+            5,
+            7
+          ],
+          "requires": [
+            "EVENT_MN_GYM_8_TRAINER_1_DEFEATED"
+          ],
+          "open_symbol": "l",
+          "event": "EVENT_MN_GYM_8_EAST_ENTRY_OPEN"
+        },
+        {
+          "at": [
+            3,
+            3
+          ],
+          "requires": [
+            "EVENT_MN_GYM_8_TRAINER_2_DEFEATED"
+          ],
+          "open_symbol": ".",
+          "event": "EVENT_MN_GYM_8_EAST_RETURN_OPEN"
+        },
+        {
+          "at": [
+            3,
+            2
+          ],
+          "requires": [
+            "EVENT_MN_GYM_8_TRAINER_1_DEFEATED",
+            "EVENT_MN_GYM_8_TRAINER_2_DEFEATED",
+            "EVENT_MN_GYM_8_TRAINER_3_DEFEATED"
+          ],
+          "open_symbol": ".",
+          "event": "EVENT_MN_GYM_8_COURT_OPEN"
+        }
+      ],
+      "guide": [
+        "White ice slides.",
+        "Rough patches stop.",
+        "Silver blocks stay.",
+        "Gold gates open",
+        "after each win.",
+        "Find LIVRA west,",
+        "TORDEL east, then",
+        "return to ANVER."
+      ],
+      "walkthrough": [
+        "MN_GYM_8_TRAINER_1",
+        "MN_GYM_8_TRAINER_2",
+        "MN_GYM_8_TRAINER_3"
+      ],
+      "dimensions_metatiles": [
+        7,
+        10
+      ],
+      "arrival_core": [
+        6,
+        17
+      ],
+      "exit_tiles_core": [
+        [
+          6,
+          19
+        ],
+        [
+          7,
+          19
+        ]
+      ],
+      "guide_at": [
+        10,
+        17
+      ],
+      "leader_court_locked": true,
+      "before_lines": [
+        "The harbor froze.",
+        "The lake moves on.",
+        "Your last BADGE",
+        "is waiting here."
+      ],
+      "victory_lines": [
+        "You held your",
+        "course. Well done."
+      ],
+      "after_lines": [
+        "Eight BADGES.",
+        "The journey goes",
+        "on. Take the",
+        "instrument to",
+        "the workshop."
+      ]
+    }
+  ]
+}

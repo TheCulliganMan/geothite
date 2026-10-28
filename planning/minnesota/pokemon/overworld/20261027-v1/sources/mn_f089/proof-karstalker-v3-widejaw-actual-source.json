@@ -1,0 +1,173 @@
+{
+  "name": "Karstalker",
+  "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f089/karstalker-v3-widejaw",
+  "all_four_nonrear_sample_actual_small_source_pupil_components": true,
+  "native_south_pupils_touch_mouth_below": true,
+  "note": "Root already passed native board/map; this proof certifies source anatomy, not four-neighbor native isolation. South eyes join black mouth on their lower edge at native resolution.",
+  "proof": [
+    {
+      "pose": "down_idle",
+      "actual_small_source_pupils": [
+        {
+          "native": [
+            6,
+            7
+          ],
+          "source_sample": [
+            250,
+            233
+          ],
+          "actual_source_component": [
+            234,
+            219,
+            19,
+            20
+          ],
+          "component_pixels": 380,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            3
+          ],
+          "native_contour_adjacent": true
+        },
+        {
+          "native": [
+            9,
+            7
+          ],
+          "source_sample": [
+            336,
+            233
+          ],
+          "actual_source_component": [
+            336,
+            219,
+            19,
+            20
+          ],
+          "component_pixels": 380,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            3
+          ],
+          "native_contour_adjacent": true
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "actual_small_source_pupils": [
+        {
+          "native": [
+            5,
+            7
+          ],
+          "source_sample": [
+            1191,
+            233
+          ],
+          "actual_source_component": [
+            1186,
+            219,
+            19,
+            20
+          ],
+          "component_pixels": 380,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "native_contour_adjacent": false
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "actual_small_source_pupils": [
+        {
+          "native": [
+            6,
+            7
+          ],
+          "source_sample": [
+            250,
+            670
+          ],
+          "actual_source_component": [
+            233,
+            659,
+            20,
+            19
+          ],
+          "component_pixels": 380,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            3
+          ],
+          "native_contour_adjacent": true
+        },
+        {
+          "native": [
+            9,
+            7
+          ],
+          "source_sample": [
+            336,
+            670
+          ],
+          "actual_source_component": [
+            336,
+            658,
+            19,
+            20
+          ],
+          "component_pixels": 379,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            3
+          ],
+          "native_contour_adjacent": true
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "actual_small_source_pupils": [
+        {
+          "native": [
+            5,
+            7
+          ],
+          "source_sample": [
+            1191,
+            670
+          ],
+          "actual_source_component": [
+            1186,
+            658,
+            19,
+            20
+          ],
+          "component_pixels": 380,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "native_contour_adjacent": false
+        }
+      ]
+    }
+  ]
+}

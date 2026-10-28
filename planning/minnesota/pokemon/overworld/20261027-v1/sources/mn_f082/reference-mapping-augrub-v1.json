@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_178",
+  "fit": 12,
+  "input_images": [
+    {
+      "role": "native16 style/logical pixel reference only",
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/references/native-pack-16px/native-six-frame-style-board.8x.png",
+      "sha256": "4354a639ed1a80fd6686e43b273443ed894e58a84307a8049f638ee9ffa2a099"
+    }
+  ],
+  "canonical_identity_reviewed": {
+    "front": {
+      "path": "target/minnesota-pokemon/native/MN_F082/mn-178-augrub-v1.front.png",
+      "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F082/mn-178-augrub-v1.front.png",
+      "sha256": "bf92fbd491f1b053a2a765ec5d9b0082eb95c1ecdb1f00803c6f8478a92188ba"
+    },
+    "back": {
+      "path": "target/minnesota-pokemon/native/MN_F082/mn-178-augrub-v1.back.png",
+      "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F082/mn-178-augrub-v1.back.png",
+      "sha256": "e857b4bc0c3b71698b81d62147da2b3f8ca0876c9a26d07b5d0cc23042468694"
+    }
+  },
+  "canonical_eye_form": "ONE actual central pupil per nonrear pose; cyclops. Rear has no eye/face.",
+  "prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f082/prompt-augrub-v1.txt"
+}

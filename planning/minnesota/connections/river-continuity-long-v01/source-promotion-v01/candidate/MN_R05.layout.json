@@ -1,0 +1,6510 @@
+{
+  "schema_version": 2,
+  "id": "MN_R05",
+  "tileset": "johto",
+  "compiled_tileset": "mn_headwaters",
+  "dimensions_metatiles": [
+    32,
+    56
+  ],
+  "shore_fitting": "explicit_source_edges",
+  "reject_cliff_cuts": true,
+  "source_pixels_modified": false,
+  "derived_blocks": [
+    {
+      "id": "80",
+      "source_tileset": "kanto",
+      "source_block": "78",
+      "collision": "WATER",
+      "required_typed_extension": "headwaters_art::build_headwaters_art_pack"
+    },
+    {
+      "id": "81",
+      "source_tileset": "kanto",
+      "source_block": "77",
+      "collision": "FLOOR/FLOOR/WALL/WALL",
+      "required_typed_extension": "headwaters_art::build_headwaters_art_pack"
+    },
+    {
+      "id": "82",
+      "source_tileset": "kanto",
+      "source_block": "77",
+      "tile_row_order": [
+        2,
+        3,
+        0,
+        1
+      ],
+      "collision_source_tileset": "johto",
+      "collision_source_block": "75",
+      "required_typed_extension": "headwaters_art::build_headwaters_art_pack"
+    }
+  ],
+  "layers": [
+    {
+      "name": "Accepted native row 000 x00..11",
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        0,
+        12,
+        1
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 000 x12..12",
+      "kind": "block_rect",
+      "bounds": [
+        12,
+        0,
+        13,
+        1
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Accepted native row 000 x13..21",
+      "kind": "block_rect",
+      "bounds": [
+        13,
+        0,
+        22,
+        1
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 000 x22..22",
+      "kind": "block_rect",
+      "bounds": [
+        22,
+        0,
+        23,
+        1
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Accepted native row 000 x23..23",
+      "kind": "block_rect",
+      "bounds": [
+        23,
+        0,
+        24,
+        1
+      ],
+      "block": "36"
+    },
+    {
+      "name": "Accepted native row 000 x24..27",
+      "kind": "block_rect",
+      "bounds": [
+        24,
+        0,
+        28,
+        1
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 000 x28..30",
+      "kind": "block_rect",
+      "bounds": [
+        28,
+        0,
+        31,
+        1
+      ],
+      "block": "31"
+    },
+    {
+      "name": "Accepted native row 000 x31..31",
+      "kind": "block_rect",
+      "bounds": [
+        31,
+        0,
+        32,
+        1
+      ],
+      "block": "32"
+    },
+    {
+      "name": "Accepted native row 001 x00..11",
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        1,
+        12,
+        2
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 001 x12..12",
+      "kind": "block_rect",
+      "bounds": [
+        12,
+        1,
+        13,
+        2
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Accepted native row 001 x13..21",
+      "kind": "block_rect",
+      "bounds": [
+        13,
+        1,
+        22,
+        2
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 001 x22..22",
+      "kind": "block_rect",
+      "bounds": [
+        22,
+        1,
+        23,
+        2
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Accepted native row 001 x23..27",
+      "kind": "block_rect",
+      "bounds": [
+        23,
+        1,
+        28,
+        2
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Accepted native row 001 x28..28",
+      "kind": "block_rect",
+      "bounds": [
+        28,
+        1,
+        29,
+        2
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Accepted native row 001 x29..30",
+      "kind": "block_rect",
+      "bounds": [
+        29,
+        1,
+        31,
+        2
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Accepted native row 001 x31..31",
+      "kind": "block_rect",
+      "bounds": [
+        31,
+        1,
+        32,
+        2
+      ],
+      "block": "36"
+    },
+    {
+      "name": "Accepted native row 002 x00..11",
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        2,
+        12,
+        3
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 002 x12..12",
+      "kind": "block_rect",
+      "bounds": [
+        12,
+        2,
+        13,
+        3
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Accepted native row 002 x13..13",
+      "kind": "block_rect",
+      "bounds": [
+        13,
+        2,
+        14,
+        3
+      ],
+      "block": "45"
+    },
+    {
+      "name": "Accepted native row 002 x14..21",
+      "kind": "block_rect",
+      "bounds": [
+        14,
+        2,
+        22,
+        3
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 002 x22..22",
+      "kind": "block_rect",
+      "bounds": [
+        22,
+        2,
+        23,
+        3
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Accepted native row 002 x23..27",
+      "kind": "block_rect",
+      "bounds": [
+        23,
+        2,
+        28,
+        3
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Accepted native row 002 x28..28",
+      "kind": "block_rect",
+      "bounds": [
+        28,
+        2,
+        29,
+        3
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Accepted native row 002 x29..31",
+      "kind": "block_rect",
+      "bounds": [
+        29,
+        2,
+        32,
+        3
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Accepted native row 003 x00..11",
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        3,
+        12,
+        4
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 003 x12..12",
+      "kind": "block_rect",
+      "bounds": [
+        12,
+        3,
+        13,
+        4
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Accepted native row 003 x13..27",
+      "kind": "block_rect",
+      "bounds": [
+        13,
+        3,
+        28,
+        4
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 003 x28..28",
+      "kind": "block_rect",
+      "bounds": [
+        28,
+        3,
+        29,
+        4
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Accepted native row 003 x29..31",
+      "kind": "block_rect",
+      "bounds": [
+        29,
+        3,
+        32,
+        4
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Accepted native row 004 x00..11",
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        4,
+        12,
+        5
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 004 x12..13",
+      "kind": "block_rect",
+      "bounds": [
+        12,
+        4,
+        14,
+        5
+      ],
+      "block": "02"
+    },
+    {
+      "name": "Accepted native row 004 x14..14",
+      "kind": "block_rect",
+      "bounds": [
+        14,
+        4,
+        15,
+        5
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Accepted native row 004 x15..27",
+      "kind": "block_rect",
+      "bounds": [
+        15,
+        4,
+        28,
+        5
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 004 x28..28",
+      "kind": "block_rect",
+      "bounds": [
+        28,
+        4,
+        29,
+        5
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Accepted native row 004 x29..30",
+      "kind": "block_rect",
+      "bounds": [
+        29,
+        4,
+        31,
+        5
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Accepted native row 004 x31..31",
+      "kind": "block_rect",
+      "bounds": [
+        31,
+        4,
+        32,
+        5
+      ],
+      "block": "36"
+    },
+    {
+      "name": "Accepted native row 005 x00..11",
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        5,
+        12,
+        6
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 005 x12..12",
+      "kind": "block_rect",
+      "bounds": [
+        12,
+        5,
+        13,
+        6
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Accepted native row 005 x13..27",
+      "kind": "block_rect",
+      "bounds": [
+        13,
+        5,
+        28,
+        6
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 005 x28..28",
+      "kind": "block_rect",
+      "bounds": [
+        28,
+        5,
+        29,
+        6
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Accepted native row 005 x29..30",
+      "kind": "block_rect",
+      "bounds": [
+        29,
+        5,
+        31,
+        6
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Accepted native row 005 x31..31",
+      "kind": "block_rect",
+      "bounds": [
+        31,
+        5,
+        32,
+        6
+      ],
+      "block": "36"
+    },
+    {
+      "name": "Accepted native row 006 x00..11",
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        6,
+        12,
+        7
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 006 x12..12",
+      "kind": "block_rect",
+      "bounds": [
+        12,
+        6,
+        13,
+        7
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Accepted native row 006 x13..27",
+      "kind": "block_rect",
+      "bounds": [
+        13,
+        6,
+        28,
+        7
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 006 x28..28",
+      "kind": "block_rect",
+      "bounds": [
+        28,
+        6,
+        29,
+        7
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Accepted native row 006 x29..30",
+      "kind": "block_rect",
+      "bounds": [
+        29,
+        6,
+        31,
+        7
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Accepted native row 006 x31..31",
+      "kind": "block_rect",
+      "bounds": [
+        31,
+        6,
+        32,
+        7
+      ],
+      "block": "36"
+    },
+    {
+      "name": "Accepted native row 007 x00..04",
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        7,
+        5,
+        8
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 007 x05..05",
+      "kind": "block_rect",
+      "bounds": [
+        5,
+        7,
+        6,
+        8
+      ],
+      "block": "6a"
+    },
+    {
+      "name": "Accepted native row 007 x06..08",
+      "kind": "block_rect",
+      "bounds": [
+        6,
+        7,
+        9,
+        8
+      ],
+      "block": "70"
+    },
+    {
+      "name": "Accepted native row 007 x09..09",
+      "kind": "block_rect",
+      "bounds": [
+        9,
+        7,
+        10,
+        8
+      ],
+      "block": "6b"
+    },
+    {
+      "name": "Accepted native row 007 x10..10",
+      "kind": "block_rect",
+      "bounds": [
+        10,
+        7,
+        11,
+        8
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 007 x11..11",
+      "kind": "block_rect",
+      "bounds": [
+        11,
+        7,
+        12,
+        8
+      ],
+      "block": "6a"
+    },
+    {
+      "name": "Accepted native row 007 x12..12",
+      "kind": "block_rect",
+      "bounds": [
+        12,
+        7,
+        13,
+        8
+      ],
+      "block": "74"
+    },
+    {
+      "name": "Accepted native row 007 x13..13",
+      "kind": "block_rect",
+      "bounds": [
+        13,
+        7,
+        14,
+        8
+      ],
+      "block": "70"
+    },
+    {
+      "name": "Accepted native row 007 x14..14",
+      "kind": "block_rect",
+      "bounds": [
+        14,
+        7,
+        15,
+        8
+      ],
+      "block": "6b"
+    },
+    {
+      "name": "Accepted native row 007 x15..27",
+      "kind": "block_rect",
+      "bounds": [
+        15,
+        7,
+        28,
+        8
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 007 x28..28",
+      "kind": "block_rect",
+      "bounds": [
+        28,
+        7,
+        29,
+        8
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Accepted native row 007 x29..30",
+      "kind": "block_rect",
+      "bounds": [
+        29,
+        7,
+        31,
+        8
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Accepted native row 007 x31..31",
+      "kind": "block_rect",
+      "bounds": [
+        31,
+        7,
+        32,
+        8
+      ],
+      "block": "36"
+    },
+    {
+      "name": "Accepted native row 008 x00..04",
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        8,
+        5,
+        9
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 008 x05..05",
+      "kind": "block_rect",
+      "bounds": [
+        5,
+        8,
+        6,
+        9
+      ],
+      "block": "68"
+    },
+    {
+      "name": "Accepted native row 008 x06..08",
+      "kind": "block_rect",
+      "bounds": [
+        6,
+        8,
+        9,
+        9
+      ],
+      "block": "0a"
+    },
+    {
+      "name": "Accepted native row 008 x09..09",
+      "kind": "block_rect",
+      "bounds": [
+        9,
+        8,
+        10,
+        9
+      ],
+      "block": "69"
+    },
+    {
+      "name": "Accepted native row 008 x10..10",
+      "kind": "block_rect",
+      "bounds": [
+        10,
+        8,
+        11,
+        9
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 008 x11..11",
+      "kind": "block_rect",
+      "bounds": [
+        11,
+        8,
+        12,
+        9
+      ],
+      "block": "68"
+    },
+    {
+      "name": "Accepted native row 008 x12..12",
+      "kind": "block_rect",
+      "bounds": [
+        12,
+        8,
+        13,
+        9
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Accepted native row 008 x13..13",
+      "kind": "block_rect",
+      "bounds": [
+        13,
+        8,
+        14,
+        9
+      ],
+      "block": "71"
+    },
+    {
+      "name": "Accepted native row 008 x14..14",
+      "kind": "block_rect",
+      "bounds": [
+        14,
+        8,
+        15,
+        9
+      ],
+      "block": "69"
+    },
+    {
+      "name": "Accepted native row 008 x15..16",
+      "kind": "block_rect",
+      "bounds": [
+        15,
+        8,
+        17,
+        9
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 008 x17..18",
+      "kind": "block_rect",
+      "bounds": [
+        17,
+        8,
+        19,
+        9
+      ],
+      "block": "02"
+    },
+    {
+      "name": "Accepted native row 008 x19..19",
+      "kind": "block_rect",
+      "bounds": [
+        19,
+        8,
+        20,
+        9
+      ],
+      "block": "04"
+    },
+    {
+      "name": "Accepted native row 008 x20..23",
+      "kind": "block_rect",
+      "bounds": [
+        20,
+        8,
+        24,
+        9
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 008 x24..27",
+      "kind": "block_rect",
+      "bounds": [
+        24,
+        8,
+        28,
+        9
+      ],
+      "block": "41"
+    },
+    {
+      "name": "Accepted native row 008 x28..28",
+      "kind": "block_rect",
+      "bounds": [
+        28,
+        8,
+        29,
+        9
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Accepted native row 008 x29..30",
+      "kind": "block_rect",
+      "bounds": [
+        29,
+        8,
+        31,
+        9
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Accepted native row 008 x31..31",
+      "kind": "block_rect",
+      "bounds": [
+        31,
+        8,
+        32,
+        9
+      ],
+      "block": "36"
+    },
+    {
+      "name": "Accepted native row 009 x00..04",
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        9,
+        5,
+        10
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 009 x05..05",
+      "kind": "block_rect",
+      "bounds": [
+        5,
+        9,
+        6,
+        10
+      ],
+      "block": "68"
+    },
+    {
+      "name": "Accepted native row 009 x06..08",
+      "kind": "block_rect",
+      "bounds": [
+        6,
+        9,
+        9,
+        10
+      ],
+      "block": "0a"
+    },
+    {
+      "name": "Accepted native row 009 x09..09",
+      "kind": "block_rect",
+      "bounds": [
+        9,
+        9,
+        10,
+        10
+      ],
+      "block": "69"
+    },
+    {
+      "name": "Accepted native row 009 x10..10",
+      "kind": "block_rect",
+      "bounds": [
+        10,
+        9,
+        11,
+        10
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 009 x11..11",
+      "kind": "block_rect",
+      "bounds": [
+        11,
+        9,
+        12,
+        10
+      ],
+      "block": "68"
+    },
+    {
+      "name": "Accepted native row 009 x12..12",
+      "kind": "block_rect",
+      "bounds": [
+        12,
+        9,
+        13,
+        10
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Accepted native row 009 x13..13",
+      "kind": "block_rect",
+      "bounds": [
+        13,
+        9,
+        14,
+        10
+      ],
+      "block": "71"
+    },
+    {
+      "name": "Accepted native row 009 x14..14",
+      "kind": "block_rect",
+      "bounds": [
+        14,
+        9,
+        15,
+        10
+      ],
+      "block": "69"
+    },
+    {
+      "name": "Accepted native row 009 x15..16",
+      "kind": "block_rect",
+      "bounds": [
+        15,
+        9,
+        17,
+        10
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 009 x17..19",
+      "kind": "block_rect",
+      "bounds": [
+        17,
+        9,
+        20,
+        10
+      ],
+      "block": "02"
+    },
+    {
+      "name": "Accepted native row 009 x20..23",
+      "kind": "block_rect",
+      "bounds": [
+        20,
+        9,
+        24,
+        10
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 009 x24..24",
+      "kind": "block_rect",
+      "bounds": [
+        24,
+        9,
+        25,
+        10
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Accepted native row 009 x25..25",
+      "kind": "block_rect",
+      "bounds": [
+        25,
+        9,
+        26,
+        10
+      ],
+      "block": "45"
+    },
+    {
+      "name": "Accepted native row 009 x26..26",
+      "kind": "block_rect",
+      "bounds": [
+        26,
+        9,
+        27,
+        10
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Accepted native row 009 x27..27",
+      "kind": "block_rect",
+      "bounds": [
+        27,
+        9,
+        28,
+        10
+      ],
+      "block": "46"
+    },
+    {
+      "name": "Accepted native row 009 x28..28",
+      "kind": "block_rect",
+      "bounds": [
+        28,
+        9,
+        29,
+        10
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Accepted native row 009 x29..30",
+      "kind": "block_rect",
+      "bounds": [
+        29,
+        9,
+        31,
+        10
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Accepted native row 009 x31..31",
+      "kind": "block_rect",
+      "bounds": [
+        31,
+        9,
+        32,
+        10
+      ],
+      "block": "36"
+    },
+    {
+      "name": "Accepted native row 010 x00..04",
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        10,
+        5,
+        11
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 010 x05..05",
+      "kind": "block_rect",
+      "bounds": [
+        5,
+        10,
+        6,
+        11
+      ],
+      "block": "68"
+    },
+    {
+      "name": "Accepted native row 010 x06..06",
+      "kind": "block_rect",
+      "bounds": [
+        6,
+        10,
+        7,
+        11
+      ],
+      "block": "0a"
+    },
+    {
+      "name": "Accepted native row 010 x07..08",
+      "kind": "block_rect",
+      "bounds": [
+        7,
+        10,
+        9,
+        11
+      ],
+      "block": "71"
+    },
+    {
+      "name": "Accepted native row 010 x09..09",
+      "kind": "block_rect",
+      "bounds": [
+        9,
+        10,
+        10,
+        11
+      ],
+      "block": "69"
+    },
+    {
+      "name": "Accepted native row 010 x10..10",
+      "kind": "block_rect",
+      "bounds": [
+        10,
+        10,
+        11,
+        11
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 010 x11..11",
+      "kind": "block_rect",
+      "bounds": [
+        11,
+        10,
+        12,
+        11
+      ],
+      "block": "68"
+    },
+    {
+      "name": "Accepted native row 010 x12..12",
+      "kind": "block_rect",
+      "bounds": [
+        12,
+        10,
+        13,
+        11
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Accepted native row 010 x13..13",
+      "kind": "block_rect",
+      "bounds": [
+        13,
+        10,
+        14,
+        11
+      ],
+      "block": "71"
+    },
+    {
+      "name": "Accepted native row 010 x14..14",
+      "kind": "block_rect",
+      "bounds": [
+        14,
+        10,
+        15,
+        11
+      ],
+      "block": "69"
+    },
+    {
+      "name": "Accepted native row 010 x15..16",
+      "kind": "block_rect",
+      "bounds": [
+        15,
+        10,
+        17,
+        11
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 010 x17..17",
+      "kind": "block_rect",
+      "bounds": [
+        17,
+        10,
+        18,
+        11
+      ],
+      "block": "02"
+    },
+    {
+      "name": "Accepted native row 010 x18..26",
+      "kind": "block_rect",
+      "bounds": [
+        18,
+        10,
+        27,
+        11
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Accepted native row 010 x27..27",
+      "kind": "block_rect",
+      "bounds": [
+        27,
+        10,
+        28,
+        11
+      ],
+      "block": "46"
+    },
+    {
+      "name": "Accepted native row 010 x28..28",
+      "kind": "block_rect",
+      "bounds": [
+        28,
+        10,
+        29,
+        11
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Accepted native row 010 x29..30",
+      "kind": "block_rect",
+      "bounds": [
+        29,
+        10,
+        31,
+        11
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Accepted native row 010 x31..31",
+      "kind": "block_rect",
+      "bounds": [
+        31,
+        10,
+        32,
+        11
+      ],
+      "block": "36"
+    },
+    {
+      "name": "Accepted native row 011 x00..04",
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        11,
+        5,
+        12
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 011 x05..05",
+      "kind": "block_rect",
+      "bounds": [
+        5,
+        11,
+        6,
+        12
+      ],
+      "block": "68"
+    },
+    {
+      "name": "Accepted native row 011 x06..09",
+      "kind": "block_rect",
+      "bounds": [
+        6,
+        11,
+        10,
+        12
+      ],
+      "block": "71"
+    },
+    {
+      "name": "Accepted native row 011 x10..10",
+      "kind": "block_rect",
+      "bounds": [
+        10,
+        11,
+        11,
+        12
+      ],
+      "block": "70"
+    },
+    {
+      "name": "Accepted native row 011 x11..11",
+      "kind": "block_rect",
+      "bounds": [
+        11,
+        11,
+        12,
+        12
+      ],
+      "block": "71"
+    },
+    {
+      "name": "Accepted native row 011 x12..12",
+      "kind": "block_rect",
+      "bounds": [
+        12,
+        11,
+        13,
+        12
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Accepted native row 011 x13..13",
+      "kind": "block_rect",
+      "bounds": [
+        13,
+        11,
+        14,
+        12
+      ],
+      "block": "71"
+    },
+    {
+      "name": "Accepted native row 011 x14..14",
+      "kind": "block_rect",
+      "bounds": [
+        14,
+        11,
+        15,
+        12
+      ],
+      "block": "69"
+    },
+    {
+      "name": "Accepted native row 011 x15..17",
+      "kind": "block_rect",
+      "bounds": [
+        15,
+        11,
+        18,
+        12
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 011 x18..18",
+      "kind": "block_rect",
+      "bounds": [
+        18,
+        11,
+        19,
+        12
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Accepted native row 011 x19..23",
+      "kind": "block_rect",
+      "bounds": [
+        19,
+        11,
+        24,
+        12
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 011 x24..27",
+      "kind": "block_rect",
+      "bounds": [
+        24,
+        11,
+        28,
+        12
+      ],
+      "block": "49"
+    },
+    {
+      "name": "Accepted native row 011 x28..28",
+      "kind": "block_rect",
+      "bounds": [
+        28,
+        11,
+        29,
+        12
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 011 x29..29",
+      "kind": "block_rect",
+      "bounds": [
+        29,
+        11,
+        30,
+        12
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Accepted native row 011 x30..30",
+      "kind": "block_rect",
+      "bounds": [
+        30,
+        11,
+        31,
+        12
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Accepted native row 011 x31..31",
+      "kind": "block_rect",
+      "bounds": [
+        31,
+        11,
+        32,
+        12
+      ],
+      "block": "36"
+    },
+    {
+      "name": "Accepted native row 012 x00..04",
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        12,
+        5,
+        13
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 012 x05..05",
+      "kind": "block_rect",
+      "bounds": [
+        5,
+        12,
+        6,
+        13
+      ],
+      "block": "68"
+    },
+    {
+      "name": "Accepted native row 012 x06..06",
+      "kind": "block_rect",
+      "bounds": [
+        6,
+        12,
+        7,
+        13
+      ],
+      "block": "71"
+    },
+    {
+      "name": "Accepted native row 012 x07..12",
+      "kind": "block_rect",
+      "bounds": [
+        7,
+        12,
+        13,
+        13
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Accepted native row 012 x13..13",
+      "kind": "block_rect",
+      "bounds": [
+        13,
+        12,
+        14,
+        13
+      ],
+      "block": "71"
+    },
+    {
+      "name": "Accepted native row 012 x14..17",
+      "kind": "block_rect",
+      "bounds": [
+        14,
+        12,
+        18,
+        13
+      ],
+      "block": "0a"
+    },
+    {
+      "name": "Accepted native row 012 x18..18",
+      "kind": "block_rect",
+      "bounds": [
+        18,
+        12,
+        19,
+        13
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Accepted native row 012 x19..28",
+      "kind": "block_rect",
+      "bounds": [
+        19,
+        12,
+        29,
+        13
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 012 x29..29",
+      "kind": "block_rect",
+      "bounds": [
+        29,
+        12,
+        30,
+        13
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Accepted native row 012 x30..30",
+      "kind": "block_rect",
+      "bounds": [
+        30,
+        12,
+        31,
+        13
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Accepted native row 012 x31..31",
+      "kind": "block_rect",
+      "bounds": [
+        31,
+        12,
+        32,
+        13
+      ],
+      "block": "36"
+    },
+    {
+      "name": "Accepted native row 013 x00..04",
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        13,
+        5,
+        14
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 013 x05..05",
+      "kind": "block_rect",
+      "bounds": [
+        5,
+        13,
+        6,
+        14
+      ],
+      "block": "68"
+    },
+    {
+      "name": "Accepted native row 013 x06..06",
+      "kind": "block_rect",
+      "bounds": [
+        6,
+        13,
+        7,
+        14
+      ],
+      "block": "71"
+    },
+    {
+      "name": "Accepted native row 013 x07..07",
+      "kind": "block_rect",
+      "bounds": [
+        7,
+        13,
+        8,
+        14
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Accepted native row 013 x08..14",
+      "kind": "block_rect",
+      "bounds": [
+        8,
+        13,
+        15,
+        14
+      ],
+      "block": "71"
+    },
+    {
+      "name": "Accepted native row 013 x15..15",
+      "kind": "block_rect",
+      "bounds": [
+        15,
+        13,
+        16,
+        14
+      ],
+      "block": "73"
+    },
+    {
+      "name": "Accepted native row 013 x16..17",
+      "kind": "block_rect",
+      "bounds": [
+        16,
+        13,
+        18,
+        14
+      ],
+      "block": "0a"
+    },
+    {
+      "name": "Accepted native row 013 x18..18",
+      "kind": "block_rect",
+      "bounds": [
+        18,
+        13,
+        19,
+        14
+      ],
+      "block": "74"
+    },
+    {
+      "name": "Accepted native row 013 x19..19",
+      "kind": "block_rect",
+      "bounds": [
+        19,
+        13,
+        20,
+        14
+      ],
+      "block": "70"
+    },
+    {
+      "name": "Accepted native row 013 x20..20",
+      "kind": "block_rect",
+      "bounds": [
+        20,
+        13,
+        21,
+        14
+      ],
+      "block": "6b"
+    },
+    {
+      "name": "Accepted native row 013 x21..28",
+      "kind": "block_rect",
+      "bounds": [
+        21,
+        13,
+        29,
+        14
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 013 x29..29",
+      "kind": "block_rect",
+      "bounds": [
+        29,
+        13,
+        30,
+        14
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Accepted native row 013 x30..30",
+      "kind": "block_rect",
+      "bounds": [
+        30,
+        13,
+        31,
+        14
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Accepted native row 013 x31..31",
+      "kind": "block_rect",
+      "bounds": [
+        31,
+        13,
+        32,
+        14
+      ],
+      "block": "36"
+    },
+    {
+      "name": "Accepted native row 014 x00..04",
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        14,
+        5,
+        15
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 014 x05..05",
+      "kind": "block_rect",
+      "bounds": [
+        5,
+        14,
+        6,
+        15
+      ],
+      "block": "68"
+    },
+    {
+      "name": "Accepted native row 014 x06..06",
+      "kind": "block_rect",
+      "bounds": [
+        6,
+        14,
+        7,
+        15
+      ],
+      "block": "71"
+    },
+    {
+      "name": "Accepted native row 014 x07..07",
+      "kind": "block_rect",
+      "bounds": [
+        7,
+        14,
+        8,
+        15
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Accepted native row 014 x08..09",
+      "kind": "block_rect",
+      "bounds": [
+        8,
+        14,
+        10,
+        15
+      ],
+      "block": "03"
+    },
+    {
+      "name": "Accepted native row 014 x10..11",
+      "kind": "block_rect",
+      "bounds": [
+        10,
+        14,
+        12,
+        15
+      ],
+      "block": "71"
+    },
+    {
+      "name": "Accepted native row 014 x12..16",
+      "kind": "block_rect",
+      "bounds": [
+        12,
+        14,
+        17,
+        15
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Accepted native row 014 x17..17",
+      "kind": "block_rect",
+      "bounds": [
+        17,
+        14,
+        18,
+        15
+      ],
+      "block": "71"
+    },
+    {
+      "name": "Accepted native row 014 x18..18",
+      "kind": "block_rect",
+      "bounds": [
+        18,
+        14,
+        19,
+        15
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Accepted native row 014 x19..19",
+      "kind": "block_rect",
+      "bounds": [
+        19,
+        14,
+        20,
+        15
+      ],
+      "block": "71"
+    },
+    {
+      "name": "Accepted native row 014 x20..20",
+      "kind": "block_rect",
+      "bounds": [
+        20,
+        14,
+        21,
+        15
+      ],
+      "block": "69"
+    },
+    {
+      "name": "Accepted native row 014 x21..31",
+      "kind": "block_rect",
+      "bounds": [
+        21,
+        14,
+        32,
+        15
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 015 x00..04",
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        15,
+        5,
+        16
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 015 x05..05",
+      "kind": "block_rect",
+      "bounds": [
+        5,
+        15,
+        6,
+        16
+      ],
+      "block": "68"
+    },
+    {
+      "name": "Accepted native row 015 x06..06",
+      "kind": "block_rect",
+      "bounds": [
+        6,
+        15,
+        7,
+        16
+      ],
+      "block": "71"
+    },
+    {
+      "name": "Accepted native row 015 x07..07",
+      "kind": "block_rect",
+      "bounds": [
+        7,
+        15,
+        8,
+        16
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Accepted native row 015 x08..09",
+      "kind": "block_rect",
+      "bounds": [
+        8,
+        15,
+        10,
+        16
+      ],
+      "block": "03"
+    },
+    {
+      "name": "Accepted native row 015 x10..11",
+      "kind": "block_rect",
+      "bounds": [
+        10,
+        15,
+        12,
+        16
+      ],
+      "block": "71"
+    },
+    {
+      "name": "Accepted native row 015 x12..18",
+      "kind": "block_rect",
+      "bounds": [
+        12,
+        15,
+        19,
+        16
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Accepted native row 015 x19..19",
+      "kind": "block_rect",
+      "bounds": [
+        19,
+        15,
+        20,
+        16
+      ],
+      "block": "71"
+    },
+    {
+      "name": "Accepted native row 015 x20..20",
+      "kind": "block_rect",
+      "bounds": [
+        20,
+        15,
+        21,
+        16
+      ],
+      "block": "69"
+    },
+    {
+      "name": "Accepted native row 015 x21..31",
+      "kind": "block_rect",
+      "bounds": [
+        21,
+        15,
+        32,
+        16
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 016 x00..04",
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        16,
+        5,
+        17
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 016 x05..05",
+      "kind": "block_rect",
+      "bounds": [
+        5,
+        16,
+        6,
+        17
+      ],
+      "block": "68"
+    },
+    {
+      "name": "Accepted native row 016 x06..06",
+      "kind": "block_rect",
+      "bounds": [
+        6,
+        16,
+        7,
+        17
+      ],
+      "block": "71"
+    },
+    {
+      "name": "Accepted native row 016 x07..07",
+      "kind": "block_rect",
+      "bounds": [
+        7,
+        16,
+        8,
+        17
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Accepted native row 016 x08..08",
+      "kind": "block_rect",
+      "bounds": [
+        8,
+        16,
+        9,
+        17
+      ],
+      "block": "03"
+    },
+    {
+      "name": "Accepted native row 016 x09..09",
+      "kind": "block_rect",
+      "bounds": [
+        9,
+        16,
+        10,
+        17
+      ],
+      "block": "71"
+    },
+    {
+      "name": "Accepted native row 016 x10..12",
+      "kind": "block_rect",
+      "bounds": [
+        10,
+        16,
+        13,
+        17
+      ],
+      "block": "0a"
+    },
+    {
+      "name": "Accepted native row 016 x13..17",
+      "kind": "block_rect",
+      "bounds": [
+        13,
+        16,
+        18,
+        17
+      ],
+      "block": "71"
+    },
+    {
+      "name": "Accepted native row 016 x18..18",
+      "kind": "block_rect",
+      "bounds": [
+        18,
+        16,
+        19,
+        17
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Accepted native row 016 x19..19",
+      "kind": "block_rect",
+      "bounds": [
+        19,
+        16,
+        20,
+        17
+      ],
+      "block": "71"
+    },
+    {
+      "name": "Accepted native row 016 x20..21",
+      "kind": "block_rect",
+      "bounds": [
+        20,
+        16,
+        22,
+        17
+      ],
+      "block": "0a"
+    },
+    {
+      "name": "Accepted native row 016 x22..31",
+      "kind": "block_rect",
+      "bounds": [
+        22,
+        16,
+        32,
+        17
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 017 x00..04",
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        17,
+        5,
+        18
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 017 x05..05",
+      "kind": "block_rect",
+      "bounds": [
+        5,
+        17,
+        6,
+        18
+      ],
+      "block": "68"
+    },
+    {
+      "name": "Accepted native row 017 x06..06",
+      "kind": "block_rect",
+      "bounds": [
+        6,
+        17,
+        7,
+        18
+      ],
+      "block": "71"
+    },
+    {
+      "name": "Accepted native row 017 x07..07",
+      "kind": "block_rect",
+      "bounds": [
+        7,
+        17,
+        8,
+        18
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Accepted native row 017 x08..09",
+      "kind": "block_rect",
+      "bounds": [
+        8,
+        17,
+        10,
+        18
+      ],
+      "block": "03"
+    },
+    {
+      "name": "Accepted native row 017 x10..11",
+      "kind": "block_rect",
+      "bounds": [
+        10,
+        17,
+        12,
+        18
+      ],
+      "block": "0a"
+    },
+    {
+      "name": "Accepted native row 017 x12..15",
+      "kind": "block_rect",
+      "bounds": [
+        12,
+        17,
+        16,
+        18
+      ],
+      "block": "72"
+    },
+    {
+      "name": "Accepted native row 017 x16..16",
+      "kind": "block_rect",
+      "bounds": [
+        16,
+        17,
+        17,
+        18
+      ],
+      "block": "6e"
+    },
+    {
+      "name": "Accepted native row 017 x17..17",
+      "kind": "block_rect",
+      "bounds": [
+        17,
+        17,
+        18,
+        18
+      ],
+      "block": "71"
+    },
+    {
+      "name": "Accepted native row 017 x18..18",
+      "kind": "block_rect",
+      "bounds": [
+        18,
+        17,
+        19,
+        18
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Accepted native row 017 x19..19",
+      "kind": "block_rect",
+      "bounds": [
+        19,
+        17,
+        20,
+        18
+      ],
+      "block": "71"
+    },
+    {
+      "name": "Accepted native row 017 x20..20",
+      "kind": "block_rect",
+      "bounds": [
+        20,
+        17,
+        21,
+        18
+      ],
+      "block": "0a"
+    },
+    {
+      "name": "Accepted native row 017 x21..31",
+      "kind": "block_rect",
+      "bounds": [
+        21,
+        17,
+        32,
+        18
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 018 x00..04",
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        18,
+        5,
+        19
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 018 x05..05",
+      "kind": "block_rect",
+      "bounds": [
+        5,
+        18,
+        6,
+        19
+      ],
+      "block": "68"
+    },
+    {
+      "name": "Accepted native row 018 x06..06",
+      "kind": "block_rect",
+      "bounds": [
+        6,
+        18,
+        7,
+        19
+      ],
+      "block": "71"
+    },
+    {
+      "name": "Accepted native row 018 x07..07",
+      "kind": "block_rect",
+      "bounds": [
+        7,
+        18,
+        8,
+        19
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Accepted native row 018 x08..09",
+      "kind": "block_rect",
+      "bounds": [
+        8,
+        18,
+        10,
+        19
+      ],
+      "block": "71"
+    },
+    {
+      "name": "Accepted native row 018 x10..10",
+      "kind": "block_rect",
+      "bounds": [
+        10,
+        18,
+        11,
+        19
+      ],
+      "block": "69"
+    },
+    {
+      "name": "Accepted native row 018 x11..11",
+      "kind": "block_rect",
+      "bounds": [
+        11,
+        18,
+        12,
+        19
+      ],
+      "block": "0a"
+    },
+    {
+      "name": "Accepted native row 018 x12..15",
+      "kind": "block_rect",
+      "bounds": [
+        12,
+        18,
+        16,
+        19
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 018 x16..16",
+      "kind": "block_rect",
+      "bounds": [
+        16,
+        18,
+        17,
+        19
+      ],
+      "block": "68"
+    },
+    {
+      "name": "Accepted native row 018 x17..17",
+      "kind": "block_rect",
+      "bounds": [
+        17,
+        18,
+        18,
+        19
+      ],
+      "block": "71"
+    },
+    {
+      "name": "Accepted native row 018 x18..18",
+      "kind": "block_rect",
+      "bounds": [
+        18,
+        18,
+        19,
+        19
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Accepted native row 018 x19..19",
+      "kind": "block_rect",
+      "bounds": [
+        19,
+        18,
+        20,
+        19
+      ],
+      "block": "71"
+    },
+    {
+      "name": "Accepted native row 018 x20..20",
+      "kind": "block_rect",
+      "bounds": [
+        20,
+        18,
+        21,
+        19
+      ],
+      "block": "0a"
+    },
+    {
+      "name": "Accepted native row 018 x21..31",
+      "kind": "block_rect",
+      "bounds": [
+        21,
+        18,
+        32,
+        19
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 019 x00..04",
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        19,
+        5,
+        20
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 019 x05..05",
+      "kind": "block_rect",
+      "bounds": [
+        5,
+        19,
+        6,
+        20
+      ],
+      "block": "68"
+    },
+    {
+      "name": "Accepted native row 019 x06..06",
+      "kind": "block_rect",
+      "bounds": [
+        6,
+        19,
+        7,
+        20
+      ],
+      "block": "71"
+    },
+    {
+      "name": "Accepted native row 019 x07..07",
+      "kind": "block_rect",
+      "bounds": [
+        7,
+        19,
+        8,
+        20
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Accepted native row 019 x08..09",
+      "kind": "block_rect",
+      "bounds": [
+        8,
+        19,
+        10,
+        20
+      ],
+      "block": "71"
+    },
+    {
+      "name": "Accepted native row 019 x10..10",
+      "kind": "block_rect",
+      "bounds": [
+        10,
+        19,
+        11,
+        20
+      ],
+      "block": "69"
+    },
+    {
+      "name": "Accepted native row 019 x11..15",
+      "kind": "block_rect",
+      "bounds": [
+        11,
+        19,
+        16,
+        20
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 019 x16..16",
+      "kind": "block_rect",
+      "bounds": [
+        16,
+        19,
+        17,
+        20
+      ],
+      "block": "68"
+    },
+    {
+      "name": "Accepted native row 019 x17..17",
+      "kind": "block_rect",
+      "bounds": [
+        17,
+        19,
+        18,
+        20
+      ],
+      "block": "71"
+    },
+    {
+      "name": "Accepted native row 019 x18..18",
+      "kind": "block_rect",
+      "bounds": [
+        18,
+        19,
+        19,
+        20
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Accepted native row 019 x19..19",
+      "kind": "block_rect",
+      "bounds": [
+        19,
+        19,
+        20,
+        20
+      ],
+      "block": "71"
+    },
+    {
+      "name": "Accepted native row 019 x20..20",
+      "kind": "block_rect",
+      "bounds": [
+        20,
+        19,
+        21,
+        20
+      ],
+      "block": "69"
+    },
+    {
+      "name": "Accepted native row 019 x21..31",
+      "kind": "block_rect",
+      "bounds": [
+        21,
+        19,
+        32,
+        20
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 020 x00..04",
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        20,
+        5,
+        21
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 020 x05..05",
+      "kind": "block_rect",
+      "bounds": [
+        5,
+        20,
+        6,
+        21
+      ],
+      "block": "6c"
+    },
+    {
+      "name": "Accepted native row 020 x06..06",
+      "kind": "block_rect",
+      "bounds": [
+        6,
+        20,
+        7,
+        21
+      ],
+      "block": "72"
+    },
+    {
+      "name": "Accepted native row 020 x07..07",
+      "kind": "block_rect",
+      "bounds": [
+        7,
+        20,
+        8,
+        21
+      ],
+      "block": "74"
+    },
+    {
+      "name": "Accepted native row 020 x08..09",
+      "kind": "block_rect",
+      "bounds": [
+        8,
+        20,
+        10,
+        21
+      ],
+      "block": "72"
+    },
+    {
+      "name": "Accepted native row 020 x10..10",
+      "kind": "block_rect",
+      "bounds": [
+        10,
+        20,
+        11,
+        21
+      ],
+      "block": "6d"
+    },
+    {
+      "name": "Accepted native row 020 x11..15",
+      "kind": "block_rect",
+      "bounds": [
+        11,
+        20,
+        16,
+        21
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 020 x16..16",
+      "kind": "block_rect",
+      "bounds": [
+        16,
+        20,
+        17,
+        21
+      ],
+      "block": "6c"
+    },
+    {
+      "name": "Accepted native row 020 x17..17",
+      "kind": "block_rect",
+      "bounds": [
+        17,
+        20,
+        18,
+        21
+      ],
+      "block": "72"
+    },
+    {
+      "name": "Accepted native row 020 x18..19",
+      "kind": "block_rect",
+      "bounds": [
+        18,
+        20,
+        20,
+        21
+      ],
+      "block": "56"
+    },
+    {
+      "name": "Accepted native row 020 x20..20",
+      "kind": "block_rect",
+      "bounds": [
+        20,
+        20,
+        21,
+        21
+      ],
+      "block": "6d"
+    },
+    {
+      "name": "Accepted native row 020 x21..31",
+      "kind": "block_rect",
+      "bounds": [
+        21,
+        20,
+        32,
+        21
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 021 x00..06",
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        21,
+        7,
+        22
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 021 x07..07",
+      "kind": "block_rect",
+      "bounds": [
+        7,
+        21,
+        8,
+        22
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Accepted native row 021 x08..13",
+      "kind": "block_rect",
+      "bounds": [
+        8,
+        21,
+        14,
+        22
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 021 x14..18",
+      "kind": "block_rect",
+      "bounds": [
+        14,
+        21,
+        19,
+        22
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Accepted native row 021 x19..31",
+      "kind": "block_rect",
+      "bounds": [
+        19,
+        21,
+        32,
+        22
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 022 x00..06",
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        22,
+        7,
+        23
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 022 x07..07",
+      "kind": "block_rect",
+      "bounds": [
+        7,
+        22,
+        8,
+        23
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Accepted native row 022 x08..13",
+      "kind": "block_rect",
+      "bounds": [
+        8,
+        22,
+        14,
+        23
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 022 x14..14",
+      "kind": "block_rect",
+      "bounds": [
+        14,
+        22,
+        15,
+        23
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Accepted native row 022 x15..31",
+      "kind": "block_rect",
+      "bounds": [
+        15,
+        22,
+        32,
+        23
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 023 x00..06",
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        23,
+        7,
+        24
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 023 x07..14",
+      "kind": "block_rect",
+      "bounds": [
+        7,
+        23,
+        15,
+        24
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Accepted native row 023 x15..31",
+      "kind": "block_rect",
+      "bounds": [
+        15,
+        23,
+        32,
+        24
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 024 x00..13",
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        24,
+        14,
+        25
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 024 x14..14",
+      "kind": "block_rect",
+      "bounds": [
+        14,
+        24,
+        15,
+        25
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Accepted native row 024 x15..31",
+      "kind": "block_rect",
+      "bounds": [
+        15,
+        24,
+        32,
+        25
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 025 x00..13",
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        25,
+        14,
+        26
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 025 x14..14",
+      "kind": "block_rect",
+      "bounds": [
+        14,
+        25,
+        15,
+        26
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Accepted native row 025 x15..31",
+      "kind": "block_rect",
+      "bounds": [
+        15,
+        25,
+        32,
+        26
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 026 x00..04",
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        26,
+        5,
+        27
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 026 x05..05",
+      "kind": "block_rect",
+      "bounds": [
+        5,
+        26,
+        6,
+        27
+      ],
+      "block": "6a"
+    },
+    {
+      "name": "Accepted native row 026 x06..13",
+      "kind": "block_rect",
+      "bounds": [
+        6,
+        26,
+        14,
+        27
+      ],
+      "block": "70"
+    },
+    {
+      "name": "Accepted native row 026 x14..14",
+      "kind": "block_rect",
+      "bounds": [
+        14,
+        26,
+        15,
+        27
+      ],
+      "block": "74"
+    },
+    {
+      "name": "Accepted native row 026 x15..15",
+      "kind": "block_rect",
+      "bounds": [
+        15,
+        26,
+        16,
+        27
+      ],
+      "block": "6b"
+    },
+    {
+      "name": "Accepted native row 026 x16..31",
+      "kind": "block_rect",
+      "bounds": [
+        16,
+        26,
+        32,
+        27
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 027 x00..04",
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        27,
+        5,
+        28
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 027 x05..05",
+      "kind": "block_rect",
+      "bounds": [
+        5,
+        27,
+        6,
+        28
+      ],
+      "block": "68"
+    },
+    {
+      "name": "Accepted native row 027 x06..08",
+      "kind": "block_rect",
+      "bounds": [
+        6,
+        27,
+        9,
+        28
+      ],
+      "block": "0a"
+    },
+    {
+      "name": "Accepted native row 027 x09..13",
+      "kind": "block_rect",
+      "bounds": [
+        9,
+        27,
+        14,
+        28
+      ],
+      "block": "02"
+    },
+    {
+      "name": "Accepted native row 027 x14..14",
+      "kind": "block_rect",
+      "bounds": [
+        14,
+        27,
+        15,
+        28
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Accepted native row 027 x15..15",
+      "kind": "block_rect",
+      "bounds": [
+        15,
+        27,
+        16,
+        28
+      ],
+      "block": "69"
+    },
+    {
+      "name": "Accepted native row 027 x16..31",
+      "kind": "block_rect",
+      "bounds": [
+        16,
+        27,
+        32,
+        28
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 028 x00..04",
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        28,
+        5,
+        29
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 028 x05..05",
+      "kind": "block_rect",
+      "bounds": [
+        5,
+        28,
+        6,
+        29
+      ],
+      "block": "68"
+    },
+    {
+      "name": "Accepted native row 028 x06..06",
+      "kind": "block_rect",
+      "bounds": [
+        6,
+        28,
+        7,
+        29
+      ],
+      "block": "02"
+    },
+    {
+      "name": "Accepted native row 028 x07..08",
+      "kind": "block_rect",
+      "bounds": [
+        7,
+        28,
+        9,
+        29
+      ],
+      "block": "0a"
+    },
+    {
+      "name": "Accepted native row 028 x09..13",
+      "kind": "block_rect",
+      "bounds": [
+        9,
+        28,
+        14,
+        29
+      ],
+      "block": "02"
+    },
+    {
+      "name": "Accepted native row 028 x14..14",
+      "kind": "block_rect",
+      "bounds": [
+        14,
+        28,
+        15,
+        29
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Accepted native row 028 x15..15",
+      "kind": "block_rect",
+      "bounds": [
+        15,
+        28,
+        16,
+        29
+      ],
+      "block": "69"
+    },
+    {
+      "name": "Accepted native row 028 x16..31",
+      "kind": "block_rect",
+      "bounds": [
+        16,
+        28,
+        32,
+        29
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 029 x00..04",
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        29,
+        5,
+        30
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 029 x05..05",
+      "kind": "block_rect",
+      "bounds": [
+        5,
+        29,
+        6,
+        30
+      ],
+      "block": "68"
+    },
+    {
+      "name": "Accepted native row 029 x06..07",
+      "kind": "block_rect",
+      "bounds": [
+        6,
+        29,
+        8,
+        30
+      ],
+      "block": "02"
+    },
+    {
+      "name": "Accepted native row 029 x08..08",
+      "kind": "block_rect",
+      "bounds": [
+        8,
+        29,
+        9,
+        30
+      ],
+      "block": "0a"
+    },
+    {
+      "name": "Accepted native row 029 x09..13",
+      "kind": "block_rect",
+      "bounds": [
+        9,
+        29,
+        14,
+        30
+      ],
+      "block": "02"
+    },
+    {
+      "name": "Accepted native row 029 x14..14",
+      "kind": "block_rect",
+      "bounds": [
+        14,
+        29,
+        15,
+        30
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Accepted native row 029 x15..15",
+      "kind": "block_rect",
+      "bounds": [
+        15,
+        29,
+        16,
+        30
+      ],
+      "block": "71"
+    },
+    {
+      "name": "Accepted native row 029 x16..16",
+      "kind": "block_rect",
+      "bounds": [
+        16,
+        29,
+        17,
+        30
+      ],
+      "block": "70"
+    },
+    {
+      "name": "Accepted native row 029 x17..17",
+      "kind": "block_rect",
+      "bounds": [
+        17,
+        29,
+        18,
+        30
+      ],
+      "block": "6b"
+    },
+    {
+      "name": "Accepted native row 029 x18..31",
+      "kind": "block_rect",
+      "bounds": [
+        18,
+        29,
+        32,
+        30
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 030 x00..04",
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        30,
+        5,
+        31
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 030 x05..05",
+      "kind": "block_rect",
+      "bounds": [
+        5,
+        30,
+        6,
+        31
+      ],
+      "block": "68"
+    },
+    {
+      "name": "Accepted native row 030 x06..10",
+      "kind": "block_rect",
+      "bounds": [
+        6,
+        30,
+        11,
+        31
+      ],
+      "block": "02"
+    },
+    {
+      "name": "Accepted native row 030 x11..13",
+      "kind": "block_rect",
+      "bounds": [
+        11,
+        30,
+        14,
+        31
+      ],
+      "block": "03"
+    },
+    {
+      "name": "Accepted native row 030 x14..14",
+      "kind": "block_rect",
+      "bounds": [
+        14,
+        30,
+        15,
+        31
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Accepted native row 030 x15..16",
+      "kind": "block_rect",
+      "bounds": [
+        15,
+        30,
+        17,
+        31
+      ],
+      "block": "02"
+    },
+    {
+      "name": "Accepted native row 030 x17..17",
+      "kind": "block_rect",
+      "bounds": [
+        17,
+        30,
+        18,
+        31
+      ],
+      "block": "69"
+    },
+    {
+      "name": "Accepted native row 030 x18..18",
+      "kind": "block_rect",
+      "bounds": [
+        18,
+        30,
+        19,
+        31
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 030 x19..20",
+      "kind": "block_rect",
+      "bounds": [
+        19,
+        30,
+        21,
+        31
+      ],
+      "block": "0a"
+    },
+    {
+      "name": "Accepted native row 030 x21..31",
+      "kind": "block_rect",
+      "bounds": [
+        21,
+        30,
+        32,
+        31
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 031 x00..04",
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        31,
+        5,
+        32
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 031 x05..05",
+      "kind": "block_rect",
+      "bounds": [
+        5,
+        31,
+        6,
+        32
+      ],
+      "block": "68"
+    },
+    {
+      "name": "Accepted native row 031 x06..10",
+      "kind": "block_rect",
+      "bounds": [
+        6,
+        31,
+        11,
+        32
+      ],
+      "block": "02"
+    },
+    {
+      "name": "Accepted native row 031 x11..13",
+      "kind": "block_rect",
+      "bounds": [
+        11,
+        31,
+        14,
+        32
+      ],
+      "block": "03"
+    },
+    {
+      "name": "Accepted native row 031 x14..14",
+      "kind": "block_rect",
+      "bounds": [
+        14,
+        31,
+        15,
+        32
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Accepted native row 031 x15..16",
+      "kind": "block_rect",
+      "bounds": [
+        15,
+        31,
+        17,
+        32
+      ],
+      "block": "02"
+    },
+    {
+      "name": "Accepted native row 031 x17..17",
+      "kind": "block_rect",
+      "bounds": [
+        17,
+        31,
+        18,
+        32
+      ],
+      "block": "71"
+    },
+    {
+      "name": "Accepted native row 031 x18..18",
+      "kind": "block_rect",
+      "bounds": [
+        18,
+        31,
+        19,
+        32
+      ],
+      "block": "70"
+    },
+    {
+      "name": "Accepted native row 031 x19..20",
+      "kind": "block_rect",
+      "bounds": [
+        19,
+        31,
+        21,
+        32
+      ],
+      "block": "0a"
+    },
+    {
+      "name": "Accepted native row 031 x21..21",
+      "kind": "block_rect",
+      "bounds": [
+        21,
+        31,
+        22,
+        32
+      ],
+      "block": "6b"
+    },
+    {
+      "name": "Accepted native row 031 x22..31",
+      "kind": "block_rect",
+      "bounds": [
+        22,
+        31,
+        32,
+        32
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 032 x00..04",
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        32,
+        5,
+        33
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 032 x05..05",
+      "kind": "block_rect",
+      "bounds": [
+        5,
+        32,
+        6,
+        33
+      ],
+      "block": "68"
+    },
+    {
+      "name": "Accepted native row 032 x06..18",
+      "kind": "block_rect",
+      "bounds": [
+        6,
+        32,
+        19,
+        33
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Accepted native row 032 x19..20",
+      "kind": "block_rect",
+      "bounds": [
+        19,
+        32,
+        21,
+        33
+      ],
+      "block": "02"
+    },
+    {
+      "name": "Accepted native row 032 x21..21",
+      "kind": "block_rect",
+      "bounds": [
+        21,
+        32,
+        22,
+        33
+      ],
+      "block": "69"
+    },
+    {
+      "name": "Accepted native row 032 x22..31",
+      "kind": "block_rect",
+      "bounds": [
+        22,
+        32,
+        32,
+        33
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 033 x00..04",
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        33,
+        5,
+        34
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 033 x05..05",
+      "kind": "block_rect",
+      "bounds": [
+        5,
+        33,
+        6,
+        34
+      ],
+      "block": "68"
+    },
+    {
+      "name": "Accepted native row 033 x06..06",
+      "kind": "block_rect",
+      "bounds": [
+        6,
+        33,
+        7,
+        34
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Accepted native row 033 x07..16",
+      "kind": "block_rect",
+      "bounds": [
+        7,
+        33,
+        17,
+        34
+      ],
+      "block": "02"
+    },
+    {
+      "name": "Accepted native row 033 x17..17",
+      "kind": "block_rect",
+      "bounds": [
+        17,
+        33,
+        18,
+        34
+      ],
+      "block": "04"
+    },
+    {
+      "name": "Accepted native row 033 x18..18",
+      "kind": "block_rect",
+      "bounds": [
+        18,
+        33,
+        19,
+        34
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Accepted native row 033 x19..20",
+      "kind": "block_rect",
+      "bounds": [
+        19,
+        33,
+        21,
+        34
+      ],
+      "block": "02"
+    },
+    {
+      "name": "Accepted native row 033 x21..21",
+      "kind": "block_rect",
+      "bounds": [
+        21,
+        33,
+        22,
+        34
+      ],
+      "block": "69"
+    },
+    {
+      "name": "Accepted native row 033 x22..31",
+      "kind": "block_rect",
+      "bounds": [
+        22,
+        33,
+        32,
+        34
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 034 x00..04",
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        34,
+        5,
+        35
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 034 x05..05",
+      "kind": "block_rect",
+      "bounds": [
+        5,
+        34,
+        6,
+        35
+      ],
+      "block": "68"
+    },
+    {
+      "name": "Accepted native row 034 x06..06",
+      "kind": "block_rect",
+      "bounds": [
+        6,
+        34,
+        7,
+        35
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Accepted native row 034 x07..08",
+      "kind": "block_rect",
+      "bounds": [
+        7,
+        34,
+        9,
+        35
+      ],
+      "block": "02"
+    },
+    {
+      "name": "Accepted native row 034 x09..11",
+      "kind": "block_rect",
+      "bounds": [
+        9,
+        34,
+        12,
+        35
+      ],
+      "block": "0a"
+    },
+    {
+      "name": "Accepted native row 034 x12..15",
+      "kind": "block_rect",
+      "bounds": [
+        12,
+        34,
+        16,
+        35
+      ],
+      "block": "72"
+    },
+    {
+      "name": "Accepted native row 034 x16..16",
+      "kind": "block_rect",
+      "bounds": [
+        16,
+        34,
+        17,
+        35
+      ],
+      "block": "6e"
+    },
+    {
+      "name": "Accepted native row 034 x17..17",
+      "kind": "block_rect",
+      "bounds": [
+        17,
+        34,
+        18,
+        35
+      ],
+      "block": "02"
+    },
+    {
+      "name": "Accepted native row 034 x18..18",
+      "kind": "block_rect",
+      "bounds": [
+        18,
+        34,
+        19,
+        35
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Accepted native row 034 x19..20",
+      "kind": "block_rect",
+      "bounds": [
+        19,
+        34,
+        21,
+        35
+      ],
+      "block": "02"
+    },
+    {
+      "name": "Accepted native row 034 x21..21",
+      "kind": "block_rect",
+      "bounds": [
+        21,
+        34,
+        22,
+        35
+      ],
+      "block": "69"
+    },
+    {
+      "name": "Accepted native row 034 x22..31",
+      "kind": "block_rect",
+      "bounds": [
+        22,
+        34,
+        32,
+        35
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 035 x00..04",
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        35,
+        5,
+        36
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 035 x05..05",
+      "kind": "block_rect",
+      "bounds": [
+        5,
+        35,
+        6,
+        36
+      ],
+      "block": "68"
+    },
+    {
+      "name": "Accepted native row 035 x06..06",
+      "kind": "block_rect",
+      "bounds": [
+        6,
+        35,
+        7,
+        36
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Accepted native row 035 x07..08",
+      "kind": "block_rect",
+      "bounds": [
+        7,
+        35,
+        9,
+        36
+      ],
+      "block": "02"
+    },
+    {
+      "name": "Accepted native row 035 x09..10",
+      "kind": "block_rect",
+      "bounds": [
+        9,
+        35,
+        11,
+        36
+      ],
+      "block": "0a"
+    },
+    {
+      "name": "Accepted native row 035 x11..15",
+      "kind": "block_rect",
+      "bounds": [
+        11,
+        35,
+        16,
+        36
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 035 x16..16",
+      "kind": "block_rect",
+      "bounds": [
+        16,
+        35,
+        17,
+        36
+      ],
+      "block": "68"
+    },
+    {
+      "name": "Accepted native row 035 x17..17",
+      "kind": "block_rect",
+      "bounds": [
+        17,
+        35,
+        18,
+        36
+      ],
+      "block": "02"
+    },
+    {
+      "name": "Accepted native row 035 x18..18",
+      "kind": "block_rect",
+      "bounds": [
+        18,
+        35,
+        19,
+        36
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Accepted native row 035 x19..20",
+      "kind": "block_rect",
+      "bounds": [
+        19,
+        35,
+        21,
+        36
+      ],
+      "block": "02"
+    },
+    {
+      "name": "Accepted native row 035 x21..21",
+      "kind": "block_rect",
+      "bounds": [
+        21,
+        35,
+        22,
+        36
+      ],
+      "block": "69"
+    },
+    {
+      "name": "Accepted native row 035 x22..31",
+      "kind": "block_rect",
+      "bounds": [
+        22,
+        35,
+        32,
+        36
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 036 x00..04",
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        36,
+        5,
+        37
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 036 x05..05",
+      "kind": "block_rect",
+      "bounds": [
+        5,
+        36,
+        6,
+        37
+      ],
+      "block": "68"
+    },
+    {
+      "name": "Accepted native row 036 x06..06",
+      "kind": "block_rect",
+      "bounds": [
+        6,
+        36,
+        7,
+        37
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Accepted native row 036 x07..08",
+      "kind": "block_rect",
+      "bounds": [
+        7,
+        36,
+        9,
+        37
+      ],
+      "block": "02"
+    },
+    {
+      "name": "Accepted native row 036 x09..09",
+      "kind": "block_rect",
+      "bounds": [
+        9,
+        36,
+        10,
+        37
+      ],
+      "block": "69"
+    },
+    {
+      "name": "Accepted native row 036 x10..10",
+      "kind": "block_rect",
+      "bounds": [
+        10,
+        36,
+        11,
+        37
+      ],
+      "block": "0a"
+    },
+    {
+      "name": "Accepted native row 036 x11..15",
+      "kind": "block_rect",
+      "bounds": [
+        11,
+        36,
+        16,
+        37
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 036 x16..16",
+      "kind": "block_rect",
+      "bounds": [
+        16,
+        36,
+        17,
+        37
+      ],
+      "block": "68"
+    },
+    {
+      "name": "Accepted native row 036 x17..17",
+      "kind": "block_rect",
+      "bounds": [
+        17,
+        36,
+        18,
+        37
+      ],
+      "block": "02"
+    },
+    {
+      "name": "Accepted native row 036 x18..18",
+      "kind": "block_rect",
+      "bounds": [
+        18,
+        36,
+        19,
+        37
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Accepted native row 036 x19..20",
+      "kind": "block_rect",
+      "bounds": [
+        19,
+        36,
+        21,
+        37
+      ],
+      "block": "02"
+    },
+    {
+      "name": "Accepted native row 036 x21..21",
+      "kind": "block_rect",
+      "bounds": [
+        21,
+        36,
+        22,
+        37
+      ],
+      "block": "69"
+    },
+    {
+      "name": "Accepted native row 036 x22..31",
+      "kind": "block_rect",
+      "bounds": [
+        22,
+        36,
+        32,
+        37
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 037 x00..04",
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        37,
+        5,
+        38
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 037 x05..05",
+      "kind": "block_rect",
+      "bounds": [
+        5,
+        37,
+        6,
+        38
+      ],
+      "block": "68"
+    },
+    {
+      "name": "Accepted native row 037 x06..06",
+      "kind": "block_rect",
+      "bounds": [
+        6,
+        37,
+        7,
+        38
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Accepted native row 037 x07..08",
+      "kind": "block_rect",
+      "bounds": [
+        7,
+        37,
+        9,
+        38
+      ],
+      "block": "02"
+    },
+    {
+      "name": "Accepted native row 037 x09..09",
+      "kind": "block_rect",
+      "bounds": [
+        9,
+        37,
+        10,
+        38
+      ],
+      "block": "69"
+    },
+    {
+      "name": "Accepted native row 037 x10..15",
+      "kind": "block_rect",
+      "bounds": [
+        10,
+        37,
+        16,
+        38
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 037 x16..16",
+      "kind": "block_rect",
+      "bounds": [
+        16,
+        37,
+        17,
+        38
+      ],
+      "block": "68"
+    },
+    {
+      "name": "Accepted native row 037 x17..17",
+      "kind": "block_rect",
+      "bounds": [
+        17,
+        37,
+        18,
+        38
+      ],
+      "block": "02"
+    },
+    {
+      "name": "Accepted native row 037 x18..18",
+      "kind": "block_rect",
+      "bounds": [
+        18,
+        37,
+        19,
+        38
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Accepted native row 037 x19..20",
+      "kind": "block_rect",
+      "bounds": [
+        19,
+        37,
+        21,
+        38
+      ],
+      "block": "02"
+    },
+    {
+      "name": "Accepted native row 037 x21..21",
+      "kind": "block_rect",
+      "bounds": [
+        21,
+        37,
+        22,
+        38
+      ],
+      "block": "69"
+    },
+    {
+      "name": "Accepted native row 037 x22..31",
+      "kind": "block_rect",
+      "bounds": [
+        22,
+        37,
+        32,
+        38
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 038 x00..04",
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        38,
+        5,
+        39
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 038 x05..05",
+      "kind": "block_rect",
+      "bounds": [
+        5,
+        38,
+        6,
+        39
+      ],
+      "block": "6c"
+    },
+    {
+      "name": "Accepted native row 038 x06..06",
+      "kind": "block_rect",
+      "bounds": [
+        6,
+        38,
+        7,
+        39
+      ],
+      "block": "74"
+    },
+    {
+      "name": "Accepted native row 038 x07..07",
+      "kind": "block_rect",
+      "bounds": [
+        7,
+        38,
+        8,
+        39
+      ],
+      "block": "72"
+    },
+    {
+      "name": "Accepted native row 038 x08..08",
+      "kind": "block_rect",
+      "bounds": [
+        8,
+        38,
+        9,
+        39
+      ],
+      "block": "73"
+    },
+    {
+      "name": "Accepted native row 038 x09..09",
+      "kind": "block_rect",
+      "bounds": [
+        9,
+        38,
+        10,
+        39
+      ],
+      "block": "6d"
+    },
+    {
+      "name": "Accepted native row 038 x10..15",
+      "kind": "block_rect",
+      "bounds": [
+        10,
+        38,
+        16,
+        39
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 038 x16..16",
+      "kind": "block_rect",
+      "bounds": [
+        16,
+        38,
+        17,
+        39
+      ],
+      "block": "6c"
+    },
+    {
+      "name": "Accepted native row 038 x17..17",
+      "kind": "block_rect",
+      "bounds": [
+        17,
+        38,
+        18,
+        39
+      ],
+      "block": "72"
+    },
+    {
+      "name": "Accepted native row 038 x18..19",
+      "kind": "block_rect",
+      "bounds": [
+        18,
+        38,
+        20,
+        39
+      ],
+      "block": "56"
+    },
+    {
+      "name": "Accepted native row 038 x20..20",
+      "kind": "block_rect",
+      "bounds": [
+        20,
+        38,
+        21,
+        39
+      ],
+      "block": "72"
+    },
+    {
+      "name": "Accepted native row 038 x21..21",
+      "kind": "block_rect",
+      "bounds": [
+        21,
+        38,
+        22,
+        39
+      ],
+      "block": "6d"
+    },
+    {
+      "name": "Accepted native row 038 x22..31",
+      "kind": "block_rect",
+      "bounds": [
+        22,
+        38,
+        32,
+        39
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 039 x00..05",
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        39,
+        6,
+        40
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 039 x06..06",
+      "kind": "block_rect",
+      "bounds": [
+        6,
+        39,
+        7,
+        40
+      ],
+      "block": "45"
+    },
+    {
+      "name": "Accepted native row 039 x07..08",
+      "kind": "block_rect",
+      "bounds": [
+        7,
+        39,
+        9,
+        40
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Accepted native row 039 x09..09",
+      "kind": "block_rect",
+      "bounds": [
+        9,
+        39,
+        10,
+        40
+      ],
+      "block": "45"
+    },
+    {
+      "name": "Accepted native row 039 x10..16",
+      "kind": "block_rect",
+      "bounds": [
+        10,
+        39,
+        17,
+        40
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 039 x17..17",
+      "kind": "block_rect",
+      "bounds": [
+        17,
+        39,
+        18,
+        40
+      ],
+      "block": "02"
+    },
+    {
+      "name": "Accepted native row 039 x18..18",
+      "kind": "block_rect",
+      "bounds": [
+        18,
+        39,
+        19,
+        40
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Accepted native row 039 x19..21",
+      "kind": "block_rect",
+      "bounds": [
+        19,
+        39,
+        22,
+        40
+      ],
+      "block": "02"
+    },
+    {
+      "name": "Accepted native row 039 x22..31",
+      "kind": "block_rect",
+      "bounds": [
+        22,
+        39,
+        32,
+        40
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 040 x00..05",
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        40,
+        6,
+        41
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 040 x06..06",
+      "kind": "block_rect",
+      "bounds": [
+        6,
+        40,
+        7,
+        41
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Accepted native row 040 x07..16",
+      "kind": "block_rect",
+      "bounds": [
+        7,
+        40,
+        17,
+        41
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 040 x17..17",
+      "kind": "block_rect",
+      "bounds": [
+        17,
+        40,
+        18,
+        41
+      ],
+      "block": "02"
+    },
+    {
+      "name": "Accepted native row 040 x18..18",
+      "kind": "block_rect",
+      "bounds": [
+        18,
+        40,
+        19,
+        41
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Accepted native row 040 x19..21",
+      "kind": "block_rect",
+      "bounds": [
+        19,
+        40,
+        22,
+        41
+      ],
+      "block": "02"
+    },
+    {
+      "name": "Accepted native row 040 x22..31",
+      "kind": "block_rect",
+      "bounds": [
+        22,
+        40,
+        32,
+        41
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 041 x00..05",
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        41,
+        6,
+        42
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 041 x06..06",
+      "kind": "block_rect",
+      "bounds": [
+        6,
+        41,
+        7,
+        42
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Accepted native row 041 x07..16",
+      "kind": "block_rect",
+      "bounds": [
+        7,
+        41,
+        17,
+        42
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 041 x17..17",
+      "kind": "block_rect",
+      "bounds": [
+        17,
+        41,
+        18,
+        42
+      ],
+      "block": "02"
+    },
+    {
+      "name": "Accepted native row 041 x18..18",
+      "kind": "block_rect",
+      "bounds": [
+        18,
+        41,
+        19,
+        42
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Accepted native row 041 x19..21",
+      "kind": "block_rect",
+      "bounds": [
+        19,
+        41,
+        22,
+        42
+      ],
+      "block": "02"
+    },
+    {
+      "name": "Accepted native row 041 x22..25",
+      "kind": "block_rect",
+      "bounds": [
+        22,
+        41,
+        26,
+        42
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 041 x26..26",
+      "kind": "block_rect",
+      "bounds": [
+        26,
+        41,
+        27,
+        42
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Accepted native row 041 x27..30",
+      "kind": "block_rect",
+      "bounds": [
+        27,
+        41,
+        31,
+        42
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Accepted native row 041 x31..31",
+      "kind": "block_rect",
+      "bounds": [
+        31,
+        41,
+        32,
+        42
+      ],
+      "block": "36"
+    },
+    {
+      "name": "Accepted native row 042 x00..02",
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        42,
+        3,
+        43
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 042 x03..04",
+      "kind": "block_rect",
+      "bounds": [
+        3,
+        42,
+        5,
+        43
+      ],
+      "block": "04"
+    },
+    {
+      "name": "Accepted native row 042 x05..06",
+      "kind": "block_rect",
+      "bounds": [
+        5,
+        42,
+        7,
+        43
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Accepted native row 042 x07..07",
+      "kind": "block_rect",
+      "bounds": [
+        7,
+        42,
+        8,
+        43
+      ],
+      "block": "02"
+    },
+    {
+      "name": "Accepted native row 042 x08..17",
+      "kind": "block_rect",
+      "bounds": [
+        8,
+        42,
+        18,
+        43
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 042 x18..18",
+      "kind": "block_rect",
+      "bounds": [
+        18,
+        42,
+        19,
+        43
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Accepted native row 042 x19..21",
+      "kind": "block_rect",
+      "bounds": [
+        19,
+        42,
+        22,
+        43
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 042 x22..22",
+      "kind": "block_rect",
+      "bounds": [
+        22,
+        42,
+        23,
+        43
+      ],
+      "block": "02"
+    },
+    {
+      "name": "Accepted native row 042 x23..25",
+      "kind": "block_rect",
+      "bounds": [
+        23,
+        42,
+        26,
+        43
+      ],
+      "block": "41"
+    },
+    {
+      "name": "Accepted native row 042 x26..26",
+      "kind": "block_rect",
+      "bounds": [
+        26,
+        42,
+        27,
+        43
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Accepted native row 042 x27..30",
+      "kind": "block_rect",
+      "bounds": [
+        27,
+        42,
+        31,
+        43
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Accepted native row 042 x31..31",
+      "kind": "block_rect",
+      "bounds": [
+        31,
+        42,
+        32,
+        43
+      ],
+      "block": "36"
+    },
+    {
+      "name": "Accepted native row 043 x00..02",
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        43,
+        3,
+        44
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 043 x03..05",
+      "kind": "block_rect",
+      "bounds": [
+        3,
+        43,
+        6,
+        44
+      ],
+      "block": "02"
+    },
+    {
+      "name": "Accepted native row 043 x06..06",
+      "kind": "block_rect",
+      "bounds": [
+        6,
+        43,
+        7,
+        44
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Accepted native row 043 x07..07",
+      "kind": "block_rect",
+      "bounds": [
+        7,
+        43,
+        8,
+        44
+      ],
+      "block": "02"
+    },
+    {
+      "name": "Accepted native row 043 x08..10",
+      "kind": "block_rect",
+      "bounds": [
+        8,
+        43,
+        11,
+        44
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 043 x11..18",
+      "kind": "block_rect",
+      "bounds": [
+        11,
+        43,
+        19,
+        44
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Accepted native row 043 x19..21",
+      "kind": "block_rect",
+      "bounds": [
+        19,
+        43,
+        22,
+        44
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 043 x22..22",
+      "kind": "block_rect",
+      "bounds": [
+        22,
+        43,
+        23,
+        44
+      ],
+      "block": "02"
+    },
+    {
+      "name": "Accepted native row 043 x23..23",
+      "kind": "block_rect",
+      "bounds": [
+        23,
+        43,
+        24,
+        44
+      ],
+      "block": "45"
+    },
+    {
+      "name": "Accepted native row 043 x24..29",
+      "kind": "block_rect",
+      "bounds": [
+        24,
+        43,
+        30,
+        44
+      ],
+      "block": "82"
+    },
+    {
+      "name": "Accepted native row 043 x30..30",
+      "kind": "block_rect",
+      "bounds": [
+        30,
+        43,
+        31,
+        44
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Accepted native row 043 x31..31",
+      "kind": "block_rect",
+      "bounds": [
+        31,
+        43,
+        32,
+        44
+      ],
+      "block": "36"
+    },
+    {
+      "name": "Accepted native row 044 x00..02",
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        44,
+        3,
+        45
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 044 x03..05",
+      "kind": "block_rect",
+      "bounds": [
+        3,
+        44,
+        6,
+        45
+      ],
+      "block": "02"
+    },
+    {
+      "name": "Accepted native row 044 x06..06",
+      "kind": "block_rect",
+      "bounds": [
+        6,
+        44,
+        7,
+        45
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Accepted native row 044 x07..07",
+      "kind": "block_rect",
+      "bounds": [
+        7,
+        44,
+        8,
+        45
+      ],
+      "block": "02"
+    },
+    {
+      "name": "Accepted native row 044 x08..10",
+      "kind": "block_rect",
+      "bounds": [
+        8,
+        44,
+        11,
+        45
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 044 x11..11",
+      "kind": "block_rect",
+      "bounds": [
+        11,
+        44,
+        12,
+        45
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Accepted native row 044 x12..21",
+      "kind": "block_rect",
+      "bounds": [
+        12,
+        44,
+        22,
+        45
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 044 x22..23",
+      "kind": "block_rect",
+      "bounds": [
+        22,
+        44,
+        24,
+        45
+      ],
+      "block": "02"
+    },
+    {
+      "name": "Accepted native row 044 x24..29",
+      "kind": "block_rect",
+      "bounds": [
+        24,
+        44,
+        30,
+        45
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Accepted native row 044 x30..30",
+      "kind": "block_rect",
+      "bounds": [
+        30,
+        44,
+        31,
+        45
+      ],
+      "block": "46"
+    },
+    {
+      "name": "Accepted native row 044 x31..31",
+      "kind": "block_rect",
+      "bounds": [
+        31,
+        44,
+        32,
+        45
+      ],
+      "block": "36"
+    },
+    {
+      "name": "Accepted native row 045 x00..02",
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        45,
+        3,
+        46
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 045 x03..05",
+      "kind": "block_rect",
+      "bounds": [
+        3,
+        45,
+        6,
+        46
+      ],
+      "block": "02"
+    },
+    {
+      "name": "Accepted native row 045 x06..23",
+      "kind": "block_rect",
+      "bounds": [
+        6,
+        45,
+        24,
+        46
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Accepted native row 045 x24..29",
+      "kind": "block_rect",
+      "bounds": [
+        24,
+        45,
+        30,
+        46
+      ],
+      "block": "81"
+    },
+    {
+      "name": "Accepted native row 045 x30..30",
+      "kind": "block_rect",
+      "bounds": [
+        30,
+        45,
+        31,
+        46
+      ],
+      "block": "54"
+    },
+    {
+      "name": "Accepted native row 045 x31..31",
+      "kind": "block_rect",
+      "bounds": [
+        31,
+        45,
+        32,
+        46
+      ],
+      "block": "36"
+    },
+    {
+      "name": "Accepted native row 046 x00..10",
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        46,
+        11,
+        47
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 046 x11..11",
+      "kind": "block_rect",
+      "bounds": [
+        11,
+        46,
+        12,
+        47
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Accepted native row 046 x12..24",
+      "kind": "block_rect",
+      "bounds": [
+        12,
+        46,
+        25,
+        47
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 046 x25..25",
+      "kind": "block_rect",
+      "bounds": [
+        25,
+        46,
+        26,
+        47
+      ],
+      "block": "3f"
+    },
+    {
+      "name": "Accepted native row 046 x26..26",
+      "kind": "block_rect",
+      "bounds": [
+        26,
+        46,
+        27,
+        47
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 046 x27..29",
+      "kind": "block_rect",
+      "bounds": [
+        27,
+        46,
+        30,
+        47
+      ],
+      "block": "80"
+    },
+    {
+      "name": "Accepted native row 046 x30..30",
+      "kind": "block_rect",
+      "bounds": [
+        30,
+        46,
+        31,
+        47
+      ],
+      "block": "79"
+    },
+    {
+      "name": "Accepted native row 046 x31..31",
+      "kind": "block_rect",
+      "bounds": [
+        31,
+        46,
+        32,
+        47
+      ],
+      "block": "36"
+    },
+    {
+      "name": "Accepted native row 047 x00..10",
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        47,
+        11,
+        48
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 047 x11..11",
+      "kind": "block_rect",
+      "bounds": [
+        11,
+        47,
+        12,
+        48
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Accepted native row 047 x12..27",
+      "kind": "block_rect",
+      "bounds": [
+        12,
+        47,
+        28,
+        48
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 047 x28..28",
+      "kind": "block_rect",
+      "bounds": [
+        28,
+        47,
+        29,
+        48
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Accepted native row 047 x29..30",
+      "kind": "block_rect",
+      "bounds": [
+        29,
+        47,
+        31,
+        48
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Accepted native row 047 x31..31",
+      "kind": "block_rect",
+      "bounds": [
+        31,
+        47,
+        32,
+        48
+      ],
+      "block": "36"
+    },
+    {
+      "name": "Accepted native row 048 x00..10",
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        48,
+        11,
+        49
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 048 x11..11",
+      "kind": "block_rect",
+      "bounds": [
+        11,
+        48,
+        12,
+        49
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Accepted native row 048 x12..27",
+      "kind": "block_rect",
+      "bounds": [
+        12,
+        48,
+        28,
+        49
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 048 x28..28",
+      "kind": "block_rect",
+      "bounds": [
+        28,
+        48,
+        29,
+        49
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Accepted native row 048 x29..31",
+      "kind": "block_rect",
+      "bounds": [
+        29,
+        48,
+        32,
+        49
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Accepted native row 049 x00..09",
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        49,
+        10,
+        50
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 049 x10..12",
+      "kind": "block_rect",
+      "bounds": [
+        10,
+        49,
+        13,
+        50
+      ],
+      "block": "03"
+    },
+    {
+      "name": "Accepted native row 049 x13..27",
+      "kind": "block_rect",
+      "bounds": [
+        13,
+        49,
+        28,
+        50
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 049 x28..28",
+      "kind": "block_rect",
+      "bounds": [
+        28,
+        49,
+        29,
+        50
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Accepted native row 049 x29..31",
+      "kind": "block_rect",
+      "bounds": [
+        29,
+        49,
+        32,
+        50
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Accepted native row 050 x00..09",
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        50,
+        10,
+        51
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 050 x10..12",
+      "kind": "block_rect",
+      "bounds": [
+        10,
+        50,
+        13,
+        51
+      ],
+      "block": "03"
+    },
+    {
+      "name": "Accepted native row 050 x13..27",
+      "kind": "block_rect",
+      "bounds": [
+        13,
+        50,
+        28,
+        51
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 050 x28..28",
+      "kind": "block_rect",
+      "bounds": [
+        28,
+        50,
+        29,
+        51
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Accepted native row 050 x29..30",
+      "kind": "block_rect",
+      "bounds": [
+        29,
+        50,
+        31,
+        51
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Accepted native row 050 x31..31",
+      "kind": "block_rect",
+      "bounds": [
+        31,
+        50,
+        32,
+        51
+      ],
+      "block": "36"
+    },
+    {
+      "name": "Accepted native row 051 x00..08",
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        51,
+        9,
+        52
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 051 x09..09",
+      "kind": "block_rect",
+      "bounds": [
+        9,
+        51,
+        10,
+        52
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Accepted native row 051 x10..10",
+      "kind": "block_rect",
+      "bounds": [
+        10,
+        51,
+        11,
+        52
+      ],
+      "block": "02"
+    },
+    {
+      "name": "Accepted native row 051 x11..11",
+      "kind": "block_rect",
+      "bounds": [
+        11,
+        51,
+        12,
+        52
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Accepted native row 051 x12..12",
+      "kind": "block_rect",
+      "bounds": [
+        12,
+        51,
+        13,
+        52
+      ],
+      "block": "02"
+    },
+    {
+      "name": "Accepted native row 051 x13..27",
+      "kind": "block_rect",
+      "bounds": [
+        13,
+        51,
+        28,
+        52
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 051 x28..28",
+      "kind": "block_rect",
+      "bounds": [
+        28,
+        51,
+        29,
+        52
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Accepted native row 051 x29..30",
+      "kind": "block_rect",
+      "bounds": [
+        29,
+        51,
+        31,
+        52
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Accepted native row 051 x31..31",
+      "kind": "block_rect",
+      "bounds": [
+        31,
+        51,
+        32,
+        52
+      ],
+      "block": "36"
+    },
+    {
+      "name": "Accepted native row 052 x00..08",
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        52,
+        9,
+        53
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 052 x09..12",
+      "kind": "block_rect",
+      "bounds": [
+        9,
+        52,
+        13,
+        53
+      ],
+      "block": "02"
+    },
+    {
+      "name": "Accepted native row 052 x13..27",
+      "kind": "block_rect",
+      "bounds": [
+        13,
+        52,
+        28,
+        53
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 052 x28..28",
+      "kind": "block_rect",
+      "bounds": [
+        28,
+        52,
+        29,
+        53
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Accepted native row 052 x29..30",
+      "kind": "block_rect",
+      "bounds": [
+        29,
+        52,
+        31,
+        53
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Accepted native row 052 x31..31",
+      "kind": "block_rect",
+      "bounds": [
+        31,
+        52,
+        32,
+        53
+      ],
+      "block": "36"
+    },
+    {
+      "name": "Accepted native row 053 x00..08",
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        53,
+        9,
+        54
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 053 x09..10",
+      "kind": "block_rect",
+      "bounds": [
+        9,
+        53,
+        11,
+        54
+      ],
+      "block": "02"
+    },
+    {
+      "name": "Accepted native row 053 x11..11",
+      "kind": "block_rect",
+      "bounds": [
+        11,
+        53,
+        12,
+        54
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Accepted native row 053 x12..12",
+      "kind": "block_rect",
+      "bounds": [
+        12,
+        53,
+        13,
+        54
+      ],
+      "block": "45"
+    },
+    {
+      "name": "Accepted native row 053 x13..13",
+      "kind": "block_rect",
+      "bounds": [
+        13,
+        53,
+        14,
+        54
+      ],
+      "block": "54"
+    },
+    {
+      "name": "Accepted native row 053 x14..15",
+      "kind": "block_rect",
+      "bounds": [
+        14,
+        53,
+        16,
+        54
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Accepted native row 053 x16..16",
+      "kind": "block_rect",
+      "bounds": [
+        16,
+        53,
+        17,
+        54
+      ],
+      "block": "55"
+    },
+    {
+      "name": "Accepted native row 053 x17..19",
+      "kind": "block_rect",
+      "bounds": [
+        17,
+        53,
+        20,
+        54
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 053 x20..20",
+      "kind": "block_rect",
+      "bounds": [
+        20,
+        53,
+        21,
+        54
+      ],
+      "block": "54"
+    },
+    {
+      "name": "Accepted native row 053 x21..27",
+      "kind": "block_rect",
+      "bounds": [
+        21,
+        53,
+        28,
+        54
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Accepted native row 053 x28..28",
+      "kind": "block_rect",
+      "bounds": [
+        28,
+        53,
+        29,
+        54
+      ],
+      "block": "79"
+    },
+    {
+      "name": "Accepted native row 053 x29..30",
+      "kind": "block_rect",
+      "bounds": [
+        29,
+        53,
+        31,
+        54
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Accepted native row 053 x31..31",
+      "kind": "block_rect",
+      "bounds": [
+        31,
+        53,
+        32,
+        54
+      ],
+      "block": "36"
+    },
+    {
+      "name": "Accepted native row 054 x00..06",
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        54,
+        7,
+        55
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 054 x07..07",
+      "kind": "block_rect",
+      "bounds": [
+        7,
+        54,
+        8,
+        55
+      ],
+      "block": "54"
+    },
+    {
+      "name": "Accepted native row 054 x08..08",
+      "kind": "block_rect",
+      "bounds": [
+        8,
+        54,
+        9,
+        55
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Accepted native row 054 x09..09",
+      "kind": "block_rect",
+      "bounds": [
+        9,
+        54,
+        10,
+        55
+      ],
+      "block": "55"
+    },
+    {
+      "name": "Accepted native row 054 x10..10",
+      "kind": "block_rect",
+      "bounds": [
+        10,
+        54,
+        11,
+        55
+      ],
+      "block": "83"
+    },
+    {
+      "name": "Accepted native row 054 x11..11",
+      "kind": "block_rect",
+      "bounds": [
+        11,
+        54,
+        12,
+        55
+      ],
+      "block": "84"
+    },
+    {
+      "name": "Accepted native row 054 x12..12",
+      "kind": "block_rect",
+      "bounds": [
+        12,
+        54,
+        13,
+        55
+      ],
+      "block": "85"
+    },
+    {
+      "name": "Accepted native row 054 x13..13",
+      "kind": "block_rect",
+      "bounds": [
+        13,
+        54,
+        14,
+        55
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Accepted native row 054 x14..15",
+      "kind": "block_rect",
+      "bounds": [
+        14,
+        54,
+        16,
+        55
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Accepted native row 054 x16..16",
+      "kind": "block_rect",
+      "bounds": [
+        16,
+        54,
+        17,
+        55
+      ],
+      "block": "7a"
+    },
+    {
+      "name": "Accepted native row 054 x17..19",
+      "kind": "block_rect",
+      "bounds": [
+        17,
+        54,
+        20,
+        55
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Accepted native row 054 x20..20",
+      "kind": "block_rect",
+      "bounds": [
+        20,
+        54,
+        21,
+        55
+      ],
+      "block": "79"
+    },
+    {
+      "name": "Accepted native row 054 x21..30",
+      "kind": "block_rect",
+      "bounds": [
+        21,
+        54,
+        31,
+        55
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Accepted native row 054 x31..31",
+      "kind": "block_rect",
+      "bounds": [
+        31,
+        54,
+        32,
+        55
+      ],
+      "block": "36"
+    },
+    {
+      "name": "Accepted native row 055 x00..06",
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        55,
+        7,
+        56
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 055 x07..07",
+      "kind": "block_rect",
+      "bounds": [
+        7,
+        55,
+        8,
+        56
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Accepted native row 055 x08..08",
+      "kind": "block_rect",
+      "bounds": [
+        8,
+        55,
+        9,
+        56
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Accepted native row 055 x09..09",
+      "kind": "block_rect",
+      "bounds": [
+        9,
+        55,
+        10,
+        56
+      ],
+      "block": "59"
+    },
+    {
+      "name": "Accepted native row 055 x10..10",
+      "kind": "block_rect",
+      "bounds": [
+        10,
+        55,
+        11,
+        56
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 055 x11..11",
+      "kind": "block_rect",
+      "bounds": [
+        11,
+        55,
+        12,
+        56
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Accepted native row 055 x12..15",
+      "kind": "block_rect",
+      "bounds": [
+        12,
+        55,
+        16,
+        56
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 055 x16..16",
+      "kind": "block_rect",
+      "bounds": [
+        16,
+        55,
+        17,
+        56
+      ],
+      "block": "38"
+    },
+    {
+      "name": "Accepted native row 055 x17..19",
+      "kind": "block_rect",
+      "bounds": [
+        17,
+        55,
+        20,
+        56
+      ],
+      "block": "39"
+    },
+    {
+      "name": "Accepted native row 055 x20..20",
+      "kind": "block_rect",
+      "bounds": [
+        20,
+        55,
+        21,
+        56
+      ],
+      "block": "3a"
+    },
+    {
+      "name": "Accepted native row 055 x21..27",
+      "kind": "block_rect",
+      "bounds": [
+        21,
+        55,
+        28,
+        56
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Accepted native row 055 x28..30",
+      "kind": "block_rect",
+      "bounds": [
+        28,
+        55,
+        31,
+        56
+      ],
+      "block": "39"
+    },
+    {
+      "name": "Accepted native row 055 x31..31",
+      "kind": "block_rect",
+      "bounds": [
+        31,
+        55,
+        32,
+        56
+      ],
+      "block": "3a"
+    }
+  ],
+  "crossings": [
+    {
+      "id": "RIVER_PIER",
+      "deck_blocks": [
+        [
+          24,
+          44
+        ],
+        [
+          25,
+          44
+        ],
+        [
+          26,
+          44
+        ],
+        [
+          27,
+          44
+        ],
+        [
+          28,
+          44
+        ],
+        [
+          29,
+          44
+        ]
+      ],
+      "north_rail_blocks": [
+        [
+          24,
+          43
+        ],
+        [
+          25,
+          43
+        ],
+        [
+          26,
+          43
+        ],
+        [
+          27,
+          43
+        ],
+        [
+          28,
+          43
+        ],
+        [
+          29,
+          43
+        ]
+      ],
+      "south_rail_blocks": [
+        [
+          24,
+          45
+        ],
+        [
+          25,
+          45
+        ],
+        [
+          26,
+          45
+        ],
+        [
+          27,
+          45
+        ],
+        [
+          28,
+          45
+        ],
+        [
+          29,
+          45
+        ]
+      ],
+      "water_under_rail_blocks": [
+        [
+          27,
+          46
+        ],
+        [
+          28,
+          46
+        ],
+        [
+          29,
+          46
+        ]
+      ],
+      "core_walk_line": [
+        [
+          47,
+          89
+        ],
+        [
+          48,
+          89
+        ],
+        [
+          49,
+          89
+        ],
+        [
+          50,
+          89
+        ],
+        [
+          51,
+          89
+        ],
+        [
+          52,
+          89
+        ],
+        [
+          53,
+          89
+        ],
+        [
+          54,
+          89
+        ],
+        [
+          55,
+          89
+        ],
+        [
+          56,
+          89
+        ],
+        [
+          57,
+          89
+        ],
+        [
+          58,
+          89
+        ],
+        [
+          59,
+          89
+        ],
+        [
+          60,
+          89
+        ]
+      ]
+    }
+  ],
+  "additional_water_blocks": [
+    "31",
+    "32",
+    "36",
+    "39",
+    "3a",
+    "54",
+    "55",
+    "58",
+    "59",
+    "76",
+    "79",
+    "7a"
+  ],
+  "outer_water_barriers": [
+    {
+      "side": "east",
+      "blocks": [
+        [
+          31,
+          1,
+          "36"
+        ],
+        [
+          31,
+          2,
+          "36"
+        ],
+        [
+          31,
+          3,
+          "36"
+        ],
+        [
+          31,
+          4,
+          "36"
+        ],
+        [
+          31,
+          5,
+          "36"
+        ],
+        [
+          31,
+          6,
+          "36"
+        ],
+        [
+          31,
+          7,
+          "36"
+        ],
+        [
+          31,
+          8,
+          "36"
+        ],
+        [
+          31,
+          9,
+          "36"
+        ],
+        [
+          31,
+          10,
+          "36"
+        ],
+        [
+          31,
+          11,
+          "36"
+        ],
+        [
+          31,
+          12,
+          "36"
+        ],
+        [
+          31,
+          13,
+          "36"
+        ],
+        [
+          31,
+          14,
+          "36"
+        ],
+        [
+          31,
+          15,
+          "36"
+        ],
+        [
+          31,
+          16,
+          "36"
+        ],
+        [
+          31,
+          17,
+          "36"
+        ],
+        [
+          31,
+          18,
+          "36"
+        ],
+        [
+          31,
+          19,
+          "36"
+        ],
+        [
+          31,
+          20,
+          "36"
+        ],
+        [
+          31,
+          21,
+          "36"
+        ],
+        [
+          31,
+          22,
+          "36"
+        ],
+        [
+          31,
+          23,
+          "36"
+        ],
+        [
+          31,
+          24,
+          "36"
+        ],
+        [
+          31,
+          25,
+          "36"
+        ],
+        [
+          31,
+          26,
+          "36"
+        ],
+        [
+          31,
+          27,
+          "36"
+        ],
+        [
+          31,
+          28,
+          "36"
+        ],
+        [
+          31,
+          29,
+          "36"
+        ],
+        [
+          31,
+          30,
+          "36"
+        ],
+        [
+          31,
+          31,
+          "36"
+        ],
+        [
+          31,
+          32,
+          "36"
+        ],
+        [
+          31,
+          33,
+          "36"
+        ],
+        [
+          31,
+          34,
+          "36"
+        ],
+        [
+          31,
+          35,
+          "36"
+        ],
+        [
+          31,
+          36,
+          "36"
+        ],
+        [
+          31,
+          37,
+          "36"
+        ],
+        [
+          31,
+          38,
+          "36"
+        ],
+        [
+          31,
+          39,
+          "36"
+        ],
+        [
+          31,
+          40,
+          "36"
+        ],
+        [
+          31,
+          41,
+          "36"
+        ],
+        [
+          31,
+          42,
+          "36"
+        ],
+        [
+          31,
+          43,
+          "36"
+        ],
+        [
+          31,
+          44,
+          "36"
+        ],
+        [
+          31,
+          45,
+          "36"
+        ],
+        [
+          31,
+          46,
+          "36"
+        ],
+        [
+          31,
+          47,
+          "36"
+        ],
+        [
+          31,
+          48,
+          "36"
+        ],
+        [
+          31,
+          49,
+          "36"
+        ],
+        [
+          31,
+          50,
+          "36"
+        ],
+        [
+          31,
+          51,
+          "36"
+        ],
+        [
+          31,
+          52,
+          "36"
+        ],
+        [
+          31,
+          53,
+          "36"
+        ],
+        [
+          31,
+          54,
+          "36"
+        ]
+      ]
+    },
+    {
+      "side": "north",
+      "blocks": [
+        [
+          28,
+          0,
+          "31"
+        ],
+        [
+          29,
+          0,
+          "31"
+        ],
+        [
+          30,
+          0,
+          "31"
+        ],
+        [
+          31,
+          0,
+          "32"
+        ]
+      ]
+    },
+    {
+      "side": "south",
+      "blocks": [
+        [
+          28,
+          55,
+          "39"
+        ],
+        [
+          29,
+          55,
+          "39"
+        ],
+        [
+          30,
+          55,
+          "39"
+        ],
+        [
+          31,
+          55,
+          "3a"
+        ]
+      ]
+    }
+  ],
+  "internal_water_connections": [
+    {
+      "from_map": "MnR05C00R00",
+      "direction": "south",
+      "target_map": "MnR05C00R01",
+      "reverse_direction": "north",
+      "offset": 0,
+      "core_boundary_y": 48
+    },
+    {
+      "from_map": "MnR05C00R01",
+      "direction": "south",
+      "target_map": "MnR05C00R02",
+      "reverse_direction": "north",
+      "offset": 0,
+      "core_boundary_y": 96
+    }
+  ]
+}

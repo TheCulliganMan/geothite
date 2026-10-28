@@ -1,0 +1,91 @@
+{
+  "schema_version": 1,
+  "id": "northwoods-starter-signatures-v1",
+  "rules": "Each starter family's final evolution learns an exclusive attack at level 36. Slipper Waltz uses Special Attack; Rimebrand and Paddle Sweep use Attack. Their secondary effects are checked after a successful hit.",
+  "starter_signatures": [
+    {
+      "family_id": "MN_F001",
+      "species_id": "MN_003",
+      "runtime_name": "CYPRIELLE",
+      "move_id": "SLIPPER_WALTZ",
+      "level": 36,
+      "catalog": "northwoods-moves.json"
+    },
+    {
+      "family_id": "MN_F125",
+      "species_id": "MN_276",
+      "runtime_name": "BOREALYNX",
+      "move_id": "RIMEBRAND",
+      "level": 36,
+      "catalog": "starter-signature-moves.json"
+    },
+    {
+      "family_id": "MN_F004",
+      "species_id": "MN_012",
+      "runtime_name": "VOYAGEAR",
+      "move_id": "PADDLE_SWEEP",
+      "level": 36,
+      "catalog": "starter-signature-moves.json"
+    }
+  ],
+  "moves": [
+    {
+      "id": "RIMEBRAND",
+      "display_name": "Rimebrand",
+      "kind": "signature",
+      "introduced_generation": null,
+      "canonical_number": null,
+      "category": "physical",
+      "description": "The winter lynx springs from cover, raking the target with ember-bright paws. Has a 20% chance to burn.",
+      "animation_donor": "FLAME_WHEEL",
+      "battle": {
+        "source_index": 271,
+        "name": "RIMEBRAND",
+        "type": "FIRE",
+        "power": 85,
+        "accuracy": 100,
+        "pp": 10,
+        "effect": "BURN_HIT",
+        "effect_chance": 20,
+        "stat": null,
+        "amount": null
+      },
+      "learners": [
+        {
+          "species_id": "MN_276",
+          "runtime_name": "BOREALYNX",
+          "level": 36
+        }
+      ]
+    },
+    {
+      "id": "PADDLE_SWEEP",
+      "display_name": "Paddle Sweep",
+      "kind": "signature",
+      "introduced_generation": null,
+      "canonical_number": null,
+      "category": "physical",
+      "description": "A broad paddle-tail stroke drives a crescent of water through the target’s guard. Has a 30% chance to lower Attack by one stage.",
+      "animation_donor": "WATERFALL",
+      "battle": {
+        "source_index": 272,
+        "name": "PADDLE_SWEEP",
+        "type": "WATER",
+        "power": 80,
+        "accuracy": 100,
+        "pp": 15,
+        "effect": "ATTACK_DOWN_HIT",
+        "effect_chance": 30,
+        "stat": "ATTACK",
+        "amount": -1
+      },
+      "learners": [
+        {
+          "species_id": "MN_012",
+          "runtime_name": "VOYAGEAR",
+          "level": 36
+        }
+      ]
+    }
+  ]
+}

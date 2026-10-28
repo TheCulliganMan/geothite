@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F084",
+  "species": [
+    {
+      "species_id": "MN_182",
+      "runtime_token": "SCUTLET",
+      "palette_rgb555": [
+        32767,
+        21268,
+        14727,
+        0
+      ],
+      "shiny_palette_rgb555": [
+        32767,
+        25236,
+        12526,
+        0
+      ],
+      "fit": [
+        13,
+        13
+      ],
+      "alpha_threshold": 128,
+      "sampling": "source_center",
+      "minimum_foreground_samples": 16,
+      "black_priority_samples": 64,
+      "interior_black_samples": 64,
+      "opaque_interior_minimum_samples": 64,
+      "frames": [
+        {
+          "pose": "down_idle",
+          "source": "scutlet.overworld.imagegen-v5-wide-front-prongs.png",
+          "crop": [
+            22,
+            85,
+            520,
+            440
+          ]
+        },
+        {
+          "pose": "up_idle",
+          "source": "scutlet.overworld.imagegen-v5-wide-front-prongs.png",
+          "crop": [
+            496,
+            81,
+            520,
+            440
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "source": "scutlet.overworld.imagegen-v5-wide-front-prongs.png",
+          "crop": [
+            1016,
+            100,
+            520,
+            440
+          ]
+        },
+        {
+          "pose": "down_step",
+          "source": "scutlet.overworld.imagegen-v5-wide-front-prongs.png",
+          "crop": [
+            21,
+            529,
+            520,
+            440
+          ]
+        },
+        {
+          "pose": "up_step",
+          "source": "scutlet.overworld.imagegen-v5-wide-front-prongs.png",
+          "crop": [
+            487,
+            517,
+            520,
+            440
+          ]
+        },
+        {
+          "pose": "left_step",
+          "source": "scutlet.overworld.imagegen-v5-wide-front-prongs.png",
+          "crop": [
+            1015,
+            537,
+            520,
+            440
+          ]
+        }
+      ]
+    }
+  ]
+}

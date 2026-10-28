@@ -1,0 +1,254 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_179",
+  "result": "pass",
+  "manifest_sha256": "2f157777ae1eba419d609dec016fcad4f8921ccd18948fbae796d6b33e03fa2e",
+  "bank_sha256": "9b8c109bf1560e58531da29ca16afb17ec3a680f13f82738c72e927e64edc775",
+  "source_sha256": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f082/heliknock.overworld.imagegen-v1.png": "e07845fd60b0439e36f3301106bea0734af4e62c8fb8c651b19e187f3f90d165"
+  },
+  "canonical_eye_form": "ONE actual central cyclops pupil in each nonrear pose, isolated on ochre face between shoulder hooks; no second eye invented. Every native pupil pixel maps to same actual small source pupil component, not horn tip or spiral seam.",
+  "nonrear_poses": [
+    {
+      "pose": "down_idle",
+      "result": "pass",
+      "source_feature_proof": {
+        "pose": "down_idle",
+        "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f082/heliknock.overworld.imagegen-v1.png",
+        "crop": [
+          61,
+          92,
+          460,
+          410
+        ],
+        "anatomically_identified_source_eye_boxes_xywh": [
+          [
+            288,
+            238,
+            24,
+            36
+          ]
+        ],
+        "actual_eye_proofs": [
+          {
+            "native_cluster": [
+              [
+                8,
+                7
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  0,
+                  0,
+                  0,
+                  253
+                ],
+                "bounds": [
+                  288,
+                  238,
+                  24,
+                  36
+                ],
+                "pixels": 864,
+                "truncated_contour": false,
+                "native_pixel": [
+                  8,
+                  7
+                ],
+                "source_sample_pixel": [
+                  305,
+                  243
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "pose": "left_idle",
+      "result": "pass",
+      "source_feature_proof": {
+        "pose": "left_idle",
+        "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f082/heliknock.overworld.imagegen-v1.png",
+        "crop": [
+          1036,
+          94,
+          460,
+          410
+        ],
+        "anatomically_identified_source_eye_boxes_xywh": [
+          [
+            1138,
+            238,
+            24,
+            36
+          ]
+        ],
+        "actual_eye_proofs": [
+          {
+            "native_cluster": [
+              [
+                4,
+                7
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  1,
+                  1,
+                  1,
+                  253
+                ],
+                "bounds": [
+                  1138,
+                  238,
+                  24,
+                  36
+                ],
+                "pixels": 864,
+                "truncated_contour": false,
+                "native_pixel": [
+                  4,
+                  7
+                ],
+                "source_sample_pixel": [
+                  1159,
+                  245
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "pose": "down_step",
+      "result": "pass",
+      "source_feature_proof": {
+        "pose": "down_step",
+        "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f082/heliknock.overworld.imagegen-v1.png",
+        "crop": [
+          61,
+          545,
+          460,
+          410
+        ],
+        "anatomically_identified_source_eye_boxes_xywh": [
+          [
+            288,
+            691,
+            25,
+            34
+          ]
+        ],
+        "actual_eye_proofs": [
+          {
+            "native_cluster": [
+              [
+                8,
+                7
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  0,
+                  0,
+                  0,
+                  253
+                ],
+                "bounds": [
+                  288,
+                  691,
+                  25,
+                  34
+                ],
+                "pixels": 850,
+                "truncated_contour": false,
+                "native_pixel": [
+                  8,
+                  7
+                ],
+                "source_sample_pixel": [
+                  305,
+                  696
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "pose": "left_step",
+      "result": "pass",
+      "source_feature_proof": {
+        "pose": "left_step",
+        "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f082/heliknock.overworld.imagegen-v1.png",
+        "crop": [
+          1059,
+          552,
+          460,
+          410
+        ],
+        "anatomically_identified_source_eye_boxes_xywh": [
+          [
+            1161,
+            698,
+            23,
+            34
+          ]
+        ],
+        "actual_eye_proofs": [
+          {
+            "native_cluster": [
+              [
+                4,
+                7
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  5,
+                  4,
+                  3,
+                  253
+                ],
+                "bounds": [
+                  1161,
+                  698,
+                  23,
+                  34
+                ],
+                "pixels": 771,
+                "truncated_contour": false,
+                "native_pixel": [
+                  4,
+                  7
+                ],
+                "source_sample_pixel": [
+                  1182,
+                  703
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "rear_anatomy": {
+    "result": "pass",
+    "notes": "Both native normal/shiny rear poses actually inspected: plain rear head, no copied face. Head anchors stable, 1px transparent outer border, three walk pairs differ."
+  },
+  "detailed_proof": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f082/manifest-heliknock-v1-pupil-proof.proof.json"
+}

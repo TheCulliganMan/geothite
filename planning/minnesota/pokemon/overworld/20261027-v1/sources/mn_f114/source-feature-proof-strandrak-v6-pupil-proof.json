@@ -1,0 +1,337 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_248",
+  "result": "pass",
+  "manifest_sha256": "344b51e72258b0b4781ba8aea61eed4393e2c6bcc409b1086974c35411fb6af3",
+  "bank_sha256": "aeaaaf2ee1a94e3afa8e9c149a2967e27fa36369ff58e6eadb5fef0295009083",
+  "source_sha256": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f114/strandrak.overworld.imagegen-v6-roomy-cheeks.png": "5488596642f0442231179b962e9d75bd582768a2a379868c849b40f15ab6546b",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f114/strandrak.overworld.imagegen-v5-gutter.png": "356f2a27b70d22688e1799b50e54cc362b2d7f923b20d592db8098dce8676036"
+  },
+  "canonical_eye_form": "TWO actual isolated BLACK index3 pupil squares in pale index1 under-shell head south; ONE true west pupil. Every actual source pupil sampled in all4nonrear poses; no seam or contour counted.",
+  "nonrear_poses": [
+    {
+      "pose": "down_idle",
+      "result": "pass",
+      "source_feature_proof": {
+        "pose": "down_idle",
+        "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f114/strandrak.overworld.imagegen-v6-roomy-cheeks.png",
+        "crop": [
+          22,
+          108,
+          500,
+          400
+        ],
+        "anatomically_identified_source_eye_boxes_xywh": [
+          [
+            237,
+            365,
+            25,
+            24
+          ],
+          [
+            313,
+            365,
+            24,
+            24
+          ]
+        ],
+        "actual_eye_proofs": [
+          {
+            "native_cluster": [
+              [
+                7,
+                11
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  0,
+                  0,
+                  0,
+                  253
+                ],
+                "bounds": [
+                  237,
+                  365,
+                  25,
+                  24
+                ],
+                "pixels": 585,
+                "truncated_contour": false,
+                "native_pixel": [
+                  7,
+                  11
+                ],
+                "source_sample_pixel": [
+                  258,
+                  369
+                ]
+              }
+            ]
+          },
+          {
+            "native_cluster": [
+              [
+                9,
+                11
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  0,
+                  0,
+                  0,
+                  253
+                ],
+                "bounds": [
+                  313,
+                  365,
+                  24,
+                  24
+                ],
+                "pixels": 576,
+                "truncated_contour": false,
+                "native_pixel": [
+                  9,
+                  11
+                ],
+                "source_sample_pixel": [
+                  325,
+                  369
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "pose": "left_idle",
+      "result": "pass",
+      "source_feature_proof": {
+        "pose": "left_idle",
+        "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f114/strandrak.overworld.imagegen-v6-roomy-cheeks.png",
+        "crop": [
+          1024,
+          154,
+          500,
+          400
+        ],
+        "anatomically_identified_source_eye_boxes_xywh": [
+          [
+            1183,
+            333,
+            24,
+            25
+          ]
+        ],
+        "actual_eye_proofs": [
+          {
+            "native_cluster": [
+              [
+                5,
+                9
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  0,
+                  0,
+                  0,
+                  253
+                ],
+                "bounds": [
+                  1183,
+                  333,
+                  24,
+                  25
+                ],
+                "pixels": 600,
+                "truncated_contour": false,
+                "native_pixel": [
+                  5,
+                  9
+                ],
+                "source_sample_pixel": [
+                  1192,
+                  346
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "pose": "down_step",
+      "result": "pass",
+      "source_feature_proof": {
+        "pose": "down_step",
+        "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f114/strandrak.overworld.imagegen-v6-roomy-cheeks.png",
+        "crop": [
+          20,
+          551,
+          500,
+          400
+        ],
+        "anatomically_identified_source_eye_boxes_xywh": [
+          [
+            236,
+            810,
+            25,
+            25
+          ],
+          [
+            313,
+            810,
+            24,
+            25
+          ]
+        ],
+        "actual_eye_proofs": [
+          {
+            "native_cluster": [
+              [
+                7,
+                11
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  13,
+                  11,
+                  4,
+                  253
+                ],
+                "bounds": [
+                  236,
+                  810,
+                  25,
+                  25
+                ],
+                "pixels": 625,
+                "truncated_contour": false,
+                "native_pixel": [
+                  7,
+                  11
+                ],
+                "source_sample_pixel": [
+                  256,
+                  812
+                ]
+              }
+            ]
+          },
+          {
+            "native_cluster": [
+              [
+                9,
+                11
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  8,
+                  6,
+                  2,
+                  253
+                ],
+                "bounds": [
+                  313,
+                  810,
+                  24,
+                  25
+                ],
+                "pixels": 600,
+                "truncated_contour": false,
+                "native_pixel": [
+                  9,
+                  11
+                ],
+                "source_sample_pixel": [
+                  323,
+                  812
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "pose": "left_step",
+      "result": "pass",
+      "source_feature_proof": {
+        "pose": "left_step",
+        "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f114/strandrak.overworld.imagegen-v6-roomy-cheeks.png",
+        "crop": [
+          1023,
+          604,
+          500,
+          400
+        ],
+        "anatomically_identified_source_eye_boxes_xywh": [
+          [
+            1176,
+            780,
+            24,
+            25
+          ]
+        ],
+        "actual_eye_proofs": [
+          {
+            "native_cluster": [
+              [
+                5,
+                9
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  0,
+                  0,
+                  0,
+                  253
+                ],
+                "bounds": [
+                  1176,
+                  780,
+                  24,
+                  25
+                ],
+                "pixels": 600,
+                "truncated_contour": false,
+                "native_pixel": [
+                  5,
+                  9
+                ],
+                "source_sample_pixel": [
+                  1191,
+                  796
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "rear_anatomy": {
+    "result": "pass",
+    "notes": "Both normal/shiny true north poses inspected: closed crescent shell with three broad nested ridge bands, two forearms and two terraceheels (4 limbs total), one forked outlet-tail; no copied face/eyes. Original v5 rear images retained unchanged."
+  },
+  "detailed_proof": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f114/strandrak.manifest-native-v6-pupil-proof.proof.json"
+}

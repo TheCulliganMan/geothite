@@ -87,11 +87,12 @@ The [approved replacement plan](expansion/20261027-eleven-generation.json) adds 
 | 151, 152, 153 | Wrigglet — Bug → Pupump — Bug/Poison → Mosquitan — Bug/Poison | Minnesota giant mosquito imagined as a living marsh pressure pump: a tiny J-shaped wriggler with a breathing siphon becomes a compact reservoir pupa with twin air trumpets, then an enormous hunched adult with a swollen tank abdomen, ribbed bellows, two broad wings, six jointed legs and a lance-like proboscis. Shared acid-green reservoir and bog-violet casing carry through all three anatomically distinct stages. It is the region's rare late-evolving pseudo-legendary, distinct from the smaller Midgebit/Skeeterex vampire pests. **Pseudo-legendary**; Slow growth; evolves at levels 30 and 55; base-stat totals 300 → 420 → 600. Proposed location: Proposed rare late-game line in a secluded northern peatland pool; the pupa shelters at the waterline and adults patrol the surrounding fen. Encounter registration remains unauthored.. |
 | 274, 275, 276 | Kindlit — Fire → Rimepelt — Fire → Borealynx — Fire/Ice | Canada lynx and winter campfires: a low ember kitten becomes a lean coal-bodied prowler with a shoulder flame mantle, then a powerful winter lynx with a blazing chest, a low solid frost mantle and massive frozen snowshoe paws. Fire grows visibly at every stage; the frost mantle arrives with the final Ice typing. All three stages remain on four paws with short bobtails. |
 
+| 043, 044, 318 | Jiglet — Steel/Water → Trollure — Steel/Water → Crappeller — Steel/Water | Living fishing lure: a painted jig with a hook tail becomes a fin-spinning lure, then a broad crappie-patterned adult with a large crown spinner blade. |
+
 ## Two-stage families
 
 | IDs | Species and types | Theme and body transformation |
 | --- | --- | --- |
-| 043, 044 | Jiglet — Steel/Water → Trollure — Steel/Water | Living fishing lure: a painted jig with a hook tail becomes a spinner whose metal fins imitate an injured fish. |
 | 045, 046 | Flapip — Normal → Stackajack — Normal/Fire | Pancakes and lumberjack breakfasts: a self-flipping pancake becomes a stack with butter eyebrows, syrup beard and a hot griddle belly. |
 | 047, 048 | Hatchit — Steel → Doublehex — Steel/Ghost | Haunted logging axe: a walking hatchet becomes a double-bit axe with blade eyes and ghost arms growing from its grip. |
 | 049, 050 | Castorock — Rock/Normal → Castoroar — Rock/Water | Giant beaver fossil: petrified incisors and ribbed stone armor become a prehistoric log-dam body. |

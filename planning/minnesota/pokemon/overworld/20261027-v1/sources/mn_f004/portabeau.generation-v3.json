@@ -1,0 +1,13 @@
+{
+  "tool": "built-in image_gen",
+  "original_tool_path": "/Users/ryanculligan/.codex/generated_images/01a17dcc-4f1a-77a2-9d21-0df036061346/exec-188802ea-d409-4ae9-837a-25c224cb4960.png",
+  "source_size": [
+    1536,
+    1024
+  ],
+  "sha256": "a1de91336ce25e778eb9ebb5c1c7696a251ccdd169cbe0d2a8f49316178966f8",
+  "reference_paths": [
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/true16-whirlnut-center-v4/MN_F119/review/whirlnut.normal-8x.png"
+  ],
+  "prompt": "portabeau.prompt-v3.txt"
+}

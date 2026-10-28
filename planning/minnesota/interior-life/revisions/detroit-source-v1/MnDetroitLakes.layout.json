@@ -1,0 +1,1401 @@
+{
+  "schema_version": 2,
+  "id": "MnDetroitLakes",
+  "tileset": "johto",
+  "compiled_tileset": "mn_detroit_lakes",
+  "dimensions_metatiles": [
+    24,
+    18
+  ],
+  "coordinate_units": "32px metatiles; zero-based explicit strokes",
+  "shore_fitting": "johto_8_neighbors",
+  "reject_cliff_cuts": true,
+  "source_pixels_modified": false,
+  "additional_water_blocks": [
+    "30",
+    "34",
+    "38",
+    "39",
+    "3a"
+  ],
+  "derived_blocks": [
+    {
+      "id": "80",
+      "source_tileset": "kanto",
+      "source_block": "78"
+    },
+    {
+      "id": "81",
+      "source_tileset": "kanto",
+      "source_block": "77"
+    },
+    {
+      "id": "82",
+      "source_tileset": "kanto",
+      "source_block": "77",
+      "tile_row_order": [
+        2,
+        3,
+        0,
+        1
+      ],
+      "collision_source_tileset": "johto",
+      "collision_source_block": "75"
+    },
+    {
+      "id": "83",
+      "source_tileset": "johto_modern",
+      "source_block": "18"
+    },
+    {
+      "id": "84",
+      "source_tileset": "johto_modern",
+      "source_block": "1f"
+    },
+    {
+      "id": "85",
+      "source_tileset": "johto_modern",
+      "source_block": "19"
+    },
+    {
+      "id": "86",
+      "source_tileset": "johto_modern",
+      "source_block": "1a"
+    },
+    {
+      "id": "87",
+      "source_tileset": "johto_modern",
+      "source_block": "0f"
+    },
+    {
+      "id": "88",
+      "source_tileset": "johto_modern",
+      "source_block": "11"
+    }
+  ],
+  "layers": [
+    {
+      "name": "Lake-facing station garden",
+      "kind": "polygon",
+      "points": [
+        [
+          3,
+          2
+        ],
+        [
+          9,
+          2
+        ],
+        [
+          9,
+          4
+        ],
+        [
+          10,
+          4
+        ],
+        [
+          10,
+          7
+        ],
+        [
+          8,
+          7
+        ],
+        [
+          8,
+          8
+        ],
+        [
+          4,
+          8
+        ],
+        [
+          4,
+          6
+        ],
+        [
+          3,
+          6
+        ]
+      ],
+      "material": "lawn"
+    },
+    {
+      "name": "Clinic and garden frontage",
+      "kind": "polygon",
+      "points": [
+        [
+          14,
+          2
+        ],
+        [
+          18,
+          2
+        ],
+        [
+          18,
+          3
+        ],
+        [
+          19,
+          3
+        ],
+        [
+          19,
+          6
+        ],
+        [
+          18,
+          6
+        ],
+        [
+          18,
+          7
+        ],
+        [
+          15,
+          7
+        ],
+        [
+          15,
+          6
+        ],
+        [
+          14,
+          6
+        ]
+      ],
+      "material": "lawn"
+    },
+    {
+      "name": "Mart approach by the eastern trail",
+      "kind": "polygon",
+      "points": [
+        [
+          18,
+          6
+        ],
+        [
+          22,
+          6
+        ],
+        [
+          22,
+          8
+        ],
+        [
+          23,
+          8
+        ],
+        [
+          23,
+          10
+        ],
+        [
+          19,
+          10
+        ],
+        [
+          19,
+          9
+        ],
+        [
+          18,
+          9
+        ]
+      ],
+      "material": "lawn"
+    },
+    {
+      "name": "Cabin street above the beach",
+      "kind": "polygon",
+      "points": [
+        [
+          13,
+          10
+        ],
+        [
+          17,
+          10
+        ],
+        [
+          17,
+          11
+        ],
+        [
+          22,
+          11
+        ],
+        [
+          22,
+          15
+        ],
+        [
+          23,
+          15
+        ],
+        [
+          23,
+          16
+        ],
+        [
+          20,
+          16
+        ],
+        [
+          20,
+          17
+        ],
+        [
+          17,
+          17
+        ],
+        [
+          17,
+          16
+        ],
+        [
+          13,
+          16
+        ]
+      ],
+      "material": "lawn"
+    },
+    {
+      "name": "Public gravel-beach lawn",
+      "kind": "polygon",
+      "points": [
+        [
+          2,
+          10
+        ],
+        [
+          5,
+          10
+        ],
+        [
+          5,
+          9
+        ],
+        [
+          8,
+          9
+        ],
+        [
+          8,
+          10
+        ],
+        [
+          11,
+          10
+        ],
+        [
+          11,
+          12
+        ],
+        [
+          9,
+          12
+        ],
+        [
+          9,
+          13
+        ],
+        [
+          5,
+          13
+        ],
+        [
+          5,
+          12
+        ],
+        [
+          2,
+          12
+        ]
+      ],
+      "material": "lawn"
+    },
+    {
+      "name": "Little Detroit Lake coves",
+      "kind": "polygon",
+      "points": [
+        [
+          0,
+          12
+        ],
+        [
+          3,
+          12
+        ],
+        [
+          3,
+          11
+        ],
+        [
+          8,
+          11
+        ],
+        [
+          8,
+          12
+        ],
+        [
+          11,
+          12
+        ],
+        [
+          11,
+          14
+        ],
+        [
+          13,
+          14
+        ],
+        [
+          13,
+          17
+        ],
+        [
+          0,
+          17
+        ]
+      ],
+      "material": "water"
+    },
+    {
+      "name": "East-west connected trail street",
+      "kind": "path",
+      "points": [
+        [
+          0,
+          9
+        ],
+        [
+          23,
+          9
+        ]
+      ],
+      "material": "floor",
+      "width_metatiles": 1
+    },
+    {
+      "name": "Itasca north approach",
+      "kind": "path",
+      "points": [
+        [
+          12,
+          0
+        ],
+        [
+          12,
+          9
+        ]
+      ],
+      "material": "floor",
+      "width_metatiles": 1
+    },
+    {
+      "name": "Station lane and clinic crossing",
+      "kind": "path",
+      "points": [
+        [
+          5,
+          5
+        ],
+        [
+          12,
+          5
+        ],
+        [
+          16,
+          5
+        ]
+      ],
+      "material": "floor",
+      "width_metatiles": 1
+    },
+    {
+      "name": "Station to beach path",
+      "kind": "path",
+      "points": [
+        [
+          6,
+          5
+        ],
+        [
+          6,
+          11
+        ],
+        [
+          10,
+          11
+        ]
+      ],
+      "material": "floor",
+      "width_metatiles": 1
+    },
+    {
+      "name": "Cabin street spine and porches",
+      "kind": "path",
+      "points": [
+        [
+          14,
+          9
+        ],
+        [
+          14,
+          14
+        ],
+        [
+          22,
+          14
+        ]
+      ],
+      "material": "floor",
+      "width_metatiles": 1
+    },
+    {
+      "name": "Dock joins the cabin shore",
+      "kind": "path",
+      "points": [
+        [
+          14,
+          14
+        ],
+        [
+          13,
+          14
+        ]
+      ],
+      "material": "floor",
+      "width_metatiles": 1
+    },
+    {
+      "name": "Station waiting-garden flowers",
+      "kind": "rect",
+      "bounds": [
+        3,
+        5,
+        4,
+        7
+      ],
+      "material": "flowers"
+    },
+    {
+      "name": "Station northern pine screen",
+      "kind": "rect",
+      "bounds": [
+        8,
+        2,
+        10,
+        4
+      ],
+      "material": "forest"
+    },
+    {
+      "name": "Clinic small flower garden",
+      "kind": "rect",
+      "bounds": [
+        17,
+        6,
+        19,
+        7
+      ],
+      "material": "flowers"
+    },
+    {
+      "name": "Cabin-street native flower bed",
+      "kind": "rect",
+      "bounds": [
+        18,
+        15,
+        20,
+        16
+      ],
+      "material": "flowers"
+    },
+    {
+      "name": "Beach path flower strip",
+      "kind": "rect",
+      "bounds": [
+        2,
+        10,
+        4,
+        11
+      ],
+      "material": "flowers"
+    },
+    {
+      "name": "Glacier Line complete source station facade",
+      "kind": "point",
+      "position": [
+        5,
+        3
+      ],
+      "block": "83"
+    },
+    {
+      "name": "Glacier Line complete source station facade",
+      "kind": "point",
+      "position": [
+        6,
+        3
+      ],
+      "block": "84"
+    },
+    {
+      "name": "Glacier Line complete source station facade",
+      "kind": "point",
+      "position": [
+        7,
+        3
+      ],
+      "block": "85"
+    },
+    {
+      "name": "Glacier Line complete source station facade",
+      "kind": "point",
+      "position": [
+        5,
+        4
+      ],
+      "block": "86"
+    },
+    {
+      "name": "Glacier Line complete source station facade",
+      "kind": "point",
+      "position": [
+        6,
+        4
+      ],
+      "block": "87"
+    },
+    {
+      "name": "Glacier Line complete source station facade",
+      "kind": "point",
+      "position": [
+        7,
+        4
+      ],
+      "block": "88"
+    },
+    {
+      "name": "Complete native clinic facade",
+      "kind": "point",
+      "position": [
+        16,
+        3
+      ],
+      "block": "18"
+    },
+    {
+      "name": "Complete native clinic facade",
+      "kind": "point",
+      "position": [
+        17,
+        3
+      ],
+      "block": "19"
+    },
+    {
+      "name": "Complete native clinic facade",
+      "kind": "point",
+      "position": [
+        16,
+        4
+      ],
+      "block": "1a"
+    },
+    {
+      "name": "Complete native clinic facade",
+      "kind": "point",
+      "position": [
+        17,
+        4
+      ],
+      "block": "1b"
+    },
+    {
+      "name": "Complete native mart facade",
+      "kind": "point",
+      "position": [
+        19,
+        7
+      ],
+      "block": "18"
+    },
+    {
+      "name": "Complete native mart facade",
+      "kind": "point",
+      "position": [
+        20,
+        7
+      ],
+      "block": "19"
+    },
+    {
+      "name": "Complete native mart facade",
+      "kind": "point",
+      "position": [
+        19,
+        8
+      ],
+      "block": "1a"
+    },
+    {
+      "name": "Complete native mart facade",
+      "kind": "point",
+      "position": [
+        20,
+        8
+      ],
+      "block": "17"
+    },
+    {
+      "name": "Complete native canoe cabin facade",
+      "kind": "point",
+      "position": [
+        16,
+        12
+      ],
+      "block": "18"
+    },
+    {
+      "name": "Complete native canoe cabin facade",
+      "kind": "point",
+      "position": [
+        17,
+        12
+      ],
+      "block": "19"
+    },
+    {
+      "name": "Complete native canoe cabin facade",
+      "kind": "point",
+      "position": [
+        16,
+        13
+      ],
+      "block": "16"
+    },
+    {
+      "name": "Complete native canoe cabin facade",
+      "kind": "point",
+      "position": [
+        17,
+        13
+      ],
+      "block": "1e"
+    },
+    {
+      "name": "Complete native ranger cabin facade",
+      "kind": "point",
+      "position": [
+        20,
+        12
+      ],
+      "block": "2c"
+    },
+    {
+      "name": "Complete native ranger cabin facade",
+      "kind": "point",
+      "position": [
+        21,
+        12
+      ],
+      "block": "2d"
+    },
+    {
+      "name": "Complete native ranger cabin facade",
+      "kind": "point",
+      "position": [
+        20,
+        13
+      ],
+      "block": "2e"
+    },
+    {
+      "name": "Complete native ranger cabin facade",
+      "kind": "point",
+      "position": [
+        21,
+        13
+      ],
+      "block": "2f"
+    },
+    {
+      "name": "Public dock north blocking rail",
+      "kind": "point",
+      "position": [
+        9,
+        13
+      ],
+      "block": "82"
+    },
+    {
+      "name": "Public dock walking deck",
+      "kind": "point",
+      "position": [
+        9,
+        14
+      ],
+      "block": "71"
+    },
+    {
+      "name": "Public dock south blocking rail",
+      "kind": "point",
+      "position": [
+        9,
+        15
+      ],
+      "block": "81"
+    },
+    {
+      "name": "Water below public dock",
+      "kind": "point",
+      "position": [
+        9,
+        16
+      ],
+      "block": "80"
+    },
+    {
+      "name": "Public dock north blocking rail",
+      "kind": "point",
+      "position": [
+        10,
+        13
+      ],
+      "block": "82"
+    },
+    {
+      "name": "Public dock walking deck",
+      "kind": "point",
+      "position": [
+        10,
+        14
+      ],
+      "block": "71"
+    },
+    {
+      "name": "Public dock south blocking rail",
+      "kind": "point",
+      "position": [
+        10,
+        15
+      ],
+      "block": "81"
+    },
+    {
+      "name": "Water below public dock",
+      "kind": "point",
+      "position": [
+        10,
+        16
+      ],
+      "block": "80"
+    },
+    {
+      "name": "Public dock north blocking rail",
+      "kind": "point",
+      "position": [
+        11,
+        13
+      ],
+      "block": "82"
+    },
+    {
+      "name": "Public dock walking deck",
+      "kind": "point",
+      "position": [
+        11,
+        14
+      ],
+      "block": "71"
+    },
+    {
+      "name": "Public dock south blocking rail",
+      "kind": "point",
+      "position": [
+        11,
+        15
+      ],
+      "block": "81"
+    },
+    {
+      "name": "Water below public dock",
+      "kind": "point",
+      "position": [
+        11,
+        16
+      ],
+      "block": "80"
+    },
+    {
+      "name": "Public dock north blocking rail",
+      "kind": "point",
+      "position": [
+        12,
+        13
+      ],
+      "block": "82"
+    },
+    {
+      "name": "Public dock walking deck",
+      "kind": "point",
+      "position": [
+        12,
+        14
+      ],
+      "block": "71"
+    },
+    {
+      "name": "Public dock south blocking rail",
+      "kind": "point",
+      "position": [
+        12,
+        15
+      ],
+      "block": "81"
+    },
+    {
+      "name": "Water below public dock",
+      "kind": "point",
+      "position": [
+        12,
+        16
+      ],
+      "block": "80"
+    },
+    {
+      "name": "Public dock north blocking rail",
+      "kind": "point",
+      "position": [
+        13,
+        13
+      ],
+      "block": "82"
+    },
+    {
+      "name": "Public dock walking deck",
+      "kind": "point",
+      "position": [
+        13,
+        14
+      ],
+      "block": "71"
+    },
+    {
+      "name": "Public dock south blocking rail",
+      "kind": "point",
+      "position": [
+        13,
+        15
+      ],
+      "block": "81"
+    },
+    {
+      "name": "Water below public dock",
+      "kind": "point",
+      "position": [
+        13,
+        16
+      ],
+      "block": "80"
+    },
+    {
+      "name": "Closed public dock end",
+      "kind": "point",
+      "position": [
+        8,
+        14
+      ],
+      "block": "44"
+    },
+    {
+      "name": "Native water rocks close unconnected outer lake",
+      "kind": "point",
+      "position": [
+        0,
+        12
+      ],
+      "block": "30"
+    },
+    {
+      "name": "Native water rocks close unconnected outer lake",
+      "kind": "point",
+      "position": [
+        0,
+        13
+      ],
+      "block": "34"
+    },
+    {
+      "name": "Native water rocks close unconnected outer lake",
+      "kind": "point",
+      "position": [
+        0,
+        14
+      ],
+      "block": "34"
+    },
+    {
+      "name": "Native water rocks close unconnected outer lake",
+      "kind": "point",
+      "position": [
+        0,
+        15
+      ],
+      "block": "34"
+    },
+    {
+      "name": "Native water rocks close unconnected outer lake",
+      "kind": "point",
+      "position": [
+        0,
+        16
+      ],
+      "block": "34"
+    },
+    {
+      "name": "Native water rocks close unconnected outer lake",
+      "kind": "point",
+      "position": [
+        0,
+        17
+      ],
+      "block": "38"
+    },
+    {
+      "name": "Native water rocks close unconnected outer lake",
+      "kind": "point",
+      "position": [
+        1,
+        17
+      ],
+      "block": "39"
+    },
+    {
+      "name": "Native water rocks close unconnected outer lake",
+      "kind": "point",
+      "position": [
+        2,
+        17
+      ],
+      "block": "39"
+    },
+    {
+      "name": "Native water rocks close unconnected outer lake",
+      "kind": "point",
+      "position": [
+        3,
+        17
+      ],
+      "block": "39"
+    },
+    {
+      "name": "Native water rocks close unconnected outer lake",
+      "kind": "point",
+      "position": [
+        4,
+        17
+      ],
+      "block": "39"
+    },
+    {
+      "name": "Native water rocks close unconnected outer lake",
+      "kind": "point",
+      "position": [
+        5,
+        17
+      ],
+      "block": "39"
+    },
+    {
+      "name": "Native water rocks close unconnected outer lake",
+      "kind": "point",
+      "position": [
+        6,
+        17
+      ],
+      "block": "39"
+    },
+    {
+      "name": "Native water rocks close unconnected outer lake",
+      "kind": "point",
+      "position": [
+        7,
+        17
+      ],
+      "block": "39"
+    },
+    {
+      "name": "Native water rocks close unconnected outer lake",
+      "kind": "point",
+      "position": [
+        8,
+        17
+      ],
+      "block": "39"
+    },
+    {
+      "name": "Native water rocks close unconnected outer lake",
+      "kind": "point",
+      "position": [
+        9,
+        17
+      ],
+      "block": "39"
+    },
+    {
+      "name": "Native water rocks close unconnected outer lake",
+      "kind": "point",
+      "position": [
+        10,
+        17
+      ],
+      "block": "39"
+    },
+    {
+      "name": "Native water rocks close unconnected outer lake",
+      "kind": "point",
+      "position": [
+        11,
+        17
+      ],
+      "block": "39"
+    },
+    {
+      "name": "Native water rocks close unconnected outer lake",
+      "kind": "point",
+      "position": [
+        12,
+        17
+      ],
+      "block": "39"
+    },
+    {
+      "name": "Native water rocks close unconnected outer lake",
+      "kind": "point",
+      "position": [
+        13,
+        17
+      ],
+      "block": "3a"
+    },
+    {
+      "name": "Cabin shore protective railing",
+      "kind": "point",
+      "position": [
+        13,
+        12
+      ],
+      "block": "44"
+    },
+    {
+      "name": "Cabin shore protective railing",
+      "kind": "point",
+      "position": [
+        14,
+        15
+      ],
+      "block": "44"
+    },
+    {
+      "name": "Cabin shore protective railing",
+      "kind": "point",
+      "position": [
+        14,
+        16
+      ],
+      "block": "44"
+    },
+    {
+      "name": "Native readable town sign",
+      "kind": "point",
+      "position": [
+        13,
+        10
+      ],
+      "block": "45"
+    },
+    {
+      "name": "Native readable town sign",
+      "kind": "point",
+      "position": [
+        9,
+        5
+      ],
+      "block": "45"
+    },
+    {
+      "name": "Native readable town sign",
+      "kind": "point",
+      "position": [
+        13,
+        2
+      ],
+      "block": "45"
+    },
+    {
+      "name": "Native readable town sign",
+      "kind": "point",
+      "position": [
+        15,
+        5
+      ],
+      "block": "45"
+    },
+    {
+      "name": "Native readable town sign",
+      "kind": "point",
+      "position": [
+        21,
+        8
+      ],
+      "block": "45"
+    },
+    {
+      "name": "Native readable town sign",
+      "kind": "point",
+      "position": [
+        9,
+        10
+      ],
+      "block": "45"
+    },
+    {
+      "name": "Native readable town sign",
+      "kind": "point",
+      "position": [
+        19,
+        13
+      ],
+      "block": "45"
+    },
+    {
+      "name": "Station garden edge bollards",
+      "kind": "point",
+      "position": [
+        4,
+        7
+      ],
+      "block": "49"
+    },
+    {
+      "name": "Station garden edge bollards",
+      "kind": "point",
+      "position": [
+        5,
+        7
+      ],
+      "block": "49"
+    },
+    {
+      "name": "Station garden edge bollards",
+      "kind": "point",
+      "position": [
+        7,
+        7
+      ],
+      "block": "49"
+    },
+    {
+      "name": "Station garden edge bollards",
+      "kind": "point",
+      "position": [
+        8,
+        7
+      ],
+      "block": "49"
+    },
+    {
+      "name": "Clinic garden edge bollards",
+      "kind": "point",
+      "position": [
+        15,
+        6
+      ],
+      "block": "49"
+    },
+    {
+      "name": "Clinic garden edge bollards",
+      "kind": "point",
+      "position": [
+        17,
+        6
+      ],
+      "block": "49"
+    },
+    {
+      "name": "Clinic garden edge bollards",
+      "kind": "point",
+      "position": [
+        18,
+        6
+      ],
+      "block": "49"
+    },
+    {
+      "name": "East upper boundary trees",
+      "kind": "rect",
+      "bounds": [
+        23,
+        0,
+        24,
+        9
+      ],
+      "material": "forest"
+    },
+    {
+      "name": "East lower boundary trees",
+      "kind": "rect",
+      "bounds": [
+        23,
+        10,
+        24,
+        18
+      ],
+      "material": "forest"
+    },
+    {
+      "name": "South cabin boundary trees",
+      "kind": "rect",
+      "bounds": [
+        14,
+        17,
+        24,
+        18
+      ],
+      "material": "forest"
+    },
+    {
+      "name": "Station garden becomes a connected pine shoulder",
+      "kind": "rect",
+      "bounds": [
+        8,
+        6,
+        11,
+        9
+      ],
+      "material": "forest"
+    },
+    {
+      "name": "Station path north-street shoulder",
+      "kind": "rect",
+      "bounds": [
+        4,
+        8,
+        6,
+        9
+      ],
+      "material": "forest"
+    },
+    {
+      "name": "Station lane eastern shoulder",
+      "kind": "rect",
+      "bounds": [
+        7,
+        8,
+        12,
+        9
+      ],
+      "material": "forest"
+    },
+    {
+      "name": "Clinic northwest tree belt",
+      "kind": "rect",
+      "bounds": [
+        13,
+        3,
+        15,
+        5
+      ],
+      "material": "forest"
+    },
+    {
+      "name": "Clinic garden southern tree belt",
+      "kind": "rect",
+      "bounds": [
+        15,
+        7,
+        19,
+        9
+      ],
+      "material": "forest"
+    },
+    {
+      "name": "Cabin roofs join a continuous pine backdrop",
+      "kind": "rect",
+      "bounds": [
+        15,
+        10,
+        23,
+        12
+      ],
+      "material": "forest"
+    },
+    {
+      "name": "Mart western tree shoulder",
+      "kind": "rect",
+      "bounds": [
+        17,
+        7,
+        19,
+        9
+      ],
+      "material": "forest"
+    },
+    {
+      "name": "Beach-side main-street protective curb",
+      "kind": "point",
+      "position": [
+        7,
+        10
+      ],
+      "block": "41"
+    },
+    {
+      "name": "Beach-side main-street protective curb",
+      "kind": "point",
+      "position": [
+        8,
+        10
+      ],
+      "block": "41"
+    },
+    {
+      "name": "Beach-side main-street protective curb",
+      "kind": "point",
+      "position": [
+        10,
+        10
+      ],
+      "block": "41"
+    },
+    {
+      "name": "Cabin garden connected rear pine shoulder",
+      "kind": "rect",
+      "bounds": [
+        15,
+        16,
+        23,
+        17
+      ],
+      "material": "forest"
+    },
+    {
+      "name": "Canoe cabin street south pine shoulder",
+      "kind": "rect",
+      "bounds": [
+        15,
+        15,
+        17,
+        16
+      ],
+      "material": "forest"
+    }
+  ]
+}

@@ -3759,6 +3759,19 @@ fn stage_visible_battle_item_effect(
         runtime_shell.battle_messages.push_back(notice);
         mark_runtime_snapshot_dirty(runtime_shell);
     }
+    if outcome.confusion_turns_after > 0
+        && outcome.hp_after > outcome.hp_before
+        && snapshot
+            .items
+            .iter()
+            .find(|item| item.item_id == outcome.item_id)
+            .is_some_and(|item| item.confusion_inflict_turns.is_some())
+    {
+        runtime_shell
+            .battle_messages
+            .push_back(format!("{target_name}\nbecame confused!"));
+        mark_runtime_snapshot_dirty(runtime_shell);
+    }
     Ok(())
 }
 

@@ -1,0 +1,9 @@
+{
+  "tool": "built-in image_gen",
+  "original": "/Users/ryanculligan/.codex/generated_images/01a179bf-dc2b-7352-8975-8b8f3a32e33b/exec-c18d8d07-f1e4-42e5-8fa4-95747b1a0efc.png",
+  "preserved_raw": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f117/winkfin.overworld.imagegen-v3-profile-three-bars.png",
+  "sha256": "d6105ac621eeda0ba7f3406384f94d38d506c0a8a299ac323fa751f05bf613fc",
+  "exact_prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f117/prompt-winkfin-profile-three-bars-v3.txt",
+  "reference_mapping": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f117/reference-mapping-winkfin-profile-three-bars-v3.json",
+  "status": "preserved; selected frames recorded in frozen manifest"
+}

@@ -519,8 +519,10 @@ fn apply_keyboard_input(
     if ambient_phase_changed {
         mark_runtime_presentation_dirty(&mut runtime_shell);
     }
-    if (runtime_shell.battle_lcd_animation_active || runtime_shell.field_text_reveal.is_some())
-        && runtime_shell.lcd_animation_frame % 8 == 0
+    if (runtime_shell.battle_lcd_animation_active
+        || runtime_shell.party_menu_open
+        || runtime_shell.field_text_reveal.is_some())
+        && previous_lcd_frame / 8 != runtime_shell.lcd_animation_frame / 8
     {
         mark_runtime_presentation_dirty(&mut runtime_shell);
     }

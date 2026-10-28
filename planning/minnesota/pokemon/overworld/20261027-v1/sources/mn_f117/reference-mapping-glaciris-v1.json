@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_252",
+  "family_id": "MN_F117",
+  "prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f117/prompt-glaciris-v1.txt",
+  "input_images": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/references/native-pack-16px/native-six-frame-style-board.8x.png",
+      "role": "ONLY authenticnative16STYLE; no battleart input",
+      "sha256": "4354a639ed1a80fd6686e43b273443ed894e58a84307a8049f638ee9ffa2a099"
+    }
+  ],
+  "identity_reviewed_not_supplied_to_imagegen": [
+    {
+      "path": "target/minnesota-pokemon/native/MN_F117/mn-252-glaciris-tipup-v1.front.png",
+      "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F117/mn-252-glaciris-tipup-v1.front.png",
+      "sha256": "bc6897e48fb6543da90962e1d1ab71fd4ce702e411ac53d0783d13740eff64d0"
+    },
+    {
+      "path": "target/minnesota-pokemon/native/MN_F117/mn-252-glaciris-tipup-v1.back.png",
+      "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F117/mn-252-glaciris-tipup-v1.back.png",
+      "sha256": "deebd8a042a1b67783022a8d946b87625ecc941795b6988a71623d9108332bac"
+    }
+  ],
+  "canonical_theme": "Living ice-fishing tip-up: a predator whose integral hinged frost dorsal flag snaps upright when prey is caught. Perch scout to walleye hunter to great walleye sentinel. Ice-lens brow is secondary anatomy.",
+  "canonical_eye_form": "SOUTH exactly TWO isolated blacksquare pupils, WEST exactly ONE actual near pupil, all on broad LIGHT cheek/sclera. No mouth/nose dots, eye masks or goggle frames. Eyeplane clear of bodybars and barbels.",
+  "palette_binding": {
+    "transparent_index": 0,
+    "visible_indices": [
+      1,
+      2,
+      3
+    ],
+    "normal_rgb555_words": [
+      32767,
+      32627,
+      18792,
+      0
+    ],
+    "shiny_rgb555_words": [
+      32767,
+      28287,
+      11538,
+      0
+    ],
+    "white_body_region_policy": "Simplify formerly white body/highlight regions to light ink1. Index0 is transparent everywhere, not an opaque white paint color."
+  },
+  "fit": 13,
+  "motion_contract": "FISH SWIMMING, NO feet/legs/hands/ground. SOUTH head/snout toward bottom with tail behind towardtop; NORTH head points UP/AWAY, visible smooth back/headback NOeye dots, tail towardbottom; WEST true horizontal fish profile headLEFT/tailRIGHT. Foreshortened front/rear fish, never upright humanoid. Secondrow only tailfin and pectoralfin tips flex1logicalpixel for swimgait, same head/eye anchor, no bodybob. Fins are flat tapered appendages, no toes."
+}

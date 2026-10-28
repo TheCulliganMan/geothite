@@ -1,6 +1,6 @@
 //! Empty-party local geometry fixtures followed only by production inputs.
 //!
-//! This proposed leaf targets the final R08 wooded-side candidate. It proves
+//! This leaf targets the final R08 wooded-side candidate. It proves
 //! neither earned regional access nor trainer victories/encounter balance. The
 //! populated Northern Lakes journey remains a separate regression. The long
 //! whole-lake alternate (183/185 steps when the local passage is closed) is a

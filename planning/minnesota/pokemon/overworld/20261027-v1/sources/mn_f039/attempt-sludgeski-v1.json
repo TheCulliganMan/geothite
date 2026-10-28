@@ -1,0 +1,9 @@
+{
+  "tool": "built-in image_gen",
+  "original": "/Users/ryanculligan/.codex/generated_images/01a179bf-dc2b-7352-8975-8b8f3a32e33b/exec-a63dc0ec-f813-4efc-b0d2-12b0727707b8.png",
+  "preserved_raw": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f039/sludgeski.overworld.imagegen-v1.png",
+  "sha256": "7e9e66f56df66c8410f1a191acbdee1db597d0dd330f2bd046eb8296533d9573",
+  "exact_prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f039/prompt-sludgeski-v1.txt",
+  "reference_mapping": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f039/reference-mapping-sludgeski-v1.json",
+  "status": "preserved; selected frames recorded in frozen manifest"
+}

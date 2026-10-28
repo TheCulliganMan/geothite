@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F110",
+  "species": [
+    {
+      "species_id": "MN_241",
+      "runtime_token": "DEWDANT",
+      "palette_rgb555": [
+        32767,
+        11997,
+        15598,
+        0
+      ],
+      "shiny_palette_rgb555": [
+        32767,
+        23467,
+        7631,
+        0
+      ],
+      "fit": [
+        14,
+        14
+      ],
+      "alpha_threshold": 128,
+      "sampling": "source_center",
+      "minimum_foreground_samples": 16,
+      "black_priority_samples": 32,
+      "interior_black_samples": null,
+      "opaque_interior_minimum_samples": 60,
+      "frames": [
+        {
+          "pose": "down_idle",
+          "source": "dewdant.overworld.imagegen-v1.png",
+          "crop": [
+            33,
+            94,
+            462,
+            424
+          ]
+        },
+        {
+          "pose": "up_idle",
+          "source": "dewdant.overworld.imagegen-v1.png",
+          "crop": [
+            518,
+            86,
+            462,
+            424
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "source": "dewdant.overworld.imagegen-v2.png",
+          "crop": [
+            1031,
+            83,
+            462,
+            424
+          ]
+        },
+        {
+          "pose": "down_step",
+          "source": "dewdant.overworld.imagegen-v1.png",
+          "crop": [
+            34,
+            507,
+            462,
+            424
+          ]
+        },
+        {
+          "pose": "up_step",
+          "source": "dewdant.overworld.imagegen-v1.png",
+          "crop": [
+            513,
+            510,
+            462,
+            424
+          ]
+        },
+        {
+          "pose": "left_step",
+          "source": "dewdant.overworld.imagegen-v2.png",
+          "crop": [
+            1031,
+            495,
+            462,
+            424
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,5030 @@
+{
+  "species_id": "MN_164",
+  "result": "pass",
+  "manifest_sha256": "e72369a188da1a29c8b703e96d1cc026342e550e0ce45b2df762660328357015",
+  "bank_sha256": "a8b09c9c136ed84dc0cae99f6b8bb0ddd292e750aa502cce28f7c09fcb571865",
+  "source_sha256": {
+    "mispair.overworld.imagegen-v2-outline-pupils.png": "92217323e7677b19600299fdabf3e64c38904c52c05365d85f4b6f31265430ac",
+    "mispair.overworld.imagegen-v5-piece-spacing.png": "cb32f139d5926e82a08b10a44ccaaae9c9b6b929b1b8ae387dbfa99e750de01f"
+  },
+  "canonical_piece_count": 2,
+  "canonical_enclosed_holes": 0,
+  "no_hidden_body": true,
+  "cuff_slits_not_eyes": true,
+  "back_hand_chirality_preserved": true,
+  "proof": [
+    {
+      "pose": "down_idle",
+      "two_real_source_mitten_components": [
+        {
+          "piece": "blue_mitten",
+          "source_alpha_component_bounds": [
+            60,
+            168,
+            196,
+            221
+          ],
+          "source_alpha_component_pixels": 31144,
+          "complete_finger_dome_samples": [
+            {
+              "native": [
+                4,
+                7
+              ],
+              "source_sample": [
+                159,
+                186
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                5,
+                7
+              ],
+              "source_sample": [
+                195,
+                186
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                4,
+                8
+              ],
+              "source_sample": [
+                159,
+                224
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                5,
+                8
+              ],
+              "source_sample": [
+                195,
+                224
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                2,
+                9
+              ],
+              "source_sample": [
+                86,
+                262
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                4,
+                9
+              ],
+              "source_sample": [
+                159,
+                262
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                6,
+                9
+              ],
+              "source_sample": [
+                231,
+                262
+              ],
+              "native_ink": 2
+            }
+          ],
+          "opposite_color_cuff_samples": [
+            {
+              "native": [
+                3,
+                11
+              ],
+              "source_sample": [
+                122,
+                338
+              ],
+              "native_ink": 1
+            }
+          ],
+          "all_native_source_component_samples": [
+            {
+              "native": [
+                4,
+                7
+              ],
+              "source_sample": [
+                159,
+                186
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                5,
+                7
+              ],
+              "source_sample": [
+                195,
+                186
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                3,
+                8
+              ],
+              "source_sample": [
+                122,
+                224
+              ],
+              "native_ink": 3
+            },
+            {
+              "native": [
+                4,
+                8
+              ],
+              "source_sample": [
+                159,
+                224
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                5,
+                8
+              ],
+              "source_sample": [
+                195,
+                224
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                6,
+                8
+              ],
+              "source_sample": [
+                231,
+                224
+              ],
+              "native_ink": 3
+            },
+            {
+              "native": [
+                2,
+                9
+              ],
+              "source_sample": [
+                86,
+                262
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                3,
+                9
+              ],
+              "source_sample": [
+                122,
+                262
+              ],
+              "native_ink": 3
+            },
+            {
+              "native": [
+                4,
+                9
+              ],
+              "source_sample": [
+                159,
+                262
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                5,
+                9
+              ],
+              "source_sample": [
+                195,
+                262
+              ],
+              "native_ink": 3
+            },
+            {
+              "native": [
+                6,
+                9
+              ],
+              "source_sample": [
+                231,
+                262
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                2,
+                10
+              ],
+              "source_sample": [
+                86,
+                300
+              ],
+              "native_ink": 3
+            },
+            {
+              "native": [
+                3,
+                10
+              ],
+              "source_sample": [
+                122,
+                300
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                4,
+                10
+              ],
+              "source_sample": [
+                159,
+                300
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                5,
+                10
+              ],
+              "source_sample": [
+                195,
+                300
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                6,
+                10
+              ],
+              "source_sample": [
+                231,
+                300
+              ],
+              "native_ink": 3
+            },
+            {
+              "native": [
+                3,
+                11
+              ],
+              "source_sample": [
+                122,
+                338
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                4,
+                11
+              ],
+              "source_sample": [
+                159,
+                338
+              ],
+              "native_ink": 3
+            },
+            {
+              "native": [
+                5,
+                11
+              ],
+              "source_sample": [
+                195,
+                338
+              ],
+              "native_ink": 3
+            },
+            {
+              "native": [
+                6,
+                11
+              ],
+              "source_sample": [
+                231,
+                338
+              ],
+              "native_ink": 3
+            },
+            {
+              "native": [
+                4,
+                12
+              ],
+              "source_sample": [
+                159,
+                376
+              ],
+              "native_ink": 3
+            },
+            {
+              "native": [
+                5,
+                12
+              ],
+              "source_sample": [
+                195,
+                376
+              ],
+              "native_ink": 3
+            }
+          ],
+          "thumb_direction": "left"
+        },
+        {
+          "piece": "cream_mitten",
+          "source_alpha_component_bounds": [
+            271,
+            205,
+            200,
+            227
+          ],
+          "source_alpha_component_pixels": 33223,
+          "complete_finger_dome_samples": [
+            {
+              "native": [
+                9,
+                8
+              ],
+              "source_sample": [
+                340,
+                224
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                8,
+                9
+              ],
+              "source_sample": [
+                304,
+                262
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                9,
+                9
+              ],
+              "source_sample": [
+                340,
+                262
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                10,
+                9
+              ],
+              "source_sample": [
+                376,
+                262
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                8,
+                10
+              ],
+              "source_sample": [
+                304,
+                300
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                10,
+                10
+              ],
+              "source_sample": [
+                376,
+                300
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                12,
+                10
+              ],
+              "source_sample": [
+                449,
+                300
+              ],
+              "native_ink": 1
+            }
+          ],
+          "opposite_color_cuff_samples": [
+            {
+              "native": [
+                8,
+                12
+              ],
+              "source_sample": [
+                304,
+                376
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                9,
+                13
+              ],
+              "source_sample": [
+                340,
+                414
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                10,
+                13
+              ],
+              "source_sample": [
+                376,
+                414
+              ],
+              "native_ink": 2
+            }
+          ],
+          "all_native_source_component_samples": [
+            {
+              "native": [
+                8,
+                8
+              ],
+              "source_sample": [
+                304,
+                224
+              ],
+              "native_ink": 3
+            },
+            {
+              "native": [
+                9,
+                8
+              ],
+              "source_sample": [
+                340,
+                224
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                10,
+                8
+              ],
+              "source_sample": [
+                376,
+                224
+              ],
+              "native_ink": 3
+            },
+            {
+              "native": [
+                8,
+                9
+              ],
+              "source_sample": [
+                304,
+                262
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                9,
+                9
+              ],
+              "source_sample": [
+                340,
+                262
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                10,
+                9
+              ],
+              "source_sample": [
+                376,
+                262
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                11,
+                9
+              ],
+              "source_sample": [
+                413,
+                262
+              ],
+              "native_ink": 3
+            },
+            {
+              "native": [
+                8,
+                10
+              ],
+              "source_sample": [
+                304,
+                300
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                9,
+                10
+              ],
+              "source_sample": [
+                340,
+                300
+              ],
+              "native_ink": 3
+            },
+            {
+              "native": [
+                10,
+                10
+              ],
+              "source_sample": [
+                376,
+                300
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                11,
+                10
+              ],
+              "source_sample": [
+                413,
+                300
+              ],
+              "native_ink": 3
+            },
+            {
+              "native": [
+                12,
+                10
+              ],
+              "source_sample": [
+                449,
+                300
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                8,
+                11
+              ],
+              "source_sample": [
+                304,
+                338
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                9,
+                11
+              ],
+              "source_sample": [
+                340,
+                338
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                10,
+                11
+              ],
+              "source_sample": [
+                376,
+                338
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                11,
+                11
+              ],
+              "source_sample": [
+                413,
+                338
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                12,
+                11
+              ],
+              "source_sample": [
+                449,
+                338
+              ],
+              "native_ink": 3
+            },
+            {
+              "native": [
+                8,
+                12
+              ],
+              "source_sample": [
+                304,
+                376
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                9,
+                12
+              ],
+              "source_sample": [
+                340,
+                376
+              ],
+              "native_ink": 3
+            },
+            {
+              "native": [
+                10,
+                12
+              ],
+              "source_sample": [
+                376,
+                376
+              ],
+              "native_ink": 3
+            },
+            {
+              "native": [
+                11,
+                12
+              ],
+              "source_sample": [
+                413,
+                376
+              ],
+              "native_ink": 3
+            },
+            {
+              "native": [
+                8,
+                13
+              ],
+              "source_sample": [
+                304,
+                414
+              ],
+              "native_ink": 3
+            },
+            {
+              "native": [
+                9,
+                13
+              ],
+              "source_sample": [
+                340,
+                414
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                10,
+                13
+              ],
+              "source_sample": [
+                376,
+                414
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                11,
+                13
+              ],
+              "source_sample": [
+                413,
+                414
+              ],
+              "native_ink": 3
+            }
+          ],
+          "thumb_direction": "right"
+        }
+      ],
+      "transparent_between_domes": [
+        {
+          "native": [
+            7,
+            7
+          ],
+          "source_sample": [
+            268,
+            186
+          ],
+          "alpha": 0
+        },
+        {
+          "native": [
+            7,
+            8
+          ],
+          "source_sample": [
+            268,
+            224
+          ],
+          "alpha": 0
+        },
+        {
+          "native": [
+            7,
+            9
+          ],
+          "source_sample": [
+            268,
+            262
+          ],
+          "alpha": 1
+        }
+      ],
+      "west_far_mitten_may_overlap_native_contour": false
+    },
+    {
+      "pose": "up_idle",
+      "two_real_source_mitten_components": [
+        {
+          "piece": "blue_mitten",
+          "source_alpha_component_bounds": [
+            535,
+            179,
+            192,
+            239
+          ],
+          "source_alpha_component_pixels": 33515,
+          "complete_finger_dome_samples": [
+            {
+              "native": [
+                3,
+                7
+              ],
+              "source_sample": [
+                624,
+                197
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                2,
+                8
+              ],
+              "source_sample": [
+                588,
+                235
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                3,
+                8
+              ],
+              "source_sample": [
+                624,
+                235
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                4,
+                8
+              ],
+              "source_sample": [
+                661,
+                235
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                1,
+                9
+              ],
+              "source_sample": [
+                552,
+                273
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                2,
+                9
+              ],
+              "source_sample": [
+                588,
+                273
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                3,
+                9
+              ],
+              "source_sample": [
+                624,
+                273
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                5,
+                9
+              ],
+              "source_sample": [
+                697,
+                273
+              ],
+              "native_ink": 2
+            }
+          ],
+          "opposite_color_cuff_samples": [
+            {
+              "native": [
+                2,
+                12
+              ],
+              "source_sample": [
+                588,
+                387
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                3,
+                12
+              ],
+              "source_sample": [
+                624,
+                387
+              ],
+              "native_ink": 1
+            }
+          ],
+          "all_native_source_component_samples": [
+            {
+              "native": [
+                2,
+                7
+              ],
+              "source_sample": [
+                588,
+                197
+              ],
+              "native_ink": 3
+            },
+            {
+              "native": [
+                3,
+                7
+              ],
+              "source_sample": [
+                624,
+                197
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                4,
+                7
+              ],
+              "source_sample": [
+                661,
+                197
+              ],
+              "native_ink": 3
+            },
+            {
+              "native": [
+                1,
+                8
+              ],
+              "source_sample": [
+                552,
+                235
+              ],
+              "native_ink": 3
+            },
+            {
+              "native": [
+                2,
+                8
+              ],
+              "source_sample": [
+                588,
+                235
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                3,
+                8
+              ],
+              "source_sample": [
+                624,
+                235
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                4,
+                8
+              ],
+              "source_sample": [
+                661,
+                235
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                1,
+                9
+              ],
+              "source_sample": [
+                552,
+                273
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                2,
+                9
+              ],
+              "source_sample": [
+                588,
+                273
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                3,
+                9
+              ],
+              "source_sample": [
+                624,
+                273
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                4,
+                9
+              ],
+              "source_sample": [
+                661,
+                273
+              ],
+              "native_ink": 3
+            },
+            {
+              "native": [
+                5,
+                9
+              ],
+              "source_sample": [
+                697,
+                273
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                1,
+                10
+              ],
+              "source_sample": [
+                552,
+                311
+              ],
+              "native_ink": 3
+            },
+            {
+              "native": [
+                2,
+                10
+              ],
+              "source_sample": [
+                588,
+                311
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                3,
+                10
+              ],
+              "source_sample": [
+                624,
+                311
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                4,
+                10
+              ],
+              "source_sample": [
+                661,
+                311
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                5,
+                10
+              ],
+              "source_sample": [
+                697,
+                311
+              ],
+              "native_ink": 3
+            },
+            {
+              "native": [
+                1,
+                11
+              ],
+              "source_sample": [
+                552,
+                349
+              ],
+              "native_ink": 3
+            },
+            {
+              "native": [
+                2,
+                11
+              ],
+              "source_sample": [
+                588,
+                349
+              ],
+              "native_ink": 3
+            },
+            {
+              "native": [
+                3,
+                11
+              ],
+              "source_sample": [
+                624,
+                349
+              ],
+              "native_ink": 3
+            },
+            {
+              "native": [
+                4,
+                11
+              ],
+              "source_sample": [
+                661,
+                349
+              ],
+              "native_ink": 3
+            },
+            {
+              "native": [
+                1,
+                12
+              ],
+              "source_sample": [
+                552,
+                387
+              ],
+              "native_ink": 3
+            },
+            {
+              "native": [
+                2,
+                12
+              ],
+              "source_sample": [
+                588,
+                387
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                3,
+                12
+              ],
+              "source_sample": [
+                624,
+                387
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                4,
+                12
+              ],
+              "source_sample": [
+                661,
+                387
+              ],
+              "native_ink": 3
+            }
+          ],
+          "thumb_direction": "right"
+        },
+        {
+          "piece": "cream_mitten",
+          "source_alpha_component_bounds": [
+            820,
+            204,
+            186,
+            230
+          ],
+          "source_alpha_component_pixels": 31530,
+          "complete_finger_dome_samples": [
+            {
+              "native": [
+                11,
+                8
+              ],
+              "source_sample": [
+                915,
+                235
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                12,
+                8
+              ],
+              "source_sample": [
+                951,
+                235
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                10,
+                9
+              ],
+              "source_sample": [
+                878,
+                273
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                11,
+                9
+              ],
+              "source_sample": [
+                915,
+                273
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                12,
+                9
+              ],
+              "source_sample": [
+                951,
+                273
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                13,
+                9
+              ],
+              "source_sample": [
+                987,
+                273
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                10,
+                10
+              ],
+              "source_sample": [
+                878,
+                311
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                11,
+                10
+              ],
+              "source_sample": [
+                915,
+                311
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                12,
+                10
+              ],
+              "source_sample": [
+                951,
+                311
+              ],
+              "native_ink": 1
+            }
+          ],
+          "opposite_color_cuff_samples": [
+            {
+              "native": [
+                10,
+                12
+              ],
+              "source_sample": [
+                878,
+                387
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                11,
+                12
+              ],
+              "source_sample": [
+                915,
+                387
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                12,
+                12
+              ],
+              "source_sample": [
+                951,
+                387
+              ],
+              "native_ink": 2
+            }
+          ],
+          "all_native_source_component_samples": [
+            {
+              "native": [
+                10,
+                8
+              ],
+              "source_sample": [
+                878,
+                235
+              ],
+              "native_ink": 3
+            },
+            {
+              "native": [
+                11,
+                8
+              ],
+              "source_sample": [
+                915,
+                235
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                12,
+                8
+              ],
+              "source_sample": [
+                951,
+                235
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                13,
+                8
+              ],
+              "source_sample": [
+                987,
+                235
+              ],
+              "native_ink": 3
+            },
+            {
+              "native": [
+                9,
+                9
+              ],
+              "source_sample": [
+                842,
+                273
+              ],
+              "native_ink": 3
+            },
+            {
+              "native": [
+                10,
+                9
+              ],
+              "source_sample": [
+                878,
+                273
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                11,
+                9
+              ],
+              "source_sample": [
+                915,
+                273
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                12,
+                9
+              ],
+              "source_sample": [
+                951,
+                273
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                13,
+                9
+              ],
+              "source_sample": [
+                987,
+                273
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                9,
+                10
+              ],
+              "source_sample": [
+                842,
+                311
+              ],
+              "native_ink": 3
+            },
+            {
+              "native": [
+                10,
+                10
+              ],
+              "source_sample": [
+                878,
+                311
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                11,
+                10
+              ],
+              "source_sample": [
+                915,
+                311
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                12,
+                10
+              ],
+              "source_sample": [
+                951,
+                311
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                13,
+                10
+              ],
+              "source_sample": [
+                987,
+                311
+              ],
+              "native_ink": 3
+            },
+            {
+              "native": [
+                10,
+                11
+              ],
+              "source_sample": [
+                878,
+                349
+              ],
+              "native_ink": 3
+            },
+            {
+              "native": [
+                11,
+                11
+              ],
+              "source_sample": [
+                915,
+                349
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                12,
+                11
+              ],
+              "source_sample": [
+                951,
+                349
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                13,
+                11
+              ],
+              "source_sample": [
+                987,
+                349
+              ],
+              "native_ink": 3
+            },
+            {
+              "native": [
+                10,
+                12
+              ],
+              "source_sample": [
+                878,
+                387
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                11,
+                12
+              ],
+              "source_sample": [
+                915,
+                387
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                12,
+                12
+              ],
+              "source_sample": [
+                951,
+                387
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                13,
+                12
+              ],
+              "source_sample": [
+                987,
+                387
+              ],
+              "native_ink": 3
+            },
+            {
+              "native": [
+                11,
+                13
+              ],
+              "source_sample": [
+                915,
+                425
+              ],
+              "native_ink": 3
+            },
+            {
+              "native": [
+                12,
+                13
+              ],
+              "source_sample": [
+                951,
+                425
+              ],
+              "native_ink": 3
+            }
+          ],
+          "thumb_direction": "left"
+        }
+      ],
+      "transparent_between_domes": [
+        {
+          "native": [
+            6,
+            7
+          ],
+          "source_sample": [
+            733,
+            197
+          ],
+          "alpha": 0
+        },
+        {
+          "native": [
+            7,
+            7
+          ],
+          "source_sample": [
+            770,
+            197
+          ],
+          "alpha": 0
+        },
+        {
+          "native": [
+            8,
+            7
+          ],
+          "source_sample": [
+            806,
+            197
+          ],
+          "alpha": 0
+        },
+        {
+          "native": [
+            6,
+            8
+          ],
+          "source_sample": [
+            733,
+            235
+          ],
+          "alpha": 0
+        },
+        {
+          "native": [
+            7,
+            8
+          ],
+          "source_sample": [
+            770,
+            235
+          ],
+          "alpha": 0
+        },
+        {
+          "native": [
+            8,
+            8
+          ],
+          "source_sample": [
+            806,
+            235
+          ],
+          "alpha": 0
+        },
+        {
+          "native": [
+            6,
+            9
+          ],
+          "source_sample": [
+            733,
+            273
+          ],
+          "alpha": 1
+        },
+        {
+          "native": [
+            7,
+            9
+          ],
+          "source_sample": [
+            770,
+            273
+          ],
+          "alpha": 0
+        },
+        {
+          "native": [
+            8,
+            9
+          ],
+          "source_sample": [
+            806,
+            273
+          ],
+          "alpha": 0
+        }
+      ],
+      "west_far_mitten_may_overlap_native_contour": false
+    },
+    {
+      "pose": "left_idle",
+      "two_real_source_mitten_components": [
+        {
+          "piece": "blue_mitten",
+          "source_alpha_component_bounds": [
+            1097,
+            168,
+            189,
+            237
+          ],
+          "source_alpha_component_pixels": 31108,
+          "complete_finger_dome_samples": [
+            {
+              "native": [
+                5,
+                7
+              ],
+              "source_sample": [
+                1209,
+                186
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                4,
+                8
+              ],
+              "source_sample": [
+                1173,
+                224
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                5,
+                8
+              ],
+              "source_sample": [
+                1209,
+                224
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                6,
+                8
+              ],
+              "source_sample": [
+                1245,
+                224
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                3,
+                9
+              ],
+              "source_sample": [
+                1136,
+                262
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                4,
+                9
+              ],
+              "source_sample": [
+                1173,
+                262
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                6,
+                9
+              ],
+              "source_sample": [
+                1245,
+                262
+              ],
+              "native_ink": 2
+            }
+          ],
+          "opposite_color_cuff_samples": [
+            {
+              "native": [
+                4,
+                12
+              ],
+              "source_sample": [
+                1173,
+                376
+              ],
+              "native_ink": 1
+            }
+          ],
+          "all_native_source_component_samples": [
+            {
+              "native": [
+                4,
+                7
+              ],
+              "source_sample": [
+                1173,
+                186
+              ],
+              "native_ink": 3
+            },
+            {
+              "native": [
+                5,
+                7
+              ],
+              "source_sample": [
+                1209,
+                186
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                6,
+                7
+              ],
+              "source_sample": [
+                1245,
+                186
+              ],
+              "native_ink": 3
+            },
+            {
+              "native": [
+                4,
+                8
+              ],
+              "source_sample": [
+                1173,
+                224
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                5,
+                8
+              ],
+              "source_sample": [
+                1209,
+                224
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                6,
+                8
+              ],
+              "source_sample": [
+                1245,
+                224
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                7,
+                8
+              ],
+              "source_sample": [
+                1282,
+                224
+              ],
+              "native_ink": 3
+            },
+            {
+              "native": [
+                2,
+                9
+              ],
+              "source_sample": [
+                1100,
+                262
+              ],
+              "native_ink": 3
+            },
+            {
+              "native": [
+                3,
+                9
+              ],
+              "source_sample": [
+                1136,
+                262
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                4,
+                9
+              ],
+              "source_sample": [
+                1173,
+                262
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                5,
+                9
+              ],
+              "source_sample": [
+                1209,
+                262
+              ],
+              "native_ink": 3
+            },
+            {
+              "native": [
+                6,
+                9
+              ],
+              "source_sample": [
+                1245,
+                262
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                7,
+                9
+              ],
+              "source_sample": [
+                1282,
+                262
+              ],
+              "native_ink": 3
+            },
+            {
+              "native": [
+                3,
+                10
+              ],
+              "source_sample": [
+                1136,
+                300
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                4,
+                10
+              ],
+              "source_sample": [
+                1173,
+                300
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                5,
+                10
+              ],
+              "source_sample": [
+                1209,
+                300
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                6,
+                10
+              ],
+              "source_sample": [
+                1245,
+                300
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                7,
+                10
+              ],
+              "source_sample": [
+                1282,
+                300
+              ],
+              "native_ink": 3
+            },
+            {
+              "native": [
+                4,
+                11
+              ],
+              "source_sample": [
+                1173,
+                338
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                5,
+                11
+              ],
+              "source_sample": [
+                1209,
+                338
+              ],
+              "native_ink": 3
+            },
+            {
+              "native": [
+                6,
+                11
+              ],
+              "source_sample": [
+                1245,
+                338
+              ],
+              "native_ink": 3
+            },
+            {
+              "native": [
+                7,
+                11
+              ],
+              "source_sample": [
+                1282,
+                338
+              ],
+              "native_ink": 3
+            },
+            {
+              "native": [
+                4,
+                12
+              ],
+              "source_sample": [
+                1173,
+                376
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                5,
+                12
+              ],
+              "source_sample": [
+                1209,
+                376
+              ],
+              "native_ink": 3
+            },
+            {
+              "native": [
+                6,
+                12
+              ],
+              "source_sample": [
+                1245,
+                376
+              ],
+              "native_ink": 3
+            }
+          ],
+          "thumb_direction": "left"
+        },
+        {
+          "piece": "cream_mitten",
+          "source_alpha_component_bounds": [
+            1298,
+            232,
+            178,
+            210
+          ],
+          "source_alpha_component_pixels": 27300,
+          "complete_finger_dome_samples": [
+            {
+              "native": [
+                9,
+                9
+              ],
+              "source_sample": [
+                1354,
+                262
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                10,
+                9
+              ],
+              "source_sample": [
+                1390,
+                262
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                8,
+                10
+              ],
+              "source_sample": [
+                1318,
+                300
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                9,
+                10
+              ],
+              "source_sample": [
+                1354,
+                300
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                10,
+                10
+              ],
+              "source_sample": [
+                1390,
+                300
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                9,
+                11
+              ],
+              "source_sample": [
+                1354,
+                338
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                10,
+                11
+              ],
+              "source_sample": [
+                1390,
+                338
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                11,
+                11
+              ],
+              "source_sample": [
+                1427,
+                338
+              ],
+              "native_ink": 1
+            }
+          ],
+          "opposite_color_cuff_samples": [
+            {
+              "native": [
+                9,
+                12
+              ],
+              "source_sample": [
+                1354,
+                376
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                10,
+                12
+              ],
+              "source_sample": [
+                1390,
+                376
+              ],
+              "native_ink": 2
+            }
+          ],
+          "all_native_source_component_samples": [
+            {
+              "native": [
+                8,
+                9
+              ],
+              "source_sample": [
+                1318,
+                262
+              ],
+              "native_ink": 3
+            },
+            {
+              "native": [
+                9,
+                9
+              ],
+              "source_sample": [
+                1354,
+                262
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                10,
+                9
+              ],
+              "source_sample": [
+                1390,
+                262
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                8,
+                10
+              ],
+              "source_sample": [
+                1318,
+                300
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                9,
+                10
+              ],
+              "source_sample": [
+                1354,
+                300
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                10,
+                10
+              ],
+              "source_sample": [
+                1390,
+                300
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                11,
+                10
+              ],
+              "source_sample": [
+                1427,
+                300
+              ],
+              "native_ink": 3
+            },
+            {
+              "native": [
+                12,
+                10
+              ],
+              "source_sample": [
+                1463,
+                300
+              ],
+              "native_ink": 3
+            },
+            {
+              "native": [
+                8,
+                11
+              ],
+              "source_sample": [
+                1318,
+                338
+              ],
+              "native_ink": 3
+            },
+            {
+              "native": [
+                9,
+                11
+              ],
+              "source_sample": [
+                1354,
+                338
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                10,
+                11
+              ],
+              "source_sample": [
+                1390,
+                338
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                11,
+                11
+              ],
+              "source_sample": [
+                1427,
+                338
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                12,
+                11
+              ],
+              "source_sample": [
+                1463,
+                338
+              ],
+              "native_ink": 3
+            },
+            {
+              "native": [
+                9,
+                12
+              ],
+              "source_sample": [
+                1354,
+                376
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                10,
+                12
+              ],
+              "source_sample": [
+                1390,
+                376
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                11,
+                12
+              ],
+              "source_sample": [
+                1427,
+                376
+              ],
+              "native_ink": 3
+            },
+            {
+              "native": [
+                9,
+                13
+              ],
+              "source_sample": [
+                1354,
+                414
+              ],
+              "native_ink": 3
+            },
+            {
+              "native": [
+                10,
+                13
+              ],
+              "source_sample": [
+                1390,
+                414
+              ],
+              "native_ink": 3
+            },
+            {
+              "native": [
+                11,
+                13
+              ],
+              "source_sample": [
+                1427,
+                414
+              ],
+              "native_ink": 3
+            }
+          ],
+          "thumb_direction": "right"
+        }
+      ],
+      "transparent_between_domes": [],
+      "west_far_mitten_may_overlap_native_contour": true
+    },
+    {
+      "pose": "down_step",
+      "two_real_source_mitten_components": [
+        {
+          "piece": "blue_mitten",
+          "source_alpha_component_bounds": [
+            61,
+            610,
+            195,
+            226
+          ],
+          "source_alpha_component_pixels": 31882,
+          "complete_finger_dome_samples": [
+            {
+              "native": [
+                5,
+                7
+              ],
+              "source_sample": [
+                195,
+                628
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                4,
+                8
+              ],
+              "source_sample": [
+                159,
+                666
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                5,
+                8
+              ],
+              "source_sample": [
+                195,
+                666
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                2,
+                9
+              ],
+              "source_sample": [
+                86,
+                704
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                3,
+                9
+              ],
+              "source_sample": [
+                122,
+                704
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                4,
+                9
+              ],
+              "source_sample": [
+                159,
+                704
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                6,
+                9
+              ],
+              "source_sample": [
+                231,
+                704
+              ],
+              "native_ink": 2
+            }
+          ],
+          "opposite_color_cuff_samples": [
+            {
+              "native": [
+                3,
+                11
+              ],
+              "source_sample": [
+                122,
+                780
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                6,
+                11
+              ],
+              "source_sample": [
+                231,
+                780
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                4,
+                12
+              ],
+              "source_sample": [
+                159,
+                818
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                5,
+                12
+              ],
+              "source_sample": [
+                195,
+                818
+              ],
+              "native_ink": 1
+            }
+          ],
+          "all_native_source_component_samples": [
+            {
+              "native": [
+                4,
+                7
+              ],
+              "source_sample": [
+                159,
+                628
+              ],
+              "native_ink": 3
+            },
+            {
+              "native": [
+                5,
+                7
+              ],
+              "source_sample": [
+                195,
+                628
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                3,
+                8
+              ],
+              "source_sample": [
+                122,
+                666
+              ],
+              "native_ink": 3
+            },
+            {
+              "native": [
+                4,
+                8
+              ],
+              "source_sample": [
+                159,
+                666
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                5,
+                8
+              ],
+              "source_sample": [
+                195,
+                666
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                6,
+                8
+              ],
+              "source_sample": [
+                231,
+                666
+              ],
+              "native_ink": 3
+            },
+            {
+              "native": [
+                2,
+                9
+              ],
+              "source_sample": [
+                86,
+                704
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                3,
+                9
+              ],
+              "source_sample": [
+                122,
+                704
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                4,
+                9
+              ],
+              "source_sample": [
+                159,
+                704
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                5,
+                9
+              ],
+              "source_sample": [
+                195,
+                704
+              ],
+              "native_ink": 3
+            },
+            {
+              "native": [
+                6,
+                9
+              ],
+              "source_sample": [
+                231,
+                704
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                2,
+                10
+              ],
+              "source_sample": [
+                86,
+                742
+              ],
+              "native_ink": 3
+            },
+            {
+              "native": [
+                3,
+                10
+              ],
+              "source_sample": [
+                122,
+                742
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                4,
+                10
+              ],
+              "source_sample": [
+                159,
+                742
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                5,
+                10
+              ],
+              "source_sample": [
+                195,
+                742
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                6,
+                10
+              ],
+              "source_sample": [
+                231,
+                742
+              ],
+              "native_ink": 3
+            },
+            {
+              "native": [
+                3,
+                11
+              ],
+              "source_sample": [
+                122,
+                780
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                4,
+                11
+              ],
+              "source_sample": [
+                159,
+                780
+              ],
+              "native_ink": 3
+            },
+            {
+              "native": [
+                5,
+                11
+              ],
+              "source_sample": [
+                195,
+                780
+              ],
+              "native_ink": 3
+            },
+            {
+              "native": [
+                6,
+                11
+              ],
+              "source_sample": [
+                231,
+                780
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                3,
+                12
+              ],
+              "source_sample": [
+                122,
+                818
+              ],
+              "native_ink": 3
+            },
+            {
+              "native": [
+                4,
+                12
+              ],
+              "source_sample": [
+                159,
+                818
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                5,
+                12
+              ],
+              "source_sample": [
+                195,
+                818
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                6,
+                12
+              ],
+              "source_sample": [
+                231,
+                818
+              ],
+              "native_ink": 3
+            }
+          ],
+          "thumb_direction": "left"
+        },
+        {
+          "piece": "cream_mitten",
+          "source_alpha_component_bounds": [
+            271,
+            665,
+            200,
+            235
+          ],
+          "source_alpha_component_pixels": 33738,
+          "complete_finger_dome_samples": [
+            {
+              "native": [
+                9,
+                9
+              ],
+              "source_sample": [
+                340,
+                704
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                10,
+                9
+              ],
+              "source_sample": [
+                376,
+                704
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                8,
+                10
+              ],
+              "source_sample": [
+                304,
+                742
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                10,
+                10
+              ],
+              "source_sample": [
+                376,
+                742
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                11,
+                10
+              ],
+              "source_sample": [
+                413,
+                742
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                8,
+                11
+              ],
+              "source_sample": [
+                304,
+                780
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                9,
+                11
+              ],
+              "source_sample": [
+                340,
+                780
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                10,
+                11
+              ],
+              "source_sample": [
+                376,
+                780
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                11,
+                11
+              ],
+              "source_sample": [
+                413,
+                780
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                12,
+                11
+              ],
+              "source_sample": [
+                449,
+                780
+              ],
+              "native_ink": 1
+            }
+          ],
+          "opposite_color_cuff_samples": [
+            {
+              "native": [
+                9,
+                12
+              ],
+              "source_sample": [
+                340,
+                818
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                8,
+                13
+              ],
+              "source_sample": [
+                304,
+                856
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                9,
+                13
+              ],
+              "source_sample": [
+                340,
+                856
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                10,
+                13
+              ],
+              "source_sample": [
+                376,
+                856
+              ],
+              "native_ink": 2
+            }
+          ],
+          "all_native_source_component_samples": [
+            {
+              "native": [
+                9,
+                8
+              ],
+              "source_sample": [
+                340,
+                666
+              ],
+              "native_ink": 3
+            },
+            {
+              "native": [
+                10,
+                8
+              ],
+              "source_sample": [
+                376,
+                666
+              ],
+              "native_ink": 3
+            },
+            {
+              "native": [
+                8,
+                9
+              ],
+              "source_sample": [
+                304,
+                704
+              ],
+              "native_ink": 3
+            },
+            {
+              "native": [
+                9,
+                9
+              ],
+              "source_sample": [
+                340,
+                704
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                10,
+                9
+              ],
+              "source_sample": [
+                376,
+                704
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                11,
+                9
+              ],
+              "source_sample": [
+                413,
+                704
+              ],
+              "native_ink": 3
+            },
+            {
+              "native": [
+                8,
+                10
+              ],
+              "source_sample": [
+                304,
+                742
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                9,
+                10
+              ],
+              "source_sample": [
+                340,
+                742
+              ],
+              "native_ink": 3
+            },
+            {
+              "native": [
+                10,
+                10
+              ],
+              "source_sample": [
+                376,
+                742
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                11,
+                10
+              ],
+              "source_sample": [
+                413,
+                742
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                12,
+                10
+              ],
+              "source_sample": [
+                449,
+                742
+              ],
+              "native_ink": 3
+            },
+            {
+              "native": [
+                8,
+                11
+              ],
+              "source_sample": [
+                304,
+                780
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                9,
+                11
+              ],
+              "source_sample": [
+                340,
+                780
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                10,
+                11
+              ],
+              "source_sample": [
+                376,
+                780
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                11,
+                11
+              ],
+              "source_sample": [
+                413,
+                780
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                12,
+                11
+              ],
+              "source_sample": [
+                449,
+                780
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                8,
+                12
+              ],
+              "source_sample": [
+                304,
+                818
+              ],
+              "native_ink": 3
+            },
+            {
+              "native": [
+                9,
+                12
+              ],
+              "source_sample": [
+                340,
+                818
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                10,
+                12
+              ],
+              "source_sample": [
+                376,
+                818
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                11,
+                12
+              ],
+              "source_sample": [
+                413,
+                818
+              ],
+              "native_ink": 3
+            },
+            {
+              "native": [
+                8,
+                13
+              ],
+              "source_sample": [
+                304,
+                856
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                9,
+                13
+              ],
+              "source_sample": [
+                340,
+                856
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                10,
+                13
+              ],
+              "source_sample": [
+                376,
+                856
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                11,
+                13
+              ],
+              "source_sample": [
+                413,
+                856
+              ],
+              "native_ink": 3
+            },
+            {
+              "native": [
+                10,
+                14
+              ],
+              "source_sample": [
+                376,
+                894
+              ],
+              "native_ink": 3
+            }
+          ],
+          "thumb_direction": "right"
+        }
+      ],
+      "transparent_between_domes": [
+        {
+          "native": [
+            7,
+            7
+          ],
+          "source_sample": [
+            268,
+            628
+          ],
+          "alpha": 0
+        },
+        {
+          "native": [
+            7,
+            8
+          ],
+          "source_sample": [
+            268,
+            666
+          ],
+          "alpha": 0
+        },
+        {
+          "native": [
+            7,
+            9
+          ],
+          "source_sample": [
+            268,
+            704
+          ],
+          "alpha": 0
+        },
+        {
+          "native": [
+            7,
+            10
+          ],
+          "source_sample": [
+            268,
+            742
+          ],
+          "alpha": 2
+        }
+      ],
+      "west_far_mitten_may_overlap_native_contour": false
+    },
+    {
+      "pose": "up_step",
+      "two_real_source_mitten_components": [
+        {
+          "piece": "blue_mitten",
+          "source_alpha_component_bounds": [
+            534,
+            652,
+            193,
+            236
+          ],
+          "source_alpha_component_pixels": 33251,
+          "complete_finger_dome_samples": [
+            {
+              "native": [
+                3,
+                7
+              ],
+              "source_sample": [
+                624,
+                670
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                2,
+                8
+              ],
+              "source_sample": [
+                588,
+                708
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                3,
+                8
+              ],
+              "source_sample": [
+                624,
+                708
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                4,
+                8
+              ],
+              "source_sample": [
+                661,
+                708
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                1,
+                9
+              ],
+              "source_sample": [
+                552,
+                746
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                2,
+                9
+              ],
+              "source_sample": [
+                588,
+                746
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                3,
+                9
+              ],
+              "source_sample": [
+                624,
+                746
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                5,
+                9
+              ],
+              "source_sample": [
+                697,
+                746
+              ],
+              "native_ink": 2
+            }
+          ],
+          "opposite_color_cuff_samples": [
+            {
+              "native": [
+                4,
+                11
+              ],
+              "source_sample": [
+                661,
+                822
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                2,
+                12
+              ],
+              "source_sample": [
+                588,
+                860
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                3,
+                12
+              ],
+              "source_sample": [
+                624,
+                860
+              ],
+              "native_ink": 1
+            }
+          ],
+          "all_native_source_component_samples": [
+            {
+              "native": [
+                2,
+                7
+              ],
+              "source_sample": [
+                588,
+                670
+              ],
+              "native_ink": 3
+            },
+            {
+              "native": [
+                3,
+                7
+              ],
+              "source_sample": [
+                624,
+                670
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                4,
+                7
+              ],
+              "source_sample": [
+                661,
+                670
+              ],
+              "native_ink": 3
+            },
+            {
+              "native": [
+                1,
+                8
+              ],
+              "source_sample": [
+                552,
+                708
+              ],
+              "native_ink": 3
+            },
+            {
+              "native": [
+                2,
+                8
+              ],
+              "source_sample": [
+                588,
+                708
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                3,
+                8
+              ],
+              "source_sample": [
+                624,
+                708
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                4,
+                8
+              ],
+              "source_sample": [
+                661,
+                708
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                1,
+                9
+              ],
+              "source_sample": [
+                552,
+                746
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                2,
+                9
+              ],
+              "source_sample": [
+                588,
+                746
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                3,
+                9
+              ],
+              "source_sample": [
+                624,
+                746
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                4,
+                9
+              ],
+              "source_sample": [
+                661,
+                746
+              ],
+              "native_ink": 3
+            },
+            {
+              "native": [
+                5,
+                9
+              ],
+              "source_sample": [
+                697,
+                746
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                1,
+                10
+              ],
+              "source_sample": [
+                552,
+                784
+              ],
+              "native_ink": 3
+            },
+            {
+              "native": [
+                2,
+                10
+              ],
+              "source_sample": [
+                588,
+                784
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                3,
+                10
+              ],
+              "source_sample": [
+                624,
+                784
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                4,
+                10
+              ],
+              "source_sample": [
+                661,
+                784
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                5,
+                10
+              ],
+              "source_sample": [
+                697,
+                784
+              ],
+              "native_ink": 3
+            },
+            {
+              "native": [
+                1,
+                11
+              ],
+              "source_sample": [
+                552,
+                822
+              ],
+              "native_ink": 3
+            },
+            {
+              "native": [
+                2,
+                11
+              ],
+              "source_sample": [
+                588,
+                822
+              ],
+              "native_ink": 3
+            },
+            {
+              "native": [
+                3,
+                11
+              ],
+              "source_sample": [
+                624,
+                822
+              ],
+              "native_ink": 3
+            },
+            {
+              "native": [
+                4,
+                11
+              ],
+              "source_sample": [
+                661,
+                822
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                1,
+                12
+              ],
+              "source_sample": [
+                552,
+                860
+              ],
+              "native_ink": 3
+            },
+            {
+              "native": [
+                2,
+                12
+              ],
+              "source_sample": [
+                588,
+                860
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                3,
+                12
+              ],
+              "source_sample": [
+                624,
+                860
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                4,
+                12
+              ],
+              "source_sample": [
+                661,
+                860
+              ],
+              "native_ink": 3
+            }
+          ],
+          "thumb_direction": "right"
+        },
+        {
+          "piece": "cream_mitten",
+          "source_alpha_component_bounds": [
+            819,
+            663,
+            186,
+            226
+          ],
+          "source_alpha_component_pixels": 31044,
+          "complete_finger_dome_samples": [
+            {
+              "native": [
+                10,
+                8
+              ],
+              "source_sample": [
+                878,
+                708
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                11,
+                8
+              ],
+              "source_sample": [
+                915,
+                708
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                12,
+                8
+              ],
+              "source_sample": [
+                951,
+                708
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                9,
+                9
+              ],
+              "source_sample": [
+                842,
+                746
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                11,
+                9
+              ],
+              "source_sample": [
+                915,
+                746
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                12,
+                9
+              ],
+              "source_sample": [
+                951,
+                746
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                13,
+                9
+              ],
+              "source_sample": [
+                987,
+                746
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                10,
+                10
+              ],
+              "source_sample": [
+                878,
+                784
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                11,
+                10
+              ],
+              "source_sample": [
+                915,
+                784
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                12,
+                10
+              ],
+              "source_sample": [
+                951,
+                784
+              ],
+              "native_ink": 1
+            }
+          ],
+          "opposite_color_cuff_samples": [
+            {
+              "native": [
+                11,
+                11
+              ],
+              "source_sample": [
+                915,
+                822
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                12,
+                11
+              ],
+              "source_sample": [
+                951,
+                822
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                10,
+                12
+              ],
+              "source_sample": [
+                878,
+                860
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                11,
+                12
+              ],
+              "source_sample": [
+                915,
+                860
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                12,
+                12
+              ],
+              "source_sample": [
+                951,
+                860
+              ],
+              "native_ink": 2
+            }
+          ],
+          "all_native_source_component_samples": [
+            {
+              "native": [
+                11,
+                7
+              ],
+              "source_sample": [
+                915,
+                670
+              ],
+              "native_ink": 3
+            },
+            {
+              "native": [
+                12,
+                7
+              ],
+              "source_sample": [
+                951,
+                670
+              ],
+              "native_ink": 3
+            },
+            {
+              "native": [
+                10,
+                8
+              ],
+              "source_sample": [
+                878,
+                708
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                11,
+                8
+              ],
+              "source_sample": [
+                915,
+                708
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                12,
+                8
+              ],
+              "source_sample": [
+                951,
+                708
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                13,
+                8
+              ],
+              "source_sample": [
+                987,
+                708
+              ],
+              "native_ink": 3
+            },
+            {
+              "native": [
+                9,
+                9
+              ],
+              "source_sample": [
+                842,
+                746
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                10,
+                9
+              ],
+              "source_sample": [
+                878,
+                746
+              ],
+              "native_ink": 3
+            },
+            {
+              "native": [
+                11,
+                9
+              ],
+              "source_sample": [
+                915,
+                746
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                12,
+                9
+              ],
+              "source_sample": [
+                951,
+                746
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                13,
+                9
+              ],
+              "source_sample": [
+                987,
+                746
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                9,
+                10
+              ],
+              "source_sample": [
+                842,
+                784
+              ],
+              "native_ink": 3
+            },
+            {
+              "native": [
+                10,
+                10
+              ],
+              "source_sample": [
+                878,
+                784
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                11,
+                10
+              ],
+              "source_sample": [
+                915,
+                784
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                12,
+                10
+              ],
+              "source_sample": [
+                951,
+                784
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                13,
+                10
+              ],
+              "source_sample": [
+                987,
+                784
+              ],
+              "native_ink": 3
+            },
+            {
+              "native": [
+                10,
+                11
+              ],
+              "source_sample": [
+                878,
+                822
+              ],
+              "native_ink": 3
+            },
+            {
+              "native": [
+                11,
+                11
+              ],
+              "source_sample": [
+                915,
+                822
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                12,
+                11
+              ],
+              "source_sample": [
+                951,
+                822
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                13,
+                11
+              ],
+              "source_sample": [
+                987,
+                822
+              ],
+              "native_ink": 3
+            },
+            {
+              "native": [
+                10,
+                12
+              ],
+              "source_sample": [
+                878,
+                860
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                11,
+                12
+              ],
+              "source_sample": [
+                915,
+                860
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                12,
+                12
+              ],
+              "source_sample": [
+                951,
+                860
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                13,
+                12
+              ],
+              "source_sample": [
+                987,
+                860
+              ],
+              "native_ink": 3
+            }
+          ],
+          "thumb_direction": "left"
+        }
+      ],
+      "transparent_between_domes": [
+        {
+          "native": [
+            6,
+            7
+          ],
+          "source_sample": [
+            733,
+            670
+          ],
+          "alpha": 0
+        },
+        {
+          "native": [
+            7,
+            7
+          ],
+          "source_sample": [
+            770,
+            670
+          ],
+          "alpha": 0
+        },
+        {
+          "native": [
+            8,
+            7
+          ],
+          "source_sample": [
+            806,
+            670
+          ],
+          "alpha": 0
+        },
+        {
+          "native": [
+            6,
+            8
+          ],
+          "source_sample": [
+            733,
+            708
+          ],
+          "alpha": 0
+        },
+        {
+          "native": [
+            7,
+            8
+          ],
+          "source_sample": [
+            770,
+            708
+          ],
+          "alpha": 0
+        },
+        {
+          "native": [
+            8,
+            8
+          ],
+          "source_sample": [
+            806,
+            708
+          ],
+          "alpha": 0
+        },
+        {
+          "native": [
+            6,
+            9
+          ],
+          "source_sample": [
+            733,
+            746
+          ],
+          "alpha": 1
+        },
+        {
+          "native": [
+            7,
+            9
+          ],
+          "source_sample": [
+            770,
+            746
+          ],
+          "alpha": 0
+        },
+        {
+          "native": [
+            8,
+            9
+          ],
+          "source_sample": [
+            806,
+            746
+          ],
+          "alpha": 0
+        }
+      ],
+      "west_far_mitten_may_overlap_native_contour": false
+    },
+    {
+      "pose": "left_step",
+      "two_real_source_mitten_components": [
+        {
+          "piece": "blue_mitten",
+          "source_alpha_component_bounds": [
+            1098,
+            604,
+            190,
+            235
+          ],
+          "source_alpha_component_pixels": 30763,
+          "complete_finger_dome_samples": [
+            {
+              "native": [
+                5,
+                7
+              ],
+              "source_sample": [
+                1209,
+                622
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                4,
+                8
+              ],
+              "source_sample": [
+                1173,
+                660
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                5,
+                8
+              ],
+              "source_sample": [
+                1209,
+                660
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                6,
+                8
+              ],
+              "source_sample": [
+                1245,
+                660
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                4,
+                9
+              ],
+              "source_sample": [
+                1173,
+                698
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                6,
+                9
+              ],
+              "source_sample": [
+                1245,
+                698
+              ],
+              "native_ink": 2
+            }
+          ],
+          "opposite_color_cuff_samples": [
+            {
+              "native": [
+                6,
+                11
+              ],
+              "source_sample": [
+                1245,
+                774
+              ],
+              "native_ink": 1
+            }
+          ],
+          "all_native_source_component_samples": [
+            {
+              "native": [
+                4,
+                7
+              ],
+              "source_sample": [
+                1173,
+                622
+              ],
+              "native_ink": 3
+            },
+            {
+              "native": [
+                5,
+                7
+              ],
+              "source_sample": [
+                1209,
+                622
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                6,
+                7
+              ],
+              "source_sample": [
+                1245,
+                622
+              ],
+              "native_ink": 3
+            },
+            {
+              "native": [
+                4,
+                8
+              ],
+              "source_sample": [
+                1173,
+                660
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                5,
+                8
+              ],
+              "source_sample": [
+                1209,
+                660
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                6,
+                8
+              ],
+              "source_sample": [
+                1245,
+                660
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                7,
+                8
+              ],
+              "source_sample": [
+                1282,
+                660
+              ],
+              "native_ink": 3
+            },
+            {
+              "native": [
+                3,
+                9
+              ],
+              "source_sample": [
+                1136,
+                698
+              ],
+              "native_ink": 3
+            },
+            {
+              "native": [
+                4,
+                9
+              ],
+              "source_sample": [
+                1173,
+                698
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                5,
+                9
+              ],
+              "source_sample": [
+                1209,
+                698
+              ],
+              "native_ink": 3
+            },
+            {
+              "native": [
+                6,
+                9
+              ],
+              "source_sample": [
+                1245,
+                698
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                7,
+                9
+              ],
+              "source_sample": [
+                1282,
+                698
+              ],
+              "native_ink": 3
+            },
+            {
+              "native": [
+                3,
+                10
+              ],
+              "source_sample": [
+                1136,
+                736
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                4,
+                10
+              ],
+              "source_sample": [
+                1173,
+                736
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                5,
+                10
+              ],
+              "source_sample": [
+                1209,
+                736
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                6,
+                10
+              ],
+              "source_sample": [
+                1245,
+                736
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                7,
+                10
+              ],
+              "source_sample": [
+                1282,
+                736
+              ],
+              "native_ink": 3
+            },
+            {
+              "native": [
+                4,
+                11
+              ],
+              "source_sample": [
+                1173,
+                774
+              ],
+              "native_ink": 3
+            },
+            {
+              "native": [
+                5,
+                11
+              ],
+              "source_sample": [
+                1209,
+                774
+              ],
+              "native_ink": 3
+            },
+            {
+              "native": [
+                6,
+                11
+              ],
+              "source_sample": [
+                1245,
+                774
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                7,
+                11
+              ],
+              "source_sample": [
+                1282,
+                774
+              ],
+              "native_ink": 3
+            },
+            {
+              "native": [
+                4,
+                12
+              ],
+              "source_sample": [
+                1173,
+                812
+              ],
+              "native_ink": 3
+            },
+            {
+              "native": [
+                5,
+                12
+              ],
+              "source_sample": [
+                1209,
+                812
+              ],
+              "native_ink": 3
+            },
+            {
+              "native": [
+                6,
+                12
+              ],
+              "source_sample": [
+                1245,
+                812
+              ],
+              "native_ink": 3
+            }
+          ],
+          "thumb_direction": "left"
+        },
+        {
+          "piece": "cream_mitten",
+          "source_alpha_component_bounds": [
+            1299,
+            691,
+            179,
+            216
+          ],
+          "source_alpha_component_pixels": 28873,
+          "complete_finger_dome_samples": [
+            {
+              "native": [
+                8,
+                10
+              ],
+              "source_sample": [
+                1318,
+                736
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                9,
+                10
+              ],
+              "source_sample": [
+                1354,
+                736
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                10,
+                10
+              ],
+              "source_sample": [
+                1390,
+                736
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                8,
+                11
+              ],
+              "source_sample": [
+                1318,
+                774
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                9,
+                11
+              ],
+              "source_sample": [
+                1354,
+                774
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                10,
+                11
+              ],
+              "source_sample": [
+                1390,
+                774
+              ],
+              "native_ink": 1
+            }
+          ],
+          "opposite_color_cuff_samples": [
+            {
+              "native": [
+                9,
+                13
+              ],
+              "source_sample": [
+                1354,
+                850
+              ],
+              "native_ink": 2
+            }
+          ],
+          "all_native_source_component_samples": [
+            {
+              "native": [
+                9,
+                9
+              ],
+              "source_sample": [
+                1354,
+                698
+              ],
+              "native_ink": 3
+            },
+            {
+              "native": [
+                10,
+                9
+              ],
+              "source_sample": [
+                1390,
+                698
+              ],
+              "native_ink": 3
+            },
+            {
+              "native": [
+                8,
+                10
+              ],
+              "source_sample": [
+                1318,
+                736
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                9,
+                10
+              ],
+              "source_sample": [
+                1354,
+                736
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                10,
+                10
+              ],
+              "source_sample": [
+                1390,
+                736
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                11,
+                10
+              ],
+              "source_sample": [
+                1427,
+                736
+              ],
+              "native_ink": 3
+            },
+            {
+              "native": [
+                8,
+                11
+              ],
+              "source_sample": [
+                1318,
+                774
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                9,
+                11
+              ],
+              "source_sample": [
+                1354,
+                774
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                10,
+                11
+              ],
+              "source_sample": [
+                1390,
+                774
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                11,
+                11
+              ],
+              "source_sample": [
+                1427,
+                774
+              ],
+              "native_ink": 3
+            },
+            {
+              "native": [
+                12,
+                11
+              ],
+              "source_sample": [
+                1463,
+                774
+              ],
+              "native_ink": 3
+            },
+            {
+              "native": [
+                8,
+                12
+              ],
+              "source_sample": [
+                1318,
+                812
+              ],
+              "native_ink": 3
+            },
+            {
+              "native": [
+                9,
+                12
+              ],
+              "source_sample": [
+                1354,
+                812
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                10,
+                12
+              ],
+              "source_sample": [
+                1390,
+                812
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                11,
+                12
+              ],
+              "source_sample": [
+                1427,
+                812
+              ],
+              "native_ink": 1
+            },
+            {
+              "native": [
+                12,
+                12
+              ],
+              "source_sample": [
+                1463,
+                812
+              ],
+              "native_ink": 3
+            },
+            {
+              "native": [
+                8,
+                13
+              ],
+              "source_sample": [
+                1318,
+                850
+              ],
+              "native_ink": 3
+            },
+            {
+              "native": [
+                9,
+                13
+              ],
+              "source_sample": [
+                1354,
+                850
+              ],
+              "native_ink": 2
+            },
+            {
+              "native": [
+                10,
+                13
+              ],
+              "source_sample": [
+                1390,
+                850
+              ],
+              "native_ink": 3
+            },
+            {
+              "native": [
+                11,
+                13
+              ],
+              "source_sample": [
+                1427,
+                850
+              ],
+              "native_ink": 3
+            },
+            {
+              "native": [
+                9,
+                14
+              ],
+              "source_sample": [
+                1354,
+                888
+              ],
+              "native_ink": 3
+            },
+            {
+              "native": [
+                10,
+                14
+              ],
+              "source_sample": [
+                1390,
+                888
+              ],
+              "native_ink": 3
+            },
+            {
+              "native": [
+                11,
+                14
+              ],
+              "source_sample": [
+                1427,
+                888
+              ],
+              "native_ink": 3
+            }
+          ],
+          "thumb_direction": "right"
+        }
+      ],
+      "transparent_between_domes": [],
+      "west_far_mitten_may_overlap_native_contour": true
+    }
+  ]
+}

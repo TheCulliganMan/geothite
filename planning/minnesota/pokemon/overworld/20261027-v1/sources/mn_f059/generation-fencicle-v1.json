@@ -1,0 +1,9 @@
+{
+  "tool": "built-in ImageGen",
+  "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f059/fencicle.overworld.imagegen-v1.png",
+  "default_original": "/Users/ryanculligan/.codex/generated_images/01a17dc4-dd75-7642-a1c6-4bf13fda70c6/exec-4de86a4b-bdd9-4116-9022-eb94476b468d.png",
+  "sha256": "63ccfe29aba713a3f770231324bf78264d6e1f682c9d1e2d1b829bb7d8010409",
+  "one_species_per_call": true,
+  "genuine16_style_only_input": true,
+  "initial_review": "source generated; native review pending"
+}

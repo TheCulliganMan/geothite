@@ -4210,6 +4210,9 @@ fn close_visible_text_window(runtime_shell: &mut BevyRuntimeShell) -> Result<()>
 }
 
 fn close_visible_pokemon_picture(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
+    if runtime_shell.shell.snapshot()?.ui.pending_text_wait.is_some() {
+        return advance_visible_pending_text_wait(runtime_shell);
+    }
     record_visible_runtime_action(runtime_shell, "ui:pokemon_picture:close")?;
     let close = runtime_shell.shell.close_active_pokemon_picture()?;
     runtime_shell.last_audio_events.push(format!(

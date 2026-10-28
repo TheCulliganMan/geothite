@@ -1,0 +1,343 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_098",
+  "result": "pass",
+  "manifest_sha256": "75bf9e491a583b417139d3056f179ab4f4b473a822e7a04d959495d33ae77999",
+  "bank_sha256": "f26ab1c79b97d3ed67cb369a5e3f2bcedf02212b344bea59add34032a77171ab",
+  "source_sha256": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f047/bunjant.overworld.imagegen-v5-tall-eye-cavity.png": "0a7d19cab9a7f16ad50dd67e40d69c5b1d3d67877ca1c99bfae4132f93153a72",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f047/bunjant.overworld.imagegen-v4-solid-outline.png": "b225f5d38a2c986d7cc474975036ca40ac097a979b8249843889325024f38f73"
+  },
+  "canonical_eye_form": "TWO actual LIGHT green index1 eye windows inside BLACK index3 face south, ONE west, matching canonical monster eye form; no invented black pupils.",
+  "nonrear_poses": [
+    {
+      "pose": "down_idle",
+      "result": "pass",
+      "source_feature_proof": {
+        "pose": "down_idle",
+        "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f047/bunjant.overworld.imagegen-v5-tall-eye-cavity.png",
+        "crop": [
+          29,
+          24,
+          500,
+          500
+        ],
+        "anatomically_identified_source_eye_boxes_xywh": [
+          [
+            226,
+            216,
+            27,
+            28
+          ],
+          [
+            288,
+            216,
+            26,
+            28
+          ]
+        ],
+        "actual_eye_proofs": [
+          {
+            "native_cluster": [
+              [
+                6,
+                6
+              ]
+            ],
+            "samples": [
+              {
+                "rgba": [
+                  167,
+                  209,
+                  84,
+                  253
+                ],
+                "bounds": [
+                  226,
+                  216,
+                  27,
+                  28
+                ],
+                "pixels": 733,
+                "truncated_contour": false,
+                "native_pixel": [
+                  6,
+                  6
+                ],
+                "source_sample_pixel": [
+                  238,
+                  221
+                ],
+                "quantized_feature_ink": 1,
+                "matches_expected_feature_ink": true
+              }
+            ]
+          },
+          {
+            "native_cluster": [
+              [
+                8,
+                6
+              ]
+            ],
+            "samples": [
+              {
+                "rgba": [
+                  167,
+                  209,
+                  80,
+                  253
+                ],
+                "bounds": [
+                  288,
+                  216,
+                  26,
+                  28
+                ],
+                "pixels": 724,
+                "truncated_contour": false,
+                "native_pixel": [
+                  8,
+                  6
+                ],
+                "source_sample_pixel": [
+                  311,
+                  221
+                ],
+                "quantized_feature_ink": 1,
+                "matches_expected_feature_ink": true
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "pose": "left_idle",
+      "result": "pass",
+      "source_feature_proof": {
+        "pose": "left_idle",
+        "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f047/bunjant.overworld.imagegen-v5-tall-eye-cavity.png",
+        "crop": [
+          1015,
+          7,
+          500,
+          500
+        ],
+        "anatomically_identified_source_eye_boxes_xywh": [
+          [
+            1182,
+            229,
+            26,
+            27
+          ]
+        ],
+        "actual_eye_proofs": [
+          {
+            "native_cluster": [
+              [
+                5,
+                7
+              ]
+            ],
+            "samples": [
+              {
+                "rgba": [
+                  164,
+                  207,
+                  80,
+                  253
+                ],
+                "bounds": [
+                  1182,
+                  229,
+                  26,
+                  27
+                ],
+                "pixels": 702,
+                "truncated_contour": false,
+                "native_pixel": [
+                  5,
+                  7
+                ],
+                "source_sample_pixel": [
+                  1187,
+                  239
+                ],
+                "quantized_feature_ink": 1,
+                "matches_expected_feature_ink": true
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "pose": "down_step",
+      "result": "pass",
+      "source_feature_proof": {
+        "pose": "down_step",
+        "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f047/bunjant.overworld.imagegen-v5-tall-eye-cavity.png",
+        "crop": [
+          24,
+          516,
+          500,
+          500
+        ],
+        "anatomically_identified_source_eye_boxes_xywh": [
+          [
+            226,
+            701,
+            27,
+            27
+          ],
+          [
+            287,
+            701,
+            27,
+            27
+          ]
+        ],
+        "actual_eye_proofs": [
+          {
+            "native_cluster": [
+              [
+                6,
+                6
+              ]
+            ],
+            "samples": [
+              {
+                "rgba": [
+                  164,
+                  208,
+                  84,
+                  253
+                ],
+                "bounds": [
+                  226,
+                  701,
+                  27,
+                  27
+                ],
+                "pixels": 729,
+                "truncated_contour": false,
+                "native_pixel": [
+                  6,
+                  6
+                ],
+                "source_sample_pixel": [
+                  233,
+                  713
+                ],
+                "quantized_feature_ink": 1,
+                "matches_expected_feature_ink": true
+              }
+            ]
+          },
+          {
+            "native_cluster": [
+              [
+                8,
+                6
+              ]
+            ],
+            "samples": [
+              {
+                "rgba": [
+                  165,
+                  206,
+                  83,
+                  253
+                ],
+                "bounds": [
+                  287,
+                  701,
+                  27,
+                  27
+                ],
+                "pixels": 703,
+                "truncated_contour": false,
+                "native_pixel": [
+                  8,
+                  6
+                ],
+                "source_sample_pixel": [
+                  306,
+                  713
+                ],
+                "quantized_feature_ink": 1,
+                "matches_expected_feature_ink": true
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "pose": "left_step",
+      "result": "pass",
+      "source_feature_proof": {
+        "pose": "left_step",
+        "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f047/bunjant.overworld.imagegen-v5-tall-eye-cavity.png",
+        "crop": [
+          1018,
+          498,
+          500,
+          500
+        ],
+        "anatomically_identified_source_eye_boxes_xywh": [
+          [
+            1188,
+            716,
+            26,
+            26
+          ]
+        ],
+        "actual_eye_proofs": [
+          {
+            "native_cluster": [
+              [
+                5,
+                7
+              ]
+            ],
+            "samples": [
+              {
+                "rgba": [
+                  166,
+                  207,
+                  84,
+                  253
+                ],
+                "bounds": [
+                  1188,
+                  716,
+                  26,
+                  26
+                ],
+                "pixels": 676,
+                "truncated_contour": false,
+                "native_pixel": [
+                  5,
+                  7
+                ],
+                "source_sample_pixel": [
+                  1190,
+                  730
+                ],
+                "quantized_feature_ink": 1,
+                "matches_expected_feature_ink": true
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "rear_anatomy": {
+    "result": "pass",
+    "notes": "Both native normal/shiny true rear poses actually reviewed: thick mossy back with branch shoulders for Vergloom or woodback/pine crown for Bunjant. No rear face or copied bright eyes. All limb/crown anatomy source-backed; native pixels not painted."
+  },
+  "detailed_proof": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f047/bunjant.manifest-native-v5-light-window-proof.proof.json"
+}

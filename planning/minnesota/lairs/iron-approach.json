@@ -1,0 +1,60 @@
+{
+  "id": "MnIronDrillApproach",
+  "template": "UnionCave1F",
+  "tileset": "cave",
+  "status": "SOURCE CANDIDATE; no publication or traversal claim",
+  "dimensions_metatiles": [
+    16,
+    13
+  ],
+  "border_block": "01",
+  "rows": [
+    "01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01",
+    "01 18 19 19 19 19 1a 01 18 19 19 19 19 1a 01 01",
+    "01 20 02 02 02 02 22 01 20 02 02 02 07 22 01 01",
+    "01 20 02 2d 2d 02 22 01 20 02 2d 2d 02 22 01 01",
+    "01 28 29 29 20 02 22 01 20 02 22 01 20 02 1a 01",
+    "01 01 01 18 02 02 19 19 02 02 22 01 20 02 22 01",
+    "01 18 19 02 02 02 02 02 02 02 22 01 20 02 22 01",
+    "01 20 02 02 2d 2d 2d 2d 2d 02 22 01 20 02 22 01",
+    "01 20 02 02 02 02 02 02 02 02 02 19 02 02 22 01",
+    "01 20 02 2d 2d 2d 2d 2d 2d 2d 02 02 02 02 22 01",
+    "01 20 02 07 02 22 01 01 01 01 28 29 29 29 2a 01",
+    "01 28 29 29 29 2a 01 01 01 01 01 01 01 01 01 01",
+    "01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01"
+  ],
+  "entrance": {
+    "active": [
+      7,
+      21
+    ],
+    "passive": [
+      6,
+      21
+    ]
+  },
+  "gallery_stair": {
+    "metatile": [
+      12,
+      2
+    ],
+    "active": [
+      25,
+      5
+    ],
+    "passive": [
+      24,
+      5
+    ]
+  },
+  "activities": [
+    "Irregular workings and a crosscut loop lead from the public mine into the pump gallery.",
+    "NELL gives the direct rescue quest at the public-mine stair.",
+    "The pump gallery contains the actual feed and service-return shutters."
+  ],
+  "contract": [
+    "Do not publish before complete source-art and collision review.",
+    "The new active stair at metatile 12,2 must use native ladder block 07, with independent safe passive arrival.",
+    "Physical shutdown in the core gates the old public-mine apparatus recovery; reading its log cannot bypass the lair."
+  ]
+}

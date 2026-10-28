@@ -1,0 +1,267 @@
+{
+  "schema_version": 1,
+  "status": "proposed source only, not published",
+  "base_pack_sha256": "2fe6fc2a2c59833886b9ffa2fa04584f1f95841efaf87e865f11230cf4cdf54e",
+  "maps": {
+    "MnStCloud": {
+      "native_module_sha256": "4c3fa80507d482ea7163a56f94f77d8881bd4e53c2b70c56e6b7fd3c77a2fe72",
+      "dimensions_metatiles": [
+        24,
+        18
+      ],
+      "changes": [
+        {
+          "metatile": [
+            22,
+            12
+          ],
+          "before": 5,
+          "after": 53
+        },
+        {
+          "metatile": [
+            23,
+            12
+          ],
+          "before": 5,
+          "after": 54
+        },
+        {
+          "metatile": [
+            22,
+            13
+          ],
+          "before": 5,
+          "after": 53
+        },
+        {
+          "metatile": [
+            23,
+            13
+          ],
+          "before": 5,
+          "after": 54
+        },
+        {
+          "metatile": [
+            22,
+            14
+          ],
+          "before": 5,
+          "after": 53
+        },
+        {
+          "metatile": [
+            23,
+            14
+          ],
+          "before": 5,
+          "after": 54
+        },
+        {
+          "metatile": [
+            22,
+            15
+          ],
+          "before": 5,
+          "after": 53
+        },
+        {
+          "metatile": [
+            23,
+            15
+          ],
+          "before": 5,
+          "after": 54
+        },
+        {
+          "metatile": [
+            22,
+            16
+          ],
+          "before": 5,
+          "after": 53
+        },
+        {
+          "metatile": [
+            23,
+            16
+          ],
+          "before": 5,
+          "after": 54
+        },
+        {
+          "metatile": [
+            22,
+            17
+          ],
+          "before": 5,
+          "after": 53
+        },
+        {
+          "metatile": [
+            23,
+            17
+          ],
+          "before": 5,
+          "after": 54
+        }
+      ]
+    },
+    "MnR05C00R00": {
+      "native_module_sha256": "949d72000f2e09df76e974329cd2837564d2a009960ca2de23b7339271a779cd",
+      "dimensions_metatiles": [
+        32,
+        24
+      ],
+      "changes": [
+        {
+          "metatile": [
+            22,
+            0
+          ],
+          "before": 5,
+          "after": 53
+        },
+        {
+          "metatile": [
+            23,
+            0
+          ],
+          "before": 5,
+          "after": 54
+        },
+        {
+          "metatile": [
+            22,
+            1
+          ],
+          "before": 5,
+          "after": 88
+        },
+        {
+          "metatile": [
+            23,
+            1
+          ],
+          "before": 5,
+          "after": 118
+        },
+        {
+          "metatile": [
+            24,
+            1
+          ],
+          "before": 5,
+          "after": 118
+        },
+        {
+          "metatile": [
+            25,
+            1
+          ],
+          "before": 5,
+          "after": 118
+        },
+        {
+          "metatile": [
+            26,
+            1
+          ],
+          "before": 5,
+          "after": 118
+        },
+        {
+          "metatile": [
+            27,
+            1
+          ],
+          "before": 5,
+          "after": 118
+        },
+        {
+          "metatile": [
+            22,
+            2
+          ],
+          "before": 5,
+          "after": 88
+        },
+        {
+          "metatile": [
+            23,
+            2
+          ],
+          "before": 5,
+          "after": 53
+        },
+        {
+          "metatile": [
+            24,
+            2
+          ],
+          "before": 5,
+          "after": 53
+        },
+        {
+          "metatile": [
+            25,
+            2
+          ],
+          "before": 5,
+          "after": 53
+        },
+        {
+          "metatile": [
+            26,
+            2
+          ],
+          "before": 5,
+          "after": 53
+        },
+        {
+          "metatile": [
+            27,
+            2
+          ],
+          "before": 5,
+          "after": 53
+        }
+      ]
+    }
+  },
+  "seam": {
+    "from": "MnStCloud",
+    "direction": "south",
+    "to": "MnR05C00R00",
+    "offset": 0,
+    "from_core": [
+      [
+        44,
+        35
+      ],
+      [
+        45,
+        35
+      ],
+      [
+        46,
+        35
+      ]
+    ],
+    "to_core": [
+      [
+        44,
+        0
+      ],
+      [
+        45,
+        0
+      ],
+      [
+        46,
+        0
+      ]
+    ]
+  }
+}

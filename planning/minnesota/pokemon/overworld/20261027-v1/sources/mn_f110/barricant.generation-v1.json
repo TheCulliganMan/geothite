@@ -1,0 +1,13 @@
+{
+  "tool": "image_gen.imagegen",
+  "original_path": "/Users/ryanculligan/.codex/generated_images/01a17dcc-4f1a-77a2-9d21-0df036061346/exec-9e800a5e-7228-4338-86df-cbdb9e344a01.png",
+  "source_size": [
+    1536,
+    1024
+  ],
+  "sha256": "5f3068d0e34cb0b95df6f4d996cd6b651760a922a6b073600a317a63f8d40ef6",
+  "reference_paths": [
+    "/Users/ryanculligan/GitHub/geothite/planning/minnesota/pokemon/overworld/20261027-v1/references/native-pack-16px/native-six-frame-style-board.8x.png"
+  ],
+  "prompt": "barricant.prompt-v1.txt"
+}

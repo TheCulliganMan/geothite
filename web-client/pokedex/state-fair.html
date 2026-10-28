@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#234b3b">
+  <meta name="description" content="Take a full-map look at the Northwoods State Fair, then play a native game-rendered tour of its crowded food rows, midway and gardens.">
+  <title>State Fair Chaos · Northwoods Pokédex · Geothite</title>
+  <link rel="icon" href="{{ASSET_BASE}}/mark.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="{{ASSET_BASE}}/style.css"><link rel="stylesheet" href="{{ASSET_BASE}}/state-fair.css">
+  <script defer src="{{ASSET_BASE}}/state-fair.js"></script>
+</head>
+<body data-page="state-fair">
+  <a class="skip" href="#fair">Skip to State Fair Chaos</a>
+  {{HEADER}}
+  <main class="wrap fair-page" id="fair">
+    <div class="breadcrumb"><a href="/pokedex/">← Regional index</a><span>A DAY AT THE FAIR</span></div>
+    <div class="fair-heading"><div><span class="eyebrow">NORTHWOODS FIELD TRIP</span><h1>State Fair <em>Chaos.</em></h1></div><p>Come for the cheese curds.<br>Stay because everyone wants to battle.</p></div>
+    <dl class="fair-census"><div><dt>FAIRGOERS</dt><dd>255</dd></div><div><dt>SHOPS</dt><dd>32</dd></div><div><dt>TRAINERS</dt><dd>35</dd></div><div><dt>WALKING ROUTES</dt><dd>28</dd></div></dl>
+    <section aria-labelledby="tour-title" class="fair-tour">
+      <div class="panel-title"><h2 id="tour-title">The whole fair. Then into the crowd.</h2><span class="move-note">Native game footage</span><button class="fair-start" type="button" data-showcase-start aria-controls="fair-video">▶ Play full tour</button></div>
+      <div class="fair-screen">
+        <video id="fair-video" data-showcase-video data-src="{{FAIR_MEDIA}}/state-fair-chaos.mp4" controls playsinline preload="none" poster="{{FAIR_MEDIA}}/whole-map.png" aria-label="State Fair Chaos full showcase"></video>
+        <button class="fair-play" data-showcase-play type="button" aria-controls="fair-video"><span aria-hidden="true">▶</span><strong>Play State Fair Chaos</strong><small>Full overview + five crowd close-ups</small></button>
+      </div>
+      <p class="fair-status" data-showcase-status role="status" aria-live="polite">Ready when you are. The tour starts only when you press Play.</p>
+      <div class="fair-chapters" role="group" aria-label="Jump to a scene">
+        <button type="button" data-showcase-time="0" aria-controls="fair-video"><span>00:00</span> The whole fair</button>
+        <button type="button" data-showcase-time="4" aria-controls="fair-video"><span>00:04</span> Food row</button>
+        <button type="button" data-showcase-time="14" aria-controls="fair-video"><span>00:14</span> The midway</button>
+        <button type="button" data-showcase-time="24" aria-controls="fair-video"><span>00:24</span> Picnic traffic</button>
+        <button type="button" data-showcase-time="34" aria-controls="fair-video"><span>00:34</span> Garden laps</button>
+        <button type="button" data-showcase-time="44" aria-controls="fair-video"><span>00:44</span> Pokémon judging</button>
+      </div>
+      <p class="fair-caption">The overview shows the entire fairgrounds. Close-ups show the actual game renderer and its walkers, runners and turning spectators at normal game speed. Silent, like the battle previews.</p>
+      <a class="fair-download" href="{{FAIR_MEDIA}}/state-fair-chaos.mp4">Open the full video ↗</a>
+    </section>
+    <section class="fair-overview" aria-labelledby="overview-title"><div class="panel-title"><h2 id="overview-title">Every booth. Every queue.</h2><a href="{{FAIR_MEDIA}}/whole-map.png" target="_blank" rel="noopener">Open full-size map ↗</a></div><a href="{{FAIR_MEDIA}}/whole-map.png" target="_blank" rel="noopener" aria-label="Open the complete State Fairgrounds map at full resolution"><img src="{{FAIR_MEDIA}}/whole-map.png" alt="Complete State Fairgrounds: food pavilions, market stalls, midway, livestock ring, picnic courts, gardens and all 255 fairgoers." width="1536" height="1152" loading="lazy" decoding="async"></a></section>
+    <section class="fair-notes" aria-label="Around the fair"><article><span class="eyebrow">FOOD ON A STICK</span><h2>One more stop.</h2><p>Cookie pails, cheese curds, sweet corn and a long line of staffed counters. The picnic route is somebody’s idea of exercise.</p></article><article><span class="eyebrow">THE MIDWAY</span><h2>Personal space? Optional.</h2><p>Children circle the paths while trainer sight lines cross the crowds. Thirty-five fairgoers brought a team.</p></article><article><span class="eyebrow">OFF THE MAIN DRAG</span><h2>Find your breather.</h2><p>Ten Pokémon exhibits have their own judges. Gardens, project halls and pockets of wild grass fill out the fair beyond the food rows.</p></article></section>
+  </main>
+  {{FOOTER}}
+</body>
+</html>

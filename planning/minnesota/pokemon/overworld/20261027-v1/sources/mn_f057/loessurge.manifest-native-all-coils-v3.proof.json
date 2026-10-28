@@ -1,0 +1,487 @@
+{
+  "species_id": "MN_124",
+  "name": "loessurge",
+  "status": "native-review-recommended; root independent review and context required",
+  "selected_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f057/loessurge.manifest-native-all-coils-v3.json",
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/true16-loessurge-all-coils-v3",
+  "shared_transform": {
+    "source_bounds": [
+      2,
+      12,
+      418,
+      448
+    ],
+    "native_size": [
+      13,
+      14
+    ],
+    "native_origin": [
+      1,
+      1
+    ]
+  },
+  "all_four_nonrear_poses_actual_pupils_pass": true,
+  "each_native_eye_cluster_maps_to_one_actual_small_source_pupil_component": true,
+  "actual_source_pupil_proofs": [
+    {
+      "pose": "down_idle",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f057/loessurge.overworld.imagegen-v3.png",
+      "crop": [
+        63,
+        26,
+        430,
+        462
+      ],
+      "actual_source_eye_bounds": [
+        [
+          194,
+          171,
+          25,
+          32
+        ],
+        [
+          265,
+          171,
+          24,
+          32
+        ]
+      ],
+      "eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              5,
+              5
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                1,
+                1,
+                0,
+                253
+              ],
+              "bounds": [
+                194,
+                171,
+                25,
+                32
+              ],
+              "pixels": 795,
+              "truncated_contour": false,
+              "native_pixel": [
+                5,
+                5
+              ],
+              "source_sample_pixel": [
+                209,
+                182
+              ]
+            }
+          ]
+        },
+        {
+          "native_cluster": [
+            [
+              7,
+              5
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                1,
+                0,
+                0,
+                253
+              ],
+              "bounds": [
+                265,
+                171,
+                24,
+                32
+              ],
+              "pixels": 750,
+              "truncated_contour": false,
+              "native_pixel": [
+                7,
+                5
+              ],
+              "source_sample_pixel": [
+                274,
+                182
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f057/loessurge.overworld.imagegen-v3.png",
+      "crop": [
+        1092,
+        19,
+        430,
+        462
+      ],
+      "actual_source_eye_bounds": [
+        [
+          1170,
+          173,
+          24,
+          32
+        ]
+      ],
+      "eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              3,
+              5
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                9,
+                6,
+                3,
+                254
+              ],
+              "bounds": [
+                1170,
+                173,
+                24,
+                32
+              ],
+              "pixels": 768,
+              "truncated_contour": false,
+              "native_pixel": [
+                3,
+                5
+              ],
+              "source_sample_pixel": [
+                1174,
+                175
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f057/loessurge.overworld.imagegen-v3.png",
+      "crop": [
+        65,
+        529,
+        430,
+        462
+      ],
+      "actual_source_eye_bounds": [
+        [
+          194,
+          659,
+          24,
+          31
+        ],
+        [
+          265,
+          659,
+          24,
+          31
+        ]
+      ],
+      "eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              5,
+              5
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                3,
+                1,
+                0,
+                253
+              ],
+              "bounds": [
+                194,
+                659,
+                24,
+                31
+              ],
+              "pixels": 744,
+              "truncated_contour": false,
+              "native_pixel": [
+                5,
+                5
+              ],
+              "source_sample_pixel": [
+                211,
+                685
+              ]
+            }
+          ]
+        },
+        {
+          "native_cluster": [
+            [
+              7,
+              5
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                0,
+                0,
+                0,
+                253
+              ],
+              "bounds": [
+                265,
+                659,
+                24,
+                31
+              ],
+              "pixels": 744,
+              "truncated_contour": false,
+              "native_pixel": [
+                7,
+                5
+              ],
+              "source_sample_pixel": [
+                276,
+                685
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f057/loessurge.overworld.imagegen-v3.png",
+      "crop": [
+        1092,
+        516,
+        430,
+        462
+      ],
+      "actual_source_eye_bounds": [
+        [
+          1170,
+          668,
+          24,
+          31
+        ]
+      ],
+      "eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              3,
+              5
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                3,
+                2,
+                1,
+                253
+              ],
+              "bounds": [
+                1170,
+                668,
+                24,
+                31
+              ],
+              "pixels": 744,
+              "truncated_contour": false,
+              "native_pixel": [
+                3,
+                5
+              ],
+              "source_sample_pixel": [
+                1174,
+                672
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "old_native_poses_preserved_exactly": [],
+  "normal_shiny_runtime_parity": "all1536pixels exact each",
+  "canonical_palette_bytes": "exact",
+  "all_three_walk_pairs_distinct": true,
+  "rear_review": "both rear native poses viewed; no copied face",
+  "normal_shiny_native_boards_actually_viewed": true,
+  "accepted_coverage_native_pack_untouched": true,
+  "manifest_sha256": "352336b0aaf6f319a35b7b291b5cc48b9b2bcf990f3c054c0341a43c981cfc7f",
+  "compiled_index_sha256": "144e382edc30c29a3a3f8d016ba48489b998077e4b6fd6034f3f4b25c6af3336",
+  "front_coil_opening_proof": [
+    {
+      "pose": "down_idle",
+      "three_actual_coil_openings": [
+        {
+          "actual_source_coil_opening_bounds": [
+            220,
+            303,
+            45,
+            35
+          ],
+          "transparent_native_samples": [
+            {
+              "native": [
+                6,
+                9
+              ],
+              "source_sample": [
+                241,
+                310
+              ],
+              "source_alpha": 0
+            }
+          ]
+        },
+        {
+          "actual_source_coil_opening_bounds": [
+            170,
+            374,
+            48,
+            36
+          ],
+          "transparent_native_samples": [
+            {
+              "native": [
+                5,
+                12
+              ],
+              "source_sample": [
+                209,
+                406
+              ],
+              "source_alpha": 240
+            }
+          ]
+        },
+        {
+          "actual_source_coil_opening_bounds": [
+            299,
+            416,
+            42,
+            35
+          ],
+          "transparent_native_samples": [
+            {
+              "native": [
+                8,
+                13
+              ],
+              "source_sample": [
+                306,
+                438
+              ],
+              "source_alpha": 2
+            },
+            {
+              "native": [
+                9,
+                13
+              ],
+              "source_sample": [
+                338,
+                438
+              ],
+              "source_alpha": 68
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "three_actual_coil_openings": [
+        {
+          "actual_source_coil_opening_bounds": [
+            220,
+            799,
+            45,
+            36
+          ],
+          "transparent_native_samples": [
+            {
+              "native": [
+                6,
+                9
+              ],
+              "source_sample": [
+                243,
+                813
+              ],
+              "source_alpha": 0
+            }
+          ]
+        },
+        {
+          "actual_source_coil_opening_bounds": [
+            170,
+            870,
+            48,
+            39
+          ],
+          "transparent_native_samples": [
+            {
+              "native": [
+                5,
+                11
+              ],
+              "source_sample": [
+                211,
+                877
+              ],
+              "source_alpha": 244
+            }
+          ]
+        },
+        {
+          "actual_source_coil_opening_bounds": [
+            299,
+            913,
+            42,
+            34
+          ],
+          "transparent_native_samples": [
+            {
+              "native": [
+                8,
+                13
+              ],
+              "source_sample": [
+                308,
+                941
+              ],
+              "source_alpha": 0
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,86 @@
+{
+  "schema_version": 1,
+  "parent_pack_sha256": "92bb645535db23c78491b6982ddf5fa17b72b1f0434dfb6456a395fbf8fdbd33",
+  "actual_exteriors": 99,
+  "issues": [
+    {
+      "id": 1,
+      "label": "01 / R03 compressed city turn",
+      "world_bounds_metatiles": [
+        16,
+        32,
+        40,
+        38
+      ],
+      "status": "FROZEN_BOUNDED_SOURCE_CANDIDATE",
+      "source_contract": "planning/minnesota/connections/river-continuity-v01/source-v01/candidate.contract.json",
+      "native_changes": 51,
+      "event_moves": 1
+    },
+    {
+      "id": 2,
+      "label": "02 / phantom civic canal",
+      "world_bounds_metatiles": [
+        52,
+        9,
+        57,
+        27
+      ],
+      "status": "DETACHED_CANDIDATE_IN_PROGRESS",
+      "owner": "/root/bemidji_city",
+      "constraint": "Contained civic pond/canal, truthful sign, no Confluence join or atlas void fill; no Surf escape demonstrated."
+    },
+    {
+      "id": 3,
+      "label": "03 / old parallel channel",
+      "world_bounds_metatiles": [
+        35,
+        -56,
+        41,
+        0
+      ],
+      "status": "DETACHED_HAND_COMPOSITION_IN_PROGRESS",
+      "owner": "/root/brainerd_city",
+      "constraint": "Preserve required long quiet river distance, external seam/world positions, old bank/room/road promises and native gates."
+    },
+    {
+      "id": 4,
+      "label": "04 / repeated upper hairpin",
+      "world_bounds_metatiles": [
+        41,
+        -74,
+        105,
+        -6
+      ],
+      "status": "DETACHED_HAND_COMPOSITION_IN_PROGRESS",
+      "owner": "/root/brainerd_city",
+      "constraint": "Preserve required long quiet river distance, external seam/world positions, old bank/room/road promises and native gates."
+    },
+    {
+      "id": 5,
+      "label": "05 / repeated lower hairpin",
+      "world_bounds_metatiles": [
+        108,
+        -16,
+        172,
+        52
+      ],
+      "status": "DETACHED_HAND_COMPOSITION_IN_PROGRESS",
+      "owner": "/root/brainerd_city",
+      "constraint": "Preserve required long quiet river distance, external seam/world positions, old bank/room/road promises and native gates."
+    },
+    {
+      "id": 6,
+      "label": "06 / St Paul corner stem",
+      "world_bounds_metatiles": [
+        104,
+        20,
+        108,
+        40
+      ],
+      "status": "REVIEW_WITH_CITY_AND_LONG_REACH_CANDIDATES",
+      "owner": "/root/river_continuity",
+      "constraint": "Keep south and east real water ports; review complete river direction and width, not graph only."
+    }
+  ]
+}

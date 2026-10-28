@@ -32,7 +32,7 @@
           </div>
         </details>
         <div class="results-area">
-          <div class="results-heading"><p id="result-count" aria-live="polite">{{SPECIES_COUNT}} Pokémon indexed</p><label>ORDER <select id="sort-filter" aria-label="Pokédex order"><option value="number">Pokédex number ↑</option></select></label></div>
+          <div class="results-heading"><p id="result-count" aria-live="polite">{{SPECIES_COUNT}} Pokémon indexed</p>{{MOTION_CONTROL}}<label>ORDER <select id="sort-filter" aria-label="Pokédex order"><option value="number">Pokédex number ↑</option></select></label></div>
           <div class="species-grid" id="species-grid">{{CARDS}}</div>
           <div class="family-grid" id="family-grid" hidden>{{FAMILIES}}</div>
           <div id="empty-state" class="empty-state" hidden><span>⌕</span><h3>No matching Pokémon.</h3><p>Change your search or clear the filters.</p><button type="button" class="solid-button" data-reset>Clear filters</button></div>

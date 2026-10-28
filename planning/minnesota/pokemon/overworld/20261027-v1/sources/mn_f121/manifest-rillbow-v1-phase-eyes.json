@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F121",
+  "species": [
+    {
+      "species_id": "MN_259",
+      "runtime_token": "RILLBOW",
+      "palette_rgb555": [
+        32767,
+        26455,
+        15782,
+        0
+      ],
+      "shiny_palette_rgb555": [
+        32767,
+        27385,
+        13519,
+        0
+      ],
+      "fit": [
+        12,
+        12
+      ],
+      "alpha_threshold": 128,
+      "sampling": "source_center",
+      "minimum_foreground_samples": 16,
+      "black_priority_samples": 64,
+      "interior_black_samples": 64,
+      "opaque_interior_minimum_samples": 64,
+      "frames": [
+        {
+          "pose": "down_idle",
+          "source": "rillbow.overworld.imagegen-v1.png",
+          "crop": [
+            70,
+            70,
+            420,
+            400
+          ]
+        },
+        {
+          "pose": "up_idle",
+          "source": "rillbow.overworld.imagegen-v1.png",
+          "crop": [
+            600,
+            70,
+            420,
+            400
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "source": "rillbow.overworld.imagegen-v1.png",
+          "crop": [
+            1050,
+            113,
+            420,
+            400
+          ]
+        },
+        {
+          "pose": "down_step",
+          "source": "rillbow.overworld.imagegen-v1.png",
+          "crop": [
+            70,
+            550,
+            420,
+            400
+          ]
+        },
+        {
+          "pose": "up_step",
+          "source": "rillbow.overworld.imagegen-v1.png",
+          "crop": [
+            600,
+            542,
+            420,
+            400
+          ]
+        },
+        {
+          "pose": "left_step",
+          "source": "rillbow.overworld.imagegen-v1.png",
+          "crop": [
+            1050,
+            593,
+            420,
+            400
+          ]
+        }
+      ]
+    }
+  ]
+}

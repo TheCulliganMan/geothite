@@ -1,0 +1,88 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F125",
+  "species_id": "MN_274",
+  "name": "Kindlit",
+  "status": "native_candidate_compiled_root_visual_review_pending",
+  "generation_tool": "built-in image_gen",
+  "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f125/kindlit.overworld.imagegen-v2.png",
+  "source_sha256": "20a43009a1f1cc5353604f5d58f59ba0a7c5ee6aa2d81c1e0a8202b51aef54db",
+  "original_default_output": "/Users/ryanculligan/.codex/generated_images/01a17dc4-dd75-7642-a1c6-4bf13fda70c6/exec-a8bb21c5-f6c6-4409-bc9f-02d2f200c88a.png",
+  "dimensions": [
+    1536,
+    1024
+  ],
+  "prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f125/prompt-kindlit-v2.txt",
+  "only_input_image": "planning/minnesota/pokemon/overworld/20261027-v1/references/native-pack-16px/native-six-frame-style-board.8x.png",
+  "identity_source": "coverage.json exact current species textual design",
+  "sheet_columns": 3,
+  "sheet_rows": 2,
+  "frame_order": [
+    "down_idle",
+    "up_idle",
+    "left_idle",
+    "down_step",
+    "up_step",
+    "left_step"
+  ],
+  "proposed_native_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f125/manifest-kindlit-v2-center.json",
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f125/kindlit-v2-center",
+  "normal_review": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f125/kindlit-v2-center/review/line.normal-8x.png",
+  "native_frame_size": [
+    16,
+    16
+  ],
+  "native_bounds": [
+    [
+      3,
+      4,
+      10,
+      11
+    ],
+    [
+      3,
+      4,
+      10,
+      11
+    ],
+    [
+      1,
+      4,
+      14,
+      11
+    ],
+    [
+      3,
+      4,
+      10,
+      11
+    ],
+    [
+      3,
+      4,
+      10,
+      11
+    ],
+    [
+      1,
+      4,
+      14,
+      11
+    ]
+  ],
+  "palette_rgb555": [
+    32767,
+    12989,
+    8424,
+    0
+  ],
+  "shiny_palette_rgb555": [
+    32767,
+    31468,
+    15593,
+    0
+  ],
+  "alpha_policy": "index0 transparent everywhere;3opaqueinks",
+  "conversion": "Rust compile_minnesota_overworld; source_center; equal-sized per-species crops, shared scale and bottomanchor; source crop registration only, no painted native pixels",
+  "review_observation": "All6poses nativecompiled; southidle and southstep each retain2separatedblackeyes. Borealynx eyes1x2pixels; Kindlit andRimepelt small doteyes. Purewestprofilequadrupedal; northbacksplain. Samepaletteandscaleall6. Rootmustinspectactualnatives before acceptance; no globalqueue orpack modified."
+}

@@ -793,6 +793,39 @@
         7
       ],
       "block": "26"
+    },
+    {
+      "kind": "block_rect",
+      "name": "Elm tongue bends the east promenade toward the picnic gate",
+      "bounds": [
+        22,
+        8,
+        23,
+        10
+      ],
+      "block": "00"
+    },
+    {
+      "kind": "block_rect",
+      "name": "Bridge landing southern grove closes the spare lawn shoulder",
+      "bounds": [
+        18,
+        10,
+        20,
+        11
+      ],
+      "block": "00"
+    },
+    {
+      "kind": "block_rect",
+      "name": "Eastern gate southern grove closes the spare lawn shoulder",
+      "bounds": [
+        25,
+        10,
+        27,
+        11
+      ],
+      "block": "00"
     }
   ],
   "source_pixels_modified": false,

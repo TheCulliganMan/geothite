@@ -1,0 +1,222 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F130",
+  "species_id": "MN_288",
+  "name": "Slidewake",
+  "status": "native_compiled_author_inspected_root_world_context_review_pending",
+  "generation_tool": "built-in image_gen",
+  "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f130/slidewake.overworld.imagegen-v1.png",
+  "source_sha256": "be152823141f442d24f1a28076b0c1da0ad1f60b0cc437ef3413eda67c198a79",
+  "original_default_output": "/Users/ryanculligan/.codex/generated_images/01a179bf-dc2b-7352-8975-8b8f3a32e33b/exec-672970ed-b1e7-4ab0-9227-389953536f24.png",
+  "dimensions": [
+    1536,
+    1024
+  ],
+  "prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f130/prompt-slidewake-v1.txt",
+  "prompt_sha256": "c0ca665580cf2aac25f07990f38ca70418428a2b43c6439f353fbc7e04f92c5e",
+  "reference_mapping": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f130/reference-mapping-slidewake-v1.json",
+  "proposed_native_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f130/manifest-slidewake-v1-pupil-proof.json",
+  "manifest_sha256": "34f7fcde3347287b244666f45869cfb5f579f3afbe3c47ed40a08ab925802ce9",
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f130/slidewake-v1-pupil-proof",
+  "normal_review": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f130/slidewake-v1-pupil-proof/review/line.normal-8x.png",
+  "review_sha256": "456f6013f321752d4922cd4be2be6c9271588257f0bc6c27b94f74ac8e6cb2f0",
+  "palette_rgb555": [
+    32767,
+    13973,
+    13670,
+    0
+  ],
+  "shiny_palette_rgb555": [
+    32767,
+    21165,
+    11469,
+    0
+  ],
+  "native_bounds": [
+    [
+      1,
+      3,
+      10,
+      12
+    ],
+    [
+      3,
+      4,
+      9,
+      11
+    ],
+    [
+      1,
+      4,
+      14,
+      10
+    ],
+    [
+      1,
+      3,
+      9,
+      12
+    ],
+    [
+      3,
+      4,
+      9,
+      11
+    ],
+    [
+      2,
+      4,
+      13,
+      10
+    ]
+  ],
+  "pupil_proof": [
+    {
+      "pose": "down_idle",
+      "source_proven_face_pupils": [
+        [
+          4,
+          12
+        ],
+        [
+          6,
+          12
+        ]
+      ],
+      "source_eye_boxes": [
+        [
+          194,
+          398,
+          210,
+          423
+        ],
+        [
+          256,
+          398,
+          273,
+          423
+        ]
+      ],
+      "bounds": [
+        1,
+        3,
+        10,
+        12
+      ]
+    },
+    {
+      "pose": "up_idle",
+      "source_proven_face_pupils": [],
+      "source_eye_boxes": [],
+      "bounds": [
+        3,
+        4,
+        9,
+        11
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "source_proven_face_pupils": [
+        [
+          3,
+          10
+        ]
+      ],
+      "source_eye_boxes": [
+        [
+          1085,
+          362,
+          1107,
+          387
+        ]
+      ],
+      "bounds": [
+        1,
+        4,
+        14,
+        10
+      ]
+    },
+    {
+      "pose": "down_step",
+      "source_proven_face_pupils": [
+        [
+          4,
+          12
+        ],
+        [
+          6,
+          12
+        ]
+      ],
+      "source_eye_boxes": [
+        [
+          193,
+          875,
+          209,
+          899
+        ],
+        [
+          255,
+          875,
+          272,
+          899
+        ]
+      ],
+      "bounds": [
+        1,
+        3,
+        9,
+        12
+      ]
+    },
+    {
+      "pose": "up_step",
+      "source_proven_face_pupils": [],
+      "source_eye_boxes": [],
+      "bounds": [
+        3,
+        4,
+        9,
+        11
+      ]
+    },
+    {
+      "pose": "left_step",
+      "source_proven_face_pupils": [
+        [
+          3,
+          10
+        ]
+      ],
+      "source_eye_boxes": [
+        [
+          1083,
+          834,
+          1103,
+          859
+        ]
+      ],
+      "bounds": [
+        2,
+        4,
+        13,
+        10
+      ]
+    }
+  ],
+  "validation_results": {
+    "six_frames_16x16": true,
+    "runtime_png_16x96": true,
+    "native_2bpp_bytes": 384,
+    "tile_decode_matches_png_and_indexed_rows": true,
+    "binary_alpha": true,
+    "transparent_border": true,
+    "three_opaque_inks_only": true,
+    "normal_shiny_palette_words_exact": true,
+    "idle_step_pairs_different": true
+  },
+  "notes": "Actual native inspected: long low teal otter, broad shoulder planes, four paw tips, giant thick looping rudder tail with clear transparent hole. Broad tan muzzle south two isolated dots/west one dot, source-rectangle proven and stable across paired walks. Genuine plain north, source shoulder folds did not become false eyes. Tail and paw outline flex slightly but head pupils stay anchored; adult wider and heavier than Rivvit. Equal510x450 source-only crop registration/common native14 transform, no painting.",
+  "accepted": false
+}

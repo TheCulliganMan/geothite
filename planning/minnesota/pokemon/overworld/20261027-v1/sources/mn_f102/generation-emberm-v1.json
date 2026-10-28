@@ -1,0 +1,7 @@
+{
+  "tool": "built-in imagegen",
+  "default_path": "/Users/ryanculligan/.codex/generated_images/01a178da-4cf1-7e01-8516-667a332dc790/exec-0adec62a-709a-40c6-b1f6-17ce08419b7f.png",
+  "workspace_path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f102/emberm.overworld.imagegen-v1.png",
+  "sha256": "5353cbd85f72542505b091a08b27cd2c66c49fe7b57fa079c6557a95b62bce3e",
+  "prompt": "prompt-emberm-v1.txt"
+}

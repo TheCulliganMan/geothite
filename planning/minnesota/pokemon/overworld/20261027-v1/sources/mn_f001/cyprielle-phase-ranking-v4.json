@@ -1,0 +1,716 @@
+[
+  {
+    "score": 212,
+    "eyes": [
+      [
+        [
+          6,
+          5
+        ],
+        [
+          9,
+          5
+        ]
+      ],
+      [
+        [
+          4,
+          5
+        ],
+        [
+          11,
+          5
+        ],
+        [
+          6,
+          6
+        ],
+        [
+          9,
+          6
+        ]
+      ]
+    ],
+    "dx": 0,
+    "dy": 0,
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/cyprielle-v4-phase-x0-y0.json",
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/cyprielle-candidate-v4-phase-x0-y0"
+  },
+  {
+    "score": 210,
+    "eyes": [
+      [
+        [
+          11,
+          5
+        ],
+        [
+          6,
+          6
+        ],
+        [
+          9,
+          6
+        ]
+      ],
+      [
+        [
+          6,
+          6
+        ],
+        [
+          9,
+          6
+        ]
+      ]
+    ],
+    "dx": -8,
+    "dy": -4,
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/cyprielle-v4-phase-x-8-y-4.json",
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/cyprielle-candidate-v4-phase-x-8-y-4"
+  },
+  {
+    "score": 210,
+    "eyes": [
+      [
+        [
+          11,
+          5
+        ],
+        [
+          6,
+          6
+        ],
+        [
+          9,
+          6
+        ]
+      ],
+      [
+        [
+          6,
+          6
+        ],
+        [
+          9,
+          6
+        ]
+      ]
+    ],
+    "dx": -8,
+    "dy": 0,
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/cyprielle-v4-phase-x-8-y0.json",
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/cyprielle-candidate-v4-phase-x-8-y0"
+  },
+  {
+    "score": 210,
+    "eyes": [
+      [
+        [
+          11,
+          5
+        ],
+        [
+          6,
+          6
+        ],
+        [
+          9,
+          6
+        ]
+      ],
+      [
+        [
+          6,
+          6
+        ],
+        [
+          9,
+          6
+        ]
+      ]
+    ],
+    "dx": -8,
+    "dy": 4,
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/cyprielle-v4-phase-x-8-y4.json",
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/cyprielle-candidate-v4-phase-x-8-y4"
+  },
+  {
+    "score": 210,
+    "eyes": [
+      [
+        [
+          11,
+          5
+        ],
+        [
+          6,
+          6
+        ],
+        [
+          9,
+          6
+        ]
+      ],
+      [
+        [
+          6,
+          6
+        ],
+        [
+          9,
+          6
+        ]
+      ]
+    ],
+    "dx": -8,
+    "dy": 8,
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/cyprielle-v4-phase-x-8-y8.json",
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/cyprielle-candidate-v4-phase-x-8-y8"
+  },
+  {
+    "score": 210,
+    "eyes": [
+      [
+        [
+          11,
+          5
+        ],
+        [
+          6,
+          6
+        ],
+        [
+          9,
+          6
+        ]
+      ],
+      [
+        [
+          6,
+          6
+        ],
+        [
+          9,
+          6
+        ]
+      ]
+    ],
+    "dx": -4,
+    "dy": 0,
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/cyprielle-v4-phase-x-4-y0.json",
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/cyprielle-candidate-v4-phase-x-4-y0"
+  },
+  {
+    "score": 210,
+    "eyes": [
+      [
+        [
+          11,
+          5
+        ],
+        [
+          6,
+          6
+        ],
+        [
+          9,
+          6
+        ]
+      ],
+      [
+        [
+          6,
+          6
+        ],
+        [
+          9,
+          6
+        ]
+      ]
+    ],
+    "dx": -4,
+    "dy": 4,
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/cyprielle-v4-phase-x-4-y4.json",
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/cyprielle-candidate-v4-phase-x-4-y4"
+  },
+  {
+    "score": 210,
+    "eyes": [
+      [
+        [
+          4,
+          5
+        ],
+        [
+          6,
+          6
+        ],
+        [
+          9,
+          6
+        ]
+      ],
+      [
+        [
+          6,
+          6
+        ],
+        [
+          9,
+          6
+        ]
+      ]
+    ],
+    "dx": 4,
+    "dy": 0,
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/cyprielle-v4-phase-x4-y0.json",
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/cyprielle-candidate-v4-phase-x4-y0"
+  },
+  {
+    "score": 210,
+    "eyes": [
+      [
+        [
+          4,
+          5
+        ],
+        [
+          6,
+          6
+        ],
+        [
+          9,
+          6
+        ]
+      ],
+      [
+        [
+          6,
+          6
+        ],
+        [
+          9,
+          6
+        ]
+      ]
+    ],
+    "dx": 8,
+    "dy": -4,
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/cyprielle-v4-phase-x8-y-4.json",
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/cyprielle-candidate-v4-phase-x8-y-4"
+  },
+  {
+    "score": 210,
+    "eyes": [
+      [
+        [
+          4,
+          5
+        ],
+        [
+          6,
+          6
+        ],
+        [
+          9,
+          6
+        ]
+      ],
+      [
+        [
+          6,
+          6
+        ],
+        [
+          9,
+          6
+        ]
+      ]
+    ],
+    "dx": 8,
+    "dy": 0,
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/cyprielle-v4-phase-x8-y0.json",
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/cyprielle-candidate-v4-phase-x8-y0"
+  },
+  {
+    "score": 210,
+    "eyes": [
+      [
+        [
+          4,
+          5
+        ],
+        [
+          6,
+          6
+        ],
+        [
+          9,
+          6
+        ]
+      ],
+      [
+        [
+          6,
+          6
+        ],
+        [
+          9,
+          6
+        ]
+      ]
+    ],
+    "dx": 8,
+    "dy": 4,
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/cyprielle-v4-phase-x8-y4.json",
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/cyprielle-candidate-v4-phase-x8-y4"
+  },
+  {
+    "score": 110,
+    "eyes": [
+      [
+        [
+          8,
+          5
+        ]
+      ],
+      [
+        [
+          4,
+          5
+        ],
+        [
+          10,
+          5
+        ],
+        [
+          5,
+          6
+        ],
+        [
+          8,
+          6
+        ]
+      ]
+    ],
+    "dx": 8,
+    "dy": -8,
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/cyprielle-v4-phase-x8-y-8.json",
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/cyprielle-candidate-v4-phase-x8-y-8"
+  },
+  {
+    "score": 106,
+    "eyes": [
+      [
+        [
+          6,
+          5
+        ],
+        [
+          9,
+          5
+        ]
+      ],
+      [
+        [
+          4,
+          5
+        ]
+      ]
+    ],
+    "dx": 4,
+    "dy": 4,
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/cyprielle-v4-phase-x4-y4.json",
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/cyprielle-candidate-v4-phase-x4-y4"
+  },
+  {
+    "score": 106,
+    "eyes": [
+      [
+        [
+          4,
+          4
+        ],
+        [
+          6,
+          5
+        ],
+        [
+          9,
+          5
+        ]
+      ],
+      []
+    ],
+    "dx": 8,
+    "dy": 8,
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/cyprielle-v4-phase-x8-y8.json",
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/cyprielle-candidate-v4-phase-x8-y8"
+  },
+  {
+    "score": 8,
+    "eyes": [
+      [
+        [
+          6,
+          5
+        ]
+      ],
+      [
+        [
+          4,
+          5
+        ],
+        [
+          10,
+          5
+        ],
+        [
+          9,
+          6
+        ]
+      ]
+    ],
+    "dx": -8,
+    "dy": -8,
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/cyprielle-v4-phase-x-8-y-8.json",
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/cyprielle-candidate-v4-phase-x-8-y-8"
+  },
+  {
+    "score": 8,
+    "eyes": [
+      [
+        [
+          8,
+          5
+        ]
+      ],
+      [
+        [
+          4,
+          5
+        ],
+        [
+          10,
+          5
+        ],
+        [
+          5,
+          6
+        ]
+      ]
+    ],
+    "dx": 4,
+    "dy": -8,
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/cyprielle-v4-phase-x4-y-8.json",
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/cyprielle-candidate-v4-phase-x4-y-8"
+  },
+  {
+    "score": 8,
+    "eyes": [
+      [
+        [
+          8,
+          5
+        ]
+      ],
+      [
+        [
+          4,
+          5
+        ],
+        [
+          10,
+          5
+        ],
+        [
+          5,
+          6
+        ]
+      ]
+    ],
+    "dx": 4,
+    "dy": -4,
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/cyprielle-v4-phase-x4-y-4.json",
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/cyprielle-candidate-v4-phase-x4-y-4"
+  },
+  {
+    "score": 6,
+    "eyes": [
+      [
+        [
+          6,
+          5
+        ]
+      ],
+      [
+        [
+          4,
+          5
+        ],
+        [
+          10,
+          5
+        ]
+      ]
+    ],
+    "dx": -4,
+    "dy": -8,
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/cyprielle-v4-phase-x-4-y-8.json",
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/cyprielle-candidate-v4-phase-x-4-y-8"
+  },
+  {
+    "score": 6,
+    "eyes": [
+      [
+        [
+          6,
+          5
+        ]
+      ],
+      [
+        [
+          4,
+          5
+        ],
+        [
+          10,
+          5
+        ]
+      ]
+    ],
+    "dx": -4,
+    "dy": -4,
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/cyprielle-v4-phase-x-4-y-4.json",
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/cyprielle-candidate-v4-phase-x-4-y-4"
+  },
+  {
+    "score": 6,
+    "eyes": [
+      [
+        [
+          4,
+          4
+        ],
+        [
+          10,
+          4
+        ],
+        [
+          6,
+          5
+        ]
+      ],
+      []
+    ],
+    "dx": -4,
+    "dy": 8,
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/cyprielle-v4-phase-x-4-y8.json",
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/cyprielle-candidate-v4-phase-x-4-y8"
+  },
+  {
+    "score": 6,
+    "eyes": [
+      [
+        [
+          4,
+          4
+        ],
+        [
+          10,
+          4
+        ],
+        [
+          8,
+          5
+        ]
+      ],
+      []
+    ],
+    "dx": 4,
+    "dy": 8,
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/cyprielle-v4-phase-x4-y8.json",
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/cyprielle-candidate-v4-phase-x4-y8"
+  },
+  {
+    "score": 4,
+    "eyes": [
+      [],
+      [
+        [
+          4,
+          5
+        ],
+        [
+          10,
+          5
+        ]
+      ]
+    ],
+    "dx": 0,
+    "dy": -8,
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/cyprielle-v4-phase-x0-y-8.json",
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/cyprielle-candidate-v4-phase-x0-y-8"
+  },
+  {
+    "score": 4,
+    "eyes": [
+      [],
+      [
+        [
+          4,
+          5
+        ],
+        [
+          10,
+          5
+        ]
+      ]
+    ],
+    "dx": 0,
+    "dy": -4,
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/cyprielle-v4-phase-x0-y-4.json",
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/cyprielle-candidate-v4-phase-x0-y-4"
+  },
+  {
+    "score": 4,
+    "eyes": [
+      [],
+      [
+        [
+          4,
+          5
+        ],
+        [
+          10,
+          5
+        ]
+      ]
+    ],
+    "dx": 0,
+    "dy": 4,
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/cyprielle-v4-phase-x0-y4.json",
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/cyprielle-candidate-v4-phase-x0-y4"
+  },
+  {
+    "score": 4,
+    "eyes": [
+      [
+        [
+          4,
+          4
+        ],
+        [
+          10,
+          4
+        ]
+      ],
+      []
+    ],
+    "dx": 0,
+    "dy": 8,
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/cyprielle-v4-phase-x0-y8.json",
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/cyprielle-candidate-v4-phase-x0-y8"
+  }
+]

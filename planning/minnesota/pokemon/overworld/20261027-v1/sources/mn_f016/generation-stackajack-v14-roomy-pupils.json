@@ -1,0 +1,80 @@
+{
+  "tool": "built-in image_gen",
+  "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f016/stackajack-v14-roomy-pupils",
+  "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f016/manifest-stackajack-v14-roomy-pupils.json",
+  "normalized_receipt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f016/source-feature-proof-stackajack-v14-roomy-pupils.json",
+  "all_raws_prompts_rejected_trials_retained": true,
+  "no_native_pixel_painting": true,
+  "no_registry_or_pack_mutation": true,
+  "normal_shiny_boards_actually_viewed": true,
+  "canonical_palettes": [
+    [
+      32767,
+      8927,
+      4336,
+      0
+    ],
+    [
+      32767,
+      23528,
+      7684,
+      0
+    ]
+  ],
+  "native_bounds": [
+    [
+      2,
+      5,
+      13,
+      10
+    ],
+    [
+      1,
+      5,
+      13,
+      10
+    ],
+    [
+      4,
+      5,
+      10,
+      10
+    ],
+    [
+      2,
+      5,
+      13,
+      10
+    ],
+    [
+      1,
+      5,
+      14,
+      10
+    ],
+    [
+      4,
+      5,
+      10,
+      10
+    ]
+  ],
+  "retained_source_hashes": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f016/stackajack.overworld.imagegen-v1.png": "cb76342d40914ecac1f83430eb7a072bcf8b0226250e2ccfeeb50cbb2118f90a",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f016/stackajack.overworld.imagegen-v5-isolated-profiles.png": "7daf17dc93c70b5ec89170a98331fe10f305dc17f3cf10951443452cda2e8c18",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f016/stackajack.overworld.imagegen-v2-pupils.png": "8b731da4253df12acb0bd1c6d5ea79cc002dc1bbfad417c8895ee08afb877b08",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f016/stackajack.overworld.imagegen-v3-restore-ink.png": "48e5bce8fea67cc6e4703555f8ca1dcbf97ea429923bae9476a73f766e7db7a6",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f016/stackajack.overworld.imagegen-v4-coarse-outline.png": "189c4d4ad15dc906cc053fe1129fa5c9a423ca592de5f19db62db5f49de66886",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f016/prompt-stackajack-v3-restore-ink.txt": "faa17700cb3abcf6687341db7523ae72dfb11fa962a533cde21139acdc6f2261",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f016/prompt-stackajack-v4-coarse-outline.txt": "dd342e5589b500cbeb1c02ebf419fbe320400683bab4679284f7e09825201653",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f016/prompt-stackajack-v1.txt": "2185d0c1792062fb773ffffe2e98452d9ec9ceab28f524a3bef3957ea27e3fe3",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f016/prompt-stackajack-v2-pupils.txt": "3676e7202f345e1bf466a7a336c7813c2225d437f1122e1bd0ee390f65996392",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f016/prompt-stackajack-v5-isolated-profiles.txt": "721a36cadc456231c77bec4515c2b946d01001cea58aa4704586a1f849758e49",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f016/stackajack.v1.original-path.txt": "1b425e083b4f99160bc9562b6f6418e1fd9057ba1d02da19c4707ba98a1b2c4c",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f016/stackajack.v5-isolated-profiles.original-path.txt": "acf2c4d124151d6cc7cd5dcb03ccb6cb548fe2fa768a2286932d4a44afe0f293",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f016/stackajack.v4-coarse-outline.original-path.txt": "b82a209e6ac3e4705a2e83e1f68a5d4360ef064225e3483b4dffc174d2bba2fc",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f016/stackajack.v3-restore-ink.original-path.txt": "a46ff766362c3185a003c0a076b9fb6cede6726d7a13381d532f8caca1ae8fba",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f016/stackajack.v2-pupils.original-path.txt": "d0ab5e2f2daf014045219aa967ac7c2d83817388c417741e2df4a5137e88cad8"
+  },
+  "status": "root independent visual/context acceptance pending"
+}

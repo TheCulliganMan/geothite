@@ -1101,6 +1101,366 @@
         23
       ],
       "block": "61"
+    },
+    {
+      "kind": "point",
+      "name": "Northern canopy meets original arrival roof",
+      "position": [
+        26,
+        5
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Northern canopy meets original arrival roof",
+      "position": [
+        27,
+        5
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Northern canopy meets original arrival roof",
+      "position": [
+        28,
+        5
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Northern canopy meets original arrival roof",
+      "position": [
+        29,
+        5
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Northern canopy meets original arrival roof",
+      "position": [
+        30,
+        5
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Attached pine headland at the original straight descent",
+      "position": [
+        24,
+        6
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Attached pine headland at the original straight descent",
+      "position": [
+        24,
+        7
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Attached pine headland at the original straight descent",
+      "position": [
+        25,
+        7
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Two-core north-west pine observation approach",
+      "position": [
+        25,
+        5
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Two-core north-west pine observation approach",
+      "position": [
+        24,
+        5
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Two-core north-west pine observation approach",
+      "position": [
+        23,
+        5
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Two-core north-west pine observation approach",
+      "position": [
+        23,
+        6
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Two-core north-west pine observation approach",
+      "position": [
+        23,
+        7
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Two-core north-west pine observation approach",
+      "position": [
+        23,
+        8
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Pines attach the long eastern lawn shoulder",
+      "position": [
+        25,
+        8
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Pines attach the long eastern lawn shoulder",
+      "position": [
+        25,
+        9
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Pines attach the long eastern lawn shoulder",
+      "position": [
+        25,
+        10
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Pines attach the long eastern lawn shoulder",
+      "position": [
+        25,
+        11
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Pines attach the long eastern lawn shoulder",
+      "position": [
+        25,
+        12
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Pines attach the long eastern lawn shoulder",
+      "position": [
+        25,
+        13
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Pines attach the long eastern lawn shoulder",
+      "position": [
+        25,
+        14
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Grassy return against the western oak field edge",
+      "position": [
+        15,
+        15
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Grassy return against the western oak field edge",
+      "position": [
+        15,
+        16
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Grassy return against the western oak field edge",
+      "position": [
+        15,
+        17
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Upper grass return meets the existing oak track",
+      "position": [
+        16,
+        15
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Fitted western lip shoulder with solid lower course",
+      "position": [
+        16,
+        16
+      ],
+      "block": "72"
+    },
+    {
+      "kind": "point",
+      "name": "Short native oak-edge downhop face",
+      "position": [
+        17,
+        16
+      ],
+      "block": "56"
+    },
+    {
+      "kind": "point",
+      "name": "Fitted eastern lip shoulder against the original oak grove",
+      "position": [
+        18,
+        16
+      ],
+      "block": "72"
+    },
+    {
+      "kind": "point",
+      "name": "Lower return shoulder under the short rock face",
+      "position": [
+        16,
+        17
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Oak margin meets the lower turning road",
+      "position": [
+        18,
+        18
+      ],
+      "block": "61"
+    },
+    {
+      "kind": "point",
+      "name": "Fenced habitat shoulder beside original watch pocket",
+      "position": [
+        22,
+        11
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Fenced habitat shoulder beside original watch pocket",
+      "position": [
+        23,
+        11
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Eastern fenced habitat meets existing pine forest",
+      "position": [
+        22,
+        10
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Eastern fenced habitat meets existing pine forest",
+      "position": [
+        23,
+        10
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Northern pine canopy meets the route board nook",
+      "position": [
+        17,
+        9
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Northern pine canopy meets the route board nook",
+      "position": [
+        18,
+        9
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Northern pine canopy meets the route board nook",
+      "position": [
+        19,
+        9
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Attached western oak shoulder defines two-core main lane",
+      "position": [
+        16,
+        10
+      ],
+      "block": "61"
+    },
+    {
+      "kind": "point",
+      "name": "Attached western oak shoulder defines two-core main lane",
+      "position": [
+        16,
+        11
+      ],
+      "block": "61"
+    },
+    {
+      "kind": "point",
+      "name": "Attached western oak shoulder defines two-core main lane",
+      "position": [
+        16,
+        12
+      ],
+      "block": "61"
     }
   ]
 }

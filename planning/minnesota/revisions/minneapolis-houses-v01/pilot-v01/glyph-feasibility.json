@@ -1,0 +1,193 @@
+{
+  "status": "SOURCE_GLYPH_FEASIBILITY_NOT_NATIVE_PUBLICATION",
+  "new_glyphs_needed": 18,
+  "new_logical_glyph_candidates": [
+    "e0",
+    "e1",
+    "e2",
+    "e3",
+    "e4",
+    "e5",
+    "e6",
+    "e7",
+    "e8",
+    "e9",
+    "ea",
+    "eb",
+    "ec",
+    "ed",
+    "ee",
+    "ef",
+    "f0",
+    "f1"
+  ],
+  "old_alias_glyphs_reused": [
+    "00",
+    "06",
+    "84",
+    "8b",
+    "8c",
+    "8d",
+    "8e",
+    "90",
+    "91",
+    "92",
+    "9f",
+    "a0",
+    "a1",
+    "a2",
+    "a3"
+  ],
+  "new_glyph_sources": [
+    {
+      "tileset": "kanto",
+      "block": "0c",
+      "glyph": [
+        0,
+        0
+      ]
+    },
+    {
+      "tileset": "kanto",
+      "block": "0c",
+      "glyph": [
+        1,
+        0
+      ]
+    },
+    {
+      "tileset": "kanto",
+      "block": "0c",
+      "glyph": [
+        2,
+        0
+      ]
+    },
+    {
+      "tileset": "kanto",
+      "block": "0c",
+      "glyph": [
+        0,
+        1
+      ]
+    },
+    {
+      "tileset": "kanto",
+      "block": "0c",
+      "glyph": [
+        1,
+        1
+      ]
+    },
+    {
+      "tileset": "kanto",
+      "block": "0c",
+      "glyph": [
+        2,
+        1
+      ]
+    },
+    {
+      "tileset": "kanto",
+      "block": "0c",
+      "glyph": [
+        1,
+        3
+      ]
+    },
+    {
+      "tileset": "kanto",
+      "block": "0c",
+      "glyph": [
+        2,
+        3
+      ]
+    },
+    {
+      "tileset": "kanto",
+      "block": "0e",
+      "glyph": [
+        2,
+        0
+      ]
+    },
+    {
+      "tileset": "kanto",
+      "block": "0e",
+      "glyph": [
+        3,
+        0
+      ]
+    },
+    {
+      "tileset": "kanto",
+      "block": "0e",
+      "glyph": [
+        3,
+        1
+      ]
+    },
+    {
+      "tileset": "kanto",
+      "block": "0e",
+      "glyph": [
+        2,
+        3
+      ]
+    },
+    {
+      "tileset": "kanto",
+      "block": "38",
+      "glyph": [
+        2,
+        2
+      ]
+    },
+    {
+      "tileset": "kanto",
+      "block": "3c",
+      "glyph": [
+        0,
+        0
+      ]
+    },
+    {
+      "tileset": "kanto",
+      "block": "3c",
+      "glyph": [
+        1,
+        0
+      ]
+    },
+    {
+      "tileset": "kanto",
+      "block": "3c",
+      "glyph": [
+        3,
+        0
+      ]
+    },
+    {
+      "tileset": "kanto",
+      "block": "3d",
+      "glyph": [
+        2,
+        0
+      ]
+    },
+    {
+      "tileset": "kanto",
+      "block": "3d",
+      "glyph": [
+        3,
+        0
+      ]
+    }
+  ],
+  "exact_four_bank_rgb_deduplication": true,
+  "old_metatile_count": 157,
+  "requested_new_metatile_count": 7,
+  "old_alias_sheet_glyph_count": 192,
+  "old_palette_map_count": 224,
+  "warning": "192-to-256 physical sheet expansion changes native bank resolution; publisher must prove every old logical glyph and all old metatile pixels in all four banks unchanged. Never simply resize/pad PNG."
+}

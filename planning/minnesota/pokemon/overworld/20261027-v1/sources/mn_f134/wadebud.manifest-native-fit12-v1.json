@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F134",
+  "species": [
+    {
+      "species_id": "MN_295",
+      "runtime_token": "WADEBUD",
+      "palette_rgb555": [
+        32767,
+        17146,
+        9770,
+        0
+      ],
+      "shiny_palette_rgb555": [
+        32767,
+        25144,
+        22985,
+        0
+      ],
+      "fit": [
+        12,
+        12
+      ],
+      "alpha_threshold": 245,
+      "sampling": "source_center",
+      "minimum_foreground_samples": 16,
+      "black_priority_samples": 32,
+      "interior_black_samples": null,
+      "opaque_interior_minimum_samples": 60,
+      "frames": [
+        {
+          "pose": "down_idle",
+          "source": "wadebud.overworld.imagegen-v1.png",
+          "crop": [
+            66,
+            75,
+            419,
+            427
+          ]
+        },
+        {
+          "pose": "up_idle",
+          "source": "wadebud.overworld.imagegen-v1.png",
+          "crop": [
+            559,
+            75,
+            419,
+            427
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "source": "wadebud.overworld.imagegen-v1.png",
+          "crop": [
+            1062,
+            76,
+            419,
+            427
+          ]
+        },
+        {
+          "pose": "down_step",
+          "source": "wadebud.overworld.imagegen-v1.png",
+          "crop": [
+            65,
+            533,
+            419,
+            427
+          ]
+        },
+        {
+          "pose": "up_step",
+          "source": "wadebud.overworld.imagegen-v1.png",
+          "crop": [
+            559,
+            546,
+            419,
+            427
+          ]
+        },
+        {
+          "pose": "left_step",
+          "source": "wadebud.overworld.imagegen-v1.png",
+          "crop": [
+            1065,
+            545,
+            419,
+            427
+          ]
+        }
+      ]
+    }
+  ]
+}

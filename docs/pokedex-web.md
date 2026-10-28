@@ -1,7 +1,389 @@
 # Northwoods Pokédex web app
 
+## Current State Fair showcase
+
+Release **`20261027-state-fair-21`** is live. The new
+[State Fair tab](https://geothite.ryanculligan.com/pokedex/state-fair.html) appears
+beside Moves across the index, move catalog and every species page. It provides
+a **48-second click-to-play movie**, five scene buttons, native fullscreen video
+controls, replay, failure feedback and the complete 1536×1152 map. Nothing
+autoplays or requests movie bytes until the user presses Play or a scene button.
+Mobile navigation retains both Moves and State Fair, and the fitted player is
+brought into view after a playback gesture.
+
+The movie opens with the entire fair, then shows ten seconds each of food row,
+midway, picnic traffic and garden laps, and closes on the overview. The four
+close-ups are actual offscreen production Bevy captures from
+`minnesota-state-fair-foods-v2.crystalpack`, at noon. The fair has 85 outdoor NPCs,
+32 shops, 22 trainers and four authored patrols. The complete map is the retained
+native `foods-source-v1/whole.native.png`, identical to the reviewed foods-v2
+terrain and crowd art. Preview coordinates and a neutral B input are disposable
+capture fixtures; this video makes no earned campaign-access claim.
+
+The rebuilt Rust recorder produced 98/62/132/153 timestamped frames, with
+25/28/75/67 distinct images across the four scenes. The installed FFmpeg encoder
+uses those actual timestamps, trims each scene to 10 seconds, scales the 640×576
+captures by exactly 2 and adds side borders. The browser MP4 is 1536×1152 H.264,
+48 seconds, 1,440 presentation frames and 4,681,714 bytes, with no audio track.
+The 30 fps container repeats source frames as needed; it is not a 30 fps gameplay
+performance claim or motion interpolation. The whole-map PNG remains lossless.
+
+The two media files live outside tracked source at
+`$HOME/Movies/Geothite/state-fair-chaos-v1`, served separately under
+`/pokedex/media/showcases/20261027-state-fair-v1/`. Public MP4/PNG bytes match
+local output; `video/mp4` MIME and exact HTTP 206 byte ranges support seeking.
+No game pack or audio payload enters the static release.
+
+Source UI is `web-client/pokedex/state-fair.html`, its focused CSS/JavaScript,
+and the compact-navigation CSS. The full Rust exporter writes these through
+`export_minnesota_pokedex_web/showcases.rs`. The frozen-release publisher is
+`crystal-assets/examples/publish_pokedex_showcase.rs`. It preserves all 224
+species, source profiles, moves, sprites, walking thumbnails, revision-8 cry
+URLs and the existing battle-preview JavaScript from release 20. Existing HTML
+changes only immutable asset URLs and the new navigation link; global CSS adds
+only the small navigation override. All 2,195 deployed files match the checked
+local export. The deployer now publishes the canonical `state-fair.html` alias
+alongside its existing index/species/moves aliases.
+
+The production recorder build completed with the pinned toolchain. Reproduce a
+fresh scene capture with an empty output directory:
+
+```sh
+CARGO_TARGET_DIR=target/state-fair-showcase CARGO_BUILD_JOBS=2 cargo build \
+  --locked --profile wasm-dev -p crystal-bevy --example new_bark_3d \
+  --features location-tester \
+  --config profile.wasm-dev.package.crystal-assets.opt-level=0 \
+  --config profile.wasm-dev.package.crystal-core.opt-level=0 \
+  --config profile.wasm-dev.package.crystal-runtime.opt-level=0 \
+  --config profile.wasm-dev.package.crystal-bevy.opt-level=0 \
+  --config profile.wasm-dev.package.crystal-voxel-view.opt-level=0
+
+CRYSTAL_RENDER_TEST_HEADLESS=1 CRYSTAL_RENDER_TEST_CAPTURE_TARGET=image \
+CRYSTAL_PREVIEW_MUTE=1 CRYSTAL_CAPTURE_FPS=30 \
+CRYSTAL_RENDER_TEST_WALK_INPUT=synthetic \
+  target/state-fair-showcase/wasm-dev/examples/new_bark_3d \
+  content-packs/minnesota-state-fair-foods-v2.crystalpack --classic \
+  --map MnStateFairgrounds --x 79 --y 12 --hour 12 --size 640x576 \
+  --walk B --record target/state-fair-showcase/captures/food-row-fresh --seconds 10
+```
+
+The other fixture coordinates are (21, 27),
+(58, 27) and(59, 55). The B route uses the existing classic warmup and ordinary
+controller input without moving the player. The older cached recorder rejected
+the new item schema and crowd state, and classic recording without a walk
+trigger did not arm; those failed attempts were superseded by this build/capture.
+The source `render_record` recorder's `frames.ffconcat` retains capture timing.
+
+The Rust publisher was compiled against Cargo-built libraries and executed as
+`target/state-fair-showcase/publish_pokedex_showcase BASE_RELEASE NEW_RELEASE`.
+Its normal Cargo frontend is:
+
+```sh
+cargo run --locked -p crystal-assets --example publish_pokedex_showcase -- \
+  target/minnesota-pokedex-web/pokedex/releases/20261027-cries-v8-20 \
+  target/minnesota-pokedex-web/pokedex/releases/20261027-state-fair-21
+
+bash tools/deploy-pokedex.sh 100.101.29.133 \
+  target/minnesota-pokedex-web/pokedex/releases/20261027-state-fair-21 \
+  20261027-state-fair-21
+```
+
+Create a fresh remote media directory and rsync the MP4/PNG before switching the
+release. These commands illustrate the executed publication with immutable IDs;
+use fresh IDs/output directories for another run.
+
+All 17 focused exporter tests, the frozen-content/playback unit regression and
+existing 224-cry/224-walker media regression pass. Real desktop and 390 px browser
+checks cover initial no-autoplay, Play, duration 48 s, chapter seeking and no mobile
+horizontal overflow. Source and encoded frames were inspected. The standard
+assets all-target Clippy command remains blocked by the existing core
+`multiplayer/mod.rs:1332` bad-bit-mask error; workspace formatting still reports
+existing `offset-allocator` differences. Changed Rust formatting and deployment
+shell syntax checks pass. Logs/captures remain ignored under
+`target/state-fair-showcase`.
+
+## Cry publication baseline
+
+Release **`20261027-cries-v8-20`** introduced all **224 revision-8 cries**,
+preserved by the current State Fair release. This includes the
+full-roster rewrite, refined loon calls, Bristub/Latchquill Velcro peels, and
+longer individually developed legendary/mythical and pseudo-legendary voices.
+The rare adults last 2.71–3.48 seconds.
+
+The Rust publisher `crystal-assets/examples/publish_pokedex_cry_revision.rs`
+reads the verified `minnesota-cries-v8.crystalpack`, decodes each cry through the
+runtime integrity path, and writes canonical WAVs outside this checkout. Audio
+is served separately under `/pokedex/media/cries/20261027-crafted-v8/`; no PCM
+or pack is embedded in the static release. Fresh URLs avoid stale cached cries.
+The catalog records `audio_pack_content_hash` and `cry_audio_base` separately
+from the frozen release's existing content-pack identity and source profiles.
+
+Release 19 is the preserved baseline. All 2,192 deployed files match the checked
+local export. After normalizing immutable release/audio URLs, all page, script,
+style, sprite, thumbnail and move-preview bytes are unchanged. Species profiles,
+learnsets, starter signature moves and all other catalog facts match exactly.
+Every one of the 224 public HTTPS WAVs matches both the runtime export and the
+revision-8 listening gallery byte for byte. The live browser has 224 cry buttons,
+all pointing to the new audio path; Mosquitan playback was checked on the public
+uploaded page before switching the canonical route.
+
+The full app and media regressions pass, including all 224 active entries,
+90 cut entries, TM/HM controls, starter signatures and exclusive cry playback.
+Scoped Rust formatting passes. Workspace formatting still reports existing
+`offset-allocator` differences, and required assets all-target Clippy stops at
+the existing `crystal-core/src/multiplayer/mod.rs:1332` bad-bit-mask error.
+
+The executed publisher was compiled from this example with the pinned `rustc`
+against Cargo-built libraries, as
+`target/cry-audit/debug/publish-pokedex-cries-v8-check`. A parallel Cargo example
+build was stopped during the large assets-library rebuild after publication and
+all runtime, public-byte and app checks completed. Its normal Cargo frontend is
+shown below; use fresh output directories because publication is immutable.
+
+To reproduce with fresh release and external audio output directories:
+
+```sh
+CARGO_TARGET_DIR=target/cry-audit cargo run --locked -p crystal-assets \
+  --example publish_pokedex_cry_revision -- \
+  content-packs/minnesota-cries-v8.crystalpack \
+  target/minnesota-pokedex-web/pokedex/releases/20261027-starter-signatures-19 \
+  target/minnesota-pokedex-web/pokedex/releases/20261027-cries-v8-20 \
+  /pokedex/releases/20261027-cries-v8-20 \
+  /pokedex/media/cries/20261027-crafted-v8 \
+  "$HOME/Music/Geothite/minnesota-cries/published-v8-20261027"
+
+rsync -a --checksum \
+  "$HOME/Music/Geothite/minnesota-cries/published-v8-20261027/" \
+  100.101.29.133:/mnt/homelab/config/geothite/pokedex/media/cries/20261027-crafted-v8/
+
+bash tools/deploy-pokedex.sh 100.101.29.133 \
+  target/minnesota-pokedex-web/pokedex/releases/20261027-cries-v8-20 \
+  20261027-cries-v8-20
+```
+
+Create the remote audio directory before rsync. Publication used the existing
+atomic deployer, retaining the previous release and private rollback snapshot.
+It verified exact served HTML, game root and health while preserving the service
+image, environment, ports, networks and existing mounts. Native campaign pack
+mounts were not replaced. Verification logs remain outside tracked source under
+`$HOME/Music/Geothite/minnesota-cries/crafted-v8/`.
+
+Release **`20261027-starter-signatures-19`** introduced all three
+[starter signature moves](../planning/minnesota/pokemon/STARTER-SIGNATURES.md):
+Slipper Waltz, Rimebrand and Paddle Sweep. All 224 walking sprites and cries
+remain available. Native animation and desktop/mobile checks pass; the linked
+runbook records the existing in-game evolution queue limitation and the user's
+direction to stop further engine work and publish.
+
+## Complete overworld publication baseline
+
+The complete-overworld baseline was immutable release
+**`20261027-overworld-224-18`**: 224 active species across 101
+families, 90 labeled cut proposals, 224 cries and 224 animated walking thumbnails.
+All 448 normal/shiny atlases use exact native 16×16 pixels at integer display
+scale. The independent pixel oracle checked every one of their 458,752 pixels
+against the actual 2bpp banks and each species' own RGB555 palettes.
+
+This export uses the verified complete native overlay
+`content-packs/northwoods-overworld-v1.crystalpack`. It preserves all 1,256 battle
+sprite PNGs, all 152 move-preview assets and the catalog facts/profiles/learnsets
+from local release `20261027-spinner-17`, apart from the source-pack hash and
+completed walking count. All 17 focused exporter tests and the app, media,
+spinner-evolution and machine regressions pass. Actual headless desktop/mobile
+media and TM/HM tests pass locally and on the public deployment; root reviewed
+the public desktop index and mobile species capture. Exact publication receipts
+are under [overworld verification](../planning/minnesota/pokemon/overworld/20261027-v1/verification).
+
+The 224 public WAVs remain external in
+`$HOME/Music/Geothite/minnesota-cries/spinner-public-v1`, served separately at
+`/pokedex/media/cries/20261027-overworld-01/`. This publication preserves 221
+existing public voices and adds the three Rust-rendered fishing-lure voices.
+The remote WAVs match those source files byte for byte. It does not publish the
+parallel full-cry redesign. No WAVs or game packs belong in the static release or
+tracked repository.
+
+Executed export and atomic deployment (use a fresh release/output for a rerun):
+
+```sh
+target/agent-northwoods-overworld-art-rebuild/debug/export_minnesota_pokedex_web \
+  content-packs/northwoods-overworld-v1.crystalpack \
+  planning/minnesota/pokemon target/minnesota-pokemon/native \
+  planning/minnesota/pokemon/species-profiles.json \
+  target/minnesota-pokedex-web/pokedex/releases/20261027-overworld-224-18 \
+  /pokedex/releases/20261027-overworld-224-18 \
+  planning/minnesota/renders/moves-animation-20261027-v1/captures \
+  planning/minnesota/pokemon/overworld/20261027-v1 \
+  /pokedex/media/cries/20261027-overworld-01
+
+bash tools/deploy-pokedex.sh 100.101.29.133 \
+  target/minnesota-pokedex-web/pokedex/releases/20261027-overworld-224-18 \
+  20261027-overworld-224-18
+```
+
+Atomic deployment passed root/health and exact served-HTML checks while
+preserving the service image, environment, ports, networks and existing mounts.
+The native pack remains local; this website deployment preserves the running
+game's pack mounts. Changed Rust formatting passes. Required all-target Clippy
+remains blocked by the existing multiplayer bad-bit-mask error; workspace
+formatting reports existing offset-allocator differences.
+
+## Historical numbered TM/HM publication
+
+
+Every one of the 223 active Minnesota Pokémon has a TM/HM learnset: 2,084
+species/machine combinations covering all 50 TMs and seven HMs. Each entry's
+**TM / HM** tab lists its compatible moves in machine-number order with type,
+power, accuracy and PP. The separate **Tutor** tab keeps Ice Beam, Thunderbolt
+and Flamethrower out of the machine list. Searching the index for a code such as
+`HM03` or `TM44` finds species compatible with Surf or Rest.
+
+The Rust exporter derives numbers from the supplied pack's item definitions,
+requires the complete 57-machine catalog, and rejects an active species with
+missing, duplicate, unknown or stale compatibility. All active compatibility
+must match the species in the game pack. The existing authored profiles and
+packed learnsets are preserved. Cut proposals keep their labeled archived
+compatibility. JSON downloads add `machine_catalog`, `machine_learnset`,
+`tutor_moves` and the source `pack_content_hash`.
+
+Release `20261027-tmhm-16` uses reviewed media release15 as its baseline.
+The `--machines` publication mode validates that frozen roster against the
+external pack, copies its immutable media and changes only move panels, machine
+search tokens and the tab wrapping styles. This keeps an in-progress source
+roster expansion independent of publication. The full exporter also emits the
+numbered lists and requires each active source species to exist in its pack.
+
+Verified: all 17 focused Rust tests; all 223 active and 90 archived entries;
+2,084 active compatibility rows; exact baseline profiles, media and page sections
+outside the move panel; machine-code search; and actual 1280px/390px browser
+controls. The existing 223 cries and 174 walking thumbnails pass their media and
+browser regressions. Changed Rust formatting passes. Required all-target Clippy
+stops at the existing `crystal-core/src/multiplayer/mod.rs:1332` bad-bit-mask
+error; whole-workspace formatting still reports existing `offset-allocator`
+differences.
+
+Reproduce the verified publication with a fresh release directory and URL:
+
+```sh
+CARGO_BUILD_JOBS=2 CARGO_TARGET_DIR=target/agent-pokedex-tmhm \
+  cargo build --locked -p crystal-assets --bin export_minnesota_pokedex_web \
+  --features crystal-core/test-fixtures \
+  --config profile.dev.package.crystal-assets.opt-level=0
+CARGO_BUILD_JOBS=2 CARGO_TARGET_DIR=target/agent-pokedex-tmhm \
+  cargo test --locked -p crystal-assets --bin export_minnesota_pokedex_web \
+  --features crystal-core/test-fixtures \
+  --config profile.dev.package.crystal-assets.opt-level=0
+
+target/agent-pokedex-tmhm/debug/export_minnesota_pokedex_web --machines \
+  content-packs/minnesota-cries.crystalpack \
+  target/minnesota-pokedex-web/pokedex/releases/20261027-media-15 \
+  target/minnesota-pokedex-web/pokedex/releases/20261027-tmhm-16 \
+  /pokedex/releases/20261027-tmhm-16
+
+export POKEDEX_WEB_RELEASE=target/minnesota-pokedex-web/pokedex/releases/20261027-tmhm-16
+export POKEDEX_WEB_BASELINE=target/minnesota-pokedex-web/pokedex/releases/20261027-media-15
+node web-client/pokedex/machines.test.mjs
+node web-client/pokedex/media.test.mjs
+node web-client/pokedex/machines.browser.test.mjs
+POKEDEX_CRY_GALLERY="$HOME/Music/Geothite/minnesota-cries/roster-v1" \
+POKEDEX_MEDIA_CAPTURES=target/pokedex-media-review \
+  node web-client/pokedex/media.browser.test.mjs
+
+bash tools/deploy-pokedex.sh 100.101.29.133 "$POKEDEX_WEB_RELEASE" 20261027-tmhm-16
+```
+
+Atomic publication16 passed the game-root and health checks while preserving
+the service image, environment, ports, networks and existing mounts. All 2,071
+deployed files match the local release; public desktop/mobile machine and media
+browser checks pass. All 319 public pages/assets match their exact release bytes.
+
+Browser checks are headless. They use the installed full Chromium channel;
+`POKEDEX_BROWSER_CHANNEL=chrome` selects installed Chrome if needed.
+
+
+The previous media release, `20261027-media-15`, covers **223 active Pokémon
+across 101 families** and retains 90 labeled cut proposals. Every active species
+has a **Cry** button on its index card and detail page. Cries start only after a
+press, one plays at a time, and playback errors are announced accessibly.
+
+**174 reviewed walking sprites** animate at native 16×16 resolution, displayed
+at an integer 3× scale. The four-cell loop uses the actual idle, step, idle and
+mirrored-step pixels from each species’ accepted bank. Independent normal/shiny
+RGB555 palettes survive unchanged; the detail page’s Shiny switch changes the
+walking sprite too. Pause controls persist between pages. Offscreen/background
+thumbnails stop, and reduced-motion preferences disable automatic animation.
+The remaining 49 species are still undergoing original sprite authoring/review;
+the exporter includes each approved bank on the next publication.
+
+Audio remains in the external Rust-rendered collection at
+`$HOME/Music/Geothite/minnesota-cries/roster-v1`. Its 223 WAVs are served separately
+from `/pokedex/media/cries/20261027-original-01/`, backed by
+`/mnt/homelab/config/geothite/pokedex/media/cries/20261027-original-01/`.
+No audio payload or content pack is copied into the static release or repository.
+The existing Rust cry regression verifies every gallery WAV against runtime PCM,
+frame counts, distinct authored voices and complete preservation of other content.
+
+The commands below reproduce the verified build and publication. Release15 reused
+the unchanged exporter built and tested for release14, then repeated the export,
+web tests and deployment. Build outputs and captures stay ignored. Use a fresh
+release ID for later exports.
+
+```sh
+CARGO_TARGET_DIR=target/agent-northwoods-overworld-art-rebuild \
+  cargo build --locked -p crystal-assets --bin export_minnesota_pokedex_web
+
+target/agent-northwoods-overworld-art-rebuild/debug/export_minnesota_pokedex_web \
+  content-packs/minnesota-cries.crystalpack \
+  planning/minnesota/pokemon target/minnesota-pokemon/native \
+  planning/minnesota/pokemon/species-profiles.json \
+  target/minnesota-pokedex-web/pokedex/releases/20261027-media-15 \
+  /pokedex/releases/20261027-media-15 \
+  planning/minnesota/renders/moves-animation-20261027-v1/captures \
+  planning/minnesota/pokemon/overworld/20261027-v1 \
+  /pokedex/media/cries/20261027-original-01
+
+POKEDEX_WEB_RELEASE=target/minnesota-pokedex-web/pokedex/releases/20261027-media-15 \
+  node web-client/pokedex/media.test.mjs
+
+POKEDEX_WEB_RELEASE=target/minnesota-pokedex-web/pokedex/releases/20261027-media-15 \
+POKEDEX_CRY_GALLERY="$HOME/Music/Geothite/minnesota-cries/roster-v1" \
+POKEDEX_MEDIA_CAPTURES=planning/minnesota/pokemon/overworld/20261027-v1/verification/pokedex-media15-browser \
+  node web-client/pokedex/media.browser.test.mjs
+
+CARGO_TARGET_DIR=target/agent-northwoods-overworld-art-rebuild \
+  cargo test --locked -p crystal-assets --bin export_minnesota_pokedex_web
+
+bash tools/deploy-pokedex.sh 100.101.29.133 \
+  target/minnesota-pokedex-web/pokedex/releases/20261027-media-15 \
+  20261027-media-15
+```
+
+Publication15 adds nineteen reviewed walking sprites. Full web integration,
+media controls and local/public desktop/mobile browser checks pass. All 2,071
+deployed files match the export; 354 public pages/assets, including all 348
+normal/shiny thumbnails, match their local files. All 223 public cries match the
+verified Rust gallery. The 1,252 battle sprites and 152 move-animation assets
+remain byte-identical to release14. The existing game configuration, root and
+health endpoint remain verified.
+
+Publication14 passed all 14 focused Rust exporter tests, the full web integration
+suite, media controls tests and actual headless desktop/mobile browser checks
+against both local and public pages. All 223 public WAVs match the verified Rust
+gallery; all 310 thumbnail variants and six public page/script/style responses
+match their local files. All 2,033 deployed files match the export. The existing
+1,252 battle sprites and 152 move-animation assets remain byte-identical to release13.
+
+Scoped Rust formatting passes. Whole-workspace formatting still reports existing
+`offset-allocator` changes. Required Clippy stops at the existing
+`crystal-core/src/multiplayer/mod.rs:1332` bad-bit-mask error; scoped no-dependency
+Clippy reaches existing `mutation_protocol.rs` never-loop errors. The unrelated
+library-test target also fails at `winter_sections_tests.rs:270` because a spawn
+reference has no `x` field. The focused exporter and cry regressions pass.
+
+The sections below retain earlier publication evidence and its historical roster
+counts. Release13 restored the sticky-note family before this media update.
+
 The Pokédex lives at **https://geothite.ryanculligan.com/pokedex/** alongside
-Geothite. Published release `20261027-northwoods-12` uses the current authored
+Geothite. Retained release `20261027-northwoods-12` used the then-authored
 catalog of **220 active species across 100 families**: 39 three-stage families,
 42 two-stage families and 19 single-stage species. The rare tail contains the
 three-stage mosquito pseudo-legendary, six legendaries and two mythicals.
@@ -11,7 +393,7 @@ The retained [sprite-only publication](../planning/minnesota/pokemon/expansion/2
 updates Dozebear, Denumbra and Mudmender in both views and palettes. It preserves
 release10’s verified interface and data: exactly twelve PNGs differ among
 1,611 files after immutable asset-URL normalization. All1,926 public byte checks
-and six health/private-route checks pass. Desktop and390px mobile front/back/shiny
+and six health/private-route checks pass. Desktop and 390 px mobile front/back/shiny
 checks pass for all three species. Flarkindle and the eleven-family native
 polish were already included in release10. The separate imported-move animation
 feature remains outside that historical sprite release. Release12 preserves

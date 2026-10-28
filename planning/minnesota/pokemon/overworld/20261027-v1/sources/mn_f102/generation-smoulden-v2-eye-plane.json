@@ -1,0 +1,7 @@
+{
+  "tool": "built-in imagegen",
+  "default_path": "/Users/ryanculligan/.codex/generated_images/01a178da-4cf1-7e01-8516-667a332dc790/exec-64eb87be-6a0c-4e37-9562-5bcedad87885.png",
+  "workspace_path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f102/smoulden.overworld.imagegen-v2-eye-plane.png",
+  "sha256": "984719d44b97abbe4709dca71be58bd89108af4d49d698389cb2d5130556dcdf",
+  "prompt": "prompt-smoulden-native-eye-plane-v2.txt"
+}

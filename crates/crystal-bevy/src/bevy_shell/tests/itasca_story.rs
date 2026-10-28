@@ -62,7 +62,7 @@ fn road(c: &mut VisibleShellController, r: &CrystalRuntime, prefix: &'static str
     }
     assert_eq!(position(c), to);
 }
-fn from_bemidji(c: &mut VisibleShellController, r: &CrystalRuntime, lane: u16) {
+pub(super) fn from_bemidji(c: &mut VisibleShellController, r: &CrystalRuntime, lane: u16) {
     walk_to(c, r, (4, 24 + lane));
     travel(c, GameButton::Left, "MnR14C01R00", (31, 26 + lane as i16));
     road(c, r, "MnR14", (5, 42 + lane as i16));
@@ -70,7 +70,7 @@ fn from_bemidji(c: &mut VisibleShellController, r: &CrystalRuntime, lane: u16) {
     walk_to(c, r, (1, 4 + lane));
     travel(c, GameButton::Left, PARK, (42, 24 + lane as i16));
 }
-fn to_bemidji(c: &mut VisibleShellController, r: &CrystalRuntime, lane: u16) {
+pub(super) fn to_bemidji(c: &mut VisibleShellController, r: &CrystalRuntime, lane: u16) {
     walk_to(c, r, (42, 24 + lane));
     travel(c, GameButton::Right, GATE, (1, 4 + lane as i16));
     walk_to(c, r, (8, 4 + lane));
@@ -79,7 +79,7 @@ fn to_bemidji(c: &mut VisibleShellController, r: &CrystalRuntime, lane: u16) {
     travel(c, GameButton::Right, "MnBemidji", (0, 24 + lane as i16));
     travel(c, GameButton::Right, "MnBemidji", (4, 24 + lane as i16));
 }
-fn marker(c: &mut VisibleShellController, r: &CrystalRuntime) {
+pub(super) fn marker(c: &mut VisibleShellController, r: &CrystalRuntime) {
     walk_to(c, r, (19, 22));
     press(c, GameButton::Up);
     press(c, GameButton::A);
@@ -89,7 +89,7 @@ fn officer(c: &mut VisibleShellController, r: &CrystalRuntime) {
     press(c, GameButton::Up);
     press(c, GameButton::A);
 }
-fn refusal(c: &mut VisibleShellController, right: bool, lane: u16, expected: &str) {
+pub(super) fn refusal(c: &mut VisibleShellController, right: bool, lane: u16, expected: &str) {
     let button = if right {
         GameButton::Right
     } else {
@@ -115,7 +115,7 @@ fn refusal(c: &mut VisibleShellController, right: bool, lane: u16, expected: &st
         (if right { 43 } else { 4 }, 24 + lane as i16),
     );
 }
-fn acknowledge_marker(c: &mut VisibleShellController, r: &CrystalRuntime) {
+pub(super) fn acknowledge_marker(c: &mut VisibleShellController, r: &CrystalRuntime) {
     marker(c, r);
     assert!(text(c).contains("HEADWATERS"));
     assert!(!event(c, READING) && !event(c, REPORT));
@@ -125,7 +125,7 @@ fn acknowledge_marker(c: &mut VisibleShellController, r: &CrystalRuntime) {
     finish(c);
     assert!(event(c, READING) && !event(c, REPORT));
 }
-fn acknowledge_report(c: &mut VisibleShellController, r: &CrystalRuntime) {
+pub(super) fn acknowledge_report(c: &mut VisibleShellController, r: &CrystalRuntime) {
     officer(c, r);
     assert!(
         text(c).contains("One meter log."),

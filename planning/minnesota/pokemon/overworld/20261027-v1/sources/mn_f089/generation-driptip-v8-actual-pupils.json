@@ -1,0 +1,36 @@
+{
+  "name": "driptip",
+  "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f089/driptip-v8-actual-pupils",
+  "selected_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f089/manifest-driptip-v8-actual-pupils.json",
+  "tool": "built-in image_gen",
+  "status": "source-generated/native-proven; root owns acceptance and context gate",
+  "native_frame_size": [
+    16,
+    16
+  ],
+  "canonical_normal_palette": [
+    32767,
+    20283,
+    12620,
+    0
+  ],
+  "canonical_shiny_palette": [
+    32767,
+    26483,
+    10636,
+    0
+  ],
+  "fit": [
+    12,
+    12
+  ],
+  "all_raw_renders_and_prompts_retained": true,
+  "no_native_pixel_painting": true,
+  "no_registry_or_pack_changes": true,
+  "retained_source_hashes": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f089/driptip.overworld.imagegen-v1.png": "485601d97383ffec7c64b7fb614f8b216f08d2d98521862f4e7d6ebd018c9a77",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f089/prompt-driptip-v1.txt": "a0e57f367255567845660e8db619b06de6be2818a79302cf1753a680ff1e1a6a",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f089/driptip.v1.original-path.txt": "8f952c335ad72d4582667f445f73b29ae9ede0c58315f0f9796db75a004edf40"
+  },
+  "proof": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f089/proof-driptip-v8-actual-pupils-actual-source.json"
+}

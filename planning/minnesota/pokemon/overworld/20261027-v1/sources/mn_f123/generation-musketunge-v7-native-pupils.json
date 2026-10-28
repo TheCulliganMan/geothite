@@ -1,0 +1,74 @@
+{
+  "tool": "built-in image_gen",
+  "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f123/musketunge-v7-native-pupils",
+  "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f123/manifest-musketunge-v7-native-pupils.json",
+  "normalized_receipt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f123/source-feature-proof-musketunge-v7-native-pupils.json",
+  "all_raws_prompts_rejected_trials_retained": true,
+  "no_native_pixel_painting": true,
+  "no_registry_or_pack_mutation": true,
+  "normal_shiny_boards_actually_viewed": true,
+  "canonical_palettes": [
+    [
+      32767,
+      26356,
+      8521,
+      0
+    ],
+    [
+      32767,
+      24217,
+      10536,
+      0
+    ]
+  ],
+  "native_bounds": [
+    [
+      2,
+      4,
+      11,
+      10
+    ],
+    [
+      4,
+      4,
+      9,
+      11
+    ],
+    [
+      1,
+      4,
+      14,
+      10
+    ],
+    [
+      2,
+      4,
+      11,
+      10
+    ],
+    [
+      4,
+      4,
+      9,
+      11
+    ],
+    [
+      1,
+      4,
+      14,
+      10
+    ]
+  ],
+  "retained_source_hashes": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f123/musketunge.overworld.imagegen-v3-profile-pupils.png": "536c1bb7ed9c32216464f506d8a5193b16f6b50ccf63b9aa3f74f2b410a1a62a",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f123/musketunge.overworld.imagegen-v2-compact-profile.png": "318ccca89971353e28fe68c29ff28ef347917643a87f1708650d77bb61e81e44",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f123/musketunge.overworld.imagegen-v1.png": "fa6f0205b17417964022a5b002402f2d32e73cc330263433bdbe503050c201a5",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f123/prompt-musketunge-v3-profile-pupils.txt": "0756ff11dd18d911763ccb485fd0788818d15c0dae7d6c20b1c2727bcc71da4b",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f123/prompt-musketunge-v2-compact-profile.txt": "53740fd012176f29798400171f37e034f1eb68e2ce921c5916fc7cbb657da083",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f123/prompt-musketunge-v1.txt": "6e8b8f2c5ea1c1cd14333d5f9051607941e156b6a418ca6e480522681638cbd7",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f123/musketunge.v2-compact-profile.original-path.txt": "26d4d86d70112f6b733e1df3e821bfbeea536531f2a7cee03b44f4dab7abbb31",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f123/musketunge.v1.original-path.txt": "f359fb13243d44914daa1314af828b4f2ee39366ee43ad492a90e498aeb25f65",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f123/musketunge.v3-profile-pupils.original-path.txt": "f09a0a09c750379ee7514af8ca252fc3a8e6469d82e50086f51f6dfc42969dde"
+  },
+  "status": "root independent visual/context acceptance pending"
+}

@@ -1,0 +1,738 @@
+[
+  {
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/pouchid-v3-north-x-8-y-12.json",
+    "output": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/pouchid-v3-north-x-8-y-12",
+    "dx": -8,
+    "dy": -12,
+    "other_four_poses_byte_exact": false,
+    "north_isolated_black_marks": [
+      [
+        [
+          5,
+          7
+        ],
+        [
+          6,
+          8
+        ],
+        [
+          10,
+          8
+        ],
+        [
+          9,
+          9
+        ]
+      ],
+      [
+        [
+          5,
+          7
+        ],
+        [
+          6,
+          8
+        ],
+        [
+          10,
+          8
+        ],
+        [
+          9,
+          9
+        ]
+      ]
+    ],
+    "clear_back": false
+  },
+  {
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/pouchid-v3-north-x0-y-12.json",
+    "output": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/pouchid-v3-north-x0-y-12",
+    "dx": 0,
+    "dy": -12,
+    "other_four_poses_byte_exact": false,
+    "north_isolated_black_marks": [
+      [
+        [
+          5,
+          7
+        ],
+        [
+          10,
+          7
+        ],
+        [
+          6,
+          9
+        ],
+        [
+          9,
+          9
+        ]
+      ],
+      [
+        [
+          5,
+          7
+        ],
+        [
+          10,
+          7
+        ],
+        [
+          6,
+          9
+        ],
+        [
+          9,
+          9
+        ]
+      ]
+    ],
+    "clear_back": false
+  },
+  {
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/pouchid-v3-north-x8-y-12.json",
+    "output": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/pouchid-v3-north-x8-y-12",
+    "dx": 8,
+    "dy": -12,
+    "other_four_poses_byte_exact": false,
+    "north_isolated_black_marks": [
+      [
+        [
+          10,
+          7
+        ],
+        [
+          5,
+          8
+        ],
+        [
+          9,
+          8
+        ],
+        [
+          6,
+          9
+        ]
+      ],
+      [
+        [
+          10,
+          7
+        ],
+        [
+          5,
+          8
+        ],
+        [
+          9,
+          8
+        ],
+        [
+          6,
+          9
+        ]
+      ]
+    ],
+    "clear_back": false
+  },
+  {
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/pouchid-v3-north-x-8-y-8.json",
+    "output": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/pouchid-v3-north-x-8-y-8",
+    "dx": -8,
+    "dy": -8,
+    "other_four_poses_byte_exact": false,
+    "north_isolated_black_marks": [
+      [
+        [
+          5,
+          7
+        ],
+        [
+          6,
+          8
+        ],
+        [
+          10,
+          8
+        ],
+        [
+          9,
+          9
+        ]
+      ],
+      [
+        [
+          5,
+          7
+        ],
+        [
+          6,
+          8
+        ],
+        [
+          10,
+          8
+        ],
+        [
+          9,
+          9
+        ]
+      ]
+    ],
+    "clear_back": false
+  },
+  {
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/pouchid-v3-north-x0-y-8.json",
+    "output": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/pouchid-v3-north-x0-y-8",
+    "dx": 0,
+    "dy": -8,
+    "other_four_poses_byte_exact": false,
+    "north_isolated_black_marks": [
+      [
+        [
+          5,
+          7
+        ],
+        [
+          10,
+          7
+        ],
+        [
+          6,
+          9
+        ],
+        [
+          9,
+          9
+        ]
+      ],
+      [
+        [
+          5,
+          7
+        ],
+        [
+          10,
+          7
+        ],
+        [
+          6,
+          9
+        ],
+        [
+          9,
+          9
+        ]
+      ]
+    ],
+    "clear_back": false
+  },
+  {
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/pouchid-v3-north-x8-y-8.json",
+    "output": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/pouchid-v3-north-x8-y-8",
+    "dx": 8,
+    "dy": -8,
+    "other_four_poses_byte_exact": false,
+    "north_isolated_black_marks": [
+      [
+        [
+          10,
+          7
+        ],
+        [
+          5,
+          8
+        ],
+        [
+          9,
+          8
+        ],
+        [
+          6,
+          9
+        ]
+      ],
+      [
+        [
+          10,
+          7
+        ],
+        [
+          5,
+          8
+        ],
+        [
+          9,
+          8
+        ],
+        [
+          6,
+          9
+        ]
+      ]
+    ],
+    "clear_back": false
+  },
+  {
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/pouchid-v3-north-x-8-y-4.json",
+    "output": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/pouchid-v3-north-x-8-y-4",
+    "dx": -8,
+    "dy": -4,
+    "other_four_poses_byte_exact": false,
+    "north_isolated_black_marks": [
+      [
+        [
+          5,
+          7
+        ],
+        [
+          6,
+          8
+        ],
+        [
+          10,
+          8
+        ],
+        [
+          9,
+          9
+        ]
+      ],
+      [
+        [
+          9,
+          9
+        ]
+      ]
+    ],
+    "clear_back": false
+  },
+  {
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/pouchid-v3-north-x0-y-4.json",
+    "output": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/pouchid-v3-north-x0-y-4",
+    "dx": 0,
+    "dy": -4,
+    "other_four_poses_byte_exact": false,
+    "north_isolated_black_marks": [
+      [
+        [
+          5,
+          7
+        ],
+        [
+          10,
+          7
+        ],
+        [
+          6,
+          9
+        ],
+        [
+          9,
+          9
+        ]
+      ],
+      [
+        [
+          6,
+          9
+        ],
+        [
+          9,
+          9
+        ]
+      ]
+    ],
+    "clear_back": false
+  },
+  {
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/pouchid-v3-north-x8-y-4.json",
+    "output": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/pouchid-v3-north-x8-y-4",
+    "dx": 8,
+    "dy": -4,
+    "other_four_poses_byte_exact": false,
+    "north_isolated_black_marks": [
+      [
+        [
+          10,
+          7
+        ],
+        [
+          5,
+          8
+        ],
+        [
+          9,
+          8
+        ],
+        [
+          6,
+          9
+        ]
+      ],
+      [
+        [
+          6,
+          9
+        ]
+      ]
+    ],
+    "clear_back": false
+  },
+  {
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/pouchid-v3-north-x-8-y0.json",
+    "output": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/pouchid-v3-north-x-8-y0",
+    "dx": -8,
+    "dy": 0,
+    "other_four_poses_byte_exact": true,
+    "north_isolated_black_marks": [
+      [
+        [
+          5,
+          7
+        ],
+        [
+          6,
+          8
+        ],
+        [
+          10,
+          8
+        ],
+        [
+          9,
+          9
+        ]
+      ],
+      [
+        [
+          9,
+          9
+        ]
+      ]
+    ],
+    "clear_back": false
+  },
+  {
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/pouchid-v3-north-x8-y0.json",
+    "output": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/pouchid-v3-north-x8-y0",
+    "dx": 8,
+    "dy": 0,
+    "other_four_poses_byte_exact": true,
+    "north_isolated_black_marks": [
+      [
+        [
+          10,
+          7
+        ],
+        [
+          5,
+          8
+        ],
+        [
+          9,
+          8
+        ],
+        [
+          6,
+          9
+        ]
+      ],
+      [
+        [
+          6,
+          9
+        ]
+      ]
+    ],
+    "clear_back": false
+  },
+  {
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/pouchid-v3-north-x-8-y4.json",
+    "output": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/pouchid-v3-north-x-8-y4",
+    "dx": -8,
+    "dy": 4,
+    "other_four_poses_byte_exact": false,
+    "north_isolated_black_marks": [
+      [
+        [
+          5,
+          7
+        ],
+        [
+          6,
+          8
+        ],
+        [
+          10,
+          8
+        ],
+        [
+          9,
+          9
+        ]
+      ],
+      [
+        [
+          9,
+          9
+        ]
+      ]
+    ],
+    "clear_back": false
+  },
+  {
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/pouchid-v3-north-x0-y4.json",
+    "output": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/pouchid-v3-north-x0-y4",
+    "dx": 0,
+    "dy": 4,
+    "other_four_poses_byte_exact": false,
+    "north_isolated_black_marks": [
+      [
+        [
+          5,
+          7
+        ],
+        [
+          10,
+          7
+        ],
+        [
+          6,
+          9
+        ],
+        [
+          9,
+          9
+        ]
+      ],
+      [
+        [
+          6,
+          9
+        ],
+        [
+          9,
+          9
+        ]
+      ]
+    ],
+    "clear_back": false
+  },
+  {
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/pouchid-v3-north-x8-y4.json",
+    "output": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/pouchid-v3-north-x8-y4",
+    "dx": 8,
+    "dy": 4,
+    "other_four_poses_byte_exact": false,
+    "north_isolated_black_marks": [
+      [
+        [
+          10,
+          7
+        ],
+        [
+          5,
+          8
+        ],
+        [
+          9,
+          8
+        ],
+        [
+          6,
+          9
+        ]
+      ],
+      [
+        [
+          6,
+          9
+        ]
+      ]
+    ],
+    "clear_back": false
+  },
+  {
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/pouchid-v3-north-x-8-y8.json",
+    "output": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/pouchid-v3-north-x-8-y8",
+    "dx": -8,
+    "dy": 8,
+    "other_four_poses_byte_exact": false,
+    "north_isolated_black_marks": [
+      [
+        [
+          6,
+          8
+        ],
+        [
+          10,
+          8
+        ],
+        [
+          9,
+          9
+        ]
+      ],
+      [
+        [
+          9,
+          9
+        ]
+      ]
+    ],
+    "clear_back": false
+  },
+  {
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/pouchid-v3-north-x0-y8.json",
+    "output": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/pouchid-v3-north-x0-y8",
+    "dx": 0,
+    "dy": 8,
+    "other_four_poses_byte_exact": false,
+    "north_isolated_black_marks": [
+      [
+        [
+          6,
+          9
+        ],
+        [
+          9,
+          9
+        ]
+      ],
+      [
+        [
+          6,
+          9
+        ],
+        [
+          9,
+          9
+        ]
+      ]
+    ],
+    "clear_back": false
+  },
+  {
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/pouchid-v3-north-x8-y8.json",
+    "output": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/pouchid-v3-north-x8-y8",
+    "dx": 8,
+    "dy": 8,
+    "other_four_poses_byte_exact": false,
+    "north_isolated_black_marks": [
+      [
+        [
+          5,
+          8
+        ],
+        [
+          9,
+          8
+        ],
+        [
+          6,
+          9
+        ]
+      ],
+      [
+        [
+          6,
+          9
+        ]
+      ]
+    ],
+    "clear_back": false
+  },
+  {
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/pouchid-v3-north-x-8-y12.json",
+    "output": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/pouchid-v3-north-x-8-y12",
+    "dx": -8,
+    "dy": 12,
+    "other_four_poses_byte_exact": false,
+    "north_isolated_black_marks": [
+      [
+        [
+          9,
+          9
+        ]
+      ],
+      [
+        [
+          5,
+          6
+        ],
+        [
+          9,
+          9
+        ]
+      ]
+    ],
+    "clear_back": false
+  },
+  {
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/pouchid-v3-north-x0-y12.json",
+    "output": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/pouchid-v3-north-x0-y12",
+    "dx": 0,
+    "dy": 12,
+    "other_four_poses_byte_exact": false,
+    "north_isolated_black_marks": [
+      [
+        [
+          6,
+          9
+        ],
+        [
+          9,
+          9
+        ]
+      ],
+      [
+        [
+          5,
+          6
+        ],
+        [
+          10,
+          6
+        ],
+        [
+          6,
+          9
+        ],
+        [
+          9,
+          9
+        ]
+      ]
+    ],
+    "clear_back": false
+  },
+  {
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/pouchid-v3-north-x8-y12.json",
+    "output": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/pouchid-v3-north-x8-y12",
+    "dx": 8,
+    "dy": 12,
+    "other_four_poses_byte_exact": false,
+    "north_isolated_black_marks": [
+      [
+        [
+          6,
+          9
+        ]
+      ],
+      [
+        [
+          10,
+          6
+        ],
+        [
+          6,
+          9
+        ]
+      ]
+    ],
+    "clear_back": false
+  }
+]

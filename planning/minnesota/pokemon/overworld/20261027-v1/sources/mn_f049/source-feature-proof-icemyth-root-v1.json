@@ -1,0 +1,336 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_100",
+  "result": "pass",
+  "manifest_sha256": "4f7e00d69cd698461b3cf6a9364a38cc5024fa8505598b428405ae85da210f7b",
+  "bank_sha256": "dff7523a653706cbffc14dd55fd401f1f73d0a00d4463103b8ed204e2ef42c8e",
+  "source_sha256": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f049/icemyth.overworld.imagegen-v2-eye-plane.png": "1392e4509ef75f5ebdc972947d8f07eff93c6dde020dc9eea6c648ada2443bae"
+  },
+  "canonical_eye_form": "Two black actual eyes on canted front ice face, diagonally offset; one near eye in west. Original white visor glints simplified into clear light-ice face while retaining actual eye positions. Belly dark curl is an enclosed shadow mark, not a second face.",
+  "nonrear_poses": [
+    {
+      "pose": "down_idle",
+      "result": "pass",
+      "source_feature_proof": {
+        "pose": "down_idle",
+        "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f049/icemyth.overworld.imagegen-v2-eye-plane.png",
+        "crop": [
+          45,
+          60,
+          480,
+          460
+        ],
+        "anatomically_identified_source_eye_boxes_xywh": [
+          [
+            248,
+            181,
+            26,
+            25
+          ],
+          [
+            288,
+            205,
+            26,
+            26
+          ]
+        ],
+        "actual_eye_proofs": [
+          {
+            "native_cluster": [
+              [
+                6,
+                4
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  0,
+                  0,
+                  0,
+                  253
+                ],
+                "bounds": [
+                  248,
+                  181,
+                  26,
+                  25
+                ],
+                "pixels": 650,
+                "truncated_contour": false,
+                "native_pixel": [
+                  6,
+                  4
+                ],
+                "source_sample_pixel": [
+                  255,
+                  192
+                ]
+              }
+            ]
+          },
+          {
+            "native_cluster": [
+              [
+                8,
+                5
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  4,
+                  3,
+                  3,
+                  254
+                ],
+                "bounds": [
+                  288,
+                  205,
+                  26,
+                  26
+                ],
+                "pixels": 676,
+                "truncated_contour": false,
+                "native_pixel": [
+                  8,
+                  5
+                ],
+                "source_sample_pixel": [
+                  308,
+                  218
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "pose": "left_idle",
+      "result": "pass",
+      "source_feature_proof": {
+        "pose": "left_idle",
+        "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f049/icemyth.overworld.imagegen-v2-eye-plane.png",
+        "crop": [
+          1032,
+          60,
+          480,
+          460
+        ],
+        "anatomically_identified_source_eye_boxes_xywh": [
+          [
+            1225,
+            227,
+            25,
+            25
+          ]
+        ],
+        "actual_eye_proofs": [
+          {
+            "native_cluster": [
+              [
+                6,
+                6
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  2,
+                  1,
+                  1,
+                  254
+                ],
+                "bounds": [
+                  1225,
+                  227,
+                  25,
+                  25
+                ],
+                "pixels": 625,
+                "truncated_contour": false,
+                "native_pixel": [
+                  6,
+                  6
+                ],
+                "source_sample_pixel": [
+                  1242,
+                  244
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "pose": "down_step",
+      "result": "pass",
+      "source_feature_proof": {
+        "pose": "down_step",
+        "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f049/icemyth.overworld.imagegen-v2-eye-plane.png",
+        "crop": [
+          45,
+          524,
+          480,
+          460
+        ],
+        "anatomically_identified_source_eye_boxes_xywh": [
+          [
+            249,
+            647,
+            26,
+            25
+          ],
+          [
+            288,
+            668,
+            26,
+            26
+          ]
+        ],
+        "actual_eye_proofs": [
+          {
+            "native_cluster": [
+              [
+                6,
+                4
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  0,
+                  1,
+                  1,
+                  253
+                ],
+                "bounds": [
+                  249,
+                  647,
+                  26,
+                  25
+                ],
+                "pixels": 650,
+                "truncated_contour": false,
+                "native_pixel": [
+                  6,
+                  4
+                ],
+                "source_sample_pixel": [
+                  255,
+                  656
+                ]
+              }
+            ]
+          },
+          {
+            "native_cluster": [
+              [
+                8,
+                5
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  0,
+                  1,
+                  1,
+                  253
+                ],
+                "bounds": [
+                  288,
+                  668,
+                  26,
+                  27
+                ],
+                "pixels": 698,
+                "truncated_contour": false,
+                "native_pixel": [
+                  8,
+                  5
+                ],
+                "source_sample_pixel": [
+                  308,
+                  682
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "pose": "left_step",
+      "result": "pass",
+      "source_feature_proof": {
+        "pose": "left_step",
+        "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f049/icemyth.overworld.imagegen-v2-eye-plane.png",
+        "crop": [
+          1032,
+          517,
+          480,
+          460
+        ],
+        "anatomically_identified_source_eye_boxes_xywh": [
+          [
+            1218,
+            684,
+            25,
+            25
+          ]
+        ],
+        "actual_eye_proofs": [
+          {
+            "native_cluster": [
+              [
+                6,
+                6
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  0,
+                  0,
+                  0,
+                  253
+                ],
+                "bounds": [
+                  1218,
+                  684,
+                  25,
+                  25
+                ],
+                "pixels": 625,
+                "truncated_contour": false,
+                "native_pixel": [
+                  6,
+                  6
+                ],
+                "source_sample_pixel": [
+                  1242,
+                  701
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "rear_anatomy": {
+    "result": "pass",
+    "notes": "Root viewed all six normal/shiny poses. True rears are plain oblique ice ridge, two arms/two feet and cloudy rear interior; no copied front eyes."
+  },
+  "detailed_proof": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f049/icemyth.manifest-native-joint-phase-v1.proof.json"
+}

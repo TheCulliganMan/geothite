@@ -1,0 +1,254 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_047",
+  "result": "pass",
+  "manifest_sha256": "fc94b0e5fe64512fb2bf23a0b86ea60e8ef1412d35ff97b0f9e73f94220dc1ca",
+  "bank_sha256": "f27bb34d9ecc2b90f49b5b4294c3d4f2ea85c06f4d0921b5adc6a9f6d53b8b32",
+  "source_sha256": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f017/hatchit.overworld.imagegen-v1.png": "f471e7ecbdc4449b982a14db934b74f70fc3ea96ffd3eb69600e57ac616fa20c"
+  },
+  "canonical_eye_form": "1 actual blade/socket pupils in SOUTH, 1 actual near-blade/socket pupil in WEST. No hand/handle/outline dots counted. Every pixel maps to same actual small source pupil component.",
+  "nonrear_poses": [
+    {
+      "pose": "down_idle",
+      "result": "pass",
+      "source_feature_proof": {
+        "pose": "down_idle",
+        "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f017/hatchit.overworld.imagegen-v1.png",
+        "crop": [
+          73,
+          80,
+          400,
+          410
+        ],
+        "anatomically_identified_source_eye_boxes_xywh": [
+          [
+            284,
+            216,
+            35,
+            36
+          ]
+        ],
+        "actual_eye_proofs": [
+          {
+            "native_cluster": [
+              [
+                9,
+                7
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  1,
+                  0,
+                  0,
+                  253
+                ],
+                "bounds": [
+                  284,
+                  216,
+                  35,
+                  36
+                ],
+                "pixels": 1260,
+                "truncated_contour": false,
+                "native_pixel": [
+                  9,
+                  7
+                ],
+                "source_sample_pixel": [
+                  305,
+                  237
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "pose": "left_idle",
+      "result": "pass",
+      "source_feature_proof": {
+        "pose": "left_idle",
+        "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f017/hatchit.overworld.imagegen-v1.png",
+        "crop": [
+          1093,
+          87,
+          400,
+          410
+        ],
+        "anatomically_identified_source_eye_boxes_xywh": [
+          [
+            1238,
+            216,
+            35,
+            37
+          ]
+        ],
+        "actual_eye_proofs": [
+          {
+            "native_cluster": [
+              [
+                7,
+                7
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  2,
+                  1,
+                  0,
+                  253
+                ],
+                "bounds": [
+                  1238,
+                  216,
+                  35,
+                  37
+                ],
+                "pixels": 1274,
+                "truncated_contour": false,
+                "native_pixel": [
+                  7,
+                  7
+                ],
+                "source_sample_pixel": [
+                  1262,
+                  244
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "pose": "down_step",
+      "result": "pass",
+      "source_feature_proof": {
+        "pose": "down_step",
+        "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f017/hatchit.overworld.imagegen-v1.png",
+        "crop": [
+          73,
+          542,
+          400,
+          410
+        ],
+        "anatomically_identified_source_eye_boxes_xywh": [
+          [
+            284,
+            674,
+            35,
+            37
+          ]
+        ],
+        "actual_eye_proofs": [
+          {
+            "native_cluster": [
+              [
+                9,
+                7
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  0,
+                  0,
+                  0,
+                  253
+                ],
+                "bounds": [
+                  284,
+                  674,
+                  35,
+                  37
+                ],
+                "pixels": 1293,
+                "truncated_contour": false,
+                "native_pixel": [
+                  9,
+                  7
+                ],
+                "source_sample_pixel": [
+                  305,
+                  699
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "pose": "left_step",
+      "result": "pass",
+      "source_feature_proof": {
+        "pose": "left_step",
+        "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f017/hatchit.overworld.imagegen-v1.png",
+        "crop": [
+          1093,
+          545,
+          400,
+          410
+        ],
+        "anatomically_identified_source_eye_boxes_xywh": [
+          [
+            1238,
+            674,
+            35,
+            37
+          ]
+        ],
+        "actual_eye_proofs": [
+          {
+            "native_cluster": [
+              [
+                7,
+                7
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  0,
+                  0,
+                  0,
+                  253
+                ],
+                "bounds": [
+                  1238,
+                  674,
+                  35,
+                  37
+                ],
+                "pixels": 1295,
+                "truncated_contour": false,
+                "native_pixel": [
+                  7,
+                  7
+                ],
+                "source_sample_pixel": [
+                  1262,
+                  702
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "rear_anatomy": {
+    "result": "pass",
+    "notes": "Both native normal/shiny rear poses actually inspected: plain rear head, no copied face. Head anchors stable, 1px transparent outer border, three walk pairs differ."
+  },
+  "detailed_proof": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f017/manifest-hatchit-v1-pupil-proof.proof.json"
+}

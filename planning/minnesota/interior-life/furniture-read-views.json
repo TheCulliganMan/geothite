@@ -1,0 +1,7 @@
+[
+  { "id": "lakeside-notebook-shelf", "map": "MnDuluthLakesideHome", "core": [7, 7] },
+  { "id": "slip-house-coffee-book", "map": "MnDuluthSlipHouse", "core": [7, 9] },
+  { "id": "harbor-log-bookcase", "map": "MnDuluthReadingHall2F", "core": [6, 8] },
+  { "id": "weather-observation-files", "map": "MnDuluthWeatherStudy1F", "core": [11, 7] },
+  { "id": "shared-forecast-files", "map": "MnDuluthWeatherStudy2F", "core": [11, 5] }
+]

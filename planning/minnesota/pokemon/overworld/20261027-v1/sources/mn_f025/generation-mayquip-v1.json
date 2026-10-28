@@ -1,0 +1,9 @@
+{
+  "tool": "built-in image_gen",
+  "species_id": "MN_063",
+  "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f025/mayquip.overworld.imagegen-v1.png",
+  "sha256": "63eb0da552d8069848f8cbca77ab8c309e9a9a930be3579d30bb8ea7a7b2cdf8",
+  "original_default_path": "/Users/ryanculligan/.codex/generated_images/01a178da-4cf1-7e01-8516-667a332dc790/exec-87f4598b-6aa9-42c4-9778-540d75e37390.png",
+  "prompt": "prompt-mayquip-v1.txt",
+  "status": "source_generated_not_accepted"
+}

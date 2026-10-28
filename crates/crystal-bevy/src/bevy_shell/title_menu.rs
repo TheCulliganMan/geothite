@@ -5184,6 +5184,7 @@ fn complete_visible_intro_cleanup(runtime_shell: &mut BevyRuntimeShell) -> Resul
     // carries MUSIC_CRYSTAL_OPENING into the silent title-entrance animation.
     runtime_shell.screen_fade = None;
     runtime_shell.visible_blackout_phase = None;
+    runtime_shell.poison_blackout_recovery = false;
     runtime_shell.visible_walk_warp_phase = None;
     if let Some(title) = runtime_shell.title_menu.as_mut() {
         reset_visible_title_program(title);

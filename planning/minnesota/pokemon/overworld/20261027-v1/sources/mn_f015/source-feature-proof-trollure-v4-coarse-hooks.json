@@ -1,0 +1,216 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_044",
+  "result": "pass",
+  "manifest_sha256": "94ff3fb1464791cee0413a146807d1dcc0fab326ecdc9ecb6c8342af389e3dc9",
+  "bank_sha256": "6d85d0412b72777c0ba93650bdcaa6387f7b4e066cf71d10583780f5f80e5224",
+  "source_sha256": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f015/trollure.overworld.imagegen-v1.png": "5719f4e9bdd39cc74a21d18b7889c7e248188278b977a9335d783fc16f17a155",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f015/trollure.overworld.imagegen-v2-coarse-hooks.png": "e926c0cf04fd1f6ee2db5c2a0f7d48b22b60f43eb3bcd7b92dbfb419c8df298c"
+  },
+  "canonical_eye_form": "Two isolated actual black pupil dots south and one isolated actual black pupil west; source eye components verified in all four nonrear poses.",
+  "nonrear_poses": [
+    {
+      "pose": "down_idle",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            6,
+            11
+          ],
+          "source_sample": [
+            235,
+            369
+          ],
+          "source_component": [
+            225,
+            348,
+            21,
+            22
+          ],
+          "component_pixels": 462,
+          "native_neighbors": [
+            2,
+            1,
+            1,
+            2
+          ],
+          "source_rgba": [
+            5,
+            1,
+            1,
+            253
+          ]
+        },
+        {
+          "native": [
+            8,
+            11
+          ],
+          "source_sample": [
+            293,
+            369
+          ],
+          "source_component": [
+            290,
+            348,
+            22,
+            22
+          ],
+          "component_pixels": 484,
+          "native_neighbors": [
+            1,
+            2,
+            1,
+            2
+          ],
+          "source_rgba": [
+            7,
+            3,
+            0,
+            253
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            3,
+            10
+          ],
+          "source_sample": [
+            1127,
+            339
+          ],
+          "source_component": [
+            1109,
+            325,
+            22,
+            25
+          ],
+          "component_pixels": 526,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            6,
+            4,
+            3,
+            253
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            6,
+            11
+          ],
+          "source_sample": [
+            235,
+            828
+          ],
+          "source_component": [
+            225,
+            807,
+            21,
+            22
+          ],
+          "component_pixels": 462,
+          "native_neighbors": [
+            2,
+            1,
+            1,
+            2
+          ],
+          "source_rgba": [
+            12,
+            6,
+            2,
+            253
+          ]
+        },
+        {
+          "native": [
+            8,
+            11
+          ],
+          "source_sample": [
+            293,
+            828
+          ],
+          "source_component": [
+            290,
+            807,
+            22,
+            22
+          ],
+          "component_pixels": 484,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            2
+          ],
+          "source_rgba": [
+            2,
+            0,
+            0,
+            253
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            3,
+            10
+          ],
+          "source_sample": [
+            1127,
+            795
+          ],
+          "source_component": [
+            1108,
+            783,
+            22,
+            25
+          ],
+          "component_pixels": 526,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            4,
+            2,
+            1,
+            253
+          ]
+        }
+      ]
+    }
+  ],
+  "rear_anatomy": {
+    "result": "pass",
+    "notes": "Living painted spinner lure keeps one upright oval spinner, two broad low metal fin blades, orange/blue shell and three-prong attached hook tail. Profile-only ImageGen coarsening makes the upper/middle/lower hook tips separately readable with transparent gaps; detailed source-hook feature receipt binds actual samples. Original four other source poses retained; exact shared transform rerun and all four actual pupil components pass. Rear has plain lure shell and mechanically folded hook, no facial organs; real contour/negative spaces retained. Commonfit14 and full silhouettes retained, normal/shiny boards actually reviewed; all raws/rejected trials preserved."
+  }
+}

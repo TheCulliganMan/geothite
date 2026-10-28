@@ -1,0 +1,6 @@
+{
+  "manifest": "manifest-slidewake-v1-center.json",
+  "exit_code": 1,
+  "error": "UpIdle source bounds touch500x450 crop due adjacent west art captured; LeftStep y590+450 also outside sheet",
+  "action": "Retained raw/failed manifest; isolate north x500 and west x1008 with same500x450 crops, west y90/570."
+}

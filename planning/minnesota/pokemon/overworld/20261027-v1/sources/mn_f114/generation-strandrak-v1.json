@@ -1,0 +1,9 @@
+{
+  "tool": "built-in image_gen",
+  "default_path": "/Users/ryanculligan/.codex/generated_images/01a178da-4cf1-7e01-8516-667a332dc790/exec-5f4f0ebd-13c1-433d-b47a-e0eacd0e3b68.png",
+  "retained_raw": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f114/strandrak.overworld.imagegen-v1.png",
+  "sha256": "a775ae5ec31493cddb604260b669a2eeea7225fa8fa7efb124c3f0d05c8c6ba0",
+  "prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f114/prompt-strandrak-v1.txt",
+  "reference_mapping": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f114/reference-mapping-strandrak-v1.json",
+  "accepted": false
+}

@@ -1,0 +1,210 @@
+{
+  "species": "castoroar",
+  "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f018/castoroar-v12-alpha200",
+  "status": "actual-source native proof passes; root visual/context acceptance pending",
+  "all_four_nonrear_actual_isolated_source_pupils": true,
+  "six16px_alpha_border_normal_shiny_runtime_parity": true,
+  "canonical_palettes": true,
+  "proof": [
+    {
+      "pose": "down_idle",
+      "actual_small_isolated_pupils": [
+        {
+          "native": [
+            7,
+            9
+          ],
+          "source_sample": [
+            239,
+            269
+          ],
+          "source_component": [
+            220,
+            255,
+            20,
+            20
+          ],
+          "component_pixels": 395,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            2
+          ],
+          "source_rgba": [
+            41,
+            50,
+            54,
+            253
+          ]
+        },
+        {
+          "native": [
+            9,
+            9
+          ],
+          "source_sample": [
+            308,
+            269
+          ],
+          "source_component": [
+            300,
+            255,
+            19,
+            20
+          ],
+          "component_pixels": 380,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            2
+          ],
+          "source_rgba": [
+            1,
+            0,
+            0,
+            253
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "actual_small_isolated_pupils": [
+        {
+          "native": [
+            3,
+            9
+          ],
+          "source_sample": [
+            1071,
+            261
+          ],
+          "source_component": [
+            1051,
+            236,
+            24,
+            28
+          ],
+          "component_pixels": 672,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            6,
+            7,
+            8,
+            253
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "actual_small_isolated_pupils": [
+        {
+          "native": [
+            7,
+            9
+          ],
+          "source_sample": [
+            239,
+            689
+          ],
+          "source_component": [
+            220,
+            674,
+            20,
+            20
+          ],
+          "component_pixels": 398,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            41,
+            48,
+            51,
+            254
+          ]
+        },
+        {
+          "native": [
+            9,
+            9
+          ],
+          "source_sample": [
+            308,
+            689
+          ],
+          "source_component": [
+            300,
+            674,
+            19,
+            20
+          ],
+          "component_pixels": 380,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            0,
+            0,
+            0,
+            254
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "actual_small_isolated_pupils": [
+        {
+          "native": [
+            3,
+            9
+          ],
+          "source_sample": [
+            1071,
+            680
+          ],
+          "source_component": [
+            1051,
+            653,
+            24,
+            28
+          ],
+          "component_pixels": 671,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            22,
+            28,
+            27,
+            253
+          ]
+        }
+      ]
+    }
+  ],
+  "hashes": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f018/castoroar-v12-alpha200/compiled-index.json": "3dbfd3ac84651f2b597aa1e2373fe12946609753e338f65ceae99b3701407204",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f018/castoroar.overworld.imagegen-v4-native-rebuild.png": "7267c84cfeb8b61f00f8a416bdf140b3a86fac683ba3d339f5110fd01f465288",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f018/castoroar.overworld.imagegen-v5-profile-eyeplate.png": "76ce68784ee93d5c4c6848b215ad38b31efe39723abefb315e4b21efdbc4832f"
+  },
+  "no_native_pixel_painting": true
+}

@@ -1,0 +1,404 @@
+{
+  "species_id": "MN_312",
+  "name": "velvawn",
+  "status": "native-review-recommended; root independent review and context required",
+  "selected_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f141/velvawn.manifest-native-joint-phase-v1.json",
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/true16-velvawn-joint-phase-v1",
+  "shared_transform": {
+    "source_bounds": [
+      12,
+      12,
+      315,
+      336
+    ],
+    "native_size": [
+      11,
+      12
+    ],
+    "native_origin": [
+      2,
+      3
+    ]
+  },
+  "all_four_nonrear_poses_actual_pupils_pass": true,
+  "each_native_eye_cluster_maps_to_one_actual_small_source_pupil_component": true,
+  "actual_source_pupil_proofs": [
+    {
+      "pose": "down_idle",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f141/velvawn.overworld.imagegen-v1.png",
+      "crop": [
+        109,
+        109,
+        339,
+        360
+      ],
+      "actual_source_eye_bounds": [
+        [
+          230,
+          275,
+          22,
+          32
+        ],
+        [
+          302,
+          275,
+          23,
+          32
+        ]
+      ],
+      "eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              6,
+              8
+            ],
+            [
+              6,
+              9
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                0,
+                0,
+                0,
+                253
+              ],
+              "bounds": [
+                230,
+                275,
+                22,
+                32
+              ],
+              "pixels": 704,
+              "truncated_contour": false,
+              "native_pixel": [
+                6,
+                8
+              ],
+              "source_sample_pixel": [
+                249,
+                275
+              ]
+            },
+            {
+              "black": true,
+              "rgba": [
+                3,
+                2,
+                1,
+                253
+              ],
+              "bounds": [
+                230,
+                275,
+                22,
+                32
+              ],
+              "pixels": 704,
+              "truncated_contour": false,
+              "native_pixel": [
+                6,
+                9
+              ],
+              "source_sample_pixel": [
+                249,
+                303
+              ]
+            }
+          ]
+        },
+        {
+          "native_cluster": [
+            [
+              8,
+              8
+            ],
+            [
+              8,
+              9
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                2,
+                1,
+                0,
+                253
+              ],
+              "bounds": [
+                302,
+                275,
+                23,
+                32
+              ],
+              "pixels": 736,
+              "truncated_contour": false,
+              "native_pixel": [
+                8,
+                8
+              ],
+              "source_sample_pixel": [
+                307,
+                275
+              ]
+            },
+            {
+              "black": true,
+              "rgba": [
+                1,
+                1,
+                0,
+                253
+              ],
+              "bounds": [
+                302,
+                275,
+                23,
+                32
+              ],
+              "pixels": 736,
+              "truncated_contour": false,
+              "native_pixel": [
+                8,
+                9
+              ],
+              "source_sample_pixel": [
+                307,
+                303
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f141/velvawn.overworld.imagegen-v1.png",
+      "crop": [
+        1072,
+        120,
+        339,
+        360
+      ],
+      "actual_source_eye_bounds": [
+        [
+          1143,
+          269,
+          20,
+          32
+        ]
+      ],
+      "eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              4,
+              8
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                4,
+                1,
+                0,
+                253
+              ],
+              "bounds": [
+                1143,
+                269,
+                20,
+                32
+              ],
+              "pixels": 640,
+              "truncated_contour": false,
+              "native_pixel": [
+                4,
+                8
+              ],
+              "source_sample_pixel": [
+                1155,
+                286
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f141/velvawn.overworld.imagegen-v1.png",
+      "crop": [
+        109,
+        561,
+        339,
+        360
+      ],
+      "actual_source_eye_bounds": [
+        [
+          231,
+          712,
+          21,
+          31
+        ],
+        [
+          302,
+          712,
+          23,
+          31
+        ]
+      ],
+      "eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              6,
+              8
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                4,
+                4,
+                2,
+                253
+              ],
+              "bounds": [
+                231,
+                712,
+                21,
+                31
+              ],
+              "pixels": 651,
+              "truncated_contour": false,
+              "native_pixel": [
+                6,
+                8
+              ],
+              "source_sample_pixel": [
+                249,
+                727
+              ]
+            }
+          ]
+        },
+        {
+          "native_cluster": [
+            [
+              8,
+              8
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                0,
+                0,
+                0,
+                253
+              ],
+              "bounds": [
+                302,
+                712,
+                23,
+                31
+              ],
+              "pixels": 713,
+              "truncated_contour": false,
+              "native_pixel": [
+                8,
+                8
+              ],
+              "source_sample_pixel": [
+                307,
+                727
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f141/velvawn.overworld.imagegen-v1.png",
+      "crop": [
+        1073,
+        561,
+        339,
+        360
+      ],
+      "actual_source_eye_bounds": [
+        [
+          1143,
+          712,
+          20,
+          31
+        ]
+      ],
+      "eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              4,
+              8
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                7,
+                2,
+                0,
+                253
+              ],
+              "bounds": [
+                1143,
+                712,
+                20,
+                31
+              ],
+              "pixels": 620,
+              "truncated_contour": false,
+              "native_pixel": [
+                4,
+                8
+              ],
+              "source_sample_pixel": [
+                1156,
+                727
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "old_native_poses_preserved_exactly": [
+    "down_idle",
+    "up_idle",
+    "left_idle",
+    "down_step",
+    "up_step",
+    "left_step"
+  ],
+  "normal_shiny_runtime_parity": "all1536pixels exact each",
+  "canonical_palette_bytes": "exact",
+  "all_three_walk_pairs_distinct": true,
+  "rear_review": "both rear native poses viewed; no copied face",
+  "normal_shiny_native_boards_actually_viewed": true,
+  "accepted_coverage_native_pack_untouched": true,
+  "manifest_sha256": "f8d0ae44049a2111e8b7c58bd5f23f29be11fa98cc43b100b4729948de9c24ec",
+  "compiled_index_sha256": "0d1f6c5cf7a2daacf8ec7573bfe9844dd85d345854a7eb8dc87ba55656a0f261",
+  "anatomy_review": "Young tan fawn with green brow shoots/ear centers/lower legs, low tan tail and tan flank spots on green haunch. Two near legs in profile; far legs occluded. Frontal/rear quadruped legs foreshortened. Source pupils1x2 or1x1 native, all isolated from contour. Fit12 yields11x12 actual shared body."
+}

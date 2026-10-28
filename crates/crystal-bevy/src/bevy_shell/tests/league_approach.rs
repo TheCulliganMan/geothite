@@ -57,7 +57,13 @@ fn grid(runtime: &CrystalRuntime) -> RouteGrid {
             prefix: "MnR13",
             columns: 1,
             rows: 3,
-            tileset: "johto",
+            tileset: if runtime.data().maps["MnR13C00R00"].attributes.tileset_name
+                == "mn_winter_north_shore"
+            {
+                "mn_winter_north_shore"
+            } else {
+                "johto"
+            },
             start: (30, 2),
             doors: BTreeMap::from([((14, 53), "MnR13Cave1F")]),
         },
@@ -84,7 +90,9 @@ fn save_path(label: &str) -> PathBuf {
         .duration_since(UNIX_EPOCH)
         .expect("clock")
         .as_nanos();
-    std::env::temp_dir().join(format!("geothite-league-{label}-{stamp}.crystalsave"))
+    super::authored_route_fixture::reached_save_path(&format!(
+        "geothite-league-{label}-{stamp}.crystalsave"
+    ))
 }
 
 #[test]
@@ -102,7 +110,7 @@ fn league_approach_controller_walks_clipped_maps_hop_ramp_shelter_and_resources(
         (30, 2),
         (34, 124),
         (18, 25),
-        (47, 15),
+        (47, 16),
         (47, 26),
         (20, 41),
         (15, 55),
@@ -235,7 +243,7 @@ fn league_approach_controller_walks_clipped_maps_hop_ramp_shelter_and_resources(
             .save(PathBuf::from(path))
             .expect("export explicit geometry review save");
     }
-    std::fs::remove_file(save).expect("remove disposable save");
+    super::authored_route_fixture::cleanup_reached_save(&save);
 }
 
 #[test]
@@ -463,5 +471,5 @@ fn league_approach_controller_native_ada_battle_spends_pp_wins_and_persists() {
         loaded.snapshot().expect("saved party").party,
         controller.snapshot().expect("party").party
     );
-    std::fs::remove_file(save).expect("remove disposable battle save");
+    super::authored_route_fixture::cleanup_reached_save(&save);
 }

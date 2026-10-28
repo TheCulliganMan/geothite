@@ -1,0 +1,9 @@
+{
+  "tool": "built-in image_gen",
+  "default_path": "/Users/ryanculligan/.codex/generated_images/01a178da-4cf1-7e01-8516-667a332dc790/exec-d3842a09-9bb9-4b4f-bc31-9c467c65bc94.png",
+  "retained_raw": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f049/icemyth.overworld.imagegen-v2-eye-plane.png",
+  "sha256": "1392e4509ef75f5ebdc972947d8f07eff93c6dde020dc9eea6c648ada2443bae",
+  "prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f049/prompt-icemyth-eye-plane-v2.txt",
+  "edit_target": "existing immediately preceding source original; identity/poses invariant",
+  "accepted": false
+}

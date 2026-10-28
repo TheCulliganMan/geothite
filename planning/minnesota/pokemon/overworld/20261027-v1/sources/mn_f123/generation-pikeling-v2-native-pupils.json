@@ -1,0 +1,68 @@
+{
+  "tool": "built-in image_gen",
+  "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f123/pikeling-v2-native-pupils",
+  "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f123/manifest-pikeling-v2-native-pupils.json",
+  "normalized_receipt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f123/source-feature-proof-pikeling-v2-native-pupils.json",
+  "all_raws_prompts_rejected_trials_retained": true,
+  "no_native_pixel_painting": true,
+  "no_registry_or_pack_mutation": true,
+  "normal_shiny_boards_actually_viewed": true,
+  "canonical_palettes": [
+    [
+      32767,
+      16180,
+      9607,
+      0
+    ],
+    [
+      32767,
+      26255,
+      12521,
+      0
+    ]
+  ],
+  "native_bounds": [
+    [
+      4,
+      6,
+      7,
+      9
+    ],
+    [
+      4,
+      6,
+      7,
+      8
+    ],
+    [
+      2,
+      6,
+      11,
+      6
+    ],
+    [
+      3,
+      6,
+      9,
+      9
+    ],
+    [
+      4,
+      6,
+      8,
+      8
+    ],
+    [
+      2,
+      6,
+      12,
+      7
+    ]
+  ],
+  "retained_source_hashes": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f123/pikeling.overworld.imagegen-v1.png": "0c0842d5d71665c82c57d9b44b6c5b8f9744f4380a658b34c9806e8cce6a122f",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f123/prompt-pikeling-v1.txt": "46b8185a20ed9d8bcbdf87d34f9909986df55d8a5f258d2d073e421dc976294d",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f123/pikeling.v1.original-path.txt": "3b6f4540131d81448e4cfd507c74c39e687bf8a37a434536591bfef20f27d611"
+  },
+  "status": "root independent visual/context acceptance pending"
+}

@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F078",
+  "species": [
+    {
+      "species_id": "MN_169",
+      "runtime_token": "KNOTHUCK",
+      "palette_rgb555": [
+        32767,
+        10808,
+        8426,
+        0
+      ],
+      "shiny_palette_rgb555": [
+        32767,
+        18186,
+        7496,
+        0
+      ],
+      "fit": [
+        12,
+        12
+      ],
+      "alpha_threshold": 245,
+      "sampling": "source_center",
+      "minimum_foreground_samples": 16,
+      "black_priority_samples": 32,
+      "interior_black_samples": null,
+      "opaque_interior_minimum_samples": 60,
+      "frames": [
+        {
+          "pose": "down_idle",
+          "source": "knothuck.overworld.imagegen-v1.png",
+          "crop": [
+            95,
+            202,
+            382,
+            360
+          ]
+        },
+        {
+          "pose": "up_idle",
+          "source": "knothuck.overworld.imagegen-v1.png",
+          "crop": [
+            579,
+            201,
+            382,
+            360
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "source": "knothuck.overworld.imagegen-v1.png",
+          "crop": [
+            1064,
+            216,
+            382,
+            360
+          ]
+        },
+        {
+          "pose": "down_step",
+          "source": "knothuck.overworld.imagegen-v1.png",
+          "crop": [
+            92,
+            573,
+            382,
+            360
+          ]
+        },
+        {
+          "pose": "up_step",
+          "source": "knothuck.overworld.imagegen-v1.png",
+          "crop": [
+            581,
+            563,
+            382,
+            360
+          ]
+        },
+        {
+          "pose": "left_step",
+          "source": "knothuck.overworld.imagegen-v1.png",
+          "crop": [
+            1073,
+            563,
+            382,
+            360
+          ]
+        }
+      ]
+    }
+  ]
+}

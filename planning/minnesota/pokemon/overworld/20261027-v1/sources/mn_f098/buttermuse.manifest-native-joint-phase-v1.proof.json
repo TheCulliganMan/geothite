@@ -1,0 +1,338 @@
+{
+  "species_id": "MN_214",
+  "name": "buttermuse",
+  "status": "native-review-recommended; root independent review and context required",
+  "selected_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f098/buttermuse.manifest-native-joint-phase-v1.json",
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/true16-buttermuse-joint-phase-v1",
+  "shared_transform": {
+    "source_bounds": [
+      12,
+      12,
+      346,
+      427
+    ],
+    "native_size": [
+      11,
+      14
+    ],
+    "native_origin": [
+      2,
+      1
+    ]
+  },
+  "all_four_nonrear_poses_actual_pupils_pass": true,
+  "each_native_eye_cluster_maps_to_one_actual_small_source_pupil_component": true,
+  "actual_source_pupil_proofs": [
+    {
+      "pose": "down_idle",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f098/buttermuse.overworld.imagegen-v1.png",
+      "crop": [
+        133,
+        51,
+        359,
+        451
+      ],
+      "actual_source_eye_bounds": [
+        [
+          274,
+          218,
+          20,
+          29
+        ],
+        [
+          349,
+          218,
+          20,
+          29
+        ]
+      ],
+      "eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              6,
+              6
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                0,
+                0,
+                0,
+                253
+              ],
+              "bounds": [
+                274,
+                218,
+                20,
+                29
+              ],
+              "pixels": 580,
+              "truncated_contour": false,
+              "native_pixel": [
+                6,
+                6
+              ],
+              "source_sample_pixel": [
+                286,
+                230
+              ]
+            }
+          ]
+        },
+        {
+          "native_cluster": [
+            [
+              8,
+              6
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                7,
+                6,
+                1,
+                253
+              ],
+              "bounds": [
+                349,
+                218,
+                20,
+                29
+              ],
+              "pixels": 580,
+              "truncated_contour": false,
+              "native_pixel": [
+                8,
+                6
+              ],
+              "source_sample_pixel": [
+                349,
+                230
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f098/buttermuse.overworld.imagegen-v1.png",
+      "crop": [
+        1067,
+        61,
+        359,
+        451
+      ],
+      "actual_source_eye_bounds": [
+        [
+          1148,
+          218,
+          19,
+          29
+        ]
+      ],
+      "eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              4,
+              6
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                2,
+                1,
+                0,
+                253
+              ],
+              "bounds": [
+                1148,
+                218,
+                19,
+                29
+              ],
+              "pixels": 551,
+              "truncated_contour": false,
+              "native_pixel": [
+                4,
+                6
+              ],
+              "source_sample_pixel": [
+                1157,
+                240
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f098/buttermuse.overworld.imagegen-v1.png",
+      "crop": [
+        134,
+        520,
+        359,
+        451
+      ],
+      "actual_source_eye_bounds": [
+        [
+          273,
+          687,
+          20,
+          29
+        ],
+        [
+          348,
+          687,
+          20,
+          29
+        ]
+      ],
+      "eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              6,
+              6
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                2,
+                1,
+                0,
+                253
+              ],
+              "bounds": [
+                273,
+                687,
+                20,
+                29
+              ],
+              "pixels": 573,
+              "truncated_contour": false,
+              "native_pixel": [
+                6,
+                6
+              ],
+              "source_sample_pixel": [
+                287,
+                699
+              ]
+            }
+          ]
+        },
+        {
+          "native_cluster": [
+            [
+              8,
+              6
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                2,
+                1,
+                1,
+                253
+              ],
+              "bounds": [
+                348,
+                687,
+                20,
+                29
+              ],
+              "pixels": 580,
+              "truncated_contour": false,
+              "native_pixel": [
+                8,
+                6
+              ],
+              "source_sample_pixel": [
+                350,
+                699
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f098/buttermuse.overworld.imagegen-v1.png",
+      "crop": [
+        1068,
+        520,
+        359,
+        451
+      ],
+      "actual_source_eye_bounds": [
+        [
+          1148,
+          687,
+          19,
+          29
+        ]
+      ],
+      "eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              4,
+              6
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                0,
+                0,
+                0,
+                253
+              ],
+              "bounds": [
+                1148,
+                687,
+                19,
+                29
+              ],
+              "pixels": 551,
+              "truncated_contour": false,
+              "native_pixel": [
+                4,
+                6
+              ],
+              "source_sample_pixel": [
+                1158,
+                699
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "old_native_poses_preserved_exactly": [],
+  "normal_shiny_runtime_parity": "all1536pixels exact each",
+  "canonical_palette_bytes": "exact",
+  "all_three_walk_pairs_distinct": true,
+  "rear_review": "Both rear native poses viewed: no copied face or actual pupil components. Black curl/tuft notches are anatomical butter-shaving outlines, not eyes; blank broad rear head plane.",
+  "normal_shiny_native_boards_actually_viewed": true,
+  "accepted_coverage_native_pack_untouched": true,
+  "manifest_sha256": "4d185ea93389dfc12da01979dc33ed59566d71b798020e87c88ef97d0e1fc0b8",
+  "compiled_index_sha256": "028e69830d69ae781c0261a4d4519b780390f4dd2b08e211f600755db39834e0"
+}

@@ -1,10 +1,13 @@
 # Minneapolis, St Paul and Duluth: smaller, tighter cities
 
-The latest direction, **“Smaller but tighter,”** replaces the96×72 proposals.
-Each whole city is 64×48 metatiles, with its original native identity, regional
-roads, clinic, gym and story rooms retained. These are local implementation and
-review fixtures; the user has not granted final visual approval or accepted all
-20 routes.
+The published baseline replaces the96×72 proposals with64×48 whole cities,
+retaining original native identities, regional roads, clinics, gyms and story
+rooms. **“Smaller but tighter”** remains the active direction: player-camera
+review found excessive lawn. [Compact Minneapolis with St. Anthony Falls](minneapolis-falls.md)
+is now published at40×32 with all40 entrances and44 rooms retained. Its river
+continues through both map edges. St Paul remains a separate source assessment
+under the [recomposition contract](../cities/RECOMPOSITION.md). The user has not granted final visual
+approval or accepted all20 routes.
 
 [Three whole towns at one scale](../renders/cities/tight-final-v02/whole-town-review/whole-towns-review.png)
 shows actual native-source exterior geometry. Every original full-resolution

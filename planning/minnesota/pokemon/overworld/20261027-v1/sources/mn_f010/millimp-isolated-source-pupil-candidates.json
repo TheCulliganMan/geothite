@@ -1,0 +1,1224 @@
+[
+  {
+    "score": 6,
+    "sizes": [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
+    ],
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/millimp-v2-registered-x8-y-12",
+    "actual_eye_hits": 6,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            252,
+            347
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            10
+          ],
+          "source": [
+            336,
+            347
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            252,
+            777
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            10
+          ],
+          "source": [
+            336,
+            777
+          ]
+        }
+      ],
+      "left_idle": [
+        {
+          "eye": 0,
+          "native": [
+            4,
+            8
+          ],
+          "source": [
+            1188,
+            302
+          ]
+        }
+      ],
+      "left_step": [
+        {
+          "eye": 0,
+          "native": [
+            4,
+            8
+          ],
+          "source": [
+            1188,
+            732
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "score": 6,
+    "sizes": [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
+    ],
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/millimp-v2-registered-x8-y-8",
+    "actual_eye_hits": 6,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            252,
+            347
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            10
+          ],
+          "source": [
+            336,
+            347
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            252,
+            777
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            10
+          ],
+          "source": [
+            336,
+            777
+          ]
+        }
+      ],
+      "left_idle": [
+        {
+          "eye": 0,
+          "native": [
+            4,
+            8
+          ],
+          "source": [
+            1188,
+            298
+          ]
+        }
+      ],
+      "left_step": [
+        {
+          "eye": 0,
+          "native": [
+            4,
+            8
+          ],
+          "source": [
+            1188,
+            728
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "score": 6,
+    "sizes": [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
+    ],
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/millimp-v2-registered-x12-y-8",
+    "actual_eye_hits": 6,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            255,
+            347
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            10
+          ],
+          "source": [
+            337,
+            347
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            255,
+            777
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            10
+          ],
+          "source": [
+            337,
+            777
+          ]
+        }
+      ],
+      "left_idle": [
+        {
+          "eye": 0,
+          "native": [
+            4,
+            8
+          ],
+          "source": [
+            1187,
+            298
+          ]
+        }
+      ],
+      "left_step": [
+        {
+          "eye": 0,
+          "native": [
+            4,
+            8
+          ],
+          "source": [
+            1187,
+            728
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "score": 6,
+    "sizes": [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
+    ],
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/millimp-v2-registered-x12-y12",
+    "actual_eye_hits": 6,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            9
+          ],
+          "source": [
+            255,
+            325
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            9
+          ],
+          "source": [
+            337,
+            325
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            9
+          ],
+          "source": [
+            255,
+            755
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            9
+          ],
+          "source": [
+            337,
+            755
+          ]
+        }
+      ],
+      "left_idle": [
+        {
+          "eye": 0,
+          "native": [
+            4,
+            9
+          ],
+          "source": [
+            1187,
+            313
+          ]
+        }
+      ],
+      "left_step": [
+        {
+          "eye": 0,
+          "native": [
+            4,
+            8
+          ],
+          "source": [
+            1187,
+            714
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "score": 6,
+    "sizes": [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
+    ],
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/millimp-v2-registered-x12-y-12",
+    "actual_eye_hits": 6,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            255,
+            347
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            10
+          ],
+          "source": [
+            337,
+            347
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            255,
+            777
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            10
+          ],
+          "source": [
+            337,
+            777
+          ]
+        }
+      ],
+      "left_idle": [
+        {
+          "eye": 0,
+          "native": [
+            4,
+            8
+          ],
+          "source": [
+            1187,
+            302
+          ]
+        }
+      ],
+      "left_step": [
+        {
+          "eye": 0,
+          "native": [
+            4,
+            8
+          ],
+          "source": [
+            1187,
+            732
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "score": 6,
+    "sizes": [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
+    ],
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/millimp-v2-registered-x8-y-4",
+    "actual_eye_hits": 6,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            252,
+            347
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            10
+          ],
+          "source": [
+            336,
+            347
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            252,
+            777
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            10
+          ],
+          "source": [
+            336,
+            777
+          ]
+        }
+      ],
+      "left_idle": [
+        {
+          "eye": 0,
+          "native": [
+            4,
+            8
+          ],
+          "source": [
+            1188,
+            294
+          ]
+        }
+      ],
+      "left_step": [
+        {
+          "eye": 0,
+          "native": [
+            4,
+            8
+          ],
+          "source": [
+            1188,
+            724
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "score": 6,
+    "sizes": [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
+    ],
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/millimp-v2-registered-x12-y-4",
+    "actual_eye_hits": 6,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            255,
+            347
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            10
+          ],
+          "source": [
+            337,
+            347
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            255,
+            777
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            10
+          ],
+          "source": [
+            337,
+            777
+          ]
+        }
+      ],
+      "left_idle": [
+        {
+          "eye": 0,
+          "native": [
+            4,
+            8
+          ],
+          "source": [
+            1187,
+            294
+          ]
+        }
+      ],
+      "left_step": [
+        {
+          "eye": 0,
+          "native": [
+            4,
+            8
+          ],
+          "source": [
+            1187,
+            724
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "score": 6,
+    "sizes": [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
+    ],
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/millimp-v2-registered-x8-y12",
+    "actual_eye_hits": 6,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            9
+          ],
+          "source": [
+            252,
+            325
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            9
+          ],
+          "source": [
+            336,
+            325
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            9
+          ],
+          "source": [
+            252,
+            755
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            9
+          ],
+          "source": [
+            336,
+            755
+          ]
+        }
+      ],
+      "left_idle": [
+        {
+          "eye": 0,
+          "native": [
+            4,
+            9
+          ],
+          "source": [
+            1188,
+            313
+          ]
+        }
+      ],
+      "left_step": [
+        {
+          "eye": 0,
+          "native": [
+            4,
+            8
+          ],
+          "source": [
+            1188,
+            714
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "score": 9,
+    "sizes": [
+      2,
+      2,
+      1,
+      1,
+      2,
+      1
+    ],
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/millimp-v2-registered-x12-y4",
+    "actual_eye_hits": 6,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            9
+          ],
+          "source": [
+            255,
+            321
+          ]
+        },
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            255,
+            350
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            9
+          ],
+          "source": [
+            337,
+            321
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            10
+          ],
+          "source": [
+            337,
+            350
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            255,
+            780
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            10
+          ],
+          "source": [
+            337,
+            780
+          ]
+        }
+      ],
+      "left_idle": [
+        {
+          "eye": 0,
+          "native": [
+            4,
+            8
+          ],
+          "source": [
+            1187,
+            288
+          ]
+        },
+        {
+          "eye": 0,
+          "native": [
+            4,
+            9
+          ],
+          "source": [
+            1187,
+            317
+          ]
+        }
+      ],
+      "left_step": [
+        {
+          "eye": 0,
+          "native": [
+            4,
+            8
+          ],
+          "source": [
+            1187,
+            718
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "score": 9,
+    "sizes": [
+      2,
+      2,
+      1,
+      1,
+      2,
+      1
+    ],
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/millimp-v2-registered-x8-y4",
+    "actual_eye_hits": 6,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            9
+          ],
+          "source": [
+            252,
+            321
+          ]
+        },
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            252,
+            350
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            9
+          ],
+          "source": [
+            336,
+            321
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            10
+          ],
+          "source": [
+            336,
+            350
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            252,
+            780
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            10
+          ],
+          "source": [
+            336,
+            780
+          ]
+        }
+      ],
+      "left_idle": [
+        {
+          "eye": 0,
+          "native": [
+            4,
+            8
+          ],
+          "source": [
+            1188,
+            288
+          ]
+        },
+        {
+          "eye": 0,
+          "native": [
+            4,
+            9
+          ],
+          "source": [
+            1188,
+            317
+          ]
+        }
+      ],
+      "left_step": [
+        {
+          "eye": 0,
+          "native": [
+            4,
+            8
+          ],
+          "source": [
+            1188,
+            718
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "score": 10,
+    "sizes": [
+      2,
+      2,
+      2,
+      2,
+      1,
+      1
+    ],
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/millimp-v2-registered-x8-y8",
+    "actual_eye_hits": 6,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            9
+          ],
+          "source": [
+            252,
+            323
+          ]
+        },
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            252,
+            352
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            9
+          ],
+          "source": [
+            336,
+            323
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            10
+          ],
+          "source": [
+            336,
+            352
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            9
+          ],
+          "source": [
+            252,
+            753
+          ]
+        },
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            252,
+            782
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            9
+          ],
+          "source": [
+            336,
+            753
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            10
+          ],
+          "source": [
+            336,
+            782
+          ]
+        }
+      ],
+      "left_idle": [
+        {
+          "eye": 0,
+          "native": [
+            4,
+            9
+          ],
+          "source": [
+            1188,
+            315
+          ]
+        }
+      ],
+      "left_step": [
+        {
+          "eye": 0,
+          "native": [
+            4,
+            8
+          ],
+          "source": [
+            1188,
+            716
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "score": 10,
+    "sizes": [
+      2,
+      2,
+      2,
+      2,
+      1,
+      1
+    ],
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/millimp-v2-registered-x12-y8",
+    "actual_eye_hits": 6,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            9
+          ],
+          "source": [
+            255,
+            323
+          ]
+        },
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            255,
+            352
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            9
+          ],
+          "source": [
+            337,
+            323
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            10
+          ],
+          "source": [
+            337,
+            352
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            9
+          ],
+          "source": [
+            255,
+            753
+          ]
+        },
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            255,
+            782
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            9
+          ],
+          "source": [
+            337,
+            753
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            10
+          ],
+          "source": [
+            337,
+            782
+          ]
+        }
+      ],
+      "left_idle": [
+        {
+          "eye": 0,
+          "native": [
+            4,
+            9
+          ],
+          "source": [
+            1187,
+            315
+          ]
+        }
+      ],
+      "left_step": [
+        {
+          "eye": 0,
+          "native": [
+            4,
+            8
+          ],
+          "source": [
+            1187,
+            716
+          ]
+        }
+      ]
+    }
+  }
+]

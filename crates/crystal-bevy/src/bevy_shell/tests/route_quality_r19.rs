@@ -1,4 +1,4 @@
-//! Proposed local R19 geometry regression for the published oak/prairie candidate.
+//! Local R19 geometry regression for the published oak/prairie candidate.
 //! Placement is an explicit empty-party fixture. The dry watch-lane subcase also
 //! starts with Merrit's defeat flag set; it does not claim an earned victory.
 //! After initial setup every movement uses VisibleShellController::press.

@@ -1,0 +1,96 @@
+{
+  "use_case": "stylized-concept",
+  "image_inputs": [
+    {
+      "role": "native16coarsestyleONLY",
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/references/native-pack-16px/native-six-frame-style-board.8x.png"
+    }
+  ],
+  "canonical_identity_refs_actually_viewed": {
+    "front": {
+      "native_png": {
+        "path": "target/minnesota-pokemon/native/MN_F038/mn-089-lutebrisk-v2.front.png",
+        "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F038/mn-089-lutebrisk-v2.front.png",
+        "sha256": "525449429e45e14b85822182b7c7535e33d5b27b9c7a2c20e7bb0d998629765d"
+      },
+      "native_indexed_json": {
+        "path": "target/minnesota-pokemon/native/MN_F038/mn-089-lutebrisk-v2.front.json",
+        "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F038/mn-089-lutebrisk-v2.front.json",
+        "sha256": "6ca64e2f9f59dd28cb450890f1bad6ef9e6f6074ecae11329a9bbb5371c93940"
+      },
+      "native_2bpp": {
+        "path": "target/minnesota-pokemon/native/MN_F038/mn-089-lutebrisk-v2.front.2bpp",
+        "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F038/mn-089-lutebrisk-v2.front.2bpp",
+        "sha256": "4c049b14f0d617b1a0ca3409765c020b9c7bef979ab6983f6e1cdcb79abc2cab"
+      },
+      "source_image": {
+        "path": "planning/minnesota/pokemon/sprites/mn-f038/front-back.imagegen-v2.png",
+        "absolute_path": "/Users/ryanculligan/GitHub/geothite/planning/minnesota/pokemon/sprites/mn-f038/front-back.imagegen-v2.png",
+        "sha256": "001add01e409047ad5b25c67eb6b7f9a29b34beac2f836152d04baa4e2d4ffb0"
+      },
+      "source_crop": [
+        0,
+        0,
+        1215,
+        647
+      ],
+      "native_fit": [
+        54,
+        40
+      ],
+      "generation_prompt": {
+        "path": "planning/minnesota/pokemon/sprites/mn-f038/prompt-v2.txt",
+        "absolute_path": "/Users/ryanculligan/GitHub/geothite/planning/minnesota/pokemon/sprites/mn-f038/prompt-v2.txt",
+        "sha256": "0220085ab355101dc8df13873b7863f01085e3e33f7318412b4a902660637945",
+        "reference_kind": "declared_design_prompt_reference; authoritative view record takes precedence over family default"
+      },
+      "sampling": "area_vote",
+      "exterior_contour": "solid",
+      "has_guarded_native_refinements": false,
+      "authority_note": "The current selected native PNG is the design authority; original source may contain detail simplified or refined in canonical conversion."
+    },
+    "back": {
+      "native_png": {
+        "path": "target/minnesota-pokemon/native/MN_F038/mn-089-lutebrisk-v2.back.png",
+        "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F038/mn-089-lutebrisk-v2.back.png",
+        "sha256": "be8cc7a4d53baceb3546812844b9e9bed6865110032451d884a9e80d4e6982cb"
+      },
+      "native_indexed_json": {
+        "path": "target/minnesota-pokemon/native/MN_F038/mn-089-lutebrisk-v2.back.json",
+        "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F038/mn-089-lutebrisk-v2.back.json",
+        "sha256": "41033ec75625a4862821d7f81457bd97ee5517658cd3ac85683a1e4d9f75a389"
+      },
+      "native_2bpp": {
+        "path": "target/minnesota-pokemon/native/MN_F038/mn-089-lutebrisk-v2.back.2bpp",
+        "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F038/mn-089-lutebrisk-v2.back.2bpp",
+        "sha256": "c7b91d8b8be2d36b4adaaa045bc60c23f846c7ec7ccf029f70ddfad91be0af55"
+      },
+      "source_image": {
+        "path": "planning/minnesota/pokemon/sprites/mn-f038/front-back.imagegen-v2.png",
+        "absolute_path": "/Users/ryanculligan/GitHub/geothite/planning/minnesota/pokemon/sprites/mn-f038/front-back.imagegen-v2.png",
+        "sha256": "001add01e409047ad5b25c67eb6b7f9a29b34beac2f836152d04baa4e2d4ffb0"
+      },
+      "source_crop": [
+        0,
+        647,
+        1215,
+        648
+      ],
+      "native_fit": [
+        46,
+        47
+      ],
+      "generation_prompt": {
+        "path": "planning/minnesota/pokemon/sprites/mn-f038/prompt-v2.txt",
+        "absolute_path": "/Users/ryanculligan/GitHub/geothite/planning/minnesota/pokemon/sprites/mn-f038/prompt-v2.txt",
+        "sha256": "0220085ab355101dc8df13873b7863f01085e3e33f7318412b4a902660637945",
+        "reference_kind": "declared_design_prompt_reference; authoritative view record takes precedence over family default"
+      },
+      "sampling": "area_vote",
+      "exterior_contour": "solid",
+      "has_guarded_native_refinements": false,
+      "authority_note": "The current selected native PNG is the design authority; original source may contain detail simplified or refined in canonical conversion."
+    }
+  },
+  "design_note": "LUTEBRISK pureICE: floatingbutter-filledLUTEFISK COD FISH, largebroadsoft flakyfilletbody, goldenbutterheartandbroadbutterribbonswithinbelly,2or3broadsteppedflankflakes; brightbutteryellowink1 simplifiedformerlywhiteflesh/core, icyblueink2 finedges/shadowsseparatecore. Shortroundedcodhead, ONEsmallcurledCHINBARBEL, TWO lateralpectoralFINS,2broadlowDORSALFINS, broadslightlyFORKEDTAIL. Noarms/legs/feet/paws/tentacles/ears; hover/swim motiononly. Largefriendlyactualblackpupils, prominentcoloredface. SOUTH truefishheadBOTTOM/tailTOP behindbodywithbothactualpupils; NORTH truefullREAR headTOPlookingaway/tailBOTTOM, blankbackofheadNOeyes/mouth; WEST genuinehorizontalprofileheadLEFT/tailRIGHT withONEnearpupil. Head/eyeanchorstable, actualpairedfins/tailflexinall3stepposes, notsameposecopiedandtranslated. Butterisfood, NOflames/heat. Maxnative14x14."
+}

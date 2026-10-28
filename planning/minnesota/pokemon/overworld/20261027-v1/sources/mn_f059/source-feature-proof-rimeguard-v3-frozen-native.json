@@ -1,0 +1,336 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_130",
+  "result": "pass",
+  "manifest_sha256": "65144cd3d23a929d43735ce95798993232cd7dc7f2c3753f329031d96a209ef4",
+  "bank_sha256": "6ad90d6c8d9442692b3252b2a9a6a3e96d9d6b1f37546c6bd9b7f8ed197aade9",
+  "source_sha256": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f059/rimeguard.overworld.imagegen-v3-roomy-face.png": "bc9e175e94641459941c6a4115d1cf8697bbe83d2ba3535412b447fe7a3812af"
+  },
+  "canonical_eye_form": "Two actual black isolated pupils south, one west, mapped to actual small source pupil components in all4 nonrear poses.",
+  "nonrear_poses": [
+    {
+      "pose": "down_idle",
+      "result": "pass",
+      "source_feature_proof": {
+        "pose": "down_idle",
+        "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f059/rimeguard.overworld.imagegen-v3-roomy-face.png",
+        "crop": [
+          21,
+          100,
+          479,
+          362
+        ],
+        "anatomically_identified_source_eye_boxes_xywh": [
+          [
+            224,
+            297,
+            31,
+            34
+          ],
+          [
+            279,
+            297,
+            31,
+            34
+          ]
+        ],
+        "actual_eye_proofs": [
+          {
+            "native_cluster": [
+              [
+                7,
+                10
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  0,
+                  0,
+                  0,
+                  253
+                ],
+                "bounds": [
+                  224,
+                  297,
+                  31,
+                  34
+                ],
+                "pixels": 1053,
+                "truncated_contour": false,
+                "native_pixel": [
+                  7,
+                  10
+                ],
+                "source_sample_pixel": [
+                  246,
+                  305
+                ]
+              }
+            ]
+          },
+          {
+            "native_cluster": [
+              [
+                9,
+                10
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  3,
+                  4,
+                  4,
+                  253
+                ],
+                "bounds": [
+                  279,
+                  297,
+                  31,
+                  34
+                ],
+                "pixels": 1053,
+                "truncated_contour": false,
+                "native_pixel": [
+                  9,
+                  10
+                ],
+                "source_sample_pixel": [
+                  309,
+                  305
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "pose": "left_idle",
+      "result": "pass",
+      "source_feature_proof": {
+        "pose": "left_idle",
+        "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f059/rimeguard.overworld.imagegen-v3-roomy-face.png",
+        "crop": [
+          1056,
+          102,
+          479,
+          362
+        ],
+        "anatomically_identified_source_eye_boxes_xywh": [
+          [
+            1144,
+            297,
+            31,
+            34
+          ]
+        ],
+        "actual_eye_proofs": [
+          {
+            "native_cluster": [
+              [
+                3,
+                10
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  0,
+                  0,
+                  0,
+                  252
+                ],
+                "bounds": [
+                  1144,
+                  297,
+                  31,
+                  34
+                ],
+                "pixels": 1054,
+                "truncated_contour": false,
+                "native_pixel": [
+                  3,
+                  10
+                ],
+                "source_sample_pixel": [
+                  1153,
+                  307
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "pose": "down_step",
+      "result": "pass",
+      "source_feature_proof": {
+        "pose": "down_step",
+        "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f059/rimeguard.overworld.imagegen-v3-roomy-face.png",
+        "crop": [
+          21,
+          541,
+          479,
+          362
+        ],
+        "anatomically_identified_source_eye_boxes_xywh": [
+          [
+            224,
+            742,
+            31,
+            35
+          ],
+          [
+            279,
+            742,
+            31,
+            35
+          ]
+        ],
+        "actual_eye_proofs": [
+          {
+            "native_cluster": [
+              [
+                7,
+                10
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  1,
+                  0,
+                  0,
+                  253
+                ],
+                "bounds": [
+                  224,
+                  742,
+                  31,
+                  35
+                ],
+                "pixels": 1083,
+                "truncated_contour": false,
+                "native_pixel": [
+                  7,
+                  10
+                ],
+                "source_sample_pixel": [
+                  246,
+                  746
+                ]
+              }
+            ]
+          },
+          {
+            "native_cluster": [
+              [
+                9,
+                10
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  2,
+                  3,
+                  4,
+                  253
+                ],
+                "bounds": [
+                  279,
+                  742,
+                  31,
+                  35
+                ],
+                "pixels": 1084,
+                "truncated_contour": false,
+                "native_pixel": [
+                  9,
+                  10
+                ],
+                "source_sample_pixel": [
+                  309,
+                  746
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "pose": "left_step",
+      "result": "pass",
+      "source_feature_proof": {
+        "pose": "left_step",
+        "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f059/rimeguard.overworld.imagegen-v3-roomy-face.png",
+        "crop": [
+          1056,
+          548,
+          479,
+          362
+        ],
+        "anatomically_identified_source_eye_boxes_xywh": [
+          [
+            1144,
+            738,
+            31,
+            35
+          ]
+        ],
+        "actual_eye_proofs": [
+          {
+            "native_cluster": [
+              [
+                3,
+                10
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  0,
+                  0,
+                  0,
+                  253
+                ],
+                "bounds": [
+                  1144,
+                  738,
+                  31,
+                  35
+                ],
+                "pixels": 1063,
+                "truncated_contour": false,
+                "native_pixel": [
+                  3,
+                  10
+                ],
+                "source_sample_pixel": [
+                  1153,
+                  753
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "rear_anatomy": {
+    "result": "pass",
+    "notes": "Both native normal/shiny true rear poses actually reviewed: plain rear closed flower folds or snowcapped posts, no copied face. All anatomy is source-backed; native pixels were not painted."
+  },
+  "detailed_proof": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f059/manifest-rimeguard-v3-frozen-native.proof.json"
+}

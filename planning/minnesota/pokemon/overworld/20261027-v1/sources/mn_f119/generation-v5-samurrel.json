@@ -1,0 +1,13 @@
+{
+  "tool": "built-in image_gen",
+  "original_tool_path": "/Users/ryanculligan/.codex/generated_images/01a17dcc-4f1a-77a2-9d21-0df036061346/exec-44e85dbf-2229-449d-8df3-55d9f6d8dcec.png",
+  "source_size": [
+    2170,
+    725
+  ],
+  "sha256": "e7f0a051e360a0e92d0e85a53dacb0d652f73e6262dffbd67ab81daaea084c1a",
+  "reference_paths": [
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/true16-family-v4/MN_F119/review/samurrel.normal-8x.png"
+  ],
+  "prompt": "prompt-v5-samurrel.txt"
+}

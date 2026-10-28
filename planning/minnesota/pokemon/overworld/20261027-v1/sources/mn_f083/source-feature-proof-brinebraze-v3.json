@@ -1,0 +1,343 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_181",
+  "result": "pass",
+  "manifest_sha256": "181e9b286fe40948f33c2b476ff0ddbff4508d2822090bb15e1feb04e216276c",
+  "bank_sha256": "249e4bfe39c9264640b1c2796cfbc252f344fda04f49f154776b4a1acd886b54",
+  "source_sha256": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f083/brinebraze.overworld.imagegen-v3-swim-motion.png": "a8853b8589d8d57246ae344666d2d4fcae7afc5783879919e552b86fb0517107"
+  },
+  "canonical_eye_form": "TWO real black pupils SOUTH/ONE real near pupil WEST, all complete native clusters map to actual small anatomical source pupil component, no coal-chamber/gill/plate seam dots counted.",
+  "nonrear_poses": [
+    {
+      "pose": "down_idle",
+      "result": "pass",
+      "source_feature_proof": {
+        "pose": "down_idle",
+        "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f083/brinebraze.overworld.imagegen-v3-swim-motion.png",
+        "crop": [
+          113,
+          105,
+          420,
+          380
+        ],
+        "anatomically_identified_source_eye_boxes_xywh": [
+          [
+            234,
+            362,
+            17,
+            20
+          ],
+          [
+            292,
+            362,
+            17,
+            20
+          ]
+        ],
+        "actual_eye_proofs": [
+          {
+            "native_cluster": [
+              [
+                5,
+                12
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  1,
+                  0,
+                  0,
+                  253
+                ],
+                "bounds": [
+                  234,
+                  362,
+                  17,
+                  20
+                ],
+                "pixels": 340,
+                "truncated_contour": false,
+                "native_pixel": [
+                  5,
+                  12
+                ],
+                "source_sample_pixel": [
+                  245,
+                  373
+                ]
+              }
+            ]
+          },
+          {
+            "native_cluster": [
+              [
+                7,
+                12
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  5,
+                  3,
+                  1,
+                  254
+                ],
+                "bounds": [
+                  292,
+                  362,
+                  17,
+                  20
+                ],
+                "pixels": 340,
+                "truncated_contour": false,
+                "native_pixel": [
+                  7,
+                  12
+                ],
+                "source_sample_pixel": [
+                  296,
+                  373
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "pose": "left_idle",
+      "result": "pass",
+      "source_feature_proof": {
+        "pose": "left_idle",
+        "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f083/brinebraze.overworld.imagegen-v3-swim-motion.png",
+        "crop": [
+          1038,
+          168,
+          420,
+          380
+        ],
+        "anatomically_identified_source_eye_boxes_xywh": [
+          [
+            1090,
+            316,
+            17,
+            20
+          ]
+        ],
+        "actual_eye_proofs": [
+          {
+            "native_cluster": [
+              [
+                2,
+                8
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  7,
+                  3,
+                  2,
+                  253
+                ],
+                "bounds": [
+                  1090,
+                  316,
+                  17,
+                  20
+                ],
+                "pixels": 340,
+                "truncated_contour": false,
+                "native_pixel": [
+                  2,
+                  8
+                ],
+                "source_sample_pixel": [
+                  1092,
+                  329
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "pose": "down_step",
+      "result": "pass",
+      "source_feature_proof": {
+        "pose": "down_step",
+        "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f083/brinebraze.overworld.imagegen-v3-swim-motion.png",
+        "crop": [
+          110,
+          549,
+          420,
+          380
+        ],
+        "anatomically_identified_source_eye_boxes_xywh": [
+          [
+            234,
+            809,
+            17,
+            20
+          ],
+          [
+            292,
+            809,
+            17,
+            20
+          ]
+        ],
+        "actual_eye_proofs": [
+          {
+            "native_cluster": [
+              [
+                5,
+                12
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  0,
+                  0,
+                  0,
+                  253
+                ],
+                "bounds": [
+                  234,
+                  809,
+                  17,
+                  20
+                ],
+                "pixels": 340,
+                "truncated_contour": false,
+                "native_pixel": [
+                  5,
+                  12
+                ],
+                "source_sample_pixel": [
+                  242,
+                  817
+                ]
+              }
+            ]
+          },
+          {
+            "native_cluster": [
+              [
+                7,
+                12
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  0,
+                  0,
+                  0,
+                  253
+                ],
+                "bounds": [
+                  292,
+                  809,
+                  17,
+                  20
+                ],
+                "pixels": 340,
+                "truncated_contour": false,
+                "native_pixel": [
+                  7,
+                  12
+                ],
+                "source_sample_pixel": [
+                  293,
+                  817
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "pose": "left_step",
+      "result": "pass",
+      "source_feature_proof": {
+        "pose": "left_step",
+        "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f083/brinebraze.overworld.imagegen-v3-swim-motion.png",
+        "crop": [
+          1037,
+          616,
+          420,
+          380
+        ],
+        "anatomically_identified_source_eye_boxes_xywh": [
+          [
+            1090,
+            764,
+            17,
+            20
+          ]
+        ],
+        "actual_eye_proofs": [
+          {
+            "native_cluster": [
+              [
+                2,
+                8
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  0,
+                  0,
+                  0,
+                  253
+                ],
+                "bounds": [
+                  1090,
+                  764,
+                  17,
+                  20
+                ],
+                "pixels": 340,
+                "truncated_contour": false,
+                "native_pixel": [
+                  2,
+                  8
+                ],
+                "source_sample_pixel": [
+                  1091,
+                  777
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "rear_anatomy": {
+    "result": "pass",
+    "notes": "Actual normal/shiny rear poses viewed: plain charcoal backskull atTOP, two canonical dorsal saltprongs are anatomy rather than copied eye features; bronze gillcollar/shutterback, tailBOTTOM, no actual face/pupils."
+  },
+  "detailed_proof": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f083/manifest-brinebraze-v3-pupil-proof.proof.json",
+  "source_motion_review": {
+    "source_sheet_actually_viewed": true,
+    "south": "Actual source paired pectoral fins and tail change shape/sweep, fixed face pupils.",
+    "north": "Actual source tail/fin stroke changes behind blank head; no whole-body translation substituted for anatomy.",
+    "west": "Actual source tail and pectoral fin alter swimming silhouette, no invented footsteps.",
+    "native_result": "All3 idle/swimstep pairs distinct; all actual pupil anchors equal."
+  }
+}

@@ -2348,6 +2348,7 @@ fn battle_item(id: &str, heal_amount: i16, battle_usable: bool) -> Item {
         battle_focus_energy: None,
         battle_stat_drop_guard: None,
         confusion_heal: None,
+        confusion_inflict_turns: None,
         repel_steps: None,
         escape_rope_mode: None,
         price: 0,
@@ -15682,60 +15683,68 @@ fn direct_positive_stat_stage_move_targets_user_from_pack_amount() {
 
 #[test]
 fn damaging_stat_stage_move_applies_after_damage_with_pack_chance() {
-    let player = pokemon("DIGLETT", 50, pokemon_type("NORMAL"), "MUD_SLAP");
-    let enemy = pokemon("RATTATA", 40, pokemon_type("NORMAL"), "TACKLE");
-    let enemy_hp = enemy.hp;
-    let moves = BTreeMap::from([
-        (
-            "MUD_SLAP".to_string(),
-            move_data_with_stat(
-                "MUD_SLAP",
-                pokemon_type("NORMAL"),
-                20,
-                100,
-                "ACCURACY_DOWN_HIT",
-                100,
-                Stat::Accuracy,
-                -1,
+    for annotated in [true, false] {
+        let player = pokemon("DIGLETT", 50, pokemon_type("NORMAL"), "MUD_SLAP");
+        let enemy = pokemon("RATTATA", 40, pokemon_type("NORMAL"), "TACKLE");
+        let enemy_hp = enemy.hp;
+        let mut moves = BTreeMap::from([
+            (
+                "MUD_SLAP".to_string(),
+                move_data_with_stat(
+                    "MUD_SLAP",
+                    pokemon_type("NORMAL"),
+                    20,
+                    100,
+                    "ACCURACY_DOWN_HIT",
+                    100,
+                    Stat::Accuracy,
+                    -1,
+                ),
             ),
-        ),
-        (
-            "TACKLE".to_string(),
-            move_data("TACKLE", pokemon_type("NORMAL"), 35, 100),
-        ),
-    ]);
-    let mut rng = Random::new(1);
+            (
+                "TACKLE".to_string(),
+                move_data("TACKLE", pokemon_type("NORMAL"), 35, 100),
+            ),
+        ]);
+        if !annotated {
+            let mud_slap = moves.get_mut("MUD_SLAP").expect("native effect record");
+            mud_slap.stat = None;
+            mud_slap.amount = None;
+        }
 
-    let outcome = resolve_battle_turn(
-        battle_state(player, enemy, rng.seed()),
-        BattleTurnInput {
-            player: BattleAction::Move { slot: 0 },
-            enemy: BattleAction::Move { slot: 0 },
-        },
-        &moves,
-        &move_priorities(),
-        &stat_multipliers(),
-        &type_categories(),
-        &type_effectiveness_table(),
-        &weather_modifiers(),
-        &mut rng,
-    )
-    .expect("damaging stat move resolves");
+        let mut rng = Random::new(1);
 
-    assert!(outcome.state.enemy.hp < enemy_hp);
-    assert_eq!(
-        outcome.state.enemy.stat_boosts.get(&Stat::Accuracy),
-        Some(&-1)
-    );
-    assert!(outcome.events.contains(&BattleEvent::StatStageChanged {
-        side: BattleSide::Player,
-        move_name: "MUD_SLAP".to_string(),
-        target: BattleSide::Enemy,
-        stat: Stat::Accuracy,
-        amount: -1,
-        stage_before: 0,
-        stage_after: -1,
-    }));
+        let outcome = resolve_battle_turn(
+            battle_state(player, enemy, rng.seed()),
+            BattleTurnInput {
+                player: BattleAction::Move { slot: 0 },
+                enemy: BattleAction::Move { slot: 0 },
+            },
+            &moves,
+            &move_priorities(),
+            &stat_multipliers(),
+            &type_categories(),
+            &type_effectiveness_table(),
+            &weather_modifiers(),
+            &mut rng,
+        )
+        .expect("damaging stat move resolves");
+
+        assert!(outcome.state.enemy.hp < enemy_hp);
+        assert_eq!(
+            outcome.state.enemy.stat_boosts.get(&Stat::Accuracy),
+            Some(&-1)
+        );
+        assert!(outcome.events.contains(&BattleEvent::StatStageChanged {
+            side: BattleSide::Player,
+            move_name: "MUD_SLAP".to_string(),
+            target: BattleSide::Enemy,
+            stat: Stat::Accuracy,
+            amount: -1,
+            stage_before: 0,
+            stage_after: -1,
+        }));
+    }
 }
 
 #[test]
@@ -31362,6 +31371,7 @@ fn modern_move_split_counter_reflects_a_physical_fire_move() {
             )),
             _ => None,
         })
+
         .expect("counter reflects tackle damage");
     assert_eq!(reflected.0, source_damage);
     assert_eq!(reflected.1, source_damage * 2);
@@ -31369,7 +31379,6 @@ fn modern_move_split_counter_reflects_a_physical_fire_move() {
     assert_eq!(outcome.state.player_last_damage, None);
     assert_eq!(outcome.state.enemy_last_damage, None);
 }
-
 
 #[test]
 fn modern_move_split_screens_follow_move_categories() {

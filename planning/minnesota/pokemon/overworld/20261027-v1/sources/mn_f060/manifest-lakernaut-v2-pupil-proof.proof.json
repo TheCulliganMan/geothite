@@ -1,0 +1,354 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_132",
+  "status": "source-proof-pass; root visual/context acceptance required",
+  "selected_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f060/manifest-lakernaut-v2-pupil-proof.json",
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f060/lakernaut-v2-pupil-proof",
+  "shared_transform": {
+    "source_bounds": [
+      4,
+      13,
+      470,
+      371
+    ],
+    "native_size": [
+      14,
+      11
+    ],
+    "native_origin": [
+      1,
+      4
+    ]
+  },
+  "all_four_nonrear_poses_have_actual_source_pupils": true,
+  "every_native_eye_cluster_maps_to_same_small_anatomical_source_pupil_component": true,
+  "actual_source_pupil_proofs": [
+    {
+      "pose": "down_idle",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f060/lakernaut.overworld.imagegen-v2-eye-window-clearance.png",
+      "crop": [
+        8,
+        97,
+        480,
+        410
+      ],
+      "anatomically_identified_source_eye_boxes_xywh": [
+        [
+          206,
+          254,
+          25,
+          24
+        ],
+        [
+          284,
+          254,
+          26,
+          24
+        ]
+      ],
+      "actual_eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              7,
+              8
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                5,
+                2,
+                0,
+                254
+              ],
+              "bounds": [
+                206,
+                254,
+                25,
+                24
+              ],
+              "pixels": 570,
+              "truncated_contour": false,
+              "native_pixel": [
+                7,
+                8
+              ],
+              "source_sample_pixel": [
+                230,
+                261
+              ]
+            }
+          ]
+        },
+        {
+          "native_cluster": [
+            [
+              9,
+              8
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                0,
+                0,
+                0,
+                253
+              ],
+              "bounds": [
+                284,
+                254,
+                26,
+                24
+              ],
+              "pixels": 578,
+              "truncated_contour": false,
+              "native_pixel": [
+                9,
+                8
+              ],
+              "source_sample_pixel": [
+                297,
+                261
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f060/lakernaut.overworld.imagegen-v2-eye-window-clearance.png",
+      "crop": [
+        1034,
+        74,
+        480,
+        410
+      ],
+      "anatomically_identified_source_eye_boxes_xywh": [
+        [
+          1197,
+          254,
+          26,
+          24
+        ]
+      ],
+      "actual_eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              6,
+              9
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                63,
+                30,
+                11,
+                253
+              ],
+              "bounds": [
+                1197,
+                254,
+                26,
+                24
+              ],
+              "pixels": 575,
+              "truncated_contour": false,
+              "native_pixel": [
+                6,
+                9
+              ],
+              "source_sample_pixel": [
+                1222,
+                272
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f060/lakernaut.overworld.imagegen-v2-eye-window-clearance.png",
+      "crop": [
+        8,
+        579,
+        480,
+        410
+      ],
+      "anatomically_identified_source_eye_boxes_xywh": [
+        [
+          206,
+          732,
+          25,
+          24
+        ],
+        [
+          284,
+          732,
+          25,
+          24
+        ]
+      ],
+      "actual_eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              7,
+              8
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                0,
+                0,
+                0,
+                254
+              ],
+              "bounds": [
+                206,
+                732,
+                25,
+                24
+              ],
+              "pixels": 567,
+              "truncated_contour": false,
+              "native_pixel": [
+                7,
+                8
+              ],
+              "source_sample_pixel": [
+                230,
+                743
+              ]
+            }
+          ]
+        },
+        {
+          "native_cluster": [
+            [
+              9,
+              8
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                2,
+                1,
+                0,
+                253
+              ],
+              "bounds": [
+                284,
+                732,
+                25,
+                24
+              ],
+              "pixels": 568,
+              "truncated_contour": false,
+              "native_pixel": [
+                9,
+                8
+              ],
+              "source_sample_pixel": [
+                297,
+                743
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f060/lakernaut.overworld.imagegen-v2-eye-window-clearance.png",
+      "crop": [
+        1034,
+        552,
+        480,
+        410
+      ],
+      "anatomically_identified_source_eye_boxes_xywh": [
+        [
+          1197,
+          732,
+          26,
+          24
+        ]
+      ],
+      "actual_eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              6,
+              9
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                76,
+                36,
+                13,
+                253
+              ],
+              "bounds": [
+                1197,
+                732,
+                26,
+                24
+              ],
+              "pixels": 577,
+              "truncated_contour": false,
+              "native_pixel": [
+                6,
+                9
+              ],
+              "source_sample_pixel": [
+                1222,
+                750
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "native_head_anchors_idle_walk_equal": true,
+  "validation": {
+    "runtime_2bpp_384_bytes_exact_allpixels": true,
+    "runtime_png16x96_index_parity": true,
+    "normal_shiny_palettebanks_exact": true,
+    "normal_shiny_all1536pixels_exact": true,
+    "transparent_border": true,
+    "idle_walk_pairs_distinct": true
+  },
+  "sha256": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f060/lakernaut-v2-pupil-proof/review/line.normal-8x.png": "fe482523170752d3d32d8f7ea9230d7a73d4b967a470bf390230137efa77a484",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f060/lakernaut-v2-pupil-proof/review/line.shiny-8x.png": "2316a01b64cdee1be0964d4da5c7e42f6a445cd402429d126db6058caf89e425",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f060/lakernaut-v2-pupil-proof/gfx/pokemon/lakernaut/overworld-shiny.gbcpal": "e8ba9295f93428bc8e0fddbd03dac7f8e3b14f49b1b6930cd3bc5dc9d8ade69e",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f060/lakernaut-v2-pupil-proof/gfx/pokemon/lakernaut/overworld.png": "a5e1167cd2a4e1800f05fd45380d185d339aa50e0e515b812a931d636b05462c",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f060/lakernaut-v2-pupil-proof/compiled-index.json": "3bac467ff7c0192125e935ae0207cdf4f056343cd1b331d2c5d73222a4ba46f6",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f060/lakernaut.overworld.imagegen-v1.png": "1248dbd5e2a413e08dd02916b62cd3b64fe574c7dfb3a0c2189eb0017a928113",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f060/lakernaut.overworld.imagegen-v2-eye-window-clearance.png": "7d15ca6a1b6ad4eae3e7478f4d85ea321795cc32c2b6da80ecf04dbcae8c8fd5",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f060/manifest-lakernaut-v2-pupil-proof.json": "4533c8c8c2c82edaea95dff7478dcbedc54a0db40d89d053f6cbb8943d33ac41",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f060/lakernaut-v2-pupil-proof/gfx/pokemon/lakernaut/overworld.2bpp": "802241c6a6cbb0741f31046d22646ec7f680ebb2aeb9af458448c2ec17533fd1",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f060/lakernaut-v2-pupil-proof/gfx/pokemon/lakernaut/overworld.gbcpal": "dbce3f6ce5ebed12c4086cce93f79be0bbd878a4fa54c175ef142dc1af52e4ac"
+  },
+  "actual_native_boards_viewed": true,
+  "rear_review": "plain rear head, no copied face; actual normal/shiny viewed",
+  "canonical_eye_form": "TWO actual isolated SOUTH pupils and ONE actual isolated WEST pupil, mapped to enlarged real source pupils; no ore-hold fist cavity, hull boiler aperture, shoulder seam or chimney notch counted. Both native eye anchors stable idle/step.",
+  "signature_anatomy_review": "All six native normal/shiny views actually inspected: broad low hull/boiler rim, two swept chimney horns with attached orange steam, two heavy raised ore-hold forearms and paddle feet. Adult14x11 visibly broader than baby10x12. Both rear poses preserve original raw source unchanged, plain rear head without copied eyes."
+}

@@ -1,0 +1,13 @@
+{
+  "prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f122/prompt-latchusk-key-barbel-width-v2.txt",
+  "input_images": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f122/latchusk.overworld.imagegen-v1.png",
+      "sha256": "a51b9e5803522318ed49878d7624adaed4197de02af5d1b5229fd6c76d854946"
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/references/native-pack-16px/native-six-frame-style-board.8x.png",
+      "sha256": "4354a639ed1a80fd6686e43b273443ed894e58a84307a8049f638ee9ffa2a099"
+    }
+  ]
+}

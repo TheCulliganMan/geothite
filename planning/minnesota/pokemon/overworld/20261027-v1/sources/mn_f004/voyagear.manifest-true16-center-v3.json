@@ -1,0 +1,93 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F004",
+  "species": [
+    {
+      "species_id": "MN_012",
+      "runtime_token": "VOYAGEAR",
+      "palette_rgb555": [
+        32767,
+        5428,
+        17668,
+        0
+      ],
+      "shiny_palette_rgb555": [
+        32767,
+        9861,
+        8337,
+        0
+      ],
+      "fit": [
+        14,
+        14
+      ],
+      "alpha_threshold": 128,
+      "sampling": "source_center",
+      "minimum_foreground_samples": 16,
+      "black_priority_samples": 8,
+      "frames": [
+        {
+          "pose": "down_idle",
+          "source": "voyagear.overworld.imagegen-v3.png",
+          "crop": [
+            42,
+            51,
+            479,
+            416
+          ]
+        },
+        {
+          "pose": "up_idle",
+          "source": "voyagear.overworld.imagegen-v3.png",
+          "crop": [
+            527,
+            63,
+            479,
+            416
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "source": "voyagear.overworld.imagegen-v3.png",
+          "crop": [
+            1030,
+            61,
+            479,
+            416
+          ]
+        },
+        {
+          "pose": "down_step",
+          "source": "voyagear.overworld.imagegen-v3.png",
+          "crop": [
+            42,
+            513,
+            479,
+            416
+          ]
+        },
+        {
+          "pose": "up_step",
+          "source": "voyagear.overworld.imagegen-v3.png",
+          "crop": [
+            527,
+            513,
+            479,
+            416
+          ]
+        },
+        {
+          "pose": "left_step",
+          "source": "voyagear.overworld.imagegen-v3.png",
+          "crop": [
+            1034,
+            515,
+            479,
+            416
+          ]
+        }
+      ],
+      "interior_black_samples": null
+    }
+  ]
+}

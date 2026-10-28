@@ -1,0 +1,13 @@
+{
+  "tool": "built-in image_gen",
+  "original_tool_path": "/Users/ryanculligan/.codex/generated_images/01a17dcc-4f1a-77a2-9d21-0df036061346/exec-0de8da55-c9bb-47ce-98e4-a65e4d363d61.png",
+  "source_size": [
+    1536,
+    1024
+  ],
+  "sha256": "94966aec3cae0346d06f0903d08763d989085795e49fe44eb964bd4edf7ee091",
+  "reference_paths": [
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f004/birchit.overworld.imagegen-v3.png"
+  ],
+  "prompt": "birchit.prompt-v4.txt"
+}

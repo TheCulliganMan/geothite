@@ -1,0 +1,216 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_036",
+  "result": "pass",
+  "manifest_sha256": "b4659dcc63b67972c867356fb6179e96493c4f7860a8bbccc3ac0160483e7a38",
+  "bank_sha256": "076730b9c2415416fa5e47aaa0d09a49764f351a4811e8098fd95ba0ed278bfc",
+  "source_sha256": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f012/goalossus.overworld.imagegen-v1.png": "30d6737829fe946028ffb65c4832601c0f9a1c468d30a8aa5ecbdc83fbeca141",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f012/goalossus.overworld.imagegen-v2-profile-pupil.png": "3013489dc51f7011b918bacc03676a8b202ebe7f112e5111080cdbccb0006c94"
+  },
+  "canonical_eye_form": "Two isolated actual black pupil dots south and one isolated actual black pupil west; source eye components verified in all four nonrear poses.",
+  "nonrear_poses": [
+    {
+      "pose": "down_idle",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            9,
+            8
+          ],
+          "source_sample": [
+            338,
+            249
+          ],
+          "source_component": [
+            320,
+            215,
+            28,
+            39
+          ],
+          "component_pixels": 1091,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            3,
+            2,
+            2,
+            253
+          ]
+        },
+        {
+          "native": [
+            6,
+            8
+          ],
+          "source_sample": [
+            236,
+            249
+          ],
+          "source_component": [
+            226,
+            215,
+            28,
+            39
+          ],
+          "component_pixels": 1091,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            1,
+            1,
+            1,
+            254
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            6,
+            8
+          ],
+          "source_sample": [
+            1243,
+            249
+          ],
+          "source_component": [
+            1236,
+            216,
+            28,
+            38
+          ],
+          "component_pixels": 1058,
+          "native_neighbors": [
+            1,
+            2,
+            1,
+            1
+          ],
+          "source_rgba": [
+            0,
+            0,
+            0,
+            253
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            9,
+            8
+          ],
+          "source_sample": [
+            338,
+            722
+          ],
+          "source_component": [
+            320,
+            690,
+            28,
+            40
+          ],
+          "component_pixels": 1111,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            0,
+            0,
+            0,
+            253
+          ]
+        },
+        {
+          "native": [
+            6,
+            8
+          ],
+          "source_sample": [
+            236,
+            722
+          ],
+          "source_component": [
+            226,
+            690,
+            28,
+            40
+          ],
+          "component_pixels": 1119,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            0,
+            0,
+            0,
+            253
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            6,
+            8
+          ],
+          "source_sample": [
+            1243,
+            722
+          ],
+          "source_component": [
+            1237,
+            691,
+            28,
+            38
+          ],
+          "component_pixels": 1064,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            1,
+            0,
+            0,
+            253
+          ]
+        }
+      ]
+    }
+  ],
+  "rear_anatomy": {
+    "result": "pass",
+    "notes": "Broad adult masked goalie body, tiered short ice crest, two large catching glove arms and two skate feet; all six full bodies preserved with source-backed hockey feature receipt. Plain north mask nape/back armor with central ice stripe, zero rear pupils. West actual pupil moved within source faceplate to preserve full native isolation; original fronts/rears retained. Full four actual pupil, border, 2bpp, palette and shared gait proofs pass. North step left skate samples dark contour rather than pale highlight, documented source-backed foot silhouette. Normal/shiny boards viewed."
+  }
+}

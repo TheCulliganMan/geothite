@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F093",
+  "species": [
+    {
+      "species_id": "MN_203",
+      "runtime_token": "SIPHLET",
+      "palette_rgb555": [
+        32767,
+        18137,
+        16745,
+        0
+      ],
+      "shiny_palette_rgb555": [
+        32767,
+        23345,
+        11568,
+        0
+      ],
+      "fit": [
+        14,
+        14
+      ],
+      "alpha_threshold": 128,
+      "sampling": "source_center",
+      "minimum_foreground_samples": 16,
+      "black_priority_samples": 32,
+      "interior_black_samples": null,
+      "opaque_interior_minimum_samples": 60,
+      "frames": [
+        {
+          "pose": "down_idle",
+          "source": "siphlet.overworld.imagegen-v1.png",
+          "crop": [
+            89,
+            86,
+            376,
+            390
+          ]
+        },
+        {
+          "pose": "up_idle",
+          "source": "siphlet.overworld.imagegen-v1.png",
+          "crop": [
+            577,
+            92,
+            376,
+            390
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "source": "siphlet.overworld.imagegen-v1.png",
+          "crop": [
+            1084,
+            93,
+            376,
+            390
+          ]
+        },
+        {
+          "pose": "down_step",
+          "source": "siphlet.overworld.imagegen-v1.png",
+          "crop": [
+            89,
+            546,
+            376,
+            390
+          ]
+        },
+        {
+          "pose": "up_step",
+          "source": "siphlet.overworld.imagegen-v1.png",
+          "crop": [
+            577,
+            552,
+            376,
+            390
+          ]
+        },
+        {
+          "pose": "left_step",
+          "source": "siphlet.overworld.imagegen-v1.png",
+          "crop": [
+            1090,
+            556,
+            376,
+            390
+          ]
+        }
+      ]
+    }
+  ]
+}

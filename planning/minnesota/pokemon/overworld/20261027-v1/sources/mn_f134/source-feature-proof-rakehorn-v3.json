@@ -1,0 +1,215 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_296",
+  "result": "pass",
+  "manifest_sha256": "047db2b6277e4ee40e3d01bf2e7c9e0bd2626687e6ebe09c6f1a62381d102ec3",
+  "bank_sha256": "1cc1c0a0a8f17576490f5252278fea1c4b32c79396ffbc1b35d6716ac1adf448",
+  "source_sha256": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f134/rakehorn.overworld.imagegen-v3.png": "b0012db20a834dd6391c06ac02c4723e9541c57e0a7b98dbb5285b01b3ce46db"
+  },
+  "canonical_eye_form": "Two actual black pupil dots in broad lime moose face on each south, one actual pupil on lime west cheek. Two broad living rake-palms each with three blunt source teeth; teal aquatic moose body, lime neck channels and root hooves. Blank back of head, palm backs and attached tail in rears, no face.",
+  "nonrear_poses": [
+    {
+      "pose": "down_idle",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            7,
+            7
+          ],
+          "source_sample": [
+            244,
+            270
+          ],
+          "source_rgba": [
+            3,
+            3,
+            0,
+            253
+          ],
+          "actual_source_pupil_component": [
+            216,
+            262,
+            29,
+            31
+          ],
+          "component_pixels": 893,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "native": [
+            9,
+            7
+          ],
+          "source_sample": [
+            307,
+            270
+          ],
+          "source_rgba": [
+            1,
+            0,
+            0,
+            253
+          ],
+          "actual_source_pupil_component": [
+            287,
+            262,
+            29,
+            31
+          ],
+          "component_pixels": 899,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            4,
+            7
+          ],
+          "source_sample": [
+            1165,
+            270
+          ],
+          "source_rgba": [
+            1,
+            1,
+            0,
+            253
+          ],
+          "actual_source_pupil_component": [
+            1146,
+            266,
+            30,
+            31
+          ],
+          "component_pixels": 923,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            7,
+            7
+          ],
+          "source_sample": [
+            244,
+            709
+          ],
+          "source_rgba": [
+            35,
+            53,
+            21,
+            253
+          ],
+          "actual_source_pupil_component": [
+            215,
+            709,
+            30,
+            31
+          ],
+          "component_pixels": 900,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "native": [
+            9,
+            7
+          ],
+          "source_sample": [
+            307,
+            709
+          ],
+          "source_rgba": [
+            24,
+            33,
+            14,
+            253
+          ],
+          "actual_source_pupil_component": [
+            287,
+            709,
+            29,
+            30
+          ],
+          "component_pixels": 870,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            4,
+            7
+          ],
+          "source_sample": [
+            1166,
+            719
+          ],
+          "source_rgba": [
+            1,
+            1,
+            0,
+            253
+          ],
+          "actual_source_pupil_component": [
+            1146,
+            713,
+            29,
+            31
+          ],
+          "component_pixels": 889,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ]
+        }
+      ]
+    }
+  ],
+  "rear_anatomy": {
+    "result": "pass",
+    "notes": "both rear native poses viewed; no copied face. All six exact normal/shiny native poses inspected, three movement pairs distinct, transparent one-pixel border and max14x14 body verified."
+  }
+}

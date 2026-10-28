@@ -8,7 +8,7 @@
     96
   ],
   "coordinate_units": "32px metatiles, zero based",
-  "shore_fitting": "johto_8_neighbors",
+  "shore_fitting": "explicit_source_edges",
   "reject_cliff_cuts": true,
   "materials": {
     "floor": "01",
@@ -3458,6 +3458,5325 @@
         86
       ],
       "block": "05"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        20,
+        0
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        24,
+        1
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        24,
+        2
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        24,
+        3
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        9,
+        4
+      ],
+      "block": "54"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        24,
+        4
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        9,
+        5
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        24,
+        5
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        9,
+        6
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        10,
+        6
+      ],
+      "block": "55"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        24,
+        6
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        10,
+        7
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        24,
+        7
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        9,
+        8
+      ],
+      "block": "54"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        10,
+        8
+      ],
+      "block": "59"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        24,
+        8
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        9,
+        9
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        24,
+        9
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        24,
+        10
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        24,
+        11
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        24,
+        12
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        9,
+        13
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        10,
+        13
+      ],
+      "block": "55"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        27,
+        13
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        9,
+        14
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        10,
+        14
+      ],
+      "block": "59"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        27,
+        14
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        10,
+        15
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        11,
+        15
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        12,
+        15
+      ],
+      "block": "55"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        27,
+        15
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        12,
+        16
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        27,
+        16
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        12,
+        17
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        27,
+        17
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        12,
+        18
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        13,
+        18
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        14,
+        18
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        15,
+        18
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        16,
+        18
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        17,
+        18
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        18,
+        18
+      ],
+      "block": "55"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        25,
+        18
+      ],
+      "block": "54"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        26,
+        18
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        27,
+        18
+      ],
+      "block": "79"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        18,
+        19
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        24,
+        19
+      ],
+      "block": "54"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        25,
+        19
+      ],
+      "block": "79"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        18,
+        20
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        19,
+        20
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        21,
+        20
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        22,
+        20
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        23,
+        20
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        24,
+        20
+      ],
+      "block": "79"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        24,
+        21
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        24,
+        22
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        26,
+        23
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        26,
+        24
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        26,
+        25
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        26,
+        26
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        26,
+        27
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        26,
+        28
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        26,
+        29
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        24,
+        30
+      ],
+      "block": "54"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        25,
+        30
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        26,
+        30
+      ],
+      "block": "79"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        9,
+        31
+      ],
+      "block": "54"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        10,
+        31
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        11,
+        31
+      ],
+      "block": "55"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        24,
+        31
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        9,
+        32
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        11,
+        32
+      ],
+      "block": "59"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        24,
+        32
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        24,
+        33
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        25,
+        34
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        25,
+        35
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        9,
+        36
+      ],
+      "block": "54"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        10,
+        36
+      ],
+      "block": "79"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        11,
+        36
+      ],
+      "block": "55"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        24,
+        36
+      ],
+      "block": "54"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        25,
+        36
+      ],
+      "block": "79"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        9,
+        37
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        11,
+        37
+      ],
+      "block": "7a"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        12,
+        37
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        13,
+        37
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        14,
+        37
+      ],
+      "block": "55"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        24,
+        37
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        14,
+        38
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        15,
+        38
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        16,
+        38
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        17,
+        38
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        18,
+        38
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        19,
+        38
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        21,
+        38
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        22,
+        38
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        23,
+        38
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        24,
+        38
+      ],
+      "block": "79"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        24,
+        39
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        24,
+        40
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        24,
+        41
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        24,
+        42
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        26,
+        43
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        26,
+        44
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        37,
+        44
+      ],
+      "block": "59"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        41,
+        44
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        28,
+        45
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        37,
+        45
+      ],
+      "block": "59"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        42,
+        45
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        28,
+        46
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        37,
+        46
+      ],
+      "block": "59"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        42,
+        46
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        28,
+        47
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        37,
+        47
+      ],
+      "block": "7a"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        38,
+        47
+      ],
+      "block": "55"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        42,
+        47
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        8,
+        48
+      ],
+      "block": "54"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        9,
+        48
+      ],
+      "block": "55"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        22,
+        48
+      ],
+      "block": "54"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        24,
+        48
+      ],
+      "block": "55"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        28,
+        48
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        38,
+        48
+      ],
+      "block": "7a"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        39,
+        48
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        40,
+        48
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        41,
+        48
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        42,
+        48
+      ],
+      "block": "79"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        8,
+        49
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        9,
+        49
+      ],
+      "block": "59"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        22,
+        49
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        24,
+        49
+      ],
+      "block": "59"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        28,
+        49
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        28,
+        50
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        9,
+        51
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        28,
+        51
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        28,
+        52
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        9,
+        53
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        10,
+        53
+      ],
+      "block": "55"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        23,
+        53
+      ],
+      "block": "54"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        24,
+        53
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        25,
+        53
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        26,
+        53
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        27,
+        53
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        28,
+        53
+      ],
+      "block": "79"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        10,
+        54
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        23,
+        54
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        10,
+        55
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        11,
+        55
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        12,
+        55
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        13,
+        55
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        14,
+        55
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        15,
+        55
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        16,
+        55
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        17,
+        55
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        18,
+        55
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        19,
+        55
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        21,
+        55
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        22,
+        55
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        23,
+        55
+      ],
+      "block": "79"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        28,
+        56
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        11,
+        57
+      ],
+      "block": "54"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        12,
+        57
+      ],
+      "block": "55"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        26,
+        57
+      ],
+      "block": "54"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        27,
+        57
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        28,
+        57
+      ],
+      "block": "79"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        11,
+        58
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        12,
+        58
+      ],
+      "block": "59"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        26,
+        58
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        26,
+        59
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        12,
+        60
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        26,
+        60
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        12,
+        61
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        13,
+        61
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        14,
+        61
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        15,
+        61
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        16,
+        61
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        18,
+        61
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        19,
+        61
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        20,
+        61
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        21,
+        61
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        22,
+        61
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        23,
+        61
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        24,
+        61
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        25,
+        61
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        26,
+        61
+      ],
+      "block": "79"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        26,
+        62
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        26,
+        63
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        26,
+        64
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        24,
+        65
+      ],
+      "block": "54"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        25,
+        65
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        26,
+        65
+      ],
+      "block": "79"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        24,
+        66
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        24,
+        67
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        24,
+        68
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        24,
+        69
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        24,
+        70
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        24,
+        71
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        9,
+        72
+      ],
+      "block": "54"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        10,
+        72
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        11,
+        72
+      ],
+      "block": "55"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        24,
+        72
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        9,
+        73
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        11,
+        73
+      ],
+      "block": "59"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        25,
+        73
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        26,
+        74
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        26,
+        75
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        10,
+        76
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        11,
+        76
+      ],
+      "block": "55"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        26,
+        76
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        42,
+        76
+      ],
+      "block": "59"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        46,
+        76
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        27,
+        77
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        41,
+        77
+      ],
+      "block": "59"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        46,
+        77
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        9,
+        78
+      ],
+      "block": "54"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        10,
+        78
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        11,
+        78
+      ],
+      "block": "59"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        27,
+        78
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        41,
+        78
+      ],
+      "block": "59"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        46,
+        78
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        9,
+        79
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        11,
+        79
+      ],
+      "block": "7a"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        12,
+        79
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        13,
+        79
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        14,
+        79
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        15,
+        79
+      ],
+      "block": "55"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        27,
+        79
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        41,
+        79
+      ],
+      "block": "59"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        45,
+        79
+      ],
+      "block": "54"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        46,
+        79
+      ],
+      "block": "79"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        15,
+        80
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        27,
+        80
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        41,
+        80
+      ],
+      "block": "7a"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        42,
+        80
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        43,
+        80
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        44,
+        80
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        45,
+        80
+      ],
+      "block": "79"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        15,
+        81
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        16,
+        81
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        17,
+        81
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        18,
+        81
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        19,
+        81
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        21,
+        81
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        22,
+        81
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        23,
+        81
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        24,
+        81
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        25,
+        81
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        26,
+        81
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        27,
+        81
+      ],
+      "block": "59"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        29,
+        81
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        29,
+        82
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        29,
+        83
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        29,
+        84
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        29,
+        85
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        13,
+        86
+      ],
+      "block": "54"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        14,
+        86
+      ],
+      "block": "55"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        27,
+        86
+      ],
+      "block": "54"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        28,
+        86
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        29,
+        86
+      ],
+      "block": "79"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        13,
+        87
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        14,
+        87
+      ],
+      "block": "59"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        27,
+        87
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        27,
+        88
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        27,
+        89
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        27,
+        90
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        13,
+        91
+      ],
+      "block": "54"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        14,
+        91
+      ],
+      "block": "79"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        15,
+        91
+      ],
+      "block": "55"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        29,
+        91
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        13,
+        92
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        15,
+        92
+      ],
+      "block": "7a"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        16,
+        92
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        17,
+        92
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        18,
+        92
+      ],
+      "block": "55"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        29,
+        92
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        18,
+        93
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        19,
+        93
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        20,
+        93
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        21,
+        93
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        22,
+        93
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        24,
+        93
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        25,
+        93
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        26,
+        93
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        27,
+        93
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        28,
+        93
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        29,
+        93
+      ],
+      "block": "79"
+    },
+    {
+      "name": "Preserve exact original fitted native shoreline/cap",
+      "kind": "point",
+      "position": [
+        29,
+        94
+      ],
+      "block": "58"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        20,
+        0
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        24,
+        0
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        25,
+        0
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        26,
+        0
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        27,
+        0
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        28,
+        0
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        29,
+        0
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        30,
+        0
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        31,
+        0
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        24,
+        1
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        25,
+        1
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        26,
+        1
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        27,
+        1
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        28,
+        1
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        29,
+        1
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        30,
+        1
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        31,
+        1
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        24,
+        2
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        25,
+        2
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        26,
+        2
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        27,
+        2
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        28,
+        2
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        29,
+        2
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        30,
+        2
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        31,
+        2
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        21,
+        3
+      ],
+      "block": "01"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        22,
+        3
+      ],
+      "block": "01"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        23,
+        3
+      ],
+      "block": "01"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        24,
+        3
+      ],
+      "block": "01"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        25,
+        3
+      ],
+      "block": "01"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        26,
+        3
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        27,
+        3
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        28,
+        3
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        29,
+        3
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        30,
+        3
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        31,
+        3
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        24,
+        4
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        25,
+        4
+      ],
+      "block": "01"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        26,
+        4
+      ],
+      "block": "01"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        27,
+        4
+      ],
+      "block": "01"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        28,
+        4
+      ],
+      "block": "03"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        29,
+        4
+      ],
+      "block": "03"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        30,
+        4
+      ],
+      "block": "01"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        31,
+        4
+      ],
+      "block": "01"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        24,
+        5
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        25,
+        5
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        26,
+        5
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        27,
+        5
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        28,
+        5
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        29,
+        5
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        30,
+        5
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        31,
+        5
+      ],
+      "block": "01"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        24,
+        6
+      ],
+      "block": "54"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        25,
+        6
+      ],
+      "block": "76"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        26,
+        6
+      ],
+      "block": "55"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        27,
+        6
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        28,
+        6
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        29,
+        6
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        30,
+        6
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        31,
+        6
+      ],
+      "block": "01"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        26,
+        7
+      ],
+      "block": "7a"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        27,
+        7
+      ],
+      "block": "76"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        28,
+        7
+      ],
+      "block": "76"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        29,
+        7
+      ],
+      "block": "76"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        30,
+        7
+      ],
+      "block": "76"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        31,
+        7
+      ],
+      "block": "76"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        32,
+        0
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        33,
+        0
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        34,
+        0
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        35,
+        0
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        36,
+        0
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        37,
+        0
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        38,
+        0
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        39,
+        0
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        40,
+        0
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        41,
+        0
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        42,
+        0
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        43,
+        0
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        44,
+        0
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        45,
+        0
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        46,
+        0
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        47,
+        0
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        48,
+        0
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        49,
+        0
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        50,
+        0
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        51,
+        0
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        52,
+        0
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        53,
+        0
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        54,
+        0
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        55,
+        0
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        32,
+        1
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        33,
+        1
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        34,
+        1
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        35,
+        1
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        36,
+        1
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        37,
+        1
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        38,
+        1
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        39,
+        1
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        40,
+        1
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        41,
+        1
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        42,
+        1
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        43,
+        1
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        44,
+        1
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        45,
+        1
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        46,
+        1
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        47,
+        1
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        48,
+        1
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        49,
+        1
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        50,
+        1
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        51,
+        1
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        52,
+        1
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        53,
+        1
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        54,
+        1
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        55,
+        1
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        32,
+        2
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        33,
+        2
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        34,
+        2
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        35,
+        2
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        36,
+        2
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        37,
+        2
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        38,
+        2
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        39,
+        2
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        40,
+        2
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        41,
+        2
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        42,
+        2
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        43,
+        2
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        44,
+        2
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        45,
+        2
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        46,
+        2
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        47,
+        2
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        48,
+        2
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        49,
+        2
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        50,
+        2
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        51,
+        2
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        52,
+        2
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        53,
+        2
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        54,
+        2
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        55,
+        2
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        32,
+        3
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        33,
+        3
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        34,
+        3
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        35,
+        3
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        36,
+        3
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        37,
+        3
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        38,
+        3
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        39,
+        3
+      ],
+      "block": "01"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        40,
+        3
+      ],
+      "block": "01"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        41,
+        3
+      ],
+      "block": "01"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        42,
+        3
+      ],
+      "block": "01"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        43,
+        3
+      ],
+      "block": "03"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        44,
+        3
+      ],
+      "block": "03"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        45,
+        3
+      ],
+      "block": "01"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        46,
+        3
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        47,
+        3
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        48,
+        3
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        49,
+        3
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        50,
+        3
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        51,
+        3
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        52,
+        3
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        53,
+        3
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        54,
+        3
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        55,
+        3
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        32,
+        4
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        33,
+        4
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        34,
+        4
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        35,
+        4
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        36,
+        4
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        37,
+        4
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        38,
+        4
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        39,
+        4
+      ],
+      "block": "01"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        40,
+        4
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        41,
+        4
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        42,
+        4
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        43,
+        4
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        44,
+        4
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        45,
+        4
+      ],
+      "block": "01"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        46,
+        4
+      ],
+      "block": "01"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        47,
+        4
+      ],
+      "block": "01"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        48,
+        4
+      ],
+      "block": "01"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        49,
+        4
+      ],
+      "block": "01"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        50,
+        4
+      ],
+      "block": "01"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        51,
+        4
+      ],
+      "block": "01"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        52,
+        4
+      ],
+      "block": "01"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        53,
+        4
+      ],
+      "block": "01"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        54,
+        4
+      ],
+      "block": "01"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        55,
+        4
+      ],
+      "block": "01"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        32,
+        5
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        33,
+        5
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        34,
+        5
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        35,
+        5
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        36,
+        5
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        37,
+        5
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        38,
+        5
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        39,
+        5
+      ],
+      "block": "01"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        40,
+        5
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        41,
+        5
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        42,
+        5
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        43,
+        5
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        44,
+        5
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        45,
+        5
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        46,
+        5
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        47,
+        5
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        48,
+        5
+      ],
+      "block": "02"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        49,
+        5
+      ],
+      "block": "02"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        50,
+        5
+      ],
+      "block": "02"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        51,
+        5
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        52,
+        5
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        53,
+        5
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        54,
+        5
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        55,
+        5
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        32,
+        6
+      ],
+      "block": "01"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        33,
+        6
+      ],
+      "block": "01"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        34,
+        6
+      ],
+      "block": "01"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        35,
+        6
+      ],
+      "block": "03"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        36,
+        6
+      ],
+      "block": "03"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        37,
+        6
+      ],
+      "block": "01"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        38,
+        6
+      ],
+      "block": "01"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        39,
+        6
+      ],
+      "block": "01"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        40,
+        6
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        41,
+        6
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        42,
+        6
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        43,
+        6
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        44,
+        6
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        45,
+        6
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        46,
+        6
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        47,
+        6
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        48,
+        6
+      ],
+      "block": "02"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        49,
+        6
+      ],
+      "block": "02"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        50,
+        6
+      ],
+      "block": "02"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        51,
+        6
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        52,
+        6
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        53,
+        6
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        54,
+        6
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        55,
+        6
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        32,
+        7
+      ],
+      "block": "76"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        33,
+        7
+      ],
+      "block": "55"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        34,
+        7
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        35,
+        7
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        36,
+        7
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        37,
+        7
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        38,
+        7
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        39,
+        7
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        40,
+        7
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        41,
+        7
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        42,
+        7
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        43,
+        7
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        44,
+        7
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        45,
+        7
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        46,
+        7
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        47,
+        7
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        48,
+        7
+      ],
+      "block": "48"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        49,
+        7
+      ],
+      "block": "49"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        50,
+        7
+      ],
+      "block": "4a"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        51,
+        7
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        52,
+        7
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        53,
+        7
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        54,
+        7
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        55,
+        7
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        33,
+        8
+      ],
+      "block": "7a"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        34,
+        8
+      ],
+      "block": "76"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        35,
+        8
+      ],
+      "block": "76"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        36,
+        8
+      ],
+      "block": "76"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        37,
+        8
+      ],
+      "block": "76"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        38,
+        8
+      ],
+      "block": "76"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        39,
+        8
+      ],
+      "block": "76"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        40,
+        8
+      ],
+      "block": "76"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        41,
+        8
+      ],
+      "block": "55"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        42,
+        8
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        43,
+        8
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        44,
+        8
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        45,
+        8
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        46,
+        8
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        47,
+        8
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        48,
+        8
+      ],
+      "block": "54"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        49,
+        8
+      ],
+      "block": "76"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        50,
+        8
+      ],
+      "block": "76"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        51,
+        8
+      ],
+      "block": "76"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        52,
+        8
+      ],
+      "block": "76"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        53,
+        8
+      ],
+      "block": "76"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        54,
+        8
+      ],
+      "block": "76"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        55,
+        8
+      ],
+      "block": "76"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        41,
+        9
+      ],
+      "block": "59"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        42,
+        9
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        43,
+        9
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        44,
+        9
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        45,
+        9
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        46,
+        9
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        47,
+        9
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        48,
+        9
+      ],
+      "block": "58"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        55,
+        9
+      ],
+      "block": "35"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        41,
+        10
+      ],
+      "block": "7a"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        42,
+        10
+      ],
+      "block": "76"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        43,
+        10
+      ],
+      "block": "76"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        44,
+        10
+      ],
+      "block": "76"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        45,
+        10
+      ],
+      "block": "76"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        46,
+        10
+      ],
+      "block": "76"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        47,
+        10
+      ],
+      "block": "76"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        48,
+        10
+      ],
+      "block": "79"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        55,
+        10
+      ],
+      "block": "35"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        55,
+        11
+      ],
+      "block": "35"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        55,
+        12
+      ],
+      "block": "35"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        55,
+        13
+      ],
+      "block": "35"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        55,
+        14
+      ],
+      "block": "35"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        55,
+        15
+      ],
+      "block": "35"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        55,
+        16
+      ],
+      "block": "35"
+    },
+    {
+      "name": "West-entry terminal headland exact native cell",
+      "kind": "point",
+      "position": [
+        55,
+        17
+      ],
+      "block": "35"
     }
   ],
   "crossings": [
@@ -3535,5 +8854,14 @@
       ],
       "necessary": true
     }
-  ]
+  ],
+  "warm_coast_restoration_review": {
+    "status": "PROPOSED_SOURCE_ONLY_NO_NATIVE_PUBLICATION_OR_CONTROLLER",
+    "instruction": "North Shore and Grand Marais stay warm on Lake Superior; winter moves inland near Ely.",
+    "reference_pack_sha256": "2b2887fd056d507d85ac5d2b8861e92559d8679cf11902f63c42f270d617842d",
+    "preimage_baseline_pack_sha256": "3ddbad16c6538e52f219c12497e4fbe6e41a7f18af5c42589b7b92357cfad243",
+    "preserved": "All current native terrain except exact828 winter cells; actors, programs, ports, falls, stairs, ledges, buoys and art exact.",
+    "source_policy": "Keep original218 authored strokes and all285 explicit native fitted shore/cap overrides; remove only828 winter/roof tail points.",
+    "publication_identity": null
+  }
 }

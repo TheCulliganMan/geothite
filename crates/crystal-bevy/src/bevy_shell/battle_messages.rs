@@ -4747,6 +4747,14 @@ fn carried_item_quantity(snapshot: &RuntimeShellSnapshot, item_id: &str) -> Opti
         )
         .find(|item| item.quantity > 0 && item.item_id == item_id)
         .map(|item| item.quantity)
+        .or_else(|| {
+            snapshot
+                .bag
+                .tm_hm
+                .iter()
+                .find(|item| item.quantity > 0 && item.item_id == item_id)
+                .map(|item| item.quantity)
+        })
 }
 
 fn item_catalog_detail_label(snapshot: &RuntimeShellSnapshot, item_id: &str) -> String {

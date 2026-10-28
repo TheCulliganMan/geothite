@@ -1,0 +1,17 @@
+{
+  "species_id": "MN_112",
+  "intent": "targeted front brow separation; only south frames selected",
+  "prompt_file": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f053/prompt-furrowbank-source-eye-repair-north-v1.txt",
+  "input_references": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f053/furrowbank.overworld.imagegen-v2.png",
+      "sha256": "78f790d22465d532ffdd055ecc5b6534c9953797c456de81f50c1e3460d59265",
+      "role": "EDIT TARGET"
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/references/native-pack-16px/native-six-frame-style-board.8x.png",
+      "sha256": "4354a639ed1a80fd6686e43b273443ed894e58a84307a8049f638ee9ffa2a099",
+      "role": "authentic native16 style reference"
+    }
+  ]
+}

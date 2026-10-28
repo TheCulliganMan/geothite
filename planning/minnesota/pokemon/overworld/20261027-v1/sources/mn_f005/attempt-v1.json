@@ -1,0 +1,33 @@
+{
+  "status": "source_generated_native_review_pending",
+  "family_id": "MN_F005",
+  "prompt_file": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f005/prompt-v1.txt",
+  "reference": "target/minnesota-pokemon/native/MN_F005/line.review.png",
+  "expected_species": [
+    "MN_013",
+    "MN_014",
+    "MN_015"
+  ],
+  "frame_order": [
+    "down_standing",
+    "up_standing",
+    "left_standing",
+    "down_walk",
+    "up_walk",
+    "left_walk"
+  ],
+  "native_cell": [
+    16,
+    16
+  ],
+  "source_result": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f005/overworld.imagegen-v1.png",
+  "tool": "built-in image_gen",
+  "sha256": "c3fd39c368f24cfec1cbd6b22bfac4ccecec8907c5c6b7b9e8f00adc7982060a",
+  "source_size": [
+    1774,
+    887
+  ],
+  "original_generated_path": "/Users/ryanculligan/.codex/generated_images/01a17aa2-ca0b-7cc0-8219-cddf2150b02b/exec-a2297747-853c-487f-8db7-f51c61e65895.png",
+  "active_coverage_credit": 3,
+  "reason": "Authoritative current coverage, roster and curation confirm this family IS ACTIVE. Earlier root claim of retirement was incorrect and is retained as a superseded audit record. No species were removed from the223-required queue."
+}

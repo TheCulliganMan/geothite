@@ -1,0 +1,391 @@
+{
+  "schema_version": 1,
+  "id": "northstar-minnesota-only-v1",
+  "status": "Published in character-story-v5; strict regional binding and current-policy asset audits pass. Nine native story/balance tests and two final-pack stdio quest replays pass; later-chapter fixtures are declared.",
+  "roster": "pokemon/roster.json",
+  "curation": "pokemon/roster-curation.json",
+  "policy": "Only active Minnesota original Pokemon may appear in the authored Minnesota campaign. Retain unrelated Johto/Kanto source content. No species fallback and no legendary substitutes for ordinary teams or gifts.",
+  "starters": [
+    "POUCHID",
+    "KINDLIT",
+    "BIRCHIT"
+  ],
+  "egg": {
+    "species": "GILLPUP",
+    "level": 5
+  },
+  "rival_parties": {
+    "MN_REED_WINONA": [
+      [
+        "CROOKIT",
+        3
+      ]
+    ]
+  },
+  "migration_rules": [
+    "Preserve ordinary trainer sizes, levels, held items and DVs. Explicit faction_teams are the authored exception: mixed regional coverage, native level/TM moves and Wrigglet-line boss aces.",
+    "If a mapped evolved form requires a higher level, use its legal earlier family member. Do not create underlevel evolutions.",
+    "Audit starter/gift/egg/wild/trade/picture/cry commands, visible dialogue names and creature actors as well as trainer parties.",
+    "Reject unmapped legacy species and active-roster targets missing from the actual pack.",
+    "Preserve all original audio, unrelated source regions and earned-result guards. Native balance and current Save/Continue must be verified again after migration."
+  ],
+  "legacy_species_bindings": {
+    "ABRA": "JOTLET",
+    "AMPHAROS": "BEETYNAMO",
+    "ARIADOS": "BARRICANT",
+    "AZUMARILL": "SLIDEWAKE",
+    "BELLOSSOM": "CYPRIELLE",
+    "BELLSPROUT": "POUCHID",
+    "BUTTERFREE": "REGALARCH",
+    "CATERPIE": "STRIPILLAR",
+    "CHIKORITA": "POUCHID",
+    "CHINCHOU": "BOBCAST",
+    "CROBAT": "SILOHAWK",
+    "CYNDAQUIL": "KINDLIT",
+    "DELIBIRD": "DRIFTPEG",
+    "DEWGONG": "LUTEBRISK",
+    "DITTO": "DRIFTILE",
+    "DRAGONAIR": "LASSERP",
+    "DRAGONITE": "TACONARCH",
+    "DROWZEE": "MEMOFOLD",
+    "ESPEON": "RECALLISK",
+    "FEAROW": "GOUGECREST",
+    "FLAAFFY": "TAPACITOR",
+    "FURRET": "CROOKVEIL",
+    "GENGAR": "FLOURGEIST",
+    "GEODUDE": "AGATOT",
+    "GIRAFARIG": "SOLSTORT",
+    "GLIGAR": "WHIRLNUT",
+    "GLOOM": "SLIPPERINA",
+    "GOLBAT": "SKEETEREX",
+    "GOLDEEN": "RILLBOW",
+    "GOLEM": "FORTIGARD",
+    "GRAVELER": "BANDRAKE",
+    "GROWLITHE": "HISSIP",
+    "GYARADOS": "MUSKETUNGE",
+    "HAUNTER": "DOUBLEHEX",
+    "HERACROSS": "GOUGECREST",
+    "HITMONTOP": "GREYTAG",
+    "HOOTHOOT": "PIPBOOM",
+    "HOPPIP": "PODLET",
+    "HOUNDOOM": "CROSSPOUT",
+    "JUMPLUFF": "PARAFLOSS",
+    "KINGDRA": "BARBELISK",
+    "LANTURN": "BUOYOSTIC",
+    "LAPRAS": "TIPULORD",
+    "MACHOKE": "HELIKNOCK",
+    "MACHOP": "AUGRUB",
+    "MAGCARGO": "CINDERFEN",
+    "MAGNEMITE": "CARTICK",
+    "MAGNETON": "MESABLAST",
+    "MANTINE": "DRIFTILE",
+    "MAREEP": "ZAPSAP",
+    "MARILL": "RIVVIT",
+    "MISDREAVUS": "MITWIST",
+    "MURKROW": "GOOSNIDE",
+    "NIDORINO": "BRISTUB",
+    "NOCTOWL": "BOOMRUFF",
+    "ODDISH": "RICELING",
+    "ONIX": "PELLETANK",
+    "PHANPY": "SODCALF",
+    "PIDGEOT": "PRAIRONDO",
+    "PIDGEOTTO": "NOTCHBILL",
+    "PIDGEY": "PECKIT",
+    "PILOSWINE": "PLOWZER",
+    "PINECO": "CLINKLAW",
+    "PINSIR": "TRAPNACK",
+    "POLIWAG": "CHORIP",
+    "POLIWHIRL": "TORROUT",
+    "PRIMEAPE": "BOUGHLASH",
+    "QUAGSIRE": "MUDMENDER",
+    "QWILFISH": "POTHOLLOW",
+    "RATICATE": "CACHEEK",
+    "RATTATA": "NIBBIN",
+    "SANDSHREW": "AUGRUB",
+    "SCYTHER": "DAKOTASKIP",
+    "SEADRA": "PIKEMAN",
+    "SEAKING": "TORROUT",
+    "SEEL": "WINKFIN",
+    "SENTRET": "NIBBIN",
+    "SHUCKLE": "TESSLARV",
+    "SKARMORY": "LATCHQUILL",
+    "SKIPLOOM": "FLOSSAIL",
+    "SLOWPOKE": "TICKLET",
+    "SLUGMA": "EMBERM",
+    "SNEASEL": "CROOKVEIL",
+    "SNUBBULL": "DENSY",
+    "SPEAROW": "VANECHICK",
+    "STANTLER": "SHEDSTAG",
+    "SUDOWOODO": "BURROOT",
+    "SUNFLORA": "PYROPINE",
+    "SUNKERN": "PINIT",
+    "SWINUB": "SCRAPLOW",
+    "TANGELA": "REEDRAFT",
+    "TAUROS": "RUMBLEHIDE",
+    "TEDDIURSA": "DENSY",
+    "TOTODILE": "BIRCHIT",
+    "URSARING": "DOZEBEAR",
+    "VENOMOTH": "MOTHOSAIC",
+    "VENONAT": "TESSLARV",
+    "VOLTORB": "PIPULSE",
+    "VULPIX": "KINDLIT",
+    "WEEPINBELL": "GLISNARE",
+    "WEEZING": "HAULGEIST",
+    "WOOPER": "GILLPUP",
+    "XATU": "SOLSTORT",
+    "YANMA": "WINDHOPPER",
+    "EXEGGCUTE": "BURRBUD",
+    "LEDYBA": "RUSTLEBEE",
+    "SPINARAK": "DEWDANT",
+    "MAGIKARP": "SCUTLET",
+    "HORSEA": "PIKELING",
+    "REMORAID": "PINGLET",
+    "OCTILLERY": "PADDARRAY",
+    "TENTACOOL": "LEECHIMP",
+    "TENTACRUEL": "LEECHURGE",
+    "STARYU": "TICKLET",
+    "STARMIE": "SOLSTORT",
+    "KRABBY": "CLINKLAW",
+    "KINGLER": "TRAPNACK",
+    "SHELLDER": "KEYPOUT",
+    "CLOYSTER": "LATCHUSK",
+    "CORSOLA": "SCUTLET",
+    "DRATINI": "KNOTLET"
+  },
+  "faction_teams": {
+    "MN_ICE_CARGO_GUARD": [
+      {
+        "species": "CINDORE",
+        "level": 18,
+        "moves": [
+          "EMBER",
+          "ROCK_THROW",
+          "SMOKESCREEN",
+          "TACKLE"
+        ]
+      },
+      {
+        "species": "MIDGEBIT",
+        "level": 19,
+        "moves": [
+          "LEECH_LIFE",
+          "POISON_STING",
+          "BITE",
+          "SUPERSONIC"
+        ]
+      }
+    ],
+    "MN_ICE_RELAY_GUARD": [
+      {
+        "species": "CARTICK",
+        "level": 20,
+        "moves": [
+          "METAL_CLAW",
+          "MUD_SLAP",
+          "POISON_GAS",
+          "HARDEN"
+        ]
+      },
+      {
+        "species": "LEECHIMP",
+        "level": 21,
+        "moves": [
+          "WATER_GUN",
+          "LEECH_LIFE",
+          "SCARY_FACE",
+          "THIEF"
+        ]
+      }
+    ],
+    "MN_REED_RELAY": [
+      {
+        "species": "CROOKIT",
+        "level": 20,
+        "moves": [
+          "QUICK_ATTACK",
+          "BITE",
+          "PURSUIT",
+          "TAIL_WHIP"
+        ]
+      },
+      {
+        "species": "GOOSNIDE",
+        "level": 21,
+        "moves": [
+          "WING_ATTACK",
+          "PURSUIT",
+          "SWAGGER",
+          "CHARM"
+        ]
+      },
+      {
+        "species": "WRIGGLET",
+        "level": 22,
+        "moves": [
+          "WATER_GUN",
+          "FURY_CUTTER",
+          "POISON_STING",
+          "BIDE"
+        ]
+      }
+    ],
+    "MN_ICE_ENFORCER": [
+      {
+        "species": "LEECHIMP",
+        "level": 22,
+        "moves": [
+          "BUBBLEBEAM",
+          "LEECH_LIFE",
+          "SCARY_FACE",
+          "THIEF"
+        ]
+      },
+      {
+        "species": "CARTICK",
+        "level": 20,
+        "moves": [
+          "METAL_CLAW",
+          "MUD_SLAP",
+          "POISON_GAS",
+          "HARDEN"
+        ]
+      },
+      {
+        "species": "SLUDGESKI",
+        "level": 21,
+        "moves": [
+          "POWDER_SNOW",
+          "SLUDGE",
+          "MUD_SLAP",
+          "HARDEN"
+        ]
+      },
+      {
+        "species": "WRIGGLET",
+        "level": 23,
+        "moves": [
+          "WATER_GUN",
+          "GIGA_DRAIN",
+          "FURY_CUTTER",
+          "BIDE"
+        ],
+        "item": "BERRY"
+      }
+    ],
+    "MN_REED_MINE": [
+      {
+        "species": "CROOKVEIL",
+        "level": 34,
+        "moves": [
+          "SLASH",
+          "BITE",
+          "QUICK_ATTACK",
+          "FAINT_ATTACK"
+        ]
+      },
+      {
+        "species": "SLUDGESKI",
+        "level": 35,
+        "moves": [
+          "ICY_WIND",
+          "SLUDGE",
+          "MUD_SLAP",
+          "HAZE"
+        ]
+      },
+      {
+        "species": "PELLETOR",
+        "level": 35,
+        "moves": [
+          "FLAME_WHEEL",
+          "ROCK_SLIDE",
+          "METAL_CLAW",
+          "HARDEN"
+        ]
+      },
+      {
+        "species": "PUPUMP",
+        "level": 36,
+        "moves": [
+          "BUBBLEBEAM",
+          "ACID",
+          "FURY_CUTTER",
+          "HAZE"
+        ],
+        "item": "BERRY"
+      }
+    ],
+    "MN_LODE_CHIEF": [
+      {
+        "species": "MESABLAST",
+        "level": 44,
+        "moves": [
+          "FLAMETHROWER",
+          "METAL_CLAW",
+          "ROCK_SLIDE",
+          "HARDEN"
+        ]
+      },
+      {
+        "species": "LEECHURGE",
+        "level": 44,
+        "moves": [
+          "SURF",
+          "CRUNCH",
+          "LEECH_LIFE",
+          "HAZE"
+        ]
+      },
+      {
+        "species": "SKEETEREX",
+        "level": 45,
+        "moves": [
+          "WING_ATTACK",
+          "CRUNCH",
+          "LEECH_LIFE",
+          "CONFUSE_RAY"
+        ]
+      },
+      {
+        "species": "PUPUMP",
+        "level": 46,
+        "moves": [
+          "BUBBLEBEAM",
+          "SLUDGE",
+          "GIGA_DRAIN",
+          "HAZE"
+        ],
+        "item": "GOLD_BERRY"
+      }
+    ]
+  },
+  "faction_identity": {
+    "theme": [
+      "leech line",
+      "mosquito lines",
+      "road slush"
+    ],
+    "coverage_support": [
+      "CINDORE line",
+      "CARTICK line"
+    ],
+    "boss_aces": [
+      "WRIGGLET",
+      "PUPUMP",
+      "MOSQUITAN"
+    ],
+    "evolution_minimums": {
+      "LEECHURGE": 24,
+      "SKEETEREX": 26,
+      "PUPUMP": 30,
+      "MOSQUITAN": 55
+    },
+    "balance": "Distinct guards cover Fire/Rock and Steel/Water. Bosses mix Water, Steel, Ice/Poison and Bug support with the Wrigglet line. Preserve early Crookit identity; no underlevel Mosquitan, blanket evasion or legendary padding. Test native battles at expected player levels, not the overlevelled geometry fixture."
+  },
+  "faction_ai_templates": {
+    "MN_REED_RELAY": "EXECUTIVEM_1",
+    "MN_ICE_ENFORCER": "EXECUTIVEM_1",
+    "MN_REED_MINE": "EXECUTIVEM_1",
+    "MN_LODE_CHIEF": "EXECUTIVEM_1"
+  }
+}

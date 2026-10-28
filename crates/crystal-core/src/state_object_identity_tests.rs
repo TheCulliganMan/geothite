@@ -1,4 +1,4 @@
-//! Map-event identities are independent of Crystal's twelve live NPC slots.
+//! Byte-sized object identities and expanded live slots survive saves.
 
 use super::{ObjectOverrideSaveError, OverworldObjectMapMemory, validate_saved_object_overrides};
 use crate::world::map::TilePosition;
@@ -64,12 +64,12 @@ fn authored_event_indices_keep_slot_duplicate_zero_and_compiled_range_guards() {
             .contains("nonzero")
     );
     let mut outside_slot = memory(18);
-    outside_slot.object_structs.structs[0].slot = 13;
+    outside_slot.object_structs.structs[0].slot = 0;
     assert!(
         outside_slot
             .validate_saved_state("AuthoredCity")
-            .expect_err("live NPC slots remain limited to twelve")
-            .contains("1..=12")
+            .expect_err("slot zero belongs to the player")
+            .contains("1..=255")
     );
     let mut duplicate = memory(18);
     let mut second = duplicate.object_structs.structs[0].clone();
@@ -95,4 +95,25 @@ fn authored_event_indices_keep_slot_duplicate_zero_and_compiled_range_guards() {
             ..
         })
     ));
+}
+
+#[test]
+fn expanded_live_slot_round_trips_through_save_validation() {
+    let mut original = memory(64);
+    original.object_structs.structs[0].slot = 64;
+    original
+        .validate_saved_state("Fair")
+        .expect("expanded live slot");
+    let restored: OverworldObjectMapMemory =
+        serde_json::from_value(serde_json::to_value(&original).expect("save expanded live slot"))
+            .expect("restore expanded live slot");
+    assert_eq!(restored, original);
+    validate_saved_object_overrides(
+        "Fair",
+        &restored,
+        |_| Some((96, 72)),
+        |_| Some(64),
+        |_| true,
+    )
+    .expect("expanded live slot resolves against the compiled map");
 }

@@ -1,0 +1,42 @@
+{
+  "species_id": "MN_316",
+  "canonical_front": {
+    "path": "target/minnesota-pokemon/native/MN_F143/mn-316-rondive-v3.front.png",
+    "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F143/mn-316-rondive-v3.front.png",
+    "sha256": "bc2cdd5ad4fac9d1c18ddeb6f727534a27d961c8aafac7e328656032c20e07a0"
+  },
+  "design": {
+    "family_theme": "Surface-skating whirligig beetles and opposing lookout stations: four eye organs straddle a strong horizontal seam while offset paddle pairs sweep in opposite directions.",
+    "member_body_growth": null,
+    "member_silhouette": null,
+    "family_design_lock": null,
+    "family_sprite_design": null,
+    "silhouette_invariants_16px": [
+      "Preserve the accepted silhouette, face, limb/wing count and dominant theme shapes shown by the exact selected native references.",
+      "Choose one or two defining visible forms from the family theme; simplify directly for16pixels rather than scaling the battle sprite."
+    ],
+    "priority_invariants_manually_authored": false
+  },
+  "palette": {
+    "transparent_index": 0,
+    "visible_indices": [
+      1,
+      2,
+      3
+    ],
+    "normal_rgb555_words": [
+      32767,
+      26381,
+      13605,
+      0
+    ],
+    "shiny_rgb555_words": [
+      32767,
+      11866,
+      13482,
+      0
+    ],
+    "white_body_region_policy": "Simplify formerly white body/highlight regions to light ink1. Index0 is transparent everywhere, not an opaque white paint color."
+  },
+  "imagegen_reference_role": "Only authentic native16 style board supplied; exact canonical battle design inspected separately and described in text."
+}

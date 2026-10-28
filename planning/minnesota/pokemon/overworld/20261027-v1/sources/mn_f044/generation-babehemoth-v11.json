@@ -1,0 +1,18 @@
+{
+  "species_id": "MN_095",
+  "name": "Babehemoth",
+  "family_id": "MN_F044",
+  "tool": "built-in image_gen",
+  "selected_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f044/manifest-babehemoth-v11-pupil-proof.json",
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f044/babehemoth-v11-pupil-proof",
+  "normalized_proof": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f044/source-feature-proof-babehemoth-v11.json",
+  "detailed_proof": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f044/manifest-babehemoth-v11-pupil-proof.proof.json",
+  "sources": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f044/babehemoth.overworld.imagegen-v8-face-clearance.png": "f60ac724423cc2cae60b50899209d94729d8b80c4282a680d8e11c48d2b74884"
+  },
+  "preserved_attempt_receipts": [
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f044/attempt-babehemoth-v8.json"
+  ],
+  "status": "frozen native candidate; actual normal/shiny source features reviewed; root context pending",
+  "accepted": false
+}

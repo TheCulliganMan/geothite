@@ -3,6 +3,9 @@ include!("tests/shell_basics.rs");
 include!("tests/party_follower.rs");
 include!("tests/multiplayer_rendering.rs");
 include!("tests/overworld_rendering.rs");
+include!("tests/pokemon_overworld_context.rs");
+include!("tests/pokemon_overworld_batch.rs");
+include!("tests/pokemon_party_sprites.rs");
 include!("tests/character_source.rs");
 include!("tests/tile_animation_provenance.rs");
 include!("tests/intro_title_rendering.rs");
@@ -33,11 +36,16 @@ include!("tests/battle_capture_palettes.rs");
 include!("tests/battle_oam_layers.rs");
 include!("tests/minnesota_signature_animations.rs");
 include!("tests/northwoods_signature_controller.rs");
+include!("tests/northwoods_starter_signatures.rs");
 include!("tests/northwoods_fairy_controller.rs");
 include!("tests/northwoods_starter_battle_backs.rs");
 include!("tests/northwoods_sticky_progression.rs");
 include!("tests/battle_sliding_intro.rs");
 include!("tests/shop_rendering.rs");
+#[path = "tests/shop_tm_sale.rs"]
+mod shop_tm_sale;
+#[path = "tests/minnesota_tmhm.rs"]
+mod minnesota_tmhm;
 include!("tests/all_pokemon.rs");
 include!("tests/trainer_rematches.rs");
 include!("tests/heal_machine_rendering.rs");
@@ -156,6 +164,10 @@ mod grand_marais_rewards;
 mod north_shore;
 #[path = "tests/north_shore_expansion.rs"]
 mod north_shore_expansion;
+#[path = "tests/minneapolis_falls.rs"]
+mod minneapolis_falls;
+#[path = "tests/minneapolis_falls_animation_native.rs"]
+mod minneapolis_falls_animation_native;
 #[cfg(feature = "voxel-view")]
 include!("tests/immersive_battle.rs");
 #[cfg(feature = "voxel-view")]
@@ -181,6 +193,10 @@ mod gunflint_art;
 mod authored_route_fixture;
 #[path = "tests/gunflint.rs"]
 mod gunflint;
+#[path = "tests/compact_gunflint.rs"]
+mod compact_gunflint;
+#[path = "tests/inland_winter.rs"]
+mod inland_winter;
 
 #[path = "tests/league_approach.rs"]
 mod league_approach;
@@ -197,6 +213,20 @@ mod iron_range_story;
 mod iron_range_descent;
 #[path = "tests/r10_gallery.rs"]
 mod r10_gallery;
+#[path = "tests/interior_life.rs"]
+mod interior_life;
+#[path = "tests/interior_layouts.rs"]
+mod interior_layouts;
+#[path = "tests/city_refinement.rs"]
+mod city_refinement;
+#[path = "tests/detroit_lakes.rs"]
+mod detroit_lakes;
+#[path = "tests/moorhead.rs"]
+mod moorhead;
+#[path = "tests/cave_quality.rs"]
+mod cave_quality;
+#[path = "tests/voyageurs_ice.rs"]
+mod voyageurs_ice;
 #[path = "tests/r12_shelter.rs"]
 mod r12_shelter;
 #[path = "tests/r13_refuge.rs"]
@@ -239,6 +269,8 @@ mod route_quality_r18;
 mod red_river_prairie;
 #[path = "tests/voyageurs_border_loop.rs"]
 mod voyageurs_border_loop;
+#[path = "tests/winter_sections.rs"]
+mod winter_sections;
 
 #[path = "tests/central_lakes.rs"]
 mod central_lakes;
@@ -276,6 +308,20 @@ mod duluth_connections;
 mod duluth_story;
 #[path = "tests/minneapolis.rs"]
 mod minneapolis;
+#[path = "tests/northstar_dialogue.rs"]
+mod northstar_dialogue;
+#[path = "tests/northstar_story_events.rs"]
+mod northstar_story_events;
+#[path = "tests/northstar_ice_lair.rs"]
+mod northstar_ice_lair;
+#[path = "tests/northstar_ice_balance.rs"]
+mod northstar_ice_balance;
+#[path = "tests/northstar_ice_headquarters.rs"]
+mod northstar_ice_headquarters;
+#[path = "tests/northstar_drill_lair.rs"]
+mod northstar_drill_lair;
+#[path = "tests/northstar_story_bridges.rs"]
+mod northstar_story_bridges;
 #[path = "tests/winona.rs"]
 mod winona;
 #[path = "tests/rochester.rs"]
@@ -286,6 +332,8 @@ mod rochester_earned;
 mod prairie_story;
 #[path = "tests/courier_story.rs"]
 mod courier_story;
+#[path = "tests/northstar_earned_gyms.rs"]
+mod northstar_earned_gyms;
 #[path = "tests/battle_pack_navigation.rs"]
 mod battle_pack_navigation;
 #[path = "tests/ryans_house.rs"]
@@ -311,3 +359,6 @@ mod root_beer_lady;
 mod boundary_waters;
 #[path = "tests/boundary_safari_expansion.rs"]
 mod boundary_safari_expansion;
+
+#[path = "tests/bridge_overlay_rendering.rs"]
+mod bridge_overlay_rendering;

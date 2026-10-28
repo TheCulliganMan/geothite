@@ -1,0 +1,107 @@
+{
+  "tool": "built-in image_gen",
+  "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f018/castoroar-v19-sized-eyes",
+  "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f018/manifest-castoroar-v19-sized-eyes.json",
+  "proof": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f018/source-feature-proof-castoroar-v19.json",
+  "all_raws_prompts_rejected_trials_retained": true,
+  "no_native_pixel_painting": true,
+  "no_registry_or_pack_mutation": true,
+  "normal_shiny_boards_actually_viewed": true,
+  "canonical_palettes": [
+    [
+      32767,
+      25332,
+      15754,
+      0
+    ],
+    [
+      32767,
+      24216,
+      12623,
+      0
+    ]
+  ],
+  "native_bounds": [
+    [
+      2,
+      3,
+      12,
+      12
+    ],
+    [
+      2,
+      3,
+      13,
+      12
+    ],
+    [
+      1,
+      3,
+      14,
+      9
+    ],
+    [
+      2,
+      3,
+      12,
+      12
+    ],
+    [
+      2,
+      3,
+      13,
+      12
+    ],
+    [
+      1,
+      3,
+      14,
+      9
+    ]
+  ],
+  "source_hybrid": "v7 taller torso all poses, v8 precise pupil growth south only; west paired source crop y-3; common493x456 windows",
+  "growth": {
+    "first_stage_front_bounds": [
+      3,
+      5,
+      9,
+      10
+    ],
+    "first_stage_front_opaque": 55,
+    "adult_front_bounds": [
+      2,
+      3,
+      12,
+      12
+    ],
+    "adult_front_opaque": 113,
+    "method": "authored source torso proportions enlarged; single shared source_center transform for all six adult poses; no per-pose native rescale"
+  },
+  "retained_source_hashes": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f018/castoroar.overworld.imagegen-v1.png": "91514fd670ae8689f71f5f2f998b40f29e0b3844d0647d499d3a3f853cdc2fc8",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f018/castoroar.overworld.imagegen-v8-bold-front-pupils.png": "e96693cd2459d231968feac510051ad50c6d99d5105c961babd32d2e8739a8d8",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f018/castoroar.overworld.imagegen-v4-native-rebuild.png": "7267c84cfeb8b61f00f8a416bdf140b3a86fac683ba3d339f5110fd01f465288",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f018/castoroar.overworld.imagegen-v5-profile-eyeplate.png": "76ce68784ee93d5c4c6848b215ad38b31efe39723abefb315e4b21efdbc4832f",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f018/castoroar.overworld.imagegen-v2-clear-faces.png": "b7d5b431e7b437ff95885953b9b109ab901c16c1b1d51b1c08ab5b8f573c4359",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f018/castoroar.overworld.imagegen-v3-clean-alpha.png": "bc02f3966cf116388cf1cd7fb3e3c6ecca49977b7cd19207f81e79d98de091dc",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f018/castoroar.overworld.imagegen-v6-bulk.png": "e5bfe14959905c71d46f94fc743c118ba77ab6206df485cd4f0183ead2f97bff",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f018/castoroar.overworld.imagegen-v7-taller-torso.png": "0c14626059d90049f9ec53cefa80b7d2099c9b9977c72815d1cd708c03bfce0d",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f018/prompt-castoroar-v6-bulk.txt": "5d74b0785a154c102255977bc515e0f7fd4e81cb19651ee83c0154f5a2f333a9",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f018/prompt-castoroar-v7-taller-torso.txt": "5add2c9ffe55d809a23d044633785d0cf4a4df56ecca7dc1ae9fde56feff1685",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f018/prompt-castoroar-v5-profile-eyeplate.txt": "58ed6f495a7d5e6c5d2f97956e3888c0265ac0af363e3f14bcf02ee1516a727a",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f018/prompt-castoroar-v8-bold-front-pupils.txt": "0c150234e0723753e8c652a323f70ad6de8980f9ddee6411578089fb95a11aac",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f018/prompt-castoroar-v4-native-rebuild.txt": "7caa0bc0c65008b5b70e374e7eaa2e52b30da2b7b771efd1772c4f17fe699d5a",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f018/prompt-castoroar-v1.txt": "825e680b94834107f6afcafc315c3694e59729d457638a2ed9ba3dddadb21c61",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f018/prompt-castoroar-v2-clear-faces.txt": "103b6b360102e64893c906b2f3eec358439b489b8bc22089f287094ee7e3ae20",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f018/prompt-castoroar-v3-clean-alpha.txt": "93392171959a8470730b8a3af0f2dc126d11eba01203cb852568c23c239afa96",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f018/castoroar.v5.original-path.txt": "2184d5be202a2bb741c536f8a4ed8519ba90683238a2ce15983d49e21cbf8445",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f018/castoroar.v4.original-path.txt": "f49546ebf3c59f8b37a562fb0452275a3d935a0432b2d00d0e670eaafb8e7b25",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f018/castoroar.v1.original-path.txt": "95f61101638c00db4f5128bac675deac178804810afdbae455a21e591828c068",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f018/castoroar.v7.original-path.txt": "137a7f075eb115fbf816ea5b1d487a7a1248550f6eee2644cbc090bc1d8c638c",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f018/castoroar.v2.original-path.txt": "afba56e371cef5852a5e0eda27898c528670da23ace95daaa94e7ebb54d3ef86",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f018/castoroar.v6.original-path.txt": "c20d26d50c24095455cb41490e808e4f2c59f7ce98257904de509282ad496831",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f018/castoroar.v3.original-path.txt": "8f439ce8540cf19cd5981f7852db463efbce1950f0731d6eae923e30cada0e2c",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f018/castoroar.v8.original-path.txt": "e9be8f9b05d5b00db683c90026fee1710f31a2529d8f2524841179a0f75e5c5e"
+  },
+  "status": "root independent visual/context acceptance pending"
+}

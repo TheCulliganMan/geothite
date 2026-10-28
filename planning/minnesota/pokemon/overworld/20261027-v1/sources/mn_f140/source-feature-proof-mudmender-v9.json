@@ -1,0 +1,215 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_311",
+  "result": "pass",
+  "manifest_sha256": "b3e4afc6edbdbb461d7c1f9cdd69278e51f4823b01294c44cb8ae97baca99072",
+  "bank_sha256": "bcb9dfd09bdafb0dc5db62a7c255dccb72410edd0f39c621769701c8365845e7",
+  "source_sha256": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f140/mudmender.overworld.imagegen-v2-inset-front-eyes.png": "3d144f8d34392b45cdc6d0489a14d02eea70ba482d559b28af78dd009726c543"
+  },
+  "canonical_eye_form": "Two isolated black south pupil dots and one west profile pupil on exposed salamander face, distinct from gill creases.",
+  "nonrear_poses": [
+    {
+      "pose": "down_idle",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            6,
+            8
+          ],
+          "source_sample": [
+            279,
+            309
+          ],
+          "source_component": [
+            260,
+            307,
+            24,
+            24
+          ],
+          "component_pixels": 575,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            9,
+            11,
+            14,
+            254
+          ]
+        },
+        {
+          "native": [
+            9,
+            8
+          ],
+          "source_sample": [
+            357,
+            309
+          ],
+          "source_component": [
+            336,
+            307,
+            23,
+            24
+          ],
+          "component_pixels": 552,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            6,
+            7,
+            9,
+            254
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            4,
+            9
+          ],
+          "source_sample": [
+            1155,
+            321
+          ],
+          "source_component": [
+            1143,
+            307,
+            17,
+            24
+          ],
+          "component_pixels": 408,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            4,
+            5,
+            5,
+            253
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            6,
+            8
+          ],
+          "source_sample": [
+            279,
+            702
+          ],
+          "source_component": [
+            260,
+            701,
+            24,
+            23
+          ],
+          "component_pixels": 552,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            2,
+            2,
+            3,
+            253
+          ]
+        },
+        {
+          "native": [
+            9,
+            8
+          ],
+          "source_sample": [
+            357,
+            702
+          ],
+          "source_component": [
+            336,
+            701,
+            23,
+            24
+          ],
+          "component_pixels": 552,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            5,
+            6,
+            8,
+            253
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            4,
+            9
+          ],
+          "source_sample": [
+            1155,
+            727
+          ],
+          "source_component": [
+            1142,
+            714,
+            16,
+            23
+          ],
+          "component_pixels": 366,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            5,
+            6,
+            8,
+            254
+          ]
+        }
+      ]
+    }
+  ],
+  "rear_anatomy": {
+    "result": "pass",
+    "notes": "Plain pale-blue salamander back with three purple shelter fan lobes per side and forward-curved cradle tail. Both rear poses viewed; no copied eyes or paired interior pupil-like dots."
+  }
+}

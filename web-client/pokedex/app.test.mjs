@@ -22,7 +22,12 @@ const script = fs.readFileSync('web-client/pokedex/app.js', 'utf8');
 function page(file, query = '') {
   const dom = new JSDOM(fs.readFileSync(path.join(root, file), 'utf8'), { url: `https://example.test/pokedex/${file}${query}`, runScripts: 'outside-only' });
   dom.window.mediaChanges = new Map();
-  dom.window.matchMedia = query => ({ matches: false, addEventListener(event, callback) { if (event === 'change') dom.window.mediaChanges.set(query, callback); } });
+  dom.window.matchMedia = query => {
+    const listeners = [];
+    const media = { matches: false, addEventListener(event, callback) { if (event === 'change') listeners.push(callback); } };
+    dom.window.mediaChanges.set(query, event => { media.matches = event.matches; listeners.forEach(callback => callback(event)); });
+    return media;
+  };
   dom.window.eval(script);
   return dom;
 }
@@ -95,11 +100,82 @@ for (const [family, ids] of [
 }
 const catalog = JSON.parse(fs.readFileSync(path.join(root, 'pokedex.json'), 'utf8'));
 await import('./cut-proposals.test.mjs');
-assert.equal(catalog.moves.length, 19);
+const starterAdditions = catalog.moves.filter(move => ['RIMEBRAND', 'PADDLE_SWEEP'].includes(move.id));
+assert.ok(starterAdditions.length === 0 || starterAdditions.length === 2, 'starter signatures must be published together');
+assert.equal(catalog.moves.length, 19 + starterAdditions.length);
+if (process.env.POKEDEX_STARTER_SIGNATURES === '1') {
+ assert.equal(starterAdditions.length, 2, 'current publication requires both added starter signatures');
+ for (const [speciesId, moveId, type, power, pp, chance, category] of [
+  ['MN_003', 'SLIPPER_WALTZ', 'FAIRY', 75, 15, 20, 'special'],
+  ['MN_276', 'RIMEBRAND', 'FIRE', 85, 10, 20, 'physical'],
+  ['MN_012', 'PADDLE_SWEEP', 'WATER', 80, 15, 30, 'physical'],
+ ]) {
+  const move = catalog.moves.find(entry => entry.id === moveId);
+  assert.equal(move.kind, 'signature');
+  assert.equal(move.category, category);
+  assert.equal(move.battle.type, type);
+  assert.equal(move.battle.power, power);
+  assert.equal(move.battle.pp, pp);
+  assert.equal(move.battle.accuracy, 100);
+  assert.equal(move.battle.effect_chance, chance);
+  assert.deepEqual(move.learners.map(learner => [learner.species_id, learner.level]), [[speciesId, 36]]);
+  const learners = catalog.species.filter(species => species.profile.level_moves.some(([level, id]) => id === moveId && level === 36));
+  assert.deepEqual(learners.map(species => species.identity.id), [speciesId]);
+ }
+}
 for (const ids of [['MN_267','MN_268','MN_092'], ['MN_131','MN_132'], ['MN_137','MN_138','MN_270']]) {
  assert.equal(new Set(ids.map(id => JSON.stringify(catalog.species.find(s => s.identity.id === id).normal_rgb555))).size, ids.length);
 }
 const speciesById = new Map(catalog.species.map(species => [species.identity.id, species]));
+assert.equal(catalog.machine_catalog.length, 57);
+assert.deepEqual(catalog.machine_catalog.map(machine => machine.code), [
+ ...Array.from({ length: 50 }, (_, i) => `TM${String(i + 1).padStart(2, '0')}`),
+ ...Array.from({ length: 7 }, (_, i) => `HM${String(i + 1).padStart(2, '0')}`),
+]);
+assert.equal(new Set(catalog.machine_catalog.map(machine => machine.move_id)).size, 57);
+const machineCodes = new Map(catalog.machine_catalog.map(machine => [machine.move_id, machine.code]));
+assert.equal(machineCodes.get('SURF'), 'HM03');
+assert.equal(machineCodes.get('FLASH'), 'HM05');
+assert.equal(machineCodes.get('REST'), 'TM44');
+assert.ok(!machineCodes.has('ICE_BEAM'));
+assert.match(catalog.pack_content_hash, /^[a-f0-9]{64}$/);
+for (const code of ['HM03', 'TM44']) {
+ const filtered = page('index.html', `?q=${code}`);
+ assert.deepEqual([...filtered.window.document.querySelectorAll('.pokemon-card:not([hidden])')].map(card => card.dataset.id),
+  catalog.species.filter(species => species.machine_learnset.some(machine => machine.code === code)).map(species => species.identity.id), `${code} search finds its compatible species`);
+ filtered.window.close();
+}
+for (const species of [...catalog.species, ...catalog.cut_species]) {
+ const compatible = new Set(species.profile.tmhm_moves);
+ const expected = catalog.machine_catalog.filter(machine => compatible.has(machine.move_id));
+ assert.deepEqual(species.machine_learnset, expected, `${species.identity.name}: exact numbered learnset`);
+ assert.deepEqual(species.tutor_moves, species.profile.tmhm_moves.filter(id => !machineCodes.has(id)));
+ if (species.status === 'active') {
+  assert.ok(expected.length > 0, `${species.identity.name} needs a TM/HM learnset`);
+  assert.ok(species.tutor_moves.every(id => ['ICE_BEAM','THUNDERBOLT','FLAMETHROWER'].includes(id)));
+ }
+ const entry = new JSDOM(fs.readFileSync(path.join(root, `species/${species.identity.name.toLowerCase()}.html`), 'utf8'));
+ const document = entry.window.document;
+ const rows = [...document.querySelectorAll('#moves-machine tbody tr')];
+ assert.deepEqual(rows.map(row => row.cells[0].textContent), expected.map(machine => machine.code));
+ assert.equal(document.querySelector('#tab-machine span').textContent, String(expected.length));
+ assert.equal(document.querySelectorAll('#moves-tutor tbody tr').length, species.tutor_moves.length);
+ assert.equal(document.querySelector('#tab-tutor span').textContent, String(species.tutor_moves.length));
+ assert.ok(!document.querySelector('#moves-machine').textContent.includes('Machine'));
+ if (!species.tutor_moves.length) assert.match(document.querySelector('#moves-tutor').textContent, /No moves listed/);
+ entry.window.close();
+}
+const machineDetail = page('species/borealynx.html');
+const machineDoc = machineDetail.window.document;
+machineDoc.querySelector('#tab-machine').click();
+assert.equal(machineDoc.querySelector('#moves-machine').hidden, false);
+assert.equal(machineDoc.querySelector('#moves-level').hidden, true);
+machineDoc.querySelector('#tab-machine').dispatchEvent(new machineDetail.window.KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true }));
+assert.equal(machineDoc.querySelector('#tab-tutor').getAttribute('aria-selected'), 'true');
+assert.equal(machineDoc.querySelector('#moves-tutor').hidden, false);
+assert.match(machineDoc.querySelector('#moves-tutor').textContent, /Ice Beam/);
+machineDetail.window.close();
+console.log(`PASS: all ${catalog.species.length} active and ${catalog.cut_species.length} cut entries have exact TM/HM numbers, separate tutors and working keyboard tabs`);
 // Restoring LINE087 adds the original complete family without displacing another line.
 const noteIds = ['MN_186','MN_187','MN_188'];
 assert.equal(retiredFamilies.has('MN_F087'), false);
@@ -170,7 +246,7 @@ for (const [familyId, names] of newFamilies) {
   assert.equal(entry.querySelector('h1').textContent, names[stage]);
   assert.equal(entry.querySelector('.cut-notice'), null);
   assert.equal(entry.querySelectorAll('#moves-level tbody tr').length, species.profile.level_moves.length);
-  assert.equal(entry.querySelectorAll('#moves-machine tbody tr').length, species.profile.tmhm_moves.length);
+  assert.equal(entry.querySelectorAll('#moves-machine tbody tr').length, species.machine_learnset.length);
   const stem = id.toLowerCase().replace('_', '-');
   entry.querySelector('[data-facing="back"]').click();
   entry.querySelector('#shiny-toggle').click();
@@ -237,7 +313,7 @@ const runestoneEntry = page('species/kensigard.html').window.document;
 assert.equal(runestoneEntry.querySelector('h1').textContent, 'Kensigard');
 assert.deepEqual([...runestoneEntry.querySelectorAll('.entry-types .type-badge')].map(badge => badge.textContent.toUpperCase()), ['GROUND']);
 assert.equal(runestoneEntry.querySelectorAll('#moves-level tbody tr').length, runestone.profile.level_moves.length);
-assert.equal(runestoneEntry.querySelectorAll('#moves-machine tbody tr').length, runestone.profile.tmhm_moves.length);
+assert.equal(runestoneEntry.querySelectorAll('#moves-machine tbody tr').length, runestone.machine_learnset.length);
 for (const id of ['MN_277']) for (const view of ['front','back']) {
  const stem = id.toLowerCase().replace('_', '-');
  const normal = fs.readFileSync(path.join(root, 'sprites', `${stem}-${view}.png`));
@@ -455,7 +531,7 @@ for (const [id, category, power, effect] of [
  assert.equal(move.battle.effect, effect);
 }
 const movePage = page('moves.html'); const md = movePage.window.document;
-assert.equal(md.querySelectorAll('.signature-card').length, 5);
+assert.equal(md.querySelectorAll('.signature-card').length, 5 + starterAdditions.length);
 assert.equal(md.querySelectorAll('.imported-animation-card').length, 14);
 assert.equal(md.querySelectorAll('.move-animation-card').length, catalog.moves.length);
 assert.equal(md.querySelectorAll('.move-index a').length, catalog.moves.length);
@@ -484,7 +560,7 @@ for (const preview of md.querySelectorAll('[data-animation-base]')) {
  assert.ok(preview.querySelector('[data-animation-play]').getAttribute('aria-label').includes(preview.dataset.moveName));
  preview.querySelector('[data-animation-play]').click(); assert.match(img.src, /enemy-shiny-still.png$/);
 }
-assert.equal(fs.readdirSync(path.join(root, 'animations')).length, 152);
+assert.equal(fs.readdirSync(path.join(root, 'animations')).length, 152 + starterAdditions.length * 8);
 for (const move of catalog.moves) {
  const id = move.id.toLowerCase();
  const card = md.getElementById(id);
@@ -526,7 +602,8 @@ for (const species of [...catalog.species, ...catalog.cut_species]) {
  const entry = speciesDom.window.document;
  const learned = [
   ...species.profile.level_moves.map(([level,id]) => [`Lv. ${level}`,id]),
-  ...species.profile.tmhm_moves.map(id => ['Machine',id]),
+  ...species.machine_learnset.map(machine => [machine.code, machine.move_id]),
+  ...species.tutor_moves.map(id => ['Tutor',id]),
   ...species.profile.egg_moves.map(id => ['Inherited',id]),
  ];
  const expected = catalog.moves.filter(move => learned.some(([,id]) => id === move.id));
@@ -553,7 +630,7 @@ for (const [name, move] of [['taconarch','magnetic_rail'],['mosquitan','bog_siph
  assert.match(entry.querySelector('#moves-level').textContent, new RegExp(move.split('_').map(s => s[0].toUpperCase()+s.slice(1)).join(' ')));
 }
 console.log(`PASS: ${expectedCount} sequential entries, ${expectedFamilies} families; exact LINE cuts and type counts; Taconite and fossils preserved; rare species last; search/notebook/sprite/move controls`);
-console.log('PASS: three equal starter progressions and visible roles; freighter cut, twine growth and individual palettes; 19 packed move learnsets; all nineteen playable native move previews with side/shiny controls and genuine per-species learning methods');
+console.log(`PASS: three equal starter progressions and visible roles; freighter cut, twine growth and individual palettes; ${catalog.moves.length} packed move learnsets and native previews with side/shiny controls and genuine per-species learning methods`);
 console.log('PASS: wool-ghost replacements and Ghost/Fairy/Flying filters; butter royalty and packed Fairy/native move rows; every active family matches reviewed native art and conversion metadata; starter front/back/shiny controls');
 console.log('PASS: Kensigard is an ordinary pure-Ground solo with its own exact palette, valid authored profile/learnsets, lake-country ordering and distinct normal/shiny front/back sprites');
 console.log('PASS: all eleven approved families, 23 new identities/full profiles and shiny views; exactly 23 replaced species remain labeled cut proposals; Taconite, Kensigard, windvane, otter and oak families preserved');

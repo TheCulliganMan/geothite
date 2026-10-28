@@ -1,0 +1,145 @@
+{
+  "status": "CLASSIFIED_NO_REACHABLE_UNCONNECTED_OUTER_WATER_IN_ACTUAL_STATIC_GEOMETRY",
+  "pack_sha256": "3ddbad16c6538e52f219c12497e4fbe6e41a7f18af5c42589b7b92357cfad243",
+  "original162": {
+    "CONNECTED_SHORE_BLOCKED_BY_NATIVE_DESTINATION": 129,
+    "UNCONNECTED_OUTER_WATER_NO_MOUNT_OR_WATER_ROUTE": 8,
+    "PASSABLE_CONNECTED_LAND_DESTINATION_NOT_AN_OUTER_ESCAPE": 25
+  },
+  "extended_numeric": {
+    "LEGAL_BRIDGE_OR_WATER_SEAM": 1908,
+    "CONNECTED_SHORE_BLOCKED_BY_NATIVE_DESTINATION": 129,
+    "UNCONNECTED_OUTER_WATER_NO_MOUNT_OR_WATER_ROUTE": 20,
+    "PASSABLE_CONNECTED_LAND_DESTINATION_NOT_AN_OUTER_ESCAPE": 25
+  },
+  "ranked_issues": [
+    {
+      "rank": 1,
+      "map": "MnR04C00R00",
+      "kind": "VISIBLE_GEOGRAPHY_NO_SURF_ESCAPE",
+      "outer_core_lanes": {
+        "north": [
+          [
+            26,
+            0
+          ],
+          [
+            27,
+            0
+          ],
+          [
+            28,
+            0
+          ],
+          [
+            29,
+            0
+          ],
+          [
+            30,
+            0
+          ],
+          [
+            31,
+            0
+          ]
+        ],
+        "south": [
+          [
+            26,
+            35
+          ],
+          [
+            27,
+            35
+          ],
+          [
+            28,
+            35
+          ],
+          [
+            29,
+            35
+          ],
+          [
+            30,
+            35
+          ],
+          [
+            31,
+            35
+          ]
+        ]
+      },
+      "action": "Integrate separately reviewed source-v04 contained pond/tight bridge;12WATER_21 edge lanes omitted by old string-only atlas. No invented R04-Confluence join.",
+      "source_contract": "planning/minnesota/connections/river-continuity-r04-v01/source-v04/candidate.contract.json"
+    },
+    {
+      "rank": 2,
+      "map": "MnStPaul / MnMississippiConfluenceC03R00",
+      "kind": "CITY_WATERFRONT_COMPOSITION_FUNCTIONAL_PORTS_RETAINED",
+      "review_core": [
+        [
+          74,
+          64
+        ],
+        [
+          2,
+          8
+        ]
+      ],
+      "action": "Review abrupt narrow stone stem and right-angle mouth in native player cameras; preserve both actual ports and seven existing river apertures. This is a visual composition issue, not an ordinary-component disconnection."
+    },
+    {
+      "rank": 3,
+      "map": "MnR02C00R00",
+      "kind": "DECORATIVE_UNMOUNTABLE_DRAINAGE_NO_ESCAPE",
+      "outer_core_lanes": {
+        "north": [
+          [
+            30,
+            0
+          ],
+          [
+            31,
+            0
+          ],
+          [
+            32,
+            0
+          ],
+          [
+            33,
+            0
+          ]
+        ],
+        "south": [
+          [
+            30,
+            43
+          ],
+          [
+            31,
+            43
+          ],
+          [
+            32,
+            43
+          ],
+          [
+            33,
+            43
+          ]
+        ]
+      },
+      "action": "Low-priority visual stream continuity review only. Existing barriers prevent Surf access; no buoy quota or speculative escape fix is justified."
+    }
+  ],
+  "limits": [
+    "Reachability intentionally over-approximates campaign/actors/ice/current/HM gates; a witness is a candidate for native input, not proof.",
+    "No-mount/no-water-route components still require checking callback/warp edits before calling permanently inaccessible.",
+    "Connected native destination Walls and valid land exits are not unconnected map escapes.",
+    "Waterfall/current direction is recorded; opposing current movement is never claimed executed.",
+    "Source cameras saved separately are native-art static crops, not reached GPU or gameplay."
+  ]
+}

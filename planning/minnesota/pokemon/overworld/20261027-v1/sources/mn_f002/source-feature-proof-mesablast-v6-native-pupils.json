@@ -1,0 +1,216 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_006",
+  "result": "pass",
+  "manifest_sha256": "0aade2dce1291cf68783b996d168b9d973d73f6c4d360917652366d542c1d176",
+  "bank_sha256": "cb1a0dd244fc428b80bd860ff6e160be7bb42a49e14692e7f3e8b22b2f03a7df",
+  "source_sha256": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f002/mesablast.overworld.imagegen-v3-compact-eyes.png": "d4e7255974252c85d80211283d783678116e93bed766b7bab56edaf18b1606ce",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f002/mesablast.overworld.imagegen-v1.png": "0e6bcb23a75e5cdabb29fe60e3a106b7ece9ad2c066032c61bed77dcc0f4fe7f"
+  },
+  "canonical_eye_form": "Two isolated actual black pupil dots south and one isolated actual black pupil west; source eye components verified in all four nonrear poses.",
+  "nonrear_poses": [
+    {
+      "pose": "down_idle",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            6,
+            7
+          ],
+          "source_sample": [
+            239,
+            248
+          ],
+          "source_component": [
+            234,
+            227,
+            30,
+            32
+          ],
+          "component_pixels": 947,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            2,
+            0,
+            0,
+            253
+          ]
+        },
+        {
+          "native": [
+            9,
+            7
+          ],
+          "source_sample": [
+            341,
+            248
+          ],
+          "source_component": [
+            316,
+            227,
+            29,
+            32
+          ],
+          "component_pixels": 923,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            3,
+            1,
+            0,
+            253
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            6,
+            7
+          ],
+          "source_sample": [
+            1243,
+            249
+          ],
+          "source_component": [
+            1215,
+            225,
+            32,
+            34
+          ],
+          "component_pixels": 1086,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            0,
+            0,
+            0,
+            253
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            6,
+            7
+          ],
+          "source_sample": [
+            239,
+            689
+          ],
+          "source_component": [
+            234,
+            662,
+            30,
+            31
+          ],
+          "component_pixels": 930,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            5,
+            1,
+            0,
+            253
+          ]
+        },
+        {
+          "native": [
+            9,
+            7
+          ],
+          "source_sample": [
+            341,
+            689
+          ],
+          "source_component": [
+            316,
+            662,
+            29,
+            31
+          ],
+          "component_pixels": 899,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            6,
+            2,
+            1,
+            253
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            6,
+            7
+          ],
+          "source_sample": [
+            1243,
+            690
+          ],
+          "source_component": [
+            1215,
+            660,
+            32,
+            33
+          ],
+          "component_pixels": 1053,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            10,
+            4,
+            1,
+            253
+          ]
+        }
+      ]
+    }
+  ],
+  "rear_anatomy": {
+    "result": "pass",
+    "notes": "Massive broad blue cast-metal furnace body with short tiered stack, two huge fist arms and two heavy feet; actual ore-feature source samples all6. Source faceplanes/pupil spacing simplified in v2/v3; original north poses retained, with plain stack rear and single orange back seam. Four actual isolated pupils, exact 2bpp/palettes/borders and gait pass. West chest core naturally hidden by near forearm; actual side shoulder heat vent source-sampled instead. Normal/shiny boards viewed. No per-pose native rescaling or painting."
+  }
+}

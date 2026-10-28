@@ -13,23 +13,25 @@ use crate::authored_route_design::Interior;
 use crate::authored_route_modpack::{collision, validate_room};
 use crate::{CompiledGamePack, MapModule};
 
-/// Replaces only blocks in a same-size, already installed authored cave.
+/// Replaces terrain and its solid-wall border in a same-size installed cave.
 ///
-/// Both sources must retain every field except rows and the editorial fields
-/// `purpose`, `candidate_status` and `review_contract`. This operation supports
+/// Both sources must retain every field except rows, the solid-wall border and
+/// the editorial fields `purpose`, `candidate_status` and `review_contract`.
+/// This operation supports
 /// ordinary residents, item balls and an already installed `HealParty` resident
 /// whose exact source and native programs are certified before revision. No
 /// service is installed or changed. Scripted trainers, keepers and passive
 /// interior arrivals require a separate implementation. Native numeric identities,
 /// all events/programs, connections, palettes, art, audio, catalogs, manifests,
-/// HOME and recovery data remain unchanged. Only the map's blocks, its uniquely
-/// owned encoded block payload and the derived pack identity change.
+/// HOME and recovery data remain unchanged. Only the map's blocks, solid-wall
+/// border and attribute mirror, its uniquely owned encoded block payload and
+/// the derived pack identity change.
 ///
 /// Revised floor must be fully reachable with actors present. All ladders must
 /// be the retained exits; borders retain only the original mouth aperture.
 /// Every short native downward or lateral ledge must have a clear landing,
-/// blocked reverse/sides and an
-/// ordinary return. This validates native geometry, not visual quality, production
+/// blocked reverse/sides and an ordinary return. This validates native geometry,
+/// not visual quality, production
 /// input, earned progression or compatibility with previously saved overrides.
 ///
 /// # Errors
@@ -47,7 +49,13 @@ pub fn revise_authored_cave_terrain(
     let new: Interior = serde_json::from_value(new_value.clone())?;
     for value in [&mut old_value, &mut new_value] {
         let fields = value.as_object_mut().context("cave room object")?;
-        for field in ["rows", "purpose", "candidate_status", "review_contract"] {
+        for field in [
+            "rows",
+            "border_block",
+            "purpose",
+            "candidate_status",
+            "review_contract",
+        ] {
             fields.remove(field);
         }
     }
@@ -77,6 +85,7 @@ pub fn revise_authored_cave_terrain(
     crate::verify_compiled_game_pack_for_runtime(base)?;
     let original = base.data.maps.get(&old.id).context("installed cave")?;
     let attributes = &original.attributes;
+    let border = revised_border(base, original, &old, &new)?;
     ensure!(
         original.id == old.id
             && attributes.tileset_name == "cave"
@@ -111,6 +120,7 @@ pub fn revise_authored_cave_terrain(
     validate_native_source(base, original, &old)?;
     let mut revised = original.clone();
     revised.blocks = replacement;
+    revised.attributes.border_block = border;
     validate_room(base, &revised, &new).context("revised cave event access")?;
     validate_terrain(base, &revised, &new)?;
     let bytes = revised
@@ -124,6 +134,10 @@ pub fn revise_authored_cave_terrain(
         .data
         .map_blocks
         .insert(label.into(), crate::encode_base64_bytes(&bytes));
+    result
+        .data
+        .map_attributes
+        .insert(old.id.clone(), revised.attributes.clone());
     result.data.maps.insert(old.id, revised);
     result.identity = crate::derive_compiled_game_pack_identity_from_manifest(
         result.format_version,
@@ -134,6 +148,28 @@ pub fn revise_authored_cave_terrain(
     )?;
     crate::verify_compiled_game_pack_for_runtime(&result)?;
     Ok(result)
+}
+
+/// Keeps border repetition blocking while allowing the native solid-rock finish.
+pub(crate) fn revised_border(
+    base: &CompiledGamePack,
+    module: &MapModule,
+    old: &Interior,
+    new: &Interior,
+) -> Result<u8> {
+    ensure!(
+        old.border_block
+            .is_none_or(|border| border == module.attributes.border_block),
+        "cave border differs from its source preimage"
+    );
+    let border = new.border_block.unwrap_or(module.attributes.border_block);
+    for tile in [[0, 0], [1, 0], [0, 1], [1, 1]] {
+        ensure!(
+            collision(base, &[u16::from(border)], 1, tile, "cave")? == "WALL",
+            "cave border must be solid native rock in every quadrant"
+        );
+    }
+    Ok(border)
 }
 
 pub(crate) fn blocks(room: &Interior) -> Result<Vec<u16>> {

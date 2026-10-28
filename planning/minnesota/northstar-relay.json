@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "map": "MnBoundaryWatersSurveyShelter",
+  "species": "KETTLURK",
+  "receiver_core": [12, 3],
+  "receiver_metatile": [6, 1],
+  "free_access": true,
+  "capture_required": false,
+  "texts": {
+    "MnNorthstarRelayFeedText": ["REMOTE TRAP FEED", "A current coils.", "KETTLURK is near", "the intake cage."],
+    "MnNorthstarRelayCutText": ["You cut the link.", "The motors coast.", "The cage opens.", "The current turns."]
+  },
+  "contract": "The separate receiver still requires the actual chief victory and a retryable YES. After alignment acknowledgment, its remote feed shows the reviewed native Kettlurk front picture. The picture owns input and closes through the production A/B path. The player then cuts the pump link; acknowledgment powers down the console and sets survey restoration. No capture, battle, Pokedex registration, Safari payment or item is required. Repeat/Continue and reentry keep the console off and do not replay the feed. The existing completion pages coordinate crews stopping the drainage before the lakes empty. This is a remote monitor scene; Kettlurk is not physically inside the shelter."
+}

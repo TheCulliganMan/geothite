@@ -1,0 +1,353 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_075",
+  "status": "source-proof-pass; root visual/context acceptance required",
+  "selected_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f031/manifest-wickit-v1-pupil-proof.json",
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f031/wickit-v1-pupil-proof",
+  "shared_transform": {
+    "source_bounds": [
+      20,
+      6,
+      376,
+      397
+    ],
+    "native_size": [
+      11,
+      12
+    ],
+    "native_origin": [
+      2,
+      3
+    ]
+  },
+  "all_four_nonrear_poses_have_actual_source_pupils": true,
+  "every_native_eye_cluster_maps_to_same_small_anatomical_source_pupil_component": true,
+  "actual_source_pupil_proofs": [
+    {
+      "pose": "down_idle",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f031/wickit.overworld.imagegen-v1.png",
+      "crop": [
+        127,
+        77,
+        420,
+        420
+      ],
+      "anatomically_identified_source_eye_boxes_xywh": [
+        [
+          228,
+          336,
+          26,
+          34
+        ],
+        [
+          312,
+          336,
+          25,
+          34
+        ]
+      ],
+      "actual_eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              4,
+              11
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                5,
+                5,
+                3,
+                253
+              ],
+              "bounds": [
+                228,
+                336,
+                26,
+                34
+              ],
+              "pixels": 884,
+              "truncated_contour": false,
+              "native_pixel": [
+                4,
+                11
+              ],
+              "source_sample_pixel": [
+                232,
+                364
+              ]
+            }
+          ]
+        },
+        {
+          "native_cluster": [
+            [
+              7,
+              11
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                7,
+                6,
+                4,
+                253
+              ],
+              "bounds": [
+                312,
+                336,
+                25,
+                34
+              ],
+              "pixels": 850,
+              "truncated_contour": false,
+              "native_pixel": [
+                7,
+                11
+              ],
+              "source_sample_pixel": [
+                335,
+                364
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f031/wickit.overworld.imagegen-v1.png",
+      "crop": [
+        1069,
+        86,
+        420,
+        420
+      ],
+      "anatomically_identified_source_eye_boxes_xywh": [
+        [
+          1189,
+          325,
+          22,
+          45
+        ]
+      ],
+      "actual_eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              5,
+              10
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                1,
+                1,
+                0,
+                254
+              ],
+              "bounds": [
+                1189,
+                325,
+                22,
+                45
+              ],
+              "pixels": 989,
+              "truncated_contour": false,
+              "native_pixel": [
+                5,
+                10
+              ],
+              "source_sample_pixel": [
+                1208,
+                340
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f031/wickit.overworld.imagegen-v1.png",
+      "crop": [
+        127,
+        551,
+        420,
+        420
+      ],
+      "anatomically_identified_source_eye_boxes_xywh": [
+        [
+          228,
+          811,
+          26,
+          35
+        ],
+        [
+          312,
+          811,
+          26,
+          35
+        ]
+      ],
+      "actual_eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              4,
+              11
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                3,
+                2,
+                0,
+                253
+              ],
+              "bounds": [
+                228,
+                811,
+                26,
+                35
+              ],
+              "pixels": 898,
+              "truncated_contour": false,
+              "native_pixel": [
+                4,
+                11
+              ],
+              "source_sample_pixel": [
+                232,
+                838
+              ]
+            }
+          ]
+        },
+        {
+          "native_cluster": [
+            [
+              7,
+              11
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                9,
+                6,
+                1,
+                254
+              ],
+              "bounds": [
+                312,
+                811,
+                26,
+                35
+              ],
+              "pixels": 871,
+              "truncated_contour": false,
+              "native_pixel": [
+                7,
+                11
+              ],
+              "source_sample_pixel": [
+                335,
+                838
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f031/wickit.overworld.imagegen-v1.png",
+      "crop": [
+        1069,
+        565,
+        420,
+        420
+      ],
+      "anatomically_identified_source_eye_boxes_xywh": [
+        [
+          1189,
+          803,
+          22,
+          43
+        ]
+      ],
+      "actual_eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              5,
+              10
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                0,
+                0,
+                0,
+                253
+              ],
+              "bounds": [
+                1189,
+                803,
+                22,
+                43
+              ],
+              "pixels": 932,
+              "truncated_contour": false,
+              "native_pixel": [
+                5,
+                10
+              ],
+              "source_sample_pixel": [
+                1208,
+                819
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "native_head_anchors_idle_walk_equal": true,
+  "validation": {
+    "runtime_2bpp_384_bytes_exact_allpixels": true,
+    "runtime_png16x96_index_parity": true,
+    "normal_shiny_palettebanks_exact": true,
+    "normal_shiny_all1536pixels_exact": true,
+    "transparent_border": true,
+    "idle_walk_pairs_distinct": true
+  },
+  "sha256": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f031/wickit-v1-pupil-proof/review/line.shiny-8x.png": "921da4330b333c57b3e6f02177460d2d665e5d4afb4b520e42429ba42156be7d",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f031/wickit-v1-pupil-proof/gfx/pokemon/wickit/overworld.gbcpal": "4aa685e226aed81b7828e370fdd0289108578b1f5345052b0f12f34021490e46",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f031/manifest-wickit-v1-pupil-proof.json": "611ca097ccbed5f331a3919090e3ec12eeecf4e63ef687aae46a4ec8fbe4b8e6",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f031/wickit-v1-pupil-proof/gfx/pokemon/wickit/overworld-shiny.gbcpal": "4fe0bbd9b2b2f85f95a6a1e7651a5d5c2881236ac5451dd75523ea6247937831",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f031/wickit-v1-pupil-proof/gfx/pokemon/wickit/overworld.2bpp": "f66f647794eca3a052b5fe8a803343fcb69806b2824b871d820f5f839a785bc0",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f031/wickit.overworld.imagegen-v1.png": "350faf41eb2529eb079ce040528bf87d5ecebfb17c0687a3380e5f72af8a3ebf",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f031/wickit-v1-pupil-proof/review/line.normal-8x.png": "abb47a3a125f91d5cc3ff8dd23b4506c010421728c7c68cb32ee5654aacf8a96",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f031/wickit-v1-pupil-proof/compiled-index.json": "d34044c661612db8b9238738a7d8803c4e73c4dbf2f042e4f7c14da49dabc555",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f031/wickit-v1-pupil-proof/gfx/pokemon/wickit/overworld.png": "aed66b344444226696d47f366efcfa59490052eea0ed6e1350cc61c7e9934500"
+  },
+  "actual_native_boards_viewed": true,
+  "rear_review": "Both actual normal/shiny rear poses viewed: blank wax rear head with wick/flame and skirtpads, no face.",
+  "canonical_eye_form": "TWO actual black coal pupils SOUTH, ONE WEST, isolated in gold wax face. No wick tuft, skirt slit or flame shadow counted.",
+  "signature_anatomy_review": "All6 native normal/shiny views actually viewed. Squat wax-mollusk with curled attached flame, dark tuft, split skirt pads. Flame bends/skirt gait, head anchors stable, no arms. Native11x12."
+}

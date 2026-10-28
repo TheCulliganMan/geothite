@@ -1,0 +1,315 @@
+{
+  "species_id": "MN_293",
+  "manifest_sha256": "f3f0766036afb283caff80ace7b5758ab16adced94b51c3e420f4a52a9227fc0",
+  "bank_sha256": "70100a304896cf2378a9148099332268bef5495dbcb53c89ab81b2f3aca5cd58",
+  "source_sha256": {
+    "burrbud.overworld.imagegen-v2-plant.png": "d28a1e0e1b905140a51e228213957eff4871b776bdeb9cda5b3d0a8c011735ba"
+  },
+  "result": "pass",
+  "no_native_painting": true,
+  "canonical_closed_holes": 0,
+  "proof": [
+    {
+      "pose": "down_idle",
+      "features": [
+        {
+          "feature": "open_stem_arch_gap",
+          "traces": [
+            {
+              "source_feature_region": [
+                225,
+                165,
+                290,
+                230
+              ],
+              "actual_native_source_samples": [
+                {
+                  "native": [
+                    6,
+                    6
+                  ],
+                  "source_sample": [
+                    248,
+                    181
+                  ],
+                  "rgba": [
+                    19,
+                    28,
+                    12,
+                    0
+                  ]
+                },
+                {
+                  "native": [
+                    7,
+                    6
+                  ],
+                  "source_sample": [
+                    284,
+                    181
+                  ],
+                  "rgba": [
+                    21,
+                    30,
+                    14,
+                    0
+                  ]
+                },
+                {
+                  "native": [
+                    7,
+                    7
+                  ],
+                  "source_sample": [
+                    284,
+                    217
+                  ],
+                  "rgba": [
+                    18,
+                    27,
+                    13,
+                    0
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "profile_occlusion_note": null
+    },
+    {
+      "pose": "up_idle",
+      "features": [
+        {
+          "feature": "open_stem_arch_gap",
+          "traces": [
+            {
+              "source_feature_region": [
+                750,
+                165,
+                805,
+                230
+              ],
+              "actual_native_source_samples": [
+                {
+                  "native": [
+                    7,
+                    6
+                  ],
+                  "source_sample": [
+                    755,
+                    175
+                  ],
+                  "rgba": [
+                    22,
+                    31,
+                    15,
+                    4
+                  ]
+                },
+                {
+                  "native": [
+                    7,
+                    7
+                  ],
+                  "source_sample": [
+                    755,
+                    211
+                  ],
+                  "rgba": [
+                    17,
+                    25,
+                    11,
+                    1
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "profile_occlusion_note": null
+    },
+    {
+      "pose": "left_idle",
+      "features": [
+        {
+          "feature": "open_stem_arch_gap",
+          "traces": [
+            {
+              "source_feature_region": [
+                1220,
+                165,
+                1295,
+                230
+              ],
+              "actual_native_source_samples": [
+                {
+                  "native": [
+                    6,
+                    6
+                  ],
+                  "source_sample": [
+                    1263,
+                    177
+                  ],
+                  "rgba": [
+                    22,
+                    34,
+                    16,
+                    1
+                  ]
+                },
+                {
+                  "native": [
+                    6,
+                    7
+                  ],
+                  "source_sample": [
+                    1263,
+                    213
+                  ],
+                  "rgba": [
+                    19,
+                    28,
+                    12,
+                    2
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "profile_occlusion_note": null
+    },
+    {
+      "pose": "down_step",
+      "features": [
+        {
+          "feature": "open_stem_arch_gap",
+          "traces": [
+            {
+              "source_feature_region": [
+                225,
+                640,
+                290,
+                720
+              ],
+              "actual_native_source_samples": [
+                {
+                  "native": [
+                    6,
+                    6
+                  ],
+                  "source_sample": [
+                    248,
+                    675
+                  ],
+                  "rgba": [
+                    18,
+                    26,
+                    11,
+                    1
+                  ]
+                },
+                {
+                  "native": [
+                    7,
+                    6
+                  ],
+                  "source_sample": [
+                    284,
+                    675
+                  ],
+                  "rgba": [
+                    18,
+                    26,
+                    11,
+                    0
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "profile_occlusion_note": null
+    },
+    {
+      "pose": "up_step",
+      "features": [
+        {
+          "feature": "open_stem_arch_gap",
+          "traces": [
+            {
+              "source_feature_region": [
+                750,
+                640,
+                805,
+                720
+              ],
+              "actual_native_source_samples": [
+                {
+                  "native": [
+                    7,
+                    6
+                  ],
+                  "source_sample": [
+                    755,
+                    670
+                  ],
+                  "rgba": [
+                    21,
+                    30,
+                    14,
+                    0
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "profile_occlusion_note": null
+    },
+    {
+      "pose": "left_step",
+      "features": [
+        {
+          "feature": "open_stem_arch_gap",
+          "traces": [
+            {
+              "source_feature_region": [
+                1220,
+                640,
+                1295,
+                720
+              ],
+              "actual_native_source_samples": [
+                {
+                  "native": [
+                    6,
+                    6
+                  ],
+                  "source_sample": [
+                    1263,
+                    675
+                  ],
+                  "rgba": [
+                    19,
+                    27,
+                    12,
+                    0
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "profile_occlusion_note": null
+    }
+  ]
+}

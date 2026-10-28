@@ -242,6 +242,9 @@ impl RouteDesign {
                     ([56, 96], 2, 4, 10, 5, rooms, "MnR11")
                 }
                 "MN_R11" => ([32, 72], 1, 3, 10, 5, 1, "MnR11"),
+                "MN_R12" if design.dimensions_metatiles == [32, 32] => {
+                    ([32, 32], 1, 2, 10, 6, 2, "MnR12")
+                }
                 "MN_R12" => ([64, 56], 2, 3, 10, 6, 2, "MnR12"),
                 "MN_R13" => ([32, 64], 1, 3, 7, 6, 1, "MnR13"),
                 "MN_R14" => ([48, 32], 2, 2, 6, 6, 0, "MnR14"),
@@ -267,6 +270,7 @@ impl RouteDesign {
                 && design.items.len()
                     == match design.id.as_str() {
                         "MN_R11" if design.dimensions_metatiles == [56, 96] => 6,
+                        "MN_R12" if design.dimensions_metatiles == [32, 32] => 5,
                         "MN_R01" | "MN_R02" | "MN_R15" => 2,
                         "MN_R03" | "MN_R04" | "MN_R05" | "MN_R06" | "MN_R10" | "MN_R17"
                         | "MN_R20" => 3,
@@ -275,6 +279,7 @@ impl RouteDesign {
                 && design.signs.len()
                     == match design.id.as_str() {
                         "MN_R11" if design.dimensions_metatiles == [56, 96] => 8 + rooms,
+                        "MN_R12" if design.dimensions_metatiles == [32, 32] => 7,
                         "MN_R01" | "MN_R02" | "MN_R03" | "MN_R04" => 5,
                         "MN_R15" => 3,
                         "MN_R07" => 7,

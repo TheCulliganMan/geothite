@@ -3489,6 +3489,9 @@ fn press_visible_start_button(runtime_shell: &mut BevyRuntimeShell) -> Result<()
 }
 
 fn has_visible_shell_b_action(runtime_shell: &mut BevyRuntimeShell) -> bool {
+    if runtime_shell.pending_name_choice.is_some() {
+        return true;
+    }
     if runtime_shell.mailbox_cursor.is_some() || runtime_shell.mailbox_action_cursor.is_some() {
         return true;
     }
@@ -3895,7 +3898,9 @@ fn has_visible_shell_direction_action(runtime_shell: &mut BevyRuntimeShell) -> b
     if runtime_shell.pending_gender_selection.is_some() {
         return true;
     }
-    let ownership = cached_runtime_snapshot(runtime_shell).map(|snapshot| {
+    // Modal input routing must observe completed script work immediately,
+    // even while the renderer retains the preceding dialogue snapshot.
+    let ownership = runtime_shell.shell.presentation_snapshot().map(|snapshot| {
         runtime_shell.start_menu_cursor.is_some()
             || snapshot.ui.pending_yes_no.is_some()
             || runtime_shell.pending_phone_prompt.is_some()
@@ -4981,6 +4986,14 @@ fn continue_visible_script_after_prompt(runtime_shell: &mut BevyRuntimeShell) ->
                 runtime_shell.shell.runtime().compiled_script_command_name(
                     &cursor.source_script,cursor.next_command_index)
                     .is_ok_and(|command|command=="closewindow"));
+        // Pokepic draws before the script's input wait. Arm that native wait
+        // before yielding the picture, so its source cursor survives Continue.
+        let picture_needs_wait = snapshot.ui.active_pokemon_picture.is_some()
+            && runtime_shell.active_script_cursor.as_ref().is_some_and(|cursor| {
+                runtime_shell.shell.runtime().compiled_script_command_name(
+                    &cursor.source_script, cursor.next_command_index,
+                ).is_ok_and(|command| matches!(command.as_str(), "waitbutton" | "promptbutton"))
+            });
         if runtime_shell.visible_mom_bank.is_some()
             || runtime_shell.field_notice.is_some()
             || runtime_shell.pc_notice.is_some()
@@ -5002,7 +5015,7 @@ fn continue_visible_script_after_prompt(runtime_shell: &mut BevyRuntimeShell) ->
             || snapshot.pending_shop.is_some()
             || text_window_blocks
             || (snapshot.ui.window_open && !closing_runtime_window)
-            || snapshot.ui.active_pokemon_picture.is_some()
+            || (snapshot.ui.active_pokemon_picture.is_some() && !picture_needs_wait)
             || runtime_shell.elevator_cursor.is_some()
             || visible_menu_has_selectable_options(&snapshot)
             || snapshot.battle.is_some()

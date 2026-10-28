@@ -1,0 +1,37 @@
+{
+  "family_id": "MN_F012",
+  "exact_front_and_back_references_actually_viewed": true,
+  "refs": {
+    "Pucklet": {
+      "front": {
+        "path": "target/minnesota-pokemon/native/MN_F012/mn-034-pucklet-v1.front.png",
+        "sha256": "fb1bcae52bdeb7cb9cd7de2926959ae3c031dfd68d2f77c434915fe40b82d905"
+      },
+      "back": {
+        "path": "target/minnesota-pokemon/native/MN_F012/mn-034-pucklet-v1.back.png",
+        "sha256": "6701e504fe5c01db61e81531883a9bca9e960e876162d7ca73eab593adc0fe8f"
+      }
+    },
+    "Skatuff": {
+      "front": {
+        "path": "target/minnesota-pokemon/native/MN_F012/mn-035-skatuff-v1.front.png",
+        "sha256": "6ba445d38cc482450ade3b21bbb96c09f14227fdf9558e6fd3a9486707a25e69"
+      },
+      "back": {
+        "path": "target/minnesota-pokemon/native/MN_F012/mn-035-skatuff-v1.back.png",
+        "sha256": "3d4478ff66734acc1ad13f34f91d9d1134bb6c5c331de50dee4706262ef0f392"
+      }
+    },
+    "Goalossus": {
+      "front": {
+        "path": "target/minnesota-pokemon/native/MN_F012/mn-036-goalossus-v1.front.png",
+        "sha256": "705d8dcdbb1e9bbad769c14731f5b9566b34eb24e18dfcff9ce9fd0f54545d28"
+      },
+      "back": {
+        "path": "target/minnesota-pokemon/native/MN_F012/mn-036-goalossus-v1.back.png",
+        "sha256": "d77766e7f1ba87f4cc6fc0810b410c83cebb63977ea4ae68f79b81416b1a2277"
+      }
+    }
+  },
+  "body_lock": "Pucklet single flat puck torso two ice fin arms and two short feet; Skatuff upright streamlined body, one head/back fin, two rounded gauntlet arms, two skate feet; Goalossus broad masked goalie torso, two large glove arms, two armored skate feet, one dorsal crest. No separate human tools, tails, wings or extra limbs."
+}

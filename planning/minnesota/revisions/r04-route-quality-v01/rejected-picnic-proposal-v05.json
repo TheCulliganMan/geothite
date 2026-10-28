@@ -1,0 +1,47 @@
+{
+  "status": "BOUNDED_PROPOSAL_ONLY_NOT_APPLIED_OR_ACCEPTED",
+  "source_candidate_contract_sha256": "871977bb33b45ff06d7159e679843df778331b142e2c6d5d920ed8bbf456088f",
+  "patches": [
+    {
+      "metatile": [
+        22,
+        12
+      ],
+      "before": "03",
+      "after": "00",
+      "purpose": "step the upper-left habitat edge with a native elm"
+    },
+    {
+      "metatile": [
+        23,
+        14
+      ],
+      "before": "03",
+      "after": "00",
+      "purpose": "step the opposite lower habitat edge"
+    },
+    {
+      "metatile": [
+        24,
+        13
+      ],
+      "before": "02",
+      "after": "0e",
+      "purpose": "native bench at existing cache clearing; item/approach stay on lower Floor quadrants"
+    }
+  ],
+  "changed_metatiles": 3,
+  "minimum_grass_to_existing_cache_approach_before": 4,
+  "minimum_grass_to_existing_cache_approach_proposed": 4,
+  "actor_footing_unchanged": true,
+  "item_core": [
+    49,
+    27
+  ],
+  "item_approach_core": [
+    48,
+    27
+  ],
+  "pond_bridge_seams_unchanged": true,
+  "source_or_pack_writes": 0
+}

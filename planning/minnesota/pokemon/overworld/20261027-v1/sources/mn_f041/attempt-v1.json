@@ -1,0 +1,28 @@
+{
+  "status": "failed_tool_argument_validation_no_image",
+  "family_id": "MN_F041",
+  "active_family_confirmed": true,
+  "prompt_file": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f041/prompt-v1.txt",
+  "references_in_species_order": [
+    "MN_267_front",
+    "MN_267_back",
+    "MN_268_front",
+    "MN_268_back",
+    "MN_092_front",
+    "MN_092_back"
+  ],
+  "frame_order": [
+    "down_standing",
+    "up_standing",
+    "left_standing",
+    "down_walk",
+    "up_walk",
+    "left_walk"
+  ],
+  "native_cell": [
+    16,
+    16
+  ],
+  "error": "referenced_image_paths must contain at most5paths",
+  "source_result": null
+}

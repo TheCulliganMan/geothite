@@ -1,0 +1,357 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_156",
+  "status": "source-proof-pass; root visual/context acceptance required",
+  "selected_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f073/manifest-contrakett-v1-pupil-proof.json",
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f073/contrakett-v1-pupil-proof",
+  "shared_transform": {
+    "source_bounds": [
+      29,
+      125,
+      449,
+      269
+    ],
+    "native_size": [
+      14,
+      8
+    ],
+    "native_origin": [
+      1,
+      7
+    ]
+  },
+  "all_four_nonrear_poses_have_actual_source_pupils": true,
+  "every_native_eye_cluster_maps_to_same_small_anatomical_source_pupil_component": true,
+  "actual_source_pupil_proofs": [
+    {
+      "pose": "down_idle",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f073/contrakett.overworld.imagegen-v1.png",
+      "crop": [
+        13,
+        62,
+        500,
+        440
+      ],
+      "anatomically_identified_source_eye_boxes_xywh": [
+        [
+          211,
+          338,
+          19,
+          27
+        ],
+        [
+          279,
+          338,
+          19,
+          27
+        ]
+      ],
+      "actual_eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              6,
+              11
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                40,
+                12,
+                6,
+                254
+              ],
+              "bounds": [
+                211,
+                338,
+                19,
+                27
+              ],
+              "pixels": 513,
+              "truncated_contour": false,
+              "native_pixel": [
+                6,
+                11
+              ],
+              "source_sample_pixel": [
+                218,
+                338
+              ]
+            }
+          ]
+        },
+        {
+          "native_cluster": [
+            [
+              8,
+              11
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                49,
+                16,
+                10,
+                253
+              ],
+              "bounds": [
+                279,
+                338,
+                19,
+                27
+              ],
+              "pixels": 512,
+              "truncated_contour": false,
+              "native_pixel": [
+                8,
+                11
+              ],
+              "source_sample_pixel": [
+                282,
+                338
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f073/contrakett.overworld.imagegen-v1.png",
+      "crop": [
+        1019,
+        89,
+        500,
+        440
+      ],
+      "anatomically_identified_source_eye_boxes_xywh": [
+        [
+          1156,
+          321,
+          20,
+          30
+        ]
+      ],
+      "actual_eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              4,
+              10
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                0,
+                1,
+                0,
+                253
+              ],
+              "bounds": [
+                1156,
+                321,
+                20,
+                30
+              ],
+              "pixels": 600,
+              "truncated_contour": false,
+              "native_pixel": [
+                4,
+                10
+              ],
+              "source_sample_pixel": [
+                1160,
+                331
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f073/contrakett.overworld.imagegen-v1.png",
+      "crop": [
+        22,
+        526,
+        500,
+        440
+      ],
+      "anatomically_identified_source_eye_boxes_xywh": [
+        [
+          220,
+          797,
+          19,
+          27
+        ],
+        [
+          290,
+          797,
+          19,
+          27
+        ]
+      ],
+      "actual_eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              6,
+              11
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                0,
+                0,
+                0,
+                253
+              ],
+              "bounds": [
+                220,
+                797,
+                19,
+                27
+              ],
+              "pixels": 507,
+              "truncated_contour": false,
+              "native_pixel": [
+                6,
+                11
+              ],
+              "source_sample_pixel": [
+                227,
+                802
+              ]
+            }
+          ]
+        },
+        {
+          "native_cluster": [
+            [
+              8,
+              11
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                6,
+                3,
+                1,
+                254
+              ],
+              "bounds": [
+                290,
+                797,
+                19,
+                27
+              ],
+              "pixels": 501,
+              "truncated_contour": false,
+              "native_pixel": [
+                8,
+                11
+              ],
+              "source_sample_pixel": [
+                291,
+                802
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f073/contrakett.overworld.imagegen-v1.png",
+      "crop": [
+        1029,
+        557,
+        500,
+        440
+      ],
+      "anatomically_identified_source_eye_boxes_xywh": [
+        [
+          1163,
+          783,
+          21,
+          32
+        ]
+      ],
+      "actual_eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              4,
+              10
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                0,
+                0,
+                0,
+                253
+              ],
+              "bounds": [
+                1163,
+                783,
+                21,
+                32
+              ],
+              "pixels": 667,
+              "truncated_contour": false,
+              "native_pixel": [
+                4,
+                10
+              ],
+              "source_sample_pixel": [
+                1170,
+                799
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "native_head_anchors_idle_walk_equal": true,
+  "validation": {
+    "runtime_2bpp_384_bytes_exact_allpixels": true,
+    "runtime_png16x96_index_parity": true,
+    "normal_shiny_palettebanks_exact": true,
+    "normal_shiny_all1536pixels_exact": true,
+    "transparent_border": true,
+    "idle_walk_pairs_distinct": true
+  },
+  "sha256": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f073/contrakett-v1-pupil-proof/gfx/pokemon/contrakett/overworld.png": "f84538d08422b33da939c55766ad644568f267b1e6058305e49f568c5a3e5b2b",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f073/contrakett.overworld.imagegen-v1.png": "9af9b347c351d15345e1999b8e4c224b6ac69d4f195ac898969ba6cbcee36471",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f073/manifest-contrakett-v1-pupil-proof.json": "2b475e0b8e96a102ea26d8cbe462a03e4c80815d0820899705a6626ad4d12c9b",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f073/contrakett-v1-pupil-proof/review/line.shiny-8x.png": "47c3fb04fdd2f5c90d12a02113e0884a3b46be947ef64d9cadb7195b3f1d82ef",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f073/contrakett-v1-pupil-proof/review/line.normal-8x.png": "af30442142c6665b95099830c9ddcd4b8a0fcfca945a4f5a7cea5d08ab96291c",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f073/contrakett-v1-pupil-proof/gfx/pokemon/contrakett/overworld-shiny.gbcpal": "c138441ab30a646d314e5d51a1ea809442b5791c6a3d1b57ab07a8d16bb7f496",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f073/contrakett-v1-pupil-proof/compiled-index.json": "d822092fb4399e8b5dfd155be6079706b823f0428d3eb5edafca79f9dfa3b55f",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f073/contrakett-v1-pupil-proof/gfx/pokemon/contrakett/overworld.2bpp": "bf2b227bad263c32bd92e56fc5f7bb693cecf54d9e5984a390af7477db98b156",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f073/contrakett-v1-pupil-proof/gfx/pokemon/contrakett/overworld.gbcpal": "5e9e5b6065feedfaccba98da21477b9f2f0a928b28dc088e9d8e003e38cc2c39"
+  },
+  "actual_native_boards_viewed": true,
+  "rear_review": "Actual six normal/shiny poses viewed. Both rear frames show blank smooth low arch/skull and feet, no copied face.",
+  "canonical_eye_form": "TWO real black SOUTH pupils, ONE real near WEST pupil. Whole clusters map to the same small actual source pupil component; spout/vent/foot dots not counted.",
+  "signature_anatomy_review": "Native14x8: wide low arch with large opposed snowshoe feet, projecting spout/head and tiny folded forearms. Broad pressure bands remain; fine foot slots simplify heavily into dark soles. Actual pupil anchors stable. Front face is small beside the broad arch, an honest native simplification.",
+  "source_motion_review": {
+    "source_sheet_actually_viewed": true,
+    "notes": "Actual source feet pivot and folded forearms shift in all three idle/step pairs, fixed eye anchors; no whole-body translation substituted."
+  }
+}

@@ -1,0 +1,768 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F099",
+  "status": "native-review-recommended; root independent visual and production context review required",
+  "selected_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f099/family.manifest-native-candidate-v4.json",
+  "runtime_output": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/true16-mosaic-family-v4/MN_F099",
+  "tool": "built-in image_gen",
+  "normal_shiny_boards_actually_viewed": true,
+  "proof": [
+    {
+      "species_id": "MN_215",
+      "name": "Tesslarv",
+      "runtime_token": "TESSLARV",
+      "native_frame_size": [
+        16,
+        16
+      ],
+      "runtime_stack_size": [
+        16,
+        96
+      ],
+      "normal_shiny_runtime_pixel_parity": "all1536pixels exact each",
+      "canonical_palettes_and_little_endian_bytes": "exact",
+      "all_three_walk_pairs_distinct": true,
+      "all_four_nonrear_poses_have_actual_isolated_source_pupils": true,
+      "source_to_native_pupil_proof": [
+        {
+          "pose": "down_idle",
+          "shared_transform": {
+            "source_union": [
+              12,
+              12,
+              432,
+              348
+            ],
+            "sampled_native_size": [
+              14,
+              11
+            ],
+            "native_origin": [
+              1,
+              4
+            ]
+          },
+          "samples": [
+            {
+              "native_pixel": [
+                6,
+                11
+              ],
+              "source_sample_pixel": [
+                216,
+                388
+              ],
+              "source_sample_rgba": [
+                0,
+                0,
+                0,
+                253
+              ],
+              "source_pupil_component_bounds": [
+                214,
+                369,
+                23,
+                28
+              ],
+              "source_pupil_component_pixels": 621,
+              "native_orthogonal_neighbors": [
+                [
+                  5,
+                  11,
+                  1
+                ],
+                [
+                  7,
+                  11,
+                  1
+                ],
+                [
+                  6,
+                  10,
+                  1
+                ],
+                [
+                  6,
+                  12,
+                  1
+                ]
+              ]
+            },
+            {
+              "native_pixel": [
+                9,
+                11
+              ],
+              "source_sample_pixel": [
+                309,
+                388
+              ],
+              "source_sample_rgba": [
+                2,
+                2,
+                1,
+                253
+              ],
+              "source_pupil_component_bounds": [
+                288,
+                370,
+                23,
+                27
+              ],
+              "source_pupil_component_pixels": 613,
+              "native_orthogonal_neighbors": [
+                [
+                  8,
+                  11,
+                  1
+                ],
+                [
+                  10,
+                  11,
+                  1
+                ],
+                [
+                  9,
+                  10,
+                  1
+                ],
+                [
+                  9,
+                  12,
+                  1
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "shared_transform": {
+            "source_union": [
+              12,
+              12,
+              432,
+              348
+            ],
+            "sampled_native_size": [
+              14,
+              11
+            ],
+            "native_origin": [
+              1,
+              4
+            ]
+          },
+          "samples": [
+            {
+              "native_pixel": [
+                3,
+                10
+              ],
+              "source_sample_pixel": [
+                1134,
+                361
+              ],
+              "source_sample_rgba": [
+                1,
+                0,
+                0,
+                254
+              ],
+              "source_pupil_component_bounds": [
+                1124,
+                357,
+                23,
+                28
+              ],
+              "source_pupil_component_pixels": 644,
+              "native_orthogonal_neighbors": [
+                [
+                  2,
+                  10,
+                  1
+                ],
+                [
+                  4,
+                  10,
+                  1
+                ],
+                [
+                  3,
+                  9,
+                  1
+                ],
+                [
+                  3,
+                  11,
+                  1
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "pose": "down_step",
+          "shared_transform": {
+            "source_union": [
+              12,
+              12,
+              432,
+              348
+            ],
+            "sampled_native_size": [
+              14,
+              11
+            ],
+            "native_origin": [
+              1,
+              4
+            ]
+          },
+          "samples": [
+            {
+              "native_pixel": [
+                6,
+                11
+              ],
+              "source_sample_pixel": [
+                216,
+                813
+              ],
+              "source_sample_rgba": [
+                3,
+                3,
+                1,
+                254
+              ],
+              "source_pupil_component_bounds": [
+                213,
+                790,
+                24,
+                27
+              ],
+              "source_pupil_component_pixels": 642,
+              "native_orthogonal_neighbors": [
+                [
+                  5,
+                  11,
+                  1
+                ],
+                [
+                  7,
+                  11,
+                  1
+                ],
+                [
+                  6,
+                  10,
+                  1
+                ],
+                [
+                  6,
+                  12,
+                  1
+                ]
+              ]
+            },
+            {
+              "native_pixel": [
+                9,
+                11
+              ],
+              "source_sample_pixel": [
+                309,
+                813
+              ],
+              "source_sample_rgba": [
+                4,
+                3,
+                2,
+                253
+              ],
+              "source_pupil_component_bounds": [
+                288,
+                790,
+                23,
+                27
+              ],
+              "source_pupil_component_pixels": 608,
+              "native_orthogonal_neighbors": [
+                [
+                  8,
+                  11,
+                  1
+                ],
+                [
+                  10,
+                  11,
+                  1
+                ],
+                [
+                  9,
+                  10,
+                  1
+                ],
+                [
+                  9,
+                  12,
+                  1
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "pose": "left_step",
+          "shared_transform": {
+            "source_union": [
+              12,
+              12,
+              432,
+              348
+            ],
+            "sampled_native_size": [
+              14,
+              11
+            ],
+            "native_origin": [
+              1,
+              4
+            ]
+          },
+          "samples": [
+            {
+              "native_pixel": [
+                3,
+                10
+              ],
+              "source_sample_pixel": [
+                1134,
+                785
+              ],
+              "source_sample_rgba": [
+                0,
+                0,
+                0,
+                253
+              ],
+              "source_pupil_component_bounds": [
+                1124,
+                774,
+                23,
+                29
+              ],
+              "source_pupil_component_pixels": 667,
+              "native_orthogonal_neighbors": [
+                [
+                  2,
+                  10,
+                  1
+                ],
+                [
+                  4,
+                  10,
+                  1
+                ],
+                [
+                  3,
+                  9,
+                  1
+                ],
+                [
+                  3,
+                  11,
+                  1
+                ]
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "species_id": "MN_216",
+      "name": "Mothosaic",
+      "runtime_token": "MOTHOSAIC",
+      "native_frame_size": [
+        16,
+        16
+      ],
+      "runtime_stack_size": [
+        16,
+        96
+      ],
+      "normal_shiny_runtime_pixel_parity": "all1536pixels exact each",
+      "canonical_palettes_and_little_endian_bytes": "exact",
+      "all_three_walk_pairs_distinct": true,
+      "all_four_nonrear_poses_have_actual_isolated_source_pupils": true,
+      "source_to_native_pupil_proof": [
+        {
+          "pose": "down_idle",
+          "shared_transform": {
+            "source_union": [
+              15,
+              12,
+              429,
+              296
+            ],
+            "sampled_native_size": [
+              14,
+              9
+            ],
+            "native_origin": [
+              1,
+              6
+            ]
+          },
+          "samples": [
+            {
+              "native_pixel": [
+                6,
+                12
+              ],
+              "source_sample_pixel": [
+                255,
+                413
+              ],
+              "source_sample_rgba": [
+                1,
+                0,
+                0,
+                253
+              ],
+              "source_pupil_component_bounds": [
+                246,
+                393,
+                20,
+                25
+              ],
+              "source_pupil_component_pixels": 500,
+              "native_orthogonal_neighbors": [
+                [
+                  5,
+                  12,
+                  1
+                ],
+                [
+                  7,
+                  12,
+                  1
+                ],
+                [
+                  6,
+                  11,
+                  1
+                ],
+                [
+                  6,
+                  13,
+                  1
+                ]
+              ]
+            },
+            {
+              "native_pixel": [
+                8,
+                12
+              ],
+              "source_sample_pixel": [
+                316,
+                413
+              ],
+              "source_sample_rgba": [
+                0,
+                0,
+                0,
+                253
+              ],
+              "source_pupil_component_bounds": [
+                309,
+                393,
+                20,
+                25
+              ],
+              "source_pupil_component_pixels": 500,
+              "native_orthogonal_neighbors": [
+                [
+                  7,
+                  12,
+                  1
+                ],
+                [
+                  9,
+                  12,
+                  1
+                ],
+                [
+                  8,
+                  11,
+                  1
+                ],
+                [
+                  8,
+                  13,
+                  1
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "shared_transform": {
+            "source_union": [
+              15,
+              12,
+              429,
+              296
+            ],
+            "sampled_native_size": [
+              14,
+              9
+            ],
+            "native_origin": [
+              1,
+              6
+            ]
+          },
+          "samples": [
+            {
+              "native_pixel": [
+                4,
+                11
+              ],
+              "source_sample_pixel": [
+                1150,
+                401
+              ],
+              "source_sample_rgba": [
+                2,
+                2,
+                3,
+                253
+              ],
+              "source_pupil_component_bounds": [
+                1131,
+                396,
+                22,
+                26
+              ],
+              "source_pupil_component_pixels": 572,
+              "native_orthogonal_neighbors": [
+                [
+                  3,
+                  11,
+                  1
+                ],
+                [
+                  5,
+                  11,
+                  1
+                ],
+                [
+                  4,
+                  10,
+                  1
+                ],
+                [
+                  4,
+                  12,
+                  1
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "pose": "down_step",
+          "shared_transform": {
+            "source_union": [
+              15,
+              12,
+              429,
+              296
+            ],
+            "sampled_native_size": [
+              14,
+              9
+            ],
+            "native_origin": [
+              1,
+              6
+            ]
+          },
+          "samples": [
+            {
+              "native_pixel": [
+                6,
+                12
+              ],
+              "source_sample_pixel": [
+                254,
+                799
+              ],
+              "source_sample_rgba": [
+                8,
+                7,
+                10,
+                253
+              ],
+              "source_pupil_component_bounds": [
+                238,
+                776,
+                22,
+                26
+              ],
+              "source_pupil_component_pixels": 571,
+              "native_orthogonal_neighbors": [
+                [
+                  5,
+                  12,
+                  1
+                ],
+                [
+                  7,
+                  12,
+                  1
+                ],
+                [
+                  6,
+                  11,
+                  1
+                ],
+                [
+                  6,
+                  13,
+                  1
+                ]
+              ]
+            },
+            {
+              "native_pixel": [
+                8,
+                12
+              ],
+              "source_sample_pixel": [
+                315,
+                799
+              ],
+              "source_sample_rgba": [
+                6,
+                6,
+                8,
+                253
+              ],
+              "source_pupil_component_bounds": [
+                308,
+                776,
+                21,
+                26
+              ],
+              "source_pupil_component_pixels": 546,
+              "native_orthogonal_neighbors": [
+                [
+                  7,
+                  12,
+                  1
+                ],
+                [
+                  9,
+                  12,
+                  1
+                ],
+                [
+                  8,
+                  11,
+                  1
+                ],
+                [
+                  8,
+                  13,
+                  1
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "pose": "left_step",
+          "shared_transform": {
+            "source_union": [
+              15,
+              12,
+              429,
+              296
+            ],
+            "sampled_native_size": [
+              14,
+              9
+            ],
+            "native_origin": [
+              1,
+              6
+            ]
+          },
+          "samples": [
+            {
+              "native_pixel": [
+                4,
+                11
+              ],
+              "source_sample_pixel": [
+                1151,
+                781
+              ],
+              "source_sample_rgba": [
+                9,
+                7,
+                9,
+                253
+              ],
+              "source_pupil_component_bounds": [
+                1131,
+                780,
+                22,
+                25
+              ],
+              "source_pupil_component_pixels": 550,
+              "native_orthogonal_neighbors": [
+                [
+                  3,
+                  11,
+                  1
+                ],
+                [
+                  5,
+                  11,
+                  1
+                ],
+                [
+                  4,
+                  10,
+                  1
+                ],
+                [
+                  4,
+                  12,
+                  1
+                ]
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "no_roster_registry_or_pack_mutations": true,
+  "all_raw_prompts_unused_frames_and_rejected_candidates_retained": true,
+  "sha256": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f099/family.manifest-native-candidate-v4.json": "a5c2da66988ef52ce9226f75d9e5d6a0257292c30979a7f5018224651dd48405",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/true16-mosaic-family-v4/MN_F099/compiled-index.json": "e681fa07cbaa756b9643f30b1ba6dbf7e250437b5dfc43b298b284b5592a0133",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f099/tesslarv.overworld.imagegen-v2.png": "e34876212ebb8dfd211bc287539c5f4ad9995144eaa4084980043d66bcca64e1",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f099/mothosaic.overworld.imagegen-v2.png": "e920fa0314b009d1cd7aac6513572832e6183c06f2b40fb5bfd7737b37ea88de",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f099/mothosaic.overworld.imagegen-v3.png": "29333b39b9563fe611611fa9a3c0cd0d918a45cc3daad2f8c3536cdaefac127b",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/true16-mosaic-family-v4/MN_F099/review/line.normal-8x.png": "35ac73f052a125fea847245d68276cfcb5a45b036d4c487a2a804e04d75c8eef",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/true16-mosaic-family-v4/MN_F099/review/line.shiny-8x.png": "46977fc16521037e741726de2072a713213e7191c5fdc77580b58a8191bc6d90"
+  }
+}

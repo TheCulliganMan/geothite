@@ -17,7 +17,6 @@ struct Journey {
     wild_encounters: usize,
     trainer_opponents: BTreeSet<String>,
     attacks_spent_pp: usize,
-    battle_clock_started: bool,
 }
 
 impl Journey {
@@ -36,17 +35,6 @@ impl Journey {
     }
 
     fn battle(&mut self, controller: &mut VisibleShellController) {
-        if !self.battle_clock_started {
-            // The first grass roll is deterministic. Vary subsequent divider
-            // samples so normal battle rejection sampling can terminate.
-            *controller.shell.shell.session_mut().divider_mut_for_tests() =
-                crystal_core::random::RuntimeDividerSource::replay(
-                    (0_u32..131072)
-                        .map(|n| ((n * 73 + 19) % 256) as u8)
-                        .collect::<Vec<u8>>(),
-                );
-            self.battle_clock_started = true;
-        }
         let initial = controller.snapshot().expect("encounter");
         let wild = matches!(
             initial.battle.as_ref().expect("battle").kind,
@@ -80,7 +68,12 @@ impl Journey {
                             .collect::<Vec<_>>()
                     })
                     .unwrap_or_default();
-            let button = if options.iter().any(|o| o.contains("change <PKMN>")) {
+            // A replacement move cursor can exist behind native narration.
+            // Finish the visible page before steering any underlying menu.
+            let button = if s.ui.menu.is_none() && s.ui.text.is_some() {
+                controller.wait_frames(30).expect("battle narration frames");
+                GameButton::A
+            } else if options.iter().any(|o| o.contains("change <PKMN>")) {
                 GameButton::B
             } else if options.iter().any(|o| o.contains("FIGHT")) {
                 let target = if wild { 3 } else { 0 };
@@ -436,19 +429,36 @@ fn twin_cities_journey_bypasses_cole_both_ways_wins_trainers_uses_ether_and_cont
     state.badges.johto = [true, true, true, false, false, false, false, false];
     state.sync_party_from_storage();
     state.random_state = Default::default();
+    // Seed the first grass roll and all later battle samples before gameplay.
+    // A finite zero prefix guarantees a real encounter without leaving battle
+    // rejection sampling stuck on an endless all-zero divider stream.
     *controller.shell.shell.session_mut().divider_mut_for_tests() =
-        crystal_core::random::RuntimeDividerSource::replay(vec![0; 131072]);
+        crystal_core::random::RuntimeDividerSource::replay(
+            std::iter::repeat_n(0, 16)
+                .chain((0_u32..131072).map(|n| ((n * 73 + 19) % 256) as u8))
+                .collect::<Vec<u8>>(),
+        );
     mark_runtime_snapshot_dirty(&mut controller.shell);
     let mut journey = Journey::default();
     for at in [(12, 18), (12, 13), (8, 13)] {
         journey.walk(&mut controller, at);
     }
-    journey.read(&mut controller, GameButton::Left, "found");
+    journey.read(&mut controller, GameButton::Left, "SUPER POTION");
     for at in [(12, 13), (12, 9)] {
         journey.walk(&mut controller, at);
     }
     journey.read(&mut controller, GameButton::Up, "ROSE WALK");
-    for at in [(12, 10), (23, 10), (23, 18), (52, 18), (52, 17)] {
+    for at in [
+        (12, 10),
+        (23, 10),
+        (23, 18),
+        (43, 18),
+        (43, 20),
+        (46, 20),
+        (46, 18),
+        (52, 18),
+        (52, 17),
+    ] {
         journey.walk(&mut controller, at);
     }
     journey.read(&mut controller, GameButton::Up, "ST PAUL");
@@ -466,10 +476,19 @@ fn twin_cities_journey_bypasses_cole_both_ways_wins_trainers_uses_ether_and_cont
         journey.wild_encounters > 0,
         "grass alternative never encountered a wild partner"
     );
-    for at in [(52, 18), (40, 18), (40, 27), (48, 27)] {
+    for at in [
+        (52, 18),
+        (46, 18),
+        (46, 20),
+        (43, 20),
+        (43, 18),
+        (40, 18),
+        (40, 27),
+        (48, 27),
+    ] {
         journey.walk(&mut controller, at);
     }
-    journey.read(&mut controller, GameButton::Right, "found");
+    journey.read(&mut controller, GameButton::Right, "GREAT BALL");
     for at in [(40, 27), (40, 25)] {
         journey.walk(&mut controller, at);
     }
@@ -513,7 +532,7 @@ fn twin_cities_journey_bypasses_cole_both_ways_wins_trainers_uses_ether_and_cont
     );
     journey.read(&mut controller, GameButton::Up, "flowers");
     journey.walk(&mut controller, (9, 26));
-    journey.read(&mut controller, GameButton::Down, "found");
+    journey.read(&mut controller, GameButton::Down, "ETHER");
     for at in [(10, 26), (10, 18), (16, 18), (18, 18)] {
         journey.walk(&mut controller, at);
     }
@@ -533,7 +552,15 @@ fn twin_cities_journey_bypasses_cole_both_ways_wins_trainers_uses_ether_and_cont
         (18, 19),
         (20, 19),
         (20, 18),
+        (43, 18),
+        (43, 20),
+        (46, 20),
+        (46, 18),
         (52, 18),
+        (46, 18),
+        (46, 20),
+        (43, 20),
+        (43, 18),
         (20, 18),
         (20, 19),
         (18, 19),

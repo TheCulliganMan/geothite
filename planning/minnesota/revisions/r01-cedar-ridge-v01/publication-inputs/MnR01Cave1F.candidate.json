@@ -1,0 +1,249 @@
+{
+  "id": "MnR01Cave1F",
+  "template": "UnionCave1F",
+  "dimensions_metatiles": [
+    8,
+    7
+  ],
+  "width_metatiles": 8,
+  "height_metatiles": 7,
+  "tileset": "cave",
+  "border_block": 1,
+  "exterior_anchor_metatile": [
+    9,
+    8
+  ],
+  "mandatory": false,
+  "purpose": "Original guide hollow and Antidote alcove joined by a low upper seam; longer guided exploration and short east-stair return.",
+  "rows": [
+    "01 01 01 01 01 01 01 01",
+    "01 01 04 05 05 06 06 01",
+    "01 04 02 0a 04 02 0a 01",
+    "01 08 02 0a 2f 30 22 01",
+    "01 20 12 2d 02 02 0a 01",
+    "01 01 20 21 07 21 22 01",
+    "01 01 01 01 01 01 01 01"
+  ],
+  "exits": [
+    [
+      9,
+      11
+    ]
+  ],
+  "clear_arrival": [
+    9,
+    10
+  ],
+  "exit_collision": "LADDER",
+  "residents": [
+    {
+      "id": "MN_R01_HOLLOW_GUIDE",
+      "sprite": "SPRITE_POKEFAN_M",
+      "tile": [
+        5,
+        5
+      ],
+      "facing": "south",
+      "lines": [
+        "Two small hollows",
+        "meet by the exit.",
+        "Take either path.",
+        "The little ball",
+        "holds an ANTIDOTE."
+      ]
+    }
+  ],
+  "items": [
+    {
+      "id": "MN_R01_ITEM_03",
+      "item": "ANTIDOTE",
+      "quantity": 1,
+      "tile": [
+        11,
+        5
+      ],
+      "flag": "EVENT_MN_R01_ITEM_03"
+    }
+  ],
+  "signs": [],
+  "review_contract": {
+    "status": "DETACHED_SOURCE_ONLY_NATIVE_PENDING",
+    "palette_group": "nite",
+    "identity": "Offset two-hollow limestone loop with a thin upper seam; old guide/Antidote/stairs remain meaningful.",
+    "native_stair_blocks": [
+      [
+        2,
+        4
+      ],
+      [
+        5,
+        3
+      ]
+    ],
+    "loop_waypoints_core": [
+      [
+        9,
+        10
+      ],
+      [
+        5,
+        10
+      ],
+      [
+        5,
+        7
+      ],
+      [
+        4,
+        5
+      ],
+      [
+        5,
+        3
+      ],
+      [
+        10,
+        3
+      ],
+      [
+        10,
+        5
+      ],
+      [
+        10,
+        8
+      ]
+    ],
+    "controller_probes": {
+      "stairs": [
+        {
+          "id": "GUIDE_HOLLOW",
+          "metatile": [
+            2,
+            4
+          ],
+          "block": "12",
+          "before": [
+            5,
+            7
+          ],
+          "lane": [
+            [
+              5,
+              8
+            ],
+            [
+              5,
+              9
+            ]
+          ],
+          "after": [
+            5,
+            10
+          ],
+          "blocked_from": [
+            5,
+            9
+          ],
+          "blocked_target": [
+            4,
+            9
+          ],
+          "destination": [
+            4,
+            5
+          ]
+        },
+        {
+          "id": "ANTIDOTE_HOLLOW",
+          "metatile": [
+            5,
+            3
+          ],
+          "block": "30",
+          "before": [
+            10,
+            5
+          ],
+          "lane": [
+            [
+              10,
+              6
+            ],
+            [
+              10,
+              7
+            ]
+          ],
+          "after": [
+            10,
+            8
+          ],
+          "blocked_from": [
+            10,
+            7
+          ],
+          "blocked_target": [
+            11,
+            7
+          ],
+          "destination": [
+            10,
+            5
+          ]
+        }
+      ]
+    },
+    "viewpoints": [
+      {
+        "id": "MOUTH_DECISION",
+        "tile": [
+          9,
+          10
+        ]
+      },
+      {
+        "id": "GUIDE_HOLLOW",
+        "tile": [
+          4,
+          5
+        ]
+      },
+      {
+        "id": "GUIDE_STAIR",
+        "tile": [
+          5,
+          9
+        ]
+      },
+      {
+        "id": "UPPER_SEAM",
+        "tile": [
+          8,
+          3
+        ]
+      },
+      {
+        "id": "ANTIDOTE_ALCOVE",
+        "tile": [
+          10,
+          5
+        ]
+      },
+      {
+        "id": "SHORT_RETURN",
+        "tile": [
+          10,
+          7
+        ]
+      },
+      {
+        "id": "LOWER_JUNCTION",
+        "tile": [
+          7,
+          10
+        ]
+      }
+    ]
+  }
+}

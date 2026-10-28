@@ -2,8 +2,8 @@
   "id": "MnStPaul",
   "name": "ST PAUL",
   "dimensions_metatiles": [
-    64,
-    48
+    40,
+    34
   ],
   "reference_anchor_percent": [
     68,
@@ -11,7 +11,7 @@
   ],
   "role": "gym_4",
   "tileset": "kanto",
-  "composition": "Compact fair booth lanes, Capitol low bluff, three-floor Lowertown Exchange, dense Summit blocks, two guarded river crossings and actual unchanged Union Depot story interior.",
+  "composition": "Dense fair lanes, attached Capitol and Summit blocks, three-floor Lowertown Exchange, short shared south-bank streets, and unchanged Union Depot story interior; exact native40×34 composition.",
   "ports": [
     {
       "route": "MN_R04",
@@ -4524,7 +4524,7 @@
     "local story NPC"
   ],
   "door_contract": "Native source DOOR quadrants, exterior active/passive indices, reciprocal room carpets and safe passive Floor arrivals are explicit; production lowering/roundtrip proof pending.",
-  "status": "Published660-map tight-final-v02; local controller verification recorded separately; user visual acceptance pending.",
+  "status": "Native compact40×34 published; exact local verification referenced in recomposition provenance.",
   "native_constant": "MN_ST_PAUL",
   "compiled_tileset": "kanto",
   "coordinate_units": "16px core tiles unless metatile suffix",
@@ -4566,8 +4566,8 @@
       "id": "MN_ST_PAUL_CIVIC_GUIDE",
       "sprite": "SPRITE_GENTLEMAN",
       "tile": [
-        65,
-        19
+        43,
+        13
       ],
       "facing": "south",
       "lines": [
@@ -4594,8 +4594,8 @@
       "id": "MN_ST_PAUL_GARDENER",
       "sprite": "SPRITE_TEACHER",
       "tile": [
-        16,
-        49
+        17,
+        47
       ],
       "facing": "north",
       "lines": [
@@ -4607,8 +4607,8 @@
       "id": "MN_ST_PAUL_DEPOT_PASSENGER",
       "sprite": "SPRITE_TEACHER",
       "tile": [
-        95,
-        73
+        68,
+        48
       ],
       "facing": "west",
       "lines": [
@@ -4621,8 +4621,8 @@
       "id": "MN_ST_PAUL_BLUFF_WALKER",
       "sprite": "SPRITE_GRAMPS",
       "tile": [
-        58,
-        25
+        35,
+        21
       ],
       "facing": "east",
       "lines": [
@@ -4635,8 +4635,8 @@
       "id": "MN_ST_PAUL_RIVER_FISHER",
       "sprite": "SPRITE_FISHER",
       "tile": [
-        63,
-        61
+        43,
+        45
       ],
       "facing": "west",
       "lines": [
@@ -4648,8 +4648,8 @@
       "id": "MN_ST_PAUL_STREET_READER",
       "sprite": "SPRITE_LASS",
       "tile": [
-        49,
-        53
+        27,
+        37
       ],
       "facing": "south",
       "lines": [
@@ -4692,7 +4692,7 @@
       "id": "MN_ST_PAUL_SIGN_CLINIC",
       "tile": [
         19,
-        47
+        45
       ],
       "lines": [
         "POKEMON CENTER",
@@ -4702,8 +4702,8 @@
     {
       "id": "MN_ST_PAUL_SIGN_MART",
       "tile": [
-        51,
-        49
+        29,
+        35
       ],
       "lines": [
         "MART",
@@ -4713,8 +4713,8 @@
     {
       "id": "MN_ST_PAUL_SIGN_CAPITOL",
       "tile": [
-        59,
-        19
+        47,
+        13
       ],
       "lines": [
         "CAPITOL HALL",
@@ -4724,8 +4724,8 @@
     {
       "id": "MN_ST_PAUL_SIGN_GYM",
       "tile": [
-        105,
-        43
+        51,
+        33
       ],
       "lines": [
         "ST PAUL GYM",
@@ -4735,8 +4735,8 @@
     {
       "id": "MN_ST_PAUL_SIGN_DEPOT",
       "tile": [
-        95,
-        71
+        71,
+        49
       ],
       "lines": [
         "UNION DEPOT",
@@ -4758,8 +4758,8 @@
     {
       "id": "MN_ST_PAUL_SIGN_RIVER",
       "tile": [
-        61,
-        63
+        41,
+        45
       ],
       "lines": [
         "RIVER PARK",
@@ -4769,8 +4769,8 @@
     {
       "id": "MN_ST_PAUL_SIGN_WAYFINDING",
       "tile": [
-        57,
-        51
+        29,
+        39
       ],
       "lines": [
         "West: CITY CROSS",
@@ -4804,16 +4804,16 @@
     {
       "id": "MN_ST_PAUL_MART_DOOR",
       "tile": [
-        45,
-        47
+        25,
+        33
       ],
       "arrival_tile": [
-        45,
-        48
+        25,
+        34
       ],
       "return_tile": [
-        45,
-        48
+        25,
+        34
       ],
       "warp_index": 5,
       "return_warp_index": 6,
@@ -4825,16 +4825,16 @@
     {
       "id": "MN_ST_PAUL_CAPITOL_DOOR",
       "tile": [
-        62,
-        15
+        40,
+        11
       ],
       "arrival_tile": [
-        62,
-        16
+        40,
+        12
       ],
       "return_tile": [
-        62,
-        16
+        40,
+        12
       ],
       "warp_index": 7,
       "return_warp_index": 8,
@@ -4846,16 +4846,16 @@
     {
       "id": "MN_ST_PAUL_GYM_DOOR",
       "tile": [
-        102,
-        41
+        48,
+        31
       ],
       "arrival_tile": [
-        102,
-        42
+        48,
+        32
       ],
       "return_tile": [
-        102,
-        42
+        48,
+        32
       ],
       "warp_index": 9,
       "return_warp_index": 10,
@@ -4867,16 +4867,16 @@
     {
       "id": "MN_ST_PAUL_DEPOT_DOOR",
       "tile": [
-        92,
-        69
+        66,
+        47
       ],
       "arrival_tile": [
-        92,
-        70
+        66,
+        48
       ],
       "return_tile": [
-        92,
-        70
+        66,
+        48
       ],
       "warp_index": 1,
       "return_warp_index": 2,
@@ -4889,18 +4889,18 @@
       "warp_index": 11,
       "return_warp_index": 12,
       "tile": [
-        11,
-        15
+        5,
+        13
       ],
       "target": "MnStPaulFairFoodHall",
       "target_warp": 3,
       "return_tile": [
-        11,
-        16
+        5,
+        14
       ],
       "arrival_tile": [
-        11,
-        16
+        5,
+        14
       ],
       "collision": "DOOR"
     },
@@ -4908,18 +4908,18 @@
       "warp_index": 13,
       "return_warp_index": 14,
       "tile": [
-        31,
-        23
+        21,
+        13
       ],
       "target": "MnStPaulFairGardenStand",
       "target_warp": 3,
       "return_tile": [
-        31,
-        24
+        21,
+        14
       ],
       "arrival_tile": [
-        31,
-        24
+        21,
+        14
       ],
       "collision": "DOOR"
     },
@@ -4927,18 +4927,18 @@
       "warp_index": 15,
       "return_warp_index": 16,
       "tile": [
-        36,
-        13
+        18,
+        9
       ],
       "target": "MnStPaulFairAgricultureHall",
       "target_warp": 3,
       "return_tile": [
-        36,
-        14
+        18,
+        10
       ],
       "arrival_tile": [
-        36,
-        14
+        18,
+        10
       ],
       "collision": "DOOR"
     },
@@ -4946,18 +4946,18 @@
       "warp_index": 17,
       "return_warp_index": 18,
       "tile": [
-        10,
-        33
+        6,
+        23
       ],
       "target": "MnStPaulFairExhibitionHall",
       "target_warp": 3,
       "return_tile": [
-        10,
-        34
+        6,
+        24
       ],
       "arrival_tile": [
-        10,
-        34
+        6,
+        24
       ],
       "collision": "DOOR"
     },
@@ -4965,18 +4965,18 @@
       "warp_index": 19,
       "return_warp_index": 20,
       "tile": [
-        22,
-        31
+        18,
+        25
       ],
       "target": "MnStPaulFairCraftHouse",
       "target_warp": 3,
       "return_tile": [
-        22,
-        32
+        18,
+        26
       ],
       "arrival_tile": [
-        22,
-        32
+        18,
+        26
       ],
       "collision": "DOOR"
     },
@@ -4984,18 +4984,18 @@
       "warp_index": 21,
       "return_warp_index": 22,
       "tile": [
-        44,
-        21
+        28,
+        15
       ],
       "target": "MnStPaulFairQuizPavilion",
       "target_warp": 3,
       "return_tile": [
-        44,
-        22
+        28,
+        16
       ],
       "arrival_tile": [
-        44,
-        22
+        28,
+        16
       ],
       "collision": "DOOR"
     },
@@ -5003,18 +5003,18 @@
       "warp_index": 23,
       "return_warp_index": 24,
       "tile": [
-        12,
-        9
+        6,
+        7
       ],
       "target": "MnStPaulFairInfoHouse",
       "target_warp": 3,
       "return_tile": [
-        12,
-        10
+        6,
+        8
       ],
       "arrival_tile": [
-        12,
-        10
+        6,
+        8
       ],
       "collision": "DOOR"
     },
@@ -5022,18 +5022,18 @@
       "warp_index": 25,
       "return_warp_index": 26,
       "tile": [
-        38,
-        33
+        22,
+        27
       ],
       "target": "MnStPaulFairBreederBarn",
       "target_warp": 3,
       "return_tile": [
-        38,
-        34
+        22,
+        28
       ],
       "arrival_tile": [
-        38,
-        34
+        22,
+        28
       ],
       "collision": "DOOR"
     },
@@ -5041,18 +5041,18 @@
       "warp_index": 27,
       "return_warp_index": 28,
       "tile": [
-        17,
-        19
+        13,
+        13
       ],
       "target": "MnStPaulFairBerrySnack",
       "target_warp": 3,
       "return_tile": [
-        17,
-        20
+        13,
+        14
       ],
       "arrival_tile": [
-        17,
-        20
+        13,
+        14
       ],
       "collision": "DOOR"
     },
@@ -5060,18 +5060,18 @@
       "warp_index": 29,
       "return_warp_index": 30,
       "tile": [
-        37,
-        17
+        21,
+        19
       ],
       "target": "MnStPaulFairFestivalMail",
       "target_warp": 3,
       "return_tile": [
-        37,
-        18
+        21,
+        20
       ],
       "arrival_tile": [
-        37,
-        18
+        21,
+        20
       ],
       "collision": "DOOR"
     },
@@ -5079,18 +5079,18 @@
       "warp_index": 31,
       "return_warp_index": 32,
       "tile": [
-        56,
-        13
+        34,
+        9
       ],
       "target": "MnStPaulCapitolArchive",
       "target_warp": 3,
       "return_tile": [
-        56,
-        14
+        34,
+        10
       ],
       "arrival_tile": [
-        56,
-        14
+        34,
+        10
       ],
       "collision": "DOOR"
     },
@@ -5098,18 +5098,18 @@
       "warp_index": 33,
       "return_warp_index": 34,
       "tile": [
-        76,
-        15
+        50,
+        11
       ],
       "target": "MnStPaulCapitolLibrary",
       "target_warp": 3,
       "return_tile": [
-        76,
-        16
+        50,
+        12
       ],
       "arrival_tile": [
-        76,
-        16
+        50,
+        12
       ],
       "collision": "DOOR"
     },
@@ -5117,18 +5117,18 @@
       "warp_index": 35,
       "return_warp_index": 36,
       "tile": [
-        78,
-        33
+        50,
+        21
       ],
       "target": "MnStPaulCivicMuseum",
       "target_warp": 3,
       "return_tile": [
-        78,
-        34
+        50,
+        22
       ],
       "arrival_tile": [
-        78,
-        34
+        50,
+        22
       ],
       "collision": "DOOR"
     },
@@ -5136,18 +5136,18 @@
       "warp_index": 37,
       "return_warp_index": 38,
       "tile": [
-        106,
-        11
+        60,
+        7
       ],
       "target": "MnStPaulSummitMoveStudyHouse",
       "target_warp": 3,
       "return_tile": [
-        106,
-        12
+        60,
+        8
       ],
       "arrival_tile": [
-        106,
-        12
+        60,
+        8
       ],
       "collision": "DOOR"
     },
@@ -5155,18 +5155,18 @@
       "warp_index": 39,
       "return_warp_index": 40,
       "tile": [
-        112,
-        23
+        66,
+        11
       ],
       "target": "MnStPaulSummitExhibitionClub",
       "target_warp": 3,
       "return_tile": [
-        112,
-        24
+        66,
+        12
       ],
       "arrival_tile": [
-        112,
-        24
+        66,
+        12
       ],
       "collision": "DOOR"
     },
@@ -5174,18 +5174,18 @@
       "warp_index": 41,
       "return_warp_index": 42,
       "tile": [
-        98,
-        29
+        60,
+        21
       ],
       "target": "MnStPaulSummitPressHouse",
       "target_warp": 3,
       "return_tile": [
-        98,
-        30
+        60,
+        22
       ],
       "arrival_tile": [
-        98,
-        30
+        60,
+        22
       ],
       "collision": "DOOR"
     },
@@ -5193,18 +5193,18 @@
       "warp_index": 43,
       "return_warp_index": 44,
       "tile": [
-        28,
-        45
+        6,
+        35
       ],
       "target": "MnStPaulWestSeventhBooks",
       "target_warp": 3,
       "return_tile": [
-        28,
-        46
+        6,
+        36
       ],
       "arrival_tile": [
-        28,
-        46
+        6,
+        36
       ],
       "collision": "DOOR"
     },
@@ -5212,18 +5212,18 @@
       "warp_index": 45,
       "return_warp_index": 46,
       "tile": [
-        7,
-        53
+        5,
+        43
       ],
       "target": "MnStPaulWestSeventhBakery",
       "target_warp": 3,
       "return_tile": [
-        7,
-        54
+        5,
+        44
       ],
       "arrival_tile": [
-        7,
-        54
+        5,
+        44
       ],
       "collision": "DOOR"
     },
@@ -5231,18 +5231,18 @@
       "warp_index": 47,
       "return_warp_index": 48,
       "tile": [
-        30,
-        57
+        16,
+        33
       ],
       "target": "MnStPaulStreetGardenHouse",
       "target_warp": 3,
       "return_tile": [
-        30,
-        58
+        16,
+        34
       ],
       "arrival_tile": [
-        30,
-        58
+        16,
+        34
       ],
       "collision": "DOOR"
     },
@@ -5250,18 +5250,18 @@
       "warp_index": 49,
       "return_warp_index": 50,
       "tile": [
-        62,
-        49
+        32,
+        39
       ],
       "target": "MnStPaulLowertownExchange",
       "target_warp": 3,
       "return_tile": [
-        62,
-        50
+        32,
+        40
       ],
       "arrival_tile": [
-        62,
-        50
+        32,
+        40
       ],
       "collision": "DOOR"
     },
@@ -5269,18 +5269,18 @@
       "warp_index": 51,
       "return_warp_index": 52,
       "tile": [
-        54,
-        59
+        38,
+        23
       ],
       "target": "MnStPaulArchiveAnnex",
       "target_warp": 3,
       "return_tile": [
-        54,
-        60
+        38,
+        24
       ],
       "arrival_tile": [
-        54,
-        60
+        38,
+        24
       ],
       "collision": "DOOR"
     },
@@ -5288,18 +5288,18 @@
       "warp_index": 53,
       "return_warp_index": 54,
       "tile": [
-        76,
-        47
+        24,
+        43
       ],
       "target": "MnStPaulLowertownCrafts",
       "target_warp": 3,
       "return_tile": [
-        76,
-        48
+        24,
+        44
       ],
       "arrival_tile": [
-        76,
-        48
+        24,
+        44
       ],
       "collision": "DOOR"
     },
@@ -5307,18 +5307,18 @@
       "warp_index": 55,
       "return_warp_index": 56,
       "tile": [
-        113,
-        41
+        53,
+        31
       ],
       "target": "MnStPaulEastAidClinic",
       "target_warp": 3,
       "return_tile": [
-        113,
-        42
+        53,
+        32
       ],
       "arrival_tile": [
-        113,
-        42
+        53,
+        32
       ],
       "collision": "DOOR"
     },
@@ -5326,18 +5326,18 @@
       "warp_index": 57,
       "return_warp_index": 58,
       "tile": [
-        96,
-        55
+        46,
+        41
       ],
       "target": "MnStPaulEastWorkshop",
       "target_warp": 3,
       "return_tile": [
-        96,
-        56
+        46,
+        42
       ],
       "arrival_tile": [
-        96,
-        56
+        46,
+        42
       ],
       "collision": "DOOR"
     },
@@ -5345,18 +5345,18 @@
       "warp_index": 59,
       "return_warp_index": 60,
       "tile": [
-        110,
-        51
+        64,
+        29
       ],
       "target": "MnStPaulCommunityHall",
       "target_warp": 3,
       "return_tile": [
-        110,
-        52
+        64,
+        30
       ],
       "arrival_tile": [
-        110,
-        52
+        64,
+        30
       ],
       "collision": "DOOR"
     },
@@ -5364,18 +5364,18 @@
       "warp_index": 61,
       "return_warp_index": 62,
       "tile": [
-        82,
-        57
+        58,
+        45
       ],
       "target": "MnStPaulTransitHeritageHouse",
       "target_warp": 3,
       "return_tile": [
-        82,
-        58
+        58,
+        46
       ],
       "arrival_tile": [
-        82,
-        58
+        58,
+        46
       ],
       "collision": "DOOR"
     },
@@ -5383,18 +5383,18 @@
       "warp_index": 63,
       "return_warp_index": 64,
       "tile": [
-        112,
-        67
+        64,
+        39
       ],
       "target": "MnStPaulFreightOffice",
       "target_warp": 3,
       "return_tile": [
-        112,
-        68
+        64,
+        40
       ],
       "arrival_tile": [
-        112,
-        68
+        64,
+        40
       ],
       "collision": "DOOR"
     },
@@ -5402,18 +5402,18 @@
       "warp_index": 65,
       "return_warp_index": 66,
       "tile": [
-        109,
-        57
+        55,
+        39
       ],
       "target": "MnStPaulLowertownCafe",
       "target_warp": 3,
       "return_tile": [
-        109,
-        58
+        55,
+        40
       ],
       "arrival_tile": [
-        109,
-        58
+        55,
+        40
       ],
       "collision": "DOOR"
     },
@@ -5421,18 +5421,18 @@
       "warp_index": 67,
       "return_warp_index": 68,
       "tile": [
-        12,
-        87
+        6,
+        63
       ],
       "target": "MnStPaulAnglerHouse",
       "target_warp": 3,
       "return_tile": [
-        12,
-        88
+        6,
+        64
       ],
       "arrival_tile": [
-        12,
-        88
+        6,
+        64
       ],
       "collision": "DOOR"
     },
@@ -5440,18 +5440,18 @@
       "warp_index": 69,
       "return_warp_index": 70,
       "tile": [
-        15,
-        79
+        5,
+        57
       ],
       "target": "MnStPaulRiversideSupplies",
       "target_warp": 3,
       "return_tile": [
-        15,
-        80
+        5,
+        58
       ],
       "arrival_tile": [
-        15,
-        80
+        5,
+        58
       ],
       "collision": "DOOR"
     },
@@ -5459,18 +5459,18 @@
       "warp_index": 71,
       "return_warp_index": 72,
       "tile": [
-        26,
-        83
+        16,
+        61
       ],
       "target": "MnStPaulWestsideCommunity",
       "target_warp": 3,
       "return_tile": [
-        26,
-        84
+        16,
+        62
       ],
       "arrival_tile": [
-        26,
-        84
+        16,
+        62
       ],
       "collision": "DOOR"
     },
@@ -5478,18 +5478,18 @@
       "warp_index": 73,
       "return_warp_index": 74,
       "tile": [
-        52,
-        87
+        30,
+        61
       ],
       "target": "MnStPaulWestsideArena",
       "target_warp": 3,
       "return_tile": [
-        52,
-        88
+        30,
+        62
       ],
       "arrival_tile": [
-        52,
-        88
+        30,
+        62
       ],
       "collision": "DOOR"
     },
@@ -5497,18 +5497,18 @@
       "warp_index": 75,
       "return_warp_index": 76,
       "tile": [
-        68,
-        89
+        44,
+        61
       ],
       "target": "MnStPaulBoatCoop",
       "target_warp": 3,
       "return_tile": [
-        68,
-        90
+        44,
+        62
       ],
       "arrival_tile": [
-        68,
-        90
+        44,
+        62
       ],
       "collision": "DOOR"
     },
@@ -5516,18 +5516,18 @@
       "warp_index": 77,
       "return_warp_index": 78,
       "tile": [
-        91,
-        91
+        51,
+        61
       ],
       "target": "MnStPaulSouthLandingInn",
       "target_warp": 3,
       "return_tile": [
-        91,
-        92
+        51,
+        62
       ],
       "arrival_tile": [
-        91,
-        92
+        51,
+        62
       ],
       "collision": "DOOR"
     },
@@ -5535,18 +5535,18 @@
       "warp_index": 79,
       "return_warp_index": 80,
       "tile": [
-        108,
-        91
+        62,
+        61
       ],
       "target": "MnStPaulSouthLandingSurvey",
       "target_warp": 3,
       "return_tile": [
-        108,
-        92
+        62,
+        62
       ],
       "arrival_tile": [
-        108,
-        92
+        62,
+        62
       ],
       "collision": "DOOR"
     }
@@ -5555,12 +5555,12 @@
     "source": "planning/minnesota/transit/MnStPaulUnionDepot.json",
     "target_map": "MnStPaulUnionDepot",
     "door_core": [
-      92,
-      69
+      66,
+      47
     ],
     "safe_return_core": [
-      92,
-      70
+      66,
+      48
     ],
     "interior_public_arrival_core": [
       15,
@@ -5599,21 +5599,21 @@
     {
       "id": "CAPITOL_BLUFF_DROP",
       "bounds_core": [
-        72,
-        26,
-        74,
-        28
+        44,
+        14,
+        46,
+        16
       ],
       "direction": "down",
       "approach": [
-        73,
-        25
+        44,
+        13
       ],
       "landing": [
-        73,
-        28
+        44,
+        16
       ],
-      "ordinary_return": "west native brick return28,10..17; native05 remains ordinary walking ladder collision"
+      "ordinary_return": "Native05 brick stairs atmeta18,7; authored compact source proves19/21input ordinary uphill returns; no Cut bypass."
     }
   ],
   "viewpoints": [
@@ -5628,42 +5628,42 @@
       "id": "FAIR_FOOD_COURT",
       "tile": [
         17,
-        23
+        15
       ]
     },
     {
       "id": "CAPITOL_FRONT",
       "tile": [
-        62,
-        16
+        40,
+        12
       ]
     },
     {
       "id": "BLUFF_DROP",
       "tile": [
-        73,
-        25
+        44,
+        13
       ]
     },
     {
       "id": "GYM_FRONT",
       "tile": [
-        102,
-        42
+        48,
+        32
       ]
     },
     {
       "id": "DEPOT_FRONT",
       "tile": [
-        92,
-        70
+        66,
+        48
       ]
     },
     {
       "id": "EXCHANGE_FRONT",
       "tile": [
-        62,
-        50
+        32,
+        40
       ]
     }
   ],
@@ -5673,8 +5673,8 @@
     {
       "id": "FairFoodHall",
       "origin_metatile": [
-        5,
-        7
+        2,
+        6
       ],
       "dimensions_metatiles": [
         2,
@@ -5682,12 +5682,12 @@
       ],
       "style": "booth",
       "door_core": [
-        11,
-        15
+        5,
+        13
       ],
       "passive_core": [
-        11,
-        16
+        5,
+        14
       ],
       "room": "MnStPaulFairFoodHall",
       "constant": "MN_SPX_FAIR_FOOD_HALL",
@@ -5697,8 +5697,8 @@
     {
       "id": "FairGardenStand",
       "origin_metatile": [
-        15,
-        11
+        10,
+        6
       ],
       "dimensions_metatiles": [
         2,
@@ -5706,12 +5706,12 @@
       ],
       "style": "booth",
       "door_core": [
-        31,
-        23
+        21,
+        13
       ],
       "passive_core": [
-        31,
-        24
+        21,
+        14
       ],
       "room": "MnStPaulFairGardenStand",
       "constant": "MN_SPX_FAIR_GARDEN_STAND",
@@ -5721,8 +5721,8 @@
     {
       "id": "FairAgricultureHall",
       "origin_metatile": [
-        17,
-        4
+        8,
+        2
       ],
       "dimensions_metatiles": [
         5,
@@ -5730,12 +5730,12 @@
       ],
       "style": "commercial",
       "door_core": [
-        36,
-        13
+        18,
+        9
       ],
       "passive_core": [
-        36,
-        14
+        18,
+        10
       ],
       "room": "MnStPaulFairAgricultureHall",
       "constant": "MN_SPX_FAIR_AGRICULTURE_HALL",
@@ -5745,8 +5745,8 @@
     {
       "id": "FairExhibitionHall",
       "origin_metatile": [
-        4,
-        14
+        2,
+        9
       ],
       "dimensions_metatiles": [
         6,
@@ -5754,12 +5754,12 @@
       ],
       "style": "commercial",
       "door_core": [
-        10,
-        33
+        6,
+        23
       ],
       "passive_core": [
-        10,
-        34
+        6,
+        24
       ],
       "room": "MnStPaulFairExhibitionHall",
       "constant": "MN_SPX_FAIR_EXHIBITION_HALL",
@@ -5769,8 +5769,8 @@
     {
       "id": "FairCraftHouse",
       "origin_metatile": [
-        10,
-        14
+        8,
+        11
       ],
       "dimensions_metatiles": [
         2,
@@ -5778,12 +5778,12 @@
       ],
       "style": "house",
       "door_core": [
-        22,
-        31
+        18,
+        25
       ],
       "passive_core": [
-        22,
-        32
+        18,
+        26
       ],
       "room": "MnStPaulFairCraftHouse",
       "constant": "MN_SPX_FAIR_CRAFT_HOUSE",
@@ -5793,8 +5793,8 @@
     {
       "id": "FairQuizPavilion",
       "origin_metatile": [
-        21,
-        9
+        13,
+        6
       ],
       "dimensions_metatiles": [
         2,
@@ -5802,12 +5802,12 @@
       ],
       "style": "house",
       "door_core": [
-        44,
-        21
+        28,
+        15
       ],
       "passive_core": [
-        44,
-        22
+        28,
+        16
       ],
       "room": "MnStPaulFairQuizPavilion",
       "constant": "MN_SPX_FAIR_QUIZ_PAVILION",
@@ -5817,8 +5817,8 @@
     {
       "id": "FairInfoHouse",
       "origin_metatile": [
-        5,
-        3
+        2,
+        2
       ],
       "dimensions_metatiles": [
         2,
@@ -5826,12 +5826,12 @@
       ],
       "style": "house",
       "door_core": [
-        12,
-        9
+        6,
+        7
       ],
       "passive_core": [
-        12,
-        10
+        6,
+        8
       ],
       "room": "MnStPaulFairInfoHouse",
       "constant": "MN_SPX_FAIR_INFO_HOUSE",
@@ -5841,8 +5841,8 @@
     {
       "id": "FairBreederBarn",
       "origin_metatile": [
-        18,
-        14
+        10,
+        11
       ],
       "dimensions_metatiles": [
         4,
@@ -5850,12 +5850,12 @@
       ],
       "style": "commercial",
       "door_core": [
-        38,
-        33
+        22,
+        27
       ],
       "passive_core": [
-        38,
-        34
+        22,
+        28
       ],
       "room": "MnStPaulFairBreederBarn",
       "constant": "MN_SPX_FAIR_BREEDER_BARN",
@@ -5865,8 +5865,8 @@
     {
       "id": "FairBerrySnack",
       "origin_metatile": [
-        8,
-        9
+        6,
+        6
       ],
       "dimensions_metatiles": [
         2,
@@ -5874,12 +5874,12 @@
       ],
       "style": "booth",
       "door_core": [
-        17,
-        19
+        13,
+        13
       ],
       "passive_core": [
-        17,
-        20
+        13,
+        14
       ],
       "room": "MnStPaulFairBerrySnack",
       "constant": "MN_SPX_FAIR_BERRY_SNACK",
@@ -5889,8 +5889,8 @@
     {
       "id": "FairFestivalMail",
       "origin_metatile": [
-        18,
-        8
+        10,
+        9
       ],
       "dimensions_metatiles": [
         2,
@@ -5898,12 +5898,12 @@
       ],
       "style": "booth",
       "door_core": [
-        37,
-        17
+        21,
+        19
       ],
       "passive_core": [
-        37,
-        18
+        21,
+        20
       ],
       "room": "MnStPaulFairFestivalMail",
       "constant": "MN_SPX_FAIR_FESTIVAL_MAIL",
@@ -5913,8 +5913,8 @@
     {
       "id": "CapitolArchive",
       "origin_metatile": [
-        27,
-        4
+        16,
+        2
       ],
       "dimensions_metatiles": [
         3,
@@ -5922,12 +5922,12 @@
       ],
       "style": "commercial",
       "door_core": [
-        56,
-        13
+        34,
+        9
       ],
       "passive_core": [
-        56,
-        14
+        34,
+        10
       ],
       "room": "MnStPaulCapitolArchive",
       "constant": "MN_SPX_CAPITOL_ARCHIVE",
@@ -5937,8 +5937,8 @@
     {
       "id": "CapitolLibrary",
       "origin_metatile": [
-        37,
-        3
+        24,
+        1
       ],
       "dimensions_metatiles": [
         4,
@@ -5946,12 +5946,12 @@
       ],
       "style": "commercial",
       "door_core": [
-        76,
-        15
+        50,
+        11
       ],
       "passive_core": [
-        76,
-        16
+        50,
+        12
       ],
       "room": "MnStPaulCapitolLibrary",
       "constant": "MN_SPX_CAPITOL_LIBRARY",
@@ -5961,8 +5961,8 @@
     {
       "id": "CivicMuseum",
       "origin_metatile": [
-        38,
-        14
+        24,
+        8
       ],
       "dimensions_metatiles": [
         4,
@@ -5970,12 +5970,12 @@
       ],
       "style": "commercial",
       "door_core": [
-        78,
-        33
+        50,
+        21
       ],
       "passive_core": [
-        78,
-        34
+        50,
+        22
       ],
       "room": "MnStPaulCivicMuseum",
       "constant": "MN_SPX_CIVIC_MUSEUM",
@@ -5985,8 +5985,8 @@
     {
       "id": "SummitMoveStudyHouse",
       "origin_metatile": [
-        52,
-        4
+        29,
+        2
       ],
       "dimensions_metatiles": [
         2,
@@ -5994,12 +5994,12 @@
       ],
       "style": "house",
       "door_core": [
-        106,
-        11
+        60,
+        7
       ],
       "passive_core": [
-        106,
-        12
+        60,
+        8
       ],
       "room": "MnStPaulSummitMoveStudyHouse",
       "constant": "MN_SPX_SUMMIT_MOVE_STUDY_HOUSE",
@@ -6009,8 +6009,8 @@
     {
       "id": "SummitExhibitionClub",
       "origin_metatile": [
-        55,
-        9
+        32,
+        3
       ],
       "dimensions_metatiles": [
         4,
@@ -6018,12 +6018,12 @@
       ],
       "style": "commercial",
       "door_core": [
-        112,
-        23
+        66,
+        11
       ],
       "passive_core": [
-        112,
-        24
+        66,
+        12
       ],
       "room": "MnStPaulSummitExhibitionClub",
       "constant": "MN_SPX_SUMMIT_EXHIBITION_CLUB",
@@ -6033,8 +6033,8 @@
     {
       "id": "SummitPressHouse",
       "origin_metatile": [
-        48,
-        13
+        29,
+        9
       ],
       "dimensions_metatiles": [
         2,
@@ -6042,12 +6042,12 @@
       ],
       "style": "house",
       "door_core": [
-        98,
-        29
+        60,
+        21
       ],
       "passive_core": [
-        98,
-        30
+        60,
+        22
       ],
       "room": "MnStPaulSummitPressHouse",
       "constant": "MN_SPX_SUMMIT_PRESS_HOUSE",
@@ -6057,8 +6057,8 @@
     {
       "id": "WestSeventhBooks",
       "origin_metatile": [
-        13,
-        20
+        2,
+        15
       ],
       "dimensions_metatiles": [
         3,
@@ -6066,12 +6066,12 @@
       ],
       "style": "commercial",
       "door_core": [
-        28,
-        45
+        6,
+        35
       ],
       "passive_core": [
-        28,
-        46
+        6,
+        36
       ],
       "room": "MnStPaulWestSeventhBooks",
       "constant": "MN_SPX_WEST_SEVENTH_BOOKS",
@@ -6081,8 +6081,8 @@
     {
       "id": "WestSeventhBakery",
       "origin_metatile": [
-        3,
-        25
+        2,
+        20
       ],
       "dimensions_metatiles": [
         3,
@@ -6090,12 +6090,12 @@
       ],
       "style": "shop",
       "door_core": [
-        7,
-        53
+        5,
+        43
       ],
       "passive_core": [
-        7,
-        54
+        5,
+        44
       ],
       "room": "MnStPaulWestSeventhBakery",
       "constant": "MN_SPX_WEST_SEVENTH_BAKERY",
@@ -6105,8 +6105,8 @@
     {
       "id": "StreetGardenHouse",
       "origin_metatile": [
-        14,
-        27
+        7,
+        15
       ],
       "dimensions_metatiles": [
         2,
@@ -6114,12 +6114,12 @@
       ],
       "style": "house",
       "door_core": [
-        30,
-        57
+        16,
+        33
       ],
       "passive_core": [
-        30,
-        58
+        16,
+        34
       ],
       "room": "MnStPaulStreetGardenHouse",
       "constant": "MN_SPX_STREET_GARDEN_HOUSE",
@@ -6129,8 +6129,8 @@
     {
       "id": "LowertownExchange",
       "origin_metatile": [
-        30,
-        19
+        15,
+        14
       ],
       "dimensions_metatiles": [
         5,
@@ -6138,12 +6138,12 @@
       ],
       "style": "commercial",
       "door_core": [
-        62,
-        49
+        32,
+        39
       ],
       "passive_core": [
-        62,
-        50
+        32,
+        40
       ],
       "room": "MnStPaulLowertownExchange",
       "constant": "MN_SPX_LOWERTOWN_EXCHANGE",
@@ -6153,8 +6153,8 @@
     {
       "id": "ArchiveAnnex",
       "origin_metatile": [
-        26,
-        27
+        18,
+        9
       ],
       "dimensions_metatiles": [
         4,
@@ -6162,12 +6162,12 @@
       ],
       "style": "commercial",
       "door_core": [
-        54,
-        59
+        38,
+        23
       ],
       "passive_core": [
-        54,
-        60
+        38,
+        24
       ],
       "room": "MnStPaulArchiveAnnex",
       "constant": "MN_SPX_ARCHIVE_ANNEX",
@@ -6177,8 +6177,8 @@
     {
       "id": "LowertownCrafts",
       "origin_metatile": [
-        37,
-        22
+        11,
+        20
       ],
       "dimensions_metatiles": [
         2,
@@ -6186,12 +6186,12 @@
       ],
       "style": "house",
       "door_core": [
-        76,
-        47
+        24,
+        43
       ],
       "passive_core": [
-        76,
-        48
+        24,
+        44
       ],
       "room": "MnStPaulLowertownCrafts",
       "constant": "MN_SPX_LOWERTOWN_CRAFTS",
@@ -6201,8 +6201,8 @@
     {
       "id": "EastAidClinic",
       "origin_metatile": [
-        56,
-        19
+        26,
+        14
       ],
       "dimensions_metatiles": [
         3,
@@ -6210,12 +6210,12 @@
       ],
       "style": "clinic",
       "door_core": [
-        113,
-        41
+        53,
+        31
       ],
       "passive_core": [
-        113,
-        42
+        53,
+        32
       ],
       "room": "MnStPaulEastAidClinic",
       "constant": "MN_SPX_EAST_AID_CLINIC",
@@ -6225,8 +6225,8 @@
     {
       "id": "EastWorkshop",
       "origin_metatile": [
-        47,
-        25
+        22,
+        18
       ],
       "dimensions_metatiles": [
         4,
@@ -6234,12 +6234,12 @@
       ],
       "style": "commercial",
       "door_core": [
-        96,
-        55
+        46,
+        41
       ],
       "passive_core": [
-        96,
-        56
+        46,
+        42
       ],
       "room": "MnStPaulEastWorkshop",
       "constant": "MN_SPX_EAST_WORKSHOP",
@@ -6249,8 +6249,8 @@
     {
       "id": "CommunityHall",
       "origin_metatile": [
-        54,
-        23
+        31,
+        12
       ],
       "dimensions_metatiles": [
         5,
@@ -6258,12 +6258,12 @@
       ],
       "style": "commercial",
       "door_core": [
-        110,
-        51
+        64,
+        29
       ],
       "passive_core": [
-        110,
-        52
+        64,
+        30
       ],
       "room": "MnStPaulCommunityHall",
       "constant": "MN_SPX_COMMUNITY_HALL",
@@ -6273,8 +6273,8 @@
     {
       "id": "TransitHeritageHouse",
       "origin_metatile": [
-        40,
-        27
+        28,
+        21
       ],
       "dimensions_metatiles": [
         2,
@@ -6282,12 +6282,12 @@
       ],
       "style": "house",
       "door_core": [
-        82,
-        57
+        58,
+        45
       ],
       "passive_core": [
-        82,
-        58
+        58,
+        46
       ],
       "room": "MnStPaulTransitHeritageHouse",
       "constant": "MN_SPX_TRANSIT_HERITAGE_HOUSE",
@@ -6297,8 +6297,8 @@
     {
       "id": "FreightOffice",
       "origin_metatile": [
-        55,
-        31
+        31,
+        17
       ],
       "dimensions_metatiles": [
         4,
@@ -6306,12 +6306,12 @@
       ],
       "style": "commercial",
       "door_core": [
-        112,
-        67
+        64,
+        39
       ],
       "passive_core": [
-        112,
-        68
+        64,
+        40
       ],
       "room": "MnStPaulFreightOffice",
       "constant": "MN_SPX_FREIGHT_OFFICE",
@@ -6321,8 +6321,8 @@
     {
       "id": "LowertownCafe",
       "origin_metatile": [
-        54,
-        27
+        27,
+        18
       ],
       "dimensions_metatiles": [
         3,
@@ -6330,12 +6330,12 @@
       ],
       "style": "shop",
       "door_core": [
-        109,
-        57
+        55,
+        39
       ],
       "passive_core": [
-        109,
-        58
+        55,
+        40
       ],
       "room": "MnStPaulLowertownCafe",
       "constant": "MN_SPX_LOWERTOWN_CAFE",
@@ -6345,8 +6345,8 @@
     {
       "id": "AnglerHouse",
       "origin_metatile": [
-        5,
-        42
+        2,
+        30
       ],
       "dimensions_metatiles": [
         2,
@@ -6354,12 +6354,12 @@
       ],
       "style": "house",
       "door_core": [
-        12,
-        87
+        6,
+        63
       ],
       "passive_core": [
-        12,
-        88
+        6,
+        64
       ],
       "room": "MnStPaulAnglerHouse",
       "constant": "MN_SPX_ANGLER_HOUSE",
@@ -6369,8 +6369,8 @@
     {
       "id": "RiversideSupplies",
       "origin_metatile": [
-        7,
-        38
+        2,
+        27
       ],
       "dimensions_metatiles": [
         3,
@@ -6378,12 +6378,12 @@
       ],
       "style": "shop",
       "door_core": [
-        15,
-        79
+        5,
+        57
       ],
       "passive_core": [
-        15,
-        80
+        5,
+        58
       ],
       "room": "MnStPaulRiversideSupplies",
       "constant": "MN_SPX_RIVERSIDE_SUPPLIES",
@@ -6393,8 +6393,8 @@
     {
       "id": "WestsideCommunity",
       "origin_metatile": [
-        12,
-        39
+        7,
+        28
       ],
       "dimensions_metatiles": [
         5,
@@ -6402,12 +6402,12 @@
       ],
       "style": "commercial",
       "door_core": [
-        26,
-        83
+        16,
+        61
       ],
       "passive_core": [
-        26,
-        84
+        16,
+        62
       ],
       "room": "MnStPaulWestsideCommunity",
       "constant": "MN_SPX_WESTSIDE_COMMUNITY",
@@ -6417,8 +6417,8 @@
     {
       "id": "WestsideArena",
       "origin_metatile": [
-        25,
-        41
+        14,
+        28
       ],
       "dimensions_metatiles": [
         4,
@@ -6426,12 +6426,12 @@
       ],
       "style": "commercial",
       "door_core": [
-        52,
-        87
+        30,
+        61
       ],
       "passive_core": [
-        52,
-        88
+        30,
+        62
       ],
       "room": "MnStPaulWestsideArena",
       "constant": "MN_SPX_WESTSIDE_ARENA",
@@ -6441,8 +6441,8 @@
     {
       "id": "BoatCoop",
       "origin_metatile": [
-        33,
-        43
+        21,
+        29
       ],
       "dimensions_metatiles": [
         2,
@@ -6450,12 +6450,12 @@
       ],
       "style": "house",
       "door_core": [
-        68,
-        89
+        44,
+        61
       ],
       "passive_core": [
-        68,
-        90
+        44,
+        62
       ],
       "room": "MnStPaulBoatCoop",
       "constant": "MN_SPX_BOAT_COOP",
@@ -6465,8 +6465,8 @@
     {
       "id": "SouthLandingInn",
       "origin_metatile": [
-        45,
-        44
+        25,
+        29
       ],
       "dimensions_metatiles": [
         3,
@@ -6474,12 +6474,12 @@
       ],
       "style": "shop",
       "door_core": [
-        91,
-        91
+        51,
+        61
       ],
       "passive_core": [
-        91,
-        92
+        51,
+        62
       ],
       "room": "MnStPaulSouthLandingInn",
       "constant": "MN_SPX_SOUTH_LANDING_INN",
@@ -6489,8 +6489,8 @@
     {
       "id": "SouthLandingSurvey",
       "origin_metatile": [
-        53,
-        43
+        30,
+        28
       ],
       "dimensions_metatiles": [
         4,
@@ -6498,12 +6498,12 @@
       ],
       "style": "commercial",
       "door_core": [
-        108,
-        91
+        62,
+        61
       ],
       "passive_core": [
-        108,
-        92
+        62,
+        62
       ],
       "room": "MnStPaulSouthLandingSurvey",
       "constant": "MN_SPX_SOUTH_LANDING_SURVEY",
@@ -6537,5 +6537,96 @@
     ]
   },
   "expansion_contract_file": "towns/MnStPaul.expansion.contract.json",
-  "native_status": "Published660-map tight-final-v02; local controller verification recorded separately; user visual acceptance pending."
+  "native_status": "Published660-map compact40×34 StPaul in twin-cities-compact-v01; nine local controller cases and15native GPU captures passed. No earned progression or final user visual approval claimed.",
+  "recomposition_contract_file": "towns/MnStPaul.recomposition.contract.json",
+  "recomposition_provenance": {
+    "status": "Native compact40×34 published and local production verification passed; this source preflight is not canonical application or user visual approval.",
+    "native_pack": "content-packs/minnesota-twin-cities-compact-v01.crystalpack",
+    "native_pack_sha256": "2fe6fc2a2c59833886b9ffa2fa04584f1f95841efaf87e865f11230cf4cdf54e",
+    "base_pack": "content-packs/minnesota-minneapolis-compact-falls-v02.crystalpack",
+    "base_pack_sha256": "125ac44497f9fde7a4ebaae3a8326d2d75f626a86d6e838be12ce28d82283fc7",
+    "source_candidate": "planning/minnesota/renders/cities/stpaul-compact-native-v01/inputs",
+    "previous_dossier_file": "revisions/st-paul-compact-v01/before/towns/MnStPaul.json",
+    "previous_dossier_sha256": "04659f5ae211bd362e62ce334c41ccb0e726453efd47101b965fbd12cddfdbc1",
+    "preserved_room_module_sha256": {
+      "MnStPaulPokecenter1F": "a2e020789152ff94e25e89a5c50eb6130fd31fb3619a6deb73dd47d1b9a4240b",
+      "MnStPaulMart": "d91d3dfc39877a602c52086f39efcc8758002e6246d6529293642db892c220f4",
+      "MnStPaulCapitolHall": "0ee96c5fcbd187295620278701677622225a4c29a451352943de2e27772a73de",
+      "MnStPaulGym": "ff6627b8aceefe4f016716aa7e245e19977a7c1bef4865f868409fbc60f6a8c6",
+      "MnStPaulFairFoodHall": "1de86874595a3bc218d1cc13e290a33acff634a2e26ccc3db4110e3cd9929293",
+      "MnStPaulFairGardenStand": "305127c19fc06da3bb93acd4432b119fc88601faca23bcfcf246e67185f88d2e",
+      "MnStPaulFairAgricultureHall": "39c8cc66eb16c4140aaf8413d729fff89216900255f9903dc68154946fc23bbe",
+      "MnStPaulFairExhibitionHall": "e2e4e3b80c3eb3ae8aa381a9974d8be983a2b610795795dbd8ac9be764451701",
+      "MnStPaulFairCraftHouse": "194a44c69ce22af6f3fe4496dd8d2026c9a3f754c331ffe0f9378765c389f1e4",
+      "MnStPaulFairQuizPavilion": "d7dc9d957835d7c9fb92575512df6636ffbe02e9f24a7ca6c193f9d07935b161",
+      "MnStPaulFairInfoHouse": "c1f00288487b17a03b8ce373ae60e9e69998c9e56a25bc3715da14060979380a",
+      "MnStPaulFairBreederBarn": "2b0a836eefb4299be9b69499f0587ef54b2a9998e789420225f5a7f11870d9f3",
+      "MnStPaulFairBerrySnack": "a1473d6ef2a17d410c1a5f865cc164e287a2356b4b4ae0894eec65aad80aa43b",
+      "MnStPaulFairFestivalMail": "177172e5ba45d240cbf1e492c601295a49833b64d006749f90281d600f33fd71",
+      "MnStPaulCapitolArchive": "35dabaca1faded9b88ad3780ef7df958b06b6a2cc92ff7c40f13417c8a95a8da",
+      "MnStPaulCapitolLibrary": "5e772a6ea73927b1c18308f7ce4af9bf98290325a45272c0801eaeb4f6f8a7c3",
+      "MnStPaulCivicMuseum": "720498492b82b541cb188ad8ce13450e1b0b740a53ba46a784d6c7bc58322e98",
+      "MnStPaulSummitMoveStudyHouse": "43e8a9074ceb880c0f7026ad7e531a2a0d010e16d1320ea461ca4ebf1ab7cb55",
+      "MnStPaulSummitExhibitionClub": "cc5165fd45b44cb3f2a0584d906746891da47b144f1bf313ab76b1ec6afd5774",
+      "MnStPaulSummitPressHouse": "2fc36cd5388707c03f27df60c6997e1f2a6a2c54733698fa28ce9fc515c4006b",
+      "MnStPaulWestSeventhBooks": "4003395cb0cec4d1671cd383570d145b3591c1beed013fa49cab67630b7058e3",
+      "MnStPaulWestSeventhBakery": "0a17916cace7ac87fc2e094c14f0a78f00cbd13e71ca68f48acb30ab8b675732",
+      "MnStPaulStreetGardenHouse": "0bc5c8a7f72c67ff88115412480aa47c0deb30a667b4bcd3a41e1bc7254b41c7",
+      "MnStPaulLowertownExchange": "245e83863b5b36c28d24336f35707886ef877878ac69ddb46a892f7160e1ce74",
+      "MnStPaulArchiveAnnex": "39f2d65ace2f2e65844a842ea872189848eed93139c59815b47e08917c88ad33",
+      "MnStPaulLowertownCrafts": "328d81c4fd8822c49eb9d13b6fa75c171022dc6b37cc07f811472af6935bac5d",
+      "MnStPaulEastAidClinic": "dd445805b1674c8f56fb4cc7e91c68d00f9dc5c6f4647ca8cf203e5c91a12cd8",
+      "MnStPaulEastWorkshop": "9f3425d3bc7895496997e7276feb6db24dbc55cf394e4765286954c914f100bb",
+      "MnStPaulCommunityHall": "e596c025b4ad608cc490371e1f471c470d096379de8a8c4d2fb19b4b06e072bf",
+      "MnStPaulTransitHeritageHouse": "82fe4a38a8b1ca005baea174ff4fc693c460f3d02f1e4501f0df9c88245e12ce",
+      "MnStPaulFreightOffice": "25b2f086645e792db15c10a170431034fc6128a76239a55f12db23c9fa6477ff",
+      "MnStPaulLowertownCafe": "f5969dc1b7340cba8995d7a9db2548171f62bc0dab5f706f91dec760002fb74e",
+      "MnStPaulAnglerHouse": "88e2232fdf56d30ea98b652af557ca2aa5d448d6b7847c8697a1660da1be5f0f",
+      "MnStPaulRiversideSupplies": "ae74c32b1ff7d9532f2ff1259d3dc9f675d7c59078c13cd601eeb7d8bbb21b68",
+      "MnStPaulWestsideCommunity": "c0a009fc10792ae22e80a80a6a45fb0087956db583c67b5ce33c1d31de87201f",
+      "MnStPaulWestsideArena": "15f6d20c8ec49265e79906a84032702be6755e12b49b0a56a40cf879fabb65ff",
+      "MnStPaulBoatCoop": "545c7141883d1ebec0da678a105ff3307363c97d897c1e6a3ce619f5b35483cc",
+      "MnStPaulSouthLandingInn": "e51a055bd77341a148f3dd2fa98da6fc9030e15e4e7bdd22811adc3a2b79b578",
+      "MnStPaulSouthLandingSurvey": "6adc0098f32b61b79d8a4a77b840d7a0360be51a3aae48e2e941c0cd41ad4352",
+      "MnStPaulLowertownExchange2F": "7dd7aa63d57a3915cb7c6a64537d61a570e207ff2bba7bdc1e956dea5ac822ce",
+      "MnStPaulLowertownExchange3F": "83030234c435413354fdb203b2efa00f9287825c327a1160cbb8c26801c3e386",
+      "MnStPaulUnionDepot": "c9f1d9d4658ab6ca465e6ad2dc4ee8d41526b560e01bd46806dce3d055cb66ff"
+    },
+    "native_city_module_sha256": "10c8ddb5dd3005d0f586917c6b3b64160d08e08283b4ce83adcf1de067a6dd2b",
+    "inline_source_room_count": 41,
+    "separate_depot_source": "transit/MnStPaulUnionDepot.json",
+    "outdoor_recovery_spawn": {
+      "identifier": 271,
+      "before": [
+        6,
+        48
+      ],
+      "after": [
+        6,
+        48
+      ]
+    },
+    "unchanged_clinic_recovery_identifier": 272,
+    "controller_cases": 9,
+    "production_gpu_views": 15,
+    "evidence": [
+      {
+        "path": "planning/minnesota/renders/route-quality-next/stpaul-native/compact-v01/written-2fe6fc2a/proof-4a0441eaa8db9b330c28f9a7a17b22d204ccb3404b766d491ae662f27db9a408.json",
+        "sha256": "4a0441eaa8db9b330c28f9a7a17b22d204ccb3404b766d491ae662f27db9a408"
+      },
+      {
+        "path": ".local/stpaul-compact-controller-v01/activities.log",
+        "sha256": "bf09ab82df11b5df9ac1df624e6cfc32c1ab2185dde128e321818f997691dd24"
+      },
+      {
+        "path": "planning/minnesota/renders/cities/stpaul-compact-native-v01/production-views/capture-progress.json",
+        "sha256": "726508a455cb691e8839aa25bcf84a47814f510354089bd1ded16408ea8911d5"
+      },
+      {
+        "path": ".local/stpaul-compact-publication-v02.log",
+        "sha256": "de2563a1c1afac756aa5ab12b31c79d43e0b038996fe2d49678c7b623d07ff39"
+      }
+    ],
+    "river_hooks": "Not included. Future water ports/bridges remain in the separate Mississippi connection manifest pending native publication/controller verification."
+  }
 }

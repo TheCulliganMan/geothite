@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F006",
+  "species": [
+    {
+      "species_id": "MN_017",
+      "runtime_token": "BANDRAKE",
+      "palette_rgb555": [
+        32767,
+        10520,
+        21001,
+        0
+      ],
+      "shiny_palette_rgb555": [
+        32767,
+        8970,
+        16692,
+        0
+      ],
+      "fit": [
+        14,
+        14
+      ],
+      "alpha_threshold": 128,
+      "sampling": "source_center",
+      "minimum_foreground_samples": 16,
+      "black_priority_samples": 32,
+      "interior_black_samples": null,
+      "opaque_interior_minimum_samples": 60,
+      "frames": [
+        {
+          "pose": "down_idle",
+          "source": "bandrake.overworld.imagegen-v2.png",
+          "crop": [
+            19,
+            149,
+            344,
+            338
+          ]
+        },
+        {
+          "pose": "up_idle",
+          "source": "bandrake.overworld.imagegen-v2.png",
+          "crop": [
+            408,
+            150,
+            344,
+            338
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "source": "bandrake.overworld.imagegen-v2.png",
+          "crop": [
+            788,
+            148,
+            344,
+            338
+          ]
+        },
+        {
+          "pose": "down_step",
+          "source": "bandrake.overworld.imagegen-v2.png",
+          "crop": [
+            19,
+            552,
+            344,
+            338
+          ]
+        },
+        {
+          "pose": "up_step",
+          "source": "bandrake.overworld.imagegen-v2.png",
+          "crop": [
+            408,
+            562,
+            344,
+            338
+          ]
+        },
+        {
+          "pose": "left_step",
+          "source": "bandrake.overworld.imagegen-v2.png",
+          "crop": [
+            789,
+            560,
+            344,
+            338
+          ]
+        }
+      ]
+    }
+  ]
+}

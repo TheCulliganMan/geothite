@@ -1,0 +1,8 @@
+{
+  "tool": "built-in image_gen",
+  "default_path": "/Users/ryanculligan/.codex/generated_images/01a178da-4cf1-7e01-8516-667a332dc790/exec-7794d118-1484-41f8-a14e-d0b31a2c4922.png",
+  "retained_raw": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f044/babehemoth.overworld.imagegen-v6-pupils-up.png",
+  "sha256": "9fbddad813eafb3d894c6e4bd7e1afc1f813d72873be45834d14f5f1e48f1121",
+  "prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f044/prompt-babehemoth-pupils-up-v6.txt",
+  "accepted": false
+}

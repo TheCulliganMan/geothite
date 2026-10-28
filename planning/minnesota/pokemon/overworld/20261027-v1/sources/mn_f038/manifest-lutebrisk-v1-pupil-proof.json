@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F038",
+  "species": [
+    {
+      "species_id": "MN_089",
+      "runtime_token": "LUTEBRISK",
+      "palette_rgb555": [
+        32767,
+        13181,
+        26251,
+        0
+      ],
+      "shiny_palette_rgb555": [
+        32767,
+        28588,
+        20857,
+        0
+      ],
+      "fit": [
+        14,
+        14
+      ],
+      "alpha_threshold": 128,
+      "sampling": "source_center",
+      "minimum_foreground_samples": 16,
+      "black_priority_samples": 64,
+      "interior_black_samples": 64,
+      "opaque_interior_minimum_samples": 64,
+      "frames": [
+        {
+          "pose": "down_idle",
+          "source": "lutebrisk.overworld.imagegen-v1.png",
+          "crop": [
+            55,
+            86,
+            500,
+            440
+          ]
+        },
+        {
+          "pose": "up_idle",
+          "source": "lutebrisk.overworld.imagegen-v1.png",
+          "crop": [
+            548,
+            88,
+            500,
+            440
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "source": "lutebrisk.overworld.imagegen-v1.png",
+          "crop": [
+            1036,
+            79,
+            500,
+            440
+          ]
+        },
+        {
+          "pose": "down_step",
+          "source": "lutebrisk.overworld.imagegen-v1.png",
+          "crop": [
+            57,
+            554,
+            500,
+            440
+          ]
+        },
+        {
+          "pose": "up_step",
+          "source": "lutebrisk.overworld.imagegen-v1.png",
+          "crop": [
+            542,
+            541,
+            500,
+            440
+          ]
+        },
+        {
+          "pose": "left_step",
+          "source": "lutebrisk.overworld.imagegen-v1.png",
+          "crop": [
+            1036,
+            559,
+            500,
+            440
+          ]
+        }
+      ]
+    }
+  ]
+}

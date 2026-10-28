@@ -1,0 +1,142 @@
+[
+  {
+    "name": "bobcast",
+    "variant": "v4-native-pupils",
+    "fit": [
+      12,
+      12
+    ],
+    "poses": [
+      {
+        "pose": "down_idle",
+        "native_bounds": [
+          3,
+          3,
+          9,
+          12
+        ],
+        "opaque_pixels": 52
+      },
+      {
+        "pose": "up_idle",
+        "native_bounds": [
+          3,
+          4,
+          9,
+          11
+        ],
+        "opaque_pixels": 54
+      },
+      {
+        "pose": "left_idle",
+        "native_bounds": [
+          4,
+          3,
+          7,
+          11
+        ],
+        "opaque_pixels": 41
+      },
+      {
+        "pose": "down_step",
+        "native_bounds": [
+          3,
+          3,
+          9,
+          11
+        ],
+        "opaque_pixels": 51
+      },
+      {
+        "pose": "up_step",
+        "native_bounds": [
+          3,
+          4,
+          9,
+          11
+        ],
+        "opaque_pixels": 51
+      },
+      {
+        "pose": "left_step",
+        "native_bounds": [
+          4,
+          3,
+          7,
+          11
+        ],
+        "opaque_pixels": 44
+      }
+    ]
+  },
+  {
+    "name": "buoyostic",
+    "variant": "v2-native-pupils",
+    "fit": [
+      14,
+      14
+    ],
+    "poses": [
+      {
+        "pose": "down_idle",
+        "native_bounds": [
+          1,
+          2,
+          14,
+          13
+        ],
+        "opaque_pixels": 83
+      },
+      {
+        "pose": "up_idle",
+        "native_bounds": [
+          1,
+          2,
+          14,
+          13
+        ],
+        "opaque_pixels": 88
+      },
+      {
+        "pose": "left_idle",
+        "native_bounds": [
+          2,
+          2,
+          12,
+          13
+        ],
+        "opaque_pixels": 83
+      },
+      {
+        "pose": "down_step",
+        "native_bounds": [
+          1,
+          2,
+          14,
+          13
+        ],
+        "opaque_pixels": 81
+      },
+      {
+        "pose": "up_step",
+        "native_bounds": [
+          1,
+          2,
+          14,
+          12
+        ],
+        "opaque_pixels": 86
+      },
+      {
+        "pose": "left_step",
+        "native_bounds": [
+          2,
+          2,
+          12,
+          12
+        ],
+        "opaque_pixels": 73
+      }
+    ]
+  }
+]

@@ -74,8 +74,9 @@ with open(root / '.docker-update.lock', 'a') as lock:
         swap('current', 'releases/' + release_id)
         swap('index.html', 'current/index.html')
         swap('species', 'current/species')
-        if (app / 'releases' / release_id / 'moves.html').exists():
-            swap('moves.html', 'current/moves.html')
+        for page in ('moves.html', 'state-fair.html'):
+            if (app / 'releases' / release_id / page).exists():
+                swap(page, 'current/' + page)
         if need_mount:
             run('docker', 'compose', 'up', '-d', '--no-deps', '--no-build', '--pull', 'never', 'geothite')
         for attempt in range(30):

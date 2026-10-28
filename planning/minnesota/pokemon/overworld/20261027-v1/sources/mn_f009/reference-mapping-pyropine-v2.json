@@ -1,0 +1,50 @@
+{
+  "family_id": "MN_F009",
+  "species_id": "MN_027",
+  "prompt_file": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f009/prompt-pyropine-v2.txt",
+  "input_references": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/references/native-pack-16px/native-six-frame-style-board.8x.png",
+      "sha256": "4354a639ed1a80fd6686e43b273443ed894e58a84307a8049f638ee9ffa2a099",
+      "role": "Only tool input: authentic16px map style, native pixel density and directions."
+    }
+  ],
+  "inspected_identity_context": {
+    "canonical_front": {
+      "path": "target/minnesota-pokemon/native/MN_F009/mn-027-pyropine-v1.front.png",
+      "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F009/mn-027-pyropine-v1.front.png",
+      "sha256": "537ab1f080f0a1276f69b2cebb5899999a2710405e462e5aeead28c33ccb66d0"
+    },
+    "canonical_back": {
+      "path": "target/minnesota-pokemon/native/MN_F009/mn-027-pyropine-v1.back.png",
+      "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F009/mn-027-pyropine-v1.back.png",
+      "sha256": "04c48683f181a9b3175e4a9beb53957e3907d2a72aae400c521e9c3c113b40cc"
+    },
+    "invariants": [
+      "Large tiered red-pine creature with broad resin/flame lantern tips and a visible trunk.",
+      "Show growth in branch tiers and lantern size; no flame-only blob or tree in a pot."
+    ]
+  },
+  "battle_refs_passed_to_tool": false,
+  "palette_binding": {
+    "transparent_index": 0,
+    "visible_indices": [
+      1,
+      2,
+      3
+    ],
+    "normal_rgb555_words": [
+      32767,
+      4639,
+      8515,
+      0
+    ],
+    "shiny_rgb555_words": [
+      32767,
+      17380,
+      10344,
+      0
+    ],
+    "white_body_region_policy": "Simplify formerly white body/highlight regions to light ink1. Index0 is transparent everywhere, not an opaque white paint color."
+  }
+}

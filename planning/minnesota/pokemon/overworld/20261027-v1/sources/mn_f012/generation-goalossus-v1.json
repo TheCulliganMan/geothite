@@ -1,0 +1,8 @@
+{
+  "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f012/goalossus.overworld.imagegen-v1.png",
+  "default_original": "/Users/ryanculligan/.codex/generated_images/01a17dc4-dd75-7642-a1c6-4bf13fda70c6/exec-56dd6f92-b180-48c5-a9f6-0c8913662e59.png",
+  "sha256": "30d6737829fe946028ffb65c4832601c0f9a1c468d30a8aa5ecbdc83fbeca141",
+  "tool": "built-in ImageGen",
+  "one_species_per_call": true,
+  "genuine16_style_only_reference": true
+}

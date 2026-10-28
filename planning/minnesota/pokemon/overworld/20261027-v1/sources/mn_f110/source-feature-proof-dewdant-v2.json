@@ -1,0 +1,216 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_241",
+  "result": "pass",
+  "manifest_sha256": "cdc0c07eeed8a06664e5c0793911ae57a6304bcde9bdce55225256358fbd2fd0",
+  "bank_sha256": "31cd1d47830d94b3ef009fbd9832a379ccbf893329c3b88e6fdb6f45521470dd",
+  "source_sha256": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f110/dewdant.overworld.imagegen-v1.png": "a7f81ad991c86bd6d90b649ea34da25ddab9e38889cdc67b2fa3e1245c89d90e",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f110/dewdant.overworld.imagegen-v2.png": "9ee3b8cbadbf9adefc6bbec498572bfe72b3fcc6dd6fecdd5ec8dbf01fba935a"
+  },
+  "canonical_eye_form": "TWO frontal pupil organs inside the gold patch on the purple ant head, ONE profile pupil. Each native black eye cluster maps to one actual small source pupil component, isolated from contour/arms/mouth. Golden honeydew reservoir has no eyes; rear head blank.",
+  "nonrear_poses": [
+    {
+      "pose": "down_idle",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            6,
+            11
+          ],
+          "source_sample": [
+            218,
+            390
+          ],
+          "source_rgba": [
+            4,
+            3,
+            3,
+            253
+          ],
+          "actual_source_pupil_component": [
+            213,
+            384,
+            23,
+            31
+          ],
+          "component_pixels": 713,
+          "native_neighbors": [
+            2,
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "native": [
+            9,
+            11
+          ],
+          "source_sample": [
+            313,
+            390
+          ],
+          "source_rgba": [
+            0,
+            0,
+            0,
+            253
+          ],
+          "actual_source_pupil_component": [
+            291,
+            384,
+            24,
+            31
+          ],
+          "component_pixels": 715,
+          "native_neighbors": [
+            1,
+            2,
+            2,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            4,
+            10
+          ],
+          "source_sample": [
+            1154,
+            345
+          ],
+          "source_rgba": [
+            0,
+            1,
+            0,
+            253
+          ],
+          "actual_source_pupil_component": [
+            1153,
+            327,
+            26,
+            33
+          ],
+          "component_pixels": 858,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            6,
+            11
+          ],
+          "source_sample": [
+            219,
+            803
+          ],
+          "source_rgba": [
+            3,
+            2,
+            1,
+            253
+          ],
+          "actual_source_pupil_component": [
+            215,
+            798,
+            22,
+            30
+          ],
+          "component_pixels": 660,
+          "native_neighbors": [
+            2,
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "native": [
+            9,
+            11
+          ],
+          "source_sample": [
+            314,
+            803
+          ],
+          "source_rgba": [
+            0,
+            0,
+            0,
+            253
+          ],
+          "actual_source_pupil_component": [
+            293,
+            798,
+            23,
+            30
+          ],
+          "component_pixels": 690,
+          "native_neighbors": [
+            1,
+            2,
+            2,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            5,
+            10
+          ],
+          "source_sample": [
+            1182,
+            757
+          ],
+          "source_rgba": [
+            0,
+            0,
+            0,
+            253
+          ],
+          "actual_source_pupil_component": [
+            1157,
+            736,
+            26,
+            35
+          ],
+          "component_pixels": 906,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ]
+        }
+      ]
+    }
+  ],
+  "rear_anatomy": {
+    "result": "pass",
+    "notes": "both rear native poses viewed; no copied face. All six exact normal/shiny native poses inspected, three movement pairs distinct, transparent one-pixel border and max14x14 body verified."
+  }
+}

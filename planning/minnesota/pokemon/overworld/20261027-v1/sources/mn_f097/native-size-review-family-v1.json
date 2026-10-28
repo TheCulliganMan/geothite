@@ -1,0 +1,767 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F097",
+  "status": "native-review-recommended; root independent visual and production context review required",
+  "selected_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f097/family.manifest-native-candidate-v1.json",
+  "runtime_output": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/true16-paddlefish-family-v1/MN_F097",
+  "tool": "built-in image_gen",
+  "normal_shiny_boards_actually_viewed": true,
+  "proof": [
+    {
+      "species_id": "MN_211",
+      "name": "Pinglet",
+      "runtime_token": "PINGLET",
+      "native_frame_size": [
+        16,
+        16
+      ],
+      "runtime_stack_size": [
+        16,
+        96
+      ],
+      "normal_shiny_runtime_pixel_parity": "all1536pixels exact each",
+      "canonical_palettes_and_little_endian_bytes": "exact",
+      "all_three_walk_pairs_distinct": true,
+      "all_four_nonrear_poses_have_actual_isolated_source_pupils": true,
+      "source_to_native_pupil_proof": [
+        {
+          "pose": "down_idle",
+          "shared_transform": {
+            "source_union": [
+              11,
+              10,
+              440,
+              342
+            ],
+            "sampled_native_size": [
+              14,
+              10
+            ],
+            "native_origin": [
+              1,
+              5
+            ]
+          },
+          "samples": [
+            {
+              "native_pixel": [
+                6,
+                10
+              ],
+              "source_sample_pixel": [
+                235,
+                317
+              ],
+              "source_sample_rgba": [
+                0,
+                0,
+                0,
+                253
+              ],
+              "source_pupil_component_bounds": [
+                219,
+                296,
+                30,
+                30
+              ],
+              "source_pupil_component_pixels": 900,
+              "native_orthogonal_neighbors": [
+                [
+                  5,
+                  10,
+                  1
+                ],
+                [
+                  7,
+                  10,
+                  1
+                ],
+                [
+                  6,
+                  9,
+                  1
+                ],
+                [
+                  6,
+                  11,
+                  1
+                ]
+              ]
+            },
+            {
+              "native_pixel": [
+                9,
+                10
+              ],
+              "source_sample_pixel": [
+                330,
+                317
+              ],
+              "source_sample_rgba": [
+                0,
+                0,
+                0,
+                252
+              ],
+              "source_pupil_component_bounds": [
+                314,
+                296,
+                30,
+                30
+              ],
+              "source_pupil_component_pixels": 900,
+              "native_orthogonal_neighbors": [
+                [
+                  8,
+                  10,
+                  1
+                ],
+                [
+                  10,
+                  10,
+                  1
+                ],
+                [
+                  9,
+                  9,
+                  1
+                ],
+                [
+                  9,
+                  11,
+                  1
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "shared_transform": {
+            "source_union": [
+              11,
+              10,
+              440,
+              342
+            ],
+            "sampled_native_size": [
+              14,
+              10
+            ],
+            "native_origin": [
+              1,
+              5
+            ]
+          },
+          "samples": [
+            {
+              "native_pixel": [
+                6,
+                11
+              ],
+              "source_sample_pixel": [
+                1195,
+                334
+              ],
+              "source_sample_rgba": [
+                6,
+                4,
+                1,
+                253
+              ],
+              "source_pupil_component_bounds": [
+                1167,
+                329,
+                30,
+                30
+              ],
+              "source_pupil_component_pixels": 900,
+              "native_orthogonal_neighbors": [
+                [
+                  5,
+                  11,
+                  1
+                ],
+                [
+                  7,
+                  11,
+                  1
+                ],
+                [
+                  6,
+                  10,
+                  1
+                ],
+                [
+                  6,
+                  12,
+                  1
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "pose": "down_step",
+          "shared_transform": {
+            "source_union": [
+              11,
+              10,
+              440,
+              342
+            ],
+            "sampled_native_size": [
+              14,
+              10
+            ],
+            "native_origin": [
+              1,
+              5
+            ]
+          },
+          "samples": [
+            {
+              "native_pixel": [
+                6,
+                10
+              ],
+              "source_sample_pixel": [
+                235,
+                736
+              ],
+              "source_sample_rgba": [
+                0,
+                0,
+                0,
+                253
+              ],
+              "source_pupil_component_bounds": [
+                219,
+                711,
+                30,
+                31
+              ],
+              "source_pupil_component_pixels": 930,
+              "native_orthogonal_neighbors": [
+                [
+                  5,
+                  10,
+                  1
+                ],
+                [
+                  7,
+                  10,
+                  1
+                ],
+                [
+                  6,
+                  9,
+                  1
+                ],
+                [
+                  6,
+                  11,
+                  1
+                ]
+              ]
+            },
+            {
+              "native_pixel": [
+                9,
+                10
+              ],
+              "source_sample_pixel": [
+                330,
+                736
+              ],
+              "source_sample_rgba": [
+                0,
+                0,
+                0,
+                253
+              ],
+              "source_pupil_component_bounds": [
+                314,
+                711,
+                31,
+                31
+              ],
+              "source_pupil_component_pixels": 938,
+              "native_orthogonal_neighbors": [
+                [
+                  8,
+                  10,
+                  1
+                ],
+                [
+                  10,
+                  10,
+                  1
+                ],
+                [
+                  9,
+                  9,
+                  1
+                ],
+                [
+                  9,
+                  11,
+                  1
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "pose": "left_step",
+          "shared_transform": {
+            "source_union": [
+              11,
+              10,
+              440,
+              342
+            ],
+            "sampled_native_size": [
+              14,
+              10
+            ],
+            "native_origin": [
+              1,
+              5
+            ]
+          },
+          "samples": [
+            {
+              "native_pixel": [
+                6,
+                11
+              ],
+              "source_sample_pixel": [
+                1194,
+                745
+              ],
+              "source_sample_rgba": [
+                10,
+                7,
+                3,
+                253
+              ],
+              "source_pupil_component_bounds": [
+                1167,
+                742,
+                30,
+                31
+              ],
+              "source_pupil_component_pixels": 930,
+              "native_orthogonal_neighbors": [
+                [
+                  5,
+                  11,
+                  1
+                ],
+                [
+                  7,
+                  11,
+                  1
+                ],
+                [
+                  6,
+                  10,
+                  1
+                ],
+                [
+                  6,
+                  12,
+                  1
+                ]
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "species_id": "MN_212",
+      "name": "Paddarray",
+      "runtime_token": "PADDARRAY",
+      "native_frame_size": [
+        16,
+        16
+      ],
+      "runtime_stack_size": [
+        16,
+        96
+      ],
+      "normal_shiny_runtime_pixel_parity": "all1536pixels exact each",
+      "canonical_palettes_and_little_endian_bytes": "exact",
+      "all_three_walk_pairs_distinct": true,
+      "all_four_nonrear_poses_have_actual_isolated_source_pupils": true,
+      "source_to_native_pupil_proof": [
+        {
+          "pose": "down_idle",
+          "shared_transform": {
+            "source_union": [
+              12,
+              11,
+              385,
+              364
+            ],
+            "sampled_native_size": [
+              13,
+              12
+            ],
+            "native_origin": [
+              1,
+              3
+            ]
+          },
+          "samples": [
+            {
+              "native_pixel": [
+                5,
+                10
+              ],
+              "source_sample_pixel": [
+                201,
+                464
+              ],
+              "source_sample_rgba": [
+                6,
+                7,
+                8,
+                254
+              ],
+              "source_pupil_component_bounds": [
+                194,
+                440,
+                26,
+                26
+              ],
+              "source_pupil_component_pixels": 676,
+              "native_orthogonal_neighbors": [
+                [
+                  4,
+                  10,
+                  1
+                ],
+                [
+                  6,
+                  10,
+                  1
+                ],
+                [
+                  5,
+                  9,
+                  1
+                ],
+                [
+                  5,
+                  11,
+                  1
+                ]
+              ]
+            },
+            {
+              "native_pixel": [
+                8,
+                10
+              ],
+              "source_sample_pixel": [
+                290,
+                464
+              ],
+              "source_sample_rgba": [
+                4,
+                5,
+                6,
+                253
+              ],
+              "source_pupil_component_bounds": [
+                279,
+                440,
+                26,
+                26
+              ],
+              "source_pupil_component_pixels": 676,
+              "native_orthogonal_neighbors": [
+                [
+                  7,
+                  10,
+                  1
+                ],
+                [
+                  9,
+                  10,
+                  1
+                ],
+                [
+                  8,
+                  9,
+                  1
+                ],
+                [
+                  8,
+                  11,
+                  1
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "shared_transform": {
+            "source_union": [
+              12,
+              11,
+              385,
+              364
+            ],
+            "sampled_native_size": [
+              13,
+              12
+            ],
+            "native_origin": [
+              1,
+              3
+            ]
+          },
+          "samples": [
+            {
+              "native_pixel": [
+                5,
+                11
+              ],
+              "source_sample_pixel": [
+                958,
+                452
+              ],
+              "source_sample_rgba": [
+                0,
+                0,
+                0,
+                254
+              ],
+              "source_pupil_component_bounds": [
+                945,
+                442,
+                22,
+                24
+              ],
+              "source_pupil_component_pixels": 520,
+              "native_orthogonal_neighbors": [
+                [
+                  4,
+                  11,
+                  1
+                ],
+                [
+                  6,
+                  11,
+                  1
+                ],
+                [
+                  5,
+                  10,
+                  1
+                ],
+                [
+                  5,
+                  12,
+                  1
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "pose": "down_step",
+          "shared_transform": {
+            "source_union": [
+              12,
+              11,
+              385,
+              364
+            ],
+            "sampled_native_size": [
+              13,
+              12
+            ],
+            "native_origin": [
+              1,
+              3
+            ]
+          },
+          "samples": [
+            {
+              "native_pixel": [
+                5,
+                10
+              ],
+              "source_sample_pixel": [
+                201,
+                881
+              ],
+              "source_sample_rgba": [
+                0,
+                2,
+                2,
+                254
+              ],
+              "source_pupil_component_bounds": [
+                196,
+                859,
+                26,
+                26
+              ],
+              "source_pupil_component_pixels": 663,
+              "native_orthogonal_neighbors": [
+                [
+                  4,
+                  10,
+                  1
+                ],
+                [
+                  6,
+                  10,
+                  1
+                ],
+                [
+                  5,
+                  9,
+                  1
+                ],
+                [
+                  5,
+                  11,
+                  1
+                ]
+              ]
+            },
+            {
+              "native_pixel": [
+                8,
+                10
+              ],
+              "source_sample_pixel": [
+                290,
+                881
+              ],
+              "source_sample_rgba": [
+                0,
+                1,
+                2,
+                253
+              ],
+              "source_pupil_component_bounds": [
+                279,
+                859,
+                26,
+                26
+              ],
+              "source_pupil_component_pixels": 676,
+              "native_orthogonal_neighbors": [
+                [
+                  7,
+                  10,
+                  1
+                ],
+                [
+                  9,
+                  10,
+                  1
+                ],
+                [
+                  8,
+                  9,
+                  1
+                ],
+                [
+                  8,
+                  11,
+                  1
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "pose": "left_step",
+          "shared_transform": {
+            "source_union": [
+              12,
+              11,
+              385,
+              364
+            ],
+            "sampled_native_size": [
+              13,
+              12
+            ],
+            "native_origin": [
+              1,
+              3
+            ]
+          },
+          "samples": [
+            {
+              "native_pixel": [
+                5,
+                11
+              ],
+              "source_sample_pixel": [
+                950,
+                853
+              ],
+              "source_sample_rgba": [
+                2,
+                0,
+                0,
+                254
+              ],
+              "source_pupil_component_bounds": [
+                945,
+                845,
+                22,
+                23
+              ],
+              "source_pupil_component_pixels": 506,
+              "native_orthogonal_neighbors": [
+                [
+                  4,
+                  11,
+                  1
+                ],
+                [
+                  6,
+                  11,
+                  1
+                ],
+                [
+                  5,
+                  10,
+                  1
+                ],
+                [
+                  5,
+                  12,
+                  1
+                ]
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "no_roster_registry_or_pack_mutations": true,
+  "all_raw_prompts_unused_frames_and_rejected_candidates_retained": true,
+  "sha256": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f097/family.manifest-native-candidate-v1.json": "db0ea38a80548ea548881d30bd1dc91d9eed6c062e78df5ce623c32dab3670d3",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/true16-paddlefish-family-v1/MN_F097/compiled-index.json": "66cec15bdd8eb6f12b2efde15d72028c09c0d2fb940cbfa76518d1bba1bb560c",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f097/pinglet.overworld.imagegen-v3.png": "5042dee9c1308760f0a6e4211f34f98e2fa222caa7752890a0fdbcbde2063592",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f097/paddarray.overworld.imagegen-v3.png": "9bf7ef674ed3022675b5ef06b8059182d91c6acc3d06888afc877e4f6a6b779c",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/true16-paddlefish-family-v1/MN_F097/review/line.normal-8x.png": "cd73fb446382ddfad94cb0c31580497aab697648bf5d5053e13d8b87336278f9",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/true16-paddlefish-family-v1/MN_F097/review/line.shiny-8x.png": "db03eb14dd1981bc14b74ed361bff5b8872389e84441af3fbd2822fccd033456"
+  }
+}

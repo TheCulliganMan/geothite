@@ -1,0 +1,264 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F125",
+  "species": [
+    {
+      "species_id": "MN_274",
+      "runtime_token": "KINDLIT",
+      "palette_rgb555": [
+        32767,
+        12989,
+        8424,
+        0
+      ],
+      "shiny_palette_rgb555": [
+        32767,
+        31468,
+        15593,
+        0
+      ],
+      "fit": [
+        14,
+        11
+      ],
+      "alpha_threshold": 128,
+      "sampling": "source_center",
+      "minimum_foreground_samples": 16,
+      "black_priority_samples": 8,
+      "frames": [
+        {
+          "pose": "down_idle",
+          "source": "overworld.imagegen-v1.png",
+          "crop": [
+            19,
+            0,
+            256,
+            370
+          ]
+        },
+        {
+          "pose": "up_idle",
+          "source": "overworld.imagegen-v1.png",
+          "crop": [
+            266,
+            0,
+            256,
+            370
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "source": "overworld.imagegen-v1.png",
+          "crop": [
+            492,
+            0,
+            256,
+            370
+          ]
+        },
+        {
+          "pose": "down_step",
+          "source": "overworld.imagegen-v1.png",
+          "crop": [
+            764,
+            0,
+            256,
+            370
+          ]
+        },
+        {
+          "pose": "up_step",
+          "source": "overworld.imagegen-v1.png",
+          "crop": [
+            1007,
+            0,
+            256,
+            370
+          ]
+        },
+        {
+          "pose": "left_step",
+          "source": "overworld.imagegen-v1.png",
+          "crop": [
+            1258,
+            0,
+            256,
+            370
+          ]
+        }
+      ]
+    },
+    {
+      "species_id": "MN_275",
+      "runtime_token": "RIMEPELT",
+      "palette_rgb555": [
+        32767,
+        7709,
+        13641,
+        0
+      ],
+      "shiny_palette_rgb555": [
+        32767,
+        31440,
+        15627,
+        0
+      ],
+      "fit": [
+        14,
+        13
+      ],
+      "alpha_threshold": 128,
+      "sampling": "source_center",
+      "minimum_foreground_samples": 16,
+      "black_priority_samples": 8,
+      "frames": [
+        {
+          "pose": "down_idle",
+          "source": "overworld.imagegen-v1.png",
+          "crop": [
+            20,
+            370,
+            256,
+            300
+          ]
+        },
+        {
+          "pose": "up_idle",
+          "source": "overworld.imagegen-v1.png",
+          "crop": [
+            262,
+            370,
+            256,
+            300
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "source": "overworld.imagegen-v1.png",
+          "crop": [
+            509,
+            370,
+            256,
+            300
+          ]
+        },
+        {
+          "pose": "down_step",
+          "source": "overworld.imagegen-v1.png",
+          "crop": [
+            767,
+            370,
+            256,
+            300
+          ]
+        },
+        {
+          "pose": "up_step",
+          "source": "overworld.imagegen-v1.png",
+          "crop": [
+            1008,
+            370,
+            256,
+            300
+          ]
+        },
+        {
+          "pose": "left_step",
+          "source": "overworld.imagegen-v1.png",
+          "crop": [
+            1267,
+            370,
+            256,
+            300
+          ]
+        }
+      ]
+    },
+    {
+      "species_id": "MN_276",
+      "runtime_token": "BOREALYNX",
+      "palette_rgb555": [
+        32767,
+        6654,
+        29521,
+        0
+      ],
+      "shiny_palette_rgb555": [
+        32767,
+        31122,
+        14076,
+        0
+      ],
+      "fit": [
+        14,
+        14
+      ],
+      "alpha_threshold": 128,
+      "sampling": "source_center",
+      "minimum_foreground_samples": 16,
+      "black_priority_samples": 8,
+      "frames": [
+        {
+          "pose": "down_idle",
+          "source": "overworld.imagegen-v1.png",
+          "crop": [
+            17,
+            670,
+            256,
+            354
+          ]
+        },
+        {
+          "pose": "up_idle",
+          "source": "overworld.imagegen-v1.png",
+          "crop": [
+            265,
+            670,
+            256,
+            354
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "source": "overworld.imagegen-v1.png",
+          "crop": [
+            514,
+            670,
+            256,
+            354
+          ]
+        },
+        {
+          "pose": "down_step",
+          "source": "overworld.imagegen-v1.png",
+          "crop": [
+            768,
+            670,
+            256,
+            354
+          ]
+        },
+        {
+          "pose": "up_step",
+          "source": "overworld.imagegen-v1.png",
+          "crop": [
+            1006,
+            670,
+            256,
+            354
+          ]
+        },
+        {
+          "pose": "left_step",
+          "source": "overworld.imagegen-v1.png",
+          "crop": [
+            1267,
+            670,
+            256,
+            354
+          ]
+        }
+      ]
+    }
+  ]
+}

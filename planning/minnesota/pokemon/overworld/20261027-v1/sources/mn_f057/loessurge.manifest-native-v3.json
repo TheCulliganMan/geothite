@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F057",
+  "species": [
+    {
+      "species_id": "MN_124",
+      "runtime_token": "LOESSURGE",
+      "palette_rgb555": [
+        32767,
+        11899,
+        5354,
+        0
+      ],
+      "shiny_palette_rgb555": [
+        32767,
+        20331,
+        7493,
+        0
+      ],
+      "fit": [
+        14,
+        14
+      ],
+      "alpha_threshold": 245,
+      "sampling": "source_center",
+      "minimum_foreground_samples": 16,
+      "black_priority_samples": 32,
+      "interior_black_samples": null,
+      "opaque_interior_minimum_samples": 60,
+      "frames": [
+        {
+          "pose": "down_idle",
+          "source": "loessurge.overworld.imagegen-v3.png",
+          "crop": [
+            65,
+            26,
+            430,
+            462
+          ]
+        },
+        {
+          "pose": "up_idle",
+          "source": "loessurge.overworld.imagegen-v3.png",
+          "crop": [
+            583,
+            26,
+            430,
+            462
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "source": "loessurge.overworld.imagegen-v3.png",
+          "crop": [
+            1075,
+            29,
+            430,
+            462
+          ]
+        },
+        {
+          "pose": "down_step",
+          "source": "loessurge.overworld.imagegen-v3.png",
+          "crop": [
+            65,
+            529,
+            430,
+            462
+          ]
+        },
+        {
+          "pose": "up_step",
+          "source": "loessurge.overworld.imagegen-v3.png",
+          "crop": [
+            583,
+            523,
+            430,
+            462
+          ]
+        },
+        {
+          "pose": "left_step",
+          "source": "loessurge.overworld.imagegen-v3.png",
+          "crop": [
+            1075,
+            526,
+            430,
+            462
+          ]
+        }
+      ]
+    }
+  ]
+}

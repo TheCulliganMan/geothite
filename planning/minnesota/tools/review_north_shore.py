@@ -17,19 +17,8 @@ from render_reference import SourceArt,layout_blocks,load_pack,room_sheet
 from review_grand_marais import sprite
 
 def oriented_sprite(pack,token,facing):
-    art=sprite(pack,token)
-    path='gfx/sprites/'+token.removeprefix('SPRITE_').lower()+'.png'
-    sheet=Image.open(io.BytesIO(bytes(pack['runtime_files'][path]))).convert('RGB')
     offset=16 if facing=='north' else 32 if facing in {'west','east'} else 0
-    if offset:
-        # Reuse the same source-palette conversion as the town renderer by
-        # matching each grayscale source level to its already converted pixel.
-        colors={}
-        first=sheet.crop((0,0,16,16))
-        for gray,pixel in zip(first.getdata(),art.getdata()):colors[gray[0]]=pixel
-        frame=sheet.crop((0,offset,16,offset+16)).convert('RGBA')
-        frame.putdata([colors[p[0]] for p in frame.getdata()])
-        art=frame
+    art=sprite(pack,token,frame_offset=offset)
     return art.transpose(Image.Transpose.FLIP_LEFT_RIGHT) if facing=='east' else art
 
 ROOT=Path(__file__).resolve().parents[3];LAYOUT=ROOT/'planning/minnesota/routes/MN_R11.layout.json';DOSSIER=ROOT/'planning/minnesota/routes/MN_R11.json';OUTPUT=ROOT/'planning/minnesota/renders/north-shore'

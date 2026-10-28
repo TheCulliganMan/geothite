@@ -1,0 +1,728 @@
+{
+  "schema_version": 1,
+  "base_pack_sha256": "57eefb675b9cb32ac66a01819f56961392e51678a6f9dd959888fbb9427e4e62",
+  "base_identity": "6ba03931721e00e50adbf8f058ef81f0ab9a94b75c2b8899ded9a198c75ffb2b",
+  "base_map_count": 683,
+  "map": "MnMinneapolis",
+  "tileset": "mn_minneapolis_city",
+  "expected_blocks": 157,
+  "base_module_sha256": "018ce3e76681e245ad914f2dea240c3a7565847f33344eba3f0f8d8e524f1ca5",
+  "base_definition_sha256": "a92939e78ed6537b466919ebfca971fcec640e795d7363a49cfa816a8f05846a",
+  "donor_definition_sha256": {
+    "johto": "d49be2437d396e1a5f69905a3297254b30d6b73d04bbba49ec4e39383dcc1c40",
+    "kanto": "985a118f297b3b88484a23b779053bad567e4ad604c87b278bdf9c295ceafaa0"
+  },
+  "source_files_sha256": {
+    "data/tilesets/johto_metatiles.bin": "4af44f22edf06b8c4dd949c0acfad0a74a05554d63278d8f5791ba0e7bf13017",
+    "data/tilesets/kanto_metatiles.bin": "cccfa474914655954731d540d2ec2c9fa35e54ad026d7ce472c314dcbc3febaf",
+    "data/tilesets/mn_minneapolis_city.json": "83e3ac82cace0bcf8141404077392b52b50444be2fc2364ea3c0c8fd77f577b8",
+    "data/tilesets/mn_minneapolis_city_metatiles.bin": "0799129abb557c7b65ecc87d831c5372b40eeb669e00e31278ef017527c9b79d",
+    "data/tilesets/mn_minneapolis_city_palette_map.json": "04ffe99d0001b84cdd906e203cc7f5d48e2709ec856b72eb5732dbd5118d2501",
+    "gfx/tilesets/bg_tiles.pal": "83ff1f3f9ab57e9d9cb021acb7689c169a7b1d6ebe78da4a294b8f4f7dc11bed",
+    "gfx/tilesets/johto.2bpp": "da7c80d2d52999f84deb38789eba3758a8a3aba25aaf24d1d2da699683cfd019",
+    "gfx/tilesets/kanto.2bpp": "d5895a7512b287e149d49282d49ffdd70b805f0b6cf6a22deb7cbeb05e4cdd1b",
+    "gfx/tilesets/mn_minneapolis_city.2bpp": "bf67bab1324f07cf5d51a9fb0ad88d5f2e147735bd50c7dc6078b2df5205b4fd",
+    "gfx/tilesets/mn_minneapolis_city.png": "ce5d05d2c725bf2783ef003e44444775c59dcae74d66f79719a07fa8848aa453"
+  },
+  "glyph_copies": [
+    {
+      "source_tileset": "kanto",
+      "source_glyph": 5,
+      "target": 224,
+      "source_palette": 6,
+      "pixels_sha256": "ad14744746c6d52a1b6d1edfe06ffbc67965299bf2dd38048a648140c4399f2d",
+      "four_bank_rgb_sha256": "68e241bb054c5b0e04d1ccac59e2764b81805aef2d382072640602400061514b"
+    },
+    {
+      "source_tileset": "kanto",
+      "source_glyph": 6,
+      "target": 225,
+      "source_palette": 6,
+      "pixels_sha256": "d40d28d833e428a8130d51991315e5f97c32282b64cc75bf642c405742be2e37",
+      "four_bank_rgb_sha256": "ffc2d791067df0d6cddf0e32f3014ca49ec4b5467c0aefcdbda10db7280523c8"
+    },
+    {
+      "source_tileset": "kanto",
+      "source_glyph": 83,
+      "target": 226,
+      "source_palette": 6,
+      "pixels_sha256": "12cbcd4dd41c3d8bc0c017314cb76a8ee45ddf45937faef888e0f937ac89ead7",
+      "four_bank_rgb_sha256": "77cbdf005ef74d2adb30202c94c4c2de841e1866d87e33f41163795db3d8540a"
+    },
+    {
+      "source_tileset": "kanto",
+      "source_glyph": 21,
+      "target": 227,
+      "source_palette": 6,
+      "pixels_sha256": "8532952a36d75da059319cb5dc264376c24fdb0738cb78923a5fcac7e323c35e",
+      "four_bank_rgb_sha256": "8d91de7d34568d536ab80d5d13b1132e8311336ef2e850c43bf8e94067dba8bc"
+    },
+    {
+      "source_tileset": "kanto",
+      "source_glyph": 56,
+      "target": 228,
+      "source_palette": 6,
+      "pixels_sha256": "8deaa5c35fbefc0b9c7304b28e05db5aaf55b31e775501e81d7977d8754c6b52",
+      "four_bank_rgb_sha256": "837b877e61eb2c2d2aaea0776ec6faa022dbe87b9d2ad5663d0def694ed7b3f4"
+    },
+    {
+      "source_tileset": "kanto",
+      "source_glyph": 18,
+      "target": 229,
+      "source_palette": 6,
+      "pixels_sha256": "ded9523641fa2c59e5831559e5ab90ae4ccf7afbb5c3cc757cceeae63a2c7924",
+      "four_bank_rgb_sha256": "3e3e140d61213c4ea55d4956628ee47863ac48c5aaf687f19aa6de82ebf7daf2"
+    },
+    {
+      "source_tileset": "kanto",
+      "source_glyph": 22,
+      "target": 230,
+      "source_palette": 6,
+      "pixels_sha256": "cfb99fcc543df833cf5cd7a2fef598f74576f4812a745a0e7565bd9922c90435",
+      "four_bank_rgb_sha256": "acc0f3c53efc29c0ee815d0989386d4e75a04fe6086ac093dd8850e3e7d49841"
+    },
+    {
+      "source_tileset": "kanto",
+      "source_glyph": 23,
+      "target": 231,
+      "source_palette": 6,
+      "pixels_sha256": "7a2dfb441bd63c516ba9bdf0b9e20a6027200c31ca148ca9b67ffb2224666d83",
+      "four_bank_rgb_sha256": "e86bcac8d559caecbf7217cc741a12c37318eef66f075490f2a868dc9d0a7014"
+    },
+    {
+      "source_tileset": "kanto",
+      "source_glyph": 8,
+      "target": 232,
+      "source_palette": 6,
+      "pixels_sha256": "0db47a21a9b1ba2e3a664f62e56584cb2cd57d4ff320487383aaa5b288cda6c0",
+      "four_bank_rgb_sha256": "06fb6022be0912558a1e06da5a88f4f893e1b2d89c7d07877fc06aec2945ae1e"
+    },
+    {
+      "source_tileset": "kanto",
+      "source_glyph": 9,
+      "target": 233,
+      "source_palette": 6,
+      "pixels_sha256": "237b7a63e7bd403a2dca985a537da44ba5fa629b1d25224b8729b123c3bc88d5",
+      "four_bank_rgb_sha256": "d7c1c81ab037f453aa5a7eb2a387db2d5c8aee0347a537f00d96d8fc821d484e"
+    },
+    {
+      "source_tileset": "kanto",
+      "source_glyph": 25,
+      "target": 234,
+      "source_palette": 6,
+      "pixels_sha256": "e9b4b1f059b2fe9dcd914ecb955db1bf2e34d62ddc89c32545614073452da412",
+      "four_bank_rgb_sha256": "32eeac35d6c870b9a5d7bc086f1cfa5e88b94d1c065859102047cea2bbf91dda"
+    },
+    {
+      "source_tileset": "kanto",
+      "source_glyph": 24,
+      "target": 235,
+      "source_palette": 6,
+      "pixels_sha256": "015f591710edffd6014eecfc20651687a9d2a465f6ad8057548c834b2519c51d",
+      "four_bank_rgb_sha256": "60149527d999b29b6d17e895c997f035e9b2e46388b78a0b0d3533a3c2447014"
+    },
+    {
+      "source_tileset": "kanto",
+      "source_glyph": 7,
+      "target": 236,
+      "source_palette": 6,
+      "pixels_sha256": "fbaf631a608b7dfce630e09bdf88f9bf01cc534612777ac16e62971c0f9c4e15",
+      "four_bank_rgb_sha256": "a2b7e0714f0f5b074669f191b9d115a739a55322c8eb4ec488403da60088fa57"
+    },
+    {
+      "source_tileset": "kanto",
+      "source_glyph": 37,
+      "target": 237,
+      "source_palette": 6,
+      "pixels_sha256": "aaeb75909b146d56da853cc5fb6e0c563c4a9eadc2f448d2f467f38e9ec25773",
+      "four_bank_rgb_sha256": "c93129a31eae80b41289b1f5df6df5fb36b676b985156a5195564682ecc986d0"
+    },
+    {
+      "source_tileset": "kanto",
+      "source_glyph": 38,
+      "target": 238,
+      "source_palette": 6,
+      "pixels_sha256": "edc55341a05179cecbf1e18d808ae358c9e82a3987ee4b2cb26f640e3028129a",
+      "four_bank_rgb_sha256": "5755c94ee4a1504c719d75ea2e2dc392d50833e27d312e75a9036f430ba9fc13"
+    },
+    {
+      "source_tileset": "kanto",
+      "source_glyph": 34,
+      "target": 239,
+      "source_palette": 0,
+      "pixels_sha256": "01d0e674a7df0091f954d242256d113516d6686d1aeaf9b2653072cc68838ab1",
+      "four_bank_rgb_sha256": "15a458b9eccd18affdaa246f4f15648d090c0becea7fade60f37d08387851a57"
+    },
+    {
+      "source_tileset": "kanto",
+      "source_glyph": 40,
+      "target": 240,
+      "source_palette": 6,
+      "pixels_sha256": "47dc083a20566af0bce2407208efbd4130f026b9ddf15086a747976356aff24b",
+      "four_bank_rgb_sha256": "a536a2102ae93c0877a4e0ac2a6d90f94016c32578e35fb5642a54c2f8333853"
+    },
+    {
+      "source_tileset": "kanto",
+      "source_glyph": 41,
+      "target": 241,
+      "source_palette": 6,
+      "pixels_sha256": "2d98396bb4c2a85f688306b9566de924d2ed46a96a9b932647cb1b249b281f1b",
+      "four_bank_rgb_sha256": "cbbf659f0361b7f622b928f03d9248dbc3968dd6eaa4ecf546bfec9d8c44c0a8"
+    },
+    {
+      "source_tileset": "johto",
+      "source_glyph": 83,
+      "target": 242,
+      "source_palette": 5,
+      "pixels_sha256": "deccb13da5e68b39fd85c559eb10a8e1706951e8ae9d2c32a1f9a3783bfdc58c",
+      "four_bank_rgb_sha256": "90e06626e3f497dcf793896ee47718aff0ad1fdd4b77be80d00ca1d2670c03a4"
+    },
+    {
+      "source_tileset": "johto",
+      "source_glyph": 148,
+      "target": 243,
+      "source_palette": 13,
+      "pixels_sha256": "74966943249088f131aa523e052bbc93bde5c99cab5f02e9b5aff34773a79304",
+      "four_bank_rgb_sha256": "a8483115620106b343228518b4cfa05633a44ec971e23b8654ed18b5968d82f9"
+    },
+    {
+      "source_tileset": "johto",
+      "source_glyph": 150,
+      "target": 244,
+      "source_palette": 13,
+      "pixels_sha256": "5bc029fc39b466c8de9c3d7e47c132bf9681030d82005cb02ea25de3d12301d6",
+      "four_bank_rgb_sha256": "7a971aae6fde7e6f2773b3e917ad2bfe4aca4a95cd61d67a2a3eb48f1ece0919"
+    },
+    {
+      "source_tileset": "johto",
+      "source_glyph": 151,
+      "target": 245,
+      "source_palette": 13,
+      "pixels_sha256": "21908cb68ff2a27d3e74ecbc6c4b1478b31c6c8dd31087c99c26b04dc6e92324",
+      "four_bank_rgb_sha256": "6fe30a6631f5367eb3af42943fc1b2628814e65db12bfe60c1039c656ed95a77"
+    },
+    {
+      "source_tileset": "johto",
+      "source_glyph": 152,
+      "target": 246,
+      "source_palette": 13,
+      "pixels_sha256": "e3924ea3397e908d36a00ac06a57552fe81e268ba973ce49f89f51d867bf2f2f",
+      "four_bank_rgb_sha256": "2ea0eebba5531716915c2f2ae70adeba257035b5410159b0c9eb8d3ddb22d20e"
+    },
+    {
+      "source_tileset": "johto",
+      "source_glyph": 39,
+      "target": 247,
+      "source_palette": 5,
+      "pixels_sha256": "7e83f46922d8b082a15e02658539cdeac671a258ff47e9e5b87c1e8a8986220c",
+      "four_bank_rgb_sha256": "349167010fc41f5bcdf92a179fd54f49d58f7cecb5791177baa230666f809977"
+    },
+    {
+      "source_tileset": "johto",
+      "source_glyph": 40,
+      "target": 248,
+      "source_palette": 5,
+      "pixels_sha256": "fcb071d62154fec07f123a14f75f1f7513c4687c8aa2470ffca35cb0144ac292",
+      "four_bank_rgb_sha256": "633635a739ac3610eca9547aa16e990211479d069741ccd298439136dd9b9330"
+    },
+    {
+      "source_tileset": "johto",
+      "source_glyph": 41,
+      "target": 249,
+      "source_palette": 5,
+      "pixels_sha256": "3e260b69905b0be801d740e12eed9410ede2b939834273a6996eea0bc0f6dfe5",
+      "four_bank_rgb_sha256": "7f85f199f5764e3b21c459543aa3f1ec207a567ef9bc5c5b23ad1163186c41ab"
+    },
+    {
+      "source_tileset": "johto",
+      "source_glyph": 42,
+      "target": 250,
+      "source_palette": 5,
+      "pixels_sha256": "5029908d5d5ea0b9a1be92ece01b9de80985352974750daae6d370382069d7c2",
+      "four_bank_rgb_sha256": "c02319f0a28adcab1c4525720c391661f3440a8074444066fe5196f78045919e"
+    }
+  ],
+  "blocks": [
+    {
+      "target": 157,
+      "glyphs": [
+        224,
+        225,
+        226,
+        226,
+        227,
+        228,
+        229,
+        229,
+        227,
+        228,
+        229,
+        229,
+        227,
+        230,
+        231,
+        231
+      ],
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ]
+    },
+    {
+      "target": 158,
+      "glyphs": [
+        226,
+        226,
+        232,
+        233,
+        229,
+        229,
+        228,
+        234,
+        229,
+        229,
+        228,
+        234,
+        231,
+        231,
+        235,
+        234
+      ],
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ]
+    },
+    {
+      "target": 159,
+      "glyphs": [
+        0,
+        0,
+        0,
+        0,
+        6,
+        0,
+        0,
+        0,
+        224,
+        225,
+        236,
+        236,
+        227,
+        230,
+        231,
+        231
+      ],
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ]
+    },
+    {
+      "target": 160,
+      "glyphs": [
+        0,
+        0,
+        0,
+        0,
+        6,
+        0,
+        0,
+        0,
+        236,
+        236,
+        232,
+        233,
+        231,
+        231,
+        235,
+        234
+      ],
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ]
+    },
+    {
+      "target": 161,
+      "glyphs": [
+        237,
+        238,
+        141,
+        239,
+        132,
+        231,
+        231,
+        231,
+        140,
+        239,
+        142,
+        142,
+        144,
+        145,
+        145,
+        145
+      ],
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ]
+    },
+    {
+      "target": 162,
+      "glyphs": [
+        141,
+        141,
+        240,
+        241,
+        231,
+        231,
+        231,
+        139,
+        160,
+        161,
+        239,
+        146,
+        162,
+        163,
+        145,
+        159
+      ],
+      "collision": [
+        "WALL",
+        "WALL",
+        "DOOR",
+        "WALL"
+      ]
+    },
+    {
+      "target": 163,
+      "glyphs": [
+        141,
+        141,
+        240,
+        241,
+        231,
+        231,
+        231,
+        139,
+        142,
+        142,
+        160,
+        161,
+        145,
+        145,
+        162,
+        163
+      ],
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "DOOR"
+      ]
+    },
+    {
+      "target": 164,
+      "glyphs": [
+        65,
+        242,
+        242,
+        242,
+        81,
+        82,
+        82,
+        82,
+        26,
+        243,
+        0,
+        244,
+        245,
+        246,
+        246,
+        246
+      ],
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ]
+    },
+    {
+      "target": 165,
+      "glyphs": [
+        242,
+        242,
+        242,
+        242,
+        82,
+        82,
+        82,
+        82,
+        247,
+        248,
+        243,
+        0,
+        249,
+        250,
+        246,
+        246
+      ],
+      "collision": [
+        "WALL",
+        "WALL",
+        "DOOR",
+        "WALL"
+      ]
+    },
+    {
+      "target": 166,
+      "glyphs": [
+        16,
+        17,
+        17,
+        17,
+        10,
+        11,
+        11,
+        11,
+        218,
+        220,
+        220,
+        220,
+        218,
+        216,
+        216,
+        216
+      ],
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ]
+    },
+    {
+      "target": 167,
+      "glyphs": [
+        17,
+        17,
+        17,
+        18,
+        11,
+        11,
+        11,
+        12,
+        218,
+        220,
+        220,
+        220,
+        218,
+        216,
+        216,
+        216
+      ],
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ]
+    },
+    {
+      "target": 168,
+      "glyphs": [
+        26,
+        7,
+        7,
+        7,
+        26,
+        38,
+        38,
+        7,
+        26,
+        7,
+        7,
+        7,
+        1,
+        2,
+        2,
+        2
+      ],
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ]
+    },
+    {
+      "target": 169,
+      "glyphs": [
+        7,
+        7,
+        7,
+        28,
+        7,
+        38,
+        38,
+        28,
+        7,
+        7,
+        55,
+        56,
+        2,
+        2,
+        57,
+        58
+      ],
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "DOOR"
+      ]
+    }
+  ],
+  "cells": [
+    {
+      "metatile": [
+        36,
+        3
+      ],
+      "before": 128,
+      "after": 157
+    },
+    {
+      "metatile": [
+        37,
+        3
+      ],
+      "before": 129,
+      "after": 158
+    },
+    {
+      "metatile": [
+        36,
+        4
+      ],
+      "before": 131,
+      "after": 161
+    },
+    {
+      "metatile": [
+        37,
+        4
+      ],
+      "before": 138,
+      "after": 162
+    },
+    {
+      "metatile": [
+        26,
+        7
+      ],
+      "before": 24,
+      "after": 159
+    },
+    {
+      "metatile": [
+        27,
+        7
+      ],
+      "before": 25,
+      "after": 160
+    },
+    {
+      "metatile": [
+        29,
+        7
+      ],
+      "before": 128,
+      "after": 5
+    },
+    {
+      "metatile": [
+        30,
+        7
+      ],
+      "before": 129,
+      "after": 5
+    },
+    {
+      "metatile": [
+        32,
+        7
+      ],
+      "before": 24,
+      "after": 166
+    },
+    {
+      "metatile": [
+        33,
+        7
+      ],
+      "before": 25,
+      "after": 167
+    },
+    {
+      "metatile": [
+        26,
+        8
+      ],
+      "before": 16,
+      "after": 161
+    },
+    {
+      "metatile": [
+        27,
+        8
+      ],
+      "before": 26,
+      "after": 163
+    },
+    {
+      "metatile": [
+        29,
+        8
+      ],
+      "before": 131,
+      "after": 164
+    },
+    {
+      "metatile": [
+        30,
+        8
+      ],
+      "before": 138,
+      "after": 165
+    },
+    {
+      "metatile": [
+        32,
+        8
+      ],
+      "before": 16,
+      "after": 168
+    },
+    {
+      "metatile": [
+        33,
+        8
+      ],
+      "before": 26,
+      "after": 169
+    }
+  ]
+}

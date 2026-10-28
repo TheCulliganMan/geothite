@@ -5,7 +5,7 @@ use bevy::prelude::{Assets, Image};
 
 use super::{
     BevyRuntimeShell, PublishedDestination, RenderedTilesetArt, RuntimeShellSnapshot, TilePosition,
-    connected_render_map_placements_to_depth, source_frame,
+    bridge_source_overlay, connected_render_map_placements_to_depth, source_frame,
 };
 
 pub(super) fn publish(
@@ -68,6 +68,9 @@ pub(super) fn publish(
         images,
     ) {
         Ok(frame) => request.stream_frame = Some(frame),
+        Err(error) if error.is::<bridge_source_overlay::BridgePrewarmUnavailable>() => {
+            request.stream_frame = None;
+        }
         Err(error) => bevy::log::warn!("world coverage source unavailable: {error:#}"),
     }
     previous.stream_key = Some(key);

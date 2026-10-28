@@ -8,6 +8,25 @@ in [world.json](world.json), the milestones in [story.json](story.json) and
 the [Northstar Survey story](STORY.md). Gym room and battle designs are in
 [GYMS.md](GYMS.md). The connected earned journey remains implementation work.
 
+The [current eight-gym rebuild](gyms/current-regional.md) now places the revised
+physical courses in the 554-map story and 660-map compact-city branches. It
+preserves these badge/departure conditions and every existing exterior/story
+field. Local full-course and actual city-return checks are distinct from the
+still-unearned complete regional journey described below.
+
+The [fresh controller course](playable/minneapolis.md#new-game-through-two-badges-and-ice--2026-10-27)
+earns Care, Prairie and ICE rescue/dispatch from Winona New Game on the 554-map
+Ely story parent. Actual saved continuations now earn
+[Current and St. Paul arrival](playable/gym-four-approach.md#earned-current-and-st-paul-arrival--2026-10-27),
+then [courier victory, the separate manifest, Capitol and return](playable/courier-story.md#earned-courier-capitol-and-minneapolis-return--2026-10-27).
+Captured/leveled partners, clinic recovery and Continue are real inputs. The
+recorded campaign ends in Minneapolis with four badges; Wind onward remains
+unproven. The later selected-gym/species relay candidate now has its own
+[fresh opening and saved four-badge continuations](playable/northstar-relay.md#earned-revised-gym-campaign--2026-10-27):
+Care/Prairie/ICE, Current/R04, then the courier's separate manifest, Capitol and
+return to Minneapolis. Its new saves bind that exact candidate; the earlier
+lineage is never relabeled. Wind onward remains open on both branches.
+
 ## Main journey
 
 ```mermaid
@@ -196,8 +215,11 @@ One New Game Cyndaquil journey with a real caught partner now earns Care and
 continues over actual stdio; another live-RNG attempt blacked out at Varel.
 The [prairie chapter](playable/prairie-story.md) now binds R02/Mankato and the
 optional notebook with local controller, Continue and actual stdio proof.
-Its setup supplies Care and an empty party; the strict earned chapter audit
-remains unresolved before R02. The [river successor](playable/river-cities.md)
+Its local setup supplies Care and an empty party. The later
+[fresh relay campaign](playable/northstar-relay.md#earned-revised-gym-campaign--2026-10-27)
+earns Care, the notebook, Prairie and both Twin Cities chapters with one actual
+party; it reaches four badges without supplied progression. The full earned
+journey beyond Wind remains open. The [river successor](playable/river-cities.md)
 now binds R03/Minneapolis: local continuous courses earn badges2/3, or play the
 ICE win/rescue/record and return without badge3. These supply a strong initial
 party and prior badges. The [courier successor](playable/courier-story.md) now
@@ -253,3 +275,40 @@ prerequisites come from the played regional save. Chief victory alone leaves
 the League checkpoint closed; only the separate acknowledged receiver action
 opens it. The test traverses the entire road and saves/Continues at the Ely
 frontier. Ely/League publication and fresh-start party balance remain open.
+
+
+## Ely and League native successor — 2026-10-27
+
+The separate [554-map Ely/League successor](playable/ely-league.md) now implements
+Ely's whole rest camp, free clinic/PC, priced supplies, the authentic Ilex Forest
+gatehouse registration lobby, five native battles and separate Hall of Fame
+recording/credits. Registration checks all eight badges and survey restoration;
+withdrawal/blackout reset only the active run. Continue returns to Ely, and
+rematch registration preserves championship and recorded parties.
+
+Five controller cases, two preservation cases, both actual stdio replays and
+all377 audio checks pass. The League course uses explicit prior access, Mew100
+and carried medicine; those are fixtures rather than earned Winona progression.
+Earlier544-map earned-finale evidence remains on its own save identity. A fresh
+full campaign and ordinary-party balance remain open. The newer relay's native
+monitor scene is verified separately; a field apparition and pump animation
+remain open. Existing villain/cabin/gatehouse content is preserved.
+
+The [user-authorized level-75 review](playable/northstar-relay.md#user-authorized-level-75-story-review--2026-10-27)
+now continues a real supplies-pack two-badge save through both evidence
+chapters, Current/Capitol/Wind, Brainerd, Lake's two dock settings and the
+separate ranger report/Surf. The native starter gains level 76 during the
+played sixth gym. No later reading/report, custody, depot, harbor or relay
+flag is supplied. Actual stdio evidence scenes and Brainerd return pass with
+empty stderr. The same party now earns Pine through the actual Cut gift and
+both hedges, then the separate Itasca reading and officer comparison. The
+complete stdio gatehouse/report/R09 round trip also passes after fixing compact
+status for visible native escape notices. The same party now wins the foreman,
+separately recovers the meter and hands it to the depot, earns Harbor and all
+ten signal pages, walks the coast through Ryan's optional cabin and the native
+gatehouse, defeats the chief, and operates the separate receiver. Picture
+Continue, acknowledged console shutdown and the reopened R13 trail pass. After
+a third-League-match loss, the user-authorized review minimum rises to 100.
+The final three matches, native Hall of Fame, credits and postgame Continue
+pass with this same party. Neither level boost supplies a quest result or
+League win; this does not establish unboosted balance.

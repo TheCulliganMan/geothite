@@ -1,0 +1,386 @@
+{
+  "schema_version": 2,
+  "id": "MnMoorhead",
+  "tileset": "johto_modern",
+  "compiled_tileset": "johto_modern",
+  "dimensions_metatiles": [
+    16,
+    12
+  ],
+  "coordinate_units": "32px native metatiles; explicit source placement",
+  "shore_fitting": "explicit_source_edges",
+  "reject_cliff_cuts": true,
+  "source_pixels_modified": false,
+  "derived_blocks": [],
+  "materials": {
+    "floor": "06",
+    "lawn": "00",
+    "forest": "05",
+    "water": "35",
+    "sign": "45"
+  },
+  "layers": [
+    {
+      "name": "Closed prairie canopy",
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        0,
+        16,
+        12
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Red River visible beyond the levee",
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        0,
+        4,
+        12
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Native stone riverbank",
+      "kind": "block_rect",
+      "bounds": [
+        4,
+        0,
+        5,
+        12
+      ],
+      "block": "36"
+    },
+    {
+      "name": "Public neighborhood",
+      "kind": "block_rect",
+      "bounds": [
+        6,
+        1,
+        15,
+        11
+      ],
+      "block": "00"
+    },
+    {
+      "name": "Continuous flood levee railing",
+      "kind": "block_rect",
+      "bounds": [
+        5,
+        1,
+        6,
+        11
+      ],
+      "block": "44"
+    },
+    {
+      "name": "Public levee walk",
+      "kind": "block_rect",
+      "bounds": [
+        6,
+        1,
+        7,
+        11
+      ],
+      "block": "06"
+    },
+    {
+      "name": "Two-tile prairie service street",
+      "kind": "block_rect",
+      "bounds": [
+        6,
+        6,
+        16,
+        7
+      ],
+      "block": "06"
+    },
+    {
+      "name": "Clinic footpath",
+      "kind": "block_rect",
+      "bounds": [
+        8,
+        4,
+        9,
+        7
+      ],
+      "block": "06"
+    },
+    {
+      "name": "Levee to clinic",
+      "kind": "block_rect",
+      "bounds": [
+        6,
+        4,
+        9,
+        5
+      ],
+      "block": "06"
+    },
+    {
+      "name": "Pickup court",
+      "kind": "block_rect",
+      "bounds": [
+        9,
+        6,
+        12,
+        8
+      ],
+      "block": "06"
+    },
+    {
+      "name": "Clinic native facade",
+      "kind": "point",
+      "position": [
+        8,
+        2
+      ],
+      "block": "18"
+    },
+    {
+      "name": "Clinic native facade",
+      "kind": "point",
+      "position": [
+        9,
+        2
+      ],
+      "block": "19"
+    },
+    {
+      "name": "Clinic native facade",
+      "kind": "point",
+      "position": [
+        8,
+        3
+      ],
+      "block": "1a"
+    },
+    {
+      "name": "Clinic native facade",
+      "kind": "point",
+      "position": [
+        9,
+        3
+      ],
+      "block": "1b"
+    },
+    {
+      "name": "Mart native facade",
+      "kind": "point",
+      "position": [
+        12,
+        4
+      ],
+      "block": "18"
+    },
+    {
+      "name": "Mart native facade",
+      "kind": "point",
+      "position": [
+        13,
+        4
+      ],
+      "block": "19"
+    },
+    {
+      "name": "Mart native facade",
+      "kind": "point",
+      "position": [
+        12,
+        5
+      ],
+      "block": "1a"
+    },
+    {
+      "name": "Mart native facade",
+      "kind": "point",
+      "position": [
+        13,
+        5
+      ],
+      "block": "33"
+    },
+    {
+      "name": "River marker",
+      "kind": "point",
+      "position": [
+        6,
+        2
+      ],
+      "block": "45"
+    },
+    {
+      "name": "Town welcome",
+      "kind": "point",
+      "position": [
+        14,
+        5
+      ],
+      "block": "45"
+    },
+    {
+      "name": "Community starts raised bed",
+      "kind": "point",
+      "position": [
+        11,
+        8
+      ],
+      "block": "08"
+    },
+    {
+      "name": "Second tray",
+      "kind": "point",
+      "position": [
+        12,
+        8
+      ],
+      "block": "08"
+    },
+    {
+      "name": "Planted flower patch",
+      "kind": "point",
+      "position": [
+        7,
+        1
+      ],
+      "block": "04"
+    },
+    {
+      "name": "Planted flower patch",
+      "kind": "point",
+      "position": [
+        10,
+        1
+      ],
+      "block": "04"
+    },
+    {
+      "name": "Planted flower patch",
+      "kind": "point",
+      "position": [
+        7,
+        3
+      ],
+      "block": "04"
+    },
+    {
+      "name": "Planted flower patch",
+      "kind": "point",
+      "position": [
+        10,
+        3
+      ],
+      "block": "04"
+    },
+    {
+      "name": "Planted flower patch",
+      "kind": "point",
+      "position": [
+        9,
+        9
+      ],
+      "block": "04"
+    },
+    {
+      "name": "Planted flower patch",
+      "kind": "point",
+      "position": [
+        13,
+        9
+      ],
+      "block": "04"
+    },
+    {
+      "name": "Planted flower patch",
+      "kind": "point",
+      "position": [
+        14,
+        2
+      ],
+      "block": "04"
+    },
+    {
+      "name": "Closed garden/back fence canopy",
+      "kind": "point",
+      "position": [
+        10,
+        10
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Closed garden/back fence canopy",
+      "kind": "point",
+      "position": [
+        11,
+        10
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Closed garden/back fence canopy",
+      "kind": "point",
+      "position": [
+        12,
+        10
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Closed garden/back fence canopy",
+      "kind": "point",
+      "position": [
+        14,
+        8
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Closed garden/back fence canopy",
+      "kind": "point",
+      "position": [
+        14,
+        9
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Closed garden/back fence canopy",
+      "kind": "point",
+      "position": [
+        14,
+        10
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Closed garden/back fence canopy",
+      "kind": "point",
+      "position": [
+        13,
+        1
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Closed garden/back fence canopy",
+      "kind": "point",
+      "position": [
+        14,
+        1
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Closed garden/back fence canopy",
+      "kind": "point",
+      "position": [
+        14,
+        3
+      ],
+      "block": "05"
+    }
+  ]
+}

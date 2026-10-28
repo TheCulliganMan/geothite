@@ -1,0 +1,13 @@
+{
+  "prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f051/prompt-thundraze-profile-pupil-pitch-v6.txt",
+  "input_images": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f051/thundraze.overworld.imagegen-v3-profile-eyes.png",
+      "sha256": "be39cd0869b933345054acf320836ea8ec39a4cdd334fb64543201cf158c9010"
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/references/native-pack-16px/native-six-frame-style-board.8x.png",
+      "sha256": "4354a639ed1a80fd6686e43b273443ed894e58a84307a8049f638ee9ffa2a099"
+    }
+  ]
+}

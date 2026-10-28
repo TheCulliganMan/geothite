@@ -154,14 +154,14 @@
   "endpoints": [
     {
       "place": "GRAND MARAIS",
-      "side": "N",
+      "side": "E",
       "gate_metatile": [
-        20,
-        1
+        55,
+        4
       ],
       "landing_metatile": [
-        20,
-        3
+        53,
+        4
       ]
     },
     {
@@ -1734,8 +1734,8 @@
     "shortcut": "MN_R11_SHORTCUT no longer used: previous tree removal did not prove a sealed useful area. No decorative Cut remains.",
     "chunks": "Retain MnR11C00R00..02; retire nine superseded chunks from the previous 64\u00d7144 extent."
   },
-  "status": "IMMUTABLE SOURCE CANDIDATE; expanded native publication/controller acceptance pending",
-  "anchor_status": "Exact existing native actors, doors, parties and story preserved; terrain-only geography revision and current production-controller proof recorded in playable/geography-revisions.md.",
+  "status": "MATCHES_COMPOSED_NATIVE_GEOGRAPHY",
+  "anchor_status": "Original native actors/doors/parties retained; west-entry terrain and connected Foot/Surf verified. See revisions/north-shore-ely-geography-v01/VERIFICATION.md.",
   "historical_evidence_note": "2026-10-25native401-map publication and captures apply only to the previous64\u00d7144overlay, not this revision.",
   "waterfall_summit": {
     "water_arrival": [
@@ -2585,5 +2585,24 @@
     ],
     "interior": "MnRyansHouse",
     "purpose": "Optional enterable personal cabin reached from the existing walking bank; waterfall remains visible and the main route remains intact."
+  },
+  "compiled_tileset": "mn_north_shore",
+  "warm_coast_restoration_review": {
+    "status": "COMPOSED_NATIVE_WARM_WEST_ENTRY",
+    "instruction": "North Shore and Grand Marais stay warm on Lake Superior; winter moves inland near Ely.",
+    "reference_pack_sha256": "2b2887fd056d507d85ac5d2b8861e92559d8679cf11902f63c42f270d617842d",
+    "preimage_baseline_pack_sha256": "3ddbad16c6538e52f219c12497e4fbe6e41a7f18af5c42589b7b92357cfad243",
+    "preserved": "Original warm restoration plus306 bounded terminal headland cells; original actors/programs/falls/stairs/ledges retained, obsolete north port closed and west-town connection installed.",
+    "source_policy": "Canonical warm strokes plus exact frozen west-entry headland edits; source raster is checked against every final R11 chunk.",
+    "publication_identity": "f34280a5fc5d6ab8ccc3ec4ef4317a6ea9321070df342ea95aca5745514a0223",
+    "west_entry_geography": "Native C01R00 east to town west offset0; former C00R00 north port visibly closed. Lake Superior shared water core rows16..35."
+  },
+  "native_geography_publication": {
+    "final_pack_sha256": "65cf6f98e65ada839ec5afaa57728bf8289d3a50ba53ba6b9b50f08d3620bb17",
+    "content_identity": "f34280a5fc5d6ab8ccc3ec4ef4317a6ea9321070df342ea95aca5745514a0223",
+    "source_contract": "revisions/north-shore-ely-geography-v01/geography/native-west-v02/contract.json",
+    "source_contract_sha256": "ee195bcfc318fa55e5c31d6f37f75ebbf1bb033760c98267303bc46a6beecc5c",
+    "verification": "revisions/north-shore-ely-geography-v01/VERIFICATION.md",
+    "progression_scope": "Local explicit fixtures and production inputs; earned campaign progression is not established."
   }
 }

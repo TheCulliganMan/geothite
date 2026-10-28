@@ -1,0 +1,12 @@
+{
+  "tool": "built-in image_gen",
+  "default_source": "/Users/ryanculligan/.codex/generated_images/01a178da-4cf1-7e01-8516-667a332dc790/exec-2845eb35-7598-406a-830d-a02a678f596d.png",
+  "canonical_battle_identity_reviewed": "target/minnesota-pokemon/native/MN_F004/line.review.png",
+  "reason": "Proportion audit: accepted front13x10/80px vs Portabeau14x12/125px; broaden adult body while preserving voyageur beaver canonical identity.",
+  "preserved_hashes": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f004/voyagear.overworld.imagegen-v5-bulk.png": "766f89db3a290fe6ad787f823e06617011f31978b227ecea26f4398ac053b7d1",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f004/voyagear.prompt-v5-bulk.txt": "d8fc96746c3075a3f157b8e9ab4bb6977041c2d612a587981b6bd33b7b99a5b4",
+    "planning/minnesota/pokemon/overworld/20261027-v1/references/native-pack-16px/native-six-frame-style-board.8x.png": "4354a639ed1a80fd6686e43b273443ed894e58a84307a8049f638ee9ffa2a099"
+  },
+  "status": "candidate source; native/source proof and comparison pending; previous selected assets retained"
+}

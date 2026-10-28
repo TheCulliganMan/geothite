@@ -1,5 +1,15 @@
 # Minnesota Pokémon
 
+Current publication: **224 active species / 101 families / 90 cut proposals**.
+Release `20261027-overworld-224-18` is live in the
+[Northwoods Pokédex](https://geothite.ryanculligan.com/pokedex/), with animated
+normal/shiny walking thumbnails and cry buttons for every active species.
+The [complete overworld overlay](overworld/20261027-v1/README.md) contains all
+224 reviewed six-pose 16×16 sets, shared with the field and battle PKMN menus.
+The full local pack has been compiled, reopened and tested; original and rejected
+renders are preserved. Earlier publication/count paragraphs below retain their
+historical roster snapshots.
+
 [Sticky-note restoration](../../../docs/northwoods-sticky-notes.md) is published as `20261027-sticky-13`: LINE087 Jotlet → Memofold → Recallisk grows from one → three → seven living sticky-note sheets, all pure Psychic. The roster has **223 active species / 101 families / 90 cut proposals**, with 313 source species. The final ignored pack has **474 species / 270 moves**; full pack balance, web integration and all three native production tests pass. Only this family's 12 exported sprite PNGs change; other 1,240 sprites and all 152 animation assets match retained release12. All six normal/shiny battle captures are accepted. Deployment/root-health checks and all 2,038 exact public-byte plus six status checks pass.
 
 Retained animation release `20261027-northwoods-12` is published: all nineteen added moves have native Gen II animations, 76 side/shiny variants and 141 genuinely learned previews across species pages. The 220-species Fairy v2 roster and all 1,252 sprite PNGs from sprite publication11 are preserved. [Animation build and verification](../../../docs/northwoods-move-animations.md) describe the completed native/controller/web checks.

@@ -1,0 +1,217 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_220",
+  "result": "pass",
+  "manifest_sha256": "d919fad76e546ec24e6240542fbead7a8f9e068cb6475ff9db1540ea4c99e4a8",
+  "bank_sha256": "ffa1bf3536dac2b36aee3074c61fcacf1fb65ec6c10a9b06df3a59d804a8facd",
+  "source_sha256": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f101/beetynamo.overworld.imagegen-v5-broad-front-face.png": "c1e4a3b117ee118f831ec71add68dbad409bb67d90563afa5e1c563d9ffda290",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f101/beetynamo.overworld.imagegen-v2-four-rootfeet.png": "785463c6f894ce63d3618e7b18dc526a4d95036725cf448f918abd2f0bd09b1c",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f101/beetynamo.overworld.imagegen-v4-restore-ink.png": "34d993047b4fd4ff03d38895330fba769538fc9134b2d1640a53c29688219fcb"
+  },
+  "canonical_eye_form": "Two isolated actual black pupil dots south and one isolated actual black pupil west; source eye components verified in all four nonrear poses.",
+  "nonrear_poses": [
+    {
+      "pose": "down_idle",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            6,
+            6
+          ],
+          "source_sample": [
+            257,
+            237
+          ],
+          "source_component": [
+            253,
+            231,
+            30,
+            28
+          ],
+          "component_pixels": 840,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            3,
+            3,
+            1,
+            253
+          ]
+        },
+        {
+          "native": [
+            8,
+            6
+          ],
+          "source_sample": [
+            315,
+            237
+          ],
+          "source_component": [
+            314,
+            231,
+            30,
+            28
+          ],
+          "component_pixels": 831,
+          "native_neighbors": [
+            1,
+            2,
+            2,
+            1
+          ],
+          "source_rgba": [
+            5,
+            5,
+            3,
+            253
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            4,
+            6
+          ],
+          "source_sample": [
+            1171,
+            230
+          ],
+          "source_component": [
+            1144,
+            202,
+            31,
+            31
+          ],
+          "component_pixels": 961,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            7,
+            7,
+            3,
+            254
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            6,
+            6
+          ],
+          "source_sample": [
+            257,
+            647
+          ],
+          "source_component": [
+            253,
+            641,
+            30,
+            27
+          ],
+          "component_pixels": 810,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            3,
+            3,
+            1,
+            253
+          ]
+        },
+        {
+          "native": [
+            8,
+            6
+          ],
+          "source_sample": [
+            315,
+            647
+          ],
+          "source_component": [
+            314,
+            641,
+            30,
+            27
+          ],
+          "component_pixels": 810,
+          "native_neighbors": [
+            1,
+            2,
+            2,
+            1
+          ],
+          "source_rgba": [
+            4,
+            3,
+            3,
+            253
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            4,
+            6
+          ],
+          "source_sample": [
+            1171,
+            640
+          ],
+          "source_component": [
+            1145,
+            615,
+            30,
+            29
+          ],
+          "component_pixels": 870,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            7,
+            6,
+            1,
+            254
+          ]
+        }
+      ]
+    }
+  ],
+  "rear_anatomy": {
+    "result": "pass",
+    "notes": "Both rears viewed normal/shiny: plain upper-root nape and purple leaf terminals, one genuinely transparent root-ring opening, four authored soil-contact rootfeet. No copied face or eye-like pairs on back. Source hybrid retains four-foot rear v2, restored opaque profile v4 and broadened exposed south face v5. Actual native south14x11, west12x12 under a shared14px transform; no independent native rescale."
+  }
+}

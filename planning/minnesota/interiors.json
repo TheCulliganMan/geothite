@@ -311,7 +311,8 @@
         24
       ],
       "exterior_warp_index": 5,
-      "exterior_return_warp_index": 6
+      "exterior_return_warp_index": 6,
+      "revision_source_file": "gyms/rochester-gates.json"
     },
     {
       "interior": "MnMankatoPokecenter1F",
@@ -400,7 +401,7 @@
         6,
         19
       ],
-      "exterior_door_status": "Native facade, passive arrival and both carpets published and production-controller verified. See playable/mankato.md.",
+      "exterior_door_status": "Published sand-terrace revision: visible stairs behind wooden gates, required native downward hop, ordinary retreat and both unchanged city carpets. Literal Bayleef/Pidgey course and native hop views pass; see gyms/mankato-terraces.md.",
       "reserved_town_district": "west upper terrace",
       "requires_real_collision_check": true,
       "source_file": "towns/MnMankato.json",
@@ -425,7 +426,8 @@
         12
       ],
       "exterior_warp_index": 5,
-      "exterior_return_warp_index": 6
+      "exterior_return_warp_index": 6,
+      "revision_source_file": "gyms/mankato-terraces.json"
     },
     {
       "interior": "MnMinneapolisPokecenter1F",
@@ -452,12 +454,12 @@
         ]
       ],
       "exterior_door_core": [
-        77,
-        35
+        63,
+        25
       ],
       "exterior_safe_return_core": [
-        77,
-        36
+        63,
+        26
       ],
       "interior_passive_arrival_warp": 3,
       "arrival_warp_index": 3,
@@ -491,12 +493,12 @@
         ]
       ],
       "exterior_door_core": [
-        87,
-        39
+        73,
+        25
       ],
       "exterior_safe_return_core": [
-        87,
-        40
+        73,
+        26
       ],
       "interior_passive_arrival_warp": 3,
       "arrival_warp_index": 3,
@@ -530,19 +532,20 @@
         ]
       ],
       "exterior_door_core": [
-        74,
-        47
+        64,
+        33
       ],
       "exterior_safe_return_core": [
-        74,
-        48
+        64,
+        34
       ],
       "interior_passive_arrival_warp": 3,
       "arrival_warp_index": 3,
       "exterior_warp_index": 3,
       "exterior_return_warp_index": 4,
       "source_file": "towns/MnMinneapolis.json",
-      "source_room_id": "MnMinneapolisGym"
+      "source_room_id": "MnMinneapolisGym",
+      "revision_source_file": "gyms/minneapolis-circuit.json"
     },
     {
       "interior": "MnStPaulPokecenter1F",
@@ -610,12 +613,12 @@
       ],
       "arrival_warp_index": 3,
       "exterior_door_core": [
-        45,
-        47
+        25,
+        33
       ],
       "exterior_safe_return_core": [
-        45,
-        48
+        25,
+        34
       ],
       "exterior_warp_index": 5,
       "exterior_return_warp_index": 6
@@ -648,15 +651,16 @@
       ],
       "arrival_warp_index": 3,
       "exterior_door_core": [
-        102,
-        41
+        48,
+        31
       ],
       "exterior_safe_return_core": [
-        102,
-        42
+        48,
+        32
       ],
       "exterior_warp_index": 9,
-      "exterior_return_warp_index": 10
+      "exterior_return_warp_index": 10,
+      "revision_source_file": "gyms/st-paul-loop.json"
     },
     {
       "interior": "MnStCloudPokecenter1F",
@@ -770,7 +774,8 @@
         28
       ],
       "exterior_warp_index": 5,
-      "exterior_return_warp_index": 6
+      "exterior_return_warp_index": 6,
+      "revision_source_file": "gyms/st-cloud-arrows.json"
     },
     {
       "interior": "MnBrainerdPokecenter1F",
@@ -883,7 +888,10 @@
         36
       ],
       "exterior_warp_index": 5,
-      "exterior_return_warp_index": 6
+      "exterior_return_warp_index": 6,
+      "revision_source_file": "gyms/brainerd-winch.json",
+      "arrival_warp_index": 3,
+      "interior_passive_arrival_warp": 3
     },
     {
       "interior": "MnBemidjiPokecenter1F",
@@ -974,7 +982,20 @@
       ],
       "exterior_door_status": "Select a complete authenticated source facade, then freeze its core door and safe exterior floor in this record before export.",
       "reserved_town_district": "west civic street",
-      "requires_real_collision_check": true
+      "requires_real_collision_check": true,
+      "revision_source_file": "gyms/bemidji-return.json",
+      "arrival_warp_index": 3,
+      "interior_passive_arrival_warp": 3,
+      "return_triggers_core": [
+        [
+          4,
+          19
+        ],
+        [
+          5,
+          19
+        ]
+      ]
     },
     {
       "interior": "MnGrandRapidsPokecenter1F",
@@ -1204,7 +1225,8 @@
         36
       ],
       "exterior_warp_index": 3,
-      "exterior_return_warp_index": 4
+      "exterior_return_warp_index": 4,
+      "revision_source_file": "gyms/duluth-gold-gates.json"
     },
     {
       "interior": "MnDuluthHarborWorkshop",
@@ -1263,133 +1285,341 @@
       "interior": "MnElyPokecenter1F",
       "parent": "MnEly",
       "arrival_core": [
-        10,
-        13
+        3,
+        5
       ],
       "return_trigger_core": [
-        10,
-        15
+        3,
+        7
       ],
-      "exterior_door_status": "Select a complete authenticated source facade, then freeze its core door and safe exterior floor in this record before export.",
-      "reserved_town_district": "north clinic/shop street",
-      "requires_real_collision_check": true
+      "exterior_door_status": "Native candidate uses exact DOOR quadrants and distinct FLOOR returns; see playable/ely-league.md for gameplay status.",
+      "requires_real_collision_check": true,
+      "arrival_warp_index": 3,
+      "return_triggers_core": [
+        [
+          3,
+          7
+        ],
+        [
+          4,
+          7
+        ]
+      ],
+      "exterior_door_core": [
+        11,
+        21
+      ],
+      "exterior_return_core": [
+        11,
+        22
+      ],
+      "source_file": "towns/MnEly.json"
     },
     {
       "interior": "MnElyMart",
       "parent": "MnEly",
       "arrival_core": [
-        6,
+        2,
         5
       ],
       "return_trigger_core": [
-        6,
+        2,
         7
       ],
-      "exterior_door_status": "Select a complete authenticated source facade, then freeze its core door and safe exterior floor in this record before export.",
-      "reserved_town_district": "east residential street",
-      "requires_real_collision_check": true
+      "exterior_door_status": "Native candidate uses exact DOOR quadrants and distinct FLOOR returns; see playable/ely-league.md for gameplay status.",
+      "requires_real_collision_check": true,
+      "arrival_warp_index": 3,
+      "return_triggers_core": [
+        [
+          2,
+          7
+        ],
+        [
+          3,
+          7
+        ]
+      ],
+      "exterior_door_core": [
+        27,
+        27
+      ],
+      "exterior_return_core": [
+        27,
+        28
+      ],
+      "source_file": "towns/MnEly.json"
     },
     {
       "interior": "MnLeagueLobby",
       "parent": "MnEly",
       "arrival_core": [
-        10,
-        13
+        1,
+        4
       ],
       "return_trigger_core": [
-        10,
-        15
+        0,
+        4
       ],
-      "exterior_door_status": "Select a complete authenticated source facade, then freeze its core door and safe exterior floor in this record before export.",
-      "reserved_town_district": "west civic street",
-      "requires_real_collision_check": true
+      "exterior_door_status": "Native candidate uses exact DOOR quadrants and distinct FLOOR returns; see playable/ely-league.md for gameplay status.",
+      "requires_real_collision_check": true,
+      "arrival_warp_index": 5,
+      "return_triggers_core": [
+        [
+          0,
+          4
+        ],
+        [
+          0,
+          5
+        ],
+        [
+          9,
+          4
+        ],
+        [
+          9,
+          5
+        ]
+      ],
+      "exterior_door_core": [
+        25,
+        13
+      ],
+      "exterior_return_core": [
+        25,
+        14
+      ],
+      "source_file": "towns/MnEly.json"
     },
     {
       "interior": "MnLeagueRoom1",
       "parent": "MnLeagueLobby",
       "arrival_core": [
-        10,
-        13
+        4,
+        16
       ],
       "return_core": [
-        10,
-        15
+        4,
+        17
       ],
       "forward_core": [
-        10,
-        1
+        4,
+        2
       ],
       "forward_requires": "LEAGUE_RUN_WIN_1",
-      "behavior": "League lobby controls active run. Loss returns to a registered Minnesota recovery center."
+      "behavior": "Native five-battle candidate; active run and completed-room count persist through Continue. Lobby/blackout reset only the run; badges, survey and Hall of Fame history survive.",
+      "arrival_warp_indices": [
+        5,
+        6
+      ],
+      "return_triggers_core": [
+        [
+          4,
+          17
+        ],
+        [
+          5,
+          17
+        ]
+      ],
+      "forward_triggers_core": [
+        [
+          4,
+          2
+        ],
+        [
+          5,
+          2
+        ]
+      ],
+      "forward_return_warp_indices": [
+        7,
+        8
+      ]
     },
     {
       "interior": "MnLeagueRoom2",
       "parent": "MnLeagueRoom1",
       "arrival_core": [
-        10,
-        13
+        4,
+        16
       ],
       "return_core": [
-        10,
-        15
+        4,
+        17
       ],
       "forward_core": [
-        10,
-        1
+        4,
+        2
       ],
       "forward_requires": "LEAGUE_RUN_WIN_2",
-      "behavior": "League lobby controls active run. Loss returns to a registered Minnesota recovery center."
+      "behavior": "Native five-battle candidate; active run and completed-room count persist through Continue. Lobby/blackout reset only the run; badges, survey and Hall of Fame history survive.",
+      "arrival_warp_indices": [
+        5,
+        6
+      ],
+      "return_triggers_core": [
+        [
+          4,
+          17
+        ],
+        [
+          5,
+          17
+        ]
+      ],
+      "forward_triggers_core": [
+        [
+          4,
+          2
+        ],
+        [
+          5,
+          2
+        ]
+      ],
+      "forward_return_warp_indices": [
+        7,
+        8
+      ]
     },
     {
       "interior": "MnLeagueRoom3",
       "parent": "MnLeagueRoom2",
       "arrival_core": [
-        10,
-        13
+        4,
+        16
       ],
       "return_core": [
-        10,
-        15
+        4,
+        17
       ],
       "forward_core": [
-        10,
-        1
+        4,
+        2
       ],
       "forward_requires": "LEAGUE_RUN_WIN_3",
-      "behavior": "League lobby controls active run. Loss returns to a registered Minnesota recovery center."
+      "behavior": "Native five-battle candidate; active run and completed-room count persist through Continue. Lobby/blackout reset only the run; badges, survey and Hall of Fame history survive.",
+      "arrival_warp_indices": [
+        5,
+        6
+      ],
+      "return_triggers_core": [
+        [
+          4,
+          17
+        ],
+        [
+          5,
+          17
+        ]
+      ],
+      "forward_triggers_core": [
+        [
+          4,
+          2
+        ],
+        [
+          5,
+          2
+        ]
+      ],
+      "forward_return_warp_indices": [
+        7,
+        8
+      ]
     },
     {
       "interior": "MnLeagueRoom4",
       "parent": "MnLeagueRoom3",
       "arrival_core": [
-        10,
-        13
+        4,
+        16
       ],
       "return_core": [
-        10,
-        15
+        4,
+        17
       ],
       "forward_core": [
-        10,
-        1
+        4,
+        2
       ],
       "forward_requires": "LEAGUE_RUN_WIN_4",
-      "behavior": "League lobby controls active run. Loss returns to a registered Minnesota recovery center."
+      "behavior": "Native five-battle candidate; active run and completed-room count persist through Continue. Lobby/blackout reset only the run; badges, survey and Hall of Fame history survive.",
+      "arrival_warp_indices": [
+        5,
+        6
+      ],
+      "return_triggers_core": [
+        [
+          4,
+          17
+        ],
+        [
+          5,
+          17
+        ]
+      ],
+      "forward_triggers_core": [
+        [
+          4,
+          2
+        ],
+        [
+          5,
+          2
+        ]
+      ],
+      "forward_return_warp_indices": [
+        7,
+        8
+      ]
     },
     {
       "interior": "MnLeagueChampion",
       "parent": "MnLeagueRoom4",
       "arrival_core": [
-        10,
-        13
+        4,
+        22
       ],
       "return_core": [
-        10,
-        15
+        4,
+        23
       ],
-      "forward_core": null,
-      "forward_requires": "EVENT_MN_LEAGUE_CHAMPION",
-      "behavior": "League lobby controls active run. Loss returns to a registered Minnesota recovery center."
+      "forward_core": [
+        4,
+        1
+      ],
+      "forward_requires": "LEAGUE_RUN_WIN_5",
+      "behavior": "Native five-battle candidate; active run and completed-room count persist through Continue. Lobby/blackout reset only the run; badges, survey and Hall of Fame history survive.",
+      "arrival_warp_indices": [
+        5,
+        6
+      ],
+      "return_triggers_core": [
+        [
+          4,
+          23
+        ],
+        [
+          5,
+          23
+        ]
+      ],
+      "forward_triggers_core": [
+        [
+          4,
+          1
+        ],
+        [
+          5,
+          1
+        ]
+      ],
+      "forward_return_warp_indices": [
+        7,
+        8
+      ]
     },
     {
       "interior": "MnDetroitLakesPokecenter1F",
@@ -1402,7 +1632,7 @@
         8,
         15
       ],
-      "exterior_door_status": "Exact authored native DOOR quadrant and reciprocal passive FLOOR contract; consult city runbook for publication/controller status.",
+      "exterior_door_status": "Native facade, passive arrival and both carpets published and production-controller verified; see interior-life/DETROIT-LAKES.md. Glacier Line rides remain unfinished.",
       "reserved_town_district": "north clinic/shop street",
       "requires_real_collision_check": true,
       "source_file": "towns/MnDetroitLakes.json",
@@ -1440,7 +1670,7 @@
         2,
         7
       ],
-      "exterior_door_status": "Exact authored native DOOR quadrant and reciprocal passive FLOOR contract; consult city runbook for publication/controller status.",
+      "exterior_door_status": "Native facade, passive arrival and both carpets published and production-controller verified; see interior-life/DETROIT-LAKES.md. Glacier Line rides remain unfinished.",
       "reserved_town_district": "east residential street",
       "requires_real_collision_check": true,
       "source_file": "towns/MnDetroitLakes.json",
@@ -1471,31 +1701,77 @@
       "interior": "MnMoorheadPokecenter1F",
       "parent": "MnMoorhead",
       "arrival_core": [
-        10,
-        13
+        3,
+        6
       ],
       "return_trigger_core": [
-        10,
-        15
+        3,
+        7
       ],
-      "exterior_door_status": "Select a complete authenticated source facade, then freeze its core door and safe exterior floor in this record before export.",
+      "exterior_door_status": "Published complete native facade/passive arrival/two carpet contracts; production returns and full native frames pass. See interior-life/MOORHEAD.md.",
       "reserved_town_district": "north clinic/shop street",
-      "requires_real_collision_check": true
+      "requires_real_collision_check": true,
+      "return_triggers_core": [
+        [
+          3,
+          7
+        ],
+        [
+          4,
+          7
+        ]
+      ],
+      "arrival_warp_index": 3,
+      "exterior_door_core": [
+        17,
+        7
+      ],
+      "exterior_safe_return_core": [
+        17,
+        8
+      ],
+      "exterior_warp_index": 1,
+      "exterior_return_warp_index": 2,
+      "source_file": "towns/MnMoorhead.json",
+      "source_room_id": "MnMoorheadPokecenter1F"
     },
     {
       "interior": "MnMoorheadMart",
       "parent": "MnMoorhead",
       "arrival_core": [
-        6,
-        5
+        3,
+        6
       ],
       "return_trigger_core": [
-        6,
+        2,
         7
       ],
-      "exterior_door_status": "Select a complete authenticated source facade, then freeze its core door and safe exterior floor in this record before export.",
+      "exterior_door_status": "Published complete native facade/passive arrival/two carpet contracts; production returns and full native frames pass. See interior-life/MOORHEAD.md.",
       "reserved_town_district": "east residential street",
-      "requires_real_collision_check": true
+      "requires_real_collision_check": true,
+      "return_triggers_core": [
+        [
+          2,
+          7
+        ],
+        [
+          3,
+          7
+        ]
+      ],
+      "arrival_warp_index": 3,
+      "exterior_door_core": [
+        25,
+        11
+      ],
+      "exterior_safe_return_core": [
+        25,
+        12
+      ],
+      "exterior_warp_index": 3,
+      "exterior_return_warp_index": 4,
+      "source_file": "towns/MnMoorhead.json",
+      "source_room_id": "MnMoorheadMart"
     },
     {
       "interior": "MnInternationalFallsPokecenter1F",
@@ -2508,7 +2784,7 @@
       ],
       "exterior_warp_index": 1,
       "exterior_return_warp_index": 2,
-      "exterior_door_status": "Exact authored native DOOR quadrant and reciprocal passive FLOOR contract; consult city runbook for publication/controller status.",
+      "exterior_door_status": "Native facade, passive arrival and both carpets published and production-controller verified; see interior-life/DETROIT-LAKES.md. Glacier Line rides remain unfinished.",
       "requires_real_collision_check": true
     },
     {
@@ -2545,7 +2821,7 @@
       ],
       "exterior_warp_index": 7,
       "exterior_return_warp_index": 8,
-      "exterior_door_status": "Exact authored native DOOR quadrant and reciprocal passive FLOOR contract; consult city runbook for publication/controller status.",
+      "exterior_door_status": "Native facade, passive arrival and both carpets published and production-controller verified; see interior-life/DETROIT-LAKES.md. Glacier Line rides remain unfinished.",
       "requires_real_collision_check": true
     },
     {
@@ -2582,7 +2858,7 @@
       ],
       "exterior_warp_index": 9,
       "exterior_return_warp_index": 10,
-      "exterior_door_status": "Exact authored native DOOR quadrant and reciprocal passive FLOOR contract; consult city runbook for publication/controller status.",
+      "exterior_door_status": "Native facade, passive arrival and both carpets published and production-controller verified; see interior-life/DETROIT-LAKES.md. Glacier Line rides remain unfinished.",
       "requires_real_collision_check": true
     },
     {
@@ -2647,12 +2923,12 @@
       ],
       "arrival_warp_index": 3,
       "exterior_door_core": [
-        62,
-        15
+        40,
+        11
       ],
       "exterior_safe_return_core": [
-        62,
-        16
+        40,
+        12
       ],
       "exterior_warp_index": 7,
       "exterior_return_warp_index": 8,
@@ -2692,12 +2968,12 @@
       ],
       "arrival_warp_index": 5,
       "exterior_door_core": [
-        92,
-        69
+        66,
+        47
       ],
       "exterior_safe_return_core": [
-        92,
-        70
+        66,
+        48
       ],
       "exterior_warp_index": 1,
       "exterior_return_warp_index": 2,
@@ -3057,12 +3333,12 @@
         ]
       ],
       "exterior_door_core": [
-        59,
-        57
+        25,
+        33
       ],
       "exterior_safe_return_core": [
-        59,
-        58
+        25,
+        34
       ],
       "interior_passive_arrival_warp": 3,
       "exterior_door_status": "NATIVE VERIFIED: actual facade, passive arrival and paired carpets published; production controller verifies entry/return. See playable/minneapolis.md.",
@@ -3095,12 +3371,12 @@
         ]
       ],
       "exterior_door_core": [
-        59,
-        37
+        23,
+        41
       ],
       "exterior_safe_return_core": [
-        59,
-        38
+        23,
+        42
       ],
       "interior_passive_arrival_warp": 3,
       "exterior_door_status": "NATIVE VERIFIED: actual facade, return-home witness visibility, family dialogue and Continue pass. See playable/minneapolis.md.",
@@ -3641,122 +3917,6 @@
       "requires_real_collision_check": true
     },
     {
-      "interior": "MnGrandMaraisShoreGate",
-      "parent": "MnGrandMarais",
-      "source_file": "towns/MnGrandMarais.connections.json",
-      "reference": "IlexForestAzaleaGate",
-      "gate_pairs": [
-        {
-          "map": "MnR11C00R00",
-          "entrances": [
-            [
-              43,
-              4
-            ],
-            [
-              43,
-              5
-            ]
-          ],
-          "returns": [
-            [
-              42,
-              4
-            ],
-            [
-              42,
-              5
-            ]
-          ],
-          "first_active": 3,
-          "first_passive": 5,
-          "room_arrivals": [
-            [
-              1,
-              4
-            ],
-            [
-              1,
-              5
-            ]
-          ],
-          "room_passive_indices": [
-            5,
-            6
-          ],
-          "room_exits": [
-            [
-              0,
-              4
-            ],
-            [
-              0,
-              5
-            ]
-          ],
-          "room_exit_indices": [
-            1,
-            2
-          ]
-        },
-        {
-          "map": "MnGrandMarais",
-          "entrances": [
-            [
-              4,
-              18
-            ],
-            [
-              4,
-              19
-            ]
-          ],
-          "returns": [
-            [
-              8,
-              18
-            ],
-            [
-              8,
-              19
-            ]
-          ],
-          "first_active": 7,
-          "first_passive": 9,
-          "room_arrivals": [
-            [
-              8,
-              4
-            ],
-            [
-              8,
-              5
-            ]
-          ],
-          "room_passive_indices": [
-            7,
-            8
-          ],
-          "room_exits": [
-            [
-              9,
-              4
-            ],
-            [
-              9,
-              5
-            ]
-          ],
-          "room_exit_indices": [
-            3,
-            4
-          ]
-        }
-      ],
-      "requires_real_collision_check": false,
-      "native_evidence": "playable/north-shore-story.md: exact 544-map successor, five production controller cases and actual stdio replay."
-    },
-    {
       "interior": "MnMinneapolisSupplyCoop",
       "parent": "MnMinneapolis",
       "town": "MnMinneapolis",
@@ -3790,8 +3950,8 @@
         {
           "parent": "MnMinneapolis",
           "parent_entry_core": [
-            9,
-            13
+            7,
+            9
           ],
           "parent_entry_warp_index": 11,
           "arrival_core": [
@@ -3816,12 +3976,12 @@
           ],
           "parent_safe_returns_core": [
             [
-              9,
-              14
+              7,
+              10
             ],
             [
-              9,
-              14
+              7,
+              10
             ]
           ],
           "pair_kind": "exterior_facade"
@@ -3869,8 +4029,8 @@
         {
           "parent": "MnMinneapolis",
           "parent_entry_core": [
-            20,
-            15
+            22,
+            9
           ],
           "parent_entry_warp_index": 13,
           "arrival_core": [
@@ -3895,12 +4055,12 @@
           ],
           "parent_safe_returns_core": [
             [
-              20,
-              16
+              22,
+              10
             ],
             [
-              20,
-              16
+              22,
+              10
             ]
           ],
           "pair_kind": "exterior_facade"
@@ -3948,7 +4108,7 @@
         {
           "parent": "MnMinneapolis",
           "parent_entry_core": [
-            32,
+            24,
             15
           ],
           "parent_entry_warp_index": 15,
@@ -3974,11 +4134,11 @@
           ],
           "parent_safe_returns_core": [
             [
-              32,
+              24,
               16
             ],
             [
-              32,
+              24,
               16
             ]
           ],
@@ -4027,8 +4187,8 @@
         {
           "parent": "MnMinneapolis",
           "parent_entry_core": [
-            73,
-            11
+            47,
+            9
           ],
           "parent_entry_warp_index": 17,
           "arrival_core": [
@@ -4053,12 +4213,12 @@
           ],
           "parent_safe_returns_core": [
             [
-              73,
-              12
+              47,
+              10
             ],
             [
-              73,
-              12
+              47,
+              10
             ]
           ],
           "pair_kind": "exterior_facade"
@@ -4106,8 +4266,8 @@
         {
           "parent": "MnMinneapolis",
           "parent_entry_core": [
-            26,
-            25
+            8,
+            19
           ],
           "parent_entry_warp_index": 19,
           "arrival_core": [
@@ -4132,12 +4292,12 @@
           ],
           "parent_safe_returns_core": [
             [
-              26,
-              26
+              8,
+              20
             ],
             [
-              26,
-              26
+              8,
+              20
             ]
           ],
           "pair_kind": "exterior_facade"
@@ -4185,8 +4345,8 @@
         {
           "parent": "MnMinneapolis",
           "parent_entry_core": [
-            11,
-            25
+            19,
+            19
           ],
           "parent_entry_warp_index": 21,
           "arrival_core": [
@@ -4211,12 +4371,12 @@
           ],
           "parent_safe_returns_core": [
             [
-              11,
-              26
+              19,
+              20
             ],
             [
-              11,
-              26
+              19,
+              20
             ]
           ],
           "pair_kind": "exterior_facade"
@@ -4264,8 +4424,8 @@
         {
           "parent": "MnMinneapolis",
           "parent_entry_core": [
-            85,
-            11
+            57,
+            9
           ],
           "parent_entry_warp_index": 23,
           "arrival_core": [
@@ -4290,12 +4450,12 @@
           ],
           "parent_safe_returns_core": [
             [
-              85,
-              12
+              57,
+              10
             ],
             [
-              85,
-              12
+              57,
+              10
             ]
           ],
           "pair_kind": "exterior_facade"
@@ -4343,8 +4503,8 @@
         {
           "parent": "MnMinneapolis",
           "parent_entry_core": [
-            96,
-            13
+            66,
+            9
           ],
           "parent_entry_warp_index": 25,
           "arrival_core": [
@@ -4369,12 +4529,12 @@
           ],
           "parent_safe_returns_core": [
             [
-              96,
-              14
+              66,
+              10
             ],
             [
-              96,
-              14
+              66,
+              10
             ]
           ],
           "pair_kind": "exterior_facade"
@@ -4422,8 +4582,8 @@
         {
           "parent": "MnMinneapolis",
           "parent_entry_core": [
-            110,
-            13
+            74,
+            9
           ],
           "parent_entry_warp_index": 27,
           "arrival_core": [
@@ -4448,12 +4608,12 @@
           ],
           "parent_safe_returns_core": [
             [
-              110,
-              14
+              74,
+              10
             ],
             [
-              110,
-              14
+              74,
+              10
             ]
           ],
           "pair_kind": "exterior_facade"
@@ -4501,8 +4661,8 @@
         {
           "parent": "MnMinneapolis",
           "parent_entry_core": [
-            73,
-            23
+            47,
+            17
           ],
           "parent_entry_warp_index": 29,
           "arrival_core": [
@@ -4527,12 +4687,12 @@
           ],
           "parent_safe_returns_core": [
             [
-              73,
-              24
+              47,
+              18
             ],
             [
-              73,
-              24
+              47,
+              18
             ]
           ],
           "pair_kind": "exterior_facade"
@@ -4580,8 +4740,8 @@
         {
           "parent": "MnMinneapolis",
           "parent_entry_core": [
-            85,
-            23
+            55,
+            17
           ],
           "parent_entry_warp_index": 31,
           "arrival_core": [
@@ -4606,12 +4766,12 @@
           ],
           "parent_safe_returns_core": [
             [
-              85,
-              24
+              55,
+              18
             ],
             [
-              85,
-              24
+              55,
+              18
             ]
           ],
           "pair_kind": "exterior_facade"
@@ -4659,8 +4819,8 @@
         {
           "parent": "MnMinneapolis",
           "parent_entry_core": [
-            11,
-            41
+            9,
+            29
           ],
           "parent_entry_warp_index": 33,
           "arrival_core": [
@@ -4685,12 +4845,12 @@
           ],
           "parent_safe_returns_core": [
             [
-              11,
-              42
+              9,
+              30
             ],
             [
-              11,
-              42
+              9,
+              30
             ]
           ],
           "pair_kind": "exterior_facade"
@@ -4738,8 +4898,8 @@
         {
           "parent": "MnMinneapolis",
           "parent_entry_core": [
-            27,
-            37
+            19,
+            29
           ],
           "parent_entry_warp_index": 35,
           "arrival_core": [
@@ -4764,12 +4924,12 @@
           ],
           "parent_safe_returns_core": [
             [
-              27,
-              38
+              19,
+              30
             ],
             [
-              27,
-              38
+              19,
+              30
             ]
           ],
           "pair_kind": "exterior_facade"
@@ -4817,8 +4977,8 @@
         {
           "parent": "MnMinneapolis",
           "parent_entry_core": [
-            9,
-            63
+            7,
+            45
           ],
           "parent_entry_warp_index": 37,
           "arrival_core": [
@@ -4843,12 +5003,12 @@
           ],
           "parent_safe_returns_core": [
             [
-              9,
-              64
+              7,
+              46
             ],
             [
-              9,
-              64
+              7,
+              46
             ]
           ],
           "pair_kind": "exterior_facade"
@@ -4896,8 +5056,8 @@
         {
           "parent": "MnMinneapolis",
           "parent_entry_core": [
-            27,
-            67
+            25,
+            55
           ],
           "parent_entry_warp_index": 39,
           "arrival_core": [
@@ -4922,12 +5082,12 @@
           ],
           "parent_safe_returns_core": [
             [
-              27,
-              68
+              25,
+              56
             ],
             [
-              27,
-              68
+              25,
+              56
             ]
           ],
           "pair_kind": "exterior_facade"
@@ -4975,8 +5135,8 @@
         {
           "parent": "MnMinneapolis",
           "parent_entry_core": [
-            39,
-            55
+            27,
+            21
           ],
           "parent_entry_warp_index": 41,
           "arrival_core": [
@@ -5001,12 +5161,12 @@
           ],
           "parent_safe_returns_core": [
             [
-              39,
-              56
+              27,
+              22
             ],
             [
-              39,
-              56
+              27,
+              22
             ]
           ],
           "pair_kind": "exterior_facade"
@@ -5054,8 +5214,8 @@
         {
           "parent": "MnMinneapolis",
           "parent_entry_core": [
-            102,
-            47
+            54,
+            35
           ],
           "parent_entry_warp_index": 43,
           "arrival_core": [
@@ -5080,12 +5240,12 @@
           ],
           "parent_safe_returns_core": [
             [
-              102,
-              48
+              54,
+              36
             ],
             [
-              102,
-              48
+              54,
+              36
             ]
           ],
           "pair_kind": "exterior_facade"
@@ -5163,8 +5323,8 @@
         {
           "parent": "MnMinneapolis",
           "parent_entry_core": [
-            116,
-            41
+            70,
+            45
           ],
           "parent_entry_warp_index": 45,
           "arrival_core": [
@@ -5189,12 +5349,12 @@
           ],
           "parent_safe_returns_core": [
             [
-              116,
-              42
+              70,
+              46
             ],
             [
-              116,
-              42
+              70,
+              46
             ]
           ],
           "pair_kind": "exterior_facade"
@@ -5242,8 +5402,8 @@
         {
           "parent": "MnMinneapolis",
           "parent_entry_core": [
-            99,
-            59
+            63,
+            51
           ],
           "parent_entry_warp_index": 47,
           "arrival_core": [
@@ -5268,12 +5428,12 @@
           ],
           "parent_safe_returns_core": [
             [
-              99,
-              60
+              63,
+              52
             ],
             [
-              99,
-              60
+              63,
+              52
             ]
           ],
           "pair_kind": "exterior_facade"
@@ -5321,8 +5481,8 @@
         {
           "parent": "MnMinneapolis",
           "parent_entry_core": [
-            113,
-            61
+            73,
+            53
           ],
           "parent_entry_warp_index": 49,
           "arrival_core": [
@@ -5347,12 +5507,12 @@
           ],
           "parent_safe_returns_core": [
             [
-              113,
-              62
+              73,
+              54
             ],
             [
-              113,
-              62
+              73,
+              54
             ]
           ],
           "pair_kind": "exterior_facade"
@@ -5400,8 +5560,8 @@
         {
           "parent": "MnMinneapolis",
           "parent_entry_core": [
-            120,
-            67
+            76,
+            59
           ],
           "parent_entry_warp_index": 51,
           "arrival_core": [
@@ -5426,12 +5586,12 @@
           ],
           "parent_safe_returns_core": [
             [
-              120,
-              68
+              76,
+              60
             ],
             [
-              120,
-              68
+              76,
+              60
             ]
           ],
           "pair_kind": "exterior_facade"
@@ -5479,8 +5639,8 @@
         {
           "parent": "MnMinneapolis",
           "parent_entry_core": [
-            15,
-            81
+            17,
+            51
           ],
           "parent_entry_warp_index": 53,
           "arrival_core": [
@@ -5505,12 +5665,12 @@
           ],
           "parent_safe_returns_core": [
             [
-              15,
-              82
+              17,
+              52
             ],
             [
-              15,
-              82
+              17,
+              52
             ]
           ],
           "pair_kind": "exterior_facade"
@@ -5558,8 +5718,8 @@
         {
           "parent": "MnMinneapolis",
           "parent_entry_core": [
-            27,
-            83
+            7,
+            57
           ],
           "parent_entry_warp_index": 55,
           "arrival_core": [
@@ -5584,12 +5744,12 @@
           ],
           "parent_safe_returns_core": [
             [
-              27,
-              84
+              7,
+              58
             ],
             [
-              27,
-              84
+              7,
+              58
             ]
           ],
           "pair_kind": "exterior_facade"
@@ -5637,8 +5797,8 @@
         {
           "parent": "MnMinneapolis",
           "parent_entry_core": [
-            69,
-            87
+            45,
+            59
           ],
           "parent_entry_warp_index": 57,
           "arrival_core": [
@@ -5663,12 +5823,12 @@
           ],
           "parent_safe_returns_core": [
             [
-              69,
-              88
+              45,
+              60
             ],
             [
-              69,
-              88
+              45,
+              60
             ]
           ],
           "pair_kind": "exterior_facade"
@@ -5716,8 +5876,8 @@
         {
           "parent": "MnMinneapolis",
           "parent_entry_core": [
-            83,
-            79
+            53,
+            59
           ],
           "parent_entry_warp_index": 59,
           "arrival_core": [
@@ -5742,12 +5902,12 @@
           ],
           "parent_safe_returns_core": [
             [
-              83,
-              80
+              53,
+              60
             ],
             [
-              83,
-              80
+              53,
+              60
             ]
           ],
           "pair_kind": "exterior_facade"
@@ -5795,8 +5955,8 @@
         {
           "parent": "MnMinneapolis",
           "parent_entry_core": [
-            98,
-            79
+            62,
+            59
           ],
           "parent_entry_warp_index": 61,
           "arrival_core": [
@@ -5821,12 +5981,12 @@
           ],
           "parent_safe_returns_core": [
             [
-              98,
-              80
+              62,
+              60
             ],
             [
-              98,
-              80
+              62,
+              60
             ]
           ],
           "pair_kind": "exterior_facade"
@@ -5874,8 +6034,8 @@
         {
           "parent": "MnMinneapolis",
           "parent_entry_core": [
-            113,
-            83
+            71,
+            59
           ],
           "parent_entry_warp_index": 63,
           "arrival_core": [
@@ -5900,12 +6060,12 @@
           ],
           "parent_safe_returns_core": [
             [
-              113,
-              84
+              71,
+              60
             ],
             [
-              113,
-              84
+              71,
+              60
             ]
           ],
           "pair_kind": "exterior_facade"
@@ -6307,8 +6467,8 @@
         {
           "parent": "MnMinneapolis",
           "parent_entry_core": [
-            92,
-            35
+            74,
+            17
           ],
           "parent_entry_warp_index": 65,
           "arrival_core": [
@@ -6333,12 +6493,12 @@
           ],
           "parent_safe_returns_core": [
             [
-              92,
-              36
+              74,
+              18
             ],
             [
-              92,
-              36
+              74,
+              18
             ]
           ],
           "pair_kind": "exterior_facade"
@@ -6386,8 +6546,8 @@
         {
           "parent": "MnMinneapolis",
           "parent_entry_core": [
-            78,
-            59
+            44,
+            51
           ],
           "parent_entry_warp_index": 67,
           "arrival_core": [
@@ -6412,12 +6572,12 @@
           ],
           "parent_safe_returns_core": [
             [
-              78,
-              60
+              44,
+              52
             ],
             [
-              78,
-              60
+              44,
+              52
             ]
           ],
           "pair_kind": "exterior_facade"
@@ -6465,8 +6625,8 @@
         {
           "parent": "MnMinneapolis",
           "parent_entry_core": [
-            71,
-            65
+            51,
+            51
           ],
           "parent_entry_warp_index": 69,
           "arrival_core": [
@@ -6491,12 +6651,12 @@
           ],
           "parent_safe_returns_core": [
             [
-              71,
-              66
+              51,
+              52
             ],
             [
-              71,
-              66
+              51,
+              52
             ]
           ],
           "pair_kind": "exterior_facade"
@@ -6544,8 +6704,8 @@
         {
           "parent": "MnMinneapolis",
           "parent_entry_core": [
-            84,
-            69
+            56,
+            51
           ],
           "parent_entry_warp_index": 71,
           "arrival_core": [
@@ -6570,12 +6730,12 @@
           ],
           "parent_safe_returns_core": [
             [
-              84,
-              70
+              56,
+              52
             ],
             [
-              84,
-              70
+              56,
+              52
             ]
           ],
           "pair_kind": "exterior_facade"
@@ -6623,8 +6783,8 @@
         {
           "parent": "MnMinneapolis",
           "parent_entry_core": [
-            57,
-            19
+            15,
+            9
           ],
           "parent_entry_warp_index": 73,
           "arrival_core": [
@@ -6649,12 +6809,12 @@
           ],
           "parent_safe_returns_core": [
             [
-              57,
-              20
+              15,
+              10
             ],
             [
-              57,
-              20
+              15,
+              10
             ]
           ],
           "pair_kind": "exterior_facade"
@@ -6702,8 +6862,8 @@
         {
           "parent": "MnMinneapolis",
           "parent_entry_core": [
-            94,
-            23
+            60,
+            17
           ],
           "parent_entry_warp_index": 75,
           "arrival_core": [
@@ -6728,12 +6888,12 @@
           ],
           "parent_safe_returns_core": [
             [
-              94,
-              24
+              60,
+              18
             ],
             [
-              94,
-              24
+              60,
+              18
             ]
           ],
           "pair_kind": "exterior_facade"
@@ -6781,8 +6941,8 @@
         {
           "parent": "MnMinneapolis",
           "parent_entry_core": [
-            105,
-            23
+            67,
+            17
           ],
           "parent_entry_warp_index": 77,
           "arrival_core": [
@@ -6807,12 +6967,12 @@
           ],
           "parent_safe_returns_core": [
             [
-              105,
-              24
+              67,
+              18
             ],
             [
-              105,
-              24
+              67,
+              18
             ]
           ],
           "pair_kind": "exterior_facade"
@@ -6860,8 +7020,8 @@
         {
           "parent": "MnMinneapolis",
           "parent_entry_core": [
-            110,
-            31
+            60,
+            45
           ],
           "parent_entry_warp_index": 79,
           "arrival_core": [
@@ -6886,12 +7046,12 @@
           ],
           "parent_safe_returns_core": [
             [
-              110,
-              32
+              60,
+              46
             ],
             [
-              110,
-              32
+              60,
+              46
             ]
           ],
           "pair_kind": "exterior_facade"
@@ -6939,8 +7099,8 @@
         {
           "parent": "MnStPaul",
           "parent_entry_core": [
-            11,
-            15
+            5,
+            13
           ],
           "parent_entry_warp_index": 11,
           "arrival_core": [
@@ -6965,12 +7125,12 @@
           ],
           "parent_safe_returns_core": [
             [
-              11,
-              16
+              5,
+              14
             ],
             [
-              11,
-              16
+              5,
+              14
             ]
           ],
           "pair_kind": "exterior_facade"
@@ -7018,8 +7178,8 @@
         {
           "parent": "MnStPaul",
           "parent_entry_core": [
-            31,
-            23
+            21,
+            13
           ],
           "parent_entry_warp_index": 13,
           "arrival_core": [
@@ -7044,12 +7204,12 @@
           ],
           "parent_safe_returns_core": [
             [
-              31,
-              24
+              21,
+              14
             ],
             [
-              31,
-              24
+              21,
+              14
             ]
           ],
           "pair_kind": "exterior_facade"
@@ -7097,8 +7257,8 @@
         {
           "parent": "MnStPaul",
           "parent_entry_core": [
-            36,
-            13
+            18,
+            9
           ],
           "parent_entry_warp_index": 15,
           "arrival_core": [
@@ -7123,12 +7283,12 @@
           ],
           "parent_safe_returns_core": [
             [
-              36,
-              14
+              18,
+              10
             ],
             [
-              36,
-              14
+              18,
+              10
             ]
           ],
           "pair_kind": "exterior_facade"
@@ -7176,8 +7336,8 @@
         {
           "parent": "MnStPaul",
           "parent_entry_core": [
-            10,
-            33
+            6,
+            23
           ],
           "parent_entry_warp_index": 17,
           "arrival_core": [
@@ -7202,12 +7362,12 @@
           ],
           "parent_safe_returns_core": [
             [
-              10,
-              34
+              6,
+              24
             ],
             [
-              10,
-              34
+              6,
+              24
             ]
           ],
           "pair_kind": "exterior_facade"
@@ -7255,8 +7415,8 @@
         {
           "parent": "MnStPaul",
           "parent_entry_core": [
-            22,
-            31
+            18,
+            25
           ],
           "parent_entry_warp_index": 19,
           "arrival_core": [
@@ -7281,12 +7441,12 @@
           ],
           "parent_safe_returns_core": [
             [
-              22,
-              32
+              18,
+              26
             ],
             [
-              22,
-              32
+              18,
+              26
             ]
           ],
           "pair_kind": "exterior_facade"
@@ -7334,8 +7494,8 @@
         {
           "parent": "MnStPaul",
           "parent_entry_core": [
-            44,
-            21
+            28,
+            15
           ],
           "parent_entry_warp_index": 21,
           "arrival_core": [
@@ -7360,12 +7520,12 @@
           ],
           "parent_safe_returns_core": [
             [
-              44,
-              22
+              28,
+              16
             ],
             [
-              44,
-              22
+              28,
+              16
             ]
           ],
           "pair_kind": "exterior_facade"
@@ -7413,8 +7573,8 @@
         {
           "parent": "MnStPaul",
           "parent_entry_core": [
-            12,
-            9
+            6,
+            7
           ],
           "parent_entry_warp_index": 23,
           "arrival_core": [
@@ -7439,12 +7599,12 @@
           ],
           "parent_safe_returns_core": [
             [
-              12,
-              10
+              6,
+              8
             ],
             [
-              12,
-              10
+              6,
+              8
             ]
           ],
           "pair_kind": "exterior_facade"
@@ -7492,8 +7652,8 @@
         {
           "parent": "MnStPaul",
           "parent_entry_core": [
-            38,
-            33
+            22,
+            27
           ],
           "parent_entry_warp_index": 25,
           "arrival_core": [
@@ -7518,12 +7678,12 @@
           ],
           "parent_safe_returns_core": [
             [
-              38,
-              34
+              22,
+              28
             ],
             [
-              38,
-              34
+              22,
+              28
             ]
           ],
           "pair_kind": "exterior_facade"
@@ -7571,8 +7731,8 @@
         {
           "parent": "MnStPaul",
           "parent_entry_core": [
-            17,
-            19
+            13,
+            13
           ],
           "parent_entry_warp_index": 27,
           "arrival_core": [
@@ -7597,12 +7757,12 @@
           ],
           "parent_safe_returns_core": [
             [
-              17,
-              20
+              13,
+              14
             ],
             [
-              17,
-              20
+              13,
+              14
             ]
           ],
           "pair_kind": "exterior_facade"
@@ -7650,8 +7810,8 @@
         {
           "parent": "MnStPaul",
           "parent_entry_core": [
-            37,
-            17
+            21,
+            19
           ],
           "parent_entry_warp_index": 29,
           "arrival_core": [
@@ -7676,12 +7836,12 @@
           ],
           "parent_safe_returns_core": [
             [
-              37,
-              18
+              21,
+              20
             ],
             [
-              37,
-              18
+              21,
+              20
             ]
           ],
           "pair_kind": "exterior_facade"
@@ -7729,8 +7889,8 @@
         {
           "parent": "MnStPaul",
           "parent_entry_core": [
-            56,
-            13
+            34,
+            9
           ],
           "parent_entry_warp_index": 31,
           "arrival_core": [
@@ -7755,12 +7915,12 @@
           ],
           "parent_safe_returns_core": [
             [
-              56,
-              14
+              34,
+              10
             ],
             [
-              56,
-              14
+              34,
+              10
             ]
           ],
           "pair_kind": "exterior_facade"
@@ -7808,8 +7968,8 @@
         {
           "parent": "MnStPaul",
           "parent_entry_core": [
-            76,
-            15
+            50,
+            11
           ],
           "parent_entry_warp_index": 33,
           "arrival_core": [
@@ -7834,12 +7994,12 @@
           ],
           "parent_safe_returns_core": [
             [
-              76,
-              16
+              50,
+              12
             ],
             [
-              76,
-              16
+              50,
+              12
             ]
           ],
           "pair_kind": "exterior_facade"
@@ -7887,8 +8047,8 @@
         {
           "parent": "MnStPaul",
           "parent_entry_core": [
-            78,
-            33
+            50,
+            21
           ],
           "parent_entry_warp_index": 35,
           "arrival_core": [
@@ -7913,12 +8073,12 @@
           ],
           "parent_safe_returns_core": [
             [
-              78,
-              34
+              50,
+              22
             ],
             [
-              78,
-              34
+              50,
+              22
             ]
           ],
           "pair_kind": "exterior_facade"
@@ -7966,8 +8126,8 @@
         {
           "parent": "MnStPaul",
           "parent_entry_core": [
-            106,
-            11
+            60,
+            7
           ],
           "parent_entry_warp_index": 37,
           "arrival_core": [
@@ -7992,12 +8152,12 @@
           ],
           "parent_safe_returns_core": [
             [
-              106,
-              12
+              60,
+              8
             ],
             [
-              106,
-              12
+              60,
+              8
             ]
           ],
           "pair_kind": "exterior_facade"
@@ -8045,8 +8205,8 @@
         {
           "parent": "MnStPaul",
           "parent_entry_core": [
-            112,
-            23
+            66,
+            11
           ],
           "parent_entry_warp_index": 39,
           "arrival_core": [
@@ -8071,12 +8231,12 @@
           ],
           "parent_safe_returns_core": [
             [
-              112,
-              24
+              66,
+              12
             ],
             [
-              112,
-              24
+              66,
+              12
             ]
           ],
           "pair_kind": "exterior_facade"
@@ -8124,8 +8284,8 @@
         {
           "parent": "MnStPaul",
           "parent_entry_core": [
-            98,
-            29
+            60,
+            21
           ],
           "parent_entry_warp_index": 41,
           "arrival_core": [
@@ -8150,12 +8310,12 @@
           ],
           "parent_safe_returns_core": [
             [
-              98,
-              30
+              60,
+              22
             ],
             [
-              98,
-              30
+              60,
+              22
             ]
           ],
           "pair_kind": "exterior_facade"
@@ -8203,8 +8363,8 @@
         {
           "parent": "MnStPaul",
           "parent_entry_core": [
-            28,
-            45
+            6,
+            35
           ],
           "parent_entry_warp_index": 43,
           "arrival_core": [
@@ -8229,12 +8389,12 @@
           ],
           "parent_safe_returns_core": [
             [
-              28,
-              46
+              6,
+              36
             ],
             [
-              28,
-              46
+              6,
+              36
             ]
           ],
           "pair_kind": "exterior_facade"
@@ -8282,8 +8442,8 @@
         {
           "parent": "MnStPaul",
           "parent_entry_core": [
-            7,
-            53
+            5,
+            43
           ],
           "parent_entry_warp_index": 45,
           "arrival_core": [
@@ -8308,12 +8468,12 @@
           ],
           "parent_safe_returns_core": [
             [
-              7,
-              54
+              5,
+              44
             ],
             [
-              7,
-              54
+              5,
+              44
             ]
           ],
           "pair_kind": "exterior_facade"
@@ -8361,8 +8521,8 @@
         {
           "parent": "MnStPaul",
           "parent_entry_core": [
-            30,
-            57
+            16,
+            33
           ],
           "parent_entry_warp_index": 47,
           "arrival_core": [
@@ -8387,12 +8547,12 @@
           ],
           "parent_safe_returns_core": [
             [
-              30,
-              58
+              16,
+              34
             ],
             [
-              30,
-              58
+              16,
+              34
             ]
           ],
           "pair_kind": "exterior_facade"
@@ -8440,8 +8600,8 @@
         {
           "parent": "MnStPaul",
           "parent_entry_core": [
-            62,
-            49
+            32,
+            39
           ],
           "parent_entry_warp_index": 49,
           "arrival_core": [
@@ -8466,12 +8626,12 @@
           ],
           "parent_safe_returns_core": [
             [
-              62,
-              50
+              32,
+              40
             ],
             [
-              62,
-              50
+              32,
+              40
             ]
           ],
           "pair_kind": "exterior_facade"
@@ -8549,8 +8709,8 @@
         {
           "parent": "MnStPaul",
           "parent_entry_core": [
-            54,
-            59
+            38,
+            23
           ],
           "parent_entry_warp_index": 51,
           "arrival_core": [
@@ -8575,12 +8735,12 @@
           ],
           "parent_safe_returns_core": [
             [
-              54,
-              60
+              38,
+              24
             ],
             [
-              54,
-              60
+              38,
+              24
             ]
           ],
           "pair_kind": "exterior_facade"
@@ -8628,8 +8788,8 @@
         {
           "parent": "MnStPaul",
           "parent_entry_core": [
-            76,
-            47
+            24,
+            43
           ],
           "parent_entry_warp_index": 53,
           "arrival_core": [
@@ -8654,12 +8814,12 @@
           ],
           "parent_safe_returns_core": [
             [
-              76,
-              48
+              24,
+              44
             ],
             [
-              76,
-              48
+              24,
+              44
             ]
           ],
           "pair_kind": "exterior_facade"
@@ -8707,8 +8867,8 @@
         {
           "parent": "MnStPaul",
           "parent_entry_core": [
-            113,
-            41
+            53,
+            31
           ],
           "parent_entry_warp_index": 55,
           "arrival_core": [
@@ -8733,12 +8893,12 @@
           ],
           "parent_safe_returns_core": [
             [
-              113,
-              42
+              53,
+              32
             ],
             [
-              113,
-              42
+              53,
+              32
             ]
           ],
           "pair_kind": "exterior_facade"
@@ -8786,8 +8946,8 @@
         {
           "parent": "MnStPaul",
           "parent_entry_core": [
-            96,
-            55
+            46,
+            41
           ],
           "parent_entry_warp_index": 57,
           "arrival_core": [
@@ -8812,12 +8972,12 @@
           ],
           "parent_safe_returns_core": [
             [
-              96,
-              56
+              46,
+              42
             ],
             [
-              96,
-              56
+              46,
+              42
             ]
           ],
           "pair_kind": "exterior_facade"
@@ -8865,8 +9025,8 @@
         {
           "parent": "MnStPaul",
           "parent_entry_core": [
-            110,
-            51
+            64,
+            29
           ],
           "parent_entry_warp_index": 59,
           "arrival_core": [
@@ -8891,12 +9051,12 @@
           ],
           "parent_safe_returns_core": [
             [
-              110,
-              52
+              64,
+              30
             ],
             [
-              110,
-              52
+              64,
+              30
             ]
           ],
           "pair_kind": "exterior_facade"
@@ -8944,8 +9104,8 @@
         {
           "parent": "MnStPaul",
           "parent_entry_core": [
-            82,
-            57
+            58,
+            45
           ],
           "parent_entry_warp_index": 61,
           "arrival_core": [
@@ -8970,12 +9130,12 @@
           ],
           "parent_safe_returns_core": [
             [
-              82,
-              58
+              58,
+              46
             ],
             [
-              82,
-              58
+              58,
+              46
             ]
           ],
           "pair_kind": "exterior_facade"
@@ -9023,8 +9183,8 @@
         {
           "parent": "MnStPaul",
           "parent_entry_core": [
-            112,
-            67
+            64,
+            39
           ],
           "parent_entry_warp_index": 63,
           "arrival_core": [
@@ -9049,12 +9209,12 @@
           ],
           "parent_safe_returns_core": [
             [
-              112,
-              68
+              64,
+              40
             ],
             [
-              112,
-              68
+              64,
+              40
             ]
           ],
           "pair_kind": "exterior_facade"
@@ -9102,8 +9262,8 @@
         {
           "parent": "MnStPaul",
           "parent_entry_core": [
-            109,
-            57
+            55,
+            39
           ],
           "parent_entry_warp_index": 65,
           "arrival_core": [
@@ -9128,12 +9288,12 @@
           ],
           "parent_safe_returns_core": [
             [
-              109,
-              58
+              55,
+              40
             ],
             [
-              109,
-              58
+              55,
+              40
             ]
           ],
           "pair_kind": "exterior_facade"
@@ -9181,8 +9341,8 @@
         {
           "parent": "MnStPaul",
           "parent_entry_core": [
-            12,
-            87
+            6,
+            63
           ],
           "parent_entry_warp_index": 67,
           "arrival_core": [
@@ -9207,12 +9367,12 @@
           ],
           "parent_safe_returns_core": [
             [
-              12,
-              88
+              6,
+              64
             ],
             [
-              12,
-              88
+              6,
+              64
             ]
           ],
           "pair_kind": "exterior_facade"
@@ -9260,8 +9420,8 @@
         {
           "parent": "MnStPaul",
           "parent_entry_core": [
-            15,
-            79
+            5,
+            57
           ],
           "parent_entry_warp_index": 69,
           "arrival_core": [
@@ -9286,12 +9446,12 @@
           ],
           "parent_safe_returns_core": [
             [
-              15,
-              80
+              5,
+              58
             ],
             [
-              15,
-              80
+              5,
+              58
             ]
           ],
           "pair_kind": "exterior_facade"
@@ -9339,8 +9499,8 @@
         {
           "parent": "MnStPaul",
           "parent_entry_core": [
-            26,
-            83
+            16,
+            61
           ],
           "parent_entry_warp_index": 71,
           "arrival_core": [
@@ -9365,12 +9525,12 @@
           ],
           "parent_safe_returns_core": [
             [
-              26,
-              84
+              16,
+              62
             ],
             [
-              26,
-              84
+              16,
+              62
             ]
           ],
           "pair_kind": "exterior_facade"
@@ -9418,8 +9578,8 @@
         {
           "parent": "MnStPaul",
           "parent_entry_core": [
-            52,
-            87
+            30,
+            61
           ],
           "parent_entry_warp_index": 73,
           "arrival_core": [
@@ -9444,12 +9604,12 @@
           ],
           "parent_safe_returns_core": [
             [
-              52,
-              88
+              30,
+              62
             ],
             [
-              52,
-              88
+              30,
+              62
             ]
           ],
           "pair_kind": "exterior_facade"
@@ -9497,8 +9657,8 @@
         {
           "parent": "MnStPaul",
           "parent_entry_core": [
-            68,
-            89
+            44,
+            61
           ],
           "parent_entry_warp_index": 75,
           "arrival_core": [
@@ -9523,12 +9683,12 @@
           ],
           "parent_safe_returns_core": [
             [
-              68,
-              90
+              44,
+              62
             ],
             [
-              68,
-              90
+              44,
+              62
             ]
           ],
           "pair_kind": "exterior_facade"
@@ -9576,8 +9736,8 @@
         {
           "parent": "MnStPaul",
           "parent_entry_core": [
-            91,
-            91
+            51,
+            61
           ],
           "parent_entry_warp_index": 77,
           "arrival_core": [
@@ -9602,12 +9762,12 @@
           ],
           "parent_safe_returns_core": [
             [
-              91,
-              92
+              51,
+              62
             ],
             [
-              91,
-              92
+              51,
+              62
             ]
           ],
           "pair_kind": "exterior_facade"
@@ -9655,8 +9815,8 @@
         {
           "parent": "MnStPaul",
           "parent_entry_core": [
-            108,
-            91
+            62,
+            61
           ],
           "parent_entry_warp_index": 79,
           "arrival_core": [
@@ -9681,12 +9841,12 @@
           ],
           "parent_safe_returns_core": [
             [
-              108,
-              92
+              62,
+              62
             ],
             [
-              108,
-              92
+              62,
+              62
             ]
           ],
           "pair_kind": "exterior_facade"
@@ -13270,6 +13430,242 @@
         "constant": "MN_DULUTH_X_POINTGARDENHOME"
       },
       "selected_candidate_rows_match_certified_native": true
+    },
+    {
+      "interior": "MnLeagueHallOfFame",
+      "parent": "MnLeagueChampion",
+      "arrival_core": [
+        4,
+        12
+      ],
+      "arrival_warp_indices": [
+        3,
+        4
+      ],
+      "return_triggers_core": [
+        [
+          4,
+          13
+        ],
+        [
+          5,
+          13
+        ]
+      ],
+      "record_actor_core": [
+        5,
+        5
+      ],
+      "record_requires": [
+        "EVENT_MN_LEAGUE_RUN_ACTIVE",
+        "LEAGUE_RUN_WIN_5"
+      ],
+      "behavior": "Separate acknowledgement records the winning native party and starts the existing Hall of Fame ceremony/credits. The map-scoped continuation destination is the Ely clinic."
+    },
+    {
+      "interior": "MnFairGrandstand",
+      "parent": "MnStateFairgrounds",
+      "arrival_core": [
+        5,
+        12
+      ],
+      "arrival_warp_index": 3,
+      "return_trigger_core": [
+        5,
+        13
+      ],
+      "return_triggers_core": [
+        [
+          5,
+          13
+        ],
+        [
+          6,
+          13
+        ]
+      ],
+      "exterior_door_core": [
+        11,
+        17
+      ],
+      "exterior_safe_return_core": [
+        11,
+        18
+      ],
+      "exterior_warp_index": 1,
+      "exterior_return_warp_index": 2,
+      "source_file": "zones/state-fairgrounds.json",
+      "source_room_id": "MnFairGrandstand",
+      "exterior_door_status": "Expanded dense-v1 production entry, safe return and both-room carpet checks pass through VisibleShellController. See playable/state-fairgrounds.md.",
+      "requires_real_collision_check": true
+    },
+    {
+      "interior": "MnFairBarn",
+      "parent": "MnStateFairgrounds",
+      "arrival_core": [
+        3,
+        6
+      ],
+      "arrival_warp_index": 3,
+      "return_trigger_core": [
+        3,
+        7
+      ],
+      "return_triggers_core": [
+        [
+          3,
+          7
+        ],
+        [
+          4,
+          7
+        ]
+      ],
+      "exterior_door_core": [
+        7,
+        51
+      ],
+      "exterior_safe_return_core": [
+        7,
+        52
+      ],
+      "exterior_warp_index": 3,
+      "exterior_return_warp_index": 4,
+      "source_file": "zones/state-fairgrounds.json",
+      "source_room_id": "MnFairBarn",
+      "exterior_door_status": "Expanded dense-v1 production entry, safe return and both-room carpet checks pass through VisibleShellController. See playable/state-fairgrounds.md.",
+      "requires_real_collision_check": true
+    },
+    {
+      "interior": "MnFairDairy",
+      "parent": "MnStateFairgrounds",
+      "arrival_core": [
+        3,
+        6
+      ],
+      "arrival_warp_index": 3,
+      "return_trigger_core": [
+        3,
+        7
+      ],
+      "return_triggers_core": [
+        [
+          3,
+          7
+        ],
+        [
+          4,
+          7
+        ]
+      ],
+      "exterior_door_core": [
+        75,
+        51
+      ],
+      "exterior_safe_return_core": [
+        75,
+        52
+      ],
+      "exterior_warp_index": 5,
+      "exterior_return_warp_index": 6,
+      "source_file": "zones/state-fairgrounds.json",
+      "source_room_id": "MnFairDairy",
+      "exterior_door_status": "Expanded dense-v1 production entry, safe return and both-room carpet checks pass through VisibleShellController. See playable/state-fairgrounds.md.",
+      "requires_real_collision_check": true
+    },
+    {
+      "interior": "MnVoyageursIce1F",
+      "parent": "MN_R20",
+      "source_file": "ice-caves/voyageurs-ice.json",
+      "source_room_id": "MnVoyageursIce1F",
+      "arrival_core": [
+        5,
+        19
+      ],
+      "arrival_warp_index": 3,
+      "return_trigger_core": [
+        5,
+        21
+      ],
+      "dimensions_metatiles": [
+        14,
+        12
+      ],
+      "warp_contracts": [
+        {
+          "tile": [
+            5,
+            21
+          ],
+          "target": "MnR20C01R00",
+          "target_warp": 4
+        },
+        {
+          "tile": [
+            23,
+            5
+          ],
+          "target": "MnVoyageursIceB1F",
+          "target_warp": 2
+        },
+        {
+          "tile": [
+            5,
+            19
+          ],
+          "target": "MnR20C01R00",
+          "target_warp": 4
+        },
+        {
+          "tile": [
+            23,
+            6
+          ],
+          "target": "MnVoyageursIceB1F",
+          "target_warp": 2
+        }
+      ],
+      "requires_real_collision_check": true,
+      "exterior_door_status": "Verified v02 production input: paired ladders, native slide stops, safe exterior return and same-mouth reentry; Save/Continue and MCP pass. See ice-caves/README.md."
+    },
+    {
+      "interior": "MnVoyageursIceB1F",
+      "parent": "MnVoyageursIce1F",
+      "source_file": "ice-caves/voyageurs-ice.json",
+      "source_room_id": "MnVoyageursIceB1F",
+      "arrival_core": [
+        5,
+        19
+      ],
+      "arrival_warp_index": 2,
+      "return_trigger_core": [
+        5,
+        21
+      ],
+      "dimensions_metatiles": [
+        16,
+        12
+      ],
+      "warp_contracts": [
+        {
+          "tile": [
+            5,
+            21
+          ],
+          "target": "MnVoyageursIce1F",
+          "target_warp": 4
+        },
+        {
+          "tile": [
+            5,
+            19
+          ],
+          "target": "MnVoyageursIce1F",
+          "target_warp": 4
+        }
+      ],
+      "requires_real_collision_check": true,
+      "exterior_door_status": "Verified v02 production input: paired ladders, native slide stops, safe exterior return and same-mouth reentry; Save/Continue and MCP pass. See ice-caves/README.md."
     }
   ]
 }

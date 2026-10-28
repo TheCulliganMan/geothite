@@ -5,6 +5,34 @@
     {
       "map": "MnRochesterGym",
       "source": "rochester-gates.json"
+    },
+    {
+      "map": "MnMankatoGym",
+      "source": "mankato-terraces.json"
+    },
+    {
+      "map": "MnMinneapolisGym",
+      "source": "minneapolis-circuit.json"
+    },
+    {
+      "map": "MnStPaulGym",
+      "source": "st-paul-loop.json"
+    },
+    {
+      "map": "MnStCloudGym",
+      "source": "st-cloud-arrows.json"
+    },
+    {
+      "map": "MnBrainerdGym",
+      "source": "brainerd-winch.json"
+    },
+    {
+      "map": "MnBemidjiGym",
+      "source": "bemidji-return.json"
+    },
+    {
+      "map": "MnDuluthGym",
+      "source": "duluth-gold-gates.json"
     }
   ]
 }

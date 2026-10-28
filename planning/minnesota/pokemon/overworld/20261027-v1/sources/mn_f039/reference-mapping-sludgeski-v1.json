@@ -1,0 +1,96 @@
+{
+  "use_case": "stylized-concept",
+  "image_inputs": [
+    {
+      "role": "native16coarsestyleONLY",
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/references/native-pack-16px/native-six-frame-style-board.8x.png"
+    }
+  ],
+  "canonical_identity_refs_actually_viewed": {
+    "front": {
+      "native_png": {
+        "path": "target/minnesota-pokemon/native/MN_F039/mn-090-sludgeski-v1.front.png",
+        "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F039/mn-090-sludgeski-v1.front.png",
+        "sha256": "389cb7924ce1bb1b41ceec46831411226aa8333dddda7bf956ffbd503cbd9468"
+      },
+      "native_indexed_json": {
+        "path": "target/minnesota-pokemon/native/MN_F039/mn-090-sludgeski-v1.front.json",
+        "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F039/mn-090-sludgeski-v1.front.json",
+        "sha256": "9ffc21f3ba0b2af2b02f1fb179f54627099468c3d8531003a0cfbc94e585a469"
+      },
+      "native_2bpp": {
+        "path": "target/minnesota-pokemon/native/MN_F039/mn-090-sludgeski-v1.front.2bpp",
+        "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F039/mn-090-sludgeski-v1.front.2bpp",
+        "sha256": "12d541dda57ff8ea4e2b1436b54272cdd43f820b12c3e4d8707356f67d08043d"
+      },
+      "source_image": {
+        "path": "planning/minnesota/pokemon/sprites/mn-f039/front-back.imagegen-v1.png",
+        "absolute_path": "/Users/ryanculligan/GitHub/geothite/planning/minnesota/pokemon/sprites/mn-f039/front-back.imagegen-v1.png",
+        "sha256": "afdee6f73acdb715b297c7ae0a2eccfb888803de38d9361e48ed60807cbc021a"
+      },
+      "source_crop": [
+        0,
+        0,
+        1145,
+        687
+      ],
+      "native_fit": [
+        54,
+        54
+      ],
+      "generation_prompt": {
+        "path": "planning/minnesota/pokemon/sprites/mn-f039/prompt-v1.txt",
+        "absolute_path": "/Users/ryanculligan/GitHub/geothite/planning/minnesota/pokemon/sprites/mn-f039/prompt-v1.txt",
+        "sha256": "6515892ca3789df5de29161d6f5a52f9c7b33d2768dd6cc01b1c4f269ef7cb54",
+        "reference_kind": "declared_design_prompt_reference; authoritative view record takes precedence over family default"
+      },
+      "sampling": "area_vote",
+      "exterior_contour": "source_backed",
+      "has_guarded_native_refinements": false,
+      "authority_note": "The current selected native PNG is the design authority; original source may contain detail simplified or refined in canonical conversion."
+    },
+    "back": {
+      "native_png": {
+        "path": "target/minnesota-pokemon/native/MN_F039/mn-090-sludgeski-v1.back.png",
+        "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F039/mn-090-sludgeski-v1.back.png",
+        "sha256": "a75b099e7e1b31b7cd0217e0e0862d39ad45afa9d7b2c78b4f554bec864ad529"
+      },
+      "native_indexed_json": {
+        "path": "target/minnesota-pokemon/native/MN_F039/mn-090-sludgeski-v1.back.json",
+        "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F039/mn-090-sludgeski-v1.back.json",
+        "sha256": "9b5b6843a36fbd416adc4d8b09d4c847c9864a9311d55530651abbbbf56ccafa"
+      },
+      "native_2bpp": {
+        "path": "target/minnesota-pokemon/native/MN_F039/mn-090-sludgeski-v1.back.2bpp",
+        "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F039/mn-090-sludgeski-v1.back.2bpp",
+        "sha256": "2f4b5dd133dcefd0b7013776f16c049a1b10918122f9ea33f762cb3d2cecb0a9"
+      },
+      "source_image": {
+        "path": "planning/minnesota/pokemon/sprites/mn-f039/front-back.imagegen-v1.png",
+        "absolute_path": "/Users/ryanculligan/GitHub/geothite/planning/minnesota/pokemon/sprites/mn-f039/front-back.imagegen-v1.png",
+        "sha256": "afdee6f73acdb715b297c7ae0a2eccfb888803de38d9361e48ed60807cbc021a"
+      },
+      "source_crop": [
+        0,
+        687,
+        1145,
+        687
+      ],
+      "native_fit": [
+        46,
+        47
+      ],
+      "generation_prompt": {
+        "path": "planning/minnesota/pokemon/sprites/mn-f039/prompt-v1.txt",
+        "absolute_path": "/Users/ryanculligan/GitHub/geothite/planning/minnesota/pokemon/sprites/mn-f039/prompt-v1.txt",
+        "sha256": "6515892ca3789df5de29161d6f5a52f9c7b33d2768dd6cc01b1c4f269ef7cb54",
+        "reference_kind": "declared_design_prompt_reference; authoritative view record takes precedence over family default"
+      },
+      "sampling": "area_vote",
+      "exterior_contour": "source_backed",
+      "has_guarded_native_refinements": false,
+      "authority_note": "The current selected native PNG is the design authority; original source may contain detail simplified or refined in canonical conversion."
+    }
+  },
+  "design_note": "SLUDGESKI Ice/Poison: lopsided shaggy snowbank creature, heavy soft icy brow and TWO real black pupils exposed on LIGHTicyface, ONE asymmetric black-ice HORN at upperLEFTcrown. Exactly2drooping thick slushARMS,2longflat SKI-SHAPEDgrownFEET withuprighttoeends; noheldskis/clothes. Big broad shoulders slump downinto short rounded darkslushbelly,2largecrystalteeth simplifiedtolightink1. Darkpurpleink2 poolsinsidebelly/undersidearms, icyblueink1 mainbody. Head notseparateanimalears. SOUTH bothupturnedskitoes, WEST longnearfoottoeLEFT/farfootalternates, NORTH blank heavysnowback/horn2arms2skifeet, NOeye/mouthorfaceonback. Gait ski-feet slidealternately, droopingarmscounter-swingonepixel, head/eyesstayfixed. Maxnative14x14."
+}

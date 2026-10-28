@@ -1,0 +1,112 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_298",
+  "name": "Bristub",
+  "family_id": "MN_F135",
+  "status": "native_compiled_sent_to_root_for_visual_context_acceptance",
+  "generation_tool": "built-in image_gen",
+  "prompts": [
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f135/prompt-bristub-v1.txt",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f135/prompt-bristub-v2-rear.txt"
+  ],
+  "sources_selected": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f135/bristub.overworld.imagegen-v1.png",
+      "sha256": "d10bd934ac7b8c2b1a17335900331bb43f9424e3f03e30ae47c334169d384081",
+      "dimensions": [
+        1254,
+        1254
+      ]
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f135/bristub.overworld.imagegen-v2-rear.png",
+      "sha256": "196f51ffc13c9f15d0e12dc9ac6f9c68c40ab4cde0a05b4a8bf96de4415c9898",
+      "dimensions": [
+        1254,
+        1254
+      ]
+    }
+  ],
+  "original_outputs": [
+    {
+      "record": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f135/bristub.v1.original-path.txt",
+      "default_path": "/Users/ryanculligan/.codex/generated_images/01a17dc4-dd75-7642-a1c6-4bf13fda70c6/exec-50239034-8822-47ae-8a8e-81c42808c10b.png"
+    },
+    {
+      "record": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f135/bristub.v2.original-path.txt",
+      "default_path": "/Users/ryanculligan/.codex/generated_images/01a17dc4-dd75-7642-a1c6-4bf13fda70c6/exec-01f8b598-a6eb-420e-b82e-80348adcccc8.png"
+    }
+  ],
+  "generation_reference_only": "planning/minnesota/pokemon/overworld/20261027-v1/references/native-pack-16px/native-six-frame-style-board.8x.png",
+  "identity_authority": "Currentactivecoverage.json textualtheme,canonicalpalette,visualinspectionofexactselectednativefront; no battleimagesprovidedtoImageGen",
+  "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f135/manifest-bristub-v3-eyes-rear.json",
+  "manifest_sha256": "2a1b0309f03addc01b182c444141e7fc2e190af0d7337936a95bc012f42a4932",
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f135/bristub-v3-eyes-rear",
+  "normal_review": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f135/bristub-v3-eyes-rear/review/line.normal-8x.png",
+  "frame_size": [
+    16,
+    16
+  ],
+  "native_bounds": [
+    [
+      3,
+      4,
+      10,
+      11
+    ],
+    [
+      4,
+      4,
+      9,
+      11
+    ],
+    [
+      1,
+      4,
+      13,
+      10
+    ],
+    [
+      3,
+      4,
+      10,
+      11
+    ],
+    [
+      4,
+      4,
+      9,
+      11
+    ],
+    [
+      1,
+      4,
+      13,
+      10
+    ]
+  ],
+  "sampling": "source_center",
+  "normal_palette_rgb555": [
+    32767,
+    9784,
+    6410,
+    0
+  ],
+  "shiny_palette_rgb555": [
+    32767,
+    26168,
+    12489,
+    0
+  ],
+  "transparent_index": 0,
+  "visible_indices": [
+    1,
+    2,
+    3
+  ],
+  "alpha_threshold": 128,
+  "native_pixels_painted": false,
+  "same_idle_step_registration": true,
+  "notes": "Sixposes nativecompiled, strictsourcealpha cropsisolated, max14pxopaquefootprints andtransparentborder. Nativeboard inspected andsenttoroot; no globalcoverage orpackwrites. Allraws/prompts/conversionvariantsretained.",
+  "rear_repair": "ImageGenpreciseeditv2 removesfalsepupildashes fromnorthonly; hybridmanifestkeepsv1front/westsource."
+}

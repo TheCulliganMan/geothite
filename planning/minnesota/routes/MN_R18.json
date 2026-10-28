@@ -182,8 +182,32 @@
       6
     ],
     [
-      24,
+      9,
       6
+    ],
+    [
+      9,
+      7
+    ],
+    [
+      13,
+      7
+    ],
+    [
+      13,
+      6
+    ],
+    [
+      22,
+      6
+    ],
+    [
+      22,
+      8
+    ],
+    [
+      24,
+      8
     ],
     [
       24,
@@ -257,7 +281,40 @@
       "purpose": "Optional Surf-only Revive; no story requirement"
     }
   ],
-  "loops": [],
+  "loops": [
+    {
+      "id": "PUBLIC_SHORE_WATCH_LOOP",
+      "path_metatiles": [
+        [
+          26,
+          6
+        ],
+        [
+          35,
+          6
+        ],
+        [
+          35,
+          9
+        ],
+        [
+          26,
+          9
+        ],
+        [
+          26,
+          6
+        ]
+      ],
+      "joins_districts": [
+        "NORTH_MEADOW",
+        "EAST_BEACH"
+      ],
+      "entry_rule": "Existing public-launch shore bay and eastern beach are both walking accessible.",
+      "return_rule": "North meadow/dune road or lower two-core protected shorewalk; no Cut, Surf or ledge required.",
+      "tradeoff": "A safe shorewalk gives a direct lake view between existing activities. The northern road and habitat retain optional trainers and field resources."
+    }
+  ],
   "minimum_optional_branches": 5,
   "doors": [],
   "interiors": [],
@@ -744,6 +801,97 @@
         57,
         11
       ]
+    },
+    {
+      "id": "SHOREWALK_WEST_GATE",
+      "tile": [
+        59,
+        18
+      ]
+    },
+    {
+      "id": "SHOREWALK_LAKE_VIEW",
+      "tile": [
+        65,
+        18
+      ]
+    },
+    {
+      "id": "SHOREWALK_BEACH_GATE",
+      "tile": [
+        71,
+        18
+      ]
+    },
+    {
+      "id": "DUNE_ROAD",
+      "tile": [
+        65,
+        11
+      ]
+    },
+    {
+      "id": "DUNE_BEND_WEST",
+      "tile": [
+        45,
+        13
+      ]
+    },
+    {
+      "id": "DIRECT_MEADOW_CHOICE",
+      "tile": [
+        47,
+        13
+      ]
+    },
+    {
+      "id": "OFFSET_LAKE_LOOKOUT",
+      "tile": [
+        45,
+        16
+      ]
+    },
+    {
+      "id": "LOOKOUT_RETURN_FORK",
+      "tile": [
+        49,
+        15
+      ]
+    },
+    {
+      "id": "FORMER_CLEAR_LAWN",
+      "tile": [
+        47,
+        11
+      ]
+    },
+    {
+      "id": "WEST_MARINA_FORK",
+      "tile": [
+        11,
+        11
+      ]
+    },
+    {
+      "id": "WEST_MEADOW_BANK_TURN",
+      "tile": [
+        19,
+        14
+      ]
+    },
+    {
+      "id": "WEST_LAKE_BEND",
+      "tile": [
+        27,
+        14
+      ]
+    },
+    {
+      "id": "MEADOW_RETURN_FORK",
+      "tile": [
+        27,
+        12
+      ]
     }
   ],
   "surf_viewpoints": [
@@ -766,6 +914,13 @@
       "tile": [
         75,
         35
+      ]
+    },
+    {
+      "id": "ISLET_PINE_DISCOVERY",
+      "tile": [
+        60,
+        34
       ]
     }
   ],
@@ -1254,5 +1409,107 @@
       "y_end": 14,
       "walking_tiles": 4
     }
-  ]
+  ],
+  "review_contract": {
+    "status": "Unpublished separate source-only whole-shore topology candidate.",
+    "purpose": "Connect existing public-launch and beach bays into a two-core railed shorewalk, contrasting with the two wider working marina piers. The northern road and continuous dune habitat form the ordinary return and optional battle/field alternative. No new story or HM gate.",
+    "native_preimage_pack_sha256": "da27b381f69f64d6530383216077de0802c5b9dc42b12c316319cbc5daeb6d50",
+    "explicit_new_region_metatiles": [
+      29,
+      6,
+      36,
+      10
+    ],
+    "shore_fitting_halo_metatiles": [
+      28,
+      8,
+      37,
+      11
+    ],
+    "native_art": "Existing native paired north82/south81 rail halves,40/42/49 corners and original03grass; no new source pixels, broad deck rectangle, art recipe or palette.",
+    "preserve": [
+      "All existing actors, items, quest commands, flags, parties, badges, signs, story fields",
+      "Both western marina piers and their cap/rail/deck/approach cells",
+      "Original six-step shore grass neck and every original encounter-grass quadrant",
+      "Original public Surf launch49,19, external rock boundaries, Surf-only islet and reciprocal water seam",
+      "Flat shore: no Cut, stair or ledge quota."
+    ],
+    "inhabited_ribbon_epoch": {
+      "status": "Separate unpublished source-only central dune/low-shore approach; frozen approved shorewalk v04 unchanged in history.",
+      "purpose": "The meadow margin joins the original necessary habitat; a dry winding approach visits a small railed lake view before climbing the existing launch spine. A direct grass crossing shortens that bend. No isolated tree mass or additional pier.",
+      "explicit_region_metatiles": [
+        21,
+        3,
+        27,
+        10
+      ],
+      "preserve": "Every actor/quest/program/party/flag/item/sign and original grass/water/piers/Surf/islet/approved shorewalk. Six-grass regional neck unchanged; dry approach adds no required grass beyond it.",
+      "candidate_choices_core": {
+        "west": [
+          45,
+          13
+        ],
+        "east": [
+          48,
+          13
+        ],
+        "dry_via": [
+          [
+            45,
+            16
+          ],
+          [
+            48,
+            16
+          ]
+        ],
+        "grass_band": [
+          46,
+          12,
+          48,
+          16
+        ]
+      },
+      "native_art": "Only original03 grass/01road and native48/49 protective rail. No new pixels/palette/recipes or Cut/hops."
+    },
+    "whole_trip_next": {
+      "status": "SOURCE_CANDIDATE_ONLY; current660 native preimage required",
+      "western_main_course_core": [
+        [
+          12,
+          12
+        ],
+        [
+          18,
+          12
+        ],
+        [
+          18,
+          14
+        ],
+        [
+          26,
+          14
+        ],
+        [
+          26,
+          12
+        ],
+        [
+          30,
+          12
+        ]
+      ],
+      "meaning": "Brainerd fork / western lake-facing bend / meadow report / required habitat / dune lookout or grassy shortcut / public launch / protected shore loop / beach",
+      "native_gameplay_proved": false
+    }
+  },
+  "terrain_revision": {
+    "id": "route-quality-next-v01",
+    "pack_sha256": "1186a24371251f741db88cf35a7863145ed5423da4ad3d7c6485c8f242753ecb",
+    "native_publication_inputs": "renders/route-quality-next/integration-inputs",
+    "controller_proof": "renders/route-quality-next/controller-v05/controller-proof.json",
+    "runbook": "playable/route-quality-next.md",
+    "scope": "Reviewed bounded terrain only; no full-route final acceptance or earned regional progression claim."
+  }
 }

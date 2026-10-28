@@ -5380,7 +5380,7 @@
       ],
       "evolution": {
         "method": "LEVEL",
-        "level": 28
+        "level": 24
       },
       "held_items": [
         null,
@@ -5439,10 +5439,6 @@
           "SWIFT"
         ],
         [
-          28,
-          "WATERFALL"
-        ],
-        [
           30,
           "BUBBLEBEAM"
         ],
@@ -5453,6 +5449,10 @@
         [
           37,
           "IRON_TAIL"
+        ],
+        [
+          40,
+          "WATERFALL"
         ],
         [
           41,
@@ -5493,15 +5493,15 @@
         "fish. It attacks @ when a larger @ fish draws close."
       ],
       "base_stats": {
-        "hp": 75,
-        "attack": 95,
-        "defense": 100,
-        "speed": 80,
-        "special_attack": 55,
-        "special_defense": 85
+        "hp": 65,
+        "attack": 80,
+        "defense": 85,
+        "speed": 60,
+        "special_attack": 45,
+        "special_defense": 75
       },
       "catch_rate": 90,
-      "base_exp": 206,
+      "base_exp": 137,
       "gender_ratio": 127,
       "hatch_cycles": 20,
       "growth_rate": "GROWTH_MEDIUM_FAST",
@@ -5509,7 +5509,10 @@
         "EGG_MINERAL",
         "EGG_WATER_2"
       ],
-      "evolution": null,
+      "evolution": {
+        "method": "LEVEL",
+        "level": 40
+      },
       "held_items": [
         null,
         null
@@ -5567,10 +5570,6 @@
           "SWIFT"
         ],
         [
-          28,
-          "WATERFALL"
-        ],
-        [
           31,
           "BUBBLEBEAM"
         ],
@@ -5581,6 +5580,10 @@
         [
           38,
           "IRON_TAIL"
+        ],
+        [
+          40,
+          "WATERFALL"
         ],
         [
           42,
@@ -39525,6 +39528,138 @@
           10,
           14
         ]
+      ]
+    },
+    {
+      "id": "MN_318",
+      "classification": "Crown Lure",
+      "height_inches": 48,
+      "weight_tenths_lb": 1120,
+      "dex_pages": [
+        "It spins the @ blade on its head @ to stir up silt.",
+        "Hidden in the @ cloud, it waits @ for unwary fish."
+      ],
+      "base_stats": {
+        "hp": 85,
+        "attack": 120,
+        "defense": 105,
+        "speed": 80,
+        "special_attack": 65,
+        "special_defense": 95
+      },
+      "catch_rate": 45,
+      "base_exp": 218,
+      "gender_ratio": 127,
+      "hatch_cycles": 20,
+      "growth_rate": "GROWTH_MEDIUM_FAST",
+      "egg_groups": [
+        "EGG_MINERAL",
+        "EGG_WATER_2"
+      ],
+      "evolution": null,
+      "held_items": [
+        null,
+        null
+      ],
+      "menu_icon": "ICON_FISH",
+      "footprint_species": "GOLDEEN",
+      "cry": {
+        "cry": "CRY_KRABBY",
+        "pitch": -40,
+        "length": 192
+      },
+      "shiny_rgb5": [
+        [
+          18,
+          29,
+          23
+        ],
+        [
+          18,
+          6,
+          14
+        ]
+      ],
+      "level_moves": [
+        [
+          1,
+          "TACKLE"
+        ],
+        [
+          1,
+          "HARDEN"
+        ],
+        [
+          1,
+          "WATER_GUN"
+        ],
+        [
+          11,
+          "ATTRACT"
+        ],
+        [
+          15,
+          "METAL_CLAW"
+        ],
+        [
+          19,
+          "SWEET_SCENT"
+        ],
+        [
+          24,
+          "PURSUIT"
+        ],
+        [
+          28,
+          "SWIFT"
+        ],
+        [
+          31,
+          "BUBBLEBEAM"
+        ],
+        [
+          35,
+          "AGILITY"
+        ],
+        [
+          38,
+          "IRON_TAIL"
+        ],
+        [
+          40,
+          "WATERFALL"
+        ],
+        [
+          42,
+          "SCREECH"
+        ],
+        [
+          44,
+          "SWORDS_DANCE"
+        ],
+        [
+          47,
+          "HYDRO_PUMP"
+        ],
+        [
+          51,
+          "LOCK_ON"
+        ]
+      ],
+      "tmhm_moves": [
+        "SURF",
+        "WHIRLPOOL",
+        "RAIN_DANCE",
+        "IRON_TAIL",
+        "SWIFT",
+        "ATTRACT",
+        "THIEF",
+        "PROTECT"
+      ],
+      "egg_moves": [
+        "FLAIL",
+        "MIMIC",
+        "OCTAZOOKA"
       ]
     }
   ]

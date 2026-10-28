@@ -1,0 +1,8 @@
+{
+  "tool": "built-in ImageGen",
+  "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f037/scraplow.overworld.imagegen-v1.png",
+  "default_original": "/Users/ryanculligan/.codex/generated_images/01a17dc4-dd75-7642-a1c6-4bf13fda70c6/exec-f0ea2491-7498-4865-a7c0-cd2924b679f2.png",
+  "sha256": "40db234cbc2d04c496b2d0c33c0b1379e02963b618bd3396d0f7fc6fbb5ee5ab",
+  "one_species_per_call": true,
+  "genuine_native16_style_only_input": true
+}

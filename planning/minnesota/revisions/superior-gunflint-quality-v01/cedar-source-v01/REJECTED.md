@@ -1,0 +1,1 @@
+Detached first pass rejected by static perimeter audit before rendering: the ordinary return touched the town boundary at x28..33 in addition to intended x26/27. No native pack or canonical source was changed. Revision v02 lifts that return one metatile inward.

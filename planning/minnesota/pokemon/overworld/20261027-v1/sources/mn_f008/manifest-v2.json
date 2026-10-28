@@ -1,0 +1,264 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F008",
+  "species": [
+    {
+      "species_id": "MN_022",
+      "runtime_token": "RUSTLEBEE",
+      "palette_rgb555": [
+        32767,
+        5885,
+        4330,
+        0
+      ],
+      "shiny_palette_rgb555": [
+        32767,
+        24485,
+        7492,
+        0
+      ],
+      "fit": [
+        14,
+        11
+      ],
+      "alpha_threshold": 128,
+      "sampling": "area_vote",
+      "minimum_foreground_samples": 16,
+      "black_priority_samples": 8,
+      "frames": [
+        {
+          "pose": "down_idle",
+          "source": "overworld.imagegen-v1.png",
+          "crop": [
+            0,
+            0,
+            256,
+            373
+          ]
+        },
+        {
+          "pose": "up_idle",
+          "source": "overworld.imagegen-v1.png",
+          "crop": [
+            256,
+            0,
+            256,
+            373
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "source": "overworld.imagegen-v1.png",
+          "crop": [
+            512,
+            0,
+            256,
+            373
+          ]
+        },
+        {
+          "pose": "down_step",
+          "source": "overworld.imagegen-v1.png",
+          "crop": [
+            768,
+            0,
+            256,
+            373
+          ]
+        },
+        {
+          "pose": "up_step",
+          "source": "overworld.imagegen-v1.png",
+          "crop": [
+            1024,
+            0,
+            256,
+            373
+          ]
+        },
+        {
+          "pose": "left_step",
+          "source": "overworld.imagegen-v1.png",
+          "crop": [
+            1280,
+            0,
+            256,
+            373
+          ]
+        }
+      ]
+    },
+    {
+      "species_id": "MN_023",
+      "runtime_token": "PATCHEBEE",
+      "palette_rgb555": [
+        32767,
+        5561,
+        13637,
+        0
+      ],
+      "shiny_palette_rgb555": [
+        32767,
+        14117,
+        10413,
+        0
+      ],
+      "fit": [
+        14,
+        13
+      ],
+      "alpha_threshold": 128,
+      "sampling": "area_vote",
+      "minimum_foreground_samples": 16,
+      "black_priority_samples": 8,
+      "frames": [
+        {
+          "pose": "down_idle",
+          "source": "overworld.imagegen-v1.png",
+          "crop": [
+            0,
+            373,
+            256,
+            292
+          ]
+        },
+        {
+          "pose": "up_idle",
+          "source": "overworld.imagegen-v1.png",
+          "crop": [
+            256,
+            373,
+            256,
+            292
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "source": "overworld.imagegen-v1.png",
+          "crop": [
+            512,
+            373,
+            256,
+            292
+          ]
+        },
+        {
+          "pose": "down_step",
+          "source": "overworld.imagegen-v1.png",
+          "crop": [
+            768,
+            373,
+            256,
+            292
+          ]
+        },
+        {
+          "pose": "up_step",
+          "source": "overworld.imagegen-v1.png",
+          "crop": [
+            1024,
+            373,
+            256,
+            292
+          ]
+        },
+        {
+          "pose": "left_step",
+          "source": "overworld.imagegen-v1.png",
+          "crop": [
+            1280,
+            373,
+            256,
+            292
+          ]
+        }
+      ]
+    },
+    {
+      "species_id": "MN_024",
+      "runtime_token": "RIVETQUEEN",
+      "palette_rgb555": [
+        32767,
+        4379,
+        23183,
+        0
+      ],
+      "shiny_palette_rgb555": [
+        32767,
+        9060,
+        20982,
+        0
+      ],
+      "fit": [
+        14,
+        14
+      ],
+      "alpha_threshold": 128,
+      "sampling": "area_vote",
+      "minimum_foreground_samples": 16,
+      "black_priority_samples": 8,
+      "frames": [
+        {
+          "pose": "down_idle",
+          "source": "overworld.imagegen-v1.png",
+          "crop": [
+            0,
+            665,
+            256,
+            359
+          ]
+        },
+        {
+          "pose": "up_idle",
+          "source": "overworld.imagegen-v1.png",
+          "crop": [
+            256,
+            665,
+            256,
+            359
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "source": "overworld.imagegen-v1.png",
+          "crop": [
+            512,
+            665,
+            256,
+            359
+          ]
+        },
+        {
+          "pose": "down_step",
+          "source": "overworld.imagegen-v1.png",
+          "crop": [
+            768,
+            665,
+            256,
+            359
+          ]
+        },
+        {
+          "pose": "up_step",
+          "source": "overworld.imagegen-v1.png",
+          "crop": [
+            1024,
+            665,
+            256,
+            359
+          ]
+        },
+        {
+          "pose": "left_step",
+          "source": "overworld.imagegen-v1.png",
+          "crop": [
+            1280,
+            665,
+            256,
+            359
+          ]
+        }
+      ]
+    }
+  ]
+}

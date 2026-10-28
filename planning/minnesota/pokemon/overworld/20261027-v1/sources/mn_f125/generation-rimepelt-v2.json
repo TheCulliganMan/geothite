@@ -1,0 +1,88 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F125",
+  "species_id": "MN_275",
+  "name": "Rimepelt",
+  "status": "native_candidate_compiled_root_visual_review_pending",
+  "generation_tool": "built-in image_gen",
+  "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f125/rimepelt.overworld.imagegen-v2.png",
+  "source_sha256": "474ac4192a104ddb20e55435baf9d8f39cb4efd7eb93916098ce0a807c220ece",
+  "original_default_output": "/Users/ryanculligan/.codex/generated_images/01a17dc4-dd75-7642-a1c6-4bf13fda70c6/exec-43555a9c-60fe-4d0b-aa19-094385468542.png",
+  "dimensions": [
+    1536,
+    1024
+  ],
+  "prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f125/prompt-rimepelt-v2.txt",
+  "only_input_image": "planning/minnesota/pokemon/overworld/20261027-v1/references/native-pack-16px/native-six-frame-style-board.8x.png",
+  "identity_source": "coverage.json exact current species textual design",
+  "sheet_columns": 3,
+  "sheet_rows": 2,
+  "frame_order": [
+    "down_idle",
+    "up_idle",
+    "left_idle",
+    "down_step",
+    "up_step",
+    "left_step"
+  ],
+  "proposed_native_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f125/manifest-rimepelt-v2-phase-eyes.json",
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f125/rimepelt-v2-phase-eyes",
+  "normal_review": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f125/rimepelt-v2-phase-eyes/review/line.normal-8x.png",
+  "native_frame_size": [
+    16,
+    16
+  ],
+  "native_bounds": [
+    [
+      2,
+      3,
+      11,
+      11
+    ],
+    [
+      2,
+      3,
+      11,
+      12
+    ],
+    [
+      1,
+      4,
+      14,
+      11
+    ],
+    [
+      2,
+      4,
+      11,
+      11
+    ],
+    [
+      2,
+      3,
+      11,
+      12
+    ],
+    [
+      1,
+      4,
+      14,
+      11
+    ]
+  ],
+  "palette_rgb555": [
+    32767,
+    7709,
+    13641,
+    0
+  ],
+  "shiny_palette_rgb555": [
+    32767,
+    31440,
+    15627,
+    0
+  ],
+  "alpha_policy": "index0 transparent everywhere;3opaqueinks",
+  "conversion": "Rust compile_minnesota_overworld; source_center; equal-sized per-species crops, shared scale and bottomanchor; source crop registration only, no painted native pixels",
+  "review_observation": "All6poses nativecompiled; southidle and southstep each retain2separatedblackeyes. Borealynx eyes1x2pixels; Kindlit andRimepelt small doteyes. Purewestprofilequadrupedal; northbacksplain. Samepaletteandscaleall6. Rootmustinspectactualnatives before acceptance; no globalqueue orpack modified."
+}

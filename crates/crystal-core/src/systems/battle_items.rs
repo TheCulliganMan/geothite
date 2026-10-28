@@ -103,6 +103,8 @@ pub const ITEM_EFFECT_BEHAVIOR_CONFUSION_HEAL: &str = "CONFUSION_HEAL";
 pub const ITEM_EFFECT_BEHAVIOR_FULL_RESTORE: &str = "FULL_RESTORE";
 pub const ITEM_EFFECT_BEHAVIOR_FULL_HEAL: &str = "FULL_HEAL";
 pub const ITEM_EFFECT_BEHAVIOR_STATUS_HEAL: &str = "STATUS_HEAL";
+/// Restore HP and apply the item's declared confusion duration on success.
+pub const ITEM_EFFECT_BEHAVIOR_RESTORE_HP_CONFUSE: &str = "RESTORE_HP_CONFUSE";
 pub const ITEM_EFFECT_BEHAVIOR_RESTORE_HP: &str = "RESTORE_HP";
 pub const ITEM_EFFECT_BEHAVIOR_PP_UP: &str = "PP_UP";
 pub const ITEM_EFFECT_BEHAVIOR_RESTORE_PP: &str = "RESTORE_PP";
@@ -227,6 +229,8 @@ pub enum BattleItemError {
     MissingConfusionHeal { item_id: String },
     #[error("battle item {item_id} has invalid confusion_heal false")]
     InvalidConfusionHeal { item_id: String },
+    #[error("item {item_id} has invalid confusion duration {turns}")]
+    InvalidConfusionDuration { item_id: String, turns: u16 },
     #[error("battle item {item_id} declares battle escape without battle_escape_mode")]
     MissingBattleEscapeMode { item_id: String },
     #[error("battle item {item_id} declares invalid battle_escape_mode {mode}")]
@@ -295,6 +299,7 @@ pub enum ItemPayloadIssue {
     InvalidRepelSteps { steps: u16 },
     InvalidBattleFocusEnergy,
     InvalidConfusionHeal,
+    InvalidConfusionDuration { turns: u16 },
     MissingTmhmIndex,
     InvalidTmhmIndex { index: usize },
     MissingTmhmMove,
@@ -492,6 +497,11 @@ pub fn item_payload_issues_with_known_field_rules(
     if let Some(false) = item.battle_focus_energy {
         issues.push(ItemPayloadIssue::InvalidBattleFocusEnergy);
     }
+    if let Some(turns) = item.confusion_inflict_turns
+        && !(1..=5).contains(&turns)
+    {
+        issues.push(ItemPayloadIssue::InvalidConfusionDuration { turns });
+    }
     if let Some(false) = item.confusion_heal {
         issues.push(ItemPayloadIssue::InvalidConfusionHeal);
     }
@@ -594,6 +604,7 @@ fn is_exact_item_effect_behavior_token(value: &str) -> bool {
             | ITEM_EFFECT_BEHAVIOR_FULL_HEAL
             | ITEM_EFFECT_BEHAVIOR_STATUS_HEAL
             | ITEM_EFFECT_BEHAVIOR_RESTORE_HP
+            | ITEM_EFFECT_BEHAVIOR_RESTORE_HP_CONFUSE
             | ITEM_EFFECT_BEHAVIOR_PP_UP
             | ITEM_EFFECT_BEHAVIOR_RESTORE_PP
             | ITEM_EFFECT_BEHAVIOR_PARTY_REVIVE
@@ -805,6 +816,9 @@ pub fn apply_active_battle_item_effect(
         ITEM_EFFECT_BEHAVIOR_FULL_HEAL => apply_full_heal(pokemon, item, consumed),
         ITEM_EFFECT_BEHAVIOR_STATUS_HEAL => apply_status_heal(pokemon, item, consumed),
         ITEM_EFFECT_BEHAVIOR_RESTORE_HP => apply_restore_hp(pokemon, item, consumed),
+        ITEM_EFFECT_BEHAVIOR_RESTORE_HP_CONFUSE => {
+            apply_restore_hp_confuse(pokemon, item, consumed)
+        }
         _behavior_id => Err(BattleItemError::MissingBattleItemPayload {
             item_id: item.script_name.clone(),
         }),
@@ -973,6 +987,9 @@ fn validate_battle_item_effect_behavior_id(
 }
 
 fn active_battle_item_behavior_id(item: &Item) -> Option<&'static str> {
+    if item.confusion_inflict_turns.is_some() {
+        return Some(ITEM_EFFECT_BEHAVIOR_RESTORE_HP_CONFUSE);
+    }
     if item.revive_hp_percent.is_some() {
         return Some(ITEM_EFFECT_BEHAVIOR_REVIVE);
     }
@@ -1325,6 +1342,26 @@ pub fn apply_evolution_stone_item_effect(
         evolution_cancel_snapshot: evolution.cancel_snapshot,
         consumed,
     })
+}
+
+fn apply_restore_hp_confuse(
+    pokemon: &mut Pokemon,
+    item: &Item,
+    consumed: bool,
+) -> Result<BattleItemOutcome, BattleItemError> {
+    let turns = item
+        .confusion_inflict_turns
+        .filter(|turns| (1..=5).contains(turns))
+        .ok_or_else(|| BattleItemError::InvalidConfusionDuration {
+            item_id: item.script_name.clone(),
+            turns: item.confusion_inflict_turns.unwrap_or(0),
+        })?;
+    // Refuse fainted, full-HP, egg, and invalid healing targets before changing
+    // confusion. Inventory consumption is committed by the owning item action.
+    let mut outcome = apply_restore_hp(pokemon, item, consumed)?;
+    pokemon.confusion_turns = turns;
+    outcome.confusion_turns_after = turns;
+    Ok(outcome)
 }
 
 fn apply_restore_hp(
@@ -2396,6 +2433,7 @@ mod tests {
             battle_focus_energy: None,
             battle_stat_drop_guard: None,
             confusion_heal: None,
+            confusion_inflict_turns: None,
             repel_steps: None,
             escape_rope_mode: None,
             price: 0,
@@ -5096,6 +5134,61 @@ mod tests {
         assert!(
             reserved_effect_error.contains("effect_id"),
             "{reserved_effect_error}"
+        );
+    }
+
+    #[test]
+    fn healing_food_confusion_is_atomic_capped_and_payload_driven() {
+        let mut item = test_item("MODDED_DRINK", 100);
+        item.confusion_inflict_turns = Some(4);
+        assert_eq!(
+            active_battle_item_effect_plan(&item)
+                .expect("drink plan")
+                .behavior_id,
+            ITEM_EFFECT_BEHAVIOR_RESTORE_HP_CONFUSE
+        );
+        let mut target = test_pokemon(10, 150);
+        let outcome =
+            apply_active_battle_item_effect(&mut target, &item, true).expect("heal and confuse");
+        assert_eq!((outcome.hp_before, outcome.hp_after), (10, 110));
+        assert_eq!(
+            (
+                outcome.confusion_turns_before,
+                outcome.confusion_turns_after
+            ),
+            (0, 4)
+        );
+        assert_eq!(target.confusion_turns, 4);
+        assert!(outcome.consumed);
+        target.hp = 140;
+        apply_active_battle_item_effect(&mut target, &item, true).expect("cap at maximum HP");
+        assert_eq!(target.hp, 150);
+        for (hp, egg, turns) in [
+            (0, false, 4),
+            (150, false, 4),
+            (10, true, 4),
+            (10, false, 0),
+            (10, false, 6),
+        ] {
+            let mut target = test_pokemon(hp, 150);
+            target.is_egg = egg;
+            let before = target.clone();
+            item.confusion_inflict_turns = Some(turns);
+            assert!(apply_active_battle_item_effect(&mut target, &item, true).is_err());
+            assert_eq!(target, before, "refusal must not change HP or confusion");
+        }
+        item.confusion_inflict_turns = Some(4);
+        let encoded = serde_json::to_value(&item).expect("drink payload");
+        assert_eq!(
+            serde_json::from_value::<Item>(encoded).expect("round trip"),
+            item
+        );
+        item.confusion_inflict_turns = None;
+        let encoded = serde_json::to_value(&item).expect("native payload");
+        assert!(encoded.get("confusion_inflict_turns").is_none());
+        assert_eq!(
+            serde_json::from_value::<Item>(encoded).expect("old pack compatibility"),
+            item
         );
     }
 

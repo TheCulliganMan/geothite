@@ -21,11 +21,11 @@ pub(super) fn install(map: &mut MapModule, source: &Value) -> Result<()> {
     );
     let pages: Vec<Vec<String>> = serde_json::from_value(milestone["dialogue_pages"].clone())?;
     ensure!(
-        pages.len() == 2
+        (2..=6).contains(&pages.len())
             && pages
                 .iter()
                 .all(|p| p.len() == 2 && p.iter().all(|s| s.is_ascii() && s.len() <= 18)),
-        "two native delivery pages"
+        "two to six complete native delivery pages"
     );
     authoring::text(
         map,

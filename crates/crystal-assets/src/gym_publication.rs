@@ -269,7 +269,10 @@ pub(crate) fn validate(
             (router.at, mode.event.clone(), false)
         } else if let Some((puzzle, control, index)) = gym.switch_step(step) {
             ensure!(
-                puzzle.requires.iter().all(|r| completed.contains(r))
+                puzzle
+                    .step_requires(index)
+                    .iter()
+                    .all(|r| completed.contains(r))
                     && (index == 0 || completed.contains(&puzzle.events[0])),
                 "{}: switch {step} has unearned prerequisites",
                 gym.id

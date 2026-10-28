@@ -712,6 +712,7 @@ fn item_data(id: &str) -> Item {
         battle_focus_energy: None,
         battle_stat_drop_guard: None,
         confusion_heal: None,
+        confusion_inflict_turns: None,
         repel_steps: None,
         escape_rope_mode: None,
         price: 0,
@@ -1573,7 +1574,9 @@ fn heal_party_restores_hp_status_and_pp_from_exact_move_catalog() {
         assert_eq!(pokemon.hp, pokemon.max_hp);
         assert_eq!(pokemon.status, None);
         assert_eq!(pokemon.sleep_turns, 0);
-        assert_eq!(pokemon.confusion_turns, 2);
+        // Field drinks can now leave confusion on a party member. Full-party
+        // healing must cure it along with the other recoverable conditions.
+        assert_eq!(pokemon.confusion_turns, 0);
         assert!(pokemon.focus_energy);
         assert_eq!(pokemon.moves[0].current_pp, 42);
         assert_eq!(pokemon.moves[1].current_pp, 40);

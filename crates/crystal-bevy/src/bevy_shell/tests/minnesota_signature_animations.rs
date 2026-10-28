@@ -53,12 +53,14 @@ fn northwoods_moves_render_native_frames_both_sides_and_cleanup() {
     let actors = selection
         .into_iter()
         .map(|id| {
-            let level =
-                if crystal_assets::minnesota_signature_animations::SIGNATURE_MOVES.contains(&id) {
-                    60
-                } else {
-                    50
-                };
+            let level = if matches!(id, "SLIPPER_WALTZ" | "RIMEBRAND" | "PADDLE_SWEEP") {
+                36
+            } else if crystal_assets::minnesota_signature_animations::SIGNATURE_MOVES.contains(&id)
+            {
+                60
+            } else {
+                50
+            };
             (
                 id,
                 northwoods_animation_actor(shell.runtime.data(), id, level),
@@ -72,7 +74,13 @@ fn northwoods_moves_render_native_frames_both_sides_and_cleanup() {
             visible_move_animation_definition(&base_snapshot, move_id, 0)
                 .expect("signature must resolve through the production move table");
         let expected_label =
-            if crystal_assets::minnesota_signature_animations::SIGNATURE_MOVES.contains(&move_id) {
+            if crystal_assets::starter_signature_animations::STARTER_SIGNATURE_MOVES
+                .contains(&move_id)
+            {
+                crystal_assets::starter_signature_animations::animation_label(move_id)
+            } else if crystal_assets::minnesota_signature_animations::SIGNATURE_MOVES
+                .contains(&move_id)
+            {
                 crystal_assets::minnesota_signature_animations::animation_label(move_id)
             } else {
                 crystal_assets::northwoods_move_animations::animation_label(move_id)
@@ -603,6 +611,7 @@ fn northwoods_animation_selection(value: Option<&str>) -> Result<Vec<&'static st
     let all = crystal_assets::northwoods_move_animations::IMPORTED_MOVES
         .into_iter()
         .chain(crystal_assets::minnesota_signature_animations::SIGNATURE_MOVES)
+        .chain(crystal_assets::starter_signature_animations::STARTER_SIGNATURE_MOVES)
         .collect::<Vec<_>>();
     let Some(value) = value else {
         return Ok(all);
@@ -627,11 +636,16 @@ fn northwoods_animation_filter_rejects_unknown_empty_and_duplicate_ids() {
         northwoods_animation_selection(None)
             .expect("all moves")
             .len(),
-        19
+        21
     );
     assert_eq!(
         northwoods_animation_selection(Some("fairy_wind, MOONBLAST")).expect("selected moves"),
         ["FAIRY_WIND", "MOONBLAST"]
+    );
+    assert_eq!(
+        northwoods_animation_selection(Some("SLIPPER_WALTZ,RIMEBRAND,PADDLE_SWEEP"))
+            .expect("all three starter signatures"),
+        ["SLIPPER_WALTZ", "RIMEBRAND", "PADDLE_SWEEP"]
     );
     for invalid in ["", "SOUND", "FAIRY_WIND,", "FAIRY_WIND,FAIRY_WIND"] {
         assert!(northwoods_animation_selection(Some(invalid)).is_err());
@@ -650,6 +664,8 @@ fn northwoods_animation_actor(
         "SLIPPER_WALTZ" | "ENERGY_BALL" | "FAIRY_WIND" | "DISARMING_VOICE" | "DAZZLING_GLEAM"
         | "MOONBLAST" => "CYPRIELLE",
         "PIKE_DRILL" => "MUSKETUNGE",
+        "RIMEBRAND" => "BOREALYNX",
+        "PADDLE_SWEEP" => "VOYAGEAR",
         "WATER_PULSE" | "AQUA_JET" => "VOYAGEAR",
         "ICE_SHARD" => "TIPULORD",
         "IRON_HEAD" => "MESABLAST",

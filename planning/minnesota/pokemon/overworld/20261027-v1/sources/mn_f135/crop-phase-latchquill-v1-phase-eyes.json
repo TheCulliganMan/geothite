@@ -1,0 +1,38 @@
+{
+  "source_crop_dx_dy": [
+    0,
+    0
+  ],
+  "same_idle_and_step_shift": true,
+  "native_pixels_painted": false,
+  "eye_source_bounds": [
+    [
+      [
+        175,
+        468,
+        188,
+        490
+      ],
+      [
+        251,
+        468,
+        264,
+        490
+      ]
+    ],
+    [
+      [
+        175,
+        917,
+        188,
+        938
+      ],
+      [
+        251,
+        917,
+        264,
+        938
+      ]
+    ]
+  ]
+}

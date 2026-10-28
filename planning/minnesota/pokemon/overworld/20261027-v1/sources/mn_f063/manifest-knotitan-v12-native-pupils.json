@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F063",
+  "species": [
+    {
+      "species_id": "MN_270",
+      "runtime_token": "KNOTITAN",
+      "palette_rgb555": [
+        32767,
+        13054,
+        3309,
+        0
+      ],
+      "shiny_palette_rgb555": [
+        32767,
+        25486,
+        13637,
+        0
+      ],
+      "fit": [
+        14,
+        14
+      ],
+      "alpha_threshold": 128,
+      "sampling": "source_center",
+      "minimum_foreground_samples": 16,
+      "black_priority_samples": 64,
+      "interior_black_samples": 64,
+      "opaque_interior_minimum_samples": 64,
+      "frames": [
+        {
+          "pose": "down_idle",
+          "source": "knotitan.overworld.imagegen-v5-tall-face.png",
+          "crop": [
+            0,
+            73,
+            540,
+            441
+          ]
+        },
+        {
+          "pose": "up_idle",
+          "source": "knotitan.overworld.imagegen-v2-native-face.png",
+          "crop": [
+            517,
+            80,
+            540,
+            441
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "source": "knotitan.overworld.imagegen-v4-profile-cheek.png",
+          "crop": [
+            995,
+            85,
+            540,
+            441
+          ]
+        },
+        {
+          "pose": "down_step",
+          "source": "knotitan.overworld.imagegen-v5-tall-face.png",
+          "crop": [
+            0,
+            516,
+            540,
+            441
+          ]
+        },
+        {
+          "pose": "up_step",
+          "source": "knotitan.overworld.imagegen-v2-native-face.png",
+          "crop": [
+            517,
+            523,
+            540,
+            441
+          ]
+        },
+        {
+          "pose": "left_step",
+          "source": "knotitan.overworld.imagegen-v4-profile-cheek.png",
+          "crop": [
+            995,
+            527,
+            540,
+            441
+          ]
+        }
+      ]
+    }
+  ]
+}

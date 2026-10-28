@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F033",
+  "species": [
+    {
+      "species_id": "MN_080",
+      "runtime_token": "SQUEAKURD",
+      "palette_rgb555": [
+        32767,
+        6847,
+        2321,
+        0
+      ],
+      "shiny_palette_rgb555": [
+        32767,
+        22502,
+        8738,
+        0
+      ],
+      "fit": [
+        14,
+        14
+      ],
+      "alpha_threshold": 245,
+      "sampling": "source_center",
+      "minimum_foreground_samples": 16,
+      "black_priority_samples": 32,
+      "interior_black_samples": null,
+      "opaque_interior_minimum_samples": 60,
+      "frames": [
+        {
+          "pose": "down_idle",
+          "source": "squeakurd.overworld.imagegen-v1.png",
+          "crop": [
+            66,
+            122,
+            434,
+            363
+          ]
+        },
+        {
+          "pose": "up_idle",
+          "source": "squeakurd.overworld.imagegen-v1.png",
+          "crop": [
+            551,
+            122,
+            434,
+            363
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "source": "squeakurd.overworld.imagegen-v1.png",
+          "crop": [
+            1046,
+            132,
+            434,
+            363
+          ]
+        },
+        {
+          "pose": "down_step",
+          "source": "squeakurd.overworld.imagegen-v1.png",
+          "crop": [
+            67,
+            550,
+            434,
+            363
+          ]
+        },
+        {
+          "pose": "up_step",
+          "source": "squeakurd.overworld.imagegen-v1.png",
+          "crop": [
+            551,
+            563,
+            434,
+            363
+          ]
+        },
+        {
+          "pose": "left_step",
+          "source": "squeakurd.overworld.imagegen-v1.png",
+          "crop": [
+            1046,
+            562,
+            434,
+            363
+          ]
+        }
+      ]
+    }
+  ]
+}

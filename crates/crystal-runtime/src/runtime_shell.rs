@@ -1312,6 +1312,34 @@ impl RuntimeGameShell {
                     ended: false,
                 });
             }
+            // A text acknowledgement may resume directly into a trade. Leave
+            // that opcode to the production controller so it asks for YES/NO
+            // and a fresh party selection, just as direct interaction does.
+            let pending_trade = command
+                .filter(|command| {
+                    command.get("command").and_then(serde_json::Value::as_str) == Some("trade")
+                })
+                .and_then(|command| command.get("args"))
+                .and_then(serde_json::Value::as_array)
+                .and_then(|args| args.first())
+                .and_then(serde_json::Value::as_str)
+                .is_some_and(|id| {
+                    !self
+                        .session
+                        .state()
+                        .script_runtime
+                        .completed_trades
+                        .iter()
+                        .any(|done| done == id)
+                });
+            if pending_trade {
+                return Ok(RuntimeCompiledScriptRun {
+                    steps,
+                    next_cursor: Some(current),
+                    boundary: Some(RuntimeCompiledScriptBoundary::NpcTrade),
+                    ended: false,
+                });
+            }
             // Registration is a synchronous choice, including when reached
             // through a jump or a returned common script. Leave the opcode
             // unexecuted until the frontend supplies the player's response.

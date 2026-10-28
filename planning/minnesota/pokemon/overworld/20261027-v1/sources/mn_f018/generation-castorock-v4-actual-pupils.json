@@ -1,0 +1,39 @@
+{
+  "name": "castorock",
+  "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f018/castorock-v4-actual-pupils",
+  "selected_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f018/manifest-castorock-v4-actual-pupils.json",
+  "tool": "built-in image_gen",
+  "status": "source-generated/native-proven; root owns acceptance and context gate",
+  "native_frame_size": [
+    16,
+    16
+  ],
+  "canonical_normal_palette": [
+    32767,
+    16023,
+    8524,
+    0
+  ],
+  "canonical_shiny_palette": [
+    32767,
+    21231,
+    10632,
+    0
+  ],
+  "fit": [
+    12,
+    12
+  ],
+  "all_raw_renders_and_prompts_retained": true,
+  "no_native_pixel_painting": true,
+  "no_registry_or_pack_changes": true,
+  "retained_source_hashes": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f018/castorock.overworld.imagegen-v2-profile-eyes.png": "b40670edd668607412615fd6506df5e6b5b864bf3c8733e4bcafb4c09c7243f4",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f018/castorock.overworld.imagegen-v1.png": "fce4a04906f26b519b81e4ab02b309689ca11303ccb16208f04a35411de4d935",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f018/prompt-castorock-v1.txt": "e767925561fe600138ce287127c612911aea366b88ea6cab442ef9d52939fb3e",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f018/prompt-castorock-v2-profile-eyes.txt": "dd8642a648816aadea8dc81cc8ccc8f827a30ef0ceefe115f0c29e1d9f594da9",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f018/castorock.v1.original-path.txt": "b905c864ef11647dbf301cc7ce389ebd6c6beb9cf246c8edb6a0dadacf98a82a",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f018/castorock.v2.original-path.txt": "d7aaebf7ff3817784d0ca917f7eb3dd0e6416b959a8fbff48ad8ded82b04f287"
+  },
+  "proof": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f018/proof-castorock-v4-actual-pupils-actual-source.json"
+}

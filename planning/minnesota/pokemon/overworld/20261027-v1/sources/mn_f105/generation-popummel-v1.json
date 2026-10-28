@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_232",
+  "name": "Popummel",
+  "family_id": "MN_F105",
+  "generation_tool": "built-in image_gen",
+  "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f105/popummel.overworld.imagegen-v1.png",
+  "original_default_output": "/Users/ryanculligan/.codex/generated_images/01a179bf-dc2b-7352-8975-8b8f3a32e33b/exec-17654326-b69b-45c2-8273-805c431a6d07.png",
+  "source_sha256": "4c64797c27afd5fc51b4cf461c5485f6d8fed56078ec005e0f39a20df9613e3d",
+  "dimensions": [
+    1536,
+    1024
+  ],
+  "prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f105/prompt-popummel-v1.txt",
+  "prompt_sha256": "572d28de7112f72869d266ccacdf0b6558b5912bbfe06397341bc8b5209b503e",
+  "reference_mapping": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f105/reference-mapping-popummel-v1.json",
+  "selected_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f105/manifest-popummel-v1-pupil-proof.json",
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f105/popummel-v1-pupil-proof",
+  "source_pupil_proof": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f105/manifest-popummel-v1-pupil-proof.proof.json",
+  "status": "frozen candidate; author actual normal/shiny and source pupils reviewed, root context pending",
+  "accepted": false
+}

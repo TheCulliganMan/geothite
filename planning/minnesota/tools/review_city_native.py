@@ -20,6 +20,19 @@ from review_passage_native import actors, digest, write
 ROOT = Path(__file__).resolve().parents[3]
 
 
+def native_scene_crop(art, module, scene, box):
+    """Include the active map's repeated native border outside its extent."""
+    left, top, right, bottom = box
+    border = art.blocks(module['attributes']['tileset_name'], 'day')[
+        module['attributes']['border_block']]
+    crop = Image.new('RGBA', (right - left, bottom - top))
+    for y in range(top // 32 * 32, bottom, 32):
+        for x in range(left // 32 * 32, right, 32):
+            crop.paste(border, (x - left, y - top))
+    crop.paste(scene, (-left, -top))
+    return crop
+
+
 def priority_scene(pack, module, scene, ground, box):
     """Mirror native nonzero-index foreground; never modify the GPU capture."""
     attr = module['attributes']; name = attr['tileset_name']
@@ -147,7 +160,8 @@ def main():
             scene = cached[name].copy(); scene.alpha_composite(oriented_sprite(pack,'SPRITE_CHRIS','south'),(x*16,y*16))
             box = (x*16-256,y*16-192,x*16+256,y*16+192)
             foreground_pixels = priority_scene(pack,module,scene,terrain[name],box)
-            crop = render_stage(scene,'crop',folder,'source512',box)
+            crop = native_scene_crop(art, module, scene, box)
+            save_render(crop, folder/'source512-with-native-border.png')
             best = actual.width*actual.height; matched = None
             for phase, candidate in [(None,crop),*list(phases(pack,module,crop,box,folder))]:
                 key = 'static' if phase is None else str(phase)

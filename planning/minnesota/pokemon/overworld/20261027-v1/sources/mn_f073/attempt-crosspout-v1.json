@@ -1,0 +1,9 @@
+{
+  "tool": "built-in image_gen",
+  "original": "/Users/ryanculligan/.codex/generated_images/01a179bf-dc2b-7352-8975-8b8f3a32e33b/exec-c6e26a76-a552-4bf4-8175-69ec3fd56a1a.png",
+  "preserved_raw": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f073/crosspout.overworld.imagegen-v1.png",
+  "sha256": "2566281466124c9bd9a71a5ae1a05a1455810ba4082298d993273fbdd5df33e1",
+  "exact_prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f073/prompt-crosspout-v1.txt",
+  "reference_mapping": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f073/reference-mapping-crosspout-v1.json",
+  "status": "preserved; selected frames recorded in frozen manifest"
+}

@@ -1,0 +1,3287 @@
+{
+  "schema_version": 2,
+  "id": "MnStateFairgrounds",
+  "tileset": "johto",
+  "compiled_tileset": "mn_state_fair_native",
+  "source_pixels_modified": false,
+  "dimensions_metatiles": [
+    48,
+    36
+  ],
+  "shore_fitting": "explicit_source_edges",
+  "reject_cliff_cuts": true,
+  "derived_blocks": [
+    {
+      "id": "80",
+      "source_tileset": "gate",
+      "source_block": "0c",
+      "collision": [
+        "COUNTER",
+        "FLOOR",
+        "COUNTER",
+        "COUNTER"
+      ]
+    },
+    {
+      "id": "81",
+      "source_tileset": "gate",
+      "source_block": "0d",
+      "collision": [
+        "FLOOR",
+        "COUNTER",
+        "COUNTER",
+        "COUNTER"
+      ]
+    },
+    {
+      "id": "82",
+      "source_tileset": "gate",
+      "source_block": "0b",
+      "collision": [
+        "FLOOR",
+        "FLOOR",
+        "COUNTER",
+        "COUNTER"
+      ]
+    },
+    {
+      "id": "83",
+      "source_tileset": "gate",
+      "source_block": "32",
+      "collision": [
+        "COUNTER",
+        "FLOOR",
+        "COUNTER",
+        "FLOOR"
+      ]
+    },
+    {
+      "id": "84",
+      "source_tileset": "gate",
+      "source_block": "33",
+      "collision": [
+        "COUNTER",
+        "FLOOR",
+        "FLOOR",
+        "WALL"
+      ]
+    },
+    {
+      "id": "85",
+      "source_tileset": "gate",
+      "source_block": "3a",
+      "collision": [
+        "FLOOR",
+        "WALL",
+        "FLOOR",
+        "WALL"
+      ]
+    },
+    {
+      "id": "86",
+      "source_tileset": "park",
+      "source_block": "0e",
+      "collision": [
+        "WALL",
+        "WALL",
+        "FLOOR",
+        "FLOOR"
+      ]
+    },
+    {
+      "id": "87",
+      "source_tileset": "park",
+      "source_block": "0f",
+      "collision": [
+        "WALL",
+        "FLOOR",
+        "FLOOR",
+        "FLOOR"
+      ]
+    },
+    {
+      "id": "88",
+      "source_tileset": "park",
+      "source_block": "28",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ]
+    },
+    {
+      "id": "89",
+      "source_tileset": "park",
+      "source_block": "29",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ]
+    },
+    {
+      "id": "8a",
+      "source_tileset": "park",
+      "source_block": "2a",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ]
+    }
+  ],
+  "layers": [
+    {
+      "name": "Closed native perimeter",
+      "kind": "rect",
+      "bounds": [
+        0,
+        0,
+        48,
+        36
+      ],
+      "material": "forest"
+    },
+    {
+      "name": "Broad occupied fair silhouette with a northern exhibition neck",
+      "kind": "polygon",
+      "material": "lawn",
+      "points": [
+        [
+          9,
+          1
+        ],
+        [
+          44,
+          1
+        ],
+        [
+          44,
+          7
+        ],
+        [
+          46,
+          7
+        ],
+        [
+          46,
+          34
+        ],
+        [
+          2,
+          34
+        ],
+        [
+          2,
+          7
+        ],
+        [
+          9,
+          7
+        ]
+      ]
+    },
+    {
+      "name": "Dan Patch Avenue",
+      "kind": "path",
+      "points": [
+        [
+          3,
+          10
+        ],
+        [
+          44,
+          10
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "name": "Carnes Avenue",
+      "kind": "path",
+      "points": [
+        [
+          3,
+          17
+        ],
+        [
+          44,
+          17
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "name": "Judson Avenue",
+      "kind": "path",
+      "points": [
+        [
+          3,
+          22
+        ],
+        [
+          44,
+          22
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "name": "Como Avenue",
+      "kind": "path",
+      "points": [
+        [
+          3,
+          32
+        ],
+        [
+          44,
+          32
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "name": "Underwood Street",
+      "kind": "path",
+      "points": [
+        [
+          24,
+          3
+        ],
+        [
+          24,
+          32
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "name": "Cooper Street",
+      "kind": "path",
+      "points": [
+        [
+          44,
+          7
+        ],
+        [
+          44,
+          32
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "name": "Clough Street",
+      "kind": "path",
+      "points": [
+        [
+          10,
+          2
+        ],
+        [
+          10,
+          32
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "name": "Midway return",
+      "kind": "path",
+      "points": [
+        [
+          3,
+          10
+        ],
+        [
+          3,
+          22
+        ],
+        [
+          10,
+          22
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "name": "North exhibits loop",
+      "kind": "path",
+      "points": [
+        [
+          10,
+          2
+        ],
+        [
+          43,
+          2
+        ],
+        [
+          43,
+          8
+        ],
+        [
+          24,
+          8
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "name": "Como entry",
+      "kind": "path",
+      "points": [
+        [
+          8,
+          35
+        ],
+        [
+          8,
+          33
+        ],
+        [
+          10,
+          33
+        ],
+        [
+          10,
+          32
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "name": "Livestock lane",
+      "kind": "path",
+      "points": [
+        [
+          3,
+          22
+        ],
+        [
+          3,
+          32
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "name": "Dairy lane",
+      "kind": "path",
+      "points": [
+        [
+          36,
+          17
+        ],
+        [
+          36,
+          32
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "name": "North growers court",
+      "kind": "rect",
+      "bounds": [
+        10,
+        3,
+        21,
+        7
+      ],
+      "material": "floor"
+    },
+    {
+      "name": "Grandstand apron",
+      "kind": "rect",
+      "bounds": [
+        4,
+        9,
+        13,
+        11
+      ],
+      "material": "floor"
+    },
+    {
+      "name": "Midway arcade",
+      "kind": "rect",
+      "bounds": [
+        3,
+        11,
+        21,
+        16
+      ],
+      "material": "floor"
+    },
+    {
+      "name": "Food pavilion",
+      "kind": "rect",
+      "bounds": [
+        26,
+        5,
+        44,
+        8
+      ],
+      "material": "floor"
+    },
+    {
+      "name": "Food row",
+      "kind": "rect",
+      "bounds": [
+        27,
+        10,
+        44,
+        14
+      ],
+      "material": "floor"
+    },
+    {
+      "name": "East craft street",
+      "kind": "rect",
+      "bounds": [
+        26,
+        19,
+        44,
+        22
+      ],
+      "material": "floor"
+    },
+    {
+      "name": "Barn forecourt",
+      "kind": "rect",
+      "bounds": [
+        3,
+        26,
+        10,
+        28
+      ],
+      "material": "floor"
+    },
+    {
+      "name": "Dairy forecourt",
+      "kind": "rect",
+      "bounds": [
+        36,
+        26,
+        44,
+        28
+      ],
+      "material": "floor"
+    },
+    {
+      "name": "Farmers market",
+      "kind": "rect",
+      "bounds": [
+        3,
+        28,
+        11,
+        32
+      ],
+      "material": "floor"
+    },
+    {
+      "name": "Entry plaza",
+      "kind": "rect",
+      "bounds": [
+        7,
+        32,
+        15,
+        34
+      ],
+      "material": "floor"
+    },
+    {
+      "name": "Food pavilion joined native roof",
+      "kind": "point",
+      "position": [
+        27,
+        4
+      ],
+      "block": "18"
+    },
+    {
+      "name": "Food pavilion continuous staffed counter",
+      "kind": "point",
+      "position": [
+        27,
+        5
+      ],
+      "block": "80"
+    },
+    {
+      "name": "Food pavilion joined native roof",
+      "kind": "point",
+      "position": [
+        28,
+        4
+      ],
+      "block": "1f"
+    },
+    {
+      "name": "Food pavilion continuous staffed counter",
+      "kind": "point",
+      "position": [
+        28,
+        5
+      ],
+      "block": "82"
+    },
+    {
+      "name": "Food pavilion joined native roof",
+      "kind": "point",
+      "position": [
+        29,
+        4
+      ],
+      "block": "1f"
+    },
+    {
+      "name": "Food pavilion continuous staffed counter",
+      "kind": "point",
+      "position": [
+        29,
+        5
+      ],
+      "block": "82"
+    },
+    {
+      "name": "Food pavilion joined native roof",
+      "kind": "point",
+      "position": [
+        30,
+        4
+      ],
+      "block": "1f"
+    },
+    {
+      "name": "Food pavilion continuous staffed counter",
+      "kind": "point",
+      "position": [
+        30,
+        5
+      ],
+      "block": "82"
+    },
+    {
+      "name": "Food pavilion joined native roof",
+      "kind": "point",
+      "position": [
+        31,
+        4
+      ],
+      "block": "1f"
+    },
+    {
+      "name": "Food pavilion continuous staffed counter",
+      "kind": "point",
+      "position": [
+        31,
+        5
+      ],
+      "block": "82"
+    },
+    {
+      "name": "Food pavilion joined native roof",
+      "kind": "point",
+      "position": [
+        32,
+        4
+      ],
+      "block": "1f"
+    },
+    {
+      "name": "Food pavilion continuous staffed counter",
+      "kind": "point",
+      "position": [
+        32,
+        5
+      ],
+      "block": "82"
+    },
+    {
+      "name": "Food pavilion joined native roof",
+      "kind": "point",
+      "position": [
+        33,
+        4
+      ],
+      "block": "1f"
+    },
+    {
+      "name": "Food pavilion continuous staffed counter",
+      "kind": "point",
+      "position": [
+        33,
+        5
+      ],
+      "block": "82"
+    },
+    {
+      "name": "Food pavilion joined native roof",
+      "kind": "point",
+      "position": [
+        34,
+        4
+      ],
+      "block": "1f"
+    },
+    {
+      "name": "Food pavilion continuous staffed counter",
+      "kind": "point",
+      "position": [
+        34,
+        5
+      ],
+      "block": "82"
+    },
+    {
+      "name": "Food pavilion joined native roof",
+      "kind": "point",
+      "position": [
+        35,
+        4
+      ],
+      "block": "1f"
+    },
+    {
+      "name": "Food pavilion continuous staffed counter",
+      "kind": "point",
+      "position": [
+        35,
+        5
+      ],
+      "block": "82"
+    },
+    {
+      "name": "Food pavilion joined native roof",
+      "kind": "point",
+      "position": [
+        36,
+        4
+      ],
+      "block": "1f"
+    },
+    {
+      "name": "Food pavilion continuous staffed counter",
+      "kind": "point",
+      "position": [
+        36,
+        5
+      ],
+      "block": "82"
+    },
+    {
+      "name": "Food pavilion joined native roof",
+      "kind": "point",
+      "position": [
+        37,
+        4
+      ],
+      "block": "1f"
+    },
+    {
+      "name": "Food pavilion continuous staffed counter",
+      "kind": "point",
+      "position": [
+        37,
+        5
+      ],
+      "block": "82"
+    },
+    {
+      "name": "Food pavilion joined native roof",
+      "kind": "point",
+      "position": [
+        38,
+        4
+      ],
+      "block": "1f"
+    },
+    {
+      "name": "Food pavilion continuous staffed counter",
+      "kind": "point",
+      "position": [
+        38,
+        5
+      ],
+      "block": "82"
+    },
+    {
+      "name": "Food pavilion joined native roof",
+      "kind": "point",
+      "position": [
+        39,
+        4
+      ],
+      "block": "1f"
+    },
+    {
+      "name": "Food pavilion continuous staffed counter",
+      "kind": "point",
+      "position": [
+        39,
+        5
+      ],
+      "block": "82"
+    },
+    {
+      "name": "Food pavilion joined native roof",
+      "kind": "point",
+      "position": [
+        40,
+        4
+      ],
+      "block": "1f"
+    },
+    {
+      "name": "Food pavilion continuous staffed counter",
+      "kind": "point",
+      "position": [
+        40,
+        5
+      ],
+      "block": "82"
+    },
+    {
+      "name": "Food pavilion joined native roof",
+      "kind": "point",
+      "position": [
+        41,
+        4
+      ],
+      "block": "1f"
+    },
+    {
+      "name": "Food pavilion continuous staffed counter",
+      "kind": "point",
+      "position": [
+        41,
+        5
+      ],
+      "block": "82"
+    },
+    {
+      "name": "Food pavilion joined native roof",
+      "kind": "point",
+      "position": [
+        42,
+        4
+      ],
+      "block": "19"
+    },
+    {
+      "name": "Food pavilion continuous staffed counter",
+      "kind": "point",
+      "position": [
+        42,
+        5
+      ],
+      "block": "81"
+    },
+    {
+      "name": "LemonadeVendor left counter",
+      "kind": "point",
+      "position": [
+        28,
+        11
+      ],
+      "block": "80"
+    },
+    {
+      "name": "LemonadeVendor right counter",
+      "kind": "point",
+      "position": [
+        29,
+        11
+      ],
+      "block": "81"
+    },
+    {
+      "name": "LemonadeVendor rear rail",
+      "kind": "point",
+      "position": [
+        28,
+        10
+      ],
+      "block": "49"
+    },
+    {
+      "name": "LemonadeVendor rear rail",
+      "kind": "point",
+      "position": [
+        29,
+        10
+      ],
+      "block": "49"
+    },
+    {
+      "name": "MilkVendor left counter",
+      "kind": "point",
+      "position": [
+        32,
+        11
+      ],
+      "block": "80"
+    },
+    {
+      "name": "MilkVendor right counter",
+      "kind": "point",
+      "position": [
+        33,
+        11
+      ],
+      "block": "81"
+    },
+    {
+      "name": "MilkVendor rear rail",
+      "kind": "point",
+      "position": [
+        32,
+        10
+      ],
+      "block": "49"
+    },
+    {
+      "name": "MilkVendor rear rail",
+      "kind": "point",
+      "position": [
+        33,
+        10
+      ],
+      "block": "49"
+    },
+    {
+      "name": "ProduceVendor left counter",
+      "kind": "point",
+      "position": [
+        36,
+        11
+      ],
+      "block": "80"
+    },
+    {
+      "name": "ProduceVendor right counter",
+      "kind": "point",
+      "position": [
+        37,
+        11
+      ],
+      "block": "81"
+    },
+    {
+      "name": "ProduceVendor rear rail",
+      "kind": "point",
+      "position": [
+        36,
+        10
+      ],
+      "block": "49"
+    },
+    {
+      "name": "ProduceVendor rear rail",
+      "kind": "point",
+      "position": [
+        37,
+        10
+      ],
+      "block": "49"
+    },
+    {
+      "name": "BakerVendor left counter",
+      "kind": "point",
+      "position": [
+        40,
+        11
+      ],
+      "block": "80"
+    },
+    {
+      "name": "BakerVendor right counter",
+      "kind": "point",
+      "position": [
+        41,
+        11
+      ],
+      "block": "81"
+    },
+    {
+      "name": "BakerVendor rear rail",
+      "kind": "point",
+      "position": [
+        40,
+        10
+      ],
+      "block": "49"
+    },
+    {
+      "name": "BakerVendor rear rail",
+      "kind": "point",
+      "position": [
+        41,
+        10
+      ],
+      "block": "49"
+    },
+    {
+      "name": "MidwayHost left counter",
+      "kind": "point",
+      "position": [
+        4,
+        12
+      ],
+      "block": "80"
+    },
+    {
+      "name": "MidwayHost right counter",
+      "kind": "point",
+      "position": [
+        5,
+        12
+      ],
+      "block": "81"
+    },
+    {
+      "name": "MidwayHost rear rail",
+      "kind": "point",
+      "position": [
+        4,
+        11
+      ],
+      "block": "49"
+    },
+    {
+      "name": "MidwayHost rear rail",
+      "kind": "point",
+      "position": [
+        5,
+        11
+      ],
+      "block": "49"
+    },
+    {
+      "name": "GameHost left counter",
+      "kind": "point",
+      "position": [
+        8,
+        12
+      ],
+      "block": "80"
+    },
+    {
+      "name": "GameHost right counter",
+      "kind": "point",
+      "position": [
+        9,
+        12
+      ],
+      "block": "81"
+    },
+    {
+      "name": "GameHost rear rail",
+      "kind": "point",
+      "position": [
+        8,
+        11
+      ],
+      "block": "49"
+    },
+    {
+      "name": "GameHost rear rail",
+      "kind": "point",
+      "position": [
+        9,
+        11
+      ],
+      "block": "49"
+    },
+    {
+      "name": "BallVendor left counter",
+      "kind": "point",
+      "position": [
+        12,
+        12
+      ],
+      "block": "80"
+    },
+    {
+      "name": "BallVendor right counter",
+      "kind": "point",
+      "position": [
+        13,
+        12
+      ],
+      "block": "81"
+    },
+    {
+      "name": "BallVendor rear rail",
+      "kind": "point",
+      "position": [
+        12,
+        11
+      ],
+      "block": "49"
+    },
+    {
+      "name": "BallVendor rear rail",
+      "kind": "point",
+      "position": [
+        13,
+        11
+      ],
+      "block": "49"
+    },
+    {
+      "name": "RibbonVendor left counter",
+      "kind": "point",
+      "position": [
+        16,
+        12
+      ],
+      "block": "80"
+    },
+    {
+      "name": "RibbonVendor right counter",
+      "kind": "point",
+      "position": [
+        17,
+        12
+      ],
+      "block": "81"
+    },
+    {
+      "name": "RibbonVendor rear rail",
+      "kind": "point",
+      "position": [
+        16,
+        11
+      ],
+      "block": "49"
+    },
+    {
+      "name": "RibbonVendor rear rail",
+      "kind": "point",
+      "position": [
+        17,
+        11
+      ],
+      "block": "49"
+    },
+    {
+      "name": "BerryGrower left counter",
+      "kind": "point",
+      "position": [
+        12,
+        4
+      ],
+      "block": "80"
+    },
+    {
+      "name": "BerryGrower right counter",
+      "kind": "point",
+      "position": [
+        13,
+        4
+      ],
+      "block": "81"
+    },
+    {
+      "name": "BerryGrower rear rail",
+      "kind": "point",
+      "position": [
+        12,
+        3
+      ],
+      "block": "49"
+    },
+    {
+      "name": "BerryGrower rear rail",
+      "kind": "point",
+      "position": [
+        13,
+        3
+      ],
+      "block": "49"
+    },
+    {
+      "name": "WaterVendor left counter",
+      "kind": "point",
+      "position": [
+        17,
+        4
+      ],
+      "block": "80"
+    },
+    {
+      "name": "WaterVendor right counter",
+      "kind": "point",
+      "position": [
+        18,
+        4
+      ],
+      "block": "81"
+    },
+    {
+      "name": "WaterVendor rear rail",
+      "kind": "point",
+      "position": [
+        17,
+        3
+      ],
+      "block": "49"
+    },
+    {
+      "name": "WaterVendor rear rail",
+      "kind": "point",
+      "position": [
+        18,
+        3
+      ],
+      "block": "49"
+    },
+    {
+      "name": "SupplyVendor left counter",
+      "kind": "point",
+      "position": [
+        3,
+        19
+      ],
+      "block": "80"
+    },
+    {
+      "name": "SupplyVendor right counter",
+      "kind": "point",
+      "position": [
+        4,
+        19
+      ],
+      "block": "81"
+    },
+    {
+      "name": "SupplyVendor rear rail",
+      "kind": "point",
+      "position": [
+        3,
+        18
+      ],
+      "block": "49"
+    },
+    {
+      "name": "SupplyVendor rear rail",
+      "kind": "point",
+      "position": [
+        4,
+        18
+      ],
+      "block": "49"
+    },
+    {
+      "name": "FeedVendor left counter",
+      "kind": "point",
+      "position": [
+        7,
+        19
+      ],
+      "block": "80"
+    },
+    {
+      "name": "FeedVendor right counter",
+      "kind": "point",
+      "position": [
+        8,
+        19
+      ],
+      "block": "81"
+    },
+    {
+      "name": "FeedVendor rear rail",
+      "kind": "point",
+      "position": [
+        7,
+        18
+      ],
+      "block": "49"
+    },
+    {
+      "name": "FeedVendor rear rail",
+      "kind": "point",
+      "position": [
+        8,
+        18
+      ],
+      "block": "49"
+    },
+    {
+      "name": "MarketSnack left counter",
+      "kind": "point",
+      "position": [
+        3,
+        29
+      ],
+      "block": "80"
+    },
+    {
+      "name": "MarketSnack right counter",
+      "kind": "point",
+      "position": [
+        4,
+        29
+      ],
+      "block": "81"
+    },
+    {
+      "name": "MarketSnack rear rail",
+      "kind": "point",
+      "position": [
+        3,
+        28
+      ],
+      "block": "49"
+    },
+    {
+      "name": "MarketSnack rear rail",
+      "kind": "point",
+      "position": [
+        4,
+        28
+      ],
+      "block": "49"
+    },
+    {
+      "name": "HoneyVendor left counter",
+      "kind": "point",
+      "position": [
+        7,
+        29
+      ],
+      "block": "80"
+    },
+    {
+      "name": "HoneyVendor right counter",
+      "kind": "point",
+      "position": [
+        8,
+        29
+      ],
+      "block": "81"
+    },
+    {
+      "name": "HoneyVendor rear rail",
+      "kind": "point",
+      "position": [
+        7,
+        28
+      ],
+      "block": "49"
+    },
+    {
+      "name": "HoneyVendor rear rail",
+      "kind": "point",
+      "position": [
+        8,
+        28
+      ],
+      "block": "49"
+    },
+    {
+      "name": "PrizeClerk left counter",
+      "kind": "point",
+      "position": [
+        10,
+        32
+      ],
+      "block": "80"
+    },
+    {
+      "name": "PrizeClerk right counter",
+      "kind": "point",
+      "position": [
+        11,
+        32
+      ],
+      "block": "81"
+    },
+    {
+      "name": "PrizeClerk rear rail",
+      "kind": "point",
+      "position": [
+        10,
+        31
+      ],
+      "block": "49"
+    },
+    {
+      "name": "PrizeClerk rear rail",
+      "kind": "point",
+      "position": [
+        11,
+        31
+      ],
+      "block": "49"
+    },
+    {
+      "name": "HerbVendor left counter",
+      "kind": "point",
+      "position": [
+        27,
+        20
+      ],
+      "block": "80"
+    },
+    {
+      "name": "HerbVendor right counter",
+      "kind": "point",
+      "position": [
+        28,
+        20
+      ],
+      "block": "81"
+    },
+    {
+      "name": "HerbVendor rear rail",
+      "kind": "point",
+      "position": [
+        27,
+        19
+      ],
+      "block": "49"
+    },
+    {
+      "name": "HerbVendor rear rail",
+      "kind": "point",
+      "position": [
+        28,
+        19
+      ],
+      "block": "49"
+    },
+    {
+      "name": "CraftVendor left counter",
+      "kind": "point",
+      "position": [
+        31,
+        20
+      ],
+      "block": "80"
+    },
+    {
+      "name": "CraftVendor right counter",
+      "kind": "point",
+      "position": [
+        32,
+        20
+      ],
+      "block": "81"
+    },
+    {
+      "name": "CraftVendor rear rail",
+      "kind": "point",
+      "position": [
+        31,
+        19
+      ],
+      "block": "49"
+    },
+    {
+      "name": "CraftVendor rear rail",
+      "kind": "point",
+      "position": [
+        32,
+        19
+      ],
+      "block": "49"
+    },
+    {
+      "name": "OrchardVendor left counter",
+      "kind": "point",
+      "position": [
+        35,
+        20
+      ],
+      "block": "80"
+    },
+    {
+      "name": "OrchardVendor right counter",
+      "kind": "point",
+      "position": [
+        36,
+        20
+      ],
+      "block": "81"
+    },
+    {
+      "name": "OrchardVendor rear rail",
+      "kind": "point",
+      "position": [
+        35,
+        19
+      ],
+      "block": "49"
+    },
+    {
+      "name": "OrchardVendor rear rail",
+      "kind": "point",
+      "position": [
+        36,
+        19
+      ],
+      "block": "49"
+    },
+    {
+      "name": "Florist left counter",
+      "kind": "point",
+      "position": [
+        39,
+        20
+      ],
+      "block": "80"
+    },
+    {
+      "name": "Florist right counter",
+      "kind": "point",
+      "position": [
+        40,
+        20
+      ],
+      "block": "81"
+    },
+    {
+      "name": "Florist rear rail",
+      "kind": "point",
+      "position": [
+        39,
+        19
+      ],
+      "block": "49"
+    },
+    {
+      "name": "Florist rear rail",
+      "kind": "point",
+      "position": [
+        40,
+        19
+      ],
+      "block": "49"
+    },
+    {
+      "name": "GardenSnack left counter",
+      "kind": "point",
+      "position": [
+        43,
+        29
+      ],
+      "block": "80"
+    },
+    {
+      "name": "GardenSnack right counter",
+      "kind": "point",
+      "position": [
+        44,
+        29
+      ],
+      "block": "81"
+    },
+    {
+      "name": "GardenSnack rear rail",
+      "kind": "point",
+      "position": [
+        43,
+        28
+      ],
+      "block": "49"
+    },
+    {
+      "name": "GardenSnack rear rail",
+      "kind": "point",
+      "position": [
+        44,
+        28
+      ],
+      "block": "49"
+    },
+    {
+      "name": "FirstAid left counter",
+      "kind": "point",
+      "position": [
+        39,
+        29
+      ],
+      "block": "80"
+    },
+    {
+      "name": "FirstAid right counter",
+      "kind": "point",
+      "position": [
+        40,
+        29
+      ],
+      "block": "81"
+    },
+    {
+      "name": "FirstAid rear rail",
+      "kind": "point",
+      "position": [
+        39,
+        28
+      ],
+      "block": "49"
+    },
+    {
+      "name": "FirstAid rear rail",
+      "kind": "point",
+      "position": [
+        40,
+        28
+      ],
+      "block": "49"
+    },
+    {
+      "name": "Grandstand native roof",
+      "kind": "point",
+      "position": [
+        5,
+        7
+      ],
+      "block": "18"
+    },
+    {
+      "name": "Grandstand native roof",
+      "kind": "point",
+      "position": [
+        6,
+        7
+      ],
+      "block": "1f"
+    },
+    {
+      "name": "Grandstand native roof",
+      "kind": "point",
+      "position": [
+        7,
+        7
+      ],
+      "block": "1f"
+    },
+    {
+      "name": "Grandstand native roof",
+      "kind": "point",
+      "position": [
+        8,
+        7
+      ],
+      "block": "1f"
+    },
+    {
+      "name": "Grandstand native roof",
+      "kind": "point",
+      "position": [
+        9,
+        7
+      ],
+      "block": "1f"
+    },
+    {
+      "name": "Grandstand native roof",
+      "kind": "point",
+      "position": [
+        10,
+        7
+      ],
+      "block": "1f"
+    },
+    {
+      "name": "Grandstand native roof",
+      "kind": "point",
+      "position": [
+        11,
+        7
+      ],
+      "block": "19"
+    },
+    {
+      "name": "Grandstand native facade",
+      "kind": "point",
+      "position": [
+        5,
+        8
+      ],
+      "block": "16"
+    },
+    {
+      "name": "Grandstand native facade",
+      "kind": "point",
+      "position": [
+        6,
+        8
+      ],
+      "block": "1e"
+    },
+    {
+      "name": "Grandstand native facade",
+      "kind": "point",
+      "position": [
+        7,
+        8
+      ],
+      "block": "1e"
+    },
+    {
+      "name": "Grandstand native facade",
+      "kind": "point",
+      "position": [
+        8,
+        8
+      ],
+      "block": "1e"
+    },
+    {
+      "name": "Grandstand native facade",
+      "kind": "point",
+      "position": [
+        9,
+        8
+      ],
+      "block": "1e"
+    },
+    {
+      "name": "Grandstand native facade",
+      "kind": "point",
+      "position": [
+        10,
+        8
+      ],
+      "block": "1e"
+    },
+    {
+      "name": "Grandstand native facade",
+      "kind": "point",
+      "position": [
+        11,
+        8
+      ],
+      "block": "1e"
+    },
+    {
+      "name": "Grandstand approach",
+      "kind": "path",
+      "points": [
+        [
+          5,
+          9
+        ],
+        [
+          11,
+          9
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "name": "Livestock barn native roof",
+      "kind": "point",
+      "position": [
+        3,
+        24
+      ],
+      "block": "22"
+    },
+    {
+      "name": "Livestock barn native roof",
+      "kind": "point",
+      "position": [
+        4,
+        24
+      ],
+      "block": "24"
+    },
+    {
+      "name": "Livestock barn native roof",
+      "kind": "point",
+      "position": [
+        5,
+        24
+      ],
+      "block": "24"
+    },
+    {
+      "name": "Livestock barn native roof",
+      "kind": "point",
+      "position": [
+        6,
+        24
+      ],
+      "block": "24"
+    },
+    {
+      "name": "Livestock barn native roof",
+      "kind": "point",
+      "position": [
+        7,
+        24
+      ],
+      "block": "23"
+    },
+    {
+      "name": "Livestock barn native facade",
+      "kind": "point",
+      "position": [
+        3,
+        25
+      ],
+      "block": "28"
+    },
+    {
+      "name": "Livestock barn native facade",
+      "kind": "point",
+      "position": [
+        4,
+        25
+      ],
+      "block": "29"
+    },
+    {
+      "name": "Livestock barn native facade",
+      "kind": "point",
+      "position": [
+        5,
+        25
+      ],
+      "block": "29"
+    },
+    {
+      "name": "Livestock barn native facade",
+      "kind": "point",
+      "position": [
+        6,
+        25
+      ],
+      "block": "29"
+    },
+    {
+      "name": "Livestock barn native facade",
+      "kind": "point",
+      "position": [
+        7,
+        25
+      ],
+      "block": "29"
+    },
+    {
+      "name": "Livestock barn approach",
+      "kind": "path",
+      "points": [
+        [
+          3,
+          26
+        ],
+        [
+          7,
+          26
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "name": "Dairy exhibition hall native roof",
+      "kind": "point",
+      "position": [
+        37,
+        24
+      ],
+      "block": "18"
+    },
+    {
+      "name": "Dairy exhibition hall native roof",
+      "kind": "point",
+      "position": [
+        38,
+        24
+      ],
+      "block": "1f"
+    },
+    {
+      "name": "Dairy exhibition hall native roof",
+      "kind": "point",
+      "position": [
+        39,
+        24
+      ],
+      "block": "1f"
+    },
+    {
+      "name": "Dairy exhibition hall native roof",
+      "kind": "point",
+      "position": [
+        40,
+        24
+      ],
+      "block": "1f"
+    },
+    {
+      "name": "Dairy exhibition hall native roof",
+      "kind": "point",
+      "position": [
+        41,
+        24
+      ],
+      "block": "1f"
+    },
+    {
+      "name": "Dairy exhibition hall native roof",
+      "kind": "point",
+      "position": [
+        42,
+        24
+      ],
+      "block": "19"
+    },
+    {
+      "name": "Dairy exhibition hall native facade",
+      "kind": "point",
+      "position": [
+        37,
+        25
+      ],
+      "block": "16"
+    },
+    {
+      "name": "Dairy exhibition hall native facade",
+      "kind": "point",
+      "position": [
+        38,
+        25
+      ],
+      "block": "1e"
+    },
+    {
+      "name": "Dairy exhibition hall native facade",
+      "kind": "point",
+      "position": [
+        39,
+        25
+      ],
+      "block": "1e"
+    },
+    {
+      "name": "Dairy exhibition hall native facade",
+      "kind": "point",
+      "position": [
+        40,
+        25
+      ],
+      "block": "1e"
+    },
+    {
+      "name": "Dairy exhibition hall native facade",
+      "kind": "point",
+      "position": [
+        41,
+        25
+      ],
+      "block": "1e"
+    },
+    {
+      "name": "Dairy exhibition hall native facade",
+      "kind": "point",
+      "position": [
+        42,
+        25
+      ],
+      "block": "1e"
+    },
+    {
+      "name": "Dairy exhibition hall approach",
+      "kind": "path",
+      "points": [
+        [
+          37,
+          26
+        ],
+        [
+          42,
+          26
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "name": "Show ring sand",
+      "kind": "rect",
+      "bounds": [
+        12,
+        23,
+        20,
+        29
+      ],
+      "material": "floor"
+    },
+    {
+      "name": "Show ring top",
+      "kind": "point",
+      "position": [
+        12,
+        23
+      ],
+      "block": "40"
+    },
+    {
+      "name": "Show ring bottom",
+      "kind": "point",
+      "position": [
+        12,
+        28
+      ],
+      "block": "48"
+    },
+    {
+      "name": "Show ring top",
+      "kind": "point",
+      "position": [
+        13,
+        23
+      ],
+      "block": "41"
+    },
+    {
+      "name": "Show ring bottom",
+      "kind": "point",
+      "position": [
+        13,
+        28
+      ],
+      "block": "49"
+    },
+    {
+      "name": "Show ring top",
+      "kind": "point",
+      "position": [
+        14,
+        23
+      ],
+      "block": "41"
+    },
+    {
+      "name": "Show ring bottom",
+      "kind": "point",
+      "position": [
+        14,
+        28
+      ],
+      "block": "49"
+    },
+    {
+      "name": "Show ring top",
+      "kind": "point",
+      "position": [
+        15,
+        23
+      ],
+      "block": "41"
+    },
+    {
+      "name": "Show ring bottom",
+      "kind": "point",
+      "position": [
+        15,
+        28
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Show ring top",
+      "kind": "point",
+      "position": [
+        16,
+        23
+      ],
+      "block": "41"
+    },
+    {
+      "name": "Show ring bottom",
+      "kind": "point",
+      "position": [
+        16,
+        28
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Show ring top",
+      "kind": "point",
+      "position": [
+        17,
+        23
+      ],
+      "block": "41"
+    },
+    {
+      "name": "Show ring bottom",
+      "kind": "point",
+      "position": [
+        17,
+        28
+      ],
+      "block": "49"
+    },
+    {
+      "name": "Show ring top",
+      "kind": "point",
+      "position": [
+        18,
+        23
+      ],
+      "block": "41"
+    },
+    {
+      "name": "Show ring bottom",
+      "kind": "point",
+      "position": [
+        18,
+        28
+      ],
+      "block": "49"
+    },
+    {
+      "name": "Show ring top",
+      "kind": "point",
+      "position": [
+        19,
+        23
+      ],
+      "block": "42"
+    },
+    {
+      "name": "Show ring bottom",
+      "kind": "point",
+      "position": [
+        19,
+        28
+      ],
+      "block": "4a"
+    },
+    {
+      "name": "Show ring west fence",
+      "kind": "point",
+      "position": [
+        12,
+        24
+      ],
+      "block": "44"
+    },
+    {
+      "name": "Show ring east fence",
+      "kind": "point",
+      "position": [
+        19,
+        24
+      ],
+      "block": "46"
+    },
+    {
+      "name": "Show ring west fence",
+      "kind": "point",
+      "position": [
+        12,
+        25
+      ],
+      "block": "44"
+    },
+    {
+      "name": "Show ring east fence",
+      "kind": "point",
+      "position": [
+        19,
+        25
+      ],
+      "block": "46"
+    },
+    {
+      "name": "Show ring west fence",
+      "kind": "point",
+      "position": [
+        12,
+        26
+      ],
+      "block": "44"
+    },
+    {
+      "name": "Show ring east fence",
+      "kind": "point",
+      "position": [
+        19,
+        26
+      ],
+      "block": "46"
+    },
+    {
+      "name": "Show ring west fence",
+      "kind": "point",
+      "position": [
+        12,
+        27
+      ],
+      "block": "44"
+    },
+    {
+      "name": "Show ring east fence",
+      "kind": "point",
+      "position": [
+        19,
+        27
+      ],
+      "block": "46"
+    },
+    {
+      "name": "Show ring gate approach",
+      "kind": "path",
+      "points": [
+        [
+          15,
+          28
+        ],
+        [
+          15,
+          32
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "name": "Horticulture demonstration bed",
+      "kind": "rect",
+      "bounds": [
+        27,
+        24,
+        30,
+        26
+      ],
+      "material": "flowers"
+    },
+    {
+      "name": "Horticulture demonstration bed",
+      "kind": "rect",
+      "bounds": [
+        31,
+        24,
+        34,
+        26
+      ],
+      "material": "flowers"
+    },
+    {
+      "name": "Horticulture demonstration bed",
+      "kind": "rect",
+      "bounds": [
+        27,
+        28,
+        30,
+        30
+      ],
+      "material": "flowers"
+    },
+    {
+      "name": "Horticulture demonstration bed",
+      "kind": "rect",
+      "bounds": [
+        31,
+        28,
+        34,
+        30
+      ],
+      "material": "flowers"
+    },
+    {
+      "name": "Horticulture demonstration bed",
+      "kind": "rect",
+      "bounds": [
+        13,
+        2,
+        16,
+        3
+      ],
+      "material": "flowers"
+    },
+    {
+      "name": "Horticulture demonstration bed",
+      "kind": "rect",
+      "bounds": [
+        19,
+        2,
+        22,
+        3
+      ],
+      "material": "flowers"
+    },
+    {
+      "name": "Horticulture demonstration bed",
+      "kind": "rect",
+      "bounds": [
+        40,
+        14,
+        43,
+        16
+      ],
+      "material": "flowers"
+    },
+    {
+      "name": "Horticulture demonstration bed",
+      "kind": "rect",
+      "bounds": [
+        14,
+        19,
+        18,
+        21
+      ],
+      "material": "flowers"
+    },
+    {
+      "name": "Garden browse loop",
+      "kind": "path",
+      "points": [
+        [
+          26,
+          23
+        ],
+        [
+          34,
+          23
+        ],
+        [
+          34,
+          31
+        ],
+        [
+          26,
+          31
+        ],
+        [
+          26,
+          23
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "name": "Garden crosswalk",
+      "kind": "path",
+      "points": [
+        [
+          26,
+          27
+        ],
+        [
+          34,
+          27
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "name": "Picnic bend",
+      "kind": "path",
+      "points": [
+        [
+          27,
+          15
+        ],
+        [
+          37,
+          15
+        ],
+        [
+          37,
+          17
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "name": "Native fair bench",
+      "kind": "point",
+      "position": [
+        5,
+        10
+      ],
+      "block": "86"
+    },
+    {
+      "name": "Native fair bench",
+      "kind": "point",
+      "position": [
+        8,
+        10
+      ],
+      "block": "86"
+    },
+    {
+      "name": "Native fair bench",
+      "kind": "point",
+      "position": [
+        12,
+        10
+      ],
+      "block": "86"
+    },
+    {
+      "name": "Native fair bench",
+      "kind": "point",
+      "position": [
+        4,
+        15
+      ],
+      "block": "86"
+    },
+    {
+      "name": "Native fair bench",
+      "kind": "point",
+      "position": [
+        7,
+        15
+      ],
+      "block": "86"
+    },
+    {
+      "name": "Native fair bench",
+      "kind": "point",
+      "position": [
+        12,
+        15
+      ],
+      "block": "86"
+    },
+    {
+      "name": "Native fair bench",
+      "kind": "point",
+      "position": [
+        16,
+        15
+      ],
+      "block": "86"
+    },
+    {
+      "name": "Native fair bench",
+      "kind": "point",
+      "position": [
+        29,
+        14
+      ],
+      "block": "86"
+    },
+    {
+      "name": "Native fair bench",
+      "kind": "point",
+      "position": [
+        32,
+        14
+      ],
+      "block": "86"
+    },
+    {
+      "name": "Native fair bench",
+      "kind": "point",
+      "position": [
+        35,
+        14
+      ],
+      "block": "86"
+    },
+    {
+      "name": "Native fair bench",
+      "kind": "point",
+      "position": [
+        28,
+        16
+      ],
+      "block": "86"
+    },
+    {
+      "name": "Native fair bench",
+      "kind": "point",
+      "position": [
+        32,
+        16
+      ],
+      "block": "86"
+    },
+    {
+      "name": "Native fair bench",
+      "kind": "point",
+      "position": [
+        36,
+        16
+      ],
+      "block": "86"
+    },
+    {
+      "name": "Native fair bench",
+      "kind": "point",
+      "position": [
+        13,
+        21
+      ],
+      "block": "86"
+    },
+    {
+      "name": "Native fair bench",
+      "kind": "point",
+      "position": [
+        17,
+        21
+      ],
+      "block": "86"
+    },
+    {
+      "name": "Native fair bench",
+      "kind": "point",
+      "position": [
+        21,
+        24
+      ],
+      "block": "86"
+    },
+    {
+      "name": "Native fair bench",
+      "kind": "point",
+      "position": [
+        21,
+        27
+      ],
+      "block": "86"
+    },
+    {
+      "name": "Native fair bench",
+      "kind": "point",
+      "position": [
+        36,
+        28
+      ],
+      "block": "86"
+    },
+    {
+      "name": "Native fair bench",
+      "kind": "point",
+      "position": [
+        43,
+        27
+      ],
+      "block": "86"
+    },
+    {
+      "name": "Native fair bench",
+      "kind": "point",
+      "position": [
+        3,
+        31
+      ],
+      "block": "86"
+    },
+    {
+      "name": "Native fair bench",
+      "kind": "point",
+      "position": [
+        6,
+        31
+      ],
+      "block": "86"
+    },
+    {
+      "name": "Native fair bench",
+      "kind": "point",
+      "position": [
+        13,
+        33
+      ],
+      "block": "86"
+    },
+    {
+      "name": "Native fair bench",
+      "kind": "point",
+      "position": [
+        16,
+        33
+      ],
+      "block": "86"
+    },
+    {
+      "name": "Native planter",
+      "kind": "point",
+      "position": [
+        3,
+        8
+      ],
+      "block": "85"
+    },
+    {
+      "name": "Native planter",
+      "kind": "point",
+      "position": [
+        13,
+        8
+      ],
+      "block": "85"
+    },
+    {
+      "name": "Native planter",
+      "kind": "point",
+      "position": [
+        21,
+        11
+      ],
+      "block": "85"
+    },
+    {
+      "name": "Native planter",
+      "kind": "point",
+      "position": [
+        21,
+        15
+      ],
+      "block": "85"
+    },
+    {
+      "name": "Native planter",
+      "kind": "point",
+      "position": [
+        26,
+        9
+      ],
+      "block": "85"
+    },
+    {
+      "name": "Native planter",
+      "kind": "point",
+      "position": [
+        44,
+        9
+      ],
+      "block": "85"
+    },
+    {
+      "name": "Native planter",
+      "kind": "point",
+      "position": [
+        26,
+        13
+      ],
+      "block": "85"
+    },
+    {
+      "name": "Native planter",
+      "kind": "point",
+      "position": [
+        44,
+        13
+      ],
+      "block": "85"
+    },
+    {
+      "name": "Native planter",
+      "kind": "point",
+      "position": [
+        2,
+        26
+      ],
+      "block": "85"
+    },
+    {
+      "name": "Native planter",
+      "kind": "point",
+      "position": [
+        10,
+        26
+      ],
+      "block": "85"
+    },
+    {
+      "name": "Native planter",
+      "kind": "point",
+      "position": [
+        36,
+        26
+      ],
+      "block": "85"
+    },
+    {
+      "name": "Native planter",
+      "kind": "point",
+      "position": [
+        44,
+        26
+      ],
+      "block": "85"
+    },
+    {
+      "name": "Native planter",
+      "kind": "point",
+      "position": [
+        26,
+        22
+      ],
+      "block": "85"
+    },
+    {
+      "name": "Native planter",
+      "kind": "point",
+      "position": [
+        34,
+        22
+      ],
+      "block": "85"
+    },
+    {
+      "name": "Native planter",
+      "kind": "point",
+      "position": [
+        6,
+        33
+      ],
+      "block": "85"
+    },
+    {
+      "name": "Native planter",
+      "kind": "point",
+      "position": [
+        14,
+        32
+      ],
+      "block": "85"
+    },
+    {
+      "name": "GroundsMap",
+      "kind": "point",
+      "position": [
+        9,
+        33
+      ],
+      "block": "45"
+    },
+    {
+      "name": "GrandstandSign",
+      "kind": "point",
+      "position": [
+        13,
+        9
+      ],
+      "block": "45"
+    },
+    {
+      "name": "BarnSign",
+      "kind": "point",
+      "position": [
+        9,
+        25
+      ],
+      "block": "45"
+    },
+    {
+      "name": "DairySign",
+      "kind": "point",
+      "position": [
+        44,
+        25
+      ],
+      "block": "45"
+    },
+    {
+      "name": "MidwaySign",
+      "kind": "point",
+      "position": [
+        3,
+        11
+      ],
+      "block": "45"
+    },
+    {
+      "name": "PavilionSign",
+      "kind": "point",
+      "position": [
+        25,
+        6
+      ],
+      "block": "45"
+    },
+    {
+      "name": "GardenSign",
+      "kind": "point",
+      "position": [
+        35,
+        27
+      ],
+      "block": "45"
+    },
+    {
+      "name": "Exhibitors hall joined roof",
+      "kind": "point",
+      "position": [
+        14,
+        7
+      ],
+      "block": "88"
+    },
+    {
+      "name": "Exhibitors hall continuous counter",
+      "kind": "point",
+      "position": [
+        14,
+        8
+      ],
+      "block": "80"
+    },
+    {
+      "name": "Exhibitors hall joined roof",
+      "kind": "point",
+      "position": [
+        15,
+        7
+      ],
+      "block": "89"
+    },
+    {
+      "name": "Exhibitors hall continuous counter",
+      "kind": "point",
+      "position": [
+        15,
+        8
+      ],
+      "block": "82"
+    },
+    {
+      "name": "Exhibitors hall joined roof",
+      "kind": "point",
+      "position": [
+        16,
+        7
+      ],
+      "block": "89"
+    },
+    {
+      "name": "Exhibitors hall continuous counter",
+      "kind": "point",
+      "position": [
+        16,
+        8
+      ],
+      "block": "82"
+    },
+    {
+      "name": "Exhibitors hall joined roof",
+      "kind": "point",
+      "position": [
+        17,
+        7
+      ],
+      "block": "89"
+    },
+    {
+      "name": "Exhibitors hall continuous counter",
+      "kind": "point",
+      "position": [
+        17,
+        8
+      ],
+      "block": "82"
+    },
+    {
+      "name": "Exhibitors hall joined roof",
+      "kind": "point",
+      "position": [
+        18,
+        7
+      ],
+      "block": "89"
+    },
+    {
+      "name": "Exhibitors hall continuous counter",
+      "kind": "point",
+      "position": [
+        18,
+        8
+      ],
+      "block": "82"
+    },
+    {
+      "name": "Exhibitors hall joined roof",
+      "kind": "point",
+      "position": [
+        19,
+        7
+      ],
+      "block": "89"
+    },
+    {
+      "name": "Exhibitors hall continuous counter",
+      "kind": "point",
+      "position": [
+        19,
+        8
+      ],
+      "block": "82"
+    },
+    {
+      "name": "Exhibitors hall joined roof",
+      "kind": "point",
+      "position": [
+        20,
+        7
+      ],
+      "block": "89"
+    },
+    {
+      "name": "Exhibitors hall continuous counter",
+      "kind": "point",
+      "position": [
+        20,
+        8
+      ],
+      "block": "82"
+    },
+    {
+      "name": "Exhibitors hall joined roof",
+      "kind": "point",
+      "position": [
+        21,
+        7
+      ],
+      "block": "8a"
+    },
+    {
+      "name": "Exhibitors hall continuous counter",
+      "kind": "point",
+      "position": [
+        21,
+        8
+      ],
+      "block": "81"
+    },
+    {
+      "name": "4-H project pavilion joined roof",
+      "kind": "point",
+      "position": [
+        18,
+        30
+      ],
+      "block": "18"
+    },
+    {
+      "name": "4-H project pavilion continuous counter",
+      "kind": "point",
+      "position": [
+        18,
+        31
+      ],
+      "block": "80"
+    },
+    {
+      "name": "4-H project pavilion joined roof",
+      "kind": "point",
+      "position": [
+        19,
+        30
+      ],
+      "block": "1f"
+    },
+    {
+      "name": "4-H project pavilion continuous counter",
+      "kind": "point",
+      "position": [
+        19,
+        31
+      ],
+      "block": "82"
+    },
+    {
+      "name": "4-H project pavilion joined roof",
+      "kind": "point",
+      "position": [
+        20,
+        30
+      ],
+      "block": "1f"
+    },
+    {
+      "name": "4-H project pavilion continuous counter",
+      "kind": "point",
+      "position": [
+        20,
+        31
+      ],
+      "block": "82"
+    },
+    {
+      "name": "4-H project pavilion joined roof",
+      "kind": "point",
+      "position": [
+        21,
+        30
+      ],
+      "block": "1f"
+    },
+    {
+      "name": "4-H project pavilion continuous counter",
+      "kind": "point",
+      "position": [
+        21,
+        31
+      ],
+      "block": "82"
+    },
+    {
+      "name": "4-H project pavilion joined roof",
+      "kind": "point",
+      "position": [
+        22,
+        30
+      ],
+      "block": "1f"
+    },
+    {
+      "name": "4-H project pavilion continuous counter",
+      "kind": "point",
+      "position": [
+        22,
+        31
+      ],
+      "block": "82"
+    },
+    {
+      "name": "4-H project pavilion joined roof",
+      "kind": "point",
+      "position": [
+        23,
+        30
+      ],
+      "block": "19"
+    },
+    {
+      "name": "4-H project pavilion continuous counter",
+      "kind": "point",
+      "position": [
+        23,
+        31
+      ],
+      "block": "81"
+    },
+    {
+      "name": "Rural craft pavilion joined roof",
+      "kind": "point",
+      "position": [
+        26,
+        30
+      ],
+      "block": "18"
+    },
+    {
+      "name": "Rural craft pavilion continuous counter",
+      "kind": "point",
+      "position": [
+        26,
+        31
+      ],
+      "block": "80"
+    },
+    {
+      "name": "Rural craft pavilion joined roof",
+      "kind": "point",
+      "position": [
+        27,
+        30
+      ],
+      "block": "1f"
+    },
+    {
+      "name": "Rural craft pavilion continuous counter",
+      "kind": "point",
+      "position": [
+        27,
+        31
+      ],
+      "block": "82"
+    },
+    {
+      "name": "Rural craft pavilion joined roof",
+      "kind": "point",
+      "position": [
+        28,
+        30
+      ],
+      "block": "1f"
+    },
+    {
+      "name": "Rural craft pavilion continuous counter",
+      "kind": "point",
+      "position": [
+        28,
+        31
+      ],
+      "block": "82"
+    },
+    {
+      "name": "Rural craft pavilion joined roof",
+      "kind": "point",
+      "position": [
+        29,
+        30
+      ],
+      "block": "1f"
+    },
+    {
+      "name": "Rural craft pavilion continuous counter",
+      "kind": "point",
+      "position": [
+        29,
+        31
+      ],
+      "block": "82"
+    },
+    {
+      "name": "Rural craft pavilion joined roof",
+      "kind": "point",
+      "position": [
+        30,
+        30
+      ],
+      "block": "1f"
+    },
+    {
+      "name": "Rural craft pavilion continuous counter",
+      "kind": "point",
+      "position": [
+        30,
+        31
+      ],
+      "block": "82"
+    },
+    {
+      "name": "Rural craft pavilion joined roof",
+      "kind": "point",
+      "position": [
+        31,
+        30
+      ],
+      "block": "1f"
+    },
+    {
+      "name": "Rural craft pavilion continuous counter",
+      "kind": "point",
+      "position": [
+        31,
+        31
+      ],
+      "block": "82"
+    },
+    {
+      "name": "Rural craft pavilion joined roof",
+      "kind": "point",
+      "position": [
+        32,
+        30
+      ],
+      "block": "19"
+    },
+    {
+      "name": "Rural craft pavilion continuous counter",
+      "kind": "point",
+      "position": [
+        32,
+        31
+      ],
+      "block": "81"
+    },
+    {
+      "name": "growers encounter habitat",
+      "kind": "rect",
+      "bounds": [
+        21,
+        3,
+        23,
+        6
+      ],
+      "material": "encounter"
+    },
+    {
+      "name": "cookie-side encounter habitat",
+      "kind": "rect",
+      "bounds": [
+        22,
+        6,
+        24,
+        10
+      ],
+      "material": "encounter"
+    },
+    {
+      "name": "cookie-back encounter habitat",
+      "kind": "rect",
+      "bounds": [
+        28,
+        3,
+        40,
+        4
+      ],
+      "material": "encounter"
+    },
+    {
+      "name": "midway-meadow encounter habitat",
+      "kind": "rect",
+      "bounds": [
+        18,
+        18,
+        23,
+        21
+      ],
+      "material": "encounter"
+    },
+    {
+      "name": "midway-lawn encounter habitat",
+      "kind": "rect",
+      "bounds": [
+        12,
+        16,
+        18,
+        17
+      ],
+      "material": "encounter"
+    },
+    {
+      "name": "breakfast encounter habitat",
+      "kind": "rect",
+      "bounds": [
+        4,
+        21,
+        10,
+        22
+      ],
+      "material": "encounter"
+    },
+    {
+      "name": "cheese encounter habitat",
+      "kind": "rect",
+      "bounds": [
+        37,
+        23,
+        43,
+        24
+      ],
+      "material": "encounter"
+    },
+    {
+      "name": "dairy encounter habitat",
+      "kind": "rect",
+      "bounds": [
+        37,
+        30,
+        39,
+        32
+      ],
+      "material": "encounter"
+    },
+    {
+      "name": "orchard-east encounter habitat",
+      "kind": "rect",
+      "bounds": [
+        38,
+        16,
+        43,
+        17
+      ],
+      "material": "encounter"
+    },
+    {
+      "name": "orchard-north encounter habitat",
+      "kind": "rect",
+      "bounds": [
+        38,
+        18,
+        43,
+        19
+      ],
+      "material": "encounter"
+    },
+    {
+      "name": "grain encounter habitat",
+      "kind": "rect",
+      "bounds": [
+        11,
+        18,
+        14,
+        21
+      ],
+      "material": "encounter"
+    },
+    {
+      "name": "rice encounter habitat",
+      "kind": "rect",
+      "bounds": [
+        11,
+        29,
+        14,
+        31
+      ],
+      "material": "encounter"
+    },
+    {
+      "name": "popcorn encounter habitat",
+      "kind": "rect",
+      "bounds": [
+        18,
+        33,
+        24,
+        35
+      ],
+      "material": "encounter"
+    },
+    {
+      "name": "smokehouse encounter habitat",
+      "kind": "rect",
+      "bounds": [
+        27,
+        18,
+        35,
+        19
+      ],
+      "material": "encounter"
+    }
+  ],
+  "extended_graphics": true,
+  "grass_contract": {
+    "user_request": "More grass patches; all existing food and fair Pokemon here.",
+    "patches": 14,
+    "metatiles": 108,
+    "habitat_groups": [
+      "grain",
+      "bakery",
+      "dairy",
+      "comfort",
+      "orchard",
+      "midway"
+    ],
+    "species": 29,
+    "all_evolutions": true,
+    "all_times": true,
+    "retired_designs_excluded": true,
+    "roster_authority": "pokemon/roster.json plus pokemon/roster-curation.json",
+    "scope": "Food bodies, edible crop/grain families and State Fair carnival spirit; source roster only."
+  }
+}

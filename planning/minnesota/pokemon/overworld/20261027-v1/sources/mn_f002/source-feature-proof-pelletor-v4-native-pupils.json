@@ -1,0 +1,216 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_005",
+  "result": "pass",
+  "manifest_sha256": "1c43afb4bbf29f08b3173ab8a3e4c47a966c52dc70e821887c9796ceaa7fb8a1",
+  "bank_sha256": "21f077d71e61939a8859c843bd93ff7256b56d8ec8b18650119bbfc2a1fcda8f",
+  "source_sha256": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f002/pelletor.overworld.imagegen-v1.png": "109884cda1f768e6bb974b80497e3d42c99bab836e8b9246f712568d56824af7",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f002/pelletor.overworld.imagegen-v2-profile-face.png": "7012798bb491d972fdcda39072c48cc51c3c3de3d04b20cc9018b7fafd1e2b2f"
+  },
+  "canonical_eye_form": "Two isolated actual black pupil dots south and one isolated actual black pupil west; source eye components verified in all four nonrear poses.",
+  "nonrear_poses": [
+    {
+      "pose": "down_idle",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            6,
+            8
+          ],
+          "source_sample": [
+            273,
+            251
+          ],
+          "source_component": [
+            260,
+            246,
+            21,
+            27
+          ],
+          "component_pixels": 567,
+          "native_neighbors": [
+            1,
+            1,
+            2,
+            1
+          ],
+          "source_rgba": [
+            0,
+            0,
+            0,
+            254
+          ]
+        },
+        {
+          "native": [
+            8,
+            8
+          ],
+          "source_sample": [
+            339,
+            251
+          ],
+          "source_component": [
+            330,
+            246,
+            21,
+            27
+          ],
+          "component_pixels": 567,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            1,
+            0,
+            0,
+            254
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            5,
+            8
+          ],
+          "source_sample": [
+            1192,
+            262
+          ],
+          "source_component": [
+            1167,
+            241,
+            35,
+            36
+          ],
+          "component_pixels": 1248,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            0,
+            0,
+            0,
+            254
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            6,
+            8
+          ],
+          "source_sample": [
+            273,
+            694
+          ],
+          "source_component": [
+            260,
+            692,
+            21,
+            27
+          ],
+          "component_pixels": 567,
+          "native_neighbors": [
+            1,
+            1,
+            2,
+            1
+          ],
+          "source_rgba": [
+            4,
+            3,
+            0,
+            253
+          ]
+        },
+        {
+          "native": [
+            8,
+            8
+          ],
+          "source_sample": [
+            339,
+            694
+          ],
+          "source_component": [
+            330,
+            692,
+            22,
+            27
+          ],
+          "component_pixels": 573,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            6,
+            3,
+            0,
+            253
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            5,
+            8
+          ],
+          "source_sample": [
+            1192,
+            700
+          ],
+          "source_component": [
+            1167,
+            688,
+            35,
+            37
+          ],
+          "component_pixels": 1282,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            0,
+            0,
+            0,
+            253
+          ]
+        }
+      ]
+    }
+  ],
+  "rear_anatomy": {
+    "result": "pass",
+    "notes": "Broad rounded ore-pellet body, two stone fist arms/two feet and one crown stub source-traced all6. Separate golden face and round furnace chest core on front; broad middle stage. Original fronts/rears retained; profile faceplane widened in source for actual eye/bodycolor buffer. Rear is plain brown with crown and no pupils. Four actual pupil/bank/border/palette/shared-motion proofs pass; normal/shiny boards viewed. Profile crown stub survives dark contour while tiny golden cap is simplified, not claimed as separate visible accent."
+  }
+}

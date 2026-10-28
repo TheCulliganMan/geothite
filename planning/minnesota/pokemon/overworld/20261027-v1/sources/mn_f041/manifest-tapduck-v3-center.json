@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F041",
+  "species": [
+    {
+      "species_id": "MN_267",
+      "runtime_token": "TAPDUCK",
+      "palette_rgb555": [
+        32767,
+        6975,
+        3378,
+        0
+      ],
+      "shiny_palette_rgb555": [
+        32767,
+        31626,
+        19626,
+        0
+      ],
+      "fit": [
+        11,
+        11
+      ],
+      "alpha_threshold": 128,
+      "sampling": "source_center",
+      "minimum_foreground_samples": 16,
+      "black_priority_samples": 64,
+      "interior_black_samples": 64,
+      "opaque_interior_minimum_samples": 64,
+      "frames": [
+        {
+          "pose": "down_idle",
+          "source": "tapduck.overworld.imagegen-v3.png",
+          "crop": [
+            37,
+            170,
+            370,
+            425
+          ]
+        },
+        {
+          "pose": "up_idle",
+          "source": "tapduck.overworld.imagegen-v3.png",
+          "crop": [
+            442,
+            170,
+            370,
+            425
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "source": "tapduck.overworld.imagegen-v3.png",
+          "crop": [
+            842,
+            170,
+            370,
+            425
+          ]
+        },
+        {
+          "pose": "down_step",
+          "source": "tapduck.overworld.imagegen-v3.png",
+          "crop": [
+            37,
+            648,
+            370,
+            425
+          ]
+        },
+        {
+          "pose": "up_step",
+          "source": "tapduck.overworld.imagegen-v3.png",
+          "crop": [
+            442,
+            648,
+            370,
+            425
+          ]
+        },
+        {
+          "pose": "left_step",
+          "source": "tapduck.overworld.imagegen-v3.png",
+          "crop": [
+            842,
+            648,
+            370,
+            425
+          ]
+        }
+      ]
+    }
+  ]
+}

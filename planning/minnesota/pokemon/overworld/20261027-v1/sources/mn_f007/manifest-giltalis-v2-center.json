@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F007",
+  "species": [
+    {
+      "species_id": "MN_020",
+      "runtime_token": "GILTALIS",
+      "palette_rgb555": [
+        32767,
+        21356,
+        12707,
+        0
+      ],
+      "shiny_palette_rgb555": [
+        32767,
+        28052,
+        13420,
+        0
+      ],
+      "fit": [
+        13,
+        13
+      ],
+      "alpha_threshold": 128,
+      "sampling": "source_center",
+      "minimum_foreground_samples": 16,
+      "black_priority_samples": 64,
+      "interior_black_samples": 64,
+      "opaque_interior_minimum_samples": 64,
+      "frames": [
+        {
+          "pose": "down_idle",
+          "source": "giltalis.overworld.imagegen-v2.png",
+          "crop": [
+            106,
+            120,
+            271,
+            465
+          ]
+        },
+        {
+          "pose": "up_idle",
+          "source": "giltalis.overworld.imagegen-v2.png",
+          "crop": [
+            493,
+            120,
+            271,
+            465
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "source": "giltalis.overworld.imagegen-v2.png",
+          "crop": [
+            894,
+            121,
+            271,
+            465
+          ]
+        },
+        {
+          "pose": "down_step",
+          "source": "giltalis.overworld.imagegen-v2.png",
+          "crop": [
+            106,
+            655,
+            271,
+            465
+          ]
+        },
+        {
+          "pose": "up_step",
+          "source": "giltalis.overworld.imagegen-v2.png",
+          "crop": [
+            493,
+            655,
+            271,
+            465
+          ]
+        },
+        {
+          "pose": "left_step",
+          "source": "giltalis.overworld.imagegen-v2.png",
+          "crop": [
+            894,
+            656,
+            271,
+            465
+          ]
+        }
+      ]
+    }
+  ]
+}

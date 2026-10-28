@@ -1,0 +1,13 @@
+{
+  "tool": "built-in image_gen",
+  "original_tool_path": "/Users/ryanculligan/.codex/generated_images/01a17dcc-4f1a-77a2-9d21-0df036061346/exec-062d4de7-7bfc-4cf8-b835-130c71ebb6f0.png",
+  "source_size": [
+    2170,
+    725
+  ],
+  "sha256": "1b8b8d40a12b37b6a9da37ede7db09e2fb877d7020f9980e81af8d95b0b96cf9",
+  "reference_paths": [
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/true16-voyagear-v3/MN_F004/review/line.normal-8x.png"
+  ],
+  "prompt": "voyagear.prompt-v4.txt"
+}

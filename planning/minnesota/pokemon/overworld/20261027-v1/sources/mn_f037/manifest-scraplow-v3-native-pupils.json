@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F037",
+  "species": [
+    {
+      "species_id": "MN_087",
+      "runtime_token": "SCRAPLOW",
+      "palette_rgb555": [
+        32767,
+        29460,
+        18824,
+        0
+      ],
+      "shiny_palette_rgb555": [
+        32767,
+        25244,
+        12562,
+        0
+      ],
+      "fit": [
+        12,
+        12
+      ],
+      "alpha_threshold": 128,
+      "sampling": "source_center",
+      "minimum_foreground_samples": 16,
+      "black_priority_samples": 64,
+      "interior_black_samples": 64,
+      "opaque_interior_minimum_samples": 64,
+      "frames": [
+        {
+          "pose": "down_idle",
+          "source": "scraplow.overworld.imagegen-v2-roomy-lamps.png",
+          "crop": [
+            37,
+            141,
+            460,
+            385
+          ]
+        },
+        {
+          "pose": "up_idle",
+          "source": "scraplow.overworld.imagegen-v2-roomy-lamps.png",
+          "crop": [
+            537,
+            141,
+            460,
+            385
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "source": "scraplow.overworld.imagegen-v2-roomy-lamps.png",
+          "crop": [
+            1045,
+            148,
+            460,
+            385
+          ]
+        },
+        {
+          "pose": "down_step",
+          "source": "scraplow.overworld.imagegen-v2-roomy-lamps.png",
+          "crop": [
+            37,
+            579,
+            460,
+            385
+          ]
+        },
+        {
+          "pose": "up_step",
+          "source": "scraplow.overworld.imagegen-v2-roomy-lamps.png",
+          "crop": [
+            537,
+            579,
+            460,
+            385
+          ]
+        },
+        {
+          "pose": "left_step",
+          "source": "scraplow.overworld.imagegen-v2-roomy-lamps.png",
+          "crop": [
+            1045,
+            579,
+            460,
+            385
+          ]
+        }
+      ]
+    }
+  ]
+}

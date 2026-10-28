@@ -67,7 +67,7 @@ pub(super) fn export(root:&Path)->Result<()> {
             let channels=headers.get(label).with_context(||format!("source audio header missing {label}"))?;
             let mut selected=BTreeMap::new();
             for (number,name) in channels {let mut body=catalog.get(name).with_context(||format!("missing channel body {name}"))?.clone();body.number=Some(*number);selected.insert(name.clone(),body);}
-            let input=Program{profile:"pokecrystal-midi-v1".into(),music_data:MusicData{channel_count:u8::try_from(selected.len())?,channels:selected,subroutines:BTreeMap::new(),shared_sources:BTreeMap::new()},cry_pitch:None,cry_length:None};
+            let input=Program{profile:"pokecrystal-midi-v1".into(),music_data:MusicData{channel_count:u8::try_from(selected.len())?,channels:selected,subroutines:BTreeMap::new(),shared_sources:BTreeMap::new()},cry_pitch:None,cry_length:None,output_envelope:None};
             let program=link(&input,&catalog).with_context(||format!("link source audio {id}"))?;
             let rendered=render(&program,context.clone()).with_context(||format!("synthesize source audio {id}"))?;
             let pcm=rendered.downsample();ensure!(!pcm.is_empty(),"source audio {id} rendered no samples");

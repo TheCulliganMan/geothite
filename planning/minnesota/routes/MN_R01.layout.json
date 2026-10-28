@@ -62,31 +62,39 @@
     },
     {
       "kind": "cliff_polygon",
-      "name": "Low limestone bench with three unequal shelves",
+      "name": "Uneven fitted limestone ridge and original Potion pocket",
       "points": [
         [
-          7,
-          3
-        ],
-        [
-          12,
-          3
-        ],
-        [
-          12,
+          9,
           4
         ],
         [
-          17,
+          11,
           4
+        ],
+        [
+          11,
+          6
+        ],
+        [
+          14,
+          6
+        ],
+        [
+          14,
+          5
         ],
         [
           17,
           5
+        ],
+        [
+          17,
+          6
         ],
         [
           21,
-          5
+          6
         ],
         [
           21,
@@ -101,8 +109,24 @@
           8
         ],
         [
-          7,
+          9,
           8
+        ],
+        [
+          9,
+          7
+        ],
+        [
+          8,
+          7
+        ],
+        [
+          8,
+          6
+        ],
+        [
+          9,
+          6
         ]
       ]
     },
@@ -762,24 +786,6 @@
       "block": "61"
     },
     {
-      "kind": "point",
-      "name": "Bluff upper marker boulder",
-      "position": [
-        10,
-        5
-      ],
-      "block": "0a"
-    },
-    {
-      "kind": "point",
-      "name": "Bluff eastern marker boulder",
-      "position": [
-        18,
-        7
-      ],
-      "block": "0a"
-    },
-    {
       "kind": "rect",
       "name": "MN_R01_T01 clear passing bay",
       "material": "lawn",
@@ -908,69 +914,6 @@
     },
     {
       "kind": "point",
-      "name": "Limestone outcrop at [8, 4]",
-      "position": [
-        8,
-        4
-      ],
-      "block": "0a"
-    },
-    {
-      "kind": "point",
-      "name": "Limestone outcrop at [9, 4]",
-      "position": [
-        9,
-        4
-      ],
-      "block": "0a"
-    },
-    {
-      "kind": "point",
-      "name": "Limestone outcrop at [8, 5]",
-      "position": [
-        8,
-        5
-      ],
-      "block": "0a"
-    },
-    {
-      "kind": "point",
-      "name": "Limestone outcrop at [8, 6]",
-      "position": [
-        8,
-        6
-      ],
-      "block": "0a"
-    },
-    {
-      "kind": "point",
-      "name": "Limestone outcrop at [11, 5]",
-      "position": [
-        11,
-        5
-      ],
-      "block": "0a"
-    },
-    {
-      "kind": "point",
-      "name": "Limestone outcrop at [14, 5]",
-      "position": [
-        14,
-        5
-      ],
-      "block": "0a"
-    },
-    {
-      "kind": "point",
-      "name": "Limestone outcrop at [15, 5]",
-      "position": [
-        15,
-        5
-      ],
-      "block": "0a"
-    },
-    {
-      "kind": "point",
       "name": "South creek visible native water-rock closure",
       "position": [
         1,
@@ -1067,6 +1010,87 @@
         18
       ],
       "block": "48"
+    },
+    {
+      "kind": "point",
+      "name": "Attached fitted limestone shoulder",
+      "position": [
+        19,
+        6
+      ],
+      "block": "6a"
+    },
+    {
+      "kind": "point",
+      "name": "Attached fitted limestone shoulder",
+      "position": [
+        20,
+        6
+      ],
+      "block": "70"
+    },
+    {
+      "kind": "point",
+      "name": "Attached fitted limestone shoulder",
+      "position": [
+        21,
+        6
+      ],
+      "block": "6b"
+    },
+    {
+      "kind": "point",
+      "name": "Attached fitted limestone shoulder",
+      "position": [
+        18,
+        7
+      ],
+      "block": "6c"
+    },
+    {
+      "kind": "point",
+      "name": "Attached fitted limestone shoulder",
+      "position": [
+        19,
+        7
+      ],
+      "block": "72"
+    },
+    {
+      "kind": "point",
+      "name": "Attached fitted limestone shoulder",
+      "position": [
+        20,
+        7
+      ],
+      "block": "72"
+    },
+    {
+      "kind": "point",
+      "name": "Attached fitted limestone shoulder",
+      "position": [
+        21,
+        7
+      ],
+      "block": "6d"
+    },
+    {
+      "kind": "point",
+      "name": "Preserved original west ledge shoulder",
+      "position": [
+        12,
+        8
+      ],
+      "block": "72"
+    },
+    {
+      "kind": "point",
+      "name": "Preserved original east ledge shoulder",
+      "position": [
+        15,
+        8
+      ],
+      "block": "6e"
     }
   ],
   "crossings": [
@@ -1172,7 +1196,7 @@
   ],
   "art_authority": "Original Johto source tiles. Low limestone, native ledge, source farmhouse and actual fence collision.",
   "source_pixels_modified": false,
-  "status": "Bounded creek boundary/Cut audit revision; existing ramp, ledge and room composition preserved. Native republication pending.",
+  "status": "Root accepted scoped native R01 cedar-ridge terrain, preserved gameplay and matched native source pixels on the exact linked pack. Earned regional campaign progression and whole-region final visual acceptance are not claimed.",
   "required_before_regional_release": [
     "Fit Winona and Rochester hub ports; preserve starter gate and Q01 parcel sequence.",
     "Prove native ramp, ledge, both room returns, encounters, battles and persistence.",
@@ -1188,5 +1212,11 @@
     "39",
     "3a",
     "43"
-  ]
+  ],
+  "native_evidence": {
+    "pack_sha256": "3d1cbdd18b05ce10ed66db7ab56d41f0032f6e045a0e72ad753064c5dc6ec8df",
+    "acceptance": "planning/minnesota/renders/outdoor-connections/native-cohesion-harbor-water-v01/root-review-v01/acceptance.json",
+    "acceptance_sha256": "de1787505e570998e070587c5b76c0eb44dbe8917e04b65840afe3166d8e8056",
+    "candidate_layout_sha256": "3c4f20df1226896b3ec8916efc42974486e5f25c3627724b2013b1eeb02d5348"
+  }
 }

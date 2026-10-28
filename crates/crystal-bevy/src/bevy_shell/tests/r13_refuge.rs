@@ -199,7 +199,13 @@ fn outside(r: &CrystalRuntime) -> RouteGrid {
             prefix: "MnR13",
             columns: 1,
             rows: 3,
-            tileset: "johto",
+            tileset: if r.data().maps["MnR13C00R00"].attributes.tileset_name
+                == "mn_winter_north_shore"
+            {
+                "mn_winter_north_shore"
+            } else {
+                "johto"
+            },
             start: (14, 54),
             doors: BTreeMap::from([((14, 53), ROOM)]),
         },

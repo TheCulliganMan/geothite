@@ -1,0 +1,652 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_074",
+  "status": "source-proof-pass; root visual/context acceptance required",
+  "selected_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f030/manifest-liftruss-v1-pupil-proof.json",
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f030/liftruss-v1-pupil-proof",
+  "shared_transform": {
+    "source_bounds": [
+      16,
+      18,
+      429,
+      385
+    ],
+    "native_size": [
+      14,
+      12
+    ],
+    "native_origin": [
+      1,
+      3
+    ]
+  },
+  "all_four_nonrear_poses_have_actual_source_pupils": true,
+  "every_native_eye_cluster_maps_to_same_small_anatomical_source_pupil_component": true,
+  "actual_source_pupil_proofs": [
+    {
+      "pose": "down_idle",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f030/liftruss.overworld.imagegen-v1.png",
+      "crop": [
+        9,
+        63,
+        460,
+        410
+      ],
+      "anatomically_identified_source_eye_boxes_xywh": [
+        [
+          206,
+          254,
+          25,
+          25
+        ],
+        [
+          282,
+          254,
+          25,
+          25
+        ]
+      ],
+      "actual_eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              7,
+              8
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                0,
+                1,
+                1,
+                253
+              ],
+              "bounds": [
+                206,
+                254,
+                25,
+                25
+              ],
+              "pixels": 625,
+              "truncated_contour": false,
+              "native_pixel": [
+                7,
+                8
+              ],
+              "source_sample_pixel": [
+                224,
+                257
+              ]
+            }
+          ]
+        },
+        {
+          "native_cluster": [
+            [
+              9,
+              8
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                0,
+                1,
+                1,
+                253
+              ],
+              "bounds": [
+                282,
+                254,
+                25,
+                25
+              ],
+              "pixels": 625,
+              "truncated_contour": false,
+              "native_pixel": [
+                9,
+                8
+              ],
+              "source_sample_pixel": [
+                285,
+                257
+              ]
+            }
+          ]
+        }
+      ],
+      "signature_feature_proof": {
+        "anatomy": "transparent arch passage between the two pier legs, source and native agree",
+        "samples": [
+          {
+            "native_pixel": [
+              7,
+              10
+            ],
+            "native_ink": 0,
+            "source_sample_pixel": [
+              224,
+              321
+            ],
+            "source_rgba": [
+              21,
+              33,
+              41,
+              1
+            ]
+          },
+          {
+            "native_pixel": [
+              8,
+              10
+            ],
+            "native_ink": 0,
+            "source_sample_pixel": [
+              254,
+              321
+            ],
+            "source_rgba": [
+              21,
+              33,
+              40,
+              0
+            ]
+          },
+          {
+            "native_pixel": [
+              9,
+              10
+            ],
+            "native_ink": 0,
+            "source_sample_pixel": [
+              285,
+              321
+            ],
+            "source_rgba": [
+              21,
+              32,
+              39,
+              1
+            ]
+          },
+          {
+            "native_pixel": [
+              7,
+              11
+            ],
+            "native_ink": 0,
+            "source_sample_pixel": [
+              224,
+              353
+            ],
+            "source_rgba": [
+              14,
+              20,
+              30,
+              0
+            ]
+          },
+          {
+            "native_pixel": [
+              8,
+              11
+            ],
+            "native_ink": 0,
+            "source_sample_pixel": [
+              254,
+              353
+            ],
+            "source_rgba": [
+              15,
+              24,
+              33,
+              0
+            ]
+          },
+          {
+            "native_pixel": [
+              9,
+              11
+            ],
+            "native_ink": 0,
+            "source_sample_pixel": [
+              285,
+              353
+            ],
+            "source_rgba": [
+              14,
+              21,
+              30,
+              0
+            ]
+          },
+          {
+            "native_pixel": [
+              7,
+              12
+            ],
+            "native_ink": 0,
+            "source_sample_pixel": [
+              224,
+              385
+            ],
+            "source_rgba": [
+              15,
+              22,
+              33,
+              0
+            ]
+          },
+          {
+            "native_pixel": [
+              8,
+              12
+            ],
+            "native_ink": 0,
+            "source_sample_pixel": [
+              254,
+              385
+            ],
+            "source_rgba": [
+              12,
+              19,
+              28,
+              0
+            ]
+          },
+          {
+            "native_pixel": [
+              9,
+              12
+            ],
+            "native_ink": 0,
+            "source_sample_pixel": [
+              285,
+              385
+            ],
+            "source_rgba": [
+              14,
+              20,
+              31,
+              0
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "pose": "left_idle",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f030/liftruss.overworld.imagegen-v1.png",
+      "crop": [
+        1048,
+        66,
+        460,
+        410
+      ],
+      "anatomically_identified_source_eye_boxes_xywh": [
+        [
+          1216,
+          254,
+          24,
+          25
+        ]
+      ],
+      "actual_eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              6,
+              8
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                0,
+                0,
+                0,
+                253
+              ],
+              "bounds": [
+                1216,
+                254,
+                24,
+                25
+              ],
+              "pixels": 600,
+              "truncated_contour": false,
+              "native_pixel": [
+                6,
+                8
+              ],
+              "source_sample_pixel": [
+                1232,
+                260
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f030/liftruss.overworld.imagegen-v1.png",
+      "crop": [
+        9,
+        539,
+        460,
+        410
+      ],
+      "anatomically_identified_source_eye_boxes_xywh": [
+        [
+          206,
+          731,
+          25,
+          25
+        ],
+        [
+          283,
+          731,
+          25,
+          25
+        ]
+      ],
+      "actual_eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              7,
+              8
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                2,
+                3,
+                4,
+                254
+              ],
+              "bounds": [
+                206,
+                731,
+                25,
+                25
+              ],
+              "pixels": 625,
+              "truncated_contour": false,
+              "native_pixel": [
+                7,
+                8
+              ],
+              "source_sample_pixel": [
+                224,
+                733
+              ]
+            }
+          ]
+        },
+        {
+          "native_cluster": [
+            [
+              9,
+              8
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                2,
+                3,
+                4,
+                253
+              ],
+              "bounds": [
+                283,
+                731,
+                25,
+                25
+              ],
+              "pixels": 625,
+              "truncated_contour": false,
+              "native_pixel": [
+                9,
+                8
+              ],
+              "source_sample_pixel": [
+                285,
+                733
+              ]
+            }
+          ]
+        }
+      ],
+      "signature_feature_proof": {
+        "anatomy": "transparent arch passage between the two pier legs, source and native agree",
+        "samples": [
+          {
+            "native_pixel": [
+              7,
+              10
+            ],
+            "native_ink": 0,
+            "source_sample_pixel": [
+              224,
+              797
+            ],
+            "source_rgba": [
+              20,
+              32,
+              38,
+              1
+            ]
+          },
+          {
+            "native_pixel": [
+              8,
+              10
+            ],
+            "native_ink": 0,
+            "source_sample_pixel": [
+              254,
+              797
+            ],
+            "source_rgba": [
+              24,
+              39,
+              44,
+              1
+            ]
+          },
+          {
+            "native_pixel": [
+              9,
+              10
+            ],
+            "native_ink": 0,
+            "source_sample_pixel": [
+              285,
+              797
+            ],
+            "source_rgba": [
+              24,
+              36,
+              43,
+              1
+            ]
+          },
+          {
+            "native_pixel": [
+              7,
+              11
+            ],
+            "native_ink": 0,
+            "source_sample_pixel": [
+              224,
+              829
+            ],
+            "source_rgba": [
+              16,
+              26,
+              34,
+              1
+            ]
+          },
+          {
+            "native_pixel": [
+              8,
+              11
+            ],
+            "native_ink": 0,
+            "source_sample_pixel": [
+              254,
+              829
+            ],
+            "source_rgba": [
+              15,
+              24,
+              31,
+              0
+            ]
+          },
+          {
+            "native_pixel": [
+              9,
+              11
+            ],
+            "native_ink": 0,
+            "source_sample_pixel": [
+              285,
+              829
+            ],
+            "source_rgba": [
+              15,
+              23,
+              31,
+              0
+            ]
+          },
+          {
+            "native_pixel": [
+              8,
+              12
+            ],
+            "native_ink": 0,
+            "source_sample_pixel": [
+              254,
+              861
+            ],
+            "source_rgba": [
+              12,
+              20,
+              27,
+              0
+            ]
+          },
+          {
+            "native_pixel": [
+              9,
+              12
+            ],
+            "native_ink": 0,
+            "source_sample_pixel": [
+              285,
+              861
+            ],
+            "source_rgba": [
+              16,
+              23,
+              32,
+              0
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "pose": "left_step",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f030/liftruss.overworld.imagegen-v1.png",
+      "crop": [
+        1061,
+        542,
+        460,
+        410
+      ],
+      "anatomically_identified_source_eye_boxes_xywh": [
+        [
+          1229,
+          728,
+          25,
+          26
+        ]
+      ],
+      "actual_eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              6,
+              8
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                0,
+                0,
+                0,
+                253
+              ],
+              "bounds": [
+                1229,
+                728,
+                25,
+                26
+              ],
+              "pixels": 628,
+              "truncated_contour": false,
+              "native_pixel": [
+                6,
+                8
+              ],
+              "source_sample_pixel": [
+                1245,
+                736
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "native_head_anchors_idle_walk_equal": true,
+  "validation": {
+    "runtime_2bpp_384_bytes_exact_allpixels": true,
+    "runtime_png16x96_index_parity": true,
+    "normal_shiny_palettebanks_exact": true,
+    "normal_shiny_all1536pixels_exact": true,
+    "transparent_border": true,
+    "idle_walk_pairs_distinct": true
+  },
+  "sha256": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f030/liftruss-v1-pupil-proof/review/line.normal-8x.png": "af643e8d69bd1ff9defd311611f328a3ca89eb2797077a9ea4bf3a5a1d6487e2",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f030/manifest-liftruss-v1-pupil-proof.json": "5649ca76c6dae01f951aabae8174af48ee93ba1d0ff5ecf741ecbb5e21b34f03",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f030/liftruss-v1-pupil-proof/gfx/pokemon/liftruss/overworld.gbcpal": "ae84995ee58eda20701779acab83cf806cd1c1208bbb038a1eca52a27a6b6b4e",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f030/liftruss-v1-pupil-proof/gfx/pokemon/liftruss/overworld.2bpp": "04e7f1e8efd8cc305f0d6d51aefd16a39fb6ca31180594dadefddb58a8d54e26",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f030/liftruss-v1-pupil-proof/compiled-index.json": "d2bf48cbac59bfe2e93281228824110ca31c315abd8b7698a7941ec7a211d50f",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f030/liftruss-v1-pupil-proof/review/line.shiny-8x.png": "f02366f3eafc3c6cb47e6a0536452ae243213a5b0dd50df871320c84faa14a93",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f030/liftruss-v1-pupil-proof/gfx/pokemon/liftruss/overworld-shiny.gbcpal": "ca5e4c0b387b4598cfa3cce335d42e6335a5ec62e637f9fb7375062176827918",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f030/liftruss.overworld.imagegen-v1.png": "50347ddfc65ef2feccb431f723ace9f68a8a7007261d69a671b48c0df4562698",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f030/liftruss-v1-pupil-proof/gfx/pokemon/liftruss/overworld.png": "c8156e0a35b2b98221371f94a0df2ddb4e9db65ac45c98f135eea7688f9143d5"
+  },
+  "actual_native_boards_viewed": true,
+  "rear_review": "plain rear head, no copied face; actual normal/shiny viewed",
+  "canonical_eye_form": "TWO actual isolated dark pupils SOUTH, ONE actual near pupil WEST in light girder face; no truss joint/hand/leg detail counted.",
+  "signature_anatomy_review": "Actual6 normal/shiny native views inspected. Native14x12, raised counterweight block arms, low cyan crossbar face, two thick pier legs, genuinely transparent torso arch. Source-backed arch samples: idle has a full3\u00d73 transparent opening, walking retains8 of those9 samples as the pier legs step. West view retains broad crossbar projection with one near pupil, more three-quarter than narrow profile; root context review needed. Rear crossbar plain/no pupils."
+}

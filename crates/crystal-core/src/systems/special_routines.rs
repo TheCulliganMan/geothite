@@ -4392,7 +4392,15 @@ fn heal_party(
         if pokemon.is_egg {
             continue;
         }
-        if heal_pokemon(pokemon, move_catalog) {
+        let mut healed = heal_pokemon(pokemon, move_catalog);
+        // Item-induced field confusion is saveable until the next battle.
+        // Field care cures it; active battle volatile state keeps its native
+        // ownership and is cleared through the battle controller instead.
+        if matches!(state.battle, BattleMemory::Inactive) && pokemon.confusion_turns != 0 {
+            pokemon.confusion_turns = 0;
+            healed = true;
+        }
+        if healed {
             healed_slots.push(party_slot);
         }
     }

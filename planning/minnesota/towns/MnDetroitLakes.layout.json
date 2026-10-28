@@ -21,56 +21,102 @@
   "derived_blocks": [
     {
       "id": "80",
-      "source_tileset": "kanto",
-      "source_block": "78"
+      "source_tileset": "mn_headwaters",
+      "source_block": "80",
+      "collision": [
+        "WATER",
+        "WATER",
+        "WATER",
+        "WATER"
+      ]
     },
     {
       "id": "81",
-      "source_tileset": "kanto",
-      "source_block": "77"
+      "source_tileset": "mn_headwaters",
+      "source_block": "81",
+      "collision": [
+        "FLOOR",
+        "FLOOR",
+        "WALL",
+        "WALL"
+      ]
     },
     {
       "id": "82",
-      "source_tileset": "kanto",
-      "source_block": "77",
-      "tile_row_order": [
-        2,
-        3,
-        0,
-        1
-      ],
-      "collision_source_tileset": "johto",
-      "collision_source_block": "75"
+      "source_tileset": "mn_headwaters",
+      "source_block": "82",
+      "collision": [
+        "WALL",
+        "WALL",
+        "FLOOR",
+        "FLOOR"
+      ]
     },
     {
       "id": "83",
       "source_tileset": "johto_modern",
-      "source_block": "18"
+      "source_block": "18",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ]
     },
     {
       "id": "84",
       "source_tileset": "johto_modern",
-      "source_block": "1f"
+      "source_block": "1f",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ]
     },
     {
       "id": "85",
       "source_tileset": "johto_modern",
-      "source_block": "19"
+      "source_block": "19",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ]
     },
     {
       "id": "86",
       "source_tileset": "johto_modern",
-      "source_block": "1a"
+      "source_block": "1a",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "DOOR"
+      ]
     },
     {
       "id": "87",
       "source_tileset": "johto_modern",
-      "source_block": "0f"
+      "source_block": "0f",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ]
     },
     {
       "id": "88",
       "source_tileset": "johto_modern",
-      "source_block": "11"
+      "source_block": "11",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ]
     }
   ],
   "layers": [
@@ -1397,5 +1443,6 @@
       ],
       "material": "forest"
     }
-  ]
+  ],
+  "extended_graphics": true
 }

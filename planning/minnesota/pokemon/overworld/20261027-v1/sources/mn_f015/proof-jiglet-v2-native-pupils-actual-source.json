@@ -1,0 +1,212 @@
+{
+  "species": "jiglet",
+  "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f015/jiglet-v2-native-pupils",
+  "status": "actual-source native proof passes; root visual/context acceptance pending",
+  "all_four_nonrear_actual_isolated_source_pupils": true,
+  "six16px_alpha_border_normal_shiny_runtime_parity": true,
+  "canonical_palettes": true,
+  "literal_2bpp_all1536indices_exact": true,
+  "bank_sha256": "a345a39bcdf818f91ac55df8d1a16dd6b177f12c9d52f8d67f25fecd35471c22",
+  "proof": [
+    {
+      "pose": "down_idle",
+      "actual_small_isolated_pupils": [
+        {
+          "native": [
+            6,
+            11
+          ],
+          "source_sample": [
+            251,
+            417
+          ],
+          "source_component": [
+            251,
+            407,
+            24,
+            36
+          ],
+          "component_pixels": 864,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            5,
+            3,
+            0,
+            253
+          ]
+        },
+        {
+          "native": [
+            9,
+            11
+          ],
+          "source_sample": [
+            338,
+            417
+          ],
+          "source_component": [
+            324,
+            407,
+            25,
+            36
+          ],
+          "component_pixels": 899,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            1,
+            0,
+            0,
+            254
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "actual_small_isolated_pupils": [
+        {
+          "native": [
+            5,
+            11
+          ],
+          "source_sample": [
+            1188,
+            432
+          ],
+          "source_component": [
+            1166,
+            417,
+            24,
+            34
+          ],
+          "component_pixels": 816,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            1,
+            0,
+            0,
+            253
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "actual_small_isolated_pupils": [
+        {
+          "native": [
+            6,
+            11
+          ],
+          "source_sample": [
+            251,
+            778
+          ],
+          "source_component": [
+            251,
+            767,
+            25,
+            35
+          ],
+          "component_pixels": 874,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            0,
+            0,
+            0,
+            253
+          ]
+        },
+        {
+          "native": [
+            9,
+            11
+          ],
+          "source_sample": [
+            338,
+            778
+          ],
+          "source_component": [
+            326,
+            767,
+            24,
+            35
+          ],
+          "component_pixels": 840,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            0,
+            0,
+            0,
+            253
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "actual_small_isolated_pupils": [
+        {
+          "native": [
+            5,
+            11
+          ],
+          "source_sample": [
+            1188,
+            789
+          ],
+          "source_component": [
+            1166,
+            782,
+            24,
+            35
+          ],
+          "component_pixels": 838,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            3,
+            2,
+            1,
+            253
+          ]
+        }
+      ]
+    }
+  ],
+  "hashes": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f015/jiglet-v2-native-pupils/compiled-index.json": "08496113516b6dbaa9e162bb6ee52a74febcbe67776a4646f1f565cf349a55f0",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f015/jiglet.overworld.imagegen-v1.png": "5a5fef45a23cfb3919b7e6626788e4693d76c9a4422dc9a4b03e087c471d81cd",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f015/jiglet-v2-native-pupils/gfx/pokemon/jiglet/overworld.2bpp": "a345a39bcdf818f91ac55df8d1a16dd6b177f12c9d52f8d67f25fecd35471c22"
+  },
+  "no_native_pixel_painting": true
+}

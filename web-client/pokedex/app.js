@@ -104,6 +104,7 @@ if (document.body.dataset.page === 'entry') {
     portrait.src = portrait.dataset[`${shiny ? 'shiny' : 'normal'}${facing === 'front' ? 'Front' : 'Back'}`];
     portrait.alt = `${portrait.dataset.name}, ${shiny ? 'shiny' : 'normal'} ${facing} sprite`;
     document.body.dataset.shiny = String(shiny);
+    syncWalkingPalette(shiny);
     $$('[data-facing]').forEach(button => button.setAttribute('aria-pressed', String(facing === button.dataset.facing)));
     $('#shiny-toggle').setAttribute('aria-pressed', String(shiny));
   }
@@ -150,4 +151,82 @@ $$('[data-animation-base]').forEach(preview => {
   palette.addEventListener('click', () => { shiny = !shiny; paint(); });
   preview.addEventListener('animation-offscreen', stop);
   if (animationVisibility) animationVisibility.observe(preview);
+});
+
+// Native thumbnails use actual idle/step cells, never a scaled battle portrait.
+function syncWalkingPalette(shiny) {
+  $$('[data-walk-normal]').forEach(image => { image.src = shiny ? image.dataset.walkShiny : image.dataset.walkNormal; });
+}
+const walkers = $$('[data-walker]');
+const visibleWalkers = new Set();
+let walkingEnabled = true;
+try { walkingEnabled = localStorage.getItem('geothite.pokedex.walking.v1') !== 'off'; } catch { /* Session-only preference. */ }
+function paintWalking() {
+  const enabled = walkingEnabled && !reducedMotion.matches;
+  walkers.forEach(walker => walker.toggleAttribute('data-sprite-running', enabled && !document.hidden && visibleWalkers.has(walker)));
+  $$('[data-walking-toggle]').forEach(button => {
+    button.setAttribute('aria-pressed', String(enabled));
+    button.textContent = enabled ? 'Pause sprites' : 'Play sprites';
+    button.disabled = reducedMotion.matches;
+  });
+}
+if (typeof IntersectionObserver === 'function') {
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => { if (entry.isIntersecting) visibleWalkers.add(entry.target); else visibleWalkers.delete(entry.target); });
+    paintWalking();
+  });
+  walkers.forEach(walker => observer.observe(walker));
+} else {
+  walkers.forEach(walker => visibleWalkers.add(walker));
+}
+$$('[data-walking-toggle]').forEach(button => button.addEventListener('click', () => {
+  walkingEnabled = !walkingEnabled;
+  try { localStorage.setItem('geothite.pokedex.walking.v1', walkingEnabled ? 'on' : 'off'); } catch { /* Session-only preference. */ }
+  paintWalking();
+}));
+reducedMotion.addEventListener('change', paintWalking);
+document.addEventListener('visibilitychange', paintWalking);
+paintWalking();
+
+// A single media element prevents overlapping cries. Fetch only after a gesture.
+const cryPlayer = new Audio();
+cryPlayer.preload = 'none';
+let activeCryButton = null;
+let cryRequest = 0;
+const cryStatus = document.createElement('span');
+cryStatus.className = 'media-status';
+cryStatus.setAttribute('role', 'status');
+document.body.append(cryStatus);
+function stopCry() {
+  cryRequest += 1;
+  cryPlayer.pause();
+  if (activeCryButton) {
+    activeCryButton.setAttribute('aria-pressed', 'false');
+    activeCryButton.setAttribute('aria-label', `Play ${activeCryButton.dataset.cryName} cry`);
+    activeCryButton.textContent = '▶ Cry';
+    activeCryButton = null;
+  }
+}
+cryPlayer.addEventListener('ended', stopCry);
+cryPlayer.addEventListener('error', () => { if (activeCryButton) cryStatus.textContent = `Could not play ${activeCryButton.dataset.cryName}'s cry. Try again.`; stopCry(); });
+window.addEventListener('pagehide', stopCry);
+document.addEventListener('click', async event => {
+  const button = event.target.closest('[data-cry]');
+  if (!button) return;
+  const same = activeCryButton === button;
+  stopCry();
+  if (same) return;
+  const request = cryRequest;
+  activeCryButton = button;
+  button.setAttribute('aria-pressed', 'true');
+  button.setAttribute('aria-label', `Stop ${button.dataset.cryName} cry`);
+  button.textContent = '■ Stop';
+  cryStatus.textContent = '';
+  cryPlayer.src = button.dataset.cry;
+  try { await cryPlayer.play(); } catch {
+    if (request === cryRequest) {
+      cryStatus.textContent = `Could not play ${button.dataset.cryName}'s cry. Try again.`;
+      stopCry();
+    }
+  }
 });

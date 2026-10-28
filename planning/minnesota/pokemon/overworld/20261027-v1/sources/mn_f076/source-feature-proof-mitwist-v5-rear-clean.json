@@ -1,0 +1,158 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_163",
+  "result": "pass",
+  "manifest_sha256": "65841f53bb39c1bd185249017acc8ef9164cb13f27df5a019a4859e3793975b3",
+  "bank_sha256": "a8a7e589e1a82b20f782725812f6820881f4c66c65c654af33f1d92903f4d5a0",
+  "source_sha256": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f076/mitwist.overworld.imagegen-v2-outline-pupils.png": "9c858ba3456c349fce45ed4353487a7f52a5ba7589094bcc454990540b51a4e2",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f076/mitwist.overworld.imagegen-v3-rear-thumbs.png": "ef3fb78a2163fa57bc59c3f2b50c6f273093d53cec6d89d2bf8c5db4d47048f5"
+  },
+  "canonical_eye_form": "ONE actual isolated black pupil on the single mitten in each south and west pose; source eye component verified in all four nonrear poses, no cuff slit counted.",
+  "nonrear_poses": [
+    {
+      "pose": "down_idle",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            8,
+            8
+          ],
+          "source_sample": [
+            300,
+            275
+          ],
+          "source_component": [
+            274,
+            248,
+            31,
+            35
+          ],
+          "component_pixels": 1084,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            5,
+            4,
+            3,
+            253
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            6,
+            7
+          ],
+          "source_sample": [
+            1234,
+            256
+          ],
+          "source_component": [
+            1206,
+            248,
+            31,
+            35
+          ],
+          "component_pixels": 1084,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            6,
+            5,
+            3,
+            254
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            7,
+            8
+          ],
+          "source_sample": [
+            270,
+            725
+          ],
+          "source_component": [
+            265,
+            697,
+            32,
+            35
+          ],
+          "component_pixels": 1119,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            3,
+            3,
+            2,
+            254
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            6,
+            7
+          ],
+          "source_sample": [
+            1254,
+            708
+          ],
+          "source_component": [
+            1228,
+            699,
+            33,
+            34
+          ],
+          "component_pixels": 1122,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            3,
+            1,
+            0,
+            253
+          ]
+        }
+      ]
+    }
+  ],
+  "rear_anatomy": {
+    "result": "pass",
+    "notes": "Exactly ONE cream mitten with blue cuff, completed rounded finger dome and single thumb. Correct north thumbLEFT versus front thumbRIGHT; rear thumb web seam stays joined to native perimeter, no floating black eye-like dot. All four nonrear real single pupils proven, no cuff slit counted as eye. Source cloth feature proof traces dome/thumb/cuff/open web alpha0 gap allsix. Sharedfit11, front eye shifts left1pixel during step, west eye stable; motion receipt retained."
+  }
+}

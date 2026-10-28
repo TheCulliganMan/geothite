@@ -1,0 +1,262 @@
+{
+  "schema_version": 1,
+  "status": "Published arrow-marked wind candidate; literal ordinary-party route, forced movement, loss, prior badge and native views verified; user acceptance open.",
+  "gyms": [
+    {
+      "slot": 5,
+      "id": "MnStCloudGym",
+      "constant": "MN_ST_CLOUD_GYM",
+      "city": "ST CLOUD",
+      "leader": "SAVEN",
+      "trainer_class": "BIRD_KEEPER",
+      "leader_sprite": "SPRITE_COOLTRAINER_M",
+      "leader_at": [
+        3,
+        3
+      ],
+      "badge_flag": "ENGINE_STORMBADGE",
+      "requires": [
+        "BADGE_4"
+      ],
+      "reward": "TM_SWIFT",
+      "party": [
+        {
+          "species": "PIDGEOTTO",
+          "level": 28,
+          "moves": [
+            "GUST",
+            "QUICK_ATTACK",
+            "SWIFT",
+            "WHIRLWIND"
+          ]
+        },
+        {
+          "species": "NOCTOWL",
+          "level": 29,
+          "moves": [
+            "PECK",
+            "HYPNOSIS",
+            "REFLECT",
+            "SWIFT"
+          ]
+        },
+        {
+          "species": "FEAROW",
+          "level": 30,
+          "moves": [
+            "PECK",
+            "FURY_ATTACK",
+            "PURSUIT",
+            "SWIFT"
+          ]
+        }
+      ],
+      "rows": [
+        "#tt######",
+        "#..f##tt#",
+        "#...>>..#",
+        "#b.###b.#",
+        "#...<<A.#",
+        "#bbf##..#",
+        "#..B>>..#",
+        "#b..##.b#",
+        "#...<<..#",
+        "#L.R##bb#",
+        "#bsb#####"
+      ],
+      "art": {
+        "#": [
+          "elite_four_room",
+          "17"
+        ],
+        ".": [
+          "elite_four_room",
+          "2d"
+        ],
+        "t": [
+          "elite_four_room",
+          "15"
+        ],
+        "b": [
+          "elite_four_room",
+          "19"
+        ],
+        "f": [
+          "elite_four_room",
+          "33"
+        ],
+        "L": [
+          "elite_four_room",
+          "1e"
+        ],
+        "R": [
+          "elite_four_room",
+          "1d"
+        ],
+        "s": [
+          "elite_four_room",
+          "1c"
+        ],
+        "A": [
+          "elite_four_room",
+          "14"
+        ],
+        "B": [
+          "elite_four_room",
+          "14"
+        ],
+        ">": [
+          "tower",
+          "0b"
+        ],
+        "<": [
+          "tower",
+          "0b"
+        ]
+      },
+      "trainers": [
+        {
+          "id": "MN_GYM_5_TRAINER_1",
+          "name": "WYREL",
+          "trainer_class": "COOLTRAINERF",
+          "sprite": "SPRITE_COOLTRAINER_F",
+          "at": [
+            4,
+            15
+          ],
+          "party": [
+            {
+              "species": "PIDGEOTTO",
+              "level": 25
+            }
+          ],
+          "optional": false,
+          "before_lines": [
+            "Feel that gust?",
+            "Keep your footing!"
+          ],
+          "after_lines": [
+            "Take the east",
+            "arrows to HALLEN.",
+            "The west arrows",
+            "bring you back."
+          ]
+        },
+        {
+          "id": "MN_GYM_5_TRAINER_2",
+          "name": "HALLEN",
+          "trainer_class": "BIRD_KEEPER",
+          "sprite": "SPRITE_YOUNGSTER",
+          "at": [
+            14,
+            10
+          ],
+          "party": [
+            {
+              "species": "SPEAROW",
+              "level": 25
+            },
+            {
+              "species": "NOCTOWL",
+              "level": 26
+            }
+          ],
+          "optional": false,
+          "before_lines": [
+            "Ready for a turn?",
+            "My birds are!"
+          ],
+          "after_lines": [
+            "Go north to the",
+            "west arrows. They",
+            "carry you across",
+            "to SAVEN."
+          ]
+        }
+      ],
+      "stations": [],
+      "gates": [
+        {
+          "at": [
+            3,
+            6
+          ],
+          "requires": [
+            "EVENT_MN_GYM_5_TRAINER_1_DEFEATED"
+          ],
+          "open_symbol": ".",
+          "event": "EVENT_MN_GYM_5_LOWER_CROSSING_OPEN"
+        },
+        {
+          "at": [
+            6,
+            4
+          ],
+          "requires": [
+            "EVENT_MN_GYM_5_TRAINER_1_DEFEATED",
+            "EVENT_MN_GYM_5_TRAINER_2_DEFEATED"
+          ],
+          "open_symbol": ".",
+          "event": "EVENT_MN_GYM_5_COURT_OPEN"
+        }
+      ],
+      "guide": [
+        "Arrows show where",
+        "the wind carries",
+        "you. Beat WYREL,",
+        "cross east to",
+        "HALLEN, then west",
+        "to SAVEN."
+      ],
+      "walkthrough": [
+        "MN_GYM_5_TRAINER_1",
+        "MN_GYM_5_TRAINER_2"
+      ],
+      "dimensions_metatiles": [
+        9,
+        11
+      ],
+      "arrival_core": [
+        4,
+        19
+      ],
+      "exit_tiles_core": [
+        [
+          4,
+          21
+        ],
+        [
+          5,
+          21
+        ]
+      ],
+      "guide_at": [
+        7,
+        18
+      ],
+      "leader_court_locked": true,
+      "before_lines": [
+        "From up here, you",
+        "can see a turn",
+        "before it happens.",
+        "Shall we?"
+      ],
+      "victory_lines": [
+        "You read the turn",
+        "before I made it."
+      ],
+      "after_lines": [
+        "Pine country lies",
+        "north of town.",
+        "Stop at the river",
+        "lookout before",
+        "you leave."
+      ],
+      "winds": {
+        ">": "WALK_RIGHT",
+        "<": "WALK_LEFT"
+      },
+      "wind_arrows": true
+    }
+  ]
+}

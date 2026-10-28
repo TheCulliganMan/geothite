@@ -11,6 +11,7 @@ use super::super::{
     mark_runtime_snapshot_dirty,
 };
 use super::authored_route_fixture::{RouteGrid, RouteSpec, indoor_walk};
+use super::northstar_earned_gyms;
 use super::winona::{at, continued, finish, load, opening, press, travel};
 
 const DELIVERED: &str = "EVENT_MN_DELIVERED_ROCHESTER_PARCEL";
@@ -99,6 +100,20 @@ pub(super) fn trail_with(
     to: (i16, i16),
     mut encounter: impl FnMut(&mut VisibleShellController),
 ) {
+    assert!(
+        try_trail_with(c, r, to, &mut encounter),
+        "R01 walk was interrupted by a native map transition"
+    );
+}
+
+/// A blackout ends this walk at the real recovery map instead of resuming a
+/// stale route plan. The caller must heal and plan a fresh departure.
+pub(super) fn try_trail_with(
+    c: &mut VisibleShellController,
+    r: &crystal_runtime::CrystalRuntime,
+    to: (i16, i16),
+    mut encounter: impl FnMut(&mut VisibleShellController),
+) -> bool {
     let s = c.snapshot().expect("route start");
     let start = (s.overworld.tile.x, s.overworld.tile.y);
     let grid = RouteGrid::new_with_grass(
@@ -120,13 +135,16 @@ pub(super) fn trail_with(
                 encounter(c);
             }
             let now = c.snapshot().expect("trail tile");
-            assert_eq!(now.overworld.map_name, "MnR01C00R00");
+            if now.overworld.map_name != "MnR01C00R00" {
+                return false;
+            }
             if now.overworld.tile != old {
                 break;
             }
         }
     }
     at(c, "MnR01C00R00", to);
+    true
 }
 
 pub(super) fn delivery() -> (
@@ -144,18 +162,34 @@ pub(super) fn delivery() -> (
     travel(&mut c, GameButton::Left, "MnRochester", (39, 18));
     assert!(!delivered(&c));
     c = continued(c, &root, &r, "rochester-earned-arrival");
-    // The real gym is accessible, but delivery is a separate prerequisite.
+    // Preview the real room before delivery. The earlier room permits a direct
+    // leader refusal; the revised room first presents its closed lane and guide.
+    // Its separate parcel guard is retained by the local prerequisite cases.
     indoor_walk(&mut c, &r, (30, 24));
-    travel(&mut c, GameButton::Up, "MnRochesterGym", (6, 17));
-    indoor_walk(&mut c, &r, (6, 4));
-    press(&mut c, GameButton::Up);
-    press(&mut c, GameButton::A);
-    assert!(c.snapshot().expect("gym refusal").ui.text.is_some());
-    finish(&mut c);
+    let selected = northstar_earned_gyms::selected(&r);
+    let arrival = if selected {
+        northstar_earned_gyms::arrival(&r, 1)
+    } else {
+        (6, 17)
+    };
+    travel(&mut c, GameButton::Up, "MnRochesterGym", arrival);
+    if selected {
+        northstar_earned_gyms::rochester_preview(&mut c, &r);
+    } else {
+        indoor_walk(&mut c, &r, (6, 4));
+        press(&mut c, GameButton::Up);
+        press(&mut c, GameButton::A);
+        assert!(c.snapshot().expect("gym refusal").ui.text.is_some());
+        finish(&mut c);
+    }
     assert!(!delivered(&c));
     assert!(!c.shell.shell.session().state().badges.johto[0]);
-    indoor_walk(&mut c, &r, (6, 18));
-    travel(&mut c, GameButton::Down, "MnRochester", (30, 24));
+    if selected {
+        northstar_earned_gyms::leave(&mut c, &r, 1, "MnRochester", (30, 24));
+    } else {
+        indoor_walk(&mut c, &r, (6, 18));
+        travel(&mut c, GameButton::Down, "MnRochester", (30, 24));
+    }
     indoor_walk(&mut c, &r, (15, 8));
     travel(&mut c, GameButton::Up, "MnRochesterPokecenter1F", (10, 13));
     indoor_walk(&mut c, &r, (11, 9));
@@ -163,13 +197,10 @@ pub(super) fn delivery() -> (
     press(&mut c, GameButton::A);
     assert!(!delivered(&c));
     let before = c.snapshot().expect("delivery page");
-    assert!(
-        before
-            .ui
-            .text
-            .as_ref()
-            .and_then(|t| t.asm_text.as_ref())
-            .is_some_and(|t| t.contains("meters"))
+    let expected = super::northstar_dialogue::canonical_pages("MS01", "MnRCDeliveryText");
+    assert_eq!(
+        before.ui.text.as_ref().and_then(|t| t.asm_text.as_ref()),
+        Some(&expected[0])
     );
     press(&mut c, GameButton::Down);
     at(&mut c, "MnRochesterPokecenter1F", (11, 9));
@@ -179,13 +210,13 @@ pub(super) fn delivery() -> (
         !delivered(&c),
         "first acknowledgment cannot finish both pages"
     );
-    assert!(
+    assert_eq!(
         c.snapshot()
             .expect("second page")
             .ui
             .text
-            .and_then(|t| t.asm_text)
-            .is_some_and(|t| t.contains("LODE"))
+            .and_then(|t| t.asm_text),
+        Some(expected[1].clone())
     );
     finish(&mut c);
     assert!(delivered(&c));

@@ -1,0 +1,161 @@
+{
+  "id": "MnMaraisCedarApproach",
+  "ports": [
+    {
+      "side": "west",
+      "core": [
+        [
+          0,
+          12
+        ],
+        [
+          0,
+          13
+        ]
+      ]
+    },
+    {
+      "side": "south",
+      "core": [
+        [
+          56,
+          37
+        ],
+        [
+          57,
+          37
+        ]
+      ]
+    }
+  ],
+  "actors": [
+    {
+      "id": "MN_COHESION_MARAIS_KEEPER",
+      "tile": [
+        29,
+        19
+      ],
+      "sprite": "SPRITE_YOUNGSTER",
+      "facing": "south",
+      "role": "optional_trainer",
+      "trainer_name": "CEDAR",
+      "trainer_class": "BIRD_KEEPER",
+      "party": [
+        {
+          "species": "NOCTOWL",
+          "level": 36
+        },
+        {
+          "species": "FARFETCH_D",
+          "level": 35
+        }
+      ],
+      "event_flag": "EVENT_MN_COHESION_MARAIS_KEEPER_DEFEATED",
+      "text": [
+        "A short forest walk.",
+        "Battle with me?"
+      ]
+    },
+    {
+      "id": "MN_COHESION_MARAIS_WALKER",
+      "tile": [
+        53,
+        31
+      ],
+      "sprite": "SPRITE_LASS",
+      "facing": "south",
+      "role": "optional_trainer",
+      "trainer_name": "MIRA",
+      "trainer_class": "LASS",
+      "party": [
+        {
+          "species": "VENONAT",
+          "level": 35
+        },
+        {
+          "species": "FURRET",
+          "level": 36
+        }
+      ],
+      "event_flag": "EVENT_MN_COHESION_MARAIS_WALKER_DEFEATED",
+      "text": [
+        "A short forest walk.",
+        "Battle with me?"
+      ]
+    }
+  ],
+  "signs": [
+    {
+      "id": "MN_COHESION_MARAIS_SIGN",
+      "tile": [
+        7,
+        9
+      ],
+      "lines": [
+        "CEDAR APPROACH",
+        "GRAND MARAIS south",
+        "GUNFLINT west."
+      ]
+    }
+  ],
+  "views": [
+    {
+      "id": "west-arrival",
+      "core": [
+        7,
+        12
+      ]
+    },
+    {
+      "id": "cedar-meadow",
+      "core": [
+        31,
+        19
+      ]
+    },
+    {
+      "id": "south-pine-turn",
+      "core": [
+        49,
+        32
+      ]
+    }
+  ],
+  "native_connections": [
+    {
+      "direction": "west",
+      "target_map": "MnMaraisInlandNeck",
+      "offset": 0
+    },
+    {
+      "direction": "south",
+      "target_map": "MnGrandMarais",
+      "offset": 19
+    }
+  ],
+  "revision": "west-entry-v02",
+  "geography_contract": "planning/minnesota/revisions/north-shore-ely-geography-v01/geography/native-west-v02/contract.json",
+  "sign_direction_corrections": [
+    {
+      "label": "MN_COHESION_MARAIS_SIGNText",
+      "command_index": 1,
+      "before": "\"GRAND MARAIS west.\"",
+      "after": "\"GRAND MARAIS south\""
+    },
+    {
+      "label": "MN_COHESION_MARAIS_SIGNText",
+      "command_index": 2,
+      "before": "\"NORTH SHORE south.\"",
+      "after": "\"GUNFLINT west.\""
+    }
+  ],
+  "status": "MATCHES_COMPOSED_NATIVE_GEOGRAPHY",
+  "native_geography_publication": {
+    "final_pack_sha256": "65cf6f98e65ada839ec5afaa57728bf8289d3a50ba53ba6b9b50f08d3620bb17",
+    "content_identity": "f34280a5fc5d6ab8ccc3ec4ef4317a6ea9321070df342ea95aca5745514a0223",
+    "source_contract": "revisions/north-shore-ely-geography-v01/geography/native-west-v02/contract.json",
+    "source_contract_sha256": "ee195bcfc318fa55e5c31d6f37f75ebbf1bb033760c98267303bc46a6beecc5c",
+    "verification": "revisions/north-shore-ely-geography-v01/VERIFICATION.md",
+    "progression_scope": "Local explicit fixtures and production inputs; earned campaign progression is not established."
+  }
+}

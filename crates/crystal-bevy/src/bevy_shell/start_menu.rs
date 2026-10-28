@@ -7190,6 +7190,7 @@ Transform::from_xyz(0.0, 0.0, 3.4),),
             snapshot,
             slot,
             row_index,
+            runtime_shell.lcd_animation_frame,
             selected == row_index,
             false,
             rendered_art,
@@ -7487,6 +7488,7 @@ fn spawn_battle_party_icon(
     snapshot: &RuntimeShellSnapshot,
     slot: &crate::RuntimePartySlotSnapshot,
     row_index: usize,
+    frame_counter: u64,
     selected: bool,
     field_surface: bool,
     rendered_art: &mut RenderedTilesetArt,
@@ -7498,12 +7500,9 @@ fn spawn_battle_party_icon(
     } else {
         slot.pokemon.species.id.as_str()
     };
-    let icon_id = snapshot
-        .presentation
-        .menu_icons
-        .get(species_id)
-        .with_context(|| format!("party icon mapping missing species {species_id}"))?
-        .clone();
+    let icon_id = pokemon_overworld_art::party_icon_id_if_present(asset_root, &slot.pokemon)
+        .or_else(|| snapshot.presentation.menu_icons.get(species_id).cloned())
+        .with_context(|| format!("party icon mapping missing species {species_id}"))?;
     if !rendered_art.party_icon_cache.contains_key(&icon_id)
         && !rendered_art.party_icon_errors.contains_key(&icon_id)
     {
@@ -7539,7 +7538,6 @@ fn spawn_battle_party_icon(
     } else {
         (136_u64, 0.0_f32)
     };
-    let frame_counter = snapshot.state_checksum.frame();
     let frame = &frames[((frame_counter / duration) & 1) as usize];
     let bob_pixels = if selected && bob_amplitude > 0.0 && (frame_counter / 16) & 1 != 0 {
         bob_amplitude
@@ -7699,6 +7697,9 @@ fn load_party_icon_frame(
     icon_id: &str,
     images: &mut Assets<Image>,
 ) -> Result<[SpriteFrame; 2]> {
+    if let Some(frames) = pokemon_overworld_art::load_party_frames(asset_root, icon_id, images)? {
+        return Ok(frames);
+    }
     let assets = asset_root.runtime_assets();
     let palette_path = assets.join("gfx/stats/party_menu_ob.pal");
     let palette_content = crate::read_runtime_asset_to_string(&palette_path)

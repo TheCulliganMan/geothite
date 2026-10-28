@@ -1,0 +1,336 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_135",
+  "result": "pass",
+  "manifest_sha256": "22fe03c78066fb73a461d1add1396b69fb1016f84f04d14052af6b69069dd867",
+  "bank_sha256": "c1ff6d85f22f10bb047fcd5e3e7419d83843f9528a036de7abd634eb7180bc11",
+  "source_sha256": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f062/vanechick.overworld.imagegen-v1.png": "85aca4c8926796bf1897e2fe6b8fd038bfc6d5b000b4d45a43f28485150df2df"
+  },
+  "canonical_eye_form": "TWO actual isolated south pupils, ONE actual isolated west pupil. Every pixel in each complete native eye cluster maps to the same small anatomical source pupil component.",
+  "nonrear_poses": [
+    {
+      "pose": "down_idle",
+      "result": "pass",
+      "source_feature_proof": {
+        "pose": "down_idle",
+        "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f062/vanechick.overworld.imagegen-v1.png",
+        "crop": [
+          152,
+          109,
+          440,
+          380
+        ],
+        "anatomically_identified_source_eye_boxes_xywh": [
+          [
+            272,
+            297,
+            17,
+            28
+          ],
+          [
+            367,
+            297,
+            17,
+            28
+          ]
+        ],
+        "actual_eye_proofs": [
+          {
+            "native_cluster": [
+              [
+                5,
+                9
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  4,
+                  2,
+                  0,
+                  253
+                ],
+                "bounds": [
+                  272,
+                  297,
+                  17,
+                  28
+                ],
+                "pixels": 476,
+                "truncated_contour": false,
+                "native_pixel": [
+                  5,
+                  9
+                ],
+                "source_sample_pixel": [
+                  286,
+                  303
+                ]
+              }
+            ]
+          },
+          {
+            "native_cluster": [
+              [
+                8,
+                9
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  0,
+                  0,
+                  0,
+                  253
+                ],
+                "bounds": [
+                  367,
+                  297,
+                  17,
+                  28
+                ],
+                "pixels": 476,
+                "truncated_contour": false,
+                "native_pixel": [
+                  8,
+                  9
+                ],
+                "source_sample_pixel": [
+                  375,
+                  303
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "pose": "left_idle",
+      "result": "pass",
+      "source_feature_proof": {
+        "pose": "left_idle",
+        "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f062/vanechick.overworld.imagegen-v1.png",
+        "crop": [
+          1039,
+          117,
+          440,
+          380
+        ],
+        "anatomically_identified_source_eye_boxes_xywh": [
+          [
+            1133,
+            296,
+            16,
+            28
+          ]
+        ],
+        "actual_eye_proofs": [
+          {
+            "native_cluster": [
+              [
+                4,
+                9
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  4,
+                  3,
+                  1,
+                  253
+                ],
+                "bounds": [
+                  1133,
+                  296,
+                  16,
+                  28
+                ],
+                "pixels": 448,
+                "truncated_contour": false,
+                "native_pixel": [
+                  4,
+                  9
+                ],
+                "source_sample_pixel": [
+                  1144,
+                  311
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "pose": "down_step",
+      "result": "pass",
+      "source_feature_proof": {
+        "pose": "down_step",
+        "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f062/vanechick.overworld.imagegen-v1.png",
+        "crop": [
+          152,
+          522,
+          440,
+          380
+        ],
+        "anatomically_identified_source_eye_boxes_xywh": [
+          [
+            272,
+            711,
+            17,
+            29
+          ],
+          [
+            367,
+            711,
+            17,
+            29
+          ]
+        ],
+        "actual_eye_proofs": [
+          {
+            "native_cluster": [
+              [
+                5,
+                9
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  0,
+                  1,
+                  0,
+                  253
+                ],
+                "bounds": [
+                  272,
+                  711,
+                  17,
+                  29
+                ],
+                "pixels": 491,
+                "truncated_contour": false,
+                "native_pixel": [
+                  5,
+                  9
+                ],
+                "source_sample_pixel": [
+                  286,
+                  716
+                ]
+              }
+            ]
+          },
+          {
+            "native_cluster": [
+              [
+                8,
+                9
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  2,
+                  1,
+                  1,
+                  254
+                ],
+                "bounds": [
+                  367,
+                  711,
+                  17,
+                  29
+                ],
+                "pixels": 491,
+                "truncated_contour": false,
+                "native_pixel": [
+                  8,
+                  9
+                ],
+                "source_sample_pixel": [
+                  375,
+                  716
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "pose": "left_step",
+      "result": "pass",
+      "source_feature_proof": {
+        "pose": "left_step",
+        "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f062/vanechick.overworld.imagegen-v1.png",
+        "crop": [
+          1039,
+          527,
+          440,
+          380
+        ],
+        "anatomically_identified_source_eye_boxes_xywh": [
+          [
+            1134,
+            705,
+            16,
+            31
+          ]
+        ],
+        "actual_eye_proofs": [
+          {
+            "native_cluster": [
+              [
+                4,
+                9
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  2,
+                  2,
+                  0,
+                  253
+                ],
+                "bounds": [
+                  1134,
+                  705,
+                  16,
+                  31
+                ],
+                "pixels": 496,
+                "truncated_contour": false,
+                "native_pixel": [
+                  4,
+                  9
+                ],
+                "source_sample_pixel": [
+                  1144,
+                  721
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "rear_anatomy": {
+    "result": "pass",
+    "notes": "Both native normal/shiny rear poses actually inspected: plain rear head, no copied face. Head anchors stable, 1px transparent outer border, three walk pairs differ."
+  },
+  "detailed_proof": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f062/manifest-vanechick-v1-pupil-proof.proof.json"
+}

@@ -1,0 +1,104 @@
+[
+  {
+    "name": "emberm",
+    "version": 2,
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f102/emberm.manifest-root-registered-v2.json",
+    "expected_eye_components": {
+      "0": [
+        [
+          240,
+          394,
+          27,
+          28
+        ],
+        [
+          311,
+          394,
+          27,
+          28
+        ]
+      ],
+      "2": [
+        [
+          1176,
+          393,
+          26,
+          27
+        ]
+      ],
+      "3": [
+        [
+          241,
+          778,
+          27,
+          27
+        ],
+        [
+          312,
+          778,
+          27,
+          27
+        ]
+      ],
+      "5": [
+        [
+          1176,
+          774,
+          27,
+          28
+        ]
+      ]
+    }
+  },
+  {
+    "name": "smoulden",
+    "version": 3,
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f102/smoulden.manifest-root-registered-v3.json",
+    "expected_eye_components": {
+      "0": [
+        [
+          214,
+          480,
+          22,
+          23
+        ],
+        [
+          302,
+          480,
+          23,
+          23
+        ]
+      ],
+      "2": [
+        [
+          1197,
+          468,
+          15,
+          24
+        ]
+      ],
+      "3": [
+        [
+          223,
+          840,
+          18,
+          23
+        ],
+        [
+          302,
+          840,
+          23,
+          23
+        ]
+      ],
+      "5": [
+        [
+          1185,
+          816,
+          15,
+          23
+        ]
+      ]
+    }
+  }
+]

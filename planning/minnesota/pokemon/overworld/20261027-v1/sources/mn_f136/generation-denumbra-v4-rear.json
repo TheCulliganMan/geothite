@@ -1,0 +1,169 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_302",
+  "name": "Denumbra",
+  "family_id": "MN_F136",
+  "status": "compiled_native_candidate_root_visual_context_acceptance_authoritative",
+  "generation_tool": "built-in image_gen",
+  "prompts": [
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f136/prompt-denumbra-v1.txt",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f136/prompt-denumbra-v2-pupils.txt",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f136/prompt-denumbra-v4-rear.txt"
+  ],
+  "sources_selected": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f136/denumbra.overworld.imagegen-v1.png",
+      "sha256": "0d91daf12d68d69889e5b82ccf96e00d1787644514ac2bc4d45b734a59ecd509",
+      "dimensions": [
+        1536,
+        1024
+      ]
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f136/denumbra.overworld.imagegen-v2-pupils.png",
+      "sha256": "a7ed184f0a2a7b949f81855b3af70235c0249c021a67c43d7bec7cb7f5a0ff3c",
+      "dimensions": [
+        1536,
+        1024
+      ]
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f136/denumbra.overworld.imagegen-v4-rear.png",
+      "sha256": "14cea127b21a587a7cd7d434938dc61ebb48eace93abc452d43887b0f5a6a02f",
+      "dimensions": [
+        1536,
+        1024
+      ]
+    }
+  ],
+  "default_output_originals": [
+    {
+      "record": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f136/denumbra.v1.original-path.txt",
+      "path": "/Users/ryanculligan/.codex/generated_images/01a17dc4-dd75-7642-a1c6-4bf13fda70c6/exec-5f583673-6b26-4aed-bb4b-45a939635a19.png"
+    },
+    {
+      "record": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f136/denumbra.v2.original-path.txt",
+      "path": "/Users/ryanculligan/.codex/generated_images/01a17dc4-dd75-7642-a1c6-4bf13fda70c6/exec-330485a2-5cae-4b51-a392-ace17cb20ec3.png"
+    },
+    {
+      "record": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f136/denumbra.v4.original-path.txt",
+      "path": "/Users/ryanculligan/.codex/generated_images/01a17dc4-dd75-7642-a1c6-4bf13fda70c6/exec-5fe3f5aa-021c-4cf3-8e5c-d6afc026b6ac.png"
+    }
+  ],
+  "generation_style_reference_only": "planning/minnesota/pokemon/overworld/20261027-v1/references/native-pack-16px/native-six-frame-style-board.8x.png",
+  "identity_authority": "Currentactivecoverage.json exactcanonicalpalettes,textbodylocks,andvisualinspectionofselectednativefront; no battleartinputforgeneration",
+  "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f136/manifest-denumbra-v4-rear.json",
+  "manifest_sha256": "a4103c9cbae459f711fc2ea201afe8e5547ea54fdf10ab178ec12d5bf7a80da6",
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f136/denumbra-v4-rear",
+  "normal_review": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f136/denumbra-v4-rear/review/line.normal-8x.png",
+  "frame_size": [
+    16,
+    16
+  ],
+  "native_bounds": [
+    [
+      2,
+      1,
+      11,
+      14
+    ],
+    [
+      2,
+      1,
+      11,
+      14
+    ],
+    [
+      3,
+      1,
+      9,
+      14
+    ],
+    [
+      2,
+      1,
+      11,
+      14
+    ],
+    [
+      2,
+      1,
+      11,
+      14
+    ],
+    [
+      3,
+      1,
+      9,
+      14
+    ]
+  ],
+  "sampling": "source_center",
+  "normal_palette_rgb555": [
+    32767,
+    14568,
+    14109,
+    0
+  ],
+  "shiny_palette_rgb555": [
+    32767,
+    15913,
+    27259,
+    0
+  ],
+  "alpha_threshold": 128,
+  "transparent_index": 0,
+  "visible_indices": [
+    1,
+    2,
+    3
+  ],
+  "native_pixels_painted": false,
+  "notes": "All6frames strictRustcompiled andretained. Sameper-speciesworldscale/equalcropwindowswithpairedheadregistration. Max14pxopaquefootprint+transparentborder. Rootreviewandruntimecontextproofsdetermineacceptance; thisreceiptisnotacceptance. Noqueue/registry/packwrites.",
+  "rear_repair": "ImageGenv4onlynorth, removesfalsepairedbackmarks; fourfront/profileframesbyte-identicaltov2pupils, proofsaved.",
+  "selected_sources": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f136/denumbra.overworld.imagegen-v1.png",
+      "sha256": "0d91daf12d68d69889e5b82ccf96e00d1787644514ac2bc4d45b734a59ecd509",
+      "dimensions": [
+        1536,
+        1024
+      ]
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f136/denumbra.overworld.imagegen-v2-pupils.png",
+      "sha256": "a7ed184f0a2a7b949f81855b3af70235c0249c021a67c43d7bec7cb7f5a0ff3c",
+      "dimensions": [
+        1536,
+        1024
+      ]
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f136/denumbra.overworld.imagegen-v4-rear.png",
+      "sha256": "14cea127b21a587a7cd7d434938dc61ebb48eace93abc452d43887b0f5a6a02f",
+      "dimensions": [
+        1536,
+        1024
+      ]
+    }
+  ],
+  "default_output_records": [
+    {
+      "record": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f136/denumbra.v1.original-path.txt",
+      "path": "/Users/ryanculligan/.codex/generated_images/01a17dc4-dd75-7642-a1c6-4bf13fda70c6/exec-5f583673-6b26-4aed-bb4b-45a939635a19.png"
+    },
+    {
+      "record": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f136/denumbra.v2.original-path.txt",
+      "path": "/Users/ryanculligan/.codex/generated_images/01a17dc4-dd75-7642-a1c6-4bf13fda70c6/exec-330485a2-5cae-4b51-a392-ace17cb20ec3.png"
+    },
+    {
+      "record": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f136/denumbra.v4.original-path.txt",
+      "path": "/Users/ryanculligan/.codex/generated_images/01a17dc4-dd75-7642-a1c6-4bf13fda70c6/exec-5fe3f5aa-021c-4cf3-8e5c-d6afc026b6ac.png"
+    }
+  ],
+  "only_generation_reference": "planning/minnesota/pokemon/overworld/20261027-v1/references/native-pack-16px/native-six-frame-style-board.8x.png",
+  "native_frame_size": [
+    16,
+    16
+  ]
+}

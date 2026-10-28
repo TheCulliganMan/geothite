@@ -1,0 +1,14 @@
+{
+  "tool": "built-in image_gen",
+  "original_tool_path": "/Users/ryanculligan/.codex/generated_images/01a17dcc-4f1a-77a2-9d21-0df036061346/exec-b44d818b-39e2-4180-b96d-a36a1d044429.png",
+  "source_size": [
+    1774,
+    887
+  ],
+  "sha256": "93399dba54e64920a7b678a05753e34ebe24446e10de22ada88c9274376f3300",
+  "reference_paths": [
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f006/fortigard.overworld.imagegen-v4.png"
+  ],
+  "prompt": "fortigard.prompt-v5.txt",
+  "edit": "Headwidth2xheight1.5x, existing coarseart only, no battleart reference"
+}

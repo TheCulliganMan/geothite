@@ -1,0 +1,26 @@
+{
+  "species_id": "MN_106",
+  "name": "Thundraze",
+  "family_id": "MN_F051",
+  "tool": "built-in image_gen",
+  "selected_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f051/manifest-thundraze-v6-pupil-proof.json",
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f051/thundraze-v6-pupil-proof",
+  "normalized_proof": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f051/source-feature-proof-thundraze-v6.json",
+  "detailed_proof": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f051/manifest-thundraze-v6-pupil-proof.proof.json",
+  "sources": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f051/thundraze.overworld.imagegen-v5-front-pupil-pitch.png": "61c0ab5a30ccf078d3501a557ba11fc432b5af896f733522b77e8673a829b6ec",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f051/thundraze.overworld.imagegen-v3-profile-eyes.png": "be39cd0869b933345054acf320836ea8ec39a4cdd334fb64543201cf158c9010",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f051/thundraze.overworld.imagegen-v6-profile-pupil-pitch.png": "18cf4eb73ed7bed2c238874956cf53a4fc61d76a628fe525a832f34b51031527"
+  },
+  "preserved_attempt_receipts": [
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f051/attempt-thundraze-v1.json",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f051/attempt-thundraze-v2.json",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f051/attempt-thundraze-v3.json",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f051/attempt-thundraze-v4.json",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f051/attempt-thundraze-v5.json",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f051/attempt-thundraze-v6.json"
+  ],
+  "status": "frozen native candidate; allfour actual source pupil proofs and normal/shiny inspected; rootcontext pending",
+  "notes": "Broad hornspan and towering resonator-hump source preserved. Native14x10 broadened final vs stocky13x11 middle; 3source zigzag planes simplify to sparse stepped gold bands at native16. Plain rear hump/central tail; no actual rear pupils. Fronts v5, rears v3, profiles v6. No native painting.",
+  "accepted": false
+}

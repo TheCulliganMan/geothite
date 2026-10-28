@@ -1,0 +1,466 @@
+{
+  "species_id": "MN_163",
+  "result": "pass",
+  "manifest_sha256": "8575477e4fac70d1dfcb86a0f040ae6ad18a37745f931991d29d6f4d2df49198",
+  "bank_sha256": "5cfcb1371269363f37942823772c96cfa620e045d72a9e8e1d337509da6856cd",
+  "one_shared_native_fit": [
+    11,
+    11
+  ],
+  "equal_source_windows": [
+    315,
+    360
+  ],
+  "source_sampling": "source_center",
+  "source_registration_only": true,
+  "no_per_pose_native_scaling_or_painting": true,
+  "pupil_anchor_maximum_step_displacement": 1,
+  "pairs": [
+    {
+      "direction": "down",
+      "different_native_pixels": 22,
+      "changes": [
+        {
+          "position": [
+            4,
+            6
+          ],
+          "idle": 2,
+          "step": 1
+        },
+        {
+          "position": [
+            9,
+            6
+          ],
+          "idle": 1,
+          "step": 2
+        },
+        {
+          "position": [
+            4,
+            7
+          ],
+          "idle": 2,
+          "step": 1
+        },
+        {
+          "position": [
+            9,
+            7
+          ],
+          "idle": 1,
+          "step": 2
+        },
+        {
+          "position": [
+            7,
+            8
+          ],
+          "idle": 1,
+          "step": 3
+        },
+        {
+          "position": [
+            8,
+            8
+          ],
+          "idle": 3,
+          "step": 1
+        },
+        {
+          "position": [
+            9,
+            8
+          ],
+          "idle": 1,
+          "step": 2
+        },
+        {
+          "position": [
+            3,
+            9
+          ],
+          "idle": 3,
+          "step": 0
+        },
+        {
+          "position": [
+            9,
+            9
+          ],
+          "idle": 3,
+          "step": 1
+        },
+        {
+          "position": [
+            10,
+            9
+          ],
+          "idle": 1,
+          "step": 3
+        },
+        {
+          "position": [
+            4,
+            10
+          ],
+          "idle": 3,
+          "step": 1
+        },
+        {
+          "position": [
+            6,
+            10
+          ],
+          "idle": 2,
+          "step": 1
+        },
+        {
+          "position": [
+            10,
+            11
+          ],
+          "idle": 0,
+          "step": 3
+        },
+        {
+          "position": [
+            6,
+            12
+          ],
+          "idle": 3,
+          "step": 2
+        },
+        {
+          "position": [
+            10,
+            12
+          ],
+          "idle": 0,
+          "step": 3
+        },
+        {
+          "position": [
+            4,
+            13
+          ],
+          "idle": 3,
+          "step": 0
+        },
+        {
+          "position": [
+            7,
+            13
+          ],
+          "idle": 2,
+          "step": 3
+        },
+        {
+          "position": [
+            8,
+            13
+          ],
+          "idle": 2,
+          "step": 3
+        },
+        {
+          "position": [
+            9,
+            13
+          ],
+          "idle": 3,
+          "step": 0
+        },
+        {
+          "position": [
+            5,
+            14
+          ],
+          "idle": 3,
+          "step": 0
+        },
+        {
+          "position": [
+            7,
+            14
+          ],
+          "idle": 3,
+          "step": 0
+        },
+        {
+          "position": [
+            8,
+            14
+          ],
+          "idle": 3,
+          "step": 0
+        }
+      ],
+      "idle_bounds": [
+        3,
+        4,
+        9,
+        11
+      ],
+      "step_bounds": [
+        3,
+        4,
+        9,
+        11
+      ],
+      "actual_pupil_anchor_shift": [
+        -1.0,
+        0.0
+      ]
+    },
+    {
+      "direction": "up",
+      "different_native_pixels": 15,
+      "changes": [
+        {
+          "position": [
+            5,
+            6
+          ],
+          "idle": 1,
+          "step": 2
+        },
+        {
+          "position": [
+            5,
+            7
+          ],
+          "idle": 1,
+          "step": 2
+        },
+        {
+          "position": [
+            11,
+            7
+          ],
+          "idle": 0,
+          "step": 3
+        },
+        {
+          "position": [
+            5,
+            8
+          ],
+          "idle": 1,
+          "step": 2
+        },
+        {
+          "position": [
+            3,
+            9
+          ],
+          "idle": 3,
+          "step": 0
+        },
+        {
+          "position": [
+            4,
+            9
+          ],
+          "idle": 1,
+          "step": 3
+        },
+        {
+          "position": [
+            5,
+            9
+          ],
+          "idle": 3,
+          "step": 2
+        },
+        {
+          "position": [
+            11,
+            9
+          ],
+          "idle": 3,
+          "step": 0
+        },
+        {
+          "position": [
+            6,
+            12
+          ],
+          "idle": 2,
+          "step": 3
+        },
+        {
+          "position": [
+            7,
+            12
+          ],
+          "idle": 2,
+          "step": 3
+        },
+        {
+          "position": [
+            6,
+            13
+          ],
+          "idle": 3,
+          "step": 2
+        },
+        {
+          "position": [
+            8,
+            13
+          ],
+          "idle": 2,
+          "step": 3
+        },
+        {
+          "position": [
+            10,
+            13
+          ],
+          "idle": 0,
+          "step": 3
+        },
+        {
+          "position": [
+            6,
+            14
+          ],
+          "idle": 3,
+          "step": 0
+        },
+        {
+          "position": [
+            7,
+            14
+          ],
+          "idle": 3,
+          "step": 0
+        }
+      ],
+      "idle_bounds": [
+        3,
+        4,
+        9,
+        11
+      ],
+      "step_bounds": [
+        3,
+        4,
+        9,
+        11
+      ]
+    },
+    {
+      "direction": "left",
+      "different_native_pixels": 11,
+      "changes": [
+        {
+          "position": [
+            5,
+            4
+          ],
+          "idle": 3,
+          "step": 0
+        },
+        {
+          "position": [
+            3,
+            6
+          ],
+          "idle": 3,
+          "step": 0
+        },
+        {
+          "position": [
+            4,
+            8
+          ],
+          "idle": 3,
+          "step": 1
+        },
+        {
+          "position": [
+            9,
+            8
+          ],
+          "idle": 3,
+          "step": 1
+        },
+        {
+          "position": [
+            4,
+            9
+          ],
+          "idle": 0,
+          "step": 3
+        },
+        {
+          "position": [
+            9,
+            9
+          ],
+          "idle": 1,
+          "step": 3
+        },
+        {
+          "position": [
+            7,
+            10
+          ],
+          "idle": 2,
+          "step": 1
+        },
+        {
+          "position": [
+            8,
+            10
+          ],
+          "idle": 2,
+          "step": 1
+        },
+        {
+          "position": [
+            6,
+            12
+          ],
+          "idle": 2,
+          "step": 3
+        },
+        {
+          "position": [
+            8,
+            12
+          ],
+          "idle": 3,
+          "step": 2
+        },
+        {
+          "position": [
+            10,
+            12
+          ],
+          "idle": 2,
+          "step": 3
+        }
+      ],
+      "idle_bounds": [
+        3,
+        4,
+        9,
+        11
+      ],
+      "step_bounds": [
+        3,
+        4,
+        9,
+        11
+      ],
+      "actual_pupil_anchor_shift": [
+        0.0,
+        0.0
+      ]
+    }
+  ]
+}

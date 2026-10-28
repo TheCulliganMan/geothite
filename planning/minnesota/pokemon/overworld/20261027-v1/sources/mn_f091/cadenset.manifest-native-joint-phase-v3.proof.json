@@ -1,0 +1,367 @@
+{
+  "species_id": "MN_199",
+  "name": "cadenset",
+  "status": "native-review-recommended; root independent review and context required",
+  "selected_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f091/cadenset.manifest-native-joint-phase-v3.json",
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/true16-cadenset-joint-phase-v3",
+  "shared_transform": {
+    "source_bounds": [
+      13,
+      12,
+      397,
+      377
+    ],
+    "native_size": [
+      14,
+      13
+    ],
+    "native_origin": [
+      1,
+      2
+    ]
+  },
+  "all_four_nonrear_poses_actual_pupils_pass": true,
+  "each_native_eye_cluster_maps_to_one_actual_small_source_pupil_component": true,
+  "actual_source_pupil_proofs": [
+    {
+      "pose": "down_idle",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f091/cadenset.overworld.imagegen-v3.png",
+      "crop": [
+        50,
+        51,
+        418,
+        401
+      ],
+      "actual_source_eye_bounds": [
+        [
+          218,
+          226,
+          32,
+          33
+        ],
+        [
+          293,
+          226,
+          32,
+          32
+        ]
+      ],
+      "eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              6,
+              8
+            ],
+            [
+              7,
+              8
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                31,
+                19,
+                8,
+                253
+              ],
+              "bounds": [
+                218,
+                226,
+                32,
+                33
+              ],
+              "pixels": 1016,
+              "truncated_contour": false,
+              "native_pixel": [
+                6,
+                8
+              ],
+              "source_sample_pixel": [
+                218,
+                251
+              ]
+            },
+            {
+              "black": true,
+              "rgba": [
+                8,
+                5,
+                2,
+                253
+              ],
+              "bounds": [
+                218,
+                226,
+                32,
+                33
+              ],
+              "pixels": 1016,
+              "truncated_contour": false,
+              "native_pixel": [
+                7,
+                8
+              ],
+              "source_sample_pixel": [
+                247,
+                251
+              ]
+            }
+          ]
+        },
+        {
+          "native_cluster": [
+            [
+              9,
+              8
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                0,
+                0,
+                0,
+                253
+              ],
+              "bounds": [
+                293,
+                226,
+                32,
+                32
+              ],
+              "pixels": 1024,
+              "truncated_contour": false,
+              "native_pixel": [
+                9,
+                8
+              ],
+              "source_sample_pixel": [
+                304,
+                251
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f091/cadenset.overworld.imagegen-v3.png",
+      "crop": [
+        1078,
+        51,
+        418,
+        401
+      ],
+      "actual_source_eye_bounds": [
+        [
+          1164,
+          212,
+          32,
+          33
+        ]
+      ],
+      "eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              4,
+              7
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                2,
+                1,
+                0,
+                252
+              ],
+              "bounds": [
+                1164,
+                212,
+                32,
+                33
+              ],
+              "pixels": 1054,
+              "truncated_contour": false,
+              "native_pixel": [
+                4,
+                7
+              ],
+              "source_sample_pixel": [
+                1190,
+                222
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f091/cadenset.overworld.imagegen-v3.png",
+      "crop": [
+        47,
+        565,
+        418,
+        401
+      ],
+      "actual_source_eye_bounds": [
+        [
+          218,
+          731,
+          32,
+          33
+        ],
+        [
+          293,
+          731,
+          31,
+          33
+        ]
+      ],
+      "eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              7,
+              7
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                2,
+                1,
+                0,
+                253
+              ],
+              "bounds": [
+                218,
+                731,
+                32,
+                33
+              ],
+              "pixels": 1050,
+              "truncated_contour": false,
+              "native_pixel": [
+                7,
+                7
+              ],
+              "source_sample_pixel": [
+                244,
+                736
+              ]
+            }
+          ]
+        },
+        {
+          "native_cluster": [
+            [
+              9,
+              7
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                4,
+                2,
+                0,
+                253
+              ],
+              "bounds": [
+                293,
+                731,
+                31,
+                33
+              ],
+              "pixels": 1023,
+              "truncated_contour": false,
+              "native_pixel": [
+                9,
+                7
+              ],
+              "source_sample_pixel": [
+                301,
+                736
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f091/cadenset.overworld.imagegen-v3.png",
+      "crop": [
+        1095,
+        565,
+        418,
+        401
+      ],
+      "actual_source_eye_bounds": [
+        [
+          1173,
+          719,
+          32,
+          32
+        ]
+      ],
+      "eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              3,
+              7
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                1,
+                1,
+                0,
+                252
+              ],
+              "bounds": [
+                1173,
+                719,
+                32,
+                32
+              ],
+              "pixels": 1024,
+              "truncated_contour": false,
+              "native_pixel": [
+                3,
+                7
+              ],
+              "source_sample_pixel": [
+                1178,
+                736
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "old_native_poses_preserved_exactly": [],
+  "normal_shiny_runtime_parity": "all1536pixels exact each",
+  "canonical_palette_bytes": "exact",
+  "all_three_walk_pairs_distinct": true,
+  "rear_review": "both rear native poses viewed; no copied face",
+  "normal_shiny_native_boards_actually_viewed": true,
+  "accepted_coverage_native_pack_untouched": true,
+  "manifest_sha256": "74af9fd098e0801b17e39b360a6d1d0d60d39d466bf8fe64eeae25324aa38685",
+  "compiled_index_sha256": "8e1a096573c95f662647d15ad14195eee1257a4dd2f604c5cf0052a327e2a020"
+}

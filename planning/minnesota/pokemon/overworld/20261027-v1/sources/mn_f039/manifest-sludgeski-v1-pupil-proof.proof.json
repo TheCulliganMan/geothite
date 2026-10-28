@@ -1,0 +1,357 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_090",
+  "status": "source-proof-pass; root visual/context acceptance required",
+  "selected_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f039/manifest-sludgeski-v1-pupil-proof.json",
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f039/sludgeski-v1-pupil-proof",
+  "shared_transform": {
+    "source_bounds": [
+      68,
+      4,
+      383,
+      422
+    ],
+    "native_size": [
+      12,
+      14
+    ],
+    "native_origin": [
+      2,
+      1
+    ]
+  },
+  "all_four_nonrear_poses_have_actual_source_pupils": true,
+  "every_native_eye_cluster_maps_to_same_small_anatomical_source_pupil_component": true,
+  "actual_source_pupil_proofs": [
+    {
+      "pose": "down_idle",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f039/sludgeski.overworld.imagegen-v1.png",
+      "crop": [
+        5,
+        71,
+        500,
+        440
+      ],
+      "anatomically_identified_source_eye_boxes_xywh": [
+        [
+          228,
+          228,
+          24,
+          34
+        ],
+        [
+          300,
+          228,
+          24,
+          34
+        ]
+      ],
+      "actual_eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              7,
+              6
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                1,
+                2,
+                2,
+                253
+              ],
+              "bounds": [
+                228,
+                228,
+                24,
+                34
+              ],
+              "pixels": 816,
+              "truncated_contour": false,
+              "native_pixel": [
+                7,
+                6
+              ],
+              "source_sample_pixel": [
+                248,
+                240
+              ]
+            }
+          ]
+        },
+        {
+          "native_cluster": [
+            [
+              9,
+              6
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                0,
+                0,
+                0,
+                253
+              ],
+              "bounds": [
+                300,
+                228,
+                24,
+                34
+              ],
+              "pixels": 816,
+              "truncated_contour": false,
+              "native_pixel": [
+                9,
+                6
+              ],
+              "source_sample_pixel": [
+                312,
+                240
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f039/sludgeski.overworld.imagegen-v1.png",
+      "crop": [
+        1003,
+        52,
+        500,
+        440
+      ],
+      "anatomically_identified_source_eye_boxes_xywh": [
+        [
+          1204,
+          238,
+          22,
+          26
+        ]
+      ],
+      "actual_eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              6,
+              7
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                3,
+                3,
+                2,
+                253
+              ],
+              "bounds": [
+                1204,
+                238,
+                22,
+                26
+              ],
+              "pixels": 572,
+              "truncated_contour": false,
+              "native_pixel": [
+                6,
+                7
+              ],
+              "source_sample_pixel": [
+                1214,
+                251
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f039/sludgeski.overworld.imagegen-v1.png",
+      "crop": [
+        8,
+        541,
+        500,
+        440
+      ],
+      "anatomically_identified_source_eye_boxes_xywh": [
+        [
+          228,
+          694,
+          24,
+          34
+        ],
+        [
+          300,
+          694,
+          24,
+          34
+        ]
+      ],
+      "actual_eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              7,
+              6
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                0,
+                0,
+                0,
+                253
+              ],
+              "bounds": [
+                228,
+                694,
+                24,
+                34
+              ],
+              "pixels": 816,
+              "truncated_contour": false,
+              "native_pixel": [
+                7,
+                6
+              ],
+              "source_sample_pixel": [
+                251,
+                710
+              ]
+            }
+          ]
+        },
+        {
+          "native_cluster": [
+            [
+              9,
+              6
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                0,
+                0,
+                0,
+                253
+              ],
+              "bounds": [
+                300,
+                694,
+                24,
+                34
+              ],
+              "pixels": 816,
+              "truncated_contour": false,
+              "native_pixel": [
+                9,
+                6
+              ],
+              "source_sample_pixel": [
+                315,
+                710
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f039/sludgeski.overworld.imagegen-v1.png",
+      "crop": [
+        1003,
+        510,
+        500,
+        440
+      ],
+      "anatomically_identified_source_eye_boxes_xywh": [
+        [
+          1204,
+          694,
+          22,
+          26
+        ]
+      ],
+      "actual_eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              6,
+              7
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                3,
+                2,
+                1,
+                253
+              ],
+              "bounds": [
+                1204,
+                694,
+                22,
+                26
+              ],
+              "pixels": 572,
+              "truncated_contour": false,
+              "native_pixel": [
+                6,
+                7
+              ],
+              "source_sample_pixel": [
+                1214,
+                709
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "native_head_anchors_idle_walk_equal": true,
+  "validation": {
+    "runtime_2bpp_384_bytes_exact_allpixels": true,
+    "runtime_png16x96_index_parity": true,
+    "normal_shiny_palettebanks_exact": true,
+    "normal_shiny_all1536pixels_exact": true,
+    "transparent_border": true,
+    "idle_walk_pairs_distinct": true
+  },
+  "sha256": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f039/sludgeski.overworld.imagegen-v1.png": "7e9e66f56df66c8410f1a191acbdee1db597d0dd330f2bd046eb8296533d9573",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f039/sludgeski-v1-pupil-proof/gfx/pokemon/sludgeski/overworld.2bpp": "7dfa86d49cb8bfd1f11dabea60402025f952c6478c3f728acdbea2e48b5c6bed",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f039/sludgeski-v1-pupil-proof/review/line.normal-8x.png": "0532640dc75c08619b2a1e61a4debf8f3d08dd5735d731973d5bc64da98c170e",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f039/sludgeski-v1-pupil-proof/review/line.shiny-8x.png": "f3611c393e3b66af411667841b896ad7b8f3ff882d4d5e2e33792f37b50af6a8",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f039/sludgeski-v1-pupil-proof/gfx/pokemon/sludgeski/overworld-shiny.gbcpal": "a1af64fb80c43503ed598916c691884d6f32219d3284e739da578f0eb6ea7685",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f039/sludgeski-v1-pupil-proof/gfx/pokemon/sludgeski/overworld.gbcpal": "6fc047514ff262caac8f7ffce2a131a1c3897d6060891157c3dacc85ac758961",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f039/sludgeski-v1-pupil-proof/gfx/pokemon/sludgeski/overworld.png": "f31129f65422265ed91432fa59cfbe47579571be0383acef62edcbe49eb8d924",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f039/sludgeski-v1-pupil-proof/compiled-index.json": "1ae8fe93e83fdd80a7878dc58a355ac24afcc5339adc7c068780e3bda9b333f0",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f039/manifest-sludgeski-v1-pupil-proof.json": "1e9181629f74c0ee9febba62cb90bd8a5674c3580ee85902771c5de23f8d2df3"
+  },
+  "actual_native_boards_viewed": true,
+  "rear_review": "All six normal/shiny poses actually viewed. Blank lopsided snowback/horn/arms/ski feet; no face.",
+  "canonical_eye_form": "TWO actual isolated black SOUTH pupils and ONE actual near WEST pupil; complete native clusters map to same anatomical source pupil component. Horn/teeth/barbel/seam dots not counted.",
+  "signature_anatomy_review": "Native12x14: single asymmetric ice horn, slumped light icy body, purple slush belly, two drooping arms/two ski feet and crystal teeth simplified light1. Ski tips compact at native scale, upright left profile toe remains.",
+  "source_motion_review": {
+    "source_sheet_actually_viewed": true,
+    "notes": "Actual source ski feet alternately slide/pivot and arms counterbrace; all native three gait pairs differ."
+  }
+}

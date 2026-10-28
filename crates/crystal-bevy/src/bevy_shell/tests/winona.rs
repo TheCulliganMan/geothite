@@ -71,6 +71,19 @@ pub(super) fn finish(c: &mut VisibleShellController) -> usize {
     for _ in 0..128 {
         c.wait_frames(128).expect("fully printed page");
         let s = c.snapshot().expect("dialogue");
+        if s.ui
+            .text
+            .as_ref()
+            .is_some_and(|t| t.label == "MnNSEReedDismissText")
+        {
+            super::northstar_story_events::observe_case(c);
+        }
+        if s.battle.is_some() {
+            // The event-driven story explicitly adds this early rival fight.
+            // Every other battle remains unexpected in ordinary dialogue.
+            super::northstar_story_events::play_reed(c);
+            continue;
+        }
         assert!(
             c.shell.pending_name_choice.is_none(),
             "nickname needs an explicit answer"
@@ -146,6 +159,16 @@ pub(super) fn continued(
     r: &CrystalRuntime,
     stage: &str,
 ) -> VisibleShellController {
+    continue_in_place(&mut c, root, r, stage);
+    c
+}
+
+pub(super) fn continue_in_place(
+    c: &mut VisibleShellController,
+    root: &AssetRoot,
+    r: &CrystalRuntime,
+    stage: &str,
+) {
     let dir = std::env::var_os("CRYSTAL_WINONA_SAVE_DIR")
         .map(PathBuf::from)
         .unwrap_or_else(std::env::temp_dir);
@@ -154,6 +177,11 @@ pub(super) fn continued(
         .duration_since(UNIX_EPOCH)
         .expect("clock")
         .as_nanos();
+    let stage = if std::env::var_os("CRYSTAL_NORTHSTAR_REVIEW_LEVEL").is_some() {
+        format!("boosted-review-{}", stage.replace("-earned-", "-"))
+    } else {
+        stage.to_owned()
+    };
     let path = dir.join(format!(
         "winona-{stage}-{}-{nonce}.crystalsave",
         std::process::id()
@@ -176,7 +204,7 @@ pub(super) fn continued(
             flag(&loaded, name)
         );
     }
-    loaded
+    *c = loaded;
 }
 
 fn declined_starter(
@@ -309,7 +337,16 @@ pub(super) fn opening(
     let p = c.shell.shell.session().state().storage.party.pokemon[0]
         .as_ref()
         .expect("real starter");
-    assert_eq!(p.species.id, species);
+    let script = ["MN_W_CHIKORITA", "MN_W_CYNDAQUIL", "MN_W_TOTODILE"][index];
+    let expected = r.data().maps["MnWinonaFieldStation"].scripts[script]
+        .as_array()
+        .expect("authored starter program")
+        .iter()
+        .find(|row| row["command"] == "givepoke")
+        .and_then(|row| row["args"].get(0))
+        .and_then(serde_json::Value::as_str)
+        .expect("actual published starter species");
+    assert_eq!(p.species.id, expected);
     assert_eq!(p.level, 5);
     assert!(!p.moves.is_empty());
     press(&mut c, GameButton::Down);
@@ -327,6 +364,16 @@ pub(super) fn opening(
     );
     c = continued(c, &root, &r, &format!("{species}-received"));
     let before = c.snapshot().expect("earned partner and balls");
+    let repeat_money = c.shell.shell.session().state().money;
+    let prize = r
+        .data()
+        .trainers
+        .trainers
+        .get("MN_REED_WINONA")
+        .map_or(0, |t| {
+            t.base_reward * 4 * u32::from(t.party.last().expect("rival party").level)
+        });
+    assert_eq!(repeat_money, money + prize);
     for other in 0..3 {
         if other == index {
             continue;
@@ -340,7 +387,7 @@ pub(super) fn opening(
     let after = c.snapshot().expect("repeat resources");
     assert_eq!(before.party, after.party);
     assert_eq!(before.bag, after.bag);
-    assert_eq!(c.shell.shell.session().state().money, money);
+    assert_eq!(c.shell.shell.session().state().money, repeat_money);
     assert!(
         !c.shell
             .shell

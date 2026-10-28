@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F058",
+  "species": [
+    {
+      "species_id": "MN_126",
+      "runtime_token": "FLOSSAIL",
+      "palette_rgb555": [
+        32767,
+        29367,
+        16652,
+        0
+      ],
+      "shiny_palette_rgb555": [
+        32767,
+        22268,
+        8592,
+        0
+      ],
+      "fit": [
+        14,
+        14
+      ],
+      "alpha_threshold": 128,
+      "sampling": "source_center",
+      "minimum_foreground_samples": 16,
+      "black_priority_samples": 32,
+      "interior_black_samples": null,
+      "opaque_interior_minimum_samples": 60,
+      "frames": [
+        {
+          "pose": "down_idle",
+          "source": "flossail.overworld.imagegen-v2.png",
+          "crop": [
+            77,
+            87,
+            394,
+            424
+          ]
+        },
+        {
+          "pose": "up_idle",
+          "source": "flossail.overworld.imagegen-v1.png",
+          "crop": [
+            570,
+            86,
+            394,
+            424
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "source": "flossail.overworld.imagegen-v1.png",
+          "crop": [
+            1099,
+            84,
+            394,
+            424
+          ]
+        },
+        {
+          "pose": "down_step",
+          "source": "flossail.overworld.imagegen-v2.png",
+          "crop": [
+            82,
+            531,
+            394,
+            424
+          ]
+        },
+        {
+          "pose": "up_step",
+          "source": "flossail.overworld.imagegen-v1.png",
+          "crop": [
+            570,
+            511,
+            394,
+            424
+          ]
+        },
+        {
+          "pose": "left_step",
+          "source": "flossail.overworld.imagegen-v1.png",
+          "crop": [
+            1095,
+            531,
+            394,
+            424
+          ]
+        }
+      ]
+    }
+  ]
+}

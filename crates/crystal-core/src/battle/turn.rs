@@ -11913,7 +11913,7 @@ fn apply_secondary_stat_stage_effect(
     rng: &mut dyn BattleRandomSource,
     events: &mut Vec<BattleEvent>,
 ) -> Result<bool, BattleTurnError> {
-    let (Some(stat), Some(amount)) = (move_data.stat, move_data.amount) else {
+    let Some((stat, amount)) = super::native_stat_change::parameters(move_data) else {
         return Ok(false);
     };
     if move_data.power == 0 || amount == 0 {
@@ -11965,7 +11965,7 @@ fn roll_secondary_stat_stage_effect(
     effect_chance: EffectChanceResult,
     events: &mut Vec<BattleEvent>,
 ) -> Result<bool, BattleTurnError> {
-    let (Some(stat), Some(amount)) = (move_data.stat, move_data.amount) else {
+    let Some((stat, amount)) = super::native_stat_change::parameters(move_data) else {
         return Ok(false);
     };
     if amount == 0 {

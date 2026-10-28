@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F078",
+  "species": [
+    {
+      "species_id": "MN_171",
+      "runtime_token": "AGROPUMMEL",
+      "palette_rgb555": [
+        32767,
+        8563,
+        9383,
+        0
+      ],
+      "shiny_palette_rgb555": [
+        32767,
+        11880,
+        5353,
+        0
+      ],
+      "fit": [
+        14,
+        14
+      ],
+      "alpha_threshold": 245,
+      "sampling": "source_center",
+      "minimum_foreground_samples": 16,
+      "black_priority_samples": 32,
+      "interior_black_samples": null,
+      "opaque_interior_minimum_samples": 60,
+      "frames": [
+        {
+          "pose": "down_idle",
+          "source": "agropummel.overworld.imagegen-v2.png",
+          "crop": [
+            36,
+            92,
+            490,
+            397
+          ]
+        },
+        {
+          "pose": "up_idle",
+          "source": "agropummel.overworld.imagegen-v2.png",
+          "crop": [
+            559,
+            71,
+            490,
+            397
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "source": "agropummel.overworld.imagegen-v2.png",
+          "crop": [
+            1046,
+            92,
+            490,
+            397
+          ]
+        },
+        {
+          "pose": "down_step",
+          "source": "agropummel.overworld.imagegen-v2.png",
+          "crop": [
+            36,
+            539,
+            490,
+            397
+          ]
+        },
+        {
+          "pose": "up_step",
+          "source": "agropummel.overworld.imagegen-v2.png",
+          "crop": [
+            559,
+            539,
+            490,
+            397
+          ]
+        },
+        {
+          "pose": "left_step",
+          "source": "agropummel.overworld.imagegen-v2.png",
+          "crop": [
+            1046,
+            539,
+            490,
+            397
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -6,6 +6,8 @@ import path from 'node:path';
 import { chromium } from 'playwright';
 
 const release = path.resolve(process.env.POKEDEX_WEB_RELEASE || 'target/minnesota-pokedex-web/pokedex/current');
+const catalog = JSON.parse(await fs.readFile(path.join(release, 'pokedex.json'), 'utf8'));
+if (process.env.POKEDEX_STARTER_SIGNATURES === '1') assert.equal(catalog.moves.length, 21);
 const proof = process.env.POKEDEX_ANIMATION_PROOF;
 if (proof) await fs.mkdir(proof, { recursive: true });
 const types = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.png': 'image/png', '.svg': 'image/svg+xml', '.json': 'application/json', '.woff2': 'font/woff2' };
@@ -22,18 +24,19 @@ const server = http.createServer(async (request, response) => {
   }
 });
 await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
+const base = process.env.POKEDEX_WEB_URL || `http://127.0.0.1:${server.address().port}/pokedex/`;
 let browser;
 try {
-  browser = await chromium.launch({ headless: true });
+  browser = await chromium.launch({ headless: true, channel: process.env.POKEDEX_BROWSER_CHANNEL || 'chromium' });
   for (const width of [390, 1280]) {
     const context = await browser.newContext({ viewport: { width, height: 850 }, reducedMotion: 'reduce' });
     const page = await context.newPage();
     const errors = [];
     page.on('pageerror', error => errors.push(error.message));
     page.on('response', response => { if (response.status() >= 400) errors.push(`${response.status()} ${response.url()}`); });
-    await page.goto(`http://127.0.0.1:${server.address().port}/pokedex/moves.html`);
+    await page.goto(`${base}moves.html`);
     const cards = page.locator('.move-animation-card');
-    assert.equal(await cards.count(), 19);
+    assert.equal(await cards.count(), catalog.moves.length);
     assert.ok(await page.locator('.main-nav a[href="/pokedex/moves.html"]').isVisible());
     assert.equal(await page.locator('[data-animation-play][aria-pressed=true]').count(), 0);
     assert.ok(await page.locator('[data-animation-base] img').evaluateAll(images => images.every(image => image.getAttribute('src').endsWith('-still.png') && image.loading === 'lazy')));
@@ -63,7 +66,7 @@ try {
       await page.locator('#fairy_wind').scrollIntoViewIfNeeded();
       await page.screenshot({ path: path.join(proof, `fairy-wind-${width}.png`) });
     }
-    await page.goto(`http://127.0.0.1:${server.address().port}/pokedex/species/cyprielle.html`);
+    await page.goto(`${base}species/cyprielle.html`);
     assert.ok(await page.locator('#fairy_wind').count());
     assert.ok(await page.locator('#slipper_waltz').count());
     assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), `Species page overflows at ${width}px`);
@@ -71,10 +74,30 @@ try {
     await page.locator('#fairy_wind .battle-preview img').evaluate(image => image.decode());
     assert.match(await page.locator('#fairy_wind .battle-preview img').getAttribute('src'), /player-normal.png$/);
     if (proof) await page.screenshot({ path: path.join(proof, `cyprielle-moves-${width}.png`) });
+    if (process.env.POKEDEX_STARTER_SIGNATURES === '1') {
+      for (const [species, move] of [['cyprielle', 'slipper_waltz'], ['borealynx', 'rimebrand'], ['voyagear', 'paddle_sweep']]) {
+        await page.goto(`${base}species/${species}.html`);
+        const signature = page.locator(`#${move}`);
+        assert.equal(await signature.count(), 1);
+        assert.match(await signature.locator('.move-learning').textContent(), /Lv\. 36/);
+        await signature.scrollIntoViewIfNeeded();
+        await signature.locator('[data-animation-play]').click();
+        await signature.locator('.battle-preview img').evaluate(image => image.decode());
+        assert.match(await signature.locator('.battle-preview img').getAttribute('src'), /player-normal.png$/);
+        await signature.locator('[data-animation-side]').click();
+        await signature.locator('[data-animation-shiny]').click();
+        await signature.locator('.battle-preview img').evaluate(image => image.decode());
+        assert.match(await signature.locator('.battle-preview img').getAttribute('src'), /enemy-shiny.png$/);
+        await signature.locator('[data-animation-play]').click();
+        assert.match(await signature.locator('.battle-preview img').getAttribute('src'), /enemy-shiny-still.png$/);
+        assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), `${species} overflows at ${width}px`);
+        if (proof) await page.screenshot({ path: path.join(proof, `${species}-signature-${width}.png`) });
+      }
+    }
     assert.deepEqual(errors, [], `Browser errors at ${width}px`);
     await context.close();
   }
-  console.log('PASS: all 19 native previews play both side/palette controls at 390px and 1280px; lazy/reduced-motion safety, native images, species cards and no overflow/browser errors');
+  console.log(`PASS: all ${catalog.moves.length} native previews play both side/palette controls at 390px and 1280px; lazy/reduced-motion safety, native images, genuine starter signature cards and no overflow/browser errors`);
 } finally {
   if (browser) await browser.close();
   await new Promise(resolve => server.close(resolve));

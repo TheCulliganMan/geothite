@@ -1,0 +1,3 @@
+/* Keep both playable catalogs reachable in the compact mobile navigation. */
+@media(max-width:850px){.main-nav{gap:16px}.main-nav a[href="/pokedex/moves.html"],.main-nav a[href="/pokedex/state-fair.html"]{display:block}}
+@media(max-width:620px){.main-nav{display:flex;gap:12px;flex-wrap:nowrap}.main-nav a[href="/pokedex/moves.html"],.main-nav a[href="/pokedex/state-fair.html"]{display:block;font-size:11px;white-space:nowrap}.site-header>.play-link{display:none}}

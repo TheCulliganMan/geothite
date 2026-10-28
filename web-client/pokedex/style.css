@@ -70,3 +70,6 @@ html{scroll-behavior:auto}body{background:var(--paper)}.site-header{background:#
 /* Keep the move catalog reachable while the mobile header stays compact. */
 @media(max-width:850px) { .main-nav a:nth-child(4) { display:block; } }
 @media(max-width:620px) { .main-nav { display:flex; font-size:11px; gap:0; } .main-nav a:not(:nth-child(4)) { display:none; } }
+
+/* Keep every learning-method tab reachable on narrow entry pages. */
+.move-tabs{flex-wrap:wrap;row-gap:0}.move-tabs button{white-space:nowrap}

@@ -317,6 +317,37 @@ fn courier_story_current_alone_reaches_depot_and_fourth_gym_then_returns() {
     let _ = continued(c, &root, &r, "courier-local-road-return");
 }
 
+pub(super) fn acknowledge_manifest(
+    root: &AssetRoot,
+    r: &CrystalRuntime,
+    mut c: VisibleShellController,
+) -> VisibleShellController {
+    assert!(event(&c, WIN) && !event(&c, READ));
+    let before = c.snapshot().expect("after win");
+    let money = c.shell.shell.session().state().money;
+    talk(&mut c, GameButton::Right);
+    finish(&mut c);
+    assert_eq!(c.shell.shell.session().state().money, money);
+    talk(&mut c, GameButton::Left);
+    super::northstar_dialogue::acknowledge(&mut c, "MS04_MANIFEST", "MnSPManifestText", READ);
+    finish(&mut c);
+    assert!(event(&c, READ));
+    let after = c.snapshot().expect("copied record");
+    assert_eq!(before.party, after.party);
+    assert_eq!(before.bag, after.bag);
+    assert_eq!(c.shell.shell.session().state().money, money);
+    c = continued(c, root, r, "courier-local-record-read");
+    talk(&mut c, GameButton::Left);
+    finish(&mut c);
+    assert!(event(&c, WIN) && event(&c, READ));
+    assert!(!event(&c, "EVENT_MN_DEPOT_CLEARED"));
+    assert_eq!(
+        c.shell.shell.session().state().badges.johto,
+        [true, true, true, false, false, false, false, false]
+    );
+    c
+}
+
 #[test]
 #[ignore = "requires courier story via CRYSTAL_WINONA_TEST_PACK"]
 fn courier_story_actual_win_separate_manifest_pages_repeat_and_continue() {
@@ -329,44 +360,11 @@ fn courier_story_actual_win_separate_manifest_pages_repeat_and_continue() {
     travel(&mut c, GameButton::Up, DEPOT, (15, 21));
     indoor_walk(&mut c, &r, (19, 16));
     talk(&mut c, GameButton::Right);
+    super::northstar_dialogue::acknowledge(&mut c, "MS04", "MnSPCourierSeenText", WIN);
     fight(&mut c, false);
     c = continued(c, &root, &r, "courier-local-earned-win");
-    let before = c.snapshot().expect("after win");
-    let money = c.shell.shell.session().state().money;
-    assert!(money > 10000);
-    talk(&mut c, GameButton::Right);
-    finish(&mut c);
-    assert_eq!(c.shell.shell.session().state().money, money);
-    talk(&mut c, GameButton::Left);
-    for expected in ["DEEP BORE", "Diversion logged", "Record copied"] {
-        assert!(!event(&c, READ));
-        assert!(
-            c.snapshot()
-                .expect("record page")
-                .ui
-                .text
-                .and_then(|t| t.asm_text)
-                .is_some_and(|s| s.contains(expected))
-        );
-        press(&mut c, GameButton::Down);
-        at(&mut c, DEPOT, (19, 16));
-        press(&mut c, GameButton::A);
-    }
-    finish(&mut c);
-    assert!(event(&c, READ));
-    let after = c.snapshot().expect("copied record");
-    assert_eq!(before.party, after.party);
-    assert_eq!(before.bag, after.bag);
-    assert_eq!(c.shell.shell.session().state().money, money);
-    c = continued(c, &root, &r, "courier-local-record-read");
-    talk(&mut c, GameButton::Left);
-    finish(&mut c);
-    assert!(event(&c, WIN) && event(&c, READ));
-    assert!(!event(&c, "EVENT_MN_DEPOT_CLEARED"));
-    assert_eq!(
-        c.shell.shell.session().state().badges.johto,
-        [true, true, true, false, false, false, false, false]
-    );
+    assert!(c.shell.shell.session().state().money > 10000);
+    c = acknowledge_manifest(&root, &r, c);
     indoor_walk(&mut c, &r, (15, 21));
     travel(&mut c, GameButton::Down, "MnStPaul", (44, 38));
     indoor_walk(&mut c, &r, (1, 24));

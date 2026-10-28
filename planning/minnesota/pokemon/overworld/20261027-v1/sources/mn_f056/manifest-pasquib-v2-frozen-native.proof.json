@@ -1,0 +1,358 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_119",
+  "status": "source-proof-pass; root visual/context acceptance required",
+  "selected_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f056/manifest-pasquib-v2-frozen-native.json",
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f056/pasquib-v2-frozen-native",
+  "shared_transform": {
+    "source_bounds": [
+      5,
+      4,
+      279,
+      346
+    ],
+    "native_size": [
+      9,
+      12
+    ],
+    "native_origin": [
+      3,
+      3
+    ]
+  },
+  "native_head_anchors_idle_walk_equal": true,
+  "validation": {
+    "runtime_2bpp_384_bytes_exact_allpixels": true,
+    "runtime_png16x96_index_parity": true,
+    "normal_shiny_palettebanks_exact": true,
+    "normal_shiny_all1536pixels_exact": true,
+    "transparent_border": true,
+    "idle_walk_pairs_distinct": true
+  },
+  "sha256": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f056/pasquib-v2-frozen-native/review/line.normal-8x.png": "0473e6a2aae97433a14131316ae8149f1855b4d8203baacd20adc818b786c6fe",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f056/pasquib-v2-frozen-native/gfx/pokemon/pasquib/overworld-shiny.gbcpal": "613bdb8938bd41e8cf5a8c1b6ec2d8f0bf1d79722e49a25185166f0afa74514e",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f056/pasquib.overworld.imagegen-v1.png": "cb33fdeb4445ab1192d164facc30e59c0906932ae5c56b7facee7b6b30027928",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f056/pasquib-v2-frozen-native/gfx/pokemon/pasquib/overworld.2bpp": "7675901bd70bea1bbdd1740f2f51d2c9fd1360fd506b837a50c228bb2d94aae9",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f056/pasquib-v2-frozen-native/review/line.shiny-8x.png": "5cd9db9fe0faeed9c8b7d9fd9b993f5b257ee8b5d820085eb01ef4d04b1fb3b9",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f056/pasquib-v2-frozen-native/gfx/pokemon/pasquib/overworld.png": "1d3bef73cf60a054d99fa0e239d65b344d012513beb0e26a3f1106ead6a972b8",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f056/manifest-pasquib-v2-frozen-native.json": "9f7f41ef573ec87bd83e0fbb11f3b489ae070f9257deea975fca7c06c9254609",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f056/pasquib-v2-frozen-native/compiled-index.json": "85165956972c07143971fda656df455f0bb2680ae76f8955ee29535ec0729323",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f056/pasquib-v2-frozen-native/gfx/pokemon/pasquib/overworld.gbcpal": "61774abfb32007e52634a230ae5a4e4144baf362c62b9dbc8ca81b94a3371561"
+  },
+  "actual_native_boards_viewed": true,
+  "rear_review": "Both native normal/shiny true rear poses actually reviewed: plain rear closed flower folds or snowcapped posts, no copied face. All anatomy is source-backed; native pixels were not painted.",
+  "canonical_eye_form": "TWO actual LIGHT lavender index1 eye windows inside BLACK index3 flower face south, ONE west, no invented black pupils or third forehead eye.",
+  "all_four_nonrear_poses_have_actual_source_eye_features": true,
+  "every_native_eye_cluster_maps_to_same_small_anatomical_source_eye_component": true,
+  "actual_source_eye_proofs": [
+    {
+      "pose": "down_idle",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f056/pasquib.overworld.imagegen-v1.png",
+      "crop": [
+        135,
+        135,
+        298,
+        366
+      ],
+      "anatomically_identified_source_eye_boxes_xywh": [
+        [
+          244,
+          290,
+          20,
+          33
+        ],
+        [
+          292,
+          290,
+          19,
+          33
+        ]
+      ],
+      "actual_eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              6,
+              8
+            ]
+          ],
+          "samples": [
+            {
+              "rgba": [
+                221,
+                193,
+                249,
+                253
+              ],
+              "bounds": [
+                244,
+                290,
+                20,
+                33
+              ],
+              "pixels": 660,
+              "truncated_contour": false,
+              "native_pixel": [
+                6,
+                8
+              ],
+              "source_sample_pixel": [
+                248,
+                297
+              ],
+              "quantized_feature_ink": 1,
+              "matches_expected_feature_ink": true
+            }
+          ]
+        },
+        {
+          "native_cluster": [
+            [
+              8,
+              8
+            ]
+          ],
+          "samples": [
+            {
+              "rgba": [
+                222,
+                196,
+                250,
+                253
+              ],
+              "bounds": [
+                292,
+                290,
+                19,
+                33
+              ],
+              "pixels": 627,
+              "truncated_contour": false,
+              "native_pixel": [
+                8,
+                8
+              ],
+              "source_sample_pixel": [
+                310,
+                297
+              ],
+              "quantized_feature_ink": 1,
+              "matches_expected_feature_ink": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f056/pasquib.overworld.imagegen-v1.png",
+      "crop": [
+        1107,
+        121,
+        298,
+        366
+      ],
+      "anatomically_identified_source_eye_boxes_xywh": [
+        [
+          1156,
+          297,
+          19,
+          35
+        ]
+      ],
+      "actual_eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              4,
+              9
+            ]
+          ],
+          "samples": [
+            {
+              "rgba": [
+                219,
+                187,
+                248,
+                253
+              ],
+              "bounds": [
+                1156,
+                297,
+                19,
+                35
+              ],
+              "pixels": 661,
+              "truncated_contour": false,
+              "native_pixel": [
+                4,
+                9
+              ],
+              "source_sample_pixel": [
+                1158,
+                312
+              ],
+              "quantized_feature_ink": 1,
+              "matches_expected_feature_ink": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f056/pasquib.overworld.imagegen-v1.png",
+      "crop": [
+        135,
+        604,
+        298,
+        366
+      ],
+      "anatomically_identified_source_eye_boxes_xywh": [
+        [
+          244,
+          760,
+          20,
+          32
+        ],
+        [
+          292,
+          760,
+          19,
+          32
+        ]
+      ],
+      "actual_eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              6,
+              8
+            ]
+          ],
+          "samples": [
+            {
+              "rgba": [
+                224,
+                198,
+                249,
+                253
+              ],
+              "bounds": [
+                244,
+                760,
+                20,
+                32
+              ],
+              "pixels": 640,
+              "truncated_contour": false,
+              "native_pixel": [
+                6,
+                8
+              ],
+              "source_sample_pixel": [
+                248,
+                766
+              ],
+              "quantized_feature_ink": 1,
+              "matches_expected_feature_ink": true
+            }
+          ]
+        },
+        {
+          "native_cluster": [
+            [
+              8,
+              8
+            ]
+          ],
+          "samples": [
+            {
+              "rgba": [
+                222,
+                195,
+                247,
+                253
+              ],
+              "bounds": [
+                292,
+                760,
+                19,
+                32
+              ],
+              "pixels": 608,
+              "truncated_contour": false,
+              "native_pixel": [
+                8,
+                8
+              ],
+              "source_sample_pixel": [
+                310,
+                766
+              ],
+              "quantized_feature_ink": 1,
+              "matches_expected_feature_ink": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f056/pasquib.overworld.imagegen-v1.png",
+      "crop": [
+        1107,
+        603,
+        298,
+        366
+      ],
+      "anatomically_identified_source_eye_boxes_xywh": [
+        [
+          1155,
+          777,
+          20,
+          35
+        ]
+      ],
+      "actual_eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              4,
+              9
+            ]
+          ],
+          "samples": [
+            {
+              "rgba": [
+                216,
+                180,
+                248,
+                253
+              ],
+              "bounds": [
+                1155,
+                777,
+                20,
+                35
+              ],
+              "pixels": 674,
+              "truncated_contour": false,
+              "native_pixel": [
+                4,
+                9
+              ],
+              "source_sample_pixel": [
+                1158,
+                794
+              ],
+              "quantized_feature_ink": 1,
+              "matches_expected_feature_ink": true
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,5 +1,11 @@
 # Mankato: terrace and native Gym2
 
+The gym terrain described here is historical. The current
+[sand-terrace revision](../gyms/mankato-terraces.md) keeps this city's indexed
+door contract, original battles and services while replacing the ambiguous
+wooden banks and stair blockers. Its ordinary-party literal course and both
+native hop views pass. This record retains the earlier town/service lineage.
+
 [Complete town](../renders/mankato-city/Mankato-whole.png) ·
 [Native facade](../renders/mankato-city/native-gym-facade.png) ·
 [Native terrace](../renders/mankato-city/native-terrace.png) ·

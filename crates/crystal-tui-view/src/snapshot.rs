@@ -561,6 +561,12 @@ fn menu_lines(source: &RuntimeShellSnapshot, selected: usize) -> Vec<SnapshotLin
 }
 
 fn prompt_lines(source: &RuntimeShellSnapshot, selected: usize) -> Vec<SnapshotLine> {
+    if let Some(species) = &source.ui.active_pokemon_picture {
+        return vec![
+            SnapshotLine::new(format!("Picture: {species}"), LineKind::Heading),
+            SnapshotLine::new("A/B: close picture", LineKind::Hint),
+        ];
+    }
     if source.ui.pending_yes_no.is_none() {
         return Vec::new();
     }
@@ -771,7 +777,9 @@ fn hint_lines(
     has_prompt: bool,
     has_dialogue: bool,
 ) -> Vec<SnapshotLine> {
-    let hints: &[&str] = if has_prompt {
+    let hints: &[&str] = if source.ui.active_pokemon_picture.is_some() {
+        &["Z/J/Space or X/K/B close picture"]
+    } else if has_prompt {
         &["↑/↓ choose", "Z/J/Space confirm", "X/K/B/Esc cancel"]
     } else if has_menu {
         &["↑/↓ choose", "Z/J/Space select", "X/K/B/Esc back"]

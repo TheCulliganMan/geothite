@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F076",
+  "species": [
+    {
+      "species_id": "MN_163",
+      "runtime_token": "MITWIST",
+      "palette_rgb555": [
+        32767,
+        20349,
+        19946,
+        0
+      ],
+      "shiny_palette_rgb555": [
+        32767,
+        23376,
+        15595,
+        0
+      ],
+      "fit": [
+        11,
+        11
+      ],
+      "alpha_threshold": 200,
+      "sampling": "area_vote",
+      "minimum_foreground_samples": 32,
+      "black_priority_samples": 24,
+      "interior_black_samples": null,
+      "opaque_interior_minimum_samples": 60,
+      "frames": [
+        {
+          "pose": "down_idle",
+          "source": "mitwist.overworld.imagegen-v1.png",
+          "crop": [
+            102,
+            95,
+            340,
+            360
+          ]
+        },
+        {
+          "pose": "up_idle",
+          "source": "mitwist.overworld.imagegen-v1.png",
+          "crop": [
+            604,
+            111,
+            340,
+            360
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "source": "mitwist.overworld.imagegen-v1.png",
+          "crop": [
+            1089,
+            111,
+            340,
+            360
+          ]
+        },
+        {
+          "pose": "down_step",
+          "source": "mitwist.overworld.imagegen-v1.png",
+          "crop": [
+            104,
+            556,
+            340,
+            360
+          ]
+        },
+        {
+          "pose": "up_step",
+          "source": "mitwist.overworld.imagegen-v1.png",
+          "crop": [
+            600,
+            571,
+            340,
+            360
+          ]
+        },
+        {
+          "pose": "left_step",
+          "source": "mitwist.overworld.imagegen-v1.png",
+          "crop": [
+            1098,
+            570,
+            340,
+            360
+          ]
+        }
+      ]
+    }
+  ]
+}

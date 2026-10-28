@@ -3076,7 +3076,16 @@ fn use_selected_party_item_on(
     let notice = if used.item_effect.hp_before == 0 && used.item_effect.hp_after > 0 {
         format!("{pokemon_name} was revived!")
     } else if used.item_effect.hp_after > used.item_effect.hp_before {
-        format!("{pokemon_name} recovered health!")
+        if snapshot
+            .items
+            .iter()
+            .find(|item| item.item_id == item_id)
+            .is_some_and(|item| item.confusion_inflict_turns.is_some())
+        {
+            format!("{pokemon_name} healed!\nBecame confused!")
+        } else {
+            format!("{pokemon_name} recovered health!")
+        }
     } else if used.item_effect.status_before != used.item_effect.status_after
         || used.item_effect.confusion_turns_after < used.item_effect.confusion_turns_before
     {

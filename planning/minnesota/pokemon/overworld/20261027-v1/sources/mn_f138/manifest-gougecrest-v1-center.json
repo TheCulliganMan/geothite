@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F138",
+  "species": [
+    {
+      "species_id": "MN_307",
+      "runtime_token": "GOUGECREST",
+      "palette_rgb555": [
+        32767,
+        6397,
+        16677,
+        0
+      ],
+      "shiny_palette_rgb555": [
+        32767,
+        26377,
+        19693,
+        0
+      ],
+      "fit": [
+        14,
+        14
+      ],
+      "alpha_threshold": 128,
+      "sampling": "source_center",
+      "minimum_foreground_samples": 16,
+      "black_priority_samples": 64,
+      "interior_black_samples": 64,
+      "opaque_interior_minimum_samples": 64,
+      "frames": [
+        {
+          "pose": "down_idle",
+          "source": "gougecrest.overworld.imagegen-v1.png",
+          "crop": [
+            7,
+            155,
+            404,
+            459
+          ]
+        },
+        {
+          "pose": "up_idle",
+          "source": "gougecrest.overworld.imagegen-v1.png",
+          "crop": [
+            420,
+            155,
+            404,
+            459
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "source": "gougecrest.overworld.imagegen-v1.png",
+          "crop": [
+            842,
+            155,
+            404,
+            459
+          ]
+        },
+        {
+          "pose": "down_step",
+          "source": "gougecrest.overworld.imagegen-v1.png",
+          "crop": [
+            7,
+            663,
+            404,
+            459
+          ]
+        },
+        {
+          "pose": "up_step",
+          "source": "gougecrest.overworld.imagegen-v1.png",
+          "crop": [
+            420,
+            663,
+            404,
+            459
+          ]
+        },
+        {
+          "pose": "left_step",
+          "source": "gougecrest.overworld.imagegen-v1.png",
+          "crop": [
+            842,
+            663,
+            404,
+            459
+          ]
+        }
+      ]
+    }
+  ]
+}

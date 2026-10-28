@@ -13,7 +13,7 @@ use crystal_runtime::{CrystalRuntime, RuntimeBattleKind, RuntimeShellPhase};
 use super::super::{
     BevyShellConfig, BevyShellStart, VisibleShellController,
     complete_visible_smoke_player_name_if_needed, initialize_bevy_runtime_shell,
-    mark_runtime_snapshot_dirty, visible_field_dialog_pages,
+    mark_runtime_snapshot_dirty,
 };
 use super::authored_route_fixture::indoor_walk;
 
@@ -412,13 +412,22 @@ pub(super) fn play_rescue(
     walk(&mut c, r, (11, 6));
     assert!(visible(&mut c, "MN_ICE_CAPTIVE_DISPATCHER"));
     walk(&mut c, r, (9, 9));
+    let money = c.shell.shell.session().state().money;
     talk(&mut c, GameButton::Left);
     battle(&mut c, false);
     assert!(finish(&mut c).contains("MnMPICEAfterText"));
+    assert!(c.shell.shell.session().state().money > money);
+    release_and_read(root, r, c)
+}
+
+pub(super) fn release_and_read(
+    root: &AssetRoot,
+    r: &CrystalRuntime,
+    mut c: VisibleShellController,
+) -> VisibleShellController {
     assert_eq!(progress(&c), [true, false, false]);
     let won = c.snapshot().expect("earned win");
     let money = c.shell.shell.session().state().money;
-    assert!(money > 10000);
     c = continued(&mut c, root, r, "enforcer-win");
     walk(&mut c, r, (9, 9));
     talk(&mut c, GameButton::Left);
@@ -442,6 +451,7 @@ pub(super) fn play_rescue(
         !event(&c, RESCUED),
         "accepted choice must still acknowledge release text"
     );
+    super::northstar_dialogue::acknowledge(&mut c, "MS03_RESCUE", "MnMPCellReleaseText", RESCUED);
     finish(&mut c);
     assert_eq!(progress(&c), [true, true, false]);
     assert!(!visible(&mut c, "MN_ICE_CAPTIVE_DISPATCHER"));
@@ -456,31 +466,7 @@ pub(super) fn play_rescue(
     assert!(!visible(&mut c, "MN_ICE_CAPTIVE_DISPATCHER"));
     walk(&mut c, r, (10, 11));
     talk(&mut c, GameButton::Left);
-    let raw = c
-        .shell
-        .shell
-        .presentation_snapshot()
-        .expect("real record source");
-    let pages = visible_field_dialog_pages(&raw, &c.shell).expect("native pages");
-    assert_eq!(pages.len(), 2);
-    assert!(pages[0].contains("TEAM ICE") && pages[0].contains("TEAM LODE"));
-    for page in pages {
-        c.wait_frames(128).expect("reading");
-        assert!(!event(&c, NOTE));
-        assert_eq!(
-            c.snapshot()
-                .expect("page")
-                .ui
-                .text
-                .expect("record")
-                .asm_text
-                .as_deref(),
-            Some(page.as_str())
-        );
-        press(&mut c, GameButton::Down);
-        at(&mut c, OFFICE, (10, 11));
-        press(&mut c, GameButton::A);
-    }
+    super::northstar_dialogue::acknowledge(&mut c, "MS03", "MnMPDispatchReadText", NOTE);
     finish(&mut c);
     assert_eq!(progress(&c), [true; 3]);
     let done = c.snapshot().expect("released record resources");

@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F059",
+  "species": [
+    {
+      "species_id": "MN_128",
+      "runtime_token": "DRIFTPEG",
+      "palette_rgb555": [
+        32767,
+        30548,
+        18856,
+        0
+      ],
+      "shiny_palette_rgb555": [
+        32767,
+        27293,
+        13586,
+        0
+      ],
+      "fit": [
+        12,
+        12
+      ],
+      "alpha_threshold": 245,
+      "sampling": "source_center",
+      "minimum_foreground_samples": 16,
+      "black_priority_samples": 64,
+      "interior_black_samples": 64,
+      "opaque_interior_minimum_samples": 64,
+      "frames": [
+        {
+          "pose": "down_idle",
+          "source": "driftpeg.overworld.imagegen-v2-profile-eye.png",
+          "crop": [
+            119,
+            191,
+            364,
+            342
+          ]
+        },
+        {
+          "pose": "up_idle",
+          "source": "driftpeg.overworld.imagegen-v2-profile-eye.png",
+          "crop": [
+            575,
+            191,
+            364,
+            342
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "source": "driftpeg.overworld.imagegen-v2-profile-eye.png",
+          "crop": [
+            1072,
+            191,
+            364,
+            342
+          ]
+        },
+        {
+          "pose": "down_step",
+          "source": "driftpeg.overworld.imagegen-v2-profile-eye.png",
+          "crop": [
+            119,
+            581,
+            364,
+            342
+          ]
+        },
+        {
+          "pose": "up_step",
+          "source": "driftpeg.overworld.imagegen-v2-profile-eye.png",
+          "crop": [
+            575,
+            580,
+            364,
+            342
+          ]
+        },
+        {
+          "pose": "left_step",
+          "source": "driftpeg.overworld.imagegen-v2-profile-eye.png",
+          "crop": [
+            1072,
+            580,
+            364,
+            342
+          ]
+        }
+      ]
+    }
+  ]
+}

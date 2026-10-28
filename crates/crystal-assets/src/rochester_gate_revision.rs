@@ -1,7 +1,7 @@
 //! Replace the rejected first-gym maze with two visibly switched lanes.
 use std::collections::{BTreeMap, BTreeSet};
 
-use anyhow::{Context, Result, ensure};
+use anyhow::{Result, ensure};
 use serde_json::Value;
 
 use crate::grand_marais_modpack::authoring;
@@ -88,71 +88,11 @@ pub fn revise_rochester_gates(
         gym.id == MAP && gym.routers.len() == 2,
         "two-switch first gym required"
     );
-    let installed = base.data.maps.get(MAP).context("installed Rochester gym")?;
-    let tileset = gym.tileset();
-    ensure!(
-        !base
-            .data
-            .maps
-            .values()
-            .any(|m| m.id != MAP && m.attributes.tileset_name == tileset),
-        "first-gym terrain art must be private"
-    );
-    let mut pack = base.clone();
-    pack.data.tilesets.remove(&tileset);
-    for path in [
-        format!("data/tilesets/{tileset}.json"),
-        format!("data/tilesets/{tileset}_metatiles.bin"),
-        format!("data/tilesets/{tileset}_palette_map.json"),
-        format!("gfx/tilesets/{tileset}.png"),
-        format!("gfx/tilesets/{tileset}.2bpp"),
-    ] {
-        ensure!(
-            pack.runtime_files.remove(&path).is_some(),
-            "missing private art {path}"
-        );
-    }
-    pack.report
-        .manifests
-        .retain(|m| m != "minnesota-gym-1-art-v1");
-    let symbols = crate::gym_art::install(&mut pack, gym)?;
-    let mut room = crate::gym_publication::room(&pack, gym, &symbols, 0)?;
-    room.attributes = installed.attributes.clone();
-    room.attributes.width = gym.dimensions_metatiles[0];
-    room.attributes.height = gym.dimensions_metatiles[1];
-    room.attributes.border_block = u8::try_from(symbols[&'#'])?;
-    for (new, old) in room.events.warps.iter_mut().zip(&installed.events.warps) {
-        let (x, y) = (new.x, new.y);
-        *new = old.clone();
-        new.x = x;
-        new.y = y;
-    }
-    let trainers = std::iter::once(gym.battle_id())
-        .chain(gym.trainers.iter().map(|t| t.id.clone()))
-        .map(|id| {
-            let original = pack
-                .data
-                .trainers
-                .trainers
-                .remove(&id)
-                .context("original battle")?;
-            let number = pack
-                .data
-                .story_event_script_constants
-                .global
-                .remove(&id)
-                .context("original trainer number")?;
-            Ok((id, original, number))
-        })
-        .collect::<Result<Vec<_>>>()?;
-    crate::gym_scripts::install(&mut pack, &mut room, gym, &symbols)?;
-    for (id, original, number) in trainers {
-        pack.data.trainers.trainers.insert(id.clone(), original);
-        pack.data
-            .story_event_script_constants
-            .global
-            .insert(id, number);
-    }
+    let crate::gym_room_revision::RebuiltGym {
+        mut pack,
+        mut room,
+        symbols,
+    } = crate::gym_room_revision::rebuild(base, gym)?;
     authoring::text(
         &mut room,
         "MnRochesterGymRequirementsText",

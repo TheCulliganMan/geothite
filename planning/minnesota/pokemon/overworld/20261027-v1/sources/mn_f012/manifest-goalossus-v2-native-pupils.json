@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F012",
+  "species": [
+    {
+      "species_id": "MN_036",
+      "runtime_token": "GOALOSSUS",
+      "palette_rgb555": [
+        32767,
+        31469,
+        17702,
+        0
+      ],
+      "shiny_palette_rgb555": [
+        32767,
+        23998,
+        9425,
+        0
+      ],
+      "fit": [
+        14,
+        14
+      ],
+      "alpha_threshold": 128,
+      "sampling": "source_center",
+      "minimum_foreground_samples": 16,
+      "black_priority_samples": 64,
+      "interior_black_samples": 64,
+      "opaque_interior_minimum_samples": 64,
+      "frames": [
+        {
+          "pose": "down_idle",
+          "source": "goalossus.overworld.imagegen-v1.png",
+          "crop": [
+            45,
+            36,
+            483,
+            463
+          ]
+        },
+        {
+          "pose": "up_idle",
+          "source": "goalossus.overworld.imagegen-v1.png",
+          "crop": [
+            571,
+            36,
+            483,
+            463
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "source": "goalossus.overworld.imagegen-v1.png",
+          "crop": [
+            1042,
+            36,
+            483,
+            463
+          ]
+        },
+        {
+          "pose": "down_step",
+          "source": "goalossus.overworld.imagegen-v1.png",
+          "crop": [
+            45,
+            509,
+            483,
+            463
+          ]
+        },
+        {
+          "pose": "up_step",
+          "source": "goalossus.overworld.imagegen-v1.png",
+          "crop": [
+            571,
+            522,
+            483,
+            463
+          ]
+        },
+        {
+          "pose": "left_step",
+          "source": "goalossus.overworld.imagegen-v1.png",
+          "crop": [
+            1042,
+            509,
+            483,
+            463
+          ]
+        }
+      ]
+    }
+  ]
+}

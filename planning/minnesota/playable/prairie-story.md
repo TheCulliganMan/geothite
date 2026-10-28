@@ -107,12 +107,84 @@ unsuppressed workspace lint pass. The plan check passes20 routes,19 hubs,
 57 chunks,86 adjacency/gate contracts and162 planned maps; its symbolic
 champion reachability does not execute the game.
 
-The strict ignored `prairie_story_earned_new_game_care_r02_notebook_and_return`
-case starts at New Game, earns its starter and caught partner, and requires
-actual wins. Attempts do not establish Varel's victory flag before reaching R02.
-An added failure diagnostic confirms a normal loss result1, return to the
-Rochester clinic and a restored party; a previous final-enemy-faint trace did
-not prove victory. This is not a passing chapter journey. Early-party
-balance/retry coverage, an earned
-Mankato badge, Cut teaching/cache, R03/Minneapolis links, later regional gates,
-courier, rail, League completion and the Kettlurk scene remain unfinished.
+## Fresh New Game replay on the Ely successor — 2026-10-27
+
+The ignored `prairie_story_earned_new_game_care_r02_notebook_and_return` now
+passes on the exact554-map [Ely successor](ely-league.md), file SHA-256
+`ab049e907b8712f5ee5f174b474c38fcc52460f272e60336aff17445d62cb6c4`.
+The executed case took93.91 seconds after compilation. It starts at production
+New Game, chooses the real Cyndaquil, receives the originals/five balls, delivers
+the readings, purchases supplies, wins all three R01 battles and both qualifying
+gym battles, catches a second partner and earns level11 through ordinary wild
+fights. It then defeats Varel, receives Care/Headbutt, heals, walks R02, separately
+acknowledges both notebook pages and returns to Rochester. Production Save and
+Continue preserve the earned checkpoints. No position, party, level, badges,
+quest flags, money, inventory or RNG are supplied to this journey.
+
+Earlier failed attempts exposed actual blackout recovery while the audit kept
+following its old route. The route helper now stops at a map transition; the
+caller preserves that loss, saves/continues at the clinic, heals and makes a
+new departure. Bounded leader retries likewise keep the actual post-loss state.
+Attack selection accounts for native physical/special stats, stages, STAB and
+type effectiveness; training is performed through the ordinary battle menus.
+The passing run includes starter faints and a caught partner finishing fights.
+This is one live-RNG course, not a statistical balance assessment or a completed
+fresh campaign through Gym2 and the later story.
+
+```sh
+export CARGO_TARGET_DIR=target/northstar-story
+export CARGO_PROFILE_WASM_DEV_OPT_LEVEL=0
+export RUST_MIN_STACK=67108864
+export CRYSTAL_WINONA_TEST_PACK="$PWD/content-packs/minnesota-northstar-ely-league.crystalpack"
+export CRYSTAL_WINONA_SAVE_DIR="$PWD/.local/northstar-fresh-campaign-saves"
+cargo test --lib --locked --profile wasm-dev -p crystal-bevy \
+  prairie_story_earned_new_game_care_r02_notebook_and_return \
+  -- --ignored --test-threads=1 --nocapture
+```
+
+Earned saves from that passing run remain in the stated ignored directory:
+`winona-rochester-earned-care-badge-42706-1793114882468546000.crystalsave`,
+`winona-mankato-earned-notebook-42706-1793114887140141000.crystalsave` and
+`winona-prairie-earned-return-42706-1793114889223547000.crystalsave`.
+They require this exact pack identity. The earlier local fixture and its MCP
+route script above still represent empty-party setup; they are separate proof.
+
+The actual stdio client also loads this earned return save, moves from `(4,18)`
+to `(5,18)` through its authoritative movement tool, opens the production Start
+menu, closes it and returns to `(4,18)`. Care and money stay exact and stderr is
+byte-empty. This replay checks continuation from earned state, not another
+complete stdio battle course. Its local log is `.local/northstar-fresh-mcp.log`.
+
+Scoped Rust formatting and default-feature Bevy all-target Clippy pass with the
+four established allowances and existing warnings; no warning names the three
+changed audit-helper files. Workspace formatting still fails first in
+`crates/offset-allocator/src/lib.rs:408`. A separate attempt with
+`--features location-tester` fails compilation with E0275, overflowing an
+`IntoIterator` requirement for nested Bevy `Res` types. The passing command above
+does not enable that feature; no claim is made that the feature failure is fixed.
+Only audit helpers and documentation change here. The pack and audio are exact
+to the earlier Ely publication; this replay does not republish content.
+
+## Earned Prairie Badge and Minneapolis arrival — 2026-10-27
+
+`northstar_campaign_earned_party_wins_prairie_and_reaches_minneapolis` passes in
+80.83 seconds on the same554-map identity. This development invocation loads
+the actual Mankato-notebook checkpoint listed above. It teaches the earned
+Headbutt TM through Start/Pack, consumes that one TM, wins all three R02 trainer
+battles and both Gym2 qualifiers, and earns level14 through a wild fight and
+native evolution. The first Torven attempt loses. The course preserves the
+actual clinic recovery, resources and gained experience, saves/continues and
+retries; Quilava wins at level16. Prairie and one Mud-Slap TM are earned, then
+the same party walks the whole R03 connection to Minneapolis and continues there.
+No prerequisite, party, money, level, inventory, RNG or position is edited.
+
+The default invocation starts with the Winona New Game course. For the executed
+development continuation, set `CRYSTAL_NORTHSTAR_EARNED_SAVE` to the absolute
+path of `winona-mankato-earned-notebook-42706-1793114887140141000.crystalsave`.
+The resulting checkpoints include
+`winona-campaign-MN_GYM_2-loss-0-46847-1793115439476075000.crystalsave`,
+`winona-campaign-MN_GYM_2-win-46847-1793115456454330000.crystalsave` and
+`winona-campaign-earned-minneapolis-arrival-46847-1793115458721091000.crystalsave`.
+All remain ignored under `.local/northstar-fresh-campaign-saves/` and bind this
+exact pack. This proves continuation of the recorded fresh game; this particular
+invocation does not independently replay its earlier Winona segment.

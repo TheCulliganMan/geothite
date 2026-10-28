@@ -1,0 +1,357 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_089",
+  "status": "source-proof-pass; root visual/context acceptance required",
+  "selected_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f038/manifest-lutebrisk-v1-pupil-proof.json",
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f038/lutebrisk-v1-pupil-proof",
+  "shared_transform": {
+    "source_bounds": [
+      18,
+      11,
+      460,
+      404
+    ],
+    "native_size": [
+      14,
+      12
+    ],
+    "native_origin": [
+      1,
+      3
+    ]
+  },
+  "all_four_nonrear_poses_have_actual_source_pupils": true,
+  "every_native_eye_cluster_maps_to_same_small_anatomical_source_pupil_component": true,
+  "actual_source_pupil_proofs": [
+    {
+      "pose": "down_idle",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f038/lutebrisk.overworld.imagegen-v1.png",
+      "crop": [
+        55,
+        86,
+        500,
+        440
+      ],
+      "anatomically_identified_source_eye_boxes_xywh": [
+        [
+          208,
+          378,
+          25,
+          26
+        ],
+        [
+          281,
+          378,
+          25,
+          26
+        ]
+      ],
+      "actual_eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              5,
+              11
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                3,
+                1,
+                0,
+                253
+              ],
+              "bounds": [
+                208,
+                378,
+                25,
+                26
+              ],
+              "pixels": 650,
+              "truncated_contour": false,
+              "native_pixel": [
+                5,
+                11
+              ],
+              "source_sample_pixel": [
+                220,
+                383
+              ]
+            }
+          ]
+        },
+        {
+          "native_cluster": [
+            [
+              7,
+              11
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                2,
+                1,
+                0,
+                253
+              ],
+              "bounds": [
+                281,
+                378,
+                25,
+                26
+              ],
+              "pixels": 648,
+              "truncated_contour": false,
+              "native_pixel": [
+                7,
+                11
+              ],
+              "source_sample_pixel": [
+                286,
+                383
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f038/lutebrisk.overworld.imagegen-v1.png",
+      "crop": [
+        1036,
+        79,
+        500,
+        440
+      ],
+      "anatomically_identified_source_eye_boxes_xywh": [
+        [
+          1112,
+          304,
+          25,
+          26
+        ]
+      ],
+      "actual_eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              3,
+              9
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                102,
+                96,
+                20,
+                253
+              ],
+              "bounds": [
+                1112,
+                304,
+                25,
+                26
+              ],
+              "pixels": 650,
+              "truncated_contour": false,
+              "native_pixel": [
+                3,
+                9
+              ],
+              "source_sample_pixel": [
+                1136,
+                308
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f038/lutebrisk.overworld.imagegen-v1.png",
+      "crop": [
+        57,
+        554,
+        500,
+        440
+      ],
+      "anatomically_identified_source_eye_boxes_xywh": [
+        [
+          208,
+          844,
+          25,
+          27
+        ],
+        [
+          281,
+          844,
+          25,
+          27
+        ]
+      ],
+      "actual_eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              5,
+              11
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                0,
+                0,
+                0,
+                253
+              ],
+              "bounds": [
+                208,
+                844,
+                25,
+                27
+              ],
+              "pixels": 675,
+              "truncated_contour": false,
+              "native_pixel": [
+                5,
+                11
+              ],
+              "source_sample_pixel": [
+                222,
+                851
+              ]
+            }
+          ]
+        },
+        {
+          "native_cluster": [
+            [
+              7,
+              11
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                0,
+                0,
+                0,
+                253
+              ],
+              "bounds": [
+                281,
+                844,
+                25,
+                27
+              ],
+              "pixels": 674,
+              "truncated_contour": false,
+              "native_pixel": [
+                7,
+                11
+              ],
+              "source_sample_pixel": [
+                288,
+                851
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f038/lutebrisk.overworld.imagegen-v1.png",
+      "crop": [
+        1036,
+        559,
+        500,
+        440
+      ],
+      "anatomically_identified_source_eye_boxes_xywh": [
+        [
+          1112,
+          779,
+          25,
+          26
+        ]
+      ],
+      "actual_eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              3,
+              9
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                56,
+                55,
+                7,
+                253
+              ],
+              "bounds": [
+                1112,
+                779,
+                25,
+                26
+              ],
+              "pixels": 650,
+              "truncated_contour": false,
+              "native_pixel": [
+                3,
+                9
+              ],
+              "source_sample_pixel": [
+                1136,
+                788
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "native_head_anchors_idle_walk_equal": true,
+  "validation": {
+    "runtime_2bpp_384_bytes_exact_allpixels": true,
+    "runtime_png16x96_index_parity": true,
+    "normal_shiny_palettebanks_exact": true,
+    "normal_shiny_all1536pixels_exact": true,
+    "transparent_border": true,
+    "idle_walk_pairs_distinct": true
+  },
+  "sha256": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f038/lutebrisk-v1-pupil-proof/review/line.shiny-8x.png": "7b2f9a5abf74a4e5fe3c5aa46c46fc40eabb30d6e19ce2a0b90a8968e89d0221",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f038/lutebrisk.overworld.imagegen-v1.png": "742802dff2ef4abd663cacc94b0bed185db56420ee69ca3a2de84eefb559d7d4",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f038/lutebrisk-v1-pupil-proof/gfx/pokemon/lutebrisk/overworld.2bpp": "4c1527ab1c88dac540603eadb4dbf53e6eb522fc288ea49f949a94f790b79d42",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f038/lutebrisk-v1-pupil-proof/gfx/pokemon/lutebrisk/overworld-shiny.gbcpal": "989a42725ed24e2c44c1a141b521875e646f7dce7d9a41e33f5a27452751022d",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f038/lutebrisk-v1-pupil-proof/review/line.normal-8x.png": "d3d84081e108ae5c3be547f8e9c7151b99ee9ac2906ac5505a40e134e5c4b0d3",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f038/lutebrisk-v1-pupil-proof/gfx/pokemon/lutebrisk/overworld.png": "35e85f1410c8814cc66e6f3700af40d8379a778b55803142065586341038f794",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f038/lutebrisk-v1-pupil-proof/compiled-index.json": "697a7ccbb2e0ea683c417fc831095ec11d8d4476556a518ae0467714ce9c88c3",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f038/manifest-lutebrisk-v1-pupil-proof.json": "233285ceacf58f1f902839fff6c3dda6738b75e8adbfa589b2ef6d22c37e1689",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f038/lutebrisk-v1-pupil-proof/gfx/pokemon/lutebrisk/overworld.gbcpal": "b080efeb999bee3bd16ce605374a0638ec9235b913f0ba8dda3c80e50a4f1322"
+  },
+  "actual_native_boards_viewed": true,
+  "rear_review": "All six normal/shiny poses actually viewed. True headTOP/tailBOTTOM rear with dorsal contours, no eyes/mouth.",
+  "canonical_eye_form": "TWO actual isolated black SOUTH pupils and ONE actual near WEST pupil; complete native clusters map to same anatomical source pupil component. Horn/teeth/barbel/seam dots not counted.",
+  "signature_anatomy_review": "Native14x12 swimming cod with butterlight1body/icyblue2fins, two low dorsal fins, forked tail, small chin barbel simplified to a small lower projection. Detailed butter bands collapse to broad buttery body with blue fin/seam distinction; no arms/legs/feet.",
+  "source_motion_review": {
+    "source_sheet_actually_viewed": true,
+    "notes": "Actual source fins/tail flex in all three swimming pairs, fixed head/eye anchors; not duplicate or translated idle."
+  }
+}

@@ -1,0 +1,202 @@
+{
+  "queue_number": 219,
+  "dex_number": 219,
+  "master_source_order": 308,
+  "species_id": "MN_098",
+  "name": "Bunjant",
+  "family_id": "MN_F047",
+  "stage": 1,
+  "types": [
+    "GRASS",
+    "FIGHTING"
+  ],
+  "evolves_to": null,
+  "section": "legendary",
+  "status": "awaiting_generation",
+  "family_job_id": "MN_F047",
+  "selected_reference_path": "target/minnesota-pokemon/native/MN_F047/mn-098-bunjant-v1.front.png",
+  "references": {
+    "front": {
+      "native_png": {
+        "path": "target/minnesota-pokemon/native/MN_F047/mn-098-bunjant-v1.front.png",
+        "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F047/mn-098-bunjant-v1.front.png",
+        "sha256": "5b878dbf94b798b42b009c7d1c196f183ebdb3c8a0a98fa5bf02ef6886da3d00"
+      },
+      "native_indexed_json": {
+        "path": "target/minnesota-pokemon/native/MN_F047/mn-098-bunjant-v1.front.json",
+        "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F047/mn-098-bunjant-v1.front.json",
+        "sha256": "2645c82ad12b5481c24299abe5b577853e03dbc605f886a3ed26e84a03687a30"
+      },
+      "native_2bpp": {
+        "path": "target/minnesota-pokemon/native/MN_F047/mn-098-bunjant-v1.front.2bpp",
+        "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F047/mn-098-bunjant-v1.front.2bpp",
+        "sha256": "d806a453ac32d490ac255ff4c34d9f356c9e738066320379fa4b751a42817375"
+      },
+      "source_image": {
+        "path": "planning/minnesota/pokemon/sprites/mn-f047/front-back.imagegen-v1.png",
+        "absolute_path": "/Users/ryanculligan/GitHub/geothite/planning/minnesota/pokemon/sprites/mn-f047/front-back.imagegen-v1.png",
+        "sha256": "74c8778e696a8e090809fa94f08aec6ef28a323ba8083b1b7669465035493980"
+      },
+      "source_crop": [
+        0,
+        0,
+        1218,
+        680
+      ],
+      "native_fit": [
+        54,
+        54
+      ],
+      "generation_prompt": {
+        "path": "planning/minnesota/pokemon/sprites/mn-f047/prompt-v1.txt",
+        "absolute_path": "/Users/ryanculligan/GitHub/geothite/planning/minnesota/pokemon/sprites/mn-f047/prompt-v1.txt",
+        "sha256": "09e4f3b23368d4ff4821803d9089bce82448e516ba1525f317e10b1802ccab5f",
+        "reference_kind": "declared_design_prompt_reference; authoritative view record takes precedence over family default"
+      },
+      "sampling": "area_vote",
+      "exterior_contour": "source_backed",
+      "has_guarded_native_refinements": false,
+      "authority_note": "The current selected native PNG is the design authority; original source may contain detail simplified or refined in canonical conversion."
+    },
+    "back": {
+      "native_png": {
+        "path": "target/minnesota-pokemon/native/MN_F047/mn-098-bunjant-v1.back.png",
+        "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F047/mn-098-bunjant-v1.back.png",
+        "sha256": "96a4f953d7b0dd580e989a7d254211c66dcb63356b3a4dfc04fe9f19b512c2e3"
+      },
+      "native_indexed_json": {
+        "path": "target/minnesota-pokemon/native/MN_F047/mn-098-bunjant-v1.back.json",
+        "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F047/mn-098-bunjant-v1.back.json",
+        "sha256": "6454c7d3a9d332f35d225e1da93157cea591102b3098b1c611183ba153372853"
+      },
+      "native_2bpp": {
+        "path": "target/minnesota-pokemon/native/MN_F047/mn-098-bunjant-v1.back.2bpp",
+        "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F047/mn-098-bunjant-v1.back.2bpp",
+        "sha256": "0f67417e6c6c09fb403174918b63d6647355e022e295f11d3e60e55663bfd593"
+      },
+      "source_image": {
+        "path": "planning/minnesota/pokemon/sprites/mn-f047/front-back.imagegen-v1.png",
+        "absolute_path": "/Users/ryanculligan/GitHub/geothite/planning/minnesota/pokemon/sprites/mn-f047/front-back.imagegen-v1.png",
+        "sha256": "74c8778e696a8e090809fa94f08aec6ef28a323ba8083b1b7669465035493980"
+      },
+      "source_crop": [
+        0,
+        680,
+        1218,
+        611
+      ],
+      "native_fit": [
+        46,
+        47
+      ],
+      "generation_prompt": {
+        "path": "planning/minnesota/pokemon/sprites/mn-f047/prompt-v1.txt",
+        "absolute_path": "/Users/ryanculligan/GitHub/geothite/planning/minnesota/pokemon/sprites/mn-f047/prompt-v1.txt",
+        "sha256": "09e4f3b23368d4ff4821803d9089bce82448e516ba1525f317e10b1802ccab5f",
+        "reference_kind": "declared_design_prompt_reference; authoritative view record takes precedence over family default"
+      },
+      "sampling": "area_vote",
+      "exterior_contour": "source_backed",
+      "has_guarded_native_refinements": false,
+      "authority_note": "The current selected native PNG is the design authority; original source may contain detail simplified or refined in canonical conversion."
+    }
+  },
+  "palette": {
+    "species_id": "MN_098",
+    "name": "Bunjant",
+    "gbc_rgb5": [
+      [
+        31,
+        31,
+        31
+      ],
+      [
+        17,
+        24,
+        11
+      ],
+      [
+        10,
+        9,
+        4
+      ],
+      [
+        0,
+        0,
+        0
+      ]
+    ],
+    "gbc_rgb555_words": [
+      32767,
+      12049,
+      4394,
+      0
+    ],
+    "rgb8": [
+      [
+        255,
+        255,
+        255
+      ],
+      [
+        140,
+        198,
+        90
+      ],
+      [
+        82,
+        74,
+        33
+      ],
+      [
+        0,
+        0,
+        0
+      ]
+    ],
+    "hex": [
+      "#FFFFFF",
+      "#8CC65A",
+      "#524A21",
+      "#000000"
+    ]
+  },
+  "design": {
+    "family_theme": "Paul Bunyan: a colossal lumberjack with woodgrain skin, tangled pine beard and checkered bark shoulders.",
+    "member_body_growth": null,
+    "member_silhouette": null,
+    "family_design_lock": null,
+    "family_sprite_design": null,
+    "silhouette_invariants_16px": [
+      "Preserve the accepted silhouette, face, limb/wing count and dominant theme shapes shown by the exact selected native references.",
+      "Choose one or two defining visible forms from the family theme; simplify directly for16pixels rather than scaling the battle sprite."
+    ],
+    "priority_invariants_manually_authored": false
+  },
+  "generation_attempts": [],
+  "selected_overworld_source": null,
+  "selected_native_candidate": null,
+  "native_visual_review": null,
+  "integration_proof": null,
+  "overworld_palette_binding": {
+    "transparent_index": 0,
+    "visible_indices": [
+      1,
+      2,
+      3
+    ],
+    "normal_rgb555_words": [
+      32767,
+      12049,
+      4394,
+      0
+    ],
+    "shiny_rgb555_words": [
+      32767,
+      25131,
+      9540,
+      0
+    ],
+    "white_body_region_policy": "Simplify formerly white body/highlight regions to light ink1. Index0 is transparent everywhere, not an opaque white paint color."
+  }
+}

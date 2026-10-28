@@ -1,0 +1,570 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_261",
+  "result": "pass",
+  "manifest_sha256": "fdf949d023756ae5661a09878108ad4904541371930a57b48b7f47550b70a1dc",
+  "bank_sha256": "f5837e56bb9b840508ca89e44f7ac125124254c4546e05b461a19f56080762bf",
+  "source_sha256": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f122/keypout.overworld.imagegen-v5-front-pupil-upper-extension.png": "56c36d3c4e19a245fb8ee044f9870d77a91d25a8e55366648956f684fe5b74a5",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f122/keypout.overworld.imagegen-v2-true-rears.png": "873bdb5fe9e4f6762d452983bc1460f7dc649fa28644bc28c305b77283799230",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f122/keypout.overworld.imagegen-v3-key-barbel-width.png": "a5079c2061da70642aa73d8959de7fa2d7469c4a7218b00802013dce296ac44f"
+  },
+  "canonical_eye_form": "TWO actual isolated south pupils, ONE actual isolated west pupil. Every pixel in each complete native eye cluster maps to the same small anatomical source pupil component.",
+  "nonrear_poses": [
+    {
+      "pose": "down_idle",
+      "result": "pass",
+      "source_feature_proof": {
+        "pose": "down_idle",
+        "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f122/keypout.overworld.imagegen-v5-front-pupil-upper-extension.png",
+        "crop": [
+          58,
+          85,
+          520,
+          410
+        ],
+        "anatomically_identified_source_eye_boxes_xywh": [
+          [
+            226,
+            332,
+            21,
+            40
+          ],
+          [
+            305,
+            332,
+            21,
+            40
+          ]
+        ],
+        "actual_eye_proofs": [
+          {
+            "native_cluster": [
+              [
+                5,
+                11
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  1,
+                  1,
+                  1,
+                  253
+                ],
+                "bounds": [
+                  226,
+                  332,
+                  21,
+                  40
+                ],
+                "pixels": 840,
+                "truncated_contour": false,
+                "native_pixel": [
+                  5,
+                  11
+                ],
+                "source_sample_pixel": [
+                  231,
+                  345
+                ]
+              }
+            ]
+          },
+          {
+            "native_cluster": [
+              [
+                7,
+                11
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  5,
+                  6,
+                  6,
+                  253
+                ],
+                "bounds": [
+                  305,
+                  332,
+                  21,
+                  40
+                ],
+                "pixels": 840,
+                "truncated_contour": false,
+                "native_pixel": [
+                  7,
+                  11
+                ],
+                "source_sample_pixel": [
+                  307,
+                  345
+                ]
+              }
+            ]
+          }
+        ],
+        "signature_feature_proof": {
+          "feature": "single attached living L-shaped chin-key barbel",
+          "result": "pass",
+          "native_shape": "three connected light-ink pixels form L; actual source barbel sampled, not hand/tail/false-eye dots",
+          "samples": [
+            {
+              "native_pixel": [
+                6,
+                13
+              ],
+              "native_ink": 1,
+              "source_sample_pixel": [
+                269,
+                423
+              ],
+              "source_rgba": [
+                164,
+                213,
+                188,
+                253
+              ]
+            },
+            {
+              "native_pixel": [
+                6,
+                14
+              ],
+              "native_ink": 1,
+              "source_sample_pixel": [
+                269,
+                463
+              ],
+              "source_rgba": [
+                171,
+                215,
+                192,
+                252
+              ]
+            },
+            {
+              "native_pixel": [
+                7,
+                14
+              ],
+              "native_ink": 1,
+              "source_sample_pixel": [
+                307,
+                463
+              ],
+              "source_rgba": [
+                179,
+                226,
+                198,
+                252
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "pose": "left_idle",
+      "result": "pass",
+      "source_feature_proof": {
+        "pose": "left_idle",
+        "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f122/keypout.overworld.imagegen-v3-key-barbel-width.png",
+        "crop": [
+          990,
+          135,
+          520,
+          410
+        ],
+        "anatomically_identified_source_eye_boxes_xywh": [
+          [
+            1048,
+            330,
+            22,
+            28
+          ]
+        ],
+        "actual_eye_proofs": [
+          {
+            "native_cluster": [
+              [
+                2,
+                10
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  1,
+                  0,
+                  0,
+                  253
+                ],
+                "bounds": [
+                  1048,
+                  330,
+                  22,
+                  28
+                ],
+                "pixels": 616,
+                "truncated_contour": false,
+                "native_pixel": [
+                  2,
+                  10
+                ],
+                "source_sample_pixel": [
+                  1049,
+                  355
+                ]
+              }
+            ]
+          }
+        ],
+        "signature_feature_proof": {
+          "feature": "single attached living L-shaped chin-key barbel",
+          "result": "pass",
+          "native_shape": "three connected light-ink pixels form L; actual source barbel sampled, not hand/tail/false-eye dots",
+          "samples": [
+            {
+              "native_pixel": [
+                2,
+                11
+              ],
+              "native_ink": 1,
+              "source_sample_pixel": [
+                1049,
+                395
+              ],
+              "source_rgba": [
+                163,
+                211,
+                184,
+                253
+              ]
+            },
+            {
+              "native_pixel": [
+                2,
+                12
+              ],
+              "native_ink": 1,
+              "source_sample_pixel": [
+                1049,
+                434
+              ],
+              "source_rgba": [
+                165,
+                212,
+                183,
+                253
+              ]
+            },
+            {
+              "native_pixel": [
+                3,
+                12
+              ],
+              "native_ink": 1,
+              "source_sample_pixel": [
+                1087,
+                434
+              ],
+              "source_rgba": [
+                160,
+                210,
+                180,
+                253
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "pose": "down_step",
+      "result": "pass",
+      "source_feature_proof": {
+        "pose": "down_step",
+        "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f122/keypout.overworld.imagegen-v5-front-pupil-upper-extension.png",
+        "crop": [
+          58,
+          543,
+          520,
+          410
+        ],
+        "anatomically_identified_source_eye_boxes_xywh": [
+          [
+            226,
+            779,
+            21,
+            41
+          ],
+          [
+            305,
+            779,
+            22,
+            41
+          ]
+        ],
+        "actual_eye_proofs": [
+          {
+            "native_cluster": [
+              [
+                5,
+                11
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  1,
+                  2,
+                  1,
+                  253
+                ],
+                "bounds": [
+                  226,
+                  779,
+                  21,
+                  41
+                ],
+                "pixels": 861,
+                "truncated_contour": false,
+                "native_pixel": [
+                  5,
+                  11
+                ],
+                "source_sample_pixel": [
+                  231,
+                  803
+                ]
+              }
+            ]
+          },
+          {
+            "native_cluster": [
+              [
+                7,
+                11
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  6,
+                  8,
+                  7,
+                  253
+                ],
+                "bounds": [
+                  305,
+                  779,
+                  22,
+                  41
+                ],
+                "pixels": 901,
+                "truncated_contour": false,
+                "native_pixel": [
+                  7,
+                  11
+                ],
+                "source_sample_pixel": [
+                  307,
+                  803
+                ]
+              }
+            ]
+          }
+        ],
+        "signature_feature_proof": {
+          "feature": "single attached living L-shaped chin-key barbel",
+          "result": "pass",
+          "native_shape": "three connected light-ink pixels form L; actual source barbel sampled, not hand/tail/false-eye dots",
+          "samples": [
+            {
+              "native_pixel": [
+                6,
+                13
+              ],
+              "native_ink": 1,
+              "source_sample_pixel": [
+                269,
+                881
+              ],
+              "source_rgba": [
+                168,
+                214,
+                188,
+                254
+              ]
+            },
+            {
+              "native_pixel": [
+                6,
+                14
+              ],
+              "native_ink": 1,
+              "source_sample_pixel": [
+                269,
+                921
+              ],
+              "source_rgba": [
+                176,
+                222,
+                196,
+                253
+              ]
+            },
+            {
+              "native_pixel": [
+                7,
+                14
+              ],
+              "native_ink": 1,
+              "source_sample_pixel": [
+                307,
+                921
+              ],
+              "source_rgba": [
+                169,
+                216,
+                190,
+                253
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "pose": "left_step",
+      "result": "pass",
+      "source_feature_proof": {
+        "pose": "left_step",
+        "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f122/keypout.overworld.imagegen-v3-key-barbel-width.png",
+        "crop": [
+          990,
+          588,
+          520,
+          410
+        ],
+        "anatomically_identified_source_eye_boxes_xywh": [
+          [
+            1048,
+            785,
+            22,
+            27
+          ]
+        ],
+        "actual_eye_proofs": [
+          {
+            "native_cluster": [
+              [
+                2,
+                10
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  1,
+                  0,
+                  0,
+                  254
+                ],
+                "bounds": [
+                  1048,
+                  785,
+                  22,
+                  27
+                ],
+                "pixels": 594,
+                "truncated_contour": false,
+                "native_pixel": [
+                  2,
+                  10
+                ],
+                "source_sample_pixel": [
+                  1049,
+                  808
+                ]
+              }
+            ]
+          }
+        ],
+        "signature_feature_proof": {
+          "feature": "single attached living L-shaped chin-key barbel",
+          "result": "pass",
+          "native_shape": "three connected light-ink pixels form L; actual source barbel sampled, not hand/tail/false-eye dots",
+          "samples": [
+            {
+              "native_pixel": [
+                2,
+                11
+              ],
+              "native_ink": 1,
+              "source_sample_pixel": [
+                1049,
+                848
+              ],
+              "source_rgba": [
+                163,
+                214,
+                184,
+                253
+              ]
+            },
+            {
+              "native_pixel": [
+                2,
+                12
+              ],
+              "native_ink": 1,
+              "source_sample_pixel": [
+                1049,
+                887
+              ],
+              "source_rgba": [
+                164,
+                212,
+                183,
+                253
+              ]
+            },
+            {
+              "native_pixel": [
+                3,
+                12
+              ],
+              "native_ink": 1,
+              "source_sample_pixel": [
+                1087,
+                887
+              ],
+              "source_rgba": [
+                163,
+                211,
+                183,
+                253
+              ]
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "rear_anatomy": {
+    "result": "pass",
+    "notes": "Both native normal/shiny rear poses actually inspected: plain rear head, no copied face. Head anchors stable, 1px transparent outer border, three walk pairs differ."
+  },
+  "detailed_proof": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f122/manifest-keypout-v5-pupil-proof.proof.json"
+}

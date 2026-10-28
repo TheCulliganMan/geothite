@@ -1,0 +1,284 @@
+{
+  "species_id": "MN_017",
+  "family_id": "MN_F006",
+  "status": "native-review-recommended; independentrootreviewpending",
+  "selected_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f006/bandrake.manifest-native-v2.json",
+  "runtime_output": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/true16-bandrake-v2/MN_F006",
+  "tool": "built-in image_gen",
+  "normal_and_shiny_boards_actually_viewed": true,
+  "proof": {
+    "six_literal_frames": [
+      16,
+      16
+    ],
+    "runtime_index_stack": [
+      16,
+      96
+    ],
+    "normal_shiny_and_runtime_indices": "exact1536pixels each",
+    "canonical_normal_shiny_palettes_and_bytes": "exact",
+    "transparent_borders": "allposesindex0",
+    "walk_pairs": "allthreedistinct"
+  },
+  "frames": [
+    {
+      "crop": [
+        19,
+        149,
+        344,
+        338
+      ],
+      "native_bounds": [
+        1,
+        2,
+        14,
+        13
+      ],
+      "pixel_sha256": "57ba02f5d9e90be588d8a6ee6d6c6426ab5f861f6325c44e515df0fca6482bad",
+      "pose": "down_idle",
+      "rows": [
+        "0000000000000000",
+        "0000000000000000",
+        "0003300000033000",
+        "0002230333322300",
+        "0002233111322300",
+        "0003111111113000",
+        "0001113113111300",
+        "0031111111111300",
+        "0312311111132230",
+        "0032222113222300",
+        "0033222332223100",
+        "0031132222311300",
+        "0032233223322300",
+        "0032230000322300",
+        "0333330000333330",
+        "0000000000000000"
+      ],
+      "source": "bandrake.overworld.imagegen-v2.png",
+      "source_alpha_bounds": [
+        14,
+        21,
+        316,
+        305
+      ],
+      "source_sha256": "b7baa128f7b7de9dfa6a7a8de2fb18a18eac7d987e946b825ce36dfa4b87fc49"
+    },
+    {
+      "crop": [
+        408,
+        150,
+        344,
+        338
+      ],
+      "native_bounds": [
+        1,
+        2,
+        14,
+        13
+      ],
+      "pixel_sha256": "4b9fca5c7e35620f578a7f4cd3ec7c0075e0dd9650083763ee0a3c7b63d15a1b",
+      "pose": "up_idle",
+      "rows": [
+        "0000000000000000",
+        "0000000000000000",
+        "0003300330033000",
+        "0002233223322000",
+        "0002231221322000",
+        "0003313223133000",
+        "0001113223111000",
+        "0233113223113120",
+        "0312311221132130",
+        "0032222222222300",
+        "0033322222233300",
+        "0031113333111300",
+        "0032111111112300",
+        "0032230000322300",
+        "0333330000333330",
+        "0000000000000000"
+      ],
+      "source": "bandrake.overworld.imagegen-v2.png",
+      "source_alpha_bounds": [
+        15,
+        20,
+        314,
+        306
+      ],
+      "source_sha256": "b7baa128f7b7de9dfa6a7a8de2fb18a18eac7d987e946b825ce36dfa4b87fc49"
+    },
+    {
+      "crop": [
+        788,
+        148,
+        344,
+        338
+      ],
+      "native_bounds": [
+        1,
+        2,
+        14,
+        13
+      ],
+      "pixel_sha256": "15f23414490ed746ae2c4be099249b2bdb3b0dc078dd1a5f47656fffbb766803",
+      "pose": "left_idle",
+      "rows": [
+        "0000000000000000",
+        "0000000000000000",
+        "0000333000000000",
+        "0002111303300000",
+        "0001111132230000",
+        "0311111112330000",
+        "0311311112233000",
+        "0311111112231100",
+        "0031111311111130",
+        "0003313112222230",
+        "0003322222222200",
+        "0003132222311300",
+        "0000311311112200",
+        "0003222300322200",
+        "0003333000333300",
+        "0000000000000000"
+      ],
+      "source": "bandrake.overworld.imagegen-v2.png",
+      "source_alpha_bounds": [
+        13,
+        21,
+        318,
+        305
+      ],
+      "source_sha256": "b7baa128f7b7de9dfa6a7a8de2fb18a18eac7d987e946b825ce36dfa4b87fc49"
+    },
+    {
+      "crop": [
+        19,
+        552,
+        344,
+        338
+      ],
+      "native_bounds": [
+        1,
+        2,
+        14,
+        13
+      ],
+      "pixel_sha256": "72f8787d7b1a63dd8400bbfe1809013d5f58d19e601798cb56e80fbb6f340af5",
+      "pose": "down_step",
+      "rows": [
+        "0000000000000000",
+        "0000000000000000",
+        "0003300000033000",
+        "0002230333322300",
+        "0002233111322300",
+        "0003111111113000",
+        "0001113113111300",
+        "0031111113111300",
+        "0312311111132230",
+        "0032221111322300",
+        "0033222332223100",
+        "0001132222311300",
+        "0032233223311300",
+        "0022230220322200",
+        "0003330000333300",
+        "0000000000000000"
+      ],
+      "source": "bandrake.overworld.imagegen-v2.png",
+      "source_alpha_bounds": [
+        14,
+        22,
+        316,
+        304
+      ],
+      "source_sha256": "b7baa128f7b7de9dfa6a7a8de2fb18a18eac7d987e946b825ce36dfa4b87fc49"
+    },
+    {
+      "crop": [
+        408,
+        562,
+        344,
+        338
+      ],
+      "native_bounds": [
+        1,
+        2,
+        14,
+        13
+      ],
+      "pixel_sha256": "e4c63e478e83d3f5574214dac6ed105cd35d0539165c11ede0366f3ca1cf9958",
+      "pose": "up_step",
+      "rows": [
+        "0000000000000000",
+        "0000000000000000",
+        "0003300330033000",
+        "0002233223322000",
+        "0002231221322000",
+        "0003313223133000",
+        "0001113223111000",
+        "0313111223113130",
+        "0032233333322300",
+        "0032222222222300",
+        "0001132222311000",
+        "0031113333111000",
+        "0032230330322300",
+        "0003300000322300",
+        "0000000000333000",
+        "0000000000000000"
+      ],
+      "source": "bandrake.overworld.imagegen-v2.png",
+      "source_alpha_bounds": [
+        15,
+        12,
+        314,
+        314
+      ],
+      "source_sha256": "b7baa128f7b7de9dfa6a7a8de2fb18a18eac7d987e946b825ce36dfa4b87fc49"
+    },
+    {
+      "crop": [
+        789,
+        560,
+        344,
+        338
+      ],
+      "native_bounds": [
+        1,
+        2,
+        14,
+        13
+      ],
+      "pixel_sha256": "7515669769272bb5b4c2aa008a524393a3496dbcde2dd3847b62855f2e4fa3ab",
+      "pose": "left_step",
+      "rows": [
+        "0000000000000000",
+        "0000000000000000",
+        "0000333000000000",
+        "0003111303300000",
+        "0031111122230000",
+        "0311111132330000",
+        "0311311132233000",
+        "0031111112231100",
+        "0021111311111130",
+        "0003231122222230",
+        "0003322222222200",
+        "0003132222311300",
+        "0032113111311200",
+        "0032223200022200",
+        "0000330000333300",
+        "0000000000000000"
+      ],
+      "source": "bandrake.overworld.imagegen-v2.png",
+      "source_alpha_bounds": [
+        12,
+        12,
+        320,
+        314
+      ],
+      "source_sha256": "b7baa128f7b7de9dfa6a7a8de2fb18a18eac7d987e946b825ce36dfa4b87fc49"
+    }
+  ],
+  "sha256": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f006/bandrake.overworld.imagegen-v2.png": "b7baa128f7b7de9dfa6a7a8de2fb18a18eac7d987e946b825ce36dfa4b87fc49",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f006/bandrake.manifest-native-v2.json": "9054c0f00139f640ad09057590d34f037177f92e14990d77ad5e6b38c3c44ce4",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/true16-bandrake-v2/MN_F006/compiled-index.json": "938133e1ddd6e542ff7d7e4e796ebdce23e8c97079a29a1f10ecef6875881258",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/true16-bandrake-v2/MN_F006/review/line.normal-8x.png": "1cabf429ae6095d09a69907ad849a1ecdf8e80fc1ea04b191ae8066e8b629598",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/true16-bandrake-v2/MN_F006/review/line.shiny-8x.png": "6f2a62e7895e939612b27deedc7b372a36929258b5297f66e73628b932e67ca9"
+  }
+}

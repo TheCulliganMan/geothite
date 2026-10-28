@@ -1,0 +1,345 @@
+{
+  "species_id": "MN_078",
+  "name": "casserogre",
+  "status": "native-review-recommended; root independent review and context required",
+  "selected_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f032/casserogre.manifest-native-joint-phase-v1.json",
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/true16-casserogre-joint-phase-v1",
+  "shared_transform": {
+    "source_bounds": [
+      12,
+      10,
+      428,
+      366
+    ],
+    "native_size": [
+      14,
+      11
+    ],
+    "native_origin": [
+      1,
+      4
+    ]
+  },
+  "all_four_nonrear_poses_actual_pupils_pass": true,
+  "each_native_eye_cluster_maps_to_one_actual_small_source_pupil_component": true,
+  "actual_source_pupil_proofs": [
+    {
+      "pose": "down_idle",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f032/casserogre.overworld.imagegen-v1.png",
+      "crop": [
+        48,
+        86,
+        452,
+        388
+      ],
+      "actual_source_eye_bounds": [
+        [
+          221,
+          237,
+          27,
+          29
+        ],
+        [
+          299,
+          237,
+          27,
+          29
+        ]
+      ],
+      "eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              6,
+              8
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                0,
+                0,
+                0,
+                253
+              ],
+              "bounds": [
+                221,
+                237,
+                27,
+                29
+              ],
+              "pixels": 783,
+              "truncated_contour": false,
+              "native_pixel": [
+                6,
+                8
+              ],
+              "source_sample_pixel": [
+                228,
+                245
+              ]
+            }
+          ]
+        },
+        {
+          "native_cluster": [
+            [
+              9,
+              8
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                0,
+                0,
+                0,
+                253
+              ],
+              "bounds": [
+                299,
+                237,
+                27,
+                29
+              ],
+              "pixels": 783,
+              "truncated_contour": false,
+              "native_pixel": [
+                9,
+                8
+              ],
+              "source_sample_pixel": [
+                319,
+                245
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f032/casserogre.overworld.imagegen-v1.png",
+      "crop": [
+        1058,
+        96,
+        452,
+        388
+      ],
+      "actual_source_eye_bounds": [
+        [
+          1157,
+          210,
+          24,
+          29
+        ]
+      ],
+      "eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              4,
+              7
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                1,
+                0,
+                0,
+                253
+              ],
+              "bounds": [
+                1157,
+                210,
+                24,
+                29
+              ],
+              "pixels": 689,
+              "truncated_contour": false,
+              "native_pixel": [
+                4,
+                7
+              ],
+              "source_sample_pixel": [
+                1177,
+                222
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f032/casserogre.overworld.imagegen-v1.png",
+      "crop": [
+        54,
+        549,
+        452,
+        388
+      ],
+      "actual_source_eye_bounds": [
+        [
+          223,
+          698,
+          25,
+          28
+        ],
+        [
+          294,
+          698,
+          25,
+          28
+        ]
+      ],
+      "eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              6,
+              8
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                0,
+                0,
+                0,
+                253
+              ],
+              "bounds": [
+                223,
+                698,
+                25,
+                28
+              ],
+              "pixels": 700,
+              "truncated_contour": false,
+              "native_pixel": [
+                6,
+                8
+              ],
+              "source_sample_pixel": [
+                234,
+                708
+              ]
+            }
+          ]
+        },
+        {
+          "native_cluster": [
+            [
+              8,
+              8
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                0,
+                0,
+                0,
+                254
+              ],
+              "bounds": [
+                294,
+                698,
+                25,
+                28
+              ],
+              "pixels": 700,
+              "truncated_contour": false,
+              "native_pixel": [
+                8,
+                8
+              ],
+              "source_sample_pixel": [
+                295,
+                708
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f032/casserogre.overworld.imagegen-v1.png",
+      "crop": [
+        1058,
+        549,
+        452,
+        388
+      ],
+      "actual_source_eye_bounds": [
+        [
+          1155,
+          674,
+          25,
+          28
+        ]
+      ],
+      "eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              4,
+              7
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                9,
+                8,
+                3,
+                254
+              ],
+              "bounds": [
+                1155,
+                674,
+                25,
+                28
+              ],
+              "pixels": 700,
+              "truncated_contour": false,
+              "native_pixel": [
+                4,
+                7
+              ],
+              "source_sample_pixel": [
+                1177,
+                675
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "old_native_poses_preserved_exactly": [
+    "down_idle",
+    "up_idle",
+    "left_idle",
+    "down_step",
+    "up_step",
+    "left_step"
+  ],
+  "normal_shiny_runtime_parity": "all1536pixels exact each",
+  "canonical_palette_bytes": "exact",
+  "all_three_walk_pairs_distinct": true,
+  "rear_review": "both rear native poses viewed; no copied face",
+  "normal_shiny_native_boards_actually_viewed": true,
+  "accepted_coverage_native_pack_untouched": true,
+  "manifest_sha256": "bf2c3df270d745fc933124f309fe50f0a5396191616b6168c9531c15dae2b51a",
+  "compiled_index_sha256": "8daf8f7b4f86b4f53e42345c8d47604cf8c06a11b6748dbf1671761eb958bda4"
+}

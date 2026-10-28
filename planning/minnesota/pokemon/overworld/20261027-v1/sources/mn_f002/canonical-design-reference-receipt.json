@@ -1,0 +1,37 @@
+{
+  "family_id": "MN_F002",
+  "exact_selected_front_back_actually_viewed": true,
+  "refs": {
+    "Cindore": {
+      "front": {
+        "path": "target/minnesota-pokemon/native/MN_F002/mn-004-cindore-render-20261026-v2.front.png",
+        "sha256": "366009a866d0bb01d1c0cd3a173fb2bff5ce1ebc50017eade0db99a8ba311727"
+      },
+      "back": {
+        "path": "target/minnesota-pokemon/native/MN_F002/mn-004-cindore-render-20261026-v2.back.png",
+        "sha256": "fd0f357e38ff48f92eabf6e2d39aca20d8a6ca7aa6d3ba53d2a01fad4b6000a6"
+      }
+    },
+    "Pelletor": {
+      "front": {
+        "path": "target/minnesota-pokemon/native/MN_F002/mn-005-pelletor-render-20261026-v2.front.png",
+        "sha256": "f8047b908c69dbe537941683b7baa3f796148cb8619c7130f67716bd12f96906"
+      },
+      "back": {
+        "path": "target/minnesota-pokemon/native/MN_F002/mn-005-pelletor-render-20261026-v2.back.png",
+        "sha256": "1e993270c9d861c939cdc42503cb9cf9d817405610fcd5bbfd500394adff65e3"
+      }
+    },
+    "Mesablast": {
+      "front": {
+        "path": "target/minnesota-pokemon/native/MN_F002/mn-006-mesablast-render-20261026-v2.front.png",
+        "sha256": "508bfc854b829bd07d426e05662c7c2479514a314f980b3bfa11c363f3334a96"
+      },
+      "back": {
+        "path": "target/minnesota-pokemon/native/MN_F002/mn-006-mesablast-render-20261026-v2.back.png",
+        "sha256": "8592c26fb5e8b4e1f32fe7c2aa419a556fb67bcc73a163b2d761db33c83ca713"
+      }
+    }
+  },
+  "body_lock": "Cindore pointed coal/ore heap, one molten crest/back stripe, two stone fists and two feet. Pelletor broad pellet-rock body, two fists/two feet, single crown stub and round hot chest core. Mesablast broad blue cast-metal furnace body, tiered conical stack head, two huge metal fist arms, two armored feet, red chest/shoulder heat vents. No extra tails/wings/tools."
+}

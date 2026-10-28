@@ -1,0 +1,338 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_105",
+  "result": "pass",
+  "manifest_sha256": "5faaa5028c543912c4f1138ed4fb8219cb58ae86b03813fa9f712bc70f6de002",
+  "bank_sha256": "2c52bfdb1be2e4d62b762d1def720dbefed40056fd1c4f1af3c329396b26eaeb",
+  "source_sha256": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f051/rumblehide.overworld.imagegen-v2-front-eyes.png": "808a90adc678a9f5ffd9d55df1cb78589ba3a86c381e56c194fb1536dc4429e2",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f051/rumblehide.overworld.imagegen-v1.png": "858e7778373633ea0f2f32b8a5fdb6dfd2a105ebb6c2b0bedec16043794595b8",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f051/rumblehide.overworld.imagegen-v3-profile-step-eye.png": "317d70e178b5a7a63d00e608f3b032ba3524e7bbf8ba0bc369823ce8baa5d8c1"
+  },
+  "canonical_eye_form": "TWO actual isolated south pupils, ONE actual isolated west pupil. Every pixel in each complete native eye cluster maps to the same small anatomical source pupil component.",
+  "nonrear_poses": [
+    {
+      "pose": "down_idle",
+      "result": "pass",
+      "source_feature_proof": {
+        "pose": "down_idle",
+        "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f051/rumblehide.overworld.imagegen-v2-front-eyes.png",
+        "crop": [
+          37,
+          89,
+          500,
+          440
+        ],
+        "anatomically_identified_source_eye_boxes_xywh": [
+          [
+            211,
+            332,
+            21,
+            26
+          ],
+          [
+            304,
+            332,
+            21,
+            26
+          ]
+        ],
+        "actual_eye_proofs": [
+          {
+            "native_cluster": [
+              [
+                5,
+                10
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  7,
+                  4,
+                  2,
+                  253
+                ],
+                "bounds": [
+                  211,
+                  332,
+                  21,
+                  26
+                ],
+                "pixels": 511,
+                "truncated_contour": false,
+                "native_pixel": [
+                  5,
+                  10
+                ],
+                "source_sample_pixel": [
+                  214,
+                  339
+                ]
+              }
+            ]
+          },
+          {
+            "native_cluster": [
+              [
+                8,
+                10
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  5,
+                  2,
+                  0,
+                  254
+                ],
+                "bounds": [
+                  304,
+                  332,
+                  21,
+                  26
+                ],
+                "pixels": 546,
+                "truncated_contour": false,
+                "native_pixel": [
+                  8,
+                  10
+                ],
+                "source_sample_pixel": [
+                  324,
+                  339
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "pose": "left_idle",
+      "result": "pass",
+      "source_feature_proof": {
+        "pose": "left_idle",
+        "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f051/rumblehide.overworld.imagegen-v2-front-eyes.png",
+        "crop": [
+          1036,
+          77,
+          500,
+          440
+        ],
+        "anatomically_identified_source_eye_boxes_xywh": [
+          [
+            1126,
+            317,
+            23,
+            26
+          ]
+        ],
+        "actual_eye_proofs": [
+          {
+            "native_cluster": [
+              [
+                3,
+                10
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  1,
+                  0,
+                  0,
+                  253
+                ],
+                "bounds": [
+                  1126,
+                  317,
+                  23,
+                  26
+                ],
+                "pixels": 580,
+                "truncated_contour": false,
+                "native_pixel": [
+                  3,
+                  10
+                ],
+                "source_sample_pixel": [
+                  1140,
+                  327
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "pose": "down_step",
+      "result": "pass",
+      "source_feature_proof": {
+        "pose": "down_step",
+        "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f051/rumblehide.overworld.imagegen-v2-front-eyes.png",
+        "crop": [
+          37,
+          544,
+          500,
+          440
+        ],
+        "anatomically_identified_source_eye_boxes_xywh": [
+          [
+            212,
+            787,
+            19,
+            26
+          ],
+          [
+            304,
+            787,
+            21,
+            26
+          ]
+        ],
+        "actual_eye_proofs": [
+          {
+            "native_cluster": [
+              [
+                5,
+                10
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  6,
+                  4,
+                  1,
+                  253
+                ],
+                "bounds": [
+                  212,
+                  787,
+                  19,
+                  26
+                ],
+                "pixels": 494,
+                "truncated_contour": false,
+                "native_pixel": [
+                  5,
+                  10
+                ],
+                "source_sample_pixel": [
+                  214,
+                  794
+                ]
+              }
+            ]
+          },
+          {
+            "native_cluster": [
+              [
+                8,
+                10
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  0,
+                  0,
+                  0,
+                  254
+                ],
+                "bounds": [
+                  304,
+                  787,
+                  21,
+                  26
+                ],
+                "pixels": 546,
+                "truncated_contour": false,
+                "native_pixel": [
+                  8,
+                  10
+                ],
+                "source_sample_pixel": [
+                  324,
+                  794
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "pose": "left_step",
+      "result": "pass",
+      "source_feature_proof": {
+        "pose": "left_step",
+        "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f051/rumblehide.overworld.imagegen-v3-profile-step-eye.png",
+        "crop": [
+          1024,
+          535,
+          500,
+          440
+        ],
+        "anatomically_identified_source_eye_boxes_xywh": [
+          [
+            1114,
+            775,
+            40,
+            26
+          ]
+        ],
+        "actual_eye_proofs": [
+          {
+            "native_cluster": [
+              [
+                3,
+                10
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  0,
+                  0,
+                  0,
+                  253
+                ],
+                "bounds": [
+                  1114,
+                  775,
+                  40,
+                  26
+                ],
+                "pixels": 1039,
+                "truncated_contour": false,
+                "native_pixel": [
+                  3,
+                  10
+                ],
+                "source_sample_pixel": [
+                  1128,
+                  785
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "rear_anatomy": {
+    "result": "pass",
+    "notes": "Both native normal/shiny rear poses actually inspected: plain rear head, no copied face. Head anchors stable, 1px transparent outer border, three walk pairs differ."
+  },
+  "detailed_proof": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f051/manifest-rumblehide-v3-pupil-proof.proof.json"
+}

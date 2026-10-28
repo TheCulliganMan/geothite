@@ -5191,6 +5191,7 @@ fn spawn_field_party_menu(
             snapshot,
             slot,
             row_index,
+            runtime_shell.lcd_animation_frame,
             selected == row_index,
             true,
             rendered_art,
@@ -12965,6 +12966,36 @@ fn push_visible_shop_dialog_entries(
     }
     if let Some(notice) = runtime_shell.shop_notice.as_deref() {
         entries.extend(notice.lines().map(str::to_string));
+        return Ok(());
+    }
+    if let Some(quantity) = runtime_shell.shop_quantity.as_ref() {
+        let item = snapshot
+            .items
+            .iter()
+            .find(|item| item.item_id == quantity.item_id)
+            .context("shop quantity item is missing from the visible catalog")?;
+        let total = visible_shop_quantity_total(quantity);
+        if let Some(yes) = quantity.confirmation {
+            entries.push(
+                if quantity.selling {
+                    "I can pay you"
+                } else {
+                    "That will be"
+                }
+                .to_string(),
+            );
+            entries.push(format_price(total));
+            entries.push(format!("{}YES", if yes { ">" } else { " " }));
+            entries.push(format!("{}NO", if yes { " " } else { ">" }));
+        } else {
+            entries.push("How many?".to_string());
+            entries.push(format!(
+                "{} ×{:02}",
+                item.name.replace('_', " "),
+                quantity.quantity
+            ));
+            entries.push(format_price(total));
+        }
         return Ok(());
     }
     if let Some(cursor) = runtime_shell.shop_top_cursor.as_ref() {

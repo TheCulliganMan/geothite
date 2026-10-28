@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F112",
+  "species": [
+    {
+      "species_id": "MN_245",
+      "runtime_token": "SKIRRIT",
+      "palette_rgb555": [
+        32767,
+        22235,
+        15661,
+        0
+      ],
+      "shiny_palette_rgb555": [
+        32767,
+        23413,
+        9647,
+        0
+      ],
+      "fit": [
+        14,
+        14
+      ],
+      "alpha_threshold": 245,
+      "sampling": "source_center",
+      "minimum_foreground_samples": 16,
+      "black_priority_samples": 32,
+      "interior_black_samples": null,
+      "opaque_interior_minimum_samples": 60,
+      "frames": [
+        {
+          "pose": "down_idle",
+          "source": "skirrit.overworld.imagegen-v1.png",
+          "crop": [
+            86,
+            127,
+            357,
+            322
+          ]
+        },
+        {
+          "pose": "up_idle",
+          "source": "skirrit.overworld.imagegen-v1.png",
+          "crop": [
+            590,
+            127,
+            357,
+            322
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "source": "skirrit.overworld.imagegen-v1.png",
+          "crop": [
+            1093,
+            127,
+            357,
+            322
+          ]
+        },
+        {
+          "pose": "down_step",
+          "source": "skirrit.overworld.imagegen-v1.png",
+          "crop": [
+            86,
+            598,
+            357,
+            322
+          ]
+        },
+        {
+          "pose": "up_step",
+          "source": "skirrit.overworld.imagegen-v1.png",
+          "crop": [
+            590,
+            581,
+            357,
+            322
+          ]
+        },
+        {
+          "pose": "left_step",
+          "source": "skirrit.overworld.imagegen-v1.png",
+          "crop": [
+            1093,
+            598,
+            357,
+            322
+          ]
+        }
+      ]
+    }
+  ]
+}

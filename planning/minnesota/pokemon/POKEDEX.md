@@ -734,9 +734,9 @@ Egg moves: MIRROR_MOVE, HAZE, DISABLE.
 
 Catch rate 45; base EXP 214; GROWTH_MEDIUM_FAST; egg groups EGG_FLYING/EGG_WATER_1; hatch cycles 20.
 
-## MN_F015: Jiglet → Trollure
+## MN_F015: Jiglet → Trollure → Crappeller
 
-Living fishing lure: a painted jig with a hook tail becomes a spinner whose metal fins imitate an injured fish.
+Living fishing lure: a painted jig with a hook tail becomes a fin-spinning lure, then a broad crappie-patterned adult with a large crown spinner blade.
 
 Habitat: central lakes.
 
@@ -746,9 +746,9 @@ Jig Fish Pokémon. 0′8″; 9.5 lb. Stats: 42 / 53 / 56 / 45 / 31 / 48 (total 2
 
 It hides among fishing hooks on the lake bed. Its twitching tail attracts fish looking for food.
 
-Evolves to MN_044 at level 28.
+Evolves to MN_044 at level 24.
 
-Level moves: 1: TACKLE; 1: HARDEN; 5: WATER_GUN; 9: ATTRACT; 9: METAL_CLAW; 17: SWEET_SCENT; 22: PURSUIT; 24: WATER_PULSE; 27: SWIFT; 28: WATERFALL; 30: BUBBLEBEAM; 34: AGILITY; 34: IRON_HEAD; 37: IRON_TAIL; 41: SCREECH; 46: HYDRO_PUMP; 50: LOCK_ON.
+Level moves: 1: TACKLE; 1: HARDEN; 5: WATER_GUN; 9: ATTRACT; 9: METAL_CLAW; 17: SWEET_SCENT; 22: PURSUIT; 24: WATER_PULSE; 27: SWIFT; 30: BUBBLEBEAM; 34: AGILITY; 37: IRON_TAIL; 40: WATERFALL; 41: SCREECH; 44: IRON_HEAD; 46: HYDRO_PUMP; 50: LOCK_ON.
 
 TM/HM/tutor: SURF, WHIRLPOOL, RAIN_DANCE, IRON_TAIL, SWIFT, ATTRACT, THIEF, PROTECT.
 
@@ -758,17 +758,33 @@ Catch rate 190; base EXP 60; GROWTH_MEDIUM_FAST; egg groups EGG_MINERAL/EGG_WATE
 
 ### MN_044 Trollure — STEEL/WATER
 
-Spinner Pokémon. 2′8″; 64 lb. Stats: 75 / 95 / 100 / 80 / 55 / 85 (total 490).
+Spinner Pokémon. 2′8″; 64 lb. Stats: 65 / 80 / 85 / 60 / 45 / 75 (total 410).
 
 It spins its metal fins to look like a weak fish. It attacks when a larger fish draws close.
 
-Level moves: 1: TACKLE; 1: HARDEN; 1: WATER_GUN; 11: ATTRACT; 15: METAL_CLAW; 19: SWEET_SCENT; 24: PURSUIT; 24: WATER_PULSE; 28: SWIFT; 28: WATERFALL; 31: BUBBLEBEAM; 34: IRON_HEAD; 35: AGILITY; 38: IRON_TAIL; 42: SCREECH; 47: HYDRO_PUMP; 51: LOCK_ON.
+Evolves to MN_318 at level 40.
+
+Level moves: 1: TACKLE; 1: HARDEN; 1: WATER_GUN; 11: ATTRACT; 15: METAL_CLAW; 19: SWEET_SCENT; 24: PURSUIT; 24: WATER_PULSE; 28: SWIFT; 31: BUBBLEBEAM; 35: AGILITY; 38: IRON_TAIL; 40: WATERFALL; 40: IRON_HEAD; 42: SCREECH; 47: HYDRO_PUMP; 51: LOCK_ON.
 
 TM/HM/tutor: SURF, WHIRLPOOL, RAIN_DANCE, IRON_TAIL, SWIFT, ATTRACT, THIEF, PROTECT.
 
 Egg moves: FLAIL, MIMIC, OCTAZOOKA.
 
-Catch rate 90; base EXP 206; GROWTH_MEDIUM_FAST; egg groups EGG_MINERAL/EGG_WATER_2; hatch cycles 20.
+Catch rate 90; base EXP 137; GROWTH_MEDIUM_FAST; egg groups EGG_MINERAL/EGG_WATER_2; hatch cycles 20.
+
+### MN_318 Crappeller — STEEL/WATER
+
+Crown Lure Pokémon. 4′0″; 112 lb. Stats: 85 / 120 / 105 / 80 / 65 / 95 (total 550).
+
+It spins the blade on its head to stir up silt. Hidden in the cloud, it waits for unwary fish.
+
+Level moves: 1: TACKLE; 1: HARDEN; 1: WATER_GUN; 11: ATTRACT; 15: METAL_CLAW; 19: SWEET_SCENT; 24: PURSUIT; 24: WATER_PULSE; 28: SWIFT; 31: BUBBLEBEAM; 35: AGILITY; 38: IRON_TAIL; 40: WATERFALL; 40: IRON_HEAD; 42: SCREECH; 44: SWORDS_DANCE; 47: HYDRO_PUMP; 51: LOCK_ON.
+
+TM/HM/tutor: SURF, WHIRLPOOL, RAIN_DANCE, IRON_TAIL, SWIFT, ATTRACT, THIEF, PROTECT.
+
+Egg moves: FLAIL, MIMIC, OCTAZOOKA.
+
+Catch rate 45; base EXP 218; GROWTH_MEDIUM_FAST; egg groups EGG_MINERAL/EGG_WATER_2; hatch cycles 20.
 
 ## MN_F016: Flapip → Stackajack
 

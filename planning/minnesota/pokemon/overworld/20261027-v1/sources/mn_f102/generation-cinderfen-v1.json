@@ -1,0 +1,7 @@
+{
+  "tool": "built-in imagegen",
+  "default_path": "/Users/ryanculligan/.codex/generated_images/01a178da-4cf1-7e01-8516-667a332dc790/exec-1203c020-67a6-4653-a7b1-9df34a78b810.png",
+  "workspace_path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f102/cinderfen.overworld.imagegen-v1.png",
+  "sha256": "1984621f6ac6df67533de296c37130f01f49e262bebb6d50f6f35e539d6960a3",
+  "prompt": "prompt-cinderfen-v1.txt"
+}

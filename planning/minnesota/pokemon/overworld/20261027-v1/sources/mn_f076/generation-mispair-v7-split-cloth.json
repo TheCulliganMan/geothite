@@ -1,0 +1,78 @@
+{
+  "tool": "built-in image_gen",
+  "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f076/mispair-v7-split-cloth",
+  "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f076/manifest-mispair-v7-split-cloth.json",
+  "normalized_receipt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f076/source-feature-proof-mispair-v7-split-cloth.json",
+  "all_raws_prompts_rejected_trials_retained": true,
+  "no_native_pixel_painting": true,
+  "no_registry_or_pack_mutation": true,
+  "normal_shiny_boards_actually_viewed": true,
+  "canonical_palettes": [
+    [
+      32767,
+      19260,
+      25196,
+      0
+    ],
+    [
+      32767,
+      15068,
+      12744,
+      0
+    ]
+  ],
+  "native_bounds": [
+    [
+      2,
+      7,
+      11,
+      7
+    ],
+    [
+      1,
+      7,
+      13,
+      7
+    ],
+    [
+      2,
+      7,
+      11,
+      7
+    ],
+    [
+      2,
+      7,
+      11,
+      8
+    ],
+    [
+      1,
+      7,
+      13,
+      6
+    ],
+    [
+      3,
+      7,
+      10,
+      8
+    ]
+  ],
+  "retained_source_hashes": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f076/mispair.overworld.imagegen-v3-rear-thumbs.png": "a4a1d8d5ab524a30817f1bbc86f5d4f8037ca4e5322d3b56947f13d6bda3aa94",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f076/mispair.overworld.imagegen-v5-piece-spacing.png": "cb32f139d5926e82a08b10a44ccaaae9c9b6b929b1b8ae387dbfa99e750de01f",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f076/mispair.overworld.imagegen-v1.png": "a60b16d3ddf7a88aaed630aa1cd31111bcd4971a4b596f9946efa4afd77fee95",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f076/mispair.overworld.imagegen-v4-rear-finish.png": "540d07fd44c74420196d656c70b6aa2463f681fd3b7843c06bc5e55f44a54778",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f076/mispair.overworld.imagegen-v2-outline-pupils.png": "92217323e7677b19600299fdabf3e64c38904c52c05365d85f4b6f31265430ac",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f076/prompt-mispair-v3-rear-thumbs.txt": "04b8abe8ddb4dbd4c4429c4a66d0e602e1017d1f63c10ad04dc7281a7b5990d6",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f076/prompt-mispair-outline-pupils-v2.txt": "2c44b02de0dfcd61391d0fd3f38d8300b101a1fa4f851d473a607ab70dbd772b",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f076/prompt-mispair-v5-piece-spacing.txt": "df2076a876cac1c9bc5da3a821b2a5808739089e649d6b7c0e380e700f83fc36",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f076/prompt-mispair-v4-rear-finish.txt": "6ca79a47d1fbc8fa585c82ad3beda9efa0b03c58c8c0e034af18ebed60d3e0af",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f076/prompt-mispair-v1.txt": "03df6c649f59735d0bd6f5a81a44a80fab5ac53a05dd8c10e647ed1224f0e225",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f076/mispair.v3-rear-thumbs.original-path.txt": "7ad3a395b54772dc381f44a77a4fb70ee1d8cdb9aba8e9cf74d2e33ecc79ca8b",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f076/mispair.v4-rear-finish.original-path.txt": "36f02d6e5f5c06bddf7d2e94ed7aa784cebd831da80683bc93c9410d72766c9b",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f076/mispair.v5-piece-spacing.original-path.txt": "b11b5f887a33b4b045dddc12ba7b849ed270e21a96988b55840d14f5f8a30555"
+  },
+  "status": "root independent visual/context acceptance pending"
+}

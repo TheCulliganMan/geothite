@@ -1,0 +1,9 @@
+{
+  "tool": "built-in image_gen",
+  "original": "/Users/ryanculligan/.codex/generated_images/01a179bf-dc2b-7352-8975-8b8f3a32e33b/exec-817c8d33-2071-4128-9484-d8d6a3214210.png",
+  "preserved_raw": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f084/scutlet.overworld.imagegen-v2-true-rear.png",
+  "sha256": "e527a8345ee496b8dd03022879021995a3ea3656df23a313895f23c53c1a10ac",
+  "exact_prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f084/prompt-scutlet-true-rear-v2.txt",
+  "reference_mapping": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f084/reference-mapping-scutlet-true-rear-v2.json",
+  "status": "preserved; selected frames recorded in frozen manifest"
+}

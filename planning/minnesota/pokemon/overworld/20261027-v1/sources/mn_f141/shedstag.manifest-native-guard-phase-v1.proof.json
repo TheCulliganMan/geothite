@@ -1,0 +1,340 @@
+{
+  "species_id": "MN_313",
+  "name": "shedstag",
+  "status": "native-review-recommended; root independent review and context required",
+  "selected_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f141/shedstag.manifest-native-guard-phase-v1.json",
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/true16-shedstag-guard-phase-v1",
+  "shared_transform": {
+    "source_bounds": [
+      12,
+      4,
+      349,
+      322
+    ],
+    "native_size": [
+      14,
+      12
+    ],
+    "native_origin": [
+      1,
+      3
+    ]
+  },
+  "all_four_nonrear_poses_actual_pupils_pass": true,
+  "each_native_eye_cluster_maps_to_one_actual_small_source_pupil_component": true,
+  "actual_source_pupil_proofs": [
+    {
+      "pose": "down_idle",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f141/shedstag.overworld.imagegen-v1.png",
+      "crop": [
+        149,
+        167,
+        369,
+        338
+      ],
+      "actual_source_eye_bounds": [
+        [
+          294,
+          310,
+          17,
+          23
+        ],
+        [
+          357,
+          310,
+          17,
+          23
+        ]
+      ],
+      "eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              6,
+              8
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                4,
+                1,
+                0,
+                253
+              ],
+              "bounds": [
+                294,
+                310,
+                17,
+                23
+              ],
+              "pixels": 391,
+              "truncated_contour": false,
+              "native_pixel": [
+                6,
+                8
+              ],
+              "source_sample_pixel": [
+                298,
+                318
+              ]
+            }
+          ]
+        },
+        {
+          "native_cluster": [
+            [
+              9,
+              8
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                4,
+                5,
+                4,
+                253
+              ],
+              "bounds": [
+                357,
+                310,
+                17,
+                23
+              ],
+              "pixels": 391,
+              "truncated_contour": false,
+              "native_pixel": [
+                9,
+                8
+              ],
+              "source_sample_pixel": [
+                372,
+                318
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f141/shedstag.overworld.imagegen-v1.png",
+      "crop": [
+        1030,
+        167,
+        369,
+        338
+      ],
+      "actual_source_eye_bounds": [
+        [
+          1124,
+          296,
+          16,
+          23
+        ]
+      ],
+      "eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              4,
+              8
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                0,
+                0,
+                0,
+                253
+              ],
+              "bounds": [
+                1124,
+                296,
+                16,
+                23
+              ],
+              "pixels": 368,
+              "truncated_contour": false,
+              "native_pixel": [
+                4,
+                8
+              ],
+              "source_sample_pixel": [
+                1129,
+                318
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f141/shedstag.overworld.imagegen-v1.png",
+      "crop": [
+        147,
+        554,
+        369,
+        338
+      ],
+      "actual_source_eye_bounds": [
+        [
+          294,
+          693,
+          18,
+          24
+        ],
+        [
+          358,
+          693,
+          17,
+          24
+        ]
+      ],
+      "eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              6,
+              8
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                4,
+                8,
+                4,
+                253
+              ],
+              "bounds": [
+                294,
+                693,
+                18,
+                24
+              ],
+              "pixels": 429,
+              "truncated_contour": false,
+              "native_pixel": [
+                6,
+                8
+              ],
+              "source_sample_pixel": [
+                296,
+                705
+              ]
+            }
+          ]
+        },
+        {
+          "native_cluster": [
+            [
+              9,
+              8
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                2,
+                2,
+                2,
+                253
+              ],
+              "bounds": [
+                358,
+                693,
+                17,
+                24
+              ],
+              "pixels": 402,
+              "truncated_contour": false,
+              "native_pixel": [
+                9,
+                8
+              ],
+              "source_sample_pixel": [
+                370,
+                705
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f141/shedstag.overworld.imagegen-v1.png",
+      "crop": [
+        1039,
+        557,
+        369,
+        338
+      ],
+      "actual_source_eye_bounds": [
+        [
+          1124,
+          681,
+          16,
+          24
+        ]
+      ],
+      "eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              4,
+              7
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                3,
+                6,
+                4,
+                254
+              ],
+              "bounds": [
+                1124,
+                681,
+                16,
+                24
+              ],
+              "pixels": 384,
+              "truncated_contour": false,
+              "native_pixel": [
+                4,
+                7
+              ],
+              "source_sample_pixel": [
+                1138,
+                681
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "old_native_poses_preserved_exactly": [],
+  "normal_shiny_runtime_parity": "all1536pixels exact each",
+  "canonical_palette_bytes": "exact",
+  "all_three_walk_pairs_distinct": true,
+  "rear_review": "both rear native poses viewed; no copied face",
+  "normal_shiny_native_boards_actually_viewed": true,
+  "accepted_coverage_native_pack_untouched": true,
+  "manifest_sha256": "c2ab2abecdb9eae6b4488f77cb2ad6b23408e3b15037fa1f27f5297f3d24f5fb",
+  "compiled_index_sha256": "7453d3d47b90ac4cdad56569d225c441bc38146f73fe84fd51b64f3f5aa30732",
+  "anatomy_review": "Original v1 source retained. Exact source-alpha components identify body, left C antler guard and right C antler guard; all four front/rear native views retain mutually separate foreground components after joint rear crop registration. No head antlers, low attached three-lobed warning tail, violet lower legs, no rear facial pupils. Profile near guard may overlap body in projection; far guard occluded.",
+  "additional_source_guard_proof": "shedstag.guard-source-registration-v1.json"
+}

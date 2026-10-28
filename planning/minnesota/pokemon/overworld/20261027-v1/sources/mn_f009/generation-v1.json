@@ -1,0 +1,100 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F009",
+  "status": "source_generated_native_conversion_and_visual_review_pending",
+  "generation_tool": "built-in image_gen",
+  "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f009/overworld.imagegen-v1.png",
+  "source_sha256": "a770c42e65b0525fa67834465c2a4abeab427ceb9452aa9fefb9160ab5d8a2d7",
+  "original_default_output": "/Users/ryanculligan/.codex/generated_images/01a17dc4-dd75-7642-a1c6-4bf13fda70c6/exec-5a36ecf0-368d-4d80-a1ba-4f2a390e0bb8.png",
+  "dimensions": [
+    1774,
+    887
+  ],
+  "prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f009/prompt-v1.txt",
+  "sheet_columns": 6,
+  "sheet_rows": 3,
+  "column_order": [
+    "down_idle",
+    "up_idle",
+    "left_idle",
+    "down_step",
+    "up_step",
+    "left_step"
+  ],
+  "row_species": [
+    "MN_025",
+    "MN_026",
+    "MN_027"
+  ],
+  "canonical_reference_paths": [
+    "target/minnesota-pokemon/native/MN_F009/mn-025-pinit-v1.front.png",
+    "target/minnesota-pokemon/native/MN_F009/mn-026-pitchwick-v1.front.png",
+    "target/minnesota-pokemon/native/MN_F009/mn-027-pyropine-v1.front.png"
+  ],
+  "native_target": {
+    "cell": [
+      16,
+      16
+    ],
+    "opaque_maximum": [
+      14,
+      14
+    ],
+    "border": 1,
+    "first_stage_height": 11,
+    "middle_height": 13,
+    "final_height": 14,
+    "transparent_index": 0,
+    "visible_indices": [
+      1,
+      2,
+      3
+    ],
+    "ground_anchor_y": 14
+  },
+  "palettes": [
+    {
+      "species_id": "MN_025",
+      "normal_rgb555": [
+        32767,
+        8909,
+        4365,
+        0
+      ],
+      "opaque_hex": [
+        "#6BB542",
+        "#6B4221",
+        "#000000"
+      ]
+    },
+    {
+      "species_id": "MN_026",
+      "normal_rgb555": [
+        32767,
+        5791,
+        7587,
+        0
+      ],
+      "opaque_hex": [
+        "#FFA529",
+        "#186B39",
+        "#000000"
+      ]
+    },
+    {
+      "species_id": "MN_027",
+      "normal_rgb555": [
+        32767,
+        4639,
+        8515,
+        0
+      ],
+      "opaque_hex": [
+        "#FF8421",
+        "#185242",
+        "#000000"
+      ]
+    }
+  ],
+  "review_note": "Raw output saved intact. Identity and full-body directional layout inspected, but generated source remains denser than native16px and contains white highlight pixels despite exact3opaqueink prompt. Canonical converter must remap highlights to lightink; root must inspect actual native sheet, geometry, idle-step coherence and edge padding before acceptance. This metadata is not native acceptance."
+}

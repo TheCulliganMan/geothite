@@ -1,0 +1,10 @@
+{
+  "tool": "built-in image_gen",
+  "original_tool_render": "/Users/ryanculligan/.codex/generated_images/01a179bf-dc2b-7352-8975-8b8f3a32e33b/exec-e1d26a52-b1ba-4da0-a90a-9f8231feba4f.png",
+  "preserved_raw": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f125/borealynx.source-eye-repair-north-v1.png",
+  "raw_sha256": "bf67e87d621559ef860b3d6e3b5e2c5ed77f3cec81605b153ba8ceb8c7744383",
+  "prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f125/prompt-borealynx-source-eye-repair-north-v1.txt",
+  "reference_mapping": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f125/reference-mapping-borealynx-source-eye-repair-north-v1.json",
+  "selection": "west frames only; four other source frames remain from originalv2",
+  "status": "native frozen, root independent context pending"
+}

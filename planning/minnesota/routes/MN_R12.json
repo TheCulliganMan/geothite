@@ -14,7 +14,7 @@
   "chunk_rows": 3,
   "endpoints": [
     {
-      "place": "GRAND MARAIS",
+      "place": "GUNFLINT INLAND CONNECTOR",
       "side": "E",
       "gate_metatile": [
         62,
@@ -1066,20 +1066,20 @@
       "entrance_event": "CAVE",
       "return": "Native exterior warp (66, 23), then walk to (66, 24).",
       "mandatory": false,
-      "purpose": "Gunflint split-roof shelter: a fitted low seep basin approaches one clear stone climb, then the upper fault branches to Otta's western dry roof and the original northeast Max Ether spur. An attached cliff rib and two-lane drop give the return a different line through the low basin; the ordinary stair remains bidirectional. No Surf is required.",
+      "purpose": "A stone brow shelters Otta, a rock shoulder turns the main traverse and a fitted lower roof shapes the approach beside the seep basin. Cache and shelter remain distinct branches rather than matching rooms.",
       "rows": [
-        "01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01",
-        "01 01 04 05 05 06 01 01 01 01 01 01 04 05 06 01",
-        "01 01 08 02 02 0a 01 01 01 01 01 04 02 02 0a 01",
-        "01 01 20 21 21 30 06 01 01 04 06 12 21 21 22 01",
-        "01 01 01 01 08 02 0a 01 04 02 0a 02 0a 01 01 01",
-        "01 01 01 01 08 02 02 06 08 02 02 02 0a 01 01 01",
-        "01 01 01 01 20 02 02 02 02 02 02 22 01 01 01 01",
-        "01 01 01 01 01 20 21 39 21 12 22 34 3e 27 01 01",
-        "01 01 01 01 04 02 02 02 31 02 02 3e 0f 27 01 01",
-        "01 01 01 01 34 1c 02 02 0e 02 02 32 25 33 01 01",
-        "01 01 01 01 20 21 21 08 02 0a 21 21 21 22 01 01",
-        "01 01 01 01 01 01 01 01 07 01 01 01 01 01 01 01"
+        "2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e",
+        "2e 2e 04 06 2e 2e 2e 2e 2e 2e 2e 2e 04 05 06 2e",
+        "2e 2e 08 02 19 06 2e 2e 2e 2e 2e 04 02 02 0a 2e",
+        "2e 2e 20 21 21 30 06 2e 2e 04 06 12 21 21 22 2e",
+        "2e 2e 2e 2e 08 02 0a 2e 04 02 0a 02 0a 2e 2e 2e",
+        "2e 2e 2e 2e 08 02 02 06 08 02 02 02 0a 2e 2e 2e",
+        "2e 2e 2e 2e 20 02 19 02 02 02 02 22 2e 2e 2e 2e",
+        "2e 2e 2e 2e 2e 20 21 39 21 12 22 34 3e 27 2e 2e",
+        "2e 2e 2e 2e 04 02 05 02 31 02 02 3e 0f 27 2e 2e",
+        "2e 2e 2e 2e 34 1c 02 02 0e 02 02 32 25 33 2e 2e",
+        "2e 2e 2e 2e 20 21 21 08 02 0a 21 21 21 22 2e 2e",
+        "2e 2e 2e 2e 2e 2e 2e 2e 07 2e 2e 2e 2e 2e 2e 2e"
       ],
       "exits": [
         [
@@ -1126,19 +1126,11 @@
           "flag": "EVENT_MN_R12_CAVE_ETHER"
         }
       ],
-      "border_block": 1,
-      "candidate_status": "UNPUBLISHED depth candidate; source/static review only, no native/controller/GPU approval.",
+      "border_block": 46,
+      "candidate_status": "Source candidate under whole-room, player-camera and production traversal review.",
       "review_contract": {
+        "quality_revision": "johto-quality-v01",
         "palette_group": "nite",
-        "entry_core": [
-          17,
-          22
-        ],
-        "exit_core": [
-          17,
-          23
-        ],
-        "actor_positions_preserved": true,
         "native_stair_blocks": [
           [
             5,
@@ -1153,470 +1145,79 @@
             7
           ]
         ],
-        "loop_waypoints_core": [
-          [
-            17,
-            20
-          ],
-          [
-            19,
-            16
-          ],
-          [
-            19,
-            13
-          ],
-          [
-            10,
-            11
-          ],
-          [
-            6,
-            5
-          ],
-          [
-            22,
-            9
-          ],
-          [
-            26,
-            5
-          ]
-        ],
         "viewpoints": [
           {
-            "id": "mouth_basin",
+            "id": "mouth",
             "tile": [
               17,
-              20
+              22
             ]
           },
           {
-            "id": "seep_bank",
+            "id": "lower-passage",
+            "tile": [
+              15,
+              19
+            ]
+          },
+          {
+            "id": "seep-approach",
+            "tile": [
+              11,
+              19
+            ]
+          },
+          {
+            "id": "otta",
+            "tile": [
+              6,
+              5
+            ]
+          },
+          {
+            "id": "shelter-stair",
+            "tile": [
+              10,
+              7
+            ]
+          },
+          {
+            "id": "shoulder-turn",
+            "tile": [
+              13,
+              13
+            ]
+          },
+          {
+            "id": "cache",
+            "tile": [
+              26,
+              5
+            ]
+          },
+          {
+            "id": "cache-stair",
+            "tile": [
+              23,
+              7
+            ]
+          },
+          {
+            "id": "spring-bank",
             "tile": [
               21,
               17
             ]
           },
           {
-            "id": "rising_throat",
-            "tile": [
-              19,
-              16
-            ]
-          },
-          {
-            "id": "upper_fork",
-            "tile": [
-              18,
-              13
-            ]
-          },
-          {
-            "id": "otta_roof",
-            "tile": [
-              6,
-              5
-            ]
-          },
-          {
-            "id": "cache_approach",
-            "tile": [
-              26,
-              5
-            ]
-          },
-          {
-            "id": "ledge_approach",
+            "id": "widest-traverse",
             "tile": [
               14,
-              13
-            ]
-          },
-          {
-            "id": "lower_return",
-            "tile": [
-              18,
-              19
+              12
             ]
           }
         ],
-        "one_way_ledges": [
-          {
-            "id": "GUNFLINT_ZIGZAG_RETURN",
-            "metatile": [
-              7,
-              7
-            ],
-            "block": "39",
-            "upper_approach": [
-              14,
-              13
-            ],
-            "hop_from": [
-              14,
-              14
-            ],
-            "landing": [
-              14,
-              16
-            ],
-            "reverse_from": [
-              14,
-              16
-            ],
-            "reverse_target": [
-              14,
-              15
-            ],
-            "ordinary_return_waypoints": [
-              [
-                14,
-                18
-              ],
-              [
-                15,
-                20
-              ],
-              [
-                18,
-                20
-              ],
-              [
-                19,
-                19
-              ],
-              [
-                19,
-                16
-              ],
-              [
-                19,
-                13
-              ],
-              [
-                14,
-                13
-              ]
-            ]
-          }
-        ],
-        "required_native_preservation": [
-          "MnR12Cave1F identity/16x12 extent",
-          "mouth17,23 and safe17,22; exterior66,23 and66,24",
-          "whole MN_R12_OTTA record/tile5,5/east/dialogue",
-          "MN_R12_CAVE_CACHE tile27,5 MAX_ETHER1 EVENT_MN_R12_CAVE_ETHER",
-          "all original native item/script/flag/program/warp identities and unrelated content"
-        ],
-        "unpublished": true,
-        "quality_revision": "r12-depth-v03-cliff-toe",
-        "topology": "Low seep basin with a readable rising throat, two upper destination branches and short directed return; no parallel zigzag shelves or central island ring.",
-        "controller_probes": {
-          "stairs": [
-            {
-              "id": "OTTA_ROOF",
-              "metatile": [
-                5,
-                3
-              ],
-              "block": "30",
-              "lane": [
-                [
-                  10,
-                  6
-                ],
-                [
-                  10,
-                  7
-                ]
-              ],
-              "before": [
-                10,
-                5
-              ],
-              "after": [
-                10,
-                8
-              ],
-              "blocked_from": [
-                10,
-                7
-              ],
-              "blocked_target": [
-                11,
-                7
-              ]
-            },
-            {
-              "id": "CACHE_SPUR",
-              "metatile": [
-                11,
-                3
-              ],
-              "block": "12",
-              "lane": [
-                [
-                  23,
-                  6
-                ],
-                [
-                  23,
-                  7
-                ]
-              ],
-              "before": [
-                23,
-                5
-              ],
-              "after": [
-                23,
-                8
-              ],
-              "blocked_from": [
-                23,
-                7
-              ],
-              "blocked_target": [
-                22,
-                7
-              ]
-            },
-            {
-              "id": "RISING_THROAT",
-              "metatile": [
-                9,
-                7
-              ],
-              "block": "12",
-              "lane": [
-                [
-                  19,
-                  14
-                ],
-                [
-                  19,
-                  15
-                ]
-              ],
-              "before": [
-                19,
-                13
-              ],
-              "after": [
-                19,
-                16
-              ],
-              "blocked_from": [
-                19,
-                15
-              ],
-              "blocked_target": [
-                18,
-                15
-              ]
-            }
-          ],
-          "ledge_lanes": [
-            {
-              "upper_approach": [
-                14,
-                13
-              ],
-              "hop_from": [
-                14,
-                14
-              ],
-              "landing": [
-                14,
-                16
-              ],
-              "reverse_target": [
-                14,
-                15
-              ],
-              "ordinary_return_waypoints": [
-                [
-                  14,
-                  18
-                ],
-                [
-                  15,
-                  20
-                ],
-                [
-                  18,
-                  20
-                ],
-                [
-                  19,
-                  19
-                ],
-                [
-                  19,
-                  16
-                ],
-                [
-                  19,
-                  13
-                ],
-                [
-                  14,
-                  13
-                ]
-              ]
-            },
-            {
-              "upper_approach": [
-                15,
-                13
-              ],
-              "hop_from": [
-                15,
-                14
-              ],
-              "landing": [
-                15,
-                16
-              ],
-              "reverse_target": [
-                15,
-                15
-              ],
-              "ordinary_return_waypoints": [
-                [
-                  14,
-                  18
-                ],
-                [
-                  15,
-                  20
-                ],
-                [
-                  18,
-                  20
-                ],
-                [
-                  19,
-                  19
-                ],
-                [
-                  19,
-                  16
-                ],
-                [
-                  19,
-                  13
-                ],
-                [
-                  15,
-                  13
-                ]
-              ]
-            }
-          ],
-          "ledge_shoulders": [
-            [
-              13,
-              15
-            ],
-            [
-              16,
-              15
-            ]
-          ],
-          "mouth": [
-            17,
-            23
-          ],
-          "clear_arrival": [
-            17,
-            22
-          ],
-          "exterior_active_mouth_global": [
-            66,
-            23
-          ],
-          "exterior_clear_global": [
-            66,
-            24
-          ],
-          "exterior_map": "MnR12C01R00",
-          "exterior_active_local": [
-            2,
-            23
-          ],
-          "exterior_clear_local": [
-            2,
-            24
-          ],
-          "exterior_return_semantics": "Original active exterior CAVE warp1 at global66,23/local2,23; native CheckTile may advance Down during presentation frames. If still on the active arrival, explicit Down reaches safe Floor66,24/local2,24 without reentry. Deliberate north input reenters. No passive exterior warp is added.",
-          "otta_approach": [
-            6,
-            5
-          ],
-          "otta_facing": "left",
-          "cache_approach": [
-            26,
-            5
-          ],
-          "cache_facing": "right",
-          "palette_group": "nite",
-          "ordinary_route_waypoints": [
-            [
-              17,
-              20
-            ],
-            [
-              19,
-              16
-            ],
-            [
-              19,
-              13
-            ],
-            [
-              10,
-              11
-            ],
-            [
-              6,
-              5
-            ],
-            [
-              22,
-              9
-            ],
-            [
-              26,
-              5
-            ]
-          ]
-        },
-        "historical_preimage_review": {
-          "pack_sha256": "c16af00c82167c809620b956981ee80641ddc9fd1eeaf1e2c91f59ab16a9cc7d",
-          "palette": "nite",
-          "candidate_sha256": "7fe83d8e9bd69f01f57c77dd1ea1a7c759de3e6d4ceefdb33d9f42fed8dd9048",
-          "preservation_checks": 163,
-          "controller_cases": [
-            "r12_shelter_controller_original_mouth_four_stairs_two_hop_lanes_and_ordinary_returns",
-            "r12_shelter_controller_original_otta_max_ether_restores_legal_pp_once_and_continues",
-            "r12_shelter_controller_native_ether_elixers_and_full_pp_refusals_preserve_resources"
-          ],
-          "source_promoted_after_explicit_root_pass": true
-        },
-        "wetland_contract": {
-          "no_surf_required": true,
-          "closed_inside_room": true,
-          "low_basin_launch": [
-            21,
-            17
-          ],
-          "water_target": [
-            22,
-            17
-          ],
-          "water_boundary": "All pool coordinates remain inside32x24core; original outer perimeter and mouth retained."
-        }
+        "notes": "A stone brow shelters Otta, a rock shoulder turns the main traverse and a fitted lower roof shapes the approach beside the seep basin. Cache and shelter remain distinct branches rather than matching rooms."
       }
     },
     {
@@ -1711,8 +1312,8 @@
     "No painted shadows, enlarged trees or perspective props.",
     "Fit source shoreline/cliff quadrants; draw source trees in coherent metatile groups."
   ],
-  "status": "Revised source terrain proposal. Previous 96\u00d796 native publication and fixtures do not validate this revision.",
-  "anchor_status": "Static source checks pending; native publication/controller/story progression pending.",
+  "status": "Canonical seasonal source matches all native terrain in the verified final geography publication.",
+  "anchor_status": "Frozen original/candidate bytes and all nine native module guards checked during source promotion; controller and visual evidence are recorded in the final geography receipt.",
   "residents": [
     {
       "id": "MN_R12_N01",
@@ -1991,7 +1592,7 @@
   ],
   "implementation": {
     "layout": "MN_R12.layout.json",
-    "scope": "64\u00d756 metatiles, six clipped native chunks; eight maps including preserved rooms",
+    "scope": "64×56 metatiles, six clipped native chunks; eight maps including preserved rooms",
     "art_review": "../renders/gunflint/whole-route.png",
     "state": "Current six-chunk native publication matches all 3584 exterior blocks and preserved rooms. Three native asset suites and Cut/battle controller tests pass; revised complete geometry controller rerun pending. Hub gates and earned regional travel remain pending."
   },
@@ -2040,9 +1641,9 @@
   ],
   "one_way_ledges": [],
   "revision_contract_changes": [
-    "96\u00d796 twelve-chunk reserve replaced by 64\u00d756 six-chunk source proposal. Shared world registration requires integration.",
+    "96×96 twelve-chunk reserve replaced by 64×56 six-chunk source proposal. Shared world registration requires integration.",
     "Both room IDs, exact interior rows, all ten original trainer IDs/parties/defeat flags, six residents and five total item identities retained; outdoor coordinates revised.",
-    "Old unmeasured Loons Cut return replaced by actual sealed optional Hyper Potion clearing. shortcut:null; exact cut_gates source forest0f\u219217.",
+    "Old unmeasured Loons Cut return replaced by actual sealed optional Hyper Potion clearing. shortcut:null; exact cut_gates source forest0f→17.",
     "Pink masonry bridge removed; Stone Bog is an actual short grassy land portage between two enclosed pools, not an invented wooden-deck tile.",
     "Prior native publication/captures/controller tests describe historical geometry and must be rerun on this revision."
   ],
@@ -2091,7 +1692,7 @@
     }
   ],
   "native_integration": {
-    "compiled_tileset": "mn_gunflint",
+    "compiled_tileset": "mn_winter_gunflint",
     "new_art_ids": [],
     "chunks": [
       {
@@ -2145,6 +1746,28 @@
       "MnR12C00R03",
       "MnR12C01R03"
     ],
-    "native_status": "Pending Rust lowering/publication and current controller/capture review; old 96\u00d796 evidence is historical."
+    "native_status": "Native seasonal terrain and six clipped modules match the verified publication. Original source review history is retained in source-v02."
+  },
+  "compiled_tileset": "mn_winter_gunflint",
+  "inland_winter_review": {
+    "status": "NATIVE_TERRAIN_VERIFIED_CANONICAL_SOURCE",
+    "instruction": "Warm Superior coast and Grand Marais; substantial winter inland near Ely.",
+    "baseline_pack_sha256": "1c6ba5d59097546ff8b94e09c809d270727ce1272acb93759b89f3b3c7d9b90a",
+    "full_region_metatiles": [
+      64,
+      56
+    ],
+    "unchanged": "Native water, cliffs, gates, actors, scripts, story, rooms, ledges and ports. Ice alters only listed original Floor quadrants.",
+    "authored_strokes_retained": 109,
+    "native_reconciliation_points": 147,
+    "seasonal_points": 3033,
+    "published_pack_sha256": "65cf6f98e65ada839ec5afaa57728bf8289d3a50ba53ba6b9b50f08d3620bb17",
+    "published_identity": "f34280a5fc5d6ab8ccc3ec4ef4317a6ea9321070df342ea95aca5745514a0223",
+    "verification_scope": "Full native modules, exact source raster, seasonal cells and final inland connection. Production controller and visual acceptance remain separate evidence in the final geography receipt."
+  },
+  "coastal_geography_binding": {
+    "east_neighbor": "MnMaraisInlandNeck",
+    "offset": 0,
+    "journey": "East through the inland connector and Cedar approach, then south into Grand Marais; the warm North Shore enters town from the west."
   }
 }

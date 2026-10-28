@@ -4500,8 +4500,22 @@ impl RuntimeGameShell {
     }
 
     pub fn resolve_blackout_to_last_spawn(&mut self) -> Result<RuntimeBlackoutRecovery> {
-        let mutation = self
-            .apply_runtime_mutation_command(RuntimeMutationCommand::ResolveBlackoutToLastSpawn)?;
+        self.resolve_blackout_with_command(RuntimeMutationCommand::ResolveBlackoutToLastSpawn)
+    }
+
+    /// Recover after overworld poison faints the last usable party member.
+    ///
+    /// Returns an error for an active battle, pending static-wild result, empty
+    /// usable party, or any healthy party member. Preserves the last battle result.
+    pub fn resolve_poison_blackout_to_last_spawn(&mut self) -> Result<RuntimeBlackoutRecovery> {
+        self.resolve_blackout_with_command(RuntimeMutationCommand::ResolvePoisonBlackoutToLastSpawn)
+    }
+
+    fn resolve_blackout_with_command(
+        &mut self,
+        command: RuntimeMutationCommand,
+    ) -> Result<RuntimeBlackoutRecovery> {
+        let mutation = self.apply_runtime_mutation_command(command)?;
         let RuntimeMutationResult::BlackoutResolved(outcome) = mutation.result else {
             anyhow::bail!("runtime mutation returned non-blackout-recovery result");
         };

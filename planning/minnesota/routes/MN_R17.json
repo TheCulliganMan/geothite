@@ -568,16 +568,16 @@
       "width_metatiles": 7,
       "height_metatiles": 8,
       "tileset": "cave",
-      "border_block": 1,
+      "border_block": 46,
       "rows": [
-        "01 01 01 01 01 01 01",
-        "01 01 04 06 01 01 01",
-        "01 04 02 0a 01 01 01",
-        "01 20 02 2d 01 01 01",
-        "01 01 08 2e 01 01 01",
-        "01 01 20 02 0a 01 01",
-        "01 01 01 20 07 22 01",
-        "01 01 01 01 01 01 01"
+        "2e 2e 2e 2e 2e 2e 2e",
+        "2e 2e 04 06 2e 2e 2e",
+        "2e 04 02 1e 2e 2e 2e",
+        "2e 20 02 2d 2e 2e 2e",
+        "2e 2e 08 2e 2e 2e 2e",
+        "2e 2e 08 1e 2e 2e 2e",
+        "2e 2e 20 21 07 22 2e",
+        "2e 2e 2e 2e 2e 2e 2e"
       ],
       "exits": [
         [
@@ -612,187 +612,57 @@
       ],
       "signs": [],
       "mandatory": false,
-      "purpose": "A short hooked talus den under the border pines. The mouth turns west around an attached granite tongue, then the low skirt opens directly onto the original Revive tucked into the fitted northern overhang. The return retraces the short readable bend. One continuous floor; no empty circuit, service, new actor, artificial tier, stair/drop or HM quota.",
-      "candidate_status": "Installed CURRENT510 tor native review candidate on4891; one real local production-controller case PASS. User final approval and earned Border Pines progression remain unclaimed.",
+      "purpose": "A short hooked talus den: fitted boulders join the northern overhang above the Revive. An attached lower stone toe makes the dry approach turn one tile earlier. Keep this optional discovery short; no new service, water or field-move gate.",
+      "candidate_status": "Source candidate under whole-room, player-camera and production traversal review.",
       "review_contract": {
+        "quality_revision": "johto-quality-v01",
         "palette_group": "nite",
-        "identity": "Attached granite tongue with one hooked low approach and a fitted Revive pocket; a short ordinary return, not a floating island loop.",
-        "stairs": [],
+        "native_stair_blocks": [],
         "viewpoints": [
           {
-            "id": "mouth-left-turn",
+            "id": "mouth",
             "tile": [
               9,
               12
             ]
           },
           {
-            "id": "fitted-low-bend",
+            "id": "lower-turn",
             "tile": [
               7,
+              12
+            ]
+          },
+          {
+            "id": "stone-toe",
+            "tile": [
+              5,
               11
             ]
           },
           {
-            "id": "tongue-skirt",
+            "id": "hook",
             "tile": [
               5,
               9
             ]
           },
           {
-            "id": "revive-discovery",
-            "tile": [
-              5,
-              6
-            ]
-          },
-          {
-            "id": "widest-reward-pocket",
+            "id": "revive",
             "tile": [
               4,
               5
             ]
           },
           {
-            "id": "worst-overhang",
+            "id": "overhang",
             "tile": [
               6,
               5
             ]
           }
         ],
-        "native_stair_blocks": [],
-        "unpublished": false,
-        "controller_probes": {
-          "ordinary_route_core": [
-            [
-              9,
-              12
-            ],
-            [
-              8,
-              12
-            ],
-            [
-              8,
-              11
-            ],
-            [
-              7,
-              11
-            ],
-            [
-              7,
-              10
-            ],
-            [
-              6,
-              10
-            ],
-            [
-              5,
-              10
-            ],
-            [
-              5,
-              9
-            ],
-            [
-              5,
-              8
-            ],
-            [
-              5,
-              7
-            ],
-            [
-              5,
-              6
-            ]
-          ],
-          "directional_roof_walk_core": [
-            [
-              5,
-              3
-            ],
-            [
-              5,
-              2
-            ],
-            [
-              6,
-              2
-            ],
-            [
-              6,
-              3
-            ]
-          ],
-          "directional_roof_tokens": [
-            "FLOOR",
-            "UP_WALL",
-            "UP_WALL",
-            "FLOOR"
-          ],
-          "roof_blocked_up": {
-            "from": [
-              5,
-              2
-            ],
-            "target": [
-              5,
-              1
-            ]
-          },
-          "second_roof_probe": {
-            "from": [
-              3,
-              5
-            ],
-            "roof": [
-              3,
-              4
-            ]
-          },
-          "item_approach": [
-            5,
-            6
-          ],
-          "item_facing": "up",
-          "item_tile": [
-            5,
-            5
-          ],
-          "mouth": [
-            9,
-            13
-          ],
-          "clear_arrival": [
-            9,
-            12
-          ],
-          "exterior_active": [
-            10,
-            43
-          ],
-          "exterior_passive": [
-            10,
-            44
-          ]
-        },
-        "preservation": "Every original non-row/noneditorial whole-source field exact, including noNPC, Revive1/id/event/anchor, mouth/exit_doors and native7x8. Sourceonly until Root publishes and actual controller/capture proofs pass.",
-        "native_review": {
-          "pack_sha256": "4891e6a084e21ea05866740fb04cc8c9891fca2433dbb5a93b58269aed78b72a",
-          "palette": "nite",
-          "candidate_sha256": "f590d69e806a4a9e8aae29d03ca2c3b40a386b45ab366755965730ecc67c5437",
-          "preservation_checks": 152,
-          "production_captures": 6,
-          "full_lcd_exact_pixels": 138240,
-          "controller_case": "r17_tor_cave_controller_bent_route_directional_roof_revive_once_and_continue",
-          "return_semantics": "Original indoor warp1 at9,13 LADDER returns directly to true passive exterior warp2 at10,44 FLOOR; stable through60 presentation frames and walking away/back. Active CAVE warp1 at10,43 deliberately reenters; indoor clear Floor9,12 is distinct from warp arrival9,13.",
-          "item_notice_observation_limit": "VisibleShellController internally settles automatic FoundText and native60-frame fanfare before returning at PocketText. The real input case asserts retained native found payload/ItemBall presentation, both fully printed PocketText pages and movement ownership; it does not claim an intermediate Found/Fanfare snapshot."
-        }
+        "notes": "A short hooked talus den: fitted boulders join the northern overhang above the Revive. An attached lower stone toe makes the dry approach turn one tile earlier. Keep this optional discovery short; no new service, water or field-move gate."
       }
     },
     {
@@ -1360,5 +1230,63 @@
     "Added MnR17RangerHut, a real 5\u00d74 room paired with the native facade. It fulfills the ranger rest-hut promise and does not replace the International Falls SQ03 desk.",
     "Cut now provides a measured walking shortcut to marsh-side supplies using native forest 0f\u219217. No decorative Cut tree or arbitrary ledge is added.",
     "Snow flecks remain an unfulfilled style reservation. This revision uses authenticated daylight forest pixels without inventing snow art."
-  ]
+  ],
+  "compiled_tileset": "mn_winter_outdoor",
+  "winter_section_review": {
+    "status": "ROOT_NATIVE_ACCEPTED_SCOPED_WINTER_TERRAIN_ART_AND_FIXTURE_GAMEPLAY",
+    "identity": "Border Pines winter cedar-marsh section",
+    "snowline_description": "Stepped cedar snowline follows lower lake and old southern sedge boundary",
+    "water_policy": "Upper cedar marsh meta y25..31 freezes as an actual new Foot surface. Original timber bridge/rails, lower lake, Cut tree/side walls and every outer water boundary remain exact. No free bridge or Cut bypass allowed.",
+    "actors_ports_gates": "Original indexed actors/room mouths/warps/story/programs unchanged; full native preimages and source model required before integration.",
+    "revision": "v03",
+    "snowline_exclusive_y_by_meta_x": [
+      42,
+      42,
+      42,
+      42,
+      42,
+      44,
+      44,
+      44,
+      44,
+      44,
+      44,
+      42,
+      42,
+      42,
+      42,
+      41,
+      41,
+      41,
+      41,
+      39,
+      39,
+      39,
+      39,
+      38,
+      38,
+      38,
+      38,
+      36,
+      36,
+      36,
+      36,
+      36
+    ],
+    "mixed_edges": "Exact native sign and Headbutt edge compositions; Cut0f is deliberately unrecolored to preserve its original native replacement.",
+    "native_evidence": {
+      "pack_sha256": "92bb645535db23c78491b6982ddf5fa17b72b1f0434dfb6456a395fbf8fdbd33",
+      "content_identity": "043b57b8814714bcf7b14f1571931eadbd139c12ad3e9afba596c193034c358f",
+      "source_contract_sha256": "716a7394c78ab02908a68ce9fe8e3425694f03e6f13630f8458d0ad8ed24a865",
+      "root_acceptance": "planning/minnesota/renders/ice/root-native-acceptance-v02/acceptance.json",
+      "root_acceptance_sha256": "cd0ba371f90e6fa1fdaf0c9628a6d46cb5067e3be4786412c2edf9b5ba102054",
+      "controller_receipt": ".local/winter-sections-controller-v04-receipt.json",
+      "controller_receipt_sha256": "a9fa0132a9248cd89e27bb4e525d11e7e6a700c0f3ea97710bb8e84c736c33ec",
+      "native_written_proof": "planning/minnesota/renders/ice/sections-native/after-roof-source-v04/written-92bb6455-v02/proof-ee157f7ed01e70cdd6b411008ede107dee60498e3b1958d0c2287af421d843e4.json",
+      "native_written_proof_sha256": "ee157f7ed01e70cdd6b411008ede107dee60498e3b1958d0c2287af421d843e4",
+      "scope": "Accepted winter terrain/art, preserved gates/resources, explicit local controller fixtures and matched native pixels. No earned campaign or completed International Falls claim.",
+      "candidate_file_sha256": "9fcc7f029a205363a96dd9ee7f6ca847d6febec0e21844c34f3fd8523011cd0a",
+      "authoring_bundle_revision": "v04"
+    }
+  }
 }

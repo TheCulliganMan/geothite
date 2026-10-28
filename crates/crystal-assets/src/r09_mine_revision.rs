@@ -4,7 +4,7 @@ use std::collections::BTreeSet;
 use anyhow::{Context, Result, ensure};
 use serde_json::Value;
 
-use crate::authored_cave_revision::{blocks, validate_terrain};
+use crate::authored_cave_revision::{blocks, revised_border, validate_terrain};
 use crate::authored_route_design::Interior;
 use crate::authored_route_modpack::{collision, validate_room};
 use crate::grand_marais_modpack::authoring;
@@ -17,11 +17,12 @@ const TRAINER: &str = "MN_LODE_FOREMAN";
 
 /// Revises the installed 12×11 Q06 mine without changing its story behavior.
 ///
-/// Sources must retain every field except rows, purpose, candidate_status and
-/// review_contract. The installed scout, talk battle, canonical story texts,
+/// Sources must retain every field except rows, the solid-wall border, purpose,
+/// candidate_status and review_contract. The installed scout, talk battle, canonical story texts,
 /// trainer and quest cache are certified using the original story implementation.
-/// Only terrain is replaced in the cached module. This operation also repairs
-/// one explicitly supported historical publication preimage: the global NPC and
+/// Only terrain and its solid-wall border/attribute mirror change in the cached
+/// module. Complete current split payloads are certified directly. This operation
+/// also repairs one explicitly supported historical publication preimage: the global NPC and
 /// event payloads contain only the scout, and all 19 Q06 roots are absent. Those
 /// exact cache-owned mirrors are synchronized, not newly authored story content.
 /// All other maps, programs, trainer/flag values, art, audio, HOME, recovery,
@@ -45,7 +46,13 @@ pub fn revise_r09_mine_terrain(
     let new: Interior = serde_json::from_value(new_raw.clone())?;
     let retained = |mut raw: Value| -> Result<Value> {
         let fields = raw.as_object_mut().context("R09 room object")?;
-        for key in ["rows", "purpose", "candidate_status", "review_contract"] {
+        for key in [
+            "rows",
+            "border_block",
+            "purpose",
+            "candidate_status",
+            "review_contract",
+        ] {
             fields.remove(key);
         }
         Ok(raw)
@@ -73,6 +80,7 @@ pub fn revise_r09_mine_terrain(
     crate::verify_compiled_game_pack_for_runtime(base)?;
     let original = base.data.maps.get(MINE).context("installed Q06 mine")?;
     let a = &original.attributes;
+    let border = revised_border(base, original, &old, &new)?;
     ensure!(
         original.id == MINE
             && original.blocks == previous
@@ -115,6 +123,7 @@ pub fn revise_r09_mine_terrain(
     certify_stale_split(base, original, &ordinary, scripts_label, events_label)?;
     let mut revised = original.clone();
     revised.blocks = replacement;
+    revised.attributes.border_block = border;
     validate_room(base, &revised, &new)?;
     validate_terrain(base, &revised, &new)?;
     validate_approaches(base, &revised, &old_raw)?;
@@ -137,6 +146,10 @@ pub fn revise_r09_mine_terrain(
         events_label,
         &revised,
     )?;
+    result
+        .data
+        .map_attributes
+        .insert(MINE.into(), revised.attributes.clone());
     certify_uncached(&result, &revised, scripts_label, events_label)?;
     result.data.maps.insert(MINE.into(), revised);
     result.identity = crate::derive_compiled_game_pack_identity_from_manifest(
@@ -229,6 +242,13 @@ fn certify_story(
         .remove(TRAINER)
         .context("installed foreman numeric identity")?;
     crate::iron_range_story::add_trainer(&mut trainer_control)?;
+    // Later bosses advance the GRUNTM allocator. This is a terrain revision of
+    // the existing foreman, whose original numeric identity remains 32.
+    trainer_control
+        .data
+        .story_event_script_constants
+        .global
+        .insert(TRAINER.into(), 32);
     ensure!(
         trainer_control.data.trainers == base.data.trainers
             && trainer_control.data.story_event_script_constants
@@ -273,6 +293,11 @@ fn certify_stale_split(
     scripts_label: &str,
     events_label: &str,
 ) -> Result<()> {
+    // Later packs already contain the complete Q06 mirrors. Certify those
+    // directly; only the exact older scout-only preimage needs the repair below.
+    if certify_uncached(base, module, scripts_label, events_label).is_ok() {
+        return Ok(());
+    }
     ensure!(
         base.data.map_scripts.get(scripts_label)
             == Some(&section(&ordinary.map_script_section_commands)?)

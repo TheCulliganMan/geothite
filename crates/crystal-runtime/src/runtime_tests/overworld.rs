@@ -6789,3 +6789,63 @@ fn runtime_battle_command_routes_player_run_through_wild_turn_resolution() {
     assert_eq!(session.state.battle_escape_attempts, 0);
     let _ = std::fs::remove_dir_all(root);
 }
+
+#[test]
+fn runtime_composed_script_leaves_uncompleted_trades_for_controller_choices() {
+    let root = temp_repository_root("composed-city-trade");
+    write_floor_tileset(&root, "johto");
+    let asset_root = AssetRoot::new(&root);
+    let mut data = minimal_runtime_data();
+    let map = data.maps.get_mut("RuntimeMap").expect("runtime map");
+    map.scripts.insert(
+        "CityTrade".into(),
+        serde_json::json!([
+            {"command":"closetext", "args":[]},
+            {"command":"trade", "args":["NPC_TRADE_CITY"]},
+            {"command":"end", "args":[]}
+        ]),
+    );
+    map.script_text_commands.push(ScriptTextCommand {
+        command: "closetext".into(),
+        text_label: None,
+        source_script: "CityTrade".into(),
+        command_index: 0,
+    });
+    let runtime = CrystalRuntime::from_compiled_pack(
+        &asset_root,
+        CompiledGamePack::new_unchecked_for_tests(data, report()),
+        identity(),
+    )
+    .expect("runtime");
+    let mut shell = RuntimeGameShell::new_game(asset_root, runtime, 0).expect("game shell");
+    let before = shell.session().state().storage.clone();
+    let run = shell
+        .run_compiled_script_until_boundary(
+            RuntimeCompiledScriptCursor {
+                origin_map_name: "RuntimeMap".into(),
+                source_script: "CityTrade".into(),
+                command_index: 0,
+            },
+            8,
+            ScriptRuntimeInputs {
+                selected_party_index: Some(0),
+                ..Default::default()
+            },
+            ScriptPhoneInputs::default(),
+        )
+        .expect("stop before trade even with a stale party selection");
+    assert_eq!(run.steps.len(), 1);
+    assert_eq!(run.boundary, Some(RuntimeCompiledScriptBoundary::NpcTrade));
+    assert_eq!(run.next_cursor.expect("unexecuted trade").command_index, 1);
+    assert!(!run.ended);
+    assert_eq!(shell.session().state().storage, before);
+    assert!(
+        shell
+            .session()
+            .state()
+            .script_runtime
+            .completed_trades
+            .is_empty()
+    );
+    std::fs::remove_dir_all(root).expect("remove temporary fixture");
+}

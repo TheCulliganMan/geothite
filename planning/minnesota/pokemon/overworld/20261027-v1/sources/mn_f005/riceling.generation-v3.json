@@ -1,0 +1,14 @@
+{
+  "tool": "built-in image_gen",
+  "original_tool_path": "/Users/ryanculligan/.codex/generated_images/01a17dcc-4f1a-77a2-9d21-0df036061346/exec-12048eb7-ef4b-4c5f-b8e5-40091c3d5397.png",
+  "source_size": [
+    1536,
+    1024
+  ],
+  "sha256": "abeddddeada757f0b69298ea9ea2a678fa64c565183b1c035a4bd652d51d333d",
+  "reference_paths": [
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/true16-riceling-v2/MN_F005/review/line.normal-8x.png"
+  ],
+  "prompt": "riceling.prompt-v3.txt",
+  "raw_review": "Broad face requested; opaque black pixels/contours lost in generated alpha and require built-in ImageGen repair. Zizalith also needs clean sixpose3x2layout."
+}

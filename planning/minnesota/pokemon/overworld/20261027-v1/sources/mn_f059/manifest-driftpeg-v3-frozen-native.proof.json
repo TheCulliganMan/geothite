@@ -1,0 +1,351 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_128",
+  "status": "source-proof-pass; root visual/context acceptance required",
+  "selected_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f059/manifest-driftpeg-v3-frozen-native.json",
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f059/driftpeg-v3-frozen-native",
+  "shared_transform": {
+    "source_bounds": [
+      10,
+      20,
+      341,
+      319
+    ],
+    "native_size": [
+      12,
+      11
+    ],
+    "native_origin": [
+      2,
+      4
+    ]
+  },
+  "all_four_nonrear_poses_have_actual_source_pupils": true,
+  "every_native_eye_cluster_maps_to_same_small_anatomical_source_pupil_component": true,
+  "actual_source_pupil_proofs": [
+    {
+      "pose": "down_idle",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f059/driftpeg.overworld.imagegen-v2-profile-eye.png",
+      "crop": [
+        138,
+        174,
+        364,
+        342
+      ],
+      "anatomically_identified_source_eye_boxes_xywh": [
+        [
+          271,
+          381,
+          18,
+          24
+        ],
+        [
+          321,
+          381,
+          17,
+          24
+        ]
+      ],
+      "actual_eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              6,
+              10
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                6,
+                8,
+                8,
+                253
+              ],
+              "bounds": [
+                271,
+                381,
+                18,
+                24
+              ],
+              "pixels": 422,
+              "truncated_contour": false,
+              "native_pixel": [
+                6,
+                10
+              ],
+              "source_sample_pixel": [
+                275,
+                382
+              ]
+            }
+          ]
+        },
+        {
+          "native_cluster": [
+            [
+              8,
+              10
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                2,
+                3,
+                4,
+                254
+              ],
+              "bounds": [
+                321,
+                381,
+                17,
+                24
+              ],
+              "pixels": 405,
+              "truncated_contour": false,
+              "native_pixel": [
+                8,
+                10
+              ],
+              "source_sample_pixel": [
+                332,
+                382
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f059/driftpeg.overworld.imagegen-v2-profile-eye.png",
+      "crop": [
+        1081,
+        179,
+        364,
+        342
+      ],
+      "anatomically_identified_source_eye_boxes_xywh": [
+        [
+          1154,
+          348,
+          23,
+          25
+        ]
+      ],
+      "actual_eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              4,
+              9
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                0,
+                0,
+                0,
+                253
+              ],
+              "bounds": [
+                1154,
+                348,
+                23,
+                25
+              ],
+              "pixels": 575,
+              "truncated_contour": false,
+              "native_pixel": [
+                4,
+                9
+              ],
+              "source_sample_pixel": [
+                1162,
+                358
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f059/driftpeg.overworld.imagegen-v2-profile-eye.png",
+      "crop": [
+        138,
+        569,
+        364,
+        342
+      ],
+      "anatomically_identified_source_eye_boxes_xywh": [
+        [
+          271,
+          762,
+          18,
+          24
+        ],
+        [
+          321,
+          762,
+          17,
+          24
+        ]
+      ],
+      "actual_eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              6,
+              10
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                5,
+                6,
+                6,
+                253
+              ],
+              "bounds": [
+                271,
+                762,
+                18,
+                24
+              ],
+              "pixels": 415,
+              "truncated_contour": false,
+              "native_pixel": [
+                6,
+                10
+              ],
+              "source_sample_pixel": [
+                275,
+                777
+              ]
+            }
+          ]
+        },
+        {
+          "native_cluster": [
+            [
+              8,
+              10
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                3,
+                2,
+                2,
+                253
+              ],
+              "bounds": [
+                321,
+                762,
+                17,
+                24
+              ],
+              "pixels": 408,
+              "truncated_contour": false,
+              "native_pixel": [
+                8,
+                10
+              ],
+              "source_sample_pixel": [
+                332,
+                777
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f059/driftpeg.overworld.imagegen-v2-profile-eye.png",
+      "crop": [
+        1081,
+        564,
+        364,
+        342
+      ],
+      "anatomically_identified_source_eye_boxes_xywh": [
+        [
+          1156,
+          739,
+          22,
+          24
+        ]
+      ],
+      "actual_eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              4,
+              9
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                6,
+                3,
+                2,
+                253
+              ],
+              "bounds": [
+                1156,
+                739,
+                22,
+                24
+              ],
+              "pixels": 528,
+              "truncated_contour": false,
+              "native_pixel": [
+                4,
+                9
+              ],
+              "source_sample_pixel": [
+                1162,
+                743
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "native_head_anchors_idle_walk_equal": true,
+  "validation": {
+    "runtime_2bpp_384_bytes_exact_allpixels": true,
+    "runtime_png16x96_index_parity": true,
+    "normal_shiny_palettebanks_exact": true,
+    "normal_shiny_all1536pixels_exact": true,
+    "transparent_border": true,
+    "idle_walk_pairs_distinct": true
+  },
+  "sha256": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f059/manifest-driftpeg-v3-frozen-native.json": "af5ca8175395eb661cb954ed4f49edb1ab3533360d6b5075ea305280f2dc265d",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f059/driftpeg-v3-frozen-native/compiled-index.json": "639621e76dffa6d506c825823bca903227e5acf225c573fababdcac4621ebe1d",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f059/driftpeg-v3-frozen-native/gfx/pokemon/driftpeg/overworld.png": "d27175b8fccd131ab74614d1d5cf52b8e112d2776a38b0f236af17f0d409a054",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f059/driftpeg-v3-frozen-native/review/line.shiny-8x.png": "a2e2b7ca4df0ba79d488a6023f4ee1268045fb9b350e4113a45b2815f26d2fd7",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f059/driftpeg-v3-frozen-native/gfx/pokemon/driftpeg/overworld-shiny.gbcpal": "8e06048c300c7885a5dd2661856c6ff776d429da84652045ed94af4673bf317e",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f059/driftpeg-v3-frozen-native/gfx/pokemon/driftpeg/overworld.2bpp": "02887bfe60a8d3d2649d87d49a8c9ffd49f9030bb4f90671447eb77b2b1bd1d7",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f059/driftpeg-v3-frozen-native/review/line.normal-8x.png": "479d73b5902a771eacd75269817909a831404d6ee7408b8d4c040de4016d7728",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f059/driftpeg-v3-frozen-native/gfx/pokemon/driftpeg/overworld.gbcpal": "9ed57aaf7eed35f6d89ab3fa4d91a2f5ffde71fa080d3264fa75493ddecc908f",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f059/driftpeg.overworld.imagegen-v2-profile-eye.png": "2f78e7c2082d9789dc506c018c2ac263d4cda7c03caa8d5d323fa681bb22cad5"
+  },
+  "actual_native_boards_viewed": true,
+  "rear_review": "Both native normal/shiny true rear poses actually reviewed: plain rear closed flower folds or snowcapped posts, no copied face. All anatomy is source-backed; native pixels were not painted."
+}

@@ -1901,6 +1901,7 @@ fn apply_visible_npc_trade_selection(
         .get(&trade_id)
         .with_context(|| format!("NPC trade {trade_id} is missing from the runtime snapshot"))?;
     runtime_shell.pc_notice = Some(visible_npc_trade_result_text(rule, result));
+    mark_runtime_snapshot_dirty(runtime_shell);
     Ok(())
 }
 
@@ -3710,6 +3711,7 @@ fn shell_render_key(runtime_shell: &BevyRuntimeShell) -> u64 {
     runtime_shell.visible_egg_hatch.hash(&mut hasher);
     runtime_shell.visible_blackout_phase.hash(&mut hasher);
     runtime_shell.pending_poison_blackout.hash(&mut hasher);
+    runtime_shell.poison_blackout_recovery.hash(&mut hasher);
     runtime_shell.visible_walk_warp_phase.hash(&mut hasher);
     runtime_shell.battle_text_reveal.hash(&mut hasher);
     runtime_shell
@@ -4068,16 +4070,19 @@ fn battle_animated_shell_render_key(
     runtime_shell: &BevyRuntimeShell,
 ) -> u64 {
     let base = shell_render_key(runtime_shell);
-    if snapshot.battle.is_none() && !runtime_shell.ambient_tileset_animation_active {
+    if snapshot.battle.is_none()
+        && !runtime_shell.party_menu_open
+        && !runtime_shell.ambient_tileset_animation_active
+    {
         return base;
     }
     let mut hasher = std::collections::hash_map::DefaultHasher::new();
     base.hash(&mut hasher);
     // `visual_state_hash` intentionally removes the semantic frame counter.
-    // Battle UI still has LCD-time animation: healthy party icons change at
+    // Battle and party UI still have LCD-time animation: healthy icons change at
     // eight frames and menu cursors alternate at sixteen. Retain the cheapest
     // phase that can express both without rebuilding the overworld each tick.
-    if snapshot.battle.is_some() {
+    if snapshot.battle.is_some() || runtime_shell.party_menu_open {
         (runtime_shell.lcd_animation_frame / 8).hash(&mut hasher);
     }
     if runtime_shell.ambient_tileset_animation_active {
@@ -4479,6 +4484,7 @@ fn overworld_render_appearance_key(snapshot: &RuntimeShellSnapshot) -> u64 {
 
 fn update_overworld_sprite_positions(
     snapshot: &RuntimeShellSnapshot,
+    bridge_scene: bool,
     movement_subframe: f32,
     visible_ledge_jump: Option<VisibleLedgeJump>,
     player_walk_from: Option<TilePosition>,
@@ -4577,8 +4583,11 @@ fn update_overworld_sprite_positions(
             }
         },
     );
-    player_transform.translation.z =
-        overworld_entity_depth(player_depth_tile, None, (start_x, start_y));
+    player_transform.translation.z = bridge_source_overlay::actor_depth(
+        overworld_entity_depth(player_depth_tile, None, (start_x, start_y)),
+        bridge_scene,
+        snapshot.overworld.mode.traversal_state(),
+    );
     if ledge_jump_has_active_shadow(visible_ledge_jump)
         && let Ok((mut shadow_transform, shadow_sprite)) = ledge_shadows.single_mut()
     {
@@ -4734,7 +4743,11 @@ fn update_overworld_sprite_positions(
         transform.translation.z = if rendered_object.above_priority {
             2.41
         } else {
-            overworld_entity_depth(object_tile, Some(source_object_slot), (start_x, start_y))
+            bridge_source_overlay::actor_depth(
+                overworld_entity_depth(object_tile, Some(source_object_slot), (start_x, start_y)),
+                bridge_scene,
+                bridge_source_overlay::object_traversal(&object.spritemovedata),
+            )
         };
     }
     true

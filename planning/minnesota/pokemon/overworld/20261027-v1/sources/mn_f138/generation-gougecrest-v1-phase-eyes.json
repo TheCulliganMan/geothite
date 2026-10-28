@@ -1,0 +1,118 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_307",
+  "name": "Gougecrest",
+  "family_id": "MN_F138",
+  "status": "compiled_native_candidate_root_visual_context_acceptance_authoritative",
+  "generation_tool": "built-in image_gen",
+  "prompts": [
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f138/prompt-gougecrest-v1.txt"
+  ],
+  "sources_selected": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f138/gougecrest.overworld.imagegen-v1.png",
+      "sha256": "f2ea1c367506a41f8445697e2903fc8fc43f678bd102e92fcc9f8af9e7dcd5ce",
+      "dimensions": [
+        1254,
+        1254
+      ]
+    }
+  ],
+  "default_output_originals": [
+    {
+      "record": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f138/gougecrest.v1.original-path.txt",
+      "path": "/Users/ryanculligan/.codex/generated_images/01a17dc4-dd75-7642-a1c6-4bf13fda70c6/exec-e0666e04-a456-41db-9c7b-06c7a558a47b.png"
+    }
+  ],
+  "generation_style_reference_only": "planning/minnesota/pokemon/overworld/20261027-v1/references/native-pack-16px/native-six-frame-style-board.8x.png",
+  "identity_authority": "Currentactivecoverage.json exactcanonicalpalettes,textbodylocks,andvisualinspectionofselectednativefront; no battleartinputforgeneration",
+  "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f138/manifest-gougecrest-v1-phase-eyes.json",
+  "manifest_sha256": "ed952c20c5f5881925f9b581d8f788bab6927c220a39c123031d34ed0645f3e3",
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f138/gougecrest-v1-phase-eyes",
+  "normal_review": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f138/gougecrest-v1-phase-eyes/review/line.normal-8x.png",
+  "frame_size": [
+    16,
+    16
+  ],
+  "native_bounds": [
+    [
+      2,
+      1,
+      12,
+      14
+    ],
+    [
+      3,
+      1,
+      10,
+      14
+    ],
+    [
+      2,
+      1,
+      12,
+      14
+    ],
+    [
+      2,
+      1,
+      12,
+      14
+    ],
+    [
+      3,
+      1,
+      10,
+      14
+    ],
+    [
+      2,
+      1,
+      12,
+      14
+    ]
+  ],
+  "sampling": "source_center",
+  "normal_palette_rgb555": [
+    32767,
+    6397,
+    16677,
+    0
+  ],
+  "shiny_palette_rgb555": [
+    32767,
+    26377,
+    19693,
+    0
+  ],
+  "alpha_threshold": 128,
+  "transparent_index": 0,
+  "visible_indices": [
+    1,
+    2,
+    3
+  ],
+  "native_pixels_painted": false,
+  "notes": "All6frames strictRustcompiled andretained. Sameper-speciesworldscale/equalcropwindowswithpairedheadregistration. Max14pxopaquefootprint+transparentborder. Rootreviewandruntimecontextproofsdetermineacceptance; thisreceiptisnotacceptance. Noqueue/registry/packwrites.",
+  "selected_sources": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f138/gougecrest.overworld.imagegen-v1.png",
+      "sha256": "f2ea1c367506a41f8445697e2903fc8fc43f678bd102e92fcc9f8af9e7dcd5ce",
+      "dimensions": [
+        1254,
+        1254
+      ]
+    }
+  ],
+  "default_output_records": [
+    {
+      "record": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f138/gougecrest.v1.original-path.txt",
+      "path": "/Users/ryanculligan/.codex/generated_images/01a17dc4-dd75-7642-a1c6-4bf13fda70c6/exec-e0666e04-a456-41db-9c7b-06c7a558a47b.png"
+    }
+  ],
+  "only_generation_reference": "planning/minnesota/pokemon/overworld/20261027-v1/references/native-pack-16px/native-six-frame-style-board.8x.png",
+  "native_frame_size": [
+    16,
+    16
+  ]
+}

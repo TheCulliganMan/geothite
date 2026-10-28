@@ -1,0 +1,85 @@
+{
+  "source_sha256": "c26f07d1f437134a1ba118d0010855ad906c131c26b0b9b16576f5319fdbe3a2",
+  "threshold": 200,
+  "reason": "ImageGen edit placed low-opacity black in outside background. Threshold removes these authored alpha artifacts and preserves solid body/pupil cores. Original rear source remains selected.",
+  "samples": [
+    {
+      "position": [
+        0,
+        0
+      ],
+      "rgba": [
+        1,
+        0,
+        0,
+        166
+      ],
+      "role": "outside background"
+    },
+    {
+      "position": [
+        1000,
+        0
+      ],
+      "rgba": [
+        0,
+        0,
+        0,
+        177
+      ],
+      "role": "outside background"
+    },
+    {
+      "position": [
+        10,
+        10
+      ],
+      "rgba": [
+        0,
+        0,
+        0,
+        162
+      ],
+      "role": "outside background"
+    },
+    {
+      "position": [
+        500,
+        500
+      ],
+      "rgba": [
+        0,
+        0,
+        0,
+        92
+      ],
+      "role": "outside background"
+    },
+    {
+      "position": [
+        260,
+        300
+      ],
+      "rgba": [
+        1,
+        0,
+        0,
+        252
+      ],
+      "role": "actual front pupil"
+    },
+    {
+      "position": [
+        300,
+        300
+      ],
+      "rgba": [
+        254,
+        203,
+        48,
+        252
+      ],
+      "role": "gold face"
+    }
+  ]
+}

@@ -4096,7 +4096,8 @@ fn visible_credits_screen_lines(credits: &VisibleCreditsScreen) -> Vec<String> {
 #[derive(SystemParam)]
 struct RenderEntityQueries<'w, 's> {
     tiles: Query<'w, 's, Entity, With<PlayfieldTile>>,
-    map_base_surfaces: Query<'w, 's, (), (With<PlayfieldTile>, Without<PlayfieldPriorityTile>)>,
+    map_base_surfaces: Query<'w, 's, (), (With<PlayfieldTile>, Without<PlayfieldPriorityTile>, Without<PlayfieldBridgeTile>)>,
+    bridge_surfaces: Query<'w, 's, Entity, With<PlayfieldBridgeTile>>,
     map_priority_surfaces: Query<'w, 's, (), (With<PlayfieldTile>, With<PlayfieldPriorityTile>)>,
     map_sprites: Query<
         'w,
@@ -4539,6 +4540,7 @@ fn render_playfield(
         tiles,
         map_base_surfaces,
         map_priority_surfaces,
+        bridge_surfaces,
         mut map_sprites,
         players,
         mut player_sprites,
@@ -5433,6 +5435,7 @@ fn render_playfield(
         // the new snapshot revision and returns early.
         let _ = update_overworld_sprite_positions(
             &snapshot,
+            rendered.bridge_scene,
             movement_subframe,
             runtime_shell.visible_ledge_jump,
             runtime_shell.player_walk_from,
@@ -5669,6 +5672,7 @@ fn render_playfield(
         if let Some((start_x, start_y)) = rendered.viewport_origin
             && update_overworld_sprite_positions(
                 &snapshot,
+                rendered.bridge_scene,
                 movement_subframe,
                 runtime_shell.visible_ledge_jump,
                 runtime_shell.player_walk_from,
@@ -6091,6 +6095,7 @@ Transform::from_xyz(0.0, 0.0, 2.7),),
         && rendered.viewport_origin == Some((start_x, start_y))
         && update_overworld_sprite_positions(
             &snapshot,
+            rendered.bridge_scene,
             movement_subframe,
             runtime_shell.visible_ledge_jump,
             runtime_shell.player_walk_from,
@@ -6171,6 +6176,7 @@ Transform::from_xyz(0.0, 0.0, 2.7),),
     if facing_only_update
         && update_overworld_sprite_positions(
             &snapshot,
+            rendered.bridge_scene,
             movement_subframe,
             runtime_shell.visible_ledge_jump,
             runtime_shell.player_walk_from,
@@ -6360,6 +6366,14 @@ Transform::from_xyz(0.0, 0.0, 2.7),),
     // Bevy entities.  The old per-tile entity churn was the dominant cost on
     // every camera step and was the reason the shell could fall to one FPS.
     // Objects, player, dialog, and battle overlays remain separate layers.
+    rendered.bridge_scene = match bridge_source_overlay::scene_has_bridge(&render_sources) {
+        Ok(enabled) => enabled,
+        Err(error) => {
+            record_visible_render_error(&mut commands, &mut runtime_shell, error);
+            return;
+        }
+    };
+    let mut bridge_viewport_tiles = Vec::new();
     let mut transition_tiles = Vec::new();
     let mut viewport_tile_handles = Vec::with_capacity(
         usize::try_from(CLASSIC_SCROLL_TILES_X * CLASSIC_SCROLL_TILES_Y).unwrap_or_default(),
@@ -6450,6 +6464,21 @@ Transform::from_xyz(0.0, 0.0, 2.7),),
             };
             if inside_scroll_surface {
                 viewport_tile_handles.push(tile_handle.clone());
+                let bridge = if rendered.bridge_scene {
+                    match bridge_source_overlay::overlay_spec(
+                        source.tileset, block, sub_x, sub_y, &tile_handle,
+                    ) {
+                        Ok(spec) => spec,
+                        Err(error) => {
+                            record_visible_render_error(&mut commands, &mut runtime_shell, error);
+                            return;
+                        }
+                    }
+                } else {
+                    None
+                };
+                bridge_viewport_tiles.push(bridge);
+
                 if let Some(art) = source_art {
                     let mut tile = art.transition_tiles[source_tile_index as usize].clone();
                     // Animated tiles retain their current frame. Prefer the
@@ -6604,6 +6633,10 @@ Transform::from_xyz(0.0, 0.0, 2.7),),
                 .map(|(handle, clip_top)| (handle.id(), *clip_top))
                 .hash(&mut hasher);
         }
+        rendered.bridge_scene.hash(&mut hasher);
+        for spec in &bridge_viewport_tiles {
+            spec.as_ref().map(|(handle, row)| (handle.id(), *row)).hash(&mut hasher);
+        }
         #[cfg(feature = "voxel-view")]
         for handle in &visual_world_tile_handles {
             handle.id().hash(&mut hasher);
@@ -6667,8 +6700,35 @@ Transform::from_xyz(0.0, 0.0, 2.7),),
             &mut images,
         )
     };
+    // Once allocated, retain a transparent surface on ordinary maps. This
+    // keeps deferred entities/handles coherent without changing native pixels.
+    let bridge_viewport_texture = if rendered.bridge_scene || rendered.map_bridge_texture.is_some() {
+        Some(if facing_only_redraw || retained_texture_content {
+            rendered.map_bridge_texture.clone().unwrap_or_else(|| {
+                compose_priority_tile_grid(
+                    &bridge_viewport_tiles,
+                    CLASSIC_SCROLL_TILES_X as usize,
+                    CLASSIC_SCROLL_TILES_Y as usize,
+                    None,
+                    &mut images,
+                )
+            })
+        } else {
+            compose_priority_tile_grid(
+                &bridge_viewport_tiles,
+                CLASSIC_SCROLL_TILES_X as usize,
+                CLASSIC_SCROLL_TILES_Y as usize,
+                rendered.map_bridge_texture.clone(),
+                &mut images,
+            )
+        })
+    } else {
+        None
+    };
+    rendered.map_bridge_texture.clone_from(&bridge_viewport_texture);
     if !transition_tiles.is_empty() {
         rendered.transition_tiles = transition_tiles;
+        rendered.transition_bridge_mask = bridge_viewport_tiles.iter().map(Option::is_some).collect();
     }
     rendered.map_texture = Some(viewport_texture.clone());
     rendered.map_priority_texture = Some(priority_viewport_texture.clone());
@@ -6827,9 +6887,10 @@ Transform::from_xyz(0.0, 0.0, 2.7),),
         commands.entity(entity).insert(map_visibility);
     }
     if can_update_positions_in_place
-        && tiles.iter().count() == 2
+        && tiles.iter().count() == 2 + usize::from(rendered.map_bridge_texture.is_some())
         && update_overworld_sprite_positions(
             &snapshot,
+            rendered.bridge_scene,
             movement_subframe,
             runtime_shell.visible_ledge_jump,
             runtime_shell.player_walk_from,
@@ -6879,6 +6940,21 @@ map_visibility,
 Transform::from_xyz(0.0, 0.0, 2.4),),
             PlayfieldTile,
             PlayfieldPriorityTile,
+        ));
+    }
+    if let Some(texture) = bridge_viewport_texture
+        && bridge_surfaces.iter().next().is_none()
+    {
+        commands.spawn((
+            Sprite {
+                image: texture,
+                custom_size: Some(Vec2::new(CLASSIC_SCROLL_WIDTH, CLASSIC_SCROLL_HEIGHT)),
+                ..default()
+            },
+            map_visibility,
+            Transform::from_xyz(camera_offset.x, camera_offset.y, bridge_source_overlay::OVERLAY_DEPTH),
+            PlayfieldTile,
+            PlayfieldBridgeTile,
         ));
     }
     {
@@ -6971,12 +7047,19 @@ Transform::from_xyz(0.0, 0.0, 2.4),),
             } else {
                 object.sprite.as_str()
             };
-            let sprite_id = resolve_visible_object_sprite_asset_id(
+            let mut sprite_id = resolve_visible_object_sprite_asset_id(
                 &runtime_shell.asset_root,
                 resolved_object_sprite,
                 &snapshot.script_events.variable_sprites,
                 &snapshot.presentation.menu_icons,
             );
+            if resident
+                .and_then(|resident| resident.pokemon.as_ref())
+                .is_some_and(visible_pokemon_is_shiny)
+                && let Some(shiny) = pokemon_overworld_art::shiny_variant(&sprite_id)
+            {
+                sprite_id = shiny;
+            }
             let model_source_id = visible_map_object_model_source_from_data(
                 runtime_shell.shell.runtime().data(),
                 &snapshot.overworld.map_name,
@@ -7185,10 +7268,10 @@ Transform::from_xyz(0.0, 0.0, 2.4),),
                     if objects_above_priority.contains(&index) {
                         2.41
                     } else {
-                        overworld_entity_depth(
-                            object_tile,
-                            Some(source_object_slot),
-                            (start_x, start_y),
+                        bridge_source_overlay::actor_depth(
+                            overworld_entity_depth(object_tile, Some(source_object_slot), (start_x, start_y)),
+                            rendered.bridge_scene,
+                            bridge_source_overlay::object_traversal(&object.spritemovedata),
                         )
                     },
                 );
@@ -7869,7 +7952,11 @@ Transform::from_xyz(emote_x, emote_y, 3.2),),
                     .and_then(|jump| visible_jump_direction(jump.from, jump.to))
                     .unwrap_or(snapshot.overworld.facing),
                 "PLAYER",
-                overworld_entity_depth(player_depth_tile, None, (start_x, start_y)),
+                bridge_source_overlay::actor_depth(
+                        overworld_entity_depth(player_depth_tile, None, (start_x, start_y)),
+                        rendered.bridge_scene,
+                        snapshot.overworld.mode.traversal_state(),
+                    ),
             );
         }
         let player_flip_x = player_uses_action_frame
@@ -7883,7 +7970,11 @@ Transform::from_xyz(emote_x, emote_y, 3.2),),
                 *transform = Transform::from_xyz(
                     player_x,
                     player_y,
-                    overworld_entity_depth(player_depth_tile, None, (start_x, start_y)),
+                    bridge_source_overlay::actor_depth(
+                        overworld_entity_depth(player_depth_tile, None, (start_x, start_y)),
+                        rendered.bridge_scene,
+                        snapshot.overworld.mode.traversal_state(),
+                    ),
                 );
                 sprite.custom_size = Some(frame.size);
                 sprite.flip_x = player_flip_x;
@@ -7911,7 +8002,11 @@ Transform::from_xyz(emote_x, emote_y, 3.2),),
 Transform::from_xyz(
                         player_x,
                         player_y,
+                        bridge_source_overlay::actor_depth(
                         overworld_entity_depth(player_depth_tile, None, (start_x, start_y)),
+                        rendered.bridge_scene,
+                        snapshot.overworld.mode.traversal_state(),
+                    ),
                     ),),
                 PlayerMarker,
                 PlayerSpriteFrames {
@@ -7948,14 +8043,20 @@ Transform::from_xyz(
                 .map_or(true, |jump| jump.frame >= WALK_FRAME_HOLD_TICKS)
         }) {
             let time_of_day = effective_time_of_day;
+            let rustle_tileset = winter_render_behavior::rustle_tileset_at(
+                &tileset_art_key.tileset_id,
+                map.attributes.width,
+                &map.blocks,
+                rustle.tile,
+            );
             let Some(frames) = grass_rustle_frames_for_art(
                 &mut tileset_art,
                 &runtime_shell.asset_root,
-                &tileset_art_key.tileset_id,
+                rustle_tileset,
                 time_of_day,
                 &mut images,
             ) else {
-                let key = grass_rustle_art_key(&tileset_art_key.tileset_id, time_of_day);
+                let key = grass_rustle_art_key(rustle_tileset, time_of_day);
                 let error = tileset_art
                     .grass_rustle_errors
                     .get(&key)
@@ -8043,7 +8144,7 @@ Transform::from_xyz(
     {
         let dark = visible_effective_map_time_of_day(map, live_time_of_day, flash_active)
             .eq_ignore_ascii_case("dark");
-        let textures = (|| -> Result<(Handle<Image>, Handle<Image>)> {
+        let textures = (|| -> Result<(Handle<Image>, Handle<Image>, Option<Handle<Image>>)> {
             let base = prepare_battle_transition_texture(
                 &runtime_shell.asset_root,
                 transition,
@@ -8064,10 +8165,22 @@ Transform::from_xyz(
                 rendered.transition_priority_texture.clone(),
                 &mut images,
             )?;
-            Ok((base, priority))
+            let bridge = if rendered.bridge_scene {
+                Some(bridge_source_overlay::transition_overlay(
+                    &base,
+                    &rendered.transition_bridge_mask,
+                    camera_offset,
+                    rendered.transition_bridge_texture.clone(),
+                    &mut images,
+                )?)
+            } else {
+                None
+            };
+            Ok((base, priority, bridge))
         })();
         match textures {
-            Ok((texture, priority)) => {
+            Ok((texture, priority, bridge)) => {
+                rendered.transition_bridge_texture.clone_from(&bridge);
                 rendered.transition_texture = Some(texture.clone());
                 rendered.transition_priority_texture = Some(priority.clone());
                 let wave_start = (if transition.trainer_battle { 4 } else { 3 }) + 75 + 2;
@@ -8075,7 +8188,10 @@ Transform::from_xyz(
                     && !transition.stronger_enemy
                     && transition.frame >= wave_start;
                 if transition_replaces_map && !wave {
-                    for (texture, z) in [(texture.clone(), 0.0), (priority.clone(), 2.4)] {
+                    for (texture, z) in [(texture.clone(), 0.0), (priority.clone(), 2.4)]
+                        .into_iter()
+                        .chain(bridge.map(|texture| (texture, bridge_source_overlay::OVERLAY_DEPTH)))
+                    {
                         commands.spawn((
                             (Sprite { image: texture,
                                     custom_size: Some(Vec2::new(PLAYFIELD_WIDTH, PLAYFIELD_HEIGHT)),

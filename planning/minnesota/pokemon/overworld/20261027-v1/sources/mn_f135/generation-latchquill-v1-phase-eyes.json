@@ -1,0 +1,98 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_299",
+  "name": "Latchquill",
+  "family_id": "MN_F135",
+  "status": "native_compiled_sent_to_root_for_visual_context_acceptance",
+  "generation_tool": "built-in image_gen",
+  "prompts": [
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f135/prompt-latchquill-v1.txt"
+  ],
+  "sources_selected": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f135/latchquill.overworld.imagegen-v1.png",
+      "sha256": "1db5b3d6e890d53618a3d3e265295023ce665de01886ab74356004ded34db92c",
+      "dimensions": [
+        1254,
+        1254
+      ]
+    }
+  ],
+  "original_outputs": [
+    {
+      "record": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f135/latchquill.v1.original-path.txt",
+      "default_path": "/Users/ryanculligan/.codex/generated_images/01a17dc4-dd75-7642-a1c6-4bf13fda70c6/exec-9e23c760-eae8-4428-a1a9-0ddc41594d91.png"
+    }
+  ],
+  "generation_reference_only": "planning/minnesota/pokemon/overworld/20261027-v1/references/native-pack-16px/native-six-frame-style-board.8x.png",
+  "identity_authority": "Currentactivecoverage.json textualtheme,canonicalpalette,visualinspectionofexactselectednativefront; no battleimagesprovidedtoImageGen",
+  "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f135/manifest-latchquill-v1-phase-eyes.json",
+  "manifest_sha256": "73e428a1520f0f9372ac06957b93c2fca2ecf18193c1d8c9cd068c37a279a89b",
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f135/latchquill-v1-phase-eyes",
+  "normal_review": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f135/latchquill-v1-phase-eyes/review/line.normal-8x.png",
+  "frame_size": [
+    16,
+    16
+  ],
+  "native_bounds": [
+    [
+      2,
+      4,
+      12,
+      11
+    ],
+    [
+      3,
+      4,
+      11,
+      11
+    ],
+    [
+      1,
+      4,
+      14,
+      11
+    ],
+    [
+      2,
+      4,
+      12,
+      11
+    ],
+    [
+      3,
+      4,
+      11,
+      11
+    ],
+    [
+      1,
+      4,
+      14,
+      10
+    ]
+  ],
+  "sampling": "source_center",
+  "normal_palette_rgb555": [
+    32767,
+    25332,
+    6443,
+    0
+  ],
+  "shiny_palette_rgb555": [
+    32767,
+    11864,
+    13547,
+    0
+  ],
+  "transparent_index": 0,
+  "visible_indices": [
+    1,
+    2,
+    3
+  ],
+  "alpha_threshold": 128,
+  "native_pixels_painted": false,
+  "same_idle_step_registration": true,
+  "notes": "Sixposes nativecompiled, strictsourcealpha cropsisolated, max14pxopaquefootprints andtransparentborder. Nativeboard inspected andsenttoroot; no globalcoverage orpackwrites. Allraws/prompts/conversionvariantsretained."
+}

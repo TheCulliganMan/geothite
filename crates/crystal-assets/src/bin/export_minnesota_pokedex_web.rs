@@ -20,10 +20,23 @@ mod web_moves;
 #[path = "export_minnesota_pokedex_web/starters.rs"]
 mod starters;
 
+#[path = "export_minnesota_pokedex_web/media.rs"]
+mod web_media;
+
+#[path = "export_minnesota_pokedex_web/showcases.rs"]
+mod showcases;
+
+#[path = "export_minnesota_pokedex_web/machine_catalog.rs"]
+mod machine_catalog;
+
+#[path = "export_minnesota_pokedex_web/machine_revision.rs"]
+mod machine_revision;
+
 const MOVES: &str = include_str!("../../../../web-client/pokedex/moves.html");
 const INDEX: &str = include_str!("../../../../web-client/pokedex/index.html");
 const ENTRY: &str = include_str!("../../../../web-client/pokedex/entry.html");
 const CSS: &str = include_str!("../../../../web-client/pokedex/style.css");
+const MEDIA_CSS: &str = include_str!("../../../../web-client/pokedex/media.css");
 const JS: &str = include_str!("../../../../web-client/pokedex/app.js");
 const TYPES: [&str; 18] = [
     "NORMAL", "FIRE", "WATER", "GRASS", "ELECTRIC", "ICE", "FIGHTING", "POISON", "GROUND",
@@ -183,7 +196,7 @@ fn image(member: &Value, base: &str, size: usize, lazy: bool) -> String {
 }
 fn header() -> String {
     format!(
-        "<header class=\"site-header wrap\"><a class=\"brand\" href=\"/pokedex/\"><span class=\"brand-mark\" aria-hidden=\"true\">{}</span><span><strong>GEOTHITE</strong><small>NORTHWOODS POKÉDEX</small></span></a><nav class=\"main-nav\" aria-label=\"Main navigation\"><a href=\"/pokedex/#guide\">Pokédex</a><a href=\"/pokedex/?view=families#guide\">Evolution lines</a><a href=\"/pokedex/?rarity=rare#guide\">Legends</a><a href=\"/pokedex/moves.html\">Moves</a></nav><a class=\"play-link\" href=\"/\">Play Geothite <span>↗</span></a></header>",
+        "<header class=\"site-header wrap\"><a class=\"brand\" href=\"/pokedex/\"><span class=\"brand-mark\" aria-hidden=\"true\">{}</span><span><strong>GEOTHITE</strong><small>NORTHWOODS POKÉDEX</small></span></a><nav class=\"main-nav\" aria-label=\"Main navigation\"><a href=\"/pokedex/#guide\">Pokédex</a><a href=\"/pokedex/?view=families#guide\">Evolution lines</a><a href=\"/pokedex/?rarity=rare#guide\">Legends</a><a href=\"/pokedex/moves.html\">Moves</a><a href=\"/pokedex/state-fair.html\">State Fair</a></nav><a class=\"play-link\" href=\"/\">Play Geothite <span>↗</span></a></header>",
         "<i></i>".repeat(12)
     )
 }
@@ -253,7 +266,7 @@ fn moves_table(
 ) -> Result<String> {
     if rows.is_empty() {
         return Ok(
-            "<div class=\"move-empty\">This Pokémon has no inherited egg moves.</div>".into(),
+            "<div class=\"move-empty\">No moves listed for this learning method.</div>".into(),
         );
     }
     let mut html = format!(
@@ -288,9 +301,22 @@ fn moves_table(
 }
 fn main() -> Result<()> {
     let args = std::env::args().skip(1).collect::<Vec<_>>();
+    if args.first().is_some_and(|arg| arg == "--machines") {
+        ensure!(
+            args.len() == 5,
+            "usage: export_minnesota_pokedex_web --machines PACK BASELINE_RELEASE OUTPUT_DIR ASSET_BASE"
+        );
+        let pack = crystal_assets::read_verified_compiled_game_pack(Path::new(&args[1]))?;
+        return machine_revision::publish(
+            &pack,
+            Path::new(&args[2]),
+            Path::new(&args[3]),
+            &args[4],
+        );
+    }
     ensure!(
-        (6..=7).contains(&args.len()),
-        "usage: export_minnesota_pokedex_web BASE_PACK POKEMON_ROOT NATIVE_ROOT PROFILES_JSON OUTPUT_DIR ASSET_BASE [ANIMATION_ROOT]"
+        matches!(args.len(), 6 | 7 | 9),
+        "usage: export_minnesota_pokedex_web BASE_PACK POKEMON_ROOT NATIVE_ROOT PROFILES_JSON OUTPUT_DIR ASSET_BASE [ANIMATION_ROOT [OVERWORLD_ROOT CRY_URL_BASE]]"
     );
     let root = Path::new(&args[1]);
     let native = Path::new(&args[2]);
@@ -390,6 +416,7 @@ fn main() -> Result<()> {
     );
     let pack = crystal_assets::read_verified_compiled_game_pack(Path::new(&args[0]))?;
     let moves = &pack.data().moves;
+    let machines = machine_catalog::MachineCatalog::load(&pack.data().items, moves)?;
     let move_catalog = web_moves::load(root, moves)?;
     let animation_root = Path::new(
         args.get(6)
@@ -402,12 +429,29 @@ fn main() -> Result<()> {
         .as_array_mut()
         .context("missing profiles")?
     {
-        let member = array(&roster["families"])
-            .iter()
-            .flat_map(|f| array(&f["members"]))
-            .find(|member| member["id"] == profile["id"]);
-        if let Some(member) = member {
+        let family_member = array(&roster["families"]).iter().find_map(|family| {
+            array(&family["members"])
+                .iter()
+                .find(|member| member["id"] == profile["id"])
+                .map(|member| (family, member))
+        });
+        if let Some((family, member)) = family_member {
             let runtime_name = string(&member["name"]).to_ascii_uppercase();
+            if !retired.contains(string(&family["id"])) {
+                let species = pack
+                    .data()
+                    .pokemon
+                    .get(&runtime_name)
+                    .with_context(|| format!("missing active species {runtime_name}"))?;
+                let authored: Vec<String> = serde_json::from_value(profile["tmhm_moves"].clone())?;
+                machine_catalog::validate_compatibility(
+                    &authored,
+                    &species.tmhm_learnset,
+                    &machines,
+                    moves,
+                )
+                .with_context(|| format!("TM/HM learnset for {runtime_name}"))?;
+            }
             if let Some(learnset) = pack.data().learnsets.get(&runtime_name) {
                 profile["level_moves"] = serde_json::to_value(learnset)?;
             }
@@ -421,6 +465,17 @@ fn main() -> Result<()> {
     let registry = read(&root.join("sprite-generation.json"))?;
     fs::create_dir_all(output.join("sprites"))?;
     fs::create_dir_all(output.join("species"))?;
+    let media = if args.len() == 9 {
+        let active = array(&roster["families"])
+            .iter()
+            .filter(|family| !retired.contains(string(&family["id"])))
+            .flat_map(|family| array(&family["members"]))
+            .map(|member| string(&member["id"]).to_owned())
+            .collect();
+        web_media::MediaCatalog::export(Path::new(&args[7]), output, base, &args[8], &active)?
+    } else {
+        web_media::MediaCatalog::default()
+    };
     let mut shiny_palettes = BTreeMap::new();
     let mut seen = BTreeSet::new();
     for family in array(&registry["families"]) {
@@ -478,6 +533,8 @@ fn main() -> Result<()> {
         let family_id = string(&family["id"]);
         let is_cut = retired.contains(family_id);
         let profile = profile_map[id];
+        let compatibility: Vec<String> = serde_json::from_value(profile["tmhm_moves"].clone())?;
+        let machine_learnset = machines.learnset(&compatibility);
         let (region_key, region_label) = region(family);
         regions.insert((region_label, region_key));
         let types = array(&member["types"])
@@ -492,13 +549,18 @@ fn main() -> Result<()> {
             .collect::<Vec<_>>()
             .join(" ");
         let search = format!(
-            "{} {} {} {} {} {} {} {}",
+            "{} {} {} {} {} {} {} {} {}",
             string(&member["name"]),
             types,
             string(&family["theme"]),
             string(&family["region"]),
             string(&profile["classification"]),
             move_search,
+            machine_learnset
+                .iter()
+                .map(|machine| machine.code.as_str())
+                .collect::<Vec<_>>()
+                .join(" "),
             starters::role(family).map(|(_, label)| label).unwrap_or(""),
             if is_cut {
                 id.to_owned()
@@ -522,8 +584,9 @@ fn main() -> Result<()> {
         let kind = rarity(family);
         let stage = member["stage"].as_u64().unwrap_or(1);
         let starter_badge = starters::badge(family);
+        let species_media = media.controls(member, !is_cut, false);
         cards += &format!(
-            "<article class=\"pokemon-card\" data-id=\"{id}\" data-family=\"{family_id}\" data-cut=\"{is_cut}\" data-name=\"{name}\" data-number=\"{num}\" data-total=\"{stat_total}\" data-types=\"{types}\" data-region=\"{region_key}\" data-stage=\"{stage}\" data-rarity=\"{kind}\" data-search=\"{}\"{hidden}><div class=\"card-top\">{card_label}</div><button type=\"button\" class=\"save-button\" data-save=\"{id}\" data-name=\"{name}\" aria-label=\"Save {name} to notebook\" aria-pressed=\"false\">☆</button><a class=\"card-link\" href=\"{}\"><div class=\"card-art\">{}</div><h3>{name}</h3><p class=\"card-classification\">{}</p>{starter_badge}<div class=\"type-badges\">{}</div></a><div class=\"card-region\"><span>{region_label}</span><span>↗</span></div></article>",
+            "<article class=\"pokemon-card\" data-id=\"{id}\" data-family=\"{family_id}\" data-cut=\"{is_cut}\" data-name=\"{name}\" data-number=\"{num}\" data-total=\"{stat_total}\" data-types=\"{types}\" data-region=\"{region_key}\" data-stage=\"{stage}\" data-rarity=\"{kind}\" data-search=\"{}\"{hidden}><div class=\"card-top\">{card_label}</div><button type=\"button\" class=\"save-button\" data-save=\"{id}\" data-name=\"{name}\" aria-label=\"Save {name} to notebook\" aria-pressed=\"false\">☆</button><a class=\"card-link\" href=\"{}\"><div class=\"card-art\">{}</div><h3>{name}</h3><p class=\"card-classification\">{}</p>{starter_badge}<div class=\"type-badges\">{}</div></a>{species_media}<div class=\"card-region\"><span>{region_label}</span><span>↗</span></div></article>",
             esc(&search),
             href(member),
             image(member, base, 112, true),
@@ -633,9 +696,14 @@ fn main() -> Result<()> {
             .iter()
             .map(|v| (format!("Lv. {}", v[0]), string(&v[1]).to_owned()))
             .collect::<Vec<_>>();
-        let machine = array(&profile["tmhm_moves"])
+        let tutor_moves = machines.tutors(&compatibility);
+        let machine = machine_learnset
             .iter()
-            .map(|v| ("Machine".into(), string(v).to_owned()))
+            .map(|m| (m.code.clone(), m.move_id.clone()))
+            .collect::<Vec<_>>();
+        let tutors = tutor_moves
+            .iter()
+            .map(|id| ("Tutor".into(), (*id).to_owned()))
             .collect::<Vec<_>>();
         let egg = array(&profile["egg_moves"])
             .iter()
@@ -728,6 +796,7 @@ fn main() -> Result<()> {
                 },
             ),
             ("PORTRAIT", portrait),
+            ("MEDIA_CONTROLS", media.controls(member, !is_cut, true)),
             ("PALETTES", palettes),
             ("CLASSIFICATION", esc(string(&profile["classification"]))),
             ("STARTER_ROLE", starter_badge),
@@ -761,14 +830,17 @@ fn main() -> Result<()> {
             ("LOCATION", location),
             ("LEVEL_COUNT", level.len().to_string()),
             ("MACHINE_COUNT", machine.len().to_string()),
+            ("TUTOR_COUNT", tutors.len().to_string()),
             ("EGG_COUNT", egg.len().to_string()),
             ("LEVEL_MOVES", moves_table(&level, moves, true)?),
             ("MACHINE_MOVES", moves_table(&machine, moves, false)?),
+            ("TUTOR_MOVES", moves_table(&tutors, moves, false)?),
             ("EGG_MOVES", moves_table(&egg, moves, false)?),
             ("MOVE_ANIMATIONS", {
                 let learned = level
                     .iter()
                     .chain(&machine)
+                    .chain(&tutors)
                     .chain(&egg)
                     .cloned()
                     .collect::<Vec<_>>();
@@ -792,7 +864,7 @@ fn main() -> Result<()> {
                 .join(format!("{}.html", slug(member))),
             render(ENTRY, &fields, base)?,
         )?;
-        let download = json!({"identity":member,"family":family_id,"status":if is_cut { "cut" } else { "active" },"cut_reason":if is_cut { Some(cut_reason) } else { None },"starter_role":starters::role(family).map(|(key, _)| key),"theme":family["theme"],"region":region_label,"profile":profile,"normal_rgb555":normal,"shiny_rgb555":shiny_palettes[id]});
+        let download = json!({"identity":member,"family":family_id,"status":if is_cut { "cut" } else { "active" },"cut_reason":if is_cut { Some(cut_reason) } else { None },"starter_role":starters::role(family).map(|(key, _)| key),"theme":family["theme"],"region":region_label,"profile":profile,"machine_learnset":machine_learnset,"tutor_moves":tutor_moves,"normal_rgb555":normal,"shiny_rgb555":shiny_palettes[id]});
         if is_cut {
             cut_downloads.push(download);
         } else {
@@ -887,16 +959,21 @@ fn main() -> Result<()> {
                 ("FAMILIES", families),
                 ("TYPE_FILTERS", filters),
                 ("REGIONS", options),
+                ("MOTION_CONTROL", media.motion_control()),
             ],
             base,
         )?,
     )?;
-    fs::write(output.join("style.css"), CSS)?;
+    fs::write(
+        output.join("style.css"),
+        format!("{CSS}\n{MEDIA_CSS}\n{}", showcases::NAV_CSS),
+    )?;
     fs::write(output.join("app.js"), JS)?;
+    showcases::write(output, base, &header(), footer(), active_species_count)?;
     fs::write(
         output.join("pokedex.json"),
         serde_json::to_vec(
-            &json!({"schema_version":1,"species_count":active_species_count,"family_count":active_family_count,"species":downloads,"cut_species_count":cut_downloads.len(),"cut_family_count":retired.len(),"cut_species":cut_downloads,"moves":move_catalog["moves"]}),
+            &json!({"schema_version":1,"species_count":active_species_count,"family_count":active_family_count,"species":downloads,"cut_species_count":cut_downloads.len(),"cut_family_count":retired.len(),"cut_species":cut_downloads,"moves":move_catalog["moves"],"machine_catalog":machines.entries,"pack_content_hash":pack.identity()?.content_hash,"walking_thumbnail_count":media.thumbnail_count(),"cry_species_count":if args.len()==9 {active_species_count} else {0}}),
         )?,
     )?;
     fs::write(

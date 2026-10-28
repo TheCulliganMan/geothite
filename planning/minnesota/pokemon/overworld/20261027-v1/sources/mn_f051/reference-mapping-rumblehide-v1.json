@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_105",
+  "family_id": "MN_F051",
+  "prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f051/prompt-rumblehide-v1.txt",
+  "input_images": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/references/native-pack-16px/native-six-frame-style-board.8x.png",
+      "role": "ONLY input: authentic native16 overworld STYLE, not identity",
+      "sha256": "4354a639ed1a80fd6686e43b273443ed894e58a84307a8049f638ee9ffa2a099"
+    }
+  ],
+  "identity_reviewed_not_supplied_to_imagegen": [
+    {
+      "path": "target/minnesota-pokemon/native/MN_F051/mn-105-rumblehide-v1.front.png",
+      "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F051/mn-105-rumblehide-v1.front.png",
+      "sha256": "a1e0bc5855dd63319f2c94bbb68ffbc87b5ad2b4c31b1598bf00fd09af4d8c72"
+    },
+    {
+      "path": "target/minnesota-pokemon/native/MN_F051/mn-105-rumblehide-v1.back.png",
+      "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F051/mn-105-rumblehide-v1.back.png",
+      "sha256": "e3cea9b218055aee5eb1c50a8eb98c2adf9c521c9ad93999efeffb6c744c3ed7"
+    }
+  ],
+  "canonical_theme": "Prairie bison and rolling thunder: a dusty calf develops a resonating shoulder hump, then stores the thunder of its charge between broad horn tips.",
+  "palette_binding": {
+    "transparent_index": 0,
+    "visible_indices": [
+      1,
+      2,
+      3
+    ],
+    "normal_rgb555_words": [
+      32767,
+      8759,
+      5353,
+      0
+    ],
+    "shiny_rgb555_words": [
+      32767,
+      18152,
+      7461,
+      0
+    ],
+    "white_body_region_policy": "Simplify formerly white body/highlight regions to light ink1. Index0 is transparent everywhere, not an opaque white paint color."
+  },
+  "fit": 13
+}

@@ -1,0 +1,112 @@
+{
+  "id": "MnR03Cave1F",
+  "template": "UnionCave1F",
+  "dimensions_metatiles": [
+    8,
+    6
+  ],
+  "rows": [
+    "2e 2e 2e 2e 2e 2e 2e 2e",
+    "2e 2e 04 05 05 05 06 2e",
+    "2e 04 02 0a 34 08 0a 2e",
+    "2e 20 3e 0a 2d 20 22 2e",
+    "2e 2e 20 07 2d 2e 2e 2e",
+    "2e 2e 2e 2e 2e 2e 2e 2e"
+  ],
+  "exits": [
+    [
+      7,
+      9
+    ]
+  ],
+  "clear_arrival": [
+    7,
+    8
+  ],
+  "exit_collision": "LADDER",
+  "border_block": 46,
+  "residents": [
+    {
+      "id": "MN_R03_CAVE_WALKER",
+      "sprite": "SPRITE_POKEFAN_M",
+      "tile": [
+        5,
+        5
+      ],
+      "facing": "south",
+      "lines": [
+        "A pocket of dry",
+        "stone by the bank.",
+        "The path curves",
+        "around that rock.",
+        "Take the far cache",
+        "and circle back."
+      ]
+    }
+  ],
+  "items": [
+    {
+      "id": "MN_R03_ITEM_02",
+      "item": "GREAT_BALL",
+      "quantity": 1,
+      "flag": "EVENT_MN_R03_ITEM_02",
+      "tile": [
+        12,
+        5
+      ]
+    }
+  ],
+  "signs": [],
+  "purpose": "A small bank seep occupies the unused west shoulder; the dry passage fits tightly between water and the attached granite nose. The upper blind bend still leads to the Great Ball.",
+  "candidate_status": "Source candidate under whole-room, player-camera and production traversal review.",
+  "review_contract": {
+    "quality_revision": "johto-quality-v01",
+    "palette_group": "nite",
+    "native_stair_blocks": [],
+    "viewpoints": [
+      {
+        "id": "mouth",
+        "tile": [
+          7,
+          8
+        ]
+      },
+      {
+        "id": "seep-bank",
+        "tile": [
+          6,
+          7
+        ]
+      },
+      {
+        "id": "walker",
+        "tile": [
+          4,
+          5
+        ]
+      },
+      {
+        "id": "blind-bend",
+        "tile": [
+          8,
+          3
+        ]
+      },
+      {
+        "id": "cache",
+        "tile": [
+          11,
+          5
+        ]
+      },
+      {
+        "id": "widest-lip",
+        "tile": [
+          10,
+          3
+        ]
+      }
+    ],
+    "notes": "A small bank seep occupies the unused west shoulder; the dry passage fits tightly between water and the attached granite nose. The upper blind bend still leads to the Great Ball."
+  }
+}

@@ -1,5 +1,15 @@
 # Glacier Line
 
+Current native status: the composed Detroit Lakes child contains the Detroit
+Lakes, St. Cloud and St. Paul public station halls with real city entrances.
+Detroit Lakes publication and verification are recorded in
+[its runbook](../interior-life/DETROIT-LAKES.md). No train service or visited
+callbacks are installed. Staples, Red Wing and Winona still need distinct
+station/outpost sources and native publication. The full six-stop service
+contract below remains unfinished. Earlier source-only notes describe the
+original depot proposal; current St. Paul exterior coordinates come from its
+[repair contract](../towns/st-paul-repair/contract.json).
+
 The line connects **Detroit Lakes — Staples — St. Cloud — St. Paul — Red Wing —
 Winona** in both directions. This follows the Minnesota stops in Amtrak's
 [Empire Builder timetable](https://content.amtrak.com/content/timetable/Empire%20Builder.pdf).
@@ -13,8 +23,8 @@ station interior is [MnStPaulUnionDepot.json](MnStPaulUnionDepot.json), a hand-s
 16×12 metatile room using the unchanged native `train_station` art. Its source
 render is [the complete depot](../renders/glacier-line/st-paul-union-depot.png),
 with [160×144 walking views](../renders/glacier-line/st-paul-player-views.png).
-These are source reviews. The current quality pack has no Glacier Line maps or
-service; Detroit Lakes, St. Cloud and St. Paul still need their town exteriors.
+These original images are source reviews. The current three public halls are
+installed, with their own later native review; the six-stop ride service is not.
 
 The original depot pass left an empty blue central concourse. The second pass
 adds a planted seating island and an actual cabinet edge near the courier,
@@ -67,8 +77,9 @@ platform or train doors. Source compilation must reject missing bindings.
 
 Q03's courier win sets `EVENT_MN_COURIER_DEFEATED`, which activates service.
 This is the St. Paul courier event; Grand Rapids' Q06 depot flags are unrelated.
-The courier battle, party and post-win scene still need implementation. Talking
-to the placeholder source actor must never grant the win or train access.
+The canonical courier encounter is now bound to the native depot; retain its
+existing upstream prerequisites, party and acknowledged post-battle event.
+Ordinary conversation must never substitute for that win.
 
 A native first-entry callback records each station's own visited flag. Players
 can ride back to stations they have physically reached. Passing an intermediate

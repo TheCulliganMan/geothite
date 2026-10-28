@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F101",
+  "species": [
+    {
+      "species_id": "MN_220",
+      "runtime_token": "BEETYNAMO",
+      "palette_rgb555": [
+        32767,
+        13177,
+        14538,
+        0
+      ],
+      "shiny_palette_rgb555": [
+        32767,
+        28460,
+        6478,
+        0
+      ],
+      "fit": [
+        14,
+        14
+      ],
+      "alpha_threshold": 128,
+      "sampling": "source_center",
+      "minimum_foreground_samples": 16,
+      "black_priority_samples": 64,
+      "interior_black_samples": 64,
+      "opaque_interior_minimum_samples": 64,
+      "frames": [
+        {
+          "pose": "down_idle",
+          "source": "beetynamo.overworld.imagegen-v1.png",
+          "crop": [
+            93,
+            113,
+            447,
+            391
+          ]
+        },
+        {
+          "pose": "up_idle",
+          "source": "beetynamo.overworld.imagegen-v1.png",
+          "crop": [
+            564,
+            112,
+            447,
+            391
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "source": "beetynamo.overworld.imagegen-v1.png",
+          "crop": [
+            1020,
+            96,
+            447,
+            391
+          ]
+        },
+        {
+          "pose": "down_step",
+          "source": "beetynamo.overworld.imagegen-v1.png",
+          "crop": [
+            93,
+            523,
+            447,
+            391
+          ]
+        },
+        {
+          "pose": "up_step",
+          "source": "beetynamo.overworld.imagegen-v1.png",
+          "crop": [
+            564,
+            523,
+            447,
+            391
+          ]
+        },
+        {
+          "pose": "left_step",
+          "source": "beetynamo.overworld.imagegen-v1.png",
+          "crop": [
+            1020,
+            506,
+            447,
+            391
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "tool": "built-in image_gen",
+  "original_tool_path": "/Users/ryanculligan/.codex/generated_images/01a17dcc-4f1a-77a2-9d21-0df036061346/exec-a17433ec-ec44-4a11-ae1a-6b39ae2e3c57.png",
+  "source_size": [
+    2169,
+    725
+  ],
+  "sha256": "14dd50ed0d4b604757cbd42c00938704b9b4d8aac3d6124e1e123dbb25a98e87",
+  "reference_paths": [
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f004/portabeau.overworld.imagegen-v6.png"
+  ],
+  "prompt": "portabeau.prompt-v7.txt"
+}

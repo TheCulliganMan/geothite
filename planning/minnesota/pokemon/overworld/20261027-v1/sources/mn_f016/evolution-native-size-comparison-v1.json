@@ -1,0 +1,126 @@
+{
+  "flapip": [
+    {
+      "pose": "down_idle",
+      "bounds": [
+        2,
+        5,
+        12,
+        10
+      ],
+      "opaque": 75
+    },
+    {
+      "pose": "up_idle",
+      "bounds": [
+        3,
+        5,
+        11,
+        10
+      ],
+      "opaque": 69
+    },
+    {
+      "pose": "left_idle",
+      "bounds": [
+        4,
+        5,
+        8,
+        10
+      ],
+      "opaque": 61
+    },
+    {
+      "pose": "down_step",
+      "bounds": [
+        2,
+        5,
+        12,
+        10
+      ],
+      "opaque": 76
+    },
+    {
+      "pose": "up_step",
+      "bounds": [
+        2,
+        5,
+        12,
+        10
+      ],
+      "opaque": 70
+    },
+    {
+      "pose": "left_step",
+      "bounds": [
+        4,
+        5,
+        8,
+        10
+      ],
+      "opaque": 62
+    }
+  ],
+  "stackajack": [
+    {
+      "pose": "down_idle",
+      "bounds": [
+        2,
+        5,
+        13,
+        10
+      ],
+      "opaque": 94
+    },
+    {
+      "pose": "up_idle",
+      "bounds": [
+        1,
+        5,
+        13,
+        10
+      ],
+      "opaque": 91
+    },
+    {
+      "pose": "left_idle",
+      "bounds": [
+        4,
+        5,
+        10,
+        10
+      ],
+      "opaque": 74
+    },
+    {
+      "pose": "down_step",
+      "bounds": [
+        2,
+        5,
+        13,
+        10
+      ],
+      "opaque": 91
+    },
+    {
+      "pose": "up_step",
+      "bounds": [
+        1,
+        5,
+        14,
+        10
+      ],
+      "opaque": 94
+    },
+    {
+      "pose": "left_step",
+      "bounds": [
+        4,
+        5,
+        10,
+        10
+      ],
+      "opaque": 71
+    }
+  ]
+}

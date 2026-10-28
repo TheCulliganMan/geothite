@@ -1,0 +1,7 @@
+{
+  "default_output": "/Users/ryanculligan/.codex/generated_images/01a17dcc-4f1a-77a2-9d21-0df036061346/exec-2fd049c4-804c-46d1-877d-4f8ec78ca73f.png",
+  "saved_source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f057/loessurge.overworld.imagegen-v3.png",
+  "exact_prompt": "loessurge.prompt-v3.txt",
+  "reference": "loessurge.overworld.imagegen-v2.png",
+  "mode": "targeted source edit"
+}

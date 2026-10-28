@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_165",
+  "family_id": "MN_F076",
+  "tool": "built-in image_gen",
+  "default_path": "/Users/ryanculligan/.codex/generated_images/01a178da-4cf1-7e01-8516-667a332dc790/exec-c4478737-1b30-4b85-9483-b7e9bd8f00d6.png",
+  "retained_raw": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f076/shawlter.overworld.imagegen-v1.png",
+  "sha256": "46507ac4a205a0ff7159b12267f61337f8b525c75cf67d2609df61aebe49020a",
+  "prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f076/prompt-shawlter-v1.txt",
+  "style_reference": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/references/native-pack-16px/native-six-frame-style-board.8x.png",
+    "sha256": "4354a639ed1a80fd6686e43b273443ed894e58a84307a8049f638ee9ffa2a099",
+    "role": "Only supplied reference; authentic native16 style and scale, no identity copying"
+  },
+  "canonical_identity_reviewed": {
+    "front": {
+      "path": "target/minnesota-pokemon/native/MN_F076/mn-165-shawlter-v7.front.png",
+      "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F076/mn-165-shawlter-v7.front.png",
+      "sha256": "80a2f7938706f6d012feeaf6544b8be4a39ea7b1eb10f67d22a66a68ba86e6d4"
+    },
+    "back": {
+      "path": "target/minnesota-pokemon/native/MN_F076/mn-165-shawlter-v7.back.png",
+      "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F076/mn-165-shawlter-v7.back.png",
+      "sha256": "069cccc697f696fabbad731ecd33d5df107f47b617bc21dec04383966fceacb4"
+    }
+  },
+  "palette_binding": {
+    "transparent_index": 0,
+    "visible_indices": [
+      1,
+      2,
+      3
+    ],
+    "normal_rgb555_words": [
+      32767,
+      13086,
+      24168,
+      0
+    ],
+    "shiny_rgb555_words": [
+      32767,
+      23067,
+      14758,
+      0
+    ],
+    "white_body_region_policy": "Simplify formerly white body/highlight regions to light ink1. Index0 is transparent everywhere, not an opaque white paint color."
+  },
+  "accepted": false
+}

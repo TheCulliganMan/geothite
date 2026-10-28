@@ -1,0 +1,18 @@
+{
+  "species_id": "MN_076",
+  "name": "Splitbeam",
+  "family_id": "MN_F031",
+  "tool": "built-in image_gen",
+  "selected_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f031/manifest-splitbeam-v1-pupil-proof.json",
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f031/splitbeam-v1-pupil-proof",
+  "normalized_proof": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f031/source-feature-proof-splitbeam-v1.json",
+  "detailed_proof": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f031/manifest-splitbeam-v1-pupil-proof.proof.json",
+  "sources": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f031/splitbeam.overworld.imagegen-v1.png": "3e701430a04c8e38ee379e445072dfd90e344efd6a2eae4dcfe07af6c7e6958b"
+  },
+  "preserved_attempt_receipts": [
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f031/attempt-splitbeam-v1.json"
+  ],
+  "status": "frozen native candidate; actual normal/shiny source features reviewed; root context pending",
+  "accepted": false
+}

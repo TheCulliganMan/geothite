@@ -1,0 +1,14 @@
+{
+  "tool": "built-in image_gen",
+  "original_tool_path": "/Users/ryanculligan/.codex/generated_images/01a17dcc-4f1a-77a2-9d21-0df036061346/exec-eebf05f1-1400-47a6-9657-84b9a0ae9cdb.png",
+  "source_size": [
+    2170,
+    725
+  ],
+  "sha256": "f2220451ba5b84501d4dd7682745a3d094c2c7de0987ca466d94fae0ee51020f",
+  "reference_paths": [
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/true16-portabeau-xy-registration-v5/MN_F004/review/line.normal-8x.png"
+  ],
+  "prompt": "portabeau.prompt-v6.txt",
+  "review": "Black mouth removed; opaque black contour and pupils need restoration because generated black paint became transparent."
+}

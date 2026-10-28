@@ -65,6 +65,7 @@ pub(crate) fn reachable(
             if matches!(
                 k,
                 "FLOOR"
+                    | "TALL_GRASS"
                     | "LADDER"
                     | "DOOR"
                     | "WARP_CARPET_DOWN"

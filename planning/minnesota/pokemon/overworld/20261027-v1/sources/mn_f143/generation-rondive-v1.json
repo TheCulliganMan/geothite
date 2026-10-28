@@ -1,0 +1,11 @@
+{
+  "tool": "built-in image_gen",
+  "original_path": "/Users/ryanculligan/.codex/generated_images/01a178da-4cf1-7e01-8516-667a332dc790/exec-37b08af9-f032-4519-bd17-770ae6c8d5f1.png",
+  "source_size": [
+    1536,
+    1024
+  ],
+  "source_sha256": "9717d4b49bfc6b3a14489f272f36e02271bc99d421e2a7bcf013d5323e9a2188",
+  "prompt": "prompt-rondive-v1.txt",
+  "style_reference": "references/native-pack-16px/native-six-frame-style-board.8x.png"
+}

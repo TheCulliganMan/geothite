@@ -1,0 +1,352 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_196",
+  "status": "source-proof-pass; root visual/context acceptance required",
+  "selected_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f090/manifest-crumcone-v2-pupil-proof.json",
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f090/crumcone-v2-pupil-proof",
+  "shared_transform": {
+    "source_bounds": [
+      8,
+      2,
+      324,
+      452
+    ],
+    "native_size": [
+      10,
+      14
+    ],
+    "native_origin": [
+      3,
+      1
+    ]
+  },
+  "all_four_nonrear_poses_have_actual_source_pupils": true,
+  "every_native_eye_cluster_maps_to_same_small_anatomical_source_pupil_component": true,
+  "actual_source_pupil_proofs": [
+    {
+      "pose": "down_idle",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f090/crumcone.overworld.imagegen-v2-front-pupil-spacing.png",
+      "crop": [
+        169,
+        42,
+        360,
+        465
+      ],
+      "anatomically_identified_source_eye_boxes_xywh": [
+        [
+          279,
+          294,
+          30,
+          28
+        ],
+        [
+          335,
+          294,
+          30,
+          28
+        ]
+      ],
+      "actual_eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              6,
+              9
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                3,
+                2,
+                1,
+                253
+              ],
+              "bounds": [
+                279,
+                294,
+                30,
+                28
+              ],
+              "pixels": 839,
+              "truncated_contour": false,
+              "native_pixel": [
+                6,
+                9
+              ],
+              "source_sample_pixel": [
+                290,
+                318
+              ]
+            }
+          ]
+        },
+        {
+          "native_cluster": [
+            [
+              8,
+              9
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                3,
+                2,
+                1,
+                254
+              ],
+              "bounds": [
+                335,
+                294,
+                30,
+                28
+              ],
+              "pixels": 840,
+              "truncated_contour": false,
+              "native_pixel": [
+                8,
+                9
+              ],
+              "source_sample_pixel": [
+                355,
+                318
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f090/crumcone.overworld.imagegen-v1.png",
+      "crop": [
+        981,
+        49,
+        360,
+        465
+      ],
+      "anatomically_identified_source_eye_boxes_xywh": [
+        [
+          1126,
+          293,
+          18,
+          21
+        ]
+      ],
+      "actual_eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              7,
+              8
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                12,
+                8,
+                2,
+                253
+              ],
+              "bounds": [
+                1126,
+                293,
+                18,
+                21
+              ],
+              "pixels": 378,
+              "truncated_contour": false,
+              "native_pixel": [
+                7,
+                8
+              ],
+              "source_sample_pixel": [
+                1134,
+                293
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f090/crumcone.overworld.imagegen-v2-front-pupil-spacing.png",
+      "crop": [
+        169,
+        516,
+        360,
+        465
+      ],
+      "anatomically_identified_source_eye_boxes_xywh": [
+        [
+          279,
+          768,
+          30,
+          28
+        ],
+        [
+          335,
+          768,
+          30,
+          28
+        ]
+      ],
+      "actual_eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              6,
+              9
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                1,
+                1,
+                0,
+                254
+              ],
+              "bounds": [
+                279,
+                768,
+                30,
+                28
+              ],
+              "pixels": 839,
+              "truncated_contour": false,
+              "native_pixel": [
+                6,
+                9
+              ],
+              "source_sample_pixel": [
+                290,
+                792
+              ]
+            }
+          ]
+        },
+        {
+          "native_cluster": [
+            [
+              8,
+              9
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                4,
+                3,
+                1,
+                254
+              ],
+              "bounds": [
+                335,
+                768,
+                30,
+                28
+              ],
+              "pixels": 840,
+              "truncated_contour": false,
+              "native_pixel": [
+                8,
+                9
+              ],
+              "source_sample_pixel": [
+                355,
+                792
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f090/crumcone.overworld.imagegen-v1.png",
+      "crop": [
+        980,
+        520,
+        360,
+        465
+      ],
+      "anatomically_identified_source_eye_boxes_xywh": [
+        [
+          1125,
+          764,
+          18,
+          22
+        ]
+      ],
+      "actual_eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              7,
+              8
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                10,
+                8,
+                3,
+                253
+              ],
+              "bounds": [
+                1125,
+                764,
+                18,
+                22
+              ],
+              "pixels": 396,
+              "truncated_contour": false,
+              "native_pixel": [
+                7,
+                8
+              ],
+              "source_sample_pixel": [
+                1133,
+                764
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "native_head_anchors_idle_walk_equal": true,
+  "validation": {
+    "runtime_2bpp_384_bytes_exact_allpixels": true,
+    "runtime_png16x96_index_parity": true,
+    "normal_shiny_palettebanks_exact": true,
+    "normal_shiny_all1536pixels_exact": true,
+    "transparent_border": true,
+    "idle_walk_pairs_distinct": true
+  },
+  "sha256": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f090/crumcone.overworld.imagegen-v1.png": "123375185391d7628c9a696aca1f3d70797420564c093bbde39d3d885a664b11",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f090/crumcone-v2-pupil-proof/gfx/pokemon/crumcone/overworld.png": "1af67d4ad2e8427447dd84bd4eeed8eb75220ade956a67511014a1c8b016a8d7",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f090/crumcone.overworld.imagegen-v2-front-pupil-spacing.png": "98cfdddc97ac70a21824568d01ca94f0dbe7e583009041b10e11d05af26c8fbe",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f090/crumcone-v2-pupil-proof/review/line.normal-8x.png": "c725dcb240b336b76b9a0e8bee34e7179d57ab610e35abb12b0bf79b1710a6c2",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f090/manifest-crumcone-v2-pupil-proof.json": "71f4cc7684a9a67ed8414f162a4f7382cef28011aa568f627cb89d76ecef8d7a",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f090/crumcone-v2-pupil-proof/gfx/pokemon/crumcone/overworld-shiny.gbcpal": "0eceb2609bef268fa0d6b0a4b820bd4eb90ce3e5bdd8e9eaf8a93b444ba31720",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f090/crumcone-v2-pupil-proof/review/line.shiny-8x.png": "78dbe3a89caf4d09b668d23ec312aa29189b0c32dabb80103007ab78d1f9fa86",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f090/crumcone-v2-pupil-proof/gfx/pokemon/crumcone/overworld.2bpp": "414cdf066cfee72fcc2d4b591b16eb3f177dc829d25d7f34f70083dbe247b9c4",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f090/crumcone-v2-pupil-proof/compiled-index.json": "552b8cbcf2bf78cf7e35469483971a84af5b453b5e0dbf19c30053fbd1b795fd",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f090/crumcone-v2-pupil-proof/gfx/pokemon/crumcone/overworld.gbcpal": "548fea3aff6a7a9c3427d1bca96829743c5eaa0ed830e0b9f83915a763d9bb65"
+  },
+  "actual_native_boards_viewed": true,
+  "rear_review": "plain rear head, no copied face; actual normal/shiny viewed"
+}

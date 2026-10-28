@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_114",
+  "name": "Boomruff",
+  "family_id": "MN_F054",
+  "generation_tool": "built-in image_gen",
+  "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f054/boomruff.overworld.imagegen-v1.png",
+  "original_default_output": "/Users/ryanculligan/.codex/generated_images/01a179bf-dc2b-7352-8975-8b8f3a32e33b/exec-ca03ee79-01aa-4e59-8904-623e7685397e.png",
+  "source_sha256": "3a4ec9fe07b1f697bf6ed1ab541a2b7a68c9c8922812865110927b712723d6ce",
+  "dimensions": [
+    1536,
+    1024
+  ],
+  "prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f054/prompt-boomruff-v1.txt",
+  "prompt_sha256": "6c131e6e34dbb0854ad21a6b6c0dba338335dd215d53f873fca4502c05d24c6a",
+  "reference_mapping": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f054/reference-mapping-boomruff-v1.json",
+  "selected_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f054/manifest-boomruff-v1-pupil-proof.json",
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f054/boomruff-v1-pupil-proof",
+  "source_pupil_proof": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f054/manifest-boomruff-v1-pupil-proof.proof.json",
+  "status": "frozen candidate; author actual normal/shiny and source pupils reviewed, root context pending",
+  "accepted": false
+}

@@ -1,0 +1,50 @@
+{
+  "status": "APPLIED_EXTERIOR_ONLY_SOURCE_PROMOTION",
+  "canonical_mutation": true,
+  "apply_supported": false,
+  "exterior_only": true,
+  "pack_sha256": "3d1cbdd18b05ce10ed66db7ab56d41f0032f6e045a0e72ad753064c5dc6ec8df",
+  "acceptance_sha256": "de1787505e570998e070587c5b76c0eb44dbe8917e04b65840afe3166d8e8056",
+  "files": [
+    {
+      "path": "planning/minnesota/routes/MN_R01.json",
+      "before_sha256": "5d5c4d49e763f74ba598cb59c699aaadf040beb6c73acdc2ac2aa6e9b1abb73f",
+      "proposed_sha256": "5d5c4d49e763f74ba598cb59c699aaadf040beb6c73acdc2ac2aa6e9b1abb73f",
+      "whole_file_unchanged": true
+    },
+    {
+      "path": "planning/minnesota/routes/MN_R01.layout.json",
+      "before_sha256": "8db9cffdf1ac6463538d835f7f2bc596f3e45b7eb90d27ace8bffffcc2c1c23a",
+      "proposed_sha256": "790dedfe482a5327bacdf9a1cbdfc2939d6ec5048a31821c560b8cf1df2fad67"
+    },
+    {
+      "path": "planning/minnesota/interiors.json",
+      "before_sha256": "e2fc017e0e468afb6cf8736c463593f6f5dc3570ea019cac427ba8c278b5314d",
+      "proposed_sha256": "e2fc017e0e468afb6cf8736c463593f6f5dc3570ea019cac427ba8c278b5314d",
+      "whole_file_unchanged": true
+    },
+    {
+      "path": "planning/minnesota/world.json",
+      "before_sha256": "cab18f767b997381ef408293060e9a24a291579c1a83e000454255061bb5ef4a",
+      "proposed_sha256": "cab18f767b997381ef408293060e9a24a291579c1a83e000454255061bb5ef4a",
+      "whole_file_unchanged": true
+    }
+  ],
+  "exterior_layout_proof": {
+    "frozen_candidate_sha256": "3c4f20df1226896b3ec8916efc42974486e5f25c3627724b2013b1eeb02d5348",
+    "editorial_fields_changed": [
+      "native_evidence",
+      "status"
+    ],
+    "all_other_layout_fields_exact": true,
+    "layout_blocks_exact": true,
+    "layout_blocks_sha256": "a00149225b3f5ce5c2e22b1781f6dca2f9014a9c05494d37f66e61b99282dfba",
+    "compiled_block_count": 640
+  },
+  "scope": "Exterior-only exact v05 terrain plus validated editorial status/native_evidence; current route dossier/interiors/world whole bytes unchanged.",
+  "applied_paths": [
+    "planning/minnesota/routes/MN_R01.layout.json"
+  ],
+  "source_dryrun_sha256": "428889ebb19e94f6c82b277a6ca83090464ee44947aec943a14f44ead3cb65d0",
+  "concurrent_cave_preserved": true
+}

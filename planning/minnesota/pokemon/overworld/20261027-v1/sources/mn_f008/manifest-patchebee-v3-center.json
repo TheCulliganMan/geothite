@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F008",
+  "species": [
+    {
+      "species_id": "MN_023",
+      "runtime_token": "PATCHEBEE",
+      "palette_rgb555": [
+        32767,
+        5561,
+        13637,
+        0
+      ],
+      "shiny_palette_rgb555": [
+        32767,
+        14117,
+        10413,
+        0
+      ],
+      "fit": [
+        14,
+        14
+      ],
+      "alpha_threshold": 128,
+      "sampling": "source_center",
+      "minimum_foreground_samples": 16,
+      "black_priority_samples": 64,
+      "interior_black_samples": 64,
+      "opaque_interior_minimum_samples": 64,
+      "frames": [
+        {
+          "pose": "down_idle",
+          "source": "patchebee.overworld.imagegen-v3.png",
+          "crop": [
+            110,
+            140,
+            360,
+            370
+          ]
+        },
+        {
+          "pose": "up_idle",
+          "source": "patchebee.overworld.imagegen-v3.png",
+          "crop": [
+            590,
+            140,
+            360,
+            370
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "source": "patchebee.overworld.imagegen-v3.png",
+          "crop": [
+            1080,
+            140,
+            360,
+            370
+          ]
+        },
+        {
+          "pose": "down_step",
+          "source": "patchebee.overworld.imagegen-v3.png",
+          "crop": [
+            110,
+            570,
+            360,
+            370
+          ]
+        },
+        {
+          "pose": "up_step",
+          "source": "patchebee.overworld.imagegen-v3.png",
+          "crop": [
+            590,
+            570,
+            360,
+            370
+          ]
+        },
+        {
+          "pose": "left_step",
+          "source": "patchebee.overworld.imagegen-v3.png",
+          "crop": [
+            1080,
+            570,
+            360,
+            370
+          ]
+        }
+      ]
+    }
+  ]
+}

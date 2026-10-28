@@ -2152,16 +2152,18 @@ impl OverworldObjectMapMemory {
         let mut slots = BTreeSet::new();
         let mut map_objects = BTreeSet::new();
         let mut normal_follower_slot = self.object_structs.player_normal_following.then_some(0);
-        if self.object_structs.structs.len() > 12 {
+        if self.object_structs.structs.len() > crate::world::object_capacity::MAX_MAP_OBJECTS {
             return Err(format!(
-                "map_object_overrides[{map_name}].object_structs contains {} non-player structs; Crystal has 12 slots",
+                "map_object_overrides[{map_name}].object_structs contains {} non-player structs; Geothite supports 255 slots",
                 self.object_structs.structs.len()
             ));
         }
         for object_struct in &self.object_structs.structs {
-            if !(1..=12).contains(&object_struct.slot) {
+            if !(1..=crate::world::object_capacity::MAX_MAP_OBJECTS as u8)
+                .contains(&object_struct.slot)
+            {
                 return Err(format!(
-                    "map_object_overrides[{map_name}].object_structs slot {} is outside 1..=12",
+                    "map_object_overrides[{map_name}].object_structs slot {} is outside 1..=255",
                     object_struct.slot
                 ));
             }
@@ -2227,15 +2229,6 @@ impl OverworldObjectMapMemory {
                     object_struct.slot
                 ));
             }
-            if object_struct
-                .following_not_exact_leader_slot
-                .is_some_and(|slot| slot > 12)
-            {
-                return Err(format!(
-                    "map_object_overrides[{map_name}].object_structs slot {} has a follow-not-exact leader slot outside 0..=12",
-                    object_struct.slot
-                ));
-            }
             if object_struct.normal_following
                 && object_struct.following_not_exact_leader_slot.is_some()
             {
@@ -2270,16 +2263,6 @@ impl OverworldObjectMapMemory {
             if following.leader_slot.is_none() && following.follower_slot.is_none() {
                 return Err(format!(
                     "map_object_overrides[{map_name}].following cannot have both slots absent"
-                ));
-            }
-            if following.leader_slot.is_some_and(|slot| slot > 12) {
-                return Err(format!(
-                    "map_object_overrides[{map_name}].following leader slot is outside 0..=12"
-                ));
-            }
-            if following.follower_slot.is_some_and(|slot| slot > 12) {
-                return Err(format!(
-                    "map_object_overrides[{map_name}].following follower slot is outside 0..=12"
                 ));
             }
         }
@@ -4190,7 +4173,7 @@ impl ScriptRuntimeMemory {
                     "pending_text_label {text_label} cannot be saved without an open text window"
                 ));
             }
-            if self.pending_text_wait.is_some() {
+            if self.pending_text_wait.is_some() && self.active_pokemon_picture.is_none() {
                 return Err(
                     "pending_text_wait cannot be saved without an open text window".to_string(),
                 );
@@ -11328,11 +11311,11 @@ mod tests {
                 ..OverworldObjectMapMemory::default()
             },
         );
-        assert_eq!(
-            state.validate_saved_state(),
-            Err(
-                "map_object_overrides[Route29].following leader slot is outside 0..=12".to_string()
-            )
+        assert!(
+            state.map_object_overrides["Route29"]
+                .validate_saved_state("Route29")
+                .is_ok(),
+            "byte-sized leader slots above twelve are valid for expanded maps"
         );
 
         state = GameState::default();
@@ -11346,12 +11329,11 @@ mod tests {
                 ..OverworldObjectMapMemory::default()
             },
         );
-        assert_eq!(
-            state.validate_saved_state(),
-            Err(
-                "map_object_overrides[Route29].following follower slot is outside 0..=12"
-                    .to_string()
-            )
+        assert!(
+            state.map_object_overrides["Route29"]
+                .validate_saved_state("Route29")
+                .is_ok(),
+            "byte-sized follower slots above twelve are valid for expanded maps"
         );
 
         state = GameState::default();
@@ -15091,6 +15073,10 @@ mod tests {
             runtime.validate(),
             Err("pending_text_wait cannot be saved without an open text window".to_string())
         );
+        runtime.active_pokemon_picture = Some("CHIKORITA".into());
+        runtime
+            .validate()
+            .expect("a native Pokemon picture owns its saved button wait");
 
         runtime = ScriptRuntimeMemory::default();
         runtime.pending_yes_no = Some(ScriptYesNoPrompt {

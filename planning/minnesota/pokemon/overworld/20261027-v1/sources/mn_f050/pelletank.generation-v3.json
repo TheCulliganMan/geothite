@@ -1,0 +1,11 @@
+{
+  "default_output": "/Users/ryanculligan/.codex/generated_images/01a17f9b-d422-7510-8f49-c2c58dedb47a/exec-cebcee20-9298-4cb8-be27-2405216d453f.png",
+  "saved_source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f050/pelletank.overworld.imagegen-v3.png",
+  "sha256": "490cdff5c30d51ef2744e6e374ad7d711ab7999ba69b5fc963e36f1f96b64d4f",
+  "prompt": "pelletank.prompt-v3.txt",
+  "references": [
+    "/Users/ryanculligan/GitHub/geothite/planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f050/pelletank.overworld.imagegen-v1.png"
+  ],
+  "tool": "built-in imagegen",
+  "accepted": false
+}

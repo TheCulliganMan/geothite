@@ -1,0 +1,202 @@
+{
+  "queue_number": 218,
+  "dex_number": 218,
+  "master_source_order": 307,
+  "species_id": "MN_097",
+  "name": "Pepivern",
+  "family_id": "MN_F046",
+  "stage": 1,
+  "types": [
+    "WATER",
+    "DRAGON"
+  ],
+  "evolves_to": null,
+  "section": "legendary",
+  "status": "awaiting_generation",
+  "family_job_id": "MN_F046",
+  "selected_reference_path": "target/minnesota-pokemon/native/MN_F046/mn-097-pepivern-v1.front.png",
+  "references": {
+    "front": {
+      "native_png": {
+        "path": "target/minnesota-pokemon/native/MN_F046/mn-097-pepivern-v1.front.png",
+        "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F046/mn-097-pepivern-v1.front.png",
+        "sha256": "f2c867478c27868423c2c0cbf13a56005ed2ea082c5ee74767219d37ad33c783"
+      },
+      "native_indexed_json": {
+        "path": "target/minnesota-pokemon/native/MN_F046/mn-097-pepivern-v1.front.json",
+        "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F046/mn-097-pepivern-v1.front.json",
+        "sha256": "6afd0080878f5a67e4ffc1e7cdb23a23013f0076ec6dff846a31c75a6ad4244b"
+      },
+      "native_2bpp": {
+        "path": "target/minnesota-pokemon/native/MN_F046/mn-097-pepivern-v1.front.2bpp",
+        "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F046/mn-097-pepivern-v1.front.2bpp",
+        "sha256": "035e9e0ec5dababb48a6668259bda1d656a3c5d4ce5f3224d0cc4c68948eeeab"
+      },
+      "source_image": {
+        "path": "planning/minnesota/pokemon/sprites/mn-f046/front-back.imagegen-v1.png",
+        "absolute_path": "/Users/ryanculligan/GitHub/geothite/planning/minnesota/pokemon/sprites/mn-f046/front-back.imagegen-v1.png",
+        "sha256": "049dccabb1cf7afc67419d8169a01fdbb770c2ac12d9b90a1a54c50d2b69b2a2"
+      },
+      "source_crop": [
+        0,
+        0,
+        1161,
+        677
+      ],
+      "native_fit": [
+        54,
+        54
+      ],
+      "generation_prompt": {
+        "path": "planning/minnesota/pokemon/sprites/mn-f046/prompt-v1.txt",
+        "absolute_path": "/Users/ryanculligan/GitHub/geothite/planning/minnesota/pokemon/sprites/mn-f046/prompt-v1.txt",
+        "sha256": "ac97b27c9da50a5acabc046be256dcc153b7ace97bbb23775352e1c0c8e12b79",
+        "reference_kind": "declared_design_prompt_reference; authoritative view record takes precedence over family default"
+      },
+      "sampling": "area_vote",
+      "exterior_contour": "source_backed",
+      "has_guarded_native_refinements": false,
+      "authority_note": "The current selected native PNG is the design authority; original source may contain detail simplified or refined in canonical conversion."
+    },
+    "back": {
+      "native_png": {
+        "path": "target/minnesota-pokemon/native/MN_F046/mn-097-pepivern-v1.back.png",
+        "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F046/mn-097-pepivern-v1.back.png",
+        "sha256": "b301c0808e6f6b81d1b4e5e080c0489491a414842ea7bb05fd7e6cfbb9c2daa5"
+      },
+      "native_indexed_json": {
+        "path": "target/minnesota-pokemon/native/MN_F046/mn-097-pepivern-v1.back.json",
+        "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F046/mn-097-pepivern-v1.back.json",
+        "sha256": "d7f955317942e3d4d98c4b9ce16c3afa59511e36a181bd36dc9a8308a4602489"
+      },
+      "native_2bpp": {
+        "path": "target/minnesota-pokemon/native/MN_F046/mn-097-pepivern-v1.back.2bpp",
+        "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F046/mn-097-pepivern-v1.back.2bpp",
+        "sha256": "e1ca707addb60580303c07943e66e32f1c66c65a9a1840e6f887643d57397469"
+      },
+      "source_image": {
+        "path": "planning/minnesota/pokemon/sprites/mn-f046/front-back.imagegen-v1.png",
+        "absolute_path": "/Users/ryanculligan/GitHub/geothite/planning/minnesota/pokemon/sprites/mn-f046/front-back.imagegen-v1.png",
+        "sha256": "049dccabb1cf7afc67419d8169a01fdbb770c2ac12d9b90a1a54c50d2b69b2a2"
+      },
+      "source_crop": [
+        0,
+        677,
+        1161,
+        678
+      ],
+      "native_fit": [
+        46,
+        47
+      ],
+      "generation_prompt": {
+        "path": "planning/minnesota/pokemon/sprites/mn-f046/prompt-v1.txt",
+        "absolute_path": "/Users/ryanculligan/GitHub/geothite/planning/minnesota/pokemon/sprites/mn-f046/prompt-v1.txt",
+        "sha256": "ac97b27c9da50a5acabc046be256dcc153b7ace97bbb23775352e1c0c8e12b79",
+        "reference_kind": "declared_design_prompt_reference; authoritative view record takes precedence over family default"
+      },
+      "sampling": "area_vote",
+      "exterior_contour": "source_backed",
+      "has_guarded_native_refinements": false,
+      "authority_note": "The current selected native PNG is the design authority; original source may contain detail simplified or refined in canonical conversion."
+    }
+  },
+  "palette": {
+    "species_id": "MN_097",
+    "name": "Pepivern",
+    "gbc_rgb5": [
+      [
+        31,
+        31,
+        31
+      ],
+      [
+        12,
+        23,
+        29
+      ],
+      [
+        7,
+        8,
+        19
+      ],
+      [
+        0,
+        0,
+        0
+      ]
+    ],
+    "gbc_rgb555_words": [
+      32767,
+      30444,
+      19719,
+      0
+    ],
+    "rgb8": [
+      [
+        255,
+        255,
+        255
+      ],
+      [
+        99,
+        189,
+        239
+      ],
+      [
+        57,
+        66,
+        156
+      ],
+      [
+        0,
+        0,
+        0
+      ]
+    ],
+    "hex": [
+      "#FFFFFF",
+      "#63BDEF",
+      "#39429C",
+      "#000000"
+    ]
+  },
+  "design": {
+    "family_theme": "Pepie, the Lake Pepin monster: paddlewheel fins and a back resembling distant steamboat wakes.",
+    "member_body_growth": null,
+    "member_silhouette": null,
+    "family_design_lock": null,
+    "family_sprite_design": null,
+    "silhouette_invariants_16px": [
+      "Preserve the accepted silhouette, face, limb/wing count and dominant theme shapes shown by the exact selected native references.",
+      "Choose one or two defining visible forms from the family theme; simplify directly for16pixels rather than scaling the battle sprite."
+    ],
+    "priority_invariants_manually_authored": false
+  },
+  "generation_attempts": [],
+  "selected_overworld_source": null,
+  "selected_native_candidate": null,
+  "native_visual_review": null,
+  "integration_proof": null,
+  "overworld_palette_binding": {
+    "transparent_index": 0,
+    "visible_indices": [
+      1,
+      2,
+      3
+    ],
+    "normal_rgb555_words": [
+      32767,
+      30444,
+      19719,
+      0
+    ],
+    "shiny_rgb555_words": [
+      32767,
+      23965,
+      8435,
+      0
+    ],
+    "white_body_region_policy": "Simplify formerly white body/highlight regions to light ink1. Index0 is transparent everywhere, not an opaque white paint color."
+  }
+}

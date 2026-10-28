@@ -1,0 +1,102 @@
+{
+  "schema_version": 1,
+  "id": "MnMaraisInlandNeck",
+  "name": "Gunflint Portage Camp",
+  "dimensions_metatiles": [
+    65,
+    19
+  ],
+  "origin_metatiles": [
+    162,
+    -419
+  ],
+  "native_connections": [
+    {
+      "direction": "west",
+      "target_map": "MnR12C01R01",
+      "offset": 0
+    },
+    {
+      "direction": "east",
+      "target_map": "MnMaraisCedarApproach",
+      "offset": 0
+    }
+  ],
+  "encounters": {
+    "source": "MnMaraisCedarApproach",
+    "source_sha256": "50d1260ec4b74e462a5442199f28b31daa120ae4816fd968d3d8c095ff5aafab",
+    "preserve_table_except_map_name": true
+  },
+  "items": [
+    {
+      "id": "MN_INLAND_CAMP_SUPPLY",
+      "core": [
+        63,
+        27
+      ],
+      "item": "BERRY",
+      "quantity": 3,
+      "event_flag": "EVENT_MN_GUNFLINT_CAMP_SUPPLY",
+      "fresh_event": 2387
+    }
+  ],
+  "signs": [
+    {
+      "id": "MN_INLAND_CAMP_SIGN",
+      "core": [
+        69,
+        25
+      ],
+      "lines": [
+        "PORTAGE CAMP",
+        "Three BERRIES for",
+        "the trail ahead."
+      ]
+    }
+  ],
+  "one_way_ledges": [
+    {
+      "takeoff_core": [
+        24,
+        10
+      ],
+      "landing_core": [
+        24,
+        12
+      ],
+      "walking_return_inputs": 26
+    },
+    {
+      "takeoff_core": [
+        82,
+        12
+      ],
+      "landing_core": [
+        82,
+        14
+      ],
+      "walking_return_inputs": 24
+    }
+  ],
+  "native_registration": {
+    "constant": "MN_MARAIS_INLAND_NECK",
+    "name": "MnMaraisInlandNeck",
+    "groupName": "MINNESOTA",
+    "groupId": 40,
+    "mapId": 8,
+    "width": 65,
+    "height": 19,
+    "environment": "ROUTE",
+    "phoneService": 0
+  },
+  "status": "MATCHES_COMPOSED_NATIVE_GEOGRAPHY",
+  "native_geography_publication": {
+    "final_pack_sha256": "65cf6f98e65ada839ec5afaa57728bf8289d3a50ba53ba6b9b50f08d3620bb17",
+    "content_identity": "f34280a5fc5d6ab8ccc3ec4ef4317a6ea9321070df342ea95aca5745514a0223",
+    "source_contract": "revisions/north-shore-ely-geography-v01/geography/native-west-v02/contract.json",
+    "source_contract_sha256": "ee195bcfc318fa55e5c31d6f37f75ebbf1bb033760c98267303bc46a6beecc5c",
+    "verification": "revisions/north-shore-ely-geography-v01/VERIFICATION.md",
+    "progression_scope": "Local explicit fixtures and production inputs; earned campaign progression is not established."
+  },
+  "retained_recovery": null
+}

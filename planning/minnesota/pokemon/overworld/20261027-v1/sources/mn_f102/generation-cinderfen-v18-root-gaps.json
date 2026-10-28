@@ -1,0 +1,8 @@
+{
+  "tool": "built-in image_gen",
+  "default_path": "/Users/ryanculligan/.codex/generated_images/01a178da-4cf1-7e01-8516-667a332dc790/exec-5ad55627-5000-4d1e-8678-689e31cf7091.png",
+  "retained_raw": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f102/cinderfen.overworld.imagegen-v18-root-gaps.png",
+  "sha256": "79e46eac6399596c64ce273880ad8b2964a2e6aa5664180444f60b1b14791735",
+  "prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f102/prompt-cinderfen-clear-upper-gap-v18.txt",
+  "accepted": false
+}

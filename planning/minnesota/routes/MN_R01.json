@@ -480,21 +480,21 @@
       "width_metatiles": 8,
       "height_metatiles": 7,
       "tileset": "cave",
-      "border_block": 1,
+      "border_block": 46,
       "exterior_anchor_metatile": [
         9,
         8
       ],
       "mandatory": false,
-      "purpose": "Two small limestone hollows connect through a lower passage; optional Antidote.",
+      "purpose": "Retain the newly published upper cycle and both climbs; round the spine toe into the mouth court instead of a sheer square end. Continuous native bedrock encloses the hollow.",
       "rows": [
-        "01 01 01 01 01 01 01 01",
-        "01 01 04 06 01 04 06 01",
-        "01 04 02 0a 04 02 0a 01",
-        "01 08 02 0a 2f 30 22 01",
-        "01 20 12 2d 02 02 0a 01",
-        "01 01 20 21 07 21 22 01",
-        "01 01 01 01 01 01 01 01"
+        "2e 2e 2e 2e 2e 2e 2e 2e",
+        "2e 2e 04 05 05 06 06 2e",
+        "2e 04 02 0a 04 02 0a 2e",
+        "2e 08 02 0a 2f 30 22 2e",
+        "2e 20 12 2d 28 02 0a 2e",
+        "2e 2e 20 21 07 21 22 2e",
+        "2e 2e 2e 2e 2e 2e 2e 2e"
       ],
       "exits": [
         [
@@ -539,165 +539,65 @@
       ],
       "signs": [],
       "review_contract": {
-        "status": "Native e549 review and two production controller cases PASS; final user visual approval and earned regional progression remain open.",
+        "quality_revision": "johto-quality-v01",
         "palette_group": "nite",
-        "identity": "Two offset limestone hollows joined by a low entrance passage; choose a short stair to the original guide or a different climb to the visible original Antidote. No ledge is needed in this introductory footprint.",
         "native_stair_blocks": [
-          [
-            2,
-            4
-          ],
           [
             5,
             3
+          ],
+          [
+            2,
+            4
           ]
         ],
-        "loop_waypoints_core": [
-          [
-            9,
-            10
-          ],
-          [
-            5,
-            10
-          ],
-          [
-            4,
-            5
-          ],
-          [
-            10,
-            5
-          ],
-          [
-            10,
-            8
-          ]
-        ],
-        "one_way_ledges": [],
         "viewpoints": [
           {
-            "id": "MOUTH_CHOICE",
+            "id": "mouth",
             "tile": [
               9,
               10
             ]
           },
           {
-            "id": "GUIDE_APPROACH",
+            "id": "guide",
             "tile": [
               4,
               5
             ]
           },
           {
-            "id": "GUIDE_STAIR",
+            "id": "upper-cycle",
             "tile": [
-              5,
-              9
+              7,
+              3
             ]
           },
           {
-            "id": "ANTIDOTE_DISCOVERY",
-            "tile": [
-              10,
-              5
-            ]
-          },
-          {
-            "id": "SUPPLY_STAIR",
+            "id": "east-stair",
             "tile": [
               10,
               7
             ]
+          },
+          {
+            "id": "spine-toe",
+            "tile": [
+              9,
+              8
+            ]
+          },
+          {
+            "id": "west-stair",
+            "tile": [
+              5,
+              9
+            ]
           }
         ],
-        "controller_probes": {
-          "stairs": [
-            {
-              "id": "GUIDE_HOLLOW",
-              "metatile": [
-                2,
-                4
-              ],
-              "block": "12",
-              "before": [
-                5,
-                7
-              ],
-              "lane": [
-                [
-                  5,
-                  8
-                ],
-                [
-                  5,
-                  9
-                ]
-              ],
-              "after": [
-                5,
-                10
-              ],
-              "blocked_from": [
-                5,
-                9
-              ],
-              "blocked_target": [
-                4,
-                9
-              ],
-              "destination": [
-                4,
-                5
-              ]
-            },
-            {
-              "id": "ANTIDOTE_HOLLOW",
-              "metatile": [
-                5,
-                3
-              ],
-              "block": "30",
-              "before": [
-                10,
-                5
-              ],
-              "lane": [
-                [
-                  10,
-                  6
-                ],
-                [
-                  10,
-                  7
-                ]
-              ],
-              "after": [
-                10,
-                8
-              ],
-              "blocked_from": [
-                10,
-                7
-              ],
-              "blocked_target": [
-                11,
-                7
-              ],
-              "destination": [
-                10,
-                5
-              ]
-            }
-          ]
-        },
-        "native_pack_sha256": "e549c178f37a3137e8ca7f119aeee79460164f1dbd3ea6d205be8928415fd04c",
-        "native_checks": 147,
-        "native_captures": 6,
-        "controller_cases": 2,
-        "local_full_bag_retry": "Not exercised locally; shared R10 engine regression is separate evidence."
-      }
+        "notes": "Retain the newly published upper cycle and both climbs; round the spine toe into the mouth court instead of a sheer square end. Continuous native bedrock encloses the hollow."
+      },
+      "candidate_status": "Source candidate under whole-room, player-camera and production traversal review."
     },
     {
       "id": "MnR01Farmhouse",

@@ -1,0 +1,210 @@
+{
+  "species": "castoroar",
+  "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f018/castoroar-v19-sized-eyes",
+  "status": "actual-source native proof passes; root visual/context acceptance pending",
+  "all_four_nonrear_actual_isolated_source_pupils": true,
+  "six16px_alpha_border_normal_shiny_runtime_parity": true,
+  "canonical_palettes": true,
+  "proof": [
+    {
+      "pose": "down_idle",
+      "actual_small_isolated_pupils": [
+        {
+          "native": [
+            6,
+            6
+          ],
+          "source_sample": [
+            203,
+            203
+          ],
+          "source_component": [
+            197,
+            181,
+            34,
+            34
+          ],
+          "component_pixels": 1155,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            0,
+            0,
+            0,
+            253
+          ]
+        },
+        {
+          "native": [
+            9,
+            6
+          ],
+          "source_sample": [
+            307,
+            203
+          ],
+          "source_component": [
+            294,
+            181,
+            34,
+            34
+          ],
+          "component_pixels": 1151,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            2
+          ],
+          "source_rgba": [
+            0,
+            0,
+            0,
+            253
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "actual_small_isolated_pupils": [
+        {
+          "native": [
+            3,
+            6
+          ],
+          "source_sample": [
+            1072,
+            258
+          ],
+          "source_component": [
+            1051,
+            234,
+            24,
+            27
+          ],
+          "component_pixels": 626,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            3,
+            3,
+            3,
+            254
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "actual_small_isolated_pupils": [
+        {
+          "native": [
+            6,
+            6
+          ],
+          "source_sample": [
+            203,
+            658
+          ],
+          "source_component": [
+            197,
+            632,
+            34,
+            34
+          ],
+          "component_pixels": 1156,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            0,
+            0,
+            0,
+            253
+          ]
+        },
+        {
+          "native": [
+            9,
+            6
+          ],
+          "source_sample": [
+            307,
+            658
+          ],
+          "source_component": [
+            294,
+            632,
+            34,
+            34
+          ],
+          "component_pixels": 1140,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            2
+          ],
+          "source_rgba": [
+            1,
+            0,
+            0,
+            253
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "actual_small_isolated_pupils": [
+        {
+          "native": [
+            3,
+            6
+          ],
+          "source_sample": [
+            1072,
+            708
+          ],
+          "source_component": [
+            1051,
+            683,
+            24,
+            26
+          ],
+          "component_pixels": 624,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            13,
+            16,
+            16,
+            254
+          ]
+        }
+      ]
+    }
+  ],
+  "hashes": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f018/castoroar-v19-sized-eyes/compiled-index.json": "84553580ba771a0a9f05009ccfa4d6aee588777613b50d0f577934bc1a820bec",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f018/castoroar.overworld.imagegen-v8-bold-front-pupils.png": "e96693cd2459d231968feac510051ad50c6d99d5105c961babd32d2e8739a8d8",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f018/castoroar.overworld.imagegen-v7-taller-torso.png": "0c14626059d90049f9ec53cefa80b7d2099c9b9977c72815d1cd708c03bfce0d"
+  },
+  "no_native_pixel_painting": true
+}

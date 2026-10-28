@@ -1,0 +1,15 @@
+{
+  "tool": "built-in image_gen",
+  "source_default_path": "/Users/ryanculligan/.codex/generated_images/01a178da-4cf1-7e01-8516-667a332dc790/exec-e753f8b3-1bc4-4509-8a0a-7076f5b44224.png",
+  "source_workspace": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f016/stackajack.overworld.imagegen-v1.png",
+  "source_sha256": "cb76342d40914ecac1f83430eb7a072bcf8b0226250e2ccfeeb50cbb2118f90a",
+  "prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f016/prompt-stackajack-v1.txt",
+  "input_style": "planning/minnesota/pokemon/overworld/20261027-v1/references/native-pack-16px/native-six-frame-style-board.8x.png",
+  "canonical_identity_review": "target/minnesota-pokemon/native/MN_F016/line.review.png inspected separately.",
+  "status": "source generated; native conversion and actual pupil proofs pending",
+  "preserved_hashes": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f016/stackajack.overworld.imagegen-v1.png": "cb76342d40914ecac1f83430eb7a072bcf8b0226250e2ccfeeb50cbb2118f90a",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f016/prompt-stackajack-v1.txt": "2185d0c1792062fb773ffffe2e98452d9ec9ceab28f524a3bef3957ea27e3fe3",
+    "planning/minnesota/pokemon/overworld/20261027-v1/references/native-pack-16px/native-six-frame-style-board.8x.png": "4354a639ed1a80fd6686e43b273443ed894e58a84307a8049f638ee9ffa2a099"
+  }
+}

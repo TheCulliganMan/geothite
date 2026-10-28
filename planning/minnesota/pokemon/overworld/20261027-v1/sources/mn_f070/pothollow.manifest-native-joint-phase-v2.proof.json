@@ -1,0 +1,345 @@
+{
+  "species_id": "MN_149",
+  "name": "pothollow",
+  "status": "native-review-recommended; root independent review and context required",
+  "selected_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f070/pothollow.manifest-native-joint-phase-v2.json",
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/true16-pothollow-v2",
+  "shared_transform": {
+    "source_bounds": [
+      12,
+      12,
+      396,
+      341
+    ],
+    "native_size": [
+      14,
+      12
+    ],
+    "native_origin": [
+      1,
+      3
+    ]
+  },
+  "all_four_nonrear_poses_actual_pupils_pass": true,
+  "each_native_eye_cluster_maps_to_one_actual_small_source_pupil_component": true,
+  "actual_source_pupil_proofs": [
+    {
+      "pose": "down_idle",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f070/pothollow.overworld.imagegen-v2.png",
+      "crop": [
+        71,
+        114,
+        420,
+        365
+      ],
+      "actual_source_eye_bounds": [
+        [
+          235,
+          357,
+          26,
+          25
+        ],
+        [
+          300,
+          357,
+          25,
+          25
+        ]
+      ],
+      "eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              6,
+              11
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                2,
+                6,
+                5,
+                254
+              ],
+              "bounds": [
+                235,
+                357,
+                26,
+                25
+              ],
+              "pixels": 650,
+              "truncated_contour": false,
+              "native_pixel": [
+                6,
+                11
+              ],
+              "source_sample_pixel": [
+                238,
+                367
+              ]
+            }
+          ]
+        },
+        {
+          "native_cluster": [
+            [
+              9,
+              11
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                4,
+                6,
+                6,
+                254
+              ],
+              "bounds": [
+                300,
+                357,
+                25,
+                25
+              ],
+              "pixels": 625,
+              "truncated_contour": false,
+              "native_pixel": [
+                9,
+                11
+              ],
+              "source_sample_pixel": [
+                323,
+                367
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f070/pothollow.overworld.imagegen-v2.png",
+      "crop": [
+        1049,
+        116,
+        420,
+        365
+      ],
+      "actual_source_eye_bounds": [
+        [
+          1120,
+          262,
+          29,
+          33
+        ]
+      ],
+      "eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              3,
+              8
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                1,
+                1,
+                0,
+                254
+              ],
+              "bounds": [
+                1120,
+                262,
+                29,
+                33
+              ],
+              "pixels": 956,
+              "truncated_contour": false,
+              "native_pixel": [
+                3,
+                8
+              ],
+              "source_sample_pixel": [
+                1131,
+                284
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f070/pothollow.overworld.imagegen-v2.png",
+      "crop": [
+        63,
+        564,
+        420,
+        365
+      ],
+      "actual_source_eye_bounds": [
+        [
+          237,
+          802,
+          25,
+          25
+        ],
+        [
+          301,
+          802,
+          25,
+          25
+        ]
+      ],
+      "eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              7,
+              11
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                3,
+                3,
+                3,
+                254
+              ],
+              "bounds": [
+                237,
+                802,
+                25,
+                25
+              ],
+              "pixels": 613,
+              "truncated_contour": false,
+              "native_pixel": [
+                7,
+                11
+              ],
+              "source_sample_pixel": [
+                258,
+                817
+              ]
+            }
+          ]
+        },
+        {
+          "native_cluster": [
+            [
+              9,
+              11
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                2,
+                1,
+                1,
+                253
+              ],
+              "bounds": [
+                301,
+                802,
+                25,
+                25
+              ],
+              "pixels": 621,
+              "truncated_contour": false,
+              "native_pixel": [
+                9,
+                11
+              ],
+              "source_sample_pixel": [
+                315,
+                817
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f070/pothollow.overworld.imagegen-v2.png",
+      "crop": [
+        1052,
+        562,
+        420,
+        365
+      ],
+      "actual_source_eye_bounds": [
+        [
+          1123,
+          710,
+          26,
+          28
+        ]
+      ],
+      "eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              3,
+              8
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                0,
+                0,
+                0,
+                253
+              ],
+              "bounds": [
+                1123,
+                710,
+                26,
+                28
+              ],
+              "pixels": 725,
+              "truncated_contour": false,
+              "native_pixel": [
+                3,
+                8
+              ],
+              "source_sample_pixel": [
+                1134,
+                730
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "old_native_poses_preserved_exactly": [
+    "down_idle",
+    "up_idle",
+    "left_idle",
+    "down_step",
+    "up_step",
+    "left_step"
+  ],
+  "normal_shiny_runtime_parity": "all1536pixels exact each",
+  "canonical_palette_bytes": "exact",
+  "all_three_walk_pairs_distinct": true,
+  "rear_review": "both rear native poses viewed; no copied face",
+  "normal_shiny_native_boards_actually_viewed": true,
+  "accepted_coverage_native_pack_untouched": true,
+  "manifest_sha256": "4d6bf9eb38d49f296ee230a022851969e730b36a1f266c492208bb71f183d153",
+  "compiled_index_sha256": "81ed2b9dda14f305225701ea7c477b5bba24c5d6c67983fc52c12112d5087607"
+}

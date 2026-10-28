@@ -1,0 +1,215 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_004",
+  "result": "pass",
+  "manifest_sha256": "babaa8a9935d38b649b9389c5557d401f961e7d9b78f05d26f07621ccb15c1ac",
+  "bank_sha256": "d4751d5c3fe087e3a722d5ef81524ea6f5e806f31410bb0f433aa36d643288a6",
+  "source_sha256": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f002/cindore.overworld.imagegen-v1.png": "b70680083180be59bcf443cae461a8525b87e9efe60ee4fece7d641b39c5c243"
+  },
+  "canonical_eye_form": "Two isolated actual black pupil dots south and one isolated actual black pupil west; source eye components verified in all four nonrear poses.",
+  "nonrear_poses": [
+    {
+      "pose": "down_idle",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            6,
+            8
+          ],
+          "source_sample": [
+            223,
+            284
+          ],
+          "source_component": [
+            208,
+            272,
+            18,
+            34
+          ],
+          "component_pixels": 612,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            6,
+            3,
+            1,
+            254
+          ]
+        },
+        {
+          "native": [
+            8,
+            8
+          ],
+          "source_sample": [
+            287,
+            284
+          ],
+          "source_component": [
+            286,
+            271,
+            18,
+            35
+          ],
+          "component_pixels": 629,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            1,
+            1,
+            0,
+            254
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            4,
+            8
+          ],
+          "source_sample": [
+            1208,
+            289
+          ],
+          "source_component": [
+            1199,
+            260,
+            19,
+            46
+          ],
+          "component_pixels": 834,
+          "native_neighbors": [
+            1,
+            1,
+            2,
+            1
+          ],
+          "source_rgba": [
+            0,
+            0,
+            0,
+            253
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            6,
+            8
+          ],
+          "source_sample": [
+            223,
+            756
+          ],
+          "source_component": [
+            208,
+            751,
+            16,
+            32
+          ],
+          "component_pixels": 512,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            2,
+            1,
+            0,
+            253
+          ]
+        },
+        {
+          "native": [
+            8,
+            8
+          ],
+          "source_sample": [
+            287,
+            756
+          ],
+          "source_component": [
+            287,
+            751,
+            17,
+            33
+          ],
+          "component_pixels": 548,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            22,
+            8,
+            1,
+            253
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            4,
+            8
+          ],
+          "source_sample": [
+            1208,
+            747
+          ],
+          "source_component": [
+            1200,
+            720,
+            17,
+            33
+          ],
+          "component_pixels": 561,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            0,
+            0,
+            0,
+            254
+          ]
+        }
+      ]
+    }
+  ],
+  "rear_anatomy": {
+    "result": "pass",
+    "notes": "Compact pointed coal/ore body, one molten crown/back seam, two stone fist arms and two feet source-traced all6 in ore-feature receipt. Plain nape/rear ore masses with one orange zigzag seam, no actual rear pupils. Four actual source pupil components are isolated natively; normal/shiny palettes, border, literal bank and stable gait pass. Pure west source original fully preserved; all six body scales shared. Normal/shiny boards viewed."
+  }
+}

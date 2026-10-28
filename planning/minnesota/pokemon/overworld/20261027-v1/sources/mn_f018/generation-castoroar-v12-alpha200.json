@@ -1,0 +1,84 @@
+{
+  "name": "castoroar",
+  "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f018/castoroar-v12-alpha200",
+  "selected_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f018/manifest-castoroar-v12-alpha200.json",
+  "tool": "built-in image_gen",
+  "status": "native-source-component proof passes; root visual/context acceptance required",
+  "source_hybrid": "front/rears rebuilt v4; west profile-only edit v5",
+  "alpha_threshold": 200,
+  "source_alpha_note": "Version5 empty-canvas translucent contamination excluded by strict200 cutoff; raw unchanged and retained. Actual art/pupils sampled directly.",
+  "normal_and_shiny_boards_viewed": true,
+  "all_raw_renders_prompts_retained": true,
+  "canonical_palettes": [
+    [
+      32767,
+      25332,
+      15754,
+      0
+    ],
+    [
+      32767,
+      24216,
+      12623,
+      0
+    ]
+  ],
+  "native_bounds": [
+    [
+      4,
+      6,
+      9,
+      9
+    ],
+    [
+      3,
+      6,
+      11,
+      9
+    ],
+    [
+      1,
+      6,
+      14,
+      9
+    ],
+    [
+      4,
+      6,
+      9,
+      9
+    ],
+    [
+      3,
+      6,
+      11,
+      9
+    ],
+    [
+      1,
+      6,
+      14,
+      9
+    ]
+  ],
+  "proof": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f018/proof-castoroar-v12-alpha200-actual-source.json",
+  "retained_source_hashes": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f018/castoroar.overworld.imagegen-v1.png": "91514fd670ae8689f71f5f2f998b40f29e0b3844d0647d499d3a3f853cdc2fc8",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f018/castoroar.overworld.imagegen-v4-native-rebuild.png": "7267c84cfeb8b61f00f8a416bdf140b3a86fac683ba3d339f5110fd01f465288",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f018/castoroar.overworld.imagegen-v5-profile-eyeplate.png": "76ce68784ee93d5c4c6848b215ad38b31efe39723abefb315e4b21efdbc4832f",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f018/castoroar.overworld.imagegen-v2-clear-faces.png": "b7d5b431e7b437ff95885953b9b109ab901c16c1b1d51b1c08ab5b8f573c4359",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f018/castoroar.overworld.imagegen-v3-clean-alpha.png": "bc02f3966cf116388cf1cd7fb3e3c6ecca49977b7cd19207f81e79d98de091dc",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f018/prompt-castoroar-v5-profile-eyeplate.txt": "58ed6f495a7d5e6c5d2f97956e3888c0265ac0af363e3f14bcf02ee1516a727a",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f018/prompt-castoroar-v4-native-rebuild.txt": "7caa0bc0c65008b5b70e374e7eaa2e52b30da2b7b771efd1772c4f17fe699d5a",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f018/prompt-castoroar-v1.txt": "825e680b94834107f6afcafc315c3694e59729d457638a2ed9ba3dddadb21c61",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f018/prompt-castoroar-v2-clear-faces.txt": "103b6b360102e64893c906b2f3eec358439b489b8bc22089f287094ee7e3ae20",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f018/prompt-castoroar-v3-clean-alpha.txt": "93392171959a8470730b8a3af0f2dc126d11eba01203cb852568c23c239afa96",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f018/castoroar.v5.original-path.txt": "2184d5be202a2bb741c536f8a4ed8519ba90683238a2ce15983d49e21cbf8445",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f018/castoroar.v4.original-path.txt": "f49546ebf3c59f8b37a562fb0452275a3d935a0432b2d00d0e670eaafb8e7b25",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f018/castoroar.v1.original-path.txt": "95f61101638c00db4f5128bac675deac178804810afdbae455a21e591828c068",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f018/castoroar.v2.original-path.txt": "afba56e371cef5852a5e0eda27898c528670da23ace95daaa94e7ebb54d3ef86",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f018/castoroar.v3.original-path.txt": "8f439ce8540cf19cd5981f7852db463efbce1950f0731d6eae923e30cada0e2c"
+  },
+  "no_native_pixel_painting": true,
+  "no_registry_or_pack_mutation": true
+}

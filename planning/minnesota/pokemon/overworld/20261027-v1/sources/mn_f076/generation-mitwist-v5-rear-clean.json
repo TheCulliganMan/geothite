@@ -1,0 +1,72 @@
+{
+  "tool": "built-in image_gen",
+  "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f076/mitwist-v5-rear-clean",
+  "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f076/manifest-mitwist-v5-rear-clean.json",
+  "normalized_receipt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f076/source-feature-proof-mitwist-v5-rear-clean.json",
+  "all_raws_prompts_rejected_trials_retained": true,
+  "no_native_pixel_painting": true,
+  "no_registry_or_pack_mutation": true,
+  "normal_shiny_boards_actually_viewed": true,
+  "canonical_palettes": [
+    [
+      32767,
+      20349,
+      19946,
+      0
+    ],
+    [
+      32767,
+      23376,
+      15595,
+      0
+    ]
+  ],
+  "native_bounds": [
+    [
+      3,
+      4,
+      9,
+      11
+    ],
+    [
+      3,
+      4,
+      9,
+      11
+    ],
+    [
+      3,
+      4,
+      9,
+      11
+    ],
+    [
+      3,
+      4,
+      9,
+      11
+    ],
+    [
+      3,
+      4,
+      9,
+      11
+    ],
+    [
+      3,
+      4,
+      9,
+      11
+    ]
+  ],
+  "retained_source_hashes": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f076/mitwist.overworld.imagegen-v3-rear-thumbs.png": "ef3fb78a2163fa57bc59c3f2b50c6f273093d53cec6d89d2bf8c5db4d47048f5",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f076/mitwist.overworld.imagegen-v2-outline-pupils.png": "9c858ba3456c349fce45ed4353487a7f52a5ba7589094bcc454990540b51a4e2",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f076/mitwist.overworld.imagegen-v1.png": "e91ea5d5332d86bfc0165786f98a84f6872501be9bb46a4102167fd4680f9da4",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f076/prompt-mitwist-v3-rear-thumbs.txt": "d043c23a1b0a3b97bf4096d4d22e6f882519625036d8e4e2eed4bacadf6eef2a",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f076/prompt-mitwist-outline-pupils-v2.txt": "cb519e8d7d188e5e85482ba07a50b942c789414beac349f77d8f045bc7f752bd",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f076/prompt-mitwist-v1.txt": "eaef6a257d8811c7983c08fa175c77a3579138255b937a31fb80e699a61c2c6b",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f076/mitwist.v3-rear-thumbs.original-path.txt": "e48689bdb6535178204bf9598bde39891991da6b86fb1f17ee39432dac3bd18d"
+  },
+  "status": "root independent visual/context acceptance pending"
+}

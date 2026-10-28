@@ -1,0 +1,51 @@
+{
+  "family_id": "MN_F121",
+  "species_id": "MN_259",
+  "prompt_file": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f121/prompt-rillbow-v1.txt",
+  "input_references": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/references/native-pack-16px/native-six-frame-style-board.8x.png",
+      "sha256": "4354a639ed1a80fd6686e43b273443ed894e58a84307a8049f638ee9ffa2a099",
+      "role": "Only tool input: authentic native16 map camera, coarse clusters, dot-eye style."
+    }
+  ],
+  "inspected_identity_context": {
+    "canonical_front": {
+      "path": "target/minnesota-pokemon/native/MN_F121/mn-259-rillbow-v1.front.png",
+      "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F121/mn-259-rillbow-v1.front.png",
+      "sha256": "868885d16950e0481aca738dd95fb4d73743ff3bdb9d3b09b3fe42e53363048b"
+    },
+    "canonical_back": {
+      "path": "target/minnesota-pokemon/native/MN_F121/mn-259-rillbow-v1.back.png",
+      "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F121/mn-259-rillbow-v1.back.png",
+      "sha256": "f27171ae2c2027a66efd81917317df8b5d33c0d30b2d9c4444a58867e6cc0909"
+    },
+    "invariants": [
+      "Compact pale teal C-shaped trout, blunt broad head, broad attached curved underbelly bow-fin, squared tail braced upward.",
+      "Short dorsal fin + small adipose fin; no props, weapons, human limbs or white opaque regions.",
+      "Light broad face with isolated black dot pupils; plain north."
+    ]
+  },
+  "battle_refs_passed_to_tool": false,
+  "palette_binding": {
+    "transparent_index": 0,
+    "visible_indices": [
+      1,
+      2,
+      3
+    ],
+    "normal_rgb555_words": [
+      32767,
+      26455,
+      15782,
+      0
+    ],
+    "shiny_rgb555_words": [
+      32767,
+      27385,
+      13519,
+      0
+    ],
+    "white_body_region_policy": "Simplify formerly white body/highlight regions to light ink1. Index0 is transparent everywhere, not an opaque white paint color."
+  }
+}

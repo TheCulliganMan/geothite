@@ -1,0 +1,133 @@
+{
+  "status": "Guarded detached seven-cell candidate; actual GM counterpart owned separately",
+  "parent_pack_sha256": "ebea77ccb9b9dbe54aa5101e32590c1b075ed8130f6e7fcfe2d8c8451dab11d8",
+  "parent_r11_module_sha256": "6a6ec704034d19bc369102b3f20cd29e858750f9539e0e652b9912299acf25e9",
+  "map": "MnR11C00R00",
+  "tileset": "mn_north_shore",
+  "cells": [
+    {
+      "metatile": [
+        24,
+        0
+      ],
+      "before": "30",
+      "after": "58"
+    },
+    {
+      "metatile": [
+        25,
+        0
+      ],
+      "before": "31",
+      "after": "35"
+    },
+    {
+      "metatile": [
+        26,
+        0
+      ],
+      "before": "31",
+      "after": "35"
+    },
+    {
+      "metatile": [
+        27,
+        0
+      ],
+      "before": "31",
+      "after": "35"
+    },
+    {
+      "metatile": [
+        28,
+        0
+      ],
+      "before": "31",
+      "after": "35"
+    },
+    {
+      "metatile": [
+        29,
+        0
+      ],
+      "before": "31",
+      "after": "35"
+    },
+    {
+      "metatile": [
+        30,
+        0
+      ],
+      "before": "31",
+      "after": "35"
+    }
+  ],
+  "old_north_connection": {
+    "direction": "north",
+    "target_map": "MnMaraisCedarApproach",
+    "offset": -8
+  },
+  "new_north_connection": {
+    "direction": "north",
+    "target_map": "MnGrandMarais",
+    "offset": 12
+  },
+  "matched_gm_south": {
+    "direction": "south",
+    "target_map": "MnR11C00R00",
+    "offset": -12
+  },
+  "foot_core": {
+    "r11": [
+      [
+        40,
+        0
+      ],
+      [
+        41,
+        0
+      ]
+    ],
+    "gm": [
+      [
+        16,
+        37
+      ],
+      [
+        17,
+        37
+      ]
+    ],
+    "unchanged_r11_terrain": true
+  },
+  "water_core": {
+    "r11": [
+      [
+        48,
+        0
+      ],
+      [
+        61,
+        0
+      ]
+    ],
+    "gm": [
+      [
+        24,
+        37
+      ],
+      [
+        37,
+        37
+      ]
+    ]
+  },
+  "preserve": {
+    "all_other_761_blocks": true,
+    "meta31_top_buoy_cap": true,
+    "all_c01_north_reef": true,
+    "all_other_attributes_programs_events_npcs": true
+  },
+  "physical_note": "This opens the actual installed Superior water below, not a new river. Land bank uses same actual58 as row1;6center metatiles use35. Every source lane remains WATER and adjacentrow1 WATER.",
+  "final_rebind_required": "Actual additiveEly/coldpine parent is pending; exactR11modulepreimage must remain equal beforepublication."
+}

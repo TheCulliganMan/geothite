@@ -129,7 +129,7 @@ fn mart_top_menu_text_stays_inside_its_window() {
 
 #[test]
 fn mart_cancel_and_empty_buy_list_preserve_valid_menu_flow() {
-    let session = include_str!("../deterministic_session.rs");
+    let session = include_str!("../deterministic_session_settling.rs");
     let interactions = include_str!("../battle_messages.rs");
 
     let cancel_quantity = session

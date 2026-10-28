@@ -1,0 +1,238 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F119",
+  "status": "candidate; root independentvisualreview requested",
+  "selected_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f119/manifest-true16-family-v6.json",
+  "runtime_output": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/true16-family-v6/MN_F119",
+  "tool": "built-in image_gen",
+  "normal_review": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/true16-family-v6/MN_F119/review/line.normal-8x.png",
+  "shiny_review": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/true16-family-v6/MN_F119/review/line.shiny-8x.png",
+  "proof": [
+    {
+      "species_id": "MN_255",
+      "runtime_token": "WHIRLNUT",
+      "frames": [
+        {
+          "pose": "down_idle",
+          "native_bounds": [
+            1,
+            3,
+            14,
+            12
+          ],
+          "pixel_sha256": "0e7c86a6ba10e0188ef7b5ca2e8f9061487297456922249f28249796e88b0d0c"
+        },
+        {
+          "pose": "up_idle",
+          "native_bounds": [
+            1,
+            3,
+            14,
+            12
+          ],
+          "pixel_sha256": "7f0a94bb815b8a1783763fc5b2685b03757ce90a2c6b840f611777b5650e5a23"
+        },
+        {
+          "pose": "left_idle",
+          "native_bounds": [
+            1,
+            3,
+            14,
+            12
+          ],
+          "pixel_sha256": "6335100fe10c05852f2dbf73cace8f6e7157450c7b59aedd6e19494d3be43506"
+        },
+        {
+          "pose": "down_step",
+          "native_bounds": [
+            1,
+            3,
+            14,
+            12
+          ],
+          "pixel_sha256": "e2241e778543588ae0dc511d018de0c241a5419ae5e75865910e84caf13b4f01"
+        },
+        {
+          "pose": "up_step",
+          "native_bounds": [
+            1,
+            3,
+            14,
+            12
+          ],
+          "pixel_sha256": "4445f03c1172c956969e581966353938725f22b47c86e478a26db7cf7f99e3c0"
+        },
+        {
+          "pose": "left_step",
+          "native_bounds": [
+            1,
+            3,
+            14,
+            12
+          ],
+          "pixel_sha256": "4763bb34cbdfa27ec10117a51c58cce0f551812a2cc9ec2854b3b41334dc37e7"
+        }
+      ],
+      "normal_shiny_indices_palette_parity": "all1536pixels exact each",
+      "native_frame_geometry": "16x16, six frames in16x96indexstack",
+      "border": "literalindex0allposes",
+      "walking": "allthreepairsdistinct"
+    },
+    {
+      "species_id": "MN_256",
+      "runtime_token": "SAMURREL",
+      "frames": [
+        {
+          "pose": "down_idle",
+          "native_bounds": [
+            1,
+            3,
+            14,
+            12
+          ],
+          "pixel_sha256": "77ff7ebd92929e4c7e3ded709dd44dbd1eb36e3f3be8290a19188335a0bb5dfd"
+        },
+        {
+          "pose": "up_idle",
+          "native_bounds": [
+            2,
+            3,
+            12,
+            12
+          ],
+          "pixel_sha256": "1582d1565b1127b4ff0c4953952b56a9982957f543e1f058e81fb36c7b7bd16a"
+        },
+        {
+          "pose": "left_idle",
+          "native_bounds": [
+            1,
+            3,
+            13,
+            12
+          ],
+          "pixel_sha256": "9843aaca1ba3088a4800c4baba5fa8811946b684e9718180cc1c7977b0922334"
+        },
+        {
+          "pose": "down_step",
+          "native_bounds": [
+            1,
+            3,
+            14,
+            12
+          ],
+          "pixel_sha256": "1ddabcdd85d4a94e54494118441373b88e6aeecbfb64ceccdd15acbc360bf36d"
+        },
+        {
+          "pose": "up_step",
+          "native_bounds": [
+            2,
+            3,
+            12,
+            12
+          ],
+          "pixel_sha256": "9331288aa4998ffebf43b96a87c41303bf43ba2de1246b8037b21b44f39fc023"
+        },
+        {
+          "pose": "left_step",
+          "native_bounds": [
+            1,
+            3,
+            13,
+            12
+          ],
+          "pixel_sha256": "f8671f4971e8cfed730e88ddbd1dcb537c4d3212fadf63e59fe24dd7c68e0989"
+        }
+      ],
+      "normal_shiny_indices_palette_parity": "all1536pixels exact each",
+      "native_frame_geometry": "16x16, six frames in16x96indexstack",
+      "border": "literalindex0allposes",
+      "walking": "allthreepairsdistinct"
+    }
+  ],
+  "local_visual_review": {
+    "Whirlnut": "Root-approvedv4direction unchanged; roundears, foldedside-lobes, integralpaddletail; twoisolated1x2eyes inbroadtanfrontface, oneleftfacingeye, facelesscocoaback.",
+    "Samurrel": "v6enlargedhead and restoredopaqueblack: twoseparateddoteyes onbothdownviews, oneeyeinsideleftcheek, facelessplumbacks, goldfoldedmembraneplanes and short integralmaple-keytail. No whitenedeyeglints, captions, costumes or electriccheekmarks.",
+    "limitations": "Source-centersampling can makecontoursegments1pixelthinandopen; rootmustjudge realterrain/playercontext before selection."
+  },
+  "generation_history": {
+    "v2": "bothspeciesrawsource stillfinedetailed; area-vote/center natives rejectedillegibleeyes",
+    "v3": "coarse-only reference improvedfaces butclippedSamurrelleftmembrane and introducedbackeyes; rejected",
+    "Whirlnutv4": "onlynativeWhirlnutreference, one-species3x2sheet; rootreview accepted direction",
+    "Whirlnutv5": "rawglow/invisibleoutlinesandeyes; rejectedbeforeconversion",
+    "Samurrelv4": "one-species3x2source, headtoosmallrelativewings; rejectednativeface",
+    "Samurrelv5": "enlargedhead butmissingopaqueblackcontour; converterrejectedbacks",
+    "Samurrelv6": "built-inImageGenrepairedopaqueblack andkeptcoarseface; pendingrootreview"
+  },
+  "sha256": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f119/manifest-true16-family-v6.json": "a6d254c460ce1a2743251d19648e5c8a1d869325dcf3ff78553dd110aa6214b8",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f119/whirlnut.overworld.imagegen-v4.png": "47f0e75a00620775a65febcc620f290a2e926e50cd891427da0e7df0db34c97a",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f119/samurrel.overworld.imagegen-v6.png": "abb4d8cb36e748bba2e99a5bbe974a8dbce92a2bd167dd71a1da95ba18552b59",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/true16-family-v6/MN_F119/compiled-index.json": "4da9696f9848494715273df97690270a0ca614f03277f86238913f2453ec0381",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/true16-family-v6/MN_F119/review/line.normal-8x.png": "3f0aa6ce2329025f2cdcee59112fb28c0dd81cf7645d59943a018a5b8f5fc250",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/true16-family-v6/MN_F119/review/line.shiny-8x.png": "6f1fe680bb366e4a633abc4f3501e44cce22cdb1026d799256544e6618377ffa"
+  },
+  "face_pixel_audit": {
+    "MN_255": {
+      "down_idle_eye_pixels": [
+        [
+          4,
+          9
+        ],
+        [
+          4,
+          10
+        ],
+        [
+          7,
+          9
+        ],
+        [
+          7,
+          10
+        ]
+      ],
+      "down_step_eye_pixels": [
+        [
+          4,
+          9
+        ],
+        [
+          4,
+          10
+        ],
+        [
+          7,
+          9
+        ],
+        [
+          7,
+          10
+        ]
+      ],
+      "eye_clusters": "two consistent1x2clusters separatedby2tanpixels; broad6x4tanface"
+    },
+    "MN_256": {
+      "down_idle_eye_pixels": [
+        [
+          5,
+          8
+        ],
+        [
+          9,
+          8
+        ]
+      ],
+      "down_step_eye_pixels": [
+        [
+          6,
+          8
+        ],
+        [
+          9,
+          8
+        ]
+      ],
+      "eye_clusters": "two isolated1x1eyes onbothdownposes, eachhaslightpixelsabovebelowandleft/right; face8x3lightregion"
+    }
+  }
+}

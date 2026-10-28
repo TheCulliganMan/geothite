@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F051",
+  "species": [
+    {
+      "species_id": "MN_104",
+      "runtime_token": "SODCALF",
+      "palette_rgb555": [
+        32767,
+        10872,
+        4364,
+        0
+      ],
+      "shiny_palette_rgb555": [
+        32767,
+        20234,
+        8580,
+        0
+      ],
+      "fit": [
+        13,
+        13
+      ],
+      "alpha_threshold": 128,
+      "sampling": "source_center",
+      "minimum_foreground_samples": 16,
+      "black_priority_samples": 64,
+      "interior_black_samples": 64,
+      "opaque_interior_minimum_samples": 64,
+      "frames": [
+        {
+          "pose": "down_idle",
+          "source": "sodcalf.overworld.imagegen-v1.png",
+          "crop": [
+            129,
+            296,
+            380,
+            350
+          ]
+        },
+        {
+          "pose": "up_idle",
+          "source": "sodcalf.overworld.imagegen-v1.png",
+          "crop": [
+            415,
+            290,
+            380,
+            350
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "source": "sodcalf.overworld.imagegen-v1.png",
+          "crop": [
+            795,
+            288,
+            380,
+            350
+          ]
+        },
+        {
+          "pose": "down_step",
+          "source": "sodcalf.overworld.imagegen-v1.png",
+          "crop": [
+            129,
+            649,
+            380,
+            350
+          ]
+        },
+        {
+          "pose": "up_step",
+          "source": "sodcalf.overworld.imagegen-v1.png",
+          "crop": [
+            415,
+            641,
+            380,
+            350
+          ]
+        },
+        {
+          "pose": "left_step",
+          "source": "sodcalf.overworld.imagegen-v1.png",
+          "crop": [
+            795,
+            640,
+            380,
+            350
+          ]
+        }
+      ]
+    }
+  ]
+}

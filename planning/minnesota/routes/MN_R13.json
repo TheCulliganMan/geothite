@@ -686,22 +686,22 @@
         8
       ],
       "tileset": "cave",
-      "border_block": 1,
+      "border_block": 46,
       "exterior_anchor_metatile": [
         7,
         26
       ],
       "mandatory": false,
-      "purpose": "Cedar Shelter is a small split-level dry refuge: a sheltered entry hollow bends around one continuous ceiling buttress to Harper\u2019s raised care terrace. A separate low supply notch opens behind the eastern rock toe, reached by an ordinary native stone stair. Fast healing and a readable optional Max Ether discovery give the space its purpose; there is no traversal ring or repeated zigzag.",
+      "purpose": "A four-block spring fills the former empty western approach; walk its eastern bank to the protected healing terrace or take the separate short climb to the Ether notch.",
       "rows": [
-        "01 01 01 01 01 01 01 01 01 01",
-        "01 01 01 01 01 04 05 06 01 01",
-        "01 01 01 01 04 02 02 0a 01 01",
-        "01 01 01 01 2d 12 21 22 01 01",
-        "01 01 01 04 2d 02 0a 01 01 01",
-        "01 01 04 02 02 0a 36 02 0a 01",
-        "01 01 20 02 21 22 21 21 22 01",
-        "01 01 01 07 01 01 01 01 01 01"
+        "2e 2e 2e 2e 2e 2e 2e 2e 2e 2e",
+        "2e 2e 2e 2e 2e 04 05 06 2e 2e",
+        "2e 2e 2e 2e 04 02 02 0a 2e 2e",
+        "2e 2e 2e 2e 2d 12 21 22 2e 2e",
+        "2e 2e 3e 3d 2d 02 0a 2e 2e 2e",
+        "2e 2e 32 33 02 0a 36 02 0a 2e",
+        "2e 2e 20 02 21 22 21 21 22 2e",
+        "2e 2e 2e 07 2e 2e 2e 2e 2e 2e"
       ],
       "exits": [
         [
@@ -745,12 +745,10 @@
         }
       ],
       "signs": [],
-      "candidate_status": "Installed CURRENT510 native review candidate; all three local production-controller cases PASS. User visual acceptance and earned regional Q08 progress remain unclaimed.",
+      "candidate_status": "Source candidate under whole-room, player-camera and production traversal review.",
       "review_contract": {
+        "quality_revision": "johto-quality-v01",
         "palette_group": "nite",
-        "topology": "compact healing terrace and low supply notch, with one attached ceiling buttress",
-        "unpublished": false,
-        "quality_revision": "r13-v02-fitted-entry-shoulder",
         "native_stair_blocks": [
           [
             5,
@@ -761,204 +759,65 @@
             5
           ]
         ],
-        "ordinary_waypoints_core": [
-          [
-            7,
-            14
-          ],
-          [
-            7,
-            11
-          ],
-          [
-            10,
-            11
-          ],
-          [
-            11,
-            8
-          ],
-          [
-            11,
-            6
-          ],
-          [
-            13,
-            6
-          ],
-          [
-            12,
-            9
-          ],
-          [
-            12,
-            12
-          ],
-          [
-            14,
-            12
-          ],
-          [
-            14,
-            11
-          ]
-        ],
         "viewpoints": [
           {
-            "id": "entrance_refuge",
+            "id": "mouth",
             "tile": [
               7,
               14
             ]
           },
           {
-            "id": "foyer_decision",
+            "id": "spring-bank",
             "tile": [
-              8,
+              9,
               11
             ]
           },
           {
-            "id": "care_stair",
+            "id": "healer",
+            "tile": [
+              12,
+              5
+            ]
+          },
+          {
+            "id": "healer-stair",
             "tile": [
               11,
               7
             ]
           },
           {
-            "id": "harper_approach",
+            "id": "upper-shelter",
             "tile": [
-              13,
-              6
+              10,
+              5
             ]
           },
           {
-            "id": "supply_notch",
+            "id": "cache-stair",
             "tile": [
               12,
               11
             ]
           },
           {
-            "id": "cache_approach",
+            "id": "ether",
             "tile": [
               14,
               11
             ]
           },
           {
-            "id": "weakest_foyer",
+            "id": "widest-approach",
             "tile": [
-              7,
-              11
+              9,
+              12
             ]
           }
         ],
-        "controller_probes": {
-          "stairs": [
-            {
-              "id": "HARPER_TERRACE",
-              "metatile": [
-                5,
-                3
-              ],
-              "block": "12",
-              "before": [
-                11,
-                5
-              ],
-              "lane": [
-                [
-                  11,
-                  6
-                ],
-                [
-                  11,
-                  7
-                ]
-              ],
-              "after": [
-                11,
-                8
-              ],
-              "blocked_from": [
-                11,
-                7
-              ],
-              "blocked_target": [
-                10,
-                7
-              ]
-            },
-            {
-              "id": "SUPPLY_NOTCH",
-              "metatile": [
-                6,
-                5
-              ],
-              "block": "36",
-              "before": [
-                12,
-                9
-              ],
-              "lane": [
-                [
-                  12,
-                  10
-                ],
-                [
-                  12,
-                  11
-                ]
-              ],
-              "after": [
-                12,
-                12
-              ],
-              "blocked_from": [
-                12,
-                10
-              ],
-              "blocked_target": [
-                13,
-                10
-              ]
-            }
-          ],
-          "harper_approach": [
-            13,
-            6
-          ],
-          "harper_facing": "up",
-          "cache_approach": [
-            14,
-            11
-          ],
-          "cache_facing": "right",
-          "mouth": [
-            7,
-            15
-          ],
-          "clear_arrival": [
-            7,
-            14
-          ],
-          "exterior_return_semantics": "Original room warp1 returns directly to exterior passive warp2 at global14,54/local14,6 FLOOR; stable after presentation and walking away/back. Exterior active CAVE warp1 at global14,53/local14,5 deliberately reenters. No warp or automatic-downstep behavior is invented."
-        },
-        "healing_contract": "Keep actual original native special HealParty and allHP/status/PP/dialogue/input/Continue behavior; do not relower Harper as text-only or invent a second nurse.",
-        "visual_revision": "Removed the unused west foyer shoulder. The entry now turns around the attached ceiling buttress, with a short widened patient waiting bend instead of a six-tile empty hollow.",
-        "native_review": {
-          "pack_sha256": "a85fac64ab31c86722c486b50213053eb16ba3f6453f99e41bd81c962badb980",
-          "palette": "nite",
-          "candidate_sha256": "e1e78dad0c18007d3b8b29f72097202193bf141b7d8b611cd6bdc7d0f1352e63",
-          "preservation_checks": 145,
-          "controller_cases": [
-            "r13_refuge_controller_true_passive_return_and_both_useful_stairs_bidirectional",
-            "r13_refuge_controller_original_harper_pages_heal_two_legal_partners_and_continue",
-            "r13_refuge_controller_original_max_ether_restores_native_learned_pp_once_and_continues"
-          ],
-          "source_promoted_after_explicit_root_pass": true
-        }
+        "notes": "A four-block spring fills the former empty western approach; walk its eastern bank to the protected healing terrace or take the separate short climb to the Ether notch."
       }
     }
   ],
@@ -968,8 +827,8 @@
     "No painted shadows, enlarged trees or perspective props.",
     "Fit source shoreline/cliff quadrants; draw source trees in coherent metatile groups."
   ],
-  "status": "Hand-authored replacement under whole-map source review. The previous eighteen-chunk native overlay is superseded and does not match this revision.",
-  "anchor_status": "Exact source anchors; native republishing/controller review pending.",
+  "status": "Canonical seasonal source matches all native terrain in the verified final geography publication.",
+  "anchor_status": "Frozen original/candidate bytes and all nine native module guards checked during source promotion; controller and visual evidence are recorded in the final geography receipt.",
   "residents": [
     {
       "id": "MN_R13_RUTH",
@@ -1354,5 +1213,22 @@
       ],
       "minimum_grass_steps": 6
     }
-  ]
+  ],
+  "compiled_tileset": "mn_winter_north_shore",
+  "inland_winter_review": {
+    "status": "NATIVE_TERRAIN_VERIFIED_CANONICAL_SOURCE",
+    "instruction": "Warm Superior coast and Grand Marais; substantial winter inland near Ely.",
+    "baseline_pack_sha256": "1c6ba5d59097546ff8b94e09c809d270727ce1272acb93759b89f3b3c7d9b90a",
+    "full_region_metatiles": [
+      32,
+      64
+    ],
+    "unchanged": "Native water, cliffs, gates, actors, scripts, story, rooms, ledges and ports. Ice alters only listed original Floor quadrants.",
+    "authored_strokes_retained": 99,
+    "native_reconciliation_points": 65,
+    "seasonal_points": 1553,
+    "published_pack_sha256": "65cf6f98e65ada839ec5afaa57728bf8289d3a50ba53ba6b9b50f08d3620bb17",
+    "published_identity": "f34280a5fc5d6ab8ccc3ec4ef4317a6ea9321070df342ea95aca5745514a0223",
+    "verification_scope": "Full native modules, exact source raster, seasonal cells and final inland connection. Production controller and visual acceptance remain separate evidence in the final geography receipt."
+  }
 }

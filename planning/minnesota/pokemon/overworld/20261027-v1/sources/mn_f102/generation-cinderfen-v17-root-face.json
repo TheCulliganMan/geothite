@@ -1,0 +1,8 @@
+{
+  "tool": "built-in image_gen",
+  "default_path": "/Users/ryanculligan/.codex/generated_images/01a178da-4cf1-7e01-8516-667a332dc790/exec-a6192a4f-5850-4097-91b8-33e916609f56.png",
+  "retained_raw": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f102/cinderfen.overworld.imagegen-v17-root-face.png",
+  "sha256": "9f5dc407d8342eaa27626bdaf9ac18482cddd45cb1d42c520c8af893273d94dc",
+  "prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f102/prompt-cinderfen-root-face-v17.txt",
+  "accepted": false
+}

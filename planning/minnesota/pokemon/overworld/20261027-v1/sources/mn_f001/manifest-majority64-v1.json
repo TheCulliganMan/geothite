@@ -1,0 +1,264 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F001",
+  "species": [
+    {
+      "species_id": "MN_001",
+      "runtime_token": "POUCHID",
+      "palette_rgb555": [
+        32767,
+        13151,
+        7686,
+        0
+      ],
+      "shiny_palette_rgb555": [
+        32767,
+        27628,
+        16583,
+        0
+      ],
+      "fit": [
+        14,
+        11
+      ],
+      "alpha_threshold": 128,
+      "sampling": "area_vote",
+      "minimum_foreground_samples": 16,
+      "black_priority_samples": 64,
+      "frames": [
+        {
+          "pose": "down_idle",
+          "source": "overworld.imagegen-v1.png",
+          "crop": [
+            5,
+            0,
+            256,
+            380
+          ]
+        },
+        {
+          "pose": "up_idle",
+          "source": "overworld.imagegen-v1.png",
+          "crop": [
+            258,
+            0,
+            256,
+            380
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "source": "overworld.imagegen-v1.png",
+          "crop": [
+            505,
+            0,
+            256,
+            380
+          ]
+        },
+        {
+          "pose": "down_step",
+          "source": "overworld.imagegen-v1.png",
+          "crop": [
+            773,
+            0,
+            256,
+            380
+          ]
+        },
+        {
+          "pose": "up_step",
+          "source": "overworld.imagegen-v1.png",
+          "crop": [
+            1026,
+            0,
+            256,
+            380
+          ]
+        },
+        {
+          "pose": "left_step",
+          "source": "overworld.imagegen-v1.png",
+          "crop": [
+            1280,
+            0,
+            256,
+            380
+          ]
+        }
+      ]
+    },
+    {
+      "species_id": "MN_002",
+      "runtime_token": "SLIPPERINA",
+      "palette_rgb555": [
+        32767,
+        30264,
+        12675,
+        0
+      ],
+      "shiny_palette_rgb555": [
+        32767,
+        18205,
+        12396,
+        0
+      ],
+      "fit": [
+        14,
+        13
+      ],
+      "alpha_threshold": 128,
+      "sampling": "area_vote",
+      "minimum_foreground_samples": 16,
+      "black_priority_samples": 64,
+      "frames": [
+        {
+          "pose": "down_idle",
+          "source": "overworld.imagegen-v1.png",
+          "crop": [
+            2,
+            380,
+            256,
+            290
+          ]
+        },
+        {
+          "pose": "up_idle",
+          "source": "overworld.imagegen-v1.png",
+          "crop": [
+            256,
+            380,
+            256,
+            290
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "source": "overworld.imagegen-v1.png",
+          "crop": [
+            510,
+            380,
+            256,
+            290
+          ]
+        },
+        {
+          "pose": "down_step",
+          "source": "overworld.imagegen-v1.png",
+          "crop": [
+            779,
+            380,
+            256,
+            290
+          ]
+        },
+        {
+          "pose": "up_step",
+          "source": "overworld.imagegen-v1.png",
+          "crop": [
+            1034,
+            380,
+            256,
+            290
+          ]
+        },
+        {
+          "pose": "left_step",
+          "source": "overworld.imagegen-v1.png",
+          "crop": [
+            1280,
+            380,
+            256,
+            290
+          ]
+        }
+      ]
+    },
+    {
+      "species_id": "MN_003",
+      "runtime_token": "CYPRIELLE",
+      "palette_rgb555": [
+        32767,
+        24031,
+        7492,
+        0
+      ],
+      "shiny_palette_rgb555": [
+        32767,
+        15351,
+        10375,
+        0
+      ],
+      "fit": [
+        14,
+        14
+      ],
+      "alpha_threshold": 128,
+      "sampling": "area_vote",
+      "minimum_foreground_samples": 16,
+      "black_priority_samples": 64,
+      "frames": [
+        {
+          "pose": "down_idle",
+          "source": "overworld.imagegen-v1.png",
+          "crop": [
+            10,
+            670,
+            256,
+            354
+          ]
+        },
+        {
+          "pose": "up_idle",
+          "source": "overworld.imagegen-v1.png",
+          "crop": [
+            268,
+            670,
+            256,
+            354
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "source": "overworld.imagegen-v1.png",
+          "crop": [
+            523,
+            670,
+            256,
+            354
+          ]
+        },
+        {
+          "pose": "down_step",
+          "source": "overworld.imagegen-v1.png",
+          "crop": [
+            765,
+            670,
+            256,
+            354
+          ]
+        },
+        {
+          "pose": "up_step",
+          "source": "overworld.imagegen-v1.png",
+          "crop": [
+            1037,
+            670,
+            256,
+            354
+          ]
+        },
+        {
+          "pose": "left_step",
+          "source": "overworld.imagegen-v1.png",
+          "crop": [
+            1280,
+            670,
+            256,
+            354
+          ]
+        }
+      ]
+    }
+  ]
+}

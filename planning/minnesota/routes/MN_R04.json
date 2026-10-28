@@ -141,7 +141,7 @@
     "GoldenrodCity",
     "Route34"
   ],
-  "description": "A short civic park crossing with one gold-railed river bridge, native roses and benches. A trainer controls the short paved lane; a longer nursery-grass walk bypasses the challenge in either direction.",
+  "description": "A short civic park crossing with a gold-railed river bridge, native roses and benches. The east promenade bends around a north-connected elm tongue toward the picnic gate; compact tree shoulders keep the crossing distinct from its garden turnouts. A trainer controls the short west paved lane; a longer nursery-grass walk bypasses the challenge in either direction.",
   "endpoints": [
     {
       "place": "MINNEAPOLIS",
@@ -171,6 +171,22 @@
   "main_path_metatiles": [
     [
       0,
+      9
+    ],
+    [
+      21,
+      9
+    ],
+    [
+      21,
+      10
+    ],
+    [
+      23,
+      10
+    ],
+    [
+      23,
       9
     ],
     [
@@ -507,7 +523,7 @@
     {
       "id": "EAST_GARDENS",
       "tile": [
-        45,
+        47,
         17
       ]
     },
@@ -537,6 +553,14 @@
       "minimum_grass_steps": 4
     }
   ],
-  "status": "Individually hand-authored native park overlay; exact source art, geometry, battle/grass journey, Ether use, persistence, MCP and production TUI verified. Regional ports and earned Q03 remain pending.",
-  "anchor_status": "All 504 native blocks, seven objects, five signs, parties and dialogue match the editor. Native captures corrected bank corners and paved rails; controller inputs verify both choices."
+  "status": "Bounded hand-authored east-grove terrain refinement; source graph and source cameras reviewed. Native publication/controller acceptance recorded separately.",
+  "anchor_status": "All 504 native blocks, seven objects, five signs, parties and dialogue match the editor. Native captures corrected bank corners and paved rails; controller inputs verify both choices.",
+  "terrain_revision": {
+    "id": "route-quality-next-v01",
+    "pack_sha256": "1186a24371251f741db88cf35a7863145ed5423da4ad3d7c6485c8f242753ecb",
+    "native_publication_inputs": "renders/route-quality-next/integration-inputs",
+    "controller_proof": "renders/route-quality-next/controller-v05/controller-proof.json",
+    "runbook": "playable/route-quality-next.md",
+    "scope": "Reviewed bounded terrain only; no full-route final acceptance or earned regional progression claim."
+  }
 }

@@ -1,0 +1,127 @@
+{
+  "schema_version": 1,
+  "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f084/scutlet.overworld.imagegen-v3-clear-source-pupils.png",
+  "source_sha256": "20e79948377d8287d014c4b6265fd75c56d26b9aacf1d5b355c9720f6253bb69",
+  "trial_alpha_threshold": 245,
+  "why": "ImageGen eye edit returned semitransparent black background haze with corner alpha166/204. Actual eye cores250\u2013252. Threshold245 tested without painting alpha; actual native proof and visual checks required.",
+  "samples": [
+    {
+      "source_pixel": [
+        0,
+        0
+      ],
+      "rgba": [
+        0,
+        0,
+        0,
+        166
+      ],
+      "retained_at245": false
+    },
+    {
+      "source_pixel": [
+        500,
+        500
+      ],
+      "rgba": [
+        0,
+        0,
+        0,
+        137
+      ],
+      "retained_at245": false
+    },
+    {
+      "source_pixel": [
+        1000,
+        500
+      ],
+      "rgba": [
+        1,
+        2,
+        1,
+        10
+      ],
+      "retained_at245": false
+    },
+    {
+      "source_pixel": [
+        210,
+        403
+      ],
+      "rgba": [
+        1,
+        0,
+        0,
+        251
+      ],
+      "retained_at245": true
+    },
+    {
+      "source_pixel": [
+        289,
+        403
+      ],
+      "rgba": [
+        0,
+        0,
+        0,
+        250
+      ],
+      "retained_at245": true
+    },
+    {
+      "source_pixel": [
+        1165,
+        373
+      ],
+      "rgba": [
+        0,
+        0,
+        0,
+        251
+      ],
+      "retained_at245": true
+    },
+    {
+      "source_pixel": [
+        250,
+        400
+      ],
+      "rgba": [
+        167,
+        189,
+        159,
+        234
+      ],
+      "retained_at245": false
+    },
+    {
+      "source_pixel": [
+        250,
+        420
+      ],
+      "rgba": [
+        166,
+        187,
+        158,
+        236
+      ],
+      "retained_at245": false
+    },
+    {
+      "source_pixel": [
+        250,
+        270
+      ],
+      "rgba": [
+        170,
+        193,
+        164,
+        251
+      ],
+      "retained_at245": true
+    }
+  ],
+  "tradeoff": "Some genuine softened colored edges/core patches are below245 and may disappear. Do not infer acceptance from this opacity receipt alone."
+}

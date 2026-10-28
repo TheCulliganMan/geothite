@@ -1,0 +1,256 @@
+{
+  "species_id": "MN_246",
+  "name": "ventactor",
+  "status": "native-review-recommended; root independent review and context required",
+  "selected_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f112/ventactor.manifest-native-joint-phase-v1.json",
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/true16-ventactor-joint-phase-v1",
+  "shared_transform": {
+    "source_bounds": [
+      12,
+      12,
+      439,
+      379
+    ],
+    "native_size": [
+      14,
+      12
+    ],
+    "native_origin": [
+      1,
+      3
+    ]
+  },
+  "all_four_nonrear_poses_actual_pupils_pass": true,
+  "each_native_eye_cluster_maps_to_one_actual_small_source_pupil_component": true,
+  "actual_source_pupil_proofs": [
+    {
+      "pose": "down_idle",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f112/ventactor.overworld.imagegen-v1.png",
+      "crop": [
+        48,
+        83,
+        455,
+        395
+      ],
+      "actual_source_eye_bounds": [
+        [
+          259,
+          310,
+          29,
+          42
+        ]
+      ],
+      "eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              7,
+              10
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                12,
+                5,
+                15,
+                252
+              ],
+              "bounds": [
+                259,
+                310,
+                29,
+                42
+              ],
+              "pixels": 1048,
+              "truncated_contour": false,
+              "native_pixel": [
+                7,
+                10
+              ],
+              "source_sample_pixel": [
+                263,
+                331
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f112/ventactor.overworld.imagegen-v1.png",
+      "crop": [
+        1040,
+        63,
+        455,
+        395
+      ],
+      "actual_source_eye_bounds": [
+        [
+          1141,
+          298,
+          36,
+          35
+        ]
+      ],
+      "eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              4,
+              10
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                2,
+                2,
+                1,
+                253
+              ],
+              "bounds": [
+                1141,
+                298,
+                36,
+                35
+              ],
+              "pixels": 975,
+              "truncated_contour": false,
+              "native_pixel": [
+                4,
+                10
+              ],
+              "source_sample_pixel": [
+                1161,
+                311
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f112/ventactor.overworld.imagegen-v1.png",
+      "crop": [
+        49,
+        551,
+        455,
+        395
+      ],
+      "actual_source_eye_bounds": [
+        [
+          255,
+          780,
+          33,
+          41
+        ]
+      ],
+      "eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              7,
+              10
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                1,
+                1,
+                1,
+                253
+              ],
+              "bounds": [
+                255,
+                780,
+                33,
+                41
+              ],
+              "pixels": 1098,
+              "truncated_contour": false,
+              "native_pixel": [
+                7,
+                10
+              ],
+              "source_sample_pixel": [
+                264,
+                799
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f112/ventactor.overworld.imagegen-v1.png",
+      "crop": [
+        1039,
+        543,
+        455,
+        395
+      ],
+      "actual_source_eye_bounds": [
+        [
+          1141,
+          768,
+          36,
+          35
+        ]
+      ],
+      "eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              4,
+              10
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                1,
+                1,
+                0,
+                253
+              ],
+              "bounds": [
+                1141,
+                768,
+                36,
+                35
+              ],
+              "pixels": 979,
+              "truncated_contour": false,
+              "native_pixel": [
+                4,
+                10
+              ],
+              "source_sample_pixel": [
+                1160,
+                791
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "old_native_poses_preserved_exactly": [],
+  "normal_shiny_runtime_parity": "all1536pixels exact each",
+  "canonical_palette_bytes": "exact",
+  "all_three_walk_pairs_distinct": true,
+  "rear_review": "both rear native poses viewed; no copied face",
+  "normal_shiny_native_boards_actually_viewed": true,
+  "accepted_coverage_native_pack_untouched": true,
+  "manifest_sha256": "0554db8fd5fc8fa7eb40b26791c806da2d4ba740404dac6ef942428e12824ba5",
+  "compiled_index_sha256": "d29a31146565618470b97dae9074cee918b10d4087d4a016e0a96b23a9ddf265"
+}

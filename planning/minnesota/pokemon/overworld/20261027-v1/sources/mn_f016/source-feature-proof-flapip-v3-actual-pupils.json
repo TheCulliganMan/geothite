@@ -1,0 +1,215 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_045",
+  "result": "pass",
+  "manifest_sha256": "e2c2a798f453a4b5bc36b13bd64a890e6992a516505c5a9a1858f96ec6ed4967",
+  "bank_sha256": "c2b9896b73ccda62e12a881101293bb572d867fb3c3768a1a1d480234a1f30c3",
+  "source_sha256": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f016/flapip.overworld.imagegen-v1.png": "cae48c0296ccf182cebee97fe70d31a62e394eaa1555ce530c25411e7137d7e3"
+  },
+  "canonical_eye_form": "Two isolated actual black pupil dots south and one isolated actual black pupil west; source eye components verified in all four nonrear poses.",
+  "nonrear_poses": [
+    {
+      "pose": "down_idle",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            6,
+            10
+          ],
+          "source_sample": [
+            219,
+            310
+          ],
+          "source_component": [
+            210,
+            288,
+            25,
+            30
+          ],
+          "component_pixels": 749,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            0,
+            0,
+            0,
+            253
+          ]
+        },
+        {
+          "native": [
+            9,
+            10
+          ],
+          "source_sample": [
+            311,
+            310
+          ],
+          "source_component": [
+            297,
+            288,
+            24,
+            30
+          ],
+          "component_pixels": 720,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            0,
+            0,
+            0,
+            253
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            5,
+            10
+          ],
+          "source_sample": [
+            1199,
+            310
+          ],
+          "source_component": [
+            1185,
+            286,
+            25,
+            32
+          ],
+          "component_pixels": 798,
+          "native_neighbors": [
+            2,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            2,
+            1,
+            0,
+            253
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            6,
+            10
+          ],
+          "source_sample": [
+            219,
+            765
+          ],
+          "source_component": [
+            211,
+            745,
+            25,
+            32
+          ],
+          "component_pixels": 798,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            1,
+            0,
+            0,
+            253
+          ]
+        },
+        {
+          "native": [
+            9,
+            10
+          ],
+          "source_sample": [
+            311,
+            765
+          ],
+          "source_component": [
+            296,
+            745,
+            25,
+            31
+          ],
+          "component_pixels": 775,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            1,
+            0,
+            0,
+            253
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            5,
+            10
+          ],
+          "source_sample": [
+            1199,
+            765
+          ],
+          "source_component": [
+            1185,
+            743,
+            25,
+            32
+          ],
+          "component_pixels": 774,
+          "native_neighbors": [
+            2,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            0,
+            0,
+            0,
+            253
+          ]
+        }
+      ]
+    }
+  ],
+  "rear_anatomy": {
+    "result": "pass",
+    "notes": "Both north poses have plain syrup cap and exposed pancake back; no pupil-like rear marks. Single pancake baby remains fit12, true front two pupils and west one pupil are complete isolated source components in all four nonrear poses. Three-pixel source registration shift in west crops preserves head alignment and common world scale."
+  }
+}

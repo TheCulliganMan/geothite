@@ -177,7 +177,8 @@
             7,
             7
           ],
-          "authoring_file": "towns/MnRochester.gates.json"
+          "authoring_file": "towns/MnRochester.gates.json",
+          "gym_revision_file": "gyms/rochester-gates.json"
         },
         {
           "id": "MnRochesterClerkHouse",
@@ -273,7 +274,8 @@
           "dimensions_metatiles": [
             8,
             10
-          ]
+          ],
+          "gym_revision_file": "gyms/mankato-terraces.json"
         }
       ],
       "walkable_destinations": [
@@ -291,8 +293,8 @@
       "id": "MnMinneapolis",
       "name": "MINNEAPOLIS",
       "dimensions_metatiles": [
-        64,
-        48
+        40,
+        32
       ],
       "reference_anchor_percent": [
         54,
@@ -300,41 +302,41 @@
       ],
       "role": "gym_3",
       "tileset": "johto_modern",
-      "composition": "Smaller, tighter64x48 Minneapolis. Inhabited North Loop and Northeast streets share courts and rear alleys; old clinic/gym/ICE core remains central, compact market connects department store and battle club, lake neighborhood and south pond walks have actual piers/bridges.",
+      "composition": "Hand-recomposed40x32: short inhabited mill/arts and culture frontages, shared civic service lanes, three actual priced market counters, lake pier and southern residential courts; St Anthony Falls beside the mill with visible north/south river continuations.",
       "ports": [
         {
           "route": "MN_R03",
           "side": "S",
           "gate_metatile": [
-            32,
-            47
+            20,
+            31
           ],
           "landing_metatile": [
-            32,
-            44
+            20,
+            29
           ]
         },
         {
           "route": "MN_R04",
           "side": "E",
           "gate_metatile": [
-            63,
-            24
+            39,
+            18
           ],
           "landing_metatile": [
-            60,
-            24
+            36,
+            18
           ]
         },
         {
           "route": "MN_R05",
           "side": "N",
           "gate_metatile": [
-            32,
+            20,
             0
           ],
           "landing_metatile": [
-            32,
+            20,
             4
           ]
         }
@@ -399,7 +401,8 @@
               "map_event_section_commands.warp_event"
             ],
             "status": "Canonical original-style switch-pair gym. The city binds its two carpets and passive arrival while preserving terrain, actors, puzzle, parties and rewards."
-          }
+          },
+          "gym_revision_file": "gyms/minneapolis-circuit.json"
         },
         {
           "id": "MnMinneapolisMart",
@@ -863,18 +866,19 @@
         "Team ICE counterfeit inspection and dispatcher witness",
         "separate dispatch-copy interaction after the enforcer battle"
       ],
-      "door_contract": "Expanded SOURCE candidate:40 real exterior facade pairs and five department floors; all old1..10 town warp IDs/oldfive rooms/story are preserved. New native publication and controller acceptance pending.",
+      "door_contract": "All40 existing exterior facade pairs and44 existing rooms retained. All original indexed native warp IDs and room return programs remain exact; exterior positions are explicit zero-based overrides.",
       "layout_file": "towns/MnMinneapolis.layout.json",
       "compiled_tileset": "mn_minneapolis_city",
       "authoring_file": "towns/MnMinneapolis.json",
-      "expansion_contract_file": "towns/MnMinneapolis.expansion.contract.json"
+      "expansion_contract_file": "towns/MnMinneapolis.expansion.contract.json",
+      "recomposition_contract_file": "towns/MnMinneapolis.recomposition.contract.json"
     },
     {
       "id": "MnStPaul",
       "name": "ST PAUL",
       "dimensions_metatiles": [
-        64,
-        48
+        40,
+        34
       ],
       "reference_anchor_percent": [
         68,
@@ -882,7 +886,7 @@
       ],
       "role": "gym_4",
       "tileset": "kanto",
-      "composition": "Compact fair booth lanes, Capitol low bluff, three-floor Lowertown Exchange, dense Summit blocks, two guarded river crossings and actual unchanged Union Depot story interior.",
+      "composition": "Dense fair lanes, attached Capitol and Summit blocks, three-floor Lowertown Exchange, short shared south-bank streets, and unchanged Union Depot story interior; exact native40\u00d734 composition.",
       "ports": [
         {
           "route": "MN_R04",
@@ -987,7 +991,8 @@
               "target_warp": 10
             }
           ],
-          "source_behavior": "Resolve the canonical four-room pad gym and preserve terrain, actors, parties, puzzle and reward. Bind only carpet/passive records 1..3 to city return 10; preserve all eight internal pad records 4..11 and callbacks."
+          "source_behavior": "Resolve the canonical four-room pad gym and preserve terrain, actors, parties, puzzle and reward. Bind only carpet/passive records 1..3 to city return 10; preserve all eight internal pad records 4..11 and callbacks.",
+          "gym_revision_file": "gyms/st-paul-loop.json"
         },
         {
           "id": "MnStPaulCapitolHall",
@@ -1425,9 +1430,10 @@
       "door_contract": "Native source DOOR quadrants, exterior active/passive indices, reciprocal room carpets and safe passive Floor arrivals are explicit; production lowering/roundtrip proof pending.",
       "authoring_file": "towns/MnStPaul.json",
       "layout_file": "towns/MnStPaul.layout.json",
-      "native_status": "Local 488-map candidate: five public facades, canonical gym/pad/reward/Continue/service checks and both R04 crossing lanes pass. Courier/rail and regional progression remain unfinished.",
+      "native_status": "Published660-map compact40\u00d734 StPaul in twin-cities-compact-v01; nine local controller cases and15native GPU captures passed. No earned progression or final user visual approval claimed.",
       "compiled_tileset": "kanto",
-      "expansion_contract_file": "towns/MnStPaul.expansion.contract.json"
+      "expansion_contract_file": "towns/MnStPaul.expansion.contract.json",
+      "recomposition_contract_file": "towns/MnStPaul.recomposition.contract.json"
     },
     {
       "id": "MnStCloud",
@@ -1600,7 +1606,8 @@
               ],
               "phase": "MN_GYM_5_TRAINER_2"
             }
-          ]
+          ],
+          "gym_revision_file": "gyms/st-cloud-arrows.json"
         },
         {
           "id": "MnStCloudStation",
@@ -1715,7 +1722,8 @@
           "dimensions_metatiles": [
             5,
             8
-          ]
+          ],
+          "gym_revision_file": "gyms/brainerd-winch.json"
         },
         {
           "id": "MnBrainerdRangerStation",
@@ -1911,7 +1919,8 @@
           "dimensions_metatiles": [
             6,
             10
-          ]
+          ],
+          "gym_revision_file": "gyms/bemidji-return.json"
         },
         {
           "id": "MnBemidjiShelfHouse",
@@ -2245,7 +2254,8 @@
               ],
               "phase": "MN_GYM_8_TRAINER_3"
             }
-          ]
+          ],
+          "gym_revision_file": "gyms/duluth-gold-gates.json"
         },
         {
           "id": "MnDuluthHarborWorkshop",
@@ -2765,33 +2775,33 @@
       ],
       "role": "town",
       "tileset": "mn_marais_shore",
-      "composition": "Fishing harbor, artist row and inland trailhead.",
+      "composition": "Warm Superior harbor. Direct North Shore arrival from west; separate north Gunflint/Ely inland departure.",
       "ports": [
         {
           "route": "MN_R11",
-          "side": "S",
-          "gate_metatile": [
-            2,
-            9
-          ],
-          "landing_metatile": [
-            4,
-            9
-          ],
-          "physical_facade": "west side building; paired east-west gate warps connect the northern coast trail"
-        },
-        {
-          "route": "MN_R12",
           "side": "W",
           "gate_metatile": [
+            1,
+            4
+          ],
+          "landing_metatile": [
             0,
             4
           ],
-          "landing_metatile": [
-            2,
-            4
+          "native_connection": "MnR11C01R00 east / town west offsets0; Foot core8/9 and Superior Water16..35."
+        },
+        {
+          "route": "MN_R12",
+          "side": "N",
+          "gate_metatile": [
+            9,
+            1
           ],
-          "native_connection": "MnR12C01R01 east; offsets 0/0; core rows 8/9"
+          "landing_metatile": [
+            9,
+            0
+          ],
+          "native_connection": "Town north offset-19 to Cedar south+19; town core18/19 to Cedar56/57. Winter begins inland."
         }
       ],
       "interiors": [
@@ -2802,7 +2812,7 @@
             5,
             4
           ],
-          "source_behavior": "Optional spare lamp part; native demo starter/supplies retired."
+          "source_behavior": "Preserve installed native room module and services exactly; no alternate seventh gatehouse lineage."
         },
         {
           "id": "MnGrandMaraisPokecenter",
@@ -2811,7 +2821,7 @@
             5,
             4
           ],
-          "source_behavior": "Native nurse healing and visit-selected recovery in the shore successor."
+          "source_behavior": "Preserve installed native room module and services exactly; no alternate seventh gatehouse lineage."
         },
         {
           "id": "MnGrandMaraisMart",
@@ -2820,7 +2830,7 @@
             6,
             4
           ],
-          "source_behavior": "Original native shop inventory and clerk."
+          "source_behavior": "Preserve installed native room module and services exactly; no alternate seventh gatehouse lineage."
         },
         {
           "id": "MnGrandMaraisArtistHouse",
@@ -2829,7 +2839,7 @@
             4,
             4
           ],
-          "source_behavior": "Original artist conversation."
+          "source_behavior": "Preserve installed native room module and services exactly; no alternate seventh gatehouse lineage."
         },
         {
           "id": "MnGrandMaraisFisherHouse",
@@ -2838,7 +2848,7 @@
             4,
             4
           ],
-          "source_behavior": "Original fisher conversation."
+          "source_behavior": "Preserve installed native room module and services exactly; no alternate seventh gatehouse lineage."
         },
         {
           "id": "MnGrandMaraisLighthouse",
@@ -2847,16 +2857,7 @@
             5,
             5
           ],
-          "source_behavior": "Optional part repair, distinct local lamp flag and once-only Super Potion."
-        },
-        {
-          "id": "MnGrandMaraisShoreGate",
-          "kind": "gatehouse",
-          "dimensions_metatiles": [
-            5,
-            4
-          ],
-          "source_behavior": "Authentic IlexForestAzaleaGate floorplan; two passive arrival lanes at each side."
+          "source_behavior": "Preserve installed native room module and services exactly; no alternate seventh gatehouse lineage."
         }
       ],
       "walkable_destinations": [
@@ -2865,8 +2866,17 @@
         "central square",
         "local story NPC"
       ],
-      "door_contract": "Six original native indexed facade/room pairs are preserved, with automatic outdoor exit steps. The separate coast gate uses four passive room arrivals and two inside-checkpoint town returns.",
-      "native_connections_source": "planning/minnesota/towns/MnGrandMarais.connections.json"
+      "door_contract": "Six original indexed facade/room pairs and native exit steps unchanged.",
+      "implementation": {
+        "design": "../playable/grand-marais.json",
+        "map_constant": "MN_GRAND_MARAIS",
+        "scope": "Warm west-entry Superior town; north inland branch.",
+        "interiors": 6,
+        "review": "../revisions/north-shore-ely-geography-v01/VERIFICATION.md",
+        "connections": "MnGrandMarais.connections.json"
+      },
+      "native_connections_source": "MnGrandMarais.connections.json",
+      "layout": "MnGrandMarais.layout.json"
     },
     {
       "id": "MnBoundaryWaters",
@@ -2965,16 +2975,16 @@
       "id": "MnEly",
       "name": "ELY",
       "dimensions_metatiles": [
-        24,
-        24
+        20,
+        18
       ],
       "reference_anchor_percent": [
         68,
         22
       ],
       "role": "league",
-      "tileset": "johto",
-      "composition": "League forecourt and northern expedition base.",
+      "tileset": "kanto",
+      "composition": "A sheltered final rest camp. The northern trail bends around the stone League lodge; a clinic and supply shop share a narrow southern garden loop. Only three visible buildings, all enterable.",
       "ports": [
         {
           "route": "MN_R13",
@@ -2994,10 +3004,72 @@
           "id": "MnElyPokecenter1F",
           "kind": "pokecenter",
           "dimensions_metatiles": [
-            10,
-            8
+            5,
+            4
           ],
-          "source_behavior": "canonical healing, PC and blackout recovery"
+          "source_behavior": "canonical healing, PC and blackout recovery",
+          "native_map_id": 2,
+          "native_constant": "MN_ELY_POKECENTER_1F",
+          "source_template": "GoldenrodPokecenter1F",
+          "passive_arrivals": [
+            {
+              "index": 3,
+              "tile": [
+                3,
+                5
+              ]
+            }
+          ],
+          "exits_core": [
+            [
+              3,
+              7
+            ],
+            [
+              4,
+              7
+            ]
+          ],
+          "service_actors": [
+            {
+              "script": "MnElyNurse",
+              "sprite": "SPRITE_NURSE",
+              "tile": [
+                3,
+                1
+              ],
+              "counter": [
+                3,
+                2
+              ],
+              "approach": [
+                3,
+                3
+              ],
+              "service": "native free HP/PP/status healing and blackout selection"
+            }
+          ],
+          "pc": {
+            "tile": [
+              8,
+              0
+            ],
+            "approach": [
+              8,
+              1
+            ]
+          },
+          "native_patches": [
+            {
+              "metatile": [
+                0,
+                3
+              ],
+              "expected": "12",
+              "block": "04",
+              "purpose": "Remove the unused link-club staircase with original room floor."
+            }
+          ]
         },
         {
           "id": "MnElyMart",
@@ -3006,55 +3078,591 @@
             6,
             4
           ],
-          "source_behavior": "canonical clerk, money deduction and inventory"
+          "source_behavior": "canonical clerk, money deduction and inventory",
+          "native_map_id": 3,
+          "native_constant": "MN_ELY_MART",
+          "source_template": "CherrygroveMart",
+          "passive_arrivals": [
+            {
+              "index": 3,
+              "tile": [
+                2,
+                5
+              ]
+            }
+          ],
+          "exits_core": [
+            [
+              2,
+              7
+            ],
+            [
+              3,
+              7
+            ]
+          ],
+          "service_actors": [
+            {
+              "script": "MnElyClerk",
+              "sprite": "SPRITE_CLERK",
+              "tile": [
+                1,
+                3
+              ],
+              "counter": [
+                2,
+                3
+              ],
+              "approach": [
+                3,
+                3
+              ],
+              "service": "native MART_MN_ELY checkout",
+              "stock": [
+                "ULTRA_BALL",
+                "HYPER_POTION",
+                "MAX_POTION",
+                "FULL_HEAL",
+                "REVIVE",
+                "MAX_REPEL"
+              ]
+            }
+          ]
         },
         {
           "id": "MnLeagueLobby",
           "kind": "league",
           "dimensions_metatiles": [
-            10,
-            8
+            5,
+            4
+          ],
+          "reference": "IlexForestAzaleaGate",
+          "native_map_id": 4,
+          "native_constant": "MN_LEAGUE_LOBBY",
+          "source_template": "IlexForestAzaleaGate",
+          "passive_arrivals": [
+            {
+              "index": 5,
+              "tile": [
+                1,
+                4
+              ]
+            },
+            {
+              "index": 6,
+              "tile": [
+                1,
+                5
+              ]
+            }
+          ],
+          "exits_core": [
+            [
+              0,
+              4
+            ],
+            [
+              0,
+              5
+            ],
+            [
+              9,
+              4
+            ],
+            [
+              9,
+              5
+            ]
+          ],
+          "service_actors": [
+            {
+              "script": "MnElyRegister",
+              "sprite": "SPRITE_TEACHER",
+              "tile": [
+                5,
+                2
+              ],
+              "counter": [
+                5,
+                3
+              ],
+              "approach": [
+                5,
+                4
+              ],
+              "service": "eight native badges plus restored survey, no fee; decline retryable; YES starts room1 at [4,16]"
+            }
           ]
         },
         {
           "id": "MnLeagueRoom1",
           "kind": "league",
           "dimensions_metatiles": [
-            10,
-            8
-          ]
+            5,
+            9
+          ],
+          "native_map_id": 5,
+          "native_constant": "MN_LEAGUE_ROOM_1",
+          "source_template": "KogasRoom",
+          "party_id": "MN_LEAGUE_1",
+          "battle_actor": {
+            "tile": [
+              5,
+              7
+            ],
+            "approach": [
+              5,
+              8
+            ],
+            "sprite": "SPRITE_COOLTRAINER_F"
+          },
+          "completed_room_value": 1,
+          "passive_arrivals": [
+            {
+              "index": 5,
+              "tile": [
+                4,
+                16
+              ]
+            },
+            {
+              "index": 6,
+              "tile": [
+                5,
+                16
+              ]
+            },
+            {
+              "index": 7,
+              "tile": [
+                4,
+                4
+              ]
+            },
+            {
+              "index": 8,
+              "tile": [
+                5,
+                4
+              ]
+            }
+          ],
+          "south_exits_core": [
+            [
+              4,
+              17
+            ],
+            [
+              5,
+              17
+            ]
+          ],
+          "north_exits_core": [
+            [
+              4,
+              2
+            ],
+            [
+              5,
+              2
+            ]
+          ],
+          "door_patch": {
+            "core": [
+              4,
+              2
+            ],
+            "closed": "22",
+            "open": "16",
+            "requires": "active run and completed-room count >= 1"
+          }
         },
         {
           "id": "MnLeagueRoom2",
           "kind": "league",
           "dimensions_metatiles": [
-            10,
-            8
-          ]
+            5,
+            9
+          ],
+          "native_map_id": 6,
+          "native_constant": "MN_LEAGUE_ROOM_2",
+          "source_template": "BrunosRoom",
+          "party_id": "MN_LEAGUE_2",
+          "battle_actor": {
+            "tile": [
+              5,
+              7
+            ],
+            "approach": [
+              5,
+              8
+            ],
+            "sprite": "SPRITE_POKEFAN_M"
+          },
+          "completed_room_value": 2,
+          "passive_arrivals": [
+            {
+              "index": 5,
+              "tile": [
+                4,
+                16
+              ]
+            },
+            {
+              "index": 6,
+              "tile": [
+                5,
+                16
+              ]
+            },
+            {
+              "index": 7,
+              "tile": [
+                4,
+                4
+              ]
+            },
+            {
+              "index": 8,
+              "tile": [
+                5,
+                4
+              ]
+            }
+          ],
+          "south_exits_core": [
+            [
+              4,
+              17
+            ],
+            [
+              5,
+              17
+            ]
+          ],
+          "north_exits_core": [
+            [
+              4,
+              2
+            ],
+            [
+              5,
+              2
+            ]
+          ],
+          "door_patch": {
+            "core": [
+              4,
+              2
+            ],
+            "closed": "22",
+            "open": "16",
+            "requires": "active run and completed-room count >= 2"
+          }
         },
         {
           "id": "MnLeagueRoom3",
           "kind": "league",
           "dimensions_metatiles": [
-            10,
-            8
-          ]
+            5,
+            9
+          ],
+          "native_map_id": 7,
+          "native_constant": "MN_LEAGUE_ROOM_3",
+          "source_template": "WillsRoom",
+          "party_id": "MN_LEAGUE_3",
+          "battle_actor": {
+            "tile": [
+              5,
+              7
+            ],
+            "approach": [
+              5,
+              8
+            ],
+            "sprite": "SPRITE_SAGE"
+          },
+          "completed_room_value": 3,
+          "passive_arrivals": [
+            {
+              "index": 5,
+              "tile": [
+                4,
+                16
+              ]
+            },
+            {
+              "index": 6,
+              "tile": [
+                5,
+                16
+              ]
+            },
+            {
+              "index": 7,
+              "tile": [
+                4,
+                4
+              ]
+            },
+            {
+              "index": 8,
+              "tile": [
+                5,
+                4
+              ]
+            }
+          ],
+          "south_exits_core": [
+            [
+              4,
+              17
+            ],
+            [
+              5,
+              17
+            ]
+          ],
+          "north_exits_core": [
+            [
+              4,
+              2
+            ],
+            [
+              5,
+              2
+            ]
+          ],
+          "door_patch": {
+            "core": [
+              4,
+              2
+            ],
+            "closed": "22",
+            "open": "16",
+            "requires": "active run and completed-room count >= 3"
+          }
         },
         {
           "id": "MnLeagueRoom4",
           "kind": "league",
           "dimensions_metatiles": [
-            10,
-            8
-          ]
+            5,
+            9
+          ],
+          "native_map_id": 8,
+          "native_constant": "MN_LEAGUE_ROOM_4",
+          "source_template": "KarensRoom",
+          "party_id": "MN_LEAGUE_4",
+          "battle_actor": {
+            "tile": [
+              5,
+              7
+            ],
+            "approach": [
+              5,
+              8
+            ],
+            "sprite": "SPRITE_COOLTRAINER_M"
+          },
+          "completed_room_value": 4,
+          "passive_arrivals": [
+            {
+              "index": 5,
+              "tile": [
+                4,
+                16
+              ]
+            },
+            {
+              "index": 6,
+              "tile": [
+                5,
+                16
+              ]
+            },
+            {
+              "index": 7,
+              "tile": [
+                4,
+                4
+              ]
+            },
+            {
+              "index": 8,
+              "tile": [
+                5,
+                4
+              ]
+            }
+          ],
+          "south_exits_core": [
+            [
+              4,
+              17
+            ],
+            [
+              5,
+              17
+            ]
+          ],
+          "north_exits_core": [
+            [
+              4,
+              2
+            ],
+            [
+              5,
+              2
+            ]
+          ],
+          "door_patch": {
+            "core": [
+              4,
+              2
+            ],
+            "closed": "22",
+            "open": "16",
+            "requires": "active run and completed-room count >= 4"
+          }
         },
         {
           "id": "MnLeagueChampion",
           "kind": "league",
           "dimensions_metatiles": [
-            10,
-            8
-          ]
+            5,
+            12
+          ],
+          "native_map_id": 9,
+          "native_constant": "MN_LEAGUE_CHAMPION",
+          "source_template": "LancesRoom",
+          "party_id": "MN_CHAMPION",
+          "battle_actor": {
+            "tile": [
+              5,
+              7
+            ],
+            "approach": [
+              5,
+              8
+            ],
+            "sprite": "SPRITE_LANCE"
+          },
+          "completed_room_value": 5,
+          "passive_arrivals": [
+            {
+              "index": 5,
+              "tile": [
+                4,
+                22
+              ]
+            },
+            {
+              "index": 6,
+              "tile": [
+                5,
+                22
+              ]
+            },
+            {
+              "index": 7,
+              "tile": [
+                4,
+                2
+              ]
+            },
+            {
+              "index": 8,
+              "tile": [
+                5,
+                2
+              ]
+            }
+          ],
+          "south_exits_core": [
+            [
+              4,
+              23
+            ],
+            [
+              5,
+              23
+            ]
+          ],
+          "north_exits_core": [
+            [
+              4,
+              1
+            ],
+            [
+              5,
+              1
+            ]
+          ],
+          "door_patch": {
+            "core": [
+              4,
+              0
+            ],
+            "closed": "0a",
+            "open": "0b",
+            "requires": "active run and completed-room count >= 5"
+          }
+        },
+        {
+          "id": "MnLeagueHallOfFame",
+          "kind": "league",
+          "dimensions_metatiles": [
+            5,
+            7
+          ],
+          "native_map_id": 10,
+          "native_constant": "MN_LEAGUE_HALL_OF_FAME",
+          "source_template": "HallOfFame",
+          "passive_arrivals": [
+            {
+              "index": 3,
+              "tile": [
+                4,
+                12
+              ]
+            },
+            {
+              "index": 4,
+              "tile": [
+                5,
+                12
+              ]
+            }
+          ],
+          "exits_core": [
+            [
+              4,
+              13
+            ],
+            [
+              5,
+              13
+            ]
+          ],
+          "record_actor": {
+            "script": "MnElyRecordVictory",
+            "sprite": "SPRITE_TEACHER",
+            "tile": [
+              5,
+              5
+            ],
+            "approach": [
+              5,
+              6
+            ]
+          },
+          "record_requires": [
+            "EVENT_MN_LEAGUE_RUN_ACTIVE",
+            "completed-room count == 5"
+          ],
+          "music": "MUSIC_INDIGO_PLATEAU",
+          "palette": "Native indoor palette, matching LoadSpecialMapPalette Ice Path exception."
         }
       ],
       "walkable_destinations": [
@@ -3063,7 +3671,9 @@
         "central square",
         "local story NPC"
       ],
-      "door_contract": "Assign exterior core-tile door coordinates only after selecting authentic facade quadrants; record reciprocal warp indices and indoor floor arrivals before export."
+      "door_contract": "Assign exterior core-tile door coordinates only after selecting authentic facade quadrants; record reciprocal warp indices and indoor floor arrivals before export.",
+      "league_authoring_file": "towns/MnEly.json",
+      "layout_file": "towns/MnEly.layout.json"
     },
     {
       "id": "MnLakeItasca",
@@ -3142,7 +3752,7 @@
       ],
       "role": "town",
       "tileset": "johto",
-      "composition": "Meadow edge, cabin street and public beach.",
+      "composition": "Lake-facing station and clinic garden, native canoe/ranger cabins, protected public beach and pier.",
       "ports": [
         {
           "route": "MN_R15",
@@ -3237,16 +3847,74 @@
         "central square",
         "local story NPC"
       ],
-      "door_contract": "Assign exterior core-tile door coordinates only after selecting authentic facade quadrants; record reciprocal warp indices and indoor floor arrivals before export.",
+      "door_contract": "Five exact native facades and ten active/passive exterior warp records; all entries target passive room Floor3 and both room carpets return to the matching exterior Floor.",
       "authoring_file": "towns/MnDetroitLakes.json",
-      "layout_file": "towns/MnDetroitLakes.layout.json"
+      "layout_file": "towns/MnDetroitLakes.layout.json",
+      "compiled_tileset": "mn_detroit_lakes",
+      "native_constant": "MN_DETROIT_LAKES",
+      "native_publication": {
+        "pack": "content-packs/minnesota-detroit-lakes-v01.crystalpack",
+        "status": "Strict readback, preservation, seven controller cases and eighteen exact native frames pass; train service remains unfinished.",
+        "source": "interior-life/DETROIT-LAKES.md",
+        "doors": 5,
+        "rooms": 5,
+        "train_service_installed": false
+      },
+      "native_ports": [
+        {
+          "side": "east",
+          "target": "MnR15C00R00",
+          "offset": -3,
+          "core_lanes": [
+            [
+              47,
+              18
+            ],
+            [
+              47,
+              19
+            ]
+          ]
+        },
+        {
+          "side": "west",
+          "target": "MnDetroitLakesApproach",
+          "offset": 0,
+          "core_lanes": [
+            [
+              0,
+              18
+            ],
+            [
+              0,
+              19
+            ]
+          ],
+          "route": "MN_R16 via the retained wooded approach"
+        },
+        {
+          "side": "north",
+          "target": "MnR19C00R01",
+          "offset": 0,
+          "core_lanes": [
+            [
+              24,
+              0
+            ],
+            [
+              25,
+              0
+            ]
+          ]
+        }
+      ]
     },
     {
       "id": "MnMoorhead",
       "name": "MOORHEAD",
       "dimensions_metatiles": [
-        24,
-        18
+        16,
+        12
       ],
       "reference_anchor_percent": [
         12,
@@ -3254,18 +3922,18 @@
       ],
       "role": "town",
       "tileset": "johto_modern",
-      "composition": "Red River square, rail bridge scenery and prairie edge.",
+      "composition": "Compact Red River levee, community pickup court, garden and prairie-trail services.",
       "ports": [
         {
           "route": "MN_R16",
           "side": "E",
           "gate_metatile": [
-            22,
-            9
+            14,
+            6
           ],
           "landing_metatile": [
-            20,
-            9
+            12,
+            6
           ]
         }
       ],
@@ -3274,10 +3942,11 @@
           "id": "MnMoorheadPokecenter1F",
           "kind": "pokecenter",
           "dimensions_metatiles": [
-            10,
-            8
+            5,
+            4
           ],
-          "source_behavior": "canonical healing, PC and blackout recovery"
+          "source_behavior": "canonical healing, PC and blackout recovery",
+          "authoring_file": "towns/MnMoorhead.json"
         },
         {
           "id": "MnMoorheadMart",
@@ -3286,7 +3955,8 @@
             6,
             4
           ],
-          "source_behavior": "canonical clerk, money deduction and inventory"
+          "source_behavior": "canonical clerk, money deduction and inventory",
+          "authoring_file": "towns/MnMoorhead.json"
         }
       ],
       "walkable_destinations": [
@@ -3295,7 +3965,44 @@
         "central square",
         "local story NPC"
       ],
-      "door_contract": "Assign exterior core-tile door coordinates only after selecting authentic facade quadrants; record reciprocal warp indices and indoor floor arrivals before export."
+      "door_contract": "Exact complete native clinic/shop facades, active/passive exterior indices and two reciprocal interior carpets; production returns verified. See interior-life/MOORHEAD.md.",
+      "layout_file": "towns/MnMoorhead.layout.json",
+      "compiled_tileset": "johto_modern",
+      "native_constant": "MN_MOORHEAD",
+      "native_publication": {
+        "pack": "content-packs/minnesota-moorhead-v01.crystalpack",
+        "status": "Accepted: strict preservation, four production controller cases, thirteen native frame comparisons and all 377 audio checks pass.",
+        "source": "interior-life/MOORHEAD.md",
+        "rooms": 2,
+        "doors": 2
+      },
+      "native_ports": [
+        {
+          "side": "east",
+          "target": "MnR16C00R00",
+          "offset": -6,
+          "core_lanes": [
+            [
+              31,
+              12
+            ],
+            [
+              31,
+              13
+            ]
+          ],
+          "destination_lanes": [
+            [
+              0,
+              24
+            ],
+            [
+              0,
+              25
+            ]
+          ]
+        }
+      ]
     },
     {
       "id": "MnInternationalFalls",
@@ -4304,8 +5011,8 @@
       },
       "direction_a": "north",
       "direction_b": "south",
-      "offset_a": -22,
-      "offset_b": 22,
+      "offset_a": -10,
+      "offset_b": 10,
       "offset_units": "32px_metatiles",
       "a_edge_core": [
         [
@@ -4319,16 +5026,69 @@
       ],
       "b_edge_core": [
         [
-          64,
-          95
+          40,
+          63
         ],
         [
-          65,
-          95
+          41,
+          63
         ]
       ],
       "qualification_source": "Existing compiled native checkpoints preserved; legacy planning flags are not newly implemented prerequisites.",
-      "expansion_contract_file": "towns/MnMinneapolis.expansion.contract.json"
+      "expansion_contract_file": "towns/MnMinneapolis.expansion.contract.json",
+      "recomposition_contract_file": "towns/MnMinneapolis.recomposition.contract.json",
+      "b_water_edge_core": [
+        [
+          32,
+          63
+        ],
+        [
+          33,
+          63
+        ],
+        [
+          34,
+          63
+        ],
+        [
+          35,
+          63
+        ],
+        [
+          36,
+          63
+        ],
+        [
+          37,
+          63
+        ]
+      ],
+      "a_water_edge_core": [
+        [
+          12,
+          0
+        ],
+        [
+          13,
+          0
+        ],
+        [
+          14,
+          0
+        ],
+        [
+          15,
+          0
+        ],
+        [
+          16,
+          0
+        ],
+        [
+          17,
+          0
+        ]
+      ]
     },
     {
       "kind": "connection",
@@ -4360,8 +5120,8 @@
       },
       "direction_a": "west",
       "direction_b": "east",
-      "offset_a": -15,
-      "offset_b": 15,
+      "offset_a": -9,
+      "offset_b": 9,
       "offset_units": "32px_metatiles",
       "a_edge_core": [
         [
@@ -4375,16 +5135,17 @@
       ],
       "b_edge_core": [
         [
-          127,
-          48
+          79,
+          36
         ],
         [
-          127,
-          49
+          79,
+          37
         ]
       ],
       "qualification_source": "Existing compiled native checkpoints preserved; legacy planning flags are not newly implemented prerequisites.",
-      "expansion_contract_file": "towns/MnMinneapolis.expansion.contract.json"
+      "expansion_contract_file": "towns/MnMinneapolis.expansion.contract.json",
+      "recomposition_contract_file": "towns/MnMinneapolis.recomposition.contract.json"
     },
     {
       "kind": "connection",
@@ -4440,7 +5201,8 @@
         ]
       ],
       "qualification_source": "Existing compiled native checkpoints preserved; legacy planning flags are not newly implemented prerequisites.",
-      "expansion_contract_file": "towns/MnStPaul.expansion.contract.json"
+      "expansion_contract_file": "towns/MnStPaul.expansion.contract.json",
+      "recomposition_contract_file": "towns/MnStPaul.recomposition.contract.json"
     },
     {
       "kind": "connection",
@@ -4473,8 +5235,8 @@
       },
       "direction_a": "south",
       "direction_b": "north",
-      "offset_a": -21,
-      "offset_b": 21,
+      "offset_a": -9,
+      "offset_b": 9,
       "offset_units": "32px_metatiles",
       "a_edge_core": [
         [
@@ -4488,16 +5250,69 @@
       ],
       "b_edge_core": [
         [
-          64,
+          40,
           0
         ],
         [
-          65,
+          41,
           0
         ]
       ],
       "qualification_source": "Existing compiled native checkpoints preserved; legacy planning flags are not newly implemented prerequisites.",
-      "expansion_contract_file": "towns/MnMinneapolis.expansion.contract.json"
+      "expansion_contract_file": "towns/MnMinneapolis.expansion.contract.json",
+      "recomposition_contract_file": "towns/MnMinneapolis.recomposition.contract.json",
+      "b_water_edge_core": [
+        [
+          32,
+          0
+        ],
+        [
+          33,
+          0
+        ],
+        [
+          34,
+          0
+        ],
+        [
+          35,
+          0
+        ],
+        [
+          36,
+          0
+        ],
+        [
+          37,
+          0
+        ]
+      ],
+      "a_water_edge_core": [
+        [
+          14,
+          15
+        ],
+        [
+          15,
+          15
+        ],
+        [
+          16,
+          15
+        ],
+        [
+          17,
+          15
+        ],
+        [
+          18,
+          15
+        ],
+        [
+          19,
+          15
+        ]
+      ]
     },
     {
       "kind": "gatehouse_warp",
@@ -5025,27 +5840,40 @@
       "inbound_facing_policy": "escort_unless_outward"
     },
     {
-      "kind": "gatehouse_warp",
+      "kind": "guarded_connection",
       "route": "MN_R13",
       "a": "MnR13C00R02",
-      "a_gate_local_metatile": [
-        17,
-        14
-      ],
-      "a_arrival_local_metatile": [
-        17,
-        12
-      ],
       "b": "MnEly",
-      "b_gate_metatile": [
-        12,
-        1
+      "direction_a": "south",
+      "direction_b": "north",
+      "offset_a": 5,
+      "offset_b": -5,
+      "offset_units": "32px_metatiles",
+      "a_edge_core": [
+        [
+          34,
+          31
+        ],
+        [
+          35,
+          31
+        ]
       ],
-      "b_arrival_metatile": [
-        12,
-        3
+      "b_edge_core": [
+        [
+          24,
+          0
+        ],
+        [
+          25,
+          0
+        ]
       ],
-      "requires_flags": [
+      "requires_flags": [],
+      "gate_map": "MnLeagueLobby",
+      "gate_script": "MnElyRegister",
+      "requires_apply_to": "league_registration",
+      "registration_requires_flags": [
         "BADGE_1",
         "BADGE_2",
         "BADGE_3",
@@ -5056,8 +5884,9 @@
         "BADGE_8",
         "EVENT_MN_SURVEY_RESTORED"
       ],
-      "gate_script": "MnR13EntryGateScript",
-      "warp_index_status": "Allocate from authored map events; target safe FLOOR arrival event rather than source trigger."
+      "inbound_access": "free_care",
+      "fee": 0,
+      "source_status": "Native 554-map Ely publication: both walking lanes/directions, independent lobby registration and return verified through controller and actual stdio; see playable/ely-league.md."
     },
     {
       "kind": "guarded_connection",
@@ -6183,185 +7012,44 @@
       ]
     },
     {
-      "kind": "gatehouse_warp",
-      "route": "MN_R11",
-      "a": "MnR11C00R00",
-      "b": "MnGrandMaraisShoreGate",
-      "requires_flags": [],
-      "a_gate_core": [
-        [
-          43,
-          4
-        ],
-        [
-          43,
-          5
-        ]
-      ],
-      "a_safe_return_core": [
-        [
-          42,
-          4
-        ],
-        [
-          42,
-          5
-        ]
-      ],
-      "a_active_warps": [
-        3,
-        4
-      ],
-      "a_passive_warps": [
-        5,
-        6
-      ],
-      "b_arrivals_core": [
-        [
-          1,
-          4
-        ],
-        [
-          1,
-          5
-        ]
-      ],
-      "b_arrival_warps": [
-        5,
-        6
-      ],
-      "b_exit_core": [
-        [
-          0,
-          4
-        ],
-        [
-          0,
-          5
-        ]
-      ],
-      "b_exit_warps": [
-        1,
-        2
-      ],
-      "native_status": "544-map candidate; see playable/north-shore-story.md. Inbound free; outbound town checks only eight badges and Duluth harbor signal."
-    },
-    {
-      "kind": "gatehouse_warp",
-      "route": "MN_R11",
-      "a": "MnGrandMarais",
-      "b": "MnGrandMaraisShoreGate",
-      "requires_flags": [
-        "BADGE_1",
-        "BADGE_2",
-        "BADGE_3",
-        "BADGE_4",
-        "BADGE_5",
-        "BADGE_6",
-        "BADGE_7",
-        "BADGE_8",
-        "EVENT_MN_LIGHTHOUSE_SIGNAL"
-      ],
-      "a_gate_core": [
-        [
-          4,
-          18
-        ],
-        [
-          4,
-          19
-        ]
-      ],
-      "a_safe_return_core": [
-        [
-          8,
-          18
-        ],
-        [
-          8,
-          19
-        ]
-      ],
-      "a_active_warps": [
-        7,
-        8
-      ],
-      "a_passive_warps": [
-        9,
-        10
-      ],
-      "b_arrivals_core": [
-        [
-          8,
-          4
-        ],
-        [
-          8,
-          5
-        ]
-      ],
-      "b_arrival_warps": [
-        7,
-        8
-      ],
-      "b_exit_core": [
-        [
-          9,
-          4
-        ],
-        [
-          9,
-          5
-        ]
-      ],
-      "b_exit_warps": [
-        3,
-        4
-      ],
-      "native_status": "544-map candidate; see playable/north-shore-story.md. Inbound free; outbound town checks only eight badges and Duluth harbor signal."
-    },
-    {
-      "kind": "guarded_connection",
-      "route": "MN_R12",
-      "a": "MnR12C01R01",
+      "kind": "connection",
+      "a": "MnR11C01R00",
       "b": "MnGrandMarais",
       "direction_a": "east",
       "direction_b": "west",
       "offset_a": 0,
       "offset_b": 0,
-      "a_edge_core": [
-        [
-          63,
-          8
-        ],
-        [
-          63,
-          9
-        ]
-      ],
-      "b_edge_core": [
-        [
-          0,
-          8
-        ],
-        [
-          0,
-          9
-        ]
-      ],
-      "requires_flags": [
-        "BADGE_1",
-        "BADGE_2",
-        "BADGE_3",
-        "BADGE_4",
-        "BADGE_5",
-        "BADGE_6",
-        "BADGE_7",
-        "BADGE_8",
-        "EVENT_MN_LIGHTHOUSE_SIGNAL"
-      ],
-      "gate_script": "MnMaraisGunflintCheck",
-      "native_status": "544-map candidate; free inbound, no local lamp or part prerequisite."
+      "native_source": "revisions/north-shore-ely-geography-v01/geography/native-west-v02/contract.json"
+    },
+    {
+      "kind": "connection",
+      "a": "MnGrandMarais",
+      "b": "MnMaraisCedarApproach",
+      "direction_a": "north",
+      "direction_b": "south",
+      "offset_a": -19,
+      "offset_b": 19,
+      "native_source": "revisions/north-shore-ely-geography-v01/geography/native-west-v02/contract.json"
+    },
+    {
+      "kind": "connection",
+      "a": "MnMaraisCedarApproach",
+      "b": "MnMaraisInlandNeck",
+      "direction_a": "west",
+      "direction_b": "east",
+      "offset_a": 0,
+      "offset_b": 0,
+      "native_source": "revisions/north-shore-ely-geography-v01/geography/native-west-v02/contract.json"
+    },
+    {
+      "kind": "connection",
+      "a": "MnMaraisInlandNeck",
+      "b": "MnR12C01R01",
+      "direction_a": "west",
+      "direction_b": "east",
+      "offset_a": 0,
+      "offset_b": 0,
+      "native_source": "revisions/north-shore-ely-geography-v01/geography/native-west-v02/contract.json"
     }
   ],
   "map_id_policy": "Allocate unused group/map/spawn IDs from the actual base; persist the registry; do not hard-code 250 or collide with other overlays.",
@@ -6665,15 +7353,30 @@
     "EVENT_MN_R12_CAVE_ETHER",
     "EVENT_MN_R11_ITEM_05",
     "EVENT_MN_R11_ITEM_06",
-    "EVENT_MN_MARAIS_SPARE_PART_RECEIVED"
+    "EVENT_MN_MARAIS_SPARE_PART_RECEIVED",
+    "EVENT_MN_GUNFLINT_CAMP_SUPPLY"
   ],
   "regional_destinations": [
     {
       "id": "MN_STATE_FAIRGROUNDS",
       "file": "zones/state-fairgrounds.json",
       "parent_hub": "MnStPaul",
-      "kind": "planned_fairgrounds",
-      "status": "Dedicated playable destination in scope; St. Paul walking entrance reserved during current town authoring. Terrain and native gameplay are not published."
+      "kind": "authored_fairgrounds",
+      "status": "Separate48x36 fair candidate:85 NPCs,22 trainers (20 sight),10 added non-battlers,4 walking loops,32 shops selling16 fair foods including healing/confusing beer,14 grass patches and29 active food/carnival species at all times. See playable/state-fairgrounds.md; integration into later regional packs remains separate.",
+      "layout_file": "zones/state-fairgrounds.layout.json",
+      "native_connection": {
+        "a": "MnStPaul",
+        "direction_a": "north",
+        "b": "MnStateFairgrounds",
+        "direction_b": "south",
+        "offset": 0,
+        "city_core_x": [
+          16,
+          17
+        ],
+        "fair_core_y": 71
+      },
+      "verified_pack": "content-packs/minnesota-state-fair-foods-v2.crystalpack"
     }
   ],
   "transit_networks": [
@@ -6691,5 +7394,75 @@
       "file": "zones/boundary-waters-safari.json",
       "status": "Expanded v17 source contract reserves six preserve chunks (group61 exterior IDs1\u20134 and6\u20137) and the unchanged cabin map5. Record the actual 505-map native publication and controller evidence separately. Free regional basecamp/story access is independent; Safari admission stays closed without fees and session/capture rules remain unimplemented."
     }
-  ]
+  ],
+  "standalone_dungeons": [
+    {
+      "id": "minnesota-voyageurs-ice-v1",
+      "name": "Voyageurs Ice Cavern",
+      "parent_route": "MN_R20",
+      "authoring_file": "ice-caves/voyageurs-ice.json",
+      "builder": "pack_voyageurs_ice",
+      "publication_order": "Apply after the completed R20 and cave-quality parent pack; preserves the base route authoring preimage.",
+      "tileset": "ice_path",
+      "maps": [
+        {
+          "id": "MnVoyageursIce1F",
+          "constant": "MN_VOYAGEURS_ICE_1F",
+          "dimensions_metatiles": [
+            14,
+            12
+          ]
+        },
+        {
+          "id": "MnVoyageursIceB1F",
+          "constant": "MN_VOYAGEURS_ICE_B1F",
+          "dimensions_metatiles": [
+            16,
+            12
+          ]
+        }
+      ],
+      "exterior_map": "MnR20C01R00",
+      "exterior_entrance_core": [
+        6,
+        33
+      ],
+      "exterior_safe_return_core": [
+        6,
+        34
+      ],
+      "access": "Optional dry mainland branch; retains all existing R20 badge/story conditions. No new HM, admission or puzzle-state flag gates.",
+      "status": "Published v02: native slides, all rewards, both ladders, ice-stop Save/Continue, same-mouth return, 9 exact production captures and stdio MCP replay pass. Local fixtures do not earn regional access.",
+      "map_group_allocation": "First unused group in 84..255; standalone cave parent uses 84, while a parent with the winter region at 84 uses 85."
+    }
+  ],
+  "superior_inland_source": {
+    "replay_order": [
+      "build_grand_marais_superior",
+      "build_superior_inland_geography",
+      "build_inland_winter"
+    ],
+    "parent": "content-packs/minnesota-superior-inland-art-v01.crystalpack",
+    "final_pack_sha256": "65cf6f98e65ada839ec5afaa57728bf8289d3a50ba53ba6b9b50f08d3620bb17",
+    "content_identity": "f34280a5fc5d6ab8ccc3ec4ef4317a6ea9321070df342ea95aca5745514a0223",
+    "extra_layouts": [
+      "towns/MnMaraisCedarApproach.layout.json",
+      "towns/MnMaraisInlandNeck.layout.json"
+    ],
+    "new_map_registration": {
+      "constant": "MN_MARAIS_INLAND_NECK",
+      "name": "MnMaraisInlandNeck",
+      "groupName": "MINNESOTA",
+      "groupId": 40,
+      "mapId": 8,
+      "width": 65,
+      "height": 19,
+      "environment": "ROUTE",
+      "phoneService": 0
+    },
+    "camp_event": {
+      "name": "EVENT_MN_GUNFLINT_CAMP_SUPPLY",
+      "value": 2387
+    }
+  }
 }

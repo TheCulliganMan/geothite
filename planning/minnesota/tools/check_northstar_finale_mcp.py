@@ -49,6 +49,7 @@ def main():
     parser.add_argument("--client", type=Path, default=ROOT / "target/northstar-story/wasm-dev/geothite")
     parser.add_argument("--mode", choices=["chief-win", "restored"], required=True)
     parser.add_argument("--save", type=Path, required=True)
+    parser.add_argument("--boosted-review", action="store_true", help="Label the user-authorized supplied-level continuation.")
     args = parser.parse_args()
     pack = load_pack(args.pack)
     with tempfile.TemporaryFile() as stderr:
@@ -70,7 +71,8 @@ def main():
             assert process.wait(timeout=30) == 0
         stderr.seek(0)
         assert stderr.read() == b"", "gameplay stderr must remain byte-empty"
-    print(f"PASS: earned {args.mode}, separate receiver, League release, Start, unchanged money/badges and byte-empty stderr.")
+    scope = "boosted story review" if args.boosted_review else "earned"
+    print(f"PASS: {scope} {args.mode}, separate receiver, League release, Start, unchanged money/badges and byte-empty stderr.")
 
 
 if __name__ == "__main__":

@@ -1,6 +1,14 @@
 # Glacier Line — native implementation handoff
 
-This is a source-read implementation plan, **not installed train service**. No Rust, pack, station geometry, exporter or controller was changed for this audit. The current network contract is [glacier-line.json](glacier-line.json); the reviewed St. Paul room is [MnStPaulUnionDepot.json](MnStPaulUnionDepot.json). Its city exterior remains unbound. Each of the other five stops still needs its own reviewed room, conductor route, public entrance and safe arrival before a six-stop playable claim.
+This is the retained source-read implementation plan for the unfinished six-stop
+service. The current Detroit Lakes child has three real public halls: Detroit
+Lakes, St. Cloud and St. Paul, with bound city doors. The canonical depot courier
+also already exists. Old unbound-city/source-placeholder observations below are
+historical and must be checked against the current pack before use. Staples,
+Red Wing and Winona remain unregistered planned station interiors. The guarded
+ride commands, first-visit callbacks and thirty directed service bindings still
+need implementation and production proof. See the current
+[Detroit Lakes runbook](../interior-life/DETROIT-LAKES.md).
 
 ## Use the existing interpreter and train visual
 

@@ -1,0 +1,390 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_316",
+  "result": "pass",
+  "manifest_sha256": "29e547375ea20c516b5bf2f0a8e2f602aa8b4e77a6397d945f49467a804e33b4",
+  "bank_sha256": "bb3685f7f1a58357d511888cab54e40173f705695ca8c0d57093e7eef901bfe6",
+  "source_sha256": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f143/rondive.overworld.imagegen-v1.png": "9717d4b49bfc6b3a14489f272f36e02271bc99d421e2a7bcf013d5323e9a2188",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f143/rondive.overworld.imagegen-v2-bottom-eye-spacing.png": "2cf80b13669ddcc446ca8ce97810037cd7ca36e5bc48d9758a67417f2c06e99a"
+  },
+  "canonical_eye_form": "FOUR frontal black pupils, two over two on separate cyan face lobes; TWO vertically stacked profile pupils. All 12 native pupils verified as distinct small actual source components against canonical four-eyed whirligig beetle.",
+  "nonrear_poses": [
+    {
+      "pose": "down_idle",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            6,
+            9
+          ],
+          "source_sample": [
+            244,
+            341
+          ],
+          "source_rgba": [
+            1,
+            2,
+            2,
+            253
+          ],
+          "actual_source_pupil_component": [
+            240,
+            336,
+            24,
+            24
+          ],
+          "component_pixels": 576,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "native": [
+            9,
+            9
+          ],
+          "source_sample": [
+            323,
+            341
+          ],
+          "source_rgba": [
+            2,
+            2,
+            0,
+            253
+          ],
+          "actual_source_pupil_component": [
+            312,
+            336,
+            24,
+            24
+          ],
+          "component_pixels": 576,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "native": [
+            6,
+            12
+          ],
+          "source_sample": [
+            244,
+            423
+          ],
+          "source_rgba": [
+            0,
+            1,
+            1,
+            253
+          ],
+          "actual_source_pupil_component": [
+            240,
+            408,
+            24,
+            24
+          ],
+          "component_pixels": 576,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "native": [
+            9,
+            12
+          ],
+          "source_sample": [
+            323,
+            423
+          ],
+          "source_rgba": [
+            0,
+            0,
+            0,
+            254
+          ],
+          "actual_source_pupil_component": [
+            312,
+            408,
+            24,
+            24
+          ],
+          "component_pixels": 576,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            3,
+            8
+          ],
+          "source_sample": [
+            1154,
+            302
+          ],
+          "source_rgba": [
+            0,
+            0,
+            0,
+            253
+          ],
+          "actual_source_pupil_component": [
+            1141,
+            288,
+            24,
+            24
+          ],
+          "component_pixels": 576,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "native": [
+            3,
+            11
+          ],
+          "source_sample": [
+            1154,
+            384
+          ],
+          "source_rgba": [
+            1,
+            1,
+            0,
+            253
+          ],
+          "actual_source_pupil_component": [
+            1141,
+            372,
+            24,
+            24
+          ],
+          "component_pixels": 576,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            6,
+            8
+          ],
+          "source_sample": [
+            244,
+            772
+          ],
+          "source_rgba": [
+            3,
+            4,
+            4,
+            253
+          ],
+          "actual_source_pupil_component": [
+            240,
+            768,
+            24,
+            26
+          ],
+          "component_pixels": 624,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "native": [
+            9,
+            8
+          ],
+          "source_sample": [
+            323,
+            772
+          ],
+          "source_rgba": [
+            0,
+            0,
+            0,
+            253
+          ],
+          "actual_source_pupil_component": [
+            312,
+            768,
+            24,
+            26
+          ],
+          "component_pixels": 624,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "native": [
+            6,
+            11
+          ],
+          "source_sample": [
+            244,
+            854
+          ],
+          "source_rgba": [
+            3,
+            8,
+            9,
+            254
+          ],
+          "actual_source_pupil_component": [
+            240,
+            852,
+            24,
+            24
+          ],
+          "component_pixels": 576,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "native": [
+            9,
+            11
+          ],
+          "source_sample": [
+            323,
+            854
+          ],
+          "source_rgba": [
+            2,
+            6,
+            6,
+            253
+          ],
+          "actual_source_pupil_component": [
+            312,
+            852,
+            24,
+            25
+          ],
+          "component_pixels": 600,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            3,
+            8
+          ],
+          "source_sample": [
+            1154,
+            752
+          ],
+          "source_rgba": [
+            6,
+            5,
+            4,
+            254
+          ],
+          "actual_source_pupil_component": [
+            1141,
+            731,
+            24,
+            24
+          ],
+          "component_pixels": 553,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            2
+          ]
+        },
+        {
+          "native": [
+            3,
+            11
+          ],
+          "source_sample": [
+            1154,
+            834
+          ],
+          "source_rgba": [
+            2,
+            0,
+            1,
+            253
+          ],
+          "actual_source_pupil_component": [
+            1141,
+            816,
+            24,
+            23
+          ],
+          "component_pixels": 552,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ]
+        }
+      ]
+    }
+  ],
+  "rear_anatomy": {
+    "result": "pass",
+    "notes": "Both genuine rears inspected: plain cyan nape and navy wing-case seam, no eyes. Shared native14x13 transform and transparent1pxborder; three idle/step pairs differ. Vertical one-pixel walk bob preserves four-eye face."
+  }
+}

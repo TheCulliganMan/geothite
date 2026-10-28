@@ -1,0 +1,9 @@
+{
+  "tool": "built-in image_gen",
+  "original": "/Users/ryanculligan/.codex/generated_images/01a179bf-dc2b-7352-8975-8b8f3a32e33b/exec-fd0fce85-e7f1-4d59-a05b-ab1050f456c5.png",
+  "preserved_raw": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f117/glaciris.overworld.imagegen-v2-compact-profile.png",
+  "sha256": "85a692de045294673605a18986503360000448e1e7afded5107a9d9f7c20b267",
+  "exact_prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f117/prompt-glaciris-compact-profile-v2.txt",
+  "reference_mapping": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f117/reference-mapping-glaciris-compact-profile-v2.json",
+  "status": "preserved; selected frames recorded in frozen manifest"
+}

@@ -1,0 +1,15 @@
+{
+  "tool": "built-in ImageGen",
+  "source_edit": "rear thumb chirality correction only",
+  "raw": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f076/mispair.overworld.imagegen-v3-rear-thumbs.png",
+  "raw_sha256": "a4a1d8d5ab524a30817f1bbc86f5d4f8037ca4e5322d3b56947f13d6bda3aa94",
+  "default_original": "/Users/ryanculligan/.codex/generated_images/01a17dc4-dd75-7642-a1c6-4bf13fda70c6/exec-73d3d88b-afca-44dd-a8b4-15ef017ee749.png",
+  "default_original_preserved": true,
+  "prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f076/prompt-mispair-v3-rear-thumbs.txt",
+  "selected_edit_cells": [
+    1,
+    4
+  ],
+  "source_generated_native_not_accepted": true,
+  "notes": "Both north thumbs correct against canonical back reference."
+}

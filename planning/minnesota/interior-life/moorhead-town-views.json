@@ -1,0 +1,50 @@
+[
+  {
+    "id": "clinic-street",
+    "map": "MnMoorhead",
+    "core": [
+      17,
+      8
+    ]
+  },
+  {
+    "id": "supplies-street",
+    "map": "MnMoorhead",
+    "core": [
+      25,
+      12
+    ]
+  },
+  {
+    "id": "river-marker",
+    "map": "MnMoorhead",
+    "core": [
+      13,
+      4
+    ]
+  },
+  {
+    "id": "levee-passing",
+    "map": "MnMoorhead",
+    "core": [
+      12,
+      17
+    ]
+  },
+  {
+    "id": "community-starts",
+    "map": "MnMoorhead",
+    "core": [
+      20,
+      18
+    ]
+  },
+  {
+    "id": "r16-return",
+    "map": "MnMoorhead",
+    "core": [
+      30,
+      12
+    ]
+  }
+]

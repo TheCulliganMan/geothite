@@ -214,7 +214,7 @@ pub(super) fn continue_save(
         .duration_since(UNIX_EPOCH)
         .expect("clock")
         .as_nanos();
-    let path = std::env::temp_dir().join(format!(
+    let path = super::authored_route_fixture::reached_save_path(&format!(
         "geothite-r10-gallery-{}-{nonce}.crystalsave",
         std::process::id()
     ));
@@ -228,7 +228,7 @@ pub(super) fn continue_save(
     assert_eq!(before.overworld.map_name, after.overworld.map_name);
     assert_eq!(flags(&loaded), before_flags);
     assert_eq!(loaded.shell.shell.session().state().money, money);
-    std::fs::remove_file(path).expect("remove temporary save");
+    super::authored_route_fixture::cleanup_reached_save(&path);
     loaded
 }
 fn outside_grid(runtime: &CrystalRuntime) -> RouteGrid {

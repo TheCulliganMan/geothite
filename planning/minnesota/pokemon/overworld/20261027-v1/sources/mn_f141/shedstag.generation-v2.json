@@ -1,0 +1,7 @@
+{
+  "default_output": "/Users/ryanculligan/.codex/generated_images/01a17dcc-4f1a-77a2-9d21-0df036061346/exec-1c884d7e-13c2-4d77-928e-c7723ebb3cfd.png",
+  "saved_source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f141/shedstag.overworld.imagegen-v2.png",
+  "exact_prompt": "shedstag.prompt-v2.txt",
+  "reference": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f141/shedstag.overworld.imagegen-v1.png",
+  "notes": "Retained wider guard source; original-v1 joint guard registration also being tested to preserve proportions."
+}

@@ -1,0 +1,9 @@
+{
+  "tool": "built-in image_gen",
+  "original": "/Users/ryanculligan/.codex/generated_images/01a179bf-dc2b-7352-8975-8b8f3a32e33b/exec-a8366c15-28fa-4918-9ee2-df3ef700303b.png",
+  "preserved_raw": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f090/doughlin.overworld.imagegen-v1.png",
+  "sha256": "221b9bf9336a72b4faae0bd8f5fa143f6c41d280ff5e2e6a7bf9ed53c5d831f8",
+  "exact_prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f090/prompt-doughlin-v1.txt",
+  "reference_mapping": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f090/reference-mapping-doughlin-v1.json",
+  "status": "preserved; see frozen manifest for pose selection"
+}

@@ -1,0 +1,8 @@
+{
+  "tool": "built-in image_gen",
+  "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f010/flourgeist.overworld.imagegen-v2-eyes.png",
+  "sha256": "7f3ff7d510781b32020caae2c29710eea81352af65092220923d4757774361e9",
+  "original_default_path": "/Users/ryanculligan/.codex/generated_images/01a178da-4cf1-7e01-8516-667a332dc790/exec-ddb0c662-d61d-4dea-b170-afb946ea00bd.png",
+  "prompt": "prompt-flourgeist-v2-eyes.txt",
+  "status": "source_generated_not_accepted"
+}

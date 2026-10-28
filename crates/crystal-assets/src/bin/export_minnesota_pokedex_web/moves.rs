@@ -11,10 +11,12 @@ use super::{array, badge, esc, href, read, string, title};
 
 pub(super) fn load(root: &Path, moves: &BTreeMap<String, Move>) -> Result<Value> {
     let mut catalog = read(&root.join("northwoods-moves.json"))?;
-    let fairy_path = root.join("fairy-moves.json");
-    if fairy_path.try_exists()? {
-        let supplement = read(&fairy_path)?;
-        merge_supplement(&mut catalog, &supplement, moves)?;
+    for filename in ["fairy-moves.json", "starter-signature-moves.json"] {
+        let path = root.join(filename);
+        if path.try_exists()? {
+            let supplement = read(&path)?;
+            merge_supplement(&mut catalog, &supplement, moves)?;
+        }
     }
     catalog["moves"]
         .as_array_mut()

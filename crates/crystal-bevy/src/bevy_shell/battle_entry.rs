@@ -213,6 +213,14 @@ fn battle_transition_trainer_art(root: &AssetRoot, dark: bool) -> Result<(Vec<u8
         Ok((tile, palette))
 }
 
+fn battle_transition_source_origin(camera_offset: Vec2) -> (i32, i32) {
+    let scale = TILE_SIZE / SOURCE_TILE_SIZE as f32;
+    (
+        i32::from(CLASSIC_SCROLL_HALO_TILES) * 8 - (camera_offset.x / scale).round() as i32,
+        i32::from(CLASSIC_SCROLL_HALO_TILES) * 8 + (camera_offset.y / scale).round() as i32,
+    )
+}
+
 fn prepare_battle_transition_texture(
     root: &AssetRoot,
     transition: VisibleBattleTransition,
@@ -231,11 +239,7 @@ fn prepare_battle_transition_texture(
     };
     let bgp = battle_transition_bgp(transition, dark);
     let mut data = vec![0; 160 * 144 * 4];
-    let scale = TILE_SIZE / SOURCE_TILE_SIZE as f32;
-    let origin_x =
-        i32::from(CLASSIC_SCROLL_HALO_TILES) * 8 - (camera_offset.x / scale).round() as i32;
-    let origin_y =
-        i32::from(CLASSIC_SCROLL_HALO_TILES) * 8 + (camera_offset.y / scale).round() as i32;
+    let (origin_x, origin_y) = battle_transition_source_origin(camera_offset);
     for y in 0..144 {
         for x in 0..160 {
             let source_x =
@@ -2779,12 +2783,17 @@ fn begin_visible_poison_blackout_after_faint_text(
     runtime_shell.pending_poison_blackout = false;
     runtime_shell.field_notice_scene = None;
     resolve_visible_blackout(runtime_shell)?;
+    runtime_shell.poison_blackout_recovery = true;
     mark_runtime_snapshot_dirty(runtime_shell);
     Ok(true)
 }
 
 fn commit_visible_blackout_recovery(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
-    let recovered = runtime_shell.shell.resolve_blackout_to_last_spawn()?;
+    let recovered = if runtime_shell.poison_blackout_recovery {
+        runtime_shell.shell.resolve_poison_blackout_to_last_spawn()?
+    } else {
+        runtime_shell.shell.resolve_blackout_to_last_spawn()?
+    };
     runtime_shell.last_audio_events.push(format!(
         "blackout recovery spawn={:?} map={} tile=({}, {}) healed={} checksum={:?}",
         recovered.spawn_identifier,

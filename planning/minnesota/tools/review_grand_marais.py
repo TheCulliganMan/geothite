@@ -25,21 +25,39 @@ DESIGN = ROOT / 'planning/minnesota/playable/grand-marais.json'
 OUTPUT = ROOT / 'planning/minnesota/renders/grand-marais'
 
 
-def sprite(pack, token, archive_output=None):
+def sprite(pack, token, archive_output=None, frame_offset=0):
     """Color the native frame; optionally retain every input/conversion locally."""
     # Other route renderers reuse this helper without writing into this town.
     def retain(image, suffix):
         if archive_output is not None:
             save_render(image, archive_output/(token.lower()+suffix))
-    file = 'gfx/sprites/' + token.removeprefix('SPRITE_').lower() + '.png'
-    # Runtime names are occasionally separated differently from their source filename.
+    name = token.removeprefix('SPRITE_').lower().replace('-', '_')
+    files = pack['runtime_files']
+    file = 'gfx/sprites/' + name + '.png'
+    if file not in files:
+        # Mirror the production species-object resolver. These are original
+        # menu-icon assets, not invented species art or a battle-image crop.
+        assert f'gfx/pokemon/{name}/overworld.2bpp' not in files, 'custom overworld bank needs its own palette decoder'
+        candidates = ['gfx/sprites/poke_ball.png'] if name == 'pokeball' else []
+        candidates.append(f'gfx/icons/{name}.png')
+        icon = pack['data']['menu_icons'].get(name.upper())
+        if icon:
+            candidates.append('gfx/icons/' + icon.lower().removeprefix('icon_') + '.png')
+        file = next((path for path in candidates if path in files), file)
     original = Image.open(io.BytesIO(bytes(pack['runtime_files'][file])))
+    # Native one/two-frame icons do not have a third directional frame.
+    count = original.height // original.width
+    assert original.width == 16 and count in {1, 2, 3, 6}, 'native 16px sprite sheet'
+    if count == 1:
+        frame_offset = 0
+    elif count == 2 and frame_offset >= 32:
+        frame_offset = 0
     retain(original, '-source-palette.png')
-    original_crop = original.crop((0, 0, 16, 16))
+    original_crop = original.crop((0, frame_offset, 16, frame_offset+16))
     retain(original_crop, '-source-crop.png')
     sheet = original.convert('RGB')
     retain(sheet, '-source-rgb.png')
-    source_crop = sheet.crop((0, 0, 16, 16))
+    source_crop = sheet.crop((0, frame_offset, 16, frame_offset+16))
     retain(source_crop, '-source-crop-rgb.png')
     art = source_crop.convert('RGBA')
     retain(art, '-before-day-palette-rgba.png')
@@ -52,7 +70,25 @@ def sprite(pack, token, archive_output=None):
         colors.extend(tuple((v << 3) | (v >> 2) for v in values[i:i+3]) for i in range(0,len(values),3))
     palette_id = pack['data']['sprite_palette_defaults'].get(token, 0) & 7
     palette = colors[palette_id*4:palette_id*4+4]
-    art.putdata([(0,0,0,0) if p[0] >= 213 else (*palette[1 if p[0]>=128 else 2 if p[0]>=43 else 3],255) for p in art.getdata()])
+    levels = [0 if p[0]>=213 else 1 if p[0]>=128 else 2 if p[0]>=43 else 3
+              for p in art.getdata()]
+    # Match native copy_source_sprite_rgba: enclosed paper pixels are opaque
+    # eye/coat highlights; only the background connected to the border is clear.
+    background, clear, pending = levels[0], set(), deque()
+    def enqueue(x, y):
+        index = y*16+x
+        if index not in clear and levels[index] == background:
+            clear.add(index); pending.append((x,y))
+    for x in range(16):
+        enqueue(x,0); enqueue(x,15)
+    for y in range(1,15):
+        enqueue(0,y); enqueue(15,y)
+    while pending:
+        x,y=pending.popleft()
+        for nx,ny in ((x-1,y),(x+1,y),(x,y-1),(x,y+1)):
+            if 0<=nx<16 and 0<=ny<16: enqueue(nx,ny)
+    art.putdata([(0,0,0,0) if i in clear else (*palette[level],255)
+                 for i,level in enumerate(levels)])
     retain(art, '-day-palette-rgba.png')
     return art
 

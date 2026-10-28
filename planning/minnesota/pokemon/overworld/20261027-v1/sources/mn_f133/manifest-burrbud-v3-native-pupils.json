@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F133",
+  "species": [
+    {
+      "species_id": "MN_293",
+      "runtime_token": "BURRBUD",
+      "palette_rgb555": [
+        32767,
+        12985,
+        8746,
+        0
+      ],
+      "shiny_palette_rgb555": [
+        32767,
+        22316,
+        17736,
+        0
+      ],
+      "fit": [
+        12,
+        12
+      ],
+      "alpha_threshold": 128,
+      "sampling": "source_center",
+      "minimum_foreground_samples": 16,
+      "black_priority_samples": 64,
+      "interior_black_samples": 64,
+      "opaque_interior_minimum_samples": 64,
+      "frames": [
+        {
+          "pose": "down_idle",
+          "source": "burrbud.overworld.imagegen-v2-plant.png",
+          "crop": [
+            68,
+            43,
+            433,
+            460
+          ]
+        },
+        {
+          "pose": "up_idle",
+          "source": "burrbud.overworld.imagegen-v2-plant.png",
+          "crop": [
+            539,
+            37,
+            433,
+            460
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "source": "burrbud.overworld.imagegen-v2-plant.png",
+          "crop": [
+            1083,
+            39,
+            433,
+            460
+          ]
+        },
+        {
+          "pose": "down_step",
+          "source": "burrbud.overworld.imagegen-v2-plant.png",
+          "crop": [
+            68,
+            537,
+            433,
+            460
+          ]
+        },
+        {
+          "pose": "up_step",
+          "source": "burrbud.overworld.imagegen-v2-plant.png",
+          "crop": [
+            539,
+            532,
+            433,
+            460
+          ]
+        },
+        {
+          "pose": "left_step",
+          "source": "burrbud.overworld.imagegen-v2-plant.png",
+          "crop": [
+            1083,
+            537,
+            433,
+            460
+          ]
+        }
+      ]
+    }
+  ]
+}

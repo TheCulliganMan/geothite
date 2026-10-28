@@ -2565,6 +2565,10 @@ fn validate_manifest_item(item: &Item) -> Result<()> {
                 "item '{}' has invalid battle_focus_energy false",
                 item.script_name
             ),
+            ItemPayloadIssue::InvalidConfusionDuration { turns } => anyhow::bail!(
+                "item '{}' has confusion_inflict_turns {turns} outside 1..=5",
+                item.script_name
+            ),
             ItemPayloadIssue::InvalidConfusionHeal => anyhow::bail!(
                 "item '{}' has invalid confusion_heal false",
                 item.script_name
@@ -2599,6 +2603,10 @@ fn resolve_collision_token(token: &str) -> Result<u8> {
     }
     Ok(match token {
         "FLOOR" => permissions::FLOOR,
+        "BRIDGE_NS_DECK" => crystal_core::world::bridge::NORTH_SOUTH_DECK,
+        "BRIDGE_NS_RAIL" => crystal_core::world::bridge::NORTH_SOUTH_RAIL,
+        "BRIDGE_EW_DECK" => crystal_core::world::bridge::EAST_WEST_DECK,
+        "BRIDGE_EW_RAIL" => crystal_core::world::bridge::EAST_WEST_RAIL,
         "01" => 0x01,
         "03" => 0x03,
         "04" => 0x04,

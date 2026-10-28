@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_195",
+  "name": "Doughlin",
+  "family_id": "MN_F090",
+  "generation_tool": "built-in image_gen",
+  "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f090/doughlin.overworld.imagegen-v1.png",
+  "original_default_output": "/Users/ryanculligan/.codex/generated_images/01a179bf-dc2b-7352-8975-8b8f3a32e33b/exec-a8366c15-28fa-4918-9ee2-df3ef700303b.png",
+  "source_sha256": "221b9bf9336a72b4faae0bd8f5fa143f6c41d280ff5e2e6a7bf9ed53c5d831f8",
+  "dimensions": [
+    1536,
+    1024
+  ],
+  "prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f090/prompt-doughlin-v1.txt",
+  "prompt_sha256": "82857c589f868618e1d65cfa6c6e8990eee1b0acce60f17f1a153c2060f15f73",
+  "reference_mapping": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f090/reference-mapping-doughlin-v1.json",
+  "selected_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f090/manifest-doughlin-v1-pupil-proof.json",
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f090/doughlin-v1-pupil-proof",
+  "source_pupil_proof": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f090/manifest-doughlin-v1-pupil-proof.proof.json",
+  "status": "frozen candidate; author actual normal/shiny and source pupils reviewed, root context pending",
+  "accepted": false
+}

@@ -1,0 +1,1602 @@
+[
+  {
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f025/manifest-hatchrush-v3-x-12-y-12.json",
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f025/hatchrush-v3-x-12-y-12",
+    "source_pupil_proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            255,
+            346
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            10
+          ],
+          "source": [
+            345,
+            346
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            255,
+            796
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            10
+          ],
+          "source": [
+            345,
+            796
+          ]
+        }
+      ],
+      "left_idle": [
+        {
+          "eye": 0,
+          "native": [
+            3,
+            10
+          ],
+          "source": [
+            1137,
+            358
+          ]
+        }
+      ],
+      "left_step": [
+        {
+          "eye": 0,
+          "native": [
+            3,
+            10
+          ],
+          "source": [
+            1137,
+            808
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f025/manifest-hatchrush-v3-x-12-y-8.json",
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f025/hatchrush-v3-x-12-y-8",
+    "source_pupil_proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            255,
+            350
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            10
+          ],
+          "source": [
+            345,
+            350
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            255,
+            800
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            10
+          ],
+          "source": [
+            345,
+            800
+          ]
+        }
+      ],
+      "left_idle": [
+        {
+          "eye": 0,
+          "native": [
+            3,
+            10
+          ],
+          "source": [
+            1137,
+            358
+          ]
+        }
+      ],
+      "left_step": [
+        {
+          "eye": 0,
+          "native": [
+            3,
+            10
+          ],
+          "source": [
+            1137,
+            808
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f025/manifest-hatchrush-v3-x-12-y4.json",
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f025/hatchrush-v3-x-12-y4",
+    "source_pupil_proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            9
+          ],
+          "source": [
+            255,
+            333
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            9
+          ],
+          "source": [
+            345,
+            333
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            9
+          ],
+          "source": [
+            255,
+            783
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            9
+          ],
+          "source": [
+            345,
+            783
+          ]
+        }
+      ],
+      "left_idle": [
+        {
+          "eye": 0,
+          "native": [
+            3,
+            10
+          ],
+          "source": [
+            1137,
+            358
+          ]
+        }
+      ],
+      "left_step": [
+        {
+          "eye": 0,
+          "native": [
+            3,
+            10
+          ],
+          "source": [
+            1137,
+            808
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f025/manifest-hatchrush-v3-x-12-y8.json",
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f025/hatchrush-v3-x-12-y8",
+    "source_pupil_proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            9
+          ],
+          "source": [
+            255,
+            336
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            9
+          ],
+          "source": [
+            345,
+            336
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            9
+          ],
+          "source": [
+            255,
+            786
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            9
+          ],
+          "source": [
+            345,
+            786
+          ]
+        }
+      ],
+      "left_idle": [
+        {
+          "eye": 0,
+          "native": [
+            3,
+            10
+          ],
+          "source": [
+            1137,
+            356
+          ]
+        }
+      ],
+      "left_step": [
+        {
+          "eye": 0,
+          "native": [
+            3,
+            10
+          ],
+          "source": [
+            1137,
+            806
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f025/manifest-hatchrush-v3-x-12-y12.json",
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f025/hatchrush-v3-x-12-y12",
+    "source_pupil_proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            9
+          ],
+          "source": [
+            255,
+            338
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            9
+          ],
+          "source": [
+            345,
+            338
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            9
+          ],
+          "source": [
+            255,
+            788
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            9
+          ],
+          "source": [
+            345,
+            788
+          ]
+        }
+      ],
+      "left_idle": [
+        {
+          "eye": 0,
+          "native": [
+            3,
+            10
+          ],
+          "source": [
+            1137,
+            355
+          ]
+        }
+      ],
+      "left_step": [
+        {
+          "eye": 0,
+          "native": [
+            3,
+            10
+          ],
+          "source": [
+            1137,
+            805
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f025/manifest-hatchrush-v3-x-8-y-12.json",
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f025/hatchrush-v3-x-8-y-12",
+    "source_pupil_proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            257,
+            346
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            10
+          ],
+          "source": [
+            346,
+            346
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            257,
+            796
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            10
+          ],
+          "source": [
+            346,
+            796
+          ]
+        }
+      ],
+      "left_idle": [
+        {
+          "eye": 0,
+          "native": [
+            3,
+            10
+          ],
+          "source": [
+            1137,
+            358
+          ]
+        }
+      ],
+      "left_step": [
+        {
+          "eye": 0,
+          "native": [
+            3,
+            10
+          ],
+          "source": [
+            1137,
+            808
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f025/manifest-hatchrush-v3-x-8-y-8.json",
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f025/hatchrush-v3-x-8-y-8",
+    "source_pupil_proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            257,
+            350
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            10
+          ],
+          "source": [
+            346,
+            350
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            257,
+            800
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            10
+          ],
+          "source": [
+            346,
+            800
+          ]
+        }
+      ],
+      "left_idle": [
+        {
+          "eye": 0,
+          "native": [
+            3,
+            10
+          ],
+          "source": [
+            1137,
+            358
+          ]
+        }
+      ],
+      "left_step": [
+        {
+          "eye": 0,
+          "native": [
+            3,
+            10
+          ],
+          "source": [
+            1137,
+            808
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f025/manifest-hatchrush-v3-x-8-y4.json",
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f025/hatchrush-v3-x-8-y4",
+    "source_pupil_proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            9
+          ],
+          "source": [
+            257,
+            333
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            9
+          ],
+          "source": [
+            346,
+            333
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            9
+          ],
+          "source": [
+            257,
+            783
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            9
+          ],
+          "source": [
+            346,
+            783
+          ]
+        }
+      ],
+      "left_idle": [
+        {
+          "eye": 0,
+          "native": [
+            3,
+            10
+          ],
+          "source": [
+            1137,
+            358
+          ]
+        }
+      ],
+      "left_step": [
+        {
+          "eye": 0,
+          "native": [
+            3,
+            10
+          ],
+          "source": [
+            1137,
+            808
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f025/manifest-hatchrush-v3-x-8-y8.json",
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f025/hatchrush-v3-x-8-y8",
+    "source_pupil_proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            9
+          ],
+          "source": [
+            257,
+            336
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            9
+          ],
+          "source": [
+            346,
+            336
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            9
+          ],
+          "source": [
+            257,
+            786
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            9
+          ],
+          "source": [
+            346,
+            786
+          ]
+        }
+      ],
+      "left_idle": [
+        {
+          "eye": 0,
+          "native": [
+            3,
+            10
+          ],
+          "source": [
+            1137,
+            356
+          ]
+        }
+      ],
+      "left_step": [
+        {
+          "eye": 0,
+          "native": [
+            3,
+            10
+          ],
+          "source": [
+            1137,
+            806
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f025/manifest-hatchrush-v3-x-8-y12.json",
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f025/hatchrush-v3-x-8-y12",
+    "source_pupil_proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            9
+          ],
+          "source": [
+            257,
+            338
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            9
+          ],
+          "source": [
+            346,
+            338
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            9
+          ],
+          "source": [
+            257,
+            788
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            9
+          ],
+          "source": [
+            346,
+            788
+          ]
+        }
+      ],
+      "left_idle": [
+        {
+          "eye": 0,
+          "native": [
+            3,
+            10
+          ],
+          "source": [
+            1137,
+            355
+          ]
+        }
+      ],
+      "left_step": [
+        {
+          "eye": 0,
+          "native": [
+            3,
+            10
+          ],
+          "source": [
+            1137,
+            805
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f025/manifest-hatchrush-v3-x8-y-12.json",
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f025/hatchrush-v3-x8-y-12",
+    "source_pupil_proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            267,
+            346
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            323,
+            346
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            267,
+            796
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            323,
+            796
+          ]
+        }
+      ],
+      "left_idle": [
+        {
+          "eye": 0,
+          "native": [
+            3,
+            10
+          ],
+          "source": [
+            1133,
+            358
+          ]
+        }
+      ],
+      "left_step": [
+        {
+          "eye": 0,
+          "native": [
+            3,
+            10
+          ],
+          "source": [
+            1133,
+            808
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f025/manifest-hatchrush-v3-x8-y-8.json",
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f025/hatchrush-v3-x8-y-8",
+    "source_pupil_proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            267,
+            350
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            323,
+            350
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            267,
+            800
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            323,
+            800
+          ]
+        }
+      ],
+      "left_idle": [
+        {
+          "eye": 0,
+          "native": [
+            3,
+            10
+          ],
+          "source": [
+            1133,
+            358
+          ]
+        }
+      ],
+      "left_step": [
+        {
+          "eye": 0,
+          "native": [
+            3,
+            10
+          ],
+          "source": [
+            1133,
+            808
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f025/manifest-hatchrush-v3-x8-y4.json",
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f025/hatchrush-v3-x8-y4",
+    "source_pupil_proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            9
+          ],
+          "source": [
+            267,
+            333
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            9
+          ],
+          "source": [
+            323,
+            333
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            9
+          ],
+          "source": [
+            267,
+            783
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            9
+          ],
+          "source": [
+            323,
+            783
+          ]
+        }
+      ],
+      "left_idle": [
+        {
+          "eye": 0,
+          "native": [
+            3,
+            10
+          ],
+          "source": [
+            1133,
+            358
+          ]
+        }
+      ],
+      "left_step": [
+        {
+          "eye": 0,
+          "native": [
+            3,
+            10
+          ],
+          "source": [
+            1133,
+            808
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f025/manifest-hatchrush-v3-x8-y8.json",
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f025/hatchrush-v3-x8-y8",
+    "source_pupil_proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            9
+          ],
+          "source": [
+            249,
+            336
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            9
+          ],
+          "source": [
+            341,
+            336
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            9
+          ],
+          "source": [
+            249,
+            786
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            9
+          ],
+          "source": [
+            341,
+            786
+          ]
+        }
+      ],
+      "left_idle": [
+        {
+          "eye": 0,
+          "native": [
+            4,
+            10
+          ],
+          "source": [
+            1139,
+            356
+          ]
+        }
+      ],
+      "left_step": [
+        {
+          "eye": 0,
+          "native": [
+            4,
+            10
+          ],
+          "source": [
+            1139,
+            806
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f025/manifest-hatchrush-v3-x8-y12.json",
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f025/hatchrush-v3-x8-y12",
+    "source_pupil_proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            9
+          ],
+          "source": [
+            249,
+            338
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            9
+          ],
+          "source": [
+            341,
+            338
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            9
+          ],
+          "source": [
+            249,
+            788
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            9
+          ],
+          "source": [
+            341,
+            788
+          ]
+        }
+      ],
+      "left_idle": [
+        {
+          "eye": 0,
+          "native": [
+            4,
+            10
+          ],
+          "source": [
+            1139,
+            355
+          ]
+        }
+      ],
+      "left_step": [
+        {
+          "eye": 0,
+          "native": [
+            4,
+            10
+          ],
+          "source": [
+            1139,
+            805
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f025/manifest-hatchrush-v3-x12-y-12.json",
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f025/hatchrush-v3-x12-y-12",
+    "source_pupil_proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            251,
+            346
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            10
+          ],
+          "source": [
+            343,
+            346
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            251,
+            796
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            10
+          ],
+          "source": [
+            343,
+            796
+          ]
+        }
+      ],
+      "left_idle": [
+        {
+          "eye": 0,
+          "native": [
+            4,
+            10
+          ],
+          "source": [
+            1139,
+            358
+          ]
+        }
+      ],
+      "left_step": [
+        {
+          "eye": 0,
+          "native": [
+            4,
+            10
+          ],
+          "source": [
+            1139,
+            808
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f025/manifest-hatchrush-v3-x12-y-8.json",
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f025/hatchrush-v3-x12-y-8",
+    "source_pupil_proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            251,
+            350
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            10
+          ],
+          "source": [
+            343,
+            350
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            251,
+            800
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            10
+          ],
+          "source": [
+            343,
+            800
+          ]
+        }
+      ],
+      "left_idle": [
+        {
+          "eye": 0,
+          "native": [
+            4,
+            10
+          ],
+          "source": [
+            1139,
+            358
+          ]
+        }
+      ],
+      "left_step": [
+        {
+          "eye": 0,
+          "native": [
+            4,
+            10
+          ],
+          "source": [
+            1139,
+            808
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f025/manifest-hatchrush-v3-x12-y4.json",
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f025/hatchrush-v3-x12-y4",
+    "source_pupil_proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            9
+          ],
+          "source": [
+            251,
+            333
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            9
+          ],
+          "source": [
+            343,
+            333
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            9
+          ],
+          "source": [
+            251,
+            783
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            9
+          ],
+          "source": [
+            343,
+            783
+          ]
+        }
+      ],
+      "left_idle": [
+        {
+          "eye": 0,
+          "native": [
+            4,
+            10
+          ],
+          "source": [
+            1139,
+            358
+          ]
+        }
+      ],
+      "left_step": [
+        {
+          "eye": 0,
+          "native": [
+            4,
+            10
+          ],
+          "source": [
+            1139,
+            808
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f025/manifest-hatchrush-v3-x12-y8.json",
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f025/hatchrush-v3-x12-y8",
+    "source_pupil_proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            9
+          ],
+          "source": [
+            251,
+            336
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            9
+          ],
+          "source": [
+            343,
+            336
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            9
+          ],
+          "source": [
+            251,
+            786
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            9
+          ],
+          "source": [
+            343,
+            786
+          ]
+        }
+      ],
+      "left_idle": [
+        {
+          "eye": 0,
+          "native": [
+            4,
+            10
+          ],
+          "source": [
+            1139,
+            356
+          ]
+        }
+      ],
+      "left_step": [
+        {
+          "eye": 0,
+          "native": [
+            4,
+            10
+          ],
+          "source": [
+            1139,
+            806
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f025/manifest-hatchrush-v3-x12-y12.json",
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f025/hatchrush-v3-x12-y12",
+    "source_pupil_proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            9
+          ],
+          "source": [
+            251,
+            338
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            9
+          ],
+          "source": [
+            343,
+            338
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            9
+          ],
+          "source": [
+            251,
+            788
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            9,
+            9
+          ],
+          "source": [
+            343,
+            788
+          ]
+        }
+      ],
+      "left_idle": [
+        {
+          "eye": 0,
+          "native": [
+            4,
+            10
+          ],
+          "source": [
+            1139,
+            355
+          ]
+        }
+      ],
+      "left_step": [
+        {
+          "eye": 0,
+          "native": [
+            4,
+            10
+          ],
+          "source": [
+            1139,
+            805
+          ]
+        }
+      ]
+    }
+  }
+]

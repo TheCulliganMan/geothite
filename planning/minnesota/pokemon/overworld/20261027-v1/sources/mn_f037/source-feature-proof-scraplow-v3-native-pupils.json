@@ -1,0 +1,215 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_087",
+  "result": "pass",
+  "manifest_sha256": "df63440515eb2a1aa8baa0d53388a3610707559a72c8d0b0b30e7ce475b456e8",
+  "bank_sha256": "db1b2f5b5e6c0ffbe4f38ec23d1b253d6321d1d00bf48c1802c2b648ae31eaf7",
+  "source_sha256": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f037/scraplow.overworld.imagegen-v2-roomy-lamps.png": "3e66009cd4ef4c82d6fa16fe56d0ee0bb4782ee3c67d90f30e43131f1aec92d6"
+  },
+  "canonical_eye_form": "Two isolated actual black pupil dots south and one isolated actual black pupil west; source eye components verified in all four nonrear poses.",
+  "nonrear_poses": [
+    {
+      "pose": "down_idle",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            5,
+            7
+          ],
+          "source_sample": [
+            179,
+            218
+          ],
+          "source_component": [
+            156,
+            213,
+            36,
+            36
+          ],
+          "component_pixels": 1295,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            0,
+            0,
+            0,
+            253
+          ]
+        },
+        {
+          "native": [
+            10,
+            7
+          ],
+          "source_sample": [
+            354,
+            218
+          ],
+          "source_component": [
+            342,
+            213,
+            35,
+            36
+          ],
+          "component_pixels": 1260,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            0,
+            0,
+            0,
+            254
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            4,
+            7
+          ],
+          "source_sample": [
+            1152,
+            225
+          ],
+          "source_component": [
+            1134,
+            218,
+            36,
+            36
+          ],
+          "component_pixels": 1295,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            0,
+            0,
+            0,
+            253
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            5,
+            7
+          ],
+          "source_sample": [
+            179,
+            656
+          ],
+          "source_component": [
+            157,
+            650,
+            36,
+            36
+          ],
+          "component_pixels": 1295,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            1,
+            1,
+            0,
+            253
+          ]
+        },
+        {
+          "native": [
+            10,
+            7
+          ],
+          "source_sample": [
+            354,
+            656
+          ],
+          "source_component": [
+            342,
+            650,
+            35,
+            36
+          ],
+          "component_pixels": 1260,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            1,
+            1,
+            0,
+            253
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            4,
+            7
+          ],
+          "source_sample": [
+            1152,
+            656
+          ],
+          "source_component": [
+            1134,
+            647,
+            36,
+            36
+          ],
+          "component_pixels": 1296,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            0,
+            0,
+            0,
+            253
+          ]
+        }
+      ]
+    }
+  ],
+  "rear_anatomy": {
+    "result": "pass",
+    "notes": "True north shows backs of the two headlamp stalks and rear plow machinery with short bent pipe-tail; four wheel-feet are foreshortened with the far pair naturally overlapping. No false rear pupils or humanoid arms. Native front plow blade remains broad and distinct from the lamp eyes."
+  }
+}

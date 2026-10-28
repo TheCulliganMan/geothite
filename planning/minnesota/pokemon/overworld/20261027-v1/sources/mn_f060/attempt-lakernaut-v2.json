@@ -1,0 +1,9 @@
+{
+  "tool": "built-in image_gen",
+  "original": "/Users/ryanculligan/.codex/generated_images/01a179bf-dc2b-7352-8975-8b8f3a32e33b/exec-0b734d64-af6d-4c7f-a2ad-5ae5b1ef7839.png",
+  "preserved_raw": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f060/lakernaut.overworld.imagegen-v2-eye-window-clearance.png",
+  "sha256": "7d15ca6a1b6ad4eae3e7478f4d85ea321795cc32c2b6da80ecf04dbcae8c8fd5",
+  "exact_prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f060/prompt-lakernaut-eye-window-clearance-v2.txt",
+  "reference_mapping": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f060/reference-mapping-lakernaut-eye-window-clearance-v2.json",
+  "status": "preserved; selected frames recorded in frozen manifest"
+}

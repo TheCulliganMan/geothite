@@ -1,0 +1,6357 @@
+{
+  "schema_version": 1,
+  "status": "SOURCE_INPUT_COURSES_NOT_EXECUTED_NATIVE",
+  "layout_sha256": "0e474ee47f0f3fdea0fcd3c32f0f5683d1f206222ce74457214f29f7017b1c78",
+  "dossier_sha256": "9f795c5da670c0db655906d7d046fd4c6862805b790209a40f3731e7d4f42019",
+  "fixture": "Explicit initial Mew80 SURF, native badges/RNG/local location, optional initial MaxRepel; later controller press/wait only. Not earned campaign.",
+  "optional_trainer_sight_avoided": [
+    [
+      47,
+      23
+    ],
+    [
+      10,
+      19
+    ]
+  ],
+  "courses": {
+    "entry_to_east_stop": [
+      {
+        "button": "left",
+        "from_core": [
+          60,
+          44
+        ],
+        "to_core": [
+          59,
+          44
+        ],
+        "traversed": [
+          [
+            59,
+            44
+          ]
+        ]
+      },
+      {
+        "button": "left",
+        "from_core": [
+          59,
+          44
+        ],
+        "to_core": [
+          58,
+          44
+        ],
+        "traversed": [
+          [
+            58,
+            44
+          ]
+        ]
+      },
+      {
+        "button": "left",
+        "from_core": [
+          58,
+          44
+        ],
+        "to_core": [
+          57,
+          44
+        ],
+        "traversed": [
+          [
+            57,
+            44
+          ]
+        ]
+      },
+      {
+        "button": "up",
+        "from_core": [
+          57,
+          44
+        ],
+        "to_core": [
+          57,
+          43
+        ],
+        "traversed": [
+          [
+            57,
+            43
+          ]
+        ]
+      },
+      {
+        "button": "up",
+        "from_core": [
+          57,
+          43
+        ],
+        "to_core": [
+          57,
+          42
+        ],
+        "traversed": [
+          [
+            57,
+            42
+          ]
+        ]
+      },
+      {
+        "button": "left",
+        "from_core": [
+          57,
+          42
+        ],
+        "to_core": [
+          56,
+          42
+        ],
+        "traversed": [
+          [
+            56,
+            42
+          ]
+        ]
+      },
+      {
+        "button": "up",
+        "from_core": [
+          56,
+          42
+        ],
+        "to_core": [
+          56,
+          41
+        ],
+        "traversed": [
+          [
+            56,
+            41
+          ]
+        ]
+      },
+      {
+        "button": "up",
+        "from_core": [
+          56,
+          41
+        ],
+        "to_core": [
+          56,
+          40
+        ],
+        "traversed": [
+          [
+            56,
+            40
+          ]
+        ]
+      },
+      {
+        "button": "up",
+        "from_core": [
+          56,
+          40
+        ],
+        "to_core": [
+          56,
+          39
+        ],
+        "traversed": [
+          [
+            56,
+            39
+          ]
+        ]
+      },
+      {
+        "button": "up",
+        "from_core": [
+          56,
+          39
+        ],
+        "to_core": [
+          56,
+          38
+        ],
+        "traversed": [
+          [
+            56,
+            38
+          ]
+        ]
+      },
+      {
+        "button": "up",
+        "from_core": [
+          56,
+          38
+        ],
+        "to_core": [
+          56,
+          37
+        ],
+        "traversed": [
+          [
+            56,
+            37
+          ]
+        ]
+      },
+      {
+        "button": "up",
+        "from_core": [
+          56,
+          37
+        ],
+        "to_core": [
+          56,
+          36
+        ],
+        "traversed": [
+          [
+            56,
+            36
+          ]
+        ]
+      },
+      {
+        "button": "left",
+        "from_core": [
+          56,
+          36
+        ],
+        "to_core": [
+          55,
+          36
+        ],
+        "traversed": [
+          [
+            55,
+            36
+          ]
+        ]
+      },
+      {
+        "button": "left",
+        "from_core": [
+          55,
+          36
+        ],
+        "to_core": [
+          54,
+          36
+        ],
+        "traversed": [
+          [
+            54,
+            36
+          ]
+        ]
+      }
+    ],
+    "west_stop_to_hut": [
+      {
+        "button": "left",
+        "from_core": [
+          37,
+          36
+        ],
+        "to_core": [
+          36,
+          36
+        ],
+        "traversed": [
+          [
+            36,
+            36
+          ]
+        ]
+      },
+      {
+        "button": "left",
+        "from_core": [
+          36,
+          36
+        ],
+        "to_core": [
+          35,
+          36
+        ],
+        "traversed": [
+          [
+            35,
+            36
+          ]
+        ]
+      },
+      {
+        "button": "left",
+        "from_core": [
+          35,
+          36
+        ],
+        "to_core": [
+          34,
+          36
+        ],
+        "traversed": [
+          [
+            34,
+            36
+          ]
+        ]
+      },
+      {
+        "button": "left",
+        "from_core": [
+          34,
+          36
+        ],
+        "to_core": [
+          33,
+          36
+        ],
+        "traversed": [
+          [
+            33,
+            36
+          ]
+        ]
+      },
+      {
+        "button": "left",
+        "from_core": [
+          33,
+          36
+        ],
+        "to_core": [
+          32,
+          36
+        ],
+        "traversed": [
+          [
+            32,
+            36
+          ]
+        ]
+      },
+      {
+        "button": "left",
+        "from_core": [
+          32,
+          36
+        ],
+        "to_core": [
+          31,
+          36
+        ],
+        "traversed": [
+          [
+            31,
+            36
+          ]
+        ]
+      },
+      {
+        "button": "left",
+        "from_core": [
+          31,
+          36
+        ],
+        "to_core": [
+          30,
+          36
+        ],
+        "traversed": [
+          [
+            30,
+            36
+          ]
+        ]
+      },
+      {
+        "button": "left",
+        "from_core": [
+          30,
+          36
+        ],
+        "to_core": [
+          29,
+          36
+        ],
+        "traversed": [
+          [
+            29,
+            36
+          ]
+        ]
+      },
+      {
+        "button": "left",
+        "from_core": [
+          29,
+          36
+        ],
+        "to_core": [
+          28,
+          36
+        ],
+        "traversed": [
+          [
+            28,
+            36
+          ]
+        ]
+      },
+      {
+        "button": "left",
+        "from_core": [
+          28,
+          36
+        ],
+        "to_core": [
+          27,
+          36
+        ],
+        "traversed": [
+          [
+            27,
+            36
+          ]
+        ]
+      },
+      {
+        "button": "up",
+        "from_core": [
+          27,
+          36
+        ],
+        "to_core": [
+          27,
+          35
+        ],
+        "traversed": [
+          [
+            27,
+            35
+          ]
+        ]
+      },
+      {
+        "button": "up",
+        "from_core": [
+          27,
+          35
+        ],
+        "to_core": [
+          27,
+          34
+        ],
+        "traversed": [
+          [
+            27,
+            34
+          ]
+        ]
+      },
+      {
+        "button": "up",
+        "from_core": [
+          27,
+          34
+        ],
+        "to_core": [
+          27,
+          33
+        ],
+        "traversed": [
+          [
+            27,
+            33
+          ]
+        ]
+      },
+      {
+        "button": "up",
+        "from_core": [
+          27,
+          33
+        ],
+        "to_core": [
+          27,
+          32
+        ],
+        "traversed": [
+          [
+            27,
+            32
+          ]
+        ]
+      },
+      {
+        "button": "left",
+        "from_core": [
+          27,
+          32
+        ],
+        "to_core": [
+          26,
+          32
+        ],
+        "traversed": [
+          [
+            26,
+            32
+          ]
+        ]
+      },
+      {
+        "button": "left",
+        "from_core": [
+          26,
+          32
+        ],
+        "to_core": [
+          25,
+          32
+        ],
+        "traversed": [
+          [
+            25,
+            32
+          ]
+        ]
+      },
+      {
+        "button": "left",
+        "from_core": [
+          25,
+          32
+        ],
+        "to_core": [
+          24,
+          32
+        ],
+        "traversed": [
+          [
+            24,
+            32
+          ]
+        ]
+      },
+      {
+        "button": "left",
+        "from_core": [
+          24,
+          32
+        ],
+        "to_core": [
+          23,
+          32
+        ],
+        "traversed": [
+          [
+            23,
+            32
+          ]
+        ]
+      },
+      {
+        "button": "up",
+        "from_core": [
+          23,
+          32
+        ],
+        "to_core": [
+          23,
+          31
+        ],
+        "traversed": [
+          [
+            23,
+            31
+          ]
+        ]
+      },
+      {
+        "button": "up",
+        "from_core": [
+          23,
+          31
+        ],
+        "to_core": [
+          23,
+          30
+        ],
+        "traversed": [
+          [
+            23,
+            30
+          ]
+        ]
+      },
+      {
+        "button": "left",
+        "from_core": [
+          23,
+          30
+        ],
+        "to_core": [
+          22,
+          30
+        ],
+        "traversed": [
+          [
+            22,
+            30
+          ]
+        ]
+      },
+      {
+        "button": "left",
+        "from_core": [
+          22,
+          30
+        ],
+        "to_core": [
+          21,
+          30
+        ],
+        "traversed": [
+          [
+            21,
+            30
+          ]
+        ]
+      },
+      {
+        "button": "left",
+        "from_core": [
+          21,
+          30
+        ],
+        "to_core": [
+          20,
+          30
+        ],
+        "traversed": [
+          [
+            20,
+            30
+          ]
+        ]
+      },
+      {
+        "button": "left",
+        "from_core": [
+          20,
+          30
+        ],
+        "to_core": [
+          19,
+          30
+        ],
+        "traversed": [
+          [
+            19,
+            30
+          ]
+        ]
+      },
+      {
+        "button": "left",
+        "from_core": [
+          19,
+          30
+        ],
+        "to_core": [
+          18,
+          30
+        ],
+        "traversed": [
+          [
+            18,
+            30
+          ]
+        ]
+      },
+      {
+        "button": "left",
+        "from_core": [
+          18,
+          30
+        ],
+        "to_core": [
+          17,
+          30
+        ],
+        "traversed": [
+          [
+            17,
+            30
+          ]
+        ]
+      },
+      {
+        "button": "left",
+        "from_core": [
+          17,
+          30
+        ],
+        "to_core": [
+          16,
+          30
+        ],
+        "traversed": [
+          [
+            16,
+            30
+          ]
+        ]
+      },
+      {
+        "button": "left",
+        "from_core": [
+          16,
+          30
+        ],
+        "to_core": [
+          15,
+          30
+        ],
+        "traversed": [
+          [
+            15,
+            30
+          ]
+        ]
+      },
+      {
+        "button": "up",
+        "from_core": [
+          15,
+          30
+        ],
+        "to_core": [
+          15,
+          29
+        ],
+        "traversed": [
+          [
+            15,
+            29
+          ]
+        ]
+      },
+      {
+        "button": "up",
+        "from_core": [
+          15,
+          29
+        ],
+        "to_core": [
+          15,
+          28
+        ],
+        "traversed": [
+          [
+            15,
+            28
+          ]
+        ]
+      },
+      {
+        "button": "left",
+        "from_core": [
+          15,
+          28
+        ],
+        "to_core": [
+          14,
+          28
+        ],
+        "traversed": [
+          [
+            14,
+            28
+          ]
+        ]
+      },
+      {
+        "button": "left",
+        "from_core": [
+          14,
+          28
+        ],
+        "to_core": [
+          13,
+          28
+        ],
+        "traversed": [
+          [
+            13,
+            28
+          ]
+        ]
+      },
+      {
+        "button": "left",
+        "from_core": [
+          13,
+          28
+        ],
+        "to_core": [
+          12,
+          28
+        ],
+        "traversed": [
+          [
+            12,
+            28
+          ]
+        ]
+      },
+      {
+        "button": "left",
+        "from_core": [
+          12,
+          28
+        ],
+        "to_core": [
+          11,
+          28
+        ],
+        "traversed": [
+          [
+            11,
+            28
+          ]
+        ]
+      },
+      {
+        "button": "left",
+        "from_core": [
+          11,
+          28
+        ],
+        "to_core": [
+          10,
+          28
+        ],
+        "traversed": [
+          [
+            10,
+            28
+          ]
+        ]
+      },
+      {
+        "button": "left",
+        "from_core": [
+          10,
+          28
+        ],
+        "to_core": [
+          9,
+          28
+        ],
+        "traversed": [
+          [
+            9,
+            28
+          ]
+        ]
+      }
+    ],
+    "ordinary_snow_return": [
+      {
+        "button": "left",
+        "from_core": [
+          37,
+          36
+        ],
+        "to_core": [
+          36,
+          36
+        ],
+        "traversed": [
+          [
+            36,
+            36
+          ]
+        ]
+      },
+      {
+        "button": "left",
+        "from_core": [
+          36,
+          36
+        ],
+        "to_core": [
+          35,
+          36
+        ],
+        "traversed": [
+          [
+            35,
+            36
+          ]
+        ]
+      },
+      {
+        "button": "left",
+        "from_core": [
+          35,
+          36
+        ],
+        "to_core": [
+          34,
+          36
+        ],
+        "traversed": [
+          [
+            34,
+            36
+          ]
+        ]
+      },
+      {
+        "button": "left",
+        "from_core": [
+          34,
+          36
+        ],
+        "to_core": [
+          33,
+          36
+        ],
+        "traversed": [
+          [
+            33,
+            36
+          ]
+        ]
+      },
+      {
+        "button": "left",
+        "from_core": [
+          33,
+          36
+        ],
+        "to_core": [
+          32,
+          36
+        ],
+        "traversed": [
+          [
+            32,
+            36
+          ]
+        ]
+      },
+      {
+        "button": "left",
+        "from_core": [
+          32,
+          36
+        ],
+        "to_core": [
+          31,
+          36
+        ],
+        "traversed": [
+          [
+            31,
+            36
+          ]
+        ]
+      },
+      {
+        "button": "left",
+        "from_core": [
+          31,
+          36
+        ],
+        "to_core": [
+          30,
+          36
+        ],
+        "traversed": [
+          [
+            30,
+            36
+          ]
+        ]
+      },
+      {
+        "button": "left",
+        "from_core": [
+          30,
+          36
+        ],
+        "to_core": [
+          29,
+          36
+        ],
+        "traversed": [
+          [
+            29,
+            36
+          ]
+        ]
+      },
+      {
+        "button": "left",
+        "from_core": [
+          29,
+          36
+        ],
+        "to_core": [
+          28,
+          36
+        ],
+        "traversed": [
+          [
+            28,
+            36
+          ]
+        ]
+      },
+      {
+        "button": "left",
+        "from_core": [
+          28,
+          36
+        ],
+        "to_core": [
+          27,
+          36
+        ],
+        "traversed": [
+          [
+            27,
+            36
+          ]
+        ]
+      },
+      {
+        "button": "up",
+        "from_core": [
+          27,
+          36
+        ],
+        "to_core": [
+          27,
+          35
+        ],
+        "traversed": [
+          [
+            27,
+            35
+          ]
+        ]
+      },
+      {
+        "button": "up",
+        "from_core": [
+          27,
+          35
+        ],
+        "to_core": [
+          27,
+          34
+        ],
+        "traversed": [
+          [
+            27,
+            34
+          ]
+        ]
+      },
+      {
+        "button": "up",
+        "from_core": [
+          27,
+          34
+        ],
+        "to_core": [
+          27,
+          33
+        ],
+        "traversed": [
+          [
+            27,
+            33
+          ]
+        ]
+      },
+      {
+        "button": "up",
+        "from_core": [
+          27,
+          33
+        ],
+        "to_core": [
+          27,
+          32
+        ],
+        "traversed": [
+          [
+            27,
+            32
+          ]
+        ]
+      },
+      {
+        "button": "left",
+        "from_core": [
+          27,
+          32
+        ],
+        "to_core": [
+          26,
+          32
+        ],
+        "traversed": [
+          [
+            26,
+            32
+          ]
+        ]
+      },
+      {
+        "button": "left",
+        "from_core": [
+          26,
+          32
+        ],
+        "to_core": [
+          25,
+          32
+        ],
+        "traversed": [
+          [
+            25,
+            32
+          ]
+        ]
+      },
+      {
+        "button": "left",
+        "from_core": [
+          25,
+          32
+        ],
+        "to_core": [
+          24,
+          32
+        ],
+        "traversed": [
+          [
+            24,
+            32
+          ]
+        ]
+      },
+      {
+        "button": "left",
+        "from_core": [
+          24,
+          32
+        ],
+        "to_core": [
+          23,
+          32
+        ],
+        "traversed": [
+          [
+            23,
+            32
+          ]
+        ]
+      },
+      {
+        "button": "up",
+        "from_core": [
+          23,
+          32
+        ],
+        "to_core": [
+          23,
+          31
+        ],
+        "traversed": [
+          [
+            23,
+            31
+          ]
+        ]
+      },
+      {
+        "button": "up",
+        "from_core": [
+          23,
+          31
+        ],
+        "to_core": [
+          23,
+          30
+        ],
+        "traversed": [
+          [
+            23,
+            30
+          ]
+        ]
+      },
+      {
+        "button": "left",
+        "from_core": [
+          23,
+          30
+        ],
+        "to_core": [
+          22,
+          30
+        ],
+        "traversed": [
+          [
+            22,
+            30
+          ]
+        ]
+      },
+      {
+        "button": "left",
+        "from_core": [
+          22,
+          30
+        ],
+        "to_core": [
+          21,
+          30
+        ],
+        "traversed": [
+          [
+            21,
+            30
+          ]
+        ]
+      },
+      {
+        "button": "left",
+        "from_core": [
+          21,
+          30
+        ],
+        "to_core": [
+          20,
+          30
+        ],
+        "traversed": [
+          [
+            20,
+            30
+          ]
+        ]
+      },
+      {
+        "button": "left",
+        "from_core": [
+          20,
+          30
+        ],
+        "to_core": [
+          19,
+          30
+        ],
+        "traversed": [
+          [
+            19,
+            30
+          ]
+        ]
+      },
+      {
+        "button": "left",
+        "from_core": [
+          19,
+          30
+        ],
+        "to_core": [
+          18,
+          30
+        ],
+        "traversed": [
+          [
+            18,
+            30
+          ]
+        ]
+      },
+      {
+        "button": "left",
+        "from_core": [
+          18,
+          30
+        ],
+        "to_core": [
+          17,
+          30
+        ],
+        "traversed": [
+          [
+            17,
+            30
+          ]
+        ]
+      },
+      {
+        "button": "left",
+        "from_core": [
+          17,
+          30
+        ],
+        "to_core": [
+          16,
+          30
+        ],
+        "traversed": [
+          [
+            16,
+            30
+          ]
+        ]
+      },
+      {
+        "button": "left",
+        "from_core": [
+          16,
+          30
+        ],
+        "to_core": [
+          15,
+          30
+        ],
+        "traversed": [
+          [
+            15,
+            30
+          ]
+        ]
+      },
+      {
+        "button": "up",
+        "from_core": [
+          15,
+          30
+        ],
+        "to_core": [
+          15,
+          29
+        ],
+        "traversed": [
+          [
+            15,
+            29
+          ]
+        ]
+      },
+      {
+        "button": "up",
+        "from_core": [
+          15,
+          29
+        ],
+        "to_core": [
+          15,
+          28
+        ],
+        "traversed": [
+          [
+            15,
+            28
+          ]
+        ]
+      },
+      {
+        "button": "left",
+        "from_core": [
+          15,
+          28
+        ],
+        "to_core": [
+          14,
+          28
+        ],
+        "traversed": [
+          [
+            14,
+            28
+          ]
+        ]
+      },
+      {
+        "button": "left",
+        "from_core": [
+          14,
+          28
+        ],
+        "to_core": [
+          13,
+          28
+        ],
+        "traversed": [
+          [
+            13,
+            28
+          ]
+        ]
+      },
+      {
+        "button": "left",
+        "from_core": [
+          13,
+          28
+        ],
+        "to_core": [
+          12,
+          28
+        ],
+        "traversed": [
+          [
+            12,
+            28
+          ]
+        ]
+      },
+      {
+        "button": "left",
+        "from_core": [
+          12,
+          28
+        ],
+        "to_core": [
+          11,
+          28
+        ],
+        "traversed": [
+          [
+            11,
+            28
+          ]
+        ]
+      },
+      {
+        "button": "left",
+        "from_core": [
+          11,
+          28
+        ],
+        "to_core": [
+          10,
+          28
+        ],
+        "traversed": [
+          [
+            10,
+            28
+          ]
+        ]
+      },
+      {
+        "button": "left",
+        "from_core": [
+          10,
+          28
+        ],
+        "to_core": [
+          9,
+          28
+        ],
+        "traversed": [
+          [
+            9,
+            28
+          ]
+        ]
+      },
+      {
+        "button": "left",
+        "from_core": [
+          9,
+          28
+        ],
+        "to_core": [
+          8,
+          28
+        ],
+        "traversed": [
+          [
+            8,
+            28
+          ]
+        ]
+      },
+      {
+        "button": "left",
+        "from_core": [
+          8,
+          28
+        ],
+        "to_core": [
+          7,
+          28
+        ],
+        "traversed": [
+          [
+            7,
+            28
+          ]
+        ]
+      },
+      {
+        "button": "up",
+        "from_core": [
+          7,
+          28
+        ],
+        "to_core": [
+          7,
+          27
+        ],
+        "traversed": [
+          [
+            7,
+            27
+          ]
+        ]
+      },
+      {
+        "button": "up",
+        "from_core": [
+          7,
+          27
+        ],
+        "to_core": [
+          7,
+          26
+        ],
+        "traversed": [
+          [
+            7,
+            26
+          ]
+        ]
+      },
+      {
+        "button": "up",
+        "from_core": [
+          7,
+          26
+        ],
+        "to_core": [
+          7,
+          25
+        ],
+        "traversed": [
+          [
+            7,
+            25
+          ]
+        ]
+      },
+      {
+        "button": "up",
+        "from_core": [
+          7,
+          25
+        ],
+        "to_core": [
+          7,
+          24
+        ],
+        "traversed": [
+          [
+            7,
+            24
+          ]
+        ]
+      },
+      {
+        "button": "up",
+        "from_core": [
+          7,
+          24
+        ],
+        "to_core": [
+          7,
+          23
+        ],
+        "traversed": [
+          [
+            7,
+            23
+          ]
+        ]
+      },
+      {
+        "button": "up",
+        "from_core": [
+          7,
+          23
+        ],
+        "to_core": [
+          7,
+          22
+        ],
+        "traversed": [
+          [
+            7,
+            22
+          ]
+        ]
+      },
+      {
+        "button": "up",
+        "from_core": [
+          7,
+          22
+        ],
+        "to_core": [
+          7,
+          21
+        ],
+        "traversed": [
+          [
+            7,
+            21
+          ]
+        ]
+      },
+      {
+        "button": "up",
+        "from_core": [
+          7,
+          21
+        ],
+        "to_core": [
+          7,
+          20
+        ],
+        "traversed": [
+          [
+            7,
+            20
+          ]
+        ]
+      },
+      {
+        "button": "right",
+        "from_core": [
+          7,
+          20
+        ],
+        "to_core": [
+          8,
+          20
+        ],
+        "traversed": [
+          [
+            8,
+            20
+          ]
+        ]
+      },
+      {
+        "button": "up",
+        "from_core": [
+          8,
+          20
+        ],
+        "to_core": [
+          8,
+          19
+        ],
+        "traversed": [
+          [
+            8,
+            19
+          ]
+        ]
+      },
+      {
+        "button": "up",
+        "from_core": [
+          8,
+          19
+        ],
+        "to_core": [
+          8,
+          18
+        ],
+        "traversed": [
+          [
+            8,
+            18
+          ]
+        ]
+      },
+      {
+        "button": "up",
+        "from_core": [
+          8,
+          18
+        ],
+        "to_core": [
+          8,
+          17
+        ],
+        "traversed": [
+          [
+            8,
+            17
+          ]
+        ]
+      },
+      {
+        "button": "up",
+        "from_core": [
+          8,
+          17
+        ],
+        "to_core": [
+          8,
+          16
+        ],
+        "traversed": [
+          [
+            8,
+            16
+          ]
+        ]
+      },
+      {
+        "button": "up",
+        "from_core": [
+          8,
+          16
+        ],
+        "to_core": [
+          8,
+          15
+        ],
+        "traversed": [
+          [
+            8,
+            15
+          ]
+        ]
+      },
+      {
+        "button": "up",
+        "from_core": [
+          8,
+          15
+        ],
+        "to_core": [
+          8,
+          14
+        ],
+        "traversed": [
+          [
+            8,
+            14
+          ]
+        ]
+      },
+      {
+        "button": "up",
+        "from_core": [
+          8,
+          14
+        ],
+        "to_core": [
+          8,
+          13
+        ],
+        "traversed": [
+          [
+            8,
+            13
+          ]
+        ]
+      },
+      {
+        "button": "up",
+        "from_core": [
+          8,
+          13
+        ],
+        "to_core": [
+          8,
+          12
+        ],
+        "traversed": [
+          [
+            8,
+            12
+          ]
+        ]
+      },
+      {
+        "button": "up",
+        "from_core": [
+          8,
+          12
+        ],
+        "to_core": [
+          8,
+          11
+        ],
+        "traversed": [
+          [
+            8,
+            11
+          ]
+        ]
+      },
+      {
+        "button": "up",
+        "from_core": [
+          8,
+          11
+        ],
+        "to_core": [
+          8,
+          10
+        ],
+        "traversed": [
+          [
+            8,
+            10
+          ]
+        ]
+      },
+      {
+        "button": "up",
+        "from_core": [
+          8,
+          10
+        ],
+        "to_core": [
+          8,
+          9
+        ],
+        "traversed": [
+          [
+            8,
+            9
+          ]
+        ]
+      },
+      {
+        "button": "up",
+        "from_core": [
+          8,
+          9
+        ],
+        "to_core": [
+          8,
+          8
+        ],
+        "traversed": [
+          [
+            8,
+            8
+          ]
+        ]
+      },
+      {
+        "button": "up",
+        "from_core": [
+          8,
+          8
+        ],
+        "to_core": [
+          8,
+          7
+        ],
+        "traversed": [
+          [
+            8,
+            7
+          ]
+        ]
+      },
+      {
+        "button": "up",
+        "from_core": [
+          8,
+          7
+        ],
+        "to_core": [
+          8,
+          6
+        ],
+        "traversed": [
+          [
+            8,
+            6
+          ]
+        ]
+      },
+      {
+        "button": "right",
+        "from_core": [
+          8,
+          6
+        ],
+        "to_core": [
+          9,
+          6
+        ],
+        "traversed": [
+          [
+            9,
+            6
+          ]
+        ]
+      },
+      {
+        "button": "right",
+        "from_core": [
+          9,
+          6
+        ],
+        "to_core": [
+          10,
+          6
+        ],
+        "traversed": [
+          [
+            10,
+            6
+          ]
+        ]
+      },
+      {
+        "button": "right",
+        "from_core": [
+          10,
+          6
+        ],
+        "to_core": [
+          11,
+          6
+        ],
+        "traversed": [
+          [
+            11,
+            6
+          ]
+        ]
+      },
+      {
+        "button": "right",
+        "from_core": [
+          11,
+          6
+        ],
+        "to_core": [
+          12,
+          6
+        ],
+        "traversed": [
+          [
+            12,
+            6
+          ]
+        ]
+      },
+      {
+        "button": "right",
+        "from_core": [
+          12,
+          6
+        ],
+        "to_core": [
+          13,
+          6
+        ],
+        "traversed": [
+          [
+            13,
+            6
+          ]
+        ]
+      },
+      {
+        "button": "right",
+        "from_core": [
+          13,
+          6
+        ],
+        "to_core": [
+          14,
+          6
+        ],
+        "traversed": [
+          [
+            14,
+            6
+          ]
+        ]
+      },
+      {
+        "button": "up",
+        "from_core": [
+          14,
+          6
+        ],
+        "to_core": [
+          14,
+          5
+        ],
+        "traversed": [
+          [
+            14,
+            5
+          ]
+        ]
+      },
+      {
+        "button": "right",
+        "from_core": [
+          14,
+          5
+        ],
+        "to_core": [
+          15,
+          5
+        ],
+        "traversed": [
+          [
+            15,
+            5
+          ]
+        ]
+      },
+      {
+        "button": "right",
+        "from_core": [
+          15,
+          5
+        ],
+        "to_core": [
+          16,
+          5
+        ],
+        "traversed": [
+          [
+            16,
+            5
+          ]
+        ]
+      },
+      {
+        "button": "right",
+        "from_core": [
+          16,
+          5
+        ],
+        "to_core": [
+          17,
+          5
+        ],
+        "traversed": [
+          [
+            17,
+            5
+          ]
+        ]
+      },
+      {
+        "button": "right",
+        "from_core": [
+          17,
+          5
+        ],
+        "to_core": [
+          18,
+          5
+        ],
+        "traversed": [
+          [
+            18,
+            5
+          ]
+        ]
+      },
+      {
+        "button": "right",
+        "from_core": [
+          18,
+          5
+        ],
+        "to_core": [
+          19,
+          5
+        ],
+        "traversed": [
+          [
+            19,
+            5
+          ]
+        ]
+      },
+      {
+        "button": "right",
+        "from_core": [
+          19,
+          5
+        ],
+        "to_core": [
+          20,
+          5
+        ],
+        "traversed": [
+          [
+            20,
+            5
+          ]
+        ]
+      },
+      {
+        "button": "right",
+        "from_core": [
+          20,
+          5
+        ],
+        "to_core": [
+          21,
+          5
+        ],
+        "traversed": [
+          [
+            21,
+            5
+          ]
+        ]
+      },
+      {
+        "button": "right",
+        "from_core": [
+          21,
+          5
+        ],
+        "to_core": [
+          22,
+          5
+        ],
+        "traversed": [
+          [
+            22,
+            5
+          ]
+        ]
+      },
+      {
+        "button": "right",
+        "from_core": [
+          22,
+          5
+        ],
+        "to_core": [
+          23,
+          5
+        ],
+        "traversed": [
+          [
+            23,
+            5
+          ]
+        ]
+      },
+      {
+        "button": "right",
+        "from_core": [
+          23,
+          5
+        ],
+        "to_core": [
+          24,
+          5
+        ],
+        "traversed": [
+          [
+            24,
+            5
+          ]
+        ]
+      },
+      {
+        "button": "right",
+        "from_core": [
+          24,
+          5
+        ],
+        "to_core": [
+          25,
+          5
+        ],
+        "traversed": [
+          [
+            25,
+            5
+          ]
+        ]
+      },
+      {
+        "button": "down",
+        "from_core": [
+          25,
+          5
+        ],
+        "to_core": [
+          25,
+          6
+        ],
+        "traversed": [
+          [
+            25,
+            6
+          ]
+        ]
+      },
+      {
+        "button": "right",
+        "from_core": [
+          25,
+          6
+        ],
+        "to_core": [
+          26,
+          6
+        ],
+        "traversed": [
+          [
+            26,
+            6
+          ]
+        ]
+      },
+      {
+        "button": "right",
+        "from_core": [
+          26,
+          6
+        ],
+        "to_core": [
+          27,
+          6
+        ],
+        "traversed": [
+          [
+            27,
+            6
+          ]
+        ]
+      },
+      {
+        "button": "right",
+        "from_core": [
+          27,
+          6
+        ],
+        "to_core": [
+          28,
+          6
+        ],
+        "traversed": [
+          [
+            28,
+            6
+          ]
+        ]
+      },
+      {
+        "button": "right",
+        "from_core": [
+          28,
+          6
+        ],
+        "to_core": [
+          29,
+          6
+        ],
+        "traversed": [
+          [
+            29,
+            6
+          ]
+        ]
+      },
+      {
+        "button": "down",
+        "from_core": [
+          29,
+          6
+        ],
+        "to_core": [
+          29,
+          7
+        ],
+        "traversed": [
+          [
+            29,
+            7
+          ]
+        ]
+      },
+      {
+        "button": "down",
+        "from_core": [
+          29,
+          7
+        ],
+        "to_core": [
+          29,
+          8
+        ],
+        "traversed": [
+          [
+            29,
+            8
+          ]
+        ]
+      },
+      {
+        "button": "right",
+        "from_core": [
+          29,
+          8
+        ],
+        "to_core": [
+          30,
+          8
+        ],
+        "traversed": [
+          [
+            30,
+            8
+          ]
+        ]
+      },
+      {
+        "button": "right",
+        "from_core": [
+          30,
+          8
+        ],
+        "to_core": [
+          31,
+          8
+        ],
+        "traversed": [
+          [
+            31,
+            8
+          ]
+        ]
+      },
+      {
+        "button": "right",
+        "from_core": [
+          31,
+          8
+        ],
+        "to_core": [
+          32,
+          8
+        ],
+        "traversed": [
+          [
+            32,
+            8
+          ]
+        ]
+      },
+      {
+        "button": "right",
+        "from_core": [
+          32,
+          8
+        ],
+        "to_core": [
+          33,
+          8
+        ],
+        "traversed": [
+          [
+            33,
+            8
+          ]
+        ]
+      },
+      {
+        "button": "right",
+        "from_core": [
+          33,
+          8
+        ],
+        "to_core": [
+          34,
+          8
+        ],
+        "traversed": [
+          [
+            34,
+            8
+          ]
+        ]
+      },
+      {
+        "button": "right",
+        "from_core": [
+          34,
+          8
+        ],
+        "to_core": [
+          35,
+          8
+        ],
+        "traversed": [
+          [
+            35,
+            8
+          ]
+        ]
+      },
+      {
+        "button": "right",
+        "from_core": [
+          35,
+          8
+        ],
+        "to_core": [
+          36,
+          8
+        ],
+        "traversed": [
+          [
+            36,
+            8
+          ]
+        ]
+      },
+      {
+        "button": "right",
+        "from_core": [
+          36,
+          8
+        ],
+        "to_core": [
+          37,
+          8
+        ],
+        "traversed": [
+          [
+            37,
+            8
+          ]
+        ]
+      },
+      {
+        "button": "down",
+        "from_core": [
+          37,
+          8
+        ],
+        "to_core": [
+          37,
+          9
+        ],
+        "traversed": [
+          [
+            37,
+            9
+          ]
+        ]
+      },
+      {
+        "button": "down",
+        "from_core": [
+          37,
+          9
+        ],
+        "to_core": [
+          37,
+          10
+        ],
+        "traversed": [
+          [
+            37,
+            10
+          ]
+        ]
+      },
+      {
+        "button": "down",
+        "from_core": [
+          37,
+          10
+        ],
+        "to_core": [
+          37,
+          11
+        ],
+        "traversed": [
+          [
+            37,
+            11
+          ]
+        ]
+      },
+      {
+        "button": "down",
+        "from_core": [
+          37,
+          11
+        ],
+        "to_core": [
+          37,
+          12
+        ],
+        "traversed": [
+          [
+            37,
+            12
+          ]
+        ]
+      },
+      {
+        "button": "right",
+        "from_core": [
+          37,
+          12
+        ],
+        "to_core": [
+          38,
+          12
+        ],
+        "traversed": [
+          [
+            38,
+            12
+          ]
+        ]
+      },
+      {
+        "button": "right",
+        "from_core": [
+          38,
+          12
+        ],
+        "to_core": [
+          39,
+          12
+        ],
+        "traversed": [
+          [
+            39,
+            12
+          ]
+        ]
+      },
+      {
+        "button": "right",
+        "from_core": [
+          39,
+          12
+        ],
+        "to_core": [
+          40,
+          12
+        ],
+        "traversed": [
+          [
+            40,
+            12
+          ]
+        ]
+      },
+      {
+        "button": "right",
+        "from_core": [
+          40,
+          12
+        ],
+        "to_core": [
+          41,
+          12
+        ],
+        "traversed": [
+          [
+            41,
+            12
+          ]
+        ]
+      },
+      {
+        "button": "down",
+        "from_core": [
+          41,
+          12
+        ],
+        "to_core": [
+          41,
+          13
+        ],
+        "traversed": [
+          [
+            41,
+            13
+          ]
+        ]
+      },
+      {
+        "button": "down",
+        "from_core": [
+          41,
+          13
+        ],
+        "to_core": [
+          41,
+          14
+        ],
+        "traversed": [
+          [
+            41,
+            14
+          ]
+        ]
+      },
+      {
+        "button": "down",
+        "from_core": [
+          41,
+          14
+        ],
+        "to_core": [
+          41,
+          15
+        ],
+        "traversed": [
+          [
+            41,
+            15
+          ]
+        ]
+      },
+      {
+        "button": "down",
+        "from_core": [
+          41,
+          15
+        ],
+        "to_core": [
+          41,
+          16
+        ],
+        "traversed": [
+          [
+            41,
+            16
+          ]
+        ]
+      },
+      {
+        "button": "down",
+        "from_core": [
+          41,
+          16
+        ],
+        "to_core": [
+          41,
+          17
+        ],
+        "traversed": [
+          [
+            41,
+            17
+          ]
+        ]
+      },
+      {
+        "button": "down",
+        "from_core": [
+          41,
+          17
+        ],
+        "to_core": [
+          41,
+          18
+        ],
+        "traversed": [
+          [
+            41,
+            18
+          ]
+        ]
+      },
+      {
+        "button": "down",
+        "from_core": [
+          41,
+          18
+        ],
+        "to_core": [
+          41,
+          19
+        ],
+        "traversed": [
+          [
+            41,
+            19
+          ]
+        ]
+      },
+      {
+        "button": "down",
+        "from_core": [
+          41,
+          19
+        ],
+        "to_core": [
+          41,
+          20
+        ],
+        "traversed": [
+          [
+            41,
+            20
+          ]
+        ]
+      },
+      {
+        "button": "right",
+        "from_core": [
+          41,
+          20
+        ],
+        "to_core": [
+          42,
+          20
+        ],
+        "traversed": [
+          [
+            42,
+            20
+          ]
+        ]
+      },
+      {
+        "button": "right",
+        "from_core": [
+          42,
+          20
+        ],
+        "to_core": [
+          43,
+          20
+        ],
+        "traversed": [
+          [
+            43,
+            20
+          ]
+        ]
+      },
+      {
+        "button": "right",
+        "from_core": [
+          43,
+          20
+        ],
+        "to_core": [
+          44,
+          20
+        ],
+        "traversed": [
+          [
+            44,
+            20
+          ]
+        ]
+      },
+      {
+        "button": "right",
+        "from_core": [
+          44,
+          20
+        ],
+        "to_core": [
+          45,
+          20
+        ],
+        "traversed": [
+          [
+            45,
+            20
+          ]
+        ]
+      },
+      {
+        "button": "right",
+        "from_core": [
+          45,
+          20
+        ],
+        "to_core": [
+          46,
+          20
+        ],
+        "traversed": [
+          [
+            46,
+            20
+          ]
+        ]
+      },
+      {
+        "button": "down",
+        "from_core": [
+          46,
+          20
+        ],
+        "to_core": [
+          46,
+          21
+        ],
+        "traversed": [
+          [
+            46,
+            21
+          ]
+        ]
+      },
+      {
+        "button": "down",
+        "from_core": [
+          46,
+          21
+        ],
+        "to_core": [
+          46,
+          22
+        ],
+        "traversed": [
+          [
+            46,
+            22
+          ]
+        ]
+      },
+      {
+        "button": "down",
+        "from_core": [
+          46,
+          22
+        ],
+        "to_core": [
+          46,
+          23
+        ],
+        "traversed": [
+          [
+            46,
+            23
+          ]
+        ]
+      },
+      {
+        "button": "down",
+        "from_core": [
+          46,
+          23
+        ],
+        "to_core": [
+          46,
+          24
+        ],
+        "traversed": [
+          [
+            46,
+            24
+          ]
+        ]
+      },
+      {
+        "button": "right",
+        "from_core": [
+          46,
+          24
+        ],
+        "to_core": [
+          47,
+          24
+        ],
+        "traversed": [
+          [
+            47,
+            24
+          ]
+        ]
+      },
+      {
+        "button": "down",
+        "from_core": [
+          47,
+          24
+        ],
+        "to_core": [
+          47,
+          25
+        ],
+        "traversed": [
+          [
+            47,
+            25
+          ]
+        ]
+      },
+      {
+        "button": "down",
+        "from_core": [
+          47,
+          25
+        ],
+        "to_core": [
+          47,
+          26
+        ],
+        "traversed": [
+          [
+            47,
+            26
+          ]
+        ]
+      },
+      {
+        "button": "right",
+        "from_core": [
+          47,
+          26
+        ],
+        "to_core": [
+          48,
+          26
+        ],
+        "traversed": [
+          [
+            48,
+            26
+          ]
+        ]
+      },
+      {
+        "button": "right",
+        "from_core": [
+          48,
+          26
+        ],
+        "to_core": [
+          49,
+          26
+        ],
+        "traversed": [
+          [
+            49,
+            26
+          ]
+        ]
+      },
+      {
+        "button": "right",
+        "from_core": [
+          49,
+          26
+        ],
+        "to_core": [
+          50,
+          26
+        ],
+        "traversed": [
+          [
+            50,
+            26
+          ]
+        ]
+      },
+      {
+        "button": "right",
+        "from_core": [
+          50,
+          26
+        ],
+        "to_core": [
+          51,
+          26
+        ],
+        "traversed": [
+          [
+            51,
+            26
+          ]
+        ]
+      },
+      {
+        "button": "right",
+        "from_core": [
+          51,
+          26
+        ],
+        "to_core": [
+          52,
+          26
+        ],
+        "traversed": [
+          [
+            52,
+            26
+          ]
+        ]
+      },
+      {
+        "button": "right",
+        "from_core": [
+          52,
+          26
+        ],
+        "to_core": [
+          53,
+          26
+        ],
+        "traversed": [
+          [
+            53,
+            26
+          ]
+        ]
+      },
+      {
+        "button": "right",
+        "from_core": [
+          53,
+          26
+        ],
+        "to_core": [
+          54,
+          26
+        ],
+        "traversed": [
+          [
+            54,
+            26
+          ]
+        ]
+      },
+      {
+        "button": "down",
+        "from_core": [
+          54,
+          26
+        ],
+        "to_core": [
+          54,
+          27
+        ],
+        "traversed": [
+          [
+            54,
+            27
+          ]
+        ]
+      },
+      {
+        "button": "down",
+        "from_core": [
+          54,
+          27
+        ],
+        "to_core": [
+          54,
+          28
+        ],
+        "traversed": [
+          [
+            54,
+            28
+          ]
+        ]
+      },
+      {
+        "button": "down",
+        "from_core": [
+          54,
+          28
+        ],
+        "to_core": [
+          54,
+          29
+        ],
+        "traversed": [
+          [
+            54,
+            29
+          ]
+        ]
+      },
+      {
+        "button": "down",
+        "from_core": [
+          54,
+          29
+        ],
+        "to_core": [
+          54,
+          30
+        ],
+        "traversed": [
+          [
+            54,
+            30
+          ]
+        ]
+      },
+      {
+        "button": "down",
+        "from_core": [
+          54,
+          30
+        ],
+        "to_core": [
+          54,
+          31
+        ],
+        "traversed": [
+          [
+            54,
+            31
+          ]
+        ]
+      },
+      {
+        "button": "down",
+        "from_core": [
+          54,
+          31
+        ],
+        "to_core": [
+          54,
+          32
+        ],
+        "traversed": [
+          [
+            54,
+            32
+          ]
+        ]
+      },
+      {
+        "button": "down",
+        "from_core": [
+          54,
+          32
+        ],
+        "to_core": [
+          54,
+          33
+        ],
+        "traversed": [
+          [
+            54,
+            33
+          ]
+        ]
+      },
+      {
+        "button": "down",
+        "from_core": [
+          54,
+          33
+        ],
+        "to_core": [
+          54,
+          34
+        ],
+        "traversed": [
+          [
+            54,
+            34
+          ]
+        ]
+      },
+      {
+        "button": "down",
+        "from_core": [
+          54,
+          34
+        ],
+        "to_core": [
+          54,
+          35
+        ],
+        "traversed": [
+          [
+            54,
+            35
+          ]
+        ]
+      },
+      {
+        "button": "down",
+        "from_core": [
+          54,
+          35
+        ],
+        "to_core": [
+          54,
+          36
+        ],
+        "traversed": [
+          [
+            54,
+            36
+          ]
+        ]
+      }
+    ],
+    "east_stop_to_port": [
+      {
+        "button": "right",
+        "from_core": [
+          54,
+          36
+        ],
+        "to_core": [
+          55,
+          36
+        ],
+        "traversed": [
+          [
+            55,
+            36
+          ]
+        ]
+      },
+      {
+        "button": "right",
+        "from_core": [
+          55,
+          36
+        ],
+        "to_core": [
+          56,
+          36
+        ],
+        "traversed": [
+          [
+            56,
+            36
+          ]
+        ]
+      },
+      {
+        "button": "down",
+        "from_core": [
+          56,
+          36
+        ],
+        "to_core": [
+          56,
+          37
+        ],
+        "traversed": [
+          [
+            56,
+            37
+          ]
+        ]
+      },
+      {
+        "button": "down",
+        "from_core": [
+          56,
+          37
+        ],
+        "to_core": [
+          56,
+          38
+        ],
+        "traversed": [
+          [
+            56,
+            38
+          ]
+        ]
+      },
+      {
+        "button": "down",
+        "from_core": [
+          56,
+          38
+        ],
+        "to_core": [
+          56,
+          39
+        ],
+        "traversed": [
+          [
+            56,
+            39
+          ]
+        ]
+      },
+      {
+        "button": "down",
+        "from_core": [
+          56,
+          39
+        ],
+        "to_core": [
+          56,
+          40
+        ],
+        "traversed": [
+          [
+            56,
+            40
+          ]
+        ]
+      },
+      {
+        "button": "down",
+        "from_core": [
+          56,
+          40
+        ],
+        "to_core": [
+          56,
+          41
+        ],
+        "traversed": [
+          [
+            56,
+            41
+          ]
+        ]
+      },
+      {
+        "button": "down",
+        "from_core": [
+          56,
+          41
+        ],
+        "to_core": [
+          56,
+          42
+        ],
+        "traversed": [
+          [
+            56,
+            42
+          ]
+        ]
+      },
+      {
+        "button": "right",
+        "from_core": [
+          56,
+          42
+        ],
+        "to_core": [
+          57,
+          42
+        ],
+        "traversed": [
+          [
+            57,
+            42
+          ]
+        ]
+      },
+      {
+        "button": "down",
+        "from_core": [
+          57,
+          42
+        ],
+        "to_core": [
+          57,
+          43
+        ],
+        "traversed": [
+          [
+            57,
+            43
+          ]
+        ]
+      },
+      {
+        "button": "down",
+        "from_core": [
+          57,
+          43
+        ],
+        "to_core": [
+          57,
+          44
+        ],
+        "traversed": [
+          [
+            57,
+            44
+          ]
+        ]
+      },
+      {
+        "button": "right",
+        "from_core": [
+          57,
+          44
+        ],
+        "to_core": [
+          58,
+          44
+        ],
+        "traversed": [
+          [
+            58,
+            44
+          ]
+        ]
+      },
+      {
+        "button": "right",
+        "from_core": [
+          58,
+          44
+        ],
+        "to_core": [
+          59,
+          44
+        ],
+        "traversed": [
+          [
+            59,
+            44
+          ]
+        ]
+      },
+      {
+        "button": "right",
+        "from_core": [
+          59,
+          44
+        ],
+        "to_core": [
+          60,
+          44
+        ],
+        "traversed": [
+          [
+            60,
+            44
+          ]
+        ]
+      },
+      {
+        "button": "right",
+        "from_core": [
+          60,
+          44
+        ],
+        "to_core": [
+          61,
+          44
+        ],
+        "traversed": [
+          [
+            61,
+            44
+          ]
+        ]
+      },
+      {
+        "button": "right",
+        "from_core": [
+          61,
+          44
+        ],
+        "to_core": [
+          62,
+          44
+        ],
+        "traversed": [
+          [
+            62,
+            44
+          ]
+        ]
+      },
+      {
+        "button": "right",
+        "from_core": [
+          62,
+          44
+        ],
+        "to_core": [
+          63,
+          44
+        ],
+        "traversed": [
+          [
+            63,
+            44
+          ]
+        ]
+      }
+    ],
+    "hut_to_north_launch": [
+      {
+        "button": "left",
+        "from_core": [
+          9,
+          28
+        ],
+        "to_core": [
+          8,
+          28
+        ],
+        "traversed": [
+          [
+            8,
+            28
+          ]
+        ]
+      },
+      {
+        "button": "left",
+        "from_core": [
+          8,
+          28
+        ],
+        "to_core": [
+          7,
+          28
+        ],
+        "traversed": [
+          [
+            7,
+            28
+          ]
+        ]
+      },
+      {
+        "button": "up",
+        "from_core": [
+          7,
+          28
+        ],
+        "to_core": [
+          7,
+          27
+        ],
+        "traversed": [
+          [
+            7,
+            27
+          ]
+        ]
+      },
+      {
+        "button": "up",
+        "from_core": [
+          7,
+          27
+        ],
+        "to_core": [
+          7,
+          26
+        ],
+        "traversed": [
+          [
+            7,
+            26
+          ]
+        ]
+      },
+      {
+        "button": "up",
+        "from_core": [
+          7,
+          26
+        ],
+        "to_core": [
+          7,
+          25
+        ],
+        "traversed": [
+          [
+            7,
+            25
+          ]
+        ]
+      },
+      {
+        "button": "up",
+        "from_core": [
+          7,
+          25
+        ],
+        "to_core": [
+          7,
+          24
+        ],
+        "traversed": [
+          [
+            7,
+            24
+          ]
+        ]
+      },
+      {
+        "button": "up",
+        "from_core": [
+          7,
+          24
+        ],
+        "to_core": [
+          7,
+          23
+        ],
+        "traversed": [
+          [
+            7,
+            23
+          ]
+        ]
+      },
+      {
+        "button": "up",
+        "from_core": [
+          7,
+          23
+        ],
+        "to_core": [
+          7,
+          22
+        ],
+        "traversed": [
+          [
+            7,
+            22
+          ]
+        ]
+      },
+      {
+        "button": "up",
+        "from_core": [
+          7,
+          22
+        ],
+        "to_core": [
+          7,
+          21
+        ],
+        "traversed": [
+          [
+            7,
+            21
+          ]
+        ]
+      },
+      {
+        "button": "up",
+        "from_core": [
+          7,
+          21
+        ],
+        "to_core": [
+          7,
+          20
+        ],
+        "traversed": [
+          [
+            7,
+            20
+          ]
+        ]
+      },
+      {
+        "button": "right",
+        "from_core": [
+          7,
+          20
+        ],
+        "to_core": [
+          8,
+          20
+        ],
+        "traversed": [
+          [
+            8,
+            20
+          ]
+        ]
+      },
+      {
+        "button": "up",
+        "from_core": [
+          8,
+          20
+        ],
+        "to_core": [
+          8,
+          19
+        ],
+        "traversed": [
+          [
+            8,
+            19
+          ]
+        ]
+      },
+      {
+        "button": "up",
+        "from_core": [
+          8,
+          19
+        ],
+        "to_core": [
+          8,
+          18
+        ],
+        "traversed": [
+          [
+            8,
+            18
+          ]
+        ]
+      },
+      {
+        "button": "up",
+        "from_core": [
+          8,
+          18
+        ],
+        "to_core": [
+          8,
+          17
+        ],
+        "traversed": [
+          [
+            8,
+            17
+          ]
+        ]
+      },
+      {
+        "button": "up",
+        "from_core": [
+          8,
+          17
+        ],
+        "to_core": [
+          8,
+          16
+        ],
+        "traversed": [
+          [
+            8,
+            16
+          ]
+        ]
+      },
+      {
+        "button": "up",
+        "from_core": [
+          8,
+          16
+        ],
+        "to_core": [
+          8,
+          15
+        ],
+        "traversed": [
+          [
+            8,
+            15
+          ]
+        ]
+      },
+      {
+        "button": "up",
+        "from_core": [
+          8,
+          15
+        ],
+        "to_core": [
+          8,
+          14
+        ],
+        "traversed": [
+          [
+            8,
+            14
+          ]
+        ]
+      },
+      {
+        "button": "up",
+        "from_core": [
+          8,
+          14
+        ],
+        "to_core": [
+          8,
+          13
+        ],
+        "traversed": [
+          [
+            8,
+            13
+          ]
+        ]
+      },
+      {
+        "button": "up",
+        "from_core": [
+          8,
+          13
+        ],
+        "to_core": [
+          8,
+          12
+        ],
+        "traversed": [
+          [
+            8,
+            12
+          ]
+        ]
+      },
+      {
+        "button": "up",
+        "from_core": [
+          8,
+          12
+        ],
+        "to_core": [
+          8,
+          11
+        ],
+        "traversed": [
+          [
+            8,
+            11
+          ]
+        ]
+      },
+      {
+        "button": "up",
+        "from_core": [
+          8,
+          11
+        ],
+        "to_core": [
+          8,
+          10
+        ],
+        "traversed": [
+          [
+            8,
+            10
+          ]
+        ]
+      },
+      {
+        "button": "up",
+        "from_core": [
+          8,
+          10
+        ],
+        "to_core": [
+          8,
+          9
+        ],
+        "traversed": [
+          [
+            8,
+            9
+          ]
+        ]
+      },
+      {
+        "button": "up",
+        "from_core": [
+          8,
+          9
+        ],
+        "to_core": [
+          8,
+          8
+        ],
+        "traversed": [
+          [
+            8,
+            8
+          ]
+        ]
+      },
+      {
+        "button": "up",
+        "from_core": [
+          8,
+          8
+        ],
+        "to_core": [
+          8,
+          7
+        ],
+        "traversed": [
+          [
+            8,
+            7
+          ]
+        ]
+      },
+      {
+        "button": "up",
+        "from_core": [
+          8,
+          7
+        ],
+        "to_core": [
+          8,
+          6
+        ],
+        "traversed": [
+          [
+            8,
+            6
+          ]
+        ]
+      },
+      {
+        "button": "right",
+        "from_core": [
+          8,
+          6
+        ],
+        "to_core": [
+          9,
+          6
+        ],
+        "traversed": [
+          [
+            9,
+            6
+          ]
+        ]
+      },
+      {
+        "button": "right",
+        "from_core": [
+          9,
+          6
+        ],
+        "to_core": [
+          10,
+          6
+        ],
+        "traversed": [
+          [
+            10,
+            6
+          ]
+        ]
+      },
+      {
+        "button": "right",
+        "from_core": [
+          10,
+          6
+        ],
+        "to_core": [
+          11,
+          6
+        ],
+        "traversed": [
+          [
+            11,
+            6
+          ]
+        ]
+      },
+      {
+        "button": "right",
+        "from_core": [
+          11,
+          6
+        ],
+        "to_core": [
+          12,
+          6
+        ],
+        "traversed": [
+          [
+            12,
+            6
+          ]
+        ]
+      },
+      {
+        "button": "right",
+        "from_core": [
+          12,
+          6
+        ],
+        "to_core": [
+          13,
+          6
+        ],
+        "traversed": [
+          [
+            13,
+            6
+          ]
+        ]
+      },
+      {
+        "button": "right",
+        "from_core": [
+          13,
+          6
+        ],
+        "to_core": [
+          14,
+          6
+        ],
+        "traversed": [
+          [
+            14,
+            6
+          ]
+        ]
+      },
+      {
+        "button": "up",
+        "from_core": [
+          14,
+          6
+        ],
+        "to_core": [
+          14,
+          5
+        ],
+        "traversed": [
+          [
+            14,
+            5
+          ]
+        ]
+      },
+      {
+        "button": "right",
+        "from_core": [
+          14,
+          5
+        ],
+        "to_core": [
+          15,
+          5
+        ],
+        "traversed": [
+          [
+            15,
+            5
+          ]
+        ]
+      },
+      {
+        "button": "right",
+        "from_core": [
+          15,
+          5
+        ],
+        "to_core": [
+          16,
+          5
+        ],
+        "traversed": [
+          [
+            16,
+            5
+          ]
+        ]
+      },
+      {
+        "button": "right",
+        "from_core": [
+          16,
+          5
+        ],
+        "to_core": [
+          17,
+          5
+        ],
+        "traversed": [
+          [
+            17,
+            5
+          ]
+        ]
+      },
+      {
+        "button": "right",
+        "from_core": [
+          17,
+          5
+        ],
+        "to_core": [
+          18,
+          5
+        ],
+        "traversed": [
+          [
+            18,
+            5
+          ]
+        ]
+      },
+      {
+        "button": "right",
+        "from_core": [
+          18,
+          5
+        ],
+        "to_core": [
+          19,
+          5
+        ],
+        "traversed": [
+          [
+            19,
+            5
+          ]
+        ]
+      },
+      {
+        "button": "down",
+        "from_core": [
+          19,
+          5
+        ],
+        "to_core": [
+          19,
+          6
+        ],
+        "traversed": [
+          [
+            19,
+            6
+          ]
+        ]
+      },
+      {
+        "button": "down",
+        "from_core": [
+          19,
+          6
+        ],
+        "to_core": [
+          19,
+          7
+        ],
+        "traversed": [
+          [
+            19,
+            7
+          ]
+        ]
+      }
+    ],
+    "island_to_cache": [
+      {
+        "button": "right",
+        "from_core": [
+          19,
+          10
+        ],
+        "to_core": [
+          20,
+          10
+        ],
+        "traversed": [
+          [
+            20,
+            10
+          ]
+        ]
+      },
+      {
+        "button": "down",
+        "from_core": [
+          20,
+          10
+        ],
+        "to_core": [
+          20,
+          11
+        ],
+        "traversed": [
+          [
+            20,
+            11
+          ]
+        ]
+      }
+    ],
+    "cache_to_island_wall_launch": [
+      {
+        "button": "up",
+        "from_core": [
+          20,
+          11
+        ],
+        "to_core": [
+          20,
+          10
+        ],
+        "traversed": [
+          [
+            20,
+            10
+          ]
+        ]
+      },
+      {
+        "button": "left",
+        "from_core": [
+          20,
+          10
+        ],
+        "to_core": [
+          19,
+          10
+        ],
+        "traversed": [
+          [
+            19,
+            10
+          ]
+        ]
+      },
+      {
+        "button": "left",
+        "from_core": [
+          19,
+          10
+        ],
+        "to_core": [
+          18,
+          10
+        ],
+        "traversed": [
+          [
+            18,
+            10
+          ]
+        ]
+      }
+    ],
+    "island_to_exit": [
+      {
+        "button": "right",
+        "from_core": [
+          18,
+          10
+        ],
+        "to_core": [
+          19,
+          10
+        ],
+        "traversed": [
+          [
+            19,
+            10
+          ]
+        ]
+      }
+    ],
+    "east_stop_to_skier": [
+      {
+        "button": "up",
+        "from_core": [
+          54,
+          36
+        ],
+        "to_core": [
+          54,
+          35
+        ],
+        "traversed": [
+          [
+            54,
+            35
+          ]
+        ]
+      },
+      {
+        "button": "up",
+        "from_core": [
+          54,
+          35
+        ],
+        "to_core": [
+          54,
+          34
+        ],
+        "traversed": [
+          [
+            54,
+            34
+          ]
+        ]
+      },
+      {
+        "button": "up",
+        "from_core": [
+          54,
+          34
+        ],
+        "to_core": [
+          54,
+          33
+        ],
+        "traversed": [
+          [
+            54,
+            33
+          ]
+        ]
+      },
+      {
+        "button": "up",
+        "from_core": [
+          54,
+          33
+        ],
+        "to_core": [
+          54,
+          32
+        ],
+        "traversed": [
+          [
+            54,
+            32
+          ]
+        ]
+      },
+      {
+        "button": "up",
+        "from_core": [
+          54,
+          32
+        ],
+        "to_core": [
+          54,
+          31
+        ],
+        "traversed": [
+          [
+            54,
+            31
+          ]
+        ]
+      },
+      {
+        "button": "up",
+        "from_core": [
+          54,
+          31
+        ],
+        "to_core": [
+          54,
+          30
+        ],
+        "traversed": [
+          [
+            54,
+            30
+          ]
+        ]
+      },
+      {
+        "button": "up",
+        "from_core": [
+          54,
+          30
+        ],
+        "to_core": [
+          54,
+          29
+        ],
+        "traversed": [
+          [
+            54,
+            29
+          ]
+        ]
+      },
+      {
+        "button": "up",
+        "from_core": [
+          54,
+          29
+        ],
+        "to_core": [
+          54,
+          28
+        ],
+        "traversed": [
+          [
+            54,
+            28
+          ]
+        ]
+      },
+      {
+        "button": "up",
+        "from_core": [
+          54,
+          28
+        ],
+        "to_core": [
+          54,
+          27
+        ],
+        "traversed": [
+          [
+            54,
+            27
+          ]
+        ]
+      },
+      {
+        "button": "up",
+        "from_core": [
+          54,
+          27
+        ],
+        "to_core": [
+          54,
+          26
+        ],
+        "traversed": [
+          [
+            54,
+            26
+          ]
+        ]
+      },
+      {
+        "button": "left",
+        "from_core": [
+          54,
+          26
+        ],
+        "to_core": [
+          53,
+          26
+        ],
+        "traversed": [
+          [
+            53,
+            26
+          ]
+        ]
+      },
+      {
+        "button": "left",
+        "from_core": [
+          53,
+          26
+        ],
+        "to_core": [
+          52,
+          26
+        ],
+        "traversed": [
+          [
+            52,
+            26
+          ]
+        ]
+      },
+      {
+        "button": "left",
+        "from_core": [
+          52,
+          26
+        ],
+        "to_core": [
+          51,
+          26
+        ],
+        "traversed": [
+          [
+            51,
+            26
+          ]
+        ]
+      },
+      {
+        "button": "left",
+        "from_core": [
+          51,
+          26
+        ],
+        "to_core": [
+          50,
+          26
+        ],
+        "traversed": [
+          [
+            50,
+            26
+          ]
+        ]
+      },
+      {
+        "button": "left",
+        "from_core": [
+          50,
+          26
+        ],
+        "to_core": [
+          49,
+          26
+        ],
+        "traversed": [
+          [
+            49,
+            26
+          ]
+        ]
+      },
+      {
+        "button": "left",
+        "from_core": [
+          49,
+          26
+        ],
+        "to_core": [
+          48,
+          26
+        ],
+        "traversed": [
+          [
+            48,
+            26
+          ]
+        ]
+      },
+      {
+        "button": "left",
+        "from_core": [
+          48,
+          26
+        ],
+        "to_core": [
+          47,
+          26
+        ],
+        "traversed": [
+          [
+            47,
+            26
+          ]
+        ]
+      },
+      {
+        "button": "up",
+        "from_core": [
+          47,
+          26
+        ],
+        "to_core": [
+          47,
+          25
+        ],
+        "traversed": [
+          [
+            47,
+            25
+          ]
+        ]
+      },
+      {
+        "button": "up",
+        "from_core": [
+          47,
+          25
+        ],
+        "to_core": [
+          47,
+          24
+        ],
+        "traversed": [
+          [
+            47,
+            24
+          ]
+        ]
+      },
+      {
+        "button": "left",
+        "from_core": [
+          47,
+          24
+        ],
+        "to_core": [
+          46,
+          24
+        ],
+        "traversed": [
+          [
+            46,
+            24
+          ]
+        ]
+      },
+      {
+        "button": "up",
+        "from_core": [
+          46,
+          24
+        ],
+        "to_core": [
+          46,
+          23
+        ],
+        "traversed": [
+          [
+            46,
+            23
+          ]
+        ]
+      },
+      {
+        "button": "up",
+        "from_core": [
+          46,
+          23
+        ],
+        "to_core": [
+          46,
+          22
+        ],
+        "traversed": [
+          [
+            46,
+            22
+          ]
+        ]
+      }
+    ],
+    "skier_to_boarder": [
+      {
+        "button": "up",
+        "from_core": [
+          46,
+          22
+        ],
+        "to_core": [
+          46,
+          21
+        ],
+        "traversed": [
+          [
+            46,
+            21
+          ]
+        ]
+      },
+      {
+        "button": "up",
+        "from_core": [
+          46,
+          21
+        ],
+        "to_core": [
+          46,
+          20
+        ],
+        "traversed": [
+          [
+            46,
+            20
+          ]
+        ]
+      },
+      {
+        "button": "left",
+        "from_core": [
+          46,
+          20
+        ],
+        "to_core": [
+          45,
+          20
+        ],
+        "traversed": [
+          [
+            45,
+            20
+          ]
+        ]
+      },
+      {
+        "button": "left",
+        "from_core": [
+          45,
+          20
+        ],
+        "to_core": [
+          44,
+          20
+        ],
+        "traversed": [
+          [
+            44,
+            20
+          ]
+        ]
+      },
+      {
+        "button": "left",
+        "from_core": [
+          44,
+          20
+        ],
+        "to_core": [
+          43,
+          20
+        ],
+        "traversed": [
+          [
+            43,
+            20
+          ]
+        ]
+      },
+      {
+        "button": "left",
+        "from_core": [
+          43,
+          20
+        ],
+        "to_core": [
+          42,
+          20
+        ],
+        "traversed": [
+          [
+            42,
+            20
+          ]
+        ]
+      },
+      {
+        "button": "left",
+        "from_core": [
+          42,
+          20
+        ],
+        "to_core": [
+          41,
+          20
+        ],
+        "traversed": [
+          [
+            41,
+            20
+          ]
+        ]
+      },
+      {
+        "button": "up",
+        "from_core": [
+          41,
+          20
+        ],
+        "to_core": [
+          41,
+          19
+        ],
+        "traversed": [
+          [
+            41,
+            19
+          ]
+        ]
+      },
+      {
+        "button": "up",
+        "from_core": [
+          41,
+          19
+        ],
+        "to_core": [
+          41,
+          18
+        ],
+        "traversed": [
+          [
+            41,
+            18
+          ]
+        ]
+      },
+      {
+        "button": "up",
+        "from_core": [
+          41,
+          18
+        ],
+        "to_core": [
+          41,
+          17
+        ],
+        "traversed": [
+          [
+            41,
+            17
+          ]
+        ]
+      },
+      {
+        "button": "up",
+        "from_core": [
+          41,
+          17
+        ],
+        "to_core": [
+          41,
+          16
+        ],
+        "traversed": [
+          [
+            41,
+            16
+          ]
+        ]
+      },
+      {
+        "button": "up",
+        "from_core": [
+          41,
+          16
+        ],
+        "to_core": [
+          41,
+          15
+        ],
+        "traversed": [
+          [
+            41,
+            15
+          ]
+        ]
+      },
+      {
+        "button": "up",
+        "from_core": [
+          41,
+          15
+        ],
+        "to_core": [
+          41,
+          14
+        ],
+        "traversed": [
+          [
+            41,
+            14
+          ]
+        ]
+      },
+      {
+        "button": "up",
+        "from_core": [
+          41,
+          14
+        ],
+        "to_core": [
+          41,
+          13
+        ],
+        "traversed": [
+          [
+            41,
+            13
+          ]
+        ]
+      },
+      {
+        "button": "up",
+        "from_core": [
+          41,
+          13
+        ],
+        "to_core": [
+          41,
+          12
+        ],
+        "traversed": [
+          [
+            41,
+            12
+          ]
+        ]
+      },
+      {
+        "button": "left",
+        "from_core": [
+          41,
+          12
+        ],
+        "to_core": [
+          40,
+          12
+        ],
+        "traversed": [
+          [
+            40,
+            12
+          ]
+        ]
+      },
+      {
+        "button": "left",
+        "from_core": [
+          40,
+          12
+        ],
+        "to_core": [
+          39,
+          12
+        ],
+        "traversed": [
+          [
+            39,
+            12
+          ]
+        ]
+      },
+      {
+        "button": "left",
+        "from_core": [
+          39,
+          12
+        ],
+        "to_core": [
+          38,
+          12
+        ],
+        "traversed": [
+          [
+            38,
+            12
+          ]
+        ]
+      },
+      {
+        "button": "left",
+        "from_core": [
+          38,
+          12
+        ],
+        "to_core": [
+          37,
+          12
+        ],
+        "traversed": [
+          [
+            37,
+            12
+          ]
+        ]
+      },
+      {
+        "button": "up",
+        "from_core": [
+          37,
+          12
+        ],
+        "to_core": [
+          37,
+          11
+        ],
+        "traversed": [
+          [
+            37,
+            11
+          ]
+        ]
+      },
+      {
+        "button": "up",
+        "from_core": [
+          37,
+          11
+        ],
+        "to_core": [
+          37,
+          10
+        ],
+        "traversed": [
+          [
+            37,
+            10
+          ]
+        ]
+      },
+      {
+        "button": "up",
+        "from_core": [
+          37,
+          10
+        ],
+        "to_core": [
+          37,
+          9
+        ],
+        "traversed": [
+          [
+            37,
+            9
+          ]
+        ]
+      },
+      {
+        "button": "up",
+        "from_core": [
+          37,
+          9
+        ],
+        "to_core": [
+          37,
+          8
+        ],
+        "traversed": [
+          [
+            37,
+            8
+          ]
+        ]
+      },
+      {
+        "button": "left",
+        "from_core": [
+          37,
+          8
+        ],
+        "to_core": [
+          36,
+          8
+        ],
+        "traversed": [
+          [
+            36,
+            8
+          ]
+        ]
+      },
+      {
+        "button": "left",
+        "from_core": [
+          36,
+          8
+        ],
+        "to_core": [
+          35,
+          8
+        ],
+        "traversed": [
+          [
+            35,
+            8
+          ]
+        ]
+      },
+      {
+        "button": "left",
+        "from_core": [
+          35,
+          8
+        ],
+        "to_core": [
+          34,
+          8
+        ],
+        "traversed": [
+          [
+            34,
+            8
+          ]
+        ]
+      },
+      {
+        "button": "left",
+        "from_core": [
+          34,
+          8
+        ],
+        "to_core": [
+          33,
+          8
+        ],
+        "traversed": [
+          [
+            33,
+            8
+          ]
+        ]
+      },
+      {
+        "button": "left",
+        "from_core": [
+          33,
+          8
+        ],
+        "to_core": [
+          32,
+          8
+        ],
+        "traversed": [
+          [
+            32,
+            8
+          ]
+        ]
+      },
+      {
+        "button": "left",
+        "from_core": [
+          32,
+          8
+        ],
+        "to_core": [
+          31,
+          8
+        ],
+        "traversed": [
+          [
+            31,
+            8
+          ]
+        ]
+      },
+      {
+        "button": "left",
+        "from_core": [
+          31,
+          8
+        ],
+        "to_core": [
+          30,
+          8
+        ],
+        "traversed": [
+          [
+            30,
+            8
+          ]
+        ]
+      },
+      {
+        "button": "left",
+        "from_core": [
+          30,
+          8
+        ],
+        "to_core": [
+          29,
+          8
+        ],
+        "traversed": [
+          [
+            29,
+            8
+          ]
+        ]
+      },
+      {
+        "button": "up",
+        "from_core": [
+          29,
+          8
+        ],
+        "to_core": [
+          29,
+          7
+        ],
+        "traversed": [
+          [
+            29,
+            7
+          ]
+        ]
+      },
+      {
+        "button": "up",
+        "from_core": [
+          29,
+          7
+        ],
+        "to_core": [
+          29,
+          6
+        ],
+        "traversed": [
+          [
+            29,
+            6
+          ]
+        ]
+      },
+      {
+        "button": "left",
+        "from_core": [
+          29,
+          6
+        ],
+        "to_core": [
+          28,
+          6
+        ],
+        "traversed": [
+          [
+            28,
+            6
+          ]
+        ]
+      },
+      {
+        "button": "left",
+        "from_core": [
+          28,
+          6
+        ],
+        "to_core": [
+          27,
+          6
+        ],
+        "traversed": [
+          [
+            27,
+            6
+          ]
+        ]
+      },
+      {
+        "button": "left",
+        "from_core": [
+          27,
+          6
+        ],
+        "to_core": [
+          26,
+          6
+        ],
+        "traversed": [
+          [
+            26,
+            6
+          ]
+        ]
+      },
+      {
+        "button": "left",
+        "from_core": [
+          26,
+          6
+        ],
+        "to_core": [
+          25,
+          6
+        ],
+        "traversed": [
+          [
+            25,
+            6
+          ]
+        ]
+      },
+      {
+        "button": "up",
+        "from_core": [
+          25,
+          6
+        ],
+        "to_core": [
+          25,
+          5
+        ],
+        "traversed": [
+          [
+            25,
+            5
+          ]
+        ]
+      },
+      {
+        "button": "left",
+        "from_core": [
+          25,
+          5
+        ],
+        "to_core": [
+          24,
+          5
+        ],
+        "traversed": [
+          [
+            24,
+            5
+          ]
+        ]
+      },
+      {
+        "button": "left",
+        "from_core": [
+          24,
+          5
+        ],
+        "to_core": [
+          23,
+          5
+        ],
+        "traversed": [
+          [
+            23,
+            5
+          ]
+        ]
+      },
+      {
+        "button": "left",
+        "from_core": [
+          23,
+          5
+        ],
+        "to_core": [
+          22,
+          5
+        ],
+        "traversed": [
+          [
+            22,
+            5
+          ]
+        ]
+      },
+      {
+        "button": "left",
+        "from_core": [
+          22,
+          5
+        ],
+        "to_core": [
+          21,
+          5
+        ],
+        "traversed": [
+          [
+            21,
+            5
+          ]
+        ]
+      },
+      {
+        "button": "left",
+        "from_core": [
+          21,
+          5
+        ],
+        "to_core": [
+          20,
+          5
+        ],
+        "traversed": [
+          [
+            20,
+            5
+          ]
+        ]
+      },
+      {
+        "button": "left",
+        "from_core": [
+          20,
+          5
+        ],
+        "to_core": [
+          19,
+          5
+        ],
+        "traversed": [
+          [
+            19,
+            5
+          ]
+        ]
+      },
+      {
+        "button": "left",
+        "from_core": [
+          19,
+          5
+        ],
+        "to_core": [
+          18,
+          5
+        ],
+        "traversed": [
+          [
+            18,
+            5
+          ]
+        ]
+      },
+      {
+        "button": "left",
+        "from_core": [
+          18,
+          5
+        ],
+        "to_core": [
+          17,
+          5
+        ],
+        "traversed": [
+          [
+            17,
+            5
+          ]
+        ]
+      },
+      {
+        "button": "left",
+        "from_core": [
+          17,
+          5
+        ],
+        "to_core": [
+          16,
+          5
+        ],
+        "traversed": [
+          [
+            16,
+            5
+          ]
+        ]
+      },
+      {
+        "button": "left",
+        "from_core": [
+          16,
+          5
+        ],
+        "to_core": [
+          15,
+          5
+        ],
+        "traversed": [
+          [
+            15,
+            5
+          ]
+        ]
+      },
+      {
+        "button": "down",
+        "from_core": [
+          15,
+          5
+        ],
+        "to_core": [
+          15,
+          6
+        ],
+        "traversed": [
+          [
+            15,
+            6
+          ]
+        ]
+      },
+      {
+        "button": "down",
+        "from_core": [
+          15,
+          6
+        ],
+        "to_core": [
+          15,
+          7
+        ],
+        "traversed": [
+          [
+            15,
+            7
+          ]
+        ]
+      },
+      {
+        "button": "left",
+        "from_core": [
+          15,
+          7
+        ],
+        "to_core": [
+          14,
+          7
+        ],
+        "traversed": [
+          [
+            14,
+            7
+          ]
+        ]
+      },
+      {
+        "button": "left",
+        "from_core": [
+          14,
+          7
+        ],
+        "to_core": [
+          13,
+          7
+        ],
+        "traversed": [
+          [
+            13,
+            7
+          ]
+        ]
+      },
+      {
+        "button": "left",
+        "from_core": [
+          13,
+          7
+        ],
+        "to_core": [
+          12,
+          7
+        ],
+        "traversed": [
+          [
+            12,
+            7
+          ]
+        ]
+      },
+      {
+        "button": "left",
+        "from_core": [
+          12,
+          7
+        ],
+        "to_core": [
+          11,
+          7
+        ],
+        "traversed": [
+          [
+            11,
+            7
+          ]
+        ]
+      },
+      {
+        "button": "left",
+        "from_core": [
+          11,
+          7
+        ],
+        "to_core": [
+          10,
+          7
+        ],
+        "traversed": [
+          [
+            10,
+            7
+          ]
+        ]
+      },
+      {
+        "button": "left",
+        "from_core": [
+          10,
+          7
+        ],
+        "to_core": [
+          9,
+          7
+        ],
+        "traversed": [
+          [
+            9,
+            7
+          ]
+        ]
+      },
+      {
+        "button": "down",
+        "from_core": [
+          9,
+          7
+        ],
+        "to_core": [
+          9,
+          8
+        ],
+        "traversed": [
+          [
+            9,
+            8
+          ]
+        ]
+      },
+      {
+        "button": "down",
+        "from_core": [
+          9,
+          8
+        ],
+        "to_core": [
+          9,
+          9
+        ],
+        "traversed": [
+          [
+            9,
+            9
+          ]
+        ]
+      },
+      {
+        "button": "down",
+        "from_core": [
+          9,
+          9
+        ],
+        "to_core": [
+          9,
+          10
+        ],
+        "traversed": [
+          [
+            9,
+            10
+          ]
+        ]
+      },
+      {
+        "button": "down",
+        "from_core": [
+          9,
+          10
+        ],
+        "to_core": [
+          9,
+          11
+        ],
+        "traversed": [
+          [
+            9,
+            11
+          ]
+        ]
+      },
+      {
+        "button": "down",
+        "from_core": [
+          9,
+          11
+        ],
+        "to_core": [
+          9,
+          12
+        ],
+        "traversed": [
+          [
+            9,
+            12
+          ]
+        ]
+      },
+      {
+        "button": "down",
+        "from_core": [
+          9,
+          12
+        ],
+        "to_core": [
+          9,
+          13
+        ],
+        "traversed": [
+          [
+            9,
+            13
+          ]
+        ]
+      },
+      {
+        "button": "down",
+        "from_core": [
+          9,
+          13
+        ],
+        "to_core": [
+          9,
+          14
+        ],
+        "traversed": [
+          [
+            9,
+            14
+          ]
+        ]
+      },
+      {
+        "button": "down",
+        "from_core": [
+          9,
+          14
+        ],
+        "to_core": [
+          9,
+          15
+        ],
+        "traversed": [
+          [
+            9,
+            15
+          ]
+        ]
+      },
+      {
+        "button": "down",
+        "from_core": [
+          9,
+          15
+        ],
+        "to_core": [
+          9,
+          16
+        ],
+        "traversed": [
+          [
+            9,
+            16
+          ]
+        ]
+      },
+      {
+        "button": "down",
+        "from_core": [
+          9,
+          16
+        ],
+        "to_core": [
+          9,
+          17
+        ],
+        "traversed": [
+          [
+            9,
+            17
+          ]
+        ]
+      },
+      {
+        "button": "down",
+        "from_core": [
+          9,
+          17
+        ],
+        "to_core": [
+          9,
+          18
+        ],
+        "traversed": [
+          [
+            9,
+            18
+          ]
+        ]
+      }
+    ],
+    "boarder_to_hut": [
+      {
+        "button": "left",
+        "from_core": [
+          9,
+          18
+        ],
+        "to_core": [
+          8,
+          18
+        ],
+        "traversed": [
+          [
+            8,
+            18
+          ]
+        ]
+      },
+      {
+        "button": "down",
+        "from_core": [
+          8,
+          18
+        ],
+        "to_core": [
+          8,
+          19
+        ],
+        "traversed": [
+          [
+            8,
+            19
+          ]
+        ]
+      },
+      {
+        "button": "down",
+        "from_core": [
+          8,
+          19
+        ],
+        "to_core": [
+          8,
+          20
+        ],
+        "traversed": [
+          [
+            8,
+            20
+          ]
+        ]
+      },
+      {
+        "button": "down",
+        "from_core": [
+          8,
+          20
+        ],
+        "to_core": [
+          8,
+          21
+        ],
+        "traversed": [
+          [
+            8,
+            21
+          ]
+        ]
+      },
+      {
+        "button": "left",
+        "from_core": [
+          8,
+          21
+        ],
+        "to_core": [
+          7,
+          21
+        ],
+        "traversed": [
+          [
+            7,
+            21
+          ]
+        ]
+      },
+      {
+        "button": "down",
+        "from_core": [
+          7,
+          21
+        ],
+        "to_core": [
+          7,
+          22
+        ],
+        "traversed": [
+          [
+            7,
+            22
+          ]
+        ]
+      },
+      {
+        "button": "down",
+        "from_core": [
+          7,
+          22
+        ],
+        "to_core": [
+          7,
+          23
+        ],
+        "traversed": [
+          [
+            7,
+            23
+          ]
+        ]
+      },
+      {
+        "button": "down",
+        "from_core": [
+          7,
+          23
+        ],
+        "to_core": [
+          7,
+          24
+        ],
+        "traversed": [
+          [
+            7,
+            24
+          ]
+        ]
+      },
+      {
+        "button": "down",
+        "from_core": [
+          7,
+          24
+        ],
+        "to_core": [
+          7,
+          25
+        ],
+        "traversed": [
+          [
+            7,
+            25
+          ]
+        ]
+      },
+      {
+        "button": "down",
+        "from_core": [
+          7,
+          25
+        ],
+        "to_core": [
+          7,
+          26
+        ],
+        "traversed": [
+          [
+            7,
+            26
+          ]
+        ]
+      },
+      {
+        "button": "down",
+        "from_core": [
+          7,
+          26
+        ],
+        "to_core": [
+          7,
+          27
+        ],
+        "traversed": [
+          [
+            7,
+            27
+          ]
+        ]
+      },
+      {
+        "button": "down",
+        "from_core": [
+          7,
+          27
+        ],
+        "to_core": [
+          7,
+          28
+        ],
+        "traversed": [
+          [
+            7,
+            28
+          ]
+        ]
+      },
+      {
+        "button": "right",
+        "from_core": [
+          7,
+          28
+        ],
+        "to_core": [
+          8,
+          28
+        ],
+        "traversed": [
+          [
+            8,
+            28
+          ]
+        ]
+      },
+      {
+        "button": "right",
+        "from_core": [
+          8,
+          28
+        ],
+        "to_core": [
+          9,
+          28
+        ],
+        "traversed": [
+          [
+            9,
+            28
+          ]
+        ]
+      }
+    ],
+    "lower_west": [
+      {
+        "button": "left",
+        "from_core": [
+          54,
+          36
+        ],
+        "to_core": [
+          37,
+          36
+        ],
+        "traversed": [
+          [
+            53,
+            36
+          ],
+          [
+            52,
+            36
+          ],
+          [
+            51,
+            36
+          ],
+          [
+            50,
+            36
+          ],
+          [
+            49,
+            36
+          ],
+          [
+            48,
+            36
+          ],
+          [
+            47,
+            36
+          ],
+          [
+            46,
+            36
+          ],
+          [
+            45,
+            36
+          ],
+          [
+            44,
+            36
+          ],
+          [
+            43,
+            36
+          ],
+          [
+            42,
+            36
+          ],
+          [
+            41,
+            36
+          ],
+          [
+            40,
+            36
+          ],
+          [
+            39,
+            36
+          ],
+          [
+            38,
+            36
+          ],
+          [
+            37,
+            36
+          ]
+        ]
+      }
+    ],
+    "lower_east": [
+      {
+        "button": "right",
+        "from_core": [
+          37,
+          36
+        ],
+        "to_core": [
+          54,
+          36
+        ],
+        "traversed": [
+          [
+            38,
+            36
+          ],
+          [
+            39,
+            36
+          ],
+          [
+            40,
+            36
+          ],
+          [
+            41,
+            36
+          ],
+          [
+            42,
+            36
+          ],
+          [
+            43,
+            36
+          ],
+          [
+            44,
+            36
+          ],
+          [
+            45,
+            36
+          ],
+          [
+            46,
+            36
+          ],
+          [
+            47,
+            36
+          ],
+          [
+            48,
+            36
+          ],
+          [
+            49,
+            36
+          ],
+          [
+            50,
+            36
+          ],
+          [
+            51,
+            36
+          ],
+          [
+            52,
+            36
+          ],
+          [
+            53,
+            36
+          ],
+          [
+            54,
+            36
+          ]
+        ]
+      }
+    ],
+    "cache_down": [
+      {
+        "button": "down",
+        "from_core": [
+          19,
+          7
+        ],
+        "to_core": [
+          19,
+          10
+        ],
+        "traversed": [
+          [
+            19,
+            8
+          ],
+          [
+            19,
+            9
+          ],
+          [
+            19,
+            10
+          ]
+        ]
+      }
+    ],
+    "cache_up": [
+      {
+        "button": "up",
+        "from_core": [
+          19,
+          10
+        ],
+        "to_core": [
+          19,
+          7
+        ],
+        "traversed": [
+          [
+            19,
+            9
+          ],
+          [
+            19,
+            8
+          ],
+          [
+            19,
+            7
+          ]
+        ]
+      }
+    ],
+    "island_wall_stop": [
+      {
+        "button": "left",
+        "from_core": [
+          18,
+          10
+        ],
+        "to_core": [
+          12,
+          10
+        ],
+        "traversed": [
+          [
+            17,
+            10
+          ],
+          [
+            16,
+            10
+          ],
+          [
+            15,
+            10
+          ],
+          [
+            14,
+            10
+          ],
+          [
+            13,
+            10
+          ],
+          [
+            12,
+            10
+          ]
+        ]
+      }
+    ],
+    "island_wall_return": [
+      {
+        "button": "right",
+        "from_core": [
+          12,
+          10
+        ],
+        "to_core": [
+          18,
+          10
+        ],
+        "traversed": [
+          [
+            13,
+            10
+          ],
+          [
+            14,
+            10
+          ],
+          [
+            15,
+            10
+          ],
+          [
+            16,
+            10
+          ],
+          [
+            17,
+            10
+          ],
+          [
+            18,
+            10
+          ]
+        ]
+      }
+    ]
+  }
+}

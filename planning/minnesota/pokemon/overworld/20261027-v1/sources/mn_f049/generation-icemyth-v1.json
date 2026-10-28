@@ -1,0 +1,9 @@
+{
+  "tool": "built-in image_gen",
+  "default_path": "/Users/ryanculligan/.codex/generated_images/01a178da-4cf1-7e01-8516-667a332dc790/exec-dfc84465-a2e5-44b3-b447-67e423f1510f.png",
+  "retained_raw": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f049/icemyth.overworld.imagegen-v1.png",
+  "sha256": "f12b98f192151bbc62594b5204546965f4af8e39a6a25ce60ac4499f8f51d00c",
+  "prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f049/prompt-icemyth-v1.txt",
+  "reference_mapping": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f049/reference-mapping-icemyth-v1.json",
+  "accepted": false
+}

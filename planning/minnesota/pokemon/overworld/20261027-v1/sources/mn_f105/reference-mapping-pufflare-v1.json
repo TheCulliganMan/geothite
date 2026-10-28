@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_231",
+  "family_id": "MN_F105",
+  "prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f105/prompt-pufflare-v1.txt",
+  "input_images": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/references/native-pack-16px/native-six-frame-style-board.8x.png",
+      "role": "ONLY input authentic native16 STYLE, not identity",
+      "sha256": "4354a639ed1a80fd6686e43b273443ed894e58a84307a8049f638ee9ffa2a099"
+    }
+  ],
+  "identity_reviewed_not_supplied_to_imagegen": [
+    {
+      "path": "target/minnesota-pokemon/native/MN_F105/mn-231-pufflare-v1.front.png",
+      "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F105/mn-231-pufflare-v1.front.png",
+      "sha256": "4c7e503ad828aa3f6804ad2cf2076952af93c1a2f6566f68addbed57313ac2c7"
+    },
+    {
+      "path": "target/minnesota-pokemon/native/MN_F105/mn-231-pufflare-v1.back.png",
+      "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F105/mn-231-pufflare-v1.back.png",
+      "sha256": "ab627340ed61ecab380bb939484b696dde5fe70547df4604db2b4f53e427935c"
+    }
+  ],
+  "canonical_theme": "Popcorn pressure and springing punches: a hard warm kernel splits into an airy fighter whose tough seed hulls become rebounding knuckles. This family is the popping seed itself, with no griddle, pot, appliance or hotdish-ogy body.",
+  "canonical_eye_form": "SOUTH TWO isolated black square pupils on broad LIGHT puff face, WEST ONE; no mouth/nose or crease crosses eye plane.",
+  "palette_binding": {
+    "transparent_index": 0,
+    "visible_indices": [
+      1,
+      2,
+      3
+    ],
+    "normal_rgb555_words": [
+      32767,
+      17278,
+      7411,
+      0
+    ],
+    "shiny_rgb555_words": [
+      32767,
+      28624,
+      7783,
+      0
+    ],
+    "white_body_region_policy": "Simplify formerly white body/highlight regions to light ink1. Index0 is transparent everywhere, not an opaque white paint color."
+  },
+  "fit": 13
+}

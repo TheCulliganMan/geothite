@@ -1,0 +1,114 @@
+[
+  {
+    "id": "clinic-and-bank",
+    "map": "MnStPaul",
+    "core": [
+      15,
+      46
+    ]
+  },
+  {
+    "id": "east-clinic",
+    "map": "MnStPaul",
+    "core": [
+      55,
+      32
+    ]
+  },
+  {
+    "id": "fair-cottages",
+    "map": "MnStPaul",
+    "core": [
+      16,
+      14
+    ]
+  },
+  {
+    "id": "craft-and-quiz",
+    "map": "MnStPaul",
+    "core": [
+      19,
+      26
+    ]
+  },
+  {
+    "id": "garden-house",
+    "map": "MnStPaul",
+    "core": [
+      17,
+      34
+    ]
+  },
+  {
+    "id": "summit-press",
+    "map": "MnStPaul",
+    "core": [
+      60,
+      22
+    ]
+  },
+  {
+    "id": "west-river-bend",
+    "map": "MnStPaul",
+    "core": [
+      20,
+      47
+    ]
+  },
+  {
+    "id": "high-bridge",
+    "map": "MnStPaul",
+    "core": [
+      26,
+      52
+    ]
+  },
+  {
+    "id": "river-records",
+    "map": "MnStPaul",
+    "core": [
+      39,
+      45
+    ]
+  },
+  {
+    "id": "depot-quay",
+    "map": "MnStPaul",
+    "core": [
+      66,
+      49
+    ]
+  },
+  {
+    "id": "south-quay",
+    "map": "MnStPaul",
+    "core": [
+      31,
+      62
+    ]
+  },
+  {
+    "id": "working-basin",
+    "map": "MnStPaul",
+    "core": [
+      42,
+      62
+    ]
+  },
+  {
+    "id": "angler-house",
+    "map": "MnStPaul",
+    "core": [
+      7,
+      60
+    ]
+  },
+  {
+    "id": "inn-and-river",
+    "map": "MnStPaul",
+    "core": [
+      68,
+      62
+    ]
+  }
+]

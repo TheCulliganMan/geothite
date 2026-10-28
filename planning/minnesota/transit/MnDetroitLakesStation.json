@@ -1,7 +1,7 @@
 {
   "id": "MnDetroitLakesStation",
   "native_constant": "MN_DETROIT_LAKES_STATION",
-  "status": "SOURCE REVIEW ONLY; no train service or visit callback installed",
+  "status": "Native public hall, residents and sealed platform verified; no train service or visit callback installed",
   "tileset": "train_station",
   "dimensions_metatiles": [
     12,
@@ -130,6 +130,10 @@
         "GLACIER LINE",
         "Rides are closed.",
         "The hall is open."
+      ],
+      "approach": [
+        13,
+        10
       ]
     },
     {
@@ -141,8 +145,19 @@
       ],
       "facing": "east",
       "lines": [
-        "Lake air makes a",
-        "fine waiting room."
+        "My shift ended at",
+        "the lake lodge.",
+        "The hall stays",
+        "warm",
+        "until my ride",
+        "comes.",
+        "Porter kept a seat",
+        "for my muddy",
+        "boots."
+      ],
+      "approach": [
+        9,
+        14
       ]
     },
     {
@@ -154,9 +169,17 @@
       ],
       "facing": "east",
       "lines": [
-        "Keep the center",
-        "aisle clear for",
-        "other passengers."
+        "The canoe case is",
+        "older than I am.",
+        "Its owner patches",
+        "one end each",
+        "spring.",
+        "I keep it dry",
+        "here."
+      ],
+      "approach": [
+        7,
+        13
       ]
     }
   ],

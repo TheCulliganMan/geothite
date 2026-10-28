@@ -1,0 +1,8 @@
+{
+  "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f002/mesablast.overworld.imagegen-v1.png",
+  "default_original": "/Users/ryanculligan/.codex/generated_images/01a17dc4-dd75-7642-a1c6-4bf13fda70c6/exec-72c85680-0b14-499c-b74b-b112562dfa53.png",
+  "sha256": "0e6bcb23a75e5cdabb29fe60e3a106b7ece9ad2c066032c61bed77dcc0f4fe7f",
+  "tool": "built-in ImageGen",
+  "one_species_per_call": true,
+  "genuine16_style_reference_only": true
+}

@@ -124,8 +124,15 @@ fn twin_cities_controller_walks_grass_alternative_bridge_rails_and_every_event()
     ] {
         assert!(grid.talk(&mut controller, at).contains(text), "{at:?}");
     }
-    for at in [(7, 13), (49, 27), (9, 27)] {
-        assert!(grid.talk(&mut controller, at).contains("found"));
+    for (at, item) in [
+        ((7, 13), "SUPER POTION"),
+        ((49, 27), "GREAT BALL"),
+        ((9, 27), "ETHER"),
+    ] {
+        assert!(
+            grid.talk(&mut controller, at).contains(item),
+            "native pickup {item}"
+        );
     }
     let snapshot = controller.snapshot().expect("all park rewards");
     for item in ["SUPER_POTION", "GREAT_BALL", "ETHER"] {

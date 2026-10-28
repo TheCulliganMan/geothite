@@ -1,0 +1,14 @@
+{
+  "tool": "built-in image_gen",
+  "original_tool_path": "/Users/ryanculligan/.codex/generated_images/01a17dcc-4f1a-77a2-9d21-0df036061346/exec-f502625a-f31c-4b20-af07-ca8a6b5bdff3.png",
+  "source_size": [
+    1536,
+    1024
+  ],
+  "sha256": "10b0a647ec2dffde708b5e1329a1262bb3e52dc954bd3e9fb7d23b043fad2cea",
+  "reference_paths": [
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/true16-whirlnut-center-v4/MN_F119/review/whirlnut.normal-8x.png"
+  ],
+  "prompt": "birchit.prompt-v3.txt",
+  "raw_review": "Needs solid opaque black outlines and glow removal; repair iteration requested."
+}

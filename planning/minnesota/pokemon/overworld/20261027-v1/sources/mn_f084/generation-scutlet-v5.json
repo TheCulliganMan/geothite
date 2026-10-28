@@ -1,0 +1,23 @@
+{
+  "species_id": "MN_182",
+  "name": "Scutlet",
+  "family_id": "MN_F084",
+  "tool": "built-in image_gen",
+  "selected_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f084/manifest-scutlet-v5-pupil-proof.json",
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f084/scutlet-v5-pupil-proof",
+  "normalized_proof": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f084/source-feature-proof-scutlet-v5.json",
+  "detailed_proof": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f084/manifest-scutlet-v5-pupil-proof.proof.json",
+  "sources": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f084/scutlet.overworld.imagegen-v5-wide-front-prongs.png": "0193b43db5e7fdcaf81a044e8abe6bada430143e6f81474796a0de203cd76136",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f084/scutlet.overworld.imagegen-v1.png": "0369f861830587f8fccc85a4013bdadf1ec6e988dd2c04369a92d611774a12ed"
+  },
+  "preserved_attempt_receipts": [
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f084/attempt-scutlet-v1.json",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f084/attempt-scutlet-v2.json",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f084/attempt-scutlet-v3.json",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f084/attempt-scutlet-v4.json",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f084/attempt-scutlet-v5.json"
+  ],
+  "status": "frozen native candidate; actual normal/shiny source features reviewed; root context pending",
+  "accepted": false
+}

@@ -1,0 +1,260 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F120",
+  "species_id": "MN_258",
+  "name": "Castanake",
+  "status": "native_compiled_author_inspected_root_world_context_review_pending",
+  "generation_tool": "built-in image_gen",
+  "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f120/castanake.overworld.imagegen-v3.png",
+  "source_sha256": "5b39752fc7beee9188871e643b760e2864fdcc632641bc3e1bc7ecda213776b4",
+  "original_default_output": "/Users/ryanculligan/.codex/generated_images/01a179bf-dc2b-7352-8975-8b8f3a32e33b/exec-e8396b6f-08d2-4aaf-ac88-65a4bb646566.png",
+  "dimensions": [
+    1536,
+    1024
+  ],
+  "prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f120/prompt-castanake-v3.txt",
+  "prompt_sha256": "e0a0ddacf3a0844cc396acbf05c9f23352bb1d6875b71c16304f15d4346e0fc1",
+  "reference_mapping": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f120/reference-mapping-castanake-v3.json",
+  "proposed_native_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f120/manifest-castanake-v3-pupil-proof.json",
+  "manifest_sha256": "eae96ddf6eae5de5c50d74dc68c659dd100fd37d80303d97f10468da167a96f4",
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f120/castanake-v3-pupil-proof",
+  "normal_review": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f120/castanake-v3-pupil-proof/review/line.normal-8x.png",
+  "review_sha256": "446fbbe0f97d702f0f8b64eb07b889f8d6d4eab3d606a0bd262b54d7d9597e28",
+  "palette_rgb555": [
+    32767,
+    9852,
+    8426,
+    0
+  ],
+  "shiny_palette_rgb555": [
+    32767,
+    20361,
+    7496,
+    0
+  ],
+  "native_bounds": [
+    [
+      2,
+      4,
+      12,
+      11
+    ],
+    [
+      1,
+      3,
+      10,
+      11
+    ],
+    [
+      1,
+      3,
+      13,
+      12
+    ],
+    [
+      2,
+      4,
+      12,
+      11
+    ],
+    [
+      1,
+      3,
+      10,
+      11
+    ],
+    [
+      1,
+      3,
+      14,
+      12
+    ]
+  ],
+  "pupil_proof": [
+    {
+      "pose": "down_idle",
+      "source_proven_face_pupils": [
+        [
+          4,
+          10
+        ],
+        [
+          6,
+          10
+        ]
+      ],
+      "source_face_pupil_boxes": [
+        [
+          162,
+          297,
+          175,
+          313
+        ],
+        [
+          231,
+          297,
+          245,
+          313
+        ]
+      ],
+      "other_isolated_ink_details": [
+        [
+          8,
+          5
+        ],
+        [
+          11,
+          6
+        ]
+      ],
+      "bounds": [
+        2,
+        4,
+        12,
+        11
+      ]
+    },
+    {
+      "pose": "up_idle",
+      "source_proven_face_pupils": [],
+      "source_face_pupil_boxes": [],
+      "other_isolated_ink_details": [
+        [
+          4,
+          5
+        ],
+        [
+          8,
+          5
+        ]
+      ],
+      "bounds": [
+        1,
+        3,
+        10,
+        11
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "source_proven_face_pupils": [
+        [
+          4,
+          10
+        ]
+      ],
+      "source_face_pupil_boxes": [
+        [
+          1191,
+          300,
+          1205,
+          320
+        ]
+      ],
+      "other_isolated_ink_details": [],
+      "bounds": [
+        1,
+        3,
+        13,
+        12
+      ]
+    },
+    {
+      "pose": "down_step",
+      "source_proven_face_pupils": [
+        [
+          4,
+          10
+        ],
+        [
+          6,
+          10
+        ]
+      ],
+      "source_face_pupil_boxes": [
+        [
+          160,
+          773,
+          174,
+          793
+        ],
+        [
+          230,
+          773,
+          244,
+          793
+        ]
+      ],
+      "other_isolated_ink_details": [],
+      "bounds": [
+        2,
+        4,
+        12,
+        11
+      ]
+    },
+    {
+      "pose": "up_step",
+      "source_proven_face_pupils": [],
+      "source_face_pupil_boxes": [],
+      "other_isolated_ink_details": [
+        [
+          4,
+          5
+        ],
+        [
+          3,
+          12
+        ]
+      ],
+      "bounds": [
+        1,
+        3,
+        10,
+        11
+      ]
+    },
+    {
+      "pose": "left_step",
+      "source_proven_face_pupils": [
+        [
+          4,
+          10
+        ]
+      ],
+      "source_face_pupil_boxes": [
+        [
+          1192,
+          781,
+          1206,
+          803
+        ]
+      ],
+      "other_isolated_ink_details": [
+        [
+          12,
+          6
+        ]
+      ],
+      "bounds": [
+        1,
+        3,
+        14,
+        12
+      ]
+    }
+  ],
+  "validation_results": {
+    "six_frames_16x16": true,
+    "runtime_png_16x96": true,
+    "native_2bpp_bytes": 384,
+    "tile_decode_matches_png_and_indexed_rows": true,
+    "binary_alpha": true,
+    "transparent_border": true,
+    "three_opaque_inks_only": true,
+    "normal_shiny_palette_words_exact": true,
+    "idle_step_pairs_different": true
+  },
+  "notes": "Actual native board inspected: broad ochre paired-cup tail silhouette with small dark hollows replaces v1/v2 black knots. South source-proven pupils (4,10)/(6,10), west source-proven pupil (4,10) have four light orthogonal neighbors and stable anchors across slither pairs; extra source west nostril dots not sampled. North central rear head is plain; separate upper tail hollows may resemble two dots but are attached rattle anatomy. Tail hollow pixel shape varies across poses, silhouette remains two-lobed. Coiled ochre/umber body is wider/more massive than young Hushiss. Equal450x440 source crops/common native14 transform only; all previous source/native attempts retained, no painting.",
+  "accepted": false
+}

@@ -12,6 +12,8 @@ struct Art {
     tileset: String,
     source_pixels_modified: bool,
     #[serde(default)]
+    extended_graphics: bool,
+    #[serde(default)]
     derived_blocks: Vec<Recipe>,
 }
 
@@ -80,9 +82,31 @@ pub(super) fn install(
         .get(&format!("gfx/tilesets/{expected}.2bpp"))
         .context("city native graphics")?
         .clone();
-    let count = graphics.len() / 16;
-    ensure!(count == 192, "city source graphics extent differs");
+    let source_count = graphics.len() / 16;
+    ensure!(source_count == 192, "city source graphics extent differs");
     let referenced = metatiles.iter().copied().collect::<BTreeSet<_>>();
+    if art.extended_graphics {
+        // Give each original bank 128 physical slots. Copy referenced source
+        // glyphs to their new physical addresses without changing any IDs,
+        // palette colors or pixels. Only the new alias receives the wider bank.
+        let mut extended = vec![0; 256 * 16];
+        let mut assigned = BTreeMap::new();
+        for &glyph in &referenced {
+            let palette = definition.palette_map[usize::from(glyph)];
+            let from = slot(glyph, palette, source_count)?;
+            let to = slot(glyph, palette, 256)?;
+            let pixels = &graphics[from * 16..(from + 1) * 16];
+            if let Some(previous) = assigned.insert(to, pixels) {
+                ensure!(
+                    previous == pixels,
+                    "native glyph bank expansion aliases different pixels"
+                );
+            }
+            extended[to * 16..(to + 1) * 16].copy_from_slice(pixels);
+        }
+        graphics = extended;
+    }
+    let count = graphics.len() / 16;
     let protected = referenced
         .iter()
         .map(|&glyph| {

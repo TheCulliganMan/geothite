@@ -1,0 +1,202 @@
+{
+  "queue_number": 187,
+  "dex_number": 187,
+  "master_source_order": 248,
+  "species_id": "MN_094",
+  "name": "Wreckquiem",
+  "family_id": "MN_F043",
+  "stage": 1,
+  "types": [
+    "STEEL",
+    "GHOST"
+  ],
+  "evolves_to": null,
+  "section": "north_shore",
+  "status": "awaiting_generation",
+  "family_job_id": "MN_F043",
+  "selected_reference_path": "target/minnesota-pokemon/native/MN_F043/mn-094-wreckquiem-v1.front.png",
+  "references": {
+    "front": {
+      "native_png": {
+        "path": "target/minnesota-pokemon/native/MN_F043/mn-094-wreckquiem-v1.front.png",
+        "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F043/mn-094-wreckquiem-v1.front.png",
+        "sha256": "76adab52a1be4a41dd975c1615249dacf5cfa344f1c3293ef757097c9abf91da"
+      },
+      "native_indexed_json": {
+        "path": "target/minnesota-pokemon/native/MN_F043/mn-094-wreckquiem-v1.front.json",
+        "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F043/mn-094-wreckquiem-v1.front.json",
+        "sha256": "3faead9595c53b588725e4027c7b567c71d4e1fb0f7061640684357ba901d37f"
+      },
+      "native_2bpp": {
+        "path": "target/minnesota-pokemon/native/MN_F043/mn-094-wreckquiem-v1.front.2bpp",
+        "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F043/mn-094-wreckquiem-v1.front.2bpp",
+        "sha256": "67d9f1a17ab41f41cd72b6eaabf6f7cda784f7090b59d61300b5d69dfa5a119d"
+      },
+      "source_image": {
+        "path": "planning/minnesota/pokemon/sprites/mn-f043/front-back.imagegen-v1.png",
+        "absolute_path": "/Users/ryanculligan/GitHub/geothite/planning/minnesota/pokemon/sprites/mn-f043/front-back.imagegen-v1.png",
+        "sha256": "471475755ef694a70d9876ec7effc449a8ee4f1907876209e9149b8800e823cc"
+      },
+      "source_crop": [
+        0,
+        0,
+        1226,
+        700
+      ],
+      "native_fit": [
+        54,
+        54
+      ],
+      "generation_prompt": {
+        "path": "planning/minnesota/pokemon/sprites/mn-f043/prompt-v1.txt",
+        "absolute_path": "/Users/ryanculligan/GitHub/geothite/planning/minnesota/pokemon/sprites/mn-f043/prompt-v1.txt",
+        "sha256": "80b448c441425cc708b4212e15e02109cff874fce052784643ca96fdecc1cb02",
+        "reference_kind": "declared_design_prompt_reference; authoritative view record takes precedence over family default"
+      },
+      "sampling": "area_vote",
+      "exterior_contour": "source_backed",
+      "has_guarded_native_refinements": false,
+      "authority_note": "The current selected native PNG is the design authority; original source may contain detail simplified or refined in canonical conversion."
+    },
+    "back": {
+      "native_png": {
+        "path": "target/minnesota-pokemon/native/MN_F043/mn-094-wreckquiem-v1.back.png",
+        "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F043/mn-094-wreckquiem-v1.back.png",
+        "sha256": "20a8b83fd56729edf56cf4c55a29c6b99726708557204cd98b4344b3c9de92bd"
+      },
+      "native_indexed_json": {
+        "path": "target/minnesota-pokemon/native/MN_F043/mn-094-wreckquiem-v1.back.json",
+        "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F043/mn-094-wreckquiem-v1.back.json",
+        "sha256": "71799ae84e235026562a1d0b1ee98c52f94f516eb5e86ffe9211d1c3969cc481"
+      },
+      "native_2bpp": {
+        "path": "target/minnesota-pokemon/native/MN_F043/mn-094-wreckquiem-v1.back.2bpp",
+        "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F043/mn-094-wreckquiem-v1.back.2bpp",
+        "sha256": "056c8ac3f43649f0e9f535b748b7a9d15b20b67e403a78f8dddae58f73a8fb2d"
+      },
+      "source_image": {
+        "path": "planning/minnesota/pokemon/sprites/mn-f043/front-back.imagegen-v1.png",
+        "absolute_path": "/Users/ryanculligan/GitHub/geothite/planning/minnesota/pokemon/sprites/mn-f043/front-back.imagegen-v1.png",
+        "sha256": "471475755ef694a70d9876ec7effc449a8ee4f1907876209e9149b8800e823cc"
+      },
+      "source_crop": [
+        0,
+        700,
+        1226,
+        583
+      ],
+      "native_fit": [
+        46,
+        47
+      ],
+      "generation_prompt": {
+        "path": "planning/minnesota/pokemon/sprites/mn-f043/prompt-v1.txt",
+        "absolute_path": "/Users/ryanculligan/GitHub/geothite/planning/minnesota/pokemon/sprites/mn-f043/prompt-v1.txt",
+        "sha256": "80b448c441425cc708b4212e15e02109cff874fce052784643ca96fdecc1cb02",
+        "reference_kind": "declared_design_prompt_reference; authoritative view record takes precedence over family default"
+      },
+      "sampling": "area_vote",
+      "exterior_contour": "source_backed",
+      "has_guarded_native_refinements": false,
+      "authority_note": "The current selected native PNG is the design authority; original source may contain detail simplified or refined in canonical conversion."
+    }
+  },
+  "palette": {
+    "species_id": "MN_094",
+    "name": "Wreckquiem",
+    "gbc_rgb5": [
+      [
+        31,
+        31,
+        31
+      ],
+      [
+        21,
+        24,
+        25
+      ],
+      [
+        12,
+        8,
+        7
+      ],
+      [
+        0,
+        0,
+        0
+      ]
+    ],
+    "gbc_rgb555_words": [
+      32767,
+      26389,
+      7436,
+      0
+    ],
+    "rgb8": [
+      [
+        255,
+        255,
+        255
+      ],
+      [
+        173,
+        198,
+        206
+      ],
+      [
+        99,
+        66,
+        57
+      ],
+      [
+        0,
+        0,
+        0
+      ]
+    ],
+    "hex": [
+      "#FFFFFF",
+      "#ADC6CE",
+      "#634239",
+      "#000000"
+    ]
+  },
+  "design": {
+    "family_theme": "Lake Superior shipwrecks and warning bells: a rusted bow-shaped body contains a deep bell controlling anchor-chain arms.",
+    "member_body_growth": null,
+    "member_silhouette": null,
+    "family_design_lock": null,
+    "family_sprite_design": null,
+    "silhouette_invariants_16px": [
+      "Preserve the accepted silhouette, face, limb/wing count and dominant theme shapes shown by the exact selected native references.",
+      "Choose one or two defining visible forms from the family theme; simplify directly for16pixels rather than scaling the battle sprite."
+    ],
+    "priority_invariants_manually_authored": false
+  },
+  "generation_attempts": [],
+  "selected_overworld_source": null,
+  "selected_native_candidate": null,
+  "native_visual_review": null,
+  "integration_proof": null,
+  "overworld_palette_binding": {
+    "transparent_index": 0,
+    "visible_indices": [
+      1,
+      2,
+      3
+    ],
+    "normal_rgb555_words": [
+      32767,
+      26389,
+      7436,
+      0
+    ],
+    "shiny_rgb555_words": [
+      32767,
+      25273,
+      8583,
+      0
+    ],
+    "white_body_region_policy": "Simplify formerly white body/highlight regions to light ink1. Index0 is transparent everywhere, not an opaque white paint color."
+  }
+}

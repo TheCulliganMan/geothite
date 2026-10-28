@@ -1,0 +1,13 @@
+{
+  "tool": "image_gen.imagegen",
+  "original_path": "/Users/ryanculligan/.codex/generated_images/01a17dcc-4f1a-77a2-9d21-0df036061346/exec-4191a500-d769-44d9-8c47-47971d74c559.png",
+  "source_size": [
+    1536,
+    1024
+  ],
+  "sha256": "9ee3b8cbadbf9adefc6bbec498572bfe72b3fcc6dd6fecdd5ec8dbf01fba935a",
+  "reference_paths": [
+    "/Users/ryanculligan/GitHub/geothite/planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f110/dewdant.overworld.imagegen-v1.png"
+  ],
+  "prompt": "dewdant.prompt-v2.txt"
+}

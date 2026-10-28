@@ -1,0 +1,136 @@
+{
+  "schema_version": 1,
+  "status": "FROZEN_SOURCE_NATIVE_PUBLICATION_PENDING",
+  "parent_pack_sha256": "3d1cbdd18b05ce10ed66db7ab56d41f0032f6e045a0e72ad753064c5dc6ec8df",
+  "parent_content_identity": "174f1942c42bd590e292e5a95340ffb9d93758bf0ab1ec31d83dadfd9fc9c722",
+  "new_maps": [
+    {
+      "id": "MnRainyRiverIcefields",
+      "map_constant": "MN_RAINY_RIVER_ICEFIELDS",
+      "dimensions_metatiles": [
+        32,
+        24
+      ],
+      "tileset": "mn_winter_outdoor",
+      "source_layout": "planning/minnesota/regions/ice/MnRainyRiverIcefields.layout.json",
+      "layout_sha256": "0e474ee47f0f3fdea0fcd3c32f0f5683d1f206222ce74457214f29f7017b1c78",
+      "source_blocks_sha256": "718fcae45a4ade9bef073c5577c6e40ba1aa28a4ba6e1441b3abac55fc1ec057",
+      "dossier": "planning/minnesota/regions/ice/MnRainyRiverIcefields.json",
+      "dossier_sha256": "9f795c5da670c0db655906d7d046fd4c6862805b790209a40f3731e7d4f42019",
+      "native_group_proposal": 84,
+      "native_id_proposal": 1
+    },
+    {
+      "id": "MnRainyRiverWarmingHut",
+      "map_constant": "MN_RAINY_RIVER_WARMING_HUT",
+      "dimensions_metatiles": [
+        5,
+        4
+      ],
+      "template": "VioletNicknameSpeechHouse",
+      "native_group_proposal": 84,
+      "native_id_proposal": 2
+    }
+  ],
+  "art_contract": {
+    "path": "planning/minnesota/regions/ice/winter-art-v01.json",
+    "sha256": "4efd8ef08fc06bfc870144014602aca5ca639b34015bade3dddb5ac769aedd74",
+    "only_new_alias": true
+  },
+  "existing_map_changes": [
+    {
+      "map": "MnR20C00R00",
+      "native_module_sha256": "9002397e9453ccfddbf992afa99d1912ca50e660530ce0c56bb5cc63c8de8ed4",
+      "blocks_change": [],
+      "all_native_programs_events_actors_warps_attributes_exact_except": [
+        "connections",
+        "connection_flags"
+      ],
+      "connections_before": [
+        {
+          "direction": "south",
+          "target_map": "MnR20C00R01",
+          "offset": 0
+        },
+        {
+          "direction": "east",
+          "target_map": "MnR20C01R00",
+          "offset": 0
+        }
+      ],
+      "add_connection": {
+        "direction": "west",
+        "target_map": "MnRainyRiverIcefields",
+        "offset": 0
+      },
+      "edge_core_preimages": [
+        {
+          "core": [
+            0,
+            44
+          ],
+          "block": 1,
+          "collision": "FLOOR"
+        },
+        {
+          "core": [
+            0,
+            45
+          ],
+          "block": 1,
+          "collision": "FLOOR"
+        }
+      ]
+    }
+  ],
+  "new_map_connection": {
+    "direction": "east",
+    "target_map": "MnR20C00R00",
+    "offset": 0,
+    "reverse_offset": 0,
+    "region_core": [
+      [
+        63,
+        44
+      ],
+      [
+        63,
+        45
+      ]
+    ],
+    "target_core": [
+      [
+        0,
+        44
+      ],
+      [
+        0,
+        45
+      ]
+    ]
+  },
+  "preserve_all_681_existing_modules_except": [
+    "MnR20C00R00 connection vector/flag only"
+  ],
+  "preserve_existing_global_fields": "All old programs/parties/flags/rooms/terrain/art/audio/HOME/recovery/catalogs/encounters unchanged. Bounded new map metadata/landmark binding, new flag namespace, legal native trainer parties/room program rows and newly derived winter alias are additions only.",
+  "landmark_parent": "MnR20C00R00",
+  "no_new_pokegear_landmark_quota": true,
+  "unimplemented_links": [
+    {
+      "target": "MnInternationalFalls",
+      "reason": "Town remains source-only; this region does not claim to implement its story desk or recovery services."
+    },
+    {
+      "target": "MnR17C00R00",
+      "reason": "Native embedding has a77-metatile north/south gap; no stretched filler or imaginary seam is added."
+    }
+  ],
+  "regional_species": {
+    "species": "LUTEBRISK",
+    "type": "ICE",
+    "area": "optional upper frostgrass pocket",
+    "status": "NOT_IN_INSTALLED_251_SPECIES_NATIVE_CATALOG",
+    "implementation": "Only replace a specifically reviewed optional encounter slot after existing F038 Rust catalog closure is integrated; current authored encounters use native species only."
+  },
+  "native_status": "NOT_PUBLISHED_OR_CONTROLLER_PROVEN"
+}

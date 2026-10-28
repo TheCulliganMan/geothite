@@ -543,7 +543,7 @@ fn mcp_status_payload(source: &crystal_runtime::RuntimeShellSnapshot) -> Value {
         "badges": badges,
         "pokedex": { "seen": source.progression.pokedex_seen, "owned": source.progression.pokedex_owned },
         "menu": source.ui.menu.as_ref().map(|menu| menu.menu_id.as_str()),
-        "dialogue": source.ui.pending_text_wait.is_some(),
+        "dialogue": source.ui.pending_text_wait.is_some() || source.ui.text.is_some(),
     })
 }
 

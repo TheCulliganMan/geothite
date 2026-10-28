@@ -1,5 +1,6 @@
 use serde::{Deserialize, Serialize};
 
+use super::bridge;
 use super::collision::{
     PlayerTraversalState, Terrain, TilesetCollision, can_enter_tile, can_jump_ledge,
     describe_collision, is_direction_blocked_leaving, sample_collision,
@@ -171,9 +172,10 @@ pub fn attempt_step_with_occupied_tiles(
             };
         }
     };
-    if sample_collision(map, tileset, state.tile)
-        .is_some_and(|sample| is_direction_blocked_leaving(sample.permission, direction))
-    {
+    if sample_collision(map, tileset, state.tile).is_some_and(|sample| {
+        is_direction_blocked_leaving(sample.permission, direction)
+            || bridge::blocks_exit(sample.permission, direction, state.mode.traversal_state())
+    }) {
         return StepOutcome::Blocked {
             at: target,
             facing: direction,
@@ -203,8 +205,14 @@ pub fn attempt_step_with_occupied_tiles(
     let running_on_foot = options.running && state.mode == MovementMode::Normal;
     let from = state.tile;
     if matches!(state.mode, MovementMode::Surf | MovementMode::SurfPika)
-        && sample_collision(map, tileset, target)
-            .is_some_and(|sample| describe_collision(sample.permission).terrain == Terrain::Land)
+        && sample_collision(map, tileset, target).is_some_and(|sample| {
+            describe_collision(bridge::layer_permission(
+                sample.permission,
+                state.mode.traversal_state(),
+            ))
+            .terrain
+                == Terrain::Land
+        })
     {
         state.mode = MovementMode::Normal;
     }

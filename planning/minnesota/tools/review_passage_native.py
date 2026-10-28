@@ -55,8 +55,12 @@ def actors(pack, terrain, module):
     image = terrain.convert("RGBA")
     for obj in module["objects"]:
         assert obj["pal"] == 0, "review explicit native palette override first"
-        facing = {"UP": "north", "DOWN": "south", "LEFT": "west", "RIGHT": "east"}[
-            obj["spritemovedata"].rsplit("_", 1)[-1]]
+        # This source layer records authored starting positions. Clockwise
+        # patrols start facing right; a later moving pose must still fail the
+        # full-frame comparison if it enters the captured viewport.
+        facing = "east" if obj["spritemovedata"] == "SPRITEMOVEDATA_PATROL_CLOCKWISE" else {
+            "UP": "north", "DOWN": "south", "LEFT": "west", "RIGHT": "east"
+        }[obj["spritemovedata"].rsplit("_", 1)[-1]]
         # The production source-art sprite origin is the gameplay-tile origin.
         image.alpha_composite(oriented_sprite(pack, obj["sprite"], facing),
                               (obj["x"] * 16, obj["y"] * 16))

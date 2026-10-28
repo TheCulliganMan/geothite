@@ -1,0 +1,9 @@
+{
+  "tool": "built-in image_gen",
+  "original": "/Users/ryanculligan/.codex/generated_images/01a179bf-dc2b-7352-8975-8b8f3a32e33b/exec-2b90d655-6b99-4af9-8f78-140b870d1e6c.png",
+  "preserved_raw": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f144/driftile.overworld.imagegen-v6-violet-inner-seams.png",
+  "sha256": "d685e959d28be0d5171a1268f69a617964ad73a85ebd83a6bfd9696bdd42f801",
+  "exact_prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f144/prompt-driftile-violet-inner-seams-v6.txt",
+  "reference_mapping": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f144/reference-mapping-driftile-violet-inner-seams-v6.json",
+  "status": "preserved; selected frames recorded in frozen manifest"
+}

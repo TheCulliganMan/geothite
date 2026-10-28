@@ -18,7 +18,7 @@ use super::super::super::super::{
 };
 use super::super::super::r10_gallery::completed_visible_page;
 use super::{
-    at, continue_save, contract, controller, event, interact, load, navigate, press, walk_to,
+    at, continue_save, contract, controller, event, interact, load, navigate, point, press, walk_to,
 };
 
 const CITY: &str = "MnStPaul";
@@ -40,7 +40,11 @@ fn fixture(inventory: Inventory) -> (AssetRoot, CrystalRuntime, Value, VisibleSh
     let plan = contract();
     assert_eq!(plan["city"], CITY);
     let city = &runtime.data().maps[CITY];
-    assert_eq!([city.attributes.width, city.attributes.height], [64, 48]);
+    assert_eq!(
+        (city.attributes.width, city.attributes.height),
+        point(&plan["dimensions_metatiles"]),
+        "fixture extent must match the actual published city"
+    );
     let mut setup = gyms["gyms"][2].clone();
     setup["id"] = plan["city"].clone();
     setup["arrival_core"] = plan["arrival_core"].clone();
@@ -264,6 +268,17 @@ fn host(
     pages(c, "record task host")
 }
 
+fn river_record_tile(plan: &Value, index: usize) -> (u16, u16) {
+    let id = format!("MN_SPX_RIVER_RECORD_{index}");
+    let sign = plan["signs"]
+        .as_array()
+        .expect("explicit installed city signs")
+        .iter()
+        .find(|sign| sign["id"].as_str() == Some(id.as_str()))
+        .expect("preserved river record identity");
+    point(&sign["tile"])
+}
+
 fn record(
     c: &mut VisibleShellController,
     r: &CrystalRuntime,
@@ -287,9 +302,21 @@ fn record(
             (11, 9),
             "Two banks share\none public city.",
         ),
-        ("RIVER", 1) => (CITY, (33, 59), "Measure north-bank\nwater at the rail."),
-        ("RIVER", 2) => (CITY, (87, 87), "The bridge spans\nboth river banks."),
-        ("RIVER", 3) => (CITY, (67, 61), "Read high marks\nfrom a safe path."),
+        ("RIVER", 1) => (
+            CITY,
+            river_record_tile(plan, 1),
+            "Measure north-bank\nwater at the rail.",
+        ),
+        ("RIVER", 2) => (
+            CITY,
+            river_record_tile(plan, 2),
+            "The bridge spans\nboth river banks.",
+        ),
+        ("RIVER", 3) => (
+            CITY,
+            river_record_tile(plan, 3),
+            "Read high marks\nfrom a safe path.",
+        ),
         _ => panic!("unknown explicit record case"),
     };
     room(c, r, plan, name);

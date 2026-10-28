@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F102",
+  "species": [
+    {
+      "species_id": "MN_223",
+      "runtime_token": "CINDERFEN",
+      "palette_rgb555": [
+        32767,
+        9789,
+        15595,
+        0
+      ],
+      "shiny_palette_rgb555": [
+        32767,
+        18345,
+        7535,
+        0
+      ],
+      "fit": [
+        14,
+        14
+      ],
+      "alpha_threshold": 245,
+      "sampling": "source_center",
+      "minimum_foreground_samples": 16,
+      "black_priority_samples": 64,
+      "interior_black_samples": 64,
+      "opaque_interior_minimum_samples": 64,
+      "frames": [
+        {
+          "pose": "down_idle",
+          "source": "cinderfen.overworld.imagegen-v7-rear-gaps.png",
+          "crop": [
+            76,
+            8,
+            480,
+            508
+          ]
+        },
+        {
+          "pose": "up_idle",
+          "source": "cinderfen.overworld.imagegen-v8-rear-spacing.png",
+          "crop": [
+            529,
+            0,
+            480,
+            508
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "source": "cinderfen.overworld.imagegen-v7-rear-gaps.png",
+          "crop": [
+            1008,
+            1,
+            480,
+            508
+          ]
+        },
+        {
+          "pose": "down_step",
+          "source": "cinderfen.overworld.imagegen-v7-rear-gaps.png",
+          "crop": [
+            72,
+            516,
+            480,
+            508
+          ]
+        },
+        {
+          "pose": "up_step",
+          "source": "cinderfen.overworld.imagegen-v8-rear-spacing.png",
+          "crop": [
+            529,
+            516,
+            480,
+            508
+          ]
+        },
+        {
+          "pose": "left_step",
+          "source": "cinderfen.overworld.imagegen-v7-rear-gaps.png",
+          "crop": [
+            1010,
+            516,
+            480,
+            508
+          ]
+        }
+      ]
+    }
+  ]
+}

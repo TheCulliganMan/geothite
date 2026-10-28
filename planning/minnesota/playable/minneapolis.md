@@ -198,3 +198,103 @@ It used the earlier gym and pre-refinement northern maps. The earlier separate
 `875934a0fd105ab211f902ced687df539b11b04659f9fcafeef4acaa146ff6e6`,
 verified the new gym/city independently. Both earlier packs, saves and all their
 render generations remain retained; their old checks keep their original scope.
+
+## Earned campaign and native damaging stat effects — 2026-10-27
+
+The later554-map [Ely successor](ely-league.md) includes the connected Winona,
+Care, R02, Mankato, Prairie and R03 course. Its file SHA-256 remains
+`ab049e907b8712f5ee5f174b474c38fcc52460f272e60336aff17445d62cb6c4`.
+The new `northstar_campaign` and `northstar_campaign_ice` controller modules
+continue actual exported campaign state, perform all movement/battles through
+production input and keep native losses. Their default course starts at Winona
+New Game; optional development saves are explicitly identified as continuations.
+See the [earned Prairie evidence](prairie-story.md#earned-prairie-badge-and-minneapolis-arrival--2026-10-27).
+
+The earned Mud-Slap TM exposed a runtime bug in that unchanged pack. Its move
+record has `ACCURACY_DOWN_HIT` and100% effect chance, but omits the optional
+`stat`/`amount` annotations. The secondary-effect path previously required those
+annotations and silently skipped the accuracy drop. The Rust engine now resolves
+the parameters from the native damaging effect, using the existing direct-stat
+resolver. Explicit annotations, including zero/partial pairs, retain precedence.
+Chance, stage caps, targets, Mist/Substitute and faint handling remain in their
+existing effect paths. No pack record, save identity or audio program changes.
+
+Eight stat-stage regressions pass, including the actual damaging turn with both
+annotated and unannotated move records. The real external-pack controller course
+also observes Mud-Slap PP consumption and accuracy drops, earns the enforcer
+victory, separately releases the captive, acknowledges both dispatch pages and
+returns the dispatcher home. That 158.19-second invocation continues the earlier
+fresh game's actual post-loss/training save, with an earned level22 partner;
+it wins at level23. It does not supply a party, badge, quest result, money, items,
+position or RNG and is not independently a complete New Game invocation.
+
+The rebuilt production text client passes the existing actual stdio rescue
+checker from its earned victory save:
+
+```sh
+.local/minnesota-review-env/bin/python planning/minnesota/tools/check_minneapolis_mcp.py \
+  --pack content-packs/minnesota-northstar-ely-league.crystalpack \
+  --save .local/northstar-fresh-campaign-final-saves/ms03-enforcer-win-56994-1793117667722753000.crystalsave
+```
+
+This replays release refusal/retry, the opened cell, ICE/Lode record, return home
+and Start, preserves the two badges/money and requires byte-empty stderr.
+Full campaign balance and later earned chapters remain open. A passing local
+continuation is not proof of all starters or all live-RNG outcomes.
+
+Default-feature Bevy all-target Clippy and core-library Clippy pass under the
+four established allowances with existing warnings. Core all-target checks are
+blocked by missing external radio-oracle JSON fixtures and the existing
+`save_sharing` constructor mismatch; those are unrelated to the effect resolver.
+Changed core functions and the new leaf modules match rustfmt. Workspace
+formatting still fails first at `crates/offset-allocator/src/lib.rs:408`; unrelated
+formatting is preserved. The `location-tester` compilation overflow reported in
+the Prairie runbook remains outside these default-feature checks.
+
+## New Game through two badges and ICE — 2026-10-27
+
+The complete default controller case now passes from a brand-new Winona game
+in 341.44 seconds, with neither checkpoint override set. It earns the guardian
+scene, Cyndaquil, originals and five balls; walks R01; acknowledges delivery;
+defeats all three route trainers and both Care qualifiers; catches Rattata;
+trains through ordinary battles/free care; and wins Care and Headbutt. It teaches
+Headbutt through Pack, reads both Mankato notebook pages, wins all three R02
+trainers and both Prairie qualifiers, evolves to Quilava, then wins Prairie and
+Mud-Slap. It walks R03 into Minneapolis, teaches Mud-Slap while retaining
+Headbutt, wins all four R03 trainers and performs real training before ICE.
+
+Two actual wild blackouts preserve the earned events and resources through
+clinic recovery and Continue. Care, Torven and the enforcer are each defeated
+on the first leader/enforcer attempt in this passing run. Quilava enters the ICE
+battle at 18 and wins at 19. Mud-Slap spends native PP and visibly lowers accuracy.
+The separate rescue checks refusal/retry, acknowledgment before release, the
+opened cell and absence of the captive, both dispatch pages/input ownership,
+repeat/Continue and the dispatcher at home. No next badge or later plot result
+is supplied. There are no position, party, level, badge, item, money, quest or RNG
+fixture writes in the default course. Earlier failed live-RNG attempts exposed
+weak audit policies; this one success is not an all-seed balance claim.
+
+```sh
+env -u CRYSTAL_NORTHSTAR_ICE_SAVE -u CRYSTAL_NORTHSTAR_EARNED_SAVE \
+  RUST_MIN_STACK=67108864 CARGO_TARGET_DIR=target/northstar-story \
+  CARGO_PROFILE_WASM_DEV_OPT_LEVEL=0 \
+  CRYSTAL_WINONA_TEST_PACK="$PWD/content-packs/minnesota-northstar-ely-league.crystalpack" \
+  CRYSTAL_WINONA_SAVE_DIR="$PWD/.local/northstar-campaign-earned-final-saves" \
+  CRYSTAL_MINNEAPOLIS_SAVE_DIR="$PWD/.local/northstar-campaign-earned-final-saves" \
+  cargo test --lib --locked --profile wasm-dev -p crystal-bevy \
+    northstar_campaign_earned_party_defeats_ice_and_releases_dispatcher \
+    -- --ignored --test-threads=1 --nocapture
+```
+
+The run is recorded in `.local/northstar-campaign-earned-final.log`. Its earned
+victory checkpoint is
+`.local/northstar-campaign-earned-final-saves/ms03-enforcer-win-64348-1793118972385463000.crystalsave`;
+the final home checkpoint is
+`winona-campaign-earned-ice-dispatcher-home-64348-1793118978678766000.crystalsave`
+in that same ignored directory. These bind the exact 554-map identity above.
+The rebuilt text client also passes the existing stdio checker from this exact
+fresh victory checkpoint: release refusal/retry, opened cell, record, home,
+Start, stable badges/money and byte-empty stderr. Its log is
+`.local/northstar-fresh-earned-ice-mcp-final.log`. Current/Capitol and the
+later earned regional journey remain unverified by this course. Kettlurk's
+visible set piece remains unfinished.

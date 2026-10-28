@@ -1,0 +1,270 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F004",
+  "species": [
+    {
+      "species_id": "MN_010",
+      "runtime_token": "BIRCHIT",
+      "palette_rgb555": [
+        32767,
+        13053,
+        4331,
+        0
+      ],
+      "shiny_palette_rgb555": [
+        32767,
+        24492,
+        7524,
+        0
+      ],
+      "fit": [
+        14,
+        11
+      ],
+      "alpha_threshold": 128,
+      "sampling": "area_vote",
+      "minimum_foreground_samples": 16,
+      "black_priority_samples": 32,
+      "frames": [
+        {
+          "pose": "down_idle",
+          "source": "overworld.imagegen-v1.png",
+          "crop": [
+            25,
+            0,
+            256,
+            402
+          ]
+        },
+        {
+          "pose": "up_idle",
+          "source": "overworld.imagegen-v1.png",
+          "crop": [
+            274,
+            0,
+            256,
+            402
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "source": "overworld.imagegen-v1.png",
+          "crop": [
+            513,
+            0,
+            256,
+            402
+          ]
+        },
+        {
+          "pose": "down_step",
+          "source": "overworld.imagegen-v1.png",
+          "crop": [
+            758,
+            0,
+            256,
+            402
+          ]
+        },
+        {
+          "pose": "up_step",
+          "source": "overworld.imagegen-v1.png",
+          "crop": [
+            1037,
+            0,
+            256,
+            402
+          ]
+        },
+        {
+          "pose": "left_step",
+          "source": "overworld.imagegen-v1.png",
+          "crop": [
+            1272,
+            0,
+            256,
+            402
+          ]
+        }
+      ],
+      "interior_black_samples": 8,
+      "opaque_interior_minimum_samples": 60
+    },
+    {
+      "species_id": "MN_011",
+      "runtime_token": "PORTABEAU",
+      "palette_rgb555": [
+        32767,
+        7639,
+        15686,
+        0
+      ],
+      "shiny_palette_rgb555": [
+        32767,
+        15079,
+        10447,
+        0
+      ],
+      "fit": [
+        14,
+        13
+      ],
+      "alpha_threshold": 128,
+      "sampling": "area_vote",
+      "minimum_foreground_samples": 16,
+      "black_priority_samples": 32,
+      "frames": [
+        {
+          "pose": "down_idle",
+          "source": "overworld.imagegen-v1.png",
+          "crop": [
+            18,
+            402,
+            256,
+            281
+          ]
+        },
+        {
+          "pose": "up_idle",
+          "source": "overworld.imagegen-v1.png",
+          "crop": [
+            271,
+            402,
+            256,
+            281
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "source": "overworld.imagegen-v1.png",
+          "crop": [
+            516,
+            402,
+            256,
+            281
+          ]
+        },
+        {
+          "pose": "down_step",
+          "source": "overworld.imagegen-v1.png",
+          "crop": [
+            764,
+            402,
+            256,
+            281
+          ]
+        },
+        {
+          "pose": "up_step",
+          "source": "overworld.imagegen-v1.png",
+          "crop": [
+            1030,
+            402,
+            256,
+            281
+          ]
+        },
+        {
+          "pose": "left_step",
+          "source": "overworld.imagegen-v1.png",
+          "crop": [
+            1272,
+            402,
+            256,
+            281
+          ]
+        }
+      ],
+      "interior_black_samples": 8,
+      "opaque_interior_minimum_samples": 60
+    },
+    {
+      "species_id": "MN_012",
+      "runtime_token": "VOYAGEAR",
+      "palette_rgb555": [
+        32767,
+        5428,
+        17668,
+        0
+      ],
+      "shiny_palette_rgb555": [
+        32767,
+        9861,
+        8337,
+        0
+      ],
+      "fit": [
+        14,
+        14
+      ],
+      "alpha_threshold": 128,
+      "sampling": "area_vote",
+      "minimum_foreground_samples": 16,
+      "black_priority_samples": 32,
+      "frames": [
+        {
+          "pose": "down_idle",
+          "source": "overworld.imagegen-v1.png",
+          "crop": [
+            5,
+            683,
+            256,
+            341
+          ]
+        },
+        {
+          "pose": "up_idle",
+          "source": "overworld.imagegen-v1.png",
+          "crop": [
+            258,
+            683,
+            256,
+            341
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "source": "overworld.imagegen-v1.png",
+          "crop": [
+            512,
+            683,
+            256,
+            341
+          ]
+        },
+        {
+          "pose": "down_step",
+          "source": "overworld.imagegen-v1.png",
+          "crop": [
+            769,
+            683,
+            256,
+            341
+          ]
+        },
+        {
+          "pose": "up_step",
+          "source": "overworld.imagegen-v1.png",
+          "crop": [
+            1026,
+            683,
+            256,
+            341
+          ]
+        },
+        {
+          "pose": "left_step",
+          "source": "overworld.imagegen-v1.png",
+          "crop": [
+            1280,
+            683,
+            256,
+            341
+          ]
+        }
+      ],
+      "interior_black_samples": 8,
+      "opaque_interior_minimum_samples": 60
+    }
+  ]
+}

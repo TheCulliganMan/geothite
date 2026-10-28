@@ -1,0 +1,342 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_120",
+  "result": "pass",
+  "manifest_sha256": "8f2f6631c9573033d6d1510f694b2eae280d5253dbd026728ca14214d1ade80a",
+  "bank_sha256": "a1deb3a04081a4a779a2ab8940fe8912b52b5171959e3b765a75abf3840ef488",
+  "source_sha256": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f056/thawbonnet.overworld.imagegen-v2-roomy-light-eyes.png": "87d2b31a5dbd00972a5f10cf11849bb8913ed630fa6f1eb42f9f16ea77b9b62a"
+  },
+  "canonical_eye_form": "TWO actual LIGHT lavender index1 eye windows inside BLACK index3 flower face south, ONE west, no invented black pupils or third forehead eye.",
+  "nonrear_poses": [
+    {
+      "pose": "down_idle",
+      "result": "pass",
+      "source_feature_proof": {
+        "pose": "down_idle",
+        "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f056/thawbonnet.overworld.imagegen-v2-roomy-light-eyes.png",
+        "crop": [
+          99,
+          70,
+          330,
+          428
+        ],
+        "anatomically_identified_source_eye_boxes_xywh": [
+          [
+            207,
+            273,
+            31,
+            33
+          ],
+          [
+            277,
+            273,
+            30,
+            33
+          ]
+        ],
+        "actual_eye_proofs": [
+          {
+            "native_cluster": [
+              [
+                6,
+                8
+              ]
+            ],
+            "samples": [
+              {
+                "rgba": [
+                  212,
+                  171,
+                  252,
+                  253
+                ],
+                "bounds": [
+                  207,
+                  273,
+                  31,
+                  33
+                ],
+                "pixels": 982,
+                "truncated_contour": false,
+                "native_pixel": [
+                  6,
+                  8
+                ],
+                "source_sample_pixel": [
+                  219,
+                  288
+                ],
+                "quantized_feature_ink": 1,
+                "matches_expected_feature_ink": true
+              }
+            ]
+          },
+          {
+            "native_cluster": [
+              [
+                8,
+                8
+              ]
+            ],
+            "samples": [
+              {
+                "rgba": [
+                  213,
+                  172,
+                  252,
+                  254
+                ],
+                "bounds": [
+                  277,
+                  273,
+                  30,
+                  33
+                ],
+                "pixels": 967,
+                "truncated_contour": false,
+                "native_pixel": [
+                  8,
+                  8
+                ],
+                "source_sample_pixel": [
+                  282,
+                  288
+                ],
+                "quantized_feature_ink": 1,
+                "matches_expected_feature_ink": true
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "pose": "left_idle",
+      "result": "pass",
+      "source_feature_proof": {
+        "pose": "left_idle",
+        "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f056/thawbonnet.overworld.imagegen-v2-roomy-light-eyes.png",
+        "crop": [
+          1098,
+          81,
+          330,
+          428
+        ],
+        "anatomically_identified_source_eye_boxes_xywh": [
+          [
+            1196,
+            273,
+            25,
+            32
+          ]
+        ],
+        "actual_eye_proofs": [
+          {
+            "native_cluster": [
+              [
+                6,
+                8
+              ]
+            ],
+            "samples": [
+              {
+                "rgba": [
+                  210,
+                  173,
+                  245,
+                  253
+                ],
+                "bounds": [
+                  1196,
+                  273,
+                  25,
+                  32
+                ],
+                "pixels": 798,
+                "truncated_contour": false,
+                "native_pixel": [
+                  6,
+                  8
+                ],
+                "source_sample_pixel": [
+                  1218,
+                  299
+                ],
+                "quantized_feature_ink": 1,
+                "matches_expected_feature_ink": true
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "pose": "down_step",
+      "result": "pass",
+      "source_feature_proof": {
+        "pose": "down_step",
+        "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f056/thawbonnet.overworld.imagegen-v2-roomy-light-eyes.png",
+        "crop": [
+          99,
+          521,
+          330,
+          428
+        ],
+        "anatomically_identified_source_eye_boxes_xywh": [
+          [
+            208,
+            723,
+            30,
+            32
+          ],
+          [
+            276,
+            723,
+            31,
+            32
+          ]
+        ],
+        "actual_eye_proofs": [
+          {
+            "native_cluster": [
+              [
+                6,
+                8
+              ]
+            ],
+            "samples": [
+              {
+                "rgba": [
+                  214,
+                  172,
+                  253,
+                  253
+                ],
+                "bounds": [
+                  208,
+                  723,
+                  30,
+                  32
+                ],
+                "pixels": 960,
+                "truncated_contour": false,
+                "native_pixel": [
+                  6,
+                  8
+                ],
+                "source_sample_pixel": [
+                  219,
+                  739
+                ],
+                "quantized_feature_ink": 1,
+                "matches_expected_feature_ink": true
+              }
+            ]
+          },
+          {
+            "native_cluster": [
+              [
+                8,
+                8
+              ]
+            ],
+            "samples": [
+              {
+                "rgba": [
+                  211,
+                  169,
+                  251,
+                  254
+                ],
+                "bounds": [
+                  276,
+                  723,
+                  31,
+                  32
+                ],
+                "pixels": 975,
+                "truncated_contour": false,
+                "native_pixel": [
+                  8,
+                  8
+                ],
+                "source_sample_pixel": [
+                  282,
+                  739
+                ],
+                "quantized_feature_ink": 1,
+                "matches_expected_feature_ink": true
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "pose": "left_step",
+      "result": "pass",
+      "source_feature_proof": {
+        "pose": "left_step",
+        "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f056/thawbonnet.overworld.imagegen-v2-roomy-light-eyes.png",
+        "crop": [
+          1098,
+          528,
+          330,
+          428
+        ],
+        "anatomically_identified_source_eye_boxes_xywh": [
+          [
+            1196,
+            717,
+            25,
+            32
+          ]
+        ],
+        "actual_eye_proofs": [
+          {
+            "native_cluster": [
+              [
+                6,
+                8
+              ]
+            ],
+            "samples": [
+              {
+                "rgba": [
+                  206,
+                  167,
+                  245,
+                  253
+                ],
+                "bounds": [
+                  1196,
+                  717,
+                  25,
+                  32
+                ],
+                "pixels": 800,
+                "truncated_contour": false,
+                "native_pixel": [
+                  6,
+                  8
+                ],
+                "source_sample_pixel": [
+                  1218,
+                  746
+                ],
+                "quantized_feature_ink": 1,
+                "matches_expected_feature_ink": true
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "rear_anatomy": {
+    "result": "pass",
+    "notes": "Both native normal/shiny true rear poses actually reviewed: plain rear closed flower folds or snowcapped posts, no copied face. All anatomy is source-backed; native pixels were not painted."
+  },
+  "detailed_proof": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f056/manifest-thawbonnet-v2-frozen-native.proof.json"
+}

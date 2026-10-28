@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F137",
+  "species_id": "MN_303",
+  "name": "Ticklet",
+  "generation_tool": "built-in image_gen",
+  "status": "retained_unselected_narrow_face_variant",
+  "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f137/ticklet.overworld.imagegen-v1.png",
+  "source_sha256": "fcd8f7e538d8b69a3e040499d07fdf560e828e0ff17b06db7150c6e6c105dd2b",
+  "original_default_output": "/Users/ryanculligan/.codex/generated_images/01a179bf-dc2b-7352-8975-8b8f3a32e33b/exec-a05b0792-2684-4107-8a52-972b00dda936.png",
+  "dimensions": [
+    1536,
+    1024
+  ],
+  "prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f137/prompt-ticklet-v1.txt",
+  "prompt_sha256": "793693786911c9141245843a290d801d0c37ea5f08af710fabda697cbc74642a",
+  "reference_mapping": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f137/reference-mapping-ticklet-v1.json",
+  "reference_mapping_sha256": "2bc7a862f465ee0bfd9ddb7b3aa1a896c37892b931a27d9d369e674ae4bf8090",
+  "unselected_native_review": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f137/ticklet-v1-phase14/review/line.normal-8x.png",
+  "review_sha256": "c8a92036acb98fd0f8b190f29abbf6ea23494851239757527423f1bd90ac7b05",
+  "notes": "Raw and native12/native14 trials retained. Native14 real pupils sampled, but outer pupil neighbors are turquoise head-edge ink2; light gold face field is too narrow and face reads poorly under hood. Targeted broad-face source v2 requested.",
+  "accepted": false
+}

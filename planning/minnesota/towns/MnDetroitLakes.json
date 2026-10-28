@@ -35,7 +35,8 @@
       "landing_metatile": [
         3,
         9
-      ]
+      ],
+      "native_via": "MnDetroitLakesApproach retains its original trainers and habitat; the town inserts east of it."
     },
     {
       "route": "MN_R19",
@@ -139,6 +140,10 @@
             "The beach is calm.",
             "The forest roads",
             "still take care."
+          ],
+          "approach": [
+            7,
+            7
           ]
         },
         {
@@ -152,11 +157,15 @@
           "lines": [
             "I check my party",
             "before boarding."
+          ],
+          "approach": [
+            11,
+            10
           ]
         }
       ],
       "signs": [],
-      "status": "Source only; production services and warp binding pending",
+      "status": "Native publication and room/resident/return controller checks pass; see interior-life/DETROIT-LAKES.md.",
       "pc": {
         "tile": [
           13,
@@ -167,16 +176,19 @@
           4
         ],
         "collision": "PC",
-        "service": "canonical_pc_pending"
+        "service": "canonical_pc_verified"
       },
       "recovery_contract": {
         "spawn_tile": [
           8,
           13
         ],
-        "status": "Register as native blackout recovery only during publication; currently uninstalled."
+        "status": "Native recovery registered and poison whiteout after Save/Continue verified at (8,13)."
       },
-      "native_constant": "MN_DETROIT_LAKES_POKECENTER_1F"
+      "native_constant": "MN_DETROIT_LAKES_POKECENTER_1F",
+      "border_block": 0,
+      "template": "CherrygrovePokecenter1F",
+      "purpose": "Public lake/trail care, PC storage and native blackout recovery."
     },
     {
       "id": "MnDetroitLakesMart",
@@ -239,7 +251,7 @@
           "lines": [
             "May I help you?"
           ],
-          "service": "canonical_pokemart_pending",
+          "service": "pokemart",
           "approach": [
             3,
             3
@@ -247,6 +259,14 @@
           "counter_tile": [
             2,
             3
+          ],
+          "stock": [
+            "GREAT_BALL",
+            "SUPER_POTION",
+            "ANTIDOTE",
+            "PARLYZ_HEAL",
+            "SUPER_REPEL",
+            "AWAKENING"
           ]
         },
         {
@@ -260,12 +280,19 @@
           "lines": [
             "I stock up before",
             "the prairie road."
+          ],
+          "approach": [
+            8,
+            6
           ]
         }
       ],
       "signs": [],
-      "status": "Source only; production services and warp binding pending",
-      "native_constant": "MN_DETROIT_LAKES_MART"
+      "status": "Native publication and room/resident/return controller checks pass; see interior-life/DETROIT-LAKES.md.",
+      "native_constant": "MN_DETROIT_LAKES_MART",
+      "border_block": 0,
+      "template": "CherrygroveMart",
+      "purpose": "Practical trail supplies, with native prices, inventory and full-pocket behavior."
     },
     {
       "id": "MnDetroitLakesStation",
@@ -276,7 +303,10 @@
       ],
       "source_file": "../transit/MnDetroitLakesStation.json",
       "source_behavior": "Glacier Line source reservation; no visit flag or ride is installed.",
-      "native_constant": "MN_DETROIT_LAKES_STATION"
+      "native_constant": "MN_DETROIT_LAKES_STATION",
+      "border_block": 0,
+      "purpose": "A timber public waiting hall with the lake porter and a returning shore worker; Glacier Line service remains a separate publication.",
+      "status": "Native publication and room/resident/return controller checks pass; see interior-life/DETROIT-LAKES.md."
     },
     {
       "id": "MnDetroitLakesCanoeCabin",
@@ -337,16 +367,48 @@
           ],
           "facing": "south",
           "lines": [
-            "The beach launch",
-            "is below the road.",
-            "Dock rails are up.",
-            "Use the low shore."
+            "Dad called that",
+            "patched paddle",
+            "his lake calendar.",
+            "Each mark was one",
+            "trip he took time",
+            "to make with me.",
+            "Use the low beach.",
+            "Leave reeds alone."
+          ],
+          "approach": [
+            3,
+            4
+          ]
+        },
+        {
+          "id": "MN_DETROIT_CANOE_APPRENTICE",
+          "sprite": "SPRITE_LASS",
+          "tile": [
+            6,
+            5
+          ],
+          "facing": "west",
+          "lines": [
+            "The blue paddle",
+            "is my first",
+            "repair.",
+            "I sanded it twice.",
+            "Grandpa says that",
+            "makes it a deluxe",
+            "Minnesota paddle."
+          ],
+          "approach": [
+            6,
+            4
           ]
         }
       ],
       "signs": [],
-      "status": "Source only; production services and warp binding pending",
-      "native_constant": "MN_DETROIT_LAKES_CANOE_CABIN"
+      "status": "Native publication and room/resident/return controller checks pass; see interior-life/DETROIT-LAKES.md.",
+      "native_constant": "MN_DETROIT_LAKES_CANOE_CABIN",
+      "border_block": 0,
+      "purpose": "A family canoe-repair cabin whose shared shoreline knowledge points to the real public launch."
     },
     {
       "id": "MnDetroitLakesRangerCabin",
@@ -413,12 +475,17 @@
             "Keep all three."
           ],
           "quest": "SQ01",
-          "service": "Observation reward script not yet installed"
+          "approach": [
+            6,
+            4
+          ]
         }
       ],
       "signs": [],
-      "status": "Source only; production services and warp binding pending",
-      "native_constant": "MN_DETROIT_LAKES_RANGER_CABIN"
+      "status": "Native publication and room/resident/return controller checks pass; see interior-life/DETROIT-LAKES.md.",
+      "native_constant": "MN_DETROIT_LAKES_RANGER_CABIN",
+      "border_block": 0,
+      "purpose": "The actual three-habitat observation hand-in: Mineral Badge and all three field notes earn one Max Repel, safely retryable with a full pocket."
     }
   ],
   "walkable_destinations": [
@@ -427,10 +494,10 @@
     "central square",
     "local story NPC"
   ],
-  "door_contract": "All five visible facade DOOR quadrants have exact active/passive exterior records. Entries target each room passive Floor index3; both active room carpets return to that exterior passive Floor. Native binding remains pending.",
+  "door_contract": "All five visible facade DOOR quadrants have exact active/passive exterior records. Entries target each room passive Floor index3; both active room carpets return to that exterior passive Floor. Native doors and returns pass production-controller checks.",
   "native_constant": "MN_DETROIT_LAKES",
   "compiled_tileset": "mn_detroit_lakes",
-  "status": "Hand-authored SOURCE candidate. Native town, rooms, recovery, SQ01 reward and train service are uninstalled.",
+  "status": "Published native town and five interiors; seven controller cases and eighteen exact native frames pass.",
   "doors": [
     {
       "id": "MN_DETROIT_STATION_DOOR",
@@ -843,7 +910,7 @@
     "native_constant": "MN_DETROIT_LAKES_STATION",
     "visited_flag": "EVENT_MN_STATION_DETROIT_LAKES_VISITED",
     "service_flag": "EVENT_MN_COURIER_DEFEATED",
-    "status": "Source-only; no callback, menu, boarding or ride implementation is installed."
+    "status": "Native public hall installed; no visit callback, menu, boarding or ride implementation is installed."
   },
   "quest_contract": {
     "id": "SQ01",
@@ -858,28 +925,29 @@
     "once_flag": "EVENT_MN_LAKE_OBSERVATIONS_REWARDED",
     "actor": "MN_DETROIT_LAKE_RANGER",
     "room": "MnDetroitLakesRangerCabin",
-    "status": "Native binder pending; ordinary dialogue must not claim the item was delivered or grant these flags."
+    "status": "Native SQ01 reward verified: each requirement, actual field-note walks, full-pocket Continue/Toss/retry and repeat denial pass."
   },
   "authoring_handoff": {
-    "status": "Complete source candidate for whole-town/room review; no native publication or playable-service claim.",
+    "status": "Native publication, preservation, services, quest and eighteen headless frame comparisons pass; full rail service remains unfinished.",
     "source_art": "Native Johto plus existing Kanto protected-dock recipes; six additive JohtoModern station facade blocks83..88. No source pixels modified.",
-    "art_recipes_native_work": "Inherit mn_headwaters dock art80..82 and water-rock recipe support; add exact source station block recipes83..88 to new mn_detroit_lakes. Do not alias an unrelated facade.",
+    "art_recipes_native_work": "Import the three already installed mn_headwaters dock blocks80..82; append native JohtoModern station blocks83..88 to a private256-glyph alias. Preserve all original art.",
     "exterior_contract": "24x18 metatiles, original three ports unchanged, five exterior DOORs and ten active/passive warp records. All entry targets room passive Floor3; room carpet1/2 target corresponding exterior passive warp.",
     "station_contract": "12x10 native train_station; public arrival11,17, carpets10,19/11,19, conductor13,9 seals both train doors6,5/11,5. Source native-floor movement demonstrated; callbacks/menu/MagnetTrain destination load and persistence remain uninstalled.",
-    "clinic_contract": "Reserved10x8 retained; compact5-metatile-wide treatment/waiting footprint with safe lower entrance. Nurse7,3 through Counter7,4 from7,5; PC13,3 read13,4; proposed recovery8,13 requires native registration.",
-    "mart_contract": "Canonical source6x4 CherrygroveMart geometry; clerk1,3 through Counter2,3 from3,3; canonical money/inventory transactions pending actual publication.",
-    "ranger_contract": "SQ01 observation reward remains pending. Do not claim MAX_REPEL awarded from ordinary dialogue; require badge6, exact three observation flags, giveitem success and persistent once-only event.",
+    "clinic_contract": "Reserved10x8 retained; compact5-metatile-wide treatment/waiting footprint with safe lower entrance. Nurse7,3 through Counter7,4 from7,5; PC13,3 read13,4; native recovery8,13 registered and verified after Continue.",
+    "mart_contract": "Canonical source6x4 CherrygroveMart geometry; clerk1,3 through Counter2,3 from3,3; native priced money/inventory transactions verified.",
+    "ranger_contract": "SQ01 grants one MAX_REPEL after native badge6 and all three observations; full-pocket retry, Continue and persistent once-only denial pass.",
     "exterior_surf": "Launch13,23 toward13,24; protected public dock approach28,29. Every unconnected outer lake quadrant is visibly closed by native water-rock collision.",
     "source_checks": "One fast source loop checks complete room geometry, actor/counter/PC approaches, all5facadeDOORs, original ports, both carpets, passive returns, conductor platform sealing and exact boarding movement;8 meaningful mutation rejections.",
     "native_checks_pending": [
-      "Native namespace/landmark/schema registration and atomic source publication",
-      "All original maps/art/audio/HOME/recovery preservation against actual base pack",
-      "Production input for every entry/both carpets/passive re-entry",
-      "Real healing/PC/recovery and shop money/full-bag behavior",
-      "SQ01 reward and Glacier Line callback/boarding/menu/return/save behavior",
-      "Numeric native Surf/masks/outer-boundary and reciprocal world connections"
+      "Full six-stop Glacier Line transport remains separate unfinished work"
     ],
     "render_loop": ".local/minnesota-review-env/bin/python planning/minnesota/tools/review_detroit_lakes.py --serve --port8798",
-    "archive": "Full-resolution exterior/rooms/source atlases, original RGBA, converted/cropped160 and4x views, rejected passes retained via render_archive/render_stages immutable history."
+    "archive": "Full-resolution exterior/rooms/source atlases, original RGBA, converted/cropped160 and4x views, rejected passes retained via render_archive/render_stages immutable history.",
+    "native_checks_passed": [
+      "Strict pack readback and exact preservation/deterministic-rebuild regression",
+      "Seven production-controller cases, including care/PC/whiteout, priced stock and SQ01",
+      "Eighteen exact native whole-frame comparisons personally reviewed",
+      "All377 audio PCM hashes, frame counts and loop ranges"
+    ]
   }
 }

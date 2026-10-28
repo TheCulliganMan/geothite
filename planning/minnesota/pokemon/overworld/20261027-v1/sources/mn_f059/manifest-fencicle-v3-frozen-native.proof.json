@@ -1,0 +1,351 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_129",
+  "status": "source-proof-pass; root visual/context acceptance required",
+  "selected_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f059/manifest-fencicle-v3-frozen-native.json",
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f059/fencicle-v3-frozen-native",
+  "shared_transform": {
+    "source_bounds": [
+      12,
+      4,
+      390,
+      313
+    ],
+    "native_size": [
+      13,
+      10
+    ],
+    "native_origin": [
+      1,
+      5
+    ]
+  },
+  "all_four_nonrear_poses_have_actual_source_pupils": true,
+  "every_native_eye_cluster_maps_to_same_small_anatomical_source_pupil_component": true,
+  "actual_source_pupil_proofs": [
+    {
+      "pose": "down_idle",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f059/fencicle.overworld.imagegen-v2-roomy-face.png",
+      "crop": [
+        43,
+        162,
+        418,
+        347
+      ],
+      "anatomically_identified_source_eye_boxes_xywh": [
+        [
+          212,
+          264,
+          28,
+          32
+        ],
+        [
+          276,
+          264,
+          28,
+          32
+        ]
+      ],
+      "actual_eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              6,
+              8
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                1,
+                0,
+                0,
+                253
+              ],
+              "bounds": [
+                212,
+                264,
+                28,
+                32
+              ],
+              "pixels": 896,
+              "truncated_contour": false,
+              "native_pixel": [
+                6,
+                8
+              ],
+              "source_sample_pixel": [
+                220,
+                275
+              ]
+            }
+          ]
+        },
+        {
+          "native_cluster": [
+            [
+              8,
+              8
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                0,
+                0,
+                1,
+                253
+              ],
+              "bounds": [
+                276,
+                264,
+                28,
+                32
+              ],
+              "pixels": 896,
+              "truncated_contour": false,
+              "native_pixel": [
+                8,
+                8
+              ],
+              "source_sample_pixel": [
+                280,
+                275
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f059/fencicle.overworld.imagegen-v2-roomy-face.png",
+      "crop": [
+        1052,
+        149,
+        418,
+        347
+      ],
+      "anatomically_identified_source_eye_boxes_xywh": [
+        [
+          1118,
+          260,
+          28,
+          32
+        ]
+      ],
+      "actual_eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              3,
+              8
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                4,
+                5,
+                6,
+                253
+              ],
+              "bounds": [
+                1118,
+                260,
+                28,
+                32
+              ],
+              "pixels": 869,
+              "truncated_contour": false,
+              "native_pixel": [
+                3,
+                8
+              ],
+              "source_sample_pixel": [
+                1139,
+                262
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f059/fencicle.overworld.imagegen-v2-roomy-face.png",
+      "crop": [
+        43,
+        610,
+        418,
+        347
+      ],
+      "anatomically_identified_source_eye_boxes_xywh": [
+        [
+          212,
+          714,
+          28,
+          32
+        ],
+        [
+          276,
+          714,
+          28,
+          32
+        ]
+      ],
+      "actual_eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              6,
+              8
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                1,
+                0,
+                0,
+                253
+              ],
+              "bounds": [
+                212,
+                714,
+                28,
+                32
+              ],
+              "pixels": 895,
+              "truncated_contour": false,
+              "native_pixel": [
+                6,
+                8
+              ],
+              "source_sample_pixel": [
+                220,
+                723
+              ]
+            }
+          ]
+        },
+        {
+          "native_cluster": [
+            [
+              8,
+              8
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                0,
+                0,
+                1,
+                253
+              ],
+              "bounds": [
+                276,
+                714,
+                28,
+                32
+              ],
+              "pixels": 896,
+              "truncated_contour": false,
+              "native_pixel": [
+                8,
+                8
+              ],
+              "source_sample_pixel": [
+                280,
+                723
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f059/fencicle.overworld.imagegen-v2-roomy-face.png",
+      "crop": [
+        1052,
+        616,
+        418,
+        347
+      ],
+      "anatomically_identified_source_eye_boxes_xywh": [
+        [
+          1118,
+          721,
+          28,
+          31
+        ]
+      ],
+      "actual_eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              3,
+              8
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                1,
+                0,
+                0,
+                253
+              ],
+              "bounds": [
+                1118,
+                721,
+                28,
+                31
+              ],
+              "pixels": 868,
+              "truncated_contour": false,
+              "native_pixel": [
+                3,
+                8
+              ],
+              "source_sample_pixel": [
+                1139,
+                729
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "native_head_anchors_idle_walk_equal": true,
+  "validation": {
+    "runtime_2bpp_384_bytes_exact_allpixels": true,
+    "runtime_png16x96_index_parity": true,
+    "normal_shiny_palettebanks_exact": true,
+    "normal_shiny_all1536pixels_exact": true,
+    "transparent_border": true,
+    "idle_walk_pairs_distinct": true
+  },
+  "sha256": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f059/fencicle-v3-frozen-native/gfx/pokemon/fencicle/overworld.2bpp": "bff5be996d0acd6f0f0dd730e1fd26ff9ffecc26b9f9ceac924fc3758d43af75",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f059/fencicle-v3-frozen-native/gfx/pokemon/fencicle/overworld.gbcpal": "8a9332742c01b6a325e26cde25db051a0016926b85e1a8116498565a0552cf87",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f059/manifest-fencicle-v3-frozen-native.json": "a0b16804beb46f9ec9ec75b8e11ad4ae8db9678cc23abb386f4cf57d50981c9a",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f059/fencicle-v3-frozen-native/review/line.shiny-8x.png": "c270c8bc7a9204bc8ac580de69caf9d5bf2766b3e094ce0835c5b5ab3b8cdcd3",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f059/fencicle-v3-frozen-native/gfx/pokemon/fencicle/overworld-shiny.gbcpal": "e9a0af4504fd550f51bec349c6633c292270e6a9ddfb9dc3069b9a016841d528",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f059/fencicle.overworld.imagegen-v2-roomy-face.png": "0c0c548af3683f61f8de010f69fed64d2cd5d4616536f3595f388b4d37ec3c78",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f059/fencicle-v3-frozen-native/review/line.normal-8x.png": "6ef9af84978bacd121a3e126ad5cda060e4772d358135fe2be328c4c5e5b32ef",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f059/fencicle-v3-frozen-native/gfx/pokemon/fencicle/overworld.png": "b082635501e54acb467978363179ac2436a8eda5216887d8d80740d60a06e8ab",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f059/fencicle-v3-frozen-native/compiled-index.json": "e13fdefa0d929cd28931d6bcf4d723e75984655b4854bb531f98c6c9f101f33f"
+  },
+  "actual_native_boards_viewed": true,
+  "rear_review": "Both native normal/shiny true rear poses actually reviewed: plain rear closed flower folds or snowcapped posts, no copied face. All anatomy is source-backed; native pixels were not painted."
+}

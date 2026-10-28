@@ -1,0 +1,77 @@
+{
+  "tool": "built-in image_gen",
+  "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f123/pikeman-v13-native-pupils",
+  "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f123/manifest-pikeman-v13-native-pupils.json",
+  "normalized_receipt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f123/source-feature-proof-pikeman-v13-native-pupils.json",
+  "all_raws_prompts_rejected_trials_retained": true,
+  "no_native_pixel_painting": true,
+  "no_registry_or_pack_mutation": true,
+  "normal_shiny_boards_actually_viewed": true,
+  "canonical_palettes": [
+    [
+      32767,
+      12983,
+      12645,
+      0
+    ],
+    [
+      32767,
+      22252,
+      11436,
+      0
+    ]
+  ],
+  "native_bounds": [
+    [
+      3,
+      5,
+      8,
+      10
+    ],
+    [
+      4,
+      5,
+      8,
+      10
+    ],
+    [
+      2,
+      6,
+      12,
+      7
+    ],
+    [
+      3,
+      5,
+      8,
+      10
+    ],
+    [
+      4,
+      5,
+      8,
+      10
+    ],
+    [
+      2,
+      6,
+      12,
+      7
+    ]
+  ],
+  "retained_source_hashes": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f123/pikeman.overworld.imagegen-v1.png": "5c0b79a374118a1f8cbf98a88b1836b22160aebed7de3688d3d503b65b237ecb",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f123/pikeman.overworld.imagegen-v4-profile-pupils.png": "8484e34d66d4df144fe394241d6e35caa1dd08b4b7b78c29029ed18b3fa96e2b",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f123/pikeman.overworld.imagegen-v2-compact-profile.png": "a42f38c4c6ac11188fefc955a2665036aaffcc009552467686ede0df13351cd3",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f123/pikeman.overworld.imagegen-v3-clean-cheeks.png": "edeb62e55923008111793fbce88365c53f24a386097e133b816311174eced7f1",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f123/prompt-pikeman-v4-profile-pupils.txt": "d57b8add5af6d75fbec10b1ec44975db54bd90582e9cb308f51815150a8fad23",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f123/prompt-pikeman-v3-clean-cheeks.txt": "997f509795f1b31f9608df44de48fc75bc30411edc500ddbd8ec60a9023a7f3e",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f123/prompt-pikeman-v2-compact-profile.txt": "707b3273ad22ec1a2abf98cbf0fb3be76b07db81ed09f2e6de9b90c1f9c9c8be",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f123/prompt-pikeman-v1.txt": "0e52dbe9ae351e6d4f142c50fbcda84c7635719919d6a575e029955469bb923a",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f123/pikeman.v2-compact-profile.original-path.txt": "68a2d31ceb537aa439141507cbcf795918c678e406bdee9db7d2f9740f4a5fba",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f123/pikeman.v4-profile-pupils.original-path.txt": "e933cfd16678219603b6ff5606b06accc5f4d1e14a962fdd7861c6d741cd0725",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f123/pikeman.v3-clean-cheeks.original-path.txt": "6e87b6c70aefdb10419d052564bb7fb8ad21d955bee0da1e9108e8e2f6dbbc61",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f123/pikeman.v1.original-path.txt": "6d5ee5a594a84f5548f34e0417d8a95fb7b247013d8b7cf99ac01616c5bd9f52"
+  },
+  "status": "root independent visual/context acceptance pending"
+}

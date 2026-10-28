@@ -1,5 +1,7 @@
 //! Opt-in actual-game capture and no-readback timing. Never drives game input.
-//! Timestamps retain wall time; no frame interpolation or retiming is performed.
+//! Timestamps retain wall time by default. Opt-in game-clock recording advances
+//! one 60 Hz game frame per host update for normal-speed offline video, without
+//! interpolation. This mode cannot be used for performance measurements.
 //!
 //! Native-only `CRYSTAL_CAPTURE_PACING_PROBE=1` requires image recording,
 //! `on_move`, and at least 36 seconds. After the ordinary first-move trigger it
@@ -295,6 +297,19 @@ fn requested_capture_hz(value: Option<&str>) -> Result<u32> {
     }
 }
 
+fn requested_game_clock(value: Option<&str>, images: bool, probe: bool) -> Result<bool> {
+    let enabled = match value {
+        None | Some("wall") => false,
+        Some("game") => true,
+        Some(value) => anyhow::bail!("CRYSTAL_CAPTURE_CLOCK must be wall or game, found {value:?}"),
+    };
+    anyhow::ensure!(
+        !enabled || (images && !probe),
+        "game-clock recording requires images and cannot measure performance"
+    );
+    Ok(enabled)
+}
+
 fn requested_arm_timeout(value: Option<&str>) -> Result<f64> {
     let seconds = value.map_or(Ok(DEFAULT_ARM_TIMEOUT_SECONDS), str::parse::<u32>)?;
     anyhow::ensure!(
@@ -397,11 +412,18 @@ pub(super) fn install(
         seconds,
     )?;
     let capture_hz = requested_capture_hz(std::env::var("CRYSTAL_CAPTURE_FPS").ok().as_deref())?;
+    let game_clock = requested_game_clock(
+        std::env::var("CRYSTAL_CAPTURE_CLOCK").ok().as_deref(),
+        capture_images,
+        pacing_probe,
+    )?;
     let arm_timeout_seconds =
         requested_arm_timeout(std::env::var("CRYSTAL_CAPTURE_ARM_SECONDS").ok().as_deref())?;
     if capture_images
         && std::env::var("CRYSTAL_RENDER_TEST_CAPTURE_TARGET").as_deref() == Ok("image")
-        && !app.world().contains_resource::<super::render_capture::Capture>()
+        && !app
+            .world()
+            .contains_resource::<super::render_capture::Capture>()
     {
         super::render_capture::install_recording_target(app, directory.join("target-only.png"))?;
     }
@@ -410,6 +432,19 @@ pub(super) fn install(
         std::fs::read_dir(directory)?.next().is_none(),
         "recording output directory must be empty"
     );
+    if game_clock {
+        app.insert_resource(bevy::time::TimeUpdateStrategy::ManualDuration(
+            std::time::Duration::from_secs_f64(1.0 / 60.0),
+        ));
+    }
+    std::fs::write(
+        directory.join("capture-clock-mode.txt"),
+        if game_clock {
+            "game: one 60 Hz simulation frame per host update; timestamps are game time, not wall time; not a performance measurement\n"
+        } else {
+            "wall: timestamps retain host wall time\n"
+        },
+    )?;
     let header = "frame,seconds,map,origin_x,origin_y,player_x,player_y,capture_ball,capture_frame,capture_caught,capture_blocked,capture_shakes,capture_started,capture_complete,world_frame_active,world_3d_active,entry_fx_active,transition_frame,intro_frame,battle_frame_active,battle_3d_active,battle_preparing\n";
     app.insert_resource(Recording {
         directory: directory.to_owned(),
@@ -509,8 +544,11 @@ fn record(
     flash_mode: Res<crystal_render_api::BattleFlashMode>,
     frame: Res<crystal_render_api::VisualWorldFrame>,
     runtime: Res<BevyRuntimeShell>,
-    review: (Option<Res<super::render_walk::RenderWalk>>, Option<Res<super::render_capture::Capture>>,
-        Option<Res<crystal_render_api::VisualWorldEntryEffect>>),
+    review: (
+        Option<Res<super::render_walk::RenderWalk>>,
+        Option<Res<super::render_capture::Capture>>,
+        Option<Res<crystal_render_api::VisualWorldEntryEffect>>,
+    ),
     windows: Query<(Entity, &Window), With<PrimaryWindow>>,
     mut commands: Commands,
     assets: RecordingAssets,
@@ -521,17 +559,30 @@ fn record(
     let materials = &assets.materials;
     let (walk, capture_target, entry_effect) = review;
     let battle_presented = battle_frame.active && !battle_frame.preparing;
-    let presentation = format!("{},{},{},{},{},{},{},{}", frame.active, status.active,
+    let presentation = format!(
+        "{},{},{},{},{},{},{},{}",
+        frame.active,
+        status.active,
         entry_effect.as_ref().is_some_and(|entry| entry.active),
-        runtime.visible_battle_transition.map_or(String::new(), |transition| transition.frame.to_string()),
-        runtime.visible_battle_sliding_intro.map_or(String::new(), |frame| frame.to_string()),
-        battle_presented, battle_status.active, battle_frame.preparing);
+        runtime
+            .visible_battle_transition
+            .map_or(String::new(), |transition| transition.frame.to_string()),
+        runtime
+            .visible_battle_sliding_intro
+            .map_or(String::new(), |frame| frame.to_string()),
+        battle_presented,
+        battle_status.active,
+        battle_frame.preparing
+    );
     if let Some(error) = runtime.render_test_error.as_ref() {
         eprintln!("capture rejected after runtime error: {error}");
         exit.write(AppExit::error());
         return;
     }
-    if validation.as_ref().is_some_and(|validation| !validation.ready()) {
+    if validation
+        .as_ref()
+        .is_some_and(|validation| !validation.ready())
+    {
         return;
     }
     let outstanding_before_poll = recording.outstanding;
@@ -857,7 +908,11 @@ fn record(
         });
     // Screenshot callbacks already run on Bevy's async compute pool. Allow a
     // bounded pipeline rather than waiting 2–3 render frames after each one.
-    let Some(screenshot) = super::render_capture::moving_screenshot(capture_target.as_deref(), window) else { return; };
+    let Some(screenshot) =
+        super::render_capture::moving_screenshot(capture_target.as_deref(), window)
+    else {
+        return;
+    };
     commands
         .spawn(screenshot)
         .observe(move |event: On<ScreenshotCaptured>| {
@@ -1030,6 +1085,15 @@ fn finish(recording: &Recording, elapsed: f64, outcome: &str) -> std::io::Result
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn offline_game_clock_cannot_be_used_as_a_performance_measurement() {
+        assert!(!requested_game_clock(None, true, false).expect("default wall clock"));
+        assert!(requested_game_clock(Some("game"), true, false).expect("offline video"));
+        assert!(requested_game_clock(Some("game"), false, false).is_err());
+        assert!(requested_game_clock(Some("game"), true, true).is_err());
+        assert!(requested_game_clock(Some("fast"), true, false).is_err());
+    }
 
     #[test]
     fn pacing_probe_requires_explicit_opt_in_and_a_complete_move_recording() {

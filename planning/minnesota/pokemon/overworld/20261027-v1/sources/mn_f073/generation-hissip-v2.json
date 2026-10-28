@@ -1,0 +1,19 @@
+{
+  "species_id": "MN_154",
+  "name": "Hissip",
+  "family_id": "MN_F073",
+  "tool": "built-in image_gen",
+  "selected_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f073/manifest-hissip-v2-pupil-proof.json",
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f073/hissip-v2-pupil-proof",
+  "normalized_proof": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f073/source-feature-proof-hissip-v2.json",
+  "detailed_proof": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f073/manifest-hissip-v2-pupil-proof.proof.json",
+  "sources": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f073/hissip.overworld.imagegen-v2-smooth-brow.png": "d2420651cbbe7e0499791c54bdb78af3fe6072695dbc1daa9439c44f8855e779"
+  },
+  "preserved_attempt_receipts": [
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f073/attempt-hissip-v1.json",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f073/attempt-hissip-v2.json"
+  ],
+  "status": "frozen native candidate; actual normal/shiny source features reviewed; root context pending",
+  "accepted": false
+}

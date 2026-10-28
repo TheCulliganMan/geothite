@@ -1,0 +1,215 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_263",
+  "result": "pass",
+  "manifest_sha256": "a25b9bef823a4d9d84993002660aa0b960a58bad1f79be594c8864eee8fca725",
+  "bank_sha256": "53bc8e57cdb2570618f62ffbbd28c7c2a158cd28e464bb88d2c3905bedc513b1",
+  "source_sha256": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f123/pikeling.overworld.imagegen-v1.png": "0c0842d5d71665c82c57d9b44b6c5b8f9744f4380a658b34c9806e8cce6a122f"
+  },
+  "canonical_eye_form": "Two isolated actual black pupil dots south and one isolated actual black pupil west; source eye components verified in all four nonrear poses.",
+  "nonrear_poses": [
+    {
+      "pose": "down_idle",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            6,
+            11
+          ],
+          "source_sample": [
+            270,
+            405
+          ],
+          "source_component": [
+            257,
+            389,
+            23,
+            23
+          ],
+          "component_pixels": 529,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            2
+          ],
+          "source_rgba": [
+            0,
+            0,
+            0,
+            253
+          ]
+        },
+        {
+          "native": [
+            8,
+            11
+          ],
+          "source_sample": [
+            329,
+            405
+          ],
+          "source_component": [
+            327,
+            389,
+            23,
+            23
+          ],
+          "component_pixels": 529,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            2,
+            1,
+            1,
+            254
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            5,
+            9
+          ],
+          "source_sample": [
+            1175,
+            381
+          ],
+          "source_component": [
+            1154,
+            369,
+            23,
+            27
+          ],
+          "component_pixels": 621,
+          "native_neighbors": [
+            1,
+            1,
+            2,
+            1
+          ],
+          "source_rgba": [
+            1,
+            0,
+            1,
+            253
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            6,
+            11
+          ],
+          "source_sample": [
+            270,
+            782
+          ],
+          "source_component": [
+            257,
+            776,
+            23,
+            25
+          ],
+          "component_pixels": 575,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            0,
+            0,
+            0,
+            253
+          ]
+        },
+        {
+          "native": [
+            8,
+            11
+          ],
+          "source_sample": [
+            329,
+            782
+          ],
+          "source_component": [
+            327,
+            776,
+            23,
+            25
+          ],
+          "component_pixels": 571,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            4,
+            3,
+            3,
+            253
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            5,
+            9
+          ],
+          "source_sample": [
+            1175,
+            775
+          ],
+          "source_component": [
+            1155,
+            761,
+            23,
+            27
+          ],
+          "component_pixels": 621,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            1,
+            1,
+            1,
+            253
+          ]
+        }
+      ]
+    }
+  ],
+  "rear_anatomy": {
+    "result": "pass",
+    "notes": "Biological spear-snouted pike fry retains short pointed jaw, green back stripe, rear-set dorsal fin, paired pectoral fins and forked tail; no costume, held spear, arms or legs. True north back hides facial organs; dark internal rear contour follows body/tail anatomy, not pupils. All four actual source eye components are isolated, other small gill contour marks excluded. Commonfit12 and all full source silhouettes retained, normal/shiny boards reviewed; only1sourcepixel south registration shift."
+  }
+}

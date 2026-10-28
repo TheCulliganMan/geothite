@@ -1,0 +1,215 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_173",
+  "result": "pass",
+  "manifest_sha256": "e60a677f5dad0bc14c49ebe5c85ee403545cc40c20370b3c2616ade234eb8bce",
+  "bank_sha256": "81b78590dac97732e211d215a6d33708e703d1d61e370ab6994533631e1df1c1",
+  "source_sha256": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f079/buoyostic.overworld.imagegen-v1.png": "bc486b196902c268b9390db95df4f862cf7a8283a8cdd53e2aed2475f18be042"
+  },
+  "canonical_eye_form": "Two isolated actual black pupil dots south and one isolated actual black pupil west; source eye components verified in all four nonrear poses.",
+  "nonrear_poses": [
+    {
+      "pose": "down_idle",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            6,
+            9
+          ],
+          "source_sample": [
+            246,
+            297
+          ],
+          "source_component": [
+            246,
+            272,
+            29,
+            34
+          ],
+          "component_pixels": 986,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            2
+          ],
+          "source_rgba": [
+            45,
+            28,
+            10,
+            253
+          ]
+        },
+        {
+          "native": [
+            8,
+            9
+          ],
+          "source_sample": [
+            304,
+            297
+          ],
+          "source_component": [
+            302,
+            272,
+            29,
+            34
+          ],
+          "component_pixels": 986,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            2
+          ],
+          "source_rgba": [
+            7,
+            6,
+            2,
+            254
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            4,
+            8
+          ],
+          "source_sample": [
+            1160,
+            281
+          ],
+          "source_component": [
+            1136,
+            275,
+            28,
+            33
+          ],
+          "component_pixels": 924,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            9,
+            6,
+            2,
+            253
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            6,
+            9
+          ],
+          "source_sample": [
+            246,
+            774
+          ],
+          "source_component": [
+            246,
+            753,
+            29,
+            34
+          ],
+          "component_pixels": 985,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            2
+          ],
+          "source_rgba": [
+            45,
+            29,
+            11,
+            253
+          ]
+        },
+        {
+          "native": [
+            8,
+            9
+          ],
+          "source_sample": [
+            304,
+            774
+          ],
+          "source_component": [
+            302,
+            753,
+            29,
+            34
+          ],
+          "component_pixels": 986,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            2
+          ],
+          "source_rgba": [
+            8,
+            6,
+            2,
+            253
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            4,
+            8
+          ],
+          "source_sample": [
+            1160,
+            774
+          ],
+          "source_component": [
+            1135,
+            753,
+            29,
+            33
+          ],
+          "component_pixels": 935,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            2
+          ],
+          "source_rgba": [
+            8,
+            5,
+            2,
+            253
+          ]
+        }
+      ]
+    }
+  ],
+  "rear_anatomy": {
+    "result": "pass",
+    "notes": "Plain true rear central pontoon without pupils; exactly three joined pontoons, two unequal mast fins, three purple sensor nodes and one curled depth tail, zero limbs. Two source-backed front pupils and one true west pupil in all four nonrear poses."
+  }
+}

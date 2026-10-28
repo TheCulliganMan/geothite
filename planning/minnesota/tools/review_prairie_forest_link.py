@@ -15,7 +15,7 @@ from PIL import Image
 from render_reference import SourceArt,load_pack,layout_blocks,room_sheet
 from review_league_approach import HTML,check,render as render_checked,verify_published
 from review_gunflint import flood,neighbors,VECTORS
-from ledge_paths import shortest_walk
+from ledge_paths import inspect_ledges, shortest_walk
 ROOT=Path(__file__).resolve().parents[3];DOSSIER=ROOT/'planning/minnesota/routes/MN_R19.json';LAYOUT=ROOT/'planning/minnesota/routes/MN_R19.layout.json';OUTPUT=ROOT/'planning/minnesota/renders/prairie-forest-link'
 PAGE=HTML.replace('League Approach','Prairie Forest Link').replace('all eighteen chunks','Itasca pines to Detroit prairie').replace('Border Lake · Wind Tor · Granite switchback · Dry saddle · Cedar Shelter · Long Lake · Old quarry · Ely arrival.','Native oak openings · Real battle/grass choice · Two-way ramp loop · Spring wetland · Prairie observations.').replace('<h2>Cedar Shelter</h2><img id="rooms" src="interiors.png">','<h2>Wetland Surf probe</h2><img id="surf" src="surf-boundaries.png">').replace("if(room)room.src='interiors.png?r='+rev","if(room)room.src='interiors.png?r='+rev;document.querySelector('#surf').src='surf-boundaries.png?r='+rev").replace('width:1536px','width:1024px').replace('(native?3072:1536)','(native?1024:512)')
 
@@ -25,7 +25,10 @@ def inspect_contracts(d,l,p):
     assert (w,h)==(32,30) and d['required_flags']==['BADGE_6'],'Retain regional gate and bent extent'
     actors=d['trainers']+d['residents']+d['items'];occupied={tuple(a['tile']) for a in actors};start,end=[tuple(2*v for v in e['gate_metatile']) for e in d['endpoints']]
     walk={(x,y) for y in range(h*2) for x in range(w*2) if kind(x,y) in {'FLOOR','TALL_GRASS'} and (x,y) not in occupied};seen=flood(start,walk);assert end in seen,'Main bent road disconnected'
-    assert d['cut_gates']==[] and d['one_way_ledges']==[] and d['shortcut'] is None,'Two-way inspection loop does not use a decorative gate or cliff jump'
+    assert d['cut_gates']==[] and d['shortcut'] is None,'Retain the ungated two-way ramp inspection loop'
+    ledges=d['one_way_ledges']
+    assert not ledges or (len(ledges)==1 and ledges[0]['id']=='MN_R19_OAK_EDGE_DESCENT'
+                         and ledges[0]['direction']=='south' and ledges[0]['bounds_core']==[34,32,36,34]),'Only the reviewed short oak descent is authored'
     assert not any(kind(x,y)=='CUT_TREE' for y in range(h*2) for x in range(w*2)),'Native canopy has an incidental Cut quadrant'
     sight=set()
     for trainer in d['trainers']:
@@ -74,9 +77,20 @@ def inspect_contracts(d,l,p):
     surf=flood(start,walk|{(x,y) for y in range(h*2) for x in range(w*2) if kind(x,y)=='WATER'});water={at for at in surf if kind(*at)=='WATER'};assert water and not water&perimeter,'Actual accessible pond must stay within the route'
     assert kind(43,33)=='FLOOR' and kind(43,34)=='WATER','Wetland launch needs real land/water quadrants'
     for v in d['surf_viewpoints']:assert tuple(v['tile']) in water,'Unreachable wetland Surf probe'
-    for x in [32,33,34,35]:assert (x,33) in seen,'Four-core-wide routine oak passage'
-    assert kind(31,33)=='HEADBUTT_TREE' and kind(36,33)=='HEADBUTT_TREE','Oak edges should bound the passage rather than leave an empty lawn'
-    return dict(source_metatile_varieties_used=len(set(b)),battle_or_grass_choice_proofs=choices,optional_meadow_rewards=rewards,observation_signs_walking_checked=3,actual_native_ramps_checked=2,upper_two_ramp_path_steps=len(upper_path)-1,native_cut_quadrants=0,oak_through_lane_core_width=4,outer_perimeter_core_tiles=len(perimeter),reachable_surf_water_tiles=len(water),reachable_outer_water_tiles=0)
+    if ledges:
+        for x in [34,35]:
+            assert kind(x,31)==kind(x,34)=='FLOOR','Both actual oak approach/landing lanes must remain clear'
+            assert kind(x,32)=='HOP_DOWN' and kind(x,33)=='WALL','Native oak lip and reverse wall required'
+        assert kind(33,33)==kind(36,33)=='WALL','Permanent oak descent side guards required'
+        assert kind(31,33)=='TALL_GRASS','Retain the grassy ordinary uphill throat'
+        habitat={at for at in walk if kind(*at)=='TALL_GRASS'}
+        assert 3<=cost((34,34),{(34,31)},habitat)<10**9,'Ordinary oak return must retain its grass price'
+        returns=inspect_ledges(d,kind,seen)
+    else:
+        for x in [32,33,34,35]:assert (x,33) in seen,'Four-core-wide original oak passage'
+        assert kind(31,33)=='HEADBUTT_TREE' and kind(36,33)=='HEADBUTT_TREE','Original oak edges must bound the passage'
+        returns=[]
+    return dict(source_metatile_varieties_used=len(set(b)),battle_or_grass_choice_proofs=choices,optional_meadow_rewards=rewards,observation_signs_walking_checked=3,actual_native_ramps_checked=2,upper_two_ramp_path_steps=len(upper_path)-1,native_cut_quadrants=0,oak_through_lane_core_width=2 if ledges else 4,oak_descent_returns=returns,outer_perimeter_core_tiles=len(perimeter),reachable_surf_water_tiles=len(water),reachable_outer_water_tiles=0)
 
 def render(d,l,p,art):
     report=render_checked(d,l,p,art,output=OUTPUT)

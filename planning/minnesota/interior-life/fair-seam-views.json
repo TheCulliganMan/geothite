@@ -1,0 +1,5 @@
+[
+  { "id": "city-north-fair-lane", "map": "MnStPaul", "core": [10, 0] },
+  { "id": "city-fair-lane-street-join", "map": "MnStPaul", "core": [10, 10] },
+  { "id": "fair-south-city-return", "map": "MnStateFairgrounds", "core": [16, 71] }
+]

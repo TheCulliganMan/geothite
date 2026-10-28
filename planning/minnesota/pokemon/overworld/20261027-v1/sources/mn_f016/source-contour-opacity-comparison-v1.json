@@ -1,0 +1,22 @@
+{
+  "flapip.overworld.imagegen-v1.png": {
+    "very_dark_alpha_ge128": 128406,
+    "very_dark_alpha_ge250": 115256,
+    "transparent_very_dark": 1122821
+  },
+  "stackajack.overworld.imagegen-v1.png": {
+    "very_dark_alpha_ge128": 149476,
+    "very_dark_alpha_ge250": 133355,
+    "transparent_very_dark": 795405
+  },
+  "stackajack.overworld.imagegen-v2-pupils.png": {
+    "very_dark_alpha_ge128": 151928,
+    "very_dark_alpha_ge250": 137642,
+    "transparent_very_dark": 812403
+  },
+  "stackajack.overworld.imagegen-v3-restore-ink.png": {
+    "very_dark_alpha_ge128": 160548,
+    "very_dark_alpha_ge250": 143361,
+    "transparent_very_dark": 818431
+  }
+}

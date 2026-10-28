@@ -1,0 +1,389 @@
+{
+  "schema_version": 1,
+  "id": "northstar-ice-headquarters-v1",
+  "status": "IMPLEMENTING; not native acceptance",
+  "maps": [
+    "MnIceOperations",
+    "MnIceRecords",
+    "MnIceMaintenance",
+    "MnIceTransfer"
+  ],
+  "links": [
+    {
+      "id": "cargo_stair",
+      "kind": "stairs",
+      "a": {
+        "map": "MnIceCargoBasement",
+        "active": [
+          23,
+          4
+        ],
+        "arrival": [
+          22,
+          5
+        ]
+      },
+      "b": {
+        "map": "MnIceOperations",
+        "active": [
+          5,
+          18
+        ],
+        "arrival": [
+          4,
+          19
+        ]
+      }
+    },
+    {
+      "id": "records_stair",
+      "kind": "stairs",
+      "a": {
+        "map": "MnIceOperations",
+        "active": [
+          15,
+          2
+        ],
+        "arrival": [
+          14,
+          3
+        ]
+      },
+      "b": {
+        "map": "MnIceRecords",
+        "active": [
+          9,
+          18
+        ],
+        "arrival": [
+          8,
+          19
+        ]
+      }
+    },
+    {
+      "id": "workshop_stair",
+      "kind": "stairs",
+      "a": {
+        "map": "MnIceRecords",
+        "active": [
+          13,
+          2
+        ],
+        "arrival": [
+          12,
+          3
+        ]
+      },
+      "b": {
+        "map": "MnIceMaintenance",
+        "active": [
+          5,
+          18
+        ],
+        "arrival": [
+          4,
+          19
+        ]
+      }
+    },
+    {
+      "id": "relay_stair",
+      "kind": "stairs",
+      "a": {
+        "map": "MnIceOperations",
+        "active": [
+          27,
+          18
+        ],
+        "arrival": [
+          26,
+          19
+        ]
+      },
+      "b": {
+        "map": "MnIceRelayFloor",
+        "active": [
+          5,
+          14
+        ],
+        "arrival": [
+          4,
+          15
+        ]
+      }
+    },
+    {
+      "id": "A",
+      "kind": "panel",
+      "a": {
+        "map": "MnIceMaintenance",
+        "active": [
+          11,
+          4
+        ],
+        "arrival": [
+          10,
+          5
+        ]
+      },
+      "b": {
+        "map": "MnIceTransfer",
+        "active": [
+          5,
+          18
+        ],
+        "arrival": [
+          4,
+          19
+        ]
+      }
+    },
+    {
+      "id": "B",
+      "kind": "panel",
+      "a": {
+        "map": "MnIceTransfer",
+        "active": [
+          13,
+          4
+        ],
+        "arrival": [
+          12,
+          5
+        ]
+      },
+      "b": {
+        "map": "MnIceRecords",
+        "active": [
+          21,
+          4
+        ],
+        "arrival": [
+          20,
+          5
+        ]
+      }
+    },
+    {
+      "id": "C",
+      "kind": "panel",
+      "a": {
+        "map": "MnIceOperations",
+        "active": [
+          5,
+          12
+        ],
+        "arrival": [
+          4,
+          13
+        ]
+      },
+      "b": {
+        "map": "MnIceMaintenance",
+        "active": [
+          21,
+          18
+        ],
+        "arrival": [
+          20,
+          19
+        ]
+      }
+    },
+    {
+      "id": "D",
+      "kind": "panel",
+      "a": {
+        "map": "MnIceMaintenance",
+        "active": [
+          27,
+          18
+        ],
+        "arrival": [
+          26,
+          19
+        ]
+      },
+      "b": {
+        "map": "MnIceRecords",
+        "active": [
+          5,
+          4
+        ],
+        "arrival": [
+          4,
+          5
+        ]
+      }
+    },
+    {
+      "id": "E",
+      "kind": "panel",
+      "a": {
+        "map": "MnIceRecords",
+        "active": [
+          21,
+          18
+        ],
+        "arrival": [
+          20,
+          19
+        ]
+      },
+      "b": {
+        "map": "MnIceTransfer",
+        "active": [
+          21,
+          4
+        ],
+        "arrival": [
+          20,
+          5
+        ]
+      }
+    },
+    {
+      "id": "F",
+      "kind": "panel",
+      "a": {
+        "map": "MnIceTransfer",
+        "active": [
+          27,
+          18
+        ],
+        "arrival": [
+          26,
+          19
+        ]
+      },
+      "b": {
+        "map": "MnIceMaintenance",
+        "active": [
+          21,
+          4
+        ],
+        "arrival": [
+          20,
+          5
+        ]
+      }
+    },
+    {
+      "id": "G",
+      "kind": "panel",
+      "a": {
+        "map": "MnIceOperations",
+        "active": [
+          21,
+          4
+        ],
+        "arrival": [
+          20,
+          5
+        ]
+      },
+      "b": {
+        "map": "MnIceTransfer",
+        "active": [
+          23,
+          18
+        ],
+        "arrival": [
+          22,
+          19
+        ]
+      }
+    },
+    {
+      "id": "H",
+      "kind": "panel",
+      "a": {
+        "map": "MnIceRecords",
+        "active": [
+          27,
+          8
+        ],
+        "arrival": [
+          26,
+          9
+        ]
+      },
+      "b": {
+        "map": "MnIceOperations",
+        "active": [
+          5,
+          4
+        ],
+        "arrival": [
+          4,
+          5
+        ]
+      }
+    }
+  ],
+  "doors": [
+    {
+      "id": "OPERATIONS",
+      "map": "MnIceOperations",
+      "metatile": [
+        8,
+        7
+      ],
+      "flag": "EVENT_MN_ICE_HQ_DOOR_OPERATIONS"
+    },
+    {
+      "id": "REST",
+      "map": "MnIceRecords",
+      "metatile": [
+        9,
+        8
+      ],
+      "flag": "EVENT_MN_ICE_HQ_DOOR_REST"
+    },
+    {
+      "id": "CELLS",
+      "map": "MnIceTransfer",
+      "metatile": [
+        8,
+        3
+      ],
+      "flag": "EVENT_MN_ICE_HQ_DOOR_CELLS"
+    },
+    {
+      "id": "ANNEX",
+      "map": "MnIceTransfer",
+      "metatile": [
+        10,
+        8
+      ],
+      "flag": "EVENT_MN_ICE_HQ_DOOR_ANNEX"
+    },
+    {
+      "id": "WORKSHOP",
+      "map": "MnIceMaintenance",
+      "metatile": [
+        7,
+        3
+      ],
+      "flag": "EVENT_MN_ICE_HQ_DOOR_WORKSHOP"
+    },
+    {
+      "id": "RETURN",
+      "map": "MnIceOperations",
+      "metatile": [
+        3,
+        4
+      ],
+      "flag": "EVENT_MN_ICE_HQ_DOOR_RETURN"
+    }
+  ],
+  "contract": [
+    "Six dungeon floors plus the public office. Four new floors have separate compartments reached from other floors.",
+    "No stair-only path reaches Ada or the relay. Before the card, A/B reach Ada; C/D form a misleading but useful alternate loop.",
+    "H returns from Ada to a sealed pocket on the earlier operations floor. The card opens a new exit from that pocket.",
+    "After the card, six persistent doors open optional recovery, the second captive, supplies, and three distinct approaches to relay access.",
+    "All eight panel pairs are bidirectional and safe arrivals are distinct from active tiles. No forced one-way softlocks.",
+    "The physical holding circuit, Reed battle, enforcer battle and Ellis release remain separate. No paper awards progression."
+  ]
+}

@@ -1,0 +1,550 @@
+{
+  "species_id": "MN_250",
+  "result": "native-zero-gaps-traced-to-source-background",
+  "alpha_threshold": 245,
+  "notes": "Raw ImageGen background has faint glow; source alpha values are disclosed rather than claimed all alpha0. Native gap cells are exactly transparent index0, and source face/body is never painted over to create them. Open pool channels can also join external background.",
+  "poses": [
+    {
+      "pose": "down_idle",
+      "native_enclosed_gap_components": [
+        [
+          {
+            "native": [
+              5,
+              9
+            ],
+            "source_sample": [
+              206,
+              312
+            ],
+            "rgba": [
+              34,
+              38,
+              39,
+              0
+            ]
+          },
+          {
+            "native": [
+              6,
+              9
+            ],
+            "source_sample": [
+              237,
+              312
+            ],
+            "rgba": [
+              71,
+              67,
+              76,
+              16
+            ]
+          }
+        ],
+        [
+          {
+            "native": [
+              9,
+              9
+            ],
+            "source_sample": [
+              332,
+              312
+            ],
+            "rgba": [
+              39,
+              39,
+              43,
+              0
+            ]
+          },
+          {
+            "native": [
+              10,
+              9
+            ],
+            "source_sample": [
+              363,
+              312
+            ],
+            "rgba": [
+              26,
+              41,
+              36,
+              2
+            ]
+          },
+          {
+            "native": [
+              9,
+              10
+            ],
+            "source_sample": [
+              332,
+              344
+            ],
+            "rgba": [
+              24,
+              43,
+              36,
+              1
+            ]
+          }
+        ]
+      ]
+    },
+    {
+      "pose": "up_idle",
+      "native_enclosed_gap_components": [
+        [
+          {
+            "native": [
+              6,
+              9
+            ],
+            "source_sample": [
+              733,
+              311
+            ],
+            "rgba": [
+              39,
+              42,
+              45,
+              3
+            ]
+          },
+          {
+            "native": [
+              6,
+              10
+            ],
+            "source_sample": [
+              733,
+              343
+            ],
+            "rgba": [
+              21,
+              42,
+              33,
+              2
+            ]
+          }
+        ],
+        [
+          {
+            "native": [
+              9,
+              9
+            ],
+            "source_sample": [
+              828,
+              311
+            ],
+            "rgba": [
+              7,
+              7,
+              8,
+              190
+            ]
+          },
+          {
+            "native": [
+              10,
+              9
+            ],
+            "source_sample": [
+              859,
+              311
+            ],
+            "rgba": [
+              34,
+              41,
+              42,
+              0
+            ]
+          }
+        ]
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "native_enclosed_gap_components": [
+        [
+          {
+            "native": [
+              9,
+              4
+            ],
+            "source_sample": [
+              1316,
+              153
+            ],
+            "rgba": [
+              25,
+              30,
+              30,
+              1
+            ]
+          },
+          {
+            "native": [
+              9,
+              5
+            ],
+            "source_sample": [
+              1316,
+              185
+            ],
+            "rgba": [
+              47,
+              43,
+              51,
+              0
+            ]
+          },
+          {
+            "native": [
+              9,
+              6
+            ],
+            "source_sample": [
+              1316,
+              217
+            ],
+            "rgba": [
+              81,
+              67,
+              86,
+              3
+            ]
+          }
+        ],
+        [
+          {
+            "native": [
+              5,
+              9
+            ],
+            "source_sample": [
+              1190,
+              314
+            ],
+            "rgba": [
+              14,
+              17,
+              16,
+              168
+            ]
+          }
+        ],
+        [
+          {
+            "native": [
+              6,
+              10
+            ],
+            "source_sample": [
+              1221,
+              346
+            ],
+            "rgba": [
+              11,
+              23,
+              18,
+              125
+            ]
+          }
+        ],
+        [
+          {
+            "native": [
+              9,
+              10
+            ],
+            "source_sample": [
+              1316,
+              346
+            ],
+            "rgba": [
+              21,
+              40,
+              32,
+              17
+            ]
+          }
+        ]
+      ]
+    },
+    {
+      "pose": "down_step",
+      "native_enclosed_gap_components": [
+        [
+          {
+            "native": [
+              5,
+              9
+            ],
+            "source_sample": [
+              206,
+              767
+            ],
+            "rgba": [
+              31,
+              34,
+              36,
+              0
+            ]
+          },
+          {
+            "native": [
+              6,
+              9
+            ],
+            "source_sample": [
+              237,
+              767
+            ],
+            "rgba": [
+              63,
+              59,
+              67,
+              81
+            ]
+          }
+        ],
+        [
+          {
+            "native": [
+              9,
+              9
+            ],
+            "source_sample": [
+              332,
+              767
+            ],
+            "rgba": [
+              43,
+              42,
+              48,
+              1
+            ]
+          },
+          {
+            "native": [
+              10,
+              9
+            ],
+            "source_sample": [
+              363,
+              767
+            ],
+            "rgba": [
+              27,
+              42,
+              36,
+              2
+            ]
+          },
+          {
+            "native": [
+              9,
+              10
+            ],
+            "source_sample": [
+              332,
+              799
+            ],
+            "rgba": [
+              24,
+              42,
+              35,
+              1
+            ]
+          }
+        ]
+      ]
+    },
+    {
+      "pose": "up_step",
+      "native_enclosed_gap_components": [
+        [
+          {
+            "native": [
+              6,
+              9
+            ],
+            "source_sample": [
+              733,
+              767
+            ],
+            "rgba": [
+              35,
+              40,
+              41,
+              0
+            ]
+          },
+          {
+            "native": [
+              6,
+              10
+            ],
+            "source_sample": [
+              733,
+              799
+            ],
+            "rgba": [
+              21,
+              46,
+              37,
+              7
+            ]
+          }
+        ],
+        [
+          {
+            "native": [
+              9,
+              9
+            ],
+            "source_sample": [
+              828,
+              767
+            ],
+            "rgba": [
+              57,
+              59,
+              63,
+              9
+            ]
+          },
+          {
+            "native": [
+              10,
+              9
+            ],
+            "source_sample": [
+              859,
+              767
+            ],
+            "rgba": [
+              33,
+              40,
+              40,
+              0
+            ]
+          }
+        ]
+      ]
+    },
+    {
+      "pose": "left_step",
+      "native_enclosed_gap_components": [
+        [
+          {
+            "native": [
+              9,
+              4
+            ],
+            "source_sample": [
+              1316,
+              608
+            ],
+            "rgba": [
+              25,
+              32,
+              31,
+              1
+            ]
+          },
+          {
+            "native": [
+              9,
+              5
+            ],
+            "source_sample": [
+              1316,
+              640
+            ],
+            "rgba": [
+              49,
+              45,
+              53,
+              0
+            ]
+          },
+          {
+            "native": [
+              9,
+              6
+            ],
+            "source_sample": [
+              1316,
+              672
+            ],
+            "rgba": [
+              69,
+              56,
+              74,
+              1
+            ]
+          }
+        ],
+        [
+          {
+            "native": [
+              5,
+              9
+            ],
+            "source_sample": [
+              1190,
+              769
+            ],
+            "rgba": [
+              31,
+              37,
+              36,
+              72
+            ]
+          }
+        ],
+        [
+          {
+            "native": [
+              6,
+              10
+            ],
+            "source_sample": [
+              1221,
+              801
+            ],
+            "rgba": [
+              25,
+              47,
+              39,
+              2
+            ]
+          }
+        ],
+        [
+          {
+            "native": [
+              9,
+              10
+            ],
+            "source_sample": [
+              1316,
+              801
+            ],
+            "rgba": [
+              8,
+              16,
+              12,
+              201
+            ]
+          }
+        ]
+      ]
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "id": "MN_WINTER_GUNFLINT_ALIAS",
+  "status": "FROZEN_ADDITIVE_ART_AND_BEHAVIOR_NO_MAP_EDITS",
+  "source_tileset": "mn_winter_outdoor",
+  "target_tileset": "mn_winter_gunflint",
+  "behavior_source": "mn_gunflint",
+  "source_definition_sha256": "026daef45738fd1f7bcb4d6d8a5e8b8cef20d5e47f4ae19849b9084d6ee1679b",
+  "behavior_definition_sha256": "d1d5979e60c4ffd8711268fca6b663de08237031130a6f81f45b01b8c876c5d4",
+  "behavior_replacements_sha256": "9f3e0fd7b7337f1a390a1114141814aceae128897aa400fda0dd563141243339",
+  "source_files_sha256": {
+    "data/tilesets/mn_winter_outdoor.json": "fd911e71065175d8ef1aa6939215abae416d3eee4cdcc8405e014b2eb84356b9",
+    "data/tilesets/mn_winter_outdoor_foregrounds.json": "0c0fddb047477cf597e4a2578f3530c4f35266a98c61488abf36b52092ff0f52",
+    "data/tilesets/mn_winter_outdoor_metatiles.bin": "64c816184c270411717d123a89c189188da5f843642b4e0815a59d165164a9ed",
+    "data/tilesets/mn_winter_outdoor_palette_map.json": "485f4937ee6159f702058a9bff6ce996e2b3b0fd0733061d428851bd01768fc4",
+    "gfx/tilesets/mn_winter_outdoor.2bpp": "93fbec10e71d2d7af81d39588a8ea4221d08fdc2ba14d0d788af65bfa1d5c3fd",
+    "gfx/tilesets/mn_winter_outdoor.png": "fb898acbdd9a754d082c0c3af58446f776bab3c95ba0dc09cee5dabe70e0c8db"
+  },
+  "expected_blocks": 73,
+  "expected_glyphs": 256,
+  "baseline_file_sha256": "ebea77ccb9b9dbe54aa5101e32590c1b075ed8130f6e7fcfe2d8c8451dab11d8",
+  "baseline_identity": "5009f2898563ecf699d7036b19d988ef5f4d43a8b39cbd48f8616cc9c45eca32",
+  "scope": "One exact copied tileset, six runtime file mirrors, inherited existing Cut/Whirlpool behavior, one additive native art manifest and derived identity. No map is retargeted or changed."
+}

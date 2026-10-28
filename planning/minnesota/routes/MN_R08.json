@@ -814,6 +814,57 @@
       ],
       "minimum_return_steps": 9,
       "purpose": "Drop from the high birch bank to the pond-shore path; climb back through the eastern native ramp."
+    },
+    {
+      "id": "CEDAR_PIER_BANK_DROP",
+      "bounds_core": [
+        72,
+        78,
+        74,
+        80
+      ],
+      "direction": "south",
+      "source_block": "57",
+      "upper_approach": [
+        73,
+        77
+      ],
+      "hop_from": [
+        73,
+        78
+      ],
+      "landing": [
+        73,
+        80
+      ],
+      "reverse_blocked": [
+        73,
+        79
+      ],
+      "side_barriers": [
+        [
+          71,
+          79
+        ],
+        [
+          74,
+          79
+        ]
+      ],
+      "return_passage_core": [
+        75,
+        78,
+        76,
+        82
+      ],
+      "return_region_core": [
+        70,
+        74,
+        77,
+        84
+      ],
+      "minimum_return_steps": 11,
+      "purpose": "Short two-lane bank descent south of the pier; local ordinary return follows the permanent outer pine shoulder through four encounter-grass steps. The longer whole-lake route remains available."
     }
   ],
   "doors": [],
@@ -1206,5 +1257,13 @@
       ]
     }
   ],
-  "shortcut": null
+  "shortcut": null,
+  "terrain_revision": {
+    "id": "route-quality-next-v01",
+    "pack_sha256": "1186a24371251f741db88cf35a7863145ed5423da4ad3d7c6485c8f242753ecb",
+    "native_publication_inputs": "renders/route-quality-next/integration-inputs",
+    "controller_proof": "renders/route-quality-next/controller-v05/controller-proof.json",
+    "runbook": "playable/route-quality-next.md",
+    "scope": "Reviewed bounded terrain only; no full-route final acceptance or earned regional progression claim."
+  }
 }

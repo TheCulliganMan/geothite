@@ -1,0 +1,9 @@
+{
+  "tool": "built-in image_gen",
+  "original": "/Users/ryanculligan/.codex/generated_images/01a179bf-dc2b-7352-8975-8b8f3a32e33b/exec-dcea6975-8935-4d14-8bba-de006345b157.png",
+  "preserved_raw": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f073/contrakett.overworld.imagegen-v1.png",
+  "sha256": "9af9b347c351d15345e1999b8e4c224b6ac69d4f195ac898969ba6cbcee36471",
+  "exact_prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f073/prompt-contrakett-v1.txt",
+  "reference_mapping": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f073/reference-mapping-contrakett-v1.json",
+  "status": "preserved; selected frames recorded in frozen manifest"
+}

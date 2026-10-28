@@ -1,0 +1,52 @@
+{
+  "family_id": "MN_F008",
+  "species_id": "MN_022",
+  "generation_version": "v2",
+  "prompt_file": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f008/prompt-rustlebee-v2.txt",
+  "input_references": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/references/native-pack-16px/native-six-frame-style-board.8x.png",
+      "sha256": "4354a639ed1a80fd6686e43b273443ed894e58a84307a8049f638ee9ffa2a099",
+      "role": "Only ImageGen input: authentic native16 map pixel density, direction framing and isolated eyes; never copy existing character."
+    }
+  ],
+  "inspected_identity_context": {
+    "canonical_front": {
+      "path": "target/minnesota-pokemon/native/MN_F008/mn-022-rustlebee-v3-polish-v1.front.png",
+      "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F008/mn-022-rustlebee-v3-polish-v1.front.png",
+      "sha256": "6badd067b27f689a534f80872ddb49cb0f5df1e49b8fe4acfdf4316163692c0d"
+    },
+    "canonical_back": {
+      "path": "target/minnesota-pokemon/native/MN_F008/mn-022-rustlebee-v3-polish-v1.back.png",
+      "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F008/mn-022-rustlebee-v3-polish-v1.back.png",
+      "sha256": "a4aa64a71e93d8ade1962db30e88a3ba182894547b8e8535abad92a63c3cb8d2"
+    },
+    "invariants": [
+      "Round rusty-patched bumblebee with broad abdomen, antennae and one simple paired-wing silhouette.",
+      "Preserve the rust patch as one cluster; hover/bob in place of footwalking."
+    ]
+  },
+  "battle_refs_passed_to_tool": false,
+  "palette_binding": {
+    "transparent_index": 0,
+    "visible_indices": [
+      1,
+      2,
+      3
+    ],
+    "normal_rgb555_words": [
+      32767,
+      5885,
+      4330,
+      0
+    ],
+    "shiny_rgb555_words": [
+      32767,
+      24485,
+      7492,
+      0
+    ],
+    "white_body_region_policy": "Simplify formerly white body/highlight regions to light ink1. Index0 is transparent everywhere, not an opaque white paint color."
+  },
+  "coverage_sha256_read": "a9f1fa187390286b03a503b70c0f9bfeebb7f23dabea13053ce7b2e93c7cfa6e"
+}

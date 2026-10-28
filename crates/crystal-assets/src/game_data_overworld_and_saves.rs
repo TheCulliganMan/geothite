@@ -161,7 +161,8 @@ impl GameDataSet {
                     session.player.tile.x, session.player.tile.y, session.map.name
                 )
             })?;
-        if describe_collision(sample.permission).terrain == Terrain::Water {
+        if describe_collision(crystal_core::world::bridge::layer_permission(
+            sample.permission, previous.traversal_state())).terrain == Terrain::Water {
             return Ok(match previous {
                 MovementMode::Surf | MovementMode::SurfPika => previous,
                 MovementMode::Normal | MovementMode::Bike | MovementMode::Skate => {
@@ -975,7 +976,9 @@ impl GameDataSet {
         let has_autonomous_objects = staged_session.objects.iter().any(|object| {
             matches!(
                 object.spritemovedata.as_str(),
-                "SPRITEMOVEDATA_WALK_LEFT_RIGHT"
+                "SPRITEMOVEDATA_PATROL_CLOCKWISE"
+                    | "SPRITEMOVEDATA_PATROL_CLOCKWISE_SLOW"
+                    | "SPRITEMOVEDATA_WALK_LEFT_RIGHT"
                     | "SPRITEMOVEDATA_WALK_UP_DOWN"
                     | "SPRITEMOVEDATA_WANDER"
                     | "SPRITEMOVEDATA_SWIM_WANDER"
@@ -1567,7 +1570,9 @@ impl GameDataSet {
             let has_autonomous_object = staged_session.objects.iter().any(|object| {
                 matches!(
                     object.spritemovedata.as_str(),
-                    "SPRITEMOVEDATA_WALK_LEFT_RIGHT"
+                    "SPRITEMOVEDATA_PATROL_CLOCKWISE"
+                        | "SPRITEMOVEDATA_PATROL_CLOCKWISE_SLOW"
+                        | "SPRITEMOVEDATA_WALK_LEFT_RIGHT"
                         | "SPRITEMOVEDATA_WALK_UP_DOWN"
                         | "SPRITEMOVEDATA_WANDER"
                         | "SPRITEMOVEDATA_SWIM_WANDER"

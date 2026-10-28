@@ -5624,6 +5624,9 @@ fn restore_visible_loaded_runtime_state(
     runtime_shell: &mut BevyRuntimeShell,
     reason: &str,
 ) -> Result<()> {
+    if consume_visible_post_credits_spawn(runtime_shell)? {
+        return settle_visible_overworld_arrival(runtime_shell, "post_credits");
+    }
     // Resuming the bedroom reapplies its decoration callback. These specials
     // finish synchronously and have no input surface to restore on Continue.
     if matches!(
@@ -5645,6 +5648,18 @@ fn restore_visible_loaded_runtime_state(
     queue_visible_current_music(runtime_shell)?;
     let snapshot = runtime_shell.shell.snapshot()?;
     runtime_shell.visible_map_name_sign = None;
+    if snapshot.ui.active_pokemon_picture.is_some()
+        && let Some(wait) = &snapshot.ui.pending_text_wait
+    {
+        // The persisted native wait is the authority for a picture's return
+        // point. Frontend cursors are process-local and must be rebuilt after
+        // Continue before its A/B close can advance the enclosing script.
+        let next = wait
+            .command_index
+            .checked_add(1)
+            .context("saved Pokemon picture continuation index overflow")?;
+        arm_visible_active_script_cursor(runtime_shell, &wait.source_script, next);
+    }
     record_visible_runtime_action(
         runtime_shell,
         format!(
@@ -5904,15 +5919,10 @@ fn quick_load(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
     Ok(())
 }
 
-fn load_visible_runtime_save(
-    runtime_shell: &mut BevyRuntimeShell,
-    path: &PathBuf,
-    arrival_reason: &str,
-) -> Result<()> {
-    runtime_shell.shell.load(path)?;
-    // Loading replaces the session. Old battle narration must not capture the
-    // restored map's script continuation or play over its arrival dialogue.
-    reset_visible_battle_presentation(runtime_shell);
+// Direct save loading and title Continue consume the same one-shot native
+// credits marker. Authored Hall of Fame maps may select their own registered
+// recovery spawn without changing the original Lance/Red destinations.
+fn consume_visible_post_credits_spawn(runtime_shell: &mut BevyRuntimeShell) -> Result<bool> {
     let post_credits_spawn = runtime_shell
         .shell
         .session()
@@ -5936,7 +5946,17 @@ fn load_visible_runtime_save(
         let spawn_lance = required_constant("SPAWN_LANCE")?;
         let spawn_red = required_constant("SPAWN_RED")?;
         let spawn_identifier = if marker == spawn_lance {
-            required_constant("SPAWN_NEW_BARK")?
+            if let Some(value) = snapshot
+                .story
+                .story_event_script_constants
+                .maps
+                .get(&snapshot.overworld.map_name)
+                .and_then(|m| m.get("GEOTHITE_POST_CREDITS_SPAWN"))
+            {
+                u16::try_from(*value).context("authored post-credits spawn must be a u16")?
+            } else {
+                required_constant("SPAWN_NEW_BARK")?
+            }
         } else if marker == spawn_red {
             required_constant("SPAWN_MT_SILVER")?
         } else {
@@ -5957,6 +5977,19 @@ fn load_visible_runtime_save(
             spawn_identifier, checksum
         ));
     }
+    Ok(post_credits_warped)
+}
+
+fn load_visible_runtime_save(
+    runtime_shell: &mut BevyRuntimeShell,
+    path: &PathBuf,
+    arrival_reason: &str,
+) -> Result<()> {
+    runtime_shell.shell.load(path)?;
+    // Loading replaces the session. Old battle narration must not capture the
+    // restored map's script continuation or play over its arrival dialogue.
+    reset_visible_battle_presentation(runtime_shell);
+    let post_credits_warped = consume_visible_post_credits_spawn(runtime_shell)?;
     runtime_shell.title_menu = None;
     runtime_shell.credits_screen = None;
     runtime_shell.pending_time_set = None;
@@ -6008,6 +6041,7 @@ fn reset_visible_navigation_state(runtime_shell: &mut BevyRuntimeShell) {
     runtime_shell.pending_oak_intro = None;
     runtime_shell.pending_gender_selection = None;
     runtime_shell.visible_blackout_phase = None;
+    runtime_shell.poison_blackout_recovery = false;
     runtime_shell.pending_poison_blackout = false;
     runtime_shell.visible_walk_warp_phase = None;
     runtime_shell.credits_screen = None;

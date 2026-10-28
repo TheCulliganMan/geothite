@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "tool": "built-in image_gen.imagegen",
+  "intent": "generate",
+  "style_reference": "planning/minnesota/pokemon/overworld/20261027-v1/references/native-pack-16px/native-six-frame-style-board.8x.png",
+  "reference_role": "authentic original16px native walking style only; no battle/high-resolution creature art",
+  "source_image": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/slipperina.overworld.imagegen-v4.png",
+  "source_sha256": "66b69c81c487e2eb223e03c385ccbfa29e01dc42476aa141437fde11542b4b87",
+  "original_generated_path": "/Users/ryanculligan/.codex/generated_images/01a17dc9-54bd-7412-bc8a-4d761e4a369e/exec-dc3850b2-1e59-4625-8576-77563d3f1cad.png",
+  "prompt_file": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/prompt-slipperina-v4.txt",
+  "prompt_sha256": "d129a4fbaa85111b15a26704bb88a77f1b2acf812c2c056d141999ebe3a987d4",
+  "native_goal": [
+    16,
+    16
+  ],
+  "frames": 6,
+  "all_outputs_retained": true
+}

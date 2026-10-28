@@ -1,0 +1,95 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F008",
+  "species_id": "MN_022",
+  "name": "Rustlebee",
+  "status": "native_compiled_author_inspected_root_world_context_review_pending",
+  "generation_tool": "built-in image_gen",
+  "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f008/rustlebee.overworld.imagegen-v2.png",
+  "source_sha256": "17e85b2faca32c47a4697f8053f74547be4651b6c1d389bdebaab577d1f903a8",
+  "original_default_output": "/Users/ryanculligan/.codex/generated_images/01a179bf-dc2b-7352-8975-8b8f3a32e33b/exec-f194ea1a-bb6b-4565-81fd-c27a2e4274c2.png",
+  "dimensions": [
+    1536,
+    1024
+  ],
+  "prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f008/prompt-rustlebee-v2.txt",
+  "prompt_sha256": "5c530c167671021120ca4ecf59c1276dc9aaba0507ace286e8aaf1efdd5f1ec8",
+  "reference_mapping": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f008/reference-mapping-rustlebee-v2.json",
+  "only_input_image": "planning/minnesota/pokemon/overworld/20261027-v1/references/native-pack-16px/native-six-frame-style-board.8x.png",
+  "proposed_native_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f008/manifest-rustlebee-v2-phase-eyes.json",
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f008/rustlebee-v2-phase-eyes",
+  "six_frame_layout": "3columns2rows; down/up/left idle then down/up/left wing-cycle",
+  "conversion": "Rust source_center with equal360x330 crop windows; shared scale/anchor across6poses; no pixel painting",
+  "conversion_result": {
+    "exit_code": 0,
+    "stdout": "Compiled MN_F008: 1 species, 4 literal OBJ runtime files; retained reviews in planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f008/rustlebee-v2-center\n",
+    "stderr": ""
+  },
+  "manifest_sha256": "d0522d0fdcff1ad9d132354fab0b5ec559e8322cbb525ceeb9befb43583c2caf",
+  "normal_review": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f008/rustlebee-v2-phase-eyes/review/line.normal-8x.png",
+  "review_sha256": "25a6349da9cb53288495e975038a0c51a4295ccded01156cab47422383616da9",
+  "native_bounds": [
+    [
+      3,
+      4,
+      11,
+      11
+    ],
+    [
+      2,
+      4,
+      12,
+      11
+    ],
+    [
+      3,
+      5,
+      10,
+      10
+    ],
+    [
+      3,
+      4,
+      11,
+      10
+    ],
+    [
+      2,
+      4,
+      12,
+      11
+    ],
+    [
+      3,
+      5,
+      10,
+      10
+    ]
+  ],
+  "palette_rgb555": [
+    32767,
+    5885,
+    4330,
+    0
+  ],
+  "shiny_palette_rgb555": [
+    32767,
+    24485,
+    7492,
+    0
+  ],
+  "sampling": "source_center",
+  "validation_results": {
+    "six_frames_16x16": true,
+    "runtime_png_16x96": true,
+    "native_2bpp_bytes": 384,
+    "tile_decode_matches_png_and_indexed_rows": true,
+    "binary_alpha": true,
+    "transparent_border": true,
+    "three_opaque_inks_only": true,
+    "normal_shiny_palette_words_exact": true,
+    "idle_step_pairs_different": true
+  },
+  "notes": "Actual native six poses inspected: separated south dots, west eye recovered with source-only west-idle +8y crop phase; rear plain rusty-patched abdomen has no face, wing/leg cycle differs. Top/head anchor remains stable within each pair.",
+  "accepted": false
+}

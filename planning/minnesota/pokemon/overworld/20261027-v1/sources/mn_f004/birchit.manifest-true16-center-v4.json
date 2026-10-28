@@ -1,0 +1,93 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F004",
+  "species": [
+    {
+      "species_id": "MN_010",
+      "runtime_token": "BIRCHIT",
+      "palette_rgb555": [
+        32767,
+        13053,
+        4331,
+        0
+      ],
+      "shiny_palette_rgb555": [
+        32767,
+        24492,
+        7524,
+        0
+      ],
+      "fit": [
+        12,
+        12
+      ],
+      "alpha_threshold": 128,
+      "sampling": "source_center",
+      "minimum_foreground_samples": 16,
+      "black_priority_samples": 8,
+      "frames": [
+        {
+          "pose": "down_idle",
+          "source": "birchit.overworld.imagegen-v4.png",
+          "crop": [
+            54,
+            80,
+            464,
+            408
+          ]
+        },
+        {
+          "pose": "up_idle",
+          "source": "birchit.overworld.imagegen-v4.png",
+          "crop": [
+            552,
+            80,
+            464,
+            408
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "source": "birchit.overworld.imagegen-v4.png",
+          "crop": [
+            1042,
+            80,
+            464,
+            408
+          ]
+        },
+        {
+          "pose": "down_step",
+          "source": "birchit.overworld.imagegen-v4.png",
+          "crop": [
+            56,
+            535,
+            464,
+            408
+          ]
+        },
+        {
+          "pose": "up_step",
+          "source": "birchit.overworld.imagegen-v4.png",
+          "crop": [
+            553,
+            535,
+            464,
+            408
+          ]
+        },
+        {
+          "pose": "left_step",
+          "source": "birchit.overworld.imagegen-v4.png",
+          "crop": [
+            1047,
+            533,
+            464,
+            408
+          ]
+        }
+      ],
+      "interior_black_samples": null
+    }
+  ]
+}

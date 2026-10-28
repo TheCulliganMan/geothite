@@ -1,0 +1,263 @@
+{
+  "species_id": "MN_204",
+  "name": "obelurk",
+  "status": "native-review-recommended; root independent review and context required",
+  "selected_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f093/obelurk.manifest-native-eye-registration-v4.json",
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/true16-obelurk-eye-registration-v4",
+  "shared_transform": {
+    "source_bounds": [
+      12,
+      13,
+      386,
+      407
+    ],
+    "native_size": [
+      13,
+      14
+    ],
+    "native_origin": [
+      1,
+      1
+    ]
+  },
+  "all_four_nonrear_poses_actual_pupils_pass": true,
+  "each_native_eye_cluster_maps_to_one_actual_small_source_pupil_component": true,
+  "actual_source_pupil_proofs": [
+    {
+      "pose": "down_idle",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f093/obelurk.overworld.imagegen-v2.png",
+      "crop": [
+        41,
+        42,
+        412,
+        432
+      ],
+      "actual_source_eye_bounds": [
+        [
+          140,
+          321,
+          19,
+          20
+        ]
+      ],
+      "eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              4,
+              10
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                3,
+                4,
+                4,
+                253
+              ],
+              "bounds": [
+                140,
+                321,
+                19,
+                20
+              ],
+              "pixels": 380,
+              "truncated_contour": false,
+              "native_pixel": [
+                4,
+                10
+              ],
+              "source_sample_pixel": [
+                156,
+                331
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f093/obelurk.overworld.imagegen-v3.png",
+      "crop": [
+        1076,
+        44,
+        412,
+        432
+      ],
+      "actual_source_eye_bounds": [
+        [
+          1154,
+          289,
+          29,
+          28
+        ]
+      ],
+      "eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              3,
+              9
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                2,
+                2,
+                0,
+                253
+              ],
+              "bounds": [
+                1154,
+                289,
+                29,
+                28
+              ],
+              "pixels": 806,
+              "truncated_contour": false,
+              "native_pixel": [
+                3,
+                9
+              ],
+              "source_sample_pixel": [
+                1162,
+                304
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f093/obelurk.overworld.imagegen-v2.png",
+      "crop": [
+        41,
+        534,
+        412,
+        432
+      ],
+      "actual_source_eye_bounds": [
+        [
+          140,
+          810,
+          19,
+          21
+        ]
+      ],
+      "eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              4,
+              10
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                2,
+                2,
+                2,
+                253
+              ],
+              "bounds": [
+                140,
+                810,
+                19,
+                21
+              ],
+              "pixels": 399,
+              "truncated_contour": false,
+              "native_pixel": [
+                4,
+                10
+              ],
+              "source_sample_pixel": [
+                156,
+                823
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f093/obelurk.overworld.imagegen-v3.png",
+      "crop": [
+        1076,
+        541,
+        412,
+        432
+      ],
+      "actual_source_eye_bounds": [
+        [
+          1154,
+          780,
+          29,
+          27
+        ]
+      ],
+      "eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              3,
+              9
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                0,
+                0,
+                0,
+                253
+              ],
+              "bounds": [
+                1154,
+                780,
+                29,
+                27
+              ],
+              "pixels": 783,
+              "truncated_contour": false,
+              "native_pixel": [
+                3,
+                9
+              ],
+              "source_sample_pixel": [
+                1162,
+                801
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "old_native_poses_preserved_exactly": [
+    "down_idle",
+    "up_idle",
+    "left_idle",
+    "down_step",
+    "up_step",
+    "left_step"
+  ],
+  "normal_shiny_runtime_parity": "all1536pixels exact each",
+  "canonical_palette_bytes": "exact",
+  "all_three_walk_pairs_distinct": true,
+  "rear_review": "both rear native poses viewed; no copied face",
+  "normal_shiny_native_boards_actually_viewed": true,
+  "accepted_coverage_native_pack_untouched": true,
+  "manifest_sha256": "1b5b4fbb9c259d59b7def177116996b4ad5323e5f3e34276b0e3db53bcb46e39",
+  "compiled_index_sha256": "3ae134834c2317a1be45c7a8e9ba9f09ae0da356877bff047286392ca713b541"
+}

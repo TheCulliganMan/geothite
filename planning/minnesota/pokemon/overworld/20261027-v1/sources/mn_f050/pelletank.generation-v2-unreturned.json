@@ -1,0 +1,6 @@
+{
+  "tool": "built-in imagegen",
+  "result": "call returned no image result; allSettled rejected; no output file present",
+  "prompt": "pelletank.prompt-v2.txt",
+  "accepted": false
+}

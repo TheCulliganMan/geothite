@@ -8,7 +8,11 @@ impl GameDataSet {
         sound_effect_ids: &BTreeSet<String>,
         cry_ids: &BTreeSet<String>,
     ) -> Result<RuntimeMutationOutcome> {
-        if matches!(&command, RuntimeMutationCommand::ResolveBlackoutToLastSpawn) {
+        if matches!(
+            &command,
+            RuntimeMutationCommand::ResolveBlackoutToLastSpawn
+                | RuntimeMutationCommand::ResolvePoisonBlackoutToLastSpawn
+        ) {
             let mut next_state = state.clone();
             let mut next_session = session.clone();
             let outcome = self.apply_runtime_mutation_command_with_checksum(
@@ -4266,7 +4270,8 @@ impl GameDataSet {
                 crystal_core::battle::start::deactivate_battle_after_loss(state);
                 RuntimeMutationResult::BattleLossCompleted
             }
-            RuntimeMutationCommand::ResolveBlackoutToLastSpawn => {
+            RuntimeMutationCommand::ResolveBlackoutToLastSpawn
+            | RuntimeMutationCommand::ResolvePoisonBlackoutToLastSpawn => {
                 anyhow::ensure!(
                     !state
                         .storage
@@ -4281,11 +4286,25 @@ impl GameDataSet {
                     matches!(state.battle, BattleMemory::Inactive),
                     "blackout requires battle loss cleanup to finish before whiteout recovery"
                 );
-                anyhow::ensure!(
-                    state.battle_result & 0x3f == 1,
-                    "blackout cannot consume terminal result {:#04x}",
-                    state.battle_result
-                );
+                if matches!(
+                    command,
+                    RuntimeMutationCommand::ResolvePoisonBlackoutToLastSpawn
+                ) {
+                    anyhow::ensure!(
+                        state.storage.party.pokemon.iter().flatten().any(|pokemon| !pokemon.is_egg),
+                        "poison blackout requires a fainted party Pokemon"
+                    );
+                    anyhow::ensure!(
+                        state.pending_static_wild_terminal.is_none(),
+                        "poison blackout cannot consume a pending static-wild result"
+                    );
+                } else {
+                    anyhow::ensure!(
+                        state.battle_result & 0x3f == 1,
+                        "blackout cannot consume terminal result {:#04x}",
+                        state.battle_result
+                    );
+                }
                 if let Some(pending) = state.pending_static_wild_terminal.as_ref() {
                     anyhow::ensure!(
                         pending.battle_result & 0x3f == 1,

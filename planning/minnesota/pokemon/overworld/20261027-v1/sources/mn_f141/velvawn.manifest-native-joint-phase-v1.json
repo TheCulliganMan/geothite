@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F141",
+  "species": [
+    {
+      "species_id": "MN_312",
+      "runtime_token": "VELVAWN",
+      "palette_rgb555": [
+        32767,
+        11897,
+        7689,
+        0
+      ],
+      "shiny_palette_rgb555": [
+        32767,
+        23065,
+        16652,
+        0
+      ],
+      "fit": [
+        12,
+        12
+      ],
+      "alpha_threshold": 245,
+      "sampling": "source_center",
+      "minimum_foreground_samples": 16,
+      "black_priority_samples": 32,
+      "interior_black_samples": null,
+      "opaque_interior_minimum_samples": 60,
+      "frames": [
+        {
+          "pose": "down_idle",
+          "source": "velvawn.overworld.imagegen-v1.png",
+          "crop": [
+            109,
+            109,
+            339,
+            360
+          ]
+        },
+        {
+          "pose": "up_idle",
+          "source": "velvawn.overworld.imagegen-v1.png",
+          "crop": [
+            599,
+            109,
+            339,
+            360
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "source": "velvawn.overworld.imagegen-v1.png",
+          "crop": [
+            1072,
+            120,
+            339,
+            360
+          ]
+        },
+        {
+          "pose": "down_step",
+          "source": "velvawn.overworld.imagegen-v1.png",
+          "crop": [
+            109,
+            561,
+            339,
+            360
+          ]
+        },
+        {
+          "pose": "up_step",
+          "source": "velvawn.overworld.imagegen-v1.png",
+          "crop": [
+            599,
+            556,
+            339,
+            360
+          ]
+        },
+        {
+          "pose": "left_step",
+          "source": "velvawn.overworld.imagegen-v1.png",
+          "crop": [
+            1073,
+            561,
+            339,
+            360
+          ]
+        }
+      ]
+    }
+  ]
+}

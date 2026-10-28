@@ -159,6 +159,16 @@ pub(super) fn validate_relocations(
 }
 
 pub(super) fn validate(pack: &CompiledGamePack, plan: &Expansion) -> Result<()> {
+    validate_with_water_edges(pack, plan, &BTreeSet::new())
+}
+
+/// Additional water lanes must already have exact reciprocal native projection
+/// and Water collision verified by the recomposition publisher.
+pub(super) fn validate_with_water_edges(
+    pack: &CompiledGamePack,
+    plan: &Expansion,
+    water_edges: &BTreeSet<[u16; 2]>,
+) -> Result<()> {
     let city = &pack.data.maps[&plan.city];
     let accessible = graph(pack, city, plan.arrival_core, false, true, true)?;
     for warp in &city.events.warps {
@@ -281,7 +291,10 @@ pub(super) fn validate(pack: &CompiledGamePack, plan: &Expansion) -> Result<()> 
                 || y + 1 == city.attributes.height * 2
             {
                 ensure!(
-                    mouths.contains(&[x, y]),
+                    mouths.contains(&[x, y])
+                        || (surf
+                            && water_edges.contains(&[x, y])
+                            && kind(pack, city, [x, y])? == "WATER"),
                     "{} unconnected walking/Surf boundary at {x},{y}",
                     city.id
                 );

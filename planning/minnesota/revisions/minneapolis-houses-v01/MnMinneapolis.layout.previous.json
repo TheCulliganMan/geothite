@@ -1,0 +1,6488 @@
+{
+  "schema_version": 2,
+  "id": "MnMinneapolis",
+  "tileset": "johto_modern",
+  "compiled_tileset": "mn_minneapolis_city",
+  "dimensions_metatiles": [
+    40,
+    32
+  ],
+  "coordinate_units": "32px metatiles; native actors and doors use16px core tiles",
+  "shore_fitting": "johto_8_neighbors",
+  "reject_cliff_cuts": true,
+  "source_pixels_modified": false,
+  "derived_blocks": [
+    {
+      "id": "80",
+      "source_tileset": "kanto",
+      "source_block": "20",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ],
+      "purpose": "Exact Saffron urban roof/window/door/paving vocabulary"
+    },
+    {
+      "id": "81",
+      "source_tileset": "kanto",
+      "source_block": "21",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ],
+      "purpose": "Exact Saffron urban roof/window/door/paving vocabulary"
+    },
+    {
+      "id": "82",
+      "source_tileset": "kanto",
+      "source_block": "54",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ],
+      "purpose": "Exact Saffron urban roof/window/door/paving vocabulary"
+    },
+    {
+      "id": "83",
+      "source_tileset": "kanto",
+      "source_block": "37",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ],
+      "purpose": "Exact Saffron urban roof/window/door/paving vocabulary"
+    },
+    {
+      "id": "84",
+      "source_tileset": "kanto",
+      "source_block": "68",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ],
+      "purpose": "Exact Saffron urban roof/window/door/paving vocabulary"
+    },
+    {
+      "id": "85",
+      "source_tileset": "kanto",
+      "source_block": "69",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ],
+      "purpose": "Exact Saffron urban roof/window/door/paving vocabulary"
+    },
+    {
+      "id": "86",
+      "source_tileset": "kanto",
+      "source_block": "7a",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ],
+      "purpose": "Exact Saffron urban roof/window/door/paving vocabulary"
+    },
+    {
+      "id": "87",
+      "source_tileset": "kanto",
+      "source_block": "7d",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ],
+      "purpose": "Exact Saffron urban roof/window/door/paving vocabulary"
+    },
+    {
+      "id": "88",
+      "source_tileset": "kanto",
+      "source_block": "7e",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ],
+      "purpose": "Exact Saffron urban roof/window/door/paving vocabulary"
+    },
+    {
+      "id": "89",
+      "source_tileset": "kanto",
+      "source_block": "7f",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ],
+      "purpose": "Exact Saffron urban roof/window/door/paving vocabulary"
+    },
+    {
+      "id": "8a",
+      "source_tileset": "kanto",
+      "source_block": "3a",
+      "collision": [
+        "WALL",
+        "WALL",
+        "DOOR",
+        "WALL"
+      ],
+      "purpose": "Exact Saffron urban roof/window/door/paving vocabulary"
+    },
+    {
+      "id": "8b",
+      "source_tileset": "kanto",
+      "source_block": "53",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "DOOR"
+      ],
+      "purpose": "Exact Saffron urban roof/window/door/paving vocabulary"
+    },
+    {
+      "id": "8c",
+      "source_tileset": "kanto",
+      "source_block": "7c",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "DOOR"
+      ],
+      "purpose": "Exact Saffron urban roof/window/door/paving vocabulary"
+    },
+    {
+      "id": "8d",
+      "source_tileset": "kanto",
+      "source_block": "55",
+      "collision": [
+        "FLOOR",
+        "FLOOR",
+        "FLOOR",
+        "FLOOR"
+      ],
+      "purpose": "Exact Saffron urban roof/window/door/paving vocabulary"
+    },
+    {
+      "id": "8e",
+      "source_tileset": "park",
+      "source_block": "0e",
+      "collision": [
+        "WALL",
+        "WALL",
+        "FLOOR",
+        "FLOOR"
+      ],
+      "purpose": "Native bench/picnic furniture and compact red market canopy"
+    },
+    {
+      "id": "8f",
+      "source_tileset": "park",
+      "source_block": "0f",
+      "collision": [
+        "WALL",
+        "FLOOR",
+        "FLOOR",
+        "FLOOR"
+      ],
+      "purpose": "Native bench/picnic furniture and compact red market canopy"
+    },
+    {
+      "id": "90",
+      "source_tileset": "park",
+      "source_block": "10",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "FLOOR"
+      ],
+      "purpose": "Native bench/picnic furniture and compact red market canopy"
+    },
+    {
+      "id": "91",
+      "source_tileset": "park",
+      "source_block": "11",
+      "collision": [
+        "WALL",
+        "WALL",
+        "FLOOR",
+        "FLOOR"
+      ],
+      "purpose": "Native bench/picnic furniture and compact red market canopy"
+    },
+    {
+      "id": "92",
+      "source_tileset": "park",
+      "source_block": "12",
+      "collision": [
+        "WALL",
+        "WALL",
+        "FLOOR",
+        "WALL"
+      ],
+      "purpose": "Native bench/picnic furniture and compact red market canopy"
+    },
+    {
+      "id": "93",
+      "source_tileset": "park",
+      "source_block": "28",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ],
+      "purpose": "Native bench/picnic furniture and compact red market canopy"
+    },
+    {
+      "id": "94",
+      "source_tileset": "park",
+      "source_block": "29",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ],
+      "purpose": "Native bench/picnic furniture and compact red market canopy"
+    },
+    {
+      "id": "95",
+      "source_tileset": "park",
+      "source_block": "2a",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ],
+      "purpose": "Native bench/picnic furniture and compact red market canopy"
+    },
+    {
+      "id": "96",
+      "source_tileset": "park",
+      "source_block": "2c",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ],
+      "purpose": "Native bench/picnic furniture and compact red market canopy"
+    },
+    {
+      "id": "97",
+      "source_tileset": "park",
+      "source_block": "2d",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ],
+      "purpose": "Native bench/picnic furniture and compact red market canopy"
+    },
+    {
+      "id": "98",
+      "source_tileset": "park",
+      "source_block": "2e",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ],
+      "purpose": "Native bench/picnic furniture and compact red market canopy"
+    },
+    {
+      "id": "99",
+      "source_tileset": "cave",
+      "source_block": "2c",
+      "collision": "WATERFALL",
+      "required_typed_extension": "Root bounded native St Anthony Falls append; source preview only until installed"
+    }
+  ],
+  "layers": [
+    {
+      "kind": "rect",
+      "name": "North mill frontage",
+      "bounds": [
+        1,
+        5,
+        14,
+        6
+      ],
+      "material": "floor"
+    },
+    {
+      "kind": "rect",
+      "name": "Foundry-arts short frontage",
+      "bounds": [
+        1,
+        10,
+        14,
+        11
+      ],
+      "material": "floor"
+    },
+    {
+      "kind": "rect",
+      "name": "Bridge home entry strip",
+      "bounds": [
+        11,
+        11,
+        14,
+        12
+      ],
+      "material": "floor"
+    },
+    {
+      "kind": "rect",
+      "name": "North culture fronts",
+      "bounds": [
+        21,
+        5,
+        39,
+        6
+      ],
+      "material": "floor"
+    },
+    {
+      "kind": "rect",
+      "name": "Garden and books short court",
+      "bounds": [
+        21,
+        9,
+        39,
+        10
+      ],
+      "material": "floor"
+    },
+    {
+      "kind": "rect",
+      "name": "Clinic and Mart frontage",
+      "bounds": [
+        30,
+        13,
+        38,
+        14
+      ],
+      "material": "floor"
+    },
+    {
+      "kind": "rect",
+      "name": "Gym frontage",
+      "bounds": [
+        30,
+        17,
+        38,
+        18
+      ],
+      "material": "floor"
+    },
+    {
+      "kind": "rect",
+      "name": "Department street elbow",
+      "bounds": [
+        23,
+        18,
+        39,
+        19
+      ],
+      "material": "floor"
+    },
+    {
+      "kind": "rect",
+      "name": "Actual priced market counter aisle",
+      "bounds": [
+        20,
+        22,
+        33,
+        24
+      ],
+      "material": "floor"
+    },
+    {
+      "kind": "rect",
+      "name": "Club entry strip",
+      "bounds": [
+        32,
+        23,
+        39,
+        24
+      ],
+      "material": "floor"
+    },
+    {
+      "kind": "rect",
+      "name": "Residential entry lane",
+      "bounds": [
+        20,
+        26,
+        34,
+        27
+      ],
+      "material": "floor"
+    },
+    {
+      "kind": "rect",
+      "name": "Kitchen short front",
+      "bounds": [
+        33,
+        27,
+        39,
+        28
+      ],
+      "material": "floor"
+    },
+    {
+      "kind": "rect",
+      "name": "Southern inhabited frontage",
+      "bounds": [
+        20,
+        30,
+        39,
+        31
+      ],
+      "material": "floor"
+    },
+    {
+      "kind": "rect",
+      "name": "Boat-house quay",
+      "bounds": [
+        1,
+        15,
+        11,
+        16
+      ],
+      "material": "floor"
+    },
+    {
+      "kind": "rect",
+      "name": "Dispatcher witness corner",
+      "bounds": [
+        10,
+        17,
+        15,
+        19
+      ],
+      "material": "floor"
+    },
+    {
+      "kind": "rect",
+      "name": "Lake cabin frontal landing",
+      "bounds": [
+        1,
+        23,
+        6,
+        24
+      ],
+      "material": "floor"
+    },
+    {
+      "kind": "rect",
+      "name": "Field club frontage",
+      "bounds": [
+        5,
+        26,
+        11,
+        27
+      ],
+      "material": "floor"
+    },
+    {
+      "kind": "rect",
+      "name": "Gardeners frontage",
+      "bounds": [
+        1,
+        29,
+        10,
+        30
+      ],
+      "material": "floor"
+    },
+    {
+      "kind": "rect",
+      "name": "Greenhouse front",
+      "bounds": [
+        9,
+        28,
+        14,
+        29
+      ],
+      "material": "floor"
+    },
+    {
+      "kind": "rect",
+      "name": "Library reader pocket",
+      "bounds": [
+        34,
+        6,
+        37,
+        7
+      ],
+      "material": "floor"
+    },
+    {
+      "kind": "rect",
+      "name": "Artist working lane",
+      "bounds": [
+        25,
+        5,
+        26,
+        7
+      ],
+      "material": "floor"
+    },
+    {
+      "kind": "rect",
+      "name": "Native coop vendor court",
+      "bounds": [
+        7,
+        5,
+        10,
+        7
+      ],
+      "material": "floor"
+    },
+    {
+      "kind": "rect",
+      "name": "Park witness bank landing",
+      "bounds": [
+        12,
+        17,
+        15,
+        18
+      ],
+      "material": "floor"
+    },
+    {
+      "kind": "rect",
+      "name": "Northern garden discoverable turn",
+      "bounds": [
+        35,
+        9,
+        36,
+        11
+      ],
+      "material": "floor"
+    },
+    {
+      "kind": "rect",
+      "name": "Co-op herb yard",
+      "bounds": [
+        1,
+        1,
+        5,
+        4
+      ],
+      "material": "lawn"
+    },
+    {
+      "kind": "rect",
+      "name": "Mill upper garden",
+      "bounds": [
+        11,
+        1,
+        14,
+        5
+      ],
+      "material": "lawn"
+    },
+    {
+      "kind": "rect",
+      "name": "Library planted edge",
+      "bounds": [
+        31,
+        6,
+        34,
+        7
+      ],
+      "material": "lawn"
+    },
+    {
+      "kind": "rect",
+      "name": "Artist garden shoulder",
+      "bounds": [
+        21,
+        6,
+        25,
+        7
+      ],
+      "material": "lawn"
+    },
+    {
+      "kind": "rect",
+      "name": "Lake planted shore",
+      "bounds": [
+        1,
+        16,
+        10,
+        22
+      ],
+      "material": "lawn"
+    },
+    {
+      "kind": "rect",
+      "name": "Greenhouse garden",
+      "bounds": [
+        8,
+        27,
+        14,
+        30
+      ],
+      "material": "lawn"
+    },
+    {
+      "kind": "rect",
+      "name": "Kitchen side garden",
+      "bounds": [
+        38,
+        24,
+        39,
+        27
+      ],
+      "material": "lawn"
+    },
+    {
+      "kind": "rect",
+      "name": "Southern house back strips",
+      "bounds": [
+        21,
+        23,
+        32,
+        24
+      ],
+      "material": "lawn"
+    },
+    {
+      "kind": "polygon",
+      "name": "Mississippi narrow inhabited river, three actual bridge courts",
+      "points": [
+        [
+          16,
+          0
+        ],
+        [
+          18,
+          0
+        ],
+        [
+          18,
+          8
+        ],
+        [
+          17,
+          8
+        ],
+        [
+          17,
+          13
+        ],
+        [
+          18,
+          13
+        ],
+        [
+          18,
+          20
+        ],
+        [
+          17,
+          20
+        ],
+        [
+          17,
+          25
+        ],
+        [
+          18,
+          25
+        ],
+        [
+          18,
+          31
+        ],
+        [
+          16,
+          31
+        ],
+        [
+          16,
+          30
+        ],
+        [
+          15,
+          30
+        ],
+        [
+          15,
+          25
+        ],
+        [
+          16,
+          25
+        ],
+        [
+          16,
+          20
+        ],
+        [
+          15,
+          20
+        ],
+        [
+          15,
+          13
+        ],
+        [
+          16,
+          13
+        ],
+        [
+          16,
+          8
+        ],
+        [
+          15,
+          8
+        ],
+        [
+          15,
+          5
+        ],
+        [
+          16,
+          5
+        ]
+      ],
+      "material": "water"
+    },
+    {
+      "kind": "polygon",
+      "name": "West neighborhood lake below boat-house quay",
+      "points": [
+        [
+          3,
+          16
+        ],
+        [
+          7,
+          16
+        ],
+        [
+          7,
+          17
+        ],
+        [
+          8,
+          17
+        ],
+        [
+          8,
+          20
+        ],
+        [
+          6,
+          20
+        ],
+        [
+          6,
+          21
+        ],
+        [
+          3,
+          21
+        ],
+        [
+          3,
+          20
+        ],
+        [
+          2,
+          20
+        ],
+        [
+          2,
+          17
+        ],
+        [
+          3,
+          17
+        ]
+      ],
+      "material": "water"
+    },
+    {
+      "kind": "polygon",
+      "name": "South park pond faces greenhouse entry",
+      "points": [
+        [
+          10,
+          29
+        ],
+        [
+          13,
+          29
+        ],
+        [
+          13,
+          30
+        ],
+        [
+          10,
+          30
+        ]
+      ],
+      "material": "water"
+    },
+    {
+      "kind": "path",
+      "name": "North-south inhabited axis",
+      "points": [
+        [
+          20,
+          0
+        ],
+        [
+          20,
+          8
+        ],
+        [
+          21,
+          8
+        ],
+        [
+          21,
+          11
+        ],
+        [
+          20,
+          11
+        ],
+        [
+          20,
+          19
+        ],
+        [
+          19,
+          19
+        ],
+        [
+          19,
+          23
+        ],
+        [
+          20,
+          23
+        ],
+        [
+          20,
+          31
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "kind": "path",
+      "name": "North mill street and actual print-order upper river bridge",
+      "points": [
+        [
+          2,
+          5
+        ],
+        [
+          14,
+          5
+        ],
+        [
+          14,
+          7
+        ],
+        [
+          20,
+          7
+        ],
+        [
+          20,
+          5
+        ],
+        [
+          37,
+          5
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "kind": "path",
+      "name": "Old foundry arts loop",
+      "points": [
+        [
+          4,
+          5
+        ],
+        [
+          5,
+          5
+        ],
+        [
+          5,
+          6
+        ],
+        [
+          1,
+          6
+        ],
+        [
+          1,
+          10
+        ],
+        [
+          11,
+          10
+        ],
+        [
+          11,
+          11
+        ],
+        [
+          14,
+          11
+        ],
+        [
+          14,
+          6
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "kind": "path",
+      "name": "Tool workshop rear entry alley",
+      "points": [
+        [
+          12,
+          5
+        ],
+        [
+          12,
+          8
+        ],
+        [
+          11,
+          8
+        ],
+        [
+          11,
+          11
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "kind": "path",
+      "name": "Library and making connected return",
+      "points": [
+        [
+          21,
+          5
+        ],
+        [
+          21,
+          9
+        ],
+        [
+          38,
+          9
+        ],
+        [
+          38,
+          5
+        ],
+        [
+          37,
+          5
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "kind": "path",
+      "name": "Short garden entry offset",
+      "points": [
+        [
+          23,
+          9
+        ],
+        [
+          23,
+          10
+        ],
+        [
+          24,
+          10
+        ],
+        [
+          24,
+          18
+        ],
+        [
+          20,
+          18
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "kind": "path",
+      "name": "Clinic and gym shared small approach",
+      "points": [
+        [
+          30,
+          10
+        ],
+        [
+          30,
+          17
+        ],
+        [
+          34,
+          17
+        ],
+        [
+          34,
+          13
+        ],
+        [
+          37,
+          13
+        ],
+        [
+          37,
+          18
+        ],
+        [
+          20,
+          18
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "kind": "path",
+      "name": "Actual St Paul park avenue only regional east street",
+      "points": [
+        [
+          10,
+          18
+        ],
+        [
+          20,
+          18
+        ],
+        [
+          39,
+          18
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "kind": "path",
+      "name": "Boat quay to working dispatch",
+      "points": [
+        [
+          1,
+          15
+        ],
+        [
+          10,
+          15
+        ],
+        [
+          10,
+          18
+        ],
+        [
+          20,
+          18
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "kind": "path",
+      "name": "Lake shore loop to gardeners and field club",
+      "points": [
+        [
+          1,
+          15
+        ],
+        [
+          1,
+          23
+        ],
+        [
+          5,
+          23
+        ],
+        [
+          5,
+          26
+        ],
+        [
+          3,
+          26
+        ],
+        [
+          3,
+          29
+        ],
+        [
+          8,
+          29
+        ],
+        [
+          8,
+          28
+        ],
+        [
+          12,
+          28
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "kind": "path",
+      "name": "Inner lake return and dispatcher home",
+      "points": [
+        [
+          9,
+          15
+        ],
+        [
+          9,
+          21
+        ],
+        [
+          12,
+          21
+        ],
+        [
+          12,
+          22
+        ],
+        [
+          8,
+          22
+        ],
+        [
+          8,
+          26
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "kind": "path",
+      "name": "South river bridge joins field and market neighborhoods",
+      "points": [
+        [
+          8,
+          26
+        ],
+        [
+          8,
+          27
+        ],
+        [
+          14,
+          27
+        ],
+        [
+          14,
+          28
+        ],
+        [
+          20,
+          28
+        ],
+        [
+          20,
+          30
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "kind": "path",
+      "name": "Short market counter and club street",
+      "points": [
+        [
+          20,
+          23
+        ],
+        [
+          33,
+          23
+        ],
+        [
+          33,
+          27
+        ],
+        [
+          38,
+          27
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "kind": "path",
+      "name": "Residential shared short entry strip",
+      "points": [
+        [
+          20,
+          26
+        ],
+        [
+          33,
+          26
+        ],
+        [
+          33,
+          30
+        ],
+        [
+          20,
+          30
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "kind": "path",
+      "name": "Small book-courier residential return",
+      "points": [
+        [
+          23,
+          23
+        ],
+        [
+          23,
+          26
+        ],
+        [
+          23,
+          30
+        ],
+        [
+          37,
+          30
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "kind": "point",
+      "name": "Civic market brick",
+      "position": [
+        13,
+        18
+      ],
+      "block": "06"
+    },
+    {
+      "kind": "point",
+      "name": "Civic market brick",
+      "position": [
+        14,
+        18
+      ],
+      "block": "06"
+    },
+    {
+      "kind": "point",
+      "name": "Civic market brick",
+      "position": [
+        15,
+        18
+      ],
+      "block": "06"
+    },
+    {
+      "kind": "point",
+      "name": "Civic market brick",
+      "position": [
+        16,
+        18
+      ],
+      "block": "06"
+    },
+    {
+      "kind": "point",
+      "name": "Civic market brick",
+      "position": [
+        17,
+        18
+      ],
+      "block": "06"
+    },
+    {
+      "kind": "point",
+      "name": "Civic market brick",
+      "position": [
+        18,
+        18
+      ],
+      "block": "06"
+    },
+    {
+      "kind": "point",
+      "name": "Civic market brick",
+      "position": [
+        19,
+        18
+      ],
+      "block": "06"
+    },
+    {
+      "kind": "point",
+      "name": "Civic market brick",
+      "position": [
+        20,
+        18
+      ],
+      "block": "06"
+    },
+    {
+      "kind": "point",
+      "name": "Civic market brick",
+      "position": [
+        21,
+        18
+      ],
+      "block": "06"
+    },
+    {
+      "kind": "point",
+      "name": "Civic market brick",
+      "position": [
+        22,
+        18
+      ],
+      "block": "06"
+    },
+    {
+      "kind": "point",
+      "name": "Civic market brick",
+      "position": [
+        23,
+        18
+      ],
+      "block": "06"
+    },
+    {
+      "kind": "point",
+      "name": "Civic market brick",
+      "position": [
+        24,
+        18
+      ],
+      "block": "06"
+    },
+    {
+      "kind": "point",
+      "name": "Civic market brick",
+      "position": [
+        25,
+        18
+      ],
+      "block": "06"
+    },
+    {
+      "kind": "point",
+      "name": "Civic market brick",
+      "position": [
+        26,
+        18
+      ],
+      "block": "06"
+    },
+    {
+      "kind": "point",
+      "name": "Civic market brick",
+      "position": [
+        27,
+        18
+      ],
+      "block": "06"
+    },
+    {
+      "kind": "point",
+      "name": "Civic market brick",
+      "position": [
+        28,
+        18
+      ],
+      "block": "06"
+    },
+    {
+      "kind": "point",
+      "name": "Civic market brick",
+      "position": [
+        29,
+        18
+      ],
+      "block": "06"
+    },
+    {
+      "kind": "point",
+      "name": "Civic market brick",
+      "position": [
+        30,
+        18
+      ],
+      "block": "06"
+    },
+    {
+      "kind": "point",
+      "name": "Civic market brick",
+      "position": [
+        31,
+        18
+      ],
+      "block": "06"
+    },
+    {
+      "kind": "point",
+      "name": "Civic market brick",
+      "position": [
+        32,
+        18
+      ],
+      "block": "06"
+    },
+    {
+      "kind": "point",
+      "name": "Civic market brick",
+      "position": [
+        33,
+        18
+      ],
+      "block": "06"
+    },
+    {
+      "kind": "point",
+      "name": "Civic market brick",
+      "position": [
+        34,
+        18
+      ],
+      "block": "06"
+    },
+    {
+      "kind": "point",
+      "name": "Civic market brick",
+      "position": [
+        35,
+        18
+      ],
+      "block": "06"
+    },
+    {
+      "kind": "point",
+      "name": "Civic market brick",
+      "position": [
+        36,
+        18
+      ],
+      "block": "06"
+    },
+    {
+      "kind": "point",
+      "name": "Civic market brick",
+      "position": [
+        37,
+        18
+      ],
+      "block": "06"
+    },
+    {
+      "kind": "point",
+      "name": "Civic market brick",
+      "position": [
+        38,
+        18
+      ],
+      "block": "06"
+    },
+    {
+      "kind": "point",
+      "name": "Upper river bridge brick",
+      "position": [
+        14,
+        7
+      ],
+      "block": "06"
+    },
+    {
+      "kind": "point",
+      "name": "Upper river bridge brick",
+      "position": [
+        15,
+        7
+      ],
+      "block": "06"
+    },
+    {
+      "kind": "point",
+      "name": "Upper river bridge brick",
+      "position": [
+        16,
+        7
+      ],
+      "block": "06"
+    },
+    {
+      "kind": "point",
+      "name": "Upper river bridge brick",
+      "position": [
+        17,
+        7
+      ],
+      "block": "06"
+    },
+    {
+      "kind": "point",
+      "name": "Upper river bridge brick",
+      "position": [
+        18,
+        7
+      ],
+      "block": "06"
+    },
+    {
+      "kind": "point",
+      "name": "Upper river bridge brick",
+      "position": [
+        19,
+        7
+      ],
+      "block": "06"
+    },
+    {
+      "kind": "point",
+      "name": "Upper river bridge brick",
+      "position": [
+        20,
+        7
+      ],
+      "block": "06"
+    },
+    {
+      "kind": "point",
+      "name": "Lower river crossing brick",
+      "position": [
+        14,
+        28
+      ],
+      "block": "06"
+    },
+    {
+      "kind": "point",
+      "name": "Lower river crossing brick",
+      "position": [
+        15,
+        28
+      ],
+      "block": "06"
+    },
+    {
+      "kind": "point",
+      "name": "Lower river crossing brick",
+      "position": [
+        16,
+        28
+      ],
+      "block": "06"
+    },
+    {
+      "kind": "point",
+      "name": "Lower river crossing brick",
+      "position": [
+        17,
+        28
+      ],
+      "block": "06"
+    },
+    {
+      "kind": "point",
+      "name": "Lower river crossing brick",
+      "position": [
+        18,
+        28
+      ],
+      "block": "06"
+    },
+    {
+      "kind": "point",
+      "name": "Lower river crossing brick",
+      "position": [
+        19,
+        28
+      ],
+      "block": "06"
+    },
+    {
+      "kind": "point",
+      "name": "Lower river crossing brick",
+      "position": [
+        20,
+        28
+      ],
+      "block": "06"
+    },
+    {
+      "kind": "point",
+      "name": "River crossing north metal rail",
+      "position": [
+        15,
+        6
+      ],
+      "block": "41"
+    },
+    {
+      "kind": "point",
+      "name": "River crossing south metal rail",
+      "position": [
+        15,
+        8
+      ],
+      "block": "49"
+    },
+    {
+      "kind": "point",
+      "name": "River crossing north metal rail",
+      "position": [
+        16,
+        6
+      ],
+      "block": "41"
+    },
+    {
+      "kind": "point",
+      "name": "River crossing south metal rail",
+      "position": [
+        16,
+        8
+      ],
+      "block": "49"
+    },
+    {
+      "kind": "point",
+      "name": "River crossing north metal rail",
+      "position": [
+        17,
+        6
+      ],
+      "block": "41"
+    },
+    {
+      "kind": "point",
+      "name": "River crossing south metal rail",
+      "position": [
+        17,
+        8
+      ],
+      "block": "49"
+    },
+    {
+      "kind": "point",
+      "name": "River crossing north metal rail",
+      "position": [
+        18,
+        6
+      ],
+      "block": "41"
+    },
+    {
+      "kind": "point",
+      "name": "River crossing south metal rail",
+      "position": [
+        18,
+        8
+      ],
+      "block": "49"
+    },
+    {
+      "kind": "point",
+      "name": "River crossing north metal rail",
+      "position": [
+        15,
+        17
+      ],
+      "block": "41"
+    },
+    {
+      "kind": "point",
+      "name": "River crossing south metal rail",
+      "position": [
+        15,
+        19
+      ],
+      "block": "49"
+    },
+    {
+      "kind": "point",
+      "name": "River crossing north metal rail",
+      "position": [
+        16,
+        17
+      ],
+      "block": "41"
+    },
+    {
+      "kind": "point",
+      "name": "River crossing south metal rail",
+      "position": [
+        16,
+        19
+      ],
+      "block": "49"
+    },
+    {
+      "kind": "point",
+      "name": "River crossing north metal rail",
+      "position": [
+        17,
+        17
+      ],
+      "block": "41"
+    },
+    {
+      "kind": "point",
+      "name": "River crossing south metal rail",
+      "position": [
+        17,
+        19
+      ],
+      "block": "49"
+    },
+    {
+      "kind": "point",
+      "name": "River crossing north metal rail",
+      "position": [
+        18,
+        17
+      ],
+      "block": "41"
+    },
+    {
+      "kind": "point",
+      "name": "River crossing south metal rail",
+      "position": [
+        18,
+        19
+      ],
+      "block": "49"
+    },
+    {
+      "kind": "point",
+      "name": "River crossing north metal rail",
+      "position": [
+        15,
+        27
+      ],
+      "block": "41"
+    },
+    {
+      "kind": "point",
+      "name": "River crossing south metal rail",
+      "position": [
+        15,
+        29
+      ],
+      "block": "49"
+    },
+    {
+      "kind": "point",
+      "name": "River crossing north metal rail",
+      "position": [
+        16,
+        27
+      ],
+      "block": "41"
+    },
+    {
+      "kind": "point",
+      "name": "River crossing south metal rail",
+      "position": [
+        16,
+        29
+      ],
+      "block": "49"
+    },
+    {
+      "kind": "point",
+      "name": "River crossing north metal rail",
+      "position": [
+        17,
+        27
+      ],
+      "block": "41"
+    },
+    {
+      "kind": "point",
+      "name": "River crossing south metal rail",
+      "position": [
+        17,
+        29
+      ],
+      "block": "49"
+    },
+    {
+      "kind": "point",
+      "name": "River crossing north metal rail",
+      "position": [
+        18,
+        27
+      ],
+      "block": "41"
+    },
+    {
+      "kind": "point",
+      "name": "River crossing south metal rail",
+      "position": [
+        18,
+        29
+      ],
+      "block": "49"
+    },
+    {
+      "kind": "point",
+      "name": "St Anthony Falls exact native cave2c face",
+      "position": [
+        16,
+        3
+      ],
+      "block": "99"
+    },
+    {
+      "kind": "point",
+      "name": "St Anthony Falls exact native cave2c face",
+      "position": [
+        17,
+        3
+      ],
+      "block": "99"
+    },
+    {
+      "kind": "point",
+      "name": "Falls fitted retaining rock face",
+      "position": [
+        15,
+        3
+      ],
+      "block": "0a"
+    },
+    {
+      "kind": "point",
+      "name": "Falls fitted retaining rock face",
+      "position": [
+        18,
+        3
+      ],
+      "block": "0a"
+    },
+    {
+      "kind": "point",
+      "name": "Falls fitted retaining rock face",
+      "position": [
+        19,
+        3
+      ],
+      "block": "0a"
+    },
+    {
+      "kind": "point",
+      "name": "St Anthony Falls exact native cave2c face",
+      "position": [
+        16,
+        4
+      ],
+      "block": "99"
+    },
+    {
+      "kind": "point",
+      "name": "St Anthony Falls exact native cave2c face",
+      "position": [
+        17,
+        4
+      ],
+      "block": "99"
+    },
+    {
+      "kind": "point",
+      "name": "Falls fitted retaining rock face",
+      "position": [
+        15,
+        4
+      ],
+      "block": "0a"
+    },
+    {
+      "kind": "point",
+      "name": "Falls fitted retaining rock face",
+      "position": [
+        18,
+        4
+      ],
+      "block": "0a"
+    },
+    {
+      "kind": "point",
+      "name": "Falls fitted retaining rock face",
+      "position": [
+        19,
+        4
+      ],
+      "block": "0a"
+    },
+    {
+      "kind": "path",
+      "name": "Mill front to reached falls overlook",
+      "points": [
+        [
+          14,
+          5
+        ],
+        [
+          14,
+          4
+        ],
+        [
+          14,
+          3
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "kind": "point",
+      "name": "Falls side-bank lookout",
+      "position": [
+        15,
+        5
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Original upper bridge guide landing",
+      "position": [
+        19,
+        6
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Visible native north river badge buoy gate",
+      "position": [
+        16,
+        1
+      ],
+      "block": "31"
+    },
+    {
+      "kind": "point",
+      "name": "Visible native north river badge buoy gate",
+      "position": [
+        17,
+        1
+      ],
+      "block": "31"
+    },
+    {
+      "kind": "point",
+      "name": "Visible native north river badge buoy gate",
+      "position": [
+        18,
+        1
+      ],
+      "block": "31"
+    },
+    {
+      "kind": "point",
+      "name": "Real lake pier deck",
+      "position": [
+        1,
+        17
+      ],
+      "block": "06"
+    },
+    {
+      "kind": "point",
+      "name": "Real lake pier deck",
+      "position": [
+        2,
+        17
+      ],
+      "block": "06"
+    },
+    {
+      "kind": "point",
+      "name": "Real lake pier deck",
+      "position": [
+        3,
+        17
+      ],
+      "block": "06"
+    },
+    {
+      "kind": "point",
+      "name": "Real lake pier deck",
+      "position": [
+        4,
+        17
+      ],
+      "block": "06"
+    },
+    {
+      "kind": "point",
+      "name": "Real lake pier deck",
+      "position": [
+        5,
+        17
+      ],
+      "block": "06"
+    },
+    {
+      "kind": "point",
+      "name": "Real lake pier deck",
+      "position": [
+        6,
+        17
+      ],
+      "block": "06"
+    },
+    {
+      "kind": "point",
+      "name": "Pier north rail",
+      "position": [
+        3,
+        16
+      ],
+      "block": "41"
+    },
+    {
+      "kind": "point",
+      "name": "Pier south rail",
+      "position": [
+        3,
+        18
+      ],
+      "block": "49"
+    },
+    {
+      "kind": "point",
+      "name": "Pier north rail",
+      "position": [
+        4,
+        16
+      ],
+      "block": "41"
+    },
+    {
+      "kind": "point",
+      "name": "Pier south rail",
+      "position": [
+        4,
+        18
+      ],
+      "block": "49"
+    },
+    {
+      "kind": "point",
+      "name": "Pier north rail",
+      "position": [
+        5,
+        16
+      ],
+      "block": "41"
+    },
+    {
+      "kind": "point",
+      "name": "Pier south rail",
+      "position": [
+        5,
+        18
+      ],
+      "block": "49"
+    },
+    {
+      "kind": "point",
+      "name": "Pier north rail",
+      "position": [
+        6,
+        16
+      ],
+      "block": "41"
+    },
+    {
+      "kind": "point",
+      "name": "Pier south rail",
+      "position": [
+        6,
+        18
+      ],
+      "block": "49"
+    },
+    {
+      "kind": "point",
+      "name": "Pier stone end stop",
+      "position": [
+        7,
+        17
+      ],
+      "block": "0a"
+    },
+    {
+      "kind": "point",
+      "name": "Clinic complete native facade",
+      "position": [
+        31,
+        11
+      ],
+      "block": "18"
+    },
+    {
+      "kind": "point",
+      "name": "Clinic complete native facade",
+      "position": [
+        32,
+        11
+      ],
+      "block": "19"
+    },
+    {
+      "kind": "point",
+      "name": "Clinic complete native facade",
+      "position": [
+        31,
+        12
+      ],
+      "block": "1a"
+    },
+    {
+      "kind": "point",
+      "name": "Clinic complete native facade",
+      "position": [
+        32,
+        12
+      ],
+      "block": "1b"
+    },
+    {
+      "kind": "path",
+      "name": "Pokecenter1F real two-core front approach",
+      "points": [
+        [
+          31,
+          13
+        ],
+        [
+          32,
+          13
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "kind": "point",
+      "name": "Powerhouse gym complete native facade",
+      "position": [
+        31,
+        14
+      ],
+      "block": "18"
+    },
+    {
+      "kind": "point",
+      "name": "Powerhouse gym complete native facade",
+      "position": [
+        32,
+        14
+      ],
+      "block": "18"
+    },
+    {
+      "kind": "point",
+      "name": "Powerhouse gym complete native facade",
+      "position": [
+        33,
+        14
+      ],
+      "block": "19"
+    },
+    {
+      "kind": "point",
+      "name": "Powerhouse gym complete native facade",
+      "position": [
+        31,
+        15
+      ],
+      "block": "20"
+    },
+    {
+      "kind": "point",
+      "name": "Powerhouse gym complete native facade",
+      "position": [
+        32,
+        15
+      ],
+      "block": "20"
+    },
+    {
+      "kind": "point",
+      "name": "Powerhouse gym complete native facade",
+      "position": [
+        33,
+        15
+      ],
+      "block": "20"
+    },
+    {
+      "kind": "point",
+      "name": "Powerhouse gym complete native facade",
+      "position": [
+        31,
+        16
+      ],
+      "block": "1c"
+    },
+    {
+      "kind": "point",
+      "name": "Powerhouse gym complete native facade",
+      "position": [
+        32,
+        16
+      ],
+      "block": "1d"
+    },
+    {
+      "kind": "point",
+      "name": "Powerhouse gym complete native facade",
+      "position": [
+        33,
+        16
+      ],
+      "block": "1e"
+    },
+    {
+      "kind": "path",
+      "name": "Gym real two-core front approach",
+      "points": [
+        [
+          32,
+          17
+        ],
+        [
+          32,
+          17
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "kind": "point",
+      "name": "Mart complete native facade",
+      "position": [
+        35,
+        11
+      ],
+      "block": "18"
+    },
+    {
+      "kind": "point",
+      "name": "Mart complete native facade",
+      "position": [
+        36,
+        11
+      ],
+      "block": "19"
+    },
+    {
+      "kind": "point",
+      "name": "Mart complete native facade",
+      "position": [
+        35,
+        12
+      ],
+      "block": "33"
+    },
+    {
+      "kind": "point",
+      "name": "Mart complete native facade",
+      "position": [
+        36,
+        12
+      ],
+      "block": "1a"
+    },
+    {
+      "kind": "path",
+      "name": "Mart real two-core front approach",
+      "points": [
+        [
+          36,
+          13
+        ],
+        [
+          36,
+          13
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "kind": "point",
+      "name": "Rail dispatch complete native facade",
+      "position": [
+        11,
+        14
+      ],
+      "block": "21"
+    },
+    {
+      "kind": "point",
+      "name": "Rail dispatch complete native facade",
+      "position": [
+        12,
+        14
+      ],
+      "block": "26"
+    },
+    {
+      "kind": "point",
+      "name": "Rail dispatch complete native facade",
+      "position": [
+        13,
+        14
+      ],
+      "block": "21"
+    },
+    {
+      "kind": "point",
+      "name": "Rail dispatch complete native facade",
+      "position": [
+        11,
+        15
+      ],
+      "block": "22"
+    },
+    {
+      "kind": "point",
+      "name": "Rail dispatch complete native facade",
+      "position": [
+        12,
+        15
+      ],
+      "block": "25"
+    },
+    {
+      "kind": "point",
+      "name": "Rail dispatch complete native facade",
+      "position": [
+        13,
+        15
+      ],
+      "block": "22"
+    },
+    {
+      "kind": "point",
+      "name": "Rail dispatch complete native facade",
+      "position": [
+        11,
+        16
+      ],
+      "block": "20"
+    },
+    {
+      "kind": "point",
+      "name": "Rail dispatch complete native facade",
+      "position": [
+        12,
+        16
+      ],
+      "block": "1a"
+    },
+    {
+      "kind": "point",
+      "name": "Rail dispatch complete native facade",
+      "position": [
+        13,
+        16
+      ],
+      "block": "20"
+    },
+    {
+      "kind": "path",
+      "name": "DispatchOffice real two-core front approach",
+      "points": [
+        [
+          12,
+          17
+        ],
+        [
+          12,
+          17
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "kind": "point",
+      "name": "Dispatcher family home complete native facade",
+      "position": [
+        11,
+        19
+      ],
+      "block": "18"
+    },
+    {
+      "kind": "point",
+      "name": "Dispatcher family home complete native facade",
+      "position": [
+        12,
+        19
+      ],
+      "block": "19"
+    },
+    {
+      "kind": "point",
+      "name": "Dispatcher family home complete native facade",
+      "position": [
+        11,
+        20
+      ],
+      "block": "1a"
+    },
+    {
+      "kind": "point",
+      "name": "Dispatcher family home complete native facade",
+      "position": [
+        12,
+        20
+      ],
+      "block": "10"
+    },
+    {
+      "kind": "path",
+      "name": "DispatcherHouse real two-core front approach",
+      "points": [
+        [
+          11,
+          21
+        ],
+        [
+          12,
+          21
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "kind": "point",
+      "name": "SupplyCoop native roof",
+      "position": [
+        2,
+        3
+      ],
+      "block": "18"
+    },
+    {
+      "kind": "point",
+      "name": "SupplyCoop native roof",
+      "position": [
+        3,
+        3
+      ],
+      "block": "18"
+    },
+    {
+      "kind": "point",
+      "name": "SupplyCoop native roof",
+      "position": [
+        4,
+        3
+      ],
+      "block": "19"
+    },
+    {
+      "kind": "point",
+      "name": "SupplyCoop real ground facade",
+      "position": [
+        2,
+        4
+      ],
+      "block": "10"
+    },
+    {
+      "kind": "point",
+      "name": "SupplyCoop real ground facade",
+      "position": [
+        3,
+        4
+      ],
+      "block": "1a"
+    },
+    {
+      "kind": "point",
+      "name": "SupplyCoop real ground facade",
+      "position": [
+        4,
+        4
+      ],
+      "block": "11"
+    },
+    {
+      "kind": "path",
+      "name": "SupplyCoop real two-core front approach",
+      "points": [
+        [
+          3,
+          5
+        ],
+        [
+          3,
+          5
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "kind": "point",
+      "name": "GrainExchange native roof",
+      "position": [
+        9,
+        1
+      ],
+      "block": "80"
+    },
+    {
+      "kind": "point",
+      "name": "GrainExchange native roof",
+      "position": [
+        10,
+        1
+      ],
+      "block": "82"
+    },
+    {
+      "kind": "point",
+      "name": "GrainExchange native roof",
+      "position": [
+        11,
+        1
+      ],
+      "block": "82"
+    },
+    {
+      "kind": "point",
+      "name": "GrainExchange native roof",
+      "position": [
+        12,
+        1
+      ],
+      "block": "82"
+    },
+    {
+      "kind": "point",
+      "name": "GrainExchange native roof",
+      "position": [
+        13,
+        1
+      ],
+      "block": "81"
+    },
+    {
+      "kind": "point",
+      "name": "GrainExchange solid window course",
+      "position": [
+        9,
+        2
+      ],
+      "block": "84"
+    },
+    {
+      "kind": "point",
+      "name": "GrainExchange solid window course",
+      "position": [
+        10,
+        2
+      ],
+      "block": "89"
+    },
+    {
+      "kind": "point",
+      "name": "GrainExchange solid window course",
+      "position": [
+        11,
+        2
+      ],
+      "block": "89"
+    },
+    {
+      "kind": "point",
+      "name": "GrainExchange solid window course",
+      "position": [
+        12,
+        2
+      ],
+      "block": "89"
+    },
+    {
+      "kind": "point",
+      "name": "GrainExchange solid window course",
+      "position": [
+        13,
+        2
+      ],
+      "block": "85"
+    },
+    {
+      "kind": "point",
+      "name": "GrainExchange solid window course",
+      "position": [
+        9,
+        3
+      ],
+      "block": "84"
+    },
+    {
+      "kind": "point",
+      "name": "GrainExchange solid window course",
+      "position": [
+        10,
+        3
+      ],
+      "block": "89"
+    },
+    {
+      "kind": "point",
+      "name": "GrainExchange solid window course",
+      "position": [
+        11,
+        3
+      ],
+      "block": "89"
+    },
+    {
+      "kind": "point",
+      "name": "GrainExchange solid window course",
+      "position": [
+        12,
+        3
+      ],
+      "block": "89"
+    },
+    {
+      "kind": "point",
+      "name": "GrainExchange solid window course",
+      "position": [
+        13,
+        3
+      ],
+      "block": "85"
+    },
+    {
+      "kind": "point",
+      "name": "GrainExchange real ground facade",
+      "position": [
+        9,
+        4
+      ],
+      "block": "83"
+    },
+    {
+      "kind": "point",
+      "name": "GrainExchange real ground facade",
+      "position": [
+        10,
+        4
+      ],
+      "block": "87"
+    },
+    {
+      "kind": "point",
+      "name": "GrainExchange real ground facade",
+      "position": [
+        11,
+        4
+      ],
+      "block": "8a"
+    },
+    {
+      "kind": "point",
+      "name": "GrainExchange real ground facade",
+      "position": [
+        12,
+        4
+      ],
+      "block": "87"
+    },
+    {
+      "kind": "point",
+      "name": "GrainExchange real ground facade",
+      "position": [
+        13,
+        4
+      ],
+      "block": "88"
+    },
+    {
+      "kind": "path",
+      "name": "GrainExchange real two-core front approach",
+      "points": [
+        [
+          11,
+          5
+        ],
+        [
+          11,
+          5
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "kind": "point",
+      "name": "ToolWorkshop native roof",
+      "position": [
+        11,
+        6
+      ],
+      "block": "80"
+    },
+    {
+      "kind": "point",
+      "name": "ToolWorkshop native roof",
+      "position": [
+        12,
+        6
+      ],
+      "block": "82"
+    },
+    {
+      "kind": "point",
+      "name": "ToolWorkshop native roof",
+      "position": [
+        13,
+        6
+      ],
+      "block": "81"
+    },
+    {
+      "kind": "point",
+      "name": "ToolWorkshop real ground facade",
+      "position": [
+        11,
+        7
+      ],
+      "block": "83"
+    },
+    {
+      "kind": "point",
+      "name": "ToolWorkshop real ground facade",
+      "position": [
+        12,
+        7
+      ],
+      "block": "8a"
+    },
+    {
+      "kind": "point",
+      "name": "ToolWorkshop real ground facade",
+      "position": [
+        13,
+        7
+      ],
+      "block": "88"
+    },
+    {
+      "kind": "path",
+      "name": "ToolWorkshop real two-core front approach",
+      "points": [
+        [
+          12,
+          8
+        ],
+        [
+          12,
+          8
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "kind": "point",
+      "name": "PrintShop native roof",
+      "position": [
+        22,
+        3
+      ],
+      "block": "18"
+    },
+    {
+      "kind": "point",
+      "name": "PrintShop native roof",
+      "position": [
+        23,
+        3
+      ],
+      "block": "18"
+    },
+    {
+      "kind": "point",
+      "name": "PrintShop native roof",
+      "position": [
+        24,
+        3
+      ],
+      "block": "19"
+    },
+    {
+      "kind": "point",
+      "name": "PrintShop real ground facade",
+      "position": [
+        22,
+        4
+      ],
+      "block": "10"
+    },
+    {
+      "kind": "point",
+      "name": "PrintShop real ground facade",
+      "position": [
+        23,
+        4
+      ],
+      "block": "1a"
+    },
+    {
+      "kind": "point",
+      "name": "PrintShop real ground facade",
+      "position": [
+        24,
+        4
+      ],
+      "block": "11"
+    },
+    {
+      "kind": "path",
+      "name": "PrintShop real two-core front approach",
+      "points": [
+        [
+          23,
+          5
+        ],
+        [
+          23,
+          5
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "kind": "point",
+      "name": "FoundryMuseum native roof",
+      "position": [
+        2,
+        7
+      ],
+      "block": "80"
+    },
+    {
+      "kind": "point",
+      "name": "FoundryMuseum native roof",
+      "position": [
+        3,
+        7
+      ],
+      "block": "82"
+    },
+    {
+      "kind": "point",
+      "name": "FoundryMuseum native roof",
+      "position": [
+        4,
+        7
+      ],
+      "block": "82"
+    },
+    {
+      "kind": "point",
+      "name": "FoundryMuseum native roof",
+      "position": [
+        5,
+        7
+      ],
+      "block": "82"
+    },
+    {
+      "kind": "point",
+      "name": "FoundryMuseum native roof",
+      "position": [
+        6,
+        7
+      ],
+      "block": "81"
+    },
+    {
+      "kind": "point",
+      "name": "FoundryMuseum solid window course",
+      "position": [
+        2,
+        8
+      ],
+      "block": "84"
+    },
+    {
+      "kind": "point",
+      "name": "FoundryMuseum solid window course",
+      "position": [
+        3,
+        8
+      ],
+      "block": "89"
+    },
+    {
+      "kind": "point",
+      "name": "FoundryMuseum solid window course",
+      "position": [
+        4,
+        8
+      ],
+      "block": "89"
+    },
+    {
+      "kind": "point",
+      "name": "FoundryMuseum solid window course",
+      "position": [
+        5,
+        8
+      ],
+      "block": "89"
+    },
+    {
+      "kind": "point",
+      "name": "FoundryMuseum solid window course",
+      "position": [
+        6,
+        8
+      ],
+      "block": "85"
+    },
+    {
+      "kind": "point",
+      "name": "FoundryMuseum real ground facade",
+      "position": [
+        2,
+        9
+      ],
+      "block": "83"
+    },
+    {
+      "kind": "point",
+      "name": "FoundryMuseum real ground facade",
+      "position": [
+        3,
+        9
+      ],
+      "block": "87"
+    },
+    {
+      "kind": "point",
+      "name": "FoundryMuseum real ground facade",
+      "position": [
+        4,
+        9
+      ],
+      "block": "8a"
+    },
+    {
+      "kind": "point",
+      "name": "FoundryMuseum real ground facade",
+      "position": [
+        5,
+        9
+      ],
+      "block": "87"
+    },
+    {
+      "kind": "point",
+      "name": "FoundryMuseum real ground facade",
+      "position": [
+        6,
+        9
+      ],
+      "block": "88"
+    },
+    {
+      "kind": "path",
+      "name": "FoundryMuseum real two-core front approach",
+      "points": [
+        [
+          4,
+          10
+        ],
+        [
+          4,
+          10
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "kind": "point",
+      "name": "ArtsStudio native roof",
+      "position": [
+        8,
+        8
+      ],
+      "block": "18"
+    },
+    {
+      "kind": "point",
+      "name": "ArtsStudio native roof",
+      "position": [
+        9,
+        8
+      ],
+      "block": "18"
+    },
+    {
+      "kind": "point",
+      "name": "ArtsStudio native roof",
+      "position": [
+        10,
+        8
+      ],
+      "block": "19"
+    },
+    {
+      "kind": "point",
+      "name": "ArtsStudio real ground facade",
+      "position": [
+        8,
+        9
+      ],
+      "block": "10"
+    },
+    {
+      "kind": "point",
+      "name": "ArtsStudio real ground facade",
+      "position": [
+        9,
+        9
+      ],
+      "block": "1a"
+    },
+    {
+      "kind": "point",
+      "name": "ArtsStudio real ground facade",
+      "position": [
+        10,
+        9
+      ],
+      "block": "11"
+    },
+    {
+      "kind": "path",
+      "name": "ArtsStudio real two-core front approach",
+      "points": [
+        [
+          9,
+          10
+        ],
+        [
+          9,
+          10
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "kind": "point",
+      "name": "MusicRoom native roof",
+      "position": [
+        26,
+        2
+      ],
+      "block": "18"
+    },
+    {
+      "kind": "point",
+      "name": "MusicRoom native roof",
+      "position": [
+        27,
+        2
+      ],
+      "block": "18"
+    },
+    {
+      "kind": "point",
+      "name": "MusicRoom native roof",
+      "position": [
+        28,
+        2
+      ],
+      "block": "18"
+    },
+    {
+      "kind": "point",
+      "name": "MusicRoom native roof",
+      "position": [
+        29,
+        2
+      ],
+      "block": "19"
+    },
+    {
+      "kind": "point",
+      "name": "MusicRoom solid window course",
+      "position": [
+        26,
+        3
+      ],
+      "block": "20"
+    },
+    {
+      "kind": "point",
+      "name": "MusicRoom solid window course",
+      "position": [
+        27,
+        3
+      ],
+      "block": "20"
+    },
+    {
+      "kind": "point",
+      "name": "MusicRoom solid window course",
+      "position": [
+        28,
+        3
+      ],
+      "block": "20"
+    },
+    {
+      "kind": "point",
+      "name": "MusicRoom solid window course",
+      "position": [
+        29,
+        3
+      ],
+      "block": "20"
+    },
+    {
+      "kind": "point",
+      "name": "MusicRoom real ground facade",
+      "position": [
+        26,
+        4
+      ],
+      "block": "10"
+    },
+    {
+      "kind": "point",
+      "name": "MusicRoom real ground facade",
+      "position": [
+        27,
+        4
+      ],
+      "block": "11"
+    },
+    {
+      "kind": "point",
+      "name": "MusicRoom real ground facade",
+      "position": [
+        28,
+        4
+      ],
+      "block": "1a"
+    },
+    {
+      "kind": "point",
+      "name": "MusicRoom real ground facade",
+      "position": [
+        29,
+        4
+      ],
+      "block": "11"
+    },
+    {
+      "kind": "path",
+      "name": "MusicRoom real two-core front approach",
+      "points": [
+        [
+          28,
+          5
+        ],
+        [
+          28,
+          5
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "kind": "point",
+      "name": "CommunityLibrary native roof",
+      "position": [
+        31,
+        1
+      ],
+      "block": "80"
+    },
+    {
+      "kind": "point",
+      "name": "CommunityLibrary native roof",
+      "position": [
+        32,
+        1
+      ],
+      "block": "82"
+    },
+    {
+      "kind": "point",
+      "name": "CommunityLibrary native roof",
+      "position": [
+        33,
+        1
+      ],
+      "block": "82"
+    },
+    {
+      "kind": "point",
+      "name": "CommunityLibrary native roof",
+      "position": [
+        34,
+        1
+      ],
+      "block": "82"
+    },
+    {
+      "kind": "point",
+      "name": "CommunityLibrary native roof",
+      "position": [
+        35,
+        1
+      ],
+      "block": "81"
+    },
+    {
+      "kind": "point",
+      "name": "CommunityLibrary solid window course",
+      "position": [
+        31,
+        2
+      ],
+      "block": "84"
+    },
+    {
+      "kind": "point",
+      "name": "CommunityLibrary solid window course",
+      "position": [
+        32,
+        2
+      ],
+      "block": "89"
+    },
+    {
+      "kind": "point",
+      "name": "CommunityLibrary solid window course",
+      "position": [
+        33,
+        2
+      ],
+      "block": "89"
+    },
+    {
+      "kind": "point",
+      "name": "CommunityLibrary solid window course",
+      "position": [
+        34,
+        2
+      ],
+      "block": "89"
+    },
+    {
+      "kind": "point",
+      "name": "CommunityLibrary solid window course",
+      "position": [
+        35,
+        2
+      ],
+      "block": "85"
+    },
+    {
+      "kind": "point",
+      "name": "CommunityLibrary solid window course",
+      "position": [
+        31,
+        3
+      ],
+      "block": "84"
+    },
+    {
+      "kind": "point",
+      "name": "CommunityLibrary solid window course",
+      "position": [
+        32,
+        3
+      ],
+      "block": "89"
+    },
+    {
+      "kind": "point",
+      "name": "CommunityLibrary solid window course",
+      "position": [
+        33,
+        3
+      ],
+      "block": "89"
+    },
+    {
+      "kind": "point",
+      "name": "CommunityLibrary solid window course",
+      "position": [
+        34,
+        3
+      ],
+      "block": "89"
+    },
+    {
+      "kind": "point",
+      "name": "CommunityLibrary solid window course",
+      "position": [
+        35,
+        3
+      ],
+      "block": "85"
+    },
+    {
+      "kind": "point",
+      "name": "CommunityLibrary real ground facade",
+      "position": [
+        31,
+        4
+      ],
+      "block": "83"
+    },
+    {
+      "kind": "point",
+      "name": "CommunityLibrary real ground facade",
+      "position": [
+        32,
+        4
+      ],
+      "block": "87"
+    },
+    {
+      "kind": "point",
+      "name": "CommunityLibrary real ground facade",
+      "position": [
+        33,
+        4
+      ],
+      "block": "8a"
+    },
+    {
+      "kind": "point",
+      "name": "CommunityLibrary real ground facade",
+      "position": [
+        34,
+        4
+      ],
+      "block": "87"
+    },
+    {
+      "kind": "point",
+      "name": "CommunityLibrary real ground facade",
+      "position": [
+        35,
+        4
+      ],
+      "block": "88"
+    },
+    {
+      "kind": "path",
+      "name": "CommunityLibrary real two-core front approach",
+      "points": [
+        [
+          33,
+          5
+        ],
+        [
+          33,
+          5
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "kind": "point",
+      "name": "NortheastHome native roof",
+      "position": [
+        36,
+        3
+      ],
+      "block": "80"
+    },
+    {
+      "kind": "point",
+      "name": "NortheastHome native roof",
+      "position": [
+        37,
+        3
+      ],
+      "block": "81"
+    },
+    {
+      "kind": "point",
+      "name": "NortheastHome real ground facade",
+      "position": [
+        36,
+        4
+      ],
+      "block": "83"
+    },
+    {
+      "kind": "point",
+      "name": "NortheastHome real ground facade",
+      "position": [
+        37,
+        4
+      ],
+      "block": "8a"
+    },
+    {
+      "kind": "path",
+      "name": "NortheastHome real two-core front approach",
+      "points": [
+        [
+          37,
+          5
+        ],
+        [
+          37,
+          5
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "kind": "point",
+      "name": "GardenShop native roof",
+      "position": [
+        22,
+        7
+      ],
+      "block": "18"
+    },
+    {
+      "kind": "point",
+      "name": "GardenShop native roof",
+      "position": [
+        23,
+        7
+      ],
+      "block": "18"
+    },
+    {
+      "kind": "point",
+      "name": "GardenShop native roof",
+      "position": [
+        24,
+        7
+      ],
+      "block": "19"
+    },
+    {
+      "kind": "point",
+      "name": "GardenShop real ground facade",
+      "position": [
+        22,
+        8
+      ],
+      "block": "10"
+    },
+    {
+      "kind": "point",
+      "name": "GardenShop real ground facade",
+      "position": [
+        23,
+        8
+      ],
+      "block": "1a"
+    },
+    {
+      "kind": "point",
+      "name": "GardenShop real ground facade",
+      "position": [
+        24,
+        8
+      ],
+      "block": "11"
+    },
+    {
+      "kind": "path",
+      "name": "GardenShop real two-core front approach",
+      "points": [
+        [
+          23,
+          9
+        ],
+        [
+          23,
+          9
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "kind": "point",
+      "name": "RiverNaturalist native roof",
+      "position": [
+        26,
+        7
+      ],
+      "block": "18"
+    },
+    {
+      "kind": "point",
+      "name": "RiverNaturalist native roof",
+      "position": [
+        27,
+        7
+      ],
+      "block": "19"
+    },
+    {
+      "kind": "point",
+      "name": "RiverNaturalist real ground facade",
+      "position": [
+        26,
+        8
+      ],
+      "block": "10"
+    },
+    {
+      "kind": "point",
+      "name": "RiverNaturalist real ground facade",
+      "position": [
+        27,
+        8
+      ],
+      "block": "1a"
+    },
+    {
+      "kind": "path",
+      "name": "RiverNaturalist real two-core front approach",
+      "points": [
+        [
+          27,
+          9
+        ],
+        [
+          27,
+          9
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "kind": "point",
+      "name": "BoatHouse native roof",
+      "position": [
+        2,
+        12
+      ],
+      "block": "18"
+    },
+    {
+      "kind": "point",
+      "name": "BoatHouse native roof",
+      "position": [
+        3,
+        12
+      ],
+      "block": "18"
+    },
+    {
+      "kind": "point",
+      "name": "BoatHouse native roof",
+      "position": [
+        4,
+        12
+      ],
+      "block": "18"
+    },
+    {
+      "kind": "point",
+      "name": "BoatHouse native roof",
+      "position": [
+        5,
+        12
+      ],
+      "block": "19"
+    },
+    {
+      "kind": "point",
+      "name": "BoatHouse solid window course",
+      "position": [
+        2,
+        13
+      ],
+      "block": "20"
+    },
+    {
+      "kind": "point",
+      "name": "BoatHouse solid window course",
+      "position": [
+        3,
+        13
+      ],
+      "block": "20"
+    },
+    {
+      "kind": "point",
+      "name": "BoatHouse solid window course",
+      "position": [
+        4,
+        13
+      ],
+      "block": "20"
+    },
+    {
+      "kind": "point",
+      "name": "BoatHouse solid window course",
+      "position": [
+        5,
+        13
+      ],
+      "block": "20"
+    },
+    {
+      "kind": "point",
+      "name": "BoatHouse real ground facade",
+      "position": [
+        2,
+        14
+      ],
+      "block": "10"
+    },
+    {
+      "kind": "point",
+      "name": "BoatHouse real ground facade",
+      "position": [
+        3,
+        14
+      ],
+      "block": "11"
+    },
+    {
+      "kind": "point",
+      "name": "BoatHouse real ground facade",
+      "position": [
+        4,
+        14
+      ],
+      "block": "1a"
+    },
+    {
+      "kind": "point",
+      "name": "BoatHouse real ground facade",
+      "position": [
+        5,
+        14
+      ],
+      "block": "11"
+    },
+    {
+      "kind": "path",
+      "name": "BoatHouse real two-core front approach",
+      "points": [
+        [
+          4,
+          15
+        ],
+        [
+          4,
+          15
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "kind": "point",
+      "name": "AnglerHome native roof",
+      "position": [
+        8,
+        13
+      ],
+      "block": "18"
+    },
+    {
+      "kind": "point",
+      "name": "AnglerHome native roof",
+      "position": [
+        9,
+        13
+      ],
+      "block": "19"
+    },
+    {
+      "kind": "point",
+      "name": "AnglerHome real ground facade",
+      "position": [
+        8,
+        14
+      ],
+      "block": "10"
+    },
+    {
+      "kind": "point",
+      "name": "AnglerHome real ground facade",
+      "position": [
+        9,
+        14
+      ],
+      "block": "1a"
+    },
+    {
+      "kind": "path",
+      "name": "AnglerHome real two-core front approach",
+      "points": [
+        [
+          9,
+          15
+        ],
+        [
+          9,
+          15
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "kind": "point",
+      "name": "LakeCabin native roof",
+      "position": [
+        2,
+        21
+      ],
+      "block": "18"
+    },
+    {
+      "kind": "point",
+      "name": "LakeCabin native roof",
+      "position": [
+        3,
+        21
+      ],
+      "block": "18"
+    },
+    {
+      "kind": "point",
+      "name": "LakeCabin native roof",
+      "position": [
+        4,
+        21
+      ],
+      "block": "19"
+    },
+    {
+      "kind": "point",
+      "name": "LakeCabin real ground facade",
+      "position": [
+        2,
+        22
+      ],
+      "block": "10"
+    },
+    {
+      "kind": "point",
+      "name": "LakeCabin real ground facade",
+      "position": [
+        3,
+        22
+      ],
+      "block": "1a"
+    },
+    {
+      "kind": "point",
+      "name": "LakeCabin real ground facade",
+      "position": [
+        4,
+        22
+      ],
+      "block": "11"
+    },
+    {
+      "kind": "path",
+      "name": "LakeCabin real two-core front approach",
+      "points": [
+        [
+          3,
+          23
+        ],
+        [
+          3,
+          23
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "kind": "point",
+      "name": "Greenhouse native roof",
+      "position": [
+        10,
+        26
+      ],
+      "block": "18"
+    },
+    {
+      "kind": "point",
+      "name": "Greenhouse native roof",
+      "position": [
+        11,
+        26
+      ],
+      "block": "18"
+    },
+    {
+      "kind": "point",
+      "name": "Greenhouse native roof",
+      "position": [
+        12,
+        26
+      ],
+      "block": "18"
+    },
+    {
+      "kind": "point",
+      "name": "Greenhouse native roof",
+      "position": [
+        13,
+        26
+      ],
+      "block": "19"
+    },
+    {
+      "kind": "point",
+      "name": "Greenhouse real ground facade",
+      "position": [
+        10,
+        27
+      ],
+      "block": "10"
+    },
+    {
+      "kind": "point",
+      "name": "Greenhouse real ground facade",
+      "position": [
+        11,
+        27
+      ],
+      "block": "11"
+    },
+    {
+      "kind": "point",
+      "name": "Greenhouse real ground facade",
+      "position": [
+        12,
+        27
+      ],
+      "block": "1a"
+    },
+    {
+      "kind": "point",
+      "name": "Greenhouse real ground facade",
+      "position": [
+        13,
+        27
+      ],
+      "block": "11"
+    },
+    {
+      "kind": "path",
+      "name": "Greenhouse real two-core front approach",
+      "points": [
+        [
+          12,
+          28
+        ],
+        [
+          12,
+          28
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "kind": "point",
+      "name": "BridgeHome native roof",
+      "position": [
+        12,
+        9
+      ],
+      "block": "18"
+    },
+    {
+      "kind": "point",
+      "name": "BridgeHome native roof",
+      "position": [
+        13,
+        9
+      ],
+      "block": "19"
+    },
+    {
+      "kind": "point",
+      "name": "BridgeHome real ground facade",
+      "position": [
+        12,
+        10
+      ],
+      "block": "10"
+    },
+    {
+      "kind": "point",
+      "name": "BridgeHome real ground facade",
+      "position": [
+        13,
+        10
+      ],
+      "block": "1a"
+    },
+    {
+      "kind": "path",
+      "name": "BridgeHome real two-core front approach",
+      "points": [
+        [
+          13,
+          11
+        ],
+        [
+          13,
+          11
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "kind": "point",
+      "name": "DepartmentStore1F native roof",
+      "position": [
+        25,
+        11
+      ],
+      "block": "80"
+    },
+    {
+      "kind": "point",
+      "name": "DepartmentStore1F native roof",
+      "position": [
+        26,
+        11
+      ],
+      "block": "82"
+    },
+    {
+      "kind": "point",
+      "name": "DepartmentStore1F native roof",
+      "position": [
+        27,
+        11
+      ],
+      "block": "82"
+    },
+    {
+      "kind": "point",
+      "name": "DepartmentStore1F native roof",
+      "position": [
+        28,
+        11
+      ],
+      "block": "82"
+    },
+    {
+      "kind": "point",
+      "name": "DepartmentStore1F native roof",
+      "position": [
+        29,
+        11
+      ],
+      "block": "81"
+    },
+    {
+      "kind": "point",
+      "name": "DepartmentStore1F solid window course",
+      "position": [
+        25,
+        12
+      ],
+      "block": "84"
+    },
+    {
+      "kind": "point",
+      "name": "DepartmentStore1F solid window course",
+      "position": [
+        26,
+        12
+      ],
+      "block": "89"
+    },
+    {
+      "kind": "point",
+      "name": "DepartmentStore1F solid window course",
+      "position": [
+        27,
+        12
+      ],
+      "block": "89"
+    },
+    {
+      "kind": "point",
+      "name": "DepartmentStore1F solid window course",
+      "position": [
+        28,
+        12
+      ],
+      "block": "89"
+    },
+    {
+      "kind": "point",
+      "name": "DepartmentStore1F solid window course",
+      "position": [
+        29,
+        12
+      ],
+      "block": "85"
+    },
+    {
+      "kind": "point",
+      "name": "DepartmentStore1F solid window course",
+      "position": [
+        25,
+        13
+      ],
+      "block": "84"
+    },
+    {
+      "kind": "point",
+      "name": "DepartmentStore1F solid window course",
+      "position": [
+        26,
+        13
+      ],
+      "block": "89"
+    },
+    {
+      "kind": "point",
+      "name": "DepartmentStore1F solid window course",
+      "position": [
+        27,
+        13
+      ],
+      "block": "89"
+    },
+    {
+      "kind": "point",
+      "name": "DepartmentStore1F solid window course",
+      "position": [
+        28,
+        13
+      ],
+      "block": "89"
+    },
+    {
+      "kind": "point",
+      "name": "DepartmentStore1F solid window course",
+      "position": [
+        29,
+        13
+      ],
+      "block": "85"
+    },
+    {
+      "kind": "point",
+      "name": "DepartmentStore1F solid window course",
+      "position": [
+        25,
+        14
+      ],
+      "block": "84"
+    },
+    {
+      "kind": "point",
+      "name": "DepartmentStore1F solid window course",
+      "position": [
+        26,
+        14
+      ],
+      "block": "89"
+    },
+    {
+      "kind": "point",
+      "name": "DepartmentStore1F solid window course",
+      "position": [
+        27,
+        14
+      ],
+      "block": "89"
+    },
+    {
+      "kind": "point",
+      "name": "DepartmentStore1F solid window course",
+      "position": [
+        28,
+        14
+      ],
+      "block": "89"
+    },
+    {
+      "kind": "point",
+      "name": "DepartmentStore1F solid window course",
+      "position": [
+        29,
+        14
+      ],
+      "block": "85"
+    },
+    {
+      "kind": "point",
+      "name": "DepartmentStore1F solid window course",
+      "position": [
+        25,
+        15
+      ],
+      "block": "84"
+    },
+    {
+      "kind": "point",
+      "name": "DepartmentStore1F solid window course",
+      "position": [
+        26,
+        15
+      ],
+      "block": "89"
+    },
+    {
+      "kind": "point",
+      "name": "DepartmentStore1F solid window course",
+      "position": [
+        27,
+        15
+      ],
+      "block": "89"
+    },
+    {
+      "kind": "point",
+      "name": "DepartmentStore1F solid window course",
+      "position": [
+        28,
+        15
+      ],
+      "block": "89"
+    },
+    {
+      "kind": "point",
+      "name": "DepartmentStore1F solid window course",
+      "position": [
+        29,
+        15
+      ],
+      "block": "85"
+    },
+    {
+      "kind": "point",
+      "name": "DepartmentStore1F solid window course",
+      "position": [
+        25,
+        16
+      ],
+      "block": "84"
+    },
+    {
+      "kind": "point",
+      "name": "DepartmentStore1F solid window course",
+      "position": [
+        26,
+        16
+      ],
+      "block": "89"
+    },
+    {
+      "kind": "point",
+      "name": "DepartmentStore1F solid window course",
+      "position": [
+        27,
+        16
+      ],
+      "block": "89"
+    },
+    {
+      "kind": "point",
+      "name": "DepartmentStore1F solid window course",
+      "position": [
+        28,
+        16
+      ],
+      "block": "89"
+    },
+    {
+      "kind": "point",
+      "name": "DepartmentStore1F solid window course",
+      "position": [
+        29,
+        16
+      ],
+      "block": "85"
+    },
+    {
+      "kind": "point",
+      "name": "DepartmentStore1F real ground facade",
+      "position": [
+        25,
+        17
+      ],
+      "block": "83"
+    },
+    {
+      "kind": "point",
+      "name": "DepartmentStore1F real ground facade",
+      "position": [
+        26,
+        17
+      ],
+      "block": "87"
+    },
+    {
+      "kind": "point",
+      "name": "DepartmentStore1F real ground facade",
+      "position": [
+        27,
+        17
+      ],
+      "block": "8a"
+    },
+    {
+      "kind": "point",
+      "name": "DepartmentStore1F real ground facade",
+      "position": [
+        28,
+        17
+      ],
+      "block": "87"
+    },
+    {
+      "kind": "point",
+      "name": "DepartmentStore1F real ground facade",
+      "position": [
+        29,
+        17
+      ],
+      "block": "88"
+    },
+    {
+      "kind": "path",
+      "name": "DepartmentStore1F real two-core front approach",
+      "points": [
+        [
+          27,
+          18
+        ],
+        [
+          27,
+          18
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "kind": "point",
+      "name": "BattleClub native roof",
+      "position": [
+        33,
+        19
+      ],
+      "block": "80"
+    },
+    {
+      "kind": "point",
+      "name": "BattleClub native roof",
+      "position": [
+        34,
+        19
+      ],
+      "block": "82"
+    },
+    {
+      "kind": "point",
+      "name": "BattleClub native roof",
+      "position": [
+        35,
+        19
+      ],
+      "block": "82"
+    },
+    {
+      "kind": "point",
+      "name": "BattleClub native roof",
+      "position": [
+        36,
+        19
+      ],
+      "block": "82"
+    },
+    {
+      "kind": "point",
+      "name": "BattleClub native roof",
+      "position": [
+        37,
+        19
+      ],
+      "block": "81"
+    },
+    {
+      "kind": "point",
+      "name": "BattleClub solid window course",
+      "position": [
+        33,
+        20
+      ],
+      "block": "84"
+    },
+    {
+      "kind": "point",
+      "name": "BattleClub solid window course",
+      "position": [
+        34,
+        20
+      ],
+      "block": "89"
+    },
+    {
+      "kind": "point",
+      "name": "BattleClub solid window course",
+      "position": [
+        35,
+        20
+      ],
+      "block": "89"
+    },
+    {
+      "kind": "point",
+      "name": "BattleClub solid window course",
+      "position": [
+        36,
+        20
+      ],
+      "block": "89"
+    },
+    {
+      "kind": "point",
+      "name": "BattleClub solid window course",
+      "position": [
+        37,
+        20
+      ],
+      "block": "85"
+    },
+    {
+      "kind": "point",
+      "name": "BattleClub solid window course",
+      "position": [
+        33,
+        21
+      ],
+      "block": "84"
+    },
+    {
+      "kind": "point",
+      "name": "BattleClub solid window course",
+      "position": [
+        34,
+        21
+      ],
+      "block": "89"
+    },
+    {
+      "kind": "point",
+      "name": "BattleClub solid window course",
+      "position": [
+        35,
+        21
+      ],
+      "block": "89"
+    },
+    {
+      "kind": "point",
+      "name": "BattleClub solid window course",
+      "position": [
+        36,
+        21
+      ],
+      "block": "89"
+    },
+    {
+      "kind": "point",
+      "name": "BattleClub solid window course",
+      "position": [
+        37,
+        21
+      ],
+      "block": "85"
+    },
+    {
+      "kind": "point",
+      "name": "BattleClub real ground facade",
+      "position": [
+        33,
+        22
+      ],
+      "block": "83"
+    },
+    {
+      "kind": "point",
+      "name": "BattleClub real ground facade",
+      "position": [
+        34,
+        22
+      ],
+      "block": "87"
+    },
+    {
+      "kind": "point",
+      "name": "BattleClub real ground facade",
+      "position": [
+        35,
+        22
+      ],
+      "block": "8a"
+    },
+    {
+      "kind": "point",
+      "name": "BattleClub real ground facade",
+      "position": [
+        36,
+        22
+      ],
+      "block": "87"
+    },
+    {
+      "kind": "point",
+      "name": "BattleClub real ground facade",
+      "position": [
+        37,
+        22
+      ],
+      "block": "88"
+    },
+    {
+      "kind": "path",
+      "name": "BattleClub real two-core front approach",
+      "points": [
+        [
+          35,
+          23
+        ],
+        [
+          35,
+          23
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "kind": "point",
+      "name": "CedarHome native roof",
+      "position": [
+        30,
+        24
+      ],
+      "block": "18"
+    },
+    {
+      "kind": "point",
+      "name": "CedarHome native roof",
+      "position": [
+        31,
+        24
+      ],
+      "block": "18"
+    },
+    {
+      "kind": "point",
+      "name": "CedarHome native roof",
+      "position": [
+        32,
+        24
+      ],
+      "block": "19"
+    },
+    {
+      "kind": "point",
+      "name": "CedarHome real ground facade",
+      "position": [
+        30,
+        25
+      ],
+      "block": "10"
+    },
+    {
+      "kind": "point",
+      "name": "CedarHome real ground facade",
+      "position": [
+        31,
+        25
+      ],
+      "block": "1a"
+    },
+    {
+      "kind": "point",
+      "name": "CedarHome real ground facade",
+      "position": [
+        32,
+        25
+      ],
+      "block": "11"
+    },
+    {
+      "kind": "path",
+      "name": "CedarHome real two-core front approach",
+      "points": [
+        [
+          31,
+          26
+        ],
+        [
+          31,
+          26
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "kind": "point",
+      "name": "CommunityKitchen native roof",
+      "position": [
+        34,
+        24
+      ],
+      "block": "18"
+    },
+    {
+      "kind": "point",
+      "name": "CommunityKitchen native roof",
+      "position": [
+        35,
+        24
+      ],
+      "block": "18"
+    },
+    {
+      "kind": "point",
+      "name": "CommunityKitchen native roof",
+      "position": [
+        36,
+        24
+      ],
+      "block": "18"
+    },
+    {
+      "kind": "point",
+      "name": "CommunityKitchen native roof",
+      "position": [
+        37,
+        24
+      ],
+      "block": "19"
+    },
+    {
+      "kind": "point",
+      "name": "CommunityKitchen solid window course",
+      "position": [
+        34,
+        25
+      ],
+      "block": "20"
+    },
+    {
+      "kind": "point",
+      "name": "CommunityKitchen solid window course",
+      "position": [
+        35,
+        25
+      ],
+      "block": "20"
+    },
+    {
+      "kind": "point",
+      "name": "CommunityKitchen solid window course",
+      "position": [
+        36,
+        25
+      ],
+      "block": "20"
+    },
+    {
+      "kind": "point",
+      "name": "CommunityKitchen solid window course",
+      "position": [
+        37,
+        25
+      ],
+      "block": "20"
+    },
+    {
+      "kind": "point",
+      "name": "CommunityKitchen real ground facade",
+      "position": [
+        34,
+        26
+      ],
+      "block": "10"
+    },
+    {
+      "kind": "point",
+      "name": "CommunityKitchen real ground facade",
+      "position": [
+        35,
+        26
+      ],
+      "block": "11"
+    },
+    {
+      "kind": "point",
+      "name": "CommunityKitchen real ground facade",
+      "position": [
+        36,
+        26
+      ],
+      "block": "1a"
+    },
+    {
+      "kind": "point",
+      "name": "CommunityKitchen real ground facade",
+      "position": [
+        37,
+        26
+      ],
+      "block": "11"
+    },
+    {
+      "kind": "path",
+      "name": "CommunityKitchen real two-core front approach",
+      "points": [
+        [
+          36,
+          27
+        ],
+        [
+          36,
+          27
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "kind": "point",
+      "name": "CouriersDesk native roof",
+      "position": [
+        37,
+        28
+      ],
+      "block": "80"
+    },
+    {
+      "kind": "point",
+      "name": "CouriersDesk native roof",
+      "position": [
+        38,
+        28
+      ],
+      "block": "81"
+    },
+    {
+      "kind": "point",
+      "name": "CouriersDesk real ground facade",
+      "position": [
+        37,
+        29
+      ],
+      "block": "83"
+    },
+    {
+      "kind": "point",
+      "name": "CouriersDesk real ground facade",
+      "position": [
+        38,
+        29
+      ],
+      "block": "8a"
+    },
+    {
+      "kind": "path",
+      "name": "CouriersDesk real two-core front approach",
+      "points": [
+        [
+          38,
+          30
+        ],
+        [
+          38,
+          30
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "kind": "point",
+      "name": "FieldClub native roof",
+      "position": [
+        6,
+        23
+      ],
+      "block": "18"
+    },
+    {
+      "kind": "point",
+      "name": "FieldClub native roof",
+      "position": [
+        7,
+        23
+      ],
+      "block": "18"
+    },
+    {
+      "kind": "point",
+      "name": "FieldClub native roof",
+      "position": [
+        8,
+        23
+      ],
+      "block": "18"
+    },
+    {
+      "kind": "point",
+      "name": "FieldClub native roof",
+      "position": [
+        9,
+        23
+      ],
+      "block": "19"
+    },
+    {
+      "kind": "point",
+      "name": "FieldClub solid window course",
+      "position": [
+        6,
+        24
+      ],
+      "block": "20"
+    },
+    {
+      "kind": "point",
+      "name": "FieldClub solid window course",
+      "position": [
+        7,
+        24
+      ],
+      "block": "20"
+    },
+    {
+      "kind": "point",
+      "name": "FieldClub solid window course",
+      "position": [
+        8,
+        24
+      ],
+      "block": "20"
+    },
+    {
+      "kind": "point",
+      "name": "FieldClub solid window course",
+      "position": [
+        9,
+        24
+      ],
+      "block": "20"
+    },
+    {
+      "kind": "point",
+      "name": "FieldClub real ground facade",
+      "position": [
+        6,
+        25
+      ],
+      "block": "10"
+    },
+    {
+      "kind": "point",
+      "name": "FieldClub real ground facade",
+      "position": [
+        7,
+        25
+      ],
+      "block": "11"
+    },
+    {
+      "kind": "point",
+      "name": "FieldClub real ground facade",
+      "position": [
+        8,
+        25
+      ],
+      "block": "1a"
+    },
+    {
+      "kind": "point",
+      "name": "FieldClub real ground facade",
+      "position": [
+        9,
+        25
+      ],
+      "block": "11"
+    },
+    {
+      "kind": "path",
+      "name": "FieldClub real two-core front approach",
+      "points": [
+        [
+          8,
+          26
+        ],
+        [
+          8,
+          26
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "kind": "point",
+      "name": "GardenersHome native roof",
+      "position": [
+        2,
+        27
+      ],
+      "block": "18"
+    },
+    {
+      "kind": "point",
+      "name": "GardenersHome native roof",
+      "position": [
+        3,
+        27
+      ],
+      "block": "19"
+    },
+    {
+      "kind": "point",
+      "name": "GardenersHome real ground facade",
+      "position": [
+        2,
+        28
+      ],
+      "block": "10"
+    },
+    {
+      "kind": "point",
+      "name": "GardenersHome real ground facade",
+      "position": [
+        3,
+        28
+      ],
+      "block": "1a"
+    },
+    {
+      "kind": "path",
+      "name": "GardenersHome real two-core front approach",
+      "points": [
+        [
+          3,
+          29
+        ],
+        [
+          3,
+          29
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "kind": "point",
+      "name": "ArrivalInfo native roof",
+      "position": [
+        21,
+        28
+      ],
+      "block": "18"
+    },
+    {
+      "kind": "point",
+      "name": "ArrivalInfo native roof",
+      "position": [
+        22,
+        28
+      ],
+      "block": "19"
+    },
+    {
+      "kind": "point",
+      "name": "ArrivalInfo real ground facade",
+      "position": [
+        21,
+        29
+      ],
+      "block": "10"
+    },
+    {
+      "kind": "point",
+      "name": "ArrivalInfo real ground facade",
+      "position": [
+        22,
+        29
+      ],
+      "block": "1a"
+    },
+    {
+      "kind": "path",
+      "name": "ArrivalInfo real two-core front approach",
+      "points": [
+        [
+          22,
+          30
+        ],
+        [
+          22,
+          30
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "kind": "point",
+      "name": "RiverInn native roof",
+      "position": [
+        24,
+        27
+      ],
+      "block": "18"
+    },
+    {
+      "kind": "point",
+      "name": "RiverInn native roof",
+      "position": [
+        25,
+        27
+      ],
+      "block": "18"
+    },
+    {
+      "kind": "point",
+      "name": "RiverInn native roof",
+      "position": [
+        26,
+        27
+      ],
+      "block": "18"
+    },
+    {
+      "kind": "point",
+      "name": "RiverInn native roof",
+      "position": [
+        27,
+        27
+      ],
+      "block": "19"
+    },
+    {
+      "kind": "point",
+      "name": "RiverInn solid window course",
+      "position": [
+        24,
+        28
+      ],
+      "block": "20"
+    },
+    {
+      "kind": "point",
+      "name": "RiverInn solid window course",
+      "position": [
+        25,
+        28
+      ],
+      "block": "20"
+    },
+    {
+      "kind": "point",
+      "name": "RiverInn solid window course",
+      "position": [
+        26,
+        28
+      ],
+      "block": "20"
+    },
+    {
+      "kind": "point",
+      "name": "RiverInn solid window course",
+      "position": [
+        27,
+        28
+      ],
+      "block": "20"
+    },
+    {
+      "kind": "point",
+      "name": "RiverInn real ground facade",
+      "position": [
+        24,
+        29
+      ],
+      "block": "10"
+    },
+    {
+      "kind": "point",
+      "name": "RiverInn real ground facade",
+      "position": [
+        25,
+        29
+      ],
+      "block": "11"
+    },
+    {
+      "kind": "point",
+      "name": "RiverInn real ground facade",
+      "position": [
+        26,
+        29
+      ],
+      "block": "1a"
+    },
+    {
+      "kind": "point",
+      "name": "RiverInn real ground facade",
+      "position": [
+        27,
+        29
+      ],
+      "block": "11"
+    },
+    {
+      "kind": "path",
+      "name": "RiverInn real two-core front approach",
+      "points": [
+        [
+          26,
+          30
+        ],
+        [
+          26,
+          30
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "kind": "point",
+      "name": "SouthMarket native roof",
+      "position": [
+        29,
+        27
+      ],
+      "block": "80"
+    },
+    {
+      "kind": "point",
+      "name": "SouthMarket native roof",
+      "position": [
+        30,
+        27
+      ],
+      "block": "82"
+    },
+    {
+      "kind": "point",
+      "name": "SouthMarket native roof",
+      "position": [
+        31,
+        27
+      ],
+      "block": "82"
+    },
+    {
+      "kind": "point",
+      "name": "SouthMarket native roof",
+      "position": [
+        32,
+        27
+      ],
+      "block": "81"
+    },
+    {
+      "kind": "point",
+      "name": "SouthMarket solid window course",
+      "position": [
+        29,
+        28
+      ],
+      "block": "84"
+    },
+    {
+      "kind": "point",
+      "name": "SouthMarket solid window course",
+      "position": [
+        30,
+        28
+      ],
+      "block": "89"
+    },
+    {
+      "kind": "point",
+      "name": "SouthMarket solid window course",
+      "position": [
+        31,
+        28
+      ],
+      "block": "89"
+    },
+    {
+      "kind": "point",
+      "name": "SouthMarket solid window course",
+      "position": [
+        32,
+        28
+      ],
+      "block": "85"
+    },
+    {
+      "kind": "point",
+      "name": "SouthMarket real ground facade",
+      "position": [
+        29,
+        29
+      ],
+      "block": "83"
+    },
+    {
+      "kind": "point",
+      "name": "SouthMarket real ground facade",
+      "position": [
+        30,
+        29
+      ],
+      "block": "87"
+    },
+    {
+      "kind": "point",
+      "name": "SouthMarket real ground facade",
+      "position": [
+        31,
+        29
+      ],
+      "block": "8a"
+    },
+    {
+      "kind": "point",
+      "name": "SouthMarket real ground facade",
+      "position": [
+        32,
+        29
+      ],
+      "block": "88"
+    },
+    {
+      "kind": "path",
+      "name": "SouthMarket real two-core front approach",
+      "points": [
+        [
+          31,
+          30
+        ],
+        [
+          31,
+          30
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "kind": "point",
+      "name": "MillWorkersHouse native roof",
+      "position": [
+        34,
+        28
+      ],
+      "block": "18"
+    },
+    {
+      "kind": "point",
+      "name": "MillWorkersHouse native roof",
+      "position": [
+        35,
+        28
+      ],
+      "block": "18"
+    },
+    {
+      "kind": "point",
+      "name": "MillWorkersHouse native roof",
+      "position": [
+        36,
+        28
+      ],
+      "block": "19"
+    },
+    {
+      "kind": "point",
+      "name": "MillWorkersHouse real ground facade",
+      "position": [
+        34,
+        29
+      ],
+      "block": "10"
+    },
+    {
+      "kind": "point",
+      "name": "MillWorkersHouse real ground facade",
+      "position": [
+        35,
+        29
+      ],
+      "block": "1a"
+    },
+    {
+      "kind": "point",
+      "name": "MillWorkersHouse real ground facade",
+      "position": [
+        36,
+        29
+      ],
+      "block": "11"
+    },
+    {
+      "kind": "path",
+      "name": "MillWorkersHouse real two-core front approach",
+      "points": [
+        [
+          35,
+          30
+        ],
+        [
+          35,
+          30
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "kind": "point",
+      "name": "Bookbinder native roof",
+      "position": [
+        36,
+        7
+      ],
+      "block": "80"
+    },
+    {
+      "kind": "point",
+      "name": "Bookbinder native roof",
+      "position": [
+        37,
+        7
+      ],
+      "block": "81"
+    },
+    {
+      "kind": "point",
+      "name": "Bookbinder real ground facade",
+      "position": [
+        36,
+        8
+      ],
+      "block": "83"
+    },
+    {
+      "kind": "point",
+      "name": "Bookbinder real ground facade",
+      "position": [
+        37,
+        8
+      ],
+      "block": "8a"
+    },
+    {
+      "kind": "path",
+      "name": "Bookbinder real two-core front approach",
+      "points": [
+        [
+          37,
+          9
+        ],
+        [
+          37,
+          9
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "kind": "point",
+      "name": "CooperativeFlat native roof",
+      "position": [
+        21,
+        24
+      ],
+      "block": "80"
+    },
+    {
+      "kind": "point",
+      "name": "CooperativeFlat native roof",
+      "position": [
+        22,
+        24
+      ],
+      "block": "81"
+    },
+    {
+      "kind": "point",
+      "name": "CooperativeFlat real ground facade",
+      "position": [
+        21,
+        25
+      ],
+      "block": "83"
+    },
+    {
+      "kind": "point",
+      "name": "CooperativeFlat real ground facade",
+      "position": [
+        22,
+        25
+      ],
+      "block": "8a"
+    },
+    {
+      "kind": "path",
+      "name": "CooperativeFlat real two-core front approach",
+      "points": [
+        [
+          22,
+          26
+        ],
+        [
+          22,
+          26
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "kind": "point",
+      "name": "ToolFlat native roof",
+      "position": [
+        24,
+        24
+      ],
+      "block": "18"
+    },
+    {
+      "kind": "point",
+      "name": "ToolFlat native roof",
+      "position": [
+        25,
+        24
+      ],
+      "block": "19"
+    },
+    {
+      "kind": "point",
+      "name": "ToolFlat real ground facade",
+      "position": [
+        24,
+        25
+      ],
+      "block": "10"
+    },
+    {
+      "kind": "point",
+      "name": "ToolFlat real ground facade",
+      "position": [
+        25,
+        25
+      ],
+      "block": "1a"
+    },
+    {
+      "kind": "path",
+      "name": "ToolFlat real two-core front approach",
+      "points": [
+        [
+          25,
+          26
+        ],
+        [
+          25,
+          26
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "kind": "point",
+      "name": "CornerHome native roof",
+      "position": [
+        27,
+        24
+      ],
+      "block": "80"
+    },
+    {
+      "kind": "point",
+      "name": "CornerHome native roof",
+      "position": [
+        28,
+        24
+      ],
+      "block": "81"
+    },
+    {
+      "kind": "point",
+      "name": "CornerHome real ground facade",
+      "position": [
+        27,
+        25
+      ],
+      "block": "83"
+    },
+    {
+      "kind": "point",
+      "name": "CornerHome real ground facade",
+      "position": [
+        28,
+        25
+      ],
+      "block": "8a"
+    },
+    {
+      "kind": "path",
+      "name": "CornerHome real two-core front approach",
+      "points": [
+        [
+          28,
+          26
+        ],
+        [
+          28,
+          26
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "kind": "point",
+      "name": "RiverFamilyHome native roof",
+      "position": [
+        6,
+        3
+      ],
+      "block": "18"
+    },
+    {
+      "kind": "point",
+      "name": "RiverFamilyHome native roof",
+      "position": [
+        7,
+        3
+      ],
+      "block": "19"
+    },
+    {
+      "kind": "point",
+      "name": "RiverFamilyHome real ground facade",
+      "position": [
+        6,
+        4
+      ],
+      "block": "10"
+    },
+    {
+      "kind": "point",
+      "name": "RiverFamilyHome real ground facade",
+      "position": [
+        7,
+        4
+      ],
+      "block": "1a"
+    },
+    {
+      "kind": "path",
+      "name": "RiverFamilyHome real two-core front approach",
+      "points": [
+        [
+          7,
+          5
+        ],
+        [
+          7,
+          5
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "kind": "point",
+      "name": "GardenFlat native roof",
+      "position": [
+        29,
+        7
+      ],
+      "block": "80"
+    },
+    {
+      "kind": "point",
+      "name": "GardenFlat native roof",
+      "position": [
+        30,
+        7
+      ],
+      "block": "81"
+    },
+    {
+      "kind": "point",
+      "name": "GardenFlat real ground facade",
+      "position": [
+        29,
+        8
+      ],
+      "block": "83"
+    },
+    {
+      "kind": "point",
+      "name": "GardenFlat real ground facade",
+      "position": [
+        30,
+        8
+      ],
+      "block": "8a"
+    },
+    {
+      "kind": "path",
+      "name": "GardenFlat real two-core front approach",
+      "points": [
+        [
+          30,
+          9
+        ],
+        [
+          30,
+          9
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "kind": "point",
+      "name": "PatternStudio native roof",
+      "position": [
+        32,
+        7
+      ],
+      "block": "18"
+    },
+    {
+      "kind": "point",
+      "name": "PatternStudio native roof",
+      "position": [
+        33,
+        7
+      ],
+      "block": "19"
+    },
+    {
+      "kind": "point",
+      "name": "PatternStudio real ground facade",
+      "position": [
+        32,
+        8
+      ],
+      "block": "10"
+    },
+    {
+      "kind": "point",
+      "name": "PatternStudio real ground facade",
+      "position": [
+        33,
+        8
+      ],
+      "block": "1a"
+    },
+    {
+      "kind": "path",
+      "name": "PatternStudio real two-core front approach",
+      "points": [
+        [
+          33,
+          9
+        ],
+        [
+          33,
+          9
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "kind": "point",
+      "name": "MillForemanHome native roof",
+      "position": [
+        29,
+        21
+      ],
+      "block": "80"
+    },
+    {
+      "kind": "point",
+      "name": "MillForemanHome native roof",
+      "position": [
+        30,
+        21
+      ],
+      "block": "81"
+    },
+    {
+      "kind": "point",
+      "name": "MillForemanHome real ground facade",
+      "position": [
+        29,
+        22
+      ],
+      "block": "83"
+    },
+    {
+      "kind": "point",
+      "name": "MillForemanHome real ground facade",
+      "position": [
+        30,
+        22
+      ],
+      "block": "8a"
+    },
+    {
+      "kind": "path",
+      "name": "MillForemanHome real two-core front approach",
+      "points": [
+        [
+          30,
+          23
+        ],
+        [
+          30,
+          23
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "kind": "point",
+      "name": "Preserved priced market canopy",
+      "position": [
+        21,
+        20
+      ],
+      "block": "93"
+    },
+    {
+      "kind": "point",
+      "name": "Preserved priced market canopy",
+      "position": [
+        22,
+        20
+      ],
+      "block": "95"
+    },
+    {
+      "kind": "point",
+      "name": "Preserved priced market canopy",
+      "position": [
+        21,
+        21
+      ],
+      "block": "96"
+    },
+    {
+      "kind": "point",
+      "name": "Preserved priced market canopy",
+      "position": [
+        22,
+        21
+      ],
+      "block": "98"
+    },
+    {
+      "kind": "path",
+      "name": "Actual front-counter aisle",
+      "points": [
+        [
+          21,
+          22
+        ],
+        [
+          21,
+          23
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "kind": "point",
+      "name": "Preserved priced market canopy",
+      "position": [
+        24,
+        20
+      ],
+      "block": "93"
+    },
+    {
+      "kind": "point",
+      "name": "Preserved priced market canopy",
+      "position": [
+        25,
+        20
+      ],
+      "block": "95"
+    },
+    {
+      "kind": "point",
+      "name": "Preserved priced market canopy",
+      "position": [
+        24,
+        21
+      ],
+      "block": "96"
+    },
+    {
+      "kind": "point",
+      "name": "Preserved priced market canopy",
+      "position": [
+        25,
+        21
+      ],
+      "block": "98"
+    },
+    {
+      "kind": "path",
+      "name": "Actual front-counter aisle",
+      "points": [
+        [
+          24,
+          22
+        ],
+        [
+          24,
+          23
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "kind": "point",
+      "name": "Preserved priced market canopy",
+      "position": [
+        27,
+        20
+      ],
+      "block": "93"
+    },
+    {
+      "kind": "point",
+      "name": "Preserved priced market canopy",
+      "position": [
+        28,
+        20
+      ],
+      "block": "95"
+    },
+    {
+      "kind": "point",
+      "name": "Preserved priced market canopy",
+      "position": [
+        27,
+        21
+      ],
+      "block": "96"
+    },
+    {
+      "kind": "point",
+      "name": "Preserved priced market canopy",
+      "position": [
+        28,
+        21
+      ],
+      "block": "98"
+    },
+    {
+      "kind": "path",
+      "name": "Actual front-counter aisle",
+      "points": [
+        [
+          27,
+          22
+        ],
+        [
+          27,
+          23
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "kind": "point",
+      "name": "MN_MP_TOWN_SIGN authentic sign",
+      "position": [
+        19,
+        24
+      ],
+      "block": "45"
+    },
+    {
+      "kind": "point",
+      "name": "MN_MP_DISPATCH_SIGN authentic sign",
+      "position": [
+        11,
+        17
+      ],
+      "block": "45"
+    },
+    {
+      "kind": "point",
+      "name": "MN_MP_GYM_SIGN authentic sign",
+      "position": [
+        34,
+        17
+      ],
+      "block": "45"
+    },
+    {
+      "kind": "point",
+      "name": "MN_MP_EAST_SIGN authentic sign",
+      "position": [
+        29,
+        23
+      ],
+      "block": "45"
+    },
+    {
+      "kind": "point",
+      "name": "MN_MP_SUPPLYCOOP_SIGN authentic sign",
+      "position": [
+        1,
+        5
+      ],
+      "block": "45"
+    },
+    {
+      "kind": "point",
+      "name": "MN_MP_GRAINEXCHANGE_SIGN authentic sign",
+      "position": [
+        8,
+        5
+      ],
+      "block": "45"
+    },
+    {
+      "kind": "point",
+      "name": "MN_MP_TOOLWORKSHOP_SIGN authentic sign",
+      "position": [
+        11,
+        8
+      ],
+      "block": "45"
+    },
+    {
+      "kind": "point",
+      "name": "MN_MP_PRINTSHOP_SIGN authentic sign",
+      "position": [
+        21,
+        5
+      ],
+      "block": "45"
+    },
+    {
+      "kind": "point",
+      "name": "MN_MP_FOUNDRYMUSEUM_SIGN authentic sign",
+      "position": [
+        1,
+        10
+      ],
+      "block": "45"
+    },
+    {
+      "kind": "point",
+      "name": "MN_MP_ARTSSTUDIO_SIGN authentic sign",
+      "position": [
+        7,
+        10
+      ],
+      "block": "45"
+    },
+    {
+      "kind": "point",
+      "name": "MN_MP_MUSICROOM_SIGN authentic sign",
+      "position": [
+        25,
+        5
+      ],
+      "block": "45"
+    },
+    {
+      "kind": "point",
+      "name": "MN_MP_COMMUNITYLIBRARY_SIGN authentic sign",
+      "position": [
+        30,
+        5
+      ],
+      "block": "45"
+    },
+    {
+      "kind": "point",
+      "name": "MN_MP_NORTHEASTHOME_SIGN authentic sign",
+      "position": [
+        35,
+        5
+      ],
+      "block": "45"
+    },
+    {
+      "kind": "point",
+      "name": "MN_MP_GARDENSHOP_SIGN authentic sign",
+      "position": [
+        21,
+        9
+      ],
+      "block": "45"
+    },
+    {
+      "kind": "point",
+      "name": "MN_MP_RIVERNATURALIST_SIGN authentic sign",
+      "position": [
+        25,
+        9
+      ],
+      "block": "45"
+    },
+    {
+      "kind": "point",
+      "name": "MN_MP_BOATHOUSE_SIGN authentic sign",
+      "position": [
+        1,
+        15
+      ],
+      "block": "45"
+    },
+    {
+      "kind": "point",
+      "name": "MN_MP_ANGLERHOME_SIGN authentic sign",
+      "position": [
+        7,
+        15
+      ],
+      "block": "45"
+    },
+    {
+      "kind": "point",
+      "name": "MN_MP_LAKECABIN_SIGN authentic sign",
+      "position": [
+        1,
+        23
+      ],
+      "block": "45"
+    },
+    {
+      "kind": "point",
+      "name": "MN_MP_GREENHOUSE_SIGN authentic sign",
+      "position": [
+        9,
+        28
+      ],
+      "block": "45"
+    },
+    {
+      "kind": "point",
+      "name": "MN_MP_BRIDGEHOME_SIGN authentic sign",
+      "position": [
+        11,
+        11
+      ],
+      "block": "45"
+    },
+    {
+      "kind": "point",
+      "name": "MN_MP_DEPARTMENTSTORE1F_SIGN authentic sign",
+      "position": [
+        24,
+        18
+      ],
+      "block": "45"
+    },
+    {
+      "kind": "point",
+      "name": "MN_MP_BATTLECLUB_SIGN authentic sign",
+      "position": [
+        32,
+        23
+      ],
+      "block": "45"
+    },
+    {
+      "kind": "point",
+      "name": "MN_MP_CEDARHOME_SIGN authentic sign",
+      "position": [
+        29,
+        26
+      ],
+      "block": "45"
+    },
+    {
+      "kind": "point",
+      "name": "MN_MP_COMMUNITYKITCHEN_SIGN authentic sign",
+      "position": [
+        33,
+        27
+      ],
+      "block": "45"
+    },
+    {
+      "kind": "point",
+      "name": "MN_MP_COURIERSDESK_SIGN authentic sign",
+      "position": [
+        36,
+        30
+      ],
+      "block": "45"
+    },
+    {
+      "kind": "point",
+      "name": "MN_MP_FIELDCLUB_SIGN authentic sign",
+      "position": [
+        5,
+        26
+      ],
+      "block": "45"
+    },
+    {
+      "kind": "point",
+      "name": "MN_MP_GARDENERSHOME_SIGN authentic sign",
+      "position": [
+        1,
+        29
+      ],
+      "block": "45"
+    },
+    {
+      "kind": "point",
+      "name": "MN_MP_ARRIVALINFO_SIGN authentic sign",
+      "position": [
+        20,
+        30
+      ],
+      "block": "45"
+    },
+    {
+      "kind": "point",
+      "name": "MN_MP_RIVERINN_SIGN authentic sign",
+      "position": [
+        23,
+        30
+      ],
+      "block": "45"
+    },
+    {
+      "kind": "point",
+      "name": "MN_MP_SOUTHMARKET_SIGN authentic sign",
+      "position": [
+        28,
+        30
+      ],
+      "block": "45"
+    },
+    {
+      "kind": "point",
+      "name": "MN_MP_MILLWORKERSHOUSE_SIGN authentic sign",
+      "position": [
+        33,
+        30
+      ],
+      "block": "45"
+    },
+    {
+      "kind": "point",
+      "name": "MN_MP_MILL_WATER_PLAQUE authentic sign",
+      "position": [
+        14,
+        6
+      ],
+      "block": "45"
+    },
+    {
+      "kind": "point",
+      "name": "MN_MP_MILL_GRAIN_PLAQUE authentic sign",
+      "position": [
+        13,
+        21
+      ],
+      "block": "45"
+    },
+    {
+      "kind": "point",
+      "name": "MN_MP_MILL_WORKERS_PLAQUE authentic sign",
+      "position": [
+        21,
+        27
+      ],
+      "block": "45"
+    },
+    {
+      "kind": "rect",
+      "name": "North checkpoint west shoulder",
+      "bounds": [
+        19,
+        0,
+        20,
+        4
+      ],
+      "material": "forest"
+    },
+    {
+      "kind": "rect",
+      "name": "North checkpoint east shoulder",
+      "bounds": [
+        21,
+        0,
+        22,
+        4
+      ],
+      "material": "forest"
+    },
+    {
+      "kind": "rect",
+      "name": "East checkpoint upper shoulder",
+      "bounds": [
+        38,
+        17,
+        40,
+        18
+      ],
+      "material": "forest"
+    },
+    {
+      "kind": "rect",
+      "name": "East checkpoint lower shoulder",
+      "bounds": [
+        38,
+        19,
+        40,
+        20
+      ],
+      "material": "forest"
+    },
+    {
+      "kind": "point",
+      "name": "North original guarded two-lane mouth",
+      "position": [
+        20,
+        0
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "North original guarded two-lane mouth",
+      "position": [
+        20,
+        1
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "North original guarded two-lane mouth",
+      "position": [
+        20,
+        2
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "North original guarded two-lane mouth",
+      "position": [
+        20,
+        3
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "East original guarded two-lane mouth",
+      "position": [
+        38,
+        18
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "East original guarded two-lane mouth",
+      "position": [
+        39,
+        18
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "South actual two-lane R03mouth",
+      "position": [
+        20,
+        29
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "South actual two-lane R03mouth",
+      "position": [
+        20,
+        30
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "South actual two-lane R03mouth",
+      "position": [
+        20,
+        31
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Purposeful lower river street-side Surf landing",
+      "position": [
+        19,
+        30
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Attached frontage flowers",
+      "position": [
+        1,
+        6
+      ],
+      "block": "04"
+    },
+    {
+      "kind": "point",
+      "name": "Attached frontage flowers",
+      "position": [
+        30,
+        6
+      ],
+      "block": "04"
+    },
+    {
+      "kind": "point",
+      "name": "Attached frontage flowers",
+      "position": [
+        35,
+        7
+      ],
+      "block": "04"
+    },
+    {
+      "kind": "point",
+      "name": "Attached frontage flowers",
+      "position": [
+        21,
+        7
+      ],
+      "block": "04"
+    },
+    {
+      "kind": "point",
+      "name": "Attached frontage flowers",
+      "position": [
+        9,
+        22
+      ],
+      "block": "04"
+    },
+    {
+      "kind": "point",
+      "name": "Attached frontage flowers",
+      "position": [
+        8,
+        27
+      ],
+      "block": "04"
+    },
+    {
+      "kind": "point",
+      "name": "Attached frontage flowers",
+      "position": [
+        18,
+        23
+      ],
+      "block": "04"
+    },
+    {
+      "kind": "point",
+      "name": "Attached frontage flowers",
+      "position": [
+        33,
+        26
+      ],
+      "block": "04"
+    },
+    {
+      "kind": "point",
+      "name": "Native bench at actual activity court",
+      "position": [
+        14,
+        12
+      ],
+      "block": "8e"
+    },
+    {
+      "kind": "point",
+      "name": "Native bench at actual activity court",
+      "position": [
+        19,
+        26
+      ],
+      "block": "8e"
+    },
+    {
+      "kind": "point",
+      "name": "Native bench at actual activity court",
+      "position": [
+        32,
+        13
+      ],
+      "block": "8e"
+    },
+    {
+      "kind": "point",
+      "name": "Native bench at actual activity court",
+      "position": [
+        38,
+        23
+      ],
+      "block": "8e"
+    }
+  ],
+  "additional_water_blocks": [
+    "99",
+    "31"
+  ]
+}

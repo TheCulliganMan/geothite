@@ -1,0 +1,7 @@
+{
+  "tool": "built-in imagegen",
+  "default_path": "/Users/ryanculligan/.codex/generated_images/01a178da-4cf1-7e01-8516-667a332dc790/exec-6eec9913-9f01-4f60-9efb-d4f484118c36.png",
+  "workspace_path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f063/lasserp.overworld.imagegen-v1.png",
+  "sha256": "3e7d2fd0289729a08dddd45298953d2ba5808752946c020364a2edd7d7b9b904",
+  "prompt": "prompt-lasserp-v1.txt"
+}

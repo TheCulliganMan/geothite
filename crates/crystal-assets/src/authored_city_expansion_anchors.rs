@@ -143,8 +143,31 @@ pub(super) fn connections(
     city: &mut MapModule,
     plan: &Expansion,
 ) -> Result<()> {
+    connections_with_retained_water(pack, city, plan, &BTreeSet::new())
+}
+
+/// Retained river connections are independently paired by the water validator.
+/// Their offsets and neighboring modules are not changed here.
+pub(super) fn connections_with_retained_water(
+    pack: &mut CompiledGamePack,
+    city: &mut MapModule,
+    plan: &Expansion,
+    retained: &BTreeSet<(&str, &str)>,
+) -> Result<()> {
+    let declared = plan
+        .connections
+        .iter()
+        .map(|link| (link.direction.as_str(), link.target.as_str()))
+        .chain(retained.iter().copied())
+        .collect::<BTreeSet<_>>();
+    let actual = city
+        .attributes
+        .connections
+        .iter()
+        .map(|link| (link.direction.as_str(), link.target_map.as_str()))
+        .collect::<BTreeSet<_>>();
     ensure!(
-        city.attributes.connections.len() == plan.connections.len(),
+        actual == declared && actual.len() == city.attributes.connections.len(),
         "every native city connection needs a contract"
     );
     let mut used = BTreeSet::new();

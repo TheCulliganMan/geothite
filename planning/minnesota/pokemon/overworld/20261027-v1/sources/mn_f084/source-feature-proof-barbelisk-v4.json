@@ -1,0 +1,336 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_183",
+  "result": "pass",
+  "manifest_sha256": "a3cff1da1806881f953ec7d21e121ffcb52d8829a8d9d07ace6291de7c7e6d0a",
+  "bank_sha256": "8be5685d1c770dd56200bdddb8842912000324dfa22e2de9df93fa7ce3f9808a",
+  "source_sha256": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f084/barbelisk.overworld.imagegen-v4-safe-gutters.png": "860a4fce4fef9a7d15c4fcbc2a8c7980a28829073ab22fbc7a5a71cf642985d3"
+  },
+  "canonical_eye_form": "TWO actual black source pupils SOUTH/ONE near black source pupil WEST, whole native eye clusters bound to actual pupil components, no armor/scute/prong dots counted.",
+  "nonrear_poses": [
+    {
+      "pose": "down_idle",
+      "result": "pass",
+      "source_feature_proof": {
+        "pose": "down_idle",
+        "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f084/barbelisk.overworld.imagegen-v4-safe-gutters.png",
+        "crop": [
+          96,
+          79,
+          440,
+          400
+        ],
+        "anatomically_identified_source_eye_boxes_xywh": [
+          [
+            210,
+            344,
+            18,
+            19
+          ],
+          [
+            294,
+            345,
+            18,
+            18
+          ]
+        ],
+        "actual_eye_proofs": [
+          {
+            "native_cluster": [
+              [
+                4,
+                12
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  1,
+                  2,
+                  2,
+                  253
+                ],
+                "bounds": [
+                  210,
+                  344,
+                  18,
+                  19
+                ],
+                "pixels": 339,
+                "truncated_contour": false,
+                "native_pixel": [
+                  4,
+                  12
+                ],
+                "source_sample_pixel": [
+                  213,
+                  350
+                ]
+              }
+            ]
+          },
+          {
+            "native_cluster": [
+              [
+                7,
+                12
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  2,
+                  2,
+                  2,
+                  253
+                ],
+                "bounds": [
+                  294,
+                  345,
+                  18,
+                  18
+                ],
+                "pixels": 324,
+                "truncated_contour": false,
+                "native_pixel": [
+                  7,
+                  12
+                ],
+                "source_sample_pixel": [
+                  301,
+                  350
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "pose": "left_idle",
+      "result": "pass",
+      "source_feature_proof": {
+        "pose": "left_idle",
+        "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f084/barbelisk.overworld.imagegen-v4-safe-gutters.png",
+        "crop": [
+          1034,
+          151,
+          440,
+          400
+        ],
+        "anatomically_identified_source_eye_boxes_xywh": [
+          [
+            1138,
+            320,
+            18,
+            20
+          ]
+        ],
+        "actual_eye_proofs": [
+          {
+            "native_cluster": [
+              [
+                4,
+                9
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  3,
+                  4,
+                  4,
+                  253
+                ],
+                "bounds": [
+                  1138,
+                  320,
+                  18,
+                  20
+                ],
+                "pixels": 360,
+                "truncated_contour": false,
+                "native_pixel": [
+                  4,
+                  9
+                ],
+                "source_sample_pixel": [
+                  1151,
+                  334
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "pose": "down_step",
+      "result": "pass",
+      "source_feature_proof": {
+        "pose": "down_step",
+        "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f084/barbelisk.overworld.imagegen-v4-safe-gutters.png",
+        "crop": [
+          105,
+          550,
+          440,
+          400
+        ],
+        "anatomically_identified_source_eye_boxes_xywh": [
+          [
+            219,
+            811,
+            18,
+            19
+          ],
+          [
+            309,
+            811,
+            18,
+            19
+          ]
+        ],
+        "actual_eye_proofs": [
+          {
+            "native_cluster": [
+              [
+                4,
+                12
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  0,
+                  0,
+                  1,
+                  253
+                ],
+                "bounds": [
+                  219,
+                  811,
+                  18,
+                  19
+                ],
+                "pixels": 341,
+                "truncated_contour": false,
+                "native_pixel": [
+                  4,
+                  12
+                ],
+                "source_sample_pixel": [
+                  222,
+                  821
+                ]
+              }
+            ]
+          },
+          {
+            "native_cluster": [
+              [
+                7,
+                12
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  0,
+                  3,
+                  3,
+                  253
+                ],
+                "bounds": [
+                  309,
+                  811,
+                  18,
+                  19
+                ],
+                "pixels": 342,
+                "truncated_contour": false,
+                "native_pixel": [
+                  7,
+                  12
+                ],
+                "source_sample_pixel": [
+                  310,
+                  821
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "pose": "left_step",
+      "result": "pass",
+      "source_feature_proof": {
+        "pose": "left_step",
+        "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f084/barbelisk.overworld.imagegen-v4-safe-gutters.png",
+        "crop": [
+          1036,
+          623,
+          440,
+          400
+        ],
+        "anatomically_identified_source_eye_boxes_xywh": [
+          [
+            1138,
+            796,
+            18,
+            20
+          ]
+        ],
+        "actual_eye_proofs": [
+          {
+            "native_cluster": [
+              [
+                4,
+                9
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  1,
+                  2,
+                  2,
+                  253
+                ],
+                "bounds": [
+                  1138,
+                  796,
+                  18,
+                  20
+                ],
+                "pixels": 348,
+                "truncated_contour": false,
+                "native_pixel": [
+                  4,
+                  9
+                ],
+                "source_sample_pixel": [
+                  1153,
+                  806
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "rear_anatomy": {
+    "result": "pass",
+    "notes": "Both native normal/shiny rear poses actually inspected: plain rear head, no copied face. Head anchors stable, 1px transparent outer border, three walk pairs differ."
+  },
+  "detailed_proof": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f084/manifest-barbelisk-v4-pupil-proof.proof.json"
+}

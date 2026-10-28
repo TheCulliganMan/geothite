@@ -1,0 +1,18 @@
+{
+  "species_id": "MN_048",
+  "name": "Doublehex",
+  "family_id": "MN_F017",
+  "tool": "built-in image_gen",
+  "selected_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f017/manifest-doublehex-v1-pupil-proof.json",
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f017/doublehex-v1-pupil-proof",
+  "normalized_proof": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f017/source-feature-proof-doublehex-v1.json",
+  "detailed_proof": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f017/manifest-doublehex-v1-pupil-proof.proof.json",
+  "sources": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f017/doublehex.overworld.imagegen-v1.png": "dcb213d299880db7d6d8d94b95484b3835da42e7c75de1ec898aa5b205ddc20c"
+  },
+  "preserved_attempt_receipts": [
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f017/attempt-doublehex-v1.json"
+  ],
+  "status": "frozen native candidate; actual normal/shiny source features reviewed; root context pending",
+  "accepted": false
+}

@@ -1,0 +1,212 @@
+{
+  "species": "stackajack",
+  "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f016/stackajack-v5-pupils-frozen",
+  "status": "actual-source native proof passes; root visual/context acceptance pending",
+  "all_four_nonrear_actual_isolated_source_pupils": true,
+  "six16px_alpha_border_normal_shiny_runtime_parity": true,
+  "canonical_palettes": true,
+  "literal_2bpp_all1536indices_exact": true,
+  "bank_sha256": "eb89b7d9aee28da1282cb014ec206f81bc3c3de2d7bd8e2ad2d8c6ecadedf4d0",
+  "proof": [
+    {
+      "pose": "down_idle",
+      "actual_small_isolated_pupils": [
+        {
+          "native": [
+            6,
+            8
+          ],
+          "source_sample": [
+            235,
+            242
+          ],
+          "source_component": [
+            231,
+            232,
+            28,
+            27
+          ],
+          "component_pixels": 756,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            2
+          ],
+          "source_rgba": [
+            0,
+            0,
+            0,
+            254
+          ]
+        },
+        {
+          "native": [
+            9,
+            8
+          ],
+          "source_sample": [
+            339,
+            242
+          ],
+          "source_component": [
+            316,
+            232,
+            29,
+            27
+          ],
+          "component_pixels": 783,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            2
+          ],
+          "source_rgba": [
+            3,
+            2,
+            0,
+            253
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "actual_small_isolated_pupils": [
+        {
+          "native": [
+            5,
+            8
+          ],
+          "source_sample": [
+            1203,
+            242
+          ],
+          "source_component": [
+            1183,
+            231,
+            30,
+            29
+          ],
+          "component_pixels": 870,
+          "native_neighbors": [
+            1,
+            1,
+            2,
+            1
+          ],
+          "source_rgba": [
+            3,
+            1,
+            1,
+            253
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "actual_small_isolated_pupils": [
+        {
+          "native": [
+            6,
+            8
+          ],
+          "source_sample": [
+            235,
+            686
+          ],
+          "source_component": [
+            231,
+            674,
+            29,
+            27
+          ],
+          "component_pixels": 770,
+          "native_neighbors": [
+            1,
+            1,
+            2,
+            2
+          ],
+          "source_rgba": [
+            3,
+            2,
+            2,
+            253
+          ]
+        },
+        {
+          "native": [
+            9,
+            8
+          ],
+          "source_sample": [
+            339,
+            686
+          ],
+          "source_component": [
+            315,
+            674,
+            30,
+            27
+          ],
+          "component_pixels": 810,
+          "native_neighbors": [
+            1,
+            1,
+            2,
+            2
+          ],
+          "source_rgba": [
+            4,
+            2,
+            0,
+            254
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "actual_small_isolated_pupils": [
+        {
+          "native": [
+            5,
+            8
+          ],
+          "source_sample": [
+            1203,
+            685
+          ],
+          "source_component": [
+            1183,
+            675,
+            30,
+            29
+          ],
+          "component_pixels": 870,
+          "native_neighbors": [
+            1,
+            1,
+            2,
+            1
+          ],
+          "source_rgba": [
+            1,
+            0,
+            0,
+            253
+          ]
+        }
+      ]
+    }
+  ],
+  "hashes": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f016/stackajack-v5-pupils-frozen/compiled-index.json": "64426c9b453fc1051c5480ad8c8d8042eb778b602833e5007193272468f3c7b0",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f016/stackajack.overworld.imagegen-v2-pupils.png": "8b731da4253df12acb0bd1c6d5ea79cc002dc1bbfad417c8895ee08afb877b08",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f016/stackajack-v5-pupils-frozen/gfx/pokemon/stackajack/overworld.2bpp": "eb89b7d9aee28da1282cb014ec206f81bc3c3de2d7bd8e2ad2d8c6ecadedf4d0"
+  },
+  "no_native_pixel_painting": true
+}

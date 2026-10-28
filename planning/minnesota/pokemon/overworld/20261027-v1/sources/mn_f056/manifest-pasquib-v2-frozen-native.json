@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F056",
+  "species": [
+    {
+      "species_id": "MN_119",
+      "runtime_token": "PASQUIB",
+      "palette_rgb555": [
+        32767,
+        30393,
+        18763,
+        0
+      ],
+      "shiny_palette_rgb555": [
+        32767,
+        22333,
+        10610,
+        0
+      ],
+      "fit": [
+        12,
+        12
+      ],
+      "alpha_threshold": 245,
+      "sampling": "source_center",
+      "minimum_foreground_samples": 16,
+      "black_priority_samples": 64,
+      "interior_black_samples": 64,
+      "opaque_interior_minimum_samples": 64,
+      "frames": [
+        {
+          "pose": "down_idle",
+          "source": "pasquib.overworld.imagegen-v1.png",
+          "crop": [
+            135,
+            135,
+            298,
+            366
+          ]
+        },
+        {
+          "pose": "up_idle",
+          "source": "pasquib.overworld.imagegen-v1.png",
+          "crop": [
+            635,
+            142,
+            298,
+            366
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "source": "pasquib.overworld.imagegen-v1.png",
+          "crop": [
+            1107,
+            121,
+            298,
+            366
+          ]
+        },
+        {
+          "pose": "down_step",
+          "source": "pasquib.overworld.imagegen-v1.png",
+          "crop": [
+            135,
+            604,
+            298,
+            366
+          ]
+        },
+        {
+          "pose": "up_step",
+          "source": "pasquib.overworld.imagegen-v1.png",
+          "crop": [
+            635,
+            616,
+            298,
+            366
+          ]
+        },
+        {
+          "pose": "left_step",
+          "source": "pasquib.overworld.imagegen-v1.png",
+          "crop": [
+            1107,
+            603,
+            298,
+            366
+          ]
+        }
+      ]
+    }
+  ]
+}

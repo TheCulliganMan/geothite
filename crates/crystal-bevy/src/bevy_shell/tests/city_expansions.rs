@@ -789,9 +789,33 @@ fn city_expansion_controller_both_road_lanes_return_freely_and_keep_original_ref
                 (edge.0 as i16 - dx * 3) as u16,
                 (edge.1 as i16 - dy * 3) as u16,
             );
-            let has_guard = r.data().maps[city].events.coord_events.iter().any(|event| {
-                (event.x, event.y) == trigger && !event.script_name.ends_with("Inward")
-            });
+            // A compact fixture declares the complete original checkpoint
+            // inventory at its new coordinates. Losing a guard must fail this
+            // test, rather than silently select the open-road branch.
+            let actual_events = &r.data().maps[city].events.coord_events;
+            let has_guard = if let Some(expected) = plan.get("controller_coordinate_events") {
+                assert_eq!(
+                    &serde_json::to_value(actual_events).expect("native checkpoints"),
+                    expected,
+                    "all original checkpoint records must retain their explicit coordinates"
+                );
+                expected
+                    .as_array()
+                    .expect("declared checkpoints")
+                    .iter()
+                    .any(|event| {
+                        event["x"].as_u64() == Some(u64::from(trigger.0))
+                            && event["y"].as_u64() == Some(u64::from(trigger.1))
+                            && !event["script_name"]
+                                .as_str()
+                                .expect("checkpoint script")
+                                .ends_with("Inward")
+                    })
+            } else {
+                actual_events.iter().any(|event| {
+                    (event.x, event.y) == trigger && !event.script_name.ends_with("Inward")
+                })
+            };
             if has_guard {
                 for _ in 0..8 {
                     press(&mut c, outward);

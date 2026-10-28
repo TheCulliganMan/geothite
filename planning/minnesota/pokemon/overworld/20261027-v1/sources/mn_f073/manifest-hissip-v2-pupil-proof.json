@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F073",
+  "species": [
+    {
+      "species_id": "MN_154",
+      "runtime_token": "HISSIP",
+      "palette_rgb555": [
+        32767,
+        9919,
+        6380,
+        0
+      ],
+      "shiny_palette_rgb555": [
+        32767,
+        22505,
+        7558,
+        0
+      ],
+      "fit": [
+        12,
+        12
+      ],
+      "alpha_threshold": 128,
+      "sampling": "source_center",
+      "minimum_foreground_samples": 16,
+      "black_priority_samples": 64,
+      "interior_black_samples": 64,
+      "opaque_interior_minimum_samples": 64,
+      "frames": [
+        {
+          "pose": "down_idle",
+          "source": "hissip.overworld.imagegen-v2-smooth-brow.png",
+          "crop": [
+            19,
+            100,
+            500,
+            440
+          ]
+        },
+        {
+          "pose": "up_idle",
+          "source": "hissip.overworld.imagegen-v2-smooth-brow.png",
+          "crop": [
+            506,
+            114,
+            500,
+            440
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "source": "hissip.overworld.imagegen-v2-smooth-brow.png",
+          "crop": [
+            1030,
+            118,
+            500,
+            440
+          ]
+        },
+        {
+          "pose": "down_step",
+          "source": "hissip.overworld.imagegen-v2-smooth-brow.png",
+          "crop": [
+            22,
+            564,
+            500,
+            440
+          ]
+        },
+        {
+          "pose": "up_step",
+          "source": "hissip.overworld.imagegen-v2-smooth-brow.png",
+          "crop": [
+            517,
+            583,
+            500,
+            440
+          ]
+        },
+        {
+          "pose": "left_step",
+          "source": "hissip.overworld.imagegen-v2-smooth-brow.png",
+          "crop": [
+            1030,
+            576,
+            500,
+            440
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,60 @@
+{
+  "status": "DETACHED_NOT_NATIVE_PUBLISHED",
+  "parent_sha256": "65cf6f98e65ada839ec5afaa57728bf8289d3a50ba53ba6b9b50f08d3620bb17",
+  "dimensions": [
+    20,
+    12
+  ],
+  "origin": [
+    222,
+    -412
+  ],
+  "actor_anchors": {
+    "MN_COHESION_MARAIS_KEEPER": [
+      15,
+      11
+    ],
+    "MN_COHESION_MARAIS_WALKER": [
+      31,
+      15
+    ]
+  },
+  "sign_anchor": [
+    4,
+    12
+  ],
+  "native_connections": [
+    {
+      "direction": "west",
+      "target_map": "MnR12C00R01",
+      "offset": 4
+    },
+    {
+      "direction": "south",
+      "target_map": "MnGrandMarais",
+      "offset": 4
+    }
+  ],
+  "rows": [
+    "8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b",
+    "8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b",
+    "8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b",
+    "8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b",
+    "8b 8b 8b 8b 8b 8b 83 83 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b",
+    "8b 8b 8b 83 83 84 84 83 83 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b",
+    "8b 8b 88 83 8b 8b 8b 83 8b 8b 8b 8b 8b 8b 83 83 8b 8b 8b 8b",
+    "83 83 83 83 8b 8b 8b 83 83 83 83 83 83 83 83 83 83 8b 8b 8b",
+    "8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 83 8b 8b 84 8b 8b 8b",
+    "8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 56 8b 8b 84 8b 8b 8b",
+    "05 05 05 05 05 05 05 05 05 05 05 05 05 01 01 01 01 05 05 05",
+    "05 05 05 05 05 05 05 05 05 05 05 05 05 01 05 05 05 05 05 05"
+  ],
+  "static_checks": {
+    "ordinary_return": true,
+    "actor_approaches": true,
+    "exact_closed_perimeter": true
+  },
+  "limitations": [
+    "Hop direction, encounters and dialogue require production controller verification."
+  ]
+}

@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "title": "The Northstar Survey",
-  "design_status": "Northstar Survey story authored around Team Lode copper/nickel extraction and its ICE ally's police impersonation, intimidation and kidnappings. The541-map shore successor preserves Winona New Game/starter/originals, Rochester delivery/Gym1, all eight city-bound gyms, Minneapolis ICE win/separate rescue/dispatch, St Paul courier/separate DEEP BORE manifest, Q06 foreman/cache/Grand Rapids handover, Duluth reveal, Q07 chief/receiver and Ryan's Baptism River cabin. Native roads now join the opening cities through St Cloud, Brainerd, the actual Leech Lake shore and Bemidji. Local continuous courses earn later badges, including a Pine loss/native clinic recovery/Fire-move retry and return. Controller, uncached preservation, actual stdio and audio checks pass for these slices. Prior badges/partners/RNG are explicit local setup; one earlier earned Care journey does not establish the current full campaign. Itasca/marker/Bemidji report/R09, Mankato Cut/cache, later regional and optional links, visited-only rail, League, Kettlurk and continuous fresh-start balance/retry remain unfinished. See STATUS.md, PROGRESSION.md and playable/leech-shore.md.",
+  "design_status": "The Northstar Survey links Team Lode's copper/nickel drainage scheme with Minneapolis ally Team ICE's police impersonation, deliberate destruction and kidnappings. The historical 554-map Ely story pack retains the complete authored opening, eight city gyms, separate rescue/evidence actions, northern investigation, chief/receiver, Ryan's Baptism River cabin and authentic Ilex Forest-Azalea gatehouses. Its recorded fresh Winona party earns four badges and the ICE/courier evidence through actual saved continuations. A newer 554-map relay candidate combines the eight selected gym revisions and reviewed 474-species/270-move catalog with a native Kettlurk remote picture and acknowledged console shutdown. Local chief/receiver/Continue input, both actual stdio replays, exact native/source pixels, full unrelated-content preservation and all 377 audio checks pass. Those local finale tests use explicit prior-access/party fixtures. The new candidate now also has its own fresh Winona New Game and actual saved continuations through Care, Prairie, ICE rescue/dispatch, Current, the courier's separate manifest, Capitol and the real Minneapolis return. Both earned evidence scenes pass actual stdio replay; historical saves are not migrated. Wind onward, the complete earned campaign, broader balance, physical pump animation, a field apparition and optional Devil's Kettle encounter remain open. See STATUS.md, PROGRESSION.md and playable/northstar-relay.md. The supplies successor now has a user-authorized level-75 story review from its actual fresh two-badge clinic save: played input completes ICE rescue/dispatch, Current, courier/manifest, Capitol, Wind, Brainerd, Lake and the separate ranger report/Surf. Both evidence scenes and the Brainerd return pass actual stdio with empty stderr. No badge or quest flag is supplied by the level boost; boosted saves remain separately named. Pine and the independent Itasca report now pass with this continued party; the full actual stdio chapter and Iron Range road round trip pass after correcting compact status for native escape notices. The same party now completes the mine, separate meter recovery and depot handover, Harbor and all ten signal pages, the coast via Ryan's cabin and the native gatehouse, chief victory and separate relay shutdown. Native picture Continue and reopened R13 access pass, with actual stdio custody/reveal/relay/release replays. After a third-League-match loss, the user-authorized review minimum rises to 100 for the final three matches. Native Hall of Fame, credits and postgame Continue pass. Neither level boost supplies a quest result or League win; unboosted balance, physical machinery animation, a field apparition and an optional legendary encounter remain separate open work. See playable/northstar-relay.md.",
   "professor": "Dr Tamarack",
   "antagonist": "Team Lode",
   "antagonist_motive": "Team Lode and its ally Team ICE intend to drain the Boundary Waters to expose copper and nickel beneath the lakebeds. Lode steals survey instruments, falsifies warnings and plans to enslave Kettlurk to power the drainage pumps. Based in Minneapolis, Team ICE impersonates police, seizes evidence and threatens residents to protect the operation. Both leaderships understand the harm and choose extraction and control anyway. Lode covets the minerals; ICE actively wants the resulting destruction and displacement, and kidnaps anyone it suspects of opposition. Lode knowingly protects and benefits from those abductions.",
@@ -358,7 +358,7 @@
         "BADGE_3"
       ],
       "steps": [
-        "Confront the Team Lode courier at the St Paul depot. He calls the diversion a correction, then threatens the player to identify who kept the originals delivered to Rochester.",
+        "Confront the Team Lode courier at the St Paul depot. He asks who has seen the originals delivered to Rochester and demands the player's entire copy.",
         "Win the courier battle; the manifest identifies DEEP BORE. He remains hostile and loyal to Lode.",
         "Win St Paul gym, return across the city crossing, and pass the north checkpoint with both Twin Cities badges.",
         "Continue to St Cloud and win its gym."
@@ -509,7 +509,8 @@
         "MnLeagueRoom2",
         "MnLeagueRoom3",
         "MnLeagueRoom4",
-        "MnLeagueChampion"
+        "MnLeagueChampion",
+        "MnLeagueHallOfFame"
       ],
       "requires": [
         "BADGE_1",
@@ -534,7 +535,8 @@
       "opens": [
         "postgame"
       ],
-      "repeat_guard": "A blackout resets the active League run without clearing badges, story completion or prior Hall of Fame entries."
+      "repeat_guard": "A blackout resets the active League run without clearing badges, story completion or prior Hall of Fame entries.",
+      "native_status": "Published in the 554-map frozen North Shore successor; production controller and stdio evidence, explicit fixtures and remaining full-campaign gap are recorded in playable/ely-league.md."
     },
     {
       "id": "SQ01",
@@ -937,7 +939,8 @@
     "EVENT_MN_WINONA_CHIKORITA",
     "EVENT_MN_WINONA_CYNDAQUIL",
     "EVENT_MN_WINONA_TOTODILE",
-    "EVENT_MN_MARAIS_SPARE_PART_RECEIVED"
+    "EVENT_MN_MARAIS_SPARE_PART_RECEIVED",
+    "EVENT_MN_LEAGUE_RUN_ACTIVE"
   ],
   "milestones": [
     {
@@ -952,16 +955,16 @@
       "narrative_status": "Native opening verified on the retained 521-map candidate and connected 526-map Rochester successor. Earned R01 delivery/return and actual stdio pass; the full regional journey stays open. See playable/rochester.md.",
       "dialogue_pages": [
         [
-          "The field station",
-          "has a job for you."
+          "Your lunch is in",
+          "the front pocket."
         ],
         [
-          "Meet DR TAMARACK",
-          "beside the river."
+          "DR TAMARACK is",
+          "down by the river."
         ],
         [
-          "Take a partner",
-          "onto the trail."
+          "Take a partner.",
+          "Come home hungry."
         ]
       ]
     },
@@ -980,12 +983,12 @@
       "narrative_status": "Native opening verified on the retained 521-map candidate and connected 526-map Rochester successor. Earned R01 delivery/return and actual stdio pass; the full regional journey stays open. See playable/rochester.md.",
       "dialogue_pages": [
         [
-          "Take these to",
-          "ROCHESTER."
+          "Old readings, but",
+          "look at the dates."
         ],
         [
-          "Keep the original",
-          "readings safe."
+          "ROCHESTER needs",
+          "the originals."
         ]
       ]
     },
@@ -1000,16 +1003,28 @@
         "EVENT_MN_DELIVERED_ROCHESTER_PARCEL"
       ],
       "completion": "clinic recipient finishes delivery scene",
-      "story_beat": "The missing equipment makes the parcel valuable.",
+      "story_beat": "Ivy receives the originals, reveals that Ellis has not returned, asks the player to find Jo in Minneapolis and personally checks the river landings.",
       "narrative_status": "Native original-readings delivery passes from production New Game through R01 on the 526-map Rochester successor, including separate gym prerequisite, acknowledged pages, repeat and Continue. See playable/rochester.md.",
       "dialogue_pages": [
         [
-          "Our meters never",
-          "arrived."
+          "IVY: You made it.",
+          "No meters, though."
         ],
         [
-          "This crate has",
-          "a LODE stamp."
+          "ELLIS was bringing",
+          "the last case."
+        ],
+        [
+          "JO hasn't seen",
+          "them come home."
+        ],
+        [
+          "Find JO in",
+          "MINNEAPOLIS."
+        ],
+        [
+          "I'll check the",
+          "river landings."
         ]
       ]
     },
@@ -1027,11 +1042,12 @@
       "narrative_status": "Native optional paper at MnMankato (26,25), approached from (26,26), with gardener hint. Care only; acknowledges both pages before EVENT_MN_PRAIRIE_NOTEBOOK (2305); repeat text, no gift or gym prerequisite. Local controller/Continue and actual stdio verified on the 538-map prairie-story successor. Earned regional journey remains unproven; see playable/prairie-story.md.",
       "dialogue_pages": [
         [
-          "Different lakes.",
-          "The same numbers."
+          "Same ink blot.",
+          "Three lake names."
         ],
         [
-          "Who copied these?"
+          "Someone copied",
+          "one sheet twice."
         ]
       ]
     },
@@ -1051,12 +1067,16 @@
       "battle": "MN_ICE_ENFORCER",
       "dialogue_pages": [
         [
-          "Official business.",
-          "Hand over the log."
+          "Inspection. Your",
+          "bag, on the desk."
         ],
         [
-          "You get no say.",
-          "We take the log."
+          "No warrant?",
+          "You can wait here."
+        ],
+        [
+          "We decide when",
+          "you're free to go."
         ]
       ],
       "witness_pages": [
@@ -1071,31 +1091,33 @@
       ],
       "repeat_pages": [
         [
-          "This is not over.",
-          "We know your name."
+          "I saw your face.",
+          "So did the others."
         ]
       ],
       "native_texts": {
         "MnMPICESeenText": [
-          "Official business.",
-          "Hand over the log.",
-          "You get no say.",
-          "We take the log."
+          "Inspection. Your",
+          "bag, on the desk.",
+          "No warrant?",
+          "You can wait here.",
+          "We decide when",
+          "you're free to go."
         ],
         "MnMPICEWonText": [
-          "You will pay",
-          "for this."
+          "Pick that up.",
+          "We are not done."
         ],
         "MnMPICELostText": [
           "Stay down."
         ],
         "MnMPICEAfterText": [
-          "This is not over.",
-          "We know your name."
+          "I saw your face.",
+          "So did the others."
         ],
         "MnMPICEBadgeDeniedText": [
-          "Stay out of this.",
-          "This line is ours."
+          "Office is closed.",
+          "Keep walking."
         ]
       }
     },
@@ -1114,23 +1136,31 @@
       "actor": "MN_ICE_CAPTIVE_DISPATCHER",
       "dialogue_pages": [
         [
-          "They took me when",
-          "I asked about LODE"
+          "I asked for names.",
+          "They locked me up."
         ],
         [
-          "I had done nothing",
-          "They took me here."
+          "No charge. No call",
+          "Just this lock."
         ],
         [
-          "The office copy",
-          "is still inside."
+          "I'm ELLIS. JO is",
+          "waiting at home."
+        ],
+        [
+          "I hid a copy",
+          "under the desk."
+        ],
+        [
+          "Please. Let me go",
+          "home first."
         ]
       ],
       "repeat_guard": "No release before an actual enforcer victory; rescue is a separate acknowledged interaction. Continue retains released custody; no repeat reward or revived captivity.",
       "native_texts": {
         "MnMPCellLockedText": [
-          "ICE holds the key.",
-          "Defeat the guard."
+          "The lock is new.",
+          "ICE has the key."
         ],
         "MnMPCellReadyText": [
           "The key is here.",
@@ -1141,16 +1171,20 @@
           "You can try again."
         ],
         "MnMPCellAlreadyText": [
-          "The clerk is free.",
-          "The cell is open."
+          "The cell is empty.",
+          "ELLIS is home."
         ],
         "MnMPCellReleaseText": [
-          "They took me when",
-          "I asked about LODE",
-          "I had done nothing",
-          "They took me here.",
-          "You open the cell.",
-          "The clerk is free."
+          "I asked for names.",
+          "They locked me up.",
+          "No charge. No call",
+          "Just this lock.",
+          "I'm ELLIS. JO is",
+          "waiting at home.",
+          "I hid a copy",
+          "under the desk.",
+          "Please. Let me go",
+          "home first."
         ]
       }
     },
@@ -1178,23 +1212,27 @@
           "REROUTE: ST PAUL"
         ],
         [
-          "CLIENT: TEAM LODE"
+          "A carbon copy.",
+          "Folded very small."
         ]
       ],
       "native_texts": {
         "MnMPDispatchLockedText": [
-          "You need the clerk",
-          "to read this copy."
+          "A locked drawer.",
+          "The clerk may know",
+          "where the copy is."
         ],
         "MnMPDispatchReadText": [
           "ESCORT: TEAM ICE",
           "CLIENT: TEAM LODE",
           "SURVEY EQUIPMENT",
-          "REROUTE: ST PAUL"
+          "REROUTE: ST PAUL",
+          "A carbon copy.",
+          "Folded very small."
         ],
         "MnMPDispatchDoneText": [
           "ST PAUL depot.",
-          "Follow the record."
+          "ELLIS kept a copy."
         ]
       }
     },
@@ -1213,15 +1251,16 @@
       "narrative_status": "Native Union Depot courier (20,16), approach (19,16), requires Current and the actual ICE dispatch note. Actual Magnemite23/Drowzee22 battle victory sets event2306; played loss/clinic recovery, repeat, Continue and connected R04 return verified. See playable/courier-story.md.",
       "dialogue_pages": [
         [
-          "You delivered the",
-          "old readings."
+          "ROCHESTER kept",
+          "the originals."
         ],
         [
-          "Who has them now?"
+          "Who else has seen",
+          "what you brought?"
         ],
         [
-          "This is your",
-          "last warning."
+          "On the desk.",
+          "All of it."
         ]
       ],
       "native_texts": {
@@ -1236,16 +1275,16 @@
           "MINNEAPOLIS depot."
         ],
         "MnSPCourierWonText": [
-          "Keep your copy.",
-          "It changes nothing"
+          "Not another copy.",
+          "How many are out?"
         ],
         "MnSPCourierLostText": [
           "Those records stay",
           "with TEAM LODE."
         ],
         "MnSPCourierAfterText": [
-          "Read your copy.",
-          "LODE will go on."
+          "My name is not",
+          "on that manifest."
         ]
       }
     },
@@ -1263,16 +1302,16 @@
       "narrative_status": "Native separate paper at (18,16), approach (19,16), locked until courier victory. Three acknowledged pages set event2307 without item/money/badge/road permission. Page ownership, repeat, Continue and actual stdio verified. See playable/courier-story.md.",
       "dialogue_pages": [
         [
-          "DEEP BORE.",
-          "Survey equipment."
+          "DEEP BORE",
+          "Survey instruments"
         ],
         [
-          "Diversion logged.",
-          "Do not contact the"
+          "Destination",
+          "changed by LODE."
         ],
         [
-          "original surveyor.",
-          "Record copied."
+          "Do not notify",
+          "original surveyor."
         ]
       ],
       "native_texts": {
@@ -1302,12 +1341,12 @@
       "narrative_status": "Published in the lake-country successor: native Lake Badge check, both acknowledged report pages, successful once-only HM_SURF grant, saved report/gift flags and testimony repeat. Continuous local Wind/Lake course and actual stdio pass; prior badges/party are explicit setup, not an earned New Game campaign. Later Brainerd branches remain closed until connected.",
       "dialogue_pages": [
         [
-          "The fish moved on.",
-          "The report says"
+          "I used to fish",
+          "off that landing."
         ],
         [
-          "nothing changed.",
-          "Ask the fishers."
+          "Now, not a bite.",
+          "Report says: fine."
         ]
       ]
     },
@@ -1326,7 +1365,7 @@
       "dialogue_pages": [
         [
           "HEADWATERS MARKER",
-          "Reading recorded."
+          "No. 04 / ITASCA"
         ]
       ]
     },
@@ -1345,12 +1384,12 @@
       "narrative_status": "Native Itasca successor: Lake-only early visit through the original Ilex-Azalea gatehouse; Pine permits the separately acknowledged marker reading. Officer requires Pine plus that reading; both comparison pages precede the report. Reading alone never opens R09; notebook remains optional. Five controller/two preservation cases, three actual stdio replays and Continue pass; prior badges/partner are fixtures. See playable/itasca-story.md.",
       "dialogue_pages": [
         [
-          "One meter log.",
+          "The same ink blot.",
           "Three station IDs."
         ],
         [
-          "These were copied.",
-          "Separate basins."
+          "Separate basins.",
+          "One copied sheet."
         ]
       ]
     },
@@ -1369,44 +1408,46 @@
       "narrative_status": "Native mine binding verified through production input: actual win/loss, separate recovery choices, repeat guards and Continue. MS09 now separately completes the native Grand Rapids handover. Continuous local Pine/report/mine/custody/handover/Harbor/reveal course now passes without supplied report or downstream flags; six prior badges and Mew45/Cut are initial setup. Separate played wild loss preserves genuinely earned custody and Continue. Four actual stdio earned-save replays pass. See playable/northstar-iron-course.md.",
       "dialogue_pages": [
         [
-          "I read the report.",
-          "Run the next test."
+          "The gauge spiked.",
+          "I saw it."
         ],
         [
-          "You heard me.",
-          "Move aside."
+          "The contract says",
+          "another test."
+        ],
+        [
+          "Put that log down.",
+          "We're not done."
         ]
       ],
       "native_texts": {
         "MnIronRangeForemanSeenText": [
-          "I read the report.",
-          "We run the test.",
-          "Copper and nickel",
-          "come first.",
-          "That meter stays.",
-          "Move aside."
+          "The gauge spiked.",
+          "I saw it.",
+          "The contract says",
+          "another test.",
+          "Put that log down.",
+          "We're not done."
         ],
         "MnIronRangeForemanWonText": [
-          "You stopped one",
-          "test. That is all."
+          "That was one test.",
+          "There are others."
         ],
         "MnIronRangeForemanLostText": [
           "We are still on",
           "schedule."
         ],
         "MnIronRangeForemanAfterText": [
-          "The meter is in",
-          "the crate.",
-          "The receiver went",
-          "farther north."
+          "Take it. Tomorrow",
+          "we get a new one."
         ],
         "MnIronRangeForemanBadgeDeniedText": [
           "Closed worksite.",
           "Keep moving."
         ],
         "MnIronRangeForemanReportDeniedText": [
-          "Talk to the office",
-          "in BEMIDJI."
+          "No clearance from",
+          "BEMIDJI? Go back."
         ]
       }
     },
@@ -1463,12 +1504,24 @@
       "narrative_status": "Native depot handover verified through production input: both prerequisites, decline/Continue/retry, all reading pages acknowledged before clearance, repeat guards and actual east-road release. The meter stays at the depot; the player takes a saved quest-state log copy. Continuous local Pine/report/mine/custody/handover/Harbor/reveal course now passes without supplied report or downstream flags; six prior badges and Mew45/Cut are initial setup. Separate played wild loss preserves genuinely earned custody and Continue. Four actual stdio earned-save replays pass. See playable/northstar-iron-course.md.",
       "dialogue_pages": [
         [
-          "These pulse tests",
-          "are no survey."
+          "See those gaps?",
+          "Always the same."
         ],
         [
-          "They are driving",
-          "something out."
+          "Pump tests. This",
+          "was no survey."
+        ],
+        [
+          "The last entries",
+          "come from a relay."
+        ],
+        [
+          "I will keep this",
+          "meter safe here."
+        ],
+        [
+          "Take my log copy",
+          "to DULUTH harbor."
         ]
       ],
       "native_texts": {
@@ -1488,16 +1541,16 @@
           "I will be here."
         ],
         "MnGrandRapidsDepotReadText": [
-          "These pulse tests",
-          "are no survey.",
-          "They are driving",
-          "something out.",
-          "A northern relay",
-          "controls the pump.",
-          "We keep the meter.",
-          "I copied its log.",
-          "Take this copy to",
-          "the DULUTH harbor."
+          "See those gaps?",
+          "Always the same.",
+          "Pump tests. This",
+          "was no survey.",
+          "The last entries",
+          "come from a relay.",
+          "I will keep this",
+          "meter safe here.",
+          "Take my log copy",
+          "to DULUTH harbor."
         ],
         "MnGrandRapidsDepotDoneText": [
           "The DULUTH harbor",
@@ -1529,68 +1582,62 @@
       "narrative_status": "NATIVE VERIFIED: all eight badges and MS09 clearance; ten acknowledged native pages reveal Boundary Waters drainage, Kettlurk, ICE destruction and kidnapping, and prior warnings. Only the harbor signal is set. Repeat, Continue and guarded R10/R11 city links pass. Continuous local Pine/report/mine/custody/handover/Harbor/reveal course now passes without supplied report or downstream flags; six prior badges and Mew45/Cut are initial setup. Separate played wild loss preserves genuinely earned custody and Continue. Four actual stdio earned-save replays pass. See playable/northstar-iron-course.md.",
       "dialogue_pages": [
         [
-          "You brought the",
-          "copied meter log."
+          "An intake cage...",
+          "To hold KETTLURK."
+        ],
+        [
+          "They want it alive",
+          "to run the pumps."
         ],
         [
           "LODE will drain",
           "BOUNDARY WATERS."
         ],
         [
-          "Ore lies beneath",
-          "the lakebeds."
+          "Copper and nickel",
+          "beneath the lakes."
         ],
         [
-          "KETTLURK would",
-          "power their pumps."
+          "ICE takes anyone",
+          "they suspect."
         ],
         [
-          "ICE wants it gone.",
+          "ICE wants it bare.",
           "LODE wants ore."
         ],
         [
-          "ICE kidnaps people",
-          "they don't trust."
+          "I'll get a crew",
+          "out to the pumps."
         ],
         [
-          "The warnings were",
-          "in their own log."
+          "Cut the relay past",
+          "GRAND MARAIS."
         ],
         [
-          "They ran the tests",
-          "after the warning."
-        ],
-        [
-          "I sent the harbor",
-          "the drainage plan."
-        ],
-        [
-          "Stop the relay",
-          "past GRAND MARAIS."
+          "We'll be waiting.",
+          "Keep that log dry."
         ]
       ],
       "native_texts": {
         "MN_HARBOR_RECEIVERText": [
-          "You brought the",
-          "copied meter log.",
+          "An intake cage...",
+          "To hold KETTLURK.",
+          "They want it alive",
+          "to run the pumps.",
           "LODE will drain",
           "BOUNDARY WATERS.",
-          "Ore lies beneath",
-          "the lakebeds.",
-          "KETTLURK would",
-          "power their pumps.",
-          "ICE wants it gone.",
+          "Copper and nickel",
+          "beneath the lakes.",
+          "ICE takes anyone",
+          "they suspect.",
+          "ICE wants it bare.",
           "LODE wants ore.",
-          "ICE kidnaps people",
-          "they don't trust.",
-          "The warnings were",
-          "in their own log.",
-          "They ran the tests",
-          "after the warning.",
-          "I sent the harbor",
-          "the drainage plan.",
-          "Stop the relay",
-          "past GRAND MARAIS."
+          "I'll get a crew",
+          "out to the pumps.",
+          "Cut the relay past",
+          "GRAND MARAIS.",
+          "We'll be waiting.",
+          "Keep that log dry."
         ],
         "MN_HARBOR_RECEIVERDeniedText": [
           "Bring eight BADGES",
@@ -1599,10 +1646,10 @@
           "GRAND RAPIDS depot"
         ],
         "MN_HARBOR_RECEIVERDoneText": [
-          "The harbor has",
-          "the drainage plan.",
-          "Stop the relay",
-          "past GRAND MARAIS."
+          "Our crew is ready.",
+          "You cut the relay.",
+          "We stop the pumps.",
+          "Past GRAND MARAIS."
         ]
       }
     },
@@ -1625,19 +1672,19 @@
       ],
       "completion": "survey-chief battle win",
       "story_beat": "The chief admits the mineral objective, known risks and ICE's complicity. He chooses drainage and control of Kettlurk anyway.",
-      "narrative_status": "Earned arrival-to-chief-to-receiver-to-R13 continuation verified on the 544-map shore pack; see playable/northstar-finale.md. Initial six badges/Mew45 remain upstream setup. Fresh Winona progression, Ely League and Kettlurk spectacle remain pending.",
+      "narrative_status": "The earlier earned arrival-to-chief-to-receiver-to-R13 continuation remains verified on its frozen 544-map shore pack; six prior badges/Mew45 were upstream setup. The 554-map revised-gym/species relay candidate separately wins this unchanged native chief battle through a local production-input course, then plays MS12's new remote feed and shutdown. Its eight prior badges/signal/Mew/divider are explicit setup. The full earned campaign on that new identity remains open. See playable/northstar-finale.md and playable/northstar-relay.md.",
       "native_texts": {
         "MnBoundarySurveyChiefSeenText": [
-          "You kept the first",
-          "survey readings.",
-          "Ore under lakes:",
+          "The station IDs?",
+          "I changed those.",
+          "Those red marks?",
+          "Homes. Boat docks.",
+          "I saw the risks.",
+          "I signed anyway.",
+          "ICE took people.",
+          "I paid their bill.",
           "Copper and nickel.",
-          "I read the risks.",
-          "Drain them anyway.",
-          "ICE takes anyone",
-          "they don't trust.",
-          "KETTLURK will",
-          "drive the pumps."
+          "The pumps stay on."
         ],
         "MnBoundarySurveyChiefWonText": [
           "You have cost me",
@@ -1647,20 +1694,20 @@
           "The work goes on."
         ],
         "MnBoundarySurveyChiefAfterText": [
-          "I lost the relay.",
-          "I have not changed",
-          "my mind.",
-          "The receiver is",
-          "at the east desk."
+          "The ore is there.",
+          "I still want it.",
+          "Get away from me.",
+          "I'm done talking."
         ],
         "MnBoundarySurveyChiefBadgeDeniedText": [
-          "Eight BADGES first",
-          "Then face my team."
+          "Still collecting",
+          "BADGES? Come back",
+          "when you are done."
         ],
         "MnBoundarySurveyChiefSignalDeniedText": [
-          "The harbor signal",
-          "has not reached us",
-          "Check the workshop"
+          "No harbor signal.",
+          "Your log is just",
+          "paper here."
         ]
       }
     },
@@ -1675,12 +1722,12 @@
       ],
       "completion": "restore receiver in the shelter",
       "story_beat": "After the battle, the separate receiver action restores the public line, exposes the true readings and stops the drainage pumps before the lakes are emptied. Defeated leaders remain villains.",
-      "narrative_status": "Earned arrival-to-chief-to-receiver-to-R13 continuation verified on the 544-map shore pack; see playable/northstar-finale.md. Initial six badges/Mew45 remain upstream setup. Fresh Winona progression, Ely League and Kettlurk spectacle remain pending.",
+      "narrative_status": "The earlier 544-map finale remains separately verified. The revised-gym/species 554-map relay candidate adds a native Kettlurk remote picture, acknowledged console shutdown and persistent picture wait. A 6.60-second local controller course wins the actual chief and plays refusal/retry, picture Continue, input ownership, shutdown and reentry; eight prior badges/signal/Mew/divider are explicit setup. Both actual stdio replays pass, including B-close after picture Continue, with no money/badge/Pokedex changes and empty stderr. Full preservation, cached/uncached closure, matched native/source pixels and all 377 audio checks pass. This is not fresh Winona progression or physical pump animation. Native scene source: northstar-relay.json. See playable/northstar-relay.md.",
+      "native_scene_source": "northstar-relay.json",
       "native_texts": {
         "MnBoundarySurveyReceiverLockedText": [
-          "The survey chief",
-          "holds this line.",
-          "Win the desk first"
+          "The chief guards",
+          "the controls."
         ],
         "MnBoundarySurveyReceiverAlreadyText": [
           "SURVEY LINK ACTIVE",
@@ -1700,20 +1747,20 @@
           "with the harbor."
         ],
         "MnBoundarySurveyReceiverDoneText": [
-          "SURVEY LINK ACTIVE",
-          "Real readings sent",
-          "Crews stop the",
-          "drainage pumps.",
-          "KETTLURK escapes",
-          "the waiting trap.",
+          "HARBOR: All clear.",
+          "The pumps are off.",
+          "KETTLURK is clear.",
+          "The cage is empty.",
+          "ELLIS: We kept",
+          "a copy.",
           "The ELY trail is",
-          "ready to survey."
+          "open again."
         ]
       }
     },
     {
       "id": "MS13",
-      "location": "MnLeagueChampion",
+      "location": "MnLeagueHallOfFame",
       "requires": [
         "BADGE_1",
         "BADGE_2",
@@ -1728,18 +1775,53 @@
       "sets": [
         "EVENT_MN_LEAGUE_CHAMPION"
       ],
-      "completion": "champion win and Hall of Fame recording",
+      "completion": "Actual fifth battle victory, then a separate acknowledged Hall of Fame recording.",
       "story_beat": "Sporting recognition follows protecting the region; recovery remains ongoing.",
-      "narrative_status": "Authored scene direction and sample dialogue; native chapter implementation pending.",
+      "narrative_status": "Native 554-map Ely successor: independent eight-badge/restored-link registration, five real trainer wins, persistent run count, repeat guards, separate native Hall of Fame recording, ceremony/credits, Ely postgame Continue and rematch entry. Prior badges/restoration, Mew100 and carried medicine are explicit review fixtures; this is not a fresh Winona campaign or a balance acceptance. See playable/ely-league.md.",
       "dialogue_pages": [
         [
-          "You stood by",
-          "your team."
+          "I'm CASEY. You've",
+          "come a long way"
         ],
         [
-          "Show me what",
-          "you have learned."
+          "together. Let me",
+          "meet the team that"
+        ],
+        [
+          "brought you here."
         ]
+      ],
+      "battle_location": "MnLeagueChampion",
+      "native_texts": {
+        "MnLeagueChampionBeforeText": [
+          "I'm CASEY. You've",
+          "come a long way",
+          "together. Let me",
+          "meet the team that",
+          "brought you here."
+        ],
+        "MnLeagueChampionWonText": [
+          "That was well",
+          "earned."
+        ],
+        "MnLeagueChampionAfterText": [
+          "You and your team",
+          "have earned your",
+          "place. Go north to",
+          "record this",
+          "victory."
+        ],
+        "MnElyRecordText": [
+          "Your partners made",
+          "this journey with",
+          "you. Their names",
+          "belong in the Hall",
+          "of Fame."
+        ]
+      },
+      "recording_requires": [
+        "EVENT_MN_LEAGUE_RUN_ACTIVE",
+        "LEAGUE_RUN_WIN_5"
       ]
     },
     {
@@ -2010,11 +2092,14 @@
       "LEAGUE_RUN_WIN_1",
       "LEAGUE_RUN_WIN_2",
       "LEAGUE_RUN_WIN_3",
-      "LEAGUE_RUN_WIN_4"
+      "LEAGUE_RUN_WIN_4",
+      "LEAGUE_RUN_WIN_5"
     ],
     "storage": "existing persistent script memory; encode completed room count for the active run",
-    "reset": "new League registration and League blackout",
-    "permanent_completion_flag": "EVENT_MN_LEAGUE_CHAMPION"
+    "reset": "new registration, return to the League lobby, and clinic arrival after a League blackout",
+    "permanent_completion_flag": "EVENT_MN_LEAGUE_CHAMPION",
+    "active_run_event": "EVENT_MN_LEAGUE_RUN_ACTIVE",
+    "memory_variable": "wMnLeagueRun"
   },
   "narrative": {
     "tone": "A local mystery that grows into a Pokemon adventure. Villains have credible motives, professional competence and distinct personalities, but knowingly choose harmful means. No cartoon greed speeches, sympathetic absolution, redeemed courier or claim that the player and Team Lode are equally right.",
@@ -2028,7 +2113,7 @@
       "existing_family": "MN_F045",
       "role": "Intended captive, never the cause of the cover-up or a willing villain. Reports of a disappearing and returning current foreshadow its identity.",
       "main_story_requirement": "Stop Lode without catching, defeating, owning or registering Kettlurk. A later voluntary encounter stays on the existing optional Devil's Kettle branch near Grand Marais.",
-      "implementation_status": "Authored roster design, not a compiled encounter. A future apparition and machine set piece require native art/scripts. Current Q07 dialogue can identify the intended captive without inventing a runtime encounter."
+      "implementation_status": "KETTLURK is compiled from the reviewed existing catalog in the 554-map revised-gym relay candidate. The native MS12 continuation shows its grayscale remote-feed picture and powers down the console after acknowledgment; local controller, source/collision, preservation and all audio checks pass. A physical field apparition, animated pump machinery and the optional Devil's Kettle encounter remain unfinished. See playable/northstar-relay.md."
     },
     "cast_arcs": [
       {
@@ -2037,7 +2122,7 @@
       },
       {
         "actor": "MN_CITY_COURIER",
-        "role": "Controlled and evasive. Calls the stolen equipment a shipping correction, then threatens the player to identify the keeper of the delivered originals. After losing, gives up the manifest but remains loyal to Lode."
+        "role": "Controlled and evasive. Traces who has seen the original readings and demands every copy. After losing, he stresses that his name is absent from the manifest. He remains loyal to Lode and concerned with his own liability."
       },
       {
         "actor": "MN_DEPOT_FOREMAN",
@@ -2072,5 +2157,114 @@
       "motive": "ICE actively wants the destruction the drainage would cause: emptied lakes, displaced residents and broken resistance. Its leaders treat destroying a place people defend as a demonstration of power. They kidnap anybody they suspect of opposing them; evidence of actual resistance is unnecessary. Express this through grounded threats, seizures, disappearances and coercion, with restrained dialogue rather than gleeful cartoon speeches.",
       "kidnapping_contract": "ICE abducts people based on suspicion alone, including residents, workers, witnesses and trainers. Show the consequences in missing-person accounts, frightened witnesses and recoverable captives. The Minneapolis dispatcher is held at the rail dispatch site; an actual enforcer win opens a separate release interaction before the recovered dispatch copy is read. A loss cannot release the captive; repeats and Continue cannot duplicate the rescue or rewards. Native placement, battle win/loss, custody/release, physical departure, separate reading, repeat and Continue are verified on the integrated candidate. Regional progression remains incomplete."
     }
-  ]
+  ],
+  "supporting_dialogue": {
+    "MnWinonaHome1F": {
+      "MnWGuardianRestText": [
+        "Mud on your shoes.",
+        "A good day, then?",
+        "Rest here a while.",
+        "Your team, too."
+      ]
+    },
+    "MnWinonaFieldStation": {
+      "MnWReminderText": [
+        "Keep in touch with",
+        "ROCHESTER.",
+        "How is the team?",
+        "Rest when you can."
+      ]
+    },
+    "MnRochesterPokecenter1F": {
+      "MnRCDeliveryAfterText": [
+        "I kept the pages.",
+        "And the envelope.",
+        "VAREL is ready",
+        "when you are."
+      ]
+    },
+    "MnMinneapolisDispatcherHouse": {
+      "MN_MP_DISPATCHER_PARTNERText": [
+        "ELLIS skips meals.",
+        "Not whole nights.",
+        "ICE took them.",
+        "I want them home."
+      ],
+      "MN_MP_DISPATCHER_PARTNERAfterText": [
+        "They fell asleep",
+        "at the table.",
+        "I left a light on.",
+        "Thank you."
+      ],
+      "MN_MP_RESCUED_DISPATCHERText": [
+        "JO kept my supper.",
+        "I could not eat.",
+        "ST PAUL is on",
+        "the office copy.",
+        "They wanted every",
+        "copy. I kept one."
+      ]
+    },
+    "MnStPaulUnionDepot": {
+      "MN_ST_PAUL_DEPOT_COURIERText": [
+        "That manifest is",
+        "company property."
+      ]
+    }
+  },
+  "dialogue_revision": {
+    "id": "2026-10-27-dialogue-quality",
+    "publication": "content-packs/minnesota-northstar-dialogue.crystalpack",
+    "source": "Milestone dialogue_pages/native_texts and supporting_dialogue are the reviewed native text authority. Apply pack_northstar_dialogue after the relay/supplies stages.",
+    "changes": "Personal departure; dates and an ink blot as evidence; ELLIS and JO rescue/home aftermath; liability-conscious courier; knowingly reckless foreman; harbor crew preparation; chief admits forgery, risks and ICE payments; crew and dispatcher callbacks at shutdown.",
+    "verification": "Rust publication/readback and whole-dataset/audio preservation pass. Native opening, fresh Rochester delivery/return, local Mankato notebook, ICE battle/rescue/record/home, courier/manifest, harbor and relay picture/Continue/reentry pass. Actual stdio rescue, harbor and relay read every revised page with input ownership and byte-empty stderr. Chapter fixtures supply prior access/party explicitly; no historical save migration or full new campaign is claimed.",
+    "remaining_work": "Broader character reactivity, physical machinery animation, field apparition, optional legendary encounter and unboosted balance remain separate work."
+  },
+  "return_dialogue": {
+    "MnWGuardianSurveyReturnText": [
+      "I heard the call.",
+      "I left a light on.",
+      "You can tell me",
+      "after supper.",
+      "Sit down a while.",
+      "Your team, too."
+    ],
+    "MnWTamarackDeliveryReturnText": [
+      "ROCHESTER called.",
+      "All pages arrived.",
+      "They kept the lot,",
+      "even the envelope."
+    ],
+    "MnWTamarackSurveyReturnText": [
+      "ROCHESTER called.",
+      "The dates held up.",
+      "A small thing,",
+      "keeping a page.",
+      "Come. Tell me how",
+      "the team is doing."
+    ],
+    "MnMPEllisSurveyReturnText": [
+      "The harbor called.",
+      "The pumps are off.",
+      "Work asked for me.",
+      "I said next week.",
+      "JO's made supper.",
+      "I'd like to stay."
+    ],
+    "MnMPJoSurveyReturnText": [
+      "We talked so long,",
+      "the soup got cold.",
+      "I didn't mind.",
+      "Not this time."
+    ],
+    "MnHarborSurveyReturnText": [
+      "Pumps are off.",
+      "The crew is home.",
+      "A quiet shift.",
+      "I'll take it."
+    ]
+  },
+  "active_revision": "story-events-v2.json",
+  "active_pokemon_policy": "story-pokemon.json",
+  "bosses_input_stage": "Legacy import records used to reconstruct historical source packs. The final Minnesota story cast is bound by story-pokemon.json and audited against active roster-curation.json; imported legacy species must not appear in the final story."
 }

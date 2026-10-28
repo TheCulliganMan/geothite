@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F056",
+  "species": [
+    {
+      "species_id": "MN_120",
+      "runtime_token": "THAWBONNET",
+      "palette_rgb555": [
+        32767,
+        29271,
+        18697,
+        0
+      ],
+      "shiny_palette_rgb555": [
+        32767,
+        19196,
+        8498,
+        0
+      ],
+      "fit": [
+        13,
+        13
+      ],
+      "alpha_threshold": 245,
+      "sampling": "source_center",
+      "minimum_foreground_samples": 16,
+      "black_priority_samples": 64,
+      "interior_black_samples": 64,
+      "opaque_interior_minimum_samples": 64,
+      "frames": [
+        {
+          "pose": "down_idle",
+          "source": "thawbonnet.overworld.imagegen-v1.png",
+          "crop": [
+            99,
+            91,
+            322,
+            423
+          ]
+        },
+        {
+          "pose": "up_idle",
+          "source": "thawbonnet.overworld.imagegen-v1.png",
+          "crop": [
+            606,
+            88,
+            322,
+            423
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "source": "thawbonnet.overworld.imagegen-v1.png",
+          "crop": [
+            1122,
+            96,
+            322,
+            423
+          ]
+        },
+        {
+          "pose": "down_step",
+          "source": "thawbonnet.overworld.imagegen-v1.png",
+          "crop": [
+            99,
+            544,
+            322,
+            423
+          ]
+        },
+        {
+          "pose": "up_step",
+          "source": "thawbonnet.overworld.imagegen-v1.png",
+          "crop": [
+            606,
+            545,
+            322,
+            423
+          ]
+        },
+        {
+          "pose": "left_step",
+          "source": "thawbonnet.overworld.imagegen-v1.png",
+          "crop": [
+            1122,
+            549,
+            322,
+            423
+          ]
+        }
+      ]
+    }
+  ]
+}

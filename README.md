@@ -4,6 +4,17 @@ A Rust implementation of Pokémon Crystal with browser and desktop clients,
 multiplayer, and an optional 2.5D overworld renderer. Game logic, rendering,
 audio, and networking are implemented in this repository.
 
+The new [Voyageurs Ice Cavern](planning/minnesota/ice-caves/README.md) adds a
+Minnesota two-floor ice dungeon off R20, using native sliding puzzles, persistent
+rewards and paired return ladders. Its local pack is
+`content-packs/minnesota-voyageurs-ice-v02.crystalpack`; the runbook records the
+executed Rust build and current verification results.
+
+The [Minnesota TM/HM distribution](planning/minnesota/playable/tmhm.md) stocks
+all 50 TMs and seven reusable HMs at Minneapolis Department Store 5F and adds
+20 hidden route/cave TMs. Its Rust publisher uses the supplied Minnesota cries pack
+and writes `content-packs/minnesota-all-tmhm.crystalpack`.
+
 The default content builds enable [All Pokémon, solo](modpacks/all-pokemon/README.md):
 all 251 Pokémon have renewable wild encounters, and Celadon Department Store 4F
 sells a Link Cable for solo trade evolutions alongside all six evolution stones.
@@ -16,11 +27,37 @@ The [additive native field-script repair runbook](docs/game-content.md#additive-
 covers importing pinned field-animation source while preserving an existing
 modded pack and its audio.
 
-The [original Minnesota Pokédex](planning/minnesota/pokemon/README.md) contains 223 active original species with individual GBC palettes and native front/back sprites. The [quadrupedal lynx starter revision](planning/minnesota/pokemon/sprites/mn-f125/DESIGN.md) adds Kindlit → Rimepelt → Borealynx while retaining the furnace family as ordinary Iron Range Pokémon. The [Rust species-pack publisher](modpacks/minnesota-pokemon/README.md) compiles full entries, learnsets, stats and complete evolution families against a supplied local base. The [roster balance review](planning/minnesota/pokemon/BALANCE.md) covers all 223 active species against the campaign level curve, preserves strong Bugs, and requires the modern physical/special split. Generated packs stay ignored; regional encounter placement remains separate authoring. The [Fairy ruleset](docs/northwoods-fairy.md) introduces thirteen regional Fairies, earned attacks and practical Poison/Steel counterplay while preserving its frozen 220-species baseline. The [sticky-note restoration](docs/northwoods-sticky-notes.md) restores Jotlet → Memofold → Recallisk, with a verified 474-species/270-move pack, native evolution/battle checks and the published 223-species Pokédex (`20261027-sticky-13`).
+The [original Minnesota Pokédex](planning/minnesota/pokemon/README.md) contains 224 active original species with individual GBC palettes and native front/back sprites. The [quadrupedal lynx starter revision](planning/minnesota/pokemon/sprites/mn-f125/DESIGN.md) adds Kindlit → Rimepelt → Borealynx while retaining the furnace family as ordinary Iron Range Pokémon. The [Rust species-pack publisher](modpacks/minnesota-pokemon/README.md) compiles full entries, learnsets, stats and complete evolution families against a supplied local base. The [roster balance review](planning/minnesota/pokemon/BALANCE.md) covers all 223 active species against the campaign level curve, preserves strong Bugs, and requires the modern physical/special split. Generated packs stay ignored; regional encounter placement remains separate authoring. The [Fairy ruleset](docs/northwoods-fairy.md) introduces thirteen regional Fairies, earned attacks and practical Poison/Steel counterplay while preserving its frozen 220-species baseline. The [sticky-note restoration](docs/northwoods-sticky-notes.md) restores Jotlet → Memofold → Recallisk, with a verified 474-species/270-move pack, native evolution/battle checks and the published 223-species Pokédex (`20261027-sticky-13`).
+
+All **224 active Northwoods Pokémon** now have individually authored six-pose
+16×16 overworld sprites with their own normal/shiny palettes. The
+[verified complete overlay](planning/minnesota/pokemon/overworld/20261027-v1/README.md)
+builds `content-packs/northwoods-overworld-v1.crystalpack` and supplies the field
+and battle PKMN menus. The [live Pokédex](https://geothite.ryanculligan.com/pokedex/)
+includes all 224 animated walkers and cries in release `20261027-overworld-224-18`.
 
 The [Northwoods animation overlay](docs/northwoods-move-animations.md) gives all
 nineteen added moves native Gen II attack programs and exports their battle
 previews through the production renderer.
+
+The [Minnesota cry performances](planning/minnesota/pokemon/CRIES.md) cover
+224 active Pokémon in 101 lines, with explicit replacement scores for all evolved
+forms. Revision 8 develops all six active legendaries, both mythicals and the
+three-stage pseudo-legendary line after the full-roster revision 7. Rare adult
+calls now run 2.71–3.48 seconds, with independently authored openings, climaxes
+and resolutions. The [current listening gallery](http://127.0.0.1:8937/crafted-v8/listen/)
+starts with these comparisons and includes every species, evolution sequences,
+Crystal legendary references and revision-7 previous versions. Generated WAVs
+and the separate `minnesota-cries-v8.crystalpack` candidate stay ignored or
+outside tracked source. The runbook distinguishes playback checks from listening
+judgment. All 224 revision-8 cries are now live in the
+[Pokédex](https://geothite.ryanculligan.com/pokedex/), preserving release 19’s
+profiles, sprites and starter signature moves.
+
+The [State Fair Chaos tab](https://geothite.ryanculligan.com/pokedex/state-fair.html)
+plays a 48-second native showcase with four crowd close-ups, scene buttons and a
+full-resolution fairgrounds map. Release `20261027-state-fair-21` preserves the
+latest 224 cries and all existing species and battle-animation content.
 
 Current [Minnesota tile art](planning/minnesota/tiles/campfire-animation-v1/README.md)
 focuses on a transparent 32×32 campfire with a gray stone ring and flickering warm flames.
@@ -37,6 +74,35 @@ cases, including earned local chief victory, receiver restoration and South
 departure with Continue. Review party, badges and upstream signal are explicit
 fixture setup; the full regional journey and Safari capture expeditions remain
 open. All original renders, conversions and rejected passes are retained.
+
+The [Minnesota city population overlay](planning/minnesota/playable/city-life.md)
+adds local residents, bounded walking NPCs and one native Pokémon trade per
+installed town. Its Rust publisher preserves the compact-city, Ely/League and
+State Fair pack lineages; exact inputs, trades and verification are in the runbook.
+
+The [Minnesota interior-life pass](planning/minnesota/interior-life/README.md)
+authors room purposes, local conversations, residents and optional neighborhood
+stories for the northern-winter pack's 187 non-gym interiors. Its Rust publisher
+rejects missing coverage and preserves existing quests and services. The runbook
+tracks verification and the registered rooms still absent from that pack branch.
+The [physical room pass](planning/minnesota/interior-life/LAYOUTS.md) adds
+24 distinct room compositions and 25 native furniture interactions over that
+story pack, including the hostel dormitory, workshop floors and public halls.
+The [St. Paul facade and river repair](planning/minnesota/towns/st-paul-repair/README.md)
+replaces mixed house/clinic assemblies with complete native buildings and
+rebuilds the waterfront banks, quay and working basin while retaining its rooms.
+The [Duluth club pass](planning/minnesota/interior-life/CLUBS.md) adds working
+sail/letter rooms, a timber kitchen, lodge spaces and 16 readable local details.
+The [current interior composition](planning/minnesota/interior-life/MOORHEAD.md)
+brings 208 non-gym interiors, including the fair and ice floors, into
+`content-packs/minnesota-moorhead-v01.crystalpack`. It adds the levee town,
+clinic, Mart and flood-notebook errand over the verified
+[Detroit Lakes parent](planning/minnesota/interior-life/DETROIT-LAKES.md).
+Four new production controller cases, thirteen complete native camera comparisons
+and all 377 audio checks pass. The lineage retains its repaired St. Paul facades,
+waterfront and protected chapter dialogue. International Falls' two rooms, the
+older shore-gate contract, three planned stations, full Glacier Line service and
+the remaining regional quality audit are still open.
 
 The [smaller, tighter major cities](planning/minnesota/playable/major-cities.md)
 publish whole64×48 Minneapolis, St Paul and Duluth in a660-map review pack,
@@ -76,8 +142,36 @@ replaces the rejected planter maze with a smaller room: open the left lane,
 reach the upper switch, then return and swap to the right lane for the leader.
 Its separate541-map pack passes a literal control course, gate reversals,
 saving and both city exits with Totodile16/Hoothoot14. The runbook records the
-executed Rust publication and native state views. The other seven designs
-still need this new review.
+executed Rust publication and native state views.
+
+The cumulative [Mankato terrace revision](planning/minnesota/gyms/mankato-terraces.md)
+adds clear sand levels, visible stairs behind wooden gates and native one-way
+drops. Its fixed Bayleef/Pidgey control run proves the required hop, retreat,
+leader, saving and both city exits while preserving Rochester's gate course.
+The [Minneapolis circuit revision](planning/minnesota/gyms/minneapolis-circuit.md)
+alternates trainer battles and switches, with visible electrical barriers.
+Its Geodude/Bayleef literal course proves both locks, resets, Continue and both
+city exits on the cumulative541-map pack. The [St. Paul pad-loop revision](planning/minnesota/gyms/st-paul-loop.md)
+connects both trainer rooms directly to the leader landing and a short return.
+Its Quilava/Geodude course verifies every reciprocal pad, saving, rewards and
+both city exits. The [St. Cloud arrow revision](planning/minnesota/gyms/st-cloud-arrows.md)
+makes wind direction visible on every lane. Its Ampharos/Graveler course proves
+all four forced crossings, wrong-way entries, saving and both city exits.
+The [Brainerd dock-control revision](planning/minnesota/gyms/brainerd-winch.md)
+replaces a trainer's position-choice menu with one blue fixture that toggles the
+piers on A. Its ordinary-team course verifies both trainers, reversals, saving,
+rewards and city exits. The [Bemidji garden revision](planning/minnesota/gyms/bemidji-return.md)
+keeps the two native Cut hedges and required trainers, then opens a gold gate
+after Orlis for a direct return. Its ordinary-team literal course, Cut denials,
+saving and both city returns pass. The [Duluth ice revision](planning/minnesota/gyms/duluth-gold-gates.md)
+distinguishes moving gold gates from permanent silver stops. Native slides,
+required trainer order, losses, badge permission, saving and both city returns
+pass. A fixed four-partner run also earns all three trainers and Norek through
+native slides, PKMN switches and Pack healing. All eight revisions now also
+rebuild through [the Rust regional gym publisher](planning/minnesota/gyms/current-regional.md)
+in the 554-map story and 660-map compact-city branches. Original city doors,
+story data, parties and audio remain intact; all sixteen native room-camera
+comparisons and both branches' paired city returns/Continue checks pass.
 
 The [prairie story successor](planning/minnesota/playable/prairie-story.md)
 connects Rochester through R02 to Mankato. Care permits departure; return is
@@ -129,7 +223,16 @@ partner and RNG are fixtures; this parent precedes the Itasca successor below.
 The full earned campaign remains unfinished. Run
 `target/northstar-story/wasm-dev/geothite play content-packs/minnesota-northstar-leech-shore.crystalpack`.
 
-The [544-map North Shore successor](planning/minnesota/playable/north-shore-story.md)
+The [Superior coast and inland winter correction](planning/minnesota/revisions/north-shore-ely-geography-v01/VERIFICATION.md)
+publishes the 694-map `content-packs/minnesota-superior-inland-winter-v01.crystalpack`
+from the supplied native-art parent through three guarded Rust stages. North
+Shore enters Grand Marais from the west over shared Superior water; both stay
+warm, and the separate north exit leads inland to winter. The runbook records
+exact pack hashes, replay commands, the actual connected render, passing local
+controller checks and canonical Rust source parity. It supersedes the older
+coastal geography; earned statewide progression remains separate.
+
+The historical [544-map North Shore successor](planning/minnesota/playable/north-shore-story.md)
 connects Grand Marais through the actual Ilex–Azalea gatehouse and the two-lane
 Gunflint walking seam. Both town departures check eight badges and the Duluth
 signal; inbound care is free. The optional local lamp repair grants no starter
@@ -139,6 +242,70 @@ regression and all377 audio checks pass. Both clinics now register real blackout
 recovery, proved through played losses and Continue. The complete earned course
 from Brainerd through Harbor to Boundary Waters and back also passes, with no
 downstream flags or reserve partner inserted. The client builds. Run `target/northstar-story/wasm-dev/geothite play content-packs/minnesota-northstar-north-shore-story.crystalpack`.
+
+The [554-map Ely/League successor](planning/minnesota/playable/ely-league.md)
+adds a complete final rest camp, the authentic Ilex Forest gatehouse lobby,
+independent eight-badge/survey registration, five native battles, Hall of Fame
+recording/credits, Ely postgame Continue and rematch entry. Five controller cases,
+source/native views, preservation and all377 audio checks pass. Prior access,
+Mew100 and carried medicine are explicit review fixtures; the fresh Winona
+campaign and Kettlurk's visible set piece remain open.
+Run `target/northstar-story/wasm-dev/geothite play content-packs/minnesota-northstar-ely-league.crystalpack --save .local/ely-campaign.crystalsave`.
+
+The same story pack now has a [fresh Winona-to-ICE controller course](planning/minnesota/playable/minneapolis.md#new-game-through-two-badges-and-ice--2026-10-27):
+earned starter/capture, delivery, Care, Prairie, native evolution/TM teaching,
+ICE victory, separate captive release and dispatch reading, and return home.
+Native blackout/Continue and actual stdio are checked; the later full earned
+campaign remains open. The runtime also fixes native damaging stat effects such
+as Mud-Slap when optional pack annotations are absent, preserving pack identity.
+
+That earned party now also wins Current, follows the ICE dispatch to the
+[St. Paul courier and separate DEEP BORE record](planning/minnesota/playable/courier-story.md#earned-courier-capitol-and-minneapolis-return--2026-10-27),
+earns Capitol and returns to Minneapolis with four badges. Native controller
+and actual stdio record checks pass. These saves belong to the Ely story parent;
+the selected-gym/species successor's own compatible course is recorded below.
+
+The [Kettlurk relay candidate](planning/minnesota/playable/northstar-relay.md)
+combines those selected gyms and the existing regional species catalog with a
+native remote-feed picture and a visible console shutdown. The separate chief
+battle and acknowledged receiver action remain required. Local controller,
+preservation and all 377 audio checks pass. A fresh New Game and actual saved
+continuations now earn four badges, ICE rescue/evidence, the courier's separate
+manifest and the Minneapolis return on this new identity. Both evidence scenes
+also pass actual stdio replay. Wind onward and the complete earned campaign
+remain open.
+
+The [local sleep-recovery successor](planning/minnesota/playable/northstar-relay.md#published-local-sleep-recovery-successor--2026-10-27)
+adds the existing purchasable Awakening at St Cloud before Saven. Its Rust
+publication/readback, full preservation, all 377 audio checks and affected-crate
+Clippy pass. Its fresh party earns two badges before four ICE losses. At the
+user's request, an explicit level-75 story review now continues from that real
+checkpoint and passes five badges, both evidence chapters and Brainerd arrival.
+Lake, the separate ranger report/Surf, Pine and the independent Itasca report
+also pass. The full Itasca/Iron Range road stdio replay passes after correcting
+compact status for native escape notices. The continued party now clears the
+mine, separate custody/depot handovers, Harbor, the coast, chief and native
+relay shutdown. After raising the review minimum to 100 for the last three
+League matches, Hall of Fame and postgame Continue also pass. Earlier saves
+retain their original pack; these reviews do not establish unboosted balance.
+
+The [dialogue quality revision](planning/minnesota/playable/northstar-relay.md#dialogue-quality-revision--2026-10-27)
+is published as the ignored
+`content-packs/minnesota-northstar-dialogue.crystalpack`. Its opening, rescue,
+copy trail and finale use the revised [Northstar dialogue](planning/minnesota/STORY.md#dialogue-revision--2026-10-27):
+ELLIS and JO give the rescue a personal aftermath, the villains have distinct
+unrepentant voices, and the harbor crew prepares for the shutdown. The runbook
+records the new identity and verification scope; earlier saves retain their
+original pack identity.
+
+The [character-driven story revision](planning/minnesota/playable/northstar-character-story.md)
+adds Reed's ICE recruitment and drill obstruction, two playable maze chapters,
+motivated crew quests, and Tamarack's optional Gillpup egg. The ignored
+`content-packs/minnesota-northstar-character-story-v5.crystalpack` uses only
+active Minnesota species in its regional story. ICE mixes parasites and road
+slush with Cindore/Cartick coverage and Wrigglet-line boss aces. The runbook
+records the executed Rust publication commands, native and stdio checks,
+paired scene renders, and the separate limits of battle and geometry fixtures.
 
 The [earned northern finale](planning/minnesota/playable/northstar-finale.md)
 now continues that actual arrival save through the chief battle, separate
@@ -159,7 +326,7 @@ now earns the report, mine victory/recovery, depot handover, Harbor and the full
 drainage reveal in one local session. Played blackout preserves earned custody;
 four actual stdio replays pass. Six prior badges/Mew45 remain setup. That frozen
 parent has no Grand Marais regional links; the successor above adds them.
-Ely/League and the full earned campaign remain unfinished.
+The Ely/League successor above is separate; the full earned campaign remains unfinished.
 
 The separate [fourth-gym approach](planning/minnesota/playable/gym-four-approach.md) opens
 Minneapolis's east road through R04 to St Paul. A Current Badge
@@ -195,8 +362,19 @@ The [current Iron Range and North Shore revision](planning/minnesota/playable/ge
 adds rock ribs, ore aprons, two rivers, new bridges and real native cascades to
 the471-map review pack. Thirteen targeted controller cases, both actual journey
 MCP sessions, exact unrelated-content preservation and all 377 audio checks pass.
-The Glacier Line cities and Minnesota State Fairgrounds remain active authoring
-work. All source and native render generations are retained for reuse.
+The [State Fairgrounds](planning/minnesota/playable/state-fairgrounds.md) now spans
+one48×36 map. The latest local maze candidate has255 outdoor characters,
+including35 trainers,10 Pokémon exhibits with judges,32 shops and large native
+counter pavilions. Distributed groups include slower walkers, brisk runners,
+turning spectators and standing visitors, all with dialogue. Its32 shops sell16 fair foods, including sweet corn, cookie pails,
+cheese curds, hotdish, pronto pups and beer. Beer restores100 HP and causes four
+turns of confusion. The grass revision adds
+14 native tall-grass patches with all29 active food/carnival species, including
+every evolution at all times. Its engine supports255 NPC records on expanded
+maps. The [fair runbook](planning/minnesota/playable/state-fairgrounds.md) records
+current gameplay, preservation and native visual verification. The candidate
+pack stays separate from later regional integration lineages. All source/native
+render generations are retained for reuse.
 
 The [preceding terrain quality pass](planning/minnesota/playable/terrain-quality-revisions.md)
 adds a hand-authored limestone cleft in River Bluffs and a connected pine
@@ -684,6 +862,7 @@ screenshots for visual changes and the checks you ran in pull requests.
 - [Meshtastic battle/trade profile](modpacks/meshtastic/README.md)
 - [Flygon modpack](modpacks/flygon/README.md)
 - [Native Rust text renderer and TUI](modpacks/text-tui/README.md)
+- [Minnesota caves: Crystal reference layouts and native verification](planning/minnesota/caves/johto-quality-v01/REVIEW.md)
 - [Grand Marais town prototype and fast 2D review loop](planning/minnesota/playable/README.md)
 - [Hand-authored North Shore route, native overlay and review evidence](planning/minnesota/routes/MN_R11.md)
 - [Hand-authored Gunflint Trail, native overlay and production 2D review](planning/minnesota/routes/MN_R12.md)
@@ -696,7 +875,7 @@ screenshots for visual changes and the checks you ran in pull requests.
 - [Compact Central Lakes review: one map, one-way ledge, gated dock and lake cabin](planning/minnesota/routes/MN_R15.md)
 - [Wild Challenge: player-relative levels and competitive wild movesets](modpacks/wild-challenge/README.md)
 - [Trainer rematches with level and moveset scaling](modpacks/trainer-rematches/README.md)
-- [Northwoods Pokédex: live app](https://geothite.ryanculligan.com/pokedex/) · [build and deployment notes](docs/pokedex-web.md)
+- [Northwoods Pokédex: cries and walking sprites](https://geothite.ryanculligan.com/pokedex/) · [build and deployment notes](docs/pokedex-web.md)
 - [Deployment and maintenance](docs/deployment.md)
 - [Game fidelity audit](FIDELITY_AUDIT.md)
 - [Renderer inspection](RENDER_AT_LOCATION.md)

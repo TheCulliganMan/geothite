@@ -1,0 +1,102 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_021",
+  "name": "Regalarch",
+  "family_id": "MN_F007",
+  "status": "native_candidate_compiled_and_sent_for_root_visual_review",
+  "generation_tool": "built-in image_gen",
+  "prompts": [
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f007/prompt-regalarch-v2.txt",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f007/prompt-regalarch-v3-face.txt",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f007/prompt-regalarch-v4-face-bars.txt"
+  ],
+  "sources_selected": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f007/regalarch.overworld.imagegen-v2.png",
+      "sha256": "d745f6b21569ced684f2f69ae250878c60544e61cdc9a91e6279fb10f90f15d8",
+      "dimensions": [
+        1254,
+        1254
+      ]
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f007/regalarch.overworld.imagegen-v4-face-bars.png",
+      "sha256": "e5ebc209f4c1879dfffa20f9324488d7f15797bfe21865adc9c073dadda67617",
+      "dimensions": [
+        1254,
+        1254
+      ]
+    }
+  ],
+  "source_v2_original_default_output": "/Users/ryanculligan/.codex/generated_images/01a17dc4-dd75-7642-a1c6-4bf13fda70c6/exec-557f5d37-9375-41db-8284-d256b041282f.png",
+  "generation_reference_only": "planning/minnesota/pokemon/overworld/20261027-v1/references/native-pack-16px/native-six-frame-style-board.8x.png",
+  "identity_authority": "Exactcurrentcoverage.json active identity/palette and visualinspection of selectednativefront; NOhighresbattleinputs used for generation",
+  "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f007/manifest-regalarch-v4-face-bars.json",
+  "manifest_sha256": "1ab9b9cb202ea743cad74e6a26f23e7979cec91370e017e8cd02f6b343e8a03c",
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f007/regalarch-v4-face-bars",
+  "normal_review": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f007/regalarch-v4-face-bars/review/line.normal-8x.png",
+  "sampling": "Rust source_center",
+  "alpha_threshold": 128,
+  "frame_size": [
+    16,
+    16
+  ],
+  "native_bounds": [
+    [
+      1,
+      2,
+      14,
+      13
+    ],
+    [
+      1,
+      2,
+      14,
+      13
+    ],
+    [
+      2,
+      2,
+      12,
+      13
+    ],
+    [
+      1,
+      2,
+      14,
+      12
+    ],
+    [
+      1,
+      2,
+      14,
+      12
+    ],
+    [
+      2,
+      2,
+      12,
+      12
+    ]
+  ],
+  "normal_rgb555": [
+    32767,
+    4703,
+    13449,
+    0
+  ],
+  "shiny_rgb555": [
+    32767,
+    19428,
+    4397,
+    0
+  ],
+  "native_pixels_painted": false,
+  "contract": "Sixposesdown/up/leftidle then down/up/leftstep;3opaquecanonicalinks+transparentindex0;max14pxopaquefootprintwithborder;onesharedspeciesworldscale andpairedheadregistration",
+  "notes": "Generatedraws andallvariantsretained. Nativeboards inspected locally and handed to root; finalacceptance/context/runtimeproof ownedbyroot.",
+  "edit_original_default_outputs": [
+    "/Users/ryanculligan/.codex/generated_images/01a17dc4-dd75-7642-a1c6-4bf13fda70c6/exec-e6669444-19eb-49ca-8f81-d4ec38372cdc.png",
+    "/Users/ryanculligan/.codex/generated_images/01a17dc4-dd75-7642-a1c6-4bf13fda70c6/exec-d55c2a8e-08de-49e5-bead-d643a509b8f6.png"
+  ],
+  "native_other_frames_byte_identical_to_v2": false
+}

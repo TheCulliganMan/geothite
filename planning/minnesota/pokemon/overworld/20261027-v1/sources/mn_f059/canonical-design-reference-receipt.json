@@ -1,0 +1,37 @@
+{
+  "family_id": "MN_F059",
+  "exact_selected_native_front_back_and_original_family_source_actually_viewed": true,
+  "refs": {
+    "Driftpeg": {
+      "front": {
+        "path": "target/minnesota-pokemon/native/MN_F059/mn-128-driftpeg-v3.front.png",
+        "sha256": "5c6046f2ec5858a264472929d804c76a5d987450c26ad39f46f1bd2ab8155a3c"
+      },
+      "back": {
+        "path": "target/minnesota-pokemon/native/MN_F059/mn-128-driftpeg-v3.back.png",
+        "sha256": "8f397d2bc9f862394c5fdae740226c89e6a80068a279f66d6942c9a50c10b9d1"
+      }
+    },
+    "Fencicle": {
+      "front": {
+        "path": "target/minnesota-pokemon/native/MN_F059/mn-129-fencicle-v3.front.png",
+        "sha256": "fc53bfaa117ca9d2f0af7afc5093efdb6045aae473ef3fc94c29835752eb6a34"
+      },
+      "back": {
+        "path": "target/minnesota-pokemon/native/MN_F059/mn-129-fencicle-v3.back.png",
+        "sha256": "67a07833d0a75e3758d56fef32f0d5b31e0d577cd9862457185cfa3210864606"
+      }
+    },
+    "Rimeguard": {
+      "front": {
+        "path": "target/minnesota-pokemon/native/MN_F059/mn-130-rimeguard-v3.front.png",
+        "sha256": "44121e1585a27f733e3f4ad466d4149cc143b93e1a1435f4e52e7148a09fe7c4"
+      },
+      "back": {
+        "path": "target/minnesota-pokemon/native/MN_F059/mn-130-rimeguard-v3.back.png",
+        "sha256": "94e924c77b8796430f70ba00897dbc1fe3e03fe3ce774ad0cf2889b67df55a75"
+      }
+    }
+  },
+  "body_lock": "All quadrupedal living prairie snow fences with4planted feet, square peg face under sloping snowcap, no arms/ears/tail. Baby3upright palisade slats. Middle2horizontal ice rails with1true transparent gap. Final3curved horizontal rails with2true transparent gaps and snowcapped vertical support posts; keep actual windbreak holes alpha0, no solid torso behind."
+}

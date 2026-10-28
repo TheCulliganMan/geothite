@@ -1,0 +1,6 @@
+{
+  "manifest": "manifest-castanake-v1-center.json",
+  "exit_code": 1,
+  "error": "CASTANAKE UpStep: source bounds [23,44,417,337] touch crop440x400; isolate complete art",
+  "action": "Retain raw; widen all same-size crops without changing pixels."
+}

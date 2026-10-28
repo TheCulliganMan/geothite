@@ -1,0 +1,80 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F053",
+  "species_id": "MN_111",
+  "name": "Cacheek",
+  "status": "native_compiled_root_visual_and_world_context_review_pending",
+  "generation_tool": "built-in image_gen",
+  "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f053/cacheek.overworld.imagegen-v2.png",
+  "source_sha256": "d3b9b0a42fe1f443f51a9cd08de5bee20ce59e55b8744268d758f0dd759d94de",
+  "original_default_output": "/Users/ryanculligan/.codex/generated_images/01a17dc4-dd75-7642-a1c6-4bf13fda70c6/exec-c954c26d-4779-4930-9441-36bd38ceebe6.png",
+  "dimensions": [
+    1254,
+    1254
+  ],
+  "prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f053/prompt-cacheek-v2.txt",
+  "only_input_image": "planning/minnesota/pokemon/overworld/20261027-v1/references/native-pack-16px/native-six-frame-style-board.8x.png",
+  "identity_source": "coverage.json current textual body locks and visual inspection of exact selected native battle fronts; battle images NOT ImageGen input",
+  "six_frame_layout": "3columns2rows; down/up/left idle then down/up/left step",
+  "proposed_native_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f053/manifest-cacheek-v2-phase-eyes.json",
+  "manifest_sha256": "f390ee39d97e9fdf107fb316312864dcdbfa5ef7e7e29f42dda6f6155ec4535b",
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f053/cacheek-v2-phase-eyes",
+  "normal_review": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f053/cacheek-v2-phase-eyes/review/line.normal-8x.png",
+  "native_frame_size": [
+    16,
+    16
+  ],
+  "native_bounds": [
+    [
+      3,
+      2,
+      11,
+      13
+    ],
+    [
+      3,
+      4,
+      10,
+      11
+    ],
+    [
+      2,
+      3,
+      12,
+      12
+    ],
+    [
+      3,
+      2,
+      11,
+      12
+    ],
+    [
+      3,
+      3,
+      10,
+      12
+    ],
+    [
+      2,
+      3,
+      12,
+      12
+    ]
+  ],
+  "palette_rgb555": [
+    32767,
+    9782,
+    8423,
+    0
+  ],
+  "shiny_palette_rgb555": [
+    32767,
+    18121,
+    7400,
+    0
+  ],
+  "alpha_threshold": 128,
+  "conversion": "Rust compile_minnesota_overworld source_center, equal-sized crop windows per species, common world scale; registration adjustment only, zero native painted pixels",
+  "notes": "Native boards inspected; both south poses retain two separated black dot eyes, up backs have no face, west profile. Max14px footprint; source bank retains all six idle-step differences. No shared queue or pack writes. Root acceptance/context proof pending."
+}

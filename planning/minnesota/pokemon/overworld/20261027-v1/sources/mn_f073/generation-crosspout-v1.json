@@ -1,0 +1,18 @@
+{
+  "species_id": "MN_155",
+  "name": "Crosspout",
+  "family_id": "MN_F073",
+  "tool": "built-in image_gen",
+  "selected_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f073/manifest-crosspout-v1-pupil-proof.json",
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f073/crosspout-v1-pupil-proof",
+  "normalized_proof": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f073/source-feature-proof-crosspout-v1.json",
+  "detailed_proof": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f073/manifest-crosspout-v1-pupil-proof.proof.json",
+  "sources": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f073/crosspout.overworld.imagegen-v1.png": "2566281466124c9bd9a71a5ae1a05a1455810ba4082298d993273fbdd5df33e1"
+  },
+  "preserved_attempt_receipts": [
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f073/attempt-crosspout-v1.json"
+  ],
+  "status": "frozen native candidate; actual normal/shiny source features reviewed; root context pending",
+  "accepted": false
+}

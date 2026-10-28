@@ -52,7 +52,10 @@ def check_piers(design,layout,pack):
     for ledge in design['one_way_ledges']:
         x0,y0,x1,y1=ledge['bounds_core']
         assert all(kind(x,y0)=='HOP_DOWN' and kind(x,y0+1)=='WALL' for x in range(x0,x1)),'Native drop face'
-        assert all(kind(*at)=='WALL' for at in ledge['side_barriers']),'Drop sides must close'
+        # Headbutt never removes these native canopy quadrants. A Cut tree
+        # cannot guard a drop because its opening would permit a side bypass.
+        assert all(kind(*at) in {'WALL','HEADBUTT_TREE','HEADBUTT_TREE_1D'}
+                   for at in ledge['side_barriers']),'Drop sides must close permanently'
     assert kind(58,73)=='WALL','Fishing pier needs its closed west end'
     return {'source_metatile_varieties_used':len(set(blocks)),'native_drop_faces_checked':len(design['one_way_ledges']),'railed_crossings_checked':len(layout['crossings'])}
 

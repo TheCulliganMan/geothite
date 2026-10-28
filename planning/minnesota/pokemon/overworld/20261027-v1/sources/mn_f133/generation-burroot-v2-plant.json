@@ -1,0 +1,12 @@
+{
+  "tool": "built-in ImageGen",
+  "raw": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f133/burroot.overworld.imagegen-v2-plant.png",
+  "raw_sha256": "e9ea527826fd7714ee049c3a98ae2bd7318ccbaac66d6c4e9c4ed85c81a8e515",
+  "default_original": "/Users/ryanculligan/.codex/generated_images/01a17dc4-dd75-7642-a1c6-4bf13fda70c6/exec-8bad5e48-1473-4331-8ca9-eac43b72889d.png",
+  "default_original_preserved": true,
+  "prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f133/prompt-burroot-v2-plant.txt",
+  "style_reference": "planning/minnesota/pokemon/overworld/20261027-v1/references/native-pack-16px/native-six-frame-style-board.8x.png",
+  "style_reference_sha256": "4354a639ed1a80fd6686e43b273443ed894e58a84307a8049f638ee9ffa2a099",
+  "only_style_reference_supplied": true,
+  "source_generated_not_native_accepted": true
+}

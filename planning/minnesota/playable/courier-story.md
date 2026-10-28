@@ -134,3 +134,79 @@ earn three prior badges or the ICE note from New Game. Full ordinary-party
 balance, Mankato's Cut/cache, Minneapolis/R05 and later links, rail, later story
 chapters, League completion and the Kettlurk scene remain unfinished. User
 visual acceptance is also open.
+
+## Earned courier, Capitol and Minneapolis return — 2026-10-27
+
+The separate 554-map [Ely story parent](ely-league.md), file SHA-256
+`ab049e907b8712f5ee5f174b474c38fcc52460f272e60336aff17445d62cb6c4`,
+now passes `northstar_campaign_earned_courier_manifest_capitol_and_return`
+in 225.52 seconds. It continues the actual three-badge St. Paul arrival from
+the [earned Current course](gym-four-approach.md#earned-current-and-st-paul-arrival--2026-10-27),
+whose party and ICE dispatch come from the recorded fresh Winona game.
+No progress, position, party, level, money, items or RNG are supplied.
+
+The course uses St. Paul's actual compact clinic and mart entrances/counters,
+registers real recovery, restores HP/status/PP and purchases only affordable
+Super Potions. The guarded manifest refuses reading before the fight, retains
+input ownership and grants no record. Quilava wins the actual courier battle
+at level 22. The victory checkpoint still has the manifest unread. The shared
+acknowledgment routine then checks all three canonical pages, rejects movement
+during each, preserves party/bag/money, verifies repeat text and continues from
+the separately completed record.
+
+The same party defeats Belva, Orven and Brannic, earns Capitol and one Steel
+Wing TM, crosses R04 back to Minneapolis with the evidence intact and uses free
+care. Quilava finishes the leader fight at level 24. All four fights win on their first
+attempt in this run; the course still retains native loss/recovery branches.
+The final save has exactly four badges. Mine/depot clearance, harbor signal and
+survey restoration stay unearned. This is an earned continuation, not another
+independent New Game invocation or proof of every starter/battle outcome.
+
+```sh
+RUST_MIN_STACK=67108864 CARGO_TARGET_DIR=target/northstar-story \
+CARGO_PROFILE_WASM_DEV_OPT_LEVEL=0 \
+CRYSTAL_WINONA_TEST_PACK="$PWD/content-packs/minnesota-northstar-ely-league.crystalpack" \
+CRYSTAL_WINONA_SAVE_DIR="$PWD/.local/northstar-current-campaign-saves" \
+CRYSTAL_NORTHSTAR_COURIER_SAVE="$PWD/.local/northstar-current-campaign-saves/winona-campaign-earned-st-paul-arrival-73673-1793120113107775000.crystalsave" \
+cargo test --lib --locked --profile wasm-dev -p crystal-bevy \
+  northstar_campaign_earned_courier_manifest_capitol_and_return \
+  -- --ignored --test-threads=1 --nocapture
+```
+
+The passing log is `.local/northstar-earned-courier-capitol-rooms.log`.
+The actual checkpoints under `.local/northstar-current-campaign-saves/` are:
+
+- Before the separate record: `winona-campaign-earned-courier-win-85786-1793121518116849000.crystalsave`.
+- After acknowledgment: `winona-campaign-earned-manifest-read-85786-1793121539313327000.crystalsave`.
+- Four badges, record and care in Minneapolis: `winona-campaign-earned-capitol-manifest-minneapolis-return-85786-1793121697369773000.crystalsave`.
+
+The rebuilt production client also passes the actual stdio record replay from
+that earned victory checkpoint. It checks the hostile repeat, all three pages,
+directional input ownership, record repeat, city return and Start, with unchanged
+money/badges and byte-empty stderr:
+
+```sh
+.local/minnesota-review-env/bin/python planning/minnesota/tools/check_courier_story_mcp.py \
+  --pack content-packs/minnesota-northstar-ely-league.crystalpack \
+  --save .local/northstar-current-campaign-saves/winona-campaign-earned-courier-win-85786-1793121518116849000.crystalsave \
+  --earned-campaign-win
+```
+
+The stdio log is `.local/northstar-earned-courier-mcp.log`. The original local
+fixture case also passes after extracting the shared acknowledgment routine
+(10.72 seconds); its saves remain separately in
+`.local/northstar-current-review-saves/` and do not establish earned progress.
+The game pack and audio are unchanged. The later current-gym publication has a
+[different identity](../gyms/current-regional.md); these parent saves must not
+be relabeled or treated as earned progress on that successor. Wind onward,
+the remaining full campaign and Kettlurk's visible scene remain open.
+
+Final source checks pass: the plan validator, scoped Rust formatting, JSON
+parsing and `git diff --check`. Bevy's default-feature all-target Clippy check
+passes with the existing `never_loop`, `bad_bit_mask`, `approx_constant` and
+`useless_conversion` allowances; it reports no warnings in the campaign or
+shared courier helpers changed here. The log is
+`.local/northstar-earned-current-courier-clippy-reviewed.log`. Workspace
+`cargo fmt --all -- --check` still reports unrelated existing differences,
+starting at `crates/offset-allocator/src/lib.rs:408`; this work does not reformat
+those files.

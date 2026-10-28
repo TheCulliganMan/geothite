@@ -6,6 +6,7 @@ import subprocess
 import tempfile
 
 from check_minneapolis_mcp import Client
+from check_lake_country_mcp import escape_wild
 from check_river_story_mcp import road, same_map_travel
 from check_winona_mcp import finish, travel, walk
 from render_reference import load_pack
@@ -28,7 +29,7 @@ def officer(client, pack):
 def outing(client, pack):
     walk(client, pack, (4, 24))
     travel(client, "left", "MnR14C01R00", (31, 26))
-    road(client, pack, (5, 42), "MnR14", 2, 2)
+    road(client, pack, (5, 42), "MnR14", 2, 2, encounter=escape_wild)
     travel(client, "left", GATE, (8, 4))
     walk(client, pack, (5, 4))
     client.press("up")
@@ -46,7 +47,7 @@ def return_trip(client, pack):
     travel(client, "right", GATE, (1, 5))
     walk(client, pack, (8, 5))
     travel(client, "right", "MnR14C00R00", (5, 43))
-    road(client, pack, (95, 27), "MnR14", 2, 2)
+    road(client, pack, (95, 27), "MnR14", 2, 2, encounter=escape_wild)
     travel(client, "right", "MnBemidji", (0, 25))
     same_map_travel(client, "right", "MnBemidji", (4, 25))
 
@@ -82,10 +83,10 @@ def iron(client, pack, full):
     walk(client, pack, (43, 24))
     travel(client, "right", "MnR09C00R01", (0, 2))
     if full:
-        road(client, pack, (127, 24), "MnR09", 2, 2)
+        road(client, pack, (127, 24), "MnR09", 2, 2, encounter=escape_wild)
         travel(client, "right", "MnGrandRapids", (0, 24))
         travel(client, "left", "MnR09C01R00", (63, 24))
-        road(client, pack, (0, 50), "MnR09", 2, 2)
+        road(client, pack, (0, 50), "MnR09", 2, 2, encounter=escape_wild)
     travel(client, "left", "MnBemidji", (47, 24))
     same_map_travel(client, "left", "MnBemidji", (43, 24))
 
@@ -98,6 +99,9 @@ def play(client, pack, mode):
         assert "IRON RANGE" in finish(client)
         iron(client, pack, False)
         return
+    if mode == "chapter" and client.status()["position"] == dict(x=10, y=10):
+        client.at("MnBemidji", 10, 10)
+        walk(client, pack, (21, 20))
     client.at("MnBemidji", *( (4, 24) if mode == "early" else (21, 20) ))
     assert client.status()["badges"] == (6 if mode == "early" else 7)
     outing(client, pack)
@@ -121,6 +125,8 @@ def main():
     p.add_argument("--pack", type=Path, default=ROOT / "content-packs/minnesota-northstar-itasca-story.crystalpack")
     p.add_argument("--save", type=Path, required=True)
     p.add_argument("--mode", choices=["early", "chapter", "earned-report"], required=True)
+    p.add_argument("--boosted-review", action="store_true",
+                   help="same-pack campaign save with user-authorized supplied levels")
     p.add_argument("--client", type=Path, default=ROOT / "target/northstar-story/wasm-dev/geothite")
     args = p.parse_args()
     pack = load_pack(args.pack)
@@ -143,7 +149,8 @@ def main():
             assert process.wait(timeout=30) == 0
         stderr.seek(0)
         assert stderr.read() == b"", "gameplay stderr must remain byte-empty"
-    print(f"PASS: actual stdio {args.mode}, Start, unchanged money/badges and byte-empty stderr.")
+    source = " from boosted story review" if args.boosted_review else ""
+    print(f"PASS: actual stdio {args.mode}{source}, Start, unchanged money/badges and byte-empty stderr.")
 
 
 if __name__ == "__main__":

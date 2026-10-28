@@ -1322,6 +1322,13 @@ fn wild_encounter_data_has(encounters: &WildEncounterData, species: &str, level:
         wild_encounter_table_has_reachable_level(table, EncounterSurface::Grass, species, level)
     }) || encounters.water.as_ref().is_some_and(|table| {
         wild_encounter_table_has_reachable_level(table, EncounterSurface::Water, species, level)
+    }) || encounters.zones.iter().any(|zone| {
+        wild_encounter_table_has_reachable_level(
+            &zone.grass,
+            EncounterSurface::Grass,
+            species,
+            level,
+        )
     }) || encounters.swarm_overrides.values().any(|swarm| {
         wild_encounter_table_has_reachable_level(
             &swarm.grass,
@@ -2867,6 +2874,8 @@ pub enum RuntimeMutationCommand {
     DeletePokegearPhoneNumber { contact_id: String },
     StartPokegearPhoneCall(RuntimePokegearPhoneCallCommand),
     CompleteBattleLoss,
+    /// Recover after the overworld poison script, without consuming a battle result.
+    ResolvePoisonBlackoutToLastSpawn,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]

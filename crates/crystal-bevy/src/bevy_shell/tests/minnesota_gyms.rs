@@ -1,6 +1,18 @@
 //! Gym puzzles/battles use production input; prior badges/party are fixture setup.
+#[path = "bemidji_return.rs"]
+mod bemidji_return;
+#[path = "brainerd_winch.rs"]
+mod brainerd_winch;
 #[path = "city_expansions.rs"]
 mod city_expansions;
+#[path = "current_gyms.rs"]
+mod current_gyms;
+#[path = "duluth_gates.rs"]
+mod duluth_gates;
+#[path = "ely_league.rs"]
+mod ely_league;
+#[path = "gym_care.rs"]
+mod gym_care;
 #[path = "gym_eight_approach.rs"]
 mod gym_eight_approach;
 #[path = "gym_four_approach.rs"]
@@ -13,10 +25,36 @@ mod itasca_story;
 mod lake_country_story;
 #[path = "leech_shore.rs"]
 mod leech_shore;
+#[path = "mankato_terraces.rs"]
+mod mankato_terraces;
+#[path = "minneapolis_circuit.rs"]
+mod minneapolis_circuit;
 #[path = "north_shore_journey.rs"]
 mod north_shore_journey;
 #[path = "north_shore_story.rs"]
 mod north_shore_story;
+#[path = "northstar_campaign.rs"]
+mod northstar_campaign;
+#[path = "northstar_campaign_courier.rs"]
+mod northstar_campaign_courier;
+#[path = "northstar_campaign_current.rs"]
+mod northstar_campaign_current;
+#[path = "northstar_campaign_finale.rs"]
+mod northstar_campaign_finale;
+#[path = "northstar_campaign_ice.rs"]
+mod northstar_campaign_ice;
+#[path = "northstar_campaign_iron.rs"]
+mod northstar_campaign_iron;
+#[path = "northstar_campaign_lake.rs"]
+mod northstar_campaign_lake;
+#[path = "northstar_campaign_league.rs"]
+mod northstar_campaign_league;
+#[path = "northstar_campaign_pine.rs"]
+mod northstar_campaign_pine;
+#[path = "northstar_campaign_review.rs"]
+mod northstar_campaign_review;
+#[path = "northstar_campaign_wind.rs"]
+mod northstar_campaign_wind;
 #[path = "northstar_finale.rs"]
 mod northstar_finale;
 #[path = "northstar_iron_course.rs"]
@@ -27,6 +65,20 @@ mod river_cities;
 mod rochester_gates;
 #[path = "rochester_readable.rs"]
 mod rochester_readable;
+#[path = "state_cohesion.rs"]
+mod state_cohesion;
+
+#[path = "st_cloud_arrows.rs"]
+mod st_cloud_arrows;
+
+#[path = "st_paul_loop.rs"]
+mod st_paul_loop;
+
+#[path = "state_fair.rs"]
+mod state_fair;
+
+#[path = "city_life.rs"]
+mod city_life;
 
 use std::collections::{BTreeMap, BTreeSet, VecDeque};
 use std::path::PathBuf;
@@ -369,7 +421,7 @@ fn path_with_ledges(
     Some(buttons)
 }
 
-fn interact(c: &mut VisibleShellController, runtime: &CrystalRuntime, target: Point) {
+pub(super) fn interact(c: &mut VisibleShellController, runtime: &CrystalRuntime, target: Point) {
     let from = at(c);
     let m = module(c, runtime);
     let mut candidates = Vec::new();
@@ -463,6 +515,14 @@ fn choose(c: &mut VisibleShellController, answer: usize) {
 }
 
 fn battle(c: &mut VisibleShellController, losing: bool) {
+    battle_with_partner(c, losing, None);
+}
+
+fn battle_with_partner(
+    c: &mut VisibleShellController,
+    losing: bool,
+    select: Option<fn(&str) -> Option<&'static str>>,
+) {
     let before = c.snapshot().expect("before battle");
     let mut started = false;
     let mut attacks = 0;
@@ -521,6 +581,15 @@ fn battle(c: &mut VisibleShellController, losing: bool) {
             }
         }
         started = true;
+        let preferred = select
+            .and_then(|choose| choose(&b.enemy_pokemon.species.id))
+            .and_then(|species| {
+                s.party.slots.iter().position(|p| {
+                    p.pokemon.hp > 0
+                        && p.pokemon.species.id == species
+                        && Some(p.index) != b.active_player_party_index
+                })
+            });
         let input = if s.ui.menu.is_none() && s.ui.text.is_some() {
             c.wait_frames(30).expect("battle narration");
             GameButton::A
@@ -539,12 +608,13 @@ fn battle(c: &mut VisibleShellController, losing: bool) {
                 GameButton::A
             }
         } else if let Some(cursor) = &c.shell.battle_switch_cursor {
-            let target = s
-                .party
-                .slots
-                .iter()
-                .position(|p| p.pokemon.hp > 0 && Some(p.index) != b.active_player_party_index)
-                .expect("living partner for the native faint switch");
+            let target = preferred
+                .or_else(|| {
+                    s.party.slots.iter().position(|p| {
+                        p.pokemon.hp > 0 && Some(p.index) != b.active_player_party_index
+                    })
+                })
+                .expect("living partner for a native switch");
             if cursor.option_index < target {
                 GameButton::Down
             } else if cursor.option_index > target {
@@ -581,11 +651,27 @@ fn battle(c: &mut VisibleShellController, losing: bool) {
                 "FLAMETHROWER",
                 "THUNDERBOLT",
                 "ICE_BEAM",
+                "THUNDERPUNCH",
+                "THUNDERSHOCK",
+                if b.enemy_pokemon.species.type1 == "FLYING"
+                    || b.enemy_pokemon.species.type2 == "FLYING"
+                {
+                    "ROCK_THROW"
+                } else {
+                    ""
+                },
+                "MAGNITUDE",
+                "RAZOR_LEAF",
+                "VINE_WHIP",
                 "WATER_GUN",
+                "FLAME_WHEEL",
                 "EMBER",
                 "CONFUSION",
                 "HEADBUTT",
+                "WING_ATTACK",
                 "PECK",
+                "GUST",
+                "BITE",
                 "SCRATCH",
                 "TACKLE",
                 "QUICK_ATTACK",
@@ -606,10 +692,11 @@ fn battle(c: &mut VisibleShellController, losing: bool) {
                 GameButton::A
             }
         } else if let Some(cursor) = &c.shell.battle_action_cursor {
-            match cursor.option_index {
-                0 => GameButton::A,
-                1 => GameButton::Left,
-                2 | 3 => GameButton::Up,
+            match (preferred.is_some(), cursor.option_index) {
+                (true, 0) => GameButton::Right,
+                (true, 1) | (false, 0) => GameButton::A,
+                (false, 1) => GameButton::Left,
+                (_, 2 | 3) => GameButton::Up,
                 _ => panic!("battle cursor"),
             }
         } else {
@@ -638,7 +725,11 @@ fn battle(c: &mut VisibleShellController, losing: bool) {
                     .sum::<u32>(),
             "chosen attacks spend native PP"
         );
-        assert!(after.party.slots.iter().any(|p| p.pokemon.hp > 0));
+        assert!(
+            after.party.slots.iter().any(|p| p.pokemon.hp > 0),
+            "expected a win with legal selected attacks; party: {:?}",
+            after.party
+        );
     }
 }
 
@@ -1370,7 +1461,7 @@ fn can_approach_with_ledges(
     })
 }
 
-fn walk_to(c: &mut VisibleShellController, runtime: &CrystalRuntime, target: Point) {
+pub(super) fn walk_to(c: &mut VisibleShellController, runtime: &CrystalRuntime, target: Point) {
     let m = module(c, runtime);
     let from = at(c);
     for button in path(runtime, &m, from, target)
@@ -2520,6 +2611,15 @@ fn minnesota_bemidji_controller_loss_and_missing_sixth_badge_grant_nothing() {
 }
 
 fn learn_gym_cut_from_guide(c: &mut VisibleShellController, runtime: &CrystalRuntime, gym: &Value) {
+    learn_gym_cut_replacing(c, runtime, gym, None);
+}
+
+fn learn_gym_cut_replacing(
+    c: &mut VisibleShellController,
+    runtime: &CrystalRuntime,
+    gym: &Value,
+    forgotten: Option<&str>,
+) {
     let hm = &runtime.data().items["HM_CUT"];
     assert_eq!(c.shell.shell.session().state().bag.quantity(hm), 0);
     assert!(
@@ -2529,6 +2629,14 @@ fn learn_gym_cut_from_guide(c: &mut VisibleShellController, runtime: &CrystalRun
             .iter()
             .any(|m| m.name == "CUT")
     );
+    let forgotten_slot = forgotten.map(|name| {
+        c.snapshot().expect("chosen HM replacement").party.slots[0]
+            .pokemon
+            .moves
+            .iter()
+            .position(|m| m.name == name)
+            .expect("known move to replace")
+    });
     interact(c, runtime, point(&gym["guide_at"]));
     finish(c);
     assert!(event(c, "EVENT_MN_GYM_7_CUT_HM_RECEIVED"));
@@ -2574,6 +2682,41 @@ fn learn_gym_cut_from_guide(c: &mut VisibleShellController, runtime: &CrystalRun
         press(c, GameButton::Right);
     }
     assert!(c.shell.tmhm_cursor.is_some());
+    let hm_index = c
+        .snapshot()
+        .expect("carried HM inventory")
+        .bag
+        .tm_hm
+        .iter()
+        .position(|item| item.item_id == "HM_CUT")
+        .expect("actual guide gift");
+    for _ in 0..128 {
+        let selected = c
+            .shell
+            .tmhm_cursor
+            .as_ref()
+            .expect("native HM cursor")
+            .option_index;
+        if selected == hm_index {
+            break;
+        }
+        press(
+            c,
+            if selected < hm_index {
+                GameButton::Down
+            } else {
+                GameButton::Up
+            },
+        );
+    }
+    assert_eq!(
+        c.shell
+            .tmhm_cursor
+            .as_ref()
+            .expect("selected Cut HM")
+            .option_index,
+        hm_index
+    );
     for _ in 0..128 {
         if c.snapshot().expect("native HM learning").party.slots[0]
             .pokemon
@@ -2583,7 +2726,28 @@ fn learn_gym_cut_from_guide(c: &mut VisibleShellController, runtime: &CrystalRun
         {
             break;
         }
-        press(c, GameButton::A);
+        let button = if let Some(target) = forgotten_slot
+            && c.shell.tmhm_forget_menu_open
+            && c.shell.pending_tmhm_text_stage.is_none()
+            && c.shell.field_notice.is_none()
+        {
+            let index = c
+                .shell
+                .party_move_cursor
+                .as_ref()
+                .expect("native HM forget cursor")
+                .option_index;
+            if index < target {
+                GameButton::Down
+            } else if index > target {
+                GameButton::Up
+            } else {
+                GameButton::A
+            }
+        } else {
+            GameButton::A
+        };
+        press(c, button);
     }
     assert!(
         c.snapshot().expect("learned Cut").party.slots[0]
@@ -2596,6 +2760,11 @@ fn learn_gym_cut_from_guide(c: &mut VisibleShellController, runtime: &CrystalRun
         c.shell.shell.session().state().bag.quantity(hm),
         1,
         "HM is reusable"
+    );
+    assert_eq!(
+        c.shell.shell.session().state().bag,
+        bag,
+        "teaching Cut cannot consume another TM"
     );
     for _ in 0..128 {
         if !super::super::has_visible_shell_direction_action(&mut c.shell) {

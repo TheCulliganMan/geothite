@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F134",
+  "species": [
+    {
+      "species_id": "MN_297",
+      "runtime_token": "MARSHRACK",
+      "palette_rgb555": [
+        32767,
+        14133,
+        15716,
+        0
+      ],
+      "shiny_palette_rgb555": [
+        32767,
+        28215,
+        16836,
+        0
+      ],
+      "fit": [
+        14,
+        14
+      ],
+      "alpha_threshold": 245,
+      "sampling": "source_center",
+      "minimum_foreground_samples": 16,
+      "black_priority_samples": 32,
+      "interior_black_samples": null,
+      "opaque_interior_minimum_samples": 60,
+      "frames": [
+        {
+          "pose": "down_idle",
+          "source": "marshrack.overworld.imagegen-v3.png",
+          "crop": [
+            31,
+            41,
+            482,
+            469
+          ]
+        },
+        {
+          "pose": "up_idle",
+          "source": "marshrack.overworld.imagegen-v3.png",
+          "crop": [
+            514,
+            44,
+            482,
+            469
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "source": "marshrack.overworld.imagegen-v3.png",
+          "crop": [
+            1023,
+            63,
+            482,
+            469
+          ]
+        },
+        {
+          "pose": "down_step",
+          "source": "marshrack.overworld.imagegen-v3.png",
+          "crop": [
+            31,
+            510,
+            482,
+            469
+          ]
+        },
+        {
+          "pose": "up_step",
+          "source": "marshrack.overworld.imagegen-v3.png",
+          "crop": [
+            514,
+            516,
+            482,
+            469
+          ]
+        },
+        {
+          "pose": "left_step",
+          "source": "marshrack.overworld.imagegen-v3.png",
+          "crop": [
+            1028,
+            524,
+            482,
+            469
+          ]
+        }
+      ]
+    }
+  ]
+}

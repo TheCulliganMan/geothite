@@ -1,0 +1,14 @@
+{
+  "tool": "built-in image_gen",
+  "original_tool_path": "/Users/ryanculligan/.codex/generated_images/01a17dcc-4f1a-77a2-9d21-0df036061346/exec-201349ab-02fd-49a2-b6ab-d73fbb08f2a2.png",
+  "source_size": [
+    2172,
+    724
+  ],
+  "sha256": "8ee0033716f36df54e407ee64239ccef4892c1023c1e6a144ce30f6e67554a67",
+  "reference_paths": [
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/native-size-review/MN_F119/review/line.normal-8x.png",
+    "target/minnesota-pokemon/native/MN_F119/line.review.png"
+  ],
+  "prompt": "prompt-v2.txt"
+}

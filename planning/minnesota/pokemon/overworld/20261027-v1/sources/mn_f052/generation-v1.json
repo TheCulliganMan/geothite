@@ -1,0 +1,100 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F052",
+  "status": "source_generated_native_conversion_and_visual_review_pending",
+  "generation_tool": "built-in image_gen",
+  "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f052/overworld.imagegen-v1.png",
+  "source_sha256": "b79b94c57c4e01ee78886d19c1de9d847791bee50f87acad40259f6fd1d888ef",
+  "original_default_output": "/Users/ryanculligan/.codex/generated_images/01a17dc4-dd75-7642-a1c6-4bf13fda70c6/exec-35da5d78-8a72-4e31-b440-875ba88cb4e2.png",
+  "dimensions": [
+    1774,
+    887
+  ],
+  "prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f052/prompt-v1.txt",
+  "sheet_columns": 6,
+  "sheet_rows": 3,
+  "column_order": [
+    "down_idle",
+    "up_idle",
+    "left_idle",
+    "down_step",
+    "up_step",
+    "left_step"
+  ],
+  "row_species": [
+    "MN_107",
+    "MN_108",
+    "MN_109"
+  ],
+  "canonical_reference_paths": [
+    "target/minnesota-pokemon/native/MN_F052/mn-107-tussnip-v1.front.png",
+    "target/minnesota-pokemon/native/MN_F052/mn-108-silksod-v1.front.png",
+    "target/minnesota-pokemon/native/MN_F052/mn-109-dakotaskip-v1.front.png"
+  ],
+  "native_target": {
+    "cell": [
+      16,
+      16
+    ],
+    "opaque_maximum": [
+      14,
+      14
+    ],
+    "border": 1,
+    "first_stage_height": 11,
+    "middle_height": 13,
+    "final_height": 14,
+    "transparent_index": 0,
+    "visible_indices": [
+      1,
+      2,
+      3
+    ],
+    "ground_anchor_y": 14
+  },
+  "palettes": [
+    {
+      "species_id": "MN_107",
+      "normal_rgb555": [
+        32767,
+        11095,
+        7623,
+        0
+      ],
+      "opaque_hex": [
+        "#BDD652",
+        "#397339",
+        "#000000"
+      ]
+    },
+    {
+      "species_id": "MN_108",
+      "normal_rgb555": [
+        32767,
+        9875,
+        4425,
+        0
+      ],
+      "opaque_hex": [
+        "#9CA54A",
+        "#4A5221",
+        "#000000"
+      ]
+    },
+    {
+      "species_id": "MN_109",
+      "normal_rgb555": [
+        32767,
+        7902,
+        4332,
+        0
+      ],
+      "opaque_hex": [
+        "#F7B539",
+        "#633921",
+        "#000000"
+      ]
+    }
+  ],
+  "review_note": "Raw output saved intact. Identity and full-body directional layout inspected, but generated source remains denser than native16px and contains white highlight pixels despite exact3opaqueink prompt. Canonical converter must remap highlights to lightink; root must inspect actual native sheet, geometry, idle-step coherence and edge padding before acceptance. This metadata is not native acceptance."
+}

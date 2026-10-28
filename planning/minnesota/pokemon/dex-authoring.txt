@@ -289,3 +289,4 @@
 292|Bank Jaw|Its folded neck reaches far beyond its shell.|It holds the bank until a flood has passed.
 293|Burr Seed|Its fringed cup catches dew before dawn.|It plants one tiny root whenever it stops to rest.
 294|Root Hold|Its roots hold soil against rushing water.|Small POKEMON hide beneath its broad leaf fans.
+318|Crown Lure|It spins the blade on its head to stir up silt.|Hidden in the cloud, it waits for unwary fish.

@@ -1,0 +1,47 @@
+{
+  "species_id": "MN_250",
+  "family_id": "MN_F116",
+  "prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f116/prompt-flarkindle-v1.txt",
+  "palette_binding": {
+    "transparent_index": 0,
+    "visible_indices": [
+      1,
+      2,
+      3
+    ],
+    "normal_rgb555_words": [
+      32767,
+      30459,
+      11687,
+      0
+    ],
+    "shiny_rgb555_words": [
+      32767,
+      24445,
+      13547,
+      0
+    ],
+    "white_body_region_policy": "Simplify formerly white body/highlight regions to light ink1. Index0 is transparent everywhere, not an opaque white paint color."
+  },
+  "fit": [
+    14,
+    14
+  ],
+  "references": [
+    {
+      "path": "target/minnesota-pokemon/native/MN_F116/mn-250-flarkindle-v4.front.png",
+      "role": "exact approved front identity",
+      "sha256": "1bd97d2e8e4a65f06b80eca88bfdb168766f91648dad48b74c58f1352a76ec71"
+    },
+    {
+      "path": "target/minnesota-pokemon/native/MN_F116/mn-250-flarkindle-v4.back.png",
+      "role": "exact approved rear identity; extrapolate full back naturally",
+      "sha256": "ba4764a9c9db412fea3a4bb5b81bf88871372ac6da11705c4c05247e8ccc3615"
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/references/native-pack-16px/native-six-frame-style-board.8x.png",
+      "role": "native16 style/scale only",
+      "sha256": "4354a639ed1a80fd6686e43b273443ed894e58a84307a8049f638ee9ffa2a099"
+    }
+  ]
+}

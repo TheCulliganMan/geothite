@@ -1,0 +1,7 @@
+{
+  "tool": "built-in imagegen",
+  "default_path": "/Users/ryanculligan/.codex/generated_images/01a178da-4cf1-7e01-8516-667a332dc790/exec-ec824cca-859b-49d8-830c-bc0cf659f46d.png",
+  "workspace_path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f060/lakernaut.overworld.imagegen-v1.png",
+  "sha256": "1248dbd5e2a413e08dd02916b62cd3b64fe574c7dfb3a0c2189eb0017a928113",
+  "prompt": "prompt-lakernaut-v1.txt"
+}

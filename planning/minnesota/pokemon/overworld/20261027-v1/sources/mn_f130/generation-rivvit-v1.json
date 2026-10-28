@@ -1,0 +1,222 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F130",
+  "species_id": "MN_287",
+  "name": "Rivvit",
+  "status": "native_compiled_author_inspected_root_world_context_review_pending",
+  "generation_tool": "built-in image_gen",
+  "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f130/rivvit.overworld.imagegen-v1.png",
+  "source_sha256": "5ec58d3da2e00bc8e08b4a1d915ece2d7623de8274cd78daee0c2de33be0044e",
+  "original_default_output": "/Users/ryanculligan/.codex/generated_images/01a179bf-dc2b-7352-8975-8b8f3a32e33b/exec-78808590-e153-46a6-85f1-ce9b8f9ba464.png",
+  "dimensions": [
+    1536,
+    1024
+  ],
+  "prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f130/prompt-rivvit-v1.txt",
+  "prompt_sha256": "59ad45680c373acb9f9df8bdcd6af492d7baa0e52541dfd02b01d7ae300f42d4",
+  "reference_mapping": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f130/reference-mapping-rivvit-v1.json",
+  "proposed_native_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f130/manifest-rivvit-v1-pupil-proof.json",
+  "manifest_sha256": "2b193c1f6a3331ffc616fe67379c2c5875e5e51ff24ac2c05ac9ddcc12f791f4",
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f130/rivvit-v1-pupil-proof",
+  "normal_review": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f130/rivvit-v1-pupil-proof/review/line.normal-8x.png",
+  "review_sha256": "13e3ae57275d2814a7a9de1ba6deebf904b162422cf97f3425056ede1e44d64c",
+  "palette_rgb555": [
+    32767,
+    17112,
+    14760,
+    0
+  ],
+  "shiny_palette_rgb555": [
+    32767,
+    23312,
+    13582,
+    0
+  ],
+  "native_bounds": [
+    [
+      4,
+      4,
+      8,
+      11
+    ],
+    [
+      3,
+      4,
+      8,
+      11
+    ],
+    [
+      2,
+      4,
+      12,
+      9
+    ],
+    [
+      4,
+      4,
+      8,
+      11
+    ],
+    [
+      3,
+      4,
+      8,
+      11
+    ],
+    [
+      2,
+      4,
+      12,
+      9
+    ]
+  ],
+  "pupil_proof": [
+    {
+      "pose": "down_idle",
+      "source_proven_face_pupils": [
+        [
+          6,
+          10
+        ],
+        [
+          9,
+          10
+        ]
+      ],
+      "source_eye_boxes": [
+        [
+          238,
+          322,
+          259,
+          343
+        ],
+        [
+          324,
+          322,
+          345,
+          343
+        ]
+      ],
+      "bounds": [
+        4,
+        4,
+        8,
+        11
+      ]
+    },
+    {
+      "pose": "up_idle",
+      "source_proven_face_pupils": [],
+      "source_eye_boxes": [],
+      "bounds": [
+        3,
+        4,
+        8,
+        11
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "source_proven_face_pupils": [
+        [
+          4,
+          8
+        ]
+      ],
+      "source_eye_boxes": [
+        [
+          1140,
+          310,
+          1162,
+          333
+        ]
+      ],
+      "bounds": [
+        2,
+        4,
+        12,
+        9
+      ]
+    },
+    {
+      "pose": "down_step",
+      "source_proven_face_pupils": [
+        [
+          6,
+          10
+        ],
+        [
+          9,
+          10
+        ]
+      ],
+      "source_eye_boxes": [
+        [
+          238,
+          792,
+          259,
+          814
+        ],
+        [
+          324,
+          792,
+          345,
+          814
+        ]
+      ],
+      "bounds": [
+        4,
+        4,
+        8,
+        11
+      ]
+    },
+    {
+      "pose": "up_step",
+      "source_proven_face_pupils": [],
+      "source_eye_boxes": [],
+      "bounds": [
+        3,
+        4,
+        8,
+        11
+      ]
+    },
+    {
+      "pose": "left_step",
+      "source_proven_face_pupils": [
+        [
+          4,
+          8
+        ]
+      ],
+      "source_eye_boxes": [
+        [
+          1139,
+          782,
+          1162,
+          805
+        ]
+      ],
+      "bounds": [
+        2,
+        4,
+        12,
+        9
+      ]
+    }
+  ],
+  "validation_results": {
+    "six_frames_16x16": true,
+    "runtime_png_16x96": true,
+    "native_2bpp_bytes": 384,
+    "tile_decode_matches_png_and_indexed_rows": true,
+    "binary_alpha": true,
+    "transparent_border": true,
+    "three_opaque_inks_only": true,
+    "normal_shiny_palette_words_exact": true,
+    "idle_step_pairs_different": true
+  },
+  "notes": "Actual native inspected: young compact teal otter with round ears, broad tan face/bib, short webbed paws and attached upward tailhook. Two south pupils and one west pupil are source-rectangle-proven, four light neighbors, exact same anchors across walk pairs. Genuine plain rear. Front foreshortens to compact upright footprint; west confirms four-paw quadruped anatomy. Equal440x400 source registration/common native12 fit, no painting.",
+  "accepted": false
+}

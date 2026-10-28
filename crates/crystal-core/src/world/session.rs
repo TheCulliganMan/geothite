@@ -31,6 +31,7 @@ use super::movement::{
     StepOptions, StepOutcome, attempt_ledge_jump_with_occupied_tiles,
     attempt_step_with_occupied_tiles, checked_move_by_stride,
 };
+use super::object_capacity::loaded_object_capacity;
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
@@ -80,11 +81,11 @@ pub struct OverworldSession {
     /// coordinate changes when the step starts, while map-object memory and
     /// the old tile remain owned until the sixteen-frame slow step lands.
     pub strength_moving_object_identifiers: BTreeSet<String>,
-    /// Map-event indices currently backed by one of Crystal's twelve
-    /// non-player object structs. Map events outside this roster do not run
+    /// Map-event indices currently backed by live non-player object structs.
+    /// Map events outside this roster do not run
     /// movement functions and therefore cannot consume the global RNG.
     #[serde(default)]
-    /// Map-event index to the exact non-player `wObjectStructs` slot (1..=12).
+    /// Map-event index to a non-player slot in1..=255; slot zero is the player.
     /// Slots are not equivalent to map-event order after deletion and
     /// `appear`: `CopyMapObjectToObjectStruct` always reuses the first free
     /// struct, and Crystal saves that allocator state verbatim.
@@ -310,7 +311,7 @@ pub enum OverworldObjectCoordinateError {
 
 #[derive(Debug, Error, Clone, PartialEq, Eq)]
 pub enum OverworldObjectStructMemoryError {
-    #[error("saved object struct slot {slot} is outside Crystal's non-player range 1..=12")]
+    #[error("saved object struct slot {slot} is outside this map's supported non-player range")]
     InvalidSlot { slot: u8 },
     #[error("saved map-object index {map_object_index} is outside the current map's event range")]
     InvalidMapObjectIndex { map_object_index: u8 },
@@ -786,7 +787,7 @@ impl OverworldSession {
         require_runtime_stride(options.stride_tiles)?;
         self.require_checked_tile_bounds()?;
         self.refresh_loaded_object_struct_roster()?;
-        let occupied_tiles = self.occupied_tiles_checked()?;
+        let occupied_tiles = self.occupied_tiles_for_player_checked()?;
         self.validate_follow_after_entity_move("PLAYER", self.player.tile)?;
         let outcome = attempt_step_with_occupied_tiles(
             &mut self.player,
@@ -838,7 +839,7 @@ impl OverworldSession {
             });
         };
         if let Some(occupied) = self
-            .occupied_tiles_checked()?
+            .occupied_tiles_for_player_checked()?
             .into_iter()
             .find(|occupied| occupied.tile == to)
         {
@@ -876,7 +877,7 @@ impl OverworldSession {
         require_runtime_stride(options.stride_tiles)?;
         self.require_checked_tile_bounds()?;
         self.refresh_loaded_object_struct_roster()?;
-        let occupied_tiles = self.occupied_tiles_checked()?;
+        let occupied_tiles = self.occupied_tiles_for_player_checked()?;
         self.validate_follow_after_entity_move("PLAYER", self.player.tile)?;
         let outcome = attempt_ledge_jump_with_occupied_tiles(
             &mut self.player,
@@ -1168,6 +1169,32 @@ impl OverworldSession {
     pub fn occupied_tiles_checked(
         &self,
     ) -> Result<Vec<OccupiedTile>, OverworldObjectCoordinateError> {
+        self.collect_occupied_tiles_checked(None)
+    }
+
+    fn occupied_tiles_for_player_checked(
+        &self,
+    ) -> Result<Vec<OccupiedTile>, OverworldObjectCoordinateError> {
+        self.collect_occupied_tiles_checked(Some((
+            self.player.tile,
+            self.player.mode.traversal_state(),
+        )))
+    }
+
+    fn collect_occupied_tiles_checked(
+        &self,
+        actor: Option<(TilePosition, super::collision::PlayerTraversalState)>,
+    ) -> Result<Vec<OccupiedTile>, OverworldObjectCoordinateError> {
+        let shares_layer = |object: &ObjectEvent, tile| {
+            // Outside a bridge quadrant, retain the original shared occupancy
+            // plane: a surfer may dismount onto this Floor tile during the
+            // proposed step, so a shore resident or boulder must remain solid.
+            !sample_collision(&self.map, &self.tileset, tile)
+                .is_some_and(|sample| super::bridge::is_bridge(sample.permission))
+                || actor.is_none_or(|(origin, traversal)| {
+                    self.object_shares_traversal_layer(object, tile, origin, traversal)
+                })
+        };
         let mut occupied = Vec::new();
         for (index, object) in self.objects.iter().enumerate().filter(|(index, object)| {
             self.object_has_loaded_struct(*index)
@@ -1175,6 +1202,9 @@ impl OverworldSession {
         }) {
             let tile = self.object_runtime_tile_checked(index, object)?;
             for tile in object_current_occupied_tiles_checked(index, object, tile)? {
+                if !shares_layer(object, tile) {
+                    continue;
+                }
                 occupied.push(OccupiedTile {
                     tile,
                     object_identifier: object.object_identifier.clone(),
@@ -1191,6 +1221,7 @@ impl OverworldSession {
                     self.object_has_loaded_struct(index)
                         && object.object_identifier.as_deref() == Some(object_id.as_str())
                         && !object_event_starts_as_emote_object(&object.spritemovedata)
+                        && shares_layer(object, *tile)
                 })
                 && !occupied.iter().any(|entry| {
                     entry.tile == *tile
@@ -1216,7 +1247,17 @@ impl OverworldSession {
         else {
             return Ok(None);
         };
-        let Some((object_slot, object)) = self.visible_object_at_checked(facing_tile)? else {
+        // A bridge target has separate upper/lower object planes. Ordinary
+        // shore tiles retain the original Strength lookup so a surfer can
+        // push its boulder while the authoritative player probe dismounts.
+        let facing_object = if sample_collision(&self.map, &self.tileset, facing_tile)
+            .is_some_and(|sample| super::bridge::is_bridge(sample.permission))
+        {
+            self.visible_object_on_player_layer_at_checked(facing_tile)?
+        } else {
+            self.visible_object_at_checked(facing_tile)?
+        };
+        let Some((object_slot, object)) = facing_object else {
             return Ok(None);
         };
         if !object_event_has_strength_boulder_palette(&object.spritemovedata) {
@@ -1241,16 +1282,17 @@ impl OverworldSession {
                     && !object_event_starts_as_emote_object(&object.spritemovedata)
             })
             .map(|(index, object)| {
-                self.object_runtime_tile_checked(index, object)
-                    .and_then(|tile| object_current_occupied_tiles_checked(index, object, tile))
-                    .map(|tiles| {
-                        tiles.into_iter().map(|tile| OccupiedTile {
-                            tile,
-                            object_identifier: object.object_identifier.clone(),
-                        })
+                let tile = self.object_runtime_tile_checked(index, object)?;
+                Ok(object_current_occupied_tiles_checked(index, object, tile)?
+                    .into_iter()
+                    .filter(|&tile| self.object_shares_player_layer(object, tile))
+                    .map(|tile| OccupiedTile {
+                        tile,
+                        object_identifier: object.object_identifier.clone(),
                     })
+                    .collect::<Vec<_>>())
             })
-            .collect::<Result<Vec<_>, _>>()?
+            .collect::<Result<Vec<_>, OverworldObjectCoordinateError>>()?
             .into_iter()
             .flatten()
             .collect::<Vec<_>>();
@@ -1282,17 +1324,23 @@ impl OverworldSession {
         let object = &self.objects[object_index];
         let current = self.object_runtime_tile_checked(object_index, object)?;
         let mut occupied_tiles = self
-            .occupied_tiles_checked()?
+            .collect_occupied_tiles_checked(Some((
+                current,
+                super::collision::PlayerTraversalState::Walk,
+            )))?
             .into_iter()
             .filter(|occupied| occupied.object_identifier.as_deref() != Some(object_id))
             .collect::<Vec<_>>();
-        occupied_tiles.push(OccupiedTile {
-            tile: self.player.tile,
-            object_identifier: Some("PLAYER".to_string()),
-        });
+        if self.object_shares_player_layer(object, self.player.tile) {
+            occupied_tiles.push(OccupiedTile {
+                tile: self.player.tile,
+                object_identifier: Some("PLAYER".to_string()),
+            });
+        }
         if self.frame < self.player_last_tile_occupied_until_frame
             && let Some(last_tile) = self.player_last_runtime_tile
             && last_tile != self.player.tile
+            && self.object_shares_player_layer(object, last_tile)
         {
             occupied_tiles.push(OccupiedTile {
                 tile: last_tile,
@@ -1381,10 +1429,16 @@ impl OverworldSession {
     /// Expanded views retain map-entry eligibility across ordinary flag/time
     /// changes, while explicit appear/disappear commands still take effect.
     pub fn object_is_eligible_for_expanded_view(&self, index: usize) -> bool {
-        let Some(object) = self.objects.get(index) else { return false; };
+        let Some(object) = self.objects.get(index) else {
+            return false;
+        };
         if let Some(id) = object.object_identifier.as_ref() {
-            if self.hidden_object_identifiers.contains(id) { return false; }
-            if self.shown_object_identifiers.contains(id) { return true; }
+            if self.hidden_object_identifiers.contains(id) {
+                return false;
+            }
+            if self.shown_object_identifiers.contains(id) {
+                return true;
+            }
         }
         self.presentation_object_slots.contains(&index)
     }
@@ -1408,7 +1462,7 @@ impl OverworldSession {
             if !in_initial_viewport {
                 continue;
             }
-            if allocated >= MAX_LOADED_MAP_OBJECT_STRUCTS {
+            if allocated >= loaded_object_capacity(self.objects.len()) {
                 return false;
             }
             if candidate_index == index {
@@ -1724,7 +1778,9 @@ impl OverworldSession {
                     || (advance_autonomous
                         && matches!(
                             object.spritemovedata.as_str(),
-                            "SPRITEMOVEDATA_WALK_LEFT_RIGHT"
+                            "SPRITEMOVEDATA_PATROL_CLOCKWISE"
+                                | "SPRITEMOVEDATA_PATROL_CLOCKWISE_SLOW"
+                                | "SPRITEMOVEDATA_WALK_LEFT_RIGHT"
                                 | "SPRITEMOVEDATA_WALK_UP_DOWN"
                                 | "SPRITEMOVEDATA_WANDER"
                                 | "SPRITEMOVEDATA_SWIM_WANDER"
@@ -1852,7 +1908,9 @@ impl OverworldSession {
             if !advance_autonomous
                 || !matches!(
                     movement,
-                    "SPRITEMOVEDATA_WALK_LEFT_RIGHT"
+                    "SPRITEMOVEDATA_PATROL_CLOCKWISE"
+                        | "SPRITEMOVEDATA_PATROL_CLOCKWISE_SLOW"
+                        | "SPRITEMOVEDATA_WALK_LEFT_RIGHT"
                         | "SPRITEMOVEDATA_WALK_UP_DOWN"
                         | "SPRITEMOVEDATA_WANDER"
                         | "SPRITEMOVEDATA_SWIM_WANDER"
@@ -1942,6 +2000,21 @@ impl OverworldSession {
                 self.object_step_durations
                     .insert(object_id.to_string(), duration_roll & mask);
                 continue;
+            } else if matches!(
+                movement,
+                "SPRITEMOVEDATA_PATROL_CLOCKWISE" | "SPRITEMOVEDATA_PATROL_CLOCKWISE_SLOW"
+            ) {
+                let anchor = object_tile_position_checked(object)
+                    .expect("loaded patrol has valid event coordinates");
+                let Some(next) = super::object_patrol::clockwise_step(
+                    anchor,
+                    current,
+                    object.move_range_x,
+                    object.move_range_y,
+                ) else {
+                    continue;
+                };
+                direction = next;
             } else if movement == "SPRITEMOVEDATA_WALK_LEFT_RIGHT" {
                 let Some(random_add) = random_add.as_mut() else {
                     continue;
@@ -1977,6 +2050,10 @@ impl OverworldSession {
             let (dx, dy) = direction.delta();
             let target = TilePosition::new(current.x + dx * stride, current.y + dy * stride);
             let outside_range = movement != "SPRITEMOVEDATA_SWIM_WANDER"
+                && !matches!(
+                    movement,
+                    "SPRITEMOVEDATA_PATROL_CLOCKWISE" | "SPRITEMOVEDATA_PATROL_CLOCKWISE_SLOW"
+                )
                 && object_target_reaches_movement_limit(
                     initial,
                     target,
@@ -1985,9 +2062,15 @@ impl OverworldSession {
                 );
             let outside_screen = movement != "SPRITEMOVEDATA_SWIM_WANDER"
                 && autonomous_object_target_is_offscreen(self.player.tile, target);
-            let player_occupied = target == self.player.tile
-                || (self.frame < self.player_last_tile_occupied_until_frame
-                    && self.player_last_runtime_tile == Some(target));
+            let traversal = if movement == "SPRITEMOVEDATA_SWIM_WANDER" {
+                super::collision::PlayerTraversalState::Surf
+            } else {
+                super::collision::PlayerTraversalState::Walk
+            };
+            let player_occupied = self.object_shares_player_layer(object, target)
+                && (target == self.player.tile
+                    || (self.frame < self.player_last_tile_occupied_until_frame
+                        && self.player_last_runtime_tile == Some(target)));
             let occupied_by_current = self
                 .objects
                 .iter()
@@ -2000,7 +2083,9 @@ impl OverworldSession {
                     if occupied {
                         return Ok(true);
                     }
-                    if object_event_starts_as_emote_object(&other.spritemovedata) {
+                    if object_event_starts_as_emote_object(&other.spritemovedata)
+                        || !self.objects_share_layer_at(object, other, target)
+                    {
                         return Ok(false);
                     }
                     let tile = self
@@ -2027,18 +2112,34 @@ impl OverworldSession {
                                 self.loaded_object_struct_slots.contains_key(&other_index)
                                     && other.object_identifier.as_deref() == Some(other_id.as_str())
                                     && !object_event_starts_as_emote_object(&other.spritemovedata)
+                                    && self.objects_share_layer_at(object, other, target)
                             })
                     })
-                || vacated_tiles.contains(&target);
+                || vacated_tiles.iter().any(|(tile, other_index)| {
+                    *tile == target
+                        && self.objects_share_layer_at(object, &self.objects[*other_index], target)
+                });
             self.object_facings.insert(object_id.to_string(), direction);
-            let blocked_leaving = sample_collision(&self.map, &self.tileset, current)
-                .is_some_and(|sample| is_direction_blocked_leaving(sample.permission, direction));
+            let blocked_leaving =
+                sample_collision(&self.map, &self.tileset, current).is_some_and(|sample| {
+                    is_direction_blocked_leaving(sample.permission, direction)
+                        || super::bridge::blocks_exit(sample.permission, direction, traversal)
+                });
             let walkable = sample_collision(&self.map, &self.tileset, target)
                 .map(|sample| {
                     if is_direction_blocked(sample.permission, direction) {
                         return false;
                     }
-                    let terrain = describe_collision(sample.permission).terrain;
+                    if super::bridge::can_enter(sample.permission, direction, traversal)
+                        == Some(false)
+                    {
+                        return false;
+                    }
+                    let terrain = describe_collision(super::bridge::layer_permission(
+                        sample.permission,
+                        traversal,
+                    ))
+                    .terrain;
                     if movement == "SPRITEMOVEDATA_SWIM_WANDER" {
                         terrain == Terrain::Water
                     } else {
@@ -2057,14 +2158,36 @@ impl OverworldSession {
                     .insert(object_id.to_string(), target);
                 self.object_last_runtime_tiles
                     .insert(object_id.to_string(), current);
-                self.object_last_tiles_occupied_until_frame
-                    .insert(object_id.to_string(), self.frame.saturating_add(8));
-                vacated_tiles.push(current);
+                self.object_last_tiles_occupied_until_frame.insert(
+                    object_id.to_string(),
+                    self.frame.saturating_add(
+                        if movement == "SPRITEMOVEDATA_PATROL_CLOCKWISE_SLOW" {
+                            16
+                        } else {
+                            8
+                        },
+                    ),
+                );
+                vacated_tiles.push((current, index));
             }
             if moved {
-                self.object_step_durations.insert(object_id.to_string(), 8);
-                self.object_pending_random_wait
-                    .insert(object_id.to_string());
+                self.object_step_durations.insert(
+                    object_id.to_string(),
+                    if movement == "SPRITEMOVEDATA_PATROL_CLOCKWISE_SLOW" {
+                        16
+                    } else {
+                        8
+                    },
+                );
+                // Authored fair circuits are continuous walks/runs. Native
+                // wandering objects retain their source random rest cadence.
+                if !matches!(
+                    movement,
+                    "SPRITEMOVEDATA_PATROL_CLOCKWISE" | "SPRITEMOVEDATA_PATROL_CLOCKWISE_SLOW"
+                ) {
+                    self.object_pending_random_wait
+                        .insert(object_id.to_string());
+                }
                 let moved_object_id = object_id.to_string();
                 self.update_follow_after_entity_move(&moved_object_id, current, target);
             } else if let Some(random_add) = random_add.as_mut() {
@@ -2111,7 +2234,8 @@ impl OverworldSession {
             {
                 if let Some(id) = object.object_identifier.as_ref() {
                     if let Some(facing) = self.object_facings.get(id).copied() {
-                        self.unloaded_object_presentation.insert(id.clone(), (current, facing));
+                        self.unloaded_object_presentation
+                            .insert(id.clone(), (current, facing));
                     }
                 }
                 self.unload_object_struct(index);
@@ -2125,7 +2249,7 @@ impl OverworldSession {
         }
 
         for index in 0..self.objects.len() {
-            if self.loaded_object_struct_slots.len() >= MAX_LOADED_MAP_OBJECT_STRUCTS {
+            if self.loaded_object_struct_slots.len() >= loaded_object_capacity(self.objects.len()) {
                 break;
             }
             if self.loaded_object_struct_slots.contains_key(&index) {
@@ -2198,7 +2322,7 @@ impl OverworldSession {
         self.object_struct_roster_player_tile = Some(self.player.tile);
         self.object_struct_roster_initialized = true;
         for index in 0..self.objects.len() {
-            if self.loaded_object_struct_slots.len() >= MAX_LOADED_MAP_OBJECT_STRUCTS {
+            if self.loaded_object_struct_slots.len() >= loaded_object_capacity(self.objects.len()) {
                 break;
             }
             if self.loaded_object_struct_slots.contains_key(&index) {
@@ -2304,7 +2428,7 @@ impl OverworldSession {
         let mut map_objects = BTreeSet::new();
         let mut normal_follower_slot = memory.player_normal_following.then_some(0);
         for saved in &memory.structs {
-            if !(1..=MAX_LOADED_MAP_OBJECT_STRUCTS as u8).contains(&saved.slot) {
+            if !(1..=loaded_object_capacity(self.objects.len()) as u8).contains(&saved.slot) {
                 return Err(OverworldObjectStructMemoryError::InvalidSlot { slot: saved.slot });
             }
             if saved.map_object_index == 0
@@ -2373,7 +2497,7 @@ impl OverworldSession {
             }
             if saved
                 .following_not_exact_leader_slot
-                .is_some_and(|slot| slot > MAX_LOADED_MAP_OBJECT_STRUCTS as u8)
+                .is_some_and(|slot| slot > loaded_object_capacity(self.objects.len()) as u8)
             {
                 return Err(
                     OverworldObjectStructMemoryError::InvalidFollowNotExactLeaderSlot {
@@ -2595,7 +2719,7 @@ impl OverworldSession {
         if self.loaded_object_struct_slots.contains_key(&index) {
             return Ok(true);
         }
-        if self.loaded_object_struct_slots.len() >= MAX_LOADED_MAP_OBJECT_STRUCTS {
+        if self.loaded_object_struct_slots.len() >= loaded_object_capacity(self.objects.len()) {
             return Ok(false);
         }
         let current = self.object_runtime_tile_checked(index, &self.objects[index])?;
@@ -2611,16 +2735,20 @@ impl OverworldSession {
     }
 
     fn initialize_loaded_object_struct_roster(&mut self) {
-        self.presentation_object_slots = self.objects.iter().enumerate()
+        self.presentation_object_slots = self
+            .objects
+            .iter()
+            .enumerate()
             .filter(|(_, object)| self.is_object_visible(object))
-            .map(|(index, _)| index).collect();
+            .map(|(index, _)| index)
+            .collect();
         self.loaded_object_struct_slots.clear();
         self.loaded_object_struct_initial_tiles.clear();
         self.unloaded_object_presentation.clear();
         self.object_struct_roster_player_tile = Some(self.player.tile);
         self.object_struct_roster_initialized = true;
         for index in 0..self.objects.len() {
-            if self.loaded_object_struct_slots.len() >= MAX_LOADED_MAP_OBJECT_STRUCTS {
+            if self.loaded_object_struct_slots.len() >= loaded_object_capacity(self.objects.len()) {
                 break;
             }
             let object = &self.objects[index];
@@ -2651,7 +2779,7 @@ impl OverworldSession {
     }
 
     fn next_available_object_struct_slot(&self) -> Option<u8> {
-        (1..=MAX_LOADED_MAP_OBJECT_STRUCTS as u8).find(|slot| {
+        (1..=loaded_object_capacity(self.objects.len()) as u8).find(|slot| {
             !self
                 .loaded_object_struct_slots
                 .values()
@@ -2695,6 +2823,47 @@ impl OverworldSession {
         }
     }
 
+    fn objects_share_layer_at(
+        &self,
+        first: &ObjectEvent,
+        second: &ObjectEvent,
+        tile: TilePosition,
+    ) -> bool {
+        !sample_collision(&self.map, &self.tileset, tile)
+            .is_some_and(|sample| super::bridge::is_bridge(sample.permission))
+            || (first.spritemovedata == "SPRITEMOVEDATA_SWIM_WANDER")
+                == (second.spritemovedata == "SPRITEMOVEDATA_SWIM_WANDER")
+    }
+
+    // Original maps have one interaction plane. Explicit bridge quadrants
+    // separate walking residents on the deck from swimmers below it.
+    fn object_shares_player_layer(&self, object: &ObjectEvent, tile: TilePosition) -> bool {
+        self.object_shares_traversal_layer(
+            object,
+            tile,
+            self.player.tile,
+            self.player.mode.traversal_state(),
+        )
+    }
+
+    fn object_shares_traversal_layer(
+        &self,
+        object: &ObjectEvent,
+        tile: TilePosition,
+        origin: TilePosition,
+        traversal: super::collision::PlayerTraversalState,
+    ) -> bool {
+        let bridge_at = |tile| {
+            sample_collision(&self.map, &self.tileset, tile)
+                .is_some_and(|sample| super::bridge::is_bridge(sample.permission))
+        };
+        if !bridge_at(tile) && !bridge_at(origin) {
+            return true;
+        }
+        matches!(traversal, super::collision::PlayerTraversalState::Surf)
+            == (object.spritemovedata == "SPRITEMOVEDATA_SWIM_WANDER")
+    }
+
     pub fn check_interaction_checked(
         &self,
         stride_tiles: i16,
@@ -2712,12 +2881,13 @@ impl OverworldSession {
             return Ok(None);
         }
 
-        if let Some((object_index, object)) =
-            self.visible_object_at_checked(facing_tile)?
-                .filter(|(_, object)| {
-                    object_has_dispatchable_script(object)
-                        && !self.object_is_visibly_walking(object)
-                })
+        if let Some((object_index, object)) = self
+            .visible_object_on_player_layer_at_checked(facing_tile)?
+            .filter(|(_, object)| {
+                object_has_dispatchable_script(object)
+                    && self.object_shares_player_layer(object, facing_tile)
+                    && !self.object_is_visibly_walking(object)
+            })
         {
             return Ok(Some(self.object_interaction(
                 object_index,
@@ -2729,9 +2899,10 @@ impl OverworldSession {
         let adjusted_tile = self.counter_adjusted_tile(facing_tile);
         if adjusted_tile != facing_tile {
             if let Some((object_index, object)) = self
-                .visible_object_at_checked(adjusted_tile)?
+                .visible_object_on_player_layer_at_checked(adjusted_tile)?
                 .filter(|(_, object)| {
                     object_has_dispatchable_script(object)
+                        && self.object_shares_player_layer(object, adjusted_tile)
                         && !self.object_is_visibly_walking(object)
                 })
             {
@@ -2741,6 +2912,16 @@ impl OverworldSession {
                     adjusted_tile,
                 )));
             }
+        }
+
+        if matches!(
+            self.player.mode.traversal_state(),
+            super::collision::PlayerTraversalState::Surf
+        ) && [self.player.tile, facing_tile].into_iter().any(|tile| {
+            sample_collision(&self.map, &self.tileset, tile)
+                .is_some_and(|sample| super::bridge::is_bridge(sample.permission))
+        }) {
+            return Ok(None);
         }
 
         // Looking past a counter applies only to NPCs. Background events
@@ -2788,6 +2969,14 @@ impl OverworldSession {
         &self,
         current_scene: Option<&str>,
     ) -> Result<Option<CoordEventTrigger>, OverworldEventCoordinateError> {
+        if matches!(
+            self.player.mode.traversal_state(),
+            super::collision::PlayerTraversalState::Surf
+        ) && sample_collision(&self.map, &self.tileset, self.player.tile)
+            .is_some_and(|sample| super::bridge::is_bridge(sample.permission))
+        {
+            return Ok(None);
+        }
         self.map_events
             .coord_events
             .iter()
@@ -2855,6 +3044,9 @@ impl OverworldSession {
                     return Ok(matched);
                 }
                 let object_tile = self.object_runtime_tile_checked(index, object)?;
+                if !self.object_shares_player_layer(object, object_tile) {
+                    return Ok(None);
+                }
                 let direction = object
                     .sightline_direction_override
                     .as_deref()
@@ -2878,6 +3070,25 @@ impl OverworldSession {
                     object_tile,
                 )))
             })
+    }
+
+    fn visible_object_on_player_layer_at_checked(
+        &self,
+        tile: TilePosition,
+    ) -> Result<Option<(u16, &ObjectEvent)>, OverworldObjectCoordinateError> {
+        for index in self.loaded_object_indices_in_struct_order() {
+            let object = &self.objects[index];
+            if object_event_starts_as_emote_object(&object.spritemovedata)
+                || !self.object_shares_player_layer(object, tile)
+            {
+                continue;
+            }
+            let object_tile = self.object_runtime_tile_checked(index, object)?;
+            if object_current_occupied_tiles_checked(index, object, object_tile)?.contains(&tile) {
+                return Ok(Some(((index + 1) as u16, object)));
+            }
+        }
+        Ok(None)
     }
 
     pub fn visible_object_at(&self, tile: TilePosition) -> Option<(u16, &ObjectEvent)> {
@@ -3720,6 +3931,9 @@ pub fn object_event_initial_facing(spritemovedata: &str) -> Option<Direction> {
         "SPRITEMOVEDATA_STANDING_UP" => Some(Direction::Up),
         "SPRITEMOVEDATA_STANDING_LEFT" => Some(Direction::Left),
         "SPRITEMOVEDATA_STANDING_RIGHT" => Some(Direction::Right),
+        "SPRITEMOVEDATA_PATROL_CLOCKWISE" | "SPRITEMOVEDATA_PATROL_CLOCKWISE_SLOW" => {
+            Some(Direction::Right)
+        }
         "SPRITEMOVEDATA_SPINCOUNTERCLOCKWISE" => Some(Direction::Left),
         "SPRITEMOVEDATA_SPINCLOCKWISE" => Some(Direction::Right),
         _ => None,
@@ -3882,7 +4096,10 @@ fn encounter_surface_for_player_tile_checked(
     if super::collision::is_grass_encounter_permission(sample.permission) {
         return Ok(Some(EncounterSurface::Grass));
     }
-    let attributes = describe_collision(sample.permission);
+    let attributes = describe_collision(super::bridge::layer_permission(
+        sample.permission,
+        session.player.mode.traversal_state(),
+    ));
     if attributes.terrain == Terrain::Water {
         return Ok(Some(EncounterSurface::Water));
     }
@@ -4122,8 +4339,6 @@ impl ConnectionTransition {
         }
     }
 }
-
-const MAX_LOADED_MAP_OBJECT_STRUCTS: usize = 12;
 
 /// Normalized-coordinate form of `CheckObjectStillVisible` and
 /// `InitializeVisibleSprites`.
@@ -4383,6 +4598,61 @@ mod tests {
         );
         assert!(session.fixed_facing_object_identifiers.contains("STILL"));
         assert!(session.sliding_object_identifiers.contains("STILL"));
+    }
+
+    #[test]
+    fn fair_walkers_and_runners_keep_distinct_step_durations() {
+        for (movement, duration) in [
+            ("SPRITEMOVEDATA_PATROL_CLOCKWISE", 8),
+            ("SPRITEMOVEDATA_PATROL_CLOCKWISE_SLOW", 16),
+        ] {
+            let mut visitor = object("VISITOR", 1, 1, "-1");
+            visitor.spritemovedata = movement.into();
+            visitor.move_range_x = 2;
+            visitor.move_range_y = 1;
+            let mut session = OverworldSession::with_events_and_objects(
+                map_with_blocks(4, 4, vec![0; 16]),
+                MapEvents::default(),
+                vec![visitor],
+                tileset(),
+                TilePosition::new(4, 4),
+            );
+            session.frame = 16;
+            let mut divider = crate::random::ReplayDivider::new([0; 16]);
+            let mut rng = CrystalRandom::new(CrystalRandomState::default(), &mut divider);
+            session
+                .advance_autonomous_objects_exact(&mut rng)
+                .expect("fair visitor begins a collision-checked step");
+            assert_eq!(
+                session
+                    .object_runtime_tile_by_id("VISITOR")
+                    .expect("live visitor"),
+                TilePosition::new(2, 1)
+            );
+            assert_eq!(
+                session.object_step_durations.get("VISITOR"),
+                Some(&duration)
+            );
+            assert_eq!(
+                session
+                    .object_last_tiles_occupied_until_frame
+                    .get("VISITOR"),
+                Some(&(16 + u64::from(duration)))
+            );
+            for _ in 0..=duration {
+                session.frame += 1;
+                session
+                    .advance_autonomous_objects_exact(&mut rng)
+                    .expect("continuous fair circuit");
+            }
+            assert_eq!(
+                session
+                    .object_runtime_tile_by_id("VISITOR")
+                    .expect("live visitor"),
+                TilePosition::new(3, 1),
+                "next step has no random rest"
+            );
+        }
     }
 
     #[test]
@@ -4650,25 +4920,113 @@ mod tests {
     }
 
     #[test]
-    fn loaded_map_object_roster_reserves_the_player_struct_slot() {
-        let objects = (0..13)
-            .map(|index| object(&format!("OBJECT_{index}"), 5, 4, "-1"))
+    fn loaded_map_object_roster_reserves_player_without_truncating_small_towns() {
+        for count in 13..=15 {
+            let objects = (0..count)
+                .map(|index| object(&format!("OBJECT_{index}"), 5, 4, "-1"))
+                .collect();
+            let mut session = OverworldSession::with_events_and_objects(
+                map_with_blocks(10, 5, vec![0; 50]),
+                MapEvents::default(),
+                objects,
+                tileset(),
+                TilePosition::new(5, 4),
+            );
+            session
+                .refresh_loaded_object_struct_roster()
+                .expect("fixture object coordinates");
+            assert_eq!(session.loaded_object_struct_slots.len(), count);
+            assert!(
+                (0..count).all(|index| session.loaded_object_struct_slots.contains_key(&index))
+            );
+            assert!(
+                session
+                    .loaded_object_struct_slots
+                    .values()
+                    .all(|&slot| slot != 0)
+            );
+            assert_eq!(
+                session.object_struct_slot(&format!("OBJECT_{}", count - 1)),
+                Some(count as u8)
+            );
+        }
+    }
+
+    #[test]
+    fn expanded_map_loads_and_restores_more_than_twelve_visible_npcs() {
+        let objects = (0..20)
+            .map(|index| object(&format!("FAIR_{index}"), 2 + index % 8, 2 + index / 8, "-1"))
             .collect();
         let mut session = OverworldSession::with_events_and_objects(
-            map_with_blocks(10, 5, vec![0; 50]),
+            map_with_blocks(10, 8, vec![0; 80]),
             MapEvents::default(),
             objects,
             tileset(),
-            TilePosition::new(5, 4),
+            TilePosition::new(5, 5),
         );
-
         session
-            .refresh_loaded_object_struct_roster()
-            .expect("fixture object coordinates");
+            .finish_map_object_setup()
+            .expect("expanded NPC roster");
+        assert_eq!(session.loaded_object_struct_slots.len(), 20);
+        assert_eq!(session.object_struct_slot("FAIR_19"), Some(20));
+        session.player.facing = Direction::Up;
+        let interaction = session
+            .check_interaction_checked(StepOptions::default().stride_tiles)
+            .expect("interaction beyond original twelve slots")
+            .expect("last visible NPC");
+        assert!(matches!(
+            interaction.target,
+            OverworldInteractionTarget::Object {
+                object_index: 20,
+                ..
+            }
+        ));
+        let memory = session
+            .object_struct_roster_memory()
+            .expect("expanded roster save");
+        let encoded = serde_json::to_value(&memory).expect("serialize expanded slots");
+        let restored = serde_json::from_value(encoded).expect("deserialize expanded slots");
+        session
+            .restore_object_struct_roster_memory(&restored)
+            .expect("restore expanded roster");
+        assert_eq!(
+            session
+                .object_struct_roster_memory()
+                .expect("restored memory"),
+            memory
+        );
+        assert_eq!(session.object_struct_slot("FAIR_19"), Some(20));
+    }
 
-        assert_eq!(session.loaded_object_struct_slots.len(), 12);
-        assert!((0..12).all(|index| session.loaded_object_struct_slots.contains_key(&index)));
-        assert!(!session.loaded_object_struct_slots.contains_key(&12));
+    #[test]
+    fn expanded_map_uses_the_last_byte_sized_npc_slot_without_overflow() {
+        // Coincident fixture objects exercise allocator capacity, not map design.
+        let objects = (0..255)
+            .map(|index| object(&format!("FAIR_{index}"), 5, 4, "-1"))
+            .collect();
+        let mut session = OverworldSession::with_events_and_objects(
+            map_with_blocks(10, 8, vec![0; 80]),
+            MapEvents::default(),
+            objects,
+            tileset(),
+            TilePosition::new(5, 5),
+        );
+        session
+            .finish_map_object_setup()
+            .expect("expanded maximum roster");
+        assert_eq!(session.loaded_object_struct_slots.len(), 255);
+        assert_eq!(session.object_struct_slot("FAIR_254"), Some(255));
+        let memory = session
+            .object_struct_roster_memory()
+            .expect("save maximum roster");
+        assert_eq!(
+            memory.structs.last().expect("last record").map_object_index,
+            255
+        );
+        session
+            .restore_object_struct_roster_memory(&memory)
+            .expect("restore final byte-sized slot");
+        assert_eq!(session.object_struct_slot("FAIR_254"), Some(255));
     }
 
     #[test]
@@ -4738,17 +5096,34 @@ mod tests {
     #[test]
     fn expanded_view_keeps_unloaded_scripted_object_position() {
         let mut session = OverworldSession::with_events_and_objects(
-            map_with_blocks(10, 6, vec![0; 60]), MapEvents::default(),
-            vec![object("ELM", 3, 4, "-1")], tileset(), TilePosition::new(4, 4),
+            map_with_blocks(10, 6, vec![0; 60]),
+            MapEvents::default(),
+            vec![object("ELM", 3, 4, "-1")],
+            tileset(),
+            TilePosition::new(4, 4),
         );
-        session.set_object_runtime_tile("ELM", TilePosition::new(5, 2)).unwrap();
-        session.set_object_runtime_facing("ELM", Direction::Right).unwrap();
-        let path = (5..=11).map(|y| TilePosition::new(4, y)).collect::<Vec<_>>();
-        session.advance_object_struct_roster_along_player_path(&path).unwrap();
+        session
+            .set_object_runtime_tile("ELM", TilePosition::new(5, 2))
+            .unwrap();
+        session
+            .set_object_runtime_facing("ELM", Direction::Right)
+            .unwrap();
+        let path = (5..=11)
+            .map(|y| TilePosition::new(4, y))
+            .collect::<Vec<_>>();
+        session
+            .advance_object_struct_roster_along_player_path(&path)
+            .unwrap();
         assert!(!session.object_has_loaded_struct(0));
         // Gameplay still uses map-object memory after unloading.
-        assert_eq!(session.object_runtime_tile_by_id("ELM").unwrap(), TilePosition::new(3, 4));
-        assert_eq!(session.unloaded_object_presentation.get("ELM"), Some(&(TilePosition::new(5, 2), Direction::Right)));
+        assert_eq!(
+            session.object_runtime_tile_by_id("ELM").unwrap(),
+            TilePosition::new(3, 4)
+        );
+        assert_eq!(
+            session.unloaded_object_presentation.get("ELM"),
+            Some(&(TilePosition::new(5, 2), Direction::Right))
+        );
         let encoded = serde_json::to_value(&session).unwrap();
         assert!(encoded.get("unloaded_object_presentation").is_none());
         session.begin_map_object_setup();
@@ -6211,8 +6586,10 @@ mod tests {
             "setevent must not despawn a live object before map reload"
         );
         assert!(session.object_is_eligible_for_expanded_view(0));
-        assert!(!session.object_is_eligible_for_expanded_view(1),
-            "expanded rendering must not show the next-load replacement");
+        assert!(
+            !session.object_is_eligible_for_expanded_view(1),
+            "expanded rendering must not show the next-load replacement"
+        );
         assert!(session.is_object_visible(&second));
         assert!(
             !session.object_has_loaded_struct(1),

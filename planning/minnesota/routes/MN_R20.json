@@ -764,16 +764,16 @@
       "width_metatiles": 9,
       "height_metatiles": 8,
       "tileset": "cave",
-      "border_block": 1,
+      "border_block": 46,
       "rows": [
-        "01 01 01 01 01 01 01 01 01",
-        "01 01 04 06 01 01 01 01 01",
-        "01 04 02 0a 01 01 01 01 01",
-        "01 20 30 21 2d 04 06 01 01",
-        "01 08 02 02 3b 02 0a 01 01",
-        "01 20 02 0a 2d 12 22 01 01",
-        "01 01 07 21 21 21 07 01 01",
-        "01 01 01 01 01 01 01 01 01"
+        "2e 2e 2e 2e 2e 2e 2e 2e 2e",
+        "2e 2e 04 06 2e 2e 2e 2e 2e",
+        "2e 04 02 0a 2e 2e 2e 2e 2e",
+        "2e 20 30 21 2d 05 06 2e 2e",
+        "2e 3d 02 02 3b 02 1e 2e 2e",
+        "2e 33 02 0a 2d 12 22 2e 2e",
+        "2e 2e 07 21 21 21 07 2e 2e",
+        "2e 2e 2e 2e 2e 2e 2e 2e 2e"
       ],
       "exits": [
         [
@@ -816,352 +816,87 @@
       ],
       "signs": [],
       "mandatory": false,
-      "purpose": "An optional transverse glacial cleft through the Voyageurs granite: two original exterior mouths open onto a low connecting stone slot. The west supply shelf uses a fitted native stair; the narrow east shelf offers a short leftward drop across the bedrock blade and an ordinary stair return through the lower slot. Original Hyper Potion and all mouth pairings remain exact. No field move is required and no faster regional crossing is promised.",
-      "candidate_status": "Installed 510-map native review; all three local production-controller cases PASS.",
+      "purpose": "A recessed west-wall seep shapes the lower cleft. Widen the upper lip by one walking tile for a visible landing before the lateral drop. Both real mouths, opposite climbs and supply shelf remain useful.",
+      "candidate_status": "Source candidate under whole-room, player-camera and production traversal review.",
       "review_contract": {
+        "quality_revision": "johto-quality-v01",
         "palette_group": "nite",
-        "quality_revision": "r20-v02-sealed-stair-toe",
-        "clear_arrivals_core": [
+        "native_stair_blocks": [
+          [
+            2,
+            3
+          ],
           [
             5,
-            12
-          ],
-          [
-            13,
-            12
-          ]
-        ],
-        "ordinary_waypoints_core": [
-          [
-            5,
-            12
-          ],
-          [
-            4,
-            9
-          ],
-          [
-            4,
-            7
-          ],
-          [
-            4,
             5
-          ],
-          [
-            7,
-            8
-          ],
-          [
-            7,
-            12
-          ],
-          [
-            11,
-            12
-          ],
-          [
-            11,
-            9
-          ],
-          [
-            10,
-            8
-          ],
-          [
-            13,
-            12
           ]
         ],
         "viewpoints": [
           {
-            "id": "west_mouth",
+            "id": "west-mouth",
             "tile": [
               5,
               12
             ]
           },
           {
-            "id": "supply_stair",
-            "tile": [
-              4,
-              7
-            ]
-          },
-          {
-            "id": "potion_shelf",
-            "tile": [
-              4,
-              5
-            ]
-          },
-          {
-            "id": "left_drop_approach",
-            "tile": [
-              10,
-              8
-            ]
-          },
-          {
-            "id": "left_drop_landing",
-            "tile": [
-              7,
-              8
-            ]
-          },
-          {
-            "id": "lower_slot",
-            "tile": [
-              9,
-              12
-            ]
-          },
-          {
-            "id": "east_stair",
-            "tile": [
-              11,
-              10
-            ]
-          },
-          {
-            "id": "east_mouth",
+            "id": "east-mouth",
             "tile": [
               13,
               12
             ]
           },
           {
-            "id": "weakest_east_shelf",
+            "id": "seep",
+            "tile": [
+              4,
+              9
+            ]
+          },
+          {
+            "id": "west-stair",
+            "tile": [
+              4,
+              7
+            ]
+          },
+          {
+            "id": "cache",
+            "tile": [
+              4,
+              5
+            ]
+          },
+          {
+            "id": "drop-landing",
+            "tile": [
+              7,
+              9
+            ]
+          },
+          {
+            "id": "upper-lip",
+            "tile": [
+              10,
+              7
+            ]
+          },
+          {
+            "id": "east-stair",
             "tile": [
               11,
-              8
+              11
+            ]
+          },
+          {
+            "id": "east-approach",
+            "tile": [
+              12,
+              9
             ]
           }
         ],
-        "controller_probes": {
-          "stairs": [
-            {
-              "id": "WEST_SUPPLY_SHELF",
-              "metatile": [
-                2,
-                3
-              ],
-              "block": "30",
-              "before": [
-                4,
-                5
-              ],
-              "lane": [
-                [
-                  4,
-                  6
-                ],
-                [
-                  4,
-                  7
-                ]
-              ],
-              "after": [
-                4,
-                8
-              ],
-              "blocked_from": [
-                4,
-                7
-              ],
-              "blocked_target": [
-                5,
-                7
-              ],
-              "destination": [
-                4,
-                5
-              ]
-            },
-            {
-              "id": "EAST_RETURN_CLIMB",
-              "metatile": [
-                5,
-                5
-              ],
-              "block": "12",
-              "before": [
-                11,
-                9
-              ],
-              "lane": [
-                [
-                  11,
-                  10
-                ],
-                [
-                  11,
-                  11
-                ]
-              ],
-              "after": [
-                11,
-                12
-              ],
-              "blocked_from": [
-                11,
-                11
-              ],
-              "blocked_target": [
-                10,
-                11
-              ],
-              "destination": [
-                10,
-                8
-              ]
-            }
-          ],
-          "ledge_lanes": [
-            {
-              "approach": [
-                10,
-                8
-              ],
-              "hop_from": [
-                9,
-                8
-              ],
-              "landing": [
-                7,
-                8
-              ],
-              "reverse_target": [
-                8,
-                8
-              ],
-              "direction": "LEFT"
-            },
-            {
-              "approach": [
-                10,
-                9
-              ],
-              "hop_from": [
-                9,
-                9
-              ],
-              "landing": [
-                7,
-                9
-              ],
-              "reverse_target": [
-                8,
-                9
-              ],
-              "direction": "LEFT"
-            }
-          ],
-          "ledge_shoulders": [
-            [
-              8,
-              7
-            ],
-            [
-              9,
-              7
-            ],
-            [
-              8,
-              10
-            ],
-            [
-              9,
-              10
-            ]
-          ],
-          "potion_approach": [
-            4,
-            5
-          ],
-          "potion_facing": "right",
-          "ordinary_return_waypoints": [
-            [
-              7,
-              12
-            ],
-            [
-              11,
-              12
-            ],
-            [
-              11,
-              9
-            ],
-            [
-              10,
-              8
-            ]
-          ],
-          "mouths": [
-            {
-              "inside": [
-                5,
-                13
-              ],
-              "clear": [
-                5,
-                12
-              ],
-              "target": "MnR20C00R00",
-              "target_warp": 2,
-              "outside_active_global": [
-                60,
-                33
-              ],
-              "outside_return_global": [
-                60,
-                34
-              ]
-            },
-            {
-              "inside": [
-                13,
-                13
-              ],
-              "clear": [
-                13,
-                12
-              ],
-              "target": "MnR20C01R00",
-              "target_warp": 2,
-              "outside_active_global": [
-                76,
-                31
-              ],
-              "outside_return_global": [
-                76,
-                32
-              ]
-            }
-          ],
-          "exterior_return_semantics": "Original west room warp1 returns to MnR20C00R00 passive warp2 global60,34 FLOOR; east room warp2 returns to MnR20C01R00 passive warp2 global76,32/local12,32 FLOOR. Active west60,33 targets roomwarp1; active east76,31 targets roomwarp2. Preserve the existing inactive east Floor record's own targetwarp1; no warp records are normalized."
-        },
-        "visual_revision": "Closed the east stair toe bypass: native22 replaces0a beside the stair, retaining upper Floor12,10 and blocking12,11. Both original mouths and the cleft silhouette stay exact.",
-        "unpublished": false,
-        "native_review": {
-          "pack_sha256": "1630ad063aa4a1cf252087bdf743ca48a2a8cb6c9c46ad95cb7aceb1c74c3b05",
-          "palette": "nite",
-          "candidate_sha256": "05617d4863db095ed7664ce6408f1d7f35e4ce3c6ed360d08bdfd36a35db2577",
-          "preservation_checks": 150,
-          "asset_cases_passed": 6,
-          "controller_cases": [
-            "r20_cleft_controller_both_mouths_passive_returns_and_two_stairs_bidirectional",
-            "r20_cleft_controller_both_left_hop_lanes_reverse_denial_and_ordinary_returns",
-            "r20_cleft_controller_original_hyper_potion_prints_once_heals_and_continues"
-          ],
-          "controller_cases_passed": [
-            "r20_cleft_controller_both_left_hop_lanes_reverse_denial_and_ordinary_returns",
-            "r20_cleft_controller_both_mouths_passive_returns_and_two_stairs_bidirectional",
-            "r20_cleft_controller_original_hyper_potion_prints_once_heals_and_continues"
-          ],
-          "earned_SQ03_progression_claimed": false
-        }
+        "notes": "A recessed west-wall seep shapes the lower cleft. Widen the upper lip by one walking tile for a visible landing before the lateral drop. Both real mouths, opposite climbs and supply shelf remain useful."
       }
     }
   ],
@@ -1479,5 +1214,21 @@
     "Fit source shoreline/cliff quadrants; draw source trees in coherent metatile groups."
   ],
   "status": "Individually hand-authored source proposal in active visual review; native publication/controller/regional circuit pending.",
-  "anchor_status": "Exact native collision/event coordinates; source checks do not prove earned badges, story completion or native gameplay."
+  "anchor_status": "Exact native collision/event coordinates; source checks do not prove earned badges, story completion or native gameplay.",
+  "native_extensions": [
+    {
+      "id": "minnesota-voyageurs-ice-v1",
+      "source_file": "../ice-caves/voyageurs-ice.json",
+      "exterior_global_core": [
+        70,
+        33
+      ],
+      "safe_return_global_core": [
+        70,
+        34
+      ],
+      "builder": "pack_voyageurs_ice",
+      "purpose": "Optional two-floor ice dungeon off the ordinary southern mainland trail. Apply as an additive Rust overlay after the base route."
+    }
+  ]
 }

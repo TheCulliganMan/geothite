@@ -1,0 +1,336 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_136",
+  "result": "pass",
+  "manifest_sha256": "d9c6a06551b3bb8639545869debf42bd39e9e0b29697134ff457054c53c6c49e",
+  "bank_sha256": "f39b6cbe6baecfc2e6bc23de9ecae86c66e64166bf17cc6d5ae0942551f4970f",
+  "source_sha256": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f062/silohawk.overworld.imagegen-v1.png": "77ed8b85b4e0d839c8ea174a7dd7e44cfc60acfbeb0b056ce1ea2ba7c85a0024"
+  },
+  "canonical_eye_form": "TWO actual isolated south pupils, ONE actual isolated west pupil. Every pixel in each complete native eye cluster maps to the same small anatomical source pupil component.",
+  "nonrear_poses": [
+    {
+      "pose": "down_idle",
+      "result": "pass",
+      "source_feature_proof": {
+        "pose": "down_idle",
+        "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f062/silohawk.overworld.imagegen-v1.png",
+        "crop": [
+          61,
+          52,
+          470,
+          450
+        ],
+        "anatomically_identified_source_eye_boxes_xywh": [
+          [
+            248,
+            324,
+            15,
+            20
+          ],
+          [
+            311,
+            324,
+            15,
+            20
+          ]
+        ],
+        "actual_eye_proofs": [
+          {
+            "native_cluster": [
+              [
+                6,
+                9
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  5,
+                  3,
+                  1,
+                  253
+                ],
+                "bounds": [
+                  248,
+                  324,
+                  15,
+                  20
+                ],
+                "pixels": 300,
+                "truncated_contour": false,
+                "native_pixel": [
+                  6,
+                  9
+                ],
+                "source_sample_pixel": [
+                  257,
+                  329
+                ]
+              }
+            ]
+          },
+          {
+            "native_cluster": [
+              [
+                8,
+                9
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  2,
+                  1,
+                  0,
+                  254
+                ],
+                "bounds": [
+                  311,
+                  324,
+                  15,
+                  20
+                ],
+                "pixels": 300,
+                "truncated_contour": false,
+                "native_pixel": [
+                  8,
+                  9
+                ],
+                "source_sample_pixel": [
+                  319,
+                  329
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "pose": "left_idle",
+      "result": "pass",
+      "source_feature_proof": {
+        "pose": "left_idle",
+        "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f062/silohawk.overworld.imagegen-v1.png",
+        "crop": [
+          1049,
+          118,
+          470,
+          450
+        ],
+        "anatomically_identified_source_eye_boxes_xywh": [
+          [
+            1142,
+            296,
+            15,
+            19
+          ]
+        ],
+        "actual_eye_proofs": [
+          {
+            "native_cluster": [
+              [
+                3,
+                6
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  5,
+                  3,
+                  0,
+                  253
+                ],
+                "bounds": [
+                  1142,
+                  296,
+                  15,
+                  19
+                ],
+                "pixels": 285,
+                "truncated_contour": false,
+                "native_pixel": [
+                  3,
+                  6
+                ],
+                "source_sample_pixel": [
+                  1150,
+                  303
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "pose": "down_step",
+      "result": "pass",
+      "source_feature_proof": {
+        "pose": "down_step",
+        "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f062/silohawk.overworld.imagegen-v1.png",
+        "crop": [
+          61,
+          505,
+          470,
+          450
+        ],
+        "anatomically_identified_source_eye_boxes_xywh": [
+          [
+            249,
+            777,
+            15,
+            21
+          ],
+          [
+            312,
+            777,
+            14,
+            21
+          ]
+        ],
+        "actual_eye_proofs": [
+          {
+            "native_cluster": [
+              [
+                6,
+                9
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  1,
+                  0,
+                  0,
+                  253
+                ],
+                "bounds": [
+                  249,
+                  777,
+                  15,
+                  21
+                ],
+                "pixels": 292,
+                "truncated_contour": false,
+                "native_pixel": [
+                  6,
+                  9
+                ],
+                "source_sample_pixel": [
+                  257,
+                  782
+                ]
+              }
+            ]
+          },
+          {
+            "native_cluster": [
+              [
+                8,
+                9
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  0,
+                  0,
+                  0,
+                  254
+                ],
+                "bounds": [
+                  312,
+                  777,
+                  14,
+                  21
+                ],
+                "pixels": 287,
+                "truncated_contour": false,
+                "native_pixel": [
+                  8,
+                  9
+                ],
+                "source_sample_pixel": [
+                  319,
+                  782
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "pose": "left_step",
+      "result": "pass",
+      "source_feature_proof": {
+        "pose": "left_step",
+        "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f062/silohawk.overworld.imagegen-v1.png",
+        "crop": [
+          1058,
+          568,
+          470,
+          450
+        ],
+        "anatomically_identified_source_eye_boxes_xywh": [
+          [
+            1151,
+            746,
+            16,
+            19
+          ]
+        ],
+        "actual_eye_proofs": [
+          {
+            "native_cluster": [
+              [
+                3,
+                6
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  5,
+                  2,
+                  0,
+                  253
+                ],
+                "bounds": [
+                  1151,
+                  746,
+                  16,
+                  19
+                ],
+                "pixels": 302,
+                "truncated_contour": false,
+                "native_pixel": [
+                  3,
+                  6
+                ],
+                "source_sample_pixel": [
+                  1159,
+                  753
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "rear_anatomy": {
+    "result": "pass",
+    "notes": "Both native normal/shiny rear poses actually inspected: plain rear head, no copied face. Head anchors stable, 1px transparent outer border, three walk pairs differ."
+  },
+  "detailed_proof": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f062/manifest-silohawk-v1-pupil-proof.proof.json"
+}

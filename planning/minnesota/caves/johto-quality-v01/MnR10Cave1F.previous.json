@@ -1,0 +1,358 @@
+{
+  "id": "MnR10Cave1F",
+  "template": "UnionCave1F",
+  "dimensions_metatiles": [
+    18,
+    14
+  ],
+  "rows": [
+    "01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01",
+    "01 01 01 01 04 05 06 01 01 01 01 01 01 01 01 01 01 01",
+    "01 01 01 04 09 09 02 04 05 05 05 06 01 01 01 01 01 01",
+    "01 01 01 08 21 21 39 21 21 21 36 0a 01 01 01 01 01 01",
+    "01 04 05 12 02 02 02 2e 2f 08 36 02 05 05 06 01 01 01",
+    "01 08 02 02 02 0a 2d 2e 2e 2f 02 02 02 02 02 06 01 01",
+    "01 07 21 02 02 0a 2d 2e 2e 2f 08 02 18 19 02 0a 01 01",
+    "01 01 01 12 01 01 2d 2e 2f 08 02 02 02 3e 3d 0a 01 01",
+    "01 01 01 08 02 05 2d 2f 04 05 08 02 3e 0f 25 0a 01 01",
+    "01 01 01 08 02 02 31 01 08 02 08 02 26 0f 33 0a 01 01",
+    "01 01 01 20 21 20 02 19 02 02 02 02 32 33 02 0a 01 01",
+    "01 01 01 01 01 01 20 21 21 21 21 0c 02 02 02 0a 01 01",
+    "01 01 01 01 01 01 01 01 01 01 01 01 20 21 21 22 01 01",
+    "01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01"
+  ],
+  "exits": [
+    [
+      3,
+      13
+    ]
+  ],
+  "clear_arrival": [
+    3,
+    12
+  ],
+  "exit_collision": "LADDER",
+  "border_block": 1,
+  "residents": [
+    {
+      "id": "MN_R10_GALLERY_READER",
+      "sprite": "SPRITE_SUPER_NERD",
+      "tile": [
+        9,
+        5
+      ],
+      "facing": "east",
+      "lines": [
+        "Both passages",
+        "circle the pillar.",
+        "The foreman was",
+        "at the west mine."
+      ]
+    }
+  ],
+  "items": [
+    {
+      "id": "MN_R10_ITEM_04",
+      "item": "REVIVE",
+      "quantity": 1,
+      "flag": "EVENT_MN_R10_ITEM_04",
+      "tile": [
+        29,
+        23
+      ]
+    }
+  ],
+  "signs": [],
+  "purpose": "Stepped seam gallery: a small entry fork climbs to the ore reader, a tapered rock spine folds the eastern descent, an irregular spring bites into the lower walkway and a dry west stair returns to the mouth. Both passages visibly circle the pillar.",
+  "candidate_status": "Native review candidate installed; all three local production-controller cases pass. User visual approval and earned regional progress are not claimed.",
+  "review_contract": {
+    "entry_core": [
+      3,
+      12
+    ],
+    "exit_core": [
+      3,
+      13
+    ],
+    "native_stair_blocks": [
+      [
+        3,
+        4
+      ],
+      [
+        10,
+        3
+      ],
+      [
+        10,
+        4
+      ],
+      [
+        3,
+        7
+      ]
+    ],
+    "loop_waypoints_core": [
+      [
+        7,
+        11
+      ],
+      [
+        7,
+        5
+      ],
+      [
+        20,
+        5
+      ],
+      [
+        22,
+        11
+      ],
+      [
+        22,
+        21
+      ],
+      [
+        8,
+        19
+      ]
+    ],
+    "retained_return_exterior_core": [
+      36,
+      18
+    ],
+    "unpublished": false,
+    "quality_revision": "brainerd-gallery-v04",
+    "one_way_ledges": [
+      {
+        "id": "GALLERY_MOUTH_DROP",
+        "source_block": "39",
+        "bounds_core": [
+          12,
+          6,
+          14,
+          8
+        ],
+        "direction": "south",
+        "upper_approach": [
+          12,
+          5
+        ],
+        "hop_from": [
+          12,
+          6
+        ],
+        "landing": [
+          12,
+          8
+        ],
+        "reverse_blocked": [
+          12,
+          7
+        ],
+        "side_barriers": [
+          [
+            11,
+            7
+          ],
+          [
+            14,
+            7
+          ]
+        ],
+        "ordinary_return_via_stair_metatile": [
+          3,
+          4
+        ],
+        "minimum_return_steps": 9,
+        "purpose": "Drop from the ore gallery toward the mouth after reading the pillar clue; ordinary ascent uses the nearby visible stone stair, not a second hop."
+      }
+    ],
+    "refinement": {
+      "status": "Native review candidate installed; Root accepted bounded whole/player visuals. All3 local production-controller cases PASS. User final approval and earned regional progression are not claimed.",
+      "baseline_pack_sha256": "e549c178f37a3137e8ca7f119aeee79460164f1dbd3ea6d205be8928415fd04c",
+      "intent": "Fitted ceiling cuts reduce the broad reader terrace; an attached central spine toe and offset lower rim bend the ordinary lower return. Existing spring, actors, reward, stairs and ledge remain exact.",
+      "hand_strokes_metatiles": [
+        {
+          "at": [
+            3,
+            1
+          ],
+          "block": "01"
+        },
+        {
+          "at": [
+            4,
+            1
+          ],
+          "block": "04"
+        },
+        {
+          "at": [
+            6,
+            1
+          ],
+          "block": "06"
+        },
+        {
+          "at": [
+            7,
+            1
+          ],
+          "block": "01"
+        },
+        {
+          "at": [
+            8,
+            1
+          ],
+          "block": "01"
+        },
+        {
+          "at": [
+            3,
+            2
+          ],
+          "block": "04"
+        },
+        {
+          "at": [
+            7,
+            2
+          ],
+          "block": "04"
+        },
+        {
+          "at": [
+            8,
+            2
+          ],
+          "block": "05"
+        },
+        {
+          "at": [
+            7,
+            10
+          ],
+          "block": "19"
+        },
+        {
+          "at": [
+            5,
+            10
+          ],
+          "block": "20"
+        },
+        {
+          "at": [
+            5,
+            11
+          ],
+          "block": "01"
+        },
+        {
+          "at": [
+            6,
+            11
+          ],
+          "block": "20"
+        },
+        {
+          "at": [
+            11,
+            11
+          ],
+          "block": "0c"
+        },
+        {
+          "at": [
+            11,
+            12
+          ],
+          "block": "01"
+        },
+        {
+          "at": [
+            12,
+            12
+          ],
+          "block": "20"
+        },
+        {
+          "at": [
+            10,
+            9
+          ],
+          "block": "08"
+        }
+      ],
+      "viewpoints": [
+        {
+          "id": "MOUTH_FORK",
+          "tile": [
+            3,
+            12
+          ]
+        },
+        {
+          "id": "READER_APPROACH",
+          "tile": [
+            10,
+            5
+          ]
+        },
+        {
+          "id": "GALLERY_DROP",
+          "tile": [
+            12,
+            5
+          ]
+        },
+        {
+          "id": "EAST_STAIRS",
+          "tile": [
+            20,
+            8
+          ]
+        },
+        {
+          "id": "SPRING_CACHE",
+          "tile": [
+            28,
+            23
+          ]
+        },
+        {
+          "id": "LOWER_RETURN",
+          "tile": [
+            13,
+            21
+          ]
+        }
+      ],
+      "native_acceptance": {
+        "source_candidate_sha256": "be41b5fb81f3ef8536214e903a07d28685bd71b4383cb4c3fade9ebf8ab73161",
+        "pack_sha256": "fe57f83bdddf43fd1e617abb4cac7855f6118691ee07479dd77be27c1c815fb0",
+        "proof_sha256": "86d9ea05d3fd410c91bf9072f319cbebe6ad371cdd36fbeee81d6d40d8ab4c0b",
+        "preservation_checks": 150,
+        "production_captures": 8,
+        "controller_log_sha256": "bb1222291a0db01cd2b1932da2e6e4c4d29c07d1b75861c101bba47ae45f9b5b",
+        "controller_receipt_sha256": "51cb71159a03af6241476949e52c25c186b6ea4c816420ea9489b7179fd58aa2",
+        "controller_cases": [
+          "r10_gallery_controller_original_mouth_passive_return_four_stairs_and_short_native_drop",
+          "r10_gallery_controller_original_reader_pages_revive_once_and_semantic_continue",
+          "r10_gallery_controller_full_bag_refusal_native_potion_use_and_original_pickup_retry"
+        ],
+        "both_hop_lanes_and_actual_returns": [
+          13,
+          15
+        ],
+        "full_bag_retry_and_Continue": true,
+        "root_bounded_visual_acceptance": true,
+        "user_final_approval_claimed": false,
+        "earned_regional_progress_claimed": false
+      }
+    }
+  }
+}

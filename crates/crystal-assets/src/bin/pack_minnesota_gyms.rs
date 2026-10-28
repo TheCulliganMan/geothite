@@ -2,7 +2,7 @@ use std::path::PathBuf;
 
 use anyhow::{Context, Result, ensure};
 use crystal_assets::{
-    build_minnesota_gym_review_pack, build_minnesota_gym_review_room,
+    build_minnesota_gym_review_pack, build_minnesota_gym_review_room, read_minnesota_gym_design,
     read_verified_compiled_game_pack,
 };
 
@@ -12,7 +12,7 @@ fn main() -> Result<()> {
         args.next()
             .context("usage: pack_minnesota_gyms BASE DESIGN OUTPUT [GYM_SLOT]")?,
     );
-    let design = std::fs::read_to_string(args.next().context("gym design JSON")?)?;
+    let design = read_minnesota_gym_design(args.next().context("gym design JSON or index")?)?;
     let output = PathBuf::from(args.next().context("output pack")?);
     let slot = args
         .next()

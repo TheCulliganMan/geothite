@@ -1,0 +1,92 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F001",
+  "species": [
+    {
+      "species_id": "MN_003",
+      "runtime_token": "CYPRIELLE",
+      "palette_rgb555": [
+        32767,
+        24031,
+        7492,
+        0
+      ],
+      "shiny_palette_rgb555": [
+        32767,
+        15351,
+        10375,
+        0
+      ],
+      "fit": [
+        14,
+        14
+      ],
+      "sampling": "source_center",
+      "black_priority_samples": 64,
+      "interior_black_samples": 64,
+      "opaque_interior_minimum_samples": 64,
+      "frames": [
+        {
+          "pose": "down_idle",
+          "source": "cyprielle.overworld.imagegen-v4.png",
+          "crop": [
+            49,
+            105,
+            406,
+            406
+          ]
+        },
+        {
+          "pose": "up_idle",
+          "source": "cyprielle.overworld.imagegen-v4.png",
+          "crop": [
+            564,
+            110,
+            406,
+            406
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "source": "cyprielle.overworld.imagegen-v4.png",
+          "crop": [
+            1055,
+            111,
+            406,
+            406
+          ]
+        },
+        {
+          "pose": "down_step",
+          "source": "cyprielle.overworld.imagegen-v4.png",
+          "crop": [
+            58,
+            556,
+            406,
+            406
+          ]
+        },
+        {
+          "pose": "up_step",
+          "source": "cyprielle.overworld.imagegen-v4.png",
+          "crop": [
+            572,
+            561,
+            406,
+            406
+          ]
+        },
+        {
+          "pose": "left_step",
+          "source": "cyprielle.overworld.imagegen-v4.png",
+          "crop": [
+            1052,
+            563,
+            406,
+            406
+          ]
+        }
+      ]
+    }
+  ]
+}

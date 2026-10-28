@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_073",
+  "fit": 12,
+  "input_images": [
+    {
+      "role": "native16 style/logical pixel reference only",
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/references/native-pack-16px/native-six-frame-style-board.8x.png",
+      "sha256": "4354a639ed1a80fd6686e43b273443ed894e58a84307a8049f638ee9ffa2a099"
+    }
+  ],
+  "canonical_identity_reviewed": {
+    "front": {
+      "path": "target/minnesota-pokemon/native/MN_F030/mn-073-spanlet-v1.front.png",
+      "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F030/mn-073-spanlet-v1.front.png",
+      "sha256": "6c440e6139cce8ad5d2c16a25f97ca0ac6c227ad678c7b4617c02513c31eab4f"
+    },
+    "back": {
+      "path": "target/minnesota-pokemon/native/MN_F030/mn-073-spanlet-v1.back.png",
+      "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F030/mn-073-spanlet-v1.back.png",
+      "sha256": "97c33e92e7f3b9644d8ace37a9646e8b0aa6ba7c06a030dbfecf90e3d34f69f2"
+    }
+  },
+  "canonical_eye_form": "TWO actual dark pupils SOUTH/ONE WEST on light girder face; rear plain.",
+  "prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f030/prompt-spanlet-v1.txt"
+}

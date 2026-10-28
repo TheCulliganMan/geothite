@@ -3288,10 +3288,6 @@
           "SWIFT"
         ],
         [
-          28,
-          "WATERFALL"
-        ],
-        [
           30,
           "BUBBLEBEAM"
         ],
@@ -3302,6 +3298,10 @@
         [
           37,
           "IRON_TAIL"
+        ],
+        [
+          40,
+          "WATERFALL"
         ],
         [
           41,
@@ -3368,10 +3368,6 @@
           "SWIFT"
         ],
         [
-          28,
-          "WATERFALL"
-        ],
-        [
           31,
           "BUBBLEBEAM"
         ],
@@ -3382,6 +3378,10 @@
         [
           38,
           "IRON_TAIL"
+        ],
+        [
+          40,
+          "WATERFALL"
         ],
         [
           42,
@@ -23992,6 +23992,90 @@
         "FLASH"
       ],
       "egg_moves": []
+    },
+    {
+      "id": "MN_318",
+      "level_moves": [
+        [
+          1,
+          "TACKLE"
+        ],
+        [
+          1,
+          "HARDEN"
+        ],
+        [
+          1,
+          "WATER_GUN"
+        ],
+        [
+          11,
+          "ATTRACT"
+        ],
+        [
+          15,
+          "METAL_CLAW"
+        ],
+        [
+          19,
+          "SWEET_SCENT"
+        ],
+        [
+          24,
+          "PURSUIT"
+        ],
+        [
+          28,
+          "SWIFT"
+        ],
+        [
+          31,
+          "BUBBLEBEAM"
+        ],
+        [
+          35,
+          "AGILITY"
+        ],
+        [
+          38,
+          "IRON_TAIL"
+        ],
+        [
+          40,
+          "WATERFALL"
+        ],
+        [
+          42,
+          "SCREECH"
+        ],
+        [
+          44,
+          "SWORDS_DANCE"
+        ],
+        [
+          47,
+          "HYDRO_PUMP"
+        ],
+        [
+          51,
+          "LOCK_ON"
+        ]
+      ],
+      "tmhm_moves": [
+        "SURF",
+        "WHIRLPOOL",
+        "RAIN_DANCE",
+        "IRON_TAIL",
+        "SWIFT",
+        "ATTRACT",
+        "THIEF",
+        "PROTECT"
+      ],
+      "egg_moves": [
+        "FLAIL",
+        "MIMIC",
+        "OCTAZOOKA"
+      ]
     }
   ]
 }

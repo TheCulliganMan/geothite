@@ -1,0 +1,216 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_313",
+  "result": "needs-fix",
+  "manifest_sha256": "37a4dceeae30dba6e431446f2816073093b3eae9eb9c848a9f71b43e9a126671",
+  "bank_sha256": "6b8e9274283ca0b7e61ebecc5dffdf44210967f6263b9143ce380c9c0e0a1fba",
+  "source_sha256": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f141/shedstag.overworld.imagegen-v1.png": "083c600d5ad0e60ee7cf25d761af18165756021b07574ac7be0ac488bad1e835"
+  },
+  "canonical_eye_form": "Two actual source black pupils front, one west; rear head blank. Mature sage deer with violet chest/lower legs, exactly two detached C-shaped antler guards beside shoulders, no antlers on head, low attached three-lobed warning tail fan. Native front/rear guard gaps remain transparent; source tail fan notches are anatomy, not rear eyes. Two near legs in profile/far legs occluded; front/rear legs foreshortened. Fit14 yields14x12 body.",
+  "nonrear_poses": [
+    {
+      "pose": "down_idle",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            6,
+            8
+          ],
+          "source_sample": [
+            296,
+            322
+          ],
+          "source_rgba": [
+            4,
+            3,
+            3,
+            253
+          ],
+          "actual_source_pupil_component": [
+            294,
+            310,
+            17,
+            23
+          ],
+          "component_pixels": 391,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "native": [
+            9,
+            8
+          ],
+          "source_sample": [
+            370,
+            322
+          ],
+          "source_rgba": [
+            5,
+            6,
+            5,
+            253
+          ],
+          "actual_source_pupil_component": [
+            357,
+            310,
+            17,
+            23
+          ],
+          "component_pixels": 391,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            4,
+            7
+          ],
+          "source_sample": [
+            1128,
+            296
+          ],
+          "source_rgba": [
+            4,
+            7,
+            5,
+            254
+          ],
+          "actual_source_pupil_component": [
+            1124,
+            296,
+            16,
+            23
+          ],
+          "component_pixels": 368,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            6,
+            8
+          ],
+          "source_sample": [
+            294,
+            709
+          ],
+          "source_rgba": [
+            3,
+            6,
+            3,
+            253
+          ],
+          "actual_source_pupil_component": [
+            294,
+            693,
+            18,
+            24
+          ],
+          "component_pixels": 429,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "native": [
+            9,
+            8
+          ],
+          "source_sample": [
+            368,
+            709
+          ],
+          "source_rgba": [
+            0,
+            0,
+            0,
+            253
+          ],
+          "actual_source_pupil_component": [
+            358,
+            693,
+            17,
+            24
+          ],
+          "component_pixels": 402,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            4,
+            7
+          ],
+          "source_sample": [
+            1137,
+            686
+          ],
+          "source_rgba": [
+            4,
+            5,
+            4,
+            253
+          ],
+          "actual_source_pupil_component": [
+            1124,
+            681,
+            16,
+            24
+          ],
+          "component_pixels": 384,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ]
+        }
+      ]
+    }
+  ],
+  "rear_anatomy": {
+    "result": "pass",
+    "notes": "both rear native poses viewed; no copied face. All six exact normal/shiny native poses inspected, three movement pairs distinct, transparent one-pixel border and max14x14 body verified."
+  },
+  "anatomy_hold": "Native antler guards touch body in some front/rear poses; outward source edit in progress."
+}

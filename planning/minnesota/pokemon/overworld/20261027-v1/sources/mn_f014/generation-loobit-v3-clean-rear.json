@@ -1,0 +1,71 @@
+{
+  "tool": "built-in image_gen",
+  "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f014/loobit-v3-clean-rear",
+  "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f014/manifest-loobit-v3-clean-rear.json",
+  "normalized_receipt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f014/source-feature-proof-loobit-v3-clean-rear.json",
+  "all_raws_prompts_rejected_trials_retained": true,
+  "no_native_pixel_painting": true,
+  "no_registry_or_pack_mutation": true,
+  "normal_shiny_boards_actually_viewed": true,
+  "canonical_palettes": [
+    [
+      32767,
+      28434,
+      14662,
+      0
+    ],
+    [
+      32767,
+      25179,
+      10446,
+      0
+    ]
+  ],
+  "native_bounds": [
+    [
+      2,
+      4,
+      11,
+      11
+    ],
+    [
+      3,
+      4,
+      10,
+      11
+    ],
+    [
+      2,
+      4,
+      11,
+      10
+    ],
+    [
+      2,
+      4,
+      11,
+      11
+    ],
+    [
+      3,
+      4,
+      10,
+      11
+    ],
+    [
+      2,
+      4,
+      12,
+      10
+    ]
+  ],
+  "retained_source_hashes": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f014/loobit.overworld.imagegen-v2-clean-rear.png": "1aa9b0b034b95702c670bab616bb2727035198eab1bfb0cbc0ffd19358b151eb",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f014/loobit.overworld.imagegen-v1.png": "dbd9c7175bb19207ab4bd0282b0a62fc183331b0f3351667cbd1879fdd90ad68",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f014/prompt-loobit-v2-clean-rear.txt": "3a8e2a28e64b847e0741ba1f3452c5b586f366c0d6ffe37b7f3d270eb73191db",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f014/prompt-loobit-v1.txt": "f0f3f69200552d8bf48ce6f72a798c68ada54050a3ef972a5ef9a2a582ba3d4f",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f014/loobit.v1.original-path.txt": "9dd605c179c8a32f5776f043428c3b64a6a0fd32ec63c3c4878c4b7d72266504",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f014/loobit.v2-clean-rear.original-path.txt": "b450c0afae53f66f611df1a1d29b8f61cf43e97847a2b70ef8149e1cda683859"
+  },
+  "status": "root independent visual/context acceptance pending"
+}

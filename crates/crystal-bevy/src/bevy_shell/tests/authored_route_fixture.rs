@@ -4,6 +4,7 @@ use crystal_assets::MapModule;
 use crystal_core::input::GameButton;
 use crystal_runtime::{CrystalRuntime, RuntimeShellPhase};
 use std::collections::{BTreeMap, BTreeSet, VecDeque};
+use std::path::{Path, PathBuf};
 pub(super) type Point = (i16, i16);
 
 pub(super) struct RouteSpec {
@@ -19,7 +20,25 @@ pub(super) struct RouteGrid {
     pub floor: BTreeSet<Point>,
     pub blocked: BTreeSet<Point>,
     pub hazards: BTreeSet<Point>,
+    ice: BTreeSet<Point>,
     doors: BTreeMap<Point, &'static str>,
+}
+
+/// Retains reached saves only when a review explicitly names its evidence directory.
+pub(super) fn reached_save_path(filename: &str) -> PathBuf {
+    let directory = std::env::var_os("CRYSTAL_MAP_RETAIN_SAVES_DIR")
+        .map(PathBuf::from)
+        .unwrap_or_else(std::env::temp_dir);
+    std::fs::create_dir_all(&directory).expect("reached fixture save directory");
+    let path = directory.join(filename);
+    assert!(!path.exists(), "reached fixture save must be fresh");
+    path
+}
+
+pub(super) fn cleanup_reached_save(path: &Path) {
+    if std::env::var_os("CRYSTAL_MAP_RETAIN_SAVES_DIR").is_none() {
+        std::fs::remove_file(path).expect("remove disposable fixture save");
+    }
 }
 
 pub(super) fn origin(name: &str) -> Point {
@@ -56,6 +75,7 @@ impl RouteGrid {
             floor: BTreeSet::new(),
             blocked: BTreeSet::new(),
             hazards: BTreeSet::new(),
+            ice: BTreeSet::new(),
             doors: spec.doors,
         };
         let mut trainers = Vec::new();
@@ -72,6 +92,9 @@ impl RouteGrid {
                             module.blocks[(y / 2) * usize::from(module.attributes.width) + x / 2];
                         let kind = &runtime.data().tilesets[spec.tileset].collision
                             [&format!("{block:02x}")][(y % 2) * 2 + x % 2];
+                        if kind == "ICE" {
+                            grid.ice.insert((col * 64 + x as i16, row * 48 + y as i16));
+                        }
                         if matches!(kind.as_str(), "FLOOR" | "LADDER" | "DOOR" | "CAVE")
                             || (include_grass && kind == "TALL_GRASS")
                         {
@@ -109,7 +132,7 @@ impl RouteGrid {
         let mut connected = BTreeSet::from([spec.start]);
         let mut queue = VecDeque::from([spec.start]);
         while let Some(p) = queue.pop_front() {
-            for (q, _) in neighbors(p) {
+            for (q, _) in grid.destinations(p) {
                 if grid.floor.contains(&q)
                     && !grid.blocked.contains(&q)
                     && !grid.hazards.contains(&q)
@@ -124,6 +147,25 @@ impl RouteGrid {
         grid
     }
 
+    // A single production press entering ICE owns the remainder of that
+    // straight slide. Plan its actual dry stop rather than pretending every
+    // sliding quadrant is a separately controllable walking position.
+    fn destinations(&self, from: Point) -> Vec<(Point, GameButton)> {
+        neighbors(from)
+            .into_iter()
+            .filter_map(|(mut next, button)| {
+                let delta = (next.0 - from.0, next.1 - from.1);
+                while self.ice.contains(&next) {
+                    if self.blocked.contains(&next) || self.hazards.contains(&next) {
+                        return None;
+                    }
+                    next = (next.0 + delta.0, next.1 + delta.1);
+                }
+                Some((next, button))
+            })
+            .collect()
+    }
+
     pub fn path(&self, from: Point, to: Point) -> Vec<GameButton> {
         let mut parents = BTreeMap::from([(from, (from, GameButton::A))]);
         let mut queue = VecDeque::from([from]);
@@ -131,7 +173,7 @@ impl RouteGrid {
             if p == to {
                 break;
             }
-            for (q, button) in neighbors(p) {
+            for (q, button) in self.destinations(p) {
                 if !self.floor.contains(&q)
                     || self.blocked.contains(&q)
                     || self.hazards.contains(&q)
@@ -166,6 +208,11 @@ impl RouteGrid {
         let from = position(controller);
         for button in self.path(from, to) {
             let before = position(controller);
+            let expected = self
+                .destinations(before)
+                .into_iter()
+                .find_map(|(point, input)| (input == button).then_some(point))
+                .expect("planned production route destination");
             for _ in 0..8 {
                 controller.press(button).expect("native route input");
                 let s = controller.snapshot().expect("native route step");
@@ -189,6 +236,16 @@ impl RouteGrid {
                     break;
                 }
             }
+            if (expected.0 - before.0).abs() + (expected.1 - before.1).abs() > 1 {
+                controller
+                    .wait_frames(320)
+                    .expect("native ICE settles at planned dry stop");
+                assert_eq!(
+                    position(controller),
+                    expected,
+                    "actual forced slide endpoint"
+                );
+            }
             assert_ne!(
                 position(controller),
                 before,
@@ -207,10 +264,15 @@ impl RouteGrid {
                     && !self.hazards.contains(p)
                     && (p.0 / 64, p.1 / 48) == (at.0 / 64, at.1 / 48)
             })
-            .expect("talk approach");
+            .unwrap_or_else(|| panic!("no reachable talk approach for {at:?}"));
         self.walk(controller, approach);
         controller.press(opposite(button)).expect("face actor");
         controller.press(GameButton::A).expect("talk or collect");
+        let mut pages = Vec::new();
+        collect_visible_page(controller, &mut pages);
+        controller
+            .wait_frames(128)
+            .expect("fully print source interaction page");
         let s = controller.snapshot().expect("visible conversation");
         assert!(
             s.phase == RuntimeShellPhase::Text && s.ui.text.is_some(),
@@ -230,9 +292,21 @@ impl RouteGrid {
                 .tile,
             before
         );
-        let text = s.ui.text.and_then(|t| t.asm_text).unwrap_or_default();
-        finish_text(controller);
-        text
+        collect_visible_page(controller, &mut pages);
+        for _ in 0..64 {
+            if dialogue_finished(controller) {
+                return pages.join("\n");
+            }
+            controller
+                .press(GameButton::A)
+                .expect("native interaction continuation");
+            collect_visible_page(controller, &mut pages);
+            controller
+                .wait_frames(16)
+                .expect("native interaction printer");
+            collect_visible_page(controller, &mut pages);
+        }
+        panic!("interaction at {at:?} did not release input: {pages:?}")
     }
 }
 
@@ -253,6 +327,38 @@ pub(super) fn opposite(button: GameButton) -> GameButton {
         GameButton::Down => GameButton::Up,
         _ => panic!("direction required"),
     }
+}
+
+fn collect_visible_page(controller: &mut VisibleShellController, pages: &mut Vec<String>) {
+    let snapshot = controller
+        .snapshot()
+        .expect("actual visible interaction page");
+    if let Some(text) = snapshot.ui.text.and_then(|t| t.asm_text)
+        && !text.is_empty()
+        && pages.last() != Some(&text)
+    {
+        pages.push(text);
+    }
+    if let Some(notice) = &controller.shell.visible_field_item_notice
+        && !pages.contains(&notice.sound_trigger_text)
+    {
+        pages.push(notice.sound_trigger_text.clone());
+    }
+}
+
+fn dialogue_finished(controller: &mut VisibleShellController) -> bool {
+    let snapshot = controller.snapshot().expect("interaction input owner");
+    snapshot.phase == RuntimeShellPhase::Overworld
+        && snapshot.ui.pending_text_wait.is_none()
+        && !snapshot.ui.text_window_open
+        && !controller.has_pending_script_work()
+        && controller.shell.field_notice.is_none()
+        && controller.shell.visible_field_item_notice.is_none()
+        && snapshot
+            .ui
+            .text
+            .as_ref()
+            .is_none_or(|text| text.label != "visible-shell:battle-message")
 }
 
 pub(super) fn finish_text(controller: &mut VisibleShellController) {
@@ -289,6 +395,7 @@ pub(super) fn indoor_walk(
         floor: BTreeSet::new(),
         blocked: m.objects.iter().map(|o| (o.x as i16, o.y as i16)).collect(),
         hazards: BTreeSet::new(),
+        ice: BTreeSet::new(),
         doors: BTreeMap::new(),
     };
     for y in 0..m.attributes.height * 2 {
@@ -320,4 +427,55 @@ pub(super) fn indoor_walk(
             }
         }
     }
+}
+
+#[test]
+fn authored_route_planner_preserves_dry_steps_and_skips_uncontrollable_ice_positions() {
+    let grid = RouteGrid {
+        floor: BTreeSet::from([(0, 0), (1, 0), (5, 0), (6, 0), (0, 1), (1, 1)]),
+        ice: BTreeSet::from([(2, 0), (3, 0), (4, 0)]),
+        blocked: BTreeSet::new(),
+        hazards: BTreeSet::new(),
+        doors: BTreeMap::new(),
+    };
+    assert_eq!(
+        grid.path((0, 0), (1, 1)).len(),
+        2,
+        "ordinary dry route remains tile by tile"
+    );
+    assert_eq!(
+        grid.path((0, 0), (6, 0)),
+        vec![GameButton::Right; 3],
+        "single input owns full ice course"
+    );
+    assert_eq!(
+        grid.path((6, 0), (0, 0)),
+        vec![GameButton::Left; 3],
+        "native reverse reaches original dry approach"
+    );
+    assert!(
+        !grid
+            .destinations((1, 0))
+            .iter()
+            .any(|(p, _)| grid.ice.contains(p)),
+        "no planned mid-slide stops"
+    );
+    let mut occupied = grid;
+    occupied.blocked.insert((3, 0));
+    assert!(
+        !occupied
+            .destinations((1, 0))
+            .iter()
+            .any(|(p, _)| *p == (5, 0)),
+        "ice never bypasses actor collision"
+    );
+    occupied.blocked.clear();
+    occupied.hazards.insert((3, 0));
+    assert!(
+        !occupied
+            .destinations((1, 0))
+            .iter()
+            .any(|(p, _)| *p == (5, 0)),
+        "ice never bypasses trainer sight"
+    );
 }

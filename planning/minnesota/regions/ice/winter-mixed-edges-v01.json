@@ -1,0 +1,134 @@
+{
+  "schema_version": 1,
+  "source_definition_sha256": {
+    "mn_border_pines": "6ce701854287c8bcb3798b9dc336bfad8090ecde9ad0e6e6466efb89a4bf9765",
+    "mn_north_shore": "979d36ed12ff70200b7796722471921775a544bb13b97bd29bd0622c18e7787e",
+    "mn_winter_outdoor": "e44e70b99e31444267bfb1728294f4bb83f387676f076a37cc4b4a3be3a31060",
+    "mn_winter_north_shore": "a4a72253323eb3ca21e018389eacb7bee6a270c6b637179424654778be94e898"
+  },
+  "targets": [
+    {
+      "tileset": "mn_winter_outdoor",
+      "source": "mn_border_pines",
+      "expected_blocks": 65,
+      "metatiles_sha256": "db16ee0f4ad6c2b14298712656d6ae1e1f2205c6bc513e05767662097d3564d2",
+      "graphics_sha256": "07930abcc97f8e7242a1d5d239f922f06187afe50c5af71772630d2b4f2d0435",
+      "foregrounds_sha256": "3d2a13b9d9264418f21bdabb0e84f4396aefdc425ea3f3ab3840f720e6106bee",
+      "snow_block": "3c",
+      "canopy_block": "3f",
+      "ground_glyph": "05",
+      "blocks": [
+        {
+          "id": "41",
+          "source_block": "13",
+          "collision": [
+            "FLOOR",
+            "FLOOR",
+            "FLOOR",
+            "WALL"
+          ]
+        },
+        {
+          "id": "42",
+          "source_block": "0e",
+          "collision": [
+            "FLOOR",
+            "HEADBUTT_TREE",
+            "FLOOR",
+            "HEADBUTT_TREE"
+          ]
+        },
+        {
+          "id": "43",
+          "source_block": "10",
+          "collision": [
+            "HEADBUTT_TREE",
+            "FLOOR",
+            "HEADBUTT_TREE",
+            "HEADBUTT_TREE"
+          ]
+        },
+        {
+          "id": "44",
+          "source_block": "11",
+          "collision": [
+            "FLOOR",
+            "FLOOR",
+            "HEADBUTT_TREE",
+            "HEADBUTT_TREE"
+          ]
+        },
+        {
+          "id": "45",
+          "source_block": "12",
+          "collision": [
+            "FLOOR",
+            "HEADBUTT_TREE",
+            "HEADBUTT_TREE",
+            "HEADBUTT_TREE"
+          ]
+        },
+        {
+          "id": "46",
+          "source_block": "14",
+          "collision": [
+            "HEADBUTT_TREE",
+            "FLOOR",
+            "FLOOR",
+            "FLOOR"
+          ]
+        },
+        {
+          "id": "47",
+          "source_block": "15",
+          "collision": [
+            "FLOOR",
+            "HEADBUTT_TREE",
+            "FLOOR",
+            "FLOOR"
+          ]
+        },
+        {
+          "id": "48",
+          "source_block": "16",
+          "collision": [
+            "FLOOR",
+            "FLOOR",
+            "HEADBUTT_TREE",
+            "FLOOR"
+          ]
+        }
+      ]
+    },
+    {
+      "tileset": "mn_winter_north_shore",
+      "source": "mn_north_shore",
+      "expected_blocks": 136,
+      "metatiles_sha256": "8f7eef4e2352f979b60443796af58cd53296d02db152db56d564efb00d10a8a1",
+      "graphics_sha256": "24d6f3c4539ed8e1e1ba8e4a797938f4484fe3bfd277a1f5be624d1cc5bea2b0",
+      "foregrounds_sha256": "3d2a13b9d9264418f21bdabb0e84f4396aefdc425ea3f3ab3840f720e6106bee",
+      "snow_block": "83",
+      "canopy_block": "86",
+      "ground_glyph": "06",
+      "blocks": [
+        {
+          "id": "88",
+          "source_block": "45",
+          "collision": [
+            "WALL",
+            "FLOOR",
+            "FLOOR",
+            "FLOOR"
+          ]
+        }
+      ]
+    }
+  ],
+  "source_file_sha256": {
+    "gfx/tilesets/bg_tiles.pal": "83ff1f3f9ab57e9d9cb021acb7689c169a7b1d6ebe78da4a294b8f4f7dc11bed",
+    "gfx/tilesets/mn_border_pines.2bpp": "69ae9730105cec8d1a80fde5c2dbece8668b82b0574f761582ba993e44960146",
+    "data/tilesets/mn_border_pines_metatiles.bin": "db9244ac11a8cb27b0ca64c35500904323fb6c58e73e5a6c1efd46bff7c97e8d",
+    "gfx/tilesets/mn_north_shore.2bpp": "72661575e29288cb9ecc73e14ce0b63aef763b2a085b900f2f910c2a2c89f49d",
+    "data/tilesets/mn_north_shore_metatiles.bin": "1c735fded81b29e8920ead944b89bce687179dea04d4e40080a3fea6f397e049"
+  }
+}

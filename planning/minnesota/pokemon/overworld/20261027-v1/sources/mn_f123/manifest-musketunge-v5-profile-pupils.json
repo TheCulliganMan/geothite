@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F123",
+  "species": [
+    {
+      "species_id": "MN_265",
+      "runtime_token": "MUSKETUNGE",
+      "palette_rgb555": [
+        32767,
+        26356,
+        8521,
+        0
+      ],
+      "shiny_palette_rgb555": [
+        32767,
+        24217,
+        10536,
+        0
+      ],
+      "fit": [
+        14,
+        14
+      ],
+      "alpha_threshold": 128,
+      "sampling": "source_center",
+      "minimum_foreground_samples": 16,
+      "black_priority_samples": 64,
+      "interior_black_samples": 64,
+      "opaque_interior_minimum_samples": 64,
+      "frames": [
+        {
+          "pose": "down_idle",
+          "source": "musketunge.overworld.imagegen-v1.png",
+          "crop": [
+            0,
+            71,
+            513,
+            429
+          ]
+        },
+        {
+          "pose": "up_idle",
+          "source": "musketunge.overworld.imagegen-v1.png",
+          "crop": [
+            433,
+            70,
+            513,
+            429
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "source": "musketunge.overworld.imagegen-v3-profile-pupils.png",
+          "crop": [
+            958,
+            121,
+            513,
+            429
+          ]
+        },
+        {
+          "pose": "down_step",
+          "source": "musketunge.overworld.imagegen-v1.png",
+          "crop": [
+            0,
+            548,
+            513,
+            429
+          ]
+        },
+        {
+          "pose": "up_step",
+          "source": "musketunge.overworld.imagegen-v1.png",
+          "crop": [
+            433,
+            547,
+            513,
+            429
+          ]
+        },
+        {
+          "pose": "left_step",
+          "source": "musketunge.overworld.imagegen-v3-profile-pupils.png",
+          "crop": [
+            958,
+            594,
+            513,
+            429
+          ]
+        }
+      ]
+    }
+  ]
+}

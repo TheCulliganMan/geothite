@@ -13,16 +13,17 @@ ROOT = Path(__file__).resolve().parents[3]
 
 
 class Client:
-    def __init__(self, process):
+    def __init__(self, process, timeout=30):
         self.process = process
         self.sequence = 0
+        self.timeout = timeout
 
     def rpc(self, method, params):
         self.sequence += 1
         request = dict(jsonrpc="2.0", id=self.sequence, method=method, params=params)
         self.process.stdin.write(json.dumps(request) + "\n")
         self.process.stdin.flush()
-        assert select.select([self.process.stdout], [], [], 30)[0], "live MCP observation timed out"
+        assert select.select([self.process.stdout], [], [], self.timeout)[0], "live MCP observation timed out"
         response = json.loads(self.process.stdout.readline())
         assert "error" not in response, response
         result = response["result"]

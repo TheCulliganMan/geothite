@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_223",
+  "result": "held",
+  "best_pupil_proven_candidate": {
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f102/cinderfen.manifest-native-eye-registration-v15.json",
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/true16-cinderfen-eye-registration-v15",
+    "detailed_proof": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f102/cinderfen.manifest-native-eye-registration-v15.proof.json",
+    "source_feature_proof": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f102/source-feature-proof-cinderfen-v15-held.json",
+    "defect": "Middle-to-lowest native gap collapses; all four actual source pupils pass."
+  },
+  "latest_gap_candidate": {
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f102/cinderfen.manifest-native-v16.json",
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/true16-cinderfen-v16",
+    "defect": "Three native levels separate, but both front pupils and west-step pupil are not isolated under attempted common source-center phases. Rear faces blank."
+  },
+  "all_sources_retained": true,
+  "accepted_coverage_native_pack_untouched": true
+}

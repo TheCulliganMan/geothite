@@ -1,0 +1,71 @@
+{
+  "tool": "built-in image_gen",
+  "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f002/pelletor-v4-native-pupils",
+  "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f002/manifest-pelletor-v4-native-pupils.json",
+  "normalized_receipt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f002/source-feature-proof-pelletor-v4-native-pupils.json",
+  "all_raws_prompts_rejected_trials_retained": true,
+  "no_native_pixel_painting": true,
+  "no_registry_or_pack_mutation": true,
+  "normal_shiny_boards_actually_viewed": true,
+  "canonical_palettes": [
+    [
+      32767,
+      5823,
+      7436,
+      0
+    ],
+    [
+      32767,
+      22501,
+      8583,
+      0
+    ]
+  ],
+  "native_bounds": [
+    [
+      1,
+      4,
+      13,
+      11
+    ],
+    [
+      2,
+      4,
+      11,
+      10
+    ],
+    [
+      3,
+      4,
+      9,
+      10
+    ],
+    [
+      1,
+      4,
+      13,
+      11
+    ],
+    [
+      2,
+      4,
+      11,
+      10
+    ],
+    [
+      3,
+      4,
+      9,
+      11
+    ]
+  ],
+  "retained_source_hashes": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f002/pelletor.overworld.imagegen-v2-profile-face.png": "7012798bb491d972fdcda39072c48cc51c3c3de3d04b20cc9018b7fafd1e2b2f",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f002/pelletor.overworld.imagegen-v1.png": "109884cda1f768e6bb974b80497e3d42c99bab836e8b9246f712568d56824af7",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f002/prompt-pelletor-v2-profile-face.txt": "a6245130881a6f54a0cf4e0c4934b136a6e480b9f8e9c849e72b83222697d337",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f002/prompt-pelletor-v1.txt": "0bfc992032b9d388af5f4772b04114f393404df417c4da2271331d98f9f8df03",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f002/pelletor.v1.original-path.txt": "5f6c188ae801d851f0a0aded054a39b9ec0f506010af26a783a5b42bb11ac14f",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f002/pelletor.v2-profile-face.original-path.txt": "9af6e91186d52e8b388ef5f18cb798385eb2995d7414473f77e7d61fa708e61a"
+  },
+  "status": "root independent visual/context acceptance pending"
+}

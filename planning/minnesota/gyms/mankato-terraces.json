@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "status": "Mankato terrace readability revision; source review pending.",
+  "status": "Published sand-terrace revision. Literal ordinary-party course, required native drops and reverse denial, optional retreat, badges/TM, Continue and both unchanged city carpets pass. User visual acceptance remains open.",
   "gyms": [
     {
       "slot": 2,
@@ -51,14 +51,14 @@
       ],
       "rows": [
         "zzzzTTTE",
-        "zzzz...r",
-        "zzzz..tr",
+        "zzzzuuur",
+        "zzzzuutr",
         "STTEphBE",
-        "l.php..r",
-        "l.p....r",
-        "ltp....r",
-        "SAphhhhE",
-        "lLwwwwRr",
+        "luphp..v",
+        "lup....v",
+        "ltp....v",
+        "SApqqqqE",
+        "aLwwwwRb",
         "###s####"
       ],
       "art": {
@@ -71,32 +71,32 @@
           "02"
         ],
         "S": [
-          "tower",
-          "33"
+          "cave",
+          "18"
         ],
         "E": [
-          "tower",
-          "34"
+          "cave",
+          "1a"
         ],
         "T": [
-          "tower",
-          "32"
+          "cave",
+          "19"
         ],
         "l": [
-          "tower",
-          "35"
+          "cave",
+          "1c"
         ],
         "r": [
-          "tower",
-          "36"
+          "cave",
+          "1e"
         ],
         "p": [
           "champions_room",
           "2a"
         ],
         "h": [
-          "cave",
-          "39"
+          "johto",
+          "56"
         ],
         "t": [
           "champions_room",
@@ -129,6 +129,26 @@
         "z": [
           "game_corner",
           "00"
+        ],
+        "u": [
+          "cave",
+          "09"
+        ],
+        "q": [
+          "cave",
+          "39"
+        ],
+        "v": [
+          "cave",
+          "0a"
+        ],
+        "a": [
+          "tower",
+          "35"
+        ],
+        "b": [
+          "tower",
+          "36"
         ]
       },
       "trainers": [
@@ -286,7 +306,7 @@
             4,
             16
           ],
-          "minimum_return_steps": 24
+          "minimum_return_steps": 22
         },
         {
           "id": "COURT_RETURN_DROP",

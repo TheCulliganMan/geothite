@@ -1,0 +1,176 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F120",
+  "species_id": "MN_257",
+  "name": "Hushiss",
+  "status": "native_compiled_author_inspected_root_world_context_review_pending",
+  "generation_tool": "built-in image_gen",
+  "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f120/hushiss.overworld.imagegen-v1.png",
+  "source_sha256": "c8f578886c1439cb37f1e30b719935878bca7aa49aed80a01c505df08fb16191",
+  "original_default_output": "/Users/ryanculligan/.codex/generated_images/01a179bf-dc2b-7352-8975-8b8f3a32e33b/exec-6e3386e0-e9d9-4cdd-9dde-253b3f57ded2.png",
+  "dimensions": [
+    1536,
+    1024
+  ],
+  "prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f120/prompt-hushiss-v1.txt",
+  "prompt_sha256": "a0c8b11f6cfade1541d6c511e75172a1e5a7b0379c0bfb0d3097f94decd1c8d1",
+  "reference_mapping": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f120/reference-mapping-hushiss-v1.json",
+  "proposed_native_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f120/manifest-hushiss-v1-pupil-proof.json",
+  "manifest_sha256": "54e716470d3dc8536f4706eb74a1464d1fb9c31374029dd4e26a31f734850a1d",
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f120/hushiss-v1-pupil-proof",
+  "normal_review": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f120/hushiss-v1-pupil-proof/review/line.normal-8x.png",
+  "review_sha256": "8aa22acdb53416ea8bb13ac187345087baf10adc377f710af7bbee9fe19ccfd0",
+  "palette_rgb555": [
+    32767,
+    22263,
+    10507,
+    0
+  ],
+  "shiny_palette_rgb555": [
+    32767,
+    24309,
+    8554,
+    0
+  ],
+  "native_bounds": [
+    [
+      3,
+      5,
+      9,
+      10
+    ],
+    [
+      2,
+      4,
+      9,
+      10
+    ],
+    [
+      2,
+      5,
+      11,
+      9
+    ],
+    [
+      3,
+      5,
+      9,
+      10
+    ],
+    [
+      2,
+      6,
+      10,
+      9
+    ],
+    [
+      3,
+      6,
+      11,
+      8
+    ]
+  ],
+  "pupil_proof": [
+    {
+      "pose": "down_idle",
+      "isolated_light_face_dots": [
+        [
+          6,
+          12
+        ],
+        [
+          8,
+          12
+        ]
+      ],
+      "bounds": [
+        3,
+        5,
+        9,
+        10
+      ]
+    },
+    {
+      "pose": "up_idle",
+      "isolated_light_face_dots": [],
+      "bounds": [
+        2,
+        4,
+        9,
+        10
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "isolated_light_face_dots": [
+        [
+          5,
+          10
+        ]
+      ],
+      "bounds": [
+        2,
+        5,
+        11,
+        9
+      ]
+    },
+    {
+      "pose": "down_step",
+      "isolated_light_face_dots": [
+        [
+          6,
+          12
+        ],
+        [
+          8,
+          12
+        ]
+      ],
+      "bounds": [
+        3,
+        5,
+        9,
+        10
+      ]
+    },
+    {
+      "pose": "up_step",
+      "isolated_light_face_dots": [],
+      "bounds": [
+        2,
+        6,
+        10,
+        9
+      ]
+    },
+    {
+      "pose": "left_step",
+      "isolated_light_face_dots": [
+        [
+          5,
+          10
+        ]
+      ],
+      "bounds": [
+        3,
+        6,
+        11,
+        8
+      ]
+    }
+  ],
+  "validation_results": {
+    "six_frames_16x16": true,
+    "runtime_png_16x96": true,
+    "native_2bpp_bytes": 384,
+    "tile_decode_matches_png_and_indexed_rows": true,
+    "binary_alpha": true,
+    "transparent_border": true,
+    "three_opaque_inks_only": true,
+    "normal_shiny_palette_words_exact": true,
+    "idle_step_pairs_different": true
+  },
+  "notes": "Actual native inspected: two separated south dot pupils and one west dot retained, stable eye anchors across slither pairs. Plain rear has no false face. Compact pale/plum coil and attached modest rattle; thin rim may simplify source outline at tiny scale. All candidate manifests retained; source-only common-transform crop registration, no painted pixels.",
+  "accepted": false
+}

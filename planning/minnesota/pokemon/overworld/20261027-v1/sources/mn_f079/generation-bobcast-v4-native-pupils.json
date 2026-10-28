@@ -1,0 +1,70 @@
+{
+  "tool": "built-in image_gen",
+  "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f079/bobcast-v4-native-pupils",
+  "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f079/manifest-bobcast-v4-native-pupils.json",
+  "normalized_receipt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f079/source-feature-proof-bobcast-v4-native-pupils.json",
+  "all_raws_prompts_rejected_trials_retained": true,
+  "no_native_pixel_painting": true,
+  "no_registry_or_pack_mutation": true,
+  "normal_shiny_boards_actually_viewed": true,
+  "canonical_palettes": [
+    [
+      32767,
+      7999,
+      18855,
+      0
+    ],
+    [
+      32767,
+      26599,
+      13554,
+      0
+    ]
+  ],
+  "native_bounds": [
+    [
+      3,
+      3,
+      9,
+      12
+    ],
+    [
+      3,
+      4,
+      9,
+      11
+    ],
+    [
+      4,
+      3,
+      7,
+      11
+    ],
+    [
+      3,
+      3,
+      9,
+      11
+    ],
+    [
+      3,
+      4,
+      9,
+      11
+    ],
+    [
+      4,
+      3,
+      7,
+      11
+    ]
+  ],
+  "retained_source_hashes": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f079/bobcast.overworld.imagegen-v1.png": "e8b1a79dee0ca2b3670218d1af6a534555379708e5006ca72815c26ee96159ea",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f079/bobcast.overworld.imagegen-v2-clear-eyes.png": "c26f07d1f437134a1ba118d0010855ad906c131c26b0b9b16576f5319fdbe3a2",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f079/prompt-bobcast-v2-clear-eyes.txt": "29229209cf8ecbdd0b6a40609dbd1d1e02425b5b82cc0b5f9a4b0896a432aafd",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f079/prompt-bobcast-v1.txt": "ba3d7256efec6872c7dbe88c18f34cc53e2014eafd99245780bbbce3c115d9e4",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f079/bobcast.v2-clear-eyes.original-path.txt": "038188b01ab3e65780c2e141ac9b3347a7b127c70c72e83d1f4941bab004dfd7"
+  },
+  "status": "root independent visual/context acceptance pending"
+}

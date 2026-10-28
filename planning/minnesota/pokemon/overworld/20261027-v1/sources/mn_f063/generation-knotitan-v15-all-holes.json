@@ -1,0 +1,79 @@
+{
+  "tool": "built-in image_gen",
+  "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f063/knotitan-v15-all-holes",
+  "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f063/manifest-knotitan-v15-all-holes.json",
+  "normalized_receipt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f063/source-feature-proof-knotitan-v15-all-holes.json",
+  "all_raws_prompts_rejected_trials_retained": true,
+  "no_native_pixel_painting": true,
+  "no_registry_or_pack_mutation": true,
+  "normal_shiny_boards_actually_viewed": true,
+  "canonical_palettes": [
+    [
+      32767,
+      13054,
+      3309,
+      0
+    ],
+    [
+      32767,
+      25486,
+      13637,
+      0
+    ]
+  ],
+  "native_bounds": [
+    [
+      1,
+      5,
+      14,
+      10
+    ],
+    [
+      1,
+      4,
+      13,
+      10
+    ],
+    [
+      3,
+      5,
+      12,
+      10
+    ],
+    [
+      1,
+      5,
+      14,
+      10
+    ],
+    [
+      1,
+      4,
+      12,
+      10
+    ],
+    [
+      3,
+      5,
+      12,
+      10
+    ]
+  ],
+  "retained_source_hashes": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f063/knotitan.overworld.imagegen-v4-profile-cheek.png": "65cf0b0448fd81c18c8ad99af0182c7f8d0c91f49326527bf7eea9a15b117b73",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f063/knotitan.overworld.imagegen-v5-tall-face.png": "6bb341233fd0f3b7e021f008bc5b83fd6058d5dde936056deb17a42ef39f5e33",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f063/knotitan.overworld.imagegen-v3-roomy-face.png": "b3d1a9bfaeda3b6f66a6f5bbb0ff6b26e2f738668560e07ffab6bc2e9478e2cf",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f063/knotitan.overworld.imagegen-v2-native-face.png": "27384c12b9894301c921b52f07eb06fe120f7a218987ca427b811fc1cdfba74f",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f063/knotitan.overworld.imagegen-v1.png": "9443c369ab3c88b14caa75e65deba5b484672ed165a0b5f84cde115a3cb8b24f",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f063/prompt-knotitan-v4-profile-cheek.txt": "bd39999a5f469f5c08d92d52505de8a25d8da34c2b48fb6bb6bd88799aa44bdc",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f063/prompt-knotitan-v5-tall-face.txt": "08cd929bb6017272c7f34f39451e038f0263c1ea71950738260327a37850b54c",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f063/prompt-knotitan-v3-roomy-face.txt": "3fcef170277bd78d11cfe557e0a837111a20315cbf613e7b8f33204f47385c85",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f063/prompt-knotitan-v2-native-face.txt": "12580f59c75683b79433310b79149a3ed8b0823ed7cab300a4ee94bf83c4f948",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f063/prompt-knotitan-v1.txt": "c4b4f1d263ad659aa16fbd2c8fee1a28fb8dc0a0ba59a277fc45da1f9ec0ee02",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f063/knotitan.v3-roomy-face.original-path.txt": "dc8bfd370288ccec7e380e9833dd222f5d481dd4ca3f4a820b7e5264ca656164",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f063/knotitan.v5-tall-face.original-path.txt": "41346084026c17617811f93c0b1383ff26f5a14837301f29189b82d3fc1fc3b4",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f063/knotitan.v4-profile-cheek.original-path.txt": "688165c233739cc8ea9f8537dc1b6ad8d04603a8f21cc4982210704f0ef4c122",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f063/knotitan.v2-native-face.original-path.txt": "a3d0fb8da1522aae0fa0fa5ffc01c3e6f852d848bf1dff72ee010387aabcce52"
+  },
+  "status": "root independent visual/context acceptance pending"
+}

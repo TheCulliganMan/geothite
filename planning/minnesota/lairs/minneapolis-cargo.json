@@ -1,0 +1,92 @@
+{
+  "id": "MnIceCargoBasement",
+  "status": "SOURCE CANDIDATE; not published or visually accepted",
+  "template": "GoldenrodUndergroundWarehouse",
+  "tileset": "underground",
+  "dimensions_metatiles": [
+    15,
+    12
+  ],
+  "border_block": "00",
+  "rows": [
+    "00 00 00 00 00 00 00 00 00 00 00 00 00 00 00",
+    "00 08 09 09 09 09 09 09 09 09 2c 2c 2c 0a 00",
+    "00 06 0d 0d 0d 0d 0d 0d 0d 0d 38 03 38 0e 00",
+    "00 06 0d 0b 0b 0b 0d 0b 0b 0b 0d 38 0d 0e 00",
+    "00 06 0d 0d 0d 0d 0d 0b 0d 0d 0d 0d 0d 0e 00",
+    "00 06 0d 0b 0d 0b 0b 0b 0d 0b 0b 0b 0d 0e 00",
+    "00 06 0d 0b 0d 0d 0d 0d 0d 0b 0d 0d 0d 0e 00",
+    "00 06 0d 0b 0b 0b 0b 0b 0b 0b 0d 0b 0d 0e 00",
+    "00 06 0d 0d 38 0d 0d 0d 0d 0d 0d 2b 0d 0e 00",
+    "00 06 02 0d 0b 0d 0b 0b 0b 0b 0b 0d 0d 0e 00",
+    "00 16 2c 2c 2c 2c 2c 2c 2c 2c 2c 2c 2c 17 00",
+    "00 00 00 00 00 00 00 00 00 00 00 00 00 00 00"
+  ],
+  "entrance": {
+    "active": [
+      5,
+      18
+    ],
+    "passive": [
+      4,
+      19
+    ],
+    "from": "MnMinneapolisDispatchOffice"
+  },
+  "relay_stair": {
+    "active": [
+      23,
+      4
+    ],
+    "passive": [
+      22,
+      5
+    ],
+    "to": "MnIceRelayFloor",
+    "requires": "EVENT_MN_ICE_CARGO_FEED_OFF"
+  },
+  "cargo_breaker": {
+    "read_tile": [
+      23,
+      17
+    ],
+    "approach": [
+      23,
+      18
+    ],
+    "result": "EVENT_MN_ICE_CARGO_FEED_OFF"
+  },
+  "block_changes": [
+    {
+      "metatile": [
+        11,
+        3
+      ],
+      "closed": "38",
+      "open": "0d",
+      "purpose": "actual sealed relay-stair alcove"
+    },
+    {
+      "metatile": [
+        4,
+        8
+      ],
+      "closed": "38",
+      "open": "0d",
+      "purpose": "shorter return to the public office after cutting cargo power"
+    }
+  ],
+  "activities": [
+    "The instrument-loading area leads to a worker who admits her role and helps disable the feed.",
+    "A middle guard covers the shorter aisle; the upper route is longer.",
+    "A worker helps the player understand the cargo feed and the holding system.",
+    "The breaker stops the feed, opens the sealed stair and gives a useful return shortcut."
+  ],
+  "geometry_contract": [
+    "Breaker approach reachable before the feed is cut.",
+    "Relay active/passive stair unreachable before the feed is cut, reachable afterward.",
+    "Open shutter shortens the ordinary breaker-to-office return.",
+    "Two central routes form a real loop around the middle rack.",
+    "No actor blocks the only ordinary return, and the source art remains native."
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F120",
+  "species_id": "MN_258",
+  "name": "Castanake",
+  "generation_tool": "built-in image_gen",
+  "status": "retained_unselected_native_readability_variant",
+  "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f120/castanake.overworld.imagegen-v2.png",
+  "source_sha256": "60491116844a74b4c4a76ea6e4764fa807124fdcd666b936d8e7316a2757e80f",
+  "original_default_output": "/Users/ryanculligan/.codex/generated_images/01a179bf-dc2b-7352-8975-8b8f3a32e33b/exec-190fcdc4-9979-4830-a4d7-6fe9b1895297.png",
+  "dimensions": [
+    1536,
+    1024
+  ],
+  "prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f120/prompt-castanake-v2.txt",
+  "prompt_sha256": "9d2e3539679c4741c61ca478c354c0e53ac078de97393416c0db943d1b95ceee",
+  "reference_mapping": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f120/reference-mapping-castanake-v2.json",
+  "reference_mapping_sha256": "a981b16c2b980e85017217fc3b74c3ef2d5dcd0f99dd5728018ebcdcef814d6b",
+  "notes": "Retained oversized paired-cup source and center/phase native trials. Rims still under one native pixel, chamber hollows merged into dark knots; selected no frames.",
+  "accepted": false
+}

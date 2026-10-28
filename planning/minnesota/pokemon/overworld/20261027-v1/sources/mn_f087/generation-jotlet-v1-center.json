@@ -1,0 +1,68 @@
+{
+  "tool": "built-in image_gen",
+  "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f087/jotlet-v1-center",
+  "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f087/manifest-jotlet-v1-center.json",
+  "normalized_receipt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f087/source-feature-proof-jotlet-v1-center.json",
+  "all_raws_prompts_rejected_trials_retained": true,
+  "no_native_pixel_painting": true,
+  "no_registry_or_pack_mutation": true,
+  "normal_shiny_boards_actually_viewed": true,
+  "canonical_palettes": [
+    [
+      32767,
+      17310,
+      6445,
+      0
+    ],
+    [
+      32767,
+      29648,
+      9638,
+      0
+    ]
+  ],
+  "native_bounds": [
+    [
+      2,
+      4,
+      12,
+      11
+    ],
+    [
+      2,
+      4,
+      12,
+      10
+    ],
+    [
+      4,
+      4,
+      8,
+      11
+    ],
+    [
+      2,
+      4,
+      12,
+      11
+    ],
+    [
+      2,
+      4,
+      12,
+      10
+    ],
+    [
+      4,
+      4,
+      9,
+      11
+    ]
+  ],
+  "retained_source_hashes": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f087/jotlet.overworld.imagegen-v1.png": "bccaa22aeb2316764c9f75a1d8f107ff515e91e559b50532883ff0f3381ba9eb",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f087/prompt-jotlet-v1.txt": "15386677ca2881ed4a26b7764120855d07a62afb244d0e92416ed5834e7cbfa1",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f087/jotlet.v1.original-path.txt": "58d66cfc38cb43af000ef986c3f14745ba2fc571f3338cb208475c3015a18992"
+  },
+  "status": "root independent visual/context acceptance pending"
+}

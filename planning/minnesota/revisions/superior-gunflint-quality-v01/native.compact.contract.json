@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "id": "MN_COMPACT_SUPERIOR_V1",
+  "module_preimages": {
+    "MnR11C01R00": "5624e112405638ff1695377b490e3656eff0187c7a639025bfc22d6d08b83716",
+    "MnR11C01R01": "63814e705845a9f9872d0aacfbb2a82b43fd9f529a5b5aa48df03bbf16e8834a",
+    "MnGrandMarais": "0b056ccbdf362892509629563e20e46af0ab95e8e699ce2a25ddee5236587406",
+    "MnMaraisCedarApproach": "719cca8740762261a0b1b5f1eda919ebf8aceff9460a749c19428cf0a668ddc4",
+    "MnMaraisInlandNeck": "6881f92cbadafc1925acc60d068f47d08fe64882dfb089faa208c9ebbac2042a",
+    "MnR12C00R00": "28b7690d3297c5cff8463db0301d0cdc3d58588dabd121d4abf7bef307b4aae9",
+    "MnR12C00R01": "ae6f6bc02b551d3f989a35eb750dcd1fdd8ff0d5cda48663199ac25f2a60b99c",
+    "MnR12C01R00": "dfa0aae404ec4667e2a0547281a1abec0ab666f03ec6d9084d3023a9ddf83d4f",
+    "MnR12C01R01": "7e4394b1e157785b4d0c7ea1067843763f34cbeb8f45d2220f81806c3e23c52e",
+    "MnR12C00R02": "6f3ce69ff5334f2f7e992c5ef0cc608779395daad0ab411b117a15b30e2dbac0",
+    "MnR12C01R02": "cc2fb80bbe3781fbbf9d5f1fddbdf040085fcee083c211f2024e53c2b73944ab",
+    "MnR12Cave1F": "a9fcdb81bd71e0e4c2865661f24df8afa5a7cea247b4548c0bbaea28afca4dd1",
+    "MnR12RangerHut": "cb3f9ab5884290c10e72b5ee06df55b1e40d8099196cee51b7a8dc04edf90c86",
+    "MnBoundaryWaters": "4c13cd1440b4e1652a78630352ac1da0aefea3bf1ddbc8d101eaeb3d95236f51"
+  },
+  "source_sha256": {
+    "coast": "81e7f9bce5aa465b170403678aa136781b13ba6645bac5cd92272921d574b627",
+    "r12_layout": "760537313a4fe083ec62ffea1e7ed6142c4cd837bc7ab67dc09c0d2b5e856b59",
+    "r12_dossier": "f75d2adbb0db37a19b9cbe795c57694778cf2fd74898c7ffcbc8a046337c42ca",
+    "cedar": "aca76077490a83ad12fe60e1a3447ed19ecb0f5665c39b3903e4d9be0bff8b05"
+  }
+}

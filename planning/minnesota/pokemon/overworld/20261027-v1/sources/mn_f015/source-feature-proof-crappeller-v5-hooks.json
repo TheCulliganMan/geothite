@@ -1,0 +1,224 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_318",
+  "result": "pass",
+  "manifest_sha256": "164d1ef5a558be2d8f52c79a92c443b52d4852b893b0856d7247a44cf002421b",
+  "bank_sha256": "cc4ee1ea3be773689898fad3ff2ab9755ca23b907a7f4c667586969e1c7cb83e",
+  "source_sha256": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f015/crappeller.overworld.imagegen-v2-native.png": "da5a548e499338e0088d22a651137ca33cce0c3b76e30ceab16d36a566641cbe",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f015/crappeller.overworld.imagegen-v3-hooks.png": "eac89038463673b88350f93bcd7fd61b61a1d118c4a8d124892653096f4b553a"
+  },
+  "canonical_eye_form": "Two isolated black source pupil components in the south brass cheek; one isolated pupil in west brass cheek. All six points retain opaque ink3 with four nonblack opaque neighbors. Swivels and outline corners are excluded.",
+  "nonrear_poses": [
+    {
+      "pose": "down_idle",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            7,
+            10
+          ],
+          "source_sample": [
+            226,
+            353
+          ],
+          "source_rgba": [
+            1,
+            0,
+            0,
+            253
+          ],
+          "source_component": [
+            210,
+            347,
+            32,
+            34
+          ],
+          "component_pixels": 1088,
+          "native_neighbors": [
+            2,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "native": [
+            9,
+            10
+          ],
+          "source_sample": [
+            295,
+            353
+          ],
+          "source_rgba": [
+            1,
+            0,
+            0,
+            253
+          ],
+          "source_component": [
+            277,
+            347,
+            34,
+            34
+          ],
+          "component_pixels": 1126,
+          "native_neighbors": [
+            1,
+            2,
+            1,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            4,
+            9
+          ],
+          "source_sample": [
+            1146,
+            320
+          ],
+          "source_rgba": [
+            0,
+            0,
+            0,
+            253
+          ],
+          "source_component": [
+            1131,
+            314,
+            31,
+            34
+          ],
+          "component_pixels": 1054,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            7,
+            9
+          ],
+          "source_sample": [
+            226,
+            832
+          ],
+          "source_rgba": [
+            1,
+            0,
+            0,
+            253
+          ],
+          "source_component": [
+            210,
+            818,
+            32,
+            33
+          ],
+          "component_pixels": 1020,
+          "native_neighbors": [
+            2,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "native": [
+            9,
+            9
+          ],
+          "source_sample": [
+            295,
+            832
+          ],
+          "source_rgba": [
+            1,
+            0,
+            0,
+            253
+          ],
+          "source_component": [
+            277,
+            818,
+            34,
+            33
+          ],
+          "component_pixels": 1097,
+          "native_neighbors": [
+            1,
+            2,
+            1,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            4,
+            8
+          ],
+          "source_sample": [
+            1146,
+            799
+          ],
+          "source_rgba": [
+            0,
+            0,
+            0,
+            253
+          ],
+          "source_component": [
+            1131,
+            789,
+            31,
+            37
+          ],
+          "component_pixels": 1147,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ]
+        }
+      ]
+    }
+  ],
+  "rear_anatomy": {
+    "result": "pass",
+    "poses": [
+      "up_idle",
+      "up_step"
+    ],
+    "notes": "Inspected both true rear poses: blank brass top, navy shell, crown blade and lower attached hook root. No eyes or face appear on the back."
+  },
+  "hook_anatomy": {
+    "result": "pass",
+    "notes": "Both west views use the coarse v3 source hooks. The three leftward caps are separated by transparent tip gaps; the attached vertical stem remains at screen right."
+  }
+}

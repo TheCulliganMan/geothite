@@ -24,6 +24,7 @@ mod battle_anim_graphics;
 mod field_waterfall;
 #[cfg(not(target_arch = "wasm32"))]
 mod native_tasks;
+mod overworld_step_events;
 use std::collections::{BTreeMap, BTreeSet, HashMap, HashSet, VecDeque};
 use std::fmt::Display;
 use std::hash::{Hash, Hasher};
@@ -52,6 +53,8 @@ use bevy::render::{Render, RenderApp, RenderSystems};
 use bevy::window::PrimaryWindow;
 use bevy::window::{PresentMode, WindowFocused, WindowResolution};
 use bevy::winit::{UpdateMode, WinitSettings};
+#[path = "bevy_shell/pokemon_overworld_art.rs"]
+mod pokemon_overworld_art;
 mod source_sprite_renderer;
 #[cfg(not(target_arch = "wasm32"))]
 mod source_view_schedule;
@@ -156,9 +159,10 @@ const CLASSIC_SCROLL_TILES_Y: i16 = VIEWPORT_TILES_Y + CLASSIC_SCROLL_HALO_TILES
 const VISUAL_WORLD_HALO_TILES: i16 = 96;
 #[cfg(not(feature = "voxel-view"))]
 const VISUAL_WORLD_HALO_TILES: i16 = CLASSIC_SCROLL_HALO_TILES;
+mod bridge_source_overlay;
+mod connected_world_sources;
 #[cfg(feature = "voxel-view")]
 mod source_window;
-mod connected_world_sources;
 const VISUAL_WORLD_TILES_X: i16 = VIEWPORT_TILES_X + VISUAL_WORLD_HALO_TILES * 2;
 const VISUAL_WORLD_TILES_Y: i16 = VIEWPORT_TILES_Y + VISUAL_WORLD_HALO_TILES * 2;
 // The Game Boy Color LCD is exactly 20 by 18 tiles.  Render source tiles at a
@@ -773,6 +777,7 @@ impl VisibleShellController {
             settle_visible_battle_after_action(&mut self.shell)?;
             sync_visible_battle_action_cursor(&mut self.shell);
         }
+        overworld_step_events::present(&mut self.shell, &frame)?;
         Ok(())
     }
 }
@@ -1121,6 +1126,7 @@ struct BevyRuntimeShell {
     pending_gender_selection: Option<VisibleGenderSelection>,
     screen_fade: Option<VisibleScreenFade>,
     visible_blackout_phase: Option<VisibleBlackoutPhase>,
+    poison_blackout_recovery: bool,
     pending_poison_blackout: bool,
     visible_walk_warp_phase: Option<VisibleWalkWarpPhase>,
     field_text_reveal: Option<VisibleFieldTextReveal>,
@@ -4672,9 +4678,14 @@ struct RenderedViewport {
     tile: Option<TilePosition>,
     map_texture: Option<Handle<Image>>,
     map_priority_texture: Option<Handle<Image>>,
+    /// Optional opaque bridge surface between Surf and ordinary Foot OAM.
+    map_bridge_texture: Option<Handle<Image>>,
+    bridge_scene: bool,
     transition_tiles: Vec<BattleTransitionTile>,
     transition_texture: Option<Handle<Image>>,
     transition_priority_texture: Option<Handle<Image>>,
+    transition_bridge_texture: Option<Handle<Image>>,
+    transition_bridge_mask: Vec<bool>,
     /// Read-only presentation metadata for an optional overworld renderer.
     /// These cells describe the same 20x18 source-tile viewport as
     /// `map_texture`; they never participate in collision or movement.
@@ -5610,6 +5621,9 @@ struct PlayfieldTile;
 
 #[derive(Component)]
 struct PlayfieldPriorityTile;
+
+#[derive(Component)]
+struct PlayfieldBridgeTile;
 
 #[derive(Component)]
 struct PlayerMarker;
@@ -7730,17 +7744,15 @@ fn apply_visible_shell_smoke_frame(
         }
     }
     let overworld_a = overworld_buttons.contains(&GameButton::A);
-    // Empty renderer-neutral frames still reach CheckTile on ice and currents.
-    // Modal owners keep those frames; an idle floor needs no extra game tick.
-    let forced_idle_frame = buttons.is_empty()
-        && runtime_shell
-            .shell
-            .session()
-            .overworld()
-            .forced_movement_direction()
-            .is_some()
-        && !has_visible_shell_direction_action(runtime_shell);
-    let frame = if overworld_buttons.is_empty() && !forced_idle_frame {
+    // An idle overworld frame still polls the joypad, even when no moving
+    // NPC is loaded. Otherwise the A that opened a dialogue remains held
+    // after it closes and the next conversation has no new press edge.
+    // The production scheduler also advances ordinary walkers and forced
+    // tile movement here; modal owners suspend that clock.
+    let idle_overworld_frame = buttons.is_empty()
+        && !has_visible_shell_direction_action(runtime_shell)
+        && !has_visible_shell_a_action(runtime_shell)?;
+    let frame = if overworld_buttons.is_empty() && !idle_overworld_frame {
         None
     } else {
         Some(runtime_shell.shell.tick(overworld_buttons)?.clone())
@@ -7814,6 +7826,9 @@ fn settle_visible_shell_controller(
                     continue;
                 }
             }
+        }
+        if overworld_step_events::advance(runtime_shell)? {
+            continue;
         }
         if runtime_shell.pokegear_exit.is_some() {
             // The explicit smoke driver has no audio backend. Keep the live
@@ -8703,6 +8718,7 @@ fn initialize_bevy_runtime_shell(
         pending_gender_selection: None,
         screen_fade: None,
         visible_blackout_phase: None,
+        poison_blackout_recovery: false,
         pending_poison_blackout: false,
         visible_walk_warp_phase: None,
         field_text_reveal: None,
@@ -9105,7 +9121,9 @@ pub fn authored_visual_jump_ledges(width:u16,blocks:&[u16],
 include!("bevy_shell/overworld_rendering.rs");
 include!("bevy_shell/start_menu.rs");
 include!("bevy_shell/competitive_battle.rs");
+mod minneapolis_falls_animation;
 mod tile_foreground;
+mod winter_render_behavior;
 include!("bevy_shell/bitmap_font.rs");
 #[path = "bevy_shell/metatile_render_flags.rs"]
 mod metatile_render_flags;
@@ -9254,6 +9272,18 @@ fn visible_controller_snapshot(runtime_shell: &mut BevyRuntimeShell) -> Result<R
                 queued_text_events: 0,
             });
             snapshot.ui.text_window_open = true;
+        }
+        if snapshot.pending_shop.is_some()
+            && runtime_shell.field_notice.is_none()
+            && runtime_shell.pc_notice.is_none()
+        {
+            // The mart owns its welcome, notice, quantity and menu surfaces.
+            // Core retains the script's text-window bit while the mart is open;
+            // expose the live production owner through the normal entries below.
+            snapshot.ui.menu = None;
+            snapshot.ui.text = None;
+            snapshot.ui.text_window_open = false;
+            snapshot.ui.window_open = false;
         }
         let tower_entries = if snapshot.battle.is_none() {
             visible_battle_tower_controller_entries(&runtime_shell)?

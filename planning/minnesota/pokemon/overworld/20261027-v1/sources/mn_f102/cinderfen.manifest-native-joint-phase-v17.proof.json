@@ -1,0 +1,352 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_223",
+  "status": "source-proof-pass; root visual/context acceptance required",
+  "selected_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f102/cinderfen.manifest-native-joint-phase-v17.json",
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f102/cinderfen-root-joint-v17",
+  "shared_transform": {
+    "source_bounds": [
+      12,
+      4,
+      344,
+      483
+    ],
+    "native_size": [
+      9,
+      14
+    ],
+    "native_origin": [
+      3,
+      1
+    ]
+  },
+  "all_four_nonrear_poses_have_actual_source_pupils": true,
+  "every_native_eye_cluster_maps_to_same_small_anatomical_source_pupil_component": true,
+  "actual_source_pupil_proofs": [
+    {
+      "pose": "down_idle",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f102/cinderfen.overworld.imagegen-v17-root-face.png",
+      "crop": [
+        125,
+        0,
+        367,
+        496
+      ],
+      "anatomically_identified_source_eye_boxes_xywh": [
+        [
+          251,
+          100,
+          30,
+          34
+        ],
+        [
+          335,
+          100,
+          30,
+          34
+        ]
+      ],
+      "actual_eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              6,
+              4
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                1,
+                0,
+                0,
+                253
+              ],
+              "bounds": [
+                251,
+                100,
+                30,
+                34
+              ],
+              "pixels": 1020,
+              "truncated_contour": false,
+              "native_pixel": [
+                6,
+                4
+              ],
+              "source_sample_pixel": [
+                270,
+                124
+              ]
+            }
+          ]
+        },
+        {
+          "native_cluster": [
+            [
+              8,
+              4
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                0,
+                0,
+                0,
+                253
+              ],
+              "bounds": [
+                335,
+                100,
+                30,
+                34
+              ],
+              "pixels": 1020,
+              "truncated_contour": false,
+              "native_pixel": [
+                8,
+                4
+              ],
+              "source_sample_pixel": [
+                347,
+                124
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f102/cinderfen.overworld.imagegen-v17-root-face.png",
+      "crop": [
+        1077,
+        0,
+        367,
+        496
+      ],
+      "anatomically_identified_source_eye_boxes_xywh": [
+        [
+          1202,
+          100,
+          25,
+          34
+        ]
+      ],
+      "actual_eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              6,
+              4
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                5,
+                2,
+                0,
+                253
+              ],
+              "bounds": [
+                1201,
+                100,
+                27,
+                34
+              ],
+              "pixels": 897,
+              "truncated_contour": false,
+              "native_pixel": [
+                6,
+                4
+              ],
+              "source_sample_pixel": [
+                1222,
+                124
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f102/cinderfen.overworld.imagegen-v17-root-face.png",
+      "crop": [
+        125,
+        499,
+        367,
+        496
+      ],
+      "anatomically_identified_source_eye_boxes_xywh": [
+        [
+          251,
+          599,
+          30,
+          32
+        ],
+        [
+          335,
+          599,
+          30,
+          32
+        ]
+      ],
+      "actual_eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              6,
+              4
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                2,
+                1,
+                0,
+                253
+              ],
+              "bounds": [
+                251,
+                599,
+                30,
+                32
+              ],
+              "pixels": 960,
+              "truncated_contour": false,
+              "native_pixel": [
+                6,
+                4
+              ],
+              "source_sample_pixel": [
+                270,
+                623
+              ]
+            }
+          ]
+        },
+        {
+          "native_cluster": [
+            [
+              8,
+              4
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                2,
+                1,
+                1,
+                253
+              ],
+              "bounds": [
+                335,
+                599,
+                30,
+                32
+              ],
+              "pixels": 960,
+              "truncated_contour": false,
+              "native_pixel": [
+                8,
+                4
+              ],
+              "source_sample_pixel": [
+                347,
+                623
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f102/cinderfen.overworld.imagegen-v17-root-face.png",
+      "crop": [
+        1077,
+        500,
+        367,
+        496
+      ],
+      "anatomically_identified_source_eye_boxes_xywh": [
+        [
+          1202,
+          600,
+          25,
+          33
+        ]
+      ],
+      "actual_eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              6,
+              4
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                4,
+                2,
+                0,
+                253
+              ],
+              "bounds": [
+                1201,
+                600,
+                27,
+                33
+              ],
+              "pixels": 857,
+              "truncated_contour": false,
+              "native_pixel": [
+                6,
+                4
+              ],
+              "source_sample_pixel": [
+                1222,
+                624
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "native_head_anchors_idle_walk_equal": true,
+  "validation": {
+    "runtime_2bpp_384_bytes_exact_allpixels": true,
+    "runtime_png16x96_index_parity": true,
+    "normal_shiny_palettebanks_exact": true,
+    "normal_shiny_all1536pixels_exact": true,
+    "transparent_border": true,
+    "idle_walk_pairs_distinct": true
+  },
+  "sha256": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f102/cinderfen-root-joint-v17/review/line.normal-8x.png": "ab76cf8318f351d677c590ff17bdb7311d70e9f3a0be7c8503dfec7ef9d4ca61",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f102/cinderfen-root-joint-v17/gfx/pokemon/cinderfen/overworld.gbcpal": "77020ba6e6a41e4543859ce16e20f32e35fc55165712429ea3a4eca207447a8d",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f102/cinderfen-root-joint-v17/gfx/pokemon/cinderfen/overworld-shiny.gbcpal": "9e0f8deeb5024b53d85eb1fdcd015ff72d1dc1d5df9a2f6c51c59cedb47a9fbc",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f102/cinderfen-root-joint-v17/review/line.shiny-8x.png": "2123857dbadd6f334996660f6684724a58260e693a38af4bdf6abc3d3b63a240",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f102/cinderfen.overworld.imagegen-v16.png": "982cf43a567bc82ccc419cae0e1b4dc950bc81e32ef7145a45005f7f4552fe74",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f102/cinderfen-root-joint-v17/compiled-index.json": "2ad724c88059389671843becac272b2be669052398d0196bdd9cfd2c866ad5a9",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f102/cinderfen.manifest-native-joint-phase-v17.json": "8a3d1b84742131364cc8cb3d13d953fa35e868f808f6838675c341f5f85f0ecd",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f102/cinderfen-root-joint-v17/gfx/pokemon/cinderfen/overworld.png": "4a32a4347883e92231ce4f166ea8abf9668dc259441d4f95415f735e7efd5097",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f102/cinderfen.overworld.imagegen-v17-root-face.png": "9f5dc407d8342eaa27626bdaf9ac18482cddd45cb1d42c520c8af893273d94dc",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f102/cinderfen-root-joint-v17/gfx/pokemon/cinderfen/overworld.2bpp": "2012e5748e0036f494b74cdb92c06398e34f0679030680bf4923e05652994e9f"
+  },
+  "actual_native_boards_viewed": true,
+  "rear_review": "plain rear head, no copied face; actual normal/shiny viewed"
+}

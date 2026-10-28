@@ -1,0 +1,188 @@
+{
+  "loobit": [
+    {
+      "pose": "down_idle",
+      "native_bounds": [
+        2,
+        4,
+        11,
+        11
+      ],
+      "opaque": 76
+    },
+    {
+      "pose": "up_idle",
+      "native_bounds": [
+        3,
+        4,
+        10,
+        11
+      ],
+      "opaque": 71
+    },
+    {
+      "pose": "left_idle",
+      "native_bounds": [
+        2,
+        4,
+        11,
+        10
+      ],
+      "opaque": 71
+    },
+    {
+      "pose": "down_step",
+      "native_bounds": [
+        2,
+        4,
+        11,
+        11
+      ],
+      "opaque": 74
+    },
+    {
+      "pose": "up_step",
+      "native_bounds": [
+        3,
+        4,
+        10,
+        11
+      ],
+      "opaque": 68
+    },
+    {
+      "pose": "left_step",
+      "native_bounds": [
+        2,
+        4,
+        12,
+        10
+      ],
+      "opaque": 72
+    }
+  ],
+  "yodeloon": [
+    {
+      "pose": "down_idle",
+      "native_bounds": [
+        3,
+        2,
+        9,
+        13
+      ],
+      "opaque": 63
+    },
+    {
+      "pose": "up_idle",
+      "native_bounds": [
+        3,
+        2,
+        9,
+        12
+      ],
+      "opaque": 65
+    },
+    {
+      "pose": "left_idle",
+      "native_bounds": [
+        2,
+        2,
+        11,
+        13
+      ],
+      "opaque": 67
+    },
+    {
+      "pose": "down_step",
+      "native_bounds": [
+        3,
+        2,
+        9,
+        13
+      ],
+      "opaque": 65
+    },
+    {
+      "pose": "up_step",
+      "native_bounds": [
+        3,
+        2,
+        9,
+        13
+      ],
+      "opaque": 66
+    },
+    {
+      "pose": "left_step",
+      "native_bounds": [
+        2,
+        2,
+        11,
+        13
+      ],
+      "opaque": 70
+    }
+  ],
+  "reverloon": [
+    {
+      "pose": "down_idle",
+      "native_bounds": [
+        1,
+        3,
+        14,
+        12
+      ],
+      "opaque": 100
+    },
+    {
+      "pose": "up_idle",
+      "native_bounds": [
+        1,
+        3,
+        12,
+        11
+      ],
+      "opaque": 82
+    },
+    {
+      "pose": "left_idle",
+      "native_bounds": [
+        3,
+        3,
+        12,
+        12
+      ],
+      "opaque": 89
+    },
+    {
+      "pose": "down_step",
+      "native_bounds": [
+        1,
+        3,
+        14,
+        12
+      ],
+      "opaque": 103
+    },
+    {
+      "pose": "up_step",
+      "native_bounds": [
+        1,
+        3,
+        12,
+        11
+      ],
+      "opaque": 81
+    },
+    {
+      "pose": "left_step",
+      "native_bounds": [
+        3,
+        3,
+        12,
+        12
+      ],
+      "opaque": 87
+    }
+  ]
+}

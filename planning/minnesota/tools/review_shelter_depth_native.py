@@ -36,15 +36,16 @@ def camera(scene, at, out, label, player_origin):
                         (left, top, left + 640, top + 576)).convert("RGB")
 
 
-def measured_player(image, player):
+def measured_player(image, player, scale=3):
     """Measure unique exact OAM; finite-map LCD clamping can move CHRIS."""
-    scaled = player.resize((48, 48), Image.Resampling.NEAREST)
-    opaque = [(x, y, scaled.getpixel((x, y))[:3]) for y in range(48) for x in range(48)
+    side = 16 * scale
+    scaled = player.resize((side, side), Image.Resampling.NEAREST)
+    opaque = [(x, y, scaled.getpixel((x, y))[:3]) for y in range(side) for x in range(side)
               if scaled.getpixel((x, y))[3]]
     seed = next(v for v in opaque if v[2][0] > v[2][2] + 30)
     found = []
-    for y in range(image.height - 47):
-        for x in range(image.width - 47):
+    for y in range(image.height - side + 1):
+        for x in range(image.width - side + 1):
             if image.getpixel((x + seed[0], y + seed[1])) == seed[2] and all(
                 image.getpixel((x + u, y + v)) == rgb for u, v, rgb in opaque
             ):

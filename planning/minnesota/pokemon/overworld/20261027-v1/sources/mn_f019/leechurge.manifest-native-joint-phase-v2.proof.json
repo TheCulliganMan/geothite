@@ -1,0 +1,345 @@
+{
+  "species_id": "MN_052",
+  "name": "leechurge",
+  "status": "native-review-recommended; root independent review and context required",
+  "selected_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f019/leechurge.manifest-native-joint-phase-v2.json",
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/true16-leechurge-joint-phase-v2",
+  "shared_transform": {
+    "source_bounds": [
+      12,
+      12,
+      461,
+      385
+    ],
+    "native_size": [
+      14,
+      11
+    ],
+    "native_origin": [
+      1,
+      4
+    ]
+  },
+  "all_four_nonrear_poses_actual_pupils_pass": true,
+  "each_native_eye_cluster_maps_to_one_actual_small_source_pupil_component": true,
+  "actual_source_pupil_proofs": [
+    {
+      "pose": "down_idle",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f019/leechurge.overworld.imagegen-v2.png",
+      "crop": [
+        26,
+        77,
+        485,
+        409
+      ],
+      "actual_source_eye_bounds": [
+        [
+          211,
+          170,
+          29,
+          31
+        ],
+        [
+          298,
+          170,
+          29,
+          31
+        ]
+      ],
+      "eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              6,
+              6
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                1,
+                0,
+                1,
+                254
+              ],
+              "bounds": [
+                211,
+                170,
+                29,
+                31
+              ],
+              "pixels": 899,
+              "truncated_contour": false,
+              "native_pixel": [
+                6,
+                6
+              ],
+              "source_sample_pixel": [
+                219,
+                176
+              ]
+            }
+          ]
+        },
+        {
+          "native_cluster": [
+            [
+              9,
+              6
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                0,
+                0,
+                0,
+                253
+              ],
+              "bounds": [
+                298,
+                170,
+                29,
+                31
+              ],
+              "pixels": 899,
+              "truncated_contour": false,
+              "native_pixel": [
+                9,
+                6
+              ],
+              "source_sample_pixel": [
+                317,
+                176
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f019/leechurge.overworld.imagegen-v2.png",
+      "crop": [
+        1041,
+        77,
+        485,
+        409
+      ],
+      "actual_source_eye_bounds": [
+        [
+          1190,
+          169,
+          29,
+          31
+        ]
+      ],
+      "eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              5,
+              6
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                0,
+                0,
+                0,
+                253
+              ],
+              "bounds": [
+                1190,
+                169,
+                29,
+                31
+              ],
+              "pixels": 899,
+              "truncated_contour": false,
+              "native_pixel": [
+                5,
+                6
+              ],
+              "source_sample_pixel": [
+                1201,
+                176
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f019/leechurge.overworld.imagegen-v2.png",
+      "crop": [
+        28,
+        552,
+        485,
+        409
+      ],
+      "actual_source_eye_bounds": [
+        [
+          211,
+          637,
+          30,
+          31
+        ],
+        [
+          298,
+          637,
+          29,
+          31
+        ]
+      ],
+      "eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              6,
+              6
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                0,
+                0,
+                0,
+                253
+              ],
+              "bounds": [
+                211,
+                637,
+                30,
+                31
+              ],
+              "pixels": 884,
+              "truncated_contour": false,
+              "native_pixel": [
+                6,
+                6
+              ],
+              "source_sample_pixel": [
+                221,
+                651
+              ]
+            }
+          ]
+        },
+        {
+          "native_cluster": [
+            [
+              9,
+              6
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                1,
+                0,
+                0,
+                253
+              ],
+              "bounds": [
+                298,
+                637,
+                29,
+                31
+              ],
+              "pixels": 879,
+              "truncated_contour": false,
+              "native_pixel": [
+                9,
+                6
+              ],
+              "source_sample_pixel": [
+                319,
+                651
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f019/leechurge.overworld.imagegen-v2.png",
+      "crop": [
+        1041,
+        552,
+        485,
+        409
+      ],
+      "actual_source_eye_bounds": [
+        [
+          1191,
+          635,
+          29,
+          31
+        ]
+      ],
+      "eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              5,
+              6
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                1,
+                0,
+                0,
+                253
+              ],
+              "bounds": [
+                1191,
+                635,
+                29,
+                31
+              ],
+              "pixels": 898,
+              "truncated_contour": false,
+              "native_pixel": [
+                5,
+                6
+              ],
+              "source_sample_pixel": [
+                1201,
+                651
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "old_native_poses_preserved_exactly": [
+    "down_idle",
+    "up_idle",
+    "left_idle",
+    "down_step",
+    "up_step",
+    "left_step"
+  ],
+  "normal_shiny_runtime_parity": "all1536pixels exact each",
+  "canonical_palette_bytes": "exact",
+  "all_three_walk_pairs_distinct": true,
+  "rear_review": "both rear native poses viewed; no copied face",
+  "normal_shiny_native_boards_actually_viewed": true,
+  "accepted_coverage_native_pack_untouched": true,
+  "manifest_sha256": "a0deaef48c7f1ad50af29534dccc21551430852d225ece61d4db97e277dcd12f",
+  "compiled_index_sha256": "f722a6dcc7492899551abc3e2334729da821da9347f3eb03ac1a769ec55b77bb"
+}

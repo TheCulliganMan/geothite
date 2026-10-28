@@ -6,13 +6,17 @@ use std::collections::{BTreeMap, HashMap};
 mod control;
 mod kernels;
 mod midi;
+mod output_envelope;
+pub use output_envelope::OutputEnvelope;
 mod render;
 mod source_clock;
-pub use source_clock::{SourceAudioClock, SourceChannelState, SourceChannelStep, SourceCommandStep};
 use control::expand;
 pub use control::{link, validate_references};
 use kernels::*;
 pub use midi::{decode_midi, encode_midi};
+pub use source_clock::{
+    SourceAudioClock, SourceChannelState, SourceChannelStep, SourceCommandStep,
+};
 
 pub const SAMPLE_RATE: usize = 44_100;
 const FRAME_NUM: usize = SAMPLE_RATE * 70_224;
@@ -30,6 +34,8 @@ pub struct Program {
     pub music_data: MusicData,
     pub cry_pitch: Option<i64>,
     pub cry_length: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub output_envelope: Option<OutputEnvelope>,
 }
 #[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
@@ -281,8 +287,16 @@ pub fn render(program: &Program, context: SynthContext) -> Result<Rendered> {
         })
         .collect();
     r.sync();
+    let mut samples = r.mix();
+    if let Some(envelope) = &program.output_envelope {
+        ensure!(
+            r.loops.is_empty(),
+            "output envelope requires a finite program"
+        );
+        envelope.apply(&mut samples, SAMPLE_RATE)?;
+    }
     Ok(Rendered {
-        samples: r.mix(),
+        samples,
         sample_rate: SAMPLE_RATE,
         loop_samples: r.loops.iter().map(|(n, (_, s))| (*n, *s)).collect(),
         channel_frames: r.frames,
@@ -375,6 +389,7 @@ mod source_timing_tests {
             profile: "pokecrystal-midi-v1".into(),
             cry_pitch: None,
             cry_length: None,
+            output_envelope: None,
             music_data: MusicData {
                 channel_count: 2,
                 channels: BTreeMap::from([

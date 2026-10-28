@@ -1,0 +1,745 @@
+{
+  "species_id": "MN_093",
+  "name": "tiltawisp",
+  "status": "native-review-recommended; root independent review and context required",
+  "selected_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f042/tiltawisp.manifest-native-joint-phase-v5.json",
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/true16-tiltawisp-v5",
+  "shared_transform": {
+    "source_bounds": [
+      12,
+      12,
+      311,
+      338
+    ],
+    "native_size": [
+      12,
+      14
+    ],
+    "native_origin": [
+      2,
+      1
+    ]
+  },
+  "all_four_nonrear_poses_actual_pupils_pass": true,
+  "each_native_eye_cluster_maps_to_one_actual_small_source_pupil_component": true,
+  "actual_source_pupil_proofs": [
+    {
+      "pose": "down_idle",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f042/tiltawisp.overworld.imagegen-v5.png",
+      "crop": [
+        50,
+        129,
+        335,
+        362
+      ],
+      "actual_source_eye_bounds": [
+        [
+          132,
+          265,
+          25,
+          35
+        ],
+        [
+          276,
+          265,
+          25,
+          35
+        ]
+      ],
+      "eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              5,
+              6
+            ],
+            [
+              5,
+              7
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                2,
+                1,
+                1,
+                253
+              ],
+              "bounds": [
+                132,
+                265,
+                25,
+                35
+              ],
+              "pixels": 842,
+              "truncated_contour": false,
+              "native_pixel": [
+                5,
+                6
+              ],
+              "source_sample_pixel": [
+                152,
+                273
+              ]
+            },
+            {
+              "black": true,
+              "rgba": [
+                4,
+                2,
+                0,
+                253
+              ],
+              "bounds": [
+                132,
+                265,
+                25,
+                35
+              ],
+              "pixels": 842,
+              "truncated_contour": false,
+              "native_pixel": [
+                5,
+                7
+              ],
+              "source_sample_pixel": [
+                152,
+                297
+              ]
+            }
+          ]
+        },
+        {
+          "native_cluster": [
+            [
+              10,
+              6
+            ],
+            [
+              10,
+              7
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                2,
+                1,
+                0,
+                253
+              ],
+              "bounds": [
+                276,
+                265,
+                25,
+                35
+              ],
+              "pixels": 875,
+              "truncated_contour": false,
+              "native_pixel": [
+                10,
+                6
+              ],
+              "source_sample_pixel": [
+                282,
+                273
+              ]
+            },
+            {
+              "black": true,
+              "rgba": [
+                4,
+                3,
+                1,
+                253
+              ],
+              "bounds": [
+                276,
+                265,
+                25,
+                35
+              ],
+              "pixels": 875,
+              "truncated_contour": false,
+              "native_pixel": [
+                10,
+                7
+              ],
+              "source_sample_pixel": [
+                282,
+                297
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f042/tiltawisp.overworld.imagegen-v5.png",
+      "crop": [
+        793,
+        119,
+        335,
+        362
+      ],
+      "actual_source_eye_bounds": [
+        [
+          912,
+          265,
+          24,
+          24
+        ]
+      ],
+      "eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              6,
+              7
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                6,
+                5,
+                2,
+                253
+              ],
+              "bounds": [
+                912,
+                265,
+                24,
+                24
+              ],
+              "pixels": 576,
+              "truncated_contour": false,
+              "native_pixel": [
+                6,
+                7
+              ],
+              "source_sample_pixel": [
+                921,
+                287
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f042/tiltawisp.overworld.imagegen-v5.png",
+      "crop": [
+        50,
+        525,
+        335,
+        362
+      ],
+      "actual_source_eye_bounds": [
+        [
+          132,
+          672,
+          25,
+          36
+        ],
+        [
+          276,
+          672,
+          25,
+          36
+        ]
+      ],
+      "eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              5,
+              7
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                1,
+                0,
+                0,
+                253
+              ],
+              "bounds": [
+                132,
+                672,
+                25,
+                36
+              ],
+              "pixels": 875,
+              "truncated_contour": false,
+              "native_pixel": [
+                5,
+                7
+              ],
+              "source_sample_pixel": [
+                152,
+                693
+              ]
+            }
+          ]
+        },
+        {
+          "native_cluster": [
+            [
+              10,
+              7
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                2,
+                1,
+                0,
+                253
+              ],
+              "bounds": [
+                276,
+                672,
+                25,
+                36
+              ],
+              "pixels": 900,
+              "truncated_contour": false,
+              "native_pixel": [
+                10,
+                7
+              ],
+              "source_sample_pixel": [
+                282,
+                693
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f042/tiltawisp.overworld.imagegen-v5.png",
+      "crop": [
+        793,
+        514,
+        335,
+        362
+      ],
+      "actual_source_eye_bounds": [
+        [
+          899,
+          672,
+          25,
+          24
+        ]
+      ],
+      "eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              6,
+              7
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                11,
+                7,
+                2,
+                253
+              ],
+              "bounds": [
+                899,
+                672,
+                25,
+                24
+              ],
+              "pixels": 600,
+              "truncated_contour": false,
+              "native_pixel": [
+                6,
+                7
+              ],
+              "source_sample_pixel": [
+                921,
+                682
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "old_native_poses_preserved_exactly": [
+    "down_idle",
+    "up_idle",
+    "left_idle",
+    "down_step",
+    "up_step",
+    "left_step"
+  ],
+  "normal_shiny_runtime_parity": "all1536pixels exact each",
+  "canonical_palette_bytes": "exact",
+  "all_three_walk_pairs_distinct": true,
+  "rear_review": "Both rear native poses viewed: broad blank violet back-of-mask, no copied eye windows/pupils; swept horn cups, lower nested ring bands, two ribbon arms and curled lower tail retained.",
+  "normal_shiny_native_boards_actually_viewed": true,
+  "accepted_coverage_native_pack_untouched": true,
+  "manifest_sha256": "1abd5d0223bc9d6719f0315b5f3176d3be2455e80329de1dd9d72c1bbbfd1c96",
+  "compiled_index_sha256": "4b4b9ebe28054229671652767794b1888153ac8e9d03af6c0bda10d233075961",
+  "canonical_eye_window_proof": [
+    {
+      "pose": "down_idle",
+      "distinct_primary_gold_eye_window_components": [
+        [
+          [
+            3,
+            5
+          ],
+          [
+            3,
+            6
+          ],
+          [
+            3,
+            7
+          ],
+          [
+            3,
+            8
+          ],
+          [
+            4,
+            5
+          ],
+          [
+            4,
+            6
+          ],
+          [
+            4,
+            7
+          ],
+          [
+            4,
+            8
+          ],
+          [
+            5,
+            5
+          ],
+          [
+            5,
+            8
+          ],
+          [
+            6,
+            5
+          ],
+          [
+            6,
+            6
+          ],
+          [
+            6,
+            7
+          ],
+          [
+            6,
+            8
+          ]
+        ],
+        [
+          [
+            9,
+            5
+          ],
+          [
+            9,
+            6
+          ],
+          [
+            9,
+            7
+          ],
+          [
+            9,
+            8
+          ],
+          [
+            10,
+            5
+          ],
+          [
+            10,
+            8
+          ],
+          [
+            11,
+            5
+          ],
+          [
+            11,
+            6
+          ],
+          [
+            11,
+            7
+          ],
+          [
+            11,
+            8
+          ],
+          [
+            12,
+            5
+          ],
+          [
+            12,
+            6
+          ],
+          [
+            12,
+            7
+          ],
+          [
+            12,
+            8
+          ]
+        ]
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "distinct_primary_gold_eye_window_components": [
+        [
+          [
+            5,
+            5
+          ],
+          [
+            5,
+            6
+          ],
+          [
+            5,
+            7
+          ],
+          [
+            5,
+            8
+          ],
+          [
+            6,
+            5
+          ],
+          [
+            6,
+            6
+          ],
+          [
+            6,
+            8
+          ],
+          [
+            7,
+            5
+          ],
+          [
+            7,
+            6
+          ],
+          [
+            7,
+            7
+          ],
+          [
+            7,
+            8
+          ],
+          [
+            8,
+            6
+          ],
+          [
+            8,
+            7
+          ],
+          [
+            8,
+            8
+          ]
+        ]
+      ]
+    },
+    {
+      "pose": "down_step",
+      "distinct_primary_gold_eye_window_components": [
+        [
+          [
+            3,
+            6
+          ],
+          [
+            3,
+            7
+          ],
+          [
+            3,
+            8
+          ],
+          [
+            4,
+            6
+          ],
+          [
+            4,
+            7
+          ],
+          [
+            4,
+            8
+          ],
+          [
+            5,
+            6
+          ],
+          [
+            5,
+            8
+          ],
+          [
+            6,
+            6
+          ],
+          [
+            6,
+            7
+          ],
+          [
+            6,
+            8
+          ]
+        ],
+        [
+          [
+            9,
+            6
+          ],
+          [
+            9,
+            7
+          ],
+          [
+            9,
+            8
+          ],
+          [
+            10,
+            6
+          ],
+          [
+            10,
+            8
+          ],
+          [
+            11,
+            6
+          ],
+          [
+            11,
+            7
+          ],
+          [
+            11,
+            8
+          ],
+          [
+            12,
+            6
+          ],
+          [
+            12,
+            7
+          ],
+          [
+            12,
+            8
+          ]
+        ]
+      ]
+    },
+    {
+      "pose": "left_step",
+      "distinct_primary_gold_eye_window_components": [
+        [
+          [
+            4,
+            7
+          ],
+          [
+            4,
+            8
+          ],
+          [
+            5,
+            6
+          ],
+          [
+            5,
+            7
+          ],
+          [
+            5,
+            8
+          ],
+          [
+            5,
+            9
+          ],
+          [
+            6,
+            6
+          ],
+          [
+            6,
+            8
+          ],
+          [
+            6,
+            9
+          ],
+          [
+            7,
+            6
+          ],
+          [
+            7,
+            7
+          ],
+          [
+            7,
+            8
+          ],
+          [
+            7,
+            9
+          ]
+        ]
+      ]
+    }
+  ]
+}

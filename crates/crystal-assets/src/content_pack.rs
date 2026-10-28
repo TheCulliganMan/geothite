@@ -6338,6 +6338,8 @@ pub struct ModpackCrystalMidiProgram {
     pub music_data: ModpackAsmMusicData,
     pub cry_pitch: Option<i64>,
     pub cry_length: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub output_envelope: Option<crystal_audio::synth::OutputEnvelope>,
 }
 
 impl ModpackCrystalMidiProgram {

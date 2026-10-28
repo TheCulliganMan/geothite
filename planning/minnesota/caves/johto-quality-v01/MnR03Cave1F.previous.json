@@ -1,0 +1,290 @@
+{
+  "id": "MnR03Cave1F",
+  "template": "UnionCave1F",
+  "dimensions_metatiles": [
+    8,
+    6
+  ],
+  "rows": [
+    "01 01 01 01 01 01 01 01",
+    "01 01 04 05 05 05 06 01",
+    "01 04 02 0a 34 08 0a 01",
+    "01 20 02 0a 2d 20 22 01",
+    "01 01 20 07 2d 01 01 01",
+    "01 01 01 01 01 01 01 01"
+  ],
+  "exits": [
+    [
+      7,
+      9
+    ]
+  ],
+  "clear_arrival": [
+    7,
+    8
+  ],
+  "exit_collision": "LADDER",
+  "border_block": 1,
+  "residents": [
+    {
+      "id": "MN_R03_CAVE_WALKER",
+      "sprite": "SPRITE_POKEFAN_M",
+      "tile": [
+        5,
+        5
+      ],
+      "facing": "south",
+      "lines": [
+        "A pocket of dry",
+        "stone by the bank.",
+        "The path curves",
+        "around that rock.",
+        "Take the far cache",
+        "and circle back."
+      ]
+    }
+  ],
+  "items": [
+    {
+      "id": "MN_R03_ITEM_02",
+      "item": "GREAT_BALL",
+      "quantity": 1,
+      "flag": "EVENT_MN_R03_ITEM_02",
+      "tile": [
+        12,
+        5
+      ]
+    }
+  ],
+  "signs": [],
+  "purpose": "Small dry-bank cave: an attached granite nose makes the far Great Ball pocket a short blind bend around real rock, as the original walker describes. One continuous ordinary walking route follows the curved lip from the original mouth past the original resident to the far cache and back. The rock nose is attached to the south boundary, not a loose central boulder ring. No stair or field-move requirement is invented for this flat pocket.",
+  "candidate_status": "Installed 510-map native review; the local production-controller case PASS.",
+  "review_contract": {
+    "palette_group": "nite",
+    "quality_revision": "r03-v02-native-directional-roof-audit",
+    "clear_arrivals_core": [
+      [
+        7,
+        8
+      ]
+    ],
+    "ordinary_waypoints_core": [
+      [
+        7,
+        8
+      ],
+      [
+        6,
+        7
+      ],
+      [
+        4,
+        6
+      ],
+      [
+        6,
+        5
+      ],
+      [
+        6,
+        3
+      ],
+      [
+        9,
+        3
+      ],
+      [
+        11,
+        3
+      ],
+      [
+        11,
+        5
+      ],
+      [
+        12,
+        6
+      ]
+    ],
+    "viewpoints": [
+      {
+        "id": "mouth_bend",
+        "tile": [
+          7,
+          8
+        ]
+      },
+      {
+        "id": "walker_approach",
+        "tile": [
+          5,
+          6
+        ]
+      },
+      {
+        "id": "granite_nose_turn",
+        "tile": [
+          7,
+          3
+        ]
+      },
+      {
+        "id": "far_cache_approach",
+        "tile": [
+          11,
+          5
+        ]
+      },
+      {
+        "id": "cache_back_corner",
+        "tile": [
+          12,
+          6
+        ]
+      },
+      {
+        "id": "weakest_north_lip",
+        "tile": [
+          9,
+          3
+        ]
+      }
+    ],
+    "controller_probes": {
+      "stairs": [],
+      "ledge_lanes": [],
+      "ledge_shoulders": [],
+      "mouth": [
+        7,
+        9
+      ],
+      "clear_arrival": [
+        7,
+        8
+      ],
+      "walker_approach": [
+        5,
+        6
+      ],
+      "walker_facing": "up",
+      "cache_approach": [
+        11,
+        5
+      ],
+      "cache_facing": "right",
+      "nose_wall_core": [
+        [
+          8,
+          4
+        ],
+        [
+          9,
+          4
+        ],
+        [
+          8,
+          5
+        ],
+        [
+          9,
+          5
+        ],
+        [
+          8,
+          6
+        ],
+        [
+          9,
+          6
+        ],
+        [
+          8,
+          7
+        ],
+        [
+          9,
+          7
+        ],
+        [
+          8,
+          8
+        ],
+        [
+          9,
+          8
+        ]
+      ],
+      "exterior_active": [
+        8,
+        37
+      ],
+      "exterior_passive_return": [
+        8,
+        38
+      ],
+      "upper_neck_barrier_core": [
+        [
+          8,
+          2
+        ],
+        [
+          9,
+          2
+        ],
+        [
+          8,
+          3
+        ],
+        [
+          9,
+          3
+        ]
+      ],
+      "native_navigation_model": "Stock UP_WALL roof quadrants remain directional land. Native reachability includes them: entering Down is blocked; leaving Up is blocked. The complete two-row upper neck, not one Floor row alone, is the necessary bend around the attached rock nose.",
+      "roof_boundary_probes": [
+        {
+          "from": [
+            8,
+            2
+          ],
+          "direction": "UP",
+          "target": [
+            8,
+            1
+          ],
+          "source_collision": "UP_WALL",
+          "target_collision": "WALL"
+        },
+        {
+          "from": [
+            8,
+            3
+          ],
+          "direction": "UP",
+          "target": [
+            8,
+            2
+          ],
+          "source_collision": "FLOOR",
+          "target_collision": "UP_WALL"
+        }
+      ],
+      "exterior_return_semantics": "Original room warp1 at7,9 returns directly to MnR03C00R00 passive exteriorwarp2 at8,38 FLOOR. Active CAVE8,37 exteriorwarp1 targets roomwarp1; inside clear Floor7,8 remains exact. Waiting on or revisiting passive Floor does not reenter; no warp record is changed."
+    },
+    "unpublished": false,
+    "native_review": {
+      "pack_sha256": "5fc652a6310beaf52d95e4ac339b4c12279e6fdae339d39c8c9597dc9b7a2df6",
+      "palette": "nite",
+      "candidate_sha256": "50738c06417b03802e513a6076b5fbfba301c9b3698723e3588f0ab4fcd92243",
+      "preservation_checks": 147,
+      "source_checks_passed": 31,
+      "controller_cases": [
+        "r03_bank_cave_controller_native_roof_walker_three_pages_great_ball_once_and_continue"
+      ],
+      "controller_cases_passed": [
+        "r03_bank_cave_controller_native_roof_walker_three_pages_great_ball_once_and_continue"
+      ],
+      "earned_regional_progression_claimed": false
+    }
+  }
+}

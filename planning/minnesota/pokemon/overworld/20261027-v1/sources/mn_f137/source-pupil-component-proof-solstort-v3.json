@@ -1,0 +1,350 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_304",
+  "name": "Solstort",
+  "family_id": "MN_F137",
+  "status": "source-proof-pass; root visual/context acceptance required",
+  "selected_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f137/manifest-solstort-v3-center.json",
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f137/solstort-v3-center",
+  "shared_transform": {
+    "source_bounds": [
+      39,
+      33,
+      396,
+      320
+    ],
+    "native_size": [
+      14,
+      11
+    ],
+    "native_origin": [
+      1,
+      4
+    ]
+  },
+  "all_four_nonrear_poses_have_actual_source_pupils": true,
+  "every_native_eye_cluster_maps_to_same_small_anatomical_source_pupil_component": true,
+  "actual_source_pupil_proofs": [
+    {
+      "pose": "down_idle",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f137/solstort.overworld.imagegen-v3.png",
+      "source_sha256": "03908976798b7e8b6af859dd3d89a6cf30f213caa8021887b799a75072cae302",
+      "crop": [
+        100,
+        110,
+        450,
+        380
+      ],
+      "actual_eye_proofs": [
+        {
+          "anatomically_identified_source_eye_box_ltrb": [
+            237,
+            359,
+            259,
+            383
+          ],
+          "native_cluster": [
+            [
+              4,
+              11
+            ]
+          ],
+          "every_cluster_pixel_maps_to_same_actual_source_component": true,
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                5,
+                5,
+                2,
+                253
+              ],
+              "bounds": [
+                237,
+                359,
+                22,
+                25
+              ],
+              "pixels": 550,
+              "truncated_contour": false,
+              "native_pixel": [
+                4,
+                11
+              ],
+              "source_sample_pixel": [
+                238,
+                361
+              ]
+            }
+          ]
+        },
+        {
+          "anatomically_identified_source_eye_box_ltrb": [
+            336,
+            359,
+            357,
+            384
+          ],
+          "native_cluster": [
+            [
+              8,
+              11
+            ]
+          ],
+          "every_cluster_pixel_maps_to_same_actual_source_component": true,
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                10,
+                7,
+                3,
+                254
+              ],
+              "bounds": [
+                335,
+                359,
+                22,
+                25
+              ],
+              "pixels": 550,
+              "truncated_contour": false,
+              "native_pixel": [
+                8,
+                11
+              ],
+              "source_sample_pixel": [
+                351,
+                361
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f137/solstort.overworld.imagegen-v3.png",
+      "source_sha256": "03908976798b7e8b6af859dd3d89a6cf30f213caa8021887b799a75072cae302",
+      "crop": [
+        1010,
+        130,
+        450,
+        380
+      ],
+      "actual_eye_proofs": [
+        {
+          "anatomically_identified_source_eye_box_ltrb": [
+            1132,
+            335,
+            1153,
+            364
+          ],
+          "native_cluster": [
+            [
+              4,
+              10
+            ]
+          ],
+          "every_cluster_pixel_maps_to_same_actual_source_component": true,
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                5,
+                3,
+                1,
+                253
+              ],
+              "bounds": [
+                1132,
+                335,
+                21,
+                29
+              ],
+              "pixels": 609,
+              "truncated_contour": false,
+              "native_pixel": [
+                4,
+                10
+              ],
+              "source_sample_pixel": [
+                1148,
+                352
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f137/solstort.overworld.imagegen-v3.png",
+      "source_sha256": "03908976798b7e8b6af859dd3d89a6cf30f213caa8021887b799a75072cae302",
+      "crop": [
+        100,
+        550,
+        450,
+        380
+      ],
+      "actual_eye_proofs": [
+        {
+          "anatomically_identified_source_eye_box_ltrb": [
+            237,
+            797,
+            259,
+            821
+          ],
+          "native_cluster": [
+            [
+              4,
+              11
+            ]
+          ],
+          "every_cluster_pixel_maps_to_same_actual_source_component": true,
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                5,
+                3,
+                1,
+                254
+              ],
+              "bounds": [
+                237,
+                797,
+                22,
+                24
+              ],
+              "pixels": 528,
+              "truncated_contour": false,
+              "native_pixel": [
+                4,
+                11
+              ],
+              "source_sample_pixel": [
+                238,
+                801
+              ]
+            }
+          ]
+        },
+        {
+          "anatomically_identified_source_eye_box_ltrb": [
+            336,
+            797,
+            358,
+            821
+          ],
+          "native_cluster": [
+            [
+              8,
+              11
+            ]
+          ],
+          "every_cluster_pixel_maps_to_same_actual_source_component": true,
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                0,
+                0,
+                0,
+                254
+              ],
+              "bounds": [
+                336,
+                797,
+                22,
+                24
+              ],
+              "pixels": 528,
+              "truncated_contour": false,
+              "native_pixel": [
+                8,
+                11
+              ],
+              "source_sample_pixel": [
+                351,
+                801
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f137/solstort.overworld.imagegen-v3.png",
+      "source_sha256": "03908976798b7e8b6af859dd3d89a6cf30f213caa8021887b799a75072cae302",
+      "crop": [
+        1010,
+        570,
+        450,
+        380
+      ],
+      "actual_eye_proofs": [
+        {
+          "anatomically_identified_source_eye_box_ltrb": [
+            1132,
+            777,
+            1153,
+            801
+          ],
+          "native_cluster": [
+            [
+              4,
+              10
+            ]
+          ],
+          "every_cluster_pixel_maps_to_same_actual_source_component": true,
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                6,
+                4,
+                1,
+                254
+              ],
+              "bounds": [
+                1132,
+                777,
+                21,
+                25
+              ],
+              "pixels": 525,
+              "truncated_contour": false,
+              "native_pixel": [
+                4,
+                10
+              ],
+              "source_sample_pixel": [
+                1148,
+                792
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "rear_review": "Both actual native rears viewed; plain genuine rear without copied facial eyes.",
+  "frozen_runtime_files_unchanged": true,
+  "no_queue_registry_or_pack_mutations": true,
+  "sha256": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f137/generation-solstort-v3.json": "05b05aba1aacfd147906efe2a143527216554e9dba308cc27f9d5116c4e4ee0a",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f137/manifest-solstort-v3-center.json": "43228119bc75a9d68646c0fbacf05067728af288c76f3350a092fca984a8a2a9",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f137/solstort-v3-center/compiled-index.json": "12b8b0e96b0dd171d451637c2094cf017e8205eaff8f86d4e277de99ab48dfdb",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f137/solstort.overworld.imagegen-v3.png": "03908976798b7e8b6af859dd3d89a6cf30f213caa8021887b799a75072cae302",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f137/prompt-solstort-v3.txt": "c20542315cb0267cfad8506d44872258e014aae7327a33053ae074f644a93a93",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f137/reference-mapping-solstort-v3.json": "578985c6cb27ae3181fbe65cc518c1de3e14e6c11d7389a34508a5f00c297405",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f137/solstort-v3-center/gfx/pokemon/solstort/overworld.png": "5b4f7affedff517b381868aeacb3b8edcb146c218c6b275638f52f6a0e2de054",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f137/solstort-v3-center/gfx/pokemon/solstort/overworld.2bpp": "d64eb7c44368ab35a55a5e650079793bbcc0198c1a6078de77000e0bd354f708",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f137/solstort-v3-center/gfx/pokemon/solstort/overworld.gbcpal": "2ab280dd3326f1b905ac29b3a4909013762d894105e95f27e3742a75b2800932",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f137/solstort-v3-center/gfx/pokemon/solstort/overworld-shiny.gbcpal": "cb810fab3289ab058f2185abced5fa19e08ffafd0c9133817da1d9c9a1cb0fc0",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f137/solstort-v3-center/review/line.normal-8x.png": "b8925b97e2ed05fc7b7be13691596b9a839247d494ee34059997f153e9f51fdf",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f137/solstort-v3-center/review/line.shiny-8x.png": "b7d2226d207d937eb405c4b89a8fd01b6f85824ed71e10fdd0edcc369cce087e"
+  }
+}

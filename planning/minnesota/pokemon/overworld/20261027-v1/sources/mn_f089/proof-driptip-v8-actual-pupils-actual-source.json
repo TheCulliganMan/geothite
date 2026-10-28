@@ -1,0 +1,209 @@
+{
+  "species": "driptip",
+  "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f089/driptip-v8-actual-pupils",
+  "status": "actual-source native proof passes; root visual/context acceptance pending",
+  "all_four_nonrear_actual_isolated_source_pupils": true,
+  "six16px_alpha_border_normal_shiny_runtime_parity": true,
+  "canonical_palettes": true,
+  "proof": [
+    {
+      "pose": "down_idle",
+      "actual_small_isolated_pupils": [
+        {
+          "native": [
+            6,
+            11
+          ],
+          "source_sample": [
+            193,
+            485
+          ],
+          "source_component": [
+            176,
+            469,
+            19,
+            19
+          ],
+          "component_pixels": 344,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            3,
+            2,
+            1,
+            254
+          ]
+        },
+        {
+          "native": [
+            9,
+            11
+          ],
+          "source_sample": [
+            283,
+            485
+          ],
+          "source_component": [
+            269,
+            469,
+            19,
+            19
+          ],
+          "component_pixels": 361,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            2,
+            5,
+            3,
+            254
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "actual_small_isolated_pupils": [
+        {
+          "native": [
+            5,
+            11
+          ],
+          "source_sample": [
+            991,
+            480
+          ],
+          "source_component": [
+            974,
+            468,
+            18,
+            20
+          ],
+          "component_pixels": 358,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            14,
+            13,
+            8,
+            253
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "actual_small_isolated_pupils": [
+        {
+          "native": [
+            6,
+            11
+          ],
+          "source_sample": [
+            193,
+            939
+          ],
+          "source_component": [
+            176,
+            925,
+            19,
+            19
+          ],
+          "component_pixels": 361,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            7,
+            6,
+            4,
+            254
+          ]
+        },
+        {
+          "native": [
+            9,
+            11
+          ],
+          "source_sample": [
+            283,
+            939
+          ],
+          "source_component": [
+            270,
+            925,
+            19,
+            19
+          ],
+          "component_pixels": 361,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            4,
+            4,
+            4,
+            254
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "actual_small_isolated_pupils": [
+        {
+          "native": [
+            5,
+            11
+          ],
+          "source_sample": [
+            991,
+            934
+          ],
+          "source_component": [
+            974,
+            923,
+            18,
+            20
+          ],
+          "component_pixels": 343,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            14,
+            12,
+            9,
+            254
+          ]
+        }
+      ]
+    }
+  ],
+  "hashes": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f089/driptip-v8-actual-pupils/compiled-index.json": "8c0550cbc5ad629c1eccf1ae5a2fed7f198a84f94f64f70b2222fb3c0fb7d533",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f089/driptip.overworld.imagegen-v1.png": "485601d97383ffec7c64b7fb614f8b216f08d2d98521862f4e7d6ebd018c9a77"
+  },
+  "no_native_pixel_painting": true
+}

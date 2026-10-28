@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F099",
+  "species": [
+    {
+      "species_id": "MN_216",
+      "runtime_token": "MOTHOSAIC",
+      "palette_rgb555": [
+        32767,
+        30328,
+        20808,
+        0
+      ],
+      "shiny_palette_rgb555": [
+        32767,
+        20253,
+        10516,
+        0
+      ],
+      "fit": [
+        14,
+        14
+      ],
+      "alpha_threshold": 128,
+      "sampling": "source_center",
+      "minimum_foreground_samples": 16,
+      "black_priority_samples": 32,
+      "interior_black_samples": null,
+      "opaque_interior_minimum_samples": 60,
+      "frames": [
+        {
+          "pose": "down_idle",
+          "source": "mothosaic.overworld.imagegen-v2.png",
+          "crop": [
+            72,
+            188,
+            448,
+            326
+          ]
+        },
+        {
+          "pose": "up_idle",
+          "source": "mothosaic.overworld.imagegen-v2.png",
+          "crop": [
+            544,
+            189,
+            448,
+            326
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "source": "mothosaic.overworld.imagegen-v2.png",
+          "crop": [
+            1028,
+            209,
+            448,
+            326
+          ]
+        },
+        {
+          "pose": "down_step",
+          "source": "mothosaic.overworld.imagegen-v2.png",
+          "crop": [
+            71,
+            574,
+            448,
+            326
+          ]
+        },
+        {
+          "pose": "up_step",
+          "source": "mothosaic.overworld.imagegen-v2.png",
+          "crop": [
+            545,
+            584,
+            448,
+            326
+          ]
+        },
+        {
+          "pose": "left_step",
+          "source": "mothosaic.overworld.imagegen-v2.png",
+          "crop": [
+            1037,
+            589,
+            448,
+            326
+          ]
+        }
+      ]
+    }
+  ]
+}

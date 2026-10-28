@@ -53,6 +53,7 @@ pub(crate) fn install(pack: &mut CompiledGamePack, gym: &Gym) -> Result<BTreeMap
             .get(&format!("gfx/tilesets/{source}.2bpp"))
             .context("source glyphs")?;
         let target_id = u16::try_from(symbols.len())?;
+        let glyph_start = metatiles.len();
         for glyph in source_blocks
             .get(source_block * 16..(source_block + 1) * 16)
             .context("source block bounds")?
@@ -98,6 +99,34 @@ pub(crate) fn install(pack: &mut CompiledGamePack, gym: &Gym) -> Result<BTreeMap
                 "wind requires native slat art and horizontal walk collision"
             );
             collision.fill(wind.clone());
+            if gym.wind_arrows {
+                let marked = crate::gym_wind_art::mark(
+                    pack,
+                    &graphics,
+                    &definition.palette_map,
+                    &metatiles[glyph_start..],
+                    wind,
+                )?;
+                for (target, glyph) in metatiles[glyph_start..].iter_mut().zip(marked) {
+                    ensure!(next < 192, "marked wind exceeds native glyph capacity");
+                    let (logical, bank) = if next < 96 {
+                        (next, 0)
+                    } else {
+                        ((next - 96) | 0x80, 8)
+                    };
+                    graphics[next * 16..(next + 1) * 16].copy_from_slice(&glyph.pixels);
+                    definition.palette_map[logical] = glyph.palette | bank;
+                    *target = u8::try_from(logical)?;
+                    next += 1;
+                }
+            }
+        }
+        if gym.barriers.contains(symbol) {
+            ensure!(
+                source == "facility" && id == "0b",
+                "charged barriers require the full native electric-grid texture"
+            );
+            collision.fill("WALL".into());
         }
         definition
             .collision

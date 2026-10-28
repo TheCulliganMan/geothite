@@ -1,0 +1,17 @@
+{
+  "species_id": "MN_106",
+  "prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f051/prompt-thundraze-compact-profiles-v2.txt",
+  "intent": "only west profiles compacted within third cell; original four other source frames retained",
+  "input_images": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f051/thundraze.overworld.imagegen-v1.png",
+      "sha256": "5efb4a6f567b294055facb09e5cbaa76c6ccd5a9536fbe709ef1460064c85e10",
+      "role": "EDIT TARGET"
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/references/native-pack-16px/native-six-frame-style-board.8x.png",
+      "sha256": "4354a639ed1a80fd6686e43b273443ed894e58a84307a8049f638ee9ffa2a099",
+      "role": "Authentic native16 STYLE"
+    }
+  ]
+}

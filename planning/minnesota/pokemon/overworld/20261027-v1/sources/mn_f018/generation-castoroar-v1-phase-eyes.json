@@ -1,0 +1,98 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F018",
+  "species_id": "MN_050",
+  "name": "Castoroar",
+  "status": "compiled_native_candidate_root_visual_context_acceptance_authoritative",
+  "generation_tool": "built-in image_gen",
+  "prompts": [
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f018/prompt-castoroar-v1.txt"
+  ],
+  "selected_sources": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f018/castoroar.overworld.imagegen-v1.png",
+      "sha256": "91514fd670ae8689f71f5f2f998b40f29e0b3844d0647d499d3a3f853cdc2fc8",
+      "dimensions": [
+        1536,
+        1024
+      ]
+    }
+  ],
+  "default_output_records": [
+    {
+      "record": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f018/castoroar.v1.original-path.txt",
+      "path": "/Users/ryanculligan/.codex/generated_images/01a17dc4-dd75-7642-a1c6-4bf13fda70c6/exec-1c8a7ef8-f91d-4b98-91b8-3c0fedbe7dd3.png"
+    }
+  ],
+  "only_generation_reference": "planning/minnesota/pokemon/overworld/20261027-v1/references/native-pack-16px/native-six-frame-style-board.8x.png",
+  "identity_authority": "Currentactivecoverage.json exactcanonicalpalettes,textbodylocks,andvisualinspectionofselectednativefront; no battleartinputforgeneration",
+  "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f018/manifest-castoroar-v1-phase-eyes.json",
+  "manifest_sha256": "f03b88456235536d484e8a046d5da6fc5b76abd9fc945dbfa2a6189690ecf962",
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f018/castoroar-v1-phase-eyes",
+  "normal_review": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f018/castoroar-v1-phase-eyes/review/line.normal-8x.png",
+  "native_frame_size": [
+    16,
+    16
+  ],
+  "native_bounds": [
+    [
+      3,
+      7,
+      9,
+      8
+    ],
+    [
+      4,
+      7,
+      9,
+      8
+    ],
+    [
+      1,
+      7,
+      14,
+      7
+    ],
+    [
+      4,
+      7,
+      8,
+      8
+    ],
+    [
+      4,
+      7,
+      9,
+      8
+    ],
+    [
+      1,
+      7,
+      14,
+      8
+    ]
+  ],
+  "normal_palette_rgb555": [
+    32767,
+    25332,
+    15754,
+    0
+  ],
+  "shiny_palette_rgb555": [
+    32767,
+    24216,
+    12623,
+    0
+  ],
+  "sampling": "source_center",
+  "alpha_threshold": 128,
+  "transparent_index": 0,
+  "visible_indices": [
+    1,
+    2,
+    3
+  ],
+  "native_pixels_painted": false,
+  "notes": "All6frames strictRustcompiled andretained. Sameper-speciesworldscale/equalcropwindowswithpairedheadregistration. Max14pxopaquefootprint+transparentborder. Rootreviewandruntimecontextproofsdetermineacceptance; thisreceiptisnotacceptance. Noqueue/registry/packwrites.",
+  "size_note": "Adultsidepaddletailsets14wideworldscale;frontbodycompactabout9high. Rootnotifiedtoreviewgrowthvsfirststage."
+}

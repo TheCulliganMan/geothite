@@ -1,0 +1,18 @@
+{
+  "species_id": "MN_179",
+  "name": "Heliknock",
+  "family_id": "MN_F082",
+  "tool": "built-in image_gen",
+  "selected_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f082/manifest-heliknock-v1-pupil-proof.json",
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f082/heliknock-v1-pupil-proof",
+  "normalized_proof": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f082/source-feature-proof-heliknock-v1.json",
+  "detailed_proof": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f082/manifest-heliknock-v1-pupil-proof.proof.json",
+  "sources": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f082/heliknock.overworld.imagegen-v1.png": "e07845fd60b0439e36f3301106bea0734af4e62c8fb8c651b19e187f3f90d165"
+  },
+  "preserved_attempt_receipts": [
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f082/attempt-heliknock-v1.json"
+  ],
+  "status": "frozen native candidate; actual normal/shiny source features reviewed; root context pending",
+  "accepted": false
+}

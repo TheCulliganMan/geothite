@@ -4,6 +4,453 @@ This is an ongoing twenty-route implementation. Source review, native publicatio
 controller fixtures and earned regional progression are separate evidence.
 No current route or town has final visual approval from the user.
 
+## Local sleep recovery before Wind — 2026-10-27
+
+The [supplies successor](playable/northstar-relay.md#published-local-sleep-recovery-successor--2026-10-27)
+is published and strictly read back with 554 maps and the existing species/move
+catalog. It appends the native ¥250 Awakening to St Cloud's installed stock and
+the town's authored clerk. The older regional sellers placed that cure only
+after Wind, despite Saven's sleep threat. Every other dataset/runtime file/audio
+program remains exact in the passing 14.91-second preservation test; contracts
+reject stale or unrelated mutations. No saved progress or resource is granted.
+All 377 PCM/hash/frame/loop checks and affected-crate all-target Clippy pass;
+scoped formatting passes while workspace formatting retains its earlier
+offset allocator difference. The fresh Winona course earns Care, Prairie and
+the four R03 trainers, then fails after four ICE losses (2034.69 seconds). Its
+actual level-22 clinic checkpoint remains intact. At the user's request, an
+explicit [level-75 story review](playable/northstar-relay.md#user-authorized-level-75-story-review--2026-10-27)
+continues from that checkpoint with supplied party levels and separate saves.
+The boosted review passes ICE rescue/evidence, Current, courier/manifest,
+Capitol, Wind and the actual Brainerd arrival in 483.48 seconds. Both evidence
+scenes pass actual stdio replay with empty stderr. The new Lake/ranger course
+passes in 92.12 seconds, including the sixth badge, both dock settings and
+separate report/Surf; the starter gains level 76 through battle. The actual
+stdio Brainerd care/refusal/R06 return also passes after an encounter-aware
+input retry, retaining strict tile checks and empty stderr. The sixth-badge
+ranger pages/repeat/Start replay also passes with empty stderr. The continued
+Pine/Itasca course now passes in 187.30 seconds after correcting the test
+helper's TM/HM selection. It earns the actual Cut gift/learning, both hedges,
+seventh badge, independent reading and separately acknowledged officer report;
+the earlier course supplies the played Leech witnesses and Bemidji arrival.
+The existing guide regression and Bevy all-target Clippy pass. Actual stdio
+now passes the complete Itasca/report/R09 round trip with empty stderr. It
+exposed a production compact-status omission: the visible **Got away safely!**
+notice was not reported as dialogue, so replay stopped acknowledging it.
+Status now includes that visible text; the shared RUN checker asserts agreement.
+The rebuilt client, core MCP movement/Start and spawned-client stderr checks
+pass. The continued mine/depot/Harbor course passes in 359.53 seconds, including
+all eight badges and ten acknowledged reveal pages; actual custody, depot and
+reveal stdio replays pass with empty stderr. The party then walks the coast,
+visits Ryan's cabin and the native gatehouse, defeats the chief and separately
+shuts down the relay. Picture Continue, no Safari/capture prerequisite and the
+reopened R13 trail pass, as do the three actual relay/release stdio replays.
+The receiver-to-Ely continuation passes in 36.22 seconds. The party earns the
+first two League wins at 77/78, then loses the third match. Raising the review
+minimum to 100 completes the final three native matches, Hall of Fame, credits
+and postgame Continue in 518.97 seconds. Actual registration/postgame replays and
+the existing explicit-fixture medicine/Hall regression also pass. Neither boost
+supplies badges, quest results, resources or League wins. These supplied-level
+reviews do not establish unboosted balance.
+Earlier earned saves stay on their original pack.
+
+## Earned St Cloud approach and native TM-sale correction — 2026-10-27
+
+The [relay party's northern continuation](playable/northstar-relay.md#earned-st-cloud-continuation--2026-10-27)
+reaches St Cloud through the actual Minneapolis north gate/R05, checks the
+missing-Wind refusal and earns all five road trainers plus both revised wind
+qualifiers. Ordinary blackouts, wild training through level31/Flame Wheel,
+native purchases and Continue retain progress. Saven still defeats this team;
+one recorded attempt leaves Noctowl with 6 HP. A further direct-damage/priority
+retry also loses. No fifth badge, Brainerd arrival or later investigation is
+claimed from those losses. The original local R05 round trip passes separately.
+
+The earned resupply exposed and fixed a production TM-pocket quantity omission
+in the mart. The new controller sale/cancel/confirmation case passes, and the
+earned party sells its actual unused TM for its native price. The existing mart
+group passes 20 cases with 3 ignored after correcting its stale cancellation
+source path. The controller also fixes the missing text-client shop projection:
+its direct-input view regression and rebuilt actual stdio TM quantity/cancel,
+shop exit and Start replay pass, with unchanged money/badges and byte-empty
+stderr. The production stderr-cleanliness case and all-target Bevy Clippy also
+pass. The pack and all game/audio content remain unchanged. The full earned
+campaign and broader balance remain open.
+
+## Earned four-badge course on the revised relay pack — 2026-10-27
+
+The [relay candidate](playable/northstar-relay.md#earned-revised-gym-campaign--2026-10-27)
+now has its own fresh Winona New Game course (270.32 seconds) and actual saved
+continuations through Current/R04 (55.97 seconds), then the courier's separate
+manifest, Capitol and Minneapolis return (80.54 seconds). These saves bind the
+new identity; no historical save is migrated. The party earns capture, levels,
+evolution, four badges and TMs through production input, with ordinary recovery
+and Save/Continue. Rochester's switches, Prairie's ledges, Current's staged
+switches and Capitol's native pads use the revised room contracts. The initial
+pre-delivery gym visit checks the closed Rochester lane/guide; separate local
+cases cover the leader's parcel refusal.
+
+Actual stdio replays pass ICE rescue/evidence/home and the courier's three
+manifest pages/repeat/city return/Start, both with byte-empty stderr. The final
+continued save has four badges and the manifest, while later investigation and
+relay flags remain unset. Bevy all-target Clippy with `location-tester` and the
+existing allowances passes with pre-existing warnings; scoped formatting passes.
+Workspace formatting retains the offset allocator difference. These are test
+course changes; the pack SHA and all game/audio data remain unchanged. Wind
+onward, broader balance and the complete earned regional journey remain open.
+
+## Native Kettlurk remote feed and relay shutdown — 2026-10-27
+
+The [relay candidate](playable/northstar-relay.md) combines the selected eight
+gyms, complete existing species/move catalog and a new receiver continuation in
+554 maps. The chief battle still precedes the separate retryable receiver.
+After alignment, a remote intake feed displays Kettlurk's reviewed native front
+picture. Acknowledging both cut-link pages powers down only the console screen
+and restores the survey. Reentry and Continue retain that result.
+
+The 6.60-second controller case plays the actual chief victory, refusal/retry,
+picture, shutdown and both Continue boundaries. Eight badges, harbor signal,
+legal Mew and divider are explicit initial fixtures. Seventeen text unit cases,
+saved-state validation, full unrelated-data/cached-versus-uncached preservation
+(15.85 seconds), source pixels/collision and all 377 audio checks pass. The
+controller now arms the native picture wait before yielding and restores its
+source return point on Continue; a picture wait does not create a field textbox.
+Both actual stdio replays now pass, including B-close after picture Continue,
+with no money/badge/Pokédex changes and empty stderr. Inspected headless picture
+and matched console-state captures pass: only 162 native screen pixels change,
+and both states match the exact indoor source palette. The incorrect first day
+palette preview remains archived beside the corrected whole-room states.
+
+Earlier earned saves retain their old pack identities. The new branch's own
+earned four-badge course is recorded above. Its complete earned campaign,
+physical pump animation, a field apparition and the optional Devil's Kettle
+encounter remain open.
+
+## Earned Current, courier evidence and Capitol — 2026-10-27
+
+The actual fresh Winona party now continues through
+[Current and R04](playable/gym-four-approach.md#earned-current-and-st-paul-arrival--2026-10-27)
+(140.39 seconds), then the
+[courier, separate manifest, Capitol and Minneapolis return](playable/courier-story.md#earned-courier-capitol-and-minneapolis-return--2026-10-27)
+(225.52 seconds). Every battle, badge, purchase, healing action, text page,
+switch, step and Save/Continue uses the production controller. The final actual
+save has four badges and the completed manifest; later plot flags remain unset.
+The rebuilt text client replays all three record pages and Start from its
+earned victory save with byte-empty stderr. The original local courier case
+also passes after sharing its acknowledgment routine, with its fixture scope
+kept separate. No map, pack or audio data changes in this continuation.
+
+This evidence binds the historical 554-map Ely story identity
+`e96cd37fd94ca71f39d72a4a7924fe613ddb1cecf64f12f5a5985095a5fea7d4`.
+It does not migrate saves to the newly published selected-gym result below.
+Wind onward and a compatible earned course on that successor remain open.
+
+## All eight selected gyms in the regional branches — 2026-10-27
+
+The [Rust regional rebuild](gyms/current-regional.md) resolves `gyms/current.json`
+and recompiles all eight reviewed rooms into the frozen 554-map Ely story and
+660-map compact Twin Cities branches. Each parent's indexed city doors, trainer
+rosters/numbers, story scenes, services, encounters, HOME/recovery and audio remain
+intact. Existing flag numbers stay fixed; new gym events append afterward.
+
+All four source/full-dataset preservation cases, both branches' sixteen actual
+carpet/reentry/Continue checks, sixteen inspected exact native room cameras,
+both source terrain/collision projections and both sets of 377 audio checks pass.
+All eight ordinary-party fixed-input courses pass on the integrated story result.
+St. Cloud uses explicit carried medicine after its earlier medicine-free trial
+lost; the shared native Pack helper checks HP effects, unchanged PP and actual
+consumption. Opponents, levels and puzzle designs remain unchanged. Rochester's
+switch course and Bemidji's Cut/victory return also pass on the city branch;
+Duluth's final rerun passes after the helper extraction.
+
+These are local initial party/badge/position/supply fixtures, not one earned
+Winona-to-League party. The city-by-city design and badge order remain intact;
+the remaining earned regional campaign and separately owned Fair/species merge
+are outside this gym publication. The runbook records exact parents, output
+identities, commands, native evidence and save compatibility limits.
+
+## Duluth ice stops and gold gates — 2026-10-27
+
+The [eighth-gym revision](gyms/duluth-gold-gates.md) gives its four moving gates
+native gold panels. Permanent silver stops stay fixed; rough patches stop the
+player for turns. Both short slide courses, all collision quadrants, actors,
+parties, trainer numbers, gates/events, badge 7 requirement and city doors remain
+intact. Livra opens west return/east launch, Tordel opens the cross passage,
+and Anver opens Norek's court. Every required trainer still has to be beaten.
+
+The cumulative 541-map `minnesota-duluth-gold-gates.crystalpack` retains all seven
+earlier revisions. A fixed four-partner level 44 course with native moves/legal
+Surf and Pack medicine earns all three trainers and Norek, checks the blocked
+east launch, opposing input/live slides, rough-patch Continue, east retreat,
+Anver's early refusal, saving, one badge/TM and both city carpets. Initial party,
+seven badges, position, legal Surf and six carried Hyper Potions are fixtures.
+No later state writes supply progress. Smaller three-partner drafts lost; the
+passing course does not establish universal balance or an earned regional run.
+
+All four existing Duluth controller cases pass, including losses and missing
+badge permission. All sixteen revision asset cases and 377 audio checks pass.
+Five inspected native views match all 368,640 source pixels each. All eight
+selected source terrains/collision projections match publication; the whole-room
+overview has been inspected at one native scale. Every render remains archived.
+The current source index and world/interior contracts select all eight revisions.
+Plan validation passes 20 routes/19 hubs/57 chunks/88 contracts/288 maps.
+Later regional city/story integration, the earned city-by-city journey and user
+visual acceptance remain open. The runbook distinguishes this exact pack's
+`(16,12)` city return from the separately expanded current Duluth facade.
+
+## Fresh Winona through Prairie and the ICE chapter — 2026-10-27
+
+The frozen 554-map [Ely story lineage](playable/ely-league.md) now has a
+[341.44-second New Game course](playable/minneapolis.md#new-game-through-two-badges-and-ice--2026-10-27)
+through the original delivery, Care, caught Rattata, Mankato notebook, Prairie,
+native Quilava evolution, both earned TMs, R03 and ICE's defeat/separate
+rescue/dispatch reading/return home. Two real wild blackouts retain earned
+progress through native clinic recovery and Continue. No party, position,
+badge, resources, quest results or RNG are supplied. This opening course ends
+before Current; its earned Current/Capitol continuation is recorded above.
+The later full earned campaign remains open; this is one live-RNG run.
+
+This exposed and fixed missing native secondary stat parameters: damaging
+effects such as Mud-Slap now resolve their stat/stage from the effect program
+when optional annotations are absent, while explicit data retains precedence.
+Eight stat-stage regressions and an actual-pack accuracy/PP case pass; actual
+stdio rescue/record/home/Start replay passes with empty stderr. The pack's exact
+identity and all audio data remain unchanged. This story lineage remains
+separate from the city/route recompositions below; no implicit merge is claimed.
+
+## Bounded route terrain and tighter-city continuation — 2026-10-27
+
+The [four-route successor](playable/route-quality-next.md) is published in the
+ignored660-map `minnesota-route-quality-next-v01.crystalpack`, SHA256
+`1186a24371251f741db88cf35a7863145ed5423da4ad3d7c6485c8f242753ecb`.
+Exactly211 native metatiles across seven chunks change on R04/R08/R18/R19;
+all city/room/story/actor/party/art/audio data remains preserved. Thirty-eight
+actual headless frames match source pixels exactly, all20 final controller
+cases and five traversal asset tests pass, and719 independent preservation
+checks plus four corruption negatives pass. All377 audio checks pass.
+The eight reviewed route sources are promoted with exact before/after archives.
+These are bounded improvements, not acceptance of all routes or the campaign.
+
+The latest **“Smaller but tighter”** city work continues beyond the published
+64×48 baseline. Root's player-camera comparison with authentic Goldenrod and
+Saffron found excessive empty lawns. [Compact Minneapolis and St. Anthony Falls](playable/minneapolis-falls.md)
+are now published at40×32, retaining40 entrances and44 rooms, with actual
+north/south river connections and a badge-controlled native buoy gate. All17
+gameplay cases, four animation cases and five asset cases pass;19 final native
+frames match source pixels exactly. The source town,54 neighbor hook cells,
+regional offsets and door contracts are promoted with guarded before/after
+archives. Six older R03 source boundary caps were reconciled to the existing
+parent pack, with no new native cap changes. St Paul remains a separate source
+assessment. The earlier64×48 baseline below is historical for Minneapolis.
+See the [recomposition contract](cities/RECOMPOSITION.md).
+
+## State Fair purchasable foods and beer — 2026-10-27
+
+The separate fair candidate now sells16 fair foods, including sweet corn,
+cookie pails, cheese curds, hotdish, pronto pups, mini donuts, funnel cake,
+fried candy, walleye and beer. Beer heals100 HP and causes real confusion in
+field/Continue and battle; field first aid cures it. Vendors, tiles,85 NPCs,
+walking loops,22 trainers and all29 encounter species remain intact.
+
+The final foods v2 pack has SHA256
+bf688621307c6e4805296fa0412b67777327899c507512432200569d0b5f7ee8.
+Two final controller component cases,76 core item cases, two healing cases,
+preservation/rebuild and scoped checks pass. The first food pack also passes
+all eight fair cases. Whole-map source pixels are identical to the reviewed
+crowd version. Native description widths are enforced. Existing workspace
+format/lint and missing-radio-fixture blockers are recorded in the
+[fair runbook](playable/state-fairgrounds.md). Packs and render/log history stay
+ignored; integration into newer regional lineages remains separate.
+
+## State Fair battle crowd and walking loops — 2026-10-27
+
+The crowd candidate contains85 outdoor NPCs, with22 trainers and20 sight
+challenges. Overlapping midway rivals share a queue lane. Ten added
+non-battlers include seven kids; four visitors follow clockwise walking loops.
+The39 staffed counter positions remain separate vendor NPCs. Native input
+checks cover every trainer, reward/defeat flags, a saved new trainer win,
+back-to-back midway challenges, blocked walkers, conversations, two laps of
+every route and Continue midway through a loop. All these new checks pass.
+The final combined run passes all seven cases in295.41seconds, including every
+shop/nine foods and all29 wild species. Preservation/rebuild, two core patrol
+tests and twelve original movement tests pass. Seventeen native views pass
+static scenery checks with the four walker regions reported separately.
+
+The current source adds `SPRITEMOVEDATA_PATROL_CLOCKWISE` to the existing core
+object scheduler, assets input paths, renderer-neutral idle frames and native
+sprite animation. Loop phase comes from live coordinates on the original
+rectangle; no save-schema extension or alternate input dispatcher is added.
+Rebuild current clients for this movement type. The completed candidate is
+`minnesota-state-fair-crowd-v2.crystalpack`; see the [runbook](playable/state-fairgrounds.md)
+for final verification and source/native render history.
+
+## State Fair food and carnival habitats — 2026-10-27
+
+The [fair runbook](playable/state-fairgrounds.md) lists14 additional native
+tall-grass patches and all29 active food/fair species in13 complete families.
+The six habitat groups cover bakery, grain/rice, dairy, hotdish/smokehouse,
+orchard/sugarbeets and midway/popcorn. All evolutions appear at every time.
+The current candidate is `minnesota-state-fair-grass-v2.crystalpack`, with the
+full223-species regional roster installed over the same660-map parent before
+the fair overlay. Retired designs stay retired. Existing maps and encounter
+tables are preserved. The shared saved-wild-origin validator now includes
+local grass zones. All29 species appeared in controller-driven wild battles,
+with a native move/PP turn and Smoke Ball RUN in every habitat group. The three
+existing fair activity cases, preservation/rebuild and377 audio checks pass.
+Thirteen headless native captures match every source pixel. See the runbook.
+
+## Expanded State Fair and raised NPC capacity — 2026-10-27
+
+The [fair runbook](playable/state-fairgrounds.md) records the larger single-map
+48×36 `minnesota-state-fair-dense-v1.crystalpack`:75 outdoor NPCs,32 shops and39
+staffed counter positions. A sixteen-metatile food pavilion, red-roofed
+exhibitors' hall, wider fair buildings and4-H/craft pavilions fill the grounds.
+The user explicitly requested raising the object limit; expanded maps support
+255 byte-indexed NPC records/live slots and saves. Original maps retain their
+source allocation behavior. No district split or painted vendor art is used.
+
+All32 merchants, nine food purchases/healing/consumption, care prize/first aid,
+stamps, games, full-bag recovery, two battles with PP mutation, room/city returns
+and Continue pass three production controller cases. Preservation/rebuild and
+capacity rejection checks pass; original Johto bitplanes/colors remain exact
+after wider-bank imports. Eight native source/GPU frames match every pixel;
+all377 audio checks pass. Native/source renders and previous revisions remain
+retained. Broader pre-existing test/lint limitations are recorded in the runbook.
+This candidate remains separate from later regional pack lineages.
+
+## Bemidji Cut garden return — 2026-10-27
+
+The [seventh-gym revision](gyms/bemidji-return.md) preserves the two native Cut
+hedges, required Moslen/Elvren battles and optional Brindel. A gold gate in the
+south hedge opens only after Orlis; clearing its approach makes a direct18-step
+return, compared with22 through the already-pruned garden. No new switch or
+field move is added.
+
+The cumulative541-map `minnesota-bemidji-return.crystalpack` retains the first
+six revisions. A fixed Typhlosion41/Crobat40/Sandslash39 course earns the required
+battles, uses native Cut, saves/Continues, receives one badge/TM, takes the new
+return and verifies both actual city carpets. Party, six prior badges, taught
+Cut, HM and starting position are initial fixtures, not earned regional progress.
+All four existing Cut/loss/trainer-permission cases pass on the final pack.
+All fourteen revision asset cases and377 audio checks pass. Both inspected
+locked/open native cameras match all368640 source pixels each; all eight source
+terrains/collision projections match publication. Every render remains archived.
+
+The current design index and world/interior contracts select the revision and
+record the existing passive arrival3 and paired carpets. Plan validation passes
+20 routes/19 hubs/57 chunks/88 contracts/288 maps. Duluth, user acceptance,
+later city/story integration and a complete earned campaign remain open.
+
+## Brainerd physical dock control — 2026-10-27
+
+The [sixth-gym revision](gyms/brainerd-winch.md) replaces the right entrance
+statue with one visible blue dock control. A toggles center/left piers;
+Lorla no longer opens a position menu. Beat Lorla, center the walk, beat Bravel,
+return and shift left to Sivren. Six static phases retain safe controls/exits.
+
+The cumulative541-map `minnesota-brainerd-winch.crystalpack` preserves all five
+previous revisions. A fixed course with native Sunflora36/Ampharos35/Venusaur36
+and matchup-based PKMN switches earns all three wins, verifies early presses,
+reversals, real water retraction, Continue, rewards and both city carpets.
+No medicine is used in the final run. Missing badge5, loss and a distinct initial
+poolside-denial case pass. All twelve asset cases and377 audio checks pass.
+The earlier St. Cloud literal course also passes through the unchanged default
+battle-helper path on this cumulative pack.
+
+Three inspected dock-state native cameras match all368640 source pixels each.
+The read-only preview now preserves enclosed sprite highlights using the native
+border-connected background rule; the original9-pixel discrepancy is retained.
+All eight source terrains/collision projections match. The current index and
+world/interior contracts select the revision, recording existing passive arrival3.
+Plan validation passes20 routes/19 hubs/57 chunks/88 contracts/288 maps.
+Bemidji and Duluth, user acceptance, later city/story integration and a complete
+earned regional campaign remain open.
+
+## St. Cloud visible wind directions — 2026-10-27
+
+The [fifth-gym revision](gyms/st-cloud-arrows.md) paints native right-arrow pixels
+on each wooden walking tile and reflects them for westbound lanes. Identical
+slats no longer hide opposite behavior. The geometry, all collisions, actors,
+parties/levels/moves, gates, rewards and indexed city bindings stay exact.
+
+The cumulative541-map `minnesota-st-cloud-arrows.crystalpack` retains the first
+four revisions. An Ampharos31/Graveler30 literal control run earns both trainers
+and Saven, proves all four forced lanes and safe landings, wrong-way entries,
+counter-steering, Continue, reward protection and both city carpets. The same
+party passes after correcting the test helper to use available Rock Throw
+rather than Magnitude against Flying opponents; no battle or level changes
+were made. Loss and missing badge4 cases pass with their explicit local fixtures.
+
+All ten revision asset cases and377 audio checks pass. Both inspected native
+crossing cameras match all368640 source pixels; all eight current terrains and
+collision projections match. The current index and world/interior reservations
+select the new source. Plan validation passes20 routes/19 hubs/57 chunks/88
+contracts/288 maps. Three gym designs, user visual acceptance, latest city/story
+integration and the continuous earned regional campaign remain open.
+
+## St. Paul continuous pad loop — 2026-10-27
+
+The [fourth-gym revision](gyms/st-paul-loop.md) replaces the foyer detour with a
+continuous entrance–Belva–Orven–leader-landing loop and direct return. Two pads
+per chamber give a consistent onward/back rule. Both practice wins open the
+visible metal grille; an early shortcut still cannot bypass it.
+
+The cumulative541-map `minnesota-st-paul-loop.crystalpack` preserves the first
+three revisions and all other maps/battles. Three actual controller cases pass:
+the Quilava27/Geodude25 literal course exercises all eight endpoints, earns all
+wins, checks Continue/no bounce/reward protection and both real city carpets;
+the separate fixtures cover loss, reverse order and missing badge3. Eight
+asset cases and all377 audio checks pass. Both inspected native cameras match
+all368640 source pixels. All eight selected source terrains/collisions match.
+
+Current source selection and reservations reference the revision. The plan
+checker now accepts the existing canonical-room reference form as well as a
+numbered gym, validating its source ID/native constant without rewriting the
+frozen city contract. Plan validation passes20 routes/19 hubs/57 chunks/88
+contracts/288 maps. Four gym designs, user acceptance, latest city/story
+integration and a complete earned campaign remain open.
+
+## Minneapolis staged Electric circuit — 2026-10-27
+
+The [third-gym revision](gyms/minneapolis-circuit.md) moves Jossa between two
+visible red electrical barriers. The player beats Lenvi, opens the first lock,
+beats Jossa, then selects the neighboring second switch to reach Avrin. Wrong
+second choices reset only the locks. Trainer wins survive; solved locks latch.
+
+The cumulative541-map `minnesota-minneapolis-circuit.crystalpack` preserves
+Rochester's lane course and Mankato's terraces. A fixed control run with native
+Geodude23/Bayleef23 earns all three battles, proves denial/reset/Continue,
+earns one badge/TM and uses both real city carpets. The second-trainer loss and
+missing-prior-badge negatives also pass. Both inspected native
+barrier cameras match all368640 source pixels. All six revision asset cases and
+all377 audio checks pass. Scoped all-target Clippy passes with existing warnings;
+full dependency Clippy stops at the pre-existing multiplayer bit-mask error.
+The current source index and room reservations select the revision, with no
+change to the indexed city door contract. Five gyms, user acceptance and full
+earned regional travel remain open; this lineage is separate from later cities.
+
+## Mankato sand terraces and ordinary-party course — 2026-10-27
+
+The current second gym uses light sand for raised terraces, dark soil for the
+middle arena and wood at the entrance. Stairs remain visible behind wooden
+gates, with a required forward hop, optional retreat and faster drop return.
+Unused northwest floor and one redundant boulder are removed. The west ordinary
+return is now 22 rather than 24 steps; native hop/reverse/return checks remain.
+
+[Current source, animation and replay](gyms/mankato-terraces.md).
+The cumulative 541-map `minnesota-mankato-terraces.crystalpack` preserves the
+Rochester gate revision and all other maps, battles, numbers, bindings and
+source audio. Its literal Bayleef 19/Pidgey 17 course passes all three fights,
+required jumps/reverse denial, retreat, Continue, one badge/TM and both city
+carpets. Initial first badge, placement and deterministic RNG are fixtures.
+Three focused prior-badge/loss/drop cases and Rochester's literal course also
+pass. Both native hop cameras match 368640 source pixels each; all 377 audio
+checks and whole-circuit source/native projections pass. Shared rebuild code
+still reproduces Rochester's published identity exactly. Current revision
+metadata is checked against world extents and registered arrival/carpet pairs.
+
+Six other gym designs, user acceptance and a complete earned campaign remain
+open. Older story/city successors retain their earlier gyms until these
+revisions are applied to their lineage.
+
 ## Rochester gate revision after the planter rejection — 2026-10-27
 
 The user rejected both planter mazes. The new7×7 room has two blue switches:
@@ -18,8 +465,8 @@ course passes with initial Totodile16/Hoothoot14, parcel and deterministic RNG
 fixtures, testing wrong-lane return, both denials, gate reversal, Continue,
 badge/single TM and both city exits. Six structural gate states are checked;
 a real half-wall bypass was found, fixed and covered by a corruption negative.
-Both asset cases and all377 audio checks pass. Native closed/open cameras each
-match368640 source pixels. The current town binding dossier and world/interior
+Both asset cases and all 377 audio checks pass. Native closed/open cameras each
+match 368640 source pixels. The current town binding dossier and world/interior
 reservations now agree on7×7 and arrival `(6,11)` / carpets `(6,13),(7,13)`.
 
 Other story/city successors retain their earlier gym until this revision is
@@ -66,17 +513,37 @@ declared terrain/art/Repel normalization. Original runtime files/audio remain
 byte exact. This is a preserved integration parent, not expanded-city gameplay
 or final visual acceptance.
 
+## Ely rest camp and native League — 2026-10-27
+
+The [554-map successor](playable/ely-league.md) adds the whole20×18 Ely camp,
+clinic/PC/shop, authentic Ilex Forest gatehouse registration lobby, four League
+members, Casey and a separate native Hall of Fame room. R13's south connection
+is real and reciprocal. Registration independently checks eight badges and
+survey restoration; wins advance persistent native memory. Withdrawal/blackout
+reset only the run. The actual ceremony autosaves its party, plays credits and
+Continues at Ely; rematch registration preserves championship/history.
+
+Five production controller cases pass in85.00seconds on the final pack,
+including priced checkout, real medicine use, five native battles/PP use,
+Continue, played loss, original credits destinations and indoor/cave palettes.
+Two preservation cases, all377 audio checks and three zero-difference source/
+native exterior views pass. Every prior map except R13's added south connection,
+all original source art/audio, old constants and recovery data are retained.
+Initial prior access, Mew100 and medicine remain review fixtures. The full fresh
+Winona campaign, ordinary-party balance and Kettlurk's visible set piece remain
+open. This frozen lineage is separate from active expanded-city/fair work.
+
 ## Earned chief, receiver and complete League Approach — 2026-10-27
 
 The [earned finale continuation](playable/northstar-finale.md) passes on the
-unchanged544-map shore pack. It loads the actual Boundary Waters arrival from
+unchanged 544-map shore pack. It loads the actual Boundary Waters arrival from
 the Brainerd-to-Harbor/coast course, supplies no new prerequisites or party,
 plays the chief win with native PP use, and proves the separate receiver's
 decline/accept/alignment/repeat/Continue. The chief's nonrepentant dialogue and
 all canonical completion pages are checked. The League gate refuses before
 the chief and again after his defeat, then opens only after restoration.
 
-The final29.32-second case walks all of R13 to the Ely frontier and saves/
+The final 29.32-second case walks all of R13 to the Ely frontier and saves/
 Continues there. Two actual stdio earned-save replays pass the receiver,
 League seam, production Start menu, unchanged money/badges and byte-empty
 stderr. Initial six badges/Mew45 remain upstream setup. Ely, its League/Hall
@@ -96,7 +563,7 @@ North Shore water encounters and Johto animations.
 
 Six local controller cases, two preservation cases and the full-bag keeper
 regression pass, alongside three actual stdio replays, a production client build
-and all377 audio checks. Both clinics now register recovery, proved through
+and all 377 audio checks. Both clinics now register recovery, proved through
 played losses after care/Continue. The complete earned Brainerd-to-Harbor-to-
 Boundary-Waters-and-home journey passes in 149.30 seconds; no downstream flag
 or reserve partner is inserted after initial six-badge/Mew45/Cut setup.
@@ -249,8 +716,8 @@ Five lake-country and six Leech shore controller cases also pass, including
 Wind/Lake/ranger travel and Pine loss/recovery/retry. The corrected focused
 Gym4 v2 candidate follows Current-only road permission; dispatch remains a
 courier prerequisite. Its three controller cases, rebuilt-client stdio replay,
-two exact native views and all377 audio checks pass. The Leech shore pack also
-passes all377 audio checks. Prior badges/partner/placement are explicit fixtures;
+two exact native views and all 377 audio checks pass. The Leech shore pack also
+passes all 377 audio checks. Prior badges/partner/placement are explicit fixtures;
 remaining regional bindings and the full earned campaign stay unfinished.
 [Exact collision fix, chapter identities, validation and limits](playable/gym-border-audit.md).
 
@@ -304,7 +771,7 @@ content. No additional road gate, item or badge is granted.
 Five controller and two preservation/rejection cases pass, including a continuous
 populated local road/battle/read/return, separate refusals, free care return,
 played loss, fourth-gym entry before courier completion and Continue. Actual
-stdio road and manifest replays pass with clean stderr; all377 audio checks
+stdio road and manifest replays pass with clean stderr; all 377 audio checks
 pass. Full city/R04/depot source views and native cameras are inspected and
 retained. Both1280×800 camera comparisons match original pixels exactly.
 Initial badges, dispatch and strong partner are explicit fixtures. Rail,
@@ -326,7 +793,7 @@ level45 partner, position and money are explicit fixtures.
 Two asset and three controller cases pass, alongside actual stdio road/facade/
 Start/return with byte-empty stderr. All eight gyms and existing story, R04
 terrain/encounters, flags, source art, audio and recovery remain exact. Both
-1280×800 native checkpoint/arrival views match source pixels; all377 audio
+1280×800 native checkpoint/arrival views match source pixels; all 377 audio
 checks pass. Courier, rail, north departure and the full earned journey remain
 unfinished. The runbook records exact input/output identities and commands.
 
@@ -351,7 +818,7 @@ terrain/encounters, other story programs, event numbers, source files and recove
 are preserved apart from those explicit bank caps. Both matched native city
 frames agree with source art exactly at1280×800 each. Actual stdio road/office
 return and rescue/record checks pass with unchanged badges and byte-empty stderr;
-all377 audio checks pass. Named gym characters use original names throughout.
+all 377 audio checks pass. Named gym characters use original names throughout.
 Later links, courier/gates and rail remain unfinished; see the runbook for
 precise scope and commands.
 
@@ -366,7 +833,7 @@ exact. The chapter uses its own frozen regional input, rather than racing the
 shared eight-gym publication.
 
 Two asset preservation/rejection cases, three local controller cases, the two
-older Rochester asset cases, actual stdio round-trip and all377 audio checks
+older Rochester asset cases, actual stdio round-trip and all 377 audio checks
 pass. Whole maps and actual native cameras were inspected; the notebook view
 matches all1,024,000 source pixels. All render generations remain retained.
 Local fixtures supply Care, position and an empty party. A strict New Game run

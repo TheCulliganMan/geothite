@@ -13,7 +13,7 @@ from render_reference import load_pack
 ROOT = Path(__file__).resolve().parents[3]
 
 
-def road(client, pack, target, prefix="MnR03", rows=2, columns=1):
+def road(client, pack, target, prefix="MnR03", rows=2, columns=1, encounter=None):
     floor, blocked, trainers = set(), set(), []
     for row in range(rows):
         for column in range(columns):
@@ -55,9 +55,22 @@ def road(client, pack, target, prefix="MnR03", rows=2, columns=1):
             queue.append(at)
     assert target in paths, (start, target)
     for button, expected in paths[target]:
-        client.move(button)
-        state = client.status()
-        assert state["mode"] == "overworld" and position(state) == expected, state
+        before = position(client.status())
+        # A wild encounter can own input before the pending tile finishes.
+        # Like the controller road course, issue the next native step only if
+        # fleeing leaves the player on the exact previous tile.
+        for _ in range(8):
+            client.move(button)
+            state = client.status()
+            if state["mode"] != "overworld" and encounter is not None:
+                encounter(client)
+                state = client.status()
+            assert state["mode"] == "overworld", (button, expected, state)
+            current = position(state)
+            if current == expected:
+                break
+            assert current == before, ("unexpected route displacement", button, before, expected, state)
+        assert position(state) == expected, ("native step did not finish", button, before, expected, state)
     client.at(f"{prefix}C{target[0] // 64:02}R{target[1] // 48:02}", target[0] % 64, target[1] % 48)
 
 

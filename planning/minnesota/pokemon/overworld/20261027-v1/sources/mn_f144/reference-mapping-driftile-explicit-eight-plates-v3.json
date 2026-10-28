@@ -1,0 +1,14 @@
+{
+  "prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f144/prompt-driftile-explicit-eight-plates-v3.txt",
+  "input_images": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/references/native-pack-16px/native-six-frame-style-board.8x.png",
+      "role": "ONLY native16 style; freshconstruction avoids previous seven-leaf shape",
+      "sha256": "4354a639ed1a80fd6686e43b273443ed894e58a84307a8049f638ee9ffa2a099"
+    }
+  ],
+  "previous_identity_reviewed_not_supplied": [
+    "driftile.overworld.imagegen-v1.png",
+    "driftile.overworld.imagegen-v2-eight-plates-four-roots.png"
+  ]
+}

@@ -1,0 +1,374 @@
+{
+  "species_id": "MN_051",
+  "name": "leechimp",
+  "status": "native-review-recommended; root independent review and context required",
+  "selected_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f019/leechimp.manifest-native-joint-phase-v1.json",
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/true16-leechimp-joint-phase-v1",
+  "shared_transform": {
+    "source_bounds": [
+      12,
+      12,
+      347,
+      374
+    ],
+    "native_size": [
+      12,
+      14
+    ],
+    "native_origin": [
+      2,
+      1
+    ]
+  },
+  "all_four_nonrear_poses_actual_pupils_pass": true,
+  "each_native_eye_cluster_maps_to_one_actual_small_source_pupil_component": true,
+  "actual_source_pupil_proofs": [
+    {
+      "pose": "down_idle",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f019/leechimp.overworld.imagegen-v1.png",
+      "crop": [
+        87,
+        99,
+        371,
+        398
+      ],
+      "actual_source_eye_bounds": [
+        [
+          219,
+          194,
+          29,
+          38
+        ],
+        [
+          296,
+          194,
+          29,
+          37
+        ]
+      ],
+      "eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              6,
+              4
+            ],
+            [
+              6,
+              5
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                0,
+                0,
+                0,
+                253
+              ],
+              "bounds": [
+                219,
+                194,
+                29,
+                38
+              ],
+              "pixels": 1043,
+              "truncated_contour": false,
+              "native_pixel": [
+                6,
+                4
+              ],
+              "source_sample_pixel": [
+                229,
+                204
+              ]
+            },
+            {
+              "black": true,
+              "rgba": [
+                31,
+                59,
+                48,
+                254
+              ],
+              "bounds": [
+                219,
+                194,
+                29,
+                38
+              ],
+              "pixels": 1043,
+              "truncated_contour": false,
+              "native_pixel": [
+                6,
+                5
+              ],
+              "source_sample_pixel": [
+                229,
+                231
+              ]
+            }
+          ]
+        },
+        {
+          "native_cluster": [
+            [
+              9,
+              4
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                0,
+                0,
+                0,
+                254
+              ],
+              "bounds": [
+                296,
+                194,
+                29,
+                37
+              ],
+              "pixels": 1073,
+              "truncated_contour": false,
+              "native_pixel": [
+                9,
+                4
+              ],
+              "source_sample_pixel": [
+                315,
+                204
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f019/leechimp.overworld.imagegen-v1.png",
+      "crop": [
+        1075,
+        97,
+        371,
+        398
+      ],
+      "actual_source_eye_bounds": [
+        [
+          1198,
+          183,
+          28,
+          31
+        ]
+      ],
+      "eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              6,
+              4
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                0,
+                0,
+                0,
+                253
+              ],
+              "bounds": [
+                1198,
+                183,
+                28,
+                31
+              ],
+              "pixels": 868,
+              "truncated_contour": false,
+              "native_pixel": [
+                6,
+                4
+              ],
+              "source_sample_pixel": [
+                1217,
+                202
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f019/leechimp.overworld.imagegen-v1.png",
+      "crop": [
+        87,
+        558,
+        371,
+        398
+      ],
+      "actual_source_eye_bounds": [
+        [
+          220,
+          652,
+          28,
+          37
+        ],
+        [
+          297,
+          652,
+          28,
+          37
+        ]
+      ],
+      "eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              6,
+              4
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                0,
+                0,
+                0,
+                253
+              ],
+              "bounds": [
+                220,
+                652,
+                28,
+                37
+              ],
+              "pixels": 1036,
+              "truncated_contour": false,
+              "native_pixel": [
+                6,
+                4
+              ],
+              "source_sample_pixel": [
+                229,
+                663
+              ]
+            }
+          ]
+        },
+        {
+          "native_cluster": [
+            [
+              9,
+              4
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                1,
+                1,
+                0,
+                254
+              ],
+              "bounds": [
+                297,
+                652,
+                28,
+                37
+              ],
+              "pixels": 1036,
+              "truncated_contour": false,
+              "native_pixel": [
+                9,
+                4
+              ],
+              "source_sample_pixel": [
+                315,
+                663
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f019/leechimp.overworld.imagegen-v1.png",
+      "crop": [
+        1084,
+        554,
+        371,
+        398
+      ],
+      "actual_source_eye_bounds": [
+        [
+          1199,
+          645,
+          29,
+          32
+        ]
+      ],
+      "eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              6,
+              4
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                3,
+                3,
+                2,
+                253
+              ],
+              "bounds": [
+                1199,
+                645,
+                29,
+                32
+              ],
+              "pixels": 928,
+              "truncated_contour": false,
+              "native_pixel": [
+                6,
+                4
+              ],
+              "source_sample_pixel": [
+                1226,
+                659
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "old_native_poses_preserved_exactly": [
+    "down_idle",
+    "up_idle",
+    "left_idle",
+    "down_step",
+    "up_step",
+    "left_step"
+  ],
+  "normal_shiny_runtime_parity": "all1536pixels exact each",
+  "canonical_palette_bytes": "exact",
+  "all_three_walk_pairs_distinct": true,
+  "rear_review": "both rear native poses viewed; no copied face",
+  "normal_shiny_native_boards_actually_viewed": true,
+  "accepted_coverage_native_pack_untouched": true,
+  "manifest_sha256": "af0028ff5490c4e29e92587ff52587293eb55d3dfc5deca5ea88828e4e39c6db",
+  "compiled_index_sha256": "56b1870e68f44e4c3c3353e18e8330e556c0a95307acdb8f84a59f87cdaebaa7"
+}

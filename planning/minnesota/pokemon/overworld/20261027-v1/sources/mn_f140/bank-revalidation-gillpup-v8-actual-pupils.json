@@ -1,0 +1,11 @@
+{
+  "name": "gillpup",
+  "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f140/gillpup-v8-actual-pupils",
+  "literal_bank": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f140/gillpup-v8-actual-pupils/gfx/pokemon/gillpup/overworld.2bpp",
+  "literal_bank_bytes": 384,
+  "all1536decoded_indices_match_compiled_frame_rows": true,
+  "actual_source_pupil_proof_revalidated": true,
+  "receipt_correction_cause": "Previous bank_sha256 hashed the equivalent indexed PNG, rather than literal2bpp bytes. No sprite asset changed.",
+  "previous_png_sha256": "3d3eaa7ac76ae93b08e25128a218252e950609f789009f40345fdd9104dc0784",
+  "correct_bank_sha256": "6801e4865bb1292e1b2a1f0dd2a2664cab209bb64017775e9f5e1cce9bcea3c9"
+}

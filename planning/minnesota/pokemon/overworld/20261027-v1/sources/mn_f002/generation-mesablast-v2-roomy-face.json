@@ -1,0 +1,7 @@
+{
+  "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f002/mesablast.overworld.imagegen-v2-roomy-face.png",
+  "default_original": "/Users/ryanculligan/.codex/generated_images/01a17dc4-dd75-7642-a1c6-4bf13fda70c6/exec-0d880765-5df5-43ca-8430-2bbcb2e8e69c.png",
+  "sha256": "e2d4d539aa43e0b213a56487b81407006ba789d39d9d569f414ce75ea74c00fc",
+  "tool": "built-in ImageGen",
+  "source_face_plane_simplification_only": true
+}

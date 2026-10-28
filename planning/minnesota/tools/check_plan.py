@@ -26,7 +26,7 @@ def check():
     assert len(chunks)==len(world['chunks'])==sum(r['chunk_columns']*r['chunk_rows'] for r in routes)
     assert len(towns)==19
     for entry in world.get('regional_destinations',[]):
-        assert entry['kind']=='planned_fairgrounds',('unknown destination kind',entry['kind'])
+        assert entry['kind'] in {'planned_fairgrounds','authored_fairgrounds'},('unknown destination kind',entry['kind'])
         destination=read(ROOT/entry['file'])
         assert destination['id']==entry['id'] and destination['parent_hub']==entry['parent_hub']
         assert entry['parent_hub'] in {t['id'] for t in towns.values()}
@@ -34,6 +34,21 @@ def check():
         assert destination['districts'] and destination['activity_contracts']
         # A scope reservation does not create a native map or fake walking edge.
         assert destination['map_name'] not in chunks
+        if entry['kind']=='authored_fairgrounds':
+            native=destination['native_map']
+            assert native['id']==destination['map_name']
+            layout=read(ROOT/entry['layout_file'])
+            assert layout['id']==native['id'] and layout['dimensions_metatiles']==native['dimensions_metatiles']
+            assert entry['native_connection']=={'a':entry['parent_hub'],'direction_a':'north','b':native['id'],'direction_b':'south','offset':0,'city_core_x':[16,17],'fair_core_y':native['dimensions_metatiles'][1]*2-1}
+            registry={c['interior']:c for c in read(ROOT/'interiors.json')['contracts']}
+            for room in native['interiors']:
+                door=next(d for d in native['doors'] if d['target']==room['id'])
+                contract=registry[room['id']]
+                assert contract['parent']==native['id'] and contract['source_room_id']==room['id']
+                assert contract['arrival_core']==room['passive_arrival']['tile'] and contract['arrival_warp_index']==room['passive_arrival']['index']
+                assert contract['return_triggers_core']==[e['tile'] for e in room['exits']]
+                assert contract['exterior_door_core']==door['tile'] and contract['exterior_safe_return_core']==door['return_tile']
+                assert contract['exterior_warp_index']==door['warp_index'] and contract['exterior_return_warp_index']==door['return_warp_index']
     for entry in world.get('transit_networks',[]):
         assert entry['kind']=='planned_rail_service',('unknown transit kind',entry['kind'])
         network=read(ROOT/entry['file'])
@@ -62,11 +77,33 @@ def check():
     maps={t['id'] for t in towns.values()}|set(chunks)
     parent={}
     room_contracts={c['interior']:c for c in read(ROOT/'interiors.json')['contracts']}
+    revisions=read(ROOT/'gyms/current.json')['overrides']
+    revision_sources={r['map']:'gyms/'+r['source'] for r in revisions}
+    assert len(revision_sources)==len(revisions),'duplicate current gym revision'
+    seen_revisions=set()
     expansion_links=set()
     for t in towns.values():
         for interior in t['interiors']:
             assert interior['id'] not in maps
             maps.add(interior['id']);parent[interior['id']]=t['id']
+            if interior['id'] in revision_sources:
+                path=revision_sources[interior['id']]
+                assert interior.get('gym_revision_file')==path,interior['id']+': stale revision selection'
+                source=read(ROOT/path)
+                assert source['schema_version']==1 and len(source['gyms'])==1
+                gym=source['gyms'][0];contract=room_contracts[interior['id']]
+                assert gym['id']==interior['id']
+                if interior['kind']=='canonical_gym_reference':
+                    assert interior['source_reference']['gym_id']==gym['id']
+                    assert interior['native_constant']==gym['constant']
+                else:
+                    assert interior['kind']==f"gym_{gym['slot']}"
+                assert gym['dimensions_metatiles']==interior['dimensions_metatiles']
+                assert contract['revision_source_file']==path and contract['parent']==t['id']
+                assert contract['arrival_core']==gym['arrival_core'] and contract['arrival_warp_index']==3
+                assert contract['return_triggers_core']==gym['exit_tiles_core']
+                assert contract['return_trigger_core']==gym['exit_tiles_core'][0]
+                seen_revisions.add(interior['id'])
         if 'authoring_file' not in t:
             continue
         authored=read(ROOT/t['authoring_file'])
@@ -77,7 +114,11 @@ def check():
         roster={r['id']:r for r in t['interiors']}
         assert set(doors)<=set(roster),t['id']+': unregistered authored room'
         expansion_rooms=set()
-        if t.get('expansion_contract_file'):
+        if t.get('recomposition_contract_file'):
+            from check_city_recomposition_plan import validate as validate_recomposition
+            expansion_rooms,links=validate_recomposition(ROOT,t,authored,room_contracts,world['connections'])
+            expansion_links.update(links)
+        elif t.get('expansion_contract_file'):
             from check_city_expansion_plan import validate as validate_expansion
             expansion_rooms,links=validate_expansion(ROOT,t,authored,room_contracts,world['connections'])
             expansion_links.update(links)
@@ -122,6 +163,7 @@ def check():
                     assert exit['index']==index and exit['target']==t['id'] and exit['target_warp']==door['return_warp_index'],interior['id']+': unsafe carpet destination/index'
             exits=[e['tile'] if isinstance(e,dict) else e for e in exits]
             assert contract['return_triggers_core']==exits and contract['return_trigger_core']==exits[0],interior['id']+': stale carpet exits'
+    assert seen_revisions==set(revision_sources),'unregistered current gym revision'
     flags=set(story['flags'])
     conditions=flags|{f'BADGE_{i}' for i in range(1,9)}
     for r in routes:
@@ -243,7 +285,10 @@ def main():
         current_world=read(ROOT/'world.json')
         registry={row['interior']:row for row in read(ROOT/'interiors.json')['contracts']}
         for town in current_world['towns']:
-            if town.get('expansion_contract_file'):
+            if town.get('recomposition_contract_file'):
+                from check_city_recomposition_plan import validate as validate_recomposition
+                validate_recomposition(ROOT,town,read(ROOT/town['authoring_file']),registry,current_world['connections'],pack)
+            elif town.get('expansion_contract_file'):
                 validate_expansion(ROOT,town,read(ROOT/town['authoring_file']),registry,current_world['connections'],pack)
         for special in read(ROOT/'world.json').get('special_zones',[]):
             zone=read(ROOT/special['file'])

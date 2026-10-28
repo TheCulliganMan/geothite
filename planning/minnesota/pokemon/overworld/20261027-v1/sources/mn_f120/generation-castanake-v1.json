@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F120",
+  "species_id": "MN_258",
+  "name": "Castanake",
+  "generation_tool": "built-in image_gen",
+  "status": "retained_unselected_native_readability_variant",
+  "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f120/castanake.overworld.imagegen-v1.png",
+  "source_sha256": "d5bf0dd4578e7104e870e498ebe05b056feafdcb735bffbaade47ea3c70637dc",
+  "original_default_output": "/Users/ryanculligan/.codex/generated_images/01a179bf-dc2b-7352-8975-8b8f3a32e33b/exec-c0c2424d-8677-443c-ba8c-49c571ff7b08.png",
+  "dimensions": [
+    1536,
+    1024
+  ],
+  "prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f120/prompt-castanake-v1.txt",
+  "prompt_sha256": "64d4c9069f5157eea41fdbd35a9892526711defd24ff2b99424d4d89ab8467a9",
+  "reference_mapping": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f120/reference-mapping-castanake-v1.json",
+  "reference_mapping_sha256": "48cb05780b61c4ae6581a8a85834c8235dc729beef15a626e3cd590af125234a",
+  "notes": "Retained first source. Paired chambers too small/thin for native14, selected no frames.",
+  "accepted": false
+}

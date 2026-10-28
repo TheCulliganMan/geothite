@@ -1,0 +1,182 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F119",
+  "species": [
+    {
+      "species_id": "MN_255",
+      "runtime_token": "WHIRLNUT",
+      "palette_rgb555": [
+        32767,
+        15068,
+        6411,
+        0
+      ],
+      "shiny_palette_rgb555": [
+        32767,
+        23438,
+        8550,
+        0
+      ],
+      "fit": [
+        14,
+        12
+      ],
+      "alpha_threshold": 128,
+      "sampling": "source_center",
+      "minimum_foreground_samples": 16,
+      "black_priority_samples": 32,
+      "interior_black_samples": null,
+      "opaque_interior_minimum_samples": 60,
+      "frames": [
+        {
+          "pose": "down_idle",
+          "source": "overworld.imagegen-v1.png",
+          "crop": [
+            93,
+            86,
+            224,
+            206
+          ]
+        },
+        {
+          "pose": "up_idle",
+          "source": "overworld.imagegen-v1.png",
+          "crop": [
+            452,
+            83,
+            224,
+            206
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "source": "overworld.imagegen-v1.png",
+          "crop": [
+            806,
+            93,
+            224,
+            206
+          ]
+        },
+        {
+          "pose": "down_step",
+          "source": "overworld.imagegen-v1.png",
+          "crop": [
+            1178,
+            93,
+            224,
+            206
+          ]
+        },
+        {
+          "pose": "up_step",
+          "source": "overworld.imagegen-v1.png",
+          "crop": [
+            1546,
+            96,
+            224,
+            206
+          ]
+        },
+        {
+          "pose": "left_step",
+          "source": "overworld.imagegen-v1.png",
+          "crop": [
+            1895,
+            99,
+            224,
+            206
+          ]
+        }
+      ]
+    },
+    {
+      "species_id": "MN_256",
+      "runtime_token": "SAMURREL",
+      "palette_rgb555": [
+        32767,
+        10842,
+        9449,
+        0
+      ],
+      "shiny_palette_rgb555": [
+        32767,
+        19274,
+        7465,
+        0
+      ],
+      "fit": [
+        14,
+        14
+      ],
+      "alpha_threshold": 128,
+      "sampling": "source_center",
+      "minimum_foreground_samples": 16,
+      "black_priority_samples": 32,
+      "interior_black_samples": null,
+      "opaque_interior_minimum_samples": 60,
+      "frames": [
+        {
+          "pose": "down_idle",
+          "source": "overworld.imagegen-v1.png",
+          "crop": [
+            22,
+            368,
+            317,
+            299
+          ]
+        },
+        {
+          "pose": "up_idle",
+          "source": "overworld.imagegen-v1.png",
+          "crop": [
+            384,
+            363,
+            317,
+            299
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "source": "overworld.imagegen-v1.png",
+          "crop": [
+            747,
+            371,
+            317,
+            299
+          ]
+        },
+        {
+          "pose": "down_step",
+          "source": "overworld.imagegen-v1.png",
+          "crop": [
+            1109,
+            377,
+            317,
+            299
+          ]
+        },
+        {
+          "pose": "up_step",
+          "source": "overworld.imagegen-v1.png",
+          "crop": [
+            1469,
+            364,
+            317,
+            299
+          ]
+        },
+        {
+          "pose": "left_step",
+          "source": "overworld.imagegen-v1.png",
+          "crop": [
+            1829,
+            371,
+            317,
+            299
+          ]
+        }
+      ]
+    }
+  ]
+}

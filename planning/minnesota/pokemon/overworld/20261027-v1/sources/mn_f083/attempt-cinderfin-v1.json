@@ -1,0 +1,9 @@
+{
+  "tool": "built-in image_gen",
+  "original": "/Users/ryanculligan/.codex/generated_images/01a179bf-dc2b-7352-8975-8b8f3a32e33b/exec-9a27a728-08b2-4401-a29b-843ca29c5a35.png",
+  "preserved_raw": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f083/cinderfin.overworld.imagegen-v1.png",
+  "sha256": "7f004d288bb6ed2b891d80521475d9d8ea4c72bae49bbf0e2110a97785186e54",
+  "exact_prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f083/prompt-cinderfin-v1.txt",
+  "reference_mapping": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f083/reference-mapping-cinderfin-v1.json",
+  "status": "preserved; selected frames recorded in frozen manifest"
+}

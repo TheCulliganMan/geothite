@@ -677,19 +677,19 @@
       "width_metatiles": 12,
       "height_metatiles": 11,
       "tileset": "cave",
-      "border_block": 1,
+      "border_block": 46,
       "rows": [
-        "01 01 01 01 01 01 01 01 01 01 01 01",
-        "01 01 04 05 05 05 06 01 01 01 01 01",
-        "01 01 08 02 02 02 0a 01 04 05 06 01",
-        "01 01 20 21 30 02 0a 01 08 02 0a 01",
-        "01 01 01 04 0a 39 2f 2d 08 02 0a 01",
-        "01 01 08 02 02 02 0a 2e 30 02 0a 01",
-        "01 01 20 21 20 02 2b 21 21 22 01 01",
-        "01 01 01 01 04 30 2f 01 01 01 01 01",
-        "01 01 01 01 08 02 0a 01 01 01 01 01",
-        "01 01 01 01 20 21 07 22 01 01 01 01",
-        "01 01 01 01 01 01 01 01 01 01 01 01"
+        "2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e",
+        "2e 2e 04 05 05 06 2e 2e 2e 2e 2e 2e",
+        "2e 2e 08 02 02 0a 2e 2e 04 05 06 2e",
+        "2e 2e 20 21 30 02 06 2e 08 02 0a 2e",
+        "2e 2e 2e 04 0a 39 2f 2d 08 02 0a 2e",
+        "2e 2e 08 02 02 02 0a 2e 30 02 0a 2e",
+        "2e 2e 20 21 20 02 2b 21 21 22 2e 2e",
+        "2e 2e 2e 2e 04 30 2f 2e 2e 2e 2e 2e",
+        "2e 2e 2e 2e 08 08 2e 2e 2e 2e 2e 2e",
+        "2e 2e 2e 2e 20 21 07 22 2e 2e 2e 2e",
+        "2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e"
       ],
       "exits": [
         [
@@ -728,7 +728,7 @@
       "items": [],
       "signs": [],
       "mandatory": true,
-      "purpose": "Q06 mine confrontation and separate instrument recovery; Grand Rapids depot handover remains separate.",
+      "purpose": "Narrow the upper mining bench against its east face, and turn the southern arrival around the shaft wall before the first climb. Three stepped workings, foreman battle, survey cache and scout remain in place.",
       "story_trainers": [
         {
           "id": "MN_R09_DEPOT_FOREMAN",
@@ -816,7 +816,7 @@
         }
       ],
       "review_contract": {
-        "status": "Installed native CURRENT510 mine candidate; all original Q06 programs/party/flags preserved and four local production-controller cases PASS.",
+        "quality_revision": "johto-quality-v01",
         "palette_group": "nite",
         "native_stair_blocks": [
           [
@@ -832,136 +832,67 @@
             7
           ]
         ],
-        "loop_waypoints_core": [
-          [
-            13,
-            18
-          ],
-          [
-            7,
-            4
-          ],
-          [
-            9,
-            6
-          ],
-          [
-            19,
-            8
-          ],
-          [
-            10,
-            16
-          ]
-        ],
-        "one_way_ledges": [
+        "viewpoints": [
           {
-            "id": "FOREMAN_BENCH_DROP",
-            "source_block": "39",
-            "bounds_core": [
-              10,
-              8,
-              12,
-              10
-            ],
-            "direction": "south",
-            "upper_approach": [
-              10,
-              7
-            ],
-            "hop_from": [
-              10,
-              8
-            ],
-            "landing": [
-              10,
-              10
-            ],
-            "reverse_blocked": [
-              10,
-              9
-            ],
-            "side_barriers": [
-              [
-                9,
-                9
-              ],
-              [
-                12,
-                9
-              ]
-            ],
-            "ordinary_return_to_upper": [
-              10,
-              7
-            ],
-            "minimum_return_steps": 7
-          }
-        ],
-        "decision_views": [
-          {
-            "id": "MOUTH_OFFSET_STAIR",
+            "id": "mouth",
             "tile": [
               13,
               18
             ]
           },
           {
-            "id": "FOREMAN_APPROACH",
+            "id": "shaft-turn",
             "tile": [
               9,
-              6
+              18
             ]
           },
           {
-            "id": "METER_CACHE",
+            "id": "lower-stair",
             "tile": [
-              7,
-              4
+              10,
+              14
             ]
           },
           {
-            "id": "SCOUT_BAY",
+            "id": "middle-working",
             "tile": [
-              19,
-              8
+              9,
+              11
             ]
           },
           {
-            "id": "BENCH_DROP",
+            "id": "foreman",
+            "tile": [
+              8,
+              5
+            ]
+          },
+          {
+            "id": "scout",
+            "tile": [
+              20,
+              7
+            ]
+          },
+          {
+            "id": "drop-approach",
             "tile": [
               10,
               7
             ]
           },
           {
-            "id": "WORKING_DRIFT",
+            "id": "fitted-bench",
             "tile": [
-              12,
-              12
+              10,
+              5
             ]
           }
         ],
-        "quality_pass": "Fitted entrance rock face and lower corner narrow the working drift; all story anchors retained",
-        "unpublished": false,
-        "controller_probes": {
-          "exterior_return_semantics": "Original mine warp1 at13,19 LADDER returns directly to exterior passive warp2 at40,42 FLOOR; stable after native frames and walking away/back. Exterior active CAVE warp1 at40,41 deliberately reenters. Clear indoor arrival13,18 is distinct from actual warp arrival13,19."
-        },
-        "native_review": {
-          "pack_sha256": "b3b0c67847b6fa2ac1f65ba0e5075a55f5b7372657a9d69c7193b2a41ba15e69",
-          "palette": "nite",
-          "candidate_sha256": "243f04da49a01f59e6fe8fb004049fd942c3acac1e1e6a5ad6c865f89b650d43",
-          "preservation_checks": 199,
-          "controller_cases": [
-            "r09_mine_controller_original_mouth_three_stairs_two_short_hops_scout_and_continue",
-            "iron_range_story_controller_actual_win_separate_recovery_decline_repeat_and_continue",
-            "iron_range_story_controller_played_loss_never_awards_victory_or_evidence",
-            "iron_range_story_controller_refuses_missing_prerequisites_and_locked_cache"
-          ],
-          "source_promoted_after_explicit_root_pass": true
-        }
+        "notes": "Narrow the upper mining bench against its east face, and turn the southern arrival around the shaft wall before the first climb. Three stepped workings, foreman battle, survey cache and scout remain in place."
       },
-      "candidate_status": "Installed CURRENT510 native review candidate; four local production-controller cases PASS. User visual acceptance and earned regional Q06 progress remain unclaimed."
+      "candidate_status": "Source candidate under whole-room, player-camera and production traversal review."
     }
   ],
   "shortcut": null,

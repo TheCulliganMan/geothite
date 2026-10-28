@@ -1,0 +1,290 @@
+[
+  {
+    "name": "emberm",
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f102/emberm.manifest-root-registered-v2.json",
+    "frames": [
+      {
+        "pose": "down_idle",
+        "source_bounds": [
+          129,
+          248,
+          448,
+          479
+        ],
+        "crop": [
+          78,
+          171,
+          420,
+          320
+        ]
+      },
+      {
+        "pose": "up_idle",
+        "source_bounds": [
+          609,
+          248,
+          926,
+          476
+        ],
+        "crop": [
+          557,
+          168,
+          420,
+          320
+        ]
+      },
+      {
+        "pose": "left_idle",
+        "source_bounds": [
+          1128,
+          249,
+          1407,
+          478
+        ],
+        "crop": [
+          1057,
+          170,
+          420,
+          320
+        ]
+      },
+      {
+        "pose": "down_step",
+        "source_bounds": [
+          136,
+          632,
+          442,
+          870
+        ],
+        "crop": [
+          79,
+          562,
+          420,
+          320
+        ]
+      },
+      {
+        "pose": "up_step",
+        "source_bounds": [
+          609,
+          631,
+          923,
+          867
+        ],
+        "crop": [
+          556,
+          559,
+          420,
+          320
+        ]
+      },
+      {
+        "pose": "left_step",
+        "source_bounds": [
+          1128,
+          632,
+          1407,
+          867
+        ],
+        "crop": [
+          1057,
+          559,
+          420,
+          320
+        ]
+      }
+    ]
+  },
+  {
+    "name": "smoulden",
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f102/smoulden.manifest-root-registered-v2.json",
+    "frames": [
+      {
+        "pose": "down_idle",
+        "source_bounds": [
+          48,
+          290,
+          480,
+          576
+        ],
+        "crop": [
+          24,
+          218,
+          480,
+          370
+        ]
+      },
+      {
+        "pose": "up_idle",
+        "source_bounds": [
+          564,
+          290,
+          1008,
+          576
+        ],
+        "crop": [
+          546,
+          218,
+          480,
+          370
+        ]
+      },
+      {
+        "pose": "left_idle",
+        "source_bounds": [
+          1080,
+          276,
+          1500,
+          576
+        ],
+        "crop": [
+          1050,
+          218,
+          480,
+          370
+        ]
+      },
+      {
+        "pose": "down_step",
+        "source_bounds": [
+          60,
+          648,
+          480,
+          948
+        ],
+        "crop": [
+          30,
+          590,
+          480,
+          370
+        ]
+      },
+      {
+        "pose": "up_step",
+        "source_bounds": [
+          576,
+          636,
+          996,
+          924
+        ],
+        "crop": [
+          546,
+          566,
+          480,
+          370
+        ]
+      },
+      {
+        "pose": "left_step",
+        "source_bounds": [
+          1080,
+          624,
+          1500,
+          936
+        ],
+        "crop": [
+          1050,
+          578,
+          480,
+          370
+        ]
+      }
+    ]
+  },
+  {
+    "name": "cinderfen",
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f102/cinderfen.manifest-root-registered-v2.json",
+    "frames": [
+      {
+        "pose": "down_idle",
+        "source_bounds": [
+          135,
+          91,
+          498,
+          493
+        ],
+        "crop": [
+          76,
+          25,
+          480,
+          480
+        ]
+      },
+      {
+        "pose": "up_idle",
+        "source_bounds": [
+          588,
+          91,
+          947,
+          489
+        ],
+        "crop": [
+          527,
+          21,
+          480,
+          480
+        ]
+      },
+      {
+        "pose": "left_idle",
+        "source_bounds": [
+          1089,
+          90,
+          1404,
+          489
+        ],
+        "crop": [
+          1006,
+          21,
+          480,
+          480
+        ]
+      },
+      {
+        "pose": "down_step",
+        "source_bounds": [
+          119,
+          558,
+          491,
+          946
+        ],
+        "crop": [
+          65,
+          478,
+          480,
+          480
+        ]
+      },
+      {
+        "pose": "up_step",
+        "source_bounds": [
+          588,
+          557,
+          957,
+          943
+        ],
+        "crop": [
+          532,
+          475,
+          480,
+          480
+        ]
+      },
+      {
+        "pose": "left_step",
+        "source_bounds": [
+          1095,
+          553,
+          1417,
+          952
+        ],
+        "crop": [
+          1016,
+          484,
+          480,
+          480
+        ]
+      }
+    ]
+  }
+]

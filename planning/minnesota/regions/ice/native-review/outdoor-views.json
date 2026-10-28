@@ -1,0 +1,154 @@
+[
+  {
+    "id": "r20_entry",
+    "map": "MnRainyRiverIcefields",
+    "core": [
+      60,
+      44
+    ]
+  },
+  {
+    "id": "lower_ice_start",
+    "map": "MnRainyRiverIcefields",
+    "core": [
+      54,
+      36
+    ]
+  },
+  {
+    "id": "lower_ice_stop",
+    "map": "MnRainyRiverIcefields",
+    "core": [
+      37,
+      36
+    ]
+  },
+  {
+    "id": "grass_choice",
+    "map": "MnRainyRiverIcefields",
+    "core": [
+      23,
+      33
+    ]
+  },
+  {
+    "id": "hut_mouth",
+    "map": "MnRainyRiverIcefields",
+    "core": [
+      9,
+      28
+    ]
+  },
+  {
+    "id": "west_return",
+    "map": "MnRainyRiverIcefields",
+    "core": [
+      8,
+      21
+    ]
+  },
+  {
+    "id": "upper_bend",
+    "map": "MnRainyRiverIcefields",
+    "core": [
+      16,
+      5
+    ]
+  },
+  {
+    "id": "cache_tongue",
+    "map": "MnRainyRiverIcefields",
+    "core": [
+      20,
+      11
+    ]
+  },
+  {
+    "id": "mid_channel",
+    "map": "MnRainyRiverIcefields",
+    "core": [
+      43,
+      20
+    ]
+  },
+  {
+    "id": "east_snow_return",
+    "map": "MnRainyRiverIcefields",
+    "core": [
+      48,
+      26
+    ]
+  },
+  {
+    "id": "weakest_south_bank",
+    "map": "MnRainyRiverIcefields",
+    "core": [
+      29,
+      36
+    ]
+  },
+  {
+    "id": "northern_stopping_bank",
+    "map": "MnRainyRiverIcefields",
+    "core": [
+      27,
+      7
+    ]
+  },
+  {
+    "id": "stationary-ice-wall-stop",
+    "map": "MnRainyRiverIcefields",
+    "core": [
+      12,
+      10
+    ]
+  },
+  {
+    "id": "icy-grass-priority",
+    "map": "MnRainyRiverIcefields",
+    "core": [
+      19,
+      31
+    ]
+  },
+  {
+    "id": "upper-cache-launch",
+    "map": "MnRainyRiverIcefields",
+    "core": [
+      19,
+      7
+    ]
+  },
+  {
+    "id": "region-seam-lane44",
+    "map": "MnRainyRiverIcefields",
+    "core": [
+      63,
+      44
+    ]
+  },
+  {
+    "id": "region-seam-lane45",
+    "map": "MnRainyRiverIcefields",
+    "core": [
+      63,
+      45
+    ]
+  },
+  {
+    "id": "r20-seam-lane44",
+    "map": "MnR20C00R00",
+    "core": [
+      0,
+      44
+    ]
+  },
+  {
+    "id": "r20-seam-lane45",
+    "map": "MnR20C00R00",
+    "core": [
+      0,
+      45
+    ]
+  }
+]

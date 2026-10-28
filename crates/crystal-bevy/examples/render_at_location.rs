@@ -34,6 +34,7 @@ impl ViewMode {
 #[derive(Debug)]
 struct Args {
     pack: PathBuf,
+    save: Option<PathBuf>,
     map: Option<String>,
     maps: Vec<String>,
     all_maps: bool,
@@ -105,6 +106,16 @@ fn main() -> Result<()> {
     {
         bail!("--live requires one map, --view both and --screenshot, without --walk");
     }
+    if args.save.is_some()
+        && (args.all_maps
+            || !args.maps.is_empty()
+            || args.list_maps
+            || args.live
+            || args.preview_flag.is_some()
+            || args.preview_doll.is_some())
+    {
+        bail!("--save requires a single saved scene without batch or preview overrides");
+    }
     let started = std::time::Instant::now();
     if args.view == ViewMode::Both
         && args.screenshot.is_none()
@@ -152,19 +163,44 @@ fn render_single_map(
     temporal_3d: bool,
     started: std::time::Instant,
 ) -> Result<()> {
+    let saved = args
+        .save
+        .as_ref()
+        .map(|path| runtime.load_save(path))
+        .transpose()?;
+    let saved_pose = match saved.as_ref().map(|state| &state.overworld) {
+        Some(crystal_runtime::core::state::OverworldMemory::Active {
+            map_name, tile, ..
+        }) => {
+            Some((map_name.clone(), *tile))
+        }
+        Some(_) => bail!("--save must contain an active overworld scene"),
+        None => None,
+    };
     let map = args
         .map
         .clone()
-        .context("--map is required unless --list-maps is used")?;
+        .or_else(|| saved_pose.as_ref().map(|p| p.0.clone()))
+        .context("--map or --save is required unless --list-maps is used")?;
+    if let Some((saved_map, tile)) = &saved_pose {
+        if saved_map != &map
+            || args.tile_x.is_some_and(|x| x != tile.x)
+            || args.tile_y.is_some_and(|y| y != tile.y)
+        {
+            bail!("--map/--x/--y must match the saved scene; saved state is never repositioned");
+        }
+    }
     let (width, height) = runtime
         .data()
         .saved_map_tile_bounds(&map)
         .with_context(|| format!("unknown or dimensionless map {map}"))?;
     let tile_x = args
         .tile_x
+        .or_else(|| saved_pose.as_ref().map(|p| p.1.x))
         .unwrap_or_else(|| i16::try_from(width / 2).unwrap_or(i16::MAX));
     let tile_y = args
         .tile_y
+        .or_else(|| saved_pose.as_ref().map(|p| p.1.y))
         .unwrap_or_else(|| i16::try_from(height / 2).unwrap_or(i16::MAX));
     require_in_bounds(&map, tile_x, tile_y, width, height)?;
 
@@ -195,7 +231,12 @@ fn render_single_map(
         std::fs::metadata(&pack_path)?.modified()?,
         args.hour,
         args.preview_flag,
-        args.preview_doll
+        (
+            args.preview_doll.as_ref(),
+            args.save.as_ref().map(|path| {
+                std::fs::metadata(path).and_then(|m| m.modified())
+            })
+        )
     );
     let previous = second
         .as_ref()
@@ -207,17 +248,24 @@ fn render_single_map(
         })
         .and_then(|path| image::open(path).ok());
     println!("runtime ready in {:.2}s", started.elapsed().as_secs_f64());
-    crystal_bevy::run_bevy_shell(
-        asset_root,
-        runtime.clone(),
+    let start = if let Some(save_path) = &args.save {
+        BevyShellStart::LoadSave {
+            save_path: save_path.clone(),
+        }
+    } else {
         BevyShellStart::NewGameAtRuntimeTile {
             spawn_identifier: runtime.title_new_game_spawn_identifier()?,
             map_name: map.clone(),
             tile_x,
             tile_y,
-        },
+        }
+    };
+    crystal_bevy::run_bevy_shell(
+        asset_root,
+        runtime.clone(),
+        start,
         BevyShellConfig {
-            smoke_player_name: Some("RENDER".to_string()),
+            smoke_player_name: args.save.is_none().then(|| "RENDER".to_string()),
             // Warm the native scene before freezing a paired baseline. A
             // source-first startup can read back a uniform initial frame,
             // despite valid runtime state. Logical output labels and
@@ -231,7 +279,9 @@ fn render_single_map(
             render_test_second_screenshot: if args.view==ViewMode::Both {first.clone()} else {second.clone()},
             render_test_live: args.live,
             render_test_walk: args.walk,
-            render_test_hour: Some(args.hour),
+            // Continue the saved clock through the production RTC path. The
+            // location fixture's default noon must not overwrite a saved game.
+            render_test_hour: args.save.is_none().then_some(args.hour),
             render_test_window_size: env::var("CRYSTAL_RENDER_TEST_WINDOW_SIZE")
                 .ok()
                 .map(|size| {
@@ -242,7 +292,7 @@ fn render_single_map(
                 .transpose()?,
             render_test_preview_flag: args.preview_flag,
             render_test_preview_doll: args.preview_doll,
-            render_test_party: true,
+            render_test_party: args.save.is_none(),
             ..Default::default()
         },
     )?;
@@ -556,6 +606,7 @@ fn require_in_bounds(map: &str, x: i16, y: i16, width: u16, height: u16) -> Resu
 
 fn parse_args(values: impl IntoIterator<Item = String>) -> Result<Args> {
     let mut pack = None;
+    let mut save = None;
     let mut map = None;
     let mut maps = Vec::new();
     let mut all_maps = false;
@@ -577,6 +628,7 @@ fn parse_args(values: impl IntoIterator<Item = String>) -> Result<Args> {
     while let Some(flag) = values.next() {
         match flag.as_str() {
             "--pack" => pack = Some(PathBuf::from(next_value(&mut values, "--pack")?)),
+            "--save" => save = Some(PathBuf::from(next_value(&mut values, "--save")?)),
             "--map" => map = Some(next_value(&mut values, "--map")?),
             "--maps" => maps.extend(
                 next_value(&mut values, "--maps")?
@@ -621,6 +673,7 @@ fn parse_args(values: impl IntoIterator<Item = String>) -> Result<Args> {
     }
     Ok(Args {
         pack: pack.context("--pack <game.crystalpack> is required")?,
+        save,
         map,
         maps,
         all_maps,
@@ -657,7 +710,7 @@ fn next_value(values: &mut impl Iterator<Item = String>, flag: &str) -> Result<S
 fn print_usage() {
     println!(
         r#"cargo run -p crystal-bevy --example render_at_location --features location-tester -- \
-         --pack <game.crystalpack> [--list-maps | --map <id> [--x <tile>] [--y <tile>] \
+         --pack <game.crystalpack> [--list-maps | --save <game.crystalsave> | --map <id> [--x <tile>] [--y <tile>] \
          [--view 2d|2.5d|both] [--hour <0..23>] [--screenshot <output-or-prefix.png>] [--live] [--walk RDLU] \
          [--preview-flag <verified-flag,...>] [--preview-doll <decoration-id>] | \
          (--maps <id,id,...> | --all-maps | --outdoors | --kanto-interiors) --output-dir <directory> [--perimeter] \

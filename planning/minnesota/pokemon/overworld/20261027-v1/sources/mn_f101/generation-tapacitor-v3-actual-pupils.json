@@ -1,0 +1,68 @@
+{
+  "tool": "built-in image_gen",
+  "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f101/tapacitor-v3-actual-pupils",
+  "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f101/manifest-tapacitor-v3-actual-pupils.json",
+  "normalized_receipt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f101/source-feature-proof-tapacitor-v3-actual-pupils.json",
+  "all_raws_prompts_rejected_trials_retained": true,
+  "no_native_pixel_painting": true,
+  "no_registry_or_pack_mutation": true,
+  "normal_shiny_boards_actually_viewed": true,
+  "canonical_palettes": [
+    [
+      32767,
+      14174,
+      9606,
+      0
+    ],
+    [
+      32767,
+      27597,
+      12489,
+      0
+    ]
+  ],
+  "native_bounds": [
+    [
+      1,
+      3,
+      13,
+      12
+    ],
+    [
+      1,
+      3,
+      13,
+      12
+    ],
+    [
+      2,
+      3,
+      11,
+      12
+    ],
+    [
+      1,
+      3,
+      13,
+      12
+    ],
+    [
+      1,
+      3,
+      13,
+      12
+    ],
+    [
+      2,
+      3,
+      11,
+      12
+    ]
+  ],
+  "retained_source_hashes": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f101/tapacitor.overworld.imagegen-v1.png": "1b83170453d9e2cb8f0e8b01e1bd13dec711805da3d7735a7e382ad5400720d8",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f101/prompt-tapacitor-v1.txt": "17097e195cf1a64d1eab8ba360ad6d6b46083eb75e641d2cbb573543b3a66d48",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f101/tapacitor.v1.original-path.txt": "f9f8e11919aa900fb1759280dc1714a4aebfca63e52a9ff7274832d1dc878a73"
+  },
+  "status": "root independent visual/context acceptance pending"
+}

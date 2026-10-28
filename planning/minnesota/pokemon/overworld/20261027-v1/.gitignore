@@ -1,0 +1,5 @@
+/native/
+/candidates/
+*.log
+*.2bpp
+**/*-candidate-*/

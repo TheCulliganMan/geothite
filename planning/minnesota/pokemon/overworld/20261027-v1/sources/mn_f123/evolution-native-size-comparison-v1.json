@@ -1,0 +1,188 @@
+{
+  "pikeling": [
+    {
+      "pose": "down_idle",
+      "bounds": [
+        4,
+        6,
+        7,
+        9
+      ],
+      "opaque": 30
+    },
+    {
+      "pose": "up_idle",
+      "bounds": [
+        4,
+        6,
+        7,
+        8
+      ],
+      "opaque": 31
+    },
+    {
+      "pose": "left_idle",
+      "bounds": [
+        2,
+        6,
+        11,
+        6
+      ],
+      "opaque": 38
+    },
+    {
+      "pose": "down_step",
+      "bounds": [
+        3,
+        6,
+        9,
+        9
+      ],
+      "opaque": 38
+    },
+    {
+      "pose": "up_step",
+      "bounds": [
+        4,
+        6,
+        8,
+        8
+      ],
+      "opaque": 33
+    },
+    {
+      "pose": "left_step",
+      "bounds": [
+        2,
+        6,
+        12,
+        7
+      ],
+      "opaque": 40
+    }
+  ],
+  "pikeman": [
+    {
+      "pose": "down_idle",
+      "bounds": [
+        3,
+        5,
+        8,
+        10
+      ],
+      "opaque": 42
+    },
+    {
+      "pose": "up_idle",
+      "bounds": [
+        4,
+        5,
+        8,
+        10
+      ],
+      "opaque": 39
+    },
+    {
+      "pose": "left_idle",
+      "bounds": [
+        2,
+        6,
+        12,
+        7
+      ],
+      "opaque": 40
+    },
+    {
+      "pose": "down_step",
+      "bounds": [
+        3,
+        5,
+        8,
+        10
+      ],
+      "opaque": 39
+    },
+    {
+      "pose": "up_step",
+      "bounds": [
+        4,
+        5,
+        8,
+        10
+      ],
+      "opaque": 38
+    },
+    {
+      "pose": "left_step",
+      "bounds": [
+        2,
+        6,
+        12,
+        7
+      ],
+      "opaque": 40
+    }
+  ],
+  "musketunge": [
+    {
+      "pose": "down_idle",
+      "bounds": [
+        2,
+        4,
+        11,
+        10
+      ],
+      "opaque": 64
+    },
+    {
+      "pose": "up_idle",
+      "bounds": [
+        4,
+        4,
+        9,
+        11
+      ],
+      "opaque": 55
+    },
+    {
+      "pose": "left_idle",
+      "bounds": [
+        1,
+        4,
+        14,
+        10
+      ],
+      "opaque": 78
+    },
+    {
+      "pose": "down_step",
+      "bounds": [
+        2,
+        4,
+        11,
+        10
+      ],
+      "opaque": 62
+    },
+    {
+      "pose": "up_step",
+      "bounds": [
+        4,
+        4,
+        9,
+        11
+      ],
+      "opaque": 51
+    },
+    {
+      "pose": "left_step",
+      "bounds": [
+        1,
+        4,
+        14,
+        10
+      ],
+      "opaque": 76
+    }
+  ]
+}

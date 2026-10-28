@@ -1,0 +1,212 @@
+{
+  "species": "pikeling",
+  "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f123/pikeling-v2-native-pupils",
+  "status": "actual-source native proof passes; root visual/context acceptance pending",
+  "all_four_nonrear_actual_isolated_source_pupils": true,
+  "six16px_alpha_border_normal_shiny_runtime_parity": true,
+  "canonical_palettes": true,
+  "literal_2bpp_all1536indices_exact": true,
+  "bank_sha256": "53bc8e57cdb2570618f62ffbbd28c7c2a158cd28e464bb88d2c3905bedc513b1",
+  "proof": [
+    {
+      "pose": "down_idle",
+      "actual_small_isolated_pupils": [
+        {
+          "native": [
+            6,
+            11
+          ],
+          "source_sample": [
+            270,
+            405
+          ],
+          "source_component": [
+            257,
+            389,
+            23,
+            23
+          ],
+          "component_pixels": 529,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            2
+          ],
+          "source_rgba": [
+            0,
+            0,
+            0,
+            253
+          ]
+        },
+        {
+          "native": [
+            8,
+            11
+          ],
+          "source_sample": [
+            329,
+            405
+          ],
+          "source_component": [
+            327,
+            389,
+            23,
+            23
+          ],
+          "component_pixels": 529,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            2,
+            1,
+            1,
+            254
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "actual_small_isolated_pupils": [
+        {
+          "native": [
+            5,
+            9
+          ],
+          "source_sample": [
+            1175,
+            381
+          ],
+          "source_component": [
+            1154,
+            369,
+            23,
+            27
+          ],
+          "component_pixels": 621,
+          "native_neighbors": [
+            1,
+            1,
+            2,
+            1
+          ],
+          "source_rgba": [
+            1,
+            0,
+            1,
+            253
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "actual_small_isolated_pupils": [
+        {
+          "native": [
+            6,
+            11
+          ],
+          "source_sample": [
+            270,
+            782
+          ],
+          "source_component": [
+            257,
+            776,
+            23,
+            25
+          ],
+          "component_pixels": 575,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            0,
+            0,
+            0,
+            253
+          ]
+        },
+        {
+          "native": [
+            8,
+            11
+          ],
+          "source_sample": [
+            329,
+            782
+          ],
+          "source_component": [
+            327,
+            776,
+            23,
+            25
+          ],
+          "component_pixels": 571,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            4,
+            3,
+            3,
+            253
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "actual_small_isolated_pupils": [
+        {
+          "native": [
+            5,
+            9
+          ],
+          "source_sample": [
+            1175,
+            775
+          ],
+          "source_component": [
+            1155,
+            761,
+            23,
+            27
+          ],
+          "component_pixels": 621,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            1,
+            1,
+            1,
+            253
+          ]
+        }
+      ]
+    }
+  ],
+  "hashes": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f123/pikeling-v2-native-pupils/compiled-index.json": "6e68c5e63763ec2f6c3e8f4abb660f7f2ab671b083f994a14c27073a6842ab24",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f123/pikeling.overworld.imagegen-v1.png": "0c0842d5d71665c82c57d9b44b6c5b8f9744f4380a658b34c9806e8cce6a122f",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f123/pikeling-v2-native-pupils/gfx/pokemon/pikeling/overworld.2bpp": "53bc8e57cdb2570618f62ffbbd28c7c2a158cd28e464bb88d2c3905bedc513b1"
+  },
+  "no_native_pixel_painting": true
+}

@@ -4,6 +4,10 @@ use std::collections::BTreeMap;
 use anyhow::{Context, Result, ensure};
 use serde::Deserialize;
 
+#[cfg(test)]
+#[path = "superior_inland_source_tests.rs"]
+mod superior_inland_source_tests;
+
 #[derive(Deserialize)]
 pub(crate) struct Layout {
     pub id: String,
@@ -72,6 +76,7 @@ enum Material {
     Forest,
     Oak,
     Water,
+    Ice,
     Boulder,
     Sign,
 }
@@ -86,6 +91,7 @@ impl Material {
             Self::Forest => 5,
             Self::Oak => 0x61,
             Self::Water => 0x35,
+            Self::Ice => 0x3e,
             Self::Boulder => 0x0a,
             Self::Sign => 0x45,
         }
@@ -126,7 +132,15 @@ impl Layout {
                 "mn_north_shore",
                 "johto_8_neighbors",
             ),
-            "MN_R12" => ([64, 56], "mn_gunflint", "forest_8_neighbors"),
+            "MN_R12" => (
+                if layout.dimensions_metatiles == [32, 32] {
+                    [32, 32]
+                } else {
+                    [64, 56]
+                },
+                "mn_gunflint",
+                "forest_8_neighbors",
+            ),
             "MN_R13" => ([32, 64], "johto", "johto_8_neighbors"),
             "MN_R14" => ([48, 32], "mn_headwaters", "johto_8_neighbors"),
             "MN_R18" => ([40, 24], "mn_headwaters", "johto_8_neighbors"),
@@ -135,6 +149,17 @@ impl Layout {
             "MN_R17" => ([32, 56], "mn_border_pines", "forest_8_neighbors"),
             "MN_R15" => ([32, 18], "kanto", "kanto_8_neighbors"),
             "MnBoundaryWaters" => ([32, 24], "mn_boundary_safari", "johto_8_neighbors"),
+            "MnGrandMarais" => ([20, 19], "mn_marais_shore", "explicit_source_edges"),
+            "MnMaraisCedarApproach" => (
+                if layout.dimensions_metatiles == [20, 12] {
+                    [20, 12]
+                } else {
+                    [32, 19]
+                },
+                "mn_winter_north_shore",
+                "explicit_source_edges",
+            ),
+            "MnMaraisInlandNeck" => ([65, 19], "mn_winter_north_shore", "explicit_source_edges"),
             _ => anyhow::bail!("unsupported authored route layout {}", layout.id),
         };
         ensure!(
@@ -145,14 +170,24 @@ impl Layout {
                         ("MN_R02", "mn_prairie_kanto")
                             | ("MN_R16", "mn_prairie_headwaters")
                             | ("MN_R10", "mn_r10_rockstairs")
+                            | ("MN_R12", "mn_winter_gunflint")
+                            | ("MN_R13", "mn_winter_north_shore")
                     ))
-                && layout.shore_fitting == expected.2,
+                && (layout.shore_fitting == expected.2
+                    || (matches!(
+                        layout.id.as_str(),
+                        "MN_R03" | "MN_R11" | "MN_R12" | "MN_R13"
+                    ) && layout.shore_fitting == "explicit_source_edges")),
             "retain the complete authored route and native art fitting"
         );
         Ok(layout)
     }
 
     fn material(&self, material: Material) -> Result<u16> {
+        ensure!(
+            material != Material::Ice || self.materials.contains_key(&Material::Ice),
+            "ice requires an explicit native tileset block"
+        );
         self.materials
             .get(&material)
             .map_or(Ok(material.block()), |value| parse_block(value))

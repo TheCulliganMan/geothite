@@ -172,13 +172,10 @@ fn duluth_story_controller_names_kettlurk_requires_every_page_and_retains_only_s
         .presentation_snapshot()
         .expect("native text source");
     let pages = visible_field_dialog_pages(&raw, &c.shell).expect("native pages");
-    assert_eq!(pages.len(), 10);
-    assert!(pages.iter().any(|p| p.contains("KETTLURK")));
-    assert!(pages.iter().any(|p| p.contains("BOUNDARY WATERS")));
-    assert!(pages.iter().any(|p| p.contains("ICE wants it gone.")));
-    assert!(pages.iter().any(|p| p.contains("drainage plan")));
-    assert!(pages.iter().any(|p| p.contains("ICE kidnaps people")));
-    assert!(pages.iter().any(|p| p.contains("after the warning.")));
+    assert_eq!(
+        pages,
+        super::northstar_dialogue::canonical_pages("MS10", READ)
+    );
     for (index, expected) in pages.iter().enumerate() {
         assert!(!signal(&c), "signal before acknowledging page {index}");
         let s = c.snapshot().expect("visible reading");

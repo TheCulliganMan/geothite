@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F102",
+  "species": [
+    {
+      "species_id": "MN_222",
+      "runtime_token": "SMOULDEN",
+      "palette_rgb555": [
+        32767,
+        10780,
+        12458,
+        0
+      ],
+      "shiny_palette_rgb555": [
+        32767,
+        17290,
+        5452,
+        0
+      ],
+      "fit": [
+        13,
+        13
+      ],
+      "alpha_threshold": 200,
+      "sampling": "source_center",
+      "minimum_foreground_samples": 16,
+      "black_priority_samples": 64,
+      "interior_black_samples": 64,
+      "opaque_interior_minimum_samples": 64,
+      "frames": [
+        {
+          "pose": "down_idle",
+          "source": "smoulden.overworld.imagegen-v1.png",
+          "crop": [
+            24,
+            248,
+            480,
+            340
+          ]
+        },
+        {
+          "pose": "up_idle",
+          "source": "smoulden.overworld.imagegen-v1.png",
+          "crop": [
+            546,
+            248,
+            480,
+            340
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "source": "smoulden.overworld.imagegen-v1.png",
+          "crop": [
+            1050,
+            248,
+            480,
+            340
+          ]
+        },
+        {
+          "pose": "down_step",
+          "source": "smoulden.overworld.imagegen-v1.png",
+          "crop": [
+            30,
+            620,
+            480,
+            340
+          ]
+        },
+        {
+          "pose": "up_step",
+          "source": "smoulden.overworld.imagegen-v1.png",
+          "crop": [
+            546,
+            596,
+            480,
+            340
+          ]
+        },
+        {
+          "pose": "left_step",
+          "source": "smoulden.overworld.imagegen-v1.png",
+          "crop": [
+            1050,
+            608,
+            480,
+            340
+          ]
+        }
+      ]
+    }
+  ]
+}

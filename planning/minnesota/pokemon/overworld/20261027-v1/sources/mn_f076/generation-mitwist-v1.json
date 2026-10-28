@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_163",
+  "family_id": "MN_F076",
+  "tool": "built-in image_gen",
+  "default_path": "/Users/ryanculligan/.codex/generated_images/01a178da-4cf1-7e01-8516-667a332dc790/exec-1199de44-e53d-4b71-a2ad-6dbf587fb828.png",
+  "retained_raw": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f076/mitwist.overworld.imagegen-v1.png",
+  "sha256": "e91ea5d5332d86bfc0165786f98a84f6872501be9bb46a4102167fd4680f9da4",
+  "prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f076/prompt-mitwist-v1.txt",
+  "style_reference": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/references/native-pack-16px/native-six-frame-style-board.8x.png",
+    "sha256": "4354a639ed1a80fd6686e43b273443ed894e58a84307a8049f638ee9ffa2a099",
+    "role": "Only supplied reference; authentic native16 style and scale, no identity copying"
+  },
+  "canonical_identity_reviewed": {
+    "front": {
+      "path": "target/minnesota-pokemon/native/MN_F076/mn-163-mitwist-v6.front.png",
+      "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F076/mn-163-mitwist-v6.front.png",
+      "sha256": "d99521063ae6bcd463d427e67e3676989c5cb85212071dae78e04f0bc28e2b28"
+    },
+    "back": {
+      "path": "target/minnesota-pokemon/native/MN_F076/mn-163-mitwist-v6.back.png",
+      "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F076/mn-163-mitwist-v6.back.png",
+      "sha256": "b8e2208d0669c3f934c4b6a291434bacacf6d1018893a5df33325470658383d0"
+    }
+  },
+  "palette_binding": {
+    "transparent_index": 0,
+    "visible_indices": [
+      1,
+      2,
+      3
+    ],
+    "normal_rgb555_words": [
+      32767,
+      20349,
+      19946,
+      0
+    ],
+    "shiny_rgb555_words": [
+      32767,
+      23376,
+      15595,
+      0
+    ],
+    "white_body_region_policy": "Simplify formerly white body/highlight regions to light ink1. Index0 is transparent everywhere, not an opaque white paint color."
+  },
+  "accepted": false
+}

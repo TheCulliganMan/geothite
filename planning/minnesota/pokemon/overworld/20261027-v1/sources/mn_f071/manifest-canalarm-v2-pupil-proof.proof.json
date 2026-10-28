@@ -1,0 +1,357 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_150",
+  "status": "source-proof-pass; root visual/context acceptance required",
+  "selected_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f071/manifest-canalarm-v2-pupil-proof.json",
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f071/canalarm-v2-pupil-proof",
+  "shared_transform": {
+    "source_bounds": [
+      44,
+      12,
+      407,
+      391
+    ],
+    "native_size": [
+      14,
+      13
+    ],
+    "native_origin": [
+      1,
+      2
+    ]
+  },
+  "all_four_nonrear_poses_have_actual_source_pupils": true,
+  "every_native_eye_cluster_maps_to_same_small_anatomical_source_pupil_component": true,
+  "actual_source_pupil_proofs": [
+    {
+      "pose": "down_idle",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f071/canalarm.overworld.imagegen-v2-neutral.png",
+      "crop": [
+        14,
+        88,
+        500,
+        440
+      ],
+      "anatomically_identified_source_eye_boxes_xywh": [
+        [
+          212,
+          245,
+          23,
+          35
+        ],
+        [
+          288,
+          245,
+          22,
+          35
+        ]
+      ],
+      "actual_eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              6,
+              7
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                5,
+                0,
+                2,
+                253
+              ],
+              "bounds": [
+                212,
+                245,
+                23,
+                35
+              ],
+              "pixels": 768,
+              "truncated_contour": false,
+              "native_pixel": [
+                6,
+                7
+              ],
+              "source_sample_pixel": [
+                217,
+                265
+              ]
+            }
+          ]
+        },
+        {
+          "native_cluster": [
+            [
+              9,
+              7
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                5,
+                2,
+                2,
+                253
+              ],
+              "bounds": [
+                288,
+                245,
+                22,
+                35
+              ],
+              "pixels": 721,
+              "truncated_contour": false,
+              "native_pixel": [
+                9,
+                7
+              ],
+              "source_sample_pixel": [
+                305,
+                265
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f071/canalarm.overworld.imagegen-v2-neutral.png",
+      "crop": [
+        1027,
+        106,
+        500,
+        440
+      ],
+      "anatomically_identified_source_eye_boxes_xywh": [
+        [
+          1180,
+          226,
+          22,
+          43
+        ]
+      ],
+      "actual_eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              5,
+              6
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                4,
+                4,
+                0,
+                253
+              ],
+              "bounds": [
+                1180,
+                226,
+                22,
+                43
+              ],
+              "pixels": 830,
+              "truncated_contour": false,
+              "native_pixel": [
+                5,
+                6
+              ],
+              "source_sample_pixel": [
+                1201,
+                253
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f071/canalarm.overworld.imagegen-v2-neutral.png",
+      "crop": [
+        17,
+        541,
+        500,
+        440
+      ],
+      "anatomically_identified_source_eye_boxes_xywh": [
+        [
+          213,
+          701,
+          22,
+          38
+        ],
+        [
+          297,
+          701,
+          23,
+          38
+        ]
+      ],
+      "actual_eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              6,
+              7
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                0,
+                1,
+                0,
+                253
+              ],
+              "bounds": [
+                213,
+                701,
+                22,
+                38
+              ],
+              "pixels": 781,
+              "truncated_contour": false,
+              "native_pixel": [
+                6,
+                7
+              ],
+              "source_sample_pixel": [
+                220,
+                718
+              ]
+            }
+          ]
+        },
+        {
+          "native_cluster": [
+            [
+              9,
+              7
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                0,
+                0,
+                0,
+                253
+              ],
+              "bounds": [
+                297,
+                701,
+                23,
+                38
+              ],
+              "pixels": 828,
+              "truncated_contour": false,
+              "native_pixel": [
+                9,
+                7
+              ],
+              "source_sample_pixel": [
+                308,
+                718
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f071/canalarm.overworld.imagegen-v2-neutral.png",
+      "crop": [
+        1030,
+        569,
+        500,
+        440
+      ],
+      "anatomically_identified_source_eye_boxes_xywh": [
+        [
+          1186,
+          692,
+          24,
+          46
+        ]
+      ],
+      "actual_eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              5,
+              6
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                3,
+                2,
+                1,
+                253
+              ],
+              "bounds": [
+                1186,
+                692,
+                24,
+                46
+              ],
+              "pixels": 975,
+              "truncated_contour": false,
+              "native_pixel": [
+                5,
+                6
+              ],
+              "source_sample_pixel": [
+                1204,
+                716
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "native_head_anchors_idle_walk_equal": true,
+  "validation": {
+    "runtime_2bpp_384_bytes_exact_allpixels": true,
+    "runtime_png16x96_index_parity": true,
+    "normal_shiny_palettebanks_exact": true,
+    "normal_shiny_all1536pixels_exact": true,
+    "transparent_border": true,
+    "idle_walk_pairs_distinct": true
+  },
+  "sha256": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f071/canalarm-v2-pupil-proof/compiled-index.json": "fec21edbd14d490ad4cbfdda6104e119647c3111db83bd01aee74d9b23abce60",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f071/canalarm.overworld.imagegen-v2-neutral.png": "4e2caa7576410f85c3f82328a3951445fdbb9d1804ccbfbc9e55330c13860317",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f071/canalarm-v2-pupil-proof/gfx/pokemon/canalarm/overworld.gbcpal": "e653f98f834acb7d115d342090515c5173bfe0c54ef013d4d5664b127f96e1d4",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f071/canalarm-v2-pupil-proof/gfx/pokemon/canalarm/overworld.png": "4b83afb2baf968b404b4d76ff0e502d9bea13c8cbdc8da2c72bbb0d714764f9b",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f071/canalarm-v2-pupil-proof/review/line.shiny-8x.png": "856bda2f7cc1d8a8b01ec5afe18bccb1ec46610de1a7334469e8e067102db4db",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f071/manifest-canalarm-v2-pupil-proof.json": "80b14cbce800a4123b561e10dff15c1b4c644468d478371e00966acc1e032731",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f071/canalarm-v2-pupil-proof/gfx/pokemon/canalarm/overworld-shiny.gbcpal": "a2a98b2910ee24be3e4e55e1dd8b8c07e6dbc9664bf0d0bf388331e21f38e727",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f071/canalarm-v2-pupil-proof/review/line.normal-8x.png": "431df33a3efad25ecd65844d82a6b9dc0d5cd8384e2f4263ac243f49cf409446",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f071/canalarm-v2-pupil-proof/gfx/pokemon/canalarm/overworld.2bpp": "3834663b6afa3e6cea1c4fd2b40415297b95998ee530aa0d873a978cd7b57529"
+  },
+  "actual_native_boards_viewed": true,
+  "rear_review": "All six normal/shiny poses viewed. Both rear frames blank back of crest/skull/cheek sacs/wings and attached tail, no chest gauge or copied face.",
+  "canonical_eye_form": "TWO actual isolated black SOUTH pupils, ONE actual near WEST pupil; full clusters map to actual source pupil components. Chest gauge/beak/wing marks not counted.",
+  "signature_anatomy_review": "Native14x13: two giant yellow cheek air sacs, conical crest, two short pointed wings, two bird feet and attached jagged tail. Chest gauge simplifies to darkblue patch/stem distinct from pupils. No equipment.",
+  "source_motion_review": {
+    "source_sheet_actually_viewed": true,
+    "notes": "Actual source feet alternate, wing tips/tail alter between all three walking pairs; native all pairs distinct and real pupil anchors stable."
+  }
+}

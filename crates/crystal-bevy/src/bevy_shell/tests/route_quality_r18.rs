@@ -1,7 +1,6 @@
-//! Proposed fixture-only regression for the bounded R18 shore-trip revision.
+//! Local geometry regression for the bounded R18 shore-trip revision.
 //!
-//! Parent copies/registers this leaf after publication. This source has not
-//! been compiled or executed. Local position, an empty party and RNG are
+//! Local position, an empty party and RNG are
 //! explicit initial fixtures; regional access is not earned here. All later
 //! movement uses VisibleShellController::press through RouteGrid. Existing
 //! populated SQ04/battle/Surf cases remain separate acceptance requirements.
@@ -305,8 +304,35 @@ fn route_quality_r18_controller_whole_shore_trip_and_both_returns() {
         .expect("unchanged resources after native walking");
     assert_eq!(after.party, initial.party);
     assert_eq!(after.bag, initial.bag);
-    assert_eq!(
-        controller.shell.shell.session().state().flags,
-        initial_flags
-    );
+    let flags = &controller.shell.shell.session().state().flags;
+    // Crossing a native map seam materializes false temporary flags. Compare
+    // every event/engine flag's value, including keys absent from either map.
+    for flag in initial_flags
+        .event_flags
+        .keys()
+        .chain(flags.event_flags.keys())
+    {
+        assert_eq!(
+            initial_flags
+                .is_event_flag_set(flag)
+                .expect("known initial event"),
+            flags.is_event_flag_set(flag).expect("known current event"),
+            "event {flag}"
+        );
+    }
+    for flag in initial_flags
+        .engine_flags
+        .keys()
+        .chain(flags.engine_flags.keys())
+    {
+        assert_eq!(
+            initial_flags
+                .is_engine_flag_set(flag)
+                .expect("known initial engine flag"),
+            flags
+                .is_engine_flag_set(flag)
+                .expect("known current engine flag"),
+            "engine {flag}"
+        );
+    }
 }

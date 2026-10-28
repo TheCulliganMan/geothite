@@ -1,0 +1,18 @@
+{
+  "species_id": "MN_073",
+  "name": "Spanlet",
+  "family_id": "MN_F030",
+  "tool": "built-in image_gen",
+  "selected_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f030/manifest-spanlet-v1-pupil-proof.json",
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f030/spanlet-v1-pupil-proof",
+  "normalized_proof": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f030/source-feature-proof-spanlet-v1.json",
+  "detailed_proof": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f030/manifest-spanlet-v1-pupil-proof.proof.json",
+  "sources": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f030/spanlet.overworld.imagegen-v1.png": "0d9da8439cc8ffdcefec1cade1d2a962f1cec3e843f829dbe357354e01e7eb07"
+  },
+  "preserved_attempt_receipts": [
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f030/attempt-spanlet-v1.json"
+  ],
+  "status": "frozen native candidate; actual normal/shiny source features reviewed; root context pending",
+  "accepted": false
+}

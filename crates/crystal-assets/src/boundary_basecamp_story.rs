@@ -526,16 +526,16 @@ fn story_texts() -> std::collections::BTreeMap<String, Vec<&'static str>> {
         (
             "MnBoundarySurveyChiefSeenText",
             vec![
-                "You kept the first",
-                "survey readings.",
-                "Ore under lakes:",
+                "The station IDs?",
+                "I changed those.",
+                "Those red marks?",
+                "Homes. Boat docks.",
+                "I saw the risks.",
+                "I signed anyway.",
+                "ICE took people.",
+                "I paid their bill.",
                 "Copper and nickel.",
-                "I read the risks.",
-                "Drain them anyway.",
-                "ICE takes anyone",
-                "they don't trust.",
-                "KETTLURK will",
-                "drive the pumps.",
+                "The pumps stay on.",
             ],
         ),
         (
@@ -546,28 +546,27 @@ fn story_texts() -> std::collections::BTreeMap<String, Vec<&'static str>> {
         (
             "MnBoundarySurveyChiefAfterText",
             vec![
-                "I lost the relay.",
-                "I have not changed",
-                "my mind.",
-                "The receiver is",
-                "at the east desk.",
+                "The ore is there.",
+                "I still want it.",
+                "Get away from me.",
+                "I'm done talking.",
             ],
         ),
         (
             "MnBoundarySurveyChiefBadgeDeniedText",
-            vec!["Eight BADGES first", "Then face my team."],
-        ),
-        (
-            "MnBoundarySurveyChiefSignalDeniedText",
             vec![
-                "The harbor signal",
-                "has not reached us",
-                "Check the workshop",
+                "Still collecting",
+                "BADGES? Come back",
+                "when you are done.",
             ],
         ),
         (
+            "MnBoundarySurveyChiefSignalDeniedText",
+            vec!["No harbor signal.", "Your log is just", "paper here."],
+        ),
+        (
             "MnBoundarySurveyReceiverLockedText",
-            vec!["The survey chief", "holds this line.", "Win the desk first"],
+            vec!["The chief guards", "the controls."],
         ),
         (
             "MnBoundarySurveyReceiverAlreadyText",
@@ -592,14 +591,14 @@ fn story_texts() -> std::collections::BTreeMap<String, Vec<&'static str>> {
         (
             "MnBoundarySurveyReceiverDoneText",
             vec![
-                "SURVEY LINK ACTIVE",
-                "Real readings sent",
-                "Crews stop the",
-                "drainage pumps.",
-                "KETTLURK escapes",
-                "the waiting trap.",
+                "HARBOR: All clear.",
+                "The pumps are off.",
+                "KETTLURK is clear.",
+                "The cage is empty.",
+                "ELLIS: We kept",
+                "a copy.",
                 "The ELY trail is",
-                "ready to survey.",
+                "open again.",
             ],
         ),
     ]

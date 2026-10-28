@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F032",
+  "species": [
+    {
+      "species_id": "MN_078",
+      "runtime_token": "CASSEROGRE",
+      "palette_rgb555": [
+        32767,
+        8959,
+        3283,
+        0
+      ],
+      "shiny_palette_rgb555": [
+        32767,
+        24552,
+        6755,
+        0
+      ],
+      "fit": [
+        14,
+        14
+      ],
+      "alpha_threshold": 245,
+      "sampling": "source_center",
+      "minimum_foreground_samples": 16,
+      "black_priority_samples": 32,
+      "interior_black_samples": null,
+      "opaque_interior_minimum_samples": 60,
+      "frames": [
+        {
+          "pose": "down_idle",
+          "source": "casserogre.overworld.imagegen-v1.png",
+          "crop": [
+            48,
+            86,
+            452,
+            388
+          ]
+        },
+        {
+          "pose": "up_idle",
+          "source": "casserogre.overworld.imagegen-v1.png",
+          "crop": [
+            562,
+            85,
+            452,
+            388
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "source": "casserogre.overworld.imagegen-v1.png",
+          "crop": [
+            1058,
+            96,
+            452,
+            388
+          ]
+        },
+        {
+          "pose": "down_step",
+          "source": "casserogre.overworld.imagegen-v1.png",
+          "crop": [
+            54,
+            549,
+            452,
+            388
+          ]
+        },
+        {
+          "pose": "up_step",
+          "source": "casserogre.overworld.imagegen-v1.png",
+          "crop": [
+            557,
+            541,
+            452,
+            388
+          ]
+        },
+        {
+          "pose": "left_step",
+          "source": "casserogre.overworld.imagegen-v1.png",
+          "crop": [
+            1058,
+            549,
+            452,
+            388
+          ]
+        }
+      ]
+    }
+  ]
+}

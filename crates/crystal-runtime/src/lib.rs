@@ -145,8 +145,9 @@ use crystal_core::state::{
 use crystal_core::systems::battle_escape::{BattleEscapeAttempt, BattleEscapeRules};
 use crystal_core::systems::battle_items::{
     BattleItemEffectPlan, BattleItemOutcome, ITEM_EFFECT_BEHAVIOR_FULL_RESTORE,
-    ITEM_EFFECT_BEHAVIOR_RESTORE_HP, PartyItemOutcome, active_battle_item_effect_plan,
-    battle_pp_item_effect_plan, party_special_item_effect_plan, party_wide_item_effect_plan,
+    ITEM_EFFECT_BEHAVIOR_RESTORE_HP, ITEM_EFFECT_BEHAVIOR_RESTORE_HP_CONFUSE, PartyItemOutcome,
+    active_battle_item_effect_plan, battle_pp_item_effect_plan, party_special_item_effect_plan,
+    party_wide_item_effect_plan,
 };
 use crystal_core::systems::battle_rewards::{
     BattleRewardOutcome, BattleRewardRules, PendingMoveLearnResolution,
@@ -2028,6 +2029,8 @@ pub struct RuntimeItemCatalogSnapshot {
     pub battle_focus_energy: Option<bool>,
     pub battle_stat_drop_guard: Option<bool>,
     pub confusion_heal: Option<bool>,
+    /// Confusion imposed after successful item healing.
+    pub confusion_inflict_turns: Option<u16>,
     pub repel_steps: Option<u16>,
     pub escape_rope_mode: Option<String>,
     pub price: u16,
@@ -2347,6 +2350,8 @@ pub struct RuntimeCompiledScriptStep {
 pub enum RuntimeCompiledScriptBoundary {
     /// The frontend must grant the gift and present its nickname/storage flow.
     GiftPokemon,
+    /// The controller must confirm the trade and obtain a fresh party selection.
+    NpcTrade,
     DayOfWeekPrompt,
     NameRaterPrompt,
     PhoneNumberPrompt,
@@ -3431,7 +3436,9 @@ impl RuntimeItemCatalogSnapshot {
                 && active_battle_item_effect_plan(item).is_some_and(|plan| {
                     matches!(
                         plan.behavior_id.as_str(),
-                        ITEM_EFFECT_BEHAVIOR_RESTORE_HP | ITEM_EFFECT_BEHAVIOR_FULL_RESTORE
+                        ITEM_EFFECT_BEHAVIOR_RESTORE_HP
+                            | ITEM_EFFECT_BEHAVIOR_FULL_RESTORE
+                            | ITEM_EFFECT_BEHAVIOR_RESTORE_HP_CONFUSE
                     )
                 }),
             battle_stat_boost_stat: item.battle_stat_boost_stat.clone(),
@@ -3440,6 +3447,7 @@ impl RuntimeItemCatalogSnapshot {
             battle_focus_energy: item.battle_focus_energy,
             battle_stat_drop_guard: item.battle_stat_drop_guard,
             confusion_heal: item.confusion_heal,
+            confusion_inflict_turns: item.confusion_inflict_turns,
             repel_steps: item.repel_steps,
             escape_rope_mode: item.escape_rope_mode.clone(),
             price: item.price,

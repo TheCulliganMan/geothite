@@ -46,6 +46,14 @@ fn refuse(c: &mut VisibleShellController, y: u16, text: &str) {
 }
 
 fn crossing(c: &mut VisibleShellController, r: &CrystalRuntime, to: (i16, i16)) {
+    assert!(try_crossing(c, r, to), "R04 walk ended at native recovery");
+}
+
+pub(super) fn try_crossing(
+    c: &mut VisibleShellController,
+    r: &CrystalRuntime,
+    to: (i16, i16),
+) -> bool {
     let tile = c.snapshot().expect("R04 start").overworld.tile;
     let start = (tile.x, tile.y);
     let grid = RouteGrid::new_with_grass(
@@ -67,7 +75,9 @@ fn crossing(c: &mut VisibleShellController, r: &CrystalRuntime, to: (i16, i16)) 
                 flee(c);
             }
             let now = c.snapshot().expect("played route step");
-            assert_eq!(now.overworld.map_name, "MnR04C00R00");
+            if now.overworld.map_name != "MnR04C00R00" {
+                return false;
+            }
             if now.overworld.tile != old {
                 break;
             }
@@ -75,6 +85,7 @@ fn crossing(c: &mut VisibleShellController, r: &CrystalRuntime, to: (i16, i16)) 
         assert_ne!(c.snapshot().expect("completed step").overworld.tile, old);
     }
     location(c, "MnR04C00R00", to);
+    true
 }
 
 #[test]

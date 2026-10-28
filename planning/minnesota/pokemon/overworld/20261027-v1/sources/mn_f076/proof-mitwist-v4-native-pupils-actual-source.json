@@ -1,0 +1,154 @@
+{
+  "species": "mitwist",
+  "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f076/mitwist-v4-native-pupils",
+  "status": "actual-source native proof passes; root visual/context acceptance pending",
+  "all_four_nonrear_actual_isolated_source_pupils": true,
+  "six16px_alpha_border_normal_shiny_runtime_parity": true,
+  "canonical_palettes": true,
+  "literal_2bpp_all1536indices_exact": true,
+  "bank_sha256": "5cfcb1371269363f37942823772c96cfa620e045d72a9e8e1d337509da6856cd",
+  "proof": [
+    {
+      "pose": "down_idle",
+      "actual_small_isolated_pupils": [
+        {
+          "native": [
+            8,
+            8
+          ],
+          "source_sample": [
+            304,
+            275
+          ],
+          "source_component": [
+            274,
+            248,
+            31,
+            35
+          ],
+          "component_pixels": 1084,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            0,
+            0,
+            0,
+            253
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "actual_small_isolated_pupils": [
+        {
+          "native": [
+            6,
+            7
+          ],
+          "source_sample": [
+            1234,
+            256
+          ],
+          "source_component": [
+            1206,
+            248,
+            31,
+            35
+          ],
+          "component_pixels": 1084,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            6,
+            5,
+            3,
+            254
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "actual_small_isolated_pupils": [
+        {
+          "native": [
+            7,
+            8
+          ],
+          "source_sample": [
+            274,
+            725
+          ],
+          "source_component": [
+            265,
+            697,
+            32,
+            35
+          ],
+          "component_pixels": 1119,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            0,
+            0,
+            0,
+            254
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "actual_small_isolated_pupils": [
+        {
+          "native": [
+            6,
+            7
+          ],
+          "source_sample": [
+            1254,
+            708
+          ],
+          "source_component": [
+            1228,
+            699,
+            33,
+            34
+          ],
+          "component_pixels": 1122,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            3,
+            1,
+            0,
+            253
+          ]
+        }
+      ]
+    }
+  ],
+  "hashes": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f076/mitwist-v4-native-pupils/compiled-index.json": "6c2f5aba1fd3a91a48aafd0204ea969c617b7ac3f3066f2a4c628c7a0b8d91b5",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f076/mitwist.overworld.imagegen-v2-outline-pupils.png": "9c858ba3456c349fce45ed4353487a7f52a5ba7589094bcc454990540b51a4e2",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f076/mitwist-v4-native-pupils/gfx/pokemon/mitwist/overworld.2bpp": "5cfcb1371269363f37942823772c96cfa620e045d72a9e8e1d337509da6856cd"
+  },
+  "no_native_pixel_painting": true
+}

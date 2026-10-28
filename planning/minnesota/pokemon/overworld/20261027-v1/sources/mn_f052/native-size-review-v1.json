@@ -1,0 +1,210 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F052",
+  "status": "rejected_visual_quality",
+  "accepted_species_count": 0,
+  "technical_checks": [
+    {
+      "species_id": "MN_107",
+      "runtime_token": "TUSSNIP",
+      "fit": [
+        14,
+        11
+      ],
+      "native_bounds_width_height": [
+        [
+          7,
+          11
+        ],
+        [
+          7,
+          11
+        ],
+        [
+          11,
+          10
+        ],
+        [
+          7,
+          11
+        ],
+        [
+          7,
+          11
+        ],
+        [
+          11,
+          10
+        ]
+      ],
+      "png_dimensions": [
+        16,
+        96
+      ],
+      "bank_bytes": 384,
+      "independent_tile_roundtrip": true,
+      "alpha_zero_equals_index_zero": true,
+      "same_crop_size_for_all_poses": true
+    },
+    {
+      "species_id": "MN_108",
+      "runtime_token": "SILKSOD",
+      "fit": [
+        14,
+        13
+      ],
+      "native_bounds_width_height": [
+        [
+          10,
+          12
+        ],
+        [
+          10,
+          13
+        ],
+        [
+          10,
+          12
+        ],
+        [
+          10,
+          13
+        ],
+        [
+          10,
+          13
+        ],
+        [
+          10,
+          12
+        ]
+      ],
+      "png_dimensions": [
+        16,
+        96
+      ],
+      "bank_bytes": 384,
+      "independent_tile_roundtrip": true,
+      "alpha_zero_equals_index_zero": true,
+      "same_crop_size_for_all_poses": true
+    },
+    {
+      "species_id": "MN_109",
+      "runtime_token": "DAKOTASKIP",
+      "fit": [
+        14,
+        14
+      ],
+      "native_bounds_width_height": [
+        [
+          14,
+          11
+        ],
+        [
+          14,
+          11
+        ],
+        [
+          13,
+          12
+        ],
+        [
+          14,
+          10
+        ],
+        [
+          14,
+          11
+        ],
+        [
+          13,
+          12
+        ]
+      ],
+      "png_dimensions": [
+        16,
+        96
+      ],
+      "bank_bytes": 384,
+      "independent_tile_roundtrip": true,
+      "alpha_zero_equals_index_zero": true,
+      "same_crop_size_for_all_poses": true
+    }
+  ],
+  "viewed_evidence": [
+    "original_source",
+    "normal_1x",
+    "normal_8x",
+    "shiny_8x",
+    "source_center_alternative_normal_8x",
+    "black64_alternative_normal_8x"
+  ],
+  "findings": [
+    "Tussnip face loses its eyes; crown merges into a black cap.",
+    "Silksod eyes disappear into sleeping-bag planes; front/side not readable as a face.",
+    "Dakotaskip retains butterfly wings but central face is not readable at 1x."
+  ],
+  "required_fix": "Regenerate source with truly native 16x16-authored three-visible-ink pixel design; give light face plane and black single-pixel eyes enough area. Keep all poses coarse and reduce detail. Retain original sources and all conversion alternatives.",
+  "evidence": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/native-size-review/MN_F052/source-manifest.json",
+      "sha256": "c421c21dc06b030d63225794113f7f2e5e4e081dec3b0a96f1af536967603057"
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/native-size-review/MN_F052/compiled-index.json",
+      "sha256": "df16ff43e3636e8a20184b12a5c2b3973e847261f2a402b41a3077b3f4edc315"
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/native-size-review/MN_F052/review/line.normal.png",
+      "sha256": "c56edb51585037231c6e822e6a459bfbdb11b6f5a0a21a6a11d17ed4bdd8f7f2"
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/native-size-review/MN_F052/review/line.normal-8x.png",
+      "sha256": "907e4862a356509cae890a59772bd681083732afb616f9453c3ce699225a8539"
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/native-size-review/MN_F052/review/line.shiny-8x.png",
+      "sha256": "341ae202d55566b31de71a5bd97408d38f84fc6fee516a345550827d8de83117"
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/native-size-review-center/MN_F052/source-manifest.json",
+      "sha256": "9b22ab294dd096a8b172dbaf5e28787774298703f747232107c8f10efe75ae14"
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/native-size-review-center/MN_F052/compiled-index.json",
+      "sha256": "dedce418b31fabf544b5d311b441e2fa5f20d81fb0fdedec0042f51094144be3"
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/native-size-review-center/MN_F052/review/line.normal.png",
+      "sha256": "5f7a3b9860a45cf99fcb31352b73289f2c16ebd5d72b1d9cec8299d8a2e1fe5c"
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/native-size-review-center/MN_F052/review/line.normal-8x.png",
+      "sha256": "a3c9b331c0ccca333e402fd31e01fa6741d4bc88fe6ff8e083724edc9879ee55"
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/native-size-review-center/MN_F052/review/line.shiny-8x.png",
+      "sha256": "72d80decf23805e15e02f0f2b8a894400354547f3e631b5d8bac52588bf95fb4"
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/native-size-review-black64/MN_F052/source-manifest.json",
+      "sha256": "ba837bf59abde351daa25d4687dd450a0af399b102ef1696aa6a9ac091b7a600"
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/native-size-review-black64/MN_F052/compiled-index.json",
+      "sha256": "61a56609cdf3ab1bb83065a3074f6084a7f62c926b3c7856ae5d9f0d09736790"
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/native-size-review-black64/MN_F052/review/line.normal.png",
+      "sha256": "c4d6fdea88c2f726bc49c14c2adbfa44c64853a56c0d81cb1729e6538e51abdf"
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/native-size-review-black64/MN_F052/review/line.normal-8x.png",
+      "sha256": "7f29ccbc14b56b03cbc0ba1175215dff6bd43553a7633e1672cc53bba71ee58b"
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/native-size-review-black64/MN_F052/review/line.shiny-8x.png",
+      "sha256": "6c958e9ecd06e6982a56cef6e742f1c7f958fa847e1651534e2b4cab9fb8418b"
+    }
+  ]
+}

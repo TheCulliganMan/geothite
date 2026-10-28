@@ -664,7 +664,7 @@ fn load_tileset_art(
         priority_image.sampler = ImageSampler::nearest();
         priority_tile_handles.push(images.add(priority_image));
     }
-    let animated_tiles = load_common_tileset_animations(
+    let mut animated_tiles = load_common_tileset_animations(
         asset_root,
         tileset_id,
         palette_map,
@@ -672,6 +672,15 @@ fn load_tileset_art(
         &foregrounds,
         &tile_handles,
         images,
+    )?;
+    minneapolis_falls_animation::register(
+        asset_root,
+        tileset_id,
+        &metatile_layout,
+        palette_map,
+        &tile_handles,
+        images,
+        &mut animated_tiles,
     )?;
     Ok(TilesetArt {
         metatile_layout,
@@ -773,7 +782,7 @@ fn load_common_tileset_animations(
     let animation_source = match tileset_id {
         "mn_northwoods_props" | "mn_marais_shore" | "mn_campfire" => "johto",
         "mn_minneapolis_city" | "mn_duluth_expanded" => "johto_modern",
-        _ => tileset_id,
+        _ => winter_render_behavior::animation_source(tileset_id),
     };
     if FLOWER_TILESETS.contains(&animation_source) {
         let palette = tileset_animation_palette(FLOWER_TILE, palette_map, palette_bank);
@@ -862,7 +871,7 @@ fn load_common_tileset_animations(
             );
         }
     }
-    if matches!(tileset_id, "forest" | "mn_gunflint") {
+    if matches!(animation_source, "forest" | "mn_gunflint") {
         const LEFT_TILE: usize = 0x0c;
         const RIGHT_TILE: usize = 0x0f;
         let directory = root.join("forest-tree");
@@ -939,7 +948,7 @@ fn load_common_tileset_animations(
             scrolled_tileset_animation(vertical_source, false, 3, 19, 16, images)?,
         );
     }
-    if tileset_id == "mn_north_shore" {
+    if winter_render_behavior::has_north_shore_waterfall(tileset_id) {
         // The bounded Rust extension places the native cave waterfall in the
         // unused Johto tile $20; retain its source scroll phase and cadence.
         const WATERFALL_TILE: usize = 0x20;
@@ -1300,7 +1309,12 @@ fn load_tileset_palette_bank(
     let tileset_palette_path = runtime_assets
         .join("gfx/tilesets")
         .join(format!("{tileset_id}.pal"));
-    if crate::runtime_asset_exists(&tileset_palette_path) {
+    // LoadSpecialMapPalette deliberately bypasses Ice Path's cave bank in an
+    // indoor map (the Hall of Fame). The effective indoor key is shared by
+    // normal rendering and destination preloading.
+    let indoor_ice_path =
+        tileset_id == "ice_path" && normalize_tileset_time_of_day(time_of_day) == "indoor";
+    if !indoor_ice_path && crate::runtime_asset_exists(&tileset_palette_path) {
         let content = crate::read_runtime_asset_to_string(&tileset_palette_path)
             .with_context(|| format!("read tileset palette {}", tileset_palette_path.display()))?;
         let palettes = parse_palette_file(&content, None)?;
@@ -4133,6 +4147,9 @@ fn load_sprite_art(
     time_of_day: &str,
     images: &mut Assets<Image>,
 ) -> Result<SpriteArt> {
+    if let Some(art) = pokemon_overworld_art::load(asset_root, sprite_id, images)? {
+        return Ok(art);
+    }
     let sprite_path = sprite_asset_path(asset_root, sprite_id);
     let source = crate::open_runtime_image(&sprite_path)
         .with_context(|| format!("decode overworld sprite PNG {}", sprite_path.display()))?
@@ -4371,7 +4388,7 @@ const GRASS_RUSTLE_OAM_LAYOUTS: [[GrassRustleOamPiece; 2]; 2] = [
 fn grass_rustle_art_key(tileset_id: &str, time_of_day: &str) -> (String, String) {
     let style = match tileset_id {
         "mn_prairie_kanto" | "mn_prairie_headwaters" => tileset_id,
-        _ => "native",
+        _ => winter_render_behavior::grass_cache_style(tileset_id).unwrap_or("native"),
     };
     (style.to_owned(), normalize_tileset_time_of_day(time_of_day))
 }
@@ -4406,18 +4423,24 @@ fn grass_rustle_frames_for_art(
                 );
             }
             let background = *source.get_pixel(0, 0);
-            let (palette_bank, palette_index) = if key.0 == "native" {
-                (load_npc_sprite_palette_bank(asset_root, &key.1)?, 6)
+            let palette = if let Some(palette) =
+                winter_render_behavior::grass_palette(asset_root, tileset_id, &key.1)?
+            {
+                palette
             } else {
-                (
-                    load_tileset_palette_bank(asset_root, tileset_id, &key.1)?
-                        .context("prairie grass rustle has no background palette bank")?,
-                    7,
-                )
+                let (palette_bank, palette_index) = if key.0 == "native" {
+                    (load_npc_sprite_palette_bank(asset_root, &key.1)?, 6)
+                } else {
+                    (
+                        load_tileset_palette_bank(asset_root, tileset_id, &key.1)?
+                            .context("prairie grass rustle has no background palette bank")?,
+                        7,
+                    )
+                };
+                *palette_bank
+                    .get(palette_index)
+                    .context("grass rustle palette bank lacks its authored palette")?
             };
-            let palette = palette_bank
-                .get(palette_index)
-                .context("grass rustle palette bank lacks its authored palette")?;
             let build = |layout: [GrassRustleOamPiece; 2],
                          images: &mut Assets<Image>|
              -> SpriteFrame {
@@ -4574,6 +4597,11 @@ fn resolve_visible_object_sprite_asset_id(
         .strip_prefix("sprite_")
         .unwrap_or(requested.trim())
         .to_ascii_lowercase();
+    if menu_icons.contains_key(&normalized.to_ascii_uppercase())
+        && let Some(custom) = pokemon_overworld_art::sprite_id_if_present(asset_root, &normalized)
+    {
+        return custom;
+    }
     let mut candidates = vec![normalized.replace('-', "_")];
     if candidates[0] == "pokeball" {
         candidates.push("poke_ball".to_string());
@@ -4850,7 +4878,9 @@ fn visible_object_model_source_id(
 fn object_sprite_is_animated(spritemovedata: &str) -> bool {
     matches!(
         spritemovedata,
-        "SPRITEMOVEDATA_WALK_LEFT_RIGHT"
+        "SPRITEMOVEDATA_PATROL_CLOCKWISE"
+            | "SPRITEMOVEDATA_PATROL_CLOCKWISE_SLOW"
+            | "SPRITEMOVEDATA_WALK_LEFT_RIGHT"
             | "SPRITEMOVEDATA_WALK_UP_DOWN"
             | "SPRITEMOVEDATA_WANDER"
             | "SPRITEMOVEDATA_SWIM_WANDER"

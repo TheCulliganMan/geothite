@@ -10,17 +10,66 @@ Its literal control run and native closed/open views pass.
 for source review. The matching current town binding is
 `../towns/MnRochester.gates.json`; world/interior reservations use the updated
 extent and indexed arrival. Historical gym/town sources remain unchanged for
-older pinned publishers. The other seven need the same design review.
+older pinned publishers. All eight selected revisions now have native review;
+the [Rust regional rebuild](current-regional.md) also installs them in the
+554-map story and 660-map compact-city branches. The complete earned journey
+remains separate.
 Earlier implementation evidence below does not constitute user acceptance.
+
+Mankato now has a [sand-terrace revision](mankato-terraces.md), with visibly
+separate heights, native one-way drops and stairs behind wooden gates. Its
+Bayleef/Pidgey literal course and both real city returns pass. The cumulative
+541-map pack retains Rochester's new course.
+World/interior metadata and plan validation now bind every selected revision.
+
+Minneapolis now has a [staged Electric circuit](minneapolis-circuit.md): Lenvi,
+first barrier, Jossa between the barriers, neighboring switch, Avrin. Visible
+red current replaces the gray blocks. The ordinary-party literal course,
+reset/Continue and both city returns pass; native closed/open cameras match
+source pixels. Its cumulative541-map pack retains both earlier revisions.
+
+St. Paul now has a [continuous pad loop](st-paul-loop.md): entrance, Belva,
+Orven, leader landing and the short return. Every room has two pads; crossing
+to the far pad advances without another foyer trip. Quilava/Geodude earn the
+course through fixed inputs; all eight endpoints, reverse order, Continue,
+loss, badge permission and both city carpets pass. Its541-map pack preserves
+the first three revisions.
+
+St. Cloud now has [arrow-marked wind lanes](st-cloud-arrows.md). East and west
+lanes visibly point in their actual forced direction. The unchanged course is
+proved with a fixed Ampharos/Graveler run, wrong-end entries, counter-steering,
+Continue and both city exits; all collision quadrants and battles stay exact.
+Its cumulative541-map pack preserves the first four revisions.
+
+Brainerd now has a [physical dock control](brainerd-winch.md) that toggles the
+center/left piers on A. It replaces Lorla's position-choice menu with visible
+hardware. Its native ordinary-team route, reversals, early presses, no-menu
+input, Continue, rewards and both city exits pass; all three dock-state cameras
+match source pixels. The cumulative541-map pack retains the first five revisions.
+
+Bemidji now has a [victory return gate](bemidji-return.md) in its native Cut
+garden. Beat Moslen, cut west, beat Elvren, cut east and reach Orlis; his win
+opens the gold gate for a direct18-step return. The fixed ordinary-team course,
+native Cut denials, required trainer checks, Continue and both city carpets pass.
+Two native cameras match source pixels, and the cumulative541-map pack preserves
+the first six revisions.
+
+Duluth now has [distinct gold gates](duluth-gold-gates.md) across its two native
+ice courses. Silver stops remain fixed; gold gates open after Livra, Tordel and
+Anver. Every collision quadrant stays exact. Four existing production controller
+cases, sixteen revision asset cases, all377 audio checks and five exact native
+camera comparisons pass. The cumulative541-map candidate retains all eight
+revisions. Its fixed four-partner course also passes, using native Pack medicine,
+literal slides, all three trainer wins, Norek, Continue and both city carpets.
 
 Names are original: leaders, trainers and other newly named characters must
 not reuse real people or existing Pokémon characters. Minnesota city names
 remain the geographic setting. Anonymous roles such as a guide or warden are
 fine; native trainer classes describe roles, not character identities.
 
-All eight original-style remakes now have source/native visual review and
-production-controller evidence. The current combined 480-map room pack passes
-all eight courses. These are revised candidates, not inferred user approval;
+The earlier eight original-style remakes had source/native visual review and
+production-controller evidence on a combined480-map room pack. That historical
+course predates the current eight-gym revision pass and is not user approval;
 earlier rejected renders remain archived. The current 541-map story successor
 retains all eight current rooms with real city facades and passes one
 production suite covering every local gym course. See [the combined candidate](../playable/eight-gyms.md).

@@ -1,0 +1,76 @@
+{
+  "base": "v3-source-face",
+  "shifts": [
+    [
+      21,
+      -5
+    ],
+    [
+      0,
+      0
+    ],
+    [
+      0,
+      -3
+    ],
+    [
+      21,
+      -5
+    ],
+    [
+      0,
+      0
+    ],
+    [
+      0,
+      0
+    ]
+  ],
+  "found": {
+    "0": [
+      [
+        6,
+        9,
+        222,
+        290
+      ],
+      [
+        8,
+        9,
+        289,
+        290
+      ]
+    ],
+    "2": [
+      [
+        4,
+        9,
+        1138,
+        292
+      ]
+    ],
+    "3": [
+      [
+        6,
+        9,
+        222,
+        745
+      ],
+      [
+        8,
+        9,
+        289,
+        745
+      ]
+    ],
+    "5": [
+      [
+        4,
+        9,
+        1138,
+        750
+      ]
+    ]
+  },
+  "registration_note": "Independent source west window translation to correct small source head-pose offsets; one shared fit and window size unchanged"
+}

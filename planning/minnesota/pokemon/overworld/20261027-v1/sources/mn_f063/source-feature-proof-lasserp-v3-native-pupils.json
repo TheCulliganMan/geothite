@@ -1,0 +1,215 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_138",
+  "result": "pass",
+  "manifest_sha256": "a75ccaafff3a8bb0f5d03cea26741b33e79f7a4ff693545a05b1fec063b6fb0d",
+  "bank_sha256": "53327106f5fb7ed473c151ef6fee35ca1e2340f3b4127b33e632b2c79f556398",
+  "source_sha256": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f063/lasserp.overworld.imagegen-v2-native-face.png": "2d0ee05994ed971bb2013e421c978f61131970402930ac8461da55981373358b"
+  },
+  "canonical_eye_form": "Two isolated actual black pupil dots south and one isolated actual black pupil west; source eye components verified in all four nonrear poses.",
+  "nonrear_poses": [
+    {
+      "pose": "down_idle",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            6,
+            6
+          ],
+          "source_sample": [
+            244,
+            173
+          ],
+          "source_component": [
+            219,
+            164,
+            28,
+            33
+          ],
+          "component_pixels": 924,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            5,
+            3,
+            0,
+            253
+          ]
+        },
+        {
+          "native": [
+            8,
+            6
+          ],
+          "source_sample": [
+            313,
+            173
+          ],
+          "source_component": [
+            294,
+            164,
+            28,
+            33
+          ],
+          "component_pixels": 924,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            2
+          ],
+          "source_rgba": [
+            1,
+            1,
+            0,
+            253
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            5,
+            5
+          ],
+          "source_sample": [
+            1205,
+            163
+          ],
+          "source_component": [
+            1186,
+            145,
+            27,
+            33
+          ],
+          "component_pixels": 879,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            2
+          ],
+          "source_rgba": [
+            0,
+            0,
+            0,
+            253
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            6,
+            6
+          ],
+          "source_sample": [
+            244,
+            653
+          ],
+          "source_component": [
+            219,
+            645,
+            28,
+            32
+          ],
+          "component_pixels": 896,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            4,
+            3,
+            0,
+            253
+          ]
+        },
+        {
+          "native": [
+            8,
+            6
+          ],
+          "source_sample": [
+            313,
+            653
+          ],
+          "source_component": [
+            294,
+            645,
+            28,
+            32
+          ],
+          "component_pixels": 896,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            0,
+            0,
+            0,
+            253
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            5,
+            5
+          ],
+          "source_sample": [
+            1205,
+            643
+          ],
+          "source_component": [
+            1178,
+            626,
+            28,
+            33
+          ],
+          "component_pixels": 921,
+          "native_neighbors": [
+            1,
+            2,
+            1,
+            1
+          ],
+          "source_rgba": [
+            32,
+            20,
+            5,
+            253
+          ]
+        }
+      ]
+    }
+  ],
+  "rear_anatomy": {
+    "result": "pass",
+    "notes": "Blank true rear head with horns and braided neck; two actual transparent closed loop arms and coiled base, zero feet. Both south faces have two source-backed isolated pupils, west one; full rope-hole proof retained separately."
+  }
+}

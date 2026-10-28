@@ -2,8 +2,8 @@
   "id": "MnMoorhead",
   "name": "MOORHEAD",
   "dimensions_metatiles": [
-    24,
-    18
+    16,
+    12
   ],
   "reference_anchor_percent": [
     12,
@@ -11,39 +11,313 @@
   ],
   "role": "town",
   "tileset": "johto_modern",
-  "composition": "Red River square, rail bridge scenery and prairie edge.",
+  "composition": "A compact Red River levee, community pickup court and prairie-trail service street. The river is visible behind an uninterrupted native bank and fence; this town has no Surf launch.",
   "ports": [
     {
       "route": "MN_R16",
       "side": "E",
       "gate_metatile": [
-        22,
-        9
+        14,
+        6
       ],
       "landing_metatile": [
-        20,
-        9
+        12,
+        6
       ]
     }
   ],
   "interiors": [
     {
       "id": "MnMoorheadPokecenter1F",
+      "native_constant": "MN_MOORHEAD_POKECENTER_1F",
       "kind": "pokecenter",
       "dimensions_metatiles": [
-        10,
-        8
+        5,
+        4
       ],
-      "source_behavior": "canonical healing, PC and blackout recovery"
+      "source_behavior": "canonical free HP/PP/status care, PC and blackout recovery",
+      "purpose": "Trail and levee care; a volunteer remembers the high-water marker and shares one dry-weather care kit.",
+      "template": "CherrygrovePokecenter1F",
+      "tileset": "pokecenter",
+      "border_block": 0,
+      "rows": [
+        "01 02 03 13 08",
+        "05 06 07 04 0c",
+        "04 04 04 2e 2f",
+        "04 11 27 2e 2f"
+      ],
+      "passive_arrival": {
+        "index": 3,
+        "tile": [
+          3,
+          6
+        ]
+      },
+      "exits": [
+        {
+          "index": 1,
+          "tile": [
+            3,
+            7
+          ],
+          "target": "MnMoorhead",
+          "target_warp": 2
+        },
+        {
+          "index": 2,
+          "tile": [
+            4,
+            7
+          ],
+          "target": "MnMoorhead",
+          "target_warp": 2
+        }
+      ],
+      "pc": {
+        "tile": [
+          9,
+          1
+        ],
+        "approach": [
+          9,
+          2
+        ]
+      },
+      "recovery_contract": {
+        "spawn_tile": [
+          3,
+          6
+        ],
+        "status": "Register and verify after native publication."
+      },
+      "residents": [
+        {
+          "id": "MN_MOORHEAD_NURSE",
+          "sprite": "SPRITE_NURSE",
+          "tile": [
+            3,
+            1
+          ],
+          "facing": "south",
+          "lines": [
+            "Wet boots outside,",
+            "partners inside.",
+            "No charge for care",
+            "in Moorhead."
+          ],
+          "approach": [
+            3,
+            3
+          ],
+          "service": "heal_party",
+          "counter_tile": [
+            3,
+            2
+          ]
+        },
+        {
+          "id": "MN_MOORHEAD_CLINIC_VOLUNTEER",
+          "sprite": "SPRITE_FISHER",
+          "tile": [
+            2,
+            3
+          ],
+          "facing": "south",
+          "lines": [
+            "My dad kept the",
+            "levee notebook.",
+            "Read the old",
+            "marker before you",
+            "head back to the",
+            "prairie."
+          ],
+          "approach": [
+            2,
+            4
+          ]
+        },
+        {
+          "id": "MN_MOORHEAD_CLINIC_STUDENT",
+          "sprite": "SPRITE_TEACHER",
+          "tile": [
+            1,
+            6
+          ],
+          "facing": "north",
+          "lines": [
+            "I brought garden",
+            "starts and came",
+            "home with three",
+            "kinds of hotdish.",
+            "Apparently that is",
+            "the exchange rate."
+          ],
+          "approach": [
+            1,
+            5
+          ]
+        }
+      ],
+      "signs": [],
+      "status": "Published; production resident, service, carpet-return and native-camera acceptance pass. See interior-life/MOORHEAD.md.",
+      "viewpoints": [
+        {
+          "id": "ARRIVAL",
+          "tile": [
+            3,
+            6
+          ]
+        },
+        {
+          "id": "NURSE",
+          "tile": [
+            3,
+            3
+          ]
+        },
+        {
+          "id": "VOLUNTEER",
+          "tile": [
+            2,
+            4
+          ]
+        },
+        {
+          "id": "PC",
+          "tile": [
+            9,
+            2
+          ]
+        }
+      ]
     },
     {
       "id": "MnMoorheadMart",
+      "native_constant": "MN_MOORHEAD_MART",
       "kind": "mart",
       "dimensions_metatiles": [
         6,
         4
       ],
-      "source_behavior": "canonical clerk, money deduction and inventory"
+      "source_behavior": "canonical stocked clerk, money deduction and inventory",
+      "purpose": "Prairie-trail supplies and neighbors buying a shared first-aid box for the garden crew.",
+      "template": "CherrygroveMart",
+      "tileset": "mart",
+      "border_block": 0,
+      "rows": [
+        "14 27 14 13 13 13",
+        "2b 22 2b 2b 2b 2b",
+        "15 29 13 13 13 28",
+        "2b 2a 2b 2b 2b 23"
+      ],
+      "passive_arrival": {
+        "index": 3,
+        "tile": [
+          3,
+          6
+        ]
+      },
+      "exits": [
+        {
+          "index": 1,
+          "tile": [
+            2,
+            7
+          ],
+          "target": "MnMoorhead",
+          "target_warp": 4
+        },
+        {
+          "index": 2,
+          "tile": [
+            3,
+            7
+          ],
+          "target": "MnMoorhead",
+          "target_warp": 4
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_MOORHEAD_CLERK",
+          "sprite": "SPRITE_CLERK",
+          "tile": [
+            1,
+            3
+          ],
+          "facing": "east",
+          "lines": [
+            "Supplies for the",
+            "prairie trail.",
+            "Tell the clinic if",
+            "the garden crew",
+            "needs a hand."
+          ],
+          "approach": [
+            3,
+            3
+          ],
+          "service": "pokemart",
+          "counter_tile": [
+            2,
+            3
+          ],
+          "stock": [
+            "GREAT_BALL",
+            "SUPER_POTION",
+            "ANTIDOTE",
+            "ICE_HEAL",
+            "ESCAPE_ROPE",
+            "REPEL"
+          ]
+        },
+        {
+          "id": "MN_MOORHEAD_SHOP_GARDENER",
+          "sprite": "SPRITE_COOLTRAINER_M",
+          "tile": [
+            7,
+            6
+          ],
+          "facing": "north",
+          "lines": [
+            "I buy REPELS for",
+            "the trail, not for",
+            "the groundhogs.",
+            "They still beat me",
+            "to the last",
+            "tomato."
+          ],
+          "approach": [
+            8,
+            6
+          ]
+        }
+      ],
+      "signs": [],
+      "status": "Published; production resident, service, carpet-return and native-camera acceptance pass. See interior-life/MOORHEAD.md.",
+      "viewpoints": [
+        {
+          "id": "ARRIVAL",
+          "tile": [
+            3,
+            6
+          ]
+        },
+        {
+          "id": "COUNTER",
+          "tile": [
+            3,
+            3
+          ]
+        },
+        {
+          "id": "GARDENER",
+          "tile": [
+            8,
+            6
+          ]
+        }
+      ]
     }
   ],
   "walkable_destinations": [
@@ -52,5 +326,317 @@
     "central square",
     "local story NPC"
   ],
-  "door_contract": "Assign exterior core-tile door coordinates only after selecting authentic facade quadrants; record reciprocal warp indices and indoor floor arrivals before export."
+  "door_contract": "Exact native Goldenrod/Cherrygrove 18 19 / 1a 1b clinic and 18 19 / 1a 33 shop assemblies. Both interior carpets return to a passive exterior Floor; entries use passive room Floor3. Both buildings and both carpets pass production input and native-frame review.",
+  "native_constant": "MN_MOORHEAD",
+  "compiled_tileset": "johto_modern",
+  "status": "Published and accepted in minnesota-moorhead-v01: four production controller cases, thirteen native camera comparisons and all 377 audio checks pass. See interior-life/MOORHEAD.md.",
+  "residents": [
+    {
+      "id": "MN_MOORHEAD_GAUGE_KEEPER",
+      "sprite": "SPRITE_FISHER",
+      "tile": [
+        13,
+        8
+      ],
+      "facing": "west",
+      "lines": [
+        "The river runs",
+        "north. So does our",
+        "spring watch. We",
+        "check the gauge",
+        "together, then put",
+        "the coffee on."
+      ],
+      "approach": [
+        14,
+        8
+      ]
+    },
+    {
+      "id": "MN_MOORHEAD_LEVEE_HELPER",
+      "sprite": "SPRITE_POKEFAN_M",
+      "tile": [
+        20,
+        13
+      ],
+      "facing": "north",
+      "lines": [
+        "Wet mittens on the",
+        "porch. Dry mittens",
+        "at the clinic.",
+        "Nobody here packs",
+        "just one pair."
+      ],
+      "approach": [
+        20,
+        12
+      ]
+    },
+    {
+      "id": "MN_MOORHEAD_GARDENER",
+      "sprite": "SPRITE_TEACHER",
+      "tile": [
+        21,
+        18
+      ],
+      "facing": "east",
+      "lines": [
+        "Our campus starts",
+        "go to the",
+        "neighborhood",
+        "gardens. The last",
+        "frost always gets",
+        "the final vote."
+      ],
+      "approach": [
+        20,
+        18
+      ]
+    },
+    {
+      "id": "MN_MOORHEAD_COMMUTER",
+      "sprite": "SPRITE_COOLTRAINER_M",
+      "tile": [
+        27,
+        15
+      ],
+      "facing": "west",
+      "lines": [
+        "I walk my bike on",
+        "the levee. You can",
+        "hear the",
+        "meadowlarks",
+        "better."
+      ],
+      "approach": [
+        26,
+        15
+      ]
+    },
+    {
+      "id": "MN_MOORHEAD_RIVER_NEIGHBOR",
+      "sprite": "SPRITE_GENTLEMAN",
+      "tile": [
+        13,
+        17
+      ],
+      "facing": "west",
+      "lines": [
+        "The high-water",
+        "line stays. Not to",
+        "scare folks. To",
+        "remember all the",
+        "neighbors who",
+        "showed up."
+      ],
+      "approach": [
+        14,
+        17
+      ]
+    }
+  ],
+  "signs": [
+    {
+      "id": "MN_MOORHEAD_RIVER_BOARD",
+      "tile": [
+        12,
+        4
+      ],
+      "lines": [
+        "RED RIVER LEVEE",
+        "The old high-water",
+        "line is kept",
+        "beside the daily",
+        "gauge board.",
+        "Neighbors watch",
+        "the river",
+        "together. Stay on",
+        "the fenced public",
+        "path."
+      ],
+      "approach": [
+        13,
+        4
+      ]
+    },
+    {
+      "id": "MN_MOORHEAD_WELCOME",
+      "tile": [
+        28,
+        10
+      ],
+      "lines": [
+        "MOORHEAD Prairie",
+        "trails, river",
+        "neighbors. Clinic",
+        "and supplies on",
+        "this street."
+      ],
+      "approach": [
+        28,
+        11
+      ]
+    },
+    {
+      "id": "MN_MOORHEAD_COMMUNITY_STARTS",
+      "tile": [
+        22,
+        16
+      ],
+      "lines": [
+        "PORCH-SWAP STARTS",
+        "Grown by students.",
+        "Planted by whoever",
+        "has a spare patch.",
+        "Ask the gardener",
+        "before taking a",
+        "tray."
+      ],
+      "approach": [
+        21,
+        16
+      ]
+    }
+  ],
+  "doors": [
+    {
+      "id": "MN_MOORHEAD_CLINIC_DOOR",
+      "warp_index": 1,
+      "return_warp_index": 2,
+      "tile": [
+        17,
+        7
+      ],
+      "target": "MnMoorheadPokecenter1F",
+      "target_warp": 3,
+      "return_tile": [
+        17,
+        8
+      ],
+      "arrival_tile": [
+        3,
+        6
+      ],
+      "collision": "DOOR"
+    },
+    {
+      "id": "MN_MOORHEAD_MART_DOOR",
+      "warp_index": 3,
+      "return_warp_index": 4,
+      "tile": [
+        25,
+        11
+      ],
+      "target": "MnMoorheadMart",
+      "target_warp": 3,
+      "return_tile": [
+        25,
+        12
+      ],
+      "arrival_tile": [
+        3,
+        6
+      ],
+      "collision": "DOOR"
+    }
+  ],
+  "quest_contract": {
+    "id": "MOORHEAD_DRY_KIT",
+    "room": "MnMoorheadPokecenter1F",
+    "actor": "MN_MOORHEAD_CLINIC_VOLUNTEER",
+    "gauge_script": "MN_MOORHEAD_RIVER_BOARD",
+    "read_flag": "EVENT_MN_MOORHEAD_GAUGE_READ",
+    "once_flag": "EVENT_MN_MOORHEAD_DRY_KIT_GIVEN",
+    "reward_item": "FULL_HEAL",
+    "reward_quantity": 1,
+    "purpose": "Read the actual high-water marker, then let a neighbor explain whose names were kept in the levee notebook. A full Pack must retain the unclaimed kit.",
+    "notebook_lines": [
+      "Dad's flood notes",
+      "kept names. Folks",
+      "who carried soup.",
+      "Folks whose steps",
+      "needed a shovel.",
+      "He gauged water.",
+      "This part kept me",
+      "from feeling",
+      "alone."
+    ],
+    "reward_lines": [
+      "Here, a FULL HEAL.",
+      "One to keep dry",
+      "for the next muddy",
+      "trip."
+    ],
+    "full_lines": [
+      "Your PACK is full.",
+      "Make room and come",
+      "back. The kit will",
+      "stay dry here."
+    ],
+    "repeat_lines": [
+      "The notebook is",
+      "not a scorecard.",
+      "Dad wrote every",
+      "name with the same",
+      "pen."
+    ]
+  },
+  "viewpoints": [
+    {
+      "id": "CLINIC_STREET",
+      "tile": [
+        17,
+        8
+      ]
+    },
+    {
+      "id": "SUPPLIES_STREET",
+      "tile": [
+        25,
+        12
+      ]
+    },
+    {
+      "id": "RIVER_MARKER",
+      "tile": [
+        13,
+        4
+      ]
+    },
+    {
+      "id": "LEVEE_PASSING",
+      "tile": [
+        12,
+        17
+      ]
+    },
+    {
+      "id": "COMMUNITY_STARTS",
+      "tile": [
+        20,
+        18
+      ]
+    },
+    {
+      "id": "R16_RETURN",
+      "tile": [
+        30,
+        12
+      ]
+    }
+  ],
+  "river_contract": {
+    "bank_metatile_x": 4,
+    "fence_metatile_x": 5,
+    "rows": [
+      1,
+      10
+    ],
+    "public_path_x": [
+      11,
+      13
+    ],
+    "surf_entry": false,
+    "reason": "Native BUOY shore and continuous WALL fence protect the levee. River water continues visually off-map but is unreachable from every public town tile, even with Surf."
+  }
 }

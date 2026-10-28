@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F136",
+  "species": [
+    {
+      "species_id": "MN_302",
+      "runtime_token": "DENUMBRA",
+      "palette_rgb555": [
+        32767,
+        14568,
+        14109,
+        0
+      ],
+      "shiny_palette_rgb555": [
+        32767,
+        15913,
+        27259,
+        0
+      ],
+      "fit": [
+        14,
+        14
+      ],
+      "alpha_threshold": 128,
+      "sampling": "source_center",
+      "minimum_foreground_samples": 16,
+      "black_priority_samples": 64,
+      "interior_black_samples": 64,
+      "opaque_interior_minimum_samples": 64,
+      "frames": [
+        {
+          "pose": "down_idle",
+          "source": "denumbra.overworld.imagegen-v1.png",
+          "crop": [
+            138,
+            61,
+            384,
+            469
+          ]
+        },
+        {
+          "pose": "up_idle",
+          "source": "denumbra.overworld.imagegen-v1.png",
+          "crop": [
+            576,
+            61,
+            384,
+            469
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "source": "denumbra.overworld.imagegen-v1.png",
+          "crop": [
+            1031,
+            60,
+            384,
+            469
+          ]
+        },
+        {
+          "pose": "down_step",
+          "source": "denumbra.overworld.imagegen-v1.png",
+          "crop": [
+            138,
+            519,
+            384,
+            469
+          ]
+        },
+        {
+          "pose": "up_step",
+          "source": "denumbra.overworld.imagegen-v1.png",
+          "crop": [
+            576,
+            519,
+            384,
+            469
+          ]
+        },
+        {
+          "pose": "left_step",
+          "source": "denumbra.overworld.imagegen-v1.png",
+          "crop": [
+            1031,
+            517,
+            384,
+            469
+          ]
+        }
+      ]
+    }
+  ]
+}

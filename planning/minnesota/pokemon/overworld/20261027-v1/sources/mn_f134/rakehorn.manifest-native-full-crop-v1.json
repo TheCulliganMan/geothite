@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F134",
+  "species": [
+    {
+      "species_id": "MN_296",
+      "runtime_token": "RAKEHORN",
+      "palette_rgb555": [
+        32767,
+        13106,
+        16837,
+        0
+      ],
+      "shiny_palette_rgb555": [
+        32767,
+        9848,
+        20839,
+        0
+      ],
+      "fit": [
+        13,
+        13
+      ],
+      "alpha_threshold": 245,
+      "sampling": "source_center",
+      "minimum_foreground_samples": 16,
+      "black_priority_samples": 32,
+      "interior_black_samples": null,
+      "opaque_interior_minimum_samples": 60,
+      "frames": [
+        {
+          "pose": "down_idle",
+          "source": "rakehorn.overworld.imagegen-v1.png",
+          "crop": [
+            39,
+            96,
+            455,
+            429
+          ]
+        },
+        {
+          "pose": "up_idle",
+          "source": "rakehorn.overworld.imagegen-v1.png",
+          "crop": [
+            536,
+            95,
+            455,
+            429
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "source": "rakehorn.overworld.imagegen-v1.png",
+          "crop": [
+            1043,
+            96,
+            455,
+            429
+          ]
+        },
+        {
+          "pose": "down_step",
+          "source": "rakehorn.overworld.imagegen-v1.png",
+          "crop": [
+            40,
+            536,
+            455,
+            429
+          ]
+        },
+        {
+          "pose": "up_step",
+          "source": "rakehorn.overworld.imagegen-v1.png",
+          "crop": [
+            537,
+            546,
+            455,
+            429
+          ]
+        },
+        {
+          "pose": "left_step",
+          "source": "rakehorn.overworld.imagegen-v1.png",
+          "crop": [
+            1043,
+            545,
+            455,
+            429
+          ]
+        }
+      ]
+    }
+  ]
+}

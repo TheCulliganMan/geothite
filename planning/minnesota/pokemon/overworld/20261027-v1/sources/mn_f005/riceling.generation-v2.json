@@ -1,0 +1,13 @@
+{
+  "tool": "built-in image_gen",
+  "original_tool_path": "/Users/ryanculligan/.codex/generated_images/01a17dcc-4f1a-77a2-9d21-0df036061346/exec-41f4e90c-82ca-4ad7-8052-bba646668867.png",
+  "source_size": [
+    1536,
+    1024
+  ],
+  "sha256": "8f20b54867e4c31411121162f55a530e0faa9e6259419b5e1be210d73b7c30f5",
+  "reference_paths": [
+    "planning/minnesota/pokemon/overworld/20261027-v1/references/native-pack-16px/native-six-frame-style-board.8x.png"
+  ],
+  "prompt": "riceling.prompt-v2.txt"
+}

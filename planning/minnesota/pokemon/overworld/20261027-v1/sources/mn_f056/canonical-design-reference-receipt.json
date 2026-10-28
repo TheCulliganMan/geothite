@@ -1,0 +1,38 @@
+{
+  "family_id": "MN_F056",
+  "exact_selected_native_front_back_and_original_family_source_actually_viewed": true,
+  "refs": {
+    "Pasquib": {
+      "front": {
+        "path": "target/minnesota-pokemon/native/MN_F056/mn-119-pasquib-v1.front.png",
+        "sha256": "6224ca8fa7a11ccfbd65b9dfb37bae3c196881e4ff1908b970d2d6741ba4b532"
+      },
+      "back": {
+        "path": "target/minnesota-pokemon/native/MN_F056/mn-119-pasquib-v1.back.png",
+        "sha256": "04fb8038071a4d8cdf4d9a531d01cefeea217a8089de6c87bb0decc22a2254e0"
+      }
+    },
+    "Thawbonnet": {
+      "front": {
+        "path": "target/minnesota-pokemon/native/MN_F056/mn-120-thawbonnet-v1.front.png",
+        "sha256": "044a3690a47bc1f7f79054a7b43276358be26b80403ccd230b666a91261c62e3"
+      },
+      "back": {
+        "path": "target/minnesota-pokemon/native/MN_F056/mn-120-thawbonnet-v1.back.png",
+        "sha256": "5820f64ced3160d4a9b6084ea2134b48fd263765f6c0f56ab7ff8104199f95e5"
+      }
+    },
+    "Vernacape": {
+      "front": {
+        "path": "target/minnesota-pokemon/native/MN_F056/mn-121-vernacape-v1.front.png",
+        "sha256": "49622b7105d3b5029ca4c64be9b01e2e5a1eba59593f0801257fef55d39ba7b3"
+      },
+      "back": {
+        "path": "target/minnesota-pokemon/native/MN_F056/mn-121-vernacape-v1.back.png",
+        "sha256": "0fcde99e00e0a4803d1df12ac760633c8b528337ed373733ea93f473ff5ea1b6"
+      }
+    }
+  },
+  "eye_form": "TWO light index1 pupils on dark void index3 face south; ONE west; NO invented black pupils/light face. Root explicitly confirmed preserving light eye form. Forehead glints simplify, not extra pupils.",
+  "body_lock": "Pasquib closed3fold-petal bud,3rootprongs,0arms. Thawbonnet pointed hood flower with2shortleafarms and3rootprongs. Vernacape5petalflowercrown,2shortpetalarms,2broadiceveinedcape panels and1pointedrootstem; hovering, no invented legs."
+}

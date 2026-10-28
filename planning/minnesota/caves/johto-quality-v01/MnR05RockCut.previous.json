@@ -1,0 +1,330 @@
+{
+  "id": "MnR05RockCut",
+  "template": "UnionCave1F",
+  "dimensions_metatiles": [
+    8,
+    10
+  ],
+  "rows": [
+    "01 01 01 01 01 01 01 01",
+    "01 01 01 01 04 06 01 01",
+    "01 01 04 05 02 07 06 01",
+    "01 01 20 21 12 21 22 01",
+    "01 01 01 04 02 0a 01 01",
+    "01 01 01 08 22 01 01 01",
+    "01 04 02 02 0a 01 01 01",
+    "01 01 08 21 22 01 01 01",
+    "01 01 07 01 01 01 01 01",
+    "01 01 01 01 01 01 01 01"
+  ],
+  "exits": [
+    [
+      5,
+      17
+    ],
+    [
+      11,
+      5
+    ]
+  ],
+  "exit_doors": [
+    [
+      16,
+      77
+    ],
+    [
+      30,
+      27
+    ]
+  ],
+  "clear_arrival": [
+    5,
+    16
+  ],
+  "exit_collision": "LADDER",
+  "border_block": 1,
+  "residents": [
+    {
+      "id": "MN_R05_CUT_WALKER",
+      "sprite": "SPRITE_POKEFAN_M",
+      "tile": [
+        5,
+        13
+      ],
+      "facing": "east",
+      "lines": [
+        "Rest a while.",
+        "I'll treat them.",
+        "Both mouths join",
+        "the same old hill."
+      ],
+      "service": "heal_party"
+    }
+  ],
+  "items": [
+    {
+      "id": "MN_R05_ITEM_03",
+      "item": "REPEL",
+      "quantity": 1,
+      "flag": "EVENT_MN_R05_ITEM_03",
+      "tile": [
+        5,
+        5
+      ]
+    }
+  ],
+  "signs": [],
+  "purpose": "A fitted rising cut through the river bluff: the south mouth bends into the original healer's sheltered western turnout, then the stone passage curls east and climbs a single narrow native stair. The upper fork separates the original north mouth from the Repel tucked into the west end of the dry shelf. Connected bedrock replaces floating boulder strips; the original services, rewards, mouth identities and return records remain exact.",
+  "candidate_status": "Installed native review; both local production-controller cases PASS.",
+  "review_contract": {
+    "palette_group": "nite",
+    "quality_revision": "r05-rockcut-v02-fitted-upper-roof",
+    "clear_arrivals_core": [
+      [
+        5,
+        16
+      ],
+      [
+        11,
+        4
+      ]
+    ],
+    "ordinary_waypoints_core": [
+      [
+        5,
+        16
+      ],
+      [
+        5,
+        14
+      ],
+      [
+        6,
+        14
+      ],
+      [
+        6,
+        13
+      ],
+      [
+        7,
+        12
+      ],
+      [
+        7,
+        10
+      ],
+      [
+        7,
+        9
+      ],
+      [
+        9,
+        9
+      ],
+      [
+        9,
+        8
+      ],
+      [
+        9,
+        6
+      ],
+      [
+        9,
+        5
+      ],
+      [
+        6,
+        5
+      ],
+      [
+        10,
+        4
+      ],
+      [
+        11,
+        4
+      ]
+    ],
+    "viewpoints": [
+      {
+        "id": "south_mouth",
+        "tile": [
+          5,
+          16
+        ]
+      },
+      {
+        "id": "healer_turnout",
+        "tile": [
+          6,
+          13
+        ]
+      },
+      {
+        "id": "mid_cut",
+        "tile": [
+          7,
+          11
+        ]
+      },
+      {
+        "id": "stair_foot",
+        "tile": [
+          9,
+          8
+        ]
+      },
+      {
+        "id": "stair_head",
+        "tile": [
+          9,
+          5
+        ]
+      },
+      {
+        "id": "repel_approach",
+        "tile": [
+          6,
+          5
+        ]
+      },
+      {
+        "id": "north_mouth",
+        "tile": [
+          11,
+          4
+        ]
+      },
+      {
+        "id": "weakest_lower_turn",
+        "tile": [
+          6,
+          14
+        ]
+      }
+    ],
+    "controller_probes": {
+      "stairs": [
+        {
+          "id": "BLUFF_SHELF_CLIMB",
+          "metatile": [
+            4,
+            3
+          ],
+          "block": "12",
+          "before": [
+            9,
+            5
+          ],
+          "lane": [
+            [
+              9,
+              6
+            ],
+            [
+              9,
+              7
+            ]
+          ],
+          "after": [
+            9,
+            8
+          ],
+          "blocked_from": [
+            9,
+            7
+          ],
+          "blocked_target": [
+            8,
+            7
+          ],
+          "destination": [
+            6,
+            5
+          ]
+        }
+      ],
+      "ledge_lanes": [],
+      "ledge_shoulders": [],
+      "healer_approach": [
+        6,
+        13
+      ],
+      "healer_facing": "left",
+      "cache_approach": [
+        6,
+        5
+      ],
+      "cache_facing": "left",
+      "mouths": [
+        {
+          "inside": [
+            5,
+            17
+          ],
+          "clear": [
+            5,
+            16
+          ],
+          "target": "MnR05C00R01",
+          "target_warp": 2,
+          "outside_active_global": [
+            16,
+            77
+          ],
+          "outside_return_global": [
+            16,
+            78
+          ],
+          "outside_passive_target_warp": 1
+        },
+        {
+          "inside": [
+            11,
+            5
+          ],
+          "clear": [
+            11,
+            4
+          ],
+          "target": "MnR05C00R00",
+          "target_warp": 2,
+          "outside_active_global": [
+            30,
+            27
+          ],
+          "outside_return_global": [
+            30,
+            28
+          ],
+          "outside_passive_target_warp": 1
+        }
+      ],
+      "exterior_return_semantics": "Original south insidewarp1 at (5,17), clear Floor (5,16), returns to MnR05C00R01 passive exteriorwarp2 at local (16,30), global (16,78). Original north insidewarp2 at (11,5), clear Floor (11,4), returns to MnR05C00R00 passive exteriorwarp2 at (30,28). Active exterior CAVE tiles (16,77) and (30,27) target insidewarps1 and2 respectively. Both inactive passive records retain their original target insidewarp1. No warp record changes; waiting or revisiting actual passive Floor cannot reenter."
+    },
+    "directional_terrain": "04/05/06 roof quadrants retain native UP_WALL: entering Down is blocked; leaving Up is blocked. Check every directional-land cell for both arrival and escape, not Floor-only reachability.",
+    "visual_revision": "The first pass left the north mouth against a hard black cut and exaggerated a tall empty Repel cap. Lower the Repel roof, fit a single offset upper rock brow and wrap the north mouth in the native06/22 right face. Both mouths, the stair and every actor remain exact.",
+    "unpublished": false,
+    "native_review": {
+      "geometry_pack_sha256": "96a10295af34deeb57cd8ebdaf882d8eb80a70e49f63f8bc27ef84980dc1bcc1",
+      "final100_pack_sha256": "31258a1788a986b158d0679e4f3a26c4dd476964311f707a6e09c9640cad48c6",
+      "palette": "nite",
+      "candidate_sha256": "485652d7bdd92e37660acc187a71478d355cffde3e6e106801c22a125339c86b",
+      "preservation_checks": 163,
+      "source_checks_passed": 61,
+      "captures": 8,
+      "full_lcd_pixels_exact": 184320,
+      "controller_cases": [
+        "r05_rockcut_controller_both_mouths_stair_healer_two_pages_and_continue",
+        "r05_rockcut_controller_original_repel_once_pack_use_movement_and_continue"
+      ],
+      "controller_cases_passed": [
+        "r05_rockcut_controller_both_mouths_stair_healer_two_pages_and_continue",
+        "r05_rockcut_controller_original_repel_once_pack_use_movement_and_continue"
+      ],
+      "earned_regional_progression_claimed": false
+    }
+  }
+}

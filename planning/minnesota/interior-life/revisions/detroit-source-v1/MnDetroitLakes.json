@@ -1,0 +1,885 @@
+{
+  "id": "MnDetroitLakes",
+  "name": "DETROIT LAKES",
+  "dimensions_metatiles": [
+    24,
+    18
+  ],
+  "reference_anchor_percent": [
+    28,
+    44
+  ],
+  "role": "town",
+  "tileset": "johto",
+  "composition": "Lake-facing Glacier Line approach, clinic garden, cabin street and protected public gravel beach/dock.",
+  "ports": [
+    {
+      "route": "MN_R15",
+      "side": "E",
+      "gate_metatile": [
+        22,
+        9
+      ],
+      "landing_metatile": [
+        20,
+        9
+      ]
+    },
+    {
+      "route": "MN_R16",
+      "side": "W",
+      "gate_metatile": [
+        1,
+        9
+      ],
+      "landing_metatile": [
+        3,
+        9
+      ]
+    },
+    {
+      "route": "MN_R19",
+      "side": "N",
+      "gate_metatile": [
+        12,
+        1
+      ],
+      "landing_metatile": [
+        12,
+        3
+      ]
+    }
+  ],
+  "interiors": [
+    {
+      "id": "MnDetroitLakesPokecenter1F",
+      "kind": "pokecenter",
+      "dimensions_metatiles": [
+        10,
+        8
+      ],
+      "source_behavior": "canonical healing, PC and blackout recovery",
+      "tileset": "pokecenter",
+      "rows": [
+        "00 00 00 00 00 00 00 00 00 00",
+        "00 00 01 02 03 13 08 00 00 00",
+        "00 00 05 06 07 04 0c 00 00 00",
+        "00 00 04 04 04 2e 2f 00 00 00",
+        "00 00 2d 04 04 04 2c 00 00 00",
+        "00 00 00 2e 2f 04 2b 00 00 00",
+        "00 00 00 00 04 04 00 00 00 00",
+        "00 00 00 00 24 00 00 00 00 00"
+      ],
+      "clear_arrival": [
+        8,
+        13
+      ],
+      "passive_arrival": {
+        "index": 3,
+        "tile": [
+          8,
+          13
+        ],
+        "collision": "FLOOR"
+      },
+      "exits": [
+        {
+          "index": 1,
+          "tile": [
+            8,
+            15
+          ],
+          "target": "MnDetroitLakes",
+          "target_warp": 4,
+          "collision": "WARP_CARPET_DOWN"
+        },
+        {
+          "index": 2,
+          "tile": [
+            9,
+            15
+          ],
+          "target": "MnDetroitLakes",
+          "target_warp": 4,
+          "collision": "WARP_CARPET_DOWN"
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_DETROIT_NURSE",
+          "sprite": "SPRITE_NURSE",
+          "tile": [
+            7,
+            3
+          ],
+          "facing": "south",
+          "lines": [
+            "Welcome! We can",
+            "rest your POKEMON."
+          ],
+          "service": "heal_party",
+          "approach": [
+            7,
+            5
+          ],
+          "counter_tile": [
+            7,
+            4
+          ]
+        },
+        {
+          "id": "MN_DETROIT_CLINIC_PATIENT",
+          "sprite": "SPRITE_FISHER",
+          "tile": [
+            6,
+            7
+          ],
+          "facing": "east",
+          "lines": [
+            "The beach is calm.",
+            "The forest roads",
+            "still take care."
+          ]
+        },
+        {
+          "id": "MN_DETROIT_CLINIC_VISITOR",
+          "sprite": "SPRITE_TEACHER",
+          "tile": [
+            10,
+            10
+          ],
+          "facing": "west",
+          "lines": [
+            "I check my party",
+            "before boarding."
+          ]
+        }
+      ],
+      "signs": [],
+      "status": "Source only; production services and warp binding pending",
+      "pc": {
+        "tile": [
+          13,
+          3
+        ],
+        "approach": [
+          13,
+          4
+        ],
+        "collision": "PC",
+        "service": "canonical_pc_pending"
+      },
+      "recovery_contract": {
+        "spawn_tile": [
+          8,
+          13
+        ],
+        "status": "Register as native blackout recovery only during publication; currently uninstalled."
+      },
+      "native_constant": "MN_DETROIT_LAKES_POKECENTER_1F"
+    },
+    {
+      "id": "MnDetroitLakesMart",
+      "kind": "mart",
+      "dimensions_metatiles": [
+        6,
+        4
+      ],
+      "source_behavior": "canonical clerk, money deduction and inventory",
+      "tileset": "mart",
+      "rows": [
+        "14 27 14 13 13 13",
+        "2b 22 2b 2b 2b 2b",
+        "15 29 13 13 13 28",
+        "2b 2a 2b 2b 2b 23"
+      ],
+      "clear_arrival": [
+        3,
+        6
+      ],
+      "passive_arrival": {
+        "index": 3,
+        "tile": [
+          3,
+          6
+        ],
+        "collision": "FLOOR"
+      },
+      "exits": [
+        {
+          "index": 1,
+          "tile": [
+            2,
+            7
+          ],
+          "target": "MnDetroitLakes",
+          "target_warp": 6,
+          "collision": "WARP_CARPET_DOWN"
+        },
+        {
+          "index": 2,
+          "tile": [
+            3,
+            7
+          ],
+          "target": "MnDetroitLakes",
+          "target_warp": 6,
+          "collision": "WARP_CARPET_DOWN"
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_DETROIT_MART_CLERK",
+          "sprite": "SPRITE_CLERK",
+          "tile": [
+            1,
+            3
+          ],
+          "facing": "east",
+          "lines": [
+            "May I help you?"
+          ],
+          "service": "canonical_pokemart_pending",
+          "approach": [
+            3,
+            3
+          ],
+          "counter_tile": [
+            2,
+            3
+          ]
+        },
+        {
+          "id": "MN_DETROIT_MART_CUSTOMER",
+          "sprite": "SPRITE_GENTLEMAN",
+          "tile": [
+            7,
+            6
+          ],
+          "facing": "west",
+          "lines": [
+            "I stock up before",
+            "the prairie road."
+          ]
+        }
+      ],
+      "signs": [],
+      "status": "Source only; production services and warp binding pending",
+      "native_constant": "MN_DETROIT_LAKES_MART"
+    },
+    {
+      "id": "MnDetroitLakesStation",
+      "kind": "train_station",
+      "dimensions_metatiles": [
+        12,
+        10
+      ],
+      "source_file": "../transit/MnDetroitLakesStation.json",
+      "source_behavior": "Glacier Line source reservation; no visit flag or ride is installed.",
+      "native_constant": "MN_DETROIT_LAKES_STATION"
+    },
+    {
+      "id": "MnDetroitLakesCanoeCabin",
+      "kind": "house",
+      "dimensions_metatiles": [
+        5,
+        4
+      ],
+      "template": "VioletNicknameSpeechHouse",
+      "tileset": "traditional_house",
+      "rows": [
+        "00 02 03 1a 00",
+        "00 04 0a 04 00",
+        "00 04 04 04 00",
+        "00 06 07 00 00"
+      ],
+      "clear_arrival": [
+        4,
+        5
+      ],
+      "passive_arrival": {
+        "index": 3,
+        "tile": [
+          4,
+          5
+        ],
+        "collision": "FLOOR"
+      },
+      "exits": [
+        {
+          "index": 1,
+          "tile": [
+            3,
+            7
+          ],
+          "target": "MnDetroitLakes",
+          "target_warp": 8,
+          "collision": "WARP_CARPET_DOWN"
+        },
+        {
+          "index": 2,
+          "tile": [
+            4,
+            7
+          ],
+          "target": "MnDetroitLakes",
+          "target_warp": 8,
+          "collision": "WARP_CARPET_DOWN"
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_DETROIT_CANOE_HOST",
+          "sprite": "SPRITE_FISHER",
+          "tile": [
+            3,
+            3
+          ],
+          "facing": "south",
+          "lines": [
+            "The beach launch",
+            "is below the road.",
+            "Dock rails are up.",
+            "Use the low shore."
+          ]
+        }
+      ],
+      "signs": [],
+      "status": "Source only; production services and warp binding pending",
+      "native_constant": "MN_DETROIT_LAKES_CANOE_CABIN"
+    },
+    {
+      "id": "MnDetroitLakesRangerCabin",
+      "kind": "quest",
+      "dimensions_metatiles": [
+        5,
+        4
+      ],
+      "template": "VioletNicknameSpeechHouse",
+      "tileset": "traditional_house",
+      "rows": [
+        "00 1a 03 02 00",
+        "00 04 0b 04 00",
+        "00 04 04 04 00",
+        "00 06 07 00 00"
+      ],
+      "clear_arrival": [
+        4,
+        5
+      ],
+      "passive_arrival": {
+        "index": 3,
+        "tile": [
+          4,
+          5
+        ],
+        "collision": "FLOOR"
+      },
+      "exits": [
+        {
+          "index": 1,
+          "tile": [
+            3,
+            7
+          ],
+          "target": "MnDetroitLakes",
+          "target_warp": 10,
+          "collision": "WARP_CARPET_DOWN"
+        },
+        {
+          "index": 2,
+          "tile": [
+            4,
+            7
+          ],
+          "target": "MnDetroitLakes",
+          "target_warp": 10,
+          "collision": "WARP_CARPET_DOWN"
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_DETROIT_LAKE_RANGER",
+          "sprite": "SPRITE_OFFICER",
+          "tile": [
+            6,
+            3
+          ],
+          "facing": "south",
+          "lines": [
+            "Three lake notes",
+            "show how our shore",
+            "habitats connect.",
+            "Keep all three."
+          ],
+          "quest": "SQ01",
+          "service": "Observation reward script not yet installed"
+        }
+      ],
+      "signs": [],
+      "status": "Source only; production services and warp binding pending",
+      "native_constant": "MN_DETROIT_LAKES_RANGER_CABIN"
+    }
+  ],
+  "walkable_destinations": [
+    "each port landing",
+    "every visible exterior door",
+    "central square",
+    "local story NPC"
+  ],
+  "door_contract": "All five visible facade DOOR quadrants have exact active/passive exterior records. Entries target each room passive Floor index3; both active room carpets return to that exterior passive Floor. Native binding remains pending.",
+  "native_constant": "MN_DETROIT_LAKES",
+  "compiled_tileset": "mn_detroit_lakes",
+  "status": "Hand-authored SOURCE candidate. Native town, rooms, recovery, SQ01 reward and train service are uninstalled.",
+  "doors": [
+    {
+      "id": "MN_DETROIT_STATION_DOOR",
+      "warp_index": 1,
+      "return_warp_index": 2,
+      "tile": [
+        11,
+        9
+      ],
+      "target": "MnDetroitLakesStation",
+      "target_warp": 3,
+      "return_tile": [
+        11,
+        10
+      ],
+      "arrival_tile": [
+        11,
+        10
+      ],
+      "collision": "DOOR"
+    },
+    {
+      "id": "MN_DETROIT_CLINIC_DOOR",
+      "warp_index": 3,
+      "return_warp_index": 4,
+      "tile": [
+        33,
+        9
+      ],
+      "target": "MnDetroitLakesPokecenter1F",
+      "target_warp": 3,
+      "return_tile": [
+        33,
+        10
+      ],
+      "arrival_tile": [
+        33,
+        10
+      ],
+      "collision": "DOOR"
+    },
+    {
+      "id": "MN_DETROIT_MART_DOOR",
+      "warp_index": 5,
+      "return_warp_index": 6,
+      "tile": [
+        39,
+        17
+      ],
+      "target": "MnDetroitLakesMart",
+      "target_warp": 3,
+      "return_tile": [
+        39,
+        18
+      ],
+      "arrival_tile": [
+        39,
+        18
+      ],
+      "collision": "DOOR"
+    },
+    {
+      "id": "MN_DETROIT_CANOE_CABIN_DOOR",
+      "warp_index": 7,
+      "return_warp_index": 8,
+      "tile": [
+        33,
+        27
+      ],
+      "target": "MnDetroitLakesCanoeCabin",
+      "target_warp": 3,
+      "return_tile": [
+        33,
+        28
+      ],
+      "arrival_tile": [
+        33,
+        28
+      ],
+      "collision": "DOOR"
+    },
+    {
+      "id": "MN_DETROIT_RANGER_CABIN_DOOR",
+      "warp_index": 9,
+      "return_warp_index": 10,
+      "tile": [
+        41,
+        27
+      ],
+      "target": "MnDetroitLakesRangerCabin",
+      "target_warp": 3,
+      "return_tile": [
+        41,
+        28
+      ],
+      "arrival_tile": [
+        41,
+        28
+      ],
+      "collision": "DOOR"
+    }
+  ],
+  "residents": [
+    {
+      "id": "MN_DETROIT_STATION_STEWARD",
+      "sprite": "SPRITE_GENTLEMAN",
+      "tile": [
+        15,
+        11
+      ],
+      "facing": "west",
+      "lines": [
+        "GLACIER LINE",
+        "The station hall",
+        "faces the lake.",
+        "Rides are closed."
+      ]
+    },
+    {
+      "id": "MN_DETROIT_CLINIC_GARDENER",
+      "sprite": "SPRITE_TEACHER",
+      "tile": [
+        35,
+        11
+      ],
+      "facing": "west",
+      "lines": [
+        "The clinic garden",
+        "leaves a clear",
+        "path to the door."
+      ]
+    },
+    {
+      "id": "MN_DETROIT_BEACH_WARDEN",
+      "sprite": "SPRITE_OFFICER",
+      "tile": [
+        8,
+        21
+      ],
+      "facing": "east",
+      "lines": [
+        "Use the low beach",
+        "to launch. The",
+        "dock rails close",
+        "the other edges."
+      ]
+    },
+    {
+      "id": "MN_DETROIT_DOCK_ANGLER",
+      "sprite": "SPRITE_FISHER",
+      "tile": [
+        21,
+        29
+      ],
+      "facing": "west",
+      "lines": [
+        "The public pier",
+        "is a quiet place",
+        "to cast a line."
+      ]
+    },
+    {
+      "id": "MN_DETROIT_CABIN_NEIGHBOR",
+      "sprite": "SPRITE_GRAMPS",
+      "tile": [
+        37,
+        29
+      ],
+      "facing": "west",
+      "lines": [
+        "Cabins face the",
+        "old lake path.",
+        "Please keep the",
+        "porches clear."
+      ]
+    }
+  ],
+  "signs": [
+    {
+      "id": "MN_DETROIT_TOWN_SIGN",
+      "tile": [
+        26,
+        20
+      ],
+      "lines": [
+        "DETROIT LAKES",
+        "PUBLIC BEACH SOUTH"
+      ]
+    },
+    {
+      "id": "MN_DETROIT_STATION_SIGN",
+      "tile": [
+        18,
+        10
+      ],
+      "lines": [
+        "GLACIER LINE",
+        "PASSENGER HALL",
+        "SERVICE CLOSED"
+      ]
+    },
+    {
+      "id": "MN_DETROIT_NORTH_SIGN",
+      "tile": [
+        26,
+        4
+      ],
+      "lines": [
+        "PRAIRIE FOREST",
+        "NORTH TO ITASCA"
+      ]
+    },
+    {
+      "id": "MN_DETROIT_CLINIC_SIGN",
+      "tile": [
+        30,
+        10
+      ],
+      "lines": [
+        "POKEMON CENTER",
+        "HEALING AND PC"
+      ]
+    },
+    {
+      "id": "MN_DETROIT_MART_SIGN",
+      "tile": [
+        42,
+        16
+      ],
+      "lines": [
+        "MART",
+        "TRAIL SUPPLIES"
+      ]
+    },
+    {
+      "id": "MN_DETROIT_BEACH_SIGN",
+      "tile": [
+        18,
+        20
+      ],
+      "lines": [
+        "PUBLIC BEACH",
+        "LAUNCH AT LOW BANK"
+      ]
+    },
+    {
+      "id": "MN_DETROIT_RANGER_SIGN",
+      "tile": [
+        38,
+        26
+      ],
+      "lines": [
+        "LAKE RANGER",
+        "OBSERVATION DESK"
+      ]
+    }
+  ],
+  "viewpoints": [
+    {
+      "id": "WEST_PORT",
+      "tile": [
+        5,
+        19
+      ]
+    },
+    {
+      "id": "STATION_APPROACH",
+      "tile": [
+        13,
+        11
+      ]
+    },
+    {
+      "id": "CLINIC_FRONT",
+      "tile": [
+        33,
+        11
+      ]
+    },
+    {
+      "id": "CROSSROADS",
+      "tile": [
+        25,
+        19
+      ]
+    },
+    {
+      "id": "BEACH_LAUNCH",
+      "tile": [
+        13,
+        23
+      ]
+    },
+    {
+      "id": "PUBLIC_DOCK",
+      "tile": [
+        24,
+        29
+      ]
+    },
+    {
+      "id": "CABIN_STREET",
+      "tile": [
+        37,
+        29
+      ]
+    },
+    {
+      "id": "EAST_PORT",
+      "tile": [
+        43,
+        19
+      ]
+    },
+    {
+      "id": "WIDEST_STATION_GREEN",
+      "tile": [
+        15,
+        13
+      ]
+    }
+  ],
+  "public_dock": {
+    "launch_tile": [
+      13,
+      23
+    ],
+    "water_target": [
+      13,
+      24
+    ],
+    "dock_approach": [
+      28,
+      29
+    ],
+    "north_rail_blocks": [
+      [
+        9,
+        13
+      ],
+      [
+        10,
+        13
+      ],
+      [
+        11,
+        13
+      ],
+      [
+        12,
+        13
+      ],
+      [
+        13,
+        13
+      ]
+    ],
+    "south_rail_blocks": [
+      [
+        9,
+        15
+      ],
+      [
+        10,
+        15
+      ],
+      [
+        11,
+        15
+      ],
+      [
+        12,
+        15
+      ],
+      [
+        13,
+        15
+      ]
+    ],
+    "deck_blocks": [
+      [
+        9,
+        14
+      ],
+      [
+        10,
+        14
+      ],
+      [
+        11,
+        14
+      ],
+      [
+        12,
+        14
+      ],
+      [
+        13,
+        14
+      ]
+    ],
+    "closed_end": [
+      8,
+      14
+    ]
+  },
+  "glacier_line": {
+    "network": "../transit/glacier-line.json",
+    "station": "MnDetroitLakesStation",
+    "native_constant": "MN_DETROIT_LAKES_STATION",
+    "visited_flag": "EVENT_MN_STATION_DETROIT_LAKES_VISITED",
+    "service_flag": "EVENT_MN_COURIER_DEFEATED",
+    "status": "Source-only; no callback, menu, boarding or ride implementation is installed."
+  },
+  "quest_contract": {
+    "id": "SQ01",
+    "requires": [
+      "BADGE_6",
+      "EVENT_MN_LAKE_OBSERVATION_01",
+      "EVENT_MN_LAKE_OBSERVATION_02",
+      "EVENT_MN_LAKE_OBSERVATION_03"
+    ],
+    "reward_item": "MAX_REPEL",
+    "reward_quantity": 1,
+    "once_flag": "EVENT_MN_LAKE_OBSERVATIONS_REWARDED",
+    "actor": "MN_DETROIT_LAKE_RANGER",
+    "room": "MnDetroitLakesRangerCabin",
+    "status": "Native binder pending; ordinary dialogue must not claim the item was delivered or grant these flags."
+  },
+  "authoring_handoff": {
+    "status": "Complete source candidate for whole-town/room review; no native publication or playable-service claim.",
+    "source_art": "Native Johto plus existing Kanto protected-dock recipes; six additive JohtoModern station facade blocks83..88. No source pixels modified.",
+    "art_recipes_native_work": "Inherit mn_headwaters dock art80..82 and water-rock recipe support; add exact source station block recipes83..88 to new mn_detroit_lakes. Do not alias an unrelated facade.",
+    "exterior_contract": "24x18 metatiles, original three ports unchanged, five exterior DOORs and ten active/passive warp records. All entry targets room passive Floor3; room carpet1/2 target corresponding exterior passive warp.",
+    "station_contract": "12x10 native train_station; public arrival11,17, carpets10,19/11,19, conductor13,9 seals both train doors6,5/11,5. Source native-floor movement demonstrated; callbacks/menu/MagnetTrain destination load and persistence remain uninstalled.",
+    "clinic_contract": "Reserved10x8 retained; compact5-metatile-wide treatment/waiting footprint with safe lower entrance. Nurse7,3 through Counter7,4 from7,5; PC13,3 read13,4; proposed recovery8,13 requires native registration.",
+    "mart_contract": "Canonical source6x4 CherrygroveMart geometry; clerk1,3 through Counter2,3 from3,3; canonical money/inventory transactions pending actual publication.",
+    "ranger_contract": "SQ01 observation reward remains pending. Do not claim MAX_REPEL awarded from ordinary dialogue; require badge6, exact three observation flags, giveitem success and persistent once-only event.",
+    "exterior_surf": "Launch13,23 toward13,24; protected public dock approach28,29. Every unconnected outer lake quadrant is visibly closed by native water-rock collision.",
+    "source_checks": "One fast source loop checks complete room geometry, actor/counter/PC approaches, all5facadeDOORs, original ports, both carpets, passive returns, conductor platform sealing and exact boarding movement;8 meaningful mutation rejections.",
+    "native_checks_pending": [
+      "Native namespace/landmark/schema registration and atomic source publication",
+      "All original maps/art/audio/HOME/recovery preservation against actual base pack",
+      "Production input for every entry/both carpets/passive re-entry",
+      "Real healing/PC/recovery and shop money/full-bag behavior",
+      "SQ01 reward and Glacier Line callback/boarding/menu/return/save behavior",
+      "Numeric native Surf/masks/outer-boundary and reciprocal world connections"
+    ],
+    "render_loop": ".local/minnesota-review-env/bin/python planning/minnesota/tools/review_detroit_lakes.py --serve --port8798",
+    "archive": "Full-resolution exterior/rooms/source atlases, original RGBA, converted/cropped160 and4x views, rejected passes retained via render_archive/render_stages immutable history."
+  }
+}

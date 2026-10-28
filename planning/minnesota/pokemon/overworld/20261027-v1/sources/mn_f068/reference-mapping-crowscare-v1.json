@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_147",
+  "family_id": "MN_F068",
+  "prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f068/prompt-crowscare-v1.txt",
+  "input_images": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/references/native-pack-16px/native-six-frame-style-board.8x.png",
+      "role": "ONLY input: authentic native16 overworld STYLE, not identity",
+      "sha256": "4354a639ed1a80fd6686e43b273443ed894e58a84307a8049f638ee9ffa2a099"
+    }
+  ],
+  "identity_reviewed_not_supplied_to_imagegen": [
+    {
+      "path": "target/minnesota-pokemon/native/MN_F068/mn-147-crowscare-v1.front.png",
+      "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F068/mn-147-crowscare-v1.front.png",
+      "sha256": "5f74ba4075818e3f6dc1a4bacb32dd20770897405afcab77533608a95784db85"
+    },
+    {
+      "path": "target/minnesota-pokemon/native/MN_F068/mn-147-crowscare-v1.back.png",
+      "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F068/mn-147-crowscare-v1.back.png",
+      "sha256": "a219de51300d5c0a9e9201df8f64d1e3c619c47f6eae786ae07b182f0de7d213"
+    }
+  ],
+  "canonical_theme": "Prairie scarecrows and trickster shadows: a straw puppet casts an independent crow-shaped shadow that returns to perch inside its head; the shadow, rather than the straw, is the creature.",
+  "palette_binding": {
+    "transparent_index": 0,
+    "visible_indices": [
+      1,
+      2,
+      3
+    ],
+    "normal_rgb555_words": [
+      32767,
+      10873,
+      11464,
+      0
+    ],
+    "shiny_rgb555_words": [
+      32767,
+      20266,
+      6411,
+      0
+    ],
+    "white_body_region_policy": "Simplify formerly white body/highlight regions to light ink1. Index0 is transparent everywhere, not an opaque white paint color."
+  },
+  "fit": 14
+}

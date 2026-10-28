@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F040",
+  "species": [
+    {
+      "species_id": "MN_091",
+      "runtime_token": "GOOSNIDE",
+      "palette_rgb555": [
+        32767,
+        21304,
+        11558,
+        0
+      ],
+      "shiny_palette_rgb555": [
+        32767,
+        26388,
+        9419,
+        0
+      ],
+      "fit": [
+        14,
+        14
+      ],
+      "alpha_threshold": 245,
+      "sampling": "source_center",
+      "minimum_foreground_samples": 16,
+      "black_priority_samples": 32,
+      "interior_black_samples": null,
+      "opaque_interior_minimum_samples": 60,
+      "frames": [
+        {
+          "pose": "down_idle",
+          "source": "goosnide.overworld.imagegen-v2.png",
+          "crop": [
+            70,
+            44,
+            403,
+            461
+          ]
+        },
+        {
+          "pose": "up_idle",
+          "source": "goosnide.overworld.imagegen-v2.png",
+          "crop": [
+            561,
+            44,
+            403,
+            461
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "source": "goosnide.overworld.imagegen-v2.png",
+          "crop": [
+            1084,
+            63,
+            403,
+            461
+          ]
+        },
+        {
+          "pose": "down_step",
+          "source": "goosnide.overworld.imagegen-v2.png",
+          "crop": [
+            74,
+            520,
+            403,
+            461
+          ]
+        },
+        {
+          "pose": "up_step",
+          "source": "goosnide.overworld.imagegen-v2.png",
+          "crop": [
+            560,
+            525,
+            403,
+            461
+          ]
+        },
+        {
+          "pose": "left_step",
+          "source": "goosnide.overworld.imagegen-v2.png",
+          "crop": [
+            1080,
+            533,
+            403,
+            461
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,176 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F121",
+  "species_id": "MN_259",
+  "name": "Rillbow",
+  "status": "native_compiled_author_inspected_root_world_context_review_pending",
+  "generation_tool": "built-in image_gen",
+  "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f121/rillbow.overworld.imagegen-v1.png",
+  "source_sha256": "0bc47774fd6019691ba4538734269ce20fa152fc15e85eccba1f6ecb343cc9af",
+  "original_default_output": "/Users/ryanculligan/.codex/generated_images/01a179bf-dc2b-7352-8975-8b8f3a32e33b/exec-4414593a-79c5-4d08-80bf-e07506aa15d7.png",
+  "dimensions": [
+    1536,
+    1024
+  ],
+  "prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f121/prompt-rillbow-v1.txt",
+  "prompt_sha256": "c8e11e93ac26293a58000748c301719cb9874857a977ca27f5d3e38e2d715cf0",
+  "reference_mapping": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f121/reference-mapping-rillbow-v1.json",
+  "proposed_native_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f121/manifest-rillbow-v1-pupil-proof.json",
+  "manifest_sha256": "f4cf2ec165fb0ef1ec017ff209d377216b2bf9d7a4dc38b863379edadf457ef6",
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f121/rillbow-v1-pupil-proof",
+  "normal_review": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f121/rillbow-v1-pupil-proof/review/line.normal-8x.png",
+  "review_sha256": "cc5bd40e77337e703644f6c004cd89e14ca277baad8657f1483ce5caa91ff3c5",
+  "palette_rgb555": [
+    32767,
+    26455,
+    15782,
+    0
+  ],
+  "shiny_palette_rgb555": [
+    32767,
+    27385,
+    13519,
+    0
+  ],
+  "native_bounds": [
+    [
+      3,
+      4,
+      8,
+      11
+    ],
+    [
+      2,
+      4,
+      9,
+      11
+    ],
+    [
+      2,
+      4,
+      12,
+      10
+    ],
+    [
+      3,
+      4,
+      9,
+      11
+    ],
+    [
+      2,
+      4,
+      10,
+      11
+    ],
+    [
+      2,
+      5,
+      12,
+      9
+    ]
+  ],
+  "pupil_proof": [
+    {
+      "pose": "down_idle",
+      "isolated_light_face_dots": [
+        [
+          5,
+          12
+        ],
+        [
+          8,
+          12
+        ]
+      ],
+      "bounds": [
+        3,
+        4,
+        8,
+        11
+      ]
+    },
+    {
+      "pose": "up_idle",
+      "isolated_light_face_dots": [],
+      "bounds": [
+        2,
+        4,
+        9,
+        11
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "isolated_light_face_dots": [
+        [
+          4,
+          9
+        ]
+      ],
+      "bounds": [
+        2,
+        4,
+        12,
+        10
+      ]
+    },
+    {
+      "pose": "down_step",
+      "isolated_light_face_dots": [
+        [
+          5,
+          12
+        ],
+        [
+          8,
+          12
+        ]
+      ],
+      "bounds": [
+        3,
+        4,
+        9,
+        11
+      ]
+    },
+    {
+      "pose": "up_step",
+      "isolated_light_face_dots": [],
+      "bounds": [
+        2,
+        4,
+        10,
+        11
+      ]
+    },
+    {
+      "pose": "left_step",
+      "isolated_light_face_dots": [
+        [
+          4,
+          9
+        ]
+      ],
+      "bounds": [
+        2,
+        5,
+        12,
+        9
+      ]
+    }
+  ],
+  "validation_results": {
+    "six_frames_16x16": true,
+    "runtime_png_16x96": true,
+    "native_2bpp_bytes": 384,
+    "tile_decode_matches_png_and_indexed_rows": true,
+    "binary_alpha": true,
+    "transparent_border": true,
+    "three_opaque_inks_only": true,
+    "normal_shiny_palette_words_exact": true,
+    "idle_step_pairs_different": true
+  },
+  "notes": "Actual native inspected: two isolated south dots and one west dot, exact same dot anchors across flex pairs. Plain dark-teal north back with no eyes. West silhouette reads compact curved fish with raised squared tail and attached pale crescent underbelly bow-fin. Front foreshortening simplifies the fin; no separate limbs/gear. Equal420x400 source crop registration and common source-center transform; no painted pixels.",
+  "accepted": false
+}

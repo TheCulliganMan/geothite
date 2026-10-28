@@ -1,0 +1,338 @@
+{
+  "species_id": "MN_126",
+  "name": "flossail",
+  "status": "native-review-recommended; root independent review and context required",
+  "selected_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f058/flossail.manifest-native-joint-phase-v2.json",
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/true16-flossail-joint-phase-v2",
+  "shared_transform": {
+    "source_bounds": [
+      11,
+      13,
+      371,
+      399
+    ],
+    "native_size": [
+      13,
+      14
+    ],
+    "native_origin": [
+      1,
+      1
+    ]
+  },
+  "all_four_nonrear_poses_actual_pupils_pass": true,
+  "each_native_eye_cluster_maps_to_one_actual_small_source_pupil_component": true,
+  "actual_source_pupil_proofs": [
+    {
+      "pose": "down_idle",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f058/flossail.overworld.imagegen-v2.png",
+      "crop": [
+        77,
+        87,
+        394,
+        424
+      ],
+      "actual_source_eye_bounds": [
+        [
+          234,
+          361,
+          21,
+          26
+        ],
+        [
+          291,
+          361,
+          21,
+          26
+        ]
+      ],
+      "eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              6,
+              10
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                0,
+                0,
+                0,
+                253
+              ],
+              "bounds": [
+                234,
+                361,
+                21,
+                26
+              ],
+              "pixels": 517,
+              "truncated_contour": false,
+              "native_pixel": [
+                6,
+                10
+              ],
+              "source_sample_pixel": [
+                244,
+                370
+              ]
+            }
+          ]
+        },
+        {
+          "native_cluster": [
+            [
+              8,
+              10
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                0,
+                0,
+                0,
+                253
+              ],
+              "bounds": [
+                291,
+                361,
+                21,
+                26
+              ],
+              "pixels": 535,
+              "truncated_contour": false,
+              "native_pixel": [
+                8,
+                10
+              ],
+              "source_sample_pixel": [
+                302,
+                370
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f058/flossail.overworld.imagegen-v1.png",
+      "crop": [
+        1099,
+        84,
+        394,
+        424
+      ],
+      "actual_source_eye_bounds": [
+        [
+          1224,
+          358,
+          17,
+          23
+        ]
+      ],
+      "eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              5,
+              10
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                1,
+                2,
+                1,
+                254
+              ],
+              "bounds": [
+                1224,
+                358,
+                17,
+                23
+              ],
+              "pixels": 391,
+              "truncated_contour": false,
+              "native_pixel": [
+                5,
+                10
+              ],
+              "source_sample_pixel": [
+                1238,
+                367
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f058/flossail.overworld.imagegen-v2.png",
+      "crop": [
+        82,
+        531,
+        394,
+        424
+      ],
+      "actual_source_eye_bounds": [
+        [
+          232,
+          796,
+          21,
+          26
+        ],
+        [
+          291,
+          796,
+          21,
+          26
+        ]
+      ],
+      "eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              6,
+              10
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                3,
+                3,
+                3,
+                253
+              ],
+              "bounds": [
+                232,
+                796,
+                21,
+                26
+              ],
+              "pixels": 546,
+              "truncated_contour": false,
+              "native_pixel": [
+                6,
+                10
+              ],
+              "source_sample_pixel": [
+                249,
+                814
+              ]
+            }
+          ]
+        },
+        {
+          "native_cluster": [
+            [
+              8,
+              10
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                3,
+                2,
+                4,
+                253
+              ],
+              "bounds": [
+                291,
+                796,
+                21,
+                26
+              ],
+              "pixels": 545,
+              "truncated_contour": false,
+              "native_pixel": [
+                8,
+                10
+              ],
+              "source_sample_pixel": [
+                307,
+                814
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f058/flossail.overworld.imagegen-v1.png",
+      "crop": [
+        1095,
+        531,
+        394,
+        424
+      ],
+      "actual_source_eye_bounds": [
+        [
+          1224,
+          801,
+          18,
+          24
+        ]
+      ],
+      "eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              5,
+              10
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                3,
+                1,
+                0,
+                253
+              ],
+              "bounds": [
+                1224,
+                801,
+                18,
+                24
+              ],
+              "pixels": 431,
+              "truncated_contour": false,
+              "native_pixel": [
+                5,
+                10
+              ],
+              "source_sample_pixel": [
+                1234,
+                814
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "old_native_poses_preserved_exactly": [],
+  "normal_shiny_runtime_parity": "all1536pixels exact each",
+  "canonical_palette_bytes": "exact",
+  "all_three_walk_pairs_distinct": true,
+  "rear_review": "both rear native poses viewed; no copied face",
+  "normal_shiny_native_boards_actually_viewed": true,
+  "accepted_coverage_native_pack_untouched": true,
+  "manifest_sha256": "5af6dd773c2461b2b3fd07faf34b66738ef8c969a4800532d9a9a7534c2140cd",
+  "compiled_index_sha256": "494a225ed0a589c2f819c66894b60aa3ec2e2997ed3317621d1268ff962b7e62"
+}

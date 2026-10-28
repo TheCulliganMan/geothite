@@ -1,0 +1,215 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_041",
+  "result": "pass",
+  "manifest_sha256": "6e6647e40ee59ef4792c590c95db06f9a1833e47f2d1075406a9a7aeab632d5f",
+  "bank_sha256": "329676c5343832b448a61433c4565ec68fb3f3ca30200378e925bc27fabd6f05",
+  "source_sha256": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f014/yodeloon.overworld.imagegen-v1.png": "e665468e04283ed876ebb5dd3a1cd17c321445ab3c988e8c616271d0d842a5ee"
+  },
+  "canonical_eye_form": "Two isolated actual black pupil dots south and one isolated actual black pupil west; source eye components verified in all four nonrear poses.",
+  "nonrear_poses": [
+    {
+      "pose": "down_idle",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            6,
+            5
+          ],
+          "source_sample": [
+            273,
+            194
+          ],
+          "source_component": [
+            264,
+            179,
+            13,
+            25
+          ],
+          "component_pixels": 324,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            1,
+            2,
+            3,
+            254
+          ]
+        },
+        {
+          "native": [
+            8,
+            5
+          ],
+          "source_sample": [
+            339,
+            194
+          ],
+          "source_component": [
+            335,
+            179,
+            13,
+            25
+          ],
+          "component_pixels": 314,
+          "native_neighbors": [
+            1,
+            2,
+            1,
+            1
+          ],
+          "source_rgba": [
+            3,
+            3,
+            4,
+            254
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            5,
+            4
+          ],
+          "source_sample": [
+            1172,
+            176
+          ],
+          "source_component": [
+            1152,
+            169,
+            25,
+            35
+          ],
+          "component_pixels": 874,
+          "native_neighbors": [
+            1,
+            2,
+            2,
+            1
+          ],
+          "source_rgba": [
+            3,
+            4,
+            5,
+            253
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            6,
+            5
+          ],
+          "source_sample": [
+            273,
+            638
+          ],
+          "source_component": [
+            264,
+            623,
+            13,
+            25
+          ],
+          "component_pixels": 325,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            2,
+            2,
+            2,
+            254
+          ]
+        },
+        {
+          "native": [
+            8,
+            5
+          ],
+          "source_sample": [
+            339,
+            638
+          ],
+          "source_component": [
+            335,
+            623,
+            13,
+            25
+          ],
+          "component_pixels": 325,
+          "native_neighbors": [
+            1,
+            2,
+            1,
+            1
+          ],
+          "source_rgba": [
+            2,
+            3,
+            3,
+            253
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            5,
+            4
+          ],
+          "source_sample": [
+            1172,
+            621
+          ],
+          "source_component": [
+            1152,
+            612,
+            25,
+            36
+          ],
+          "component_pixels": 900,
+          "native_neighbors": [
+            1,
+            2,
+            2,
+            1
+          ],
+          "source_rgba": [
+            3,
+            4,
+            5,
+            253
+          ]
+        }
+      ]
+    }
+  ],
+  "rear_anatomy": {
+    "result": "pass",
+    "notes": "Long-necked middle-stage loon preserves bell-shaped ringed throat, two folded wing planes, webbed feet and short attached wavy echo tail. Rear is true indigo nape/neck and folded wings, no face or pupil-like marks. All four actual source pupil components isolated. Commonfit13, full equal windows/source anatomy retained; only south source registration adjusted, no native painting. Normal/shiny boards actually viewed."
+  }
+}

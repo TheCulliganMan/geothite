@@ -1,0 +1,215 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_035",
+  "result": "pass",
+  "manifest_sha256": "e2a21829df2a92234915a9644d584205c4975a30b701b3b5bdf09e411386b47e",
+  "bank_sha256": "8da252f9f90d4e2d2c3b16c8f37469d67b2440ee2ddd8dae751e3b03faa74c8c",
+  "source_sha256": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f012/skatuff.overworld.imagegen-v1.png": "150df2284f40c6a78fb1ea826e4043d8dc91b60654376c30275758d5807ca729"
+  },
+  "canonical_eye_form": "Two isolated actual black pupil dots south and one isolated actual black pupil west; source eye components verified in all four nonrear poses.",
+  "nonrear_poses": [
+    {
+      "pose": "down_idle",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            6,
+            7
+          ],
+          "source_sample": [
+            304,
+            251
+          ],
+          "source_component": [
+            288,
+            234,
+            24,
+            34
+          ],
+          "component_pixels": 783,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            0,
+            0,
+            0,
+            254
+          ]
+        },
+        {
+          "native": [
+            8,
+            7
+          ],
+          "source_sample": [
+            366,
+            251
+          ],
+          "source_component": [
+            351,
+            234,
+            23,
+            34
+          ],
+          "component_pixels": 782,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            0,
+            0,
+            0,
+            253
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            5,
+            6
+          ],
+          "source_sample": [
+            1161,
+            232
+          ],
+          "source_component": [
+            1152,
+            208,
+            23,
+            35
+          ],
+          "component_pixels": 797,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            0,
+            0,
+            0,
+            253
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            6,
+            7
+          ],
+          "source_sample": [
+            304,
+            706
+          ],
+          "source_component": [
+            288,
+            687,
+            24,
+            32
+          ],
+          "component_pixels": 750,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            0,
+            0,
+            0,
+            254
+          ]
+        },
+        {
+          "native": [
+            8,
+            7
+          ],
+          "source_sample": [
+            366,
+            706
+          ],
+          "source_component": [
+            351,
+            687,
+            23,
+            32
+          ],
+          "component_pixels": 736,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            1,
+            0,
+            0,
+            253
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            5,
+            6
+          ],
+          "source_sample": [
+            1161,
+            685
+          ],
+          "source_component": [
+            1153,
+            663,
+            24,
+            35
+          ],
+          "component_pixels": 840,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            1,
+            0,
+            0,
+            253
+          ]
+        }
+      ]
+    }
+  ],
+  "rear_anatomy": {
+    "result": "pass",
+    "notes": "Full-body slender middle hockey skater: one backward ice crest, two gauntlet arms and two skate feet. Plain true north head/back with no actual pupils or false eyes; source-backed head fin/side flange contours only. South two actual pupil components and west one fully proven. Exact RGB555 normal/shiny, literal native borders and shared scale; gait anchors passed. Normal/shiny boards viewed."
+  }
+}

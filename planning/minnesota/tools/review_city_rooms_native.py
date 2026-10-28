@@ -3,12 +3,14 @@
 
 Views are an array of {map, core:[x,y], id?:str}. Each point is an explicit
 empty-party, south-facing, hour12 placement, not earned regional progression.
-The untouched GPU image is authoritative. A source mismatch or unmeasurable
-player leaves REVIEW_DIFFERENCES and retained diagnostics, never pixel approval.
+The untouched GPU image is authoritative. The camera origin is derived from
+the native finite-map clamp, including when foreground scenery covers CHRIS.
+Every output pixel still participates in the source comparison.
 Use --strict when a nonmatching comparison must also return a failing exit code.
 """
 import argparse
 import json
+import math
 import os
 from pathlib import Path
 import shutil
@@ -20,12 +22,40 @@ from render_archive import retain_render_file, save_render
 from render_reference import SourceArt, load_pack, npc_palette_pack, room_sheet
 from render_stages import render_stage
 from review_city_native import priority_scene
+from review_connected_route_native import camera_origin
 from review_north_shore import oriented_sprite
 from review_passage_native import actors, digest, write
 from review_shelter_depth_native import measured_player
 
 ROOT = Path(__file__).resolve().parents[3]
 PAD = 512  # Whole native metatiles, keeping negative border sub-tile phase.
+
+
+def room_frame_layout(module, at):
+    """Derive the 640x576 native room-fit transform before examining GPU pixels.
+
+    fullscreen_pixels_per_world_unit gives three physical pixels per source
+    texel at this fixed window size. fullscreen_field_layout then reserves
+    32 logical units on the top/sides and 224 below. A sufficiently small room
+    fits a whole-texel zoom in that area; ordinary rooms retain the LCD clamp.
+    This is geometry from fullscreen_scaling.rs, never an image-fit search.
+    """
+    width = module['attributes']['width'] * 32
+    height = module['attributes']['height'] * 32
+    pixels_per_world_unit = 3 / 4
+    available = (640 - 64*pixels_per_world_unit,
+                 576 - 256*pixels_per_world_unit)
+    scale = max(3, math.floor(min(available[0]/width, available[1]/height)))
+    if scale == 3:
+        origin, lcd = camera_origin([(module, 0, 0)], at)
+        return origin, scale, lcd
+    # Room-fit roots cancel the clamped map center, then center the complete
+    # map in the reserved world area. Source OAM remains map-relative.
+    center = (320, (32*pixels_per_world_unit + 576 - 224*pixels_per_world_unit)/2)
+    origin = (center[0] - width*scale/2 + at[0]*16*scale,
+              center[1] - height*scale/2 + at[1]*16*scale)
+    assert all(v == int(v) for v in origin), 'native room fit must preserve whole pixels'
+    return tuple(int(v) for v in origin), scale, None
 
 
 def effective_period(attributes):
@@ -52,7 +82,7 @@ def bordered_scene(art, module, scene, period):
 
 
 def compare(pack, art, module, actual, at, folder):
-    """Build expected pixels independently, measuring only exact CHRIS placement."""
+    """Build expected pixels with an independently derived native camera clamp."""
     attr = module['attributes']; x, y = at
     period = effective_period(attr)
     sprite_period = 'day' if period == 'indoor' else period
@@ -69,13 +99,19 @@ def compare(pack, art, module, actual, at, folder):
                npc_palette_bank=sprite_period, border_block=attr['border_block'],
                compared_pixels=640 * 576, pixel_mismatches=None,
                centered_camera_assumption_used=False)
+    origin, scale, lcd = room_frame_layout(module, at)
+    row.update(derived_player_origin=list(origin), lcd_origin_8px_cells=lcd,
+               physical_pixels_per_source_texel=scale, native_room_fit_used=scale > 3)
     try:
-        origin, opaque = measured_player(actual, player)
+        measured, opaque = measured_player(actual, player, scale)
     except AssertionError as error:
-        row['comparison_error'] = str(error)
-        row['pixel_verified'] = False
-        return row
-    row.update(measured_player_origin=list(origin), exact_opaque_player_pixels=opaque)
+        # A native foreground tile can cover part of the sprite. Do not fit or
+        # mask pixels to recover it: retain the diagnostic and compare the whole
+        # independently positioned scene, including that foreground, below.
+        row['complete_player_measurement'] = str(error)
+    else:
+        row.update(measured_player_origin=list(measured), exact_opaque_player_pixels=opaque)
+        assert tuple(origin) == tuple(measured), 'native clamp and exact visible OAM disagree'
     scene = whole.copy(); scene.alpha_composite(player, (x * 16, y * 16))
     save_render(scene, folder / 'whole-player-before-priority.png')
     box = (x * 16 - 256, y * 16 - 192, x * 16 + 256, y * 16 + 192)
@@ -86,8 +122,8 @@ def compare(pack, art, module, actual, at, folder):
     save_render(padded, folder / 'whole-bordered-native-source.png')
     padded_box = tuple(value + PAD for value in box)
     crop = render_stage(padded, 'crop', folder, 'source512', padded_box)
-    scaled = render_stage(crop, 'resize', folder, 'source3x', (1536, 1152), Image.Resampling.NEAREST)
-    left, top = 768 - origin[0], 576 - origin[1]
+    scaled = render_stage(crop, 'resize', folder, f'source{scale}x', (512*scale, 384*scale), Image.Resampling.NEAREST)
+    left, top = 256*scale - origin[0], 192*scale - origin[1]
     ref_box = (left, top, left + 640, top + 576)
     reference = render_stage(scaled, 'crop', folder, 'reference640', ref_box).convert('RGB')
     save_render(reference, folder / 'source-reference640.png')

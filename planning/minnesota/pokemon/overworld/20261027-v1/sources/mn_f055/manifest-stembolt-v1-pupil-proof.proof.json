@@ -1,0 +1,351 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_117",
+  "status": "source-proof-pass; root visual/context acceptance required",
+  "selected_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f055/manifest-stembolt-v1-pupil-proof.json",
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f055/stembolt-v1-pupil-proof",
+  "shared_transform": {
+    "source_bounds": [
+      31,
+      37,
+      344,
+      395
+    ],
+    "native_size": [
+      11,
+      13
+    ],
+    "native_origin": [
+      2,
+      2
+    ]
+  },
+  "all_four_nonrear_poses_have_actual_source_pupils": true,
+  "every_native_eye_cluster_maps_to_same_small_anatomical_source_pupil_component": true,
+  "actual_source_pupil_proofs": [
+    {
+      "pose": "down_idle",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f055/stembolt.overworld.imagegen-v1.png",
+      "crop": [
+        79,
+        70,
+        440,
+        450
+      ],
+      "anatomically_identified_source_eye_boxes_xywh": [
+        [
+          240,
+          288,
+          13,
+          23
+        ],
+        [
+          312,
+          288,
+          14,
+          23
+        ]
+      ],
+      "actual_eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              6,
+              8
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                3,
+                5,
+                3,
+                253
+              ],
+              "bounds": [
+                240,
+                288,
+                13,
+                23
+              ],
+              "pixels": 299,
+              "truncated_contour": false,
+              "native_pixel": [
+                6,
+                8
+              ],
+              "source_sample_pixel": [
+                250,
+                304
+              ]
+            }
+          ]
+        },
+        {
+          "native_cluster": [
+            [
+              8,
+              8
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                0,
+                0,
+                0,
+                253
+              ],
+              "bounds": [
+                312,
+                288,
+                14,
+                23
+              ],
+              "pixels": 321,
+              "truncated_contour": false,
+              "native_pixel": [
+                8,
+                8
+              ],
+              "source_sample_pixel": [
+                313,
+                304
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f055/stembolt.overworld.imagegen-v1.png",
+      "crop": [
+        1020,
+        60,
+        440,
+        450
+      ],
+      "anatomically_identified_source_eye_boxes_xywh": [
+        [
+          1179,
+          276,
+          13,
+          23
+        ]
+      ],
+      "actual_eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              6,
+              8
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                3,
+                7,
+                4,
+                253
+              ],
+              "bounds": [
+                1179,
+                276,
+                13,
+                23
+              ],
+              "pixels": 299,
+              "truncated_contour": false,
+              "native_pixel": [
+                6,
+                8
+              ],
+              "source_sample_pixel": [
+                1191,
+                294
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f055/stembolt.overworld.imagegen-v1.png",
+      "crop": [
+        79,
+        514,
+        440,
+        450
+      ],
+      "anatomically_identified_source_eye_boxes_xywh": [
+        [
+          240,
+          732,
+          13,
+          23
+        ],
+        [
+          313,
+          732,
+          13,
+          23
+        ]
+      ],
+      "actual_eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              6,
+              8
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                3,
+                5,
+                3,
+                253
+              ],
+              "bounds": [
+                240,
+                732,
+                13,
+                23
+              ],
+              "pixels": 292,
+              "truncated_contour": false,
+              "native_pixel": [
+                6,
+                8
+              ],
+              "source_sample_pixel": [
+                250,
+                748
+              ]
+            }
+          ]
+        },
+        {
+          "native_cluster": [
+            [
+              8,
+              8
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                3,
+                9,
+                5,
+                253
+              ],
+              "bounds": [
+                313,
+                732,
+                13,
+                23
+              ],
+              "pixels": 290,
+              "truncated_contour": false,
+              "native_pixel": [
+                8,
+                8
+              ],
+              "source_sample_pixel": [
+                313,
+                748
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f055/stembolt.overworld.imagegen-v1.png",
+      "crop": [
+        1007,
+        504,
+        440,
+        450
+      ],
+      "anatomically_identified_source_eye_boxes_xywh": [
+        [
+          1166,
+          719,
+          13,
+          24
+        ]
+      ],
+      "actual_eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              6,
+              8
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                4,
+                9,
+                5,
+                254
+              ],
+              "bounds": [
+                1166,
+                719,
+                13,
+                24
+              ],
+              "pixels": 295,
+              "truncated_contour": false,
+              "native_pixel": [
+                6,
+                8
+              ],
+              "source_sample_pixel": [
+                1178,
+                738
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "native_head_anchors_idle_walk_equal": true,
+  "validation": {
+    "runtime_2bpp_384_bytes_exact_allpixels": true,
+    "runtime_png16x96_index_parity": true,
+    "normal_shiny_palettebanks_exact": true,
+    "normal_shiny_all1536pixels_exact": true,
+    "transparent_border": true,
+    "idle_walk_pairs_distinct": true
+  },
+  "sha256": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f055/manifest-stembolt-v1-pupil-proof.json": "3ed565305c2c89cae8c778b08baed451a2d4ec993fb8a218eb06499fd5e78d98",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f055/stembolt-v1-pupil-proof/gfx/pokemon/stembolt/overworld.2bpp": "c0528a37eda7f786e18d23b967f656ca36ff55930886f4e6352bb8985edeb35c",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f055/stembolt-v1-pupil-proof/review/line.normal-8x.png": "5d4341dbdb3ad76a3c1e9f104ee80af977e5ba89b2c113024e293855db66901c",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f055/stembolt-v1-pupil-proof/gfx/pokemon/stembolt/overworld.png": "ebe93aab9b5e67cc147aeb1f778e34ad0a10ac2f1f5e2fc64c2f1deebf6a4f79",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f055/stembolt-v1-pupil-proof/review/line.shiny-8x.png": "2d52312251527bb3cb867fe7ffc3c9ab213ec63d25f33ea45b1091a68ef8af18",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f055/stembolt-v1-pupil-proof/gfx/pokemon/stembolt/overworld-shiny.gbcpal": "4ba818eddb72374fc8eb52b7cb60ba99f9cf71767e2154fbfe04fb650529f3dc",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f055/stembolt.overworld.imagegen-v1.png": "1fdff78be1d3ec1b84cc2c4cf75fbcee983b47adeb47fe527c43b54b81428b5a",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f055/stembolt-v1-pupil-proof/compiled-index.json": "bf7b3f16d1a3c585be23e2e9ef6f64ce1cef52abc20101de593091af78a8b5c2",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f055/stembolt-v1-pupil-proof/gfx/pokemon/stembolt/overworld.gbcpal": "c1af4ebcf7b50295132b9c84ec768187f498b2916e966ba0d3b4e8014b771591"
+  },
+  "actual_native_boards_viewed": true,
+  "rear_review": "plain rear head, no copied face; actual normal/shiny viewed"
+}

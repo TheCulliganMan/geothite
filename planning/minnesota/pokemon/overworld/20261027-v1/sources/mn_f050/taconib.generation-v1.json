@@ -1,0 +1,13 @@
+{
+  "default_output": "/Users/ryanculligan/.codex/generated_images/01a17f9b-d422-7510-8f49-c2c58dedb47a/exec-454a9f4a-f2fc-45fe-aad5-58f24643eb25.png",
+  "saved_source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f050/taconib.overworld.imagegen-v1.png",
+  "sha256": "55b5c20cc41e12e31153e7289bc0aff291887ecd02cb0a99aca1da00c117cfac",
+  "prompt": "taconib.prompt-v1.txt",
+  "references": [
+    "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F050/mn-101-taconib-v1.front.png",
+    "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F050/mn-101-taconib-v1.back.png",
+    "/Users/ryanculligan/GitHub/geothite/planning/minnesota/pokemon/overworld/20261027-v1/references/native-pack-16px/native-six-frame-style-board.8x.png"
+  ],
+  "tool": "built-in imagegen",
+  "accepted": false
+}

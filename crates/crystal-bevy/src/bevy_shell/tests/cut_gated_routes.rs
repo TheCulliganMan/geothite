@@ -215,7 +215,14 @@ fn grid(
             prefix: case.prefix,
             columns: case.columns,
             rows: case.rows,
-            tileset: case.tileset,
+            tileset: if case.prefix == "MnR13"
+                && runtime.data().maps["MnR13C00R00"].attributes.tileset_name
+                    == "mn_winter_north_shore"
+            {
+                "mn_winter_north_shore"
+            } else {
+                case.tileset
+            },
             start: position(controller),
             doors: BTreeMap::new(),
         },
@@ -233,7 +240,7 @@ fn grid(
             .data()
             .assemble_map_module_from_compiled_payloads(&snapshot.overworld.map_name)
             .expect("native current chunk");
-        let collision = &runtime.data().tilesets[case.tileset].collision;
+        let collision = &runtime.data().tilesets[&module.attributes.tileset_name].collision;
         for y in 0..module.attributes.height as i16 * 2 {
             for x in 0..module.attributes.width as i16 * 2 {
                 let block = map.metatile_at(x / 2, y / 2).expect("native metatile");
@@ -333,8 +340,10 @@ fn verify_cut_gate(case: &CutCase) {
         .duration_since(UNIX_EPOCH)
         .expect("fixture save clock")
         .as_nanos();
-    let save =
-        std::env::temp_dir().join(format!("geothite-{}-cut-{stamp}.crystalsave", case.prefix));
+    let save = super::authored_route_fixture::reached_save_path(&format!(
+        "geothite-{}-cut-{stamp}.crystalsave",
+        case.prefix
+    ));
     controller
         .save(&save)
         .expect("save actual opened gate and pickup");
@@ -363,7 +372,7 @@ fn verify_cut_gate(case: &CutCase) {
     cut(&mut loaded, case);
     grid(&runtime, &mut loaded, case, true).walk(&mut loaded, case.approach);
     assert_eq!(quantity(&mut loaded, case.reward_item), before_quantity + 1);
-    std::fs::remove_file(save).expect("remove disposable Cut fixture save");
+    super::authored_route_fixture::cleanup_reached_save(&save);
 }
 
 #[test]

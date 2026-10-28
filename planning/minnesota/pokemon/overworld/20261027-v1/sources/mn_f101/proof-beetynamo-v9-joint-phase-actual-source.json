@@ -1,0 +1,212 @@
+{
+  "species": "beetynamo",
+  "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f101/beetynamo-v9-joint-phase",
+  "status": "actual-source native proof passes; root visual/context acceptance pending",
+  "all_four_nonrear_actual_isolated_source_pupils": true,
+  "six16px_alpha_border_normal_shiny_runtime_parity": true,
+  "canonical_palettes": true,
+  "literal_2bpp_all1536indices_exact": true,
+  "bank_sha256": "88b69c7e3286625e02c3d502beea937a48c87b1fd943c3dcbfe437a4744c86db",
+  "proof": [
+    {
+      "pose": "down_idle",
+      "actual_small_isolated_pupils": [
+        {
+          "native": [
+            6,
+            6
+          ],
+          "source_sample": [
+            263,
+            240
+          ],
+          "source_component": [
+            260,
+            237,
+            17,
+            18
+          ],
+          "component_pixels": 306,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            9,
+            10,
+            4,
+            254
+          ]
+        },
+        {
+          "native": [
+            8,
+            6
+          ],
+          "source_sample": [
+            324,
+            240
+          ],
+          "source_component": [
+            322,
+            237,
+            17,
+            18
+          ],
+          "component_pixels": 305,
+          "native_neighbors": [
+            1,
+            1,
+            2,
+            1
+          ],
+          "source_rgba": [
+            7,
+            7,
+            3,
+            253
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "actual_small_isolated_pupils": [
+        {
+          "native": [
+            4,
+            6
+          ],
+          "source_sample": [
+            1160,
+            224
+          ],
+          "source_component": [
+            1144,
+            215,
+            17,
+            19
+          ],
+          "component_pixels": 323,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            1,
+            1,
+            0,
+            253
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "actual_small_isolated_pupils": [
+        {
+          "native": [
+            6,
+            6
+          ],
+          "source_sample": [
+            263,
+            650
+          ],
+          "source_component": [
+            259,
+            649,
+            17,
+            17
+          ],
+          "component_pixels": 289,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            5,
+            6,
+            2,
+            253
+          ]
+        },
+        {
+          "native": [
+            8,
+            6
+          ],
+          "source_sample": [
+            324,
+            650
+          ],
+          "source_component": [
+            321,
+            649,
+            18,
+            17
+          ],
+          "component_pixels": 305,
+          "native_neighbors": [
+            1,
+            1,
+            2,
+            1
+          ],
+          "source_rgba": [
+            6,
+            6,
+            2,
+            254
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "actual_small_isolated_pupils": [
+        {
+          "native": [
+            4,
+            6
+          ],
+          "source_sample": [
+            1160,
+            634
+          ],
+          "source_component": [
+            1145,
+            621,
+            17,
+            19
+          ],
+          "component_pixels": 323,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            3,
+            3,
+            1,
+            254
+          ]
+        }
+      ]
+    }
+  ],
+  "hashes": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f101/beetynamo-v9-joint-phase/compiled-index.json": "30b38dcaf07875649096a17f5ef6dd24243666b10f0f9a97b847d45b4b6cc6d9",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f101/beetynamo.overworld.imagegen-v2-four-rootfeet.png": "785463c6f894ce63d3618e7b18dc526a4d95036725cf448f918abd2f0bd09b1c",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f101/beetynamo-v9-joint-phase/gfx/pokemon/beetynamo/overworld.2bpp": "88b69c7e3286625e02c3d502beea937a48c87b1fd943c3dcbfe437a4744c86db"
+  },
+  "no_native_pixel_painting": true
+}

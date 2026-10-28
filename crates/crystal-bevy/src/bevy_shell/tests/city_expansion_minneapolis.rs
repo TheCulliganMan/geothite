@@ -64,7 +64,11 @@ fn fixture(setup: Setup<'_>) -> (AssetRoot, CrystalRuntime, Value, VisibleShellC
     let plan = contract();
     assert_eq!(plan["city"], CITY);
     let city = &runtime.data().maps[CITY];
-    assert_eq!([city.attributes.width, city.attributes.height], [64, 48]);
+    assert_eq!(
+        (city.attributes.width, city.attributes.height),
+        point(&plan["dimensions_metatiles"]),
+        "fixture extent must match the actual published city"
+    );
     let mut location = gyms["gyms"][2].clone();
     location["id"] = plan["city"].clone();
     location["arrival_core"] = plan["arrival_core"].clone();

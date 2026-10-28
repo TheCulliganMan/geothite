@@ -2,8 +2,8 @@
   "id": "MnMinneapolis",
   "name": "MINNEAPOLIS",
   "dimensions_metatiles": [
-    64,
-    48
+    40,
+    32
   ],
   "reference_anchor_percent": [
     54,
@@ -11,41 +11,41 @@
   ],
   "role": "gym_3",
   "tileset": "johto_modern",
-  "composition": "Smaller, tighter64x48 Minneapolis. Inhabited North Loop and Northeast streets share courts and rear alleys; old clinic/gym/ICE core remains central, compact market connects department store and battle club, lake neighborhood and south pond walks have actual piers/bridges.",
+  "composition": "Hand-recomposed40x32: short inhabited mill/arts and culture frontages, shared civic service lanes, three actual priced market counters, lake pier and southern residential courts; St Anthony Falls beside the mill with visible north/south river continuations.",
   "ports": [
     {
       "route": "MN_R03",
       "side": "S",
       "gate_metatile": [
-        32,
-        47
+        20,
+        31
       ],
       "landing_metatile": [
-        32,
-        44
+        20,
+        29
       ]
     },
     {
       "route": "MN_R04",
       "side": "E",
       "gate_metatile": [
-        63,
-        24
+        39,
+        18
       ],
       "landing_metatile": [
-        60,
-        24
+        36,
+        18
       ]
     },
     {
       "route": "MN_R05",
       "side": "N",
       "gate_metatile": [
-        32,
+        20,
         0
       ],
       "landing_metatile": [
-        32,
+        20,
         4
       ]
     }
@@ -2777,10 +2777,63 @@
             4
           ],
           "stock": [
+            "TM_DYNAMICPUNCH",
+            "TM_HEADBUTT",
+            "TM_CURSE",
+            "TM_ROLLOUT",
+            "TM_ROAR",
+            "TM_TOXIC",
+            "TM_ZAP_CANNON",
+            "TM_ROCK_SMASH",
+            "TM_PSYCH_UP",
             "TM_HIDDEN_POWER",
+            "TM_SUNNY_DAY",
+            "TM_SWEET_SCENT",
+            "TM_SNORE",
+            "TM_BLIZZARD",
+            "TM_HYPER_BEAM",
+            "TM_ICY_WIND",
             "TM_PROTECT",
             "TM_RAIN_DANCE",
-            "TM_ICE_PUNCH"
+            "TM_GIGA_DRAIN",
+            "TM_ENDURE",
+            "TM_FRUSTRATION",
+            "TM_SOLARBEAM",
+            "TM_IRON_TAIL",
+            "TM_DRAGONBREATH",
+            "TM_THUNDER",
+            "TM_EARTHQUAKE",
+            "TM_RETURN",
+            "TM_DIG",
+            "TM_PSYCHIC_M",
+            "TM_SHADOW_BALL",
+            "TM_MUD_SLAP",
+            "TM_DOUBLE_TEAM",
+            "TM_ICE_PUNCH",
+            "TM_SWAGGER",
+            "TM_SLEEP_TALK",
+            "TM_SLUDGE_BOMB",
+            "TM_SANDSTORM",
+            "TM_FIRE_BLAST",
+            "TM_SWIFT",
+            "TM_DEFENSE_CURL",
+            "TM_THUNDERPUNCH",
+            "TM_DREAM_EATER",
+            "TM_DETECT",
+            "TM_REST",
+            "TM_ATTRACT",
+            "TM_THIEF",
+            "TM_STEEL_WING",
+            "TM_FIRE_PUNCH",
+            "TM_FURY_CUTTER",
+            "TM_NIGHTMARE",
+            "HM_CUT",
+            "HM_FLY",
+            "HM_SURF",
+            "HM_STRENGTH",
+            "HM_FLASH",
+            "HM_WHIRLPOOL",
+            "HM_WATERFALL"
           ]
         }
       ],
@@ -3329,7 +3382,7 @@
     "Team ICE counterfeit inspection and dispatcher witness",
     "separate dispatch-copy interaction after the enforcer battle"
   ],
-  "door_contract": "Expanded SOURCE candidate:40 real exterior facade pairs and five department floors; all old1..10 town warp IDs/oldfive rooms/story are preserved. New native publication and controller acceptance pending.",
+  "door_contract": "All40 existing exterior facade pairs and44 existing rooms retained. All original indexed native warp IDs and room return programs remain exact; exterior positions are explicit zero-based overrides.",
   "story_factions": [
     {
       "name": "Team ICE",
@@ -3345,14 +3398,14 @@
   ],
   "native_constant": "MN_MINNEAPOLIS",
   "compiled_tileset": "mn_minneapolis_city",
-  "native_status": "Published660-map tight-final-v02; local controller verification recorded separately; user visual acceptance pending.",
+  "native_status": "Native published40x32 compact-falls-v02; source promotion requires exact external native/controller acceptance. No user final approval or earned regional progress claimed.",
   "residents": [
     {
       "id": "MN_MP_ARRIVAL_GUIDE",
       "sprite": "SPRITE_TEACHER",
       "tile": [
-        66,
-        63
+        42,
+        45
       ],
       "facing": "west",
       "lines": [
@@ -3366,8 +3419,8 @@
       "id": "MN_MP_PARK_WITNESS",
       "sprite": "SPRITE_GENTLEMAN",
       "tile": [
-        42,
-        47
+        27,
+        35
       ],
       "facing": "east",
       "lines": [
@@ -3381,8 +3434,8 @@
       "id": "MN_MP_NORTH_GUIDE",
       "sprite": "SPRITE_FISHER",
       "tile": [
-        67,
-        32
+        43,
+        12
       ],
       "facing": "south",
       "lines": [
@@ -3396,8 +3449,8 @@
       "id": "MN_MP_UPPER_BRIDGE_GUIDE",
       "sprite": "SPRITE_FISHER",
       "tile": [
-        59,
-        21
+        39,
+        13
       ],
       "facing": "west",
       "lines": [
@@ -3411,8 +3464,8 @@
       "id": "MN_MP_CEDAR_GUIDE",
       "sprite": "SPRITE_TEACHER",
       "tile": [
-        109,
-        51
+        61,
+        37
       ],
       "facing": "west",
       "lines": [
@@ -3426,8 +3479,8 @@
       "id": "MN_MP_SOUTH_PARK_GUIDE",
       "sprite": "SPRITE_GENTLEMAN",
       "tile": [
-        46,
-        83
+        19,
+        57
       ],
       "facing": "east",
       "lines": [
@@ -3441,8 +3494,8 @@
       "id": "MN_MP_LAKE_FISHER",
       "sprite": "SPRITE_FISHER",
       "tile": [
-        19,
-        49
+        13,
+        35
       ],
       "facing": "south",
       "lines": [
@@ -3454,8 +3507,8 @@
       "id": "MN_MP_NORTH_LOOP_VENDOR",
       "sprite": "SPRITE_GENTLEMAN",
       "tile": [
-        33,
-        17
+        17,
+        13
       ],
       "facing": "east",
       "lines": [
@@ -3469,8 +3522,8 @@
       "id": "MN_MP_LIBRARY_READER",
       "sprite": "SPRITE_LASS",
       "tile": [
-        102,
-        17
+        71,
+        13
       ],
       "facing": "west",
       "lines": [
@@ -3484,8 +3537,8 @@
       "id": "MN_MP_MUSEUM_VISITOR",
       "sprite": "SPRITE_TEACHER",
       "tile": [
-        33,
-        27
+        15,
+        21
       ],
       "facing": "west",
       "lines": [
@@ -3499,7 +3552,7 @@
       "id": "MN_MP_BATTLE_CLUB_FAN",
       "sprite": "SPRITE_ROCKER",
       "tile": [
-        115,
+        65,
         45
       ],
       "facing": "west",
@@ -3514,8 +3567,8 @@
       "id": "MN_MP_LAKE_GARDENER",
       "sprite": "SPRITE_TEACHER",
       "tile": [
-        29,
-        69
+        25,
+        57
       ],
       "facing": "north",
       "lines": [
@@ -3529,8 +3582,8 @@
       "id": "MN_MP_NORTH_ARTIST",
       "sprite": "SPRITE_LASS",
       "tile": [
-        78,
-        17
+        51,
+        13
       ],
       "facing": "south",
       "lines": [
@@ -3544,8 +3597,8 @@
       "id": "MN_MP_MARKET_SNACK",
       "sprite": "SPRITE_CLERK",
       "tile": [
-        83,
-        49
+        43,
+        45
       ],
       "facing": "south",
       "lines": [
@@ -3562,8 +3615,8 @@
       "id": "MN_MP_MARKET_BERRY",
       "sprite": "SPRITE_CLERK",
       "tile": [
-        89,
-        49
+        49,
+        45
       ],
       "facing": "south",
       "lines": [
@@ -3581,8 +3634,8 @@
       "id": "MN_MP_MARKET_TRAIL",
       "sprite": "SPRITE_CLERK",
       "tile": [
-        95,
-        49
+        55,
+        45
       ],
       "facing": "south",
       "lines": [
@@ -3599,8 +3652,8 @@
     {
       "id": "MN_MP_TOWN_SIGN",
       "tile": [
-        62,
-        62
+        38,
+        48
       ],
       "lines": [
         "MINNEAPOLIS",
@@ -3610,8 +3663,8 @@
     {
       "id": "MN_MP_DISPATCH_SIGN",
       "tile": [
-        56,
-        58
+        22,
+        34
       ],
       "lines": [
         "RAIL DISPATCH",
@@ -3621,8 +3674,8 @@
     {
       "id": "MN_MP_GYM_SIGN",
       "tile": [
-        78,
-        48
+        68,
+        34
       ],
       "lines": [
         "MINNEAPOLIS GYM",
@@ -3632,8 +3685,8 @@
     {
       "id": "MN_MP_EAST_SIGN",
       "tile": [
-        88,
-        50
+        58,
+        46
       ],
       "lines": [
         "ST PAUL",
@@ -3643,8 +3696,8 @@
     {
       "id": "MN_MP_SUPPLYCOOP_SIGN",
       "tile": [
-        4,
-        14
+        2,
+        10
       ],
       "lines": [
         "NORTH LOOP CO-OP"
@@ -3653,8 +3706,8 @@
     {
       "id": "MN_MP_GRAINEXCHANGE_SIGN",
       "tile": [
-        14,
-        16
+        16,
+        10
       ],
       "lines": [
         "GRAIN EXCHANGE"
@@ -3663,7 +3716,7 @@
     {
       "id": "MN_MP_TOOLWORKSHOP_SIGN",
       "tile": [
-        28,
+        22,
         16
       ],
       "lines": [
@@ -3673,8 +3726,8 @@
     {
       "id": "MN_MP_PRINTSHOP_SIGN",
       "tile": [
-        68,
-        12
+        42,
+        10
       ],
       "lines": [
         "RIVER PRINT SHOP"
@@ -3683,8 +3736,8 @@
     {
       "id": "MN_MP_FOUNDRYMUSEUM_SIGN",
       "tile": [
-        20,
-        26
+        2,
+        20
       ],
       "lines": [
         "MILL HISTORY HALL"
@@ -3693,8 +3746,8 @@
     {
       "id": "MN_MP_ARTSSTUDIO_SIGN",
       "tile": [
-        6,
-        26
+        14,
+        20
       ],
       "lines": [
         "NORTHEAST STUDIO"
@@ -3703,8 +3756,8 @@
     {
       "id": "MN_MP_MUSICROOM_SIGN",
       "tile": [
-        78,
-        12
+        50,
+        10
       ],
       "lines": [
         "RIVER MUSIC ROOM"
@@ -3713,8 +3766,8 @@
     {
       "id": "MN_MP_COMMUNITYLIBRARY_SIGN",
       "tile": [
-        90,
-        14
+        60,
+        10
       ],
       "lines": [
         "CENTRAL LIBRARY"
@@ -3723,8 +3776,8 @@
     {
       "id": "MN_MP_NORTHEASTHOME_SIGN",
       "tile": [
-        106,
-        14
+        70,
+        10
       ],
       "lines": [
         "NORTHEAST HOME"
@@ -3733,8 +3786,8 @@
     {
       "id": "MN_MP_GARDENSHOP_SIGN",
       "tile": [
-        68,
-        24
+        42,
+        18
       ],
       "lines": [
         "GARDEN CO-OP"
@@ -3743,8 +3796,8 @@
     {
       "id": "MN_MP_RIVERNATURALIST_SIGN",
       "tile": [
-        80,
-        24
+        50,
+        18
       ],
       "lines": [
         "RIVER FIELD ROOM"
@@ -3753,8 +3806,8 @@
     {
       "id": "MN_MP_BOATHOUSE_SIGN",
       "tile": [
-        4,
-        42
+        2,
+        30
       ],
       "lines": [
         "LAKE BOATHOUSE"
@@ -3763,8 +3816,8 @@
     {
       "id": "MN_MP_ANGLERHOME_SIGN",
       "tile": [
-        22,
-        38
+        14,
+        30
       ],
       "lines": [
         "ANGLER HOME"
@@ -3773,8 +3826,8 @@
     {
       "id": "MN_MP_LAKECABIN_SIGN",
       "tile": [
-        4,
-        64
+        2,
+        46
       ],
       "lines": [
         "LAKE COMMUNITY CAB",
@@ -3784,8 +3837,8 @@
     {
       "id": "MN_MP_GREENHOUSE_SIGN",
       "tile": [
-        20,
-        68
+        18,
+        56
       ],
       "lines": [
         "LAKE GREENHOUSE"
@@ -3794,8 +3847,8 @@
     {
       "id": "MN_MP_BRIDGEHOME_SIGN",
       "tile": [
-        34,
-        56
+        22,
+        22
       ],
       "lines": [
         "BRIDGE KEEPER HOME"
@@ -3804,8 +3857,8 @@
     {
       "id": "MN_MP_DEPARTMENTSTORE1F_SIGN",
       "tile": [
-        96,
-        48
+        48,
+        36
       ],
       "lines": [
         "MINNEAPOLIS DEPT S",
@@ -3815,8 +3868,8 @@
     {
       "id": "MN_MP_BATTLECLUB_SIGN",
       "tile": [
-        110,
-        42
+        64,
+        46
       ],
       "lines": [
         "RIVERFRONT BATTLE ",
@@ -3826,8 +3879,8 @@
     {
       "id": "MN_MP_CEDARHOME_SIGN",
       "tile": [
-        94,
-        60
+        58,
+        52
       ],
       "lines": [
         "CEDAR FAMILY HOME"
@@ -3836,8 +3889,8 @@
     {
       "id": "MN_MP_COMMUNITYKITCHEN_SIGN",
       "tile": [
-        106,
-        62
+        66,
+        54
       ],
       "lines": [
         "COMMUNITY KITCHEN"
@@ -3846,8 +3899,8 @@
     {
       "id": "MN_MP_COURIERSDESK_SIGN",
       "tile": [
-        116,
-        68
+        72,
+        60
       ],
       "lines": [
         "RIVER COURIER DESK"
@@ -3856,8 +3909,8 @@
     {
       "id": "MN_MP_FIELDCLUB_SIGN",
       "tile": [
-        8,
-        82
+        10,
+        52
       ],
       "lines": [
         "PARK FIELD CLUB"
@@ -3866,8 +3919,8 @@
     {
       "id": "MN_MP_GARDENERSHOME_SIGN",
       "tile": [
-        22,
-        84
+        2,
+        58
       ],
       "lines": [
         "GARDENER HOME"
@@ -3876,8 +3929,8 @@
     {
       "id": "MN_MP_ARRIVALINFO_SIGN",
       "tile": [
-        64,
-        88
+        40,
+        60
       ],
       "lines": [
         "SOUTH ARRIVAL DESK"
@@ -3886,8 +3939,8 @@
     {
       "id": "MN_MP_RIVERINN_SIGN",
       "tile": [
-        76,
-        80
+        46,
+        60
       ],
       "lines": [
         "MILL WORKERS INN"
@@ -3896,8 +3949,8 @@
     {
       "id": "MN_MP_SOUTHMARKET_SIGN",
       "tile": [
-        92,
-        80
+        56,
+        60
       ],
       "lines": [
         "SOUTH CITY MARKET"
@@ -3906,8 +3959,8 @@
     {
       "id": "MN_MP_MILLWORKERSHOUSE_SIGN",
       "tile": [
-        108,
-        84
+        66,
+        60
       ],
       "lines": [
         "MILL FAMILY HOUSE"
@@ -3916,8 +3969,8 @@
     {
       "id": "MN_MP_MILL_WATER_PLAQUE",
       "tile": [
-        38,
-        26
+        28,
+        12
       ],
       "lines": [
         "RIVER POWER",
@@ -3928,8 +3981,8 @@
     {
       "id": "MN_MP_MILL_GRAIN_PLAQUE",
       "tile": [
-        46,
-        58
+        26,
+        42
       ],
       "lines": [
         "GRAIN AND RAIL",
@@ -3940,8 +3993,8 @@
     {
       "id": "MN_MP_MILL_WORKERS_PLAQUE",
       "tile": [
-        66,
-        74
+        42,
+        54
       ],
       "lines": [
         "MILL WORKERS",
@@ -3955,16 +4008,16 @@
       "id": "MnMinneapolisPokecenter1FDoor",
       "target": "MnMinneapolisPokecenter1F",
       "tile": [
-        77,
-        35
+        63,
+        25
       ],
       "return_tile": [
-        77,
-        36
+        63,
+        26
       ],
       "arrival_tile": [
-        77,
-        36
+        63,
+        26
       ],
       "warp_index": 1,
       "return_warp_index": 2,
@@ -3974,16 +4027,16 @@
       "id": "MnMinneapolisGymDoor",
       "target": "MnMinneapolisGym",
       "tile": [
-        74,
-        47
+        64,
+        33
       ],
       "return_tile": [
-        74,
-        48
+        64,
+        34
       ],
       "arrival_tile": [
-        74,
-        48
+        64,
+        34
       ],
       "warp_index": 3,
       "return_warp_index": 4,
@@ -3993,16 +4046,16 @@
       "id": "MnMinneapolisMartDoor",
       "target": "MnMinneapolisMart",
       "tile": [
-        87,
-        39
+        73,
+        25
       ],
       "return_tile": [
-        87,
-        40
+        73,
+        26
       ],
       "arrival_tile": [
-        87,
-        40
+        73,
+        26
       ],
       "warp_index": 5,
       "return_warp_index": 6,
@@ -4012,16 +4065,16 @@
       "id": "MnMinneapolisDispatchOfficeDoor",
       "target": "MnMinneapolisDispatchOffice",
       "tile": [
-        59,
-        57
+        25,
+        33
       ],
       "return_tile": [
-        59,
-        58
+        25,
+        34
       ],
       "arrival_tile": [
-        59,
-        58
+        25,
+        34
       ],
       "warp_index": 7,
       "return_warp_index": 8,
@@ -4031,16 +4084,16 @@
       "id": "MnMinneapolisDispatcherHouseDoor",
       "target": "MnMinneapolisDispatcherHouse",
       "tile": [
-        59,
-        37
+        23,
+        41
       ],
       "return_tile": [
-        59,
-        38
+        23,
+        42
       ],
       "arrival_tile": [
-        59,
-        38
+        23,
+        42
       ],
       "warp_index": 9,
       "return_warp_index": 10,
@@ -4050,16 +4103,16 @@
       "id": "MnMinneapolisSupplyCoopDoor",
       "target": "MnMinneapolisSupplyCoop",
       "tile": [
-        9,
-        13
+        7,
+        9
       ],
       "return_tile": [
-        9,
-        14
+        7,
+        10
       ],
       "arrival_tile": [
-        9,
-        14
+        7,
+        10
       ],
       "warp_index": 11,
       "return_warp_index": 12,
@@ -4069,16 +4122,16 @@
       "id": "MnMinneapolisGrainExchangeDoor",
       "target": "MnMinneapolisGrainExchange",
       "tile": [
-        20,
-        15
+        22,
+        9
       ],
       "return_tile": [
-        20,
-        16
+        22,
+        10
       ],
       "arrival_tile": [
-        20,
-        16
+        22,
+        10
       ],
       "warp_index": 13,
       "return_warp_index": 14,
@@ -4088,15 +4141,15 @@
       "id": "MnMinneapolisToolWorkshopDoor",
       "target": "MnMinneapolisToolWorkshop",
       "tile": [
-        32,
+        24,
         15
       ],
       "return_tile": [
-        32,
+        24,
         16
       ],
       "arrival_tile": [
-        32,
+        24,
         16
       ],
       "warp_index": 15,
@@ -4107,16 +4160,16 @@
       "id": "MnMinneapolisPrintShopDoor",
       "target": "MnMinneapolisPrintShop",
       "tile": [
-        73,
-        11
+        47,
+        9
       ],
       "return_tile": [
-        73,
-        12
+        47,
+        10
       ],
       "arrival_tile": [
-        73,
-        12
+        47,
+        10
       ],
       "warp_index": 17,
       "return_warp_index": 18,
@@ -4126,16 +4179,16 @@
       "id": "MnMinneapolisFoundryMuseumDoor",
       "target": "MnMinneapolisFoundryMuseum",
       "tile": [
-        26,
-        25
+        8,
+        19
       ],
       "return_tile": [
-        26,
-        26
+        8,
+        20
       ],
       "arrival_tile": [
-        26,
-        26
+        8,
+        20
       ],
       "warp_index": 19,
       "return_warp_index": 20,
@@ -4145,16 +4198,16 @@
       "id": "MnMinneapolisArtsStudioDoor",
       "target": "MnMinneapolisArtsStudio",
       "tile": [
-        11,
-        25
+        19,
+        19
       ],
       "return_tile": [
-        11,
-        26
+        19,
+        20
       ],
       "arrival_tile": [
-        11,
-        26
+        19,
+        20
       ],
       "warp_index": 21,
       "return_warp_index": 22,
@@ -4164,16 +4217,16 @@
       "id": "MnMinneapolisMusicRoomDoor",
       "target": "MnMinneapolisMusicRoom",
       "tile": [
-        85,
-        11
+        57,
+        9
       ],
       "return_tile": [
-        85,
-        12
+        57,
+        10
       ],
       "arrival_tile": [
-        85,
-        12
+        57,
+        10
       ],
       "warp_index": 23,
       "return_warp_index": 24,
@@ -4183,16 +4236,16 @@
       "id": "MnMinneapolisCommunityLibraryDoor",
       "target": "MnMinneapolisCommunityLibrary",
       "tile": [
-        96,
-        13
+        66,
+        9
       ],
       "return_tile": [
-        96,
-        14
+        66,
+        10
       ],
       "arrival_tile": [
-        96,
-        14
+        66,
+        10
       ],
       "warp_index": 25,
       "return_warp_index": 26,
@@ -4202,16 +4255,16 @@
       "id": "MnMinneapolisNortheastHomeDoor",
       "target": "MnMinneapolisNortheastHome",
       "tile": [
-        110,
-        13
+        74,
+        9
       ],
       "return_tile": [
-        110,
-        14
+        74,
+        10
       ],
       "arrival_tile": [
-        110,
-        14
+        74,
+        10
       ],
       "warp_index": 27,
       "return_warp_index": 28,
@@ -4221,16 +4274,16 @@
       "id": "MnMinneapolisGardenShopDoor",
       "target": "MnMinneapolisGardenShop",
       "tile": [
-        73,
-        23
+        47,
+        17
       ],
       "return_tile": [
-        73,
-        24
+        47,
+        18
       ],
       "arrival_tile": [
-        73,
-        24
+        47,
+        18
       ],
       "warp_index": 29,
       "return_warp_index": 30,
@@ -4240,16 +4293,16 @@
       "id": "MnMinneapolisRiverNaturalistDoor",
       "target": "MnMinneapolisRiverNaturalist",
       "tile": [
-        85,
-        23
+        55,
+        17
       ],
       "return_tile": [
-        85,
-        24
+        55,
+        18
       ],
       "arrival_tile": [
-        85,
-        24
+        55,
+        18
       ],
       "warp_index": 31,
       "return_warp_index": 32,
@@ -4259,16 +4312,16 @@
       "id": "MnMinneapolisBoatHouseDoor",
       "target": "MnMinneapolisBoatHouse",
       "tile": [
-        11,
-        41
+        9,
+        29
       ],
       "return_tile": [
-        11,
-        42
+        9,
+        30
       ],
       "arrival_tile": [
-        11,
-        42
+        9,
+        30
       ],
       "warp_index": 33,
       "return_warp_index": 34,
@@ -4278,16 +4331,16 @@
       "id": "MnMinneapolisAnglerHomeDoor",
       "target": "MnMinneapolisAnglerHome",
       "tile": [
-        27,
-        37
+        19,
+        29
       ],
       "return_tile": [
-        27,
-        38
+        19,
+        30
       ],
       "arrival_tile": [
-        27,
-        38
+        19,
+        30
       ],
       "warp_index": 35,
       "return_warp_index": 36,
@@ -4297,16 +4350,16 @@
       "id": "MnMinneapolisLakeCabinDoor",
       "target": "MnMinneapolisLakeCabin",
       "tile": [
-        9,
-        63
+        7,
+        45
       ],
       "return_tile": [
-        9,
-        64
+        7,
+        46
       ],
       "arrival_tile": [
-        9,
-        64
+        7,
+        46
       ],
       "warp_index": 37,
       "return_warp_index": 38,
@@ -4316,16 +4369,16 @@
       "id": "MnMinneapolisGreenhouseDoor",
       "target": "MnMinneapolisGreenhouse",
       "tile": [
-        27,
-        67
+        25,
+        55
       ],
       "return_tile": [
-        27,
-        68
+        25,
+        56
       ],
       "arrival_tile": [
-        27,
-        68
+        25,
+        56
       ],
       "warp_index": 39,
       "return_warp_index": 40,
@@ -4335,16 +4388,16 @@
       "id": "MnMinneapolisBridgeHomeDoor",
       "target": "MnMinneapolisBridgeHome",
       "tile": [
-        39,
-        55
+        27,
+        21
       ],
       "return_tile": [
-        39,
-        56
+        27,
+        22
       ],
       "arrival_tile": [
-        39,
-        56
+        27,
+        22
       ],
       "warp_index": 41,
       "return_warp_index": 42,
@@ -4354,16 +4407,16 @@
       "id": "MnMinneapolisDepartmentStore1FDoor",
       "target": "MnMinneapolisDepartmentStore1F",
       "tile": [
-        102,
-        47
+        54,
+        35
       ],
       "return_tile": [
-        102,
-        48
+        54,
+        36
       ],
       "arrival_tile": [
-        102,
-        48
+        54,
+        36
       ],
       "warp_index": 43,
       "return_warp_index": 44,
@@ -4373,16 +4426,16 @@
       "id": "MnMinneapolisBattleClubDoor",
       "target": "MnMinneapolisBattleClub",
       "tile": [
-        116,
-        41
+        70,
+        45
       ],
       "return_tile": [
-        116,
-        42
+        70,
+        46
       ],
       "arrival_tile": [
-        116,
-        42
+        70,
+        46
       ],
       "warp_index": 45,
       "return_warp_index": 46,
@@ -4392,16 +4445,16 @@
       "id": "MnMinneapolisCedarHomeDoor",
       "target": "MnMinneapolisCedarHome",
       "tile": [
-        99,
-        59
+        63,
+        51
       ],
       "return_tile": [
-        99,
-        60
+        63,
+        52
       ],
       "arrival_tile": [
-        99,
-        60
+        63,
+        52
       ],
       "warp_index": 47,
       "return_warp_index": 48,
@@ -4411,16 +4464,16 @@
       "id": "MnMinneapolisCommunityKitchenDoor",
       "target": "MnMinneapolisCommunityKitchen",
       "tile": [
-        113,
-        61
+        73,
+        53
       ],
       "return_tile": [
-        113,
-        62
+        73,
+        54
       ],
       "arrival_tile": [
-        113,
-        62
+        73,
+        54
       ],
       "warp_index": 49,
       "return_warp_index": 50,
@@ -4430,16 +4483,16 @@
       "id": "MnMinneapolisCouriersDeskDoor",
       "target": "MnMinneapolisCouriersDesk",
       "tile": [
-        120,
-        67
+        76,
+        59
       ],
       "return_tile": [
-        120,
-        68
+        76,
+        60
       ],
       "arrival_tile": [
-        120,
-        68
+        76,
+        60
       ],
       "warp_index": 51,
       "return_warp_index": 52,
@@ -4449,16 +4502,16 @@
       "id": "MnMinneapolisFieldClubDoor",
       "target": "MnMinneapolisFieldClub",
       "tile": [
-        15,
-        81
+        17,
+        51
       ],
       "return_tile": [
-        15,
-        82
+        17,
+        52
       ],
       "arrival_tile": [
-        15,
-        82
+        17,
+        52
       ],
       "warp_index": 53,
       "return_warp_index": 54,
@@ -4468,16 +4521,16 @@
       "id": "MnMinneapolisGardenersHomeDoor",
       "target": "MnMinneapolisGardenersHome",
       "tile": [
-        27,
-        83
+        7,
+        57
       ],
       "return_tile": [
-        27,
-        84
+        7,
+        58
       ],
       "arrival_tile": [
-        27,
-        84
+        7,
+        58
       ],
       "warp_index": 55,
       "return_warp_index": 56,
@@ -4487,16 +4540,16 @@
       "id": "MnMinneapolisArrivalInfoDoor",
       "target": "MnMinneapolisArrivalInfo",
       "tile": [
-        69,
-        87
+        45,
+        59
       ],
       "return_tile": [
-        69,
-        88
+        45,
+        60
       ],
       "arrival_tile": [
-        69,
-        88
+        45,
+        60
       ],
       "warp_index": 57,
       "return_warp_index": 58,
@@ -4506,16 +4559,16 @@
       "id": "MnMinneapolisRiverInnDoor",
       "target": "MnMinneapolisRiverInn",
       "tile": [
-        83,
-        79
+        53,
+        59
       ],
       "return_tile": [
-        83,
-        80
+        53,
+        60
       ],
       "arrival_tile": [
-        83,
-        80
+        53,
+        60
       ],
       "warp_index": 59,
       "return_warp_index": 60,
@@ -4525,16 +4578,16 @@
       "id": "MnMinneapolisSouthMarketDoor",
       "target": "MnMinneapolisSouthMarket",
       "tile": [
-        98,
-        79
+        62,
+        59
       ],
       "return_tile": [
-        98,
-        80
+        62,
+        60
       ],
       "arrival_tile": [
-        98,
-        80
+        62,
+        60
       ],
       "warp_index": 61,
       "return_warp_index": 62,
@@ -4544,16 +4597,16 @@
       "id": "MnMinneapolisMillWorkersHouseDoor",
       "target": "MnMinneapolisMillWorkersHouse",
       "tile": [
-        113,
-        83
+        71,
+        59
       ],
       "return_tile": [
-        113,
-        84
+        71,
+        60
       ],
       "arrival_tile": [
-        113,
-        84
+        71,
+        60
       ],
       "warp_index": 63,
       "return_warp_index": 64,
@@ -4563,16 +4616,16 @@
       "id": "MnMinneapolisBookbinderDoor",
       "target": "MnMinneapolisBookbinder",
       "tile": [
-        92,
-        35
+        74,
+        17
       ],
       "return_tile": [
-        92,
-        36
+        74,
+        18
       ],
       "arrival_tile": [
-        92,
-        36
+        74,
+        18
       ],
       "warp_index": 65,
       "return_warp_index": 66,
@@ -4582,16 +4635,16 @@
       "id": "MnMinneapolisCooperativeFlatDoor",
       "target": "MnMinneapolisCooperativeFlat",
       "tile": [
-        78,
-        59
+        44,
+        51
       ],
       "return_tile": [
-        78,
-        60
+        44,
+        52
       ],
       "arrival_tile": [
-        78,
-        60
+        44,
+        52
       ],
       "warp_index": 67,
       "return_warp_index": 68,
@@ -4601,16 +4654,16 @@
       "id": "MnMinneapolisToolFlatDoor",
       "target": "MnMinneapolisToolFlat",
       "tile": [
-        71,
-        65
+        51,
+        51
       ],
       "return_tile": [
-        71,
-        66
+        51,
+        52
       ],
       "arrival_tile": [
-        71,
-        66
+        51,
+        52
       ],
       "warp_index": 69,
       "return_warp_index": 70,
@@ -4620,16 +4673,16 @@
       "id": "MnMinneapolisCornerHomeDoor",
       "target": "MnMinneapolisCornerHome",
       "tile": [
-        84,
-        69
+        56,
+        51
       ],
       "return_tile": [
-        84,
-        70
+        56,
+        52
       ],
       "arrival_tile": [
-        84,
-        70
+        56,
+        52
       ],
       "warp_index": 71,
       "return_warp_index": 72,
@@ -4639,16 +4692,16 @@
       "id": "MnMinneapolisRiverFamilyHomeDoor",
       "target": "MnMinneapolisRiverFamilyHome",
       "tile": [
-        57,
-        19
+        15,
+        9
       ],
       "return_tile": [
-        57,
-        20
+        15,
+        10
       ],
       "arrival_tile": [
-        57,
-        20
+        15,
+        10
       ],
       "warp_index": 73,
       "return_warp_index": 74,
@@ -4658,16 +4711,16 @@
       "id": "MnMinneapolisGardenFlatDoor",
       "target": "MnMinneapolisGardenFlat",
       "tile": [
-        94,
-        23
+        60,
+        17
       ],
       "return_tile": [
-        94,
-        24
+        60,
+        18
       ],
       "arrival_tile": [
-        94,
-        24
+        60,
+        18
       ],
       "warp_index": 75,
       "return_warp_index": 76,
@@ -4677,16 +4730,16 @@
       "id": "MnMinneapolisPatternStudioDoor",
       "target": "MnMinneapolisPatternStudio",
       "tile": [
-        105,
-        23
+        67,
+        17
       ],
       "return_tile": [
-        105,
-        24
+        67,
+        18
       ],
       "arrival_tile": [
-        105,
-        24
+        67,
+        18
       ],
       "warp_index": 77,
       "return_warp_index": 78,
@@ -4696,16 +4749,16 @@
       "id": "MnMinneapolisMillForemanHomeDoor",
       "target": "MnMinneapolisMillForemanHome",
       "tile": [
-        110,
-        31
+        60,
+        45
       ],
       "return_tile": [
-        110,
-        32
+        60,
+        46
       ],
       "arrival_tile": [
-        110,
-        32
+        60,
+        46
       ],
       "warp_index": 79,
       "return_warp_index": 80,
@@ -4978,8 +5031,8 @@
       {
         "id": "MN_MP_FIND_UPPER_BANK",
         "tile": [
-          39,
-          13
+          27,
+          11
         ],
         "item": "SUPER_POTION",
         "quantity": 1,
@@ -4990,7 +5043,7 @@
       {
         "id": "MN_MP_FIND_MUSEUM_ALLEY",
         "tile": [
-          35,
+          22,
           23
         ],
         "item": "REVIVE",
@@ -5002,8 +5055,8 @@
       {
         "id": "MN_MP_FIND_WEST_LAKE",
         "tile": [
-          13,
-          57
+          3,
+          40
         ],
         "item": "GREAT_BALL",
         "quantity": 2,
@@ -5014,8 +5067,8 @@
       {
         "id": "MN_MP_FIND_LOWER_BRIDGE",
         "tile": [
-          65,
-          75
+          43,
+          55
         ],
         "item": "ESCAPE_ROPE",
         "quantity": 1,
@@ -5026,8 +5079,8 @@
       {
         "id": "MN_MP_FIND_CEDAR_COURT",
         "tile": [
-          117,
-          69
+          77,
+          55
         ],
         "item": "REPEL",
         "quantity": 1,
@@ -5038,8 +5091,8 @@
       {
         "id": "MN_MP_FIND_PARK_POND",
         "tile": [
-          45,
-          85
+          19,
+          59
         ],
         "item": "SUPER_POTION",
         "quantity": 1,
@@ -5050,8 +5103,8 @@
       {
         "id": "MN_MP_FIND_NORTH_GARDEN",
         "tile": [
-          107,
-          23
+          71,
+          21
         ],
         "item": "PARLYZ_HEAL",
         "quantity": 1,
@@ -5062,8 +5115,8 @@
       {
         "id": "MN_MP_FIND_SOUTH_LANE",
         "tile": [
-          107,
-          85
+          75,
+          61
         ],
         "item": "NUGGET",
         "quantity": 1,
@@ -5233,108 +5286,129 @@
   },
   "camera_probes": [
     {
-      "id": "market",
+      "id": "mill-front",
       "tile": [
-        87,
-        50
+        17,
+        12
       ]
     },
     {
-      "id": "department-entry",
+      "id": "foundry-arts",
       "tile": [
-        102,
-        49
+        14,
+        21
       ]
     },
     {
-      "id": "battle-club-front",
+      "id": "north-culture",
       "tile": [
-        116,
-        43
+        58,
+        11
       ]
     },
     {
-      "id": "museum-front",
+      "id": "garden-front",
       "tile": [
-        26,
+        61,
+        19
+      ]
+    },
+    {
+      "id": "clinic-mart",
+      "tile": [
+        69,
         27
       ]
     },
     {
-      "id": "library-front",
+      "id": "gym-entry",
       "tile": [
-        96,
-        15
+        63,
+        35
       ]
     },
     {
-      "id": "north-loop-alley",
+      "id": "market-counters",
       "tile": [
-        29,
-        17
-      ]
-    },
-    {
-      "id": "north-river-bank",
-      "tile": [
-        39,
-        15
-      ]
-    },
-    {
-      "id": "northeast-making-court",
-      "tile": [
-        88,
-        25
+        51,
+        47
       ]
     },
     {
       "id": "lake-pier",
       "tile": [
-        18,
-        49
+        11,
+        35
       ]
     },
     {
-      "id": "old-gym-east",
+      "id": "dispatch",
       "tile": [
-        79,
-        49
+        26,
+        35
       ]
     },
     {
-      "id": "central-living-alley",
+      "id": "residential",
       "tile": [
-        75,
+        56,
+        53
+      ]
+    },
+    {
+      "id": "greenhouse-pond",
+      "tile": [
+        24,
+        57
+      ]
+    },
+    {
+      "id": "southern-front",
+      "tile": [
+        59,
         61
       ]
     },
     {
-      "id": "south-pond-bridge",
+      "id": "upper-bridge",
       "tile": [
-        37,
-        81
+        35,
+        15
       ]
     },
     {
-      "id": "south-park-return",
+      "id": "falls-overlook",
       "tile": [
-        45,
-        87
+        31,
+        10
       ]
     },
     {
-      "id": "cedar-courtyard",
+      "id": "lower-bank-launch",
       "tile": [
-        105,
-        63
+        38,
+        60
       ]
     },
     {
-      "id": "southern-arrival",
+      "id": "mill-falls-view",
       "tile": [
-        64,
-        91
+        29,
+        9
+      ]
+    },
+    {
+      "id": "main-bridge",
+      "tile": [
+        35,
+        37
+      ]
+    },
+    {
+      "id": "lower-bridge",
+      "tile": [
+        35,
+        57
       ]
     }
   ],
@@ -5369,5 +5443,75 @@
     ]
   },
   "expansion_contract_file": "towns/MnMinneapolis.expansion.contract.json",
-  "status": "Published660-map tight-final-v02; local controller verification recorded separately; user visual acceptance pending."
+  "status": "Native published40x32 compact-falls-v02; local acceptance recorded in recomposition provenance.",
+  "recomposition_contract_file": "towns/MnMinneapolis.recomposition.contract.json",
+  "recomposition_provenance": {
+    "status": "Native660-map compact-falls-v02 published; final actual check acceptance required before applying this source preflight.",
+    "native_pack": "content-packs/minnesota-minneapolis-compact-falls-v02.crystalpack",
+    "native_pack_sha256": "125ac44497f9fde7a4ebaae3a8326d2d75f626a86d6e838be12ce28d82283fc7",
+    "base_pack": "content-packs/minnesota-route-quality-next-v01.crystalpack",
+    "base_pack_sha256": "1186a24371251f741db88cf35a7863145ed5423da4ad3d7c6485c8f242753ecb",
+    "previous_dossier_file": "revisions/minneapolis-compact-falls-v02/before/towns/MnMinneapolis.json",
+    "previous_dossier_sha256": "f75142dfbfe882f960c68b1134e50f2032e6ba8661834e6d248d77d58710500a",
+    "source_candidate": "planning/minnesota/renders/route-quality-next/minneapolis-assessment/candidate40/v05",
+    "source_gate_contract": "planning/minnesota/renders/route-quality-next/minneapolis-assessment/candidate40/v05/north-water-gate.contract.json",
+    "preserved_room_module_sha256": {
+      "MnMinneapolisPokecenter1F": "db2a3adec8565103e932d527bf92b154c1437b0d7888651ae2695d972d95f07d",
+      "MnMinneapolisGym": "6f68f749f3d4f706991db876f85f023a2ec4faf295802494bf4792341c6b872a",
+      "MnMinneapolisMart": "542927725cb7952eb2d3da2d5c301653c02c13e967fe3fa7b830796c519f23d5",
+      "MnMinneapolisDispatchOffice": "188bc17d2b91875a596cd2a9a981e0beaa117d8f97eeb766aa26236ab3f5be47",
+      "MnMinneapolisDispatcherHouse": "6e12e023f05c79177fec666aed32cd92f663c8e75812c83fe4105adeebafd946",
+      "MnMinneapolisSupplyCoop": "6297b39fcff51ba968c8753ec2ae00f3c6dde77d82398667d136ed6d883b9193",
+      "MnMinneapolisGrainExchange": "d730d828be0acd3931008e0e3bbd921339f29ecb8e68d18147b523cdfa5fed6c",
+      "MnMinneapolisToolWorkshop": "f19ea0d65674e2845e2df43abe604e565a956a0c7e7f02b9d1a613b6feb7c04d",
+      "MnMinneapolisPrintShop": "e899fd08b7778905eae8e0916cde24fbf6f2eac445aa6ec3be1602ab7866fef2",
+      "MnMinneapolisFoundryMuseum": "1283d8bce33cfd53055e92cdfb18b846be28516c8239205efac9839cfe4d4717",
+      "MnMinneapolisArtsStudio": "4dc1d93dd303c7e1c2d3696068962d67248d81767c9443dc117279edf906324e",
+      "MnMinneapolisMusicRoom": "ba2687ea30fa63b75410c052f68f6473adcc50e297d45de9bf593203803ccf9d",
+      "MnMinneapolisCommunityLibrary": "ee53753b41663f4b8bf7c3095eff8c06b1640bf87652a9c814bea207af30959e",
+      "MnMinneapolisNortheastHome": "3e4d8f940a190de9c64cd8de56995e57c80eb3973108142c2cc8074cd99adbe3",
+      "MnMinneapolisGardenShop": "64ec6ff38075282faad9f239cb75d237c449a5e2ee740f4f9aa08da3e5031946",
+      "MnMinneapolisRiverNaturalist": "3f578b0c8cceb83ec003411d7cc5d43bcf36b9e7edfd913f14b5dba4c7344cd6",
+      "MnMinneapolisBoatHouse": "8412500d2633ca493867101949e3f5709191cc89363a7a99e6ce4e14bf89ca21",
+      "MnMinneapolisAnglerHome": "00bd6a860b17d1962389730f94d6e4e8c4f11e2b38c141251915ed12bf17c11c",
+      "MnMinneapolisLakeCabin": "e1a09e76ec739a3b571d098e8d7f0be599711ff227a102cd5ec78ed1104e6dd9",
+      "MnMinneapolisGreenhouse": "e64a99352dffc965d48cbad91b917306734d362f74dfc1c2ecddf0c8191b386a",
+      "MnMinneapolisBridgeHome": "fc333b403205bee8e87c47fd755f62b206cbe1e054aa7b3f6f25c4824199cf39",
+      "MnMinneapolisDepartmentStore1F": "4a80814d61c07dfe21512f36195b1ba24ba5718fe79f2b064ee97451ababd923",
+      "MnMinneapolisBattleClub": "d4e05e78586eb0c865cff20626fa7fa49ecff0052c010e72a8edfad8ee5cf9de",
+      "MnMinneapolisCedarHome": "0fa282274dbd483ef635cb66ec55f39a8ccd7c31e3d30d29106f00951d2e9d71",
+      "MnMinneapolisCommunityKitchen": "a3e74378960c000ab56467114629bf165ef3013a2e9d154f1c8c24402309c75b",
+      "MnMinneapolisCouriersDesk": "f2caf03aac7d25d35eace24e9e0b85ca22e72d05231791562ad6992a74fc7641",
+      "MnMinneapolisFieldClub": "c79568879d4e3f0c8bb594f4a06984cc9b908d2cc446eaa8f309dee14a5f1708",
+      "MnMinneapolisGardenersHome": "5d62a91c155ae7bd24d985adfff396d9048e65564a83eca039e65964b31abc81",
+      "MnMinneapolisArrivalInfo": "ecf593022d54d010354529110b1d3f26d4ed9210c2e109fc1a8e04f94eafcc18",
+      "MnMinneapolisRiverInn": "08ffc607159529238b9c208acb7e2695ead6403d97f01101bad085c6880b8cb5",
+      "MnMinneapolisSouthMarket": "321b42fb416f11a63e0ee52f401824fa30e16698713e48b5de5f775c23098c33",
+      "MnMinneapolisMillWorkersHouse": "ea2b9a35040a17e2e337af7825b7cfea2ee077eb21d6d36753afca5925295843",
+      "MnMinneapolisDepartmentStore2F": "bb1340fc628f39523128c8e25a677fef68767f674522bed5b97b3de718aa7340",
+      "MnMinneapolisDepartmentStore3F": "c4d51443fc20195908d136f4a6f9788c849fc148b211e1c1213107a5caa7ddb3",
+      "MnMinneapolisDepartmentStore4F": "a75c6196ca97a28202d15f65b448f6c2e878f454e39d8f1fae392766773db54f",
+      "MnMinneapolisDepartmentStore5F": "1966200a14d1e79165703e0fdf23baf84112ca2a4ad715e81f215a3e243c8f10",
+      "MnMinneapolisBookbinder": "be04f3e7b6ed033bb0cdd38affc2d12763230836fb993d6590a2015db114d0ba",
+      "MnMinneapolisCooperativeFlat": "88494103605c1b70f2df8e26afbff1cb45639b9acb268b5ba40ca351fbbcda64",
+      "MnMinneapolisToolFlat": "cbb7bb957cae0ecc7ab6a627b4b5d6373285b9eef65236ceec302eeed9ae49ae",
+      "MnMinneapolisCornerHome": "068d86c5c2da6539d4f6976f7f86274da091829b118feb4ef839833255fc826a",
+      "MnMinneapolisRiverFamilyHome": "9533dbb76582aaa21a6744d8fdcf4abfa5623205111a4042b2a2a153943a9d54",
+      "MnMinneapolisGardenFlat": "9392acafa9ea084516025ea554355178d78e68c5351901f7d76d0d74dcbc9d6c",
+      "MnMinneapolisPatternStudio": "7d4aaf75b322275323a024febfd3760a5e8641fec18eaa4647af1804345dcdfd",
+      "MnMinneapolisMillForemanHome": "e9bdea60509083c748974d61b938f8dd6bb736945109388e0649c3fbe48e7ace"
+    },
+    "outdoor_recovery_spawn": {
+      "identifier": 260,
+      "before": [
+        64,
+        64
+      ],
+      "after": [
+        40,
+        48
+      ]
+    },
+    "unchanged_clinic_recovery_identifier": 261
+  }
 }
