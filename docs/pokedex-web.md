@@ -1,5 +1,27 @@
 # Northwoods Pokédex web app
 
+## State Fair regional-species correction (2026-10-28)
+
+The current fair page is release `20261028-state-fair-originals-23`.
+It replaces the slogan-style copy with direct labels and uses newly captured
+regional-only exhibits: Oatlet, Totlit, Chislet, Riceling, Buttermuse, Zapsap,
+Doughlin, Curdlet, Pipcorn and Cinderfin. The source fair also replaces the barn
+specimen and the three remaining old-species trainer party entries.
+
+Media lives at `/pokedex/media/showcases/20261028-state-fair-originals-v1/`.
+The silent movie remains 58 seconds at 30 fps (1,740 frames), with the same
+six chapter positions. All five native scenes and the whole-map image were
+recaptured from `minnesota-state-fair-originals-v1.crystalpack`.
+The new MP4 SHA256 is
+`cd23e637595db27ffd81e10fd865cc62604176a623aaf51e3b1ec79a4afc62ef`;
+the map SHA256 is
+`5e53fd2ab2c6f60214c8fd7adc1f6779e32242d69ba5d7a9d78cb6f224fe51a8`.
+The live desktop/mobile checks passed normal-speed playback, chapter seeking,
+no autoplay, no horizontal overflow and no page errors. Both public media files
+match local bytes. The frozen 224-species catalog and cry URLs remain exact.
+The existing game container, environment, data and mounts were preserved.
+
+
 ## Real-time State Fair recapture
 
 Release `20261027-state-fair-realtime-22` publishes a fresh58-second native tour

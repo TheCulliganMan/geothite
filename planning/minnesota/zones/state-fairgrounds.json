@@ -1272,7 +1272,7 @@
         "service": null,
         "stock": [],
         "lines": [
-          "My SENTRET learned a new move this summer."
+          "My OATLET learned a new move this summer."
         ],
         "counter_tile": [
           41,
@@ -1530,15 +1530,15 @@
       },
       {
         "id": "MnFairExhibit01",
-        "sprite": "SPRITE_TAUROS",
+        "sprite": "SPRITE_OATLET",
         "tile": [
           27,
           48
         ],
         "facing": "south",
         "lines": [
-          "TAUROS: What a crowd!",
-          "A brushed coat and a calm stance earn high marks."
+          "OATLET: Ready for judging.",
+          "OATLET holds still while the judge checks its grain coat."
         ]
       },
       {
@@ -1550,22 +1550,22 @@
         ],
         "facing": "west",
         "lines": [
-          "Livestock judging.",
-          "A brushed coat and a calm stance earn high marks.",
-          "Good care comes before ribbons."
+          "OATLET judging.",
+          "OATLET holds still while the judge checks its grain coat.",
+          "Care and handling count toward the ribbon."
         ]
       },
       {
         "id": "MnFairExhibit02",
-        "sprite": "SPRITE_MAREEP",
+        "sprite": "SPRITE_TOTLIT",
         "tile": [
           33,
           48
         ],
         "facing": "south",
         "lines": [
-          "MAREEP: What a crowd!",
-          "Soft fleece! The judge checks careful grooming."
+          "TOTLIT: Ready for judging.",
+          "TOTLIT finishes a clean lap around the ring."
         ]
       },
       {
@@ -1577,22 +1577,22 @@
         ],
         "facing": "west",
         "lines": [
-          "Fleece judging.",
-          "Soft fleece! The judge checks careful grooming.",
-          "Good care comes before ribbons."
+          "TOTLIT judging.",
+          "TOTLIT finishes a clean lap around the ring.",
+          "Care and handling count toward the ribbon."
         ]
       },
       {
         "id": "MnFairExhibit03",
-        "sprite": "SPRITE_MILTANK",
+        "sprite": "SPRITE_CHISLET",
         "tile": [
           36,
           50
         ],
         "facing": "south",
         "lines": [
-          "MILTANK: What a crowd!",
-          "A steady walk matters more than size."
+          "CHISLET: Ready for judging.",
+          "CHISLET keeps its butter curls neatly shaped."
         ]
       },
       {
@@ -1604,22 +1604,22 @@
         ],
         "facing": "west",
         "lines": [
-          "Dairy judging.",
-          "A steady walk matters more than size.",
-          "Good care comes before ribbons."
+          "CHISLET judging.",
+          "CHISLET keeps its butter curls neatly shaped.",
+          "Care and handling count toward the ribbon."
         ]
       },
       {
         "id": "MnFairExhibit04",
-        "sprite": "SPRITE_ODDISH",
+        "sprite": "SPRITE_RICELING",
         "tile": [
           27,
           54
         ],
         "facing": "south",
         "lines": [
-          "ODDISH: What a crowd!",
-          "Healthy leaves tell the story of patient care."
+          "RICELING: Ready for judging.",
+          "RICELING has healthy leaves and strong roots."
         ]
       },
       {
@@ -1631,22 +1631,22 @@
         ],
         "facing": "west",
         "lines": [
-          "Garden judging.",
-          "Healthy leaves tell the story of patient care.",
-          "Good care comes before ribbons."
+          "RICELING judging.",
+          "RICELING has healthy leaves and strong roots.",
+          "Care and handling count toward the ribbon."
         ]
       },
       {
         "id": "MnFairExhibit05",
-        "sprite": "SPRITE_SUDOWOODO",
+        "sprite": "SPRITE_BUTTERMUSE",
         "tile": [
           35,
           56
         ],
         "facing": "south",
         "lines": [
-          "SUDOWOODO: What a crowd!",
-          "Hold that pose! The crowd is watching."
+          "BUTTERMUSE: Ready for judging.",
+          "BUTTERMUSE holds its sculpted pose for the judges."
         ]
       },
       {
@@ -1658,22 +1658,22 @@
         ],
         "facing": "west",
         "lines": [
-          "Posing judging.",
-          "Hold that pose! The crowd is watching.",
-          "Good care comes before ribbons."
+          "BUTTERMUSE judging.",
+          "BUTTERMUSE holds its sculpted pose for the judges.",
+          "Care and handling count toward the ribbon."
         ]
       },
       {
         "id": "MnFairExhibit06",
-        "sprite": "SPRITE_PIKACHU",
+        "sprite": "SPRITE_ZAPSAP",
         "tile": [
           31,
           54
         ],
         "facing": "south",
         "lines": [
-          "PIKACHU: What a crowd!",
-          "A bright spark finishes the demonstration."
+          "ZAPSAP: Ready for judging.",
+          "ZAPSAP controls its sparks without startling the crowd."
         ]
       },
       {
@@ -1685,22 +1685,22 @@
         ],
         "facing": "west",
         "lines": [
-          "Showmanship judging.",
-          "A bright spark finishes the demonstration.",
-          "Good care comes before ribbons."
+          "ZAPSAP judging.",
+          "ZAPSAP controls its sparks without startling the crowd.",
+          "Care and handling count toward the ribbon."
         ]
       },
       {
         "id": "MnFairExhibit07",
-        "sprite": "SPRITE_TAUROS",
+        "sprite": "SPRITE_DOUGHLIN",
         "tile": [
           14,
           54
         ],
         "facing": "south",
         "lines": [
-          "TAUROS: What a crowd!",
-          "Our junior handler practiced all summer."
+          "DOUGHLIN: Ready for judging.",
+          "DOUGHLIN follows the junior handler through each turn."
         ]
       },
       {
@@ -1712,22 +1712,22 @@
         ],
         "facing": "west",
         "lines": [
-          "Junior judging.",
-          "Our junior handler practiced all summer.",
-          "Good care comes before ribbons."
+          "DOUGHLIN judging.",
+          "DOUGHLIN follows the junior handler through each turn.",
+          "Care and handling count toward the ribbon."
         ]
       },
       {
         "id": "MnFairExhibit08",
-        "sprite": "SPRITE_MAREEP",
+        "sprite": "SPRITE_CURDLET",
         "tile": [
           16,
           56
         ],
         "facing": "south",
         "lines": [
-          "MAREEP: What a crowd!",
-          "The fleece class is ready for inspection."
+          "CURDLET: Ready for judging.",
+          "CURDLET keeps its balance through the handling course."
         ]
       },
       {
@@ -1739,22 +1739,22 @@
         ],
         "facing": "west",
         "lines": [
-          "Wool judging.",
-          "The fleece class is ready for inspection.",
-          "Good care comes before ribbons."
+          "CURDLET judging.",
+          "CURDLET keeps its balance through the handling course.",
+          "Care and handling count toward the ribbon."
         ]
       },
       {
         "id": "MnFairExhibit09",
-        "sprite": "SPRITE_ODDISH",
+        "sprite": "SPRITE_PIPCORN",
         "tile": [
           74,
           54
         ],
         "facing": "south",
         "lines": [
-          "ODDISH: What a crowd!",
-          "This partner helped grow our prize vegetables."
+          "PIPCORN: Ready for judging.",
+          "PIPCORN helped tend the prize corn plot."
         ]
       },
       {
@@ -1766,22 +1766,22 @@
         ],
         "facing": "west",
         "lines": [
-          "Produce judging.",
-          "This partner helped grow our prize vegetables.",
-          "Good care comes before ribbons."
+          "PIPCORN judging.",
+          "PIPCORN helped tend the prize corn plot.",
+          "Care and handling count toward the ribbon."
         ]
       },
       {
         "id": "MnFairExhibit10",
-        "sprite": "SPRITE_PIKACHU",
+        "sprite": "SPRITE_CINDERFIN",
         "tile": [
           80,
           56
         ],
         "facing": "south",
         "lines": [
-          "PIKACHU: What a crowd!",
-          "Our next act is a careful little light show."
+          "CINDERFIN: Ready for judging.",
+          "CINDERFIN keeps its flame steady during the demonstration."
         ]
       },
       {
@@ -1793,9 +1793,9 @@
         ],
         "facing": "west",
         "lines": [
-          "Talent judging.",
-          "Our next act is a careful little light show.",
-          "Good care comes before ribbons."
+          "CINDERFIN judging.",
+          "CINDERFIN keeps its flame steady during the demonstration.",
+          "Care and handling count toward the ribbon."
         ]
       },
       {
@@ -3856,17 +3856,15 @@
           },
           {
             "id": "MnFairBarnMoomoo",
-            "sprite": "SPRITE_TAUROS",
+            "sprite": "SPRITE_OATLET",
             "tile": [
               3,
               3
             ],
             "facing": "south",
             "lines": [
-              "MOOMOO: Mooo!",
-              "The handler brushes",
-              "her coat before",
-              "the judging."
+              "OATLET rustles its grain coat.",
+              "The handler brushes it before judging."
             ],
             "service": null,
             "stock": []
@@ -4007,11 +4005,11 @@
       "display_name": "ELI",
       "party": [
         {
-          "species": "RATTATA",
+          "species": "DOUGHLIN",
           "level": 14
         },
         {
-          "species": "PIDGEY",
+          "species": "PIPCORN",
           "level": 14
         }
       ],
@@ -4043,7 +4041,7 @@
       "display_name": "JAMIE",
       "party": [
         {
-          "species": "SENTRET",
+          "species": "OATLET",
           "level": 12
         }
       ],

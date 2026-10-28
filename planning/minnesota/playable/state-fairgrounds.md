@@ -1,5 +1,39 @@
 # Expanded native State Fairgrounds
 
+## Regional species correction (2026-10-28)
+
+Current candidate: `content-packs/minnesota-state-fair-originals-v1.crystalpack`,
+built from `minnesota-fair-originals-base-v1.crystalpack` with the existing Rust
+`pack_state_fair` binary and this dossier/layout. The parent adds the selected
+accepted native walking banks through `pack_minnesota_overworld`.
+
+The ten exhibits now show Oatlet, Totlit, Chislet, Riceling, Buttermuse, Zapsap,
+Doughlin, Curdlet, Pipcorn and Cinderfin, each with species-specific judging text.
+The barn's Tauros becomes Oatlet. Eli's Rattata/Pidgey become Doughlin/Pipcorn;
+Jamie's Sentret becomes Oatlet, including the visitor dialogue reference.
+All 35 teams and the encounter species remain within the regional roster.
+The 255-character census, movement circuits, terrain, entrances and services
+are preserved. Original native bank bytes and palettes are used for each
+exhibit; no shared old-species icon substitutes for the regional artwork.
+
+Source checks and whole maps are retained under
+`renders/state-fair/originals-source-v1` and `originals-source-v2`.
+The judging camera at `(32,55)`, noon, matches 309,396 static reference pixels
+exactly; the report explicitly excludes 59,244 moving-region pixels and retains
+the full difference image under `originals-judging-comparison-v1`.
+Five fresh 300-frame scenes and game-clock manifests are retained under
+`target/fair-maze/originals-capture-v1`.
+The 58-second, 30-fps video and map are published in static release
+`20261028-state-fair-originals-23`; its copy uses direct headings without slogans.
+The public desktop/mobile checks pass playback, chapter seeking and layout;
+public media matches local bytes. The frozen catalog and cry metadata remain
+unchanged. The 35 production trainer battles pass, including rewards and saved
+defeat flags. The updated preservation regression passes (43.57 s), preserving
+all unrelated maps/assets, terrain, services, HOME and exact compiled audio.
+The old assertion retaining Tauros was updated only for the intentional barn
+specimen and its dialogue. The 35-battle run uses a 32 MiB test-thread stack.
+
+
 The user rejected the small fair as too sparse and asked for a bigger, denser
 fair with more vendors and larger structures. The current authoring is one
 48×36-metatile exterior (96×72 walking tiles),2.25× the earlier map area.

@@ -33,6 +33,28 @@ def sprite(pack, token, archive_output=None, frame_offset=0):
             save_render(image, archive_output/(token.lower()+suffix))
     name = token.removeprefix('SPRITE_').lower().replace('-', '_')
     files = pack['runtime_files']
+    bank_key = f'gfx/pokemon/{name}/overworld.2bpp'
+    if bank_key in files:
+        # Decode the same six-pose native bank and species palette as production.
+        bank = bytes(files[bank_key])
+        palette = bytes(files[f'gfx/pokemon/{name}/overworld.gbcpal'])
+        assert len(bank) == 384 and len(palette) == 8, 'native species bank'
+        colors = []
+        for i in range(0, 8, 2):
+            value = int.from_bytes(palette[i:i+2], 'little')
+            colors.append(tuple(((value >> shift & 31) << 3) |
+                                ((value >> shift & 31) >> 2) for shift in (0, 5, 10)))
+        pose = frame_offset // 16
+        assert 0 <= pose < 6
+        art = Image.new('RGBA', (16, 16))
+        for y in range(16):
+            for x in range(16):
+                offset = pose * 64 + ((y // 8) * 2 + x // 8) * 16 + (y % 8) * 2
+                bit = 7 - x % 8
+                ink = (bank[offset] >> bit & 1) | (bank[offset+1] >> bit & 1) << 1
+                art.putpixel((x, y), (*colors[ink], 255) if ink else (0, 0, 0, 0))
+        retain(art, '-native-species-palette.png')
+        return art
     file = 'gfx/sprites/' + name + '.png'
     if file not in files:
         # Mirror the production species-object resolver. These are original

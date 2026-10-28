@@ -22,7 +22,7 @@ def resolve_icon_sprites(pack, tokens):
     for token in tokens:
         name = token.removeprefix("SPRITE_").lower()
         target = f"gfx/sprites/{name}.png"
-        if target in files:
+        if target in files or f"gfx/pokemon/{name}/overworld.2bpp" in files:
             continue
         icon = pack["data"]["menu_icons"].get(name.upper(), "").lower().removeprefix("icon_")
         candidates = [f"gfx/icons/{name}.png", f"gfx/icons/{icon}.png"]
@@ -53,6 +53,16 @@ def main():
     layout = json.loads(args.layout.read_text())
     zone = json.loads(args.dossier.read_text())
     design = zone["native_map"]
+    roster = json.loads((ROOT / "planning/minnesota/pokemon/roster.json").read_text())
+    regional = {member["name"].upper() for family in roster["families"]
+                for member in family["members"]}
+    for trainer in zone["native_trainers"]:
+        for member in trainer["party"]:
+            assert member["species"] in regional, (trainer["id"], "nonregional party species")
+    exhibits = [a for a in design["residents"] if a["id"].startswith("MnFairExhibit")
+                and not a["id"].startswith("MnFairExhibitJudge")]
+    for actor in exhibits:
+        assert actor["sprite"].removeprefix("SPRITE_") in regional, actor["id"]
     pack = load_pack(args.pack)
     art = SourceArt(pack)
     width, height = layout["dimensions_metatiles"]

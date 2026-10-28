@@ -123,9 +123,34 @@ fn state_fair_preserves_other_maps_assets_items_home_and_audio() {
         b.wild_encounters["MnStateFairgrounds"],
         grass.data().wild_encounters["MnStateFairgrounds"]
     );
-    for room in ["MnFairGrandstand", "MnFairBarn", "MnFairDairy"] {
+    for room in ["MnFairGrandstand", "MnFairDairy"] {
         assert_eq!(b.maps[room], grass.data().maps[room]);
     }
+    // Only the barn specimen and its dialogue change with the regional roster.
+    let barn = &b.maps["MnFairBarn"];
+    let mut expected_barn = grass.data().maps["MnFairBarn"].clone();
+    for actor in &mut expected_barn.objects {
+        if actor.sprite == "SPRITE_TAUROS" {
+            actor.sprite = "SPRITE_OATLET".into();
+        }
+    }
+    for command in &mut expected_barn.map_event_section_commands {
+        for argument in &mut command.args {
+            if argument == "SPRITE_TAUROS" {
+                *argument = "SPRITE_OATLET".into();
+            }
+        }
+    }
+    let text = &barn.scripts["MnFairBarnMoomooText"];
+    assert!(text.to_string().contains("OATLET"));
+    expected_barn
+        .scripts
+        .insert("MnFairBarnMoomooText".into(), text.clone());
+    expected_barn.script_text_bodies.insert(
+        "MnFairBarnMoomooText".into(),
+        barn.script_text_bodies["MnFairBarnMoomooText"].clone(),
+    );
+    assert_eq!(barn, &expected_barn, "preserve barn geometry and services");
     let collision = &b.tilesets[&m.attributes.tileset_name].collision;
     let kind = |x: usize, y: usize| {
         &collision[&format!(

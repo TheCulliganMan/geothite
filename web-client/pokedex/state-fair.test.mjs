@@ -12,7 +12,7 @@ assert.deepEqual(JSON.parse(read('pokedex.json')), JSON.parse(before('pokedex.js
 for (const file of ['index.html', 'moves.html', ...fs.readdirSync(path.join(release, 'species')).map(name => `species/${name}`)]) {
   const html = read(file);
   assert.equal((html.match(/href="\/pokedex\/state-fair.html"/g) || []).length, 1, `${file}: one accessible fair tab`);
-  const normalized = html.replace(/\/pokedex\/releases\/20261027-state-fair-realtime-22/g, '/pokedex/releases/20261027-state-fair-21');
+  const normalized = html.replaceAll(`/pokedex/releases/${path.basename(release)}`, `/pokedex/releases/${path.basename(baseline)}`);
   assert.equal(normalized, before(file), `${file}: only the navigation and immutable URLs change`);
 }
 assert.equal(read('app.js'), before('app.js'), 'existing species, cry and battle controls remain exact');
@@ -46,13 +46,13 @@ doc.querySelector('[data-showcase-start]').click();
 assert.equal(scrolls, 1, 'the prominent play control brings the fitted player into view');
 await new Promise(setImmediate);
 assert.equal(plays, 1);
-assert.match(video.src, /\/pokedex\/media\/showcases\/20261027-state-fair-v2\/state-fair-chaos.mp4$/);
+assert.match(video.src, /\/pokedex\/media\/showcases\/20261028-state-fair-originals-v1\/state-fair-chaos.mp4$/);
 ready = 1;
 video.dispatchEvent(new window.Event('loadedmetadata'));
 assert.equal(video.currentTime, 0);
 video.dispatchEvent(new window.Event('playing'));
 assert.equal(play.hidden, true);
-assert.match(status.textContent, /Playing State Fair Chaos/);
+assert.match(status.textContent, /Playing State Fair/);
 doc.querySelector('[data-showcase-time="24"]').click();
 await new Promise(setImmediate);
 assert.equal(video.currentTime, 24, 'chapter seeks to the real movie timestamp');

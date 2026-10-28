@@ -24,9 +24,9 @@
   document.querySelectorAll('[data-showcase-time]').forEach(button => {
     button.addEventListener('click', () => start(Number(button.dataset.showcaseTime)));
   });
-  video.addEventListener('playing', () => { play.hidden = true; status.textContent = 'Playing State Fair Chaos. Use the video controls to pause or go full screen.'; });
+  video.addEventListener('playing', () => { play.hidden = true; status.textContent = 'Playing State Fair. Use the video controls to pause or go full screen.'; });
   video.addEventListener('pause', () => { if (!video.ended) status.textContent = 'Paused. Resume with the video controls or choose a scene.'; });
-  video.addEventListener('ended', () => { play.hidden = false; play.querySelector('strong').textContent = 'Replay State Fair Chaos'; status.textContent = 'That’s the fair. Pick a scene or play it all again.'; });
+  video.addEventListener('ended', () => { play.hidden = false; play.querySelector('strong').textContent = 'Replay State Fair'; status.textContent = 'Video ended. Choose a scene or replay.'; });
   video.addEventListener('error', () => { play.hidden = false; status.textContent = 'The video could not load. Try Play again, or open the full video below.'; });
   document.addEventListener('visibilitychange', () => { if (document.hidden) video.pause(); });
   window.addEventListener('pagehide', () => video.pause());

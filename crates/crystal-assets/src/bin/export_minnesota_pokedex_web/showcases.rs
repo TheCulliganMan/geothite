@@ -20,7 +20,7 @@ const JS: &str = include_str!(concat!(
     env!("CARGO_MANIFEST_DIR"),
     "/../../web-client/pokedex/state-fair.js"
 ));
-const MEDIA: &str = "/pokedex/media/showcases/20261027-state-fair-v2";
+const MEDIA: &str = "/pokedex/media/showcases/20261028-state-fair-originals-v1";
 
 pub(super) fn write(
     output: &Path,
