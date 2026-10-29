@@ -73,6 +73,106 @@ fn character_victory_recorded(c: &VisibleShellController, row: &Value) -> bool {
 }
 
 #[test]
+#[ignore = "requires CRYSTAL_WINONA_TEST_PACK with the female Tamarack art binding"]
+fn professor_tamarack_native_art_opening_dialogue_and_continue() {
+    use super::authored_route_fixture::indoor_walk;
+    use super::winona::{at, continue_in_place, finish, press, travel};
+
+    // This opening earns the starter and delivery supplies through actual
+    // inputs. No party, position, badge or story flag is supplied by a fixture.
+    let (_, runtime, mut c) = super::dialogue_overhaul::opening(0);
+    let root = runtime
+        .materialize_runtime_files()
+        .expect("actual candidate native art");
+    let actor = runtime.data().maps["MnWinonaFieldStation"]
+        .objects
+        .iter()
+        .find(|o| o.object_identifier.as_deref() == Some("MN_W_TAMARACK"))
+        .expect("existing professor actor");
+    assert_eq!(actor.sprite, "SPRITE_MN_PROF_TAMARACK");
+    assert_eq!((actor.x, actor.y), (5, 2));
+    assert!(
+        !runtime
+            .data()
+            .trainer_class_names
+            .contains_key("MN_PROF_TAMARACK"),
+        "the professor keeps her field-only story role"
+    );
+    let stem = "mn_prof_tamarack";
+    let palette = load_gbcpal_palette(
+        &root
+            .runtime_assets()
+            .join(format!("gfx/sprites/{stem}.gbcpal")),
+    )
+    .expect("professor's own four-color palette");
+    let light = [palette[1][0], palette[1][1], palette[1][2], 255];
+    let mut images = Assets::<Image>::default();
+    let art =
+        load_sprite_art(&root, stem, 0, "day", &mut images).expect("professor's native field bank");
+    for direction in [&art.down, &art.up, &art.left, &art.right] {
+        let standing = images
+            .get(&direction.standing.handle)
+            .expect("standing art");
+        let walking = images
+            .get(&direction.walking.as_ref().expect("walking pose").handle)
+            .expect("walking art");
+        assert_ne!(standing.data, walking.data, "actual leg and arm animation");
+        assert!(
+            standing
+                .data
+                .as_ref()
+                .expect("pixels")
+                .as_chunks::<4>()
+                .0
+                .contains(&light)
+        );
+    }
+    let portrait = load_oak_intro_frame(&root, &format!("battle-trainer:{stem}"), &mut images)
+        .expect("matched native portrait format");
+    assert!(
+        images
+            .get(&portrait.handle)
+            .expect("portrait")
+            .data
+            .as_ref()
+            .expect("portrait pixels")
+            .as_chunks::<4>()
+            .0
+            .contains(&light)
+    );
+
+    indoor_walk(&mut c, &runtime, (6, 6));
+    travel(&mut c, GameButton::Down, "MnWinona", (7, 8));
+    indoor_walk(&mut c, &runtime, (18, 20));
+    travel(&mut c, GameButton::Up, "MnWinonaFieldStation", (4, 10));
+    indoor_walk(&mut c, &runtime, (4, 2));
+    press(&mut c, GameButton::Right);
+    at(&mut c, "MnWinonaFieldStation", (4, 2));
+    press(&mut c, GameButton::A);
+    let before = c.snapshot().expect("professor dialogue");
+    assert!(before.ui.text_window_open);
+    press(&mut c, GameButton::Down);
+    at(&mut c, "MnWinonaFieldStation", (4, 2));
+    continue_in_place(&mut c, &root, &runtime, "female-tamarack-speaking");
+    assert_eq!(
+        c.snapshot()
+            .expect("continued professor")
+            .ui
+            .text
+            .as_ref()
+            .map(|t| &t.label),
+        before.ui.text.as_ref().map(|t| &t.label),
+        "the same authored page survives Continue"
+    );
+    c.shell.asset_root = root;
+    c = capture_overworld(c);
+    finish(&mut c);
+    assert_eq!(c.snapshot().expect("partner preserved").party, before.party);
+    press(&mut c, GameButton::Down);
+    at(&mut c, "MnWinonaFieldStation", (4, 3));
+}
+
+#[test]
 #[ignore = "requires CRYSTAL_INTERIOR_PACK with the published original ranger pack"]
 fn original_npc_controller_talk_battle_turn_and_save() {
     let (_, runtime, _) = load();

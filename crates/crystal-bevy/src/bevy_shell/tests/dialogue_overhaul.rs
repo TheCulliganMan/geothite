@@ -275,6 +275,38 @@ fn overhaul_earned_campaign_through_hall_of_fame() {
 }
 
 #[test]
+#[ignore = "requires the same candidate's actual earned Minneapolis save; no fixture progression or boosts"]
+fn overhaul_earned_continue_through_hall_of_fame() {
+    assert!(
+        std::env::var_os("CRYSTAL_NORTHSTAR_ICE_SAVE").is_some(),
+        "Continue requires an actual New Game campaign checkpoint"
+    );
+    for variable in [
+        "CRYSTAL_NORTHSTAR_REVIEW_LEVEL",
+        "CRYSTAL_NORTHSTAR_EARNED_SAVE",
+        "CRYSTAL_NORTHSTAR_PRAIRIE_EXIT_SAVE",
+        "CRYSTAL_NORTHSTAR_CURRENT_SAVE",
+        "CRYSTAL_NORTHSTAR_CURRENT_EXIT_SAVE",
+        "CRYSTAL_NORTHSTAR_COURIER_SAVE",
+        "CRYSTAL_NORTHSTAR_RELAY_SAVE",
+        "CRYSTAL_NORTHSTAR_WIND_SAVE",
+        "CRYSTAL_NORTHSTAR_LAKE_SAVE",
+        "CRYSTAL_NORTHSTAR_PINE_SAVE",
+        "CRYSTAL_NORTHSTAR_IRON_SAVE",
+        "CRYSTAL_NORTHSTAR_FINALE_SAVE",
+        "CRYSTAL_NORTHSTAR_LEAGUE_SAVE",
+    ] {
+        assert!(
+            std::env::var_os(variable).is_none(),
+            "earned Continue cannot override later chapters or levels: {variable}"
+        );
+    }
+    // The native loader verifies the pack identity. The arrival helper checks
+    // the two earned badges, delivered envelope and unstarted ICE chapter.
+    super::minnesota_gyms::northstar_arc_unboosted_new_game_through_legendary_release_and_hall_of_fame();
+}
+
+#[test]
 fn overhaul_text_program_retains_source_control_boundaries() {
     let body = ScriptTextBody {
         label: "TimingText".into(),

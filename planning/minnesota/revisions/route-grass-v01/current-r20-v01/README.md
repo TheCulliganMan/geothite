@@ -39,3 +39,8 @@ Pending: updated outdoor and populated test replays, affected Clippy, production
 stdio from the newly reached save, and guarded canonical/selection acceptance.
 Other outdoor regional links/parks and final current-story coverage remain in scope
 after R20. This candidate does not complete the statewide objective.
+
+A compiler-aware rebuild is now queued in `.local/route-grass-review/build_r20_when_compiles_finish.py`.
+It watches live rustc and Clippy processes, then starts the single two-job rebuild.
+Revalidate its process/handle before any further Cargo job; do not start a duplicate.
+Current queue observation is `.local/route-grass-review/current-r20-build-queue.json`.

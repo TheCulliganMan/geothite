@@ -5,9 +5,9 @@
   "deprecated_art": "Earlier ImageGen region and route illustrations do not define scale, assets, collision or topology.",
   "start_map": "MnWinonaHome2F",
   "starter_species": [
-    "CHIKORITA",
-    "CYNDAQUIL",
-    "TOTODILE"
+    "POUCHID",
+    "KINDLIT",
+    "BIRCHIT"
   ],
   "starter_level": 5,
   "trainer_selection": "production requested trainer",
