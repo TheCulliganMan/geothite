@@ -733,7 +733,7 @@ impl VisibleShellController {
     }
 
     pub fn save(&mut self, path: impl AsRef<Path>) -> Result<()> {
-        self.shell.shell.save(path)
+        field_dialogue_resume::save(&mut self.shell, path.as_ref())
     }
 
     pub fn press(&mut self, button: GameButton) -> Result<()> {

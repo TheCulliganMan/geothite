@@ -9,9 +9,10 @@ impl CompiledGamePack {
     ///
     /// Derives a fresh identity while preserving terrain, executable scripts,
     /// source art, audio and recovery. Replaces only the preserve's obsolete
-    /// closure text with native permit/check-in directions. This is a publication primitive; callers
-    /// must separately verify production input and presentation before selecting
-    /// the result as the playable regional pack.
+    /// closure text with native permit/check-in directions. This is a
+    /// publication primitive; callers must separately verify production input
+    /// and presentation before selecting the result as the playable regional
+    /// pack.
     ///
     /// # Errors
     /// Rejects an invalid pack, already configured expedition, missing native

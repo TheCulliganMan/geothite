@@ -482,6 +482,276 @@
         12
       ],
       "block": "11"
+    },
+    {
+      "kind": "point",
+      "name": "Preserved installed native extension",
+      "position": [
+        20,
+        10
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Preserved installed native extension",
+      "position": [
+        21,
+        10
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Preserved installed native extension",
+      "position": [
+        22,
+        10
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Preserved installed native extension",
+      "position": [
+        23,
+        10
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Preserved installed native extension",
+      "position": [
+        0,
+        14
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Preserved installed native extension",
+      "position": [
+        1,
+        14
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Preserved installed native extension",
+      "position": [
+        2,
+        14
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Preserved installed native extension",
+      "position": [
+        3,
+        14
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Eastern meadow crossing",
+      "position": [
+        16,
+        11
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Eastern meadow crossing",
+      "position": [
+        16,
+        12
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Eastern meadow crossing",
+      "position": [
+        16,
+        13
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Eastern meadow crossing",
+      "position": [
+        16,
+        14
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Eastern meadow crossing",
+      "position": [
+        16,
+        15
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Eastern meadow crossing",
+      "position": [
+        16,
+        16
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Eastern meadow crossing",
+      "position": [
+        16,
+        17
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Eastern meadow body",
+      "position": [
+        15,
+        12
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Eastern meadow body",
+      "position": [
+        15,
+        13
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Eastern meadow body",
+      "position": [
+        15,
+        14
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Eastern meadow body",
+      "position": [
+        14,
+        12
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Eastern meadow body",
+      "position": [
+        14,
+        13
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Western glade habitat",
+      "position": [
+        5,
+        15
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Western glade habitat",
+      "position": [
+        7,
+        15
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Western glade habitat",
+      "position": [
+        8,
+        15
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Western glade habitat",
+      "position": [
+        9,
+        15
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Western glade habitat",
+      "position": [
+        10,
+        15
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Western glade habitat",
+      "position": [
+        5,
+        16
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Western glade habitat",
+      "position": [
+        5,
+        17
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Terrace west pine frame",
+      "position": [
+        5,
+        14
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Dry south-facing glade return",
+      "position": [
+        6,
+        14
+      ],
+      "block": "56"
+    },
+    {
+      "kind": "point",
+      "name": "Terrace east pine frame",
+      "position": [
+        7,
+        14
+      ],
+      "block": "05"
     }
   ]
 }

@@ -415,6 +415,7 @@ pub(super) fn report_course() -> (
     VisibleShellController,
 ) {
     let (root, r, mut c) = pine_course();
+    super::leech_shore::heal(&mut c, &r, "MnBemidji", (31, 10), "MnBemidjiPokecenter1F");
     assert!(c.shell.shell.session().state().badges.johto[6]);
     assert!(!event(&c, READING) && !event(&c, REPORT));
     from_bemidji(&mut c, &r, 0);

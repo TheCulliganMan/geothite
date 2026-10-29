@@ -72,3 +72,9 @@ The [current intake site](../verdigrim-scene-site.json) records exact scene,
 control, water-footprint and camera/retreat anchors. All declared player and
 creature anchors pass native FLOOR checks on this parent. It remains uninstalled
 authoring input, with imported art, animation and scene/control tests pending.
+
+The fresh reward publisher also completed on a declared historical R11
+roster-expanded regression fixture: five distinct preserved flag identities,
+thresholds10/25/50/100/225 and Ultra Balls at50. This is a builder regression,
+not a current geography parent or earned gameplay proof. The two temporary
+historical fixture packs were removed after verification.

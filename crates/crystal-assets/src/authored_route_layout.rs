@@ -158,6 +158,7 @@ impl Layout {
             "MnGrandMarais" => ([20, 19], "mn_marais_shore", "explicit_source_edges"),
             "MnBemidjiNorthwoods" => ([8, 14], "johto", "explicit_source_edges"),
             "MnDetroitLakesApproach" => ([24, 18], "johto", "explicit_source_edges"),
+            "MnPreservePineEntry" => ([24, 16], "johto", "explicit_source_edges"),
             "MnElyShorePass" => ([7, 12], "mn_winter_north_shore", "explicit_source_edges"),
             "MnMaraisCedarApproach" => (
                 if layout.dimensions_metatiles == [20, 12] {

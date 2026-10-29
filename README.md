@@ -4,6 +4,11 @@ A Rust implementation of Pokémon Crystal with browser and desktop clients,
 multiplayer, and an optional 2.5D overworld renderer. Game logic, rendering,
 audio, and networking are implemented in this repository.
 
+The [current browser release](docs/deployment.md#combined-minnesota-release-2026-10-29)
+combines the reviewed Minnesota world/dialogue, starter signature moves and all
+225 original species' field art and cries. Verdigrim's excavation encounter is
+still in progress; its completed assets and Pokédex entry are published.
+
 The [Tamarack and Team ICE sprite revision](planning/minnesota/npcs/tamarack-ice/README.md)
 uses normal Crystal overworld proportions, woman Tamarack and eight additional
 trainer types, with private native art and local encounter checks.
@@ -37,21 +42,21 @@ The [additive native field-script repair runbook](docs/game-content.md#additive-
 covers importing pinned field-animation source while preserving an existing
 modded pack and its audio.
 
-The [original Minnesota Pokédex](planning/minnesota/pokemon/README.md) contains 224 active original species with individual GBC palettes and native front/back sprites. The [quadrupedal lynx starter revision](planning/minnesota/pokemon/sprites/mn-f125/DESIGN.md) adds Kindlit → Rimepelt → Borealynx while retaining the furnace family as ordinary Iron Range Pokémon. The [Rust species-pack publisher](modpacks/minnesota-pokemon/README.md) compiles full entries, learnsets, stats and complete evolution families against a supplied local base. The [roster balance review](planning/minnesota/pokemon/BALANCE.md) covers all 223 active species against the campaign level curve, preserves strong Bugs, and requires the modern physical/special split. Generated packs stay ignored; regional encounter placement remains separate authoring. The [Fairy ruleset](docs/northwoods-fairy.md) introduces thirteen regional Fairies, earned attacks and practical Poison/Steel counterplay while preserving its frozen 220-species baseline. The [sticky-note restoration](docs/northwoods-sticky-notes.md) restores Jotlet → Memofold → Recallisk, with a verified 474-species/270-move pack, native evolution/battle checks and the published 223-species Pokédex (`20261027-sticky-13`).
+The [original Minnesota Pokédex](planning/minnesota/pokemon/README.md) contains 225 active original species with individual GBC palettes and native front/back sprites. The [quadrupedal lynx starter revision](planning/minnesota/pokemon/sprites/mn-f125/DESIGN.md) adds Kindlit → Rimepelt → Borealynx while retaining the furnace family as ordinary Iron Range Pokémon. The [Rust species-pack publisher](modpacks/minnesota-pokemon/README.md) compiles full entries, learnsets, stats and complete evolution families against a supplied local base. The [roster balance review](planning/minnesota/pokemon/BALANCE.md) covers all 223 active species against the campaign level curve, preserves strong Bugs, and requires the modern physical/special split. Generated packs stay ignored; regional encounter placement remains separate authoring. The [Fairy ruleset](docs/northwoods-fairy.md) introduces thirteen regional Fairies, earned attacks and practical Poison/Steel counterplay while preserving its frozen 220-species baseline. The [sticky-note restoration](docs/northwoods-sticky-notes.md) restores Jotlet → Memofold → Recallisk, with a verified 474-species/270-move pack, native evolution/battle checks and the published 223-species Pokédex (`20261027-sticky-13`).
 
-All **224 active Northwoods Pokémon** now have individually authored six-pose
+All **225 active Northwoods Pokémon** now have individually authored six-pose
 16×16 overworld sprites with their own normal/shiny palettes. The
 [verified complete overlay](planning/minnesota/pokemon/overworld/20261027-v1/README.md)
 builds `content-packs/northwoods-overworld-v1.crystalpack` and supplies the field
 and battle PKMN menus. The [live Pokédex](https://geothite.ryanculligan.com/pokedex/)
-includes all 224 animated walkers and cries in release `20261027-overworld-224-18`.
+includes all 225 animated walkers and cries in release `20261029-verdigrim-25`.
 
 The [Northwoods animation overlay](docs/northwoods-move-animations.md) gives all
 nineteen added moves native Gen II attack programs and exports their battle
 previews through the production renderer.
 
 The [Minnesota cry performances](planning/minnesota/pokemon/CRIES.md) cover
-224 active Pokémon in 101 lines, with explicit replacement scores for all evolved
+225 active Pokémon in 102 lines, with explicit replacement scores for all evolved
 forms. Revision 8 develops all six active legendaries, both mythicals and the
 three-stage pseudo-legendary line after the full-roster revision 7. Rare adult
 calls now run 2.71–3.48 seconds, with independently authored openings, climaxes

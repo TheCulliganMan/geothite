@@ -115,44 +115,60 @@ It remains unselected while the complete acceptance course is open. Whole-pack
 preservation, all 377 audio hash/frame/loop checks and the production stdio
 opening replay with empty stderr pass on this identity.
 
-Passed on the preceding candidates: all three earned New Game starter journeys
-through Ivy; four declared lab approaches; ten declared depot arrivals;
-full-pocket aide refusal, native Pack toss, retry and once-only receipt;
-continuous and diagonal held input into Mom's scene under the production 2D
-schedule; source text controls, 30-frame pauses, 20-frame paragraphs, two
-five-frame scroll stages, acceleration and ordered non-silent playback
-preparation. Nine cumulative clinic return fixtures prove distinct actors,
-correct advice, movement locks, no accidental rewards and Save/Continue.
+The v13 acceptance runs pass all three earned New Game starter journeys through
+Ivy, continuous and diagonal depot interception under the production 2D keyboard
+schedule, and both lanes of the repaired League road. The production stdio
+opening and repeated road crossings retain byte-for-byte empty stderr. All 377
+original audio programs pass their PCM hashes, frame counts and loop ranges.
 
-The v11 harbor prerequisite/return fixtures and Boundary finale fixture pass.
-The latter asserts battle, evidence, drive, visible Kettlurk escape, crew response
-and clearance separately, including exact actors and deferred final flags.
-The v09 League fixture completes all five native battles, Hall of Fame autosave,
-credits, postgame Continue and rematch registration. Chapter party fixtures are
-explicit setup; they do not prove an earned New Game campaign or battle balance.
+The v12 full scene suite passes four lab approaches, ten depot arrivals,
+full-pocket aide refusal, native Pack toss, retry and once-only receipt; held
+and diagonal input into Mom's scene; source text controls, 30-frame pauses,
+20-frame paragraphs, two five-frame scroll stages, acceleration and ordered
+non-silent playback preparation. Nine cumulative clinic return fixtures prove
+distinct actors, correct advice, movement locks, no accidental rewards and
+Save/Continue. Harbor prerequisite/return and Boundary finale fixtures assert
+battle, evidence, drive, visible Kettlurk escape, crew response and clearance
+separately, including exact actors and deferred final flags. These scenes are
+unchanged in v13 apart from the separately verified reciprocal road offsets.
 
-Strict whole-pack preservation, native script mirrors and rejection of obsolete
-text overlays pass on the preceding parents. Every one of the 377 original audio
-programs passes its PCM hash, frame count and loop-range check on v10.
-Controller Mom/gate and battle regressions, production MCP movement/Start and
-clean-stderr checks pass. Native 2D opening captures were inspected. Current
-candidate integration and later-scene captures are being rechecked.
+The v13 declared late-story course has completed Brainerd, Leech Lake, Bemidji,
+Itasca, the expanded mine and rescue, Grand Rapids custody, Duluth and the
+compact coast, the chief, evidence transmission, local shutdown, visible
+release, crew response, repaired road, Ely care and shopping, registration,
+all five League battles, the Hall of Fame autosave, credits and actual postgame
+Continue. It began with an explicit five-badge party fixture, then used ordinary
+inputs and native checkpoints without further state grants. This proves the
+connected later chapters; it does not establish an earned New Game campaign or
+battle balance. The completed continuation log is
+`.local/dialogue-overhaul/late-story-v13-league-retry.log`.
 
-The full earned course starts from production New Game, uses ordinary catches,
-training, menu actions and battles, and forbids chapter checkpoints or level
-boosts. Its frozen v10 saves are never relabeled for later candidates. A separate
-v06 declared late-story fixture has played from Brainerd through the mine,
-Grand Rapids, Harbor, the coast and the chief; this supplements the earned run.
-Full earned-campaign completion, native/browser listening and normal-speed audio
-recordings remain open. The selected regional pack is not advanced by this work. The full replay found
-a real League road blocker: the camp's exit at (32/33,47) met road walls at
-(32/33,0). The revision restores the canonical one-metatile connection offset
-so it meets the existing road floor at (30/31,0), with reciprocal -1 on return.
-All terrain cells stay exact. Both lanes, denial before shutdown, Continue and
-actual repeated stdio crossings in both directions pass.
+The independent v13 earned course starts from production New Game, uses
+ordinary catches, training, menu actions and battles, and forbids externally
+supplied progression or level boosts. It has earned four badges and reached
+St. Cloud. Actual checkpoints and in-scene saves retain the v13 content identity;
+frozen earlier candidates' saves are never relabeled. The continuing run is
+recorded in `.local/dialogue-overhaul/earned-full-v13.log`.
 
-Affected-crate all-target Clippy completed with existing workspace warnings;
-introduced warnings were corrected, with final changed-code checks pending.
+The replay found a real League road blocker: the camp's exit at (32/33,47) met
+road walls at (32/33,0). The revision restores the canonical one-metatile
+connection offset so it meets the existing road floor at (30/31,0), with
+reciprocal -1 on return. All terrain cells stay exact. Both lanes, denial before
+shutdown, Continue and repeated production stdio crossings in both directions
+pass on v13. Native 2D captures of the road, intake encounter, released Kettlurk,
+crew response, harbor return, completed Champion dialogue and actual earned
+Minneapolis coercion were inspected. The complete readable campaign transcript remains ignored at
+`.local/dialogue-overhaul/complete-campaign-transcript.md`.
+
+Full earned-campaign completion, native/browser listening and normal-speed
+audio recordings remain open. PCM verification, an unlocked browser sound
+control and successful source dispatch do not prove audible device playback.
+The selected regional pack is not advanced by this work.
+
+Affected-crate all-target Clippy completed after the final League checkpoint
+driver correction, with existing workspace warnings. No warning was introduced
+in the revised story leaf modules. The final log is
+`.local/dialogue-overhaul/final-clippy-v13.log`.
 Workspace formatting check reports existing failures beginning in
 `crates/offset-allocator`; new leaf modules are formatted. Verification packs,
 saves, the full readable transcript and captures remain ignored under
@@ -165,7 +181,7 @@ compile the voxel feature. The executed build command was:
 
 ```sh
 WASM_BINDGEN="$PWD/.local/dialogue-overhaul/tools/wasm-bindgen-0.2.128-aarch64-apple-darwin/wasm-bindgen" \
-  sh tools/dialogue-2d-web.sh
+  CRYSTAL_WEB_OUT=target/dialogue-overhaul-2d-web-v13 sh tools/dialogue-2d-web.sh
 ```
 
 The official CLI version must match the locked Rust wasm-bindgen version
@@ -173,19 +189,22 @@ The official CLI version must match the locked Rust wasm-bindgen version
 The local Rust server was started with:
 
 ```sh
-CRYSTAL_DATA_DIR="$PWD/.local/dialogue-overhaul/browser-v04-data" \
+CRYSTAL_DATA_DIR="$PWD/.local/dialogue-overhaul/browser-v13-data" \
   target/northstar-story/debug/crystal-web-server \
-  --dir target/dialogue-overhaul-2d-web --host 127.0.0.1 --port 3007
+  --dir target/dialogue-overhaul-2d-web-v13 --host 127.0.0.1 --port 3009
 ```
 
 The browser replay exposed two real startup defects: the native 2D composite
 image upload plugin was installed only with the voxel feature, and OakSpeech
 rejected the regional GILLPUP portrait because it expected WOOPER. The upload
 plugin is now unconditional; the showcase uses the pack's portrait and its
-matching embedded cry. The regional portrait regression passes. The hidden browser replay passed fresh New Game, the regional portrait, naming,
-the rendered 2D home, Mom's approach and return, Save and reloaded Continue. A
-16 MiB Wasm stack fixes the former name-confirmation overflow. The sound control reports ready after a user
-gesture, which alone does not prove audible output.
+matching embedded cry. The regional portrait regression passes. The v13 Rust-only browser was rebuilt
+and cold-start checked through the native clock and GILLPUP showcase in 2D,
+with the sound control unlocked and no browser errors observed. The earlier v04
+hidden browser replay passed fresh New Game, naming, the rendered home, Mom's
+approach and return, Save and reloaded Continue. A 16 MiB Wasm stack fixes the
+former name-confirmation overflow. Sound readiness alone does not prove audible
+output; browser listening and a normal-speed audio recording remain open.
 
 ## Browser publication — 2026-10-29
 

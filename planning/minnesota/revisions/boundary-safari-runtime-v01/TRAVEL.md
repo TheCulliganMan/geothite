@@ -1,11 +1,14 @@
 # Paid Boundary Waters travel review
 
 The main pack's paid entrance remains closed. The current unselected review is
-`content-packs/minnesota-safari-runtime-review-detroit-v03.crystalpack`, SHA256
-`af5215e8182f74117e9555c2dbba2c9adb2ef49a4badd5bcb8db8ebc03fe96f5`.
-It is a direct overlay of the accepted Detroit Lakes Approach parent at SHA256
-`cc58e376cfe76e20eadbbec2c51eca6ad33c92fb1267d28f73d854ee7324b6f7`.
-All 730 maps, other game data, runtime art and compiled audio are unchanged.
+`content-packs/minnesota-safari-runtime-review-itasca-v06.crystalpack`, SHA256
+`cf799e822151f62d0078936bf317dd39403a2f79b93debc37ed7221ef8061bc5`.
+It is a direct overlay of the accepted Lake Itasca parent at SHA256
+`89c70e8f5df7c53c9d74bbf9c5197ae22c6580cb4c0d193538f24e439fc9af22`.
+All 730 maps retain exact terrain, actors, events and executable commands.
+The only data changes are Safari configuration and seven related native
+closure-text bodies with their existing split mirrors; 727 whole maps, all
+other data, runtime art and compiled audio remain exact.
 
 The published terrain has six exterior chunks, each at most 64×48 walking
 tiles, arranged as a 128×112 walking-tile preserve. The bottom row is clipped
@@ -35,6 +38,13 @@ production input. These fixtures do not establish earned statewide access.
 | Dorothy's cabin | outside `(71,56)` | Enter active door `(71,55)` and arrive on indoor passive FLOOR `(5,6)` |
 | Cabin return | `(71,56)` | Actual carpet exit returns safely; permit/budgets survive indoor Continue |
 | Second lake | `(86,61)` | Relaunch after cabin visit; save/Continue retains Surf mode and permit |
+| Palisade south landing | `(36,67)` from water `(36,68)` | Dismount and cross grass toward the cliff |
+| Palisade downhill hop | `(35,58)` → `(35,60)` | One successful travel debit; blocked intermediate `(35,59)` is skipped |
+| Palisade uphill return | `(35,60)` → `(35,57)` | Up is blocked; ordinary 15-step return crosses three grass tiles |
+| Palisade north landing | `(36,42)` → water `(36,41)` | Traverse the grassy shoulder, relaunch and retain Surf through Continue |
+| West water barrier | water `(1,92)` beside buoy `(0,92)` | Repeated west input stays in bounds and costs no travel steps |
+| Paid walking exit | court local `(14,15)` → Pine Entry `(16,0)` | Actual connection ends permit at the chosen destination, retaining party and fee history |
+| Unpaid court return | Pine Entry `(16,0)` → court local `(14,15)` | Both guard bodies return; either approach remains blocked |
 
 Wildlife may interrupt the grass and paddling portions. Run must release each
 real encounter through the four-command capture screen without consuming a
@@ -52,13 +62,20 @@ the actual free-hub return `(30,10)` in ordinary walking mode. The original fee
 remains the only debit. Continue again after return; the permit must stay absent.
 
 These journeys supplement the existing full-body closed-gate, full-perimeter
-water-barrier and terrain tests. They do not replace the remaining paid ledge,
-other portage, outward-field-move, final-ball, canoe and animation/audio checks.
+water-barrier and terrain tests. They do not replace the remaining ledges,
+other portages, outward-field-move, final-ball, canoe and animation/audio checks.
 The free Pine Entry → court walking connection is now part of the current
 terrain. Older whole-map verification assumes a sealed outer perimeter and
 therefore rejects this newer connection; do not delete the legitimate free
-entrance to satisfy that historical verifier. The current actual-map composite
-is retained under `renders/boundary-safari-runtime-v08/current-parent-actual-v01/`.
+entrance to satisfy that historical verifier. The current preview audits all
+476 perimeter tiles: 474 WALL/BUOY tiles and exactly two paired FLOOR exits to
+Pine Entry, with no outer water openings. Static actor-body floods preserve the
+free court/approach, deny lake access without admission and reach the lake and
+cabin approach with the two permit guards removed. These static checks do not
+replace native controller travel. The current actual-map composite is retained
+under `renders/boundary-safari-runtime-v09/itasca-whole-v01/`. The Itasca rebase
+preserves all seven configured maps exactly against the Marais-parent review.
+See [LEDGES-EXIT.md](LEDGES-EXIT.md) for the detailed native input contracts.
 
 ## Review publication
 
@@ -95,7 +112,7 @@ render pass reported 6.72 seconds; no Rust rebuild is required for a preview.
 
 The default resolves and hashes the live selected pack. To preview this
 unselected Safari review, add
-`--pack content-packs/minnesota-safari-runtime-review-detroit-v03.crystalpack`.
+`--pack content-packs/minnesota-safari-runtime-review-itasca-v06.crystalpack`.
 The printed report identifies which pack was used and whether it was selected.
 It timestamps that selector observation and records the observed revision;
 later accepted packs do not retroactively change an archived preview's status.

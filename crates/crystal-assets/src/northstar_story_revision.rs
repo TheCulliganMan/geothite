@@ -94,6 +94,9 @@ pub fn revise_northstar_story(base: &CompiledGamePack, source: &str) -> Result<C
     let mut pack = base.clone();
     crate::northstar_opening_revision::install(&mut pack)?;
     crate::northstar_courier_revision::install(&mut pack)?;
+    let mut holding = pack.data.maps["MnMinneapolisDispatchOffice"].clone();
+    crate::northstar_holding_fence::install(&mut pack, &mut holding)?;
+    publish(&mut pack, holding)?;
     for (name, texts) in revision.texts {
         ensure!(
             name.starts_with("Mn"),
@@ -376,7 +379,28 @@ mod tests {
         }
         assert_eq!(base.data.maps.len(), child.data.maps.len());
         assert_eq!(base.compiled_audio(), child.compiled_audio());
-        assert_eq!(base.runtime_files, child.runtime_files);
+        for (name, bytes) in &base.runtime_files {
+            assert_eq!(
+                child.runtime_files.get(name),
+                Some(bytes),
+                "original art {name}"
+            );
+        }
+        assert_eq!(child.runtime_files.len(), base.runtime_files.len() + 5);
+        assert!(
+            child
+                .runtime_files
+                .keys()
+                .filter(|name| !base.runtime_files.contains_key(*name))
+                .all(|name| name.contains("mn_northstar_holding"))
+        );
+        for (name, tileset) in &base.data.tilesets {
+            assert_eq!(
+                child.data.tilesets.get(name),
+                Some(tileset),
+                "original tileset {name}"
+            );
+        }
         assert_eq!(base.data.pokemon, child.data.pokemon);
         assert_eq!(base.data.moves, child.data.moves);
         assert_eq!(base.data.trainers, child.data.trainers);
@@ -406,8 +430,17 @@ mod tests {
         ]);
         for (name, before) in &base.data.maps {
             let after = &child.data.maps[name];
-            assert_eq!(before.blocks, after.blocks, "terrain {name}");
+            let mut expected_blocks = before.blocks.clone();
+            if name == "MnMinneapolisDispatchOffice" {
+                for (x, y, id) in crate::northstar_holding_fence::CELLS {
+                    expected_blocks[y * 10 + x] = id;
+                }
+            }
+            assert_eq!(expected_blocks, after.blocks, "terrain {name}");
             let mut expected_attributes = before.attributes.clone();
+            if name == "MnMinneapolisDispatchOffice" {
+                expected_attributes.tileset_name = crate::northstar_holding_fence::TILESET.into();
+            }
             for (map, direction, target, offset) in [
                 ("MnBoundaryWaters", "south", "MnR13C00R00", 1),
                 ("MnR13C00R00", "north", "MnBoundaryWaters", -1),

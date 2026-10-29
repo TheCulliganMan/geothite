@@ -9,7 +9,10 @@ use the shared controller, bitmap renderer and read-only TUI projection.
 Production-controller journeys now cover ranger-to-retirement, native fishing,
 party and selected-PC capture, Dex/nickname screens, two actual grassy portages,
 Surf launches/dismounts, walking/water seams, the real cabin and 500-step expiry.
-The nine-case current-parent replay passes using the default test profile.
+The earlier nine-case replay and newer ten-case Itasca-parent replay pass using
+the default test profile. Final page-persistence changes have separate affected
+travel/ending and original Johto controller checks. See [VERIFICATION.md](VERIFICATION.md)
+for exact execution epochs and limits.
 Remaining movement/travel paths and throw/shake/audio presentation still
 require acceptance before enabling admission.
 The battle display now has native command/result captures, matching source-art
@@ -18,15 +21,17 @@ See [VERIFICATION.md](VERIFICATION.md) for exact inputs and limits. The free Bou
 Q07 shelter and R12/R13/R20 junction remain outside the expedition.
 
 The current unselected review is
-`content-packs/minnesota-safari-runtime-review-detroit-v03.crystalpack`, derived from
-`minnesota-current-grass-detroit-approach-v01.crystalpack`. Rust publication
+`content-packs/minnesota-safari-runtime-review-itasca-v06.crystalpack`, derived from
+`minnesota-current-grass-itasca-v01.crystalpack`. Rust publication
 verified exact preservation of unrelated data, runtime art and compiled audio,
-plus strict readback. It does not change the main regional selector.
+plus strict readback. All terrain, actors, events and executable commands remain
+exact. In addition to the Safari configuration, v2 publication replaces seven
+related closure-text bodies and their existing split mirrors with native
+permit/check-in directions. It does not change the main regional selector.
 See [TRAVEL.md](TRAVEL.md) for exact lake/portage/cabin coordinates, the executed
-publication path and remaining travel work. The selected main has subsequently
-advanced beyond this parent; promotion requires checking the live
-[world selector](../../world.json) and rebasing. Older R15 review packs remain
-historical evidence.
+publication path and remaining travel work. Promotion requires checking the
+live [world selector](../../world.json) and rebasing if it has advanced. Older
+R15, Detroit, Marais and guidance review packs remain historical evidence.
 
 ## Battle presentation contract
 
@@ -39,6 +44,8 @@ Results keep this same battle composition until acknowledged. Returning to
 exploration releases the battle display and removes the trainer back sprite.
 Budget exhaustion and ranger retirement keep the field visible with the normal
 field-dialogue window; they no longer display an empty trainer battle.
+See [BACKSPRITES.md](BACKSPRITES.md) for the retained Chris/Kris renders and
+their production-controller/compositor checks.
 The capture engine continues to own these commands and saved results; this
 presentation does not send out a party member or offer ordinary combat moves.
 

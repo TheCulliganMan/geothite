@@ -5829,7 +5829,7 @@ fn quick_save_with_policy(
         if snapshot_before_save.ui.text_window_open {checkpoint.close_text_window()?;}
         checkpoint.save(&path)?;
     } else {
-        runtime_shell.shell.save(&path)?;
+        field_dialogue_resume::save(runtime_shell, &path)?;
     }
     let summary = runtime_shell.shell.runtime().load_save_summary(&path)?;
     runtime_shell.last_audio_events.push(format!(

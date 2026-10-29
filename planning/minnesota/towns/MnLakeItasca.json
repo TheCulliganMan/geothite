@@ -12,7 +12,7 @@
     33
   ],
   "role": "landmark",
-  "composition": "A quiet reference site: pine banks, a northern lake feeding a narrow brook, one short railed crossing and a dry-land survey plaque. Visiting is possible after Lake; only the Pine-qualified, acknowledged marker records the independent reading. The future western trail remains visibly closed. The eastern arrival passes through the authentic Ilex Forest\u2013Azalea gatehouse floorplan, with two native side-carpet lanes and separate safe arrivals on both sides.",
+  "composition": "A pine-banked reference park with a protected dry survey plaque and railed crossing, native encounter meadows, and a short forest-framed glade descent. Eastern gatehouse and installed western trail controls retain their current contracts.",
   "ports": [
     {
       "route": "MN_R14",
@@ -374,5 +374,330 @@
         "target_warp": 4
       }
     ]
-  }
+  },
+  "current_revision": "route_grass_itasca_revision",
+  "current_native_source": "planning/minnesota/towns/MnLakeItasca.layout.json",
+  "native_installed_actors": [
+    {
+      "sprite": "SPRITE_TEACHER",
+      "sprite_has_facings": true,
+      "x": 15,
+      "y": 33,
+      "spritemovedata": "SPRITEMOVEDATA_STANDING_RIGHT",
+      "move_range_x": 0,
+      "move_range_y": 0,
+      "hram_x": -1,
+      "hram_y": -1,
+      "pal": 0,
+      "object_type": "OBJECTTYPE_SCRIPT",
+      "radius": 0,
+      "script": "MN_ITASCA_OBSERVER",
+      "label": null,
+      "event_flag": "-1",
+      "object_identifier": "MN_ITASCA_OBSERVER",
+      "sightline_direction_override": null
+    },
+    {
+      "sprite": "SPRITE_FISHER",
+      "sprite_has_facings": true,
+      "x": 34,
+      "y": 29,
+      "spritemovedata": "SPRITEMOVEDATA_STANDING_LEFT",
+      "move_range_x": 0,
+      "move_range_y": 0,
+      "hram_x": -1,
+      "hram_y": -1,
+      "pal": 0,
+      "object_type": "OBJECTTYPE_SCRIPT",
+      "radius": 0,
+      "script": "MN_ITASCA_TRAIL_WALKER",
+      "label": null,
+      "event_flag": "-1",
+      "object_identifier": "MN_ITASCA_TRAIL_WALKER",
+      "sightline_direction_override": null
+    },
+    {
+      "sprite": "SPRITE_OFFICER",
+      "sprite_has_facings": true,
+      "x": 2,
+      "y": 28,
+      "spritemovedata": "SPRITEMOVEDATA_STANDING_RIGHT",
+      "move_range_x": 0,
+      "move_range_y": 0,
+      "hram_x": -1,
+      "hram_y": -1,
+      "pal": 0,
+      "object_type": "OBJECTTYPE_SCRIPT",
+      "radius": 0,
+      "script": "MnCohesionItascaWest",
+      "label": null,
+      "event_flag": "-1",
+      "object_identifier": "MNCOHESIONITASCAWEST_A",
+      "sightline_direction_override": null
+    },
+    {
+      "sprite": "SPRITE_OFFICER",
+      "sprite_has_facings": true,
+      "x": 2,
+      "y": 29,
+      "spritemovedata": "SPRITEMOVEDATA_STANDING_RIGHT",
+      "move_range_x": 0,
+      "move_range_y": 0,
+      "hram_x": -1,
+      "hram_y": -1,
+      "pal": 0,
+      "object_type": "OBJECTTYPE_SCRIPT",
+      "radius": 0,
+      "script": "MnCohesionItascaWest",
+      "label": null,
+      "event_flag": "-1",
+      "object_identifier": "MNCOHESIONITASCAWEST_B",
+      "sightline_direction_override": null
+    }
+  ],
+  "native_installed_connections": [
+    {
+      "direction": "west",
+      "target_map": "MnR19C00R00",
+      "offset": 8
+    },
+    {
+      "direction": "east",
+      "target_map": "MnR14C00R00",
+      "offset": -9
+    }
+  ],
+  "native_installed_events": {
+    "warps": [
+      {
+        "index": 1,
+        "x": 43,
+        "y": 24,
+        "target_map_constant": "MN_ITASCA_GATEHOUSE",
+        "target_map": "MN_ITASCA_GATEHOUSE",
+        "target_warp_id": 5
+      },
+      {
+        "index": 2,
+        "x": 43,
+        "y": 25,
+        "target_map_constant": "MN_ITASCA_GATEHOUSE",
+        "target_map": "MN_ITASCA_GATEHOUSE",
+        "target_warp_id": 6
+      },
+      {
+        "index": 3,
+        "x": 42,
+        "y": 24,
+        "target_map_constant": "MN_LAKE_ITASCA",
+        "target_map": "MN_LAKE_ITASCA",
+        "target_warp_id": 3
+      },
+      {
+        "index": 4,
+        "x": 42,
+        "y": 25,
+        "target_map_constant": "MN_LAKE_ITASCA",
+        "target_map": "MN_LAKE_ITASCA",
+        "target_warp_id": 4
+      }
+    ],
+    "coord_events": [
+      {
+        "x": 3,
+        "y": 28,
+        "scene_id": "-1",
+        "script_name": "MnCohesionItascaWest"
+      },
+      {
+        "x": 1,
+        "y": 28,
+        "scene_id": "-1",
+        "script_name": "MnCohesionItascaWestInward"
+      },
+      {
+        "x": 3,
+        "y": 29,
+        "scene_id": "-1",
+        "script_name": "MnCohesionItascaWest"
+      },
+      {
+        "x": 1,
+        "y": 29,
+        "scene_id": "-1",
+        "script_name": "MnCohesionItascaWestInward"
+      }
+    ],
+    "bg_events": [
+      {
+        "x": 19,
+        "y": 21,
+        "event_type": "BGEVENT_READ",
+        "script": "MN_ITASCA_MARKER"
+      },
+      {
+        "x": 38,
+        "y": 24,
+        "event_type": "BGEVENT_READ",
+        "script": "MN_ITASCA_ENTRY"
+      },
+      {
+        "x": 4,
+        "y": 24,
+        "event_type": "BGEVENT_READ",
+        "script": "MN_ITASCA_WEST_CLOSED"
+      }
+    ]
+  },
+  "encounter_grass_contract": {
+    "eastern_arrival_marker_both_directions": 2,
+    "local_glade_ordinary_uphill": 2,
+    "local_glade_native_downhill": 0
+  },
+  "native_grass_and_water_encounters": {
+    "map_name": "MnLakeItasca",
+    "grass_rates": {
+      "day": 10,
+      "morning": 10,
+      "night": 10
+    },
+    "water_rate": 4,
+    "grass": {
+      "morning": [
+        {
+          "level": 27,
+          "species": "RICELING"
+        },
+        {
+          "level": 28,
+          "species": "CLINKLAW"
+        },
+        {
+          "level": 29,
+          "species": "FLOSSAIL"
+        },
+        {
+          "level": 30,
+          "species": "GILLPUP"
+        },
+        {
+          "level": 31,
+          "species": "VELVAWN"
+        },
+        {
+          "level": 32,
+          "species": "WINDHOPPER"
+        },
+        {
+          "level": 33,
+          "species": "NOTCHBILL"
+        }
+      ],
+      "day": [
+        {
+          "level": 27,
+          "species": "RICELING"
+        },
+        {
+          "level": 28,
+          "species": "CLINKLAW"
+        },
+        {
+          "level": 29,
+          "species": "FLOSSAIL"
+        },
+        {
+          "level": 30,
+          "species": "GILLPUP"
+        },
+        {
+          "level": 31,
+          "species": "VELVAWN"
+        },
+        {
+          "level": 32,
+          "species": "WINDHOPPER"
+        },
+        {
+          "level": 33,
+          "species": "NOTCHBILL"
+        }
+      ],
+      "night": [
+        {
+          "level": 27,
+          "species": "BOOMRUFF"
+        },
+        {
+          "level": 28,
+          "species": "BARRICANT"
+        },
+        {
+          "level": 29,
+          "species": "FLOSSAIL"
+        },
+        {
+          "level": 30,
+          "species": "GILLPUP"
+        },
+        {
+          "level": 31,
+          "species": "VELVAWN"
+        },
+        {
+          "level": 32,
+          "species": "WINDHOPPER"
+        },
+        {
+          "level": 33,
+          "species": "NOTCHBILL"
+        }
+      ]
+    },
+    "water": {
+      "morning": [
+        {
+          "level": 27,
+          "species": "CHORIP"
+        },
+        {
+          "level": 28,
+          "species": "GILLPUP"
+        },
+        {
+          "level": 33,
+          "species": "RIVVIT"
+        }
+      ],
+      "day": [
+        {
+          "level": 27,
+          "species": "CHORIP"
+        },
+        {
+          "level": 28,
+          "species": "GILLPUP"
+        },
+        {
+          "level": 33,
+          "species": "RIVVIT"
+        }
+      ],
+      "night": [
+        {
+          "level": 27,
+          "species": "CHORIP"
+        },
+        {
+          "level": 28,
+          "species": "GILLPUP"
+        },
+        {
+          "level": 33,
+          "species": "RIVVIT"
+        }
+      ]
+    }
+  },
+  "revision_runbook": "revisions/route-grass-v01/current-lake-itasca-v01/README.md"
 }

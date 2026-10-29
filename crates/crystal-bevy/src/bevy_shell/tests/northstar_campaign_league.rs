@@ -19,7 +19,7 @@ const CHAMPION: &str = "EVENT_MN_LEAGUE_CHAMPION";
 const RESTORED: &str = "EVENT_MN_SURVEY_RESTORED";
 const CLINIC: &str = "MnElyPokecenter1F";
 
-fn arrival() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
+pub(super) fn arrival() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
     let Some(path) = std::env::var_os("CRYSTAL_NORTHSTAR_LEAGUE_SAVE") else {
         return finale();
     };

@@ -1,7 +1,7 @@
 # Deploy Geothite multiplayer
 
 The live browser game serves [The Northstar Survey](https://geothite.ryanculligan.com/?view=2d)
-in native 2D. See the [2026-10-29 release record](#northstar-native-2d-story-release-2026-10-29)
+in native 2D. See the [2026-10-29 release record](#combined-minnesota-release-2026-10-29)
 for the exact pack, image, verification scope and rollback command.
 
 ## Requirements
@@ -439,6 +439,59 @@ provided no subsequent deployment has changed them:
 
 ```sh
 python3 /mnt/homelab/config/geothite/releases/d7634794-northstar-2d-20261029t115843z/deploy.py rollback
+```
+
+## Combined Minnesota release (2026-10-29)
+
+Published `geothite:combined-native-2d-itasca-20261029-final`, image
+`sha256:a1e07c74178dd714461acba907ed21303f64682cba3ce26ea292c9867b4fe9dc`.
+The combined working-tree source snapshot is retained on the homelab; shared
+source checkpoint `3fe69ad0` also includes the concurrent source/art/test work.
+The release retains the reviewed Marais/Mille geography and latest dialogue,
+adds Verdigrim's completed species/field art, all 225 authored regional cries,
+research-count synchronization and both published starter signatures. The
+excavation/containment scene and optional capture remain unfinished. The late accepted Lake Itasca grass/ledge revision is included. This publication
+does not move the shared authoring selector; Safari admission stays closed.
+
+Input: `content-packs/combined-native-2d-itasca-20261029.crystalpack`, 730 maps,
+476 total species, 272 moves and 602 audio programs. Input SHA-256:
+`a69580bac73e664e263083fe490cdf057ee73cc6e21bf50a415c0e99c6ba9c9a`.
+The hosted clock/customization pack SHA-256 is
+`0d6a1206d107f46c0766b440f145f0f58f02643437045a24cd4ebb153449265a`.
+Its 342 Minnesota maps, complete trainer catalog, 7,818 runtime files and all
+602 audio programs are identical to the checked input. All original 377 audio
+programs remain exact. Every PCM hash, frame count and loop range verifies.
+
+The Rust browser build excludes voxel features and offers 2D/TUI. Its public
+Chromium/mobile WebKit checks pass fresh/stale startup and an ordinary New Game
+through the intro, bedroom stairs, Mom's pages/input ownership and Start menu;
+native views were inspected. The subsequent Itasca-only data update preserves
+all 729 other maps and the exact browser binary. It passes two default-profile
+park controllers, wild/RUN/Continue, 15 clean production MCP calls, a current-pack
+headless 2D capture and authenticated browser startup. Trusted sound activation
+and visible animation settling precede source-dependent dialogue inputs.
+The service is healthy; the final HTTPS pack and connection are verified.
+
+Other completed checks: 133 browser/installer unit tests, six Pokédex catalog/
+media/browser suites, 25 lobby tests, all-target server Clippy, production
+battle/Mom controllers, stdio-MCP movement/Start and byte-empty stderr. A fresh
+combined-pack MCP New Game passes Mom's pages, movement ownership and Start in
+43 calls with stderr0. Whole-workspace fmt retains the existing offset-allocator
+differences; new Rust files pass scoped rustfmt. Complete earned campaign and
+auditory design acceptance remain open.
+
+Only Geothite was recreated. Existing data, signing configuration, Pokédex,
+Flygon, terminal mounts and earlier immutable browser assets remain. Native
+terminal downloads retain their previous verified executable/pack. No old save
+identity was relabeled. Pokédex release `20261029-verdigrim-25` is published and
+verified separately in [its release record](pokedex-web.md).
+
+Source/build recipes, pack and private rollback records are retained under
+`/mnt/homelab/config/geothite/releases/combined-native-2d-itasca-20261029`.
+Guarded rollback, provided the service has not changed since publication:
+
+```sh
+python3 /mnt/homelab/config/geothite/releases/combined-native-2d-itasca-20261029/deploy.py rollback
 ```
 
 ## Optional Flygon

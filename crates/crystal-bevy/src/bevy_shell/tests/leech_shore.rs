@@ -245,7 +245,7 @@ fn home(c: &mut VisibleShellController, r: &CrystalRuntime) {
     travel(c, GameButton::Down, "MnBrainerd", (32, 0));
     travel(c, GameButton::Down, "MnBrainerd", (32, 4));
 }
-fn heal(
+pub(super) fn heal(
     c: &mut VisibleShellController,
     r: &CrystalRuntime,
     city: &str,

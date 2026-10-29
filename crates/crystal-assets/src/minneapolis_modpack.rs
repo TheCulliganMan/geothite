@@ -268,6 +268,7 @@ pub fn build_minneapolis_modpack(
         .find(|(m, _)| m.id == OFFICE)
         .context("actual office")?;
     ice::install(&pack, &mut office.0, &raw, story_json)?;
+    crate::northstar_holding_fence::install(&mut pack, &mut office.0)?;
     finish(&pack, &mut office.0)?;
     let home = modules
         .iter_mut()

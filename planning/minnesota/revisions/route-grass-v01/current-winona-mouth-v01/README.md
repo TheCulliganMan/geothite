@@ -1,0 +1,13 @@
+# Winona Mississippi mouth — current landing review
+
+This 16×4-metatile river seam has 72 connected water tiles and one dry bench landing of only 18 walking tiles. There is no overland through route. All dry tiles connect to the casting/dismount bank; the water perimeter has exactly four northern and four southern reciprocal lanes. The tiny landing remains dry. Inserting a grass climb or a ledge loop here would replace the rest/casting area without improving a meaningful through journey. The longer wooded river reaches remain separate pending reviews.
+
+The selected native map matches `connections/mississippi-v02/MnMississippiWinonaMouth.layout.json` exactly. There are no installed actors or map events here; the historical proposed angler is not treated as an installed activity. The usable activity is native bank fishing and Surf access to the river. Bound wild and pond/time fishing tables contain only active original Minnesota species. All 18 floor tiles and 72 water tiles are connected within their respective modes. Both river ends project to WATER and return through their real reciprocal connections; the bench's blocking quadrants are preserved.
+
+Whole-map and both actual headless 2D captures were inspected against authentic Crystal Route32 shoreline/pier art. Both native views match current source pixels exactly. All originals, GPU captures and rejected checks are retained. No terrain, wild-table, story or selected-pack change is proposed.
+
+Native acceptance requires two controller cases: walking the dry bank, actual Surf launch, all eight river lanes and their returns, Surf save/Continue and dry-bank dismount; and actual registered-rod casts, a Minnesota fish biting, native RUN, retained bank/resources and Continue. The initial party, prior badges, position and carried registered rod are explicit fixtures; no party, mode, pose or RNG is rewritten after setup. These cases do not prove earned regional Surf or rod access. The first build caught a fixture species-lookup type error; that rejected log is retained and the test reads the native species ID correctly.
+
+The actual reached bank save must also pass production stdio movement, Start/Pack, Items/Balls and return to walking with empty stderr. Scoped formatting and final affected-crate all-target Clippy are required. Audio verification is inherited from the exact selected Preserve Pine pack, whose bytes remain unchanged. `acceptance.json` records the final evidence only after these gates pass.
+
+After this local review, five route/link/park groups, relevant town exteriors and final current-story coverage remain open. The Mississippi Confluence and both longer wooded reaches still require their own current-pack review; this small seam does not stand in for them.

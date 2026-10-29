@@ -6,6 +6,7 @@ publication remains Rust. Every invocation requires a fresh output directory.
 """
 
 import argparse
+from collections import deque
 from datetime import datetime, timezone
 import hashlib
 import json
@@ -22,6 +23,69 @@ from review_north_shore import oriented_sprite
 ROOT = Path(__file__).resolve().parents[3]
 OPPOSITE = {"north": "south", "south": "north", "east": "west", "west": "east"}
 FACING = {"UP": "north", "DOWN": "south", "LEFT": "west", "RIGHT": "east"}
+
+
+def inspect_boundaries(pack, modules):
+    """Audit current native collision; the two free walking exits stay open."""
+    data = pack["data"]
+    cells, occupied, guards = {}, set(), set()
+    for (column, row), (_, module) in modules.items():
+        attr = module["attributes"]
+        collision = data["tilesets"][attr["tileset_name"]]["collision"]
+        width, height = attr["width"], attr["height"]
+        for y in range(height * 2):
+            for x in range(width * 2):
+                block = module["blocks"][y // 2 * width + x // 2]
+                cells[column * 64 + x, row * 48 + y] = collision[f"{block:02x}"][y % 2 * 2 + x % 2]
+        for actor in module["objects"]:
+            tile = column * 64 + actor["x"], row * 48 + actor["y"]
+            occupied.add(tile)
+            if actor["object_identifier"] in {"BWS_PENDING_GATE_WEST", "BWS_PENDING_GATE_EAST"}:
+                guards.add(tile)
+    if guards != {(11, 101), (12, 101)}:
+        raise ValueError("Current native permit guard bodies changed")
+    perimeter = {p for p in cells if p[0] in {0, 127} or p[1] in {0, 111}}
+    exits = {(14, 111), (15, 111)}
+    court = modules[0, 2][1]
+    approach = data["maps"]["MnPreservePineEntry"]
+    if not any(edge == {"direction": "south", "target_map": "MnPreservePineEntry", "offset": -1}
+               for edge in court["attributes"]["connections"]):
+        raise ValueError("Free Pine Entry walking connection missing")
+    approach_attr = approach["attributes"]
+    approach_collision = data["tilesets"][approach_attr["tileset_name"]]["collision"]
+    for x, y in exits:
+        # A -1-metatile south connection adds two walking tiles at its target.
+        target_x = x + 2
+        block = approach["blocks"][target_x // 2]
+        if cells[x, y] != "FLOOR" or approach_collision[f"{block:02x}"][target_x % 2] != "FLOOR":
+            raise ValueError("Free walking seam lacks paired passive FLOOR")
+    bad = sorted(p for p in perimeter - exits if cells[p] not in {"WALL", "BUOY"})
+    if bad:
+        raise ValueError(f"Unconnected walking/Surf perimeter opening: {bad}")
+
+    def flood(blocked):
+        seen, queue = {(15, 105)}, deque([(15, 105)])
+        while queue:
+            x, y = queue.popleft()
+            for tile in [(x - 1, y), (x + 1, y), (x, y - 1), (x, y + 1)]:
+                if (tile not in seen and tile not in blocked
+                        and cells.get(tile) in {"FLOOR", "TALL_GRASS", "WATER"}):
+                    seen.add(tile)
+                    queue.append(tile)
+        return seen
+
+    closed, admitted = flood(occupied), flood(occupied - guards)
+    if any(cells[p] == "WATER" for p in closed) or (3, 90) in closed:
+        raise ValueError("Unpaid walking/Surf bypass around permit guards")
+    if not exits <= closed or not {(3, 89), (71, 56)} <= admitted:
+        raise ValueError("Free approach, admitted lake or cabin approach disconnected")
+    return {
+        "perimeter_tiles": len(perimeter), "closed_wall_or_buoy_tiles": len(perimeter - exits),
+        "paired_free_walking_exits": sorted(exits), "unconnected_water_exits": 0,
+        "closed_court_reachable_tiles": len(closed), "unpaid_lake_bypass": False,
+        "admitted_lake_and_cabin_approach_reachable": True,
+        "scope": "Static FLOOR/TALL_GRASS/WATER graph with actual actor bodies; native play is separate",
+    }
 
 
 def render(pack_path, output):
@@ -43,6 +107,7 @@ def render(pack_path, output):
             modules[tuple(map(int, match.groups()))] = (name, module)
     if set(modules) != {(column, row) for column in range(2) for row in range(3)}:
         raise ValueError("Expected the current six clipped preserve chunks")
+    boundaries = inspect_boundaries(pack, modules)
     art = SourceArt(pack)
     terrain = Image.new("RGB", (2048, 1792))
     actors, connections = [], []
@@ -92,6 +157,7 @@ def render(pack_path, output):
         "maps": [name for name, _ in modules.values()],
         "dimensions_pixels": scene.size, "connections": connections,
         "static_actor_count": len(actors), "gameplay_verified_by_this_preview": False,
+        "boundary_audit": boundaries,
         "render_ms": round((time.perf_counter() - started) * 1000, 1),
     }
     (output / "render.json").write_text(json.dumps(report, indent=2) + "\n")

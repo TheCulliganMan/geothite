@@ -6,6 +6,41 @@ exports runtime catalogs, compiles and verifies the packs, and publishes local
 agent inputs. Source checkouts, ROMs, intermediate exports, PCM, and packs stay
 outside tracked source.
 
+## Combined Minnesota browser publication (2026-10-29)
+
+The [live release record](deployment.md#combined-minnesota-release-2026-10-29)
+identifies the deployed 730-map/476-species/272-move/602-audio pack and its
+preservation checks. It is a child of the reviewed Itasca world with the current dialogue revision, with
+completed Verdigrim assets/research and starter signatures. The excavation scene
+remains in progress; this is not full encounter acceptance.
+
+The executed Rust composition uses the canonical Pokemon source, its completed
+native banks and the reviewed field manifest. Set a fresh ignored prefix on
+reruns; existing packs remain immutable.
+
+```sh
+stage=content-packs/combined-native-2d-itasca-20261029
+source=planning/minnesota/pokemon
+native=target/minnesota-pokemon/native
+bin=target/northstar-story/debug
+"$bin/revise_northstar_story" content-packs/minnesota-current-grass-itasca-v01.crystalpack \
+  planning/minnesota/story.json content-packs/combined-itasca-dialogue-20261029.crystalpack
+"$bin/pack_minnesota_pokemon" content-packs/combined-itasca-dialogue-20261029.crystalpack \
+  "$source" "$native" "$source/species-profiles.json" "$stage-species.crystalpack" --family MN_F145
+"$bin/pack_minnesota_cries" "$stage-species.crystalpack" "$source" "$stage-cries.crystalpack"
+"$bin/pack_minnesota_overworld" "$stage-cries.crystalpack" "$stage-field.crystalpack" \
+  "$source/overworld/20261027-v1/sources/mn_f145/verdigrim.manifest-v3-eye-registration.json"
+"$bin/pack_minnesota_dex_roster_sync" "$stage-field.crystalpack" "$source" "$stage-dex.crystalpack"
+target/fishing-rods/debug/pack_northwoods_starter_signatures \
+  "$stage-dex.crystalpack" "$stage.crystalpack"
+"$bin/verify_crystalpack" "$stage.crystalpack" --audio --desktop
+```
+
+These are repository Rust publishers; their Cargo package is `crystal-assets`.
+The cry and selected overworld publishers preserve the previous programs and
+banks. Publication does not move the shared regional authoring pointer or
+change existing saves' content identity. Packs and compiled tools remain ignored.
+
 ## Minnesota canoe
 
 The [canoe publication runbook](../planning/minnesota/canoe/README.md) records

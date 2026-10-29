@@ -4190,7 +4190,7 @@ fn minnesota_regional_gyms_controller_all_eight_actual_facades_and_local_courses
 #[ignore = "full ordinary-party arc campaign; no review boosts or injected progress"]
 pub(super) fn northstar_arc_unboosted_new_game_through_legendary_release_and_hall_of_fame() {
     northstar_campaign_review::require_unboosted();
-    let (root, r, c) = northstar_campaign_finale::finale();
+    let (root, r, c) = northstar_campaign_league::arrival();
     for flag in [
         "EVENT_MN_REED_WINONA_DEFEATED",
         "EVENT_MN_REED_ROCHESTER_DEFEATED",

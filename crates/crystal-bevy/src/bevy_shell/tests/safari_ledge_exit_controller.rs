@@ -65,11 +65,15 @@ fn safari_paid_palisade_hop_grassy_climb_and_real_buoy_boundary() {
         MovementMode::Normal
     );
     save(&mut c, "paid-palisade-landing");
+    // Landing in habitat can legitimately open wildlife immediately. Retain
+    // that checkpoint, then use native Run for a separate visible cliff view.
+    release_wild(&mut c);
+    save(&mut c, "paid-palisade-landing-field");
     c = continue_save(root.clone(), runtime.clone(), &mut c);
     blocked(&mut c, GameButton::Up);
     let return_path = grid.path((35, 60), (35, 57), false);
     assert!(
-        return_path.len() - 1 >= 9,
+        return_path.len() > 9,
         "the uphill return must be a real detour"
     );
     let before_return = active(&mut c).steps_remaining;
@@ -173,6 +177,88 @@ fn safari_paid_walking_exit_ends_permit_and_reentry_restores_both_guards() {
     }
     assert_eq!(c.shell.shell.session().state().money, 1000);
     save(&mut c, "paid-reentry-guards-closed");
+    press(&mut c, GameButton::A);
+    let before_text = c.snapshot().expect("native guard directions");
+    let pages = super::super::super::super::visible_field_dialog_pages(&before_text, &c.shell)
+        .expect("authored gate dialogue")
+        .join("\n");
+    assert!(pages.contains("Permit required."));
+    assert!(pages.contains("Ask the ranger"));
+    assert!(!pages.contains("EXPEDITIONS CLOSED"));
+    let position = global(&mut c);
+    press(&mut c, GameButton::Down);
+    assert_eq!(
+        global(&mut c),
+        position,
+        "native permit directions own input"
+    );
+    save(&mut c, "paid-gate-permit-directions");
+    c = continue_save(root.clone(), runtime.clone(), &mut c);
+    assert_eq!(
+        c.snapshot()
+            .expect("guard text Continue")
+            .ui
+            .pending_text_wait,
+        before_text.ui.pending_text_wait
+    );
+    press(&mut c, GameButton::A);
+    let second_text = c.snapshot().expect("next native directions page");
+    let pages = super::super::super::super::visible_field_dialog_pages(&second_text, &c.shell)
+        .expect("second authored gate page")
+        .join("\n");
+    assert!(pages.contains("at basecamp to"));
+    assert!(pages.contains("start a trip."));
+    assert!(!pages.contains("EXPEDITIONS CLOSED"));
+    let live_memory = c
+        .shell
+        .shell
+        .session()
+        .state()
+        .script_runtime
+        .memory
+        .clone();
+    save(&mut c, "paid-gate-permit-next-page");
+    assert_eq!(
+        c.shell.shell.session().state().script_runtime.memory,
+        live_memory
+    );
+    c = continue_save(root.clone(), runtime.clone(), &mut c);
+    assert_eq!(
+        c.snapshot()
+            .expect("second guard page Continue")
+            .ui
+            .pending_text_wait,
+        second_text.ui.pending_text_wait
+    );
+    let resumed = c
+        .snapshot()
+        .expect("same visible second page after Continue");
+    let resumed_pages = super::super::super::super::visible_field_dialog_pages(&resumed, &c.shell)
+        .expect("continued native gate page")
+        .join("\n");
+    assert!(resumed_pages.contains("at basecamp to"));
+    assert!(resumed_pages.contains("start a trip."));
+    assert!(!resumed_pages.contains("Permit required."));
+    save(&mut c, "paid-gate-permit-next-page-continued");
+    for _ in 0..64 {
+        let snapshot = c.snapshot().expect("guard dialogue settling");
+        if snapshot.ui.pending_text_wait.is_none()
+            && !snapshot.ui.text_window_open
+            && !c.has_pending_script_work()
+        {
+            break;
+        }
+        press(&mut c, GameButton::A);
+    }
+    assert!(
+        c.snapshot()
+            .expect("guard dialogue closed")
+            .ui
+            .pending_text_wait
+            .is_none()
+    );
+    assert!(!c.has_pending_script_work());
+    save(&mut c, "paid-guard-dialogue-closed");
     let mut continued = continue_save(root, runtime, &mut c);
     assert!(
         continued
@@ -180,5 +266,11 @@ fn safari_paid_walking_exit_ends_permit_and_reentry_restores_both_guards() {
             .expect("closed gate Continue")
             .safari
             .is_none()
+    );
+    let closed = continued
+        .snapshot()
+        .expect("closed dialogue after Continue");
+    assert!(
+        super::super::super::super::visible_field_dialog_pages(&closed, &continued.shell).is_none()
     );
 }
