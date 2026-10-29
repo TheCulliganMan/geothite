@@ -9,6 +9,9 @@ fn continued(
     label: &str,
 ) -> VisibleShellController {
     let before = c.snapshot().expect("reached mouth");
+    let registered = c.shell.shell.session().state().registered_key_item.clone();
+    let money = c.shell.shell.session().state().money;
+    let mom = c.shell.shell.session().state().moms_money;
     let path = save(c, label);
     let mut loaded =
         VisibleShellController::load_save(root, r, path, None).expect("native Continue");
@@ -16,9 +19,20 @@ fn continued(
     assert_eq!(before.overworld.map_name, after.overworld.map_name);
     assert_eq!(before.overworld.tile, after.overworld.tile);
     assert_eq!(before.overworld.mode, after.overworld.mode);
+    assert_eq!(before.overworld.facing, after.overworld.facing);
+    assert_eq!(
+        loaded.shell.shell.session().state().registered_key_item,
+        registered
+    );
+    assert_eq!(loaded.shell.shell.session().state().money, money);
+    assert_eq!(loaded.shell.shell.session().state().moms_money, mom);
     assert_eq!(before.party, after.party);
     assert_eq!(before.bag, after.bag);
     assert_eq!(before.progression.badges, after.progression.badges);
+    assert_eq!(
+        before.progression.active_engine_flags,
+        after.progression.active_engine_flags
+    );
     assert_eq!(
         before.progression.active_event_flags,
         after.progression.active_event_flags

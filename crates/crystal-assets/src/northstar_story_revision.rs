@@ -94,7 +94,12 @@ pub fn revise_northstar_story(base: &CompiledGamePack, source: &str) -> Result<C
     let mut pack = base.clone();
     crate::northstar_opening_revision::install(&mut pack)?;
     crate::northstar_courier_revision::install(&mut pack)?;
-    let mut holding = pack.data.maps["MnMinneapolisDispatchOffice"].clone();
+    let mut holding = pack
+        .data
+        .maps
+        .get("MnMinneapolisDispatchOffice")
+        .context("installed holding room")?
+        .clone();
     crate::northstar_holding_fence::install(&mut pack, &mut holding)?;
     publish(&mut pack, holding)?;
     for (name, texts) in revision.texts {
@@ -398,7 +403,19 @@ mod tests {
                 "original art {name}"
             );
         }
-        assert_eq!(child.runtime_files.len(), base.runtime_files.len() + 5);
+        let added_files = if base
+            .data
+            .tilesets
+            .contains_key(crate::northstar_holding_fence::TILESET)
+        {
+            0
+        } else {
+            5
+        };
+        assert_eq!(
+            child.runtime_files.len(),
+            base.runtime_files.len() + added_files
+        );
         assert!(
             child
                 .runtime_files

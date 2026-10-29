@@ -40,13 +40,19 @@ pub(crate) fn install(pack: &mut CompiledGamePack, room: &mut MapModule) -> Resu
                 .all(|&(x, y, _)| room.blocks[y * 10 + x] == 0x38),
         "original solid holding barrier required"
     );
-    let mut definition = pack.data.tilesets["underground"].clone();
+    let mut definition = pack
+        .data
+        .tilesets
+        .get("underground")
+        .context("native holding collision and palette")?
+        .clone();
     let source = pack
         .runtime_files()
         .get("data/tilesets/underground_metatiles.bin")
         .context("native holding room metatiles")?;
     ensure!(source.len() == 64 * 16, "native holding art extent changed");
     let mut graphics = vec![0; 192 * 16];
+    definition.palette_map.resize(256, 0);
     definition.palette_map.fill(0);
     let mut glyphs = BTreeMap::new();
     let mut blocks = source
@@ -66,6 +72,7 @@ pub(crate) fn install(pack: &mut CompiledGamePack, room: &mut MapModule) -> Resu
         .runtime_files()
         .get("data/tilesets/johto_modern_metatiles.bin")
         .context("native gray metal fence")?;
+    ensure!(fence.len() >= 0x47 * 16, "native gray fence blocks changed");
     let floor: [u8; 16] = blocks[5 * 16..6 * 16]
         .try_into()
         .expect("native metatiles contain sixteen glyphs");
@@ -144,7 +151,14 @@ fn copy_glyph(
     }
     let index = glyphs.len();
     ensure!(index < 192, "holding fence exceeds native glyph capacity");
-    let attribute = pack.data.tilesets[source].palette_map[usize::from(glyph)];
+    let attribute = *pack
+        .data
+        .tilesets
+        .get(source)
+        .context("native gray fence source definition")?
+        .palette_map
+        .get(usize::from(glyph))
+        .context("native gray fence glyph palette")?;
     let pixels = pack
         .runtime_files()
         .get(&format!("gfx/tilesets/{source}.2bpp"))

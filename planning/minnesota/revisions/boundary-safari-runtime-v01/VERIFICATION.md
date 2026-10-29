@@ -1,6 +1,88 @@
 # Native core verification
 
-## Current-parent paid travel and field return
+## Itasca-parent ledges, walking exit and saved native dialogue pages
+
+The unselected v06 review is
+`content-packs/minnesota-safari-runtime-review-itasca-v06.crystalpack`, SHA256
+`cf799e822151f62d0078936bf317dd39403a2f79b93debc37ed7221ef8061bc5`,
+identity `3f40bf9db671f9dc0f142ea9b4c54fc1fc904c5c43311112f51838032ecc0a6e`.
+The guarded Rust publisher ran against the exact accepted Itasca parent at
+SHA256 `89c70e8f5df7c53c9d74bbf9c5197ae22c6580cb4c0d193538f24e439fc9af22`.
+Independent decoded comparison preserves every map's terrain, actors, events
+and executable commands, 727 complete maps, all other data, runtime art and
+compiled audio. Only Safari configuration and seven related closure-text
+labels/split mirrors change. Strict native identity/readback passes.
+
+The ten-case default-profile suite passes in 285.01 seconds on v06 before the
+final saved-dialogue-page fix. It covers real capture/storage/Dex/nickname,
+fishing, paid entry/retirement, both trainer backs/cursor cleanup, the new
+Palisade hop/grassy return/buoy, actual walking exit/restored guards, 500 real
+travel commits/expiry/return, and the portage/seam/cabin loop.
+
+Visual review then caught a real gap in the dialogue assertion: preserving the
+native pending-text wait did not preserve the frontend's selected text page.
+Continue reopened page one when saving page two. The production controller
+and ordinary native quick-save path now write the later-page printer state on
+a checkpoint copy and validate/restore it against the same native text owner.
+The live state is unchanged by saving; restore consumes the optional metadata
+so it cannot leak into a later conversation. First-page and non-dialogue saves
+keep their existing representation.
+
+On the corrected source, all three affected ledge/exit/ending cases pass in
+51.94 seconds. The assertion now checks the actual second-page text after
+Continue, live-memory preservation during save and complete closure after a
+further Continue. The original Johto Mom/New Bark controller case passes in
+11.89 seconds. The full Safari post-catch/Dex/nickname/party/PC/Continue case
+also passes again in 31.53 seconds. These final focused runs are separate
+epochs from the earlier ten-case run, not a relabeled full-suite rerun.
+
+A 14-call production stdio replay verifies both live guard pages, blocked
+movement, unchanged money, returned walking and Start. The rebuilt client's
+eight-call second-page Continue replay verifies the restored page, dialogue
+ownership, closure, walking and Start. Both have zero stderr bytes and preserve
+their input save bytes. All 377 audio programs pass the Rust verifier's PCM
+hash, frame-count and loop-range checks on v06.
+
+The rebuilt native 2D client was captured headlessly at the actual reached
+position, facing, time and state. Final readable captures use
+`CRYSTAL_RENDER_TEST_WAIT_FIELD_TEXT=1`, which waits for the production printer
+without acknowledging a page. [Page one](../../renders/boundary-safari-runtime-v09/native-v03/paid-gate-permit-directions.png),
+[page two](../../renders/boundary-safari-runtime-v09/native-v03/paid-gate-permit-next-page.png)
+and [page two after another Continue](../../renders/boundary-safari-runtime-v09/native-v03/paid-gate-permit-next-page-continued.png)
+were inspected. The two second-page textbox crops match all 67,968 pixels;
+page one is distinct. Earlier partial/default-startup captures and rejected
+passes are retained. [LEDGES-EXIT.md](LEDGES-EXIT.md) records exact traversal
+coordinates and native images.
+
+The fast actual-map preview now audits all 476 perimeter cells: 474 blocking
+WALL/BUOY cells and exactly two reciprocal passive FLOOR exits to Pine Entry.
+There are no unconnected water exits. Actor-aware static floods deny unpaid
+lake access while preserving the free court/approach, then reach the lake and
+cabin approach when only the permit guards are removed. Four negative cases
+reject an opened water edge, wet walking aperture, moved guard and missing
+approach connection. This static graph is separate from native play. The
+Itasca rebase matches all 3,670,016 whole-preserve pixels of the preceding
+guidance review. Eleven native asset/component cases also pass against the
+disabled Marais parent; all seven configured maps remain exact between the
+guidance and Itasca reviews.
+
+Final all-target Bevy Clippy with `location-tester` passes, with existing
+unrelated warnings and none on changed Safari/dialogue leaves. Changed leaf
+files pass scoped rustfmt. Whole-workspace formatting still has pre-existing
+differences beginning with `offset-allocator`; existing formatting in the two
+large parent modules is preserved around the focused save-call changes.
+
+The main selector advanced independently to `route_grass_preserve_pine_revision`
+after this review's Itasca publication. This work does not replace that newer
+Pine Entry terrain or select paid admission. Remaining portage/ledge paths,
+outward field moves, final-ball/last-grass-step journeys and full throw/shake/
+audio presentation still need acceptance. Canoe prerequisites remain a separate
+unavailable-content branch; the executed trips use native Surf. See the
+[v09 receipt](../../renders/boundary-safari-runtime-v09/receipt-v01.json) for
+artifact and executable hashes. Broader regional quality/earned access remain
+open and the goal remains active.
+
+## Historical Detroit-parent paid travel and field return
 
 The new unselected review is
 `content-packs/minnesota-safari-runtime-review-detroit-v03.crystalpack`, SHA256

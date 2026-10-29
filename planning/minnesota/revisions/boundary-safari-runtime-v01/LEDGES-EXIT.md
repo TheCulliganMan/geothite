@@ -92,11 +92,12 @@ restored in memory after every negative case. Every render is immutable.
 ## Retained review
 
 - [Whole preserve](../../renders/boundary-safari-runtime-v09/itasca-whole-v01/whole-preview.png)
-- [Downhill landing after native Run](../../renders/boundary-safari-runtime-v09/native-v02/paid-palisade-landing-field.png)
+- [Downhill landing after native Run](../../renders/boundary-safari-runtime-v09/native-v03/paid-palisade-landing-field.png)
 - [Grassy uphill return](../../renders/boundary-safari-runtime-v09/native-v02/paid-palisade-grassy-return.png)
 - [Buoy boundary](../../renders/boundary-safari-runtime-v09/native-v02/paid-west-buoy-blocked.png)
-- [First permit page](../../renders/boundary-safari-runtime-v09/native-v02/paid-gate-permit-directions.png)
-- [Second permit page](../../renders/boundary-safari-runtime-v09/native-v02/paid-gate-permit-next-page.png)
+- [First permit page](../../renders/boundary-safari-runtime-v09/native-v03/paid-gate-permit-directions.png)
+- [Second permit page](../../renders/boundary-safari-runtime-v09/native-v03/paid-gate-permit-next-page.png)
+- [Second page retained after Continue](../../renders/boundary-safari-runtime-v09/native-v03/paid-gate-permit-next-page-continued.png)
 
 Exact publication hashes and build commands are in [TRAVEL.md](TRAVEL.md).
 Remaining acceptance includes other ledges/portages, outward field moves,

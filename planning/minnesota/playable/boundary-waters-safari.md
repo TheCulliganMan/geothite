@@ -34,7 +34,13 @@ battle composition. A paid ranger-to-lake journey now crosses the Reed and Isle
 of Pines grassy portages, visits the real cabin and retains Surf/permit state
 through Continue. A separate 500-step journey proves expiry and safe return.
 Expiry uses the normal field-dialogue presenter instead of an empty battle.
-Other portages/ledges, outward travel, canoe input and complete throw
+A paid Palisade trip now proves the one-step downhill hop, blocked reverse,
+15-step grassy uphill return, native Surf relaunch/Continue and buoy collision.
+The real south walking exit ends the permit at Pine Entry; returning restores
+both actual guard bodies. Their native permit directions now preserve the
+visible second text page through Continue, with reviewed bitmap captures and
+clean stdio input ownership. See the [ledge/exit runbook](../revisions/boundary-safari-runtime-v01/LEDGES-EXIT.md).
+Other portages/ledges, outward field travel, canoe input and complete throw
 animation/audio presentation still need work. The authoritative runtime
 habitats and Minnesota-only wildlife tables are in
 [zone.json](../revisions/boundary-safari-runtime-v01/zone.json); older dimensions,
