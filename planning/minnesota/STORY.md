@@ -94,6 +94,13 @@ is an aftermath scene, not a redemption or a League appointment.
 
 ## Team Lode and Team ICE
 
+The [Verdigrim addition](pokemon/sprites/mn-f145/DESIGN.md) authors a copper
+Steel/Poison legendary exposed by Team Lode's excavation. Its green discharge
+and channel-sealing tail oppose Kettlurk's returning current. The reveal,
+containment actions and optional encounter are specified in
+[the story contract](pokemon/verdigrim-story.json); they are not yet installed
+in the playable chapter sequence below.
+
 Lode's leaders want the ore beneath the lakes. They divert survey equipment,
 falsify readings, continue dangerous tests and pay ICE to keep people away.
 The courier demands the original records and their copies. The foreman sees
@@ -148,6 +155,12 @@ Minnesota's separate drainage basins. Do not present the story as an explanation
 of real Devil's Kettle hydrology or attribute its crimes to a real company.
 
 ## Evidence and remaining work
+
+The native 2D browser story is [published on Geothite](https://geothite.ryanculligan.com/?view=2d).
+The [2026-10-29 release record](../../docs/deployment.md#northstar-native-2d-story-release-2026-10-29)
+identifies the v05 pack, final server image, public online opening checks and
+remaining validation. This publication preserves the regional world selector;
+it does not establish a completed ordinary-party campaign.
 
 The [current composition record](revisions/current-story-v01/README.md) reports
 an earned New Game opening, local rival and grunt cases, rescue and release

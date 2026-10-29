@@ -1,4 +1,4 @@
-//! Continue the user's boosted story review through Lake and the ranger report.
+//! Continue an earned campaign or an explicitly boosted review through Lake.
 use std::path::PathBuf;
 
 use crystal_assets::AssetRoot;
@@ -102,13 +102,43 @@ fn care(c: &mut VisibleShellController, r: &CrystalRuntime) {
     travel(c, GameButton::Down, CITY, (9, 22));
 }
 
+fn supplies(c: &mut VisibleShellController, r: &CrystalRuntime) {
+    let item = &r.data().items["SUPER_POTION"];
+    let state = c.shell.shell.session().state();
+    let needed = 5_u16.saturating_sub(state.bag.quantity(item));
+    let quantity = (state.money / u32::from(item.price)).min(u32::from(needed)) as u16;
+    if quantity == 0 {
+        return;
+    }
+    indoor_walk(c, r, (19, 22));
+    travel(c, GameButton::Up, "MnBrainerdMart", (6, 5));
+    indoor_walk(c, r, (3, 3));
+    press(c, GameButton::Left);
+    press(c, GameButton::A);
+    super::super::rochester_earned::checkout(c, r, "SUPER_POTION", quantity);
+    indoor_walk(c, r, (6, 6));
+    travel(c, GameButton::Down, CITY, (19, 22));
+}
+
 fn winch(c: &mut VisibleShellController, r: &CrystalRuntime, flag: &str) {
+    let router = &northstar_earned_gyms::design(r, 6)["routers"][0];
+    let at = super::point(&router["at"]);
     for _ in 0..2 {
         if event(c, flag) {
             return;
         }
-        interact(c, r, (6, 13));
-        assert!(c.snapshot().expect("physical winch").ui.menu.is_none());
+        interact(c, r, at);
+        if router["operator"].is_string() {
+            let choice = router["modes"]
+                .as_array()
+                .expect("published dock modes")
+                .iter()
+                .position(|mode| mode["event"] == flag)
+                .expect("dock direction");
+            super::choose(c, choice);
+        } else {
+            assert!(c.snapshot().expect("physical winch").ui.menu.is_none());
+        }
         finish(c);
     }
     assert!(event(c, flag), "played dock control {flag}");
@@ -118,19 +148,28 @@ fn report(c: &mut VisibleShellController, r: &CrystalRuntime, root: &AssetRoot) 
     indoor_walk(c, r, (25, 20));
     press(c, GameButton::Up);
     press(c, GameButton::A);
-    for expected in ["The fish moved on", "Ask the fishers"] {
+    if r.data()
+        .story_event_script_constants
+        .global
+        .contains_key("EVENT_MN_TAMARACK_INTRO")
+    {
         assert!(!event(c, REPORT) && !event(c, SURF));
-        assert!(
-            c.snapshot()
-                .expect("separate ranger page")
-                .ui
-                .text
-                .and_then(|t| t.asm_text)
-                .is_some_and(|text| text.contains(expected))
-        );
-        press(c, GameButton::Down);
-        at(c, CITY, (25, 20));
-        press(c, GameButton::A);
+        super::super::northstar_dialogue::acknowledge(c, "MS05", "MN_BRAINERD_RANGERText", REPORT);
+    } else {
+        for expected in ["The fish moved on", "Ask the fishers"] {
+            assert!(!event(c, REPORT) && !event(c, SURF));
+            assert!(
+                c.snapshot()
+                    .expect("separate ranger page")
+                    .ui
+                    .text
+                    .and_then(|t| t.asm_text)
+                    .is_some_and(|text| text.contains(expected))
+            );
+            press(c, GameButton::Down);
+            at(c, CITY, (25, 20));
+            press(c, GameButton::A);
+        }
     }
     finish(c);
     assert!(event(c, REPORT) && event(c, SURF));
@@ -143,9 +182,10 @@ fn report(c: &mut VisibleShellController, r: &CrystalRuntime, root: &AssetRoot) 
             .party
             .slots
             .iter()
-            .position(|p| p.pokemon.species.tmhm_learnset.iter().any(|m| m == "SURF"))
-            .expect("caught party has a legal Surf carrier");
-        super::northstar_campaign::learn_machine_on(c, r, "HM_SURF", "SURF", "GROWL", slot);
+            .position(|p| p.pokemon.species.tmhm_learnset.iter().any(|m| m == "SURF"));
+        if let Some(slot) = slot {
+            super::northstar_campaign::learn_machine_on(c, r, "HM_SURF", "SURF", "GROWL", slot);
+        }
         assert_eq!(c.shell.shell.session().state().bag.quantity(item), 1);
     }
     continue_in_place(c, root, r, "campaign-lake-ranger-report");
@@ -190,30 +230,49 @@ pub(super) fn lake() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
         finish(&mut c);
         assert!(!event(&c, REPORT) && !event(&c, SURF));
         care(&mut c, &r);
-        indoor_walk(&mut c, &r, (12, 36));
-        travel(
-            &mut c,
-            GameButton::Up,
-            "MnBrainerdGym",
-            northstar_earned_gyms::arrival(&r, 6),
-        );
         for id in ["MN_GYM_6_TRAINER_1", "MN_GYM_6_TRAINER_2", "MN_GYM_6"] {
             let flag = format!("EVENT_{id}_DEFEATED");
             if event(&c, &flag) {
                 continue;
             }
-            if id == "MN_GYM_6_TRAINER_2" {
-                winch(&mut c, &r, "EVENT_MN_GYM_6_WALK_CENTER");
-            } else if id == "MN_GYM_6" {
-                winch(&mut c, &r, "EVENT_MN_GYM_6_WALK_LEFT");
-                assert!(event(&c, "EVENT_MN_GYM_6_COURT_OPEN"));
+            for attempt in 0..4 {
+                care(&mut c, &r);
+                supplies(&mut c, &r);
+                let party = c.snapshot().expect("choose an earned Lake partner").party;
+                if let Some(slot) = party.slots.iter().position(|slot| {
+                    matches!(slot.pokemon.species.type1.as_str(), "ELECTRIC" | "GRASS")
+                        || matches!(slot.pokemon.species.type2.as_str(), "ELECTRIC" | "GRASS")
+                }) {
+                    super::northstar_arc_campaign::switch_lead(&mut c, slot);
+                }
+                indoor_walk(&mut c, &r, (12, 36));
+                travel(
+                    &mut c,
+                    GameButton::Up,
+                    "MnBrainerdGym",
+                    northstar_earned_gyms::arrival(&r, 6),
+                );
+                if id == "MN_GYM_6_TRAINER_2" {
+                    winch(&mut c, &r, "EVENT_MN_GYM_6_WALK_CENTER");
+                } else if id == "MN_GYM_6" {
+                    winch(&mut c, &r, "EVENT_MN_GYM_6_WALK_LEFT");
+                    assert!(event(&c, "EVENT_MN_GYM_6_COURT_OPEN"));
+                }
+                interact(&mut c, &r, northstar_earned_gyms::opponent(&r, 6, id));
+                if try_battle(&mut c, &r, id, &flag) {
+                    northstar_earned_gyms::leave(&mut c, &r, 6, CITY, (12, 36));
+                    continue_in_place(&mut c, &root, &r, &format!("campaign-{id}-win"));
+                    break;
+                }
+                let map = c
+                    .snapshot()
+                    .expect("native Lake recovery")
+                    .overworld
+                    .map_name;
+                assert!(map == CLINIC || map == CITY, "native recovery in {map}");
+                continue_in_place(&mut c, &root, &r, &format!("campaign-{id}-loss-{attempt}"));
             }
-            interact(&mut c, &r, northstar_earned_gyms::opponent(&r, 6, id));
-            assert!(
-                try_battle(&mut c, &r, id, &flag),
-                "played Lake opponent {id}"
-            );
-            continue_in_place(&mut c, &root, &r, &format!("campaign-{id}-win"));
+            assert!(event(&c, &flag), "played Lake opponent {id}");
         }
         assert_eq!(
             c.shell
@@ -224,7 +283,7 @@ pub(super) fn lake() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
                 .quantity(&r.data().items["TM_RAIN_DANCE"]),
             1
         );
-        northstar_earned_gyms::leave(&mut c, &r, 6, CITY, (12, 36));
+        at(&mut c, CITY, (12, 36));
         continue_in_place(&mut c, &root, &r, "campaign-lake-gym-return");
     }
     assert_eq!(

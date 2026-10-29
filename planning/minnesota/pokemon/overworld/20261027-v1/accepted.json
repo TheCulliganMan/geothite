@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
   "scope": "all224 active Northwoods Pokemon",
-  "required_species": 224,
-  "accepted_species": 224,
+  "required_species": 225,
+  "accepted_species": 225,
   "complete": true,
   "frame_contract": {
     "width": 16,
@@ -21840,10 +21840,109 @@
       ]
     },
     {
+      "species_id": "MN_319",
+      "name": "Verdigrim",
+      "family_id": "MN_F145",
+      "dex_number": 219,
+      "status": "accepted",
+      "generation_tool": "built-in image_gen",
+      "selected_manifest": {
+        "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f145/verdigrim.manifest-v3-eye-registration.json",
+        "sha256": "afbb048e07f1d94bd1f9b3787b051c794e31f619b0e539e664f3b4638c9ac482",
+        "bytes": 1876
+      },
+      "sources": [
+        {
+          "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f145/verdigrim.overworld.imagegen-v2.png",
+          "sha256": "4b6df5b209ea3ae87184980929bd30d4cf9f3b0a252e5449b366e3e8be0aaf80",
+          "bytes": 1402325
+        }
+      ],
+      "prompts": [
+        {
+          "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f145/prompt-verdigrim-v1.txt",
+          "sha256": "85ca44daa0dd582e7e8d553a331d8b0fc00e8f3b05663a1c506c802bbcd5169a",
+          "bytes": 3006
+        },
+        {
+          "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f145/prompt-verdigrim-v2.txt",
+          "sha256": "5d60f596fcb066bb8505afb9db671f1bdde890c6328fa5e9029123ba84ce6dbb",
+          "bytes": 2706
+        }
+      ],
+      "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f145/verdigrim-v3",
+      "normal_review": {
+        "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f145/verdigrim-v3/review/verdigrim.normal-8x.png",
+        "sha256": "ef7b8a280fbf67f765449d829f191eaf0a7f0383d2f279eee6eb2be002951057",
+        "bytes": 8938
+      },
+      "shiny_review": {
+        "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f145/verdigrim-v3/review/verdigrim.shiny-8x.png",
+        "sha256": "67fd2f25835c984e1911dc3e504300466d44b89ce1c1d133bef6b6e2ad655487",
+        "bytes": 8938
+      },
+      "compiled_index": {
+        "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f145/verdigrim-v3/compiled-index.json",
+        "sha256": "f692198c11c78738924404766dc5446623c22c7b31a79a7a4acb2ff2b2a294bf",
+        "bytes": 7877
+      },
+      "source_feature_review": {
+        "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f145/source-feature-proof-verdigrim-v3.json",
+        "sha256": "71f458226d749ddc0b921067baaf8852cd81705f988d553c2d62c56098998834",
+        "bytes": 4546
+      },
+      "context_evidence": {
+        "directory": "planning/minnesota/pokemon/overworld/20261027-v1/diagnostics/verdigrim-v3",
+        "input_manifest": {
+          "path": "planning/minnesota/pokemon/overworld/20261027-v1/diagnostics/verdigrim-v3/input-manifest.json",
+          "sha256": "800264bc28d2201ed0a77988cb80ee8b37e4838916af68ab149cde17ad91cd65",
+          "bytes": 203
+        },
+        "verification": {
+          "path": "planning/minnesota/pokemon/overworld/20261027-v1/diagnostics/verdigrim-v3/verification.json",
+          "sha256": "897d597a09bc593bcc3d2852631659b77e3e97f3a20cff9876b4f97e73e2bcdb",
+          "bytes": 2997
+        },
+        "test_log": {
+          "path": "planning/minnesota/pokemon/overworld/20261027-v1/verification/verdigrim-v3.log",
+          "sha256": "ef2cecbdfd2ad76945af5eb6fcb7f7a3c354b193adfc41fb489ece7c29cb424e",
+          "bytes": 217
+        },
+        "normal_actor_poses": 8,
+        "all_six_shiny_native_poses_verified": true
+      },
+      "root_visual_review": {
+        "accepted": true,
+        "notes": "Inspected both generated sheets, all six normal/shiny native poses and all eight actual production terrain scenes beside the trainer. V1 lost face detail and added a misleading raised tail. V2 removes the third top point and strengthens the copper mask. V3 crop registration preserves two actual frontal source pupils and one real profile pupil in both idle/step views; no pixels were painted. True ear-back/tail rears, broad copper shoulder masses, green patina and heavy tail are coherent with canonical float-copper wolf. Distinct paw steps, transparent native border and all normal/shiny bank pixels verified."
+      },
+      "runtime_files": [
+        {
+          "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/verdigrim/overworld.2bpp",
+          "sha256": "138f60de42755cec8ceb9396ce8f54245c74d54c1a14437de581d156abb79ccc",
+          "bytes": 384
+        },
+        {
+          "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/verdigrim/overworld.png",
+          "sha256": "f0f120f0ddc07262309538efb9f23b48be4eb8b94a24098ab2446682e2c05c82",
+          "bytes": 807
+        },
+        {
+          "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/verdigrim/overworld.gbcpal",
+          "sha256": "ec7927cdd78ea209aba633d35c2a2f5a3073e6f059b52df19fc90f274b3cecf4",
+          "bytes": 8
+        },
+        {
+          "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/verdigrim/overworld-shiny.gbcpal",
+          "sha256": "4999ac428ed873d2aaba7900e63137cc195930b27577ada39b409fbcb2e1abe2",
+          "bytes": 8
+        }
+      ]
+    },
+    {
       "species_id": "MN_097",
       "name": "Pepivern",
       "family_id": "MN_F046",
-      "dex_number": 219,
+      "dex_number": 220,
       "status": "accepted",
       "generation_tool": "built-in image_gen",
       "selected_manifest": {
@@ -21947,7 +22046,7 @@
       "species_id": "MN_098",
       "name": "Bunjant",
       "family_id": "MN_F047",
-      "dex_number": 220,
+      "dex_number": 221,
       "status": "accepted",
       "generation_tool": "built-in image_gen",
       "selected_manifest": {
@@ -22066,7 +22165,7 @@
       "species_id": "MN_099",
       "name": "Vergloom",
       "family_id": "MN_F048",
-      "dex_number": 221,
+      "dex_number": 222,
       "status": "accepted",
       "generation_tool": "built-in image_gen",
       "selected_manifest": {
@@ -22175,7 +22274,7 @@
       "species_id": "MN_248",
       "name": "Strandrak",
       "family_id": "MN_F114",
-      "dex_number": 222,
+      "dex_number": 223,
       "status": "accepted",
       "generation_tool": "built-in image_gen",
       "selected_manifest": {
@@ -22299,7 +22398,7 @@
       "species_id": "MN_100",
       "name": "Icemyth",
       "family_id": "MN_F049",
-      "dex_number": 223,
+      "dex_number": 224,
       "status": "accepted",
       "generation_tool": "built-in image_gen",
       "selected_manifest": {
@@ -22398,7 +22497,7 @@
       "species_id": "MN_250",
       "name": "Flarkindle",
       "family_id": "MN_F116",
-      "dex_number": 224,
+      "dex_number": 225,
       "status": "accepted",
       "generation_tool": "built-in image_gen",
       "selected_manifest": {

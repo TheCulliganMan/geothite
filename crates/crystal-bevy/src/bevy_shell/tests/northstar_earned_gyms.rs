@@ -19,11 +19,27 @@ pub(super) fn selected(r: &CrystalRuntime) -> bool {
 }
 
 pub(super) fn design(r: &CrystalRuntime, slot: usize) -> &'static Value {
-    assert!(selected(r), "selected-gym publication required");
-    static DESIGN: OnceLock<Value> = OnceLock::new();
-    let design = DESIGN.get_or_init(|| {
+    let current = selected(r);
+    let reviewed_base = r
+        .pack_identity()
+        .runtime_modpack_id
+        .split('+')
+        .any(|id| id == "minnesota-reviewed-eight-gyms-refresh-v1");
+    assert!(
+        current || reviewed_base,
+        "reviewed gym publication required"
+    );
+    static CURRENT: OnceLock<Value> = OnceLock::new();
+    static BASE: OnceLock<Value> = OnceLock::new();
+    let cache = if current { &CURRENT } else { &BASE };
+    let design = cache.get_or_init(|| {
         let path = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-            .join("../../planning/minnesota/gyms/current.json");
+            .join("../../planning/minnesota/gyms")
+            .join(if current {
+                "current.json"
+            } else {
+                "interiors.json"
+            });
         serde_json::from_str(&read_minnesota_gym_design(path).expect("current gym source"))
             .expect("selected gym JSON")
     });

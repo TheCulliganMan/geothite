@@ -66,7 +66,10 @@ try {
   assert.equal(await card.locator('[data-cry]').getAttribute('aria-pressed'), 'false');
   const events = await page.evaluate(() => window.cryEvents);
   assert.ok(events.every(event => event.type !== 'error'));
-  assert.ok(events.find(event => event.type === 'ended').duration > .25);
+  const cryWav = fs.readFileSync(path.join(gallery, 'MN_001.wav'));
+  const expectedDuration = cryWav.readUInt32LE(40) / cryWav.readUInt32LE(28);
+  assert.ok(Math.abs(events.find(event => event.type === 'ended').duration - expectedDuration) < .01,
+    'browser playback keeps the authored cry duration');
   await page.screenshot({ path: path.join(captures, 'index-desktop.png') });
   await page.locator('[data-walking-toggle]').click();
   assert.equal(await walker.getAttribute('data-sprite-running'), null);

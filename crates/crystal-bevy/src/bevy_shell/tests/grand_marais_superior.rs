@@ -169,6 +169,16 @@ fn kind(r: &CrystalRuntime, map: &str, p: Point) -> String {
 }
 
 fn path(r: &CrystalRuntime, c: &mut VisibleShellController, target: Point, water: bool) {
+    terrain_path(r, c, target, water, false);
+}
+
+fn terrain_path(
+    r: &CrystalRuntime,
+    c: &mut VisibleShellController,
+    target: Point,
+    water: bool,
+    include_grass: bool,
+) -> usize {
     let (map, start) = at(c);
     let m = &r.data().maps[&map];
     let occupied = m
@@ -203,7 +213,12 @@ fn path(r: &CrystalRuntime, c: &mut VisibleShellController, target: Point, water
                 continue;
             }
             let k = kind(r, &map, n);
-            if if water { k != "WATER" } else { k != "FLOOR" } {
+            let passable = if water {
+                k == "WATER"
+            } else {
+                k == "FLOOR" || (include_grass && k == "TALL_GRASS")
+            };
+            if !passable {
                 continue;
             }
             // Avoid incidental warps/events. A named target may intentionally
@@ -237,7 +252,9 @@ fn path(r: &CrystalRuntime, c: &mut VisibleShellController, target: Point, water
         course.push((p, end));
         end = p;
     }
+    let mut grass_steps = 0;
     for (from, to) in course.into_iter().rev() {
+        grass_steps += usize::from(kind(r, &map, to) == "TALL_GRASS");
         step(
             c,
             button(from, to),
@@ -246,6 +263,7 @@ fn path(r: &CrystalRuntime, c: &mut VisibleShellController, target: Point, water
             "body-aware ordinary input course",
         );
     }
+    grass_steps
 }
 
 fn refused(c: &mut VisibleShellController, input: GameButton, point: Point, water: bool) {
@@ -578,6 +596,9 @@ fn blocked(c: &mut VisibleShellController, input: GameButton, point: Point) {
 #[ignore = "requires final composed native geography pack and caller save directory"]
 fn grand_marais_superior_controller_surfs_closed_gate_all_rows_open_seam_and_boundaries() {
     let (_, r, mut c) = fixture(TOWN, (4, 20), false, false, false);
+    let coast_x =
+        i16::try_from(r.data().maps[COAST].attributes.width).expect("installed coast width") * 2
+            - 1;
     use_max_repel(&mut c, &r);
     mount(&mut c, GameButton::Left, TOWN, (3, 20));
     path(&r, &mut c, (3, 16), true);
@@ -611,7 +632,7 @@ fn grand_marais_superior_controller_surfs_closed_gate_all_rows_open_seam_and_bou
         &mut c,
         GameButton::Left,
         COAST,
-        (47, 20),
+        (coast_x, 20),
         "same-Superior outward seam",
     );
     step(
@@ -666,7 +687,7 @@ fn grand_marais_superior_controller_surfs_closed_gate_all_rows_open_seam_and_bou
             &mut c,
             GameButton::Left,
             COAST,
-            (47, y),
+            (coast_x, y),
             "each Superior outgoing lane",
         );
         step(
@@ -717,7 +738,7 @@ fn grand_marais_superior_controller_surfs_closed_gate_all_rows_open_seam_and_bou
     let (_, r, mut c) = fixture(COAST, (3, 13), false, false, true);
     use_max_repel(&mut c, &r);
     mount(&mut c, GameButton::Down, COAST, (3, 14));
-    path(&r, &mut c, (47, 20), true);
+    path(&r, &mut c, (coast_x, 20), true);
     step(
         &mut c,
         GameButton::Right,
@@ -746,3 +767,121 @@ fn grand_marais_superior_controller_surfs_closed_gate_all_rows_open_seam_and_bou
     );
     nurse(&r, &mut c);
 }
+
+#[test]
+#[ignore = "requires the selected warm Cedar approach pack and reached-save directory"]
+fn grand_marais_superior_controller_existing_cedar_grass_wild_run_and_dry_ledge_return() {
+    use super::super::authored_route_fixture::escape_wild;
+
+    let (root, r, mut c) = fixture(INLAND, (0, 14), true, true, false);
+    assert_eq!(
+        r.data().maps[INLAND].attributes.tileset_name,
+        "mn_north_shore"
+    );
+    assert!(terrain_path(&r, &mut c, (17, 14), false, true) >= 3);
+    assert!(terrain_path(&r, &mut c, (0, 14), false, true) >= 3);
+    terrain_path(&r, &mut c, (12, 10), false, true);
+    assert_eq!(kind(&r, INLAND, (12, 10)), "TALL_GRASS");
+    assert_eq!(kind(&r, INLAND, (13, 10)), "TALL_GRASS");
+    let mut encountered = false;
+    for index in 0..256 {
+        let (input, target) = if index % 2 == 0 {
+            (GameButton::Right, (13, 10))
+        } else {
+            (GameButton::Left, (12, 10))
+        };
+        for _ in 0..8 {
+            c.press(input).expect("actual existing Cedar habitat step");
+            c.wait_frames(16).expect("native grass presentation");
+            if c.snapshot()
+                .expect("actual encounter state")
+                .battle
+                .is_some()
+            {
+                escape_wild(&mut c);
+                encountered = true;
+            }
+            if at(&mut c) == (INLAND.to_owned(), target) {
+                break;
+            }
+        }
+        assert_at(&mut c, INLAND, target, "walked existing Cedar grass");
+        if encountered {
+            break;
+        }
+    }
+    assert!(
+        encountered,
+        "existing Cedar grass must start a native wild battle"
+    );
+    let before = c.snapshot().expect("reached grass resources");
+    let reached = save(&mut c, "existing-cedar-grass");
+    let mut loaded = VisibleShellController::load_save(root, r, reached, None)
+        .expect("Continue actual existing-grass journey");
+    let after = loaded.snapshot().expect("continued existing grass");
+    assert_eq!(before.overworld.map_name, after.overworld.map_name);
+    assert_eq!(before.overworld.tile, after.overworld.tile);
+    assert_eq!(before.party, after.party);
+    assert_eq!(before.bag, after.bag);
+    assert_eq!(before.progression.badges, after.progression.badges);
+    assert_eq!(
+        before.progression.active_event_flags,
+        after.progression.active_event_flags
+    );
+    assert_eq!(
+        before.progression.active_engine_flags,
+        after.progression.active_engine_flags
+    );
+    if let Some(path) = std::env::var_os("CRYSTAL_CEDAR_GRASS_REACHED_SAVE") {
+        loaded
+            .save(PathBuf::from(path))
+            .expect("retain actual grass save");
+    }
+
+    // Independent local placement proves the preserved one-way return. Party,
+    // badges and initial positions above are setup, not earned regional access.
+    let (_, r, mut c) = fixture(INLAND, (27, 20), true, true, false);
+    assert!(terrain_path(&r, &mut c, (27, 17), false, true) >= 4);
+    step(
+        &mut c,
+        GameButton::Down,
+        INLAND,
+        (27, 18),
+        "ordinary ledge lip",
+    );
+    step(
+        &mut c,
+        GameButton::Down,
+        INLAND,
+        (27, 20),
+        "native dry descent",
+    );
+    assert_eq!(kind(&r, INLAND, (27, 20)), "FLOOR");
+    for _ in 0..3 {
+        c.press(GameButton::Up)
+            .expect("native reverse ledge denial");
+        c.wait_frames(16).expect("settled reverse attempt");
+        settle(&mut c);
+        assert_at(
+            &mut c,
+            INLAND,
+            (27, 20),
+            "Cedar reverse ledge remains blocked",
+        );
+    }
+}
+
+#[path = "bemidji_northwoods_grass.rs"]
+mod bemidji_northwoods_grass;
+
+#[path = "detroit_approach_grass.rs"]
+mod detroit_approach_grass;
+
+#[path = "ely_shore_pass_grass.rs"]
+mod ely_shore_pass_grass;
+
+#[path = "mille_lacs_grass.rs"]
+mod mille_lacs_grass;
+
+#[path = "itasca_grass.rs"]
+mod itasca_grass;

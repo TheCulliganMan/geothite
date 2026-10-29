@@ -1,6 +1,6 @@
 # Northwoods overworld sprite coverage
 
-**224 active species · 101 families · 1,344 native frames required.** 224 accepted; 0 unfinished.
+**225 active species · 102 families · 1,350 native frames required.** 225 accepted; 0 unfinished.
 
 Six 16×16 frames, three visible RGB555 inks plus transparent index 0, individual normal/shiny palettes and 384-byte 2bpp banks.
 All sources, prompts and failed attempts are retained. Native acceptance is separate from pack publication.
@@ -225,9 +225,10 @@ All sources, prompts and failed attempts are retained. Native acceptance is sepa
 | 216 | MN_153 | Mosquitan | MN_F072 | BUG / POISON | accepted |
 | 217 | MN_095 | Babehemoth | MN_F044 | GROUND / FAIRY | accepted |
 | 218 | MN_096 | Kettlurk | MN_F045 | WATER / GHOST | accepted |
-| 219 | MN_097 | Pepivern | MN_F046 | WATER / DRAGON | accepted |
-| 220 | MN_098 | Bunjant | MN_F047 | GRASS / FIGHTING | accepted |
-| 221 | MN_099 | Vergloom | MN_F048 | DARK / GRASS | accepted |
-| 222 | MN_248 | Strandrak | MN_F114 | DRAGON / GROUND | accepted |
-| 223 | MN_100 | Icemyth | MN_F049 | ICE / PSYCHIC | accepted |
-| 224 | MN_250 | Flarkindle | MN_F116 | GHOST / FAIRY | accepted |
+| 219 | MN_319 | Verdigrim | MN_F145 | STEEL / POISON | accepted |
+| 220 | MN_097 | Pepivern | MN_F046 | WATER / DRAGON | accepted |
+| 221 | MN_098 | Bunjant | MN_F047 | GRASS / FIGHTING | accepted |
+| 222 | MN_099 | Vergloom | MN_F048 | DARK / GRASS | accepted |
+| 223 | MN_248 | Strandrak | MN_F114 | DRAGON / GROUND | accepted |
+| 224 | MN_100 | Icemyth | MN_F049 | ICE / PSYCHIC | accepted |
+| 225 | MN_250 | Flarkindle | MN_F116 | GHOST / FAIRY | accepted |

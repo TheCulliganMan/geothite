@@ -89,6 +89,8 @@ The [approved replacement plan](expansion/20261027-eleven-generation.json) adds 
 
 | 043, 044, 318 | Jiglet — Steel/Water → Trollure — Steel/Water → Crappeller — Steel/Water | Living fishing lure: a painted jig with a hook tail becomes a fin-spinning lure, then a broad crappie-patterned adult with a large crown spinner blade. |
 
+| 319 | Verdigrim — Steel/Poison | Legendary wolf formed from Minnesota-inspired glacial float copper, with green patina and smooth copper high points. Ojibwe wolf-as-companion teachings inform its character. Team Lode exposes it during excavation; its green poisonous discharge and heavy channel-sealing tail counter Kettlurk's returning current. [Design and native art](sprites/mn-f145/DESIGN.md); playable story integration pending. |
+
 ## Two-stage families
 
 | IDs | Species and types | Theme and body transformation |

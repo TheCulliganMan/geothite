@@ -5,6 +5,10 @@ mod native_city_ports;
 mod minnesota_fossils;
 #[path = "tests/minnesota_castorock.rs"]
 mod minnesota_castorock;
+#[path = "tests/minnesota_starter_return.rs"]
+mod minnesota_starter_return;
+#[path = "tests/grand_marais_partner_retry.rs"]
+mod grand_marais_partner_retry;
 #[path = "tests/dialogue_overhaul.rs"]
 mod dialogue_overhaul;
 #[path = "tests/dialogue_scene_fixtures.rs"]

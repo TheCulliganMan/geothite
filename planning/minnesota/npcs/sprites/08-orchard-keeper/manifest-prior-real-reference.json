@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "id": "MN_ORCHARD_KEEPER",
+  "name": "ORCHARD KEEPER POMONA",
+  "status": "accepted-native-playable",
+  "overworld_frames": 6,
+  "overworld_size": [
+    16,
+    16
+  ],
+  "battle_size": [
+    56,
+    56
+  ],
+  "palette_rgb555": [
+    32767,
+    22399,
+    8372,
+    0
+  ],
+  "source": "native-pixels-v2.json",
+  "placement": "placement-v1.json",
+  "pack": "content-packs/minnesota-npcs-hand-09-v01.crystalpack",
+  "parent": "content-packs/minnesota-npcs-hand-08-v03.crystalpack",
+  "runtime_checks": {
+    "one_controller_test_passed": true,
+    "talk_and_input_ownership": true,
+    "battle_turn_and_pp": true,
+    "battle_save_load": true,
+    "actual_victory_and_defeat_flag_before_render_capture": true,
+    "post_battle_talk": true,
+    "existing_trainers_and_assets_preserved": true
+  },
+  "manual_visual_review": "Six directly hand-authored native grids inspected at 1x and 8x and actual Rochester capture. Broad banded straw hat, enlarged face, twin side braids, burgundy apron, anatomically consistent raised apple and basket, distinct tied rear apron and real lifted-foot stride. Basket bottom preserved during walking. Full controller encounter passed; battle rows and palette unchanged.",
+  "evidence_sha256": {
+    "planning/minnesota/npcs/sprites/08-orchard-keeper/native-pixels-v2.json": "988648b3d24724cf782d1a1aa6fcff0c6a475d0d3230563c1b16af33d11b12aa",
+    "planning/minnesota/npcs/sprites/08-orchard-keeper/placement-v1.json": "455618c403978e9af421520f382ceaf7a5c90f018dd1f890830c9bf527a803e8",
+    "content-packs/minnesota-npcs-hand-09-v01.crystalpack": "70d8967e4e6a5329fae3a5f71bf0bda2b718a004c011c946b8a7f5b7d3dc45ae",
+    "target/npc-sprites/orchard/controller-hand-v01.log": "a69e87eb54ac47b28dd6e9860827ce85465faf070ce1d09bcd5348c388e96061",
+    "target/npc-sprites/orchard/gameplay-hand-v01/original-npc-trainer-intro.png": "1a9949a9d10183c2f0d19bb67ab03ab474f14feb2310cdb7faac3bac41f4700c",
+    "target/npc-sprites/orchard/gameplay-hand-v01/original-npc-first-turn.png": "aedd3754c579f7a1208c45a60114c9144d2da061a0a68f7e446980269d25ceed",
+    "target/npc-sprites/orchard/gameplay-hand-v01/original-npc-overworld-state.png": "7f453ff029b9050858c441eb632e8aeb3ae5734ae196e3c9e7a79a57788174fd",
+    "target/npc-sprites/orchard/hand-v2/comparison.png": "3b7c5bf6fac3d86d4bf84e6b6a7941996be27c402d339de85c360e001db21a6a",
+    "target/npc-sprites/orchard/hand-v2/overworld-review.png": "2bbedc0ac38a4a0b7dea3bbcaba02ab6fbf55e22166439daa6cbaffdaf7b467d",
+    "target/npc-sprites/orchard/hand-v2/overworld-review-8x.png": "41f3ff3bf8d428d7ee4083fad45b129172f8deef475d5bfcd8c6b2db831aa5d8"
+  },
+  "overworld_revision": "hand-edited-v2",
+  "previous_visual_acceptance_reopened_by_user": true
+}

@@ -1,3 +1,9 @@
+> Current grass review: [R20 verification](../revisions/route-grass-v01/current-r20-v01/README.md).
+> Five metatiles add a six-step grassy camp climb with dry ledge descent, plus a
+> three-step western meadow crossing each way. Eastern neck and bridges remain.
+> Four native cases, 15 stdio, audio and actual 2D pass. Other regional links and
+> the separate Grand Marais cedar warmth correction remain open.
+
 # Voyageurs Border Loop — source review and integration contract
 
 ## Current executed native evidence — 2026-10-26

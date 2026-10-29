@@ -43,7 +43,6 @@ fn arrival() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
     ] {
         assert!(event(&c, flag), "played prerequisite {flag}");
     }
-    assert!(!event(&c, RESTORED));
     let s = c.snapshot().expect("settled northern checkpoint");
     assert!(s.battle.is_none() && s.ui.text.is_none() && s.ui.menu.is_none());
     assert!(matches!(
@@ -53,12 +52,108 @@ fn arrival() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
     (root, r, c)
 }
 
+fn walk_cedar(c: &mut VisibleShellController, r: &CrystalRuntime, target: (i16, i16)) {
+    use std::collections::{BTreeMap, BTreeSet, VecDeque};
+
+    let map = &r.data().maps["MnMaraisCedarApproach"];
+    let snapshot = c.snapshot().expect("current Cedar approach");
+    let start = (snapshot.overworld.tile.x, snapshot.overworld.tile.y);
+    let blocked = map
+        .objects
+        .iter()
+        .map(|o| (o.x as i16, o.y as i16))
+        .collect::<BTreeSet<_>>();
+    let mut parents = BTreeMap::from([(start, (start, GameButton::A))]);
+    let mut queue = VecDeque::from([start]);
+    while let Some((x, y)) = queue.pop_front() {
+        if (x, y) == target {
+            break;
+        }
+        for (next, button) in [
+            ((x - 1, y), GameButton::Left),
+            ((x + 1, y), GameButton::Right),
+            ((x, y - 1), GameButton::Up),
+            ((x, y + 1), GameButton::Down),
+        ] {
+            let (xx, yy) = next;
+            if xx < 0
+                || yy < 0
+                || xx >= map.attributes.width as i16 * 2
+                || yy >= map.attributes.height as i16 * 2
+                || blocked.contains(&next)
+                || parents.contains_key(&next)
+            {
+                continue;
+            }
+            let block =
+                map.blocks[yy as usize / 2 * usize::from(map.attributes.width) + xx as usize / 2];
+            let kind = &r.data().tilesets[&map.attributes.tileset_name].collision
+                [&format!("{block:02x}")][yy as usize % 2 * 2 + xx as usize % 2];
+            if !matches!(
+                kind.as_str(),
+                "FLOOR" | "TALL_GRASS" | "BRIDGE_NS_DECK" | "BRIDGE_EW_DECK"
+            ) {
+                continue;
+            }
+            parents.insert(next, ((x, y), button));
+            queue.push_back(next);
+        }
+    }
+    assert!(parents.contains_key(&target), "current dry Cedar trail");
+    let mut route = Vec::new();
+    let mut cursor = target;
+    while cursor != start {
+        let (from, button) = parents[&cursor];
+        route.push(button);
+        cursor = from;
+    }
+    for button in route.into_iter().rev() {
+        let before = c.snapshot().expect("Cedar step").overworld.tile;
+        for _ in 0..8 {
+            press(c, button);
+            if let Some(battle) = c.snapshot().expect("Cedar encounter").battle {
+                match battle.kind {
+                    crystal_runtime::RuntimeBattleKind::Wild { .. } => {
+                        super::super::rochester::flee(c)
+                    }
+                    crystal_runtime::RuntimeBattleKind::Trainer { trainer_id, .. } => {
+                        assert!(try_battle(
+                            c,
+                            r,
+                            &trainer_id,
+                            &format!("EVENT_{trainer_id}_DEFEATED")
+                        ));
+                    }
+                    _ => panic!("unexpected Cedar battle"),
+                }
+            }
+            let after = c.snapshot().expect("Cedar return").overworld;
+            assert_eq!(after.map_name, "MnMaraisCedarApproach");
+            if after.tile != before {
+                break;
+            }
+        }
+        assert_ne!(
+            c.snapshot().expect("native Cedar movement").overworld.tile,
+            before
+        );
+    }
+    at(c, "MnMaraisCedarApproach", target);
+}
+
 fn coast(c: &mut VisibleShellController, r: &CrystalRuntime, root: &AssetRoot) {
     if c.snapshot().expect("coastal departure").overworld.map_name == "MnDuluthHarborWorkshop" {
         walk_to(c, r, (8, 10));
-        travel(c, GameButton::Down, "MnDuluth", (48, 36));
-        care(c, r, "MnDuluth", (37, 12));
-        walk_to(c, r, (32, 4));
+        travel(c, GameButton::Down, "MnDuluth", (72, 42));
+        care(c, r, "MnDuluth", (69, 32));
+        let north = r.data().maps["MnDuluth"]
+            .attributes
+            .connections
+            .iter()
+            .find(|link| link.direction == "north" && link.target_map == "MnR11C00R03")
+            .expect("current Duluth northern port");
+        let x = 46 + i16::try_from(north.offset * 2).expect("north port offset");
+        walk_to(c, r, (x, 4));
         travel(c, GameButton::Up, "MnR11C00R03", (46, 47));
         // Optional Ryan visit on the real Baptism River bank.
         road(c, r, 11, (23, 24));
@@ -79,14 +174,10 @@ fn coast(c: &mut VisibleShellController, r: &CrystalRuntime, root: &AssetRoot) {
         continue_in_place(c, root, r, "campaign-ryans-house");
         walk_to(c, r, (5, 6));
         travel(c, GameButton::Down, "MnR11C00R00", (23, 22));
-        road(c, r, 11, (42, 4));
-        travel(c, GameButton::Right, "MnGrandMaraisShoreGate", (1, 4));
-        walk_to(c, r, (5, 4));
-        press(c, GameButton::Up);
-        press(c, GameButton::A);
-        finish(c);
-        walk_to(c, r, (8, 4));
-        travel(c, GameButton::Right, "MnGrandMarais", (8, 18));
+        // The accepted compact coast reaches town by its walking seam.
+        road(c, r, 11, (71, 8));
+        travel(c, GameButton::Right, "MnGrandMarais", (0, 8));
+        travel(c, GameButton::Right, "MnGrandMarais", (3, 8));
         continue_in_place(c, root, r, "campaign-grand-marais-arrival");
     }
     if c.snapshot().expect("Gunflint departure").overworld.map_name == "MnGrandMarais" {
@@ -101,9 +192,15 @@ fn coast(c: &mut VisibleShellController, r: &CrystalRuntime, root: &AssetRoot) {
         assert_eq!(c.shell.shell.session().state().money, money);
         walk_to(c, r, (3, 6));
         travel(c, GameButton::Down, "MnGrandMarais", (15, 10));
-        walk_to(c, r, (4, 8));
-        travel(c, GameButton::Left, "MnR12C01R01", (63, 8));
-        road(c, r, 12, (0, 56));
+        walk_to(c, r, (18, 4));
+        travel(c, GameButton::Up, "MnMaraisCedarApproach", (26, 23));
+        walk_cedar(c, r, (25, 14));
+        travel(c, GameButton::Left, "MnGrandMaraisShoreGate", (8, 4));
+        walk_to(c, r, (1, 4));
+        travel(c, GameButton::Left, "MnMaraisCedarApproach", (18, 14));
+        walk_cedar(c, r, (0, 14));
+        travel(c, GameButton::Left, "MnR12C00R01", (63, 6));
+        road(c, r, 12, (0, 28));
         travel(c, GameButton::Left, CAMP, (63, 24));
         travel(c, GameButton::Left, CAMP, (60, 24));
         continue_in_place(c, root, r, "campaign-boundary-arrival");
@@ -133,13 +230,14 @@ fn refusal(c: &mut VisibleShellController, r: &CrystalRuntime) {
         }
         press(c, GameButton::Down);
     }
-    assert!(
+    assert_eq!(
         c.snapshot()
             .expect("restoration prerequisite")
             .ui
             .text
-            .and_then(|t| t.asm_text)
-            .is_some_and(|t| t.contains("Restore the survey"))
+            .expect("shutdown directions")
+            .label,
+        "MnBoundaryLeagueCheckRestoredText"
     );
     press(c, GameButton::Down);
     at(c, CAMP, (32, 42));
@@ -189,8 +287,39 @@ fn northstar_campaign_boosted_coast_chief_relay_and_ely_trail() {
     let _ = finale();
 }
 
+fn departure(c: &mut VisibleShellController, r: &CrystalRuntime, root: &AssetRoot) {
+    receiver(c, r);
+    assert_eq!(
+        c.snapshot()
+            .expect("repeat receiver")
+            .ui
+            .text
+            .expect("text")
+            .label,
+        "MnBoundarySurveyReceiverAlreadyText"
+    );
+    finish(c);
+    interact(c, r, (3, 7));
+    finish(c);
+    walk_to(c, r, (9, 10));
+    travel(c, GameButton::Down, CAMP, (43, 20));
+    walk_to(c, r, (32, 41));
+    // Walk the authored clearance trigger through input before planning any
+    // road travel. The local planner deliberately avoids coordinate events.
+    travel(c, GameButton::Down, CAMP, (32, 44));
+    travel(c, GameButton::Down, "MnR13C00R00", (30, 0));
+    continue_in_place(c, root, r, "campaign-league-road");
+    road(c, r, 13, (34, 126));
+    at(c, "MnR13C00R02", (34, 30));
+    continue_in_place(c, root, r, "campaign-ely-frontier");
+}
+
 pub(super) fn finale() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
     let (root, r, mut c) = arrival();
+    if event(&c, RESTORED) {
+        departure(&mut c, &r, &root);
+        return (root, r, c);
+    }
     boost(&mut c, &r);
     coast(&mut c, &r, &root);
     if c.snapshot().expect("shelter approach").overworld.map_name == CAMP {
@@ -237,7 +366,24 @@ pub(super) fn finale() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
     walk_to(&mut c, &r, (8, 5));
     press(&mut c, GameButton::Right);
     press(&mut c, GameButton::A);
-    assert!(pages(&mut c, "MnBoundarySurveyChiefAfterText").contains("have not changed my mind"));
+    let chief_reply = pages(&mut c, "MnBoundarySurveyChiefAfterText");
+    if r.data()
+        .story_event_script_constants
+        .global
+        .contains_key("EVENT_MN_TAMARACK_INTRO")
+    {
+        let expected = super::super::northstar_dialogue::canonical_pages(
+            "MS11",
+            "MnBoundarySurveyChiefAfterText",
+        )
+        .join(" ")
+        .split_whitespace()
+        .collect::<Vec<_>>()
+        .join(" ");
+        assert_eq!(chief_reply.trim(), expected);
+    } else {
+        assert!(chief_reply.contains("have not changed my mind"));
+    }
     finish(&mut c);
     walk_to(&mut c, &r, (8, 10));
     travel(&mut c, GameButton::Down, CAMP, (43, 20));
@@ -321,26 +467,6 @@ pub(super) fn finale() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
         );
     }
     continue_in_place(&mut c, &root, &r, "campaign-survey-restored");
-    receiver(&mut c, &r);
-    assert_eq!(
-        c.snapshot()
-            .expect("repeat receiver")
-            .ui
-            .text
-            .expect("text")
-            .label,
-        "MnBoundarySurveyReceiverAlreadyText"
-    );
-    finish(&mut c);
-    interact(&mut c, &r, (3, 7));
-    finish(&mut c);
-    walk_to(&mut c, &r, (9, 10));
-    travel(&mut c, GameButton::Down, CAMP, (43, 20));
-    walk_to(&mut c, &r, (32, 41));
-    travel(&mut c, GameButton::Down, "MnR13C00R00", (30, 0));
-    continue_in_place(&mut c, &root, &r, "campaign-league-road");
-    road(&mut c, &r, 13, (34, 126));
-    at(&mut c, "MnR13C00R02", (34, 30));
-    continue_in_place(&mut c, &root, &r, "campaign-ely-frontier");
+    departure(&mut c, &r, &root);
     (root, r, c)
 }

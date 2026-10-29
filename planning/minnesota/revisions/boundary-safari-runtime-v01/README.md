@@ -6,22 +6,27 @@ return transactions, movement accounting and replayable capture commands.
 Committed walking/Surf and native rods now generate actual wildlife through
 native held-item and DV routines. Saved ranger confirmation and capture cursors
 use the shared controller, bitmap renderer and read-only TUI projection.
-Eleven preserve component cases pass on the730-map R15 habitat/cyclist parent,
-alongside25 native fishing tests and12 Safari core/save checks. Production
-controller journeys cover ranger-to-retirement and native rod-to-capture/Continue;
-a separate generated-grass catch proves correct native caught-area delivery.
-Remaining movement/travel paths, PC delivery through the controller and complete
-post-catch presentation still require acceptance before enabling admission.
+Production-controller journeys now cover ranger-to-retirement, native fishing,
+party and selected-PC capture, Dex/nickname screens, two actual grassy portages,
+Surf launches/dismounts, walking/water seams, the real cabin and 500-step expiry.
+The nine-case current-parent replay passes using the default test profile.
+Remaining movement/travel paths and throw/shake/audio presentation still
+require acceptance before enabling admission.
 The battle display now has native command/result captures, matching source-art
 pixels and a regression for both trainer back sprites and return to exploration.
 See [VERIFICATION.md](VERIFICATION.md) for exact inputs and limits. The free Boundary Waters hub,
 Q07 shelter and R12/R13/R20 junction remain outside the expedition.
 
 The current unselected review is
-`content-packs/minnesota-safari-runtime-review-r15-v02.crystalpack`, derived from
-`minnesota-current-habitats-cyclists-r15-v01.crystalpack`. Rust publication
+`content-packs/minnesota-safari-runtime-review-detroit-v03.crystalpack`, derived from
+`minnesota-current-grass-detroit-approach-v01.crystalpack`. Rust publication
 verified exact preservation of unrelated data, runtime art and compiled audio,
 plus strict readback. It does not change the main regional selector.
+See [TRAVEL.md](TRAVEL.md) for exact lake/portage/cabin coordinates, the executed
+publication path and remaining travel work. The selected main has subsequently
+advanced beyond this parent; promotion requires checking the live
+[world selector](../../world.json) and rebasing. Older R15 review packs remain
+historical evidence.
 
 ## Battle presentation contract
 
@@ -32,6 +37,8 @@ slot, with its native name, level, gender and HP display. Balls and steps sit
 beside the trainer; the lower command window contains Ball, Bait, Rock and Run.
 Results keep this same battle composition until acknowledged. Returning to
 exploration releases the battle display and removes the trainer back sprite.
+Budget exhaustion and ranger retirement keep the field visible with the normal
+field-dialogue window; they no longer display an empty trainer battle.
 The capture engine continues to own these commands and saved results; this
 presentation does not send out a party member or offer ordinary combat moves.
 

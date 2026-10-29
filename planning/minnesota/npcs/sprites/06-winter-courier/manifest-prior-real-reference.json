@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "id": "MN_WINTER_COURIER",
+  "name": "COURIER IVAR",
+  "status": "accepted-native-playable",
+  "overworld_frames": 6,
+  "overworld_size": [
+    16,
+    16
+  ],
+  "battle_size": [
+    56,
+    56
+  ],
+  "palette_rgb555": [
+    32767,
+    22431,
+    4500,
+    0
+  ],
+  "source": "native-pixels-v2.json",
+  "placement": "placement-v1.json",
+  "pack": "content-packs/minnesota-npcs-hand-07-v01.crystalpack",
+  "parent": "content-packs/minnesota-npcs-hand-06-v01.crystalpack",
+  "runtime_checks": {
+    "one_controller_test_passed": true,
+    "talk_and_input_ownership": true,
+    "battle_turn_and_pp": true,
+    "battle_save_load": true,
+    "actual_victory_and_defeat_flag_before_render_capture": true,
+    "post_battle_talk": true,
+    "existing_trainers_and_assets_preserved": true
+  },
+  "manual_visual_review": "Directly redrew all six grids, preserving brown skin while adding clear eye highlights, fur earflaps and a separate rear hat seam. Rebuilt the dark coat, scarf, crossbody strap, sealed letter and leather satchel with anatomical side continuity. The profile has one eye and the rear has no facial marks. Purposeful leading/rear-foot stride replaces foot-spreading. Reviewed native-size/enlarged comparisons and actual snowy International Falls follow-up capture. Battle art, palette and gameplay unchanged.",
+  "evidence_sha256": {
+    "planning/minnesota/npcs/sprites/06-winter-courier/native-pixels-v2.json": "cacceffbb4d59b11b76927db441afa66627bf294f607bba3dd3d39ce0aa8490b",
+    "planning/minnesota/npcs/sprites/06-winter-courier/placement-v1.json": "287183b95148d388c832cfed9980d92ddca4e5a4161790c2a71b516c4fde2b00",
+    "content-packs/minnesota-npcs-hand-07-v01.crystalpack": "2097271e374e6359718928a1de13676548342555b529100b80ef885a1fdf37d7",
+    "target/npc-sprites/courier/controller-hand-v01.log": "ccd28a5c4b17aaeb268f4c51a6477262acd6e98c4b3b517e8cf98c28b4cdce67",
+    "target/npc-sprites/courier/gameplay-hand-v01/original-npc-trainer-intro.png": "22f68ae55213dbba3a1833a9593381cb6991a7b2a8b4336c653b2d1ced026785",
+    "target/npc-sprites/courier/gameplay-hand-v01/original-npc-first-turn.png": "21dba513eeb972a710ae91e4e7ea28d364960f2de585311f6f103a51e5b2b06a",
+    "target/npc-sprites/courier/gameplay-hand-v01/original-npc-overworld-state.png": "daae9ca34e611d4337d04931eecd899fa686bbeb89daf1d429ebac843fd37493",
+    "target/npc-sprites/courier/hand-v1/comparison.png": "0643f30c01470bc8a68b6d90f0450b2fd39f5b5416abf056d8cf9fa3e402c0ad",
+    "target/npc-sprites/courier/hand-v1/overworld-review.png": "8dc7bc5be312b2c11507e58c12f0088b473955f943e5b4c6e57584bcfafaa2ff",
+    "target/npc-sprites/courier/hand-v1/overworld-review-8x.png": "66bf7766b06ad29f8469e4bc517095c2c37cacff73fd66222d9f9eb608b9b54d"
+  },
+  "overworld_revision": "hand-edited-v2",
+  "previous_visual_acceptance_reopened_by_user": true
+}

@@ -17937,6 +17937,192 @@
           "character": "Driftile: A sliding leaf puzzle moves three disconnected voices into empty spaces: one high query, one low rectangular reply and a split held ending that never bounces back."
         }
       }
+    },
+    "MN_F145": {
+      "intent": "Verdigrim: A deep chest warning opens into a long rising wolf howl, holds under copper resonance, then sinks into one short protective growl. Unequal low companion and brief throat rasp; no feline snarl or watery whistle.",
+      "score": {
+        "pulse1": {
+          "delay": 0,
+          "duty": [
+            2,
+            2,
+            2,
+            2
+          ],
+          "notes": [
+            [
+              8,
+              185,
+              11,
+              0
+            ],
+            [
+              29,
+              265,
+              14,
+              0
+            ],
+            [
+              24,
+              410,
+              14,
+              0
+            ],
+            [
+              5,
+              0,
+              0,
+              0
+            ],
+            [
+              10,
+              205,
+              12,
+              0
+            ],
+            [
+              12,
+              130,
+              8,
+              0
+            ]
+          ],
+          "contours": {
+            "0": [
+              255,
+              14
+            ],
+            "1": [
+              410,
+              14
+            ],
+            "2": [
+              235,
+              9
+            ],
+            "4": [
+              145,
+              8
+            ],
+            "5": [
+              85,
+              0
+            ]
+          },
+          "duties": {
+            "1": [
+              1,
+              1,
+              1,
+              1
+            ],
+            "4": [
+              2,
+              1,
+              2,
+              1
+            ]
+          }
+        },
+        "pulse2": {
+          "delay": 13,
+          "duty": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "notes": [
+            [
+              25,
+              112,
+              5,
+              0
+            ],
+            [
+              23,
+              195,
+              7,
+              0
+            ],
+            [
+              7,
+              0,
+              0,
+              0
+            ],
+            [
+              19,
+              144,
+              6,
+              0
+            ]
+          ],
+          "contours": {
+            "0": [
+              185,
+              7
+            ],
+            "1": [
+              120,
+              4
+            ],
+            "3": [
+              88,
+              0
+            ]
+          },
+          "duties": {}
+        },
+        "noise": {
+          "delay": 0,
+          "notes": [
+            [
+              5,
+              69,
+              8,
+              1
+            ],
+            [
+              19,
+              102,
+              3,
+              0
+            ],
+            [
+              23,
+              117,
+              2,
+              0
+            ],
+            [
+              7,
+              0,
+              0,
+              0
+            ],
+            [
+              8,
+              85,
+              7,
+              1
+            ],
+            [
+              15,
+              117,
+              3,
+              2
+            ]
+          ]
+        }
+      },
+      "species": {
+        "MN_319": {
+          "pitch": 0,
+          "length": 256,
+          "character": "Verdigrim: A deep chest warning opens into a long rising wolf howl, holds under copper resonance, then sinks into one short protective growl. Unequal low companion and brief throat rasp; no feline snarl or watery whistle."
+        }
+      }
     }
   }
 }

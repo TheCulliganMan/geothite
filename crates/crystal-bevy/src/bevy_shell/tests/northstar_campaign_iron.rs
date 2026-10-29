@@ -42,6 +42,7 @@ fn arrival() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
         s.overworld.map_name.as_str(),
         "MnBemidji"
             | "MnR09Cave1F"
+            | "MnIronDrillCore"
             | "MnGrandRapidsSurveyDepot"
             | "MnDuluth"
             | "MnDuluthGym"
@@ -51,6 +52,18 @@ fn arrival() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
 }
 
 fn mine(c: &mut VisibleShellController, r: &CrystalRuntime, root: &AssetRoot) {
+    if c.snapshot()
+        .expect("completed drill Continue")
+        .overworld
+        .map_name
+        == "MnIronDrillCore"
+    {
+        assert!(event(c, METER));
+        let loaded = super::super::northstar_ice_lair::save(c, root, r, "campaign-crew-return");
+        let borrowed = std::mem::replace(c, loaded);
+        *c = super::super::northstar_drill_lair::leave_chapter(borrowed, r);
+        continue_in_place(c, root, r, "campaign-mine-return");
+    }
     if c.snapshot().expect("mine approach").overworld.map_name == "MnBemidji" {
         care(c, r, "MnBemidji", (31, 10));
         walk_to(c, r, (43, 25));
@@ -60,7 +73,7 @@ fn mine(c: &mut VisibleShellController, r: &CrystalRuntime, root: &AssetRoot) {
         travel(c, GameButton::Up, "MnR09Cave1F", (13, 18));
     }
     if r.data().maps.contains_key("MnBoundaryIntake") && !event(c, METER) {
-        walk_to(c, r, (13, 18));
+        super::super::northstar_ice_lair::walk(c, r, (13, 18));
         let loaded = super::super::northstar_ice_lair::save(c, root, r, "campaign-arc-mine-entry");
         let mut borrowed = std::mem::replace(c, loaded);
         borrowed = super::super::northstar_drill_lair::play_chapter(borrowed, root, r);
@@ -84,7 +97,7 @@ fn mine(c: &mut VisibleShellController, r: &CrystalRuntime, root: &AssetRoot) {
             continue_in_place(c, root, r, "campaign-instrument-custody");
         }
     }
-    walk_to(c, r, (13, 18));
+    super::super::northstar_ice_lair::walk(c, r, (13, 18));
     travel(c, GameButton::Down, "MnR09C00R00", (40, 42));
     road(c, r, 9, (127, 24));
     travel(c, GameButton::Right, "MnGrandRapids", (0, 24));
@@ -126,15 +139,22 @@ fn handover(c: &mut VisibleShellController, r: &CrystalRuntime, root: &AssetRoot
     walk_to(c, r, (43, 24));
     travel(c, GameButton::Right, "MnR10C00R00", (0, 10));
     road(c, r, 10, (95, 24));
-    travel(c, GameButton::Right, "MnDuluth", (0, 24));
-    travel(c, GameButton::Right, "MnDuluth", (3, 24));
-    care(c, r, "MnDuluth", (37, 12));
+    let connection = r.data().maps["MnR10C01R00"]
+        .attributes
+        .connections
+        .iter()
+        .find(|link| link.direction == "east" && link.target_map == "MnDuluth")
+        .expect("published Duluth inlet");
+    let y = 24 - i16::try_from(connection.offset * 2).expect("native inlet offset");
+    travel(c, GameButton::Right, "MnDuluth", (0, y));
+    travel(c, GameButton::Right, "MnDuluth", (3, y));
+    care(c, r, "MnDuluth", (69, 32));
     continue_in_place(c, root, r, "campaign-duluth-arrival");
 }
 
 fn receiver(c: &mut VisibleShellController, r: &CrystalRuntime) {
     if c.snapshot().expect("harbor approach").overworld.map_name == "MnDuluth" {
-        walk_to(c, r, (48, 36));
+        walk_to(c, r, (72, 42));
         travel(c, GameButton::Up, "MnDuluthHarborWorkshop", (8, 9));
     }
     walk_to(c, r, (10, 5));
@@ -157,8 +177,8 @@ fn gym(c: &mut VisibleShellController, r: &CrystalRuntime, root: &AssetRoot) {
         finish(c);
         assert!(!event(c, SIGNAL));
         walk_to(c, r, (8, 10));
-        travel(c, GameButton::Down, "MnDuluth", (48, 36));
-        walk_to(c, r, (16, 12));
+        travel(c, GameButton::Down, "MnDuluth", (72, 42));
+        walk_to(c, r, (48, 32));
         travel(
             c,
             GameButton::Up,
@@ -179,10 +199,10 @@ fn gym(c: &mut VisibleShellController, r: &CrystalRuntime, root: &AssetRoot) {
         interact(c, r, northstar_earned_gyms::opponent(r, 8, id));
         assert!(try_battle(c, r, id, &flag), "played Harbor opponent {id}");
         continue_in_place(c, root, r, &format!("campaign-{id}-win"));
-        northstar_earned_gyms::leave(c, r, 8, "MnDuluth", (16, 12));
-        care(c, r, "MnDuluth", (37, 12));
+        northstar_earned_gyms::leave(c, r, 8, "MnDuluth", (48, 32));
+        care(c, r, "MnDuluth", (69, 32));
         if id != "MN_GYM_8" {
-            walk_to(c, r, (16, 12));
+            walk_to(c, r, (48, 32));
             travel(
                 c,
                 GameButton::Up,
@@ -221,7 +241,7 @@ pub(super) fn iron() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
             .overworld
             .map_name
             .as_str(),
-        "MnBemidji" | "MnR09Cave1F"
+        "MnBemidji" | "MnR09Cave1F" | "MnIronDrillCore"
     ) {
         mine(&mut c, &r, &root);
     }
@@ -232,48 +252,64 @@ pub(super) fn iron() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
     if !event(&c, "EVENT_MN_GYM_8_DEFEATED") {
         gym(&mut c, &r, &root);
     } else if c.snapshot().expect("gym exit").overworld.map_name == "MnDuluthGym" {
-        northstar_earned_gyms::leave(&mut c, &r, 8, "MnDuluth", (16, 12));
+        northstar_earned_gyms::leave(&mut c, &r, 8, "MnDuluth", (48, 32));
     }
     if c.snapshot().expect("reveal approach").overworld.map_name == "MnDuluth" {
-        walk_to(&mut c, &r, (48, 36));
+        walk_to(&mut c, &r, (72, 42));
         travel(&mut c, GameButton::Up, "MnDuluthHarborWorkshop", (8, 9));
     }
     walk_to(&mut c, &r, (10, 5));
     continue_in_place(&mut c, &root, &r, "campaign-harbor-reveal-ready");
     receiver(&mut c, &r);
-    let raw = c
-        .shell
-        .shell
-        .presentation_snapshot()
-        .expect("receiver source");
-    let pages = visible_field_dialog_pages(&raw, &c.shell).expect("canonical reveal pages");
-    assert_eq!(pages.len(), 10);
-    for phrase in [
-        "KETTLURK",
-        "BOUNDARY WATERS",
-        "ICE kidnaps people",
-        "drainage plan",
-    ] {
-        assert!(
-            pages.iter().any(|p| p.contains(phrase)),
-            "missing story fact {phrase}"
-        );
-    }
     let before = c.shell.shell.session().state().clone();
-    for page in pages {
-        assert!(!event(&c, SIGNAL));
-        assert_eq!(
-            c.snapshot()
-                .expect("reveal page")
-                .ui
-                .text
-                .as_ref()
-                .and_then(|t| t.asm_text.as_deref()),
-            Some(page.as_str())
-        );
-        press(&mut c, GameButton::Down);
-        at(&mut c, "MnDuluthHarborWorkshop", (10, 5));
-        press(&mut c, GameButton::A);
+    if r.data()
+        .story_event_script_constants
+        .global
+        .contains_key("EVENT_MN_TAMARACK_INTRO")
+    {
+        for label in [
+            "MN_HARBOR_RECEIVERText",
+            "MnOverhaulHarborEvidenceText",
+            "MnOverhaulHarborReactionText",
+            "MnOverhaulHarborDirectionsText",
+        ] {
+            super::super::northstar_ice_lair::page(&mut c, label);
+            super::super::northstar_dialogue::acknowledge(&mut c, "MS10", label, SIGNAL);
+        }
+    } else {
+        let raw = c
+            .shell
+            .shell
+            .presentation_snapshot()
+            .expect("receiver source");
+        let pages = visible_field_dialog_pages(&raw, &c.shell).expect("canonical reveal pages");
+        assert_eq!(pages.len(), 10);
+        for phrase in [
+            "KETTLURK",
+            "BOUNDARY WATERS",
+            "ICE kidnaps people",
+            "drainage plan",
+        ] {
+            assert!(
+                pages.iter().any(|p| p.contains(phrase)),
+                "missing story fact {phrase}"
+            );
+        }
+        for page in pages {
+            assert!(!event(&c, SIGNAL));
+            assert_eq!(
+                c.snapshot()
+                    .expect("reveal page")
+                    .ui
+                    .text
+                    .as_ref()
+                    .and_then(|t| t.asm_text.as_deref()),
+                Some(page.as_str())
+            );
+            press(&mut c, GameButton::Down);
+            at(&mut c, "MnDuluthHarborWorkshop", (10, 5));
+            press(&mut c, GameButton::A);
+        }
     }
     if r.data().maps.contains_key("MnBoundaryIntake") {
         assert!(

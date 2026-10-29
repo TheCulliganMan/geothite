@@ -23,8 +23,8 @@ test('verified install, launcher args, reinstall preservation and corrupt downlo
   const pack = Buffer.from('synthetic installer-only pack');
   const binary = gzipSync('#!/bin/sh\nprintf "argument=%s\\n" "$@"\n');
   const launcher = await readFile(new URL('./terminal-play.sh', import.meta.url));
-  let corruptBinary = false, corruptPack = false, release = 'test-1';
-  const manifest = () => `release ${release}\npack ${sha(pack)}\nlauncher ${sha(launcher)}\n${target} ${sha(binary)}\n`;
+  let corruptBinary = false, corruptPack = false, release = 'test-1', packPath = '';
+  const manifest = () => `release ${release}\npack ${sha(pack)}\n${packPath ? `pack-path ${packPath}\n` : ''}launcher ${sha(launcher)}\n${target} ${sha(binary)}\n`;
   const requests = [];
   const server = createServer((req, res) => {
     requests.push(req.url);
@@ -71,6 +71,13 @@ test('verified install, launcher args, reinstall preservation and corrupt downlo
     assert.notEqual(result.code, 0); assert.match(result.output, /Content checksum mismatch/);
     result = await run('sh', [resolve('web-client/install.sh'), '--no-play'], { ...env, GEOTHITE_HOME: 'relative' });
     assert.notEqual(result.code, 0); assert.match(result.output, /absolute path/);
+    corruptPack = false; packPath = 'downloads/terminal/test-1/game.crystalpack'; requests.length = 0;
+    result = await run('sh', [resolve('web-client/install.sh'), '--no-play'], { ...env, GEOTHITE_HOME: join(root, 'pinned-pack') });
+    assert.equal(result.code, 0, result.output);
+    assert.ok(requests.includes('/' + packPath), 'Pinned terminal release must use its own verified pack');
+    assert.ok(!requests.includes('/realtime-clock.browser.crystalpack'), 'Browser story updates must not change a pinned terminal release');
+    packPath = '../game.crystalpack';
+    result = await install(); assert.notEqual(result.code, 0); assert.match(result.output, /Invalid content path/);
   } finally {
     server.closeAllConnections();
     await new Promise(resolve => server.close(resolve));

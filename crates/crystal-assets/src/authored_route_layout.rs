@@ -107,6 +107,8 @@ impl Layout {
         let layout: Self = serde_json::from_str(text)?;
         ensure!(layout.schema_version == 2, "unsupported editor schema");
         let expected = match layout.id.as_str() {
+            "MnLakeItasca" => ([24, 24], "mn_headwaters", "johto_8_neighbors"),
+            "MnMilleLacs" => ([24, 20], "mn_headwaters", "johto_8_neighbors"),
             "MN_R01" => ([32, 20], "johto", "johto_8_neighbors"),
             "MN_R02" => ([30, 22], "kanto", "kanto_8_neighbors"),
             "MN_R03" => ([24, 32], "mn_headwaters", "johto_8_neighbors"),
@@ -154,6 +156,9 @@ impl Layout {
             "MN_R15" => ([32, 18], "kanto", "kanto_8_neighbors"),
             "MnBoundaryWaters" => ([32, 24], "mn_boundary_safari", "johto_8_neighbors"),
             "MnGrandMarais" => ([20, 19], "mn_marais_shore", "explicit_source_edges"),
+            "MnBemidjiNorthwoods" => ([8, 14], "johto", "explicit_source_edges"),
+            "MnDetroitLakesApproach" => ([24, 18], "johto", "explicit_source_edges"),
+            "MnElyShorePass" => ([7, 12], "mn_winter_north_shore", "explicit_source_edges"),
             "MnMaraisCedarApproach" => (
                 if layout.dimensions_metatiles == [20, 12] {
                     [20, 12]
@@ -177,7 +182,10 @@ impl Layout {
                             | ("MN_R12", "mn_winter_gunflint")
                             | ("MN_R13", "mn_winter_north_shore")
                             | ("MN_R17", "mn_winter_outdoor")
-                    ))
+                    )
+                    || (layout.id == "MnMaraisCedarApproach"
+                        && layout.dimensions_metatiles == [20, 12]
+                        && layout.compiled_tileset == "mn_north_shore"))
                 && (layout.shore_fitting == expected.2
                     || (matches!(
                         layout.id.as_str(),

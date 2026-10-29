@@ -5,7 +5,26 @@
     {
       "id": "story",
       "required": "Earned opening, six motivated rival encounters, ICE/Lode escalation, complex headquarters and mine, rescue, acknowledged Boundary Waters restoration, written Elite Four/Champion/Hall of Fame.",
-      "status": "Chapter verified; genuine unboosted retained R12 journey has two badges, all HQ guards, Reed relay victory, actual enforcer victory and dispatcher returned home. The earned run has reached Minneapolis Gym; final selected-pack full campaign remains unproved.",
+      "status": "Chapter verified; the genuine unboosted retained R12 journey has four badges, all HQ guards, Reed relay/enforcer victories and the dispatcher returned home. The actual Gym4 win and its retained save are recorded in full-current-exit-resume-v02. This older diagnostic does not establish the final selected-pack full campaign, which remains unproved.",
+      "evidence": "../current-story-v01/README.md"
+    },
+    {
+      "id": "verdigrim-story",
+      "required": "Integrate the authored native float-copper wolf Verdigrim into Lode excavation: exposure and original howl, crushed test line, visible map-scoped green water, blocked Kettlurk return current, separate drill/outlet/clean-bypass controls and acknowledged crew clearance. Persist water and actor/control states through reentry and Continue. Optional level60 encounter must support refusal, escape, defeat/blackout retry until actual once-only capture, native party/PC delivery, and never gate story or require Safari admission. Preserve native2D-only presentation, Minnesota roster and existing content/audio.",
+      "status": "Asset owner reports canonical225th species/battle art/six-pose field bank and CRY_MN_319 runtime howl ready in an unselected471-map reference pack. Source handoff and story contract inspected. None of these reports establish installation on the selected730-map current-world pack. Current-parent catalog/cry/overworld/Dex-threshold composition, exact scene geometry, green-water state and full controller/MCP/Continue/visual verification remain implementation work. Direct inspection of the selected pack finds zero CRY_MN_ audio IDs; KINDLIT still binds CRY_VULPIX. Canonical build_minnesota_cries iterates all225 active source species, so full-book composition onto this parent would add225 IDs, unlike the one-voice378-program reference handoff. Verify actual composed counts/bindings and all preserved audio rather than copying the reference count. Unselected current-world verdigrim-dex-v02 composition now passes all602 audio PCM/frame/loop checks,225 original cry bindings, strict225 roster/reward alignment, preservation of729 other maps/old species/art/original377 audio, native reward fixtures including224 denial/225 success/Continue and114 rebuilt-client MCP calls with stderr0. Full excavation/water/control/encounter scene remains unimplemented; extra fifty-reward capacity/nativeTOSS case is queued. See pokemon/acquisition-v01/verdigrim-composition.md. Exact fifty-Ultra-Ball and Master Ball full-pocket/nativeTOSS/retry/Continue cases now pass, as does current-source all-target Assets/Bevy Clippy. Authored verdigrim-scene-site.json has floor-checked anchors and protected movement paths; scene scripts/art/animated green water remain uninstalled.",
+      "evidence": "../../pokemon/sprites/mn-f145/STORY-HANDOFF.md",
+      "contract": "../../pokemon/verdigrim-story.json"
+    },
+    {
+      "id": "ryan-cabin-and-gatehouse",
+      "required": "Ryan's log cabin beside a waterfall on the Baptism River, with functioning doors and readable dialogue; a native Crystal National Park or Ilex Forest style gatehouse with working passage and appropriate regional levels.",
+      "status": "The selected warm-parent Castorock child contains MnRyansHouse and MnGrandMaraisShoreGate, both 5x4 native metatiles. Historical house/gate controller and visual evidence exists; their modules are preserved exactly by the Castorock parent comparison. Current final-pack doorway, waterfall composition and passage acceptance remain to be refreshed.",
+      "evidence": "../../playable/ryans-house.md"
+    },
+    {
+      "id": "lairs-and-villain-teams",
+      "required": "Substantial ICE and Lode grunt populations, balanced active Minnesota teams using the requested leech, mosquito, slush, Cindore, Cartick and Wrigglet themes; nuanced, unequivocal villains; Silph Co level navigation with multiple floors, meaningful locked routes, telepads, clues, shortcuts and safe returns.",
+      "status": "Headquarters/mine and their story battles are authored and chapter verified, including actual HQ guard and relay/enforcer victories in the retained earned journey. Current final-pack team coverage, full lair navigation and continuous campaign acceptance remain open. Preserve the separately accepted removal of ICE from the North Shore.",
       "evidence": "../current-story-v01/README.md"
     },
     {
@@ -21,12 +40,12 @@
     {
       "id": "research",
       "required": "Caught active Minnesota species milestones at 10/25/50/100/all; exclude seen-only, retired and foreign species; once-only actual rewards, capacity failure retains claim.",
-      "status": "Verified on progression-rewards-v04: all five tiers with native bag mutations, seen/foreign exclusion, authoritative recomputation instead of saved mirrors, repeats and Continue. Full roster acquisition remains incomplete."
+      "status": "Verified on progression-rewards-v04: all five tiers with native bag mutations, seen/foreign exclusion, authoritative recomputation instead of saved mirrors, repeats and Continue. Full roster acquisition remains incomplete. Current selected-pack/source-roster alignment check fails as expected: VERDIGRIM absent from catalog and Dex membership; compiled completion threshold224 versus active source roster225. New-species integration and threshold refresh are required before accepting full completion."
     },
     {
       "id": "hms",
       "required": "All seven HMs acquired in Minnesota at intended badges, directions, legal teaching and actual field use, no inaccessible giver or circular gate.",
-      "status": "Selected current R15 field stage: all seven badge denials, actual gifts, repeats and Continue pass; Brainerd report guard, visit unlocking and actual Fly landing pass. Earned acquisition, legal teaching and actual field use of all seven remain to be proved."
+      "status": "The selected lineage inherits seven-HM badge-denial/gift/repeat/Continue cases, Brainerd report guard, visit unlocking and actual Fly landing. Its warm-parent Castorock child passes native PACK Strength teaching, reusable HM, Save/Continue and real boulder use. Earned acquisition, legal teaching and actual field use of all seven remain to be proved."
     },
     {
       "id": "fishing",
@@ -36,23 +55,23 @@
     {
       "id": "key-items",
       "required": "Every Minnesota key item has a reachable source, clear purpose, authoritative use/check, removal/retention behavior and saved progression; no orphan promises.",
-      "status": "Card key chapter verified. Grand Marais Machine Part failed-delivery recovery and no replacement after repair pass native tests; complete lighthouse hand-in and remaining key-item use audit outstanding."
+      "status": "Card key chapter verified. Grand Marais Machine Part failed-delivery recovery and no replacement after repair pass native tests; complete lighthouse hand-in and remaining key-item use audit outstanding. Fresh selected starter-return pack passes the native lighthouse full-item-pocket refusal, part retention, retry/consumption, signal repair and no-duplicate reward regression. Existing capacity fixture directly frees one item slot between attempts; it is not an earned native TOSS journey. Grand Marais Birchit delivery has a newly implemented result-2 retry guard pending build/runtime verification; actual cross-town hand-in regression is pending. Read-only key-item wiring audit finds nine regionally referenced key items, each with a script source and either script check/removal or declared field use. This scans dormant/conditional programs and does not prove earned access or actual field functionality. Machine Part/Card Key retain inherited POWER PLANT/RADIO TOWER bag descriptions, so regional wording remains to be addressed without altering other regions. Selected grand_marais_partner_retry_revision on current Mille Lacs parent now passes three native party/storage branches, actual cross-town Machine Part hand-in/consumption, signal/reward, Continue and duplicate prevention. Twenty production stdio calls pass full-storage refusal, input ownership and returned movement/Start with empty stderr;729 other maps and all original content/audio are exact. Freeing storage via native PC menus before returning to retry remains unproved."
     },
     {
       "id": "roster",
       "required": "Every intended catchable active species has a legal Minnesota acquisition path; no foreign species in touched content; completion reward is genuinely achievable.",
-      "status": "Selected730-map fossil research child:135 potential direct species,214 after all evolution edges. Both fossil roots are actually restored, evolved at34, registered caught and continued in native cases. Ten species in nine rare/landmark/prehistoric families still lack acquisition sources. Other evolution conditions and earned full Dex collection remain unproved.",
-      "evidence_command": ".local/minnesota-review-env/bin/python planning/minnesota/tools/audit_species_acquisition.py content-packs/minnesota-current-fossils-repaired-r15-v01.crystalpack"
+      "status": "Selected castorock_acquisition_revision has136 potential direct species and an upper bound of216 after all evolution edges. Fossil restoration/evolution34/Continue proof is inherited. Four warm-parent controller cases pass native Strength teaching/gate/clues, actual Castorock capture/caught-Dex/Continue, evolution32 and RUN/defeat/reverse-push return/reentry. Eight other rare families still lack sources; other evolution conditions, exclusive-choice closure and earned full Dex collection remain unproved. Selected starter_return_revision closes the Kindlit starter-choice lock through a post-Champion research gift. Three declared fixture branches pass native refusal, full-party retry, delivery, caught entry and Continue; current production stdio full-party dialogue passes. This does not prove earned Champion access or full collection. Fresh selected-pack audit against the concurrently expanded source roster reports225 active species,216 structural upper bound and nine missing families including newly added VERDIGRIM; its pack integration remains open.",
+      "evidence_command": ".local/minnesota-review-env/bin/python planning/minnesota/tools/audit_species_acquisition.py content-packs/minnesota-current-starter-return-ely-v01.crystalpack"
     },
     {
       "id": "world",
       "required": "Connected towns/routes/interiors/lairs, useful side quests and services, trainer and encounter density, badge-appropriate teams and safe return routes.",
-      "status": "Selected730-map R15 child preserves accepted terrain and interiors, adds ordinary habitats and18 optional Minneapolis cyclists. Four habitat and three cyclist controller cases pass. Continuous earned journey remains in progress."
+      "status": "The selected730-map warm-parent Castorock child inherits ordinary habitats and18 optional Minneapolis cyclists; habitat/cyclist controller cases pass on their recorded parents. Its new cave passes native gate, observations and return routes while preserving729 other maps exactly. Continuous earned journey and final world acceptance remain in progress."
     },
     {
       "id": "production",
       "required": "Selected pack and runnable production controller include all accepted stages, clean stdio MCP, saves/Continue, native visual review and unchanged 377 audio program hashes/frame counts/loops.",
-      "status": "Selected fossil_research_revision inherits the cyclist battle-return repair and19 field/reward cases from recorded parents. Three fossil controller cases, strict parent preservation, current production client Start/Pack/Save/movement/Continue stdio with empty stderr, and377 audio checks pass on the child. Continuous final-pack campaign and full visual acceptance remain unverified."
+      "status": "Selected castorock_acquisition_revision preserves the warm Cedar correction, fossil/field/reward stages and18 cyclist battle-return repairs. All224 reviewed walking banks, four cave controller cases,729-map preservation,377 audio checks, inspected2D capture and18-call rebuilt-client Continue/menu/movement stdio with empty stderr pass. Actual production New Game starts CHRIS in MnWinonaHome2F. Continuous final-pack campaign and full world visual acceptance remain unverified."
     }
   ],
   "acceptance_policy": "A source builder, fixture setup, green structural audit or chapter test does not prove an earned full campaign. Keep objective active until every requirement has direct current-state evidence."

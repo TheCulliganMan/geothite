@@ -62,9 +62,10 @@ const SUPPORT: [(&str, &str); 7] = [
 
 /// Identifies reviewed chapter text that local flavor overlays must preserve.
 pub(crate) fn is_reviewed_story_text(map: &str, label: &str) -> bool {
-    PAGE_SCENES
-        .iter()
-        .any(|(_, room, text)| *room == map && *text == label)
+    crate::northstar_story_revision::owns_text(map, label)
+        || PAGE_SCENES
+            .iter()
+            .any(|(_, room, text)| *room == map && *text == label)
         || SUPPORT
             .iter()
             .any(|(room, text)| *room == map && *text == label)
@@ -90,10 +91,7 @@ pub fn refresh_northstar_dialogue(
     base: &CompiledGamePack,
     source: &str,
 ) -> Result<CompiledGamePack> {
-    ensure!(
-        !base.report.manifests.iter().any(|m| m == crate::northstar_story_revision::MANIFEST),
-        "staged dialogue owns revised labels; use revise_northstar_story on a reviewed parent"
-    );
+    crate::northstar_story_revision::ensure_legacy_stage_allowed(base)?;
     crate::verify_compiled_game_pack_for_runtime(base)?;
     let texts = source_texts(source)?;
     let mut pack = base.clone();

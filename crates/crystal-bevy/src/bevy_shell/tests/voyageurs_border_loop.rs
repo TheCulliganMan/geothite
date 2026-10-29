@@ -75,6 +75,22 @@ fn fixture(start: Point, populated: bool) -> (AssetRoot, CrystalRuntime, Visible
             assert!(state.storage.party.add_pokemon(partner));
         }
         state.badges.johto = [true; 8];
+        // Initial native badge projections must agree before Save/Continue.
+        for name in [
+            "ENGINE_ZEPHYRBADGE",
+            "ENGINE_HIVEBADGE",
+            "ENGINE_PLAINBADGE",
+            "ENGINE_FOGBADGE",
+            "ENGINE_STORMBADGE",
+            "ENGINE_MINERALBADGE",
+            "ENGINE_GLACIERBADGE",
+            "ENGINE_RISINGBADGE",
+        ] {
+            state
+                .flags
+                .set_engine_flag(name, true)
+                .expect("initial badge projection");
+        }
         state.sync_party_from_storage();
         mark_runtime_snapshot_dirty(&mut controller.shell);
     }
@@ -344,16 +360,27 @@ fn voyageurs_controller_walks_seams_bridges_habitat_cave_returns_and_continue() 
     indoor_walk(&mut controller, &runtime, (5, 6));
     assert_eq!(cave_position(&mut controller), (5, 6));
     let before = quantity(&mut controller, "HYPER_POTION");
-    controller.press(GameButton::Up).expect("face cave item");
-    controller.press(GameButton::A).expect("native cave pickup");
-    let text = controller.snapshot().expect("cave found text");
+    let mut pickup_pages = Vec::new();
+    for button in [GameButton::Up, GameButton::A] {
+        controller.press(button).expect("native cave pickup input");
+        let snapshot = controller.snapshot().expect("actual cave pickup page");
+        if let Some(page) = snapshot.ui.text.and_then(|text| text.asm_text) {
+            pickup_pages.push(page);
+        }
+        if let Some(notice) = &controller.shell.visible_field_item_notice {
+            pickup_pages.push(notice.sound_trigger_text.clone());
+        }
+    }
+    let text = controller.snapshot().expect("cave pickup text ownership");
     assert_eq!(text.phase, RuntimeShellPhase::Text);
     assert!(
-        text.ui
-            .text
-            .and_then(|text| text.asm_text)
-            .unwrap_or_default()
-            .contains("found")
+        pickup_pages.iter().any(|page| page.contains("found")),
+        "missing native found page: {pickup_pages:?}"
+    );
+    assert!(
+        pickup_pages
+            .iter()
+            .any(|page| page.contains("HYPER POTION"))
     );
     finish_text(&mut controller);
     assert_eq!(quantity(&mut controller, "HYPER_POTION"), before + 1);

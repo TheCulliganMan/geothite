@@ -124,18 +124,21 @@ pub fn build_northstar_progression_rewards(
     );
     wrap(&mut station, "MN_W_AIDE", "MnRewardDex")?;
     // Keep existing reward flag identities so saved claims remain valid.
-    // The retired 50-species EXP Share reward used flag index 2.
+    // The 50-species supplies replace EXP Share while retaining its claim flag.
     crate::northstar_lair_authoring::flag(&mut pack, "EVENT_MN_DEX_REWARD_2")?;
     let tiers = [
         (0, 10, "GREAT_BALL", 10),
         (1, 25, "ITEMFINDER", 1),
+        (2, 50, "ULTRA_BALL", 10),
         (3, 100, "LUCKY_EGG", 1),
         (4, species.len(), "RARE_CANDY", 10),
     ];
     let mut root = vec![c("faceplayer", &[])];
     for (i, (flag_index, count, item, quantity)) in tiers.iter().enumerate() {
         let flag = format!("EVENT_MN_DEX_REWARD_{flag_index}");
-        crate::northstar_lair_authoring::flag(&mut pack, &flag)?;
+        if *flag_index != 2 {
+            crate::northstar_lair_authoring::flag(&mut pack, &flag)?;
+        }
         let next = format!("MnRewardDexTier{}", i + 1);
         let claim = format!("MnRewardDexClaim{i}");
         let text = format!("MnRewardDexClaim{i}Text");
@@ -176,6 +179,7 @@ pub fn build_northstar_progression_rewards(
                     "GREAT_BALL" => {
                         "GREAT BALLs help catch wild Pokemon. Keep a few ready on the trail."
                     }
+                    "ULTRA_BALL" => "ULTRA BALLs help catch elusive Pokemon. Keep exploring!",
                     "ITEMFINDER" => {
                         "Use ITEMFINDER outdoors to search for hidden items. Register it for SELECT, too."
                     }
@@ -207,7 +211,7 @@ pub fn build_northstar_progression_rewards(
         &mut station,
         "MnRewardDexNeedText",
         &[
-            "I award research supplies for 10, 25, 100 and all Minnesota species caught.",
+            "I award research supplies for 10, 25, 50, 100 and all Minnesota species caught.",
             "Seen entries don't count. Your partners may stay in the PC. Come back as your records grow!",
             "All healthy party Pokemon already share battle experience. No item is needed.",
         ],

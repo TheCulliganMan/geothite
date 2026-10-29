@@ -119,6 +119,7 @@ pub fn refresh_northstar_league_dialogue(
     roster: &str,
     curation: &str,
 ) -> Result<CompiledGamePack> {
+    crate::northstar_story_revision::ensure_legacy_stage_allowed(base)?;
     crate::verify_compiled_game_pack_for_runtime(base)?;
     let source = source(dialogue)?;
     let roster: Value = serde_json::from_str(roster)?;

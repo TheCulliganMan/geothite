@@ -10,16 +10,18 @@ fn main() -> Result<()> {
     let mut args = std::env::args().skip(1);
     let pack = PathBuf::from(
         args.next()
-            .context("usage: render_saved_session PACK SAVE OUTPUT [--pair] [--walk ROUTE] [--quick-save PATH]")?,
+            .context("usage: render_saved_session PACK SAVE OUTPUT [--2d | --pair] [--walk ROUTE] [--quick-save PATH]")?,
     );
     let save_path = PathBuf::from(args.next().context("missing SAVE")?);
     let output = PathBuf::from(args.next().context("missing OUTPUT")?);
     let mut pair = false;
+    let mut two_d = false;
     let mut walk = None;
     let mut quick_save_path = None;
     while let Some(option) = args.next() {
         match option.as_str() {
             "--pair" => pair = true,
+            "--2d" => two_d = true,
             "--walk" => walk = Some(args.next().context("--walk requires a route")?),
             "--quick-save" => {
                 quick_save_path = Some(PathBuf::from(
@@ -29,6 +31,7 @@ fn main() -> Result<()> {
             _ => anyhow::bail!("unexpected option {option}"),
         }
     }
+    anyhow::ensure!(!(two_d && pair), "--2d captures only the native 2D view");
     let root = AssetRoot::new(
         PathBuf::from(env!("CARGO_MANIFEST_DIR"))
             .join("../..")
@@ -38,7 +41,7 @@ fn main() -> Result<()> {
     let runtime = CrystalRuntime::from_loaded_compiled_pack(&root, loaded)?;
     // Movement QA measures the published 3D scene as well as authoritative
     // steps, so run the route there before freezing the matched source view.
-    let start_in_3d = !pair || walk.is_some();
+    let start_in_3d = !two_d && (!pair || walk.is_some());
     let first = if pair {
         output.with_file_name(format!(
             "{}-{}.png",

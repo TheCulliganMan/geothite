@@ -6261,47 +6261,61 @@ pub fn run_bevy_shell(
     #[cfg(feature = "dev-tools")]
     dev_tools::install(&mut app);
     source_sprite_renderer::install(&mut app);
+    // Native 2D map composites use retained GPU uploads too. Install their
+    // image pipeline even when the optional voxel renderer is not compiled.
+    app.add_plugins(crystal_render_api::VisualWorldRenderPlugin);
     #[cfg(feature = "voxel-view")]
     app.add_systems(Update,sync_native_healing_sprite_visibility
         .after(crystal_render_api::WorldRenderSet::RenderSync));
     #[cfg(feature = "voxel-view")]
-    app.add_plugins(crystal_render_api::VisualWorldRenderPlugin)
-        .add_systems(
-            Update,
-            sync_immersive_battle_layers.after(crystal_render_api::WorldRenderSet::RenderSync),
-        )
-        .add_systems(
-            Update,
-            clear_inactive_visual_battle
-                .after(render_playfield)
-                .in_set(crystal_render_api::WorldRenderSet::PresentationExtract),
-        )
-        .add_systems(
-            Update,
-            publish_visual_world_frame
-                .after(sync_visible_player_sprite)
-                .after(sync_multiplayer_ghosts)
-                .after(sync_visible_object_sprites)
-                .after(sync_visible_ledge_jump)
-                .after(sync_visible_script_jump)
-                .after(sync_visible_script_tree_shake)
-                .after(sync_visible_stationary_movement_effect)
-                .after(apply_visible_battle_screen_offset)
-                .in_set(crystal_render_api::WorldRenderSet::PresentationExtract),
-        )
-        .add_systems(Update, summit_backdrop::publish
+    app.add_systems(
+        Update,
+        sync_immersive_battle_layers.after(crystal_render_api::WorldRenderSet::RenderSync),
+    )
+    .add_systems(
+        Update,
+        clear_inactive_visual_battle
+            .after(render_playfield)
+            .in_set(crystal_render_api::WorldRenderSet::PresentationExtract),
+    )
+    .add_systems(
+        Update,
+        publish_visual_world_frame
+            .after(sync_visible_player_sprite)
+            .after(sync_multiplayer_ghosts)
+            .after(sync_visible_object_sprites)
+            .after(sync_visible_ledge_jump)
+            .after(sync_visible_script_jump)
+            .after(sync_visible_script_tree_shake)
+            .after(sync_visible_stationary_movement_effect)
+            .after(apply_visible_battle_screen_offset)
+            .in_set(crystal_render_api::WorldRenderSet::PresentationExtract),
+    )
+    .add_systems(
+        Update,
+        summit_backdrop::publish
             .after(publish_visual_world_frame)
-            .in_set(crystal_render_api::WorldRenderSet::PresentationExtract))
-        .add_systems(Update, publish_pokemon_dimensions
+            .in_set(crystal_render_api::WorldRenderSet::PresentationExtract),
+    )
+    .add_systems(
+        Update,
+        publish_pokemon_dimensions
             .after(publish_visual_world_frame)
-            .in_set(crystal_render_api::WorldRenderSet::PresentationExtract))
-        .add_systems(Update, publish_party_follower
+            .in_set(crystal_render_api::WorldRenderSet::PresentationExtract),
+    )
+    .add_systems(
+        Update,
+        publish_party_follower
             .after(publish_visual_world_frame)
             .after(publish_pokemon_dimensions)
-            .in_set(crystal_render_api::WorldRenderSet::PresentationExtract))
-        .add_systems(Update, publish_surf_mount
+            .in_set(crystal_render_api::WorldRenderSet::PresentationExtract),
+    )
+    .add_systems(
+        Update,
+        publish_surf_mount
             .after(publish_party_follower)
-            .in_set(crystal_render_api::WorldRenderSet::PresentationExtract));
+            .in_set(crystal_render_api::WorldRenderSet::PresentationExtract),
+    );
     #[cfg(feature = "voxel-view")]
     app.add_systems(Update, publish_visual_world_entry_effect.after(publish_visual_world_frame)
         .in_set(crystal_render_api::WorldRenderSet::PresentationExtract));

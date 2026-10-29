@@ -1,6 +1,7 @@
 //! Explicit prior-access fixture, then three real rooms and native drilling.
 use crystal_core::input::GameButton;
 use crystal_core::models::Dv;
+use crystal_runtime::CrystalRuntime;
 
 use super::super::{
     BevyShellConfig, BevyShellStart, VisibleShellController,
@@ -238,17 +239,62 @@ pub(super) fn play_chapter(
     talk(&mut c, GameButton::Down);
     page(&mut c, "MnNDrillMeterAfterText");
     finish(&mut c);
-    walk(&mut c, &r, (4, 14));
-    travel(&mut c, GameButton::Right, GALLERY, (24, 5));
-    if expanded {
-        super::northstar_iron_workings::leave_gallery(&mut c, &r);
-    } else {
-        walk(&mut c, &r, (4, 18));
-        travel(&mut c, GameButton::Right, APPROACH, (24, 5));
+    leave_chapter(c, r)
+}
+
+fn leave_up(
+    c: &mut VisibleShellController,
+    r: &CrystalRuntime,
+    approach: (i16, i16),
+    target_map: &str,
+    target: (i16, i16),
+) {
+    let source = c.snapshot().expect("mine exit").overworld.map_name;
+    walk(c, r, approach);
+    for _ in 0..64 {
+        let snapshot = c.snapshot().expect("native mine exit");
+        if snapshot.overworld.map_name == target_map {
+            at(c, target_map, target);
+            return;
+        }
+        if let Some(battle) = snapshot.battle {
+            let crystal_runtime::RuntimeBattleKind::Trainer { trainer_id, .. } = battle.kind else {
+                panic!("mine exit only has authored trainers");
+            };
+            assert!(super::rochester_earned::try_battle(
+                c,
+                r,
+                &trainer_id,
+                &format!("EVENT_{trainer_id}_DEFEATED")
+            ));
+            if c.snapshot().expect("post-trainer exit").overworld.map_name == source {
+                walk(c, r, approach);
+            }
+        } else if snapshot.ui.text.is_some() || c.has_pending_script_work() {
+            press(c, GameButton::A);
+        } else {
+            press(c, GameButton::Up);
+        }
     }
-    walk(&mut c, &r, (6, 21));
+    panic!("mine exit did not reach {target_map}");
+}
+
+/// Walk the completed crew handoff back out through its actual native ladders.
+pub(super) fn leave_chapter(
+    mut c: VisibleShellController,
+    r: &crystal_runtime::CrystalRuntime,
+) -> VisibleShellController {
+    assert!(event(&c, RECOVERED) && event(&c, OFF));
+    let expanded = r.data().maps.contains_key("MnIronHaulage");
+    leave_up(&mut c, r, (5, 15), GALLERY, (24, 5));
+    if expanded {
+        super::northstar_iron_workings::leave_gallery(&mut c, r);
+    } else {
+        leave_up(&mut c, r, (5, 19), APPROACH, (24, 5));
+    }
+    walk(&mut c, r, (6, 21));
     travel(&mut c, GameButton::Right, MINE, (19, 9));
-    walk(&mut c, &r, (19, 8));
+    walk(&mut c, r, (19, 8));
     talk(&mut c, GameButton::Up);
     page(&mut c, "MnNDrillPublicAfterText");
     finish(&mut c);

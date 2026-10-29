@@ -80,7 +80,7 @@ fn professor_tamarack_native_art_opening_dialogue_and_continue() {
 
     // This opening earns the starter and delivery supplies through actual
     // inputs. No party, position, badge or story flag is supplied by a fixture.
-    let (_, runtime, mut c) = super::dialogue_overhaul::opening(0);
+    let (_, runtime, mut c) = super::winona::opening(0, "POUCHID");
     let root = runtime
         .materialize_runtime_files()
         .expect("actual candidate native art");
@@ -168,8 +168,8 @@ fn professor_tamarack_native_art_opening_dialogue_and_continue() {
     c = capture_overworld(c);
     finish(&mut c);
     assert_eq!(c.snapshot().expect("partner preserved").party, before.party);
-    press(&mut c, GameButton::Down);
-    at(&mut c, "MnWinonaFieldStation", (4, 3));
+    indoor_walk(&mut c, &runtime, (4, 8));
+    at(&mut c, "MnWinonaFieldStation", (4, 8));
 }
 
 #[test]

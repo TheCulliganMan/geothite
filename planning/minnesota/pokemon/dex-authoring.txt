@@ -290,3 +290,4 @@
 293|Burr Seed|Its fringed cup catches dew before dawn.|It plants one tiny root whenever it stops to rest.
 294|Root Hold|Its roots hold soil against rushing water.|Small POKEMON hide beneath its broad leaf fans.
 318|Crown Lure|It spins the blade on its head to stir up silt.|Hidden in the cloud, it waits for unwary fish.
+319|Copper Howl|Its copper coat leaks poison that turns water green.|It seals currents with its broad tail before it sleeps.

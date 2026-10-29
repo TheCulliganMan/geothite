@@ -1,0 +1,109 @@
+{
+  "schema_version": 1,
+  "trainer_class": "MN_ICE_AGENT",
+  "class_name": "TEAM",
+  "trainer_ids": [
+    "MN_ICE_ARC_INTAKE_WEST",
+    "MN_ICE_CARGO_GUARD",
+    "MN_ICE_HQ_CARGO_MANIFEST",
+    "MN_ICE_HQ_DISPATCH",
+    "MN_ICE_HQ_ESCORT",
+    "MN_ICE_HQ_MAINTENANCE_GUARD",
+    "MN_ICE_HQ_OPERATIONS_GUARD",
+    "MN_ICE_HQ_RECORDS_GUARD",
+    "MN_ICE_HQ_TRANSFER_GUARD",
+    "MN_ICE_RELAY_GUARD"
+  ],
+  "actors": [
+    {
+      "map": "MnBoundaryIntake",
+      "script": "MN_ICE_ARC_INTAKE_WEST",
+      "tile": [
+        3,
+        13
+      ],
+      "previous_sprite": "SPRITE_OFFICER"
+    },
+    {
+      "map": "MnIceCargoBasement",
+      "script": "MN_ICE_CARGO_GUARD",
+      "tile": [
+        12,
+        12
+      ],
+      "previous_sprite": "SPRITE_ROCKET"
+    },
+    {
+      "map": "MnIceCargoBasement",
+      "script": "MN_ICE_HQ_CARGO_MANIFEST",
+      "tile": [
+        24,
+        13
+      ],
+      "previous_sprite": "SPRITE_OFFICER"
+    },
+    {
+      "map": "MnIceMaintenance",
+      "script": "MN_ICE_HQ_MAINTENANCE_GUARD",
+      "tile": [
+        9,
+        13
+      ],
+      "previous_sprite": "SPRITE_OFFICER"
+    },
+    {
+      "map": "MnIceOperations",
+      "script": "MN_ICE_HQ_DISPATCH",
+      "tile": [
+        8,
+        5
+      ],
+      "previous_sprite": "SPRITE_OFFICER"
+    },
+    {
+      "map": "MnIceOperations",
+      "script": "MN_ICE_HQ_OPERATIONS_GUARD",
+      "tile": [
+        11,
+        15
+      ],
+      "previous_sprite": "SPRITE_OFFICER"
+    },
+    {
+      "map": "MnIceRecords",
+      "script": "MN_ICE_HQ_RECORDS_GUARD",
+      "tile": [
+        11,
+        13
+      ],
+      "previous_sprite": "SPRITE_OFFICER"
+    },
+    {
+      "map": "MnIceRelayFloor",
+      "script": "MN_ICE_RELAY_GUARD",
+      "tile": [
+        16,
+        11
+      ],
+      "previous_sprite": "SPRITE_ROCKET"
+    },
+    {
+      "map": "MnIceTransfer",
+      "script": "MN_ICE_HQ_ESCORT",
+      "tile": [
+        8,
+        7
+      ],
+      "previous_sprite": "SPRITE_OFFICER"
+    },
+    {
+      "map": "MnIceTransfer",
+      "script": "MN_ICE_HQ_TRANSFER_GUARD",
+      "tile": [
+        11,
+        15
+      ],
+      "previous_sprite": "SPRITE_OFFICER"
+    }
+  ]
+}

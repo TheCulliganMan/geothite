@@ -2984,14 +2984,6 @@ fn oak_intro_sprite_frame(
 ) -> Option<SpriteFrame> {
     let sprite = oak_intro.current_sprite.as_deref()?;
     match sprite {
-        "WOOPER" => pokemon_frame_for_art(
-            rendered_art,
-            asset_root,
-            "WOOPER",
-            PokemonSpriteSide::Front,
-            false,
-            images,
-        ),
         "OAK" | "PLAYER" => {
             let key = IntroArtKey {
                 asset_id: oak_intro_intro_asset_id(sprite, trainer),
@@ -3011,7 +3003,14 @@ fn oak_intro_sprite_frame(
             }
             rendered_art.intro_cache.get(&key).cloned()
         }
-        _ => None,
+        species => pokemon_frame_for_art(
+            rendered_art,
+            asset_root,
+            species,
+            PokemonSpriteSide::Front,
+            false,
+            images,
+        ),
     }
 }
 
@@ -3023,8 +3022,8 @@ fn oak_intro_art_error(
     let Some(sprite) = oak_intro.current_sprite.as_deref() else {
         return "no Oak intro sprite is active".to_string();
     };
-    if sprite == "WOOPER" {
-        return pokemon_art_error(rendered_art, "WOOPER", PokemonSpriteSide::Front, false);
+    if !matches!(sprite, "OAK" | "PLAYER") {
+        return pokemon_art_error(rendered_art, sprite, PokemonSpriteSide::Front, false);
     }
     let key = IntroArtKey {
         asset_id: oak_intro_intro_asset_id(sprite, trainer),

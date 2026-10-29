@@ -8,14 +8,43 @@ use super::super::authored_route_fixture::{RouteGrid, RouteSpec, position};
 use super::super::rochester::flee;
 use super::super::winona::{at, continued, travel};
 use super::leech_shore::{fixture, pine_course};
-use super::{
-    VisibleShellController, battle, event, finish, mark_runtime_snapshot_dirty, press, walk_to,
-};
+use super::{VisibleShellController, battle, event, finish, mark_runtime_snapshot_dirty, press};
 
 const PARK: &str = "MnLakeItasca";
 const GATE: &str = "MnItascaGatehouse";
 const READING: &str = "EVENT_MN_HEADWATERS_READING";
 const REPORT: &str = "EVENT_MN_HEADWATERS_REPORT";
+
+// Resolve real grass encounters only on the newly authored park surface.
+// Other map helpers keep their established traversal behavior.
+fn walk_to(c: &mut VisibleShellController, runtime: &CrystalRuntime, target: (u16, u16)) {
+    if c.snapshot().expect("actual walking map").overworld.map_name != PARK {
+        super::walk_to(c, runtime, target);
+        return;
+    }
+    let module = super::module(c, runtime);
+    let start = super::at(c);
+    let course = super::path(runtime, &module, start, target).expect("current native park path");
+    for button in course {
+        let before = super::at(c);
+        for _ in 0..8 {
+            press(c, button);
+            if let Some(battle) = c.snapshot().expect("native park encounter").battle {
+                assert!(matches!(battle.kind, RuntimeBattleKind::Wild { .. }));
+                flee(c);
+            }
+            if super::at(c) != before {
+                break;
+            }
+        }
+        c.wait_frames(80).expect("settled native park movement");
+        if let Some(battle) = c.snapshot().expect("settled park encounter").battle {
+            assert!(matches!(battle.kind, RuntimeBattleKind::Wild { .. }));
+            flee(c);
+        }
+    }
+    assert_eq!(super::at(c), target, "current park journey");
+}
 
 fn text(c: &mut VisibleShellController) -> String {
     c.snapshot()
@@ -117,6 +146,16 @@ pub(super) fn refusal(c: &mut VisibleShellController, right: bool, lane: u16, ex
 }
 pub(super) fn acknowledge_marker(c: &mut VisibleShellController, r: &CrystalRuntime) {
     marker(c, r);
+    if r.data()
+        .story_event_script_constants
+        .global
+        .contains_key("EVENT_MN_TAMARACK_INTRO")
+    {
+        super::super::northstar_dialogue::acknowledge(c, "MS06", "MN_ITASCA_MARKERText", READING);
+        finish(c);
+        assert!(event(c, READING) && !event(c, REPORT));
+        return;
+    }
     assert!(text(c).contains("HEADWATERS"));
     assert!(!event(c, READING) && !event(c, REPORT));
     press(c, GameButton::Left);
@@ -127,8 +166,18 @@ pub(super) fn acknowledge_marker(c: &mut VisibleShellController, r: &CrystalRunt
 }
 pub(super) fn acknowledge_report(c: &mut VisibleShellController, r: &CrystalRuntime) {
     officer(c, r);
+    if r.data()
+        .story_event_script_constants
+        .global
+        .contains_key("EVENT_MN_TAMARACK_INTRO")
+    {
+        super::super::northstar_dialogue::acknowledge(c, "MS07", "MnBemidjiComparisonText", REPORT);
+        finish(c);
+        assert!(event(c, REPORT));
+        return;
+    }
     assert!(
-        text(c).contains("One meter log."),
+        text(c).contains("One meter log.") || text(c).contains("The same ink blot."),
         "comparison page one: {}",
         text(c)
     );
@@ -329,10 +378,12 @@ fn itasca_story_controller_optional_notebook_recognition_grants_no_extra_progres
     let badges = state.badges.clone();
     mark_runtime_snapshot_dirty(&mut c.shell);
     officer(&mut c, &r);
-    assert!(text(&mut c).contains("One meter log."));
+    assert!(text(&mut c).contains("One meter log.") || text(&mut c).contains("The same ink blot."));
     assert!(!event(&c, REPORT));
     press(&mut c, GameButton::A);
-    assert!(text(&mut c).contains("These were copied."));
+    assert!(
+        text(&mut c).contains("These were copied.") || text(&mut c).contains("Separate basins.")
+    );
     assert!(!event(&c, REPORT));
     press(&mut c, GameButton::A);
     assert!(event(&c, REPORT));

@@ -2305,7 +2305,13 @@
     "approved_parents": [
       "6173c790bbc7038998cbcfec06b107d25d91aa2fae456a5c8479ac9c81f6d9e0",
       "4c48ae16685a3a459d38d851ca8dee40fcaae12f54f6c52bc5c36c5a09449b60",
-      "53917ea37309b35a3eff89340608f9e118dc568346a4fc258ce328a092e883af"
+      "53917ea37309b35a3eff89340608f9e118dc568346a4fc258ce328a092e883af",
+      "cb73653796e4854fad042481a6f5154b343d72058b19ead4f6abb7bcacaf08e4",
+      "6f0fddec8df3822cbf467f702bd20f1e442a1854ba283ae7d0d13f17a4841164",
+      "a39d74ccba50b93af03b4f80f72869e1a045efc8bf3792592a04fece45f1b395",
+      "136e33076ff0273c7be33a737b19298187dd4f26501cc9a781230aba493d75b5",
+      "93ba090b97aa89e41119c993a38f4b8500f58f3151eb3c1959b3425b39a59444",
+      "6bc7fd50d36cea546df1bf25e83cf59834be734d46bce1ebc97bb3d1c758f4a5"
     ],
     "texts": {
       "MnWinonaHome1F": {
@@ -2353,16 +2359,16 @@
         ],
         "MnWGuardianSurveyReturnText": [
           [
-            "MOM: The crews are",
-            "finally home."
+            "MOM: IVY called.",
+            "Everyone is safe!"
           ],
           [
-            "You must be tired.",
-            "Come sit with me."
+            "Come sit with me.",
+            "Tell me about it."
           ],
           [
             "Your team can rest",
-            "while we talk."
+            "here too."
           ]
         ]
       },
@@ -2569,41 +2575,34 @@
         ],
         "MnWTamarackDeliveryReturnText": [
           [
-            "TAMARACK: IVY",
-            "called."
-          ],
-          [
-            "She has all my",
-            "readings."
+            "TAMARACK: IVY has",
+            "the envelope now."
           ],
           [
             "Thank you for",
-            "going."
+            "taking it to her."
           ],
           [
-            "She is worried",
-            "about ELLIS."
-          ],
-          [
-            "Ask JO about him."
-          ],
-          [
-            "JO is in",
-            "MINNEAPOLIS."
+            "She will keep the",
+            "originals safe."
           ]
         ],
         "MnWTamarackSurveyReturnText": [
           [
             "TAMARACK: The",
-            "crews are home."
+            "pumps are off."
           ],
           [
-            "Your delivery kept",
-            "the records safe."
+            "IVY told me how",
+            "you helped them."
           ],
           [
-            "Now we can repair",
-            "the damage."
+            "You brought the",
+            "crews home safely."
+          ],
+          [
+            "How is your",
+            "partner doing?"
           ]
         ],
         "MnNSEReedArrivalText": [
@@ -2897,6 +2896,200 @@
             "Find me if you",
             "change your mind."
           ]
+        ],
+        "MnArcHabitatText": [
+          [
+            "AIDE: A pump test",
+            "drained this nest."
+          ],
+          [
+            "GILLPUP will not",
+            "go back to it."
+          ],
+          [
+            "Our crew went to",
+            "inspect the gauge."
+          ],
+          [
+            "They have not",
+            "called back yet."
+          ],
+          [
+            "IVY is at the",
+            "other desk."
+          ]
+        ],
+        "MnArcHabitatAfterText": [
+          [
+            "AIDE: IVY called.",
+            "Her crew is safe."
+          ],
+          [
+            "The water level",
+            "is holding steady."
+          ],
+          [
+            "GILLPUP is back",
+            "in its nest."
+          ]
+        ],
+        "MnArcRCBeforeText": [
+          [
+            "REED: You have",
+            "a partner now."
+          ],
+          [
+            "Let me see what",
+            "your team can do."
+          ]
+        ],
+        "MnArcRCWonText": [
+          [
+            "REED: You won",
+            "this time."
+          ],
+          [
+            "I need a stronger",
+            "team of my own."
+          ]
+        ],
+        "MnArcRCBattleLostText": [
+          [
+            "REED: That is",
+            "more like it."
+          ],
+          [
+            "Go to the desk",
+            "to heal your team."
+          ]
+        ],
+        "MnOverhaulClinicAideAwayText": [
+          [
+            "AIDE: IVY left",
+            "to help her crew."
+          ],
+          [
+            "They are at the",
+            "BOUNDARY intake."
+          ],
+          [
+            "Follow the",
+            "North Shore road."
+          ]
+        ],
+        "MnOverhaulGillpupText": [
+          [
+            "GILLPUP huddles",
+            "by a dry channel."
+          ],
+          [
+            "It peers toward",
+            "its empty nest."
+          ]
+        ],
+        "MnOverhaulIvyEllisSafeText": [
+          [
+            "IVY: ELLIS is",
+            "safely home."
+          ],
+          [
+            "Thank you for",
+            "helping him."
+          ],
+          [
+            "His dispatch copy",
+            "names ST PAUL."
+          ],
+          [
+            "Ask MINA at the",
+            "UNION DEPOT."
+          ]
+        ],
+        "MnOverhaulIvyNorthText": [
+          [
+            "IVY: LODE sent",
+            "the gear north."
+          ],
+          [
+            "They are running",
+            "pump tests."
+          ],
+          [
+            "The BRAINERD crew",
+            "needs your help."
+          ],
+          [
+            "Take the road",
+            "through ST CLOUD."
+          ]
+        ],
+        "MnOverhaulIvyMineText": [
+          [
+            "IVY: The officer",
+            "compared the logs."
+          ],
+          [
+            "The real readings",
+            "were replaced."
+          ],
+          [
+            "Find the meter",
+            "in the R09 mine."
+          ],
+          [
+            "Take it to",
+            "GRAND RAPIDS."
+          ],
+          [
+            "The survey depot",
+            "can read its log."
+          ]
+        ],
+        "MnOverhaulIvyHarborText": [
+          [
+            "IVY: The depot",
+            "read the pump log."
+          ],
+          [
+            "LODE was testing",
+            "the falling water."
+          ],
+          [
+            "The engineer in",
+            "DULUTH can help."
+          ],
+          [
+            "Show the log at",
+            "DULUTH harbor."
+          ]
+        ],
+        "MnOverhaulIvyMeterText": [
+          [
+            "IVY: You found",
+            "the missing meter."
+          ],
+          [
+            "Take it to",
+            "GRAND RAPIDS."
+          ],
+          [
+            "The survey crew",
+            "can read its log."
+          ]
+        ],
+        "MnOverhaulIvyBrainerdText": [
+          [
+            "IVY: BRAINERD",
+            "needs another log."
+          ],
+          [
+            "See the officer",
+            "in BEMIDJI."
+          ],
+          [
+            "Ask about",
+            "the ITASCA log."
+          ]
         ]
       },
       "MnMinneapolisDispatcherHouse": {
@@ -3017,6 +3210,37 @@
           [
             "Show her the",
             "dispatch copy."
+          ]
+        ],
+        "MnMPEllisSurveyReturnText": [
+          [
+            "ELLIS: The harbor",
+            "crew called."
+          ],
+          [
+            "The pumps are off.",
+            "Everyone is home."
+          ],
+          [
+            "I will go back to",
+            "work next week."
+          ],
+          [
+            "For now, JO and I",
+            "need a quiet day."
+          ]
+        ],
+        "MnMPJoSurveyReturnText": [
+          [
+            "JO: We talked",
+            "all evening."
+          ],
+          [
+            "The soup is cold."
+          ],
+          [
+            "I can make more.",
+            "He is home."
           ]
         ]
       },
@@ -3487,6 +3711,46 @@
             "Our equipment is",
             "coming home."
           ]
+        ],
+        "MnArcSPBattleText": [
+          [
+            "REED: Move MINA",
+            "away from my load."
+          ],
+          [
+            "MINA: I work here.",
+            "I am staying."
+          ]
+        ],
+        "MnArcSPDeclinedText": [
+          [
+            "MINA: You can",
+            "use the clinic."
+          ],
+          [
+            "I will keep REED",
+            "away from my crew."
+          ]
+        ],
+        "MnArcSPWonText": [
+          [
+            "REED: The north",
+            "shipment has gone."
+          ],
+          [
+            "LODE still needs",
+            "me at the mine."
+          ]
+        ],
+        "MnArcSPBattleLostText": [
+          [
+            "REED: Stay away",
+            "from our shipment."
+          ],
+          [
+            "MINA: The clinic",
+            "is still open."
+          ]
         ]
       },
       "MnBrainerd": {
@@ -3514,6 +3778,76 @@
           [
             "The officer can",
             "compare the logs."
+          ]
+        ],
+        "MnBrainerdRangerBeforeText": [
+          [
+            "RANGER: First,",
+            "speak to SIVREN."
+          ],
+          [
+            "Earn the LAKE",
+            "BADGE at our GYM."
+          ],
+          [
+            "Then I can ask you",
+            "to help our crew."
+          ]
+        ],
+        "MnBrainerdRangerFullText": [
+          [
+            "RANGER: Your TM",
+            "POCKET is full."
+          ],
+          [
+            "Make room, then",
+            "return for SURF."
+          ]
+        ],
+        "MnBrainerdRangerGiftText": [
+          [
+            "RANGER: This HM",
+            "teaches SURF."
+          ],
+          [
+            "Teach a partner",
+            "from your PACK."
+          ],
+          [
+            "You can cross",
+            "water together."
+          ],
+          [
+            "BEMIDJI is north",
+            "past LEECH LAKE."
+          ]
+        ],
+        "MnBrainerdRangerRepeatText": [
+          [
+            "RANGER: Ask the",
+            "BEMIDJI officer."
+          ],
+          [
+            "We need a log that",
+            "LODE never wrote."
+          ],
+          [
+            "LEECH LAKE is on",
+            "the northern road."
+          ]
+        ],
+        "MnBrainerdLakeCheckBadgesText": [
+          [
+            "Earn the LAKE",
+            "BADGE here first."
+          ],
+          [
+            "SIVREN leads our",
+            "GYM."
+          ],
+          [
+            "Then take the",
+            "northern road."
           ]
         ]
       },
@@ -3555,12 +3889,15 @@
         ],
         "MnItascaMarkerBeforeText": [
           [
-            "The reference log",
-            "is sealed."
+            "The log is sealed."
           ],
           [
-            "Ask the officer in",
-            "BEMIDJI."
+            "Earn the PINE",
+            "BADGE in BEMIDJI."
+          ],
+          [
+            "Then you may copy",
+            "the original log."
           ]
         ]
       },
@@ -3628,6 +3965,79 @@
             "Its log may show",
             "what LODE tested."
           ]
+        ],
+        "MN_BEMIDJI_OFFICERText": [
+          [
+            "OFFICER: I compare",
+            "the field logs."
+          ],
+          [
+            "BRAINERD reported",
+            "a problem."
+          ],
+          [
+            "LODE says the",
+            "water is fine."
+          ],
+          [
+            "We need an",
+            "independent log."
+          ]
+        ],
+        "MnBemidjiNeedPineText": [
+          [
+            "OFFICER: Earn the",
+            "PINE BADGE first."
+          ],
+          [
+            "ORLIS is our",
+            "GYM LEADER."
+          ],
+          [
+            "Then you can copy",
+            "the ITASCA log."
+          ]
+        ],
+        "MnBemidjiIronCheckBadgesText": [
+          [
+            "The eastern road",
+            "is not cleared."
+          ],
+          [
+            "Earn the PINE",
+            "BADGE in BEMIDJI."
+          ],
+          [
+            "Then speak to",
+            "the field officer."
+          ]
+        ],
+        "MnBemidjiIronCheckEvidenceText": [
+          [
+            "The officer needs",
+            "the ITASCA log."
+          ],
+          [
+            "Copy its readings,",
+            "then return here."
+          ],
+          [
+            "The officer can",
+            "clear this road."
+          ]
+        ],
+        "MnBemidjiItascaCheckBadgesText": [
+          [
+            "ITASCA is west."
+          ],
+          [
+            "First, earn the",
+            "LAKE BADGE."
+          ],
+          [
+            "SIVREN leads the",
+            "GYM in BRAINERD."
+          ]
         ]
       },
       "MnMankato": {
@@ -3647,6 +4057,20 @@
           [
             "These are not",
             "separate surveys."
+          ]
+        ],
+        "MnMKRiverCheckBadgesText": [
+          [
+            "TORVEN leads our",
+            "GYM."
+          ],
+          [
+            "Earn the PRAIRIE",
+            "BADGE there."
+          ],
+          [
+            "Then the valley",
+            "road leads north."
           ]
         ]
       },
@@ -3771,6 +4195,20 @@
           [
             "Thank you for",
             "stopping it."
+          ]
+        ],
+        "MnNDrillMeterDeniedText": [
+          [
+            "The meter is still",
+            "part of the test."
+          ],
+          [
+            "FINN is working",
+            "below the mine."
+          ],
+          [
+            "Stop the drill.",
+            "Help his crew out."
           ]
         ]
       },
@@ -3925,12 +4363,22 @@
         ],
         "MN_HARBOR_RECEIVERDeniedText": [
           [
-            "ENGINEER: The",
-            "pumps still run."
+            "ENGINEER: Earn the",
+            "HARBOR BADGE at"
           ],
           [
-            "Bring the GRAND",
-            "RAPIDS log to me."
+            "DULUTH GYM first."
+          ],
+          [
+            "Bring all eight",
+            "BADGES and the"
+          ],
+          [
+            "GRAND RAPIDS log."
+          ],
+          [
+            "Then we can plan",
+            "a safe shutdown."
           ]
         ],
         "MN_HARBOR_RECEIVERDoneText": [
@@ -3955,6 +4403,48 @@
           [
             "Our crews will",
             "meet you there."
+          ]
+        ],
+        "MnHarborSurveyReturnText": [
+          [
+            "ENGINEER: Our",
+            "crews are home."
+          ],
+          [
+            "The pumps are off."
+          ],
+          [
+            "The lakes are",
+            "safe."
+          ],
+          [
+            "We will inspect",
+            "the damaged shore."
+          ],
+          [
+            "Thank you for",
+            "getting us there."
+          ]
+        ],
+        "MnOverhaulHarborMissingLogText": [
+          [
+            "ENGINEER: We need",
+            "the pump log."
+          ],
+          [
+            "Take the mine",
+            "meter to the depot"
+          ],
+          [
+            "in GRAND RAPIDS."
+          ],
+          [
+            "The technician can",
+            "read its log."
+          ],
+          [
+            "Bring that copy",
+            "back here."
           ]
         ]
       },
@@ -4037,12 +4527,16 @@
         ],
         "MnBoundarySurveyReceiverAlreadyText": [
           [
-            "The real records",
-            "have been sent."
+            "The evidence",
+            "reached the crews."
           ],
           [
-            "The crews will",
-            "stop the pumps."
+            "The drive is off.",
+            "KETTLURK is free."
+          ],
+          [
+            "The crews are",
+            "checking the bank."
           ]
         ],
         "MnArcLinkReadyText": [
@@ -4305,6 +4799,19 @@
           [
             "They can collect",
             "it themselves."
+          ]
+        ],
+        "MnArcFinalBattleLostText": [
+          [
+            "REED: You cannot",
+            "reach the drive."
+          ],
+          [
+            "IVY: Fall back."
+          ],
+          [
+            "The medic is",
+            "upstairs."
           ]
         ]
       },
@@ -4714,6 +5221,943 @@
           [
             "The transfer has",
             "stopped."
+          ]
+        ],
+        "MnArcSeraWaitingText": [
+          [
+            "SERA: I came here",
+            "to ask for help."
+          ],
+          [
+            "REED followed me",
+            "from the lift."
+          ],
+          [
+            "He says his badge",
+            "lets him take me."
+          ]
+        ],
+        "MnSCWindCheckBadgesText": [
+          [
+            "SAVEN leads our",
+            "GYM."
+          ],
+          [
+            "Earn the WIND",
+            "BADGE there."
+          ],
+          [
+            "Then take the",
+            "road to BRAINERD."
+          ]
+        ]
+      },
+      "MnLeechLake": {
+        "MN_LEECH_SHORE_FISHERText": [
+          [
+            "FISHER: LODE used",
+            "last year's catch."
+          ],
+          [
+            "This week my nets",
+            "came up empty."
+          ],
+          [
+            "Tell the officer",
+            "in BEMIDJI."
+          ]
+        ],
+        "MN_LEECH_SHORE_WALKERText": [
+          [
+            "WALKER: ICE tried",
+            "to shut the shore."
+          ],
+          [
+            "This is public",
+            "land and water."
+          ],
+          [
+            "We can fish here",
+            "without their say."
+          ]
+        ],
+        "MnLeechLakeCheckBadgesText": [
+          [
+            "Earn the LAKE",
+            "BADGE in BRAINERD."
+          ],
+          [
+            "Then follow this",
+            "shore to BEMIDJI."
+          ]
+        ]
+      },
+      "MnLeechLakeFisherHouse": {
+        "MN_LEECH_SHORE_DIARISTText": [
+          [
+            "FISHER: I write",
+            "down each catch."
+          ],
+          [
+            "ICE told me to",
+            "leave out dates."
+          ],
+          [
+            "I kept writing."
+          ],
+          [
+            "Tell the officer",
+            "in BEMIDJI."
+          ]
+        ]
+      },
+      "MnStCloudStation": {
+        "MnArcAftermathText": [
+          [
+            "REED: LODE kept",
+            "my last pay."
+          ],
+          [
+            "They blamed me for",
+            "losing the meter."
+          ],
+          [
+            "I wanted a team",
+            "people respected."
+          ],
+          [
+            "Now they know me",
+            "as a prison guard."
+          ],
+          [
+            "Leave me alone.",
+            "I need to think."
+          ]
+        ]
+      },
+      "MnLeagueRoom1": {
+        "MnLeagueRoom1BeforeText": [
+          [
+            "FERN: Welcome to",
+            "the ELITE FOUR."
+          ],
+          [
+            "I survey nests",
+            "in roadside grass."
+          ],
+          [
+            "Small partners can",
+            "surprise you."
+          ],
+          [
+            "Watch my team",
+            "closely!"
+          ]
+        ],
+        "MnLeagueRoom1WonText": [
+          [
+            "FERN: You found",
+            "our opening first."
+          ],
+          [
+            "Well played!"
+          ]
+        ],
+        "MnLeagueRoom1LostText": [
+          [
+            "FERN: One opening",
+            "was enough."
+          ],
+          [
+            "Rest your team,",
+            "then try again."
+          ]
+        ],
+        "MnLeagueRoom1AfterText": [
+          [
+            "FERN: FLINT is",
+            "through that door."
+          ],
+          [
+            "Check your team",
+            "before you go."
+          ]
+        ],
+        "MnLeagueRoom1NoRunText": [
+          [
+            "FERN: Register",
+            "at the lobby desk."
+          ],
+          [
+            "We battle in",
+            "a fixed order."
+          ]
+        ],
+        "MnLeagueRoom1RematchText": [
+          [
+            "FERN: Welcome",
+            "back, CHAMPION."
+          ],
+          [
+            "We have both had",
+            "time to practice."
+          ],
+          [
+            "Let us see what",
+            "has changed!"
+          ]
+        ]
+      },
+      "MnLeagueRoom2": {
+        "MnLeagueRoom2BeforeText": [
+          [
+            "FLINT: I checked",
+            "mine supports."
+          ],
+          [
+            "You learn to hear",
+            "a strained beam."
+          ],
+          [
+            "My team knows",
+            "how to hold firm."
+          ],
+          [
+            "Show me where",
+            "you put pressure!"
+          ]
+        ],
+        "MnLeagueRoom2WonText": [
+          [
+            "FLINT: You found",
+            "our weak point."
+          ],
+          [
+            "Good work."
+          ]
+        ],
+        "MnLeagueRoom2LostText": [
+          [
+            "FLINT: We held",
+            "our ground."
+          ],
+          [
+            "Rest your team.",
+            "I will be here."
+          ]
+        ],
+        "MnLeagueRoom2AfterText": [
+          [
+            "FLINT: VEIL is",
+            "in the next room."
+          ],
+          [
+            "Take a moment to",
+            "check your team."
+          ]
+        ],
+        "MnLeagueRoom2NoRunText": [
+          [
+            "FLINT: This is",
+            "the second match."
+          ],
+          [
+            "Register, then",
+            "defeat FERN first."
+          ]
+        ],
+        "MnLeagueRoom2RematchText": [
+          [
+            "FLINT: CHAMPION!"
+          ],
+          [
+            "We patched the",
+            "gaps in our team."
+          ],
+          [
+            "Put us to the",
+            "test again!"
+          ]
+        ]
+      },
+      "MnLeagueRoom3": {
+        "MnLeagueRoom3BeforeText": [
+          [
+            "VEIL: I search",
+            "for lost people."
+          ],
+          [
+            "I take the",
+            "night shift."
+          ],
+          [
+            "My partners notice",
+            "every sound."
+          ],
+          [
+            "They have already",
+            "noticed you."
+          ],
+          [
+            "Shall we begin?"
+          ]
+        ],
+        "MnLeagueRoom3WonText": [
+          [
+            "VEIL: You made",
+            "your move first."
+          ],
+          [
+            "I could not",
+            "catch up."
+          ]
+        ],
+        "MnLeagueRoom3LostText": [
+          [
+            "VEIL: You lost",
+            "sight of us."
+          ],
+          [
+            "Let your team",
+            "rest, then return."
+          ]
+        ],
+        "MnLeagueRoom3AfterText": [
+          [
+            "VEIL: HALDEN",
+            "waits ahead."
+          ],
+          [
+            "Check your team",
+            "before going on."
+          ]
+        ],
+        "MnLeagueRoom3NoRunText": [
+          [
+            "VEIL: Register",
+            "for a challenge."
+          ],
+          [
+            "Defeat FERN and",
+            "FLINT before me."
+          ]
+        ],
+        "MnLeagueRoom3RematchText": [
+          [
+            "VEIL: Welcome",
+            "back, CHAMPION."
+          ],
+          [
+            "I remember our",
+            "last match."
+          ],
+          [
+            "Show me something",
+            "I have not seen."
+          ]
+        ]
+      },
+      "MnLeagueRoom4": {
+        "MnLeagueRoom4BeforeText": [
+          [
+            "HALDEN: Last of",
+            "the ELITE FOUR."
+          ],
+          [
+            "I guide canoe",
+            "trips around ELY."
+          ],
+          [
+            "A strong current",
+            "takes good timing."
+          ],
+          [
+            "Let us see how",
+            "you finish!"
+          ]
+        ],
+        "MnLeagueRoom4WonText": [
+          [
+            "HALDEN: You",
+            "turned it around."
+          ],
+          [
+            "Well done!"
+          ]
+        ],
+        "MnLeagueRoom4LostText": [
+          [
+            "HALDEN: Try",
+            "another approach."
+          ],
+          [
+            "Rest your team.",
+            "Then try again."
+          ]
+        ],
+        "MnLeagueRoom4AfterText": [
+          [
+            "HALDEN: That is",
+            "all four of us."
+          ],
+          [
+            "CASEY, our",
+            "CHAMPION, is next."
+          ],
+          [
+            "Check every",
+            "partner first."
+          ]
+        ],
+        "MnLeagueRoom4NoRunText": [
+          [
+            "HALDEN: I am",
+            "the fourth match."
+          ],
+          [
+            "Defeat the first",
+            "three members."
+          ]
+        ],
+        "MnLeagueRoom4RematchText": [
+          [
+            "HALDEN: Back",
+            "again, CHAMPION?"
+          ],
+          [
+            "One more match",
+            "before CASEY."
+          ],
+          [
+            "Let us begin!"
+          ]
+        ]
+      },
+      "MnLeagueChampion": {
+        "MnLeagueChampionBeforeText": [
+          [
+            "CASEY: Welcome!"
+          ],
+          [
+            "IVY said that you",
+            "saved her crew."
+          ],
+          [
+            "Today we can all",
+            "enjoy this match."
+          ],
+          [
+            "Your team earned",
+            "its place here."
+          ],
+          [
+            "I am CASEY,",
+            "the CHAMPION."
+          ],
+          [
+            "Show me your",
+            "very best!"
+          ]
+        ],
+        "MnLeagueChampionWonText": [
+          [
+            "CASEY: You won!"
+          ],
+          [
+            "I gave that match",
+            "everything I had."
+          ]
+        ],
+        "MnLeagueChampionLostText": [
+          [
+            "CASEY: You came",
+            "a long way."
+          ],
+          [
+            "Let your team",
+            "rest, then return."
+          ]
+        ],
+        "MnLeagueChampionAfterText": [
+          [
+            "CASEY: You are",
+            "our new CHAMPION!"
+          ],
+          [
+            "Go through the",
+            "northern door."
+          ],
+          [
+            "Each partner goes",
+            "into the record."
+          ],
+          [
+            "Next time, I will",
+            "try for the title!"
+          ]
+        ],
+        "MnLeagueChampionNoRunText": [
+          [
+            "CASEY: Complete",
+            "a registered run."
+          ],
+          [
+            "Defeat all four",
+            "members in order."
+          ],
+          [
+            "Then you may",
+            "challenge my team."
+          ]
+        ],
+        "MnLeagueChampionRematchText": [
+          [
+            "CASEY: CHAMPION!"
+          ],
+          [
+            "I keep thinking",
+            "of our last match."
+          ],
+          [
+            "Show me what",
+            "you have learned!"
+          ]
+        ]
+      },
+      "MnLeagueLobby": {
+        "MnElyRegistrationText": [
+          [
+            "REGISTRAR: Welcome",
+            "to the LEAGUE."
+          ],
+          [
+            "Meet our ELITE",
+            "FOUR: FERN, FLINT,"
+          ],
+          [
+            "VEIL and HALDEN."
+          ],
+          [
+            "CASEY is the",
+            "reigning CHAMPION."
+          ],
+          [
+            "Win five battles",
+            "in a fixed order."
+          ],
+          [
+            "Bring supplies."
+          ],
+          [
+            "Leaving or losing",
+            "ends this run."
+          ],
+          [
+            "Ready to register?"
+          ]
+        ],
+        "MnElyBadgeDeniedText": [
+          [
+            "REGISTRAR: Earn",
+            "all eight BADGES."
+          ],
+          [
+            "Then you may",
+            "enter the LEAGUE."
+          ],
+          [
+            "Our clinic and",
+            "shop are open now."
+          ]
+        ],
+        "MnElySurveyDeniedText": [
+          [
+            "REGISTRAR: The",
+            "trail is closed."
+          ],
+          [
+            "The survey crews",
+            "need help."
+          ],
+          [
+            "Head north to",
+            "BOUNDARY WATERS."
+          ],
+          [
+            "Stop the pumps.",
+            "Help the crews."
+          ],
+          [
+            "Then we can clear",
+            "the LEAGUE trail."
+          ]
+        ],
+        "MnElyRegistrationDeclinedText": [
+          [
+            "REGISTRAR: Take",
+            "your time."
+          ],
+          [
+            "The clinic is",
+            "free."
+          ],
+          [
+            "Check your",
+            "supplies too."
+          ],
+          [
+            "Return when your",
+            "team is ready."
+          ]
+        ]
+      },
+      "MnLeagueHallOfFame": {
+        "MnElyRecordText": [
+          [
+            "Five victories.",
+            "One team."
+          ],
+          [
+            "Every partner goes",
+            "into this record."
+          ],
+          [
+            "The lake crews are",
+            "safe and home now."
+          ],
+          [
+            "There is damage",
+            "left to repair."
+          ],
+          [
+            "Today is for",
+            "your team."
+          ],
+          [
+            "Enjoy what you",
+            "earned together!"
+          ],
+          [
+            "Welcome to the",
+            "HALL OF FAME!"
+          ]
+        ],
+        "MnElyRecordDeniedText": [
+          [
+            "This record needs",
+            "five victories."
+          ],
+          [
+            "Win them in one",
+            "registered run."
+          ],
+          [
+            "Your older records",
+            "remain safe here."
+          ]
+        ]
+      },
+      "MnBoundaryWaters": {
+        "MnBoundaryGunflintCheckBadgesText": [
+          [
+            "OFFICER: Earn",
+            "all eight BADGES."
+          ],
+          [
+            "Then return here.",
+            "Our medic is free."
+          ]
+        ],
+        "MnBoundaryGunflintCheckSignalText": [
+          [
+            "OFFICER: Go to",
+            "DULUTH's harbor."
+          ],
+          [
+            "The engineer needs",
+            "the pump log."
+          ],
+          [
+            "Ask at the",
+            "harbor workshop."
+          ]
+        ],
+        "MnBoundaryGunflintCheckRestoredText": [
+          [
+            "OFFICER: The",
+            "pumps still run."
+          ],
+          [
+            "Send the evidence",
+            "from the shelter."
+          ],
+          [
+            "Then go downstairs",
+            "to stop the drive."
+          ],
+          [
+            "Help the crew",
+            "release KETTLURK."
+          ]
+        ],
+        "MnBoundaryLeagueCheckBadgesText": [
+          [
+            "OFFICER: Earn",
+            "all eight BADGES."
+          ],
+          [
+            "Then return here.",
+            "Our medic is free."
+          ]
+        ],
+        "MnBoundaryLeagueCheckSignalText": [
+          [
+            "OFFICER: Go to",
+            "DULUTH's harbor."
+          ],
+          [
+            "The engineer needs",
+            "the pump log."
+          ],
+          [
+            "Ask at the",
+            "harbor workshop."
+          ]
+        ],
+        "MnBoundaryLeagueCheckRestoredText": [
+          [
+            "OFFICER: The",
+            "pumps still run."
+          ],
+          [
+            "Send the evidence",
+            "from the shelter."
+          ],
+          [
+            "Then go downstairs",
+            "to stop the drive."
+          ],
+          [
+            "Help the crew",
+            "release KETTLURK."
+          ]
+        ],
+        "MnBoundaryVoyageursCheckBadgesText": [
+          [
+            "OFFICER: Earn",
+            "all eight BADGES."
+          ],
+          [
+            "Then return here.",
+            "Our medic is free."
+          ]
+        ],
+        "MnBoundaryVoyageursCheckSignalText": [
+          [
+            "OFFICER: Go to",
+            "DULUTH's harbor."
+          ],
+          [
+            "The engineer needs",
+            "the pump log."
+          ],
+          [
+            "Ask at the",
+            "harbor workshop."
+          ]
+        ],
+        "MnBoundaryVoyageursCheckRestoredText": [
+          [
+            "OFFICER: The",
+            "pumps still run."
+          ],
+          [
+            "Send the evidence",
+            "from the shelter."
+          ],
+          [
+            "Then go downstairs",
+            "to stop the drive."
+          ],
+          [
+            "Help the crew",
+            "release KETTLURK."
+          ]
+        ],
+        "MN_BOUNDARY_SOUTH_TRAILText": [
+          [
+            "LEAGUE TRAIL",
+            "ELY lies south."
+          ],
+          [
+            "Ask the officers",
+            "for safe passage."
+          ]
+        ]
+      },
+      "MnDuluth": {
+        "MnDuluthRangeCheckBadgesText": [
+          [
+            "Earn the PINE",
+            "BADGE in BEMIDJI."
+          ],
+          [
+            "It is your seventh",
+            "GYM challenge."
+          ],
+          [
+            "Our clinic is",
+            "open for care."
+          ]
+        ],
+        "MnDuluthRangeCheckEvidenceText": [
+          [
+            "Bring the meter",
+            "to GRAND RAPIDS."
+          ],
+          [
+            "The survey depot",
+            "can read its log."
+          ],
+          [
+            "Then this road",
+            "will be cleared."
+          ]
+        ],
+        "MnDuluthShoreCheckBadgesText": [
+          [
+            "Earn all eight",
+            "BADGES first."
+          ],
+          [
+            "Our GYM is your",
+            "last challenge."
+          ],
+          [
+            "Then take the",
+            "North Shore road."
+          ]
+        ],
+        "MnDuluthShoreCheckEvidenceText": [
+          [
+            "Show the pump log",
+            "to the engineer."
+          ],
+          [
+            "Go to our",
+            "harbor workshop."
+          ],
+          [
+            "The engineer will",
+            "call the crews."
+          ]
+        ]
+      },
+      "MnGrandRapids": {
+        "MnGrandRapidsEastCheckBadgesText": [
+          [
+            "Earn the PINE",
+            "BADGE in BEMIDJI."
+          ],
+          [
+            "ORLIS leads",
+            "the GYM there."
+          ]
+        ],
+        "MnGrandRapidsWestCheckBadgesText": [
+          [
+            "Earn the PINE",
+            "BADGE in BEMIDJI."
+          ],
+          [
+            "ORLIS leads",
+            "the GYM there."
+          ]
+        ],
+        "MnGrandRapidsEastCheckEvidenceText": [
+          [
+            "Take the meter",
+            "to the depot."
+          ],
+          [
+            "Let the crew read",
+            "its pump log."
+          ],
+          [
+            "Then you may",
+            "go east to DULUTH."
+          ]
+        ],
+        "MnGrandRapidsWestCheckEvidenceText": [
+          [
+            "BEMIDJI needs",
+            "the ITASCA log."
+          ],
+          [
+            "Copy the readings",
+            "Bring them back."
+          ],
+          [
+            "The officer will",
+            "clear this road."
+          ]
+        ]
+      },
+      "MnMinneapolis": {
+        "MnMPEastCheckBadgesText": [
+          [
+            "AVRIN leads our",
+            "GYM."
+          ],
+          [
+            "Earn the CURRENT",
+            "BADGE there."
+          ],
+          [
+            "Then cross the",
+            "bridge to ST PAUL."
+          ]
+        ],
+        "MnMPNorthCheckBadgesText": [
+          [
+            "Earn the CAPITOL",
+            "BADGE in ST PAUL."
+          ],
+          [
+            "Then return to",
+            "this crossing."
+          ],
+          [
+            "The northern road",
+            "leads to ST CLOUD."
+          ]
+        ]
+      },
+      "MnRochester": {
+        "MnRCPrairieCheckBadgesText": [
+          [
+            "VAREL leads our",
+            "GYM."
+          ],
+          [
+            "Earn the CARE",
+            "BADGE there."
+          ],
+          [
+            "Then take the",
+            "road to MANKATO."
+          ]
+        ]
+      },
+      "MnWinona": {
+        "MnWTrailCheckEvidenceText": [
+          [
+            "Ask DR TAMARACK",
+            "for a partner."
+          ],
+          [
+            "His field station",
+            "is by the river."
           ]
         ]
       }

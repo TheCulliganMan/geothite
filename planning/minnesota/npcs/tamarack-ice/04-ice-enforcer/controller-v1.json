@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "trainers": [
+    {
+      "approach": [
+        7,
+        9
+      ],
+      "defeated_flag": "EVENT_MN_ICE_ENFORCER_DEFEATED",
+      "facing": "west",
+      "id": "MN_ICE_ENFORCER",
+      "map": "MnMinneapolisDispatchOffice",
+      "sprite": "SPRITE_MN_ICE_ENFORCER",
+      "tile": [
+        8,
+        9
+      ],
+      "trainer_class": "MN_ICE_ENFORCER",
+      "fixture_badges": 2
+    }
+  ]
+}

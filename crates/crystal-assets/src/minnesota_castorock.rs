@@ -312,10 +312,10 @@ pub fn build_minnesota_castorock(
         c("waitbutton", &[]),
         c("closetext", &[]),
         c("setevent", &[READY]),
-        c("return", &[]),
+        c("end", &[]),
     ]);
     put(&mut room, "MnJawCheck", check);
-    put(&mut room, "MnJawReturn", vec![c("return", &[])]);
+    put(&mut room, "MnJawReturn", vec![c("end", &[])]);
     text(
         &mut room,
         "MnJawRevealText",

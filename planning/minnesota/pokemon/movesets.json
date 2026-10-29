@@ -24076,6 +24076,81 @@
         "MIMIC",
         "OCTAZOOKA"
       ]
+    },
+    {
+      "id": "MN_319",
+      "level_moves": [
+        [
+          1,
+          "TACKLE"
+        ],
+        [
+          1,
+          "HARDEN"
+        ],
+        [
+          1,
+          "POISON_GAS"
+        ],
+        [
+          8,
+          "BITE"
+        ],
+        [
+          15,
+          "METAL_CLAW"
+        ],
+        [
+          22,
+          "GLARE"
+        ],
+        [
+          29,
+          "SLUDGE"
+        ],
+        [
+          36,
+          "PROTECT"
+        ],
+        [
+          40,
+          "CRUNCH"
+        ],
+        [
+          44,
+          "POISON_JAB"
+        ],
+        [
+          50,
+          "IRON_TAIL"
+        ],
+        [
+          57,
+          "SLUDGE_BOMB"
+        ],
+        [
+          64,
+          "HAZE"
+        ]
+      ],
+      "tmhm_moves": [
+        "TOXIC",
+        "PROTECT",
+        "REST",
+        "SLEEP_TALK",
+        "SNORE",
+        "RETURN",
+        "FRUSTRATION",
+        "DOUBLE_TEAM",
+        "ENDURE",
+        "HIDDEN_POWER",
+        "IRON_TAIL",
+        "SLUDGE_BOMB",
+        "EARTHQUAKE",
+        "ROCK_SMASH",
+        "STRENGTH"
+      ],
+      "egg_moves": []
     }
   ]
 }

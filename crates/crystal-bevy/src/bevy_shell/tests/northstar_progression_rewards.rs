@@ -93,7 +93,7 @@ fn progression_rewards_dex_counts_caught_native_species_not_seen_foreign_or_save
         .filter_map(|k| k.strip_prefix("MN_DEX_MEMBER_"))
         .collect();
     assert!(active.len() >= 100);
-    for caught in [0, 9, 10, 25, 50, 100, active.len()] {
+    for caught in [0, 9, 10, 25, 50, 100, active.len() - 1, active.len()] {
         let mut c = fixture(&root, &r, "MnWinonaFieldStation", (2, 8));
         let state = c.shell.shell.session_mut().state_mut();
         state
@@ -126,6 +126,7 @@ fn progression_rewards_dex_counts_caught_native_species_not_seen_foreign_or_save
         for (threshold, item, amount) in [
             (10, "GREAT_BALL", 10),
             (25, "ITEMFINDER", 1),
+            (50, "ULTRA_BALL", 10),
             (100, "LUCKY_EGG", 1),
             (active.len(), "RARE_CANDY", 10),
         ] {
@@ -142,6 +143,11 @@ fn progression_rewards_dex_counts_caught_native_species_not_seen_foreign_or_save
         assert_eq!(
             quantity(&c, "GREAT_BALL"),
             if caught >= 10 { 10 } else { 0 }
+        );
+        assert_eq!(
+            quantity(&c, "RARE_CANDY"),
+            if caught == active.len() { 10 } else { 0 },
+            "Continue must preserve the final reward boundary"
         );
     }
 }
@@ -253,7 +259,6 @@ fn register_and_ride(
 #[test]
 #[ignore = "requires CRYSTAL_WINONA_TEST_PACK with progression rewards"]
 fn progression_rewards_failed_ball_delivery_native_toss_retry_and_no_duplicate() {
-    use super::super::{FieldPackAction, FieldPackPocket, StartMenuOption};
     use super::winona::press;
     use crystal_core::input::GameButton;
     let (root, r) = load();
@@ -297,88 +302,7 @@ fn progression_rewards_failed_ball_delivery_native_toss_retry_and_no_duplicate()
             .expect("claim flag")
     );
     c = continue_save(root.clone(), r.clone(), &mut c);
-    press(&mut c, GameButton::Start);
-    let snapshot = c.snapshot().expect("Start");
-    let target = super::super::visible_start_menu_options(&c.shell, &snapshot)
-        .iter()
-        .position(|o| *o == StartMenuOption::Pack)
-        .expect("PACK");
-    for _ in 0..16 {
-        let selected = c
-            .shell
-            .start_menu_cursor
-            .as_ref()
-            .expect("Start cursor")
-            .option_index;
-        if selected == target {
-            press(&mut c, GameButton::A);
-            break;
-        }
-        press(
-            &mut c,
-            if selected < target {
-                GameButton::Down
-            } else {
-                GameButton::Up
-            },
-        );
-    }
-    for _ in 0..4 {
-        if c.shell.field_pack_pocket == Some(FieldPackPocket::Balls) {
-            break;
-        }
-        press(&mut c, GameButton::Right);
-    }
-    press(&mut c, GameButton::A);
-    let snapshot = c.snapshot().expect("ball actions");
-    let actions = super::super::visible_selected_pack_item_actions(
-        &snapshot,
-        &c.shell,
-        &FieldPackPocket::Balls,
-        false,
-    )
-    .expect("ball actions");
-    let target = actions
-        .iter()
-        .position(|a| *a == FieldPackAction::Toss)
-        .expect("TOSS");
-    for _ in 0..8 {
-        let selected = c
-            .shell
-            .field_pack_action_cursor
-            .as_ref()
-            .expect("action cursor")
-            .option_index;
-        if selected == target {
-            press(&mut c, GameButton::A);
-            break;
-        }
-        press(
-            &mut c,
-            if selected < target {
-                GameButton::Down
-            } else {
-                GameButton::Up
-            },
-        );
-    }
-    assert_eq!(
-        c.shell
-            .pack_toss
-            .as_ref()
-            .expect("native quantity")
-            .quantity,
-        1
-    );
-    press(&mut c, GameButton::A);
-    assert!(
-        c.shell
-            .pack_toss
-            .as_ref()
-            .expect("native confirmation")
-            .confirming
-    );
-    press(&mut c, GameButton::A);
+    native_toss_first_ball(&mut c);
     assert_eq!(quantity(&c, "MASTER_BALL"), 98);
     for _ in 0..8 {
         press(&mut c, GameButton::B);
@@ -436,4 +360,174 @@ fn checkpoint(c: &mut super::super::VisibleShellController, name: &str) {
         assert!(!path.exists(), "review checkpoint must be fresh");
         c.save(path).expect("production checkpoint save");
     }
+}
+
+#[test]
+#[ignore = "requires CRYSTAL_WINONA_TEST_PACK with the fifty-species Ultra Ball reward"]
+fn progression_rewards_fifty_ultra_balls_native_toss_retry_and_once() {
+    use super::winona::press;
+    use crystal_core::input::GameButton;
+    let (root, r) = load();
+    let mut c = fixture(&root, &r, "MnWinonaFieldStation", (2, 8));
+    {
+        let state = c.shell.shell.session_mut().state_mut();
+        for flag in [
+            "EVENT_MN_STARTER_RECEIVED",
+            "EVENT_MN_WINONA_BALLS_RECEIVED",
+            "EVENT_MN_DEX_REWARD_0",
+            "EVENT_MN_DEX_REWARD_1",
+        ] {
+            state
+                .flags
+                .set_event_flag(flag, true)
+                .expect("declared prior opening/awards");
+        }
+        for name in r
+            .data()
+            .story_event_script_constants
+            .global
+            .keys()
+            .filter_map(|key| key.strip_prefix("MN_DEX_MEMBER_"))
+            .take(50)
+        {
+            state.pokedex.record_caught(&r.data().pokemon[name]);
+        }
+        assert!(
+            state
+                .bag
+                .add_item(&r.data().items["ULTRA_BALL"], 90)
+                .expect("partial first stack")
+        );
+        for _ in 1..crystal_core::models::bag::BALL_POCKET_CAPACITY {
+            assert!(
+                state
+                    .bag
+                    .add_item(&r.data().items["POKE_BALL"], 99)
+                    .expect("full other stacks")
+            );
+        }
+    }
+    mark_runtime_snapshot_dirty(&mut c.shell);
+    // Every action below uses native input; capacity is freed through PACK.
+    let bag = c.shell.shell.session().state().bag.clone();
+    talk(&mut c, (2, 9));
+    assert_eq!(c.shell.shell.session().state().bag, bag);
+    assert!(
+        !c.shell
+            .shell
+            .session()
+            .state()
+            .flags
+            .is_event_flag_set("EVENT_MN_DEX_REWARD_2")
+            .expect("failed claim")
+    );
+    c = continue_save(root.clone(), r.clone(), &mut c);
+    native_toss_first_ball(&mut c);
+    assert_eq!(quantity(&c, "ULTRA_BALL"), 89);
+    for _ in 0..8 {
+        press(&mut c, GameButton::B);
+    }
+    talk(&mut c, (2, 9));
+    assert_eq!(quantity(&c, "ULTRA_BALL"), 99);
+    assert_eq!(quantity(&c, "EXP_SHARE"), 0);
+    assert!(
+        c.shell
+            .shell
+            .session()
+            .state()
+            .flags
+            .is_event_flag_set("EVENT_MN_DEX_REWARD_2")
+            .expect("earned supplies")
+    );
+    c = continue_save(root, r, &mut c);
+    talk(&mut c, (2, 9));
+    assert_eq!(quantity(&c, "ULTRA_BALL"), 99);
+}
+
+fn native_toss_first_ball(c: &mut super::super::VisibleShellController) {
+    use super::super::{FieldPackAction, FieldPackPocket, StartMenuOption};
+    use super::winona::press;
+    use crystal_core::input::GameButton;
+    press(c, GameButton::Start);
+    let snapshot = c.snapshot().expect("Start");
+    let target = super::super::visible_start_menu_options(&c.shell, &snapshot)
+        .iter()
+        .position(|o| *o == StartMenuOption::Pack)
+        .expect("PACK");
+    for _ in 0..16 {
+        let selected = c
+            .shell
+            .start_menu_cursor
+            .as_ref()
+            .expect("Start cursor")
+            .option_index;
+        if selected == target {
+            press(c, GameButton::A);
+            break;
+        }
+        press(
+            c,
+            if selected < target {
+                GameButton::Down
+            } else {
+                GameButton::Up
+            },
+        );
+    }
+    for _ in 0..4 {
+        if c.shell.field_pack_pocket == Some(FieldPackPocket::Balls) {
+            break;
+        }
+        press(c, GameButton::Right);
+    }
+    press(c, GameButton::A);
+    let snapshot = c.snapshot().expect("ball actions");
+    let actions = super::super::visible_selected_pack_item_actions(
+        &snapshot,
+        &c.shell,
+        &FieldPackPocket::Balls,
+        false,
+    )
+    .expect("ball actions");
+    let target = actions
+        .iter()
+        .position(|a| *a == FieldPackAction::Toss)
+        .expect("TOSS");
+    for _ in 0..8 {
+        let selected = c
+            .shell
+            .field_pack_action_cursor
+            .as_ref()
+            .expect("action cursor")
+            .option_index;
+        if selected == target {
+            press(c, GameButton::A);
+            break;
+        }
+        press(
+            c,
+            if selected < target {
+                GameButton::Down
+            } else {
+                GameButton::Up
+            },
+        );
+    }
+    assert_eq!(
+        c.shell
+            .pack_toss
+            .as_ref()
+            .expect("native quantity")
+            .quantity,
+        1
+    );
+    press(c, GameButton::A);
+    assert!(
+        c.shell
+            .pack_toss
+            .as_ref()
+            .expect("native confirmation")
+            .confirming
+    );
+    press(c, GameButton::A);
 }

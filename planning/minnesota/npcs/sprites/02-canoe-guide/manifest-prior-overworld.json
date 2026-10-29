@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "id": "MN_CANOE_GUIDE",
+  "name": "CANOE GUIDE OREN",
+  "status": "accepted-native-playable",
+  "overworld_frames": 6,
+  "overworld_size": [
+    16,
+    16
+  ],
+  "battle_size": [
+    56,
+    56
+  ],
+  "palette_rgb555": [
+    32767,
+    10975,
+    13733,
+    0
+  ],
+  "source": "native-pixels-v1.json",
+  "placement": "placement-v1.json",
+  "pack": "content-packs/minnesota-original-npcs-02-v02.crystalpack",
+  "parent": "content-packs/minnesota-original-ranger-v04.crystalpack",
+  "runtime_checks": {
+    "one_controller_test_passed": true,
+    "talk_and_input_ownership": true,
+    "battle_turn_and_pp": true,
+    "battle_save_load": true,
+    "actual_victory_and_defeat_flag_before_render_capture": true,
+    "post_battle_talk": true,
+    "existing_trainers_and_assets_preserved": true
+  },
+  "visual_review": {
+    "battle": "accepted after guarded face cleanup; separate eyes, bucket hat, vest and paddle readable",
+    "overworld": "accepted at Brainerd lake launch; correct native scale and matching paddle/vest identity",
+    "native_bank": "six registered views reviewed, paddles aligned and held, walking feet refined"
+  },
+  "evidence_sha256": {
+    "planning/minnesota/npcs/sprites/02-canoe-guide/native-pixels-v1.json": "00b9a454259e7c72ce2c97d1b59b077230118e79a80a8fa1e6fca13bd9314a51",
+    "planning/minnesota/npcs/sprites/02-canoe-guide/placement-v1.json": "e494528d7a68898ed6dfe58c69a3c99bc81af503d00bfb599a90afbab6029027",
+    "content-packs/minnesota-original-npcs-02-v02.crystalpack": "30a46a79e0be8cbb54639e48f9ffe4de97c9aaa962434c6f5297238aa0e50818",
+    "target/npc-sprites/canoe-guide/controller-v02.log": "4a3f873c0905ae3778a4f8ea3fc9062c13f4e516a8e0a2ddf3c00ee6cb1fa7be",
+    "target/npc-sprites/canoe-guide/gameplay-v02/original-npc-trainer-intro.png": "39f910d54998a32c8c715ef10406014dddaf19fbd52fcf64e01bada52b6339d6",
+    "target/npc-sprites/canoe-guide/gameplay-v02/original-npc-first-turn.png": "937c6263d6e3cb8add229baf83faafc62237a13d38514702ca545ad9cbf5e503",
+    "target/npc-sprites/canoe-guide/gameplay-v02/original-npc-overworld-state.png": "0ed5b63f9492140b47e0e3e5ae6fd326570a898d63a68d9b06d676c947638ee6"
+  }
+}

@@ -2048,3 +2048,14 @@ the compact R13 parent and verified
 records exact inputs, hashes, build commands, four passing atlas/controller
 checks and inspected production renders. Source artwork/audio are preserved;
 the pack and render history remain ignored.
+
+## Tamarack and Team ICE trainer sprites
+
+The [native sprite runbook](../planning/minnesota/npcs/tamarack-ice/README.md)
+records the executed Rust encoding/publication commands, concrete Castorock/
+Cedar R20 parent and combined pack, normal Crystal six-pose field bases, all
+17 ICE variants and eight new trainer encounters. Use
+`tools/build-tamarack-ice-sprites.sh` after building the listed Rust tools.
+It preserves the parent and requires a fresh ignored output name. The runbook
+also gives the concrete production play/MCP commands, preservation/audio
+results, actual controller evidence and declared test-fixture limits.

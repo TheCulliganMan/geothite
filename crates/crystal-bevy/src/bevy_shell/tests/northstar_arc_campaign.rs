@@ -86,7 +86,7 @@ pub(super) fn recruit_party(c: &mut VisibleShellController, r: &CrystalRuntime, 
     care(c, r);
     // Buy real balls before walking the same regional encounter strip used for
     // ordinary Minneapolis preparation. Duplicate catches are not selected.
-    let item = &r.data().items["POKE_BALL"];
+    let item = &r.data().items["GREAT_BALL"];
     let quantity = (c.shell.shell.session().state().money / u32::from(item.price)).min(12) as u16;
     if quantity > 0 {
         indoor_walk(c, r, (73, 26));
@@ -94,7 +94,7 @@ pub(super) fn recruit_party(c: &mut VisibleShellController, r: &CrystalRuntime, 
         indoor_walk(c, r, (3, 3));
         press(c, GameButton::Left);
         press(c, GameButton::A);
-        super::super::rochester_earned::checkout(c, r, "POKE_BALL", quantity);
+        super::super::rochester_earned::checkout(c, r, "GREAT_BALL", quantity);
         indoor_walk(c, r, (6, 6));
         travel(c, GameButton::Down, "MnMinneapolis", (73, 26));
     }
@@ -166,7 +166,7 @@ pub(super) fn recruit_party(c: &mut VisibleShellController, r: &CrystalRuntime, 
 }
 
 /// Change the lead through the real Start/Party/Switch menus.
-fn switch_lead(c: &mut VisibleShellController, slot: usize) {
+pub(super) fn switch_lead(c: &mut VisibleShellController, slot: usize) {
     use super::super::super::{
         PartyAction, StartMenuOption, has_visible_shell_direction_action, visible_party_actions,
         visible_start_menu_options,

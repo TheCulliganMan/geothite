@@ -100,6 +100,8 @@ pub(super) fn try_road(
         .expect("route");
     let tileset = if number == 9 {
         "mn_iron_range"
+    } else if first.attributes.tileset_name == "mn_r10_rockstairs" {
+        "mn_r10_rockstairs"
     } else {
         "johto"
     };

@@ -1,12 +1,12 @@
 {
   "schema_version": 2,
   "status": "canonical_original_species_authoring",
-  "species_count": 314,
+  "species_count": 315,
   "evolution_mix": {
     "three_stage_families": 53,
     "two_stage_families": 65,
-    "single_stage_species": 25,
-    "legendary_species": 7,
+    "single_stage_species": 26,
+    "legendary_species": 8,
     "mythical_species": 2
   },
   "type_balance_policy": {
@@ -6580,6 +6580,45 @@
       ],
       "design_status": "reviewed-themed-replacement",
       "replacement_context": "User authorized these eleven previously proposed families to replace weaker overlapping designs while keeping220 active species. All retired source records and renders remain preserved."
+    },
+    {
+      "id": "MN_F145",
+      "members": [
+        {
+          "id": "MN_319",
+          "name": "Verdigrim",
+          "types": [
+            "STEEL",
+            "POISON"
+          ],
+          "stage": 1,
+          "evolves_to": null
+        }
+      ],
+      "theme": "Minnesota timber wolves and glacial float copper become an imposing native-copper wolf. Ojibwe wolf-as-companion teachings inform its guardian character. Team Lode exposes the buried mass while stripping overburden; green poisonous discharge and a crushing tail choke Kettlurk's returning current.",
+      "region": "iron_range",
+      "rarity": "legendary",
+      "location": "Buried glacial copper mass exposed during Team Lode overburden removal at a northeastern Minnesota worksite; exact playable placement pending.",
+      "story_contract": "verdigrim-story.json",
+      "sprite_design": "Highly stylized wolf formed from one irregular glacial float-copper mass: rounded merged shoulder and chest lobes, short strong wolf legs, huge nugget paws, a broad heavy tail, a powerful canine muzzle and two tall ears. Deep green weathering crust covers broad surfaces; smooth exposed reddish copper follows the high points. Few large pits and white glints. Native 2D only.",
+      "sources": [
+        {
+          "title": "1854 Treaty Authority: Wolf Research",
+          "url": "https://www.1854treatyauthority.org/management/biological-resources/wildlife/wolf-research",
+          "supports": "Ma\u2019iingan and wolf research near Duluth and in northeastern Minnesota."
+        },
+        {
+          "title": "1854 Treaty Authority: Climate Adaptation Plan (2016), section 4.11.3",
+          "url": "https://www.1854treatyauthority.org/images/ClimateAdaptationPlan_Final-July_2016-optimized%281%29.pdf",
+          "supports": "Minnesota Ojibwe context for the wolf as a companion whose fate is linked with people. The copper coat, poison and Kettlurk conflict are original game fiction."
+        },
+        {
+          "title": "University of Minnesota mineral guide: Native Copper, page35",
+          "url": "https://conservancy.umn.edu/bitstreams/7452b0d6-8260-4e78-9b7a-a22cf0b0070a/download",
+          "supports": "Rare native copper in Minnesota glacial drift; exposed metal weathers from rose/copper-red to brown or green. The giant living wolf is fiction."
+        }
+      ],
+      "inspiration_boundary": "Original fictional wolf species. The Ojibwe wolf tradition informs its companion/guardian character; copper anatomy, poison powers, Team Lode excavation and the Kettlurk rivalry are game inventions, not an attributed traditional story. Use its original species name without fabricated Indigenous translations or copied ceremonial imagery."
     }
   ],
   "expansion_request_date": "2026-10-26",

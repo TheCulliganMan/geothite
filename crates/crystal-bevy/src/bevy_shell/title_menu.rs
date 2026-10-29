@@ -7152,9 +7152,13 @@ fn start_visible_oak_intro_scene(
     }
     .with_context(|| format!("unsupported OakSpeech portrait kind {kind}"))?;
     anyhow::ensure!(
-        exported_sprite == sprite,
+        exported_sprite == sprite
+            || (state == "wooper_showcase" && kind == "pokemon" && !exported_sprite.is_empty()),
         "OakSpeech portrait {exported_sprite} does not match scene sprite {sprite}"
     );
+    // Regional packs author their own showcase species and matching embedded
+    // cry. Retain the source scene timing while using that validated portrait.
+    let sprite = exported_sprite;
     oak_intro.scene_state = state.to_string();
     oak_intro.current_sprite = Some(sprite.to_string());
     let text_groups = visible_oak_text_groups(program, oak_intro.scene_index, "PLAYER")?;
@@ -7337,6 +7341,15 @@ fn tick_visible_oak_intro(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
     };
     oak_intro.blink_timer = (oak_intro.blink_timer + 1) % 60;
     drive_visible_oak_intro_phase(oak_intro, transient_busy);
+    if oak_intro.finished {
+        // Source fades return directly to the next portrait or naming scene.
+        // A completed white fade is not another acknowledgement boundary.
+        let completed = runtime_shell
+            .pending_oak_intro
+            .take()
+            .expect("the completed intro owns this frame");
+        complete_visible_oak_intro(runtime_shell, completed)?;
+    }
     Ok(())
 }
 

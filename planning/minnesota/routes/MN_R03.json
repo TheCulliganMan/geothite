@@ -667,7 +667,7 @@
       ],
       "signs": [],
       "purpose": "A small bank seep occupies the unused west shoulder; the dry passage fits tightly between water and the attached granite nose. The upper blind bend still leads to the Great Ball.",
-      "candidate_status": "Source candidate under whole-room, player-camera and production traversal review.",
+      "candidate_status": "Reviewed construction-base geometry; the selected acquisition overlay supplies the current14x8 room and programs. Keep archived source rows as base inputs rather than representing them as the current whole cave.",
       "review_contract": {
         "quality_revision": "johto-quality-v01",
         "palette_group": "nite",
@@ -717,6 +717,23 @@
           }
         ],
         "notes": "A small bank seep occupies the unused west shoulder; the dry passage fits tightly between water and the attached granite nose. The upper blind bend still leads to the Great Ball."
+      },
+      "current_runtime_overlay": {
+        "revision": "castorock_acquisition_revision",
+        "source": "planning/minnesota/pokemon/acquisition-v01/castorock/site.json",
+        "builder": "crystal_assets::build_minnesota_castorock",
+        "dimensions_metatiles": [
+          14,
+          8
+        ],
+        "native_warp_arrival": [
+          7,
+          9
+        ],
+        "clear_floor_approach": [
+          7,
+          8
+        ]
       }
     }
   ],

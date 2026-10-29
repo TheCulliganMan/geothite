@@ -1,0 +1,133 @@
+{
+  "id": "MnDetroitLakesApproach",
+  "ports": [
+    {
+      "side": "west",
+      "core": [
+        [
+          0,
+          18
+        ],
+        [
+          0,
+          19
+        ]
+      ]
+    },
+    {
+      "side": "east",
+      "core": [
+        [
+          47,
+          18
+        ],
+        [
+          47,
+          19
+        ]
+      ]
+    }
+  ],
+  "actors": [
+    {
+      "id": "MN_COHESION_DETROIT_KEEPER",
+      "tile": [
+        7,
+        15
+      ],
+      "sprite": "SPRITE_YOUNGSTER",
+      "facing": "south",
+      "role": "optional_trainer",
+      "trainer_name": "TAM",
+      "trainer_class": "BIRD_KEEPER",
+      "party": [
+        {
+          "species": "BOOMRUFF",
+          "level": 30
+        },
+        {
+          "species": "NOTCHBILL",
+          "level": 29
+        }
+      ],
+      "event_flag": "EVENT_MN_COHESION_DETROIT_KEEPER_DEFEATED",
+      "text": [
+        "A short forest walk.",
+        "Battle with me?"
+      ]
+    },
+    {
+      "id": "MN_COHESION_DETROIT_WALKER",
+      "tile": [
+        24,
+        21
+      ],
+      "sprite": "SPRITE_LASS",
+      "facing": "south",
+      "role": "optional_trainer",
+      "trainer_name": "IRIS",
+      "trainer_class": "LASS",
+      "party": [
+        {
+          "species": "CROOKVEIL",
+          "level": 30
+        },
+        {
+          "species": "PODLET",
+          "level": 29
+        }
+      ],
+      "event_flag": "EVENT_MN_COHESION_DETROIT_WALKER_DEFEATED",
+      "text": [
+        "A short forest walk.",
+        "Battle with me?"
+      ]
+    }
+  ],
+  "signs": [
+    {
+      "id": "MN_COHESION_DETROIT_SIGN",
+      "tile": [
+        8,
+        13
+      ],
+      "lines": [
+        "DETROIT LAKES",
+        "WOODLAND APPROACH",
+        "Follow the pine trail."
+      ]
+    }
+  ],
+  "views": [
+    {
+      "id": "west-meadow",
+      "core": [
+        10,
+        15
+      ]
+    },
+    {
+      "id": "lower-pine-bend",
+      "core": [
+        29,
+        24
+      ]
+    },
+    {
+      "id": "east-return",
+      "core": [
+        39,
+        18
+      ]
+    }
+  ],
+  "current_revision": "route_grass_detroit_approach_revision",
+  "current_native_source": "planning/minnesota/towns/MnDetroitLakesApproach.layout.json",
+  "grass_contract": {
+    "eastbound": 11,
+    "westbound": 13,
+    "terrace_uphill": 3,
+    "terrace_downhill": 0
+  },
+  "revision_runbook": "revisions/route-grass-v01/current-detroit-approach-v01/README.md"
+}

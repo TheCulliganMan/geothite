@@ -1,5 +1,9 @@
 # Deploy Geothite multiplayer
 
+The live browser game serves [The Northstar Survey](https://geothite.ryanculligan.com/?view=2d)
+in native 2D. See the [2026-10-29 release record](#northstar-native-2d-story-release-2026-10-29)
+for the exact pack, image, verification scope and rollback command.
+
 ## Requirements
 
 Use Docker Engine with BuildKit and the Docker Compose plugin. Run commands
@@ -114,6 +118,11 @@ Build the macOS executable on that host with `cargo build --release --locked
 when it differs from the input pack. Publish binaries and launcher before
 atomically replacing `downloads/terminal/current.txt`; retain previous releases.
 Generated downloads and game packs remain outside tracked source.
+
+The terminal manifest may include `pack-path` with a relative, versioned pack
+URL. This pins an existing terminal release to its verified content when the
+browser receives a newer story pack. Without that field, the installer uses
+`realtime-clock.browser.crystalpack` as before.
 
 The homelab deployment keeps these files in
 `/mnt/homelab/config/geothite/terminal-distribution`, with read-only service mounts:
@@ -361,6 +370,76 @@ Workspace formatting still reports pre-existing offset-allocator differences;
 all-target Clippy remains blocked by the existing `bad_bit_mask` in
 `crystal-core/src/multiplayer/mod.rs`. Changed capture Rust files passed scoped
 formatting. This is not a claim that unrelated shared work passes every test.
+
+## Northstar native 2D story release (2026-10-29)
+
+Published `geothite:d7634794-northstar-2d-20261029t115843z-final` to
+`sshpop:/mnt/homelab`. The final image ID is
+`sha256:8cb42a892b3e559e3396f80f086a5da7d78921cf984c858a8a6b640b25d93ab2`.
+The source is a frozen working tree over `d7634794`, with the recorded lobby
+and installer patches. This is a browser publication; the regional world
+selector and existing save identities were preserved.
+
+The input is `content-packs/minnesota-dialogue-overhaul-v05.crystalpack`, built
+on the completed Cedar warmth/R20 descendant. It contains 730 maps and retains
+the current Northstar scenes, active Minnesota species and native art. Input
+SHA-256: `a77997c3e19dd0d7d6f327d9dd5f0fb6b78d9f326260d5ecc51a6850a6ce2446`.
+The server applies its existing hosted clock, battle and customization overlays;
+the served runtime pack SHA-256 is
+`80deedd0db1fcf7b994ee980e260a47f1e8bade0e346e4444b193020c5fd0dd7`.
+Independent comparison preserves all 342 Minnesota maps, 78 Minnesota encounter
+tables, the complete trainer catalog, native runtime files and audio sections.
+
+The Rust browser client compiles without the voxel feature. Minnesota stays in
+2D through old display preferences, `?view=3d`, F3 and renderer requests; the
+visible choices are 2D and TUI. The renderer/audio pairs and TUI adapter are
+versioned together. Earlier immutable browser bundles remain available.
+
+Public default-online testing caught the story's 14,708-byte manifest lineage
+exceeding the lobby's previous 4 KB bound. The first rollout was restored to the
+preceding image while the fix was built. The final server accepts compositions
+up to 16 KB, retaining the 128-byte component checks and existing WebSocket
+frame bounds. A real authenticated welcome with the served story identity
+passes, alongside 25 lobby tests. The required all-target server Clippy check
+passes with existing warnings. New Rust lines match pinned rustfmt output;
+workspace formatting still reports pre-existing differences beginning in
+`crates/offset-allocator/src/lib.rs:408`.
+
+The final public HTTPS checks pass:
+
+- Fresh and stale-glue startup in Chromium and mobile WebKit, with exact
+  JavaScript/WASM and source/hosted pack hashes matching the tested candidate.
+- Default-online Winona New Game in both engines, Mom's actual dialogue pages,
+  rejected movement during dialogue, production Start, TUI rendering and return
+  to the same game. Native 2D captures were inspected headlessly.
+- Native stdio Mom/Tamarack pages, movement ownership, starter decline, Start
+  and byte-empty stderr; all 377 original audio PCM hashes, frame counts and
+  loop ranges; 133 browser/installer unit tests.
+- Existing terminal curl installs on macOS ARM64 and Linux x86_64, fullscreen
+  Start/save, save-preserving reinstall and authoritative MCP movement/Start.
+- Healthy service and clock, unchanged Pokédex HTML, available Flygon route and
+  retained preceding browser assets.
+
+Native downloads remain pinned to their previous verified release and pack via
+the manifest's `pack-path`; the new story is available in browser 2D and TUI.
+Only Geothite was recreated. Its signing configuration, named data volume,
+Pokédex, Flygon data and terminal mounts were preserved. Existing saves were
+not relabeled for the new pack. An uninterrupted ordinary-party campaign,
+complete difficulty acceptance and native/browser listening review remain open.
+
+The frozen source, build recipes, final source patches, verification records
+and private rollback configuration are retained under:
+
+```text
+/mnt/homelab/config/geothite/releases/d7634794-northstar-2d-20261029t115843z
+```
+
+The guarded rollback restores the captured service and terminal configuration,
+provided no subsequent deployment has changed them:
+
+```sh
+python3 /mnt/homelab/config/geothite/releases/d7634794-northstar-2d-20261029t115843z/deploy.py rollback
+```
 
 ## Optional Flygon
 

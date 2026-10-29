@@ -3079,7 +3079,8 @@ impl GameDataSet {
                 &event.command,
             );
         };
-        self.validate_saved_script_command_payload_reference(
+        crate::scoped_text_save::validate_text_payload(
+            self,
             path,
             &event.source_script,
             event.command_index,
@@ -3105,7 +3106,8 @@ impl GameDataSet {
                 &wait.command,
             );
         };
-        self.validate_saved_script_command_payload_reference(
+        crate::scoped_text_save::validate_text_payload(
+            self,
             path,
             &wait.source_script,
             wait.command_index,

@@ -34,7 +34,14 @@ fn arrival() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
     let snapshot = c.snapshot().expect("actual campaign checkpoint");
     match snapshot.overworld.map_name.as_str() {
         "MnMinneapolis" => location(&mut c, "MnMinneapolis", (63, 26)),
-        CITY => location(&mut c, CITY, (24, 34)),
+        CITY => {
+            let tile = snapshot.overworld.tile;
+            if (tile.x, tile.y) == (8, 28) {
+                assert!(event(&c, "EVENT_MN_GYM_5_TRAINER_1_DEFEATED"));
+            } else {
+                location(&mut c, CITY, (24, 34));
+            }
+        }
         CLINIC => location(&mut c, CLINIC, (10, 13)),
         _ => panic!("expected an actual four-badge return or earned R05 checkpoint"),
     }
@@ -283,9 +290,12 @@ fn northstar_campaign_earned_r05_recruitment() {
 pub(super) fn wind() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
     let (root, r, mut c) = arrival();
     super::northstar_campaign_review::boost(&mut c, &r);
-    assert!(northstar_earned_gyms::selected(&r));
+    // Validate the actually published room. Current regional descendants can
+    // retain the reviewed original courts while newer gym candidates stay
+    // unselected; never replace gameplay content to fit a replay driver.
+    northstar_earned_gyms::design(&r, 5);
     if c.snapshot().expect("earned departure").overworld.map_name == "MnMinneapolis" {
-        indoor_walk(&mut c, &r, (32, 4));
+        indoor_walk(&mut c, &r, (40, 4));
         travel(&mut c, GameButton::Up, "MnR05C00R02", (22, 15));
         assert!(try_road_with(&mut c, &r, 5, (24, 0), flee));
         travel(&mut c, GameButton::Up, CITY, (24, 35));
@@ -299,6 +309,43 @@ pub(super) fn wind() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
         == CLINIC
     {
         care(&mut c, &r);
+    }
+    if r.data().maps.contains_key("MnBoundaryIntake") && !event(&c, "EVENT_MN_REED_WORKER_RELEASED")
+    {
+        // Approach the visible participants before planning past their lane.
+        // Their scene, rather than a geometry shortcut, opens this street.
+        indoor_walk(&mut c, &r, (24, 7));
+        for _ in 0..3 {
+            press(&mut c, GameButton::Up);
+            if c.has_pending_script_work() {
+                break;
+            }
+        }
+        super::super::northstar_ice_lair::choice(&mut c, false);
+        finish(&mut c);
+        assert!(!event(&c, "EVENT_MN_REED_WORKER_RELEASED"));
+        press(&mut c, GameButton::Up);
+        press(&mut c, GameButton::Up);
+        super::super::northstar_ice_lair::choice(&mut c, true);
+        super::super::northstar_ice_lair::page(&mut c, "MnArcSCReleasedText");
+        assert!(!event(&c, "EVENT_MN_REED_WORKER_RELEASED"));
+        finish(&mut c);
+        assert!(event(&c, "EVENT_MN_REED_WORKER_RELEASED"));
+        let snapshot = c.snapshot().expect("worker visibly released");
+        let sera = snapshot.visible_object_runtime_tiles["MN_ARC_SC_SERA"];
+        assert_eq!((sera.x, sera.y), (24, 9));
+        assert!(
+            !snapshot
+                .visible_objects
+                .iter()
+                .any(|object| object.object_identifier.as_deref() == Some("MN_ARC_SC_REED"))
+        );
+        continue_in_place(
+            &mut c,
+            &root,
+            &r,
+            "campaign-earned-st-cloud-worker-released",
+        );
     }
     // The unearned fifth badge still blocks the next road after four badges.
     indoor_walk(&mut c, &r, (24, 4));

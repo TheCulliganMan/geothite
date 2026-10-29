@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "id": "MN_STATE_FAIR_BAKER",
+  "name": "BAKER DOTTIE",
+  "status": "accepted-native-playable",
+  "overworld_frames": 6,
+  "overworld_size": [
+    16,
+    16
+  ],
+  "battle_size": [
+    56,
+    56
+  ],
+  "palette_rgb555": [
+    32767,
+    22399,
+    8694,
+    0
+  ],
+  "source": "native-pixels-v1.json",
+  "placement": "placement-v1.json",
+  "pack": "content-packs/minnesota-original-npcs-12-v03.crystalpack",
+  "parent": "content-packs/minnesota-original-npcs-11-v01.crystalpack",
+  "runtime_checks": {
+    "one_controller_test_passed": true,
+    "talk_and_input_ownership": true,
+    "battle_turn_and_pp": true,
+    "battle_save_load": true,
+    "actual_victory_and_defeat_flag_before_render_capture": true,
+    "post_battle_talk": true,
+    "existing_trainers_and_assets_preserved": true
+  },
+  "manual_visual_review": "Reviewed native-size and enlarged six-pose strips, native battle grid and actual intro/post-win St Paul captures. Rebuilt separated eyes and three distinct tray rolls. Moved into the open midway area, checked the complete hat silhouette there, and rounded the native toque lobes after rejecting its initial flat top. Toque, apron, oven mitts, tray and separate shoes match across views; rear view excludes the front-facing rolls.",
+  "evidence_sha256": {
+    "planning/minnesota/npcs/sprites/12-state-fair-baker/native-pixels-v1.json": "44c3f1c19dd2740815a4a4416593408ed62385cdab43655acda68c684c5d3f07",
+    "planning/minnesota/npcs/sprites/12-state-fair-baker/placement-v1.json": "75e154ca2142a25ce0cf5e716db5fb7490e706fa12a2a5dfdb986231daf7e908",
+    "content-packs/minnesota-original-npcs-12-v03.crystalpack": "3e69f561378350cbfb9780a7182fe7d39e8911238ad3af432e678ee45db4c0b1",
+    "target/npc-sprites/baker/controller-v03.log": "eb1aea0cc863dbf89c551c3c3160e73fca95d846bcb576ca73b2a6319ebf9d0d",
+    "target/npc-sprites/baker/gameplay-v03/original-npc-trainer-intro.png": "0a4d1da6bfd8125975d068ab7ef0006dd9afa1947abe56bdf5c4bc6ad7d3af93",
+    "target/npc-sprites/baker/gameplay-v03/original-npc-first-turn.png": "cfe631bb9eebf4d1860fae5e600fc12a99509783131e4c3a45595472f13cfc79",
+    "target/npc-sprites/baker/gameplay-v03/original-npc-overworld-state.png": "c0797e1ac0af76361c2eb8fca138d031df83f66478e74b3e28ae447e5cd0c082"
+  }
+}

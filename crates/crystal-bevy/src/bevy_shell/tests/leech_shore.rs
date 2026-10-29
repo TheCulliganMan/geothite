@@ -212,16 +212,30 @@ pub(super) fn from_brainerd(c: &mut VisibleShellController, r: &CrystalRuntime) 
     travel(c, GameButton::Up, SHORE, (32, 47));
     travel(c, GameButton::Up, SHORE, (32, 44));
 }
+fn bemidji_route_port(r: &CrystalRuntime) -> i16 {
+    let connection = r.data().maps["MnR08C00R00"]
+        .attributes
+        .connections
+        .iter()
+        .find(|link| link.direction.eq_ignore_ascii_case("north") && link.target_map == "MnBemidji")
+        .expect("published Bemidji walking connection");
+    24 + i16::try_from(connection.offset * 2).expect("native R08 offset")
+}
 pub(super) fn to_bemidji(c: &mut VisibleShellController, r: &CrystalRuntime) {
     walk_to(c, r, (32, 4));
     travel(c, GameButton::Up, "MnR08C00R01", (26, 47));
-    road(c, r, 8, (40, 0));
+    road(c, r, 8, (bemidji_route_port(r), 0));
     travel(c, GameButton::Up, "MnBemidji", (24, 47));
     travel(c, GameButton::Up, "MnBemidji", (24, 46));
 }
 fn home(c: &mut VisibleShellController, r: &CrystalRuntime) {
     walk_to(c, r, (24, 46));
-    travel(c, GameButton::Down, "MnR08C00R00", (40, 0));
+    travel(
+        c,
+        GameButton::Down,
+        "MnR08C00R00",
+        (bemidji_route_port(r), 0),
+    );
     road(c, r, 8, (26, 95));
     travel(c, GameButton::Down, SHORE, (32, 0));
     travel(c, GameButton::Down, SHORE, (32, 4));

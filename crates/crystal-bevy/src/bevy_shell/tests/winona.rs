@@ -37,7 +37,9 @@ pub(super) fn load() -> (AssetRoot, CrystalRuntime) {
 }
 pub(super) fn press(c: &mut VisibleShellController, b: GameButton) {
     c.press(b).expect("production input");
-    c.wait_frames(24).expect("presentation");
+    // The production controller already settles authored presentation to its
+    // next input boundary, exactly as the stdio MCP client does.
+    c.wait_frames(1).expect("released joypad frame");
     assert_eq!(c.shell.last_error, None);
 }
 pub(super) fn at(c: &mut VisibleShellController, map: &str, tile: (i16, i16)) {
@@ -69,7 +71,7 @@ fn count(c: &VisibleShellController) -> usize {
 pub(super) fn finish(c: &mut VisibleShellController) -> usize {
     let mut pages = 0;
     for _ in 0..128 {
-        c.wait_frames(128).expect("fully printed page");
+        c.wait_frames(1).expect("settle the shared native printer");
         let s = c.snapshot().expect("dialogue");
         if s.ui
             .text
@@ -283,12 +285,9 @@ pub(super) fn opening(
     index: usize,
     species: &str,
 ) -> (AssetRoot, CrystalRuntime, VisibleShellController) {
-    if load()
-        .1
-        .data()
-        .story_event_script_constants
-        .global
-        .contains_key("EVENT_MN_TAMARACK_INTRO")
+    if load().1.data().maps["MnWinonaFieldStation"]
+        .scripts
+        .contains_key("MnOverhaulLabEntry")
     {
         return super::dialogue_overhaul::opening(index);
     }

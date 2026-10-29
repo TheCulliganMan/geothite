@@ -2494,22 +2494,36 @@
       ],
       "exterior_warp_index": 1,
       "exterior_return_warp_index": 2,
-      "exterior_door_status": "Actual native entry, granite-nose walking with directional roof land, all three original walker pages, Great Ball pickup once, collected-tile safety, passive Floor return and Continue PASS through production controller input.",
+      "exterior_door_status": "Native ladder entry, ordinary return, reverse Strength pushes, untouched pickup and RUN/defeat/reentry pass through the production controller.",
       "requires_real_collision_check": false,
       "dimensions_metatiles": [
-        8,
-        6
+        14,
+        8
       ],
       "native_palette": "nite",
-      "candidate_source_sha256": "50738c06417b03802e513a6076b5fbfba301c9b3698723e3588f0ab4fcd92243",
-      "native_review_pack_sha256": "5fc652a6310beaf52d95e4ac339b4c12279e6fdae339d39c8c9597dc9b7a2df6",
+      "candidate_source_sha256": "d43d18631ba17fb46530775d19a20c89b3107e613948584473557aa891e22b84",
+      "native_review_pack_sha256": "08de9e1c31fdb15ed283a24602fb45c373d1dd1e94d684c199b08bda8b3df4e1",
       "runtime_settled_exterior_core": [
         8,
         38
       ],
-      "return_semantics": "Original room warp1 at7,9 returns directly to MnR03C00R00 passive exteriorwarp2 at8,38 FLOOR. Active CAVE8,37 exteriorwarp1 targets roomwarp1; inside clear Floor7,8 remains exact. Waiting on or revisiting passive Floor does not reenter; no warp record is changed.",
-      "validation": "Actual written 510-map terrain/preservation147, six native captures and31 source checks PASS; original walker six lines/native program, Great Ball1/flag and sole mouth/art/attributes preserved. Production-controller case PASS.",
-      "native_status": "Installed dry8x6 River Valley bank pocket on5fc652a6; original forced NITE. Granite-nose bend, actual directional roof land, original walker/Great Ball and genuine passive return; no added HM, service, story or field use. Native pages/input ownership/pickup once/cleared-tile safety/Continue PASS."
+      "return_semantics": "Original mouth7,9 and exterior active8,37/passive8,38 are unchanged. Native ladder arrival is7,9; clear floor approach is7,8. The east gallery remains escapable with its throat boulder reset and without collecting the original Great Ball.",
+      "validation": "Four current warm-parent native cases,729-map exact preservation,18 production stdio calls with byte-empty stderr and377 PCM/frame/loop checks pass.",
+      "native_status": "Selected14x8 incisor gallery preserves the old mouth, western pool, walker location and Great Ball. Native Strength opens the throat; three acknowledged observations reveal level24 Castorock. Capture/Continue, evolution32 and uncaught return after RUN/defeat pass. Full earned campaign and collection remain open.",
+      "previous_native_geometry_review": {
+        "dimensions_metatiles": [
+          8,
+          6
+        ],
+        "candidate_source_sha256": "50738c06417b03802e513a6076b5fbfba301c9b3698723e3588f0ab4fcd92243",
+        "native_review_pack_sha256": "5fc652a6310beaf52d95e4ac339b4c12279e6fdae339d39c8c9597dc9b7a2df6",
+        "contract": "caves/current-r03-v01/native.contract.json"
+      },
+      "native_warp_arrival_core": [
+        7,
+        9
+      ],
+      "candidate_source": "pokemon/acquisition-v01/castorock/site.json"
     },
     {
       "interior": "MnR05RockCut",

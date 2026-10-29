@@ -120,6 +120,13 @@ fn heal(c: &mut VisibleShellController, r: &CrystalRuntime) {
             .pokemon
             .hp
             == 0
+            && c.shell
+                .shell
+                .session()
+                .state()
+                .bag
+                .quantity(&r.data().items["REVIVE"])
+                > 0
         {
             restore_partner_with(c, r, "REVIVE", slot);
         }
@@ -127,15 +134,52 @@ fn heal(c: &mut VisibleShellController, r: &CrystalRuntime) {
             .pokemon
             .status
             .is_some()
+            && c.snapshot().expect("living partner").party.slots[slot]
+                .pokemon
+                .hp
+                > 0
+            && c.shell
+                .shell
+                .session()
+                .state()
+                .bag
+                .quantity(&r.data().items["FULL_HEAL"])
+                > 0
         {
             restore_partner_with(c, r, "FULL_HEAL", slot);
         }
         // Save a native Max Potion when a partner has lost only a few HP.
         let s = c.snapshot().expect("native pre-match HP");
         let p = &s.party.slots[slot].pokemon;
-        if p.hp < p.max_hp * 3 / 4 {
+        if p.hp > 0
+            && p.hp < p.max_hp * 3 / 4
+            && c.shell
+                .shell
+                .session()
+                .state()
+                .bag
+                .quantity(&r.data().items["MAX_POTION"])
+                > 0
+        {
             restore_partner_with(c, r, "MAX_POTION", slot);
         }
+    }
+    // Rotate rested partners through Party/Switch when medicine runs out.
+    let snapshot = c.snapshot().expect("available League partners");
+    let lead = &snapshot.party.slots[0].pokemon;
+    if (lead.hp < lead.max_hp * 3 / 4 || lead.status.is_some())
+        && let Some(slot) = snapshot
+            .party
+            .slots
+            .iter()
+            .enumerate()
+            .filter(|(_, slot)| {
+                slot.pokemon.hp >= slot.pokemon.max_hp * 3 / 4 && slot.pokemon.status.is_none()
+            })
+            .max_by_key(|(_, slot)| slot.pokemon.level)
+            .map(|(index, _)| index)
+    {
+        super::northstar_arc_campaign::switch_lead(c, slot);
     }
 }
 

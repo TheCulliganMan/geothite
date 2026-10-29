@@ -39661,6 +39661,129 @@
         "MIMIC",
         "OCTAZOOKA"
       ]
+    },
+    {
+      "id": "MN_319",
+      "classification": "Copper Howl",
+      "height_inches": 112,
+      "weight_tenths_lb": 7940,
+      "dex_pages": [
+        "Its copper coat @ leaks poison that @ turns water green.",
+        "It seals currents @ with its wide tail @ before it sleeps."
+      ],
+      "base_stats": {
+        "hp": 110,
+        "attack": 120,
+        "defense": 130,
+        "speed": 60,
+        "special_attack": 80,
+        "special_defense": 100
+      },
+      "catch_rate": 3,
+      "base_exp": 255,
+      "gender_ratio": 255,
+      "hatch_cycles": 120,
+      "growth_rate": "GROWTH_SLOW",
+      "egg_groups": [
+        "EGG_NONE",
+        "EGG_NONE"
+      ],
+      "evolution": null,
+      "held_items": [
+        null,
+        null
+      ],
+      "menu_icon": "ICON_MONSTER",
+      "footprint_species": "RAIKOU",
+      "cry": {
+        "cry": "CRY_RAIKOU",
+        "pitch": -12,
+        "length": 176
+      },
+      "shiny_rgb5": [
+        [
+          24,
+          27,
+          20
+        ],
+        [
+          12,
+          7,
+          19
+        ]
+      ],
+      "level_moves": [
+        [
+          1,
+          "TACKLE"
+        ],
+        [
+          1,
+          "HARDEN"
+        ],
+        [
+          1,
+          "POISON_GAS"
+        ],
+        [
+          8,
+          "BITE"
+        ],
+        [
+          15,
+          "METAL_CLAW"
+        ],
+        [
+          22,
+          "GLARE"
+        ],
+        [
+          29,
+          "SLUDGE"
+        ],
+        [
+          36,
+          "PROTECT"
+        ],
+        [
+          40,
+          "CRUNCH"
+        ],
+        [
+          44,
+          "POISON_JAB"
+        ],
+        [
+          50,
+          "IRON_TAIL"
+        ],
+        [
+          57,
+          "SLUDGE_BOMB"
+        ],
+        [
+          64,
+          "HAZE"
+        ]
+      ],
+      "tmhm_moves": [
+        "TOXIC",
+        "PROTECT",
+        "REST",
+        "SLEEP_TALK",
+        "SNORE",
+        "RETURN",
+        "FRUSTRATION",
+        "DOUBLE_TEAM",
+        "ENDURE",
+        "HIDDEN_POWER",
+        "IRON_TAIL",
+        "SLUDGE_BOMB",
+        "EARTHQUAKE",
+        "ROCK_SMASH",
+        "STRENGTH"
+      ],
+      "egg_moves": []
     }
   ]
 }

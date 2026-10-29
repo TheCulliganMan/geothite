@@ -15,12 +15,32 @@ pub(crate) fn replace(pack: &mut CompiledGamePack, map: MapModule) -> Result<()>
         .context("map constant")?;
     if let Some(old) = pack.data.maps.get(&map.id) {
         for label in old.scripts.keys().chain(old.script_text_bodies.keys()) {
-            ensure!(
-                !pack.data.maps.values().any(|m| m.id != map.id
-                    && (m.scripts.contains_key(label) || m.script_text_bodies.contains_key(label))),
-                "replaced script label is shared: {label}"
-            );
-            pack.data.map_scripts.remove(label);
+            let shared = pack
+                .data
+                .maps
+                .values()
+                .filter(|m| {
+                    m.id != map.id
+                        && (m.scripts.contains_key(label)
+                            || m.script_text_bodies.contains_key(label))
+                })
+                .collect::<Vec<_>>();
+            if shared.is_empty() {
+                pack.data.map_scripts.remove(label);
+            } else {
+                // An existing common helper can stay shared when every native
+                // definition is identical and this publication leaves it intact.
+                ensure!(
+                    map.scripts.get(label) == old.scripts.get(label)
+                        && map.script_text_bodies.get(label) == old.script_text_bodies.get(label)
+                        && shared
+                            .iter()
+                            .all(|other| other.scripts.get(label) == old.scripts.get(label)
+                                && other.script_text_bodies.get(label)
+                                    == old.script_text_bodies.get(label)),
+                    "shared script must remain identical and unchanged: {label}"
+                );
+            }
         }
     }
     crate::insert_compiled_map_split_payloads(

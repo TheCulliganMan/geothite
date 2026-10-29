@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "trainers": [
+    {
+      "map": "MnStCloud",
+      "approach": [
+        14,
+        14
+      ],
+      "id": "MN_EXTRA_TRAIL_RUNNER",
+      "display_name": "JUNE",
+      "trainer_class": "MN_TRAIL_RUNNER",
+      "class_name": "TRAIL RUNNER",
+      "template_class": "COOLTRAINERF",
+      "sprite": "SPRITE_MN_TRAIL_RUNNER",
+      "tile": [
+        14,
+        13
+      ],
+      "facing": "south",
+      "sight_range": 1,
+      "defeated_flag": "EVENT_MN_EXTRA_TRAIL_RUNNER",
+      "party": [
+        {
+          "species": "BLUESTIP",
+          "level": 24
+        },
+        {
+          "species": "BUNJANT",
+          "level": 26
+        }
+      ],
+      "before_lines": [
+        "One more hill!",
+        "Keep up with us!"
+      ],
+      "after_lines": [
+        "That was a sprint!",
+        "Time to cool down."
+      ],
+      "loss_lines": [
+        "Find your rhythm.",
+        "You can go again."
+      ]
+    }
+  ]
+}

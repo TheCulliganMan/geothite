@@ -157,7 +157,7 @@ fn event(c: &VisibleShellController, name: &str) -> bool {
 }
 fn press(c: &mut VisibleShellController, b: GameButton) {
     c.press(b).expect("production gym input");
-    c.wait_frames(20).expect("presentation settle");
+    c.wait_frames(1).expect("released native joypad frame");
     assert_eq!(c.shell.last_error, None);
 }
 
@@ -585,6 +585,12 @@ fn battle_with_partner(
             }
         }
         started = true;
+        let opponent_is_dark = [
+            &b.enemy_pokemon.species.type1,
+            &b.enemy_pokemon.species.type2,
+        ]
+        .iter()
+        .any(|kind| kind.trim_end_matches("_TYPE") == "DARK");
         let preferred = select
             .and_then(|choose| choose(&b.enemy_pokemon.species.id))
             .and_then(|species| {
@@ -643,7 +649,8 @@ fn battle_with_partner(
             } else if matches!(
                 b.enemy_pokemon.species.id.as_str(),
                 "MAGNEMITE" | "SKARMORY" | "SNEASEL" | "PINECO" | "SWINUB" | "PILOSWINE"
-            ) {
+            ) || opponent_is_dark
+            {
                 "FLAMETHROWER"
             } else {
                 "PSYCHIC_M"
@@ -682,6 +689,9 @@ fn battle_with_partner(
             ]
             .into_iter()
             .find_map(|choice| {
+                if choice == "PSYCHIC_M" && opponent_is_dark {
+                    return None;
+                }
                 b.player_moves
                     .iter()
                     .position(|m| m.name == choice && m.current_pp > 0)
@@ -1478,7 +1488,10 @@ pub(super) fn walk_to(c: &mut VisibleShellController, runtime: &CrystalRuntime, 
                 break;
             }
         }
-        c.wait_frames(80).expect("finish native movement");
+        // Ice continues across released input frames. A changed tile alone
+        // does not establish that the next planned direction owns input.
+        c.wait_frames(80)
+            .expect("native ice slide settles before the next direction");
     }
     assert_eq!(at(c), target);
 }

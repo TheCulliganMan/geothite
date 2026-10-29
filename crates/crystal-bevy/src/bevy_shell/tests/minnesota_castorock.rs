@@ -1,4 +1,10 @@
 //! Isolated discovery fixtures; encounter choices and capture use native input.
+#[path = "minnesota_castorock_evolution.rs"]
+mod evolution;
+#[path = "minnesota_castorock_retry.rs"]
+mod retry;
+#[path = "minnesota_castorock_teaching.rs"]
+mod teaching;
 use crystal_core::input::GameButton;
 use crystal_core::models::{Dv, LearnedMove};
 use crystal_runtime::CrystalRuntime;
@@ -68,16 +74,25 @@ fn castorock_controller_strength_gate_and_three_acknowledged_clues() {
                     .any(|m| m == "STRENGTH")
             );
             partner.item = Some("SMOKE_BALL".into());
-            // Known moves are declared fixture state. Teaching the HM through
-            // PACK requires a separate acquisition/teaching regression.
             partner.moves.retain(|m| m.name != "STRENGTH");
-            if knows_strength {
+            if knows_strength && !badge {
                 partner.moves.truncate(3);
                 partner.moves.push(LearnedMove {
                     name: "STRENGTH".into(),
                     current_pp: runtime.data().moves["STRENGTH"].pp,
                     pp_ups: 0,
                 });
+            }
+            if badge && knows_strength {
+                // Supply the HM and an open legal move slot, then actually
+                // teach it through PACK after initial fixture setup ends.
+                partner.moves.truncate(3);
+                assert!(
+                    state
+                        .bag
+                        .add_item(&runtime.data().items["HM_STRENGTH"], 1)
+                        .expect("declared prior HM acquisition")
+                );
             }
             state.storage.party.pokemon[0] = Some(partner);
             state.sync_party_from_storage();
@@ -89,6 +104,10 @@ fn castorock_controller_strength_gate_and_three_acknowledged_clues() {
         }
         mark_runtime_snapshot_dirty(&mut c.shell);
         // All subsequent travel, dialogue, pushes and clues use native input.
+        if badge && knows_strength {
+            teaching::teach_strength(&mut c);
+            c = continue_save(root.clone(), runtime.clone(), &mut c);
+        }
         assert!(super::northstar_ice_lair::path(&mut c, &runtime, (21, 10)).is_none());
         press(&mut c, GameButton::Right);
         press(&mut c, GameButton::A);
@@ -102,6 +121,9 @@ fn castorock_controller_strength_gate_and_three_acknowledged_clues() {
         finish(&mut c);
         for x in [14, 15] {
             press(&mut c, GameButton::Right);
+            // Strength's source push/dust presentation can outlast an ordinary
+            // walking step. Let it settle before accepting the next input.
+            c.wait_frames(64).expect("native Strength push settles");
             if c.snapshot().expect("pushed step").battle.is_some() {
                 super::rochester::flee(&mut c);
             }
@@ -113,6 +135,11 @@ fn castorock_controller_strength_gate_and_three_acknowledged_clues() {
                 .object_runtime_tile_by_id("MN_R03_JAW_BOULDER")
                 .expect("native pushed boulder");
             assert_eq!((tile.x, tile.y), (x, 6));
+            // The blocked probe starts the boulder's movement function. The
+            // next directional input steps into the tile it has vacated.
+            super::winona::at(&mut c, "MnR03Cave1F", (x - 2, 6));
+            press(&mut c, GameButton::Right);
+            super::winona::at(&mut c, "MnR03Cave1F", (x - 1, 6));
         }
         for (at, facing, flag) in [
             ((3, 5), GameButton::Left, "EVENT_MN_CASTOROCK_POOL"),
@@ -166,15 +193,17 @@ fn castorock_controller_strength_gate_and_three_acknowledged_clues() {
 #[ignore = "requires CRYSTAL_WINONA_TEST_PACK with the incisor gallery"]
 fn castorock_controller_decline_actual_capture_and_continue() {
     let (root, runtime) = load();
-    // This isolates the encounter after discovery. It does not claim that the
-    // Strength gate or three observations were earned by this fixture.
-    let mut c = fixture(&root, &runtime, "MnR03Cave1F", (21, 10));
+    // Two earlier observations and local access are declared. The last clue
+    // reveals the actor through its real script rather than a visibility edit.
+    let mut c = fixture(&root, &runtime, "MnR03Cave1F", (23, 12));
     {
         let state = c.shell.shell.session_mut().state_mut();
-        state
-            .flags
-            .set_event_flag("EVENT_MN_CASTOROCK_TRACKS_READ", true)
-            .expect("declared discovered-track fixture");
+        for flag in ["EVENT_MN_CASTOROCK_POOL", "EVENT_MN_CASTOROCK_PILLAR"] {
+            state
+                .flags
+                .set_event_flag(flag, true)
+                .expect("declared earlier observation");
+        }
         state.storage.party.pokemon[0] = Some(
             runtime
                 .data()
@@ -190,8 +219,11 @@ fn castorock_controller_decline_actual_capture_and_continue() {
         );
     }
     mark_runtime_snapshot_dirty(&mut c.shell);
-    // Continue runs the native map callback with the declared discovery state.
     // No state, party, item, flag, position or RNG writes below this line.
+    press(&mut c, GameButton::Down);
+    press(&mut c, GameButton::A);
+    finish(&mut c);
+    walk(&mut c, &runtime, (21, 10));
     c = continue_save(root.clone(), runtime.clone(), &mut c);
     press(&mut c, GameButton::Down);
     press(&mut c, GameButton::A);
@@ -213,6 +245,22 @@ fn castorock_controller_decline_actual_capture_and_continue() {
     assert!(super::rochester_earned::try_recruit(&mut c, &runtime));
     finish(&mut c);
     assert!(caught(&c));
+    assert!(
+        c.shell
+            .shell
+            .session()
+            .state()
+            .pokedex
+            .has_caught("CASTOROCK")
+    );
+    assert!(
+        c.snapshot()
+            .expect("actual Castorock capture")
+            .party
+            .slots
+            .iter()
+            .any(|slot| slot.pokemon.species.id == "CASTOROCK")
+    );
     assert_eq!(
         c.shell
             .shell

@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "id": "MN_LAKESIDE_ANGLER",
+  "name": "ANGLER NETTA",
+  "status": "accepted-native-playable",
+  "overworld_frames": 6,
+  "overworld_size": [
+    16,
+    16
+  ],
+  "battle_size": [
+    56,
+    56
+  ],
+  "palette_rgb555": [
+    32767,
+    18239,
+    15590,
+    0
+  ],
+  "source": "native-pixels-v1.json",
+  "placement": "placement-v1.json",
+  "pack": "content-packs/minnesota-original-npcs-05-v01.crystalpack",
+  "parent": "content-packs/minnesota-original-npcs-04-v01.crystalpack",
+  "runtime_checks": {
+    "one_controller_test_passed": true,
+    "talk_and_input_ownership": true,
+    "battle_turn_and_pp": true,
+    "battle_save_load": true,
+    "actual_victory_and_defeat_flag_before_render_capture": true,
+    "post_battle_talk": true,
+    "existing_trainers_and_assets_preserved": true
+  },
+  "manual_visual_review": "Reviewed native six-pose board and battle grid, then actual production battle intro and post-win pier capture. Repaired enclosed transparent source holes and rebuilt separated eyes/smile at native resolution. Floppy hat, dark bob, pocket vest, waders, boots, lure and complete rod remain readable; front/back pose identity and two-lane pier passage are preserved.",
+  "evidence_sha256": {
+    "planning/minnesota/npcs/sprites/05-lakeside-angler/native-pixels-v1.json": "6e756bb65fa2c38fe59c7b18135087cd096fa5c0df0e202e76c23094087689e7",
+    "planning/minnesota/npcs/sprites/05-lakeside-angler/placement-v1.json": "7a452cab65688e02f52d241772b2e85276cb4ba8059721ba8cb7f432bbc91c85",
+    "content-packs/minnesota-original-npcs-05-v01.crystalpack": "f5998c4042bf1079624f8bf712e549e36db597397d5317dc8ae8ac19be562a48",
+    "target/npc-sprites/angler/controller-v01.log": "42daa466733aebf96dd7ecb22a5f5dcdda386add0567ead5bad4aad24026caa1",
+    "target/npc-sprites/angler/gameplay-v01/original-npc-trainer-intro.png": "5258277e76475c3469359db6f89f75346fc62e38d1fd780778845798b3fac4e8",
+    "target/npc-sprites/angler/gameplay-v01/original-npc-first-turn.png": "515ec068a234a79348a5225b50a66f2c32c041e34148b426b0faa72da6ab1bfd",
+    "target/npc-sprites/angler/gameplay-v01/original-npc-overworld-state.png": "767ef16a50a26d31e6aa653c64b7f983c906796d19d08020e57013e3251f77dd"
+  }
+}

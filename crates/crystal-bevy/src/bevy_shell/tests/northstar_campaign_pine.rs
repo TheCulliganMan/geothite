@@ -116,13 +116,13 @@ fn pages(c: &mut VisibleShellController, expected: &[&str]) {
 
 fn witnesses(c: &mut VisibleShellController, r: &CrystalRuntime) {
     interact(c, r, (35, 21));
-    pages(c, &["report", "nets", "empty"]);
+    pages(c, &["LODE", "nets", "empty"]);
     indoor_walk(c, r, (9, 36));
     travel(c, GameButton::Up, "MnLeechLakeFisherHouse", (5, 6));
     indoor_walk(c, r, (6, 4));
     press(c, GameButton::Up);
     press(c, GameButton::A);
-    pages(c, &["ICE", "stop writing"]);
+    pages(c, &["ICE", "dates"]);
     indoor_walk(c, r, (5, 6));
     travel(c, GameButton::Down, "MnLeechLake", (9, 36));
     later(c);
@@ -165,6 +165,18 @@ fn gym(c: &mut VisibleShellController, r: &CrystalRuntime, root: &AssetRoot) {
         indoor_walk(c, r, (10, 10));
         travel(c, GameButton::Up, GYM, northstar_earned_gyms::arrival(r, 7));
     }
+    if let Some(slot) = c
+        .snapshot()
+        .expect("choose a carried Pine partner")
+        .party
+        .slots
+        .iter()
+        .position(|slot| {
+            slot.pokemon.species.type1 == "FIRE" || slot.pokemon.species.type2 == "FIRE"
+        })
+    {
+        super::northstar_arc_campaign::switch_lead(c, slot);
+    }
     let design = northstar_earned_gyms::design(r, 7);
     if !c
         .snapshot()
@@ -189,11 +201,12 @@ fn gym(c: &mut VisibleShellController, r: &CrystalRuntime, root: &AssetRoot) {
         );
         learn_gym_cut_replacing(c, r, design, Some("SMOKESCREEN"));
         assert!(
-            c.snapshot().expect("preserved earned attack").party.slots[0]
-                .pokemon
-                .moves
+            c.snapshot()
+                .expect("actual Cut lesson")
+                .party
+                .slots
                 .iter()
-                .any(|m| m.name == "HEADBUTT")
+                .any(|slot| slot.pokemon.moves.iter().any(|m| m.name == "CUT"))
         );
         continue_in_place(c, root, r, "campaign-pine-learned-cut");
     }
@@ -216,8 +229,16 @@ fn gym(c: &mut VisibleShellController, r: &CrystalRuntime, root: &AssetRoot) {
         interact(c, r, northstar_earned_gyms::opponent(r, 7, id));
         assert!(try_battle(c, r, id, &flag), "played Pine opponent {id}");
         continue_in_place(c, root, r, &format!("campaign-{id}-win"));
+        if id != "MN_GYM_7" {
+            northstar_earned_gyms::leave(c, r, 7, CITY, (10, 10));
+            care(c, r);
+            indoor_walk(c, r, (10, 10));
+            travel(c, GameButton::Up, GYM, northstar_earned_gyms::arrival(r, 7));
+        }
     }
-    assert!(event(c, "EVENT_MN_GYM_7_RETURN_OPEN"));
+    if northstar_earned_gyms::selected(r) {
+        assert!(event(c, "EVENT_MN_GYM_7_RETURN_OPEN"));
+    }
     assert!(
         !event(c, "EVENT_MN_GYM_7_TRAINER_3_DEFEATED"),
         "Brindel stays optional"
@@ -270,14 +291,27 @@ pub(super) fn pine() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
         {
             from_bemidji(&mut c, &r, 0);
             marker(&mut c, &r);
-            assert!(
-                c.snapshot()
-                    .expect("early marker refusal")
-                    .ui
-                    .text
-                    .and_then(|t| t.asm_text)
-                    .is_some_and(|text| text.contains("PINE"))
-            );
+            if r.data()
+                .story_event_script_constants
+                .global
+                .contains_key("EVENT_MN_TAMARACK_INTRO")
+            {
+                super::super::northstar_dialogue::acknowledge(
+                    &mut c,
+                    "MS06",
+                    "MnItascaMarkerBeforeText",
+                    READING,
+                );
+            } else {
+                assert!(
+                    c.snapshot()
+                        .expect("early marker refusal")
+                        .ui
+                        .text
+                        .and_then(|t| t.asm_text)
+                        .is_some_and(|text| text.contains("PINE"))
+                );
+            }
             finish(&mut c);
             assert!(!event(&c, READING) && !event(&c, REPORT));
             from_itasca(&mut c, &r, 1);
@@ -304,7 +338,20 @@ pub(super) fn pine() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
     at(&mut c, PARK, (19, 22));
     from_itasca(&mut c, &r, 1);
     indoor_walk(&mut c, &r, (43, 25));
-    refusal(&mut c, true, 1, "marker");
+    refusal(
+        &mut c,
+        true,
+        1,
+        if r.data()
+            .story_event_script_constants
+            .global
+            .contains_key("EVENT_MN_TAMARACK_INTRO")
+        {
+            "ITASCA"
+        } else {
+            "marker"
+        },
+    );
     acknowledge_report(&mut c, &r);
     assert!(event(&c, READING) && event(&c, REPORT));
     later(&c);

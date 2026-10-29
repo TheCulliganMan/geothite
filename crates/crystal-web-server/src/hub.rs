@@ -13,7 +13,8 @@ pub use crystal_net::hosted::{
 
 pub const MAX_NAME_BYTES: usize = 32;
 pub const MAX_TOKEN_BYTES: usize = 128;
-const MAX_MODPACK_ID_BYTES: usize = 4096;
+// Regional packs retain their full manifest lineage in the shared identity.
+const MAX_MODPACK_ID_BYTES: usize = 16 * 1024;
 pub const MAX_RATING_RANGE: u32 = 1_000;
 const PRESENCE_RADIUS_X: u32 = 12;
 const PRESENCE_RADIUS_Y: u32 = 10;
@@ -1085,6 +1086,26 @@ mod tests {
         for invalid in ["+core", "core+", "core++mod", "core/other", "core+bad pack"] {
             assert!(validate_modpack_id(invalid).is_err(), "{invalid}");
         }
+    }
+
+    #[test]
+    fn hub_accepts_regional_story_lineage_and_rejects_oversized_identity() {
+        let story = ["minnesota-story-chapter-v1"; 600].join("+");
+        assert!(story.len() > 4096);
+        let mut player = identity("story-player", "core");
+        player.world.modpack.id = story;
+        let mut hub = Hub::default();
+        let deliveries = hub
+            .connect(Uuid::new_v4(), player)
+            .expect("regional story identity fits the hosted transport");
+        assert!(matches!(
+            &deliveries[0].message,
+            ServerMessage::Welcome { .. }
+        ));
+
+        let mut oversized = identity("oversized-player", "core");
+        oversized.world.modpack.id = ["a"; MAX_MODPACK_ID_BYTES].join("+");
+        assert!(hub.connect(Uuid::new_v4(), oversized).is_err());
     }
 
     #[test]

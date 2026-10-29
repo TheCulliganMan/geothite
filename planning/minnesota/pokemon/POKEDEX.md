@@ -1,5 +1,8 @@
 # Minnesota Pokédex
 
+The new [Verdigrim entry](#mn_319-verdigrim--steelpoison) is appended below;
+the historical catalog totals in this guide predate the current roster.
+
 This authoring guide retains all source records, including retired families. The active roster has 219 species; see [curation](roster-curation.json) and [balance review](BALANCE.md). Level moves below include the separate imported and signature learners from `northwoods-moves.json`.
 
 272 original species; all descriptions and powers are fictional. Move IDs resolve against the supplied base pack, which uses a physical/special split per move.
@@ -4895,3 +4898,30 @@ TM/HM/tutor: FLAMETHROWER, FIRE_BLAST, SUNNY_DAY, HEADBUTT, IRON_TAIL, ICY_WIND,
 Egg moves: CRUNCH, CHARM, ENDURE.
 
 Catch rate 45; base EXP 223; GROWTH_MEDIUM_SLOW; egg groups EGG_GROUND/EGG_GROUND; hatch cycles 20.
+
+## MN_F145: Verdigrim
+
+Minnesota timber wolves, glacial float copper and Ojibwe wolf-as-companion
+teachings inspire an original massive copper wolf. Team Lode exposes it while
+removing glacial overburden.
+
+### MN_319 Verdigrim — STEEL/POISON
+
+Copper Howl Pokémon. 9′4″; 794 lb. Legendary; no evolution.
+Stats: 110 / 120 / 130 / 60 / 80 / 100 (total 600).
+
+Its copper coat leaks poison that turns water green. It seals currents with
+its broad tail before it sleeps.
+
+Level moves: 1: TACKLE; 1: HARDEN; 1: POISON_GAS; 8: BITE; 15: METAL_CLAW;
+22: GLARE; 29: SLUDGE; 36: PROTECT; 40: CRUNCH; 44: POISON_JAB;
+50: IRON_TAIL; 57: SLUDGE_BOMB; 64: HAZE.
+
+TM/HM/tutor: TOXIC, PROTECT, REST, SLEEP_TALK, SNORE, RETURN, FRUSTRATION,
+DOUBLE_TEAM, ENDURE, HIDDEN_POWER, IRON_TAIL, SLUDGE_BOMB, EARTHQUAKE,
+ROCK_SMASH, STRENGTH. Egg moves: none.
+
+Catch rate 3; base EXP 255; genderless; GROWTH_SLOW; EGG_NONE/EGG_NONE.
+Native art and provenance: [MN_F145](sprites/mn-f145/DESIGN.md).
+The green-water reveal and optional encounter are authored in
+[verdigrim-story.json](verdigrim-story.json); playable integration is pending.

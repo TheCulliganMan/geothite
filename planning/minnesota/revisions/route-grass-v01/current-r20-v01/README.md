@@ -1,46 +1,55 @@
-# R20 Voyageurs Border Loop — unselected grass candidate
+# R20 Voyageurs Border Loop — accepted grass revision
 
-Five floor-to-grass metatiles close two useful gaps. The sheltered camp's ordinary
-uphill return now crosses six grass steps while its native ledge drop stays dry.
-The western meadow crossing changes from zero to three required grass steps in
-both directions. Actor-aware collision graphs confirm those costs. Grass increases
-880 to 900 walking quadrants. Original ledge/wall/water/Cut/warp blocks remain exact.
+Five floor-to-grass metatiles improve two existing journeys. The sheltered camp's
+ordinary uphill return now crosses six grass steps, while its native ledge descent
+stays dry. The western meadow changes from a dry crossing to three required grass
+steps in either direction. Actor-aware collision graphs confirm both contracts.
+Grass increases 880 to 900 walking quadrants. The original four-step eastern neck,
+bridges, cave mouths, and all special collision blocks remain exact.
 
-Typed Rust publication writes minnesota-current-grass-r20-v01.crystalpack from
-selected R19. Parent identity is pinned in parent.json. World selection and canonical
-sources remain unchanged. The independent audit passes 762 checks and four negative
-mutations: only five cells across two native chunks and their encoded mirrors change.
-All other complete maps, actors/events/scripts, encounters, catalogs and art/audio
-remain exact. Eleven installed trainer/wild species bound into the review dossier
-are checked against the active original Minnesota roster.
+Selected route_grass_r20_revision descends directly from selected R19. Exact pack,
+SHA and content identity are in publication.json. Canonical R20 layout and dossier
+are synchronized. Independent preservation passes 762 checks and four negative
+mutations: only five cells across two native chunks and their encoded mirrors
+change. All 728 other complete maps, actors/events/scripts, native encounter tables,
+catalogs, art/audio and report data remain exact. Seven HMs, 19 Fly points, habitats,
+cyclists, fossils and prior script repairs remain. All eleven native trainer/wild
+species bound into the dossier are active original Minnesota species.
 
-The actual Officer battle/PP/victory/Continue case and current cave-quality
-cameras/stairs/hops/mouths/pickup/Continue case pass. The older outdoor geometry
-fixture accidentally entered the current inland ice-cave mouth while planning
-another walk. Its local planner now lists that existing mouth at (70,33); no game
-warp or geometry was changed. Rebuild/replay of that fixture remains required.
-A new populated test covers the six-grass camp climb, dry ledge descent and reverse
-denial, an actual new-grass encounter/native RUN, western meadow crossing and
-party/bag/flags/location through Continue. It has been authored and formatted but
-has not yet been compiled or run. Existing local party/badge/position fixtures are
-setup, not evidence of earned regional access or battle balance.
+Four native controller cases pass. The populated grass journey verifies the camp
+climb, native dry drop/reverse denial, actual new-grass encounter/native RUN, western
+meadow and party/bag/flags/location through Continue. The complete outdoor tour
+covers seams, both bridges/deck rows and barriers, old habitat, camp return, signs,
+residents, once-only resources, every cave mouth return and Continue. The Officer
+case verifies all three opponents, selected move PP, victory/reward/flags and actual
+continued party. Current cave quality separately verifies cameras, stairs/hops,
+mouths, pickup and Continue. Empty parties isolate geometry; populated cases use
+explicit initial native partners, badges and position. Those fixtures do not prove
+earned regional access or encounter balance.
 
-The full source route, both source feature crops and fresh native 2D captures were
-inspected. All 2,048 metatiles and 2,097,152 native/source pixels match. All source,
-raw/native and alternate captures are retained. The camp camera and western east
-approach are the primary native views; the original grass-centered western view is
-also retained. Audio verification passes all 377 programs. Coast maps remain zero
-ICE with no scripted block changes, preserving the established no-ice fix.
+Fixture corrections preserve the gameplay assertions. The route planner now lists
+the existing inland ice-cave mouth at (70,33), avoiding accidental entry while
+walking to another landmark. Initial badge bits now include their matching native
+engine flags, retaining exact Continue equality. The cave pickup captures native
+text and field-notice pages around both inputs, including found feedback and the
+later put-in-bag page. The original item, bag increment, flag and once-only checks
+remain. Earlier failures, intermediate source proofs and all renders are retained.
 
-Other live Cargo/rustc jobs on the shared host deferred our test rebuild; no other
-job was interrupted and no competing rebuild was started. Revalidate live host
-processes before starting the serialized two-job target/route-grass rebuild.
-Pending: updated outdoor and populated test replays, affected Clippy, production
-stdio from the newly reached save, and guarded canonical/selection acceptance.
-Other outdoor regional links/parks and final current-story coverage remain in scope
-after R20. This candidate does not complete the statewide objective.
+Production stdio passes 15 calls from the final reached save, moving (27,42) to
+(26,42), opening Start/Pack, checking Items/Balls and returning to the overworld with
+zero stderr. All 377 audio programs match PCM hashes/frame counts/loop ranges.
+Affected all-target Clippy and scoped formatting pass with existing unrelated
+warnings and no warning on this leaf. Workspace-wide formatting still reports
+pre-existing unrelated differences; those files were not rewritten.
 
-A compiler-aware rebuild is now queued in `.local/route-grass-review/build_r20_when_compiles_finish.py`.
-It watches live rustc and Clippy processes, then starts the single two-job rebuild.
-Revalidate its process/handle before any further Cargo job; do not start a duplicate.
-Current queue observation is `.local/route-grass-review/current-r20-build-queue.json`.
+The complete native-art route, feature crops and fresh production 2D camp and
+western-approach captures were inspected. All 2,048 authored metatiles and 2,097,152
+source/native pixels match. Originals and alternate captures remain retained.
+Guarded selection checked the live R19 parent, frozen input hashes and unchanged
+canonical preimages before synchronizing sources and selecting R20.
+
+The statewide objective remains open after R01-R20. The separate Grand Marais cedar
+approach still has snowy art despite zero sliding ICE; its warm-art correction is
+next, preserving approved inland winter. The 14 other route/link/park groups,
+relevant connections across 18 town exteriors, and final current-story coverage
+also remain. The existing R11/Duluth/Grand Marais proper zero-ICE fix is preserved.

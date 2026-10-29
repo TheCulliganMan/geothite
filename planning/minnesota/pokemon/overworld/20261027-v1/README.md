@@ -1,5 +1,12 @@
 # Northwoods overworld sprites
 
+The local accepted registry now contains **225/225 species** after adding
+[Verdigrim's float-copper wolf](sources/mn_f145/README.md). Its six normal/shiny
+poses and eight production terrain views pass; all 224 earlier banks are preserved.
+The regional story owner must compose the new species, bank and original cry
+onto the current world. The 224-species publication below remains its historical
+release snapshot.
+
 Scope: all **224 active Northwoods species**. The [roster](ROSTER.md) and
 [accepted registry](accepted.json) record all **224 accepted sets**. Each passed source-anatomy, native normal/shiny
 and production-map visual review. The complete overlay was compiled and reopened

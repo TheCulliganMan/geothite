@@ -547,6 +547,7 @@ fn time_set_renders_real_boot_window_font_and_arrow_assets() {
 #[test]
 fn oak_intro_renders_real_oak_wooper_and_player_portraits() {
     let mut runtime_shell = core_modular_title_shell_for_test();
+    runtime_shell.splash_screen = None;
     runtime_shell.intro_screen = None;
     runtime_shell.title_menu = None;
     open_visible_oak_intro_sequence(&mut runtime_shell).expect("open Oak intro");
@@ -886,7 +887,7 @@ fn custom_player_name_returns_through_exact_source_fades_and_bg_wait() {
 }
 
 #[test]
-fn oak_intro_fade_phases_gate_text_and_clear_sprite_on_fade_out() {
+fn oak_intro_fade_phases_gate_text_and_advance_without_an_extra_acknowledgement() {
     let mut runtime_shell = core_modular_title_shell_for_test();
     let oak_text_pages = visible_oak_text_groups(
         runtime_shell.runtime.title_presentation_program(),
@@ -946,10 +947,11 @@ fn oak_intro_fade_phases_gate_text_and_clear_sprite_on_fade_out() {
             .pending_oak_intro
             .as_ref()
             .expect("Oak intro pending after fade-out");
-        assert_eq!(oak_intro.scene_phase, VisibleOakIntroPhase::Complete);
-        assert!(oak_intro.finished);
-        assert_eq!(oak_intro.fade_alpha, 255);
-        assert_eq!(oak_intro.current_sprite, None);
+        assert_eq!(oak_intro.scene_phase, VisibleOakIntroPhase::WipeIn);
+        assert!(!oak_intro.finished);
+        assert_eq!(oak_intro.fade_alpha, 0);
+        assert_eq!(oak_intro.current_sprite.as_deref(), Some("WOOPER"));
+        assert_eq!(oak_intro.scene_index, 1);
     }
 }
 

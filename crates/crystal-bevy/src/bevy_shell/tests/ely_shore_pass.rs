@@ -21,14 +21,17 @@ fn at(c: &mut VisibleShellController) -> (String, (i16, i16)) {
     )
 }
 fn plan() -> Value {
-    serde_json::from_str(
-        &std::fs::read_to_string(PathBuf::from(env!("CARGO_MANIFEST_DIR")).join(
-            "../../planning/minnesota/revisions/ely-backroute-v01/source-v08/input-plan.json",
-        ))
-        .expect("explicit reviewed paths"),
-    )
-    .expect("input plan")
+    let path = std::env::var_os("CRYSTAL_ELY_PASS_INPUT_PLAN")
+        .map(PathBuf::from)
+        .unwrap_or_else(|| {
+            PathBuf::from(env!("CARGO_MANIFEST_DIR")).join(
+                "../../planning/minnesota/revisions/ely-backroute-v01/source-v08/input-plan.json",
+            )
+        });
+    serde_json::from_str(&std::fs::read_to_string(path).expect("explicit reviewed paths"))
+        .expect("input plan")
 }
+
 fn course(c: &mut VisibleShellController, key: &str, reverse: bool) {
     let mut points = plan()[key]
         .as_array()
@@ -97,6 +100,15 @@ fn ely_shore_pass_controller_round_trip_heals_pc_and_continue() {
     partner.moves[0].current_pp = 0;
     let state = c.shell.shell.session_mut().state_mut();
     assert!(state.storage.party.add_pokemon(partner));
+    // Three-member wild scaling can exceed a solo lead by one level. Lower-level
+    // initial partners keep this care/PC fixture's real Repel above that anchor.
+    for species in ["VOYAGEAR", "DOZEBEAR"] {
+        let companion = r
+            .data()
+            .create_pokemon(species, 40, Dv::default())
+            .expect("explicit lower-level regional fixture partner");
+        assert!(state.storage.party.add_pokemon(companion));
+    }
     state.sync_party_from_storage();
     assert!(
         state

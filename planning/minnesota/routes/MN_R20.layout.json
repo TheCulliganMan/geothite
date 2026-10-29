@@ -2622,6 +2622,69 @@
         26
       ],
       "block": "56"
+    },
+    {
+      "kind": "point",
+      "name": "Preserve installed native terrain",
+      "position": [
+        35,
+        16
+      ],
+      "block": "73"
+    },
+    {
+      "kind": "point",
+      "name": "Preserve installed native terrain",
+      "position": [
+        35,
+        17
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Sheltered camp grassy uphill return",
+      "position": [
+        6,
+        24
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Sheltered camp grassy uphill return",
+      "position": [
+        6,
+        25
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Western meadow trail joins existing habitat",
+      "position": [
+        9,
+        21
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Western meadow trail joins existing habitat",
+      "position": [
+        10,
+        21
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Western meadow trail joins existing habitat",
+      "position": [
+        11,
+        21
+      ],
+      "block": "03"
     }
   ],
   "crossings": [

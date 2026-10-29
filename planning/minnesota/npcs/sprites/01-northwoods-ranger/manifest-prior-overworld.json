@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "id": "MN_NORTHWOODS_RANGER",
+  "name": "RANGER ROWAN",
+  "status": "accepted-native-playable",
+  "overworld_frames": 6,
+  "overworld_size": [
+    16,
+    16
+  ],
+  "battle_size": [
+    56,
+    56
+  ],
+  "palette_rgb555": [
+    32767,
+    18239,
+    10794,
+    0
+  ],
+  "source": "native-pixels-v1.json",
+  "placement": "placement-v2.json",
+  "pack": "content-packs/minnesota-original-ranger-v04.crystalpack",
+  "parent": "content-packs/minnesota-trainers-v02.crystalpack",
+  "runtime_checks": {
+    "one_controller_test_passed": true,
+    "talk_and_input_ownership": true,
+    "battle_turn_and_pp": true,
+    "battle_save_load": true,
+    "actual_victory_and_defeat_flag_before_render_capture": true,
+    "post_battle_talk": true,
+    "existing_trainers_and_assets_preserved": true
+  },
+  "visual_review": {
+    "battle_intro": "accepted: clear hat braid binoculars outfit and native framing",
+    "overworld_context": "accepted: native scale clear beside player; matches battle identity",
+    "native_frames": "reviewed at native grid and enlarged; six distinct appropriate poses"
+  },
+  "evidence_sha256": {
+    "planning/minnesota/npcs/sprites/01-northwoods-ranger/native-pixels-v1.json": "c8ab24f3364eca42d575520c4edc4b20cfd11cad313e3108e8ed3f7986704fb6",
+    "planning/minnesota/npcs/sprites/01-northwoods-ranger/placement-v2.json": "3ccf0ed0d9333f2d59c51792cac0f712cadf7730522e6b89fd862ca1374630ce",
+    "content-packs/minnesota-original-ranger-v04.crystalpack": "9364e11ae4f45fdd3846634f9476a396af8d815a9d3a2305b015d41282b8a68c",
+    "target/npc-sprites/ranger-controller-v05.log": "04eaafed56e53a8b0263f6de37817c6399cef1db358f46617429e5677f24f33a",
+    "target/npc-sprites/ranger/gameplay-v05/original-npc-trainer-intro.png": "e8fb90ea6d78a8442e4a7140b14761ffd502bffc424a275c9fca93c123b619ab",
+    "target/npc-sprites/ranger/gameplay-v05/original-npc-first-turn.png": "7c0fec99f087f07cf2e1438717732b4199cf85f0fa0b179839e114fc86b59231",
+    "target/npc-sprites/ranger/gameplay-v05/original-npc-overworld-state.png": "6ac725026b966c69bd6e5c95dc22c7842c8b07e9e9d08e5502ff96ae8e257527"
+  }
+}

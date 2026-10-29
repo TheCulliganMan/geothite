@@ -30,8 +30,12 @@ shore/water contact; the Good Rod casting/capture/Continue journey passes.
 Native Pokédex/nickname screens, real party/selected-PC delivery and their
 saved pages/choices/name drafts now pass production-controller Continue and
 clean-stdio checks. The native YES/NO window also has a corrected reviewed
-battle composition. Remaining movement/travel/exhaustion journeys, canoe input,
-and complete throw animation/audio presentation still need work. The authoritative runtime
+battle composition. A paid ranger-to-lake journey now crosses the Reed and Isle
+of Pines grassy portages, visits the real cabin and retains Surf/permit state
+through Continue. A separate 500-step journey proves expiry and safe return.
+Expiry uses the normal field-dialogue presenter instead of an empty battle.
+Other portages/ledges, outward travel, canoe input and complete throw
+animation/audio presentation still need work. The authoritative runtime
 habitats and Minnesota-only wildlife tables are in
 [zone.json](../revisions/boundary-safari-runtime-v01/zone.json); older dimensions,
 habitat proposals and species examples below are historical design notes.
@@ -60,19 +64,36 @@ flowchart LR
  HUB <--> SHELTER[Free Q07 survey shelter]
  HUB <--> R13[R13: restored-survey gate]
  HUB --> CHECKIN[Ranger: confirm fee and preflight]
- CHECKIN --> SW[Preserve C00R01]
- SW <--> NW[Preserve C00R00]
- NW <--> NE[Preserve C01R00]
- NE <--> SE[Preserve C01R01]
- SE <--> SW
- SW --> EXIT[Free ranger return]
+ HUB <--> PINE[Free Pine Entry]
+ PINE <--> COURT[Free court in C00R02]
+ CHECKIN --> COURT
+ COURT <--> GATE[Permit-controlled guard line]
+ GATE <--> SW[Preserve side of C00R02]
+ SW <--> SE[Preserve C01R02]
+ SW <--> WEST[Preserve C00R01]
+ SE <--> EAST[Preserve C01R01]
+ WEST <--> EAST
+ WEST <--> NW[Preserve C00R00]
+ EAST <--> NE[Preserve C01R00]
+ NW <--> NE
+ EAST <--> CABIN[Actual Root Beer Cabin]
+ SW --> EXIT[Native ranger or budget return]
  NW --> EXIT
  NE --> EXIT
  SE --> EXIT
+ WEST --> EXIT
+ EAST --> EXIT
+ CABIN --> EXIT
  EXIT --> HUB
 ```
 
-This graph is the intended regional/admission/retirement design. Its four preserve boxes are now actual native chunks with reciprocal seams, **not four rectangular biome rooms**. Check-in and return arrows remain future expedition actions; no ordinary admission or retirement warp is installed.
+This graph describes the current six-chunk terrain and its real free walking
+approach. The court and preserve side of C00R02 are areas of the same map,
+separated by actual guard bodies. The seven internal neighbor pairs are
+reciprocal native connections, with walking or Surf passages where collision
+allows. Ranger admission and return transactions run in
+the unselected runtime review; the selected main still keeps paid admission
+closed. The story hub/shelter and regional junction never require a permit.
 
 ## Complete map and habitat composition
 
@@ -81,11 +102,18 @@ The published exterior uses these exact identities/extents from the zone JSON:
 | Chunk | Metatile origin | Size |
 | --- | --- | --- |
 | `MnBoundarySafariC00R00` | `(0,0)` | 32×24 |
-| `MnBoundarySafariC01R00` | `(32,0)` | 16×24 |
-| `MnBoundarySafariC00R01` | `(0,24)` | 32×16 |
-| `MnBoundarySafariC01R01` | `(32,24)` | 16×16 |
+| `MnBoundarySafariC01R00` | `(32,0)` | 32×24 |
+| `MnBoundarySafariC00R01` | `(0,24)` | 32×24 |
+| `MnBoundarySafariC01R01` | `(32,24)` | 32×24 |
+| `MnBoundarySafariC00R02` | `(0,48)` | 32×8 |
+| `MnBoundarySafariC01R02` | `(32,48)` | 32×8 |
 
-All four published neighbor pairs have reciprocal east/west or north/south records with offset 0. Core seams are x=64 and y=48; edge-map widths/heights are clipped, not padded. Preserve existing regional hub ports rather than treating Safari as the route between them.
+All seven internal neighbor pairs have reciprocal east/west or north/south
+records with offset 0. Core seams are x=64, y=48 and y=96; the bottom row is
+clipped, not padded. The free south connection from C00R02 to Pine Entry has
+offset -1 with reciprocal north offset 1. Pine Entry links to the hub with
+south offset -8 and reciprocal north offset 8. Preserve the regional hub ports
+rather than treating Safari as the route between them.
 
 | Habitat reservation | Play and composition |
 | --- | --- |

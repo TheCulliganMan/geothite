@@ -2,9 +2,9 @@
   "schema_version": 1,
   "status": "active-roster-curation",
   "scope": "Whole evolution families are retired from the active Northwoods Pok\u00e9dex. Keep all authoring records, generated renders, native outputs, archived inventories and previous website releases. Stable source IDs and app evolution-line numbers are unchanged. Active species numbers are repacked in master order, with pseudo-legendaries, legendaries and mythicals last.",
-  "source_species_count": 314,
-  "active_species_count": 224,
-  "active_family_count": 101,
+  "source_species_count": 315,
+  "active_species_count": 225,
+  "active_family_count": 102,
   "type_counts_before": {
     "BUG": 27,
     "DARK": 35,
@@ -19,10 +19,10 @@
     "GROUND": 29,
     "ICE": 26,
     "NORMAL": 37,
-    "POISON": 21,
+    "POISON": 22,
     "PSYCHIC": 24,
     "ROCK": 34,
-    "STEEL": 24,
+    "STEEL": 25,
     "WATER": 52
   },
   "type_counts_after": {
@@ -39,10 +39,10 @@
     "GROUND": 17,
     "ICE": 19,
     "NORMAL": 29,
-    "POISON": 19,
+    "POISON": 20,
     "PSYCHIC": 16,
     "ROCK": 17,
-    "STEEL": 22,
+    "STEEL": 23,
     "WATER": 43
   },
   "retired_families": [
@@ -949,8 +949,8 @@
   "evolution_mix": {
     "three_stage_families": 41,
     "two_stage_families": 41,
-    "single_stage_species": 19,
-    "legendary_species": 6,
+    "single_stage_species": 20,
+    "legendary_species": 7,
     "mythical_species": 2
   }
 }

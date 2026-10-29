@@ -49,4 +49,29 @@ remains open.
 
 The separate [fossil research stage](fossils.md) adds the paired specimen
 choice, Rochester restoration and post-League exchange. The selected composed pack increases
-the acquisition upper bound to 214; consult its verification and selection status.
+the acquisition upper bound to 214. The selected
+[Castorock discovery](castorock/README.md) on the warm Cedar parent raises that
+structural upper bound to 216, installs all 224 reviewed walking banks and
+passes native teaching/gate/clue/capture/evolution/retry/Continue cases. Eight
+other rare families still lack sources. Consult `world.json` for the current
+composed pack; structural availability does not establish earned collection.
+
+The selected [Kindlit research partner](starter-return.md) closes the Fire
+starter choice lock after the regional Champion victory. The structural upper
+bound remains 216; eight rare families still require acquisition sources.
+
+The source roster subsequently added VERDIGRIM, bringing the active count to
+225. The selected starter-return pack still contains 224 regional Dex members
+and a 224-species completion threshold. Nine families lack acquisition sources
+when audited against the expanded roster. The new species must be compiled,
+added to Dex membership and included in the final reward threshold before full
+collection can be accepted.
+
+Run the read-only acquisition check with `--require-roster-alignment` to make
+catalog, membership or final-threshold drift fail explicitly. Its JSON report
+separates these integration failures from absent acquisition sources. Default
+reporting remains available for inspecting an intentionally incomplete pack.
+
+The selected [Grand Marais delivery guard](marais-partner-retry.md) preserves
+Birchit when both party and selected PC box are full, while retaining native PC
+delivery. Current-parent controller and production stdio checks pass.

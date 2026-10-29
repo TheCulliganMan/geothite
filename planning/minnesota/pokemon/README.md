@@ -1,5 +1,16 @@
 # Minnesota Pokémon
 
+[Verdigrim](sprites/mn-f145/DESIGN.md) is the new copper **Steel/Poison
+legendary**, inspired by Minnesota timber wolves, native float copper and the
+Ojibwe wolf-as-companion tradition. Its massive wolf form has rounded copper
+masses, green weathering crust and exposed copper high points. The source
+catalog now contains **315 species / 225
+active species / 102 active families**. Stats, learnsets, palettes, battle art,
+[six-pose overworld art and the original runtime cry](sprites/mn-f145/STORY-HANDOFF.md)
+and the [Team Lode excavation and green-water story contract](verdigrim-story.json)
+are authored. The playable reveal and water-state scripts remain to be installed;
+the published release below remains its recorded 224-species snapshot.
+
 Current publication: **224 active species / 101 families / 90 cut proposals**.
 Release `20261027-overworld-224-18` is live in the
 [Northwoods Pokédex](https://geothite.ryanculligan.com/pokedex/), with animated

@@ -1,5 +1,92 @@
 # Native core verification
 
+## Current-parent paid travel and field return
+
+The new unselected review is
+`content-packs/minnesota-safari-runtime-review-detroit-v03.crystalpack`, SHA256
+`af5215e8182f74117e9555c2dbba2c9adb2ef49a4badd5bcb8db8ebc03fe96f5`.
+Its exact parent is the accepted Detroit Lakes Approach pack at SHA256
+`cc58e376cfe76e20eadbbec2c51eca6ad33c92fb1267d28f73d854ee7324b6f7`.
+The actual `pack_safari_expedition` Rust CLI ran with both parent/source hash
+guards and strict readback. Independent decoded comparison preserves all 730
+maps and every other data field, runtime file and audio section exactly; the
+only data addition is the validated Safari configuration.
+
+The nine-case default-profile controller suite passes in 148.11 seconds. It
+includes the existing catch/PC/Dex/nickname/rod/ranger/backpic flows plus new
+paid travel and step-expiry cases. Its first lake itinerary incorrectly treated
+Reed Pocket Lake as connected main water and failed before the island paddle.
+The corrected route returns over that deliberate grassy portage, then launches
+into the main lake. No map or path assertion was weakened to hide the failure.
+
+After final field-presenter refinement and the explicit reciprocal Surf seam
+addition, the two affected cases pass again on the final source (33.00 seconds):
+
+- Real ranger admission; walking north out of the court; native Surf launch,
+  dismount and relaunch; four grass steps across Reed Pocket in each direction;
+  `(63,75)` → `(64,75)` → `(63,75)` across the native water connection; six grass
+  steps across the Isle of Pines portage; actual cabin door/FLOOR arrival and
+  carpet return; Surf, island and indoor Continue. Successful ordinary travel
+  and Surf launch debit once; facing input and Run debit nothing. All 30 balls
+  remain. Partner fields remain exact except native walking happiness gains.
+- A real previously reached ending save renders normal field dialogue with
+  no battle portrait or full-LCD white canvas. Acknowledging returns to the hub
+  and removes the complete frame and glyph surface without renderer errors.
+
+The separate expiry journey walks 500 actual adjacent court-floor steps,
+without injecting counters or a permit. It reaches zero once, continues the
+saved ending, rejects further walking, returns to the real hub `(30,10)` in
+ordinary walking mode and continues again with no permit or duplicate fee.
+It does not claim a final-grass-tile encounter-suppression journey.
+
+The visual defect was an empty trainer battle at field expiry. The final
+implementation uses the existing field textbox, glyph coordinates and dialogue
+layout owner. The first field-only pass still used battle-window coordinates;
+that retained intermediate render is superseded by the canonical field pass.
+Inspected images: [final field return](../../renders/boundary-safari-runtime-v08/native-v03/paid-step-limit.png),
+[retained battle composition](../../renders/boundary-safari-runtime-v08/native-v03/wildlife-menu.png),
+[actual cabin](../../renders/boundary-safari-runtime-v08/native-v02/paid-cabin.png),
+[second lake](../../renders/boundary-safari-runtime-v08/native-v02/paid-second-lake.png)
+and the [whole current preserve](../../renders/boundary-safari-runtime-v08/current-parent-actual-v01/whole-native-preserve-original.png).
+Originals, previews and rejected passes are all retained.
+
+The fresh production stdio naming/PC replay passes in 7.69 seconds with nine
+successful calls and zero stderr bytes. A separate seven-call ending replay
+observes the actual saved zero-step state, rejects arrow movement, acknowledges
+and observes the exact safe hub return with money still1000 and no Safari
+surface. It also has zero stderr bytes. All 377 audio programs pass the rebuilt
+Rust verifier's PCM hash, frame-count and loop-range checks. An older verifier
+binary rejected the new `safari_zone` field; rebuilding resolved that tool
+version mismatch without changing the pack or suppressing validation.
+
+All-target Bevy Clippy with `location-tester` passes, with existing unrelated
+warnings and none on the changed Safari leaves. Scoped formatting passes;
+whole-workspace formatting still fails in unrelated existing files beginning
+with `offset-allocator`. Regression builds use the default test profile;
+`wasm-dev` is used only for the headless production renderer.
+
+[TRAVEL.md](TRAVEL.md) records exact itinerary coordinates. The main Safari
+planning page now reflects six exterior chunks, seven internal neighbor pairs,
+the real free Pine Entry/court connections and cabin. The older whole-map
+verifier rejects the newer legitimate south court entrance; its failure log is
+retained. Actual current pack terrain was rendered directly instead of deleting
+that entrance to satisfy the historical sealed-perimeter contract.
+
+Paid admission remains closed in the selected main pack. During this work the
+main advanced independently beyond this parent, so this pinned review must
+rebase against the live selector before promotion. Remaining native acceptance includes the
+other portages/ledges, outward field moves, final-ball/last-grass-tile journeys,
+canoe and full throw/shake/audio presentation. Broader regional quality and
+earned statewide progression remain open. Exact hashes, test epochs and retained
+artifacts are recorded in the [v08 receipt](../../renders/boundary-safari-runtime-v08/receipt-v01.json).
+The new read-only `render_safari_runtime.py` previews the actual six maps using
+existing native-art helpers. It checks reciprocal connections and the live
+selector hash, writes immutable originals/previews, and reports the observed
+selection rather than silently using a stale pack. Its measured first pass is
+6.72 seconds. The new preview matches all 3,670,016 whole-map pixels of the
+earlier actual-pack composite; the final battle GPU capture also matches all
+368,640 source-compositor pixels. This preview is separate from gameplay proof.
+
 ## Saved native catch screens and trainer-backed battle review
 
 The unchanged, unselected R15 review pack now runs the complete native catch

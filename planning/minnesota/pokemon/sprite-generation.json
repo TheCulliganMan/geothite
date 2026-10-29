@@ -573,6 +573,10 @@
     {
       "id": "MN_F144",
       "manifest": "sprites/mn-f144/manifest.json"
+    },
+    {
+      "id": "MN_F145",
+      "manifest": "sprites/mn-f145/manifest.json"
     }
   ]
 }

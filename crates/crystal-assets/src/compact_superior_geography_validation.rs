@@ -66,10 +66,10 @@ pub fn validate_compact_superior_geography(pack: &CompiledGamePack) -> Result<()
             [map.attributes.width, map.attributes.height] == size,
             "retired northern footprint: {name}"
         );
-        if name.starts_with("MnR11C") {
+        if name.starts_with("MnR11C") || name == "MnMaraisCedarApproach" {
             ensure!(
                 map.attributes.tileset_name == "mn_north_shore",
-                "North Shore must retain its warm native tileset"
+                "North Shore and its Cedar approach must retain their warm native tileset: {name}"
             );
             let definition = pack
                 .data
@@ -80,6 +80,7 @@ pub fn validate_compact_superior_geography(pack: &CompiledGamePack) -> Result<()
                 .blocks
                 .iter()
                 .copied()
+                .chain(std::iter::once(u16::from(map.attributes.border_block)))
                 .chain(map.script_block_changes.iter().map(|row| row.block_id))
             {
                 let permissions = definition

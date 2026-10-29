@@ -50,5 +50,12 @@
     "native_map_id": 1,
     "initial_spawn_identifier": 282,
     "status": "Published native705-map R09child; source/native/controller/stdio/atlas/audio checks pass. Original R18 ShoreWatch and GoodRod remain unchanged."
+  },
+  "current_terrain": {
+    "revision": "route_grass_mille_lacs_revision",
+    "authoring_file": "../revisions/route-grass-v01/current-mille-lacs-v01/MnMilleLacs.after.json",
+    "layout_file": "MnMilleLacs.layout.json",
+    "publication": "../revisions/route-grass-v01/current-mille-lacs-v01/publication.json",
+    "source_role": "Current selected terrain; native_exterior files retain the initial park construction base."
   }
 }

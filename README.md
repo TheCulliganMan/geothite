@@ -4,6 +4,10 @@ A Rust implementation of Pokémon Crystal with browser and desktop clients,
 multiplayer, and an optional 2.5D overworld renderer. Game logic, rendering,
 audio, and networking are implemented in this repository.
 
+The [Tamarack and Team ICE sprite revision](planning/minnesota/npcs/tamarack-ice/README.md)
+uses normal Crystal overworld proportions, woman Tamarack and eight additional
+trainer types, with private native art and local encounter checks.
+
 The [Minnesota canoe](planning/minnesota/canoe/README.md) adds a reusable key
 item, a St. Paul canoe-shop handoff after the Capitol Badge, and native Chris/Kris
 paddling sprites. Carry it and walk into open water to launch; step onto land to
@@ -312,10 +316,13 @@ relay shutdown. After raising the review minimum to 100 for the last three
 League matches, Hall of Fame and postgame Continue also pass. Earlier saves
 retain their original pack; these reviews do not establish unboosted balance.
 
-The [comprehensive dialogue overhaul](docs/dialogue-overhaul.md) rebuilds the
-family departure, professor introduction, starter handoff and courier staging,
-and adds authored pages and native text timing. Its runbook records candidate
-publication and acceptance separately from the historical text-only revision.
+The [comprehensive dialogue overhaul](docs/dialogue-overhaul.md) rewrites the
+required story from Winona through the Boundary Waters and Hall of Fame:
+279 conversations across 36 maps, including refusals, reminders and returns.
+It stages the opening and courier encounter, preserves authored pages and
+native text timing, and gives each handoff a clear speaker, reason and next
+destination. Its 2D runbook records candidate publication and acceptance
+separately from the historical text-only revision.
 
 The [dialogue quality revision](planning/minnesota/playable/northstar-relay.md#dialogue-quality-revision--2026-10-27)
 is published as the ignored

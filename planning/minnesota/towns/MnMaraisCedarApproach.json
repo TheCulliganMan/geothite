@@ -189,5 +189,12 @@
     "content_identity": "f2ac93f14af05a2935947e1696385a26a16b2d2bd509e5da3e9223af02f98d63",
     "verification": "revisions/superior-gunflint-quality-v01/VERIFICATION.md",
     "progression_scope": "Explicit local fixtures do not establish earned campaign progression."
+  },
+  "coastal_warmth_revision": {
+    "revision_key": "coastal_cedar_warmth_revision",
+    "compiled_tileset": "mn_north_shore",
+    "pack_sha256": "34ba87d510d13b1345f14770a8d82a67c9fd07e220609db6d21bf1e36cb80976",
+    "runbook": "revisions/route-grass-v01/current-cedar-warmth-v01/README.md",
+    "scope": "Restore warm coastal art only; preserve every collision quadrant, border, actor, door, program and approved inland winter. Earlier native_geography_publication is historical."
   }
 }

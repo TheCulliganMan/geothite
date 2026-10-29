@@ -9,6 +9,16 @@
 > must remain ice-free. All new visual review is 2D only. The old history below
 > is superseded by the verified current-parent work linked next.
 
+> Latest accepted terrain revision: [Mille Lacs](current-mille-lacs-v01/README.md). Nine grass cells strengthen the lookout climb3/dryreturn0, north-shore walk2 and picnic walk4. Five native cases, current Fly discovery, Surf-only reward, Continue,15clean stdio, audio, exact2D and preservation pass. The selected v02 pack descends from starter-return; all729 other maps remain exact. Eight other route/link/park groups, relevant town links and final current-story coverage remain open. Read world.json for the current selected pack.
+
+> Previous accepted terrain revision: [Ely Shore Pass](current-ely-shore-pass-v01/README.md). Two green grass cells raise required crossings from one to five steps each way. Existing inland snow cells and the border remain exact. Four native cases, clinic/care/PC/Continue, 15 clean stdio calls, audio, exact 2D and preservation pass. Nine other route/link/park groups, relevant town links and final current-story coverage remain open. Read world.json for the selected pack.
+
+> Previous outdoor review: [Staples Rail Junction](current-staples-junction-review-v01/README.md) is accepted unchanged. Its R15 approach already crosses three required grass steps; the small depot yard remains dry. Three native cases, 13 clean stdio calls and two exact native 2D views pass. The selected pack remains the Detroit Approach child. Ten other route/link/park groups, relevant town links and final current-story coverage remain open.
+
+> Previous accepted terrain revision: [Detroit Lakes Approach](current-detroit-approach-v01/README.md). Seven grass cells, a native ledge and dry landing create a three-step grassy terrace climb and dry return. Native/Continue/stdio/audio/2D/preservation checks pass. It preserves all729 other maps. Eleven other route/link/park groups, relevant town links and final current-story coverage remain open. Read world.json for the current selected pack.
+
+> Previous accepted outdoor revision: [Bemidji Northwoods](current-bemidji-northwoods-v01/README.md). Six grass cells and a native ledge give a five-step grassy uphill loop and dry return. It descends from the current warm-Cedar Castorock pack and preserves all729 other maps. Read world.json for the current selected pack. Twelve other route/link/park groups, relevant town links and final current-story coverage remain open.
+
 Objective: review Minnesota's numbered routes and outdoor regional links; bring
 encounter habitat onto useful walking paths with original Crystal pacing.
 This is an in-progress statewide pass, not regional acceptance.

@@ -187,3 +187,11 @@ pub fn build_mille_lacs_park(
     crate::verify_compiled_game_pack_for_runtime(&pack)?;
     Ok(pack)
 }
+
+/// Rechecks the published park contracts for a later terrain-only descendant.
+pub(crate) fn validate_current_terrain(
+    pack: &CompiledGamePack,
+    map: &crate::MapModule,
+) -> Result<()> {
+    geometry::validate(pack, map)
+}

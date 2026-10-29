@@ -171,13 +171,20 @@ fn run_from_wild(c: &mut VisibleShellController) {
 fn mille_lacs_park_controller_roads_residents_grass_ledge_dock_and_continue() {
     let (root, r, _) = load();
     let mut c = fixture(&root, &r, ROUTE, (15, 10));
-    let original = flags(&c);
+    let mut original = flags(&c);
+    assert!(!original.1.contains("ENGINE_FLYPOINT_MN_MILLE_LACS"));
     step(
         &mut c,
         GameButton::Right,
         PARK,
         (0, 12),
         "real R18 road enters the park",
+    );
+    original.1.insert("ENGINE_FLYPOINT_MN_MILLE_LACS".into());
+    assert_eq!(
+        flags(&c),
+        original,
+        "native first entry unlocks only the park Fly point"
     );
     walk(&mut c, &r, (4, 13));
     save(&mut c, "entry");
@@ -382,8 +389,9 @@ fn mille_lacs_park_controller_surfs_to_roost_pickup_once_and_continues() {
 #[ignore = "requires the native park; legal regional party fixture and real grass encounter"]
 fn mille_lacs_park_controller_grass_has_regional_wild_battle_and_native_run() {
     let (root, r, _) = load();
-    let mut c = fixture(&root, &r, PARK, (13, 16));
+    let mut c = fixture(&root, &r, PARK, (13, 18));
     partner(&mut c, &r);
+    walk(&mut c, &r, (13, 16));
     let original = flags(&c);
     let table = r.data().wild_encounters[PARK]
         .grass

@@ -39,6 +39,7 @@ pub fn build_northstar_drill_lair(
     gallery: &str,
     core: &str,
 ) -> Result<CompiledGamePack> {
+    crate::northstar_story_revision::ensure_legacy_stage_allowed(base)?;
     crate::verify_compiled_game_pack_for_runtime(base)?;
     ensure!(
         base.report

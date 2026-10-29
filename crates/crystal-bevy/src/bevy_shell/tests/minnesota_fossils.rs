@@ -56,7 +56,7 @@ fn finish(c: &mut VisibleShellController) {
     panic!("fossil conversation did not release input");
 }
 
-fn talk(c: &mut VisibleShellController, facing: GameButton, answers: &[bool]) {
+pub(super) fn talk(c: &mut VisibleShellController, facing: GameButton, answers: &[bool]) {
     press(c, facing);
     press(c, GameButton::A);
     for answer in answers {

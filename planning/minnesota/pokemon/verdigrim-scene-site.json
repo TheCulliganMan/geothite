@@ -1,0 +1,181 @@
+{
+  "schema_version": 1,
+  "status": "authored-current-parent-site-not-installed",
+  "map": "MnBoundaryIntake",
+  "source_tileset": "mn_arc_intake",
+  "dimensions_metatiles": [
+    16,
+    12
+  ],
+  "parent_geometry_sha256": "84cede1b876e0ed5c44896c1c27e75f98ebc9ce6e102ceb6fd3d1d84155fddc8",
+  "anchors": {
+    "entry_camera": [
+      18,
+      9
+    ],
+    "exposed_wolf": [
+      23,
+      9
+    ],
+    "retreated_wolf": [
+      25,
+      6
+    ],
+    "drill_approach": [
+      17,
+      12
+    ],
+    "outlet_approach": [
+      21,
+      20
+    ],
+    "bypass_approach": [
+      13,
+      12
+    ]
+  },
+  "controls": {
+    "drill": {
+      "read_tile": [
+        17,
+        11
+      ],
+      "approach": [
+        17,
+        12
+      ],
+      "flag": "EVENT_MN_VERDIGRIM_DRILL_STOPPED"
+    },
+    "outlet": {
+      "read_tile": [
+        21,
+        19
+      ],
+      "approach": [
+        21,
+        20
+      ],
+      "machine_metatile": [
+        10,
+        9
+      ],
+      "flag": "EVENT_MN_VERDIGRIM_OUTLET_CLOSED"
+    },
+    "bypass": {
+      "read_tile": [
+        13,
+        11
+      ],
+      "approach": [
+        13,
+        12
+      ],
+      "machine_metatile": [
+        6,
+        5
+      ],
+      "flag": "EVENT_MN_VERDIGRIM_CLEAN_BYPASS"
+    }
+  },
+  "water_metatiles": [
+    [
+      10,
+      6
+    ],
+    [
+      11,
+      6
+    ],
+    [
+      12,
+      6
+    ],
+    [
+      13,
+      6
+    ],
+    [
+      14,
+      6
+    ]
+  ],
+  "contained_green_sump_metatiles": [
+    [
+      13,
+      6
+    ],
+    [
+      14,
+      6
+    ]
+  ],
+  "clean_return_metatiles": [
+    [
+      10,
+      6
+    ],
+    [
+      11,
+      6
+    ],
+    [
+      12,
+      6
+    ]
+  ],
+  "exposure_cover_metatile": [
+    11,
+    4
+  ],
+  "exposure_replacement": "07",
+  "wolf_retreat_steps": [
+    [
+      "RIGHT",
+      2
+    ],
+    [
+      "UP",
+      3
+    ]
+  ],
+  "bypass_camera_steps": [
+    [
+      "RIGHT",
+      5
+    ],
+    [
+      "UP",
+      3
+    ]
+  ],
+  "return_to_original_outflow_start_steps": [
+    [
+      "DOWN",
+      3
+    ],
+    [
+      "LEFT",
+      1
+    ]
+  ],
+  "kettlurk_failed_push_steps": [
+    [
+      "DOWN",
+      1
+    ],
+    [
+      "UP",
+      1
+    ]
+  ],
+  "preservation_contract": [
+    "Preserve all existing warp indices, 24-guard story bindings and original Reed/crew/Kettlurk movement paths.",
+    "Lower outlet control must not obstruct the entry camera walk along x19 from y17 to y9.",
+    "BYPASS approach moves to entry camera18,9 before wolf retreat, then returns to17,12 before the original outflow/crew continuation.",
+    "Keep the contaminated sump green after clean return; do not instantly purify the whole map.",
+    "Only a private map tileset may gain green glyph/palette variants; retain native water collision, Surf and animation.",
+    "All acknowledged control and actor/water states must persist on reentry and Continue.",
+    "Only acknowledged crew clearance grants containment/restoration; capture never gates the story."
+  ],
+  "acceptance_status": "Floor anchors checked against current composed pack; imported rock/machine art, animated green water, authored scripts and native scene verification remain to implement."
+}

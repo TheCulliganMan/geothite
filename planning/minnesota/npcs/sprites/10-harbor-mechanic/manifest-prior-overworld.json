@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "id": "MN_HARBOR_MECHANIC",
+  "name": "MECHANIC TOBIN",
+  "status": "accepted-native-playable",
+  "overworld_frames": 6,
+  "overworld_size": [
+    16,
+    16
+  ],
+  "battle_size": [
+    56,
+    56
+  ],
+  "palette_rgb555": [
+    32767,
+    22399,
+    18858,
+    0
+  ],
+  "source": "native-pixels-v1.json",
+  "placement": "placement-v1.json",
+  "pack": "content-packs/minnesota-original-npcs-10-v01.crystalpack",
+  "parent": "content-packs/minnesota-original-npcs-09-v01.crystalpack",
+  "runtime_checks": {
+    "one_controller_test_passed": true,
+    "talk_and_input_ownership": true,
+    "battle_turn_and_pp": true,
+    "battle_save_load": true,
+    "actual_victory_and_defeat_flag_before_render_capture": true,
+    "post_battle_talk": true,
+    "existing_trainers_and_assets_preserved": true
+  },
+  "manual_visual_review": "Reviewed native-size/enlarged six-pose strips, native battle grid, actual intro and post-win Duluth capture. Rebuilt independent goggle lenses and separated eyes/beard; stocky slate overalls, rolled shirt, tool belt, open wrench jaw and broad boots match across views. Rejected the first blackout run; the second passed using unchanged teams and legal defensive switching through the production PKMN menu.",
+  "evidence_sha256": {
+    "planning/minnesota/npcs/sprites/10-harbor-mechanic/native-pixels-v1.json": "6d4fa5f9c9a0214e276204d79afd2cdfc9f4eb183ebf6c553ed6752302613066",
+    "planning/minnesota/npcs/sprites/10-harbor-mechanic/placement-v1.json": "9018bde9826dae673349ea62b85109cea27319d1455bed85858b66b5b456668b",
+    "content-packs/minnesota-original-npcs-10-v01.crystalpack": "4fe7c74d37e383f18e8842cbb4def528715751ba9db5aa74fac41e8644be4cb0",
+    "target/npc-sprites/mechanic/controller-v02.log": "c2334da5c50c313da307d9d327dc514bb9bcdaf68706224b403312f402622796",
+    "target/npc-sprites/mechanic/gameplay-v02/original-npc-trainer-intro.png": "ba24068fae698996e826c4a89a61e5395bc4c9bffe3a5b80a6e9a98005b0c1b9",
+    "target/npc-sprites/mechanic/gameplay-v02/original-npc-first-turn.png": "01b4e7f2abdeeb136cd70875c1f5791bfbc61c392b0c96c95086f68f9d32a16e",
+    "target/npc-sprites/mechanic/gameplay-v02/original-npc-overworld-state.png": "2a155cf162a0fcc63b223f6a175b1b11776504d54291b45863dd308728aa7f25"
+  }
+}

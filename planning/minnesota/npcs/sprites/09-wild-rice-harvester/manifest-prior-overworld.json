@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "id": "MN_RICE_HARVESTER",
+  "name": "RICE HARVESTER SEDGE",
+  "status": "accepted-native-playable",
+  "overworld_frames": 6,
+  "overworld_size": [
+    16,
+    16
+  ],
+  "battle_size": [
+    56,
+    56
+  ],
+  "palette_rgb555": [
+    32767,
+    18239,
+    11749,
+    0
+  ],
+  "source": "native-pixels-v1.json",
+  "placement": "placement-v1.json",
+  "pack": "content-packs/minnesota-original-npcs-09-v01.crystalpack",
+  "parent": "content-packs/minnesota-original-npcs-08-v01.crystalpack",
+  "runtime_checks": {
+    "one_controller_test_passed": true,
+    "talk_and_input_ownership": true,
+    "battle_turn_and_pp": true,
+    "battle_save_load": true,
+    "actual_victory_and_defeat_flag_before_render_capture": true,
+    "post_battle_talk": true,
+    "existing_trainers_and_assets_preserved": true
+  },
+  "manual_visual_review": "Reviewed native-size and enlarged six-pose strips, native battle grid, actual battle intro and post-win Leech Lake capture. Rebuilt separated facial features, preserved long braid and bag gaps, and enlarged the two compact wooden tools for native readability. Teal headband, practical vest/trousers, light shirt and field bag match both views; public path and pier stay open.",
+  "evidence_sha256": {
+    "planning/minnesota/npcs/sprites/09-wild-rice-harvester/native-pixels-v1.json": "a4f15cb09309800eb2219e6bb4833e7912dc49f020b389408372e45f6a2b484f",
+    "planning/minnesota/npcs/sprites/09-wild-rice-harvester/placement-v1.json": "573e8d2a83bd96daf25e2d1c722e16204a99ea5e9f9476031b5045c9c15e3ab2",
+    "content-packs/minnesota-original-npcs-09-v01.crystalpack": "77e0d69ad2211ad2dcc9b8113c47ae6bb07b7cc34a03a971e9bb4efbc854fc2b",
+    "target/npc-sprites/rice/controller-v01.log": "e4fa566294e049b68fb2cb4fc467f33cbec4315f301250f5242d7e993bd5cba6",
+    "target/npc-sprites/rice/gameplay-v01/original-npc-trainer-intro.png": "462388adc3c073e7ceb8756c9f22c82e81219ab628a774612ad0d1446bbabc88",
+    "target/npc-sprites/rice/gameplay-v01/original-npc-first-turn.png": "6411d80aab774beda79dcea16fef4a34bcd92073adc6404976429b4075f95248",
+    "target/npc-sprites/rice/gameplay-v01/original-npc-overworld-state.png": "d298b769140a9c21c34309c38897e493900ff2845651e240a1b17ad939ca6b1c"
+  }
+}

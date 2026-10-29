@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "id": "MN_STATE_FAIR_BAKER",
+  "name": "BAKER DOTTIE",
+  "status": "accepted-native-playable",
+  "overworld_frames": 6,
+  "overworld_size": [
+    16,
+    16
+  ],
+  "battle_size": [
+    56,
+    56
+  ],
+  "palette_rgb555": [
+    32767,
+    22399,
+    8694,
+    0
+  ],
+  "source": "native-pixels-v2.json",
+  "placement": "placement-v1.json",
+  "pack": "content-packs/minnesota-original-npcs-12-v04.crystalpack",
+  "parent": "content-packs/minnesota-original-npcs-11-v01.crystalpack",
+  "runtime_checks": {
+    "one_controller_test_passed": true,
+    "talk_and_input_ownership": true,
+    "battle_turn_and_pp": true,
+    "battle_save_load": true,
+    "actual_victory_and_defeat_flag_before_render_capture": true,
+    "post_battle_talk": true,
+    "existing_trainers_and_assets_preserved": true
+  },
+  "manual_visual_review": "User reopened overworld quality. Directly redrew all six 16x16 pixel grids against native sprite proportions: strong hair framing, taller separated eyes, larger readable face, compact apron/tray clusters, distinct rear hair/straps and a genuine leading/rear-foot stride. Reviewed native-size and enlarged old/new/reference comparison and the actual St Paul post-win capture. Battle rows and palette remain byte-for-byte unchanged. This accepts the first hand-refined baker pass only; the other earlier overworld sets still require refinement.",
+  "evidence_sha256": {
+    "planning/minnesota/npcs/sprites/12-state-fair-baker/native-pixels-v2.json": "f6b826c34e4f15757bf95777f45953b1c1ca5b8caaaf8a4273f7ba941eee8918",
+    "planning/minnesota/npcs/sprites/12-state-fair-baker/placement-v1.json": "75e154ca2142a25ce0cf5e716db5fb7490e706fa12a2a5dfdb986231daf7e908",
+    "content-packs/minnesota-original-npcs-12-v04.crystalpack": "0c1f2f2e29b1fab2a9e87e9c8aebe1384fc41544fa423c9adfcf6940de5b02b5",
+    "target/npc-sprites/baker/controller-hand-v01.log": "1ee22eae3a88cb866cdee220ad9af25d86f52eae24924ea2fad75744e11ac7d1",
+    "target/npc-sprites/baker/gameplay-hand-v01/original-npc-trainer-intro.png": "0a4d1da6bfd8125975d068ab7ef0006dd9afa1947abe56bdf5c4bc6ad7d3af93",
+    "target/npc-sprites/baker/gameplay-hand-v01/original-npc-first-turn.png": "cfe631bb9eebf4d1860fae5e600fc12a99509783131e4c3a45595472f13cfc79",
+    "target/npc-sprites/baker/gameplay-hand-v01/original-npc-overworld-state.png": "0a04d7af91d481a303aa4302cd326467fad886a9118804763fe13e70240824b1",
+    "target/npc-sprites/baker/hand-v1/comparison.png": "3b5f65baba226d4c255c0a34f2c7f2a97da1350f02e94aa5632928fc408271cd",
+    "target/npc-sprites/baker/hand-v1/overworld-review.png": "0e1d7721e0b3039263dff8ef4723238e3122db82036041e7898e232db7636bfb",
+    "target/npc-sprites/baker/hand-v1/overworld-review-8x.png": "e5cca5fbb2048d5742b4da496bd52d178ee52c9edd01a4c36e28ba6ce2f25cd4"
+  },
+  "overworld_revision": "hand-edited-v2",
+  "previous_visual_acceptance_reopened_by_user": true
+}

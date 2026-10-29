@@ -1,5 +1,35 @@
 # Northwoods Pokédex web app
 
+## Verdigrim publication (2026-10-29)
+
+Release `20261029-verdigrim-25` adds Verdigrim as active species 225 with its
+selected float-copper wolf front/back art, normal/shiny walking sprites and
+original 1.524-second cry. It retains the published starter signatures and all
+168 move previews. All 1,256 previous battle sprites, 448 previous walking
+thumbnails and 224 previous WAVs remain byte-identical. The full source catalog
+has 315 species, including 90 labeled cut proposals.
+
+The current Rust exporter was compiled against the completed Cargo libraries
+and run with `combined-verdigrim-starters-20261029-v01.crystalpack`, the canonical
+source/native roots and a temporary animation source assembled from the prior
+accepted previews. Output and temporary build inputs remain ignored. Six
+catalog, cut-proposal, media, machine-browser and spinner checks pass. The
+public Verdigrim page passes desktop/mobile front/back/shiny, native walking,
+real audio playing/ended, layout and browser-error checks; captures were
+inspected. All 2,202 remote static files match the checked local export.
+
+```sh
+bash tools/deploy-pokedex.sh 100.101.29.133 \
+  target/minnesota-pokedex-web/pokedex/releases/20261029-verdigrim-25 \
+  20261029-verdigrim-25
+```
+
+Audio is external under `/pokedex/media/cries/20261029-verdigrim-v1/`. The
+existing game image, environment and mounts were preserved during this static
+publication. This publishes the species guide and assets; the excavation and
+containment encounter remains in progress in the story task. Auditory design
+acceptance remains open; browser playback is verified.
+
 ## State Fair regional-species correction (2026-10-28)
 
 The current fair page is release `20261028-state-fair-originals-23`.

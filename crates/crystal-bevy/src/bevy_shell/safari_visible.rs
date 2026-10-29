@@ -19,13 +19,18 @@ use super::{
     spawn_battle_trainer_marker, spawn_battle_window, visible_pc_pokemon_info,
 };
 
-/// Safari owns the same complete LCD surface as combat, including result text.
+/// Wildlife and its result own the complete battle LCD; field endings do not.
 pub(super) fn battle_active(shell: &BevyRuntimeShell) -> bool {
     shell.visible_fishing_animation.is_none()
         && safari::session(shell.shell.session().state())
             .ok()
             .flatten()
-            .is_some_and(|active| active.phase != SafariPhase::Exploring)
+            .is_some_and(|active| {
+                matches!(
+                    active.phase,
+                    SafariPhase::Encounter(_) | SafariPhase::Presenting { .. }
+                )
+            })
 }
 
 fn trainer_back_asset_id(snapshot: &RuntimeShellSnapshot) -> &'static str {
@@ -340,6 +345,32 @@ pub(super) fn render(
     let Some(capture) = capture else {
         return Ok(());
     };
+    if matches!(capture.phase, SafariPhase::Ending(_)) {
+        // Budget exhaustion and ranger retirement are field dialogue. There
+        // is no wildlife left to justify a blank trainer-backed battle LCD.
+        // Use the field presenter so the window and glyphs dock together.
+        let background = super::spawn_scene_dialog_window(
+            commands,
+            art,
+            root,
+            images,
+            super::FIELD_TEXT_BOX_LEFT_TILE,
+            super::FIELD_TEXT_BOX_TOP_TILE,
+            super::FIELD_TEXT_BOX_WIDTH_TILES,
+            super::FIELD_TEXT_BOX_HEIGHT_TILES,
+            Z,
+        );
+        commands.entity(background).insert(BattleCommandMarker);
+        for (i, line) in ["Expedition over!", "Back to basecamp."].iter().enumerate() {
+            let (x, y) = super::battle_hud_tile_origin(
+                super::FIELD_TEXT_BOX_TEXT_LEFT_TILE,
+                super::FIELD_TEXT_BOX_TEXT_TOP_TILE
+                    + i as f32 * super::FIELD_TEXT_BOX_ROW_SPACING_TILES,
+            );
+            super::spawn_scene_dialog_bitmap_text(commands, art, root, images, line, x, y, Z + 0.3);
+        }
+        return Ok(());
+    }
     commands.spawn((
         Sprite {
             color: Color::WHITE,
@@ -475,19 +506,6 @@ pub(super) fn render(
                         images,
                         line,
                         (1.0, 13.0 + i as f32 * 1.5),
-                        Z + 0.3,
-                    );
-                }
-            }
-            SafariPhase::Ending(_) => {
-                for (i, line) in ["Expedition over!", "Back to basecamp."].iter().enumerate() {
-                    text(
-                        commands,
-                        art,
-                        root,
-                        images,
-                        line,
-                        (1.0, 13.0 + i as f32 * 2.0),
                         Z + 0.3,
                     );
                 }

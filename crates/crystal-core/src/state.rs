@@ -3972,11 +3972,11 @@ impl ScriptRuntimeMemory {
             validate_queued_command_payload(index, command)?;
         }
         validate_optional_script_runtime_token("current_music", self.current_music.as_deref())?;
-        validate_optional_script_runtime_token(
+        validate_optional_script_runtime_label(
             "active_text_label",
             self.active_text_label.as_deref(),
         )?;
-        validate_optional_script_runtime_token(
+        validate_optional_script_runtime_label(
             "pending_text_label",
             self.pending_text_label.as_deref(),
         )?;
@@ -4080,7 +4080,7 @@ impl ScriptRuntimeMemory {
                 &format!("text_events[{index}].command"),
                 &event.command,
             )?;
-            validate_optional_script_runtime_token(
+            validate_optional_script_runtime_label(
                 &format!("text_events[{index}].text_label"),
                 event.text_label.as_deref(),
             )?;
@@ -13178,6 +13178,42 @@ mod tests {
 
         state.bag.key_items.insert("BICYCLE".to_string(), 1);
         assert_eq!(state.validate_saved_state(), Ok(()));
+    }
+
+    #[test]
+    fn saved_script_runtime_accepts_scoped_field_text_labels() {
+        let label = ".UseStrengthText@Script_UsedStrength";
+        let mut runtime = ScriptRuntimeMemory {
+            text_window_open: true,
+            active_text_label: Some(label.to_string()),
+            pending_text_label: Some(label.to_string()),
+            ..ScriptRuntimeMemory::default()
+        };
+        runtime.text_events.push(ScriptTextRuntimeEvent {
+            command: "writetext".to_string(),
+            kind: ScriptTextRuntimeKind::Write,
+            text_label: Some(label.to_string()),
+            face_player: false,
+            closes_text: false,
+            source_script: "Script_UsedStrength".to_string(),
+            command_index: 1,
+        });
+        assert_eq!(runtime.validate(), Ok(()));
+        let encoded = serde_json::to_string(&runtime).expect("scoped text save");
+        let decoded: ScriptRuntimeMemory =
+            serde_json::from_str(&encoded).expect("scoped text Continue");
+        assert_eq!(decoded, runtime);
+        for invalid in [
+            " .UseStrengthText@Script_UsedStrength",
+            "Bad Text",
+            "Bad\nText",
+        ] {
+            runtime.active_text_label = Some(invalid.to_string());
+            assert!(
+                runtime.validate().is_err(),
+                "invalid scoped label {invalid:?}"
+            );
+        }
     }
 
     #[test]

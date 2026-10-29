@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "id": "MN_LAKESIDE_ANGLER",
+  "name": "ANGLER NETTA",
+  "status": "accepted-native-playable",
+  "overworld_frames": 6,
+  "overworld_size": [
+    16,
+    16
+  ],
+  "battle_size": [
+    56,
+    56
+  ],
+  "palette_rgb555": [
+    32767,
+    18239,
+    15590,
+    0
+  ],
+  "source": "native-pixels-v2.json",
+  "placement": "placement-v1.json",
+  "pack": "content-packs/minnesota-npcs-hand-06-v01.crystalpack",
+  "parent": "content-packs/minnesota-npcs-hand-05-v02.crystalpack",
+  "runtime_checks": {
+    "one_controller_test_passed": true,
+    "talk_and_input_ownership": true,
+    "battle_turn_and_pp": true,
+    "battle_save_load": true,
+    "actual_victory_and_defeat_flag_before_render_capture": true,
+    "post_battle_talk": true,
+    "existing_trainers_and_assets_preserved": true
+  },
+  "manual_visual_review": "Directly redrew all six native grids with a larger bob-framed face, taller eyes, floppy banded hat, separate pocket vest and waders, real leading/rear-foot stride and free-arm swing. Complete bent rod tip, shaft and a distinct reel remain inside the 16x16 frames and keep anatomical handedness front/rear. Reviewed native-size/enlarged comparisons and actual Bemidji pier capture, including enlarged field detail. Battle art, palette and gameplay unchanged.",
+  "evidence_sha256": {
+    "planning/minnesota/npcs/sprites/05-lakeside-angler/native-pixels-v2.json": "299e7fe43dd6f56bb3856a03e299322b2dc8304b8798c19fa3acbb3a70dd2590",
+    "planning/minnesota/npcs/sprites/05-lakeside-angler/placement-v1.json": "7a452cab65688e02f52d241772b2e85276cb4ba8059721ba8cb7f432bbc91c85",
+    "content-packs/minnesota-npcs-hand-06-v01.crystalpack": "736294e66fd34c8b7e8e51e94cdecc855c17f546203eccc5a0183e187d855c6b",
+    "target/npc-sprites/angler/controller-hand-v01.log": "0bbc579e7bbf94ba75e14358273810f3fdcc140df7f1cfbf945846dad8536f23",
+    "target/npc-sprites/angler/gameplay-hand-v01/original-npc-trainer-intro.png": "5258277e76475c3469359db6f89f75346fc62e38d1fd780778845798b3fac4e8",
+    "target/npc-sprites/angler/gameplay-hand-v01/original-npc-first-turn.png": "515ec068a234a79348a5225b50a66f2c32c041e34148b426b0faa72da6ab1bfd",
+    "target/npc-sprites/angler/gameplay-hand-v01/original-npc-overworld-state.png": "12f57bbc3642f27f034e12a0abca4ad9742223f5af9f3d324d95eb7c0038fb7a",
+    "target/npc-sprites/angler/hand-v1/comparison.png": "3d86209408f667fb67cbcde0e693ff46c1e69281f259de874e30b52bbd856cde",
+    "target/npc-sprites/angler/hand-v1/overworld-review.png": "e9e4d3ca30b565061b3439f23e87f93b9986af9e769c5c097ea914e818cdb20c",
+    "target/npc-sprites/angler/hand-v1/overworld-review-8x.png": "bb3087087c6f48b9e2b1e3e8b411c38fa7916d13e803047d82cd5014bb941660"
+  },
+  "overworld_revision": "hand-edited-v2",
+  "previous_visual_acceptance_reopened_by_user": true
+}

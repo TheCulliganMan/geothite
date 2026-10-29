@@ -32,10 +32,13 @@ cleanup() {
 trap cleanup EXIT
 trap 'exit 130' HUP INT TERM
 fetch "$base/downloads/terminal/current.txt" "$scratch/manifest"
-# Manifest contains only a release slug and SHA256 checksums, never shell code.
+# Manifest contains checksums and an optional relative content path, never shell code.
 release=$(awk '$1 == "release" {print $2}' "$scratch/manifest")
 binary_hash=$(awk -v p="$platform" '$1 == p {print $2}' "$scratch/manifest")
 pack_hash=$(awk '$1 == "pack" {print $2}' "$scratch/manifest")
+pack_path=$(awk '$1 == "pack-path" {print $2}' "$scratch/manifest")
+pack_path=${pack_path:-realtime-clock.browser.crystalpack}
+case "$pack_path" in /*|*..*|*[!a-zA-Z0-9_./-]*) echo 'Invalid content path' >&2; exit 1 ;; esac
 case "$release" in ''|*[!a-zA-Z0-9_-]*) echo 'Invalid release manifest' >&2; exit 1 ;; esac
 if [ -z "$binary_hash" ]; then echo "No prebuilt release for $platform yet. Use https://geothite.ryanculligan.com/tui/" >&2; exit 1; fi
 for checksum in "$binary_hash" "$pack_hash"; do
@@ -47,7 +50,7 @@ fetch "$base/downloads/terminal/$release/$platform.gz" "$scratch/binary.gz"
 gzip -dc "$scratch/binary.gz" > "$scratch/native"
 pack_dir="$home_dir/packs/$pack_hash"
 if [ ! -f "$pack_dir/game.crystalpack" ] || [ "$(hash "$pack_dir/game.crystalpack")" != "$pack_hash" ]; then
-  fetch "$base/realtime-clock.browser.crystalpack" "$scratch/pack"
+  fetch "$base/$pack_path" "$scratch/pack"
   [ "$(hash "$scratch/pack")" = "$pack_hash" ] || { echo 'Content checksum mismatch; rerun after publication finishes.' >&2; exit 1; }
   mkdir -p "$pack_dir"
   mv "$scratch/pack" "$pack_dir/game.crystalpack"

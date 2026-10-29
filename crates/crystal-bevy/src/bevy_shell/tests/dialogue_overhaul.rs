@@ -248,6 +248,10 @@ fn overhaul_three_earned_starters_and_ivy_delivery() {
 #[ignore = "requires revised pack and an earned campaign; no fixture progression or level boosts"]
 fn overhaul_earned_campaign_through_hall_of_fame() {
     assert!(
+        std::env::var_os("CRYSTAL_NORTHSTAR_EVENTS_SAVE_DIR").is_some(),
+        "set CRYSTAL_NORTHSTAR_EVENTS_SAVE_DIR for actual in-scene review captures"
+    );
+    assert!(
         std::env::var_os("CRYSTAL_NORTHSTAR_REVIEW_LEVEL").is_none(),
         "earned campaign cannot use review boosts"
     );
@@ -275,19 +279,23 @@ fn overhaul_earned_campaign_through_hall_of_fame() {
 }
 
 #[test]
-#[ignore = "requires the same candidate's actual earned Minneapolis save; no fixture progression or boosts"]
+#[ignore = "requires the same candidate's actual earned chapter save; no fixture progression or boosts"]
 fn overhaul_earned_continue_through_hall_of_fame() {
     assert!(
-        std::env::var_os("CRYSTAL_NORTHSTAR_ICE_SAVE").is_some(),
-        "Continue requires an actual New Game campaign checkpoint"
+        std::env::var_os("CRYSTAL_NORTHSTAR_EVENTS_SAVE_DIR").is_some(),
+        "set CRYSTAL_NORTHSTAR_EVENTS_SAVE_DIR for actual in-scene review captures"
     );
-    for variable in [
-        "CRYSTAL_NORTHSTAR_REVIEW_LEVEL",
+    assert!(
+        std::env::var_os("CRYSTAL_NORTHSTAR_REVIEW_LEVEL").is_none(),
+        "earned Continue cannot use review boosts"
+    );
+    let checkpoints = [
         "CRYSTAL_NORTHSTAR_EARNED_SAVE",
         "CRYSTAL_NORTHSTAR_PRAIRIE_EXIT_SAVE",
         "CRYSTAL_NORTHSTAR_CURRENT_SAVE",
         "CRYSTAL_NORTHSTAR_CURRENT_EXIT_SAVE",
         "CRYSTAL_NORTHSTAR_COURIER_SAVE",
+        "CRYSTAL_NORTHSTAR_ICE_SAVE",
         "CRYSTAL_NORTHSTAR_RELAY_SAVE",
         "CRYSTAL_NORTHSTAR_WIND_SAVE",
         "CRYSTAL_NORTHSTAR_LAKE_SAVE",
@@ -295,14 +303,17 @@ fn overhaul_earned_continue_through_hall_of_fame() {
         "CRYSTAL_NORTHSTAR_IRON_SAVE",
         "CRYSTAL_NORTHSTAR_FINALE_SAVE",
         "CRYSTAL_NORTHSTAR_LEAGUE_SAVE",
-    ] {
-        assert!(
-            std::env::var_os(variable).is_none(),
-            "earned Continue cannot override later chapters or levels: {variable}"
-        );
-    }
-    // The native loader verifies the pack identity. The arrival helper checks
-    // the two earned badges, delivered envelope and unstarted ICE chapter.
+    ];
+    assert_eq!(
+        checkpoints
+            .iter()
+            .filter(|name| std::env::var_os(name).is_some())
+            .count(),
+        1,
+        "Continue requires exactly one actual New Game campaign checkpoint"
+    );
+    // Native loaders verify the pack identity and each chapter's earned
+    // prerequisites. Recorded review runs retain their New Game save lineage.
     super::minnesota_gyms::northstar_arc_unboosted_new_game_through_legendary_release_and_hall_of_fame();
 }
 
@@ -564,4 +575,29 @@ fn overhaul_held_acceleration_cannot_acknowledge_the_next_page() {
         shell.field_notice.is_some(),
         "held acceleration cannot dismiss the following page"
     );
+}
+
+#[test]
+#[ignore = "declared five-badge/level-65 late-story fixture; supplementary to the earned New Game course"]
+fn overhaul_declared_late_story_through_hall_of_fame() {
+    let checkpoints = [
+        "CRYSTAL_NORTHSTAR_LAKE_SAVE",
+        "CRYSTAL_NORTHSTAR_PINE_SAVE",
+        "CRYSTAL_NORTHSTAR_IRON_SAVE",
+        "CRYSTAL_NORTHSTAR_FINALE_SAVE",
+        "CRYSTAL_NORTHSTAR_LEAGUE_SAVE",
+    ]
+    .into_iter()
+    .filter_map(std::env::var_os)
+    .collect::<Vec<_>>();
+    assert_eq!(
+        checkpoints.len(),
+        1,
+        "one explicitly declared late-story checkpoint"
+    );
+    let path = std::path::PathBuf::from(&checkpoints[0]);
+    assert!(path.to_string_lossy().contains("declared-late-story"));
+    assert!(std::env::var_os("CRYSTAL_NORTHSTAR_REVIEW_LEVEL").is_none());
+    assert!(std::env::var_os("CRYSTAL_NORTHSTAR_EVENTS_SAVE_DIR").is_some());
+    super::minnesota_gyms::northstar_arc_unboosted_new_game_through_legendary_release_and_hall_of_fame();
 }

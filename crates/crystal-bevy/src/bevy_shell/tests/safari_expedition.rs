@@ -6,6 +6,8 @@ mod capture_delivery;
 mod fishing_controller;
 #[path = "safari_postcatch_controller.rs"]
 mod postcatch_controller;
+#[path = "safari_travel_controller.rs"]
+mod travel_controller;
 
 use std::collections::{BTreeMap, BTreeSet, VecDeque};
 use std::path::PathBuf;
@@ -170,10 +172,56 @@ fn publish_review_pack_if_requested() {
         .expect("native Rust expedition publication");
     let mut expected = base.data().clone();
     expected.safari_zone = candidate.data().safari_zone.clone();
+    let zone = expected.safari_zone.as_ref().expect("published Safari");
+    let allowed_texts = zone
+        .gate_court
+        .guard_identifiers
+        .iter()
+        .chain(&zone.retire_scripts)
+        .map(|root| format!("{root}Text"))
+        .chain(["BWS_SIGN_01Text".into(), "BWS_SIGN_06Text".into()])
+        .collect::<BTreeSet<_>>();
+    for name in zone.maps.keys() {
+        let old = &base.data().maps[name];
+        let new = &candidate.data().maps[name];
+        assert_eq!(
+            old.scripts.keys().collect::<Vec<_>>(),
+            new.scripts.keys().collect::<Vec<_>>()
+        );
+        assert_eq!(
+            old.script_text_bodies.keys().collect::<Vec<_>>(),
+            new.script_text_bodies.keys().collect::<Vec<_>>()
+        );
+        let mut normalized = new.clone();
+        normalized.scripts = old.scripts.clone();
+        normalized.script_text_bodies = old.script_text_bodies.clone();
+        assert_eq!(
+            &normalized, old,
+            "terrain, actors, events and executable commands remain exact"
+        );
+        for (label, payload) in &new.scripts {
+            if old.scripts.get(label) != Some(payload) {
+                assert!(
+                    allowed_texts.contains(label),
+                    "unrelated script changed: {name}/{label}"
+                );
+                expected.map_scripts.insert(label.clone(), payload.clone());
+            }
+        }
+        for (label, body) in &new.script_text_bodies {
+            if old.script_text_bodies.get(label) != Some(body) {
+                assert!(
+                    allowed_texts.contains(label),
+                    "unrelated dialogue changed: {name}/{label}"
+                );
+            }
+        }
+        expected.maps.insert(name.clone(), new.clone());
+    }
     assert_eq!(
         candidate.data(),
         &expected,
-        "all unrelated game data remains exact"
+        "all data outside Safari config and narrowly bound permit text remains exact"
     );
     assert_eq!(candidate.runtime_files(), base.runtime_files());
     assert_eq!(candidate.compiled_audio(), base.compiled_audio());

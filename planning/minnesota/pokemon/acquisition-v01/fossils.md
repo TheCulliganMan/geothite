@@ -1,6 +1,6 @@
 # Driftless fossil research
 
-The selected local review pack is
+The fossil stage was verified as
 `content-packs/minnesota-current-fossils-repaired-r15-v01.crystalpack`, built from
 `content-packs/minnesota-scripts-repaired-r15-v01.crystalpack`. It inherits
 the accepted HM/habitat/cyclist stages and all 18 repaired cyclist battle-return
@@ -16,8 +16,9 @@ Care Badge. A full party retains both the item and the restoration claim.
 
 After defeating the regional Champion, the Driftless researcher offers the
 unchosen specimen through a free, once-only research exchange. Both living
-lines can therefore be collected in one run. The separate prehistoric beaver
-line is still awaiting its own discovery path.
+lines can therefore be collected in one run. The prehistoric beaver line now
+has its own [Strength-gated discovery](castorock/README.md), selected on the warm
+Cedar descendant. Consult `world.json` for the current composed pack.
 
 Three native controller cases pass choice/refusal/persistence/exchange,
 badge/full-party/restoration, and both level-34 evolutions. The evolution case

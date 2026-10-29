@@ -13,7 +13,11 @@ use super::{VisibleShellController, event, finish, press, walk_to};
 pub(super) fn road(c: &mut VisibleShellController, r: &CrystalRuntime, number: u8, to: (i16, i16)) {
     let (prefix, columns, rows, tileset) = match number {
         11 => ("MnR11", 2, 4, "mn_north_shore"),
+        12 if !r.data().maps.contains_key("MnR12C01R01") => ("MnR12", 1, 2, "mn_winter_gunflint"),
         12 => ("MnR12", 2, 3, "mn_gunflint"),
+        13 if r.data().maps["MnR13C00R00"].attributes.tileset_name == "mn_winter_north_shore" => {
+            ("MnR13", 1, 3, "mn_winter_north_shore")
+        }
         13 => ("MnR13", 1, 3, "johto"),
         _ => panic!("unsupported coastal road"),
     };
