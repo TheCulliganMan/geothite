@@ -291,6 +291,15 @@ mod tests {
             .expect("story maps")
             .keys()
         {
+            if name == "MnLakeItasca" {
+                let mut expected = before.data.maps[name].clone();
+                expected.blocks.clone_from(&after.data.maps[name].blocks);
+                assert_eq!(
+                    expected, after.data.maps[name],
+                    "reviewed Itasca grass only"
+                );
+                continue;
+            }
             if name == "MnWinonaFieldStation"
                 && after
                     .report
@@ -348,6 +357,8 @@ mod tests {
                             | "MnWinonaFieldStation"
                             | "MnMilleLacs"
                             | "MnGrandMaraisFieldStation"
+                            | "MnLakeItasca"
+                            | "MnPreservePineEntry"
                     ),
                     "unreviewed parent change {name}"
                 );
@@ -368,6 +379,7 @@ mod tests {
         )
         .expect("canonical story");
         let child = super::revise_northstar_story(&base, &source).expect("staged revision");
+        crate::northstar_holding_fence::assert_enclosure(&child);
         if let Some(path) = std::env::var_os("CRYSTAL_STORY_REVISION_PACK") {
             let published = crate::read_verified_compiled_game_pack(PathBuf::from(path))
                 .expect("published dialogue candidate");

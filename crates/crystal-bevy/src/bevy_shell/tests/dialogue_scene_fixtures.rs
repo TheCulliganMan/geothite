@@ -1,6 +1,8 @@
 //! Declared chapter setups supplement the separate earned New Game course.
 #[path = "dialogue_retry_fixture.rs"]
 mod retry;
+#[path = "dialogue_holding_fence.rs"]
+mod holding_fence;
 
 use crystal_assets::AssetRoot;
 use crystal_core::input::GameButton;

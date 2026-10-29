@@ -169,3 +169,43 @@ fn copy_glyph(
     glyphs.insert((source, glyph), logical);
     Ok(logical)
 }
+
+#[cfg(test)]
+pub(crate) fn assert_enclosure(pack: &CompiledGamePack) {
+    use std::collections::{BTreeSet, VecDeque};
+
+    let room = &pack.data.maps["MnMinneapolisDispatchOffice"];
+    for open in [false, true] {
+        let mut blocks = room.blocks.clone();
+        if open {
+            blocks[36] = 5;
+        }
+        let mut visited = BTreeSet::from([[11_u16, 6_u16]]);
+        let mut queue = VecDeque::from([[11_u16, 6_u16]]);
+        while let Some([x, y]) = queue.pop_front() {
+            for (dx, dy) in [(0, -1), (1, 0), (0, 1), (-1, 0)] {
+                let (Ok(x), Ok(y)) = (
+                    u16::try_from(i32::from(x) + dx),
+                    u16::try_from(i32::from(y) + dy),
+                ) else {
+                    continue;
+                };
+                if x >= 20 || y >= 16 || visited.contains(&[x, y]) {
+                    continue;
+                }
+                let collision =
+                    crate::authored_route_modpack::collision(pack, &blocks, 10, [x, y], TILESET)
+                        .expect("private fence native collision");
+                if matches!(collision, "FLOOR" | "WARP_CARPET_DOWN" | "LADDER") {
+                    visited.insert([x, y]);
+                    queue.push_back([x, y]);
+                }
+            }
+        }
+        assert_eq!(
+            visited.contains(&[15, 5]),
+            open,
+            "the gate alone controls entry to Ellis"
+        );
+    }
+}

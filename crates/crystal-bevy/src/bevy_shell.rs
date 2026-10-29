@@ -732,6 +732,13 @@ impl VisibleShellController {
             || self.shell.visible_walk_warp_phase.is_some()
     }
 
+    /// Save gameplay and the current ordinary script dialogue page.
+    ///
+    /// Saving preserves the live controller and printer. Later dialogue pages
+    /// are restored by Continue alongside their native script continuation.
+    ///
+    /// # Errors
+    /// Returns checkpoint encoding, native validation or filesystem errors.
     pub fn save(&mut self, path: impl AsRef<Path>) -> Result<()> {
         field_dialogue_resume::save(&mut self.shell, path.as_ref())
     }
