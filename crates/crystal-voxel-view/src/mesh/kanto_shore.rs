@@ -1,5 +1,5 @@
-//! Source-authenticated Kanto pond/coast caps and the existing shallow drop.
-//! Collision, cap contacts, water beds and footing remain unchanged.
+//! Source-authenticated Kanto bedrock caps and the existing water drop.
+//! Low interior crowns preserve native cap contacts, water beds and footing.
 use super::*;
 const LABEL: &str = "outdoor/kanto-shore";
 
@@ -334,14 +334,16 @@ pub(super) fn finish(
         for i in banks {
             for &q in &faces[i] {
                 let p = old.positions[q * 4..q * 4 + 4].try_into().unwrap();
-                new_bark::ledge_finish::append_natural_bank(
+                if old.normals[q * 4] == [0., 1., 0.] {
+                    super::rocky_shore_cap::append(&mut mesh.solid, p, g, origin, palette);
+                } else {new_bark::ledge_finish::append_natural_bank(
                     &mut mesh.solid,
                     p,
                     old.normals[q * 4],
                     g,
                     origin,
                     palette,
-                );
+                );}
                 removed.insert(q);
             }
             mesh.authored_cells[i] = Some(LABEL);
@@ -481,6 +483,23 @@ mod tests {
         (cells, shapes, g, images, mesh)
     }
     #[test]
+    fn raised_native_rock_caps_are_not_repainted_as_neighboring_dirt() {
+        let (cells, shapes, grid, images, mut mesh) = fixture(0x1f);
+        let cells = cells.iter().collect::<Vec<_>>();
+        finish(&mut mesh, &cells, &shapes, &grid, [13, 17], &images);
+        let crowns = mesh.solid.positions.iter().enumerate()
+            .filter(|(_, point)| point[1] > 0.)
+            .map(|(i, _)| (i, mesh.solid.colors[i], mesh.solid.uvs[i]))
+            .collect::<Vec<_>>();
+        assert!(!crowns.is_empty());
+        new_bark::ledge_finish::continue_shore_cap_ground(&mut mesh, &cells, &grid, [13, 17]);
+        for (i, color, uv) in crowns {
+            assert_eq!(mesh.solid.colors[i], color, "the crown keeps native mineral pigment");
+            assert_eq!(mesh.solid.uvs[i], uv, "the crown keeps its world-anchored bedrock grain");
+        }
+    }
+
+    #[test]
     fn native_caps_and_all_water_drop_directions_preserve_contacts_and_other_owners() {
         let mut directions = std::collections::HashSet::new();
         for block in [0x1d, 0x1e, 0x1f, 0x2d, 0x2e, 0x64, 0x65, 0x67, 0x6a, 0x78] {
@@ -530,8 +549,8 @@ mod tests {
                 .all(|p| p.iter().all(|v| v.is_finite()) && p[1] >= crate::profile::WATER_HEIGHT - g.tile_height * 0.20 && p[1] <= g.tile_height * 0.32));
             assert!(source_corners.iter().all(|p| mesh.solid.positions.contains(p)),
                 "fractured shelves and walls preserve all source contact corners");
-            assert!(mesh.solid.positions.iter().all(|p|p[1]>=crate::profile::WATER_HEIGHT && p[1]<=0.),
-                "standard cliff faces cannot add a separate raised shoreline crown");
+            assert!(mesh.solid.positions.iter().all(|p|p[1]>=crate::profile::WATER_HEIGHT && p[1]<g.tile_height*0.1),
+                "bedrock crowns stay low and inside the native bank; contacts stay fixed");
             assert!(mesh.solid.positions.iter().zip(&mesh.solid.normals).any(|(p,n)|
                 p[1]>crate::profile::WATER_HEIGHT && p[1]<0. && n[1].abs()>0.001 && n[1].abs()<0.9),
                 "the shared cliff wall must retain real fractured relief");

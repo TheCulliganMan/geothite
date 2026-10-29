@@ -1,0 +1,47 @@
+{
+  "name": "BOTANIST ELDEN",
+  "role": "preserved original NPC",
+  "status": "accepted-native-playable-rebased",
+  "source": "native-pixels-v3.json",
+  "source_path": "planning/minnesota/npcs/sprites/04-prairie-botanist/native-pixels-v3.json",
+  "integration": "placement-v1.json",
+  "controller": "placement-v1.json",
+  "native": "target/npc-sprites/botanist/reference-v3",
+  "pack": "content-packs/minnesota-trainer-cast-25-v01.crystalpack",
+  "gameplay": "target/trainer-cast/rebase/04-prairie-botanist/gameplay",
+  "log": "target/trainer-cast/rebase/04-prairie-botanist/controller.log",
+  "original_placement": "planning/minnesota/npcs/sprites/04-prairie-botanist/placement-v1.json",
+  "old_map": "MnMankato",
+  "new_map": "MnMankato",
+  "old_tile": [
+    32,
+    24
+  ],
+  "new_tile": [
+    31,
+    24
+  ],
+  "scope": "Exact accepted original art, palette, party, class and dialogue. Placement rebased to safe compact geography; original geography not transplanted.",
+  "evidence_sha256": {
+    "planning/minnesota/npcs/cast/rebased-originals/04-prairie-botanist/placement-v1.json": "56f2be78be7c6869985cd810cecf6ad9ef6d915f0fcbc422d290089613edf215",
+    "planning/minnesota/npcs/sprites/04-prairie-botanist/native-pixels-v3.json": "fd7e9f18a17029be1b5cf7875776d25def0ea9f82a06a422cb3d99258d3e6448",
+    "planning/minnesota/npcs/sprites/04-prairie-botanist/manifest.json": "8ca20324c406884d81373fe82bd10f1f97ca24e1527dbce896de783340c8bd4b",
+    "target/trainer-cast/rebase/04-prairie-botanist/controller.log": "115b5dbc0030b70a5e8a9d0aa492eb533b50b4b0166fdf79ef9deb236ec594ba",
+    "content-packs/minnesota-trainer-cast-25-v01.crystalpack": "4fbb442117b7faf0ef5767e0aa6f8e38d2cc9dbeee631dad19d2d31d26ba5835",
+    "target/npc-sprites/botanist/reference-v3/verification.json": "5b1c33bb1080b3cbbf3e81fcd8efbef95612e6959a9bba8419b39b0671ecd4b4",
+    "target/trainer-cast/rebase/04-prairie-botanist/gameplay/original-npc-trainer-intro.png": "34bffd1fc09c703c1dfa9591c0f7a9f99b07d1d9e2bcf1d9eb564c8409759177",
+    "target/trainer-cast/rebase/04-prairie-botanist/gameplay/original-npc-overworld-state.png": "ef835ef7059f514ef8e848d1df4f39b17a9a33001afb8bc3bd050dd375c1ab9f",
+    "target/trainer-cast/rebase/04-prairie-botanist/gameplay/original-npc-first-turn.png": "eff425e9caf0a0b3bb6c387029fa56a7489be71d767da3ccbe43e384de495d56"
+  },
+  "final_pack": "content-packs/minnesota-trainer-cast-36-v01.crystalpack",
+  "final_gameplay": "target/trainer-cast/final-audit/gameplay/rebased-originals-04-prairie-botanist",
+  "final_log": "target/trainer-cast/final-audit/gameplay/rebased-originals-04-prairie-botanist/controller.log",
+  "final_status": "accepted-native-playable-final-pack",
+  "final_review": "Actual battle intro and field captures inspected on exact final pack; art retains accepted native sources and palette.",
+  "final_evidence_sha256": {
+    "target/trainer-cast/final-audit/gameplay/rebased-originals-04-prairie-botanist/controller.log": "b9ce24c610a31fac1221d39501d85bcc495563020a687a43a4181438c9eabe5d",
+    "target/trainer-cast/final-audit/gameplay/rebased-originals-04-prairie-botanist/original-npc-trainer-intro.png": "34bffd1fc09c703c1dfa9591c0f7a9f99b07d1d9e2bcf1d9eb564c8409759177",
+    "target/trainer-cast/final-audit/gameplay/rebased-originals-04-prairie-botanist/original-npc-overworld-state.png": "ef835ef7059f514ef8e848d1df4f39b17a9a33001afb8bc3bd050dd375c1ab9f",
+    "target/trainer-cast/final-audit/gameplay/rebased-originals-04-prairie-botanist/original-npc-first-turn.png": "eff425e9caf0a0b3bb6c387029fa56a7489be71d767da3ccbe43e384de495d56"
+  }
+}

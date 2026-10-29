@@ -36,7 +36,8 @@ pub fn build_northstar_supplies(base: &CompiledGamePack, source: &str) -> Result
         "supported St Cloud sleep-recovery contract required"
     );
     ensure!(
-        base.identity()?.content_hash == source.base_content_hash,
+        base.identity()?.content_hash == source.base_content_hash
+            || crate::northstar_current_story::is_composing(base),
         "supplies parent differs"
     );
     ensure!(

@@ -1,0 +1,346 @@
+{
+  "id": "MnWinonaStation",
+  "native_constant": "MN_WINONA_STATION",
+  "template": "GoldenrodMagnetTrainStation",
+  "kind": "train_station",
+  "tileset": "train_station",
+  "border_block": 15,
+  "dimensions_metatiles": [
+    10,
+    9
+  ],
+  "rows": [
+    "0a 16 0a 16 0a 16 0a 16 0a 16",
+    "0f 0b 0b 0b 0b 0b 0b 0b 0b 0f",
+    "0f 14 10 11 15 12 13 14 14 0f",
+    "0f 04 04 04 04 04 04 04 04 0f",
+    "0f 06 06 06 06 07 06 06 06 0f",
+    "0f 24 25 24 03 03 03 03 0c 0f",
+    "0f 1c 1c 1c 03 03 01 01 0c 0f",
+    "0f 1c 1c 1c 03 03 03 03 0f 0f",
+    "0f 0f 0f 0f 0f 09 0f 0f 0f 0f"
+  ],
+  "passive_arrival": {
+    "index": 3,
+    "tile": [
+      11,
+      15
+    ]
+  },
+  "exits": [
+    {
+      "index": 1,
+      "tile": [
+        10,
+        17
+      ],
+      "target": "MnWinona",
+      "target_warp": 10
+    },
+    {
+      "index": 2,
+      "tile": [
+        11,
+        17
+      ],
+      "target": "MnWinona",
+      "target_warp": 10
+    }
+  ],
+  "residents": [
+    {
+      "id": "MN_WINONA_STATION_CONDUCTOR",
+      "sprite": "SPRITE_OFFICER",
+      "tile": [
+        11,
+        9
+      ],
+      "approach": [
+        11,
+        10
+      ],
+      "facing": "south",
+      "lines": [
+        "GLACIER LINE",
+        "Ticket service is",
+        "not open yet."
+      ]
+    },
+    {
+      "id": "MN_WINONA_STATION_MASON",
+      "sprite": "SPRITE_GRAMPS",
+      "tile": [
+        5,
+        13
+      ],
+      "approach": [
+        6,
+        13
+      ],
+      "facing": "east",
+      "lines": [
+        "I set this stone",
+        "with my father.",
+        "The bluff gave us",
+        "limestone. He gave",
+        "me a steady hand."
+      ]
+    },
+    {
+      "id": "MN_WINONA_STATION_PORTER",
+      "sprite": "SPRITE_FISHER",
+      "tile": [
+        9,
+        12
+      ],
+      "approach": [
+        9,
+        13
+      ],
+      "facing": "south",
+      "lines": [
+        "Read the ice log.",
+        "Our mason knows",
+        "that worn sill."
+      ]
+    },
+    {
+      "id": "MN_WINONA_STATION_PADDLER",
+      "sprite": "SPRITE_TEACHER",
+      "tile": [
+        14,
+        15
+      ],
+      "approach": [
+        13,
+        15
+      ],
+      "facing": "west",
+      "lines": [
+        "My paddle fits",
+        "under this bench.",
+        "Waiting here beats",
+        "another headwind."
+      ]
+    }
+  ],
+  "signs": [
+    {
+      "id": "MN_WINONA_STATION_ICE_LOG",
+      "tile": [
+        5,
+        10
+      ],
+      "approach": [
+        5,
+        11
+      ],
+      "lines": [
+        "WINTER REGISTER",
+        "River ice carried",
+        "the mail that day.",
+        "The depot stayed",
+        "open for everyone."
+      ]
+    }
+  ],
+  "pc": null,
+  "exterior_binding": {
+    "hub": "MnWinona",
+    "expected_dimensions_metatiles": [
+      16,
+      14
+    ],
+    "door": {
+      "warp_index": 9,
+      "return_warp_index": 10,
+      "tile": [
+        19,
+        13
+      ],
+      "return_tile": [
+        19,
+        14
+      ],
+      "arrival_tile": [
+        11,
+        15
+      ],
+      "target": "MnWinonaStation",
+      "target_warp": 3,
+      "collision": "DOOR"
+    },
+    "patches": [
+      {
+        "position": [
+          9,
+          5
+        ],
+        "before": "02",
+        "after": "18"
+      },
+      {
+        "position": [
+          10,
+          5
+        ],
+        "before": "02",
+        "after": "19"
+      },
+      {
+        "position": [
+          9,
+          6
+        ],
+        "before": "02",
+        "after": "16"
+      },
+      {
+        "position": [
+          10,
+          6
+        ],
+        "before": "02",
+        "after": "1e"
+      },
+      {
+        "position": [
+          11,
+          6
+        ],
+        "before": "02",
+        "after": "45"
+      }
+    ],
+    "sign": {
+      "id": "MN_WINONA_DEPOT_SIGN",
+      "tile": [
+        22,
+        12
+      ],
+      "approach": [
+        22,
+        13
+      ],
+      "lines": [
+        "WINONA DEPOT",
+        "Warm waiting room.",
+        "GLACIER LINE"
+      ]
+    },
+    "retained_connections": [
+      {
+        "direction": "west",
+        "target_map": "MnR01C00R00",
+        "offset": -3
+      },
+      {
+        "direction": "north",
+        "target_map": "MnMississippiWinonaMouth",
+        "offset": 0
+      }
+    ],
+    "retained_edge_lanes": [
+      [
+        0,
+        18
+      ],
+      [
+        0,
+        19
+      ],
+      [
+        26,
+        0
+      ],
+      [
+        27,
+        0
+      ],
+      [
+        28,
+        0
+      ],
+      [
+        29,
+        0
+      ]
+    ]
+  },
+  "boarding": {
+    "conductor_core": [
+      11,
+      9
+    ],
+    "approach_core": [
+      11,
+      10
+    ],
+    "platform_core": [
+      11,
+      7
+    ],
+    "train_door_core": [
+      6,
+      5
+    ],
+    "other_train_door_core": [
+      11,
+      5
+    ],
+    "ride_arrival_core": [
+      11,
+      11
+    ],
+    "conductor_open_steps": [
+      "up",
+      "up",
+      "right",
+      "right"
+    ],
+    "conductor_restore_steps": [
+      "left",
+      "left",
+      "down",
+      "down"
+    ],
+    "player_board_steps": [
+      "up",
+      "up",
+      "up",
+      "left",
+      "left",
+      "left",
+      "left",
+      "left",
+      "up",
+      "up"
+    ]
+  },
+  "story_contract": {
+    "id": "WINONA_WINTER_REGISTER",
+    "visit_flag": "EVENT_MN_STATION_WINONA_VISITED",
+    "read_flag": "EVENT_MN_WINONA_DEPOT_LOG_READ",
+    "heard_flag": "EVENT_MN_WINONA_DEPOT_MASON_HEARD",
+    "gift_flag": "EVENT_MN_WINONA_DEPOT_DRY_KIT_GIVEN",
+    "reward_item": "ICE_HEAL",
+    "reward_quantity": 1,
+    "reward_lines": [
+      "I keep ICE HEAL",
+      "for the late train",
+      "Take one for the",
+      "road north."
+    ],
+    "full_lines": [
+      "No room? I will",
+      "hold it for you."
+    ],
+    "repeat_lines": [
+      "Last lamp stays",
+      "lit until everyone",
+      "gets home."
+    ]
+  },
+  "status": "Public hall published in minnesota-winona-station-v03.crystalpack; source geometry, strict preservation, native controller story/returns, audio and seven paired views verified. Five-stop passenger service remains unfinished.",
+  "composition": "A compact public concourse with a timber reading nook, paired winter notices, four waiting chairs, a planted east wall and a conductor sealing the platform throat."
+}

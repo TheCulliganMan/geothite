@@ -1,3 +1,25 @@
+# Current installed review, 2026-10-28
+
+The earlier grass pass is already present. [Current 2D/native review](../revisions/route-grass-v01/current-r07-audit-v01/README.md) verifies eight outward meadow grass steps and a dry sandbank return. Direct current collision count is192walking grass tiles; historical196below is superseded. Active selection is preserved. Earlier pack claims below are historical.
+
+# Crystal-reference meadow and sandbank return, 2026-10-28
+
+R07 now brings more encounter habitat onto the outward walking trail, using
+Crystal Route42's lake-and-grass composition. The main meadow extends north and
+south, including its lower bank corner; three smaller patches connect to paths.
+Total encounter habitat increases from 120 to 196 walking tiles.
+
+The outward journey requires eight grass steps through the expanded meadow,
+before and after Cut. The existing sandbank ledge keeps a dry return that avoids
+those bands. Its ordinary 119-step return, both crossings, fishing landing,
+Cut-gated cache, actors and resources stay intact.
+
+The named review pack passed exact preservation, native visual review, eight
+trainer victories with spent PP, six wild battles, all pickups, native Cut/Surf,
+audio and Save/Continue. See [the current runbook and explicit fixture / identity
+limits](../revisions/route-grass-v01/R07.md). No default game pack is replaced.
+Earlier source/native milestones below remain historical.
+
 # Current garden/pine revision
 
 This route now matches the471-map `minnesota-canopy-review.crystalpack`. See

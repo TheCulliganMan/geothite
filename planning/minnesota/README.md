@@ -1,6 +1,22 @@
 # Minnesota mod pack implementation plan
 
-Build an authored Minnesota region in Geothite using the original 2D tile language of the Johto and Kanto atlas rendered for this task. The region starts in Winona, passes through eight gym towns, follows the North Shore into canoe country, and ends at the Ely League. This folder is the implementation handoff. The [Grand Marais town design and review loop](playable/README.md) supersede its initial blockout; its gameplay is implemented and tested, with visual acceptance still open. The town, [North Shore Trail](routes/MN_R11.md) and [Gunflint Trail](routes/MN_R12.md) are preserved with native overlays and focused controller evidence. [League Approach](routes/MN_R13.md) has an individual granite route and shelter, and [Headwaters Trail](routes/MN_R14.md) now adds a quieter nine-chunk wetland/pine composition with a native wooden-rail crossing. Both have native overlays, production 2D review and explicit controller/MCP fixtures. The connected regional journey and hub gates remain pending. Generated packs remain ignored in `content-packs/`.
+Minnesota uses native 2D only for the entire session. 3D and 2.5D are unavailable
+through desktop menus, F3, browser controls, saved preferences and previews,
+including on original maps retained in the regional pack. Text view remains available.
+
+Minnesota is an authored Geothite region using native Crystal art. The journey
+starts in Winona, follows eight gyms to Duluth, resolves the Northstar Survey
+in Boundary Waters and ends at the Ely League. This folder contains the source
+plans, profiles and versioned implementation records. Generated packs stay
+ignored in `content-packs/`.
+
+Read [the story profile](STORY.md), [progression](PROGRESSION.md) and
+[gym profiles](GYMS.md) for the current authored direction. The
+[current story composition record](revisions/current-story-v01/README.md)
+and [world.json](world.json) identify their particular publications and later
+regional revisions. Chapter records retain the evidence and limits of their
+named packs. A newer source file does not retroactively update an old pack.
+An uninterrupted ordinary-party campaign remains unclaimed.
 
 The user rejected both the small ImageGen route plates and the expanded illustrated replacement. **The actual Johto and Kanto tile render controls visual style.** The Minnesota overview controls regional geography and destination names only. Do not use the existing geographic map generator to compose this region.
 
@@ -8,38 +24,18 @@ The user rejected both the small ImageGen route plates and the expanded illustra
 
 Read [STATUS.md](STATUS.md) for the precise delivered work, planning checks, and remaining implementation tasks.
 
-The preserved prairie art pass gives Prairie Farm and Red River Prairie yellow grass
-using native glyphs and palette7. [Prairie renders and replay](playable/prairie-grass.md)
-use `content-packs/minnesota-prairie-review.crystalpack`, layered on the retained
-Iron Range/North Shore geography revision. All generated packs remain ignored.
+Map publications have their own versioned records, including the
+[prairie art](playable/prairie-grass.md),
+[garden and pine edges](playable/garden-and-pine-revisions.md),
+[North Shore](routes/MN_R11.md) and [Gunflint](routes/MN_R12.md).
+Use the regional revision pointers for the intended parent rather than selecting
+an older pack from one of these records by name alone.
 
-The current [garden/pine revision](playable/garden-and-pine-revisions.md) frames
-R04's east garden, R06's northern junction and R07's north turn. It retains
-the yellow prairie in `content-packs/minnesota-canopy-review.crystalpack`; eight
-current controller cases, exact preservation and all377 audio checks pass.
-
-[Gym designs](GYMS.md) specify all eight leaders' rooms, puzzles, trainer
-parties, explicit move sets, rewards and field permissions. [City by city
-progression](PROGRESSION.md) covers all nineteen hubs, the optional circuits,
-Fairgrounds, rail outposts and the complete Winona-to-Ely journey. These expand
-the existing story and route contracts; they do not claim a published gym
-circuit or a completed earned regional playthrough.
-
-The [Northstar Survey story](STORY.md) follows the player's first parcel into a
-Team Lode cover-up: stolen instruments, falsified copper-nickel test readings,
-and a plan to force Kettlurk to power the mine's pumps. The villains have
-credible motives and knowingly harmful methods. Main-chapter reveals and sample
-dialogue are attached to the existing milestones in `story.json`. The native
-Q06 foreman, separate meter recovery and Grand Rapids handover now join the
-native Duluth reveal and Q07 chief/receiver ending in the 502-map
-`content-packs/minnesota-northstar-harbor.crystalpack`. It retains the
-repaired three-city source, prairie art and earlier terrain. Actual handover
-opens the guarded R10 walking link; victory or pickup alone cannot do so.
-See [Q06's native contract](routes/MN_R09.md#actors-rewards-and-q06) and the
-[current evidence](STATUS.md). The harbor reading identifies Kettlurk, confirms
-that Lode continued after its own warnings and sends the true readings only
-after all nine pages are acknowledged. Upstream earned chapters, Duluth's
-regional travel links, League completion and the Kettlurk encounter remain open.
+The Northstar story follows Tamarack's delivery to Ivy into Ellis's rescue,
+Mina's shipment request, the endangered mine crew and Lode's attempt to use
+Kettlurk to drain the lakes. Reed knowingly joins ICE and repeatedly guards the
+operation. The ending requires the local drive shutdown and witnessed release;
+the chief battle and radio link alone cannot restore the survey.
 
 [One-way path contracts and renders](LEDGES.md) document the compact routes' ledges, safe landings and uphill returns. Their fast review loops include a movement overlay and reject decorative drops with trivial bypasses.
 
@@ -53,30 +49,24 @@ regional travel links, League completion and the Kettlurk encounter remain open.
 6. [IMPLEMENTATION.md](IMPLEMENTATION.md): repository integration and work sequence.
 7. [ACCEPTANCE.md](ACCEPTANCE.md): evidence required before a map, story chapter, or pack is accepted.
 
-[actors.json](actors.json) holds 12 named story interaction anchors, and [interiors.json](interiors.json) holds home, shop, clinic, gym, cave and League room navigation reservations. [ROUTES.md](ROUTES.md) is the compact route-by-route index.
+[actors.json](actors.json) contains base story anchors;
+[interiors.json](interiors.json), the chapter sources and their Rust builders
+supply additional rooms and actors. [ROUTES.md](ROUTES.md) indexes the twenty
+logical routes. Counts in early blockouts are not a current pack inventory.
 
-## Current design inventory
+## Story conventions
 
-| Record | Count | Meaning |
-| --- | ---: | --- |
-| Logical routes | 20 | Geography/story links; size is determined by worthwhile play |
-| Towns and major outdoor landmarks | 19 | Includes lake and wilderness hubs |
-| Route map chunks | Derived by `tools/check_plan.py` | Up to32×24 metatiles; clipped extents vary as individual revisions freeze |
-| Hub interiors | 64 | Clinics, shops, gyms, home, field station, story rooms, League |
-| Route interior reservations | Derived from route dossiers | Caves, farmhouses, tool shed, keeper/ranger rooms and lake cabin |
-| Gym battles | 8 | Explicit parties, levels, badge slots and repeat behavior |
-| Main story quests | 9 | Q00 through Q08 |
-| Side quests | 4 | SQ01 through SQ04 |
+Follow [STORY.md's source and writing conventions](STORY.md#sources-and-writing-conventions).
+Use supplied names, plain speech and concrete requests. Do not invent a
+biography, regional custom or completed test result to fill out a profile.
+Minnesota appearances use only the active roster after curation; base import
+species and historical test parties are not current regional teams.
 
-Route and hub counts describe planning, not connected gameplay. See
-[STATUS.md](STATUS.md) and each route runbook for current native evidence.
-All twenty route rasters have native publication evidence in the471-map route
-composition. Recent garden/pine, prairie and geography revisions have focused
-production-controller and preservation evidence; consult STATUS.md for their
-actual scope. Hub integration, connected earned story travel and final visual
-acceptance remain open. The atlas verifies
-actual source/native equality before using teal and marks superseded packs amber.
-Map size follows useful features, not a region-wide compactness rule.
+`story.json` provides the base contracts, while its `dialogue_overhaul` owns
+revised text labels after chapter overlays. `story-events-v2.json` and
+`story-arc-v3.json` supply acted scenes; `story-pokemon.json` supplies regional
+binding. Preserve that composition order. Historical chapter records are
+supporting evidence for their own versions, not alternative current profiles.
 
 ## Source priority
 
@@ -126,23 +116,24 @@ python3 -m venv .local/minnesota-planning-env
 
 Run `python3 planning/minnesota/tools/check_plan.py` for a plan-only check without a pack or image dependencies. This checks authored records and dependencies; it is not a gameplay test.
 
-## Start the implementation
+## Implementation records
 
-The **Minnesota State Fairgrounds** are explicitly in scope as a dedicated
-playable destination connected to St. Paul. The [fairgrounds contract](zones/state-fairgrounds.json)
-includes the midway, livestock/4-H barns, dairy/butter exhibit, food row, show
-ring and repeat-safe activities. Its actual city entrance is being reserved;
-the grounds and their native gameplay are not published yet.
+Use [STATUS.md](STATUS.md) and the revision fields in [world.json](world.json)
+to locate the relevant publication. The
+[current story record](revisions/current-story-v01/README.md) documents compact
+geography, the recurring rival, both lairs and the acted intake release. The
+[interior/story child](interior-life/current-story-v01/README.md) has a separate
+identity and verification scope. Neither record certifies later source edits.
 
-The [Glacier Line source contract](transit/README.md) adds the requested
-Detroit Lakes–Staples–St. Cloud–St. Paul–Red Wing–Winona rail spine. The complete
-St. Paul depot public room now has native city doors and all four return carpets,
-verified in [the local city candidate](playable/st-paul.md). St. Cloud's public
-station door, both carpets and Continue also pass in [its native successor](playable/st-cloud.md).
-Both train platforms stay sealed. Courier/rail progression, the other station bindings and native
-animated travel remain implementation work. The progress atlas must distinguish
-that local public-room connection from the unimplemented rail network.
+The [State Fair](playable/state-fairgrounds.md),
+[Glacier Line](transit/README.md),
+[Boundary preserve](playable/boundary-waters-safari.md) and
+[free basecamp](playable/boundary-basecamp.md) have independent implementation
+records. Keep optional activities separate from mandatory story progress.
+Safari payment, food purchases, catches and local repairs cannot gate the
+rescue or League release. Do not infer admission or passenger service from the
+presence of a design document.
 
-Keep Grand Marais and North Shore stable. Keep the individually authored Gunflint, League Approach and Headwaters overlays and their checked production renders/controller behavior available. Its hub ports and the connected journey remain integration work. Continue the same individual process across the remaining routes; the full twenty-route objective stays intact. The planned initial regional journey remains Winona, eastern Route 1 and Rochester's first gym. Prove connected production-controller progression before describing the region as playable.
-
-Boundary Waters is now designed as a **Safari-style wildlife preserve**, with a free ranger basecamp and separate optional capture expeditions. The [gameplay contract](zones/boundary-waters-safari.json) fixes candidate habitats, session budgets, capture commands, progression safeguards and required Rust work; the [implementation design](playable/boundary-waters-safari.md) records the runtime handoff. Its four candidate preserve chunks are not yet registered or included in the map inventory.
+Keep accepted terrain and reusable render originals. Follow the repository's
+Rust pack-build path and exact-parent guards, verify the resulting pack and
+use production-controller evidence before calling a new composition playable.

@@ -48,7 +48,7 @@
     "Route42",
     "Route29"
   ],
-  "description": "A hand-authored wooded outlet journey: a railed southern causeway reaches the pine peninsula, short wet meadow leads to an upper bridge, and the west bank reaches a closed-ended fishing landing. A low native south-drop cuts the return across the forest divide. No main-path SURF.",
+  "description": "A hand-authored wooded outlet journey: a railed southern causeway reaches the pine peninsula, short wet meadow leads to an upper bridge, and the west bank reaches a closed-ended fishing landing. A low native south-drop cuts the return across the forest divide. No main-path SURF. The lower peninsula has sheltered pine shoulders and a recessed west cove, contrasting with Pine Country\u2019s enclosed forest bends and the ancient mire farther north.",
   "main_path_metatiles": [
     [
       10,
@@ -233,7 +233,7 @@
   "trainers": [
     {
       "id": "MN_R07_T01",
-      "display_name": "SIVREN",
+      "display_name": "MARA",
       "trainer_class": "FISHER",
       "sprite": "SPRITE_FISHER",
       "tile": [
@@ -244,11 +244,11 @@
       "sight_range": 1,
       "party": [
         {
-          "species": "WOOPER",
+          "species": "GILLPUP",
           "level": 27
         },
         {
-          "species": "POLIWAG",
+          "species": "CHORIP",
           "level": 27
         }
       ],
@@ -279,11 +279,11 @@
       "sight_range": 1,
       "party": [
         {
-          "species": "POLIWAG",
+          "species": "CHORIP",
           "level": 27
         },
         {
-          "species": "SKIPLOOM",
+          "species": "FLOSSAIL",
           "level": 27
         }
       ],
@@ -314,11 +314,11 @@
       "sight_range": 1,
       "party": [
         {
-          "species": "SKIPLOOM",
+          "species": "FLOSSAIL",
           "level": 28
         },
         {
-          "species": "PINECO",
+          "species": "CLINKLAW",
           "level": 28
         }
       ],
@@ -349,11 +349,11 @@
       "sight_range": 1,
       "party": [
         {
-          "species": "PINECO",
+          "species": "CLINKLAW",
           "level": 28
         },
         {
-          "species": "ODDISH",
+          "species": "RICELING",
           "level": 28
         }
       ],
@@ -384,11 +384,11 @@
       "sight_range": 1,
       "party": [
         {
-          "species": "ODDISH",
+          "species": "RICELING",
           "level": 29
         },
         {
-          "species": "MARILL",
+          "species": "RIVVIT",
           "level": 29
         }
       ],
@@ -419,11 +419,11 @@
       "sight_range": 1,
       "party": [
         {
-          "species": "WOOPER",
+          "species": "GILLPUP",
           "level": 29
         },
         {
-          "species": "YANMA",
+          "species": "WINDHOPPER",
           "level": 29
         }
       ],
@@ -454,11 +454,11 @@
       "sight_range": 1,
       "party": [
         {
-          "species": "POLIWAG",
+          "species": "CHORIP",
           "level": 30
         },
         {
-          "species": "WOOPER",
+          "species": "GILLPUP",
           "level": 30
         }
       ],
@@ -489,11 +489,11 @@
       "sight_range": 1,
       "party": [
         {
-          "species": "SKIPLOOM",
+          "species": "FLOSSAIL",
           "level": 30
         },
         {
-          "species": "POLIWAG",
+          "species": "CHORIP",
           "level": 30
         }
       ],
@@ -687,115 +687,115 @@
   "doors": [],
   "encounters": {
     "grass_rates": {
-      "morning": 10,
       "day": 10,
+      "morning": 10,
       "night": 10
     },
     "grass": {
       "morning": [
         {
-          "species": "WOOPER",
-          "level": 27
+          "level": 27,
+          "species": "GILLPUP"
         },
         {
-          "species": "POLIWAG",
-          "level": 28
+          "level": 28,
+          "species": "CHORIP"
         },
         {
-          "species": "SKIPLOOM",
-          "level": 29
+          "level": 29,
+          "species": "FLOSSAIL"
         },
         {
-          "species": "PINECO",
-          "level": 30
+          "level": 30,
+          "species": "CLINKLAW"
         },
         {
-          "species": "ODDISH",
-          "level": 31
+          "level": 31,
+          "species": "RICELING"
         },
         {
-          "species": "MARILL",
-          "level": 31
+          "level": 31,
+          "species": "RIVVIT"
         },
         {
-          "species": "YANMA",
-          "level": 31
+          "level": 31,
+          "species": "WINDHOPPER"
         }
       ],
       "day": [
         {
-          "species": "WOOPER",
-          "level": 27
+          "level": 27,
+          "species": "GILLPUP"
         },
         {
-          "species": "POLIWAG",
-          "level": 28
+          "level": 28,
+          "species": "CHORIP"
         },
         {
-          "species": "SKIPLOOM",
-          "level": 29
+          "level": 29,
+          "species": "FLOSSAIL"
         },
         {
-          "species": "PINECO",
-          "level": 30
+          "level": 30,
+          "species": "CLINKLAW"
         },
         {
-          "species": "ODDISH",
-          "level": 31
+          "level": 31,
+          "species": "RICELING"
         },
         {
-          "species": "MARILL",
-          "level": 31
+          "level": 31,
+          "species": "RIVVIT"
         },
         {
-          "species": "YANMA",
-          "level": 31
+          "level": 31,
+          "species": "WINDHOPPER"
         }
       ],
       "night": [
         {
-          "species": "NOCTOWL",
-          "level": 27
+          "level": 27,
+          "species": "BOOMRUFF"
         },
         {
-          "species": "ARIADOS",
-          "level": 28
+          "level": 28,
+          "species": "BARRICANT"
         },
         {
-          "species": "SKIPLOOM",
-          "level": 29
+          "level": 29,
+          "species": "FLOSSAIL"
         },
         {
-          "species": "PINECO",
-          "level": 30
+          "level": 30,
+          "species": "CLINKLAW"
         },
         {
-          "species": "ODDISH",
-          "level": 31
+          "level": 31,
+          "species": "RICELING"
         },
         {
-          "species": "MARILL",
-          "level": 31
+          "level": 31,
+          "species": "RIVVIT"
         },
         {
-          "species": "YANMA",
-          "level": 31
+          "level": 31,
+          "species": "WINDHOPPER"
         }
       ]
     },
     "water_rate": 4,
     "water": [
       {
-        "species": "POLIWAG",
-        "level": 27
+        "level": 27,
+        "species": "CHORIP"
       },
       {
-        "species": "WOOPER",
-        "level": 28
+        "level": 28,
+        "species": "GILLPUP"
       },
       {
-        "species": "MARILL",
-        "level": 31
+        "level": 31,
+        "species": "RIVVIT"
       }
     ]
   },
@@ -852,11 +852,11 @@
       "id": "PENINSULA_MEADOW",
       "bounds_core": [
         44,
-        44,
+        42,
         56,
-        48
+        50
       ],
-      "minimum_grass_steps": 4
+      "minimum_grass_steps": 7
     }
   ],
   "viewpoints": [
@@ -957,8 +957,8 @@
     "No painted shadows, enlarged trees or perspective props.",
     "Fit source shoreline/cliff quadrants; draw source trees in coherent metatile groups."
   ],
-  "status": "Individually authored native overlay published locally. Exact source comparison, production Cut denial/removal/reward/Continue reset and saved reward persistence pass. Populated route journeys, earned regional progression and visual acceptance remain open.",
-  "anchor_status": "Explicit resolved core tiles. Static source checks do not establish production playability.",
+  "status": "Crystal Route42-reference grass pass accepted in named R07 review pack 73eee2da63ba. Native habitat is 196 walking tiles; outward meadow exposure is eight grass steps including the lower bank corner, with zero in those bands on the sandbank return. Source/pre-post-Cut geometry, exact preservation, native cameras, eight-trainer journey, Cut/Surf, audio and Continue passed. Current-game integration and earned regional progression remain open.",
+  "anchor_status": "All installed actor/resource/sign positions, source footing, Cut gate, both crossings, fishing landing and sandbank ledge remain unchanged. Two installed arrival caps are retained through exact local preimages. The native review lineage retains its existing T01 name MARA; canonical SIVREN remains unchanged. All native mechanics/journey cases passed, including eight victories/six wild battles, pickups, selected PP, money and party/bag/flag persistence.",
   "reserved_flags": {
     "trainer_flags": "All eight trainer identities, parties and EVENT_MN_R07_TRAINER_01..08 retained.",
     "pickup_flags": "All four original item identities, contents and EVENT_MN_R07_ITEM_01..04 retained."
@@ -1039,5 +1039,37 @@
       "requires": "Published map attributes must contain both reciprocal connections; source reservation alone is not proof."
     },
     "native_execution_status": "Production Surf initiation, blocked outward input and reciprocal water-seam crossing remain integration tests."
-  }
+  },
+  "directional_grass_loops": [
+    {
+      "id": "WET_MEADOW_OR_SANDBANK_RETURN",
+      "ledge_id": "SANDBANK_RETURN",
+      "grass_regions_core": [
+        [
+          44,
+          42,
+          56,
+          50
+        ],
+        [
+          42,
+          48,
+          44,
+          50
+        ]
+      ],
+      "northbound_minimum_grass_steps": 8,
+      "southbound_minimum_grass_steps": 0,
+      "dry_trail_core": [
+        [
+          17,
+          53
+        ],
+        [
+          17,
+          56
+        ]
+      ]
+    }
+  ]
 }

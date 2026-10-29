@@ -1,3 +1,6 @@
+mod minnesota_town_map;
+mod renderer_policy;
+pub use renderer_policy::runtime_supports_voxel_view;
 #[cfg(any(test, feature = "intro-certification"))]
 mod intro_certification;
 #[cfg(any(test, feature = "intro-certification"))]
@@ -21,7 +24,9 @@ mod render_walk;
 #[cfg(feature = "location-tester")]
 mod model_preview;
 mod battle_anim_graphics;
+mod field_fly;
 mod field_waterfall;
+mod ely_snow;
 #[cfg(not(target_arch = "wasm32"))]
 mod native_tasks;
 mod overworld_step_events;
@@ -386,9 +391,9 @@ pub struct BevyShellConfig {
     /// Native frame/position measurement without GPU screenshots.
     #[cfg(all(feature = "location-tester", not(target_arch = "wasm32")))]
     pub render_test_measure: Option<(PathBuf, u32)>,
-    /// Fixed 24-hour clock used by deterministic location screenshots.
+    /// Fixed 24-hour clock used by deterministic tests and location screenshots.
     /// Normal play continues to use the live/new-game clock path.
-    #[cfg(feature = "location-tester")]
+    #[cfg(any(test, feature = "location-tester"))]
     pub render_test_hour: Option<u8>,
     /// Disposable location fixture only: seed comma-separated verified flags and
     /// rerun normal entry callbacks. This is visual-state evidence, not progression.
@@ -682,6 +687,21 @@ impl VisibleShellController {
     /// Returns `(menu_index, yes_no_index)`, using zero for inactive surfaces.
     /// This only mirrors cursors; it never advances input or changes gameplay.
     pub fn text_view_selection_indices(&self, snapshot: &RuntimeShellSnapshot) -> (usize, usize) {
+        if let Some(prompt) = &snapshot.safari_prompt {
+            return (0, usize::from(!prompt.selected_yes));
+        }
+        if let Some(presentation) = &snapshot.safari_catch_presentation {
+            match presentation.stage {
+                crate::core::systems::safari_catch_presentation::SafariCatchStage::NicknamePrompt => return (0, usize::from(!presentation.selected_yes)),
+                crate::core::systems::safari_catch_presentation::SafariCatchStage::Naming => return (presentation.name_draft.cursor_row, 0),
+                _ => {}
+            }
+        }
+        if let Some(session) = &snapshot.safari
+            && matches!(session.phase, crate::core::systems::safari::SafariPhase::Encounter(_))
+        {
+            return (usize::from(session.command_cursor), 0);
+        }
         let menu_index = snapshot
             .ui
             .menu
@@ -722,6 +742,10 @@ impl VisibleShellController {
 
     /// Apply a simultaneous joypad chord through the production input owner.
     pub fn press_buttons(&mut self, buttons: impl IntoIterator<Item = GameButton>) -> Result<()> {
+        safari_catch_visible::restore(&mut self.shell)?;
+        if advance_visible_controller_fishing_clock(&mut self.shell) {
+            return Ok(());
+        }
         let mut buttons: Vec<_> = buttons.into_iter().collect();
         // Match the graphical credits owner: only A/B reach its handlers;
         // directions and Start must never fall through to the runtime map.
@@ -733,6 +757,10 @@ impl VisibleShellController {
             // completes. Empty input still advances that production clock.
             buttons.clear();
         }
+        if self.shell.visible_fly_animation.is_some() {
+            // Departure and arrival own input until the shared Fly clock ends.
+            buttons.clear();
+        }
         // A modal B dismissal owns the chord; do not move after closing it.
         if buttons.contains(&GameButton::B) && has_visible_shell_b_action(&mut self.shell) {
             buttons.retain(|button| *button == GameButton::B);
@@ -740,6 +768,7 @@ impl VisibleShellController {
         }
         let outcome = apply_visible_shell_smoke_frame(&mut self.shell, &buttons)?;
         self.complete_overworld_outcome(outcome)?;
+        field_fly::advance(&mut self.shell, 1)?;
         // Native presentation advances credits once per input-clock frame.
         // Renderer-neutral hosts have no Bevy Time system, so advance that
         // same production sequence here, without draining past its A/B waits.
@@ -1130,6 +1159,7 @@ struct BevyRuntimeShell {
     pending_poison_blackout: bool,
     visible_walk_warp_phase: Option<VisibleWalkWarpPhase>,
     field_text_reveal: Option<VisibleFieldTextReveal>,
+    field_text_timing: Option<field_text_program::TextTiming>,
     /// Last fully printed field-text page whose glyph update was accepted by
     /// the Bevy renderer. Autonomous script fences must not replace a page
     /// until this identity has been acknowledged.
@@ -1620,7 +1650,7 @@ fn music_volume_during_transient(volume: f32, transient_id: Option<&str>) -> f32
 #[cfg(all(not(test), not(target_arch = "wasm32")))]
 struct NativeAudioBackend {
     output: NativeAudioOutput,
-    /// Silence developer trials while retaining source playback timing.
+    /// Silence capture tools while retaining source playback timing.
     preview_muted: bool,
     music_sink: Option<rodio::Sink>,
     music_volume: f32,
@@ -1665,10 +1695,9 @@ impl NativeAudioBackend {
                 _stream: stream,
                 handle,
             },
-            // Packaged games play sound by default. Developer clients and
-            // render previews stay silent, including when built in release.
-            preview_muted: !cfg!(feature = "desktop-app")
-                || cfg!(any(feature = "location-tester", feature = "dev-tools"))
+            // Ordinary native gameplay plays sound in development and shipped
+            // builds. Capture tools and an explicit preview mute stay silent.
+            preview_muted: cfg!(any(feature = "location-tester", feature = "dev-tools"))
                 || std::env::var_os("CRYSTAL_PREVIEW_MUTE").is_some(),
             music_sink: None,
             music_volume: 1.0,
@@ -5788,6 +5817,11 @@ pub fn run_bevy_shell(
     #[cfg(feature = "operation-trace")]
     let _trace = crate::operation_trace::start();
     let multiplayer_config = config.multiplayer.clone();
+    let renderer_policy = renderer_policy::RendererPolicy {
+        voxel_allowed: runtime_supports_voxel_view(&runtime),
+    };
+    #[cfg(target_arch = "wasm32")]
+    renderer_policy::publish_browser_policy(renderer_policy);
     #[cfg(all(feature = "performance-audit", not(target_arch = "wasm32")))]
     let audit_request = config.performance_audit.clone();
     #[cfg(all(feature = "performance-audit", not(target_arch = "wasm32")))]
@@ -5795,7 +5829,8 @@ pub fn run_bevy_shell(
     #[cfg(all(feature = "location-tester", not(target_arch = "wasm32"), not(feature = "performance-audit")))]
     let auditing = false;
     #[cfg(feature = "voxel-view")]
-    let voxel_view_enabled = config.voxel_view_enabled.unwrap_or(false);
+    let voxel_view_enabled =
+        renderer_policy.voxel_allowed && config.voxel_view_enabled.unwrap_or(false);
     #[cfg(feature = "voxel-view")]
     let voxel_camera = config.voxel_camera;
     let window_title = config
@@ -5872,7 +5907,7 @@ pub fn run_bevy_shell(
     let render_test_record_on_capture = config.render_test_record_on_capture;
     #[cfg(all(feature = "location-tester", not(target_arch = "wasm32")))]
     let render_test_measure = config.render_test_measure.clone();
-    #[cfg(feature = "location-tester")]
+    #[cfg(any(test, feature = "location-tester"))]
     let native_rtc_source = config
         .render_test_hour
         .map(|hour| {
@@ -5884,7 +5919,7 @@ pub fn run_bevy_shell(
             })
         })
         .unwrap_or_else(NativeRtcSource::system_local);
-    #[cfg(not(feature = "location-tester"))]
+    #[cfg(not(any(test, feature = "location-tester")))]
     let native_rtc_source = NativeRtcSource::system_local();
     let native_rtc_source =
         select_native_rtc_source(runtime.data().server_clock, native_rtc_source)?;
@@ -5983,6 +6018,7 @@ pub fn run_bevy_shell(
     };
 
     let mut app = App::new();
+    app.insert_resource(renderer_policy);
     #[cfg(not(target_arch = "wasm32"))]
     native_navigation::install(&mut app);
     #[cfg(not(target_arch = "wasm32"))]
@@ -6209,6 +6245,7 @@ pub fn run_bevy_shell(
             Update,
             apply_visible_battle_screen_offset.after(render_playfield),
         )
+        .add_systems(Update, ely_snow::animate.after(render_playfield))
         .add_systems(Update, render_screen_fade_overlay.after(render_playfield))
         .add_systems(
             Update,
@@ -6337,7 +6374,7 @@ pub fn run_bevy_shell(
     #[cfg(feature = "voxel-view")]
     app.insert_resource(crystal_voxel_view::VoxelViewSettings {
         enabled: voxel_view_enabled,
-        allow_f3_toggle: !cfg!(target_arch = "wasm32"),
+        allow_f3_toggle: renderer_policy.voxel_allowed && !cfg!(target_arch = "wasm32"),
         camera: voxel_camera
             .map(|(zoom, rotation)| {
                 crystal_voxel_view::VoxelCameraControls::new(
@@ -6353,6 +6390,13 @@ pub fn run_bevy_shell(
         crystal_render_api::BattleFlashMode::Full
     })
     .add_plugins(crystal_voxel_view::VoxelViewPlugin)
+    .add_systems(
+        Update,
+        renderer_policy::enforce
+            .after(crystal_voxel_view::VoxelCameraInput)
+            .before(apply_keyboard_input)
+            .before(crystal_render_api::WorldRenderSet::PresentationExtract),
+    )
     .add_systems(
         Startup,
         configure_voxel_composite_camera.after(setup_shell_view),
@@ -7800,8 +7844,10 @@ fn settle_visible_shell_controller(
     runtime_shell: &mut BevyRuntimeShell,
     auto_input: bool,
 ) -> Result<()> {
+    safari_catch_visible::restore(runtime_shell)?;
     const MAX_IDLE_SETTLE_STEPS: usize = 1024;
     for _ in 0..MAX_IDLE_SETTLE_STEPS {
+        field_text_timing::settle_sound(runtime_shell);
         runtime_shell.pokegear_exit_input_blocked = false;
         if !auto_input {
             // This renderer-neutral controller has no audio device. Preserve
@@ -8097,6 +8143,7 @@ fn settle_visible_shell_controller(
                 // so perform the same cleanup here or the stale printer owns
                 // Start/A/B forever after new-game and scripted dialogue.
                 runtime_shell.field_text_reveal = None;
+                runtime_shell.field_text_timing = None;
                 runtime_shell.rendered_field_text_identity = None;
                 mark_runtime_snapshot_dirty(runtime_shell);
                 continue;
@@ -8549,7 +8596,7 @@ fn initialize_bevy_runtime_shell(
         title_state.lucky_number_day = saved_state.lucky_number_day;
         title_state.lucky_id_number = saved_state.lucky_id_number;
     }
-    #[cfg(feature = "location-tester")]
+    #[cfg(any(test, feature = "location-tester"))]
     if let Some(hour) = config.render_test_hour {
         anyhow::ensure!(hour < 24, "render-test hour {hour} is outside 0..24");
         shell.update_clock_from_datetime(GameDate::new(2000, 1, 1), hour, 0, 0)?;
@@ -8722,6 +8769,7 @@ fn initialize_bevy_runtime_shell(
         pending_poison_blackout: false,
         visible_walk_warp_phase: None,
         field_text_reveal: None,
+        field_text_timing: None,
         rendered_field_text_identity: None,
         dialogue_log_identity: None,
         dialogue_log_events: VecDeque::new(),
@@ -9048,6 +9096,7 @@ fn initialize_bevy_runtime_shell(
     // never carry an intermediate routing snapshot into the first joypad
     // frame.
     mark_runtime_snapshot_dirty(&mut runtime_shell);
+    safari_catch_visible::restore(&mut runtime_shell)?;
     Ok(runtime_shell)
 }
 
@@ -9136,6 +9185,7 @@ mod object_presentation;
 include!("bevy_shell/graphics_assets.rs");
 include!("bevy_shell/field_pack.rs");
 include!("bevy_shell/field_item_controller_clock.rs");
+include!("bevy_shell/fishing_controller_clock.rs");
 include!("bevy_shell/item_target_capabilities.rs");
 
 #[cfg(test)]
@@ -9167,6 +9217,14 @@ mod native_window_lifetime;
 #[path = "bevy_shell/handheld_input.rs"]
 mod handheld_input;
 
+#[path = "bevy_shell/safari_visible.rs"]
+mod safari_visible;
+#[path = "bevy_shell/safari_catch_visible.rs"]
+mod safari_catch_visible;
+
+mod field_text_program;
+mod field_text_timing;
+mod field_dialogue_resume;
 mod natural_movement;
 #[cfg(feature = "voxel-view")]
 mod mouse_movement;
@@ -9174,6 +9232,9 @@ mod mouse_movement;
 
 fn visible_controller_snapshot(runtime_shell: &mut BevyRuntimeShell) -> Result<RuntimeShellSnapshot> {
         let mut snapshot = runtime_shell.shell.presentation_snapshot()?;
+        if let Some(scene) = visible_controller_fishing_scene(runtime_shell) {
+            snapshot.clone_from(scene);
+        }
         if runtime_shell.pending_gift_pokemon_nickname.is_some()
             && (runtime_shell.pending_name_choice.is_some()
                 || runtime_shell.pending_name_input.is_some())

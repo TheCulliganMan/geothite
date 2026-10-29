@@ -85,7 +85,11 @@ impl GameDataSet {
         cry_ids: &BTreeSet<String>,
         compute_checksum: bool,
     ) -> Result<RuntimeMutationOutcome> {
+        self.require_safari_input_ownership(state, &command)?;
         let result = match command {
+            RuntimeMutationCommand::Safari(command) => RuntimeMutationResult::SafariUpdated(
+                self.apply_safari_command(state, session, command, music_ids)?,
+            ),
             RuntimeMutationCommand::ApplyOverworldInput(command) => {
                 let mut next_state = state.clone();
                 let mut next_session = session.clone();

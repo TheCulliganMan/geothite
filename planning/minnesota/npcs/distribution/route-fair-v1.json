@@ -1,0 +1,1710 @@
+{
+  "schema_version": 1,
+  "assignments": [
+    {
+      "trainer_id": "MN_R01_T03",
+      "trainer_class": "MN_NORTHWOODS_RANGER",
+      "map": "MnR01C00R00",
+      "script": "MN_R01_T03",
+      "tile": [
+        33,
+        13
+      ],
+      "previous_sprite": "SPRITE_YOUNGSTER"
+    },
+    {
+      "trainer_id": "MN_R01_T01",
+      "trainer_class": "MN_ORCHARD_KEEPER",
+      "map": "MnR01C00R00",
+      "script": "MN_R01_T01",
+      "tile": [
+        45,
+        27
+      ],
+      "previous_sprite": "SPRITE_YOUNGSTER"
+    },
+    {
+      "trainer_id": "MN_R01_T02",
+      "trainer_class": "MN_CYCLE_TOURIST",
+      "map": "MnR01C00R00",
+      "script": "MN_R01_T02",
+      "tile": [
+        25,
+        29
+      ],
+      "previous_sprite": "SPRITE_LASS"
+    },
+    {
+      "trainer_id": "MN_R02_T02",
+      "trainer_class": "MN_PRAIRIE_BOTANIST",
+      "map": "MnR02C00R00",
+      "script": "MN_R02_T02",
+      "tile": [
+        23,
+        19
+      ],
+      "previous_sprite": "SPRITE_YOUNGSTER"
+    },
+    {
+      "trainer_id": "MN_R02_T01",
+      "trainer_class": "MN_BEEKEEPER",
+      "map": "MnR02C00R00",
+      "script": "MN_R02_T01",
+      "tile": [
+        51,
+        21
+      ],
+      "previous_sprite": "SPRITE_LASS"
+    },
+    {
+      "trainer_id": "MN_R02_T03",
+      "trainer_class": "MN_BIRD_WATCHER",
+      "map": "MnR02C00R00",
+      "script": "MN_R02_T03",
+      "tile": [
+        47,
+        37
+      ],
+      "previous_sprite": "SPRITE_LASS"
+    },
+    {
+      "trainer_id": "MN_R03_T02",
+      "trainer_class": "MN_MUSHROOM_FORAGER",
+      "map": "MnR03C00R00",
+      "script": "MN_R03_T02",
+      "tile": [
+        15,
+        17
+      ],
+      "previous_sprite": "SPRITE_LASS"
+    },
+    {
+      "trainer_id": "MN_R03_T03",
+      "trainer_class": "MN_HARBOR_MECHANIC",
+      "map": "MnR03C00R00",
+      "script": "MN_R03_T03",
+      "tile": [
+        15,
+        29
+      ],
+      "previous_sprite": "SPRITE_LASS"
+    },
+    {
+      "trainer_id": "MN_R03_T04",
+      "trainer_class": "MN_STATE_FAIR_BAKER",
+      "map": "MnR03C00R00",
+      "script": "MN_R03_T04",
+      "tile": [
+        37,
+        37
+      ],
+      "previous_sprite": "SPRITE_YOUNGSTER"
+    },
+    {
+      "trainer_id": "MN_R03_T01",
+      "trainer_class": "MN_FOSSIL_RESEARCHER",
+      "map": "MnR03C00R01",
+      "script": "MN_R03_T01",
+      "tile": [
+        37,
+        1
+      ],
+      "previous_sprite": "SPRITE_FISHER"
+    },
+    {
+      "trainer_id": "MN_R04_T01",
+      "trainer_class": "MN_HOCKEY_CAPTAIN",
+      "map": "MnR04C00R00",
+      "script": "MN_R04_T01",
+      "tile": [
+        19,
+        18
+      ],
+      "previous_sprite": "SPRITE_SUPER_NERD"
+    },
+    {
+      "trainer_id": "MN_R04_T02",
+      "trainer_class": "MN_MUSHROOM_FORAGER",
+      "map": "MnR04C00R00",
+      "script": "MN_R04_T02",
+      "tile": [
+        41,
+        25
+      ],
+      "previous_sprite": "SPRITE_YOUNGSTER"
+    },
+    {
+      "trainer_id": "MN_R05_T04",
+      "trainer_class": "MN_DAIRY_FARMER",
+      "map": "MnR05C00R00",
+      "script": "MN_R05_T04",
+      "tile": [
+        29,
+        9
+      ],
+      "previous_sprite": "SPRITE_FISHER"
+    },
+    {
+      "trainer_id": "MN_R05_T05",
+      "trainer_class": "MN_LUMBERJACK",
+      "map": "MnR05C00R00",
+      "script": "MN_R05_T05",
+      "tile": [
+        33,
+        29
+      ],
+      "previous_sprite": "SPRITE_SUPER_NERD"
+    },
+    {
+      "trainer_id": "MN_R05_T03",
+      "trainer_class": "MN_DAIRY_FARMER",
+      "map": "MnR05C00R00",
+      "script": "MN_R05_T03",
+      "tile": [
+        19,
+        33
+      ],
+      "previous_sprite": "SPRITE_LASS"
+    },
+    {
+      "trainer_id": "MN_R05_T02",
+      "trainer_class": "MN_NORTHWOODS_RANGER",
+      "map": "MnR05C00R01",
+      "script": "MN_R05_T02",
+      "tile": [
+        31,
+        17
+      ],
+      "previous_sprite": "SPRITE_YOUNGSTER"
+    },
+    {
+      "trainer_id": "MN_R05_T01",
+      "trainer_class": "MN_PRAIRIE_BOTANIST",
+      "map": "MnR05C00R01",
+      "script": "MN_R05_T01",
+      "tile": [
+        11,
+        37
+      ],
+      "previous_sprite": "SPRITE_POKEFAN_M"
+    },
+    {
+      "trainer_id": "MN_R06_T05",
+      "trainer_class": "MN_CANOE_GUIDE",
+      "map": "MnR06C00R00",
+      "script": "MN_R06_T05",
+      "tile": [
+        27,
+        23
+      ],
+      "previous_sprite": "SPRITE_POKEFAN_M"
+    },
+    {
+      "trainer_id": "MN_R06_T04",
+      "trainer_class": "MN_LAKESIDE_ANGLER",
+      "map": "MnR06C00R00",
+      "script": "MN_R06_T04",
+      "tile": [
+        51,
+        31
+      ],
+      "previous_sprite": "SPRITE_YOUNGSTER"
+    },
+    {
+      "trainer_id": "MN_R06_T03",
+      "trainer_class": "MN_RICE_HARVESTER",
+      "map": "MnR06C00R00",
+      "script": "MN_R06_T03",
+      "tile": [
+        43,
+        43
+      ],
+      "previous_sprite": "SPRITE_FISHER"
+    },
+    {
+      "trainer_id": "MN_R06_T02",
+      "trainer_class": "MN_LUMBERJACK",
+      "map": "MnR06C00R01",
+      "script": "MN_R06_T02",
+      "tile": [
+        45,
+        7
+      ],
+      "previous_sprite": "SPRITE_YOUNGSTER"
+    },
+    {
+      "trainer_id": "MN_R06_T01",
+      "trainer_class": "MN_CANOE_GUIDE",
+      "map": "MnR06C00R01",
+      "script": "MN_R06_T01",
+      "tile": [
+        21,
+        21
+      ],
+      "previous_sprite": "SPRITE_BUG_CATCHER"
+    },
+    {
+      "trainer_id": "MN_R07_T08",
+      "trainer_class": "MN_LAKESIDE_ANGLER",
+      "map": "MnR07C00R00",
+      "script": "MN_R07_T08",
+      "tile": [
+        13,
+        13
+      ],
+      "previous_sprite": "SPRITE_LASS"
+    },
+    {
+      "trainer_id": "MN_R07_T07",
+      "trainer_class": "MN_RICE_HARVESTER",
+      "map": "MnR07C00R00",
+      "script": "MN_R07_T07",
+      "tile": [
+        41,
+        15
+      ],
+      "previous_sprite": "SPRITE_FISHER"
+    },
+    {
+      "trainer_id": "MN_R07_T06",
+      "trainer_class": "MN_LUMBERJACK",
+      "map": "MnR07C00R00",
+      "script": "MN_R07_T06",
+      "tile": [
+        13,
+        31
+      ],
+      "previous_sprite": "SPRITE_YOUNGSTER"
+    },
+    {
+      "trainer_id": "MN_R07_T05",
+      "trainer_class": "MN_NORTHWOODS_RANGER",
+      "map": "MnR07C00R00",
+      "script": "MN_R07_T05",
+      "tile": [
+        51,
+        31
+      ],
+      "previous_sprite": "SPRITE_LASS"
+    },
+    {
+      "trainer_id": "MN_R07_T04",
+      "trainer_class": "MN_CANOE_GUIDE",
+      "map": "MnR07C00R01",
+      "script": "MN_R07_T04",
+      "tile": [
+        45,
+        3
+      ],
+      "previous_sprite": "SPRITE_BUG_CATCHER"
+    },
+    {
+      "trainer_id": "MN_R07_T02",
+      "trainer_class": "MN_LAKESIDE_ANGLER",
+      "map": "MnR07C00R01",
+      "script": "MN_R07_T02",
+      "tile": [
+        19,
+        15
+      ],
+      "previous_sprite": "SPRITE_YOUNGSTER"
+    },
+    {
+      "trainer_id": "MN_R07_T03",
+      "trainer_class": "MN_RICE_HARVESTER",
+      "map": "MnR07C00R01",
+      "script": "MN_R07_T03",
+      "tile": [
+        55,
+        17
+      ],
+      "previous_sprite": "SPRITE_LASS"
+    },
+    {
+      "trainer_id": "MN_R07_T01",
+      "trainer_class": "MN_LUMBERJACK",
+      "map": "MnR07C00R01",
+      "script": "MN_R07_T01",
+      "tile": [
+        13,
+        35
+      ],
+      "previous_sprite": "SPRITE_FISHER"
+    },
+    {
+      "trainer_id": "MN_R08_T07",
+      "trainer_class": "MN_IRON_RANGE_MINER",
+      "map": "MnR08C00R00",
+      "script": "MN_R08_T07",
+      "tile": [
+        27,
+        17
+      ],
+      "previous_sprite": "SPRITE_YOUNGSTER"
+    },
+    {
+      "trainer_id": "MN_R08_T04",
+      "trainer_class": "MN_TRAIL_PHOTOGRAPHER",
+      "map": "MnR08C00R00",
+      "script": "MN_R08_T04",
+      "tile": [
+        15,
+        19
+      ],
+      "previous_sprite": "SPRITE_BUG_CATCHER"
+    },
+    {
+      "trainer_id": "MN_R08_T05",
+      "trainer_class": "MN_STORM_WATCHER",
+      "map": "MnR08C00R00",
+      "script": "MN_R08_T05",
+      "tile": [
+        37,
+        35
+      ],
+      "previous_sprite": "SPRITE_YOUNGSTER"
+    },
+    {
+      "trainer_id": "MN_R08_T02",
+      "trainer_class": "MN_BEEKEEPER",
+      "map": "MnR08C00R01",
+      "script": "MN_R08_T02",
+      "tile": [
+        27,
+        5
+      ],
+      "previous_sprite": "SPRITE_LASS"
+    },
+    {
+      "trainer_id": "MN_R08_T01",
+      "trainer_class": "MN_IRON_RANGE_MINER",
+      "map": "MnR08C00R01",
+      "script": "MN_R08_T01",
+      "tile": [
+        21,
+        37
+      ],
+      "previous_sprite": "SPRITE_YOUNGSTER"
+    },
+    {
+      "trainer_id": "MN_R08_T06",
+      "trainer_class": "MN_TRAIL_PHOTOGRAPHER",
+      "map": "MnR08C01R00",
+      "script": "MN_R08_T06",
+      "tile": [
+        3,
+        11
+      ],
+      "previous_sprite": "SPRITE_FISHER"
+    },
+    {
+      "trainer_id": "MN_R08_T03",
+      "trainer_class": "MN_STORM_WATCHER",
+      "map": "MnR08C01R01",
+      "script": "MN_R08_T03",
+      "tile": [
+        9,
+        15
+      ],
+      "previous_sprite": "SPRITE_FISHER"
+    },
+    {
+      "trainer_id": "MN_R08_T08",
+      "trainer_class": "MN_BEEKEEPER",
+      "map": "MnR08C01R01",
+      "script": "MN_R08_T08",
+      "tile": [
+        5,
+        37
+      ],
+      "previous_sprite": "SPRITE_SUPER_NERD"
+    },
+    {
+      "trainer_id": "MN_R09_T07",
+      "trainer_class": "MN_VOLUNTEER",
+      "map": "MnR09C00R00",
+      "script": "MN_R09_T07",
+      "tile": [
+        61,
+        23
+      ],
+      "previous_sprite": "SPRITE_POKEFAN_M"
+    },
+    {
+      "trainer_id": "MN_R09_T01",
+      "trainer_class": "MN_SKI_PATROLLER",
+      "map": "MnR09C00R00",
+      "script": "MN_R09_T01",
+      "tile": [
+        7,
+        37
+      ],
+      "previous_sprite": "SPRITE_POKEFAN_M"
+    },
+    {
+      "trainer_id": "MN_R09_T03",
+      "trainer_class": "MN_VOLUNTEER",
+      "map": "MnR09C00R00",
+      "script": "MN_R09_T03",
+      "tile": [
+        41,
+        37
+      ],
+      "previous_sprite": "SPRITE_POKEFAN_M"
+    },
+    {
+      "trainer_id": "MN_R09_T02",
+      "trainer_class": "MN_SKI_PATROLLER",
+      "map": "MnR09C00R01",
+      "script": "MN_R09_T02",
+      "tile": [
+        39,
+        7
+      ],
+      "previous_sprite": "SPRITE_FISHER"
+    },
+    {
+      "trainer_id": "MN_R09_T08",
+      "trainer_class": "MN_VOLUNTEER",
+      "map": "MnR09C01R00",
+      "script": "MN_R09_T08",
+      "tile": [
+        49,
+        19
+      ],
+      "previous_sprite": "SPRITE_POKEFAN_F"
+    },
+    {
+      "trainer_id": "MN_R09_T04",
+      "trainer_class": "MN_SKI_PATROLLER",
+      "map": "MnR09C01R00",
+      "script": "MN_R09_T04",
+      "tile": [
+        17,
+        37
+      ],
+      "previous_sprite": "SPRITE_POKEFAN_M"
+    },
+    {
+      "trainer_id": "MN_R09_T06",
+      "trainer_class": "MN_IRON_RANGE_MINER",
+      "map": "MnR09C01R00",
+      "script": "MN_R09_T06",
+      "tile": [
+        34,
+        37
+      ],
+      "previous_sprite": "SPRITE_POKEFAN_M"
+    },
+    {
+      "trainer_id": "MN_R09_T05",
+      "trainer_class": "MN_STORM_WATCHER",
+      "map": "MnR09C01R00",
+      "script": "MN_R09_T05",
+      "tile": [
+        3,
+        45
+      ],
+      "previous_sprite": "SPRITE_POKEFAN_M"
+    },
+    {
+      "trainer_id": "MN_R10_T01",
+      "trainer_class": "MN_NIGHT_SKY_OBSERVER",
+      "map": "MnR10C00R00",
+      "script": "MN_R10_T01",
+      "tile": [
+        9,
+        11
+      ],
+      "previous_sprite": "SPRITE_POKEFAN_M"
+    },
+    {
+      "trainer_id": "MN_R10_T05",
+      "trainer_class": "MN_NIGHT_SKY_OBSERVER",
+      "map": "MnR10C00R00",
+      "script": "MN_R10_T05",
+      "tile": [
+        37,
+        13
+      ],
+      "previous_sprite": "SPRITE_POKEFAN_M"
+    },
+    {
+      "trainer_id": "MN_R10_T02",
+      "trainer_class": "MN_NIGHT_SKY_OBSERVER",
+      "map": "MnR10C00R00",
+      "script": "MN_R10_T02",
+      "tile": [
+        15,
+        25
+      ],
+      "previous_sprite": "SPRITE_FISHER"
+    },
+    {
+      "trainer_id": "MN_R10_T06",
+      "trainer_class": "MN_TRAIL_PHOTOGRAPHER",
+      "map": "MnR10C00R00",
+      "script": "MN_R10_T06",
+      "tile": [
+        39,
+        29
+      ],
+      "previous_sprite": "SPRITE_LASS"
+    },
+    {
+      "trainer_id": "MN_R10_T03",
+      "trainer_class": "MN_NIGHT_SKY_OBSERVER",
+      "map": "MnR10C01R00",
+      "script": "MN_R10_T03",
+      "tile": [
+        11,
+        19
+      ],
+      "previous_sprite": "SPRITE_YOUNGSTER"
+    },
+    {
+      "trainer_id": "MN_R10_T04",
+      "trainer_class": "MN_SKI_PATROLLER",
+      "map": "MnR10C01R00",
+      "script": "MN_R10_T04",
+      "tile": [
+        21,
+        25
+      ],
+      "previous_sprite": "SPRITE_SAILOR"
+    },
+    {
+      "trainer_id": "MN_R11_T10",
+      "trainer_class": "MN_WINTER_COURIER",
+      "map": "MnR11C00R00",
+      "script": "MN_R11_T10",
+      "tile": [
+        43,
+        13
+      ],
+      "previous_sprite": "SPRITE_YOUNGSTER"
+    },
+    {
+      "trainer_id": "MN_R11_T09",
+      "trainer_class": "MN_WINTER_COURIER",
+      "map": "MnR11C00R00",
+      "script": "MN_R11_T09",
+      "tile": [
+        45,
+        35
+      ],
+      "previous_sprite": "SPRITE_FISHER"
+    },
+    {
+      "trainer_id": "MN_R11_T07",
+      "trainer_class": "MN_WINTER_COURIER",
+      "map": "MnR11C00R01",
+      "script": "MN_R11_T07",
+      "tile": [
+        33,
+        3
+      ],
+      "previous_sprite": "SPRITE_POKEFAN_M"
+    },
+    {
+      "trainer_id": "MN_R11_T08",
+      "trainer_class": "MN_STORM_WATCHER",
+      "map": "MnR11C00R01",
+      "script": "MN_R11_T08",
+      "tile": [
+        45,
+        7
+      ],
+      "previous_sprite": "SPRITE_COOLTRAINER_F"
+    },
+    {
+      "trainer_id": "MN_R11_T05",
+      "trainer_class": "MN_CANOE_GUIDE",
+      "map": "MnR11C00R01",
+      "script": "MN_R11_T05",
+      "tile": [
+        43,
+        17
+      ],
+      "previous_sprite": "SPRITE_FISHER"
+    },
+    {
+      "trainer_id": "MN_R11_T06",
+      "trainer_class": "MN_LAKESIDE_ANGLER",
+      "map": "MnR11C00R01",
+      "script": "MN_R11_T06",
+      "tile": [
+        35,
+        35
+      ],
+      "previous_sprite": "SPRITE_YOUNGSTER"
+    },
+    {
+      "trainer_id": "MN_R11_T04",
+      "trainer_class": "MN_WINTER_COURIER",
+      "map": "MnR11C00R01",
+      "script": "MN_R11_T04",
+      "tile": [
+        33,
+        45
+      ],
+      "previous_sprite": "SPRITE_POKEFAN_M"
+    },
+    {
+      "trainer_id": "MN_R11_T03",
+      "trainer_class": "MN_STORM_WATCHER",
+      "map": "MnR11C00R02",
+      "script": "MN_R11_T03",
+      "tile": [
+        49,
+        7
+      ],
+      "previous_sprite": "SPRITE_COOLTRAINER_F"
+    },
+    {
+      "trainer_id": "MN_R11_T01",
+      "trainer_class": "MN_SKI_PATROLLER",
+      "map": "MnR11C00R02",
+      "script": "MN_R11_T01",
+      "tile": [
+        35,
+        23
+      ],
+      "previous_sprite": "SPRITE_POKEFAN_M"
+    },
+    {
+      "trainer_id": "MN_R11_T02",
+      "trainer_class": "MN_CANOE_GUIDE",
+      "map": "MnR11C00R02",
+      "script": "MN_R11_T02",
+      "tile": [
+        41,
+        25
+      ],
+      "previous_sprite": "SPRITE_COOLTRAINER_F"
+    },
+    {
+      "trainer_id": "MN_R12_T04",
+      "trainer_class": "MN_DAIRY_FARMER",
+      "map": "MnR12C00R00",
+      "script": "MN_R12_T04",
+      "tile": [
+        37,
+        19
+      ],
+      "previous_sprite": "SPRITE_POKEFAN_M"
+    },
+    {
+      "trainer_id": "MN_R12_T10",
+      "trainer_class": "MN_DAIRY_FARMER",
+      "map": "MnR12C00R00",
+      "script": "MN_R12_T10",
+      "tile": [
+        17,
+        21
+      ],
+      "previous_sprite": "SPRITE_COOLTRAINER_F"
+    },
+    {
+      "trainer_id": "MN_R12_T03",
+      "trainer_class": "MN_NORTHWOODS_RANGER",
+      "map": "MnR12C00R00",
+      "script": "MN_R12_T03",
+      "tile": [
+        51,
+        21
+      ],
+      "previous_sprite": "SPRITE_COOLTRAINER_F"
+    },
+    {
+      "trainer_id": "MN_R12_T05",
+      "trainer_class": "MN_NIGHT_SKY_OBSERVER",
+      "map": "MnR12C00R00",
+      "script": "MN_R12_T05",
+      "tile": [
+        19,
+        25
+      ],
+      "previous_sprite": "SPRITE_LASS"
+    },
+    {
+      "trainer_id": "MN_R12_T02",
+      "trainer_class": "MN_LUMBERJACK",
+      "map": "MnR12C00R00",
+      "script": "MN_R12_T02",
+      "tile": [
+        51,
+        29
+      ],
+      "previous_sprite": "SPRITE_YOUNGSTER"
+    },
+    {
+      "trainer_id": "MN_R12_T09",
+      "trainer_class": "MN_DAIRY_FARMER",
+      "map": "MnR12C00R00",
+      "script": "MN_R12_T09",
+      "tile": [
+        17,
+        43
+      ],
+      "previous_sprite": "SPRITE_YOUNGSTER"
+    },
+    {
+      "trainer_id": "MN_R12_T06",
+      "trainer_class": "MN_NORTHWOODS_RANGER",
+      "map": "MnR12C00R00",
+      "script": "MN_R12_T06",
+      "tile": [
+        39,
+        43
+      ],
+      "previous_sprite": "SPRITE_COOLTRAINER_F"
+    },
+    {
+      "trainer_id": "MN_R12_T08",
+      "trainer_class": "MN_NIGHT_SKY_OBSERVER",
+      "map": "MnR12C00R00",
+      "script": "MN_R12_T08",
+      "tile": [
+        25,
+        47
+      ],
+      "previous_sprite": "SPRITE_FISHER"
+    },
+    {
+      "trainer_id": "MN_R12_T01",
+      "trainer_class": "MN_LUMBERJACK",
+      "map": "MnR12C00R01",
+      "script": "MN_R12_T01",
+      "tile": [
+        55,
+        1
+      ],
+      "previous_sprite": "SPRITE_POKEFAN_M"
+    },
+    {
+      "trainer_id": "MN_R12_T07",
+      "trainer_class": "MN_DAIRY_FARMER",
+      "map": "MnR12C00R01",
+      "script": "MN_R12_T07",
+      "tile": [
+        25,
+        7
+      ],
+      "previous_sprite": "SPRITE_YOUNGSTER"
+    },
+    {
+      "trainer_id": "MN_R13_T03",
+      "trainer_class": "MN_LAKESIDE_ANGLER",
+      "map": "MnR13C00R00",
+      "script": "MN_R13_T03",
+      "tile": [
+        49,
+        17
+      ],
+      "previous_sprite": "SPRITE_COOLTRAINER_F"
+    },
+    {
+      "trainer_id": "MN_R13_T01",
+      "trainer_class": "MN_WINTER_COURIER",
+      "map": "MnR13C00R00",
+      "script": "MN_R13_T01",
+      "tile": [
+        23,
+        25
+      ],
+      "previous_sprite": "SPRITE_COOLTRAINER_F"
+    },
+    {
+      "trainer_id": "MN_R13_T02",
+      "trainer_class": "MN_NORTHWOODS_RANGER",
+      "map": "MnR13C00R00",
+      "script": "MN_R13_T02",
+      "tile": [
+        17,
+        39
+      ],
+      "previous_sprite": "SPRITE_POKEFAN_M"
+    },
+    {
+      "trainer_id": "MN_R13_T05",
+      "trainer_class": "MN_CANOE_GUIDE",
+      "map": "MnR13C00R01",
+      "script": "MN_R13_T05",
+      "tile": [
+        33,
+        15
+      ],
+      "previous_sprite": "SPRITE_COOLTRAINER_F"
+    },
+    {
+      "trainer_id": "MN_R13_T04",
+      "trainer_class": "MN_LAKESIDE_ANGLER",
+      "map": "MnR13C00R01",
+      "script": "MN_R13_T04",
+      "tile": [
+        47,
+        37
+      ],
+      "previous_sprite": "SPRITE_BLACK_BELT"
+    },
+    {
+      "trainer_id": "MN_R13_T07",
+      "trainer_class": "MN_WINTER_COURIER",
+      "map": "MnR13C00R02",
+      "script": "MN_R13_T07",
+      "tile": [
+        17,
+        11
+      ],
+      "previous_sprite": "SPRITE_COOLTRAINER_F"
+    },
+    {
+      "trainer_id": "MN_R13_T10",
+      "trainer_class": "MN_NIGHT_SKY_OBSERVER",
+      "map": "MnR13C00R02",
+      "script": "MN_R13_T10",
+      "tile": [
+        37,
+        21
+      ],
+      "previous_sprite": "SPRITE_COOLTRAINER_M"
+    },
+    {
+      "trainer_id": "MN_R14_T03",
+      "trainer_class": "MN_PRAIRIE_BOTANIST",
+      "map": "MnR14C00R00",
+      "script": "MN_R14_T03",
+      "tile": [
+        19,
+        17
+      ],
+      "previous_sprite": "SPRITE_BUG_CATCHER"
+    },
+    {
+      "trainer_id": "MN_R14_T04",
+      "trainer_class": "MN_BEEKEEPER",
+      "map": "MnR14C00R01",
+      "script": "MN_R14_T04",
+      "tile": [
+        29,
+        5
+      ],
+      "previous_sprite": "SPRITE_COOLTRAINER_F"
+    },
+    {
+      "trainer_id": "MN_R14_T02",
+      "trainer_class": "MN_PRAIRIE_BOTANIST",
+      "map": "MnR14C01R00",
+      "script": "MN_R14_T02",
+      "tile": [
+        9,
+        13
+      ],
+      "previous_sprite": "SPRITE_LASS"
+    },
+    {
+      "trainer_id": "MN_R14_T01",
+      "trainer_class": "MN_BEEKEEPER",
+      "map": "MnR14C01R00",
+      "script": "MN_R14_T01",
+      "tile": [
+        17,
+        31
+      ],
+      "previous_sprite": "SPRITE_YOUNGSTER"
+    },
+    {
+      "trainer_id": "MN_R14_T06",
+      "trainer_class": "MN_PRAIRIE_BOTANIST",
+      "map": "MnR14C01R00",
+      "script": "MN_R14_T06",
+      "tile": [
+        7,
+        45
+      ],
+      "previous_sprite": "SPRITE_BUG_CATCHER"
+    },
+    {
+      "trainer_id": "MN_R14_T05",
+      "trainer_class": "MN_BEEKEEPER",
+      "map": "MnR14C01R01",
+      "script": "MN_R14_T05",
+      "tile": [
+        17,
+        7
+      ],
+      "previous_sprite": "SPRITE_FISHER"
+    },
+    {
+      "trainer_id": "MN_R15_T03",
+      "trainer_class": "MN_RICE_HARVESTER",
+      "map": "MnR15C00R00",
+      "script": "MN_R15_T03",
+      "tile": [
+        55,
+        17
+      ],
+      "previous_sprite": "SPRITE_YOUNGSTER"
+    },
+    {
+      "trainer_id": "MN_R15_T02",
+      "trainer_class": "MN_RICE_HARVESTER",
+      "map": "MnR15C00R00",
+      "script": "MN_R15_T02",
+      "tile": [
+        17,
+        24
+      ],
+      "previous_sprite": "SPRITE_FISHER"
+    },
+    {
+      "trainer_id": "MN_R16_T02",
+      "trainer_class": "MN_ORCHARD_KEEPER",
+      "map": "MnR16C00R00",
+      "script": "MN_R16_T02",
+      "tile": [
+        39,
+        9
+      ],
+      "previous_sprite": "SPRITE_YOUNGSTER"
+    },
+    {
+      "trainer_id": "MN_R16_T03",
+      "trainer_class": "MN_BIRD_WATCHER",
+      "map": "MnR16C00R00",
+      "script": "MN_R16_T03",
+      "tile": [
+        50,
+        13
+      ],
+      "previous_sprite": "SPRITE_POKEFAN_M"
+    },
+    {
+      "trainer_id": "MN_R16_T01",
+      "trainer_class": "MN_ORCHARD_KEEPER",
+      "map": "MnR16C00R00",
+      "script": "MN_R16_T01",
+      "tile": [
+        13,
+        16
+      ],
+      "previous_sprite": "SPRITE_FISHER"
+    },
+    {
+      "trainer_id": "MN_R16_T07",
+      "trainer_class": "MN_BIRD_WATCHER",
+      "map": "MnR16C00R00",
+      "script": "MN_R16_T07",
+      "tile": [
+        29,
+        25
+      ],
+      "previous_sprite": "SPRITE_YOUNGSTER"
+    },
+    {
+      "trainer_id": "MN_R16_T04",
+      "trainer_class": "MN_MUSHROOM_FORAGER",
+      "map": "MnR16C00R00",
+      "script": "MN_R16_T04",
+      "tile": [
+        38,
+        39
+      ],
+      "previous_sprite": "SPRITE_LASS"
+    },
+    {
+      "trainer_id": "MN_R16_T05",
+      "trainer_class": "MN_ORCHARD_KEEPER",
+      "map": "MnR16C00R00",
+      "script": "MN_R16_T05",
+      "tile": [
+        55,
+        39
+      ],
+      "previous_sprite": "SPRITE_FISHER"
+    },
+    {
+      "trainer_id": "MN_R16_T06",
+      "trainer_class": "MN_BIRD_WATCHER",
+      "map": "MnR16C01R00",
+      "script": "MN_R16_T06",
+      "tile": [
+        11,
+        11
+      ],
+      "previous_sprite": "SPRITE_YOUNGSTER"
+    },
+    {
+      "trainer_id": "MN_R16_T09",
+      "trainer_class": "MN_MUSHROOM_FORAGER",
+      "map": "MnR16C01R00",
+      "script": "MN_R16_T09",
+      "tile": [
+        27,
+        13
+      ],
+      "previous_sprite": "SPRITE_YOUNGSTER"
+    },
+    {
+      "trainer_id": "MN_R16_T08",
+      "trainer_class": "MN_ORCHARD_KEEPER",
+      "map": "MnR16C01R00",
+      "script": "MN_R16_T08",
+      "tile": [
+        11,
+        39
+      ],
+      "previous_sprite": "SPRITE_POKEFAN_F"
+    },
+    {
+      "trainer_id": "MN_R16_T10",
+      "trainer_class": "MN_BIRD_WATCHER",
+      "map": "MnR16C01R00",
+      "script": "MN_R16_T10",
+      "tile": [
+        15,
+        41
+      ],
+      "previous_sprite": "SPRITE_LASS"
+    },
+    {
+      "trainer_id": "MN_R17_T06",
+      "trainer_class": "MN_CYCLE_TOURIST",
+      "map": "MnR17C00R00",
+      "script": "MN_R17_T06",
+      "tile": [
+        39,
+        11
+      ],
+      "previous_sprite": "SPRITE_COOLTRAINER_M"
+    },
+    {
+      "trainer_id": "MN_R17_T05",
+      "trainer_class": "MN_CYCLE_TOURIST",
+      "map": "MnR17C00R00",
+      "script": "MN_R17_T05",
+      "tile": [
+        17,
+        25
+      ],
+      "previous_sprite": "SPRITE_POKEFAN_M"
+    },
+    {
+      "trainer_id": "MN_R17_T04",
+      "trainer_class": "MN_TRAIL_PHOTOGRAPHER",
+      "map": "MnR17C00R00",
+      "script": "MN_R17_T04",
+      "tile": [
+        11,
+        45
+      ],
+      "previous_sprite": "SPRITE_COOLTRAINER_F"
+    },
+    {
+      "trainer_id": "MN_R17_T03",
+      "trainer_class": "MN_CYCLE_TOURIST",
+      "map": "MnR17C00R01",
+      "script": "MN_R17_T03",
+      "tile": [
+        29,
+        11
+      ],
+      "previous_sprite": "SPRITE_FISHER"
+    },
+    {
+      "trainer_id": "MN_R17_T02",
+      "trainer_class": "MN_TRAIL_PHOTOGRAPHER",
+      "map": "MnR17C00R01",
+      "script": "MN_R17_T02",
+      "tile": [
+        17,
+        45
+      ],
+      "previous_sprite": "SPRITE_BUG_CATCHER"
+    },
+    {
+      "trainer_id": "MN_R17_T01",
+      "trainer_class": "MN_CYCLE_TOURIST",
+      "map": "MnR17C00R02",
+      "script": "MN_R17_T01",
+      "tile": [
+        35,
+        7
+      ],
+      "previous_sprite": "SPRITE_FISHER"
+    },
+    {
+      "trainer_id": "MN_R18_T02",
+      "trainer_class": "MN_RICE_HARVESTER",
+      "map": "MnR18C00R00",
+      "script": "MN_R18_T02",
+      "tile": [
+        19,
+        11
+      ],
+      "previous_sprite": "SPRITE_LASS"
+    },
+    {
+      "trainer_id": "MN_R18_T03",
+      "trainer_class": "MN_TRAIL_PHOTOGRAPHER",
+      "map": "MnR18C00R00",
+      "script": "MN_R18_T03",
+      "tile": [
+        53,
+        11
+      ],
+      "previous_sprite": "SPRITE_LASS"
+    },
+    {
+      "trainer_id": "MN_R18_T05",
+      "trainer_class": "MN_STORM_WATCHER",
+      "map": "MnR18C00R00",
+      "script": "MN_R18_T05",
+      "tile": [
+        61,
+        13
+      ],
+      "previous_sprite": "SPRITE_SAILOR"
+    },
+    {
+      "trainer_id": "MN_R18_T01",
+      "trainer_class": "MN_RICE_HARVESTER",
+      "map": "MnR18C00R00",
+      "script": "MN_R18_T01",
+      "tile": [
+        17,
+        23
+      ],
+      "previous_sprite": "SPRITE_FISHER"
+    },
+    {
+      "trainer_id": "MN_R18_T04",
+      "trainer_class": "MN_TRAIL_PHOTOGRAPHER",
+      "map": "MnR18C00R00",
+      "script": "MN_R18_T04",
+      "tile": [
+        11,
+        29
+      ],
+      "previous_sprite": "SPRITE_BUG_CATCHER"
+    },
+    {
+      "trainer_id": "MN_R18_T06",
+      "trainer_class": "MN_STORM_WATCHER",
+      "map": "MnR18C00R00",
+      "script": "MN_R18_T06",
+      "tile": [
+        17,
+        35
+      ],
+      "previous_sprite": "SPRITE_FISHER"
+    },
+    {
+      "trainer_id": "MN_R19_T02",
+      "trainer_class": "MN_LAKESIDE_ANGLER",
+      "map": "MnR19C00R00",
+      "script": "MN_R19_T02",
+      "tile": [
+        57,
+        13
+      ],
+      "previous_sprite": "SPRITE_YOUNGSTER"
+    },
+    {
+      "trainer_id": "MN_R19_T01",
+      "trainer_class": "MN_LUMBERJACK",
+      "map": "MnR19C00R00",
+      "script": "MN_R19_T01",
+      "tile": [
+        43,
+        21
+      ],
+      "previous_sprite": "SPRITE_LASS"
+    },
+    {
+      "trainer_id": "MN_R19_T03",
+      "trainer_class": "MN_DAIRY_FARMER",
+      "map": "MnR19C00R00",
+      "script": "MN_R19_T03",
+      "tile": [
+        33,
+        29
+      ],
+      "previous_sprite": "SPRITE_POKEFAN_F"
+    },
+    {
+      "trainer_id": "MN_R19_T04",
+      "trainer_class": "MN_NORTHWOODS_RANGER",
+      "map": "MnR19C00R00",
+      "script": "MN_R19_T04",
+      "tile": [
+        19,
+        31
+      ],
+      "previous_sprite": "SPRITE_POKEFAN_M"
+    },
+    {
+      "trainer_id": "MN_R19_T06",
+      "trainer_class": "MN_LAKESIDE_ANGLER",
+      "map": "MnR19C00R00",
+      "script": "MN_R19_T06",
+      "tile": [
+        39,
+        37
+      ],
+      "previous_sprite": "SPRITE_FISHER"
+    },
+    {
+      "trainer_id": "MN_R19_T05",
+      "trainer_class": "MN_RICE_HARVESTER",
+      "map": "MnR19C00R00",
+      "script": "MN_R19_T05",
+      "tile": [
+        11,
+        41
+      ],
+      "previous_sprite": "SPRITE_LASS"
+    },
+    {
+      "trainer_id": "MN_R20_T02",
+      "trainer_class": "MN_SKI_PATROLLER",
+      "map": "MnR20C00R00",
+      "script": "MN_R20_T02",
+      "tile": [
+        55,
+        31
+      ],
+      "previous_sprite": "SPRITE_YOUNGSTER"
+    },
+    {
+      "trainer_id": "MN_R20_T01",
+      "trainer_class": "MN_WINTER_COURIER",
+      "map": "MnR20C00R00",
+      "script": "MN_R20_T01",
+      "tile": [
+        11,
+        43
+      ],
+      "previous_sprite": "SPRITE_OFFICER"
+    },
+    {
+      "trainer_id": "MN_R20_T05",
+      "trainer_class": "MN_SKI_PATROLLER",
+      "map": "MnR20C00R01",
+      "script": "MN_R20_T05",
+      "tile": [
+        37,
+        1
+      ],
+      "previous_sprite": "SPRITE_FISHER"
+    },
+    {
+      "trainer_id": "MN_R20_T04",
+      "trainer_class": "MN_WINTER_COURIER",
+      "map": "MnR20C00R01",
+      "script": "MN_R20_T04",
+      "tile": [
+        21,
+        7
+      ],
+      "previous_sprite": "SPRITE_LASS"
+    },
+    {
+      "trainer_id": "MN_R20_T08",
+      "trainer_class": "MN_STORM_WATCHER",
+      "map": "MnR20C01R00",
+      "script": "MN_R20_T08",
+      "tile": [
+        9,
+        23
+      ],
+      "previous_sprite": "SPRITE_POKEFAN_M"
+    },
+    {
+      "trainer_id": "MN_R20_T09",
+      "trainer_class": "MN_NIGHT_SKY_OBSERVER",
+      "map": "MnR20C01R00",
+      "script": "MN_R20_T09",
+      "tile": [
+        43,
+        27
+      ],
+      "previous_sprite": "SPRITE_YOUNGSTER"
+    },
+    {
+      "trainer_id": "MN_R20_T03",
+      "trainer_class": "MN_SKI_PATROLLER",
+      "map": "MnR20C01R00",
+      "script": "MN_R20_T03",
+      "tile": [
+        1,
+        37
+      ],
+      "previous_sprite": "SPRITE_POKEFAN_M"
+    },
+    {
+      "trainer_id": "MN_R20_T10",
+      "trainer_class": "MN_NORTHWOODS_RANGER",
+      "map": "MnR20C01R00",
+      "script": "MN_R20_T10",
+      "tile": [
+        57,
+        43
+      ],
+      "previous_sprite": "SPRITE_COOLTRAINER_M"
+    },
+    {
+      "trainer_id": "MN_R20_T07",
+      "trainer_class": "MN_WINTER_COURIER",
+      "map": "MnR20C01R01",
+      "script": "MN_R20_T07",
+      "tile": [
+        21,
+        1
+      ],
+      "previous_sprite": "SPRITE_COOLTRAINER_F"
+    },
+    {
+      "trainer_id": "MN_R20_T06",
+      "trainer_class": "MN_STORM_WATCHER",
+      "map": "MnR20C01R01",
+      "script": "MN_R20_T06",
+      "tile": [
+        9,
+        5
+      ],
+      "previous_sprite": "SPRITE_FISHER"
+    },
+    {
+      "trainer_id": "MN_FAIR_EXHIBITOR_01_TRAINER",
+      "trainer_class": "MN_BEEKEEPER",
+      "map": "MnStateFairgrounds",
+      "script": "MN_FAIR_EXHIBITOR_01_TRAINER",
+      "tile": [
+        18,
+        8
+      ],
+      "previous_sprite": "SPRITE_YOUNGSTER"
+    },
+    {
+      "trainer_id": "MN_FAIR_EXHIBITOR_02_TRAINER",
+      "trainer_class": "MN_FOSSIL_RESEARCHER",
+      "map": "MnStateFairgrounds",
+      "script": "MN_FAIR_EXHIBITOR_02_TRAINER",
+      "tile": [
+        21,
+        8
+      ],
+      "previous_sprite": "SPRITE_LASS"
+    },
+    {
+      "trainer_id": "MN_FAIR_RICE_TRAINER",
+      "trainer_class": "MN_RICE_HARVESTER",
+      "map": "MnStateFairgrounds",
+      "script": "MN_FAIR_RICE_TRAINER",
+      "tile": [
+        26,
+        13
+      ],
+      "previous_sprite": "SPRITE_FISHER"
+    },
+    {
+      "trainer_id": "MN_FAIR_COOKIE_TRAINER",
+      "trainer_class": "MN_STATE_FAIR_BAKER",
+      "map": "MnStateFairgrounds",
+      "script": "MN_FAIR_COOKIE_TRAINER",
+      "tile": [
+        55,
+        13
+      ],
+      "previous_sprite": "SPRITE_YOUNGSTER"
+    },
+    {
+      "trainer_id": "MN_FAIR_PRETZEL_TRAINER",
+      "trainer_class": "MN_STATE_FAIR_BAKER",
+      "map": "MnStateFairgrounds",
+      "script": "MN_FAIR_PRETZEL_TRAINER",
+      "tile": [
+        63,
+        13
+      ],
+      "previous_sprite": "SPRITE_LASS"
+    },
+    {
+      "trainer_id": "MN_FAIR_CURDS_TRAINER",
+      "trainer_class": "MN_DAIRY_FARMER",
+      "map": "MnStateFairgrounds",
+      "script": "MN_FAIR_CURDS_TRAINER",
+      "tile": [
+        67,
+        15
+      ],
+      "previous_sprite": "SPRITE_POKEFAN_F"
+    },
+    {
+      "trainer_id": "MN_FAIR_STAGE_TRAINER",
+      "trainer_class": "MN_NORTHWOODS_RANGER",
+      "map": "MnStateFairgrounds",
+      "script": "MN_FAIR_STAGE_TRAINER",
+      "tile": [
+        15,
+        21
+      ],
+      "previous_sprite": "SPRITE_LASS"
+    },
+    {
+      "trainer_id": "MN_FAIR_MILK_TRAINER",
+      "trainer_class": "MN_DAIRY_FARMER",
+      "map": "MnStateFairgrounds",
+      "script": "MN_FAIR_MILK_TRAINER",
+      "tile": [
+        65,
+        25
+      ],
+      "previous_sprite": "SPRITE_YOUNGSTER"
+    },
+    {
+      "trainer_id": "MN_FAIR_BAKER_TRAINER",
+      "trainer_class": "MN_STATE_FAIR_BAKER",
+      "map": "MnStateFairgrounds",
+      "script": "MN_FAIR_BAKER_TRAINER",
+      "tile": [
+        83,
+        25
+      ],
+      "previous_sprite": "SPRITE_LASS"
+    },
+    {
+      "trainer_id": "MN_FAIR_EXHIBITOR_03_TRAINER",
+      "trainer_class": "MN_TRAIL_PHOTOGRAPHER",
+      "map": "MnStateFairgrounds",
+      "script": "MN_FAIR_EXHIBITOR_03_TRAINER",
+      "tile": [
+        27,
+        26
+      ],
+      "previous_sprite": "SPRITE_POKEFAN_F"
+    },
+    {
+      "trainer_id": "MN_FAIR_EXHIBITOR_04_TRAINER",
+      "trainer_class": "MN_MUSHROOM_FORAGER",
+      "map": "MnStateFairgrounds",
+      "script": "MN_FAIR_EXHIBITOR_04_TRAINER",
+      "tile": [
+        30,
+        26
+      ],
+      "previous_sprite": "SPRITE_YOUNGSTER"
+    },
+    {
+      "trainer_id": "MN_FAIR_EXHIBITOR_05_TRAINER",
+      "trainer_class": "MN_LUMBERJACK",
+      "map": "MnStateFairgrounds",
+      "script": "MN_FAIR_EXHIBITOR_05_TRAINER",
+      "tile": [
+        36,
+        26
+      ],
+      "previous_sprite": "SPRITE_LASS"
+    },
+    {
+      "trainer_id": "MN_FAIR_MIDWAY_A_TRAINER",
+      "trainer_class": "MN_LAKESIDE_ANGLER",
+      "map": "MnStateFairgrounds",
+      "script": "MN_FAIR_MIDWAY_A_TRAINER",
+      "tile": [
+        10,
+        27
+      ],
+      "previous_sprite": "SPRITE_YOUNGSTER"
+    },
+    {
+      "trainer_id": "MN_FAIR_MIDWAY_B_TRAINER",
+      "trainer_class": "MN_NIGHT_SKY_OBSERVER",
+      "map": "MnStateFairgrounds",
+      "script": "MN_FAIR_MIDWAY_B_TRAINER",
+      "tile": [
+        18,
+        27
+      ],
+      "previous_sprite": "SPRITE_LASS"
+    },
+    {
+      "trainer_id": "MN_FAIR_MIDWAY_C_TRAINER",
+      "trainer_class": "MN_CANOE_GUIDE",
+      "map": "MnStateFairgrounds",
+      "script": "MN_FAIR_MIDWAY_C_TRAINER",
+      "tile": [
+        26,
+        27
+      ],
+      "previous_sprite": "SPRITE_POKEFAN_M"
+    },
+    {
+      "trainer_id": "MN_FAIR_MIDWAY_D_TRAINER",
+      "trainer_class": "MN_VOLUNTEER",
+      "map": "MnStateFairgrounds",
+      "script": "MN_FAIR_MIDWAY_D_TRAINER",
+      "tile": [
+        34,
+        27
+      ],
+      "previous_sprite": "SPRITE_TEACHER"
+    },
+    {
+      "trainer_id": "MN_FAIR_EXHIBITOR_06_TRAINER",
+      "trainer_class": "MN_BIRD_WATCHER",
+      "map": "MnStateFairgrounds",
+      "script": "MN_FAIR_EXHIBITOR_06_TRAINER",
+      "tile": [
+        62,
+        28
+      ],
+      "previous_sprite": "SPRITE_GENTLEMAN"
+    },
+    {
+      "trainer_id": "MN_FAIR_PICNIC_TRAINER",
+      "trainer_class": "MN_WINTER_COURIER",
+      "map": "MnStateFairgrounds",
+      "script": "MN_FAIR_PICNIC_TRAINER",
+      "tile": [
+        61,
+        31
+      ],
+      "previous_sprite": "SPRITE_GENTLEMAN"
+    },
+    {
+      "trainer_id": "MN_FAIR_WEST_TRAINER",
+      "trainer_class": "MN_CYCLE_TOURIST",
+      "map": "MnStateFairgrounds",
+      "script": "MN_FAIR_WEST_TRAINER",
+      "tile": [
+        7,
+        34
+      ],
+      "previous_sprite": "SPRITE_YOUNGSTER"
+    },
+    {
+      "trainer_id": "MN_FAIR_EXHIBITOR_07_TRAINER",
+      "trainer_class": "MN_IRON_RANGE_MINER",
+      "map": "MnStateFairgrounds",
+      "script": "MN_FAIR_EXHIBITOR_07_TRAINER",
+      "tile": [
+        13,
+        34
+      ],
+      "previous_sprite": "SPRITE_GAMEBOY_KID"
+    },
+    {
+      "trainer_id": "MN_FAIR_EXHIBITOR_08_TRAINER",
+      "trainer_class": "MN_STORM_WATCHER",
+      "map": "MnStateFairgrounds",
+      "script": "MN_FAIR_EXHIBITOR_08_TRAINER",
+      "tile": [
+        28,
+        43
+      ],
+      "previous_sprite": "SPRITE_GAMEBOY_KID"
+    },
+    {
+      "trainer_id": "MN_FAIR_ORCHARD_TRAINER",
+      "trainer_class": "MN_ORCHARD_KEEPER",
+      "map": "MnStateFairgrounds",
+      "script": "MN_FAIR_ORCHARD_TRAINER",
+      "tile": [
+        71,
+        43
+      ],
+      "previous_sprite": "SPRITE_FISHER"
+    },
+    {
+      "trainer_id": "MN_FAIR_EXHIBITOR_09_TRAINER",
+      "trainer_class": "MN_SKI_PATROLLER",
+      "map": "MnStateFairgrounds",
+      "script": "MN_FAIR_EXHIBITOR_09_TRAINER",
+      "tile": [
+        8,
+        45
+      ],
+      "previous_sprite": "SPRITE_FISHER"
+    },
+    {
+      "trainer_id": "MN_FAIR_EXHIBITOR_10_TRAINER",
+      "trainer_class": "MN_HARBOR_MECHANIC",
+      "map": "MnStateFairgrounds",
+      "script": "MN_FAIR_EXHIBITOR_10_TRAINER",
+      "tile": [
+        11,
+        45
+      ],
+      "previous_sprite": "SPRITE_YOUNGSTER"
+    },
+    {
+      "trainer_id": "MN_FAIR_RING_FAN_TRAINER",
+      "trainer_class": "MN_HOCKEY_CAPTAIN",
+      "map": "MnStateFairgrounds",
+      "script": "MN_FAIR_RING_FAN_TRAINER",
+      "tile": [
+        43,
+        49
+      ],
+      "previous_sprite": "SPRITE_GENTLEMAN"
+    },
+    {
+      "trainer_id": "MN_FAIR_SHOW_TRAINER",
+      "trainer_class": "MN_BEEKEEPER",
+      "map": "MnStateFairgrounds",
+      "script": "MN_FAIR_SHOW_TRAINER",
+      "tile": [
+        31,
+        51
+      ],
+      "previous_sprite": "SPRITE_POKEFAN_M"
+    },
+    {
+      "trainer_id": "MN_FAIR_EXHIBITOR_11_TRAINER",
+      "trainer_class": "MN_PRAIRIE_BOTANIST",
+      "map": "MnStateFairgrounds",
+      "script": "MN_FAIR_EXHIBITOR_11_TRAINER",
+      "tile": [
+        44,
+        55
+      ],
+      "previous_sprite": "SPRITE_LASS"
+    },
+    {
+      "trainer_id": "MN_FAIR_GARDEN_TRAINER",
+      "trainer_class": "MN_PRAIRIE_BOTANIST",
+      "map": "MnStateFairgrounds",
+      "script": "MN_FAIR_GARDEN_TRAINER",
+      "tile": [
+        65,
+        55
+      ],
+      "previous_sprite": "SPRITE_LASS"
+    },
+    {
+      "trainer_id": "MN_FAIR_EXHIBITOR_12_TRAINER",
+      "trainer_class": "MN_FOSSIL_RESEARCHER",
+      "map": "MnStateFairgrounds",
+      "script": "MN_FAIR_EXHIBITOR_12_TRAINER",
+      "tile": [
+        30,
+        59
+      ],
+      "previous_sprite": "SPRITE_POKEFAN_M"
+    },
+    {
+      "trainer_id": "MN_FAIR_EXHIBITOR_13_TRAINER",
+      "trainer_class": "MN_NORTHWOODS_RANGER",
+      "map": "MnStateFairgrounds",
+      "script": "MN_FAIR_EXHIBITOR_13_TRAINER",
+      "tile": [
+        6,
+        65
+      ],
+      "previous_sprite": "SPRITE_TEACHER"
+    }
+  ]
+}

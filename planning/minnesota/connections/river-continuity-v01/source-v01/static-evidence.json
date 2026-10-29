@@ -1,0 +1,339 @@
+{
+  "status": "STATIC_SOURCE_ONLY",
+  "seam": [
+    {
+      "r03_core": [
+        47,
+        0
+      ],
+      "confluence_core": [
+        0,
+        0
+      ],
+      "permission": "WALL"
+    },
+    {
+      "r03_core": [
+        47,
+        1
+      ],
+      "confluence_core": [
+        0,
+        1
+      ],
+      "permission": "WALL"
+    },
+    {
+      "r03_core": [
+        47,
+        2
+      ],
+      "confluence_core": [
+        0,
+        2
+      ],
+      "permission": "WATER"
+    },
+    {
+      "r03_core": [
+        47,
+        3
+      ],
+      "confluence_core": [
+        0,
+        3
+      ],
+      "permission": "WATER"
+    },
+    {
+      "r03_core": [
+        47,
+        4
+      ],
+      "confluence_core": [
+        0,
+        4
+      ],
+      "permission": "WATER"
+    },
+    {
+      "r03_core": [
+        47,
+        5
+      ],
+      "confluence_core": [
+        0,
+        5
+      ],
+      "permission": "WATER"
+    },
+    {
+      "r03_core": [
+        47,
+        6
+      ],
+      "confluence_core": [
+        0,
+        6
+      ],
+      "permission": "WATER"
+    },
+    {
+      "r03_core": [
+        47,
+        7
+      ],
+      "confluence_core": [
+        0,
+        7
+      ],
+      "permission": "WATER"
+    },
+    {
+      "r03_core": [
+        47,
+        8
+      ],
+      "confluence_core": [
+        0,
+        8
+      ],
+      "permission": "WATER"
+    },
+    {
+      "r03_core": [
+        47,
+        9
+      ],
+      "confluence_core": [
+        0,
+        9
+      ],
+      "permission": "BUOY"
+    },
+    {
+      "r03_core": [
+        47,
+        10
+      ],
+      "confluence_core": [
+        0,
+        10
+      ],
+      "permission": "WALL"
+    },
+    {
+      "r03_core": [
+        47,
+        11
+      ],
+      "confluence_core": [
+        0,
+        11
+      ],
+      "permission": "WALL"
+    },
+    {
+      "r03_core": [
+        47,
+        12
+      ],
+      "confluence_core": [
+        0,
+        12
+      ],
+      "permission": "WALL"
+    },
+    {
+      "r03_core": [
+        47,
+        13
+      ],
+      "confluence_core": [
+        0,
+        13
+      ],
+      "permission": "WALL"
+    },
+    {
+      "r03_core": [
+        47,
+        14
+      ],
+      "confluence_core": [
+        0,
+        14
+      ],
+      "permission": "WALL"
+    },
+    {
+      "r03_core": [
+        47,
+        15
+      ],
+      "confluence_core": [
+        0,
+        15
+      ],
+      "permission": "WALL"
+    }
+  ],
+  "unchanged_anchor_permissions": [
+    {
+      "map": "MnR03C00R00",
+      "group": "objects",
+      "before_core": [
+        15,
+        17
+      ],
+      "candidate_core": [
+        15,
+        17
+      ],
+      "before": "FLOOR",
+      "after": "FLOOR"
+    },
+    {
+      "map": "MnR03C00R00",
+      "group": "objects",
+      "before_core": [
+        15,
+        29
+      ],
+      "candidate_core": [
+        15,
+        29
+      ],
+      "before": "FLOOR",
+      "after": "FLOOR"
+    },
+    {
+      "map": "MnR03C00R00",
+      "group": "objects",
+      "before_core": [
+        37,
+        37
+      ],
+      "candidate_core": [
+        37,
+        37
+      ],
+      "before": "FLOOR",
+      "after": "FLOOR"
+    },
+    {
+      "map": "MnR03C00R00",
+      "group": "objects",
+      "before_core": [
+        13,
+        13
+      ],
+      "candidate_core": [
+        13,
+        13
+      ],
+      "before": "FLOOR",
+      "after": "FLOOR"
+    },
+    {
+      "map": "MnR03C00R00",
+      "group": "objects",
+      "before_core": [
+        39,
+        35
+      ],
+      "candidate_core": [
+        39,
+        35
+      ],
+      "before": "FLOOR",
+      "after": "FLOOR"
+    },
+    {
+      "map": "MnR03C00R00",
+      "group": "warps",
+      "before_core": [
+        8,
+        37
+      ],
+      "candidate_core": [
+        8,
+        37
+      ],
+      "before": "CAVE",
+      "after": "CAVE"
+    },
+    {
+      "map": "MnR03C00R00",
+      "group": "warps",
+      "before_core": [
+        8,
+        38
+      ],
+      "candidate_core": [
+        8,
+        38
+      ],
+      "before": "FLOOR",
+      "after": "FLOOR"
+    },
+    {
+      "map": "MnR03C00R00",
+      "group": "bg_events",
+      "before_core": [
+        22,
+        4
+      ],
+      "candidate_core": [
+        22,
+        8
+      ],
+      "before": "WALL",
+      "after": "WALL"
+    },
+    {
+      "map": "MnR03C00R00",
+      "group": "bg_events",
+      "before_core": [
+        12,
+        36
+      ],
+      "candidate_core": [
+        12,
+        36
+      ],
+      "before": "WALL",
+      "after": "WALL"
+    },
+    {
+      "map": "MnR03C00R00",
+      "group": "bg_events",
+      "before_core": [
+        28,
+        26
+      ],
+      "candidate_core": [
+        28,
+        26
+      ],
+      "before": "WALL",
+      "after": "WALL"
+    },
+    {
+      "map": "MnR03C00R00",
+      "group": "bg_events",
+      "before_core": [
+        40,
+        44
+      ],
+      "candidate_core": [
+        40,
+        44
+      ],
+      "before": "WALL",
+      "after": "WALL"
+    }
+  ],
+  "changed_cells": 51,
+  "note": "Bridge underpass is production-specific. Static preview does not prove input, HM gates, battle, Save/Continue or earned progression."
+}

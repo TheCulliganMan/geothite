@@ -1,0 +1,23 @@
+{
+  "trainers": [
+    {
+      "id": "MN_GYM_3",
+      "map": "MnMinneapolisGym",
+      "approach": [
+        4,
+        4
+      ],
+      "facing": "south",
+      "trainer_class": "MN_LEADER_AVRIN",
+      "sprite": "SPRITE_MN_LEADER_AVRIN",
+      "actor_script": "MnMinneapolisGymLeader",
+      "fixture_events": [
+        "EVENT_MN_GYM_3_COURT_OPEN"
+      ],
+      "fixture_badges": 2,
+      "defeated_flag": "EVENT_MN_GYM_3_DEFEATED",
+      "badge_slot": 3,
+      "reward_item": "TM_THUNDERPUNCH"
+    }
+  ]
+}

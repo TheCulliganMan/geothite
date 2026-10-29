@@ -3262,6 +3262,24 @@
         19
       ],
       "material": "encounter"
+    },
+    {
+      "name": "Close the superseded city-side gate with native pines",
+      "kind": "point",
+      "position": [
+        8,
+        35
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Eastern gate to lower Pine Country woodland trail",
+      "kind": "point",
+      "position": [
+        47,
+        32
+      ],
+      "block": "01"
     }
   ],
   "extended_graphics": true,

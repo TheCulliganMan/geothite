@@ -102,17 +102,19 @@ fn run_native() -> Result<()> {
             .with_context(|| format!("verify writable save location {}", default_save_path.display()))?;
         let resources = desktop_resource_directory(&env::current_exe()?)?;
         #[cfg(feature = "voxel-view")]
-        for relative in [
-            "people/kenney/human-male.glb",
-            "people/kenney/human-female.glb",
-        ] {
-            anyhow::ensure!(
-                resources
-                    .join("assets/open-models")
-                    .join(relative)
-                    .is_file(),
-                "missing installed artwork {relative}"
-            );
+        if crystal_bevy::bevy_shell::runtime_supports_voxel_view(&runtime) {
+            for relative in [
+                "people/kenney/human-male.glb",
+                "people/kenney/human-female.glb",
+            ] {
+                anyhow::ensure!(
+                    resources
+                        .join("assets/open-models")
+                        .join(relative)
+                        .is_file(),
+                    "missing installed artwork {relative}"
+                );
+            }
         }
         println!(
             "Verified game pack: {}\nResources: {}\nSave: {}",
@@ -246,7 +248,7 @@ async fn run_browser() -> Result<()> {
     // temporary buffers can then be reused for artwork instead of overlapping
     // both allocation peaks in WebAssembly's non-shrinking linear memory.
     #[cfg(feature = "voxel-view")]
-    {
+    if crystal_bevy::bevy_shell::runtime_supports_voxel_view(&runtime) {
         let scenery = fetch_browser_open_models("open-models.json", false).await;
         #[cfg(feature = "terrain-worker-qa")]
         if scenery.is_err() { crystal_voxel_view::terrain_worker::browser_scenery_sources(None); }

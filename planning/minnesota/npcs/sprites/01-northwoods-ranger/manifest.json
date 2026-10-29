@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "id": "MN_NORTHWOODS_RANGER",
+  "name": "RANGER ROWAN",
+  "status": "accepted-native-playable",
+  "overworld_frames": 6,
+  "overworld_size": [
+    16,
+    16
+  ],
+  "battle_size": [
+    56,
+    56
+  ],
+  "palette_rgb555": [
+    32767,
+    18239,
+    10794,
+    0
+  ],
+  "source": "native-pixels-v3.json",
+  "placement": "placement-v2.json",
+  "pack": "content-packs/minnesota-npcs-ref-01-v01.crystalpack",
+  "parent": "content-packs/minnesota-original-npcs-13-v02.crystalpack",
+  "runtime_checks": {
+    "one_controller_test_passed": true,
+    "talk_and_input_ownership": true,
+    "battle_turn_and_pp": true,
+    "battle_save_load": true,
+    "actual_victory_and_defeat_flag_before_render_capture": true,
+    "post_battle_talk": true,
+    "existing_trainers_and_assets_preserved": true
+  },
+  "manual_visual_review": "Direct comparison against real Fisher/Teacher/Chris six-pose native sprites at common palette and scale. Revised dome/brim, uncluttered open shirt/collar/cuffs, khaki trousers and boots, dedicated profile braid; dense miniature binocular chest pattern removed, binoculars retained in battle. Green cheek shading removed after own-palette review. Native 1x/8x and actual forest capture reviewed. Full encounter passed in 8.19s. Battle pixels/palette and all gameplay/unrelated content preserved by overworld-only pack update.",
+  "evidence_sha256": {
+    "planning/minnesota/npcs/sprites/01-northwoods-ranger/native-pixels-v3.json": "aa3dc55df110063eb8eb4467bda88d133c5b0ffa8a38e53a918eb0f5e6f5b9d5",
+    "planning/minnesota/npcs/sprites/01-northwoods-ranger/placement-v2.json": "3ccf0ed0d9333f2d59c51792cac0f712cadf7730522e6b89fd862ca1374630ce",
+    "content-packs/minnesota-npcs-ref-01-v01.crystalpack": "430f32c413e7317628ce9aad54c6851c76ce43687c73f7afddfd5c398d2c6220",
+    "target/npc-sprites/ranger/controller-reference-v01.log": "11ca4bd0c4bdcdbcb1cc81128a7ef3d9fe386bd860960f09be2bfb7af3d8c18e",
+    "target/npc-sprites/ranger/gameplay-reference-v01/original-npc-trainer-intro.png": "e8fb90ea6d78a8442e4a7140b14761ffd502bffc424a275c9fca93c123b619ab",
+    "target/npc-sprites/ranger/gameplay-reference-v01/original-npc-first-turn.png": "7c0fec99f087f07cf2e1438717732b4199cf85f0fa0b179839e114fc86b59231",
+    "target/npc-sprites/ranger/gameplay-reference-v01/original-npc-overworld-state.png": "d016aba27f5767655a3f9486368530ce62055186772d4527e4a258364a2ecbd6",
+    "target/npc-sprites/hand-review/ranger-real-comparison-v2.png": "c1cbb6521e3d59cc7df4831dad155cc6898e93e89afe676b4a1dc2df18d65a59",
+    "target/npc-sprites/ranger/reference-v2/comparison.png": "09f55e08a75045e4ec99a16859827f67cd16a35489858c1c143020b6c6308aaa",
+    "target/npc-sprites/ranger/reference-v2/verification.json": "fa7c3820f019f59438bc16f57ff30d9af1c21197f4b97eaea6965c197ccb1dff"
+  },
+  "overworld_revision": "real-reference-hand-edited-v3",
+  "reference_review": "actual-crystal-sprites-common-palette-and-scale"
+}

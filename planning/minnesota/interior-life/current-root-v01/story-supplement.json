@@ -1,0 +1,162 @@
+{
+  "schema_version": 1,
+  "base_content_hash": "f3c41e401d512171141a41cf458a7c4782da32c4942fa1c97f46a157ae0a7905",
+  "story_source_sha256": "0d1d6fc72c44d944a9dc1125a572704d8aec018660b7626bc01a034b07237e46",
+  "manifest": "minnesota-interior-life-compact-stories-v1",
+  "rooms": [
+    {
+      "map": "MnElyMart",
+      "purpose": "Trail-shelter supplies and a ski volunteer quietly passing on the kindness of strangers.",
+      "conversations": [
+        {
+          "script": "MN_INTERIOR_ELY_SHELTER_RUNNER",
+          "actor": {
+            "sprite": "SPRITE_YOUNGSTER",
+            "tile": [
+              7,
+              6
+            ],
+            "approach": [
+              6,
+              6
+            ]
+          },
+          "lines": [
+            "I help stock the ski-trail shelters.",
+            "Someone always leaves a neat little pile of split kindling.",
+            "Nobody signs it. We just pass it on."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnElyPokecenter1F",
+      "purpose": "Free final-trail recovery and a native PC, with a winter traveler's spare-mitten lesson.",
+      "conversations": [
+        {
+          "script": "MN_INTERIOR_ELY_SPARE_MITTENS",
+          "actor": {
+            "sprite": "SPRITE_POKEFAN_M",
+            "tile": [
+              1,
+              5
+            ],
+            "approach": [
+              2,
+              5
+            ]
+          },
+          "lines": [
+            "Keep spare mittens in a bread bag. That's what my cousin told me.",
+            "I laughed until mine fell through the ice.",
+            "I bring two pairs now."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnLeagueLobby",
+      "purpose": "Registration for the four-member Minnesota League run; public clinic and supplies remain available without registering."
+    },
+    {
+      "map": "MnLeagueRoom1",
+      "purpose": "FERN teaches that small changes and cooperation make a team stronger."
+    },
+    {
+      "map": "MnLeagueRoom2",
+      "purpose": "FLINT connects endurance to the strains recorded in Minnesota stone."
+    },
+    {
+      "map": "MnLeagueRoom3",
+      "purpose": "VEIL asks a challenger to notice what is hard to see instead of rushing."
+    },
+    {
+      "map": "MnLeagueRoom4",
+      "purpose": "REED tests how a challenger guides power before the final room."
+    },
+    {
+      "map": "MnLeagueChampion",
+      "purpose": "CASEY honors the partners that carried the player across Minnesota before the final registered match."
+    },
+    {
+      "map": "MnLeagueHallOfFame",
+      "purpose": "Record partners by name after a real League victory; a fish-house family photograph gives the record a personal meaning.",
+      "conversations": [
+        {
+          "script": "MN_INTERIOR_ELY_FAMILY_PHOTO",
+          "actor": {
+            "sprite": "SPRITE_LASS",
+            "tile": [
+              2,
+              9
+            ],
+            "approach": [
+              3,
+              9
+            ]
+          },
+          "lines": [
+            "My dad's team photo hangs in our fish house.",
+            "I thought his grin meant he never lost.",
+            "Now I know he just kept trying.",
+            "Let's get your team's good side."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnSplitRockPokecenter1F",
+      "purpose": "Free windbreak care and PC access, a lighthouse grandfather mending mittens and a deckhand learning the value of coming home.",
+      "conversations": [
+        {
+          "script": "MN_SPLIT_ROCK_SHORE_GRANDPA",
+          "actor": {
+            "sprite": "SPRITE_FISHER",
+            "tile": [
+              1,
+              5
+            ],
+            "approach": [
+              2,
+              5
+            ]
+          },
+          "lines": [
+            "My granddaughter",
+            "cleans the lens.",
+            "I mend her mittens",
+            "while she works.",
+            "Lake wind finds",
+            "a loose stitch.",
+            "When she comes in,",
+            "we walk home slow."
+          ]
+        },
+        {
+          "script": "MN_SPLIT_ROCK_DECKHAND",
+          "actor": {
+            "sprite": "SPRITE_SAILOR",
+            "tile": [
+              6,
+              4
+            ],
+            "approach": [
+              6,
+              5
+            ]
+          },
+          "lines": [
+            "Our boat turned",
+            "back in the fog.",
+            "I felt foolish",
+            "coming in early.",
+            "The nurse said,",
+            "Coming home is",
+            "what matters.",
+            "I told my crew."
+          ]
+        }
+      ]
+    }
+  ]
+}

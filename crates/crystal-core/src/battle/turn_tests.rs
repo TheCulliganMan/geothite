@@ -1995,6 +1995,69 @@ fn commit_battle_turn_outcome_keeps_mimic_battle_only() {
 }
 
 #[test]
+fn commit_battle_turn_outcome_keeps_enemy_mimic_battle_only() {
+    let mut state = GameState::default();
+    let player = pokemon("RATTATA", 40, pokemon_type("NORMAL"), "TACKLE");
+    let enemy = pokemon("MR_MIME", 45, pokemon_type("PSYCHIC_TYPE"), "MIMIC");
+    state.storage.party.pokemon[0] = Some(player.clone());
+    state.battle_active_enemy_party_index = Some(0);
+    state.battle = BattleMemory::Wild {
+        battle_type: "BATTLETYPE_NORMAL".into(),
+        battle_music: "MUSIC_JOHTO_WILD_BATTLE".into(),
+        map_name: "ROUTE_29".into(),
+        roaming_slot: None,
+        enemy_pokemon: enemy.clone(),
+        enemy_party: vec![enemy.clone()],
+    };
+    let mut active_enemy = enemy.clone();
+    active_enemy.moves[0] = LearnedMove {
+        name: "TACKLE".into(),
+        current_pp: 5,
+        pp_ups: 0,
+    };
+    let mut party_enemy = enemy.clone();
+    party_enemy.moves[0].current_pp = 4;
+    let outcome = BattleTurnOutcome {
+        state: BattleCombatState::new(player.clone(), active_enemy)
+            .with_parties(vec![player], vec![party_enemy]),
+        order: vec![BattleSide::Player, BattleSide::Enemy],
+        events: vec![BattleEvent::MimicApplied {
+            side: BattleSide::Enemy,
+            move_name: "MIMIC".into(),
+            slot: 0,
+            replaced_move: "MIMIC".into(),
+            copied_move: "TACKLE".into(),
+        }],
+    };
+    commit_battle_turn_outcome(&mut state, 0, &outcome).expect("commit enemy Mimic");
+    let BattleMemory::Wild {
+        enemy_pokemon,
+        enemy_party,
+        ..
+    } = &state.battle
+    else {
+        panic!("wild battle retained");
+    };
+    assert_eq!(enemy_party[0].moves[0].name, "MIMIC");
+    assert_eq!(enemy_party[0].moves[0].current_pp, 4);
+    crate::state::validate_saved_trainer_enemy_party_identity(
+        "MIMIC_TRAINER",
+        enemy_party,
+        enemy_pokemon,
+        &[enemy],
+    )
+    .expect("permanent trainer move identity remains valid");
+    let combat = state
+        .script_runtime
+        .active_battle_combat
+        .as_ref()
+        .expect("committed active combat");
+    assert_eq!(combat.enemy.moves[0].name, "TACKLE");
+    assert_eq!(combat.enemy.moves[0].current_pp, 5);
+    assert_eq!(combat.enemy_party[0].moves[0].name, "MIMIC");
+}
+
+#[test]
 fn commit_battle_turn_outcome_accumulates_enemy_pay_day_with_24_bit_wrap() {
     let mut state = GameState::default();
     let player = pokemon("CHIKORITA", 45, pokemon_type("GRASS"), "TACKLE");

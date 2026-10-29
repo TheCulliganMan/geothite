@@ -91,7 +91,7 @@ fn choose(
 
 #[test]
 #[ignore = "requires CRYSTAL_INTERIOR_PACK with Detroit Lakes"]
-fn detroit_lakes_controller_all_rooms_residents_carpets_and_three_roads() {
+fn detroit_lakes_controller_all_rooms_residents_carpets_and_two_real_roads() {
     let (root, r, _) = load();
     let directory = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../planning/minnesota");
     let plan: Value = serde_json::from_str(
@@ -155,13 +155,6 @@ fn detroit_lakes_controller_all_rooms_residents_carpets_and_three_roads() {
             (47, 18),
             GameButton::Right,
         ),
-        (
-            (24, 0),
-            GameButton::Up,
-            "MnR19C00R01",
-            (24, 11),
-            GameButton::Down,
-        ),
     ] {
         walk(&mut c, &r, edge);
         for _ in 0..8 {
@@ -194,6 +187,13 @@ fn detroit_lakes_controller_all_rooms_residents_carpets_and_three_roads() {
             CITY
         );
     }
+    walk(&mut c, &r, (24, 2));
+    for _ in 0..4 {
+        press(&mut c, GameButton::Up);
+    }
+    let boundary = c.snapshot().expect("visible woodland boundary").overworld;
+    assert_eq!(boundary.map_name, CITY);
+    assert_eq!((boundary.tile.x, boundary.tile.y), (24, 2));
     let before = c.snapshot().expect("before town Continue").overworld;
     c = super::r10_gallery::continue_save(root, r.clone(), &mut c);
     let after = c.snapshot().expect("town Continue").overworld;
@@ -576,7 +576,7 @@ fn detroit_lakes_controller_ranger_denies_each_missing_requirement() {
 
 #[test]
 #[ignore = "requires CRYSTAL_INTERIOR_PACK with Detroit Lakes"]
-fn detroit_lakes_controller_walks_all_observations_to_ranger_and_continues() {
+fn detroit_lakes_controller_observations_persist_on_the_real_itasca_return() {
     let (root, r, _) = load();
     let mut c = fixture(&root, &r, "MnR19C00R01", (24, 10));
     c.shell.shell.session_mut().state_mut().badges.johto[5] = true;
@@ -612,25 +612,34 @@ fn detroit_lakes_controller_walks_all_observations_to_ranger_and_continues() {
         assert!(event(&c, NOTES[i]));
         assert!(!event(&c, DONE));
     }
-    grid.walk(&mut c, (24, 59));
-    press(&mut c, GameButton::Down);
+    let edge = grid
+        .floor
+        .iter()
+        .copied()
+        .find(|p| p.0 == 63 && p.1 < 48 && !grid.blocked.contains(p) && !grid.hazards.contains(p))
+        .expect("original east road to Itasca");
+    grid.walk(&mut c, edge);
+    for _ in 0..8 {
+        press(&mut c, GameButton::Right);
+        if c.snapshot().expect("real survey return").overworld.map_name == "MnLakeItasca" {
+            break;
+        }
+    }
     assert_eq!(
-        c.snapshot().expect("trail town seam").overworld.map_name,
-        CITY
+        c.snapshot()
+            .expect("original Itasca road")
+            .overworld
+            .map_name,
+        "MnLakeItasca"
     );
-    travel(&mut c, &r, RANGER);
-    walk(&mut c, &r, (6, 4));
-    let before = quantity(&c, &r);
-    let text = talk(&mut c, (6, 3));
-    assert!(text.contains("MAX REPEL"));
-    assert_eq!(quantity(&c, &r), before + 1);
-    assert!(event(&c, DONE));
     c = super::r10_gallery::continue_save(root, r.clone(), &mut c);
-    talk(&mut c, (6, 3));
-    assert_eq!(quantity(&c, &r), before + 1);
     for flag in NOTES {
         assert!(event(&c, flag));
     }
+    assert!(
+        !event(&c, DONE),
+        "gathering notes is separate from the ranger hand-in"
+    );
 }
 
 pub(super) fn toss_potion(c: &mut VisibleShellController) {

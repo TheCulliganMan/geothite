@@ -41,18 +41,9 @@ fn detroit_lakes_preserves_original_content_and_rejects_unsafe_room_contracts() 
     for (name, old) in &before.maps {
         let new = &after.maps[name];
         let mut expected = old.clone();
-        if matches!(
-            name.as_str(),
-            "MnR15C00R00" | "MnDetroitLakesApproach" | "MnR19C00R01"
-        ) {
+        if matches!(name.as_str(), "MnR15C00R00" | "MnDetroitLakesApproach") {
             expected.attributes.connections = new.attributes.connections.clone();
             expected.attributes.connection_flags = new.attributes.connection_flags.clone();
-            if name == "MnR19C00R01" {
-                for x in [11, 13] {
-                    assert_eq!(old.blocks[5 * 32 + x], 2);
-                    expected.blocks[5 * 32 + x] = 5;
-                }
-            }
         }
         assert_eq!(&expected, new, "all original room/program data: {name}");
     }
@@ -105,23 +96,20 @@ fn detroit_lakes_preserves_original_content_and_rejects_unsafe_room_contracts() 
         );
     }
     for (name, attrs) in &before.map_attributes {
-        if !matches!(
-            name.as_str(),
-            "MnR15C00R00" | "MnDetroitLakesApproach" | "MnR19C00R01"
-        ) {
+        if !matches!(name.as_str(), "MnR15C00R00" | "MnDetroitLakesApproach") {
             assert_eq!(after.map_attributes.get(name), Some(attrs));
         }
     }
-    let changed_blocks = before.maps["MnR19C00R01"]
-        .attributes
-        .blocks_label
-        .as_ref()
-        .expect("R19 blocks");
     for (label, bytes) in &before.map_blocks {
-        if label != changed_blocks {
-            assert_eq!(after.map_blocks.get(label), Some(bytes));
-        }
+        assert_eq!(after.map_blocks.get(label), Some(bytes));
     }
+    assert_eq!(
+        after.maps["MnDetroitLakes"]
+            .attributes
+            .fishing_group
+            .as_deref(),
+        Some("FISHGROUP_MN_POND")
+    );
     for (name, metadata) in &before.runtime_map_metadata {
         assert_eq!(after.runtime_map_metadata.get(name), Some(metadata));
     }

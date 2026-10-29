@@ -1,0 +1,841 @@
+{
+  "schema_version": 2,
+  "id": "MnMississippiUpstreamWoodsC00R00",
+  "status": "DETACHED_SOURCE_NOT_NATIVE",
+  "dimensions_metatiles": [
+    32,
+    24
+  ],
+  "tileset": "johto",
+  "compiled_tileset": "johto",
+  "source_pixels_modified": false,
+  "shore_fitting": "explicit_source_edges",
+  "reject_cliff_cuts": true,
+  "layers": [
+    {
+      "name": "Explicit row 00 x00..31",
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        0,
+        32,
+        1
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Explicit row 01 x00..31",
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        1,
+        32,
+        2
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Explicit row 02 x00..31",
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        2,
+        32,
+        3
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Explicit row 03 x00..31",
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        3,
+        32,
+        4
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Explicit row 04 x00..31",
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        4,
+        32,
+        5
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Explicit row 05 x00..31",
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        5,
+        32,
+        6
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Explicit row 06 x00..31",
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        6,
+        32,
+        7
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Explicit row 07 x00..31",
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        7,
+        32,
+        8
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Explicit row 08 x00..31",
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        8,
+        32,
+        9
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Explicit row 09 x00..31",
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        9,
+        32,
+        10
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Explicit row 10 x00..31",
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        10,
+        32,
+        11
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Explicit row 11 x00..31",
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        11,
+        32,
+        12
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Explicit row 12 x00..31",
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        12,
+        32,
+        13
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Explicit row 13 x00..31",
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        13,
+        32,
+        14
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Explicit row 14 x00..31",
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        14,
+        32,
+        15
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Explicit row 15 x00..29",
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        15,
+        30,
+        16
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Explicit row 15 x30..30",
+      "kind": "block_rect",
+      "bounds": [
+        30,
+        15,
+        31,
+        16
+      ],
+      "block": "54"
+    },
+    {
+      "name": "Explicit row 15 x31..31",
+      "kind": "block_rect",
+      "bounds": [
+        31,
+        15,
+        32,
+        16
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Explicit row 16 x00..25",
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        16,
+        26,
+        17
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Explicit row 16 x26..26",
+      "kind": "block_rect",
+      "bounds": [
+        26,
+        16,
+        27,
+        17
+      ],
+      "block": "54"
+    },
+    {
+      "name": "Explicit row 16 x27..29",
+      "kind": "block_rect",
+      "bounds": [
+        27,
+        16,
+        30,
+        17
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Explicit row 16 x30..30",
+      "kind": "block_rect",
+      "bounds": [
+        30,
+        16,
+        31,
+        17
+      ],
+      "block": "79"
+    },
+    {
+      "name": "Explicit row 16 x31..31",
+      "kind": "block_rect",
+      "bounds": [
+        31,
+        16,
+        32,
+        17
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Explicit row 17 x00..20",
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        17,
+        21,
+        18
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Explicit row 17 x21..21",
+      "kind": "block_rect",
+      "bounds": [
+        21,
+        17,
+        22,
+        18
+      ],
+      "block": "54"
+    },
+    {
+      "name": "Explicit row 17 x22..25",
+      "kind": "block_rect",
+      "bounds": [
+        22,
+        17,
+        26,
+        18
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Explicit row 17 x26..26",
+      "kind": "block_rect",
+      "bounds": [
+        26,
+        17,
+        27,
+        18
+      ],
+      "block": "79"
+    },
+    {
+      "name": "Explicit row 17 x27..29",
+      "kind": "block_rect",
+      "bounds": [
+        27,
+        17,
+        30,
+        18
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Explicit row 17 x30..30",
+      "kind": "block_rect",
+      "bounds": [
+        30,
+        17,
+        31,
+        18
+      ],
+      "block": "59"
+    },
+    {
+      "name": "Explicit row 17 x31..31",
+      "kind": "block_rect",
+      "bounds": [
+        31,
+        17,
+        32,
+        18
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Explicit row 18 x00..19",
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        18,
+        20,
+        19
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Explicit row 18 x20..20",
+      "kind": "block_rect",
+      "bounds": [
+        20,
+        18,
+        21,
+        19
+      ],
+      "block": "54"
+    },
+    {
+      "name": "Explicit row 18 x21..21",
+      "kind": "block_rect",
+      "bounds": [
+        21,
+        18,
+        22,
+        19
+      ],
+      "block": "79"
+    },
+    {
+      "name": "Explicit row 18 x22..25",
+      "kind": "block_rect",
+      "bounds": [
+        22,
+        18,
+        26,
+        19
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Explicit row 18 x26..26",
+      "kind": "block_rect",
+      "bounds": [
+        26,
+        18,
+        27,
+        19
+      ],
+      "block": "59"
+    },
+    {
+      "name": "Explicit row 18 x27..31",
+      "kind": "block_rect",
+      "bounds": [
+        27,
+        18,
+        32,
+        19
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Explicit row 19 x00..18",
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        19,
+        19,
+        20
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Explicit row 19 x19..19",
+      "kind": "block_rect",
+      "bounds": [
+        19,
+        19,
+        20,
+        20
+      ],
+      "block": "54"
+    },
+    {
+      "name": "Explicit row 19 x20..20",
+      "kind": "block_rect",
+      "bounds": [
+        20,
+        19,
+        21,
+        20
+      ],
+      "block": "79"
+    },
+    {
+      "name": "Explicit row 19 x21..22",
+      "kind": "block_rect",
+      "bounds": [
+        21,
+        19,
+        23,
+        20
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Explicit row 19 x23..23",
+      "kind": "block_rect",
+      "bounds": [
+        23,
+        19,
+        24,
+        20
+      ],
+      "block": "59"
+    },
+    {
+      "name": "Explicit row 19 x24..31",
+      "kind": "block_rect",
+      "bounds": [
+        24,
+        19,
+        32,
+        20
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Explicit row 20 x00..02",
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        20,
+        3,
+        21
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Explicit row 20 x03..03",
+      "kind": "block_rect",
+      "bounds": [
+        3,
+        20,
+        4,
+        21
+      ],
+      "block": "55"
+    },
+    {
+      "name": "Explicit row 20 x04..16",
+      "kind": "block_rect",
+      "bounds": [
+        4,
+        20,
+        17,
+        21
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Explicit row 20 x17..17",
+      "kind": "block_rect",
+      "bounds": [
+        17,
+        20,
+        18,
+        21
+      ],
+      "block": "54"
+    },
+    {
+      "name": "Explicit row 20 x18..18",
+      "kind": "block_rect",
+      "bounds": [
+        18,
+        20,
+        19,
+        21
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Explicit row 20 x19..19",
+      "kind": "block_rect",
+      "bounds": [
+        19,
+        20,
+        20,
+        21
+      ],
+      "block": "79"
+    },
+    {
+      "name": "Explicit row 20 x20..21",
+      "kind": "block_rect",
+      "bounds": [
+        20,
+        20,
+        22,
+        21
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Explicit row 20 x22..22",
+      "kind": "block_rect",
+      "bounds": [
+        22,
+        20,
+        23,
+        21
+      ],
+      "block": "59"
+    },
+    {
+      "name": "Explicit row 20 x23..31",
+      "kind": "block_rect",
+      "bounds": [
+        23,
+        20,
+        32,
+        21
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Explicit row 21 x00..02",
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        21,
+        3,
+        22
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Explicit row 21 x03..03",
+      "kind": "block_rect",
+      "bounds": [
+        3,
+        21,
+        4,
+        22
+      ],
+      "block": "7a"
+    },
+    {
+      "name": "Explicit row 21 x04..04",
+      "kind": "block_rect",
+      "bounds": [
+        4,
+        21,
+        5,
+        22
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Explicit row 21 x05..05",
+      "kind": "block_rect",
+      "bounds": [
+        5,
+        21,
+        6,
+        22
+      ],
+      "block": "55"
+    },
+    {
+      "name": "Explicit row 21 x06..15",
+      "kind": "block_rect",
+      "bounds": [
+        6,
+        21,
+        16,
+        22
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Explicit row 21 x16..16",
+      "kind": "block_rect",
+      "bounds": [
+        16,
+        21,
+        17,
+        22
+      ],
+      "block": "54"
+    },
+    {
+      "name": "Explicit row 21 x17..17",
+      "kind": "block_rect",
+      "bounds": [
+        17,
+        21,
+        18,
+        22
+      ],
+      "block": "79"
+    },
+    {
+      "name": "Explicit row 21 x18..20",
+      "kind": "block_rect",
+      "bounds": [
+        18,
+        21,
+        21,
+        22
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Explicit row 21 x21..21",
+      "kind": "block_rect",
+      "bounds": [
+        21,
+        21,
+        22,
+        22
+      ],
+      "block": "59"
+    },
+    {
+      "name": "Explicit row 21 x22..31",
+      "kind": "block_rect",
+      "bounds": [
+        22,
+        21,
+        32,
+        22
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Explicit row 22 x00..02",
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        22,
+        3,
+        23
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Explicit row 22 x03..03",
+      "kind": "block_rect",
+      "bounds": [
+        3,
+        22,
+        4,
+        23
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Explicit row 22 x04..04",
+      "kind": "block_rect",
+      "bounds": [
+        4,
+        22,
+        5,
+        23
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Explicit row 22 x05..05",
+      "kind": "block_rect",
+      "bounds": [
+        5,
+        22,
+        6,
+        23
+      ],
+      "block": "7a"
+    },
+    {
+      "name": "Explicit row 22 x06..15",
+      "kind": "block_rect",
+      "bounds": [
+        6,
+        22,
+        16,
+        23
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Explicit row 22 x16..16",
+      "kind": "block_rect",
+      "bounds": [
+        16,
+        22,
+        17,
+        23
+      ],
+      "block": "79"
+    },
+    {
+      "name": "Explicit row 22 x17..18",
+      "kind": "block_rect",
+      "bounds": [
+        17,
+        22,
+        19,
+        23
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Explicit row 22 x19..19",
+      "kind": "block_rect",
+      "bounds": [
+        19,
+        22,
+        20,
+        23
+      ],
+      "block": "59"
+    },
+    {
+      "name": "Explicit row 22 x20..31",
+      "kind": "block_rect",
+      "bounds": [
+        20,
+        22,
+        32,
+        23
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Explicit row 23 x00..04",
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        23,
+        5,
+        24
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Explicit row 23 x05..05",
+      "kind": "block_rect",
+      "bounds": [
+        5,
+        23,
+        6,
+        24
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Explicit row 23 x06..17",
+      "kind": "block_rect",
+      "bounds": [
+        6,
+        23,
+        18,
+        24
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Explicit row 23 x18..18",
+      "kind": "block_rect",
+      "bounds": [
+        18,
+        23,
+        19,
+        24
+      ],
+      "block": "59"
+    },
+    {
+      "name": "Explicit row 23 x19..31",
+      "kind": "block_rect",
+      "bounds": [
+        19,
+        23,
+        32,
+        24
+      ],
+      "block": "05"
+    }
+  ]
+}

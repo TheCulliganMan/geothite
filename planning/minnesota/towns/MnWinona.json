@@ -619,5 +619,13 @@
         ]
       }
     ]
-  }
+  },
+  "transit_overlays": [
+    {
+      "room_id": "MnWinonaStation",
+      "source_file": "transit/MnWinonaStation.json",
+      "publisher": "pack_winona_station",
+      "status": "Published in minnesota-winona-station-v03.crystalpack; real town door, residents, winter-register story and visit callback verified. Passenger service unfinished."
+    }
+  ]
 }

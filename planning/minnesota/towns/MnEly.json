@@ -1,5 +1,16 @@
 {
   "id": "MnEly",
+  "native_exterior": {
+    "revision": "ely_pine_knolls_revision",
+    "plan": "../revisions/ely-trail-quality-v02/PINES.md",
+    "native_contract": "../revisions/ely-trail-quality-v02/source-v03/native.contract.json",
+    "compiled_tileset": "mn_ely_snow",
+    "border_block": "83",
+    "forest_block": "83",
+    "forest_collision": ["WALL", "WALL", "WALL", "WALL"],
+    "weather": "falling snow outdoors",
+    "authoring_rule": "Ely sits in snowy pines, including its perimeter and internal groves. Retain the lodge facade, both lodge doors, clinic, mart and connected north/east paths. The Kanto layout is the pre-overlay building plan; publish through the reviewed native contract, not that layout alone."
+  },
   "name": "ELY",
   "dimensions_metatiles": [
     20,

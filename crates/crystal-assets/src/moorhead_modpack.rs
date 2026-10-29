@@ -35,6 +35,7 @@ pub fn build_moorhead_modpack(
     town_json: &str,
     layout_json: &str,
 ) -> Result<CompiledGamePack> {
+    crate::validate_compact_superior_geography(base)?;
     crate::verify_compiled_game_pack_for_runtime(base)?;
     let raw: Value = serde_json::from_str(town_json).context("Moorhead dossier")?;
     let town: Town = serde_json::from_value(raw.clone()).context("native Moorhead source")?;
@@ -125,6 +126,7 @@ pub fn build_moorhead_modpack(
     exterior.attributes.height = 12;
     exterior.attributes.border_block = 5;
     exterior.attributes.tileset_name = town.compiled_tileset.clone();
+    crate::regional_town_fishing::freshwater(&pack, &mut exterior)?;
     exterior.blocks = layout.compile()?;
     crate::authored_town_scripts::ordinary(
         &pack,
@@ -233,6 +235,7 @@ pub fn build_moorhead_modpack(
         &pack.runtime_files,
         &pack.report,
     )?;
+    crate::validate_compact_superior_geography(&pack)?;
     crate::verify_compiled_game_pack_for_runtime(&pack)?;
     Ok(pack)
 }

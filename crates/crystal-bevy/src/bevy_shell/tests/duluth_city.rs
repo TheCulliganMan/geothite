@@ -94,7 +94,7 @@ fn fixture(root: &AssetRoot, runtime: &CrystalRuntime, setup: Setup<'_>) -> Visi
     let mut controller = VisibleShellController { shell };
     complete_visible_smoke_player_name_if_needed(&mut controller.shell, Some("CHRIS"))
         .expect("fixture name");
-    for (species, level) in [("MEW", 45), ("CYNDAQUIL", 12)] {
+    for (species, level) in [("POUCHID", 45), ("CINDORE", 12)] {
         let mut mon = runtime
             .data()
             .create_pokemon(species, level, Dv::default())
@@ -402,7 +402,7 @@ fn duluth_city_controller_native_care_pc_deposit_withdraw_and_walking() {
     });
     let deposited = controller.snapshot().expect("real deposit mutation");
     assert_eq!(deposited.party.slots.len(), 1);
-    assert_eq!(deposited.party.slots[0].pokemon.species.id, "CYNDAQUIL");
+    assert_eq!(deposited.party.slots[0].pokemon.species.id, "CINDORE");
     let stored = deposited
         .storage
         .boxes
@@ -410,7 +410,7 @@ fn duluth_city_controller_native_care_pc_deposit_withdraw_and_walking() {
         .find(|b| b.index == deposited.storage.current_pc_box)
         .expect("current box");
     assert_eq!(stored.slots.len(), 1);
-    assert_eq!(stored.slots[0].pokemon.species.id, "MEW");
+    assert_eq!(stored.slots[0].pokemon.species.id, "POUCHID");
     press(&mut controller, GameButton::B);
     assert_eq!(
         controller
@@ -666,4 +666,103 @@ fn duluth_city_controller_q07_success_sets_only_signal_and_repeat_survives_conti
         active_flags(&expected_flags)
     );
     std::fs::remove_file(path).expect("remove own temporary save, never a render");
+}
+
+#[test]
+#[ignore = "requires published Duluth hill-harbor revision"]
+fn duluth_hill_harbor_all_38_paired_returns_and_native_stair() {
+    let (root, runtime) = load();
+    let city = runtime
+        .data()
+        .assemble_map_module_from_compiled_payloads(CITY)
+        .expect("complete native city");
+    assert_eq!((city.attributes.width, city.attributes.height), (64, 46));
+    assert_eq!(city.events.warps.len(), 76);
+    for pair in city.events.warps.chunks_exact(2) {
+        let door = &pair[0];
+        let passive = &pair[1];
+        let room_header = runtime
+            .data()
+            .maps
+            .values()
+            .find(|map| map.attributes.map_constant.as_deref() == Some(&door.target_map_constant))
+            .expect("retained real interior");
+        let room = runtime
+            .data()
+            .assemble_map_module_from_compiled_payloads(&room_header.id)
+            .expect("complete retained interior");
+        let arrival = room
+            .events
+            .warps
+            .iter()
+            .find(|warp| {
+                i16::try_from(warp.index).expect("small warp index") == door.target_warp_id
+            })
+            .expect("interior passive arrival");
+        let outside = (
+            i16::try_from(passive.x).expect("city x"),
+            i16::try_from(passive.y).expect("city y"),
+        );
+        assert_eq!(door.x, passive.x);
+        assert_eq!(door.y + 1, passive.y);
+        for exit in room
+            .events
+            .warps
+            .iter()
+            .filter(|warp| warp.target_map_constant == "MN_DULUTH")
+        {
+            assert_eq!(
+                exit.target_warp_id,
+                i16::try_from(passive.index).expect("city passive index")
+            );
+            let mut controller = fixture(&root, &runtime, Setup::at(CITY, outside));
+            enter(
+                &mut controller,
+                &room.id,
+                (
+                    i16::try_from(arrival.x).expect("room x"),
+                    i16::try_from(arrival.y).expect("room y"),
+                ),
+            );
+            indoor_walk(
+                &mut controller,
+                &runtime,
+                (
+                    i16::try_from(exit.x).expect("exit x"),
+                    i16::try_from(exit.y).expect("exit y"),
+                ),
+            );
+            for _ in 0..4 {
+                if controller.snapshot().expect("return").overworld.map_name == CITY {
+                    break;
+                }
+                press(&mut controller, GameButton::Down);
+            }
+            assert_at(&mut controller, CITY, outside);
+            press(&mut controller, GameButton::A);
+            assert_at(&mut controller, CITY, outside);
+        }
+    }
+    let mut controller = fixture(&root, &runtime, Setup::at(CITY, (54, 37)));
+    move_to(&mut controller, GameButton::Down, (54, 42));
+    move_to(&mut controller, GameButton::Up, (54, 37));
+    assert_at(&mut controller, CITY, (54, 37));
+    let mut controller = fixture(&root, &runtime, Setup::at(CITY, (46, 39)));
+    move_to(&mut controller, GameButton::Down, (46, 40));
+    move_to(&mut controller, GameButton::Down, (46, 42));
+    for _ in 0..3 {
+        press(&mut controller, GameButton::Up);
+    }
+    assert_at(&mut controller, CITY, (46, 42));
+    // The new stairs sit eight walking tiles east, preserving a useful
+    // ordinary return instead of opening an adjacent reverse bypass.
+    // Turning is a native input too; do not spend the eight-step walk budget
+    // on the initial facing change.
+    press(&mut controller, GameButton::Right);
+    move_to(&mut controller, GameButton::Right, (54, 42));
+    move_to(&mut controller, GameButton::Up, (54, 37));
+    press(&mut controller, GameButton::Left);
+    move_to(&mut controller, GameButton::Left, (46, 37));
+    move_to(&mut controller, GameButton::Down, (46, 39));
+    assert_at(&mut controller, CITY, (46, 39));
 }

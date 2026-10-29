@@ -180,15 +180,15 @@
       "sight_range": 3,
       "party": [
         {
-          "species": "NOCTOWL",
+          "species": "BOOMRUFF",
           "level": 34
         },
         {
-          "species": "PINECO",
+          "species": "CLINKLAW",
           "level": 34
         },
         {
-          "species": "URSARING",
+          "species": "DOZEBEAR",
           "level": 33
         }
       ],
@@ -220,15 +220,15 @@
       "sight_range": 3,
       "party": [
         {
-          "species": "PINECO",
+          "species": "CLINKLAW",
           "level": 34
         },
         {
-          "species": "STANTLER",
+          "species": "SHEDSTAG",
           "level": 34
         },
         {
-          "species": "GOLBAT",
+          "species": "SKEETEREX",
           "level": 33
         }
       ],
@@ -249,7 +249,7 @@
     },
     {
       "id": "MN_R17_T03",
-      "display_name": "REED",
+      "display_name": "ELI",
       "trainer_class": "BIRD_KEEPER",
       "sprite": "SPRITE_FISHER",
       "tile": [
@@ -260,15 +260,15 @@
       "sight_range": 3,
       "party": [
         {
-          "species": "STANTLER",
+          "species": "SHEDSTAG",
           "level": 35
         },
         {
-          "species": "URSARING",
+          "species": "DOZEBEAR",
           "level": 35
         },
         {
-          "species": "SNEASEL",
+          "species": "CROOKVEIL",
           "level": 34
         }
       ],
@@ -300,15 +300,15 @@
       "sight_range": 3,
       "party": [
         {
-          "species": "URSARING",
+          "species": "DOZEBEAR",
           "level": 35
         },
         {
-          "species": "GOLBAT",
+          "species": "SKEETEREX",
           "level": 35
         },
         {
-          "species": "DELIBIRD",
+          "species": "DRIFTPEG",
           "level": 34
         }
       ],
@@ -329,7 +329,7 @@
     },
     {
       "id": "MN_R17_T05",
-      "display_name": "NOREK",
+      "display_name": "SOREN",
       "trainer_class": "POKEFANM",
       "sprite": "SPRITE_POKEFAN_M",
       "tile": [
@@ -340,15 +340,15 @@
       "sight_range": 3,
       "party": [
         {
-          "species": "GOLBAT",
+          "species": "SKEETEREX",
           "level": 36
         },
         {
-          "species": "SNEASEL",
+          "species": "CROOKVEIL",
           "level": 36
         },
         {
-          "species": "NOCTOWL",
+          "species": "BOOMRUFF",
           "level": 35
         }
       ],
@@ -380,15 +380,15 @@
       "sight_range": 3,
       "party": [
         {
-          "species": "NOCTOWL",
+          "species": "BOOMRUFF",
           "level": 36
         },
         {
-          "species": "DELIBIRD",
+          "species": "DRIFTPEG",
           "level": 36
         },
         {
-          "species": "PINECO",
+          "species": "CLINKLAW",
           "level": 35
         }
       ],
@@ -445,115 +445,115 @@
   ],
   "encounters": {
     "grass_rates": {
-      "morning": 10,
       "day": 10,
+      "morning": 10,
       "night": 10
     },
     "grass": {
       "morning": [
         {
-          "species": "NOCTOWL",
-          "level": 34
+          "level": 34,
+          "species": "BOOMRUFF"
         },
         {
-          "species": "PINECO",
-          "level": 35
+          "level": 35,
+          "species": "CLINKLAW"
         },
         {
-          "species": "STANTLER",
-          "level": 36
+          "level": 36,
+          "species": "SHEDSTAG"
         },
         {
-          "species": "URSARING",
-          "level": 37
+          "level": 37,
+          "species": "DOZEBEAR"
         },
         {
-          "species": "GOLBAT",
-          "level": 38
+          "level": 38,
+          "species": "SKEETEREX"
         },
         {
-          "species": "SNEASEL",
-          "level": 39
+          "level": 39,
+          "species": "CROOKVEIL"
         },
         {
-          "species": "DELIBIRD",
-          "level": 40
+          "level": 40,
+          "species": "DRIFTPEG"
         }
       ],
       "day": [
         {
-          "species": "NOCTOWL",
-          "level": 34
+          "level": 34,
+          "species": "BOOMRUFF"
         },
         {
-          "species": "PINECO",
-          "level": 35
+          "level": 35,
+          "species": "CLINKLAW"
         },
         {
-          "species": "STANTLER",
-          "level": 36
+          "level": 36,
+          "species": "SHEDSTAG"
         },
         {
-          "species": "URSARING",
-          "level": 37
+          "level": 37,
+          "species": "DOZEBEAR"
         },
         {
-          "species": "GOLBAT",
-          "level": 38
+          "level": 38,
+          "species": "SKEETEREX"
         },
         {
-          "species": "SNEASEL",
-          "level": 39
+          "level": 39,
+          "species": "CROOKVEIL"
         },
         {
-          "species": "DELIBIRD",
-          "level": 40
+          "level": 40,
+          "species": "DRIFTPEG"
         }
       ],
       "night": [
         {
-          "species": "NOCTOWL",
-          "level": 34
+          "level": 34,
+          "species": "BOOMRUFF"
         },
         {
-          "species": "ARIADOS",
-          "level": 35
+          "level": 35,
+          "species": "BARRICANT"
         },
         {
-          "species": "STANTLER",
-          "level": 36
+          "level": 36,
+          "species": "SHEDSTAG"
         },
         {
-          "species": "URSARING",
-          "level": 37
+          "level": 37,
+          "species": "DOZEBEAR"
         },
         {
-          "species": "GOLBAT",
-          "level": 38
+          "level": 38,
+          "species": "SKEETEREX"
         },
         {
-          "species": "SNEASEL",
-          "level": 39
+          "level": 39,
+          "species": "CROOKVEIL"
         },
         {
-          "species": "DELIBIRD",
-          "level": 40
+          "level": 40,
+          "species": "DRIFTPEG"
         }
       ]
     },
     "water_rate": 4,
     "water": [
       {
-        "species": "POLIWAG",
-        "level": 34
+        "level": 34,
+        "species": "CHORIP"
       },
       {
-        "species": "WOOPER",
-        "level": 35
+        "level": 35,
+        "species": "GILLPUP"
       },
       {
-        "species": "MARILL",
-        "level": 40
+        "level": 40,
+        "species": "RIVVIT"
       }
     ]
   },
@@ -943,7 +943,7 @@
       "facing": "east",
       "lines": [
         "These old crowns",
-        "shelter NOCTOWL.",
+        "shelter BOOMRUFF.",
         "Leave the trunks",
         "standing here."
       ]
@@ -1288,5 +1288,616 @@
       "candidate_file_sha256": "9fcc7f029a205363a96dd9ee7f6ca847d6febec0e21844c34f3fd8523011cd0a",
       "authoring_bundle_revision": "v04"
     }
+  },
+  "native_encounter_bindings": {
+    "MnR17C00R00": {
+      "grass_rates": {
+        "day": 10,
+        "morning": 10,
+        "night": 10
+      },
+      "water_rate": 4,
+      "grass": {
+        "morning": [
+          {
+            "level": 34,
+            "species": "BOOMRUFF"
+          },
+          {
+            "level": 35,
+            "species": "CLINKLAW"
+          },
+          {
+            "level": 36,
+            "species": "SHEDSTAG"
+          },
+          {
+            "level": 37,
+            "species": "DOZEBEAR"
+          },
+          {
+            "level": 38,
+            "species": "SKEETEREX"
+          },
+          {
+            "level": 39,
+            "species": "CROOKVEIL"
+          },
+          {
+            "level": 40,
+            "species": "DRIFTPEG"
+          }
+        ],
+        "day": [
+          {
+            "level": 34,
+            "species": "BOOMRUFF"
+          },
+          {
+            "level": 35,
+            "species": "CLINKLAW"
+          },
+          {
+            "level": 36,
+            "species": "SHEDSTAG"
+          },
+          {
+            "level": 37,
+            "species": "DOZEBEAR"
+          },
+          {
+            "level": 38,
+            "species": "SKEETEREX"
+          },
+          {
+            "level": 39,
+            "species": "CROOKVEIL"
+          },
+          {
+            "level": 40,
+            "species": "DRIFTPEG"
+          }
+        ],
+        "night": [
+          {
+            "level": 34,
+            "species": "BOOMRUFF"
+          },
+          {
+            "level": 35,
+            "species": "BARRICANT"
+          },
+          {
+            "level": 36,
+            "species": "SHEDSTAG"
+          },
+          {
+            "level": 37,
+            "species": "DOZEBEAR"
+          },
+          {
+            "level": 38,
+            "species": "SKEETEREX"
+          },
+          {
+            "level": 39,
+            "species": "CROOKVEIL"
+          },
+          {
+            "level": 40,
+            "species": "DRIFTPEG"
+          }
+        ]
+      },
+      "water": {
+        "morning": [
+          {
+            "level": 34,
+            "species": "CHORIP"
+          },
+          {
+            "level": 35,
+            "species": "GILLPUP"
+          },
+          {
+            "level": 40,
+            "species": "RIVVIT"
+          }
+        ],
+        "day": [
+          {
+            "level": 34,
+            "species": "CHORIP"
+          },
+          {
+            "level": 35,
+            "species": "GILLPUP"
+          },
+          {
+            "level": 40,
+            "species": "RIVVIT"
+          }
+        ],
+        "night": [
+          {
+            "level": 34,
+            "species": "CHORIP"
+          },
+          {
+            "level": 35,
+            "species": "GILLPUP"
+          },
+          {
+            "level": 40,
+            "species": "RIVVIT"
+          }
+        ]
+      }
+    },
+    "MnR17C00R01": {
+      "grass_rates": {
+        "day": 10,
+        "morning": 10,
+        "night": 10
+      },
+      "water_rate": 4,
+      "grass": {
+        "morning": [
+          {
+            "level": 34,
+            "species": "BOOMRUFF"
+          },
+          {
+            "level": 35,
+            "species": "CLINKLAW"
+          },
+          {
+            "level": 36,
+            "species": "SHEDSTAG"
+          },
+          {
+            "level": 37,
+            "species": "DOZEBEAR"
+          },
+          {
+            "level": 38,
+            "species": "SKEETEREX"
+          },
+          {
+            "level": 39,
+            "species": "CROOKVEIL"
+          },
+          {
+            "level": 40,
+            "species": "DRIFTPEG"
+          }
+        ],
+        "day": [
+          {
+            "level": 34,
+            "species": "BOOMRUFF"
+          },
+          {
+            "level": 35,
+            "species": "CLINKLAW"
+          },
+          {
+            "level": 36,
+            "species": "SHEDSTAG"
+          },
+          {
+            "level": 37,
+            "species": "DOZEBEAR"
+          },
+          {
+            "level": 38,
+            "species": "SKEETEREX"
+          },
+          {
+            "level": 39,
+            "species": "CROOKVEIL"
+          },
+          {
+            "level": 40,
+            "species": "DRIFTPEG"
+          }
+        ],
+        "night": [
+          {
+            "level": 34,
+            "species": "BOOMRUFF"
+          },
+          {
+            "level": 35,
+            "species": "BARRICANT"
+          },
+          {
+            "level": 36,
+            "species": "SHEDSTAG"
+          },
+          {
+            "level": 37,
+            "species": "DOZEBEAR"
+          },
+          {
+            "level": 38,
+            "species": "SKEETEREX"
+          },
+          {
+            "level": 39,
+            "species": "CROOKVEIL"
+          },
+          {
+            "level": 40,
+            "species": "DRIFTPEG"
+          }
+        ]
+      },
+      "water": {
+        "morning": [
+          {
+            "level": 34,
+            "species": "CHORIP"
+          },
+          {
+            "level": 35,
+            "species": "GILLPUP"
+          },
+          {
+            "level": 40,
+            "species": "RIVVIT"
+          }
+        ],
+        "day": [
+          {
+            "level": 34,
+            "species": "CHORIP"
+          },
+          {
+            "level": 35,
+            "species": "GILLPUP"
+          },
+          {
+            "level": 40,
+            "species": "RIVVIT"
+          }
+        ],
+        "night": [
+          {
+            "level": 34,
+            "species": "CHORIP"
+          },
+          {
+            "level": 35,
+            "species": "GILLPUP"
+          },
+          {
+            "level": 40,
+            "species": "RIVVIT"
+          }
+        ]
+      },
+      "zones": [
+        {
+          "id": "MN_HABITAT_MOOSE_REEDS",
+          "minX": 22,
+          "minY": 40,
+          "maxX": 27,
+          "maxY": 43,
+          "grassRates": {
+            "day": 10,
+            "morning": 10,
+            "night": 10
+          },
+          "grass": {
+            "morning": [
+              {
+                "level": 34,
+                "species": "BOOMRUFF"
+              },
+              {
+                "level": 35,
+                "species": "CLINKLAW"
+              },
+              {
+                "level": 36,
+                "species": "WADEBUD"
+              },
+              {
+                "level": 36,
+                "species": "WADEBUD"
+              },
+              {
+                "level": 38,
+                "species": "SKEETEREX"
+              },
+              {
+                "level": 36,
+                "species": "WADEBUD"
+              },
+              {
+                "level": 36,
+                "species": "WADEBUD"
+              }
+            ],
+            "day": [
+              {
+                "level": 34,
+                "species": "BOOMRUFF"
+              },
+              {
+                "level": 35,
+                "species": "CLINKLAW"
+              },
+              {
+                "level": 36,
+                "species": "WADEBUD"
+              },
+              {
+                "level": 36,
+                "species": "WADEBUD"
+              },
+              {
+                "level": 38,
+                "species": "SKEETEREX"
+              },
+              {
+                "level": 36,
+                "species": "WADEBUD"
+              },
+              {
+                "level": 36,
+                "species": "WADEBUD"
+              }
+            ],
+            "night": [
+              {
+                "level": 34,
+                "species": "BOOMRUFF"
+              },
+              {
+                "level": 35,
+                "species": "BARRICANT"
+              },
+              {
+                "level": 36,
+                "species": "WADEBUD"
+              },
+              {
+                "level": 36,
+                "species": "WADEBUD"
+              },
+              {
+                "level": 38,
+                "species": "SKEETEREX"
+              },
+              {
+                "level": 36,
+                "species": "WADEBUD"
+              },
+              {
+                "level": 36,
+                "species": "WADEBUD"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "MnR17C00R02": {
+      "grass_rates": {
+        "day": 10,
+        "morning": 10,
+        "night": 10
+      },
+      "water_rate": 4,
+      "grass": {
+        "morning": [
+          {
+            "level": 34,
+            "species": "BOOMRUFF"
+          },
+          {
+            "level": 35,
+            "species": "CLINKLAW"
+          },
+          {
+            "level": 36,
+            "species": "SHEDSTAG"
+          },
+          {
+            "level": 37,
+            "species": "DOZEBEAR"
+          },
+          {
+            "level": 38,
+            "species": "SKEETEREX"
+          },
+          {
+            "level": 39,
+            "species": "CROOKVEIL"
+          },
+          {
+            "level": 40,
+            "species": "DRIFTPEG"
+          }
+        ],
+        "day": [
+          {
+            "level": 34,
+            "species": "BOOMRUFF"
+          },
+          {
+            "level": 35,
+            "species": "CLINKLAW"
+          },
+          {
+            "level": 36,
+            "species": "SHEDSTAG"
+          },
+          {
+            "level": 37,
+            "species": "DOZEBEAR"
+          },
+          {
+            "level": 38,
+            "species": "SKEETEREX"
+          },
+          {
+            "level": 39,
+            "species": "CROOKVEIL"
+          },
+          {
+            "level": 40,
+            "species": "DRIFTPEG"
+          }
+        ],
+        "night": [
+          {
+            "level": 34,
+            "species": "BOOMRUFF"
+          },
+          {
+            "level": 35,
+            "species": "BARRICANT"
+          },
+          {
+            "level": 36,
+            "species": "SHEDSTAG"
+          },
+          {
+            "level": 37,
+            "species": "DOZEBEAR"
+          },
+          {
+            "level": 38,
+            "species": "SKEETEREX"
+          },
+          {
+            "level": 39,
+            "species": "CROOKVEIL"
+          },
+          {
+            "level": 40,
+            "species": "DRIFTPEG"
+          }
+        ]
+      },
+      "water": {
+        "morning": [
+          {
+            "level": 34,
+            "species": "CHORIP"
+          },
+          {
+            "level": 35,
+            "species": "GILLPUP"
+          },
+          {
+            "level": 40,
+            "species": "RIVVIT"
+          }
+        ],
+        "day": [
+          {
+            "level": 34,
+            "species": "CHORIP"
+          },
+          {
+            "level": 35,
+            "species": "GILLPUP"
+          },
+          {
+            "level": 40,
+            "species": "RIVVIT"
+          }
+        ],
+        "night": [
+          {
+            "level": 34,
+            "species": "CHORIP"
+          },
+          {
+            "level": 35,
+            "species": "GILLPUP"
+          },
+          {
+            "level": 40,
+            "species": "RIVVIT"
+          }
+        ]
+      }
+    }
+  },
+  "grass_route_review_contract": {
+    "added_patches": [
+      {
+        "purpose": "Northern pine arrival",
+        "metatiles": [
+          [
+            17,
+            4
+          ],
+          [
+            18,
+            4
+          ],
+          [
+            19,
+            4
+          ],
+          [
+            20,
+            4
+          ]
+        ]
+      },
+      {
+        "purpose": "Central pine passage",
+        "metatiles": [
+          [
+            20,
+            18
+          ],
+          [
+            20,
+            19
+          ]
+        ]
+      },
+      {
+        "purpose": "Ordinary marsh trail, bypassed by the native Cut return",
+        "metatiles": [
+          [
+            9,
+            39
+          ],
+          [
+            9,
+            40
+          ]
+        ]
+      },
+      {
+        "purpose": "Southern green-pine bend",
+        "metatiles": [
+          [
+            16,
+            48
+          ],
+          [
+            16,
+            49
+          ],
+          [
+            15,
+            48
+          ]
+        ]
+      }
+    ],
+    "native_ice_route_minimum_grass_steps": 20,
+    "with_native_ice_and_Cut_minimum_grass_steps": 16,
+    "native_return": "Retain the existing useful Cut return and all icy movement; no new ledge is authored on this forest route."
   }
 }

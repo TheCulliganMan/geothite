@@ -1,0 +1,41 @@
+{
+  "name": "FERN",
+  "role": "Elite Four 1",
+  "status": "accepted-native-playable",
+  "source": "native-pixels-v2.json",
+  "integration": "binding-v1.json",
+  "controller": "controller-v1.json",
+  "native": "target/trainer-cast/fern/native-v2",
+  "pack": "content-packs/minnesota-trainer-cast-10-v01.crystalpack",
+  "gameplay": "target/trainer-cast/fern/gameplay-v1",
+  "log": "target/trainer-cast/fern/controller-v1.log",
+  "reference_review": "actual-crystal-sprites-common-palette-and-scale",
+  "review_notes": "Twin long braids and amber wing-panel cape distinguish the Bug specialist. Field braids and folded cape hand-authored; native battle face, braid highlights and boots refined after conversion. Same-scale actual Pokefan/Karen references and native 1x views plus actual game captures reviewed. Real League challenge, PP, save/load, legal victory, counter increment, repeat guard and saved progress pass; prior active registration/count are explicit setup.",
+  "fixture": "Three legal level-60 Minnesota starters; adjacent position and explicit prior-access setup. Local encounter/rewards proof, not earned traversal or intended-level balance.",
+  "evidence_sha256": {
+    "planning/minnesota/npcs/cast/10-fern/native-pixels-v2.json": "1b193843a49d7378e3776220c6fbd82dcf6d95ebcbd5de1787a2c201045cc91b",
+    "planning/minnesota/npcs/cast/10-fern/binding-v1.json": "78b8ddc22bea6564831634809debe2bacc0b8eed3bc7a4be19cb4c4a39c2e917",
+    "planning/minnesota/npcs/cast/10-fern/controller-v1.json": "cbe462200efc2f67865068c4d9abec779e991c01b173e69fcf07995f80017c7d",
+    "target/trainer-cast/fern/native-v2/verification.json": "2c6ddbc75834c7c8e673eb3a5a65a88560098dd2e3d431045aecc52ca691205f",
+    "content-packs/minnesota-trainer-cast-10-v01.crystalpack": "94ae229c07262887be7d69dbd39934668581d591c9e70f0bd7de6e8045f56a3a",
+    "target/trainer-cast/fern/controller-v1.log": "c7958f6876ae908514472554d2740d2af6d4399f22087890db300ff45496d329",
+    "target/trainer-cast/fern/gameplay-v1/original-npc-trainer-intro.png": "7e3fad941d008246cf127870a0e58ba7085394457d602390751216cff8cf3979",
+    "target/trainer-cast/fern/gameplay-v1/original-npc-overworld-state.png": "ddbd2c8c0cb764f3959748fd014c676a9d8e7e0139592a869869714c1b62f154",
+    "target/trainer-cast/fern/gameplay-v1/original-npc-first-turn.png": "6838b1cb23acd5bd569e93299d23225f749c56bb66790fa0a543cc4ff66b9e89",
+    "planning/minnesota/npcs/cast/10-fern/battle-reference-prompt.txt": "8d82dbddf36bda0d271ebdd84666a1792731dadf8f836f641053230dedd4130b",
+    "planning/minnesota/npcs/cast/10-fern/battle-reference-v1.png": "ef05f3b1f6763de59630cb672ace86fb56bbde9f2653d3452bccec20c097a3cd",
+    "target/trainer-cast/fern/real-comparison.png": "fc8f55757b845f39a8b35a80cebdc1e916b050f31ddee789e63c72d02306481b",
+    "target/trainer-cast/fern/battle-real-comparison.png": "8e3d41002a82a011826514b38dcdc18de8ea3c2093edf1bc8b396dac286f3eb5"
+  },
+  "final_pack": "content-packs/minnesota-trainer-cast-36-v01.crystalpack",
+  "final_gameplay": "target/trainer-cast/final-audit/gameplay/10-fern",
+  "final_log": "target/trainer-cast/final-audit/gameplay/10-fern/controller.log",
+  "final_status": "accepted-native-playable-final-pack",
+  "final_review": "Actual battle intro and field captures inspected on exact final pack; art retains accepted native sources and palette.",
+  "final_evidence_sha256": {
+    "target/trainer-cast/final-audit/gameplay/10-fern/controller.log": "77186b0baedb20ce9b353dc2c104b0a3c7821f22c9c34f8463d2ea9a9060e2cf",
+    "target/trainer-cast/final-audit/gameplay/10-fern/original-npc-trainer-intro.png": "7e3fad941d008246cf127870a0e58ba7085394457d602390751216cff8cf3979",
+    "target/trainer-cast/final-audit/gameplay/10-fern/original-npc-overworld-state.png": "ddbd2c8c0cb764f3959748fd014c676a9d8e7e0139592a869869714c1b62f154",
+    "target/trainer-cast/final-audit/gameplay/10-fern/original-npc-first-turn.png": "6838b1cb23acd5bd569e93299d23225f749c56bb66790fa0a543cc4ff66b9e89"
+  }
+}

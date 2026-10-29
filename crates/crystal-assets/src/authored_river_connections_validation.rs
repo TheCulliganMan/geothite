@@ -133,7 +133,8 @@ fn edge(map: &MapModule, side: &str) -> Result<Vec<[u16; 2]>> {
         _ => anyhow::bail!("invalid river edge"),
     })
 }
-fn crossing(
+/// Resolves one outward boundary step using the production connection projection.
+pub(crate) fn crossing(
     pack: &CompiledGamePack,
     map: &MapModule,
     at: [u16; 2],

@@ -1,3 +1,10 @@
+> Current grass revision: see [Border Pines verification](../revisions/route-grass-v01/current-r17-v03/README.md).
+> Four native grass crossings add11metatiles (92→136walking quadrants). The ice
+> route requires20grass steps each way; the existing Cut return reduces this to16.
+> Original ice, Cut, cave, seasonal aliases and the warm North Shore remain exact.
+> Six current-parent native cases,15stdio calls and fresh2D/audio checks pass.
+> Current native Minnesota teams/encounters supersede historical source below.
+
 # Border Pines — woodland source proposal
 
 ## Current executed native evidence — 2026-10-26

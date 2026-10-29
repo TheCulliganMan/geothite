@@ -457,7 +457,7 @@
         14
       ],
       "lines": [
-        "MISSISSIPPI BRIDGE",
+        "PARK POND BRIDGE",
         "Keep to the deck."
       ]
     },
@@ -553,8 +553,8 @@
       "minimum_grass_steps": 4
     }
   ],
-  "status": "Bounded hand-authored east-grove terrain refinement; source graph and source cameras reviewed. Native publication/controller acceptance recorded separately.",
-  "anchor_status": "All 504 native blocks, seven objects, five signs, parties and dialogue match the editor. Native captures corrected bank corners and paved rails; controller inputs verify both choices.",
+  "status": "Current compact R04 grass review on minnesota-current-grass-r04-v02.crystalpack preserves the accepted R17 cave and all690 other maps. Eleven terrain cells add native Park habitat. Two R04 controller cases and reached-save production stdio pass; 2D-only visual review, exact source/native preservation and all377audio pass. Native Minnesota parties and current bank glyphs are frozen in revisions/route-grass-v01/compact-rebase-v01/MN_R04.installed-dossier.json; canonical parties remain source templates for the regional roster layer.",
+  "anchor_status": "All 504 exterior blocks and seven native objects match the revised editor; source and native comparison retain all other content. Both rose-walk directions, bridge rails, signs/pickups, trainer wins, medicine and Ether use, party/bag/flags and Save/Continue passed. Fixture party, three badge bits, carried supplies and clock are explicit setup, not earned progression.",
   "terrain_revision": {
     "id": "route-quality-next-v01",
     "pack_sha256": "1186a24371251f741db88cf35a7863145ed5423da4ad3d7c6485c8f242753ecb",

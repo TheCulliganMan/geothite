@@ -123,7 +123,88 @@
         ]
       }
     ],
-    "notes": "Retain the newly published upper cycle and both climbs; round the spine toe into the mouth court instead of a sheer square end. Continuous native bedrock encloses the hollow."
+    "notes": "Retain the newly published upper cycle and both climbs; round the spine toe into the mouth court instead of a sheer square end. Continuous native bedrock encloses the hollow.",
+    "controller_probes": {
+      "stairs": [
+        {
+          "id": "GUIDE_HOLLOW",
+          "metatile": [
+            2,
+            4
+          ],
+          "block": "12",
+          "before": [
+            5,
+            7
+          ],
+          "lane": [
+            [
+              5,
+              8
+            ],
+            [
+              5,
+              9
+            ]
+          ],
+          "after": [
+            5,
+            10
+          ],
+          "blocked_from": [
+            5,
+            9
+          ],
+          "blocked_target": [
+            4,
+            9
+          ],
+          "destination": [
+            4,
+            5
+          ]
+        },
+        {
+          "id": "ANTIDOTE_HOLLOW",
+          "metatile": [
+            5,
+            3
+          ],
+          "block": "30",
+          "before": [
+            10,
+            5
+          ],
+          "lane": [
+            [
+              10,
+              6
+            ],
+            [
+              10,
+              7
+            ]
+          ],
+          "after": [
+            10,
+            8
+          ],
+          "blocked_from": [
+            10,
+            7
+          ],
+          "blocked_target": [
+            11,
+            7
+          ],
+          "destination": [
+            10,
+            5
+          ]
+        }
+      ]
+    },
+    "current_source_note": "Retain the actual upper cycle and both stair lanes. Native28 rounds the spine toe at metatile4,4; the adjacent9,8 Floor used by the six-input return stays clear. No new service, item, water or field gate."
   },
   "candidate_status": "Source candidate under whole-room, player-camera and production traversal review."
 }

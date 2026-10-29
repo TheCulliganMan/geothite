@@ -15,13 +15,12 @@ use super::super::{
     complete_visible_smoke_player_name_if_needed, initialize_bevy_runtime_shell,
     mark_runtime_snapshot_dirty,
 };
-use super::authored_route_fixture::{Point, RouteGrid, RouteSpec, indoor_walk, neighbors};
+use super::authored_route_fixture::{Point, indoor_walk, neighbors};
 use super::r10_gallery::{
     completed_visible_page, continue_save, flags, map, press, remember_dialogue, settle, tile,
 };
 
 const ROOM: &str = "MnR12Cave1F";
-const OUTSIDE: &str = "MnR12C01R00";
 const EVENT: &str = "EVENT_MN_R12_CAVE_ETHER";
 fn source() -> Value {
     let path = std::env::var_os("CRYSTAL_R12_SHELTER_SOURCE")
@@ -194,66 +193,117 @@ fn blocked(c: &mut VisibleShellController, b: GameButton) {
         assert_eq!(tile(c), before);
     }
 }
-fn outside(runtime: &CrystalRuntime) -> RouteGrid {
-    RouteGrid::new_with_grass(
-        runtime,
-        RouteSpec {
-            prefix: "MnR12",
-            columns: 2,
-            rows: 3,
-            tileset: "mn_gunflint",
-            start: (66, 24),
-            doors: BTreeMap::from([((66, 23), ROOM), ((85, 83), "MnR12RangerHut")]),
+struct Mouth {
+    map_name: &'static str,
+    active: Point,
+    clear: Point,
+}
+
+fn mouth(runtime: &CrystalRuntime) -> Mouth {
+    let inside = &runtime.data().maps[ROOM];
+    assert_eq!(inside.events.warps.len(), 1);
+    let warp = &inside.events.warps[0];
+    assert_eq!(
+        (warp.index, warp.x, warp.y, warp.target_warp_id),
+        (1, 17, 23, 1)
+    );
+    let name = runtime
+        .data()
+        .map_name_for_constant(&warp.target_map_constant)
+        .expect("actual paired shelter exterior");
+    let mouth = match name.as_str() {
+        "MnR12C00R00" => Mouth {
+            map_name: "MnR12C00R00",
+            active: (40, 15),
+            clear: (40, 16),
         },
-    )
+        "MnR12C01R00" => Mouth {
+            map_name: "MnR12C01R00",
+            active: (2, 23),
+            clear: (2, 24),
+        },
+        other => panic!("unreviewed R12 shelter exterior {other}"),
+    };
+    let outside = &runtime.data().maps[mouth.map_name];
+    let target = &outside.events.warps[0];
+    assert_eq!(target.index, 1);
+    assert_eq!((target.x as i16, target.y as i16), mouth.active);
+    assert_eq!(
+        Some(target.target_map_constant.as_str()),
+        inside.attributes.map_constant.as_deref()
+    );
+    assert_eq!(target.target_warp_id, 1);
+    for (at, expected) in [(mouth.active, "CAVE"), (mouth.clear, "FLOOR")] {
+        let x = usize::try_from(at.0).expect("bounded exterior x");
+        let y = usize::try_from(at.1).expect("bounded exterior y");
+        let block = outside.blocks[y / 2 * usize::from(outside.attributes.width) + x / 2];
+        assert_eq!(
+            runtime.data().tilesets[&outside.attributes.tileset_name].collision
+                [&format!("{block:02x}")][y % 2 * 2 + x % 2],
+            expected,
+            "reviewed exterior mouth and safe ground"
+        );
+    }
+    mouth
 }
 fn enter(c: &mut VisibleShellController, runtime: &CrystalRuntime) {
-    outside(runtime).walk(c, (66, 23));
+    let mouth = mouth(runtime);
+    assert_eq!(map(c), mouth.map_name);
+    assert_eq!(tile(c), mouth.clear);
+    for _ in 0..8 {
+        if map(c) == ROOM {
+            break;
+        }
+        press(c, GameButton::Up);
+    }
     assert_eq!(map(c), ROOM);
     assert_eq!(tile(c), (17, 23));
     indoor_walk(c, runtime, (17, 22));
     assert_eq!(tile(c), (17, 22));
 }
 fn leave(c: &mut VisibleShellController, runtime: &CrystalRuntime) {
+    let mouth = mouth(runtime);
     indoor_walk(c, runtime, (17, 22));
     indoor_walk(c, runtime, (17, 23));
-    assert_eq!(map(c), OUTSIDE);
+    assert_eq!(map(c), mouth.map_name);
     let mut arrivals = vec![tile(c)];
-    // The data still targets active CAVE2,23. Different native presentation
+    // The data still targets the active CAVE. Different native presentation
     // stages can expose that tile or its automatic downward Floor step.
     for _ in 0..8 {
         let at = tile(c);
         assert!(
-            at == (2, 23) || at == (2, 24),
+            at == mouth.active || at == mouth.clear,
             "unexpected return: {arrivals:?}"
         );
-        if at == (2, 24) {
+        if at == mouth.clear {
             break;
         }
         c.wait_frames(8).expect("bounded native cave return frames");
         assert_eq!(
             map(c),
-            OUTSIDE,
+            mouth.map_name,
             "return cannot accidentally reenter: {arrivals:?}"
         );
         arrivals.push(tile(c));
     }
-    if tile(c) == (2, 23) {
-        assert!(outside(runtime).floor.contains(&(66, 23)));
-        step(c, GameButton::Down, (2, 24));
+    if tile(c) == mouth.active {
+        step(c, GameButton::Down, mouth.clear);
         arrivals.push(tile(c));
     }
     assert_eq!(
         tile(c),
-        (2, 24),
+        mouth.clear,
         "active warp must permit its clear step: {arrivals:?}"
     );
-    assert_eq!(map(c), OUTSIDE);
+    assert_eq!(map(c), mouth.map_name);
     c.wait_frames(60)
         .expect("native cave exit stable on safe Floor");
-    assert_eq!(map(c), OUTSIDE, "safe Floor must not reenter: {arrivals:?}");
-    assert_eq!(tile(c), (2, 24));
-    assert!(outside(runtime).floor.contains(&(66, 24)));
+    assert_eq!(
+        map(c),
+        mouth.map_name,
+        "safe Floor must not reenter: {arrivals:?}"
+    );
+    assert_eq!(tile(c), mouth.clear);
 }
 fn ordinary_path(runtime: &CrystalRuntime, from: Point, to: Point) -> Vec<Point> {
     let m = &runtime.data().maps[ROOM];
@@ -300,7 +350,9 @@ fn ordinary_path(runtime: &CrystalRuntime, from: Point, to: Point) -> Vec<Point>
 #[test]
 #[ignore = "requires actual revised R12 shelter pack and matching frozen source"]
 fn r12_shelter_controller_original_mouth_three_stairs_two_hop_lanes_and_ordinary_returns() {
-    let (_, runtime, mut c) = fixture(OUTSIDE, (2, 24), PpSetup::Empty);
+    let (_, runtime) = load();
+    let mouth = mouth(&runtime);
+    let (_, runtime, mut c) = fixture(mouth.map_name, mouth.clear, PpSetup::Empty);
     enter(&mut c, &runtime);
     let s = source();
     let probes = &s["review_contract"]["controller_probes"];

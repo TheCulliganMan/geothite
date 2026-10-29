@@ -141,7 +141,7 @@
     "Route42",
     "Route30"
   ],
-  "description": "A narrow two-map river valley with two real timber crossings, unavoidable lower-bank habitat, a small optional limestone terrace and a cave pocket. No field move or one-way hop is required to traverse the route.",
+  "description": "A narrow river valley with two timber crossings, lower-bank habitat, a limestone terrace and a cave pocket. Northbound travel crosses the bird meadow grass neck; southbound walkers can return along the dry trail and hop the woodland ledge. No field move or one-way hop is required to traverse the route.",
   "endpoints": [
     {
       "place": "MANKATO",
@@ -214,7 +214,11 @@
       11
     ],
     [
-      5,
+      8,
+      11
+    ],
+    [
+      8,
       7
     ],
     [
@@ -846,10 +850,55 @@
         42
       ],
       "minimum_return_steps": 9
+    },
+    {
+      "id": "BIRD_MEADOW_RETURN",
+      "bounds_core": [
+        10,
+        20,
+        14,
+        22
+      ],
+      "direction": "south",
+      "source_block": "57",
+      "upper_approach": [
+        11,
+        19
+      ],
+      "hop_from": [
+        11,
+        20
+      ],
+      "landing": [
+        11,
+        22
+      ],
+      "reverse_blocked": [
+        11,
+        21
+      ],
+      "side_barriers": [
+        [
+          9,
+          21
+        ],
+        [
+          14,
+          20
+        ]
+      ],
+      "return_passage_core": [
+        16,
+        20,
+        18,
+        22
+      ],
+      "minimum_return_steps": 13,
+      "purpose": "Northbound walkers must cross the eastern grass neck; southbound travel hops from the dry woodland trail onto a clear landing. No dry uphill bypass."
     }
   ],
-  "status": "Existing two-crossing native design with bounded north/south river closure and ordinary canopy repair. Previous populated journey evidence is historical; this source revision awaits native republication.",
-  "anchor_status": "Original actor, party, port, room and native ledge/ramp coordinates preserved. New source checks pass; changed boundary/canopy blocks require native comparison/controller checks.",
+  "status": "Crystal-reference grass and directional ledge pass accepted in the R03 review pack after exact terrain preservation, visual review, directional proof and native controller / populated journey checks, one route at a time. The accepted native preimage preserves installed river seams and the ragged southern extent; prior canonical geography revisions remain separate.",
+  "anchor_status": "Existing native actors, parties, doors and terrace anchors are retained. New bird meadow grass/ledge terrain is published and compared exactly against the installed preimage; all four ledge lanes, bridges, cave and the populated journey passed production-controller checks including native healing and Save/Continue. Canonical river-bend differences are documented in revisions/route-grass-v01/R03.md.",
   "cut_gates": [],
   "surf_viewpoints": [
     {
@@ -928,5 +977,41 @@
     "hook_native_cells": 12,
     "road_bridge_note": "Actual dry deck and rail collisions separate Surf components; no under-bridge Surf claim.",
     "existing_native_cap_source_reconciliation": 6
-  }
+  },
+  "directional_grass_loops": [
+    {
+      "id": "BIRD_MEADOW_GRASS_OR_RETURN",
+      "ledge_id": "BIRD_MEADOW_RETURN",
+      "northbound_minimum_grass_steps": 5,
+      "southbound_minimum_grass_steps": 0,
+      "dry_trail_core": [
+        [
+          11,
+          16
+        ],
+        [
+          11,
+          19
+        ],
+        [
+          11,
+          22
+        ]
+      ],
+      "grass_regions_core": [
+        [
+          16,
+          18,
+          18,
+          24
+        ],
+        [
+          12,
+          18,
+          16,
+          20
+        ]
+      ]
+    }
+  ]
 }

@@ -49,6 +49,8 @@ mod structure_extensions;
 pub(super) mod park_flowers;
 #[path = "park_gate.rs"]
 pub(super) mod park_gate;
+#[path = "winter_tree_ground.rs"]
+mod winter_tree_ground;
 use crate::exterior_models::{Kind, model, variant_model};
 use crate::new_bark_models::{ModelKind as Johto, model as johto_model};
 
@@ -313,7 +315,7 @@ fn drawing(
             (0..p.width).all(|x| {
                 let s = &cells[(p.row + y) * g.width + p.column + x].source;
                 let sy = y + skip;
-                s.tileset_id.as_ref() == tileset
+                crate::building_style::native_structure_tileset(s.tileset_id.as_ref()) == tileset
                     && s.metatile_id == rows[sy / 4][x / 4]
                     && s.subtile_column as usize == x % 4
                     && s.subtile_row as usize == sy % 4
@@ -384,7 +386,8 @@ fn descriptor(
     let door = door_column(cells, g, p);
     let mut east = false;
     let mut depth = None;
-    let mut asset = match first.tileset_id.as_ref() {
+    let model_tileset = crate::building_style::native_structure_tileset(first.tileset_id.as_ref());
+    let mut asset = match model_tileset {
         "johto" => {
             use Johto::*;
             if connected_gate {
@@ -490,6 +493,8 @@ fn descriptor(
         "kanto" if kanto_gym::matches(cells,g,p)
             && door==Some((p.width-3) as f32) => Asset::KantoGym,
         "kanto" if kanto_brick_office::matches(cells,g,p) => Asset::KantoBrickOffice,
+        "kanto" if first.metatile_id==0x20 && p.height==8
+            && matches!(at(p.width-4,p.height-4),0x72|0x73) => return None,
         "kanto" if kanto_brick_office::double_entrance_candidate(cells,g,p) => return None,
         "kanto" => {
             let kind = match first.metatile_id {
@@ -1087,6 +1092,9 @@ pub(super) fn tree_ground(
     p: TreePlacement,
 ) -> Option<usize> {
     tree_kind(cells, g, p)?;
+    if let Some(sample) = winter_tree_ground::sample(map, cells, shapes, g, p) {
+        return Some(sample);
+    }
     let tileset = cells[p.row * g.width + p.column].source.tileset_id.as_ref();
     ground(
         cells,
@@ -1202,6 +1210,7 @@ pub(super) fn append_tree_with_groves(
     let Some(sample) = tree_ground(map, cells, shapes, g, p) else {
         return false;
     };
+    let winter_tree = winter_tree_ground::sample(map, cells, shapes, g, p).is_some();
     floor(mesh, cells, shapes, g, rect, sample, claimed);
     if park_tree {
         let recipe = super::new_bark::GroveRecipe {
@@ -1283,11 +1292,12 @@ pub(super) fn append_tree_with_groves(
             let neighbors = if small_forest { [false;4] }
                 else { super::new_bark::grove_neighbors(mesh, cells, g, map, p) };
             let recipe = super::new_bark::GroveRecipe {
-                family: crate::foliage::GroveFamily::from_drawing(
-                    cells[p.row*g.width+p.column].source.tileset_id.as_ref(), p.width, p.height),
+                family: if winter_tree { crate::foliage::GroveFamily::WinterPine }
+                    else { crate::foliage::GroveFamily::from_drawing(
+                        cells[p.row*g.width+p.column].source.tileset_id.as_ref(), p.width, p.height) },
                 bounds: b,
                 base_height: p.base_height,
-                tile_height: g.tile_height * if small_forest { 0.5 } else { 1. },
+                tile_height: g.tile_height * if small_forest || winter_tree { 0.5 } else { 1. },
                 coordinates: [
                     map_origin[0] + p.column as i32,
                     map_origin[1] + p.row as i32,
@@ -1304,7 +1314,8 @@ pub(super) fn append_tree_with_groves(
         }
         Asset::Johto(_) | Asset::KantoMuseum | Asset::KantoHouse | Asset::KantoFlatHouse | Asset::KantoBrickOffice | Asset::KantoGym => unreachable!("buildings cannot be tree placements"),
     }
-    let label=if kind==Asset::GroveTree {
+    let label=if winter_tree { crate::foliage::GroveFamily::WinterPine.label() }
+    else if kind==Asset::GroveTree {
         crate::foliage::GroveFamily::from_drawing(cells[p.row*g.width+p.column].source.tileset_id.as_ref(), p.width, p.height).label()
     } else {kind.label()};
     mark_authored_rect(mesh, g, rect, label);
@@ -1322,7 +1333,8 @@ fn props(cells: &[&VisualTile], g: &GridGeometry) -> Vec<Prop> {
     let mut out = Vec::new();
     for tile in cells {
         let s = &tile.source;
-        if !outdoor(s.tileset_id.as_ref()) {
+        let model_tileset = crate::building_style::native_structure_tileset(s.tileset_id.as_ref());
+        if !outdoor(model_tileset) {
             continue;
         }
         let x = tile.column as usize;
@@ -1352,7 +1364,7 @@ fn props(cells: &[&VisualTile], g: &GridGeometry) -> Vec<Prop> {
                 });
             }
         }
-        if matches!(s.tileset_id.as_ref(), "johto" | "johto_modern")
+        if matches!(model_tileset, "johto" | "johto_modern")
             && matches!(s.metatile_id, 0x45 | 0x47 | 0x78 | 0x3d)
             && s.tile_index == 0x4e
             && x + 2 <= g.width
@@ -2268,6 +2280,64 @@ mod tests {
         }
     }
     use std::sync::Arc;
+    #[test]
+    fn headwaters_guru_house_sign_uses_native_volume() {
+        for family in ["johto", "mn_headwaters", "unrelated_custom"] {
+            let sources = [0x4e, 0x4f, 0x5e, 0x5f]
+                .into_iter()
+                .enumerate()
+                .map(|(index, tile)| {
+                    let mut source = super::super::tests::source_with_tile(
+                        0x45,
+                        (index % 2) as u8,
+                        (index / 2) as u8,
+                        tile,
+                    );
+                    source.tileset_id = family.into();
+                    source
+                })
+                .collect();
+            let frame = super::super::tests::frame(2, 2, sources);
+            let cells = frame.tiles.iter().collect::<Vec<_>>();
+            let geometry = GridGeometry {
+                width: 2,
+                height: 2,
+                tile_width: 8.0,
+                tile_height: 8.0,
+                origin_x: 0.0,
+                origin_z: 0.0,
+            };
+            let signs = props(&cells, &geometry);
+            if family == "unrelated_custom" {
+                assert!(signs.is_empty());
+            } else {
+                assert_eq!(signs.len(), 1);
+                assert_eq!(signs[0].kind, Kind::RouteSign);
+                assert!(crate::sign::sign_shape(&cells[0].source).is_some());
+            }
+        }
+    }
+
+    #[test]
+    fn headwaters_guru_house_selects_the_native_volume_model() {
+        for tileset in ["johto", "mn_headwaters", "unrelated_custom"] {
+            let (tiles, geometry, placement) = drawing_cells(tileset, &[&[0x18, 0x19], &[0x16, 0x1e]]);
+            let cells = tiles.iter().collect::<Vec<_>>();
+            let building = descriptor("MnR06C00R00", &cells, &geometry, placement);
+            if tileset == "unrelated_custom" {
+                assert!(building.is_none());
+            } else {
+                assert!(
+                    matches!(
+                        building.map(|building| building.asset),
+                        Some(Asset::Johto(Johto::PlayerHouse))
+                    ),
+                    "{tileset}: use the native volume model, not a source card"
+                );
+            }
+        }
+    }
+
     fn drawing_cells(
         tileset: &str,
         blocks: &[&[u16]],
@@ -2815,7 +2885,7 @@ mod tests {
 
     #[test]
     fn kanto_brick_street_blocks_follow_native_width_and_door_bays_in_every_city() {
-        for width in [8,12,16,20] {for doorway in [false,true] {
+        for width in [8,12,16,20,24,28,32] {for doorway in [false,true] {
             let blocks=width/4;let mut roof=vec![0x54;blocks];roof[0]=0x20;roof[blocks-1]=0x21;
             let mut wall=vec![0x7d;blocks];wall[0]=0x37;wall[blocks-1]=0x7e;
             let door=if !doorway {None} else if width==8 {wall[0]=0x7c;Some(2)}
@@ -2941,7 +3011,7 @@ mod tests {
 
     #[test]
     fn stacked_kanto_brick_drawings_share_source_stories_without_shop_awnings() {
-        for (blocks,stories) in [(2,1),(3,1),(4,4),(5,6)] {
+        for (blocks,stories) in [(2,1),(3,1),(4,4),(5,6),(8,1)] {
             let mut roof=vec![0x54;blocks];roof[0]=0x20;roof[blocks-1]=0x21;
             let mut upper=vec![0x7f;blocks];upper[0]=0x68;upper[blocks-1]=0x69;
             let mut base=vec![0x7d;blocks];base[0]=0x37;base[blocks-1]=0x7e;
@@ -2999,7 +3069,7 @@ mod tests {
             assert!(mesh.solid.positions.iter().any(|p|
                 (p[1]-(5.70+stories as f32*3.80)*8.).abs()<0.001));
             let triangles=mesh.solid.indices.len()/3;
-            assert!(triangles<200_000,"largest supported 20x32 drawing: {triangles} triangles");
+            assert!(triangles<200_000,"complete brick drawing: {triangles} triangles");
             if blocks==4 && stories==4 {assert!(triangles<100_000,"Silph: {triangles} triangles");}
             let source_lights=cells.iter().filter(|t|t.source.tile_index==0x0a).count();
             let model_lights=crate::city_lights::collect(&mesh.solid);
@@ -3678,19 +3748,15 @@ mod tests {
     }
     #[test]
     fn kanto_service_models_follow_the_native_poke_and_mart_signs() {
-        for (map, terminal, expected) in [
-            ("CinnabarIsland", 0x72, Kind::KantoCenter),
-            ("SilverCaveOutside", 0x72, Kind::KantoCenter),
-            ("CeruleanCity", 0x73, Kind::KantoMart),
+        for (map, terminal) in [
+            ("CinnabarIsland", 0x72),
+            ("SilverCaveOutside", 0x72),
+            ("CeruleanCity", 0x73),
         ] {
             let (mut tiles, geometry, placement) =
                 drawing_cells("kanto", &[&[0x20, 0x21], &[0x37, terminal]]);
-            assert_eq!(
-                descriptor(map, &tiles.iter().collect::<Vec<_>>(), &geometry, placement)
-                    .unwrap()
-                    .asset,
-                Asset::World(expected)
-            );
+            assert!(descriptor(map, &tiles.iter().collect::<Vec<_>>(), &geometry, placement).is_none(),
+                "block IDs without the native door and service lettering cannot select a substitute clinic");
             tiles[0].source.subtile_column = 1;
             assert!(
                 descriptor(map, &tiles.iter().collect::<Vec<_>>(), &geometry, placement).is_none()

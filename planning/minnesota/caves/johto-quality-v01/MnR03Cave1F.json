@@ -9,7 +9,7 @@
     "2e 2e 2e 2e 2e 2e 2e 2e",
     "2e 2e 04 05 05 05 06 2e",
     "2e 04 02 0a 34 08 0a 2e",
-    "2e 20 3e 0a 2d 20 22 2e",
+    "2e 3e 02 0a 2d 20 22 2e",
     "2e 2e 20 07 2d 2e 2e 2e",
     "2e 2e 2e 2e 2e 2e 2e 2e"
   ],
@@ -57,10 +57,10 @@
     }
   ],
   "signs": [],
-  "purpose": "A small bank seep occupies the unused west shoulder; the dry passage fits tightly between water and the attached granite nose. The upper blind bend still leads to the Great Ball.",
-  "candidate_status": "Source candidate under whole-room, player-camera and production traversal review.",
+  "purpose": "A west-bank seep is enclosed by fitted granite, beside the original dry walker approach. The narrow passage around the attached granite nose retains its blind bend and original Great Ball alcove.",
+  "candidate_status": "Reviewed native-source revision: solid rock enclosure and west-bank seep; publication and fresh controller/native comparison required before selection.",
   "review_contract": {
-    "quality_revision": "johto-quality-v01",
+    "quality_revision": "current-r03-bank-v01",
     "palette_group": "nite",
     "native_stair_blocks": [],
     "viewpoints": [
@@ -107,6 +107,6 @@
         ]
       }
     ],
-    "notes": "A small bank seep occupies the unused west shoulder; the dry passage fits tightly between water and the attached granite nose. The upper blind bend still leads to the Great Ball."
+    "notes": "A west-bank seep is enclosed by fitted granite, beside the original dry walker approach. The narrow passage around the attached granite nose retains its blind bend and original Great Ball alcove."
   }
 }

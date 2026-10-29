@@ -1,3 +1,7 @@
+use std::env;
+use std::fs;
+use std::path::PathBuf;
+
 use crystal_core::systems::radio_text::{
     RADIO_SCROLL, RadioLinePrinter, RadioScrollState, RadioTextEnvironment, RadioTextError,
     RadioTextWindow,
@@ -40,11 +44,19 @@ fn state(printed: u8) -> RadioScrollState {
         printed,
     }
 }
+fn oracle_root() -> PathBuf {
+    env::var_os("CRYSTAL_RADIO_ORACLE_ROOT")
+        .map(PathBuf::from)
+        .expect("set CRYSTAL_RADIO_ORACLE_ROOT to the external source and capture workspace")
+}
+
+fn oracle_text(name: &str) -> String {
+    fs::read_to_string(oracle_root().join("tools/asm-oracle/fixtures").join(name))
+        .expect("read external radio oracle capture")
+}
+
 fn fixture() -> Value {
-    serde_json::from_str(include_str!(
-        "../../../../tools/asm-oracle/fixtures/radio-program-rocket.json"
-    ))
-    .unwrap()
+    serde_json::from_str(&oracle_text("radio-program-rocket.json")).unwrap()
 }
 
 #[test]
@@ -53,20 +65,30 @@ fn ordinary_radio_text_preserves_the_first_character_and_explicit_coordinates() 
     // two calls overwrite byte 1 and select their own row.
     let text = [0, 0x80, 0x81, 0x50, 0x50];
     for (column, row) in [(1, 14), (9, 14), (1, 16), (12, 16)] {
-        let mut window = RadioTextWindow { tiles: [[0x7f; 20]; 6] };
+        let mut window = RadioTextWindow {
+            tiles: [[0x7f; 20]; 6],
+        };
         let mut printer = RadioLinePrinter::text_at(&text, column, row).unwrap();
-        assert!(printer.advance_frame(&mut window, &Environment, false).unwrap());
+        assert!(
+            printer
+                .advance_frame(&mut window, &Environment, false)
+                .unwrap()
+        );
         let mut expected = [[0x7f; 20]; 6];
         expected[usize::from(row - 12)][usize::from(column)] = 0x80;
         expected[usize::from(row - 12)][usize::from(column + 1)] = 0x81;
         assert_eq!(window.tiles, expected);
     }
     for (column, row) in [(20, 14), (1, 11), (1, 18)] {
-        assert!(matches!(RadioLinePrinter::text_at(&text, column, row), Err(RadioTextError::Position(_))));
+        assert!(matches!(
+            RadioLinePrinter::text_at(&text, column, row),
+            Err(RadioTextError::Position(_))
+        ));
     }
 }
 
 #[test]
+#[ignore = "requires CRYSTAL_RADIO_ORACLE_ROOT with external source and oracle captures"]
 fn radio_printer_replays_every_rocket_rom_tile_write_and_explicit_pause() {
     let fixture = fixture();
     let prints = fixture["prints"].as_array().unwrap();
@@ -118,6 +140,7 @@ fn radio_printer_replays_every_rocket_rom_tile_write_and_explicit_pause() {
 }
 
 #[test]
+#[ignore = "requires CRYSTAL_RADIO_ORACLE_ROOT with external source and oracle captures"]
 fn radio_scroll_replays_the_rom_countdown_and_full_tile_rows() {
     let fixture = fixture();
     let loops = fixture["loops"].as_array().unwrap();
@@ -218,7 +241,7 @@ fn radio_ram_and_day_commands_keep_place_string_expansion() {
 fn exported_radio_bodies()
 -> std::collections::BTreeMap<String, crystal_core::systems::script_text::ScriptTextBody> {
     use crystal_core::systems::script_text::{ScriptTextBody, ScriptTextBodyCommand};
-    let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../../..");
+    let root = oracle_root();
     let source =
         std::fs::read_to_string(root.join("vendor/pokecrystal/engine/pokegear/radio.asm")).unwrap();
     let catalog: Value = serde_json::from_slice(
@@ -266,6 +289,7 @@ impl RadioTextEnvironment for CapturedEnvironment<'_> {
 }
 
 #[test]
+#[ignore = "requires CRYSTAL_RADIO_ORACLE_ROOT with external source and oracle captures"]
 fn radio_exported_commands_compile_to_source_bytes_and_replay_dynamic_lucky_text() {
     use crystal_core::systems::radio_text::encode_radio_text_body;
     let bodies = exported_radio_bodies();
@@ -281,10 +305,7 @@ fn radio_exported_commands_compile_to_source_bytes_and_replay_dynamic_lucky_text
             encoded.len()
         );
     }
-    let lucky: Value = serde_json::from_str(include_str!(
-        "../../../../tools/asm-oracle/fixtures/radio-program-lucky.json"
-    ))
-    .unwrap();
+    let lucky: Value = serde_json::from_str(&oracle_text("radio-program-lucky.json")).unwrap();
     assert_eq!(lucky["prints"].as_array().unwrap().len(), 18);
     assert!(lucky["unfinished_print"].is_null());
     for (fixture, is_lucky) in [(&rocket, false), (&lucky, true)] {
@@ -367,23 +388,15 @@ fn radio_encoder_preserves_controls_and_rejects_missing_operands() {
 }
 
 #[test]
+#[ignore = "requires CRYSTAL_RADIO_ORACLE_ROOT with external source and oracle captures"]
 fn radio_program_transitions_match_four_source_broadcasts() {
     use crystal_core::systems::{radio_program::*, radio_text::encode_radio_text_body};
     let bodies = exported_radio_bodies();
     let fixtures = [
         fixture(),
-        serde_json::from_str(include_str!(
-            "../../../../tools/asm-oracle/fixtures/radio-program-lucky.json"
-        ))
-        .unwrap(),
-        serde_json::from_str(include_str!(
-            "../../../../tools/asm-oracle/fixtures/radio-program-ben-sunday.json"
-        ))
-        .unwrap(),
-        serde_json::from_str(include_str!(
-            "../../../../tools/asm-oracle/fixtures/radio-program-fern-monday.json"
-        ))
-        .unwrap(),
+        serde_json::from_str(&oracle_text("radio-program-lucky.json")).unwrap(),
+        serde_json::from_str(&oracle_text("radio-program-ben-sunday.json")).unwrap(),
+        serde_json::from_str(&oracle_text("radio-program-fern-monday.json")).unwrap(),
     ];
     let mut checked = 0;
     for fixture in &fixtures {
@@ -595,9 +608,10 @@ fn radio_program_preserves_rare_lucky_branch_music_end_and_start_conditions() {
 }
 
 #[test]
+#[ignore = "requires CRYSTAL_RADIO_ORACLE_ROOT with external source and oracle captures"]
 fn places_people_replays_all_source_random_draws_text_and_tiles() {
     use crystal_core::systems::{radio_program::*, radio_text::encode_radio_text_body};
-    let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../../..");
+    let root = oracle_root();
     let classes =
         std::fs::read_to_string(root.join("vendor/pokecrystal/constants/trainer_constants.asm"))
             .unwrap();
@@ -644,10 +658,8 @@ fn places_people_replays_all_source_random_draws_text_and_tiles() {
         hidden_people_beat_e4: &e4,
         hidden_people_beat_kanto: &kanto,
     };
-    let fixture: Value = serde_json::from_str(include_str!(
-        "../../../../tools/asm-oracle/fixtures/radio-program-places-people.json"
-    ))
-    .unwrap();
+    let fixture: Value =
+        serde_json::from_str(&oracle_text("radio-program-places-people.json")).unwrap();
     let draws = fixture["random"].as_array().unwrap();
     let symbols = serde_json::from_value(fixture["ram_symbols"].clone()).unwrap();
     let bodies = exported_radio_bodies();
@@ -853,17 +865,15 @@ fn pokedex_show_selects_only_caught_species_with_source_rejection_sampling() {
 }
 
 #[test]
+#[ignore = "requires CRYSTAL_RADIO_ORACLE_ROOT with external source and oracle captures"]
 fn pokedex_show_replays_source_selection_category_and_six_entry_lines() {
     use crystal_core::systems::{radio_program::*, radio_text::encode_radio_text_body};
-    let fixture: Value = serde_json::from_str(include_str!(
-        "../../../../tools/asm-oracle/fixtures/radio-program-pokedex.json"
-    ))
-    .unwrap();
+    let fixture: Value = serde_json::from_str(&oracle_text("radio-program-pokedex.json")).unwrap();
     let mut caught = [false; 251];
     caught[fixture["caught_species"].as_u64().unwrap() as usize - 1] = true;
     let bodies = exported_radio_bodies();
     let symbols = serde_json::from_value(fixture["ram_symbols"].clone()).unwrap();
-    let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../../..");
+    let root = oracle_root();
     let entries: std::collections::BTreeMap<
         String,
         crystal_core::models::pokedex::RuntimePokedexEntry,
@@ -1020,12 +1030,11 @@ fn oak_radio_starts_its_source_program() {
 }
 
 #[test]
+#[ignore = "requires CRYSTAL_RADIO_ORACLE_ROOT with external source and oracle captures"]
 fn oak_radio_replays_source_cycle_and_bumper_delays() {
     use crystal_core::systems::{radio_program::*, radio_text::encode_radio_text_body};
-    let fixture: Value = serde_json::from_str(include_str!(
-        "../../../../tools/asm-oracle/fixtures/radio-program-oak-cycle.json"
-    ))
-    .unwrap();
+    let fixture: Value =
+        serde_json::from_str(&oracle_text("radio-program-oak-cycle.json")).unwrap();
     let bodies = exported_radio_bodies();
     let symbols = serde_json::from_value(fixture["ram_symbols"].clone()).unwrap();
     let loops = fixture["loops"].as_array().unwrap();
@@ -1384,6 +1393,7 @@ fn buena_radio_samples_once_and_reuses_all_source_password_indices() {
 }
 
 #[test]
+#[ignore = "requires CRYSTAL_RADIO_ORACLE_ROOT with external source and oracle captures"]
 fn buena_radio_shutdown_preserves_source_text_order_and_resets() {
     use crystal_core::systems::radio_program::*;
     let buena = RadioBuenaContext {
@@ -1434,13 +1444,14 @@ fn buena_radio_shutdown_preserves_source_text_order_and_resets() {
 }
 
 #[test]
+#[ignore = "requires CRYSTAL_RADIO_ORACLE_ROOT with external source and oracle captures"]
 fn buena_radio_replays_source_night_and_off_air_prints() {
     use crystal_core::systems::{radio_program::*, radio_text::encode_radio_text_body};
     let bodies = exported_radio_bodies();
     let mut checked = 0;
     for source in [
-        include_str!("../../../../tools/asm-oracle/fixtures/radio-program-buena-night.json"),
-        include_str!("../../../../tools/asm-oracle/fixtures/radio-program-buena-day.json"),
+        &oracle_text("radio-program-buena-night.json"),
+        &oracle_text("radio-program-buena-day.json"),
     ] {
         let fixture: Value = serde_json::from_str(source).unwrap();
         let symbols = serde_json::from_value(fixture["ram_symbols"].clone()).unwrap();
@@ -1589,6 +1600,7 @@ fn radio_random_retry_preserves_source_carry_input() {
 }
 
 #[test]
+#[ignore = "requires CRYSTAL_RADIO_ORACLE_ROOT with external source and oracle captures"]
 fn radio_playback_runs_rocket_program_printer_and_scroll_as_one_owner() {
     use crystal_core::systems::{radio_playback::*, radio_program::*};
     struct Host {
@@ -1878,12 +1890,13 @@ fn radio_random_exhaustion_stops_rejection_sampling_without_a_fabricated_byte() 
 }
 
 #[test]
+#[ignore = "requires CRYSTAL_RADIO_ORACLE_ROOT with external source and oracle captures"]
 fn radio_pokedex_catalog_encoding_matches_all_source_entry_bytes() {
     use crystal_core::{
         models::pokedex::RuntimePokedexEntry,
         systems::radio_text::{encode_radio_pokedex_entry, encode_radio_string},
     };
-    let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../../..");
+    let root = oracle_root();
     let entries: std::collections::BTreeMap<String, RuntimePokedexEntry> = serde_json::from_slice(
         &std::fs::read(root.join("apps/web/assets/data/pokedex_entries.json")).unwrap(),
     )

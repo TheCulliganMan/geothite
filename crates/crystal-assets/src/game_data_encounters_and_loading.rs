@@ -46,6 +46,14 @@ impl GameDataSet {
         S::Error: std::fmt::Display,
     {
         self.require_no_active_battle(state, "fishing rod")?;
+        self.validate_saved_safari_references(state)?;
+        let safari_active = crystal_core::systems::safari::session(state)?;
+        anyhow::ensure!(
+            safari_active.as_ref().is_none_or(
+                |active| active.phase == crystal_core::systems::safari::SafariPhase::Exploring
+            ),
+            "Safari capture owns fishing input"
+        );
         if matches!(
             session.player.mode,
             MovementMode::Surf | MovementMode::SurfPika
@@ -87,23 +95,40 @@ impl GameDataSet {
             .saturating_add(fishing_session.cast_frames)
             .saturating_add(fishing_session.bite_delay_frames);
         let bite = fishing_bite(&mut next_state, &mut fishing_session, bite_frame);
+        let mut safari_encounter = None;
         let wild_battle = if bite == Some(true) {
             fishing_battle_trigger(&mut next_state);
             if let Some(encounter) = fishing_session.outcome.encounter.clone() {
-                Some(
-                    self.start_fishing_battle_with_rng(
-                        &mut next_state,
-                        &map_name,
-                        session.player.tile,
-                        encounter,
-                        time_of_day,
-                        rolled.bite_roll,
-                        rolled
-                            .slot_roll
-                            .context("fishing bite is missing its slot roll")?,
-                        &mut rng,
-                    )?,
-                )
+                if safari_active.is_some() {
+                    safari_encounter = Some(
+                        self.start_safari_fishing_encounter(
+                            &mut next_state,
+                            session,
+                            &fishing_session,
+                            rolled
+                                .slot_roll
+                                .context("Safari bite is missing its native slot roll")?,
+                            target,
+                            &mut rng,
+                        )?,
+                    );
+                    None
+                } else {
+                    Some(
+                        self.start_fishing_battle_with_rng(
+                            &mut next_state,
+                            &map_name,
+                            session.player.tile,
+                            encounter,
+                            time_of_day,
+                            rolled.bite_roll,
+                            rolled
+                                .slot_roll
+                                .context("fishing bite is missing its slot roll")?,
+                            &mut rng,
+                        )?,
+                    )
+                }
             } else {
                 None
             }
@@ -117,6 +142,7 @@ impl GameDataSet {
             session: fishing_session,
             bite,
             wild_battle,
+            safari_encounter,
         })
     }
 
@@ -3106,7 +3132,15 @@ impl GameDataSet {
         state: &crystal_core::state::GameState,
         request: TrainerBattleRequest,
     ) -> Result<TrainerBattleStartStatus> {
-        if self.is_trainer_rematch_script(&request.source_script) {
+        if self.uses_scaled_trainer(&request.source_script, &request.trainer_id) {
+            if !request.event_flag.is_empty()
+                && state.flags.is_event_flag_set(&request.event_flag)?
+            {
+                return Ok(TrainerBattleStartStatus::AlreadyDefeated {
+                    event_flag: request.event_flag,
+                    callback: request.callback,
+                });
+            }
             return self.rematch_battle_start(state, request);
         }
         Ok(trainer_battle_start(

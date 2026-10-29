@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "id": "MN_LAKESIDE_ANGLER",
+  "name": "ANGLER NETTA",
+  "status": "accepted-native-playable",
+  "overworld_frames": 6,
+  "overworld_size": [
+    16,
+    16
+  ],
+  "battle_size": [
+    56,
+    56
+  ],
+  "palette_rgb555": [
+    32767,
+    18239,
+    15590,
+    0
+  ],
+  "source": "native-pixels-v3.json",
+  "placement": "placement-v1.json",
+  "pack": "content-packs/minnesota-npcs-ref-05-v01.crystalpack",
+  "parent": "content-packs/minnesota-npcs-ref-04-v01.crystalpack",
+  "runtime_checks": {
+    "one_controller_test_passed": true,
+    "talk_and_input_ownership": true,
+    "battle_turn_and_pp": true,
+    "battle_save_load": true,
+    "actual_victory_and_defeat_flag_before_render_capture": true,
+    "post_battle_talk": true,
+    "existing_trainers_and_assets_preserved": true
+  },
+  "manual_visual_review": "Direct actual Crystal Fisher/Teacher/Chris six-pose comparison at equal palette/scale, own-palette 1x/8x and actual Bemidji pier reviewed. Broad asymmetric floppy brim, bob with broken indigo highlight clusters, small eyes, rolled pale sleeves, readable pocket vest, pale trousers and indigo boots. Revised rear hair after flat-blue first candidate. Rod/lure retained in unchanged battle art only to avoid crowded 16x16 silhouette. Distinct rear/profile, raised-foot stride and arm swing. Full encounter passed in 8.71s; battle/palette/gameplay/unrelated assets preserved.",
+  "evidence_sha256": {
+    "planning/minnesota/npcs/sprites/05-lakeside-angler/native-pixels-v3.json": "aa448ccb1d5406bf87794aec1805e5b161c1c65d61882f7834707cb5e9a4738c",
+    "planning/minnesota/npcs/sprites/05-lakeside-angler/placement-v1.json": "7a452cab65688e02f52d241772b2e85276cb4ba8059721ba8cb7f432bbc91c85",
+    "content-packs/minnesota-npcs-ref-05-v01.crystalpack": "998d096fb25b0c77a7af6567ea4b28c73ebf762a754c1d218d2285279b1782c7",
+    "target/npc-sprites/angler/controller-reference-v01.log": "633aee44ca71353412d2030401dc3e33b3fad3232e142203debacabf57fa63f1",
+    "target/npc-sprites/angler/gameplay-reference-v01/original-npc-trainer-intro.png": "5258277e76475c3469359db6f89f75346fc62e38d1fd780778845798b3fac4e8",
+    "target/npc-sprites/angler/gameplay-reference-v01/original-npc-first-turn.png": "515ec068a234a79348a5225b50a66f2c32c041e34148b426b0faa72da6ab1bfd",
+    "target/npc-sprites/angler/gameplay-reference-v01/original-npc-overworld-state.png": "b778837c3b78bb8666b9fae9d7df5ba065a03c67f9256141280bd2a8417e1211",
+    "target/npc-sprites/hand-review/angler-real-comparison-v2.png": "428208532c123a28f42d3fb6e57c237a62684786df793a03e96f6df89dd387d6",
+    "target/npc-sprites/angler/reference-v2/comparison.png": "b1ba142fcb8183f9a9705b8728df092a4ef4e8dbd3d2a8702a74abde1f707352",
+    "target/npc-sprites/angler/reference-v2/verification.json": "fec8b5a042f02cc8f9e7633c1f06cbef6d97f89935652abbd6e3627deec35c59",
+    "target/npc-sprites/angler/reference-v2/overworld-review.png": "d1fdfe45219052b8786306c9e338908ab6e62351d3a2ca2deeeadcc7848071ca",
+    "target/npc-sprites/angler/reference-v2/overworld-review-8x.png": "2a5b45263ec7d2aea870b55368779b0cb30a3e143644c92f5ad8570955eff7f6"
+  },
+  "overworld_revision": "real-reference-hand-edited-v3",
+  "reference_review": "actual-crystal-sprites-common-palette-and-scale"
+}

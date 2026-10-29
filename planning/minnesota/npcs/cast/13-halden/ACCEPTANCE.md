@@ -1,0 +1,5 @@
+# HALDEN
+
+Current Dragon specialist Halden remains separate from rival Reed. Silver swept hair, angular clean-shaven face, maroon travel coat, high ivory lapels and black boots; hair and face redrawn in native battle pixels after conversion. Field hair/temples/coat tails hand-authored. Actual Crystal Cooltrainer comparisons and production captures reviewed. League counter 3-to-4, PP, save/load, victory, repeat guard and saved progress pass; no Champion or Hall-of-Fame claim.
+
+Native source: native-pixels-v2.json. Actual controller encounter passed on `content-packs/minnesota-trainer-cast-13-v01.crystalpack` with PP mutation, battle save/load, legal victory, follow-up and saved victory state. Boss rows additionally assert the native badge and exactly one authored TM, or League progress, as appropriate. Explicit fixture: Three legal level-60 Minnesota starters; adjacent position and explicit prior-access setup. Local encounter/rewards proof, not earned traversal or intended-level balance.

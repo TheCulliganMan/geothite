@@ -2270,6 +2270,7 @@ impl RuntimeGameShell {
             session: outcome.session,
             bite: outcome.bite,
             wild_battle: outcome.wild_battle,
+            safari_encounter: outcome.safari_encounter,
             state_checksum: mutation.state_checksum,
         })
     }
@@ -2293,6 +2294,7 @@ impl RuntimeGameShell {
                 session: outcome.cast.session,
                 bite: outcome.cast.bite,
                 wild_battle: outcome.cast.wild_battle,
+                safari_encounter: outcome.cast.safari_encounter,
                 state_checksum: outcome.cast_state_checksum,
             },
             state_checksum: mutation.state_checksum,
@@ -4718,6 +4720,9 @@ impl RuntimeGameShell {
             visible_object_facings.insert(object_id.clone(), facing);
         }
         Ok(RuntimeShellSnapshot {
+            safari: crystal_core::systems::safari::session(&self.session.state).map_err(anyhow::Error::new)?,
+            safari_catch_presentation: crystal_core::systems::safari_catch_presentation::presentation(&self.session.state).map_err(anyhow::Error::new)?,
+            safari_prompt: crystal_core::systems::safari_prompt::prompt(&self.session.state).map_err(anyhow::Error::new)?,
             competitive_battle: RuntimeCompetitiveBattleSnapshot::from_state(
                 &self.runtime.data, &self.session.state)?,
             boot: self.runtime.boot_summary(),

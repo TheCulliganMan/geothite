@@ -1,0 +1,23 @@
+[
+  {
+    "exterior": "MnR01C00R00",
+    "room": "MnDriftlessFishingGuruHouse",
+    "constant": "MN_DRIFTLESS_FISHING_GURU_HOUSE",
+    "facade_metatile": [12, 15],
+    "rod_tier": 0
+  },
+  {
+    "exterior": "MnR03C00R00",
+    "room": "MnRiverValleyFishingGuruHouse",
+    "constant": "MN_RIVER_VALLEY_FISHING_GURU_HOUSE",
+    "facade_metatile": [15, 13],
+    "rod_tier": 1
+  },
+  {
+    "exterior": "MnR06C00R00",
+    "room": "MnPineCountryFishingGuruHouse",
+    "constant": "MN_PINE_COUNTRY_FISHING_GURU_HOUSE",
+    "facade_metatile": [18, 18],
+    "rod_tier": 2
+  }
+]

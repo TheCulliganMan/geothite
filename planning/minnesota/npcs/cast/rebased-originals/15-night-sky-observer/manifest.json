@@ -1,0 +1,47 @@
+{
+  "name": "NIGHT SKY OBSERVER ASTER",
+  "role": "preserved original NPC",
+  "status": "accepted-native-playable-rebased",
+  "source": "native-pixels-v1.json",
+  "source_path": "planning/minnesota/npcs/sprites/15-night-sky-observer/native-pixels-v1.json",
+  "integration": "placement-v1.json",
+  "controller": "placement-v1.json",
+  "native": "target/npc-sprites/observer/native-v3",
+  "pack": "content-packs/minnesota-trainer-cast-36-v01.crystalpack",
+  "gameplay": "target/trainer-cast/rebase/15-night-sky-observer/gameplay",
+  "log": "target/trainer-cast/rebase/15-night-sky-observer/controller.log",
+  "original_placement": "planning/minnesota/npcs/sprites/15-night-sky-observer/placement-v1.json",
+  "old_map": "MnGrandMarais",
+  "new_map": "MnGrandMarais",
+  "old_tile": [
+    26,
+    27
+  ],
+  "new_tile": [
+    26,
+    27
+  ],
+  "scope": "Exact accepted original art, palette, party, class and dialogue. Placement rebased to safe compact geography; original geography not transplanted.",
+  "evidence_sha256": {
+    "planning/minnesota/npcs/cast/rebased-originals/15-night-sky-observer/placement-v1.json": "6e84b1a1c622f69626cd756068fbd3017a2bcc982854de7c389e9ccb8f2c7a31",
+    "planning/minnesota/npcs/sprites/15-night-sky-observer/native-pixels-v1.json": "66d7a09252b0cd8144c004dcd6125f4554b7336e09b732d4639e8da638c31dce",
+    "planning/minnesota/npcs/sprites/15-night-sky-observer/manifest.json": "5e7be91b2a8b74a01cc274da1af5c84b4dd63af83c3a88d03853ebe61e4a6bce",
+    "target/trainer-cast/rebase/15-night-sky-observer/controller.log": "25cbf823b62575ef851b0896a464e2f68c58d468c6483b1905142b65ea72ab71",
+    "content-packs/minnesota-trainer-cast-36-v01.crystalpack": "c7a16077f5c056f60ea248bde2446e704a4bd1154e97c9d2e9b10724ec644f17",
+    "target/npc-sprites/observer/native-v3/verification.json": "9a07f88b092e2cf7c6e73bc6bd0ff5a64543366b3ad0c485626b807fe8e3b825",
+    "target/trainer-cast/rebase/15-night-sky-observer/gameplay/original-npc-trainer-intro.png": "eb31b5f4973a1ce1883e723586e889e043a2295007d72c3005caeba35a5545ab",
+    "target/trainer-cast/rebase/15-night-sky-observer/gameplay/original-npc-overworld-state.png": "c134f95a1a69e4e9780d3fc7715584c44b49746c32d347fed0f6910136aab6b6",
+    "target/trainer-cast/rebase/15-night-sky-observer/gameplay/original-npc-first-turn.png": "dd764aeb23aab7e3ac71cbfe07c50ad5e852849cfa3fed61240653eca62d3bd0"
+  },
+  "final_pack": "content-packs/minnesota-trainer-cast-36-v01.crystalpack",
+  "final_gameplay": "target/trainer-cast/final-audit/gameplay/rebased-originals-15-night-sky-observer",
+  "final_log": "target/trainer-cast/final-audit/gameplay/rebased-originals-15-night-sky-observer/controller.log",
+  "final_status": "accepted-native-playable-final-pack",
+  "final_review": "Actual battle intro and field captures inspected on exact final pack; art retains accepted native sources and palette.",
+  "final_evidence_sha256": {
+    "target/trainer-cast/final-audit/gameplay/rebased-originals-15-night-sky-observer/controller.log": "c8be9e4cbf102072dddd0cc1b07496f66322c66467515f65e72356b4d89663f6",
+    "target/trainer-cast/final-audit/gameplay/rebased-originals-15-night-sky-observer/original-npc-trainer-intro.png": "eb31b5f4973a1ce1883e723586e889e043a2295007d72c3005caeba35a5545ab",
+    "target/trainer-cast/final-audit/gameplay/rebased-originals-15-night-sky-observer/original-npc-overworld-state.png": "c134f95a1a69e4e9780d3fc7715584c44b49746c32d347fed0f6910136aab6b6",
+    "target/trainer-cast/final-audit/gameplay/rebased-originals-15-night-sky-observer/original-npc-first-turn.png": "dd764aeb23aab7e3ac71cbfe07c50ad5e852849cfa3fed61240653eca62d3bd0"
+  }
+}

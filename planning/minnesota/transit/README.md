@@ -1,30 +1,32 @@
 # Glacier Line
 
-Current native status: the composed Detroit Lakes child contains the Detroit
-Lakes, St. Cloud and St. Paul public station halls with real city entrances.
-Detroit Lakes publication and verification are recorded in
-[its runbook](../interior-life/DETROIT-LAKES.md). No train service or visited
-callbacks are installed. Staples, Red Wing and Winona still need distinct
-station/outpost sources and native publication. The full six-stop service
-contract below remains unfinished. Earlier source-only notes describe the
-original depot proposal; current St. Paul exterior coordinates come from its
-[repair contract](../towns/st-paul-repair/contract.json).
+Current native status: the protected interior branch contains five public halls
+with real entrances: Detroit Lakes, Staples, St. Cloud, St. Paul and Winona.
+Staples and Winona have visit callbacks; the other three callbacks and passenger
+service remain unfinished. Red Wing is excluded by user direction; its rejected
+source and renders are retained only as history. See the
+[current correction](../interior-life/RAIL-STOP-CORRECTION.md).
 
-The line connects **Detroit Lakes — Staples — St. Cloud — St. Paul — Red Wing —
-Winona** in both directions. This follows the Minnesota stops in Amtrak's
-[Empire Builder timetable](https://content.amtrak.com/content/timetable/Empire%20Builder.pdf).
-Glacier Line is this mod's fictional service name. Moorhead connects to Detroit
-Lakes by the existing prairie route; Minneapolis connects through St. Paul.
-Neither needs a duplicate rail stop. Staples and Red Wing are rail outposts,
-separate from the nineteen main hub reservations and eight gyms.
+The new [Rust service candidate](GLACIER-SERVICE.md) contains all five visit
+callbacks and 20 guarded native ride branches. Geometry, typed/raw script
+reconstruction, menu definitions, pack serialization, preservation, unsafe-input
+rejection and all 377 audio checks pass. Actual controller journeys and native
+LCD acceptance are still pending; the verified city/interior union remains
+selected. This candidate does not reintroduce Red Wing.
+
+The approved line connects **Detroit Lakes — Staples — St. Cloud — St. Paul —
+Winona** in both directions. Glacier Line is this mod's fictional service.
+Moorhead connects to Detroit Lakes by the existing prairie route; Minneapolis
+connects through St. Paul. Staples is a rail outpost, separate from the nineteen
+main hub reservations and eight gyms.
 
 The source of truth is [glacier-line.json](glacier-line.json). The first complete
 station interior is [MnStPaulUnionDepot.json](MnStPaulUnionDepot.json), a hand-set
 16×12 metatile room using the unchanged native `train_station` art. Its source
 render is [the complete depot](../renders/glacier-line/st-paul-union-depot.png),
 with [160×144 walking views](../renders/glacier-line/st-paul-player-views.png).
-These original images are source reviews. The current three public halls are
-installed, with their own later native review; the six-stop ride service is not.
+These original images are source reviews. The current five public halls are
+installed, with their own later native review; the five-stop ride service is not.
 
 The original depot pass left an empty blue central concourse. The second pass
 adds a planted seating island and an actual cabinet edge near the courier,
@@ -35,6 +37,12 @@ and train. Review its proportions against the saved Goldenrod/Saffron source
 station references in the same render directory.
 
 ## Physical implementation contract
+
+This section retains the original depot design. Its exterior `(44,37)` proposal
+and original pending-publication notes are historical. The installed city uses
+the repaired facade/index bindings; the current executable contract is
+[glacier-service-v01.json](glacier-service-v01.json), verified against the
+selected pack. Do not publish from these old exterior coordinates.
 
 Coordinates below are 16px core tiles. Rows in the JSON are 32px metatiles.
 
@@ -100,8 +108,8 @@ second travel dispatcher or substitute a captioned teleport for the ride.
 
 Freeze each remaining station's geometry separately: timber/lake district at
 Detroit Lakes, compact freight junction at Staples, granite/riverbank district
-at St. Cloud, bluff-foot lookout at Red Wing and levee district at Winona.
-No repeated six-station template. Complete each public approach and its honest
+at St. Cloud, levee district at Winona.
+No repeated station template. Complete each public approach and its honest
 city or route linkage before describing that stop as playable.
 
 ## Fast source loop and acceptance
@@ -119,7 +127,7 @@ on the conductor and shared visit flags. Exact station/network source copies,
 whole terrain, actor composite, conversion stages, all camera crops and nearest
 previews remain under immutable hash directories; latest aliases are extra copies.
 
-Before publishing service, test all thirty directed stop bindings and actual
+Before publishing service, test all twenty directed stop bindings and actual
 controller rides in both directions, pre-courier denial, unvisited destination
 denial, B cancellation, repeat visits, free departure/arrival, city-door returns,
 Save/Continue and unaffected money/party/story flags. Retain actual native train

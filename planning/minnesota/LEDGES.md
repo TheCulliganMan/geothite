@@ -13,6 +13,7 @@ The current four compact rural routes have exact authored contracts:
 | [Driftless](routes/MN_R01.md) | `(29,15)` → `(29,18)`, south | Westbound bluff alternative drops onto the lower road. Uphill uses the eastern ramp, core rectangle `[40,18,42,20)`. | 43 tiles |
 | [Prairie Farm](routes/MN_R02.md) | `(48,15)` → `(45,15)`, west | Nursery shortcut works westbound. Eastbound walkers use the southern farm lane, `[48,23,55,28)`. | 41 tiles |
 | [River Valley](routes/MN_R03.md) | `(37,39)` → `(37,42)`, south | Drop from the optional reward terrace. Its eastern ramp, `[40,40,42,42)`, provides the climb back. | 11 tiles |
+| [River Valley bird meadow](revisions/route-grass-v01/R03.md) | `(11,19)` → `(11,22)`, south | Northbound travel crosses five grass steps around the eastern side. The southbound dry trail reaches the hop; ordinary uphill return crosses `[16,20,18,22)`. Published terrain, directional graph and all four native controller lanes passed; populated journey and Continue passed. | 13 tiles |
 | [Central Lakes](routes/MN_R15.md) | `(22,17)` → `(22,20)`, south | Northern meadow bypasses Ron eastbound; the lower mouth cannot be used to enter the meadow. Returning through the western entrance, `[14,18,16,20)`, passes Ron's challenge until his defeat. | 31 tiles |
 
 Distances count ordinary core-tile walking steps through FLOOR/TALL_GRASS,
@@ -114,3 +115,49 @@ barriers and can guard a ledge side. Headbutt starts an encounter without
 clearing that collision. `CUT_TREE` can open and remains invalid as a permanent
 side guard. Choose the art that belongs to the terrain; do not add artificial
 rock fins merely to satisfy a narrower token list in a planning checker.
+
+
+R05's Route45-reference grass pass now pairs these existing drops with meaningful
+outdoor habitat: seven grass steps on the upper climb and six on the lower,
+with zero in those bands on the corresponding southbound returns. Native
+uphill/drop traversal, reverse blocking and the populated journey passed.
+The original two-ended cave remains an alternate route. Evidence is in
+[the R05 grass runbook](revisions/route-grass-v01/R05.md).
+
+
+R06 adds [the bird-glade north-road return](revisions/route-grass-v01/R06.md):
+core `(45,9)` → `(45,12)`, south, on native `57`. Its two lanes have blocked
+reverse/side approaches. The ordinary eastern grass loop is nine steps and
+requires seven grass steps northbound; the southbound dry hop saves six steps.
+Both lanes, their grass climb, the original Cut-gated lookout and the populated
+journey passed native controls and Continue.
+
+
+R07's [expanded meadow pass](revisions/route-grass-v01/R07.md) now pairs the
+existing sandbank return with eight grass steps on the outward route and zero
+in those bands on the return. The 119-step ordinary return and native drop are
+unchanged. Published directional checks, the populated eight-trainer journey,
+Cut/Surf and Save/Continue passed.
+
+
+R08's [lake circuit revision](revisions/route-grass-v01/R08.md) preserves both
+native drops. The Birch climb crosses at least four grass steps, while its
+southbound hop stays dry; the ordinary return is19 steps. The Cedar bank's
+local pine shoulder similarly requires four grass steps climbing and none on
+the hop, with an11-step local return. Its longer whole-lake alternative remains
+available. Both lanes of each drop and the ordinary returns passed native inputs.
+
+
+R09's [reclaimed quarry pass](revisions/route-grass-v01/R09.md) keeps the original
+spoil approach(81,39)→landing(81,42). The ordinary shelf circuit from the west ramp now
+crosses four grass steps before its upper ledge approach; the downhill hop and
+lower ore-track return remain dry. The129-step ordinary return and original
+ledge geometry are unchanged. Native geometry, actual shoulder encounters and
+published bypass/reverse-wall negative checks passed.
+
+
+R10's [carrier-bank revision](revisions/route-grass-v01/R10.md) pairs four grass
+steps on the ordinary upper circuit with the original dry approach(25,19)→
+landing(25,22) hop. The lower carrier road remains dry. Closing the original
+cliff-foot bypass makes the ordinary return39 steps; stair/ledge collision,
+actual grass encounters and the native geometry tour passed.

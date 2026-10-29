@@ -1,0 +1,25 @@
+{
+  "trainers": [
+    {
+      "id": "MN_GYM_1",
+      "map": "MnRochesterGym",
+      "approach": [
+        6,
+        4
+      ],
+      "facing": "south",
+      "trainer_class": "MN_LEADER_VAREL",
+      "sprite": "SPRITE_MN_LEADER_VAREL",
+      "actor_script": "MnRochesterGymLeader",
+      "fixture_events": [
+        "EVENT_MN_DELIVERED_ROCHESTER_PARCEL",
+        "EVENT_MN_GYM_1_COURT_OPEN",
+        "EVENT_MN_GYM_1_TRAINER_1_DEFEATED",
+        "EVENT_MN_GYM_1_TRAINER_2_DEFEATED"
+      ],
+      "defeated_flag": "EVENT_MN_GYM_1_DEFEATED",
+      "badge_slot": 1,
+      "reward_item": "TM_HEADBUTT"
+    }
+  ]
+}

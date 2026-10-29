@@ -1,0 +1,137 @@
+{
+  "schema_version": 2,
+  "id": "MnMississippiConfluenceC00R00",
+  "status": "DETACHED_SOURCE_CANDIDATE_NOT_PUBLISHED",
+  "dimensions_metatiles": [
+    6,
+    8
+  ],
+  "tileset": "johto",
+  "compiled_tileset": "johto",
+  "source_pixels_modified": false,
+  "shore_fitting": "explicit_source_edges",
+  "reject_cliff_cuts": true,
+  "layers": [
+    {
+      "name": "Explicit row 00 x00..05",
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        0,
+        6,
+        1
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Explicit row 01 x00..05",
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        1,
+        6,
+        2
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Explicit row 02 x00..05",
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        2,
+        6,
+        3
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Explicit row 03 x00..05",
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        3,
+        6,
+        4
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Explicit row 04 x00..03",
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        4,
+        4,
+        5
+      ],
+      "block": "39"
+    },
+    {
+      "name": "Explicit row 04 x04..04",
+      "kind": "block_rect",
+      "bounds": [
+        4,
+        4,
+        5,
+        5
+      ],
+      "block": "38"
+    },
+    {
+      "name": "Explicit row 04 x05..05",
+      "kind": "block_rect",
+      "bounds": [
+        5,
+        4,
+        6,
+        5
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Explicit row 05 x00..04",
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        5,
+        5,
+        6
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Explicit row 05 x05..05",
+      "kind": "block_rect",
+      "bounds": [
+        5,
+        5,
+        6,
+        6
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Explicit row 06 x00..05",
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        6,
+        6,
+        7
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Explicit row 07 x00..05",
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        7,
+        6,
+        8
+      ],
+      "block": "05"
+    }
+  ]
+}

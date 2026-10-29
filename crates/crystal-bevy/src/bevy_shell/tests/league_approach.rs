@@ -7,14 +7,16 @@ use std::time::{SystemTime, UNIX_EPOCH};
 use crystal_assets::{AssetRoot, read_loaded_verified_compiled_game_pack};
 use crystal_core::input::GameButton;
 use crystal_core::models::{Dv, LearnedMove};
-use crystal_runtime::CrystalRuntime;
+use crystal_runtime::{CrystalRuntime, RuntimeBattleKind};
 
 use super::super::{
     BevyShellConfig, BevyShellStart, VisibleShellController,
     complete_visible_smoke_player_name_if_needed, initialize_bevy_runtime_shell,
     mark_runtime_snapshot_dirty,
 };
-use super::authored_route_fixture::{RouteGrid, RouteSpec, finish_text, indoor_walk, position};
+use super::authored_route_fixture::{
+    RouteGrid, RouteSpec, escape_wild, finish_text, indoor_walk, position,
+};
 
 type Point = (i16, i16);
 
@@ -148,7 +150,7 @@ fn league_approach_controller_walks_clipped_maps_hop_ramp_shelter_and_resources(
         ((19, 27), "sheltered bay"),
         ((17, 57), "Ice shaped"),
         ((27, 71), "cave keeper"),
-        ((39, 65), "Noctowl"),
+        ((39, 65), "BOOMRUFF"),
         ((33, 121), "Ely is just south"),
         ((28, 12), "LEAGUE APPROACH"),
         ((32, 24), "BORDER LAKE"),
@@ -296,167 +298,106 @@ fn league_approach_controller_native_keeper_restores_fainted_hp_status_and_pp() 
     }
 }
 
-#[test]
-#[ignore = "requires the revised external League Approach pack"]
-fn league_approach_controller_native_ada_battle_spends_pp_wins_and_persists() {
-    let (root, runtime, mut controller) = fixture("MnR13C00R00", (23, 24));
-    // Explicit level60 partner/badges; this proves battle execution, not balance.
-    let mut mew = runtime
+// Initial legal local fixture only; every subsequent change uses production input.
+fn grass_partner(c: &mut VisibleShellController, runtime: &CrystalRuntime, repel: bool) {
+    let mut partner = runtime
         .data()
         .create_pokemon("MEW", 60, Dv::default())
-        .expect("legal late fixture partner");
-    mew.moves = ["PSYCHIC_M", "CUT"]
+        .expect("same legal level60 local partner");
+    partner.moves = ["EARTHQUAKE", "SLUDGE_BOMB", "THUNDERBOLT", "CUT"]
         .into_iter()
-        .map(|name| LearnedMove {
-            name: name.into(),
-            current_pp: runtime.data().moves[name].pp,
-            pp_ups: 0,
+        .map(|name| {
+            assert!(
+                runtime.data().pokemon["MEW"]
+                    .tmhm_learnset
+                    .iter()
+                    .any(|m| m == name)
+            );
+            LearnedMove {
+                name: name.into(),
+                current_pp: runtime.data().moves[name].pp,
+                pp_ups: 0,
+            }
         })
         .collect();
-    let state = controller.shell.shell.session_mut().state_mut();
-    assert!(state.storage.party.add_pokemon(mew));
+    let state = c.shell.shell.session_mut().state_mut();
+    assert!(state.storage.party.add_pokemon(partner));
     state.badges.johto = [true; 8];
-    state.sync_party_from_storage();
-    mark_runtime_snapshot_dirty(&mut controller.shell);
-    controller.press(GameButton::Down).expect("face Ada");
-    controller.press(GameButton::A).expect("challenge Ada");
-    for _ in 0..64 {
-        let s = controller.snapshot().expect("trainer intro");
-        if s.ui.menu.as_ref().is_some_and(|menu| {
-            menu.layout
-                .vertical_menus
-                .iter()
-                .flat_map(|m| &m.options)
-                .any(|option| option.contains("FIGHT"))
-        }) {
-            break;
-        }
-        controller.press(GameButton::A).expect("intro page");
+    for name in [
+        "ZEPHYR", "HIVE", "PLAIN", "FOG", "STORM", "MINERAL", "GLACIER", "RISING",
+    ] {
+        state
+            .flags
+            .set_engine_flag(&format!("ENGINE_{name}BADGE"), true)
+            .expect("consistent initial badge fixture");
     }
-    assert!(
-        controller
-            .snapshot()
-            .expect("native trainer battle")
-            .battle
-            .is_some()
+    if repel {
+        assert!(
+            state
+                .bag
+                .add_item(&runtime.data().items["MAX_REPEL"], 2)
+                .expect("initial Repel stock")
+        );
+    }
+    state.sync_party_from_storage();
+    mark_runtime_snapshot_dirty(&mut c.shell);
+}
+
+fn native_kind(runtime: &CrystalRuntime, at: Point) -> &str {
+    let module = &runtime.data().maps[&format!("MnR13C00R{:02}", at.1 / 48)];
+    let x = usize::try_from(at.0).expect("positive native x");
+    let y = usize::try_from(at.1 % 48).expect("positive native y");
+    let block = module.blocks[y / 2 * usize::from(module.attributes.width) + x / 2];
+    &runtime.data().tilesets[&module.attributes.tileset_name].collision[&format!("{block:02x}")]
+        [y % 2 * 2 + x % 2]
+}
+
+#[test]
+#[ignore = "requires the current parent League Approach grass pack"]
+fn league_approach_controller_native_avrin_battle_spends_effective_pp_wins_and_continues() {
+    let (root, runtime, mut c) = fixture("MnR13C00R00", (23, 24));
+    grass_partner(&mut c, &runtime, false);
+    assert_eq!(
+        runtime.data().trainers.trainers["MN_R13_T01"]
+            .party
+            .iter()
+            .map(|p| p.species.as_str())
+            .collect::<Vec<_>>(),
+        ["BUOYOSTIC", "REEDRAFT"]
     );
-    controller.press(GameButton::A).expect("FIGHT");
-    let battle = controller
-        .snapshot()
-        .expect("move menu")
-        .battle
-        .expect("battle");
-    let active = battle.active_player_party_index.expect("active");
-    let selected = battle.player_moves[0].clone();
-    controller
-        .press(GameButton::A)
-        .expect("actual selected move");
+    let before = c.snapshot().expect("explicit initial party");
+    super::r10_gallery::press(&mut c, GameButton::Down);
+    super::r10_gallery::press(&mut c, GameButton::A);
+    assert!(super::rochester_earned::try_battle(
+        &mut c,
+        &runtime,
+        "MN_R13_T01",
+        "EVENT_MN_R13_TRAINER_01"
+    ));
+    super::r10_gallery::settle(&mut c, "actual Avrin victory");
+    let won = c.snapshot().expect("native battle complete");
+    assert!(won.battle.is_none() && won.party.slots[0].pokemon.hp > 0);
     assert!(
-        controller.snapshot().expect("PP mutation").party.slots[active]
+        won.party.slots[0]
             .pokemon
             .moves
             .iter()
-            .find(|m| m.name == selected.name)
-            .expect("selected move")
-            .current_pp
-            < selected.current_pp
-    );
-    for _ in 0..512 {
-        let snapshot = controller.snapshot().expect("battle state");
-        let Some(battle) = &snapshot.battle else {
-            break;
-        };
-        let button = if let Some(menu) = &snapshot.ui.menu {
-            let options = menu
-                .layout
-                .vertical_menus
+            .any(|m| before.party.slots[0]
+                .pokemon
+                .moves
                 .iter()
-                .flat_map(|m| &m.options)
-                .collect::<Vec<_>>();
-            if options.iter().any(|entry| entry.contains("change <PKMN>")) {
-                GameButton::B
-            } else if options.iter().any(|entry| entry.contains("FIGHT")) {
-                let cursor = controller
-                    .shell
-                    .battle_action_cursor
-                    .as_ref()
-                    .expect("production action cursor")
-                    .option_index;
-                if cursor / 2 > 0 {
-                    GameButton::Up
-                } else if !cursor.is_multiple_of(2) {
-                    GameButton::Left
-                } else {
-                    GameButton::A
-                }
-            } else if let Some(cursor) = &controller.shell.battle_party_action_cursor {
-                if cursor.option_index > 0 {
-                    GameButton::Up
-                } else {
-                    GameButton::A
-                }
-            } else if let Some(cursor) = &controller.shell.battle_switch_cursor {
-                let active = battle.active_player_party_index;
-                let target = snapshot
-                    .party
-                    .slots
-                    .iter()
-                    .position(|slot| slot.pokemon.hp > 0 && Some(slot.index) != active)
-                    .expect("living replacement");
-                if cursor.option_index < target {
-                    GameButton::Down
-                } else if cursor.option_index > target {
-                    GameButton::Up
-                } else {
-                    GameButton::A
-                }
-            } else if let Some(cursor) = &controller.shell.battle_move_cursor {
-                let active = battle.active_player_party_index.expect("active partner");
-                let name = if snapshot.party.slots[active].pokemon.species.id == "MEW" {
-                    "PSYCHIC_M"
-                } else {
-                    "ICE_BEAM"
-                };
-                let target = battle
-                    .player_moves
-                    .iter()
-                    .position(|m| m.name == name && m.current_pp > 0)
-                    .expect("chosen legal attack");
-                if cursor.option_index < target {
-                    GameButton::Down
-                } else if cursor.option_index > target {
-                    GameButton::Up
-                } else {
-                    GameButton::A
-                }
-            } else {
-                GameButton::A
-            }
-        } else {
-            GameButton::A
-        };
-        controller
-            .press(button)
-            .expect("native battle choice or text page");
-    }
-    let ended = controller.snapshot().expect("battle complete");
-    assert!(ended.battle.is_none(), "Ada battle failed to end");
-    assert!(ended.party.slots.iter().any(|slot| slot.pokemon.hp > 0));
-    finish_text(&mut controller);
-    assert!(
-        controller
-            .shell
-            .shell
-            .session()
-            .state()
-            .flags
-            .is_event_flag_set("EVENT_MN_R13_TRAINER_01")
-            .expect("native defeat flag")
+                .any(|old| old.name == m.name && m.current_pp < old.current_pp)),
+        "actual effective attack spends PP"
     );
-    let save = save_path("battle");
-    controller.save(&save).expect("save native battle outcome");
-    let mut loaded = VisibleShellController::load_save(root, runtime, save.clone(), None)
-        .expect("Continue battle");
+    let save = save_path("current-avrin-win");
+    c.save(&save).expect("save actual victory");
+    let mut loaded = VisibleShellController::load_save(root, runtime, save, None)
+        .expect("Continue actual native victory");
+    let after = loaded.snapshot().expect("continued party and route");
+    assert_eq!(won.party, after.party);
+    assert_eq!(won.bag, after.bag);
+    assert_eq!(won.overworld.map_name, after.overworld.map_name);
+    assert_eq!(won.overworld.tile, after.overworld.tile);
     assert!(
         loaded
             .shell
@@ -465,11 +406,89 @@ fn league_approach_controller_native_ada_battle_spends_pp_wins_and_persists() {
             .state()
             .flags
             .is_event_flag_set("EVENT_MN_R13_TRAINER_01")
-            .expect("saved defeat flag")
+            .expect("continued victory flag")
     );
-    assert_eq!(
-        loaded.snapshot().expect("saved party").party,
-        controller.snapshot().expect("party").party
+    if let Some(path) = std::env::var_os("CRYSTAL_LEAGUE_APPROACH_GRASS_BATTLE_SAVE") {
+        loaded
+            .save(PathBuf::from(path))
+            .expect("export current grass battle reached save");
+    }
+}
+
+#[test]
+#[ignore = "requires the current parent League Approach grass pack"]
+fn league_approach_controller_grassy_tor_climb_has_dry_hop_return_and_continue() {
+    let (root, runtime, mut c) = fixture("MnR13C00R00", (39, 26));
+    grass_partner(&mut c, &runtime, true);
+    super::minneapolis_falls::grand_marais_harbor::use_max_repel(&mut c, &runtime);
+    let route = grid(&runtime);
+    let mut grass = 0;
+    route.walk_with_actions(
+        &mut c,
+        (39, 23),
+        |c| {
+            grass += usize::from(native_kind(&runtime, position(c)) == "TALL_GRASS");
+        },
+        escape_wild,
     );
-    super::authored_route_fixture::cleanup_reached_save(&save);
+    assert!(grass >= 2, "ordinary ramp climb must cross added habitat");
+    assert_eq!(native_kind(&runtime, (39, 23)), "FLOOR");
+    assert_eq!(native_kind(&runtime, (39, 26)), "FLOOR");
+    step(&mut c, GameButton::Down, (39, 26));
+    for _ in 0..4 {
+        c.press(GameButton::Up).expect("blocked reverse hop");
+    }
+    assert_eq!(position(&mut c), (39, 26));
+    let before = c.snapshot().expect("actual dry drop return");
+    let save = save_path("grass-tor-return");
+    c.save(&save).expect("save reached tor return");
+    let mut loaded =
+        VisibleShellController::load_save(root, runtime, save, None).expect("Continue tor return");
+    let after = loaded.snapshot().expect("continued tor return");
+    assert_eq!(position(&mut loaded), (39, 26));
+    assert_eq!(before.party, after.party);
+    assert_eq!(before.bag, after.bag);
+}
+
+#[test]
+#[ignore = "requires the current parent League Approach grass pack"]
+fn league_approach_controller_new_pine_neck_grass_encounter_native_run_and_continue() {
+    let (root, runtime, mut c) = fixture("MnR13C00R02", (35, 9));
+    grass_partner(&mut c, &runtime, false);
+    assert_eq!(native_kind(&runtime, (35, 106)), "TALL_GRASS");
+    for _ in 0..512 {
+        if c.snapshot()
+            .expect("native habitat encounter")
+            .battle
+            .is_some()
+        {
+            break;
+        }
+        let input = if position(&mut c).1 <= 106 {
+            GameButton::Down
+        } else {
+            GameButton::Up
+        };
+        super::r10_gallery::press(&mut c, input);
+    }
+    assert!(matches!(
+        c.snapshot()
+            .expect("new native grass battle")
+            .battle
+            .expect("actual habitat must encounter")
+            .kind,
+        RuntimeBattleKind::Wild { .. }
+    ));
+    escape_wild(&mut c);
+    let escaped = c.snapshot().expect("native RUN complete");
+    assert!(escaped.battle.is_none());
+    assert_eq!(escaped.overworld.map_name, "MnR13C00R02");
+    let save = save_path("pine-neck-wild-run");
+    c.save(&save).expect("save actual wild escape");
+    let mut loaded = VisibleShellController::load_save(root, runtime, save, None)
+        .expect("Continue actual wild escape");
+    let after = loaded.snapshot().expect("continued new habitat");
+    assert_eq!(escaped.party, after.party);
+    assert_eq!(escaped.bag, after.bag);
+    assert_eq!(escaped.overworld.tile, after.overworld.tile);
 }

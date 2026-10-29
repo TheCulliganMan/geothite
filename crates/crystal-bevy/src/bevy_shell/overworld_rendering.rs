@@ -499,7 +499,8 @@ fn retained_field_fullscreen_active(runtime_shell: &BevyRuntimeShell) -> bool {
         || (runtime_shell.pending_name_choice.is_some()
         && runtime_shell.pending_standard_capture.is_none()
         && runtime_shell.pending_gift_pokemon_nickname.is_none()
-        && runtime_shell.pending_egg_hatch_nickname.is_none())
+        && runtime_shell.pending_egg_hatch_nickname.is_none()
+        && !safari_catch_visible::native_surface_owns(runtime_shell))
         || runtime_shell.pending_name_input.is_some()
         || runtime_shell.pending_mail_input.is_some()
         || runtime_shell.pending_mail_read.is_some()
@@ -3471,10 +3472,23 @@ fn spawn_field_pokegear_screen(
     images: &mut Assets<Image>,
 ) -> Result<()> {
     if visible_pokegear_exit_palettes_are_clear(runtime_shell) {
-        return commit_presented_fullscreen_solid(commands, rendered_art, [255, 255, 255, 255], 3.4, images);
+        return commit_presented_fullscreen_solid(
+            commands,
+            rendered_art,
+            [255, 255, 255, 255],
+            3.4,
+            images,
+        );
     }
     if runtime_shell.pokegear_map_radio_delay.is_some() {
-        return spawn_furniture_radio_textbox(commands, snapshot, runtime_shell, rendered_art, asset_root, images);
+        return spawn_furniture_radio_textbox(
+            commands,
+            snapshot,
+            runtime_shell,
+            rendered_art,
+            asset_root,
+            images,
+        );
     }
     match runtime_shell.pokegear_page {
         PokegearPage::Clock => {}
@@ -3499,7 +3513,11 @@ fn spawn_field_pokegear_screen(
         if runtime_shell.pokegear_radio_station.is_some() {
             visible_radio_text_rows(runtime_shell)?;
         } else {
-            anyhow::ensure!(runtime_shell.pokegear_radio_tuning_knob <= 80 && runtime_shell.pokegear_radio_tuning_knob % 2 == 0, "invalid radio tuning knob");
+            anyhow::ensure!(
+                runtime_shell.pokegear_radio_tuning_knob <= 80
+                    && runtime_shell.pokegear_radio_tuning_knob % 2 == 0,
+                "invalid radio tuning knob"
+            );
         }
     }
     let tile_palette_map = &snapshot.presentation.pokegear_town_map_palette_map;
@@ -3520,8 +3538,15 @@ fn spawn_field_pokegear_screen(
             .iter()
             .find(|map| map.map_name == snapshot.overworld.map_name)
             .and_then(|map| map.metadata.as_ref())
-            .with_context(|| format!("Pokégear active map {} has no metadata", snapshot.overworld.map_name))?
-            .phone_service >> 4 == 0;
+            .with_context(|| {
+                format!(
+                    "Pokégear active map {} has no metadata",
+                    snapshot.overworld.map_name
+                )
+            })?
+            .phone_service
+            >> 4
+            == 0;
         let frame = pokegear_card_frame_for_art(
             rendered_art,
             asset_root,
@@ -3544,7 +3569,11 @@ fn spawn_field_pokegear_screen(
         )?;
     }
     if runtime_shell.pokegear_page == PokegearPage::Map {
-        let region = visible_pokegear_region(snapshot, runtime_shell.pokegear_standalone_map)?;
+        let region = if minnesota_map_active(snapshot) {
+            "MINNESOTA"
+        } else {
+            visible_pokegear_region(snapshot, runtime_shell.pokegear_standalone_map)?
+        };
         let frame = town_map_frame_for_art(
             rendered_art,
             asset_root,
@@ -3589,7 +3618,9 @@ fn spawn_field_pokegear_screen(
         if !runtime_shell.pokegear_standalone_map {
             spawn_pokegear_card_objects(commands, snapshot, runtime_shell, asset_root, images)?;
         }
-        let landmark = selected_pokegear_landmark(snapshot, runtime_shell.pokegear_cursor)?;
+        let original_landmark =
+            selected_pokegear_landmark(snapshot, runtime_shell.pokegear_cursor)?;
+        let landmark = projected_minnesota_landmark(snapshot, original_landmark);
         for (row, line) in town_map_label_lines(&landmark.name).iter().enumerate() {
             if line.is_empty() {
                 continue;
@@ -3606,15 +3637,29 @@ fn spawn_field_pokegear_screen(
                 3.8,
             );
         }
+        if minnesota_map_active(snapshot) {
+            let (x, y) = battle_hud_tile_origin(2.0, 16.0);
+            spawn_field_command_bitmap_text(
+                commands,
+                rendered_art,
+                asset_root,
+                images,
+                "MINNESOTA",
+                x,
+                y,
+                3.8,
+            );
+        }
         let current = visible_pokegear_player_landmark(snapshot)?;
+        let current = projected_minnesota_landmark(snapshot, current);
         spawn_town_map_markers(
             commands,
             snapshot,
             rendered_art,
             asset_root,
             images,
-            current,
-            landmark,
+            &current,
+            &landmark,
             runtime_shell.pokegear_map_animation_frame / 9,
         )?;
     }
@@ -4191,7 +4236,25 @@ fn spawn_field_fly_map_screen(
     asset_root: &AssetRoot,
     images: &mut Assets<Image>,
 ) -> Result<()> {
-    commit_presented_fullscreen_solid(commands, rendered_art, [173, 209, 148, 255], 3.4, images)?;
+    if minnesota_map_active(snapshot) {
+        let frame = minnesota_map_frame(snapshot, rendered_art, asset_root, images, true)?;
+        commit_presented_fullscreen_frame(
+            commands,
+            rendered_art,
+            &frame,
+            PresentedFullscreenFrameSource::Cached,
+            3.4,
+            images,
+        )?;
+    } else {
+        commit_presented_fullscreen_solid(
+            commands,
+            rendered_art,
+            [173, 209, 148, 255],
+            3.4,
+            images,
+        )?;
+    }
     let destinations = active_fly_destinations(snapshot, &runtime_shell.shell)?;
     let selected = strict_readonly_cursor_index(
         &runtime_shell.fly_cursor,
@@ -4217,20 +4280,64 @@ fn spawn_field_fly_map_screen(
                     destination.label
                 )
             })?;
+        let landmark = projected_minnesota_landmark(snapshot, landmark);
         let x = (landmark.x as f32 - 8.0).clamp(0.0, 159.0);
         let y = (landmark.y as f32 - 16.0).clamp(0.0, 143.0);
         let is_selected = selected == index;
+        if minnesota_map_active(snapshot) {
+            if is_selected {
+                let scale = TILE_SIZE / SOURCE_TILE_SIZE as f32;
+                for rect in town_map_marker_rects(&landmark, &landmark) {
+                    commands.spawn((
+                        Sprite {
+                            color: Color::BLACK,
+                            custom_size: Some(rect.size * scale),
+                            ..default()
+                        },
+                        Transform::from_xyz(
+                            PLAYFIELD_LEFT + rect.center.x * scale,
+                            PLAYFIELD_TOP - rect.center.y * scale,
+                            3.7,
+                        ),
+                        FieldCommandMarker,
+                    ));
+                }
+                for (row, line) in town_map_label_lines(&landmark.name).iter().enumerate() {
+                    let (x, y) = battle_hud_tile_origin(9.0, row as f32);
+                    spawn_field_command_bitmap_text(
+                        commands,
+                        rendered_art,
+                        asset_root,
+                        images,
+                        line,
+                        x,
+                        y,
+                        3.8,
+                    );
+                }
+            }
+            continue;
+        }
         commands.spawn((
-            (Sprite {
+            (
+                Sprite {
                     color: if is_selected {
                         Color::srgb(0.95, 0.12, 0.12)
                     } else {
                         Color::srgb(0.18, 0.42, 0.82)
                     },
-                    custom_size: Some(Vec2::splat(if is_selected { 6.0 } else { 3.0 })),
+                    custom_size: Some(
+                        Vec2::splat(if is_selected { 6.0 } else { 3.0 })
+                            * (TILE_SIZE / SOURCE_TILE_SIZE as f32),
+                    ),
                     ..default()
                 },
-Transform::from_xyz(PLAYFIELD_LEFT + x, PLAYFIELD_TOP - y, 3.7),),
+                Transform::from_xyz(
+                    PLAYFIELD_LEFT + x * (TILE_SIZE / SOURCE_TILE_SIZE as f32),
+                    PLAYFIELD_TOP - y * (TILE_SIZE / SOURCE_TILE_SIZE as f32),
+                    3.7,
+                ),
+            ),
             FieldCommandMarker,
         ));
     }
@@ -4238,13 +4345,21 @@ Transform::from_xyz(PLAYFIELD_LEFT + x, PLAYFIELD_TOP - y, 3.7),),
         .get(selected)
         .map(fly_destination_label)
         .context("selected FLY destination is missing")?;
-    let (x, y) = battle_hud_tile_origin(1.0, 15.0);
+    let regional = minnesota_map_active(snapshot);
+    let (x, y) = battle_hud_tile_origin(
+        if regional { 2.0 } else { 1.0 },
+        if regional { 16.0 } else { 15.0 },
+    );
     spawn_field_command_bitmap_text(
         commands,
         rendered_art,
         asset_root,
         images,
-        &format!(">{}", compact_scene_label(&label, 17)),
+        &if regional {
+            "FLY TO:".to_string()
+        } else {
+            format!(">{}", compact_scene_label(&label, 17))
+        },
         x,
         y,
         3.8,
@@ -8766,7 +8881,8 @@ fn spawn_scene_dialog_text_content(
     {
         let (x, y) = battle_hud_tile_origin(
             FIELD_TEXT_BOX_TEXT_LEFT_TILE,
-            FIELD_TEXT_BOX_TEXT_TOP_TILE + index as f32 * FIELD_TEXT_BOX_ROW_SPACING_TILES,
+            FIELD_TEXT_BOX_TEXT_TOP_TILE + index as f32 * FIELD_TEXT_BOX_ROW_SPACING_TILES
+                + field_text_timing::scroll_offset(runtime_shell),
         );
         spawn_scene_dialog_bitmap_text(
             commands,
@@ -8811,6 +8927,7 @@ fn field_dialogue_prompt_arrow_visible(
         };
         let page_index = reveal.page_index.min(pages.len().saturating_sub(1));
         return reveal.text == pages.join("\u{1e}")
+            && field_text_timing::complete(runtime_shell)
             && visible_field_text_reveal_is_complete(reveal, &pages[page_index])
             && (page_index + 1 < pages.len()
                 || visible_field_notice_uses_prompt_arrow(runtime_shell))
@@ -8823,7 +8940,8 @@ fn field_dialogue_prompt_arrow_visible(
         && reveal.text == pages.join("\u{1e}")
         && reveal.page_index + 1 < pages.len()
     {
-        return visible_field_text_reveal_is_complete(reveal, &pages[reveal.page_index])
+        return field_text_timing::complete(runtime_shell)
+            && visible_field_text_reveal_is_complete(reveal, &pages[reveal.page_index])
             && visible_vblank_counter_bit4(runtime_shell);
     }
     snapshot.ui.pending_text_wait.is_some()
@@ -9248,10 +9366,18 @@ fn visible_name_entry_presentation_input(runtime_shell: &BevyRuntimeShell, input
 }
 
 fn visible_name_entry_pokemon_art(runtime_shell: &BevyRuntimeShell, input: &PendingNameInput) -> Result<Option<NameEntryPokemonArt>> {
-    if input.label != "POKéMON'S NAME?" { return Ok(None); }
     let snapshot = runtime_shell.shell.presentation_snapshot()?;
-    let pokemon = &snapshot.party.slots.get(runtime_shell.party_cursor)
-        .context("Name Rater icon lost its selected party Pokemon")?.pokemon;
+    let pokemon = if snapshot.safari_catch_presentation.as_ref().is_some_and(|saved|
+        saved.stage == crate::core::systems::safari_catch_presentation::SafariCatchStage::Naming) {
+        let active = snapshot.safari.as_ref().context("Safari naming lost its permit")?;
+        let crate::core::systems::safari::SafariPhase::Presenting { result, .. } = &active.phase else { anyhow::bail!("Safari naming lost its result"); };
+        let crate::core::systems::safari::SafariResolution::Caught(stored) = &result.resolution else { anyhow::bail!("Safari naming lost its actual catch"); };
+        &stored.pokemon
+    } else {
+        if input.label != "POKéMON'S NAME?" { return Ok(None); }
+        &snapshot.party.slots.get(runtime_shell.party_cursor)
+            .context("Name Rater icon lost its selected party Pokemon")?.pokemon
+    };
     // GetGender combines the Attack and Speed DVs, not Attack alone.
     let gender_dv = (pokemon.dvs.attack << 4) | pokemon.dvs.speed;
     let gender = match pokemon.species.gender_ratio {
@@ -10752,7 +10878,8 @@ fn update_scene_dialog_text_content_in_place<F: QueryFilter>(
     {
         let (x, y) = battle_hud_tile_origin(
             FIELD_TEXT_BOX_TEXT_LEFT_TILE,
-            FIELD_TEXT_BOX_TEXT_TOP_TILE + index as f32 * FIELD_TEXT_BOX_ROW_SPACING_TILES,
+            FIELD_TEXT_BOX_TEXT_TOP_TILE + index as f32 * FIELD_TEXT_BOX_ROW_SPACING_TILES
+                + field_text_timing::scroll_offset(runtime_shell),
         );
         for (glyph_index, frame) in bitmap_text_frames(rendered_art, asset_root, images, entry)
             .into_iter()
@@ -11880,7 +12007,8 @@ fn visible_field_dialogue_is_fully_revealed(
         return false;
     }
     let full_text = &pages[reveal.page_index.min(pages.len().saturating_sub(1))];
-    visible_field_text_reveal_is_complete(reveal, &full_text)
+    field_text_timing::complete(runtime_shell)
+        && visible_field_text_reveal_is_complete(reveal, full_text)
 }
 
 fn visible_field_dialogue_is_entirely_consumed(
@@ -11897,7 +12025,8 @@ fn visible_field_dialogue_is_entirely_consumed(
     if reveal.text != text_identity || reveal.page_index + 1 != pages.len() {
         return false;
     }
-    visible_field_text_reveal_is_complete(reveal, &pages[reveal.page_index])
+    field_text_timing::complete(runtime_shell)
+        && visible_field_text_reveal_is_complete(reveal, &pages[reveal.page_index])
 }
 
 fn visible_field_text_reveal_is_complete(
@@ -11932,6 +12061,7 @@ fn tick_visible_field_text_reveal(
             // that transient gap; clearing it reprints the full dialogue.
             return Ok(false);
         }
+        runtime_shell.field_text_timing = None;
         let changed = runtime_shell.field_text_reveal.take().is_some();
         log_visible_dialogue_close(runtime_shell);
         return Ok(changed);
@@ -11957,6 +12087,11 @@ fn tick_visible_field_text_reveal(
         }
         reveal.page_index = reveal.page_index.min(pages.len().saturating_sub(1));
     }
+    field_text_timing::initialize(runtime_shell, &snapshot, &pages);
+    if field_text_timing::advance(runtime_shell, acceleration_requested)? {
+        return Ok(true);
+    }
+    let instant_limit = field_text_timing::reveal_limit(runtime_shell, usize::MAX);
     let page_index = runtime_shell
         .field_text_reveal
         .as_ref()
@@ -11971,7 +12106,7 @@ fn tick_visible_field_text_reveal(
     let text_len = full_text.chars().count();
     if snapshot.trainer.options.no_text_scroll {
         let changed = reveal.visible_chars < text_len;
-        reveal.visible_chars = text_len;
+        reveal.visible_chars = text_len.min(instant_limit);
         reveal.frames_until_next_char = 0;
         queue_visible_completed_oak_rating_sound(runtime_shell)?;
         return Ok(changed);
@@ -12062,6 +12197,9 @@ fn advance_visible_completed_field_text_page(
     runtime_shell: &mut BevyRuntimeShell,
     snapshot: &RuntimeShellSnapshot,
 ) -> Result<bool> {
+    if !field_text_timing::complete(runtime_shell) {
+        return Ok(false);
+    }
     let Some(pages) = visible_field_dialog_pages(snapshot, runtime_shell) else {
         return Ok(false);
     };
@@ -12090,9 +12228,21 @@ fn advance_visible_completed_field_text_page(
     // `<CONT>` scrolls the existing bottom line to the top and then prints
     // only the new bottom line. Starting the next page at zero retyped that
     // carried line, which players saw as Mom repeating her last words.
-    reveal.visible_chars =
-        visible_field_page_initial_chars(&pages[previous_page_index], &pages[reveal.page_index]);
+    let is_scroll = runtime_shell
+        .field_text_timing
+        .as_ref()
+        .and_then(|timing| timing.program.pages.get(reveal.page_index))
+        .is_none_or(|page| page.transition == field_text_program::PageTransition::Scroll);
+    reveal.visible_chars = if is_scroll {
+        visible_field_page_initial_chars(&pages[previous_page_index], &pages[reveal.page_index])
+    } else {
+        0
+    };
     reveal.frames_until_next_char = 0;
+    let page_index = reveal.page_index;
+    if let Some(timing) = runtime_shell.field_text_timing.as_mut() {
+        timing.enter(page_index);
+    }
     mark_runtime_presentation_dirty(runtime_shell);
     Ok(true)
 }
@@ -14348,4 +14498,98 @@ fn queue_visible_completed_oak_rating_sound(shell: &mut BevyRuntimeShell) -> Res
         queue_visible_shell_sound_effect(shell, &sound)?;
     }
     Ok(())
+}
+
+fn minnesota_map_active(snapshot: &RuntimeShellSnapshot) -> bool {
+    snapshot.overworld.map_name.starts_with("Mn")
+}
+
+fn minnesota_map_frame(
+    snapshot: &RuntimeShellSnapshot,
+    art: &mut RenderedTilesetArt,
+    root: &AssetRoot,
+    images: &mut Assets<Image>,
+    standalone: bool,
+) -> Result<SpriteFrame> {
+    let palettes = &snapshot.presentation.pokegear_town_map_palette_map;
+    town_map_frame_for_art(
+        art,
+        root,
+        "MINNESOTA",
+        snapshot.trainer.player_gender,
+        palettes
+            .get("town_map")
+            .context("native Town Map palettes")?,
+        palettes
+            .get("pokegear")
+            .context("native Pokegear palettes")?,
+        standalone,
+        1 | (u8::from(
+            snapshot
+                .progression
+                .active_engine_flags
+                .contains("ENGINE_MAP_CARD"),
+        ) << 1)
+            | (u8::from(
+                snapshot
+                    .progression
+                    .active_engine_flags
+                    .contains("ENGINE_PHONE_CARD"),
+            ) << 2)
+            | (u8::from(
+                snapshot
+                    .progression
+                    .active_engine_flags
+                    .contains("ENGINE_RADIO_CARD"),
+            ) << 3),
+        images,
+    )
+    .context("render native Minnesota atlas")
+}
+
+fn projected_minnesota_landmark(
+    snapshot: &RuntimeShellSnapshot,
+    landmark: &crate::core::models::PokegearLandmark,
+) -> crate::core::models::PokegearLandmark {
+    let mut projected = landmark.clone();
+    if !minnesota_map_active(snapshot) {
+        return projected;
+    }
+    if let Some(name) = landmark.constant.strip_prefix("LANDMARK_MN_") {
+        projected.name = name.replace('_', " ");
+    }
+    let named = snapshot
+        .presentation
+        .pokegear_landmarks
+        .map_to_landmark
+        .iter()
+        .filter(|(map, constant)| map.starts_with("Mn") && *constant == &landmark.constant)
+        .find_map(|(map, _)| {
+            // Resolve towns through their map identifiers as well as display names;
+            // some older packs reuse Johto landmark names for regional towns.
+            let name = map.strip_prefix("Mn")?;
+            let mut words = String::new();
+            for ch in name.chars() {
+                if ch.is_uppercase() && !words.is_empty() {
+                    words.push(' ');
+                }
+                words.push(ch.to_ascii_uppercase());
+            }
+            minnesota_town_map::town_position(&words).map(|position| (words, position))
+        });
+    let (x, y) = if let Some((name, position)) = named {
+        projected.name = name;
+        position
+    } else {
+        minnesota_town_map::position(
+            &landmark.constant,
+            &landmark.name,
+            landmark.x - 8,
+            landmark.y - 16,
+        )
+    };
+    // Native OAM coordinates include the 8px/16px hardware origin.
+    projected.x = x + 8;
+    projected.y = y + 16;
+    projected
 }

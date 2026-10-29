@@ -1,0 +1,3930 @@
+{
+  "schema_version": 2,
+  "id": "MN_R08",
+  "tileset": "johto",
+  "compiled_tileset": "mn_headwaters",
+  "dimensions_metatiles": [
+    40,
+    48
+  ],
+  "coordinate_units": "32px metatiles, zero based",
+  "shore_fitting": "johto_8_neighbors",
+  "derived_blocks": [
+    {
+      "id": "80",
+      "source_tileset": "kanto",
+      "source_block": "78",
+      "collision": "WATER",
+      "required_typed_extension": "headwaters_art::build_headwaters_art_pack"
+    },
+    {
+      "id": "81",
+      "source_tileset": "kanto",
+      "source_block": "77",
+      "collision": "FLOOR/FLOOR/WALL/WALL",
+      "required_typed_extension": "headwaters_art::build_headwaters_art_pack"
+    },
+    {
+      "id": "82",
+      "source_tileset": "kanto",
+      "source_block": "77",
+      "tile_row_order": [
+        2,
+        3,
+        0,
+        1
+      ],
+      "collision_source_tileset": "johto",
+      "collision_source_block": "75",
+      "required_typed_extension": "headwaters_art::build_headwaters_art_pack"
+    }
+  ],
+  "layers": [
+    {
+      "kind": "polygon",
+      "material": "lawn",
+      "points": [
+        [
+          11,
+          47
+        ],
+        [
+          15,
+          47
+        ],
+        [
+          15,
+          45
+        ],
+        [
+          31,
+          45
+        ],
+        [
+          31,
+          44
+        ],
+        [
+          36,
+          44
+        ],
+        [
+          36,
+          41
+        ],
+        [
+          38,
+          41
+        ],
+        [
+          38,
+          27
+        ],
+        [
+          34,
+          27
+        ],
+        [
+          34,
+          24
+        ],
+        [
+          27,
+          24
+        ],
+        [
+          27,
+          21
+        ],
+        [
+          21,
+          21
+        ],
+        [
+          21,
+          16
+        ],
+        [
+          19,
+          16
+        ],
+        [
+          19,
+          3
+        ],
+        [
+          22,
+          3
+        ],
+        [
+          22,
+          0
+        ],
+        [
+          18,
+          0
+        ],
+        [
+          18,
+          2
+        ],
+        [
+          14,
+          2
+        ],
+        [
+          14,
+          4
+        ],
+        [
+          11,
+          4
+        ],
+        [
+          11,
+          2
+        ],
+        [
+          5,
+          2
+        ],
+        [
+          5,
+          3
+        ],
+        [
+          2,
+          3
+        ],
+        [
+          2,
+          5
+        ],
+        [
+          0,
+          5
+        ],
+        [
+          0,
+          18
+        ],
+        [
+          8,
+          18
+        ],
+        [
+          8,
+          20
+        ],
+        [
+          10,
+          20
+        ],
+        [
+          10,
+          23
+        ],
+        [
+          15,
+          23
+        ],
+        [
+          15,
+          24
+        ],
+        [
+          10,
+          24
+        ],
+        [
+          10,
+          27
+        ],
+        [
+          5,
+          27
+        ],
+        [
+          5,
+          31
+        ],
+        [
+          6,
+          31
+        ],
+        [
+          6,
+          38
+        ],
+        [
+          8,
+          38
+        ],
+        [
+          8,
+          45
+        ],
+        [
+          11,
+          45
+        ]
+      ],
+      "name": "Connected lake-country clearings"
+    },
+    {
+      "kind": "polygon",
+      "material": "lawn",
+      "points": [
+        [
+          20,
+          4
+        ],
+        [
+          27,
+          4
+        ],
+        [
+          27,
+          3
+        ],
+        [
+          33,
+          3
+        ],
+        [
+          33,
+          5
+        ],
+        [
+          37,
+          5
+        ],
+        [
+          37,
+          16
+        ],
+        [
+          35,
+          16
+        ],
+        [
+          35,
+          20
+        ],
+        [
+          30,
+          20
+        ],
+        [
+          30,
+          23
+        ],
+        [
+          21,
+          23
+        ],
+        [
+          21,
+          13
+        ],
+        [
+          20,
+          13
+        ]
+      ],
+      "name": "Upper lake shoreline, spits and north walk"
+    },
+    {
+      "kind": "polygon",
+      "material": "water",
+      "points": [
+        [
+          6,
+          5
+        ],
+        [
+          9,
+          5
+        ],
+        [
+          9,
+          7
+        ],
+        [
+          11,
+          7
+        ],
+        [
+          11,
+          12
+        ],
+        [
+          9,
+          12
+        ],
+        [
+          9,
+          14
+        ],
+        [
+          6,
+          14
+        ],
+        [
+          6,
+          12
+        ],
+        [
+          4,
+          12
+        ],
+        [
+          4,
+          8
+        ],
+        [
+          6,
+          8
+        ]
+      ],
+      "name": "Birch Pond indented banks"
+    },
+    {
+      "kind": "polygon",
+      "material": "water",
+      "points": [
+        [
+          25,
+          6
+        ],
+        [
+          29,
+          6
+        ],
+        [
+          29,
+          8
+        ],
+        [
+          32,
+          8
+        ],
+        [
+          32,
+          9
+        ],
+        [
+          35,
+          9
+        ],
+        [
+          35,
+          11
+        ],
+        [
+          31,
+          11
+        ],
+        [
+          31,
+          12
+        ],
+        [
+          29,
+          12
+        ],
+        [
+          29,
+          14
+        ],
+        [
+          33,
+          14
+        ],
+        [
+          33,
+          16
+        ],
+        [
+          30,
+          16
+        ],
+        [
+          30,
+          19
+        ],
+        [
+          25,
+          19
+        ],
+        [
+          25,
+          17
+        ],
+        [
+          23,
+          17
+        ],
+        [
+          23,
+          13
+        ],
+        [
+          25,
+          13
+        ],
+        [
+          25,
+          10
+        ],
+        [
+          23,
+          10
+        ],
+        [
+          23,
+          8
+        ],
+        [
+          25,
+          8
+        ]
+      ],
+      "name": "Long Lake and narrow northern arm"
+    },
+    {
+      "kind": "polygon",
+      "material": "water",
+      "points": [
+        [
+          19,
+          27
+        ],
+        [
+          25,
+          27
+        ],
+        [
+          25,
+          29
+        ],
+        [
+          33,
+          29
+        ],
+        [
+          33,
+          31
+        ],
+        [
+          35,
+          31
+        ],
+        [
+          35,
+          40
+        ],
+        [
+          32,
+          40
+        ],
+        [
+          32,
+          43
+        ],
+        [
+          23,
+          43
+        ],
+        [
+          23,
+          41
+        ],
+        [
+          18,
+          41
+        ],
+        [
+          18,
+          37
+        ],
+        [
+          15,
+          37
+        ],
+        [
+          15,
+          33
+        ],
+        [
+          17,
+          33
+        ],
+        [
+          17,
+          23
+        ],
+        [
+          20,
+          23
+        ],
+        [
+          20,
+          27
+        ]
+      ],
+      "name": "Cedar Lake with inlet and staggered coves"
+    },
+    {
+      "kind": "rect",
+      "material": "lawn",
+      "bounds": [
+        6,
+        8,
+        9,
+        11
+      ],
+      "name": "Birch Pond island"
+    },
+    {
+      "kind": "rect",
+      "material": "floor",
+      "bounds": [
+        6,
+        8,
+        8,
+        10
+      ],
+      "name": "Island clearing"
+    },
+    {
+      "kind": "cliff_polygon",
+      "points": [
+        [
+          12,
+          5
+        ],
+        [
+          16,
+          5
+        ],
+        [
+          16,
+          7
+        ],
+        [
+          19,
+          7
+        ],
+        [
+          19,
+          10
+        ],
+        [
+          21,
+          10
+        ],
+        [
+          21,
+          13
+        ],
+        [
+          12,
+          13
+        ]
+      ],
+      "name": "Birch bank earth terrace"
+    },
+    {
+      "kind": "rect",
+      "material": "lawn",
+      "bounds": [
+        13,
+        6,
+        16,
+        8
+      ],
+      "name": "Birch bank grassy shelf"
+    },
+    {
+      "kind": "rect",
+      "material": "encounter",
+      "bounds": [
+        13,
+        9,
+        15,
+        12
+      ],
+      "name": "Birch bank habitat"
+    },
+    {
+      "kind": "rect",
+      "material": "forest",
+      "bounds": [
+        18,
+        7,
+        20,
+        9
+      ],
+      "name": "Birch bank trees"
+    },
+    {
+      "kind": "path",
+      "material": "floor",
+      "points": [
+        [
+          13,
+          47
+        ],
+        [
+          13,
+          44
+        ],
+        [
+          9,
+          44
+        ],
+        [
+          9,
+          35
+        ],
+        [
+          12,
+          35
+        ],
+        [
+          12,
+          26
+        ],
+        [
+          16,
+          26
+        ],
+        [
+          16,
+          25
+        ],
+        [
+          24,
+          25
+        ],
+        [
+          24,
+          22
+        ],
+        [
+          20,
+          22
+        ],
+        [
+          20,
+          18
+        ],
+        [
+          22,
+          18
+        ],
+        [
+          22,
+          3
+        ],
+        [
+          20,
+          3
+        ],
+        [
+          20,
+          0
+        ]
+      ],
+      "width_metatiles": 1,
+      "name": "Main Leech Lake to Bemidji walking road"
+    },
+    {
+      "kind": "rect",
+      "material": "water",
+      "bounds": [
+        17,
+        23,
+        21,
+        28
+      ],
+      "name": "Open inlet below actual bridge"
+    },
+    {
+      "kind": "path",
+      "material": "floor",
+      "points": [
+        [
+          13,
+          44
+        ],
+        [
+          31,
+          44
+        ],
+        [
+          31,
+          43
+        ],
+        [
+          36,
+          43
+        ],
+        [
+          36,
+          28
+        ],
+        [
+          34,
+          28
+        ],
+        [
+          34,
+          25
+        ],
+        [
+          24,
+          25
+        ]
+      ],
+      "width_metatiles": 1,
+      "name": "Long Cedar Lake shoreline return"
+    },
+    {
+      "kind": "path",
+      "material": "floor",
+      "points": [
+        [
+          20,
+          18
+        ],
+        [
+          22,
+          18
+        ],
+        [
+          22,
+          5
+        ],
+        [
+          32,
+          5
+        ],
+        [
+          32,
+          6
+        ],
+        [
+          36,
+          6
+        ],
+        [
+          36,
+          18
+        ],
+        [
+          31,
+          18
+        ],
+        [
+          31,
+          21
+        ],
+        [
+          24,
+          21
+        ],
+        [
+          24,
+          22
+        ]
+      ],
+      "width_metatiles": 1,
+      "name": "Long Lake counterclockwise shore"
+    },
+    {
+      "kind": "path",
+      "material": "floor",
+      "points": [
+        [
+          20,
+          18
+        ],
+        [
+          17,
+          18
+        ],
+        [
+          17,
+          16
+        ],
+        [
+          11,
+          16
+        ],
+        [
+          11,
+          17
+        ],
+        [
+          3,
+          17
+        ],
+        [
+          3,
+          9
+        ],
+        [
+          6,
+          9
+        ]
+      ],
+      "width_metatiles": 1,
+      "name": "Pond island excursion from lower birches"
+    },
+    {
+      "kind": "rect",
+      "material": "water",
+      "bounds": [
+        4,
+        8,
+        6,
+        11
+      ],
+      "name": "Island narrows water"
+    },
+    {
+      "kind": "point",
+      "position": [
+        4,
+        8
+      ],
+      "block": "41",
+      "name": "Island bridge north rail"
+    },
+    {
+      "kind": "point",
+      "position": [
+        4,
+        9
+      ],
+      "block": "49",
+      "name": "Island bridge south rail"
+    },
+    {
+      "kind": "point",
+      "position": [
+        5,
+        8
+      ],
+      "block": "41",
+      "name": "Island bridge north rail"
+    },
+    {
+      "kind": "point",
+      "position": [
+        5,
+        9
+      ],
+      "block": "49",
+      "name": "Island bridge south rail"
+    },
+    {
+      "kind": "point",
+      "position": [
+        17,
+        24
+      ],
+      "block": "82",
+      "name": "Inlet bridge north rail"
+    },
+    {
+      "kind": "point",
+      "position": [
+        17,
+        25
+      ],
+      "block": "81",
+      "name": "Inlet bridge south rail"
+    },
+    {
+      "kind": "point",
+      "position": [
+        18,
+        24
+      ],
+      "block": "82",
+      "name": "Inlet bridge north rail"
+    },
+    {
+      "kind": "point",
+      "position": [
+        18,
+        25
+      ],
+      "block": "81",
+      "name": "Inlet bridge south rail"
+    },
+    {
+      "kind": "point",
+      "position": [
+        19,
+        24
+      ],
+      "block": "82",
+      "name": "Inlet bridge north rail"
+    },
+    {
+      "kind": "point",
+      "position": [
+        19,
+        25
+      ],
+      "block": "81",
+      "name": "Inlet bridge south rail"
+    },
+    {
+      "kind": "point",
+      "position": [
+        20,
+        24
+      ],
+      "block": "82",
+      "name": "Inlet bridge north rail"
+    },
+    {
+      "kind": "point",
+      "position": [
+        20,
+        25
+      ],
+      "block": "81",
+      "name": "Inlet bridge south rail"
+    },
+    {
+      "kind": "point",
+      "position": [
+        17,
+        13
+      ],
+      "block": "74",
+      "name": "South terrace ramp"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        16,
+        8,
+        18,
+        9
+      ],
+      "block": "01",
+      "name": "Birch terrace lookout approach deliberate interior wear 1"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        16,
+        8,
+        17,
+        11
+      ],
+      "block": "01",
+      "name": "Birch terrace lookout approach deliberate interior wear 2"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        14,
+        10,
+        17,
+        11
+      ],
+      "block": "01",
+      "name": "Birch terrace lookout approach deliberate interior wear 3"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        14,
+        10,
+        15,
+        13
+      ],
+      "block": "01",
+      "name": "Birch terrace lookout approach deliberate interior wear 4"
+    },
+    {
+      "kind": "point",
+      "position": [
+        14,
+        13
+      ],
+      "block": "57",
+      "name": "One-way drop to pond-shore return"
+    },
+    {
+      "kind": "path",
+      "material": "floor",
+      "points": [
+        [
+          14,
+          14
+        ],
+        [
+          14,
+          16
+        ],
+        [
+          17,
+          16
+        ]
+      ],
+      "width_metatiles": 1,
+      "name": "Lower ledge landing rejoins main"
+    },
+    {
+      "kind": "rect",
+      "material": "encounter",
+      "bounds": [
+        11,
+        45,
+        16,
+        47
+      ],
+      "name": "Leech Lake mandatory habitat gate"
+    },
+    {
+      "kind": "rect",
+      "material": "floor",
+      "bounds": [
+        13,
+        47,
+        14,
+        48
+      ],
+      "name": "Southern endpoint safe floor"
+    },
+    {
+      "kind": "polygon",
+      "material": "encounter",
+      "points": [
+        [
+          7,
+          28
+        ],
+        [
+          9,
+          28
+        ],
+        [
+          9,
+          30
+        ],
+        [
+          10,
+          30
+        ],
+        [
+          10,
+          32
+        ],
+        [
+          7,
+          32
+        ]
+      ],
+      "name": "West woodland search"
+    },
+    {
+      "kind": "rect",
+      "material": "encounter",
+      "bounds": [
+        35,
+        34,
+        38,
+        37
+      ],
+      "name": "Long shore marsh crossing"
+    },
+    {
+      "kind": "rect",
+      "material": "encounter",
+      "bounds": [
+        29,
+        42,
+        32,
+        44
+      ],
+      "name": "Ether spit grass"
+    },
+    {
+      "kind": "polygon",
+      "material": "encounter",
+      "points": [
+        [
+          28,
+          4
+        ],
+        [
+          30,
+          4
+        ],
+        [
+          30,
+          5
+        ],
+        [
+          31,
+          5
+        ],
+        [
+          31,
+          7
+        ],
+        [
+          28,
+          7
+        ]
+      ],
+      "name": "Northern walk encounter choice"
+    },
+    {
+      "kind": "rect",
+      "material": "encounter",
+      "bounds": [
+        22,
+        12,
+        23,
+        15
+      ],
+      "name": "Long Lake west-bank habitat"
+    },
+    {
+      "kind": "polygon",
+      "material": "forest",
+      "points": [
+        [
+          3,
+          19
+        ],
+        [
+          7,
+          19
+        ],
+        [
+          7,
+          23
+        ],
+        [
+          9,
+          23
+        ],
+        [
+          9,
+          26
+        ],
+        [
+          3,
+          26
+        ]
+      ],
+      "name": "Western forest tongue"
+    },
+    {
+      "kind": "polygon",
+      "material": "forest",
+      "points": [
+        [
+          13,
+          28
+        ],
+        [
+          16,
+          28
+        ],
+        [
+          16,
+          31
+        ],
+        [
+          14,
+          31
+        ],
+        [
+          14,
+          34
+        ],
+        [
+          13,
+          34
+        ]
+      ],
+      "name": "Narrow bank trees"
+    },
+    {
+      "kind": "rect",
+      "material": "forest",
+      "bounds": [
+        10,
+        36,
+        14,
+        41
+      ],
+      "name": "Southwest cedar elbow"
+    },
+    {
+      "kind": "rect",
+      "material": "flowers",
+      "bounds": [
+        9,
+        42,
+        12,
+        44
+      ],
+      "name": "Trailhead flowers"
+    },
+    {
+      "kind": "rect",
+      "material": "flowers",
+      "bounds": [
+        22,
+        20,
+        24,
+        22
+      ],
+      "name": "Lake saddle flowers"
+    },
+    {
+      "kind": "rect",
+      "material": "flowers",
+      "bounds": [
+        33,
+        19,
+        35,
+        20
+      ],
+      "name": "Northern angler flowers"
+    },
+    {
+      "kind": "point",
+      "position": [
+        10,
+        15
+      ],
+      "block": "0a",
+      "name": "Natural bank boulder"
+    },
+    {
+      "kind": "point",
+      "position": [
+        35,
+        12
+      ],
+      "block": "0a",
+      "name": "Natural bank boulder"
+    },
+    {
+      "kind": "point",
+      "position": [
+        37,
+        28
+      ],
+      "block": "0a",
+      "name": "Natural bank boulder"
+    },
+    {
+      "kind": "point",
+      "position": [
+        17,
+        39
+      ],
+      "block": "0a",
+      "name": "Natural bank boulder"
+    },
+    {
+      "kind": "point",
+      "position": [
+        30,
+        35
+      ],
+      "block": "82",
+      "name": "Fishing pier north rail"
+    },
+    {
+      "kind": "point",
+      "position": [
+        30,
+        36
+      ],
+      "block": "81",
+      "name": "Fishing pier south rail"
+    },
+    {
+      "kind": "point",
+      "position": [
+        31,
+        35
+      ],
+      "block": "82",
+      "name": "Fishing pier north rail"
+    },
+    {
+      "kind": "point",
+      "position": [
+        31,
+        36
+      ],
+      "block": "81",
+      "name": "Fishing pier south rail"
+    },
+    {
+      "kind": "point",
+      "position": [
+        32,
+        35
+      ],
+      "block": "82",
+      "name": "Fishing pier north rail"
+    },
+    {
+      "kind": "point",
+      "position": [
+        32,
+        36
+      ],
+      "block": "81",
+      "name": "Fishing pier south rail"
+    },
+    {
+      "kind": "point",
+      "position": [
+        33,
+        35
+      ],
+      "block": "82",
+      "name": "Fishing pier north rail"
+    },
+    {
+      "kind": "point",
+      "position": [
+        33,
+        36
+      ],
+      "block": "81",
+      "name": "Fishing pier south rail"
+    },
+    {
+      "kind": "point",
+      "position": [
+        34,
+        35
+      ],
+      "block": "82",
+      "name": "Fishing pier north rail"
+    },
+    {
+      "kind": "point",
+      "position": [
+        34,
+        36
+      ],
+      "block": "81",
+      "name": "Fishing pier south rail"
+    },
+    {
+      "kind": "point",
+      "position": [
+        35,
+        35
+      ],
+      "block": "82",
+      "name": "Fishing pier north rail"
+    },
+    {
+      "kind": "point",
+      "position": [
+        35,
+        36
+      ],
+      "block": "81",
+      "name": "Fishing pier south rail"
+    },
+    {
+      "kind": "point",
+      "position": [
+        29,
+        35
+      ],
+      "block": "44",
+      "name": "Closed west pier cap"
+    },
+    {
+      "kind": "point",
+      "position": [
+        29,
+        36
+      ],
+      "block": "44",
+      "name": "Closed west pier cap"
+    },
+    {
+      "kind": "point",
+      "position": [
+        35,
+        32
+      ],
+      "block": "44",
+      "name": "Lake edge fence with deliberate pier gap"
+    },
+    {
+      "kind": "point",
+      "position": [
+        35,
+        33
+      ],
+      "block": "44",
+      "name": "Lake edge fence with deliberate pier gap"
+    },
+    {
+      "kind": "point",
+      "position": [
+        35,
+        37
+      ],
+      "block": "44",
+      "name": "Lake edge fence with deliberate pier gap"
+    },
+    {
+      "kind": "point",
+      "position": [
+        35,
+        38
+      ],
+      "block": "44",
+      "name": "Lake edge fence with deliberate pier gap"
+    },
+    {
+      "kind": "point",
+      "position": [
+        35,
+        39
+      ],
+      "block": "44",
+      "name": "Lake edge fence with deliberate pier gap"
+    },
+    {
+      "kind": "point",
+      "position": [
+        3,
+        3
+      ],
+      "block": "5d",
+      "name": "Ordinary grove canopy; no decorative Cut collision"
+    },
+    {
+      "kind": "point",
+      "position": [
+        4,
+        3
+      ],
+      "block": "5c",
+      "name": "Source-scale grove edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        3,
+        4
+      ],
+      "block": "5d",
+      "name": "Source-scale grove edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        4,
+        4
+      ],
+      "block": "5e",
+      "name": "Source-scale grove edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        9,
+        20
+      ],
+      "block": "61",
+      "name": "Source-scale grove edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        10,
+        42
+      ],
+      "block": "01",
+      "name": "Trainer standing square"
+    },
+    {
+      "kind": "point",
+      "position": [
+        13,
+        26
+      ],
+      "block": "01",
+      "name": "Trainer standing square"
+    },
+    {
+      "kind": "point",
+      "position": [
+        36,
+        31
+      ],
+      "block": "01",
+      "name": "Trainer standing square"
+    },
+    {
+      "kind": "point",
+      "position": [
+        7,
+        9
+      ],
+      "block": "01",
+      "name": "Trainer standing square"
+    },
+    {
+      "kind": "point",
+      "position": [
+        18,
+        17
+      ],
+      "block": "01",
+      "name": "Trainer standing square"
+    },
+    {
+      "kind": "point",
+      "position": [
+        33,
+        5
+      ],
+      "block": "01",
+      "name": "Trainer standing square"
+    },
+    {
+      "kind": "point",
+      "position": [
+        13,
+        8
+      ],
+      "block": "01",
+      "name": "Trainer standing square"
+    },
+    {
+      "kind": "point",
+      "position": [
+        34,
+        42
+      ],
+      "block": "01",
+      "name": "Trainer standing square"
+    },
+    {
+      "kind": "point",
+      "position": [
+        15,
+        7
+      ],
+      "block": "01",
+      "name": "Persistent reward standing square"
+    },
+    {
+      "kind": "point",
+      "position": [
+        7,
+        8
+      ],
+      "block": "01",
+      "name": "Persistent reward standing square"
+    },
+    {
+      "kind": "point",
+      "position": [
+        32,
+        13
+      ],
+      "block": "01",
+      "name": "Persistent reward standing square"
+    },
+    {
+      "kind": "point",
+      "position": [
+        29,
+        44
+      ],
+      "block": "01",
+      "name": "Persistent reward standing square"
+    },
+    {
+      "kind": "path",
+      "material": "floor",
+      "points": [
+        [
+          36,
+          13
+        ],
+        [
+          32,
+          13
+        ]
+      ],
+      "width_metatiles": 1,
+      "name": "Northeast narrow fishing peninsula"
+    },
+    {
+      "kind": "point",
+      "position": [
+        14,
+        44
+      ],
+      "block": "45",
+      "name": "Readable native sign"
+    },
+    {
+      "kind": "point",
+      "position": [
+        11,
+        27
+      ],
+      "block": "45",
+      "name": "Readable native sign"
+    },
+    {
+      "kind": "point",
+      "position": [
+        15,
+        14
+      ],
+      "block": "45",
+      "name": "Readable native sign"
+    },
+    {
+      "kind": "point",
+      "position": [
+        4,
+        16
+      ],
+      "block": "45",
+      "name": "Readable native sign"
+    },
+    {
+      "kind": "point",
+      "position": [
+        35,
+        40
+      ],
+      "block": "45",
+      "name": "Readable native sign"
+    },
+    {
+      "kind": "point",
+      "position": [
+        19,
+        2
+      ],
+      "block": "45",
+      "name": "Readable native sign"
+    },
+    {
+      "kind": "rect",
+      "material": "forest",
+      "bounds": [
+        0,
+        45,
+        11,
+        47
+      ],
+      "name": "Close west habitat side"
+    },
+    {
+      "kind": "rect",
+      "material": "forest",
+      "bounds": [
+        16,
+        45,
+        40,
+        47
+      ],
+      "name": "Close east habitat side"
+    },
+    {
+      "kind": "point",
+      "position": [
+        21,
+        13
+      ],
+      "block": "0a",
+      "name": "Close eastern terrace corner bypass"
+    },
+    {
+      "kind": "point",
+      "position": [
+        12,
+        13
+      ],
+      "block": "0a",
+      "name": "Close western terrace corner bypass"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        17,
+        8,
+        18,
+        19
+      ],
+      "block": "01",
+      "name": "Optional birch climb deliberate interior wear 1"
+    },
+    {
+      "kind": "point",
+      "position": [
+        17,
+        13
+      ],
+      "block": "74",
+      "name": "South terrace ramp final native fitting"
+    },
+    {
+      "kind": "polygon",
+      "material": "forest",
+      "points": [
+        [
+          11,
+          19
+        ],
+        [
+          18,
+          19
+        ],
+        [
+          18,
+          21
+        ],
+        [
+          19,
+          21
+        ],
+        [
+          19,
+          23
+        ],
+        [
+          14,
+          23
+        ],
+        [
+          14,
+          24
+        ],
+        [
+          11,
+          24
+        ]
+      ],
+      "name": "Mainland cedar finger closes empty central lawn"
+    },
+    {
+      "kind": "polygon",
+      "material": "forest",
+      "points": [
+        [
+          3,
+          31
+        ],
+        [
+          10,
+          31
+        ],
+        [
+          10,
+          34
+        ],
+        [
+          8,
+          34
+        ],
+        [
+          8,
+          37
+        ],
+        [
+          6,
+          37
+        ],
+        [
+          6,
+          34
+        ],
+        [
+          3,
+          34
+        ]
+      ],
+      "name": "Western woodland narrows the approach"
+    },
+    {
+      "kind": "rect",
+      "material": "forest",
+      "bounds": [
+        37,
+        26,
+        40,
+        44
+      ],
+      "name": "Eastern cedar wall narrows the long shore"
+    },
+    {
+      "kind": "rect",
+      "material": "forest",
+      "bounds": [
+        11,
+        0,
+        18,
+        5
+      ],
+      "name": "Birch northern forest cap"
+    },
+    {
+      "kind": "rect",
+      "material": "forest",
+      "name": "Northern shore cedar pocket",
+      "bounds": [
+        34,
+        3,
+        39,
+        6
+      ]
+    },
+    {
+      "kind": "rect",
+      "material": "forest",
+      "bounds": [
+        37,
+        10,
+        40,
+        22
+      ],
+      "name": "Long Lake east forest boundary"
+    },
+    {
+      "kind": "rect",
+      "material": "forest",
+      "bounds": [
+        34,
+        12,
+        36,
+        13
+      ],
+      "name": "Alder spit north boundary"
+    },
+    {
+      "kind": "rect",
+      "material": "forest",
+      "bounds": [
+        34,
+        14,
+        36,
+        17
+      ],
+      "name": "Alder spit south boundary"
+    },
+    {
+      "kind": "rect",
+      "material": "forest",
+      "bounds": [
+        0,
+        19,
+        11,
+        27
+      ],
+      "name": "Island approach woodland edge"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        15,
+        8,
+        18,
+        9
+      ],
+      "block": "01",
+      "name": "Medicine discovery on upper birch shelf deliberate interior wear 1"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        15,
+        7,
+        16,
+        9
+      ],
+      "block": "01",
+      "name": "Medicine discovery on upper birch shelf deliberate interior wear 2"
+    },
+    {
+      "kind": "point",
+      "position": [
+        15,
+        7
+      ],
+      "block": "01",
+      "name": "Terrace medicine square"
+    },
+    {
+      "kind": "point",
+      "position": [
+        32,
+        13
+      ],
+      "block": "01",
+      "name": "Alder spit reward square"
+    },
+    {
+      "kind": "rect",
+      "material": "forest",
+      "bounds": [
+        24,
+        3,
+        33,
+        4
+      ],
+      "name": "Narrow north walk behind Long Lake"
+    },
+    {
+      "kind": "point",
+      "position": [
+        34,
+        34
+      ],
+      "block": "0a",
+      "name": "Rock guards marsh edge"
+    },
+    {
+      "kind": "point",
+      "position": [
+        35,
+        34
+      ],
+      "block": "03",
+      "name": "Marsh gate closes dry rail-strip bypass"
+    },
+    {
+      "kind": "rect",
+      "material": "forest",
+      "bounds": [
+        5,
+        27,
+        7,
+        31
+      ],
+      "name": "Woodland encounter bay west boundary"
+    },
+    {
+      "kind": "rect",
+      "material": "forest",
+      "bounds": [
+        10,
+        27,
+        12,
+        29
+      ],
+      "name": "Upper narrow west lane boundary"
+    },
+    {
+      "kind": "rect",
+      "material": "forest",
+      "bounds": [
+        10,
+        30,
+        12,
+        35
+      ],
+      "name": "Lower narrow west lane boundary"
+    },
+    {
+      "kind": "rect",
+      "material": "forest",
+      "bounds": [
+        8,
+        36,
+        9,
+        42
+      ],
+      "name": "Cedar elbow walking throat"
+    },
+    {
+      "kind": "rect",
+      "material": "forest",
+      "bounds": [
+        18,
+        0,
+        20,
+        2
+      ],
+      "name": "Bemidji arrival west trees"
+    },
+    {
+      "kind": "rect",
+      "material": "forest",
+      "bounds": [
+        21,
+        0,
+        23,
+        3
+      ],
+      "name": "Bemidji arrival east trees"
+    },
+    {
+      "kind": "rect",
+      "name": "Island Cut gate west closure",
+      "material": "forest",
+      "bounds": [
+        0,
+        10,
+        3,
+        11
+      ]
+    },
+    {
+      "kind": "point",
+      "position": [
+        3,
+        10
+      ],
+      "block": "63",
+      "name": "Cut seals the pond bridge excursion"
+    },
+    {
+      "kind": "rect",
+      "material": "forest",
+      "bounds": [
+        0,
+        5,
+        3,
+        17
+      ],
+      "name": "Dense west forest frames the real island gate"
+    },
+    {
+      "kind": "point",
+      "position": [
+        6,
+        8
+      ],
+      "block": "41",
+      "name": "Island shore rail prevents Surf landing behind Cut"
+    },
+    {
+      "kind": "point",
+      "position": [
+        7,
+        8
+      ],
+      "block": "41",
+      "name": "Island shore rail prevents Surf landing behind Cut"
+    },
+    {
+      "kind": "point",
+      "position": [
+        8,
+        8
+      ],
+      "block": "42",
+      "name": "Island shore rail prevents Surf landing behind Cut"
+    },
+    {
+      "kind": "point",
+      "position": [
+        6,
+        9
+      ],
+      "block": "49",
+      "name": "Island shore rail prevents Surf landing behind Cut"
+    },
+    {
+      "kind": "point",
+      "position": [
+        8,
+        9
+      ],
+      "block": "46",
+      "name": "Island shore rail prevents Surf landing behind Cut"
+    },
+    {
+      "kind": "point",
+      "position": [
+        6,
+        10
+      ],
+      "block": "48",
+      "name": "Island shore rail prevents Surf landing behind Cut"
+    },
+    {
+      "kind": "point",
+      "position": [
+        7,
+        10
+      ],
+      "block": "49",
+      "name": "Island shore rail prevents Surf landing behind Cut"
+    },
+    {
+      "kind": "point",
+      "position": [
+        8,
+        10
+      ],
+      "block": "4a",
+      "name": "Island shore rail prevents Surf landing behind Cut"
+    },
+    {
+      "kind": "point",
+      "position": [
+        3,
+        8
+      ],
+      "block": "41",
+      "name": "Bridge abutment north rail seals opposite-shore approach"
+    },
+    {
+      "kind": "point",
+      "position": [
+        4,
+        10
+      ],
+      "block": "0a",
+      "name": "Visible water rock closes landing beside Cut canopy"
+    },
+    {
+      "name": "Eastern cedar peninsula frames the two lake shore corridors",
+      "kind": "polygon",
+      "material": "forest",
+      "points": [
+        [
+          25,
+          22
+        ],
+        [
+          32,
+          22
+        ],
+        [
+          32,
+          21
+        ],
+        [
+          37,
+          21
+        ],
+        [
+          37,
+          24
+        ],
+        [
+          25,
+          24
+        ]
+      ]
+    },
+    {
+      "name": "Cedar walk attached forest mass",
+      "kind": "block_rect",
+      "bounds": [
+        8,
+        31,
+        15,
+        41
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Cedar dry bend 12,30",
+      "kind": "point",
+      "position": [
+        12,
+        30
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Cedar dry bend 12,31",
+      "kind": "point",
+      "position": [
+        12,
+        31
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Cedar dry bend 13,31",
+      "kind": "point",
+      "position": [
+        13,
+        31
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Cedar dry bend 14,31",
+      "kind": "point",
+      "position": [
+        14,
+        31
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Cedar dry bend 14,32",
+      "kind": "point",
+      "position": [
+        14,
+        32
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Cedar dry bend 14,33",
+      "kind": "point",
+      "position": [
+        14,
+        33
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Cedar dry bend 14,34",
+      "kind": "point",
+      "position": [
+        14,
+        34
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Cedar dry bend 14,35",
+      "kind": "point",
+      "position": [
+        14,
+        35
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Cedar dry bend 9,36",
+      "kind": "point",
+      "position": [
+        9,
+        36
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Cedar dry bend 11,36",
+      "kind": "point",
+      "position": [
+        11,
+        36
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Cedar dry bend 12,36",
+      "kind": "point",
+      "position": [
+        12,
+        36
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Cedar dry bend 13,36",
+      "kind": "point",
+      "position": [
+        13,
+        36
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Cedar dry bend 14,36",
+      "kind": "point",
+      "position": [
+        14,
+        36
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Cedar dry bend 9,37",
+      "kind": "point",
+      "position": [
+        9,
+        37
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Cedar dry bend 11,37",
+      "kind": "point",
+      "position": [
+        11,
+        37
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Cedar dry bend 9,38",
+      "kind": "point",
+      "position": [
+        9,
+        38
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Cedar dry bend 10,38",
+      "kind": "point",
+      "position": [
+        10,
+        38
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Cedar dry bend 11,38",
+      "kind": "point",
+      "position": [
+        11,
+        38
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Cedar dry bend 9,39",
+      "kind": "point",
+      "position": [
+        9,
+        39
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Cedar dry bend 9,40",
+      "kind": "point",
+      "position": [
+        9,
+        40
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Existing grass pocket lower connection 31",
+      "kind": "point",
+      "position": [
+        9,
+        31
+      ],
+      "block": "03"
+    },
+    {
+      "name": "Existing grass pocket lower connection 32",
+      "kind": "point",
+      "position": [
+        9,
+        32
+      ],
+      "block": "03"
+    },
+    {
+      "name": "Existing grass pocket lower connection 33",
+      "kind": "point",
+      "position": [
+        9,
+        33
+      ],
+      "block": "03"
+    },
+    {
+      "name": "Existing grass pocket lower connection 34",
+      "kind": "point",
+      "position": [
+        9,
+        34
+      ],
+      "block": "03"
+    },
+    {
+      "name": "Existing grass pocket lower connection 35",
+      "kind": "point",
+      "position": [
+        9,
+        35
+      ],
+      "block": "03"
+    },
+    {
+      "name": "Original lake landing [13, 35]",
+      "kind": "point",
+      "position": [
+        13,
+        35
+      ],
+      "block": "02"
+    },
+    {
+      "name": "Original lake landing [14, 37]",
+      "kind": "point",
+      "position": [
+        14,
+        37
+      ],
+      "block": "02"
+    },
+    {
+      "name": "Attached native pine shoulder 13,32",
+      "kind": "point",
+      "position": [
+        13,
+        32
+      ],
+      "block": "60"
+    },
+    {
+      "name": "Attached native pine shoulder 13,34",
+      "kind": "point",
+      "position": [
+        13,
+        34
+      ],
+      "block": "60"
+    },
+    {
+      "name": "Attached native pine shoulder 10,37",
+      "kind": "point",
+      "position": [
+        10,
+        37
+      ],
+      "block": "62"
+    },
+    {
+      "name": "Attached native pine shoulder 12,37",
+      "kind": "point",
+      "position": [
+        12,
+        37
+      ],
+      "block": "65"
+    },
+    {
+      "name": "Attached native pine shoulder 10,39",
+      "kind": "point",
+      "position": [
+        10,
+        39
+      ],
+      "block": "65"
+    },
+    {
+      "name": "Attached native pine shoulder 8,40",
+      "kind": "point",
+      "position": [
+        8,
+        40
+      ],
+      "block": "60"
+    },
+    {
+      "name": "Attached cedar headland closes the former broad eastern road court",
+      "kind": "polygon",
+      "material": "forest",
+      "points": [
+        [
+          25,
+          24
+        ],
+        [
+          36,
+          24
+        ],
+        [
+          36,
+          27
+        ],
+        [
+          37,
+          27
+        ],
+        [
+          37,
+          28
+        ],
+        [
+          27,
+          28
+        ],
+        [
+          27,
+          26
+        ],
+        [
+          25,
+          26
+        ]
+      ]
+    },
+    {
+      "name": "Lake-revealing walk follows the existing upper Cedar cove",
+      "kind": "path",
+      "material": "floor",
+      "points": [
+        [
+          24,
+          25
+        ],
+        [
+          26,
+          25
+        ],
+        [
+          26,
+          28
+        ],
+        [
+          31,
+          28
+        ],
+        [
+          31,
+          27
+        ],
+        [
+          34,
+          27
+        ],
+        [
+          34,
+          29
+        ],
+        [
+          36,
+          29
+        ],
+        [
+          36,
+          31
+        ]
+      ],
+      "width_metatiles": 1
+    },
+    {
+      "name": "Southern cedar mass reaches from the existing lower forest",
+      "kind": "polygon",
+      "material": "forest",
+      "points": [
+        [
+          16,
+          44
+        ],
+        [
+          19,
+          44
+        ],
+        [
+          19,
+          43
+        ],
+        [
+          22,
+          43
+        ],
+        [
+          22,
+          44
+        ],
+        [
+          26,
+          44
+        ],
+        [
+          26,
+          45
+        ],
+        [
+          16,
+          45
+        ]
+      ]
+    },
+    {
+      "name": "Southern bank walk bends to the natural shallow cove",
+      "kind": "path",
+      "material": "floor",
+      "points": [
+        [
+          15,
+          44
+        ],
+        [
+          16,
+          44
+        ],
+        [
+          16,
+          43
+        ],
+        [
+          19,
+          43
+        ],
+        [
+          19,
+          42
+        ],
+        [
+          22,
+          42
+        ],
+        [
+          22,
+          44
+        ],
+        [
+          28,
+          44
+        ]
+      ],
+      "width_metatiles": 1
+    },
+    {
+      "name": "South cove north shoulder closes spare lawn behind the walk",
+      "kind": "rect",
+      "material": "forest",
+      "bounds": [
+        16,
+        41,
+        18,
+        43
+      ]
+    },
+    {
+      "name": "South cove east shoulder joins lower cedar mass",
+      "kind": "point",
+      "position": [
+        21,
+        43
+      ],
+      "block": "60"
+    },
+    {
+      "name": "Pier southern bank native two-lane downhill ledge",
+      "kind": "point",
+      "position": [
+        36,
+        39
+      ],
+      "block": "57"
+    },
+    {
+      "name": "Granite shoulder closes the ledge west side beside the shore rail",
+      "kind": "point",
+      "position": [
+        35,
+        39
+      ],
+      "block": "0a"
+    },
+    {
+      "name": "Grassy upper lip on the ordinary uphill bank return",
+      "kind": "rect",
+      "material": "encounter",
+      "bounds": [
+        37,
+        37,
+        38,
+        39
+      ]
+    },
+    {
+      "name": "Permanent native Headbutt pine closes east side of the drop beside its ordinary return lane",
+      "kind": "point",
+      "position": [
+        37,
+        39
+      ],
+      "block": "60"
+    },
+    {
+      "name": "Attached native pine shoulder carries the ordinary outer lane to its lower landing",
+      "kind": "point",
+      "position": [
+        37,
+        40
+      ],
+      "block": "60"
+    },
+    {
+      "name": "Grassy lower landing makes the ordinary uphill return a real encounter choice",
+      "kind": "point",
+      "position": [
+        37,
+        41
+      ],
+      "block": "03"
+    },
+    {
+      "name": "Old outer Long Lake road rejoins the attached eastern cedar forest",
+      "kind": "block_rect",
+      "bounds": [
+        35,
+        13,
+        37,
+        19
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Southern end of old broad Long Lake corner closes into its forest shoulder",
+      "kind": "block_rect",
+      "bounds": [
+        34,
+        18,
+        35,
+        19
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Long Lake shore walk takes the inner bank beside real water",
+      "kind": "path",
+      "material": "floor",
+      "points": [
+        [
+          36,
+          11
+        ],
+        [
+          36,
+          12
+        ],
+        [
+          34,
+          12
+        ],
+        [
+          34,
+          17
+        ],
+        [
+          33,
+          17
+        ],
+        [
+          33,
+          18
+        ],
+        [
+          31,
+          18
+        ]
+      ],
+      "width_metatiles": 1
+    },
+    {
+      "name": "Repel turnout stays joined to the new inner-bank walk",
+      "kind": "point",
+      "position": [
+        34,
+        13
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Southern bank lower cedar shoulder first narrows the path to its lakeward half",
+      "kind": "point",
+      "position": [
+        25,
+        44
+      ],
+      "block": "65"
+    },
+    {
+      "name": "Southern bank attached lower cedar shoulder narrows the approach before the reward pocket",
+      "kind": "point",
+      "position": [
+        27,
+        44
+      ],
+      "block": "65"
+    },
+    {
+      "name": "Southern bank lower cedar shoulder releases at the Ether passing pocket",
+      "kind": "point",
+      "position": [
+        30,
+        44
+      ],
+      "block": "65"
+    },
+    {
+      "name": "Southeast bank closes spare grass below the existing Nell approach",
+      "kind": "block_rect",
+      "bounds": [
+        32,
+        44,
+        37,
+        45
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "block_remap",
+      "name": "Birch-bank grass climb below the eastern ramp",
+      "bounds": [
+        16,
+        14,
+        20,
+        15
+      ],
+      "from": "01",
+      "to": "03"
+    },
+    {
+      "kind": "block_remap",
+      "name": "Birch-bank grass climb below the eastern ramp",
+      "bounds": [
+        16,
+        14,
+        20,
+        15
+      ],
+      "from": "02",
+      "to": "03"
+    },
+    {
+      "kind": "block_remap",
+      "name": "Cedar fishing-shore grass approach",
+      "bounds": [
+        36,
+        33,
+        37,
+        34
+      ],
+      "from": "01",
+      "to": "03"
+    },
+    {
+      "kind": "block_remap",
+      "name": "Long Lake western grass trail connections",
+      "bounds": [
+        22,
+        11,
+        23,
+        12
+      ],
+      "from": "01",
+      "to": "03"
+    },
+    {
+      "kind": "block_remap",
+      "name": "Long Lake grass neck southern connection",
+      "bounds": [
+        22,
+        15,
+        23,
+        16
+      ],
+      "from": "01",
+      "to": "03"
+    },
+    {
+      "kind": "block_remap",
+      "name": "Cedar shorter meadow route connects to its trail",
+      "bounds": [
+        10,
+        29,
+        12,
+        30
+      ],
+      "from": "02",
+      "to": "03"
+    },
+    {
+      "kind": "block_remap",
+      "name": "Birch climb grass extends below the ramp",
+      "bounds": [
+        16,
+        15,
+        20,
+        16
+      ],
+      "from": "01",
+      "to": "03"
+    },
+    {
+      "kind": "block_remap",
+      "name": "Birch climb grass extends below the ramp",
+      "bounds": [
+        16,
+        15,
+        20,
+        16
+      ],
+      "from": "02",
+      "to": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Birch sign-side rock closes the short dry edge",
+      "position": [
+        16,
+        14
+      ],
+      "block": "0a"
+    },
+    {
+      "kind": "path",
+      "name": "Installed Bemidji north arrival continues on the existing west dogleg",
+      "points": [
+        [
+          12,
+          0
+        ],
+        [
+          12,
+          2
+        ],
+        [
+          15,
+          2
+        ],
+        [
+          15,
+          1
+        ],
+        [
+          19,
+          1
+        ]
+      ],
+      "material": "floor",
+      "width_metatiles": 1
+    },
+    {
+      "kind": "point",
+      "name": "Retired straight northern opening is native forest",
+      "position": [
+        20,
+        0
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "rect",
+      "name": "Closed unused western map edge",
+      "bounds": [
+        0,
+        17,
+        1,
+        19
+      ],
+      "material": "forest"
+    },
+    {
+      "kind": "point",
+      "name": "Installed southern trailhead forest shoulder",
+      "position": [
+        11,
+        47
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Installed southern trailhead forest shoulder",
+      "position": [
+        12,
+        47
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Installed southern trailhead forest shoulder",
+      "position": [
+        14,
+        47
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Installed southern trailhead forest shoulder",
+      "position": [
+        15,
+        47
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "polygon",
+      "name": "Ancient peat basin raised ground joins the northern forest",
+      "points": [
+        [
+          26,
+          5
+        ],
+        [
+          30,
+          5
+        ],
+        [
+          30,
+          7
+        ],
+        [
+          32,
+          7
+        ],
+        [
+          32,
+          9
+        ],
+        [
+          30,
+          9
+        ],
+        [
+          30,
+          11
+        ],
+        [
+          31,
+          11
+        ],
+        [
+          31,
+          13
+        ],
+        [
+          29,
+          13
+        ],
+        [
+          29,
+          15
+        ],
+        [
+          27,
+          15
+        ],
+        [
+          27,
+          17
+        ],
+        [
+          25,
+          17
+        ],
+        [
+          25,
+          19
+        ],
+        [
+          23,
+          19
+        ],
+        [
+          23,
+          17
+        ],
+        [
+          24,
+          17
+        ],
+        [
+          24,
+          15
+        ],
+        [
+          25,
+          15
+        ],
+        [
+          25,
+          12
+        ],
+        [
+          27,
+          12
+        ],
+        [
+          27,
+          10
+        ],
+        [
+          26,
+          10
+        ]
+      ],
+      "material": "lawn"
+    },
+    {
+      "kind": "polygon",
+      "name": "Old cedar root mass follows the high peat tongue",
+      "points": [
+        [
+          27,
+          5
+        ],
+        [
+          29,
+          5
+        ],
+        [
+          29,
+          7
+        ],
+        [
+          31,
+          7
+        ],
+        [
+          31,
+          8
+        ],
+        [
+          29,
+          8
+        ],
+        [
+          29,
+          10
+        ],
+        [
+          28,
+          10
+        ],
+        [
+          28,
+          8
+        ],
+        [
+          27,
+          8
+        ]
+      ],
+      "material": "forest"
+    },
+    {
+      "kind": "polygon",
+      "name": "Western blackwater finger curls around the peat shelf",
+      "points": [
+        [
+          23,
+          8
+        ],
+        [
+          25,
+          8
+        ],
+        [
+          25,
+          10
+        ],
+        [
+          26,
+          10
+        ],
+        [
+          26,
+          12
+        ],
+        [
+          24,
+          12
+        ],
+        [
+          24,
+          14
+        ],
+        [
+          23,
+          14
+        ]
+      ],
+      "material": "water"
+    },
+    {
+      "kind": "polygon",
+      "name": "Southern peat spit breaks the long empty lake edge",
+      "points": [
+        [
+          26,
+          17
+        ],
+        [
+          28,
+          17
+        ],
+        [
+          28,
+          18
+        ],
+        [
+          30,
+          18
+        ],
+        [
+          30,
+          19
+        ],
+        [
+          28,
+          19
+        ],
+        [
+          28,
+          20
+        ],
+        [
+          26,
+          20
+        ]
+      ],
+      "material": "lawn"
+    },
+    {
+      "kind": "rect",
+      "name": "Reedbed at the southern peat landing",
+      "bounds": [
+        26,
+        18,
+        28,
+        20
+      ],
+      "material": "encounter"
+    },
+    {
+      "kind": "path",
+      "name": "Ancient mire foot trail enters from the established saddle",
+      "points": [
+        [
+          22,
+          18
+        ],
+        [
+          24,
+          18
+        ],
+        [
+          24,
+          16
+        ],
+        [
+          26,
+          16
+        ],
+        [
+          26,
+          14
+        ],
+        [
+          28,
+          14
+        ],
+        [
+          28,
+          12
+        ],
+        [
+          29,
+          12
+        ]
+      ],
+      "material": "floor",
+      "width_metatiles": 1
+    },
+    {
+      "kind": "rect",
+      "name": "Mire reed crossing on the raised peat neck",
+      "bounds": [
+        25,
+        15,
+        27,
+        17
+      ],
+      "material": "encounter"
+    },
+    {
+      "kind": "rect",
+      "name": "Old grove sanctuary dry approach",
+      "bounds": [
+        28,
+        11,
+        31,
+        13
+      ],
+      "material": "lawn"
+    },
+    {
+      "kind": "point",
+      "name": "Ancient cedar stump west of the sanctuary",
+      "position": [
+        28,
+        10
+      ],
+      "block": "61"
+    },
+    {
+      "kind": "point",
+      "name": "Ancient cedar stump east of the sanctuary",
+      "position": [
+        30,
+        10
+      ],
+      "block": "61"
+    },
+    {
+      "kind": "point",
+      "name": "Weathered sanctuary stone follows the old root bank",
+      "position": [
+        30,
+        11
+      ],
+      "block": "0a"
+    },
+    {
+      "kind": "rect",
+      "name": "Moss grass sanctuary western shoulder",
+      "bounds": [
+        27,
+        12,
+        28,
+        14
+      ],
+      "material": "encounter"
+    },
+    {
+      "kind": "rect",
+      "name": "Reed island divides the lower blackwater pool",
+      "bounds": [
+        25,
+        18,
+        26,
+        20
+      ],
+      "material": "encounter"
+    },
+    {
+      "kind": "point",
+      "name": "Small ancient cedar on the lower peat tongue",
+      "position": [
+        27,
+        17
+      ],
+      "block": "61"
+    },
+    {
+      "kind": "polygon",
+      "name": "Eastern peat shelf turns the old lake arm into shallow reed pools",
+      "material": "lawn",
+      "points": [
+        [
+          31,
+          13
+        ],
+        [
+          34,
+          13
+        ],
+        [
+          34,
+          14
+        ],
+        [
+          36,
+          14
+        ],
+        [
+          36,
+          18
+        ],
+        [
+          33,
+          18
+        ],
+        [
+          33,
+          20
+        ],
+        [
+          30,
+          20
+        ],
+        [
+          30,
+          18
+        ],
+        [
+          28,
+          18
+        ],
+        [
+          28,
+          17
+        ],
+        [
+          30,
+          17
+        ],
+        [
+          30,
+          15
+        ],
+        [
+          31,
+          15
+        ]
+      ]
+    },
+    {
+      "kind": "polygon",
+      "name": "Wet reed field winds between the eastern root banks",
+      "material": "encounter",
+      "points": [
+        [
+          32,
+          14
+        ],
+        [
+          34,
+          14
+        ],
+        [
+          34,
+          15
+        ],
+        [
+          35,
+          15
+        ],
+        [
+          35,
+          17
+        ],
+        [
+          33,
+          17
+        ],
+        [
+          33,
+          19
+        ],
+        [
+          31,
+          19
+        ],
+        [
+          31,
+          18
+        ],
+        [
+          29,
+          18
+        ],
+        [
+          29,
+          17
+        ],
+        [
+          31,
+          17
+        ],
+        [
+          31,
+          16
+        ],
+        [
+          32,
+          16
+        ]
+      ]
+    },
+    {
+      "kind": "polygon",
+      "name": "Connected blackwater side channel divides eastern and ancient peat tongues",
+      "material": "water",
+      "points": [
+        [
+          29,
+          14
+        ],
+        [
+          31,
+          14
+        ],
+        [
+          31,
+          15
+        ],
+        [
+          32,
+          15
+        ],
+        [
+          32,
+          16
+        ],
+        [
+          30,
+          16
+        ],
+        [
+          30,
+          17
+        ],
+        [
+          28,
+          17
+        ],
+        [
+          28,
+          16
+        ],
+        [
+          29,
+          16
+        ]
+      ]
+    },
+    {
+      "kind": "polygon",
+      "name": "Pine root fingers enclose the eastern reedbed from existing forest",
+      "material": "forest",
+      "points": [
+        [
+          35,
+          14
+        ],
+        [
+          37,
+          14
+        ],
+        [
+          37,
+          19
+        ],
+        [
+          34,
+          19
+        ],
+        [
+          34,
+          18
+        ],
+        [
+          36,
+          18
+        ],
+        [
+          36,
+          16
+        ],
+        [
+          35,
+          16
+        ]
+      ]
+    },
+    {
+      "kind": "point",
+      "name": "Ancient cedar beside the old blackwater fork",
+      "position": [
+        31,
+        14
+      ],
+      "block": "61"
+    },
+    {
+      "kind": "point",
+      "name": "Reedbed stone is a natural stop beside the raised trail",
+      "position": [
+        25,
+        17
+      ],
+      "block": "0a"
+    },
+    {
+      "kind": "point",
+      "name": "Old timber clue standing cedar beside the raised western trail",
+      "position": [
+        23,
+        16
+      ],
+      "block": "61"
+    },
+    {
+      "kind": "point",
+      "name": "Peat footprint clue weathered stone beside the middle reed crossing",
+      "position": [
+        27,
+        14
+      ],
+      "block": "0a"
+    },
+    {
+      "kind": "point",
+      "name": "Moss scrape clue stone at the sanctuary eastern shoulder",
+      "position": [
+        30,
+        12
+      ],
+      "block": "0a"
+    },
+    {
+      "kind": "polygon",
+      "name": "Attached ancient grove canopy encloses the sanctuary from the northern bank",
+      "material": "forest",
+      "points": [
+        [
+          32,
+          7
+        ],
+        [
+          35,
+          7
+        ],
+        [
+          35,
+          10
+        ],
+        [
+          34,
+          10
+        ],
+        [
+          34,
+          11
+        ],
+        [
+          33,
+          11
+        ],
+        [
+          33,
+          9
+        ],
+        [
+          31,
+          9
+        ],
+        [
+          31,
+          8
+        ],
+        [
+          32,
+          8
+        ]
+      ]
+    },
+    {
+      "kind": "rect",
+      "name": "Low moss below the inner root bank breaks the reed rectangle",
+      "material": "lawn",
+      "bounds": [
+        32,
+        16,
+        33,
+        18
+      ]
+    },
+    {
+      "kind": "rect",
+      "name": "Moss finger follows eastern grass toward the closed blackwater cove",
+      "material": "lawn",
+      "bounds": [
+        34,
+        15,
+        35,
+        16
+      ]
+    },
+    {
+      "kind": "point",
+      "name": "Old cedar stump anchors the eastern reed island",
+      "position": [
+        32,
+        18
+      ],
+      "block": "61"
+    },
+    {
+      "kind": "point",
+      "name": "Petrified timber clue marker reads before any field move",
+      "position": [
+        23,
+        16
+      ],
+      "block": "0a"
+    },
+    {
+      "kind": "point",
+      "name": "Ancient cedar root remains stand just behind the petrified marker",
+      "position": [
+        23,
+        15
+      ],
+      "block": "61"
+    }
+  ],
+  "art_authority": "Exact local Johto / Kanto source blocks; Route42 lake partitions and Route30 shoreline pacing studied.",
+  "source_pixels_modified": false,
+  "status": "Hand-authored source revision; native integration and controller play pending.",
+  "crossings": [
+    {
+      "id": "CEDAR_INLET_BRIDGE",
+      "north_rail_blocks": [
+        [
+          17,
+          24
+        ],
+        [
+          18,
+          24
+        ],
+        [
+          19,
+          24
+        ],
+        [
+          20,
+          24
+        ]
+      ],
+      "south_rail_blocks": [
+        [
+          17,
+          25
+        ],
+        [
+          18,
+          25
+        ],
+        [
+          19,
+          25
+        ],
+        [
+          20,
+          25
+        ]
+      ],
+      "water_under_rail_blocks": [
+        [
+          17,
+          26
+        ],
+        [
+          18,
+          26
+        ],
+        [
+          19,
+          26
+        ],
+        [
+          20,
+          26
+        ]
+      ]
+    },
+    {
+      "id": "BIRCH_ISLAND_BRIDGE",
+      "north_rail_blocks": [
+        [
+          4,
+          8
+        ],
+        [
+          5,
+          8
+        ]
+      ],
+      "south_rail_blocks": [
+        [
+          4,
+          9
+        ],
+        [
+          5,
+          9
+        ]
+      ],
+      "water_under_rail_blocks": [
+        [
+          5,
+          10
+        ]
+      ],
+      "rock_under_rail_blocks": [
+        [
+          4,
+          10
+        ]
+      ]
+    },
+    {
+      "id": "CEDAR_FISHING_PIER",
+      "north_rail_blocks": [
+        [
+          30,
+          35
+        ],
+        [
+          31,
+          35
+        ],
+        [
+          32,
+          35
+        ],
+        [
+          33,
+          35
+        ],
+        [
+          34,
+          35
+        ],
+        [
+          35,
+          35
+        ]
+      ],
+      "south_rail_blocks": [
+        [
+          30,
+          36
+        ],
+        [
+          31,
+          36
+        ],
+        [
+          32,
+          36
+        ],
+        [
+          33,
+          36
+        ],
+        [
+          34,
+          36
+        ],
+        [
+          35,
+          36
+        ]
+      ],
+      "water_under_rail_blocks": [
+        [
+          30,
+          37
+        ],
+        [
+          31,
+          37
+        ],
+        [
+          32,
+          37
+        ],
+        [
+          33,
+          37
+        ],
+        [
+          34,
+          37
+        ]
+      ]
+    }
+  ],
+  "reject_cliff_cuts": true
+}

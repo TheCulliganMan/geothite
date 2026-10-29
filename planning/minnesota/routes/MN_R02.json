@@ -834,5 +834,175 @@
     }
   ],
   "status": "Compact hand-authored native overlay; geometry and first-badge battle journey fixtures pass. Regional ports and earned Q02 progression remain pending.",
-  "anchor_status": "Exact native blocks, objects, signs, dialogue, teams and room returns match the source editor. Actual ledge and battle input verified."
+  "anchor_status": "Exact native blocks, objects, signs, dialogue, teams and room returns match the source editor. Actual ledge and battle input verified.",
+  "directional_grass_loops": [
+    {
+      "id": "NURSERY_GRASS_WALK_DRY_WEST_DROP",
+      "ledge_id": "NURSERY_WEST_DROP",
+      "outbound_start_core": [
+        45,
+        15
+      ],
+      "outbound_end_core": [
+        48,
+        15
+      ],
+      "grass_regions_core": [
+        [
+          18,
+          6,
+          24,
+          8
+        ],
+        [
+          36,
+          6,
+          44,
+          8
+        ],
+        [
+          18,
+          8,
+          24,
+          10
+        ],
+        [
+          36,
+          10,
+          40,
+          12
+        ],
+        [
+          20,
+          12,
+          26,
+          14
+        ],
+        [
+          20,
+          14,
+          26,
+          16
+        ],
+        [
+          42,
+          14,
+          44,
+          16
+        ],
+        [
+          16,
+          16,
+          20,
+          18
+        ],
+        [
+          36,
+          16,
+          40,
+          18
+        ],
+        [
+          42,
+          16,
+          44,
+          18
+        ],
+        [
+          16,
+          18,
+          20,
+          20
+        ],
+        [
+          36,
+          18,
+          40,
+          20
+        ],
+        [
+          42,
+          18,
+          44,
+          20
+        ],
+        [
+          52,
+          18,
+          54,
+          20
+        ],
+        [
+          52,
+          20,
+          54,
+          22
+        ],
+        [
+          20,
+          24,
+          24,
+          26
+        ],
+        [
+          20,
+          26,
+          24,
+          28
+        ],
+        [
+          44,
+          26,
+          50,
+          28
+        ],
+        [
+          8,
+          28,
+          14,
+          30
+        ],
+        [
+          8,
+          30,
+          26,
+          32
+        ],
+        [
+          8,
+          32,
+          14,
+          34
+        ],
+        [
+          46,
+          38,
+          50,
+          40
+        ]
+      ],
+      "outbound_minimum_grass_steps": 2,
+      "return_minimum_grass_steps": 0,
+      "dry_trail_core": [
+        [
+          45,
+          14
+        ],
+        [
+          45,
+          15
+        ],
+        [
+          45,
+          16
+        ],
+        [
+          45,
+          17
+        ]
+      ],
+      "all_ledge_lanes_minimum_grass_steps": 2,
+      "scope": "Eastward ordinary return around the bank crosses encounter fields. The westward native hop has a dry landing on all four lanes; field grass stays native golden."
+    }
+  ]
 }

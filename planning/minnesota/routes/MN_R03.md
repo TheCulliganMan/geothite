@@ -1,10 +1,21 @@
 # Minnesota River Valley: compact native review
 
+## Grass and directional ledge pass, 2026-10-28
+
+The current pass uses original Crystal Route30/42/45 as references. The bird
+meadow now requires five grass steps northbound and offers a dry southbound
+ledge return. Native terrain has 224 encounter tiles, up from 112. The review
+pack and native 2D/3D captures pass exact terrain/nonterrain preservation and
+directional checks. Production controls passed all four ledge lanes and the
+populated journey with battles, native medicine and Save/Continue. See
+[the current route runbook](../revisions/route-grass-v01/R03.md). This route is accepted in the named review pack; subsequent routes remain
+separate work.
+
 This hand-authored replacement is **24×32 metatiles**, two native maps and one small cave. It replaces the repeated 64×144 twelve-chunk layout. The river's stepped bends, two required timber crossings, lower habitat shelf and optional limestone terrace form a narrow north/south journey rather than another farmyard or lake fork.
 
 [Whole route](../renders/river-valley/whole-route-13d463b2.png) · [ten player-scale views](../renders/river-valley/viewpoints.png) · [cave interior](../renders/river-valley/interiors.png) · [native upper bridge](../renders/river-valley/native-upper-bridge.png) · [native lower bridge](../renders/river-valley/native-lower-bridge.png) · [native terrace](../renders/river-valley/native-terrace.png) · [native cave mouth](../renders/river-valley/native-cave-mouth.png) · [native cave](../renders/river-valley/native-cave.png).
 
-**Current status:** bounded source boundary/canopy repair, 2026-10-26. The
+**Historical boundary pass:** bounded source boundary/canopy repair, 2026-10-26. The
 historical native captures and populated journey below describe the preceding
 publication. New source pixels/collision pass; changed blocks await native
 republication and controller verification. Actor, room, party, port, encounter,

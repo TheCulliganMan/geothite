@@ -1,0 +1,2355 @@
+{
+  "schema_version": 1,
+  "id": "MN_MISSISSIPPI_CONNECTIONS",
+  "status": "long quiet hand-authored source candidate; not published gameplay",
+  "base_pack": "content-packs/minnesota-twin-cities-compact-v01.crystalpack",
+  "base_pack_sha256": "2fe6fc2a2c59833886b9ffa2fa04584f1f95841efaf87e865f11230cf4cdf54e",
+  "base_content_hash": "23b3ca0c19fbc6c7f687645540aa9bdd12becfbdb7b693804d6f3b125a41ed41",
+  "registry": {
+    "group_id": 82,
+    "group_name": "MINNESOTA_MISSISSIPPI",
+    "map_group_constant": "MAPGROUP_MINNESOTA_MISSISSIPPI",
+    "reservation_evidence": "82 absent from exact2fe6 runtime metadata and checked-in registration;80Fair/81Ely reserved. Recheck fresh parent."
+  },
+  "new_maps": [
+    {
+      "id": "MnMississippiConfluenceC00R00",
+      "map_id": 1,
+      "map_constant": "MN_MISSISSIPPI_CONFLUENCE_C00R00",
+      "layout": "planning/minnesota/connections/mississippi-v02/MnMississippiConfluence.layout.json",
+      "layout_sha256": "1f791e6eda43af46a989f6aad6c1a5aebcf213237f8a223224fb6e7284991efc",
+      "source_origin_metatiles": [
+        0,
+        4
+      ],
+      "dimensions_metatiles": [
+        6,
+        8
+      ],
+      "world_origin_metatiles": [
+        34,
+        32
+      ],
+      "tileset": "johto",
+      "environment": "ROUTE",
+      "music": "MUSIC_ROUTE_30",
+      "connections": [
+        {
+          "direction": "west",
+          "target_map": "MnR03C00R00",
+          "offset": 0
+        },
+        {
+          "direction": "east",
+          "target_map": "MnMississippiConfluenceC01R00",
+          "offset": -4
+        }
+      ],
+      "source_blocks_sha256": "e4a9a5837816ee907f457cff07f69047c64cbdb12c02e816eec9cec4589eaf08"
+    },
+    {
+      "id": "MnMississippiConfluenceC01R00",
+      "map_id": 2,
+      "map_constant": "MN_MISSISSIPPI_CONFLUENCE_C01R00",
+      "layout": "planning/minnesota/connections/mississippi-v02/MnMississippiConfluence.layout.json",
+      "layout_sha256": "1f791e6eda43af46a989f6aad6c1a5aebcf213237f8a223224fb6e7284991efc",
+      "source_origin_metatiles": [
+        6,
+        0
+      ],
+      "dimensions_metatiles": [
+        32,
+        12
+      ],
+      "world_origin_metatiles": [
+        40,
+        28
+      ],
+      "tileset": "johto",
+      "environment": "ROUTE",
+      "music": "MUSIC_ROUTE_30",
+      "connections": [
+        {
+          "direction": "west",
+          "target_map": "MnMississippiConfluenceC00R00",
+          "offset": 4
+        },
+        {
+          "direction": "east",
+          "target_map": "MnMississippiConfluenceC02R00",
+          "offset": 0
+        }
+      ],
+      "source_blocks_sha256": "f0f29819e6b08b23992adae22c14e55d1de33f87c1ee37c50a4cbf068f6a1c99"
+    },
+    {
+      "id": "MnMississippiConfluenceC02R00",
+      "map_id": 3,
+      "map_constant": "MN_MISSISSIPPI_CONFLUENCE_C02R00",
+      "layout": "planning/minnesota/connections/mississippi-v02/MnMississippiConfluence.layout.json",
+      "layout_sha256": "1f791e6eda43af46a989f6aad6c1a5aebcf213237f8a223224fb6e7284991efc",
+      "source_origin_metatiles": [
+        38,
+        0
+      ],
+      "dimensions_metatiles": [
+        32,
+        12
+      ],
+      "world_origin_metatiles": [
+        72,
+        28
+      ],
+      "tileset": "johto",
+      "environment": "ROUTE",
+      "music": "MUSIC_ROUTE_30",
+      "connections": [
+        {
+          "direction": "west",
+          "target_map": "MnMississippiConfluenceC01R00",
+          "offset": 0
+        },
+        {
+          "direction": "east",
+          "target_map": "MnMississippiConfluenceC03R00",
+          "offset": 0
+        }
+      ],
+      "source_blocks_sha256": "86cb59cfe4d5fda7023ecf99ac9fc4de4213fad42af17a3868d7009985c0546a"
+    },
+    {
+      "id": "MnMississippiConfluenceC03R00",
+      "map_id": 4,
+      "map_constant": "MN_MISSISSIPPI_CONFLUENCE_C03R00",
+      "layout": "planning/minnesota/connections/mississippi-v02/MnMississippiConfluence.layout.json",
+      "layout_sha256": "1f791e6eda43af46a989f6aad6c1a5aebcf213237f8a223224fb6e7284991efc",
+      "source_origin_metatiles": [
+        70,
+        0
+      ],
+      "dimensions_metatiles": [
+        4,
+        12
+      ],
+      "world_origin_metatiles": [
+        104,
+        28
+      ],
+      "tileset": "johto",
+      "environment": "ROUTE",
+      "music": "MUSIC_ROUTE_30",
+      "connections": [
+        {
+          "direction": "west",
+          "target_map": "MnMississippiConfluenceC02R00",
+          "offset": 0
+        },
+        {
+          "direction": "north",
+          "target_map": "MnStPaul",
+          "offset": -36
+        }
+      ],
+      "source_blocks_sha256": "1446a937ced897edf97adbea5d32c9cfcc73f89af1b1520ac26bea7e072467d2"
+    },
+    {
+      "id": "MnMississippiLowerWoodsC00R00",
+      "map_id": 5,
+      "map_constant": "MNMISSISSIPPILOWERWOODSC00R00",
+      "layout": "planning/minnesota/connections/mississippi-v02/MnMississippiLowerWoods.layout.json",
+      "layout_sha256": "4f4f8c27e620fd02b82859ef28dc59337db5abada51eba9b8897ab310d5434bf",
+      "source_origin_metatiles": [
+        0,
+        0
+      ],
+      "dimensions_metatiles": [
+        32,
+        24
+      ],
+      "world_origin_metatiles": [
+        108,
+        -16
+      ],
+      "tileset": "johto",
+      "environment": "ROUTE",
+      "music": "MUSIC_ROUTE_30",
+      "connections": [
+        {
+          "direction": "east",
+          "target_map": "MnMississippiLowerWoodsC01R00",
+          "offset": 0
+        },
+        {
+          "direction": "south",
+          "target_map": "MnMississippiLowerWoodsC00R01",
+          "offset": 0
+        }
+      ],
+      "source_blocks_sha256": "cd229400c441af8b671ac2ffb2a1e05331980ac527216b670c2dc88c7ad8b8a5"
+    },
+    {
+      "id": "MnMississippiLowerWoodsC01R00",
+      "map_id": 6,
+      "map_constant": "MNMISSISSIPPILOWERWOODSC01R00",
+      "layout": "planning/minnesota/connections/mississippi-v02/MnMississippiLowerWoods.layout.json",
+      "layout_sha256": "4f4f8c27e620fd02b82859ef28dc59337db5abada51eba9b8897ab310d5434bf",
+      "source_origin_metatiles": [
+        32,
+        0
+      ],
+      "dimensions_metatiles": [
+        32,
+        24
+      ],
+      "world_origin_metatiles": [
+        140,
+        -16
+      ],
+      "tileset": "johto",
+      "environment": "ROUTE",
+      "music": "MUSIC_ROUTE_30",
+      "connections": [
+        {
+          "direction": "west",
+          "target_map": "MnMississippiLowerWoodsC00R00",
+          "offset": 0
+        },
+        {
+          "direction": "south",
+          "target_map": "MnMississippiLowerWoodsC01R01",
+          "offset": 0
+        }
+      ],
+      "source_blocks_sha256": "0ed2eb9be9ec66a9b61711ec78899d692f24e804e1bff32dc081f392e6e17c07"
+    },
+    {
+      "id": "MnMississippiLowerWoodsC00R01",
+      "map_id": 7,
+      "map_constant": "MNMISSISSIPPILOWERWOODSC00R01",
+      "layout": "planning/minnesota/connections/mississippi-v02/MnMississippiLowerWoods.layout.json",
+      "layout_sha256": "4f4f8c27e620fd02b82859ef28dc59337db5abada51eba9b8897ab310d5434bf",
+      "source_origin_metatiles": [
+        0,
+        24
+      ],
+      "dimensions_metatiles": [
+        32,
+        24
+      ],
+      "world_origin_metatiles": [
+        108,
+        8
+      ],
+      "tileset": "johto",
+      "environment": "ROUTE",
+      "music": "MUSIC_ROUTE_30",
+      "connections": [
+        {
+          "direction": "north",
+          "target_map": "MnMississippiLowerWoodsC00R00",
+          "offset": 0
+        },
+        {
+          "direction": "east",
+          "target_map": "MnMississippiLowerWoodsC01R01",
+          "offset": 0
+        },
+        {
+          "direction": "south",
+          "target_map": "MnMississippiLowerWoodsC00R02",
+          "offset": 0
+        },
+        {
+          "direction": "west",
+          "target_map": "MnStPaul",
+          "offset": -14
+        }
+      ],
+      "source_blocks_sha256": "e8e8ccd0fb203ce4c767bbb11012189060efffad10f599dd01c7c7e823811a2b"
+    },
+    {
+      "id": "MnMississippiLowerWoodsC01R01",
+      "map_id": 8,
+      "map_constant": "MNMISSISSIPPILOWERWOODSC01R01",
+      "layout": "planning/minnesota/connections/mississippi-v02/MnMississippiLowerWoods.layout.json",
+      "layout_sha256": "4f4f8c27e620fd02b82859ef28dc59337db5abada51eba9b8897ab310d5434bf",
+      "source_origin_metatiles": [
+        32,
+        24
+      ],
+      "dimensions_metatiles": [
+        32,
+        24
+      ],
+      "world_origin_metatiles": [
+        140,
+        8
+      ],
+      "tileset": "johto",
+      "environment": "ROUTE",
+      "music": "MUSIC_ROUTE_30",
+      "connections": [
+        {
+          "direction": "north",
+          "target_map": "MnMississippiLowerWoodsC01R00",
+          "offset": 0
+        },
+        {
+          "direction": "west",
+          "target_map": "MnMississippiLowerWoodsC00R01",
+          "offset": 0
+        },
+        {
+          "direction": "south",
+          "target_map": "MnMississippiLowerWoodsC01R02",
+          "offset": 0
+        }
+      ],
+      "source_blocks_sha256": "8143b0c00c6ed87770773b0d3cb748577507eb029f7f40d5573ae60bb6b2641d"
+    },
+    {
+      "id": "MnMississippiLowerWoodsC00R02",
+      "map_id": 9,
+      "map_constant": "MNMISSISSIPPILOWERWOODSC00R02",
+      "layout": "planning/minnesota/connections/mississippi-v02/MnMississippiLowerWoods.layout.json",
+      "layout_sha256": "4f4f8c27e620fd02b82859ef28dc59337db5abada51eba9b8897ab310d5434bf",
+      "source_origin_metatiles": [
+        0,
+        48
+      ],
+      "dimensions_metatiles": [
+        32,
+        20
+      ],
+      "world_origin_metatiles": [
+        108,
+        32
+      ],
+      "tileset": "johto",
+      "environment": "ROUTE",
+      "music": "MUSIC_ROUTE_30",
+      "connections": [
+        {
+          "direction": "north",
+          "target_map": "MnMississippiLowerWoodsC00R01",
+          "offset": 0
+        },
+        {
+          "direction": "east",
+          "target_map": "MnMississippiLowerWoodsC01R02",
+          "offset": 0
+        },
+        {
+          "direction": "south",
+          "target_map": "MnMississippiWinonaMouth",
+          "offset": 5
+        }
+      ],
+      "source_blocks_sha256": "a9d91f86773341b2b14202969fe06929d96745d5be6b1a4b0ee00437736a9ca6"
+    },
+    {
+      "id": "MnMississippiLowerWoodsC01R02",
+      "map_id": 10,
+      "map_constant": "MNMISSISSIPPILOWERWOODSC01R02",
+      "layout": "planning/minnesota/connections/mississippi-v02/MnMississippiLowerWoods.layout.json",
+      "layout_sha256": "4f4f8c27e620fd02b82859ef28dc59337db5abada51eba9b8897ab310d5434bf",
+      "source_origin_metatiles": [
+        32,
+        48
+      ],
+      "dimensions_metatiles": [
+        32,
+        20
+      ],
+      "world_origin_metatiles": [
+        140,
+        32
+      ],
+      "tileset": "johto",
+      "environment": "ROUTE",
+      "music": "MUSIC_ROUTE_30",
+      "connections": [
+        {
+          "direction": "north",
+          "target_map": "MnMississippiLowerWoodsC01R01",
+          "offset": 0
+        },
+        {
+          "direction": "west",
+          "target_map": "MnMississippiLowerWoodsC00R02",
+          "offset": 0
+        }
+      ],
+      "source_blocks_sha256": "358a7fe42f90d9fd5983520baf4e24486f471abb27de1b04ef2dddfbafd6bd85"
+    },
+    {
+      "id": "MnMississippiWinonaMouth",
+      "map_id": 11,
+      "map_constant": "MNMISSISSIPPIWINONAMOUTH",
+      "layout": "planning/minnesota/connections/mississippi-v02/MnMississippiWinonaMouth.layout.json",
+      "layout_sha256": "34be3767a32075eddfb2e5a17564e8787ff3507939fe52f58d54b926822c87ec",
+      "source_origin_metatiles": [
+        0,
+        0
+      ],
+      "dimensions_metatiles": [
+        16,
+        4
+      ],
+      "world_origin_metatiles": [
+        113,
+        52
+      ],
+      "tileset": "johto",
+      "environment": "ROUTE",
+      "music": "MUSIC_ROUTE_30",
+      "connections": [
+        {
+          "direction": "north",
+          "target_map": "MnMississippiLowerWoodsC00R02",
+          "offset": -5
+        },
+        {
+          "direction": "south",
+          "target_map": "MnWinona",
+          "offset": 0
+        }
+      ],
+      "source_blocks_sha256": "82e364e864a0064d476f6504190cc4b8a6148478837230c58c7960df5278bd7a"
+    },
+    {
+      "id": "MnMississippiUpstreamWoodsC00R00",
+      "map_id": 12,
+      "map_constant": "MNMISSISSIPPIUPSTREAMWOODSC00R00",
+      "layout": "planning/minnesota/connections/mississippi-v02/MnMississippiUpstreamWoods.layout.json",
+      "layout_sha256": "29bbdd50eb5449def26a4f0102809cfa81cd1e0468cb13a131bd8122ce5dda59",
+      "source_origin_metatiles": [
+        0,
+        0
+      ],
+      "dimensions_metatiles": [
+        32,
+        24
+      ],
+      "world_origin_metatiles": [
+        41,
+        -74
+      ],
+      "tileset": "johto",
+      "environment": "ROUTE",
+      "music": "MUSIC_ROUTE_30",
+      "connections": [
+        {
+          "direction": "east",
+          "target_map": "MnMississippiUpstreamWoodsC01R00",
+          "offset": 0
+        },
+        {
+          "direction": "south",
+          "target_map": "MnMississippiUpstreamWoodsC00R01",
+          "offset": 0
+        },
+        {
+          "direction": "west",
+          "target_map": "MnR05C00R00",
+          "offset": 18
+        }
+      ],
+      "source_blocks_sha256": "786000fffe49080a1af8d2a7dfcfb4ac9b38101d40434643aae4c84f1262736b"
+    },
+    {
+      "id": "MnMississippiUpstreamWoodsC01R00",
+      "map_id": 13,
+      "map_constant": "MNMISSISSIPPIUPSTREAMWOODSC01R00",
+      "layout": "planning/minnesota/connections/mississippi-v02/MnMississippiUpstreamWoods.layout.json",
+      "layout_sha256": "29bbdd50eb5449def26a4f0102809cfa81cd1e0468cb13a131bd8122ce5dda59",
+      "source_origin_metatiles": [
+        32,
+        0
+      ],
+      "dimensions_metatiles": [
+        32,
+        24
+      ],
+      "world_origin_metatiles": [
+        73,
+        -74
+      ],
+      "tileset": "johto",
+      "environment": "ROUTE",
+      "music": "MUSIC_ROUTE_30",
+      "connections": [
+        {
+          "direction": "west",
+          "target_map": "MnMississippiUpstreamWoodsC00R00",
+          "offset": 0
+        },
+        {
+          "direction": "south",
+          "target_map": "MnMississippiUpstreamWoodsC01R01",
+          "offset": 0
+        }
+      ],
+      "source_blocks_sha256": "e2a6614da1865624b9f88ffe400f965c7c7401484d643d35982593670d3b1414"
+    },
+    {
+      "id": "MnMississippiUpstreamWoodsC00R01",
+      "map_id": 14,
+      "map_constant": "MNMISSISSIPPIUPSTREAMWOODSC00R01",
+      "layout": "planning/minnesota/connections/mississippi-v02/MnMississippiUpstreamWoods.layout.json",
+      "layout_sha256": "29bbdd50eb5449def26a4f0102809cfa81cd1e0468cb13a131bd8122ce5dda59",
+      "source_origin_metatiles": [
+        0,
+        24
+      ],
+      "dimensions_metatiles": [
+        32,
+        24
+      ],
+      "world_origin_metatiles": [
+        41,
+        -50
+      ],
+      "tileset": "johto",
+      "environment": "ROUTE",
+      "music": "MUSIC_ROUTE_30",
+      "connections": [
+        {
+          "direction": "north",
+          "target_map": "MnMississippiUpstreamWoodsC00R00",
+          "offset": 0
+        },
+        {
+          "direction": "east",
+          "target_map": "MnMississippiUpstreamWoodsC01R01",
+          "offset": 0
+        },
+        {
+          "direction": "south",
+          "target_map": "MnMississippiUpstreamWoodsC00R02",
+          "offset": 0
+        }
+      ],
+      "source_blocks_sha256": "35a6f7cd954c8414f4c2765a00351f59930671dc89619eec23eb1d4c7f98eb93"
+    },
+    {
+      "id": "MnMississippiUpstreamWoodsC01R01",
+      "map_id": 15,
+      "map_constant": "MNMISSISSIPPIUPSTREAMWOODSC01R01",
+      "layout": "planning/minnesota/connections/mississippi-v02/MnMississippiUpstreamWoods.layout.json",
+      "layout_sha256": "29bbdd50eb5449def26a4f0102809cfa81cd1e0468cb13a131bd8122ce5dda59",
+      "source_origin_metatiles": [
+        32,
+        24
+      ],
+      "dimensions_metatiles": [
+        32,
+        24
+      ],
+      "world_origin_metatiles": [
+        73,
+        -50
+      ],
+      "tileset": "johto",
+      "environment": "ROUTE",
+      "music": "MUSIC_ROUTE_30",
+      "connections": [
+        {
+          "direction": "north",
+          "target_map": "MnMississippiUpstreamWoodsC01R00",
+          "offset": 0
+        },
+        {
+          "direction": "west",
+          "target_map": "MnMississippiUpstreamWoodsC00R01",
+          "offset": 0
+        },
+        {
+          "direction": "south",
+          "target_map": "MnMississippiUpstreamWoodsC01R02",
+          "offset": 0
+        }
+      ],
+      "source_blocks_sha256": "12600de007759e9f264308c214d06d36d38df61cf29e1d61eed8ccdd88494be6"
+    },
+    {
+      "id": "MnMississippiUpstreamWoodsC00R02",
+      "map_id": 16,
+      "map_constant": "MNMISSISSIPPIUPSTREAMWOODSC00R02",
+      "layout": "planning/minnesota/connections/mississippi-v02/MnMississippiUpstreamWoods.layout.json",
+      "layout_sha256": "29bbdd50eb5449def26a4f0102809cfa81cd1e0468cb13a131bd8122ce5dda59",
+      "source_origin_metatiles": [
+        0,
+        48
+      ],
+      "dimensions_metatiles": [
+        32,
+        20
+      ],
+      "world_origin_metatiles": [
+        41,
+        -26
+      ],
+      "tileset": "johto",
+      "environment": "ROUTE",
+      "music": "MUSIC_ROUTE_30",
+      "connections": [
+        {
+          "direction": "north",
+          "target_map": "MnMississippiUpstreamWoodsC00R01",
+          "offset": 0
+        },
+        {
+          "direction": "east",
+          "target_map": "MnMississippiUpstreamWoodsC01R02",
+          "offset": 0
+        },
+        {
+          "direction": "west",
+          "target_map": "MnR05C00R02",
+          "offset": 18
+        }
+      ],
+      "source_blocks_sha256": "332e7e77481c7511d6036e99380c27facc6bfc09add24a88583a1398bb854496"
+    },
+    {
+      "id": "MnMississippiUpstreamWoodsC01R02",
+      "map_id": 17,
+      "map_constant": "MNMISSISSIPPIUPSTREAMWOODSC01R02",
+      "layout": "planning/minnesota/connections/mississippi-v02/MnMississippiUpstreamWoods.layout.json",
+      "layout_sha256": "29bbdd50eb5449def26a4f0102809cfa81cd1e0468cb13a131bd8122ce5dda59",
+      "source_origin_metatiles": [
+        32,
+        48
+      ],
+      "dimensions_metatiles": [
+        32,
+        20
+      ],
+      "world_origin_metatiles": [
+        73,
+        -26
+      ],
+      "tileset": "johto",
+      "environment": "ROUTE",
+      "music": "MUSIC_ROUTE_30",
+      "connections": [
+        {
+          "direction": "north",
+          "target_map": "MnMississippiUpstreamWoodsC01R01",
+          "offset": 0
+        },
+        {
+          "direction": "west",
+          "target_map": "MnMississippiUpstreamWoodsC00R02",
+          "offset": 0
+        }
+      ],
+      "source_blocks_sha256": "df2f3b8f87636bc4c01c060076aac16846d7e979fa315d551cc791ec42b47382"
+    }
+  ],
+  "terrain_revisions": [
+    {
+      "map": "MnStPaul",
+      "native_module_sha256": "10c8ddb5dd3005d0f586917c6b3b64160d08e08283b4ce83adcf1de067a6dd2b",
+      "dimensions_metatiles": [
+        40,
+        34
+      ],
+      "changes": [
+        {
+          "metatile": [
+            39,
+            26
+          ],
+          "before": 19,
+          "after": 67
+        },
+        {
+          "metatile": [
+            39,
+            27
+          ],
+          "before": 19,
+          "after": 67
+        },
+        {
+          "metatile": [
+            37,
+            28
+          ],
+          "before": 1,
+          "after": 67
+        },
+        {
+          "metatile": [
+            38,
+            28
+          ],
+          "before": 1,
+          "after": 100
+        },
+        {
+          "metatile": [
+            37,
+            29
+          ],
+          "before": 1,
+          "after": 67
+        },
+        {
+          "metatile": [
+            38,
+            29
+          ],
+          "before": 1,
+          "after": 100
+        },
+        {
+          "metatile": [
+            37,
+            30
+          ],
+          "before": 1,
+          "after": 67
+        },
+        {
+          "metatile": [
+            38,
+            30
+          ],
+          "before": 1,
+          "after": 100
+        },
+        {
+          "metatile": [
+            37,
+            31
+          ],
+          "before": 85,
+          "after": 67
+        },
+        {
+          "metatile": [
+            38,
+            31
+          ],
+          "before": 1,
+          "after": 100
+        },
+        {
+          "metatile": [
+            37,
+            32
+          ],
+          "before": 1,
+          "after": 67
+        },
+        {
+          "metatile": [
+            38,
+            32
+          ],
+          "before": 1,
+          "after": 100
+        },
+        {
+          "metatile": [
+            37,
+            33
+          ],
+          "before": 19,
+          "after": 67
+        },
+        {
+          "metatile": [
+            38,
+            33
+          ],
+          "before": 19,
+          "after": 100
+        }
+      ],
+      "anchor_preimages": {
+        "objects": [
+          [
+            43,
+            13
+          ],
+          [
+            30,
+            7
+          ],
+          [
+            17,
+            47
+          ],
+          [
+            68,
+            48
+          ],
+          [
+            35,
+            21
+          ],
+          [
+            43,
+            45
+          ],
+          [
+            27,
+            37
+          ],
+          [
+            28,
+            2
+          ],
+          [
+            29,
+            2
+          ],
+          [
+            17,
+            17
+          ],
+          [
+            25,
+            55
+          ],
+          [
+            59,
+            61
+          ],
+          [
+            63,
+            13
+          ],
+          [
+            19,
+            29
+          ],
+          [
+            71,
+            61
+          ],
+          [
+            5,
+            29
+          ],
+          [
+            29,
+            25
+          ],
+          [
+            63,
+            3
+          ],
+          [
+            61,
+            23
+          ],
+          [
+            27,
+            43
+          ],
+          [
+            25,
+            63
+          ],
+          [
+            49,
+            63
+          ],
+          [
+            73,
+            63
+          ]
+        ],
+        "backgrounds": [
+          [
+            19,
+            45
+          ],
+          [
+            29,
+            35
+          ],
+          [
+            47,
+            13
+          ],
+          [
+            51,
+            33
+          ],
+          [
+            71,
+            49
+          ],
+          [
+            31,
+            7
+          ],
+          [
+            41,
+            45
+          ],
+          [
+            29,
+            39
+          ],
+          [
+            19,
+            47
+          ],
+          [
+            59,
+            57
+          ],
+          [
+            47,
+            45
+          ]
+        ],
+        "coordinates": [],
+        "warps": [
+          [
+            66,
+            47
+          ],
+          [
+            66,
+            48
+          ],
+          [
+            13,
+            45
+          ],
+          [
+            13,
+            46
+          ],
+          [
+            25,
+            33
+          ],
+          [
+            25,
+            34
+          ],
+          [
+            40,
+            11
+          ],
+          [
+            40,
+            12
+          ],
+          [
+            48,
+            31
+          ],
+          [
+            48,
+            32
+          ],
+          [
+            5,
+            13
+          ],
+          [
+            5,
+            14
+          ],
+          [
+            21,
+            13
+          ],
+          [
+            21,
+            14
+          ],
+          [
+            18,
+            9
+          ],
+          [
+            18,
+            10
+          ],
+          [
+            6,
+            23
+          ],
+          [
+            6,
+            24
+          ],
+          [
+            18,
+            25
+          ],
+          [
+            18,
+            26
+          ],
+          [
+            28,
+            15
+          ],
+          [
+            28,
+            16
+          ],
+          [
+            6,
+            7
+          ],
+          [
+            6,
+            8
+          ],
+          [
+            22,
+            27
+          ],
+          [
+            22,
+            28
+          ],
+          [
+            13,
+            13
+          ],
+          [
+            13,
+            14
+          ],
+          [
+            21,
+            19
+          ],
+          [
+            21,
+            20
+          ],
+          [
+            34,
+            9
+          ],
+          [
+            34,
+            10
+          ],
+          [
+            50,
+            11
+          ],
+          [
+            50,
+            12
+          ],
+          [
+            50,
+            21
+          ],
+          [
+            50,
+            22
+          ],
+          [
+            60,
+            7
+          ],
+          [
+            60,
+            8
+          ],
+          [
+            66,
+            11
+          ],
+          [
+            66,
+            12
+          ],
+          [
+            60,
+            21
+          ],
+          [
+            60,
+            22
+          ],
+          [
+            6,
+            35
+          ],
+          [
+            6,
+            36
+          ],
+          [
+            5,
+            43
+          ],
+          [
+            5,
+            44
+          ],
+          [
+            16,
+            33
+          ],
+          [
+            16,
+            34
+          ],
+          [
+            32,
+            39
+          ],
+          [
+            32,
+            40
+          ],
+          [
+            38,
+            23
+          ],
+          [
+            38,
+            24
+          ],
+          [
+            24,
+            43
+          ],
+          [
+            24,
+            44
+          ],
+          [
+            53,
+            31
+          ],
+          [
+            53,
+            32
+          ],
+          [
+            46,
+            41
+          ],
+          [
+            46,
+            42
+          ],
+          [
+            64,
+            29
+          ],
+          [
+            64,
+            30
+          ],
+          [
+            58,
+            45
+          ],
+          [
+            58,
+            46
+          ],
+          [
+            64,
+            39
+          ],
+          [
+            64,
+            40
+          ],
+          [
+            55,
+            39
+          ],
+          [
+            55,
+            40
+          ],
+          [
+            6,
+            63
+          ],
+          [
+            6,
+            64
+          ],
+          [
+            5,
+            57
+          ],
+          [
+            5,
+            58
+          ],
+          [
+            16,
+            61
+          ],
+          [
+            16,
+            62
+          ],
+          [
+            30,
+            61
+          ],
+          [
+            30,
+            62
+          ],
+          [
+            44,
+            61
+          ],
+          [
+            44,
+            62
+          ],
+          [
+            51,
+            61
+          ],
+          [
+            51,
+            62
+          ],
+          [
+            62,
+            61
+          ],
+          [
+            62,
+            62
+          ]
+        ]
+      }
+    },
+    {
+      "map": "MnWinona",
+      "native_module_sha256": "e385a15723f968bf15340d507e08750b9fcf05f365eff4c11d36fa443a6957fd",
+      "dimensions_metatiles": [
+        16,
+        14
+      ],
+      "changes": [
+        {
+          "metatile": [
+            13,
+            0
+          ],
+          "before": 5,
+          "after": 88
+        },
+        {
+          "metatile": [
+            14,
+            0
+          ],
+          "before": 5,
+          "after": 89
+        }
+      ],
+      "anchor_preimages": {
+        "objects": [
+          [
+            24,
+            15
+          ],
+          [
+            10,
+            17
+          ],
+          [
+            2,
+            18
+          ],
+          [
+            2,
+            19
+          ]
+        ],
+        "backgrounds": [
+          [
+            12,
+            10
+          ],
+          [
+            20,
+            8
+          ],
+          [
+            24,
+            20
+          ],
+          [
+            14,
+            16
+          ]
+        ],
+        "coordinates": [
+          [
+            3,
+            18
+          ],
+          [
+            1,
+            18
+          ],
+          [
+            3,
+            19
+          ],
+          [
+            1,
+            19
+          ]
+        ],
+        "warps": [
+          [
+            7,
+            7
+          ],
+          [
+            7,
+            8
+          ],
+          [
+            17,
+            7
+          ],
+          [
+            17,
+            8
+          ],
+          [
+            7,
+            23
+          ],
+          [
+            7,
+            24
+          ],
+          [
+            18,
+            19
+          ],
+          [
+            18,
+            20
+          ]
+        ]
+      }
+    },
+    {
+      "map": "MnR03C00R00",
+      "native_module_sha256": "b34e904f8380fdcb73e6728f68bac51412dddc530f6736705c84b64993796065",
+      "dimensions_metatiles": [
+        24,
+        24
+      ],
+      "changes": [
+        {
+          "metatile": [
+            18,
+            1
+          ],
+          "before": 89,
+          "after": 53
+        },
+        {
+          "metatile": [
+            19,
+            1
+          ],
+          "before": 5,
+          "after": 118
+        },
+        {
+          "metatile": [
+            20,
+            1
+          ],
+          "before": 5,
+          "after": 118
+        },
+        {
+          "metatile": [
+            21,
+            1
+          ],
+          "before": 5,
+          "after": 118
+        },
+        {
+          "metatile": [
+            22,
+            1
+          ],
+          "before": 5,
+          "after": 118
+        },
+        {
+          "metatile": [
+            23,
+            1
+          ],
+          "before": 5,
+          "after": 118
+        },
+        {
+          "metatile": [
+            18,
+            2
+          ],
+          "before": 89,
+          "after": 53
+        },
+        {
+          "metatile": [
+            19,
+            2
+          ],
+          "before": 5,
+          "after": 53
+        },
+        {
+          "metatile": [
+            20,
+            2
+          ],
+          "before": 5,
+          "after": 53
+        },
+        {
+          "metatile": [
+            21,
+            2
+          ],
+          "before": 5,
+          "after": 53
+        },
+        {
+          "metatile": [
+            22,
+            2
+          ],
+          "before": 5,
+          "after": 53
+        },
+        {
+          "metatile": [
+            23,
+            2
+          ],
+          "before": 5,
+          "after": 53
+        }
+      ],
+      "anchor_preimages": {
+        "objects": [
+          [
+            15,
+            17
+          ],
+          [
+            15,
+            29
+          ],
+          [
+            37,
+            37
+          ],
+          [
+            13,
+            13
+          ],
+          [
+            39,
+            35
+          ]
+        ],
+        "backgrounds": [
+          [
+            22,
+            4
+          ],
+          [
+            12,
+            36
+          ],
+          [
+            28,
+            26
+          ],
+          [
+            40,
+            44
+          ]
+        ],
+        "coordinates": [],
+        "warps": [
+          [
+            8,
+            37
+          ],
+          [
+            8,
+            38
+          ]
+        ]
+      }
+    },
+    {
+      "map": "MnStCloud",
+      "native_module_sha256": "4c3fa80507d482ea7163a56f94f77d8881bd4e53c2b70c56e6b7fd3c77a2fe72",
+      "dimensions_metatiles": [
+        24,
+        18
+      ],
+      "changes": [
+        {
+          "metatile": [
+            22,
+            12
+          ],
+          "before": 5,
+          "after": 53
+        },
+        {
+          "metatile": [
+            23,
+            12
+          ],
+          "before": 5,
+          "after": 54
+        },
+        {
+          "metatile": [
+            22,
+            13
+          ],
+          "before": 5,
+          "after": 53
+        },
+        {
+          "metatile": [
+            23,
+            13
+          ],
+          "before": 5,
+          "after": 54
+        },
+        {
+          "metatile": [
+            22,
+            14
+          ],
+          "before": 5,
+          "after": 53
+        },
+        {
+          "metatile": [
+            23,
+            14
+          ],
+          "before": 5,
+          "after": 54
+        },
+        {
+          "metatile": [
+            22,
+            15
+          ],
+          "before": 5,
+          "after": 53
+        },
+        {
+          "metatile": [
+            23,
+            15
+          ],
+          "before": 5,
+          "after": 54
+        },
+        {
+          "metatile": [
+            22,
+            16
+          ],
+          "before": 5,
+          "after": 53
+        },
+        {
+          "metatile": [
+            23,
+            16
+          ],
+          "before": 5,
+          "after": 54
+        },
+        {
+          "metatile": [
+            22,
+            17
+          ],
+          "before": 5,
+          "after": 53
+        },
+        {
+          "metatile": [
+            23,
+            17
+          ],
+          "before": 5,
+          "after": 54
+        }
+      ],
+      "anchor_preimages": {
+        "objects": [
+          [
+            18,
+            13
+          ],
+          [
+            37,
+            13
+          ],
+          [
+            29,
+            24
+          ],
+          [
+            37,
+            25
+          ],
+          [
+            19,
+            29
+          ],
+          [
+            24,
+            2
+          ],
+          [
+            25,
+            2
+          ]
+        ],
+        "backgrounds": [
+          [
+            4,
+            10
+          ],
+          [
+            4,
+            28
+          ],
+          [
+            40,
+            12
+          ],
+          [
+            28,
+            24
+          ],
+          [
+            38,
+            26
+          ],
+          [
+            26,
+            6
+          ]
+        ],
+        "coordinates": [
+          [
+            24,
+            3
+          ],
+          [
+            24,
+            1
+          ],
+          [
+            25,
+            3
+          ],
+          [
+            25,
+            1
+          ]
+        ],
+        "warps": [
+          [
+            6,
+            9
+          ],
+          [
+            6,
+            10
+          ],
+          [
+            14,
+            9
+          ],
+          [
+            14,
+            10
+          ],
+          [
+            8,
+            27
+          ],
+          [
+            8,
+            28
+          ],
+          [
+            35,
+            11
+          ],
+          [
+            35,
+            12
+          ]
+        ]
+      }
+    },
+    {
+      "map": "MnR05C00R00",
+      "native_module_sha256": "949d72000f2e09df76e974329cd2837564d2a009960ca2de23b7339271a779cd",
+      "dimensions_metatiles": [
+        32,
+        24
+      ],
+      "changes": [
+        {
+          "metatile": [
+            22,
+            0
+          ],
+          "before": 5,
+          "after": 53
+        },
+        {
+          "metatile": [
+            23,
+            0
+          ],
+          "before": 5,
+          "after": 54
+        },
+        {
+          "metatile": [
+            22,
+            1
+          ],
+          "before": 5,
+          "after": 88
+        },
+        {
+          "metatile": [
+            23,
+            1
+          ],
+          "before": 5,
+          "after": 118
+        },
+        {
+          "metatile": [
+            24,
+            1
+          ],
+          "before": 5,
+          "after": 118
+        },
+        {
+          "metatile": [
+            25,
+            1
+          ],
+          "before": 5,
+          "after": 118
+        },
+        {
+          "metatile": [
+            26,
+            1
+          ],
+          "before": 5,
+          "after": 118
+        },
+        {
+          "metatile": [
+            27,
+            1
+          ],
+          "before": 5,
+          "after": 118
+        },
+        {
+          "metatile": [
+            22,
+            2
+          ],
+          "before": 5,
+          "after": 88
+        },
+        {
+          "metatile": [
+            23,
+            2
+          ],
+          "before": 5,
+          "after": 53
+        },
+        {
+          "metatile": [
+            24,
+            2
+          ],
+          "before": 5,
+          "after": 53
+        },
+        {
+          "metatile": [
+            25,
+            2
+          ],
+          "before": 5,
+          "after": 53
+        },
+        {
+          "metatile": [
+            26,
+            2
+          ],
+          "before": 5,
+          "after": 53
+        },
+        {
+          "metatile": [
+            27,
+            2
+          ],
+          "before": 5,
+          "after": 53
+        },
+        {
+          "metatile": [
+            31,
+            2
+          ],
+          "before": 54,
+          "after": 53
+        },
+        {
+          "metatile": [
+            31,
+            3
+          ],
+          "before": 54,
+          "after": 53
+        }
+      ],
+      "anchor_preimages": {
+        "objects": [
+          [
+            19,
+            33
+          ],
+          [
+            29,
+            9
+          ],
+          [
+            33,
+            29
+          ],
+          [
+            53,
+            21
+          ],
+          [
+            37,
+            19
+          ]
+        ],
+        "backgrounds": [
+          [
+            50,
+            18
+          ],
+          [
+            26,
+            4
+          ]
+        ],
+        "coordinates": [],
+        "warps": [
+          [
+            30,
+            27
+          ],
+          [
+            30,
+            28
+          ]
+        ]
+      }
+    },
+    {
+      "map": "MnR05C00R02",
+      "native_module_sha256": "db0515db685e73fad50be2f398bcadd1467eaf6f1eed20b969e54a34311fa164",
+      "dimensions_metatiles": [
+        32,
+        8
+      ],
+      "changes": [
+        {
+          "metatile": [
+            31,
+            0
+          ],
+          "before": 54,
+          "after": 53
+        },
+        {
+          "metatile": [
+            31,
+            1
+          ],
+          "before": 54,
+          "after": 53
+        }
+      ],
+      "anchor_preimages": {
+        "objects": [
+          [
+            19,
+            7
+          ]
+        ],
+        "backgrounds": [
+          [
+            24,
+            10
+          ]
+        ],
+        "coordinates": [],
+        "warps": []
+      }
+    },
+    {
+      "map": "MnR05C00R01",
+      "native_module_sha256": "c00ed80d40bc4b6c0f4538bbb83857c58104b308db8fe4df5411122929deec8b",
+      "dimensions_metatiles": [
+        32,
+        24
+      ],
+      "changes": [
+        {
+          "metatile": [
+            26,
+            12
+          ],
+          "before": 88,
+          "after": 48
+        },
+        {
+          "metatile": [
+            27,
+            12
+          ],
+          "before": 53,
+          "after": 49
+        },
+        {
+          "metatile": [
+            28,
+            12
+          ],
+          "before": 53,
+          "after": 49
+        },
+        {
+          "metatile": [
+            29,
+            12
+          ],
+          "before": 53,
+          "after": 49
+        },
+        {
+          "metatile": [
+            30,
+            12
+          ],
+          "before": 53,
+          "after": 49
+        },
+        {
+          "metatile": [
+            31,
+            12
+          ],
+          "before": 54,
+          "after": 50
+        }
+      ],
+      "anchor_preimages": {
+        "objects": [
+          [
+            11,
+            37
+          ],
+          [
+            31,
+            17
+          ],
+          [
+            57,
+            41
+          ],
+          [
+            9,
+            41
+          ],
+          [
+            41,
+            33
+          ]
+        ],
+        "backgrounds": [
+          [
+            12,
+            30
+          ],
+          [
+            18,
+            30
+          ],
+          [
+            46,
+            38
+          ]
+        ],
+        "coordinates": [],
+        "warps": [
+          [
+            16,
+            29
+          ],
+          [
+            16,
+            30
+          ]
+        ]
+      }
+    }
+  ],
+  "existing_connection_additions": [
+    {
+      "map": "MnR03C00R00",
+      "direction": "east",
+      "target_map": "MnMississippiConfluenceC00R00",
+      "offset": 0
+    },
+    {
+      "map": "MnStPaul",
+      "direction": "east",
+      "target_map": "MnMississippiLowerWoodsC00R01",
+      "offset": 14
+    },
+    {
+      "map": "MnStPaul",
+      "direction": "south",
+      "target_map": "MnMississippiConfluenceC03R00",
+      "offset": 36
+    },
+    {
+      "map": "MnWinona",
+      "direction": "north",
+      "target_map": "MnMississippiWinonaMouth",
+      "offset": 0
+    },
+    {
+      "map": "MnR05C00R00",
+      "direction": "east",
+      "target_map": "MnMississippiUpstreamWoodsC00R00",
+      "offset": -18
+    },
+    {
+      "map": "MnR05C00R02",
+      "direction": "east",
+      "target_map": "MnMississippiUpstreamWoodsC00R02",
+      "offset": -18
+    }
+  ],
+  "bridge_inventory": "planning/minnesota/connections/mississippi-v01/bridge-inventory.json",
+  "objects": [
+    {
+      "id": "MN_RIVER_CONFLUENCE_FISHER",
+      "map": "MnMississippiConfluenceC01R00",
+      "core": [
+        13,
+        3
+      ],
+      "sprite": "SPRITE_FISHER",
+      "role": "optional_trainer",
+      "facing": "south",
+      "text": [
+        "A quiet river.",
+        "Time for a battle?"
+      ],
+      "trainer_class": "FISHER",
+      "trainer_name": "REED",
+      "party": [
+        {
+          "species": "GOLDEEN",
+          "level": 29
+        },
+        {
+          "species": "QUAGSIRE",
+          "level": 30
+        }
+      ],
+      "event_flag": "EVENT_MN_RIVER_CONFLUENCE_FISHER_DEFEATED"
+    },
+    {
+      "id": "MN_RIVER_LOWER_BANK_FISHER",
+      "map": "MnMississippiLowerWoodsC00R01",
+      "core": [
+        21,
+        13
+      ],
+      "sprite": "SPRITE_FISHER",
+      "role": "optional_trainer",
+      "facing": "south",
+      "text": [
+        "A quiet river.",
+        "Time for a battle?"
+      ],
+      "trainer_class": "FISHER",
+      "trainer_name": "ELI",
+      "party": [
+        {
+          "species": "POLIWHIRL",
+          "level": 30
+        },
+        {
+          "species": "GOLDEEN",
+          "level": 29
+        }
+      ],
+      "event_flag": "EVENT_MN_RIVER_LOWER_BANK_FISHER_DEFEATED"
+    },
+    {
+      "id": "MN_RIVER_LOWER_PINE_KEEPER",
+      "map": "MnMississippiLowerWoodsC01R01",
+      "core": [
+        39,
+        35
+      ],
+      "sprite": "SPRITE_YOUNGSTER",
+      "role": "optional_trainer",
+      "facing": "south",
+      "text": [
+        "A quiet river.",
+        "Time for a battle?"
+      ],
+      "trainer_class": "BIRD_KEEPER",
+      "trainer_name": "ASH",
+      "party": [
+        {
+          "species": "NOCTOWL",
+          "level": 31
+        },
+        {
+          "species": "FARFETCH_D",
+          "level": 30
+        }
+      ],
+      "event_flag": "EVENT_MN_RIVER_LOWER_PINE_KEEPER_DEFEATED"
+    },
+    {
+      "id": "MN_RIVER_UPSTREAM_BANK_FISHER",
+      "map": "MnMississippiUpstreamWoodsC00R02",
+      "core": [
+        33,
+        35
+      ],
+      "sprite": "SPRITE_FISHER",
+      "role": "optional_trainer",
+      "facing": "south",
+      "text": [
+        "A quiet river.",
+        "Time for a battle?"
+      ],
+      "trainer_class": "FISHER",
+      "trainer_name": "DALE",
+      "party": [
+        {
+          "species": "SEAKING",
+          "level": 31
+        },
+        {
+          "species": "QUAGSIRE",
+          "level": 32
+        }
+      ],
+      "event_flag": "EVENT_MN_RIVER_UPSTREAM_BANK_FISHER_DEFEATED"
+    },
+    {
+      "id": "MN_RIVER_UPSTREAM_WOODS_KEEPER",
+      "map": "MnMississippiUpstreamWoodsC01R00",
+      "core": [
+        5,
+        23
+      ],
+      "sprite": "SPRITE_YOUNGSTER",
+      "role": "optional_trainer",
+      "facing": "south",
+      "text": [
+        "A quiet river.",
+        "Time for a battle?"
+      ],
+      "trainer_class": "BIRD_KEEPER",
+      "trainer_name": "PINE",
+      "party": [
+        {
+          "species": "NOCTOWL",
+          "level": 32
+        },
+        {
+          "species": "PIDGEOTTO",
+          "level": 31
+        }
+      ],
+      "event_flag": "EVENT_MN_RIVER_UPSTREAM_WOODS_KEEPER_DEFEATED"
+    }
+  ],
+  "backgrounds": [],
+  "encounter_contracts": [
+    {
+      "maps": [
+        "MnMississippiConfluenceC00R00",
+        "MnMississippiConfluenceC01R00",
+        "MnMississippiConfluenceC02R00",
+        "MnMississippiConfluenceC03R00",
+        "MnMississippiLowerWoodsC00R00",
+        "MnMississippiLowerWoodsC01R00",
+        "MnMississippiLowerWoodsC00R01",
+        "MnMississippiLowerWoodsC01R01",
+        "MnMississippiLowerWoodsC00R02",
+        "MnMississippiLowerWoodsC01R02",
+        "MnMississippiWinonaMouth",
+        "MnMississippiUpstreamWoodsC00R00",
+        "MnMississippiUpstreamWoodsC01R00",
+        "MnMississippiUpstreamWoodsC00R01",
+        "MnMississippiUpstreamWoodsC01R01",
+        "MnMississippiUpstreamWoodsC00R02",
+        "MnMississippiUpstreamWoodsC01R02"
+      ],
+      "terrain": "surf",
+      "habitat": "quiet wooded river",
+      "slots": [
+        {
+          "species": "PSYDUCK",
+          "level": 27,
+          "weight": 60
+        },
+        {
+          "species": "QUAGSIRE",
+          "level": 30,
+          "weight": 30
+        },
+        {
+          "species": "GOLDEEN",
+          "level": 28,
+          "weight": 10
+        }
+      ]
+    },
+    {
+      "maps": [
+        "MnMississippiConfluenceC00R00",
+        "MnMississippiConfluenceC01R00",
+        "MnMississippiConfluenceC02R00",
+        "MnMississippiConfluenceC03R00",
+        "MnMississippiLowerWoodsC00R00",
+        "MnMississippiLowerWoodsC01R00",
+        "MnMississippiLowerWoodsC00R01",
+        "MnMississippiLowerWoodsC01R01",
+        "MnMississippiLowerWoodsC00R02",
+        "MnMississippiLowerWoodsC01R02",
+        "MnMississippiWinonaMouth",
+        "MnMississippiUpstreamWoodsC00R00",
+        "MnMississippiUpstreamWoodsC01R00",
+        "MnMississippiUpstreamWoodsC00R01",
+        "MnMississippiUpstreamWoodsC01R01",
+        "MnMississippiUpstreamWoodsC00R02",
+        "MnMississippiUpstreamWoodsC01R02"
+      ],
+      "terrain": "grass",
+      "habitat": "small wooded river banks",
+      "slots": [
+        {
+          "species": "WOOPER",
+          "level": 27,
+          "weight": 30
+        },
+        {
+          "species": "NOCTOWL",
+          "level": 29,
+          "weight": 30
+        },
+        {
+          "species": "ARIADOS",
+          "level": 28,
+          "weight": 20
+        },
+        {
+          "species": "WOOPER",
+          "level": 29,
+          "weight": 10
+        },
+        {
+          "species": "QUAGSIRE",
+          "level": 30,
+          "weight": 5
+        },
+        {
+          "species": "NOCTOWL",
+          "level": 31,
+          "weight": 4
+        },
+        {
+          "species": "FARFETCH_D",
+          "level": 30,
+          "weight": 1
+        }
+      ]
+    }
+  ],
+  "notes": [
+    "Latest user: longer quiet wooded river routes, few trainers and a little grass; no elaborate activities or puzzle quota.",
+    "The upstream forest meanders are mandatory for uninterrupted Surf because a visible native rock bar closes the original straightR05watercourse. Walking road is unaffected.",
+    "All external water seams use actual reciprocal native connections; no warp or invisible terrain gap.",
+    "Existing city interiors, stories, actors, doors and recovery records are preserved.",
+    "Confluence has a6\u00d74 northwest cutout occupied by existing Minneapolis; four clipped native windows instantiate all remaining terrain without overlap.",
+    "Native explicit row runs encode the exact sight-reviewed hand-authored raster. Original editable hand-stroke intents are preserved in hand-authored-intent/."
+  ]
+}

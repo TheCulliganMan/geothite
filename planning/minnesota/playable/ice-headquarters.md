@@ -1,5 +1,16 @@
 # ICE headquarters: cross-floor revision
 
+This is a versioned chapter and verification record. Its commands, parties,
+page counts and results apply to the packs named below. For current narrative,
+character roles and completion actions, read [STORY.md](../STORY.md),
+[PROGRESSION.md](../PROGRESSION.md) and the
+[current composition record](../revisions/current-story-v01/README.md).
+Use the current composition path for new publications. Later source changes
+need their own pack verification. Historical fixtures do not establish an
+uninterrupted ordinary-party campaign.
+
+## Historical chapter record
+
 The two-floor v5 chapter was a winding, mostly linear switch sequence. It did
 not meet the user's Gen 1 Silph Co. reference. This successor changes the
 navigation graph, not just the number of steps or floors.
@@ -192,3 +203,17 @@ It proves navigation, actual battles, controls and persistence. It does not
 prove intended-level balance of the extended gauntlet or a new uninterrupted
 Hall of Fame journey. The unchanged enforcer's earlier level-22/23 comparison
 is recorded separately in the character-story runbook.
+
+## Later intended-level acceptance
+
+The combined [Iron Range workings successor](iron-workings.md) is published in
+`minnesota-northstar-complex-story-v6.crystalpack`. Its complete native ICE
+public-office-to-Ellis course passed for Slipperina, Rimepelt and Portabeau at
+23, each with Gillpup/Cindore/Notchbill at 22, average DVs and four starting
+Super Potions. Recruitment and cargo power are earned in each run. No HP, PP,
+RNG, party, position or result writes occur after the initial party/two-badge
+fixture. The route uses Nora before Reed and returns for recovery before the
+enforcer; Ollie's two potions are received once through his actual dialogue.
+Normal XP gains are retained. Optional trainers are avoidable; this checks the
+main route, not clearing every trainer. This supersedes the earlier v5
+intended-level limitation while preserving its historical geometry evidence.

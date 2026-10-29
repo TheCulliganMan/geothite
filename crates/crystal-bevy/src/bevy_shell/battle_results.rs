@@ -5159,6 +5159,9 @@ fn dispatch_visible_overworld_interaction(
             interaction.script, interaction.target
         ),
     )?;
+    if safari_visible::open_ranger(runtime_shell, &interaction.script)? {
+        return Ok(());
+    }
     let dispatch = runtime_shell
         .shell
         .dispatch_interaction_script(&interaction)?;
@@ -5648,18 +5651,7 @@ fn restore_visible_loaded_runtime_state(
     queue_visible_current_music(runtime_shell)?;
     let snapshot = runtime_shell.shell.snapshot()?;
     runtime_shell.visible_map_name_sign = None;
-    if snapshot.ui.active_pokemon_picture.is_some()
-        && let Some(wait) = &snapshot.ui.pending_text_wait
-    {
-        // The persisted native wait is the authority for a picture's return
-        // point. Frontend cursors are process-local and must be rebuilt after
-        // Continue before its A/B close can advance the enclosing script.
-        let next = wait
-            .command_index
-            .checked_add(1)
-            .context("saved Pokemon picture continuation index overflow")?;
-        arm_visible_active_script_cursor(runtime_shell, &wait.source_script, next);
-    }
+    field_dialogue_resume::restore(runtime_shell)?;
     record_visible_runtime_action(
         runtime_shell,
         format!(

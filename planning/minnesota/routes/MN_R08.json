@@ -1,7 +1,7 @@
 {
   "id": "MN_R08",
   "map_prefix": "MnR08",
-  "name": "Northern Lake Circuit",
+  "name": "Northern Lakes and Ancient Mire",
   "dimensions_metatiles": [
     40,
     48
@@ -29,12 +29,12 @@
       "place": "BEMIDJI",
       "side": "N",
       "gate_metatile": [
-        20,
+        12,
         0
       ],
       "landing_metatile": [
-        20,
-        3
+        15,
+        2
       ]
     }
   ],
@@ -48,7 +48,7 @@
     "Route42",
     "Route45"
   ],
-  "description": "Three unequal lakes, a birch terrace, a Cut-gated pond island and a long Cedar Lake shoreline. The island shore rails and a visible water rock prevent Surf from bypassing its Cut-controlled bridge approach. The short main road crosses a railed inlet bridge; the longer east-bank circuit crosses marsh grass and rewards the walker with a fishing pier and Ether. Long Lake offers its narrow grass bank or a longer fishing shore. A native downhill ledge returns from the medicine/trainer terrace. Required regional travel needs neither Cut nor Surf.",
+  "description": "Three unequal northern waters now include an ancient peat mire: blackwater fingers, old cedar roots, reed crossings and a dry cryptid sanctuary interrupt the former Long Lake basin. The optional raised trail branches off the Long Lake saddle; ordinary Leech Lake\u2013Bemidji travel, the Cut-controlled Birch island, native ledges, fishing pier and every existing activity remain intact. Vergloom story publication is a separate guarded overlay.",
   "main_path_metatiles": [
     [
       13,
@@ -64,11 +64,27 @@
     ],
     [
       9,
-      35
+      38
+    ],
+    [
+      11,
+      38
+    ],
+    [
+      11,
+      36
+    ],
+    [
+      14,
+      36
+    ],
+    [
+      14,
+      31
     ],
     [
       12,
-      35
+      31
     ],
     [
       12,
@@ -104,14 +120,30 @@
     ],
     [
       22,
+      5
+    ],
+    [
+      22,
       3
     ],
     [
-      20,
-      3
+      19,
+      1
     ],
     [
-      20,
+      15,
+      1
+    ],
+    [
+      15,
+      2
+    ],
+    [
+      12,
+      2
+    ],
+    [
+      12,
       0
     ]
   ],
@@ -177,11 +209,27 @@
         ],
         [
           9,
-          35
+          38
+        ],
+        [
+          11,
+          38
+        ],
+        [
+          11,
+          36
+        ],
+        [
+          14,
+          36
+        ],
+        [
+          14,
+          31
         ],
         [
           12,
-          35
+          31
         ],
         [
           12,
@@ -200,16 +248,32 @@
           25
         ],
         [
-          34,
+          26,
           25
         ],
         [
+          26,
+          28
+        ],
+        [
+          31,
+          28
+        ],
+        [
+          31,
+          27
+        ],
+        [
           34,
-          28
+          27
+        ],
+        [
+          34,
+          29
         ],
         [
           36,
-          28
+          29
         ],
         [
           36,
@@ -221,6 +285,30 @@
         ],
         [
           31,
+          44
+        ],
+        [
+          22,
+          44
+        ],
+        [
+          22,
+          42
+        ],
+        [
+          19,
+          42
+        ],
+        [
+          19,
+          43
+        ],
+        [
+          16,
+          43
+        ],
+        [
+          16,
           44
         ],
         [
@@ -263,6 +351,22 @@
         ],
         [
           36,
+          12
+        ],
+        [
+          34,
+          12
+        ],
+        [
+          34,
+          17
+        ],
+        [
+          33,
+          17
+        ],
+        [
+          33,
           18
         ],
         [
@@ -307,17 +411,17 @@
       "sight_range": 1,
       "party": [
         {
-          "species": "PINECO",
+          "species": "CLINKLAW",
           "level": 29
         },
         {
-          "species": "WEEPINBELL",
+          "species": "GLISNARE",
           "level": 29
         }
       ],
       "defeated_flag": "EVENT_MN_R08_TRAINER_01",
       "block_main_lane": false,
-      "display_name": "NOREK",
+      "display_name": "SOREN",
       "trainer_class": "CAMPER",
       "sprite": "SPRITE_YOUNGSTER",
       "tile": [
@@ -343,11 +447,11 @@
       "sight_range": 1,
       "party": [
         {
-          "species": "WEEPINBELL",
+          "species": "GLISNARE",
           "level": 29
         },
         {
-          "species": "PIDGEOTTO",
+          "species": "NOTCHBILL",
           "level": 29
         }
       ],
@@ -379,11 +483,11 @@
       "sight_range": 2,
       "party": [
         {
-          "species": "PIDGEOTTO",
+          "species": "NOTCHBILL",
           "level": 30
         },
         {
-          "species": "QUAGSIRE",
+          "species": "MUDMENDER",
           "level": 30
         }
       ],
@@ -415,17 +519,17 @@
       "sight_range": 1,
       "party": [
         {
-          "species": "QUAGSIRE",
+          "species": "MUDMENDER",
           "level": 30
         },
         {
-          "species": "STANTLER",
+          "species": "VELVAWN",
           "level": 30
         }
       ],
       "defeated_flag": "EVENT_MN_R08_TRAINER_04",
       "block_main_lane": false,
-      "display_name": "AVRIN",
+      "display_name": "ADA",
       "trainer_class": "BUG_CATCHER",
       "sprite": "SPRITE_BUG_CATCHER",
       "tile": [
@@ -451,11 +555,11 @@
       "sight_range": 1,
       "party": [
         {
-          "species": "STANTLER",
+          "species": "VELVAWN",
           "level": 31
         },
         {
-          "species": "HERACROSS",
+          "species": "NOTCHBILL",
           "level": 31
         }
       ],
@@ -487,17 +591,17 @@
       "sight_range": 2,
       "party": [
         {
-          "species": "PINECO",
+          "species": "CLINKLAW",
           "level": 31
         },
         {
-          "species": "GIRAFARIG",
+          "species": "TICKLET",
           "level": 31
         }
       ],
       "defeated_flag": "EVENT_MN_R08_TRAINER_06",
       "block_main_lane": false,
-      "display_name": "SIVREN",
+      "display_name": "MARA",
       "trainer_class": "FISHER",
       "sprite": "SPRITE_FISHER",
       "tile": [
@@ -523,11 +627,11 @@
       "sight_range": 1,
       "party": [
         {
-          "species": "WEEPINBELL",
+          "species": "GLISNARE",
           "level": 32
         },
         {
-          "species": "PINECO",
+          "species": "CLINKLAW",
           "level": 32
         }
       ],
@@ -559,11 +663,11 @@
       "sight_range": 2,
       "party": [
         {
-          "species": "PIDGEOTTO",
+          "species": "NOTCHBILL",
           "level": 32
         },
         {
-          "species": "WEEPINBELL",
+          "species": "GLISNARE",
           "level": 32
         }
       ],
@@ -637,115 +741,115 @@
   ],
   "encounters": {
     "grass_rates": {
-      "morning": 10,
       "day": 10,
+      "morning": 10,
       "night": 10
     },
     "grass": {
       "morning": [
         {
-          "species": "PINECO",
-          "level": 29
+          "level": 29,
+          "species": "CLINKLAW"
         },
         {
-          "species": "WEEPINBELL",
-          "level": 30
+          "level": 30,
+          "species": "GLISNARE"
         },
         {
-          "species": "PIDGEOTTO",
-          "level": 31
+          "level": 31,
+          "species": "NOTCHBILL"
         },
         {
-          "species": "QUAGSIRE",
-          "level": 32
+          "level": 32,
+          "species": "MUDMENDER"
         },
         {
-          "species": "STANTLER",
-          "level": 33
+          "level": 33,
+          "species": "SHEDSTAG"
         },
         {
-          "species": "HERACROSS",
-          "level": 33
+          "level": 33,
+          "species": "NOTCHBILL"
         },
         {
-          "species": "GIRAFARIG",
-          "level": 33
+          "level": 33,
+          "species": "SOLSTORT"
         }
       ],
       "day": [
         {
-          "species": "PINECO",
-          "level": 29
+          "level": 29,
+          "species": "CLINKLAW"
         },
         {
-          "species": "WEEPINBELL",
-          "level": 30
+          "level": 30,
+          "species": "GLISNARE"
         },
         {
-          "species": "PIDGEOTTO",
-          "level": 31
+          "level": 31,
+          "species": "NOTCHBILL"
         },
         {
-          "species": "QUAGSIRE",
-          "level": 32
+          "level": 32,
+          "species": "MUDMENDER"
         },
         {
-          "species": "STANTLER",
-          "level": 33
+          "level": 33,
+          "species": "SHEDSTAG"
         },
         {
-          "species": "HERACROSS",
-          "level": 33
+          "level": 33,
+          "species": "NOTCHBILL"
         },
         {
-          "species": "GIRAFARIG",
-          "level": 33
+          "level": 33,
+          "species": "SOLSTORT"
         }
       ],
       "night": [
         {
-          "species": "NOCTOWL",
-          "level": 29
+          "level": 29,
+          "species": "BOOMRUFF"
         },
         {
-          "species": "ARIADOS",
-          "level": 30
+          "level": 30,
+          "species": "BARRICANT"
         },
         {
-          "species": "PIDGEOTTO",
-          "level": 31
+          "level": 31,
+          "species": "NOTCHBILL"
         },
         {
-          "species": "QUAGSIRE",
-          "level": 32
+          "level": 32,
+          "species": "MUDMENDER"
         },
         {
-          "species": "STANTLER",
-          "level": 33
+          "level": 33,
+          "species": "SHEDSTAG"
         },
         {
-          "species": "HERACROSS",
-          "level": 33
+          "level": 33,
+          "species": "NOTCHBILL"
         },
         {
-          "species": "GIRAFARIG",
-          "level": 33
+          "level": 33,
+          "species": "SOLSTORT"
         }
       ]
     },
     "water_rate": 4,
     "water": [
       {
-        "species": "POLIWAG",
-        "level": 29
+        "level": 29,
+        "species": "CHORIP"
       },
       {
-        "species": "WOOPER",
-        "level": 30
+        "level": 30,
+        "species": "GILLPUP"
       },
       {
-        "species": "MARILL",
-        "level": 33
+        "level": 33,
+        "species": "RIVVIT"
       }
     ]
   },
@@ -1265,5 +1369,194 @@
     "controller_proof": "renders/route-quality-next/controller-v05/controller-proof.json",
     "runbook": "playable/route-quality-next.md",
     "scope": "Reviewed bounded terrain only; no full-route final acceptance or earned regional progression claim."
+  },
+  "directional_grass_loops": [
+    {
+      "id": "BIRCH_GRASS_CLIMB_OR_DROP",
+      "ledge_id": "BIRCH_RETURN_DROP",
+      "outbound_start_core": [
+        29,
+        28
+      ],
+      "outbound_end_core": [
+        29,
+        25
+      ],
+      "grass_regions_core": [
+        [
+          34,
+          28,
+          40,
+          30
+        ],
+        [
+          32,
+          30,
+          40,
+          32
+        ]
+      ],
+      "northbound_minimum_grass_steps": 4,
+      "southbound_minimum_grass_steps": 0,
+      "dry_trail_core": [
+        [
+          29,
+          25
+        ],
+        [
+          29,
+          28
+        ]
+      ],
+      "scope": "Birch-bank climb and downhill return; the whole lake circuit remains available."
+    },
+    {
+      "id": "CEDAR_PIER_GRASS_CLIMB_OR_DROP",
+      "ledge_id": "CEDAR_PIER_BANK_DROP",
+      "outbound_start_core": [
+        73,
+        80
+      ],
+      "outbound_end_core": [
+        73,
+        77
+      ],
+      "walk_region_core": [
+        70,
+        74,
+        77,
+        84
+      ],
+      "grass_regions_core": [
+        [
+          74,
+          76,
+          76,
+          78
+        ],
+        [
+          74,
+          82,
+          76,
+          84
+        ]
+      ],
+      "northbound_minimum_grass_steps": 4,
+      "southbound_minimum_grass_steps": 0,
+      "dry_trail_core": [
+        [
+          73,
+          77
+        ],
+        [
+          73,
+          80
+        ]
+      ],
+      "scope": "Existing local permanent-pine shoulder; the longer whole-lake road remains available."
+    }
+  ],
+  "ancient_mire": {
+    "legendary": "VERGLOOM",
+    "family": "MN_F048",
+    "source_identity": "Vergas forest cryptid",
+    "bounds_metatiles": [
+      23,
+      5,
+      38,
+      21
+    ],
+    "entry_core": [
+      45,
+      37
+    ],
+    "trail_core": [
+      [
+        45,
+        37
+      ],
+      [
+        49,
+        37
+      ],
+      [
+        49,
+        33
+      ],
+      [
+        53,
+        33
+      ],
+      [
+        53,
+        29
+      ],
+      [
+        57,
+        29
+      ],
+      [
+        57,
+        25
+      ],
+      [
+        59,
+        25
+      ]
+    ],
+    "creature_map": "MnR08C00R00",
+    "creature_core": [
+      59,
+      23
+    ],
+    "interaction_core": [
+      59,
+      24
+    ],
+    "facing": "north",
+    "main_travel_requires_legendary": false,
+    "status": "Terrain candidate; optional native event owned by northstar_ancient_swamp overlay",
+    "clue_stations": [
+      {
+        "id": "OLD_TIMBER",
+        "target_core": [
+          47,
+          33
+        ],
+        "interaction_core": [
+          48,
+          33
+        ],
+        "facing": "west",
+        "native_block": "0a",
+        "landmark": "Petrified timber marker beside old cedar root remains; WALL avoids contextual Headbutt input"
+      },
+      {
+        "id": "PEAT_FOOTPRINT",
+        "target_core": [
+          55,
+          29
+        ],
+        "interaction_core": [
+          56,
+          29
+        ],
+        "facing": "west",
+        "native_block": "0a"
+      },
+      {
+        "id": "MOSS_SCRAPE",
+        "target_core": [
+          60,
+          25
+        ],
+        "interaction_core": [
+          59,
+          25
+        ],
+        "facing": "east",
+        "native_block": "0a"
+      }
+    ]
   }
 }

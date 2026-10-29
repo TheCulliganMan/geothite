@@ -2,34 +2,34 @@
   "id": "MN_STATE_FAIRGROUNDS",
   "map_name": "MnStateFairgrounds",
   "name": "MINNESOTA STATE FAIRGROUNDS",
-  "parent_hub": "MnStPaul",
-  "status": "Maze trainers v7: 48x36 native fair, 255 exterior characters, 35 battle trainers, 10 Pokemon exhibits with judges, 12 slow walkers, 16 runners, 54 rotators and 173 standing characters. Source connectivity, 35 battles, original patrol persistence, new ambient movement/dialogue, 19 headless native views and 377 audio checks pass. Rust preservation/rebuild also passes; standard Clippy and workspace formatting are blocked by pre-existing issues.",
+  "parent_hub": "MnMinneapolis",
+  "status": "Local compact native 2D fair accepted: real lower Pine Country walking gate, 255 exterior characters/35 trainers, three inhabited halls with seven room interactions, both lane projections and all six carpets. Four controller cases, two crowd cases, preservation/rejection and 377 audio checks pass. Full regional campaign/interior acceptance remains open.",
   "identity": "A fair to explore and do things in: a midway, livestock and 4-H barns, dairy exhibits, food stalls, a show ring and a fairground loop. Separate map, not a fair sign or one vendor in the city.",
   "extent_policy": "Fit the actual activities and readable native player cameras before freezing dimensions. Do not reserve a huge empty rectangle or shrink every activity into one plaza.",
   "access": {
-    "from_hub": "MnStPaul",
-    "kind": "Public walking gate from the current St. Paul exterior design, with an actual reciprocal return and room for two-way passage.",
+    "from_hub": "MnR05C00R02",
+    "kind": "Two-way woodland trail from the lower Pine Country road northwest of the metro.",
     "city_gate_anchor_core": [
       [
-        16,
-        0
+        0,
+        8
       ],
       [
-        17,
-        0
+        0,
+        9
       ]
     ],
     "city_gate_metatile": [
-      8,
-      0
+      0,
+      4
     ],
     "city_landing_metatile": [
-      8,
-      3
+      9,
+      4
     ],
-    "city_side": "N",
-    "anchor_status": "Verified reciprocal St Paul north/fair south offset0 at x16/17, fairy71. Existing eight guarded city street edits preserved.",
-    "rail_connection": "Walk from St. Paul Union Depot through the city to the fair gate; Glacier Line is useful access, not a teleport inside the grounds.",
+    "city_side": "W",
+    "anchor_status": "Candidate native fair east/R05 west offsets+28/-28; nine exact pine cells open onto the existing road.",
+    "rail_connection": "Walk from Minneapolis north onto Pine Country, then turn west. St Paul connects through the ordinary regional roads.",
     "admission": "No new mandatory main-story fee or rail-pass requirement. Optional shop purchases and game costs must be shown before spending.",
     "progression": "Optional regional destination. No badge, Q03 courier victory, Q06 depot flag, Safari permit or champion requirement is granted merely by entering."
   },
@@ -224,15 +224,15 @@
     ],
     "ports": [
       {
-        "route": "MnStPaul",
-        "side": "S",
+        "route": "MN_R05",
+        "side": "E",
         "gate_metatile": [
-          8,
-          35
+          46,
+          32
         ],
         "landing_metatile": [
-          8,
-          34
+          44,
+          32
         ]
       }
     ],
@@ -3593,7 +3593,8 @@
           "Northeast: FOOD PAVILION.",
           "South: LIVESTOCK and DAIRY.",
           "Grass habitats: bakery, dairy, midway, growers, orchard and hotdish. All food families visit!",
-          "Twenty-two trainers want a friendly battle. Visit first aid by the dairy."
+          "Thirty-five trainers want a friendly battle. Visit first aid by the dairy.",
+          "Exit east for PINE COUNTRY and MINNEAPOLIS."
         ]
       },
       {
@@ -3779,14 +3780,56 @@
             ],
             "facing": "south",
             "lines": [
-              "Every town brings",
-              "a different story",
-              "to this stage."
+              "The BEMIDJI folk",
+              "group goes on next.",
+              "My daughter keeps",
+              "their old tunes",
+              "in a school book."
             ],
             "service": null,
             "stock": [],
             "approach": null,
             "counter_tile": null
+          },
+          {
+            "id": "MnFairFolkPerformer",
+            "sprite": "SPRITE_COOLTRAINER_F",
+            "tile": [
+              4,
+              5
+            ],
+            "approach": [
+              3,
+              5
+            ],
+            "facing": "south",
+            "lines": [
+              "Grandma taught me",
+              "these dance tunes",
+              "in BEMIDJI. Now my",
+              "little brother",
+              "keeps time for me."
+            ]
+          },
+          {
+            "id": "MnFairRangeChorus",
+            "sprite": "SPRITE_GRAMPS",
+            "tile": [
+              8,
+              5
+            ],
+            "approach": [
+              9,
+              5
+            ],
+            "facing": "south",
+            "lines": [
+              "Our IRON RANGE",
+              "choir sings after",
+              "the fiddle group.",
+              "Some voices crack.",
+              "We sing together."
+            ]
           }
         ],
         "signs": [],
@@ -3877,13 +3920,18 @@
         "id": "MnFairDairy",
         "native_constant": "MN_FAIR_DAIRY",
         "template": "CherrygrovePokecenter1F",
-        "tileset": "pokecenter",
+        "tileset": "gate",
         "border_block": 0,
         "dimensions_metatiles": [
           5,
           4
         ],
-        "rows": [],
+        "rows": [
+          "39 0e 02 13 39",
+          "01 10 10 10 01",
+          "39 01 01 01 39",
+          "01 26 26 01 01"
+        ],
         "source_reference": {
           "map": "CherrygrovePokecenter1F",
           "preserve_exact_layout": false,
@@ -3900,7 +3948,7 @@
           {
             "index": 1,
             "tile": [
-              3,
+              2,
               7
             ],
             "target": "MnStateFairgrounds",
@@ -3919,7 +3967,7 @@
         "residents": [
           {
             "id": "MnFairDairyDemonstrator",
-            "sprite": "SPRITE_NURSE",
+            "sprite": "SPRITE_LASS",
             "tile": [
               3,
               1
@@ -3927,9 +3975,9 @@
             "facing": "south",
             "lines": [
               "Our butter art",
-              "starts with milk.",
-              "Watch carefully",
-              "and earn a stamp."
+              "stays cool here.",
+              "Watch BUTTERMUSE",
+              "shape a new curl."
             ],
             "service": null,
             "stock": [],
@@ -3940,6 +3988,30 @@
             "counter_tile": [
               3,
               2
+            ]
+          },
+          {
+            "id": "MnFairButterArtist",
+            "sprite": "SPRITE_BUTTERMUSE",
+            "tile": [
+              6,
+              1
+            ],
+            "counter_tile": [
+              6,
+              2
+            ],
+            "approach": [
+              6,
+              3
+            ],
+            "facing": "south",
+            "lines": [
+              "BUTTERMUSE smooths",
+              "a curl of butter.",
+              "Its careful work",
+              "keeps the edges",
+              "from melting."
             ]
           }
         ],
@@ -5116,77 +5188,215 @@
     }
   ],
   "native_city_connection": {
-    "map": "MnStPaul",
-    "tileset": "kanto",
+    "map": "MnR05C00R02",
+    "tileset": "mn_headwaters",
+    "dimensions_metatiles": [
+      32,
+      8
+    ],
+    "fair_to_city_offset": 28,
     "edits": [
       {
         "position": [
-          8,
-          0
+          0,
+          4
         ],
-        "before": "13",
-        "after": "55"
+        "before": "05",
+        "after": "01"
       },
       {
         "position": [
-          8,
-          1
+          1,
+          4
         ],
-        "before": "0f",
-        "after": "55"
+        "before": "05",
+        "after": "01"
       },
       {
         "position": [
-          8,
-          2
+          2,
+          4
         ],
-        "before": "01",
-        "after": "55"
+        "before": "05",
+        "after": "01"
       },
       {
         "position": [
-          8,
-          3
+          3,
+          4
         ],
-        "before": "01",
-        "after": "55"
+        "before": "05",
+        "after": "01"
+      },
+      {
+        "position": [
+          4,
+          4
+        ],
+        "before": "05",
+        "after": "01"
+      },
+      {
+        "position": [
+          5,
+          4
+        ],
+        "before": "05",
+        "after": "01"
+      },
+      {
+        "position": [
+          6,
+          4
+        ],
+        "before": "05",
+        "after": "01"
+      },
+      {
+        "position": [
+          7,
+          4
+        ],
+        "before": "05",
+        "after": "01"
       },
       {
         "position": [
           8,
           4
         ],
-        "before": "01",
-        "after": "55"
-      },
-      {
-        "position": [
-          8,
-          5
-        ],
-        "before": "01",
-        "after": "55"
-      },
-      {
-        "position": [
-          8,
-          6
-        ],
-        "before": "01",
-        "after": "55"
-      },
-      {
-        "position": [
-          8,
-          7
-        ],
-        "before": "01",
-        "after": "55"
+        "before": "05",
+        "after": "01"
       }
-    ],
-    "scope": "One two-core-wide brick path through existing northern border/grass. Existing buildings, NPCs, scripts, other connections and all other city blocks stay unchanged. Fair south gate and city north gate align at core x16/17 with offset0."
+    ]
   },
   "native_room_edits": [
+    {
+      "map": "MnFairDairy",
+      "position": [
+        0,
+        0
+      ],
+      "before": "01",
+      "after": "39"
+    },
+    {
+      "map": "MnFairDairy",
+      "position": [
+        1,
+        0
+      ],
+      "before": "02",
+      "after": "0e"
+    },
+    {
+      "map": "MnFairDairy",
+      "position": [
+        2,
+        0
+      ],
+      "before": "03",
+      "after": "02"
+    },
+    {
+      "map": "MnFairDairy",
+      "position": [
+        4,
+        0
+      ],
+      "before": "08",
+      "after": "39"
+    },
+    {
+      "map": "MnFairDairy",
+      "position": [
+        0,
+        1
+      ],
+      "before": "05",
+      "after": "01"
+    },
+    {
+      "map": "MnFairDairy",
+      "position": [
+        1,
+        1
+      ],
+      "before": "06",
+      "after": "10"
+    },
+    {
+      "map": "MnFairDairy",
+      "position": [
+        2,
+        1
+      ],
+      "before": "07",
+      "after": "10"
+    },
+    {
+      "map": "MnFairDairy",
+      "position": [
+        3,
+        1
+      ],
+      "before": "04",
+      "after": "10"
+    },
+    {
+      "map": "MnFairDairy",
+      "position": [
+        4,
+        1
+      ],
+      "before": "0c",
+      "after": "01"
+    },
+    {
+      "map": "MnFairDairy",
+      "position": [
+        0,
+        2
+      ],
+      "before": "04",
+      "after": "39"
+    },
+    {
+      "map": "MnFairDairy",
+      "position": [
+        1,
+        2
+      ],
+      "before": "04",
+      "after": "01"
+    },
+    {
+      "map": "MnFairDairy",
+      "position": [
+        2,
+        2
+      ],
+      "before": "04",
+      "after": "01"
+    },
+    {
+      "map": "MnFairDairy",
+      "position": [
+        3,
+        2
+      ],
+      "before": "2e",
+      "after": "01"
+    },
+    {
+      "map": "MnFairDairy",
+      "position": [
+        4,
+        2
+      ],
+      "before": "2f",
+      "after": "39"
+    },
     {
       "map": "MnFairDairy",
       "position": [
@@ -5194,8 +5404,43 @@
         3
       ],
       "before": "12",
-      "after": "04",
-      "reason": "Replace source downstairs stair with native floor; this exhibit has one floor."
+      "after": "01"
+    },
+    {
+      "map": "MnFairDairy",
+      "position": [
+        1,
+        3
+      ],
+      "before": "11",
+      "after": "26"
+    },
+    {
+      "map": "MnFairDairy",
+      "position": [
+        2,
+        3
+      ],
+      "before": "27",
+      "after": "26"
+    },
+    {
+      "map": "MnFairDairy",
+      "position": [
+        3,
+        3
+      ],
+      "before": "2e",
+      "after": "01"
+    },
+    {
+      "map": "MnFairDairy",
+      "position": [
+        4,
+        3
+      ],
+      "before": "2f",
+      "after": "01"
     }
   ],
   "future_features": [
@@ -5209,8 +5454,8 @@
     ],
     "single_exterior_map": true,
     "entry_core": [
-      16,
-      68
+      93,
+      65
     ],
     "staffed_counters": 39,
     "shops": 32,
@@ -5267,8 +5512,8 @@
       {
         "id": "entry",
         "core": [
-          17,
-          68
+          93,
+          65
         ]
       },
       {

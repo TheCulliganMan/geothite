@@ -102,6 +102,125 @@
         ]
       }
     ],
-    "notes": "A short hooked talus den: fitted boulders join the northern overhang above the Revive. An attached lower stone toe makes the dry approach turn one tile earlier. Keep this optional discovery short; no new service, water or field-move gate."
+    "notes": "A short hooked talus den: fitted boulders join the northern overhang above the Revive. An attached lower stone toe makes the dry approach turn one tile earlier. Keep this optional discovery short; no new service, water or field-move gate.",
+    "controller_probes": {
+      "ordinary_route_core": [
+        [
+          9,
+          12
+        ],
+        [
+          8,
+          12
+        ],
+        [
+          7,
+          12
+        ],
+        [
+          6,
+          12
+        ],
+        [
+          5,
+          12
+        ],
+        [
+          5,
+          11
+        ],
+        [
+          5,
+          10
+        ],
+        [
+          5,
+          9
+        ],
+        [
+          5,
+          8
+        ],
+        [
+          5,
+          7
+        ],
+        [
+          5,
+          6
+        ]
+      ],
+      "directional_roof_walk_core": [
+        [
+          5,
+          3
+        ],
+        [
+          5,
+          2
+        ],
+        [
+          6,
+          2
+        ],
+        [
+          6,
+          3
+        ]
+      ],
+      "directional_roof_tokens": [
+        "FLOOR",
+        "UP_WALL",
+        "UP_WALL",
+        "FLOOR"
+      ],
+      "roof_blocked_up": {
+        "from": [
+          5,
+          2
+        ],
+        "target": [
+          5,
+          1
+        ]
+      },
+      "second_roof_probe": {
+        "from": [
+          3,
+          5
+        ],
+        "roof": [
+          3,
+          4
+        ]
+      },
+      "item_approach": [
+        5,
+        6
+      ],
+      "item_facing": "up",
+      "item_tile": [
+        5,
+        5
+      ],
+      "mouth": [
+        9,
+        13
+      ],
+      "clear_arrival": [
+        9,
+        12
+      ],
+      "exterior_active": [
+        10,
+        43
+      ],
+      "exterior_passive": [
+        10,
+        44
+      ]
+    },
+    "ordinary_route_inputs": 10,
+    "current_source_note": "Current native-bedrock finish and fitted lower toe. The explicit10-input ordinary approach follows the lower bank before the northward hook. Retain native directional roof probes, real passive mouth and once-only Revive."
   }
 }

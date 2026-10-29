@@ -1,0 +1,253 @@
+{
+  "schema_version": 1,
+  "id": "northstar-iron-workings-v1",
+  "maps": [
+    "MnIronHaulage",
+    "MnIronSump",
+    "MnIronVentilation"
+  ],
+  "links": [
+    {
+      "id": "mouth",
+      "a": {
+        "map": "MnIronDrillApproach",
+        "active": [
+          25,
+          5
+        ],
+        "arrival": [
+          24,
+          5
+        ]
+      },
+      "b": {
+        "map": "MnIronHaulage",
+        "active": [
+          5,
+          22
+        ],
+        "arrival": [
+          4,
+          23
+        ]
+      }
+    },
+    {
+      "id": "haul_down",
+      "a": {
+        "map": "MnIronHaulage",
+        "active": [
+          7,
+          4
+        ],
+        "arrival": [
+          6,
+          5
+        ]
+      },
+      "b": {
+        "map": "MnIronSump",
+        "active": [
+          5,
+          18
+        ],
+        "arrival": [
+          4,
+          19
+        ]
+      }
+    },
+    {
+      "id": "sump_rise",
+      "a": {
+        "map": "MnIronSump",
+        "active": [
+          9,
+          4
+        ],
+        "arrival": [
+          8,
+          5
+        ]
+      },
+      "b": {
+        "map": "MnIronVentilation",
+        "active": [
+          5,
+          20
+        ],
+        "arrival": [
+          4,
+          21
+        ]
+      }
+    },
+    {
+      "id": "upper_crossing",
+      "a": {
+        "map": "MnIronVentilation",
+        "active": [
+          7,
+          4
+        ],
+        "arrival": [
+          6,
+          5
+        ]
+      },
+      "b": {
+        "map": "MnIronHaulage",
+        "active": [
+          27,
+          4
+        ],
+        "arrival": [
+          26,
+          5
+        ]
+      }
+    },
+    {
+      "id": "east_drop",
+      "a": {
+        "map": "MnIronHaulage",
+        "active": [
+          29,
+          22
+        ],
+        "arrival": [
+          28,
+          23
+        ]
+      },
+      "b": {
+        "map": "MnIronSump",
+        "active": [
+          31,
+          18
+        ],
+        "arrival": [
+          30,
+          19
+        ]
+      }
+    },
+    {
+      "id": "pump_access",
+      "a": {
+        "map": "MnIronSump",
+        "active": [
+          35,
+          4
+        ],
+        "arrival": [
+          34,
+          5
+        ]
+      },
+      "b": {
+        "map": "MnIronPumpGallery",
+        "active": [
+          5,
+          18
+        ],
+        "arrival": [
+          4,
+          19
+        ]
+      }
+    },
+    {
+      "id": "service_loop",
+      "a": {
+        "map": "MnIronHaulage",
+        "active": [
+          13,
+          12
+        ],
+        "arrival": [
+          12,
+          13
+        ]
+      },
+      "b": {
+        "map": "MnIronVentilation",
+        "active": [
+          27,
+          20
+        ],
+        "arrival": [
+          26,
+          21
+        ]
+      }
+    },
+    {
+      "id": "service_rise",
+      "a": {
+        "map": "MnIronVentilation",
+        "active": [
+          29,
+          4
+        ],
+        "arrival": [
+          28,
+          5
+        ]
+      },
+      "b": {
+        "map": "MnIronSump",
+        "active": [
+          25,
+          10
+        ],
+        "arrival": [
+          24,
+          11
+        ]
+      }
+    }
+  ],
+  "controls": [
+    {
+      "id": "HAUL",
+      "map": "MnIronHaulage",
+      "tile": [
+        29,
+        11
+      ],
+      "flag": "EVENT_MN_IRON_HAUL_PRESSURE_OFF",
+      "door": [
+        9,
+        8
+      ]
+    },
+    {
+      "id": "VENT",
+      "map": "MnIronVentilation",
+      "tile": [
+        13,
+        15
+      ],
+      "flag": "EVENT_MN_IRON_VENT_PRESSURE_OFF",
+      "door": [
+        9,
+        6
+      ]
+    }
+  ],
+  "gate": {
+    "map": "MnIronSump",
+    "door": [
+      16,
+      3
+    ]
+  },
+  "contract": [
+    "Eight reciprocal ladder pairs connect distinct east/west compartments across three levels.",
+    "Both independent pressure circuits must be isolated before the sump pump-access shutter opens.",
+    "Each pressure control opens a crosscut on its own level, shortening later travel.",
+    "The service ladder loop is an alternate route, not an extra teleport maze.",
+    "Original feed, witnessed piston, Reed battle, drive stop and Finn meter quest stay separate."
+  ]
+}

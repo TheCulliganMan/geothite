@@ -8492,6 +8492,11 @@ impl GameState {
     {
         let mut next = self.clone();
         next.fishing.daily_flags1 = 0;
+        // Fruit pickups use one saved flag per native tree. Expire the
+        // harvest, while leaving item pickups and story flags permanent.
+        next.flags.event_flags.retain(|flag, _| {
+            !(flag.starts_with("FRUITTREE_") && flag.ends_with("_COLLECTED"))
+        });
         // CheckDailyResetTimer clears the daily, swarm, rematch and phone flag
         // banks. Named flags are stored separately from fishing's raw bytes.
         // Keep permanent story/event flags and the retained Buena password.
@@ -8619,6 +8624,8 @@ impl GameState {
 
     pub fn validate_saved_state(&self) -> Result<(), String> {
         validate_saved_player_name(&self.player_name)?;
+        crate::systems::safari::validate_saved_session(self).map_err(|error| error.to_string())?;
+        crate::systems::safari_prompt::prompt(self).map_err(|error| error.to_string())?;
         validate_saved_player_gender(self.player_gender)?;
         if self.blue_card_balance > 30 {
             return Err(format!(
@@ -10669,6 +10676,42 @@ mod tests {
         assert_eq!(state.secret_id, 0xffff);
         assert_eq!(state.random_state, CrystalRandomState { add: 1, sub: 0xff });
         assert_eq!(divider.consumed(), 14);
+    }
+
+    #[test]
+    fn daily_fruit_harvests_regrow_without_resetting_permanent_pickups() {
+        let mut state = GameState::default();
+        state.kenji_break_timer = 2;
+        for flag in [
+            "FRUITTREE_ROUTE_29_COLLECTED",
+            "FRUITTREE_MN_GROVE_001_COLLECTED",
+            "EVENT_MN_SUPPLY_COLLECTED",
+            "EVENT_BEAT_BUGSY",
+        ] {
+            state
+                .flags
+                .set_event_flag(flag, true)
+                .expect("fixture flag");
+        }
+        state
+            .apply_daily_reset(&mut ReplayDivider::new([]))
+            .expect("daily reset");
+        for flag in [
+            "FRUITTREE_ROUTE_29_COLLECTED",
+            "FRUITTREE_MN_GROVE_001_COLLECTED",
+        ] {
+            assert!(!state.flags.is_event_flag_set(flag).expect("harvest flag"));
+        }
+        for flag in ["EVENT_MN_SUPPLY_COLLECTED", "EVENT_BEAT_BUGSY"] {
+            assert!(state.flags.is_event_flag_set(flag).expect("permanent flag"));
+        }
+        let saved = serde_json::to_string(&state.flags).expect("saved flags");
+        let restored: EventFlagMemory = serde_json::from_str(&saved).expect("continued flags");
+        assert!(
+            !restored
+                .is_event_flag_set("FRUITTREE_MN_GROVE_001_COLLECTED")
+                .expect("continued harvest")
+        );
     }
 
     #[test]

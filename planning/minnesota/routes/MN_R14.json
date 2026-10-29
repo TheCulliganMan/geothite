@@ -29,13 +29,14 @@
       "place": "LAKE ITASCA",
       "side": "W",
       "gate_metatile": [
-        1,
+        3,
         21
       ],
       "landing_metatile": [
         3,
         21
-      ]
+      ],
+      "native_gate_note": "Current installed Itasca gatehouse approach at core(6,42); facade at former source endpoint(2,42) is WALL. Native gatehouse warps(4,42)/(4,43), room return and regional connection are preserved."
     }
   ],
   "required_flags": [
@@ -159,7 +160,7 @@
   "trainers": [
     {
       "id": "MN_R14_T01",
-      "display_name": "SIVREN",
+      "display_name": "MARA",
       "trainer_class": "CAMPER",
       "sprite": "SPRITE_YOUNGSTER",
       "tile": [
@@ -170,11 +171,11 @@
       "sight_range": 1,
       "party": [
         {
-          "species": "PINECO",
+          "species": "CLINKLAW",
           "level": 27
         },
         {
-          "species": "STANTLER",
+          "species": "VELVAWN",
           "level": 28
         }
       ],
@@ -208,11 +209,11 @@
       "sight_range": 1,
       "party": [
         {
-          "species": "SKIPLOOM",
+          "species": "FLOSSAIL",
           "level": 28
         },
         {
-          "species": "SUNFLORA",
+          "species": "PITCHWICK",
           "level": 29
         }
       ],
@@ -246,11 +247,11 @@
       "sight_range": 1,
       "party": [
         {
-          "species": "YANMA",
+          "species": "CLICKIT",
           "level": 27
         },
         {
-          "species": "BUTTERFREE",
+          "species": "REGALARCH",
           "level": 28
         }
       ],
@@ -284,11 +285,11 @@
       "sight_range": 1,
       "party": [
         {
-          "species": "STANTLER",
+          "species": "VELVAWN",
           "level": 30
         },
         {
-          "species": "HERACROSS",
+          "species": "NOTCHBILL",
           "level": 31
         }
       ],
@@ -322,11 +323,11 @@
       "sight_range": 1,
       "party": [
         {
-          "species": "QUAGSIRE",
+          "species": "MUDMENDER",
           "level": 30
         },
         {
-          "species": "POLIWHIRL",
+          "species": "TORROUT",
           "level": 29
         }
       ],
@@ -340,7 +341,13 @@
       ],
       "after_lines": [
         "That was worth",
-        "the quiet wait."
+        "the quiet wait.",
+        "Try the ROD GURU!",
+        "His house is above",
+        "the lakeside deck",
+        "on PINE COUNTRY RD",
+        "south of BRAINERD.",
+        "A free SUPER ROD!"
       ],
       "loss_lines": [
         "I will stay here",
@@ -360,11 +367,11 @@
       "sight_range": 1,
       "party": [
         {
-          "species": "VENONAT",
+          "species": "TESSLARV",
           "level": 29
         },
         {
-          "species": "YANMA",
+          "species": "WINDHOPPER",
           "level": 30
         }
       ],
@@ -434,115 +441,115 @@
   ],
   "encounters": {
     "grass_rates": {
-      "morning": 10,
       "day": 10,
+      "morning": 10,
       "night": 10
     },
     "grass": {
       "morning": [
         {
-          "species": "ODDISH",
-          "level": 27
+          "level": 27,
+          "species": "RICELING"
         },
         {
-          "species": "PINECO",
-          "level": 28
+          "level": 28,
+          "species": "CLINKLAW"
         },
         {
-          "species": "SKIPLOOM",
-          "level": 29
+          "level": 29,
+          "species": "FLOSSAIL"
         },
         {
-          "species": "WOOPER",
-          "level": 30
+          "level": 30,
+          "species": "GILLPUP"
         },
         {
-          "species": "STANTLER",
-          "level": 31
+          "level": 31,
+          "species": "VELVAWN"
         },
         {
-          "species": "YANMA",
-          "level": 32
+          "level": 32,
+          "species": "WINDHOPPER"
         },
         {
-          "species": "HERACROSS",
-          "level": 33
+          "level": 33,
+          "species": "NOTCHBILL"
         }
       ],
       "day": [
         {
-          "species": "ODDISH",
-          "level": 27
+          "level": 27,
+          "species": "RICELING"
         },
         {
-          "species": "PINECO",
-          "level": 28
+          "level": 28,
+          "species": "CLINKLAW"
         },
         {
-          "species": "SKIPLOOM",
-          "level": 29
+          "level": 29,
+          "species": "FLOSSAIL"
         },
         {
-          "species": "WOOPER",
-          "level": 30
+          "level": 30,
+          "species": "GILLPUP"
         },
         {
-          "species": "STANTLER",
-          "level": 31
+          "level": 31,
+          "species": "VELVAWN"
         },
         {
-          "species": "YANMA",
-          "level": 32
+          "level": 32,
+          "species": "WINDHOPPER"
         },
         {
-          "species": "HERACROSS",
-          "level": 33
+          "level": 33,
+          "species": "NOTCHBILL"
         }
       ],
       "night": [
         {
-          "species": "NOCTOWL",
-          "level": 27
+          "level": 27,
+          "species": "BOOMRUFF"
         },
         {
-          "species": "ARIADOS",
-          "level": 28
+          "level": 28,
+          "species": "BARRICANT"
         },
         {
-          "species": "SKIPLOOM",
-          "level": 29
+          "level": 29,
+          "species": "FLOSSAIL"
         },
         {
-          "species": "WOOPER",
-          "level": 30
+          "level": 30,
+          "species": "GILLPUP"
         },
         {
-          "species": "STANTLER",
-          "level": 31
+          "level": 31,
+          "species": "VELVAWN"
         },
         {
-          "species": "YANMA",
-          "level": 32
+          "level": 32,
+          "species": "WINDHOPPER"
         },
         {
-          "species": "HERACROSS",
-          "level": 33
+          "level": 33,
+          "species": "NOTCHBILL"
         }
       ]
     },
     "water_rate": 4,
     "water": [
       {
-        "species": "POLIWAG",
-        "level": 27
+        "level": 27,
+        "species": "CHORIP"
       },
       {
-        "species": "WOOPER",
-        "level": 28
+        "level": 28,
+        "species": "GILLPUP"
       },
       {
-        "species": "MARILL",
-        "level": 33
+        "level": 33,
+        "species": "RIVVIT"
       }
     ]
   },
@@ -676,7 +683,8 @@
       ],
       "facing": "east",
       "lines": [
-        "Yanma skim across",
+        "WINDHOPPER skim",
+        "across",
         "the marsh water.",
         "I stay on the bank",
         "watch them turn."
@@ -946,5 +954,22 @@
     "reading": "Lake Itasca marker grants EVENT_MN_HEADWATERS_READING on accessible dry ground; route residents do not grant it.",
     "report": "Bemidji field officer turns actual reading into EVENT_MN_HEADWATERS_REPORT; reading alone never opens Iron Range.",
     "quest_permission": "Q05 requires BADGE_7 in the existing story; preserve this independently from the route BADGE_6 access condition."
+  },
+  "grass_return_review_contract": {
+    "ledge_id": "SURVEY_BANK_RETURN",
+    "uphill_gate": {
+      "id": "SURVEY_BANK_UPHILL_WOODLAND_GATE",
+      "bounds_core": [
+        14,
+        24,
+        16,
+        28
+      ],
+      "minimum_grass_steps": 4,
+      "purpose": "Ordinary climb crosses woodland grass; native southbound survey ledge returns dry."
+    },
+    "ordinary_climb_minimum_grass_steps": 4,
+    "dry_drop_grass_steps": 0,
+    "verification": "Separate local uphill/downhill source proof and production-controller replay; original global YOUNG_RIVER_UNDERSTORY crossing retained."
   }
 }

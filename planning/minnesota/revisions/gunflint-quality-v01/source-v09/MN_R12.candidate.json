@@ -1,0 +1,1485 @@
+{
+  "id": "MN_R12",
+  "map_prefix": "MnR12",
+  "name": "Gunflint Trail",
+  "dimensions_metatiles": [
+    32,
+    32
+  ],
+  "chunk_metatiles": [
+    32,
+    24
+  ],
+  "chunk_columns": 1,
+  "chunk_rows": 2,
+  "endpoints": [
+    {
+      "place": "CEDAR APPROACH",
+      "side": "E",
+      "gate_metatile": [
+        31,
+        27
+      ],
+      "landing_metatile": [
+        29,
+        27
+      ]
+    },
+    {
+      "place": "BOUNDARY WATERS",
+      "side": "W",
+      "gate_metatile": [
+        0,
+        14
+      ],
+      "landing_metatile": [
+        2,
+        14
+      ]
+    }
+  ],
+  "required_flags": [
+    "BADGE_1",
+    "BADGE_2",
+    "BADGE_3",
+    "BADGE_4",
+    "BADGE_5",
+    "BADGE_6",
+    "BADGE_7",
+    "BADGE_8",
+    "EVENT_MN_LIGHTHOUSE_SIGNAL"
+  ],
+  "quest": "Q07",
+  "tileset": "forest",
+  "source_references": [
+    "IlexForest",
+    "Route30",
+    "Route42"
+  ],
+  "description": "A shorter inland winter route around the Loons lake shore: a Raven Rock shelter, coherent frost basin with dry rim, two useful bog banks and the ranger hut. The Cut herb clearing is optional and actually sealed.",
+  "main_path_metatiles": [
+    [
+      31,
+      27
+    ],
+    [
+      27,
+      27
+    ],
+    [
+      25,
+      27
+    ],
+    [
+      25,
+      25
+    ],
+    [
+      23,
+      25
+    ],
+    [
+      23,
+      21
+    ],
+    [
+      22,
+      21
+    ],
+    [
+      22,
+      19
+    ],
+    [
+      24,
+      19
+    ],
+    [
+      24,
+      17
+    ],
+    [
+      25,
+      17
+    ],
+    [
+      25,
+      10
+    ],
+    [
+      21,
+      10
+    ],
+    [
+      21,
+      9
+    ],
+    [
+      18,
+      9
+    ],
+    [
+      18,
+      8
+    ],
+    [
+      15,
+      8
+    ],
+    [
+      15,
+      9
+    ],
+    [
+      12,
+      9
+    ],
+    [
+      12,
+      12
+    ],
+    [
+      10,
+      12
+    ],
+    [
+      10,
+      14
+    ],
+    [
+      0,
+      14
+    ]
+  ],
+  "main_lane_width_gameplay_tiles": 2,
+  "districts": [
+    {
+      "id": "LOONS_SHORES",
+      "purpose": "One open lake with connected opposite walking banks, useful lookout and short main trail."
+    },
+    {
+      "id": "RAVEN_FROST_BROW",
+      "purpose": "Real shelter cave beside a coherent slippery basin; continuous dry rim and clear native slide stops."
+    },
+    {
+      "id": "STONE_BOG_RANGER",
+      "purpose": "Dry-access sign and trainer pocket, real grass neck, hammock resource and nearby ranger room."
+    }
+  ],
+  "loops": [
+    {
+      "id": "LOONS_CIRCUIT",
+      "purpose": "North shelter/ice visit rejoins both walking banks without an empty route-wide detour."
+    },
+    {
+      "id": "BOG_BANK_RETURN",
+      "purpose": "Walkable southern discovery circuit; every sign/trainer has ordinary dry access."
+    }
+  ],
+  "trainers": [
+    {
+      "id": "MN_R12_T01",
+      "district": "D6",
+      "anchor_metatile": [
+        27,
+        24
+      ],
+      "facing": "north",
+      "sight_range": 2,
+      "party": [
+        {
+          "species": "GRAVELER",
+          "level": 40
+        },
+        {
+          "species": "ONIX",
+          "level": 40
+        },
+        {
+          "species": "URSARING",
+          "level": 39
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R12_TRAINER_01",
+      "block_main_lane": false,
+      "before_text": "These stones warm in the noon sun. My team does too!",
+      "after_text": "A warm welcome! The hut is west.",
+      "loss_text": "Steady your feet. Then try again.",
+      "display_name": "Silas",
+      "trainer_class": "HIKER",
+      "sprite": "SPRITE_POKEFAN_M",
+      "tile": [
+        55,
+        49
+      ],
+      "before_lines": [
+        "These stones warm",
+        "in the noon sun.",
+        "My team does too!"
+      ],
+      "after_lines": [
+        "A warm welcome!",
+        "The hut is west."
+      ],
+      "loss_lines": [
+        "Steady your feet.",
+        "Then try again."
+      ]
+    },
+    {
+      "id": "MN_R12_T02",
+      "district": "D3",
+      "anchor_metatile": [
+        25,
+        14
+      ],
+      "facing": "east",
+      "sight_range": 2,
+      "party": [
+        {
+          "species": "NOCTOWL",
+          "level": 40
+        },
+        {
+          "species": "XATU",
+          "level": 40
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R12_TRAINER_02",
+      "block_main_lane": false,
+      "before_text": "Wings above us, roots below us.",
+      "after_text": "Both keep us safe.",
+      "loss_text": "Watch the wind.",
+      "display_name": "Milo",
+      "trainer_class": "BIRD_KEEPER",
+      "sprite": "SPRITE_YOUNGSTER",
+      "tile": [
+        51,
+        29
+      ],
+      "before_lines": [
+        "Wings above us,",
+        "roots below us."
+      ],
+      "after_lines": [
+        "Both keep us safe."
+      ],
+      "loss_lines": [
+        "Watch the wind."
+      ]
+    },
+    {
+      "id": "MN_R12_T03",
+      "district": "D3",
+      "anchor_metatile": [
+        25,
+        10
+      ],
+      "facing": "east",
+      "sight_range": 2,
+      "party": [
+        {
+          "species": "QUAGSIRE",
+          "level": 40
+        },
+        {
+          "species": "MANTINE",
+          "level": 41
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R12_TRAINER_03",
+      "block_main_lane": false,
+      "before_text": "Quiet water hides a lively team!",
+      "after_text": "A lovely ripple.",
+      "loss_text": "The lake is calm. Catch your breath.",
+      "display_name": "Nell",
+      "trainer_class": "COOLTRAINERF",
+      "sprite": "SPRITE_COOLTRAINER_F",
+      "tile": [
+        51,
+        21
+      ],
+      "before_lines": [
+        "Quiet water hides",
+        "a lively team!"
+      ],
+      "after_lines": [
+        "A lovely ripple."
+      ],
+      "loss_lines": [
+        "The lake is calm.",
+        "Catch your breath."
+      ]
+    },
+    {
+      "id": "MN_R12_T04",
+      "district": "D2",
+      "anchor_metatile": [
+        18,
+        9
+      ],
+      "facing": "south",
+      "sight_range": 2,
+      "party": [
+        {
+          "species": "GOLEM",
+          "level": 42
+        },
+        {
+          "species": "SHUCKLE",
+          "level": 41
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R12_TRAINER_04",
+      "block_main_lane": false,
+      "before_text": "That cleft is old. My team is solid!",
+      "after_text": "Solid work! The shelter is N.",
+      "loss_text": "The stone waits. We can try again.",
+      "display_name": "Toren",
+      "trainer_class": "HIKER",
+      "sprite": "SPRITE_POKEFAN_M",
+      "tile": [
+        37,
+        19
+      ],
+      "before_lines": [
+        "That cleft is old.",
+        "My team is solid!"
+      ],
+      "after_lines": [
+        "Solid work!",
+        "The shelter is N."
+      ],
+      "loss_lines": [
+        "The stone waits.",
+        "We can try again."
+      ]
+    },
+    {
+      "id": "MN_R12_T05",
+      "district": "D2",
+      "anchor_metatile": [
+        9,
+        12
+      ],
+      "facing": "east",
+      "sight_range": 2,
+      "party": [
+        {
+          "species": "SUNFLORA",
+          "level": 41
+        },
+        {
+          "species": "PINECO",
+          "level": 42
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R12_TRAINER_05",
+      "block_main_lane": false,
+      "before_text": "Seeds on the wind! Battle, then tea?",
+      "after_text": "You have a bright team of your own.",
+      "loss_text": "Rest in the shade.",
+      "display_name": "Anja",
+      "trainer_class": "PICNICKER",
+      "sprite": "SPRITE_LASS",
+      "tile": [
+        19,
+        25
+      ],
+      "before_lines": [
+        "Seeds on the wind!",
+        "Battle, then tea?"
+      ],
+      "after_lines": [
+        "You have a bright",
+        "team of your own."
+      ],
+      "loss_lines": [
+        "Rest in the shade."
+      ]
+    },
+    {
+      "id": "MN_R12_T06",
+      "district": "D5",
+      "anchor_metatile": [
+        19,
+        21
+      ],
+      "facing": "east",
+      "sight_range": 2,
+      "party": [
+        {
+          "species": "STANTLER",
+          "level": 42
+        },
+        {
+          "species": "SNEASEL",
+          "level": 42
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R12_TRAINER_06",
+      "block_main_lane": false,
+      "before_text": "The ranger knows every trail here. I know my team!",
+      "after_text": "A new path opens.",
+      "loss_text": "Try a new lead.",
+      "display_name": "Elin",
+      "trainer_class": "COOLTRAINERF",
+      "sprite": "SPRITE_COOLTRAINER_F",
+      "tile": [
+        39,
+        43
+      ],
+      "before_lines": [
+        "The ranger knows",
+        "every trail here.",
+        "I know my team!"
+      ],
+      "after_lines": [
+        "A new path opens."
+      ],
+      "loss_lines": [
+        "Try a new lead."
+      ]
+    },
+    {
+      "id": "MN_R12_T07",
+      "district": "D5",
+      "anchor_metatile": [
+        12,
+        27
+      ],
+      "facing": "west",
+      "sight_range": 2,
+      "party": [
+        {
+          "species": "HERACROSS",
+          "level": 43
+        },
+        {
+          "species": "ARIADOS",
+          "level": 42
+        },
+        {
+          "species": "PINECO",
+          "level": 43
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R12_TRAINER_07",
+      "block_main_lane": false,
+      "before_text": "The old trees hide powerful partners!",
+      "after_text": "Little partners, great strength.",
+      "loss_text": "Look under leaves.",
+      "display_name": "Perry",
+      "trainer_class": "BUG_CATCHER",
+      "sprite": "SPRITE_YOUNGSTER",
+      "tile": [
+        25,
+        55
+      ],
+      "before_lines": [
+        "The old trees hide",
+        "powerful partners!"
+      ],
+      "after_lines": [
+        "Little partners,",
+        "great strength."
+      ],
+      "loss_lines": [
+        "Look under leaves."
+      ]
+    },
+    {
+      "id": "MN_R12_T08",
+      "district": "D4",
+      "anchor_metatile": [
+        12,
+        23
+      ],
+      "facing": "south",
+      "sight_range": 2,
+      "party": [
+        {
+          "species": "QUAGSIRE",
+          "level": 42
+        },
+        {
+          "species": "SEAKING",
+          "level": 43
+        },
+        {
+          "species": "POLIWHIRL",
+          "level": 42
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R12_TRAINER_08",
+      "block_main_lane": false,
+      "before_text": "A still pool can surprise a fisher!",
+      "after_text": "You read the pool.",
+      "loss_text": "Let the ripples settle a moment.",
+      "display_name": "Gus",
+      "trainer_class": "FISHER",
+      "sprite": "SPRITE_FISHER",
+      "tile": [
+        25,
+        47
+      ],
+      "before_lines": [
+        "A still pool can",
+        "surprise a fisher!"
+      ],
+      "after_lines": [
+        "You read the pool."
+      ],
+      "loss_lines": [
+        "Let the ripples",
+        "settle a moment."
+      ]
+    },
+    {
+      "id": "MN_R12_T09",
+      "district": "D4",
+      "anchor_metatile": [
+        8,
+        21
+      ],
+      "facing": "west",
+      "sight_range": 2,
+      "party": [
+        {
+          "species": "URSARING",
+          "level": 43
+        },
+        {
+          "species": "NOCTOWL",
+          "level": 43
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R12_TRAINER_09",
+      "block_main_lane": false,
+      "before_text": "Leave no trace. Make a fine match!",
+      "after_text": "A fine trail mate.",
+      "loss_text": "Use the wide turn.",
+      "display_name": "Owen",
+      "trainer_class": "CAMPER",
+      "sprite": "SPRITE_YOUNGSTER",
+      "tile": [
+        17,
+        43
+      ],
+      "before_lines": [
+        "Leave no trace.",
+        "Make a fine match!"
+      ],
+      "after_lines": [
+        "A fine trail mate."
+      ],
+      "loss_lines": [
+        "Use the wide turn."
+      ]
+    },
+    {
+      "id": "MN_R12_T10",
+      "district": "D1",
+      "anchor_metatile": [
+        8,
+        10
+      ],
+      "facing": "west",
+      "sight_range": 2,
+      "party": [
+        {
+          "species": "TANGELA",
+          "level": 44
+        },
+        {
+          "species": "SNEASEL",
+          "level": 44
+        },
+        {
+          "species": "STANTLER",
+          "level": 43
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R12_TRAINER_10",
+      "block_main_lane": false,
+      "before_text": "The long way has its own rewards.",
+      "after_text": "You earned this view of the lake.",
+      "loss_text": "The lake can wait.",
+      "display_name": "Signe",
+      "trainer_class": "COOLTRAINERF",
+      "sprite": "SPRITE_COOLTRAINER_F",
+      "tile": [
+        17,
+        21
+      ],
+      "before_lines": [
+        "The long way has",
+        "its own rewards."
+      ],
+      "after_lines": [
+        "You earned this",
+        "view of the lake."
+      ],
+      "loss_lines": [
+        "The lake can wait."
+      ]
+    }
+  ],
+  "items": [
+    {
+      "id": "MN_R12_ITEM_01",
+      "item": "HYPER_POTION",
+      "quantity": 1,
+      "anchor_metatile": [
+        6,
+        5
+      ],
+      "flag": "EVENT_MN_R12_ITEM_01",
+      "access": "Cut-sealed herb clearing; native party CUT + HiveBadge",
+      "tile": [
+        13,
+        11
+      ]
+    },
+    {
+      "id": "MN_R12_ITEM_02",
+      "item": "ULTRA_BALL",
+      "quantity": 1,
+      "anchor_metatile": [
+        27,
+        5
+      ],
+      "flag": "EVENT_MN_R12_ITEM_02",
+      "access": "Walking optional excursion; no Surf required",
+      "tile": [
+        55,
+        11
+      ]
+    },
+    {
+      "id": "MN_R12_ITEM_03",
+      "item": "MAX_REPEL",
+      "quantity": 1,
+      "anchor_metatile": [
+        11,
+        27
+      ],
+      "flag": "EVENT_MN_R12_ITEM_03",
+      "access": "Walking optional excursion; no Surf required",
+      "tile": [
+        23,
+        55
+      ]
+    },
+    {
+      "id": "MN_R12_ITEM_04",
+      "item": "REVIVE",
+      "quantity": 1,
+      "anchor_metatile": [
+        17,
+        8
+      ],
+      "flag": "EVENT_MN_R12_ITEM_04",
+      "access": "Reachable cave forecourt, outside the terminal cave warp; original REVIVE and event preserved.",
+      "tile": [
+        35,
+        17
+      ]
+    },
+    {
+      "id": "MN_INLAND_CAMP_SUPPLY",
+      "item": "BERRY",
+      "quantity": 3,
+      "flag": "EVENT_MN_GUNFLINT_CAMP_SUPPLY",
+      "tile": [
+        51,
+        53
+      ],
+      "access": "Ranger junction trail stock; native event2387 moved from retired inland Neck."
+    }
+  ],
+  "encounters": {
+    "grass_rates": {
+      "morning": 10,
+      "day": 10,
+      "night": 10
+    },
+    "grass": {
+      "morning": [
+        {
+          "species": "TANGELA",
+          "level": 40
+        },
+        {
+          "species": "PINECO",
+          "level": 41
+        },
+        {
+          "species": "STANTLER",
+          "level": 42
+        },
+        {
+          "species": "GOLBAT",
+          "level": 43
+        },
+        {
+          "species": "SNEASEL",
+          "level": 44
+        },
+        {
+          "species": "URSARING",
+          "level": 45
+        },
+        {
+          "species": "HERACROSS",
+          "level": 45
+        }
+      ],
+      "day": [
+        {
+          "species": "TANGELA",
+          "level": 40
+        },
+        {
+          "species": "PINECO",
+          "level": 41
+        },
+        {
+          "species": "STANTLER",
+          "level": 42
+        },
+        {
+          "species": "GOLBAT",
+          "level": 43
+        },
+        {
+          "species": "SNEASEL",
+          "level": 44
+        },
+        {
+          "species": "URSARING",
+          "level": 45
+        },
+        {
+          "species": "HERACROSS",
+          "level": 45
+        }
+      ],
+      "night": [
+        {
+          "species": "NOCTOWL",
+          "level": 40
+        },
+        {
+          "species": "ARIADOS",
+          "level": 41
+        },
+        {
+          "species": "STANTLER",
+          "level": 42
+        },
+        {
+          "species": "GOLBAT",
+          "level": 43
+        },
+        {
+          "species": "SNEASEL",
+          "level": 44
+        },
+        {
+          "species": "URSARING",
+          "level": 45
+        },
+        {
+          "species": "HERACROSS",
+          "level": 45
+        }
+      ]
+    },
+    "water_rate": 4,
+    "water": [
+      {
+        "species": "POLIWAG",
+        "level": 40
+      },
+      {
+        "species": "WOOPER",
+        "level": 41
+      },
+      {
+        "species": "MARILL",
+        "level": 45
+      }
+    ]
+  },
+  "interiors": [
+    {
+      "id": "MnR12Cave1F",
+      "width_metatiles": 16,
+      "height_metatiles": 12,
+      "dimensions_metatiles": [
+        16,
+        12
+      ],
+      "tileset": "cave",
+      "template": "UnionCave1F",
+      "exterior_anchor_metatile": [
+        20,
+        7
+      ],
+      "exterior_door_core": [
+        40,
+        15
+      ],
+      "entrance_event": "CAVE",
+      "return": "Native paired exterior warp(40, 15) settles onto clear footprint(40, 16); room rows/events are unchanged.",
+      "mandatory": false,
+      "purpose": "A stone brow shelters Otta, a rock shoulder turns the main traverse and a fitted lower roof shapes the approach beside the seep basin. Cache and shelter remain distinct branches rather than matching rooms.",
+      "rows": [
+        "2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e",
+        "2e 2e 04 06 2e 2e 2e 2e 2e 2e 2e 2e 04 05 06 2e",
+        "2e 2e 08 02 19 06 2e 2e 2e 2e 2e 04 02 02 0a 2e",
+        "2e 2e 20 21 21 30 06 2e 2e 04 06 12 21 21 22 2e",
+        "2e 2e 2e 2e 08 02 0a 2e 04 02 0a 02 0a 2e 2e 2e",
+        "2e 2e 2e 2e 08 02 02 06 08 02 02 02 0a 2e 2e 2e",
+        "2e 2e 2e 2e 20 02 19 02 02 02 02 22 2e 2e 2e 2e",
+        "2e 2e 2e 2e 2e 20 21 39 21 12 22 34 3e 27 2e 2e",
+        "2e 2e 2e 2e 04 02 05 02 31 02 02 3e 0f 27 2e 2e",
+        "2e 2e 2e 2e 34 1c 02 02 0e 02 02 32 25 33 2e 2e",
+        "2e 2e 2e 2e 20 21 21 08 02 0a 21 21 21 22 2e 2e",
+        "2e 2e 2e 2e 2e 2e 2e 2e 07 2e 2e 2e 2e 2e 2e 2e"
+      ],
+      "exits": [
+        [
+          17,
+          23
+        ]
+      ],
+      "native_arrival": [
+        17,
+        23
+      ],
+      "clear_arrival": [
+        17,
+        22
+      ],
+      "exit_collision": "LADDER",
+      "residents": [
+        {
+          "id": "MN_R12_OTTA",
+          "name": "Otta",
+          "sprite": "SPRITE_POKEFAN_M",
+          "tile": [
+            5,
+            5
+          ],
+          "facing": "east",
+          "lines": [
+            "A dry rock roof",
+            "beats a wet tent!",
+            "Two paths curl",
+            "round the stone."
+          ]
+        }
+      ],
+      "items": [
+        {
+          "id": "MN_R12_CAVE_CACHE",
+          "tile": [
+            27,
+            5
+          ],
+          "item": "MAX_ETHER",
+          "quantity": 1,
+          "flag": "EVENT_MN_R12_CAVE_ETHER"
+        }
+      ],
+      "border_block": 46,
+      "candidate_status": "Source candidate under whole-room, player-camera and production traversal review.",
+      "review_contract": {
+        "quality_revision": "johto-quality-v01",
+        "palette_group": "nite",
+        "native_stair_blocks": [
+          [
+            5,
+            3
+          ],
+          [
+            11,
+            3
+          ],
+          [
+            9,
+            7
+          ]
+        ],
+        "viewpoints": [
+          {
+            "id": "mouth",
+            "tile": [
+              17,
+              22
+            ]
+          },
+          {
+            "id": "lower-passage",
+            "tile": [
+              15,
+              19
+            ]
+          },
+          {
+            "id": "seep-approach",
+            "tile": [
+              11,
+              19
+            ]
+          },
+          {
+            "id": "otta",
+            "tile": [
+              6,
+              5
+            ]
+          },
+          {
+            "id": "shelter-stair",
+            "tile": [
+              10,
+              7
+            ]
+          },
+          {
+            "id": "shoulder-turn",
+            "tile": [
+              13,
+              13
+            ]
+          },
+          {
+            "id": "cache",
+            "tile": [
+              26,
+              5
+            ]
+          },
+          {
+            "id": "cache-stair",
+            "tile": [
+              23,
+              7
+            ]
+          },
+          {
+            "id": "spring-bank",
+            "tile": [
+              21,
+              17
+            ]
+          },
+          {
+            "id": "widest-traverse",
+            "tile": [
+              14,
+              12
+            ]
+          }
+        ],
+        "notes": "A stone brow shelters Otta, a rock shoulder turns the main traverse and a fitted lower roof shapes the approach beside the seep basin. Cache and shelter remain distinct branches rather than matching rooms."
+      }
+    },
+    {
+      "id": "MnR12RangerHut",
+      "width_metatiles": 6,
+      "height_metatiles": 5,
+      "dimensions_metatiles": [
+        6,
+        5
+      ],
+      "tileset": "house",
+      "template": "GuideGentsHouse",
+      "exterior_anchor_metatile": [
+        24,
+        23
+      ],
+      "exterior_door_core": [
+        49,
+        47
+      ],
+      "entrance_event": "DOOR",
+      "return": "Native paired exterior warp(49, 47) settles onto clear footprint(49, 48); room rows/events are unchanged.",
+      "mandatory": false,
+      "purpose": "June offers navigation for Q07, with a table and readable map wall. Healing service requires native script lowering.",
+      "rows": [
+        "00 03 29 03 05 00",
+        "00 04 0f 0f 06 00",
+        "00 0c 0d 0f 0f 00",
+        "00 0f 0f 0f 1a 00",
+        "00 00 0b 00 00 00"
+      ],
+      "exits": [
+        [
+          4,
+          9
+        ],
+        [
+          5,
+          9
+        ]
+      ],
+      "native_arrival": [
+        4,
+        9
+      ],
+      "clear_arrival": [
+        4,
+        8
+      ],
+      "exit_collision": "WARP_CARPET_DOWN",
+      "residents": [
+        {
+          "id": "MN_R12_JUNE",
+          "name": "June",
+          "sprite": "SPRITE_TEACHER",
+          "tile": [
+            7,
+            3
+          ],
+          "facing": "south",
+          "lines": [
+            "LODE went west.",
+            "They took a canoe.",
+            "Cross the saddle",
+            "to reach the",
+            "Boundary Waters",
+            "survey shelter."
+          ]
+        }
+      ],
+      "items": [],
+      "signs": [
+        {
+          "id": "MN_R12_HUT_MAP",
+          "tile": [
+            4,
+            0
+          ],
+          "lines": [
+            "GUNFLINT TRAIL",
+            "GRAND MARAIS: E",
+            "CANOE LANDING: W"
+          ]
+        }
+      ],
+      "border_block": 0
+    }
+  ],
+  "shortcut": null,
+  "art_constraints": [
+    "Only original packed 8x8 source tiles.",
+    "No painted shadows, enlarged trees or perspective props.",
+    "Fit source shoreline/cliff quadrants; draw source trees in coherent metatile groups."
+  ],
+  "status": "DETACHED compact Gunflint whole-route revision; no native publication or controller acceptance.",
+  "anchor_status": "Frozen original/candidate bytes and all nine native module guards checked during source promotion; controller and visual evidence are recorded in the final geography receipt.",
+  "residents": [
+    {
+      "id": "MN_R12_N01",
+      "name": "Bram",
+      "sprite": "SPRITE_GRAMPS",
+      "tile": [
+        59,
+        55
+      ],
+      "facing": "west",
+      "lines": [
+        "June keeps a map",
+        "at the ranger hut.",
+        "The canoe landing",
+        "lies to the west."
+      ]
+    },
+    {
+      "id": "MN_R12_N02",
+      "name": "Bea",
+      "sprite": "SPRITE_TEACHER",
+      "tile": [
+        48,
+        9
+      ],
+      "facing": "south",
+      "lines": [
+        "Loons keep the",
+        "quiet coves.",
+        "Use the high bank."
+      ]
+    },
+    {
+      "id": "MN_R12_N03",
+      "name": "Edda",
+      "sprite": "SPRITE_TEACHER",
+      "tile": [
+        25,
+        33
+      ],
+      "facing": "north",
+      "lines": [
+        "Windthrow narrows",
+        "the old saddle.",
+        "Raven Rock lies",
+        "up the north fork."
+      ]
+    },
+    {
+      "id": "MN_R12_N04",
+      "name": "Alma",
+      "sprite": "SPRITE_POKEFAN_F",
+      "tile": [
+        22,
+        55
+      ],
+      "facing": "east",
+      "lines": [
+        "A dry hammock",
+        "between the pools.",
+        "Cross the sedge",
+        "to reach the rest."
+      ]
+    },
+    {
+      "id": "MN_R12_N05",
+      "name": "Jory",
+      "sprite": "SPRITE_YOUNGSTER",
+      "tile": [
+        51,
+        37
+      ],
+      "facing": "west",
+      "lines": [
+        "Big tracks in mud!",
+        "I stayed on stone.",
+        "So did my partner."
+      ]
+    },
+    {
+      "id": "MN_R12_N06",
+      "name": "Hollis",
+      "sprite": "SPRITE_FISHER",
+      "tile": [
+        23,
+        27
+      ],
+      "facing": "west",
+      "lines": [
+        "The long west bank",
+        "returns south.",
+        "Its north bend",
+        "hides a supply."
+      ]
+    }
+  ],
+  "signs": [
+    {
+      "id": "MN_R12_SIGN_01",
+      "tile": [
+        61,
+        53
+      ],
+      "lines": [
+        "GUNFLINT TRAIL",
+        "RANGER HUT: WEST"
+      ]
+    },
+    {
+      "id": "MN_R12_SIGN_02",
+      "tile": [
+        49,
+        33
+      ],
+      "lines": [
+        "LOONS LAKE",
+        "USE THE HIGH BANK"
+      ]
+    },
+    {
+      "id": "MN_R12_SIGN_03",
+      "tile": [
+        43,
+        17
+      ],
+      "lines": [
+        "RAVEN ROCK SHELTER",
+        "ENTER FROM SOUTH"
+      ]
+    },
+    {
+      "id": "MN_R12_SIGN_04",
+      "tile": [
+        47,
+        49
+      ],
+      "lines": [
+        "RANGER CLEARING",
+        "A PLACE TO REST"
+      ]
+    },
+    {
+      "id": "MN_R12_SIGN_05",
+      "tile": [
+        23,
+        45
+      ],
+      "lines": [
+        "STONE BOG PORTAGE",
+        "CROSS THE SEDGE"
+      ]
+    },
+    {
+      "id": "MN_R12_SIGN_06",
+      "tile": [
+        5,
+        27
+      ],
+      "lines": [
+        "CANOE LANDING: W",
+        "GRAND MARAIS: EAST"
+      ]
+    },
+    {
+      "id": "MN_INLAND_CAMP_SIGN",
+      "tile": [
+        55,
+        53
+      ],
+      "lines": [
+        "PORTAGE CAMP",
+        "Three BERRIES for",
+        "the trail ahead."
+      ]
+    }
+  ],
+  "doors": [
+    {
+      "id": "RAVEN_ROCK",
+      "warp_index": 1,
+      "tile": [
+        40,
+        15
+      ],
+      "arrival_tile": [
+        40,
+        15
+      ],
+      "return_tile": [
+        40,
+        16
+      ],
+      "target": "MnR12Cave1F",
+      "target_warp": 1,
+      "collision": "CAVE"
+    },
+    {
+      "id": "RANGER_HUT",
+      "warp_index": 2,
+      "tile": [
+        49,
+        47
+      ],
+      "arrival_tile": [
+        49,
+        47
+      ],
+      "return_tile": [
+        49,
+        48
+      ],
+      "target": "MnR12RangerHut",
+      "target_warp": 1,
+      "collision": "DOOR"
+    }
+  ],
+  "viewpoints": [
+    {
+      "id": "LAKE_WEST_BANK",
+      "tile": [
+        23,
+        27
+      ]
+    },
+    {
+      "id": "LOONS_BANK",
+      "tile": [
+        50,
+        28
+      ]
+    },
+    {
+      "id": "CLEFT_APPROACH",
+      "tile": [
+        40,
+        16
+      ]
+    },
+    {
+      "id": "RANGER_PORCH",
+      "tile": [
+        49,
+        49
+      ]
+    },
+    {
+      "id": "BOG_BANK",
+      "tile": [
+        22,
+        49
+      ]
+    },
+    {
+      "id": "CUT_APPROACH",
+      "tile": [
+        14,
+        18
+      ]
+    },
+    {
+      "id": "WIDEST_MAIN_CLEARING",
+      "tile": [
+        32,
+        37
+      ]
+    },
+    {
+      "id": "FROST_RIM",
+      "tile": [
+        55,
+        19
+      ]
+    }
+  ],
+  "implementation": "Detached complete32x32 candidate; native endpoint and room pairing integration pending. Original room content, parties, flags, rewards and story identities remain unchanged.",
+  "main_lane_width_note": "Two core tiles through forest and portages, with wider event/listening/arrival pockets. Native collision determines actual clear width.",
+  "required_grass_crossings": [
+    {
+      "id": "WEST_PINE_SEDGE",
+      "bounds_core": [
+        4,
+        28,
+        6,
+        30
+      ],
+      "minimum_grass_steps": 2
+    }
+  ],
+  "cut_gates": [
+    {
+      "id": "MN_R12_SHORTCUT",
+      "tile": [
+        14,
+        17
+      ],
+      "approach": [
+        14,
+        18
+      ],
+      "source_block": "0f",
+      "replacement_block": "17",
+      "targets": [
+        [
+          14,
+          11
+        ]
+      ],
+      "gated_actor_ids": [
+        "MN_R12_ITEM_01"
+      ],
+      "requires": [
+        "MOVE_CUT",
+        "HIVEBADGE"
+      ],
+      "mandatory": false,
+      "purpose": "Sealed forest herb cache; no walking or Surf entrance behind the Cut tree."
+    }
+  ],
+  "one_way_ledges": [],
+  "revision_contract_changes": [
+    "Gunflint shortened64x56 to32x32; source-v02 inland winter epoch retained as immutable history.",
+    "External ports are proposed east63,54/55 and west0,28/29; root integrates actual regional footprints.",
+    "All actor/room/reward/script identities retained with explicit relocated exterior anchors; old regional fixtures need new coordinates.",
+    "Pine8b copied from installed native winter art as one declared derived block49; Cut replacement prefix remains original."
+  ],
+  "portages": [
+    {
+      "id": "BOG_GRASS_NECK",
+      "bounds_core": [
+        22,
+        44,
+        24,
+        52
+      ],
+      "purpose": "Useful shorter passage between two ponds, with a dry outer circuit and an actual shore landing."
+    }
+  ],
+  "native_integration": {
+    "compiled_tileset": "mn_winter_gunflint",
+    "proposed_chunks": [
+      {
+        "id": "MnR12C00R00",
+        "dimensions": [
+          32,
+          24
+        ]
+      },
+      {
+        "id": "MnR12C00R01",
+        "dimensions": [
+          32,
+          8
+        ]
+      }
+    ],
+    "native_status": "NOT PUBLISHED; compare source and actual final native controller after integration."
+  },
+  "compiled_tileset": "mn_winter_gunflint",
+  "quality_revision": "gunflint-quality-v01",
+  "proposed_ports": {
+    "east_core": [
+      [
+        63,
+        54
+      ],
+      [
+        63,
+        55
+      ]
+    ],
+    "west_core": [
+      [
+        0,
+        28
+      ],
+      [
+        0,
+        29
+      ]
+    ],
+    "origin_metatiles": [
+      190,
+      -432
+    ],
+    "east_native_map": "MnR12C00R01",
+    "east_local_core": [
+      [
+        63,
+        6
+      ],
+      [
+        63,
+        7
+      ]
+    ],
+    "east_offset": -4,
+    "west_native_map": "MnR12C00R00",
+    "west_offset": 2,
+    "global_geometry_owner": "root"
+  }
+}

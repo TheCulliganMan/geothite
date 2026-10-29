@@ -82,9 +82,10 @@ pub(crate) fn validate_ledges<'a>(
     Ok(())
 }
 
-pub(crate) fn validate_grass_crossings(
+pub(crate) fn validate_grass_crossings<'a>(
     design: &RouteDesign,
     walkable: &BTreeSet<[u16; 2]>,
+    kind: impl Fn([u16; 2]) -> Result<&'a str>,
 ) -> Result<()> {
     let start = design.endpoints[0].gate_metatile.map(|v| v * 2);
     let end = design.endpoints[1].gate_metatile.map(|v| v * 2);
@@ -94,14 +95,71 @@ pub(crate) fn validate_grass_crossings(
             "empty encounter challenge"
         );
         ensure!(
-            minimum_grass_cost(start, end, walkable, &BTreeSet::new(), crossing.bounds_core)
-                .is_some_and(|steps| steps >= crossing.minimum_grass_steps),
+            minimum_grass_cost_with_ice(
+                start,
+                end,
+                walkable,
+                crossing.bounds_core,
+                design.dimensions_metatiles.map(|value| value * 2),
+                &kind,
+            )?
+            .is_some_and(|steps| steps >= crossing.minimum_grass_steps),
             "{}: encounter grass can be bypassed or is too short",
             crossing.id
         );
     }
     Ok(())
 }
+
+// Match the route flood's straight ICE-to-land edges. Transient ice cells are
+// not turn points; wall-stop routes still require native controller review.
+fn minimum_grass_cost_with_ice<'a>(
+    start: [u16; 2],
+    end: [u16; 2],
+    walkable: &BTreeSet<[u16; 2]>,
+    bounds: [u16; 4],
+    extent_core: [u16; 2],
+    kind: impl Fn([u16; 2]) -> Result<&'a str>,
+) -> Result<Option<u16>> {
+    let [x0, y0, x1, y1] = bounds;
+    let in_band = |[x, y]: [u16; 2]| (x0..x1).contains(&x) && (y0..y1).contains(&y);
+    let inside = |x: i32, y: i32| {
+        (0..i32::from(extent_core[0])).contains(&x) && (0..i32::from(extent_core[1])).contains(&y)
+    };
+    let mut costs = BTreeMap::from([(start, 0_u16)]);
+    let mut queue = VecDeque::from([start]);
+    while let Some([x, y]) = queue.pop_front() {
+        for (dx, dy) in [(1, 0), (-1, 0), (0, 1), (0, -1)] {
+            let (mut nx, mut ny) = (i32::from(x) + dx, i32::from(y) + dy);
+            while inside(nx, ny) && kind([u16::try_from(nx)?, u16::try_from(ny)?])? == "ICE" {
+                nx += dx;
+                ny += dy;
+            }
+            if !inside(nx, ny) {
+                continue;
+            }
+            let next = [u16::try_from(nx)?, u16::try_from(ny)?];
+            if !walkable.contains(&next) {
+                continue;
+            }
+            let cost = costs[&[x, y]] + u16::from(in_band(next));
+            if costs.get(&next).is_some_and(|&prior| prior <= cost) {
+                continue;
+            }
+            costs.insert(next, cost);
+            if in_band(next) {
+                queue.push_back(next);
+            } else {
+                queue.push_front(next);
+            }
+        }
+    }
+    Ok(costs.get(&end).copied())
+}
+
+#[cfg(test)]
+#[path = "authored_route_ice_grass_tests.rs"]
+mod ice_grass_tests;
 
 /// A drop must shorten a real walking loop, with a deliberate return passage.
 /// An explicit local loop may coexist with longer walks elsewhere on the map;

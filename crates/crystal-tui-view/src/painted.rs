@@ -539,6 +539,20 @@ impl PaintedRenderer {
                     },
                     s.trainer.player_palette_id,
                 ),
+                MovementMode::Surf
+                    if s.script_events
+                        .memory
+                        .contains_key(crystal_core::systems::field_moves::CANOE_ACTIVE_MEMORY) =>
+                {
+                    (
+                        if female {
+                            "SPRITE_MN_CANOE_KRIS"
+                        } else {
+                            "SPRITE_MN_CANOE_CHRIS"
+                        },
+                        1,
+                    )
+                }
                 MovementMode::Surf => ("SPRITE_SURF", 1),
                 MovementMode::SurfPika => ("SPRITE_SURFING_PIKACHU", 0),
             };
@@ -697,6 +711,21 @@ impl PaintedRenderer {
             });
             self.actors.insert(name.clone(), actor);
         }
+        let authored_palette = if name.starts_with("mn_canoe_") {
+            self.bytes(&format!("gfx/sprites/{name}.gbcpal"))
+                .and_then(|bytes| {
+                    let bytes: [u8; 8] = bytes.try_into().ok()?;
+                    Some(std::array::from_fn::<_, 4, _>(|index| {
+                        let color = u16::from_le_bytes([bytes[index * 2], bytes[index * 2 + 1]]);
+                        std::array::from_fn(|channel| {
+                            let value = ((color >> (channel * 5)) & 31) as u8;
+                            (value << 3) | (value >> 2)
+                        })
+                    }))
+                })
+        } else {
+            None
+        };
         let actor = self.actors.get(&name)?.as_ref()?;
         let frame = if has_facings {
             match facing {
@@ -723,7 +752,9 @@ impl PaintedRenderer {
                 let index = shade(p[0]);
                 if p[3] != 0 && index != 0 {
                     pixels[y * 16 + x] = Some(
-                        bank.get(usize::from(palette))
+                        authored_palette
+                            .as_ref()
+                            .or_else(|| bank.get(usize::from(palette)))
                             .map_or([p[0]; 3], |palette| palette[index]),
                     );
                 }

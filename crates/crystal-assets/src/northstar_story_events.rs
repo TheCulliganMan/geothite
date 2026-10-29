@@ -22,7 +22,8 @@ pub fn build_northstar_story_events(
 ) -> Result<CompiledGamePack> {
     let source: Value = serde_json::from_str(events).context("event-driven story source")?;
     ensure!(
-        source["parent_dialogue_hash"] == base.identity()?.content_hash,
+        source["parent_dialogue_hash"] == base.identity()?.content_hash
+            || crate::northstar_current_story::is_composing(base),
         "event story parent differs"
     );
     let mut pack = crate::build_northstar_returns(base, story)?;

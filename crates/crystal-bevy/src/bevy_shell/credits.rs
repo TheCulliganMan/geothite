@@ -950,16 +950,17 @@ fn visible_nickname_prompt_pages(
     Ok(pages.into())
 }
 
-fn advance_visible_nickname_prompt(runtime_shell: &mut BevyRuntimeShell) -> bool {
+fn advance_visible_nickname_prompt(runtime_shell: &mut BevyRuntimeShell) -> Result<bool> {
     let Some(choice) = runtime_shell.pending_name_choice.as_mut() else {
-        return false;
+        return Ok(false);
     };
     if choice.nickname_pages.len() <= 1 {
-        return false;
+        return Ok(false);
     }
     choice.nickname_pages.pop_front();
     mark_runtime_snapshot_dirty(runtime_shell);
-    true
+    safari_catch_visible::advance_prompt_page(runtime_shell)?;
+    Ok(true)
 }
 
 fn move_visible_name_choice(runtime_shell: &mut BevyRuntimeShell, delta: isize) -> Result<()> {
@@ -990,11 +991,12 @@ fn move_visible_name_choice(runtime_shell: &mut BevyRuntimeShell, delta: isize) 
         choice.selected
     };
     record_visible_runtime_action(runtime_shell, format!("player_name:choice:{selected}"))?;
+    safari_catch_visible::sync_choice(runtime_shell)?;
     Ok(())
 }
 
 fn confirm_visible_name_choice(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
-    if advance_visible_nickname_prompt(runtime_shell) {
+    if advance_visible_nickname_prompt(runtime_shell)? {
         return Ok(());
     }
     let Some(mut choice) = runtime_shell.pending_name_choice.take() else {
@@ -1006,6 +1008,7 @@ fn confirm_visible_name_choice(runtime_shell: &mut BevyRuntimeShell) -> Result<(
         runtime_shell.pending_name_choice = Some(choice);
         return Ok(());
     }
+    if safari_catch_visible::confirm_choice(runtime_shell)? { return Ok(()); }
     if runtime_shell.pending_egg_hatch_nickname.is_some() {
         if choice.selected == 0 {
             let species_name = runtime_shell
@@ -1518,11 +1521,11 @@ fn apply_visible_name_input_smoke_key(runtime_shell: &mut BevyRuntimeShell, key:
 }
 
 fn visible_name_input_grid_width() -> usize {
-    9
+    crate::core::systems::name_entry::NAME_ENTRY_COLUMNS
 }
 
 fn visible_name_input_grid_height() -> usize {
-    5
+    crate::core::systems::name_entry::NAME_ENTRY_ROWS
 }
 
 fn visible_name_input_bottom_row_index() -> usize {
@@ -1530,22 +1533,7 @@ fn visible_name_input_bottom_row_index() -> usize {
 }
 
 fn visible_name_input_layout(case: NameInputCase) -> &'static [&'static str; 5] {
-    match case {
-        NameInputCase::Upper => &[
-            "A B C D E F G H I",
-            "J K L M N O P Q R",
-            "S T U V W X Y Z  ",
-            "- ? ! / . ,      ",
-            "lower  DEL   END ",
-        ],
-        NameInputCase::Lower => &[
-            "a b c d e f g h i",
-            "j k l m n o p q r",
-            "s t u v w x y z  ",
-            "× ( ) : ; [ ] <PK> <MN>",
-            "UPPER  DEL   END ",
-        ],
-    }
+    crate::core::systems::name_entry::name_entry_layout(case == NameInputCase::Upper)
 }
 
 fn visible_name_input_row_chars(case: NameInputCase, row: usize) -> [Option<char>; 9] {
@@ -1625,6 +1613,7 @@ fn toggle_visible_player_name_case(runtime_shell: &mut BevyRuntimeShell) -> Resu
         .last_audio_events
         .push(format!("player name case {next_case:?}"));
     trim_event_log(&mut runtime_shell.last_audio_events);
+    safari_catch_visible::sync_name(runtime_shell)?;
     Ok(())
 }
 
@@ -1639,6 +1628,7 @@ fn move_visible_player_name_cursor_to_end(runtime_shell: &mut BevyRuntimeShell) 
         .last_audio_events
         .push("player name cursor END".to_string());
     trim_event_log(&mut runtime_shell.last_audio_events);
+    safari_catch_visible::sync_name(runtime_shell)?;
     Ok(())
 }
 
@@ -1694,6 +1684,7 @@ fn move_visible_player_name_cursor(
         .last_audio_events
         .push(format!("player name cursor row={next_row} col={next_col}"));
     trim_event_log(&mut runtime_shell.last_audio_events);
+    safari_catch_visible::sync_name(runtime_shell)?;
     Ok(())
 }
 
@@ -1746,6 +1737,7 @@ fn append_visible_player_name_char(runtime_shell: &mut BevyRuntimeShell, ch: cha
         .last_audio_events
         .push(format!("player name add {ch}"));
     trim_event_log(&mut runtime_shell.last_audio_events);
+    safari_catch_visible::sync_name(runtime_shell)?;
     Ok(())
 }
 
@@ -1763,6 +1755,7 @@ fn delete_visible_player_name_char(runtime_shell: &mut BevyRuntimeShell) -> Resu
         .last_audio_events
         .push("player name delete".to_string());
     trim_event_log(&mut runtime_shell.last_audio_events);
+    safari_catch_visible::sync_name(runtime_shell)?;
     Ok(())
 }
 
@@ -1770,6 +1763,7 @@ fn complete_visible_smoke_player_name_if_needed(
     runtime_shell: &mut BevyRuntimeShell,
     smoke_player_name: Option<&str>,
 ) -> Result<()> {
+    if safari_catch_visible::native_surface_owns(runtime_shell) { return Ok(()); }
     complete_visible_smoke_gender_if_needed(runtime_shell)?;
     complete_visible_smoke_time_set_if_needed(runtime_shell)?;
     complete_visible_smoke_oak_intro_if_needed(runtime_shell)?;
@@ -1948,6 +1942,7 @@ fn confirm_visible_player_name_input(runtime_shell: &mut BevyRuntimeShell) -> Re
         runtime_shell.pending_name_input = Some(input);
         anyhow::bail!("player name must be exact");
     }
+    if safari_catch_visible::finish_name(runtime_shell, &input)? { return Ok(()); }
     if input.label == "BOX NAME?" {
         let box_index = strict_readonly_cursor_index(
             &runtime_shell.bill_pc_box_cursor,

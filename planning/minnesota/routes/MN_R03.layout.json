@@ -2099,6 +2099,237 @@
         30
       ],
       "block": "59"
+    },
+    {
+      "kind": "block_remap",
+      "name": "Lower east-bank walking bend encounter grass",
+      "bounds": [
+        18,
+        23,
+        21,
+        26
+      ],
+      "from": "01",
+      "to": "03"
+    },
+    {
+      "kind": "block_remap",
+      "name": "Lower east-bank walking bend encounter grass",
+      "bounds": [
+        18,
+        23,
+        21,
+        26
+      ],
+      "from": "02",
+      "to": "03"
+    },
+    {
+      "kind": "block_remap",
+      "name": "Upper bridge east meadow encounter grass",
+      "bounds": [
+        13,
+        15,
+        16,
+        17
+      ],
+      "from": "01",
+      "to": "03"
+    },
+    {
+      "kind": "block_remap",
+      "name": "Upper bridge east meadow encounter grass",
+      "bounds": [
+        13,
+        15,
+        16,
+        17
+      ],
+      "from": "02",
+      "to": "03"
+    },
+    {
+      "kind": "block_remap",
+      "name": "Upper bridge woodland approach encounter grass",
+      "bounds": [
+        6,
+        12,
+        9,
+        14
+      ],
+      "from": "01",
+      "to": "03"
+    },
+    {
+      "kind": "block_remap",
+      "name": "Upper bridge woodland approach encounter grass",
+      "bounds": [
+        6,
+        12,
+        9,
+        14
+      ],
+      "from": "02",
+      "to": "03"
+    },
+    {
+      "kind": "block_remap",
+      "name": "North valley footpath encounter grass",
+      "bounds": [
+        4,
+        8,
+        6,
+        10
+      ],
+      "from": "01",
+      "to": "03"
+    },
+    {
+      "kind": "block_remap",
+      "name": "North valley footpath encounter grass",
+      "bounds": [
+        4,
+        8,
+        6,
+        10
+      ],
+      "from": "02",
+      "to": "03"
+    },
+    {
+      "kind": "block_remap",
+      "name": "Southern trail crossing encounter grass",
+      "bounds": [
+        7,
+        28,
+        10,
+        29
+      ],
+      "from": "01",
+      "to": "03"
+    },
+    {
+      "kind": "block_remap",
+      "name": "Southern trail crossing encounter grass",
+      "bounds": [
+        7,
+        28,
+        10,
+        29
+      ],
+      "from": "02",
+      "to": "03"
+    },
+    {
+      "kind": "block_remap",
+      "name": "Angler meadow edge encounter grass",
+      "bounds": [
+        10,
+        25,
+        12,
+        27
+      ],
+      "from": "01",
+      "to": "03"
+    },
+    {
+      "kind": "block_remap",
+      "name": "Angler meadow edge encounter grass",
+      "bounds": [
+        10,
+        25,
+        12,
+        27
+      ],
+      "from": "02",
+      "to": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Retain clear footing for MN_R03_T01",
+      "position": [
+        18,
+        24
+      ],
+      "block": "02"
+    },
+    {
+      "kind": "point",
+      "name": "Bird meadow drop western tree abutment",
+      "position": [
+        4,
+        10
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Bird meadow southbound native ledge west",
+      "position": [
+        5,
+        10
+      ],
+      "block": "57"
+    },
+    {
+      "kind": "point",
+      "name": "Bird meadow southbound native ledge east",
+      "position": [
+        6,
+        10
+      ],
+      "block": "57"
+    },
+    {
+      "kind": "point",
+      "name": "Bird meadow drop eastern boulder abutment",
+      "position": [
+        7,
+        10
+      ],
+      "block": "0a"
+    },
+    {
+      "kind": "point",
+      "name": "Clear bird meadow ledge approach",
+      "position": [
+        5,
+        9
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Dry southbound trail reaches bird meadow ledge",
+      "position": [
+        5,
+        8
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "block_remap",
+      "name": "Grassy northbound meadow return",
+      "bounds": [
+        8,
+        9,
+        9,
+        11
+      ],
+      "from": "02",
+      "to": "03"
+    },
+    {
+      "kind": "block_remap",
+      "name": "Grassy northbound neck begins below the ledge lip",
+      "bounds": [
+        8,
+        11,
+        9,
+        12
+      ],
+      "from": "02",
+      "to": "03"
     }
   ],
   "crossings": [

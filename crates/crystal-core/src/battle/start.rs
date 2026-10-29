@@ -500,7 +500,12 @@ pub fn wild_dvs_from_rng(rng: &mut Random) -> Dv {
     )
 }
 
-fn wild_held_item_from_crystal_random<S>(
+/// Select ordinary wild held items using native RNG and item thresholds.
+/// Capture-only expeditions reuse this without constructing a combatant.
+///
+/// # Errors
+/// Returns a native divider error if hardware samples are unavailable.
+pub fn wild_held_item_from_crystal_random<S>(
     species: &PokemonSpecies,
     battle_type: &str,
     rng: &mut CrystalRandom<&mut S>,
@@ -534,7 +539,11 @@ where
     })
 }
 
-fn wild_dvs_from_crystal_random<S>(
+/// Sample the two native wild DV bytes without starting a battle.
+///
+/// # Errors
+/// Returns a native divider error if hardware samples are unavailable.
+pub fn wild_dvs_from_crystal_random<S>(
     rng: &mut CrystalRandom<&mut S>,
 ) -> Result<Dv, StaticWildBattleError>
 where

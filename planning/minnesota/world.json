@@ -38,7 +38,7 @@
       ],
       "role": "starter",
       "tileset": "johto",
-      "composition": "A riverbank field station, home above the small oak square, western trail road and a short east-bank lookout. Four distinct native facades share one compact walking loop.",
+      "composition": "A riverbank field station, home above the small oak square, western trail road and a short east-bank lookout. Four distinct native facades share one compact walking loop. A separately published five-block transit overlay adds the public depot without altering the four original facades or river/road ports.",
       "ports": [
         {
           "route": "MN_R01",
@@ -99,6 +99,16 @@
             6
           ],
           "authoring_file": "towns/MnWinona.json"
+        },
+        {
+          "id": "MnWinonaStation",
+          "kind": "train_station",
+          "dimensions_metatiles": [
+            10,
+            9
+          ],
+          "authoring_file": "transit/MnWinonaStation.json",
+          "access_kind": "published_town_overlay"
         }
       ],
       "walkable_destinations": [
@@ -109,7 +119,15 @@
       ],
       "door_contract": "Assign exterior core-tile door coordinates only after selecting authentic facade quadrants; record reciprocal warp indices and indoor floor arrivals before export.",
       "authoring_file": "towns/MnWinona.json",
-      "layout_file": "towns/MnWinona.layout.json"
+      "layout_file": "towns/MnWinona.layout.json",
+      "transit_overlays": [
+        {
+          "room_id": "MnWinonaStation",
+          "source_file": "transit/MnWinonaStation.json",
+          "publisher": "pack_winona_station",
+          "status": "Published in minnesota-winona-station-v03.crystalpack; real town door, residents, winter-register story and visit callback verified. Passenger service unfinished."
+        }
+      ]
     },
     {
       "id": "MnRochester",
@@ -2060,7 +2078,7 @@
       "name": "DULUTH",
       "dimensions_metatiles": [
         64,
-        48
+        46
       ],
       "reference_anchor_percent": [
         72,
@@ -2068,18 +2086,18 @@
       ],
       "role": "gym_8",
       "tileset": "johto_modern",
-      "composition": "A compact inhabited bluff and winding hillside street meet Lincoln Park work blocks, the original civic/canal quarter, a large enterable maritime co-op, Bayfront slips and a bent Park Point neighborhood.",
+      "composition": "A compact inhabited bluff, connected clinic and Mart streets, and harbor workshop lead down a native stair to the waterfront, civic quarter, Bayfront slips and Park Point.",
       "ports": [
         {
           "route": "MN_R10",
           "side": "W",
           "gate_metatile": [
             1,
-            24
+            22
           ],
           "landing_metatile": [
             3,
-            24
+            22
           ]
         },
         {
@@ -2760,7 +2778,8 @@
       "layout_file": "towns/MnDuluth.layout.json",
       "native_connections_source": "towns/MnDuluth.expansion.contract.json",
       "compiled_tileset": "mn_duluth_expanded",
-      "expansion_contract_file": "towns/MnDuluth.expansion.contract.json"
+      "expansion_contract_file": "towns/MnDuluth.expansion.contract.json",
+      "recomposition_contract_file": "towns/MnDuluth.recomposition.contract.json"
     },
     {
       "id": "MnGrandMarais",
@@ -2858,6 +2877,18 @@
             5
           ],
           "source_behavior": "Preserve installed native room module and services exactly; no alternate seventh gatehouse lineage."
+        },
+        {
+          "id": "MnGrandMaraisShoreGate",
+          "kind": "gatehouse",
+          "dimensions_metatiles": [
+            5,
+            4
+          ],
+          "authoring_file": "towns/MnGrandMaraisShoreGate.json",
+          "access_kind": "published_road_gatehouse",
+          "integration_scope": "preserved_winona_lineage",
+          "canonical_rebase_required": true
         }
       ],
       "walkable_destinations": [
@@ -2995,7 +3026,7 @@
       ],
       "role": "league",
       "tileset": "kanto",
-      "composition": "A sheltered final rest camp. The northern trail bends around the stone League lodge; a clinic and supply shop share a narrow southern garden loop. Only three visible buildings, all enterable.",
+      "composition": "A snowy rest camp surrounded by native pines. The League lodge, original clinic and supply shop retain their doors and paths. An eastern wooded back route reaches the North Shore and its new Split Rock Center.",
       "ports": [
         {
           "route": "MN_R13",
@@ -3684,7 +3715,29 @@
       ],
       "door_contract": "Assign exterior core-tile door coordinates only after selecting authentic facade quadrants; record reciprocal warp indices and indoor floor arrivals before export.",
       "league_authoring_file": "towns/MnEly.json",
-      "layout_file": "towns/MnEly.layout.json"
+      "layout_file": "towns/MnEly.layout.json",
+      "native_overlay": {
+        "source_file": "revisions/ely-backroute-v01/source-v08/native.contract.json",
+        "compiled_tileset": "mn_ely_snow",
+        "weather": "falling snow outdoors",
+        "east_port": {
+          "map": "MnElyShorePass",
+          "core_lanes": [
+            [
+              39,
+              14
+            ],
+            [
+              39,
+              15
+            ]
+          ],
+          "offset_metatiles": 0
+        },
+        "base_layout": "towns/MnEly.layout.json",
+        "status": "Published; reciprocal seams, native healing/PC/Continue and headless 2D snow/pine captures verified. See revisions/ely-backroute-v01/VERIFICATION.md.",
+        "quality_successor": "ely_pine_knolls_revision"
+      }
     },
     {
       "id": "MnLakeItasca",
@@ -4152,8 +4205,8 @@
       "id": "MnMilleLacs",
       "name": "MILLE LACS",
       "dimensions_metatiles": [
-        32,
-        24
+        24,
+        20
       ],
       "reference_anchor_percent": [
         57,
@@ -4161,29 +4214,46 @@
       ],
       "role": "landmark",
       "tileset": "johto",
-      "composition": "Shore park, dock and optional water circuit.",
+      "composition": "A wooded shore park at the actual R18 terminus, with a winding walk, grass-gated bird lookout and short downward return, railed dock, picnic bend, lake launch and Surf-only rocky roost.",
       "ports": [
         {
           "route": "MN_R18",
           "side": "W",
           "gate_metatile": [
-            1,
-            12
+            0,
+            6
           ],
           "landing_metatile": [
-            3,
-            12
+            2,
+            6
           ]
         }
       ],
       "interiors": [],
       "walkable_destinations": [
-        "each port landing",
-        "every visible exterior door",
-        "central square",
-        "local story NPC"
+        "both R18 road lanes",
+        "park ranger and entry board",
+        "grassy bird lookout",
+        "short ledge and ordinary return",
+        "railed fishing dock",
+        "picnic bend",
+        "north-shore wind notice",
+        "lake launch",
+        "Surf-only rocky roost"
       ],
-      "door_contract": "Assign exterior core-tile door coordinates only after selecting authentic facade quadrants; record reciprocal warp indices and indoor floor arrivals before export."
+      "door_contract": "No buildings or door warps in this outdoor park.",
+      "compiled_tileset": "mn_headwaters",
+      "native_exterior": {
+        "revision": "mille_lacs_park_revision",
+        "authoring_file": "mille-lacs-park-v01/town.json",
+        "layout_file": "mille-lacs-park-v01/layout.json",
+        "native_contract": "mille-lacs-park-v01/native.contract.json",
+        "plan": "mille-lacs-park-v01/README.md",
+        "native_group_id": 101,
+        "native_map_id": 1,
+        "initial_spawn_identifier": 282,
+        "status": "Published native705-map R09child; source/native/controller/stdio/atlas/audio checks pass. Original R18 ShoreWatch and GoodRod remain unchanged."
+      }
     }
   ],
   "routes": [
@@ -6304,31 +6374,41 @@
       "warp_index_status": "Allocate from authored map events; target safe FLOOR arrival event rather than source trigger."
     },
     {
-      "kind": "gatehouse_warp",
+      "kind": "direct_connection",
       "route": "MN_R18",
       "a": "MnR18C01R00",
-      "a_gate_local_metatile": [
-        6,
-        5
-      ],
-      "a_arrival_local_metatile": [
-        4,
-        5
-      ],
       "b": "MnMilleLacs",
-      "b_gate_metatile": [
-        1,
-        12
+      "direction_a": "east",
+      "direction_b": "west",
+      "offset_a": -1,
+      "offset_b": 1,
+      "offset_units": "32px_metatiles",
+      "a_edge_core": [
+        [
+          15,
+          10
+        ],
+        [
+          15,
+          11
+        ]
       ],
-      "b_arrival_metatile": [
-        3,
-        12
+      "b_edge_core": [
+        [
+          0,
+          12
+        ],
+        [
+          0,
+          13
+        ]
       ],
-      "requires_flags": [
+      "requires_flags": [],
+      "route_entry_requires_flags": [
         "BADGE_6"
       ],
-      "gate_script": "MnR18EntryGateScript",
-      "warp_index_status": "Allocate from authored map events; target safe FLOOR arrival event rather than source trigger."
+      "access_note": "Existing upstream R18 access and ShoreWatch/GoodRod rules remain native and unchanged. This reciprocal park seam adds no new gate or reward authority.",
+      "source_status": "Native705-map park publication; both lanes/directions, all park activities and actual stdio/Continue verified. No gatehouse warp is invented."
     },
     {
       "kind": "gatehouse_warp",
@@ -7338,23 +7418,41 @@
     {
       "id": "MN_STATE_FAIRGROUNDS",
       "file": "zones/state-fairgrounds.json",
-      "parent_hub": "MnStPaul",
+      "parent_hub": "MnMinneapolis",
       "kind": "authored_fairgrounds",
-      "status": "Separate48x36 fair candidate:85 NPCs,22 trainers (20 sight),10 added non-battlers,4 walking loops,32 shops selling16 fair foods including healing/confusing beer,14 grass patches and29 active food/carnival species at all times. See playable/state-fairgrounds.md; integration into later regional packs remains separate.",
+      "status": "Local compact fair composition:255 exterior characters,35 trainers,32 shops/16 food effects,three inhabited halls/seven room interactions,six native carpets and both actual woodland lane returns verified. Wider regional acceptance remains open.",
       "layout_file": "zones/state-fairgrounds.layout.json",
       "native_connection": {
-        "a": "MnStPaul",
-        "direction_a": "north",
+        "a": "MnR05C00R02",
+        "direction_a": "west",
         "b": "MnStateFairgrounds",
-        "direction_b": "south",
-        "offset": 0,
-        "city_core_x": [
-          16,
-          17
+        "direction_b": "east",
+        "offset_a": -28,
+        "offset_b": 28,
+        "road_core": [
+          [
+            0,
+            8
+          ],
+          [
+            0,
+            9
+          ]
         ],
-        "fair_core_y": 71
+        "fair_core": [
+          [
+            95,
+            64
+          ],
+          [
+            95,
+            65
+          ]
+        ],
+        "bounded_trail_metatiles": 9
       },
-      "verified_pack": "content-packs/minnesota-state-fair-foods-v2.crystalpack"
+      "verified_pack": "content-packs/minnesota-interiors-fair-woodland-v02.crystalpack",
+      "runbook": "interior-life/fair-woodland-v01/README.md"
     }
   ],
   "transit_networks": [
@@ -7362,7 +7460,7 @@
       "id": "MN_GLACIER_LINE",
       "file": "transit/glacier-line.json",
       "kind": "planned_rail_service",
-      "status": "Six-stop source contract; St. Paul station interior has hand-authored rows and collision review. Cities, station doors and native train service are not installed."
+      "status": "Five public halls: Detroit Lakes, Staples, St. Cloud, St. Paul and Winona. Red Wing is excluded by user direction. Staples and Winona first-visit callbacks are verified; the other three callbacks and all twenty guarded passenger branches remain unfinished."
     }
   ],
   "special_zones": [
@@ -7493,5 +7591,1369 @@
         24
       ]
     }
+  },
+  "fishing_guru_houses": {
+    "source": "fishing-gurus.json",
+    "builder": "pack_minnesota_fishing_rods",
+    "runbook": "playable/fishing-rods.md",
+    "status": "Three real route homes composed on protected gate v04. Distinct native room layouts, six Minnesota family details, free Old/Good/Super Rod gifts, both exit lanes, Continue, full-pocket retry and earned fisherman directions verified. Six exact native 2D frames pass; current visual direction is 2D only.",
+    "houses": [
+      {
+        "route": "MN_R01",
+        "map": "MnDriftlessFishingGuruHouse",
+        "rod": "OLD_ROD"
+      },
+      {
+        "route": "MN_R03",
+        "map": "MnRiverValleyFishingGuruHouse",
+        "rod": "GOOD_ROD"
+      },
+      {
+        "route": "MN_R06",
+        "map": "MnPineCountryFishingGuruHouse",
+        "rod": "SUPER_ROD"
+      }
+    ],
+    "interior_layout_source": "interior-life/fishing-layouts.json",
+    "composed_pack": "content-packs/minnesota-interiors-fishing-life-v02.crystalpack",
+    "interior_life_runbook": "interior-life/FISHING-HOUSES.md"
+  },
+  "ely_shore_pass_revision": {
+    "source_file": "revisions/ely-backroute-v01/source-v08/native.contract.json",
+    "clinic_source_file": "revisions/ely-backroute-v01/clinic.json",
+    "runbook": "revisions/ely-backroute-v01/README.md",
+    "pack": "content-packs/minnesota-ely-snow-shore-pass-v01.crystalpack",
+    "pack_sha256": "e6a17f18d5b19e5c2c6ef16aa6b2a85a75c894d89c8b49fc0a1eec08295c10d3",
+    "content_identity": "c63a1c203ee44825494321a1a7e2c032b83c0e173cf30b150930f79b103c9c85",
+    "maps": 691,
+    "unchanged_other_maps": 687,
+    "connections": [
+      {
+        "map": "MnEly",
+        "direction": "east",
+        "target": "MnElyShorePass",
+        "offset": 0
+      },
+      {
+        "map": "MnElyShorePass",
+        "direction": "west",
+        "target": "MnEly",
+        "offset": 0
+      },
+      {
+        "map": "MnElyShorePass",
+        "direction": "east",
+        "target": "MnR11C00R02",
+        "offset": -10
+      },
+      {
+        "map": "MnR11C00R02",
+        "direction": "west",
+        "target": "MnElyShorePass",
+        "offset": 10
+      }
+    ],
+    "origins_metatiles": {
+      "MnEly": [
+        163,
+        -342
+      ],
+      "MnElyShorePass": [
+        183,
+        -342
+      ],
+      "MnR11C00R02": [
+        190,
+        -352
+      ]
+    },
+    "legacy_source_rule": "Apply this accepted native overlay after the compact coast. Existing coarse routes and the original Ely layout describe the foundation; this source supplies the new alias, east port, route and clinic.",
+    "verification": "revisions/ely-backroute-v01/VERIFICATION.md",
+    "status": "Native publication, byte-identical replay, local production-controller services and 377 audio checks passed; native 2D captures inspected."
+  },
+  "ely_pine_knolls_revision": {
+    "source_file": "revisions/ely-trail-quality-v02/source-v03/native.contract.json",
+    "runbook": "revisions/ely-trail-quality-v02/README.md",
+    "pack": "content-packs/minnesota-ely-pine-knolls-v02.crystalpack",
+    "pack_sha256": "1f5604a6c743904e5b0c8fbfe36b32ef056f50dab309a42795aa639457ac0bf3",
+    "content_identity": "1d3d63099937c03ad2c390ef2910ddfe23de232321cfdcb226aa26e250df6347",
+    "supersedes": "ely_shore_pass_revision",
+    "owned_geometry": [
+      "MnEly",
+      "MnElyShorePass",
+      "MnR11C00R02",
+      "MnSplitRockPokecenter1F"
+    ],
+    "regional_species_policy": "story-pokemon.json",
+    "maps": 691,
+    "active_regional_species": 224,
+    "minimum_eastbound_grass_steps": 14,
+    "minimum_westbound_grass_steps": 0,
+    "native_ledge": {
+      "map": "MnR11C00R02",
+      "from_core": [
+        23,
+        35
+      ],
+      "to_core": [
+        21,
+        35
+      ],
+      "direction": "left"
+    },
+    "status": "Verified native climb, grass encounter/RUN, westward ledge/reverse block, nurse HP/PP/status recovery, Save/Continue, seam lanes and original north exit. Native stdio replays and reached 2D captures pass. All 377 audio checks pass; broad regional quality remains open.",
+    "atlas": "renders/ely-trail-quality-v02/state-continuity-v01/full-state-native-current.png",
+    "scope_limit": "Current compact-coast child; other branch changes are not implicitly integrated. See runbook.",
+    "proof_directory": "renders/ely-trail-quality-v02/native-v03",
+    "native_captures": "renders/ely-trail-quality-v02/native-reached-v02"
+  },
+  "split_rock_clinic_interior_composition": {
+    "source_file": "interior-life/split-rock-clinic.json",
+    "runbook": "interior-life/SPLIT-ROCK.md",
+    "pack": "content-packs/minnesota-interiors-split-rock-v01.crystalpack",
+    "parent_pack": "content-packs/minnesota-interiors-fishing-life-v02.crystalpack",
+    "maps": 717,
+    "installed_non_gym_interiors": 216,
+    "clinic": "MnSplitRockPokecenter1F",
+    "exterior": "MnR11C00R02",
+    "door_core": [
+      33,
+      33
+    ],
+    "safe_return_core": [
+      33,
+      34
+    ],
+    "native_pc_core": [
+      9,
+      1
+    ],
+    "status": "Native 2D clinic and its public south-bank approach composed on the protected interior lineage. Three residents, free care, real PC, both carpets, poison recovery and Save/Continue verified. Separate Ely snow/back trail and canonical coastal/Cedar geometry remain to compose; this is not that whole geography revision."
+  },
+  "minneapolis_waterfront_revision": {
+    "source_file": "revisions/minneapolis-waterfront-v01/source-v06/native.contract.json",
+    "runbook": "revisions/minneapolis-waterfront-v01/README.md",
+    "verification": "revisions/minneapolis-waterfront-v01/PUBLICATION.md",
+    "pack": "content-packs/minnesota-waterfront-frontages-v01.crystalpack",
+    "pack_sha256": "3862c34b044a456721b5f7ee5464b42dd123f07e3bd12d16e7e503bec972ffa2",
+    "content_identity": "3e28ac6c91696876e4572dac67494fcd3fe8997f31d93ee5463d2b89ac41da52",
+    "parent_revision": "ely_pine_knolls_revision",
+    "map": "MnMinneapolis",
+    "owned_frontages": [
+      "BoatHouse",
+      "AnglerHome",
+      "DispatcherHouse",
+      "LakeCabin"
+    ],
+    "changed_metatiles": 16,
+    "new_native_glyphs": 25,
+    "new_recipes": 10,
+    "all_city_collision_quadrants_preserved": 5120,
+    "proof_directory": "renders/minneapolis-waterfront-v01/native-v02",
+    "native_captures": "renders/minneapolis-waterfront-v01/native-fixtures-v02",
+    "atlas": "renders/minneapolis-waterfront-v01/state-continuity-v01/full-state-native-current.png",
+    "status": "Published and strict readback verified. Native before/after 2D captures inspected; all original four-bank art, gameplay and audio preserved. New static glyphs and original waterfall animation pass focused regressions; broader regional quality remains open.",
+    "scope_limit": "Four exterior fronts on the compact-coast/Ely lineage. No new service, earned campaign or final 3D acceptance; later independent branches are not implicitly integrated."
+  },
+  "current_river_verification": {
+    "runbook": "connections/current-river-v01/README.md",
+    "pack": "content-packs/minnesota-waterfront-frontages-v01.crystalpack",
+    "pack_sha256": "3862c34b044a456721b5f7ee5464b42dd123f07e3bd12d16e7e503bec972ffa2",
+    "revision": "minneapolis_waterfront_revision",
+    "route": [
+      "MnWinona",
+      "MnStPaul",
+      "MnMinneapolis",
+      "MnStCloud"
+    ],
+    "itinerary": "renders/current-river-v01/native-v01/all-bridges-input-plan.json",
+    "proof": "renders/current-river-v01/verified-v01/receipt.json",
+    "connected_render": "renders/current-river-v01/verified-v01/whole-current-corridor.png",
+    "native_captures": "renders/current-river-v01/native-reached-v01",
+    "itinerary_actions_each_way": 1247,
+    "bridge_apertures_each_way": 7,
+    "lower_wooded_reach_actions_each_way": 361,
+    "upper_wooded_reach_actions_each_way": 374,
+    "reachable_unconnected_surf_edges_in_river_component": 0,
+    "fixture_partner": "SLIDEWAKE",
+    "status": "Two native round-trip/bridge cases and five Falls/seam/badge cases pass. Eight reached 2D frames inspected, including city mouths and both bridge planes. Current pack terrain and audio unchanged.",
+    "scope_limit": "Explicit initial local partner, badges and Winona bank; no earned campaign or final 3D claim. This audits the river component, not every independent lake or optional bank activity."
+  },
+  "r10_rock_gallery_revision": {
+    "source_file": "caves/johto-quality-v01/MnR10Cave1F.json",
+    "previous_source_file": "caves/johto-quality-v01/MnR10Cave1F.previous.json",
+    "runbook": "caves/current-iron-v01/README.md",
+    "verification": "caves/current-iron-v01/PUBLICATION.md",
+    "parent_revision": "minneapolis_waterfront_revision",
+    "pack": "content-packs/minnesota-r10-rock-gallery-v01.crystalpack",
+    "pack_sha256": "a69aa145e6ea870b459d79859958806170b56036af4f85e0c1e007629a2f67d6",
+    "content_identity": "4d826107eede5bd551d45987dbd107460a474e152b6a08707974047372a07168",
+    "owned_geometry": [
+      "MnR10Cave1F"
+    ],
+    "changed_metatiles": 139,
+    "native_border_block": "2e",
+    "retained_water_core_tiles": 40,
+    "added_water_core_tiles": 24,
+    "unchanged_other_maps": 690,
+    "inherited_river_geometry_review": "current_river_verification",
+    "proof_directory": "renders/iron-cave-quality-v01/published-v02",
+    "verified_receipt": "renders/iron-cave-quality-v01/verified-v01/receipt.json",
+    "whole_comparison": "renders/iron-cave-quality-v01/verified-v01/whole-before-after.png",
+    "native_captures": "renders/iron-cave-quality-v01/native-v01",
+    "reached_native_captures": "renders/iron-cave-quality-v01/native-reached-v01",
+    "status": "Published, byte-identical fresh Rust replay, complete parent residual equality and377 audio checks pass. Four controller cases pass, including all cameras, stairs, both ledge lanes/returns, reader, Revive retry and Continue. Nine native frames match source exactly; three reached captures inspected.",
+    "scope_limit": "Only R10 cave integrated from the separate nine-cave source revision. Exteriors and all other caves remain exact to the waterfront parent; later independent branches are not implicitly imported. No earned campaign or final 3D acceptance."
+  },
+  "r12_shelter_revision": {
+    "source_file": "caves/johto-quality-v01/MnR12Cave1F.json",
+    "previous_source_file": "caves/johto-quality-v01/MnR12Cave1F.previous.json",
+    "contract_file": "caves/current-r12-v01/native.contract.json",
+    "runbook": "caves/current-r12-v01/README.md",
+    "verification": "caves/current-r12-v01/PUBLICATION.md",
+    "parent_revision": "region_polish_revision",
+    "pack": "content-packs/minnesota-region-polish-r12-v01.crystalpack",
+    "pack_sha256": "49b8121a4f1b0d00da34d7d93c61fffe784f097fbdfd682e15d9ecc9bb5993c2",
+    "content_identity": "f3c41e401d512171141a41cf458a7c4782da32c4942fa1c97f46a157ae0a7905",
+    "maps": 691,
+    "owned_map": "MnR12Cave1F",
+    "dimensions_metatiles": [
+      16,
+      12
+    ],
+    "changed_metatiles": 109,
+    "native_border_block": "2e",
+    "unchanged_other_maps": 690,
+    "retained_water_core_cells": 32,
+    "current_exterior": "MnR12C00R00",
+    "active_mouth_core": [
+      40,
+      15
+    ],
+    "safe_exterior_core": [
+      40,
+      16
+    ],
+    "verified_receipt": "renders/r12-current-shelter-v01/region-verified-v01/receipt.json",
+    "native_captures": "renders/r12-current-shelter-v01/region-native-v01",
+    "reached_captures": "renders/r12-current-shelter-v01/region-native-reached-v01",
+    "atlas": "renders/r12-current-shelter-v01/region-atlas-v01/full-state-native-current.png",
+    "status": "Accepted local 2D shelter overlay on the exact final-region parent. Three fresh controller cases,10 zero-difference native frames, actual compact-mouth/drop/dialogue/Start stdio replay, fresh Winona New Game, exact guarded Rust replay and377audio checks pass. All690 other maps and native content remain exact; exterior atlas retains97maps/1component/0overlaps/0cycles.",
+    "scope_limit": "Only R12 cave terrain/border/mirrors/identity change. The parent's city/river/Vergloom test logs keep their original pack binding; their complete native data is preserved. Five remaining cave integrations, four absent named hubs and broader quality/earned campaign/final3D requirements remain open."
+  },
+  "r05_rock_cut_revision": {
+    "source_file": "caves/johto-quality-v01/MnR05RockCut.json",
+    "previous_source_file": "caves/johto-quality-v01/MnR05RockCut.previous.json",
+    "runbook": "caves/current-r05-v01/README.md",
+    "verification": "caves/current-r05-v01/PUBLICATION.md",
+    "parent_revision": "r09_rock_mine_revision",
+    "pack": "content-packs/minnesota-r05-rock-cut-v01.crystalpack",
+    "pack_sha256": "133226dbc5b8c164e5fbf17a475093acd6a26836394e5fe73d2f9bf763749097",
+    "content_identity": "63950c00d1524ced8c177f328d60c8888de9792a699c16037e133fde8509c537",
+    "maps": 691,
+    "owned_map": "MnR05RockCut",
+    "dimensions_metatiles": [
+      8,
+      10
+    ],
+    "changed_metatiles": 56,
+    "native_border_block": "2e",
+    "unchanged_other_maps": 690,
+    "proof_directory": "renders/r05-current-rockcut-v01/published-v01",
+    "native_captures": "renders/r05-current-rockcut-v01/native-v01",
+    "reached_captures": "renders/r05-current-rockcut-v01/native-reached-v01",
+    "status": "Candidate verified: all6 cameras, native stair, both real mouth exit/reentry pairings, healer two pages/input lock and HP/PP/status recovery, once-only Repel, native Pack use/countdown and Continue pass. Six zero-difference native frames, byte-identical guarded Rust replay,6 rejection cases and377audio checks pass. Shared region composition is separate; no active pointer update here.",
+    "scope_limit": "Cave terrain/border/mirrors/identity only. All other maps, story, services, species, art, audio, HOME and recovery exact to R09 parent. Explicit local fixtures do not earn regional progression or establish final3D acceptance."
+  },
+  "r09_rock_mine_revision": {
+    "source_file": "caves/johto-quality-v01/MnR09Cave1F.json",
+    "contract_file": "caves/current-r09-v01/native.contract.json",
+    "runbook": "caves/current-r09-v01/README.md",
+    "parent_revision": "r10_rock_gallery_revision",
+    "pack": "content-packs/minnesota-r09-rock-mine-v01.crystalpack",
+    "pack_sha256": "b8178a3de63a7aab68280e6ed3646bbfb28e1c168315139aeeca5f2ff0ede14d",
+    "content_identity": "ac459e36c3fdfc28c5bf736547ce0bb6ce993a770c6ad650eb218965cc6c5f81",
+    "maps": 691,
+    "owned_map": "MnR09Cave1F",
+    "dimensions_metatiles": [
+      12,
+      11
+    ],
+    "changed_metatiles": 83,
+    "border_block": "2e",
+    "foreman_party": [
+      "BANDRAKE35",
+      "HELIKNOCK35",
+      "MESABLAST36"
+    ],
+    "proof_directory": "renders/r09-current-mine-v01/verified-v01",
+    "native_captures": "renders/r09-current-mine-v01/native-v01",
+    "atlas": "renders/r09-current-mine-v01/state-continuity-v01/full-state-native-current.png",
+    "status": "Candidate verified: all8 cameras,3stairs,both drop lanes/reverse/returns/mouth/Continue; real regional foreman victory/PP, played loss, prerequisites and separate cache decline/acknowledgment/repeat/Continue pass. Three asset tests, byte-identical guarded Rust replay,8 zero-difference native frames and377audio checks pass. Active pointer awaits shared region composition.",
+    "scope_limit": "Mine terrain/border/mirrors/identity only. All690 other maps and current native story/team/moves/programs/art/audio/HOME/recovery remain exact. Broader map quality, earned campaign and final3D remain open."
+  },
+  "route_grass_r03_revision": {
+    "pack": "content-packs/minnesota-current-grass-r03-v02.crystalpack",
+    "pack_sha256": "115a2bfcec328a5d02b76c9b5f5f051836eecb239844bc965b1337719dec91e9",
+    "content_identity": "012b20b8f320135a8f3a122cb8d8265de08de891dff1b00969b518cdd7a8ebe5",
+    "parent_revision": "r12_shelter_revision",
+    "parent_pack_sha256": "49b8121a4f1b0d00da34d7d93c61fffe784f097fbdfd682e15d9ecc9bb5993c2",
+    "runbook": "revisions/route-grass-v01/compact-rebase-v01/R03.md",
+    "proof": "revisions/route-grass-v01/compact-rebase-v01/R03-publication.json",
+    "maps": 691,
+    "route": "MN_R03",
+    "grass_routes_accepted": [
+      "MN_R01",
+      "MN_R02",
+      "MN_R03"
+    ],
+    "native_controller_cases_passed": 9,
+    "stdio_successful_calls": 15,
+    "audio_programs_verified": 377,
+    "changed_metatiles": 34,
+    "other_maps_unchanged": 689,
+    "north_shore_ice_quadrants": 0,
+    "view": "2d",
+    "status": "Accepted current-parent terrain revision: source/native pixels, strict whole-pack preservation, directional grass/ledge proof, actual2D review, native encounters/trainerPP/resources/Continue and stdio pass. CurrentR12 work preserved.",
+    "scope_limit": "Sequential Minnesota grass pass remains open beyond R01-R03. Explicit local fixtures do not prove an earned statewide campaign."
+  },
+  "active_local_review_revision": "route_grass_r19_revision",
+  "script_command_repair_revision": {
+    "kind": "missing_minnesota_map_command_records",
+    "parent_revision": "field_hm_habitats_cyclists_revision",
+    "parent_pack": "content-packs/minnesota-current-hm-r15-v01.crystalpack",
+    "parent_pack_sha256": "5fb635ffdf9938622bba5d5fccae585a1df02a26081567b304cc2649e09a18af",
+    "pack": "content-packs/minnesota-scripts-repaired-r15-v01.crystalpack",
+    "pack_sha256": "de23cc18ddaadcf8fb7a452d5f27dcdce04f3832a6004805e7ecec0e2cd881b1",
+    "content_identity": "63ad149d7f40261f2fa6018623050acfa0f33c235e49213c0f580865dabd13b3",
+    "maps": 730,
+    "restored_map_commands": 18,
+    "audio_programs_verified": 377,
+    "stdio_stderr_bytes": 0,
+    "runbook": "trainers/README.md#missing-battle-return-commands",
+    "status": "All 18 omitted cyclist battle-return commands restored. Preservation, fresh-builder, actual cyclist victory/return, all three New Game starter journeys, regional stdio and audio verification pass.",
+    "scope_limit": "The warning reported within the first 30 seconds was not reproduced on the current pack. This repair preserves the parent's remaining campaign and acquisition limits."
+  },
+  "interior_life_compact_replay": {
+    "runbook": "interior-life/COMPACT-REBASE.md",
+    "parent_pack": "content-packs/minnesota-region-polish-r12-v01.crystalpack",
+    "parent_sha256": "49b8121a4f1b0d00da34d7d93c61fffe784f097fbdfd682e15d9ecc9bb5993c2",
+    "pack": "content-packs/minnesota-current-voyageurs-ice-v01.crystalpack",
+    "pack_sha256": "a05eb73574121a13daf470831923fa9ec31b00602acc255fd6813e77fc77b0b4",
+    "content_identity": "75e7a010a6d6b604f4d9b4abfbbbf45bbe25d8e6e8d916b6fae08d0228e59930",
+    "maps": 709,
+    "installed_non_gym_interiors": 212,
+    "visual_mode": "2D only",
+    "red_wing_station": "Excluded by user direction; no map, actor or active transit reservation.",
+    "controller_cases_passed": 37,
+    "furnished_room_contracts": 43,
+    "furniture_details": 53,
+    "fresh_city_native_frames": 14,
+    "fresh_cedar_native_frames": 2,
+    "fresh_native_pixel_differences": 0,
+    "audio_programs_verified": 377,
+    "preservation_receipt": "renders/interior-life/compact-composition-v01/current-root-preservation-v01.json",
+    "status": "Verified local interior replay over the R12 shelter parent. The full objective remains active. Existing native constants, original art/audio, river activities, Duluth, Vergloom programs and cave geometry are preserved; fishing-house directions are appended to the original anglers' dialogue. St Paul facade/river repair, actual two-road Detroit, Moorhead, three fishing homes, compact Cedar gate, Winona, Staples, bookshelf repair and Voyageurs ice floors are composed.",
+    "pending": "Import the subsequently accepted R03 grass and R13 shelter terrain without losing the interior work. Resolve the two International Falls rooms and three fair rooms through valid geography, finish passenger service and remaining regional acceptance. This entry does not change the shared active map selector."
+  },
+  "staples_station_interior_composition": {
+    "source_file": "transit/MnStaplesStation.json",
+    "runbook": "interior-life/STAPLES-STATION.md",
+    "pack": "content-packs/minnesota-interiors-staples-v02.crystalpack",
+    "parent_pack": "content-packs/minnesota-interiors-split-rock-v01.crystalpack",
+    "maps": 719,
+    "installed_non_gym_interiors": 217,
+    "station": "MnStaplesStation",
+    "exterior": "MnStaplesRailJunction",
+    "route": "MnR15C00R00",
+    "junction_origin_relative_to_route_metatiles": [
+      10,
+      -10
+    ],
+    "route_to_junction": {
+      "direction": "north",
+      "offset": 10,
+      "edge_core": [
+        [
+          26,
+          0
+        ],
+        [
+          27,
+          0
+        ]
+      ]
+    },
+    "junction_to_route": {
+      "direction": "south",
+      "offset": -10,
+      "edge_core": [
+        [
+          6,
+          19
+        ],
+        [
+          7,
+          19
+        ]
+      ]
+    },
+    "door_core": [
+      13,
+      7
+    ],
+    "safe_return_core": [
+      13,
+      8
+    ],
+    "visit_flag": "EVENT_MN_STATION_STAPLES_VISITED",
+    "status": "Native 2D station, signal-room stories and useful parcel shop composed on the protected interior branch. Real grass/spur/door traversal, both paired seam lanes, all encounters, both carpets, exact purchase/denial, Save/Continue and seven source/native frames pass. The touched R15 trainer, wild and cloned local fishing tables use active Minnesota originals; actual wild battle/RUN verified. No recovery or Fly point. Full service and broader geography/room review remain open."
+  },
+  "interior_life_preserved_story_branch": {
+    "pack": "content-packs/minnesota-interiors-no-red-wing-v01.crystalpack",
+    "parent_pack": "content-packs/minnesota-interiors-staples-v02.crystalpack",
+    "runbook": "interior-life/RAIL-STOP-CORRECTION.md",
+    "maps": 719,
+    "installed_non_gym_interiors": 217,
+    "visual_mode": "2D only",
+    "status": "Preserved 217-room story branch only; NOT an approved current publication parent. It retains obsolete North Shore/Gunflint geometry and must be rebased onto the verified compact coast. Red Wing remains excluded. Current interior publishers reject this branch; readable-detail fixes are authored but not published.",
+    "rebase_runbook": "interior-life/COMPACT-REBASE.md"
+  },
+  "region_polish_revision": {
+    "pack": "content-packs/minnesota-region-polish-final-v03.crystalpack",
+    "pack_sha256": "67fb7ee40c022f0de78b561bbb144767d1483fe97a7dba9a2e6ec111d8c3360e",
+    "content_identity": "cfbd112da24c3c2644aba93368f387d0701cb13d59a32d955ab09af55e72315d",
+    "parent_revision": "r09_rock_mine_revision",
+    "runbook": "revisions/region-polish-v01/PUBLICATION.md",
+    "maps": 691,
+    "outdoor_maps": 97,
+    "outdoor_components": 1,
+    "overlaps": 0,
+    "inconsistent_connection_cycles": 0,
+    "atlas": "renders/region-polish-v01/final-v03/full-state-native-current.png",
+    "proof_directory": "renders/region-polish-v01/final-v03",
+    "ancient_swamp": "revisions/ancient-swamp-v01/encounter.md",
+    "duluth_contract": "towns/MnDuluth.recomposition.contract.json",
+    "river_source": "connections/mississippi-bank-refinement-v01/revision.shared-activities-v02.json",
+    "status": "Accepted local 2D outdoor composition. Native area journeys, all44river activities, optional Vergloom capture/retry/Continue, fresh production MCP and377audio checks pass. Exact scoped preservation and current roster audits pass.",
+    "scope_limit": "No earned full campaign or final3D acceptance. Historical packs remain preserved; use this explicit selection rather than file modification time."
+  },
+  "r13_spring_shelter_revision": {
+    "source_file": "caves/johto-quality-v01/MnR13Cave1F.json",
+    "previous_source_file": "caves/johto-quality-v01/MnR13Cave1F.previous.json",
+    "contract_file": "caves/current-r13-v01/native.contract.json",
+    "runbook": "caves/current-r13-v01/README.md",
+    "verification": "caves/current-r13-v01/PUBLICATION.md",
+    "parent_revision": "route_grass_r03_revision",
+    "parent_pack_sha256": "115a2bfcec328a5d02b76c9b5f5f051836eecb239844bc965b1337719dec91e9",
+    "pack": "content-packs/minnesota-r13-spring-shelter-v01.crystalpack",
+    "pack_sha256": "d9b4f2e85061e8e615cc668e68fb05b094bb38773e8dfc08d56af6dca4073816",
+    "content_identity": "60027135d782170fd7998a1e4ee50ce39170700b4a2bb79129dab2f883707784",
+    "maps": 691,
+    "owned_map": "MnR13Cave1F",
+    "dimensions_metatiles": [
+      10,
+      8
+    ],
+    "changed_metatiles": 53,
+    "native_border_block": "2e",
+    "unchanged_other_maps": 690,
+    "spring_water_core_cells": 16,
+    "current_exterior": "MnR13C00R01",
+    "active_mouth_core": [
+      14,
+      5
+    ],
+    "passive_return_core": [
+      14,
+      6
+    ],
+    "controller_cases_passed": 3,
+    "native_camera_frames": 8,
+    "native_pixel_differences": 0,
+    "audio_programs_verified": 377,
+    "verified_receipt": "renders/r13-current-shelter-v01/verified-v01/receipt.json",
+    "native_captures": "renders/r13-current-shelter-v01/native-v01",
+    "reached_captures": "renders/r13-current-shelter-v01/native-reached-v01",
+    "atlas": "renders/r13-current-shelter-v01/atlas-v01/full-state-native-current.png",
+    "status": "Accepted local2D spring-shelter revision on the exact R03 grass child. All690 other maps and every native service/event/program/reward/roster/art/audio remain exact. Three controller cases,8 zero-difference full native frames, actual stdio replay, fresh Winona New Game, guarded byte-identical Rust replay and377audio checks pass.",
+    "scope_limit": "Only R13 cave terrain/border/mirrors/identity change. Prior regional/grass/city/river execution logs retain their original identity bindings. Four stone cave integrations, missing named hubs, passenger service and broader map quality/earned campaign/final3D requirements remain open."
+  },
+  "r17_talus_den_revision": {
+    "source_file": "caves/johto-quality-v01/MnR17Cave1F.json",
+    "previous_source_file": "caves/johto-quality-v01/MnR17Cave1F.previous.json",
+    "contract_file": "caves/current-r17-v01/native.contract.json",
+    "runbook": "caves/current-r17-v01/README.md",
+    "verification": "caves/current-r17-v01/PUBLICATION.md",
+    "parent_revision": "r13_spring_shelter_revision",
+    "parent_pack_sha256": "d9b4f2e85061e8e615cc668e68fb05b094bb38773e8dfc08d56af6dca4073816",
+    "pack": "content-packs/minnesota-r17-talus-den-v01.crystalpack",
+    "pack_sha256": "46074029adacca1aa0da411dbe878bb57b6e488d81eb5f2b444d0b40f9ffc329",
+    "content_identity": "a0d9b83dce37dd6b7760ce970a9c2dc976b32fc602fee3184896c86400d3df41",
+    "maps": 691,
+    "owned_map": "MnR17Cave1F",
+    "dimensions_metatiles": [
+      7,
+      8
+    ],
+    "changed_metatiles": 45,
+    "native_border_block": "2e",
+    "unchanged_other_maps": 690,
+    "ordinary_approach_inputs": 10,
+    "directional_roof_cells": 3,
+    "current_exterior": "MnR17C00R00",
+    "active_mouth_core": [
+      10,
+      43
+    ],
+    "passive_return_core": [
+      10,
+      44
+    ],
+    "controller_cases_passed": 2,
+    "native_camera_frames": 6,
+    "native_pixel_differences": 0,
+    "audio_programs_verified": 377,
+    "verified_receipt": "renders/r17-current-den-v01/verified-v01/receipt.json",
+    "native_captures": "renders/r17-current-den-v01/native-v01",
+    "reached_captures": "renders/r17-current-den-v01/native-reached-v01",
+    "atlas": "renders/r17-current-den-v01/atlas-v01/full-state-native-current.png",
+    "status": "Accepted local2D fitted talus-den child of exact R13. All690 other complete maps/native programs/resources/art/audio remain exact. Two final controller cases,6 zero-difference full native views, two-process stdio/Continue, fresh Winona NewGame,377audio and guarded byte-identical Rust replay pass.",
+    "scope_limit": "Only R17 cave terrain/border/mirrors/identity change. Three stone cave integrations, missing named hubs, passenger service, ongoing grass work and broader regional quality/earned campaign/final3D requirements remain open."
+  },
+  "route_grass_r04_revision": {
+    "parent_revision": "r17_talus_den_revision",
+    "parent_pack_sha256": "46074029adacca1aa0da411dbe878bb57b6e488d81eb5f2b444d0b40f9ffc329",
+    "pack": "content-packs/minnesota-current-grass-r04-v02.crystalpack",
+    "pack_sha256": "18d2114538e1c02dba7a05947b75c81cc603934d03ad215ff5a0df941ee71c07",
+    "content_identity": "11c80ccf657456be535e23b780441a5e3ab01294d89931ca27f0e37076b7ba06",
+    "maps": 691,
+    "owned_map": "MnR04C00R00",
+    "before_layout": "revisions/route-grass-v01/compact-rebase-v01/MN_R04.before.layout.json",
+    "after_layout": "revisions/route-grass-v01/compact-rebase-v01/MN_R04.after.layout.json",
+    "bound_dossier": "revisions/route-grass-v01/compact-rebase-v01/MN_R04.installed-dossier.json",
+    "runbook": "revisions/route-grass-v01/compact-rebase-v01/R04.md",
+    "publication": "revisions/route-grass-v01/compact-rebase-v01/R04-publication.json",
+    "changed_metatiles": 11,
+    "grass_metatiles_before": 12,
+    "grass_metatiles_after": 23,
+    "unchanged_other_maps": 690,
+    "native_grass_steps_avoiding_trainer_both_directions": 14,
+    "post_victory_dry_lane_grass_steps": 0,
+    "controller_cases_passed": 8,
+    "R04_controller_cases_passed": 2,
+    "stdio_calls_passed": 11,
+    "stdio_stderr_bytes": 0,
+    "audio_programs_verified": 377,
+    "north_shore_ice_blocks": 0,
+    "view": "2d",
+    "accepted_grass_routes": [
+      "MN_R01",
+      "MN_R02",
+      "MN_R03",
+      "MN_R04"
+    ],
+    "status": "Accepted local R04 native Park grass revision on the exact R17 child. All690 other maps and all nonterrain fields remain exact; two R04 cases plus six R01-R03 regressions,11production stdio calls, source/native pixels,377audio and byte-identical guarded replay pass. Full-state work remains open.",
+    "scope_limit": "Only eleven R04 terrain cells. R05 onward and outdoor regional links remain open. Workspace formatting/coreClippy/radio-fixture baseline failures are documented in the runbook."
+  },
+  "r20_seep_cleft_revision": {
+    "source_file": "caves/johto-quality-v01/MnR20Cave1F.json",
+    "previous_source_file": "caves/johto-quality-v01/MnR20Cave1F.previous.json",
+    "contract_file": "caves/current-r20-v01/native.contract.json",
+    "runbook": "caves/current-r20-v01/README.md",
+    "verification": "caves/current-r20-v01/PUBLICATION.md",
+    "parent_revision": "route_grass_r04_revision",
+    "parent_pack_sha256": "18d2114538e1c02dba7a05947b75c81cc603934d03ad215ff5a0df941ee71c07",
+    "pack": "content-packs/minnesota-r20-seep-cleft-v02.crystalpack",
+    "pack_sha256": "12efb9c264e46c1329e7dc9f52aa0fc95d8a75194a96a46eb8520491571720c3",
+    "content_identity": "bdbef89c2ca7af31cc21a78b355431c5743b40a1154df54b37c2d91b32824942",
+    "maps": 691,
+    "owned_map": "MnR20Cave1F",
+    "dimensions_metatiles": [
+      9,
+      8
+    ],
+    "changed_metatiles": 48,
+    "native_border_block": "2e",
+    "unchanged_other_maps": 690,
+    "new_seep_water_core_cells": 8,
+    "native_stairs": 2,
+    "native_left_drop_lanes": 2,
+    "ordinary_return_inputs": [
+      15,
+      13
+    ],
+    "mouths": [
+      {
+        "label": "west",
+        "inside_warp_index": 1,
+        "inside_core": [
+          5,
+          13
+        ],
+        "exterior": "MnR20C00R00",
+        "active_warp_index": 1,
+        "active_core": [
+          60,
+          33
+        ],
+        "passive_warp_index": 2,
+        "passive_core": [
+          60,
+          34
+        ]
+      },
+      {
+        "label": "east",
+        "inside_warp_index": 2,
+        "inside_core": [
+          13,
+          13
+        ],
+        "exterior": "MnR20C01R00",
+        "active_warp_index": 1,
+        "active_core": [
+          12,
+          31
+        ],
+        "passive_warp_index": 2,
+        "passive_core": [
+          12,
+          32
+        ]
+      }
+    ],
+    "controller_cases_passed": 4,
+    "native_camera_frames": 9,
+    "native_pixel_differences": 0,
+    "audio_programs_verified": 377,
+    "verified_receipt": "renders/r20-current-cleft-v01/verified-v02/receipt.json",
+    "native_captures": "renders/r20-current-cleft-v01/native-v02",
+    "reached_captures": "renders/r20-current-cleft-v01/native-reached-v02",
+    "atlas": "renders/r20-current-cleft-v01/atlas-v02/full-state-native-current.png",
+    "status": "Accepted local2D two-mouth seep-cleft revision on exact accepted R04 parent. Four fresh controller cases,9zero-difference native frames, two-process stdio/Continue, fresh WinonaNewGame,377audio and guarded byte-identical replay pass. All690other maps/native programs/resources/art/audio remain exact, including all11R04grasscells.",
+    "scope_limit": "Only R20 cave terrain/border/mirrors/identity change. R01/R03 stone cave integrations, missing named hubs, passenger service, further route/city/grass quality and earned regional campaign/final3D acceptance remain open. Initial R17-parent v01 evidence remains separately bound."
+  },
+  "r01_limestone_hollows_revision": {
+    "source_file": "caves/johto-quality-v01/MnR01Cave1F.json",
+    "previous_source_file": "caves/johto-quality-v01/MnR01Cave1F.previous.json",
+    "contract_file": "caves/current-r01-v01/native.contract.json",
+    "input_plan": "caves/current-r01-v01/input-plan.json",
+    "runbook": "caves/current-r01-v01/README.md",
+    "verification": "caves/current-r01-v01/PUBLICATION.md",
+    "parent_revision": "r20_seep_cleft_revision",
+    "parent_pack_sha256": "12efb9c264e46c1329e7dc9f52aa0fc95d8a75194a96a46eb8520491571720c3",
+    "pack": "content-packs/minnesota-r01-limestone-hollows-v01.crystalpack",
+    "pack_sha256": "c7e3e0297533789a3c9e32f29db20cf69d73972b2a6f744192bc183fa23c74e1",
+    "content_identity": "2cd511deac839c29e8ddd4729f6faa2aa255e7e4af6e48bff7f8026ec4a7a6b2",
+    "maps": 691,
+    "owned_map": "MnR01Cave1F",
+    "dimensions_metatiles": [
+      8,
+      7
+    ],
+    "changed_metatiles": 29,
+    "native_border_block": "2e",
+    "unchanged_other_maps": 690,
+    "retained_upper_cycle_inputs": 26,
+    "short_return_inputs": 6,
+    "guide_side_return_inputs": 18,
+    "current_exterior": "MnR01C00R00",
+    "inside_mouth_core": [
+      9,
+      11
+    ],
+    "active_mouth_core": [
+      18,
+      17
+    ],
+    "passive_return_core": [
+      18,
+      18
+    ],
+    "controller_cases_passed": 4,
+    "native_camera_frames": 6,
+    "native_pixel_differences": 0,
+    "audio_programs_verified": 377,
+    "verified_receipt": "renders/r01-current-hollows-v01/verified-v01/receipt.json",
+    "native_captures": "renders/r01-current-hollows-v01/native-v01",
+    "reached_captures": "renders/r01-current-hollows-v01/native-reached-v01",
+    "atlas": "renders/r01-current-hollows-v01/atlas-v01/full-state-native-current.png",
+    "status": "Accepted local2D fitted-hollows child of exact accepted R20. Retains the existing26-input upper cycle and6/18returns; rounds the attached toe and encloses native bedrock. Four fresh controller cases,6zero-difference native views,2process stdio/Continue, fresh WinonaNewGame,377audio and byte-identical replay pass. All690other complete maps/native programs/resources/art/audio stay exact.",
+    "scope_limit": "Only R01 cave terrain/border/mirrors/identity change. R03 stone cave integration, missing named hubs, passenger service, further route/city/grass quality and earned regional campaign/final3D requirements remain open."
+  },
+  "league_dialogue_r01_revision": {
+    "parent_revision": "r01_limestone_hollows_revision",
+    "parent_pack_sha256": "c7e3e0297533789a3c9e32f29db20cf69d73972b2a6f744192bc183fa23c74e1",
+    "pack": "content-packs/minnesota-current-league-r01-v01.crystalpack",
+    "pack_sha256": "a9e1a85cb05205fbebef9eda94a172b7aae6171c8e092f0c80fee114a553a0ea",
+    "content_identity": "ace6ef74e659105ed429a2e550551005a6c3f887d72103a6bac15ef4cb39a941",
+    "maps": 691,
+    "source_file": "revisions/league-finale-v01/dialogue.json",
+    "runbook": "revisions/league-finale-v01/README.md",
+    "approved_League_pack": "content-packs/minnesota-northstar-league-dialogue-v02.crystalpack",
+    "approved_League_pack_sha256": "bd36007878c271ef4842d021d8742ef8df5d370408c88bb9d8254cb472d2eda0",
+    "changed_League_modules": 7,
+    "terrain_attributes_actors_audio_runtime_files_exact_to_parent": true,
+    "composition_receipt": ".local/route-grass-review/current-r05-v03-composition-receipt.json",
+    "status": "Completed League dialogue composed on accepted R01 cave parent. All7League modules, trainer catalog and changed global script aliases exactly match the League author tested v02 pack. All691maps terrain/attributes/actors and all audio/runtimefiles remain exact to accepted R01. Native League tests retain their original pack identity bindings."
+  },
+  "route_grass_r05_revision": {
+    "parent_revision": "league_dialogue_r01_revision",
+    "parent_pack_sha256": "a9e1a85cb05205fbebef9eda94a172b7aae6171c8e092f0c80fee114a553a0ea",
+    "accepted_terrain_parent_revision": "r01_limestone_hollows_revision",
+    "accepted_terrain_parent_sha256": "c7e3e0297533789a3c9e32f29db20cf69d73972b2a6f744192bc183fa23c74e1",
+    "pack": "content-packs/minnesota-current-grass-r05-v03.crystalpack",
+    "pack_sha256": "79e14bbddb7723cfd688544f1c126668637c7583953b524a74008f332d7e61c3",
+    "content_identity": "b04a7ba2bbfe1c930eef15d41662e0a7c7bbd1bc64923da4fb1b10d47305f37f",
+    "maps": 691,
+    "owned_maps": [
+      "MnR05C00R00",
+      "MnR05C00R01"
+    ],
+    "before_layout": "revisions/route-grass-v01/compact-rebase-v01/MN_R05.before.layout.json",
+    "after_layout": "revisions/route-grass-v01/compact-rebase-v01/MN_R05.after.layout.json",
+    "bound_dossier": "revisions/route-grass-v01/compact-rebase-v01/MN_R05.installed-dossier.json",
+    "runbook": "revisions/route-grass-v01/compact-rebase-v01/R05.md",
+    "publication": "revisions/route-grass-v01/compact-rebase-v01/R05-publication.json",
+    "changed_metatiles": 33,
+    "grass_metatiles_before": 19,
+    "grass_metatiles_after": 52,
+    "unchanged_other_maps_relative_to_immediate_parent": 689,
+    "upper_uphill_grass_steps": 7,
+    "lower_uphill_grass_steps": 6,
+    "return_band_grass_steps": 0,
+    "controller_cases_passed": 11,
+    "R05_controller_cases_passed": 3,
+    "wild_encounters": 7,
+    "trainer_victories": 5,
+    "trainer_opponents": 7,
+    "stdio_calls_passed": 11,
+    "stdio_stderr_bytes": 0,
+    "audio_programs_verified": 377,
+    "north_shore_ice_blocks": 0,
+    "view": "2d",
+    "accepted_grass_routes": [
+      "MN_R01",
+      "MN_R02",
+      "MN_R03",
+      "MN_R04",
+      "MN_R05"
+    ],
+    "status": "Accepted local R05 grass climbs and dry ledge returns on the League/R01 composed parent. R01 cave and all other accepted terrain stay exact. R05 changes only33cells in2maps relative to immediate parent;689othermaps and all nonterrain fields exact. Eleven native route cases,11clean stdio calls, source/native pixels,377audio and byte-identical final-input replay pass.",
+    "scope_limit": "R06 onward and outdoor regional links remain open. Full704map story integration is a later accepted-parent handoff; do not drop R05 terrain when composing it. Workspace formatting baseline remains documented."
+  },
+  "current_story_revision": {
+    "audio_programs_verified": 377,
+    "production_stdio_replays_passed": 3,
+    "stdio_stderr_bytes": 0,
+    "parent_revision": "route_grass_r05_revision",
+    "retained_cave_revision": "r01_limestone_hollows_revision",
+    "parent_pack": "content-packs/minnesota-current-grass-r05-v03.crystalpack",
+    "composition_source": "revisions/current-story-v01/composition.json",
+    "pack": "content-packs/minnesota-northstar-current-story-v03.crystalpack",
+    "pack_sha256": "560e49986d14e48c07526e9878eddc69be46d546ad079774f04b10f58e7e5c88",
+    "content_identity": "f2808268fbda859cf97b79b8460086c8fc0251cc4870f68504d58f1426a822aa",
+    "maps": 704,
+    "added_story_rooms": 13,
+    "changed_existing_story_maps": 16,
+    "retained_written_league_maps": 7,
+    "new_sight_grunts": 24,
+    "rival_battles": 6,
+    "runbook": "revisions/current-story-v01/README.md",
+    "controller_cases_passed": 7,
+    "earned_opening_cases_passed": 1,
+    "controller_seconds": 378.81,
+    "status": "Accepted complete current story composition on exact R05 grass + R01 cave + written League parent. Seven native rival/grunt cases pass with actual battles/PP/results/Continue, plus fresh earned New Game opening. Entire trainer catalog, story constants, art/runtime files and audio match the tested initial story composition; only the accepted R01 cave and two R05 route chunks differ.",
+    "scope_limit": "Chapter cases declare initial party/access. The earned opening starts from New Game. One uninterrupted ordinary-party Winona-to-Hall-of-Fame campaign and complete difficulty acceptance remain unclaimed."
+  },
+  "route_grass_r06_audit": {
+    "kind": "read_only_route_review",
+    "route": "MN_R06",
+    "verified_revision": "current_story_revision",
+    "pack": "content-packs/minnesota-northstar-current-story-v03.crystalpack",
+    "pack_sha256": "560e49986d14e48c07526e9878eddc69be46d546ad079774f04b10f58e7e5c88",
+    "content_identity": "f2808268fbda859cf97b79b8460086c8fc0251cc4870f68504d58f1426a822aa",
+    "maps": 704,
+    "terrain_changed": false,
+    "historical_21_cell_grass_ledge_revision_already_present": true,
+    "grass_metatiles": 49,
+    "grass_walking_tiles": 196,
+    "northern_band_outbound_grass_steps": 7,
+    "northern_band_return_grass_steps": 0,
+    "same_result_after_native_Cut_and_without_actor_bodies": true,
+    "southern_shared_habitat_remains_both_directions": true,
+    "native_metatiles_matched_to_canonical": 1408,
+    "native_terrain_source_pixels_equal": 1441792,
+    "native_controller_cases_passed": 5,
+    "stdio_calls_passed": 12,
+    "stdio_stderr_bytes": 0,
+    "audio_programs_verified": 377,
+    "new_native_2d_captures_reviewed": 3,
+    "ice_blocks_across_R11_Duluth_GrandMarais": 0,
+    "source_and_pixel_receipt": "renders/route-grass-v01/current-r06-audit-v01/f2808268fbda/receipt.json",
+    "directional_receipt": "renders/route-grass-v01/current-r06-audit-v01/R06-directional-10e580d4a5d670de.json",
+    "stdio_receipt": ".local/route-grass-review/current-r06-704-stdio.receipt.json",
+    "runbook": "revisions/route-grass-v01/current-r06-audit-v01/README.md",
+    "setup_limit": "The existing populated fixture uses explicit Mew60 with source moves, injury/poison, five badges, position and initial replay clock. It proves native behavior/persistence, not earned progression or balanced play.",
+    "scope_limit": "R07-R20, outdoor regional links and final current-story integration coverage remain open. Earlier R01-R05 execution receipts retain their recorded identities.",
+    "same_result_before_after_native_Cut_with_without_actor_bodies": true,
+    "R11_warm_tileset_verified": true
+  },
+  "r03_bank_seep_revision": {
+    "source_file": "caves/current-r03-v01/native.contract.json",
+    "runbook": "caves/current-r03-v01/README.md",
+    "parent_revision": "current_story_revision",
+    "parent_pack": "content-packs/minnesota-northstar-current-story-v03.crystalpack",
+    "parent_pack_sha256": "560e49986d14e48c07526e9878eddc69be46d546ad079774f04b10f58e7e5c88",
+    "pack": "content-packs/minnesota-r03-bank-seep-v02.crystalpack",
+    "pack_sha256": "c6fdc6bdad16f49b5a0cc8ea0efcf7f3500d2fa61e9494e69492d4b540e6a96a",
+    "content_identity": "6c54eeb1451cdec23133a7b397542ec24485d34b5d2c7404d9893c1f266ec8a9",
+    "maps": 704,
+    "changed_cave_metatiles": 29,
+    "unchanged_other_maps": 703,
+    "all_nine_cave_geometry_cases_passed": 1,
+    "original_r03_interaction_cases_passed": 1,
+    "earned_opening_cases_passed": 1,
+    "reached_cave_cameras": 68,
+    "native_camera_frames": 6,
+    "native_pixel_mismatches": 0,
+    "production_stdio_processes": 2,
+    "stdio_stderr_bytes": 0,
+    "audio_programs_verified": 377,
+    "proof_directory": "renders/r03-current-bank-v01/verified-v02",
+    "whole_cave_collection": "renders/r03-current-bank-v01/all-nine-whole-v03/all-nine-public-caves.png",
+    "atlas": "renders/r03-current-bank-v01/atlas-v02/full-state-native-current.png",
+    "status": "Accepted R03 fitted bank-seep cave on selected704-map story parent. Dry original walker approach, all3pages, native roof, original GreatBall, safe passive mouth, once-only pickup and Continue pass. Shared all-nine course verifies68cameras, stairs/hops/rewards/physicalmouths plus exact closed R09 story shaft. All703othermaps, programs, roster, art and audio remain exact.",
+    "scope_limit": "No full earned campaign or final3D acceptance. Passenger trains, missing hubs and broader regional quality remain open. Historical and sibling audit bindings remain exact."
+  },
+  "route_grass_r07_audit": {
+    "kind": "read_only_route_review",
+    "route": "MN_R07",
+    "verified_revision": "r03_bank_seep_revision",
+    "pack": "content-packs/minnesota-r03-bank-seep-v02.crystalpack",
+    "pack_sha256": "c6fdc6bdad16f49b5a0cc8ea0efcf7f3500d2fa61e9494e69492d4b540e6a96a",
+    "maps": 704,
+    "terrain_changed": false,
+    "historical_19_cell_revision_already_present": true,
+    "grass_walking_tiles": 192,
+    "outbound_meadow_grass_steps": 8,
+    "return_meadow_grass_steps": 0,
+    "native_controller_current_cases_passed": 3,
+    "original_story_stdio_calls_passed": 12,
+    "original_story_stdio_stderr_bytes": 0,
+    "visual_2d_captures_reviewed": 3,
+    "runbook": "revisions/route-grass-v01/current-r07-audit-v01/README.md",
+    "equivalence_receipt": "revisions/route-grass-v01/current-r07-audit-v01/current-equivalence.json",
+    "scope_limit": "R08-R20, outdoor regional links and final current-story coverage remain open."
+  },
+  "route_grass_r08_audit": {
+    "kind": "read_only_route_review",
+    "route": "MN_R08",
+    "verified_revision": "r03_bank_seep_revision",
+    "pack": "content-packs/minnesota-r03-bank-seep-v02.crystalpack",
+    "pack_sha256": "c6fdc6bdad16f49b5a0cc8ea0efcf7f3500d2fa61e9494e69492d4b540e6a96a",
+    "maps": 704,
+    "terrain_changed": false,
+    "historical_13_cell_revision_already_present": true,
+    "grass_walking_tiles": 360,
+    "local_Birch_Cedar_loops_grass_out_return": [
+      4,
+      0
+    ],
+    "longer_dry_lake_circuit_retained": true,
+    "native_controller_cases_passed": 4,
+    "stdio_calls_passed": 15,
+    "stdio_stderr_bytes": 0,
+    "audio_programs_verified": 377,
+    "new_native_2d_captures_reviewed": 3,
+    "runbook": "revisions/route-grass-v01/current-r08-audit-v01/README.md",
+    "scope_limit": "R09-R20, outdoor regional links and final current-story integration remain open."
+  },
+  "route_grass_r09_revision": {
+    "kind": "terrain_only_route_revision",
+    "route": "MN_R09",
+    "parent_revision": "r03_bank_seep_revision",
+    "parent_pack": "content-packs/minnesota-r03-bank-seep-v02.crystalpack",
+    "parent_pack_sha256": "c6fdc6bdad16f49b5a0cc8ea0efcf7f3500d2fa61e9494e69492d4b540e6a96a",
+    "pack": "content-packs/minnesota-current-grass-r09-v01.crystalpack",
+    "pack_sha256": "3ed13b6eb3a8d4c3e379fca8c4a721674647b426302528c80149c8d2eb8845fb",
+    "content_identity": "c1d2a410644398812f28b499825c9605669f60861c13d466ff8948b22543eb35",
+    "maps": 704,
+    "changed_metatiles": 12,
+    "added_grass_metatiles": 8,
+    "attached_spoil_boulders": 4,
+    "grass_metatiles": 57,
+    "grass_walking_tiles": 228,
+    "quarry_circuit_outward_grass_steps": 4,
+    "quarry_circuit_return_grass_steps": 0,
+    "same_result_after_Cut_without_actors": true,
+    "native_controller_cases_passed": 5,
+    "new_grass_native_wild_encounters": 5,
+    "stdio_calls_passed": 13,
+    "stdio_stderr_bytes": 0,
+    "audio_programs_verified": 377,
+    "new_native_2d_captures_reviewed": 3,
+    "other_maps_preserved_exact": 702,
+    "ice_blocks_across_R11_Duluth_GrandMarais": 0,
+    "runbook": "revisions/route-grass-v01/current-r09-v01/README.md",
+    "source_inputs": [
+      "revisions/route-grass-v01/current-r09-v01/MN_R09.before.layout.json",
+      "revisions/route-grass-v01/current-r09-v01/MN_R09.after.layout.json",
+      "revisions/route-grass-v01/current-r09-v01/MN_R09.installed-dossier.json"
+    ],
+    "status": "Accepted current-parent terrain revision: source/native pixels, strict preservation, directional proof, 2D review, native cases, production stdio and audio pass.",
+    "scope_limit": "R10-R20, outdoor regional links and final current-story integration remain open; explicit fixtures do not establish earned statewide progression."
+  },
+  "mille_lacs_park_revision": {
+    "source_file": "towns/mille-lacs-park-v01/native.contract.json",
+    "runbook": "towns/mille-lacs-park-v01/README.md",
+    "parent_revision": "route_grass_r09_revision",
+    "parent_pack": "content-packs/minnesota-current-grass-r09-v01.crystalpack",
+    "parent_pack_sha256": "3ed13b6eb3a8d4c3e379fca8c4a721674647b426302528c80149c8d2eb8845fb",
+    "pack": "content-packs/minnesota-mille-lacs-park-v04.crystalpack",
+    "pack_sha256": "6d5e7a486adc7508c8adf42d43543a02c9a1d279c6521e01e0c4b3a94490ecaa",
+    "content_identity": "b20bc929c3aa8d1067b5cdc14586b6bee346de5fa7ed39820a200160a215bd16",
+    "maps": 705,
+    "added_maps": [
+      "MnMilleLacs"
+    ],
+    "unchanged_original_terrain_and_program_maps": 704,
+    "unchanged_complete_original_map_modules": 703,
+    "changed_existing_map": "MnR18C01R00 attributes.connections/connection_flags and attribute mirror only",
+    "native_group_id": 101,
+    "native_map_id": 1,
+    "initial_spawn_identifier": 282,
+    "controller_cases_passed": 3,
+    "asset_cases_passed": 2,
+    "native_camera_frames": 7,
+    "native_pixel_mismatches": 0,
+    "production_stdio_processes": 4,
+    "stdio_stderr_bytes": 0,
+    "audio_programs_verified": 377,
+    "outdoor_maps": 98,
+    "outdoor_components": 1,
+    "overlaps": 0,
+    "proof_directory": "renders/mille-lacs-park-v01/verified-v04",
+    "atlas": "renders/mille-lacs-park-v01/atlas-v04/full-state-native-current.png",
+    "status": "Accepted complete24x20native park on selected R09story/R03cave parent. Winding road,5residents/2signs, mandatory lookout grass, both short drop lanes/reverse blocks/ordinary returns, dock rails/end, real regional wild/RUN, Surf paddle/dismount, independent once-only PPUp and Continue pass. All original maps terrain/programs/art/audio/roster/quest authorities remain exact.",
+    "scope_limit": "Local access/party fixtures do not earn regional access. Missing hubs, passenger trains, Safari capture, broader map quality and full campaign/final3D acceptance remain open."
+  },
+  "route_grass_r10_revision": {
+    "route": "MN_R10",
+    "pack": "content-packs/minnesota-current-grass-r10-v01.crystalpack",
+    "pack_sha256": "f9e3153964a966d610e1ec8c9ecfb45e980e80eab8ea48e336e061863747acd0",
+    "content_identity": "c289e60bd25f637553cdccbeceecb880595a662a0b1f1fc76d857de1bfe7a8e2",
+    "maps": 705,
+    "changed_metatiles": 12,
+    "added_grass_metatiles": 7,
+    "attached_boulders": 5,
+    "grass_walking_tiles": 116,
+    "outward_grass_steps": 4,
+    "return_grass_steps": 0,
+    "native_controller_cases_passed": 6,
+    "stdio_calls_passed": 13,
+    "stdio_stderr_bytes": 0,
+    "audio_programs_verified": 377,
+    "actual_2d_views_reviewed": 3,
+    "unrelated_maps_preserved_exact": 704,
+    "North_Shore_ICE": 0,
+    "kind": "terrain_only_route_revision",
+    "parent_revision": "mille_lacs_park_revision",
+    "parent_pack": "content-packs/minnesota-mille-lacs-park-v04.crystalpack",
+    "parent_pack_sha256": "6d5e7a486adc7508c8adf42d43543a02c9a1d279c6521e01e0c4b3a94490ecaa",
+    "publication_input_parent_pack": "content-packs/minnesota-mille-lacs-park-v03.crystalpack",
+    "same_parent_payload_verified": true,
+    "runbook": "revisions/route-grass-v01/current-r10-v01/README.md",
+    "status": "Accepted current-parent grass revision: source/native pixels, preservation, directional proof, actual2D review, six native cases, stdio and audio pass.",
+    "scope_limit": "R11-R20, outdoor regional links and final current-story coverage remain open. Explicit local fixtures do not establish earned statewide progression."
+  },
+  "route_grass_r11_revision": {
+    "kind": "terrain_only_route_revision",
+    "route": "MN_R11",
+    "parent_revision": "route_grass_r10_revision",
+    "parent_pack": "content-packs/minnesota-current-grass-r10-v01.crystalpack",
+    "parent_pack_sha256": "f9e3153964a966d610e1ec8c9ecfb45e980e80eab8ea48e336e061863747acd0",
+    "pack": "content-packs/minnesota-current-grass-r11-v01.crystalpack",
+    "pack_sha256": "2296cfb81cf6d17e1f02ca3477b7ae3194a33d29e1d4c965a8eb2acff81a3303",
+    "content_identity": "b9df04a73c42d83fe95569200855edd158c3bf8fdc8a17251805185e0350e493",
+    "maps": 705,
+    "changed_metatiles": 9,
+    "added_grass_metatiles": 8,
+    "attached_boulders": 1,
+    "grass_walking_tiles": 272,
+    "Birch_named_climb_return_grass_steps": [
+      3,
+      0
+    ],
+    "Lester_named_climb_return_grass_steps": [
+      4,
+      0
+    ],
+    "Stoney_neck_grass_steps_both_directions": 4,
+    "native_controller_cases_passed": 9,
+    "stdio_calls_passed": 15,
+    "stdio_stderr_bytes": 0,
+    "audio_programs_verified": 377,
+    "actual_2d_captures_reviewed": 3,
+    "other_maps_preserved_exact": 702,
+    "ice_blocks_across_R11_Duluth_GrandMarais": 0,
+    "runbook": "revisions/route-grass-v01/current-r11-v01/README.md",
+    "status": "Accepted warm current-parent grass revision: strict geometry/preservation, source/native pixels, directional/source negatives, actual2D review, nine fresh native cases, stdio and audio pass.",
+    "scope_limit": "R12-R20, outdoor regional links and final current-story coverage remain open; initial local fixtures do not establish earned statewide progression."
+  },
+  "progression_rewards_revision": {
+    "kind": "native_progression_rewards",
+    "parent_revision": "route_grass_r11_revision",
+    "parent_pack": "content-packs/minnesota-current-grass-r11-v01.crystalpack",
+    "parent_pack_sha256": "2296cfb81cf6d17e1f02ca3477b7ae3194a33d29e1d4c965a8eb2acff81a3303",
+    "pack": "content-packs/minnesota-progression-rewards-v04.crystalpack",
+    "pack_sha256": "27a71e6259fab624324a990957a059b009552ddfa39720fa9074db813aeadb42",
+    "content_identity": "96402ad8fb055ece38d119e21db4ef42ee44b16c57c886885fb283058f848a0b",
+    "maps": 705,
+    "changed_modules": [
+      "MnWinonaFieldStation",
+      "MnMinneapolisToolWorkshop",
+      "MnMinneapolis",
+      "MnGrandMaraisFieldStation"
+    ],
+    "terrain_actors_warps_and_existing_catalogs_preserved": true,
+    "active_roster_species": 224,
+    "research_rewards": [
+      {
+        "caught": 10,
+        "item": "GREAT_BALL",
+        "quantity": 10
+      },
+      {
+        "caught": 25,
+        "item": "ITEMFINDER",
+        "quantity": 1
+      },
+      {
+        "caught": 100,
+        "item": "LUCKY_EGG",
+        "quantity": 1
+      },
+      {
+        "caught": 224,
+        "item": "RARE_CANDY",
+        "quantity": 10
+      }
+    ],
+    "master_ball": "Tamarack: once after acknowledged Boundary Waters restoration",
+    "bicycle": "Minneapolis tool workshop: free rebuilt bike after first badge; native PACK registration and SELECT riding",
+    "machine_part": "Grand Marais station recovers a failed delivery before lighthouse repair; no second starter or replacement after repair",
+    "native_controller_cases_passed": 5,
+    "earned_opening_cases_passed": 1,
+    "stdio_reward_replays_passed": 3,
+    "stdio_stderr_bytes": 0,
+    "audio_programs_verified": 377,
+    "uninterrupted_campaign_verified": false,
+    "remaining_work": [
+      "54 active families lack a potential acquisition source in the inspected data",
+      "Integrate and verify current HM and fishing-house builders",
+      "Complete key-item use and uninterrupted campaign audits"
+    ],
+    "verified_client": "target/northstar-story/wasm-dev/geothite",
+    "receipt": "planning/minnesota/revisions/comprehensive-game-v01/README.md"
+  },
+  "route_grass_r12_revision": {
+    "kind": "terrain_only_route_revision",
+    "route": "MN_R12",
+    "parent_revision": "progression_rewards_revision",
+    "parent_pack": "content-packs/minnesota-progression-rewards-v04.crystalpack",
+    "parent_pack_sha256": "27a71e6259fab624324a990957a059b009552ddfa39720fa9074db813aeadb42",
+    "pack": "content-packs/minnesota-current-grass-r12-v01.crystalpack",
+    "pack_sha256": "8c9a01edf629270392e43ae8761fd0ea78d57035b0cb4b097bf9eebc3fc38717",
+    "content_identity": "343812aa6f506d3480d149f20d606912e68efa5a2f82fe5955e63fd4739fdd38",
+    "maps": 705,
+    "changed_metatiles": 18,
+    "added_grass_metatiles": 18,
+    "grass_walking_tiles": 88,
+    "ordinary_endpoint_minimum_grass_steps_both_directions": 10,
+    "required_west_band_grass_steps_both_directions": 6,
+    "native_controller_cases_passed": 7,
+    "stdio_calls_passed": 15,
+    "stdio_stderr_bytes": 0,
+    "audio_programs_verified": 377,
+    "actual_2d_captures_reviewed": 4,
+    "other_maps_preserved_exact": 703,
+    "ice_blocks_across_R11_Duluth_GrandMarais": 0,
+    "existing_inland_ice_and_Cut_exact": true,
+    "runbook": "revisions/route-grass-v01/current-r12-v01/README.md",
+    "status": "Accepted current-parent grass revision: strict geometry/preservation, source/native pixels, actual 2D review, seven native cases, production stdio and audio pass.",
+    "scope_limit": "R13-R20, remaining outdoor regional links and final current-story coverage remain open; local fixtures do not establish earned statewide progression."
+  },
+  "interior_life_selected_union_revision": {
+    "kind": "interior_story_and_selected_terrain_union",
+    "parent_revision": "route_grass_r12_revision",
+    "selected_parent_pack": "content-packs/minnesota-current-grass-r12-v01.crystalpack",
+    "selected_parent_pack_sha256": "8c9a01edf629270392e43ae8761fd0ea78d57035b0cb4b097bf9eebc3fc38717",
+    "interior_foundation_pack": "content-packs/minnesota-interiors-voyageurs-surveyor-v01.crystalpack",
+    "interior_foundation_sha256": "21c5918b95f86aa43782065c0358fab1b80a8b0fa1a3106231095a366cdab7a9",
+    "pack": "content-packs/minnesota-interiors-selected-r12-v01.crystalpack",
+    "pack_sha256": "1d60940da0f42dbce7bd5a595ccd8d8b8d68c2e84dcfa4ca505c67d5abd6595b",
+    "content_identity": "548e9ab437aa9c8c1f9c00f1bfb804f5c997d5da63174a95ba48cc5b862c4463",
+    "maps": 730,
+    "installed_non_gym_interiors": 230,
+    "visual_mode": "2D only",
+    "red_wing_station": false,
+    "red_wing_timetable_entries": 0,
+    "controller_cases_passed": 26,
+    "native_2d_frames_reviewed": 3,
+    "native_pixel_mismatches": 0,
+    "audio_programs_verified": 377,
+    "registry_native_port_checks": 2502,
+    "registry_native_port_issues": 0,
+    "runbook": "interior-life/selected-union-v01/README.md",
+    "preservation_receipt": "renders/interior-life/selected-union-v01/strict-preservation-v01.json",
+    "status": "Verified current local 2D union of repaired cities, 230 authored non-gym interiors, current story floors, R09-R12 terrain, Mille Lacs park and progression rewards. All targeted checks pass. Original actors/events, numeric identities, native art/audio and unrelated catalogs remain exact.",
+    "scope_limit": "The full interior objective remains active: five-stop passenger service, International Falls regional circuit and wider room/story acceptance remain open. Local fixtures do not establish an earned statewide campaign."
+  },
+  "route_grass_r13_revision": {
+    "kind": "terrain_only_route_revision",
+    "route": "MN_R13",
+    "parent_revision": "interior_life_selected_union_revision",
+    "parent_pack": "content-packs/minnesota-interiors-selected-r12-v01.crystalpack",
+    "parent_pack_sha256": "1d60940da0f42dbce7bd5a595ccd8d8b8d68c2e84dcfa4ca505c67d5abd6595b",
+    "pack": "content-packs/minnesota-current-grass-r13-union-v01.crystalpack",
+    "pack_sha256": "87bba9f81e3a6b56eaf9f92641eacc5a0b4be185bb65ac62c42a5d81eb6f7d65",
+    "content_identity": "f48476bc620a3ff57e78b9e21f558c555d8c023215946964c77a73b8728fd6d5",
+    "maps": 730,
+    "changed_metatiles": 19,
+    "added_grass_metatiles": 19,
+    "grass_walking_tiles": 192,
+    "ordinary_endpoint_minimum_grass_steps_both_directions": 18,
+    "southern_pine_neck_grass_steps_both_directions": 6,
+    "Wind_Tor_climb_and_dry_drop_grass_steps": [
+      2,
+      0
+    ],
+    "native_controller_cases_passed": 7,
+    "R12_shared_driver_regression_cases_passed": 7,
+    "stdio_calls_passed": 15,
+    "stdio_stderr_bytes": 0,
+    "audio_programs_verified": 377,
+    "actual_2d_captures_reviewed": 3,
+    "other_maps_preserved_exact": 727,
+    "ice_blocks_across_R11_Duluth_GrandMarais": 0,
+    "existing_inland_ice_Cut_and_ledge_exact": true,
+    "runbook": "revisions/route-grass-v01/current-r13-union-v01/README.md",
+    "status": "Accepted current-parent grass revision: strict geometry/preservation, source/native pixels, actual 2D review, seven native cases, shared-driver regression, production stdio and audio pass.",
+    "scope_limit": "R14-R20, remaining outdoor regional links and final current-story coverage remain open; local fixtures do not establish earned statewide progression."
+  },
+  "route_grass_r14_revision": {
+    "kind": "terrain_only_route_revision",
+    "route": "MN_R14",
+    "parent_revision": "route_grass_r13_revision",
+    "parent_pack": "content-packs/minnesota-current-grass-r13-union-v01.crystalpack",
+    "parent_pack_sha256": "87bba9f81e3a6b56eaf9f92641eacc5a0b4be185bb65ac62c42a5d81eb6f7d65",
+    "pack": "content-packs/minnesota-current-grass-r14-v01.crystalpack",
+    "pack_sha256": "0a78461bf1215ce0e81e1a47b65af4a0e027152b487e340ee0129cea28d81c34",
+    "content_identity": "5cb96c6af6486d03472a1e45514ea915b4d9fa2e468803e2df5ce4dce0b90e1d",
+    "maps": 730,
+    "changed_metatiles": 2,
+    "added_grass_metatiles": 2,
+    "grass_walking_tiles": 504,
+    "Survey_Bank_uphill_and_dry_drop_grass_steps": [
+      4,
+      0
+    ],
+    "ordinary_survey_return_steps": 53,
+    "installed_Itasca_port_metatiles_preserved": 13,
+    "native_controller_and_animation_cases_passed": 6,
+    "stdio_calls_passed": 15,
+    "stdio_stderr_bytes": 0,
+    "audio_programs_verified": 377,
+    "actual_2d_captures_reviewed": 2,
+    "other_maps_preserved_exact": 729,
+    "ice_blocks_across_R11_Duluth_GrandMarais": 0,
+    "existing_Cut_ledge_water_exact": true,
+    "runbook": "revisions/route-grass-v01/current-r14-v01/README.md",
+    "status": "Accepted Headwaters woodland grass revision. Required uphill habitat and dry ledge return pass populated native input, wild RUN, Cut, battle PP/victory, resource and Continue checks; current source/native pixels, strict preservation, production stdio,2D and audio pass.",
+    "scope_limit": "R15-R20, remaining outdoor regional links/parks and final current-story integration remain open. Local party/badge fixtures do not establish earned statewide progression."
+  },
+  "route_grass_r15_revision": {
+    "kind": "terrain_only_route_revision",
+    "route": "MN_R15",
+    "parent_revision": "route_grass_r14_revision",
+    "parent_pack": "content-packs/minnesota-current-grass-r14-v01.crystalpack",
+    "parent_pack_sha256": "0a78461bf1215ce0e81e1a47b65af4a0e027152b487e340ee0129cea28d81c34",
+    "pack": "content-packs/minnesota-current-grass-r15-v01.crystalpack",
+    "pack_sha256": "73bd0948be600b55d93842e1348c1fdcdd93423ef74295650d9cfa33b49badf1",
+    "content_identity": "4c48ae16685a3a459d38d851ca8dee40fcaae12f54f6c52bc5c36c5a09449b60",
+    "maps": 730,
+    "changed_metatiles": 5,
+    "added_grass_metatiles": 5,
+    "grass_walking_tiles": 92,
+    "Meadow_uphill_and_dry_drop_grass_steps": [
+      8,
+      0
+    ],
+    "ordinary_meadow_return_steps": 31,
+    "ordinary_endpoint_minimum_grass_steps_both_directions": 10,
+    "installed_rail_connection_metatiles_preserved": 9,
+    "native_controller_cases_passed": 5,
+    "stdio_calls_passed": 15,
+    "stdio_stderr_bytes": 0,
+    "audio_programs_verified": 377,
+    "actual_2d_captures_reviewed": 2,
+    "other_maps_preserved_exact": 729,
+    "ice_blocks_across_R11_Duluth_GrandMarais": 0,
+    "existing_Cut_ledge_water_warp_exact": true,
+    "runbook": "revisions/route-grass-v01/current-r15-v01/README.md",
+    "status": "Accepted native grass revision: guarded woodland ascent, dry ledge return, new shore encounter/nativeRUN, trainer PP/victory, cabin returns and Continue pass. Source/native pixels,2D, strict preservation, audio and production stdio pass.",
+    "scope_limit": "R16-R20, remaining outdoor regional links/parks and final current-story integration remain open. Mew60/badge/position fixtures are setup, not earned statewide access or encounter balance."
+  },
+  "species_habitats_cyclists_revision": {
+    "kind": "native_species_habitats_and_minneapolis_cyclists",
+    "parent_revision": "route_grass_r15_revision",
+    "parent_pack": "content-packs/minnesota-current-grass-r15-v01.crystalpack",
+    "parent_pack_sha256": "73bd0948be600b55d93842e1348c1fdcdd93423ef74295650d9cfa33b49badf1",
+    "pack": "content-packs/minnesota-current-habitats-cyclists-r15-v01.crystalpack",
+    "pack_sha256": "25b7c1dfd8715a90a0675a07e992f0d10a7432e745e0c19e4ebab5890f4957cf",
+    "content_identity": "6173c790bbc7038998cbcfec06b107d25d91aa2fae456a5c8479ac9c81f6d9e0",
+    "maps": 730,
+    "ordinary_family_roots_added": 40,
+    "grass_zones_added": 14,
+    "local_surf_and_rod_maps": 7,
+    "minneapolis_cyclists": 18,
+    "native_controller_cases_passed": 7,
+    "registered_rod_stdio_bite_passed": true,
+    "stdio_stderr_bytes": 0,
+    "audio_programs_verified": 377,
+    "terrain_preserved_exact": true,
+    "runbook": "pokemon/acquisition-v01/README.md",
+    "status": "Verified habitat captures, Surf, registered fishing, cyclist patrol/refusal/battle and Save/Continue; strict parent preservation and audio checks pass.",
+    "scope_limit": "Declared controller fixtures do not establish earned statewide progression. Acquisition upper bound is 210 of 224 active species; 14 species in 11 families still require sources. No new 3D visual acceptance."
+  },
+  "field_hm_habitats_cyclists_revision": {
+    "kind": "badge_paced_field_handoffs_and_visit_unlocked_fly",
+    "parent_revision": "species_habitats_cyclists_revision",
+    "parent_pack": "content-packs/minnesota-current-habitats-cyclists-r15-v01.crystalpack",
+    "parent_pack_sha256": "25b7c1dfd8715a90a0675a07e992f0d10a7432e745e0c19e4ebab5890f4957cf",
+    "pack": "content-packs/minnesota-current-hm-r15-v01.crystalpack",
+    "pack_sha256": "5fb635ffdf9938622bba5d5fccae585a1df02a26081567b304cc2649e09a18af",
+    "content_identity": "d538689959d10069673d4f126d637c62a168244114de41e6b214a48b4a58d915",
+    "maps": 730,
+    "hm_handoffs": 7,
+    "regional_fly_destinations_added": 19,
+    "native_controller_cases_passed": 19,
+    "stdio_stderr_bytes": 0,
+    "audio_programs_verified": 377,
+    "terrain_warps_actor_geometry_preserved_exact": true,
+    "runbook": "playable/hm-progression.md",
+    "status": "Current production client builds and loads. HM, visit/Fly, rod-service, habitat, cyclist and reward cases pass; real fishing bite stdio and377 audio checks pass.",
+    "scope_limit": "Fixtures do not establish earned statewide progression or all seven actual field uses. Fourteen species in eleven families still require acquisition sources; full game goal remains open."
+  },
+  "fossil_research_revision": {
+    "kind": "paired_driftless_fossils_and_rochester_restoration",
+    "parent_revision": "script_command_repair_revision",
+    "parent_pack": "content-packs/minnesota-scripts-repaired-r15-v01.crystalpack",
+    "parent_pack_sha256": "de23cc18ddaadcf8fb7a452d5f27dcdce04f3832a6004805e7ecec0e2cd881b1",
+    "pack": "content-packs/minnesota-current-fossils-repaired-r15-v01.crystalpack",
+    "pack_sha256": "992276b50a847dd58a82601fc0a7e4e2a7c7de7846b19db51e920acd4cb0c4e4",
+    "content_identity": "53917ea37309b35a3eff89340608f9e118dc568346a4fc258ce328a092e883af",
+    "maps": 730,
+    "new_native_species_acquisition_roots": 2,
+    "native_fossil_species_with_evolutions": 4,
+    "key_items_added": 2,
+    "researchers_added": 2,
+    "native_controller_cases_passed": 3,
+    "audio_programs_verified": 377,
+    "stdio_stderr_bytes": 0,
+    "other_maps_preserved_exact": 728,
+    "new_text_rows_verified": 67,
+    "planning_2d_views_reviewed": 2,
+    "runbook": "pokemon/acquisition-v01/fossils.md",
+    "status": "Both choices, declines, badge denial, full-party retention, actual level10 gifts, post-League other-specimen exchange, native level34 evolutions, caught Dex entries and Continue pass. Strict preservation, current client Start/menu/movement/Continue stdio and377 audio checks pass. Cyclist battle-return repair is inherited exactly.",
+    "scope_limit": "Declared fixtures do not prove earned statewide collection. Acquisition upper bound214/224; ten species in nine families still lack sources. Full campaign and new3D visual acceptance remain open."
+  },
+  "route_grass_r17_revision": {
+    "kind": "terrain_only_route_revision",
+    "route": "MN_R17",
+    "parent_revision": "fossil_research_revision",
+    "parent_pack": "content-packs/minnesota-current-fossils-repaired-r15-v01.crystalpack",
+    "parent_pack_sha256": "992276b50a847dd58a82601fc0a7e4e2a7c7de7846b19db51e920acd4cb0c4e4",
+    "pack": "content-packs/minnesota-current-grass-r17-v03.crystalpack",
+    "pack_sha256": "e99a9eb0fa86b85369b6b3d7e5bb52a9d7abdb9eef4aacb54856ccb989c61c84",
+    "content_identity": "7a86bddd7a2a429d687f96272b5d64a6d8daff139a9c165f5e47582efe7ec009",
+    "maps": 730,
+    "changed_metatiles": 11,
+    "added_grass_metatiles": 11,
+    "grass_walking_tiles": 136,
+    "native_ice_route_minimum_grass_steps_both_directions": 20,
+    "native_Cut_and_ice_route_minimum_grass_steps_both_directions": 16,
+    "existing_required_sedge_crossing_grass_steps": 4,
+    "native_controller_cases_passed": 6,
+    "layout_alias_and_ice_graph_tests_passed": 9,
+    "stdio_calls_passed": 15,
+    "stdio_stderr_bytes": 0,
+    "audio_programs_verified": 377,
+    "actual_2d_captures_reviewed": 3,
+    "other_maps_preserved_exact": 727,
+    "ice_blocks_across_R11_Duluth_GrandMarais": 0,
+    "existing_ice_Cut_water_cliff_warp_cells_exact": true,
+    "native_winter_and_southern_green_aliases_preserved": true,
+    "seven_HMs_19Fly_points_habitats_cyclists_fossils_and_script_repairs_preserved": true,
+    "runbook": "revisions/route-grass-v01/current-r17-v03/README.md",
+    "status": "Accepted four grass crossings on the current repaired fossil/HM/habitat/cyclist parent. Cut return, ice, current cave/resources, battle PP/victory/Continue, real wild RUN, production stdio, audio, native2D and strict preservation pass.",
+    "scope_limit": "R18-R20, remaining outdoor regional links/parks and final current-story coverage remain open. Declared native party/badge/position fixtures do not establish earned statewide access or encounter balance."
+  },
+  "route_grass_r18_revision": {
+    "kind": "terrain_only_route_revision",
+    "route": "MN_R18",
+    "parent_revision": "route_grass_r17_revision",
+    "parent_pack": "content-packs/minnesota-current-grass-r17-v03.crystalpack",
+    "parent_pack_sha256": "e99a9eb0fa86b85369b6b3d7e5bb52a9d7abdb9eef4aacb54856ccb989c61c84",
+    "pack": "content-packs/minnesota-current-grass-r18-v01.crystalpack",
+    "pack_sha256": "36e58054462b67415a89445a4fc465ccc6edc84b082025a41f504104a6a3e323",
+    "content_identity": "5ff92ab1d7f4b8618ff3768ac4adee12d16d437a275bd40ea48cf1c50eeb3f54",
+    "maps": 730,
+    "changed_metatiles": 5,
+    "added_grass_metatiles": 5,
+    "grass_walking_tiles": 268,
+    "western_approach_minimum_grass_steps_both_directions": 4,
+    "original_meadow_neck_grass_steps": 6,
+    "native_controller_cases_passed": 8,
+    "stdio_calls_passed": 15,
+    "stdio_stderr_bytes": 0,
+    "audio_programs_verified": 377,
+    "actual_2d_captures_reviewed": 1,
+    "other_maps_preserved_exact": 729,
+    "ice_blocks_across_R11_Duluth_GrandMarais": 0,
+    "seven_HMs_19Fly_points_habitats_cyclists_fossils_and_script_repairs_preserved": true,
+    "runbook": "revisions/route-grass-v01/current-r18-v01/README.md",
+    "status": "Accepted western meadow extension; populated new habitat/native RUN/Continue, shore quests and Surf island, production stdio, audio, native 2D and exact preservation pass.",
+    "scope_limit": "R19-R20, remaining outdoor links/parks and final current-story coverage remain open. Local fixture party/badges/position do not establish earned regional access or encounter balance. North Shore reported-version discrepancy remains open."
+  },
+  "route_grass_r19_revision": {
+    "kind": "terrain_only_route_revision",
+    "route": "MN_R19",
+    "parent_revision": "route_grass_r18_revision",
+    "parent_pack": "content-packs/minnesota-current-grass-r18-v01.crystalpack",
+    "parent_pack_sha256": "36e58054462b67415a89445a4fc465ccc6edc84b082025a41f504104a6a3e323",
+    "pack": "content-packs/minnesota-current-grass-r19-v01.crystalpack",
+    "pack_sha256": "688f1568e8e5001c6f9b9c544c9f31aa8451dafd992ce67078a229fb5a5cbb10",
+    "content_identity": "cb73653796e4854fad042481a6f5154b343d72058b19ead4f6abb7bcacaf08e4",
+    "maps": 730,
+    "changed_metatiles": 4,
+    "added_grass_metatiles": 4,
+    "grass_walking_tiles": 156,
+    "pine_bend_minimum_grass_steps_both_directions": 7,
+    "existing_ledge_uphill_grass_steps": 3,
+    "existing_ledge_downhill_grass_steps": 0,
+    "native_controller_cases_passed": 6,
+    "stdio_calls_passed": 15,
+    "stdio_stderr_bytes": 0,
+    "audio_programs_verified": 377,
+    "actual_2d_captures_reviewed": 1,
+    "other_maps_preserved_exact": 729,
+    "ice_blocks_across_R11_Duluth_GrandMarais": 0,
+    "seven_HMs_19Fly_points_habitats_cyclists_fossils_and_script_repairs_preserved": true,
+    "runbook": "revisions/route-grass-v01/current-r19-v01/README.md",
+    "status": "Accepted pine-bend habitat; native new-grass encounter/RUN/return/Continue, dry drop and grassy uphill/ramps, battle-versus-grass choice, observations/rewards, Headbutt PP/battle/Continue, production stdio, audio, 2D and exact preservation pass.",
+    "scope_limit": "R20, remaining outdoor links/parks and final current-story coverage remain open. Explicit fixture party/flags/position do not establish earned regional access or encounter balance."
   }
 }

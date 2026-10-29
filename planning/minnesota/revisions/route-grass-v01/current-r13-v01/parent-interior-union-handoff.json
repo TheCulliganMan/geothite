@@ -1,0 +1,21 @@
+{
+  "revision": "interior_life_selected_union_revision",
+  "pack": "content-packs/minnesota-interiors-selected-r12-v01.crystalpack",
+  "sha256": "1d60940da0f42dbce7bd5a595ccd8d8b8d68c2e84dcfa4ca505c67d5abd6595b",
+  "identity": "548e9ab437aa9c8c1f9c00f1bfb804f5c997d5da63174a95ba48cc5b862c4463",
+  "maps": 730,
+  "old_parent_pack": "content-packs/minnesota-current-grass-r12-v01.crystalpack",
+  "route_modules_exact_to_old_parent": {
+    "MnR12C00R00": false,
+    "MnR12C00R01": true,
+    "MnR12Cave1F": true,
+    "MnR12RangerHut": false,
+    "MnR13C00R00": false,
+    "MnR13C00R01": true,
+    "MnR13C00R02": true,
+    "MnR13Cave1F": true
+  },
+  "runtime_files_exact": false,
+  "tilesets_exact": false,
+  "pokemon_catalog_exact": true
+}

@@ -29,6 +29,10 @@ pub const FLASH_DARK_MAP_PALETTE: &str = "dark";
 pub const SURF_ACTOR_SPECIES_MEMORY: &str = "geothiteSurfActorSpecies";
 pub const SURF_ACTOR_DVS_MEMORY: &str = "geothiteSurfActorDvs";
 pub const SURF_ACTOR_PARTY_MEMORY: &str = "geothiteSurfActorPartySlot";
+/// Passive key item used by Minnesota's shore-launch traversal.
+pub const CANOE_ITEM: &str = "CANOE";
+/// Saved presentation identity; ordinary Surf never sets this marker.
+pub const CANOE_ACTIVE_MEMORY: &str = "geothiteCanoeActive";
 
 #[derive(Debug, Default, Clone, PartialEq, Eq, Serialize)]
 #[serde(deny_unknown_fields)]
@@ -1400,6 +1404,31 @@ fn apply_flag_field_move(
     )
 }
 
+/// Validate the native Surf actor, configured badge and bicycle restriction
+/// without starting travel. Admission services use the same permission checks
+/// as an actual Surf launch; this does not spend PP or move the player.
+///
+/// # Errors
+/// Returns the ordinary native field-move error for missing/invalid rules,
+/// missing party moves, badges or an always-on-bike map.
+pub fn validate_surf_field_access<'a>(
+    catalog: &FieldMoveCatalog,
+    state: &GameState,
+    storage: &'a PokemonStorage,
+    party_index: usize,
+) -> Result<&'a crate::models::Pokemon, FieldMoveError> {
+    let rule = &catalog.surf;
+    require_travel_rule_shape(rule, false)?;
+    let actor = require_party_move(storage, party_index, &rule.move_id)?;
+    require_badge(state, &rule.move_id, &rule.badge)?;
+    if state.flags.is_engine_flag_set("ENGINE_ALWAYS_ON_BIKE")? {
+        return Err(FieldMoveError::AlwaysOnBike {
+            move_id: rule.move_id.clone(),
+        });
+    }
+    Ok(actor)
+}
+
 pub fn apply_surf_field_move(
     catalog: &FieldMoveCatalog,
     state: &GameState,
@@ -1410,14 +1439,7 @@ pub fn apply_surf_field_move(
     party_index: usize,
 ) -> Result<FieldMoveTravelOutcome, FieldMoveError> {
     let rule = &catalog.surf;
-    require_travel_rule_shape(rule, false)?;
-    let actor = require_party_move(storage, party_index, &rule.move_id)?;
-    require_badge(state, &rule.move_id, &rule.badge)?;
-    if state.flags.is_engine_flag_set("ENGINE_ALWAYS_ON_BIKE")? {
-        return Err(FieldMoveError::AlwaysOnBike {
-            move_id: rule.move_id.clone(),
-        });
-    }
+    let actor = validate_surf_field_access(catalog, state, storage, party_index)?;
     if matches!(player.mode, MovementMode::Surf | MovementMode::SurfPika) {
         return Err(FieldMoveError::InvalidMovementMode {
             move_id: rule.move_id.clone(),

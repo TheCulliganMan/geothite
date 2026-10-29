@@ -281,3 +281,340 @@ fn fullscreen_town_map_owns_one_centered_layer_and_restores_world() {
     let world = app.world_mut();
     assert_eq!(*world.query_filtered::<&Visibility, With<FullscreenWorldRoot>>().single(world).unwrap(), Visibility::Inherited);
 }
+
+#[test]
+#[ignore = "requires an external Minnesota pack and render directory"]
+fn minnesota_town_map_and_fly_share_one_screen_art_and_positions() {
+    let path = PathBuf::from(std::env::var_os("CRYSTAL_RENDER_TEST_PACK").expect("external pack"));
+    let root = AssetRoot::new(path.parent().expect("pack parent"));
+    let runtime = CrystalRuntime::from_loaded_compiled_pack(
+        &root,
+        crystal_assets::read_loaded_verified_compiled_game_pack(&path).expect("verified pack"),
+    )
+    .expect("runtime");
+    let destination = runtime
+        .data()
+        .fly_destinations
+        .get("ENGINE_FLYPOINT_MN_WINONA")
+        .expect("registered Winona landing");
+    let landing =
+        &runtime.data().runtime_spawn_points[&destination.destination_spawn_identifier.to_string()];
+    let mut shell = initialize_bevy_runtime_shell(
+        root.clone(),
+        runtime.clone(),
+        BevyShellStart::NewGameAtRuntimeTile {
+            spawn_identifier: runtime.title_new_game_spawn_identifier().expect("home"),
+            map_name: "MnWinona".into(),
+            tile_x: landing.tile_x,
+            tile_y: landing.tile_y,
+        },
+        BevyShellConfig {
+            smoke_player_name: Some("CHRIS".into()),
+            ..default()
+        },
+    )
+    .expect("explicit atlas fixture");
+    complete_visible_smoke_player_name_if_needed(&mut shell, Some("CHRIS")).expect("name");
+    let snapshot = shell.shell.snapshot().expect("snapshot");
+    assert!(minnesota_map_active(&snapshot));
+    let indices = visible_pokegear_landmark_indices(&snapshot, true).expect("regional cursor");
+    assert!(indices.iter().all(|index| {
+        let landmark = &snapshot.presentation.pokegear_landmarks.landmarks[*index];
+        let projected = projected_minnesota_landmark(&snapshot, landmark);
+        (16..=151).contains(&(projected.x - 8)) && (32..=119).contains(&(projected.y - 16))
+    }));
+    shell.pokegear_menu_open = true;
+    shell.pokegear_standalone_map = true;
+    shell.pokegear_page = PokegearPage::Map;
+    shell.pokegear_cursor = indices[0];
+    let mut reached = BTreeSet::new();
+    for _ in 0..indices.len() {
+        reached.insert(shell.pokegear_cursor);
+        move_visible_pokegear_cursor(&mut shell, -1).expect("native regional cursor input");
+        assert!(
+            indices.contains(&shell.pokegear_cursor),
+            "cursor escaped into Johto"
+        );
+    }
+    assert_eq!(reached.len(), indices.len());
+    assert_eq!(shell.pokegear_cursor, indices[0]);
+    shell.pokegear_cursor = indices
+        .into_iter()
+        .find(|index| {
+            projected_minnesota_landmark(
+                &snapshot,
+                &snapshot.presentation.pokegear_landmarks.landmarks[*index],
+            )
+            .name
+                == "WINONA"
+        })
+        .expect("Winona cursor");
+    let mut app = integrated_shell_test_app(shell);
+    app.update();
+    save_minnesota_screen_sprites(app.world_mut(), "town-map.png");
+    for (town, filename) in [
+        ("GRAND MARAIS", "town-map-north-shore.png"),
+        ("INTERNATIONAL FALLS", "town-map-border.png"),
+    ] {
+        let index = visible_pokegear_landmark_indices(&snapshot, true)
+            .expect("regional cursor")
+            .into_iter()
+            .find(|index| {
+                projected_minnesota_landmark(
+                    &snapshot,
+                    &snapshot.presentation.pokegear_landmarks.landmarks[*index],
+                )
+                .name
+                    == town
+            })
+            .or_else(|| {
+                (town == "INTERNATIONAL FALLS")
+                    .then(|| {
+                        visible_pokegear_landmark_indices(&snapshot, true)
+                            .expect("regional cursor")
+                            .into_iter()
+                            .find(|index| {
+                                snapshot.presentation.pokegear_landmarks.landmarks[*index].constant
+                                    == "LANDMARK_MN_BORDER_PINES"
+                            })
+                    })
+                    .flatten()
+            })
+            .expect("installed northern location");
+        {
+            let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+            shell.pokegear_cursor = index;
+            mark_runtime_presentation_dirty(&mut shell);
+        }
+        app.update();
+        save_minnesota_screen_sprites(app.world_mut(), filename);
+    }
+    {
+        let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+        shell.pokegear_menu_open = false;
+        shell.party_menu_open = true;
+        let flags = runtime
+            .data()
+            .fly_destinations
+            .keys()
+            .filter(|flag| flag.starts_with("ENGINE_FLYPOINT_MN_"))
+            .cloned()
+            .collect::<Vec<_>>();
+        assert!(flags.len() >= 15, "use a completed regional HM pack");
+        for flag in flags {
+            shell
+                .shell
+                .session_mut()
+                .state_mut()
+                .flags
+                .set_engine_flag(&flag, true)
+                .expect("explicit visited-town fixture");
+        }
+        let bird = runtime
+            .data()
+            .create_pokemon("LOOBIT", 40, crate::core::models::Dv::default())
+            .expect("regional Fly bird fixture");
+        let state = shell.shell.session_mut().state_mut();
+        assert!(state.storage.party.add_pokemon(bird));
+        state.sync_party_from_storage();
+        state.badges.johto[4] = true;
+        state
+            .flags
+            .set_engine_flag("ENGINE_STORMBADGE", true)
+            .expect("Wind badge fixture");
+        shell
+            .shell
+            .add_bag_item("HM_FLY", 1)
+            .expect("owned Fly HM fixture");
+        shell
+            .shell
+            .use_bag_tmhm_on_party_pokemon("HM_FLY", 0, Some(0))
+            .expect("teach compatible regional bird");
+        mark_runtime_snapshot_dirty(&mut shell);
+        let snapshot = shell.shell.snapshot().expect("visited towns");
+        let destinations = active_fly_destinations(&snapshot, &shell.shell).expect("regional Fly");
+        assert!(
+            destinations
+                .iter()
+                .all(|d| d.flypoint_flag.starts_with("ENGINE_FLYPOINT_MN_"))
+        );
+        for destination in &destinations {
+            let landmark = snapshot
+                .presentation
+                .pokegear_landmarks
+                .landmarks
+                .iter()
+                .find(|landmark| landmark.constant == destination.label)
+                .expect("Fly landmark");
+            let projected = projected_minnesota_landmark(&snapshot, landmark);
+            assert_eq!(
+                Some((projected.x - 8, projected.y - 16)),
+                minnesota_town_map::town_position(&fly_destination_label(destination)),
+                "Fly target must align with its native town square: {}",
+                destination.flypoint_flag
+            );
+        }
+        open_visible_fly_destination_menu(&mut shell).expect("production Fly chooser");
+    }
+    app.update();
+    save_minnesota_screen_sprites(app.world_mut(), "fly-map.png");
+    let shell = app
+        .world_mut()
+        .remove_resource::<BevyRuntimeShell>()
+        .expect("rendered session");
+    let mut controller = VisibleShellController { shell };
+    let target = "ENGINE_FLYPOINT_MN_GRAND_MARAIS";
+    for _ in 0..32 {
+        let snapshot = controller.snapshot().expect("Fly selection");
+        let destinations =
+            active_fly_destinations(&snapshot, &controller.shell.shell).expect("Fly entries");
+        let selected = controller
+            .shell
+            .fly_cursor
+            .as_ref()
+            .expect("Fly cursor")
+            .option_index;
+        if destinations[selected].flypoint_flag == target {
+            break;
+        }
+        controller
+            .press(GameButton::Down)
+            .expect("native Fly cursor input");
+    }
+    let snapshot = controller.snapshot().expect("selected landing");
+    let destinations =
+        active_fly_destinations(&snapshot, &controller.shell.shell).expect("Fly entries");
+    assert_eq!(
+        destinations[controller
+            .shell
+            .fly_cursor
+            .as_ref()
+            .expect("cursor")
+            .option_index]
+            .flypoint_flag,
+        target
+    );
+    app.world_mut().insert_resource(controller.shell);
+    app.update();
+    save_minnesota_screen_sprites(app.world_mut(), "fly-map-north-shore.png");
+    controller = VisibleShellController {
+        shell: app
+            .world_mut()
+            .remove_resource::<BevyRuntimeShell>()
+            .expect("selected flight session"),
+    };
+    controller
+        .press(GameButton::A)
+        .expect("confirm actual flight");
+    assert!(
+        controller.shell.visible_fly_animation.is_some(),
+        "native departure"
+    );
+    let departure = controller.snapshot().expect("departure").overworld.tile;
+    controller.press(GameButton::Right).expect("Fly owns input");
+    assert_eq!(
+        controller.snapshot().expect("owned input").overworld.tile,
+        departure
+    );
+    for _ in 0..64 {
+        let snapshot = controller.snapshot().expect("flight");
+        if snapshot.overworld.map_name == "MnGrandMarais"
+            && controller.shell.visible_fly_animation.is_none()
+        {
+            break;
+        }
+        if snapshot.ui.text_window_open {
+            controller
+                .press(GameButton::A)
+                .expect("native flight dialogue");
+        } else {
+            controller
+                .wait_frames(16)
+                .expect("production flight frames");
+        }
+    }
+    let landed = controller.snapshot().expect("actual arrival");
+    let destination = &runtime.data().fly_destinations[target];
+    let landing =
+        &runtime.data().runtime_spawn_points[&destination.destination_spawn_identifier.to_string()];
+    assert_eq!(landed.overworld.map_name, "MnGrandMarais");
+    assert_eq!(
+        (landed.overworld.tile.x, landed.overworld.tile.y),
+        (landing.tile_x, landing.tile_y)
+    );
+}
+
+/// Compose the actual production sprites offscreen at native LCD resolution.
+/// This checks the real UI artwork, labels and markers without opening a window.
+fn save_minnesota_screen_sprites(world: &mut World, filename: &str) {
+    assert!(
+        world.resource::<BevyRuntimeShell>().last_error.is_none(),
+        "production render error: {:?}",
+        world.resource::<BevyRuntimeShell>().last_error
+    );
+    assert!(
+        world
+            .resource::<RenderedTilesetArt>()
+            .town_map_cache
+            .keys()
+            .any(|(key, _)| key.contains(":minnesota:")),
+        "native atlas was not presented"
+    );
+    let mut sprites = world
+        .query::<(&Sprite, &Transform)>()
+        .iter(world)
+        .filter(|(_, transform)| transform.translation.z >= 3.4)
+        .map(|(sprite, transform)| (sprite.clone(), *transform))
+        .collect::<Vec<_>>();
+    sprites.sort_by(|a, b| a.1.translation.z.total_cmp(&b.1.translation.z));
+    let images = world.resource::<Assets<Image>>();
+    let scale = TILE_SIZE / SOURCE_TILE_SIZE as f32;
+    let mut output = image::RgbaImage::from_pixel(160, 144, image::Rgba([232, 240, 208, 255]));
+    for (sprite, transform) in sprites {
+        let image = images.get(&sprite.image);
+        let size = sprite.custom_size.unwrap_or_else(|| {
+            image.map_or(Vec2::ONE, |image| {
+                Vec2::new(image.width() as f32, image.height() as f32)
+            })
+        });
+        let width = (size.x / scale).round() as i32;
+        let height = (size.y / scale).round() as i32;
+        let left = ((transform.translation.x - PLAYFIELD_LEFT) / scale - width as f32 / 2.0).round()
+            as i32;
+        let top = ((PLAYFIELD_TOP - transform.translation.y) / scale - height as f32 / 2.0).round()
+            as i32;
+        for y in 0..height {
+            for x in 0..width {
+                if !(0..160).contains(&(left + x)) || !(0..144).contains(&(top + y)) {
+                    continue;
+                }
+                let pixel = if let Some(image) = image {
+                    let Some(data) = image.data.as_ref() else {
+                        continue;
+                    };
+                    if data.len() != image.width() as usize * image.height() as usize * 4 {
+                        continue;
+                    }
+                    let sx = x as u32 * image.width() / width as u32;
+                    let sy = y as u32 * image.height() / height as u32;
+                    let offset = ((sy * image.width() + sx) * 4) as usize;
+                    <[u8; 4]>::try_from(&data[offset..offset + 4]).expect("RGBA")
+                } else {
+                    sprite.color.to_srgba().to_u8_array()
+                };
+                if pixel[3] > 0 {
+                    output.put_pixel((left + x) as u32, (top + y) as u32, image::Rgba(pixel));
+                }
+            }
+        }
+    }
+    let directory =
+        PathBuf::from(std::env::var_os("CRYSTAL_TOWN_MAP_RENDER_DIR").expect("render directory"));
+    std::fs::create_dir_all(&directory).expect("render directory");
+    output
+        .save(directory.join(filename))
+        .expect("save production sprites");
+    image::imageops::resize(&output, 640, 576, image::imageops::FilterType::Nearest)
+        .save(directory.join(filename.replace(".png", "-4x.png")))
+        .expect("save enlarged production sprites");
+}

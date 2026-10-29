@@ -1,0 +1,254 @@
+[
+  {
+    "label": "MN_R17_T01Seen",
+    "source_field": "before_lines",
+    "lines": [
+      "Pines shelter my",
+      "team on this road.",
+      "Hear their call!"
+    ]
+  },
+  {
+    "label": "MN_R17_T01Won",
+    "source_field": "after_lines",
+    "lines": [
+      "The ranger desk",
+      "is in the Falls."
+    ]
+  },
+  {
+    "label": "MN_R17_T01Lost",
+    "source_field": "loss_lines",
+    "lines": [
+      "Rest at the hut.",
+      "Then try again."
+    ]
+  },
+  {
+    "label": "MN_R17_T02Seen",
+    "source_field": "before_lines",
+    "lines": [
+      "Old trees hide",
+      "sturdy partners.",
+      "Show me your team!"
+    ]
+  },
+  {
+    "label": "MN_R17_T02Won",
+    "source_field": "after_lines",
+    "lines": [
+      "The ranger desk",
+      "is in the Falls."
+    ]
+  },
+  {
+    "label": "MN_R17_T02Lost",
+    "source_field": "loss_lines",
+    "lines": [
+      "Rest at the hut.",
+      "Then try again."
+    ]
+  },
+  {
+    "label": "MN_R17_T03Seen",
+    "source_field": "before_lines",
+    "lines": [
+      "Stand still. The",
+      "birds return here.",
+      "First, a battle!"
+    ]
+  },
+  {
+    "label": "MN_R17_T03Won",
+    "source_field": "after_lines",
+    "lines": [
+      "The ranger desk",
+      "is in the Falls."
+    ]
+  },
+  {
+    "label": "MN_R17_T03Lost",
+    "source_field": "loss_lines",
+    "lines": [
+      "Rest at the hut.",
+      "Then try again."
+    ]
+  },
+  {
+    "label": "MN_R17_T04Seen",
+    "source_field": "before_lines",
+    "lines": [
+      "The den is quiet.",
+      "The woodland team",
+      "I train is not!"
+    ]
+  },
+  {
+    "label": "MN_R17_T04Won",
+    "source_field": "after_lines",
+    "lines": [
+      "The ranger desk",
+      "is in the Falls."
+    ]
+  },
+  {
+    "label": "MN_R17_T04Lost",
+    "source_field": "loss_lines",
+    "lines": [
+      "Rest at the hut.",
+      "Then try again."
+    ]
+  },
+  {
+    "label": "MN_R17_T05Seen",
+    "source_field": "before_lines",
+    "lines": [
+      "These old pines",
+      "shelter my team.",
+      "Ready to meet it?"
+    ]
+  },
+  {
+    "label": "MN_R17_T05Won",
+    "source_field": "after_lines",
+    "lines": [
+      "The ranger desk",
+      "is in the Falls."
+    ]
+  },
+  {
+    "label": "MN_R17_T05Lost",
+    "source_field": "loss_lines",
+    "lines": [
+      "Rest at the hut.",
+      "Then try again."
+    ]
+  },
+  {
+    "label": "MN_R17_T06Seen",
+    "source_field": "before_lines",
+    "lines": [
+      "The Falls are near",
+      "One more forest",
+      "battle, then town?"
+    ]
+  },
+  {
+    "label": "MN_R17_T06Won",
+    "source_field": "after_lines",
+    "lines": [
+      "The ranger desk",
+      "is in the Falls."
+    ]
+  },
+  {
+    "label": "MN_R17_T06Lost",
+    "source_field": "loss_lines",
+    "lines": [
+      "Rest at the hut.",
+      "Then try again."
+    ]
+  },
+  {
+    "label": "MN_R17_ROUTE_RANGERText",
+    "source_field": "residents.lines",
+    "lines": [
+      "The ranger desk",
+      "is in the Falls.",
+      "This hut is a rest",
+      "stop on the trail."
+    ]
+  },
+  {
+    "label": "MN_R17_MARSH_WATCHERText",
+    "source_field": "residents.lines",
+    "lines": [
+      "That cache has a",
+      "MAX REPEL for the",
+      "long pine trail.",
+      "CUT opens a path."
+    ]
+  },
+  {
+    "label": "MN_R17_OLD_PINES_WATCHERText",
+    "source_field": "residents.lines",
+    "lines": [
+      "These old crowns",
+      "shelter BOOMRUFF.",
+      "Leave the trunks",
+      "standing here."
+    ]
+  },
+  {
+    "label": "MN_R17_SIGN_01Text",
+    "source_field": "signs.lines",
+    "lines": [
+      "BORDER PINES",
+      "NORTH: THE FALLS"
+    ]
+  },
+  {
+    "label": "MN_R17_SIGN_02Text",
+    "source_field": "signs.lines",
+    "lines": [
+      "SEDGE TRAIL",
+      "STAY ON TIMBER"
+    ]
+  },
+  {
+    "label": "MN_R17_SIGN_03Text",
+    "source_field": "signs.lines",
+    "lines": [
+      "MARSH CROSSING",
+      "RAILS PROTECT YOU"
+    ]
+  },
+  {
+    "label": "MN_R17_SIGN_04Text",
+    "source_field": "signs.lines",
+    "lines": [
+      "RANGER REST HUT",
+      "DESK IN THE FALLS"
+    ]
+  },
+  {
+    "label": "MN_R17_SIGN_05Text",
+    "source_field": "signs.lines",
+    "lines": [
+      "GRANITE DEN",
+      "RETURN SAME MOUTH"
+    ]
+  },
+  {
+    "label": "MN_R17_SIGN_06Text",
+    "source_field": "signs.lines",
+    "lines": [
+      "OLD PINES ROOST",
+      "KEEP THE TREES"
+    ]
+  },
+  {
+    "label": "MN_R17_SIGN_07Text",
+    "source_field": "signs.lines",
+    "lines": [
+      "INTERNATIONAL",
+      "FALLS: NORTH"
+    ]
+  },
+  {
+    "label": "MN_R17_SIGN_08Text",
+    "source_field": "signs.lines",
+    "lines": [
+      "FERN ALCOVE",
+      "WILDLIFE HABITAT"
+    ]
+  },
+  {
+    "label": "MN_R17_FOREST_JUNCTIONText",
+    "source_field": "signs.lines",
+    "lines": [
+      "GRANITE DEN: WEST",
+      "RANGER HUT: EAST"
+    ]
+  }
+]

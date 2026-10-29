@@ -1,5 +1,12 @@
 {
   "id": "MN_R09",
+  "native_cave_revision": {
+    "revision": "r09_rock_mine_revision",
+    "room": "MnR09Cave1F",
+    "plan": "../caves/current-r09-v01/README.md",
+    "source": "../caves/johto-quality-v01/MnR09Cave1F.json",
+    "scope": "Complete12x11 native mine overlay on the current R10/compact-coast/Ely lineage. Three stairs, two drop lanes, mouth, regional foreman battle, separate cache acknowledgment and Continue verified. Historical source team/dialogue are provenance; the current-only Rust publisher preserves installed native story and moves. Candidate awaits shared region composition."
+  },
   "map_prefix": "MnR09",
   "name": "Iron Range West",
   "dimensions_metatiles": [
@@ -1384,5 +1391,52 @@
     "native_art": "Unchanged Johto 68\u201373 cliff faces, 71 exposed stone and 0a grouped erratics; existing mn_iron_range recipes retained.",
     "gameplay_anchor_changes": [],
     "dimensions_ports_actors_parties_rooms_rail_and_cut": "Preserved exactly; only explicit terrain strokes and review viewpoints change."
-  }
+  },
+  "directional_grass_loops": [
+    {
+      "id": "QUARRY_GRASS_CLIMB_OR_DRY_ORE_RETURN",
+      "ledge_id": "MN_R09_SPOIL_RETURN",
+      "outbound_start_core": [
+        49,
+        42
+      ],
+      "outbound_end_core": [
+        81,
+        39
+      ],
+      "grass_regions_core": [
+        [
+          80,
+          30,
+          82,
+          34
+        ]
+      ],
+      "northbound_minimum_grass_steps": 4,
+      "southbound_minimum_grass_steps": 0,
+      "dry_trail_core": [
+        [
+          81,
+          39
+        ],
+        [
+          81,
+          42
+        ],
+        [
+          81,
+          46
+        ],
+        [
+          49,
+          46
+        ],
+        [
+          49,
+          42
+        ]
+      ],
+      "scope": "Quarry shelf circuit: ordinary upper-bench climb versus existing spoil drop and lower ore track."
+    }
+  ]
 }

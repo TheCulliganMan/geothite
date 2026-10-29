@@ -35,13 +35,14 @@ pub(super) fn glyph(tileset: &str, metatiles: &[u8]) -> Result<Option<usize>> {
             && !metatiles[..offset].contains(&(imported as u8)),
         "Minneapolis waterfall must use one newly allocated glyph"
     );
-    // Later bridge and facade recipes may rearrange existing native glyphs.
-    // They must not alias the allocated waterfall glyph or add new pixels.
+    // Static overlays can import additional native facade glyphs. Their pack
+    // loader owns graphics/bank validation; this animation binding only needs
+    // to keep the isolated waterfall glyph out of every later static recipe.
     ensure!(
         metatiles[offset + BLOCK_BYTES..]
             .iter()
-            .all(|glyph| metatiles[..offset].contains(glyph)),
-        "additional Minneapolis blocks must use original native glyphs"
+            .all(|&glyph| usize::from(glyph) != imported),
+        "static Minneapolis blocks must not reuse the waterfall glyph"
     );
     Ok(Some(imported))
 }
@@ -137,7 +138,7 @@ mod tests {
     }
 
     #[test]
-    fn composed_facades_use_existing_glyphs_without_animating_their_walls() {
+    fn composed_and_imported_static_facades_keep_the_waterfall_glyph_isolated() {
         let mut layout = vec![0; 0x99 * 16];
         layout[16..32].fill(7);
         layout.extend([0xa7; 16]);
@@ -148,9 +149,14 @@ mod tests {
         );
         let last = layout.len() - 1;
         layout[last] = 8;
+        assert_eq!(
+            glyph("mn_minneapolis_city", &layout).expect("new static native glyph"),
+            Some(0xa7)
+        );
+        layout[last] = 0xa7;
         assert!(
             glyph("mn_minneapolis_city", &layout).is_err(),
-            "facades must not introduce an unreferenced glyph"
+            "a static facade must not acquire the waterfall's animation"
         );
     }
 

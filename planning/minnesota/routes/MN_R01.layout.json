@@ -1091,6 +1091,201 @@
         8
       ],
       "block": "6e"
+    },
+    {
+      "kind": "block_remap",
+      "name": "Rochester woodland crossing encounter grass",
+      "bounds": [
+        4,
+        12,
+        7,
+        13
+      ],
+      "from": "01",
+      "to": "03"
+    },
+    {
+      "kind": "block_remap",
+      "name": "Rochester woodland crossing encounter grass",
+      "bounds": [
+        4,
+        12,
+        7,
+        13
+      ],
+      "from": "02",
+      "to": "03"
+    },
+    {
+      "kind": "block_remap",
+      "name": "Creek trail approach encounter grass",
+      "bounds": [
+        11,
+        13,
+        14,
+        16
+      ],
+      "from": "01",
+      "to": "03"
+    },
+    {
+      "kind": "block_remap",
+      "name": "Creek trail approach encounter grass",
+      "bounds": [
+        11,
+        13,
+        14,
+        16
+      ],
+      "from": "02",
+      "to": "03"
+    },
+    {
+      "kind": "block_remap",
+      "name": "Eastern lowland bend encounter grass",
+      "bounds": [
+        23,
+        15,
+        26,
+        16
+      ],
+      "from": "01",
+      "to": "03"
+    },
+    {
+      "kind": "block_remap",
+      "name": "Eastern lowland bend encounter grass",
+      "bounds": [
+        23,
+        15,
+        26,
+        16
+      ],
+      "from": "02",
+      "to": "03"
+    },
+    {
+      "kind": "block_remap",
+      "name": "Limestone foot meadow encounter grass",
+      "bounds": [
+        12,
+        9,
+        14,
+        11
+      ],
+      "from": "01",
+      "to": "03"
+    },
+    {
+      "kind": "block_remap",
+      "name": "Limestone foot meadow encounter grass",
+      "bounds": [
+        12,
+        9,
+        14,
+        11
+      ],
+      "from": "02",
+      "to": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Dry footing for the existing creek trail trainer",
+      "position": [
+        12,
+        14
+      ],
+      "block": "02"
+    },
+    {
+      "kind": "point",
+      "name": "Dry bluff return to lower trail 13,9",
+      "position": [
+        13,
+        9
+      ],
+      "block": "02"
+    },
+    {
+      "kind": "point",
+      "name": "Dry bluff return to lower trail 13,10",
+      "position": [
+        13,
+        10
+      ],
+      "block": "02"
+    },
+    {
+      "kind": "point",
+      "name": "Dry bluff return to lower trail 12,10",
+      "position": [
+        12,
+        10
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Bluff climb grass approach 19,10",
+      "position": [
+        19,
+        10
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Bluff climb grass approach 21,10",
+      "position": [
+        21,
+        10
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Bluff climb grass approach 22,10",
+      "position": [
+        22,
+        10
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Bluff climb grass approach 19,11",
+      "position": [
+        19,
+        11
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Bluff climb grass approach 20,11",
+      "position": [
+        20,
+        11
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Bluff climb grass approach 21,11",
+      "position": [
+        21,
+        11
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Bluff climb grass approach 22,11",
+      "position": [
+        22,
+        11
+      ],
+      "block": "03"
     }
   ],
   "crossings": [

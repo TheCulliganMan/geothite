@@ -303,12 +303,29 @@ fn walkable_region(
     let mut seen = BTreeSet::from([start]);
     let mut queue = VecDeque::from([start]);
     while let Some([x, y]) = queue.pop_front() {
-        for [nx, ny] in [
+        for [mut nx, mut ny] in [
             [i32::from(x) - 1, i32::from(y)],
             [i32::from(x) + 1, i32::from(y)],
             [i32::from(x), i32::from(y) - 1],
             [i32::from(x), i32::from(y) + 1],
         ] {
+            let dx = nx - i32::from(x);
+            let dy = ny - i32::from(y);
+            // Match the ordinary route graph: ice can carry the player straight
+            // to land, but does not allow a turn at a transient sliding tile.
+            while (0..i32::from(width) * 2).contains(&nx)
+                && (0..i32::from(height) * 2).contains(&ny)
+                && collision(
+                    pack,
+                    blocks,
+                    width,
+                    [u16::try_from(nx)?, u16::try_from(ny)?],
+                    tileset,
+                )? == "ICE"
+            {
+                nx += dx;
+                ny += dy;
+            }
             if !(0..i32::from(width) * 2).contains(&nx) || !(0..i32::from(height) * 2).contains(&ny)
             {
                 continue;

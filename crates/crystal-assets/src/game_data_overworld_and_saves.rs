@@ -637,6 +637,7 @@ impl GameDataSet {
     ) -> Result<()> {
         apply_state_block_overrides(session, state)?;
         apply_state_object_overrides(session, state)?;
+        self.sync_safari_gate(state, session)?;
         Ok(())
     }
 
@@ -690,6 +691,9 @@ impl GameDataSet {
         spawn_update: SpawnMemoryUpdate,
         music_ids: &BTreeSet<String>,
     ) -> Result<()> {
+        let safari_departure = self.safari_departure_for_transition(
+            state, session, destination_map, destination_tile,
+        )?;
         let frame = session.frame;
         let connection_movement = (map_setup == "MAPSETUP_CONNECTION")
             .then_some((session.player.facing, session.last_step_direction));
@@ -744,6 +748,10 @@ impl GameDataSet {
             self.sync_current_map_music(state, destination_map, callback_mode, music_ids)?;
         }
         self.commit_overworld_snapshot(state, session, spawn_update);
+        self.sync_safari_gate(state, session)?;
+        if safari_departure {
+            self.finish_safari_departure(state, session)?;
+        }
         Ok(())
     }
 
@@ -1203,8 +1211,11 @@ impl GameDataSet {
                     facing: direction,
                 });
             } else {
+                let canoe_launch = forced_direction.is_none()
+                    && self.prepare_canoe_step(&staged_state, &mut staged_session, direction)?;
                 let options = StepOptions {
-                    running: self.running_shoes != Some(false)
+                    running: !canoe_launch
+                        && self.running_shoes != Some(false)
                         && movement_mode_before == MovementMode::Normal
                         && input_mask & B_PAD_B != 0
                         && forced_direction.is_none(),
@@ -1290,6 +1301,32 @@ impl GameDataSet {
                         })?;
                     movement = Some(result.outcome);
                     warp_trigger = result.warp;
+                }
+                if canoe_launch {
+                    if matches!(movement, Some(StepOutcome::Moved { .. })) {
+                        staged_state.script_runtime.memory.insert(
+                            crystal_core::systems::field_moves::CANOE_ACTIVE_MEMORY.into(),
+                            "1".into(),
+                        );
+                        for key in [
+                            crystal_core::systems::field_moves::SURF_ACTOR_SPECIES_MEMORY,
+                            crystal_core::systems::field_moves::SURF_ACTOR_DVS_MEMORY,
+                            crystal_core::systems::field_moves::SURF_ACTOR_PARTY_MEMORY,
+                        ] {
+                            staged_state.script_runtime.memory.remove(key);
+                        }
+                    } else {
+                        staged_session.player.mode = movement_mode_before;
+                    }
+                }
+                if !matches!(
+                    staged_session.player.mode,
+                    MovementMode::Surf | MovementMode::SurfPika
+                ) {
+                    staged_state
+                        .script_runtime
+                        .memory
+                        .remove(crystal_core::systems::field_moves::CANOE_ACTIVE_MEMORY);
                 }
                 if ledge_jump.is_none()
                     && let Some(permission) = tile_forced_permission
@@ -1405,6 +1442,10 @@ impl GameDataSet {
                 }
             }
             if moved {
+                // Safari counts the committed travel before trainer/connection/
+                // warp/coordinate events can return ahead of native CountStep.
+                crystal_core::systems::safari::record_successful_travel(&mut staged_state)
+                    .map_err(anyhow::Error::msg)?;
                 if let Some(StepOutcome::Moved {
                     to,
                     speed_multiplier,
@@ -1487,11 +1528,21 @@ impl GameDataSet {
                                             && !events.egg_hatched
                                             && events.poison_result.is_none()
                                     });
+                                if count_step_completed {
+                                    self.start_safari_encounter_after_step(
+                                        &mut staged_state,
+                                        &staged_session,
+                                        &mut rng,
+                                    )?;
+                                }
                                 // A field preview can legitimately start before obtaining
                                 // a first Pokemon. Walking must not commit a wild battle
                                 // without a usable player slot; scripted battle entry keeps
                                 // its separate authored validation and lifecycle.
                                 if count_step_completed
+                                    && crystal_core::systems::safari::session(&staged_state)
+                                        .map_err(anyhow::Error::msg)?
+                                        .is_none()
                                     && first_available_battle_party_index(&staged_state).is_some()
                                 {
                                     wild_encounter = self.check_wild_encounter_after_step(
@@ -1645,6 +1696,12 @@ impl GameDataSet {
     fn game_state_blocks_overworld_input(state: &GameState) -> bool {
         let runtime = &state.script_runtime;
         !matches!(state.battle, BattleMemory::Inactive)
+            || crystal_core::systems::safari_prompt::prompt(state).map_or(true, |prompt| prompt.is_some())
+            || crystal_core::systems::safari::session(state).map_or(true, |saved| {
+                saved.is_some_and(|active| {
+                    active.phase != crystal_core::systems::safari::SafariPhase::Exploring
+                })
+            })
             || runtime.player_input_locked
             || runtime.all_input_locked
             || !runtime.pending_delays.is_empty()
@@ -3315,7 +3372,7 @@ impl GameDataSet {
         source_script: &str,
     ) -> Result<()> {
         let rematch_trainer;
-        let trainer = if self.is_trainer_rematch_script(source_script) {
+        let trainer = if self.uses_scaled_trainer(source_script, &trainer.trainer_id) {
             let ace = enemy_party
                 .iter()
                 .map(|p| p.level)

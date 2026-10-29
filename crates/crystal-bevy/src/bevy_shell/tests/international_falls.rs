@@ -12,6 +12,9 @@ use super::super::{VisibleShellController, mark_runtime_snapshot_dirty};
 use super::interior_life::{fixture, load, talk, travel, walk};
 use super::r10_gallery::{continue_save, press};
 
+#[path = "international_falls_journey.rs"]
+mod journey;
+
 const CITY: &str = "MnInternationalFalls";
 const CLINIC: &str = "MnInternationalFallsPokecenter1F";
 const REPORT: &str = "EVENT_MN_BORDER_REPORT";
@@ -196,6 +199,7 @@ fn dry_walk(c: &mut VisibleShellController, r: &CrystalRuntime, to: (i16, i16)) 
         p = prev;
     }
     for (q, b) in course.into_iter().rev() {
+        journey::repel(c, r);
         let (name, local) = locations[&q];
         for _ in 0..8 {
             press(c, b);
@@ -208,6 +212,7 @@ fn dry_walk(c: &mut VisibleShellController, r: &CrystalRuntime, to: (i16, i16)) 
         assert_eq!(actual.map_name, name);
         assert_eq!((actual.tile.x, actual.tile.y), local);
     }
+    journey::repel(c, r);
 }
 
 #[test]
@@ -233,7 +238,7 @@ fn international_falls_controller_decline_each_departure_guard_and_free_inbound_
         .map(Some)
         .chain([None, None]);
     for (missing, badge) in omissions.enumerate() {
-        let mut gate = fixture(&root, &r, CITY, (28, 14));
+        let mut gate = fixture(&root, &r, "MnRainyRiverIcefields", (60, 45));
         qualify(&mut gate);
         let state = gate.shell.shell.session_mut().state_mut();
         state
@@ -277,12 +282,12 @@ fn international_falls_controller_decline_each_departure_guard_and_free_inbound_
         );
         assert!(drain(&mut gate).contains("winter loop"));
         let s = gate.snapshot().expect("safe denial return").overworld;
-        assert_eq!((s.tile.x, s.tile.y), (28, 14));
+        assert_eq!((s.tile.x, s.tile.y), (60, 45));
         assert!(!flag(&gate, ARRIVED));
         assert!(!flag(&gate, GIVEN));
     }
-    let mut incoming = fixture(&root, &r, CITY, (31, 15));
-    walk(&mut incoming, &r, (28, 15));
+    let mut incoming = fixture(&root, &r, "MnR17C00R00", (36, 0));
+    cross(&mut incoming, GameButton::Up, CITY, (20, 27));
     travel(&mut incoming, &r, CLINIC);
     assert_eq!(
         incoming
@@ -341,7 +346,7 @@ fn international_falls_controller_decline_each_departure_guard_and_free_inbound_
         flag(&second_lane, ARRIVED),
         "the second real outlet lane also records arrival"
     );
-    let mut other_road = fixture(&root, &r, "MnR12C00R01", (0, 8));
+    let mut other_road = fixture(&root, &r, "MnR12C00R00", (0, 28));
     qualify(&mut other_road);
     other_road
         .shell
@@ -389,17 +394,20 @@ fn international_falls_controller_walks_the_real_border_loop_and_retries_full_pa
     qualify(&mut c);
     // Optional matches are already defeated in this journey fixture. No route,
     // check-in, arrival or reward flag is invented by the movement planner.
+    c.shell
+        .shell
+        .session_mut()
+        .state_mut()
+        .flags
+        .set_event_flag("EVENT_MN_HEADWATERS_REPORT", true)
+        .expect("explicit prior Headwaters evidence fixture for the east road");
     let defeated = r
         .data()
-        .story_event_script_constants
-        .global
-        .keys()
-        .filter(|n| {
-            n.starts_with("EVENT_MN_R20_TRAINER_")
-                || (n.starts_with("EVENT_MN_ICE_") && !n.contains("NEVERMELTICE"))
-        })
-        .cloned()
-        .collect::<Vec<_>>();
+        .maps
+        .values()
+        .filter(|m| m.id.starts_with("Mn") && !m.id.contains("Gym"))
+        .flat_map(|m| m.trainer_scripts.values().map(|t| t.event_flag.clone()))
+        .collect::<BTreeSet<_>>();
     for name in defeated {
         c.shell
             .shell
@@ -409,11 +417,25 @@ fn international_falls_controller_walks_the_real_border_loop_and_retries_full_pa
             .set_event_flag(&name, true)
             .expect("defeated optional match fixture");
     }
+    let partner = r
+        .data()
+        .create_pokemon("POUCHID", 80, Dv::default())
+        .expect("active regional journey partner fixture");
+    let state = c.shell.shell.session_mut().state_mut();
+    state.storage.party.pokemon.fill(None);
+    assert!(state.storage.party.add_pokemon(partner));
+    state.sync_party_from_storage();
+    state.repel_steps_remaining = 250;
+    state.active_repel_item = Some("MAX_REPEL".into());
     c.shell.shell.session_mut().state_mut().bag.items.clear();
     c.shell
         .shell
         .add_bag_item("POTION", 1)
         .expect("tossable fixture item");
+    c.shell
+        .shell
+        .add_bag_item("MAX_REPEL", 99)
+        .expect("carried journey Repels");
     while c.shell.shell.session().state().bag.items.len()
         < crystal_core::models::bag::ITEM_POCKET_CAPACITY
     {
@@ -428,10 +450,9 @@ fn international_falls_controller_walks_the_real_border_loop_and_retries_full_pa
     c = continue_save(root.clone(), r.clone(), &mut c);
     assert!(!flag(&c, ARRIVED));
     travel(&mut c, &r, CITY);
-    walk(&mut c, &r, (31, 14));
-    cross(&mut c, GameButton::Right, "MnRainyRiverIcefields", (0, 28));
-    dry_walk(&mut c, &r, (63, 44));
-    cross(&mut c, GameButton::Right, "MnR20C00R00", (0, 44));
+    journey::walk(&mut c, &r, "MnRainyRiverIcefields", (60, 45));
+    dry_walk(&mut c, &r, (63, 45));
+    cross(&mut c, GameButton::Right, "MnR20C00R00", (0, 45));
     dry_walk(&mut c, &r, (63, 24));
     cross(&mut c, GameButton::Right, "MnR20C01R00", (0, 24));
     dry_walk(&mut c, &r, (63, 36));
@@ -449,8 +470,7 @@ fn international_falls_controller_walks_the_real_border_loop_and_retries_full_pa
     cross(&mut c, GameButton::Left, "MnR20C00R00", (63, 24));
     dry_walk(&mut c, &r, (0, 44));
     cross(&mut c, GameButton::Left, "MnRainyRiverIcefields", (63, 44));
-    dry_walk(&mut c, &r, (0, 28));
-    cross(&mut c, GameButton::Left, CITY, (31, 14));
+    journey::walk(&mut c, &r, CITY, (20, 25));
     travel(&mut c, &r, CLINIC);
     walk(&mut c, &r, (2, 6));
     assert!(talk(&mut c, (2, 5)).contains("full"));
@@ -469,7 +489,7 @@ fn international_falls_controller_walks_the_real_border_loop_and_retries_full_pa
 }
 #[test]
 #[ignore = "requires CRYSTAL_INTERIOR_PACK with InternationalFalls"]
-fn international_falls_controller_residents_rooms_carpets_and_both_northern_roads() {
+fn international_falls_controller_residents_rooms_carpets_and_real_southern_road() {
     let (root, r, _) = load();
     let plan: Value = serde_json::from_str(
         &std::fs::read_to_string(
@@ -538,16 +558,16 @@ fn international_falls_controller_residents_rooms_carpets_and_both_northern_road
         cross(&mut c, GameButton::Down, "MnR17C00R00", (lane + 16, 0));
         cross(&mut c, GameButton::Up, CITY, (lane, 27));
     }
-    for lane in [14, 15] {
-        walk(&mut c, &r, (31, lane));
-        cross(
-            &mut c,
-            GameButton::Right,
-            "MnRainyRiverIcefields",
-            (0, lane + 14),
-        );
-        cross(&mut c, GameButton::Left, CITY, (31, lane));
+    walk(&mut c, &r, (26, 14));
+    for _ in 0..4 {
+        press(&mut c, GameButton::Right);
     }
+    let boundary = c
+        .snapshot()
+        .expect("visible forest closes the false shortcut")
+        .overworld;
+    assert_eq!(boundary.map_name, CITY);
+    assert_eq!((boundary.tile.x, boundary.tile.y), (27, 14));
     let before = c.snapshot().expect("town save").overworld;
     c = continue_save(root, r.clone(), &mut c);
     let after = c.snapshot().expect("continued town").overworld;

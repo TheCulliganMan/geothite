@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "trainers": [
+    {
+      "map": "MnRochester",
+      "approach": [
+        23,
+        13
+      ],
+      "id": "MN_EXTRA_NPC_ORCHARD_01",
+      "display_name": "POMONA",
+      "trainer_class": "MN_ORCHARD_KEEPER",
+      "class_name": "ORCHARD KEEPER",
+      "template_class": "POKEFANF",
+      "sprite": "SPRITE_MN_ORCHARD_KEEPER",
+      "tile": [
+        23,
+        12
+      ],
+      "facing": "south",
+      "sight_range": 2,
+      "defeated_flag": "EVENT_MN_EXTRA_NPC_ORCHARD_01",
+      "party": [
+        {
+          "species": "CRISPIP",
+          "level": 12
+        },
+        {
+          "species": "POUCHID",
+          "level": 14
+        }
+      ],
+      "before_lines": [
+        "A crisp challenge!",
+        "Care for a battle?"
+      ],
+      "after_lines": [
+        "Sweet teamwork!",
+        "Let fruit ripen."
+      ],
+      "loss_lines": [
+        "Grow strong roots.",
+        "Try again soon."
+      ]
+    }
+  ]
+}

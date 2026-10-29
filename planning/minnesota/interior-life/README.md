@@ -1,18 +1,28 @@
 # Minnesota interior life
 
 The goal remains **all Minnesota interiors except gyms**, including the rooms
-registered in other publication branches. This pass authors the 187 non-gym
-interiors actually installed in the northern-winter parent. It does not merge
-the other branches or claim their absent rooms are finished.
+registered in other publication branches. The original story pass authored the
+187 non-gym interiors installed in the northern-winter parent; the publications
+below integrate additional buildings. Uncomposed geography and regional quality
+requirements remain open.
 
-The current publication is [International Falls v02](INTERNATIONAL-FALLS.md),
-with 210 installed non-gym interiors and the repaired St. Paul city. Its two-room
-winter town and real ranger circuit follow [Moorhead](MOORHEAD.md),
-[Detroit Lakes](DETROIT-LAKES.md) and the protected canonical chapter lineage.
-Four Falls controller cases, strict preservation, audio and native 2D review
-pass. Regional 3D acceptance remains open after the fresh city capture timeout. Earlier v03 story and
-fair/ice v01 outputs are historical: the receiver chapter test later exposed one
-flavor-text collision, corrected throughout the current lineage.
+The retained [rail-stop correction](RAIL-STOP-CORRECTION.md) withdraws Red Wing's
+station by user direction. The preserved room branch is
+`content-packs/minnesota-interiors-no-red-wing-v01.crystalpack`, with 719 maps and
+217 installed non-gym interiors. The depot, its actors and its stop reservation
+have been removed from active source; the two native timetables list five stops.
+Rejected source snapshots, packs and renders remain historical only.
+It retains [Staples' station and supplies](STAPLES-STATION.md),
+[Split Rock's clinic](SPLIT-ROCK.md), [three fishing homes](FISHING-HOUSES.md),
+the shore-watch gate and Winona depot, plus the St. Paul facade/waterfront repair.
+The visual direction remains **native 2D only**.
+The 719-map interior branch is now **preserved history, not an approved new
+publication parent**: it retains the obsolete coast/Gunflint geometry. Current
+interior publishers refuse it. See [the compact rebase](COMPACT-REBASE.md) for the protected room work, geometry conflicts
+and pending physical entrance integration. No new stale-geometry pack was published.
+ Canonical coast/Cedar and Ely
+geography integration, the Staples ledger repair, full five-stop train service
+and regional room-quality review remain open. Counts do not establish acceptance.
 
 The subsequent [physical layout pass](LAYOUTS.md) replaces 24 weak room
 compositions and adds 25 readable furniture details. Its current publication is
@@ -21,7 +31,8 @@ pack below. It retains the same 187-room story coverage and original services.
 The subsequent [Duluth club pass](CLUBS.md) adds 13 more room contracts and
 16 readable details over the St. Paul repair/Ely child, keeping the existing
 weather and labor errands. The [coverage record](COVERAGE.md) tracks the
-older shore-gate contract, three planned stations and regional 3D review. The earlier
+canonical geography/shore-gate rebase, remaining detail repairs, full
+train service and regional native 2D review. The earlier
 [699-map composition](INTEGRATION.md) contains 201 interiors and passes all
 20 targeted controller cases, native room/seam review and all 377 audio checks.
 The all-interiors objective remains active.

@@ -1,0 +1,40 @@
+{
+  "name": "PIPPA",
+  "role": "Bird Watcher",
+  "status": "accepted-native-playable",
+  "source": "native-pixels-v3.json",
+  "integration": "placement-v1.json",
+  "controller": "placement-v1.json",
+  "native": "target/trainer-cast/birdwatcher/native-v3",
+  "pack": "content-packs/minnesota-trainer-cast-17-v02.crystalpack",
+  "gameplay": "target/trainer-cast/birdwatcher/gameplay-v3",
+  "log": "target/trainer-cast/birdwatcher/controller-v3.log",
+  "reference_review": "actual-crystal-sprites-common-palette-and-scale",
+  "review_notes": "Muted olive palette corrected after game capture. Broad hat and ponytail retained across six hand-drawn field poses; native battle crown and eyes redrawn. Crystal comparisons and actual game inspected.",
+  "fixture": "Three legal level-60 Minnesota starters; adjacent position and explicit prior-access setup. Local encounter/rewards proof, not earned traversal or intended-level balance.",
+  "evidence_sha256": {
+    "planning/minnesota/npcs/cast/17-bird-watcher/native-pixels-v3.json": "855e381c9f874963d5cc4c35486b849fad5713f77c1230ba306ddf784f2f2cc5",
+    "planning/minnesota/npcs/cast/17-bird-watcher/placement-v1.json": "873e332814aa78f92eb20c8448e02eddca318458341aa9f16f9b289fb790621d",
+    "target/trainer-cast/birdwatcher/native-v3/verification.json": "da1c6f39d7da9e8e6bc20bbbef51b86c94e6aeb2f4687757816bfb4361f9cc79",
+    "content-packs/minnesota-trainer-cast-17-v02.crystalpack": "1088e5d4e1cd1b8467ca0199b4cf5cb977bdabb1f3146b8db80ed4af54e27e8b",
+    "target/trainer-cast/birdwatcher/controller-v3.log": "58a6ca42c2d0a27e6beb7345e91c16ef8f5c7efd84626252ff4b235edbdfb31d",
+    "target/trainer-cast/birdwatcher/gameplay-v3/original-npc-trainer-intro.png": "1a0b95d0bb2e97928938be89f5814868de70ea8555f6642c10b72fecd71eae43",
+    "target/trainer-cast/birdwatcher/gameplay-v3/original-npc-overworld-state.png": "002157a1cd6ceb2295d0ea45abeb134e2687030f5d24fa75928a6b4b998b5d73",
+    "target/trainer-cast/birdwatcher/gameplay-v3/original-npc-first-turn.png": "06a4b0cdcecdc9f92c17e0e72bf6806f927f960508cb249fba99ff44d4ba0655",
+    "planning/minnesota/npcs/cast/17-bird-watcher/battle-reference-prompt.txt": "8c90e1e5e69a12b59d8d9c9bca96aa3a8348ec75db90261b8616a982b2eaff2e",
+    "planning/minnesota/npcs/cast/17-bird-watcher/battle-reference-v1.png": "994118b93bfd136a87227eca3b339070fab2b0ed27e631d56519b78e0fef542f",
+    "target/trainer-cast/birdwatcher/real-comparison.png": "179623b1ca75b229008cbacd8a5b1cc45eeaff3bd542cc8809e40e6c120762e1",
+    "target/trainer-cast/birdwatcher/battle-real-comparison.png": "0a8242744780368932eea4fcf4a2101c6b9aa5471b15ba5c66a791f9132f0943"
+  },
+  "final_pack": "content-packs/minnesota-trainer-cast-36-v01.crystalpack",
+  "final_gameplay": "target/trainer-cast/final-audit/gameplay/17-bird-watcher",
+  "final_log": "target/trainer-cast/final-audit/gameplay/17-bird-watcher/controller.log",
+  "final_status": "accepted-native-playable-final-pack",
+  "final_review": "Actual battle intro and field captures inspected on exact final pack; art retains accepted native sources and palette.",
+  "final_evidence_sha256": {
+    "target/trainer-cast/final-audit/gameplay/17-bird-watcher/controller.log": "7b8d96f9d5fbc29b7e372b626255df83a7e2bf572fe9f162cdd3d47cc92d1088",
+    "target/trainer-cast/final-audit/gameplay/17-bird-watcher/original-npc-trainer-intro.png": "1a0b95d0bb2e97928938be89f5814868de70ea8555f6642c10b72fecd71eae43",
+    "target/trainer-cast/final-audit/gameplay/17-bird-watcher/original-npc-overworld-state.png": "18a94b3121157d858cd82cd7a0a99351cf2ae06f4fd1541eb9104d0de3a90bb0",
+    "target/trainer-cast/final-audit/gameplay/17-bird-watcher/original-npc-first-turn.png": "06a4b0cdcecdc9f92c17e0e72bf6806f927f960508cb249fba99ff44d4ba0655"
+  }
+}

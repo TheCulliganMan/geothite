@@ -4,30 +4,54 @@ use std::path::PathBuf;
 
 use crystal_core::input::GameButton;
 use crystal_core::models::Dv;
-use crystal_runtime::{RuntimeBattleKind, RuntimeShellPhase};
+use crystal_runtime::{CrystalRuntime, RuntimeBattleKind, RuntimeShellPhase};
 
 use super::super::{VisibleShellController, mark_runtime_snapshot_dirty};
-use super::authored_route_fixture::{finish_text, position};
+use super::authored_route_fixture::{finish_text, position, use_super_potion};
 use super::twin_cities::fixture;
 
 type Point = (i16, i16);
 
-#[derive(Default)]
-struct Journey {
+struct Journey<'a> {
+    runtime: &'a CrystalRuntime,
     wild_encounters: usize,
     trainer_opponents: BTreeSet<String>,
     attacks_spent_pp: usize,
+    medicine_uses: usize,
 }
 
-impl Journey {
+impl Journey<'_> {
     fn settle(&mut self, controller: &mut VisibleShellController) {
         for _ in 0..64 {
             let s = controller.snapshot().expect("visible activity");
             if s.battle.is_some() {
                 self.battle(controller);
-            } else if s.phase == RuntimeShellPhase::Text || controller.has_pending_script_work() {
+            } else if s.phase == RuntimeShellPhase::Text
+                || controller.has_pending_script_work()
+                || controller.shell.field_notice.is_some()
+                || controller.shell.visible_field_item_notice.is_some()
+                || !controller.shell.battle_messages.is_empty()
+            {
                 controller.press(GameButton::A).expect("native text page");
+                controller
+                    .wait_frames(16)
+                    .expect("native text presentation");
             } else {
+                // Exercise carried medicine on actual battle damage; a half-HP
+                // threshold can miss the item contract with this native party.
+                if s.party
+                    .slots
+                    .iter()
+                    .any(|p| p.pokemon.hp > 0 && p.pokemon.hp < p.pokemon.max_hp)
+                    && s.bag
+                        .items
+                        .iter()
+                        .any(|item| item.item_id == "SUPER_POTION" && item.quantity > 0)
+                {
+                    use_super_potion(controller);
+                    self.medicine_uses += 1;
+                    continue;
+                }
                 return;
             }
         }
@@ -41,13 +65,17 @@ impl Journey {
             RuntimeBattleKind::Wild { .. }
         );
         self.wild_encounters += usize::from(wild);
-        let initial_pp: u32 = initial
+        let initial_moves: Vec<_> = initial
             .party
             .slots
             .iter()
-            .flat_map(|p| &p.pokemon.moves)
-            .map(|m| u32::from(m.current_pp))
-            .sum();
+            .flat_map(|p| {
+                p.pokemon
+                    .moves
+                    .iter()
+                    .map(move |m| (p.index, m.name.clone(), m.current_pp))
+            })
+            .collect();
         for _ in 0..768 {
             let s = controller.snapshot().expect("production battle");
             let Some(battle) = &s.battle else {
@@ -56,6 +84,26 @@ impl Journey {
             if !wild {
                 self.trainer_opponents
                     .insert(battle.enemy_pokemon.species.id.clone());
+            }
+            if let Some(button) = super::rochester_earned::learning_button(controller, self.runtime)
+            {
+                controller
+                    .press(button)
+                    .expect("native move learning input");
+                controller
+                    .wait_frames(16)
+                    .expect("native move learning presentation");
+                continue;
+            }
+            // Visible narration owns input even if a cursor exists behind it.
+            if !controller.shell.battle_messages.is_empty() || s.ui.menu.is_none() {
+                controller
+                    .press(GameButton::A)
+                    .expect("native battle narration");
+                controller
+                    .wait_frames(16)
+                    .expect("native battle presentation");
+                continue;
             }
             let options =
                 s.ui.menu
@@ -74,7 +122,18 @@ impl Journey {
                 controller.wait_frames(30).expect("battle narration frames");
                 GameButton::A
             } else if options.iter().any(|o| o.contains("change <PKMN>")) {
-                GameButton::B
+                if controller
+                    .shell
+                    .battle_shift_prompt_cursor
+                    .as_ref()
+                    .expect("visible trainer Shift choice")
+                    .option_index
+                    == 0
+                {
+                    GameButton::Down
+                } else {
+                    GameButton::A
+                }
             } else if options.iter().any(|o| o.contains("FIGHT")) {
                 let target = if wild { 3 } else { 0 };
                 let cursor = controller
@@ -119,30 +178,7 @@ impl Journey {
             } else if let Some(cursor) = &controller.shell.battle_move_cursor {
                 let slot = battle.active_player_party_index.expect("active partner");
                 let pokemon = &s.party.slots[slot].pokemon;
-                let enemy = battle.enemy_pokemon.species.id.as_str();
-                let preferred = if pokemon.species.id == "FLAAFFY" {
-                    if enemy == "WOOPER" {
-                        "TACKLE"
-                    } else {
-                        "THUNDERSHOCK"
-                    }
-                } else if ["WOOPER", "MAREEP", "PIDGEY"].contains(&enemy) {
-                    "WATER_GUN"
-                } else {
-                    "BITE"
-                };
-                let target = battle
-                    .player_moves
-                    .iter()
-                    .position(|m| m.name == preferred && m.current_pp > 0)
-                    .or_else(|| {
-                        battle.player_moves.iter().position(|m| {
-                            m.current_pp > 0
-                                && ["WATER_GUN", "BITE", "THUNDERSHOCK", "TACKLE"]
-                                    .contains(&m.name.as_str())
-                        })
-                    })
-                    .expect("usable legal move");
+                let target = super::rochester_earned::best_attack(self.runtime, battle, pokemon);
                 if cursor.option_index < target {
                     GameButton::Down
                 } else if cursor.option_index > target {
@@ -154,20 +190,54 @@ impl Journey {
                 GameButton::A
             };
             controller.press(button).expect("production battle input");
+            controller
+                .wait_frames(16)
+                .expect("native battle input presentation");
         }
         let ended = controller.snapshot().expect("battle result");
-        assert!(ended.battle.is_none(), "battle did not end: {:?}", ended.ui);
-        if !wild {
-            let final_pp: u32 = ended
+        assert!(
+            ended.battle.is_none(),
+            "battle did not end: ui={:?}, messages={:?}, shift={:?}, audio={:?}, party={:?}",
+            ended.ui,
+            controller.shell.battle_messages,
+            controller.shell.battle_shift_prompt_cursor,
+            controller
+                .shell
+                .last_audio_events
+                .iter()
+                .rev()
+                .take(8)
+                .collect::<Vec<_>>(),
+            ended
                 .party
                 .slots
                 .iter()
-                .flat_map(|p| &p.pokemon.moves)
-                .map(|m| u32::from(m.current_pp))
-                .sum();
-            assert!(final_pp < initial_pp, "trainer battle never spent move PP");
+                .map(|p| (p.pokemon.species.id.as_str(), p.pokemon.hp))
+                .collect::<Vec<_>>()
+        );
+        if !wild {
+            // A learned move may add PP; retain proof that an original move
+            // on the same partner was actually consumed during this battle.
+            assert!(
+                initial_moves.iter().any(|(slot, name, before)| {
+                    ended.party.slots.iter().any(|p| {
+                        p.index == *slot
+                            && p.pokemon
+                                .moves
+                                .iter()
+                                .any(|m| m.name == *name && m.current_pp < *before)
+                    })
+                }),
+                "trainer battle never spent move PP"
+            );
             self.attacks_spent_pp += 1;
         }
+        assert!(
+            ended.party.slots.iter().any(|p| p.pokemon.hp > 0),
+            "journey party fainted: kind={:?}, party={:?}",
+            initial.battle,
+            ended.party
+        );
         finish_text(controller);
     }
 
@@ -186,7 +256,12 @@ impl Journey {
                 .text
                 .as_ref()
                 .and_then(|t| t.asm_text.as_ref())
-                .is_some_and(|text| text.contains(expected)),
+                .is_some_and(|text| text.contains(expected))
+                || controller
+                    .shell
+                    .visible_field_item_notice
+                    .as_ref()
+                    .is_some_and(|notice| notice.sound_trigger_text.contains(expected)),
             "missing {expected}: {:?}",
             snapshot.ui
         );
@@ -409,7 +484,7 @@ fn twin_cities_journey_bypasses_cole_both_ways_wins_trainers_uses_ether_and_cont
     let (root, runtime, mut controller) = fixture();
     // Source-created partners, three badge bits, placement and the divider are
     // explicit local setup. They do not represent an earned regional journey.
-    for (species, level) in [("CROCONAW", 21), ("FLAAFFY", 20)] {
+    for (species, level) in [("PORTABEAU", 18), ("ZAPSAP", 16)] {
         let pokemon = runtime
             .data()
             .create_pokemon(species, level, Dv::default())
@@ -426,6 +501,13 @@ fn twin_cities_journey_bypasses_cole_both_ways_wins_trainers_uses_ether_and_cont
         );
     }
     let state = controller.shell.shell.session_mut().state_mut();
+    // Explicit carried supplies; use through the field Pack during the journey.
+    assert!(
+        state
+            .bag
+            .add_item(&runtime.data().items["SUPER_POTION"], 4)
+            .expect("fixture carried medicine")
+    );
     state.badges.johto = [true, true, true, false, false, false, false, false];
     state.sync_party_from_storage();
     state.random_state = Default::default();
@@ -439,7 +521,13 @@ fn twin_cities_journey_bypasses_cole_both_ways_wins_trainers_uses_ether_and_cont
                 .collect::<Vec<u8>>(),
         );
     mark_runtime_snapshot_dirty(&mut controller.shell);
-    let mut journey = Journey::default();
+    let mut journey = Journey {
+        runtime: &runtime,
+        wild_encounters: 0,
+        trainer_opponents: BTreeSet::new(),
+        attacks_spent_pp: 0,
+        medicine_uses: 0,
+    };
     for at in [(12, 18), (12, 13), (8, 13)] {
         journey.walk(&mut controller, at);
     }
@@ -502,7 +590,7 @@ fn twin_cities_journey_bypasses_cole_both_ways_wins_trainers_uses_ether_and_cont
     for at in [(42, 26), (40, 26), (40, 25), (40, 18), (36, 18), (36, 15)] {
         journey.walk(&mut controller, at);
     }
-    journey.read(&mut controller, GameButton::Up, "MISSISSIPPI");
+    journey.read(&mut controller, GameButton::Up, "PARK POND BRIDGE");
     for at in [(36, 18), (22, 18), (22, 23)] {
         journey.walk(&mut controller, at);
     }
@@ -578,7 +666,11 @@ fn twin_cities_journey_bypasses_cole_both_ways_wins_trainers_uses_ether_and_cont
         journey.walk(&mut controller, at);
     }
     assert_eq!(journey.attacks_spent_pp, 2);
-    for species in ["DITTO", "YANMA", "ABRA", "SNUBBULL"] {
+    assert!(
+        journey.medicine_uses > 0,
+        "journey never used native field medicine"
+    );
+    for species in ["DRIFTILE", "CLICKIT", "JOTLET", "DENSY"] {
         assert!(journey.trainer_opponents.contains(species), "{species}");
     }
     let flags = [
@@ -606,8 +698,8 @@ fn twin_cities_journey_bypasses_cole_both_ways_wins_trainers_uses_ether_and_cont
         std::process::id()
     ));
     controller.save(&save).expect("save journey");
-    let mut loaded =
-        VisibleShellController::load_save(root, runtime, save.clone(), None).expect("Continue");
+    let mut loaded = VisibleShellController::load_save(root, runtime.clone(), save.clone(), None)
+        .expect("Continue");
     assert_eq!(position(&mut loaded), (4, 18));
     let after = loaded.snapshot().expect("continued party and inventory");
     assert_eq!(before.party, after.party);

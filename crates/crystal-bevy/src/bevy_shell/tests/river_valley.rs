@@ -110,9 +110,37 @@ fn river_valley_controller_walks_both_bridges_seam_terrace_and_cave_events() {
     for at in [(41, 42), (41, 41), (41, 40), (41, 39), (37, 39)] {
         grid.walk(&mut controller, at);
     }
+    // Route30-style woodland drop: all four native lanes hop south, reject
+    // reverse ascent, then return through the ordinary eastern meadow bend.
+    for x in 10..14 {
+        grid.walk(&mut controller, (x, 19));
+        for _ in 0..8 {
+            controller
+                .press(GameButton::Down)
+                .expect("bird meadow native descent");
+            assert_ne!(
+                position(&mut controller),
+                (x, 21),
+                "walked through reverse wall"
+            );
+            if position(&mut controller) == (x, 22) {
+                break;
+            }
+        }
+        assert_eq!(position(&mut controller), (x, 22));
+        for _ in 0..4 {
+            controller
+                .press(GameButton::Up)
+                .expect("try meadow reverse ascent");
+        }
+        assert_eq!(position(&mut controller), (x, 22));
+        for at in [(16, 22), (16, 20), (16, 18), (x, 19)] {
+            grid.walk(&mut controller, at);
+        }
+    }
     for (at, text) in [
         ((20, 60), "MINNESOTA"),
-        ((22, 4), "MINNEAPOLIS"),
+        ((22, 8), "MINNEAPOLIS"),
         ((12, 36), "RIVER POCKET"),
         ((28, 26), "UPPER"),
         ((40, 44), "TERRACE"),
@@ -136,7 +164,9 @@ fn river_valley_controller_walks_both_bridges_seam_terrace_and_cave_events() {
             .map_name,
         "MnR03Cave1F"
     );
-    for at in [(5, 6), (4, 7), (10, 7), (11, 5)] {
+    // The installed cave's cache is reached through its northern gallery;
+    // the older southern waypoint (10,7) is now permanent rock.
+    for at in [(5, 6), (4, 7), (5, 3), (11, 3), (11, 5)] {
         indoor_walk(&mut controller, &runtime, at);
     }
     controller.press(GameButton::Right).expect("face cache");

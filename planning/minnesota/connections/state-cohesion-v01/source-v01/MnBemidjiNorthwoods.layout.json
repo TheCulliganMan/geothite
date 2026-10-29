@@ -1,0 +1,74 @@
+{
+  "schema_version": 2,
+  "id": "MnBemidjiNorthwoods",
+  "tileset": "johto",
+  "compiled_tileset": "johto",
+  "dimensions_metatiles": [
+    8,
+    14
+  ],
+  "shore_fitting": "explicit_source_edges",
+  "reject_cliff_cuts": true,
+  "source_pixels_modified": false,
+  "layers": [
+    {
+      "name": "A narrow pine neck clears the old west and east roads",
+      "kind": "path",
+      "points": [
+        [
+          4,
+          13
+        ],
+        [
+          4,
+          11
+        ],
+        [
+          2,
+          11
+        ],
+        [
+          2,
+          8
+        ],
+        [
+          5,
+          8
+        ],
+        [
+          5,
+          5
+        ],
+        [
+          3,
+          5
+        ],
+        [
+          3,
+          2
+        ],
+        [
+          4,
+          2
+        ],
+        [
+          4,
+          0
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "name": "Small inside bend grass crossing",
+      "kind": "rect",
+      "bounds": [
+        3,
+        5,
+        4,
+        6
+      ],
+      "material": "encounter"
+    }
+  ]
+}

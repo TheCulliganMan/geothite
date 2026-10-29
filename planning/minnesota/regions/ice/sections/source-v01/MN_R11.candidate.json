@@ -1,0 +1,2597 @@
+{
+  "id": "MN_R11",
+  "map_prefix": "MnR11",
+  "name": "North Shore Trail",
+  "required_flags": [
+    "BADGE_1",
+    "BADGE_2",
+    "BADGE_3",
+    "BADGE_4",
+    "BADGE_5",
+    "BADGE_6",
+    "BADGE_7",
+    "BADGE_8",
+    "EVENT_MN_LIGHTHOUSE_SIGNAL"
+  ],
+  "quest": "Q07",
+  "encounters": {
+    "grass_rates": {
+      "morning": 10,
+      "day": 10,
+      "night": 10
+    },
+    "grass": {
+      "morning": [
+        {
+          "species": "PIDGEOTTO",
+          "level": 38
+        },
+        {
+          "species": "TANGELA",
+          "level": 39
+        },
+        {
+          "species": "GRAVELER",
+          "level": 40
+        },
+        {
+          "species": "GLOOM",
+          "level": 40
+        },
+        {
+          "species": "QUAGSIRE",
+          "level": 41
+        },
+        {
+          "species": "SNEASEL",
+          "level": 42
+        },
+        {
+          "species": "URSARING",
+          "level": 43
+        }
+      ],
+      "day": [
+        {
+          "species": "PIDGEOTTO",
+          "level": 38
+        },
+        {
+          "species": "TANGELA",
+          "level": 39
+        },
+        {
+          "species": "GRAVELER",
+          "level": 40
+        },
+        {
+          "species": "GLOOM",
+          "level": 40
+        },
+        {
+          "species": "QUAGSIRE",
+          "level": 41
+        },
+        {
+          "species": "SNEASEL",
+          "level": 42
+        },
+        {
+          "species": "URSARING",
+          "level": 43
+        }
+      ],
+      "night": [
+        {
+          "species": "NOCTOWL",
+          "level": 38
+        },
+        {
+          "species": "ARIADOS",
+          "level": 39
+        },
+        {
+          "species": "GRAVELER",
+          "level": 40
+        },
+        {
+          "species": "GOLBAT",
+          "level": 40
+        },
+        {
+          "species": "QUAGSIRE",
+          "level": 41
+        },
+        {
+          "species": "SNEASEL",
+          "level": 42
+        },
+        {
+          "species": "URSARING",
+          "level": 43
+        }
+      ]
+    },
+    "water_rate": 4,
+    "water": [
+      {
+        "species": "POLIWAG",
+        "level": 38
+      },
+      {
+        "species": "QUAGSIRE",
+        "level": 40
+      },
+      {
+        "species": "MANTINE",
+        "level": 42
+      }
+    ]
+  },
+  "art_constraints": [
+    "Only original packed 8x8 source tiles.",
+    "No painted shadows, enlarged trees or perspective props.",
+    "Fit source shoreline/cliff quadrants; draw source trees in coherent metatile groups."
+  ],
+  "dimensions_metatiles": [
+    56,
+    96
+  ],
+  "chunk_metatiles": [
+    32,
+    24
+  ],
+  "chunk_columns": 2,
+  "chunk_rows": 4,
+  "tileset": "johto",
+  "source_references": [
+    "Route34",
+    "Route42",
+    "Route45",
+    "OlivineCity"
+  ],
+  "description": "An expanded continuous Superior coast: narrow tributaries cut six basalt gorges, cliff crowns offer directional drops with ordinary ramp returns, and new Stoney Point/Lester walks extend the approach to Duluth. The enlarged lake dominates the east rather than enlarging the rivers.",
+  "endpoints": [
+    {
+      "place": "GRAND MARAIS",
+      "side": "N",
+      "gate_metatile": [
+        20,
+        1
+      ],
+      "landing_metatile": [
+        20,
+        3
+      ]
+    },
+    {
+      "place": "DULUTH",
+      "side": "S",
+      "gate_metatile": [
+        23,
+        94
+      ],
+      "landing_metatile": [
+        23,
+        92
+      ]
+    }
+  ],
+  "main_path_metatiles": [
+    [
+      20,
+      1
+    ],
+    [
+      20,
+      8
+    ],
+    [
+      17,
+      8
+    ],
+    [
+      17,
+      16
+    ],
+    [
+      20,
+      16
+    ],
+    [
+      20,
+      23
+    ],
+    [
+      16,
+      23
+    ],
+    [
+      16,
+      30
+    ],
+    [
+      20,
+      30
+    ],
+    [
+      20,
+      41
+    ],
+    [
+      16,
+      41
+    ],
+    [
+      16,
+      42
+    ],
+    [
+      14,
+      42
+    ],
+    [
+      14,
+      44
+    ],
+    [
+      16,
+      44
+    ],
+    [
+      16,
+      46
+    ],
+    [
+      16,
+      47
+    ],
+    [
+      20,
+      47
+    ],
+    [
+      20,
+      56
+    ],
+    [
+      17,
+      56
+    ],
+    [
+      17,
+      70
+    ],
+    [
+      17,
+      72
+    ],
+    [
+      20,
+      72
+    ],
+    [
+      20,
+      74
+    ],
+    [
+      24,
+      74
+    ],
+    [
+      24,
+      77
+    ],
+    [
+      22,
+      77
+    ],
+    [
+      22,
+      80
+    ],
+    [
+      20,
+      80
+    ],
+    [
+      20,
+      83
+    ],
+    [
+      22,
+      83
+    ],
+    [
+      22,
+      85
+    ],
+    [
+      20,
+      85
+    ],
+    [
+      20,
+      86
+    ],
+    [
+      23,
+      86
+    ],
+    [
+      23,
+      90
+    ],
+    [
+      25,
+      90
+    ],
+    [
+      25,
+      92
+    ],
+    [
+      23,
+      92
+    ],
+    [
+      23,
+      94
+    ]
+  ],
+  "main_lane_width_gameplay_tiles": 2,
+  "minimum_optional_branches": 5,
+  "loops": [],
+  "districts": [
+    {
+      "id": "SHORE_PINES",
+      "name": "Grand Marais pines",
+      "bounds_metatiles": [
+        16,
+        0,
+        25,
+        13
+      ],
+      "landmark_metatile": [
+        20,
+        6
+      ],
+      "purpose": "Narrow winding northern approach, Ruth and Will bird turnout."
+    },
+    {
+      "id": "PEBBLE_BASALT",
+      "name": "Pebble beach and basalt inspection",
+      "bounds_metatiles": [
+        15,
+        12,
+        28,
+        31
+      ],
+      "landmark_metatile": [
+        24,
+        28
+      ],
+      "purpose": "Fishing bend, real encounter shoulders, attached basalt rib and railed lake lookout with Hyper Potion."
+    },
+    {
+      "id": "RIVER_GORGE",
+      "name": "River gorge and waterfall bank",
+      "bounds_metatiles": [
+        8,
+        29,
+        25,
+        44
+      ],
+      "landmark_metatile": [
+        10,
+        34
+      ],
+      "purpose": "Complete waterfall camera, Oren signal clue, necessary native brick bridge, southern bird rest."
+    },
+    {
+      "id": "SPLIT_ROCK",
+      "name": "Split Rock keeper headland",
+      "bounds_metatiles": [
+        15,
+        44,
+        29,
+        56
+      ],
+      "landmark_metatile": [
+        25,
+        49
+      ],
+      "purpose": "Complete native tower, optional cove crossing, actual keeper room and protected lake apron."
+    },
+    {
+      "id": "SOUTHERN_REST",
+      "name": "Southern birch rest and Duluth neck",
+      "bounds_metatiles": [
+        14,
+        56,
+        27,
+        72
+      ],
+      "landmark_metatile": [
+        17,
+        64
+      ],
+      "purpose": "Resource turnout, southern habitat requiring six grass steps and clear Duluth connection."
+    }
+  ],
+  "shortcut": null,
+  "cut_gates": [],
+  "one_way_ledges": [
+    {
+      "id": "PALISADE_RIDGE_DROP",
+      "bounds_core": [
+        16,
+        52,
+        22,
+        54
+      ],
+      "direction": "south",
+      "source_block": "56",
+      "upper_approach": [
+        18,
+        51
+      ],
+      "hop_from": [
+        18,
+        52
+      ],
+      "landing": [
+        18,
+        54
+      ],
+      "reverse_blocked": [
+        18,
+        53
+      ],
+      "side_barriers": [
+        [
+          15,
+          53
+        ],
+        [
+          22,
+          53
+        ]
+      ],
+      "return_passage_core": [
+        28,
+        48,
+        30,
+        56
+      ],
+      "minimum_return_steps": 12
+    },
+    {
+      "id": "LESTER_TERRACE_DROP",
+      "bounds_core": [
+        32,
+        172,
+        38,
+        174
+      ],
+      "direction": "south",
+      "source_block": "56",
+      "upper_approach": [
+        35,
+        171
+      ],
+      "hop_from": [
+        35,
+        172
+      ],
+      "landing": [
+        35,
+        174
+      ],
+      "reverse_blocked": [
+        35,
+        173
+      ],
+      "side_barriers": [
+        [
+          31,
+          173
+        ],
+        [
+          38,
+          173
+        ]
+      ],
+      "return_passage_core": [
+        40,
+        168,
+        42,
+        176
+      ],
+      "minimum_return_steps": 12
+    },
+    {
+      "id": "BIRCH_SWITCHBACK_DROP",
+      "bounds_core": [
+        32,
+        90,
+        34,
+        92
+      ],
+      "direction": "south",
+      "source_block": "56",
+      "upper_approach": [
+        33,
+        89
+      ],
+      "hop_from": [
+        33,
+        90
+      ],
+      "landing": [
+        33,
+        92
+      ],
+      "reverse_blocked": [
+        33,
+        91
+      ],
+      "side_barriers": [
+        [
+          31,
+          91
+        ],
+        [
+          34,
+          91
+        ]
+      ],
+      "return_passage_core": [
+        36,
+        88,
+        38,
+        94
+      ],
+      "minimum_return_steps": 9
+    }
+  ],
+  "required_grass_crossings": [
+    {
+      "id": "SOUTHERN_SHORE_HABITAT",
+      "bounds_core": [
+        32,
+        126,
+        38,
+        132
+      ],
+      "minimum_grass_steps": 6
+    },
+    {
+      "id": "BIRCH_SWITCHBACK_GRASS",
+      "bounds_core": [
+        28,
+        86,
+        30,
+        90
+      ],
+      "minimum_grass_steps": 3
+    }
+  ],
+  "trainers": [
+    {
+      "id": "MN_R11_T01",
+      "district": "D6",
+      "anchor_metatile": [
+        36,
+        129
+      ],
+      "facing": "west",
+      "sight_range": 1,
+      "party": [
+        {
+          "species": "GRAVELER",
+          "level": 38
+        },
+        {
+          "species": "ONIX",
+          "level": 38
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R11_TRAINER_01",
+      "block_main_lane": false,
+      "before_text": "Basalt holds heat. My team does too!",
+      "after_text": "Solid footing! Keep going north.",
+      "loss_text": "Steady your feet. We can try again.",
+      "display_name": "Dale",
+      "trainer_class": "HIKER",
+      "sprite": "SPRITE_POKEFAN_M",
+      "tile": [
+        35,
+        119
+      ],
+      "before_lines": [
+        "Basalt holds heat.",
+        "My team does too!"
+      ],
+      "after_lines": [
+        "Solid footing!",
+        "Keep going north."
+      ],
+      "loss_lines": [
+        "Steady your feet.",
+        "We can try again."
+      ]
+    },
+    {
+      "id": "MN_R11_T02",
+      "district": "D6",
+      "anchor_metatile": [
+        22,
+        136
+      ],
+      "facing": "east",
+      "sight_range": 1,
+      "party": [
+        {
+          "species": "SUNFLORA",
+          "level": 39
+        },
+        {
+          "species": "NOCTOWL",
+          "level": 38
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R11_TRAINER_02",
+      "block_main_lane": false,
+      "before_text": "The lake's loud. The grove is calm. Hear the wings?",
+      "after_text": "Both shores have their own rhythm.",
+      "loss_text": "My wings need a rest.",
+      "display_name": "Dana",
+      "trainer_class": "COOLTRAINERF",
+      "sprite": "SPRITE_COOLTRAINER_F",
+      "tile": [
+        41,
+        121
+      ],
+      "before_lines": [
+        "The lake's loud.",
+        "The grove is calm.",
+        "Hear the wings?"
+      ],
+      "after_lines": [
+        "Both shores have",
+        "their own rhythm."
+      ],
+      "loss_lines": [
+        "My wings need",
+        "a rest."
+      ]
+    },
+    {
+      "id": "MN_R11_T03",
+      "district": "D5",
+      "anchor_metatile": [
+        44,
+        103
+      ],
+      "facing": "north",
+      "sight_range": 1,
+      "party": [
+        {
+          "species": "LANTURN",
+          "level": 40
+        },
+        {
+          "species": "MANTINE",
+          "level": 40
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R11_TRAINER_03",
+      "block_main_lane": false,
+      "before_text": "Land or water? We train for both.",
+      "after_text": "LANTURN shines through the fog.",
+      "loss_text": "Steady your feet. We can try again.",
+      "display_name": "Sivren",
+      "trainer_class": "COOLTRAINERF",
+      "sprite": "SPRITE_COOLTRAINER_F",
+      "tile": [
+        49,
+        103
+      ],
+      "before_lines": [
+        "Land or water?",
+        "We train for both."
+      ],
+      "after_lines": [
+        "LANTURN shines",
+        "through the fog."
+      ],
+      "loss_lines": [
+        "Steady your feet.",
+        "We can try again."
+      ]
+    },
+    {
+      "id": "MN_R11_T04",
+      "district": "D5",
+      "anchor_metatile": [
+        26,
+        105
+      ],
+      "facing": "east",
+      "sight_range": 1,
+      "party": [
+        {
+          "species": "URSARING",
+          "level": 40
+        },
+        {
+          "species": "GRAVELER",
+          "level": 39
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R11_TRAINER_04",
+      "block_main_lane": false,
+      "before_text": "A quiet fern bed? Not with URSARING!",
+      "after_text": "Leave the ferns as you found them.",
+      "loss_text": "Steady your feet. We can try again.",
+      "display_name": "Erik",
+      "trainer_class": "HIKER",
+      "sprite": "SPRITE_POKEFAN_M",
+      "tile": [
+        33,
+        93
+      ],
+      "before_lines": [
+        "A quiet fern bed?",
+        "Not with URSARING!"
+      ],
+      "after_lines": [
+        "Leave the ferns",
+        "as you found them."
+      ],
+      "loss_lines": [
+        "Steady your feet.",
+        "We can try again."
+      ]
+    },
+    {
+      "id": "MN_R11_T05",
+      "district": "D4",
+      "anchor_metatile": [
+        42,
+        73
+      ],
+      "facing": "south",
+      "sight_range": 1,
+      "party": [
+        {
+          "species": "QUAGSIRE",
+          "level": 40
+        },
+        {
+          "species": "SEAKING",
+          "level": 40
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R11_TRAINER_05",
+      "block_main_lane": false,
+      "before_text": "Fish swim upstream So does my team!",
+      "after_text": "A strong current takes a calm head.",
+      "loss_text": "Steady your feet. We can try again.",
+      "display_name": "Reed",
+      "trainer_class": "FISHER",
+      "sprite": "SPRITE_FISHER",
+      "tile": [
+        43,
+        65
+      ],
+      "before_lines": [
+        "Fish swim upstream",
+        "So does my team!"
+      ],
+      "after_lines": [
+        "A strong current",
+        "takes a calm head."
+      ],
+      "loss_lines": [
+        "Steady your feet.",
+        "We can try again."
+      ]
+    },
+    {
+      "id": "MN_R11_T06",
+      "district": "D4",
+      "anchor_metatile": [
+        24,
+        87
+      ],
+      "facing": "east",
+      "sight_range": 1,
+      "party": [
+        {
+          "species": "NOCTOWL",
+          "level": 41
+        },
+        {
+          "species": "FEAROW",
+          "level": 40
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R11_TRAINER_06",
+      "block_main_lane": false,
+      "before_text": "Hear those wings? Watch our landing!",
+      "after_text": "The gorge carries every wingbeat.",
+      "loss_text": "Steady your feet. We can try again.",
+      "display_name": "Ivo",
+      "trainer_class": "BIRD_KEEPER",
+      "sprite": "SPRITE_YOUNGSTER",
+      "tile": [
+        35,
+        83
+      ],
+      "before_lines": [
+        "Hear those wings?",
+        "Watch our landing!"
+      ],
+      "after_lines": [
+        "The gorge carries",
+        "every wingbeat."
+      ],
+      "loss_lines": [
+        "Steady your feet.",
+        "We can try again."
+      ]
+    },
+    {
+      "id": "MN_R11_T07",
+      "district": "D3",
+      "anchor_metatile": [
+        25,
+        58
+      ],
+      "facing": "west",
+      "sight_range": 1,
+      "party": [
+        {
+          "species": "ONIX",
+          "level": 41
+        },
+        {
+          "species": "MAGCARGO",
+          "level": 41
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R11_TRAINER_07",
+      "block_main_lane": false,
+      "before_text": "Old lava made this rock. Meet my team",
+      "after_text": "Even old stone can surprise you.",
+      "loss_text": "Steady your feet. We can try again.",
+      "display_name": "Ansel",
+      "trainer_class": "HIKER",
+      "sprite": "SPRITE_POKEFAN_M",
+      "tile": [
+        33,
+        51
+      ],
+      "before_lines": [
+        "Old lava made this",
+        "rock. Meet my team"
+      ],
+      "after_lines": [
+        "Even old stone",
+        "can surprise you."
+      ],
+      "loss_lines": [
+        "Steady your feet.",
+        "We can try again."
+      ]
+    },
+    {
+      "id": "MN_R11_T08",
+      "district": "D3",
+      "anchor_metatile": [
+        40,
+        62
+      ],
+      "facing": "west",
+      "sight_range": 1,
+      "party": [
+        {
+          "species": "SUDOWOODO",
+          "level": 42
+        },
+        {
+          "species": "AMPHAROS",
+          "level": 41
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R11_TRAINER_08",
+      "block_main_lane": false,
+      "before_text": "A tree or a rock? Look a bit closer!",
+      "after_text": "AMPHAROS lights our way home.",
+      "loss_text": "Steady your feet. We can try again.",
+      "display_name": "Faye",
+      "trainer_class": "COOLTRAINERF",
+      "sprite": "SPRITE_COOLTRAINER_F",
+      "tile": [
+        45,
+        55
+      ],
+      "before_lines": [
+        "A tree or a rock?",
+        "Look a bit closer!"
+      ],
+      "after_lines": [
+        "AMPHAROS lights",
+        "our way home."
+      ],
+      "loss_lines": [
+        "Steady your feet.",
+        "We can try again."
+      ]
+    },
+    {
+      "id": "MN_R11_T09",
+      "district": "D2",
+      "anchor_metatile": [
+        42,
+        40
+      ],
+      "facing": "south",
+      "sight_range": 1,
+      "party": [
+        {
+          "species": "GYARADOS",
+          "level": 42
+        },
+        {
+          "species": "QWILFISH",
+          "level": 41
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R11_TRAINER_09",
+      "block_main_lane": false,
+      "before_text": "My line went slack Time for a battle!",
+      "after_text": "A pebble beach is a fine rest.",
+      "loss_text": "Steady your feet. We can try again.",
+      "display_name": "Finn",
+      "trainer_class": "FISHER",
+      "sprite": "SPRITE_FISHER",
+      "tile": [
+        45,
+        35
+      ],
+      "before_lines": [
+        "My line went slack",
+        "Time for a battle!"
+      ],
+      "after_lines": [
+        "A pebble beach",
+        "is a fine rest."
+      ],
+      "loss_lines": [
+        "Steady your feet.",
+        "We can try again."
+      ]
+    },
+    {
+      "id": "MN_R11_T10",
+      "district": "D1",
+      "anchor_metatile": [
+        34,
+        17
+      ],
+      "facing": "east",
+      "sight_range": 1,
+      "party": [
+        {
+          "species": "PIDGEOT",
+          "level": 43
+        },
+        {
+          "species": "NOCTOWL",
+          "level": 42
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R11_TRAINER_10",
+      "block_main_lane": false,
+      "before_text": "Pines bend in wind Our wings use it!",
+      "after_text": "GRAND MARAIS is just up the trail.",
+      "loss_text": "Steady your feet. We can try again.",
+      "display_name": "Will",
+      "trainer_class": "BIRD_KEEPER",
+      "sprite": "SPRITE_YOUNGSTER",
+      "tile": [
+        43,
+        13
+      ],
+      "before_lines": [
+        "Pines bend in wind",
+        "Our wings use it!"
+      ],
+      "after_lines": [
+        "GRAND MARAIS is",
+        "just up the trail."
+      ],
+      "loss_lines": [
+        "Steady your feet.",
+        "We can try again."
+      ]
+    }
+  ],
+  "residents": [
+    {
+      "id": "MN_R11_N01",
+      "name": "Ruth",
+      "sprite": "SPRITE_TEACHER",
+      "tile": [
+        41,
+        11
+      ],
+      "facing": "west",
+      "lines": [
+        "The wind bends",
+        "these shore pines.",
+        "Hear them creak?"
+      ]
+    },
+    {
+      "id": "MN_R11_N02",
+      "name": "Avrin",
+      "sprite": "SPRITE_GRAMPS",
+      "tile": [
+        35,
+        31
+      ],
+      "facing": "west",
+      "lines": [
+        "Rock pools shelter",
+        "young water types.",
+        "Please step",
+        "around them."
+      ]
+    },
+    {
+      "id": "MN_R11_N03",
+      "name": "Oren",
+      "sprite": "SPRITE_SAILOR",
+      "tile": [
+        27,
+        69
+      ],
+      "facing": "south",
+      "lines": [
+        "Duluth's receiver",
+        "relays the signal.",
+        "The keeper waits."
+      ]
+    },
+    {
+      "id": "MN_R11_N04",
+      "name": "Nan",
+      "sprite": "SPRITE_POKEFAN_F",
+      "tile": [
+        47,
+        103
+      ],
+      "facing": "east",
+      "lines": [
+        "From here, I count",
+        "three quiet bays.",
+        "Each trail bends",
+        "a different way."
+      ]
+    },
+    {
+      "id": "MN_R11_N05",
+      "name": "Mae",
+      "sprite": "SPRITE_TEACHER",
+      "tile": [
+        43,
+        119
+      ],
+      "facing": "west",
+      "lines": [
+        "Rest by the birch.",
+        "Keep to the trail.",
+        "Duluth lies south."
+      ]
+    }
+  ],
+  "items": [
+    {
+      "id": "MN_R11_ITEM_01",
+      "item": "HYPER_POTION",
+      "quantity": 1,
+      "anchor_metatile": [
+        24,
+        27
+      ],
+      "flag": "EVENT_MN_R11_ITEM_01",
+      "access": "walking from optional branch; never mandatory Surf",
+      "tile": [
+        49,
+        55
+      ]
+    },
+    {
+      "id": "MN_R11_ITEM_02",
+      "item": "ULTRA_BALL",
+      "quantity": 1,
+      "anchor_metatile": [
+        24,
+        16
+      ],
+      "flag": "EVENT_MN_R11_ITEM_02",
+      "access": "walking from optional branch; never mandatory Surf",
+      "tile": [
+        49,
+        33
+      ]
+    },
+    {
+      "id": "MN_R11_ITEM_03",
+      "item": "MAX_REPEL",
+      "quantity": 1,
+      "anchor_metatile": [
+        22,
+        33
+      ],
+      "flag": "EVENT_MN_R11_ITEM_03",
+      "access": "walking from optional branch; never mandatory Surf",
+      "tile": [
+        45,
+        67
+      ]
+    },
+    {
+      "id": "MN_R11_ITEM_04",
+      "item": "REVIVE",
+      "quantity": 1,
+      "anchor_metatile": [
+        21,
+        60
+      ],
+      "flag": "EVENT_MN_R11_ITEM_04",
+      "access": "walking from optional branch; never mandatory Surf",
+      "tile": [
+        43,
+        121
+      ]
+    },
+    {
+      "id": "MN_R11_ITEM_05",
+      "item": "NUGGET",
+      "quantity": 1,
+      "tile": [
+        15,
+        49
+      ],
+      "anchor_metatile": [
+        7,
+        24
+      ],
+      "flag": "EVENT_MN_R11_ITEM_05",
+      "access": "walking through the ordinary ramp onto Palisade crown; south ledge is an optional fast return"
+    },
+    {
+      "id": "MN_R11_ITEM_06",
+      "item": "FULL_RESTORE",
+      "quantity": 1,
+      "tile": [
+        31,
+        169
+      ],
+      "anchor_metatile": [
+        15,
+        84
+      ],
+      "flag": "EVENT_MN_R11_ITEM_06",
+      "access": "walking eastern ramp to Lester terrace; useful drop to the lower trail"
+    }
+  ],
+  "signs": [
+    {
+      "id": "MN_R11_SIGN_01",
+      "tile": [
+        38,
+        8
+      ],
+      "lines": [
+        "NORTH SHORE TRAIL",
+        "GRAND MARAIS: N"
+      ]
+    },
+    {
+      "id": "MN_R11_SIGN_02",
+      "tile": [
+        42,
+        30
+      ],
+      "lines": [
+        "PEBBLE BEACH",
+        "KEEP TO THE SHORE"
+      ]
+    },
+    {
+      "id": "MN_R11_SIGN_03",
+      "tile": [
+        44,
+        54
+      ],
+      "lines": [
+        "BASALT OVERLOOK",
+        "STAY ON THE TRAIL"
+      ]
+    },
+    {
+      "id": "MN_R11_SIGN_04",
+      "tile": [
+        30,
+        66
+      ],
+      "lines": [
+        "RIVER GORGE",
+        "USE THE BRIDGE"
+      ]
+    },
+    {
+      "id": "MN_R11_SIGN_05",
+      "tile": [
+        42,
+        92
+      ],
+      "lines": [
+        "SPLIT ROCK LIGHT",
+        "TAKE THE EAST FORK"
+      ]
+    },
+    {
+      "id": "MN_R11_SIGN_06",
+      "tile": [
+        36,
+        134
+      ],
+      "lines": [
+        "DULUTH: SOUTH",
+        "GRAND MARAIS: N"
+      ]
+    },
+    {
+      "id": "MN_R11_PALISADE_SIGN",
+      "tile": [
+        26,
+        52
+      ],
+      "lines": [
+        "PALISADE RIDGE",
+        "Downhill shortcut.",
+        "The east ramp",
+        "returns uphill."
+      ]
+    },
+    {
+      "id": "MN_R11_STONEY_SIGN",
+      "tile": [
+        36,
+        146
+      ],
+      "lines": [
+        "STONEY POINT FALLS",
+        "West: viewing bank",
+        "South: shore road"
+      ]
+    },
+    {
+      "id": "MN_R11_LESTER_SIGN",
+      "tile": [
+        42,
+        176
+      ],
+      "lines": [
+        "LESTER GORGE",
+        "West: lower falls",
+        "North: return ramp"
+      ]
+    },
+    {
+      "id": "MN_R11_RYANS_HOUSE_SIGN",
+      "tile": [
+        26,
+        22
+      ],
+      "lines": [
+        "RYAN'S HOUSE",
+        "BAPTISM RIVER"
+      ]
+    }
+  ],
+  "interiors": [
+    {
+      "id": "MnR11SplitRockLighthouse",
+      "kind": "lighthouse",
+      "dimensions_metatiles": [
+        6,
+        5
+      ],
+      "source_behavior": "Preserved native 6\u00d75 keeper room/identity and both carpet exits. Bind both exits to exterior passive Floor record 2.",
+      "template": "OlivineLighthouse1F",
+      "rows": [
+        "0c 3e 29 29 3e 0c",
+        "3e 27 27 27 27 3e",
+        "3e 18 27 27 2f 3e",
+        "3e 27 27 27 27 3e",
+        "3c 3d 2e 3d 3d 3c"
+      ],
+      "exits": [
+        [
+          4,
+          9
+        ],
+        [
+          5,
+          9
+        ]
+      ],
+      "clear_arrival": [
+        4,
+        8
+      ],
+      "exit_collision": "WARP_CARPET_DOWN",
+      "border_block": 62,
+      "residents": [
+        {
+          "id": "MnR11Keeper",
+          "sprite": "SPRITE_SAILOR",
+          "tile": [
+            7,
+            3
+          ],
+          "facing": "south",
+          "lines": [
+            "Duluth sends the",
+            "receiver signal.",
+            "We watch the lake",
+            "from our headland."
+          ]
+        }
+      ],
+      "items": [],
+      "signs": []
+    },
+    {
+      "id": "MnRyansHouse",
+      "template": "VioletNicknameSpeechHouse",
+      "dimensions_metatiles": [
+        5,
+        4
+      ],
+      "rows": [
+        "02 08 14 08 1a",
+        "1b 1c 20 20 1a",
+        "18 19 20 20 20",
+        "20 20 21 22 20"
+      ],
+      "exits": [
+        [
+          5,
+          7
+        ],
+        [
+          6,
+          7
+        ]
+      ],
+      "passive_arrival": {
+        "index": 3,
+        "tile": [
+          5,
+          6
+        ]
+      },
+      "clear_arrival": [
+        5,
+        6
+      ],
+      "border_block": 0,
+      "exit_collision": "WARP_CARPET_DOWN",
+      "residents": [
+        {
+          "id": "MN_RYAN",
+          "sprite": "SPRITE_FISHER",
+          "tile": [
+            6,
+            3
+          ],
+          "facing": "west",
+          "lines": [
+            "RYAN: Welcome to",
+            "my cabin.",
+            "The BAPTISM RIVER",
+            "is right outside.",
+            "Listen to the",
+            "falls for a while."
+          ]
+        }
+      ],
+      "items": [],
+      "signs": []
+    }
+  ],
+  "doors": [
+    {
+      "id": "SPLIT_ROCK_LIGHTHOUSE",
+      "tile": [
+        51,
+        99
+      ],
+      "target": "MnR11SplitRockLighthouse",
+      "target_warp": 1,
+      "return_tile": [
+        51,
+        100
+      ],
+      "arrival_tile": [
+        51,
+        100
+      ],
+      "warp_index": 1,
+      "return_warp_index": 2,
+      "collision": "DOOR"
+    },
+    {
+      "warp_index": 1,
+      "return_warp_index": 2,
+      "tile": [
+        23,
+        21
+      ],
+      "target": "MnRyansHouse",
+      "target_warp": 3,
+      "return_tile": [
+        23,
+        22
+      ],
+      "arrival_tile": [
+        23,
+        22
+      ],
+      "collision": "DOOR"
+    }
+  ],
+  "viewpoints": [
+    {
+      "id": "GRAND_MARAIS_PINES",
+      "tile": [
+        41,
+        9
+      ]
+    },
+    {
+      "id": "PEBBLE_FISHING_BEND",
+      "tile": [
+        47,
+        33
+      ]
+    },
+    {
+      "id": "BASALT_LOOKOUT",
+      "tile": [
+        49,
+        58
+      ]
+    },
+    {
+      "id": "WATERFALL_BANK",
+      "tile": [
+        25,
+        69
+      ]
+    },
+    {
+      "id": "GORGE_NORTH_LANDING",
+      "tile": [
+        41,
+        67
+      ]
+    },
+    {
+      "id": "SOUTH_GORGE_REST",
+      "tile": [
+        33,
+        83
+      ]
+    },
+    {
+      "id": "SPLIT_ROCK_COVE",
+      "tile": [
+        47,
+        101
+      ]
+    },
+    {
+      "id": "SPLIT_ROCK_LOOKOUT",
+      "tile": [
+        53,
+        104
+      ]
+    },
+    {
+      "id": "SOUTHERN_REST",
+      "tile": [
+        39,
+        119
+      ]
+    },
+    {
+      "id": "SOUTHERN_HABITAT",
+      "tile": [
+        35,
+        125
+      ]
+    },
+    {
+      "id": "DULUTH_APPROACH",
+      "tile": [
+        35,
+        137
+      ]
+    },
+    {
+      "id": "WIDEST_ROUTINE_SHORE",
+      "tile": [
+        39,
+        53
+      ]
+    },
+    {
+      "id": "BAPTISM_CASCADE",
+      "tile": [
+        23,
+        24
+      ]
+    },
+    {
+      "id": "BAPTISM_RIVER_BRIDGE",
+      "tile": [
+        41,
+        39
+      ]
+    },
+    {
+      "id": "TEMPERANCE_CASCADE",
+      "tile": [
+        23,
+        103
+      ]
+    },
+    {
+      "id": "TEMPERANCE_CREEK_BRIDGE",
+      "tile": [
+        41,
+        109
+      ]
+    },
+    {
+      "id": "BAPTISM_BANK_FORK",
+      "tile": [
+        35,
+        29
+      ]
+    },
+    {
+      "id": "TEMPERANCE_BANK_FORK",
+      "tile": [
+        39,
+        107
+      ]
+    },
+    {
+      "id": "PALISADE_LEDGE_DECISION",
+      "tile": [
+        19,
+        51
+      ]
+    },
+    {
+      "id": "PALISADE_RETURN_RAMP",
+      "tile": [
+        27,
+        49
+      ]
+    },
+    {
+      "id": "KNIFE_SHORT_FALL",
+      "tile": [
+        29,
+        119
+      ]
+    },
+    {
+      "id": "STONEY_FULL_TIERS",
+      "tile": [
+        25,
+        152
+      ]
+    },
+    {
+      "id": "STONEY_UPPER_BANK",
+      "tile": [
+        25,
+        147
+      ]
+    },
+    {
+      "id": "STONEY_CREEK_CROSSING",
+      "tile": [
+        41,
+        163
+      ]
+    },
+    {
+      "id": "LESTER_LEDGE_DECISION",
+      "tile": [
+        35,
+        171
+      ]
+    },
+    {
+      "id": "LESTER_FULL_FALL",
+      "tile": [
+        31,
+        179
+      ]
+    },
+    {
+      "id": "LESTER_RETURN_RAMP",
+      "tile": [
+        41,
+        171
+      ]
+    },
+    {
+      "id": "FINAL_DULUTH_NECK",
+      "tile": [
+        47,
+        189
+      ]
+    },
+    {
+      "id": "LARGEST_NEW_LAKE_LOOK",
+      "tile": [
+        53,
+        155
+      ]
+    },
+    {
+      "id": "BIRCH_GRASS_SWITCHBACK",
+      "tile": [
+        29,
+        87
+      ]
+    },
+    {
+      "id": "BIRCH_SHORT_LEDGE",
+      "tile": [
+        33,
+        89
+      ]
+    },
+    {
+      "id": "BIRCH_CAVE_STAIR_RETURN",
+      "tile": [
+        37,
+        91
+      ]
+    }
+  ],
+  "surf_viewpoints": [
+    {
+      "id": "SUPERIOR_ROCK_BOUNDARY",
+      "tile": [
+        107,
+        81
+      ]
+    },
+    {
+      "id": "SOUTHERN_SEA_BOUNDARY",
+      "tile": [
+        90,
+        187
+      ]
+    },
+    {
+      "id": "WATERFALL_SUMMIT_SPRING",
+      "tile": [
+        21,
+        63
+      ]
+    },
+    {
+      "id": "ENLARGED_SUPERIOR_NORTH",
+      "tile": [
+        95,
+        41
+      ]
+    },
+    {
+      "id": "ENLARGED_SUPERIOR_SOUTH",
+      "tile": [
+        101,
+        165
+      ]
+    },
+    {
+      "id": "NORTHERN_SEA_ROCK_BOUNDARY",
+      "tile": [
+        90,
+        5
+      ]
+    }
+  ],
+  "unused_reservations": {
+    "shortcut": "MN_R11_SHORTCUT no longer used: previous tree removal did not prove a sealed useful area. No decorative Cut remains.",
+    "chunks": "Retain MnR11C00R00..02; retire nine superseded chunks from the previous 64\u00d7144 extent."
+  },
+  "status": "IMMUTABLE SOURCE CANDIDATE; expanded native publication/controller acceptance pending",
+  "anchor_status": "Exact existing native actors, doors, parties and story preserved; terrain-only geography revision and current production-controller proof recorded in playable/geography-revisions.md.",
+  "historical_evidence_note": "2026-10-25native401-map publication and captures apply only to the previous64\u00d7144overlay, not this revision.",
+  "waterfall_summit": {
+    "water_arrival": [
+      20,
+      65
+    ],
+    "safe_bank": [
+      20,
+      61
+    ],
+    "surf_launch": [
+      20,
+      62
+    ],
+    "water_bounds_core": [
+      18,
+      62,
+      24,
+      66
+    ],
+    "cascade_return": [
+      20,
+      66
+    ],
+    "base_water": [
+      20,
+      72
+    ],
+    "purpose": "Ordinary WATER spring gives the optional summit bank a legal Surf relaunch. Waterfall collision alone cannot be mounted from Normal mode."
+  },
+  "river_catchments": [
+    {
+      "id": "BAPTISM_RIVER",
+      "source_pool_metatiles": [
+        9,
+        4,
+        11,
+        10
+      ],
+      "cascade_blocks": [
+        [
+          9,
+          10
+        ],
+        [
+          9,
+          11
+        ],
+        [
+          9,
+          12
+        ]
+      ],
+      "head_water_core": [
+        18,
+        19
+      ],
+      "base_water_core": [
+        18,
+        26
+      ],
+      "viewpoint_core": [
+        23,
+        24
+      ],
+      "bridge_id": "BAPTISM_RIVER_BRIDGE",
+      "sea_join_core": [
+        54,
+        41
+      ],
+      "role": "Long northern forest drainage with a rock source, plunge pool, stepped river and required dry bridge; optional walking bank view. Native80 collision is real; additional HM traversal remains unproved.",
+      "base_surf_bank_core": [
+        22,
+        27
+      ],
+      "base_surf_launch_core": [
+        21,
+        27
+      ],
+      "upper_surf_bank_core": [
+        22,
+        14
+      ],
+      "upper_surf_launch_core": [
+        21,
+        14
+      ],
+      "bridge_core_columns": [
+        40,
+        41
+      ],
+      "bridge_core_y_inclusive": [
+        40,
+        41
+      ],
+      "north_bank_core": [
+        [
+          40,
+          39
+        ],
+        [
+          41,
+          39
+        ]
+      ],
+      "south_bank_core": [
+        [
+          40,
+          42
+        ],
+        [
+          41,
+          42
+        ]
+      ],
+      "bank_fork_core": [
+        35,
+        29
+      ],
+      "climb_stages": [
+        {
+          "base_water": [
+            18,
+            26
+          ],
+          "upper_water": [
+            18,
+            19
+          ]
+        }
+      ]
+    },
+    {
+      "id": "TEMPERANCE_CREEK",
+      "source_pool_metatiles": [
+        8,
+        48,
+        10,
+        50
+      ],
+      "cascade_blocks": [
+        [
+          9,
+          50
+        ],
+        [
+          9,
+          52
+        ]
+      ],
+      "head_water_core": [
+        18,
+        99
+      ],
+      "base_water_core": [
+        18,
+        106
+      ],
+      "viewpoint_core": [
+        23,
+        103
+      ],
+      "bridge_id": "TEMPERANCE_CREEK_BRIDGE",
+      "sea_join_core": [
+        48,
+        111
+      ],
+      "role": "Two-stage rock ravine with an ordinary-water plunge pool between native80 drops, a short creek bridge, and an optional sedge-bank view. Additional HM traversal remains unproved.",
+      "intermediate_water_core": [
+        18,
+        102
+      ],
+      "base_surf_bank_core": [
+        22,
+        107
+      ],
+      "base_surf_launch_core": [
+        21,
+        107
+      ],
+      "upper_surf_bank_core": [
+        18,
+        95
+      ],
+      "upper_surf_launch_core": [
+        18,
+        96
+      ],
+      "bridge_core_columns": [
+        40,
+        41
+      ],
+      "bridge_core_y_inclusive": [
+        110,
+        111
+      ],
+      "north_bank_core": [
+        [
+          40,
+          109
+        ],
+        [
+          41,
+          109
+        ]
+      ],
+      "south_bank_core": [
+        [
+          40,
+          112
+        ],
+        [
+          41,
+          112
+        ]
+      ],
+      "bank_fork_core": [
+        39,
+        107
+      ],
+      "climb_stages": [
+        {
+          "base_water": [
+            18,
+            106
+          ],
+          "upper_water": [
+            18,
+            103
+          ]
+        },
+        {
+          "base_water": [
+            18,
+            102
+          ],
+          "upper_water": [
+            18,
+            99
+          ]
+        }
+      ],
+      "bank_encounter_choice": {
+        "from_core": [
+          39,
+          107
+        ],
+        "view_core": [
+          23,
+          103
+        ],
+        "minimum_grass_steps": 4,
+        "scope": "Walking bank excursion only; required regional route remains outside this sedge."
+      }
+    },
+    {
+      "id": "KNIFE_RIVER",
+      "cascade_blocks": [
+        [
+          12,
+          59
+        ]
+      ],
+      "head_water_core": [
+        24,
+        117
+      ],
+      "base_water_core": [
+        24,
+        120
+      ],
+      "viewpoint_core": [
+        29,
+        119
+      ],
+      "bridge_id": "KNIFE_RIVER_BRIDGE",
+      "sea_join_core": [
+        54,
+        125
+      ],
+      "upper_surf_bank_core": [
+        26,
+        117
+      ],
+      "upper_surf_launch_core": [
+        25,
+        117
+      ],
+      "base_surf_bank_core": [
+        26,
+        121
+      ],
+      "base_surf_launch_core": [
+        25,
+        121
+      ],
+      "climb_stages": [
+        {
+          "base_water": [
+            24,
+            120
+          ],
+          "upper_water": [
+            24,
+            117
+          ]
+        }
+      ],
+      "north_bank_core": [
+        [
+          34,
+          121
+        ],
+        [
+          35,
+          121
+        ]
+      ],
+      "south_bank_core": [
+        [
+          34,
+          124
+        ],
+        [
+          35,
+          124
+        ]
+      ]
+    },
+    {
+      "id": "STONEY_POINT",
+      "cascade_blocks": [
+        [
+          10,
+          74
+        ],
+        [
+          10,
+          75
+        ],
+        [
+          11,
+          77
+        ]
+      ],
+      "head_water_core": [
+        20,
+        147
+      ],
+      "base_water_core": [
+        20,
+        156
+      ],
+      "viewpoint_core": [
+        25,
+        152
+      ],
+      "bridge_id": "STONEY_POINT_BRIDGE",
+      "sea_join_core": [
+        54,
+        163
+      ],
+      "upper_surf_bank_core": [
+        24,
+        147
+      ],
+      "upper_surf_launch_core": [
+        23,
+        147
+      ],
+      "base_surf_bank_core": [
+        24,
+        157
+      ],
+      "base_surf_launch_core": [
+        23,
+        157
+      ],
+      "intermediate_water_core": [
+        20,
+        152
+      ],
+      "climb_stages": [
+        {
+          "base_water": [
+            22,
+            156
+          ],
+          "upper_water": [
+            22,
+            153
+          ]
+        },
+        {
+          "base_water": [
+            20,
+            152
+          ],
+          "upper_water": [
+            20,
+            147
+          ]
+        }
+      ],
+      "north_bank_core": [
+        [
+          40,
+          161
+        ],
+        [
+          41,
+          161
+        ]
+      ],
+      "south_bank_core": [
+        [
+          40,
+          164
+        ],
+        [
+          41,
+          164
+        ]
+      ]
+    },
+    {
+      "id": "LESTER_RIVER",
+      "cascade_blocks": [
+        [
+          14,
+          88
+        ],
+        [
+          14,
+          89
+        ],
+        [
+          14,
+          90
+        ]
+      ],
+      "head_water_core": [
+        28,
+        175
+      ],
+      "base_water_core": [
+        28,
+        182
+      ],
+      "viewpoint_core": [
+        31,
+        179
+      ],
+      "bridge_id": "LESTER_BRIDGE",
+      "sea_join_core": [
+        58,
+        187
+      ],
+      "upper_surf_bank_core": [
+        30,
+        175
+      ],
+      "upper_surf_launch_core": [
+        29,
+        175
+      ],
+      "base_surf_bank_core": [
+        32,
+        183
+      ],
+      "base_surf_launch_core": [
+        31,
+        183
+      ],
+      "climb_stages": [
+        {
+          "base_water": [
+            28,
+            182
+          ],
+          "upper_water": [
+            28,
+            175
+          ]
+        }
+      ],
+      "north_bank_core": [
+        [
+          46,
+          185
+        ],
+        [
+          47,
+          185
+        ]
+      ],
+      "south_bank_core": [
+        [
+          46,
+          188
+        ],
+        [
+          47,
+          188
+        ]
+      ]
+    }
+  ],
+  "optional_grass_rewards": [
+    {
+      "id": "PALISADE_CACHE_GRASS",
+      "actor_id": "MN_R11_ITEM_05",
+      "bounds_core": [
+        16,
+        48,
+        22,
+        52
+      ],
+      "minimum_grass_steps": 6
+    },
+    {
+      "id": "LESTER_TERRACE_GRASS",
+      "actor_id": "MN_R11_ITEM_06",
+      "bounds_core": [
+        32,
+        168,
+        36,
+        172
+      ],
+      "minimum_grass_steps": 4
+    }
+  ],
+  "expansion_contract": {
+    "unchanged_native_actor_sets": [
+      "trainers",
+      "residents"
+    ],
+    "unchanged_interiors": true,
+    "old_duluth_gate_now_interior": [
+      17,
+      70
+    ],
+    "sea_only_chunks_valid_with_reciprocal_surf": true,
+    "source_only": true,
+    "original_native_ids": {
+      "MnR11C00R00": 1,
+      "MnR11C00R01": 2,
+      "MnR11C00R02": 3,
+      "MnR11SplitRockLighthouse": 4
+    },
+    "new_chunk_ids_append_only": true,
+    "notes": [
+      "Eight exterior chunks; second column24x24, same original lighthouse room.",
+      "Keep native group41 IDs1..4; append five new chunk IDs, do not row-major renumber.",
+      "Native Rust parsers/resize publisher/controller/world/atlas require integration; no candidate is installed."
+    ],
+    "controller_probes": {
+      "coordinate_units": "zero-based global core tiles; convert to native chunk/local with x//64,y//48 and x%64,y%48",
+      "stair_lanes": [
+        {
+          "id": "PALISADE_CAVE_30",
+          "block": "82",
+          "before": [
+            26,
+            48
+          ],
+          "steps": [
+            [
+              25,
+              48
+            ],
+            [
+              24,
+              48
+            ],
+            [
+              24,
+              49
+            ]
+          ],
+          "after": [
+            23,
+            49
+          ],
+          "blocked_side": {
+            "from_core": [
+              25,
+              48
+            ],
+            "target_core": [
+              25,
+              49
+            ]
+          }
+        },
+        {
+          "id": "BIRCH_CAVE_12",
+          "block": "81",
+          "before": [
+            37,
+            89
+          ],
+          "steps": [
+            [
+              37,
+              90
+            ],
+            [
+              37,
+              91
+            ]
+          ],
+          "after": [
+            37,
+            92
+          ],
+          "blocked_side": {
+            "from_core": [
+              37,
+              91
+            ],
+            "target_core": [
+              36,
+              91
+            ]
+          }
+        },
+        {
+          "id": "LESTER_CAVE_12",
+          "block": "81",
+          "before": [
+            40,
+            170
+          ],
+          "steps": [
+            [
+              39,
+              170
+            ],
+            [
+              38,
+              170
+            ]
+          ],
+          "after": [
+            37,
+            170
+          ],
+          "blocked_side": {
+            "from_core": [
+              38,
+              170
+            ],
+            "target_core": [
+              38,
+              171
+            ]
+          }
+        }
+      ],
+      "dry_seams": [
+        {
+          "north": "MnR11C00R00",
+          "south": "MnR11C00R01",
+          "north_local": [
+            [
+              32,
+              47
+            ],
+            [
+              33,
+              47
+            ]
+          ],
+          "south_local": [
+            [
+              32,
+              0
+            ],
+            [
+              33,
+              0
+            ]
+          ],
+          "offset": 0
+        },
+        {
+          "north": "MnR11C00R01",
+          "south": "MnR11C00R02",
+          "north_local": [
+            [
+              40,
+              47
+            ],
+            [
+              41,
+              47
+            ]
+          ],
+          "south_local": [
+            [
+              40,
+              0
+            ],
+            [
+              41,
+              0
+            ]
+          ],
+          "offset": 0
+        },
+        {
+          "north": "MnR11C00R02",
+          "south": "MnR11C00R03",
+          "north_local": [
+            [
+              34,
+              47
+            ],
+            [
+              35,
+              47
+            ]
+          ],
+          "south_local": [
+            [
+              34,
+              0
+            ],
+            [
+              35,
+              0
+            ]
+          ],
+          "offset": 0
+        }
+      ],
+      "sea_bank": [
+        51,
+        57
+      ],
+      "sea_launch": [
+        52,
+        57
+      ],
+      "sea_waypoints": [
+        [
+          52,
+          57
+        ],
+        [
+          62,
+          57
+        ],
+        [
+          62,
+          20
+        ],
+        [
+          102,
+          20
+        ],
+        [
+          102,
+          120
+        ],
+        [
+          62,
+          120
+        ],
+        [
+          62,
+          170
+        ],
+        [
+          102,
+          170
+        ]
+      ],
+      "sea_boundary_probes": [
+        {
+          "at": [
+            110,
+            60
+          ],
+          "target": [
+            111,
+            60
+          ],
+          "expected": "BUOY"
+        },
+        {
+          "at": [
+            90,
+            1
+          ],
+          "target": [
+            90,
+            0
+          ],
+          "expected": "BUOY"
+        },
+        {
+          "at": [
+            90,
+            190
+          ],
+          "target": [
+            90,
+            191
+          ],
+          "expected": "BUOY"
+        }
+      ],
+      "fixture_scope": "source-checked probes only; use real Surf/controller input and explicit initial party/badges, no post-setup state rewrites"
+    }
+  },
+  "ryans_house": {
+    "status": "NATIVE VERIFIED on the510-map Northstar house composition; actual door, both returns, Ryan/sign dialogue, Continue, preservation and source/native captures pass. See playable/ryans-house.md.",
+    "file": "playable/ryans-house.json",
+    "door": {
+      "warp_index": 1,
+      "return_warp_index": 2,
+      "tile": [
+        23,
+        21
+      ],
+      "target": "MnRyansHouse",
+      "target_warp": 3,
+      "return_tile": [
+        23,
+        22
+      ],
+      "arrival_tile": [
+        23,
+        22
+      ],
+      "collision": "DOOR"
+    },
+    "porch_view_core": [
+      23,
+      24
+    ],
+    "facade_origin_metatiles": [
+      11,
+      9
+    ],
+    "interior": "MnRyansHouse",
+    "purpose": "Optional enterable personal cabin reached from the existing walking bank; waterfall remains visible and the main route remains intact."
+  },
+  "compiled_tileset": "mn_winter_north_shore",
+  "winter_section_review": {
+    "status": "DETACHED_SOURCE_ONLY_USER_REVIEW_PENDING_NOT_NATIVE",
+    "identity": "North Shore upper frosted-gorge section",
+    "snowline_description": "Upper gorge snowline follows the second stream and tapers before the middle coast",
+    "water_policy": "All tributary water, animated waterfall faces, plunge pools, bridge rails and open Lake Superior remain exact; native Waterfall relaunch/badge routes must not be bypassed by new frozen surfaces. Frosted shelves follow original dry terrain.",
+    "actors_ports_gates": "Original indexed actors/room mouths/warps/story/programs unchanged; full native preimages and source model required before integration."
+  }
+}

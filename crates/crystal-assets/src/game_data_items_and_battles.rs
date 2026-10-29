@@ -1134,6 +1134,9 @@ impl GameDataSet {
             }
             .to_string(),
         );
+        staged_state.script_runtime.memory.remove(
+            crystal_core::systems::field_moves::CANOE_ACTIVE_MEMORY,
+        );
         staged_state.script_runtime.pending_surf_field_move = Some(outcome.clone());
         staged_state.script_runtime.memory.insert(
             crystal_core::systems::field_moves::SURF_ACTOR_PARTY_MEMORY.to_owned(),

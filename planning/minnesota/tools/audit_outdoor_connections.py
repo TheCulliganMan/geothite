@@ -54,10 +54,22 @@ def boundary(a, direction):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--pack', type=Path, required=True)
+    parser.add_argument('--pack', type=Path,
+                        help='Pack to inspect; defaults to world.json active_local_review_revision')
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--scale', type=int, default=8)
     args = parser.parse_args()
+    if args.pack is None:
+        root = Path(__file__).resolve().parents[3]
+        world = json.loads((root / 'planning/minnesota/world.json').read_text())
+        revision = world.get('active_local_review_revision')
+        record = world.get(revision, {}) if isinstance(revision, str) else {}
+        selected = record.get('pack')
+        if not selected:
+            parser.error('world.json active_local_review_revision must name a revision with a pack')
+        args.pack = root / selected
+        if not args.pack.is_file():
+            parser.error(f'Active review pack is missing: {args.pack}')
     args.output.mkdir(parents=True, exist_ok=True)
     pack = load_pack(args.pack)
     maps = {k: v for k, v in pack['data']['maps'].items()

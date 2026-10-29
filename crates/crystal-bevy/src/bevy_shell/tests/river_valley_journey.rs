@@ -4,31 +4,54 @@ use std::path::PathBuf;
 
 use crystal_core::input::GameButton;
 use crystal_core::models::Dv;
-use crystal_runtime::{RuntimeBattleKind, RuntimeShellPhase};
+use crystal_runtime::{CrystalRuntime, RuntimeBattleKind, RuntimeShellPhase};
 
 use super::super::{VisibleShellController, mark_runtime_snapshot_dirty};
-use super::authored_route_fixture::{finish_text, position};
+use super::authored_route_fixture::{finish_text, position, use_super_potion};
 use super::river_valley::fixture;
 
 type Point = (i16, i16);
 
-#[derive(Default)]
-struct Journey {
+struct Journey<'a> {
+    runtime: &'a CrystalRuntime,
     wild_encounters: usize,
     trainer_opponents: BTreeSet<String>,
     attacks_spent_pp: usize,
-    battle_clock_started: bool,
+    medicine_uses: usize,
 }
 
-impl Journey {
+impl Journey<'_> {
     fn settle(&mut self, controller: &mut VisibleShellController) {
         for _ in 0..64 {
             let s = controller.snapshot().expect("visible activity");
             if s.battle.is_some() {
                 self.battle(controller);
-            } else if s.phase == RuntimeShellPhase::Text || controller.has_pending_script_work() {
+            } else if s.phase == RuntimeShellPhase::Text
+                || controller.has_pending_script_work()
+                || controller.shell.field_notice.is_some()
+                || controller.shell.visible_field_item_notice.is_some()
+                || !controller.shell.battle_messages.is_empty()
+            {
                 controller.press(GameButton::A).expect("native text page");
+                controller
+                    .wait_frames(16)
+                    .expect("native text presentation");
             } else {
+                // This fixture carries supplies from its explicit setup. Use
+                // the normal field Pack before continuing on low health.
+                if s.party
+                    .slots
+                    .iter()
+                    .any(|p| p.pokemon.hp > 0 && p.pokemon.hp <= p.pokemon.max_hp / 2)
+                    && s.bag
+                        .items
+                        .iter()
+                        .any(|item| item.item_id == "SUPER_POTION" && item.quantity > 0)
+                {
+                    use_super_potion(controller);
+                    self.medicine_uses += 1;
+                    continue;
+                }
                 return;
             }
         }
@@ -36,30 +59,23 @@ impl Journey {
     }
 
     fn battle(&mut self, controller: &mut VisibleShellController) {
-        if !self.battle_clock_started {
-            // The first grass roll is deterministic. Vary subsequent divider
-            // samples so normal battle rejection sampling can terminate.
-            *controller.shell.shell.session_mut().divider_mut_for_tests() =
-                crystal_core::random::RuntimeDividerSource::replay(
-                    (0_u32..131072)
-                        .map(|n| ((n * 73 + 19) % 256) as u8)
-                        .collect::<Vec<u8>>(),
-                );
-            self.battle_clock_started = true;
-        }
         let initial = controller.snapshot().expect("encounter");
         let wild = matches!(
             initial.battle.as_ref().expect("battle").kind,
             RuntimeBattleKind::Wild { .. }
         );
         self.wild_encounters += usize::from(wild);
-        let initial_pp: u32 = initial
+        let initial_moves: Vec<_> = initial
             .party
             .slots
             .iter()
-            .flat_map(|p| &p.pokemon.moves)
-            .map(|m| u32::from(m.current_pp))
-            .sum();
+            .flat_map(|p| {
+                p.pokemon
+                    .moves
+                    .iter()
+                    .map(move |m| (p.index, m.name.clone(), m.current_pp))
+            })
+            .collect();
         for _ in 0..768 {
             let s = controller.snapshot().expect("production battle");
             let Some(battle) = &s.battle else {
@@ -68,6 +84,17 @@ impl Journey {
             if !wild {
                 self.trainer_opponents
                     .insert(battle.enemy_pokemon.species.id.clone());
+            }
+            // Visible narration owns A even when a replacement/move cursor
+            // already exists behind it. Do not steer that hidden cursor.
+            if !controller.shell.battle_messages.is_empty() || s.ui.menu.is_none() {
+                controller
+                    .press(GameButton::A)
+                    .expect("native battle message");
+                controller
+                    .wait_frames(16)
+                    .expect("native battle narration presentation");
+                continue;
             }
             let options =
                 s.ui.menu
@@ -126,30 +153,9 @@ impl Journey {
             } else if let Some(cursor) = &controller.shell.battle_move_cursor {
                 let slot = battle.active_player_party_index.expect("active partner");
                 let pokemon = &s.party.slots[slot].pokemon;
-                let enemy = battle.enemy_pokemon.species.id.as_str();
-                let preferred = if pokemon.species.id == "FLAAFFY" {
-                    if enemy == "WOOPER" {
-                        "TACKLE"
-                    } else {
-                        "THUNDERSHOCK"
-                    }
-                } else if ["WOOPER", "MAREEP", "PIDGEY"].contains(&enemy) {
-                    "WATER_GUN"
-                } else {
-                    "SCRATCH"
-                };
-                let target = battle
-                    .player_moves
-                    .iter()
-                    .position(|m| m.name == preferred && m.current_pp > 0)
-                    .or_else(|| {
-                        battle.player_moves.iter().position(|m| {
-                            m.current_pp > 0
-                                && ["WATER_GUN", "SCRATCH", "THUNDERSHOCK", "TACKLE"]
-                                    .contains(&m.name.as_str())
-                        })
-                    })
-                    .expect("usable legal move");
+                // Read visible learned moves, PP and opposing types rather
+                // than limiting Minnesota partners to an old Johto move list.
+                let target = super::rochester_earned::best_attack(self.runtime, battle, pokemon);
                 if cursor.option_index < target {
                     GameButton::Down
                 } else if cursor.option_index > target {
@@ -161,18 +167,29 @@ impl Journey {
                 GameButton::A
             };
             controller.press(button).expect("production battle input");
+            controller
+                .wait_frames(16)
+                .expect("native battle presentation");
         }
         let ended = controller.snapshot().expect("battle result");
         assert!(ended.battle.is_none(), "battle did not end: {:?}", ended.ui);
         if !wild {
-            let final_pp: u32 = ended
-                .party
-                .slots
-                .iter()
-                .flat_map(|p| &p.pokemon.moves)
-                .map(|m| u32::from(m.current_pp))
-                .sum();
-            assert!(final_pp < initial_pp, "trainer battle never spent move PP");
+            // Level-up moves can increase the total PP. Compare each original
+            // move on the same partner instead of summing the whole party.
+            let spent_pp = initial_moves.iter().any(|(slot, name, before)| {
+                ended.party.slots.iter().any(|p| {
+                    p.index == *slot
+                        && p.pokemon
+                            .moves
+                            .iter()
+                            .any(|m| m.name == *name && m.current_pp < *before)
+                })
+            });
+            assert!(
+                spent_pp,
+                "trainer battle never spent move PP: battle={:?}, initial={initial_moves:?}, ended={:?}",
+                initial.battle, ended.party
+            );
             self.attacks_spent_pp += 1;
         }
         finish_text(controller);
@@ -187,13 +204,22 @@ impl Journey {
         controller.press(facing).expect("face native interaction");
         controller.press(GameButton::A).expect("read or speak");
         let snapshot = controller.snapshot().expect("visible directions");
+        let shown = snapshot
+            .ui
+            .text
+            .as_ref()
+            .and_then(|t| t.asm_text.as_ref())
+            .is_some_and(|text| text.contains(expected));
+        // Item presentation can already be on its "put ... in PACK" page.
+        // Retain evidence of the actual first page, as the room fixture does;
+        // the journey separately checks the native inventory and pickup flags.
+        let first_item_page = controller
+            .shell
+            .visible_field_item_notice
+            .as_ref()
+            .is_some_and(|notice| notice.sound_trigger_text.contains(expected));
         assert!(
-            snapshot
-                .ui
-                .text
-                .as_ref()
-                .and_then(|t| t.asm_text.as_ref())
-                .is_some_and(|text| text.contains(expected)),
+            shown || first_item_page,
             "missing {expected}: {:?}",
             snapshot.ui
         );
@@ -241,164 +267,13 @@ impl Journey {
     }
 }
 
-fn use_collected_super_potion(controller: &mut VisibleShellController) {
-    finish_text(controller);
-    controller
-        .press(GameButton::Start)
-        .expect("production Start");
-    let snapshot = controller.snapshot().expect("Start options");
-    let target = super::super::visible_start_menu_options(&controller.shell, &snapshot)
-        .iter()
-        .position(|o| *o == super::super::StartMenuOption::Pack)
-        .expect("PACK option");
-    for _ in 0..16 {
-        let current = controller
-            .shell
-            .start_menu_cursor
-            .as_ref()
-            .expect("Start cursor")
-            .option_index;
-        if current == target {
-            controller.press(GameButton::A).expect("open PACK");
-            break;
-        }
-        controller
-            .press(if current < target {
-                GameButton::Down
-            } else {
-                GameButton::Up
-            })
-            .expect("select PACK");
-    }
-    let bag = controller.snapshot().expect("carried medicine").bag;
-    let target = bag
-        .items
-        .iter()
-        .filter(|s| s.quantity > 0)
-        .position(|s| s.item_id == "SUPER_POTION")
-        .expect("collected Super Potion");
-    for _ in 0..16 {
-        let current = controller
-            .shell
-            .bag_cursor
-            .as_ref()
-            .expect("production bag cursor")
-            .option_index;
-        if current == target {
-            controller.press(GameButton::A).expect("medicine actions");
-            break;
-        }
-        controller
-            .press(if current < target {
-                GameButton::Down
-            } else {
-                GameButton::Up
-            })
-            .expect("select medicine");
-    }
-    let snapshot = controller.snapshot().expect("medicine actions");
-    let actions = super::super::visible_selected_pack_item_actions(
-        &snapshot,
-        &controller.shell,
-        &super::super::FieldPackPocket::Items,
-        false,
-    )
-    .expect("production item actions");
-    let target = actions
-        .iter()
-        .position(|o| *o == super::super::FieldPackAction::Use)
-        .expect("USE action");
-    for _ in 0..16 {
-        let current = controller
-            .shell
-            .field_pack_action_cursor
-            .as_ref()
-            .expect("item action cursor")
-            .option_index;
-        if current == target {
-            controller.press(GameButton::A).expect("use medicine");
-            break;
-        }
-        controller
-            .press(if current < target {
-                GameButton::Down
-            } else {
-                GameButton::Up
-            })
-            .expect("select USE");
-    }
-    assert!(
-        controller.shell.field_pack_target_mode
-            == Some(super::super::FieldPackTargetMode::PartyPokemon),
-        "medicine target did not open; selected={:?}, ui={:?}",
-        super::super::selected_field_pack_item_id(&mut controller.shell),
-        controller
-            .snapshot()
-            .expect("medicine target diagnostic")
-            .ui
-    );
-    for _ in 0..6 {
-        if controller.shell.party_cursor == 0 {
-            break;
-        }
-        controller
-            .press(GameButton::Up)
-            .expect("select lead partner");
-    }
-    assert_eq!(controller.shell.party_cursor, 0);
-    let before = controller.snapshot().expect("injured Croconaw").party.slots[0]
-        .pokemon
-        .hp;
-    controller
-        .press(GameButton::A)
-        .expect("apply Super Potion to Croconaw");
-    let healed = controller.snapshot().expect("native healing result");
-    assert!(
-        healed.party.slots[0].pokemon.hp > before,
-        "medicine did not restore HP: before={before}, after={}, target={:?}, notice={:?}, field_notice={:?}, ui={:?}",
-        healed.party.slots[0].pokemon.hp,
-        controller.shell.field_pack_target_mode,
-        controller.shell.visible_field_item_notice,
-        controller.shell.field_notice,
-        healed.ui
-    );
-    assert!(
-        !healed
-            .bag
-            .items
-            .iter()
-            .any(|s| s.item_id == "SUPER_POTION" && s.quantity > 0),
-        "medicine not consumed"
-    );
-    for _ in 0..16 {
-        let current = controller.snapshot().expect("close field Pack");
-        if controller.shell.field_notice.is_some() || current.ui.pending_text_wait.is_some() {
-            controller
-                .wait_frames(60)
-                .expect("healing presentation frames");
-            controller.press(GameButton::A).expect("healing notice");
-        } else if current.ui.menu.is_some() {
-            controller
-                .press(GameButton::B)
-                .expect("close medicine menu");
-        } else {
-            return;
-        }
-    }
-    let final_ui = controller.snapshot().expect("healing close diagnostic").ui;
-    panic!(
-        "medicine did not return to walking: field_notice={:?}, item_notice={:?}, ui={:?}",
-        controller.shell.field_notice, controller.shell.visible_field_item_notice, final_ui
-    );
-}
-
 #[test]
 #[ignore = "requires the external River Valley pack"]
 fn river_valley_journey_crosses_both_bridges_habitat_and_all_trainers_with_saved_pp() {
     let (root, runtime, mut controller) = fixture();
     // Normal source-created partners after the second badge. This placement,
     // party, badge setup and replay clock do not prove earned Q02 progression.
-    for (species, level) in [("CROCONAW", 18), ("FLAAFFY", 16)] {
+    for (species, level) in [("PORTABEAU", 18), ("ZAPSAP", 16)] {
         let pokemon = runtime
             .data()
             .create_pokemon(species, level, Dv::default())
@@ -415,13 +290,30 @@ fn river_valley_journey_crosses_both_bridges_habitat_and_all_trainers_with_saved
         );
     }
     let state = controller.shell.shell.session_mut().state_mut();
+    // Explicit carried supplies, not a claim of earned regional progression.
+    assert!(
+        state
+            .bag
+            .add_item(&runtime.data().items["SUPER_POTION"], 6)
+            .expect("fixture carried medicine")
+    );
     state.badges.johto = [true, true, false, false, false, false, false, false];
     state.sync_party_from_storage();
     state.random_state = Default::default();
     *controller.shell.shell.session_mut().divider_mut_for_tests() =
-        crystal_core::random::RuntimeDividerSource::replay(vec![0; 131072]);
+        crystal_core::random::RuntimeDividerSource::replay(
+            (0_u32..262144)
+                .map(|n| ((n * 73 + 19) % 256) as u8)
+                .collect::<Vec<_>>(),
+        );
     mark_runtime_snapshot_dirty(&mut controller.shell);
-    let mut journey = Journey::default();
+    let mut journey = Journey {
+        runtime: &runtime,
+        wild_encounters: 0,
+        trainer_opponents: BTreeSet::new(),
+        attacks_spent_pp: 0,
+        medicine_uses: 0,
+    };
     for p in [
         (18, 56),
         (24, 56),
@@ -430,8 +322,9 @@ fn river_valley_journey_crosses_both_bridges_habitat_and_all_trainers_with_saved
         (39, 42),
         (30, 42),
         (30, 28),
-        (14, 28),
-        (14, 16),
+        (16, 28),
+        // Uphill travel goes around the reverse ledge wall through the grass.
+        (16, 16),
         (15, 16),
     ] {
         journey.walk(&mut controller, p);
@@ -443,14 +336,18 @@ fn river_valley_journey_crosses_both_bridges_habitat_and_all_trainers_with_saved
     controller.press(GameButton::Down).expect("face Jo");
     controller.press(GameButton::A).expect("challenge Jo");
     journey.settle(&mut controller);
-    for p in [(14, 16), (14, 14), (20, 14), (20, 2), (20, 4), (21, 4)] {
+    for p in [(14, 16), (14, 14), (20, 14), (20, 2), (20, 8), (21, 8)] {
         journey.walk(&mut controller, p);
     }
     journey.read(&mut controller, GameButton::Right, "MINNEAPOLIS");
     for p in [
-        (20, 4),
+        (20, 8),
         (20, 14),
-        (14, 14),
+        // The return uses the dry woodland trail and native southbound hop.
+        (11, 14),
+        (11, 19),
+        (11, 22),
+        (14, 22),
         (14, 28),
         (30, 28),
         (30, 42),
@@ -485,19 +382,27 @@ fn river_valley_journey_crosses_both_bridges_habitat_and_all_trainers_with_saved
         journey.walk(&mut controller, p);
     }
     journey.read(&mut controller, GameButton::Right, "found");
-    use_collected_super_potion(&mut controller);
+    if controller
+        .snapshot()
+        .expect("pickup party")
+        .party
+        .slots
+        .iter()
+        .any(|p| p.pokemon.hp > 0 && p.pokemon.hp < p.pokemon.max_hp)
+    {
+        use_super_potion(&mut controller);
+        journey.medicine_uses += 1;
+    }
+    assert!(
+        journey.medicine_uses > 0,
+        "journey never used carried medicine"
+    );
     for p in [(39, 55), (39, 54), (24, 54), (24, 56), (18, 56), (18, 58)] {
         journey.walk(&mut controller, p);
     }
     assert_eq!(journey.attacks_spent_pp, 4);
     for species in [
-        "WOOPER",
-        "POLIWAG",
-        "HOPPIP",
-        "PIDGEY",
-        "BELLSPROUT",
-        "MAREEP",
-        "SLOWPOKE",
+        "GILLPUP", "CHORIP", "PODLET", "PECKIT", "POUCHID", "ZAPSAP", "TICKLET",
     ] {
         assert!(
             journey.trainer_opponents.contains(species),
@@ -533,6 +438,7 @@ fn river_valley_journey_crosses_both_bridges_habitat_and_all_trainers_with_saved
             .iter()
             .any(|s| s.item_id == "ETHER" && s.quantity == 1)
     );
+    let wild_encounters = journey.wild_encounters;
     let save = std::env::temp_dir().join(format!(
         "geothite-river-valley-journey-{}.crystalsave",
         std::process::id()
@@ -564,6 +470,6 @@ fn river_valley_journey_crosses_both_bridges_habitat_and_all_trainers_with_saved
     std::fs::remove_file(save).expect("remove scratch save");
     eprintln!(
         "River Valley: {} wild encounters, both bridge crossings, four trainers/seven opponents defeated with spent PP, Ether, used Super Potion and party/flags survive Continue",
-        journey.wild_encounters
+        wild_encounters
     );
 }

@@ -1,0 +1,17 @@
+{
+  "accepted": true,
+  "mode": "2D",
+  "pack_sha256": "0a78461bf1215ce0e81e1a47b65af4a0e027152b487e340ee0129cea28d81c34",
+  "reviewed": [
+    "source-candidate-v01/whole-route.png",
+    "source-candidate-v01/western-climb-4x.png",
+    "native-v01/woodland-gate.png",
+    "native-v01/survey-dry-return.png"
+  ],
+  "findings": [
+    "Native grass fills the two-tile woodland gate without changing its width or canopy.",
+    "Survey-bank ledge landing stays dry and clear.",
+    "Whole-route identity, existing habitats, boardwalk and gatehouse retained."
+  ],
+  "scope": "Current R13-parent candidate only. Refresh preservation and source/native bindings if selected parent changes."
+}

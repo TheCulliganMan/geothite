@@ -1,0 +1,1085 @@
+{
+  "id": "MN_R06",
+  "map_prefix": "MnR06",
+  "name": "Pine Country Road",
+  "required_flags": [
+    "BADGE_5"
+  ],
+  "quest": "Q04",
+  "encounters": {
+    "grass_rates": {
+      "day": 10,
+      "morning": 10,
+      "night": 10
+    },
+    "grass": {
+      "morning": [
+        {
+          "level": 23,
+          "species": "CLINKLAW"
+        },
+        {
+          "level": 24,
+          "species": "RICELING"
+        },
+        {
+          "level": 25,
+          "species": "DEWDANT"
+        },
+        {
+          "level": 26,
+          "species": "NOTCHBILL"
+        },
+        {
+          "level": 27,
+          "species": "FLOSSAIL"
+        },
+        {
+          "level": 27,
+          "species": "HISSIP"
+        },
+        {
+          "level": 27,
+          "species": "VELVAWN"
+        }
+      ],
+      "day": [
+        {
+          "level": 23,
+          "species": "CLINKLAW"
+        },
+        {
+          "level": 24,
+          "species": "RICELING"
+        },
+        {
+          "level": 25,
+          "species": "DEWDANT"
+        },
+        {
+          "level": 26,
+          "species": "NOTCHBILL"
+        },
+        {
+          "level": 27,
+          "species": "FLOSSAIL"
+        },
+        {
+          "level": 27,
+          "species": "HISSIP"
+        },
+        {
+          "level": 27,
+          "species": "VELVAWN"
+        }
+      ],
+      "night": [
+        {
+          "level": 23,
+          "species": "BOOMRUFF"
+        },
+        {
+          "level": 24,
+          "species": "DEWDANT"
+        },
+        {
+          "level": 25,
+          "species": "DEWDANT"
+        },
+        {
+          "level": 26,
+          "species": "NOTCHBILL"
+        },
+        {
+          "level": 27,
+          "species": "FLOSSAIL"
+        },
+        {
+          "level": 27,
+          "species": "HISSIP"
+        },
+        {
+          "level": 27,
+          "species": "VELVAWN"
+        }
+      ]
+    },
+    "water_rate": 4,
+    "water": [
+      {
+        "level": 23,
+        "species": "CHORIP"
+      },
+      {
+        "level": 24,
+        "species": "GILLPUP"
+      },
+      {
+        "level": 27,
+        "species": "RIVVIT"
+      }
+    ]
+  },
+  "art_constraints": [
+    "Only original packed 8x8 source tiles.",
+    "No painted shadows, enlarged trees or perspective props.",
+    "Fit source shoreline/cliff quadrants; draw source trees in coherent metatile groups."
+  ],
+  "dimensions_metatiles": [
+    32,
+    44
+  ],
+  "chunk_metatiles": [
+    32,
+    24
+  ],
+  "chunk_columns": 1,
+  "chunk_rows": 2,
+  "tileset": "johto",
+  "source_references": [
+    "Route30",
+    "Route42",
+    "Route29"
+  ],
+  "description": "Needle Lake fills the west; a timber bridge crosses its outlet from a southern recovery cabin to the eastern pine road. A native Cut tree seals the optional lake-view shelf, Ether and Hiker below its uphill ramp. A fenced fishing pier, battle-or-grass conifer fork, one-way lookout return and short required southern habitat give the road a changing rhythm. The eastern pine road bends around a wooded shore promontory; its narrow two-turn opening contrasts with the open lake crossing and the lookout climb.",
+  "endpoints": [
+    {
+      "place": "ST CLOUD",
+      "side": "S",
+      "gate_metatile": [
+        8,
+        42
+      ],
+      "landing_metatile": [
+        8,
+        40
+      ]
+    },
+    {
+      "place": "BRAINERD",
+      "side": "N",
+      "gate_metatile": [
+        21,
+        1
+      ],
+      "landing_metatile": [
+        21,
+        3
+      ]
+    }
+  ],
+  "main_path_metatiles": [
+    [
+      8,
+      43
+    ],
+    [
+      8,
+      33
+    ],
+    [
+      23,
+      33
+    ],
+    [
+      23,
+      25
+    ],
+    [
+      25,
+      25
+    ],
+    [
+      25,
+      20
+    ],
+    [
+      27,
+      20
+    ],
+    [
+      27,
+      17
+    ],
+    [
+      25,
+      17
+    ],
+    [
+      21,
+      17
+    ],
+    [
+      21,
+      9
+    ],
+    [
+      20,
+      9
+    ],
+    [
+      20,
+      6
+    ],
+    [
+      24,
+      6
+    ],
+    [
+      24,
+      4
+    ],
+    [
+      22,
+      4
+    ],
+    [
+      22,
+      3
+    ],
+    [
+      21,
+      3
+    ],
+    [
+      21,
+      0
+    ]
+  ],
+  "main_lane_width_gameplay_tiles": 2,
+  "districts": [
+    {
+      "id": "CAMP",
+      "name": "Needle Camp and outlet",
+      "bounds_metatiles": [
+        2,
+        27,
+        20,
+        44
+      ],
+      "landmark_metatile": [
+        5,
+        31
+      ],
+      "purpose": "Real cabin, short habitat threshold and necessary outlet crossing"
+    },
+    {
+      "id": "LAKE_ROAD",
+      "name": "Eastern lake road",
+      "bounds_metatiles": [
+        15,
+        14,
+        30,
+        37
+      ],
+      "landmark_metatile": [
+        18,
+        21
+      ],
+      "purpose": "Fenced fishing pier, passing bay and grass-backed battle turnouts"
+    },
+    {
+      "id": "LOOKOUT",
+      "name": "Pine overlook and Brainerd approach",
+      "bounds_metatiles": [
+        5,
+        0,
+        27,
+        18
+      ],
+      "landmark_metatile": [
+        10,
+        14
+      ],
+      "purpose": "A low lake-view shelf, ramp climb, one-way return, bird habitat and northern exit"
+    }
+  ],
+  "loops": [
+    {
+      "id": "EAST_PASSING_BAY",
+      "path_metatiles": [
+        [
+          23,
+          25
+        ],
+        [
+          28,
+          25
+        ],
+        [
+          28,
+          30
+        ],
+        [
+          23,
+          30
+        ],
+        [
+          23,
+          25
+        ]
+      ],
+      "joins_districts": [
+        "CAMP",
+        "LAKE_ROAD"
+      ],
+      "entry_rule": "open",
+      "return_rule": "two_way",
+      "tradeoff": "Perry challenges the short lane; the outer conifer-side detour crosses at least six grass tiles and reaches a Great Ball."
+    },
+    {
+      "id": "LOOKOUT_DROP_RETURN",
+      "path_metatiles": [
+        [
+          14,
+          16
+        ],
+        [
+          14,
+          15
+        ],
+        [
+          14,
+          14
+        ],
+        [
+          10,
+          14
+        ],
+        [
+          10,
+          15
+        ],
+        [
+          10,
+          16
+        ],
+        [
+          14,
+          16
+        ]
+      ],
+      "joins_districts": [
+        "LOOKOUT"
+      ],
+      "entry_rule": "Native Cut gate below the eastern ramp; optional lookout only",
+      "return_rule": "South-facing ledge",
+      "tradeoff": "Cut opens the lake view, Ether and optional Hiker. The downhill ledge returns to the lower trail; the eastern ramp is the ordinary uphill return after cutting."
+    }
+  ],
+  "minimum_optional_branches": 4,
+  "trainers": [
+    {
+      "id": "MN_R06_T01",
+      "display_name": "FERN",
+      "trainer_class": "BUG_CATCHER",
+      "sprite": "SPRITE_BUG_CATCHER",
+      "tile": [
+        21,
+        69
+      ],
+      "facing": "west",
+      "sight_range": 1,
+      "party": [
+        {
+          "species": "CLINKLAW",
+          "level": 23
+        },
+        {
+          "species": "DEWDANT",
+          "level": 23
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R06_TRAINER_01",
+      "before_lines": [
+        "CLINKLAW hides in",
+        "the camp trees."
+      ],
+      "after_lines": [
+        "Shake a branch?",
+        "Watch your head!"
+      ],
+      "loss_lines": [
+        "A good trail team!"
+      ],
+      "block_main_lane": false
+    },
+    {
+      "id": "MN_R06_T02",
+      "display_name": "PERRY",
+      "trainer_class": "CAMPER",
+      "sprite": "SPRITE_YOUNGSTER",
+      "tile": [
+        45,
+        55
+      ],
+      "facing": "east",
+      "sight_range": 2,
+      "party": [
+        {
+          "species": "RICELING",
+          "level": 23
+        },
+        {
+          "species": "HISSIP",
+          "level": 24
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R06_TRAINER_02",
+      "before_lines": [
+        "Dry road or grass?",
+        "I chose this bay."
+      ],
+      "after_lines": [
+        "The tree island",
+        "makes room to pass"
+      ],
+      "loss_lines": [
+        "A good trail team!"
+      ],
+      "block_main_lane": false
+    },
+    {
+      "id": "MN_R06_T03",
+      "display_name": "NORA",
+      "trainer_class": "FISHER",
+      "sprite": "SPRITE_FISHER",
+      "tile": [
+        43,
+        43
+      ],
+      "facing": "east",
+      "sight_range": 1,
+      "party": [
+        {
+          "species": "TICKLET",
+          "level": 24
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R06_TRAINER_03",
+      "before_lines": [
+        "No bites today.",
+        "How about a match?"
+      ],
+      "after_lines": [
+        "The pier end is",
+        "fenced for safety."
+      ],
+      "loss_lines": [
+        "A good trail team!"
+      ],
+      "block_main_lane": false
+    },
+    {
+      "id": "MN_R06_T04",
+      "display_name": "BECK",
+      "trainer_class": "BIRD_KEEPER",
+      "sprite": "SPRITE_YOUNGSTER",
+      "tile": [
+        51,
+        31
+      ],
+      "facing": "west",
+      "sight_range": 1,
+      "party": [
+        {
+          "species": "NOTCHBILL",
+          "level": 24
+        },
+        {
+          "species": "BOOMRUFF",
+          "level": 24
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R06_TRAINER_04",
+      "before_lines": [
+        "Listen by the lake",
+        "before you battle."
+      ],
+      "after_lines": [
+        "I count wings on",
+        "the road north."
+      ],
+      "loss_lines": [
+        "A good trail team!"
+      ],
+      "block_main_lane": false
+    },
+    {
+      "id": "MN_R06_T05",
+      "display_name": "ELI",
+      "trainer_class": "HIKER",
+      "sprite": "SPRITE_POKEFAN_M",
+      "tile": [
+        27,
+        23
+      ],
+      "facing": "west",
+      "sight_range": 1,
+      "party": [
+        {
+          "species": "VELVAWN",
+          "level": 25
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R06_TRAINER_05",
+      "before_lines": [
+        "The pine lookout",
+        "is worth the climb"
+      ],
+      "after_lines": [
+        "The east ramp is",
+        "the way back up."
+      ],
+      "loss_lines": [
+        "A good trail team!"
+      ],
+      "block_main_lane": false
+    }
+  ],
+  "residents": [
+    {
+      "id": "MN_R06_CAMP_WARDEN",
+      "sprite": "SPRITE_OFFICER",
+      "tile": [
+        13,
+        71
+      ],
+      "facing": "east",
+      "lines": [
+        "ST CLOUD is south.",
+        "BRAINERD is north.",
+        "The cabin stays",
+        "open to walkers."
+      ]
+    },
+    {
+      "id": "MN_R06_LAKE_ANGLER",
+      "sprite": "SPRITE_FISHER",
+      "tile": [
+        33,
+        43
+      ],
+      "facing": "east",
+      "lines": [
+        "Quiet water here.",
+        "The outlet runs",
+        "beneath the bridge",
+        "farther south."
+      ]
+    },
+    {
+      "id": "MN_R06_PINE_WATCHER",
+      "sprite": "SPRITE_GRAMPS",
+      "tile": [
+        41,
+        9
+      ],
+      "facing": "east",
+      "lines": [
+        "A patch of pines",
+        "marks the north.",
+        "The high lookout",
+        "is off to the west"
+      ]
+    }
+  ],
+  "items": [
+    {
+      "id": "MN_R06_ITEM_01",
+      "item": "SUPER_POTION",
+      "quantity": 1,
+      "flag": "EVENT_MN_R06_ITEM_01",
+      "tile": [
+        23,
+        73
+      ]
+    },
+    {
+      "id": "MN_R06_ITEM_02",
+      "item": "GREAT_BALL",
+      "quantity": 1,
+      "flag": "EVENT_MN_R06_ITEM_02",
+      "tile": [
+        57,
+        53
+      ]
+    },
+    {
+      "id": "MN_R06_ITEM_04",
+      "item": "ETHER",
+      "quantity": 1,
+      "flag": "EVENT_MN_R06_ITEM_04",
+      "tile": [
+        13,
+        27
+      ]
+    }
+  ],
+  "signs": [
+    {
+      "id": "MN_R06_SOUTH_SIGN",
+      "tile": [
+        18,
+        82
+      ],
+      "lines": [
+        "PINE COUNTRY ROAD",
+        "NORTH: BRAINERD",
+        "SOUTH: ST CLOUD"
+      ]
+    },
+    {
+      "id": "MN_R06_CAMP_SIGN",
+      "tile": [
+        14,
+        64
+      ],
+      "lines": [
+        "NEEDLE CAMP",
+        "Cabin open.",
+        "Cross at the deck."
+      ]
+    },
+    {
+      "id": "MN_R06_BRIDGE_SIGN",
+      "tile": [
+        40,
+        68
+      ],
+      "lines": [
+        "NEEDLE OUTLET",
+        "Keep to the bridge"
+      ]
+    },
+    {
+      "id": "MN_R06_PIER_SIGN",
+      "tile": [
+        44,
+        40
+      ],
+      "lines": [
+        "NEEDLE LAKE PIER",
+        "Closed rails.",
+        "One clear entrance"
+      ]
+    },
+    {
+      "id": "MN_R06_LOOKOUT_SIGN",
+      "tile": [
+        30,
+        34
+      ],
+      "lines": [
+        "PINE LOOKOUT",
+        "CUT opens the ramp",
+        "View and cache up."
+      ]
+    },
+    {
+      "id": "MN_R06_NORTH_SIGN",
+      "tile": [
+        44,
+        4
+      ],
+      "lines": [
+        "BRAINERD NORTH",
+        "ST CLOUD SOUTH"
+      ]
+    }
+  ],
+  "doors": [
+    {
+      "id": "NEEDLE_CAMP_CABIN",
+      "warp_index": 1,
+      "return_warp_index": 2,
+      "tile": [
+        9,
+        61
+      ],
+      "arrival_tile": [
+        9,
+        62
+      ],
+      "return_tile": [
+        9,
+        62
+      ],
+      "target": "MnR06NeedleCabin",
+      "target_warp": 1,
+      "collision": "DOOR"
+    }
+  ],
+  "interiors": [
+    {
+      "template": "VioletNicknameSpeechHouse",
+      "dimensions_metatiles": [
+        5,
+        4
+      ],
+      "rows": [
+        "02 08 14 08 1a",
+        "1b 1c 20 20 20",
+        "18 19 20 20 1a",
+        "20 20 21 22 20"
+      ],
+      "exits": [
+        [
+          5,
+          7
+        ],
+        [
+          6,
+          7
+        ]
+      ],
+      "clear_arrival": [
+        5,
+        6
+      ],
+      "exit_collision": "WARP_CARPET_DOWN",
+      "border_block": 0,
+      "id": "MnR06NeedleCabin",
+      "residents": [
+        {
+          "id": "MN_R06_CABIN_KEEPER",
+          "sprite": "SPRITE_POKEFAN_M",
+          "tile": [
+            5,
+            3
+          ],
+          "facing": "south",
+          "lines": [
+            "Rest here a while.",
+            "I will tend your",
+            "whole team.",
+            "The trail can wait"
+          ],
+          "service": "heal_party"
+        }
+      ],
+      "items": [
+        {
+          "id": "MN_R06_ITEM_03",
+          "item": "REPEL",
+          "quantity": 1,
+          "flag": "EVENT_MN_R06_ITEM_03",
+          "tile": [
+            7,
+            3
+          ]
+        }
+      ],
+      "signs": []
+    }
+  ],
+  "shortcut": null,
+  "viewpoints": [
+    {
+      "id": "SOUTH_HABITAT",
+      "tile": [
+        17,
+        81
+      ]
+    },
+    {
+      "id": "NEEDLE_CAMP",
+      "tile": [
+        11,
+        65
+      ]
+    },
+    {
+      "id": "OUTLET_BRIDGE",
+      "tile": [
+        31,
+        67
+      ]
+    },
+    {
+      "id": "TREE_PASSING_BAY",
+      "tile": [
+        47,
+        59
+      ]
+    },
+    {
+      "id": "LAKE_ROAD",
+      "tile": [
+        51,
+        47
+      ]
+    },
+    {
+      "id": "FISHING_PIER",
+      "tile": [
+        37,
+        43
+      ]
+    },
+    {
+      "id": "NORTH_BIRD_GLADE",
+      "tile": [
+        43,
+        29
+      ]
+    },
+    {
+      "id": "LOOKOUT_GATE",
+      "tile": [
+        29,
+        33
+      ]
+    },
+    {
+      "id": "LOOKOUT_RETURN",
+      "tile": [
+        21,
+        29
+      ]
+    },
+    {
+      "id": "BRAINERD_APPROACH",
+      "tile": [
+        43,
+        7
+      ]
+    },
+    {
+      "id": "GRASS_FORK",
+      "tile": [
+        55,
+        51
+      ]
+    },
+    {
+      "id": "LOOKOUT_LAKE_VIEW",
+      "tile": [
+        13,
+        29
+      ]
+    }
+  ],
+  "required_grass_crossings": [
+    {
+      "id": "SOUTH_PINE_HABITAT",
+      "bounds_core": [
+        12,
+        76,
+        22,
+        80
+      ],
+      "minimum_grass_steps": 4
+    }
+  ],
+  "one_way_ledges": [
+    {
+      "id": "PINE_LOOKOUT_RETURN",
+      "bounds_core": [
+        20,
+        30,
+        24,
+        32
+      ],
+      "direction": "south",
+      "source_block": "56",
+      "upper_approach": [
+        21,
+        29
+      ],
+      "hop_from": [
+        21,
+        30
+      ],
+      "landing": [
+        21,
+        32
+      ],
+      "reverse_blocked": [
+        21,
+        31
+      ],
+      "side_barriers": [
+        [
+          19,
+          31
+        ],
+        [
+          24,
+          31
+        ]
+      ],
+      "return_passage_core": [
+        28,
+        30,
+        30,
+        32
+      ],
+      "minimum_return_steps": 19,
+      "purpose": "The high lookout drops onto the north lake trail; the only uphill opening remains the eastern source ramp."
+    },
+    {
+      "id": "BIRD_GLADE_RETURN",
+      "bounds_core": [
+        44,
+        10,
+        46,
+        12
+      ],
+      "direction": "south",
+      "source_block": "57",
+      "upper_approach": [
+        45,
+        9
+      ],
+      "hop_from": [
+        45,
+        10
+      ],
+      "landing": [
+        45,
+        12
+      ],
+      "reverse_blocked": [
+        45,
+        11
+      ],
+      "side_barriers": [
+        [
+          43,
+          11
+        ],
+        [
+          46,
+          11
+        ]
+      ],
+      "return_passage_core": [
+        48,
+        10,
+        50,
+        12
+      ],
+      "minimum_return_steps": 9,
+      "purpose": "Northbound travel takes the eastern grass loop; the dry southbound trail uses this hop without Cut."
+    }
+  ],
+  "status": "Crystal Route29-reference grass/ledge pass accepted in the named R06 review pack 4e1d845335f6. Native encounter habitat is 196 walking tiles. A new northern ledge pairs seven northbound grass steps with a dry southbound hop. Exact preservation, native camera review, both ledge lanes, populated journey, Cut/Surf, audio and Continue passed. Current-game integration and earned regional progression remain separate.",
+  "anchor_status": "All installed actors, cabin/warp records, resources, required bridge, fishing pier, Cut-gated lookout and old lookout ledge are preserved. Six installed arrival caps remain unchanged through exact local source snapshots. The new two-lane bird-glade ledge and nine-step grass return passed native controls; all four relevant controller cases passed including five trainers/eight opponents and saved party/bag/flags.",
+  "battle_or_grass_choices": [
+    {
+      "id": "PINE_PASSING_BAY_CHOICE",
+      "trainer_id": "MN_R06_T02",
+      "bounds_core": [
+        52,
+        54,
+        58,
+        60
+      ],
+      "minimum_grass_steps": 6,
+      "approach_core": [
+        47,
+        61
+      ],
+      "exit_core": [
+        47,
+        50
+      ],
+      "purpose": "Perry controls the short rail-side lane; the outer conifer side requires at least six grass steps. Both routes remain ordinary two-way paths after victory."
+    }
+  ],
+  "cut_gates": [
+    {
+      "id": "MN_R06_LOOKOUT_CUT_GATE",
+      "tile": [
+        29,
+        32
+      ],
+      "approach": [
+        29,
+        33
+      ],
+      "replacement_block": "3c",
+      "targets": [
+        [
+          13,
+          29
+        ],
+        [
+          14,
+          27
+        ],
+        [
+          26,
+          23
+        ],
+        [
+          21,
+          29
+        ]
+      ],
+      "gated_actor_ids": [
+        "MN_R06_T05",
+        "MN_R06_ITEM_04"
+      ]
+    }
+  ],
+  "surf_viewpoints": [
+    {
+      "id": "WEST_WATER_ROCKS",
+      "tile": [
+        5,
+        39
+      ],
+      "mode": "surf",
+      "review_only": true
+    },
+    {
+      "id": "SOUTH_OUTLET_ROCKS",
+      "tile": [
+        32,
+        83
+      ],
+      "mode": "surf",
+      "review_only": true
+    }
+  ],
+  "directional_grass_loops": [
+    {
+      "id": "BIRD_GLADE_GRASS_OR_RETURN",
+      "ledge_id": "BIRD_GLADE_RETURN",
+      "grass_regions_core": [
+        [
+          48,
+          8,
+          50,
+          14
+        ],
+        [
+          46,
+          8,
+          48,
+          10
+        ],
+        [
+          46,
+          12,
+          48,
+          14
+        ]
+      ],
+      "northbound_minimum_grass_steps": 7,
+      "southbound_minimum_grass_steps": 0,
+      "dry_trail_core": [
+        [
+          45,
+          9
+        ],
+        [
+          45,
+          12
+        ]
+      ]
+    }
+  ]
+}

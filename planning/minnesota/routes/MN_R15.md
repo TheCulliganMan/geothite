@@ -1,3 +1,10 @@
+> Current grass revision: see [Central Lakes verification](../revisions/route-grass-v01/current-r15-v01/README.md).
+> The selected730-map R14 descendant adds5native grass metatiles. Meadow ascent
+> crosses8grass steps and returns via a dry ledge; ordinary route traversal
+> crosses at least10grass steps. All9installed northern rail-connection cells,
+> lake/cabin/dock and native events remain intact. Current Minnesota parties,
+> encounters and dialogue supersede the historical source below.
+
 # Central Lakes — bounded water-boundary repair
 
 The existing 32×18 route, battle/meadow choice, required grass, useful ledge,

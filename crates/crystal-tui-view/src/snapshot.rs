@@ -4,6 +4,9 @@ use crystal_core::world::{
     session::raw_event_tile_to_runtime_tile_checked,
 };
 use crystal_runtime::{RuntimeMapCatalogSnapshot, RuntimeShellPhase, RuntimeShellSnapshot};
+
+#[path = "safari_snapshot.rs"]
+mod safari;
 use serde::{Deserialize, Serialize};
 use std::collections::BTreeMap;
 
@@ -138,17 +141,19 @@ impl RuntimeTextRenderer {
     }
 
     pub fn render(&mut self, source: &RuntimeShellSnapshot) -> TextSnapshot {
-        let (viewport_title, viewport) = if let Some(battle) = &source.battle {
+        let (viewport_title, viewport) = if let Some(view) = safari::viewport(source) {
+            view
+        } else if let Some(battle) = &source.battle {
             ("Battle".to_string(), battle_lines(source, battle))
         } else {
             (map_title(source), overworld_lines(source, self.viewport))
         };
-        let menu = menu_lines(source, self.menu_index);
+        let menu = safari::menu(source).unwrap_or_else(|| menu_lines(source, self.menu_index));
         if !menu.is_empty() {
             self.menu_index = self.menu_index.min(menu.len().saturating_sub(1));
         }
-        let prompt = prompt_lines(source, self.yes_no_index);
-        let dialogue = dialogue_lines(source);
+        let prompt = safari::prompt(source).unwrap_or_else(|| prompt_lines(source, self.yes_no_index));
+        let dialogue = safari::dialogue(source).unwrap_or_else(|| dialogue_lines(source));
         let input_hints = hint_lines(
             source,
             !menu.is_empty(),

@@ -181,10 +181,16 @@ impl Journey {
                     .or_default()
                     .insert(battle.enemy_pokemon.species.id.clone());
             }
-            let button = if snapshot.ui.menu.is_none() && snapshot.ui.text.is_some() {
-                controller.wait_frames(30).expect("native battle narration");
-                GameButton::A
-            } else if snapshot.ui.menu.as_ref().is_some_and(|menu| {
+            if !controller.shell.battle_messages.is_empty() || snapshot.ui.menu.is_none() {
+                controller
+                    .wait_frames(16)
+                    .expect("native battle narration frames");
+                controller
+                    .press(GameButton::A)
+                    .expect("native battle narration");
+                continue;
+            }
+            let button = if snapshot.ui.menu.as_ref().is_some_and(|menu| {
                 menu.layout
                     .vertical_menus
                     .iter()
@@ -194,7 +200,7 @@ impl Journey {
                 GameButton::B
             } else if let Some(cursor) = &controller.shell.battle_move_cursor {
                 assert!(trainer.is_some(), "wild encounters must use native RUN");
-                let preferred = if ["SLOWPOKE", "PIDGEOTTO", "NOCTOWL"]
+                let preferred = if ["TICKLET", "NOTCHBILL", "BOOMRUFF"]
                     .contains(&battle.enemy_pokemon.species.id.as_str())
                 {
                     "THUNDERBOLT"
@@ -604,6 +610,31 @@ fn use_collected_super_potion(controller: &mut VisibleShellController) {
 }
 
 #[test]
+#[ignore = "requires the central lake variation external pack"]
+fn pine_country_controller_walks_shore_promontory_detour_both_directions() {
+    let (_, runtime, mut controller) = fixture((50, 35), false);
+    let grid = grid(&runtime, (50, 35));
+    let mut journey = Journey::default();
+    for _ in 0..4 {
+        controller
+            .press(GameButton::Down)
+            .expect("the pine promontory blocks the old straight road");
+    }
+    assert_eq!(position(&mut controller), (50, 35));
+    let bends = [(50, 34), (54, 34), (54, 40), (50, 40)];
+    for at in bends {
+        journey.walk(&mut controller, &grid, at);
+    }
+    assert_eq!(position(&mut controller), (50, 40));
+    for at in bends.into_iter().rev() {
+        journey.walk(&mut controller, &grid, at);
+    }
+    journey.walk(&mut controller, &grid, (50, 35));
+    assert_eq!(position(&mut controller), (50, 35));
+    assert_eq!(controller.shell.last_error, None);
+}
+
+#[test]
 #[ignore = "requires the published external Pine Country or combined northern-lakes pack"]
 fn pine_country_controller_populated_five_trainers_cabin_resources_cut_return_and_continue() {
     let (root, runtime, mut controller) = fixture((16, 80), true);
@@ -632,7 +663,7 @@ fn pine_country_controller_populated_five_trainers_cabin_resources_cut_return_an
     assert!(event(&controller, "EVENT_MN_R06_ITEM_01"));
     use_collected_super_potion(&mut controller);
     assert_eq!(quantity(&mut controller, "SUPER_POTION"), 0);
-    journey.talk(&mut controller, &grid, (21, 69), "PINECO");
+    journey.talk(&mut controller, &grid, (21, 69), "CLINKLAW");
     assert!(event(&controller, "EVENT_MN_R06_TRAINER_01"));
 
     journey.walk(&mut controller, &grid, (9, 61));
@@ -742,11 +773,11 @@ fn pine_country_controller_populated_five_trainers_cabin_resources_cut_return_an
 
     assert_eq!(journey.pp_spending_victories.len(), 5);
     let expected = [
-        ("MN_R06_T01", ["PINECO", "ARIADOS"].as_slice()),
-        ("MN_R06_T02", ["ODDISH", "GROWLITHE"].as_slice()),
-        ("MN_R06_T03", ["SLOWPOKE"].as_slice()),
-        ("MN_R06_T04", ["PIDGEOTTO", "NOCTOWL"].as_slice()),
-        ("MN_R06_T05", ["STANTLER"].as_slice()),
+        ("MN_R06_T01", ["CLINKLAW", "DEWDANT"].as_slice()),
+        ("MN_R06_T02", ["RICELING", "HISSIP"].as_slice()),
+        ("MN_R06_T03", ["TICKLET"].as_slice()),
+        ("MN_R06_T04", ["NOTCHBILL", "BOOMRUFF"].as_slice()),
+        ("MN_R06_T05", ["VELVAWN"].as_slice()),
     ];
     for (id, species) in expected {
         assert_eq!(
@@ -825,11 +856,44 @@ fn pine_country_controller_northern_bends_watcher_nook_and_return() {
         journey.walk(&mut controller, &grid, at);
     }
     journey.read(&mut controller, GameButton::Left, "A patch of pines");
-    let waypoints = [
-        (42, 6),
-        (44, 6),
-        (44, 8),
-        (44, 10),
+    // Both lanes of the new dry downhill hop, then the ordinary grassy climb.
+    for x in [44, 45] {
+        journey.walk(&mut controller, &grid, (x, 9));
+        for _ in 0..8 {
+            controller
+                .press(GameButton::Down)
+                .expect("bird glade ledge");
+            assert_ne!(
+                position(&mut controller),
+                (x, 11),
+                "reverse wall is not a walking tile"
+            );
+            if position(&mut controller) == (x, 12) {
+                break;
+            }
+        }
+        assert_eq!(position(&mut controller), (x, 12));
+        for _ in 0..4 {
+            controller
+                .press(GameButton::Up)
+                .expect("blocked reverse hop");
+        }
+        assert_eq!(position(&mut controller), (x, 12));
+        for at in [(48, 12), (48, 9), (x, 9)] {
+            journey.walk(&mut controller, &grid, at);
+        }
+    }
+    journey.walk(&mut controller, &grid, (44, 9));
+    for _ in 0..8 {
+        if position(&mut controller) == (44, 12) {
+            break;
+        }
+        controller
+            .press(GameButton::Down)
+            .expect("southbound road hop");
+    }
+    assert_eq!(position(&mut controller), (44, 12));
+    let below = [
         (44, 12),
         (42, 12),
         (40, 12),
@@ -841,13 +905,23 @@ fn pine_country_controller_northern_bends_watcher_nook_and_return() {
         (42, 22),
         (42, 24),
     ];
-    for at in waypoints {
+    for at in below {
         journey.walk(&mut controller, &grid, at);
     }
-    for at in waypoints.into_iter().rev() {
+    for at in below.into_iter().rev() {
         journey.walk(&mut controller, &grid, at);
     }
-    journey.walk(&mut controller, &grid, (42, 2));
+    for at in [
+        (48, 12),
+        (48, 9),
+        (44, 9),
+        (44, 8),
+        (44, 6),
+        (42, 6),
+        (42, 2),
+    ] {
+        journey.walk(&mut controller, &grid, at);
+    }
     assert_eq!(position(&mut controller), (42, 2));
     assert_eq!(controller.shell.last_error, None);
     assert!(

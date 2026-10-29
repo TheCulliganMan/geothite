@@ -14,6 +14,12 @@ use crate::random::Random;
 use crate::random::{BattleRandomSource, CrystalRandom, DividerSource};
 use crate::state::{BattleMemory, GameState};
 
+/// Opt-in static encounter mode that records capture without blocking escape.
+///
+/// Like the native Celebi mode, successful party/PC storage sets the script's
+/// caught bit. Existing normal and protected legendary modes keep their rules.
+pub const OPTIONAL_LEGENDARY_BATTLE_TYPE: &str = "BATTLETYPE_OPTIONAL_LEGENDARY";
+
 #[derive(Debug, Default, Clone, PartialEq, Eq, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct CaptureRules {
@@ -588,6 +594,23 @@ pub fn resolve_capture_attempt_with_battle_rng(
         rules,
         final_catch_rate,
     )?;
+    resolve_capture_rate_with_battle_rng(
+        final_catch_rate,
+        first_random_carry,
+        wobble_probabilities,
+        rng,
+    )
+}
+
+/// Shared native catch roll and wobble sequence after the caller validates its
+/// context/rules and computes the final catch rate. Capture-only expeditions
+/// use this without introducing a player combatant or invoking enemy AI.
+pub(crate) fn resolve_capture_rate_with_battle_rng(
+    final_catch_rate: u8,
+    first_random_carry: bool,
+    wobble_probabilities: &[CaptureWobbleProbability],
+    rng: &mut dyn BattleRandomSource,
+) -> Result<CaptureOutcome, CaptureError> {
     let roll = rng.crystal_random_byte(first_random_carry);
     if roll <= final_catch_rate {
         return Ok(CaptureOutcome {
@@ -1118,7 +1141,10 @@ pub fn complete_active_wild_capture_result_with_transformed_replacement(
     )?;
     if let Some(stored_capture) = stored.as_ref() {
         state.battle_result = 0;
-        if battle_type == "BATTLETYPE_CELEBI" {
+        if matches!(
+            battle_type.as_str(),
+            "BATTLETYPE_CELEBI" | OPTIONAL_LEGENDARY_BATTLE_TYPE
+        ) {
             state.battle_result |= 1 << 6;
         }
         if let CaptureStorageLocation::Pc { box_index, .. } = &stored_capture.location
@@ -1162,9 +1188,29 @@ pub fn apply_ball_multiplier(
     context: &CaptureAttemptContext,
     rules: &CaptureRules,
 ) -> Result<BallCatchRateResult, CaptureError> {
+    apply_ball_multiplier_with_base_rate(
+        enemy.species.catch_rate,
+        ball_id,
+        player,
+        enemy,
+        context,
+        rules,
+    )
+}
+
+/// Apply the same native ball rules to a capture-only disposition's adjusted
+/// base rate without changing the Pokémon or the shared species catalog.
+pub(crate) fn apply_ball_multiplier_with_base_rate(
+    base_catch_rate: u8,
+    ball_id: &str,
+    player: &Pokemon,
+    enemy: &Pokemon,
+    context: &CaptureAttemptContext,
+    rules: &CaptureRules,
+) -> Result<BallCatchRateResult, CaptureError> {
     require_capture_rules(rules)?;
     validate_capture_ball_id(ball_id)?;
-    let mut rate = clamp_catch_rate(enemy.species.catch_rate as i32, 0);
+    let mut rate = clamp_catch_rate(base_catch_rate as i32, 0);
     let mut skip_hp_calc = false;
 
     let rule = rules
@@ -2327,11 +2373,13 @@ mod tests {
     }
 
     #[test]
-    fn capture_battle_result_preserves_only_canonical_celebi_and_box_full_bits() {
+    fn capture_battle_result_preserves_canonical_and_optional_legendary_bits() {
         for (battle_type, box_before, expected) in [
             ("BATTLETYPE_NORMAL", 18, 0x00),
             ("BATTLETYPE_NORMAL", 19, 0x80),
             ("BATTLETYPE_CELEBI", 19, 0xc0),
+            (OPTIONAL_LEGENDARY_BATTLE_TYPE, 18, 0x40),
+            (OPTIONAL_LEGENDARY_BATTLE_TYPE, 19, 0xc0),
         ] {
             let mut state = active_capture_state(battle_type, true, box_before);
             let outcome = successful_capture_outcome(&state);
@@ -2356,19 +2404,25 @@ mod tests {
 
     #[test]
     fn full_capture_storage_rejects_without_changing_battle_result_or_runtime_state() {
-        let mut state = active_capture_state("BATTLETYPE_NORMAL", true, MAX_BOX_MONS);
-        state.battle_result = 0;
-        let outcome = successful_capture_outcome(&state);
-        let before = state.clone();
+        for battle_type in [
+            "BATTLETYPE_NORMAL",
+            "BATTLETYPE_CELEBI",
+            OPTIONAL_LEGENDARY_BATTLE_TYPE,
+        ] {
+            let mut state = active_capture_state(battle_type, true, MAX_BOX_MONS);
+            state.battle_result = 0;
+            let outcome = successful_capture_outcome(&state);
+            let before = state.clone();
 
-        let error = complete_active_wild_capture_result(&mut state, &outcome)
-            .expect_err("party plus selected full box rejects the capture completion");
+            let error = complete_active_wild_capture_result(&mut state, &outcome)
+                .expect_err("party plus selected full box rejects the capture completion");
 
-        assert!(
-            error.contains("party and current PC box 1 are full"),
-            "{error}"
-        );
-        assert_eq!(state, before);
+            assert!(
+                error.contains("party and current PC box 1 are full"),
+                "{error}"
+            );
+            assert_eq!(state, before);
+        }
     }
 
     #[test]

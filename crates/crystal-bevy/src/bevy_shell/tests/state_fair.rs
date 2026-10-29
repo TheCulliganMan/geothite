@@ -3,6 +3,8 @@
 mod crowd;
 #[path = "state_fair_food.rs"]
 mod food;
+#[path = "state_fair_rooms.rs"]
+mod rooms;
 use std::path::PathBuf;
 use std::sync::OnceLock;
 
@@ -201,8 +203,8 @@ fn fixture_options(
         .expect("fixture name");
     let mut pokemon = r
         .data()
-        .create_pokemon("MEW", 100, Dv::default())
-        .expect("legal review partner");
+        .create_pokemon("POUCHID", 100, Dv::default())
+        .expect("active Minnesota review partner");
     if !healthy {
         pokemon.hp = 1;
     } else {
@@ -212,10 +214,19 @@ fn fixture_options(
         pokemon.item = Some("SMOKE_BALL".into());
     }
     let moves = if healthy {
-        ["PROTECT", "FLAMETHROWER", "SURF", "THUNDERBOLT"]
+        ["PROTECT", "GIGA_DRAIN", "PSYCHIC_M", "REST"]
     } else {
-        ["PSYCHIC_M", "FLAMETHROWER", "SURF", "THUNDERBOLT"]
+        ["PSYCHIC_M", "GIGA_DRAIN", "SOLARBEAM", "REST"]
     };
+    for name in moves {
+        assert!(
+            r.data().pokemon["POUCHID"]
+                .tmhm_learnset
+                .iter()
+                .any(|m| m == name),
+            "the active regional fixture partner must legally learn {name}"
+        );
+    }
     pokemon.moves = moves
         .into_iter()
         .map(|name| LearnedMove {
@@ -654,28 +665,29 @@ fn toss(c: &mut VisibleShellController, r: &CrystalRuntime, cancel: bool) {
 #[ignore = "requires the external native State Fair pack"]
 fn state_fair_controller_counters_food_stamps_rooms_battle_and_continue() {
     let (root, r, mut c) = fixture(false);
-    // Walk the actual reciprocal city seam in both directions.
-    walk(&mut c, &r, (16, 71));
-    for _ in 0..4 {
-        press(&mut c, GameButton::Down);
-        if c.snapshot().expect("city seam").overworld.map_name == "MnStPaul" {
-            break;
+    // Walk both actual woodland lanes to the existing road and back.
+    for (fair_y, road_y) in [(64, 8), (65, 9)] {
+        walk(&mut c, &r, (95, fair_y));
+        for _ in 0..4 {
+            press(&mut c, GameButton::Right);
+            if c.snapshot().expect("road seam").overworld.map_name != FAIR {
+                break;
+            }
         }
-    }
-    assert_eq!(c.snapshot().expect("city").overworld.map_name, "MnStPaul");
-    let city_x = at(&mut c).0;
-    let street_y = if r.data().maps["MnStPaul"].attributes.width == 40 {
-        10
-    } else {
-        16
-    };
-    walk(&mut c, &r, (city_x, street_y));
-    walk(&mut c, &r, (city_x, 0));
-    for _ in 0..4 {
-        press(&mut c, GameButton::Up);
-        if c.snapshot().expect("fair seam").overworld.map_name == FAIR {
-            break;
+        assert_eq!(
+            c.snapshot().expect("road").overworld.map_name,
+            "MnR05C00R02"
+        );
+        assert_eq!(at(&mut c), (0, road_y));
+        walk(&mut c, &r, (19, road_y));
+        walk(&mut c, &r, (0, road_y));
+        for _ in 0..4 {
+            press(&mut c, GameButton::Left);
+            if c.snapshot().expect("fair seam").overworld.map_name == FAIR {
+                break;
+            }
         }
+        assert_eq!(at(&mut c), (95, fair_y));
     }
     assert_eq!(c.snapshot().expect("fair").overworld.map_name, FAIR);
     counter(&mut c, &r, (21, 66));
@@ -831,8 +843,12 @@ fn state_fair_controller_full_bag_preserves_stamp_prize_then_recovers() {
 #[ignore = "requires the external expanded State Fair pack"]
 fn state_fair_controller_every_expanded_shop_and_all_sixteen_food_effects() {
     let (_, r, mut c) = fixture(false);
-    let path = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("../../planning/minnesota/zones/state-fairgrounds.json");
+    let path = std::env::var_os("CRYSTAL_FAIR_SOURCE")
+        .map(PathBuf::from)
+        .unwrap_or_else(|| {
+            PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+                .join("../../planning/minnesota/zones/state-fairgrounds.json")
+        });
     let source: serde_json::Value =
         serde_json::from_str(&std::fs::read_to_string(path).expect("expanded fair source"))
             .expect("dossier");
@@ -843,7 +859,8 @@ fn state_fair_controller_every_expanded_shop_and_all_sixteen_food_effects() {
         .filter(|a| a["service"] == "pokemart")
         .collect::<Vec<_>>();
     assert_eq!(merchants.len(), 32);
-    assert_eq!(r.data().maps[FAIR].objects.len(), 85);
+    assert_eq!(source["crowd_contract"]["total_outdoor_npcs"], 255);
+    assert_eq!(r.data().maps[FAIR].objects.len(), 255);
     for a in &merchants {
         let pos = super::point(&a["approach"]);
         counter(&mut c, &r, pos);

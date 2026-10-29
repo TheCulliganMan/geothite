@@ -1,0 +1,8 @@
+{
+  "changed_authoring_fields_only": [
+    "MN_R11_T03:after_lines",
+    "MN_R11_T04:before_lines",
+    "MN_R11_T08:after_lines"
+  ],
+  "native_game_mutated": false
+}

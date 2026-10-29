@@ -33,6 +33,13 @@ pub(crate) fn validate(q: &Value) -> Result<()> {
             && q["arrival_facing"] == "RIGHT",
         "retain SQ03 authority, guards and real eastbound far-camp arrival"
     );
+    ensure!(
+        q["checkpoint_map"] == "MnRainyRiverIcefields"
+            && q["checkpoint_tiles"] == json!([[61, 44], [61, 45]])
+            && q["warden_tile"] == json!([60, 44])
+            && q["warden_approach"] == json!([60, 45]),
+        "the winter circuit must use the actual two-lane Rainy River outlet"
+    );
     Ok(())
 }
 
@@ -67,7 +74,7 @@ fn checks(failure: &str) -> Vec<Value> {
     commands
 }
 
-pub(crate) fn gate(map: &mut MapModule, q: &Value) -> Result<()> {
+fn gate(map: &mut MapModule, q: &Value) -> Result<()> {
     let c = authoring::command;
     let label = text(map, q, "denied_lines")?;
     let mut commands = vec![
@@ -95,9 +102,9 @@ pub(crate) fn gate(map: &mut MapModule, q: &Value) -> Result<()> {
         "MnFallsTrailBack".into(),
         json!([c("step", &["LEFT"]), c("step_end", &[])]),
     );
-    for y in [14, 15] {
+    for y in [44, 45] {
         map.events.coord_events.push(CoordEvent {
-            x: 29,
+            x: 61,
             y,
             scene_id: String::new(),
             script_name: "MnFallsTrailCheck".into(),
@@ -172,6 +179,62 @@ pub(crate) fn ranger(map: &mut MapModule, q: &Value) -> Result<()> {
         );
     }
     Ok(())
+}
+
+pub(crate) fn checkpoint(pack: &mut CompiledGamePack, town: &Town, q: &Value) -> Result<()> {
+    let name = "MnRainyRiverIcefields";
+    let original = pack.data.maps.get(name).context("actual winter outlet")?;
+    for x in 60..=63 {
+        for y in [44, 45] {
+            ensure!(
+                crate::authored_town_geometry::kind(pack, original, [x, y])? == "FLOOR",
+                "winter outlet needs two real snow lanes"
+            );
+        }
+        for y in [43, 46] {
+            ensure!(
+                crate::authored_town_geometry::kind(pack, original, [x, y])? == "WALL",
+                "winter checkpoint must have no side bypass"
+            );
+        }
+    }
+    ensure!(
+        !original.objects.iter().any(|o| o.x == 60 && o.y == 44)
+            && !original
+                .events
+                .coord_events
+                .iter()
+                .any(|e| e.x == 61 && [44, 45].contains(&e.y)),
+        "winter checkpoint positions are occupied"
+    );
+    let mut new = authoring::blank(pack, name, name, "MN_RAINY_RIVER_ICEFIELDS")?;
+    new.attributes = original.attributes.clone();
+    new.blocks = original.blocks.clone();
+    gate(&mut new, q)?;
+    let label = text(&mut new, q, "warden_lines")?;
+    new.scripts.insert(
+        "MnFallsTrailWarden".into(),
+        json!([authoring::command("jumptextfaceplayer", &[&label])]),
+    );
+    authoring::npc(
+        pack,
+        &mut new,
+        "MnFallsTrailWarden",
+        "SPRITE_POKEFAN_M",
+        60,
+        44,
+    )?;
+    new.objects
+        .last_mut()
+        .context("new winter warden")?
+        .object_identifier = Some("MN_FALLS_TRAIL_WARDEN".into());
+    crate::authored_town_scripts::finish(pack, &mut new, town)?;
+    let coordinates = std::mem::take(&mut new.events.coord_events);
+    let mut revised = original.clone();
+    crate::authored_city_expansion::merge_new_content(&mut revised, new)?;
+    revised.events.coord_events.extend(coordinates);
+    authoring::refresh_event_section(&mut revised);
+    crate::authored_town_publication::replace(pack, revised)
 }
 
 pub(crate) fn arrival(pack: &mut CompiledGamePack, town: &Town) -> Result<()> {

@@ -16,7 +16,7 @@ use super::super::{
     mark_runtime_snapshot_dirty,
 };
 use super::authored_route_fixture::{
-    Point, RouteGrid, RouteSpec, finish_text, indoor_walk, position,
+    Point, RouteGrid, RouteSpec, escape_wild, finish_text, indoor_walk, position,
 };
 
 fn runtime() -> (AssetRoot, CrystalRuntime) {
@@ -57,17 +57,29 @@ fn fixture(root: &AssetRoot, runtime: &CrystalRuntime, at: Point) -> VisibleShel
     controller
 }
 
+fn route_tileset(runtime: &CrystalRuntime) -> &'static str {
+    match runtime.data().maps["MnR17C00R00"]
+        .attributes
+        .tileset_name
+        .as_str()
+    {
+        "mn_border_pines" => "mn_border_pines",
+        "mn_winter_outdoor" => "mn_winter_outdoor",
+        other => panic!("unexpected Border Pines tileset {other}"),
+    }
+}
+
 fn grid(runtime: &CrystalRuntime, at: Point, grass: bool) -> RouteGrid {
     let spec = RouteSpec {
         prefix: "MnR17",
         columns: 1,
         rows: 3,
-        tileset: "mn_border_pines",
+        tileset: route_tileset(runtime),
         start: at,
         doors: BTreeMap::from([((10, 43), "MnR17Cave1F"), ((45, 49), "MnR17RangerHut")]),
     };
     if grass {
-        RouteGrid::new_with_grass(runtime, spec)
+        RouteGrid::new_with_grass(runtime, spec).with_battle_handler(escape_wild)
     } else {
         RouteGrid::new(runtime, spec)
     }
@@ -138,11 +150,12 @@ fn cut(controller: &mut VisibleShellController, direction: GameButton) {
 }
 
 fn opened_grid(runtime: &CrystalRuntime, controller: &mut VisibleShellController) -> RouteGrid {
-    let mut grid = grid(runtime, position(controller), false);
+    let mut grid = grid(runtime, position(controller), true);
     // Read the authoritative map replacement; this only plans native inputs.
     // The other three quadrants must retain the source replacement collision.
     let block = tree(controller);
-    let collision = &runtime.data().tilesets["mn_border_pines"].collision[&format!("{block:02x}")];
+    let collision =
+        &runtime.data().tilesets[route_tileset(runtime)].collision[&format!("{block:02x}")];
     for dy in 0..2 {
         for dx in 0..2 {
             if collision[dy * 2 + dx] == "FLOOR" {
@@ -353,7 +366,7 @@ fn border_pines_cut_shortcut_denies_opens_walks_rests_and_resets_on_continue() {
         assert_eq!(tree(&denied), 0x0f);
         assert_eq!(position(&mut denied), (36, 68));
         assert_eq!(
-            grid(&runtime, (36, 67), false)
+            grid(&runtime, (36, 67), true)
                 .path((36, 67), (36, 73))
                 .len(),
             66
@@ -361,12 +374,12 @@ fn border_pines_cut_shortcut_denies_opens_walks_rests_and_resets_on_continue() {
     }
     let mut controller = fixture(&root, &runtime, (36, 67));
     initial_partner(&runtime, &mut controller, "CUT", true);
-    let dry = grid(&runtime, (36, 67), false);
-    assert_eq!(dry.path((36, 67), (36, 73)).len(), 66);
+    let ordinary = grid(&runtime, (36, 67), true);
+    assert_eq!(ordinary.path((36, 67), (36, 73)).len(), 66);
     // Both arms already accessible. Walk the actual longer dry route first.
-    dry.walk(&mut controller, (36, 73));
-    dry.walk(&mut controller, (36, 67));
-    dry.walk(&mut controller, (36, 68));
+    ordinary.walk(&mut controller, (36, 73));
+    ordinary.walk(&mut controller, (36, 67));
+    ordinary.walk(&mut controller, (36, 68));
     cut(&mut controller, GameButton::Down);
     assert_eq!(tree(&controller), 0x17);
     let opened = opened_grid(&runtime, &mut controller);
@@ -416,11 +429,11 @@ fn border_pines_cut_shortcut_denies_opens_walks_rests_and_resets_on_continue() {
     );
     // Native TILES reload restores vegetation independently of pickup flags.
     assert_eq!(tree(&controller), 0x0f);
-    let dry = grid(&runtime, (36, 73), false);
-    dry.walk(&mut controller, (36, 70));
+    let ordinary = grid(&runtime, (36, 73), true);
+    ordinary.walk(&mut controller, (36, 70));
     cut(&mut controller, GameButton::Up);
     opened_grid(&runtime, &mut controller).walk(&mut controller, (36, 67));
-    let grid = grid(&runtime, (36, 67), false);
+    let grid = grid(&runtime, (36, 67), true);
     grid.walk(&mut controller, (45, 49));
     indoor_walk(&mut controller, &runtime, (5, 6));
     let before = controller
@@ -563,7 +576,7 @@ fn border_pines_populated_fixture_wins_spends_selected_pp_and_continues() {
     let (root, runtime) = runtime();
     let mut controller = fixture(&root, &runtime, (11, 46));
     // Legal local party, badges and deterministic divider are initial setup.
-    // The test starts beside Ellis; it does not claim earned regional travel.
+    // The test starts beside the actual T04; it does not claim earned travel.
     for (species, level, move_name) in
         [("FERALIGATR", 48, "SURF"), ("AMPHAROS", 46, "THUNDERPUNCH")]
     {
@@ -609,13 +622,19 @@ fn border_pines_populated_fixture_wins_spends_selected_pp_and_continues() {
         .pokemon
         .moves[0]
         .current_pp;
-    controller.press(GameButton::Up).expect("face Ellis");
+    controller
+        .press(GameButton::Up)
+        .expect("face actual trainer");
     controller
         .press(GameButton::A)
         .expect("native trainer challenge");
     assert_eq!(
         complete_battle(&mut controller),
-        BTreeSet::from(["URSARING".into(), "GOLBAT".into(), "DELIBIRD".into()])
+        runtime.data().trainers.trainers["MN_R17_T04"]
+            .party
+            .iter()
+            .map(|pokemon| pokemon.species.clone())
+            .collect::<BTreeSet<_>>()
     );
     finish_text(&mut controller);
     let won = controller.snapshot().expect("native trainer result");
@@ -663,4 +682,93 @@ fn border_pines_populated_fixture_wins_spends_selected_pp_and_continues() {
             .expect("optional controller fixture save");
     }
     std::fs::remove_file(save).expect("remove disposable battle save");
+}
+
+fn native_route_kind(runtime: &CrystalRuntime, at: Point) -> &str {
+    let m = &runtime.data().maps[&format!("MnR17C00R{:02}", at.1 / 48)];
+    let x = usize::try_from(at.0).expect("nonnegative route x");
+    let y = usize::try_from(at.1 % 48).expect("nonnegative local y");
+    let block = m.blocks[y / 2 * usize::from(m.attributes.width) + x / 2];
+    &runtime.data().tilesets[&m.attributes.tileset_name].collision[&format!("{block:02x}")]
+        [y % 2 * 2 + x % 2]
+}
+
+fn continue_grass_state(
+    root: AssetRoot,
+    runtime: CrystalRuntime,
+    controller: &mut VisibleShellController,
+    label: &str,
+) {
+    let at = position(controller);
+    let before = controller.snapshot().expect("actual reached grass state");
+    let save = super::authored_route_fixture::reached_save_path(&format!(
+        "geothite-r17-{label}-{}.crystalsave",
+        std::process::id(),
+    ));
+    controller.save(&save).expect("save reached grass state");
+    let mut loaded = VisibleShellController::load_save(root, runtime, save.clone(), None)
+        .expect("Continue actual grass state");
+    let after = loaded.snapshot().expect("continued grass state");
+    assert_eq!(position(&mut loaded), at);
+    assert_eq!(before.party, after.party);
+    assert_eq!(before.bag, after.bag);
+    if let Some(path) = std::env::var_os("CRYSTAL_BORDER_PINES_GRASS_REACHED_SAVE") {
+        loaded
+            .save(PathBuf::from(path))
+            .expect("retain reached grass state");
+    }
+    super::authored_route_fixture::cleanup_reached_save(&save);
+}
+
+#[test]
+#[ignore = "requires the current selected-parent Border Pines grass candidate"]
+fn border_pines_grass_controller_northern_arrival_crossing_and_continue() {
+    let (root, runtime) = runtime();
+    let mut c = fixture(&root, &runtime, (36, 6));
+    initial_partner(&runtime, &mut c, "SWIFT", true);
+    let route = grid(&runtime, (36, 6), true);
+    let mut grass = 0;
+    route.walk_with_actions(
+        &mut c,
+        (36, 12),
+        |c| {
+            grass += usize::from(native_route_kind(&runtime, position(c)) == "TALL_GRASS");
+        },
+        escape_wild,
+    );
+    assert!(grass >= 2, "northern arrival must cross its new pine grass");
+    continue_grass_state(root, runtime, &mut c, "north-arrival");
+}
+
+#[test]
+#[ignore = "requires the current selected-parent Border Pines grass candidate"]
+fn border_pines_grass_controller_marsh_new_habitat_wild_run_and_continue() {
+    let (root, runtime) = runtime();
+    let mut c = fixture(&root, &runtime, (19, 78));
+    initial_partner(&runtime, &mut c, "SWIFT", true);
+    assert_eq!(native_route_kind(&runtime, (19, 78)), "TALL_GRASS");
+    assert_eq!(native_route_kind(&runtime, (19, 79)), "TALL_GRASS");
+    let route = grid(&runtime, (19, 78), true);
+    let mut encounters = 0;
+    for index in 0..256 {
+        let target = if index % 2 == 0 { (19, 79) } else { (19, 78) };
+        route.walk_with_actions(
+            &mut c,
+            target,
+            |_| {},
+            |c| {
+                encounters += 1;
+                escape_wild(c);
+            },
+        );
+        if encounters > 0 {
+            break;
+        }
+    }
+    assert!(
+        encounters > 0,
+        "new middle-chunk habitat never started a native encounter"
+    );
+    route.walk_with_actions(&mut c, (19, 82), |_| {}, escape_wild);
+    continue_grass_state(root, runtime, &mut c, "marsh-wild");
 }

@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "trainer_class": "MN_LEADER_ORLIS",
+  "class_name": "LEADER",
+  "trainer_ids": [
+    "MN_GYM_7"
+  ],
+  "actors": [
+    {
+      "map": "MnBemidjiGym",
+      "script": "MnBemidjiGymLeader",
+      "tile": [
+        5,
+        3
+      ],
+      "previous_sprite": "SPRITE_COOLTRAINER_M"
+    }
+  ]
+}

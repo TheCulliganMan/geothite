@@ -4,6 +4,15 @@ use super::*;
 use bevy::light::{NotShadowCaster, NotShadowReceiver};
 use bevy::render::render_resource::{Extent3d, TextureDimension, TextureFormat};
 
+// Only Ely weather is enabled by the production plugin. The generic source
+// emitter tests retain their existing broader fixtures.
+#[derive(Resource)]
+struct ElyWeatherOnly;
+
+pub(super) fn register_ely_snow(app: &mut App) {
+    app.insert_resource(ElyWeatherOnly).add_plugins(EnvironmentFxPlugin);
+}
+
 pub(super) struct EnvironmentFxPlugin;
 impl Plugin for EnvironmentFxPlugin {
     fn build(&self, app: &mut App) {
@@ -93,7 +102,11 @@ fn rebuild(frame: &VisualWorldFrame, emitters: &mut Emitters) {
             continue;
         }
         let shape = shape_for_source(&tile.source);
-        if !interior_cutaway::is_cave(frame)
+        // Ely is an outdoor snowstorm, including its cleared town streets.
+        if frame.map_id.as_ref() == "MnEly" {
+            emitters.ice.push(p);
+        }
+        if frame.map_id.as_ref() != "MnEly" && !interior_cutaway::is_cave(frame)
             && matches!(
                 tile.source.tileset_id.as_ref(),
                 "johto" | "johto_modern" | "kanto" | "forest" | "park"
@@ -355,9 +368,11 @@ fn animate(
     status: Res<VoxelViewStatus>,
     time: Res<Time>,
     mut emitters: ResMut<Emitters>,
+    scope: Option<Res<ElyWeatherOnly>>,
     mut particles: Query<(&Particle, &mut Transform, &mut Visibility)>,
 ) {
-    let active = frame.active && settings.enabled && status.active;
+    let active = frame.active && settings.enabled && status.active
+        && (scope.is_none() || frame.map_id.as_ref() == "MnEly");
     if active && emitters.key.as_ref() != Some(&TerrainCacheKey::from_frame(&frame)) {
         rebuild(&frame, &mut emitters);
     }
@@ -426,6 +441,20 @@ mod tests {
             ..default()
         }
     }
+    #[test]
+    fn ely_snowfall_covers_the_cleared_outdoor_streets_and_stops_inside() {
+        let mut emitters = Emitters::default();
+        rebuild(&fixture("MnEly", "kanto", 0), &mut emitters);
+        assert_eq!(emitters.ice.len(), 4);
+        rebuild(
+            &fixture("MnElyPokecenter1F", "pokecenter", 0),
+            &mut emitters,
+        );
+        assert!(emitters.ice.is_empty());
+        rebuild(&fixture("MnR11C00R02", "mn_north_shore", 0), &mut emitters);
+        assert!(emitters.ice.is_empty());
+    }
+
     #[test]
     fn environment_pool_retains_assets_animates_and_hides_when_3d_stops() {
         let frame = fixture("IcePath1F", "ice_path", ice_path::SMOOTH_ICE_TILE);

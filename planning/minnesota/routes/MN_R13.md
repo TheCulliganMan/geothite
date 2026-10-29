@@ -1,3 +1,10 @@
+> Current grass revision: see [R13 verification and 2D views](../revisions/route-grass-v01/current-r13-union-v01/README.md).
+> The selected 730-map interior-union descendant changes 19 snow FLOOR metatiles to native
+> frosted grass. Grass grows from 116 to 192 walking tiles. Wind Tor has a grassy
+> uphill approach and dry ledge return. Existing inland ice, Cut, actors, rooms,
+> rewards and the ice-free North Shore remain intact. Seven native cases pass.
+> Older pack counts, source teams and historical claims below are superseded.
+
 # League Approach: current hand-authored implementation
 
 The current route is **32×64 metatiles**, split into three clipped native maps

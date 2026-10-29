@@ -1,5 +1,11 @@
 # Current gym revisions in the regional packs
 
+This record describes the two frozen gym publications named below. The current
+[gym profiles](../GYMS.md) summarize the courses; the
+[story composition record](../revisions/current-story-v01/README.md) describes a
+later regional publication. Results here retain their original pack and fixture
+scope. Legacy test parties are historical evidence, not approved Minnesota teams.
+
 All eight selected rooms now rebuild through Rust inside two frozen regional
 branches. The selected source is [current.json](current.json), which layers the
 eight single-room revisions over the unchanged historical collection.

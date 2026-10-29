@@ -3118,6 +3118,7 @@ impl RuntimeOverworldSession {
             session: outcome.session,
             bite: outcome.bite,
             wild_battle: outcome.wild_battle,
+            safari_encounter: outcome.safari_encounter,
             state_checksum: mutation.state_checksum,
         })
     }
@@ -3140,6 +3141,7 @@ impl RuntimeOverworldSession {
                 session: outcome.cast.session,
                 bite: outcome.cast.bite,
                 wild_battle: outcome.cast.wild_battle,
+                safari_encounter: outcome.cast.safari_encounter,
                 state_checksum: outcome.cast_state_checksum,
             },
             state_checksum: mutation.state_checksum,
@@ -4323,6 +4325,7 @@ fn runtime_audio_asset_key(
 }
 
 fn validate_save_references_for_runtime_pack(state: &GameState, data: &GameDataSet) -> Result<()> {
+    data.validate_saved_safari_references(state)?;
     data.validate_saved_bag_references(&state.bag)?;
     data.validate_saved_mom_purchase_references(state)?;
     data.validate_saved_pokedex_references(&state.pokedex)?;

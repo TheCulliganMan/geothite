@@ -1,0 +1,91 @@
+{
+  "schema_version": 1,
+  "id": "MN_WINTER_SECTIONS_FINAL_SOURCE_V04",
+  "status": "DETACHED_FINAL_AUTHORING_SOURCE_NATIVE_ROOF_STAGE_ACCEPTANCE_PENDING",
+  "role": "Final source composition; not input to the already frozen c901 sections publisher.",
+  "original_parent_pack_sha256": "3d1cbdd18b05ce10ed66db7ab56d41f0032f6e045a0e72ad753064c5dc6ec8df",
+  "published_sections_parent_sha256": "aa1aa251f7383640412b82b9b3ed9d6e0bb1304569230a79624c75274db60e5a",
+  "previous_sections_contract": {
+    "path": "planning/minnesota/regions/ice/sections/source-v03/integration.contract.json",
+    "sha256": "c901add54e8ec698b72f563bcd2fa93ef0383e95bd399db8f6bb70f048032735"
+  },
+  "roof_contract": {
+    "path": "planning/minnesota/regions/ice/roof-fidelity-v01/roof-fidelity.contract.json",
+    "sha256": "db9a077f82b7a307c5df41a4c2751bf64d5f88064d405ee40dd7306d214d96eb"
+  },
+  "roof_source_preview": {
+    "path": "planning/minnesota/regions/ice/roof-fidelity-v01/preview_roof_fidelity.py",
+    "sha256": "5c621fd533231174d8a87d12a72e92d23f5ecb53271bec93f616c1a7df592691"
+  },
+  "sources": {
+    "planning/minnesota/regions/ice/sections/source-v04/MN_R11.candidate.json": "8e7ee513ea537160215b429fe4bb430e7bda0419149eb81085b6242d70285c41",
+    "planning/minnesota/regions/ice/sections/source-v04/MN_R11.json.before": "5a818e11016e1b6ef556e94b22967b5990e6de2081afa302dde6a991154044bf",
+    "planning/minnesota/regions/ice/sections/source-v04/MN_R11.layout.candidate.json": "c0889cbb9867dde8a076b765c9b163243df6ed012932e89122892d61686a3a8b",
+    "planning/minnesota/regions/ice/sections/source-v04/MN_R11.layout.json.before": "0beac1f249fee686bd6690719bb4f77e333b235918e14148e89ca7b9f0b4bb43",
+    "planning/minnesota/regions/ice/sections/source-v04/MN_R17.candidate.json": "9fcc7f029a205363a96dd9ee7f6ca847d6febec0e21844c34f3fd8523011cd0a",
+    "planning/minnesota/regions/ice/sections/source-v04/MN_R17.json.before": "379db3aa3505997b69f66c5f9ec785310c1173914f0ef2d71b619d4ffe029fae",
+    "planning/minnesota/regions/ice/sections/source-v04/MN_R17.layout.candidate.json": "d1d948a3462631d4c4bd61adde4dd6d86763f8248eeb863083a23551789a73dd",
+    "planning/minnesota/regions/ice/sections/source-v04/MN_R17.layout.json.before": "e2aeb100c42d190c8a1b728d917f5321e8452a28bba448caf5741c7b7104d488"
+  },
+  "routes": [
+    {
+      "id": "MN_R17",
+      "dimensions_metatiles": [
+        32,
+        56
+      ],
+      "candidate_layout": "planning/minnesota/regions/ice/sections/source-v04/MN_R17.layout.candidate.json",
+      "candidate_dossier": "planning/minnesota/regions/ice/sections/source-v04/MN_R17.candidate.json",
+      "compiled_native_grid_sha256": "bf38183fc9423d6c88d0e8f29e083df912ee7295dfd1baac6de51591228f8294",
+      "native_cap_overlays": [],
+      "unchanged_geometry_and_gameplay_proof_contract_sha256": "c901add54e8ec698b72f563bcd2fa93ef0383e95bd399db8f6bb70f048032735",
+      "only_v03_changes": []
+    },
+    {
+      "id": "MN_R11",
+      "dimensions_metatiles": [
+        56,
+        96
+      ],
+      "candidate_layout": "planning/minnesota/regions/ice/sections/source-v04/MN_R11.layout.candidate.json",
+      "candidate_dossier": "planning/minnesota/regions/ice/sections/source-v04/MN_R11.candidate.json",
+      "compiled_native_grid_sha256": "0f2bed3712f63b066e643bdfb4dcc6ef314f7675abd954c97af1a0651f00a834",
+      "native_cap_overlays": [
+        {
+          "at": [
+            20,
+            0
+          ],
+          "source": 5,
+          "native": 1
+        }
+      ],
+      "unchanged_geometry_and_gameplay_proof_contract_sha256": "c901add54e8ec698b72f563bcd2fa93ef0383e95bd399db8f6bb70f048032735",
+      "only_v03_changes": [
+        {
+          "at_meta": [
+            11,
+            9
+          ],
+          "before": 44,
+          "after": 137
+        },
+        {
+          "at_meta": [
+            12,
+            9
+          ],
+          "before": 45,
+          "after": 138
+        }
+      ]
+    }
+  ],
+  "canonical_written": false,
+  "required_before_promotion": [
+    "Actual fifth-stage written pack hash and whole-grid equality to this source bundle",
+    "Root final roof GPU/source review and hash-bound scoped native acceptance",
+    "Truthful editorial status/native_evidence update with only metadata change proof",
+    "Fresh canonical preimage check; byte-exact outside owned route fields; world/interiors unchanged"
+  ]
+}

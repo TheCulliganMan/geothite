@@ -1,5 +1,12 @@
 {
   "id": "MN_R05",
+  "native_cave_revision": {
+    "revision": "r05_rock_cut_revision",
+    "room": "MnR05RockCut",
+    "plan": "../caves/current-r05-v01/README.md",
+    "source": "../caves/johto-quality-v01/MnR05RockCut.json",
+    "scope": "Complete8x10 native Rock Cut on the current R09/R10/compact-coast/Ely lineage. Both real hillside mouth pairings, stair, original healer HP/PP/status care, Repel pickup/Pack use/countdown and Continue verified. Cave-only overlay; it does not compose independent outdoor route revisions or change the active world pointer."
+  },
   "map_prefix": "MnR05",
   "name": "River Bluffs North",
   "required_flags": [
@@ -907,7 +914,7 @@
         42
       ],
       "minimum_return_steps": 35,
-      "purpose": "Southbound drop; the walking climb returns through the western ramp."
+      "purpose": "Southbound dry drop; the ordinary western uphill climb crosses encounter habitat. The existing cave is a separate alternate passage."
     },
     {
       "id": "LOWER_DROP",
@@ -952,7 +959,7 @@
         78
       ],
       "minimum_return_steps": 35,
-      "purpose": "Southbound drop; the walking climb returns through the western ramp."
+      "purpose": "Southbound dry drop; the ordinary western uphill climb crosses encounter habitat. The existing cave is a separate alternate passage."
     }
   ],
   "viewpoints": [
@@ -1048,8 +1055,8 @@
       ]
     }
   ],
-  "status": "Native 471-map quality review includes the13-block upper-ridge cleft. Exact full-pack terrain-only preservation, current three controller cases including the five-trainer journey and both Surf seams, and all377 audio checks pass. Earned regional progression and final visual acceptance remain open.",
-  "anchor_status": "All current actor/sign/room/port/ramp/ledge/pier anchors retained; both cave mouths, both drops, four ramps, three resources, medicine/keeper use and Continue pass in the revised native pack.",
+  "status": "Current compact R05 grass revision reviewed in minnesota-current-grass-r05-v03.crystalpack, preserving accepted R01/R20 cave terrain and completed League dialogue. Thirty-three grass cells, forced outdoor climbs and dry returns pass exact native/source preservation, directional negatives,2D review,3native controller cases, reached-save production stdio and377audio. Explicit local setup does not establish earned progression. Frozen native parties/room/bank inputs are in revisions/route-grass-v01/compact-rebase-v01; canonical roster rows remain templates for the regional roster layer. The full statewide grass objective remains open.",
+  "anchor_status": "All installed actors, signs, room/warp pairs, ramps, ledges, pier/Surf footing and native connections are preserved. Published through exact installed snapshots so 27 older canonical/native differences remain untouched. Native terrain comparison, both outdoor uphill returns/drops, five trainer wins/seven opponents, healing/medicine, Surf seams/banks and Save/Continue passed.",
   "native_river_continuation": {
     "status": "Exact hook-only native continuation; no unpublished route-quality candidate imported.",
     "recomposition_contract_file": "towns/MnMinneapolis.recomposition.contract.json",
@@ -1109,5 +1116,75 @@
     "hook_native_cells": 42,
     "road_bridge_note": "Actual dry deck and rail collisions separate Surf components; no under-bridge Surf claim.",
     "existing_native_cap_source_reconciliation": 0
-  }
+  },
+  "directional_grass_loops": [
+    {
+      "id": "UPPER_CLIMB_GRASS_OR_DROP",
+      "ledge_id": "UPPER_DROP",
+      "grass_regions_core": [
+        [
+          12,
+          36,
+          20,
+          40
+        ],
+        [
+          16,
+          34,
+          20,
+          36
+        ],
+        [
+          14,
+          42,
+          16,
+          46
+        ]
+      ],
+      "northbound_minimum_grass_steps": 7,
+      "southbound_minimum_grass_steps": 0,
+      "dry_trail_core": [
+        [
+          37,
+          39
+        ],
+        [
+          37,
+          42
+        ]
+      ],
+      "scope": "Ordinary outdoor walking; the existing two-ended cave remains an alternate route."
+    },
+    {
+      "id": "LOWER_CLIMB_GRASS_OR_DROP",
+      "ledge_id": "LOWER_DROP",
+      "grass_regions_core": [
+        [
+          12,
+          68,
+          18,
+          76
+        ],
+        [
+          12,
+          80,
+          14,
+          84
+        ]
+      ],
+      "northbound_minimum_grass_steps": 6,
+      "southbound_minimum_grass_steps": 0,
+      "dry_trail_core": [
+        [
+          37,
+          75
+        ],
+        [
+          37,
+          78
+        ]
+      ],
+      "scope": "Ordinary outdoor walking; the existing two-ended cave remains an alternate route."
+    }
+  ]
 }

@@ -44,7 +44,7 @@ pub(super) fn install(app: &mut App) {
         .map(PathBuf::from)
         .filter(|path| path.is_absolute())
         .map(|home| home.join("Library/Application Support/Geothite/settings.json"));
-    let prefs = path
+    let mut prefs = path
         .as_ref()
         .map(|path| store::load(path))
         .transpose()
@@ -53,6 +53,13 @@ pub(super) fn install(app: &mut App) {
             None
         })
         .unwrap_or_default();
+    if !app
+        .world()
+        .resource::<renderer_policy::RendererPolicy>()
+        .voxel_allowed
+    {
+        prefs.view_3d = false;
+    }
     #[cfg(feature = "voxel-view")]
     if let Some(mut view) = app
         .world_mut()
@@ -105,6 +112,7 @@ fn apply_fullscreen(window: &mut Window, fullscreen: bool) {
 
 fn apply_actions(
     mut prefs: ResMut<DesktopSettings>,
+    policy: Res<renderer_policy::RendererPolicy>,
     _host: NonSendMut<MenuHost>,
     frame: Option<Res<crystal_render_api::VisualWorldFrame>>,
     #[cfg(feature = "voxel-view")] mut view: Option<ResMut<crystal_voxel_view::VoxelViewSettings>>,
@@ -122,7 +130,19 @@ fn apply_actions(
         .unwrap_or(Vec2::NEG_Y)
         .to_array();
     for action in macos::take_actions() {
+        if !policy.voxel_allowed
+            && matches!(
+                action,
+                Action::Toggle3d
+                    | Action::ToggleFirstPerson
+                    | Action::Camera(_)
+                    | Action::ResetCamera
+            )
+        {
+            continue;
+        }
         prefs.state.apply(action, facing);
+        prefs.state.view_3d &= policy.voxel_allowed;
         #[cfg(feature = "voxel-view")]
         if let Some(view) = view.as_mut() {
             if matches!(
@@ -148,6 +168,7 @@ fn apply_actions(
 
 fn sync_actual_settings(
     mut prefs: ResMut<DesktopSettings>,
+    policy: Res<renderer_policy::RendererPolicy>,
     mut host: NonSendMut<MenuHost>,
     #[cfg(feature = "voxel-view")] view: Option<Res<crystal_voxel_view::VoxelViewSettings>>,
     windows: Query<&Window, With<bevy::window::PrimaryWindow>>,
@@ -181,7 +202,10 @@ fn sync_actual_settings(
     };
     if created || host.mirrored != prefs.state {
         if let Some(native) = &host.native {
-            native.sync(prefs.state, cfg!(feature = "voxel-view"));
+            native.sync(
+                prefs.state,
+                cfg!(feature = "voxel-view") && policy.voxel_allowed,
+            );
         }
     }
     if host.mirrored != prefs.state {

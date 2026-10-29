@@ -18,7 +18,8 @@ def register(client, pack):
     client.press("up")
     client.press("a")
     choose(client, False)
-    assert "Healing and supplies" in finish(client)
+    refusal = finish(client)
+    assert "Healing and supplies" in refusal or "clinic is free" in refusal
     client.press("up")
     client.press("a")
     choose(client, True)

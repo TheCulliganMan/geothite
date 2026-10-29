@@ -5,7 +5,7 @@
   "compiled_tileset": "mn_duluth_expanded",
   "dimensions_metatiles": [
     64,
-    48
+    46
   ],
   "coordinate_units": "32px metatiles; zero-based explicit hand strokes",
   "shore_fitting": "johto_8_neighbors",
@@ -163,43 +163,43 @@
       "points": [
         [
           0,
-          35
+          33
+        ],
+        [
+          14,
+          33
         ],
         [
           14,
           35
         ],
         [
-          14,
-          37
+          37,
+          35
         ],
         [
           37,
-          37
-        ],
-        [
-          37,
-          34
+          32
         ],
         [
           48,
-          34
+          32
         ],
         [
           48,
-          24
+          22
         ],
         [
           60,
-          24
+          22
         ],
         [
           60,
-          13
+          11
         ],
         [
           62,
-          13
+          11
         ],
         [
           62,
@@ -211,11 +211,11 @@
         ],
         [
           63,
-          47
+          45
         ],
         [
           0,
-          47
+          45
         ]
       ]
     },
@@ -258,27 +258,27 @@
         ],
         [
           61,
-          12
+          11
         ],
         [
           58,
-          12
+          11
         ],
         [
           58,
-          17
+          15
         ],
         [
           48,
-          17
+          15
         ],
         [
           48,
-          12
+          11
         ],
         [
           2,
-          12
+          11
         ]
       ]
     },
@@ -289,43 +289,43 @@
       "points": [
         [
           1,
-          13
+          11
         ],
         [
           14,
-          13
+          11
         ],
         [
           14,
-          18
+          16
         ],
         [
           15,
-          18
+          16
         ],
         [
           15,
-          34
+          32
         ],
         [
           13,
-          34
+          32
         ],
         [
           13,
-          38
+          36
         ],
         [
           2,
-          38
+          36
         ],
         [
           2,
-          33
+          31
         ],
         [
           1,
-          33
+          31
         ]
       ]
     },
@@ -336,59 +336,59 @@
       "points": [
         [
           49,
-          12
+          11
         ],
         [
           59,
-          12
+          11
         ],
         [
           59,
-          17
+          15
         ],
         [
           58,
-          17
+          15
         ],
         [
           58,
-          22
+          20
         ],
         [
           60,
-          22
+          20
         ],
         [
           60,
-          32
-        ],
-        [
-          58,
-          32
-        ],
-        [
-          58,
-          35
-        ],
-        [
-          49,
-          35
-        ],
-        [
-          49,
           30
         ],
         [
-          48,
+          58,
           30
         ],
         [
-          48,
-          18
+          58,
+          33
         ],
         [
           49,
-          18
+          33
+        ],
+        [
+          49,
+          28
+        ],
+        [
+          48,
+          28
+        ],
+        [
+          48,
+          16
+        ],
+        [
+          49,
+          16
         ]
       ]
     },
@@ -399,51 +399,51 @@
       "points": [
         [
           2,
-          33
+          31
+        ],
+        [
+          13,
+          31
         ],
         [
           13,
           33
         ],
         [
-          13,
-          35
+          15,
+          33
         ],
         [
           15,
-          35
-        ],
-        [
-          15,
-          39
+          37
         ],
         [
           13,
-          39
+          37
         ],
         [
           13,
-          44
+          42
         ],
         [
           10,
-          44
+          42
         ],
         [
           10,
-          45
+          43
         ],
         [
           3,
-          45
+          43
         ],
         [
           3,
-          41
+          39
         ],
         [
           2,
-          41
+          39
         ]
       ]
     },
@@ -454,99 +454,99 @@
       "points": [
         [
           40,
-          33
+          31
+        ],
+        [
+          43,
+          31
         ],
         [
           43,
           33
         ],
         [
-          43,
-          35
+          45,
+          33
         ],
         [
           45,
           35
         ],
         [
-          45,
-          37
+          48,
+          35
         ],
         [
           48,
           37
         ],
         [
-          48,
-          39
+          53,
+          37
         ],
         [
           53,
-          39
+          38
         ],
         [
-          53,
-          40
+          57,
+          38
         ],
         [
           57,
           40
         ],
         [
-          57,
-          42
+          61,
+          40
         ],
         [
           61,
-          42
-        ],
-        [
-          61,
-          46
+          44
         ],
         [
           55,
-          46
+          44
         ],
         [
           55,
-          45
-        ],
-        [
-          48,
-          45
+          43
         ],
         [
           48,
           43
         ],
         [
-          43,
-          43
+          48,
+          41
         ],
         [
           43,
           41
         ],
         [
-          40,
-          41
+          43,
+          39
         ],
         [
           40,
-          38
+          39
+        ],
+        [
+          40,
+          36
         ],
         [
           39,
-          38
+          36
         ],
         [
           39,
-          35
+          33
         ],
         [
           40,
-          35
+          33
         ]
       ]
     },
@@ -641,31 +641,31 @@
         ],
         [
           4,
-          13
+          11
         ],
         [
           3,
-          13
+          11
         ],
         [
           3,
-          17
+          15
         ],
         [
           8,
-          17
+          15
         ],
         [
           8,
-          21
+          19
         ],
         [
           15,
-          21
+          19
         ],
         [
           15,
-          24
+          22
         ]
       ],
       "width_metatiles": 1
@@ -705,7 +705,7 @@
         ],
         [
           32,
-          12
+          11
         ]
       ],
       "width_metatiles": 1
@@ -781,7 +781,7 @@
         ],
         [
           50,
-          12
+          11
         ]
       ],
       "width_metatiles": 1
@@ -813,35 +813,35 @@
         ],
         [
           54,
-          15
+          13
         ],
         [
           50,
-          15
+          13
         ],
         [
           50,
-          18
+          16
         ],
         [
           55,
-          18
+          16
         ],
         [
           55,
-          21
+          19
         ],
         [
           50,
-          21
+          19
         ],
         [
           50,
-          24
+          22
         ],
         [
           48,
-          24
+          22
         ]
       ],
       "width_metatiles": 1
@@ -853,27 +853,27 @@
       "points": [
         [
           0,
-          24
+          22
         ],
         [
           7,
-          24
+          22
         ],
         [
           7,
-          23
+          21
         ],
         [
           10,
-          23
+          21
         ],
         [
           10,
-          24
+          22
         ],
         [
           16,
-          24
+          22
         ]
       ],
       "width_metatiles": 1
@@ -885,43 +885,43 @@
       "points": [
         [
           3,
-          17
+          15
         ],
         [
           3,
-          21
+          19
         ],
         [
           6,
-          21
+          19
         ],
         [
           6,
-          24
+          22
         ],
         [
           3,
-          24
+          22
         ],
         [
           3,
-          28
+          26
         ],
         [
           8,
-          28
+          26
         ],
         [
           8,
-          31
+          29
         ],
         [
           13,
-          31
+          29
         ],
         [
           13,
-          34
+          32
         ]
       ],
       "width_metatiles": 1
@@ -933,31 +933,31 @@
       "points": [
         [
           8,
-          21
+          19
         ],
         [
           8,
-          22
+          20
         ],
         [
           10,
-          22
+          20
         ],
         [
           10,
-          25
+          23
         ],
         [
           13,
-          25
+          23
         ],
         [
           13,
-          28
+          26
         ],
         [
           8,
-          28
+          26
         ]
       ],
       "width_metatiles": 1
@@ -969,47 +969,47 @@
       "points": [
         [
           3,
-          28
+          26
         ],
         [
           3,
-          32
+          30
         ],
         [
           5,
-          32
+          30
         ],
         [
           5,
-          35
+          33
+        ],
+        [
+          8,
+          33
         ],
         [
           8,
           35
         ],
         [
-          8,
-          37
+          11,
+          35
         ],
         [
           11,
-          37
+          39
         ],
         [
-          11,
-          41
+          7,
+          39
         ],
         [
           7,
           41
-        ],
-        [
-          7,
-          43
         ],
         [
           12,
-          43
+          41
         ]
       ],
       "width_metatiles": 1
@@ -1021,23 +1021,23 @@
       "points": [
         [
           48,
-          24
+          22
         ],
         [
           51,
-          24
+          22
         ],
         [
           51,
-          31
+          29
+        ],
+        [
+          55,
+          29
         ],
         [
           55,
           31
-        ],
-        [
-          55,
-          33
         ]
       ],
       "width_metatiles": 1
@@ -1049,47 +1049,47 @@
       "points": [
         [
           41,
-          33
+          31
         ],
         [
           41,
-          35
+          33
         ],
         [
           43,
-          35
+          33
         ],
         [
           43,
-          38
+          36
         ],
         [
           46,
-          38
+          36
         ],
         [
           46,
-          41
+          39
         ],
         [
           51,
-          41
+          39
         ],
         [
           51,
-          44
+          42
         ],
         [
           57,
-          44
+          42
         ],
         [
           57,
-          45
+          43
         ],
         [
           60,
-          45
+          43
         ]
       ],
       "width_metatiles": 1
@@ -1564,27 +1564,27 @@
         ],
         [
           7,
-          13
+          11
         ],
         [
           6,
-          13
+          11
         ],
         [
           6,
-          14
+          12
         ],
         [
           2,
-          14
+          12
         ],
         [
           2,
-          13
+          11
         ],
         [
           1,
-          13
+          11
         ]
       ]
     },
@@ -1595,27 +1595,27 @@
       "points": [
         [
           9,
-          15
+          13
         ],
         [
           14,
-          15
+          13
         ],
         [
           14,
-          18
+          16
         ],
         [
           12,
-          18
+          16
         ],
         [
           12,
-          17
+          15
         ],
         [
           9,
-          17
+          15
         ]
       ]
     },
@@ -1626,27 +1626,27 @@
       "points": [
         [
           9,
-          26
+          24
+        ],
+        [
+          12,
+          24
         ],
         [
           12,
           26
         ],
         [
-          12,
-          28
+          11,
+          26
         ],
         [
           11,
-          28
-        ],
-        [
-          11,
-          29
+          27
         ],
         [
           9,
-          29
+          27
         ]
       ]
     },
@@ -1673,11 +1673,11 @@
         ],
         [
           60,
-          12
+          11
         ],
         [
           58,
-          12
+          11
         ]
       ]
     },
@@ -1719,27 +1719,27 @@
       "points": [
         [
           42,
-          38
+          36
         ],
         [
           44,
-          38
+          36
         ],
         [
           44,
-          39
+          37
         ],
         [
           45,
-          39
+          37
         ],
         [
           45,
-          40
+          38
         ],
         [
           42,
-          40
+          38
         ]
       ]
     },
@@ -1750,27 +1750,27 @@
       "points": [
         [
           54,
-          39
+          37
+        ],
+        [
+          56,
+          37
         ],
         [
           56,
           39
         ],
         [
-          56,
-          41
+          55,
+          39
         ],
         [
           55,
-          41
-        ],
-        [
-          55,
-          42
+          40
         ],
         [
           54,
-          42
+          40
         ]
       ]
     },
@@ -1779,7 +1779,7 @@
       "kind": "point",
       "position": [
         16,
-        12
+        11
       ],
       "block": "05"
     },
@@ -1788,7 +1788,7 @@
       "kind": "point",
       "position": [
         17,
-        12
+        11
       ],
       "block": "05"
     },
@@ -1797,7 +1797,7 @@
       "kind": "point",
       "position": [
         18,
-        12
+        11
       ],
       "block": "05"
     },
@@ -1806,7 +1806,7 @@
       "kind": "point",
       "position": [
         19,
-        12
+        11
       ],
       "block": "05"
     },
@@ -1815,7 +1815,7 @@
       "kind": "point",
       "position": [
         20,
-        12
+        11
       ],
       "block": "05"
     },
@@ -1824,7 +1824,7 @@
       "kind": "point",
       "position": [
         21,
-        12
+        11
       ],
       "block": "05"
     },
@@ -1833,7 +1833,7 @@
       "kind": "point",
       "position": [
         22,
-        12
+        11
       ],
       "block": "05"
     },
@@ -1842,7 +1842,7 @@
       "kind": "point",
       "position": [
         23,
-        12
+        11
       ],
       "block": "05"
     },
@@ -1851,7 +1851,7 @@
       "kind": "point",
       "position": [
         24,
-        12
+        11
       ],
       "block": "05"
     },
@@ -1860,7 +1860,7 @@
       "kind": "point",
       "position": [
         25,
-        12
+        11
       ],
       "block": "05"
     },
@@ -1869,7 +1869,7 @@
       "kind": "point",
       "position": [
         26,
-        12
+        11
       ],
       "block": "05"
     },
@@ -1878,7 +1878,7 @@
       "kind": "point",
       "position": [
         27,
-        12
+        11
       ],
       "block": "05"
     },
@@ -1887,7 +1887,7 @@
       "kind": "point",
       "position": [
         28,
-        12
+        11
       ],
       "block": "05"
     },
@@ -1896,7 +1896,7 @@
       "kind": "point",
       "position": [
         29,
-        12
+        11
       ],
       "block": "05"
     },
@@ -1905,7 +1905,7 @@
       "kind": "point",
       "position": [
         30,
-        12
+        11
       ],
       "block": "05"
     },
@@ -1914,7 +1914,7 @@
       "kind": "point",
       "position": [
         31,
-        12
+        11
       ],
       "block": "05"
     },
@@ -1923,7 +1923,7 @@
       "kind": "point",
       "position": [
         32,
-        12
+        11
       ],
       "block": "01"
     },
@@ -1932,295 +1932,7 @@
       "kind": "point",
       "position": [
         33,
-        12
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Preserved old native city",
-      "kind": "point",
-      "position": [
-        34,
-        12
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Preserved old native city",
-      "kind": "point",
-      "position": [
-        35,
-        12
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Preserved old native city",
-      "kind": "point",
-      "position": [
-        36,
-        12
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Preserved old native city",
-      "kind": "point",
-      "position": [
-        37,
-        12
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Preserved old native city",
-      "kind": "point",
-      "position": [
-        38,
-        12
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Preserved old native city",
-      "kind": "point",
-      "position": [
-        39,
-        12
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Preserved old native city",
-      "kind": "point",
-      "position": [
-        40,
-        12
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Preserved old native city",
-      "kind": "point",
-      "position": [
-        41,
-        12
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Preserved old native city",
-      "kind": "point",
-      "position": [
-        42,
-        12
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Preserved old native city",
-      "kind": "point",
-      "position": [
-        43,
-        12
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Preserved old native city",
-      "kind": "point",
-      "position": [
-        44,
-        12
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Preserved old native city",
-      "kind": "point",
-      "position": [
-        45,
-        12
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Preserved old native city",
-      "kind": "point",
-      "position": [
-        46,
-        12
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Preserved old native city",
-      "kind": "point",
-      "position": [
-        47,
-        12
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Preserved old native city",
-      "kind": "point",
-      "position": [
-        16,
-        13
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Preserved old native city",
-      "kind": "point",
-      "position": [
-        17,
-        13
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Preserved old native city",
-      "kind": "point",
-      "position": [
-        18,
-        13
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Preserved old native city",
-      "kind": "point",
-      "position": [
-        19,
-        13
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Preserved old native city",
-      "kind": "point",
-      "position": [
-        20,
-        13
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Preserved old native city",
-      "kind": "point",
-      "position": [
-        21,
-        13
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Preserved old native city",
-      "kind": "point",
-      "position": [
-        22,
-        13
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Preserved old native city",
-      "kind": "point",
-      "position": [
-        23,
-        13
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Preserved old native city",
-      "kind": "point",
-      "position": [
-        24,
-        13
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Preserved old native city",
-      "kind": "point",
-      "position": [
-        25,
-        13
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Preserved old native city",
-      "kind": "point",
-      "position": [
-        26,
-        13
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Preserved old native city",
-      "kind": "point",
-      "position": [
-        27,
-        13
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Preserved old native city",
-      "kind": "point",
-      "position": [
-        28,
-        13
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Preserved old native city",
-      "kind": "point",
-      "position": [
-        29,
-        13
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Preserved old native city",
-      "kind": "point",
-      "position": [
-        30,
-        13
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Preserved old native city",
-      "kind": "point",
-      "position": [
-        31,
-        13
-      ],
-      "block": "05"
-    },
-    {
-      "name": "Preserved old native city",
-      "kind": "point",
-      "position": [
-        32,
-        13
-      ],
-      "block": "01"
-    },
-    {
-      "name": "Preserved old native city",
-      "kind": "point",
-      "position": [
-        33,
-        13
+        11
       ],
       "block": "45"
     },
@@ -2229,7 +1941,7 @@
       "kind": "point",
       "position": [
         34,
-        13
+        11
       ],
       "block": "05"
     },
@@ -2238,7 +1950,7 @@
       "kind": "point",
       "position": [
         35,
-        13
+        11
       ],
       "block": "05"
     },
@@ -2247,7 +1959,7 @@
       "kind": "point",
       "position": [
         36,
-        13
+        11
       ],
       "block": "05"
     },
@@ -2256,7 +1968,7 @@
       "kind": "point",
       "position": [
         37,
-        13
+        11
       ],
       "block": "05"
     },
@@ -2265,7 +1977,7 @@
       "kind": "point",
       "position": [
         38,
-        13
+        11
       ],
       "block": "05"
     },
@@ -2274,7 +1986,7 @@
       "kind": "point",
       "position": [
         39,
-        13
+        11
       ],
       "block": "05"
     },
@@ -2283,7 +1995,7 @@
       "kind": "point",
       "position": [
         40,
-        13
+        11
       ],
       "block": "05"
     },
@@ -2292,7 +2004,7 @@
       "kind": "point",
       "position": [
         41,
-        13
+        11
       ],
       "block": "05"
     },
@@ -2301,7 +2013,7 @@
       "kind": "point",
       "position": [
         42,
-        13
+        11
       ],
       "block": "05"
     },
@@ -2310,7 +2022,7 @@
       "kind": "point",
       "position": [
         43,
-        13
+        11
       ],
       "block": "05"
     },
@@ -2319,7 +2031,7 @@
       "kind": "point",
       "position": [
         44,
-        13
+        11
       ],
       "block": "05"
     },
@@ -2328,7 +2040,7 @@
       "kind": "point",
       "position": [
         45,
-        13
+        11
       ],
       "block": "05"
     },
@@ -2337,7 +2049,7 @@
       "kind": "point",
       "position": [
         46,
-        13
+        11
       ],
       "block": "05"
     },
@@ -2346,7 +2058,7 @@
       "kind": "point",
       "position": [
         47,
-        13
+        11
       ],
       "block": "05"
     },
@@ -2355,7 +2067,7 @@
       "kind": "point",
       "position": [
         16,
-        14
+        12
       ],
       "block": "05"
     },
@@ -2364,7 +2076,7 @@
       "kind": "point",
       "position": [
         17,
-        14
+        12
       ],
       "block": "05"
     },
@@ -2373,7 +2085,7 @@
       "kind": "point",
       "position": [
         18,
-        14
+        12
       ],
       "block": "05"
     },
@@ -2382,7 +2094,7 @@
       "kind": "point",
       "position": [
         19,
-        14
+        12
       ],
       "block": "05"
     },
@@ -2391,7 +2103,7 @@
       "kind": "point",
       "position": [
         20,
-        14
+        12
       ],
       "block": "05"
     },
@@ -2400,7 +2112,7 @@
       "kind": "point",
       "position": [
         21,
-        14
+        12
       ],
       "block": "6a"
     },
@@ -2409,7 +2121,7 @@
       "kind": "point",
       "position": [
         22,
-        14
+        12
       ],
       "block": "70"
     },
@@ -2418,7 +2130,7 @@
       "kind": "point",
       "position": [
         23,
-        14
+        12
       ],
       "block": "70"
     },
@@ -2427,7 +2139,7 @@
       "kind": "point",
       "position": [
         24,
-        14
+        12
       ],
       "block": "70"
     },
@@ -2436,7 +2148,7 @@
       "kind": "point",
       "position": [
         25,
-        14
+        12
       ],
       "block": "6b"
     },
@@ -2445,7 +2157,7 @@
       "kind": "point",
       "position": [
         26,
-        14
+        12
       ],
       "block": "05"
     },
@@ -2454,7 +2166,7 @@
       "kind": "point",
       "position": [
         27,
-        14
+        12
       ],
       "block": "05"
     },
@@ -2463,7 +2175,7 @@
       "kind": "point",
       "position": [
         28,
-        14
+        12
       ],
       "block": "05"
     },
@@ -2472,7 +2184,7 @@
       "kind": "point",
       "position": [
         29,
-        14
+        12
       ],
       "block": "05"
     },
@@ -2481,7 +2193,7 @@
       "kind": "point",
       "position": [
         30,
-        14
+        12
       ],
       "block": "05"
     },
@@ -2490,7 +2202,7 @@
       "kind": "point",
       "position": [
         31,
-        14
+        12
       ],
       "block": "02"
     },
@@ -2499,7 +2211,7 @@
       "kind": "point",
       "position": [
         32,
-        14
+        12
       ],
       "block": "01"
     },
@@ -2508,7 +2220,7 @@
       "kind": "point",
       "position": [
         33,
-        14
+        12
       ],
       "block": "05"
     },
@@ -2517,7 +2229,7 @@
       "kind": "point",
       "position": [
         34,
-        14
+        12
       ],
       "block": "05"
     },
@@ -2526,7 +2238,7 @@
       "kind": "point",
       "position": [
         35,
-        14
+        12
       ],
       "block": "05"
     },
@@ -2535,7 +2247,7 @@
       "kind": "point",
       "position": [
         36,
-        14
+        12
       ],
       "block": "05"
     },
@@ -2544,7 +2256,7 @@
       "kind": "point",
       "position": [
         37,
-        14
+        12
       ],
       "block": "05"
     },
@@ -2553,7 +2265,7 @@
       "kind": "point",
       "position": [
         38,
-        14
+        12
       ],
       "block": "05"
     },
@@ -2562,7 +2274,7 @@
       "kind": "point",
       "position": [
         39,
-        14
+        12
       ],
       "block": "05"
     },
@@ -2571,7 +2283,7 @@
       "kind": "point",
       "position": [
         40,
-        14
+        12
       ],
       "block": "05"
     },
@@ -2580,7 +2292,7 @@
       "kind": "point",
       "position": [
         41,
-        14
+        12
       ],
       "block": "05"
     },
@@ -2589,7 +2301,7 @@
       "kind": "point",
       "position": [
         42,
-        14
+        12
       ],
       "block": "05"
     },
@@ -2598,7 +2310,7 @@
       "kind": "point",
       "position": [
         43,
-        14
+        12
       ],
       "block": "05"
     },
@@ -2607,7 +2319,7 @@
       "kind": "point",
       "position": [
         44,
-        14
+        12
       ],
       "block": "05"
     },
@@ -2616,7 +2328,7 @@
       "kind": "point",
       "position": [
         45,
-        14
+        12
       ],
       "block": "05"
     },
@@ -2625,7 +2337,7 @@
       "kind": "point",
       "position": [
         46,
-        14
+        12
       ],
       "block": "05"
     },
@@ -2634,7 +2346,7 @@
       "kind": "point",
       "position": [
         47,
-        14
+        12
       ],
       "block": "05"
     },
@@ -2643,7 +2355,7 @@
       "kind": "point",
       "position": [
         16,
-        15
+        13
       ],
       "block": "05"
     },
@@ -2652,7 +2364,7 @@
       "kind": "point",
       "position": [
         17,
-        15
+        13
       ],
       "block": "05"
     },
@@ -2661,7 +2373,7 @@
       "kind": "point",
       "position": [
         18,
-        15
+        13
       ],
       "block": "6a"
     },
@@ -2670,7 +2382,7 @@
       "kind": "point",
       "position": [
         19,
-        15
+        13
       ],
       "block": "04"
     },
@@ -2679,7 +2391,7 @@
       "kind": "point",
       "position": [
         20,
-        15
+        13
       ],
       "block": "04"
     },
@@ -2688,7 +2400,7 @@
       "kind": "point",
       "position": [
         21,
-        15
+        13
       ],
       "block": "04"
     },
@@ -2697,7 +2409,7 @@
       "kind": "point",
       "position": [
         22,
-        15
+        13
       ],
       "block": "04"
     },
@@ -2706,7 +2418,7 @@
       "kind": "point",
       "position": [
         23,
-        15
+        13
       ],
       "block": "04"
     },
@@ -2715,7 +2427,7 @@
       "kind": "point",
       "position": [
         24,
-        15
+        13
       ],
       "block": "04"
     },
@@ -2724,7 +2436,7 @@
       "kind": "point",
       "position": [
         25,
-        15
+        13
       ],
       "block": "04"
     },
@@ -2733,7 +2445,7 @@
       "kind": "point",
       "position": [
         26,
-        15
+        13
       ],
       "block": "04"
     },
@@ -2742,7 +2454,7 @@
       "kind": "point",
       "position": [
         27,
-        15
+        13
       ],
       "block": "04"
     },
@@ -2751,7 +2463,7 @@
       "kind": "point",
       "position": [
         28,
-        15
+        13
       ],
       "block": "6b"
     },
@@ -2760,7 +2472,7 @@
       "kind": "point",
       "position": [
         29,
-        15
+        13
       ],
       "block": "05"
     },
@@ -2769,7 +2481,7 @@
       "kind": "point",
       "position": [
         30,
-        15
+        13
       ],
       "block": "05"
     },
@@ -2778,7 +2490,7 @@
       "kind": "point",
       "position": [
         31,
-        15
+        13
       ],
       "block": "02"
     },
@@ -2787,7 +2499,7 @@
       "kind": "point",
       "position": [
         32,
-        15
+        13
       ],
       "block": "01"
     },
@@ -2796,7 +2508,7 @@
       "kind": "point",
       "position": [
         33,
-        15
+        13
       ],
       "block": "05"
     },
@@ -2805,7 +2517,7 @@
       "kind": "point",
       "position": [
         34,
-        15
+        13
       ],
       "block": "05"
     },
@@ -2814,7 +2526,7 @@
       "kind": "point",
       "position": [
         35,
-        15
+        13
       ],
       "block": "05"
     },
@@ -2823,7 +2535,7 @@
       "kind": "point",
       "position": [
         36,
-        15
+        13
       ],
       "block": "05"
     },
@@ -2832,7 +2544,7 @@
       "kind": "point",
       "position": [
         37,
-        15
+        13
       ],
       "block": "05"
     },
@@ -2841,7 +2553,7 @@
       "kind": "point",
       "position": [
         38,
-        15
+        13
       ],
       "block": "05"
     },
@@ -2850,7 +2562,7 @@
       "kind": "point",
       "position": [
         39,
-        15
+        13
       ],
       "block": "05"
     },
@@ -2859,7 +2571,7 @@
       "kind": "point",
       "position": [
         40,
-        15
+        13
       ],
       "block": "05"
     },
@@ -2868,7 +2580,7 @@
       "kind": "point",
       "position": [
         41,
-        15
+        13
       ],
       "block": "05"
     },
@@ -2877,7 +2589,7 @@
       "kind": "point",
       "position": [
         42,
-        15
+        13
       ],
       "block": "05"
     },
@@ -2886,7 +2598,7 @@
       "kind": "point",
       "position": [
         43,
-        15
+        13
       ],
       "block": "05"
     },
@@ -2895,7 +2607,7 @@
       "kind": "point",
       "position": [
         44,
-        15
+        13
       ],
       "block": "05"
     },
@@ -2904,7 +2616,7 @@
       "kind": "point",
       "position": [
         45,
-        15
+        13
       ],
       "block": "05"
     },
@@ -2913,7 +2625,7 @@
       "kind": "point",
       "position": [
         46,
-        15
+        13
       ],
       "block": "05"
     },
@@ -2922,7 +2634,7 @@
       "kind": "point",
       "position": [
         47,
-        15
+        13
       ],
       "block": "05"
     },
@@ -2931,7 +2643,7 @@
       "kind": "point",
       "position": [
         16,
-        16
+        14
       ],
       "block": "05"
     },
@@ -2940,7 +2652,7 @@
       "kind": "point",
       "position": [
         17,
-        16
+        14
       ],
       "block": "05"
     },
@@ -2949,7 +2661,7 @@
       "kind": "point",
       "position": [
         18,
-        16
+        14
       ],
       "block": "68"
     },
@@ -2958,7 +2670,7 @@
       "kind": "point",
       "position": [
         19,
-        16
+        14
       ],
       "block": "05"
     },
@@ -2967,7 +2679,7 @@
       "kind": "point",
       "position": [
         20,
-        16
+        14
       ],
       "block": "18"
     },
@@ -2976,7 +2688,7 @@
       "kind": "point",
       "position": [
         21,
-        16
+        14
       ],
       "block": "19"
     },
@@ -2985,7 +2697,7 @@
       "kind": "point",
       "position": [
         22,
-        16
+        14
       ],
       "block": "05"
     },
@@ -2994,7 +2706,7 @@
       "kind": "point",
       "position": [
         23,
-        16
+        14
       ],
       "block": "18"
     },
@@ -3003,7 +2715,7 @@
       "kind": "point",
       "position": [
         24,
-        16
+        14
       ],
       "block": "1f"
     },
@@ -3012,7 +2724,7 @@
       "kind": "point",
       "position": [
         25,
-        16
+        14
       ],
       "block": "19"
     },
@@ -3021,7 +2733,7 @@
       "kind": "point",
       "position": [
         26,
-        16
+        14
       ],
       "block": "04"
     },
@@ -3030,7 +2742,7 @@
       "kind": "point",
       "position": [
         27,
-        16
+        14
       ],
       "block": "04"
     },
@@ -3039,7 +2751,7 @@
       "kind": "point",
       "position": [
         28,
-        16
+        14
       ],
       "block": "71"
     },
@@ -3048,7 +2760,7 @@
       "kind": "point",
       "position": [
         29,
-        16
+        14
       ],
       "block": "05"
     },
@@ -3057,7 +2769,7 @@
       "kind": "point",
       "position": [
         30,
-        16
+        14
       ],
       "block": "05"
     },
@@ -3066,7 +2778,7 @@
       "kind": "point",
       "position": [
         31,
-        16
+        14
       ],
       "block": "02"
     },
@@ -3075,7 +2787,7 @@
       "kind": "point",
       "position": [
         32,
-        16
+        14
       ],
       "block": "01"
     },
@@ -3084,7 +2796,7 @@
       "kind": "point",
       "position": [
         33,
-        16
+        14
       ],
       "block": "05"
     },
@@ -3093,7 +2805,7 @@
       "kind": "point",
       "position": [
         34,
-        16
+        14
       ],
       "block": "18"
     },
@@ -3102,7 +2814,7 @@
       "kind": "point",
       "position": [
         35,
-        16
+        14
       ],
       "block": "19"
     },
@@ -3111,7 +2823,7 @@
       "kind": "point",
       "position": [
         36,
-        16
+        14
       ],
       "block": "05"
     },
@@ -3120,7 +2832,7 @@
       "kind": "point",
       "position": [
         37,
-        16
+        14
       ],
       "block": "05"
     },
@@ -3129,7 +2841,7 @@
       "kind": "point",
       "position": [
         38,
-        16
+        14
       ],
       "block": "05"
     },
@@ -3138,7 +2850,7 @@
       "kind": "point",
       "position": [
         39,
-        16
+        14
       ],
       "block": "05"
     },
@@ -3147,7 +2859,7 @@
       "kind": "point",
       "position": [
         40,
-        16
+        14
       ],
       "block": "05"
     },
@@ -3156,7 +2868,7 @@
       "kind": "point",
       "position": [
         41,
-        16
+        14
       ],
       "block": "05"
     },
@@ -3165,7 +2877,7 @@
       "kind": "point",
       "position": [
         42,
-        16
+        14
       ],
       "block": "05"
     },
@@ -3174,7 +2886,7 @@
       "kind": "point",
       "position": [
         43,
-        16
+        14
       ],
       "block": "05"
     },
@@ -3183,7 +2895,7 @@
       "kind": "point",
       "position": [
         44,
-        16
+        14
       ],
       "block": "05"
     },
@@ -3192,7 +2904,7 @@
       "kind": "point",
       "position": [
         45,
-        16
+        14
       ],
       "block": "05"
     },
@@ -3201,7 +2913,7 @@
       "kind": "point",
       "position": [
         46,
-        16
+        14
       ],
       "block": "05"
     },
@@ -3210,7 +2922,7 @@
       "kind": "point",
       "position": [
         47,
-        16
+        14
       ],
       "block": "05"
     },
@@ -3219,7 +2931,7 @@
       "kind": "point",
       "position": [
         16,
-        17
+        15
       ],
       "block": "05"
     },
@@ -3228,7 +2940,7 @@
       "kind": "point",
       "position": [
         17,
-        17
+        15
       ],
       "block": "05"
     },
@@ -3237,7 +2949,7 @@
       "kind": "point",
       "position": [
         18,
-        17
+        15
       ],
       "block": "68"
     },
@@ -3246,7 +2958,7 @@
       "kind": "point",
       "position": [
         19,
-        17
+        15
       ],
       "block": "05"
     },
@@ -3255,7 +2967,7 @@
       "kind": "point",
       "position": [
         20,
-        17
+        15
       ],
       "block": "1a"
     },
@@ -3264,7 +2976,7 @@
       "kind": "point",
       "position": [
         21,
-        17
+        15
       ],
       "block": "11"
     },
@@ -3273,7 +2985,7 @@
       "kind": "point",
       "position": [
         22,
-        17
+        15
       ],
       "block": "05"
     },
@@ -3282,7 +2994,7 @@
       "kind": "point",
       "position": [
         23,
-        17
+        15
       ],
       "block": "1c"
     },
@@ -3291,7 +3003,7 @@
       "kind": "point",
       "position": [
         24,
-        17
+        15
       ],
       "block": "1d"
     },
@@ -3300,7 +3012,7 @@
       "kind": "point",
       "position": [
         25,
-        17
+        15
       ],
       "block": "1e"
     },
@@ -3309,7 +3021,7 @@
       "kind": "point",
       "position": [
         26,
-        17
+        15
       ],
       "block": "04"
     },
@@ -3318,7 +3030,7 @@
       "kind": "point",
       "position": [
         27,
-        17
+        15
       ],
       "block": "04"
     },
@@ -3327,7 +3039,7 @@
       "kind": "point",
       "position": [
         28,
-        17
+        15
       ],
       "block": "71"
     },
@@ -3336,7 +3048,7 @@
       "kind": "point",
       "position": [
         29,
-        17
+        15
       ],
       "block": "05"
     },
@@ -3345,7 +3057,7 @@
       "kind": "point",
       "position": [
         30,
-        17
+        15
       ],
       "block": "05"
     },
@@ -3354,7 +3066,7 @@
       "kind": "point",
       "position": [
         31,
-        17
+        15
       ],
       "block": "02"
     },
@@ -3363,7 +3075,7 @@
       "kind": "point",
       "position": [
         32,
-        17
+        15
       ],
       "block": "01"
     },
@@ -3372,7 +3084,7 @@
       "kind": "point",
       "position": [
         33,
-        17
+        15
       ],
       "block": "02"
     },
@@ -3381,7 +3093,7 @@
       "kind": "point",
       "position": [
         34,
-        17
+        15
       ],
       "block": "1a"
     },
@@ -3390,7 +3102,7 @@
       "kind": "point",
       "position": [
         35,
-        17
+        15
       ],
       "block": "1b"
     },
@@ -3399,7 +3111,7 @@
       "kind": "point",
       "position": [
         36,
-        17
+        15
       ],
       "block": "05"
     },
@@ -3408,7 +3120,7 @@
       "kind": "point",
       "position": [
         37,
-        17
+        15
       ],
       "block": "05"
     },
@@ -3417,7 +3129,7 @@
       "kind": "point",
       "position": [
         38,
-        17
+        15
       ],
       "block": "05"
     },
@@ -3426,7 +3138,7 @@
       "kind": "point",
       "position": [
         39,
-        17
+        15
       ],
       "block": "05"
     },
@@ -3435,7 +3147,7 @@
       "kind": "point",
       "position": [
         40,
-        17
+        15
       ],
       "block": "02"
     },
@@ -3444,7 +3156,7 @@
       "kind": "point",
       "position": [
         41,
-        17
+        15
       ],
       "block": "02"
     },
@@ -3453,7 +3165,7 @@
       "kind": "point",
       "position": [
         42,
-        17
+        15
       ],
       "block": "02"
     },
@@ -3462,7 +3174,7 @@
       "kind": "point",
       "position": [
         43,
-        17
+        15
       ],
       "block": "05"
     },
@@ -3471,7 +3183,7 @@
       "kind": "point",
       "position": [
         44,
-        17
+        15
       ],
       "block": "05"
     },
@@ -3480,7 +3192,7 @@
       "kind": "point",
       "position": [
         45,
-        17
+        15
       ],
       "block": "05"
     },
@@ -3489,7 +3201,7 @@
       "kind": "point",
       "position": [
         46,
-        17
+        15
       ],
       "block": "05"
     },
@@ -3498,7 +3210,7 @@
       "kind": "point",
       "position": [
         47,
-        17
+        15
       ],
       "block": "05"
     },
@@ -3507,7 +3219,7 @@
       "kind": "point",
       "position": [
         16,
-        18
+        16
       ],
       "block": "05"
     },
@@ -3516,7 +3228,7 @@
       "kind": "point",
       "position": [
         17,
-        18
+        16
       ],
       "block": "05"
     },
@@ -3525,7 +3237,7 @@
       "kind": "point",
       "position": [
         18,
-        18
+        16
       ],
       "block": "68"
     },
@@ -3534,7 +3246,7 @@
       "kind": "point",
       "position": [
         19,
-        18
+        16
       ],
       "block": "05"
     },
@@ -3543,7 +3255,7 @@
       "kind": "point",
       "position": [
         20,
-        18
+        16
       ],
       "block": "01"
     },
@@ -3552,7 +3264,7 @@
       "kind": "point",
       "position": [
         21,
-        18
+        16
       ],
       "block": "05"
     },
@@ -3561,7 +3273,7 @@
       "kind": "point",
       "position": [
         22,
-        18
+        16
       ],
       "block": "05"
     },
@@ -3570,7 +3282,7 @@
       "kind": "point",
       "position": [
         23,
-        18
+        16
       ],
       "block": "02"
     },
@@ -3579,7 +3291,7 @@
       "kind": "point",
       "position": [
         24,
-        18
+        16
       ],
       "block": "01"
     },
@@ -3588,7 +3300,7 @@
       "kind": "point",
       "position": [
         25,
-        18
+        16
       ],
       "block": "02"
     },
@@ -3597,7 +3309,7 @@
       "kind": "point",
       "position": [
         26,
-        18
+        16
       ],
       "block": "04"
     },
@@ -3606,7 +3318,7 @@
       "kind": "point",
       "position": [
         27,
-        18
+        16
       ],
       "block": "04"
     },
@@ -3615,7 +3327,7 @@
       "kind": "point",
       "position": [
         28,
-        18
+        16
       ],
       "block": "6f"
     },
@@ -3624,7 +3336,7 @@
       "kind": "point",
       "position": [
         29,
-        18
+        16
       ],
       "block": "05"
     },
@@ -3633,7 +3345,7 @@
       "kind": "point",
       "position": [
         30,
-        18
+        16
       ],
       "block": "05"
     },
@@ -3642,7 +3354,7 @@
       "kind": "point",
       "position": [
         31,
-        18
+        16
       ],
       "block": "02"
     },
@@ -3651,7 +3363,7 @@
       "kind": "point",
       "position": [
         32,
-        18
+        16
       ],
       "block": "01"
     },
@@ -3660,7 +3372,7 @@
       "kind": "point",
       "position": [
         33,
-        18
+        16
       ],
       "block": "45"
     },
@@ -3669,7 +3381,7 @@
       "kind": "point",
       "position": [
         34,
-        18
+        16
       ],
       "block": "01"
     },
@@ -3678,7 +3390,7 @@
       "kind": "point",
       "position": [
         35,
-        18
+        16
       ],
       "block": "01"
     },
@@ -3687,7 +3399,7 @@
       "kind": "point",
       "position": [
         36,
-        18
+        16
       ],
       "block": "04"
     },
@@ -3696,7 +3408,7 @@
       "kind": "point",
       "position": [
         37,
-        18
+        16
       ],
       "block": "04"
     },
@@ -3705,7 +3417,7 @@
       "kind": "point",
       "position": [
         38,
-        18
+        16
       ],
       "block": "02"
     },
@@ -3714,7 +3426,7 @@
       "kind": "point",
       "position": [
         39,
-        18
+        16
       ],
       "block": "05"
     },
@@ -3723,7 +3435,7 @@
       "kind": "point",
       "position": [
         40,
-        18
+        16
       ],
       "block": "05"
     },
@@ -3732,7 +3444,7 @@
       "kind": "point",
       "position": [
         41,
-        18
+        16
       ],
       "block": "05"
     },
@@ -3741,7 +3453,7 @@
       "kind": "point",
       "position": [
         42,
-        18
+        16
       ],
       "block": "02"
     },
@@ -3750,7 +3462,7 @@
       "kind": "point",
       "position": [
         43,
-        18
+        16
       ],
       "block": "05"
     },
@@ -3759,7 +3471,7 @@
       "kind": "point",
       "position": [
         44,
-        18
+        16
       ],
       "block": "05"
     },
@@ -3768,7 +3480,7 @@
       "kind": "point",
       "position": [
         45,
-        18
+        16
       ],
       "block": "05"
     },
@@ -3777,7 +3489,7 @@
       "kind": "point",
       "position": [
         46,
-        18
+        16
       ],
       "block": "05"
     },
@@ -3786,7 +3498,7 @@
       "kind": "point",
       "position": [
         47,
-        18
+        16
       ],
       "block": "05"
     },
@@ -3795,7 +3507,7 @@
       "kind": "point",
       "position": [
         16,
-        19
+        17
       ],
       "block": "05"
     },
@@ -3804,7 +3516,7 @@
       "kind": "point",
       "position": [
         17,
-        19
+        17
       ],
       "block": "05"
     },
@@ -3813,7 +3525,7 @@
       "kind": "point",
       "position": [
         18,
-        19
+        17
       ],
       "block": "68"
     },
@@ -3822,7 +3534,7 @@
       "kind": "point",
       "position": [
         19,
-        19
+        17
       ],
       "block": "05"
     },
@@ -3831,7 +3543,7 @@
       "kind": "point",
       "position": [
         20,
-        19
+        17
       ],
       "block": "01"
     },
@@ -3840,7 +3552,7 @@
       "kind": "point",
       "position": [
         21,
-        19
+        17
       ],
       "block": "01"
     },
@@ -3849,7 +3561,7 @@
       "kind": "point",
       "position": [
         22,
-        19
+        17
       ],
       "block": "01"
     },
@@ -3858,7 +3570,7 @@
       "kind": "point",
       "position": [
         23,
-        19
+        17
       ],
       "block": "01"
     },
@@ -3867,7 +3579,7 @@
       "kind": "point",
       "position": [
         24,
-        19
+        17
       ],
       "block": "01"
     },
@@ -3876,7 +3588,7 @@
       "kind": "point",
       "position": [
         25,
-        19
+        17
       ],
       "block": "01"
     },
@@ -3885,7 +3597,7 @@
       "kind": "point",
       "position": [
         26,
-        19
+        17
       ],
       "block": "45"
     },
@@ -3894,7 +3606,7 @@
       "kind": "point",
       "position": [
         27,
-        19
+        17
       ],
       "block": "01"
     },
@@ -3903,7 +3615,7 @@
       "kind": "point",
       "position": [
         28,
-        19
+        17
       ],
       "block": "69"
     },
@@ -3912,7 +3624,7 @@
       "kind": "point",
       "position": [
         29,
-        19
+        17
       ],
       "block": "05"
     },
@@ -3921,7 +3633,7 @@
       "kind": "point",
       "position": [
         30,
-        19
+        17
       ],
       "block": "02"
     },
@@ -3930,7 +3642,7 @@
       "kind": "point",
       "position": [
         31,
-        19
+        17
       ],
       "block": "02"
     },
@@ -3939,7 +3651,7 @@
       "kind": "point",
       "position": [
         32,
-        19
+        17
       ],
       "block": "01"
     },
@@ -3948,7 +3660,7 @@
       "kind": "point",
       "position": [
         33,
-        19
+        17
       ],
       "block": "05"
     },
@@ -3957,7 +3669,7 @@
       "kind": "point",
       "position": [
         34,
-        19
+        17
       ],
       "block": "05"
     },
@@ -3966,7 +3678,7 @@
       "kind": "point",
       "position": [
         35,
-        19
+        17
       ],
       "block": "05"
     },
@@ -3975,7 +3687,7 @@
       "kind": "point",
       "position": [
         36,
-        19
+        17
       ],
       "block": "05"
     },
@@ -3984,7 +3696,7 @@
       "kind": "point",
       "position": [
         37,
-        19
+        17
       ],
       "block": "05"
     },
@@ -3993,7 +3705,7 @@
       "kind": "point",
       "position": [
         38,
-        19
+        17
       ],
       "block": "05"
     },
@@ -4002,7 +3714,7 @@
       "kind": "point",
       "position": [
         39,
-        19
+        17
       ],
       "block": "05"
     },
@@ -4011,7 +3723,7 @@
       "kind": "point",
       "position": [
         40,
-        19
+        17
       ],
       "block": "05"
     },
@@ -4020,7 +3732,7 @@
       "kind": "point",
       "position": [
         41,
-        19
+        17
       ],
       "block": "05"
     },
@@ -4029,7 +3741,7 @@
       "kind": "point",
       "position": [
         42,
-        19
+        17
       ],
       "block": "02"
     },
@@ -4038,7 +3750,7 @@
       "kind": "point",
       "position": [
         43,
-        19
+        17
       ],
       "block": "02"
     },
@@ -4047,7 +3759,7 @@
       "kind": "point",
       "position": [
         44,
-        19
+        17
       ],
       "block": "02"
     },
@@ -4056,7 +3768,7 @@
       "kind": "point",
       "position": [
         45,
-        19
+        17
       ],
       "block": "02"
     },
@@ -4065,7 +3777,7 @@
       "kind": "point",
       "position": [
         46,
-        19
+        17
       ],
       "block": "05"
     },
@@ -4074,7 +3786,7 @@
       "kind": "point",
       "position": [
         47,
-        19
+        17
       ],
       "block": "05"
     },
@@ -4083,7 +3795,7 @@
       "kind": "point",
       "position": [
         16,
-        20
+        18
       ],
       "block": "05"
     },
@@ -4092,7 +3804,7 @@
       "kind": "point",
       "position": [
         17,
-        20
+        18
       ],
       "block": "05"
     },
@@ -4101,7 +3813,7 @@
       "kind": "point",
       "position": [
         18,
-        20
+        18
       ],
       "block": "6c"
     },
@@ -4110,7 +3822,7 @@
       "kind": "point",
       "position": [
         19,
-        20
+        18
       ],
       "block": "05"
     },
@@ -4119,7 +3831,7 @@
       "kind": "point",
       "position": [
         20,
-        20
+        18
       ],
       "block": "05"
     },
@@ -4128,7 +3840,7 @@
       "kind": "point",
       "position": [
         21,
-        20
+        18
       ],
       "block": "05"
     },
@@ -4137,7 +3849,7 @@
       "kind": "point",
       "position": [
         22,
-        20
+        18
       ],
       "block": "02"
     },
@@ -4146,7 +3858,7 @@
       "kind": "point",
       "position": [
         23,
-        20
+        18
       ],
       "block": "02"
     },
@@ -4155,7 +3867,7 @@
       "kind": "point",
       "position": [
         24,
-        20
+        18
       ],
       "block": "02"
     },
@@ -4164,7 +3876,7 @@
       "kind": "point",
       "position": [
         25,
-        20
+        18
       ],
       "block": "02"
     },
@@ -4173,7 +3885,7 @@
       "kind": "point",
       "position": [
         26,
-        20
+        18
       ],
       "block": "02"
     },
@@ -4182,7 +3894,7 @@
       "kind": "point",
       "position": [
         27,
-        20
+        18
       ],
       "block": "01"
     },
@@ -4191,7 +3903,7 @@
       "kind": "point",
       "position": [
         28,
-        20
+        18
       ],
       "block": "74"
     },
@@ -4200,7 +3912,7 @@
       "kind": "point",
       "position": [
         29,
-        20
+        18
       ],
       "block": "01"
     },
@@ -4209,7 +3921,7 @@
       "kind": "point",
       "position": [
         30,
-        20
+        18
       ],
       "block": "01"
     },
@@ -4218,7 +3930,7 @@
       "kind": "point",
       "position": [
         31,
-        20
+        18
       ],
       "block": "01"
     },
@@ -4227,7 +3939,7 @@
       "kind": "point",
       "position": [
         32,
-        20
+        18
       ],
       "block": "01"
     },
@@ -4236,7 +3948,7 @@
       "kind": "point",
       "position": [
         33,
-        20
+        18
       ],
       "block": "05"
     },
@@ -4245,7 +3957,7 @@
       "kind": "point",
       "position": [
         34,
-        20
+        18
       ],
       "block": "05"
     },
@@ -4254,7 +3966,7 @@
       "kind": "point",
       "position": [
         35,
-        20
+        18
       ],
       "block": "05"
     },
@@ -4263,7 +3975,7 @@
       "kind": "point",
       "position": [
         36,
-        20
+        18
       ],
       "block": "05"
     },
@@ -4272,7 +3984,7 @@
       "kind": "point",
       "position": [
         37,
-        20
+        18
       ],
       "block": "05"
     },
@@ -4281,7 +3993,7 @@
       "kind": "point",
       "position": [
         38,
-        20
+        18
       ],
       "block": "05"
     },
@@ -4290,7 +4002,7 @@
       "kind": "point",
       "position": [
         39,
-        20
+        18
       ],
       "block": "18"
     },
@@ -4299,7 +4011,7 @@
       "kind": "point",
       "position": [
         40,
-        20
+        18
       ],
       "block": "19"
     },
@@ -4308,7 +4020,7 @@
       "kind": "point",
       "position": [
         41,
-        20
+        18
       ],
       "block": "02"
     },
@@ -4317,7 +4029,7 @@
       "kind": "point",
       "position": [
         42,
-        20
+        18
       ],
       "block": "02"
     },
@@ -4326,7 +4038,7 @@
       "kind": "point",
       "position": [
         43,
-        20
+        18
       ],
       "block": "05"
     },
@@ -4335,7 +4047,7 @@
       "kind": "point",
       "position": [
         44,
-        20
+        18
       ],
       "block": "05"
     },
@@ -4344,7 +4056,7 @@
       "kind": "point",
       "position": [
         45,
-        20
+        18
       ],
       "block": "05"
     },
@@ -4353,7 +4065,7 @@
       "kind": "point",
       "position": [
         46,
-        20
+        18
       ],
       "block": "05"
     },
@@ -4362,7 +4074,7 @@
       "kind": "point",
       "position": [
         47,
-        20
+        18
       ],
       "block": "05"
     },
@@ -4371,7 +4083,7 @@
       "kind": "point",
       "position": [
         16,
-        21
+        19
       ],
       "block": "05"
     },
@@ -4380,7 +4092,7 @@
       "kind": "point",
       "position": [
         17,
-        21
+        19
       ],
       "block": "05"
     },
@@ -4389,7 +4101,7 @@
       "kind": "point",
       "position": [
         18,
-        21
+        19
       ],
       "block": "05"
     },
@@ -4398,7 +4110,7 @@
       "kind": "point",
       "position": [
         19,
-        21
+        19
       ],
       "block": "05"
     },
@@ -4407,7 +4119,7 @@
       "kind": "point",
       "position": [
         20,
-        21
+        19
       ],
       "block": "05"
     },
@@ -4416,7 +4128,7 @@
       "kind": "point",
       "position": [
         21,
-        21
+        19
       ],
       "block": "05"
     },
@@ -4425,7 +4137,7 @@
       "kind": "point",
       "position": [
         22,
-        21
+        19
       ],
       "block": "45"
     },
@@ -4434,7 +4146,7 @@
       "kind": "point",
       "position": [
         23,
-        21
+        19
       ],
       "block": "02"
     },
@@ -4443,7 +4155,7 @@
       "kind": "point",
       "position": [
         24,
-        21
+        19
       ],
       "block": "02"
     },
@@ -4452,7 +4164,7 @@
       "kind": "point",
       "position": [
         25,
-        21
+        19
       ],
       "block": "05"
     },
@@ -4461,7 +4173,7 @@
       "kind": "point",
       "position": [
         26,
-        21
+        19
       ],
       "block": "05"
     },
@@ -4470,7 +4182,7 @@
       "kind": "point",
       "position": [
         27,
-        21
+        19
       ],
       "block": "05"
     },
@@ -4479,7 +4191,7 @@
       "kind": "point",
       "position": [
         28,
-        21
+        19
       ],
       "block": "69"
     },
@@ -4488,7 +4200,7 @@
       "kind": "point",
       "position": [
         29,
-        21
+        19
       ],
       "block": "05"
     },
@@ -4497,7 +4209,7 @@
       "kind": "point",
       "position": [
         30,
-        21
+        19
       ],
       "block": "05"
     },
@@ -4506,7 +4218,7 @@
       "kind": "point",
       "position": [
         31,
-        21
+        19
       ],
       "block": "05"
     },
@@ -4515,7 +4227,7 @@
       "kind": "point",
       "position": [
         32,
-        21
+        19
       ],
       "block": "01"
     },
@@ -4524,7 +4236,7 @@
       "kind": "point",
       "position": [
         33,
-        21
+        19
       ],
       "block": "05"
     },
@@ -4533,7 +4245,7 @@
       "kind": "point",
       "position": [
         34,
-        21
+        19
       ],
       "block": "05"
     },
@@ -4542,7 +4254,7 @@
       "kind": "point",
       "position": [
         35,
-        21
+        19
       ],
       "block": "05"
     },
@@ -4551,7 +4263,7 @@
       "kind": "point",
       "position": [
         36,
-        21
+        19
       ],
       "block": "05"
     },
@@ -4560,7 +4272,7 @@
       "kind": "point",
       "position": [
         37,
-        21
+        19
       ],
       "block": "05"
     },
@@ -4569,7 +4281,7 @@
       "kind": "point",
       "position": [
         38,
-        21
+        19
       ],
       "block": "05"
     },
@@ -4578,7 +4290,7 @@
       "kind": "point",
       "position": [
         39,
-        21
+        19
       ],
       "block": "10"
     },
@@ -4587,7 +4299,7 @@
       "kind": "point",
       "position": [
         40,
-        21
+        19
       ],
       "block": "17"
     },
@@ -4596,7 +4308,7 @@
       "kind": "point",
       "position": [
         41,
-        21
+        19
       ],
       "block": "45"
     },
@@ -4605,7 +4317,7 @@
       "kind": "point",
       "position": [
         42,
-        21
+        19
       ],
       "block": "02"
     },
@@ -4614,7 +4326,7 @@
       "kind": "point",
       "position": [
         43,
-        21
+        19
       ],
       "block": "05"
     },
@@ -4623,7 +4335,7 @@
       "kind": "point",
       "position": [
         44,
-        21
+        19
       ],
       "block": "05"
     },
@@ -4632,7 +4344,7 @@
       "kind": "point",
       "position": [
         45,
-        21
+        19
       ],
       "block": "05"
     },
@@ -4641,7 +4353,7 @@
       "kind": "point",
       "position": [
         46,
-        21
+        19
       ],
       "block": "05"
     },
@@ -4650,7 +4362,7 @@
       "kind": "point",
       "position": [
         47,
-        21
+        19
       ],
       "block": "05"
     },
@@ -4659,7 +4371,7 @@
       "kind": "point",
       "position": [
         16,
-        22
+        20
       ],
       "block": "05"
     },
@@ -4668,7 +4380,7 @@
       "kind": "point",
       "position": [
         17,
-        22
+        20
       ],
       "block": "05"
     },
@@ -4677,7 +4389,7 @@
       "kind": "point",
       "position": [
         18,
-        22
+        20
       ],
       "block": "05"
     },
@@ -4686,7 +4398,7 @@
       "kind": "point",
       "position": [
         19,
-        22
+        20
       ],
       "block": "05"
     },
@@ -4695,7 +4407,7 @@
       "kind": "point",
       "position": [
         20,
-        22
+        20
       ],
       "block": "05"
     },
@@ -4704,7 +4416,7 @@
       "kind": "point",
       "position": [
         21,
-        22
+        20
       ],
       "block": "05"
     },
@@ -4713,7 +4425,7 @@
       "kind": "point",
       "position": [
         22,
-        22
+        20
       ],
       "block": "57"
     },
@@ -4722,7 +4434,7 @@
       "kind": "point",
       "position": [
         23,
-        22
+        20
       ],
       "block": "57"
     },
@@ -4731,7 +4443,7 @@
       "kind": "point",
       "position": [
         24,
-        22
+        20
       ],
       "block": "57"
     },
@@ -4740,7 +4452,7 @@
       "kind": "point",
       "position": [
         25,
-        22
+        20
       ],
       "block": "72"
     },
@@ -4749,7 +4461,7 @@
       "kind": "point",
       "position": [
         26,
-        22
+        20
       ],
       "block": "72"
     },
@@ -4758,7 +4470,7 @@
       "kind": "point",
       "position": [
         27,
-        22
+        20
       ],
       "block": "72"
     },
@@ -4767,7 +4479,7 @@
       "kind": "point",
       "position": [
         28,
-        22
+        20
       ],
       "block": "6d"
     },
@@ -4776,7 +4488,7 @@
       "kind": "point",
       "position": [
         29,
-        22
+        20
       ],
       "block": "05"
     },
@@ -4785,7 +4497,7 @@
       "kind": "point",
       "position": [
         30,
-        22
+        20
       ],
       "block": "05"
     },
@@ -4794,7 +4506,7 @@
       "kind": "point",
       "position": [
         31,
-        22
+        20
       ],
       "block": "05"
     },
@@ -4803,7 +4515,7 @@
       "kind": "point",
       "position": [
         32,
-        22
+        20
       ],
       "block": "01"
     },
@@ -4812,7 +4524,7 @@
       "kind": "point",
       "position": [
         33,
-        22
+        20
       ],
       "block": "01"
     },
@@ -4821,7 +4533,7 @@
       "kind": "point",
       "position": [
         34,
-        22
+        20
       ],
       "block": "01"
     },
@@ -4830,7 +4542,7 @@
       "kind": "point",
       "position": [
         35,
-        22
+        20
       ],
       "block": "01"
     },
@@ -4839,7 +4551,7 @@
       "kind": "point",
       "position": [
         36,
-        22
+        20
       ],
       "block": "01"
     },
@@ -4848,7 +4560,7 @@
       "kind": "point",
       "position": [
         37,
-        22
+        20
       ],
       "block": "01"
     },
@@ -4857,7 +4569,7 @@
       "kind": "point",
       "position": [
         38,
-        22
+        20
       ],
       "block": "01"
     },
@@ -4866,7 +4578,7 @@
       "kind": "point",
       "position": [
         39,
-        22
+        20
       ],
       "block": "01"
     },
@@ -4875,7 +4587,7 @@
       "kind": "point",
       "position": [
         40,
-        22
+        20
       ],
       "block": "01"
     },
@@ -4884,7 +4596,7 @@
       "kind": "point",
       "position": [
         41,
-        22
+        20
       ],
       "block": "01"
     },
@@ -4893,7 +4605,7 @@
       "kind": "point",
       "position": [
         42,
-        22
+        20
       ],
       "block": "02"
     },
@@ -4902,7 +4614,7 @@
       "kind": "point",
       "position": [
         43,
-        22
+        20
       ],
       "block": "05"
     },
@@ -4911,7 +4623,7 @@
       "kind": "point",
       "position": [
         44,
-        22
+        20
       ],
       "block": "05"
     },
@@ -4920,7 +4632,7 @@
       "kind": "point",
       "position": [
         45,
-        22
+        20
       ],
       "block": "05"
     },
@@ -4929,7 +4641,7 @@
       "kind": "point",
       "position": [
         46,
-        22
+        20
       ],
       "block": "05"
     },
@@ -4938,7 +4650,7 @@
       "kind": "point",
       "position": [
         47,
-        22
+        20
       ],
       "block": "05"
     },
@@ -4947,7 +4659,7 @@
       "kind": "point",
       "position": [
         16,
-        23
+        21
       ],
       "block": "05"
     },
@@ -4956,7 +4668,7 @@
       "kind": "point",
       "position": [
         17,
-        23
+        21
       ],
       "block": "05"
     },
@@ -4965,7 +4677,7 @@
       "kind": "point",
       "position": [
         18,
-        23
+        21
       ],
       "block": "45"
     },
@@ -4974,7 +4686,7 @@
       "kind": "point",
       "position": [
         19,
-        23
+        21
       ],
       "block": "05"
     },
@@ -4983,7 +4695,7 @@
       "kind": "point",
       "position": [
         20,
-        23
+        21
       ],
       "block": "02"
     },
@@ -4992,7 +4704,7 @@
       "kind": "point",
       "position": [
         21,
-        23
+        21
       ],
       "block": "02"
     },
@@ -5001,7 +4713,7 @@
       "kind": "point",
       "position": [
         22,
-        23
+        21
       ],
       "block": "02"
     },
@@ -5010,7 +4722,7 @@
       "kind": "point",
       "position": [
         23,
-        23
+        21
       ],
       "block": "02"
     },
@@ -5019,7 +4731,7 @@
       "kind": "point",
       "position": [
         24,
-        23
+        21
       ],
       "block": "02"
     },
@@ -5028,7 +4740,7 @@
       "kind": "point",
       "position": [
         25,
-        23
+        21
       ],
       "block": "02"
     },
@@ -5037,7 +4749,7 @@
       "kind": "point",
       "position": [
         26,
-        23
+        21
       ],
       "block": "02"
     },
@@ -5046,7 +4758,7 @@
       "kind": "point",
       "position": [
         27,
-        23
+        21
       ],
       "block": "02"
     },
@@ -5055,7 +4767,7 @@
       "kind": "point",
       "position": [
         28,
-        23
+        21
       ],
       "block": "02"
     },
@@ -5064,7 +4776,7 @@
       "kind": "point",
       "position": [
         29,
-        23
+        21
       ],
       "block": "05"
     },
@@ -5073,7 +4785,7 @@
       "kind": "point",
       "position": [
         30,
-        23
+        21
       ],
       "block": "05"
     },
@@ -5082,7 +4794,7 @@
       "kind": "point",
       "position": [
         31,
-        23
+        21
       ],
       "block": "05"
     },
@@ -5091,7 +4803,7 @@
       "kind": "point",
       "position": [
         32,
-        23
+        21
       ],
       "block": "01"
     },
@@ -5100,7 +4812,7 @@
       "kind": "point",
       "position": [
         33,
-        23
+        21
       ],
       "block": "05"
     },
@@ -5109,7 +4821,7 @@
       "kind": "point",
       "position": [
         34,
-        23
+        21
       ],
       "block": "05"
     },
@@ -5118,7 +4830,7 @@
       "kind": "point",
       "position": [
         35,
-        23
+        21
       ],
       "block": "05"
     },
@@ -5127,7 +4839,7 @@
       "kind": "point",
       "position": [
         36,
-        23
+        21
       ],
       "block": "05"
     },
@@ -5136,7 +4848,7 @@
       "kind": "point",
       "position": [
         37,
-        23
+        21
       ],
       "block": "05"
     },
@@ -5145,7 +4857,7 @@
       "kind": "point",
       "position": [
         38,
-        23
+        21
       ],
       "block": "05"
     },
@@ -5154,7 +4866,7 @@
       "kind": "point",
       "position": [
         39,
-        23
+        21
       ],
       "block": "05"
     },
@@ -5163,7 +4875,7 @@
       "kind": "point",
       "position": [
         40,
-        23
+        21
       ],
       "block": "02"
     },
@@ -5172,7 +4884,7 @@
       "kind": "point",
       "position": [
         41,
-        23
+        21
       ],
       "block": "01"
     },
@@ -5181,7 +4893,7 @@
       "kind": "point",
       "position": [
         42,
-        23
+        21
       ],
       "block": "05"
     },
@@ -5190,7 +4902,7 @@
       "kind": "point",
       "position": [
         43,
-        23
+        21
       ],
       "block": "05"
     },
@@ -5199,7 +4911,7 @@
       "kind": "point",
       "position": [
         44,
-        23
+        21
       ],
       "block": "05"
     },
@@ -5208,7 +4920,7 @@
       "kind": "point",
       "position": [
         45,
-        23
+        21
       ],
       "block": "05"
     },
@@ -5217,7 +4929,7 @@
       "kind": "point",
       "position": [
         46,
-        23
+        21
       ],
       "block": "05"
     },
@@ -5226,7 +4938,7 @@
       "kind": "point",
       "position": [
         47,
-        23
+        21
       ],
       "block": "05"
     },
@@ -5235,7 +4947,7 @@
       "kind": "point",
       "position": [
         16,
-        24
+        22
       ],
       "block": "01"
     },
@@ -5244,7 +4956,7 @@
       "kind": "point",
       "position": [
         17,
-        24
+        22
       ],
       "block": "01"
     },
@@ -5253,7 +4965,7 @@
       "kind": "point",
       "position": [
         18,
-        24
+        22
       ],
       "block": "01"
     },
@@ -5262,7 +4974,7 @@
       "kind": "point",
       "position": [
         19,
-        24
+        22
       ],
       "block": "01"
     },
@@ -5271,7 +4983,7 @@
       "kind": "point",
       "position": [
         20,
-        24
+        22
       ],
       "block": "01"
     },
@@ -5280,7 +4992,7 @@
       "kind": "point",
       "position": [
         21,
-        24
+        22
       ],
       "block": "01"
     },
@@ -5289,7 +5001,7 @@
       "kind": "point",
       "position": [
         22,
-        24
+        22
       ],
       "block": "01"
     },
@@ -5298,7 +5010,7 @@
       "kind": "point",
       "position": [
         23,
-        24
+        22
       ],
       "block": "01"
     },
@@ -5307,7 +5019,7 @@
       "kind": "point",
       "position": [
         24,
-        24
+        22
       ],
       "block": "01"
     },
@@ -5316,7 +5028,7 @@
       "kind": "point",
       "position": [
         25,
-        24
+        22
       ],
       "block": "01"
     },
@@ -5325,7 +5037,7 @@
       "kind": "point",
       "position": [
         26,
-        24
+        22
       ],
       "block": "01"
     },
@@ -5334,7 +5046,7 @@
       "kind": "point",
       "position": [
         27,
-        24
+        22
       ],
       "block": "01"
     },
@@ -5343,7 +5055,7 @@
       "kind": "point",
       "position": [
         28,
-        24
+        22
       ],
       "block": "01"
     },
@@ -5352,7 +5064,7 @@
       "kind": "point",
       "position": [
         29,
-        24
+        22
       ],
       "block": "01"
     },
@@ -5361,7 +5073,7 @@
       "kind": "point",
       "position": [
         30,
-        24
+        22
       ],
       "block": "01"
     },
@@ -5370,7 +5082,7 @@
       "kind": "point",
       "position": [
         31,
-        24
+        22
       ],
       "block": "01"
     },
@@ -5379,7 +5091,7 @@
       "kind": "point",
       "position": [
         32,
-        24
+        22
       ],
       "block": "01"
     },
@@ -5388,7 +5100,7 @@
       "kind": "point",
       "position": [
         33,
-        24
+        22
       ],
       "block": "05"
     },
@@ -5397,7 +5109,7 @@
       "kind": "point",
       "position": [
         34,
-        24
+        22
       ],
       "block": "05"
     },
@@ -5406,7 +5118,7 @@
       "kind": "point",
       "position": [
         35,
-        24
+        22
       ],
       "block": "05"
     },
@@ -5415,7 +5127,7 @@
       "kind": "point",
       "position": [
         36,
-        24
+        22
       ],
       "block": "05"
     },
@@ -5424,7 +5136,7 @@
       "kind": "point",
       "position": [
         37,
-        24
+        22
       ],
       "block": "05"
     },
@@ -5433,7 +5145,7 @@
       "kind": "point",
       "position": [
         38,
-        24
+        22
       ],
       "block": "05"
     },
@@ -5442,7 +5154,7 @@
       "kind": "point",
       "position": [
         39,
-        24
+        22
       ],
       "block": "05"
     },
@@ -5451,7 +5163,7 @@
       "kind": "point",
       "position": [
         40,
-        24
+        22
       ],
       "block": "45"
     },
@@ -5460,7 +5172,7 @@
       "kind": "point",
       "position": [
         41,
-        24
+        22
       ],
       "block": "01"
     },
@@ -5469,7 +5181,7 @@
       "kind": "point",
       "position": [
         42,
-        24
+        22
       ],
       "block": "05"
     },
@@ -5478,7 +5190,7 @@
       "kind": "point",
       "position": [
         43,
-        24
+        22
       ],
       "block": "05"
     },
@@ -5487,7 +5199,7 @@
       "kind": "point",
       "position": [
         44,
-        24
+        22
       ],
       "block": "05"
     },
@@ -5496,7 +5208,7 @@
       "kind": "point",
       "position": [
         45,
-        24
+        22
       ],
       "block": "05"
     },
@@ -5505,7 +5217,7 @@
       "kind": "point",
       "position": [
         46,
-        24
+        22
       ],
       "block": "05"
     },
@@ -5514,7 +5226,7 @@
       "kind": "point",
       "position": [
         47,
-        24
+        22
       ],
       "block": "05"
     },
@@ -5523,7 +5235,7 @@
       "kind": "point",
       "position": [
         16,
-        25
+        23
       ],
       "block": "05"
     },
@@ -5532,7 +5244,7 @@
       "kind": "point",
       "position": [
         17,
-        25
+        23
       ],
       "block": "05"
     },
@@ -5541,7 +5253,7 @@
       "kind": "point",
       "position": [
         18,
-        25
+        23
       ],
       "block": "05"
     },
@@ -5550,7 +5262,7 @@
       "kind": "point",
       "position": [
         19,
-        25
+        23
       ],
       "block": "05"
     },
@@ -5559,7 +5271,7 @@
       "kind": "point",
       "position": [
         20,
-        25
+        23
       ],
       "block": "05"
     },
@@ -5568,7 +5280,7 @@
       "kind": "point",
       "position": [
         21,
-        25
+        23
       ],
       "block": "05"
     },
@@ -5577,7 +5289,7 @@
       "kind": "point",
       "position": [
         22,
-        25
+        23
       ],
       "block": "05"
     },
@@ -5586,7 +5298,7 @@
       "kind": "point",
       "position": [
         23,
-        25
+        23
       ],
       "block": "05"
     },
@@ -5595,7 +5307,7 @@
       "kind": "point",
       "position": [
         24,
-        25
+        23
       ],
       "block": "05"
     },
@@ -5604,7 +5316,7 @@
       "kind": "point",
       "position": [
         25,
-        25
+        23
       ],
       "block": "05"
     },
@@ -5613,7 +5325,7 @@
       "kind": "point",
       "position": [
         26,
-        25
+        23
       ],
       "block": "05"
     },
@@ -5622,7 +5334,7 @@
       "kind": "point",
       "position": [
         27,
-        25
+        23
       ],
       "block": "05"
     },
@@ -5631,7 +5343,7 @@
       "kind": "point",
       "position": [
         28,
-        25
+        23
       ],
       "block": "05"
     },
@@ -5640,7 +5352,7 @@
       "kind": "point",
       "position": [
         29,
-        25
+        23
       ],
       "block": "02"
     },
@@ -5649,7 +5361,7 @@
       "kind": "point",
       "position": [
         30,
-        25
+        23
       ],
       "block": "02"
     },
@@ -5658,7 +5370,7 @@
       "kind": "point",
       "position": [
         31,
-        25
+        23
       ],
       "block": "02"
     },
@@ -5667,7 +5379,7 @@
       "kind": "point",
       "position": [
         32,
-        25
+        23
       ],
       "block": "49"
     },
@@ -5676,7 +5388,7 @@
       "kind": "point",
       "position": [
         33,
-        25
+        23
       ],
       "block": "4a"
     },
@@ -5685,7 +5397,7 @@
       "kind": "point",
       "position": [
         34,
-        25
+        23
       ],
       "block": "05"
     },
@@ -5694,7 +5406,7 @@
       "kind": "point",
       "position": [
         35,
-        25
+        23
       ],
       "block": "05"
     },
@@ -5703,7 +5415,7 @@
       "kind": "point",
       "position": [
         36,
-        25
+        23
       ],
       "block": "05"
     },
@@ -5712,7 +5424,7 @@
       "kind": "point",
       "position": [
         37,
-        25
+        23
       ],
       "block": "05"
     },
@@ -5721,7 +5433,7 @@
       "kind": "point",
       "position": [
         38,
-        25
+        23
       ],
       "block": "05"
     },
@@ -5730,7 +5442,7 @@
       "kind": "point",
       "position": [
         39,
-        25
+        23
       ],
       "block": "05"
     },
@@ -5739,7 +5451,7 @@
       "kind": "point",
       "position": [
         40,
-        25
+        23
       ],
       "block": "49"
     },
@@ -5748,7 +5460,7 @@
       "kind": "point",
       "position": [
         41,
-        25
+        23
       ],
       "block": "49"
     },
@@ -5757,7 +5469,7 @@
       "kind": "point",
       "position": [
         42,
-        25
+        23
       ],
       "block": "4a"
     },
@@ -5766,7 +5478,7 @@
       "kind": "point",
       "position": [
         43,
-        25
+        23
       ],
       "block": "54"
     },
@@ -5775,7 +5487,7 @@
       "kind": "point",
       "position": [
         44,
-        25
+        23
       ],
       "block": "76"
     },
@@ -5784,7 +5496,7 @@
       "kind": "point",
       "position": [
         45,
-        25
+        23
       ],
       "block": "76"
     },
@@ -5793,7 +5505,7 @@
       "kind": "point",
       "position": [
         46,
-        25
+        23
       ],
       "block": "76"
     },
@@ -5802,7 +5514,7 @@
       "kind": "point",
       "position": [
         47,
-        25
+        23
       ],
       "block": "32"
     },
@@ -5811,7 +5523,7 @@
       "kind": "point",
       "position": [
         16,
-        26
+        24
       ],
       "block": "05"
     },
@@ -5820,7 +5532,7 @@
       "kind": "point",
       "position": [
         17,
-        26
+        24
       ],
       "block": "05"
     },
@@ -5829,7 +5541,7 @@
       "kind": "point",
       "position": [
         18,
-        26
+        24
       ],
       "block": "05"
     },
@@ -5838,7 +5550,7 @@
       "kind": "point",
       "position": [
         19,
-        26
+        24
       ],
       "block": "18"
     },
@@ -5847,7 +5559,7 @@
       "kind": "point",
       "position": [
         20,
-        26
+        24
       ],
       "block": "19"
     },
@@ -5856,7 +5568,7 @@
       "kind": "point",
       "position": [
         21,
-        26
+        24
       ],
       "block": "01"
     },
@@ -5865,7 +5577,7 @@
       "kind": "point",
       "position": [
         22,
-        26
+        24
       ],
       "block": "05"
     },
@@ -5874,7 +5586,7 @@
       "kind": "point",
       "position": [
         23,
-        26
+        24
       ],
       "block": "05"
     },
@@ -5883,7 +5595,7 @@
       "kind": "point",
       "position": [
         24,
-        26
+        24
       ],
       "block": "05"
     },
@@ -5892,7 +5604,7 @@
       "kind": "point",
       "position": [
         25,
-        26
+        24
       ],
       "block": "14"
     },
@@ -5901,7 +5613,7 @@
       "kind": "point",
       "position": [
         26,
-        26
+        24
       ],
       "block": "15"
     },
@@ -5910,7 +5622,7 @@
       "kind": "point",
       "position": [
         27,
-        26
+        24
       ],
       "block": "05"
     },
@@ -5919,7 +5631,7 @@
       "kind": "point",
       "position": [
         28,
-        26
+        24
       ],
       "block": "05"
     },
@@ -5928,7 +5640,7 @@
       "kind": "point",
       "position": [
         29,
-        26
+        24
       ],
       "block": "02"
     },
@@ -5937,7 +5649,7 @@
       "kind": "point",
       "position": [
         30,
-        26
+        24
       ],
       "block": "41"
     },
@@ -5946,7 +5658,7 @@
       "kind": "point",
       "position": [
         31,
-        26
+        24
       ],
       "block": "0a"
     },
@@ -5955,7 +5667,7 @@
       "kind": "point",
       "position": [
         32,
-        26
+        24
       ],
       "block": "54"
     },
@@ -5964,7 +5676,7 @@
       "kind": "point",
       "position": [
         33,
-        26
+        24
       ],
       "block": "76"
     },
@@ -5973,7 +5685,7 @@
       "kind": "point",
       "position": [
         34,
-        26
+        24
       ],
       "block": "76"
     },
@@ -5982,7 +5694,7 @@
       "kind": "point",
       "position": [
         35,
-        26
+        24
       ],
       "block": "76"
     },
@@ -5991,7 +5703,7 @@
       "kind": "point",
       "position": [
         36,
-        26
+        24
       ],
       "block": "76"
     },
@@ -6000,7 +5712,7 @@
       "kind": "point",
       "position": [
         37,
-        26
+        24
       ],
       "block": "76"
     },
@@ -6009,7 +5721,7 @@
       "kind": "point",
       "position": [
         38,
-        26
+        24
       ],
       "block": "76"
     },
@@ -6018,7 +5730,7 @@
       "kind": "point",
       "position": [
         39,
-        26
+        24
       ],
       "block": "76"
     },
@@ -6027,7 +5739,7 @@
       "kind": "point",
       "position": [
         40,
-        26
+        24
       ],
       "block": "76"
     },
@@ -6036,7 +5748,7 @@
       "kind": "point",
       "position": [
         41,
-        26
+        24
       ],
       "block": "76"
     },
@@ -6045,7 +5757,7 @@
       "kind": "point",
       "position": [
         42,
-        26
+        24
       ],
       "block": "76"
     },
@@ -6054,7 +5766,7 @@
       "kind": "point",
       "position": [
         43,
-        26
+        24
       ],
       "block": "79"
     },
@@ -6063,7 +5775,7 @@
       "kind": "point",
       "position": [
         44,
-        26
+        24
       ],
       "block": "35"
     },
@@ -6072,7 +5784,7 @@
       "kind": "point",
       "position": [
         45,
-        26
+        24
       ],
       "block": "35"
     },
@@ -6081,7 +5793,7 @@
       "kind": "point",
       "position": [
         46,
-        26
+        24
       ],
       "block": "35"
     },
@@ -6090,7 +5802,7 @@
       "kind": "point",
       "position": [
         47,
-        26
+        24
       ],
       "block": "36"
     },
@@ -6099,7 +5811,7 @@
       "kind": "point",
       "position": [
         16,
-        27
+        25
       ],
       "block": "05"
     },
@@ -6108,7 +5820,7 @@
       "kind": "point",
       "position": [
         17,
-        27
+        25
       ],
       "block": "05"
     },
@@ -6117,7 +5829,7 @@
       "kind": "point",
       "position": [
         18,
-        27
+        25
       ],
       "block": "05"
     },
@@ -6126,7 +5838,7 @@
       "kind": "point",
       "position": [
         19,
-        27
+        25
       ],
       "block": "1a"
     },
@@ -6135,7 +5847,7 @@
       "kind": "point",
       "position": [
         20,
-        27
+        25
       ],
       "block": "11"
     },
@@ -6144,7 +5856,7 @@
       "kind": "point",
       "position": [
         21,
-        27
+        25
       ],
       "block": "01"
     },
@@ -6153,7 +5865,7 @@
       "kind": "point",
       "position": [
         22,
-        27
+        25
       ],
       "block": "05"
     },
@@ -6162,7 +5874,7 @@
       "kind": "point",
       "position": [
         23,
-        27
+        25
       ],
       "block": "05"
     },
@@ -6171,7 +5883,7 @@
       "kind": "point",
       "position": [
         24,
-        27
+        25
       ],
       "block": "05"
     },
@@ -6180,7 +5892,7 @@
       "kind": "point",
       "position": [
         25,
-        27
+        25
       ],
       "block": "02"
     },
@@ -6189,7 +5901,7 @@
       "kind": "point",
       "position": [
         26,
-        27
+        25
       ],
       "block": "02"
     },
@@ -6198,7 +5910,7 @@
       "kind": "point",
       "position": [
         27,
-        27
+        25
       ],
       "block": "45"
     },
@@ -6207,7 +5919,7 @@
       "kind": "point",
       "position": [
         28,
-        27
+        25
       ],
       "block": "02"
     },
@@ -6216,7 +5928,7 @@
       "kind": "point",
       "position": [
         29,
-        27
+        25
       ],
       "block": "01"
     },
@@ -6225,7 +5937,7 @@
       "kind": "point",
       "position": [
         30,
-        27
+        25
       ],
       "block": "45"
     },
@@ -6234,7 +5946,7 @@
       "kind": "point",
       "position": [
         31,
-        27
+        25
       ],
       "block": "01"
     },
@@ -6243,7 +5955,7 @@
       "kind": "point",
       "position": [
         32,
-        27
+        25
       ],
       "block": "41"
     },
@@ -6252,7 +5964,7 @@
       "kind": "point",
       "position": [
         33,
-        27
+        25
       ],
       "block": "41"
     },
@@ -6261,7 +5973,7 @@
       "kind": "point",
       "position": [
         34,
-        27
+        25
       ],
       "block": "41"
     },
@@ -6270,7 +5982,7 @@
       "kind": "point",
       "position": [
         35,
-        27
+        25
       ],
       "block": "41"
     },
@@ -6279,7 +5991,7 @@
       "kind": "point",
       "position": [
         36,
-        27
+        25
       ],
       "block": "0a"
     },
@@ -6288,7 +6000,7 @@
       "kind": "point",
       "position": [
         37,
-        27
+        25
       ],
       "block": "41"
     },
@@ -6297,7 +6009,7 @@
       "kind": "point",
       "position": [
         38,
-        27
+        25
       ],
       "block": "05"
     },
@@ -6306,7 +6018,7 @@
       "kind": "point",
       "position": [
         39,
-        27
+        25
       ],
       "block": "05"
     },
@@ -6315,7 +6027,7 @@
       "kind": "point",
       "position": [
         40,
-        27
+        25
       ],
       "block": "05"
     },
@@ -6324,7 +6036,7 @@
       "kind": "point",
       "position": [
         41,
-        27
+        25
       ],
       "block": "05"
     },
@@ -6333,7 +6045,7 @@
       "kind": "point",
       "position": [
         42,
-        27
+        25
       ],
       "block": "58"
     },
@@ -6342,7 +6054,7 @@
       "kind": "point",
       "position": [
         43,
-        27
+        25
       ],
       "block": "35"
     },
@@ -6351,7 +6063,7 @@
       "kind": "point",
       "position": [
         44,
-        27
+        25
       ],
       "block": "35"
     },
@@ -6360,7 +6072,7 @@
       "kind": "point",
       "position": [
         45,
-        27
+        25
       ],
       "block": "35"
     },
@@ -6369,7 +6081,7 @@
       "kind": "point",
       "position": [
         46,
-        27
+        25
       ],
       "block": "35"
     },
@@ -6378,7 +6090,7 @@
       "kind": "point",
       "position": [
         47,
-        27
+        25
       ],
       "block": "36"
     },
@@ -6387,7 +6099,7 @@
       "kind": "point",
       "position": [
         16,
-        28
+        26
       ],
       "block": "05"
     },
@@ -6396,7 +6108,7 @@
       "kind": "point",
       "position": [
         17,
-        28
+        26
       ],
       "block": "05"
     },
@@ -6405,7 +6117,7 @@
       "kind": "point",
       "position": [
         18,
-        28
+        26
       ],
       "block": "05"
     },
@@ -6414,7 +6126,7 @@
       "kind": "point",
       "position": [
         19,
-        28
+        26
       ],
       "block": "02"
     },
@@ -6423,7 +6135,7 @@
       "kind": "point",
       "position": [
         20,
-        28
+        26
       ],
       "block": "01"
     },
@@ -6432,7 +6144,7 @@
       "kind": "point",
       "position": [
         21,
-        28
+        26
       ],
       "block": "01"
     },
@@ -6441,7 +6153,7 @@
       "kind": "point",
       "position": [
         22,
-        28
+        26
       ],
       "block": "05"
     },
@@ -6450,7 +6162,7 @@
       "kind": "point",
       "position": [
         23,
-        28
+        26
       ],
       "block": "05"
     },
@@ -6459,7 +6171,7 @@
       "kind": "point",
       "position": [
         24,
-        28
+        26
       ],
       "block": "05"
     },
@@ -6468,7 +6180,7 @@
       "kind": "point",
       "position": [
         25,
-        28
+        26
       ],
       "block": "01"
     },
@@ -6477,7 +6189,7 @@
       "kind": "point",
       "position": [
         26,
-        28
+        26
       ],
       "block": "04"
     },
@@ -6486,7 +6198,7 @@
       "kind": "point",
       "position": [
         27,
-        28
+        26
       ],
       "block": "04"
     },
@@ -6495,7 +6207,7 @@
       "kind": "point",
       "position": [
         28,
-        28
+        26
       ],
       "block": "02"
     },
@@ -6504,7 +6216,7 @@
       "kind": "point",
       "position": [
         29,
-        28
+        26
       ],
       "block": "01"
     },
@@ -6513,7 +6225,7 @@
       "kind": "point",
       "position": [
         30,
-        28
+        26
       ],
       "block": "02"
     },
@@ -6522,7 +6234,7 @@
       "kind": "point",
       "position": [
         31,
-        28
+        26
       ],
       "block": "01"
     },
@@ -6531,7 +6243,7 @@
       "kind": "point",
       "position": [
         32,
-        28
+        26
       ],
       "block": "49"
     },
@@ -6540,7 +6252,7 @@
       "kind": "point",
       "position": [
         33,
-        28
+        26
       ],
       "block": "49"
     },
@@ -6549,7 +6261,7 @@
       "kind": "point",
       "position": [
         34,
-        28
+        26
       ],
       "block": "49"
     },
@@ -6558,7 +6270,7 @@
       "kind": "point",
       "position": [
         35,
-        28
+        26
       ],
       "block": "49"
     },
@@ -6567,7 +6279,7 @@
       "kind": "point",
       "position": [
         36,
-        28
+        26
       ],
       "block": "02"
     },
@@ -6576,7 +6288,7 @@
       "kind": "point",
       "position": [
         37,
-        28
+        26
       ],
       "block": "02"
     },
@@ -6585,7 +6297,7 @@
       "kind": "point",
       "position": [
         38,
-        28
+        26
       ],
       "block": "02"
     },
@@ -6594,7 +6306,7 @@
       "kind": "point",
       "position": [
         39,
-        28
+        26
       ],
       "block": "18"
     },
@@ -6603,7 +6315,7 @@
       "kind": "point",
       "position": [
         40,
-        28
+        26
       ],
       "block": "1f"
     },
@@ -6612,7 +6324,7 @@
       "kind": "point",
       "position": [
         41,
-        28
+        26
       ],
       "block": "19"
     },
@@ -6621,7 +6333,7 @@
       "kind": "point",
       "position": [
         42,
-        28
+        26
       ],
       "block": "05"
     },
@@ -6630,7 +6342,7 @@
       "kind": "point",
       "position": [
         43,
-        28
+        26
       ],
       "block": "05"
     },
@@ -6639,7 +6351,7 @@
       "kind": "point",
       "position": [
         44,
-        28
+        26
       ],
       "block": "58"
     },
@@ -6648,7 +6360,7 @@
       "kind": "point",
       "position": [
         45,
-        28
+        26
       ],
       "block": "35"
     },
@@ -6657,7 +6369,7 @@
       "kind": "point",
       "position": [
         46,
-        28
+        26
       ],
       "block": "35"
     },
@@ -6666,7 +6378,7 @@
       "kind": "point",
       "position": [
         47,
-        28
+        26
       ],
       "block": "36"
     },
@@ -6675,7 +6387,7 @@
       "kind": "point",
       "position": [
         16,
-        29
+        27
       ],
       "block": "05"
     },
@@ -6684,7 +6396,7 @@
       "kind": "point",
       "position": [
         17,
-        29
+        27
       ],
       "block": "05"
     },
@@ -6693,7 +6405,7 @@
       "kind": "point",
       "position": [
         18,
-        29
+        27
       ],
       "block": "05"
     },
@@ -6702,7 +6414,7 @@
       "kind": "point",
       "position": [
         19,
-        29
+        27
       ],
       "block": "02"
     },
@@ -6711,7 +6423,7 @@
       "kind": "point",
       "position": [
         20,
-        29
+        27
       ],
       "block": "01"
     },
@@ -6720,7 +6432,7 @@
       "kind": "point",
       "position": [
         21,
-        29
+        27
       ],
       "block": "01"
     },
@@ -6729,7 +6441,7 @@
       "kind": "point",
       "position": [
         22,
-        29
+        27
       ],
       "block": "01"
     },
@@ -6738,7 +6450,7 @@
       "kind": "point",
       "position": [
         23,
-        29
+        27
       ],
       "block": "01"
     },
@@ -6747,7 +6459,7 @@
       "kind": "point",
       "position": [
         24,
-        29
+        27
       ],
       "block": "01"
     },
@@ -6756,7 +6468,7 @@
       "kind": "point",
       "position": [
         25,
-        29
+        27
       ],
       "block": "01"
     },
@@ -6765,7 +6477,7 @@
       "kind": "point",
       "position": [
         26,
-        29
+        27
       ],
       "block": "01"
     },
@@ -6774,7 +6486,7 @@
       "kind": "point",
       "position": [
         27,
-        29
+        27
       ],
       "block": "01"
     },
@@ -6783,7 +6495,7 @@
       "kind": "point",
       "position": [
         28,
-        29
+        27
       ],
       "block": "01"
     },
@@ -6792,7 +6504,7 @@
       "kind": "point",
       "position": [
         29,
-        29
+        27
       ],
       "block": "01"
     },
@@ -6801,7 +6513,7 @@
       "kind": "point",
       "position": [
         30,
-        29
+        27
       ],
       "block": "49"
     },
@@ -6810,7 +6522,7 @@
       "kind": "point",
       "position": [
         31,
-        29
+        27
       ],
       "block": "4a"
     },
@@ -6819,7 +6531,7 @@
       "kind": "point",
       "position": [
         32,
-        29
+        27
       ],
       "block": "54"
     },
@@ -6828,7 +6540,7 @@
       "kind": "point",
       "position": [
         33,
-        29
+        27
       ],
       "block": "76"
     },
@@ -6837,7 +6549,7 @@
       "kind": "point",
       "position": [
         34,
-        29
+        27
       ],
       "block": "76"
     },
@@ -6846,7 +6558,7 @@
       "kind": "point",
       "position": [
         35,
-        29
+        27
       ],
       "block": "55"
     },
@@ -6855,7 +6567,7 @@
       "kind": "point",
       "position": [
         36,
-        29
+        27
       ],
       "block": "44"
     },
@@ -6864,7 +6576,7 @@
       "kind": "point",
       "position": [
         37,
-        29
+        27
       ],
       "block": "01"
     },
@@ -6873,7 +6585,7 @@
       "kind": "point",
       "position": [
         38,
-        29
+        27
       ],
       "block": "02"
     },
@@ -6882,7 +6594,7 @@
       "kind": "point",
       "position": [
         39,
-        29
+        27
       ],
       "block": "10"
     },
@@ -6891,7 +6603,7 @@
       "kind": "point",
       "position": [
         40,
-        29
+        27
       ],
       "block": "24"
     },
@@ -6900,7 +6612,7 @@
       "kind": "point",
       "position": [
         41,
-        29
+        27
       ],
       "block": "11"
     },
@@ -6909,7 +6621,7 @@
       "kind": "point",
       "position": [
         42,
-        29
+        27
       ],
       "block": "05"
     },
@@ -6918,7 +6630,7 @@
       "kind": "point",
       "position": [
         43,
-        29
+        27
       ],
       "block": "05"
     },
@@ -6927,7 +6639,7 @@
       "kind": "point",
       "position": [
         44,
-        29
+        27
       ],
       "block": "58"
     },
@@ -6936,7 +6648,7 @@
       "kind": "point",
       "position": [
         45,
-        29
+        27
       ],
       "block": "35"
     },
@@ -6945,7 +6657,7 @@
       "kind": "point",
       "position": [
         46,
-        29
+        27
       ],
       "block": "35"
     },
@@ -6954,7 +6666,7 @@
       "kind": "point",
       "position": [
         47,
-        29
+        27
       ],
       "block": "36"
     },
@@ -6963,7 +6675,7 @@
       "kind": "point",
       "position": [
         16,
-        30
+        28
       ],
       "block": "05"
     },
@@ -6972,7 +6684,7 @@
       "kind": "point",
       "position": [
         17,
-        30
+        28
       ],
       "block": "05"
     },
@@ -6981,7 +6693,7 @@
       "kind": "point",
       "position": [
         18,
-        30
+        28
       ],
       "block": "05"
     },
@@ -6990,7 +6702,7 @@
       "kind": "point",
       "position": [
         19,
-        30
+        28
       ],
       "block": "04"
     },
@@ -6999,7 +6711,7 @@
       "kind": "point",
       "position": [
         20,
-        30
+        28
       ],
       "block": "04"
     },
@@ -7008,7 +6720,7 @@
       "kind": "point",
       "position": [
         21,
-        30
+        28
       ],
       "block": "02"
     },
@@ -7017,7 +6729,7 @@
       "kind": "point",
       "position": [
         22,
-        30
+        28
       ],
       "block": "02"
     },
@@ -7026,7 +6738,7 @@
       "kind": "point",
       "position": [
         23,
-        30
+        28
       ],
       "block": "01"
     },
@@ -7035,7 +6747,7 @@
       "kind": "point",
       "position": [
         24,
-        30
+        28
       ],
       "block": "05"
     },
@@ -7044,7 +6756,7 @@
       "kind": "point",
       "position": [
         25,
-        30
+        28
       ],
       "block": "05"
     },
@@ -7053,7 +6765,7 @@
       "kind": "point",
       "position": [
         26,
-        30
+        28
       ],
       "block": "05"
     },
@@ -7062,7 +6774,7 @@
       "kind": "point",
       "position": [
         27,
-        30
+        28
       ],
       "block": "01"
     },
@@ -7071,7 +6783,7 @@
       "kind": "point",
       "position": [
         28,
-        30
+        28
       ],
       "block": "45"
     },
@@ -7080,7 +6792,7 @@
       "kind": "point",
       "position": [
         29,
-        30
+        28
       ],
       "block": "02"
     },
@@ -7089,7 +6801,7 @@
       "kind": "point",
       "position": [
         30,
-        30
+        28
       ],
       "block": "02"
     },
@@ -7098,7 +6810,7 @@
       "kind": "point",
       "position": [
         31,
-        30
+        28
       ],
       "block": "02"
     },
@@ -7107,7 +6819,7 @@
       "kind": "point",
       "position": [
         32,
-        30
+        28
       ],
       "block": "58"
     },
@@ -7116,7 +6828,7 @@
       "kind": "point",
       "position": [
         33,
-        30
+        28
       ],
       "block": "35"
     },
@@ -7125,7 +6837,7 @@
       "kind": "point",
       "position": [
         34,
-        30
+        28
       ],
       "block": "35"
     },
@@ -7134,7 +6846,7 @@
       "kind": "point",
       "position": [
         35,
-        30
+        28
       ],
       "block": "59"
     },
@@ -7143,7 +6855,7 @@
       "kind": "point",
       "position": [
         36,
-        30
+        28
       ],
       "block": "44"
     },
@@ -7152,7 +6864,7 @@
       "kind": "point",
       "position": [
         37,
-        30
+        28
       ],
       "block": "01"
     },
@@ -7161,7 +6873,7 @@
       "kind": "point",
       "position": [
         38,
-        30
+        28
       ],
       "block": "45"
     },
@@ -7170,7 +6882,7 @@
       "kind": "point",
       "position": [
         39,
-        30
+        28
       ],
       "block": "01"
     },
@@ -7179,7 +6891,7 @@
       "kind": "point",
       "position": [
         40,
-        30
+        28
       ],
       "block": "01"
     },
@@ -7188,7 +6900,7 @@
       "kind": "point",
       "position": [
         41,
-        30
+        28
       ],
       "block": "01"
     },
@@ -7197,7 +6909,7 @@
       "kind": "point",
       "position": [
         42,
-        30
+        28
       ],
       "block": "05"
     },
@@ -7206,7 +6918,7 @@
       "kind": "point",
       "position": [
         43,
-        30
+        28
       ],
       "block": "05"
     },
@@ -7215,7 +6927,7 @@
       "kind": "point",
       "position": [
         44,
-        30
+        28
       ],
       "block": "58"
     },
@@ -7224,7 +6936,7 @@
       "kind": "point",
       "position": [
         45,
-        30
+        28
       ],
       "block": "35"
     },
@@ -7233,7 +6945,7 @@
       "kind": "point",
       "position": [
         46,
-        30
+        28
       ],
       "block": "35"
     },
@@ -7242,7 +6954,7 @@
       "kind": "point",
       "position": [
         47,
-        30
+        28
       ],
       "block": "36"
     },
@@ -7251,7 +6963,7 @@
       "kind": "point",
       "position": [
         16,
-        31
+        29
       ],
       "block": "05"
     },
@@ -7260,7 +6972,7 @@
       "kind": "point",
       "position": [
         17,
-        31
+        29
       ],
       "block": "05"
     },
@@ -7269,7 +6981,7 @@
       "kind": "point",
       "position": [
         18,
-        31
+        29
       ],
       "block": "49"
     },
@@ -7278,7 +6990,7 @@
       "kind": "point",
       "position": [
         19,
-        31
+        29
       ],
       "block": "04"
     },
@@ -7287,7 +6999,7 @@
       "kind": "point",
       "position": [
         20,
-        31
+        29
       ],
       "block": "04"
     },
@@ -7296,7 +7008,7 @@
       "kind": "point",
       "position": [
         21,
-        31
+        29
       ],
       "block": "02"
     },
@@ -7305,7 +7017,7 @@
       "kind": "point",
       "position": [
         22,
-        31
+        29
       ],
       "block": "45"
     },
@@ -7314,7 +7026,7 @@
       "kind": "point",
       "position": [
         23,
-        31
+        29
       ],
       "block": "01"
     },
@@ -7323,7 +7035,7 @@
       "kind": "point",
       "position": [
         24,
-        31
+        29
       ],
       "block": "01"
     },
@@ -7332,7 +7044,7 @@
       "kind": "point",
       "position": [
         25,
-        31
+        29
       ],
       "block": "05"
     },
@@ -7341,7 +7053,7 @@
       "kind": "point",
       "position": [
         26,
-        31
+        29
       ],
       "block": "05"
     },
@@ -7350,7 +7062,7 @@
       "kind": "point",
       "position": [
         27,
-        31
+        29
       ],
       "block": "01"
     },
@@ -7359,7 +7071,7 @@
       "kind": "point",
       "position": [
         28,
-        31
+        29
       ],
       "block": "01"
     },
@@ -7368,7 +7080,7 @@
       "kind": "point",
       "position": [
         29,
-        31
+        29
       ],
       "block": "46"
     },
@@ -7377,7 +7089,7 @@
       "kind": "point",
       "position": [
         30,
-        31
+        29
       ],
       "block": "54"
     },
@@ -7386,7 +7098,7 @@
       "kind": "point",
       "position": [
         31,
-        31
+        29
       ],
       "block": "76"
     },
@@ -7395,7 +7107,7 @@
       "kind": "point",
       "position": [
         32,
-        31
+        29
       ],
       "block": "79"
     },
@@ -7404,7 +7116,7 @@
       "kind": "point",
       "position": [
         33,
-        31
+        29
       ],
       "block": "35"
     },
@@ -7413,7 +7125,7 @@
       "kind": "point",
       "position": [
         34,
-        31
+        29
       ],
       "block": "35"
     },
@@ -7422,7 +7134,7 @@
       "kind": "point",
       "position": [
         35,
-        31
+        29
       ],
       "block": "59"
     },
@@ -7431,7 +7143,7 @@
       "kind": "point",
       "position": [
         36,
-        31
+        29
       ],
       "block": "44"
     },
@@ -7440,7 +7152,7 @@
       "kind": "point",
       "position": [
         37,
-        31
+        29
       ],
       "block": "01"
     },
@@ -7449,7 +7161,7 @@
       "kind": "point",
       "position": [
         38,
-        31
+        29
       ],
       "block": "01"
     },
@@ -7458,7 +7170,7 @@
       "kind": "point",
       "position": [
         39,
-        31
+        29
       ],
       "block": "01"
     },
@@ -7467,7 +7179,7 @@
       "kind": "point",
       "position": [
         40,
-        31
+        29
       ],
       "block": "01"
     },
@@ -7476,7 +7188,7 @@
       "kind": "point",
       "position": [
         41,
-        31
+        29
       ],
       "block": "01"
     },
@@ -7485,7 +7197,7 @@
       "kind": "point",
       "position": [
         42,
-        31
+        29
       ],
       "block": "05"
     },
@@ -7494,7 +7206,7 @@
       "kind": "point",
       "position": [
         43,
-        31
+        29
       ],
       "block": "05"
     },
@@ -7503,7 +7215,7 @@
       "kind": "point",
       "position": [
         44,
-        31
+        29
       ],
       "block": "58"
     },
@@ -7512,7 +7224,7 @@
       "kind": "point",
       "position": [
         45,
-        31
+        29
       ],
       "block": "35"
     },
@@ -7521,7 +7233,7 @@
       "kind": "point",
       "position": [
         46,
-        31
+        29
       ],
       "block": "35"
     },
@@ -7530,7 +7242,7 @@
       "kind": "point",
       "position": [
         47,
-        31
+        29
       ],
       "block": "36"
     },
@@ -7539,7 +7251,7 @@
       "kind": "point",
       "position": [
         16,
-        32
+        30
       ],
       "block": "05"
     },
@@ -7548,7 +7260,7 @@
       "kind": "point",
       "position": [
         17,
-        32
+        30
       ],
       "block": "05"
     },
@@ -7557,7 +7269,7 @@
       "kind": "point",
       "position": [
         18,
-        32
+        30
       ],
       "block": "54"
     },
@@ -7566,7 +7278,7 @@
       "kind": "point",
       "position": [
         19,
-        32
+        30
       ],
       "block": "48"
     },
@@ -7575,7 +7287,7 @@
       "kind": "point",
       "position": [
         20,
-        32
+        30
       ],
       "block": "49"
     },
@@ -7584,7 +7296,7 @@
       "kind": "point",
       "position": [
         21,
-        32
+        30
       ],
       "block": "49"
     },
@@ -7593,7 +7305,7 @@
       "kind": "point",
       "position": [
         22,
-        32
+        30
       ],
       "block": "49"
     },
@@ -7602,7 +7314,7 @@
       "kind": "point",
       "position": [
         23,
-        32
+        30
       ],
       "block": "44"
     },
@@ -7611,7 +7323,7 @@
       "kind": "point",
       "position": [
         24,
-        32
+        30
       ],
       "block": "46"
     },
@@ -7620,7 +7332,7 @@
       "kind": "point",
       "position": [
         25,
-        32
+        30
       ],
       "block": "49"
     },
@@ -7629,7 +7341,7 @@
       "kind": "point",
       "position": [
         26,
-        32
+        30
       ],
       "block": "49"
     },
@@ -7638,7 +7350,7 @@
       "kind": "point",
       "position": [
         27,
-        32
+        30
       ],
       "block": "49"
     },
@@ -7647,7 +7359,7 @@
       "kind": "point",
       "position": [
         28,
-        32
+        30
       ],
       "block": "49"
     },
@@ -7656,7 +7368,7 @@
       "kind": "point",
       "position": [
         29,
-        32
+        30
       ],
       "block": "4a"
     },
@@ -7665,7 +7377,7 @@
       "kind": "point",
       "position": [
         30,
-        32
+        30
       ],
       "block": "58"
     },
@@ -7674,7 +7386,7 @@
       "kind": "point",
       "position": [
         31,
-        32
+        30
       ],
       "block": "35"
     },
@@ -7683,7 +7395,7 @@
       "kind": "point",
       "position": [
         32,
-        32
+        30
       ],
       "block": "35"
     },
@@ -7692,7 +7404,7 @@
       "kind": "point",
       "position": [
         33,
-        32
+        30
       ],
       "block": "35"
     },
@@ -7701,7 +7413,7 @@
       "kind": "point",
       "position": [
         34,
-        32
+        30
       ],
       "block": "35"
     },
@@ -7710,7 +7422,7 @@
       "kind": "point",
       "position": [
         35,
-        32
+        30
       ],
       "block": "59"
     },
@@ -7719,7 +7431,7 @@
       "kind": "point",
       "position": [
         36,
-        32
+        30
       ],
       "block": "44"
     },
@@ -7728,7 +7440,7 @@
       "kind": "point",
       "position": [
         37,
-        32
+        30
       ],
       "block": "02"
     },
@@ -7737,7 +7449,7 @@
       "kind": "point",
       "position": [
         38,
-        32
+        30
       ],
       "block": "04"
     },
@@ -7746,7 +7458,7 @@
       "kind": "point",
       "position": [
         39,
-        32
+        30
       ],
       "block": "04"
     },
@@ -7755,7 +7467,7 @@
       "kind": "point",
       "position": [
         40,
-        32
+        30
       ],
       "block": "04"
     },
@@ -7764,7 +7476,7 @@
       "kind": "point",
       "position": [
         41,
-        32
+        30
       ],
       "block": "44"
     },
@@ -7773,7 +7485,7 @@
       "kind": "point",
       "position": [
         42,
-        32
+        30
       ],
       "block": "46"
     },
@@ -7782,7 +7494,7 @@
       "kind": "point",
       "position": [
         43,
-        32
+        30
       ],
       "block": "05"
     },
@@ -7791,7 +7503,7 @@
       "kind": "point",
       "position": [
         44,
-        32
+        30
       ],
       "block": "58"
     },
@@ -7800,7 +7512,7 @@
       "kind": "point",
       "position": [
         45,
-        32
+        30
       ],
       "block": "35"
     },
@@ -7809,7 +7521,7 @@
       "kind": "point",
       "position": [
         46,
-        32
+        30
       ],
       "block": "35"
     },
@@ -7818,7 +7530,7 @@
       "kind": "point",
       "position": [
         47,
-        32
+        30
       ],
       "block": "36"
     },
@@ -7827,7 +7539,7 @@
       "kind": "point",
       "position": [
         16,
-        33
+        31
       ],
       "block": "34"
     },
@@ -7836,7 +7548,7 @@
       "kind": "point",
       "position": [
         17,
-        33
+        31
       ],
       "block": "76"
     },
@@ -7845,7 +7557,7 @@
       "kind": "point",
       "position": [
         18,
-        33
+        31
       ],
       "block": "79"
     },
@@ -7854,7 +7566,7 @@
       "kind": "point",
       "position": [
         19,
-        33
+        31
       ],
       "block": "76"
     },
@@ -7863,7 +7575,7 @@
       "kind": "point",
       "position": [
         20,
-        33
+        31
       ],
       "block": "76"
     },
@@ -7872,7 +7584,7 @@
       "kind": "point",
       "position": [
         21,
-        33
+        31
       ],
       "block": "76"
     },
@@ -7881,7 +7593,7 @@
       "kind": "point",
       "position": [
         22,
-        33
+        31
       ],
       "block": "55"
     },
@@ -7890,7 +7602,7 @@
       "kind": "point",
       "position": [
         23,
-        33
+        31
       ],
       "block": "44"
     },
@@ -7899,7 +7611,7 @@
       "kind": "point",
       "position": [
         24,
-        33
+        31
       ],
       "block": "46"
     },
@@ -7908,7 +7620,7 @@
       "kind": "point",
       "position": [
         25,
-        33
+        31
       ],
       "block": "54"
     },
@@ -7917,7 +7629,7 @@
       "kind": "point",
       "position": [
         26,
-        33
+        31
       ],
       "block": "76"
     },
@@ -7926,7 +7638,7 @@
       "kind": "point",
       "position": [
         27,
-        33
+        31
       ],
       "block": "76"
     },
@@ -7935,7 +7647,7 @@
       "kind": "point",
       "position": [
         28,
-        33
+        31
       ],
       "block": "76"
     },
@@ -7944,7 +7656,7 @@
       "kind": "point",
       "position": [
         29,
-        33
+        31
       ],
       "block": "76"
     },
@@ -7953,7 +7665,7 @@
       "kind": "point",
       "position": [
         30,
-        33
+        31
       ],
       "block": "79"
     },
@@ -7962,7 +7674,7 @@
       "kind": "point",
       "position": [
         31,
-        33
+        31
       ],
       "block": "35"
     },
@@ -7971,7 +7683,7 @@
       "kind": "point",
       "position": [
         32,
-        33
+        31
       ],
       "block": "35"
     },
@@ -7980,7 +7692,7 @@
       "kind": "point",
       "position": [
         33,
-        33
+        31
       ],
       "block": "35"
     },
@@ -7989,7 +7701,7 @@
       "kind": "point",
       "position": [
         34,
-        33
+        31
       ],
       "block": "35"
     },
@@ -7998,7 +7710,7 @@
       "kind": "point",
       "position": [
         35,
-        33
+        31
       ],
       "block": "59"
     },
@@ -8007,7 +7719,7 @@
       "kind": "point",
       "position": [
         36,
-        33
+        31
       ],
       "block": "48"
     },
@@ -8016,7 +7728,7 @@
       "kind": "point",
       "position": [
         37,
-        33
+        31
       ],
       "block": "49"
     },
@@ -8025,7 +7737,7 @@
       "kind": "point",
       "position": [
         38,
-        33
+        31
       ],
       "block": "49"
     },
@@ -8034,7 +7746,7 @@
       "kind": "point",
       "position": [
         39,
-        33
+        31
       ],
       "block": "49"
     },
@@ -8043,7 +7755,7 @@
       "kind": "point",
       "position": [
         40,
-        33
+        31
       ],
       "block": "49"
     },
@@ -8052,7 +7764,7 @@
       "kind": "point",
       "position": [
         41,
-        33
+        31
       ],
       "block": "0a"
     },
@@ -8061,7 +7773,7 @@
       "kind": "point",
       "position": [
         42,
-        33
+        31
       ],
       "block": "0a"
     },
@@ -8070,7 +7782,7 @@
       "kind": "point",
       "position": [
         43,
-        33
+        31
       ],
       "block": "54"
     },
@@ -8079,7 +7791,7 @@
       "kind": "point",
       "position": [
         44,
-        33
+        31
       ],
       "block": "79"
     },
@@ -8088,7 +7800,7 @@
       "kind": "point",
       "position": [
         45,
-        33
+        31
       ],
       "block": "35"
     },
@@ -8097,7 +7809,7 @@
       "kind": "point",
       "position": [
         46,
-        33
+        31
       ],
       "block": "35"
     },
@@ -8106,7 +7818,7 @@
       "kind": "point",
       "position": [
         47,
-        33
+        31
       ],
       "block": "36"
     },
@@ -8115,7 +7827,7 @@
       "kind": "point",
       "position": [
         16,
-        34
+        32
       ],
       "block": "34"
     },
@@ -8124,7 +7836,7 @@
       "kind": "point",
       "position": [
         17,
-        34
+        32
       ],
       "block": "35"
     },
@@ -8133,7 +7845,7 @@
       "kind": "point",
       "position": [
         18,
-        34
+        32
       ],
       "block": "35"
     },
@@ -8142,7 +7854,7 @@
       "kind": "point",
       "position": [
         19,
-        34
+        32
       ],
       "block": "35"
     },
@@ -8151,7 +7863,7 @@
       "kind": "point",
       "position": [
         20,
-        34
+        32
       ],
       "block": "35"
     },
@@ -8160,7 +7872,7 @@
       "kind": "point",
       "position": [
         21,
-        34
+        32
       ],
       "block": "35"
     },
@@ -8169,7 +7881,7 @@
       "kind": "point",
       "position": [
         22,
-        34
+        32
       ],
       "block": "59"
     },
@@ -8178,7 +7890,7 @@
       "kind": "point",
       "position": [
         23,
-        34
+        32
       ],
       "block": "0a"
     },
@@ -8187,7 +7899,7 @@
       "kind": "point",
       "position": [
         24,
-        34
+        32
       ],
       "block": "0a"
     },
@@ -8196,7 +7908,7 @@
       "kind": "point",
       "position": [
         25,
-        34
+        32
       ],
       "block": "58"
     },
@@ -8205,7 +7917,7 @@
       "kind": "point",
       "position": [
         26,
-        34
+        32
       ],
       "block": "35"
     },
@@ -8214,7 +7926,7 @@
       "kind": "point",
       "position": [
         27,
-        34
+        32
       ],
       "block": "35"
     },
@@ -8223,7 +7935,7 @@
       "kind": "point",
       "position": [
         28,
-        34
+        32
       ],
       "block": "35"
     },
@@ -8232,7 +7944,7 @@
       "kind": "point",
       "position": [
         29,
-        34
+        32
       ],
       "block": "35"
     },
@@ -8241,7 +7953,7 @@
       "kind": "point",
       "position": [
         30,
-        34
+        32
       ],
       "block": "35"
     },
@@ -8250,7 +7962,7 @@
       "kind": "point",
       "position": [
         31,
-        34
+        32
       ],
       "block": "35"
     },
@@ -8259,7 +7971,7 @@
       "kind": "point",
       "position": [
         32,
-        34
+        32
       ],
       "block": "35"
     },
@@ -8268,7 +7980,7 @@
       "kind": "point",
       "position": [
         33,
-        34
+        32
       ],
       "block": "35"
     },
@@ -8277,7 +7989,7 @@
       "kind": "point",
       "position": [
         34,
-        34
+        32
       ],
       "block": "35"
     },
@@ -8286,7 +7998,7 @@
       "kind": "point",
       "position": [
         35,
-        34
+        32
       ],
       "block": "7a"
     },
@@ -8295,7 +8007,7 @@
       "kind": "point",
       "position": [
         36,
-        34
+        32
       ],
       "block": "76"
     },
@@ -8304,7 +8016,7 @@
       "kind": "point",
       "position": [
         37,
-        34
+        32
       ],
       "block": "76"
     },
@@ -8313,7 +8025,7 @@
       "kind": "point",
       "position": [
         38,
-        34
+        32
       ],
       "block": "76"
     },
@@ -8322,7 +8034,7 @@
       "kind": "point",
       "position": [
         39,
-        34
+        32
       ],
       "block": "76"
     },
@@ -8331,7 +8043,7 @@
       "kind": "point",
       "position": [
         40,
-        34
+        32
       ],
       "block": "76"
     },
@@ -8340,7 +8052,7 @@
       "kind": "point",
       "position": [
         41,
-        34
+        32
       ],
       "block": "76"
     },
@@ -8349,7 +8061,7 @@
       "kind": "point",
       "position": [
         42,
-        34
+        32
       ],
       "block": "76"
     },
@@ -8358,7 +8070,7 @@
       "kind": "point",
       "position": [
         43,
-        34
+        32
       ],
       "block": "79"
     },
@@ -8367,7 +8079,7 @@
       "kind": "point",
       "position": [
         44,
-        34
+        32
       ],
       "block": "35"
     },
@@ -8376,7 +8088,7 @@
       "kind": "point",
       "position": [
         45,
-        34
+        32
       ],
       "block": "35"
     },
@@ -8385,7 +8097,7 @@
       "kind": "point",
       "position": [
         46,
-        34
+        32
       ],
       "block": "35"
     },
@@ -8394,7 +8106,7 @@
       "kind": "point",
       "position": [
         47,
-        34
+        32
       ],
       "block": "36"
     },
@@ -8403,7 +8115,7 @@
       "kind": "point",
       "position": [
         16,
-        35
+        33
       ],
       "block": "38"
     },
@@ -8412,7 +8124,7 @@
       "kind": "point",
       "position": [
         17,
-        35
+        33
       ],
       "block": "39"
     },
@@ -8421,7 +8133,7 @@
       "kind": "point",
       "position": [
         18,
-        35
+        33
       ],
       "block": "39"
     },
@@ -8430,7 +8142,7 @@
       "kind": "point",
       "position": [
         19,
-        35
+        33
       ],
       "block": "39"
     },
@@ -8439,7 +8151,7 @@
       "kind": "point",
       "position": [
         20,
-        35
+        33
       ],
       "block": "39"
     },
@@ -8448,7 +8160,7 @@
       "kind": "point",
       "position": [
         21,
-        35
+        33
       ],
       "block": "39"
     },
@@ -8457,7 +8169,7 @@
       "kind": "point",
       "position": [
         22,
-        35
+        33
       ],
       "block": "39"
     },
@@ -8466,7 +8178,7 @@
       "kind": "point",
       "position": [
         23,
-        35
+        33
       ],
       "block": "39"
     },
@@ -8475,7 +8187,7 @@
       "kind": "point",
       "position": [
         24,
-        35
+        33
       ],
       "block": "39"
     },
@@ -8484,7 +8196,7 @@
       "kind": "point",
       "position": [
         25,
-        35
+        33
       ],
       "block": "39"
     },
@@ -8493,7 +8205,7 @@
       "kind": "point",
       "position": [
         26,
-        35
+        33
       ],
       "block": "39"
     },
@@ -8502,7 +8214,7 @@
       "kind": "point",
       "position": [
         27,
-        35
+        33
       ],
       "block": "39"
     },
@@ -8511,7 +8223,7 @@
       "kind": "point",
       "position": [
         28,
-        35
+        33
       ],
       "block": "39"
     },
@@ -8520,7 +8232,7 @@
       "kind": "point",
       "position": [
         29,
-        35
+        33
       ],
       "block": "39"
     },
@@ -8529,7 +8241,7 @@
       "kind": "point",
       "position": [
         30,
-        35
+        33
       ],
       "block": "39"
     },
@@ -8538,7 +8250,7 @@
       "kind": "point",
       "position": [
         31,
-        35
+        33
       ],
       "block": "39"
     },
@@ -8547,7 +8259,7 @@
       "kind": "point",
       "position": [
         32,
-        35
+        33
       ],
       "block": "39"
     },
@@ -8556,7 +8268,7 @@
       "kind": "point",
       "position": [
         33,
-        35
+        33
       ],
       "block": "39"
     },
@@ -8565,7 +8277,7 @@
       "kind": "point",
       "position": [
         34,
-        35
+        33
       ],
       "block": "39"
     },
@@ -8574,7 +8286,7 @@
       "kind": "point",
       "position": [
         35,
-        35
+        33
       ],
       "block": "39"
     },
@@ -8583,7 +8295,7 @@
       "kind": "point",
       "position": [
         36,
-        35
+        33
       ],
       "block": "39"
     },
@@ -8592,7 +8304,7 @@
       "kind": "point",
       "position": [
         37,
-        35
+        33
       ],
       "block": "39"
     },
@@ -8601,7 +8313,7 @@
       "kind": "point",
       "position": [
         38,
-        35
+        33
       ],
       "block": "39"
     },
@@ -8610,7 +8322,7 @@
       "kind": "point",
       "position": [
         39,
-        35
+        33
       ],
       "block": "39"
     },
@@ -8619,7 +8331,7 @@
       "kind": "point",
       "position": [
         40,
-        35
+        33
       ],
       "block": "39"
     },
@@ -8628,7 +8340,7 @@
       "kind": "point",
       "position": [
         41,
-        35
+        33
       ],
       "block": "39"
     },
@@ -8637,7 +8349,7 @@
       "kind": "point",
       "position": [
         42,
-        35
+        33
       ],
       "block": "39"
     },
@@ -8646,7 +8358,7 @@
       "kind": "point",
       "position": [
         43,
-        35
+        33
       ],
       "block": "39"
     },
@@ -8655,7 +8367,7 @@
       "kind": "point",
       "position": [
         44,
-        35
+        33
       ],
       "block": "39"
     },
@@ -8664,7 +8376,7 @@
       "kind": "point",
       "position": [
         45,
-        35
+        33
       ],
       "block": "39"
     },
@@ -8673,7 +8385,7 @@
       "kind": "point",
       "position": [
         46,
-        35
+        33
       ],
       "block": "39"
     },
@@ -8682,9 +8394,18 @@
       "kind": "point",
       "position": [
         47,
-        35
+        33
       ],
       "block": "3a"
+    },
+    {
+      "name": "Controlled new ordinary city street opening",
+      "kind": "point",
+      "position": [
+        23,
+        11
+      ],
+      "block": "01"
     },
     {
       "name": "Controlled new ordinary city street opening",
@@ -8699,26 +8420,8 @@
       "name": "Controlled new ordinary city street opening",
       "kind": "point",
       "position": [
-        23,
-        13
-      ],
-      "block": "01"
-    },
-    {
-      "name": "Controlled new ordinary city street opening",
-      "kind": "point",
-      "position": [
-        23,
-        14
-      ],
-      "block": "01"
-    },
-    {
-      "name": "Controlled new ordinary city street opening",
-      "kind": "point",
-      "position": [
         47,
-        24
+        22
       ],
       "block": "01"
     },
@@ -8727,7 +8430,7 @@
       "kind": "point",
       "position": [
         17,
-        35
+        33
       ],
       "block": "35"
     },
@@ -8736,7 +8439,7 @@
       "kind": "point",
       "position": [
         18,
-        35
+        33
       ],
       "block": "35"
     },
@@ -8745,7 +8448,7 @@
       "kind": "point",
       "position": [
         19,
-        35
+        33
       ],
       "block": "35"
     },
@@ -8754,7 +8457,7 @@
       "kind": "point",
       "position": [
         20,
-        35
+        33
       ],
       "block": "35"
     },
@@ -8763,7 +8466,7 @@
       "kind": "point",
       "position": [
         21,
-        35
+        33
       ],
       "block": "35"
     },
@@ -8772,7 +8475,7 @@
       "kind": "point",
       "position": [
         22,
-        35
+        33
       ],
       "block": "35"
     },
@@ -8781,7 +8484,7 @@
       "kind": "point",
       "position": [
         23,
-        35
+        33
       ],
       "block": "35"
     },
@@ -8790,7 +8493,7 @@
       "kind": "point",
       "position": [
         24,
-        35
+        33
       ],
       "block": "35"
     },
@@ -8799,7 +8502,7 @@
       "kind": "point",
       "position": [
         25,
-        35
+        33
       ],
       "block": "35"
     },
@@ -8808,7 +8511,7 @@
       "kind": "point",
       "position": [
         26,
-        35
+        33
       ],
       "block": "35"
     },
@@ -8817,7 +8520,7 @@
       "kind": "point",
       "position": [
         27,
-        35
+        33
       ],
       "block": "35"
     },
@@ -8826,7 +8529,7 @@
       "kind": "point",
       "position": [
         28,
-        35
+        33
       ],
       "block": "35"
     },
@@ -8835,7 +8538,7 @@
       "kind": "point",
       "position": [
         29,
-        35
+        33
       ],
       "block": "35"
     },
@@ -8844,7 +8547,7 @@
       "kind": "point",
       "position": [
         30,
-        35
+        33
       ],
       "block": "35"
     },
@@ -8853,7 +8556,7 @@
       "kind": "point",
       "position": [
         31,
-        35
+        33
       ],
       "block": "35"
     },
@@ -8862,7 +8565,7 @@
       "kind": "point",
       "position": [
         32,
-        35
+        33
       ],
       "block": "35"
     },
@@ -8871,7 +8574,7 @@
       "kind": "point",
       "position": [
         33,
-        35
+        33
       ],
       "block": "35"
     },
@@ -8880,7 +8583,7 @@
       "kind": "point",
       "position": [
         34,
-        35
+        33
       ],
       "block": "35"
     },
@@ -8889,7 +8592,7 @@
       "kind": "point",
       "position": [
         35,
-        35
+        33
       ],
       "block": "35"
     },
@@ -8898,7 +8601,7 @@
       "kind": "point",
       "position": [
         36,
-        35
+        33
       ],
       "block": "35"
     },
@@ -8907,7 +8610,7 @@
       "kind": "point",
       "position": [
         37,
-        35
+        33
       ],
       "block": "35"
     },
@@ -8916,7 +8619,7 @@
       "kind": "point",
       "position": [
         38,
-        35
+        33
       ],
       "block": "35"
     },
@@ -8925,7 +8628,7 @@
       "kind": "point",
       "position": [
         39,
-        35
+        33
       ],
       "block": "35"
     },
@@ -8934,7 +8637,7 @@
       "kind": "point",
       "position": [
         40,
-        35
+        33
       ],
       "block": "35"
     },
@@ -8943,7 +8646,7 @@
       "kind": "point",
       "position": [
         41,
-        35
+        33
       ],
       "block": "35"
     },
@@ -8952,7 +8655,7 @@
       "kind": "point",
       "position": [
         42,
-        35
+        33
       ],
       "block": "35"
     },
@@ -8961,7 +8664,7 @@
       "kind": "point",
       "position": [
         43,
-        35
+        33
       ],
       "block": "35"
     },
@@ -8970,7 +8673,7 @@
       "kind": "point",
       "position": [
         44,
-        35
+        33
       ],
       "block": "35"
     },
@@ -8979,7 +8682,7 @@
       "kind": "point",
       "position": [
         45,
-        35
+        33
       ],
       "block": "35"
     },
@@ -8988,7 +8691,25 @@
       "kind": "point",
       "position": [
         46,
-        35
+        33
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Former east boundary is now continuous Superior",
+      "kind": "point",
+      "position": [
+        47,
+        23
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Former east boundary is now continuous Superior",
+      "kind": "point",
+      "position": [
+        47,
+        24
       ],
       "block": "35"
     },
@@ -9065,20 +8786,11 @@
       "block": "35"
     },
     {
-      "name": "Former east boundary is now continuous Superior",
+      "name": "Former west lake cap is now same harbor",
       "kind": "point",
       "position": [
-        47,
-        33
-      ],
-      "block": "35"
-    },
-    {
-      "name": "Former east boundary is now continuous Superior",
-      "kind": "point",
-      "position": [
-        47,
-        34
+        16,
+        31
       ],
       "block": "35"
     },
@@ -9087,16 +8799,7 @@
       "kind": "point",
       "position": [
         16,
-        33
-      ],
-      "block": "35"
-    },
-    {
-      "name": "Former west lake cap is now same harbor",
-      "kind": "point",
-      "position": [
-        16,
-        34
+        32
       ],
       "block": "35"
     },
@@ -9105,6 +8808,42 @@
       "kind": "point",
       "position": [
         41,
+        31
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Old point safe neighborhood continuation",
+      "kind": "point",
+      "position": [
+        42,
+        31
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Old point safe neighborhood continuation",
+      "kind": "point",
+      "position": [
+        41,
+        32
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Old point safe neighborhood continuation",
+      "kind": "point",
+      "position": [
+        42,
+        32
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Old point safe neighborhood continuation",
+      "kind": "point",
+      "position": [
+        41,
         33
       ],
       "block": "01"
@@ -9122,15 +8861,6 @@
       "name": "Old point safe neighborhood continuation",
       "kind": "point",
       "position": [
-        41,
-        34
-      ],
-      "block": "01"
-    },
-    {
-      "name": "Old point safe neighborhood continuation",
-      "kind": "point",
-      "position": [
         42,
         34
       ],
@@ -9140,26 +8870,8 @@
       "name": "Old point safe neighborhood continuation",
       "kind": "point",
       "position": [
-        41,
-        35
-      ],
-      "block": "01"
-    },
-    {
-      "name": "Old point safe neighborhood continuation",
-      "kind": "point",
-      "position": [
-        42,
-        35
-      ],
-      "block": "01"
-    },
-    {
-      "name": "Old point safe neighborhood continuation",
-      "kind": "point",
-      "position": [
-        42,
-        36
+        43,
+        34
       ],
       "block": "01"
     },
@@ -9168,16 +8880,7 @@
       "kind": "point",
       "position": [
         43,
-        36
-      ],
-      "block": "01"
-    },
-    {
-      "name": "Old point safe neighborhood continuation",
-      "kind": "point",
-      "position": [
-        43,
-        37
+        35
       ],
       "block": "01"
     },
@@ -10052,22 +9755,11 @@
       "block": "11"
     },
     {
-      "name": "Lakewalk outfitter one-row street apron",
-      "kind": "block_rect",
-      "bounds": [
-        57,
-        11,
-        60,
-        12
-      ],
-      "block": "01"
-    },
-    {
       "name": "Lakeside field clinic full facade",
       "kind": "point",
       "position": [
         50,
-        13
+        11
       ],
       "block": "18"
     },
@@ -10076,7 +9768,7 @@
       "kind": "point",
       "position": [
         51,
-        13
+        11
       ],
       "block": "1f"
     },
@@ -10085,7 +9777,7 @@
       "kind": "point",
       "position": [
         52,
-        13
+        11
       ],
       "block": "19"
     },
@@ -10094,7 +9786,7 @@
       "kind": "point",
       "position": [
         50,
-        14
+        12
       ],
       "block": "10"
     },
@@ -10103,7 +9795,7 @@
       "kind": "point",
       "position": [
         51,
-        14
+        12
       ],
       "block": "24"
     },
@@ -10112,7 +9804,7 @@
       "kind": "point",
       "position": [
         52,
-        14
+        12
       ],
       "block": "11"
     },
@@ -10121,9 +9813,9 @@
       "kind": "block_rect",
       "bounds": [
         50,
-        15,
+        13,
         53,
-        16
+        14
       ],
       "block": "01"
     },
@@ -10132,7 +9824,7 @@
       "kind": "point",
       "position": [
         50,
-        19
+        17
       ],
       "block": "82"
     },
@@ -10141,7 +9833,7 @@
       "kind": "point",
       "position": [
         51,
-        19
+        17
       ],
       "block": "83"
     },
@@ -10150,7 +9842,7 @@
       "kind": "point",
       "position": [
         52,
-        19
+        17
       ],
       "block": "83"
     },
@@ -10159,7 +9851,7 @@
       "kind": "point",
       "position": [
         53,
-        19
+        17
       ],
       "block": "84"
     },
@@ -10168,7 +9860,7 @@
       "kind": "point",
       "position": [
         50,
-        20
+        18
       ],
       "block": "85"
     },
@@ -10177,7 +9869,7 @@
       "kind": "point",
       "position": [
         51,
-        20
+        18
       ],
       "block": "87"
     },
@@ -10186,7 +9878,7 @@
       "kind": "point",
       "position": [
         52,
-        20
+        18
       ],
       "block": "86"
     },
@@ -10195,7 +9887,7 @@
       "kind": "point",
       "position": [
         53,
-        20
+        18
       ],
       "block": "88"
     },
@@ -10204,9 +9896,9 @@
       "kind": "block_rect",
       "bounds": [
         50,
-        21,
+        19,
         54,
-        22
+        20
       ],
       "block": "06"
     },
@@ -10215,7 +9907,7 @@
       "kind": "point",
       "position": [
         2,
-        14
+        12
       ],
       "block": "82"
     },
@@ -10224,7 +9916,7 @@
       "kind": "point",
       "position": [
         3,
-        14
+        12
       ],
       "block": "83"
     },
@@ -10233,7 +9925,7 @@
       "kind": "point",
       "position": [
         4,
-        14
+        12
       ],
       "block": "83"
     },
@@ -10242,7 +9934,7 @@
       "kind": "point",
       "position": [
         5,
-        14
+        12
       ],
       "block": "83"
     },
@@ -10251,7 +9943,7 @@
       "kind": "point",
       "position": [
         6,
-        14
+        12
       ],
       "block": "84"
     },
@@ -10260,7 +9952,7 @@
       "kind": "point",
       "position": [
         2,
-        15
+        13
       ],
       "block": "89"
     },
@@ -10269,7 +9961,7 @@
       "kind": "point",
       "position": [
         3,
-        15
+        13
       ],
       "block": "8a"
     },
@@ -10278,7 +9970,7 @@
       "kind": "point",
       "position": [
         4,
-        15
+        13
       ],
       "block": "8a"
     },
@@ -10287,7 +9979,7 @@
       "kind": "point",
       "position": [
         5,
-        15
+        13
       ],
       "block": "8a"
     },
@@ -10296,7 +9988,7 @@
       "kind": "point",
       "position": [
         6,
-        15
+        13
       ],
       "block": "8b"
     },
@@ -10305,7 +9997,7 @@
       "kind": "point",
       "position": [
         2,
-        16
+        14
       ],
       "block": "85"
     },
@@ -10314,7 +10006,7 @@
       "kind": "point",
       "position": [
         3,
-        16
+        14
       ],
       "block": "87"
     },
@@ -10323,7 +10015,7 @@
       "kind": "point",
       "position": [
         4,
-        16
+        14
       ],
       "block": "86"
     },
@@ -10332,7 +10024,7 @@
       "kind": "point",
       "position": [
         5,
-        16
+        14
       ],
       "block": "86"
     },
@@ -10341,7 +10033,7 @@
       "kind": "point",
       "position": [
         6,
-        16
+        14
       ],
       "block": "88"
     },
@@ -10350,9 +10042,9 @@
       "kind": "block_rect",
       "bounds": [
         2,
-        17,
+        15,
         7,
-        18
+        16
       ],
       "block": "06"
     },
@@ -10361,7 +10053,7 @@
       "kind": "point",
       "position": [
         8,
-        18
+        16
       ],
       "block": "82"
     },
@@ -10370,7 +10062,7 @@
       "kind": "point",
       "position": [
         9,
-        18
+        16
       ],
       "block": "83"
     },
@@ -10379,7 +10071,7 @@
       "kind": "point",
       "position": [
         10,
-        18
+        16
       ],
       "block": "83"
     },
@@ -10388,7 +10080,7 @@
       "kind": "point",
       "position": [
         11,
-        18
+        16
       ],
       "block": "83"
     },
@@ -10397,7 +10089,7 @@
       "kind": "point",
       "position": [
         12,
-        18
+        16
       ],
       "block": "83"
     },
@@ -10406,7 +10098,7 @@
       "kind": "point",
       "position": [
         13,
-        18
+        16
       ],
       "block": "84"
     },
@@ -10415,7 +10107,7 @@
       "kind": "point",
       "position": [
         8,
-        19
+        17
       ],
       "block": "89"
     },
@@ -10424,7 +10116,7 @@
       "kind": "point",
       "position": [
         9,
-        19
+        17
       ],
       "block": "8a"
     },
@@ -10433,7 +10125,7 @@
       "kind": "point",
       "position": [
         10,
-        19
+        17
       ],
       "block": "8a"
     },
@@ -10442,7 +10134,7 @@
       "kind": "point",
       "position": [
         11,
-        19
+        17
       ],
       "block": "8a"
     },
@@ -10451,7 +10143,7 @@
       "kind": "point",
       "position": [
         12,
-        19
+        17
       ],
       "block": "8a"
     },
@@ -10460,7 +10152,7 @@
       "kind": "point",
       "position": [
         13,
-        19
+        17
       ],
       "block": "8b"
     },
@@ -10469,7 +10161,7 @@
       "kind": "point",
       "position": [
         8,
-        20
+        18
       ],
       "block": "85"
     },
@@ -10478,7 +10170,7 @@
       "kind": "point",
       "position": [
         9,
-        20
+        18
       ],
       "block": "87"
     },
@@ -10487,7 +10179,7 @@
       "kind": "point",
       "position": [
         10,
-        20
+        18
       ],
       "block": "86"
     },
@@ -10496,7 +10188,7 @@
       "kind": "point",
       "position": [
         11,
-        20
+        18
       ],
       "block": "86"
     },
@@ -10505,7 +10197,7 @@
       "kind": "point",
       "position": [
         12,
-        20
+        18
       ],
       "block": "86"
     },
@@ -10514,7 +10206,7 @@
       "kind": "point",
       "position": [
         13,
-        20
+        18
       ],
       "block": "88"
     },
@@ -10523,9 +10215,9 @@
       "kind": "block_rect",
       "bounds": [
         8,
-        21,
+        19,
         14,
-        22
+        20
       ],
       "block": "06"
     },
@@ -10534,7 +10226,7 @@
       "kind": "point",
       "position": [
         11,
-        22
+        20
       ],
       "block": "82"
     },
@@ -10543,7 +10235,7 @@
       "kind": "point",
       "position": [
         12,
-        22
+        20
       ],
       "block": "83"
     },
@@ -10552,7 +10244,7 @@
       "kind": "point",
       "position": [
         13,
-        22
+        20
       ],
       "block": "84"
     },
@@ -10561,7 +10253,7 @@
       "kind": "point",
       "position": [
         11,
-        23
+        21
       ],
       "block": "85"
     },
@@ -10570,7 +10262,7 @@
       "kind": "point",
       "position": [
         12,
-        23
+        21
       ],
       "block": "87"
     },
@@ -10579,7 +10271,7 @@
       "kind": "point",
       "position": [
         13,
-        23
+        21
       ],
       "block": "88"
     },
@@ -10588,9 +10280,9 @@
       "kind": "block_rect",
       "bounds": [
         11,
-        24,
+        22,
         14,
-        25
+        23
       ],
       "block": "06"
     },
@@ -10599,7 +10291,7 @@
       "kind": "point",
       "position": [
         2,
-        26
+        24
       ],
       "block": "82"
     },
@@ -10608,7 +10300,7 @@
       "kind": "point",
       "position": [
         3,
-        26
+        24
       ],
       "block": "83"
     },
@@ -10617,7 +10309,7 @@
       "kind": "point",
       "position": [
         4,
-        26
+        24
       ],
       "block": "83"
     },
@@ -10626,7 +10318,7 @@
       "kind": "point",
       "position": [
         5,
-        26
+        24
       ],
       "block": "84"
     },
@@ -10635,7 +10327,7 @@
       "kind": "point",
       "position": [
         2,
-        27
+        25
       ],
       "block": "85"
     },
@@ -10644,7 +10336,7 @@
       "kind": "point",
       "position": [
         3,
-        27
+        25
       ],
       "block": "87"
     },
@@ -10653,7 +10345,7 @@
       "kind": "point",
       "position": [
         4,
-        27
+        25
       ],
       "block": "86"
     },
@@ -10662,7 +10354,7 @@
       "kind": "point",
       "position": [
         5,
-        27
+        25
       ],
       "block": "88"
     },
@@ -10671,9 +10363,9 @@
       "kind": "block_rect",
       "bounds": [
         2,
-        28,
+        26,
         6,
-        29
+        27
       ],
       "block": "06"
     },
@@ -10682,7 +10374,7 @@
       "kind": "point",
       "position": [
         11,
-        29
+        27
       ],
       "block": "18"
     },
@@ -10691,7 +10383,7 @@
       "kind": "point",
       "position": [
         12,
-        29
+        27
       ],
       "block": "19"
     },
@@ -10700,7 +10392,7 @@
       "kind": "point",
       "position": [
         11,
-        30
+        28
       ],
       "block": "1a"
     },
@@ -10709,7 +10401,7 @@
       "kind": "point",
       "position": [
         12,
-        30
+        28
       ],
       "block": "1b"
     },
@@ -10718,9 +10410,9 @@
       "kind": "block_rect",
       "bounds": [
         11,
-        31,
+        29,
         13,
-        32
+        30
       ],
       "block": "01"
     },
@@ -10729,7 +10421,7 @@
       "kind": "point",
       "position": [
         52,
-        25
+        23
       ],
       "block": "18"
     },
@@ -10738,7 +10430,7 @@
       "kind": "point",
       "position": [
         53,
-        25
+        23
       ],
       "block": "1f"
     },
@@ -10747,7 +10439,7 @@
       "kind": "point",
       "position": [
         54,
-        25
+        23
       ],
       "block": "1f"
     },
@@ -10756,7 +10448,7 @@
       "kind": "point",
       "position": [
         55,
-        25
+        23
       ],
       "block": "1f"
     },
@@ -10765,7 +10457,7 @@
       "kind": "point",
       "position": [
         56,
-        25
+        23
       ],
       "block": "1f"
     },
@@ -10774,7 +10466,7 @@
       "kind": "point",
       "position": [
         57,
-        25
+        23
       ],
       "block": "19"
     },
@@ -10783,6 +10475,114 @@
       "kind": "point",
       "position": [
         52,
+        24
+      ],
+      "block": "27"
+    },
+    {
+      "name": "Maritime co-op full facade",
+      "kind": "point",
+      "position": [
+        53,
+        24
+      ],
+      "block": "23"
+    },
+    {
+      "name": "Maritime co-op full facade",
+      "kind": "point",
+      "position": [
+        54,
+        24
+      ],
+      "block": "23"
+    },
+    {
+      "name": "Maritime co-op full facade",
+      "kind": "point",
+      "position": [
+        55,
+        24
+      ],
+      "block": "23"
+    },
+    {
+      "name": "Maritime co-op full facade",
+      "kind": "point",
+      "position": [
+        56,
+        24
+      ],
+      "block": "23"
+    },
+    {
+      "name": "Maritime co-op full facade",
+      "kind": "point",
+      "position": [
+        57,
+        24
+      ],
+      "block": "28"
+    },
+    {
+      "name": "Maritime co-op full facade",
+      "kind": "point",
+      "position": [
+        52,
+        25
+      ],
+      "block": "27"
+    },
+    {
+      "name": "Maritime co-op full facade",
+      "kind": "point",
+      "position": [
+        53,
+        25
+      ],
+      "block": "23"
+    },
+    {
+      "name": "Maritime co-op full facade",
+      "kind": "point",
+      "position": [
+        54,
+        25
+      ],
+      "block": "23"
+    },
+    {
+      "name": "Maritime co-op full facade",
+      "kind": "point",
+      "position": [
+        55,
+        25
+      ],
+      "block": "23"
+    },
+    {
+      "name": "Maritime co-op full facade",
+      "kind": "point",
+      "position": [
+        56,
+        25
+      ],
+      "block": "23"
+    },
+    {
+      "name": "Maritime co-op full facade",
+      "kind": "point",
+      "position": [
+        57,
+        25
+      ],
+      "block": "28"
+    },
+    {
+      "name": "Maritime co-op full facade",
+      "kind": "point",
+      "position": [
+        52,
         26
       ],
       "block": "27"
@@ -10892,114 +10692,6 @@
       "position": [
         52,
         28
-      ],
-      "block": "27"
-    },
-    {
-      "name": "Maritime co-op full facade",
-      "kind": "point",
-      "position": [
-        53,
-        28
-      ],
-      "block": "23"
-    },
-    {
-      "name": "Maritime co-op full facade",
-      "kind": "point",
-      "position": [
-        54,
-        28
-      ],
-      "block": "23"
-    },
-    {
-      "name": "Maritime co-op full facade",
-      "kind": "point",
-      "position": [
-        55,
-        28
-      ],
-      "block": "23"
-    },
-    {
-      "name": "Maritime co-op full facade",
-      "kind": "point",
-      "position": [
-        56,
-        28
-      ],
-      "block": "23"
-    },
-    {
-      "name": "Maritime co-op full facade",
-      "kind": "point",
-      "position": [
-        57,
-        28
-      ],
-      "block": "28"
-    },
-    {
-      "name": "Maritime co-op full facade",
-      "kind": "point",
-      "position": [
-        52,
-        29
-      ],
-      "block": "27"
-    },
-    {
-      "name": "Maritime co-op full facade",
-      "kind": "point",
-      "position": [
-        53,
-        29
-      ],
-      "block": "23"
-    },
-    {
-      "name": "Maritime co-op full facade",
-      "kind": "point",
-      "position": [
-        54,
-        29
-      ],
-      "block": "23"
-    },
-    {
-      "name": "Maritime co-op full facade",
-      "kind": "point",
-      "position": [
-        55,
-        29
-      ],
-      "block": "23"
-    },
-    {
-      "name": "Maritime co-op full facade",
-      "kind": "point",
-      "position": [
-        56,
-        29
-      ],
-      "block": "23"
-    },
-    {
-      "name": "Maritime co-op full facade",
-      "kind": "point",
-      "position": [
-        57,
-        29
-      ],
-      "block": "28"
-    },
-    {
-      "name": "Maritime co-op full facade",
-      "kind": "point",
-      "position": [
-        52,
-        30
       ],
       "block": "10"
     },
@@ -11008,7 +10700,7 @@
       "kind": "point",
       "position": [
         53,
-        30
+        28
       ],
       "block": "24"
     },
@@ -11017,7 +10709,7 @@
       "kind": "point",
       "position": [
         54,
-        30
+        28
       ],
       "block": "23"
     },
@@ -11026,7 +10718,7 @@
       "kind": "point",
       "position": [
         55,
-        30
+        28
       ],
       "block": "23"
     },
@@ -11035,7 +10727,7 @@
       "kind": "point",
       "position": [
         56,
-        30
+        28
       ],
       "block": "23"
     },
@@ -11044,7 +10736,7 @@
       "kind": "point",
       "position": [
         57,
-        30
+        28
       ],
       "block": "11"
     },
@@ -11053,9 +10745,9 @@
       "kind": "block_rect",
       "bounds": [
         52,
-        31,
+        29,
         58,
-        32
+        30
       ],
       "block": "01"
     },
@@ -11064,7 +10756,7 @@
       "kind": "point",
       "position": [
         3,
-        33
+        31
       ],
       "block": "82"
     },
@@ -11073,7 +10765,7 @@
       "kind": "point",
       "position": [
         4,
-        33
+        31
       ],
       "block": "83"
     },
@@ -11082,7 +10774,7 @@
       "kind": "point",
       "position": [
         5,
-        33
+        31
       ],
       "block": "84"
     },
@@ -11091,7 +10783,7 @@
       "kind": "point",
       "position": [
         3,
-        34
+        32
       ],
       "block": "85"
     },
@@ -11100,7 +10792,7 @@
       "kind": "point",
       "position": [
         4,
-        34
+        32
       ],
       "block": "87"
     },
@@ -11109,7 +10801,7 @@
       "kind": "point",
       "position": [
         5,
-        34
+        32
       ],
       "block": "88"
     },
@@ -11118,9 +10810,9 @@
       "kind": "block_rect",
       "bounds": [
         3,
-        35,
+        33,
         6,
-        36
+        34
       ],
       "block": "06"
     },
@@ -11129,7 +10821,7 @@
       "kind": "point",
       "position": [
         9,
-        34
+        32
       ],
       "block": "18"
     },
@@ -11138,7 +10830,7 @@
       "kind": "point",
       "position": [
         10,
-        34
+        32
       ],
       "block": "1f"
     },
@@ -11147,7 +10839,7 @@
       "kind": "point",
       "position": [
         11,
-        34
+        32
       ],
       "block": "1f"
     },
@@ -11156,7 +10848,7 @@
       "kind": "point",
       "position": [
         12,
-        34
+        32
       ],
       "block": "19"
     },
@@ -11165,7 +10857,7 @@
       "kind": "point",
       "position": [
         9,
-        35
+        33
       ],
       "block": "27"
     },
@@ -11174,7 +10866,7 @@
       "kind": "point",
       "position": [
         10,
-        35
+        33
       ],
       "block": "23"
     },
@@ -11183,7 +10875,7 @@
       "kind": "point",
       "position": [
         11,
-        35
+        33
       ],
       "block": "23"
     },
@@ -11192,7 +10884,7 @@
       "kind": "point",
       "position": [
         12,
-        35
+        33
       ],
       "block": "28"
     },
@@ -11201,7 +10893,7 @@
       "kind": "point",
       "position": [
         9,
-        36
+        34
       ],
       "block": "10"
     },
@@ -11210,7 +10902,7 @@
       "kind": "point",
       "position": [
         10,
-        36
+        34
       ],
       "block": "24"
     },
@@ -11219,7 +10911,7 @@
       "kind": "point",
       "position": [
         11,
-        36
+        34
       ],
       "block": "23"
     },
@@ -11228,7 +10920,7 @@
       "kind": "point",
       "position": [
         12,
-        36
+        34
       ],
       "block": "11"
     },
@@ -11237,9 +10929,9 @@
       "kind": "block_rect",
       "bounds": [
         9,
-        37,
+        35,
         13,
-        38
+        36
       ],
       "block": "01"
     },
@@ -11248,7 +10940,7 @@
       "kind": "point",
       "position": [
         5,
-        39
+        37
       ],
       "block": "18"
     },
@@ -11257,7 +10949,7 @@
       "kind": "point",
       "position": [
         6,
-        39
+        37
       ],
       "block": "1f"
     },
@@ -11266,7 +10958,7 @@
       "kind": "point",
       "position": [
         7,
-        39
+        37
       ],
       "block": "19"
     },
@@ -11275,7 +10967,7 @@
       "kind": "point",
       "position": [
         5,
-        40
+        38
       ],
       "block": "10"
     },
@@ -11284,7 +10976,7 @@
       "kind": "point",
       "position": [
         6,
-        40
+        38
       ],
       "block": "24"
     },
@@ -11293,7 +10985,7 @@
       "kind": "point",
       "position": [
         7,
-        40
+        38
       ],
       "block": "11"
     },
@@ -11302,9 +10994,9 @@
       "kind": "block_rect",
       "bounds": [
         5,
-        41,
+        39,
         8,
-        42
+        40
       ],
       "block": "01"
     },
@@ -11313,7 +11005,7 @@
       "kind": "point",
       "position": [
         11,
-        42
+        40
       ],
       "block": "14"
     },
@@ -11322,7 +11014,7 @@
       "kind": "point",
       "position": [
         12,
-        42
+        40
       ],
       "block": "15"
     },
@@ -11331,9 +11023,9 @@
       "kind": "block_rect",
       "bounds": [
         11,
-        43,
+        41,
         13,
-        44
+        42
       ],
       "block": "01"
     },
@@ -11342,7 +11034,7 @@
       "kind": "point",
       "position": [
         40,
-        36
+        34
       ],
       "block": "18"
     },
@@ -11351,7 +11043,7 @@
       "kind": "point",
       "position": [
         41,
-        36
+        34
       ],
       "block": "19"
     },
@@ -11360,7 +11052,7 @@
       "kind": "point",
       "position": [
         40,
-        37
+        35
       ],
       "block": "1a"
     },
@@ -11369,7 +11061,7 @@
       "kind": "point",
       "position": [
         41,
-        37
+        35
       ],
       "block": "1b"
     },
@@ -11378,9 +11070,9 @@
       "kind": "block_rect",
       "bounds": [
         40,
-        38,
+        36,
         42,
-        39
+        37
       ],
       "block": "01"
     },
@@ -11389,7 +11081,7 @@
       "kind": "point",
       "position": [
         44,
-        39
+        37
       ],
       "block": "18"
     },
@@ -11398,7 +11090,7 @@
       "kind": "point",
       "position": [
         45,
-        39
+        37
       ],
       "block": "1f"
     },
@@ -11407,7 +11099,7 @@
       "kind": "point",
       "position": [
         46,
-        39
+        37
       ],
       "block": "19"
     },
@@ -11416,7 +11108,7 @@
       "kind": "point",
       "position": [
         44,
-        40
+        38
       ],
       "block": "10"
     },
@@ -11425,7 +11117,7 @@
       "kind": "point",
       "position": [
         45,
-        40
+        38
       ],
       "block": "24"
     },
@@ -11434,7 +11126,7 @@
       "kind": "point",
       "position": [
         46,
-        40
+        38
       ],
       "block": "11"
     },
@@ -11443,9 +11135,9 @@
       "kind": "block_rect",
       "bounds": [
         44,
-        41,
+        39,
         47,
-        42
+        40
       ],
       "block": "01"
     },
@@ -11454,7 +11146,7 @@
       "kind": "point",
       "position": [
         49,
-        40
+        38
       ],
       "block": "14"
     },
@@ -11463,7 +11155,7 @@
       "kind": "point",
       "position": [
         50,
-        40
+        38
       ],
       "block": "15"
     },
@@ -11472,9 +11164,9 @@
       "kind": "block_rect",
       "bounds": [
         49,
-        41,
+        39,
         51,
-        42
+        40
       ],
       "block": "01"
     },
@@ -11483,7 +11175,7 @@
       "kind": "point",
       "position": [
         52,
-        41
+        39
       ],
       "block": "18"
     },
@@ -11492,7 +11184,7 @@
       "kind": "point",
       "position": [
         53,
-        41
+        39
       ],
       "block": "1f"
     },
@@ -11501,7 +11193,7 @@
       "kind": "point",
       "position": [
         54,
-        41
+        39
       ],
       "block": "1f"
     },
@@ -11510,7 +11202,7 @@
       "kind": "point",
       "position": [
         55,
-        41
+        39
       ],
       "block": "19"
     },
@@ -11519,7 +11211,7 @@
       "kind": "point",
       "position": [
         52,
-        42
+        40
       ],
       "block": "27"
     },
@@ -11528,7 +11220,7 @@
       "kind": "point",
       "position": [
         53,
-        42
+        40
       ],
       "block": "23"
     },
@@ -11537,7 +11229,7 @@
       "kind": "point",
       "position": [
         54,
-        42
+        40
       ],
       "block": "23"
     },
@@ -11546,7 +11238,7 @@
       "kind": "point",
       "position": [
         55,
-        42
+        40
       ],
       "block": "28"
     },
@@ -11555,7 +11247,7 @@
       "kind": "point",
       "position": [
         52,
-        43
+        41
       ],
       "block": "10"
     },
@@ -11564,7 +11256,7 @@
       "kind": "point",
       "position": [
         53,
-        43
+        41
       ],
       "block": "24"
     },
@@ -11573,7 +11265,7 @@
       "kind": "point",
       "position": [
         54,
-        43
+        41
       ],
       "block": "23"
     },
@@ -11582,7 +11274,7 @@
       "kind": "point",
       "position": [
         55,
-        43
+        41
       ],
       "block": "11"
     },
@@ -11591,9 +11283,9 @@
       "kind": "block_rect",
       "bounds": [
         52,
-        44,
+        42,
         56,
-        45
+        43
       ],
       "block": "01"
     },
@@ -11602,7 +11294,7 @@
       "kind": "point",
       "position": [
         58,
-        43
+        41
       ],
       "block": "18"
     },
@@ -11611,7 +11303,7 @@
       "kind": "point",
       "position": [
         59,
-        43
+        41
       ],
       "block": "19"
     },
@@ -11620,7 +11312,7 @@
       "kind": "point",
       "position": [
         58,
-        44
+        42
       ],
       "block": "1a"
     },
@@ -11629,7 +11321,7 @@
       "kind": "point",
       "position": [
         59,
-        44
+        42
       ],
       "block": "1b"
     },
@@ -11638,9 +11330,9 @@
       "kind": "block_rect",
       "bounds": [
         58,
-        45,
+        43,
         60,
-        46
+        44
       ],
       "block": "01"
     },
@@ -11649,7 +11341,7 @@
       "kind": "point",
       "position": [
         48,
-        43
+        41
       ],
       "block": "14"
     },
@@ -11658,7 +11350,7 @@
       "kind": "point",
       "position": [
         49,
-        43
+        41
       ],
       "block": "15"
     },
@@ -11667,9 +11359,9 @@
       "kind": "block_rect",
       "bounds": [
         48,
-        44,
+        42,
         50,
-        45
+        43
       ],
       "block": "01"
     },
@@ -11845,38 +11537,11 @@
       "block": "01"
     },
     {
-      "name": "Outfitter street",
-      "kind": "point",
-      "position": [
-        57,
-        11
-      ],
-      "block": "01"
-    },
-    {
-      "name": "Outfitter street",
-      "kind": "point",
-      "position": [
-        58,
-        11
-      ],
-      "block": "01"
-    },
-    {
-      "name": "Outfitter street",
-      "kind": "point",
-      "position": [
-        59,
-        11
-      ],
-      "block": "01"
-    },
-    {
       "name": "Field clinic street",
       "kind": "point",
       "position": [
         50,
-        15
+        13
       ],
       "block": "01"
     },
@@ -11885,7 +11550,7 @@
       "kind": "point",
       "position": [
         51,
-        15
+        13
       ],
       "block": "01"
     },
@@ -11894,7 +11559,7 @@
       "kind": "point",
       "position": [
         52,
-        15
+        13
       ],
       "block": "01"
     },
@@ -11903,7 +11568,7 @@
       "kind": "point",
       "position": [
         53,
-        15
+        13
       ],
       "block": "01"
     },
@@ -11912,7 +11577,7 @@
       "kind": "point",
       "position": [
         54,
-        15
+        13
       ],
       "block": "01"
     },
@@ -11921,7 +11586,7 @@
       "kind": "point",
       "position": [
         50,
-        21
+        19
       ],
       "block": "01"
     },
@@ -11930,7 +11595,7 @@
       "kind": "point",
       "position": [
         51,
-        21
+        19
       ],
       "block": "01"
     },
@@ -11939,7 +11604,7 @@
       "kind": "point",
       "position": [
         52,
-        21
+        19
       ],
       "block": "01"
     },
@@ -11948,7 +11613,7 @@
       "kind": "point",
       "position": [
         53,
-        21
+        19
       ],
       "block": "01"
     },
@@ -11957,7 +11622,7 @@
       "kind": "point",
       "position": [
         54,
-        21
+        19
       ],
       "block": "01"
     },
@@ -11966,7 +11631,7 @@
       "kind": "point",
       "position": [
         3,
-        17
+        15
       ],
       "block": "01"
     },
@@ -11975,7 +11640,7 @@
       "kind": "point",
       "position": [
         4,
-        17
+        15
       ],
       "block": "01"
     },
@@ -11984,7 +11649,7 @@
       "kind": "point",
       "position": [
         5,
-        17
+        15
       ],
       "block": "01"
     },
@@ -11993,7 +11658,7 @@
       "kind": "point",
       "position": [
         6,
-        17
+        15
       ],
       "block": "01"
     },
@@ -12002,7 +11667,7 @@
       "kind": "point",
       "position": [
         7,
-        17
+        15
       ],
       "block": "01"
     },
@@ -12011,7 +11676,7 @@
       "kind": "point",
       "position": [
         8,
-        21
+        19
       ],
       "block": "01"
     },
@@ -12020,7 +11685,7 @@
       "kind": "point",
       "position": [
         9,
-        21
+        19
       ],
       "block": "01"
     },
@@ -12029,7 +11694,7 @@
       "kind": "point",
       "position": [
         10,
-        21
+        19
       ],
       "block": "01"
     },
@@ -12038,7 +11703,7 @@
       "kind": "point",
       "position": [
         11,
-        21
+        19
       ],
       "block": "01"
     },
@@ -12047,7 +11712,7 @@
       "kind": "point",
       "position": [
         12,
-        21
+        19
       ],
       "block": "01"
     },
@@ -12056,7 +11721,7 @@
       "kind": "point",
       "position": [
         13,
-        21
+        19
       ],
       "block": "01"
     },
@@ -12065,7 +11730,7 @@
       "kind": "point",
       "position": [
         11,
-        24
+        22
       ],
       "block": "01"
     },
@@ -12074,7 +11739,7 @@
       "kind": "point",
       "position": [
         12,
-        24
+        22
       ],
       "block": "01"
     },
@@ -12083,7 +11748,7 @@
       "kind": "point",
       "position": [
         13,
-        24
+        22
       ],
       "block": "01"
     },
@@ -12092,7 +11757,7 @@
       "kind": "point",
       "position": [
         2,
-        28
+        26
       ],
       "block": "01"
     },
@@ -12101,7 +11766,7 @@
       "kind": "point",
       "position": [
         3,
-        28
+        26
       ],
       "block": "01"
     },
@@ -12110,7 +11775,7 @@
       "kind": "point",
       "position": [
         4,
-        28
+        26
       ],
       "block": "01"
     },
@@ -12119,7 +11784,7 @@
       "kind": "point",
       "position": [
         5,
-        28
+        26
       ],
       "block": "01"
     },
@@ -12128,7 +11793,7 @@
       "kind": "point",
       "position": [
         6,
-        28
+        26
       ],
       "block": "01"
     },
@@ -12137,7 +11802,7 @@
       "kind": "point",
       "position": [
         7,
-        28
+        26
       ],
       "block": "01"
     },
@@ -12146,7 +11811,7 @@
       "kind": "point",
       "position": [
         11,
-        31
+        29
       ],
       "block": "01"
     },
@@ -12155,7 +11820,7 @@
       "kind": "point",
       "position": [
         12,
-        31
+        29
       ],
       "block": "01"
     },
@@ -12164,7 +11829,7 @@
       "kind": "point",
       "position": [
         13,
-        31
+        29
       ],
       "block": "01"
     },
@@ -12173,7 +11838,7 @@
       "kind": "point",
       "position": [
         3,
-        35
+        33
       ],
       "block": "01"
     },
@@ -12182,7 +11847,7 @@
       "kind": "point",
       "position": [
         4,
-        35
+        33
       ],
       "block": "01"
     },
@@ -12191,7 +11856,7 @@
       "kind": "point",
       "position": [
         5,
-        35
+        33
       ],
       "block": "01"
     },
@@ -12200,7 +11865,7 @@
       "kind": "point",
       "position": [
         9,
-        37
+        35
       ],
       "block": "01"
     },
@@ -12209,7 +11874,7 @@
       "kind": "point",
       "position": [
         10,
-        37
+        35
       ],
       "block": "01"
     },
@@ -12218,7 +11883,7 @@
       "kind": "point",
       "position": [
         11,
-        37
+        35
       ],
       "block": "01"
     },
@@ -12227,7 +11892,7 @@
       "kind": "point",
       "position": [
         12,
-        37
+        35
       ],
       "block": "01"
     },
@@ -12236,7 +11901,7 @@
       "kind": "point",
       "position": [
         5,
-        41
+        39
       ],
       "block": "01"
     },
@@ -12245,7 +11910,7 @@
       "kind": "point",
       "position": [
         6,
-        41
+        39
       ],
       "block": "01"
     },
@@ -12254,7 +11919,7 @@
       "kind": "point",
       "position": [
         7,
-        41
+        39
       ],
       "block": "01"
     },
@@ -12263,7 +11928,7 @@
       "kind": "point",
       "position": [
         40,
-        38
+        36
       ],
       "block": "01"
     },
@@ -12272,7 +11937,7 @@
       "kind": "point",
       "position": [
         41,
-        38
+        36
       ],
       "block": "01"
     },
@@ -12281,7 +11946,7 @@
       "kind": "point",
       "position": [
         42,
-        38
+        36
       ],
       "block": "01"
     },
@@ -12290,7 +11955,7 @@
       "kind": "point",
       "position": [
         43,
-        38
+        36
       ],
       "block": "01"
     },
@@ -12299,7 +11964,7 @@
       "kind": "point",
       "position": [
         44,
-        41
+        39
       ],
       "block": "01"
     },
@@ -12308,7 +11973,7 @@
       "kind": "point",
       "position": [
         45,
-        41
+        39
       ],
       "block": "01"
     },
@@ -12317,7 +11982,7 @@
       "kind": "point",
       "position": [
         46,
-        41
+        39
       ],
       "block": "01"
     },
@@ -12326,7 +11991,7 @@
       "kind": "point",
       "position": [
         47,
-        41
+        39
       ],
       "block": "01"
     },
@@ -12335,7 +12000,7 @@
       "kind": "point",
       "position": [
         49,
-        41
+        39
       ],
       "block": "01"
     },
@@ -12344,7 +12009,7 @@
       "kind": "point",
       "position": [
         50,
-        41
+        39
       ],
       "block": "01"
     },
@@ -12353,7 +12018,7 @@
       "kind": "point",
       "position": [
         51,
-        41
+        39
       ],
       "block": "01"
     },
@@ -12362,7 +12027,7 @@
       "kind": "point",
       "position": [
         48,
-        44
+        42
       ],
       "block": "01"
     },
@@ -12371,7 +12036,7 @@
       "kind": "point",
       "position": [
         49,
-        44
+        42
       ],
       "block": "01"
     },
@@ -12380,7 +12045,7 @@
       "kind": "point",
       "position": [
         50,
-        44
+        42
       ],
       "block": "01"
     },
@@ -12389,7 +12054,7 @@
       "kind": "point",
       "position": [
         51,
-        44
+        42
       ],
       "block": "01"
     },
@@ -12398,7 +12063,7 @@
       "kind": "point",
       "position": [
         52,
-        44
+        42
       ],
       "block": "01"
     },
@@ -12407,7 +12072,7 @@
       "kind": "point",
       "position": [
         53,
-        44
+        42
       ],
       "block": "01"
     },
@@ -12416,7 +12081,7 @@
       "kind": "point",
       "position": [
         54,
-        44
+        42
       ],
       "block": "01"
     },
@@ -12425,7 +12090,7 @@
       "kind": "point",
       "position": [
         55,
-        44
+        42
       ],
       "block": "01"
     },
@@ -12434,7 +12099,7 @@
       "kind": "point",
       "position": [
         56,
-        44
+        42
       ],
       "block": "01"
     },
@@ -12443,7 +12108,7 @@
       "kind": "point",
       "position": [
         57,
-        44
+        42
       ],
       "block": "01"
     },
@@ -12452,7 +12117,7 @@
       "kind": "point",
       "position": [
         58,
-        45
+        43
       ],
       "block": "01"
     },
@@ -12461,7 +12126,7 @@
       "kind": "point",
       "position": [
         59,
-        45
+        43
       ],
       "block": "01"
     },
@@ -12470,7 +12135,7 @@
       "kind": "point",
       "position": [
         60,
-        45
+        43
       ],
       "block": "01"
     },
@@ -12479,7 +12144,7 @@
       "kind": "point",
       "position": [
         57,
-        45
+        43
       ],
       "block": "01"
     },
@@ -12488,7 +12153,7 @@
       "kind": "point",
       "position": [
         13,
-        38
+        36
       ],
       "block": "41"
     },
@@ -12497,7 +12162,7 @@
       "kind": "point",
       "position": [
         13,
-        39
+        37
       ],
       "block": "01"
     },
@@ -12506,7 +12171,7 @@
       "kind": "point",
       "position": [
         13,
-        40
+        38
       ],
       "block": "49"
     },
@@ -12515,7 +12180,7 @@
       "kind": "point",
       "position": [
         14,
-        38
+        36
       ],
       "block": "41"
     },
@@ -12524,7 +12189,7 @@
       "kind": "point",
       "position": [
         14,
-        39
+        37
       ],
       "block": "01"
     },
@@ -12533,7 +12198,7 @@
       "kind": "point",
       "position": [
         14,
-        40
+        38
       ],
       "block": "49"
     },
@@ -12542,7 +12207,7 @@
       "kind": "point",
       "position": [
         15,
-        38
+        36
       ],
       "block": "41"
     },
@@ -12551,7 +12216,7 @@
       "kind": "point",
       "position": [
         15,
-        39
+        37
       ],
       "block": "01"
     },
@@ -12560,7 +12225,7 @@
       "kind": "point",
       "position": [
         15,
-        40
+        38
       ],
       "block": "49"
     },
@@ -12569,7 +12234,7 @@
       "kind": "point",
       "position": [
         16,
-        38
+        36
       ],
       "block": "41"
     },
@@ -12578,7 +12243,7 @@
       "kind": "point",
       "position": [
         16,
-        39
+        37
       ],
       "block": "01"
     },
@@ -12587,7 +12252,7 @@
       "kind": "point",
       "position": [
         16,
-        40
+        38
       ],
       "block": "49"
     },
@@ -12596,7 +12261,7 @@
       "kind": "point",
       "position": [
         17,
-        38
+        36
       ],
       "block": "41"
     },
@@ -12605,7 +12270,7 @@
       "kind": "point",
       "position": [
         17,
-        39
+        37
       ],
       "block": "01"
     },
@@ -12614,7 +12279,7 @@
       "kind": "point",
       "position": [
         17,
-        40
+        38
       ],
       "block": "49"
     },
@@ -12623,7 +12288,7 @@
       "kind": "point",
       "position": [
         18,
-        38
+        36
       ],
       "block": "41"
     },
@@ -12632,7 +12297,7 @@
       "kind": "point",
       "position": [
         18,
-        39
+        37
       ],
       "block": "01"
     },
@@ -12641,7 +12306,7 @@
       "kind": "point",
       "position": [
         18,
-        40
+        38
       ],
       "block": "49"
     },
@@ -12650,7 +12315,7 @@
       "kind": "point",
       "position": [
         18,
-        39
+        37
       ],
       "block": "44"
     },
@@ -12659,7 +12324,7 @@
       "kind": "point",
       "position": [
         58,
-        19
+        17
       ],
       "block": "41"
     },
@@ -12668,7 +12333,7 @@
       "kind": "point",
       "position": [
         58,
-        20
+        18
       ],
       "block": "01"
     },
@@ -12677,7 +12342,7 @@
       "kind": "point",
       "position": [
         58,
-        21
+        19
       ],
       "block": "49"
     },
@@ -12686,7 +12351,7 @@
       "kind": "point",
       "position": [
         59,
-        19
+        17
       ],
       "block": "41"
     },
@@ -12695,7 +12360,7 @@
       "kind": "point",
       "position": [
         59,
-        20
+        18
       ],
       "block": "01"
     },
@@ -12704,7 +12369,7 @@
       "kind": "point",
       "position": [
         59,
-        21
+        19
       ],
       "block": "49"
     },
@@ -12713,7 +12378,7 @@
       "kind": "point",
       "position": [
         60,
-        19
+        17
       ],
       "block": "41"
     },
@@ -12722,7 +12387,7 @@
       "kind": "point",
       "position": [
         60,
-        20
+        18
       ],
       "block": "01"
     },
@@ -12731,7 +12396,7 @@
       "kind": "point",
       "position": [
         60,
-        21
+        19
       ],
       "block": "49"
     },
@@ -12740,7 +12405,7 @@
       "kind": "point",
       "position": [
         61,
-        19
+        17
       ],
       "block": "41"
     },
@@ -12749,7 +12414,7 @@
       "kind": "point",
       "position": [
         61,
-        20
+        18
       ],
       "block": "01"
     },
@@ -12758,7 +12423,7 @@
       "kind": "point",
       "position": [
         61,
-        21
+        19
       ],
       "block": "49"
     },
@@ -12767,7 +12432,7 @@
       "kind": "point",
       "position": [
         61,
-        20
+        18
       ],
       "block": "44"
     },
@@ -13105,29 +12770,11 @@
       "block": "36"
     },
     {
-      "name": "Eastern Superior rock boundary",
-      "kind": "point",
-      "position": [
-        63,
-        45
-      ],
-      "block": "36"
-    },
-    {
-      "name": "Eastern Superior rock boundary",
-      "kind": "point",
-      "position": [
-        63,
-        46
-      ],
-      "block": "36"
-    },
-    {
       "name": "Southern harbor rock boundary",
       "kind": "point",
       "position": [
         0,
-        47
+        45
       ],
       "block": "39"
     },
@@ -13136,7 +12783,7 @@
       "kind": "point",
       "position": [
         1,
-        47
+        45
       ],
       "block": "39"
     },
@@ -13145,7 +12792,7 @@
       "kind": "point",
       "position": [
         2,
-        47
+        45
       ],
       "block": "39"
     },
@@ -13154,7 +12801,7 @@
       "kind": "point",
       "position": [
         3,
-        47
+        45
       ],
       "block": "39"
     },
@@ -13163,7 +12810,7 @@
       "kind": "point",
       "position": [
         4,
-        47
+        45
       ],
       "block": "39"
     },
@@ -13172,7 +12819,7 @@
       "kind": "point",
       "position": [
         5,
-        47
+        45
       ],
       "block": "39"
     },
@@ -13181,7 +12828,7 @@
       "kind": "point",
       "position": [
         6,
-        47
+        45
       ],
       "block": "39"
     },
@@ -13190,7 +12837,7 @@
       "kind": "point",
       "position": [
         7,
-        47
+        45
       ],
       "block": "39"
     },
@@ -13199,7 +12846,7 @@
       "kind": "point",
       "position": [
         8,
-        47
+        45
       ],
       "block": "39"
     },
@@ -13208,7 +12855,7 @@
       "kind": "point",
       "position": [
         9,
-        47
+        45
       ],
       "block": "39"
     },
@@ -13217,7 +12864,7 @@
       "kind": "point",
       "position": [
         10,
-        47
+        45
       ],
       "block": "39"
     },
@@ -13226,7 +12873,7 @@
       "kind": "point",
       "position": [
         11,
-        47
+        45
       ],
       "block": "39"
     },
@@ -13235,7 +12882,7 @@
       "kind": "point",
       "position": [
         12,
-        47
+        45
       ],
       "block": "39"
     },
@@ -13244,7 +12891,7 @@
       "kind": "point",
       "position": [
         13,
-        47
+        45
       ],
       "block": "39"
     },
@@ -13253,7 +12900,7 @@
       "kind": "point",
       "position": [
         14,
-        47
+        45
       ],
       "block": "39"
     },
@@ -13262,7 +12909,7 @@
       "kind": "point",
       "position": [
         15,
-        47
+        45
       ],
       "block": "39"
     },
@@ -13271,7 +12918,7 @@
       "kind": "point",
       "position": [
         16,
-        47
+        45
       ],
       "block": "39"
     },
@@ -13280,7 +12927,7 @@
       "kind": "point",
       "position": [
         17,
-        47
+        45
       ],
       "block": "39"
     },
@@ -13289,7 +12936,7 @@
       "kind": "point",
       "position": [
         18,
-        47
+        45
       ],
       "block": "39"
     },
@@ -13298,7 +12945,7 @@
       "kind": "point",
       "position": [
         19,
-        47
+        45
       ],
       "block": "39"
     },
@@ -13307,7 +12954,7 @@
       "kind": "point",
       "position": [
         20,
-        47
+        45
       ],
       "block": "39"
     },
@@ -13316,7 +12963,7 @@
       "kind": "point",
       "position": [
         21,
-        47
+        45
       ],
       "block": "39"
     },
@@ -13325,7 +12972,7 @@
       "kind": "point",
       "position": [
         22,
-        47
+        45
       ],
       "block": "39"
     },
@@ -13334,7 +12981,7 @@
       "kind": "point",
       "position": [
         23,
-        47
+        45
       ],
       "block": "39"
     },
@@ -13343,7 +12990,7 @@
       "kind": "point",
       "position": [
         24,
-        47
+        45
       ],
       "block": "39"
     },
@@ -13352,7 +12999,7 @@
       "kind": "point",
       "position": [
         25,
-        47
+        45
       ],
       "block": "39"
     },
@@ -13361,7 +13008,7 @@
       "kind": "point",
       "position": [
         26,
-        47
+        45
       ],
       "block": "39"
     },
@@ -13370,7 +13017,7 @@
       "kind": "point",
       "position": [
         27,
-        47
+        45
       ],
       "block": "39"
     },
@@ -13379,7 +13026,7 @@
       "kind": "point",
       "position": [
         28,
-        47
+        45
       ],
       "block": "39"
     },
@@ -13388,7 +13035,7 @@
       "kind": "point",
       "position": [
         29,
-        47
+        45
       ],
       "block": "39"
     },
@@ -13397,7 +13044,7 @@
       "kind": "point",
       "position": [
         30,
-        47
+        45
       ],
       "block": "39"
     },
@@ -13406,7 +13053,7 @@
       "kind": "point",
       "position": [
         31,
-        47
+        45
       ],
       "block": "39"
     },
@@ -13415,7 +13062,7 @@
       "kind": "point",
       "position": [
         32,
-        47
+        45
       ],
       "block": "39"
     },
@@ -13424,7 +13071,7 @@
       "kind": "point",
       "position": [
         33,
-        47
+        45
       ],
       "block": "39"
     },
@@ -13433,7 +13080,7 @@
       "kind": "point",
       "position": [
         34,
-        47
+        45
       ],
       "block": "39"
     },
@@ -13442,7 +13089,7 @@
       "kind": "point",
       "position": [
         35,
-        47
+        45
       ],
       "block": "39"
     },
@@ -13451,7 +13098,7 @@
       "kind": "point",
       "position": [
         36,
-        47
+        45
       ],
       "block": "39"
     },
@@ -13460,7 +13107,7 @@
       "kind": "point",
       "position": [
         37,
-        47
+        45
       ],
       "block": "39"
     },
@@ -13469,7 +13116,7 @@
       "kind": "point",
       "position": [
         38,
-        47
+        45
       ],
       "block": "39"
     },
@@ -13478,7 +13125,7 @@
       "kind": "point",
       "position": [
         39,
-        47
+        45
       ],
       "block": "39"
     },
@@ -13487,7 +13134,7 @@
       "kind": "point",
       "position": [
         40,
-        47
+        45
       ],
       "block": "39"
     },
@@ -13496,7 +13143,7 @@
       "kind": "point",
       "position": [
         41,
-        47
+        45
       ],
       "block": "39"
     },
@@ -13505,7 +13152,7 @@
       "kind": "point",
       "position": [
         42,
-        47
+        45
       ],
       "block": "39"
     },
@@ -13514,7 +13161,7 @@
       "kind": "point",
       "position": [
         43,
-        47
+        45
       ],
       "block": "39"
     },
@@ -13523,7 +13170,7 @@
       "kind": "point",
       "position": [
         44,
-        47
+        45
       ],
       "block": "39"
     },
@@ -13532,7 +13179,7 @@
       "kind": "point",
       "position": [
         45,
-        47
+        45
       ],
       "block": "39"
     },
@@ -13541,7 +13188,7 @@
       "kind": "point",
       "position": [
         46,
-        47
+        45
       ],
       "block": "39"
     },
@@ -13550,7 +13197,7 @@
       "kind": "point",
       "position": [
         47,
-        47
+        45
       ],
       "block": "39"
     },
@@ -13559,7 +13206,7 @@
       "kind": "point",
       "position": [
         48,
-        47
+        45
       ],
       "block": "39"
     },
@@ -13568,7 +13215,7 @@
       "kind": "point",
       "position": [
         49,
-        47
+        45
       ],
       "block": "39"
     },
@@ -13577,7 +13224,7 @@
       "kind": "point",
       "position": [
         50,
-        47
+        45
       ],
       "block": "39"
     },
@@ -13586,7 +13233,7 @@
       "kind": "point",
       "position": [
         51,
-        47
+        45
       ],
       "block": "39"
     },
@@ -13595,7 +13242,7 @@
       "kind": "point",
       "position": [
         52,
-        47
+        45
       ],
       "block": "39"
     },
@@ -13604,7 +13251,7 @@
       "kind": "point",
       "position": [
         53,
-        47
+        45
       ],
       "block": "39"
     },
@@ -13613,7 +13260,7 @@
       "kind": "point",
       "position": [
         54,
-        47
+        45
       ],
       "block": "39"
     },
@@ -13622,7 +13269,7 @@
       "kind": "point",
       "position": [
         55,
-        47
+        45
       ],
       "block": "39"
     },
@@ -13631,7 +13278,7 @@
       "kind": "point",
       "position": [
         56,
-        47
+        45
       ],
       "block": "39"
     },
@@ -13640,7 +13287,7 @@
       "kind": "point",
       "position": [
         57,
-        47
+        45
       ],
       "block": "39"
     },
@@ -13649,7 +13296,7 @@
       "kind": "point",
       "position": [
         58,
-        47
+        45
       ],
       "block": "39"
     },
@@ -13658,7 +13305,7 @@
       "kind": "point",
       "position": [
         59,
-        47
+        45
       ],
       "block": "39"
     },
@@ -13667,7 +13314,7 @@
       "kind": "point",
       "position": [
         60,
-        47
+        45
       ],
       "block": "39"
     },
@@ -13676,7 +13323,7 @@
       "kind": "point",
       "position": [
         61,
-        47
+        45
       ],
       "block": "39"
     },
@@ -13685,7 +13332,7 @@
       "kind": "point",
       "position": [
         62,
-        47
+        45
       ],
       "block": "39"
     },
@@ -13694,9 +13341,27 @@
       "kind": "point",
       "position": [
         63,
-        47
+        45
       ],
       "block": "39"
+    },
+    {
+      "name": "Western bay rock boundary",
+      "kind": "point",
+      "position": [
+        0,
+        33
+      ],
+      "block": "34"
+    },
+    {
+      "name": "Western bay rock boundary",
+      "kind": "point",
+      "position": [
+        0,
+        34
+      ],
+      "block": "34"
     },
     {
       "name": "Western bay rock boundary",
@@ -13789,29 +13454,11 @@
       "block": "34"
     },
     {
-      "name": "Western bay rock boundary",
-      "kind": "point",
-      "position": [
-        0,
-        45
-      ],
-      "block": "34"
-    },
-    {
-      "name": "Western bay rock boundary",
-      "kind": "point",
-      "position": [
-        0,
-        46
-      ],
-      "block": "34"
-    },
-    {
       "name": "SE rock join",
       "kind": "point",
       "position": [
         63,
-        47
+        45
       ],
       "block": "3a"
     },
@@ -13820,7 +13467,7 @@
       "kind": "point",
       "position": [
         0,
-        47
+        45
       ],
       "block": "38"
     },
@@ -13847,7 +13494,7 @@
       "kind": "point",
       "position": [
         7,
-        24
+        22
       ],
       "block": "45"
     },
@@ -13856,7 +13503,7 @@
       "kind": "point",
       "position": [
         51,
-        32
+        30
       ],
       "block": "45"
     },
@@ -13865,7 +13512,7 @@
       "kind": "point",
       "position": [
         7,
-        41
+        39
       ],
       "block": "45"
     },
@@ -13874,7 +13521,7 @@
       "kind": "point",
       "position": [
         42,
-        38
+        36
       ],
       "block": "45"
     },
@@ -13883,7 +13530,7 @@
       "kind": "point",
       "position": [
         58,
-        31
+        29
       ],
       "block": "45"
     },
@@ -13892,9 +13539,9 @@
       "kind": "block_rect",
       "bounds": [
         14,
-        36,
+        34,
         39,
-        38
+        36
       ],
       "block": "35"
     },
@@ -13903,7 +13550,7 @@
       "kind": "point",
       "position": [
         41,
-        35
+        33
       ],
       "block": "01"
     },
@@ -13912,7 +13559,7 @@
       "kind": "point",
       "position": [
         42,
-        35
+        33
       ],
       "block": "01"
     },
@@ -13921,7 +13568,25 @@
       "kind": "point",
       "position": [
         42,
-        36
+        34
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Point ordinary lane preserved",
+      "kind": "point",
+      "position": [
+        43,
+        34
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Point ordinary lane preserved",
+      "kind": "point",
+      "position": [
+        43,
+        35
       ],
       "block": "01"
     },
@@ -13931,24 +13596,6 @@
       "position": [
         43,
         36
-      ],
-      "block": "01"
-    },
-    {
-      "name": "Point ordinary lane preserved",
-      "kind": "point",
-      "position": [
-        43,
-        37
-      ],
-      "block": "01"
-    },
-    {
-      "name": "Point ordinary lane preserved",
-      "kind": "point",
-      "position": [
-        43,
-        38
       ],
       "block": "01"
     },
@@ -13957,7 +13604,7 @@
       "kind": "point",
       "position": [
         44,
-        38
+        36
       ],
       "block": "01"
     },
@@ -13966,7 +13613,7 @@
       "kind": "point",
       "position": [
         45,
-        38
+        36
       ],
       "block": "01"
     },
@@ -13975,7 +13622,7 @@
       "kind": "point",
       "position": [
         46,
-        38
+        36
       ],
       "block": "01"
     },
@@ -14011,7 +13658,7 @@
       "kind": "point",
       "position": [
         12,
-        30
+        28
       ],
       "block": "11"
     },
@@ -14020,7 +13667,7 @@
       "kind": "point",
       "position": [
         41,
-        37
+        35
       ],
       "block": "11"
     },
@@ -14029,7 +13676,7 @@
       "kind": "point",
       "position": [
         59,
-        44
+        42
       ],
       "block": "11"
     },
@@ -14038,7 +13685,7 @@
       "kind": "point",
       "position": [
         5,
-        17
+        15
       ],
       "block": "82"
     },
@@ -14047,7 +13694,7 @@
       "kind": "point",
       "position": [
         6,
-        17
+        15
       ],
       "block": "83"
     },
@@ -14056,7 +13703,7 @@
       "kind": "point",
       "position": [
         7,
-        17
+        15
       ],
       "block": "84"
     },
@@ -14065,7 +13712,7 @@
       "kind": "point",
       "position": [
         5,
-        18
+        16
       ],
       "block": "89"
     },
@@ -14074,7 +13721,7 @@
       "kind": "point",
       "position": [
         6,
-        18
+        16
       ],
       "block": "8a"
     },
@@ -14083,7 +13730,7 @@
       "kind": "point",
       "position": [
         7,
-        18
+        16
       ],
       "block": "8b"
     },
@@ -14092,7 +13739,7 @@
       "kind": "point",
       "position": [
         5,
-        19
+        17
       ],
       "block": "85"
     },
@@ -14101,7 +13748,7 @@
       "kind": "point",
       "position": [
         6,
-        19
+        17
       ],
       "block": "86"
     },
@@ -14110,7 +13757,7 @@
       "kind": "point",
       "position": [
         7,
-        19
+        17
       ],
       "block": "88"
     },
@@ -14121,27 +13768,27 @@
       "points": [
         [
           1,
-          18
+          16
         ],
         [
           3,
-          18
+          16
         ],
         [
           3,
-          22
+          20
         ],
         [
           2,
-          22
+          20
         ],
         [
           2,
-          23
+          21
         ],
         [
           1,
-          23
+          21
         ]
       ]
     },
@@ -14152,43 +13799,43 @@
       "points": [
         [
           55,
-          13
+          11
         ],
         [
           58,
-          13
+          11
         ],
         [
           58,
-          18
+          16
         ],
         [
           57,
-          18
+          16
         ],
         [
           57,
-          19
-        ],
-        [
-          55,
-          19
+          17
         ],
         [
           55,
           17
         ],
         [
-          54,
-          17
+          55,
+          15
         ],
         [
           54,
-          16
+          15
+        ],
+        [
+          54,
+          14
         ],
         [
           55,
-          16
+          14
         ]
       ]
     },
@@ -14215,19 +13862,19 @@
         ],
         [
           16,
-          14
+          12
         ],
         [
           14,
-          14
+          12
         ],
         [
           14,
-          13
+          11
         ],
         [
           9,
-          13
+          11
         ]
       ]
     },
@@ -14269,27 +13916,27 @@
       "points": [
         [
           56,
-          32
+          30
+        ],
+        [
+          59,
+          30
         ],
         [
           59,
           32
         ],
         [
-          59,
-          34
+          58,
+          32
         ],
         [
           58,
-          34
-        ],
-        [
-          58,
-          35
+          33
         ],
         [
           56,
-          35
+          33
         ]
       ]
     },
@@ -14298,7 +13945,7 @@
       "kind": "point",
       "position": [
         50,
-        34
+        32
       ],
       "block": "49"
     },
@@ -14307,7 +13954,7 @@
       "kind": "point",
       "position": [
         51,
-        34
+        32
       ],
       "block": "49"
     },
@@ -14316,7 +13963,7 @@
       "kind": "point",
       "position": [
         52,
-        34
+        32
       ],
       "block": "49"
     },
@@ -14325,7 +13972,7 @@
       "kind": "point",
       "position": [
         53,
-        34
+        32
       ],
       "block": "49"
     },
@@ -14334,7 +13981,7 @@
       "kind": "point",
       "position": [
         54,
-        34
+        32
       ],
       "block": "49"
     },
@@ -14343,7 +13990,7 @@
       "kind": "point",
       "position": [
         55,
-        34
+        32
       ],
       "block": "49"
     },
@@ -14352,7 +13999,7 @@
       "kind": "point",
       "position": [
         18,
-        39
+        37
       ],
       "block": "46"
     },
@@ -14361,7 +14008,7 @@
       "kind": "point",
       "position": [
         61,
-        20
+        18
       ],
       "block": "46"
     },
@@ -14382,6 +14029,267 @@
         7
       ],
       "block": "57"
+    },
+    {
+      "name": "Former receiver site returned to attached harbor pines",
+      "kind": "point",
+      "position": [
+        39,
+        26
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Former receiver site returned to attached harbor pines",
+      "kind": "point",
+      "position": [
+        40,
+        26
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Former receiver site returned to attached harbor pines",
+      "kind": "point",
+      "position": [
+        41,
+        26
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Former receiver site returned to attached harbor pines",
+      "kind": "point",
+      "position": [
+        39,
+        27
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Former receiver site returned to attached harbor pines",
+      "kind": "point",
+      "position": [
+        40,
+        27
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Former receiver site returned to attached harbor pines",
+      "kind": "point",
+      "position": [
+        41,
+        27
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Gym ordinary descent to waterfront",
+      "kind": "point",
+      "position": [
+        27,
+        19
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Native gym waterfront stair through actual cliff",
+      "kind": "point",
+      "position": [
+        27,
+        20
+      ],
+      "block": "81"
+    },
+    {
+      "name": "Outfitter paired passive return retained below its original door",
+      "kind": "point",
+      "position": [
+        58,
+        11
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Receiver retained native facade in compact service cluster",
+      "kind": "point",
+      "position": [
+        35,
+        19
+      ],
+      "block": "18"
+    },
+    {
+      "name": "Receiver retained native facade in compact service cluster",
+      "kind": "point",
+      "position": [
+        36,
+        19
+      ],
+      "block": "1f"
+    },
+    {
+      "name": "Receiver retained native facade in compact service cluster",
+      "kind": "point",
+      "position": [
+        37,
+        19
+      ],
+      "block": "19"
+    },
+    {
+      "name": "Receiver retained native facade in compact service cluster",
+      "kind": "point",
+      "position": [
+        35,
+        20
+      ],
+      "block": "10"
+    },
+    {
+      "name": "Receiver retained native facade in compact service cluster",
+      "kind": "point",
+      "position": [
+        36,
+        20
+      ],
+      "block": "24"
+    },
+    {
+      "name": "Receiver retained native facade in compact service cluster",
+      "kind": "point",
+      "position": [
+        37,
+        20
+      ],
+      "block": "11"
+    },
+    {
+      "name": "Short service cross street joins clinic mart and workshop",
+      "kind": "point",
+      "position": [
+        32,
+        21
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Short service cross street joins clinic mart and workshop",
+      "kind": "point",
+      "position": [
+        33,
+        21
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Short service cross street joins clinic mart and workshop",
+      "kind": "point",
+      "position": [
+        34,
+        21
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Short service cross street joins clinic mart and workshop",
+      "kind": "point",
+      "position": [
+        35,
+        21
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Short service cross street joins clinic mart and workshop",
+      "kind": "point",
+      "position": [
+        36,
+        21
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Short service cross street joins clinic mart and workshop",
+      "kind": "point",
+      "position": [
+        37,
+        21
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Short service cross street joins clinic mart and workshop",
+      "kind": "point",
+      "position": [
+        38,
+        21
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Short service cross street joins clinic mart and workshop",
+      "kind": "point",
+      "position": [
+        39,
+        21
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Short service cross street joins clinic mart and workshop",
+      "kind": "point",
+      "position": [
+        40,
+        21
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Outfitter ordinary return lane after shoulder contraction",
+      "kind": "point",
+      "position": [
+        54,
+        11
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Outfitter ordinary return lane after shoulder contraction",
+      "kind": "point",
+      "position": [
+        55,
+        11
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Outfitter ordinary return lane after shoulder contraction",
+      "kind": "point",
+      "position": [
+        56,
+        11
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Outfitter ordinary return lane after shoulder contraction",
+      "kind": "point",
+      "position": [
+        57,
+        11
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Outfitter ordinary return lane after shoulder contraction",
+      "kind": "point",
+      "position": [
+        58,
+        11
+      ],
+      "block": "01"
     }
   ]
 }

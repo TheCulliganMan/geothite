@@ -1,0 +1,992 @@
+{
+  "status": "DETACHED_SOURCE_PROPOSAL_NOT_NATIVE",
+  "parent_pack_sha256": "6b36b4b835873e4c4508a7da7727ecb759273c26e219ec026c061c0e66f24775",
+  "patches": [
+    {
+      "map": "MnBrainerd",
+      "native_module_sha256": "f37b6fbd692c5d2807a1d3abe91d2ebcc3e96b8757f97045ca70a75dd023af82",
+      "dimensions_metatiles": [
+        32,
+        24
+      ],
+      "changes": [
+        {
+          "metatile": [
+            0,
+            12
+          ],
+          "before": 5,
+          "after": 1,
+          "before_quadrants": [
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL"
+          ],
+          "after_quadrants": [
+            "FLOOR",
+            "FLOOR",
+            "FLOOR",
+            "FLOOR"
+          ]
+        },
+        {
+          "metatile": [
+            31,
+            12
+          ],
+          "before": 5,
+          "after": 1,
+          "before_quadrants": [
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL"
+          ],
+          "after_quadrants": [
+            "FLOOR",
+            "FLOOR",
+            "FLOOR",
+            "FLOOR"
+          ]
+        }
+      ],
+      "conflicts": []
+    },
+    {
+      "map": "MnBemidji",
+      "native_module_sha256": "fc92fa930f90718206a6224a23f169110866d1eebae74daf9d73f233c8ea8d16",
+      "dimensions_metatiles": [
+        24,
+        24
+      ],
+      "changes": [
+        {
+          "metatile": [
+            12,
+            0
+          ],
+          "before": 5,
+          "after": 1,
+          "before_quadrants": [
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL"
+          ],
+          "after_quadrants": [
+            "FLOOR",
+            "FLOOR",
+            "FLOOR",
+            "FLOOR"
+          ]
+        }
+      ],
+      "conflicts": []
+    },
+    {
+      "map": "MnR18C00R00",
+      "native_module_sha256": "03c48012d5a2695eca80426f5bd4f796187141e82c8926a924779248e7adc4ca",
+      "dimensions_metatiles": [
+        32,
+        24
+      ],
+      "changes": [
+        {
+          "metatile": [
+            0,
+            5
+          ],
+          "before": 5,
+          "after": 1,
+          "before_quadrants": [
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL"
+          ],
+          "after_quadrants": [
+            "FLOOR",
+            "FLOOR",
+            "FLOOR",
+            "FLOOR"
+          ]
+        }
+      ],
+      "conflicts": []
+    },
+    {
+      "map": "MnLakeItasca",
+      "native_module_sha256": "84b1c53ce89af1d372c0878a5ed23b304604de6e027fb81644a4ff28102deb45",
+      "dimensions_metatiles": [
+        24,
+        24
+      ],
+      "changes": [
+        {
+          "metatile": [
+            20,
+            10
+          ],
+          "before": 5,
+          "after": 1,
+          "before_quadrants": [
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL"
+          ],
+          "after_quadrants": [
+            "FLOOR",
+            "FLOOR",
+            "FLOOR",
+            "FLOOR"
+          ]
+        },
+        {
+          "metatile": [
+            21,
+            10
+          ],
+          "before": 5,
+          "after": 1,
+          "before_quadrants": [
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL"
+          ],
+          "after_quadrants": [
+            "FLOOR",
+            "FLOOR",
+            "FLOOR",
+            "FLOOR"
+          ]
+        },
+        {
+          "metatile": [
+            22,
+            10
+          ],
+          "before": 5,
+          "after": 1,
+          "before_quadrants": [
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL"
+          ],
+          "after_quadrants": [
+            "FLOOR",
+            "FLOOR",
+            "FLOOR",
+            "FLOOR"
+          ]
+        },
+        {
+          "metatile": [
+            23,
+            10
+          ],
+          "before": 5,
+          "after": 1,
+          "before_quadrants": [
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL"
+          ],
+          "after_quadrants": [
+            "FLOOR",
+            "FLOOR",
+            "FLOOR",
+            "FLOOR"
+          ]
+        },
+        {
+          "metatile": [
+            0,
+            14
+          ],
+          "before": 5,
+          "after": 1,
+          "before_quadrants": [
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL"
+          ],
+          "after_quadrants": [
+            "FLOOR",
+            "FLOOR",
+            "FLOOR",
+            "FLOOR"
+          ]
+        },
+        {
+          "metatile": [
+            1,
+            14
+          ],
+          "before": 5,
+          "after": 1,
+          "before_quadrants": [
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL"
+          ],
+          "after_quadrants": [
+            "FLOOR",
+            "FLOOR",
+            "FLOOR",
+            "FLOOR"
+          ]
+        },
+        {
+          "metatile": [
+            2,
+            14
+          ],
+          "before": 5,
+          "after": 1,
+          "before_quadrants": [
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL"
+          ],
+          "after_quadrants": [
+            "FLOOR",
+            "FLOOR",
+            "FLOOR",
+            "FLOOR"
+          ]
+        },
+        {
+          "metatile": [
+            3,
+            14
+          ],
+          "before": 5,
+          "after": 1,
+          "before_quadrants": [
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL"
+          ],
+          "after_quadrants": [
+            "FLOOR",
+            "FLOOR",
+            "FLOOR",
+            "FLOOR"
+          ]
+        }
+      ],
+      "conflicts": []
+    },
+    {
+      "map": "MnR14C00R00",
+      "native_module_sha256": "e280be9cde8fb3ab649a7648656896a84d1f0a8a37874be084fd9ece1cb1b284",
+      "dimensions_metatiles": [
+        32,
+        24
+      ],
+      "changes": [
+        {
+          "metatile": [
+            4,
+            18
+          ],
+          "before": 5,
+          "after": 1,
+          "before_quadrants": [
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL"
+          ],
+          "after_quadrants": [
+            "FLOOR",
+            "FLOOR",
+            "FLOOR",
+            "FLOOR"
+          ]
+        },
+        {
+          "metatile": [
+            5,
+            18
+          ],
+          "before": 5,
+          "after": 1,
+          "before_quadrants": [
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL"
+          ],
+          "after_quadrants": [
+            "FLOOR",
+            "FLOOR",
+            "FLOOR",
+            "FLOOR"
+          ]
+        },
+        {
+          "metatile": [
+            6,
+            18
+          ],
+          "before": 5,
+          "after": 1,
+          "before_quadrants": [
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL"
+          ],
+          "after_quadrants": [
+            "FLOOR",
+            "FLOOR",
+            "FLOOR",
+            "FLOOR"
+          ]
+        },
+        {
+          "metatile": [
+            0,
+            19
+          ],
+          "before": 5,
+          "after": 1,
+          "before_quadrants": [
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL"
+          ],
+          "after_quadrants": [
+            "FLOOR",
+            "FLOOR",
+            "FLOOR",
+            "FLOOR"
+          ]
+        },
+        {
+          "metatile": [
+            1,
+            19
+          ],
+          "before": 5,
+          "after": 1,
+          "before_quadrants": [
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL"
+          ],
+          "after_quadrants": [
+            "FLOOR",
+            "FLOOR",
+            "FLOOR",
+            "FLOOR"
+          ]
+        },
+        {
+          "metatile": [
+            2,
+            19
+          ],
+          "before": 5,
+          "after": 1,
+          "before_quadrants": [
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL"
+          ],
+          "after_quadrants": [
+            "FLOOR",
+            "FLOOR",
+            "FLOOR",
+            "FLOOR"
+          ]
+        },
+        {
+          "metatile": [
+            3,
+            19
+          ],
+          "before": 5,
+          "after": 1,
+          "before_quadrants": [
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL"
+          ],
+          "after_quadrants": [
+            "FLOOR",
+            "FLOOR",
+            "FLOOR",
+            "FLOOR"
+          ]
+        },
+        {
+          "metatile": [
+            4,
+            19
+          ],
+          "before": 5,
+          "after": 1,
+          "before_quadrants": [
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL"
+          ],
+          "after_quadrants": [
+            "FLOOR",
+            "FLOOR",
+            "FLOOR",
+            "FLOOR"
+          ]
+        }
+      ],
+      "conflicts": []
+    },
+    {
+      "map": "MnR19C00R00",
+      "native_module_sha256": "6c202b9804548fb18dcf32e146d7ee44d053b917afbe4403871ca1c4eb34e4ba",
+      "dimensions_metatiles": [
+        32,
+        24
+      ],
+      "changes": [
+        {
+          "metatile": [
+            31,
+            6
+          ],
+          "before": 5,
+          "after": 1,
+          "before_quadrants": [
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL"
+          ],
+          "after_quadrants": [
+            "FLOOR",
+            "FLOOR",
+            "FLOOR",
+            "FLOOR"
+          ]
+        }
+      ],
+      "conflicts": []
+    },
+    {
+      "map": "MnGrandMarais",
+      "native_module_sha256": "b3021650580baa957320e45808c538f36b5df3ffe53f778fe35da3ed2fd41c19",
+      "dimensions_metatiles": [
+        20,
+        19
+      ],
+      "changes": [
+        {
+          "metatile": [
+            0,
+            4
+          ],
+          "before": 5,
+          "after": 1,
+          "before_quadrants": [
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL"
+          ],
+          "after_quadrants": [
+            "FLOOR",
+            "FLOOR",
+            "FLOOR",
+            "FLOOR"
+          ]
+        },
+        {
+          "metatile": [
+            19,
+            6
+          ],
+          "before": 5,
+          "after": 1,
+          "before_quadrants": [
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL"
+          ],
+          "after_quadrants": [
+            "FLOOR",
+            "FLOOR",
+            "FLOOR",
+            "FLOOR"
+          ]
+        }
+      ],
+      "conflicts": []
+    },
+    {
+      "map": "MnR11C00R00",
+      "native_module_sha256": "1a46d1c55034f7ae5059fb2d891b278f0e46d2700600fbdffd6a38d0de14f57e",
+      "dimensions_metatiles": [
+        32,
+        24
+      ],
+      "changes": [
+        {
+          "metatile": [
+            20,
+            0
+          ],
+          "before": 5,
+          "after": 1,
+          "before_quadrants": [
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL"
+          ],
+          "after_quadrants": [
+            "FLOOR",
+            "FLOOR",
+            "FLOOR",
+            "FLOOR"
+          ]
+        }
+      ],
+      "conflicts": []
+    },
+    {
+      "map": "MnBoundaryWaters",
+      "native_module_sha256": "4f4883dee614c633e339e3b6734344d66aa57ca504c9e0c856a4a805332dfe42",
+      "dimensions_metatiles": [
+        32,
+        24
+      ],
+      "changes": [
+        {
+          "metatile": [
+            16,
+            0
+          ],
+          "before": 5,
+          "after": 1,
+          "before_quadrants": [
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL"
+          ],
+          "after_quadrants": [
+            "FLOOR",
+            "FLOOR",
+            "FLOOR",
+            "FLOOR"
+          ]
+        },
+        {
+          "metatile": [
+            16,
+            1
+          ],
+          "before": 5,
+          "after": 1,
+          "before_quadrants": [
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL"
+          ],
+          "after_quadrants": [
+            "FLOOR",
+            "FLOOR",
+            "FLOOR",
+            "FLOOR"
+          ]
+        },
+        {
+          "metatile": [
+            16,
+            2
+          ],
+          "before": 2,
+          "after": 1,
+          "before_quadrants": [
+            "FLOOR",
+            "FLOOR",
+            "FLOOR",
+            "FLOOR"
+          ],
+          "after_quadrants": [
+            "FLOOR",
+            "FLOOR",
+            "FLOOR",
+            "FLOOR"
+          ]
+        }
+      ],
+      "conflicts": []
+    },
+    {
+      "map": "MnBoundarySafariC00R02",
+      "native_module_sha256": "ff8226f159ae2c7044b5fb144440181a037a1bf034c66ca1a0132aac9d106442",
+      "dimensions_metatiles": [
+        32,
+        8
+      ],
+      "changes": [
+        {
+          "metatile": [
+            7,
+            5
+          ],
+          "before": 5,
+          "after": 1,
+          "before_quadrants": [
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL"
+          ],
+          "after_quadrants": [
+            "FLOOR",
+            "FLOOR",
+            "FLOOR",
+            "FLOOR"
+          ]
+        },
+        {
+          "metatile": [
+            7,
+            6
+          ],
+          "before": 5,
+          "after": 1,
+          "before_quadrants": [
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL"
+          ],
+          "after_quadrants": [
+            "FLOOR",
+            "FLOOR",
+            "FLOOR",
+            "FLOOR"
+          ]
+        },
+        {
+          "metatile": [
+            7,
+            7
+          ],
+          "before": 5,
+          "after": 1,
+          "before_quadrants": [
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL"
+          ],
+          "after_quadrants": [
+            "FLOOR",
+            "FLOOR",
+            "FLOOR",
+            "FLOOR"
+          ]
+        }
+      ],
+      "conflicts": []
+    },
+    {
+      "map": "MnR08C00R00",
+      "native_module_sha256": "eeb7ddcff0f9190fcbc6364dc76f79efb06a9168e2f3567e878efa73dd7b4d18",
+      "dimensions_metatiles": [
+        32,
+        24
+      ],
+      "changes": [
+        {
+          "metatile": [
+            12,
+            0
+          ],
+          "before": 5,
+          "after": 1,
+          "before_quadrants": [
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL"
+          ],
+          "after_quadrants": [
+            "FLOOR",
+            "FLOOR",
+            "FLOOR",
+            "FLOOR"
+          ]
+        },
+        {
+          "metatile": [
+            20,
+            0
+          ],
+          "before": 1,
+          "after": 5,
+          "before_quadrants": [
+            "FLOOR",
+            "FLOOR",
+            "FLOOR",
+            "FLOOR"
+          ],
+          "after_quadrants": [
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL"
+          ]
+        },
+        {
+          "metatile": [
+            12,
+            1
+          ],
+          "before": 5,
+          "after": 1,
+          "before_quadrants": [
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL"
+          ],
+          "after_quadrants": [
+            "FLOOR",
+            "FLOOR",
+            "FLOOR",
+            "FLOOR"
+          ]
+        },
+        {
+          "metatile": [
+            15,
+            1
+          ],
+          "before": 5,
+          "after": 1,
+          "before_quadrants": [
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL"
+          ],
+          "after_quadrants": [
+            "FLOOR",
+            "FLOOR",
+            "FLOOR",
+            "FLOOR"
+          ]
+        },
+        {
+          "metatile": [
+            16,
+            1
+          ],
+          "before": 5,
+          "after": 1,
+          "before_quadrants": [
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL"
+          ],
+          "after_quadrants": [
+            "FLOOR",
+            "FLOOR",
+            "FLOOR",
+            "FLOOR"
+          ]
+        },
+        {
+          "metatile": [
+            17,
+            1
+          ],
+          "before": 5,
+          "after": 1,
+          "before_quadrants": [
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL"
+          ],
+          "after_quadrants": [
+            "FLOOR",
+            "FLOOR",
+            "FLOOR",
+            "FLOOR"
+          ]
+        },
+        {
+          "metatile": [
+            18,
+            1
+          ],
+          "before": 5,
+          "after": 1,
+          "before_quadrants": [
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL"
+          ],
+          "after_quadrants": [
+            "FLOOR",
+            "FLOOR",
+            "FLOOR",
+            "FLOOR"
+          ]
+        },
+        {
+          "metatile": [
+            19,
+            1
+          ],
+          "before": 5,
+          "after": 1,
+          "before_quadrants": [
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL"
+          ],
+          "after_quadrants": [
+            "FLOOR",
+            "FLOOR",
+            "FLOOR",
+            "FLOOR"
+          ]
+        },
+        {
+          "metatile": [
+            12,
+            2
+          ],
+          "before": 5,
+          "after": 1,
+          "before_quadrants": [
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL"
+          ],
+          "after_quadrants": [
+            "FLOOR",
+            "FLOOR",
+            "FLOOR",
+            "FLOOR"
+          ]
+        },
+        {
+          "metatile": [
+            13,
+            2
+          ],
+          "before": 5,
+          "after": 1,
+          "before_quadrants": [
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL"
+          ],
+          "after_quadrants": [
+            "FLOOR",
+            "FLOOR",
+            "FLOOR",
+            "FLOOR"
+          ]
+        },
+        {
+          "metatile": [
+            14,
+            2
+          ],
+          "before": 5,
+          "after": 1,
+          "before_quadrants": [
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL"
+          ],
+          "after_quadrants": [
+            "FLOOR",
+            "FLOOR",
+            "FLOOR",
+            "FLOOR"
+          ]
+        },
+        {
+          "metatile": [
+            15,
+            2
+          ],
+          "before": 5,
+          "after": 1,
+          "before_quadrants": [
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL"
+          ],
+          "after_quadrants": [
+            "FLOOR",
+            "FLOOR",
+            "FLOOR",
+            "FLOOR"
+          ]
+        }
+      ],
+      "conflicts": []
+    },
+    {
+      "map": "MnR03C00R01",
+      "native_module_sha256": "de78b7c6be76d8cbda0d56c956cdf2c9a076514dee8e24fd82bf745ecc260fea",
+      "kind": "remove_blocking_margin",
+      "before_dimensions_metatiles": [
+        24,
+        8
+      ],
+      "after_dimensions_metatiles": [
+        21,
+        8
+      ],
+      "removed_bounds_metatiles": [
+        21,
+        0,
+        24,
+        8
+      ],
+      "removed_quadrants": {
+        "WALL": 96
+      },
+      "native_anchors_unchanged": true
+    }
+  ],
+  "historical_parent_pack_sha256": "2fe6fc2a2c59833886b9ffa2fa04584f1f95841efaf87e865f11230cf4cdf54e",
+  "preimages_reverified_on_actual677_parent": true
+}

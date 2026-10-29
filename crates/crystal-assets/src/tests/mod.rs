@@ -136,3 +136,5 @@ include!("items.rs");
 include!("script_execution.rs");
 
 include!("connection_collision.rs");
+
+include!("canoe.rs");

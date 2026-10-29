@@ -14,7 +14,7 @@ use super::super::{
     complete_visible_smoke_player_name_if_needed, initialize_bevy_runtime_shell,
     mark_runtime_snapshot_dirty,
 };
-use super::authored_route_fixture::{Point, RouteGrid, RouteSpec, indoor_walk, neighbors};
+use super::authored_route_fixture::{Point, indoor_walk, neighbors};
 use super::r10_gallery::{
     completed_visible_page, continue_save, flags, map, press, remember_dialogue, settle, tile,
 };
@@ -157,21 +157,53 @@ fn blocked(c: &mut VisibleShellController, input: GameButton) {
         assert_eq!(tile(c), at);
     }
 }
-fn outside(r: &CrystalRuntime) -> RouteGrid {
-    RouteGrid::new_with_grass(
-        r,
-        RouteSpec {
-            prefix: "MnR17",
-            columns: 1,
-            rows: 3,
-            tileset: "mn_border_pines",
-            start: (10, 44),
-            doors: BTreeMap::from([((10, 43), ROOM), ((45, 49), "MnR17RangerHut")]),
-        },
-    )
+fn validate_mouth(r: &CrystalRuntime) {
+    let inside = &r.data().maps[ROOM];
+    assert_eq!(inside.events.warps.len(), 1);
+    let warp = &inside.events.warps[0];
+    assert_eq!(
+        (warp.index, warp.x, warp.y, warp.target_warp_id),
+        (1, 9, 13, 2)
+    );
+    assert_eq!(
+        r.data()
+            .map_name_for_constant(&warp.target_map_constant)
+            .expect("compiled exterior map"),
+        OUTSIDE
+    );
+    let outside = &r.data().maps[OUTSIDE];
+    for (index, x, y, permission) in [(1, 10, 43, "CAVE"), (2, 10, 44, "FLOOR")] {
+        let paired = outside
+            .events
+            .warps
+            .iter()
+            .find(|candidate| candidate.index == index)
+            .expect("retained active entrance or true passive return");
+        assert_eq!((paired.x, paired.y, paired.target_warp_id), (x, y, 1));
+        assert_eq!(
+            Some(paired.target_map_constant.as_str()),
+            inside.attributes.map_constant.as_deref()
+        );
+        let block = outside.blocks
+            [usize::from(y / 2) * usize::from(outside.attributes.width) + usize::from(x / 2)];
+        assert_eq!(
+            r.data().tilesets[&outside.attributes.tileset_name].collision[&format!("{block:02x}")]
+                [usize::from(y % 2) * 2 + usize::from(x % 2)],
+            permission,
+            "the actual installed snow/forest bank owns mouth collision"
+        );
+    }
 }
 fn enter(c: &mut VisibleShellController, r: &CrystalRuntime) {
-    outside(r).walk(c, (10, 43));
+    validate_mouth(r);
+    assert_eq!(map(c), OUTSIDE);
+    assert_eq!(tile(c), (10, 44));
+    for _ in 0..8 {
+        if map(c) == ROOM {
+            break;
+        }
+        press(c, GameButton::Up);
+    }
     assert_eq!(map(c), ROOM);
     assert_eq!(tile(c), (9, 13));
     indoor_walk(c, r, (9, 12));
@@ -186,9 +218,8 @@ fn leave(c: &mut VisibleShellController, r: &CrystalRuntime) {
         .expect("original passive Floor stays stable");
     assert_eq!(map(c), OUTSIDE);
     assert_eq!(tile(c), (10, 44));
-    let g = outside(r);
-    g.walk(c, (10, 45));
-    g.walk(c, (10, 44));
+    step(c, GameButton::Down, (10, 45));
+    step(c, GameButton::Up, (10, 44));
     assert_eq!(map(c), OUTSIDE);
     assert_eq!(tile(c), (10, 44));
 }

@@ -136,6 +136,18 @@ fn report(c: &mut VisibleShellController, r: &CrystalRuntime, root: &AssetRoot) 
     assert!(event(c, REPORT) && event(c, SURF));
     let item = &r.data().items["HM_SURF"];
     assert_eq!(c.shell.shell.session().state().bag.quantity(item), 1);
+    if r.data().maps.contains_key("MnBoundaryIntake") {
+        let slot = c
+            .snapshot()
+            .expect("earned Water partner")
+            .party
+            .slots
+            .iter()
+            .position(|p| p.pokemon.species.tmhm_learnset.iter().any(|m| m == "SURF"))
+            .expect("caught party has a legal Surf carrier");
+        super::northstar_campaign::learn_machine_on(c, r, "HM_SURF", "SURF", "GROWL", slot);
+        assert_eq!(c.shell.shell.session().state().bag.quantity(item), 1);
+    }
     continue_in_place(c, root, r, "campaign-lake-ranger-report");
     let party = c.snapshot().expect("before ranger repeat").party;
     press(c, GameButton::Up);

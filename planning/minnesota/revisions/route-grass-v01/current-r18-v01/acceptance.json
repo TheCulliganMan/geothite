@@ -1,0 +1,43 @@
+{
+  "status": "PASS",
+  "selected": true,
+  "publication": {
+    "kind": "terrain_only_route_revision",
+    "route": "MN_R18",
+    "parent_revision": "route_grass_r17_revision",
+    "parent_pack": "content-packs/minnesota-current-grass-r17-v03.crystalpack",
+    "parent_pack_sha256": "e99a9eb0fa86b85369b6b3d7e5bb52a9d7abdb9eef4aacb54856ccb989c61c84",
+    "pack": "content-packs/minnesota-current-grass-r18-v01.crystalpack",
+    "pack_sha256": "36e58054462b67415a89445a4fc465ccc6edc84b082025a41f504104a6a3e323",
+    "content_identity": "5ff92ab1d7f4b8618ff3768ac4adee12d16d437a275bd40ea48cf1c50eeb3f54",
+    "maps": 730,
+    "changed_metatiles": 5,
+    "added_grass_metatiles": 5,
+    "grass_walking_tiles": 268,
+    "western_approach_minimum_grass_steps_both_directions": 4,
+    "original_meadow_neck_grass_steps": 6,
+    "native_controller_cases_passed": 8,
+    "stdio_calls_passed": 15,
+    "stdio_stderr_bytes": 0,
+    "audio_programs_verified": 377,
+    "actual_2d_captures_reviewed": 1,
+    "other_maps_preserved_exact": 729,
+    "ice_blocks_across_R11_Duluth_GrandMarais": 0,
+    "seven_HMs_19Fly_points_habitats_cyclists_fossils_and_script_repairs_preserved": true,
+    "runbook": "revisions/route-grass-v01/current-r18-v01/README.md",
+    "status": "Accepted western meadow extension; populated new habitat/native RUN/Continue, shore quests and Surf island, production stdio, audio, native 2D and exact preservation pass.",
+    "scope_limit": "R19-R20, remaining outdoor links/parks and final current-story coverage remain open. Local fixture party/badges/position do not establish earned regional access or encounter balance. North Shore reported-version discrepancy remains open."
+  },
+  "visual_review": "visual-acceptance.json",
+  "pixel_proof": "source-native-pixel-proof.json",
+  "native_logs": [
+    ".local/route-grass-review/current-r18-v01-grass-controller.log",
+    ".local/route-grass-review/current-r18-v01-shore.log"
+  ],
+  "stdio": ".local/route-grass-review/current-r18-v01-stdio.receipt.json",
+  "unresolved": [
+    "Trace the North Shore version seen by user",
+    "R19-R20 and remaining outdoor regional links/parks",
+    "Final current-story coverage"
+  ]
+}

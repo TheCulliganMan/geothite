@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "id": "northstar-minnesota-only-v1",
-  "status": "Published in character-story-v5; strict regional binding and current-policy asset audits pass. Nine native story/balance tests and two final-pack stdio quest replays pass; later-chapter fixtures are declared.",
+  "status": "Active regional binding policy. Earlier story publication remains archived; extended geography binding and trainer expansion verification are in progress.",
   "roster": "pokemon/roster.json",
   "curation": "pokemon/roster-curation.json",
   "policy": "Only active Minnesota original Pokemon may appear in the authored Minnesota campaign. Retain unrelated Johto/Kanto source content. No species fallback and no legendary substitutes for ordinary teams or gifts.",
@@ -40,6 +40,8 @@
     "CATERPIE": "STRIPILLAR",
     "CHIKORITA": "POUCHID",
     "CHINCHOU": "BOBCAST",
+    "CLOYSTER": "LATCHUSK",
+    "CORSOLA": "SCUTLET",
     "CROBAT": "SILOHAWK",
     "CYNDAQUIL": "KINDLIT",
     "DELIBIRD": "DRIFTPEG",
@@ -47,10 +49,14 @@
     "DITTO": "DRIFTILE",
     "DRAGONAIR": "LASSERP",
     "DRAGONITE": "TACONARCH",
+    "DRATINI": "KNOTLET",
     "DROWZEE": "MEMOFOLD",
     "ESPEON": "RECALLISK",
+    "EXEGGCUTE": "BURRBUD",
+    "FARFETCH_D": "NOTCHBILL",
     "FEAROW": "GOUGECREST",
     "FLAAFFY": "TAPACITOR",
+    "FORRETRESS": "TRAPNACK",
     "FURRET": "CROOKVEIL",
     "GENGAR": "FLOURGEIST",
     "GEODUDE": "AGATOT",
@@ -60,6 +66,7 @@
     "GOLBAT": "SKEETEREX",
     "GOLDEEN": "RILLBOW",
     "GOLEM": "FORTIGARD",
+    "GRANBULL": "DENUMBRA",
     "GRAVELER": "BANDRAKE",
     "GROWLITHE": "HISSIP",
     "GYARADOS": "MUSKETUNGE",
@@ -68,23 +75,31 @@
     "HITMONTOP": "GREYTAG",
     "HOOTHOOT": "PIPBOOM",
     "HOPPIP": "PODLET",
+    "HORSEA": "PIKELING",
     "HOUNDOOM": "CROSSPOUT",
     "JUMPLUFF": "PARAFLOSS",
+    "JYNX": "VERNACAPE",
     "KINGDRA": "BARBELISK",
+    "KINGLER": "TRAPNACK",
+    "KRABBY": "CLINKLAW",
     "LANTURN": "BUOYOSTIC",
     "LAPRAS": "TIPULORD",
+    "LEDYBA": "RUSTLEBEE",
     "MACHOKE": "HELIKNOCK",
     "MACHOP": "AUGRUB",
     "MAGCARGO": "CINDERFEN",
+    "MAGIKARP": "SCUTLET",
     "MAGNEMITE": "CARTICK",
     "MAGNETON": "MESABLAST",
     "MANTINE": "DRIFTILE",
     "MAREEP": "ZAPSAP",
     "MARILL": "RIVVIT",
+    "MILTANK": "RUMBLEHIDE",
     "MISDREAVUS": "MITWIST",
     "MURKROW": "GOOSNIDE",
     "NIDORINO": "BRISTUB",
     "NOCTOWL": "BOOMRUFF",
+    "OCTILLERY": "PADDARRAY",
     "ODDISH": "RICELING",
     "ONIX": "PELLETANK",
     "PHANPY": "SODCALF",
@@ -96,17 +111,23 @@
     "PINSIR": "TRAPNACK",
     "POLIWAG": "CHORIP",
     "POLIWHIRL": "TORROUT",
+    "POLIWRATH": "TORROUT",
+    "PORYGON": "PADDARRAY",
     "PRIMEAPE": "BOUGHLASH",
+    "PSYDUCK": "TAPDUCK",
     "QUAGSIRE": "MUDMENDER",
     "QWILFISH": "POTHOLLOW",
     "RATICATE": "CACHEEK",
     "RATTATA": "NIBBIN",
+    "REMORAID": "PINGLET",
     "SANDSHREW": "AUGRUB",
+    "SANDSLASH": "FURROWBANK",
     "SCYTHER": "DAKOTASKIP",
     "SEADRA": "PIKEMAN",
     "SEAKING": "TORROUT",
     "SEEL": "WINKFIN",
     "SENTRET": "NIBBIN",
+    "SHELLDER": "KEYPOUT",
     "SHUCKLE": "TESSLARV",
     "SKARMORY": "LATCHQUILL",
     "SKIPLOOM": "FLOSSAIL",
@@ -115,7 +136,10 @@
     "SNEASEL": "CROOKVEIL",
     "SNUBBULL": "DENSY",
     "SPEAROW": "VANECHICK",
+    "SPINARAK": "DEWDANT",
     "STANTLER": "SHEDSTAG",
+    "STARMIE": "SOLSTORT",
+    "STARYU": "TICKLET",
     "SUDOWOODO": "BURROOT",
     "SUNFLORA": "PYROPINE",
     "SUNKERN": "PINIT",
@@ -123,7 +147,10 @@
     "TANGELA": "REEDRAFT",
     "TAUROS": "RUMBLEHIDE",
     "TEDDIURSA": "DENSY",
+    "TENTACOOL": "LEECHIMP",
+    "TENTACRUEL": "LEECHURGE",
     "TOTODILE": "BIRCHIT",
+    "TYROGUE": "CURDLET",
     "URSARING": "DOZEBEAR",
     "VENOMOTH": "MOTHOSAIC",
     "VENONAT": "TESSLARV",
@@ -133,24 +160,7 @@
     "WEEZING": "HAULGEIST",
     "WOOPER": "GILLPUP",
     "XATU": "SOLSTORT",
-    "YANMA": "WINDHOPPER",
-    "EXEGGCUTE": "BURRBUD",
-    "LEDYBA": "RUSTLEBEE",
-    "SPINARAK": "DEWDANT",
-    "MAGIKARP": "SCUTLET",
-    "HORSEA": "PIKELING",
-    "REMORAID": "PINGLET",
-    "OCTILLERY": "PADDARRAY",
-    "TENTACOOL": "LEECHIMP",
-    "TENTACRUEL": "LEECHURGE",
-    "STARYU": "TICKLET",
-    "STARMIE": "SOLSTORT",
-    "KRABBY": "CLINKLAW",
-    "KINGLER": "TRAPNACK",
-    "SHELLDER": "KEYPOUT",
-    "CLOYSTER": "LATCHUSK",
-    "CORSOLA": "SCUTLET",
-    "DRATINI": "KNOTLET"
+    "YANMA": "WINDHOPPER"
   },
   "faction_teams": {
     "MN_ICE_CARGO_GUARD": [
@@ -357,6 +367,650 @@
         ],
         "item": "GOLD_BERRY"
       }
+    ],
+    "MN_REED_ROCHESTER": [
+      {
+        "species": "CROOKIT",
+        "level": 8,
+        "moves": [
+          "SCRATCH",
+          "QUICK_ATTACK",
+          "TAIL_WHIP"
+        ]
+      },
+      {
+        "species": "MIDGEBIT",
+        "level": 7,
+        "moves": [
+          "LEECH_LIFE",
+          "POISON_STING",
+          "GROWL"
+        ]
+      }
+    ],
+    "MN_REED_STPAUL": [
+      {
+        "species": "CROOKIT",
+        "level": 26,
+        "moves": [
+          "SLASH",
+          "BITE",
+          "PURSUIT",
+          "QUICK_ATTACK"
+        ]
+      },
+      {
+        "species": "GOOSNIDE",
+        "level": 25,
+        "moves": [
+          "WING_ATTACK",
+          "BITE",
+          "PURSUIT",
+          "CHARM"
+        ]
+      },
+      {
+        "species": "WRIGGLET",
+        "level": 26,
+        "moves": [
+          "WATER_GUN",
+          "FURY_CUTTER",
+          "GIGA_DRAIN",
+          "BIDE"
+        ],
+        "item": "BERRY"
+      }
+    ],
+    "MN_REED_BOUNDARY": [
+      {
+        "species": "CROOKVEIL",
+        "level": 44,
+        "moves": [
+          "SLASH",
+          "FAINT_ATTACK",
+          "QUICK_ATTACK",
+          "AGILITY"
+        ]
+      },
+      {
+        "species": "GOOSNIDE",
+        "level": 43,
+        "moves": [
+          "WING_ATTACK",
+          "CRUNCH",
+          "CHARM",
+          "MIRROR_MOVE"
+        ]
+      },
+      {
+        "species": "CARTICK",
+        "level": 43,
+        "moves": [
+          "METAL_CLAW",
+          "SLUDGE_BOMB",
+          "SHADOW_BALL",
+          "MUD_SLAP"
+        ]
+      },
+      {
+        "species": "PUPUMP",
+        "level": 45,
+        "moves": [
+          "BUBBLEBEAM",
+          "GIGA_DRAIN",
+          "SIGNAL_BEAM",
+          "SLUDGE"
+        ],
+        "item": "GOLD_BERRY"
+      }
+    ],
+    "MN_ICE_HQ_CARGO_SEARCH": [
+      {
+        "species": "SLUDGESKI",
+        "level": 18,
+        "moves": [
+          "ICY_WIND",
+          "POWDER_SNOW",
+          "MUD_SLAP",
+          "POISON_GAS"
+        ]
+      },
+      {
+        "species": "MIDGEBIT",
+        "level": 19,
+        "moves": [
+          "BITE",
+          "POISON_STING",
+          "SUPERSONIC",
+          "SWEET_SCENT"
+        ]
+      }
+    ],
+    "MN_ICE_HQ_CARGO_MANIFEST": [
+      {
+        "species": "CARTICK",
+        "level": 19,
+        "moves": [
+          "SLUDGE_BOMB",
+          "METAL_CLAW",
+          "SHADOW_BALL",
+          "MUD_SLAP"
+        ]
+      },
+      {
+        "species": "LEECHIMP",
+        "level": 19,
+        "moves": [
+          "LEECH_LIFE",
+          "WATER_GUN",
+          "CONSTRICT",
+          "SCARY_FACE"
+        ]
+      }
+    ],
+    "MN_ICE_HQ_DISPATCH": [
+      {
+        "species": "MIDGEBIT",
+        "level": 20,
+        "moves": [
+          "BITE",
+          "POISON_STING",
+          "SUPERSONIC",
+          "SWEET_SCENT"
+        ]
+      },
+      {
+        "species": "CINDORE",
+        "level": 19,
+        "moves": [
+          "EMBER",
+          "HARDEN",
+          "ROCK_THROW",
+          "SMOKESCREEN"
+        ]
+      }
+    ],
+    "MN_ICE_HQ_OPERATIONS_PATROL": [
+      {
+        "species": "SLUDGESKI",
+        "level": 20,
+        "moves": [
+          "ICY_WIND",
+          "POWDER_SNOW",
+          "SLUDGE",
+          "MUD_SLAP"
+        ]
+      },
+      {
+        "species": "CARTICK",
+        "level": 20,
+        "moves": [
+          "SLUDGE_BOMB",
+          "METAL_CLAW",
+          "SHADOW_BALL",
+          "MUD_SLAP"
+        ]
+      }
+    ],
+    "MN_ICE_HQ_ARCHIVE": [
+      {
+        "species": "LEECHIMP",
+        "level": 20,
+        "moves": [
+          "LEECH_LIFE",
+          "WATER_GUN",
+          "CONSTRICT",
+          "SCARY_FACE"
+        ]
+      },
+      {
+        "species": "MIDGEBIT",
+        "level": 21,
+        "moves": [
+          "BITE",
+          "POISON_STING",
+          "SUPERSONIC",
+          "SWEET_SCENT"
+        ]
+      }
+    ],
+    "MN_ICE_HQ_WORKSHOP": [
+      {
+        "species": "CINDORE",
+        "level": 21,
+        "moves": [
+          "EMBER",
+          "HARDEN",
+          "ROCK_THROW",
+          "SMOKESCREEN"
+        ]
+      },
+      {
+        "species": "CARTICK",
+        "level": 21,
+        "moves": [
+          "SLUDGE_BOMB",
+          "METAL_CLAW",
+          "SHADOW_BALL",
+          "MUD_SLAP"
+        ]
+      }
+    ],
+    "MN_ICE_HQ_ESCORT": [
+      {
+        "species": "SLUDGESKI",
+        "level": 21,
+        "moves": [
+          "ICY_WIND",
+          "POWDER_SNOW",
+          "SLUDGE",
+          "MUD_SLAP"
+        ]
+      },
+      {
+        "species": "LEECHIMP",
+        "level": 21,
+        "moves": [
+          "LEECH_LIFE",
+          "WATER_GUN",
+          "CONSTRICT",
+          "SCARY_FACE"
+        ]
+      }
+    ],
+    "MN_ICE_HQ_RELAY_PATROL": [
+      {
+        "species": "MIDGEBIT",
+        "level": 21,
+        "moves": [
+          "BITE",
+          "POISON_STING",
+          "SUPERSONIC",
+          "SWEET_SCENT"
+        ]
+      },
+      {
+        "species": "CARTICK",
+        "level": 21,
+        "moves": [
+          "SLUDGE_BOMB",
+          "METAL_CLAW",
+          "SHADOW_BALL",
+          "MUD_SLAP"
+        ]
+      }
+    ],
+    "MN_LODE_ARC_ACCESS": [
+      {
+        "species": "AGATOT",
+        "level": 36,
+        "moves": [
+          "ANCIENTPOWER",
+          "PSYBEAM",
+          "REFLECT",
+          "ROCK_THROW"
+        ]
+      },
+      {
+        "species": "CARTICK",
+        "level": 36,
+        "moves": [
+          "SLUDGE_BOMB",
+          "METAL_CLAW",
+          "SHADOW_BALL",
+          "MUD_SLAP"
+        ]
+      }
+    ],
+    "MN_LODE_ARC_SPOIL": [
+      {
+        "species": "CINDORE",
+        "level": 36,
+        "moves": [
+          "FLAME_WHEEL",
+          "METAL_CLAW",
+          "ROCK_SLIDE",
+          "IRON_TAIL"
+        ]
+      },
+      {
+        "species": "LEECHIMP",
+        "level": 36,
+        "moves": [
+          "BUBBLEBEAM",
+          "PURSUIT",
+          "HAZE",
+          "BITE"
+        ]
+      }
+    ],
+    "MN_LODE_ARC_WEIGH": [
+      {
+        "species": "PELLETOR",
+        "level": 37,
+        "moves": [
+          "FLAME_WHEEL",
+          "METAL_CLAW",
+          "ROCK_SLIDE",
+          "IRON_TAIL"
+        ]
+      },
+      {
+        "species": "CARTICK",
+        "level": 37,
+        "moves": [
+          "SLUDGE_BOMB",
+          "METAL_CLAW",
+          "SHADOW_BALL",
+          "MUD_SLAP"
+        ]
+      }
+    ],
+    "MN_LODE_ARC_CONVEYOR": [
+      {
+        "species": "AGATOT",
+        "level": 37,
+        "moves": [
+          "ANCIENTPOWER",
+          "PSYBEAM",
+          "REFLECT",
+          "ROCK_THROW"
+        ]
+      },
+      {
+        "species": "SLUDGESKI",
+        "level": 37,
+        "moves": [
+          "ICE_BEAM",
+          "ICY_WIND",
+          "POWDER_SNOW",
+          "SLUDGE"
+        ]
+      }
+    ],
+    "MN_LODE_ARC_PUMP": [
+      {
+        "species": "LEECHURGE",
+        "level": 38,
+        "moves": [
+          "BUBBLEBEAM",
+          "LEECH_LIFE",
+          "BITE",
+          "SCARY_FACE"
+        ]
+      },
+      {
+        "species": "PELLETOR",
+        "level": 38,
+        "moves": [
+          "METAL_CLAW",
+          "ROCK_SLIDE",
+          "IRON_TAIL",
+          "FLAMETHROWER"
+        ]
+      }
+    ],
+    "MN_LODE_ARC_INTAKE": [
+      {
+        "species": "CARTICK",
+        "level": 38,
+        "moves": [
+          "SLUDGE_BOMB",
+          "METAL_CLAW",
+          "SHADOW_BALL",
+          "MUD_SLAP"
+        ]
+      },
+      {
+        "species": "GOOSNIDE",
+        "level": 38,
+        "moves": [
+          "WING_ATTACK",
+          "CRUNCH",
+          "PURSUIT",
+          "CHARM"
+        ]
+      }
+    ],
+    "MN_LODE_ARC_SUMP": [
+      {
+        "species": "SLUDGESKI",
+        "level": 38,
+        "moves": [
+          "ICE_BEAM",
+          "ICY_WIND",
+          "POWDER_SNOW",
+          "SLUDGE"
+        ]
+      },
+      {
+        "species": "LEECHURGE",
+        "level": 39,
+        "moves": [
+          "BUBBLEBEAM",
+          "LEECH_LIFE",
+          "BITE",
+          "SCARY_FACE"
+        ]
+      }
+    ],
+    "MN_LODE_ARC_DRAIN": [
+      {
+        "species": "PELLETOR",
+        "level": 39,
+        "moves": [
+          "METAL_CLAW",
+          "ROCK_SLIDE",
+          "IRON_TAIL",
+          "FLAMETHROWER"
+        ]
+      },
+      {
+        "species": "CARTICK",
+        "level": 38,
+        "moves": [
+          "SLUDGE_BOMB",
+          "METAL_CLAW",
+          "SHADOW_BALL",
+          "MUD_SLAP"
+        ]
+      }
+    ],
+    "MN_LODE_ARC_VENT": [
+      {
+        "species": "GOOSNIDE",
+        "level": 39,
+        "moves": [
+          "WING_ATTACK",
+          "CRUNCH",
+          "PURSUIT",
+          "CHARM"
+        ]
+      },
+      {
+        "species": "LEECHURGE",
+        "level": 39,
+        "moves": [
+          "BUBBLEBEAM",
+          "LEECH_LIFE",
+          "BITE",
+          "SCARY_FACE"
+        ]
+      }
+    ],
+    "MN_LODE_ARC_SHIFT": [
+      {
+        "species": "PELLETOR",
+        "level": 39,
+        "moves": [
+          "METAL_CLAW",
+          "ROCK_SLIDE",
+          "IRON_TAIL",
+          "FLAMETHROWER"
+        ]
+      },
+      {
+        "species": "SLUDGESKI",
+        "level": 39,
+        "moves": [
+          "ICE_BEAM",
+          "ICY_WIND",
+          "POWDER_SNOW",
+          "SLUDGE"
+        ]
+      }
+    ],
+    "MN_LODE_ARC_CORE_WEST": [
+      {
+        "species": "CARTICK",
+        "level": 40,
+        "moves": [
+          "SLUDGE_BOMB",
+          "METAL_CLAW",
+          "SHADOW_BALL",
+          "MUD_SLAP"
+        ]
+      },
+      {
+        "species": "LEECHURGE",
+        "level": 40,
+        "moves": [
+          "BUBBLEBEAM",
+          "LEECH_LIFE",
+          "BITE",
+          "SCARY_FACE"
+        ]
+      }
+    ],
+    "MN_LODE_ARC_CORE_EAST": [
+      {
+        "species": "PELLETOR",
+        "level": 40,
+        "moves": [
+          "METAL_CLAW",
+          "ROCK_SLIDE",
+          "IRON_TAIL",
+          "FLAMETHROWER"
+        ]
+      },
+      {
+        "species": "GOOSNIDE",
+        "level": 40,
+        "moves": [
+          "WING_ATTACK",
+          "CRUNCH",
+          "PURSUIT",
+          "CHARM"
+        ]
+      }
+    ],
+    "MN_ICE_ARC_INTAKE_WEST": [
+      {
+        "species": "LEECHURGE",
+        "level": 42,
+        "moves": [
+          "BUBBLEBEAM",
+          "LEECH_LIFE",
+          "BITE",
+          "SCARY_FACE"
+        ]
+      },
+      {
+        "species": "CARTICK",
+        "level": 42,
+        "moves": [
+          "SLUDGE_BOMB",
+          "METAL_CLAW",
+          "SHADOW_BALL",
+          "MUD_SLAP"
+        ]
+      }
+    ],
+    "MN_LODE_ARC_INTAKE_EAST": [
+      {
+        "species": "MESABLAST",
+        "level": 42,
+        "moves": [
+          "ROCK_SLIDE",
+          "IRON_TAIL",
+          "IRON_HEAD",
+          "FLAMETHROWER"
+        ]
+      },
+      {
+        "species": "SLUDGESKI",
+        "level": 42,
+        "moves": [
+          "ICE_BEAM",
+          "ICY_WIND",
+          "POWDER_SNOW",
+          "SLUDGE"
+        ]
+      }
+    ],
+    "MN_ICE_ARC_INTAKE_RECORDS": [
+      {
+        "species": "MIDGEBIT",
+        "level": 43,
+        "moves": [
+          "WING_ATTACK",
+          "BITE",
+          "POISON_STING",
+          "SUPERSONIC"
+        ]
+      },
+      {
+        "species": "LEECHURGE",
+        "level": 42,
+        "moves": [
+          "BUBBLEBEAM",
+          "LEECH_LIFE",
+          "BITE",
+          "SCARY_FACE"
+        ]
+      },
+      {
+        "species": "CARTICK",
+        "level": 42,
+        "moves": [
+          "SLUDGE_BOMB",
+          "METAL_CLAW",
+          "SHADOW_BALL",
+          "MUD_SLAP"
+        ]
+      }
+    ],
+    "MN_LODE_ARC_INTAKE_CONTROL": [
+      {
+        "species": "PELLETOR",
+        "level": 43,
+        "moves": [
+          "ROCK_SLIDE",
+          "IRON_TAIL",
+          "FLAMETHROWER",
+          "BARRIER"
+        ]
+      },
+      {
+        "species": "GOOSNIDE",
+        "level": 42,
+        "moves": [
+          "WING_ATTACK",
+          "CRUNCH",
+          "PURSUIT",
+          "CHARM"
+        ]
+      },
+      {
+        "species": "SLUDGESKI",
+        "level": 42,
+        "moves": [
+          "ICE_BEAM",
+          "ICY_WIND",
+          "POWDER_SNOW",
+          "SLUDGE"
+        ]
+      }
     ]
   },
   "faction_identity": {
@@ -386,6 +1040,42 @@
     "MN_REED_RELAY": "EXECUTIVEM_1",
     "MN_ICE_ENFORCER": "EXECUTIVEM_1",
     "MN_REED_MINE": "EXECUTIVEM_1",
-    "MN_LODE_CHIEF": "EXECUTIVEM_1"
-  }
+    "MN_LODE_CHIEF": "EXECUTIVEM_1",
+    "MN_REED_ROCHESTER": "EXECUTIVEM_1",
+    "MN_REED_STPAUL": "EXECUTIVEM_1",
+    "MN_REED_BOUNDARY": "EXECUTIVEM_1"
+  },
+  "optional_faction_teams": [
+    "MN_ICE_CARGO_GUARD",
+    "MN_ICE_RELAY_GUARD",
+    "MN_REED_RELAY",
+    "MN_REED_MINE",
+    "MN_REED_ROCHESTER",
+    "MN_REED_STPAUL",
+    "MN_REED_BOUNDARY",
+    "MN_ICE_HQ_CARGO_SEARCH",
+    "MN_ICE_HQ_CARGO_MANIFEST",
+    "MN_ICE_HQ_DISPATCH",
+    "MN_ICE_HQ_OPERATIONS_PATROL",
+    "MN_ICE_HQ_ARCHIVE",
+    "MN_ICE_HQ_WORKSHOP",
+    "MN_ICE_HQ_ESCORT",
+    "MN_ICE_HQ_RELAY_PATROL",
+    "MN_LODE_ARC_ACCESS",
+    "MN_LODE_ARC_SPOIL",
+    "MN_LODE_ARC_WEIGH",
+    "MN_LODE_ARC_CONVEYOR",
+    "MN_LODE_ARC_PUMP",
+    "MN_LODE_ARC_INTAKE",
+    "MN_LODE_ARC_SUMP",
+    "MN_LODE_ARC_DRAIN",
+    "MN_LODE_ARC_VENT",
+    "MN_LODE_ARC_SHIFT",
+    "MN_LODE_ARC_CORE_WEST",
+    "MN_LODE_ARC_CORE_EAST",
+    "MN_ICE_ARC_INTAKE_WEST",
+    "MN_LODE_ARC_INTAKE_EAST",
+    "MN_ICE_ARC_INTAKE_RECORDS",
+    "MN_LODE_ARC_INTAKE_CONTROL"
+  ]
 }

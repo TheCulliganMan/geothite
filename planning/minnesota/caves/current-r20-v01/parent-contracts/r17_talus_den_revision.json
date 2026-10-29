@@ -1,0 +1,143 @@
+{
+  "schema_version": 1,
+  "id": "CURRENT_R20_SEEP_CLEFT_V01",
+  "room": "MnR20Cave1F",
+  "parent_revision": "r17_talus_den_revision",
+  "parent_pack": "content-packs/minnesota-r17-talus-den-v01.crystalpack",
+  "parent_sha256": "46074029adacca1aa0da411dbe878bb57b6e488d81eb5f2b444d0b40f9ffc329",
+  "previous_source": "planning/minnesota/caves/johto-quality-v01/MnR20Cave1F.previous.json",
+  "previous_source_sha256": "72a17aece9bf2e50ef7789550053b594d7934b61f03d021ab1ea124839845688",
+  "revised_source": "planning/minnesota/caves/johto-quality-v01/MnR20Cave1F.json",
+  "revised_source_sha256": "2121f1208195a058db12bdfc64ae90c9cd61329c19b39fd5a87bc4ba63f32514",
+  "dimensions_metatiles": [
+    9,
+    8
+  ],
+  "palette": "nite",
+  "border_block": "2e",
+  "water_core_cells": 8,
+  "mouths": [
+    {
+      "label": "west",
+      "inside_warp_index": 1,
+      "inside_core": [
+        5,
+        13
+      ],
+      "exterior": "MnR20C00R00",
+      "active_warp_index": 1,
+      "active_core": [
+        60,
+        33
+      ],
+      "passive_warp_index": 2,
+      "passive_core": [
+        60,
+        34
+      ]
+    },
+    {
+      "label": "east",
+      "inside_warp_index": 2,
+      "inside_core": [
+        13,
+        13
+      ],
+      "exterior": "MnR20C01R00",
+      "active_warp_index": 1,
+      "active_core": [
+        12,
+        31
+      ],
+      "passive_warp_index": 2,
+      "passive_core": [
+        12,
+        32
+      ]
+    }
+  ],
+  "reward": {
+    "item": "HYPER_POTION",
+    "quantity": 1,
+    "flag": "EVENT_MN_R20_ITEM_01",
+    "actor": [
+      5,
+      5
+    ],
+    "approach": [
+      4,
+      5
+    ]
+  },
+  "native_stair_metatiles": [
+    [
+      2,
+      3
+    ],
+    [
+      5,
+      5
+    ]
+  ],
+  "left_drops": [
+    {
+      "approach": [
+        10,
+        8
+      ],
+      "lip": [
+        9,
+        8
+      ],
+      "wall": [
+        8,
+        8
+      ],
+      "landing": [
+        7,
+        8
+      ],
+      "ordinary_return_inputs": 15
+    },
+    {
+      "approach": [
+        10,
+        9
+      ],
+      "lip": [
+        9,
+        9
+      ],
+      "wall": [
+        8,
+        9
+      ],
+      "landing": [
+        7,
+        9
+      ],
+      "ordinary_return_inputs": 13
+    }
+  ],
+  "closed_ledge_shoulders_core": [
+    [
+      8,
+      7
+    ],
+    [
+      9,
+      7
+    ],
+    [
+      8,
+      10
+    ],
+    [
+      9,
+      10
+    ]
+  ],
+  "native_east_passive_rule": "Keep original east passive warp2 target_warp_id=1. It is a safe floor record, not the active east entrance; do not normalize it to2.",
+  "preservation": "Only R20 cave blocks, border, native block/attribute mirrors and derived identity may change; all690 other complete maps/programs/resources/roster/art/audio remain exact.",
+  "scope": "Authored contract; fresh native preservation, gameplay/MCP, visuals and parent integration checks required before selection."
+}

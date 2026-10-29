@@ -179,51 +179,95 @@
   ],
   "main_path_metatiles": [
     [
+      35,
+      4
+    ],
+    [
+      34,
+      4
+    ],
+    [
+      34,
+      5
+    ],
+    [
+      33,
+      5
+    ],
+    [
+      33,
+      6
+    ],
+    [
+      31,
+      6
+    ],
+    [
+      31,
+      4
+    ],
+    [
+      25,
+      4
+    ],
+    [
+      25,
+      3
+    ],
+    [
       20,
       3
     ],
     [
       20,
-      8
+      7
+    ],
+    [
+      18,
+      7
+    ],
+    [
+      18,
+      12
+    ],
+    [
+      20,
+      12
+    ],
+    [
+      20,
+      22
     ],
     [
       17,
-      8
+      22
     ],
     [
       17,
-      16
+      25
+    ],
+    [
+      19,
+      25
+    ],
+    [
+      19,
+      28
     ],
     [
       20,
-      16
+      28
     ],
     [
       20,
-      23
+      39
     ],
     [
-      16,
-      23
+      15,
+      39
     ],
     [
-      16,
-      30
-    ],
-    [
-      20,
-      30
-    ],
-    [
-      20,
-      41
-    ],
-    [
-      16,
-      41
-    ],
-    [
-      16,
+      15,
       42
     ],
     [
@@ -235,43 +279,51 @@
       44
     ],
     [
-      16,
+      18,
       44
     ],
     [
-      16,
-      46
-    ],
-    [
-      16,
-      47
+      18,
+      45
     ],
     [
       20,
-      47
+      45
     ],
     [
       20,
       56
     ],
     [
-      17,
+      18,
       56
     ],
     [
-      17,
-      70
+      18,
+      60
     ],
     [
       17,
+      60
+    ],
+    [
+      17,
+      62
+    ],
+    [
+      18,
+      62
+    ],
+    [
+      18,
       72
     ],
     [
-      20,
+      21,
       72
     ],
     [
-      20,
+      21,
       74
     ],
     [
@@ -288,14 +340,22 @@
     ],
     [
       22,
-      80
+      79
     ],
     [
       20,
-      80
+      79
     ],
     [
       20,
+      82
+    ],
+    [
+      21,
+      82
+    ],
+    [
+      21,
       83
     ],
     [
@@ -304,35 +364,11 @@
     ],
     [
       22,
-      85
-    ],
-    [
-      20,
-      85
-    ],
-    [
-      20,
       86
     ],
     [
       23,
       86
-    ],
-    [
-      23,
-      90
-    ],
-    [
-      25,
-      90
-    ],
-    [
-      25,
-      92
-    ],
-    [
-      23,
-      92
     ],
     [
       23,
@@ -559,12 +595,13 @@
     {
       "id": "SOUTHERN_SHORE_HABITAT",
       "bounds_core": [
-        32,
-        126,
+        34,
+        138,
         38,
-        132
+        142
       ],
-      "minimum_grass_steps": 6
+      "minimum_grass_steps": 4,
+      "current_binding_note": "Previous126..132annotationisnowtheinstalledSplitRockPokecenterfacade;thecurrentrequiredhabitatistheactualStoneyPointneckextendedbythisgrassrevision."
     },
     {
       "id": "BIRCH_SWITCHBACK_GRASS",
@@ -589,11 +626,11 @@
       "sight_range": 1,
       "party": [
         {
-          "species": "GRAVELER",
+          "species": "BANDRAKE",
           "level": 38
         },
         {
-          "species": "ONIX",
+          "species": "PELLETANK",
           "level": 38
         }
       ],
@@ -602,7 +639,7 @@
       "before_text": "Basalt holds heat. My team does too!",
       "after_text": "Solid footing! Keep going north.",
       "loss_text": "Steady your feet. We can try again.",
-      "display_name": "Dale",
+      "display_name": "DALE",
       "trainer_class": "HIKER",
       "sprite": "SPRITE_POKEFAN_M",
       "tile": [
@@ -633,11 +670,11 @@
       "sight_range": 1,
       "party": [
         {
-          "species": "SUNFLORA",
+          "species": "PITCHWICK",
           "level": 39
         },
         {
-          "species": "NOCTOWL",
+          "species": "BOOMRUFF",
           "level": 38
         }
       ],
@@ -646,7 +683,7 @@
       "before_text": "The lake's loud. The grove is calm. Hear the wings?",
       "after_text": "Both shores have their own rhythm.",
       "loss_text": "My wings need a rest.",
-      "display_name": "Dana",
+      "display_name": "DANA",
       "trainer_class": "COOLTRAINERF",
       "sprite": "SPRITE_COOLTRAINER_F",
       "tile": [
@@ -678,11 +715,11 @@
       "sight_range": 1,
       "party": [
         {
-          "species": "LANTURN",
+          "species": "BUOYOSTIC",
           "level": 40
         },
         {
-          "species": "MANTINE",
+          "species": "DRIFTILE",
           "level": 40
         }
       ],
@@ -691,7 +728,7 @@
       "before_text": "Land or water? We train for both.",
       "after_text": "LANTURN shines through the fog.",
       "loss_text": "Steady your feet. We can try again.",
-      "display_name": "Sivren",
+      "display_name": "MARA",
       "trainer_class": "COOLTRAINERF",
       "sprite": "SPRITE_COOLTRAINER_F",
       "tile": [
@@ -703,7 +740,7 @@
         "We train for both."
       ],
       "after_lines": [
-        "LANTURN shines",
+        "BUOYOSTIC shines",
         "through the fog."
       ],
       "loss_lines": [
@@ -722,11 +759,11 @@
       "sight_range": 1,
       "party": [
         {
-          "species": "URSARING",
+          "species": "DOZEBEAR",
           "level": 40
         },
         {
-          "species": "GRAVELER",
+          "species": "BANDRAKE",
           "level": 39
         }
       ],
@@ -735,7 +772,7 @@
       "before_text": "A quiet fern bed? Not with URSARING!",
       "after_text": "Leave the ferns as you found them.",
       "loss_text": "Steady your feet. We can try again.",
-      "display_name": "Erik",
+      "display_name": "ERIK",
       "trainer_class": "HIKER",
       "sprite": "SPRITE_POKEFAN_M",
       "tile": [
@@ -744,7 +781,7 @@
       ],
       "before_lines": [
         "A quiet fern bed?",
-        "Not with URSARING!"
+        "Not with DOZEBEAR!"
       ],
       "after_lines": [
         "Leave the ferns",
@@ -766,11 +803,11 @@
       "sight_range": 1,
       "party": [
         {
-          "species": "QUAGSIRE",
+          "species": "MUDMENDER",
           "level": 40
         },
         {
-          "species": "SEAKING",
+          "species": "TORROUT",
           "level": 40
         }
       ],
@@ -779,7 +816,7 @@
       "before_text": "Fish swim upstream So does my team!",
       "after_text": "A strong current takes a calm head.",
       "loss_text": "Steady your feet. We can try again.",
-      "display_name": "Reed",
+      "display_name": "NILS",
       "trainer_class": "FISHER",
       "sprite": "SPRITE_FISHER",
       "tile": [
@@ -810,11 +847,11 @@
       "sight_range": 1,
       "party": [
         {
-          "species": "NOCTOWL",
+          "species": "BOOMRUFF",
           "level": 41
         },
         {
-          "species": "FEAROW",
+          "species": "GOUGECREST",
           "level": 40
         }
       ],
@@ -823,7 +860,7 @@
       "before_text": "Hear those wings? Watch our landing!",
       "after_text": "The gorge carries every wingbeat.",
       "loss_text": "Steady your feet. We can try again.",
-      "display_name": "Ivo",
+      "display_name": "IVO",
       "trainer_class": "BIRD_KEEPER",
       "sprite": "SPRITE_YOUNGSTER",
       "tile": [
@@ -854,11 +891,11 @@
       "sight_range": 1,
       "party": [
         {
-          "species": "ONIX",
+          "species": "PELLETANK",
           "level": 41
         },
         {
-          "species": "MAGCARGO",
+          "species": "SMOULDEN",
           "level": 41
         }
       ],
@@ -867,7 +904,7 @@
       "before_text": "Old lava made this rock. Meet my team",
       "after_text": "Even old stone can surprise you.",
       "loss_text": "Steady your feet. We can try again.",
-      "display_name": "Ansel",
+      "display_name": "ANSEL",
       "trainer_class": "HIKER",
       "sprite": "SPRITE_POKEFAN_M",
       "tile": [
@@ -898,11 +935,11 @@
       "sight_range": 1,
       "party": [
         {
-          "species": "SUDOWOODO",
+          "species": "BURROOT",
           "level": 42
         },
         {
-          "species": "AMPHAROS",
+          "species": "BEETYNAMO",
           "level": 41
         }
       ],
@@ -911,7 +948,7 @@
       "before_text": "A tree or a rock? Look a bit closer!",
       "after_text": "AMPHAROS lights our way home.",
       "loss_text": "Steady your feet. We can try again.",
-      "display_name": "Faye",
+      "display_name": "FAYE",
       "trainer_class": "COOLTRAINERF",
       "sprite": "SPRITE_COOLTRAINER_F",
       "tile": [
@@ -923,7 +960,7 @@
         "Look a bit closer!"
       ],
       "after_lines": [
-        "AMPHAROS lights",
+        "BEETYNAMO lights",
         "our way home."
       ],
       "loss_lines": [
@@ -942,11 +979,11 @@
       "sight_range": 1,
       "party": [
         {
-          "species": "GYARADOS",
+          "species": "PIKEMAN",
           "level": 42
         },
         {
-          "species": "QWILFISH",
+          "species": "POTHOLLOW",
           "level": 41
         }
       ],
@@ -955,7 +992,7 @@
       "before_text": "My line went slack Time for a battle!",
       "after_text": "A pebble beach is a fine rest.",
       "loss_text": "Steady your feet. We can try again.",
-      "display_name": "Finn",
+      "display_name": "FINN",
       "trainer_class": "FISHER",
       "sprite": "SPRITE_FISHER",
       "tile": [
@@ -986,11 +1023,11 @@
       "sight_range": 1,
       "party": [
         {
-          "species": "PIDGEOT",
+          "species": "PRAIRONDO",
           "level": 43
         },
         {
-          "species": "NOCTOWL",
+          "species": "BOOMRUFF",
           "level": 42
         }
       ],
@@ -999,7 +1036,7 @@
       "before_text": "Pines bend in wind Our wings use it!",
       "after_text": "GRAND MARAIS is just up the trail.",
       "loss_text": "Steady your feet. We can try again.",
-      "display_name": "Will",
+      "display_name": "WILL",
       "trainer_class": "BIRD_KEEPER",
       "sprite": "SPRITE_YOUNGSTER",
       "tile": [
@@ -1315,7 +1352,7 @@
         6,
         5
       ],
-      "source_behavior": "Preserved native 6×5 keeper room/identity and both carpet exits. Bind both exits to exterior passive Floor record 2.",
+      "source_behavior": "Preserved native 6\u00d75 keeper room/identity and both carpet exits. Bind both exits to exterior passive Floor record 2.",
       "template": "OlivineLighthouse1F",
       "rows": [
         "0c 3e 29 29 3e 0c",
@@ -1457,7 +1494,8 @@
         23,
         22
       ],
-      "collision": "DOOR"
+      "collision": "DOOR",
+      "return_target_warp": 3
     }
   ],
   "viewpoints": [
@@ -1732,11 +1770,11 @@
   ],
   "unused_reservations": {
     "shortcut": "MN_R11_SHORTCUT no longer used: previous tree removal did not prove a sealed useful area. No decorative Cut remains.",
-    "chunks": "Retain MnR11C00R00..02; retire nine superseded chunks from the previous 64×144 extent."
+    "chunks": "Retain MnR11C00R00..02; retire nine superseded chunks from the previous 64\u00d7144 extent."
   },
   "status": "MATCHES_COMPOSED_NATIVE_GEOGRAPHY",
   "anchor_status": "Original native actors/doors/parties retained; west-entry terrain and connected Foot/Surf verified. See revisions/north-shore-ely-geography-v01/VERIFICATION.md.",
-  "historical_evidence_note": "2026-10-25native401-map publication and captures apply only to the previous64×144overlay, not this revision.",
+  "historical_evidence_note": "2026-10-25native401-map publication and captures apply only to the previous64\u00d7144overlay, not this revision.",
   "waterfall_summit": {
     "water_arrival": [
       20,
@@ -2393,7 +2431,8 @@
               38,
               171
             ]
-          }
+          },
+          "after_collision": "TALL_GRASS"
         }
       ],
       "dry_seams": [
@@ -2487,32 +2526,192 @@
           57
         ],
         [
-          62,
+          54,
           57
         ],
         [
-          62,
-          20
+          54,
+          25
         ],
         [
-          102,
-          20
+          48,
+          25
         ],
         [
-          102,
+          48,
+          24
+        ],
+        [
+          71,
+          24
+        ],
+        [
+          69,
+          24
+        ],
+        [
+          69,
+          48
+        ],
+        [
+          71,
+          48
+        ],
+        [
+          71,
+          50
+        ],
+        [
+          96,
+          50
+        ],
+        [
+          96,
+          72
+        ],
+        [
+          56,
+          72
+        ],
+        [
+          56,
+          74
+        ],
+        [
+          50,
+          74
+        ],
+        [
+          50,
+          76
+        ],
+        [
+          42,
+          76
+        ],
+        [
+          56,
+          76
+        ],
+        [
+          56,
+          114
+        ],
+        [
+          52,
+          114
+        ],
+        [
+          52,
+          122
+        ],
+        [
+          36,
+          122
+        ],
+        [
+          96,
+          122
+        ],
+        [
+          96,
           120
         ],
         [
-          62,
+          66,
           120
         ],
         [
-          62,
-          170
+          66,
+          138
         ],
         [
-          102,
-          170
+          64,
+          138
+        ],
+        [
+          64,
+          140
+        ],
+        [
+          56,
+          140
+        ],
+        [
+          56,
+          142
+        ],
+        [
+          54,
+          142
+        ],
+        [
+          54,
+          162
+        ],
+        [
+          42,
+          162
+        ],
+        [
+          42,
+          163
+        ],
+        [
+          55,
+          163
+        ],
+        [
+          55,
+          161
+        ],
+        [
+          96,
+          161
+        ],
+        [
+          96,
+          168
+        ],
+        [
+          66,
+          168
+        ],
+        [
+          66,
+          135
+        ],
+        [
+          64,
+          135
+        ],
+        [
+          64,
+          65
+        ],
+        [
+          58,
+          65
+        ],
+        [
+          58,
+          63
+        ],
+        [
+          54,
+          63
+        ],
+        [
+          54,
+          61
+        ],
+        [
+          52,
+          61
+        ],
+        [
+          52,
+          57
         ]
       ],
       "sea_boundary_probes": [
@@ -2530,17 +2729,6 @@
         {
           "at": [
             90,
-            1
-          ],
-          "target": [
-            90,
-            0
-          ],
-          "expected": "BUOY"
-        },
-        {
-          "at": [
-            90,
             190
           ],
           "target": [
@@ -2548,6 +2736,17 @@
             191
           ],
           "expected": "BUOY"
+        },
+        {
+          "at": [
+            68,
+            14
+          ],
+          "target": [
+            68,
+            13
+          ],
+          "expected": "WALL"
         }
       ],
       "fixture_scope": "source-checked probes only; use real Surf/controller input and explicit initial party/badges, no post-setup state rewrites"
@@ -2649,7 +2848,8 @@
       "collision": "WALL in all quadrants",
       "reason": "Cropped northern neighbor has no target beyond corex7. Close actual lower-map north edge visibly instead of relying on its broad north connection."
     },
-    "native_shore_bank": "Source-v04: compact meta0..2,row7 use native76 horizontal bank rather than58 side-bank corners; WATER4 collision unchanged."
+    "native_shore_bank": "Source-v04: compact meta0..2,row7 use native76 horizontal bank rather than58 side-bank corners; WATER4 collision unchanged.",
+    "controller_probe_revision": "Actual eight-map water footprint; no coordinates in retired top-right canvas. Two original outer-sea probes plus exact compact blocking-bank probe."
   },
   "retired_camera_points": [
     {
@@ -2665,6 +2865,93 @@
         90,
         5
       ]
+    }
+  ],
+  "directional_grass_loops": [
+    {
+      "id": "BIRCH_GRASS_CLIMB_OR_DRY_HOP",
+      "ledge_id": "BIRCH_SWITCHBACK_DROP",
+      "outbound_start_core": [
+        33,
+        92
+      ],
+      "outbound_end_core": [
+        33,
+        89
+      ],
+      "grass_regions_core": [
+        [
+          28,
+          86,
+          30,
+          90
+        ],
+        [
+          32,
+          88,
+          36,
+          90
+        ]
+      ],
+      "northbound_minimum_grass_steps": 3,
+      "southbound_minimum_grass_steps": 0,
+      "dry_trail_core": [
+        [
+          33,
+          92
+        ]
+      ],
+      "scope": "Birch switchback circuit: grass on the ordinary climb; no additional grass after the upper-edge hop.",
+      "all_ledge_lanes_minimum_grass_steps": 3
+    },
+    {
+      "id": "LESTER_GRASS_CLIMB_OR_DRY_HOP",
+      "ledge_id": "LESTER_TERRACE_DROP",
+      "outbound_start_core": [
+        35,
+        174
+      ],
+      "outbound_end_core": [
+        35,
+        171
+      ],
+      "grass_regions_core": [
+        [
+          32,
+          168,
+          38,
+          172
+        ]
+      ],
+      "northbound_minimum_grass_steps": 4,
+      "southbound_minimum_grass_steps": 0,
+      "dry_trail_core": [
+        [
+          35,
+          174
+        ]
+      ],
+      "scope": "Lester terrace: encounter crown on the climb and dry landing on the original hop.",
+      "all_ledge_lanes_minimum_grass_steps": 2
+    }
+  ],
+  "installed_extensions_preserved": [
+    {
+      "map": "MnSplitRockPokecenter1F",
+      "exterior_active_core": [
+        33,
+        129
+      ],
+      "exterior_passive_core": [
+        33,
+        130
+      ],
+      "exterior_warp_indices": [
+        3,
+        4
+      ],
+      "destination_warp": 3,
+      "scope": "Already installed by interior-life publication; unchanged by grass terrain revision."
     }
   ]
 }

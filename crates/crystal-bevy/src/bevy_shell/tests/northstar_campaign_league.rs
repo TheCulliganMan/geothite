@@ -89,7 +89,7 @@ fn supplies(c: &mut VisibleShellController, r: &CrystalRuntime) {
         checkout(c, r, id, count);
     }
     eprintln!(
-        "Boosted League review carried medicine: MAX_POTION={}, FULL_HEAL={}, REVIVE={}, remaining earned money={}",
+        "League review carried earned medicine: MAX_POTION={}, FULL_HEAL={}, REVIVE={}, remaining earned money={}",
         c.shell
             .shell
             .session()
@@ -145,6 +145,12 @@ fn northstar_campaign_boosted_ely_league_hall_of_fame_and_postgame() {
     assert!(std::env::var_os("CRYSTAL_NORTHSTAR_REVIEW_LEVEL").is_some());
     let (root, r, mut c) = arrival();
     boost(&mut c, &r);
+    play_chapter(root, r, c);
+}
+
+/// Play registration, the five native battles and the ceremony with the carried party.
+/// This function never changes levels, HP, items, money or progression directly.
+pub(super) fn play_chapter(root: AssetRoot, r: CrystalRuntime, mut c: VisibleShellController) {
     if c.snapshot().expect("Ely approach").overworld.map_name == "MnR13C00R02" {
         travel(&mut c, GameButton::Down, "MnEly", (24, 0));
         travel(&mut c, GameButton::Down, "MnEly", (24, 1));
@@ -239,7 +245,7 @@ fn northstar_campaign_boosted_ely_league_hall_of_fame_and_postgame() {
         .expect("clock")
         .as_nanos();
     let path = dir.join(format!(
-        "boosted-review-league-hof-{}-{nonce}.crystalsave",
+        "campaign-league-hof-{}-{nonce}.crystalsave",
         std::process::id()
     ));
     c.shell.quick_save_path = Some(path.clone());

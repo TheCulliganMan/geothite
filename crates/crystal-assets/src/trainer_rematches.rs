@@ -197,6 +197,11 @@ impl GameDataSet {
         self.trainer_rematches && source.starts_with(SCRIPT_PREFIX)
     }
 
+    pub(crate) fn uses_scaled_trainer(&self, source: &str, trainer: &str) -> bool {
+        self.is_trainer_rematch_script(source)
+            || (self.minnesota_trainer_scaling && trainer.starts_with("MN_"))
+    }
+
     pub(crate) fn record_trainer_rematch_win(
         &self,
         state: &mut GameState,
@@ -350,11 +355,23 @@ impl GameDataSet {
             .map(|p| p.level)
             .max()
             .context("empty trainer team")?;
+        // Minnesota difficulty follows the current collection, so depositing
+        // a strong Pokemon or swapping the active team cannot lower opponents.
+        // Stock rematches retain their existing active-party scaling.
+        let collection_scaling =
+            self.minnesota_trainer_scaling && request.trainer_id.starts_with("MN_");
+        let stored = state
+            .storage
+            .pc_boxes
+            .iter()
+            .filter(|_| collection_scaling)
+            .flat_map(|pc_box| pc_box.pokemon.iter());
         let mut levels: Vec<_> = state
             .storage
             .party
             .pokemon
             .iter()
+            .chain(stored)
             .flatten()
             .filter(|p| !p.is_egg)
             .map(|p| u16::from(p.level))
@@ -363,6 +380,10 @@ impl GameDataSet {
         levels.truncate(3);
         let anchor = if levels.is_empty() {
             authored_ace
+        } else if collection_scaling {
+            // The maximum is monotone as the collection grows. An average can
+            // drop when a weak catch fills a previously empty top-three slot.
+            levels[0] as u8
         } else {
             ((levels.iter().sum::<u16>() + levels.len() as u16 / 2) / levels.len() as u16) as u8
         };
@@ -399,9 +420,36 @@ impl GameDataSet {
         for (slot, original) in scaled.party.iter_mut().zip(original) {
             let authored_level = slot.level;
             slot.level += ace - authored_ace;
-            slot.moves = self.rematch_moves(&original, authored_level, slot.level)?;
+            if self.minnesota_trainer_scaling && trainer.trainer_id.starts_with("MN_") {
+                slot.species = self.rematch_evolved_species(&slot.species, slot.level)?;
+            }
+            slot.moves =
+                self.rematch_moves(&original, authored_level, slot.level, &slot.species)?;
         }
         Ok(scaled)
+    }
+
+    // Only level-triggered evolutions are implied by training. Stones, trades,
+    // friendship and branching choices remain part of the authored roster.
+    fn rematch_evolved_species(&self, species: &str, level: u8) -> Result<String> {
+        let mut species = species.to_owned();
+        let mut visited = BTreeSet::new();
+        while visited.insert(species.clone()) {
+            let next = self.evolutions.0.get(&species).and_then(|entries| {
+                entries.iter().find(|entry| {
+                    entry.method == "LEVEL" && entry.level.is_some_and(|required| required <= level)
+                })
+            });
+            let Some(next) = next else {
+                return Ok(species);
+            };
+            ensure!(
+                self.pokemon.contains_key(&next.species),
+                "trainer evolution target missing"
+            );
+            species.clone_from(&next.species);
+        }
+        anyhow::bail!("cycle in trainer evolution family: {species}")
     }
 
     fn rematch_moves(
@@ -409,14 +457,17 @@ impl GameDataSet {
         original: &Pokemon,
         authored: u8,
         level: u8,
+        species: &str,
     ) -> Result<Vec<LearnedMove>> {
         let mut moves: Vec<_> = original.moves.iter().map(|m| m.name.clone()).collect();
         for entry in self
             .learnsets
-            .get(&original.species.id)
+            .get(species)
             .context("rematch learnset missing")?
             .iter()
-            .filter(|entry| entry.0 > authored && entry.0 <= level)
+            .filter(|entry| {
+                entry.0 <= level && (species != original.species.id || entry.0 > authored)
+            })
         {
             if !moves.contains(&entry.1) {
                 if moves.len() == 4 {

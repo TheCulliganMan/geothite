@@ -1657,7 +1657,8 @@
         10
       ],
       "exterior_warp_index": 3,
-      "exterior_return_warp_index": 4
+      "exterior_return_warp_index": 4,
+      "purpose": "Free party care, a native PC and lake-country residents preparing for the road."
     },
     {
       "interior": "MnDetroitLakesMart",
@@ -1695,7 +1696,8 @@
         18
       ],
       "exterior_warp_index": 5,
-      "exterior_return_warp_index": 6
+      "exterior_return_warp_index": 6,
+      "purpose": "A native paid supply shop and local shopper stop before the lake-country journey."
     },
     {
       "interior": "MnMoorheadPokecenter1F",
@@ -1733,7 +1735,8 @@
       "exterior_warp_index": 1,
       "exterior_return_warp_index": 2,
       "source_file": "towns/MnMoorhead.json",
-      "source_room_id": "MnMoorheadPokecenter1F"
+      "source_room_id": "MnMoorheadPokecenter1F",
+      "purpose": "Free care and a native PC with prairie travelers and a readable waiting-room layout."
     },
     {
       "interior": "MnMoorheadMart",
@@ -1771,7 +1774,8 @@
       "exterior_warp_index": 3,
       "exterior_return_warp_index": 4,
       "source_file": "towns/MnMoorhead.json",
-      "source_room_id": "MnMoorheadMart"
+      "source_room_id": "MnMoorheadMart",
+      "purpose": "A native paid prairie supply shop with local customers and a distinct store interior."
     },
     {
       "interior": "MnInternationalFallsPokecenter1F",
@@ -1809,7 +1813,8 @@
       "exterior_warp_index": 1,
       "exterior_return_warp_index": 2,
       "source_file": "towns/MnInternationalFalls.json",
-      "source_room_id": "MnInternationalFallsPokecenter1F"
+      "source_room_id": "MnInternationalFallsPokecenter1F",
+      "purpose": "Free care and a native PC, with residents preparing for the Rainy River winter roads."
     },
     {
       "interior": "MnInternationalFallsMart",
@@ -1847,7 +1852,8 @@
       "exterior_warp_index": 3,
       "exterior_return_warp_index": 4,
       "source_file": "towns/MnInternationalFalls.json",
-      "source_room_id": "MnInternationalFallsMart"
+      "source_room_id": "MnInternationalFallsMart",
+      "purpose": "A native paid supply shop for the border-road and winter travelers."
     },
     {
       "interior": "MnR09Cave1F",
@@ -2837,7 +2843,8 @@
       "exterior_warp_index": 1,
       "exterior_return_warp_index": 2,
       "exterior_door_status": "Native facade, passive arrival and both carpets published and production-controller verified; see interior-life/DETROIT-LAKES.md. Glacier Line rides remain unfinished.",
-      "requires_real_collision_check": true
+      "requires_real_collision_check": true,
+      "purpose": "A staffed rail hall with the weather ledger, parcel counter and waiting travelers; passenger service is tracked separately."
     },
     {
       "interior": "MnDetroitLakesCanoeCabin",
@@ -2874,7 +2881,8 @@
       "exterior_warp_index": 7,
       "exterior_return_warp_index": 8,
       "exterior_door_status": "Native facade, passive arrival and both carpets published and production-controller verified; see interior-life/DETROIT-LAKES.md. Glacier Line rides remain unfinished.",
-      "requires_real_collision_check": true
+      "requires_real_collision_check": true,
+      "purpose": "A canoe household sharing lake-country travel stories and practical route advice."
     },
     {
       "interior": "MnDetroitLakesRangerCabin",
@@ -2911,7 +2919,8 @@
       "exterior_warp_index": 9,
       "exterior_return_warp_index": 10,
       "exterior_door_status": "Native facade, passive arrival and both carpets published and production-controller verified; see interior-life/DETROIT-LAKES.md. Glacier Line rides remain unfinished.",
-      "requires_real_collision_check": true
+      "requires_real_collision_check": true,
+      "purpose": "A ranger cabin with local travel advice and a distinct working-room identity."
     },
     {
       "interior": "MnStCloudStation",
@@ -3967,6 +3976,172 @@
       "legacy_return_warp_index": 6,
       "exterior_door_status": "Original active door index preserved; native exit automatically steps onto safe exterior floor. Not a passive-return retrofit.",
       "requires_real_collision_check": true
+    },
+    {
+      "interior": "MnGrandMaraisShoreGate",
+      "parent": "MnGrandMarais",
+      "source_file": "towns/MnGrandMaraisShoreGate.json",
+      "source_room_id": "MnGrandMaraisShoreGate",
+      "access_kind": "published_road_gatehouse",
+      "reference": "IlexForestAzaleaGate",
+      "dimensions_metatiles": [
+        5,
+        4
+      ],
+      "arrival_core": [
+        1,
+        4
+      ],
+      "arrival_warp_index": 5,
+      "passive_arrivals": [
+        {
+          "index": 5,
+          "tile": [
+            1,
+            4
+          ],
+          "target": "MnMaraisCedarApproach",
+          "target_warp": 3
+        },
+        {
+          "index": 6,
+          "tile": [
+            1,
+            5
+          ],
+          "target": "MnMaraisCedarApproach",
+          "target_warp": 4
+        },
+        {
+          "index": 7,
+          "tile": [
+            8,
+            4
+          ],
+          "target": "MnMaraisCedarApproach",
+          "target_warp": 7
+        },
+        {
+          "index": 8,
+          "tile": [
+            8,
+            5
+          ],
+          "target": "MnMaraisCedarApproach",
+          "target_warp": 8
+        }
+      ],
+      "return_trigger_core": [
+        0,
+        4
+      ],
+      "return_triggers_core": [
+        [
+          0,
+          4
+        ],
+        [
+          0,
+          5
+        ],
+        [
+          9,
+          4
+        ],
+        [
+          9,
+          5
+        ]
+      ],
+      "exterior_map": "MnMaraisCedarApproach",
+      "exterior_dimensions_metatiles": [
+        32,
+        19
+      ],
+      "exterior_tileset": "johto",
+      "exterior_sides": [
+        {
+          "name": "town",
+          "entrances": [
+            [
+              39,
+              26
+            ],
+            [
+              39,
+              27
+            ]
+          ],
+          "returns": [
+            [
+              38,
+              26
+            ],
+            [
+              38,
+              27
+            ]
+          ],
+          "active_indices": [
+            1,
+            2
+          ],
+          "passive_indices": [
+            3,
+            4
+          ],
+          "room_passive_indices": [
+            5,
+            6
+          ]
+        },
+        {
+          "name": "shore",
+          "entrances": [
+            [
+              44,
+              26
+            ],
+            [
+              44,
+              27
+            ]
+          ],
+          "returns": [
+            [
+              45,
+              26
+            ],
+            [
+              45,
+              27
+            ]
+          ],
+          "active_indices": [
+            5,
+            6
+          ],
+          "passive_indices": [
+            7,
+            8
+          ],
+          "room_passive_indices": [
+            7,
+            8
+          ]
+        }
+      ],
+      "base_content_hash": "d09cff71ce8b879b5226347e6f430fd7d3ddc2458348a242b5ef8eb36581bf14",
+      "integration_scope": "preserved_winona_lineage",
+      "canonical_rebase_required": true,
+      "native_identity": {
+        "group_id": 90,
+        "map_id": 1,
+        "constant": "MN_GRAND_MARAIS_SHORE_GATE"
+      },
+      "requires_real_collision_check": true,
+      "exterior_door_status": "Published v04: both paired mouths, all four passive arrivals, actual counter conversations, input ownership, Start, Continue and retained road seams pass the production 2D controller. Eight complete native 2D frames match source. See interior-life/SHORE-GATE.md.",
+      "purpose": "A staffed North Shore passage with travel stories and readable notes between its paired native exits."
     },
     {
       "interior": "MnMinneapolisSupplyCoop",
@@ -7467,7 +7642,7 @@
         {
           "parent": "MnStPaul",
           "parent_entry_core": [
-            18,
+            17,
             25
           ],
           "parent_entry_warp_index": 19,
@@ -7493,11 +7668,11 @@
           ],
           "parent_safe_returns_core": [
             [
-              18,
+              17,
               26
             ],
             [
-              18,
+              17,
               26
             ]
           ],
@@ -7546,7 +7721,7 @@
         {
           "parent": "MnStPaul",
           "parent_entry_core": [
-            28,
+            27,
             15
           ],
           "parent_entry_warp_index": 21,
@@ -7572,11 +7747,11 @@
           ],
           "parent_safe_returns_core": [
             [
-              28,
+              27,
               16
             ],
             [
-              28,
+              27,
               16
             ]
           ],
@@ -7625,7 +7800,7 @@
         {
           "parent": "MnStPaul",
           "parent_entry_core": [
-            6,
+            5,
             7
           ],
           "parent_entry_warp_index": 23,
@@ -7651,11 +7826,11 @@
           ],
           "parent_safe_returns_core": [
             [
-              6,
+              5,
               8
             ],
             [
-              6,
+              5,
               8
             ]
           ],
@@ -8178,7 +8353,7 @@
         {
           "parent": "MnStPaul",
           "parent_entry_core": [
-            60,
+            59,
             7
           ],
           "parent_entry_warp_index": 37,
@@ -8204,11 +8379,11 @@
           ],
           "parent_safe_returns_core": [
             [
-              60,
+              59,
               8
             ],
             [
-              60,
+              59,
               8
             ]
           ],
@@ -8336,7 +8511,7 @@
         {
           "parent": "MnStPaul",
           "parent_entry_core": [
-            60,
+            59,
             21
           ],
           "parent_entry_warp_index": 41,
@@ -8362,11 +8537,11 @@
           ],
           "parent_safe_returns_core": [
             [
-              60,
+              59,
               22
             ],
             [
-              60,
+              59,
               22
             ]
           ],
@@ -8573,7 +8748,7 @@
         {
           "parent": "MnStPaul",
           "parent_entry_core": [
-            16,
+            15,
             33
           ],
           "parent_entry_warp_index": 47,
@@ -8599,11 +8774,11 @@
           ],
           "parent_safe_returns_core": [
             [
-              16,
+              15,
               34
             ],
             [
-              16,
+              15,
               34
             ]
           ],
@@ -8840,7 +9015,7 @@
         {
           "parent": "MnStPaul",
           "parent_entry_core": [
-            24,
+            23,
             43
           ],
           "parent_entry_warp_index": 53,
@@ -8866,11 +9041,11 @@
           ],
           "parent_safe_returns_core": [
             [
-              24,
+              23,
               44
             ],
             [
-              24,
+              23,
               44
             ]
           ],
@@ -9156,7 +9331,7 @@
         {
           "parent": "MnStPaul",
           "parent_entry_core": [
-            58,
+            57,
             45
           ],
           "parent_entry_warp_index": 61,
@@ -9182,11 +9357,11 @@
           ],
           "parent_safe_returns_core": [
             [
-              58,
+              57,
               46
             ],
             [
-              58,
+              57,
               46
             ]
           ],
@@ -9393,7 +9568,7 @@
         {
           "parent": "MnStPaul",
           "parent_entry_core": [
-            6,
+            5,
             63
           ],
           "parent_entry_warp_index": 67,
@@ -9419,11 +9594,11 @@
           ],
           "parent_safe_returns_core": [
             [
-              6,
+              5,
               64
             ],
             [
-              6,
+              5,
               64
             ]
           ],
@@ -9709,7 +9884,7 @@
         {
           "parent": "MnStPaul",
           "parent_entry_core": [
-            44,
+            43,
             61
           ],
           "parent_entry_warp_index": 75,
@@ -9735,11 +9910,11 @@
           ],
           "parent_safe_returns_core": [
             [
-              44,
+              43,
               62
             ],
             [
-              44,
+              43,
               62
             ]
           ],
@@ -11520,7 +11695,7 @@
           "parent": "MnDuluth",
           "parent_entry_core": [
             102,
-            29
+            25
           ],
           "parent_entry_warp_index": 41,
           "arrival_core": [
@@ -11546,11 +11721,11 @@
           "parent_safe_returns_core": [
             [
               102,
-              30
+              26
             ],
             [
               102,
-              30
+              26
             ]
           ],
           "pair_kind": "exterior_facade"
@@ -11599,7 +11774,7 @@
           "parent": "MnDuluth",
           "parent_entry_core": [
             102,
-            41
+            37
           ],
           "parent_entry_warp_index": 43,
           "arrival_core": [
@@ -11625,11 +11800,11 @@
           "parent_safe_returns_core": [
             [
               102,
-              42
+              38
             ],
             [
               102,
-              42
+              38
             ]
           ],
           "pair_kind": "exterior_facade"
@@ -11678,7 +11853,7 @@
           "parent": "MnDuluth",
           "parent_entry_core": [
             6,
-            33
+            29
           ],
           "parent_entry_warp_index": 45,
           "arrival_core": [
@@ -11704,11 +11879,11 @@
           "parent_safe_returns_core": [
             [
               6,
-              34
+              30
             ],
             [
               6,
-              34
+              30
             ]
           ],
           "pair_kind": "exterior_facade"
@@ -11853,7 +12028,7 @@
           "parent": "MnDuluth",
           "parent_entry_core": [
             18,
-            41
+            37
           ],
           "parent_entry_warp_index": 47,
           "arrival_core": [
@@ -11879,11 +12054,11 @@
           "parent_safe_returns_core": [
             [
               18,
-              42
+              38
             ],
             [
               18,
-              42
+              38
             ]
           ],
           "pair_kind": "exterior_facade"
@@ -12028,7 +12203,7 @@
           "parent": "MnDuluth",
           "parent_entry_core": [
             24,
-            47
+            43
           ],
           "parent_entry_warp_index": 49,
           "arrival_core": [
@@ -12054,11 +12229,11 @@
           "parent_safe_returns_core": [
             [
               24,
-              48
+              44
             ],
             [
               24,
-              48
+              44
             ]
           ],
           "pair_kind": "exterior_facade"
@@ -12107,7 +12282,7 @@
           "parent": "MnDuluth",
           "parent_entry_core": [
             6,
-            55
+            51
           ],
           "parent_entry_warp_index": 51,
           "arrival_core": [
@@ -12133,11 +12308,11 @@
           "parent_safe_returns_core": [
             [
               6,
-              56
+              52
             ],
             [
               6,
-              56
+              52
             ]
           ],
           "pair_kind": "exterior_facade"
@@ -12186,7 +12361,7 @@
           "parent": "MnDuluth",
           "parent_entry_core": [
             23,
-            61
+            57
           ],
           "parent_entry_warp_index": 53,
           "arrival_core": [
@@ -12212,11 +12387,11 @@
           "parent_safe_returns_core": [
             [
               23,
-              62
+              58
             ],
             [
               23,
-              62
+              58
             ]
           ],
           "pair_kind": "exterior_facade"
@@ -12265,7 +12440,7 @@
           "parent": "MnDuluth",
           "parent_entry_core": [
             106,
-            61
+            57
           ],
           "parent_entry_warp_index": 55,
           "arrival_core": [
@@ -12291,11 +12466,11 @@
           "parent_safe_returns_core": [
             [
               106,
-              62
+              58
             ],
             [
               106,
-              62
+              58
             ]
           ],
           "pair_kind": "exterior_facade"
@@ -12536,7 +12711,7 @@
           "parent": "MnDuluth",
           "parent_entry_core": [
             8,
-            69
+            65
           ],
           "parent_entry_warp_index": 57,
           "arrival_core": [
@@ -12562,11 +12737,11 @@
           "parent_safe_returns_core": [
             [
               8,
-              70
+              66
             ],
             [
               8,
-              70
+              66
             ]
           ],
           "pair_kind": "exterior_facade"
@@ -12615,7 +12790,7 @@
           "parent": "MnDuluth",
           "parent_entry_core": [
             20,
-            73
+            69
           ],
           "parent_entry_warp_index": 59,
           "arrival_core": [
@@ -12641,11 +12816,11 @@
           "parent_safe_returns_core": [
             [
               20,
-              74
+              70
             ],
             [
               20,
-              74
+              70
             ]
           ],
           "pair_kind": "exterior_facade"
@@ -12790,7 +12965,7 @@
           "parent": "MnDuluth",
           "parent_entry_core": [
             12,
-            81
+            77
           ],
           "parent_entry_warp_index": 61,
           "arrival_core": [
@@ -12816,11 +12991,11 @@
           "parent_safe_returns_core": [
             [
               12,
-              82
+              78
             ],
             [
               12,
-              82
+              78
             ]
           ],
           "pair_kind": "exterior_facade"
@@ -12869,7 +13044,7 @@
           "parent": "MnDuluth",
           "parent_entry_core": [
             23,
-            85
+            81
           ],
           "parent_entry_warp_index": 63,
           "arrival_core": [
@@ -12895,11 +13070,11 @@
           "parent_safe_returns_core": [
             [
               23,
-              86
+              82
             ],
             [
               23,
-              86
+              82
             ]
           ],
           "pair_kind": "exterior_facade"
@@ -12948,7 +13123,7 @@
           "parent": "MnDuluth",
           "parent_entry_core": [
             81,
-            75
+            71
           ],
           "parent_entry_warp_index": 65,
           "arrival_core": [
@@ -12974,11 +13149,11 @@
           "parent_safe_returns_core": [
             [
               81,
-              76
+              72
             ],
             [
               81,
-              76
+              72
             ]
           ],
           "pair_kind": "exterior_facade"
@@ -13027,7 +13202,7 @@
           "parent": "MnDuluth",
           "parent_entry_core": [
             90,
-            81
+            77
           ],
           "parent_entry_warp_index": 67,
           "arrival_core": [
@@ -13053,11 +13228,11 @@
           "parent_safe_returns_core": [
             [
               90,
-              82
+              78
             ],
             [
               90,
-              82
+              78
             ]
           ],
           "pair_kind": "exterior_facade"
@@ -13106,7 +13281,7 @@
           "parent": "MnDuluth",
           "parent_entry_core": [
             99,
-            81
+            77
           ],
           "parent_entry_warp_index": 69,
           "arrival_core": [
@@ -13132,11 +13307,11 @@
           "parent_safe_returns_core": [
             [
               99,
-              82
+              78
             ],
             [
               99,
-              82
+              78
             ]
           ],
           "pair_kind": "exterior_facade"
@@ -13185,7 +13360,7 @@
           "parent": "MnDuluth",
           "parent_entry_core": [
             106,
-            87
+            83
           ],
           "parent_entry_warp_index": 71,
           "arrival_core": [
@@ -13211,11 +13386,11 @@
           "parent_safe_returns_core": [
             [
               106,
-              88
+              84
             ],
             [
               106,
-              88
+              84
             ]
           ],
           "pair_kind": "exterior_facade"
@@ -13360,7 +13535,7 @@
           "parent": "MnDuluth",
           "parent_entry_core": [
             117,
-            89
+            85
           ],
           "parent_entry_warp_index": 73,
           "arrival_core": [
@@ -13386,11 +13561,11 @@
           "parent_safe_returns_core": [
             [
               117,
-              90
+              86
             ],
             [
               117,
-              90
+              86
             ]
           ],
           "pair_kind": "exterior_facade"
@@ -13439,7 +13614,7 @@
           "parent": "MnDuluth",
           "parent_entry_core": [
             97,
-            87
+            83
           ],
           "parent_entry_warp_index": 75,
           "arrival_core": [
@@ -13465,11 +13640,11 @@
           "parent_safe_returns_core": [
             [
               97,
-              88
+              84
             ],
             [
               97,
-              88
+              84
             ]
           ],
           "pair_kind": "exterior_facade"
@@ -13548,8 +13723,9 @@
       "exterior_return_warp_index": 2,
       "source_file": "zones/state-fairgrounds.json",
       "source_room_id": "MnFairGrandstand",
-      "exterior_door_status": "Expanded dense-v1 production entry, safe return and both-room carpet checks pass through VisibleShellController. See playable/state-fairgrounds.md.",
-      "requires_real_collision_check": true
+      "exterior_door_status": "Local compact woodland composition: all seven hall stories and all six native carpets verified through production input, with actual returns, independent stamps and Continue. See interior-life/fair-woodland-v01/README.md.",
+      "requires_real_collision_check": true,
+      "purpose": "A waiting performer room with a Bemidji folk musician, Iron Range choir elder and grandstand host."
     },
     {
       "interior": "MnFairBarn",
@@ -13585,8 +13761,9 @@
       "exterior_return_warp_index": 4,
       "source_file": "zones/state-fairgrounds.json",
       "source_room_id": "MnFairBarn",
-      "exterior_door_status": "Expanded dense-v1 production entry, safe return and both-room carpet checks pass through VisibleShellController. See playable/state-fairgrounds.md.",
-      "requires_real_collision_check": true
+      "exterior_door_status": "Local compact woodland composition: all seven hall stories and all six native carpets verified through production input, with actual returns, independent stamps and Continue. See interior-life/fair-woodland-v01/README.md.",
+      "requires_real_collision_check": true,
+      "purpose": "The Minnesota fair livestock hall: an OATLET handler, its grain-coat story and the independent barn stamp."
     },
     {
       "interior": "MnFairDairy",
@@ -13597,12 +13774,12 @@
       ],
       "arrival_warp_index": 3,
       "return_trigger_core": [
-        3,
+        2,
         7
       ],
       "return_triggers_core": [
         [
-          3,
+          2,
           7
         ],
         [
@@ -13622,8 +13799,9 @@
       "exterior_return_warp_index": 6,
       "source_file": "zones/state-fairgrounds.json",
       "source_room_id": "MnFairDairy",
-      "exterior_door_status": "Expanded dense-v1 production entry, safe return and both-room carpet checks pass through VisibleShellController. See playable/state-fairgrounds.md.",
-      "requires_real_collision_check": true
+      "exterior_door_status": "Local compact woodland composition: all seven hall stories and all six native carpets verified through production input, with actual returns, independent stamps and Continue. See interior-life/fair-woodland-v01/README.md.",
+      "requires_real_collision_check": true,
+      "purpose": "A fair sculptor and BUTTERMUSE butter carving, with an independent dairy exhibit stamp."
     },
     {
       "interior": "MnVoyageursIce1F",
@@ -13678,7 +13856,8 @@
         }
       ],
       "requires_real_collision_check": true,
-      "exterior_door_status": "Verified v02 production input: paired ladders, native slide stops, safe exterior return and same-mouth reentry; Save/Continue and MCP pass. See ice-caves/README.md."
+      "exterior_door_status": "Verified v02 production input: paired ladders, native slide stops, safe exterior return and same-mouth reentry; Save/Continue and MCP pass. See ice-caves/README.md.",
+      "purpose": "A glacial fissure with its ice guide, teaching slide and separate healing-supply pocket."
     },
     {
       "interior": "MnVoyageursIceB1F",
@@ -13717,7 +13896,2129 @@
         }
       ],
       "requires_real_collision_check": true,
-      "exterior_door_status": "Verified v02 production input: paired ladders, native slide stops, safe exterior return and same-mouth reentry; Save/Continue and MCP pass. See ice-caves/README.md."
+      "exterior_door_status": "Verified v02 production input: paired ladders, native slide stops, safe exterior return and same-mouth reentry; Save/Continue and MCP pass. See ice-caves/README.md.",
+      "purpose": "Offset rock teeth lead to two cache shelves; a Voyageurs canoe guide maps winter crossings for his grandson on the dry landing.",
+      "story_file": "interior-life/voyageurs-surveyor-v01.json",
+      "resident_scripts": [
+        "MN_INTERIOR_VOYAGEURS_SURVEYOR"
+      ]
+    },
+    {
+      "interior": "MnWinonaStation",
+      "parent": "MnWinona",
+      "source_file": "transit/MnWinonaStation.json",
+      "source_room_id": "MnWinonaStation",
+      "arrival_core": [
+        11,
+        15
+      ],
+      "return_trigger_core": [
+        10,
+        17
+      ],
+      "return_triggers_core": [
+        [
+          10,
+          17
+        ],
+        [
+          11,
+          17
+        ]
+      ],
+      "arrival_warp_index": 3,
+      "exterior_door_core": [
+        19,
+        13
+      ],
+      "exterior_safe_return_core": [
+        19,
+        14
+      ],
+      "exterior_warp_index": 9,
+      "exterior_return_warp_index": 10,
+      "exterior_door_status": "Native five-block town overlay, both carpets, four residents, two-clue gift and first-visit callback pass production input; seven paired native views pass. See interior-life/WINONA-STATION.md. Glacier Line rides unfinished.",
+      "requires_real_collision_check": true,
+      "purpose": "A Winona rail hall with staff and waiting travelers; the five-stop passenger service remains a separate implementation."
+    },
+    {
+      "interior": "MnDriftlessFishingGuruHouse",
+      "parent_route": "MN_R01",
+      "exterior_map": "MnR01C00R00",
+      "exterior_door_core": [
+        25,
+        33
+      ],
+      "exterior_safe_return_core": [
+        25,
+        34
+      ],
+      "arrival_core": [
+        2,
+        6
+      ],
+      "return_triggers_core": [
+        [
+          2,
+          7
+        ],
+        [
+          3,
+          7
+        ]
+      ],
+      "interior_passive_arrival_warp": 3,
+      "exterior_warp_indices": [
+        5,
+        6
+      ],
+      "source_design": "fishing-gurus.json",
+      "requires_real_collision_check": true,
+      "exterior_door_status": "Composed on preserved gate v04 in minnesota-interiors-fishing-life-v02: both exits, re-entry, free/repeat-safe rod, full-pocket retry and Continue verified. Distinct native layouts, six local family details and six complete native 2D frames pass. See interior-life/FISHING-HOUSES.md.",
+      "interior_layout_source": "interior-life/fishing-layouts.json",
+      "purpose": "A Driftless fishing household with native rod teaching, a field notebook and a family tackle table."
+    },
+    {
+      "interior": "MnRiverValleyFishingGuruHouse",
+      "parent_route": "MN_R03",
+      "exterior_map": "MnR03C00R00",
+      "exterior_door_core": [
+        31,
+        29
+      ],
+      "exterior_safe_return_core": [
+        31,
+        30
+      ],
+      "arrival_core": [
+        2,
+        6
+      ],
+      "return_triggers_core": [
+        [
+          2,
+          7
+        ],
+        [
+          3,
+          7
+        ]
+      ],
+      "interior_passive_arrival_warp": 3,
+      "exterior_warp_indices": [
+        3,
+        4
+      ],
+      "source_design": "fishing-gurus.json",
+      "requires_real_collision_check": true,
+      "exterior_door_status": "Composed on preserved gate v04 in minnesota-interiors-fishing-life-v02: both exits, re-entry, free/repeat-safe rod, full-pocket retry and Continue verified. Distinct native layouts, six local family details and six complete native 2D frames pass. See interior-life/FISHING-HOUSES.md.",
+      "interior_layout_source": "interior-life/fishing-layouts.json",
+      "purpose": "A river-valley fishing household with native rod teaching, family advice and a tackle workspace."
+    },
+    {
+      "interior": "MnPineCountryFishingGuruHouse",
+      "parent_route": "MN_R06",
+      "exterior_map": "MnR06C00R00",
+      "exterior_door_core": [
+        37,
+        39
+      ],
+      "exterior_safe_return_core": [
+        37,
+        40
+      ],
+      "arrival_core": [
+        2,
+        6
+      ],
+      "return_triggers_core": [
+        [
+          2,
+          7
+        ],
+        [
+          3,
+          7
+        ]
+      ],
+      "interior_passive_arrival_warp": 3,
+      "exterior_warp_indices": [
+        1,
+        2
+      ],
+      "source_design": "fishing-gurus.json",
+      "requires_real_collision_check": true,
+      "exterior_door_status": "Composed on preserved gate v04 in minnesota-interiors-fishing-life-v02: both exits, re-entry, free/repeat-safe rod, full-pocket retry and Continue verified. Distinct native layouts, six local family details and six complete native 2D frames pass. See interior-life/FISHING-HOUSES.md.",
+      "interior_layout_source": "interior-life/fishing-layouts.json",
+      "purpose": "A Pine Country fishing household with rod teaching and a furnished tackle workspace."
+    },
+    {
+      "interior": "MnSplitRockPokecenter1F",
+      "parent": "MnR11C00R02",
+      "arrival_core": [
+        3,
+        5
+      ],
+      "return_trigger_core": [
+        3,
+        7
+      ],
+      "return_triggers_core": [
+        [
+          3,
+          7
+        ],
+        [
+          4,
+          7
+        ]
+      ],
+      "arrival_warp_index": 3,
+      "exterior_door_core": [
+        33,
+        33
+      ],
+      "exterior_safe_return_core": [
+        33,
+        34
+      ],
+      "exterior_warp_index": 3,
+      "exterior_return_warp_index": 4,
+      "source_file": "interior-life/split-rock-clinic.json",
+      "source_room_id": "MnSplitRockPokecenter1F",
+      "source_kind": "authored_clinic_overlay",
+      "requires_real_collision_check": true,
+      "reserved_town_district": "North Shore southern bank below Split Rock",
+      "exterior_door_status": "v02: production-controller entry, both exits, nurse HP/PP/status and Continue pass. Native MCP clinic/Start/return pass; reached 2D exterior inspected. Clinic geometry/programs remain exact across regional binding. Earlier v01 PC test retained; see quality successor.",
+      "original_source_file": "revisions/ely-backroute-v01/clinic.json",
+      "source_room_key": "room",
+      "pc_core": [
+        9,
+        1
+      ],
+      "pc_approach_core": [
+        9,
+        2
+      ],
+      "quality_successor": "revisions/ely-trail-quality-v02/README.md"
+    },
+    {
+      "interior": "MnStaplesStation",
+      "parent": "MnStaplesRailJunction",
+      "source_file": "transit/MnStaplesStation.json",
+      "source_room_id": "MnStaplesStation",
+      "source_room_key": "room",
+      "source_kind": "authored_station_overlay",
+      "arrival_core": [
+        9,
+        15
+      ],
+      "arrival_warp_index": 3,
+      "return_trigger_core": [
+        8,
+        17
+      ],
+      "return_triggers_core": [
+        [
+          8,
+          17
+        ],
+        [
+          9,
+          17
+        ]
+      ],
+      "exterior_door_core": [
+        13,
+        7
+      ],
+      "exterior_safe_return_core": [
+        13,
+        8
+      ],
+      "exterior_warp_index": 1,
+      "exterior_return_warp_index": 2,
+      "requires_real_collision_check": true,
+      "exterior_door_status": "Published in minnesota-interiors-staples-v02 on the protected Split Rock lineage: real R15 grass/spur entry, both seam lanes/directions, five residents, ledger, both carpets, parcel purchase/denial and visit Save/Continue pass. Touched-route species are active Minnesota originals, with actual wild battle/RUN. Seven exact native 2D frames; passenger rides unfinished. See interior-life/STAPLES-STATION.md.",
+      "purpose": "A staffed rail junction hall with a ledger, weather conversations and a real parcel purchase; passenger service is tracked separately."
+    },
+    {
+      "interior": "MnRainyRiverWarmingHut",
+      "parent": "MnRainyRiverIcefields",
+      "source_file": "regions/ice/MnRainyRiverIcefields.json",
+      "source_room_id": "MnRainyRiverWarmingHut",
+      "story_file": "interior-life/stories.json",
+      "purpose": "Free winter care and a mitten-mender's welcome on the Rainy River snow-bank return. The border report remains a separate errand.",
+      "arrival_core": [
+        5,
+        6
+      ],
+      "arrival_warp_index": 2,
+      "return_trigger_core": [
+        5,
+        7
+      ],
+      "return_triggers_core": [
+        [
+          5,
+          7
+        ]
+      ],
+      "exterior_door_core": [
+        9,
+        27
+      ],
+      "exterior_safe_return_core": [
+        9,
+        28
+      ],
+      "exterior_warp_index": 1,
+      "exterior_return_warp_index": 2,
+      "resident_scripts": [
+        "MN_ICE_WARMING_KEEPER",
+        "MN_SMALL_INTERIOR_RAINY_MITTEN_MENDER"
+      ],
+      "requires_real_collision_check": true,
+      "exterior_door_status": "Actual indexed ports match the 729-map local story/interior candidate. The mitten mender's approach, conversation and native exit pass in the 117-resident controller case; the original winter keeper and free-care program are preserved. See interior-life/current-story-v01/README.md and regions/ice/rainy-river.md."
+    },
+    {
+      "interior": "MnBoundaryIntake",
+      "parent": "MnBoundaryWatersSurveyShelter",
+      "source_file": "lairs/rival-arc/intake.json",
+      "source_room_id": "MnBoundaryIntake",
+      "source_kind": "authored_story_floor",
+      "purpose": "Boundary Waters intake with the captive KETTLURK, local shutdown and survey-restoration crew.",
+      "dimensions_metatiles": [
+        16,
+        12
+      ],
+      "arrival_core": [
+        4,
+        19
+      ],
+      "arrival_warp_index": 2,
+      "return_trigger_core": [
+        5,
+        18
+      ],
+      "return_triggers_core": [
+        [
+          5,
+          18
+        ]
+      ],
+      "paired_bindings": [
+        {
+          "parent": "MnBoundaryWatersSurveyShelter",
+          "parent_entry_core": [
+            13,
+            8
+          ],
+          "parent_entry_warp_index": 4,
+          "arrival_core": [
+            4,
+            19
+          ],
+          "arrival_warp_index": 2,
+          "arrival_collision": "FLOOR",
+          "return_trigger_indices": [
+            1
+          ],
+          "return_triggers_core": [
+            [
+              5,
+              18
+            ]
+          ],
+          "parent_safe_returns_core": [
+            [
+              12,
+              7
+            ]
+          ],
+          "pair_kind": "native_story_stairs"
+        }
+      ],
+      "resident_scripts": [
+        "MN_ARC_INTAKE_REED",
+        "MN_ARC_KETTLURK",
+        "MN_ARC_INTAKE_IVY",
+        "MN_ARC_INTAKE_FINN",
+        "MN_ICE_ARC_INTAKE_WEST",
+        "MN_LODE_ARC_INTAKE_EAST",
+        "MN_ICE_ARC_INTAKE_RECORDS",
+        "MN_LODE_ARC_INTAKE_CONTROL"
+      ],
+      "requires_real_collision_check": true,
+      "native_binding_scope": "Local 729-map current-story/R03 composition; module identities allocate from the actual parent.",
+      "exterior_door_status": "Published and strict-verified in the local current-story composition. Native 2D full-frame/source and whole-layout review covers this floor. Story controller evidence and remaining regional limits are recorded in interior-life/current-story-v01/README.md."
+    },
+    {
+      "interior": "MnIceCargoBasement",
+      "parent": "MnMinneapolisDispatchOffice",
+      "source_file": "lairs/minneapolis-cargo.json",
+      "source_room_id": "MnIceCargoBasement",
+      "source_kind": "authored_story_floor",
+      "purpose": "Guarded Minneapolis cargo stores and the feed console in the dispatcher rescue.",
+      "dimensions_metatiles": [
+        15,
+        12
+      ],
+      "arrival_core": [
+        4,
+        19
+      ],
+      "arrival_warp_index": 2,
+      "return_trigger_core": [
+        5,
+        18
+      ],
+      "return_triggers_core": [
+        [
+          5,
+          18
+        ]
+      ],
+      "paired_bindings": [
+        {
+          "parent": "MnMinneapolisDispatchOffice",
+          "parent_entry_core": [
+            5,
+            2
+          ],
+          "parent_entry_warp_index": 5,
+          "arrival_core": [
+            4,
+            19
+          ],
+          "arrival_warp_index": 2,
+          "arrival_collision": "FLOOR",
+          "return_trigger_indices": [
+            1
+          ],
+          "return_triggers_core": [
+            [
+              5,
+              18
+            ]
+          ],
+          "parent_safe_returns_core": [
+            [
+              5,
+              4
+            ]
+          ],
+          "pair_kind": "native_story_stairs"
+        },
+        {
+          "parent": "MnIceOperations",
+          "parent_entry_core": [
+            5,
+            18
+          ],
+          "parent_entry_warp_index": 1,
+          "arrival_core": [
+            22,
+            5
+          ],
+          "arrival_warp_index": 4,
+          "arrival_collision": "FLOOR",
+          "return_trigger_indices": [
+            3
+          ],
+          "return_triggers_core": [
+            [
+              23,
+              4
+            ]
+          ],
+          "parent_safe_returns_core": [
+            [
+              4,
+              19
+            ]
+          ],
+          "pair_kind": "native_story_stairs"
+        }
+      ],
+      "resident_scripts": [
+        "MN_ICE_CARGO_GUARD",
+        "MN_NICE_UMA",
+        "MN_ICE_HQ_CARGO_SEARCH",
+        "MN_ICE_HQ_CARGO_MANIFEST"
+      ],
+      "requires_real_collision_check": true,
+      "native_binding_scope": "Local 729-map current-story/R03 composition; module identities allocate from the actual parent.",
+      "exterior_door_status": "Published and strict-verified in the local current-story composition. Native 2D full-frame/source and whole-layout review covers this floor. Story controller evidence and remaining regional limits are recorded in interior-life/current-story-v01/README.md."
+    },
+    {
+      "interior": "MnIceOperations",
+      "parent": "MnIceCargoBasement",
+      "source_file": "lairs/ice-headquarters/operations.json",
+      "source_room_id": "MnIceOperations",
+      "source_kind": "authored_story_floor",
+      "purpose": "Headquarters operations: guarded card doors connect cargo, records and the relay.",
+      "dimensions_metatiles": [
+        16,
+        12
+      ],
+      "arrival_core": [
+        4,
+        19
+      ],
+      "arrival_warp_index": 2,
+      "return_trigger_core": [
+        5,
+        18
+      ],
+      "return_triggers_core": [
+        [
+          5,
+          18
+        ]
+      ],
+      "paired_bindings": [
+        {
+          "parent": "MnIceCargoBasement",
+          "parent_entry_core": [
+            23,
+            4
+          ],
+          "parent_entry_warp_index": 3,
+          "arrival_core": [
+            4,
+            19
+          ],
+          "arrival_warp_index": 2,
+          "arrival_collision": "FLOOR",
+          "return_trigger_indices": [
+            1
+          ],
+          "return_triggers_core": [
+            [
+              5,
+              18
+            ]
+          ],
+          "parent_safe_returns_core": [
+            [
+              22,
+              5
+            ]
+          ],
+          "pair_kind": "native_story_stairs"
+        },
+        {
+          "parent": "MnIceRecords",
+          "parent_entry_core": [
+            9,
+            18
+          ],
+          "parent_entry_warp_index": 1,
+          "arrival_core": [
+            14,
+            3
+          ],
+          "arrival_warp_index": 4,
+          "arrival_collision": "FLOOR",
+          "return_trigger_indices": [
+            3
+          ],
+          "return_triggers_core": [
+            [
+              15,
+              2
+            ]
+          ],
+          "parent_safe_returns_core": [
+            [
+              8,
+              19
+            ]
+          ],
+          "pair_kind": "native_story_stairs"
+        },
+        {
+          "parent": "MnIceRelayFloor",
+          "parent_entry_core": [
+            5,
+            14
+          ],
+          "parent_entry_warp_index": 1,
+          "arrival_core": [
+            26,
+            19
+          ],
+          "arrival_warp_index": 6,
+          "arrival_collision": "FLOOR",
+          "return_trigger_indices": [
+            5
+          ],
+          "return_triggers_core": [
+            [
+              27,
+              18
+            ]
+          ],
+          "parent_safe_returns_core": [
+            [
+              4,
+              15
+            ]
+          ],
+          "pair_kind": "native_story_stairs"
+        },
+        {
+          "parent": "MnIceMaintenance",
+          "parent_entry_core": [
+            21,
+            18
+          ],
+          "parent_entry_warp_index": 5,
+          "arrival_core": [
+            4,
+            13
+          ],
+          "arrival_warp_index": 8,
+          "arrival_collision": "FLOOR",
+          "return_trigger_indices": [
+            7
+          ],
+          "return_triggers_core": [
+            [
+              5,
+              12
+            ]
+          ],
+          "parent_safe_returns_core": [
+            [
+              20,
+              19
+            ]
+          ],
+          "pair_kind": "native_story_panel"
+        },
+        {
+          "parent": "MnIceTransfer",
+          "parent_entry_core": [
+            23,
+            18
+          ],
+          "parent_entry_warp_index": 9,
+          "arrival_core": [
+            20,
+            5
+          ],
+          "arrival_warp_index": 10,
+          "arrival_collision": "FLOOR",
+          "return_trigger_indices": [
+            9
+          ],
+          "return_triggers_core": [
+            [
+              21,
+              4
+            ]
+          ],
+          "parent_safe_returns_core": [
+            [
+              22,
+              19
+            ]
+          ],
+          "pair_kind": "native_story_panel"
+        },
+        {
+          "parent": "MnIceRecords",
+          "parent_entry_core": [
+            27,
+            8
+          ],
+          "parent_entry_warp_index": 11,
+          "arrival_core": [
+            4,
+            5
+          ],
+          "arrival_warp_index": 12,
+          "arrival_collision": "FLOOR",
+          "return_trigger_indices": [
+            11
+          ],
+          "return_triggers_core": [
+            [
+              5,
+              4
+            ]
+          ],
+          "parent_safe_returns_core": [
+            [
+              26,
+              9
+            ]
+          ],
+          "pair_kind": "native_story_panel"
+        }
+      ],
+      "resident_scripts": [
+        "MN_ICE_HQ_OPERATIONS_GUARD",
+        "MnIceOperationsWorker",
+        "MN_ICE_HQ_DISPATCH",
+        "MN_ICE_HQ_OPERATIONS_PATROL"
+      ],
+      "requires_real_collision_check": true,
+      "native_binding_scope": "Local 729-map current-story/R03 composition; module identities allocate from the actual parent.",
+      "exterior_door_status": "Published and strict-verified in the local current-story composition. Native 2D full-frame/source and whole-layout review covers this floor. Story controller evidence and remaining regional limits are recorded in interior-life/current-story-v01/README.md."
+    },
+    {
+      "interior": "MnIceRecords",
+      "parent": "MnIceOperations",
+      "source_file": "lairs/ice-headquarters/records.json",
+      "source_room_id": "MnIceRecords",
+      "source_kind": "authored_story_floor",
+      "purpose": "Records annex with the card-holder conversation and the optional nurse recovery room.",
+      "dimensions_metatiles": [
+        16,
+        12
+      ],
+      "arrival_core": [
+        8,
+        19
+      ],
+      "arrival_warp_index": 2,
+      "return_trigger_core": [
+        9,
+        18
+      ],
+      "return_triggers_core": [
+        [
+          9,
+          18
+        ]
+      ],
+      "paired_bindings": [
+        {
+          "parent": "MnIceOperations",
+          "parent_entry_core": [
+            15,
+            2
+          ],
+          "parent_entry_warp_index": 3,
+          "arrival_core": [
+            8,
+            19
+          ],
+          "arrival_warp_index": 2,
+          "arrival_collision": "FLOOR",
+          "return_trigger_indices": [
+            1
+          ],
+          "return_triggers_core": [
+            [
+              9,
+              18
+            ]
+          ],
+          "parent_safe_returns_core": [
+            [
+              14,
+              3
+            ]
+          ],
+          "pair_kind": "native_story_stairs"
+        },
+        {
+          "parent": "MnIceMaintenance",
+          "parent_entry_core": [
+            5,
+            18
+          ],
+          "parent_entry_warp_index": 1,
+          "arrival_core": [
+            12,
+            3
+          ],
+          "arrival_warp_index": 4,
+          "arrival_collision": "FLOOR",
+          "return_trigger_indices": [
+            3
+          ],
+          "return_triggers_core": [
+            [
+              13,
+              2
+            ]
+          ],
+          "parent_safe_returns_core": [
+            [
+              4,
+              19
+            ]
+          ],
+          "pair_kind": "native_story_stairs"
+        },
+        {
+          "parent": "MnIceTransfer",
+          "parent_entry_core": [
+            13,
+            4
+          ],
+          "parent_entry_warp_index": 3,
+          "arrival_core": [
+            20,
+            5
+          ],
+          "arrival_warp_index": 6,
+          "arrival_collision": "FLOOR",
+          "return_trigger_indices": [
+            5
+          ],
+          "return_triggers_core": [
+            [
+              21,
+              4
+            ]
+          ],
+          "parent_safe_returns_core": [
+            [
+              12,
+              5
+            ]
+          ],
+          "pair_kind": "native_story_panel"
+        },
+        {
+          "parent": "MnIceMaintenance",
+          "parent_entry_core": [
+            27,
+            18
+          ],
+          "parent_entry_warp_index": 7,
+          "arrival_core": [
+            4,
+            5
+          ],
+          "arrival_warp_index": 8,
+          "arrival_collision": "FLOOR",
+          "return_trigger_indices": [
+            7
+          ],
+          "return_triggers_core": [
+            [
+              5,
+              4
+            ]
+          ],
+          "parent_safe_returns_core": [
+            [
+              26,
+              19
+            ]
+          ],
+          "pair_kind": "native_story_panel"
+        },
+        {
+          "parent": "MnIceTransfer",
+          "parent_entry_core": [
+            21,
+            4
+          ],
+          "parent_entry_warp_index": 5,
+          "arrival_core": [
+            20,
+            19
+          ],
+          "arrival_warp_index": 10,
+          "arrival_collision": "FLOOR",
+          "return_trigger_indices": [
+            9
+          ],
+          "return_triggers_core": [
+            [
+              21,
+              18
+            ]
+          ],
+          "parent_safe_returns_core": [
+            [
+              20,
+              5
+            ]
+          ],
+          "pair_kind": "native_story_panel"
+        },
+        {
+          "parent": "MnIceOperations",
+          "parent_entry_core": [
+            5,
+            4
+          ],
+          "parent_entry_warp_index": 11,
+          "arrival_core": [
+            26,
+            9
+          ],
+          "arrival_warp_index": 12,
+          "arrival_collision": "FLOOR",
+          "return_trigger_indices": [
+            11
+          ],
+          "return_triggers_core": [
+            [
+              27,
+              8
+            ]
+          ],
+          "parent_safe_returns_core": [
+            [
+              4,
+              5
+            ]
+          ],
+          "pair_kind": "native_story_panel"
+        }
+      ],
+      "resident_scripts": [
+        "MN_ICE_HQ_RECORDS_GUARD",
+        "MN_ICE_HQ_ADA",
+        "MN_ICE_HQ_NORA",
+        "MN_ICE_HQ_ARCHIVE"
+      ],
+      "requires_real_collision_check": true,
+      "native_binding_scope": "Local 729-map current-story/R03 composition; module identities allocate from the actual parent.",
+      "exterior_door_status": "Published and strict-verified in the local current-story composition. Native 2D full-frame/source and whole-layout review covers this floor. Story controller evidence and remaining regional limits are recorded in interior-life/current-story-v01/README.md."
+    },
+    {
+      "interior": "MnIceMaintenance",
+      "parent": "MnIceRecords",
+      "source_file": "lairs/ice-headquarters/maintenance.json",
+      "source_room_id": "MnIceMaintenance",
+      "source_kind": "authored_story_floor",
+      "purpose": "Maintenance stores with limited supplies and links into the working pad circuit.",
+      "dimensions_metatiles": [
+        16,
+        12
+      ],
+      "arrival_core": [
+        4,
+        19
+      ],
+      "arrival_warp_index": 2,
+      "return_trigger_core": [
+        5,
+        18
+      ],
+      "return_triggers_core": [
+        [
+          5,
+          18
+        ]
+      ],
+      "paired_bindings": [
+        {
+          "parent": "MnIceRecords",
+          "parent_entry_core": [
+            13,
+            2
+          ],
+          "parent_entry_warp_index": 3,
+          "arrival_core": [
+            4,
+            19
+          ],
+          "arrival_warp_index": 2,
+          "arrival_collision": "FLOOR",
+          "return_trigger_indices": [
+            1
+          ],
+          "return_triggers_core": [
+            [
+              5,
+              18
+            ]
+          ],
+          "parent_safe_returns_core": [
+            [
+              12,
+              3
+            ]
+          ],
+          "pair_kind": "native_story_stairs"
+        },
+        {
+          "parent": "MnIceTransfer",
+          "parent_entry_core": [
+            5,
+            18
+          ],
+          "parent_entry_warp_index": 1,
+          "arrival_core": [
+            10,
+            5
+          ],
+          "arrival_warp_index": 4,
+          "arrival_collision": "FLOOR",
+          "return_trigger_indices": [
+            3
+          ],
+          "return_triggers_core": [
+            [
+              11,
+              4
+            ]
+          ],
+          "parent_safe_returns_core": [
+            [
+              4,
+              19
+            ]
+          ],
+          "pair_kind": "native_story_panel"
+        },
+        {
+          "parent": "MnIceOperations",
+          "parent_entry_core": [
+            5,
+            12
+          ],
+          "parent_entry_warp_index": 7,
+          "arrival_core": [
+            20,
+            19
+          ],
+          "arrival_warp_index": 6,
+          "arrival_collision": "FLOOR",
+          "return_trigger_indices": [
+            5
+          ],
+          "return_triggers_core": [
+            [
+              21,
+              18
+            ]
+          ],
+          "parent_safe_returns_core": [
+            [
+              4,
+              13
+            ]
+          ],
+          "pair_kind": "native_story_panel"
+        },
+        {
+          "parent": "MnIceRecords",
+          "parent_entry_core": [
+            5,
+            4
+          ],
+          "parent_entry_warp_index": 7,
+          "arrival_core": [
+            26,
+            19
+          ],
+          "arrival_warp_index": 8,
+          "arrival_collision": "FLOOR",
+          "return_trigger_indices": [
+            7
+          ],
+          "return_triggers_core": [
+            [
+              27,
+              18
+            ]
+          ],
+          "parent_safe_returns_core": [
+            [
+              4,
+              5
+            ]
+          ],
+          "pair_kind": "native_story_panel"
+        },
+        {
+          "parent": "MnIceTransfer",
+          "parent_entry_core": [
+            27,
+            18
+          ],
+          "parent_entry_warp_index": 7,
+          "arrival_core": [
+            20,
+            5
+          ],
+          "arrival_warp_index": 10,
+          "arrival_collision": "FLOOR",
+          "return_trigger_indices": [
+            9
+          ],
+          "return_triggers_core": [
+            [
+              21,
+              4
+            ]
+          ],
+          "parent_safe_returns_core": [
+            [
+              26,
+              19
+            ]
+          ],
+          "pair_kind": "native_story_panel"
+        }
+      ],
+      "resident_scripts": [
+        "MN_ICE_HQ_MAINTENANCE_GUARD",
+        "MnIceMaintenanceRoutingWorker",
+        "MN_ICE_HQ_OLLIE",
+        "MN_ICE_HQ_WORKSHOP"
+      ],
+      "requires_real_collision_check": true,
+      "native_binding_scope": "Local 729-map current-story/R03 composition; module identities allocate from the actual parent.",
+      "exterior_door_status": "Published and strict-verified in the local current-story composition. Native 2D full-frame/source and whole-layout review covers this floor. Story controller evidence and remaining regional limits are recorded in interior-life/current-story-v01/README.md."
+    },
+    {
+      "interior": "MnIceTransfer",
+      "parent": "MnIceMaintenance",
+      "source_file": "lairs/ice-headquarters/transfer.json",
+      "source_room_id": "MnIceTransfer",
+      "source_kind": "authored_story_floor",
+      "purpose": "Transfer floor with the witness conversation and separately opened return routes.",
+      "dimensions_metatiles": [
+        16,
+        12
+      ],
+      "arrival_core": [
+        4,
+        19
+      ],
+      "arrival_warp_index": 2,
+      "return_trigger_core": [
+        5,
+        18
+      ],
+      "return_triggers_core": [
+        [
+          5,
+          18
+        ]
+      ],
+      "paired_bindings": [
+        {
+          "parent": "MnIceMaintenance",
+          "parent_entry_core": [
+            11,
+            4
+          ],
+          "parent_entry_warp_index": 3,
+          "arrival_core": [
+            4,
+            19
+          ],
+          "arrival_warp_index": 2,
+          "arrival_collision": "FLOOR",
+          "return_trigger_indices": [
+            1
+          ],
+          "return_triggers_core": [
+            [
+              5,
+              18
+            ]
+          ],
+          "parent_safe_returns_core": [
+            [
+              10,
+              5
+            ]
+          ],
+          "pair_kind": "native_story_panel"
+        },
+        {
+          "parent": "MnIceRecords",
+          "parent_entry_core": [
+            21,
+            4
+          ],
+          "parent_entry_warp_index": 5,
+          "arrival_core": [
+            12,
+            5
+          ],
+          "arrival_warp_index": 4,
+          "arrival_collision": "FLOOR",
+          "return_trigger_indices": [
+            3
+          ],
+          "return_triggers_core": [
+            [
+              13,
+              4
+            ]
+          ],
+          "parent_safe_returns_core": [
+            [
+              20,
+              5
+            ]
+          ],
+          "pair_kind": "native_story_panel"
+        },
+        {
+          "parent": "MnIceRecords",
+          "parent_entry_core": [
+            21,
+            18
+          ],
+          "parent_entry_warp_index": 9,
+          "arrival_core": [
+            20,
+            5
+          ],
+          "arrival_warp_index": 6,
+          "arrival_collision": "FLOOR",
+          "return_trigger_indices": [
+            5
+          ],
+          "return_triggers_core": [
+            [
+              21,
+              4
+            ]
+          ],
+          "parent_safe_returns_core": [
+            [
+              20,
+              19
+            ]
+          ],
+          "pair_kind": "native_story_panel"
+        },
+        {
+          "parent": "MnIceMaintenance",
+          "parent_entry_core": [
+            21,
+            4
+          ],
+          "parent_entry_warp_index": 9,
+          "arrival_core": [
+            26,
+            19
+          ],
+          "arrival_warp_index": 8,
+          "arrival_collision": "FLOOR",
+          "return_trigger_indices": [
+            7
+          ],
+          "return_triggers_core": [
+            [
+              27,
+              18
+            ]
+          ],
+          "parent_safe_returns_core": [
+            [
+              20,
+              5
+            ]
+          ],
+          "pair_kind": "native_story_panel"
+        },
+        {
+          "parent": "MnIceOperations",
+          "parent_entry_core": [
+            21,
+            4
+          ],
+          "parent_entry_warp_index": 9,
+          "arrival_core": [
+            22,
+            19
+          ],
+          "arrival_warp_index": 10,
+          "arrival_collision": "FLOOR",
+          "return_trigger_indices": [
+            9
+          ],
+          "return_triggers_core": [
+            [
+              23,
+              18
+            ]
+          ],
+          "parent_safe_returns_core": [
+            [
+              20,
+              5
+            ]
+          ],
+          "pair_kind": "native_story_panel"
+        }
+      ],
+      "resident_scripts": [
+        "MN_ICE_HQ_TRANSFER_GUARD",
+        "MN_ICE_HQ_TESS",
+        "MN_ICE_HQ_ESCORT"
+      ],
+      "requires_real_collision_check": true,
+      "native_binding_scope": "Local 729-map current-story/R03 composition; module identities allocate from the actual parent.",
+      "exterior_door_status": "Published and strict-verified in the local current-story composition. Native 2D full-frame/source and whole-layout review covers this floor. Story controller evidence and remaining regional limits are recorded in interior-life/current-story-v01/README.md."
+    },
+    {
+      "interior": "MnIceRelayFloor",
+      "parent": "MnIceOperations",
+      "source_file": "lairs/minneapolis-relay.json",
+      "source_room_id": "MnIceRelayFloor",
+      "source_kind": "authored_story_floor",
+      "purpose": "Relay office where the rival battle and holding-power shutdown remain distinct actions.",
+      "dimensions_metatiles": [
+        13,
+        10
+      ],
+      "arrival_core": [
+        4,
+        15
+      ],
+      "arrival_warp_index": 2,
+      "return_trigger_core": [
+        5,
+        14
+      ],
+      "return_triggers_core": [
+        [
+          5,
+          14
+        ]
+      ],
+      "paired_bindings": [
+        {
+          "parent": "MnIceOperations",
+          "parent_entry_core": [
+            27,
+            18
+          ],
+          "parent_entry_warp_index": 5,
+          "arrival_core": [
+            4,
+            15
+          ],
+          "arrival_warp_index": 2,
+          "arrival_collision": "FLOOR",
+          "return_trigger_indices": [
+            1
+          ],
+          "return_triggers_core": [
+            [
+              5,
+              14
+            ]
+          ],
+          "parent_safe_returns_core": [
+            [
+              26,
+              19
+            ]
+          ],
+          "pair_kind": "native_story_stairs"
+        }
+      ],
+      "resident_scripts": [
+        "MN_ICE_RELAY_GUARD",
+        "MN_NICE_RELAY_REED",
+        "MN_ICE_HQ_RELAY_PATROL"
+      ],
+      "requires_real_collision_check": true,
+      "native_binding_scope": "Local 729-map current-story/R03 composition; module identities allocate from the actual parent.",
+      "exterior_door_status": "Published and strict-verified in the local current-story composition. Native 2D full-frame/source and whole-layout review covers this floor. Story controller evidence and remaining regional limits are recorded in interior-life/current-story-v01/README.md."
+    },
+    {
+      "interior": "MnIronDrillApproach",
+      "parent": "MnR09Cave1F",
+      "source_file": "lairs/iron-approach.json",
+      "source_room_id": "MnIronDrillApproach",
+      "source_kind": "authored_story_floor",
+      "purpose": "Guarded Iron Range cave approach leading into the interleaved mine workings.",
+      "dimensions_metatiles": [
+        16,
+        13
+      ],
+      "arrival_core": [
+        6,
+        21
+      ],
+      "arrival_warp_index": 2,
+      "return_trigger_core": [
+        7,
+        21
+      ],
+      "return_triggers_core": [
+        [
+          7,
+          21
+        ]
+      ],
+      "paired_bindings": [
+        {
+          "parent": "MnR09Cave1F",
+          "parent_entry_core": [
+            19,
+            11
+          ],
+          "parent_entry_warp_index": 3,
+          "arrival_core": [
+            6,
+            21
+          ],
+          "arrival_warp_index": 2,
+          "arrival_collision": "FLOOR",
+          "return_trigger_indices": [
+            1
+          ],
+          "return_triggers_core": [
+            [
+              7,
+              21
+            ]
+          ],
+          "parent_safe_returns_core": [
+            [
+              19,
+              9
+            ]
+          ],
+          "pair_kind": "native_story_stairs"
+        },
+        {
+          "parent": "MnIronHaulage",
+          "parent_entry_core": [
+            5,
+            22
+          ],
+          "parent_entry_warp_index": 1,
+          "arrival_core": [
+            24,
+            5
+          ],
+          "arrival_warp_index": 4,
+          "arrival_collision": "FLOOR",
+          "return_trigger_indices": [
+            3
+          ],
+          "return_triggers_core": [
+            [
+              25,
+              5
+            ]
+          ],
+          "parent_safe_returns_core": [
+            [
+              4,
+              23
+            ]
+          ],
+          "pair_kind": "native_story_stairs"
+        }
+      ],
+      "resident_scripts": [
+        "MN_LODE_ARC_ACCESS",
+        "MN_LODE_ARC_SPOIL"
+      ],
+      "requires_real_collision_check": true,
+      "native_binding_scope": "Local 729-map current-story/R03 composition; module identities allocate from the actual parent.",
+      "exterior_door_status": "Published and strict-verified in the local current-story composition. Native 2D full-frame/source and whole-layout review covers this floor. Story controller evidence and remaining regional limits are recorded in interior-life/current-story-v01/README.md."
+    },
+    {
+      "interior": "MnIronPumpGallery",
+      "parent": "MnIronSump",
+      "source_file": "lairs/iron-gallery.json",
+      "source_room_id": "MnIronPumpGallery",
+      "source_kind": "authored_story_floor",
+      "purpose": "Guarded pump gallery connecting the lower workings to the drill control room.",
+      "dimensions_metatiles": [
+        16,
+        12
+      ],
+      "arrival_core": [
+        4,
+        19
+      ],
+      "arrival_warp_index": 2,
+      "return_trigger_core": [
+        5,
+        18
+      ],
+      "return_triggers_core": [
+        [
+          5,
+          18
+        ]
+      ],
+      "paired_bindings": [
+        {
+          "parent": "MnIronSump",
+          "parent_entry_core": [
+            35,
+            4
+          ],
+          "parent_entry_warp_index": 7,
+          "arrival_core": [
+            4,
+            19
+          ],
+          "arrival_warp_index": 2,
+          "arrival_collision": "FLOOR",
+          "return_trigger_indices": [
+            1
+          ],
+          "return_triggers_core": [
+            [
+              5,
+              18
+            ]
+          ],
+          "parent_safe_returns_core": [
+            [
+              34,
+              5
+            ]
+          ],
+          "pair_kind": "native_story_stairs"
+        },
+        {
+          "parent": "MnIronDrillCore",
+          "parent_entry_core": [
+            5,
+            14
+          ],
+          "parent_entry_warp_index": 1,
+          "arrival_core": [
+            24,
+            5
+          ],
+          "arrival_warp_index": 4,
+          "arrival_collision": "FLOOR",
+          "return_trigger_indices": [
+            3
+          ],
+          "return_triggers_core": [
+            [
+              25,
+              4
+            ]
+          ],
+          "parent_safe_returns_core": [
+            [
+              4,
+              15
+            ]
+          ],
+          "pair_kind": "native_story_stairs"
+        }
+      ],
+      "resident_scripts": [
+        "MN_LODE_ARC_PUMP",
+        "MN_LODE_ARC_INTAKE"
+      ],
+      "requires_real_collision_check": true,
+      "native_binding_scope": "Local 729-map current-story/R03 composition; module identities allocate from the actual parent.",
+      "exterior_door_status": "Published and strict-verified in the local current-story composition. Native 2D full-frame/source and whole-layout review covers this floor. Story controller evidence and remaining regional limits are recorded in interior-life/current-story-v01/README.md."
+    },
+    {
+      "interior": "MnIronDrillCore",
+      "parent": "MnIronPumpGallery",
+      "source_file": "lairs/iron-core.json",
+      "source_room_id": "MnIronDrillCore",
+      "source_kind": "authored_story_floor",
+      "purpose": "Drill control room with the rival encounter, independent shutdown and mine workers.",
+      "dimensions_metatiles": [
+        12,
+        10
+      ],
+      "arrival_core": [
+        4,
+        15
+      ],
+      "arrival_warp_index": 2,
+      "return_trigger_core": [
+        5,
+        14
+      ],
+      "return_triggers_core": [
+        [
+          5,
+          14
+        ]
+      ],
+      "paired_bindings": [
+        {
+          "parent": "MnIronPumpGallery",
+          "parent_entry_core": [
+            25,
+            4
+          ],
+          "parent_entry_warp_index": 3,
+          "arrival_core": [
+            4,
+            15
+          ],
+          "arrival_warp_index": 2,
+          "arrival_collision": "FLOOR",
+          "return_trigger_indices": [
+            1
+          ],
+          "return_triggers_core": [
+            [
+              5,
+              14
+            ]
+          ],
+          "parent_safe_returns_core": [
+            [
+              24,
+              5
+            ]
+          ],
+          "pair_kind": "native_story_stairs"
+        }
+      ],
+      "resident_scripts": [
+        "MN_NDRILL_REED",
+        "MN_NDRILL_ENGINEER",
+        "MN_NDRILL_FINN",
+        "MN_LODE_ARC_CORE_WEST",
+        "MN_LODE_ARC_CORE_EAST"
+      ],
+      "requires_real_collision_check": true,
+      "native_binding_scope": "Local 729-map current-story/R03 composition; module identities allocate from the actual parent.",
+      "exterior_door_status": "Published and strict-verified in the local current-story composition. Native 2D full-frame/source and whole-layout review covers this floor. Story controller evidence and remaining regional limits are recorded in interior-life/current-story-v01/README.md."
+    },
+    {
+      "interior": "MnIronHaulage",
+      "parent": "MnIronDrillApproach",
+      "source_file": "lairs/iron-workings/haulage.json",
+      "source_room_id": "MnIronHaulage",
+      "source_kind": "authored_story_floor",
+      "purpose": "Split haulage aisles with a local worker, guards and multiple mining-floor connections.",
+      "dimensions_metatiles": [
+        18,
+        14
+      ],
+      "arrival_core": [
+        4,
+        23
+      ],
+      "arrival_warp_index": 2,
+      "return_trigger_core": [
+        5,
+        22
+      ],
+      "return_triggers_core": [
+        [
+          5,
+          22
+        ]
+      ],
+      "paired_bindings": [
+        {
+          "parent": "MnIronDrillApproach",
+          "parent_entry_core": [
+            25,
+            5
+          ],
+          "parent_entry_warp_index": 3,
+          "arrival_core": [
+            4,
+            23
+          ],
+          "arrival_warp_index": 2,
+          "arrival_collision": "FLOOR",
+          "return_trigger_indices": [
+            1
+          ],
+          "return_triggers_core": [
+            [
+              5,
+              22
+            ]
+          ],
+          "parent_safe_returns_core": [
+            [
+              24,
+              5
+            ]
+          ],
+          "pair_kind": "native_story_stairs"
+        },
+        {
+          "parent": "MnIronSump",
+          "parent_entry_core": [
+            5,
+            18
+          ],
+          "parent_entry_warp_index": 1,
+          "arrival_core": [
+            6,
+            5
+          ],
+          "arrival_warp_index": 4,
+          "arrival_collision": "FLOOR",
+          "return_trigger_indices": [
+            3
+          ],
+          "return_triggers_core": [
+            [
+              7,
+              4
+            ]
+          ],
+          "parent_safe_returns_core": [
+            [
+              4,
+              19
+            ]
+          ],
+          "pair_kind": "native_story_stairs"
+        },
+        {
+          "parent": "MnIronVentilation",
+          "parent_entry_core": [
+            7,
+            4
+          ],
+          "parent_entry_warp_index": 3,
+          "arrival_core": [
+            26,
+            5
+          ],
+          "arrival_warp_index": 6,
+          "arrival_collision": "FLOOR",
+          "return_trigger_indices": [
+            5
+          ],
+          "return_triggers_core": [
+            [
+              27,
+              4
+            ]
+          ],
+          "parent_safe_returns_core": [
+            [
+              6,
+              5
+            ]
+          ],
+          "pair_kind": "native_story_stairs"
+        },
+        {
+          "parent": "MnIronSump",
+          "parent_entry_core": [
+            31,
+            18
+          ],
+          "parent_entry_warp_index": 5,
+          "arrival_core": [
+            28,
+            23
+          ],
+          "arrival_warp_index": 8,
+          "arrival_collision": "FLOOR",
+          "return_trigger_indices": [
+            7
+          ],
+          "return_triggers_core": [
+            [
+              29,
+              22
+            ]
+          ],
+          "parent_safe_returns_core": [
+            [
+              30,
+              19
+            ]
+          ],
+          "pair_kind": "native_story_stairs"
+        },
+        {
+          "parent": "MnIronVentilation",
+          "parent_entry_core": [
+            27,
+            20
+          ],
+          "parent_entry_warp_index": 5,
+          "arrival_core": [
+            12,
+            13
+          ],
+          "arrival_warp_index": 10,
+          "arrival_collision": "FLOOR",
+          "return_trigger_indices": [
+            9
+          ],
+          "return_triggers_core": [
+            [
+              13,
+              12
+            ]
+          ],
+          "parent_safe_returns_core": [
+            [
+              26,
+              21
+            ]
+          ],
+          "pair_kind": "native_story_stairs"
+        }
+      ],
+      "resident_scripts": [
+        "MnIronHaulageRuth",
+        "MN_LODE_ARC_WEIGH",
+        "MN_LODE_ARC_CONVEYOR"
+      ],
+      "requires_real_collision_check": true,
+      "native_binding_scope": "Local 729-map current-story/R03 composition; module identities allocate from the actual parent.",
+      "exterior_door_status": "Published and strict-verified in the local current-story composition. Native 2D full-frame/source and whole-layout review covers this floor. Story controller evidence and remaining regional limits are recorded in interior-life/current-story-v01/README.md."
+    },
+    {
+      "interior": "MnIronSump",
+      "parent": "MnIronHaulage",
+      "source_file": "lairs/iron-workings/sump.json",
+      "source_room_id": "MnIronSump",
+      "source_kind": "authored_story_floor",
+      "purpose": "Stepped sump galleries form the guarded lower return circuit of the mine.",
+      "dimensions_metatiles": [
+        20,
+        12
+      ],
+      "arrival_core": [
+        4,
+        19
+      ],
+      "arrival_warp_index": 2,
+      "return_trigger_core": [
+        5,
+        18
+      ],
+      "return_triggers_core": [
+        [
+          5,
+          18
+        ]
+      ],
+      "paired_bindings": [
+        {
+          "parent": "MnIronHaulage",
+          "parent_entry_core": [
+            7,
+            4
+          ],
+          "parent_entry_warp_index": 3,
+          "arrival_core": [
+            4,
+            19
+          ],
+          "arrival_warp_index": 2,
+          "arrival_collision": "FLOOR",
+          "return_trigger_indices": [
+            1
+          ],
+          "return_triggers_core": [
+            [
+              5,
+              18
+            ]
+          ],
+          "parent_safe_returns_core": [
+            [
+              6,
+              5
+            ]
+          ],
+          "pair_kind": "native_story_stairs"
+        },
+        {
+          "parent": "MnIronVentilation",
+          "parent_entry_core": [
+            5,
+            20
+          ],
+          "parent_entry_warp_index": 1,
+          "arrival_core": [
+            8,
+            5
+          ],
+          "arrival_warp_index": 4,
+          "arrival_collision": "FLOOR",
+          "return_trigger_indices": [
+            3
+          ],
+          "return_triggers_core": [
+            [
+              9,
+              4
+            ]
+          ],
+          "parent_safe_returns_core": [
+            [
+              4,
+              21
+            ]
+          ],
+          "pair_kind": "native_story_stairs"
+        },
+        {
+          "parent": "MnIronHaulage",
+          "parent_entry_core": [
+            29,
+            22
+          ],
+          "parent_entry_warp_index": 7,
+          "arrival_core": [
+            30,
+            19
+          ],
+          "arrival_warp_index": 6,
+          "arrival_collision": "FLOOR",
+          "return_trigger_indices": [
+            5
+          ],
+          "return_triggers_core": [
+            [
+              31,
+              18
+            ]
+          ],
+          "parent_safe_returns_core": [
+            [
+              28,
+              23
+            ]
+          ],
+          "pair_kind": "native_story_stairs"
+        },
+        {
+          "parent": "MnIronPumpGallery",
+          "parent_entry_core": [
+            5,
+            18
+          ],
+          "parent_entry_warp_index": 1,
+          "arrival_core": [
+            34,
+            5
+          ],
+          "arrival_warp_index": 8,
+          "arrival_collision": "FLOOR",
+          "return_trigger_indices": [
+            7
+          ],
+          "return_triggers_core": [
+            [
+              35,
+              4
+            ]
+          ],
+          "parent_safe_returns_core": [
+            [
+              4,
+              19
+            ]
+          ],
+          "pair_kind": "native_story_stairs"
+        },
+        {
+          "parent": "MnIronVentilation",
+          "parent_entry_core": [
+            29,
+            4
+          ],
+          "parent_entry_warp_index": 7,
+          "arrival_core": [
+            24,
+            11
+          ],
+          "arrival_warp_index": 10,
+          "arrival_collision": "FLOOR",
+          "return_trigger_indices": [
+            9
+          ],
+          "return_triggers_core": [
+            [
+              25,
+              10
+            ]
+          ],
+          "parent_safe_returns_core": [
+            [
+              28,
+              5
+            ]
+          ],
+          "pair_kind": "native_story_stairs"
+        }
+      ],
+      "resident_scripts": [
+        "MN_LODE_ARC_SUMP",
+        "MN_LODE_ARC_DRAIN"
+      ],
+      "requires_real_collision_check": true,
+      "native_binding_scope": "Local 729-map current-story/R03 composition; module identities allocate from the actual parent.",
+      "exterior_door_status": "Published and strict-verified in the local current-story composition. Native 2D full-frame/source and whole-layout review covers this floor. Story controller evidence and remaining regional limits are recorded in interior-life/current-story-v01/README.md."
+    },
+    {
+      "interior": "MnIronVentilation",
+      "parent": "MnIronSump",
+      "source_file": "lairs/iron-workings/vent.json",
+      "source_room_id": "MnIronVentilation",
+      "source_kind": "authored_story_floor",
+      "purpose": "Ventilation machinery hall with its worker and guarded links between the lower galleries.",
+      "dimensions_metatiles": [
+        18,
+        13
+      ],
+      "arrival_core": [
+        4,
+        21
+      ],
+      "arrival_warp_index": 2,
+      "return_trigger_core": [
+        5,
+        20
+      ],
+      "return_triggers_core": [
+        [
+          5,
+          20
+        ]
+      ],
+      "paired_bindings": [
+        {
+          "parent": "MnIronSump",
+          "parent_entry_core": [
+            9,
+            4
+          ],
+          "parent_entry_warp_index": 3,
+          "arrival_core": [
+            4,
+            21
+          ],
+          "arrival_warp_index": 2,
+          "arrival_collision": "FLOOR",
+          "return_trigger_indices": [
+            1
+          ],
+          "return_triggers_core": [
+            [
+              5,
+              20
+            ]
+          ],
+          "parent_safe_returns_core": [
+            [
+              8,
+              5
+            ]
+          ],
+          "pair_kind": "native_story_stairs"
+        },
+        {
+          "parent": "MnIronHaulage",
+          "parent_entry_core": [
+            27,
+            4
+          ],
+          "parent_entry_warp_index": 5,
+          "arrival_core": [
+            6,
+            5
+          ],
+          "arrival_warp_index": 4,
+          "arrival_collision": "FLOOR",
+          "return_trigger_indices": [
+            3
+          ],
+          "return_triggers_core": [
+            [
+              7,
+              4
+            ]
+          ],
+          "parent_safe_returns_core": [
+            [
+              26,
+              5
+            ]
+          ],
+          "pair_kind": "native_story_stairs"
+        },
+        {
+          "parent": "MnIronHaulage",
+          "parent_entry_core": [
+            13,
+            12
+          ],
+          "parent_entry_warp_index": 9,
+          "arrival_core": [
+            26,
+            21
+          ],
+          "arrival_warp_index": 6,
+          "arrival_collision": "FLOOR",
+          "return_trigger_indices": [
+            5
+          ],
+          "return_triggers_core": [
+            [
+              27,
+              20
+            ]
+          ],
+          "parent_safe_returns_core": [
+            [
+              12,
+              13
+            ]
+          ],
+          "pair_kind": "native_story_stairs"
+        },
+        {
+          "parent": "MnIronSump",
+          "parent_entry_core": [
+            25,
+            10
+          ],
+          "parent_entry_warp_index": 9,
+          "arrival_core": [
+            28,
+            5
+          ],
+          "arrival_warp_index": 8,
+          "arrival_collision": "FLOOR",
+          "return_trigger_indices": [
+            7
+          ],
+          "return_triggers_core": [
+            [
+              29,
+              4
+            ]
+          ],
+          "parent_safe_returns_core": [
+            [
+              24,
+              11
+            ]
+          ],
+          "pair_kind": "native_story_stairs"
+        }
+      ],
+      "resident_scripts": [
+        "MnIronVentilationVern",
+        "MN_LODE_ARC_VENT",
+        "MN_LODE_ARC_SHIFT"
+      ],
+      "requires_real_collision_check": true,
+      "native_binding_scope": "Local 729-map current-story/R03 composition; module identities allocate from the actual parent.",
+      "exterior_door_status": "Published and strict-verified in the local current-story composition. Native 2D full-frame/source and whole-layout review covers this floor. Story controller evidence and remaining regional limits are recorded in interior-life/current-story-v01/README.md."
     }
   ]
 }

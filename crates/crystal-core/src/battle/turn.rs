@@ -2461,13 +2461,18 @@ pub fn commit_battle_turn_outcome(
     let persistent_player_party = outcome.state.player_party.clone();
     let persistent_enemy_party = outcome.state.enemy_party.clone();
     let persistent_player = outcome.state.player.clone();
-    let persistent_enemy = outcome.state.enemy.clone();
+    let mut persistent_enemy = outcome.state.enemy.clone();
     validate_player_party_snapshot(state, &persistent_player_party, commit_party_index)?;
     validate_enemy_party_snapshot(
         state,
         &persistent_enemy_party,
         outcome.state.enemy_party_index,
     )?;
+    // Mimic replacements belong to active combat, while the opponent's party
+    // retains its source moves and their consumed PP, just like the player.
+    if let Some(party_enemy) = persistent_enemy_party.get(outcome.state.enemy_party_index) {
+        persistent_enemy.moves.clone_from(&party_enemy.moves);
+    }
     let persistent_player_moves = persistent_player_party[commit_party_index].moves.clone();
     let active_player_moves = persistent_player.moves.clone();
     commit_player_party_snapshot(state, &persistent_player_party)?;

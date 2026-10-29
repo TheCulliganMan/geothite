@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "current_content_hash": "b1acb07bf7cbadfe579dc31e3554bb3f05fc4ae0e4222228746a0497d4ee4a80",
+  "accepted_base_content_hash": "f2808268fbda859cf97b79b8460086c8fc0251cc4870f68504d58f1426a822aa",
+  "accepted_child_content_hash": "6c54eeb1451cdec23133a7b397542ec24485d34b5d2c7404d9893c1f266ec8a9",
+  "manifest": "minnesota-interior-terrain-sync-v7",
+  "maps": [
+    "MnR03Cave1F"
+  ]
+}

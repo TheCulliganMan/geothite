@@ -254,8 +254,10 @@ pub(super) fn path(
                 live.metatile_ids[(yy as usize / 2) * live.width as usize + xx as usize / 2];
             let collision = &r.data().tilesets[&module.attributes.tileset_name].collision
                 [&format!("{block:02x}")][yy as usize % 2 * 2 + xx as usize % 2];
-            if !matches!(collision.as_str(), "FLOOR" | "WARP_CARPET_DOWN" | "LADDER")
-                || (collision == "LADDER" && (xx, yy) != to)
+            if !matches!(
+                collision.as_str(),
+                "FLOOR" | "WARP_CARPET_DOWN" | "LADDER" | "BRIDGE_NS_DECK"
+            ) || (collision == "LADDER" && (xx, yy) != to)
             {
                 continue;
             }
@@ -272,6 +274,10 @@ pub(super) fn walk(c: &mut VisibleShellController, r: &CrystalRuntime, to: (i16,
     // actual step so an initially offscreen worker is never treated as floor.
     for _ in 0..256 {
         let s = c.snapshot().expect("live walking input");
+        if s.ui.text_window_open || s.battle.is_some() || c.has_pending_script_work() {
+            finish(c);
+            continue;
+        }
         if (s.overworld.tile.x, s.overworld.tile.y) == to {
             at(c, &name, to);
             return;
@@ -295,7 +301,11 @@ pub(super) fn walk(c: &mut VisibleShellController, r: &CrystalRuntime, to: (i16,
     }
     panic!("{name}: walking route exceeded its bounded course to {to:?}");
 }
-fn join(c: &mut VisibleShellController, r: &CrystalRuntime, root: &crystal_assets::AssetRoot) {
+pub(super) fn join(
+    c: &mut VisibleShellController,
+    r: &CrystalRuntime,
+    root: &crystal_assets::AssetRoot,
+) {
     // A first directional input may only turn the player. Keep using native
     // input until stepping into the event, then let dialogue own the scene.
     for _ in 0..8 {

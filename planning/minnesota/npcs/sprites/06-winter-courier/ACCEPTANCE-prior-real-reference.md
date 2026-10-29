@@ -1,0 +1,9 @@
+# COURIER IVAR: accepted native and playable
+
+Deliverable: `content-packs/minnesota-npcs-hand-07-v01.crystalpack`. Parent: `content-packs/minnesota-npcs-hand-06-v01.crystalpack`. Existing trainers and runtime assets passed preservation checks. Placement: MnInternationalFalls [16, 18], facing south, approach [16, 19].
+
+Six native 16x16 overworld poses and one 56x56 battle sprite share an independent four-color GBC palette. Source: `native-pixels-v2.json`. Placement: `placement-v1.json`. PNG/palette/tile/alpha agreement, nonblank poses, distinct walking pairs and independent tile decode passed.
+
+The production controller test passed exactly once, 0 failures. It checked native art loaders and visible palette, introduction/input ownership, a PP-spending move, battle save/load, a complete legal-input win, defeat flag before render capture, and follow-up talk. Log: `target/npc-sprites/courier/controller-hand-v01.log`. Actual game captures: `target/npc-sprites/courier/gameplay-hand-v01`. These images were manually inspected before this record was written: Directly redrew all six grids, preserving brown skin while adding clear eye highlights, fur earflaps and a separate rear hat seam. Rebuilt the dark coat, scarf, crossbody strap, sealed letter and leather satchel with anatomical side continuity. The profile has one eye and the rear has no facial marks. Purposeful leading/rear-foot stride replaces foot-spreading. Reviewed native-size/enlarged comparisons and actual snowy International Falls follow-up capture. Battle art, palette and gameplay unchanged.
+
+Evidence hashes are in `manifest.json`. This record accepts this NPC only; the goal still requires at least 15. Continue one at a time using this pack as the next parent. The generic test runs with explicit CRYSTAL_INTERIOR_PACK, CRYSTAL_ORIGINAL_NPC_SOURCE, POKEGEAR_PC_RENDER_DIR and RUST_MIN_STACK=33554432.

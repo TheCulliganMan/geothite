@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "trainers": [
+    {
+      "map": "MnMankato",
+      "approach": [
+        32,
+        25
+      ],
+      "id": "MN_EXTRA_NPC_BOTANIST_01",
+      "display_name": "ELDEN",
+      "trainer_class": "MN_PRAIRIE_BOTANIST",
+      "class_name": "BOTANIST",
+      "template_class": "SCIENTIST",
+      "sprite": "SPRITE_MN_PRAIRIE_BOTANIST",
+      "tile": [
+        32,
+        24
+      ],
+      "facing": "south",
+      "sight_range": 2,
+      "defeated_flag": "EVENT_MN_EXTRA_NPC_BOTANIST_01",
+      "party": [
+        {
+          "species": "BLUESTIP",
+          "level": 18
+        },
+        {
+          "species": "RICELING",
+          "level": 20
+        }
+      ],
+      "before_lines": [
+        "Look closely now.",
+        "Growth takes care."
+      ],
+      "after_lines": [
+        "Fine observation!",
+        "Let wild roots be."
+      ],
+      "loss_lines": [
+        "Study and return.",
+        "There is no rush."
+      ]
+    }
+  ]
+}

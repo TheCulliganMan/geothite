@@ -12,7 +12,11 @@ use crate::{CompiledGamePack, MapModule};
 /// Revises terrain on an already installed route without reinstalling its events.
 ///
 /// Both layouts must describe the same native route, extent, tileset and clipped
-/// chunk grid. Raw `tileset`, `derived_blocks` and `source_pixels_modified` source
+/// chunk grid. Existing ragged edge chunks retain their installed dimensions;
+/// omitted source cells must remain unchanged, fully blocking wall terrain.
+/// R17's registered southern green-pine alias remains installed, with every old
+/// and proposed block required to share the planning alias's native collision.
+/// Raw `tileset`, `derived_blocks` and `source_pixels_modified` source
 /// art fields must also remain equal; this operation cannot publish new art. Every installed chunk and its uniquely owned base64 block payload
 /// must exactly match the compiled previous layout. The dossier certifies existing
 /// actor/sign/door anchors and trainer/pickup identities; it cannot move those
@@ -60,6 +64,11 @@ pub fn revise_authored_route_terrain(
         .context("compile previous route terrain")?;
     let new_blocks = revised.compile().context("compile revised route terrain")?;
     let chunks = installed_chunks(base, &design, &previous, &old_blocks)?;
+    for chunk in &chunks {
+        validate_chunk_collision_alias(base, &previous, &old_blocks, chunk)?;
+        validate_chunk_collision_alias(base, &revised, &new_blocks, chunk)?;
+        validate_clipped_padding(base, &previous, &old_blocks, &new_blocks, chunk)?;
+    }
     validate_anchors(base, &design)?;
     crate::verify_compiled_game_pack_for_runtime(base)?;
     crate::authored_route_modpack::validate_geometry(
@@ -124,6 +133,66 @@ pub(crate) struct InstalledChunk {
     pub(crate) size: [u16; 2],
 }
 
+fn accepts_installed_tileset(layout: &Layout, chunk: &InstalledChunk, actual: &str) -> bool {
+    actual == layout.compiled_tileset
+        || (layout.id == "MN_R17"
+            && layout.dimensions_metatiles == [32, 56]
+            && layout.compiled_tileset == "mn_winter_outdoor"
+            && chunk.name == "MnR17C00R02"
+            && chunk.origin == [0, 48]
+            && chunk.size == [32, 8]
+            && actual == "mn_border_pines")
+}
+
+fn validate_chunk_collision_alias(
+    pack: &CompiledGamePack,
+    layout: &Layout,
+    blocks: &[u16],
+    chunk: &InstalledChunk,
+) -> Result<()> {
+    let actual = &pack
+        .data
+        .maps
+        .get(&chunk.name)
+        .context("installed seasonal chunk")?
+        .attributes
+        .tileset_name;
+    if actual == &layout.compiled_tileset {
+        return Ok(());
+    }
+    // Preserve R17's installed green southern transition. The complete-route
+    // geometry check must agree with its actual native collision for every
+    // old and proposed block; this cannot change an alias or install new art.
+    let planned = &pack
+        .data
+        .tilesets
+        .get(&layout.compiled_tileset)
+        .context("planned seasonal tileset")?
+        .collision;
+    let native = &pack
+        .data
+        .tilesets
+        .get(actual)
+        .context("installed seasonal tileset")?
+        .collision;
+    for block in clipped_blocks(blocks, layout.dimensions_metatiles[0], chunk)
+        .into_iter()
+        .collect::<BTreeSet<_>>()
+    {
+        let key = format!("{block:02x}");
+        ensure!(
+            planned.get(&key).is_some() && planned.get(&key) == native.get(&key),
+            "{}: planned/native seasonal collision differs for block {key}",
+            chunk.name
+        );
+    }
+    Ok(())
+}
+
+#[cfg(test)]
+#[path = "border_pines_revision_tests.rs"]
+mod border_pines_tests;
+
 pub(crate) fn clipped_blocks(blocks: &[u16], width: u16, chunk: &InstalledChunk) -> Vec<u16> {
     let mut result = Vec::with_capacity(usize::from(chunk.size[0]) * usize::from(chunk.size[1]));
     for y in chunk.origin[1]..chunk.origin[1] + chunk.size[1] {
@@ -131,6 +200,45 @@ pub(crate) fn clipped_blocks(blocks: &[u16], width: u16, chunk: &InstalledChunk)
         result.extend_from_slice(&blocks[start..start + usize::from(chunk.size[0])]);
     }
     result
+}
+
+fn validate_clipped_padding(
+    pack: &CompiledGamePack,
+    layout: &Layout,
+    before: &[u16],
+    after: &[u16],
+    chunk: &InstalledChunk,
+) -> Result<()> {
+    let [width, height] = layout.dimensions_metatiles;
+    for y in chunk.origin[1]..(chunk.origin[1] + 24).min(height) {
+        for x in chunk.origin[0]..(chunk.origin[0] + 32).min(width) {
+            if x < chunk.origin[0] + chunk.size[0] && y < chunk.origin[1] + chunk.size[1] {
+                continue;
+            }
+            let index = usize::from(y) * usize::from(width) + usize::from(x);
+            ensure!(
+                before[index] == after[index],
+                "{}: terrain revision changes omitted ragged padding at {x},{y}",
+                chunk.name
+            );
+            for dy in 0..2 {
+                for dx in 0..2 {
+                    ensure!(
+                        crate::authored_route_modpack::collision(
+                            pack,
+                            before,
+                            width,
+                            [x * 2 + dx, y * 2 + dy],
+                            &layout.compiled_tileset,
+                        )? == "WALL",
+                        "{}: omitted ragged padding is traversable at {x},{y}",
+                        chunk.name
+                    );
+                }
+            }
+        }
+    }
+    Ok(())
 }
 
 pub(crate) fn installed_chunks(
@@ -157,20 +265,21 @@ pub(crate) fn installed_chunks(
                 name: name.clone(),
                 label: label.into(),
                 origin: [column * 32, row * 24],
-                size: [
-                    (layout.dimensions_metatiles[0] - column * 32).min(32),
-                    (layout.dimensions_metatiles[1] - row * 24).min(24),
-                ],
+                size: [module.attributes.width, module.attributes.height],
             };
             ensure!(
                 module.id == name
-                    && [module.attributes.width, module.attributes.height] == chunk.size
-                    && module.attributes.tileset_name == layout.compiled_tileset
+                    && chunk.size[0] > 0
+                    && chunk.size[1] > 0
+                    && chunk.size[0] <= (layout.dimensions_metatiles[0] - column * 32).min(32)
+                    && chunk.size[1] <= (layout.dimensions_metatiles[1] - row * 24).min(24)
+                    && accepts_installed_tileset(layout, &chunk, &module.attributes.tileset_name)
                     && module.attributes.map_constant.as_deref()
                         == Some(authored_route_events::constant(&name).as_str())
                     && pack.data.map_attributes.get(&name) == Some(&module.attributes),
                 "{name}: installed route identity/extent/tileset/attributes drift"
             );
+            validate_clipped_padding(pack, layout, old_blocks, old_blocks, &chunk)?;
             let section_labels = [
                 Some(label),
                 module.attributes.map_scripts_label.as_deref(),
@@ -409,7 +518,15 @@ pub(crate) fn validate_anchors(pack: &CompiledGamePack, design: &RouteDesign) ->
             .into_iter()
             .chain(
                 door.return_warp_index
-                    .map(|index| (index, door.arrival_tile, door.target_warp)),
+                    // Ordinary passive FLOOR arrivals use destination 1;
+                    // an installed custom room can declare its exact target.
+                    .map(|index| {
+                        (
+                            index,
+                            door.arrival_tile,
+                            door.return_target_warp.unwrap_or(1),
+                        )
+                    }),
             )
         {
             let warp = module
@@ -529,6 +646,37 @@ mod tests {
     }
 
     #[test]
+    fn authored_route_revision_ragged_padding_must_be_unchanged_walls() {
+        let mut layout = Layout::parse(&previous()).expect("layout");
+        layout.dimensions_metatiles = [4, 4];
+        let chunk = InstalledChunk {
+            name: "RaggedEdge".into(),
+            label: "RaggedEdgeBlocks".into(),
+            origin: [0, 0],
+            size: [3, 4],
+        };
+        let walls = vec![0x05; 16];
+        validate_clipped_padding(base(), &layout, &walls, &walls, &chunk)
+            .expect("unchanged native forest may pad the bounding rectangle");
+        let mut traversable = walls.clone();
+        traversable[7] = 0x01;
+        assert!(
+            validate_clipped_padding(base(), &layout, &traversable, &traversable, &chunk)
+                .expect_err("omitted source floor would invent a walking bypass")
+                .to_string()
+                .contains("padding is traversable")
+        );
+        let mut changed = walls.clone();
+        changed[7] = 0x0a;
+        assert!(
+            validate_clipped_padding(base(), &layout, &walls, &changed, &chunk)
+                .expect_err("even blocking changes outside native terrain must be rejected")
+                .to_string()
+                .contains("changes omitted ragged padding")
+        );
+    }
+
+    #[test]
     fn authored_route_revision_preserves_every_nonterrain_field_and_strict_wire() {
         let base = base();
         let previous = previous();
@@ -616,7 +764,8 @@ mod tests {
         let design = RouteDesign::parse(&dossier()).expect("dossier");
         let layout = Layout::parse(&previous()).expect("layout");
         let blocks = layout.compile().expect("source terrain");
-        let label = base().data.maps["MnR08C00R00"]
+        let first_chunk = format!("{}C00R00", design.map_prefix);
+        let label = base().data.maps[&first_chunk]
             .attributes
             .blocks_label
             .as_ref()

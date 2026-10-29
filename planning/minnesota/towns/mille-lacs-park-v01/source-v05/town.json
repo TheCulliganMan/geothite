@@ -1,0 +1,262 @@
+{
+  "id": "MnMilleLacs",
+  "name": "MILLE LACS",
+  "native_constant": "MN_MILLE_LACS",
+  "compiled_tileset": "mn_headwaters",
+  "dimensions_metatiles": [
+    24,
+    20
+  ],
+  "role": "landmark",
+  "composition": "A wooded shore park at the actual R18 terminus, with a winding walk, grass-gated bird lookout and short downward return, railed dock, picnic bend, lake launch and Surf-only rocky roost.",
+  "ports": [
+    {
+      "route": "MN_R18",
+      "side": "W",
+      "gate_metatile": [
+        0,
+        6
+      ],
+      "landing_metatile": [
+        2,
+        6
+      ]
+    }
+  ],
+  "residents": [
+    {
+      "id": "MN_ML_PARK_RANGER",
+      "sprite": "SPRITE_POKEFAN_M",
+      "tile": [
+        7,
+        13
+      ],
+      "facing": "west",
+      "approach": [
+        6,
+        13
+      ],
+      "lines": [
+        "MILLE LACS park.",
+        "The SHORE WATCH",
+        "volunteers are on",
+        "the western shore.",
+        "Their ranger keeps",
+        "the fishing rods."
+      ]
+    },
+    {
+      "id": "MN_ML_PARK_BIRDER",
+      "sprite": "SPRITE_LASS",
+      "tile": [
+        17,
+        16
+      ],
+      "facing": "west",
+      "approach": [
+        16,
+        16
+      ],
+      "lines": [
+        "A flash of wings",
+        "above the reeds!",
+        "The grass is quiet",
+        "if you take it slow.",
+        "That short ledge",
+        "drops to the dock."
+      ]
+    },
+    {
+      "id": "MN_ML_PARK_ANGLER",
+      "sprite": "SPRITE_FISHER",
+      "tile": [
+        27,
+        23
+      ],
+      "facing": "west",
+      "approach": [
+        26,
+        23
+      ],
+      "lines": [
+        "A broad lake makes",
+        "its own weather.",
+        "Those posts keep",
+        "the pier safe."
+      ]
+    },
+    {
+      "id": "MN_ML_PARK_PICNIC",
+      "sprite": "SPRITE_POKEFAN_F",
+      "tile": [
+        11,
+        30
+      ],
+      "facing": "east",
+      "approach": [
+        12,
+        30
+      ],
+      "lines": [
+        "We walked past",
+        "the little lookout.",
+        "The wooded bend",
+        "blocks the wind."
+      ]
+    },
+    {
+      "id": "MN_ML_PARK_BOATER",
+      "sprite": "SPRITE_SAILOR",
+      "tile": [
+        39,
+        9
+      ],
+      "facing": "south",
+      "approach": [
+        39,
+        10
+      ],
+      "lines": [
+        "We stay inside",
+        "the marked buoys.",
+        "There is a rocky",
+        "roost in the bay."
+      ]
+    }
+  ],
+  "signs": [
+    {
+      "id": "MN_ML_PARK_ENTRY",
+      "tile": [
+        2,
+        10
+      ],
+      "lines": [
+        "MILLE LACS PARK",
+        "West: SHORE WATCH",
+        "Dock: south trail"
+      ]
+    },
+    {
+      "id": "MN_ML_PARK_WIND",
+      "tile": [
+        24,
+        6
+      ],
+      "lines": [
+        "Wide water.",
+        "Watch the wind."
+      ]
+    }
+  ],
+  "doors": [],
+  "interiors": [],
+  "items": [
+    {
+      "id": "MN_ML_PARK_ROOST",
+      "item": "PP_UP",
+      "quantity": 1,
+      "flag": "EVENT_MN_MILLE_LACS_ROOST",
+      "tile": [
+        36,
+        29
+      ]
+    }
+  ],
+  "one_way_ledges": [
+    {
+      "id": "BIRD_LOOKOUT_RETURN",
+      "direction": "down",
+      "approach": [
+        16,
+        17
+      ],
+      "lip": [
+        16,
+        18
+      ],
+      "landing": [
+        16,
+        20
+      ],
+      "ordinary_return_via": [
+        [
+          13,
+          20
+        ],
+        [
+          13,
+          17
+        ],
+        [
+          15,
+          17
+        ],
+        [
+          16,
+          17
+        ]
+      ],
+      "gated_destination": [
+        16,
+        16
+      ],
+      "required_grass_metatile": [
+        7,
+        8
+      ]
+    }
+  ],
+  "viewpoints": [
+    {
+      "id": "entry",
+      "tile": [
+        4,
+        13
+      ]
+    },
+    {
+      "id": "lookout",
+      "tile": [
+        16,
+        16
+      ]
+    },
+    {
+      "id": "dock",
+      "tile": [
+        24,
+        23
+      ]
+    },
+    {
+      "id": "picnic",
+      "tile": [
+        12,
+        30
+      ]
+    },
+    {
+      "id": "launch",
+      "tile": [
+        19,
+        29
+      ]
+    },
+    {
+      "id": "north-shore",
+      "tile": [
+        38,
+        10
+      ]
+    },
+    {
+      "id": "roost",
+      "tile": [
+        37,
+        29
+      ]
+    }
+  ],
+  "preserve": "R18 ShoreWatch reports, MineralBadge requirement, GoodRod delivery and every old actor/program/item/encounter remain exact. No duplicate rod or indoor room is added."
+}

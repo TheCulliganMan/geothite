@@ -1,5 +1,11 @@
 # Long Mississippi continuity candidate
 
+For the compact-city/coast and snowy-pine-Ely successor, see the
+[current native river review](../current-river-v01/README.md). It binds the
+new waterfront pack and verifies the complete round trip, seven apertures and
+eight reached 2D frames with legal regional SLIDEWAKE. The historical source
+contracts and older native receipts below remain unchanged.
+
 The source candidate replaces the repeating long-river hairpins with two different wooded reaches. The northern reach has an unequal oxbow, a pine tongue and one quiet pool; the lower reach has a broad angler approach, a northern still reach and a longer southern S bend. Four existing bank trainers and small grass patches remain. R05 now reads as two genuine lookout/fishing coves rather than an apparent parallel river that promises a short through journey.
 
 This hand-authored revision is now **published in the ignored native pack**, with its complete Winona–St. Cloud round trip passing through production input. All four optional bank-trainer cases pass, and Root has visually accepted ten actual reached GPU frames for the woods/mouths and banks. Guarded canonical-source promotion remains proposed rather than applied. The superseded source-v01 and every earlier render remain preserved. Canonical route, city, world and interior authoring files remain unchanged by this detached revision.

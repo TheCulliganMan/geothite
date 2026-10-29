@@ -3,6 +3,15 @@
 
 use crystal_render_api::VisualTileSource;
 
+/// Headwaters appends pier blocks to unchanged native Johto house and sign drawings.
+/// Keep the actual atlas identity for sampling; share only model recognition.
+pub(crate) fn native_structure_tileset(tileset: &str) -> &str {
+    match tileset {
+        "mn_headwaters" => "johto",
+        other => other,
+    }
+}
+
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub(crate) struct RoofStyle {
     pub depth_pixels: usize,

@@ -15,7 +15,7 @@ use super::super::{
     mark_runtime_snapshot_dirty,
 };
 use super::authored_route_fixture::{
-    Point, RouteGrid, RouteSpec, finish_text, neighbors, opposite, position,
+    Point, RouteGrid, RouteSpec, escape_wild, finish_text, neighbors, opposite, position,
 };
 
 #[derive(Clone, Copy)]
@@ -244,7 +244,9 @@ fn headwaters_controller_walks_four_clipped_maps_rails_habitat_bank_and_continue
         grid.walk(&mut controller, b);
         grid.walk(&mut controller, a);
     }
-    for at in [(92, 26), (2, 42)] {
+    // The installed Itasca gatehouse facade occupies the old (2,42) endpoint.
+    // Reach its actual eastern approach without replacing the native gate.
+    for at in [(92, 26), (6, 42)] {
         grid.walk(&mut controller, at);
     }
     // Cross both physical boardwalk rows in both directions.
@@ -314,7 +316,7 @@ fn headwaters_controller_walks_four_clipped_maps_rails_habitat_bank_and_continue
         ((19, 11), "count the birds"),
         ((55, 37), "small stream"),
         ((17, 55), "We pause"),
-        ((79, 45), "Yanma"),
+        ((79, 45), "WINDHOPPER"),
         ((90, 24), "HEADWATERS"),
         ((68, 10), "OLD PINE"),
         ((54, 34), "MISSISSIPPI"),
@@ -755,4 +757,116 @@ fn headwaters_controller_wins_native_mara_battle_spends_pp_and_continues_party()
             .battle
             .is_none()
     );
+}
+
+#[test]
+#[ignore = "requires the current Headwaters grass revision pack"]
+fn headwaters_controller_grassy_survey_climb_dry_drop_and_continue() {
+    let (root, runtime, mut controller) = fixture(
+        (29, 26),
+        Setup::Cut {
+            learns_cut: false,
+            hive_badge: false,
+        },
+    );
+    let route = grid(&runtime, (29, 26));
+    let mut grass_steps = 0;
+    route.walk_with_actions(
+        &mut controller,
+        (29, 23),
+        |c| {
+            let (x, y) = position(c);
+            let x = usize::try_from(x).expect("nonnegative route x");
+            let y = usize::try_from(y).expect("nonnegative route y");
+            let name = format!("MnR14C{:02}R{:02}", x / 64, y / 48);
+            let map = &runtime.data().maps[&name];
+            let block = map.blocks[(y % 48 / 2) * usize::from(map.attributes.width) + x % 64 / 2];
+            let collision =
+                &runtime.data().tilesets["mn_headwaters"].collision[&format!("{block:02x}")];
+            grass_steps += usize::from(collision[y % 2 * 2 + x % 2] == "TALL_GRASS");
+        },
+        escape_wild,
+    );
+    assert!(
+        grass_steps >= 4,
+        "ordinary survey climb must cross woodland grass"
+    );
+    for _ in 0..8 {
+        controller
+            .press(GameButton::Down)
+            .expect("native dry survey drop");
+        let at = position(&mut controller);
+        assert!(matches!(at, (29, 23) | (29, 24) | (29, 26)));
+        assert!(
+            controller
+                .snapshot()
+                .expect("dry hop state")
+                .battle
+                .is_none()
+        );
+        if at == (29, 26) {
+            break;
+        }
+    }
+    assert_eq!(position(&mut controller), (29, 26));
+    barrier(&mut controller, (29, 26), GameButton::Up);
+    let before = controller.snapshot().expect("actual dry ledge return");
+    let save = OwnedSave::new("grassy-survey-return");
+    controller.save(&save.0).expect("save reached dry return");
+    let mut loaded = VisibleShellController::load_save(root, runtime, save.0.clone(), None)
+        .expect("Continue reached survey return");
+    let after = loaded.snapshot().expect("continued survey return");
+    assert_eq!(position(&mut loaded), (29, 26));
+    assert_eq!(before.party, after.party);
+    assert_eq!(before.bag, after.bag);
+}
+
+#[test]
+#[ignore = "requires the current Headwaters grass revision pack"]
+fn headwaters_controller_new_woodland_grass_encounter_run_and_continue() {
+    let (root, runtime, mut controller) = fixture(
+        (15, 24),
+        Setup::Cut {
+            learns_cut: false,
+            hive_badge: false,
+        },
+    );
+    let route = grid(&runtime, (15, 24));
+    let mut encounters = 0;
+    for index in 0..256 {
+        let target = if index % 2 == 0 { (15, 25) } else { (15, 24) };
+        route.walk_with_actions(
+            &mut controller,
+            target,
+            |_| {},
+            |c| {
+                encounters += 1;
+                escape_wild(c);
+            },
+        );
+        if encounters > 0 {
+            break;
+        }
+    }
+    assert!(
+        encounters > 0,
+        "new woodland grass never started an authoritative wild battle"
+    );
+    let reached = position(&mut controller);
+    let before = controller.snapshot().expect("actual native wild escape");
+    let save = OwnedSave::new("woodland-wild-run");
+    controller
+        .save(&save.0)
+        .expect("save actual woodland escape");
+    let mut loaded = VisibleShellController::load_save(root, runtime, save.0.clone(), None)
+        .expect("Continue actual woodland escape");
+    let after = loaded.snapshot().expect("continued woodland escape");
+    assert_eq!(position(&mut loaded), reached);
+    assert_eq!(before.party, after.party);
+    assert_eq!(before.bag, after.bag);
+    if let Some(path) = std::env::var_os("CRYSTAL_HEADWATERS_GRASS_REACHED_SAVE") {
+        loaded
+            .save(PathBuf::from(path))
+            .expect("export reached woodland escape");
+    }
 }

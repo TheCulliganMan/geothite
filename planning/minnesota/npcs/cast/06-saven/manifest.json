@@ -1,0 +1,41 @@
+{
+  "name": "SAVEN",
+  "role": "Gym Leader 5",
+  "status": "accepted-native-playable",
+  "source": "native-pixels-v3.json",
+  "integration": "binding-v1.json",
+  "controller": "controller-v1.json",
+  "native": "target/trainer-cast/saven/native-v3",
+  "pack": "content-packs/minnesota-trainer-cast-06-v02.crystalpack",
+  "gameplay": "target/trainer-cast/saven/gameplay-v1",
+  "log": "target/trainer-cast/saven/controller-v1.log",
+  "reference_review": "actual-crystal-sprites-common-palette-and-scale",
+  "review_notes": "Pale swept hair, blue forehead goggles, short flight jacket, cream scarf and black falconry glove form a distinct wind silhouette. Hand-authored field scarf reverses shoulders in the rear view; black glove is retained on the correct arm during walking. Native eye/mouth, scarf and boot straps refined after conversion. Crystal comparisons and actual captures reviewed; native badge, one authored TM, repeat talk and saved state pass.",
+  "fixture": "Three legal level-60 Minnesota starters; adjacent position and explicit prior-access setup. Local encounter/rewards proof, not earned traversal or intended-level balance.",
+  "evidence_sha256": {
+    "planning/minnesota/npcs/cast/06-saven/native-pixels-v3.json": "b2766ace43261f25cc2cdb76730a57864f1310c31147308a1c160c2ee0542899",
+    "planning/minnesota/npcs/cast/06-saven/binding-v1.json": "3186192340fa36ff21bb91d76d9f0b566dbbc560a3971026b93f8fd28496398c",
+    "planning/minnesota/npcs/cast/06-saven/controller-v1.json": "fec0663ef3458d1d6c9c67e043d768b4f70b74be4908480dbf3b02dc1731cd5c",
+    "target/trainer-cast/saven/native-v3/verification.json": "41a2e162f9bfb429f98a6025cb14dd822eb60cd74ba9c8bd115d870f3d46e6d1",
+    "content-packs/minnesota-trainer-cast-06-v02.crystalpack": "c860b70b9f27b96b94613cca27dbad516d260987109447be6385018553cd8337",
+    "target/trainer-cast/saven/controller-v1.log": "28b62fb641516676a7c0f2aa5e0a9156009602efe86235f153ecfbc041a5829f",
+    "target/trainer-cast/saven/gameplay-v1/original-npc-trainer-intro.png": "de188fdaf4cb0c0b688d2b720755bfab58ce81201a3c64d3b8f2cb3ab9bcb3f9",
+    "target/trainer-cast/saven/gameplay-v1/original-npc-overworld-state.png": "852be3fec47ac45f7b6f7d87163e46b9a2799cdda63debe19a8b10f78337c210",
+    "target/trainer-cast/saven/gameplay-v1/original-npc-first-turn.png": "adb00b0b8f8e3a33be52fdbe4a72f2e708d419caa6c646b8acc35d912e13d209",
+    "planning/minnesota/npcs/cast/06-saven/battle-reference-prompt.txt": "92d633e4b0cb2a66e32a64b6f47fa35a71e1956d498f622395a6eb858d7d8bc4",
+    "planning/minnesota/npcs/cast/06-saven/battle-reference-v1.png": "760a476d54a93d203a9111ab3cd913133870cc3d80b16b57f93aadf4d397161f",
+    "target/trainer-cast/saven/real-comparison.png": "8b6df156b36cbc358821daef1f760d9c757d0027895aca3be774fcc4e2518f4e",
+    "target/trainer-cast/saven/battle-real-comparison.png": "26ab69c1a49b2bace7bf16887adab9fd61d25b52d7a116590264a08c35f9079e"
+  },
+  "final_pack": "content-packs/minnesota-trainer-cast-36-v01.crystalpack",
+  "final_gameplay": "target/trainer-cast/final-audit/gameplay/06-saven",
+  "final_log": "target/trainer-cast/final-audit/gameplay/06-saven/controller.log",
+  "final_status": "accepted-native-playable-final-pack",
+  "final_review": "Actual battle intro and field captures inspected on exact final pack; art retains accepted native sources and palette.",
+  "final_evidence_sha256": {
+    "target/trainer-cast/final-audit/gameplay/06-saven/controller.log": "d9944577cb6388c2587044051284797c042880acd0e4eef6a9c4fbe1bd6787ae",
+    "target/trainer-cast/final-audit/gameplay/06-saven/original-npc-trainer-intro.png": "de188fdaf4cb0c0b688d2b720755bfab58ce81201a3c64d3b8f2cb3ab9bcb3f9",
+    "target/trainer-cast/final-audit/gameplay/06-saven/original-npc-overworld-state.png": "852be3fec47ac45f7b6f7d87163e46b9a2799cdda63debe19a8b10f78337c210",
+    "target/trainer-cast/final-audit/gameplay/06-saven/original-npc-first-turn.png": "adb00b0b8f8e3a33be52fdbe4a72f2e708d419caa6c646b8acc35d912e13d209"
+  }
+}

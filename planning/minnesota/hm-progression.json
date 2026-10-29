@@ -1,0 +1,9 @@
+[
+  {"item":"HM_FLASH","rule":"flash","badge_index":0,"badge":"CARE","flag":"ENGINE_ZEPHYRBADGE","map":"MnR01Cave1F","actor":"MN_R01_HOLLOW_GUIDE","gym":"MnRochesterGym","directions":["For HM FLASH, ask","the hollow guide","on DRIFTLESS TRAIL."]},
+  {"item":"HM_CUT","rule":"cut","badge_index":1,"badge":"PRAIRIE","flag":"ENGINE_HIVEBADGE","map":"MnR02ToolShed","actor":"MN_R02_TOOL_KEEPER","gym":"MnMankatoGym","directions":["For HM CUT, visit","the tool shed on","PRAIRIE FARM ROAD."]},
+  {"item":"HM_STRENGTH","rule":"strength","badge_index":2,"badge":"CURRENT","flag":"ENGINE_PLAINBADGE","map":"MnMinneapolisMillForemanHome","actor":"MN_MP_MILLFOREMANHOME_HOST","gym":"MnMinneapolisGym","directions":["For HM STRENGTH,","visit the mill","foreman's home in","MINNEAPOLIS."]},
+  {"item":"HM_SURF","rule":"surf","badge_index":3,"badge":"CAPITOL","flag":"ENGINE_FOGBADGE","map":"MnStPaulAnglerHouse","actor":"MN_SPX_ANGLERHOUSE_HOST","gym":"MnStPaulGym","directions":["For HM SURF, visit","the ANGLER HOUSE","here in ST PAUL."]},
+  {"item":"HM_FLY","rule":"fly","badge_index":4,"badge":"WIND","flag":"ENGINE_STORMBADGE","map":"MnStCloud","actor":"MN_ST_CLOUD_DEPOT_GUIDE","gym":"MnStCloudGym","directions":["For HM FLY, ask","the depot guide","here in ST CLOUD."]},
+  {"item":"HM_WHIRLPOOL","rule":"whirlpool","badge_index":6,"badge":"PINE","flag":"ENGINE_GLACIERBADGE","map":"MnBemidji","actor":"MN_BEMIDJI_PIER_FISHER","gym":"MnBemidjiGym","directions":["For HM WHIRLPOOL,","ask the fisherman","on BEMIDJI's pier."]},
+  {"item":"HM_WATERFALL","rule":"waterfall","badge_index":7,"badge":"HARBOR","flag":"ENGINE_RISINGBADGE","map":"MnDuluthLakeOutfitter","actor":"MN_DULUTH_X_LAKEOUTFITTER_F1_HOST","gym":"MnDuluthGym","directions":["For HM WATERFALL,","visit DULUTH's","LAKE OUTFITTER."]}
+]

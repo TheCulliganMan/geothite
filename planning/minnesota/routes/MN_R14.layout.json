@@ -1785,6 +1785,141 @@
         13
       ],
       "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Preserve installed Lake Itasca connection",
+      "position": [
+        4,
+        18
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Preserve installed Lake Itasca connection",
+      "position": [
+        5,
+        18
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Preserve installed Lake Itasca connection",
+      "position": [
+        6,
+        18
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Preserve installed Lake Itasca connection",
+      "position": [
+        0,
+        19
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Preserve installed Lake Itasca connection",
+      "position": [
+        1,
+        19
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Preserve installed Lake Itasca connection",
+      "position": [
+        2,
+        19
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Preserve installed Lake Itasca connection",
+      "position": [
+        3,
+        19
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Preserve installed Lake Itasca connection",
+      "position": [
+        4,
+        19
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Preserve installed Lake Itasca connection",
+      "position": [
+        0,
+        20
+      ],
+      "block": "08"
+    },
+    {
+      "kind": "point",
+      "name": "Preserve installed Lake Itasca connection",
+      "position": [
+        1,
+        20
+      ],
+      "block": "09"
+    },
+    {
+      "kind": "point",
+      "name": "Preserve installed Lake Itasca connection",
+      "position": [
+        0,
+        21
+      ],
+      "block": "10"
+    },
+    {
+      "kind": "point",
+      "name": "Preserve installed Lake Itasca connection",
+      "position": [
+        1,
+        21
+      ],
+      "block": "11"
+    },
+    {
+      "kind": "point",
+      "name": "Preserve installed Lake Itasca connection",
+      "position": [
+        2,
+        21
+      ],
+      "block": "0b"
+    },
+    {
+      "kind": "point",
+      "name": "Survey-bank uphill grass; dry ledge return",
+      "position": [
+        7,
+        12
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Survey-bank uphill grass; dry ledge return",
+      "position": [
+        7,
+        13
+      ],
+      "block": "03"
     }
   ],
   "crossings": [

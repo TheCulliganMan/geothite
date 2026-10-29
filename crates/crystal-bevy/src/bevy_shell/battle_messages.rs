@@ -4430,8 +4430,16 @@ fn active_fly_destinations(
             .progression
             .active_engine_flags
             .contains("ENGINE_FLYPOINT_INDIGO_PLATEAU");
+    let destinations = shell
+        .fly_destination_keys()
+        .into_iter()
+        .filter(|destination| {
+            let regional = destination.flypoint_flag.starts_with("ENGINE_FLYPOINT_MN_");
+            regional == minnesota_map_active(snapshot)
+        })
+        .collect();
     ordered_active_fly_destinations(
-        shell.fly_destination_keys(),
+        destinations,
         &snapshot.presentation.pokegear_landmarks,
         &snapshot.progression.active_engine_flags,
         use_kanto_map,
@@ -4476,6 +4484,16 @@ fn ordered_active_fly_destinations(
 }
 
 fn fly_destination_label(destination: &RuntimeFlyDestinationKey) -> String {
+    if let Some(town) = destination
+        .flypoint_flag
+        .strip_prefix("ENGINE_FLYPOINT_MN_")
+    {
+        let name = town.replace('_', " ");
+        return match minnesota_town_map::fly_town_name(&name) {
+            Some(town) => town.to_string(),
+            None => name,
+        };
+    }
     destination
         .label
         .strip_prefix("LANDMARK_")

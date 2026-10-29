@@ -1,0 +1,129 @@
+{
+  "id": "MnR01Cave1F",
+  "template": "UnionCave1F",
+  "dimensions_metatiles": [
+    8,
+    7
+  ],
+  "width_metatiles": 8,
+  "height_metatiles": 7,
+  "tileset": "cave",
+  "border_block": 46,
+  "exterior_anchor_metatile": [
+    9,
+    8
+  ],
+  "mandatory": false,
+  "purpose": "Retain the newly published upper cycle and both climbs; round the spine toe into the mouth court instead of a sheer square end. Continuous native bedrock encloses the hollow.",
+  "rows": [
+    "2e 2e 2e 2e 2e 2e 2e 2e",
+    "2e 2e 04 05 05 06 06 2e",
+    "2e 04 02 0a 04 02 0a 2e",
+    "2e 08 02 0a 2f 30 22 2e",
+    "2e 20 12 2d 28 02 0a 2e",
+    "2e 2e 20 21 07 21 22 2e",
+    "2e 2e 2e 2e 2e 2e 2e 2e"
+  ],
+  "exits": [
+    [
+      9,
+      11
+    ]
+  ],
+  "clear_arrival": [
+    9,
+    10
+  ],
+  "exit_collision": "LADDER",
+  "residents": [
+    {
+      "id": "MN_R01_HOLLOW_GUIDE",
+      "sprite": "SPRITE_POKEFAN_M",
+      "tile": [
+        5,
+        5
+      ],
+      "facing": "south",
+      "lines": [
+        "Two small hollows",
+        "meet by the exit.",
+        "Take either path.",
+        "The little ball",
+        "holds an ANTIDOTE."
+      ]
+    }
+  ],
+  "items": [
+    {
+      "id": "MN_R01_ITEM_03",
+      "item": "ANTIDOTE",
+      "quantity": 1,
+      "tile": [
+        11,
+        5
+      ],
+      "flag": "EVENT_MN_R01_ITEM_03"
+    }
+  ],
+  "signs": [],
+  "review_contract": {
+    "quality_revision": "johto-quality-v01",
+    "palette_group": "nite",
+    "native_stair_blocks": [
+      [
+        5,
+        3
+      ],
+      [
+        2,
+        4
+      ]
+    ],
+    "viewpoints": [
+      {
+        "id": "mouth",
+        "tile": [
+          9,
+          10
+        ]
+      },
+      {
+        "id": "guide",
+        "tile": [
+          4,
+          5
+        ]
+      },
+      {
+        "id": "upper-cycle",
+        "tile": [
+          7,
+          3
+        ]
+      },
+      {
+        "id": "east-stair",
+        "tile": [
+          10,
+          7
+        ]
+      },
+      {
+        "id": "spine-toe",
+        "tile": [
+          9,
+          8
+        ]
+      },
+      {
+        "id": "west-stair",
+        "tile": [
+          5,
+          9
+        ]
+      }
+    ],
+    "notes": "Retain the newly published upper cycle and both climbs; round the spine toe into the mouth court instead of a sheer square end. Continuous native bedrock encloses the hollow."
+  },
+  "candidate_status": "Source candidate under whole-room, player-camera and production traversal review."
+}

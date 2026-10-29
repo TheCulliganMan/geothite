@@ -8,115 +8,115 @@
   "quest": "SQ04",
   "encounters": {
     "grass_rates": {
-      "morning": 10,
       "day": 10,
+      "morning": 10,
       "night": 10
     },
     "grass": {
       "morning": [
         {
-          "species": "WOOPER",
-          "level": 26
+          "level": 26,
+          "species": "GILLPUP"
         },
         {
-          "species": "SKIPLOOM",
-          "level": 27
+          "level": 27,
+          "species": "FLOSSAIL"
         },
         {
-          "species": "BELLSPROUT",
-          "level": 28
+          "level": 28,
+          "species": "POUCHID"
         },
         {
-          "species": "MARILL",
-          "level": 29
+          "level": 29,
+          "species": "RIVVIT"
         },
         {
-          "species": "PIDGEOTTO",
-          "level": 30
+          "level": 30,
+          "species": "NOTCHBILL"
         },
         {
-          "species": "GIRAFARIG",
-          "level": 31
+          "level": 31,
+          "species": "TICKLET"
         },
         {
-          "species": "YANMA",
-          "level": 32
+          "level": 32,
+          "species": "WINDHOPPER"
         }
       ],
       "day": [
         {
-          "species": "WOOPER",
-          "level": 26
+          "level": 26,
+          "species": "GILLPUP"
         },
         {
-          "species": "SKIPLOOM",
-          "level": 27
+          "level": 27,
+          "species": "FLOSSAIL"
         },
         {
-          "species": "BELLSPROUT",
-          "level": 28
+          "level": 28,
+          "species": "POUCHID"
         },
         {
-          "species": "MARILL",
-          "level": 29
+          "level": 29,
+          "species": "RIVVIT"
         },
         {
-          "species": "PIDGEOTTO",
-          "level": 30
+          "level": 30,
+          "species": "NOTCHBILL"
         },
         {
-          "species": "GIRAFARIG",
-          "level": 31
+          "level": 31,
+          "species": "TICKLET"
         },
         {
-          "species": "YANMA",
-          "level": 32
+          "level": 32,
+          "species": "WINDHOPPER"
         }
       ],
       "night": [
         {
-          "species": "NOCTOWL",
-          "level": 26
+          "level": 26,
+          "species": "BOOMRUFF"
         },
         {
-          "species": "ARIADOS",
-          "level": 27
+          "level": 27,
+          "species": "DEWDANT"
         },
         {
-          "species": "BELLSPROUT",
-          "level": 28
+          "level": 28,
+          "species": "POUCHID"
         },
         {
-          "species": "MARILL",
-          "level": 29
+          "level": 29,
+          "species": "RIVVIT"
         },
         {
-          "species": "PIDGEOTTO",
-          "level": 30
+          "level": 30,
+          "species": "NOTCHBILL"
         },
         {
-          "species": "GIRAFARIG",
-          "level": 31
+          "level": 31,
+          "species": "TICKLET"
         },
         {
-          "species": "YANMA",
-          "level": 32
+          "level": 32,
+          "species": "WINDHOPPER"
         }
       ]
     },
     "water_rate": 4,
     "water": [
       {
-        "species": "POLIWAG",
-        "level": 26
+        "level": 26,
+        "species": "CHORIP"
       },
       {
-        "species": "WOOPER",
-        "level": 27
+        "level": 27,
+        "species": "GILLPUP"
       },
       {
-        "species": "MARILL",
-        "level": 32
+        "level": 32,
+        "species": "RIVVIT"
       }
     ]
   },
@@ -350,15 +350,15 @@
       "sight_range": 1,
       "party": [
         {
-          "species": "WOOPER",
+          "species": "GILLPUP",
           "level": 26
         },
         {
-          "species": "SKIPLOOM",
+          "species": "FLOSSAIL",
           "level": 26
         },
         {
-          "species": "MARILL",
+          "species": "RIVVIT",
           "level": 25
         }
       ],
@@ -369,7 +369,13 @@
       ],
       "after_lines": [
         "The timber rails",
-        "keep us on deck."
+        "keep us on deck.",
+        "Try the ROD GURU!",
+        "His house is above",
+        "the lakeside deck",
+        "on PINE COUNTRY RD",
+        "south of BRAINERD.",
+        "A free SUPER ROD!"
       ],
       "loss_lines": [
         "Good shore sense!"
@@ -388,15 +394,15 @@
       "sight_range": 1,
       "party": [
         {
-          "species": "SKIPLOOM",
+          "species": "FLOSSAIL",
           "level": 26
         },
         {
-          "species": "BELLSPROUT",
+          "species": "POUCHID",
           "level": 26
         },
         {
-          "species": "PIDGEOTTO",
+          "species": "NOTCHBILL",
           "level": 25
         }
       ],
@@ -426,15 +432,15 @@
       "sight_range": 1,
       "party": [
         {
-          "species": "BELLSPROUT",
+          "species": "POUCHID",
           "level": 27
         },
         {
-          "species": "MARILL",
+          "species": "RIVVIT",
           "level": 27
         },
         {
-          "species": "GIRAFARIG",
+          "species": "TICKLET",
           "level": 26
         }
       ],
@@ -464,15 +470,15 @@
       "sight_range": 1,
       "party": [
         {
-          "species": "MARILL",
+          "species": "RIVVIT",
           "level": 27
         },
         {
-          "species": "PIDGEOTTO",
+          "species": "NOTCHBILL",
           "level": 27
         },
         {
-          "species": "YANMA",
+          "species": "CLICKIT",
           "level": 26
         }
       ],
@@ -502,15 +508,15 @@
       "sight_range": 1,
       "party": [
         {
-          "species": "PIDGEOTTO",
+          "species": "NOTCHBILL",
           "level": 28
         },
         {
-          "species": "GIRAFARIG",
+          "species": "TICKLET",
           "level": 28
         },
         {
-          "species": "WOOPER",
+          "species": "GILLPUP",
           "level": 27
         }
       ],
@@ -540,15 +546,15 @@
       "sight_range": 1,
       "party": [
         {
-          "species": "WOOPER",
+          "species": "GILLPUP",
           "level": 28
         },
         {
-          "species": "YANMA",
+          "species": "WINDHOPPER",
           "level": 28
         },
         {
-          "species": "SKIPLOOM",
+          "species": "FLOSSAIL",
           "level": 27
         }
       ],
@@ -559,7 +565,13 @@
       ],
       "after_lines": [
         "The pier is fine",
-        "for waiting too."
+        "for waiting too.",
+        "Try the ROD GURU!",
+        "His house is above",
+        "the lakeside deck",
+        "on PINE COUNTRY RD",
+        "south of BRAINERD.",
+        "A free SUPER ROD!"
       ],
       "loss_lines": [
         "Good shore sense!"
@@ -578,7 +590,13 @@
       "lines": [
         "Reed watch here.",
         "The small fliers",
-        "are feeding well."
+        "are feeding well.",
+        "Try the ROD GURU!",
+        "His house is above",
+        "the lakeside deck",
+        "on PINE COUNTRY RD",
+        "south of BRAINERD.",
+        "A free SUPER ROD!"
       ]
     },
     {
@@ -1511,5 +1529,310 @@
     "controller_proof": "renders/route-quality-next/controller-v05/controller-proof.json",
     "runbook": "playable/route-quality-next.md",
     "scope": "Reviewed bounded terrain only; no full-route final acceptance or earned regional progression claim."
+  },
+  "native_encounter_bindings": {
+    "MnR18C00R00": {
+      "grass_rates": {
+        "day": 10,
+        "morning": 10,
+        "night": 10
+      },
+      "water_rate": 4,
+      "grass": {
+        "morning": [
+          {
+            "level": 26,
+            "species": "GILLPUP"
+          },
+          {
+            "level": 27,
+            "species": "FLOSSAIL"
+          },
+          {
+            "level": 28,
+            "species": "POUCHID"
+          },
+          {
+            "level": 29,
+            "species": "RIVVIT"
+          },
+          {
+            "level": 30,
+            "species": "NOTCHBILL"
+          },
+          {
+            "level": 31,
+            "species": "TICKLET"
+          },
+          {
+            "level": 32,
+            "species": "WINDHOPPER"
+          }
+        ],
+        "day": [
+          {
+            "level": 26,
+            "species": "GILLPUP"
+          },
+          {
+            "level": 27,
+            "species": "FLOSSAIL"
+          },
+          {
+            "level": 28,
+            "species": "POUCHID"
+          },
+          {
+            "level": 29,
+            "species": "RIVVIT"
+          },
+          {
+            "level": 30,
+            "species": "NOTCHBILL"
+          },
+          {
+            "level": 31,
+            "species": "TICKLET"
+          },
+          {
+            "level": 32,
+            "species": "WINDHOPPER"
+          }
+        ],
+        "night": [
+          {
+            "level": 26,
+            "species": "BOOMRUFF"
+          },
+          {
+            "level": 27,
+            "species": "DEWDANT"
+          },
+          {
+            "level": 28,
+            "species": "POUCHID"
+          },
+          {
+            "level": 29,
+            "species": "RIVVIT"
+          },
+          {
+            "level": 30,
+            "species": "NOTCHBILL"
+          },
+          {
+            "level": 31,
+            "species": "TICKLET"
+          },
+          {
+            "level": 32,
+            "species": "WINDHOPPER"
+          }
+        ]
+      },
+      "water": {
+        "morning": [
+          {
+            "level": 26,
+            "species": "CHORIP"
+          },
+          {
+            "level": 27,
+            "species": "GILLPUP"
+          },
+          {
+            "level": 32,
+            "species": "RIVVIT"
+          }
+        ],
+        "day": [
+          {
+            "level": 26,
+            "species": "CHORIP"
+          },
+          {
+            "level": 27,
+            "species": "GILLPUP"
+          },
+          {
+            "level": 32,
+            "species": "RIVVIT"
+          }
+        ],
+        "night": [
+          {
+            "level": 26,
+            "species": "CHORIP"
+          },
+          {
+            "level": 27,
+            "species": "GILLPUP"
+          },
+          {
+            "level": 32,
+            "species": "RIVVIT"
+          }
+        ]
+      }
+    },
+    "MnR18C01R00": {
+      "grass_rates": {
+        "day": 10,
+        "morning": 10,
+        "night": 10
+      },
+      "water_rate": 4,
+      "grass": {
+        "morning": [
+          {
+            "level": 26,
+            "species": "GILLPUP"
+          },
+          {
+            "level": 27,
+            "species": "FLOSSAIL"
+          },
+          {
+            "level": 28,
+            "species": "POUCHID"
+          },
+          {
+            "level": 29,
+            "species": "RIVVIT"
+          },
+          {
+            "level": 30,
+            "species": "NOTCHBILL"
+          },
+          {
+            "level": 31,
+            "species": "TICKLET"
+          },
+          {
+            "level": 32,
+            "species": "WINDHOPPER"
+          }
+        ],
+        "day": [
+          {
+            "level": 26,
+            "species": "GILLPUP"
+          },
+          {
+            "level": 27,
+            "species": "FLOSSAIL"
+          },
+          {
+            "level": 28,
+            "species": "POUCHID"
+          },
+          {
+            "level": 29,
+            "species": "RIVVIT"
+          },
+          {
+            "level": 30,
+            "species": "NOTCHBILL"
+          },
+          {
+            "level": 31,
+            "species": "TICKLET"
+          },
+          {
+            "level": 32,
+            "species": "WINDHOPPER"
+          }
+        ],
+        "night": [
+          {
+            "level": 26,
+            "species": "BOOMRUFF"
+          },
+          {
+            "level": 27,
+            "species": "DEWDANT"
+          },
+          {
+            "level": 28,
+            "species": "POUCHID"
+          },
+          {
+            "level": 29,
+            "species": "RIVVIT"
+          },
+          {
+            "level": 30,
+            "species": "NOTCHBILL"
+          },
+          {
+            "level": 31,
+            "species": "TICKLET"
+          },
+          {
+            "level": 32,
+            "species": "WINDHOPPER"
+          }
+        ]
+      },
+      "water": {
+        "morning": [
+          {
+            "level": 26,
+            "species": "CHORIP"
+          },
+          {
+            "level": 27,
+            "species": "PIKELING"
+          },
+          {
+            "level": 32,
+            "species": "RIVVIT"
+          }
+        ],
+        "day": [
+          {
+            "level": 26,
+            "species": "CHORIP"
+          },
+          {
+            "level": 27,
+            "species": "GILLPUP"
+          },
+          {
+            "level": 32,
+            "species": "RIVVIT"
+          }
+        ],
+        "night": [
+          {
+            "level": 26,
+            "species": "CHORIP"
+          },
+          {
+            "level": 27,
+            "species": "GILLPUP"
+          },
+          {
+            "level": 32,
+            "species": "RIVVIT"
+          }
+        ]
+      }
+    }
+  },
+  "grass_route_review_contract": {
+    "additional_crossings": [
+      {
+        "id": "WESTERN_MEADOW_APPROACH",
+        "bounds_core": [
+          14,
+          8,
+          18,
+          14
+        ],
+        "minimum_grass_steps": 4
+      }
+    ],
+    "note": "Additional review contract; original six-step neck remains the registered required crossing. Native proof remains required."
   }
 }

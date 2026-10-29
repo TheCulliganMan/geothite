@@ -2849,6 +2849,907 @@
         45
       ],
       "block": "05"
+    },
+    {
+      "kind": "block_remap",
+      "name": "Birch-bank grass climb below the eastern ramp",
+      "bounds": [
+        16,
+        14,
+        20,
+        15
+      ],
+      "from": "01",
+      "to": "03"
+    },
+    {
+      "kind": "block_remap",
+      "name": "Birch-bank grass climb below the eastern ramp",
+      "bounds": [
+        16,
+        14,
+        20,
+        15
+      ],
+      "from": "02",
+      "to": "03"
+    },
+    {
+      "kind": "block_remap",
+      "name": "Cedar fishing-shore grass approach",
+      "bounds": [
+        36,
+        33,
+        37,
+        34
+      ],
+      "from": "01",
+      "to": "03"
+    },
+    {
+      "kind": "block_remap",
+      "name": "Long Lake western grass trail connections",
+      "bounds": [
+        22,
+        11,
+        23,
+        12
+      ],
+      "from": "01",
+      "to": "03"
+    },
+    {
+      "kind": "block_remap",
+      "name": "Long Lake grass neck southern connection",
+      "bounds": [
+        22,
+        15,
+        23,
+        16
+      ],
+      "from": "01",
+      "to": "03"
+    },
+    {
+      "kind": "block_remap",
+      "name": "Cedar shorter meadow route connects to its trail",
+      "bounds": [
+        10,
+        29,
+        12,
+        30
+      ],
+      "from": "02",
+      "to": "03"
+    },
+    {
+      "kind": "block_remap",
+      "name": "Birch climb grass extends below the ramp",
+      "bounds": [
+        16,
+        15,
+        20,
+        16
+      ],
+      "from": "01",
+      "to": "03"
+    },
+    {
+      "kind": "block_remap",
+      "name": "Birch climb grass extends below the ramp",
+      "bounds": [
+        16,
+        15,
+        20,
+        16
+      ],
+      "from": "02",
+      "to": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Birch sign-side rock closes the short dry edge",
+      "position": [
+        16,
+        14
+      ],
+      "block": "0a"
+    },
+    {
+      "kind": "path",
+      "name": "Installed Bemidji north arrival continues on the existing west dogleg",
+      "points": [
+        [
+          12,
+          0
+        ],
+        [
+          12,
+          2
+        ],
+        [
+          15,
+          2
+        ],
+        [
+          15,
+          1
+        ],
+        [
+          19,
+          1
+        ]
+      ],
+      "material": "floor",
+      "width_metatiles": 1
+    },
+    {
+      "kind": "point",
+      "name": "Retired straight northern opening is native forest",
+      "position": [
+        20,
+        0
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "rect",
+      "name": "Closed unused western map edge",
+      "bounds": [
+        0,
+        17,
+        1,
+        19
+      ],
+      "material": "forest"
+    },
+    {
+      "kind": "point",
+      "name": "Installed southern trailhead forest shoulder",
+      "position": [
+        11,
+        47
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Installed southern trailhead forest shoulder",
+      "position": [
+        12,
+        47
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Installed southern trailhead forest shoulder",
+      "position": [
+        14,
+        47
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Installed southern trailhead forest shoulder",
+      "position": [
+        15,
+        47
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "polygon",
+      "name": "Ancient peat basin raised ground joins the northern forest",
+      "points": [
+        [
+          26,
+          5
+        ],
+        [
+          30,
+          5
+        ],
+        [
+          30,
+          7
+        ],
+        [
+          32,
+          7
+        ],
+        [
+          32,
+          9
+        ],
+        [
+          30,
+          9
+        ],
+        [
+          30,
+          11
+        ],
+        [
+          31,
+          11
+        ],
+        [
+          31,
+          13
+        ],
+        [
+          29,
+          13
+        ],
+        [
+          29,
+          15
+        ],
+        [
+          27,
+          15
+        ],
+        [
+          27,
+          17
+        ],
+        [
+          25,
+          17
+        ],
+        [
+          25,
+          19
+        ],
+        [
+          23,
+          19
+        ],
+        [
+          23,
+          17
+        ],
+        [
+          24,
+          17
+        ],
+        [
+          24,
+          15
+        ],
+        [
+          25,
+          15
+        ],
+        [
+          25,
+          12
+        ],
+        [
+          27,
+          12
+        ],
+        [
+          27,
+          10
+        ],
+        [
+          26,
+          10
+        ]
+      ],
+      "material": "lawn"
+    },
+    {
+      "kind": "polygon",
+      "name": "Old cedar root mass follows the high peat tongue",
+      "points": [
+        [
+          27,
+          5
+        ],
+        [
+          29,
+          5
+        ],
+        [
+          29,
+          7
+        ],
+        [
+          31,
+          7
+        ],
+        [
+          31,
+          8
+        ],
+        [
+          29,
+          8
+        ],
+        [
+          29,
+          10
+        ],
+        [
+          28,
+          10
+        ],
+        [
+          28,
+          8
+        ],
+        [
+          27,
+          8
+        ]
+      ],
+      "material": "forest"
+    },
+    {
+      "kind": "polygon",
+      "name": "Western blackwater finger curls around the peat shelf",
+      "points": [
+        [
+          23,
+          8
+        ],
+        [
+          25,
+          8
+        ],
+        [
+          25,
+          10
+        ],
+        [
+          26,
+          10
+        ],
+        [
+          26,
+          12
+        ],
+        [
+          24,
+          12
+        ],
+        [
+          24,
+          14
+        ],
+        [
+          23,
+          14
+        ]
+      ],
+      "material": "water"
+    },
+    {
+      "kind": "polygon",
+      "name": "Southern peat spit breaks the long empty lake edge",
+      "points": [
+        [
+          26,
+          17
+        ],
+        [
+          28,
+          17
+        ],
+        [
+          28,
+          18
+        ],
+        [
+          30,
+          18
+        ],
+        [
+          30,
+          19
+        ],
+        [
+          28,
+          19
+        ],
+        [
+          28,
+          20
+        ],
+        [
+          26,
+          20
+        ]
+      ],
+      "material": "lawn"
+    },
+    {
+      "kind": "rect",
+      "name": "Reedbed at the southern peat landing",
+      "bounds": [
+        26,
+        18,
+        28,
+        20
+      ],
+      "material": "encounter"
+    },
+    {
+      "kind": "path",
+      "name": "Ancient mire foot trail enters from the established saddle",
+      "points": [
+        [
+          22,
+          18
+        ],
+        [
+          24,
+          18
+        ],
+        [
+          24,
+          16
+        ],
+        [
+          26,
+          16
+        ],
+        [
+          26,
+          14
+        ],
+        [
+          28,
+          14
+        ],
+        [
+          28,
+          12
+        ],
+        [
+          29,
+          12
+        ]
+      ],
+      "material": "floor",
+      "width_metatiles": 1
+    },
+    {
+      "kind": "rect",
+      "name": "Mire reed crossing on the raised peat neck",
+      "bounds": [
+        25,
+        15,
+        27,
+        17
+      ],
+      "material": "encounter"
+    },
+    {
+      "kind": "rect",
+      "name": "Old grove sanctuary dry approach",
+      "bounds": [
+        28,
+        11,
+        31,
+        13
+      ],
+      "material": "lawn"
+    },
+    {
+      "kind": "point",
+      "name": "Ancient cedar stump west of the sanctuary",
+      "position": [
+        28,
+        10
+      ],
+      "block": "61"
+    },
+    {
+      "kind": "point",
+      "name": "Ancient cedar stump east of the sanctuary",
+      "position": [
+        30,
+        10
+      ],
+      "block": "61"
+    },
+    {
+      "kind": "point",
+      "name": "Weathered sanctuary stone follows the old root bank",
+      "position": [
+        30,
+        11
+      ],
+      "block": "0a"
+    },
+    {
+      "kind": "rect",
+      "name": "Moss grass sanctuary western shoulder",
+      "bounds": [
+        27,
+        12,
+        28,
+        14
+      ],
+      "material": "encounter"
+    },
+    {
+      "kind": "rect",
+      "name": "Reed island divides the lower blackwater pool",
+      "bounds": [
+        25,
+        18,
+        26,
+        20
+      ],
+      "material": "encounter"
+    },
+    {
+      "kind": "point",
+      "name": "Small ancient cedar on the lower peat tongue",
+      "position": [
+        27,
+        17
+      ],
+      "block": "61"
+    },
+    {
+      "kind": "polygon",
+      "name": "Eastern peat shelf turns the old lake arm into shallow reed pools",
+      "material": "lawn",
+      "points": [
+        [
+          31,
+          13
+        ],
+        [
+          34,
+          13
+        ],
+        [
+          34,
+          14
+        ],
+        [
+          36,
+          14
+        ],
+        [
+          36,
+          18
+        ],
+        [
+          33,
+          18
+        ],
+        [
+          33,
+          20
+        ],
+        [
+          30,
+          20
+        ],
+        [
+          30,
+          18
+        ],
+        [
+          28,
+          18
+        ],
+        [
+          28,
+          17
+        ],
+        [
+          30,
+          17
+        ],
+        [
+          30,
+          15
+        ],
+        [
+          31,
+          15
+        ]
+      ]
+    },
+    {
+      "kind": "polygon",
+      "name": "Wet reed field winds between the eastern root banks",
+      "material": "encounter",
+      "points": [
+        [
+          32,
+          14
+        ],
+        [
+          34,
+          14
+        ],
+        [
+          34,
+          15
+        ],
+        [
+          35,
+          15
+        ],
+        [
+          35,
+          17
+        ],
+        [
+          33,
+          17
+        ],
+        [
+          33,
+          19
+        ],
+        [
+          31,
+          19
+        ],
+        [
+          31,
+          18
+        ],
+        [
+          29,
+          18
+        ],
+        [
+          29,
+          17
+        ],
+        [
+          31,
+          17
+        ],
+        [
+          31,
+          16
+        ],
+        [
+          32,
+          16
+        ]
+      ]
+    },
+    {
+      "kind": "polygon",
+      "name": "Connected blackwater side channel divides eastern and ancient peat tongues",
+      "material": "water",
+      "points": [
+        [
+          29,
+          14
+        ],
+        [
+          31,
+          14
+        ],
+        [
+          31,
+          15
+        ],
+        [
+          32,
+          15
+        ],
+        [
+          32,
+          16
+        ],
+        [
+          30,
+          16
+        ],
+        [
+          30,
+          17
+        ],
+        [
+          28,
+          17
+        ],
+        [
+          28,
+          16
+        ],
+        [
+          29,
+          16
+        ]
+      ]
+    },
+    {
+      "kind": "polygon",
+      "name": "Pine root fingers enclose the eastern reedbed from existing forest",
+      "material": "forest",
+      "points": [
+        [
+          35,
+          14
+        ],
+        [
+          37,
+          14
+        ],
+        [
+          37,
+          19
+        ],
+        [
+          34,
+          19
+        ],
+        [
+          34,
+          18
+        ],
+        [
+          36,
+          18
+        ],
+        [
+          36,
+          16
+        ],
+        [
+          35,
+          16
+        ]
+      ]
+    },
+    {
+      "kind": "point",
+      "name": "Ancient cedar beside the old blackwater fork",
+      "position": [
+        31,
+        14
+      ],
+      "block": "61"
+    },
+    {
+      "kind": "point",
+      "name": "Reedbed stone is a natural stop beside the raised trail",
+      "position": [
+        25,
+        17
+      ],
+      "block": "0a"
+    },
+    {
+      "kind": "point",
+      "name": "Old timber clue standing cedar beside the raised western trail",
+      "position": [
+        23,
+        16
+      ],
+      "block": "61"
+    },
+    {
+      "kind": "point",
+      "name": "Peat footprint clue weathered stone beside the middle reed crossing",
+      "position": [
+        27,
+        14
+      ],
+      "block": "0a"
+    },
+    {
+      "kind": "point",
+      "name": "Moss scrape clue stone at the sanctuary eastern shoulder",
+      "position": [
+        30,
+        12
+      ],
+      "block": "0a"
+    },
+    {
+      "kind": "polygon",
+      "name": "Attached ancient grove canopy encloses the sanctuary from the northern bank",
+      "material": "forest",
+      "points": [
+        [
+          32,
+          7
+        ],
+        [
+          35,
+          7
+        ],
+        [
+          35,
+          10
+        ],
+        [
+          34,
+          10
+        ],
+        [
+          34,
+          11
+        ],
+        [
+          33,
+          11
+        ],
+        [
+          33,
+          9
+        ],
+        [
+          31,
+          9
+        ],
+        [
+          31,
+          8
+        ],
+        [
+          32,
+          8
+        ]
+      ]
+    },
+    {
+      "kind": "rect",
+      "name": "Low moss below the inner root bank breaks the reed rectangle",
+      "material": "lawn",
+      "bounds": [
+        32,
+        16,
+        33,
+        18
+      ]
+    },
+    {
+      "kind": "rect",
+      "name": "Moss finger follows eastern grass toward the closed blackwater cove",
+      "material": "lawn",
+      "bounds": [
+        34,
+        15,
+        35,
+        16
+      ]
+    },
+    {
+      "kind": "point",
+      "name": "Old cedar stump anchors the eastern reed island",
+      "position": [
+        32,
+        18
+      ],
+      "block": "61"
+    },
+    {
+      "kind": "point",
+      "name": "Petrified timber clue marker reads before any field move",
+      "position": [
+        23,
+        16
+      ],
+      "block": "0a"
+    },
+    {
+      "kind": "point",
+      "name": "Ancient cedar root remains stand just behind the petrified marker",
+      "position": [
+        23,
+        15
+      ],
+      "block": "61"
     }
   ],
   "art_authority": "Exact local Johto / Kanto source blocks; Route42 lake partitions and Route30 shoreline pacing studied.",

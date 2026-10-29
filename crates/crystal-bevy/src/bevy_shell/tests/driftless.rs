@@ -501,3 +501,167 @@ fn exact_native_step(c: &mut VisibleShellController, button: GameButton, to: (i1
     }
     panic!("native step remained blocked {from:?}→{to:?}, button={button:?}");
 }
+
+#[test]
+#[ignore = "requires the compact R01 grass revision"]
+fn driftless_grass_climb_encounters_dry_ledge_return_and_continue() {
+    use crystal_core::models::Dv;
+    use crystal_runtime::RuntimeBattleKind;
+
+    use super::super::mark_runtime_snapshot_dirty;
+    use super::authored_route_fixture::{cleanup_reached_save, reached_save_path};
+    use super::rochester::flee;
+
+    let path =
+        PathBuf::from(std::env::var_os("CRYSTAL_DRIFTLESS_TEST_PACK").expect("compact grass pack"));
+    let root = AssetRoot::new(path.parent().expect("pack parent"));
+    let runtime = CrystalRuntime::from_loaded_compiled_pack(
+        &root,
+        read_loaded_verified_compiled_game_pack(&path).expect("native pack"),
+    )
+    .expect("runtime");
+    let shell = initialize_bevy_runtime_shell(
+        root.clone(),
+        runtime.clone(),
+        BevyShellStart::NewGameAtRuntimeTile {
+            spawn_identifier: runtime.title_new_game_spawn_identifier().expect("HOME"),
+            map_name: "MnR01C00R00".into(),
+            tile_x: 39,
+            tile_y: 22,
+        },
+        BevyShellConfig {
+            smoke_player_name: Some("CHRIS".into()),
+            ..Default::default()
+        },
+    )
+    .expect("explicit new-grass fixture placement");
+    let mut c = VisibleShellController { shell };
+    complete_visible_smoke_player_name_if_needed(&mut c.shell, Some("CHRIS"))
+        .expect("fixture name");
+    let partner = runtime
+        .data()
+        .create_pokemon("NIBBIN", 50, Dv::default())
+        .expect("explicit Minnesota encounter fixture partner");
+    let state = c.shell.shell.session_mut().state_mut();
+    assert!(state.storage.party.add_pokemon(partner));
+    state.sync_party_from_storage();
+    *c.shell.shell.session_mut().divider_mut_for_tests() =
+        crystal_core::random::RuntimeDividerSource::replay(
+            (0_u32..262144)
+                .map(|n| ((n * 73 + 19) % 256) as u8)
+                .collect::<Vec<_>>(),
+        );
+    c.set_runtime_journal_enabled(false);
+    mark_runtime_snapshot_dirty(&mut c.shell);
+    // Initial placement, party and clock above are setup. Every subsequent
+    // movement, encounter, escape, ledge hop and save uses the real controller.
+    let mut encounters = 0;
+    let mut step = |c: &mut VisibleShellController, button| {
+        c.press(button).expect("native grass-loop input");
+        c.wait_frames(16).expect("movement presentation");
+        if let Some(battle) = c.snapshot().expect("native encounter check").battle {
+            assert!(matches!(battle.kind, RuntimeBattleKind::Wild { .. }));
+            encounters += 1;
+            flee(c);
+        }
+    };
+    for _ in 0..16 {
+        for (button, y) in [
+            (GameButton::Up, 21),
+            (GameButton::Up, 20),
+            (GameButton::Down, 21),
+            (GameButton::Down, 22),
+        ] {
+            for _ in 0..8 {
+                step(&mut c, button);
+                if position(&mut c) == (39, y) {
+                    break;
+                }
+            }
+            assert_eq!(position(&mut c), (39, y));
+        }
+    }
+    let grid = RouteGrid::new_with_grass(
+        &runtime,
+        RouteSpec {
+            prefix: "MnR01",
+            columns: 1,
+            rows: 1,
+            tileset: "johto",
+            start: (39, 22),
+            doors: BTreeMap::from([((18, 17), "MnR01Cave1F"), ((49, 15), "MnR01Farmhouse")]),
+        },
+    );
+    for button in grid.path(position(&mut c), (29, 15)) {
+        let from = position(&mut c);
+        let target = neighbors(from)
+            .into_iter()
+            .find_map(|(at, b)| (b == button).then_some(at))
+            .expect("ordinary step");
+        for _ in 0..8 {
+            step(&mut c, button);
+            if position(&mut c) == target {
+                break;
+            }
+        }
+        assert_eq!(position(&mut c), target);
+    }
+    assert!(
+        encounters > 0,
+        "new ramp grass must produce native wild encounters"
+    );
+    exact_native_step(&mut c, GameButton::Down, (29, 16));
+    exact_native_step(&mut c, GameButton::Down, (29, 18));
+    for _ in 0..3 {
+        c.press(GameButton::Up)
+            .expect("native reverse ledge denial");
+        assert_eq!(position(&mut c), (29, 18));
+    }
+    for target in [
+        (28, 18),
+        (27, 18),
+        (26, 18),
+        (26, 19),
+        (26, 20),
+        (26, 21),
+        (25, 21),
+        (25, 22),
+        (25, 23),
+        (25, 24),
+    ] {
+        let button = neighbors(position(&mut c))
+            .into_iter()
+            .find_map(|(at, b)| (at == target).then_some(b))
+            .expect("adjacent dry trail");
+        let block = c
+            .shell
+            .shell
+            .session()
+            .overworld()
+            .map
+            .metatile_at(target.0 / 2, target.1 / 2)
+            .expect("dry return block");
+        assert_eq!(
+            runtime.data().tilesets["johto"].collision[&format!("{block:02x}")]
+                [(target.1 % 2 * 2 + target.0 % 2) as usize],
+            "FLOOR"
+        );
+        exact_native_step(&mut c, button, target);
+        assert!(c.snapshot().expect("dry return").battle.is_none());
+    }
+    let before = c.snapshot().expect("reached dry trail");
+    let save = reached_save_path("compact-r01-grass-climb.crystalsave");
+    c.save(&save).expect("production reached save");
+    let mut loaded = VisibleShellController::load_save(root, runtime, save.clone(), None)
+        .expect("Continue grass journey");
+    let after = loaded.snapshot().expect("continued grass journey");
+    assert_eq!(before.party, after.party);
+    assert_eq!(before.bag, after.bag);
+    assert_eq!(before.overworld.tile, after.overworld.tile);
+    assert_eq!(before.overworld.map_name, after.overworld.map_name);
+    assert_eq!(loaded.shell.last_error, None);
+    cleanup_reached_save(&save);
+    eprintln!(
+        "R01 climb: {encounters} native wild encounters; dry ledge/trail and Continue passed"
+    );
+}

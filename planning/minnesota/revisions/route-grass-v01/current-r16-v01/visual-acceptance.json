@@ -1,0 +1,15 @@
+{
+  "accepted": true,
+  "mode": "2D",
+  "pack_sha256": "73bd0948be600b55d93842e1348c1fdcdd93423ef74295650d9cfa33b49badf1",
+  "reviewed": [
+    "native-before-v01/whole-route.png",
+    "native-v01/hayfield-bank.png",
+    "native-v01/cottonwood-neck.png"
+  ],
+  "findings": [
+    "Existing hay/meadow grass and native ledge already price the ordinary outward climb.",
+    "Cottonwood field grass spans the main neck between forest and visible rail barriers.",
+    "Existing paths, bridges and hayfield identity are readable; preserve terrain."
+  ]
+}

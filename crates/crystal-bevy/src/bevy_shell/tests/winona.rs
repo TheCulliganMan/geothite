@@ -78,6 +78,34 @@ pub(super) fn finish(c: &mut VisibleShellController) -> usize {
         {
             super::northstar_story_events::observe_case(c);
         }
+        if let Some(crystal_runtime::RuntimeBattleSnapshot {
+            kind: crystal_runtime::RuntimeBattleKind::Trainer { ref trainer_id, .. },
+            ..
+        }) = s.battle
+        {
+            if (trainer_id.starts_with("MN_REED_") && trainer_id != "MN_REED_WINONA")
+                || trainer_id.starts_with("MN_ICE_HQ_")
+                || trainer_id.starts_with("MN_ICE_ARC_")
+                || trainer_id.starts_with("MN_LODE_ARC_")
+            {
+                let (_, runtime) = load();
+                let flag = format!("EVENT_{trainer_id}_DEFEATED");
+                assert!(super::rochester_earned::try_battle(
+                    c, &runtime, trainer_id, &flag
+                ));
+                continue;
+            }
+        }
+        if s.ui.pending_yes_no.is_some()
+            && s.ui
+                .text
+                .as_ref()
+                .is_some_and(|t| t.label.starts_with("MnArc"))
+        {
+            let (_, runtime) = load();
+            super::northstar_rival_arc::settle_walk_scene(c, &runtime);
+            continue;
+        }
         if s.battle.is_some() {
             // The event-driven story explicitly adds this early rival fight.
             // Every other battle remains unexpected in ordinary dialogue.
@@ -113,7 +141,11 @@ pub(super) fn travel(c: &mut VisibleShellController, b: GameButton, map: &str, t
         }
         press(c, b);
     }
-    panic!("did not reach {map} {tile:?}");
+    let actual = c.snapshot().expect("failed travel location").overworld;
+    panic!(
+        "did not reach {map} {tile:?}; actual {} {:?}",
+        actual.map_name, actual.tile
+    );
 }
 fn prompt(c: &mut VisibleShellController) {
     for _ in 0..32 {
@@ -251,6 +283,15 @@ pub(super) fn opening(
     index: usize,
     species: &str,
 ) -> (AssetRoot, CrystalRuntime, VisibleShellController) {
+    if load()
+        .1
+        .data()
+        .story_event_script_constants
+        .global
+        .contains_key("EVENT_MN_TAMARACK_INTRO")
+    {
+        return super::dialogue_overhaul::opening(index);
+    }
     let (root, r, mut c) = declined_starter(index, species);
     let money = c.shell.shell.session().state().money;
     let x = 6 + i16::try_from(index).expect("starter index");

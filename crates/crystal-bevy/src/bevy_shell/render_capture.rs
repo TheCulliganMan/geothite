@@ -715,6 +715,19 @@ fn capture(
     } else {
         status.inactive_reason.as_deref() == Some("disabled")
     };
+    // Dialogue review can request a readable page before the first matched
+    // freeze. This waits on the production printer without acknowledging it.
+    if !hold.frozen && std::env::var_os("CRYSTAL_RENDER_TEST_WAIT_FIELD_TEXT").is_some() {
+        match runtime.shell.presentation_snapshot() {
+            Ok(snapshot) if !visible_field_dialogue_is_fully_revealed(&runtime, &snapshot) => return,
+            Ok(_) => {}
+            Err(error) => {
+                eprintln!("dialogue capture snapshot failed: {error:#}");
+                exit.write(AppExit::error());
+                return;
+            }
+        }
+    }
     if capture.requested
         // Tower source frames advance every 16 ticks. Same-view readbacks
         // need a longer gap than the ordinary paired-view GPU warmup so they

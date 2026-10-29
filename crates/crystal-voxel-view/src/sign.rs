@@ -5,7 +5,8 @@ use crystal_render_api::VisualTileSource;
 use crate::profile::{CellShape, SolidKind};
 
 pub(crate) fn sign_shape(source: &VisualTileSource) -> Option<CellShape> {
-    let (plane_subtile_row, band_from_top, ground_tile_index) = match source.tileset_id.as_ref() {
+    let tileset = crate::building_style::native_structure_tileset(source.tileset_id.as_ref());
+    let (plane_subtile_row, band_from_top, ground_tile_index) = match tileset {
         "johto" => match source.metatile_id {
             // Town-route signboards share $18/$19 over the post pair $17.
             // These appear in many maps as mixed scenery blocks, not only in
@@ -118,6 +119,7 @@ mod tests {
     fn every_atlas_sign_container_folds_its_complete_two_by_two_drawing() {
         for (tileset, metatile, column, ground) in [
             ("johto", 0x45, 0, 0x06),
+            ("mn_headwaters", 0x45, 0, 0x06),
             ("johto", 0x47, 2, 0x05),
             ("johto", 0x78, 2, 0x06),
             ("johto_modern", 0x3c, 0, 0x05),

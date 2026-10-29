@@ -9,13 +9,15 @@ function savedStep(storage, key, defaultValue, maximum) {
 }
 
 export function mountViewToggle(wasm, { button, canvas, storage, startIn2D = false, startIn3D = false }) {
-  let enabled = !startIn2D && (startIn3D || storage.getItem(VIEW_KEY) === 'true');
+  const allow3D = wasm.crystal_voxel_view_allowed?.() !== false;
+  let enabled = allow3D && !startIn2D && (startIn3D || storage.getItem(VIEW_KEY) === 'true');
   let zoom = savedStep(storage, ZOOM_KEY, startIn3D ? 0 : 1, 5);
   let rotation = savedStep(storage, ROTATION_KEY, startIn3D ? 7.5 : 0, 8);
   let firstPerson = false;
   let pitch = 45;
   const supportsPose = typeof wasm.crystal_set_voxel_camera_pose === 'function';
   const updateCamera = () => {
+    if (!allow3D) return;
     if (supportsPose) wasm.crystal_set_voxel_camera_pose(zoom, rotation, pitch, firstPerson);
     else wasm.crystal_set_voxel_camera(zoom, rotation);
   };
@@ -36,15 +38,17 @@ export function mountViewToggle(wasm, { button, canvas, storage, startIn2D = fal
   };
   const update = () => {
     endDrag();
-    wasm.crystal_set_voxel_view(enabled);
+    wasm.crystal_set_voxel_view?.(enabled);
     updateCamera();
     button.setAttribute('aria-pressed', String(enabled));
-    button.setAttribute('aria-label', enabled ? 'Switch to 2D view' : 'Switch to 3D view');
-    button.title = enabled ? 'Switch to 2D view' : 'Switch to 3D view';
+    button.setAttribute('aria-label', !allow3D ? '2D view' : enabled ? 'Switch to 2D view' : 'Switch to 3D view');
+    button.title = !allow3D ? '2D view' : enabled ? 'Switch to 2D view' : 'Switch to 3D view';
   };
   update();
-  button.disabled = false;
+  button.disabled = !allow3D;
+  button.hidden = !allow3D;
   button.addEventListener('click', () => {
+    if (!allow3D) return;
     enabled = !enabled;
     update();
     storage.setItem(VIEW_KEY, String(enabled));
@@ -123,7 +127,7 @@ export function mountViewToggle(wasm, { button, canvas, storage, startIn2D = fal
   let moving = false;
   return {
     setEnabled(value) {
-      enabled = Boolean(value); update(); storage.setItem(VIEW_KEY, String(enabled));
+      enabled = allow3D && Boolean(value); update(); storage.setItem(VIEW_KEY, String(enabled));
     },
     cycleCamera() {
       if (blocked() || typeof wasm.crystal_cycle_voxel_camera !== 'function') return false;

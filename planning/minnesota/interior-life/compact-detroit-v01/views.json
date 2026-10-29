@@ -1,0 +1,59 @@
+[
+  {
+    "id": "station-garden",
+    "map": "MnDetroitLakes",
+    "core": [
+      13,
+      11
+    ]
+  },
+  {
+    "id": "clinic-front",
+    "map": "MnDetroitLakes",
+    "core": [
+      33,
+      11
+    ]
+  },
+  {
+    "id": "crossroads",
+    "map": "MnDetroitLakes",
+    "core": [
+      25,
+      19
+    ]
+  },
+  {
+    "id": "beach-launch",
+    "map": "MnDetroitLakes",
+    "core": [
+      13,
+      23
+    ]
+  },
+  {
+    "id": "public-dock",
+    "map": "MnDetroitLakes",
+    "core": [
+      24,
+      29
+    ]
+  },
+  {
+    "id": "cabin-street",
+    "map": "MnDetroitLakes",
+    "core": [
+      36,
+      29
+    ]
+  },
+  {
+    "id": "woodland-boundary",
+    "map": "MnDetroitLakes",
+    "core": [
+      24,
+      2
+    ],
+    "source_depth": 2
+  }
+]

@@ -17,7 +17,7 @@ use super::super::{
     mark_runtime_snapshot_dirty,
 };
 use super::authored_route_fixture::{
-    Point, RouteGrid, RouteSpec, finish_text, indoor_walk, neighbors, position,
+    Point, RouteGrid, RouteSpec, escape_wild, finish_text, indoor_walk, neighbors, position,
 };
 
 const SOURCE: &str = include_str!(
@@ -194,6 +194,7 @@ fn grid(runtime: &CrystalRuntime, at: Point) -> RouteGrid {
             doors: BTreeMap::from([((40, 15), "MnR12Cave1F"), ((49, 45), "MnR12RangerHut")]),
         },
     )
+    .with_battle_handler(escape_wild)
 }
 fn source() -> Value {
     serde_json::from_str(SOURCE).expect("frozen compact dossier")
@@ -508,10 +509,15 @@ fn compact_gunflint_controller_cut_denial_native_open_reward_continue_and_map_re
     cut(&mut c, GameButton::Down);
     opened_grid(&runtime, &mut c).walk(&mut c, (14, 18));
     let route = grid(&runtime, position(&mut c));
-    route.walk(&mut c, (63, 54));
+    let renew_repel = |c: &mut VisibleShellController| {
+        if c.shell.shell.session().state().repel_steps_remaining == 0 {
+            super::minneapolis_falls::grand_marais_harbor::use_max_repel(c, &runtime);
+        }
+    };
+    route.walk_with_step_action(&mut c, (63, 54), renew_repel);
     step(&mut c, GameButton::Right, CEDAR, (0, 14));
     step(&mut c, GameButton::Left, LOWER, (63, 6));
-    grid(&runtime, position(&mut c)).walk(&mut c, (14, 18));
+    grid(&runtime, position(&mut c)).walk_with_step_action(&mut c, (14, 18), renew_repel);
     assert_eq!(
         tree(&c),
         0x0f,
@@ -608,7 +614,7 @@ fn compact_gunflint_controller_meaningful_frost_courses_force_dry_and_wall_stops
 #[test]
 #[ignore = "requires published compact pack in CRYSTAL_COMPACT_SUPERIOR_TEST_PACK"]
 fn compact_gunflint_controller_required_west_grass_starts_authoritative_wild_battle() {
-    let (_, _, mut c) = fixture((6, 28), Setup::Cut);
+    let (_, _, mut c) = fixture((8, 28), Setup::Cut);
     // Repel stock remains unused: the actual native habitat must encounter.
     for _ in 0..512 {
         if c.snapshot()
@@ -637,4 +643,87 @@ fn compact_gunflint_controller_required_west_grass_starts_authoritative_wild_bat
         RuntimeBattleKind::Wild { .. }
     ));
     retain(&mut c, "west-grass-battle");
+}
+
+#[test]
+#[ignore = "requires the current compact Gunflint grass pack"]
+fn compact_gunflint_controller_effective_trainer_win_pp_and_continue() {
+    let (root, runtime, mut c) = fixture((50, 29), Setup::Cut);
+    // Initial legal moves only; the native trainer and all later actions stay intact.
+    let mut moves = Vec::new();
+    for name in ["CUT", "SURF", "THUNDERBOLT", "ICE_BEAM"] {
+        assert!(
+            runtime.data().pokemon["MEW"]
+                .tmhm_learnset
+                .iter()
+                .any(|m| m == name)
+        );
+        moves.push(LearnedMove {
+            name: name.into(),
+            current_pp: runtime.data().moves[name].pp,
+            pp_ups: 0,
+        });
+    }
+    c.shell
+        .shell
+        .session_mut()
+        .state_mut()
+        .storage
+        .party
+        .pokemon[0]
+        .as_mut()
+        .expect("initial fixture partner")
+        .moves = moves;
+    c.shell
+        .shell
+        .session_mut()
+        .state_mut()
+        .sync_party_from_storage();
+    mark_runtime_snapshot_dirty(&mut c.shell);
+    let before = c.snapshot().expect("native trainer fixture");
+    c.press(GameButton::Right).expect("face current Milo");
+    c.press(GameButton::A).expect("native trainer interaction");
+    assert!(super::rochester_earned::try_battle(
+        &mut c,
+        &runtime,
+        "MN_R12_T02",
+        "EVENT_MN_R12_TRAINER_02"
+    ));
+    finish_text(&mut c);
+    let won = c.snapshot().expect("actual native victory");
+    assert!(won.battle.is_none());
+    assert!(won.party.slots[0].pokemon.hp > 0);
+    assert!(
+        won.party.slots[0].pokemon.moves.iter().any(|m| {
+            before.party.slots[0]
+                .pokemon
+                .moves
+                .iter()
+                .any(|old| old.name == m.name && m.current_pp < old.current_pp)
+        }),
+        "native effective attack must spend PP"
+    );
+    let save = retain(&mut c, "milo-grass-win");
+    let mut loaded = VisibleShellController::load_save(root, runtime, save, None)
+        .expect("Continue actual trainer win");
+    let after = loaded.snapshot().expect("continued current compact route");
+    assert_eq!(won.party, after.party);
+    assert_eq!(won.bag, after.bag);
+    assert_eq!(won.overworld.map_name, after.overworld.map_name);
+    assert_eq!(won.overworld.tile, after.overworld.tile);
+    assert!(
+        loaded
+            .shell
+            .shell
+            .session()
+            .state()
+            .flags
+            .is_event_flag_set("EVENT_MN_R12_TRAINER_02")
+            .expect("continued native trainer victory")
+    );
+    if let Some(path) = std::env::var_os("CRYSTAL_COMPACT_GUNFLINT_GRASS_JOURNEY_SAVE") {
+        loaded
+            .save(PathBuf::from(path))
+            .expect("export current grass trainer save");
+    }
 }

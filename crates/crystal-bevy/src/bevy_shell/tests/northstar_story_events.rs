@@ -47,6 +47,23 @@ pub(super) fn observe_case(c: &mut VisibleShellController) {
             "acted case scene needs visible {id}"
         );
     }
+    if c.shell.shell.runtime().data().maps[LAB]
+        .scripts
+        .contains_key("MnOverhaulLabEntry")
+    {
+        for (id, expected) in [
+            ("MN_NSE_REED", (5, 4)),
+            ("MN_NSE_EGG_CASE", (5, 5)),
+            ("MN_W_TAMARACK", (5, 2)),
+        ] {
+            let tile = s
+                .visible_object_runtime_tiles
+                .get(id)
+                .expect("acted scene position");
+            assert_eq!((tile.x, tile.y), expected, "placed scene actor {id}");
+        }
+        assert_eq!((s.overworld.tile.x, s.overworld.tile.y), (4, 2));
+    }
     if let Some(directory) = std::env::var_os("CRYSTAL_NORTHSTAR_EVENTS_SAVE_DIR") {
         let directory = PathBuf::from(directory);
         std::fs::create_dir_all(&directory).expect("scene-save directory");
@@ -62,7 +79,18 @@ pub(super) fn play_reed(c: &mut VisibleShellController) {
     let attack = first
         .moves
         .iter()
-        .find(|m| matches!(m.name.as_str(), "TACKLE" | "SCRATCH" | "POUND"))
+        .find(|m| {
+            matches!(
+                m.name.as_str(),
+                "EMBER" | "WATER_GUN" | "VINE_WHIP" | "ABSORB"
+            )
+        })
+        .or_else(|| {
+            first
+                .moves
+                .iter()
+                .find(|m| matches!(m.name.as_str(), "TACKLE" | "SCRATCH" | "POUND"))
+        })
         .expect("starter's actual attack")
         .clone();
     let mut attacks = 0;

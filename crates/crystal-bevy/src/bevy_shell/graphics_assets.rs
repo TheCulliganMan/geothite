@@ -1837,111 +1837,11 @@ pub(super) fn render_visible_script_text_pages(
     rival_name: &str,
     day_of_week: u8,
 ) -> Vec<String> {
-    let mut pages = Vec::new();
-    let mut lines = Vec::new();
-    let mut current = String::new();
-    let flush_line = |lines: &mut Vec<String>, current: &mut String| {
-        if !current.is_empty() {
-            lines.push(std::mem::take(current));
-        }
-    };
-    let flush_page = |pages: &mut Vec<String>, lines: &mut Vec<String>, current: &mut String| {
-        flush_line(lines, current);
-        if !lines.is_empty() {
-            pages.push(normalize_visible_script_text_with_context(
-                &lines.join("\n"),
-                player_name,
-                rival_name,
-                day_of_week,
-            ));
-            lines.clear();
-        }
-    };
-    for command in &body.commands {
-        let rendered = match command.command.as_str() {
-            "text_ram" | "text_decimal" => {
-                render_named_text_buffer(command.args.first().map(String::as_str), named_buffers)
-            }
-            _ => render_script_text_args(&command.args),
-        };
-        match command.command.as_str() {
-            "text" | "text_start" | "text_block" | "text_ram" | "text_decimal" => {
-                // These commands all write at the current ASM text cursor.
-                // Inserting a host newline between a text_ram buffer and the
-                // following punctuation produced impossible extra rows.
-                current.push_str(&rendered);
-            }
-            "text_today" => current.push_str("<TODAY>"),
-            "text_pause" | "text_asm" => {}
-            "text_low" => {
-                // TX_LOW relocates BC to the standard bottom baseline.  It
-                // prints nothing, but subsequent chunks must not concatenate
-                // onto the top baseline's text.
-                flush_line(&mut lines, &mut current);
-            }
-            // The field renderer resolves TX_FAR through the runtime text
-            // catalog before calling this interpreter. Its pointer label is
-            // never player-visible text.
-            "text_far" => {}
-            "line" | "next" => {
-                flush_line(&mut lines, &mut current);
-                // `<LINE>` and `<NEXT>` both add two tile rows in
-                // `home/text.asm` (`LineChar` and `NextLineChar`). The visual
-                // renderer owns that two-tile baseline spacing; inserting a
-                // blank logical line here created four apparent text rows.
-                current.push_str(&rendered);
-            }
-            "para" => {
-                flush_page(&mut pages, &mut lines, &mut current);
-                current.push_str(&rendered);
-            }
-            "cont" => {
-                // `<CONT>` prompts, scrolls the box up two rows, then starts
-                // the continuation at the third interior row. Keep the last
-                // displayed row as the new top row. The visual renderer owns
-                // the two-tile baseline spacing.
-                flush_line(&mut lines, &mut current);
-                let carry = lines.iter().rev().find(|line| !line.is_empty()).cloned();
-                if !lines.is_empty() {
-                    pages.push(normalize_visible_script_text_with_context(
-                        &lines.join("\n"),
-                        player_name,
-                        rival_name,
-                        day_of_week,
-                    ));
-                }
-                lines.clear();
-                if let Some(carry) = carry {
-                    lines.push(carry);
-                }
-                current.push_str(&rendered);
-            }
-            "text_promptbutton" => {
-                flush_page(&mut pages, &mut lines, &mut current);
-            }
-            "prompt" | "done" | "text_end" => {
-                // These terminate PrintText. Unlabelled bytes after the
-                // terminator (including NurseGoodbyeText's unused copy)
-                // belong to no part of this dialogue stream.
-                flush_page(&mut pages, &mut lines, &mut current);
-                break;
-            }
-            opcode if opcode.starts_with("sound_") => {}
-            _ => {
-                flush_line(&mut lines, &mut current);
-                if rendered.is_empty() {
-                    lines.push(format!("[{}]", command.command));
-                } else {
-                    lines.push(format!("[{} {rendered}]", command.command));
-                }
-            }
-        }
-    }
-    flush_page(&mut pages, &mut lines, &mut current);
-    if pages.is_empty() {
-        pages.push(String::new());
-    }
-    pages
+    field_text_program::compile(body, named_buffers, player_name, rival_name, day_of_week)
+        .pages
+        .into_iter()
+        .map(|page| page.text)
+        .collect()
 }
 
 fn render_script_text_args(args: &[String]) -> String {
@@ -1949,7 +1849,17 @@ fn render_script_text_args(args: &[String]) -> String {
         // `@` is the charmap string terminator, not a visible glyph. Text
         // bodies use it for empty cursor moves (`line "@"`) and to end a
         // chunk after punctuation (`text "!@"`).
-        .map(|arg| arg.trim().trim_matches('"').trim_end_matches('@'))
+        .map(|arg| {
+            let trimmed = arg.trim();
+            // Whitespace inside a text chunk is authored content. In
+            // particular, a chunk after text_pause can start with the space
+            // separating the next word from the preceding chunk.
+            trimmed
+                .strip_prefix('"')
+                .and_then(|quoted| quoted.strip_suffix('"'))
+                .unwrap_or(arg)
+                .trim_end_matches('@')
+        })
         .collect::<Vec<_>>()
         .join(" ")
 }

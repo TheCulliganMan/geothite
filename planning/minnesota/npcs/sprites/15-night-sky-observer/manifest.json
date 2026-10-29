@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "id": "MN_NIGHT_SKY_OBSERVER",
+  "name": "NIGHT SKY OBSERVER ASTER",
+  "status": "accepted-native-playable",
+  "overworld_frames": 6,
+  "overworld_size": [
+    16,
+    16
+  ],
+  "battle_size": [
+    56,
+    56
+  ],
+  "palette_rgb555": [
+    32767,
+    22399,
+    19817,
+    0
+  ],
+  "source": "native-pixels-v1.json",
+  "placement": "placement-v1.json",
+  "pack": "content-packs/minnesota-original-npcs-15-v01.crystalpack",
+  "parent": "content-packs/minnesota-original-npcs-14-v02.crystalpack",
+  "runtime_checks": {
+    "one_controller_test_passed": true,
+    "talk_and_input_ownership": true,
+    "battle_turn_and_pp": true,
+    "battle_save_load": true,
+    "actual_victory_and_defeat_flag_before_render_capture": true,
+    "post_battle_talk": true,
+    "existing_trainers_and_assets_preserved": true
+  },
+  "manual_visual_review": "Original ASTER battle reference retained; native 56x56 face, short diagonal telescope, atlas chart/binding and boot highlights refined directly. Six 16x16 poses hand-authored with swept silver quiff, cream scarf/capelet collar, blue field coat and same-arm atlas; dedicated rear/profile, lifted-foot stride and free-arm swing. Atlas moved up one pixel to separate it from boots. Actual Crystal Gentleman/Gramps/Chris overworld comparison and Scientist/Fisher battle comparison at native size/equal enlargement, own-palette strips and actual Grand Marais/world/intro/battle captures reviewed. MOTHOSAIC/SOLSTORT checked active native families. Full controller encounter passed in 8.99s; earlier fourteen trainers/assets/gameplay preserved.",
+  "evidence_sha256": {
+    "planning/minnesota/npcs/sprites/15-night-sky-observer/native-pixels-v1.json": "66d7a09252b0cd8144c004dcd6125f4554b7336e09b732d4639e8da638c31dce",
+    "planning/minnesota/npcs/sprites/15-night-sky-observer/placement-v1.json": "6e84b1a1c622f69626cd756068fbd3017a2bcc982854de7c389e9ccb8f2c7a31",
+    "content-packs/minnesota-original-npcs-15-v01.crystalpack": "1b7232dd3690171f6beb07d7fa2f463543105bdbe4b080912416eb83ea381f24",
+    "target/npc-sprites/observer/controller-v01.log": "53bd63805be205bf9c4cb65612f7acaef35259ac1f6add36c2da63c235d6a061",
+    "target/npc-sprites/observer/gameplay-v01/original-npc-trainer-intro.png": "eb31b5f4973a1ce1883e723586e889e043a2295007d72c3005caeba35a5545ab",
+    "target/npc-sprites/observer/gameplay-v01/original-npc-first-turn.png": "c49434a31898dafb04a9385f021255386b5d1f96b9aa8192515b6a133b8a3b9d",
+    "target/npc-sprites/observer/gameplay-v01/original-npc-overworld-state.png": "c134f95a1a69e4e9780d3fc7715584c44b49746c32d347fed0f6910136aab6b6",
+    "planning/minnesota/npcs/sprites/15-night-sky-observer/battle-source-v1.png": "aabe1a0f47173fef62789b746490a94c0284a6b7ec7d370b54aa85999cb1ab97",
+    "planning/minnesota/npcs/sprites/15-night-sky-observer/prompt-battle-v1.txt": "66c0380c55dced713118791810f99074d21c5e99a929566ca45b1aeaa7c7f2f7",
+    "target/npc-sprites/hand-review/observer-real-comparison-v3.png": "68ecfa8c5870931eb8e6a512312014d1e3488f1f659347f902357c69322147cb",
+    "target/npc-sprites/hand-review/observer-battle-real-comparison-v2.png": "fb9d5e2435f4b73c1904c24260914a90ba8ad5c91e007cfb476d1a8226011a5b",
+    "target/npc-sprites/observer/native-v3/verification.json": "9a07f88b092e2cf7c6e73bc6bd0ff5a64543366b3ad0c485626b807fe8e3b825",
+    "target/npc-sprites/observer/native-v3/overworld-review.png": "fb47ccdfc35eddb363c864c6ff558735c4f8de77eeb6c5207dbd8ffcf31dff56",
+    "target/npc-sprites/observer/native-v3/overworld-review-8x.png": "c9bd4e7d2c762997f2eeb1672308d420aff79a1b9dca82b6dff13ee07cee3c24"
+  },
+  "overworld_authoring": "direct-native-pixel-grids",
+  "reference_review": "actual-crystal-sprites-common-palette-and-scale"
+}

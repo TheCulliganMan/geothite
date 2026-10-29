@@ -9,7 +9,7 @@ use crystal_core::input::GameButton;
 use crystal_core::models::{Dv, LearnedMove};
 use crystal_core::systems::script_flags::{ScriptFlagCommand, apply_script_flag_mutation};
 use crystal_core::world::movement::MovementMode;
-use crystal_runtime::CrystalRuntime;
+use crystal_runtime::{CrystalRuntime, RuntimeBattleKind, RuntimeShellPhase};
 use serde_json::Value;
 
 use super::super::{
@@ -18,7 +18,7 @@ use super::super::{
     mark_runtime_snapshot_dirty,
 };
 use super::authored_route_fixture::{
-    Point, RouteGrid, RouteSpec, finish_text, indoor_walk, neighbors, opposite, position,
+    Point, RouteGrid, RouteSpec, finish_text, indoor_walk, neighbors, position,
 };
 use super::north_shore::{climb_added_cascade, mount_surf, settle_water, water_step};
 
@@ -59,6 +59,22 @@ fn load() -> (AssetRoot, CrystalRuntime) {
                 read_loaded_verified_compiled_game_pack(path).expect("verified actual pack"),
             )
             .expect("native runtime");
+            for row in 0..4 {
+                for col in 0..2 {
+                    let module = &runtime.data().maps[&format!("MnR11C{col:02}R{row:02}")];
+                    assert_eq!(module.attributes.tileset_name, "mn_north_shore");
+                    assert!(
+                        module
+                            .blocks
+                            .iter()
+                            .all(|block| runtime.data().tilesets["mn_north_shore"].collision
+                                [&format!("{block:02x}")]
+                                .iter()
+                                .all(|kind| kind != "ICE")),
+                        "no ice is allowed on North Shore"
+                    );
+                }
+            }
             (root, runtime)
         })
         .clone()
@@ -146,7 +162,7 @@ fn grid(runtime: &CrystalRuntime, start: Point) -> RouteGrid {
             prefix: "MnR11",
             columns: 2,
             rows: 4,
-            tileset: "mn_north_shore",
+            tileset: route_tileset(runtime),
             start,
             doors: BTreeMap::from([((51, 99), "MnR11SplitRockLighthouse")]),
         },
@@ -157,9 +173,30 @@ fn block(runtime: &CrystalRuntime, at: Point) -> u16 {
     m.blocks[usize::from((at.1 % 48) as u16 / 2) * usize::from(m.attributes.width)
         + usize::from((at.0 % 64) as u16 / 2)]
 }
+fn route_tileset(runtime: &CrystalRuntime) -> &'static str {
+    assert_eq!(
+        runtime.data().maps["MnR11C00R00"].attributes.tileset_name,
+        "mn_north_shore",
+        "North Shore must stay warm"
+    );
+    "mn_north_shore"
+}
 fn kind(runtime: &CrystalRuntime, at: Point) -> &str {
-    &runtime.data().tilesets["mn_north_shore"].collision[&format!("{:02x}", block(runtime, at))]
-        [(at.1 % 2 * 2 + at.0 % 2) as usize]
+    if at.0 < 0 || at.1 < 0 {
+        return "WALL";
+    }
+    let Some(module) = runtime.data().maps.get(&map(at)) else {
+        return "WALL";
+    };
+    if at.0 % 64
+        >= i16::try_from(module.attributes.width).expect("bounded authored chunk width") * 2
+        || at.1 % 48
+            >= i16::try_from(module.attributes.height).expect("bounded authored chunk height") * 2
+    {
+        return "WALL";
+    }
+    &runtime.data().tilesets[route_tileset(runtime)].collision
+        [&format!("{:02x}", block(runtime, at))][(at.1 % 2 * 2 + at.0 % 2) as usize]
 }
 fn direction(from: Point, to: Point) -> GameButton {
     neighbors(from)
@@ -231,7 +268,7 @@ fn expanded_north_shore_controller_walks_stairs_three_ledges_grass_and_keeper_re
             .slots
             .is_empty()
     );
-    for e in d["endpoints"].as_array().expect("ports") {
+    for e in d["endpoints"].as_array().expect("route endpoints") {
         let p = point(&e["gate_metatile"]);
         g.walk(&mut c, (p.0 * 2, p.1 * 2));
     }
@@ -269,7 +306,13 @@ fn expanded_north_shore_controller_walks_stairs_three_ledges_grass_and_keeper_re
             .chain(std::iter::once(point(&lane["after"])))
             .collect::<Vec<_>>();
         for (index, &at) in path.iter().enumerate() {
-            assert_eq!(kind(&runtime, at), "FLOOR", "{} {at:?}", lane["id"]);
+            let expected = if index + 1 == path.len() {
+                lane["after_collision"].as_str().unwrap_or("FLOOR")
+            } else {
+                "FLOOR"
+            };
+            assert!(matches!(expected, "FLOOR" | "TALL_GRASS"));
+            assert_eq!(kind(&runtime, at), expected, "{} {at:?}", lane["id"]);
             if index > 0 {
                 assert_eq!(
                     g.path(path[index - 1], at).len(),
@@ -305,29 +348,49 @@ fn expanded_north_shore_controller_walks_stairs_three_ledges_grass_and_keeper_re
         "every installed stair crossed both ways"
     );
     for ledge in d["one_way_ledges"].as_array().expect("three ledges") {
-        let from = point(&ledge["hop_from"]);
-        let landing = point(&ledge["landing"]);
-        let forbidden = point(&ledge["reverse_blocked"]);
-        let upper = point(&ledge["upper_approach"]);
-        g.walk(&mut c, upper);
-        let button = match ledge["direction"].as_str().expect("native ledge direction") {
-            "south" => GameButton::Down,
-            "north" => GameButton::Up,
-            "east" => GameButton::Right,
-            "west" => GameButton::Left,
-            _ => panic!("cardinal ledge"),
-        };
-        native_hop(&mut c, upper, from, landing, forbidden, button);
-        barrier(&mut c, opposite(button));
-        let route = g.path(landing, upper);
-        assert!(
-            route.len()
-                >= ledge["minimum_return_steps"]
-                    .as_u64()
-                    .expect("nontrivial return") as usize
-        );
-        g.walk(&mut c, upper);
-        native_hop(&mut c, upper, from, landing, forbidden, button);
+        let y_upper = point(&ledge["upper_approach"]).1;
+        let y_from = point(&ledge["hop_from"]).1;
+        let y_landing = point(&ledge["landing"]).1;
+        let y_forbidden = point(&ledge["reverse_blocked"]).1;
+        let bounds = &ledge["bounds_core"];
+        for x in bounds[0].as_i64().expect("ledge left")..bounds[2].as_i64().expect("ledge right") {
+            let x = i16::try_from(x).expect("core lane x");
+            let upper = (x, y_upper);
+            let landing = (x, y_landing);
+            g.walk(&mut c, upper);
+            native_hop(
+                &mut c,
+                upper,
+                (x, y_from),
+                landing,
+                (x, y_forbidden),
+                GameButton::Down,
+            );
+            barrier(&mut c, GameButton::Up);
+            let return_steps = g.path(landing, upper).len();
+            assert!(
+                return_steps > usize::from((landing.1 - upper.1).unsigned_abs()),
+                "every lane must offer a shorter native hop than its ordinary return"
+            );
+            if upper == point(&ledge["upper_approach"]) {
+                assert!(
+                    return_steps
+                        >= ledge["minimum_return_steps"]
+                            .as_u64()
+                            .expect("named lane's nontrivial return")
+                            as usize
+                );
+            }
+            g.walk(&mut c, upper);
+            native_hop(
+                &mut c,
+                upper,
+                (x, y_from),
+                landing,
+                (x, y_forbidden),
+                GameButton::Down,
+            );
+        }
     }
     for grass in d["required_grass_crossings"]
         .as_array()
@@ -461,7 +524,11 @@ fn expanded_north_shore_controller_surfs_eight_chunks_blocks_outer_edges_and_con
         let at = point(&probe["at"]);
         let target = point(&probe["target"]);
         surf_to(&runtime, &mut c, at, &mut visited);
-        assert_eq!(kind(&runtime, target), "BUOY");
+        let expected = probe["expected"]
+            .as_str()
+            .expect("declared native boundary collision");
+        assert!(matches!(expected, "WALL" | "BUOY"));
+        assert_eq!(kind(&runtime, target), expected);
         barrier(&mut c, direction(at, target));
         assert_eq!(
             c.snapshot().expect("closed Surf edge").overworld.mode,
@@ -491,6 +558,11 @@ fn expanded_north_shore_controller_surfs_eight_chunks_blocks_outer_edges_and_con
     assert_eq!(before.overworld.map_name, after.overworld.map_name);
     assert_eq!(flags(&loaded), before_flags);
     assert_eq!(loaded.shell.shell.session().state().money, money);
+    if let Some(save) = std::env::var_os("CRYSTAL_NORTH_SHORE_GRASS_JOURNEY_SAVE") {
+        loaded
+            .save(PathBuf::from(save))
+            .expect("export actual completed sea circuit");
+    }
     std::fs::remove_file(path).expect("remove temporary save");
 }
 
@@ -535,5 +607,78 @@ fn expanded_north_shore_controller_climbs_authored_cascades_through_native_water
     assert!(
         tested >= 7,
         "all declared old/new waterfall stages must execute"
+    );
+}
+
+#[test]
+#[ignore = "requires the published North Shore grass revision"]
+fn expanded_north_shore_stoney_grass_triggers_native_encounters() {
+    let (_, _, mut controller) = fixture((35, 137), true);
+    // All subsequent state changes come from native movement and RUN inputs.
+    let mut encounters = 0;
+    for _ in 0..16 {
+        for (button, y) in (138..142)
+            .map(|y| (GameButton::Down, y))
+            .chain((137..141).rev().map(|y| (GameButton::Up, y)))
+        {
+            let target = (35, y);
+            for _ in 0..8 {
+                controller
+                    .press(button)
+                    .expect("native reclaimed-grass step");
+                let mut active = false;
+                for _ in 0..512 {
+                    let snapshot = controller.snapshot().expect("native grass encounter state");
+                    let input = if let Some(battle) = &snapshot.battle {
+                        assert!(matches!(battle.kind, RuntimeBattleKind::Wild { .. }));
+                        if !active {
+                            encounters += 1;
+                            active = true;
+                        }
+                        if !controller.shell.battle_messages.is_empty()
+                            || snapshot.ui.menu.is_none()
+                        {
+                            GameButton::A
+                        } else if let Some(cursor) = &controller.shell.battle_action_cursor {
+                            match cursor.option_index {
+                                0 | 1 => GameButton::Down,
+                                2 => GameButton::Right,
+                                3 => GameButton::A,
+                                _ => panic!("invalid native action cursor"),
+                            }
+                        } else {
+                            GameButton::A
+                        }
+                    } else if snapshot.phase == RuntimeShellPhase::Text
+                        || controller.has_pending_script_work()
+                        || !controller.shell.battle_messages.is_empty()
+                    {
+                        GameButton::A
+                    } else {
+                        assert_eq!(snapshot.phase, RuntimeShellPhase::Overworld);
+                        break;
+                    };
+                    controller
+                        .press(input)
+                        .expect("native RUN or narration input");
+                    controller
+                        .wait_frames(16)
+                        .expect("native encounter presentation");
+                }
+                if position(&mut controller) == target {
+                    break;
+                }
+            }
+            assert_eq!(position(&mut controller), target);
+        }
+    }
+    assert!(
+        encounters > 0,
+        "new grass never produced an actual native encounter"
+    );
+    assert_eq!(position(&mut controller), (35, 137));
+    assert_eq!(controller.shell.last_error, None);
+    eprintln!(
+        "Stoney Point trail neck: {encounters} native wild encounters across 128 grass-loop steps"
     );
 }

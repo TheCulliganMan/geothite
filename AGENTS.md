@@ -15,6 +15,18 @@
 - Verify audio changes against the pack's PCM hashes, frame counts, and loop
   ranges. Preserve unaffected audio and unrelated game content.
 
+## Minnesota Pokemon roster
+
+- Minnesota is native 2D only. Do not expose or enable 3D, voxel or 2.5D views
+  for Minnesota packs, including menus, preferences, shortcuts and previews.
+- Minnesota uses only original Minnesota Pokemon from the active roster in
+  `planning/minnesota/pokemon/roster.json`, excluding families retired in
+  `planning/minnesota/pokemon/roster-curation.json`. Never place non-Minnesota
+  Pokemon in Minnesota trainer teams, wild encounters, gifts, trades, starters,
+  static encounters, or visible creature actors. Apply this rule to added content
+  and to existing regional content touched by a change, including scaled teams
+  and their evolutions. Preserve Johto/Kanto content outside Minnesota.
+
 ## Rust style
 
 - Follow [Google's Rust Style Guide](https://google.github.io/styleguide/rustguide.html)
@@ -116,6 +128,15 @@
   `CARGO_TARGET_DIR`, for example `target/agent-title`, and set
   `CRYSTAL_RENDER_TEST_PACK` to the absolute completed TUI pack path when testing.
   Do not delete another agent's build cache to bypass a lock.
+- Serialize memory-intensive Cargo builds on shared hosts, even when tasks use
+  distinct target directories. Use the default test profile for regressions;
+  `--profile wasm-dev` selects playable-renderer optimization instead. Preserve
+  the repository's two-job default unless the host has capacity for more.
+- Tests that need external oracle captures or ignored authoring fixtures must
+  read them at runtime and declare their prerequisites explicitly. Do not use
+  `include_str!` or `include_bytes!` for those inputs: even ignored tests must
+  compile in a checkout without external captures. Keep capture-dependent
+  replays opt-in while retaining self-contained tests in the default run.
 - The initializer uses its own persistent Cargo cache. Set
   `CRYSTAL_PACK_BUILD_DIR` to choose its Linux cache directory and
   `CRYSTAL_PACK_BUILD_PROFILE` to `release` (default) or `wasm-dev`.

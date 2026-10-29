@@ -8658,174 +8658,168 @@ fn run_visible_credits_jumptable_step(runtime_shell: &mut BevyRuntimeShell) -> R
 }
 
 fn step_parse_visible_credits(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
-    loop {
-        let Some(credits) = runtime_shell.credits_screen.as_mut() else {
-            return Ok(());
+    let Some(credits) = runtime_shell.credits_screen.as_mut() else {
+        return Ok(());
+    };
+    if credits.jumptable_index & (1 << VISIBLE_CREDITS_EXIT_BIT) != 0 {
+        visible_credits_next(runtime_shell);
+        return Ok(());
+    }
+    if credits.timer > 0 {
+        credits.timer = credits.timer.saturating_sub(1);
+        visible_credits_next(runtime_shell);
+        return Ok(());
+    }
+    credits.lines.clear();
+    credits.show_the_end = false;
+    credits.bg_map_mode = 0;
+    if credits.script_index >= credits.program.ops.len() {
+        credits.awaiting_exit = true;
+        credits.script_complete = true;
+        credits.jumptable_index |= 1 << VISIBLE_CREDITS_EXIT_BIT;
+        set_shell_action_status(runtime_shell, "THE END");
+        return Ok(());
+    }
+    while runtime_shell
+        .credits_screen
+        .as_ref()
+        .is_some_and(|credits| credits.script_index < credits.program.ops.len())
+    {
+        let op = {
+            let credits = runtime_shell
+                .credits_screen
+                .as_mut()
+                .context("credits screen closed while parsing")?;
+            let op = credits
+                .program
+                .ops
+                .get(credits.script_index)
+                .cloned()
+                .context("credits script index moved outside loaded script")?;
+            credits.script_index += 1;
+            credits.consumed_bytes = credits
+                .consumed_bytes
+                .saturating_add(visible_credits_op_byte_len(&op));
+            op
         };
-        if credits.jumptable_index & (1 << VISIBLE_CREDITS_EXIT_BIT) != 0 {
-            visible_credits_next(runtime_shell);
-            return Ok(());
-        }
-        if credits.timer > 0 {
-            credits.timer = credits.timer.saturating_sub(1);
-            visible_credits_next(runtime_shell);
-            return Ok(());
-        }
-        credits.lines.clear();
-        credits.show_the_end = false;
-        credits.bg_map_mode = 0;
-        if credits.script_index >= credits.program.ops.len() {
-            credits.awaiting_exit = true;
-            credits.script_complete = true;
-            credits.jumptable_index |= 1 << VISIBLE_CREDITS_EXIT_BIT;
-            set_shell_action_status(runtime_shell, "THE END");
-            return Ok(());
-        }
-        while runtime_shell
-            .credits_screen
-            .as_ref()
-            .is_some_and(|credits| credits.script_index < credits.program.ops.len())
-        {
-            let op = {
+        match op {
+            VisibleCreditsOp::String { token, line_index } => {
                 let credits = runtime_shell
                     .credits_screen
                     .as_mut()
-                    .context("credits screen closed while parsing")?;
-                let op = credits
+                    .context("credits screen closed while adding line")?;
+                let Some(string_index) = credits.program.constant_indices.get(&token).copied()
+                else {
+                    anyhow::bail!("credits script token {token} has no exported constant index");
+                };
+                let text = credits
                     .program
-                    .ops
-                    .get(credits.script_index)
-                    .cloned()
-                    .context("credits script index moved outside loaded script")?;
-                credits.script_index += 1;
-                credits.consumed_bytes = credits
-                    .consumed_bytes
-                    .saturating_add(visible_credits_op_byte_len(&op));
-                op
-            };
-            match op {
-                VisibleCreditsOp::String { token, line_index } => {
-                    let credits = runtime_shell
-                        .credits_screen
-                        .as_mut()
-                        .context("credits screen closed while adding line")?;
-                    let Some(string_index) = credits.program.constant_indices.get(&token).copied()
-                    else {
-                        anyhow::bail!("credits script token {token} has no exported constant index");
-                    };
-                    let text = credits
-                        .program
-                        .strings
-                        .get(string_index)
-                        .with_context(|| {
-                            format!(
-                                "credits string token {token} index {string_index} is outside parsed string table"
-                            )
-                        })?
-                        .clone();
-                    let tiles = credits
-                        .program
-                        .string_tiles
-                        .get(string_index)
-                        .with_context(|| {
-                            format!(
-                                "credits string tile token {token} index {string_index} is outside parsed tile table"
-                            )
-                        })?
-                        .clone();
-                    credits.lines.push(VisibleCreditsLine {
-                        token,
-                        text,
-                        tiles,
-                        line_index,
-                    });
-                }
-                VisibleCreditsOp::Wait(duration) => {
-                    let credits = runtime_shell
-                        .credits_screen
-                        .as_mut()
-                        .context("credits screen closed while setting wait")?;
-                    credits.timer = duration;
-                    credits.bg_map_third = 0;
-                    credits.bg_map_mode = 1;
-                    visible_credits_next(runtime_shell);
-                    return Ok(());
-                }
-                VisibleCreditsOp::Wait2(duration) => {
-                    let credits = runtime_shell
-                        .credits_screen
-                        .as_mut()
-                        .context("credits screen closed while setting wait")?;
-                    credits.timer = duration;
-                    visible_credits_next(runtime_shell);
-                    return Ok(());
-                }
-                VisibleCreditsOp::Scene(scene) => {
-                    let credits = runtime_shell
-                        .credits_screen
-                        .as_mut()
-                        .context("credits screen closed while setting scene")?;
-                    credits.scene_index = scene % 4;
-                    credits.border_frame_counter = Some(0);
-                }
-                VisibleCreditsOp::Clear => {
-                    let credits = runtime_shell
-                        .credits_screen
-                        .as_mut()
-                        .context("credits screen closed while clearing")?;
-                    credits.border_frame_counter = None;
-                }
-                VisibleCreditsOp::Music => {
-                    queue_visible_credits_music_stop(runtime_shell)?;
-                    let credits = runtime_shell
-                        .credits_screen
-                        .as_mut()
-                        .context("credits screen closed while delaying music")?;
-                    credits.music_start_delay_frames = 1;
-                    return Ok(());
-                }
-                VisibleCreditsOp::TheEnd => {
-                    let credits = runtime_shell
-                        .credits_screen
-                        .as_mut()
-                        .context("credits screen closed while showing The End")?;
-                    credits.show_the_end = true;
-                }
-                VisibleCreditsOp::End => {
-                    let (target_music, fade_rate) = {
-                        let credits = runtime_shell
-                            .credits_screen
-                            .as_ref()
-                            .context("credits screen closed while ending")?;
-                        (
-                            credits.program.end_music_target.clone(),
-                            credits.program.end_music_fade_rate,
+                    .strings
+                    .get(string_index)
+                    .with_context(|| {
+                        format!(
+                            "credits string token {token} index {string_index} is outside parsed string table"
                         )
-                    };
-                    begin_visible_music_fade(
-                        runtime_shell,
-                        &target_music,
-                        u16::from(fade_rate),
-                    )?;
+                    })?
+                    .clone();
+                let tiles = credits
+                    .program
+                    .string_tiles
+                    .get(string_index)
+                    .with_context(|| {
+                        format!(
+                            "credits string tile token {token} index {string_index} is outside parsed tile table"
+                        )
+                    })?
+                    .clone();
+                credits.lines.push(VisibleCreditsLine {
+                    token,
+                    text,
+                    tiles,
+                    line_index,
+                });
+            }
+            VisibleCreditsOp::Wait(duration) => {
+                let credits = runtime_shell
+                    .credits_screen
+                    .as_mut()
+                    .context("credits screen closed while setting wait")?;
+                credits.timer = duration;
+                credits.bg_map_third = 0;
+                credits.bg_map_mode = 1;
+                visible_credits_next(runtime_shell);
+                return Ok(());
+            }
+            VisibleCreditsOp::Wait2(duration) => {
+                let credits = runtime_shell
+                    .credits_screen
+                    .as_mut()
+                    .context("credits screen closed while setting wait")?;
+                credits.timer = duration;
+                visible_credits_next(runtime_shell);
+                return Ok(());
+            }
+            VisibleCreditsOp::Scene(scene) => {
+                let credits = runtime_shell
+                    .credits_screen
+                    .as_mut()
+                    .context("credits screen closed while setting scene")?;
+                credits.scene_index = scene % 4;
+                credits.border_frame_counter = Some(0);
+            }
+            VisibleCreditsOp::Clear => {
+                let credits = runtime_shell
+                    .credits_screen
+                    .as_mut()
+                    .context("credits screen closed while clearing")?;
+                credits.border_frame_counter = None;
+            }
+            VisibleCreditsOp::Music => {
+                queue_visible_credits_music_stop(runtime_shell)?;
+                let credits = runtime_shell
+                    .credits_screen
+                    .as_mut()
+                    .context("credits screen closed while delaying music")?;
+                credits.music_start_delay_frames = 1;
+                return Ok(());
+            }
+            VisibleCreditsOp::TheEnd => {
+                let credits = runtime_shell
+                    .credits_screen
+                    .as_mut()
+                    .context("credits screen closed while showing The End")?;
+                credits.show_the_end = true;
+            }
+            VisibleCreditsOp::End => {
+                let (target_music, fade_rate) = {
                     let credits = runtime_shell
                         .credits_screen
-                        .as_mut()
+                        .as_ref()
                         .context("credits screen closed while ending")?;
-                    credits.awaiting_exit = true;
-                    credits.script_complete = true;
-                    credits.jumptable_index |= 1 << VISIBLE_CREDITS_EXIT_BIT;
-                    set_shell_action_status(runtime_shell, "THE END");
-                    return Ok(());
-                }
+                    (
+                        credits.program.end_music_target.clone(),
+                        credits.program.end_music_fade_rate,
+                    )
+                };
+                begin_visible_music_fade(runtime_shell, &target_music, u16::from(fade_rate))?;
+                let credits = runtime_shell
+                    .credits_screen
+                    .as_mut()
+                    .context("credits screen closed while ending")?;
+                credits.awaiting_exit = true;
+                credits.script_complete = true;
+                credits.jumptable_index |= 1 << VISIBLE_CREDITS_EXIT_BIT;
+                set_shell_action_status(runtime_shell, "THE END");
+                return Ok(());
             }
         }
-        if let Some(credits) = runtime_shell.credits_screen.as_mut() {
-            credits.awaiting_exit = true;
-            credits.script_complete = true;
-            credits.jumptable_index |= 1 << VISIBLE_CREDITS_EXIT_BIT;
-        }
-        return Ok(());
     }
+    if let Some(credits) = runtime_shell.credits_screen.as_mut() {
+        credits.awaiting_exit = true;
+        credits.script_complete = true;
+        credits.jumptable_index |= 1 << VISIBLE_CREDITS_EXIT_BIT;
+    }
+    Ok(())
 }
 
 fn visible_credits_next(runtime_shell: &mut BevyRuntimeShell) {

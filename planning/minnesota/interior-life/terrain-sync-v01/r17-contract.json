@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "current_content_hash": "ba48b58fa3b1aed7ab537355419a57729ea39831af0f97d82d350a9b6e9f2ba4",
+  "accepted_base_content_hash": "60027135d782170fd7998a1e4ee50ce39170700b4a2bb79129dab2f883707784",
+  "accepted_child_content_hash": "a0d9b83dce37dd6b7760ce970a9c2dc976b32fc602fee3184896c86400d3df41",
+  "manifest": "minnesota-interior-terrain-sync-v2",
+  "maps": [
+    "MnR17Cave1F"
+  ],
+  "actor_relocations": [
+    {
+      "map": "MnR17Cave1F",
+      "script": "MN_INTERIOR_R17_LICHEN_READER",
+      "sprite": "SPRITE_SCIENTIST",
+      "before": [
+        8,
+        10
+      ],
+      "tile": [
+        6,
+        10
+      ],
+      "approach": [
+        5,
+        10
+      ],
+      "arrival": [
+        9,
+        12
+      ]
+    }
+  ]
+}

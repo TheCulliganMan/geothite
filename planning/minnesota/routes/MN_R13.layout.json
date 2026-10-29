@@ -16253,6 +16253,177 @@
         63
       ],
       "block": "8b"
+    },
+    {
+      "kind": "point",
+      "name": "Northern pine entrance",
+      "position": [
+        15,
+        7
+      ],
+      "block": "84"
+    },
+    {
+      "kind": "point",
+      "name": "Northern pine entrance",
+      "position": [
+        17,
+        7
+      ],
+      "block": "84"
+    },
+    {
+      "kind": "point",
+      "name": "Wind Tor grassy ramp foot skipped by the drop",
+      "position": [
+        22,
+        13
+      ],
+      "block": "84"
+    },
+    {
+      "kind": "point",
+      "name": "Wind Tor grassy ramp foot skipped by the drop",
+      "position": [
+        23,
+        13
+      ],
+      "block": "84"
+    },
+    {
+      "kind": "point",
+      "name": "Wind Tor grassy ramp foot skipped by the drop",
+      "position": [
+        24,
+        13
+      ],
+      "block": "84"
+    },
+    {
+      "kind": "point",
+      "name": "Border Lake resource-bank sedge",
+      "position": [
+        8,
+        14
+      ],
+      "block": "84"
+    },
+    {
+      "kind": "point",
+      "name": "Border Lake resource-bank sedge",
+      "position": [
+        9,
+        14
+      ],
+      "block": "84"
+    },
+    {
+      "kind": "point",
+      "name": "Border Lake resource-bank sedge",
+      "position": [
+        10,
+        14
+      ],
+      "block": "84"
+    },
+    {
+      "kind": "point",
+      "name": "Border Lake resource-bank sedge",
+      "position": [
+        11,
+        14
+      ],
+      "block": "84"
+    },
+    {
+      "kind": "point",
+      "name": "Long Lake high-bank crossing",
+      "position": [
+        16,
+        33
+      ],
+      "block": "84"
+    },
+    {
+      "kind": "point",
+      "name": "Long Lake high-bank crossing",
+      "position": [
+        17,
+        33
+      ],
+      "block": "84"
+    },
+    {
+      "kind": "point",
+      "name": "Long Lake high-bank crossing",
+      "position": [
+        18,
+        33
+      ],
+      "block": "84"
+    },
+    {
+      "kind": "point",
+      "name": "Long Lake high-bank crossing",
+      "position": [
+        19,
+        33
+      ],
+      "block": "84"
+    },
+    {
+      "kind": "point",
+      "name": "Southern pine neck",
+      "position": [
+        17,
+        53
+      ],
+      "block": "84"
+    },
+    {
+      "kind": "point",
+      "name": "Southern pine neck",
+      "position": [
+        17,
+        54
+      ],
+      "block": "84"
+    },
+    {
+      "kind": "point",
+      "name": "Southern pine neck",
+      "position": [
+        17,
+        55
+      ],
+      "block": "84"
+    },
+    {
+      "kind": "point",
+      "name": "Ely approach meadow",
+      "position": [
+        16,
+        59
+      ],
+      "block": "84"
+    },
+    {
+      "kind": "point",
+      "name": "Ely approach meadow",
+      "position": [
+        17,
+        59
+      ],
+      "block": "84"
+    },
+    {
+      "kind": "point",
+      "name": "Ely approach meadow",
+      "position": [
+        18,
+        59
+      ],
+      "block": "84"
     }
   ],
   "status": "Hand-authored source replacement; native publication pending.",

@@ -4,9 +4,7 @@ use serde::{Deserialize, Deserializer, Serialize, Serializer};
 use thiserror::Error;
 
 use crate::battle::turn::BattleAction;
-use crate::input::{
-    B_PAD_A, B_PAD_B, B_PAD_DOWN, B_PAD_LEFT, B_PAD_RIGHT, B_PAD_SELECT, B_PAD_START, B_PAD_UP,
-};
+use crate::input::{B_PAD_DOWN, B_PAD_LEFT, B_PAD_RIGHT, B_PAD_UP};
 use crate::models::{PARTY_SIZE, Party, Pokemon};
 use crate::random::{LinkBattleRandom, LinkBattleRandomState};
 use crate::save::{SaveGameSummary, SaveModpackIdentity, validate_pack_content_hash};
@@ -1321,21 +1319,7 @@ fn validate_command_event_joypad_mask(
     field: &str,
     mask: u8,
 ) -> Result<(), MultiplayerMessageError> {
-    const VALID_JOYPAD_MASK: u8 = B_PAD_A
-        | B_PAD_B
-        | B_PAD_SELECT
-        | B_PAD_START
-        | B_PAD_RIGHT
-        | B_PAD_LEFT
-        | B_PAD_UP
-        | B_PAD_DOWN;
-    if mask & !VALID_JOYPAD_MASK != 0 {
-        return Err(MultiplayerMessageError::InvalidCommandChecksumEvent {
-            message: format!(
-                "command checksum event {index} {field} mask {mask:#010b} contains invalid button bits"
-            ),
-        });
-    }
+    // All eight bits name buttons; direction combinations are validated below.
     validate_lockstep_joypad_mask(mask).map_err(|error| {
         MultiplayerMessageError::InvalidCommandChecksumEvent {
             message: format!("command checksum event {index} {field}: {error}"),
@@ -6850,6 +6834,7 @@ pub fn latest_remote_presence<'a>(
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::input::B_PAD_A;
     use crate::models::{BaseStats, Dv, PokemonSpecies};
 
     fn test_modpack(id: &str, hash: &str) -> SaveModpackIdentity {

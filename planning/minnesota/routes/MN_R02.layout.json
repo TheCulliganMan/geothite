@@ -1037,6 +1037,102 @@
       ],
       "from": "01",
       "to": "80"
+    },
+    {
+      "kind": "block_remap",
+      "name": "Western field neck golden encounter grass",
+      "bounds": [
+        7,
+        15,
+        10,
+        16
+      ],
+      "from": "31",
+      "to": "81"
+    },
+    {
+      "kind": "block_remap",
+      "name": "Western field neck golden encounter grass",
+      "bounds": [
+        7,
+        15,
+        10,
+        16
+      ],
+      "from": "80",
+      "to": "81"
+    },
+    {
+      "kind": "block_remap",
+      "name": "West bank approach golden encounter grass",
+      "bounds": [
+        10,
+        12,
+        12,
+        14
+      ],
+      "from": "31",
+      "to": "81"
+    },
+    {
+      "kind": "block_remap",
+      "name": "West bank approach golden encounter grass",
+      "bounds": [
+        10,
+        12,
+        12,
+        14
+      ],
+      "from": "80",
+      "to": "81"
+    },
+    {
+      "kind": "block_remap",
+      "name": "East bank field edge golden encounter grass",
+      "bounds": [
+        22,
+        13,
+        25,
+        14
+      ],
+      "from": "31",
+      "to": "81"
+    },
+    {
+      "kind": "block_remap",
+      "name": "East bank field edge golden encounter grass",
+      "bounds": [
+        22,
+        13,
+        25,
+        14
+      ],
+      "from": "80",
+      "to": "81"
+    },
+    {
+      "kind": "block_remap",
+      "name": "Rochester farm bend golden encounter grass",
+      "bounds": [
+        26,
+        9,
+        27,
+        11
+      ],
+      "from": "31",
+      "to": "81"
+    },
+    {
+      "kind": "block_remap",
+      "name": "Rochester farm bend golden encounter grass",
+      "bounds": [
+        26,
+        9,
+        27,
+        11
+      ],
+      "from": "80",
+      "to": "81"
     }
   ],
   "source_pixels_modified": false,

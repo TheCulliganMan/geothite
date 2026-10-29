@@ -2098,6 +2098,156 @@
         11
       ],
       "block": "0a"
+    },
+    {
+      "name": "Carrier-bank reclaimed grass above the stair",
+      "kind": "block_remap",
+      "bounds": [
+        5,
+        7,
+        7,
+        9
+      ],
+      "from": "01",
+      "to": "03"
+    },
+    {
+      "name": "Carrier-bank reclaimed grass above the stair",
+      "kind": "block_remap",
+      "bounds": [
+        5,
+        7,
+        7,
+        9
+      ],
+      "from": "71",
+      "to": "03"
+    },
+    {
+      "name": "Upper cache grass joins the carrier-bank trail",
+      "kind": "block_remap",
+      "bounds": [
+        12,
+        7,
+        13,
+        8
+      ],
+      "from": "71",
+      "to": "03"
+    },
+    {
+      "name": "Pine-neck habitat extends onto the western trail",
+      "kind": "block_remap",
+      "bounds": [
+        24,
+        9,
+        25,
+        11
+      ],
+      "from": "01",
+      "to": "03"
+    },
+    {
+      "name": "Pine-neck habitat extends onto the western trail",
+      "kind": "block_remap",
+      "bounds": [
+        24,
+        9,
+        25,
+        11
+      ],
+      "from": "02",
+      "to": "03"
+    },
+    {
+      "name": "Attached carrier-bank boulder closes the lower grass shoulder",
+      "kind": "point",
+      "position": [
+        7,
+        8
+      ],
+      "block": "0a"
+    },
+    {
+      "name": "Attached carrier-bank toe closes the cliff-foot bypass",
+      "kind": "point",
+      "position": [
+        6,
+        10
+      ],
+      "block": "0a"
+    },
+    {
+      "name": "Attached carrier-bank toe closes the cliff-foot bypass",
+      "kind": "point",
+      "position": [
+        7,
+        9
+      ],
+      "block": "0a"
+    },
+    {
+      "name": "Attached stair shoulder seals the short grass-side bypass",
+      "kind": "point",
+      "position": [
+        6,
+        9
+      ],
+      "block": "0a"
+    },
+    {
+      "name": "West stair rock shoulder closes the exposed cliff-foot strip",
+      "kind": "point",
+      "position": [
+        4,
+        9
+      ],
+      "block": "0a"
+    },
+    {
+      "kind": "point",
+      "name": "Preserve accepted installed city mouth",
+      "position": [
+        0,
+        5
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Preserve accepted installed city mouth",
+      "position": [
+        47,
+        10
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Preserve accepted installed city mouth",
+      "position": [
+        47,
+        11
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Preserve accepted installed city mouth",
+      "position": [
+        47,
+        12
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Preserve accepted installed city mouth",
+      "position": [
+        47,
+        13
+      ],
+      "block": "05"
     }
   ],
   "status": "Explicit source art/strokes visually reviewed; native terrain, six-step grass neck, ordinary ramp return and complete Surf perimeter checked. Native publication pending.",

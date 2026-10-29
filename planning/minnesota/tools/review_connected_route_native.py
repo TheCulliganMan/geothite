@@ -120,7 +120,11 @@ def compare(pack, art, view, actual, directory):
         scene.alpha_composite(layer,(ox-left,oy-top))
     save_render(scene,directory/'connected-original-native-source.png')
     crop = render_stage(scene,'crop',directory,'connected-source512',(box[0]-left,box[1]-top,box[2]-left,box[3]-top))
-    origin,lcd = camera_origin(regions,view['core'])
+    # battle_entry_progress::connection_composite_viewport_origin clamps to
+    # immediate neighbors. Scenery composition separately includes two hops.
+    # A second-hop rectangle can supply visible pixels without extending the
+    # camera bounds (for example the Rainy River outlet's southeast trees).
+    origin,lcd = camera_origin(sources(pack, view['map'], 1),view['core'])
     best = actual.width*actual.height; matched = None; matched_falls = None
     ownership = []
     for i,(m,ox,oy) in enumerate(regions):

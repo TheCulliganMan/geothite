@@ -1,0 +1,41 @@
+{
+  "kind": "read_only_existing_route_acceptance",
+  "route": "MN_R16",
+  "parent_revision": "route_grass_r15_revision",
+  "pack": "content-packs/minnesota-current-grass-r15-v01.crystalpack",
+  "pack_sha256": "73bd0948be600b55d93842e1348c1fdcdd93423ef74295650d9cfa33b49badf1",
+  "content_identity": "4c48ae16685a3a459d38d851ca8dee40fcaae12f54f6c52bc5c36c5a09449b60",
+  "maps": 730,
+  "changed_metatiles": 0,
+  "grass_walking_tiles": 1016,
+  "Hayfield_uphill_and_dry_drop_grass_steps": [
+    6,
+    0
+  ],
+  "ordinary_hayfield_return_steps": 59,
+  "ordinary_endpoint_minimum_grass_steps_both_directions": 4,
+  "grass_price_after_pickups_and_without_actors": 6,
+  "native_controller_cases_passed": 4,
+  "stdio_calls_passed": 15,
+  "stdio_stderr_bytes": 0,
+  "audio_programs_verified_on_exact_pack": 377,
+  "actual_2d_captures_reviewed": 2,
+  "native_source_metatiles_exact": 1152,
+  "all_730_maps_unchanged": true,
+  "ice_blocks_across_R11_Duluth_GrandMarais": 0,
+  "coast_zero_ice": [
+    "MnDuluth",
+    "MnGrandMarais",
+    "MnR11C00R00",
+    "MnR11C00R01",
+    "MnR11C00R02",
+    "MnR11C00R03",
+    "MnR11C01R00",
+    "MnR11C01R01",
+    "MnR11C01R02",
+    "MnR11C01R03",
+    "MnR11SplitRockLighthouse"
+  ],
+  "status": "Accepted existing route: no terrain revision required. Current native layout already provides forced outward grass and a dry ledge return; populated traversal, wild RUN, resources, battle PP/victory, Continue and production stdio pass.",
+  "scope_limit": "R17-R20, other outdoor regional links/parks and final current-story integration remain open. Native party/badge/position fixtures do not establish earned statewide access or encounter balance."
+}

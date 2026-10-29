@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "trainer_class": "MN_ELITE_VEIL",
+  "class_name": "ELITE FOUR",
+  "trainer_ids": [
+    "MN_LEAGUE_3"
+  ],
+  "actors": [
+    {
+      "map": "MnLeagueRoom3",
+      "script": "MnLeagueRoom3Challenge",
+      "tile": [
+        5,
+        7
+      ],
+      "previous_sprite": "SPRITE_SAGE"
+    }
+  ]
+}

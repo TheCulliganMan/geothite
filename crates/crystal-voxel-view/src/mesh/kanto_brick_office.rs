@@ -12,7 +12,7 @@ pub(super) fn double_entrance_candidate(cells:&[&VisualTile],g:&GridGeometry,p:B
             .is_some_and(|t|t.source.metatile_id==0x53))
 }
 pub(super) fn matches(cells: &[&VisualTile], g: &GridGeometry, p: BuildingPlacement) -> bool {
-    if !(8..=20).contains(&p.width) || p.width % 4 != 0
+    if !(8..=32).contains(&p.width) || p.width % 4 != 0
         || !(8..=32).contains(&p.height) || p.height % 4 != 0 || p.roof_rows != 4
         || p.column + p.width > g.width || p.row + p.height > g.height { return false; }
     let twin=double_entrance_candidate(cells,g,p);
@@ -25,10 +25,10 @@ pub(super) fn matches(cells: &[&VisualTile], g: &GridGeometry, p: BuildingPlacem
         let roof = if x==0 {0x20} else if x+4==p.width {0x21} else {0x54};
         let upper = if x==0 {0x68} else if x+4==p.width {0x69} else {0x7f};
         let Some(base) = at(x,base_y).map(|s|s.metatile_id) else {return false;};
-        let retail=x+4==p.width && base==0x73 && p.height>8 && !twin;
+        let retail=x+4==p.width && matches!(base,0x72|0x73) && !twin;
         if (x==0 && !matches!(base,0x37|0x7c)) || (x+4==p.width && base!=0x7e && !retail)
             || (x>0 && x+4<p.width && !matches!(base,0x3a|0x7d) && !(twin&&base==0x53)) {return false;}
-        if retail && ![(0,2,0x44),(1,2,0x45),(0,3,0x4a),(1,3,0x4a)]
+        if retail && ![(0,2,if base==0x72 {0x42}else{0x44}),(1,2,if base==0x72 {0x43}else{0x45}),(0,3,0x4a),(1,3,0x4a)]
             .into_iter().all(|(dx,dy,tile)|at(x+dx,base_y+dy).is_some_and(|s|s.tile_index==tile)) {return false;}
         if matches!(base,0x7c|0x3a|0x53) {
             if base==0x53 {if twin_bay.replace(x).is_some() {return false;}}
@@ -56,6 +56,7 @@ pub(super) struct Paint {
     source_height: usize,
     extra_doors: Vec<f32>,
     retail_sign: bool,
+    medical_sign: bool,
     roof: [[f32; 3]; 2],
     brick: [f32; 3],
     mortar: [f32; 3],
@@ -147,7 +148,8 @@ pub(super) fn paint(
     Some(Paint {
         source_height:p.height+if twin {4}else{0},
         extra_doors:door_cells.iter().skip(1).map(|&x|(x-door_x.unwrap())as f32).collect(),
-        retail_sign:p.height>8 && cells[(p.row+p.height-4)*g.width+p.column+p.width-4].source.metatile_id==0x73,
+        retail_sign:cells[(p.row+p.height-4)*g.width+p.column+p.width-4].source.metatile_id==0x73,
+        medical_sign:cells[(p.row+p.height-4)*g.width+p.column+p.width-4].source.metatile_id==0x72,
         roof,brick:wall[0],mortar:wall[1],
         glass:if let Some(x)=door_x {pixel(sample(x,p.height-2,0x0b)?,6,5)} else {*windows.first()?},
         door:if let Some(x)=door_x {pixel(sample(x,p.height-1,0x1b)?,5,5)} else {wall[0]},
@@ -347,7 +349,10 @@ fn append_retail_sign(out:&mut SurfaceMeshData,b:[f32;4],unit:f32,p:&Paint,mater
         front-unit*0.19,front-unit*0.12],unit*0.015,p.mortar,3.,material_unit);
     // Original closed 3x5 strokes retain the compact MART inscription without
     // stretching its native pixels or introducing another store model.
-    for (letter,rows) in [[5u8,7,7,5,5],[2,5,7,5,5],[6,5,6,5,5],[7,2,2,2,2]]
+    let inscription=if p.medical_sign {
+        [[6u8,5,6,4,4],[2,5,5,5,2],[5,5,6,5,5],[7,4,6,4,7]]
+    } else {[[5u8,7,7,5,5],[2,5,7,5,5],[6,5,6,5,5],[7,2,2,2,2]]};
+    for (letter,rows) in inscription
         .into_iter().enumerate() {
         for (row,bits) in rows.into_iter().enumerate() {for col in 0..3 {
             if bits&(1<<(2-col))==0 {continue;}
@@ -762,7 +767,7 @@ pub(super) fn append_with_passage(out: &mut SurfaceMeshData, b: [f32; 4], unit: 
         material_unit,
     );
     }
-    if p.retail_sign {append_retail_sign(out,b,unit,&p,material_unit);}
+    if p.retail_sign || p.medical_sign {append_retail_sign(out,b,unit,&p,material_unit);}
     for position in &mut out.positions[first..] {
         *position=(Vec3::from_array(*position)+origin).to_array();
     }
@@ -831,6 +836,7 @@ mod tests {
             source_height:8,
             extra_doors:Vec::new(),
             retail_sign:false,
+            medical_sign:false,
             roof: [[0.12; 3], [0.45; 3]],
             brick: [0.4, 0.22, 0.04],
             mortar: [0.8, 0.9, 0.8],

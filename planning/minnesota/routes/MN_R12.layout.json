@@ -2376,6 +2376,168 @@
         22
       ],
       "block": "27"
+    },
+    {
+      "kind": "point",
+      "name": "West gate sedge on ordinary crossing",
+      "position": [
+        1,
+        14
+      ],
+      "block": "3d"
+    },
+    {
+      "kind": "point",
+      "name": "West gate sedge on ordinary crossing",
+      "position": [
+        3,
+        14
+      ],
+      "block": "3d"
+    },
+    {
+      "kind": "point",
+      "name": "South lake-bank meadow on through trail",
+      "position": [
+        12,
+        18
+      ],
+      "block": "3d"
+    },
+    {
+      "kind": "point",
+      "name": "South lake-bank meadow on through trail",
+      "position": [
+        13,
+        18
+      ],
+      "block": "3d"
+    },
+    {
+      "kind": "point",
+      "name": "South lake-bank meadow on through trail",
+      "position": [
+        14,
+        18
+      ],
+      "block": "3d"
+    },
+    {
+      "kind": "point",
+      "name": "South lake-bank meadow on through trail",
+      "position": [
+        15,
+        18
+      ],
+      "block": "3d"
+    },
+    {
+      "kind": "point",
+      "name": "South lake-bank meadow on through trail",
+      "position": [
+        16,
+        18
+      ],
+      "block": "3d"
+    },
+    {
+      "kind": "point",
+      "name": "South lake-bank meadow on through trail",
+      "position": [
+        17,
+        18
+      ],
+      "block": "3d"
+    },
+    {
+      "kind": "point",
+      "name": "South lake-bank meadow on through trail",
+      "position": [
+        18,
+        18
+      ],
+      "block": "3d"
+    },
+    {
+      "kind": "point",
+      "name": "Cave-bank sedge beside the upper discovery",
+      "position": [
+        18,
+        8
+      ],
+      "block": "3d"
+    },
+    {
+      "kind": "point",
+      "name": "Cave-bank sedge beside the upper discovery",
+      "position": [
+        19,
+        8
+      ],
+      "block": "3d"
+    },
+    {
+      "kind": "point",
+      "name": "Cave-bank sedge beside the upper discovery",
+      "position": [
+        19,
+        9
+      ],
+      "block": "3d"
+    },
+    {
+      "kind": "point",
+      "name": "Cave-bank sedge beside the upper discovery",
+      "position": [
+        20,
+        9
+      ],
+      "block": "3d"
+    },
+    {
+      "kind": "point",
+      "name": "Ranger approach grass before sheltered path",
+      "position": [
+        21,
+        20
+      ],
+      "block": "3d"
+    },
+    {
+      "kind": "point",
+      "name": "Ranger approach grass before sheltered path",
+      "position": [
+        22,
+        20
+      ],
+      "block": "3d"
+    },
+    {
+      "kind": "point",
+      "name": "Ranger approach grass before sheltered path",
+      "position": [
+        23,
+        20
+      ],
+      "block": "3d"
+    },
+    {
+      "kind": "point",
+      "name": "Camp passage joins existing sedge",
+      "position": [
+        12,
+        24
+      ],
+      "block": "3d"
+    },
+    {
+      "kind": "point",
+      "name": "Camp passage joins existing sedge",
+      "position": [
+        12,
+        25
+      ],
+      "block": "3d"
     }
   ],
   "reject_cliff_cuts": false

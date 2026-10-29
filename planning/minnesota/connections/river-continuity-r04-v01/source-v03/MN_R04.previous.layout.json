@@ -1,0 +1,1058 @@
+{
+  "schema_version": 2,
+  "id": "MN_R04",
+  "tileset": "park",
+  "compiled_tileset": "mn_river_park",
+  "dimensions_metatiles": [
+    28,
+    18
+  ],
+  "shore_fitting": "explicit_source_edges",
+  "reject_cliff_cuts": true,
+  "materials": {
+    "floor": "01",
+    "lawn": "02",
+    "encounter": "03",
+    "flowers": "05",
+    "forest": "00",
+    "water": "07",
+    "boulder": "0f",
+    "sign": "15"
+  },
+  "layers": [
+    {
+      "kind": "rect",
+      "name": "Western promenade landing",
+      "bounds": [
+        2,
+        8,
+        12,
+        10
+      ],
+      "material": "lawn"
+    },
+    {
+      "kind": "rect",
+      "name": "Western rose garden approach",
+      "bounds": [
+        2,
+        4,
+        7,
+        7
+      ],
+      "material": "lawn"
+    },
+    {
+      "kind": "rect",
+      "name": "Southern quiet seating",
+      "bounds": [
+        3,
+        12,
+        7,
+        15
+      ],
+      "material": "lawn"
+    },
+    {
+      "kind": "rect",
+      "name": "Eastern civic forecourt",
+      "bounds": [
+        18,
+        5,
+        27,
+        11
+      ],
+      "material": "lawn"
+    },
+    {
+      "kind": "path",
+      "name": "Continuous city promenade",
+      "points": [
+        [
+          0,
+          9
+        ],
+        [
+          27,
+          9
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "kind": "path",
+      "name": "Northern grass alternative",
+      "points": [
+        [
+          6,
+          9
+        ],
+        [
+          6,
+          5
+        ],
+        [
+          11,
+          5
+        ],
+        [
+          11,
+          9
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "lawn"
+    },
+    {
+      "kind": "path",
+      "name": "Quiet garden spur",
+      "points": [
+        [
+          5,
+          9
+        ],
+        [
+          5,
+          13
+        ],
+        [
+          4,
+          13
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "lawn"
+    },
+    {
+      "kind": "path",
+      "name": "Eastern picnic spur",
+      "points": [
+        [
+          20,
+          9
+        ],
+        [
+          20,
+          13
+        ],
+        [
+          24,
+          13
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "lawn"
+    },
+    {
+      "kind": "rect",
+      "name": "Upper habitat gate",
+      "bounds": [
+        8,
+        4,
+        10,
+        7
+      ],
+      "material": "encounter"
+    },
+    {
+      "kind": "rect",
+      "name": "Picnic habitat neck",
+      "bounds": [
+        22,
+        12,
+        24,
+        15
+      ],
+      "material": "encounter"
+    },
+    {
+      "kind": "point",
+      "name": "Picnic cache clearing",
+      "position": [
+        24,
+        13
+      ],
+      "block": "02"
+    },
+    {
+      "kind": "rect",
+      "name": "Mississippi water",
+      "bounds": [
+        13,
+        0,
+        16,
+        18
+      ],
+      "material": "water"
+    },
+    {
+      "kind": "block_rect",
+      "name": "Western stone retaining edge",
+      "bounds": [
+        12,
+        0,
+        13,
+        18
+      ],
+      "block": "41"
+    },
+    {
+      "kind": "block_rect",
+      "name": "Eastern stone retaining edge",
+      "bounds": [
+        16,
+        0,
+        17,
+        18
+      ],
+      "block": "42"
+    },
+    {
+      "kind": "block_rect",
+      "name": "Bridge north gold rail",
+      "bounds": [
+        12,
+        8,
+        17,
+        9
+      ],
+      "block": "40"
+    },
+    {
+      "kind": "block_rect",
+      "name": "Bridge paved deck",
+      "bounds": [
+        12,
+        9,
+        17,
+        10
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "block_rect",
+      "name": "Bridge south gold rail",
+      "bounds": [
+        12,
+        10,
+        17,
+        11
+      ],
+      "block": "43"
+    },
+    {
+      "kind": "block_rect",
+      "name": "West landing river fence",
+      "bounds": [
+        11,
+        11,
+        12,
+        14
+      ],
+      "block": "16"
+    },
+    {
+      "kind": "block_rect",
+      "name": "East landing river fence",
+      "bounds": [
+        17,
+        11,
+        18,
+        14
+      ],
+      "block": "14"
+    },
+    {
+      "kind": "point",
+      "name": "Bridge west litter bin",
+      "position": [
+        11,
+        8
+      ],
+      "block": "0f"
+    },
+    {
+      "kind": "point",
+      "name": "Bridge east litter bin",
+      "position": [
+        17,
+        8
+      ],
+      "block": "2f"
+    },
+    {
+      "kind": "point",
+      "name": "Short lane lower gold fence",
+      "position": [
+        8,
+        9
+      ],
+      "block": "19"
+    },
+    {
+      "kind": "point",
+      "name": "Short lane north elm closure",
+      "position": [
+        8,
+        8
+      ],
+      "block": "00"
+    },
+    {
+      "kind": "point",
+      "name": "Short lane south elm closure",
+      "position": [
+        8,
+        10
+      ],
+      "block": "00"
+    },
+    {
+      "kind": "point",
+      "name": "West rose upper left",
+      "position": [
+        2,
+        3
+      ],
+      "block": "1c"
+    },
+    {
+      "kind": "block_rect",
+      "name": "West rose upper middle",
+      "bounds": [
+        3,
+        3,
+        5,
+        4
+      ],
+      "block": "1d"
+    },
+    {
+      "kind": "point",
+      "name": "West rose upper right",
+      "position": [
+        5,
+        3
+      ],
+      "block": "1e"
+    },
+    {
+      "kind": "point",
+      "name": "West rose left",
+      "position": [
+        2,
+        4
+      ],
+      "block": "20"
+    },
+    {
+      "kind": "block_rect",
+      "name": "West rose center",
+      "bounds": [
+        3,
+        4,
+        5,
+        5
+      ],
+      "block": "21"
+    },
+    {
+      "kind": "point",
+      "name": "West rose right",
+      "position": [
+        5,
+        4
+      ],
+      "block": "22"
+    },
+    {
+      "kind": "point",
+      "name": "West rose lower left",
+      "position": [
+        2,
+        5
+      ],
+      "block": "24"
+    },
+    {
+      "kind": "block_rect",
+      "name": "West rose lower middle",
+      "bounds": [
+        3,
+        5,
+        5,
+        6
+      ],
+      "block": "25"
+    },
+    {
+      "kind": "point",
+      "name": "West rose lower right",
+      "position": [
+        5,
+        5
+      ],
+      "block": "26"
+    },
+    {
+      "kind": "point",
+      "name": "Western garden bench",
+      "position": [
+        3,
+        6
+      ],
+      "block": "0e"
+    },
+    {
+      "kind": "point",
+      "name": "West bench litter bin",
+      "position": [
+        5,
+        6
+      ],
+      "block": "0f"
+    },
+    {
+      "kind": "point",
+      "name": "Southern bench",
+      "position": [
+        3,
+        12
+      ],
+      "block": "0e"
+    },
+    {
+      "kind": "point",
+      "name": "Southern bench second seat",
+      "position": [
+        4,
+        12
+      ],
+      "block": "0e"
+    },
+    {
+      "kind": "block_rect",
+      "name": "Quiet nook south fence",
+      "bounds": [
+        3,
+        15,
+        7,
+        16
+      ],
+      "block": "19"
+    },
+    {
+      "kind": "block_rect",
+      "name": "Quiet nook west fence",
+      "bounds": [
+        2,
+        12,
+        3,
+        16
+      ],
+      "block": "14"
+    },
+    {
+      "kind": "point",
+      "name": "Quiet nook small tree",
+      "position": [
+        6,
+        14
+      ],
+      "block": "06"
+    },
+    {
+      "kind": "point",
+      "name": "East rose upper left",
+      "position": [
+        19,
+        5
+      ],
+      "block": "1c"
+    },
+    {
+      "kind": "point",
+      "name": "East rose upper middle",
+      "position": [
+        20,
+        5
+      ],
+      "block": "1d"
+    },
+    {
+      "kind": "point",
+      "name": "East rose upper right",
+      "position": [
+        21,
+        5
+      ],
+      "block": "1e"
+    },
+    {
+      "kind": "point",
+      "name": "East rose lower left",
+      "position": [
+        19,
+        6
+      ],
+      "block": "24"
+    },
+    {
+      "kind": "point",
+      "name": "East rose lower middle",
+      "position": [
+        20,
+        6
+      ],
+      "block": "25"
+    },
+    {
+      "kind": "point",
+      "name": "East rose lower right",
+      "position": [
+        21,
+        6
+      ],
+      "block": "26"
+    },
+    {
+      "kind": "point",
+      "name": "East small flowers left",
+      "position": [
+        24,
+        5
+      ],
+      "block": "1c"
+    },
+    {
+      "kind": "point",
+      "name": "East small flowers right",
+      "position": [
+        25,
+        5
+      ],
+      "block": "1e"
+    },
+    {
+      "kind": "point",
+      "name": "East small flowers lower left",
+      "position": [
+        24,
+        6
+      ],
+      "block": "24"
+    },
+    {
+      "kind": "point",
+      "name": "East small flowers lower right",
+      "position": [
+        25,
+        6
+      ],
+      "block": "26"
+    },
+    {
+      "kind": "point",
+      "name": "Eastern view bench",
+      "position": [
+        23,
+        7
+      ],
+      "block": "0e"
+    },
+    {
+      "kind": "point",
+      "name": "Eastern bin",
+      "position": [
+        26,
+        7
+      ],
+      "block": "2f"
+    },
+    {
+      "kind": "block_rect",
+      "name": "Eastern south fence left",
+      "bounds": [
+        18,
+        11,
+        20,
+        12
+      ],
+      "block": "19"
+    },
+    {
+      "kind": "block_rect",
+      "name": "Eastern south fence right",
+      "bounds": [
+        21,
+        11,
+        27,
+        12
+      ],
+      "block": "19"
+    },
+    {
+      "kind": "point",
+      "name": "Eastern picnic tree",
+      "position": [
+        19,
+        14
+      ],
+      "block": "06"
+    },
+    {
+      "kind": "block_rect",
+      "name": "Picnic clearing south fence",
+      "bounds": [
+        24,
+        14,
+        26,
+        15
+      ],
+      "block": "19"
+    },
+    {
+      "kind": "point",
+      "name": "Picnic clearing seat",
+      "position": [
+        24,
+        12
+      ],
+      "block": "0e"
+    },
+    {
+      "kind": "point",
+      "name": "Cole paved standing tile",
+      "position": [
+        9,
+        9
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Mica picnic standing tile",
+      "position": [
+        20,
+        12
+      ],
+      "block": "02"
+    },
+    {
+      "kind": "point",
+      "name": "Gardener standing tile",
+      "position": [
+        3,
+        12
+      ],
+      "block": "0e"
+    },
+    {
+      "kind": "point",
+      "name": "Keeper standing tile",
+      "position": [
+        11,
+        11
+      ],
+      "block": "04"
+    },
+    {
+      "kind": "point",
+      "name": "Super Potion bench foot",
+      "position": [
+        3,
+        6
+      ],
+      "block": "0e"
+    },
+    {
+      "kind": "point",
+      "name": "Ether nook standing floor",
+      "position": [
+        4,
+        13
+      ],
+      "block": "02"
+    },
+    {
+      "kind": "point",
+      "name": "Minneapolis direction board",
+      "position": [
+        1,
+        8
+      ],
+      "block": "15"
+    },
+    {
+      "kind": "point",
+      "name": "Saint Paul direction board",
+      "position": [
+        26,
+        8
+      ],
+      "block": "15"
+    },
+    {
+      "kind": "point",
+      "name": "Grass alternative board",
+      "position": [
+        6,
+        4
+      ],
+      "block": "15"
+    },
+    {
+      "kind": "point",
+      "name": "Bridge river board",
+      "position": [
+        18,
+        7
+      ],
+      "block": "15"
+    },
+    {
+      "kind": "point",
+      "name": "Picnic direction board",
+      "position": [
+        21,
+        12
+      ],
+      "block": "15"
+    },
+    {
+      "kind": "point",
+      "name": "Narrow keeper lookout approach",
+      "position": [
+        11,
+        10
+      ],
+      "block": "02"
+    },
+    {
+      "kind": "rect",
+      "name": "North-connected elm divider between civic gardens",
+      "bounds": [
+        22,
+        4,
+        23,
+        8
+      ],
+      "material": "forest"
+    },
+    {
+      "kind": "point",
+      "name": "Long eastern rose bed row6 column19",
+      "position": [
+        19,
+        6
+      ],
+      "block": "20"
+    },
+    {
+      "kind": "point",
+      "name": "Long eastern rose bed row6 column20",
+      "position": [
+        20,
+        6
+      ],
+      "block": "21"
+    },
+    {
+      "kind": "point",
+      "name": "Long eastern rose bed row6 column21",
+      "position": [
+        21,
+        6
+      ],
+      "block": "22"
+    },
+    {
+      "kind": "point",
+      "name": "Long eastern rose bed row7 column19",
+      "position": [
+        19,
+        7
+      ],
+      "block": "24"
+    },
+    {
+      "kind": "point",
+      "name": "Long eastern rose bed row7 column20",
+      "position": [
+        20,
+        7
+      ],
+      "block": "25"
+    },
+    {
+      "kind": "point",
+      "name": "Long eastern rose bed row7 column21",
+      "position": [
+        21,
+        7
+      ],
+      "block": "26"
+    },
+    {
+      "kind": "block_rect",
+      "name": "Elm tongue bends the east promenade toward the picnic gate",
+      "bounds": [
+        22,
+        8,
+        23,
+        10
+      ],
+      "block": "00"
+    },
+    {
+      "kind": "block_rect",
+      "name": "Bridge landing southern grove closes the spare lawn shoulder",
+      "bounds": [
+        18,
+        10,
+        20,
+        11
+      ],
+      "block": "00"
+    },
+    {
+      "kind": "block_rect",
+      "name": "Eastern gate southern grove closes the spare lawn shoulder",
+      "bounds": [
+        25,
+        10,
+        27,
+        11
+      ],
+      "block": "00"
+    }
+  ],
+  "source_pixels_modified": false,
+  "derived_blocks": [
+    {
+      "id": "40",
+      "source_tileset": "park",
+      "source_block": "19",
+      "collision_order": [
+        2,
+        3,
+        0,
+        1
+      ],
+      "required_typed_extension": "twin_cities_art::build_twin_cities_art_pack",
+      "tile_row_sources": [
+        {
+          "source_block": "19",
+          "source_row": 2
+        },
+        {
+          "source_block": "19",
+          "source_row": 3
+        },
+        {
+          "source_block": "01",
+          "source_row": 2
+        },
+        {
+          "source_block": "01",
+          "source_row": 3
+        }
+      ]
+    },
+    {
+      "id": "41",
+      "source_tileset": "park",
+      "source_block": "08",
+      "tile_row_order": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "collision_source_block": "08",
+      "required_typed_extension": "twin_cities_art::build_twin_cities_art_pack"
+    },
+    {
+      "id": "42",
+      "source_tileset": "park",
+      "source_block": "09",
+      "tile_row_order": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "collision_source_block": "09",
+      "required_typed_extension": "twin_cities_art::build_twin_cities_art_pack"
+    },
+    {
+      "id": "43",
+      "source_tileset": "park",
+      "source_block": "19",
+      "tile_row_sources": [
+        {
+          "source_block": "01",
+          "source_row": 0
+        },
+        {
+          "source_block": "01",
+          "source_row": 1
+        },
+        {
+          "source_block": "19",
+          "source_row": 2
+        },
+        {
+          "source_block": "19",
+          "source_row": 3
+        }
+      ],
+      "collision_source_block": "19",
+      "required_typed_extension": "twin_cities_art::build_twin_cities_art_pack"
+    }
+  ],
+  "crossings": [
+    {
+      "id": "CIVIC_BRIDGE",
+      "deck_blocks": [
+        [
+          12,
+          9
+        ],
+        [
+          13,
+          9
+        ],
+        [
+          14,
+          9
+        ],
+        [
+          15,
+          9
+        ],
+        [
+          16,
+          9
+        ]
+      ],
+      "north_rail_blocks": [
+        [
+          12,
+          8
+        ],
+        [
+          13,
+          8
+        ],
+        [
+          14,
+          8
+        ],
+        [
+          15,
+          8
+        ],
+        [
+          16,
+          8
+        ]
+      ],
+      "south_rail_blocks": [
+        [
+          12,
+          10
+        ],
+        [
+          13,
+          10
+        ],
+        [
+          14,
+          10
+        ],
+        [
+          15,
+          10
+        ],
+        [
+          16,
+          10
+        ]
+      ],
+      "water_under_rail_blocks": [
+        [
+          13,
+          11
+        ],
+        [
+          14,
+          11
+        ],
+        [
+          15,
+          11
+        ]
+      ],
+      "core_walk_line": [
+        [
+          22,
+          19
+        ],
+        [
+          23,
+          19
+        ],
+        [
+          24,
+          19
+        ],
+        [
+          25,
+          19
+        ],
+        [
+          26,
+          19
+        ],
+        [
+          27,
+          19
+        ],
+        [
+          28,
+          19
+        ],
+        [
+          29,
+          19
+        ],
+        [
+          30,
+          19
+        ],
+        [
+          31,
+          19
+        ],
+        [
+          32,
+          19
+        ],
+        [
+          33,
+          19
+        ],
+        [
+          34,
+          19
+        ],
+        [
+          35,
+          19
+        ]
+      ]
+    }
+  ]
+}

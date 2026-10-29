@@ -1,4 +1,6 @@
 //! Local empty-party R20 fixture; all dungeon movement uses production input.
+#[path = "voyageurs_surveyor.rs"]
+mod surveyor;
 use std::collections::btree_map::Entry;
 use std::collections::{BTreeMap, BTreeSet, VecDeque};
 use std::path::PathBuf;

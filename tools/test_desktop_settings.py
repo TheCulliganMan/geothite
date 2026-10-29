@@ -84,6 +84,18 @@ pub fn smoke() {
         let first_person = &menus[0].items.iter().find(|(action, _)| *action == Action::ToggleFirstPerson).unwrap().1;
         let enabled: bool = msg_send![first_person, isEnabled];
         assert!(!enabled, "first person requires the 3D renderer");
+        for menu in &menus {
+            menu.sync(prefs, false);
+            for (action, item) in &menu.items {
+                let hidden: bool = msg_send![item, isHidden];
+                let camera_action = matches!(action, Action::Toggle3d | Action::ToggleFirstPerson
+                    | Action::Camera(_) | Action::ResetCamera);
+                assert_eq!(hidden, camera_action, "Minnesota must remove camera options in both menus");
+            }
+            let camera = menu.camera_menu_item.as_ref().unwrap();
+            let hidden: bool = msg_send![camera, isHidden];
+            assert!(hidden, "Minnesota must remove the Camera submenu");
+        }
         for _ in 0..80 { selected(&target, sel!(geothiteSettings:), view); }
         assert_eq!(take_actions().len(), 64, "nested menu event queues remain bounded");
         let allocated: *mut AnyObject = msg_send![class!(NSWindow), alloc];

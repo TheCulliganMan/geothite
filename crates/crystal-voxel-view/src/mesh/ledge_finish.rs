@@ -242,6 +242,12 @@ pub(in crate::mesh) fn continue_shore_cap_ground(mesh:&mut TerrainMeshData,
             best.map(|(_,i)|i)
         });
         let Some(cell)=cell else {continue;};
+        // A fractured crown includes steep facets as well as upward caps.
+        // Keep their native mineral paint; elevated banks and flat contacts
+        // still receive the existing adjacent-ground continuation.
+        if mesh.authored_cells[cell]==Some("outdoor/kanto-shore")
+            && mesh.footing_heights[cell].abs()<g.tile_height*0.001
+            && p.iter().any(|point|point.y>g.tile_height*0.001) {continue;}
         let (x,z)=(cell%g.width,cell/g.width);
         let floor=*chosen[cell].get_or_insert_with(|| {
             let (w,e,n,s)=g.bounds(x,z);let center=Vec3::new((w+e)*0.5,mesh.footing_heights.get(cell).copied().unwrap_or(center.y),(n+s)*0.5);

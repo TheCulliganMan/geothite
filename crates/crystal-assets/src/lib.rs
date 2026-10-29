@@ -660,8 +660,19 @@ mod northstar_relay_art;
 pub use northstar_relay::build_northstar_relay_scene;
 mod northstar_supplies;
 pub use northstar_supplies::build_northstar_supplies;
+mod northstar_current_story;
+mod authored_dialogue;
+mod northstar_story_revision;
+mod northstar_opening_revision;
+mod northstar_courier_revision;
+pub use northstar_story_revision::revise_northstar_story;
 mod northstar_dialogue;
+pub use northstar_current_story::{
+    build_northstar_current_story, build_northstar_current_story_from_composition,
+};
+mod northstar_league_dialogue;
 pub use northstar_dialogue::refresh_northstar_dialogue;
+pub use northstar_league_dialogue::refresh_northstar_league_dialogue;
 mod northstar_returns;
 pub use northstar_returns::build_northstar_returns;
 mod northstar_story_events;
@@ -683,12 +694,48 @@ mod northstar_ice_headquarters_events;
 #[cfg(test)]
 mod northstar_ice_headquarters_tests;
 pub use northstar_ice_headquarters::build_northstar_ice_headquarters;
+mod northstar_iron_workings;
+#[cfg(test)]
+mod northstar_iron_workings_tests;
+pub use northstar_iron_workings::build_northstar_iron_workings;
+mod northstar_progression_rewards;
+pub use northstar_progression_rewards::build_northstar_progression_rewards;
+mod minnesota_fossils;
+pub use minnesota_fossils::build_minnesota_fossils;
+mod minnesota_castorock;
+pub use minnesota_castorock::build_minnesota_castorock;
+mod northstar_rival_arc;
+mod northstar_rival_early;
+mod northstar_rival_middle;
+mod northstar_rival_finale;
+mod northstar_rival_art;
+mod northstar_rival_returns;
+mod northstar_rival_grunts;
+mod northstar_publication_geometry;
+pub use northstar_publication_geometry::verify_northstar_publication_geometry;
+mod northstar_ancient_swamp;
+pub use northstar_ancient_swamp::build_northstar_ancient_swamp;
+#[cfg(test)]
+mod northstar_rival_arc_tests;
+pub use northstar_rival_arc::build_northstar_rival_arc;
 mod northstar_drill_lair;
 mod northstar_drill_scene;
 #[cfg(test)]
 mod northstar_drill_lair_tests;
 mod northstar_story_bridges;
 pub use northstar_drill_lair::build_northstar_drill_lair;
+mod minnesota_fishing_houses;
+mod minnesota_fishing_hints;
+mod minnesota_fishing_rods;
+pub use minnesota_fishing_rods::build_minnesota_fishing_rods;
+
+mod minnesota_fly_destinations;
+pub use minnesota_fly_destinations::build_minnesota_fly_destinations;
+mod minnesota_habitat_fishing;
+mod minnesota_habitats;
+pub use minnesota_habitats::build_minnesota_habitats;
+mod minnesota_hm_progression;
+pub use minnesota_hm_progression::build_minnesota_hm_progression;
 mod minnesota_tmhm;
 mod minnesota_tmhm_caches;
 pub use minnesota_tmhm::build_minnesota_tmhm;
@@ -720,12 +767,14 @@ mod authored_route_layout;
 mod authored_route_modpack;
 mod authored_route_revision;
 mod original_repel_revision;
+mod r09_current_mine;
 mod r09_mine_revision;
 mod r10_gallery_revision;
 mod r10_stairs_revision;
 pub use authored_cave_revision::revise_authored_cave_terrain;
 pub use authored_route_revision::revise_authored_route_terrain;
 pub use original_repel_revision::{parse_source_repel_duration, repair_original_repel_duration};
+pub use r09_current_mine::build_current_r09_mine_pack;
 pub use r09_mine_revision::revise_r09_mine_terrain;
 pub use r10_gallery_revision::revise_r10_gallery_modpack;
 pub use r10_stairs_revision::revise_r10_rock_stairs;
@@ -736,6 +785,20 @@ pub use gunflint_modpack::build_gunflint_modpack;
 mod league_approach_modpack;
 pub use league_approach_modpack::build_league_approach_modpack;
 mod boundary_safari_art;
+mod safari_admission;
+mod safari_departure;
+mod safari_encounters;
+mod safari_fishing;
+mod safari_roster;
+mod safari_mutation;
+mod safari_pack;
+mod safari_prompts;
+mod safari_zone;
+pub use safari_admission::SafariAdmissionOutcome;
+pub use safari_mutation::{RuntimeSafariCommand, RuntimeSafariOutcome};
+pub use safari_zone::{
+    SafariGateCourt, SafariHabitat, SafariMap, SafariSurface, SafariWildSlot, SafariZone,
+};
 mod boundary_safari_modpack;
 pub use boundary_safari_modpack::{
     BOUNDARY_SAFARI_GROUP, BOUNDARY_SAFARI_MANIFEST, BOUNDARY_SAFARI_PENDING_GUARDS,
@@ -754,6 +817,7 @@ mod authored_town_design;
 mod authored_town_geometry;
 mod authored_town_scripts;
 mod authored_town_publication;
+mod minnesota_geometry_publication;
 mod authored_town_rooms;
 mod authored_city_expansion;
 mod authored_city_expansion_anchors;
@@ -826,6 +890,29 @@ mod moorhead_connections;
 mod moorhead_modpack;
 mod moorhead_story;
 pub use moorhead_modpack::build_moorhead_modpack;
+mod winona_station_edges;
+mod winona_station_modpack;
+mod winona_station_story;
+pub use winona_station_modpack::build_winona_station_modpack;
+mod shore_gate_geometry;
+mod shore_gate_modpack;
+pub use shore_gate_modpack::build_shore_gate_modpack;
+mod split_rock_clinic;
+mod split_rock_clinic_geometry;
+pub use split_rock_clinic::build_split_rock_clinic_pack;
+mod staples_station;
+mod staples_station_geometry;
+mod staples_station_roster;
+mod authored_regional_approach;
+mod regional_town_fishing;
+pub use staples_station::build_staples_station_pack;
+mod glacier_line_geometry;
+mod glacier_line_preservation;
+mod glacier_line_scripts;
+mod glacier_line_service;
+pub use glacier_line_service::build_glacier_line_service;
+#[cfg(test)]
+mod glacier_line_tests;
 mod st_cloud_connections;
 pub use st_cloud_modpack::build_st_cloud_modpack;
 mod mankato_gym;
@@ -876,7 +963,9 @@ mod border_pines_art;
 pub use border_pines_art::build_border_pines_art_pack;
 mod border_pines_modpack;
 pub use border_pines_modpack::build_border_pines_modpack;
+mod mille_lacs_park;
 mod mille_lacs_shore_modpack;
+pub use mille_lacs_park::build_mille_lacs_park;
 pub use mille_lacs_shore_modpack::{
     SHORE_WATCH_REPORT_EVENTS, SHORE_WATCH_REWARDED_EVENT, build_mille_lacs_shore_modpack,
 };
@@ -909,16 +998,28 @@ mod winter_roof_fidelity;
 pub use winter_roof_fidelity::build_winter_roof_fidelity_pack;
 mod river_continuity_bend;
 pub use river_continuity_bend::build_river_continuity_bend_pack;
+mod minnesota_fruit_groves;
+pub use minnesota_fruit_groves::{build_minnesota_fruit_groves, build_mississippi_activity_revision};
+
+mod river_bank_refinement;
+pub use river_bank_refinement::refine_mississippi_banks;
+mod river_content_lineage;
+mod frozen_water;
+pub use frozen_water::build_frozen_water;
 mod river_route_fun;
 pub use river_route_fun::build_river_route_fun;
 mod river_continuity_long;
 pub use river_continuity_long::build_river_continuity_long_pack;
 mod minneapolis_house_joins;
 pub use minneapolis_house_joins::build_minneapolis_house_joins_pack;
+mod minneapolis_waterfront;
+pub use minneapolis_waterfront::build_minneapolis_waterfront_pack;
 mod park_pond_route;
 pub use park_pond_route::build_park_pond_route_pack;
 mod north_shore_warm;
 pub use north_shore_warm::build_north_shore_warm_pack;
+mod north_shore_coves;
+pub use north_shore_coves::build_north_shore_coves_pack;
 mod inland_snow_pines;
 pub use inland_snow_pines::build_inland_snow_pines_pack;
 mod winter_gunflint_alias;
@@ -930,7 +1031,9 @@ pub use superior_inland_geography::build_superior_inland_geography_modpack;
 mod inland_winter;
 pub use inland_winter::build_inland_winter_pack;
 mod compact_superior;
+mod compact_superior_geography_validation;
 pub use compact_superior::build_compact_superior_pack;
+pub use compact_superior_geography_validation::validate_compact_superior_geography;
 mod prairie_grass_modpack;
 pub use prairie_grass_modpack::{PrairieGrassRevision, build_prairie_grass_modpack};
 mod duluth_connections;
@@ -1011,7 +1114,40 @@ pub use duluth_gate_revision::revise_duluth_gates;
 
 mod minnesota_city_life;
 pub use minnesota_city_life::build_minnesota_city_life_modpack;
+mod compact_interior_story;
+pub use compact_interior_story::build_compact_interior_story_pack;
+mod accepted_terrain_rebase;
+pub use accepted_terrain_rebase::rebase_accepted_terrain;
+mod interior_conversation_relocations;
+mod minnesota_interior_lineage;
 mod minnesota_interior_life;
 pub use minnesota_interior_life::build_minnesota_interior_life_modpack;
+mod interior_read_relocations;
 mod minnesota_interior_layouts;
 pub use minnesota_interior_layouts::build_minnesota_interior_layout_modpack;
+
+#[cfg(test)]
+mod minnesota_original_npc_tests;
+mod minnesota_trainer_art;
+mod minnesota_trainer_distribution;
+pub use minnesota_trainer_art::bind_minnesota_trainer_art;
+pub use minnesota_trainer_distribution::distribute_minnesota_trainer_art;
+mod minnesota_script_repair;
+pub use minnesota_script_repair::repair_minnesota_script_commands;
+
+mod minnesota_trainers;
+pub use minnesota_trainers::{
+    build_minneapolis_cyclists_modpack, build_minnesota_trainers_modpack, build_original_npc_modpack,
+    revise_original_npc_overworld,
+};
+
+mod ely_shore_pass;
+pub use ely_shore_pass::build_ely_shore_pass_pack;
+
+mod ely_snow_art;
+
+mod canoe_modpack;
+mod canoe_sprites;
+mod canoe_story_hints;
+mod canoe_travel;
+pub use canoe_modpack::build_canoe_modpack;

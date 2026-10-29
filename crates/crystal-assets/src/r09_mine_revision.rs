@@ -345,7 +345,7 @@ fn certify_stale_split(
     certify_uncached(&control, module, scripts_label, events_label)
 }
 
-fn certify_uncached(
+pub(crate) fn certify_uncached(
     pack: &CompiledGamePack,
     module: &MapModule,
     scripts_label: &str,
@@ -373,7 +373,11 @@ fn certify_uncached(
     Ok(())
 }
 
-fn validate_approaches(base: &CompiledGamePack, module: &MapModule, source: &Value) -> Result<()> {
+pub(crate) fn validate_approaches(
+    base: &CompiledGamePack,
+    module: &MapModule,
+    source: &Value,
+) -> Result<()> {
     for field in ["story_trainers", "story_objects"] {
         for actor in source[field].as_array().context("Q06 story actors")? {
             let body: [u16; 2] = serde_json::from_value(actor["tile"].clone())?;

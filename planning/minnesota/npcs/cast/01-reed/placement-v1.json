@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "trainers": [
+    {
+      "map": "MnWinona",
+      "approach": [
+        16,
+        14
+      ],
+      "id": "MN_EXTRA_RIVAL_REED",
+      "display_name": "REED",
+      "trainer_class": "MN_RIVAL_REED",
+      "class_name": "RIVAL",
+      "template_class": "COOLTRAINERM",
+      "sprite": "SPRITE_MN_RIVAL_REED",
+      "tile": [
+        16,
+        13
+      ],
+      "facing": "south",
+      "sight_range": 1,
+      "defeated_flag": "EVENT_MN_EXTRA_RIVAL_REED",
+      "party": [
+        {
+          "species": "BIRCHIT",
+          "level": 7
+        },
+        {
+          "species": "POUCHID",
+          "level": 8
+        }
+      ],
+      "before_lines": [
+        "You got lucky.",
+        "Prove me wrong."
+      ],
+      "after_lines": [
+        "That proves zero.",
+        "I held back."
+      ],
+      "loss_lines": [
+        "Just as I thought.",
+        "Try harder."
+      ]
+    }
+  ]
+}

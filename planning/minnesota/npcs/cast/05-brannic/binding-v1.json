@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "trainer_class": "MN_LEADER_BRANNIC",
+  "class_name": "LEADER",
+  "trainer_ids": [
+    "MN_GYM_4"
+  ],
+  "actors": [
+    {
+      "map": "MnStPaulGym",
+      "script": "MnStPaulGymLeader",
+      "tile": [
+        11,
+        2
+      ],
+      "previous_sprite": "SPRITE_GENTLEMAN"
+    }
+  ]
+}

@@ -56,6 +56,7 @@ thread_local! {
 #[cfg(all(target_arch = "wasm32", feature = "voxel-view"))]
 #[wasm_bindgen::prelude::wasm_bindgen]
 pub fn crystal_set_voxel_view(enabled: bool) {
+    let enabled = enabled && renderer_policy::crystal_voxel_view_allowed();
     BROWSER_VOXEL_VIEW.with(|value| value.set(Some(enabled)));
 }
 

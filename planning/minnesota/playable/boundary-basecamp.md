@@ -1,5 +1,16 @@
 # Boundary Waters basecamp — native review build
 
+This is a versioned chapter and verification record. Its commands, parties,
+page counts and results apply to the packs named below. For current narrative,
+character roles and completion actions, read [STORY.md](../STORY.md),
+[PROGRESSION.md](../PROGRESSION.md) and the
+[current composition record](../revisions/current-story-v01/README.md).
+Use the current composition path for new publications. Later source changes
+need their own pack verification. Historical fixtures do not establish an
+uninterrupted ordinary-party campaign.
+
+## Historical chapter record
+
 The revised 32×24 town and 8×6 Survey Shelter are published with three guarded
 walking links in the ignored
 `content-packs/minnesota-boundary-basecamp-connected.crystalpack` (471 maps),

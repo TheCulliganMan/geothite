@@ -1,0 +1,16 @@
+{
+  "accepted": true,
+  "mode": "2D",
+  "pack_sha256": "6dd141c6475114566a3204003ceae72c40594a35bf07e9a70c6b395b1d370abf",
+  "whole_route": "planning/minnesota/renders/route-grass-v01/current-r20-v01/source-candidate-v01/whole-route.png",
+  "native_captures": [
+    "planning/minnesota/renders/route-grass-v01/current-r20-v01/native-v01/camp-return.png",
+    "planning/minnesota/renders/route-grass-v01/current-r20-v01/native-v01/western-meadow-east-approach.png"
+  ],
+  "findings": [
+    "Camp return grass joins existing meadow at the only ordinary western opening; the ledge landing remains clear.",
+    "Western grass joins both sides of existing habitat instead of leaving a straight dry stripe through it.",
+    "Complete route retains the bridges, granite narrows, cave mouths, eastern grass neck and optional spurs.",
+    "Original grass-centered western capture is retained; the east-approach view presents the crossing and player more clearly."
+  ]
+}

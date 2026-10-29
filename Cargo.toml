@@ -89,7 +89,19 @@ opt-level = 3
 [profile.dev]
 opt-level = 2
 debug = 1
-# Concurrent renderer builds otherwise accumulate very large incremental caches.
+# Reuse unchanged game code when iterating instead of optimizing the entire
+# renderer and asset catalog again after every source edit.
+incremental = true
+
+# Pack authoring and decoding do not run in the frame loop. Optimizing this
+# large catalog dominates otherwise small development builds.
+[profile.dev.package.crystal-assets]
+opt-level = 0
+
+# This local patch sits beneath Bevy. Keep its fingerprint stable across
+# development and test builds so a test edit cannot rebuild the GPU stack.
+[profile.dev.package.offset-allocator]
+opt-level = 2
 incremental = false
 
 # The shell is a real-time Bevy application.  Optimizing only workspace
@@ -99,6 +111,13 @@ incremental = false
 # that executes every frame as well.
 [profile.dev.package."*"]
 opt-level = 2
+
+# Tests need short edit/compile cycles, not optimized copies of every game
+# crate. Keep the engine dependency settings inherited from dev so tests and
+# normal development builds can reuse the same compiled Bevy artifacts.
+[profile.test]
+opt-level = 0
+incremental = true
 
 # Browser iteration should retain the responsive renderer settings from `dev`,
 # without paying the release profile's whole-program ThinLTO and single

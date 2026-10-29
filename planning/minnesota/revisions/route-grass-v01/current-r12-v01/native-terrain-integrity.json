@@ -1,0 +1,74 @@
+{
+  "status": "PASS",
+  "parent": "content-packs/minnesota-progression-rewards-v04.crystalpack",
+  "parent_sha256": "27a71e6259fab624324a990957a059b009552ddfa39720fa9074db813aeadb42",
+  "child": "content-packs/minnesota-current-grass-r12-v01.crystalpack",
+  "child_sha256": "8c9a01edf629270392e43ae8761fd0ea78d57035b0cb4b097bf9eebc3fc38717",
+  "maps": 705,
+  "coast": [
+    {
+      "map": "MnDuluth",
+      "tileset": "mn_duluth_expanded",
+      "ice_blocks_including_script_changes": 0,
+      "complete_module_exact_to_parent": true
+    },
+    {
+      "map": "MnGrandMarais",
+      "tileset": "mn_marais_shore",
+      "ice_blocks_including_script_changes": 0,
+      "complete_module_exact_to_parent": true
+    },
+    {
+      "map": "MnR11C00R00",
+      "tileset": "mn_north_shore",
+      "ice_blocks_including_script_changes": 0,
+      "complete_module_exact_to_parent": true
+    },
+    {
+      "map": "MnR11C00R01",
+      "tileset": "mn_north_shore",
+      "ice_blocks_including_script_changes": 0,
+      "complete_module_exact_to_parent": true
+    },
+    {
+      "map": "MnR11C00R02",
+      "tileset": "mn_north_shore",
+      "ice_blocks_including_script_changes": 0,
+      "complete_module_exact_to_parent": true
+    },
+    {
+      "map": "MnR11C00R03",
+      "tileset": "mn_north_shore",
+      "ice_blocks_including_script_changes": 0,
+      "complete_module_exact_to_parent": true
+    },
+    {
+      "map": "MnR11C01R00",
+      "tileset": "mn_north_shore",
+      "ice_blocks_including_script_changes": 0,
+      "complete_module_exact_to_parent": true
+    },
+    {
+      "map": "MnR11C01R01",
+      "tileset": "mn_north_shore",
+      "ice_blocks_including_script_changes": 0,
+      "complete_module_exact_to_parent": true
+    },
+    {
+      "map": "MnR11C01R02",
+      "tileset": "mn_north_shore",
+      "ice_blocks_including_script_changes": 0,
+      "complete_module_exact_to_parent": true
+    },
+    {
+      "map": "MnR11C01R03",
+      "tileset": "mn_north_shore",
+      "ice_blocks_including_script_changes": 0,
+      "complete_module_exact_to_parent": true
+    }
+  ],
+  "changed_metatiles": 18,
+  "all_changes_native_floor_to_grass": true,
+  "existing_inland_ice_metatiles_preserved": 26,
+  "existing_Cut_metatiles_preserved": 1
+}

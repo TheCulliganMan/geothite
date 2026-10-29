@@ -3519,6 +3519,8 @@ fn town_map_frame_for_art(
 ) -> Option<SpriteFrame> {
     let region = if region.eq_ignore_ascii_case("KANTO") {
         "kanto"
+    } else if region.eq_ignore_ascii_case("MINNESOTA") {
+        "minnesota"
     } else {
         "johto"
     };
@@ -3624,8 +3626,12 @@ fn load_town_map_frame_with_nests(
     let palettes = parse_palette_file(&palette_source, None)?;
     anyhow::ensure!(palettes.len() >= 6, "Town Map palette bank is incomplete");
     let tilemap_path = root.join(format!("{region}.bin"));
-    let mut tilemap = crate::read_runtime_asset(&tilemap_path)
-        .with_context(|| format!("read Town Map tilemap {}", tilemap_path.display()))?;
+    let mut tilemap = if region == "minnesota" {
+        minnesota_town_map::tilemap()
+    } else {
+        crate::read_runtime_asset(&tilemap_path)
+            .with_context(|| format!("read Town Map tilemap {}", tilemap_path.display()))?
+    };
     if tilemap.last() == Some(&0xff) {
         tilemap.pop();
     }
@@ -4165,10 +4171,17 @@ fn load_sprite_art(
     }
     let frame_size = width as usize;
     let frame_count = (height / width) as usize;
-    let palette_bank = load_npc_sprite_palette_bank(asset_root, time_of_day)?;
-    let palette = palette_bank
-        .get(usize::from(palette_id & 0x7))
-        .context("requested NPC sprite palette is missing")?;
+    let authored_palette_path = sprite_path.with_extension("gbcpal");
+    let palette = if sprite_id.starts_with("mn_")
+        && crate::runtime_asset_exists(&authored_palette_path)
+    {
+        load_gbcpal_palette(&authored_palette_path)?
+    } else {
+        let palette_bank = load_npc_sprite_palette_bank(asset_root, time_of_day)?;
+        *palette_bank
+            .get(usize::from(palette_id & 0x7))
+            .context("requested NPC sprite palette is missing")?
+    };
     let effective_frame_count = if is_padded_static_sprite_sheet(&source, frame_size, frame_count) {
         1
     } else {
@@ -4179,7 +4192,7 @@ fn load_sprite_art(
         &source,
         frame_size,
         effective_frame_count,
-        palette,
+        &palette,
         images,
     )
 }

@@ -1,0 +1,41 @@
+{
+  "name": "AVRIN",
+  "role": "Gym Leader 3",
+  "status": "accepted-native-playable",
+  "source": "native-pixels-v2.json",
+  "integration": "binding-v1.json",
+  "controller": "controller-v2.json",
+  "native": "target/trainer-cast/avrin/native-v2",
+  "pack": "content-packs/minnesota-trainer-cast-04-v01.crystalpack",
+  "gameplay": "target/trainer-cast/avrin/gameplay-v2",
+  "log": "target/trainer-cast/avrin/controller-v2.log",
+  "reference_review": "actual-crystal-sprites-common-palette-and-scale",
+  "review_notes": "Distinct swept undercut, medium-brown skin, violet jacket with diagonal light inset, cuffed trousers and high-top shoes. Six field poses hand-authored; native face, fingers and hip meter refined after conversion. Same-scale common-palette Crystal comparisons and actual intro/field captures reviewed. Native court has a wall directly south: corrected the test to the actual west-side floor approach; existing geometry is unchanged. Full native badge, single-TM, repeat and saved-state checks pass.",
+  "fixture": "Three legal level-60 Minnesota starters; adjacent position and explicit prior-access setup. Local encounter/rewards proof, not earned traversal or intended-level balance.",
+  "evidence_sha256": {
+    "planning/minnesota/npcs/cast/04-avrin/native-pixels-v2.json": "350f52e40abb0b92bd7455994899b6aed64c802f8f78f91279cae632749ac328",
+    "planning/minnesota/npcs/cast/04-avrin/binding-v1.json": "18b46cc0230b9ff3830567518a22f38ba76b7025f52330c3d1229b4d80148c14",
+    "planning/minnesota/npcs/cast/04-avrin/controller-v2.json": "e78c7da795e2d52acf1150ca1ab2c7de33a5cea8daaf334326bba13264a54108",
+    "target/trainer-cast/avrin/native-v2/verification.json": "53247960e01c16f903514f176226ed6525506ab4d7277da4aa2e415aa39093d4",
+    "content-packs/minnesota-trainer-cast-04-v01.crystalpack": "e961cf0205def962b7c97cf758cc07f37cac42bf9636e06eb801b7efb3ff0902",
+    "target/trainer-cast/avrin/controller-v2.log": "b6cfecdd16eade594558cd2f9d3e68908d83f9b3575bdd81bf1a9fe692edf7d8",
+    "target/trainer-cast/avrin/gameplay-v2/original-npc-trainer-intro.png": "eb891a58b0d747dc4efdc76f752fbe7738bda8982d6ea85ca0279acd4e9fa63b",
+    "target/trainer-cast/avrin/gameplay-v2/original-npc-overworld-state.png": "667847397f618682d47bcd8af3101dabae9ae074372cccc91e0d99f5e515eb60",
+    "target/trainer-cast/avrin/gameplay-v2/original-npc-first-turn.png": "615817902e75d23c60a4c57ea8fa747b3b7178ce99422bfbd92cc9d6fe0ebaa3",
+    "planning/minnesota/npcs/cast/04-avrin/battle-reference-prompt.txt": "43f0e4b31fedc15a989486399c80fcce2aae81762986ab184391bf50be7d698b",
+    "planning/minnesota/npcs/cast/04-avrin/battle-reference-v1.png": "3c3ebc7f6874ecadaf44e37aff247ca8cad024be53b6e2c4f89d2f9fbcb04a2a",
+    "target/trainer-cast/avrin/real-comparison.png": "2c545cfa65833c7e4f1bbf72914ca1cc2f31f2238903ad7886cdfdfcca75b3e7",
+    "target/trainer-cast/avrin/battle-real-comparison.png": "cf15ca90ea974bf56068b951e3283f652a5e73710f54a13059b1785af3fb3159"
+  },
+  "final_pack": "content-packs/minnesota-trainer-cast-36-v01.crystalpack",
+  "final_gameplay": "target/trainer-cast/final-audit/gameplay/04-avrin",
+  "final_log": "target/trainer-cast/final-audit/gameplay/04-avrin/controller.log",
+  "final_status": "accepted-native-playable-final-pack",
+  "final_review": "Actual battle intro and field captures inspected on exact final pack; art retains accepted native sources and palette.",
+  "final_evidence_sha256": {
+    "target/trainer-cast/final-audit/gameplay/04-avrin/controller.log": "429ef2280c3c594e72aac052cbcc08b478e06944ea0ff7e13d1972a7e6b8e15a",
+    "target/trainer-cast/final-audit/gameplay/04-avrin/original-npc-trainer-intro.png": "eb891a58b0d747dc4efdc76f752fbe7738bda8982d6ea85ca0279acd4e9fa63b",
+    "target/trainer-cast/final-audit/gameplay/04-avrin/original-npc-overworld-state.png": "667847397f618682d47bcd8af3101dabae9ae074372cccc91e0d99f5e515eb60",
+    "target/trainer-cast/final-audit/gameplay/04-avrin/original-npc-first-turn.png": "615817902e75d23c60a4c57ea8fa747b3b7178ce99422bfbd92cc9d6fe0ebaa3"
+  }
+}

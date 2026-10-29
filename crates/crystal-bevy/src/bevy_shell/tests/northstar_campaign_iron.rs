@@ -1,4 +1,4 @@
-//! Continue the same boosted party through custody, Harbor and its reveal.
+//! Continue the carried party through custody, Harbor and its reveal.
 use std::path::PathBuf;
 
 use crystal_assets::AssetRoot;
@@ -59,22 +59,30 @@ fn mine(c: &mut VisibleShellController, r: &CrystalRuntime, root: &AssetRoot) {
         travel(c, GameButton::Up, "MnR09Cave1F", (13, 19));
         travel(c, GameButton::Up, "MnR09Cave1F", (13, 18));
     }
-    if !event(c, FOREMAN) {
-        interact(c, r, (7, 5));
-        finish(c);
-        assert!(!event(c, METER));
-        interact(c, r, (9, 5));
-        assert!(try_battle(c, r, "MN_LODE_FOREMAN", FOREMAN));
-        assert!(!event(c, METER) && !event(c, DEPOT));
-        continue_in_place(c, root, r, "campaign-foreman-win");
-    }
-    if !event(c, METER) {
-        interact(c, r, (7, 5));
-        accept(c, METER);
-        assert!(!event(c, METER), "recovery still needs acknowledgment");
-        finish(c);
-        assert!(event(c, METER) && !event(c, DEPOT));
-        continue_in_place(c, root, r, "campaign-instrument-custody");
+    if r.data().maps.contains_key("MnBoundaryIntake") && !event(c, METER) {
+        walk_to(c, r, (13, 18));
+        let loaded = super::super::northstar_ice_lair::save(c, root, r, "campaign-arc-mine-entry");
+        let mut borrowed = std::mem::replace(c, loaded);
+        borrowed = super::super::northstar_drill_lair::play_chapter(borrowed, root, r);
+        *c = borrowed;
+    } else {
+        if !event(c, FOREMAN) {
+            interact(c, r, (7, 5));
+            finish(c);
+            assert!(!event(c, METER));
+            interact(c, r, (9, 5));
+            assert!(try_battle(c, r, "MN_LODE_FOREMAN", FOREMAN));
+            assert!(!event(c, METER) && !event(c, DEPOT));
+            continue_in_place(c, root, r, "campaign-foreman-win");
+        }
+        if !event(c, METER) {
+            interact(c, r, (7, 5));
+            accept(c, METER);
+            assert!(!event(c, METER), "recovery still needs acknowledgment");
+            finish(c);
+            assert!(event(c, METER) && !event(c, DEPOT));
+            continue_in_place(c, root, r, "campaign-instrument-custody");
+        }
     }
     walk_to(c, r, (13, 18));
     travel(c, GameButton::Down, "MnR09C00R00", (40, 42));
@@ -266,6 +274,14 @@ pub(super) fn iron() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
         press(&mut c, GameButton::Down);
         at(&mut c, "MnDuluthHarborWorkshop", (10, 5));
         press(&mut c, GameButton::A);
+    }
+    if r.data().maps.contains_key("MnBoundaryIntake") {
+        assert!(
+            !event(&c, SIGNAL),
+            "Ivy's live call also requires acknowledgment"
+        );
+        super::super::northstar_ice_lair::page(&mut c, "MnArcHarborIntakeText");
+        finish(&mut c);
     }
     assert!(event(&c, SIGNAL));
     finish(&mut c);

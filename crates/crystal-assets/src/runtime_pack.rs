@@ -101,6 +101,8 @@ pub struct FishingCastOutcome {
     pub session: FishingSession,
     pub bite: Option<bool>,
     pub wild_battle: Option<WildBattleStart>,
+    /// An actual native rod encounter owned by the capture expedition.
+    pub safari_encounter: Option<crystal_core::systems::safari::SafariEncounter>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]

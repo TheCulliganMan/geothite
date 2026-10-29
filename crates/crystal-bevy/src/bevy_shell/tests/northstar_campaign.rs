@@ -43,6 +43,39 @@ fn arrival() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
     (root, r, c)
 }
 
+/// Follow the native R03 north connection into the current city footprint.
+/// Repaired Minneapolis is larger than its original 48-tile fixture outline.
+pub(super) fn enter_minneapolis(c: &mut VisibleShellController, r: &CrystalRuntime) {
+    let source = c.snapshot().expect("R03 departure").overworld;
+    assert_eq!(source.map_name, "MnR03C00R00");
+    assert_eq!(source.tile.y, 0);
+    let connection = r.data().maps[&source.map_name]
+        .attributes
+        .connections
+        .iter()
+        .find(|link| link.direction == "north" && link.target_map == "MnMinneapolis")
+        .expect("native Minneapolis connection");
+    let city = &r.data().maps["MnMinneapolis"];
+    let arrival = (
+        i16::try_from(i32::from(source.tile.x) - connection.offset * 2).expect("native arrival x"),
+        i16::try_from(city.attributes.height * 2 - 1).expect("native arrival y"),
+    );
+    travel(c, GameButton::Up, "MnMinneapolis", arrival);
+    travel(
+        c,
+        GameButton::Up,
+        "MnMinneapolis",
+        (arrival.0, arrival.1 - 1),
+    );
+}
+
+fn depart_prairie(c: &mut VisibleShellController, r: &CrystalRuntime) {
+    walk_to(c, r, (24, 4));
+    travel(c, GameButton::Up, "MnR03C00R01", (18, 15));
+    super::river_cities::road(c, r, (20, 0));
+    enter_minneapolis(c, r);
+}
+
 fn care(c: &mut VisibleShellController, r: &CrystalRuntime) {
     if c.snapshot().expect("care approach").overworld.map_name == "MnMankato" {
         indoor_walk(c, r, (31, 14));
@@ -111,8 +144,32 @@ pub(super) fn learn_tm(
     learned: &str,
     forgotten: &str,
 ) {
+    learn_machine_on(c, r, item, learned, forgotten, 0);
+}
+
+/// Teach the actual carried machine through Pack and the selected party slot.
+pub(super) fn learn_machine_on(
+    c: &mut VisibleShellController,
+    r: &CrystalRuntime,
+    item: &str,
+    learned: &str,
+    forgotten: &str,
+    target_slot: usize,
+) {
     let tm = &r.data().items[item];
-    if c.snapshot().expect("continued learned move").party.slots[0]
+    let remaining = u16::from(item.starts_with("HM_"));
+    assert!(
+        c.snapshot()
+            .expect("legal native machine recipient")
+            .party
+            .slots[target_slot]
+            .pokemon
+            .species
+            .tmhm_learnset
+            .iter()
+            .any(|m| m == learned)
+    );
+    if c.snapshot().expect("continued learned move").party.slots[target_slot]
         .pokemon
         .moves
         .iter()
@@ -120,17 +177,37 @@ pub(super) fn learn_tm(
     {
         assert_eq!(
             c.shell.shell.session().state().bag.quantity(tm),
-            0,
-            "the earned TM was consumed before Continue"
+            remaining,
+            "native machine consumption persists across Continue"
         );
         return;
     }
     assert_eq!(c.shell.shell.session().state().bag.quantity(tm), 1);
-    let target_move = c.snapshot().expect("known earned moves").party.slots[0]
+    let target_move = c.snapshot().expect("known earned moves").party.slots[target_slot]
         .pokemon
         .moves
         .iter()
         .position(|m| m.name == forgotten)
+        .or_else(|| {
+            c.snapshot().expect("regional move replacement").party.slots[target_slot]
+                .pokemon
+                .moves
+                .iter()
+                .position(|m| r.data().moves[&m.name].power == 0)
+        })
+        .or_else(|| {
+            c.snapshot()
+                .expect("deliberate attack replacement")
+                .party
+                .slots[target_slot]
+                .pokemon
+                .moves
+                .iter()
+                .enumerate()
+                .filter(|(_, m)| !matches!(m.name.as_str(), "CUT" | "SURF"))
+                .min_by_key(|(_, m)| r.data().moves[&m.name].power)
+                .map(|(i, _)| i)
+        })
         .expect("deliberately selected move to replace");
     press(c, GameButton::Start);
     let entries = super::super::super::visible_start_menu_entries(&c.shell).expect("native Start");
@@ -165,13 +242,57 @@ pub(super) fn learn_tm(
         press(c, GameButton::Right);
     }
     assert!(c.shell.tmhm_cursor.is_some());
+    let machine_index = c
+        .snapshot()
+        .expect("carried machine pocket")
+        .bag
+        .tm_hm
+        .iter()
+        .position(|m| m.item_id == item)
+        .expect("actual earned machine");
     for _ in 0..128 {
-        if c.shell.shell.session().state().bag.quantity(tm) == 0 {
+        let index = c
+            .shell
+            .tmhm_cursor
+            .as_ref()
+            .expect("native machine cursor")
+            .option_index;
+        if index == machine_index {
             break;
         }
-        // Each use has one unconsumed TM. Select the first partner, read the
-        // native pages and explicitly choose the move to replace.
-        let button = if c.shell.tmhm_forget_menu_open
+        press(
+            c,
+            if index < machine_index {
+                GameButton::Down
+            } else {
+                GameButton::Up
+            },
+        );
+    }
+    for _ in 0..128 {
+        if c.snapshot().expect("native machine knowledge").party.slots[target_slot]
+            .pokemon
+            .moves
+            .iter()
+            .any(|m| m.name == learned)
+        {
+            break;
+        }
+        // Read the native pages, select a compatible partner and choose a move.
+        let button = if c.shell.pending_tmhm_text_stage.is_some() || c.shell.field_notice.is_some()
+        {
+            GameButton::A
+        } else if c.shell.field_pack_target_mode
+            == Some(super::super::super::FieldPackTargetMode::TmHmPokemon)
+        {
+            if c.shell.party_cursor < target_slot {
+                GameButton::Down
+            } else if c.shell.party_cursor > target_slot {
+                GameButton::Up
+            } else {
+                GameButton::A
+            }
+        } else if c.shell.tmhm_forget_menu_open
             && c.shell.pending_tmhm_text_stage.is_none()
             && c.shell.field_notice.is_none()
         {
@@ -193,9 +314,9 @@ pub(super) fn learn_tm(
         };
         press(c, button);
     }
-    assert_eq!(c.shell.shell.session().state().bag.quantity(tm), 0);
+    assert_eq!(c.shell.shell.session().state().bag.quantity(tm), remaining);
     assert!(
-        c.snapshot().expect("native TM learning").party.slots[0]
+        c.snapshot().expect("native TM learning").party.slots[target_slot]
             .pokemon
             .moves
             .iter()
@@ -274,6 +395,32 @@ fn northstar_campaign_earned_party_wins_prairie_and_reaches_minneapolis() {
 }
 
 pub(super) fn prairie() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
+    if let Some(path) = std::env::var_os("CRYSTAL_NORTHSTAR_PRAIRIE_EXIT_SAVE") {
+        let (root, r) = load();
+        let mut c =
+            VisibleShellController::load_save(root.clone(), r.clone(), PathBuf::from(path), None)
+                .expect("actual same-pack earned Prairie victory checkpoint");
+        c.set_runtime_journal_enabled(false);
+        location(&mut c, "MnMankato", (10, 12));
+        assert_eq!(
+            c.shell.shell.session().state().badges.johto,
+            [true, true, false, false, false, false, false, false]
+        );
+        for flag in [
+            "EVENT_MN_DELIVERED_ROCHESTER_PARCEL",
+            "EVENT_MN_GYM_1_DEFEATED",
+            "EVENT_MN_REED_ROCHESTER_DEFEATED",
+            "EVENT_MN_PRAIRIE_NOTEBOOK",
+            "EVENT_MN_GYM_2_DEFEATED",
+        ] {
+            assert!(event(&c, flag), "played checkpoint prerequisite {flag}");
+        }
+        // This resumes a retained, genuinely played checkpoint. No state,
+        // inventory, level, position, flags or RNG are rewritten after load.
+        depart_prairie(&mut c, &r);
+        continue_in_place(&mut c, &root, &r, "campaign-earned-minneapolis-arrival");
+        return (root, r, c);
+    }
     let (root, r, mut c) = arrival();
     care(&mut c, &r);
     learn_tm(&mut c, &r, "TM_HEADBUTT", "HEADBUTT", "TACKLE");
@@ -321,14 +468,24 @@ pub(super) fn prairie() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
         ((11, 3), "MN_GYM_2"),
     ] {
         if id == "MN_GYM_2" {
-            train(&mut c, &r, &root, 14);
-            assert_eq!(
+            train(
+                &mut c,
+                &r,
+                &root,
+                if r.data().maps.contains_key("MnBoundaryIntake") {
+                    16
+                } else {
+                    14
+                },
+            );
+            assert!(matches!(
                 c.snapshot().expect("native starter evolution").party.slots[0]
                     .pokemon
                     .species
-                    .id,
-                "QUILAVA"
-            );
+                    .id
+                    .as_str(),
+                "QUILAVA" | "RIMEPELT"
+            ));
         }
         let flag = format!("EVENT_{id}_DEFEATED");
         for attempt in 0..4 {
@@ -369,11 +526,7 @@ pub(super) fn prairie() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
             .quantity(&r.data().items["TM_MUD_SLAP"]),
         1
     );
-    walk_to(&mut c, &r, (24, 4));
-    travel(&mut c, GameButton::Up, "MnR03C00R01", (18, 15));
-    super::river_cities::road(&mut c, &r, (20, 0));
-    travel(&mut c, GameButton::Up, "MnMinneapolis", (32, 47));
-    travel(&mut c, GameButton::Up, "MnMinneapolis", (32, 46));
+    depart_prairie(&mut c, &r);
     continue_in_place(&mut c, &root, &r, "campaign-earned-minneapolis-arrival");
     assert!(!event(&c, "EVENT_MN_ICE_ENFORCER_DEFEATED"));
     (root, r, c)

@@ -64,8 +64,8 @@ def validate(design, layout, pack, blocks):
         assert kind(tuple(s['tile'])) == 'WALL', s['id']+' sign off WALL'
         assert set(adjacent(tuple(s['tile']))) & seen, s['id']+' cannot be read'
         assert all(0 < len(line) <= 18 for line in s['lines']), s['id']+' text width'
-    assert len(design['ports']) == 3, 'exact three original town ports'
-    expected = [('MN_R15', 'E', [22,9], [20,9]), ('MN_R16','W',[1,9],[3,9]), ('MN_R19','N',[12,1],[12,3])]
+    assert len(design['ports']) == 2, 'exact two geographically valid town ports'
+    expected = [('MN_R15', 'E', [22,9], [20,9]), ('MN_R16','W',[1,9],[3,9])]
     for p, (route, side, gate, landing) in zip(design['ports'], expected):
         assert (p['route'],p['side'],p['gate_metatile'],p['landing_metatile']) == (route,side,gate,landing), route+' changed reserved port'
         assert all(tuple(2*v for v in a) in seen for a in (gate,landing)), route+' disconnected'
@@ -82,7 +82,7 @@ def validate(design, layout, pack, blocks):
     assert not any(kind(p) == 'CUT_TREE' for p in cells), 'incidental decorative Cut canopy'
     outer = {p for p in cells if p[0] in {0,47} or p[1] in {0,35}}
     assert not water & outer, 'unconnected outer lake WATER needs real rocks'
-    assert seen & outer == {(0,18),(0,19),(47,18),(47,19),(24,0),(25,0)}, ('unplanned walking edge',seen&outer)
+    assert seen & outer == {(0,18),(0,19),(47,18),(47,19)}, ('unplanned walking edge',seen&outer)
     dock = design['public_dock']
     assert tuple(dock['launch_tile']) in seen and tuple(dock['water_target']) in water, 'beach Surf launch'
     assert tuple(dock['dock_approach']) in seen, 'dock is not connected to cabin street'
@@ -92,7 +92,7 @@ def validate(design, layout, pack, blocks):
         assert [kind((2*x,2*y)),kind((2*x,2*y+1))] == ['FLOOR','WALL'], 'dock south rail'
     for view in design['viewpoints']:
         assert tuple(view['tile']) in seen or tuple(view['tile']) in actors, view['id']+' viewpoint is unreachable'
-    return dict(source_only=True,reachable_walking_tiles=len(seen),reachable_water_tiles=len(water&surf),native_facade_doors=len(doors),outer_water_cells=0,three_original_ports_retained=True,incidental_cut=0,train_service_installed=False,room_publication_pending=True),kind
+    return dict(source_only=True,reachable_walking_tiles=len(seen),reachable_water_tiles=len(water&surf),native_facade_doors=len(doors),outer_water_cells=0,two_real_ports_retained=True,incidental_cut=0,train_service_installed=False,room_publication_pending=False),kind
 
 
 

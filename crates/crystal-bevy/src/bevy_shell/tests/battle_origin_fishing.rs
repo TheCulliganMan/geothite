@@ -113,9 +113,7 @@ fn fishing_origin_assert_consumed_divider(controller: &VisibleShellController, s
 }
 
 fn fishing_origin_advance_to_notice(controller: &mut VisibleShellController) {
-    // SELECT above is the actual controller transaction. Its renderer-neutral
-    // settle loop does not advance fishing, so drive the same bounded clock as
-    // native rendering, then return to controller input for the entry boundary.
+    // SELECT and the bounded casting clock both use the production controller.
     for _ in 0..113 {
         if controller
             .shell
@@ -125,7 +123,9 @@ fn fishing_origin_advance_to_notice(controller: &mut VisibleShellController) {
         {
             break;
         }
-        advance_visible_fishing_animation(&mut controller.shell);
+        controller
+            .wait_frames(1)
+            .expect("advance the production casting clock");
     }
     assert_eq!(
         controller
@@ -245,6 +245,9 @@ fn battle_origin_registered_fishing_freezes_real_shore_and_water_through_entry()
     );
     assert_eq!(pending.authoritative_step, None);
     assert_ne!(pending.source.tile, water);
+    let casting = controller.snapshot().expect("public casting presentation");
+    assert!(casting.battle.is_none());
+    assert_eq!(casting.overworld, source);
 
     let session_after_cast = controller.shell.shell.session().clone();
     fishing_origin_advance_to_notice(&mut controller);
@@ -253,6 +256,19 @@ fn battle_origin_registered_fishing_freezes_real_shore_and_water_through_entry()
         Some("Oh!\nA bite!")
     );
     assert!(controller.shell.pending_field_battle_entry);
+    let notice = controller.snapshot().expect("public bite notice");
+    assert!(notice.battle.is_none());
+    assert_eq!(notice.phase, RuntimeShellPhase::Text);
+    assert_eq!(
+        notice
+            .ui
+            .text
+            .as_ref()
+            .expect("bite text")
+            .asm_text
+            .as_deref(),
+        Some("Oh!\nA bite!")
+    );
     assert!(Arc::ptr_eq(
         controller.shell.battle_origin.pending.as_ref().unwrap(),
         &pending

@@ -103,12 +103,12 @@
   <body>
     <nav id="view-navigation" aria-label="Game view">
       <a href="/?view=2d" data-view="2d">2D</a>
-      <a href="/?view=3d" data-view="3d">3D</a>
+      <a href="/?view=3d" data-view="3d" hidden>3D</a>
       <a href="/?view=tui" data-view="tui">TUI</a>
       <button id="tui-style-toggle" type="button" hidden>Text</button>
     </nav>
     <main id="game-stage" aria-label="Geothite game">
-      <canvas id="crystal-canvas" tabindex="0" aria-label="Game screen. Drag to control the camera. Use a controller or arrow keys or WASD, Z, X and Space. Enter opens chat."></canvas>
+      <canvas id="crystal-canvas" tabindex="0" aria-label="Game screen. Use a controller or arrow keys or WASD, Z, X and Space. Enter opens chat."></canvas>
       <section id="tui-surface" hidden aria-label="Game terminal"><pre id="tui-screen" aria-live="off"></pre><canvas id="tui-canvas" aria-hidden="true"></canvas></section>
       <div id="loading" role="status"><div class="loading-card"><h1 id="loading-message">Loading game</h1><div id="game-loading-assets"></div></div></div>
     </main>
@@ -140,7 +140,7 @@
     <div id="settings-backdrop" aria-hidden="true"></div>
     <nav id="controls" aria-label="Game settings">
       <div class="settings-heading"><strong>Settings</strong><button id="close-settings" type="button">Done</button></div>
-      <button id="view-toggle" type="button" aria-label="Switch to 3D view" aria-pressed="false" title="Switch to 3D view" disabled>3D view</button>
+      <button id="view-toggle" type="button" aria-label="Switch to 3D view" aria-pressed="false" title="Switch to 3D view" disabled hidden>3D view</button>
       <button id="save-games" type="button" disabled>Save games</button>
       <button id="personalization" type="button" hidden>Personalization</button>
       <span id="personalization-notice" role="status"></span>
@@ -210,8 +210,8 @@
       <div class="menu-body">
         <p class="menu-caption">Move, explore, and meet other trainers.</p>
         <dl class="help-controls"><dt>D-pad</dt><dd>Hold a direction to move. Slide your thumb to turn.</dd><dt>A</dt><dd>Talk, interact, confirm.</dd><dt>B</dt><dd>Go back.</dd><dt>START</dt><dd>Open the game menu or skip the intro.</dd><dt>SELECT</dt><dd>Use the registered item.</dd></dl>
-        <details open><summary>3D camera</summary><p>Drag the world to rotate and tilt. Two-finger trackpad scrolling rotates horizontally and zooms vertically; pinch zooms. Gamepad Select cycles close orbit, wide orbit, and first person. On touchscreens, drag up or down to zoom in orbit view, or look in first person.</p></details>
-        <details><summary>Keyboard &amp; controller</summary><p>Arrow keys / WASD / left stick: move. Z / bottom face button: confirm. X / right face button: back. <span data-start-key>Space</span> / Start: menu. <span data-select-key>Backspace</span> / Back / View: Select. Right stick: rotate and zoom in orbit; look in first person. Gamepad Select cycles close orbit, wide orbit, and first person. On Steam Deck, use a Gamepad layout.</p></details>
+        <details open data-voxel-controls hidden><summary>3D camera</summary><p>Drag the world to rotate and tilt. Two-finger trackpad scrolling rotates horizontally and zooms vertically; pinch zooms. Gamepad Select cycles close orbit, wide orbit, and first person. On touchscreens, drag up or down to zoom in orbit view, or look in first person.</p></details>
+        <details><summary>Keyboard &amp; controller</summary><p>Arrow keys / WASD / left stick: move. Z / bottom face button: confirm. X / right face button: back. <span data-start-key>Space</span> / Start: menu. <span data-select-key>Backspace</span> / Back / View: Select. <span data-voxel-controls>Right stick: rotate and zoom in orbit; look in first person. Gamepad Select cycles close orbit, wide orbit, and first person. </span>On Steam Deck, use a Gamepad layout.</p></details>
         <details><summary>Online &amp; chat</summary><p>Face a trainer and press A to interact. <span data-chat-key>Enter</span> opens chat; Escape returns to the game.</p></details>
         <details><summary>Agent tools</summary><p id="webmcp-status" role="status">Checking availability…</p></details>
       </div>
@@ -247,8 +247,9 @@
         return packRequests.get(key);
       };
       const canvas = document.querySelector('canvas');
-      let pendingRendererView = preferredRendererView(location, localStorage, localStorage.getItem('crystal.display.voxel') === 'true');
+      let pendingRendererView = preferredRendererView(location, localStorage, localStorage.getItem('crystal.display.voxel') === 'true', false);
       mountViewNavigation({ document, location, history,
+        allow3D: false,
         currentMode: () => pendingRendererView,
         setMode: mode => { pendingRendererView = mode; localStorage.setItem('crystal.display.mode', mode); },
       });

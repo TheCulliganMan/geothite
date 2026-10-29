@@ -1,0 +1,47 @@
+{
+  "name": "COURIER IVAR",
+  "role": "preserved original NPC",
+  "status": "accepted-native-playable-rebased",
+  "source": "native-pixels-v3.json",
+  "source_path": "planning/minnesota/npcs/sprites/06-winter-courier/native-pixels-v3.json",
+  "integration": "placement-v1.json",
+  "controller": "placement-v1.json",
+  "native": "target/npc-sprites/courier/reference-v2",
+  "pack": "content-packs/minnesota-trainer-cast-27-v01.crystalpack",
+  "gameplay": "target/trainer-cast/rebase/06-winter-courier/gameplay",
+  "log": "target/trainer-cast/rebase/06-winter-courier/controller.log",
+  "original_placement": "planning/minnesota/npcs/sprites/06-winter-courier/placement-v1.json",
+  "old_map": "MnInternationalFalls",
+  "new_map": "MnEly",
+  "old_tile": [
+    16,
+    18
+  ],
+  "new_tile": [
+    16,
+    18
+  ],
+  "scope": "Exact accepted original art, palette, party, class and dialogue. Placement rebased to safe compact geography; original geography not transplanted.",
+  "evidence_sha256": {
+    "planning/minnesota/npcs/cast/rebased-originals/06-winter-courier/placement-v1.json": "598f92786bc14901b286d855b7b04152366d6414fec8e037e4aad31c23cd35a0",
+    "planning/minnesota/npcs/sprites/06-winter-courier/native-pixels-v3.json": "50acfb8184738bef862aeaf595546b05e0e1549105f0b58bc2f73c6631fdc98b",
+    "planning/minnesota/npcs/sprites/06-winter-courier/manifest.json": "c52e459d7ec6478388067ddfa0c68e1b1d4ea15d9fb9af6c9d8e193d84c613ee",
+    "target/trainer-cast/rebase/06-winter-courier/controller.log": "dd6f2cb09506dea7187189876378bbeece4832460a87e5b9fa124d434e5cde6b",
+    "content-packs/minnesota-trainer-cast-27-v01.crystalpack": "3b46183c93b68125a34a482bc099e72a31bd8f842ce928acb70dfb3d45595099",
+    "target/npc-sprites/courier/reference-v2/verification.json": "4cfe450a2f1d04ec04d30daab6eda77abaf7dcbfd40b55c19dd8b7f3c66eecfd",
+    "target/trainer-cast/rebase/06-winter-courier/gameplay/original-npc-trainer-intro.png": "22f68ae55213dbba3a1833a9593381cb6991a7b2a8b4336c653b2d1ced026785",
+    "target/trainer-cast/rebase/06-winter-courier/gameplay/original-npc-overworld-state.png": "941ab19eea732f57e48fd1fdae4a15ecdffa2091dd67f986be77bd36a5e4a85b",
+    "target/trainer-cast/rebase/06-winter-courier/gameplay/original-npc-first-turn.png": "4b2bd3e9d2dd5baa7d2363cd70c7f5990d92b97ca964686fa40a7951445459e9"
+  },
+  "final_pack": "content-packs/minnesota-trainer-cast-36-v01.crystalpack",
+  "final_gameplay": "target/trainer-cast/final-audit/gameplay/rebased-originals-06-winter-courier",
+  "final_log": "target/trainer-cast/final-audit/gameplay/rebased-originals-06-winter-courier/controller.log",
+  "final_status": "accepted-native-playable-final-pack",
+  "final_review": "Actual battle intro and field captures inspected on exact final pack; art retains accepted native sources and palette.",
+  "final_evidence_sha256": {
+    "target/trainer-cast/final-audit/gameplay/rebased-originals-06-winter-courier/controller.log": "f8ca59f1163106a4cbc4263d6e6dec21bc805e2279d7e9987ebf41c153075625",
+    "target/trainer-cast/final-audit/gameplay/rebased-originals-06-winter-courier/original-npc-trainer-intro.png": "22f68ae55213dbba3a1833a9593381cb6991a7b2a8b4336c653b2d1ced026785",
+    "target/trainer-cast/final-audit/gameplay/rebased-originals-06-winter-courier/original-npc-overworld-state.png": "941ab19eea732f57e48fd1fdae4a15ecdffa2091dd67f986be77bd36a5e4a85b",
+    "target/trainer-cast/final-audit/gameplay/rebased-originals-06-winter-courier/original-npc-first-turn.png": "4b2bd3e9d2dd5baa7d2363cd70c7f5990d92b97ca964686fa40a7951445459e9"
+  }
+}

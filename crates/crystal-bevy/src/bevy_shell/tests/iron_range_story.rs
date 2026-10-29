@@ -22,6 +22,24 @@ const RECOVERED: &str = "EVENT_MN_MINE_INSTRUMENT_RECOVERED";
 const DEPOT: &str = "EVENT_MN_DEPOT_CLEARED";
 const CACHE: &str = "MN_R09_SURVEY_CACHE";
 
+fn expected_foreman(runtime: &CrystalRuntime) -> BTreeSet<String> {
+    let party = &runtime.data().trainers.trainers["MN_LODE_FOREMAN"].party;
+    let expected = if party.first().is_some_and(|p| p.species == "BANDRAKE") {
+        [("BANDRAKE", 35), ("HELIKNOCK", 35), ("MESABLAST", 36)]
+    } else {
+        [("GRAVELER", 35), ("MACHOKE", 35), ("MAGNETON", 36)]
+    };
+    assert_eq!(
+        party
+            .iter()
+            .map(|p| (p.species.as_str(), p.level))
+            .collect::<Vec<_>>(),
+        expected,
+        "Q06 uses the exact original or reviewed regional party"
+    );
+    expected.into_iter().map(|(name, _)| name.into()).collect()
+}
+
 fn fixture(
     badge: bool,
     report: bool,
@@ -398,10 +416,7 @@ fn iron_range_story_controller_actual_win_separate_recovery_decline_repeat_and_c
     cache(&mut controller, &runtime);
     assert!(finish(&mut controller).contains("MnIronRangeCacheLockedText"));
     foreman(&mut controller, &runtime);
-    assert_eq!(
-        battle(&mut controller, false),
-        BTreeSet::from(["GRAVELER".into(), "MACHOKE".into(), "MAGNETON".into()])
-    );
+    assert_eq!(battle(&mut controller, false), expected_foreman(&runtime));
     assert!(finish(&mut controller).contains("MnIronRangeForemanAfterText"));
     assert_eq!(progress(&controller), [true, false, false]);
     controller = continue_save(&mut controller, &root, &runtime, "foreman-won");
@@ -452,7 +467,12 @@ fn iron_range_story_controller_actual_win_separate_recovery_decline_repeat_and_c
 fn iron_range_story_controller_played_loss_never_awards_victory_or_evidence() {
     let (root, runtime, mut controller) = fixture(true, true, true);
     foreman(&mut controller, &runtime);
-    assert!(battle(&mut controller, true).contains("GRAVELER"));
+    let expected = expected_foreman(&runtime);
+    let opponents = battle(&mut controller, true);
+    assert!(
+        opponents.contains(&runtime.data().trainers.trainers["MN_LODE_FOREMAN"].party[0].species)
+    );
+    assert!(opponents.is_subset(&expected));
     finish(&mut controller);
     assert_eq!(progress(&controller), [false; 3]);
     assert_ne!(

@@ -71,8 +71,7 @@ pub(crate) fn is_reviewed_story_text(map: &str, label: &str) -> bool {
         || NATIVE_SCENES.iter().any(|(_, room, prefix, _)| {
             *room == map && label.starts_with(*prefix) && label.ends_with("Text")
         })
-        || (label.starts_with("MnLeagueChampion") && label.ends_with("Text"))
-        || label == "MnElyRecordText"
+        || (map.starts_with("MnLeague") && label.ends_with("Text"))
 }
 
 /// Refreshes the installed Northstar dialogue from its canonical story source.
@@ -91,6 +90,10 @@ pub fn refresh_northstar_dialogue(
     base: &CompiledGamePack,
     source: &str,
 ) -> Result<CompiledGamePack> {
+    ensure!(
+        !base.report.manifests.iter().any(|m| m == crate::northstar_story_revision::MANIFEST),
+        "staged dialogue owns revised labels; use revise_northstar_story on a reviewed parent"
+    );
     crate::verify_compiled_game_pack_for_runtime(base)?;
     let texts = source_texts(source)?;
     let mut pack = base.clone();

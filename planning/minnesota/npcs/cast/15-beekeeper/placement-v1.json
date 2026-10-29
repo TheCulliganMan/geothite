@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "trainers": [
+    {
+      "map": "MnRochester",
+      "approach": [
+        23,
+        13
+      ],
+      "id": "MN_EXTRA_BEEKEEPER",
+      "display_name": "NELL",
+      "trainer_class": "MN_BEEKEEPER",
+      "class_name": "BEEKEEPER",
+      "template_class": "POKEFANF",
+      "sprite": "SPRITE_MN_BEEKEEPER",
+      "tile": [
+        23,
+        12
+      ],
+      "facing": "south",
+      "sight_range": 1,
+      "defeated_flag": "EVENT_MN_EXTRA_BEEKEEPER",
+      "party": [
+        {
+          "species": "RUSTLEBEE",
+          "level": 12
+        },
+        {
+          "species": "CLICKIT",
+          "level": 14
+        }
+      ],
+      "before_lines": [
+        "A hive stays busy.",
+        "So does my team!"
+      ],
+      "after_lines": [
+        "Sweet teamwork!",
+        "Leave blooms wild."
+      ],
+      "loss_lines": [
+        "Buzz back again.",
+        "We can try again."
+      ]
+    }
+  ]
+}

@@ -33,6 +33,8 @@ mod minneapolis_circuit;
 mod north_shore_journey;
 #[path = "north_shore_story.rs"]
 mod north_shore_story;
+#[path = "northstar_arc_campaign.rs"]
+mod northstar_arc_campaign;
 #[path = "northstar_campaign.rs"]
 mod northstar_campaign;
 #[path = "northstar_campaign_courier.rs"]
@@ -59,6 +61,8 @@ mod northstar_campaign_wind;
 mod northstar_finale;
 #[path = "northstar_iron_course.rs"]
 mod northstar_iron_course;
+#[path = "northstar_league_dialogue.rs"]
+mod northstar_league_dialogue;
 #[path = "river_cities.rs"]
 mod river_cities;
 #[path = "rochester_gates.rs"]
@@ -2621,21 +2625,36 @@ fn learn_gym_cut_replacing(
     forgotten: Option<&str>,
 ) {
     let hm = &runtime.data().items["HM_CUT"];
+    let target_slot = c
+        .snapshot()
+        .expect("legal Cut carrier")
+        .party
+        .slots
+        .iter()
+        .position(|p| p.pokemon.species.tmhm_learnset.iter().any(|m| m == "CUT"))
+        .expect("earned party includes a legal Cut carrier");
     assert_eq!(c.shell.shell.session().state().bag.quantity(hm), 0);
     assert!(
-        !c.snapshot().expect("initial partner").party.slots[0]
+        !c.snapshot().expect("initial partner").party.slots[target_slot]
             .pokemon
             .moves
             .iter()
             .any(|m| m.name == "CUT")
     );
     let forgotten_slot = forgotten.map(|name| {
-        c.snapshot().expect("chosen HM replacement").party.slots[0]
+        c.snapshot().expect("chosen HM replacement").party.slots[target_slot]
             .pokemon
             .moves
             .iter()
             .position(|m| m.name == name)
-            .expect("known move to replace")
+            .or_else(|| {
+                c.snapshot().expect("regional HM replacement").party.slots[target_slot]
+                    .pokemon
+                    .moves
+                    .iter()
+                    .position(|m| runtime.data().moves[&m.name].power == 0)
+            })
+            .unwrap_or(0)
     });
     interact(c, runtime, point(&gym["guide_at"]));
     finish(c);
@@ -2718,7 +2737,7 @@ fn learn_gym_cut_replacing(
         hm_index
     );
     for _ in 0..128 {
-        if c.snapshot().expect("native HM learning").party.slots[0]
+        if c.snapshot().expect("native HM learning").party.slots[target_slot]
             .pokemon
             .moves
             .iter()
@@ -2744,13 +2763,23 @@ fn learn_gym_cut_replacing(
             } else {
                 GameButton::A
             }
+        } else if c.shell.field_pack_target_mode
+            == Some(super::super::FieldPackTargetMode::TmHmPokemon)
+        {
+            if c.shell.party_cursor < target_slot {
+                GameButton::Down
+            } else if c.shell.party_cursor > target_slot {
+                GameButton::Up
+            } else {
+                GameButton::A
+            }
         } else {
             GameButton::A
         };
         press(c, button);
     }
     assert!(
-        c.snapshot().expect("learned Cut").party.slots[0]
+        c.snapshot().expect("learned Cut").party.slots[target_slot]
             .pokemon
             .moves
             .iter()
@@ -4142,4 +4171,26 @@ fn minnesota_regional_gyms_controller_all_eight_actual_facades_and_local_courses
     minnesota_brainerd_city_controller_canonical_piers_trainers_badge_tm_and_returns();
     minnesota_bemidji_city_controller_facade_guide_hm_pack_cut_battles_and_both_exits();
     minnesota_duluth_city_controller_facade_all_three_trainers_badge_and_receiver();
+}
+
+#[test]
+#[ignore = "full ordinary-party arc campaign; no review boosts or injected progress"]
+pub(super) fn northstar_arc_unboosted_new_game_through_legendary_release_and_hall_of_fame() {
+    northstar_campaign_review::require_unboosted();
+    let (root, r, c) = northstar_campaign_finale::finale();
+    for flag in [
+        "EVENT_MN_REED_WINONA_DEFEATED",
+        "EVENT_MN_REED_ROCHESTER_DEFEATED",
+        "EVENT_MN_REED_RELAY_DEFEATED",
+        "EVENT_MN_REED_STPAUL_DEFEATED",
+        "EVENT_MN_REED_WORKER_RELEASED",
+        "EVENT_MN_REED_MINE_DEFEATED",
+        "EVENT_MN_REED_BOUNDARY_DEFEATED",
+        "EVENT_MN_KETTLURK_RELEASED",
+        "EVENT_MN_SURVEY_RESTORED",
+    ] {
+        assert!(event(&c, flag), "earned narrative beat {flag}");
+    }
+    assert_eq!(c.shell.shell.session().state().badges.johto, [true; 8]);
+    northstar_campaign_league::play_chapter(root, r, c);
 }

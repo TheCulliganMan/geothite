@@ -130,15 +130,25 @@ fn fixture_with_items_on_runtime(
     let mut c = VisibleShellController { shell };
     complete_visible_smoke_player_name_if_needed(&mut c.shell, Some("CHRIS"))
         .expect("explicit trainer name");
+    let partner = std::env::var("CRYSTAL_RIVER_FIXTURE_SPECIES").unwrap_or_else(|_| "MEW".into());
     let mut pokemon = r
         .data()
-        .create_pokemon("MEW", 80, Dv::default())
+        .create_pokemon(&partner, 80, Dv::default())
         .expect("legal native Surf/HM-compatible fixture partner");
     let moves = if waterfall_move {
         vec!["SURF", "WATERFALL"]
     } else {
         vec!["SURF"]
     };
+    for name in &moves {
+        assert!(
+            r.data().pokemon[&partner]
+                .tmhm_learnset
+                .iter()
+                .any(|allowed| allowed.as_str() == *name),
+            "{partner} must legally learn the fixture HM {name}"
+        );
+    }
     pokemon.moves = moves
         .into_iter()
         .map(|name| LearnedMove {
@@ -730,3 +740,9 @@ mod superior_inland_geography;
 
 #[path = "river_route_fun.rs"]
 mod river_route_fun;
+
+#[path = "minnesota_fruit_groves.rs"]
+mod minnesota_fruit_groves;
+
+#[path = "frozen_water.rs"]
+mod frozen_water;

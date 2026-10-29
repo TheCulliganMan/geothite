@@ -34,6 +34,9 @@ def validate(town, layout, pack):
     assert q['outlet_requires'] == ['BADGE_'+str(i) for i in range(1,9)] + ['EVENT_MN_BORDER_REPORT','EVENT_MN_LIGHTHOUSE_SIGNAL']
     assert q['arrival_mode'] == 'MAPCALLBACK_NEWMAP'
     assert q['arrival_map'] == 'MnBoundaryWaters' and q['arrival_tiles'] == [[0,24],[0,25]] and q['arrival_facing'] == 'RIGHT'
+    assert q['checkpoint_map'] == 'MnRainyRiverIcefields'
+    assert q['checkpoint_tiles'] == [[61,44],[61,45]]
+    assert q['warden_tile'] == [60,44] and q['warden_approach'] == [60,45]
     assert all(0 < len(line) <= 18 for k,rows in q.items() if k.endswith('_lines') for line in rows)
     maps = [(town, layout_blocks(layout), (20, 25))]
     maps += [(r, [int(b, 16) for row in r['rows'] for b in row.split()], tuple(r['passive_arrival']['tile'])) for r in town['interiors']]
@@ -74,10 +77,10 @@ def validate(town, layout, pack):
                 assert kind(tuple(d['return_tile'])) == 'FLOOR' and d['target_warp'] == 3
                 assert d['return_tile'] == [d['tile'][0], d['tile'][1]+1]
             edge = {p for p in floor if p[0] in {0, 31} or p[1] in {0, 27}}
-            assert edge == {(20,27),(21,27),(31,14),(31,15)}, ('unplanned walking edge', edge)
+            assert edge == {(20,27),(21,27)}, ('unplanned walking edge', edge)
             assert not surf & water, 'town must not expose unbound Surf water'
             assert all(kind(p) != 'CUT_TREE' for p in cells), 'incidental Cut canopy'
-            assert [(p['route'],p['side'])for p in town['ports']] == [('MN_R17','S'),('MN_R20','E')]
+            assert [(p['route'],p['side'])for p in town['ports']] == [('MN_R17','S')]
             for view in town['viewpoints']:
                 assert tuple(view['tile']) in seen and kind(tuple(view['tile'])) == 'FLOOR', view['id']+' occupied or blocked view'
         else:
@@ -161,11 +164,16 @@ def render(town, layout, pack):
 
 
 def main():
+    global OUTPUT
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--pack', type=Path, default=ROOT/'content-packs/minnesota-moorhead-v01.crystalpack')
+    parser.add_argument('--town', type=Path, default=TOWN)
+    parser.add_argument('--layout', type=Path, default=LAYOUT)
+    parser.add_argument('--output', type=Path, default=OUTPUT)
     args = parser.parse_args()
+    OUTPUT = args.output
     pack = load_pack(args.pack)
-    print(json.dumps(render(json.loads(TOWN.read_text()), json.loads(LAYOUT.read_text()), pack)))
+    print(json.dumps(render(json.loads(args.town.read_text()), json.loads(args.layout.read_text()), pack)))
 
 
 if __name__ == '__main__':

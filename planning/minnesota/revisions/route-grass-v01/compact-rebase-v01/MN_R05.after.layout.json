@@ -1,0 +1,4316 @@
+{
+  "schema_version": 2,
+  "id": "MN_R05",
+  "tileset": "johto",
+  "compiled_tileset": "mn_headwaters",
+  "dimensions_metatiles": [
+    32,
+    56
+  ],
+  "shore_fitting": "explicit_source_edges",
+  "reject_cliff_cuts": true,
+  "source_pixels_modified": false,
+  "derived_blocks": [
+    {
+      "id": "80",
+      "source_tileset": "kanto",
+      "source_block": "78",
+      "collision": "WATER",
+      "required_typed_extension": "headwaters_art::build_headwaters_art_pack"
+    },
+    {
+      "id": "81",
+      "source_tileset": "kanto",
+      "source_block": "77",
+      "collision": "FLOOR/FLOOR/WALL/WALL",
+      "required_typed_extension": "headwaters_art::build_headwaters_art_pack"
+    },
+    {
+      "id": "82",
+      "source_tileset": "kanto",
+      "source_block": "77",
+      "tile_row_order": [
+        2,
+        3,
+        0,
+        1
+      ],
+      "collision_source_tileset": "johto",
+      "collision_source_block": "75",
+      "required_typed_extension": "headwaters_art::build_headwaters_art_pack"
+    },
+    {
+      "id": "83",
+      "source_tileset": "mn_headwaters",
+      "source_block": "83",
+      "required_typed_extension": "Frozen installed river bridge art; preserved byte-for-byte by terrain-only publication"
+    },
+    {
+      "id": "84",
+      "source_tileset": "mn_headwaters",
+      "source_block": "84",
+      "required_typed_extension": "Frozen installed river bridge art; preserved byte-for-byte by terrain-only publication"
+    },
+    {
+      "id": "85",
+      "source_tileset": "mn_headwaters",
+      "source_block": "85",
+      "required_typed_extension": "Frozen installed river bridge art; preserved byte-for-byte by terrain-only publication"
+    }
+  ],
+  "layers": [
+    {
+      "kind": "cliff_polygon",
+      "name": "Upper limestone ridge",
+      "points": [
+        [
+          5,
+          7
+        ],
+        [
+          9,
+          7
+        ],
+        [
+          9,
+          11
+        ],
+        [
+          11,
+          11
+        ],
+        [
+          11,
+          7
+        ],
+        [
+          14,
+          7
+        ],
+        [
+          14,
+          13
+        ],
+        [
+          20,
+          13
+        ],
+        [
+          20,
+          20
+        ],
+        [
+          16,
+          20
+        ],
+        [
+          16,
+          17
+        ],
+        [
+          10,
+          17
+        ],
+        [
+          10,
+          20
+        ],
+        [
+          5,
+          20
+        ]
+      ]
+    },
+    {
+      "kind": "cliff_polygon",
+      "name": "Lower limestone ridge",
+      "points": [
+        [
+          5,
+          26
+        ],
+        [
+          15,
+          26
+        ],
+        [
+          15,
+          29
+        ],
+        [
+          17,
+          29
+        ],
+        [
+          17,
+          31
+        ],
+        [
+          21,
+          31
+        ],
+        [
+          21,
+          38
+        ],
+        [
+          16,
+          38
+        ],
+        [
+          16,
+          34
+        ],
+        [
+          9,
+          34
+        ],
+        [
+          9,
+          38
+        ],
+        [
+          5,
+          38
+        ]
+      ]
+    },
+    {
+      "kind": "polygon",
+      "name": "Lower ridge meadow shelf",
+      "points": [
+        [
+          6,
+          27
+        ],
+        [
+          14,
+          27
+        ],
+        [
+          14,
+          30
+        ],
+        [
+          16,
+          30
+        ],
+        [
+          16,
+          32
+        ],
+        [
+          20,
+          32
+        ],
+        [
+          20,
+          37
+        ],
+        [
+          17,
+          37
+        ],
+        [
+          17,
+          33
+        ],
+        [
+          8,
+          33
+        ],
+        [
+          8,
+          37
+        ],
+        [
+          6,
+          37
+        ]
+      ],
+      "material": "lawn"
+    },
+    {
+      "kind": "rect",
+      "name": "South rest shelf",
+      "bounds": [
+        3,
+        42,
+        8,
+        46
+      ],
+      "material": "lawn"
+    },
+    {
+      "kind": "rect",
+      "name": "Ledge landing garden",
+      "bounds": [
+        17,
+        39,
+        22,
+        42
+      ],
+      "material": "lawn"
+    },
+    {
+      "kind": "rect",
+      "name": "Pier headland",
+      "bounds": [
+        22,
+        42,
+        26,
+        46
+      ],
+      "material": "lawn"
+    },
+    {
+      "kind": "rect",
+      "name": "City trailhead",
+      "bounds": [
+        9,
+        51,
+        13,
+        54
+      ],
+      "material": "lawn"
+    },
+    {
+      "kind": "path",
+      "name": "South arrival and lower ascent",
+      "points": [
+        [
+          11,
+          55
+        ],
+        [
+          11,
+          45
+        ],
+        [
+          6,
+          45
+        ],
+        [
+          6,
+          39
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "kind": "path",
+      "name": "Between-ridge switchback",
+      "points": [
+        [
+          7,
+          21
+        ],
+        [
+          7,
+          23
+        ],
+        [
+          14,
+          23
+        ],
+        [
+          14,
+          25
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "kind": "path",
+      "name": "North city approach",
+      "points": [
+        [
+          12,
+          6
+        ],
+        [
+          12,
+          0
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "kind": "path",
+      "name": "North warming-rock turnout",
+      "points": [
+        [
+          12,
+          4
+        ],
+        [
+          14,
+          4
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "lawn"
+    },
+    {
+      "kind": "path",
+      "name": "Lower ledge return",
+      "points": [
+        [
+          18,
+          39
+        ],
+        [
+          18,
+          43
+        ],
+        [
+          11,
+          43
+        ],
+        [
+          11,
+          45
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "kind": "path",
+      "name": "Upper ledge return",
+      "points": [
+        [
+          18,
+          21
+        ],
+        [
+          14,
+          21
+        ],
+        [
+          14,
+          25
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "kind": "path",
+      "name": "Fishing spur",
+      "points": [
+        [
+          11,
+          45
+        ],
+        [
+          24,
+          45
+        ],
+        [
+          24,
+          44
+        ],
+        [
+          29,
+          44
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "kind": "path",
+      "name": "Trail warden bay",
+      "points": [
+        [
+          11,
+          52
+        ],
+        [
+          9,
+          52
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "lawn"
+    },
+    {
+      "kind": "point",
+      "name": "Upper northwest knoll",
+      "position": [
+        6,
+        8
+      ],
+      "block": "0a"
+    },
+    {
+      "kind": "point",
+      "name": "Upper northwest knoll",
+      "position": [
+        7,
+        8
+      ],
+      "block": "0a"
+    },
+    {
+      "kind": "point",
+      "name": "Upper northwest knoll",
+      "position": [
+        8,
+        8
+      ],
+      "block": "0a"
+    },
+    {
+      "kind": "point",
+      "name": "Upper northwest knoll",
+      "position": [
+        6,
+        9
+      ],
+      "block": "0a"
+    },
+    {
+      "kind": "point",
+      "name": "Upper northwest knoll",
+      "position": [
+        7,
+        9
+      ],
+      "block": "0a"
+    },
+    {
+      "kind": "point",
+      "name": "Upper northwest knoll",
+      "position": [
+        8,
+        9
+      ],
+      "block": "0a"
+    },
+    {
+      "kind": "point",
+      "name": "Upper northwest knoll",
+      "position": [
+        6,
+        10
+      ],
+      "block": "0a"
+    },
+    {
+      "kind": "point",
+      "name": "Upper central outcrop",
+      "position": [
+        10,
+        16
+      ],
+      "block": "0a"
+    },
+    {
+      "kind": "point",
+      "name": "Upper central outcrop",
+      "position": [
+        11,
+        16
+      ],
+      "block": "0a"
+    },
+    {
+      "kind": "point",
+      "name": "Upper central outcrop",
+      "position": [
+        12,
+        16
+      ],
+      "block": "0a"
+    },
+    {
+      "kind": "point",
+      "name": "Upper central outcrop",
+      "position": [
+        10,
+        17
+      ],
+      "block": "0a"
+    },
+    {
+      "kind": "point",
+      "name": "Upper central outcrop",
+      "position": [
+        11,
+        17
+      ],
+      "block": "0a"
+    },
+    {
+      "kind": "point",
+      "name": "Upper central outcrop",
+      "position": [
+        11,
+        18
+      ],
+      "block": "0a"
+    },
+    {
+      "kind": "point",
+      "name": "Cut roof",
+      "position": [
+        14,
+        12
+      ],
+      "block": "0a"
+    },
+    {
+      "kind": "point",
+      "name": "Cut roof",
+      "position": [
+        15,
+        12
+      ],
+      "block": "0a"
+    },
+    {
+      "kind": "point",
+      "name": "Cut roof",
+      "position": [
+        16,
+        12
+      ],
+      "block": "0a"
+    },
+    {
+      "kind": "point",
+      "name": "Cut roof",
+      "position": [
+        17,
+        12
+      ],
+      "block": "0a"
+    },
+    {
+      "kind": "point",
+      "name": "Cut roof",
+      "position": [
+        16,
+        13
+      ],
+      "block": "0a"
+    },
+    {
+      "kind": "point",
+      "name": "Cut roof",
+      "position": [
+        17,
+        13
+      ],
+      "block": "0a"
+    },
+    {
+      "kind": "point",
+      "name": "East teeth",
+      "position": [
+        20,
+        16
+      ],
+      "block": "0a"
+    },
+    {
+      "kind": "point",
+      "name": "East teeth",
+      "position": [
+        21,
+        16
+      ],
+      "block": "0a"
+    },
+    {
+      "kind": "point",
+      "name": "East teeth",
+      "position": [
+        20,
+        17
+      ],
+      "block": "0a"
+    },
+    {
+      "kind": "point",
+      "name": "East teeth",
+      "position": [
+        20,
+        18
+      ],
+      "block": "0a"
+    },
+    {
+      "kind": "point",
+      "name": "Lower west shoulder",
+      "position": [
+        6,
+        27
+      ],
+      "block": "0a"
+    },
+    {
+      "kind": "point",
+      "name": "Lower west shoulder",
+      "position": [
+        7,
+        27
+      ],
+      "block": "0a"
+    },
+    {
+      "kind": "point",
+      "name": "Lower west shoulder",
+      "position": [
+        8,
+        27
+      ],
+      "block": "0a"
+    },
+    {
+      "kind": "point",
+      "name": "Lower west shoulder",
+      "position": [
+        7,
+        28
+      ],
+      "block": "0a"
+    },
+    {
+      "kind": "point",
+      "name": "Lower west shoulder",
+      "position": [
+        8,
+        28
+      ],
+      "block": "0a"
+    },
+    {
+      "kind": "point",
+      "name": "Lower west shoulder",
+      "position": [
+        8,
+        29
+      ],
+      "block": "0a"
+    },
+    {
+      "kind": "point",
+      "name": "Lower middle boulders",
+      "position": [
+        9,
+        34
+      ],
+      "block": "0a"
+    },
+    {
+      "kind": "point",
+      "name": "Lower middle boulders",
+      "position": [
+        10,
+        34
+      ],
+      "block": "0a"
+    },
+    {
+      "kind": "point",
+      "name": "Lower middle boulders",
+      "position": [
+        11,
+        34
+      ],
+      "block": "0a"
+    },
+    {
+      "kind": "point",
+      "name": "Lower middle boulders",
+      "position": [
+        9,
+        35
+      ],
+      "block": "0a"
+    },
+    {
+      "kind": "point",
+      "name": "Lower middle boulders",
+      "position": [
+        10,
+        35
+      ],
+      "block": "0a"
+    },
+    {
+      "kind": "point",
+      "name": "Lower middle boulders",
+      "position": [
+        10,
+        36
+      ],
+      "block": "0a"
+    },
+    {
+      "kind": "point",
+      "name": "Lower east shoulder",
+      "position": [
+        19,
+        30
+      ],
+      "block": "0a"
+    },
+    {
+      "kind": "point",
+      "name": "Lower east shoulder",
+      "position": [
+        20,
+        30
+      ],
+      "block": "0a"
+    },
+    {
+      "kind": "point",
+      "name": "Lower east shoulder",
+      "position": [
+        19,
+        31
+      ],
+      "block": "0a"
+    },
+    {
+      "kind": "point",
+      "name": "Lower east shoulder",
+      "position": [
+        20,
+        31
+      ],
+      "block": "0a"
+    },
+    {
+      "kind": "block_rect",
+      "name": "Lower switchback",
+      "bounds": [
+        6,
+        32,
+        7,
+        38
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "block_rect",
+      "name": "Lower switchback",
+      "bounds": [
+        6,
+        32,
+        15,
+        33
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "block_rect",
+      "name": "Lower switchback",
+      "bounds": [
+        14,
+        27,
+        15,
+        33
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "block_rect",
+      "name": "Upper switchback",
+      "bounds": [
+        7,
+        12,
+        8,
+        20
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "block_rect",
+      "name": "Upper switchback",
+      "bounds": [
+        7,
+        12,
+        13,
+        13
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "block_rect",
+      "name": "Upper switchback",
+      "bounds": [
+        12,
+        8,
+        13,
+        13
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "block_rect",
+      "name": "Lower return fork",
+      "bounds": [
+        14,
+        32,
+        19,
+        33
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "block_rect",
+      "name": "Lower return fork",
+      "bounds": [
+        18,
+        32,
+        19,
+        38
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "block_rect",
+      "name": "Upper return fork",
+      "bounds": [
+        12,
+        15,
+        19,
+        16
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "block_rect",
+      "name": "Upper return fork",
+      "bounds": [
+        18,
+        15,
+        19,
+        20
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "block_rect",
+      "name": "Upper cave apron",
+      "bounds": [
+        12,
+        14,
+        16,
+        15
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Native ramp",
+      "position": [
+        6,
+        38
+      ],
+      "block": "74"
+    },
+    {
+      "kind": "point",
+      "name": "Native ramp",
+      "position": [
+        14,
+        26
+      ],
+      "block": "74"
+    },
+    {
+      "kind": "point",
+      "name": "Native ramp",
+      "position": [
+        7,
+        20
+      ],
+      "block": "74"
+    },
+    {
+      "kind": "point",
+      "name": "Native ramp",
+      "position": [
+        12,
+        7
+      ],
+      "block": "74"
+    },
+    {
+      "kind": "block_rect",
+      "name": "Lower southbound drop",
+      "bounds": [
+        18,
+        38,
+        20,
+        39
+      ],
+      "block": "56"
+    },
+    {
+      "kind": "block_rect",
+      "name": "Upper southbound drop",
+      "bounds": [
+        18,
+        20,
+        20,
+        21
+      ],
+      "block": "56"
+    },
+    {
+      "kind": "point",
+      "name": "Lower drop foot",
+      "position": [
+        18,
+        39
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Upper drop foot",
+      "position": [
+        18,
+        21
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "rect",
+      "name": "Shared southern habitat",
+      "bounds": [
+        10,
+        49,
+        13,
+        51
+      ],
+      "material": "encounter"
+    },
+    {
+      "kind": "rect",
+      "name": "Rest shelf flowers",
+      "bounds": [
+        3,
+        42,
+        5,
+        43
+      ],
+      "material": "flowers"
+    },
+    {
+      "kind": "rect",
+      "name": "Upper wild shelf",
+      "bounds": [
+        8,
+        14,
+        10,
+        18
+      ],
+      "material": "encounter"
+    },
+    {
+      "kind": "point",
+      "name": "Iris standing stone",
+      "position": [
+        9,
+        16
+      ],
+      "block": "71"
+    },
+    {
+      "kind": "rect",
+      "name": "Middle sunny grass",
+      "bounds": [
+        11,
+        30,
+        14,
+        32
+      ],
+      "material": "encounter"
+    },
+    {
+      "kind": "polygon",
+      "name": "Mississippi outer bank",
+      "points": [
+        [
+          28,
+          0
+        ],
+        [
+          31,
+          0
+        ],
+        [
+          31,
+          55
+        ],
+        [
+          28,
+          55
+        ],
+        [
+          28,
+          43
+        ],
+        [
+          26,
+          43
+        ],
+        [
+          26,
+          34
+        ],
+        [
+          27,
+          34
+        ],
+        [
+          27,
+          22
+        ],
+        [
+          29,
+          22
+        ],
+        [
+          29,
+          10
+        ],
+        [
+          28,
+          10
+        ]
+      ],
+      "material": "water"
+    },
+    {
+      "kind": "block_rect",
+      "name": "Pier upper timber rail",
+      "bounds": [
+        24,
+        43,
+        30,
+        44
+      ],
+      "block": "82"
+    },
+    {
+      "kind": "block_rect",
+      "name": "Pier walking deck",
+      "bounds": [
+        24,
+        44,
+        30,
+        45
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "block_rect",
+      "name": "Pier lower timber rail",
+      "bounds": [
+        24,
+        45,
+        30,
+        46
+      ],
+      "block": "81"
+    },
+    {
+      "kind": "point",
+      "name": "Pier closed bollard end",
+      "position": [
+        30,
+        44
+      ],
+      "block": "46"
+    },
+    {
+      "kind": "point",
+      "name": "Animated water below pier",
+      "position": [
+        27,
+        46
+      ],
+      "block": "80"
+    },
+    {
+      "kind": "point",
+      "name": "Animated water below pier",
+      "position": [
+        28,
+        46
+      ],
+      "block": "80"
+    },
+    {
+      "kind": "point",
+      "name": "Animated water below pier",
+      "position": [
+        29,
+        46
+      ],
+      "block": "80"
+    },
+    {
+      "kind": "block_rect",
+      "name": "Headland upper fence",
+      "bounds": [
+        23,
+        42,
+        26,
+        43
+      ],
+      "block": "41"
+    },
+    {
+      "kind": "point",
+      "name": "Headland outer shrub",
+      "position": [
+        25,
+        46
+      ],
+      "block": "3f"
+    },
+    {
+      "kind": "point",
+      "name": "Lower rock-cut mouth",
+      "position": [
+        8,
+        38
+      ],
+      "block": "73"
+    },
+    {
+      "kind": "point",
+      "name": "Lower rock-cut safe return",
+      "position": [
+        8,
+        39
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Upper rock-cut mouth",
+      "position": [
+        15,
+        13
+      ],
+      "block": "73"
+    },
+    {
+      "kind": "point",
+      "name": "Upper rock-cut safe return",
+      "position": [
+        15,
+        14
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "block_rect",
+      "name": "High river lookout",
+      "bounds": [
+        18,
+        10,
+        19,
+        16
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "rect",
+      "name": "Lookout turnout",
+      "bounds": [
+        17,
+        8,
+        20,
+        11
+      ],
+      "material": "lawn"
+    },
+    {
+      "kind": "point",
+      "name": "Lookout flower",
+      "position": [
+        19,
+        8
+      ],
+      "block": "04"
+    },
+    {
+      "kind": "point",
+      "name": "Clear actor footing",
+      "position": [
+        5,
+        42
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Clear actor footing",
+      "position": [
+        15,
+        32
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Clear actor footing",
+      "position": [
+        9,
+        16
+      ],
+      "block": "71"
+    },
+    {
+      "kind": "point",
+      "name": "Clear actor footing",
+      "position": [
+        14,
+        4
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Clear actor footing",
+      "position": [
+        16,
+        14
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Clear actor footing",
+      "position": [
+        9,
+        51
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Clear actor footing",
+      "position": [
+        28,
+        44
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Clear actor footing",
+      "position": [
+        26,
+        10
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "SOUTH_SIGN",
+      "position": [
+        12,
+        53
+      ],
+      "block": "45"
+    },
+    {
+      "kind": "point",
+      "name": "RAMP_SIGN",
+      "position": [
+        6,
+        39
+      ],
+      "block": "45"
+    },
+    {
+      "kind": "point",
+      "name": "CUT_SIGN",
+      "position": [
+        9,
+        39
+      ],
+      "block": "45"
+    },
+    {
+      "kind": "point",
+      "name": "LOOKOUT_SIGN",
+      "position": [
+        25,
+        9
+      ],
+      "block": "45"
+    },
+    {
+      "kind": "point",
+      "name": "PIER_SIGN",
+      "position": [
+        23,
+        43
+      ],
+      "block": "45"
+    },
+    {
+      "kind": "point",
+      "name": "NORTH_SIGN",
+      "position": [
+        13,
+        2
+      ],
+      "block": "45"
+    },
+    {
+      "kind": "path",
+      "name": "Lower rock-cut approach",
+      "points": [
+        [
+          6,
+          39
+        ],
+        [
+          8,
+          39
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "kind": "point",
+      "name": "High lookout native ramp",
+      "position": [
+        18,
+        13
+      ],
+      "block": "74"
+    },
+    {
+      "kind": "point",
+      "name": "Ramp sign after approach fitting",
+      "position": [
+        6,
+        39
+      ],
+      "block": "45"
+    },
+    {
+      "kind": "rect",
+      "name": "River-facing lookout terrace",
+      "bounds": [
+        24,
+        8,
+        28,
+        12
+      ],
+      "material": "floor"
+    },
+    {
+      "kind": "path",
+      "name": "Lookout woodland spur",
+      "points": [
+        [
+          18,
+          10
+        ],
+        [
+          25,
+          10
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "kind": "block_rect",
+      "name": "Lookout north fence",
+      "bounds": [
+        24,
+        8,
+        28,
+        9
+      ],
+      "block": "41"
+    },
+    {
+      "kind": "block_rect",
+      "name": "Lookout south fence",
+      "bounds": [
+        24,
+        11,
+        28,
+        12
+      ],
+      "block": "49"
+    },
+    {
+      "kind": "block_rect",
+      "name": "Lookout river-side fence",
+      "bounds": [
+        27,
+        9,
+        28,
+        11
+      ],
+      "block": "46"
+    },
+    {
+      "kind": "point",
+      "name": "River-view information sign",
+      "position": [
+        25,
+        9
+      ],
+      "block": "45"
+    },
+    {
+      "kind": "point",
+      "name": "Sunny ridge flower pocket",
+      "position": [
+        17,
+        33
+      ],
+      "block": "04"
+    },
+    {
+      "kind": "block_rect",
+      "name": "Visible eastern river boundary: original Johto water rocks",
+      "bounds": [
+        31,
+        1,
+        32,
+        55
+      ],
+      "block": "36"
+    },
+    {
+      "kind": "block_rect",
+      "name": "North river boundary rock rail",
+      "bounds": [
+        28,
+        0,
+        31,
+        1
+      ],
+      "block": "31"
+    },
+    {
+      "kind": "point",
+      "name": "North-east river boundary corner",
+      "position": [
+        31,
+        0
+      ],
+      "block": "32"
+    },
+    {
+      "kind": "block_rect",
+      "name": "South river boundary rock rail",
+      "bounds": [
+        28,
+        55,
+        31,
+        56
+      ],
+      "block": "39"
+    },
+    {
+      "kind": "point",
+      "name": "South-east river boundary corner",
+      "position": [
+        31,
+        55
+      ],
+      "block": "3a"
+    },
+    {
+      "kind": "point",
+      "name": "Exact native Minneapolis river continuation hook",
+      "position": [
+        13,
+        53
+      ],
+      "block": "54"
+    },
+    {
+      "kind": "point",
+      "name": "Exact native Minneapolis river continuation hook",
+      "position": [
+        14,
+        53
+      ],
+      "block": "76"
+    },
+    {
+      "kind": "point",
+      "name": "Exact native Minneapolis river continuation hook",
+      "position": [
+        15,
+        53
+      ],
+      "block": "76"
+    },
+    {
+      "kind": "point",
+      "name": "Exact native Minneapolis river continuation hook",
+      "position": [
+        16,
+        53
+      ],
+      "block": "55"
+    },
+    {
+      "kind": "point",
+      "name": "Exact native Minneapolis river continuation hook",
+      "position": [
+        20,
+        53
+      ],
+      "block": "54"
+    },
+    {
+      "kind": "point",
+      "name": "Exact native Minneapolis river continuation hook",
+      "position": [
+        21,
+        53
+      ],
+      "block": "76"
+    },
+    {
+      "kind": "point",
+      "name": "Exact native Minneapolis river continuation hook",
+      "position": [
+        22,
+        53
+      ],
+      "block": "76"
+    },
+    {
+      "kind": "point",
+      "name": "Exact native Minneapolis river continuation hook",
+      "position": [
+        23,
+        53
+      ],
+      "block": "76"
+    },
+    {
+      "kind": "point",
+      "name": "Exact native Minneapolis river continuation hook",
+      "position": [
+        24,
+        53
+      ],
+      "block": "76"
+    },
+    {
+      "kind": "point",
+      "name": "Exact native Minneapolis river continuation hook",
+      "position": [
+        25,
+        53
+      ],
+      "block": "76"
+    },
+    {
+      "kind": "point",
+      "name": "Exact native Minneapolis river continuation hook",
+      "position": [
+        26,
+        53
+      ],
+      "block": "76"
+    },
+    {
+      "kind": "point",
+      "name": "Exact native Minneapolis river continuation hook",
+      "position": [
+        27,
+        53
+      ],
+      "block": "76"
+    },
+    {
+      "kind": "point",
+      "name": "Exact native Minneapolis river continuation hook",
+      "position": [
+        28,
+        53
+      ],
+      "block": "79"
+    },
+    {
+      "kind": "point",
+      "name": "Exact native Minneapolis river continuation hook",
+      "position": [
+        7,
+        54
+      ],
+      "block": "54"
+    },
+    {
+      "kind": "point",
+      "name": "Exact native Minneapolis river continuation hook",
+      "position": [
+        8,
+        54
+      ],
+      "block": "76"
+    },
+    {
+      "kind": "point",
+      "name": "Exact native Minneapolis river continuation hook",
+      "position": [
+        9,
+        54
+      ],
+      "block": "55"
+    },
+    {
+      "kind": "point",
+      "name": "Exact native Minneapolis river continuation hook",
+      "position": [
+        10,
+        54
+      ],
+      "block": "44"
+    },
+    {
+      "kind": "point",
+      "name": "Exact native Minneapolis river continuation hook",
+      "position": [
+        12,
+        54
+      ],
+      "block": "46"
+    },
+    {
+      "kind": "point",
+      "name": "Exact native Minneapolis river continuation hook",
+      "position": [
+        13,
+        54
+      ],
+      "block": "58"
+    },
+    {
+      "kind": "point",
+      "name": "Exact native Minneapolis river continuation hook",
+      "position": [
+        14,
+        54
+      ],
+      "block": "35"
+    },
+    {
+      "kind": "point",
+      "name": "Exact native Minneapolis river continuation hook",
+      "position": [
+        15,
+        54
+      ],
+      "block": "35"
+    },
+    {
+      "kind": "point",
+      "name": "Exact native Minneapolis river continuation hook",
+      "position": [
+        16,
+        54
+      ],
+      "block": "7a"
+    },
+    {
+      "kind": "point",
+      "name": "Exact native Minneapolis river continuation hook",
+      "position": [
+        17,
+        54
+      ],
+      "block": "76"
+    },
+    {
+      "kind": "point",
+      "name": "Exact native Minneapolis river continuation hook",
+      "position": [
+        18,
+        54
+      ],
+      "block": "76"
+    },
+    {
+      "kind": "point",
+      "name": "Exact native Minneapolis river continuation hook",
+      "position": [
+        19,
+        54
+      ],
+      "block": "76"
+    },
+    {
+      "kind": "point",
+      "name": "Exact native Minneapolis river continuation hook",
+      "position": [
+        20,
+        54
+      ],
+      "block": "79"
+    },
+    {
+      "kind": "point",
+      "name": "Exact native Minneapolis river continuation hook",
+      "position": [
+        21,
+        54
+      ],
+      "block": "35"
+    },
+    {
+      "kind": "point",
+      "name": "Exact native Minneapolis river continuation hook",
+      "position": [
+        22,
+        54
+      ],
+      "block": "35"
+    },
+    {
+      "kind": "point",
+      "name": "Exact native Minneapolis river continuation hook",
+      "position": [
+        23,
+        54
+      ],
+      "block": "35"
+    },
+    {
+      "kind": "point",
+      "name": "Exact native Minneapolis river continuation hook",
+      "position": [
+        24,
+        54
+      ],
+      "block": "35"
+    },
+    {
+      "kind": "point",
+      "name": "Exact native Minneapolis river continuation hook",
+      "position": [
+        25,
+        54
+      ],
+      "block": "35"
+    },
+    {
+      "kind": "point",
+      "name": "Exact native Minneapolis river continuation hook",
+      "position": [
+        26,
+        54
+      ],
+      "block": "35"
+    },
+    {
+      "kind": "point",
+      "name": "Exact native Minneapolis river continuation hook",
+      "position": [
+        27,
+        54
+      ],
+      "block": "35"
+    },
+    {
+      "kind": "point",
+      "name": "Exact native Minneapolis river continuation hook",
+      "position": [
+        28,
+        54
+      ],
+      "block": "35"
+    },
+    {
+      "kind": "point",
+      "name": "Exact native Minneapolis river continuation hook",
+      "position": [
+        7,
+        55
+      ],
+      "block": "58"
+    },
+    {
+      "kind": "point",
+      "name": "Exact native Minneapolis river continuation hook",
+      "position": [
+        8,
+        55
+      ],
+      "block": "35"
+    },
+    {
+      "kind": "point",
+      "name": "Exact native Minneapolis river continuation hook",
+      "position": [
+        9,
+        55
+      ],
+      "block": "59"
+    },
+    {
+      "kind": "point",
+      "name": "Exact native Minneapolis river continuation hook",
+      "position": [
+        16,
+        55
+      ],
+      "block": "38"
+    },
+    {
+      "kind": "point",
+      "name": "Exact native Minneapolis river continuation hook",
+      "position": [
+        17,
+        55
+      ],
+      "block": "39"
+    },
+    {
+      "kind": "point",
+      "name": "Exact native Minneapolis river continuation hook",
+      "position": [
+        18,
+        55
+      ],
+      "block": "39"
+    },
+    {
+      "kind": "point",
+      "name": "Exact native Minneapolis river continuation hook",
+      "position": [
+        19,
+        55
+      ],
+      "block": "39"
+    },
+    {
+      "kind": "point",
+      "name": "Exact native Minneapolis river continuation hook",
+      "position": [
+        20,
+        55
+      ],
+      "block": "3a"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 22,0",
+      "position": [
+        22,
+        0
+      ],
+      "block": "35"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 23,0",
+      "position": [
+        23,
+        0
+      ],
+      "block": "36"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 22,1",
+      "position": [
+        22,
+        1
+      ],
+      "block": "58"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 23,1",
+      "position": [
+        23,
+        1
+      ],
+      "block": "76"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 24,1",
+      "position": [
+        24,
+        1
+      ],
+      "block": "76"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 25,1",
+      "position": [
+        25,
+        1
+      ],
+      "block": "76"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 26,1",
+      "position": [
+        26,
+        1
+      ],
+      "block": "76"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 27,1",
+      "position": [
+        27,
+        1
+      ],
+      "block": "76"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 22,2",
+      "position": [
+        22,
+        2
+      ],
+      "block": "58"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 23,2",
+      "position": [
+        23,
+        2
+      ],
+      "block": "35"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 24,2",
+      "position": [
+        24,
+        2
+      ],
+      "block": "35"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 25,2",
+      "position": [
+        25,
+        2
+      ],
+      "block": "35"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 26,2",
+      "position": [
+        26,
+        2
+      ],
+      "block": "35"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 27,2",
+      "position": [
+        27,
+        2
+      ],
+      "block": "35"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 31,2",
+      "position": [
+        31,
+        2
+      ],
+      "block": "35"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 31,3",
+      "position": [
+        31,
+        3
+      ],
+      "block": "35"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 29,14",
+      "position": [
+        29,
+        14
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 30,14",
+      "position": [
+        30,
+        14
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 31,14",
+      "position": [
+        31,
+        14
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 29,15",
+      "position": [
+        29,
+        15
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 30,15",
+      "position": [
+        30,
+        15
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 31,15",
+      "position": [
+        31,
+        15
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 29,16",
+      "position": [
+        29,
+        16
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 30,16",
+      "position": [
+        30,
+        16
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 31,16",
+      "position": [
+        31,
+        16
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 29,17",
+      "position": [
+        29,
+        17
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 30,17",
+      "position": [
+        30,
+        17
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 31,17",
+      "position": [
+        31,
+        17
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 29,18",
+      "position": [
+        29,
+        18
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 30,18",
+      "position": [
+        30,
+        18
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 31,18",
+      "position": [
+        31,
+        18
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 29,19",
+      "position": [
+        29,
+        19
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 30,19",
+      "position": [
+        30,
+        19
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 31,19",
+      "position": [
+        31,
+        19
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 29,20",
+      "position": [
+        29,
+        20
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 30,20",
+      "position": [
+        30,
+        20
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 31,20",
+      "position": [
+        31,
+        20
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 29,21",
+      "position": [
+        29,
+        21
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 30,21",
+      "position": [
+        30,
+        21
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 31,21",
+      "position": [
+        31,
+        21
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 27,22",
+      "position": [
+        27,
+        22
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 28,22",
+      "position": [
+        28,
+        22
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 29,22",
+      "position": [
+        29,
+        22
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 30,22",
+      "position": [
+        30,
+        22
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 31,22",
+      "position": [
+        31,
+        22
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 27,23",
+      "position": [
+        27,
+        23
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 28,23",
+      "position": [
+        28,
+        23
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 29,23",
+      "position": [
+        29,
+        23
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 30,23",
+      "position": [
+        30,
+        23
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 31,23",
+      "position": [
+        31,
+        23
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 27,24",
+      "position": [
+        27,
+        24
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 28,24",
+      "position": [
+        28,
+        24
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 29,24",
+      "position": [
+        29,
+        24
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 30,24",
+      "position": [
+        30,
+        24
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 31,24",
+      "position": [
+        31,
+        24
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 27,25",
+      "position": [
+        27,
+        25
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 28,25",
+      "position": [
+        28,
+        25
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 29,25",
+      "position": [
+        29,
+        25
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 30,25",
+      "position": [
+        30,
+        25
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 31,25",
+      "position": [
+        31,
+        25
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 27,26",
+      "position": [
+        27,
+        26
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 28,26",
+      "position": [
+        28,
+        26
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 29,26",
+      "position": [
+        29,
+        26
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 30,26",
+      "position": [
+        30,
+        26
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 31,26",
+      "position": [
+        31,
+        26
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 27,27",
+      "position": [
+        27,
+        27
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 28,27",
+      "position": [
+        28,
+        27
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 29,27",
+      "position": [
+        29,
+        27
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 30,27",
+      "position": [
+        30,
+        27
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 31,27",
+      "position": [
+        31,
+        27
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 27,28",
+      "position": [
+        27,
+        28
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 28,28",
+      "position": [
+        28,
+        28
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 29,28",
+      "position": [
+        29,
+        28
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 30,28",
+      "position": [
+        30,
+        28
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 31,28",
+      "position": [
+        31,
+        28
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 27,29",
+      "position": [
+        27,
+        29
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 28,29",
+      "position": [
+        28,
+        29
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 29,29",
+      "position": [
+        29,
+        29
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 30,29",
+      "position": [
+        30,
+        29
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 31,29",
+      "position": [
+        31,
+        29
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 27,30",
+      "position": [
+        27,
+        30
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 28,30",
+      "position": [
+        28,
+        30
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 29,30",
+      "position": [
+        29,
+        30
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 30,30",
+      "position": [
+        30,
+        30
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 31,30",
+      "position": [
+        31,
+        30
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 27,31",
+      "position": [
+        27,
+        31
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 28,31",
+      "position": [
+        28,
+        31
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 29,31",
+      "position": [
+        29,
+        31
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 30,31",
+      "position": [
+        30,
+        31
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 31,31",
+      "position": [
+        31,
+        31
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 27,32",
+      "position": [
+        27,
+        32
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 28,32",
+      "position": [
+        28,
+        32
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 29,32",
+      "position": [
+        29,
+        32
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 30,32",
+      "position": [
+        30,
+        32
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 31,32",
+      "position": [
+        31,
+        32
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 27,33",
+      "position": [
+        27,
+        33
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 28,33",
+      "position": [
+        28,
+        33
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 29,33",
+      "position": [
+        29,
+        33
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 30,33",
+      "position": [
+        30,
+        33
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 31,33",
+      "position": [
+        31,
+        33
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 26,34",
+      "position": [
+        26,
+        34
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 27,34",
+      "position": [
+        27,
+        34
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 28,34",
+      "position": [
+        28,
+        34
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 29,34",
+      "position": [
+        29,
+        34
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 30,34",
+      "position": [
+        30,
+        34
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 31,34",
+      "position": [
+        31,
+        34
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 26,35",
+      "position": [
+        26,
+        35
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 27,35",
+      "position": [
+        27,
+        35
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 28,35",
+      "position": [
+        28,
+        35
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 29,35",
+      "position": [
+        29,
+        35
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 30,35",
+      "position": [
+        30,
+        35
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 31,35",
+      "position": [
+        31,
+        35
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 26,36",
+      "position": [
+        26,
+        36
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 27,36",
+      "position": [
+        27,
+        36
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 28,36",
+      "position": [
+        28,
+        36
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 29,36",
+      "position": [
+        29,
+        36
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 30,36",
+      "position": [
+        30,
+        36
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 31,36",
+      "position": [
+        31,
+        36
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 26,37",
+      "position": [
+        26,
+        37
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 27,37",
+      "position": [
+        27,
+        37
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 28,37",
+      "position": [
+        28,
+        37
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 29,37",
+      "position": [
+        29,
+        37
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 30,37",
+      "position": [
+        30,
+        37
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 31,37",
+      "position": [
+        31,
+        37
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 26,38",
+      "position": [
+        26,
+        38
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 27,38",
+      "position": [
+        27,
+        38
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 28,38",
+      "position": [
+        28,
+        38
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 29,38",
+      "position": [
+        29,
+        38
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 30,38",
+      "position": [
+        30,
+        38
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 31,38",
+      "position": [
+        31,
+        38
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 26,39",
+      "position": [
+        26,
+        39
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 27,39",
+      "position": [
+        27,
+        39
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 28,39",
+      "position": [
+        28,
+        39
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 29,39",
+      "position": [
+        29,
+        39
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 30,39",
+      "position": [
+        30,
+        39
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 31,39",
+      "position": [
+        31,
+        39
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 26,40",
+      "position": [
+        26,
+        40
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 27,40",
+      "position": [
+        27,
+        40
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 28,40",
+      "position": [
+        28,
+        40
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 29,40",
+      "position": [
+        29,
+        40
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 30,40",
+      "position": [
+        30,
+        40
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 31,40",
+      "position": [
+        31,
+        40
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 31,48",
+      "position": [
+        31,
+        48
+      ],
+      "block": "35"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 31,49",
+      "position": [
+        31,
+        49
+      ],
+      "block": "35"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 10,54",
+      "position": [
+        10,
+        54
+      ],
+      "block": "83"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 11,54",
+      "position": [
+        11,
+        54
+      ],
+      "block": "84"
+    },
+    {
+      "kind": "point",
+      "name": "Exact compact native preimage 12,54",
+      "position": [
+        12,
+        54
+      ],
+      "block": "85"
+    },
+    {
+      "kind": "point",
+      "name": "Compatible reviewed grass delta 7,14",
+      "position": [
+        7,
+        14
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Compatible reviewed grass delta 7,15",
+      "position": [
+        7,
+        15
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Compatible reviewed grass delta 7,16",
+      "position": [
+        7,
+        16
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Compatible reviewed grass delta 6,18",
+      "position": [
+        6,
+        18
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Compatible reviewed grass delta 7,18",
+      "position": [
+        7,
+        18
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Compatible reviewed grass delta 8,18",
+      "position": [
+        8,
+        18
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Compatible reviewed grass delta 9,18",
+      "position": [
+        9,
+        18
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Compatible reviewed grass delta 6,19",
+      "position": [
+        6,
+        19
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Compatible reviewed grass delta 7,19",
+      "position": [
+        7,
+        19
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Compatible reviewed grass delta 8,19",
+      "position": [
+        8,
+        19
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Compatible reviewed grass delta 9,19",
+      "position": [
+        9,
+        19
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Compatible reviewed grass delta 7,21",
+      "position": [
+        7,
+        21
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Compatible reviewed grass delta 7,22",
+      "position": [
+        7,
+        22
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Compatible reviewed grass delta 9,30",
+      "position": [
+        9,
+        30
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Compatible reviewed grass delta 10,30",
+      "position": [
+        10,
+        30
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Compatible reviewed grass delta 9,31",
+      "position": [
+        9,
+        31
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Compatible reviewed grass delta 10,31",
+      "position": [
+        10,
+        31
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Compatible reviewed grass delta 6,34",
+      "position": [
+        6,
+        34
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Compatible reviewed grass delta 7,34",
+      "position": [
+        7,
+        34
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Compatible reviewed grass delta 8,34",
+      "position": [
+        8,
+        34
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Compatible reviewed grass delta 6,35",
+      "position": [
+        6,
+        35
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Compatible reviewed grass delta 7,35",
+      "position": [
+        7,
+        35
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Compatible reviewed grass delta 8,35",
+      "position": [
+        8,
+        35
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Compatible reviewed grass delta 6,36",
+      "position": [
+        6,
+        36
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Compatible reviewed grass delta 7,36",
+      "position": [
+        7,
+        36
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Compatible reviewed grass delta 8,36",
+      "position": [
+        8,
+        36
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Compatible reviewed grass delta 6,37",
+      "position": [
+        6,
+        37
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Compatible reviewed grass delta 7,37",
+      "position": [
+        7,
+        37
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Compatible reviewed grass delta 8,37",
+      "position": [
+        8,
+        37
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Compatible reviewed grass delta 6,40",
+      "position": [
+        6,
+        40
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Compatible reviewed grass delta 6,41",
+      "position": [
+        6,
+        41
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Compatible reviewed grass delta 5,43",
+      "position": [
+        5,
+        43
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Compatible reviewed grass delta 5,44",
+      "position": [
+        5,
+        44
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Preserve current R04-parent bank 22,0",
+      "position": [
+        22,
+        0
+      ],
+      "block": "35"
+    },
+    {
+      "kind": "point",
+      "name": "Preserve current R04-parent bank 28,1",
+      "position": [
+        28,
+        1
+      ],
+      "block": "58"
+    },
+    {
+      "kind": "point",
+      "name": "Preserve current R04-parent bank 28,2",
+      "position": [
+        28,
+        2
+      ],
+      "block": "58"
+    },
+    {
+      "kind": "point",
+      "name": "Preserve current R04-parent bank 26,41",
+      "position": [
+        26,
+        41
+      ],
+      "block": "58"
+    },
+    {
+      "kind": "point",
+      "name": "Preserve current R04-parent bank 27,41",
+      "position": [
+        27,
+        41
+      ],
+      "block": "35"
+    },
+    {
+      "kind": "point",
+      "name": "Preserve current R04-parent bank 28,41",
+      "position": [
+        28,
+        41
+      ],
+      "block": "35"
+    },
+    {
+      "kind": "point",
+      "name": "Preserve current R04-parent bank 29,41",
+      "position": [
+        29,
+        41
+      ],
+      "block": "35"
+    },
+    {
+      "kind": "point",
+      "name": "Preserve current R04-parent bank 30,41",
+      "position": [
+        30,
+        41
+      ],
+      "block": "35"
+    },
+    {
+      "kind": "point",
+      "name": "Freeze installed fitted shore 28,3",
+      "position": [
+        28,
+        3
+      ],
+      "block": "58"
+    },
+    {
+      "kind": "point",
+      "name": "Freeze installed fitted shore 28,4",
+      "position": [
+        28,
+        4
+      ],
+      "block": "58"
+    },
+    {
+      "kind": "point",
+      "name": "Freeze installed fitted shore 28,5",
+      "position": [
+        28,
+        5
+      ],
+      "block": "58"
+    },
+    {
+      "kind": "point",
+      "name": "Freeze installed fitted shore 28,6",
+      "position": [
+        28,
+        6
+      ],
+      "block": "58"
+    },
+    {
+      "kind": "point",
+      "name": "Freeze installed fitted shore 28,7",
+      "position": [
+        28,
+        7
+      ],
+      "block": "58"
+    },
+    {
+      "kind": "point",
+      "name": "Freeze installed fitted shore 28,8",
+      "position": [
+        28,
+        8
+      ],
+      "block": "58"
+    },
+    {
+      "kind": "point",
+      "name": "Freeze installed fitted shore 28,9",
+      "position": [
+        28,
+        9
+      ],
+      "block": "58"
+    },
+    {
+      "kind": "point",
+      "name": "Freeze installed fitted shore 28,10",
+      "position": [
+        28,
+        10
+      ],
+      "block": "58"
+    },
+    {
+      "kind": "point",
+      "name": "Freeze installed fitted shore 29,11",
+      "position": [
+        29,
+        11
+      ],
+      "block": "58"
+    },
+    {
+      "kind": "point",
+      "name": "Freeze installed fitted shore 29,12",
+      "position": [
+        29,
+        12
+      ],
+      "block": "58"
+    },
+    {
+      "kind": "point",
+      "name": "Freeze installed fitted shore 29,13",
+      "position": [
+        29,
+        13
+      ],
+      "block": "58"
+    },
+    {
+      "kind": "point",
+      "name": "Freeze installed fitted shore 26,42",
+      "position": [
+        26,
+        42
+      ],
+      "block": "58"
+    },
+    {
+      "kind": "point",
+      "name": "Freeze installed fitted shore 30,43",
+      "position": [
+        30,
+        43
+      ],
+      "block": "58"
+    },
+    {
+      "kind": "point",
+      "name": "Freeze installed fitted shore 30,45",
+      "position": [
+        30,
+        45
+      ],
+      "block": "54"
+    },
+    {
+      "kind": "point",
+      "name": "Freeze installed fitted shore 30,46",
+      "position": [
+        30,
+        46
+      ],
+      "block": "79"
+    },
+    {
+      "kind": "point",
+      "name": "Freeze installed fitted shore 28,47",
+      "position": [
+        28,
+        47
+      ],
+      "block": "58"
+    },
+    {
+      "kind": "point",
+      "name": "Freeze installed fitted shore 28,48",
+      "position": [
+        28,
+        48
+      ],
+      "block": "58"
+    },
+    {
+      "kind": "point",
+      "name": "Freeze installed fitted shore 28,49",
+      "position": [
+        28,
+        49
+      ],
+      "block": "58"
+    },
+    {
+      "kind": "point",
+      "name": "Freeze installed fitted shore 28,50",
+      "position": [
+        28,
+        50
+      ],
+      "block": "58"
+    },
+    {
+      "kind": "point",
+      "name": "Freeze installed fitted shore 28,51",
+      "position": [
+        28,
+        51
+      ],
+      "block": "58"
+    },
+    {
+      "kind": "point",
+      "name": "Freeze installed fitted shore 28,52",
+      "position": [
+        28,
+        52
+      ],
+      "block": "58"
+    }
+  ],
+  "crossings": [
+    {
+      "id": "RIVER_PIER",
+      "deck_blocks": [
+        [
+          24,
+          44
+        ],
+        [
+          25,
+          44
+        ],
+        [
+          26,
+          44
+        ],
+        [
+          27,
+          44
+        ],
+        [
+          28,
+          44
+        ],
+        [
+          29,
+          44
+        ]
+      ],
+      "north_rail_blocks": [
+        [
+          24,
+          43
+        ],
+        [
+          25,
+          43
+        ],
+        [
+          26,
+          43
+        ],
+        [
+          27,
+          43
+        ],
+        [
+          28,
+          43
+        ],
+        [
+          29,
+          43
+        ]
+      ],
+      "south_rail_blocks": [
+        [
+          24,
+          45
+        ],
+        [
+          25,
+          45
+        ],
+        [
+          26,
+          45
+        ],
+        [
+          27,
+          45
+        ],
+        [
+          28,
+          45
+        ],
+        [
+          29,
+          45
+        ]
+      ],
+      "water_under_rail_blocks": [
+        [
+          27,
+          46
+        ],
+        [
+          28,
+          46
+        ],
+        [
+          29,
+          46
+        ]
+      ],
+      "core_walk_line": [
+        [
+          47,
+          89
+        ],
+        [
+          48,
+          89
+        ],
+        [
+          49,
+          89
+        ],
+        [
+          50,
+          89
+        ],
+        [
+          51,
+          89
+        ],
+        [
+          52,
+          89
+        ],
+        [
+          53,
+          89
+        ],
+        [
+          54,
+          89
+        ],
+        [
+          55,
+          89
+        ],
+        [
+          56,
+          89
+        ],
+        [
+          57,
+          89
+        ],
+        [
+          58,
+          89
+        ],
+        [
+          59,
+          89
+        ],
+        [
+          60,
+          89
+        ]
+      ]
+    }
+  ],
+  "additional_water_blocks": [
+    "31",
+    "32",
+    "36",
+    "39",
+    "3a",
+    "54",
+    "55",
+    "58",
+    "59",
+    "76",
+    "79",
+    "7a"
+  ],
+  "outer_water_barriers": [
+    {
+      "side": "east",
+      "blocks": [
+        [
+          31,
+          1,
+          "36"
+        ],
+        [
+          31,
+          2,
+          "36"
+        ],
+        [
+          31,
+          3,
+          "36"
+        ],
+        [
+          31,
+          4,
+          "36"
+        ],
+        [
+          31,
+          5,
+          "36"
+        ],
+        [
+          31,
+          6,
+          "36"
+        ],
+        [
+          31,
+          7,
+          "36"
+        ],
+        [
+          31,
+          8,
+          "36"
+        ],
+        [
+          31,
+          9,
+          "36"
+        ],
+        [
+          31,
+          10,
+          "36"
+        ],
+        [
+          31,
+          11,
+          "36"
+        ],
+        [
+          31,
+          12,
+          "36"
+        ],
+        [
+          31,
+          13,
+          "36"
+        ],
+        [
+          31,
+          14,
+          "36"
+        ],
+        [
+          31,
+          15,
+          "36"
+        ],
+        [
+          31,
+          16,
+          "36"
+        ],
+        [
+          31,
+          17,
+          "36"
+        ],
+        [
+          31,
+          18,
+          "36"
+        ],
+        [
+          31,
+          19,
+          "36"
+        ],
+        [
+          31,
+          20,
+          "36"
+        ],
+        [
+          31,
+          21,
+          "36"
+        ],
+        [
+          31,
+          22,
+          "36"
+        ],
+        [
+          31,
+          23,
+          "36"
+        ],
+        [
+          31,
+          24,
+          "36"
+        ],
+        [
+          31,
+          25,
+          "36"
+        ],
+        [
+          31,
+          26,
+          "36"
+        ],
+        [
+          31,
+          27,
+          "36"
+        ],
+        [
+          31,
+          28,
+          "36"
+        ],
+        [
+          31,
+          29,
+          "36"
+        ],
+        [
+          31,
+          30,
+          "36"
+        ],
+        [
+          31,
+          31,
+          "36"
+        ],
+        [
+          31,
+          32,
+          "36"
+        ],
+        [
+          31,
+          33,
+          "36"
+        ],
+        [
+          31,
+          34,
+          "36"
+        ],
+        [
+          31,
+          35,
+          "36"
+        ],
+        [
+          31,
+          36,
+          "36"
+        ],
+        [
+          31,
+          37,
+          "36"
+        ],
+        [
+          31,
+          38,
+          "36"
+        ],
+        [
+          31,
+          39,
+          "36"
+        ],
+        [
+          31,
+          40,
+          "36"
+        ],
+        [
+          31,
+          41,
+          "36"
+        ],
+        [
+          31,
+          42,
+          "36"
+        ],
+        [
+          31,
+          43,
+          "36"
+        ],
+        [
+          31,
+          44,
+          "36"
+        ],
+        [
+          31,
+          45,
+          "36"
+        ],
+        [
+          31,
+          46,
+          "36"
+        ],
+        [
+          31,
+          47,
+          "36"
+        ],
+        [
+          31,
+          48,
+          "36"
+        ],
+        [
+          31,
+          49,
+          "36"
+        ],
+        [
+          31,
+          50,
+          "36"
+        ],
+        [
+          31,
+          51,
+          "36"
+        ],
+        [
+          31,
+          52,
+          "36"
+        ],
+        [
+          31,
+          53,
+          "36"
+        ],
+        [
+          31,
+          54,
+          "36"
+        ]
+      ]
+    },
+    {
+      "side": "north",
+      "blocks": [
+        [
+          28,
+          0,
+          "31"
+        ],
+        [
+          29,
+          0,
+          "31"
+        ],
+        [
+          30,
+          0,
+          "31"
+        ],
+        [
+          31,
+          0,
+          "32"
+        ]
+      ]
+    },
+    {
+      "side": "south",
+      "blocks": [
+        [
+          28,
+          55,
+          "39"
+        ],
+        [
+          29,
+          55,
+          "39"
+        ],
+        [
+          30,
+          55,
+          "39"
+        ],
+        [
+          31,
+          55,
+          "3a"
+        ]
+      ]
+    }
+  ],
+  "internal_water_connections": [
+    {
+      "from_map": "MnR05C00R00",
+      "direction": "south",
+      "target_map": "MnR05C00R01",
+      "reverse_direction": "north",
+      "offset": 0,
+      "core_boundary_y": 48
+    },
+    {
+      "from_map": "MnR05C00R01",
+      "direction": "south",
+      "target_map": "MnR05C00R02",
+      "reverse_direction": "north",
+      "offset": 0,
+      "core_boundary_y": 96
+    }
+  ]
+}

@@ -1,5 +1,12 @@
 {
   "id": "MN_R10",
+  "native_cave_revision": {
+    "revision": "r10_rock_gallery_revision",
+    "room": "MnR10Cave1F",
+    "plan": "../caves/current-iron-v01/README.md",
+    "source": "../caves/johto-quality-v01/MnR10Cave1F.json",
+    "scope": "The canonical18x14 cave is now published on the compact-coast/Ely/waterfront lineage, with native stairs, both ledges, reader, Revive and mouth/Continue verified. This link does not compose the separately accepted outdoor carrier-bank grass revision."
+  },
   "map_prefix": "MnR10",
   "name": "Iron Range Descent",
   "required_flags": [
@@ -266,6 +273,14 @@
         [
           5,
           9
+        ],
+        [
+          5,
+          7
+        ],
+        [
+          12,
+          7
         ],
         [
           12,
@@ -1003,7 +1018,7 @@
       "purpose": "Return from the upper cache to the lower carrier road; ordinary uphill travel goes west to the actual ramp."
     }
   ],
-  "status": "Native terrain revision published in the 471-map geography review pack f9b04e67f2bf; current geometry/cave, Calder battle/PP/Continue and Surf seam/barrier fixtures pass. Final visual acceptance and earned regional progression remain open.",
+  "status": "Carrier-bank grass revision accepted in isolated minnesota-route-grass-r10-v01.crystalpack, identity 3d7362f74a63; native grass encounters, stair/ledge/mine, Surf, Calder/PP, Continue, stdio and preservation/audio checks pass. Shared current-game integration and earned regional progression remain open.",
   "anchor_status": "Exact existing native actors, doors, parties and story preserved; terrain-only geography revision and current production-controller proof recorded in playable/geography-revisions.md.",
   "unused_reservations": {
     "trainers": [
@@ -1111,5 +1126,40 @@
         29
       ]
     }
-  }
+  },
+  "directional_grass_loops": [
+    {
+      "id": "CARRIER_GRASS_CLIMB_OR_DRY_DROP",
+      "ledge_id": "CARRIER_BANK_DROP",
+      "outbound_start_core": [
+        25,
+        22
+      ],
+      "outbound_end_core": [
+        25,
+        19
+      ],
+      "grass_regions_core": [
+        [
+          10,
+          14,
+          14,
+          18
+        ]
+      ],
+      "northbound_minimum_grass_steps": 4,
+      "southbound_minimum_grass_steps": 0,
+      "dry_trail_core": [
+        [
+          25,
+          19
+        ],
+        [
+          25,
+          22
+        ]
+      ],
+      "scope": "Carrier-bank upper circuit; the lower road stays dry for the downhill return."
+    }
+  ]
 }

@@ -33,10 +33,18 @@ fn international_falls_preserves_the_region_and_rejects_unsafe_sources() {
     ))
     .expect("strict child");
     let root = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../planning/minnesota/towns");
-    let town =
-        std::fs::read_to_string(root.join("MnInternationalFalls.json")).expect("town source");
-    let layout = std::fs::read_to_string(root.join("MnInternationalFalls.layout.json"))
-        .expect("layout source");
+    let town = std::fs::read_to_string(
+        std::env::var_os("CRYSTAL_FALLS_TOWN")
+            .map(PathBuf::from)
+            .unwrap_or_else(|| root.join("MnInternationalFalls.json")),
+    )
+    .expect("town source");
+    let layout = std::fs::read_to_string(
+        std::env::var_os("CRYSTAL_FALLS_LAYOUT")
+            .map(PathBuf::from)
+            .unwrap_or_else(|| root.join("MnInternationalFalls.layout.json")),
+    )
+    .expect("layout source");
     let rebuilt = build_international_falls_modpack(&base, &town, &layout)
         .expect("deterministic source publication");
     assert_eq!(
@@ -69,24 +77,69 @@ fn international_falls_preserves_the_region_and_rejects_unsafe_sources() {
     );
     for (name, old) in &before.maps {
         let new = &after.maps[name];
-        if name == "MnBoundaryWaters" {
+        if matches!(name.as_str(), "MnBoundaryWaters" | "MnRainyRiverIcefields") {
             assert_eq!(new.attributes, old.attributes);
             assert_eq!(new.blocks, old.blocks);
-            assert_eq!(new.objects, old.objects);
+            if name == "MnBoundaryWaters" {
+                assert_eq!(new.objects, old.objects);
+                assert_eq!(new.events.coord_events, old.events.coord_events);
+                assert_eq!(new.scripts.len(), old.scripts.len() + 3);
+            } else {
+                assert!(new.objects.starts_with(&old.objects));
+                assert_eq!(new.objects.len(), old.objects.len() + 1);
+                let warden = new.objects.last().expect("one new warden");
+                assert_eq!((warden.x, warden.y), (60, 44));
+                assert_eq!(warden.script, "MnFallsTrailWarden");
+                assert_eq!(warden.sprite, "SPRITE_POKEFAN_M");
+                assert_eq!(
+                    warden.object_identifier.as_deref(),
+                    Some("MN_FALLS_TRAIL_WARDEN")
+                );
+                assert!(
+                    new.events
+                        .coord_events
+                        .starts_with(&old.events.coord_events)
+                );
+                assert_eq!(
+                    new.events.coord_events.len(),
+                    old.events.coord_events.len() + 2
+                );
+                for (event, y) in new.events.coord_events[old.events.coord_events.len()..]
+                    .iter()
+                    .zip([44, 45])
+                {
+                    assert_eq!((event.x, event.y), (61, y));
+                    assert!(event.scene_id.is_empty());
+                    assert_eq!(event.script_name, "MnFallsTrailCheck");
+                }
+                assert_eq!(new.scripts.len(), old.scripts.len() + 7);
+            }
             assert_eq!(new.events.warps, old.events.warps);
             assert_eq!(new.events.bg_events, old.events.bg_events);
-            assert_eq!(new.events.coord_events, old.events.coord_events);
             for (key, program) in &old.scripts {
                 assert_eq!(new.scripts.get(key), Some(program));
             }
-            assert_eq!(new.scripts.len(), old.scripts.len() + 3);
             let a = serde_json::to_value(old).expect("old hub");
             let b = serde_json::to_value(new).expect("new hub");
             for (key, v) in a.as_object().expect("module") {
-                if matches!(key.as_str(), "scripts" | "events") {
+                if matches!(key.as_str(), "scripts" | "events")
+                    || (name == "MnRainyRiverIcefields"
+                        && matches!(key.as_str(), "objects" | "map_event_section_commands"))
+                {
                     continue;
                 }
                 match (v, &b[key]) {
+                    (Value::Object(old), Value::Object(new)) => {
+                        for (label, body) in old {
+                            assert_eq!(new.get(label), Some(body), "old hub payload {key}/{label}");
+                        }
+                        for label in new.keys().filter(|label| !old.contains_key(*label)) {
+                            assert!(
+                                label.starts_with("MnFalls"),
+                                "unrelated hub payload {key}/{label}"
+                            );
+                        }
+                    }
                     (Value::Array(old), Value::Array(new)) => {
                         assert!(new.starts_with(old), "old hub payload prefix {key}");
                         for addition in &new[old.len()..] {
@@ -101,7 +154,7 @@ fn international_falls_preserves_the_region_and_rejects_unsafe_sources() {
             }
         } else {
             let mut expected = old.clone();
-            if matches!(name.as_str(), "MnR17C00R00" | "MnRainyRiverIcefields") {
+            if name == "MnR17C00R00" {
                 assert!(
                     new.attributes
                         .connections
@@ -113,12 +166,6 @@ fn international_falls_preserves_the_region_and_rejects_unsafe_sources() {
                 );
                 expected.attributes.connections = new.attributes.connections.clone();
                 expected.attributes.connection_flags = new.attributes.connection_flags.clone();
-                if name == "MnRainyRiverIcefields" {
-                    for x in 0..3 {
-                        assert_eq!(expected.blocks[14 * 32 + x], 0x3f);
-                        expected.blocks[14 * 32 + x] = 0x3c;
-                    }
-                }
             }
             assert!(new == &expected, "exact old map preservation {name}");
         }
@@ -137,6 +184,27 @@ fn international_falls_preserves_the_region_and_rejects_unsafe_sources() {
                 Some(&expected),
                 "one appended native callback"
             );
+        } else if key == "MnRainyRiverIcefields_MapEvents" {
+            // The existing event rows remain exact; only the two real
+            // checkpoint triggers and one warden are appended to their sections.
+            let old = v.as_array().expect("native winter events");
+            let new = after.map_scripts[key]
+                .as_array()
+                .expect("new winter events");
+            assert_eq!(new.len(), old.len() + 3);
+            let retained = new
+                .iter()
+                .filter(|row| {
+                    !((row["command"] == "coord_event" && row["args"][3] == "MnFallsTrailCheck")
+                        || (row["command"] == "object_event"
+                            && row["args"][11] == "MnFallsTrailWarden"))
+                })
+                .cloned()
+                .collect::<Vec<_>>();
+            assert_eq!(
+                &retained, old,
+                "every original winter event row stays exact"
+            );
         } else {
             assert_eq!(
                 after.map_scripts.get(key),
@@ -146,7 +214,14 @@ fn international_falls_preserves_the_region_and_rejects_unsafe_sources() {
         }
     }
     for (key, v) in &before.npcs {
-        assert_eq!(after.npcs.get(key), Some(v), "old split actors {key}");
+        if key == "MnRainyRiverIcefields" {
+            let old = v.as_array().expect("winter actors");
+            let new = after.npcs[key].as_array().expect("new winter actors");
+            assert!(new.starts_with(old), "old winter actors stay exact");
+            assert_eq!(new.len(), old.len() + 1);
+        } else {
+            assert_eq!(after.npcs.get(key), Some(v), "old split actors {key}");
+        }
     }
     for (key, v) in &before.runtime_map_metadata {
         assert_eq!(after.runtime_map_metadata.get(key), Some(v));

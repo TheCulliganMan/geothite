@@ -1,0 +1,55 @@
+{
+  "schema_version": 1,
+  "read_only_world_sha256": "4f1777985e299ac31144839e6e9c92d40416cf2f4babc21e3f236e2a7f0a7442",
+  "owned_before": {
+    "id": "MnR11C01R00",
+    "route": "MN_R11",
+    "column": 1,
+    "row": 0,
+    "dimensions_metatiles": [
+      24,
+      24
+    ]
+  },
+  "owned_after": {
+    "id": "MnR11C01R00",
+    "route": "MN_R11",
+    "column": 1,
+    "row": 0,
+    "dimensions_metatiles": [
+      4,
+      24
+    ],
+    "source_origin_metatiles": [
+      32,
+      0
+    ],
+    "native_origin_metatiles": [
+      222,
+      -400
+    ],
+    "footprint_contract": "revisions/north-shore-ely-geography-v01/coast-quality-v01/source-v02/ragged-footprint.contract.json"
+  },
+  "route_source_canvas_dimensions_unchanged": [
+    56,
+    96
+  ],
+  "unpublished_canvas_bounds": [
+    36,
+    0,
+    56,
+    24
+  ],
+  "other_chunk_dimensions_unchanged": true,
+  "town_move": {
+    "before": [
+      246,
+      -400
+    ],
+    "after": [
+      226,
+      -400
+    ]
+  },
+  "inland_geometry_owner": "root; no Cedar/R12/Neck mutation in coast patch"
+}

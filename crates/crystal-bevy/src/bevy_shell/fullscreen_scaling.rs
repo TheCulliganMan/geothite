@@ -113,6 +113,25 @@ mod fullscreen_scaling_tests {
     }
 
     #[test]
+    fn fullscreen_battle_fills_an_exact_lcd_viewport_after_projection_round_trip() {
+        for physical in [Vec2::new(640.0, 576.0), Vec2::new(1280.0, 1152.0)] {
+            let pixels_per_unit = fullscreen_pixels_per_world_unit(physical, 1.0);
+            let view = physical / pixels_per_unit;
+            let size = fullscreen_modal_size(view, pixels_per_unit);
+            assert!(
+                (size * pixels_per_unit - physical).length() < 0.001,
+                "integer LCD fits must not lose a complete source-pixel scale: {size:?}"
+            );
+        }
+        let almost = fullscreen_art_size(Vec2::new(160.0, 144.0), Vec2::new(639.0, 575.0), 1.0);
+        assert_eq!(
+            almost,
+            Vec2::new(480.0, 432.0),
+            "a real fractional fit must still round down"
+        );
+    }
+
+    #[test]
     fn fullscreen_multiplayer_players_beyond_original_lcd_have_positions() {
         assert!(runtime_tile_playfield_position(TilePosition::new(20, 10), 0, 0).is_some());
     }
@@ -212,7 +231,13 @@ Transform::from_xyz(0.0, 0.0, PRESENTED_FULLSCREEN_BASE_Z + 0.01),),
 
 fn fullscreen_art_size(native: Vec2, available: Vec2, physical_pixels_per_unit: f32) -> Vec2 {
     let fit = (available.max(Vec2::ONE) / native).min_element() * physical_pixels_per_unit;
-    let pixels = if fit >= 1.0 { fit.floor() } else { fit };
+    // Projection's world/physical round trip can turn exactly four source
+    // pixels into 3.9999998. Absorb only floating-point error before flooring.
+    let pixels = if fit >= 1.0 {
+        (fit + 4.0 * f32::EPSILON * fit).floor()
+    } else {
+        fit
+    };
     native * pixels / physical_pixels_per_unit
 }
 
@@ -524,7 +549,8 @@ fn fullscreen_modal_active(runtime: &BevyRuntimeShell, rendered: &RenderedViewpo
 
 fn fullscreen_battle_active(runtime: &BevyRuntimeShell) -> bool {
     runtime.visible_battle_transition.is_none()
-        && (runtime.battle_lcd_animation_active
+        && (safari_visible::battle_active(runtime)
+            || runtime.battle_lcd_animation_active
             || runtime.battle_message_scene.as_ref().is_some_and(|scene| scene.battle.is_some()))
 }
 

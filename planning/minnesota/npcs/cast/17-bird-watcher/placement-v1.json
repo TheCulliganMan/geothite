@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "trainers": [
+    {
+      "map": "MnBemidji",
+      "approach": [
+        28,
+        36
+      ],
+      "id": "MN_EXTRA_BIRD_WATCHER",
+      "display_name": "PIPPA",
+      "trainer_class": "MN_BIRD_WATCHER",
+      "class_name": "BIRD WATCHER",
+      "template_class": "PICNICKER",
+      "sprite": "SPRITE_MN_BIRD_WATCHER",
+      "tile": [
+        28,
+        35
+      ],
+      "facing": "south",
+      "sight_range": 1,
+      "defeated_flag": "EVENT_MN_EXTRA_BIRD_WATCHER",
+      "party": [
+        {
+          "species": "LOOBIT",
+          "level": 36
+        },
+        {
+          "species": "VANECHICK",
+          "level": 38
+        }
+      ],
+      "before_lines": [
+        "Hear that call?",
+        "My team heard you!"
+      ],
+      "after_lines": [
+        "What a fine flock!",
+        "Keep your eyes up."
+      ],
+      "loss_lines": [
+        "Watch your step.",
+        "Try a fresh angle."
+      ]
+    }
+  ]
+}

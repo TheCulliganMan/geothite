@@ -93,6 +93,7 @@ def main():
     parser.add_argument('--directory', type=Path,
                         default=Path('planning/minnesota/caves/johto-quality-v01'))
     parser.add_argument('--resume', action='store_true')
+    parser.add_argument('--room', help='Capture one complete room; default remains all nine.')
     args = parser.parse_args()
     output = args.output.resolve()
     output.mkdir(parents=True, exist_ok=args.resume)
@@ -116,6 +117,8 @@ def main():
             if source.name.endswith('.previous.json'):
                 continue
             room = json.loads(source.read_text())
+            if args.room is not None and room['id'] != args.room:
+                continue
             module = pack['data']['maps'][room['id']]
             assert module['blocks'] == [int(v, 16) for row in room['rows'] for v in row.split()]
             sheet = []
@@ -149,6 +152,7 @@ def main():
                 print(label, 'mismatches', row['pixel_mismatches'], flush=True)
                 sheet.append((view['id'], actual))
             save_render(room_sheet(sheet, 3), output/(room['id']+'-production-cameras.png'))
+        assert report['captures'], 'Selected room must have native review cameras.'
         report['status'] = 'PASS' if all(v['pixel_mismatches'] == 0 for v in report['captures']) else 'REVIEW_DIFFERENCES'
     finally:
         private.unlink()

@@ -38,6 +38,7 @@ fn main() -> Result<()> {
         "output must be untracked and must not alias the source"
     );
     let base = crystal_assets::read_verified_compiled_game_pack(input)?;
+    crystal_assets::verify_northstar_publication_geometry(&base)?;
     let result = crystal_assets::build_northstar_returns(&base, &source)?;
     result.write_preserving_storage(&resolved)?;
     let written = crystal_assets::read_verified_compiled_game_pack(&resolved)?;

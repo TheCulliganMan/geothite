@@ -1,4 +1,19 @@
+# Current installed grass review, 2026-10-28
+
+[Current 2D/native audit](../revisions/route-grass-v01/current-r08-audit-v01/README.md) verifies the installed grass pass on the704-map R03 cave child, retaining the ancient mire. Both local ledge loops have4grass steps uphill and0downhill; the longer dry lake circuit remains. Four native cases and15clean stdio calls pass. Terrain and selector are unchanged. Older isolated pack claims below are historical.
+
 # Northern Lake Circuit — current native review
+
+## Grass and dry ledge returns — 2026-10-28
+
+Accepted in the isolated `minnesota-route-grass-r08-v01.crystalpack`, identity
+prefix `75f7b910a3f7`. Twelve additional grass metatiles connect useful trails;
+the Birch climb requires four grass steps and its downhill hop stays dry. The
+Cedar bank has the same local pattern, while the whole-lake road and original
+dry shore walk remain available. Native movement, Cut, two trainer battles,
+pickups, Save/Continue, stdio and audio checks passed. See
+[R08 review](../revisions/route-grass-v01/R08.md) for exact scope and evidence.
+The shared game pack has not been replaced. Older reports below are historical.
 
 ## Eastern cedar peninsula — published and checked, 2026-10-26
 

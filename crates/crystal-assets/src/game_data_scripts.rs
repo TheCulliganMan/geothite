@@ -3644,6 +3644,19 @@ impl GameDataSet {
         let command = self
             .script_variable_command(map_name, source_script, command_index)?
             .clone();
+        // Regional research counts come from authoritative caught records and
+        // pack-authored active roster membership, never a saved variable mirror.
+        if command.command == "readvar"
+            && command.target.as_deref()
+                == Some(crate::northstar_progression_rewards::DEX_CAUGHT_VARIABLE)
+        {
+            let count = crate::northstar_progression_rewards::caught_count(self, state);
+            let variable = command.target.as_ref().context("regional Dex variable")?;
+            state
+                .script_runtime
+                .variables
+                .insert(variable.clone(), count.to_string());
+        }
         core_apply_script_variable_command(state, command, time_of_day)
             .map_err(|error| anyhow::anyhow!("apply script variable command: {error:?}"))
     }
@@ -4053,6 +4066,10 @@ impl GameDataSet {
                 "UsedSurfScript movement diverged from its prepared SURF outcome"
             );
             next_state.script_runtime.pending_surf_field_move = None;
+            if outcome.tile != outcome.previous_tile {
+                crystal_core::systems::safari::record_successful_travel(&mut next_state)
+                    .map_err(anyhow::Error::msg)?;
+            }
         }
         if let Some(mut pending) = pending_waterfall {
             let expected_tile = TilePosition::new(

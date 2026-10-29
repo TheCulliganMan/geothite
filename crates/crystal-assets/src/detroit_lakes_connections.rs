@@ -7,62 +7,6 @@ use crate::authored_town_geometry::kind;
 use crate::{CompiledGamePack, MapModule};
 
 pub(crate) fn install(pack: &mut CompiledGamePack) -> Result<()> {
-    // Close only the two surplus shoulders at the old unbound R19 south edge.
-    // The center pair now meets the town's exact two-tile north road.
-    let mut trail = pack
-        .data
-        .maps
-        .get("MnR19C00R01")
-        .context("observation trail")?
-        .clone();
-    ensure!(
-        trail.attributes.width == 32
-            && trail.attributes.height == 6
-            && !trail
-                .attributes
-                .connections
-                .iter()
-                .any(|c| c.direction == "south"),
-        "original unbound R19 southern endpoint required"
-    );
-    for x in [11, 13] {
-        let index = 5 * 32 + x;
-        ensure!(trail.blocks[index] == 2, "stale R19 road shoulder");
-        ensure!(
-            !trail
-                .objects
-                .iter()
-                .any(|o| usize::from(o.x / 2) == x && o.y / 2 == 5)
-                && !trail
-                    .events
-                    .bg_events
-                    .iter()
-                    .any(|e| usize::from(e.x / 2) == x && e.y / 2 == 5)
-                && !trail
-                    .events
-                    .warps
-                    .iter()
-                    .any(|e| usize::from(e.x / 2) == x && e.y / 2 == 5),
-            "R19 boundary cap cannot bury an event"
-        );
-        trail.blocks[index] = 5;
-    }
-    let bytes = trail
-        .blocks
-        .iter()
-        .copied()
-        .map(u8::try_from)
-        .collect::<std::result::Result<Vec<_>, _>>()?;
-    pack.data.map_blocks.insert(
-        trail
-            .attributes
-            .blocks_label
-            .clone()
-            .context("trail blocks")?,
-        crate::encode_base64_bytes(&bytes),
-    );
-    pack.data.maps.insert(trail.id.clone(), trail);
-
     replace(
         pack,
         "MnR15C00R00",
@@ -84,8 +28,6 @@ pub(crate) fn install(pack: &mut CompiledGamePack) -> Result<()> {
     for (name, side, target, offset) in [
         ("MnDetroitLakes", "east", "MnR15C00R00", -3),
         ("MnDetroitLakes", "west", "MnDetroitLakesApproach", 0),
-        ("MnDetroitLakes", "north", "MnR19C00R01", 0),
-        ("MnR19C00R01", "south", "MnDetroitLakes", 0),
     ] {
         let mut map = pack
             .data
@@ -124,20 +66,6 @@ pub(crate) fn install(pack: &mut CompiledGamePack) -> Result<()> {
             [[47, 18], [47, 19]],
             "MnDetroitLakes",
             [[0, 18], [0, 19]],
-        ),
-        (
-            "MnDetroitLakes",
-            "north",
-            [[24, 0], [25, 0]],
-            "MnR19C00R01",
-            [[24, 11], [25, 11]],
-        ),
-        (
-            "MnR19C00R01",
-            "south",
-            [[24, 11], [25, 11]],
-            "MnDetroitLakes",
-            [[24, 0], [25, 0]],
         ),
     ] {
         let map = &pack.data.maps[name];

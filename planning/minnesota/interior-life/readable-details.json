@@ -1,0 +1,142 @@
+{
+  "schema_version": 1,
+  "manifest": "minnesota-interior-layout-readable-details-v1",
+  "rooms": [
+    {
+      "map": "MnBrainerdOutfitter",
+      "intent": "Align the existing read-only detail with visible solid native furniture and preserve the whole room.",
+      "before_tileset": "house",
+      "before_rows": [
+        "0a 04 05 0e 04 0a",
+        "0a 0f 01 02 0f 0a",
+        "0a 0f 0c 0d 0f 0a",
+        "0a 0a 0a 0b 0a 0a"
+      ],
+      "tileset": "house",
+      "border_block": 10,
+      "rows": [
+        "0a 04 05 0e 04 0a",
+        "0a 0f 01 02 0f 0a",
+        "0a 0f 0c 0d 0f 0a",
+        "0a 0a 0a 0b 0a 0a"
+      ],
+      "arrival": [
+        6,
+        5
+      ],
+      "actor_approaches": [
+        {
+          "script": "MN_BRAINERD_GEAR_KEEPER",
+          "tile": [
+            3,
+            4
+          ]
+        },
+        {
+          "script": "MN_BRAINERD_CAMP_HELPER",
+          "tile": [
+            9,
+            5
+          ]
+        }
+      ],
+      "read_relocations": [
+        {
+          "script": "MN_BRAINERD_CAMP_GUIDE",
+          "before": [
+            4,
+            1
+          ],
+          "tile": [
+            3,
+            1
+          ],
+          "approach": [
+            3,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnStaplesStation",
+      "intent": "Align the existing read-only detail with visible solid native furniture and preserve the whole room.",
+      "before_tileset": "train_station",
+      "before_rows": [
+        "0a 16 0a 16 0a 16 0a 16 0a",
+        "0f 0b 0b 0b 0b 0b 0b 0b 0f",
+        "0f 14 10 11 15 12 13 14 0f",
+        "0f 04 04 04 04 04 04 04 0f",
+        "0f 06 06 06 06 07 06 06 0f",
+        "0f 24 25 24 03 03 03 03 0f",
+        "0f 1c 1c 1c 03 01 01 0c 0f",
+        "0f 1c 1c 1c 03 03 03 03 0f",
+        "0f 0f 0f 0f 09 0f 0f 0f 0f"
+      ],
+      "tileset": "train_station",
+      "border_block": 15,
+      "rows": [
+        "0a 16 0a 16 0a 16 0a 16 0a",
+        "0f 0b 0b 0b 0b 0b 0b 0b 0f",
+        "0f 14 10 11 15 12 13 14 0f",
+        "0f 04 04 04 04 04 04 04 0f",
+        "0f 06 06 06 06 07 06 06 0f",
+        "0f 24 25 24 03 03 03 03 0f",
+        "0f 1c 1c 1c 03 01 01 0c 0f",
+        "0f 1c 1c 1c 03 03 03 03 0f",
+        "0f 0f 0f 0f 09 0f 0f 0f 0f"
+      ],
+      "arrival": [
+        9,
+        15
+      ],
+      "actor_approaches": [
+        {
+          "script": "MN_STAPLES_CONDUCTOR",
+          "tile": [
+            11,
+            10
+          ]
+        },
+        {
+          "script": "MN_STAPLES_SIGNAL_KEEPER",
+          "tile": [
+            3,
+            12
+          ]
+        },
+        {
+          "script": "MN_STAPLES_PARCEL_CLERK",
+          "tile": [
+            5,
+            14
+          ]
+        },
+        {
+          "script": "MN_STAPLES_WAITING_STUDENT",
+          "tile": [
+            12,
+            14
+          ]
+        }
+      ],
+      "read_relocations": [
+        {
+          "script": "MN_STAPLES_SIGNAL_BOOK",
+          "before": [
+            4,
+            11
+          ],
+          "tile": [
+            4,
+            10
+          ],
+          "approach": [
+            4,
+            11
+          ]
+        }
+      ]
+    }
+  ]
+}

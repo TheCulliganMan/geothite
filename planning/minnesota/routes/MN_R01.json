@@ -954,5 +954,89 @@
     "state": "Current source-native repair published; geometry, preservation, fresh stdio MCP and audio verification pass. Regional starter gate remains pending.",
     "trainer_density": "Three named optional trainers replace six generic reservations. Flags 04\u201306 remain unused; Q01 depends on none of them."
   },
-  "cut_gates": []
+  "cut_gates": [],
+  "directional_grass_loops": [
+    {
+      "id": "BLUFF_GRASS_CLIMB_DRY_DROP",
+      "ledge_id": "BLUFF_RETURN",
+      "outbound_start_core": [
+        29,
+        18
+      ],
+      "outbound_end_core": [
+        29,
+        15
+      ],
+      "grass_regions_core": [
+        [
+          38,
+          20,
+          40,
+          24
+        ],
+        [
+          42,
+          20,
+          46,
+          24
+        ],
+        [
+          40,
+          22,
+          42,
+          24
+        ]
+      ],
+      "northbound_minimum_grass_steps": 2,
+      "southbound_minimum_grass_steps": 0,
+      "dry_trail_core": [
+        [
+          29,
+          18
+        ],
+        [
+          28,
+          18
+        ],
+        [
+          27,
+          18
+        ],
+        [
+          26,
+          18
+        ],
+        [
+          26,
+          19
+        ],
+        [
+          26,
+          20
+        ],
+        [
+          26,
+          21
+        ],
+        [
+          25,
+          21
+        ],
+        [
+          25,
+          22
+        ],
+        [
+          25,
+          23
+        ],
+        [
+          25,
+          24
+        ]
+      ],
+      "all_ledge_lanes_minimum_grass_steps": 2,
+      "scope": "Bluff loop: grass across the ordinary ramp approach, dry southward ledge return to the lower trail. Existing walker dry pad and ramp preserved."
+    }
+  ]
 }

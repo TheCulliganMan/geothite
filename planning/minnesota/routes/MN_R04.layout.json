@@ -826,6 +826,102 @@
         11
       ],
       "block": "00"
+    },
+    {
+      "kind": "block_remap",
+      "name": "Rose walk southern neck",
+      "bounds": [
+        6,
+        7,
+        7,
+        8
+      ],
+      "from": "02",
+      "to": "03"
+    },
+    {
+      "kind": "block_remap",
+      "name": "Rose walk west shoulder",
+      "bounds": [
+        7,
+        5,
+        8,
+        6
+      ],
+      "from": "02",
+      "to": "03"
+    },
+    {
+      "kind": "block_remap",
+      "name": "Rose walk east shoulder",
+      "bounds": [
+        10,
+        5,
+        11,
+        6
+      ],
+      "from": "02",
+      "to": "03"
+    },
+    {
+      "kind": "block_remap",
+      "name": "Rose walk bridge approach",
+      "bounds": [
+        11,
+        6,
+        12,
+        8
+      ],
+      "from": "02",
+      "to": "03"
+    },
+    {
+      "kind": "block_remap",
+      "name": "Quiet garden east habitat",
+      "bounds": [
+        5,
+        13,
+        7,
+        14
+      ],
+      "from": "02",
+      "to": "03"
+    },
+    {
+      "kind": "block_remap",
+      "name": "Quiet garden southern habitat",
+      "bounds": [
+        5,
+        14,
+        6,
+        15
+      ],
+      "from": "02",
+      "to": "03"
+    },
+    {
+      "kind": "block_remap",
+      "name": "Picnic garden entrance",
+      "bounds": [
+        20,
+        11,
+        21,
+        12
+      ],
+      "from": "02",
+      "to": "03"
+    },
+    {
+      "kind": "block_remap",
+      "name": "Picnic reward approach",
+      "bounds": [
+        20,
+        13,
+        22,
+        14
+      ],
+      "from": "02",
+      "to": "03"
     }
   ],
   "source_pixels_modified": false,

@@ -1,0 +1,136 @@
+{
+  "route": "MN_R11",
+  "active_parent": "content-packs/minnesota-r10-rock-gallery-v01.crystalpack",
+  "active_parent_sha256": "a69aa145e6ea870b459d79859958806170b56036af4f85e0c1e007629a2f67d6",
+  "status": "detached historical terrain deltas; not publication approval",
+  "cells": [
+    {
+      "map": "MnR11C00R01",
+      "metatile": [
+        16,
+        20
+      ],
+      "global_metatile": [
+        16,
+        44
+      ],
+      "before": 1,
+      "after": 3,
+      "current": 1
+    },
+    {
+      "map": "MnR11C00R01",
+      "metatile": [
+        17,
+        20
+      ],
+      "global_metatile": [
+        17,
+        44
+      ],
+      "before": 1,
+      "after": 3,
+      "current": 1
+    },
+    {
+      "map": "MnR11C00R01",
+      "metatile": [
+        17,
+        21
+      ],
+      "global_metatile": [
+        17,
+        45
+      ],
+      "before": 114,
+      "after": 10,
+      "current": 114
+    },
+    {
+      "map": "MnR11C00R02",
+      "metatile": [
+        17,
+        21
+      ],
+      "global_metatile": [
+        17,
+        69
+      ],
+      "before": 1,
+      "after": 3,
+      "current": 1
+    },
+    {
+      "map": "MnR11C00R02",
+      "metatile": [
+        18,
+        21
+      ],
+      "global_metatile": [
+        18,
+        69
+      ],
+      "before": 2,
+      "after": 3,
+      "current": 2
+    },
+    {
+      "map": "MnR11C00R02",
+      "metatile": [
+        17,
+        22
+      ],
+      "global_metatile": [
+        17,
+        70
+      ],
+      "before": 1,
+      "after": 3,
+      "current": 1
+    },
+    {
+      "map": "MnR11C00R02",
+      "metatile": [
+        18,
+        22
+      ],
+      "global_metatile": [
+        18,
+        70
+      ],
+      "before": 2,
+      "after": 3,
+      "current": 2
+    },
+    {
+      "map": "MnR11C00R03",
+      "metatile": [
+        18,
+        12
+      ],
+      "global_metatile": [
+        18,
+        84
+      ],
+      "before": 113,
+      "after": 3,
+      "current": 113
+    },
+    {
+      "map": "MnR11C00R03",
+      "metatile": [
+        18,
+        13
+      ],
+      "global_metatile": [
+        18,
+        85
+      ],
+      "before": 113,
+      "after": 3,
+      "current": 113
+    }
+  ],
+  "conflicts": [],
+  "already_present": 0
+}

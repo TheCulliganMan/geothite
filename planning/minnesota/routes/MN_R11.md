@@ -1,3 +1,14 @@
+# Current installed warm grass revision, 2026-10-28
+
+[Selected R11 review](../revisions/route-grass-v01/current-r11-v01/README.md) adds8grass metatiles and1attached boulder on the705-map current game. Birch and Lester climbs require grass with dry downhill returns; Stoney is shared four-step habitat. Nine fresh native cases,15clean stdio calls,759preservation checks and377audio programs pass. North Shore remains on mn_north_shore with zeroICE, including scripted changes. All earlier pack/dimension claims below are historical.
+
+> Historical runbook: the rectangular standalone installer described below is
+> retired. Current geography uses the compact Superior lineage, with direct
+> North Shore–Grand Marais adjacency and shortened Gunflint. Consult
+> `../world.json` → `active_local_review_revision` for the current native pack.
+> Older dimensions, pack commands and acceptance claims below are preserved
+> as historical evidence, not current publication instructions.
+
 # Current expanded North Shore — 2026-10-26
 
 The authoritative56×96 layout is installed in the505-map native review pack.
@@ -470,3 +481,20 @@ it never clears that pending state. Root owns sharing the existing Waterfall
 clock with neutral settling and guarding animation input. The bounded native
 Waterfall test remains a blocker until its actual ascent, bank dismount,
 Surf relaunch and descent pass.
+
+
+## Current warm Superior coves (2026-10-28)
+
+The compact approved coast now has three small stepped pine headlands and a
+sheltered middle cove. Short grass saddles lead to actual-water overlooks at
+global gameplay tiles (58,68), (60,136) and (64,178). Continuous Superior,
+all creek mouths and cascades, the compact 4x24 terminal, native gates,
+existing actors/pickups, cabin doors and regional seams are preserved.
+
+The canonical explicit layout matches the installed warm compact terrain and
+its bounded 179-cell revision. Rust publication and exact unrelated-content
+preservation are implemented by `build_north_shore_coves_pack`; see
+`../revisions/coast-coves-v01/README.md` for the verified publication command,
+source proof and production headless images. The generic route dossier still
+contains a pre-existing stale required-grass rectangle; it is not replayed by
+this publisher. Native campaign progression is distinct from location fixtures.

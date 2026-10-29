@@ -1,0 +1,44 @@
+{
+  "status": "PASS",
+  "selected": true,
+  "publication": {
+    "kind": "terrain_only_route_revision",
+    "route": "MN_R19",
+    "parent_revision": "route_grass_r18_revision",
+    "parent_pack": "content-packs/minnesota-current-grass-r18-v01.crystalpack",
+    "parent_pack_sha256": "36e58054462b67415a89445a4fc465ccc6edc84b082025a41f504104a6a3e323",
+    "pack": "content-packs/minnesota-current-grass-r19-v01.crystalpack",
+    "pack_sha256": "688f1568e8e5001c6f9b9c544c9f31aa8451dafd992ce67078a229fb5a5cbb10",
+    "content_identity": "cb73653796e4854fad042481a6f5154b343d72058b19ead4f6abb7bcacaf08e4",
+    "maps": 730,
+    "changed_metatiles": 4,
+    "added_grass_metatiles": 4,
+    "grass_walking_tiles": 156,
+    "pine_bend_minimum_grass_steps_both_directions": 7,
+    "existing_ledge_uphill_grass_steps": 3,
+    "existing_ledge_downhill_grass_steps": 0,
+    "native_controller_cases_passed": 6,
+    "stdio_calls_passed": 15,
+    "stdio_stderr_bytes": 0,
+    "audio_programs_verified": 377,
+    "actual_2d_captures_reviewed": 1,
+    "other_maps_preserved_exact": 729,
+    "ice_blocks_across_R11_Duluth_GrandMarais": 0,
+    "seven_HMs_19Fly_points_habitats_cyclists_fossils_and_script_repairs_preserved": true,
+    "runbook": "revisions/route-grass-v01/current-r19-v01/README.md",
+    "status": "Accepted pine-bend habitat; native new-grass encounter/RUN/return/Continue, dry drop and grassy uphill/ramps, battle-versus-grass choice, observations/rewards, Headbutt PP/battle/Continue, production stdio, audio, 2D and exact preservation pass.",
+    "scope_limit": "R20, remaining outdoor links/parks and final current-story coverage remain open. Explicit fixture party/flags/position do not establish earned regional access or encounter balance."
+  },
+  "visual_review": "visual-acceptance.json",
+  "pixel_proof": "source-native-pixel-proof.json",
+  "native_logs": [
+    ".local/route-grass-review/current-r19-v01-quality-v03.log",
+    ".local/route-grass-review/current-r19-v01-story.log"
+  ],
+  "stdio": ".local/route-grass-review/current-r19-v01-stdio.receipt.json",
+  "remaining": [
+    "R20",
+    "Other outdoor regional links and parks",
+    "Final current-story coverage"
+  ]
+}

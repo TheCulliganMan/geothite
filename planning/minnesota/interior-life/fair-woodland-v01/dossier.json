@@ -1,0 +1,8021 @@
+{
+  "id": "MN_STATE_FAIRGROUNDS",
+  "map_name": "MnStateFairgrounds",
+  "name": "MINNESOTA STATE FAIRGROUNDS",
+  "parent_hub": "MnMinneapolis",
+  "status": "Local compact native 2D fair accepted: real lower Pine Country walking gate, 255 exterior characters/35 trainers, three inhabited halls with seven room interactions, both lane projections and all six carpets. Four controller cases, two crowd cases, preservation/rejection and 377 audio checks pass. Full regional campaign/interior acceptance remains open.",
+  "identity": "A fair to explore and do things in: a midway, livestock and 4-H barns, dairy exhibits, food stalls, a show ring and a fairground loop. Separate map, not a fair sign or one vendor in the city.",
+  "extent_policy": "Fit the actual activities and readable native player cameras before freezing dimensions. Do not reserve a huge empty rectangle or shrink every activity into one plaza.",
+  "access": {
+    "from_hub": "MnR05C00R02",
+    "kind": "Two-way woodland trail from the lower Pine Country road northwest of the metro.",
+    "city_gate_anchor_core": [
+      [
+        0,
+        8
+      ],
+      [
+        0,
+        9
+      ]
+    ],
+    "city_gate_metatile": [
+      0,
+      4
+    ],
+    "city_landing_metatile": [
+      9,
+      4
+    ],
+    "city_side": "W",
+    "anchor_status": "Candidate native fair east/R05 west offsets+28/-28; nine exact pine cells open onto the existing road.",
+    "rail_connection": "Walk from Minneapolis north onto Pine Country, then turn west. St Paul connects through the ordinary regional roads.",
+    "admission": "No new mandatory main-story fee or rail-pass requirement. Optional shop purchases and game costs must be shown before spending.",
+    "progression": "Optional regional destination. No badge, Q03 courier victory, Q06 depot flag, Safari permit or champion requirement is granted merely by entering."
+  },
+  "districts": [
+    {
+      "id": "ENTRY_COMMON",
+      "purpose": "Recognizable gate, readable grounds map, information volunteer, fountain or planted meeting point and clear exits to both sides of the fair loop."
+    },
+    {
+      "id": "MIDWAY",
+      "purpose": "Distinct ride silhouettes, fenced queues, two native-script activities and a prize booth. All passable platforms must lead somewhere useful; moving ride presentation requires explicit Rust support and is not assumed to exist."
+    },
+    {
+      "id": "LIVESTOCK_4H",
+      "purpose": "At least one fully enterable barn, a small show ring, regional creature/handler pairs and a 4-H learning activity. Pens have solid native fences, real gates and connected public viewing paths."
+    },
+    {
+      "id": "DAIRY_BUILDING",
+      "purpose": "Enterable cold exhibit and butter-sculpture display tied to the existing Chislet/Buttermuse family. Dialogue or a demonstrator activity gives the exhibit a purpose; a building facade alone is insufficient."
+    },
+    {
+      "id": "FOOD_ROW",
+      "purpose": "Food-on-a-stick stalls, cookie stand and public picnic tables. Vendor menus use native inventory/money/shop behavior; do not scatter item balls as fake vendors. Doughlin/Crumcone/Pailbaron habitat follows the existing roster identities."
+    },
+    {
+      "id": "SHOW_RING_GREEN",
+      "purpose": "A visible trainer demonstration or optional small battle event, resting/seating space and a useful return connection to the entry. A grassy field must serve the ring or an encounter/activity rather than being avoidable filler."
+    }
+  ],
+  "activity_contracts": [
+    {
+      "id": "FAIR_STAMP_TRAIL",
+      "behavior": "Three distinct stations: barn volunteer, dairy demonstrator and midway host. Native flags record each interaction. Prize clerk awards once only after all three; a full bag must leave the reward claim recoverable.",
+      "status": "Implemented in crowd-v2; production controller tests pass with state changes and persistence."
+    },
+    {
+      "id": "MIDWAY_QUIZ",
+      "behavior": "Original regional creature question with native menu choices and dialogue branches. Show any cost first, allow B cancellation, and prevent retry spam from duplicating a once-only reward.",
+      "status": "Implemented in crowd-v2; production controller tests pass with state changes and persistence."
+    },
+    {
+      "id": "SHOW_RING_BATTLE",
+      "behavior": "Optional legal trainer party with visible invitation, native battle outcome, selected move PP changes and repeat dialogue. A win cannot stand in for a regional gym badge.",
+      "status": "Implemented in crowd-v2; production controller tests pass with state changes and persistence."
+    },
+    {
+      "id": "FAIR_CARE_CHALLENGE",
+      "behavior": "Free native yes/no care question. One BERRY for a correct answer, full-bag retry and once-only flag; wrong answers can retry.",
+      "status": "Production controller wrong/correct/repeat/Continue checks pass."
+    },
+    {
+      "id": "FAIR_FIRST_AID",
+      "behavior": "Staffed native counter restores party HP and PP through HealParty.",
+      "status": "Verified after actual show-ring battles through production input."
+    }
+  ],
+  "existing_creature_links": [
+    {
+      "family": "MN_F005",
+      "members": [
+        "Riceling",
+        "Reedraft",
+        "Zizalith"
+      ],
+      "scope": "Every active evolution appears in native fair grass at all times of day."
+    },
+    {
+      "family": "MN_F010",
+      "members": [
+        "Oatlet",
+        "Millimp",
+        "Flourgeist"
+      ],
+      "scope": "Every active evolution appears in native fair grass at all times of day."
+    },
+    {
+      "family": "MN_F016",
+      "members": [
+        "Flapip",
+        "Stackajack"
+      ],
+      "scope": "Every active evolution appears in native fair grass at all times of day."
+    },
+    {
+      "family": "MN_F020",
+      "members": [
+        "Crispip",
+        "Cidermaw"
+      ],
+      "scope": "Every active evolution appears in native fair grass at all times of day."
+    },
+    {
+      "family": "MN_F032",
+      "members": [
+        "Totlit",
+        "Casserogre"
+      ],
+      "scope": "Every active evolution appears in native fair grass at all times of day."
+    },
+    {
+      "family": "MN_F033",
+      "members": [
+        "Curdlet",
+        "Squeakurd"
+      ],
+      "scope": "Every active evolution appears in native fair grass at all times of day."
+    },
+    {
+      "family": "MN_F038",
+      "members": [
+        "Lutebrisk"
+      ],
+      "scope": "Every active evolution appears in native fair grass at all times of day."
+    },
+    {
+      "family": "MN_F042",
+      "members": [
+        "Tiltawisp"
+      ],
+      "scope": "Every active evolution appears in native fair grass at all times of day."
+    },
+    {
+      "family": "MN_F083",
+      "members": [
+        "Cinderfin",
+        "Brinebraze"
+      ],
+      "scope": "Every active evolution appears in native fair grass at all times of day."
+    },
+    {
+      "family": "MN_F090",
+      "members": [
+        "Doughlin",
+        "Crumcone",
+        "Pailbaron"
+      ],
+      "scope": "Every active evolution appears in native fair grass at all times of day."
+    },
+    {
+      "family": "MN_F098",
+      "members": [
+        "Chislet",
+        "Buttermuse"
+      ],
+      "scope": "Every active evolution appears in native fair grass at all times of day."
+    },
+    {
+      "family": "MN_F101",
+      "members": [
+        "Zapsap",
+        "Tapacitor",
+        "Beetynamo"
+      ],
+      "scope": "Every active evolution appears in native fair grass at all times of day."
+    },
+    {
+      "family": "MN_F105",
+      "members": [
+        "Pipcorn",
+        "Pufflare",
+        "Popummel"
+      ],
+      "scope": "Every active evolution appears in native fair grass at all times of day."
+    }
+  ],
+  "map_acceptance": [
+    "Complete whole grounds render with every gate, district, pen, visible door and return loop; inspect actual160\u00d7144 approach and weakest routine segment.",
+    "Explicit native tile varieties distinguish midway, barns, dairy exhibit, food row and ring without prop scattering or wide vacant paving.",
+    "Connected roads and queues, ordinary return paths around any one-way ledges, physical fences/bollards and visible closure of reachable water boundaries.",
+    "Exact exterior DOOR quadrants, safe passive Floor arrivals and reciprocal room/gate exits; no decorative facade door promises.",
+    "Source collision and negative checks followed by native VisibleShellController entry/return, each activity, purchase/cancel, battle, reward-full-bag recovery and Save/Continue.",
+    "Retain every original render, rejected pass, source snapshot, conversion, crop, preview and native capture for reuse."
+  ],
+  "style_direction": {
+    "authority": "User: Pok\u00e9mon style; tile based, like Pok\u00e9mon Center / Goldenrod Underground vendors. Do not bake vendors into tile art.",
+    "native_tiles_only": true,
+    "vendors_are_separate_objects": true,
+    "large_illustrated_booths": "Rejected; retained only as source history."
+  },
+  "reference_map": {
+    "url": "https://assets.mnstatefair.org/pdf/26-MSF-color-Map-web.pdf",
+    "year": 2026,
+    "use": "Geographic inspiration, condensed into a native game map. Official reference retained in ignored renders/state-fair/reference."
+  },
+  "native_map": {
+    "id": "MnStateFairgrounds",
+    "native_constant": "MN_STATE_FAIRGROUNDS",
+    "compiled_tileset": "mn_state_fair_native",
+    "dimensions_metatiles": [
+      48,
+      36
+    ],
+    "ports": [
+      {
+        "route": "MN_R05",
+        "side": "E",
+        "gate_metatile": [
+          46,
+          32
+        ],
+        "landing_metatile": [
+          44,
+          32
+        ]
+      }
+    ],
+    "residents": [
+      {
+        "id": "MnFairCookieVendor",
+        "sprite": "SPRITE_GRANNY",
+        "tile": [
+          55,
+          10
+        ],
+        "facing": "south",
+        "lines": [
+          "Fresh cookies by the pail!"
+        ],
+        "service": "pokemart",
+        "stock": [
+          "FAIR_COOKIE_PAIL"
+        ],
+        "approach": [
+          55,
+          12
+        ],
+        "counter_tile": [
+          55,
+          11
+        ]
+      },
+      {
+        "id": "MnFairCornVendor",
+        "sprite": "SPRITE_FISHER",
+        "tile": [
+          59,
+          10
+        ],
+        "facing": "south",
+        "lines": [
+          "Roasted sweet corn and pronto pups!"
+        ],
+        "service": "pokemart",
+        "stock": [
+          "FAIR_CORN_STICK",
+          "FAIR_PRONTO_PUP"
+        ],
+        "approach": [
+          59,
+          12
+        ],
+        "counter_tile": [
+          59,
+          11
+        ]
+      },
+      {
+        "id": "MnFairPretzelVendor",
+        "sprite": "SPRITE_POKEFAN_M",
+        "tile": [
+          63,
+          10
+        ],
+        "facing": "south",
+        "lines": [
+          "One twist, warm salt, a happy partner."
+        ],
+        "service": "pokemart",
+        "stock": [
+          "FAIR_PRETZEL"
+        ],
+        "approach": [
+          63,
+          12
+        ],
+        "counter_tile": [
+          63,
+          11
+        ]
+      },
+      {
+        "id": "MnFairCurdsVendor",
+        "sprite": "SPRITE_POKEFAN_F",
+        "tile": [
+          67,
+          10
+        ],
+        "facing": "south",
+        "lines": [
+          "Golden cheese curds and tater tot hotdish!"
+        ],
+        "service": "pokemart",
+        "stock": [
+          "FAIR_CHEESE_CURDS",
+          "FAIR_HOTDISH"
+        ],
+        "approach": [
+          67,
+          12
+        ],
+        "counter_tile": [
+          67,
+          11
+        ]
+      },
+      {
+        "id": "MnFairRootBeerVendor",
+        "sprite": "SPRITE_GENTLEMAN",
+        "tile": [
+          71,
+          10
+        ],
+        "facing": "south",
+        "lines": [
+          "Beer heals 100 HP, but makes your partner confused.",
+          "Root beer is a gentler choice."
+        ],
+        "service": "pokemart",
+        "stock": [
+          "FAIR_ROOT_BEER",
+          "FAIR_BEER"
+        ],
+        "approach": [
+          71,
+          12
+        ],
+        "counter_tile": [
+          71,
+          11
+        ]
+      },
+      {
+        "id": "MnFairIceCreamVendor",
+        "sprite": "SPRITE_LASS",
+        "tile": [
+          75,
+          10
+        ],
+        "facing": "south",
+        "lines": [
+          "The dairy churned this batch today."
+        ],
+        "service": "pokemart",
+        "stock": [
+          "FAIR_ICE_CREAM"
+        ],
+        "approach": [
+          75,
+          12
+        ],
+        "counter_tile": [
+          75,
+          11
+        ]
+      },
+      {
+        "id": "MnFairPickleVendor",
+        "sprite": "SPRITE_SUPER_NERD",
+        "tile": [
+          79,
+          10
+        ],
+        "facing": "south",
+        "lines": [
+          "A pickle on a stick? Of course!"
+        ],
+        "service": "pokemart",
+        "stock": [
+          "FAIR_PICKLE"
+        ],
+        "approach": [
+          79,
+          12
+        ],
+        "counter_tile": [
+          79,
+          11
+        ]
+      },
+      {
+        "id": "MnFairKettleVendor",
+        "sprite": "SPRITE_TEACHER",
+        "tile": [
+          83,
+          10
+        ],
+        "facing": "south",
+        "lines": [
+          "Kettle corn and deep-fried candy bars!"
+        ],
+        "service": "pokemart",
+        "stock": [
+          "FAIR_KETTLE_CORN",
+          "FAIR_FRIED_CANDY"
+        ],
+        "approach": [
+          83,
+          12
+        ],
+        "counter_tile": [
+          83,
+          11
+        ]
+      },
+      {
+        "id": "MnFairLemonadeVendor",
+        "sprite": "SPRITE_LASS",
+        "tile": [
+          57,
+          22
+        ],
+        "facing": "south",
+        "lines": [
+          "Fresh lemonade on Underwood Street."
+        ],
+        "service": "pokemart",
+        "stock": [
+          "LEMONADE"
+        ],
+        "approach": [
+          57,
+          24
+        ],
+        "counter_tile": [
+          57,
+          23
+        ]
+      },
+      {
+        "id": "MnFairMilkVendor",
+        "sprite": "SPRITE_POKEFAN_F",
+        "tile": [
+          65,
+          22
+        ],
+        "facing": "south",
+        "lines": [
+          "All-you-can-carry milk for your party."
+        ],
+        "service": "pokemart",
+        "stock": [
+          "MOOMOO_MILK"
+        ],
+        "approach": [
+          65,
+          24
+        ],
+        "counter_tile": [
+          65,
+          23
+        ]
+      },
+      {
+        "id": "MnFairProduceVendor",
+        "sprite": "SPRITE_FISHER",
+        "tile": [
+          73,
+          22
+        ],
+        "facing": "south",
+        "lines": [
+          "Growers brought their best berries."
+        ],
+        "service": "pokemart",
+        "stock": [
+          "BERRY",
+          "GOLD_BERRY"
+        ],
+        "approach": [
+          73,
+          24
+        ],
+        "counter_tile": [
+          73,
+          23
+        ]
+      },
+      {
+        "id": "MnFairBakerVendor",
+        "sprite": "SPRITE_GRANNY",
+        "tile": [
+          81,
+          22
+        ],
+        "facing": "south",
+        "lines": [
+          "Mini donuts, funnel cake, and cookies!"
+        ],
+        "service": "pokemart",
+        "stock": [
+          "FAIR_COOKIE_PAIL",
+          "FAIR_PRETZEL",
+          "FAIR_MINI_DONUTS",
+          "FAIR_FUNNEL_CAKE"
+        ],
+        "approach": [
+          81,
+          24
+        ],
+        "counter_tile": [
+          81,
+          23
+        ]
+      },
+      {
+        "id": "MnFairMidwayHost",
+        "sprite": "SPRITE_SUPER_NERD",
+        "tile": [
+          9,
+          24
+        ],
+        "facing": "south",
+        "lines": [
+          "Step up for the dairy quiz!"
+        ],
+        "service": null,
+        "stock": [],
+        "approach": [
+          9,
+          26
+        ],
+        "counter_tile": [
+          9,
+          25
+        ]
+      },
+      {
+        "id": "MnFairGameHost",
+        "sprite": "SPRITE_POKEFAN_M",
+        "tile": [
+          17,
+          24
+        ],
+        "facing": "south",
+        "lines": [
+          "Free ring toss!"
+        ],
+        "service": null,
+        "stock": [],
+        "approach": [
+          17,
+          26
+        ],
+        "counter_tile": [
+          17,
+          25
+        ]
+      },
+      {
+        "id": "MnFairBallVendor",
+        "sprite": "SPRITE_GENTLEMAN",
+        "tile": [
+          25,
+          24
+        ],
+        "facing": "south",
+        "lines": [
+          "Ready for your next catch?"
+        ],
+        "service": "pokemart",
+        "stock": [
+          "POKE_BALL",
+          "GREAT_BALL"
+        ],
+        "approach": [
+          25,
+          26
+        ],
+        "counter_tile": [
+          25,
+          25
+        ]
+      },
+      {
+        "id": "MnFairRibbonVendor",
+        "sprite": "SPRITE_LASS",
+        "tile": [
+          33,
+          24
+        ],
+        "facing": "south",
+        "lines": [
+          "A ribbon for your show-ring partner."
+        ],
+        "service": "pokemart",
+        "stock": [
+          "PINK_BOW",
+          "POLKADOT_BOW"
+        ],
+        "approach": [
+          33,
+          26
+        ],
+        "counter_tile": [
+          33,
+          25
+        ]
+      },
+      {
+        "id": "MnFairBerryGrower",
+        "sprite": "SPRITE_POKEFAN_F",
+        "tile": [
+          25,
+          8
+        ],
+        "facing": "south",
+        "lines": [
+          "Grown with patient care."
+        ],
+        "service": "pokemart",
+        "stock": [
+          "MINT_BERRY",
+          "PRZCUREBERRY"
+        ],
+        "approach": [
+          25,
+          10
+        ],
+        "counter_tile": [
+          25,
+          9
+        ]
+      },
+      {
+        "id": "MnFairWaterVendor",
+        "sprite": "SPRITE_FISHER",
+        "tile": [
+          35,
+          8
+        ],
+        "facing": "south",
+        "lines": [
+          "Stay cool as you explore the grounds."
+        ],
+        "service": "pokemart",
+        "stock": [
+          "FRESH_WATER",
+          "SODA_POP"
+        ],
+        "approach": [
+          35,
+          10
+        ],
+        "counter_tile": [
+          35,
+          9
+        ]
+      },
+      {
+        "id": "MnFairSupplyVendor",
+        "sprite": "SPRITE_GENTLEMAN",
+        "tile": [
+          7,
+          38
+        ],
+        "facing": "south",
+        "lines": [
+          "Supplies for the trip home."
+        ],
+        "service": "pokemart",
+        "stock": [
+          "POTION",
+          "SUPER_POTION"
+        ],
+        "approach": [
+          7,
+          40
+        ],
+        "counter_tile": [
+          7,
+          39
+        ]
+      },
+      {
+        "id": "MnFairFeedVendor",
+        "sprite": "SPRITE_FISHER",
+        "tile": [
+          15,
+          38
+        ],
+        "facing": "south",
+        "lines": [
+          "A snack after the judging."
+        ],
+        "service": "pokemart",
+        "stock": [
+          "BERRY",
+          "FAIR_CORN_STICK"
+        ],
+        "approach": [
+          15,
+          40
+        ],
+        "counter_tile": [
+          15,
+          39
+        ]
+      },
+      {
+        "id": "MnFairMarketSnack",
+        "sprite": "SPRITE_LASS",
+        "tile": [
+          7,
+          58
+        ],
+        "facing": "south",
+        "lines": [
+          "Fried walleye and fair snacks, right here!"
+        ],
+        "service": "pokemart",
+        "stock": [
+          "FAIR_PRETZEL",
+          "FAIR_PICKLE",
+          "FAIR_WALLEYE"
+        ],
+        "approach": [
+          7,
+          60
+        ],
+        "counter_tile": [
+          7,
+          59
+        ]
+      },
+      {
+        "id": "MnFairHoneyVendor",
+        "sprite": "SPRITE_POKEFAN_F",
+        "tile": [
+          15,
+          58
+        ],
+        "facing": "south",
+        "lines": [
+          "Honey from the agricultural exhibit."
+        ],
+        "service": "pokemart",
+        "stock": [
+          "FAIR_HONEY"
+        ],
+        "approach": [
+          15,
+          60
+        ],
+        "counter_tile": [
+          15,
+          59
+        ]
+      },
+      {
+        "id": "MnFairPrizeClerk",
+        "sprite": "SPRITE_RECEPTIONIST",
+        "tile": [
+          21,
+          64
+        ],
+        "facing": "south",
+        "lines": [
+          "Bring three stamps for your prize."
+        ],
+        "service": null,
+        "stock": [],
+        "approach": [
+          21,
+          66
+        ],
+        "counter_tile": [
+          21,
+          65
+        ]
+      },
+      {
+        "id": "MnFairHerbVendor",
+        "sprite": "SPRITE_GRANNY",
+        "tile": [
+          55,
+          40
+        ],
+        "facing": "south",
+        "lines": [
+          "Herbs from the demonstration garden."
+        ],
+        "service": "pokemart",
+        "stock": [
+          "ENERGYPOWDER",
+          "HEAL_POWDER"
+        ],
+        "approach": [
+          55,
+          42
+        ],
+        "counter_tile": [
+          55,
+          41
+        ]
+      },
+      {
+        "id": "MnFairCraftVendor",
+        "sprite": "SPRITE_TEACHER",
+        "tile": [
+          63,
+          40
+        ],
+        "facing": "south",
+        "lines": [
+          "Useful crafts for your next adventure."
+        ],
+        "service": "pokemart",
+        "stock": [
+          "SMOKE_BALL",
+          "CHARCOAL"
+        ],
+        "approach": [
+          63,
+          42
+        ],
+        "counter_tile": [
+          63,
+          41
+        ]
+      },
+      {
+        "id": "MnFairOrchardVendor",
+        "sprite": "SPRITE_POKEFAN_M",
+        "tile": [
+          71,
+          40
+        ],
+        "facing": "south",
+        "lines": [
+          "Our orchard has a berry for every season."
+        ],
+        "service": "pokemart",
+        "stock": [
+          "PSNCUREBERRY",
+          "ICE_BERRY"
+        ],
+        "approach": [
+          71,
+          42
+        ],
+        "counter_tile": [
+          71,
+          41
+        ]
+      },
+      {
+        "id": "MnFairFlorist",
+        "sprite": "SPRITE_LASS",
+        "tile": [
+          79,
+          40
+        ],
+        "facing": "south",
+        "lines": [
+          "Pick a fragrant garden souvenir."
+        ],
+        "service": "pokemart",
+        "stock": [
+          "MINT_BERRY",
+          "MYSTERYBERRY"
+        ],
+        "approach": [
+          79,
+          42
+        ],
+        "counter_tile": [
+          79,
+          41
+        ]
+      },
+      {
+        "id": "MnFairGardenSnack",
+        "sprite": "SPRITE_FISHER",
+        "tile": [
+          87,
+          58
+        ],
+        "facing": "south",
+        "lines": [
+          "Popcorn and root beer by the garden."
+        ],
+        "service": "pokemart",
+        "stock": [
+          "FAIR_KETTLE_CORN",
+          "FAIR_ROOT_BEER"
+        ],
+        "approach": [
+          87,
+          60
+        ],
+        "counter_tile": [
+          87,
+          59
+        ]
+      },
+      {
+        "id": "MnFairFirstAid",
+        "sprite": "SPRITE_NURSE",
+        "tile": [
+          79,
+          58
+        ],
+        "facing": "south",
+        "lines": [
+          "Take a break. We can care for your whole party."
+        ],
+        "service": "heal_party",
+        "stock": [],
+        "approach": [
+          79,
+          60
+        ],
+        "counter_tile": [
+          79,
+          59
+        ]
+      },
+      {
+        "id": "MnFairWelcome",
+        "sprite": "SPRITE_TEACHER",
+        "tile": [
+          18,
+          67
+        ],
+        "facing": "south",
+        "lines": [
+          "Food pavilion northeast. Midway northwest. Barns just ahead!"
+        ],
+        "service": null,
+        "stock": []
+      },
+      {
+        "id": "MnFairRootBeerCustomer",
+        "sprite": "SPRITE_POKEFAN_M",
+        "tile": [
+          71,
+          13
+        ],
+        "facing": "south",
+        "lines": [
+          "My partner likes the cold cup."
+        ],
+        "service": null,
+        "stock": []
+      },
+      {
+        "id": "MnFairProduceCustomer",
+        "sprite": "SPRITE_GENTLEMAN",
+        "tile": [
+          74,
+          25
+        ],
+        "facing": "south",
+        "lines": [
+          "These growers know their berries."
+        ],
+        "service": null,
+        "stock": []
+      },
+      {
+        "id": "MnFairPicnicParent",
+        "sprite": "SPRITE_POKEFAN_F",
+        "tile": [
+          71,
+          31
+        ],
+        "facing": "south",
+        "lines": [
+          "The whole family found something to do."
+        ],
+        "service": null,
+        "stock": []
+      },
+      {
+        "id": "MnFairNorthVolunteer",
+        "sprite": "SPRITE_TEACHER",
+        "tile": [
+          41,
+          12
+        ],
+        "facing": "south",
+        "lines": [
+          "The growers and the midway share this lane."
+        ],
+        "service": null,
+        "stock": []
+      },
+      {
+        "id": "MnFairStageUsher",
+        "sprite": "SPRITE_GENTLEMAN",
+        "tile": [
+          24,
+          19
+        ],
+        "facing": "south",
+        "lines": [
+          "Step inside for the next performance."
+        ],
+        "service": null,
+        "stock": []
+      },
+      {
+        "id": "MnFairBarnVisitor",
+        "sprite": "SPRITE_POKEFAN_F",
+        "tile": [
+          17,
+          53
+        ],
+        "facing": "south",
+        "lines": [
+          "The handler keeps the animals calm."
+        ],
+        "service": null,
+        "stock": []
+      },
+      {
+        "id": "MnFairRingJudge",
+        "sprite": "SPRITE_TEACHER",
+        "tile": [
+          28,
+          49
+        ],
+        "facing": "south",
+        "lines": [
+          "Good care comes before winning."
+        ],
+        "service": null,
+        "stock": []
+      },
+      {
+        "id": "MnFairRingSpectatorB",
+        "sprite": "SPRITE_LASS",
+        "tile": [
+          43,
+          55
+        ],
+        "facing": "south",
+        "lines": [
+          "We are cheering from outside the rail."
+        ],
+        "service": null,
+        "stock": []
+      },
+      {
+        "id": "MnFairRingSpectatorC",
+        "sprite": "SPRITE_POKEFAN_M",
+        "tile": [
+          28,
+          59
+        ],
+        "facing": "south",
+        "lines": [
+          "A friendly battle draws a crowd."
+        ],
+        "service": null,
+        "stock": []
+      },
+      {
+        "id": "MnFairGardenVisitor",
+        "sprite": "SPRITE_TEACHER",
+        "tile": [
+          61,
+          55
+        ],
+        "facing": "south",
+        "lines": [
+          "Each bed shows a different growing method."
+        ],
+        "service": null,
+        "stock": []
+      },
+      {
+        "id": "MnFairDairyGuest",
+        "sprite": "SPRITE_POKEFAN_F",
+        "tile": [
+          82,
+          53
+        ],
+        "facing": "south",
+        "lines": [
+          "The butter room is wonderfully cool."
+        ],
+        "service": null,
+        "stock": []
+      },
+      {
+        "id": "MnFairCraftGuest",
+        "sprite": "SPRITE_GENTLEMAN",
+        "tile": [
+          62,
+          43
+        ],
+        "facing": "south",
+        "lines": [
+          "A useful souvenir beats another trinket."
+        ],
+        "service": null,
+        "stock": []
+      },
+      {
+        "id": "MnFairFirstAidGuest",
+        "sprite": "SPRITE_POKEFAN_M",
+        "tile": [
+          80,
+          61
+        ],
+        "facing": "south",
+        "lines": [
+          "A little rest makes the fair fun again."
+        ],
+        "service": null,
+        "stock": []
+      },
+      {
+        "id": "MnFairSeedExhibitor",
+        "sprite": "SPRITE_POKEFAN_F",
+        "tile": [
+          29,
+          16
+        ],
+        "facing": "south",
+        "service": "pokemart",
+        "stock": [
+          "MIRACLE_SEED"
+        ],
+        "lines": [
+          "The seed exhibit supports GRASS-type partners."
+        ],
+        "counter_tile": [
+          29,
+          17
+        ],
+        "approach": [
+          29,
+          18
+        ]
+      },
+      {
+        "id": "MnFairStoneExhibitor",
+        "sprite": "SPRITE_FISHER",
+        "tile": [
+          33,
+          16
+        ],
+        "facing": "south",
+        "service": "pokemart",
+        "stock": [
+          "HARD_STONE"
+        ],
+        "lines": [
+          "Feel the weight of the mineral display."
+        ],
+        "counter_tile": [
+          33,
+          17
+        ],
+        "approach": [
+          33,
+          18
+        ]
+      },
+      {
+        "id": "MnFairFeatherExhibitor",
+        "sprite": "SPRITE_TEACHER",
+        "tile": [
+          37,
+          16
+        ],
+        "facing": "south",
+        "service": "pokemart",
+        "stock": [
+          "SHARP_BEAK"
+        ],
+        "lines": [
+          "Bird keepers brought their finest equipment."
+        ],
+        "counter_tile": [
+          37,
+          17
+        ],
+        "approach": [
+          37,
+          18
+        ]
+      },
+      {
+        "id": "MnFairClawExhibitor",
+        "sprite": "SPRITE_GENTLEMAN",
+        "tile": [
+          41,
+          16
+        ],
+        "facing": "south",
+        "service": "pokemart",
+        "stock": [
+          "QUICK_CLAW"
+        ],
+        "lines": [
+          "This craft can give a slow partner a chance."
+        ],
+        "counter_tile": [
+          41,
+          17
+        ],
+        "approach": [
+          41,
+          18
+        ]
+      },
+      {
+        "id": "MnFairCareHost",
+        "sprite": "SPRITE_TEACHER",
+        "tile": [
+          37,
+          62
+        ],
+        "facing": "south",
+        "service": null,
+        "stock": [],
+        "lines": [
+          "The4-H care challenge is free."
+        ],
+        "counter_tile": [
+          37,
+          63
+        ],
+        "approach": [
+          37,
+          64
+        ]
+      },
+      {
+        "id": "MnFairFourHMember",
+        "sprite": "SPRITE_YOUNGSTER",
+        "tile": [
+          41,
+          62
+        ],
+        "facing": "south",
+        "service": null,
+        "stock": [],
+        "lines": [
+          "My OATLET learned a new move this summer."
+        ],
+        "counter_tile": [
+          41,
+          63
+        ],
+        "approach": [
+          41,
+          64
+        ]
+      },
+      {
+        "id": "MnFairFourHGuide",
+        "sprite": "SPRITE_POKEFAN_F",
+        "tile": [
+          45,
+          62
+        ],
+        "facing": "south",
+        "service": null,
+        "stock": [],
+        "lines": [
+          "We care for our partners every day, not only on judging day."
+        ],
+        "counter_tile": [
+          45,
+          63
+        ],
+        "approach": [
+          45,
+          64
+        ]
+      },
+      {
+        "id": "MnFairBerryProject",
+        "sprite": "SPRITE_LASS",
+        "tile": [
+          53,
+          62
+        ],
+        "facing": "south",
+        "service": "pokemart",
+        "stock": [
+          "BERRY",
+          "PRZCUREBERRY"
+        ],
+        "lines": [
+          "These are from our growing project."
+        ],
+        "counter_tile": [
+          53,
+          63
+        ],
+        "approach": [
+          53,
+          64
+        ]
+      },
+      {
+        "id": "MnFairWoodworker",
+        "sprite": "SPRITE_FISHER",
+        "tile": [
+          57,
+          62
+        ],
+        "facing": "south",
+        "service": "pokemart",
+        "stock": [
+          "CHARCOAL"
+        ],
+        "lines": [
+          "Woodworking is a patient craft."
+        ],
+        "counter_tile": [
+          57,
+          63
+        ],
+        "approach": [
+          57,
+          64
+        ]
+      },
+      {
+        "id": "MnFairRockhound",
+        "sprite": "SPRITE_SUPER_NERD",
+        "tile": [
+          61,
+          62
+        ],
+        "facing": "south",
+        "service": "pokemart",
+        "stock": [
+          "HARD_STONE"
+        ],
+        "lines": [
+          "The mineral club has room for one more collector."
+        ],
+        "counter_tile": [
+          61,
+          63
+        ],
+        "approach": [
+          61,
+          64
+        ]
+      },
+      {
+        "id": "MnFairCookieRunner",
+        "sprite": "SPRITE_YOUNGSTER",
+        "tile": [
+          77,
+          15
+        ],
+        "facing": "east",
+        "lines": [
+          "I am doing another cookie lap!"
+        ],
+        "service": null,
+        "approach": null,
+        "counter_tile": null
+      },
+      {
+        "id": "MnFairMidwayRunner",
+        "sprite": "SPRITE_TWIN",
+        "tile": [
+          17,
+          29
+        ],
+        "facing": "east",
+        "lines": [
+          "The rides spin. I run around!"
+        ],
+        "service": null,
+        "approach": null,
+        "counter_tile": null
+      },
+      {
+        "id": "MnFairPicnicWalker",
+        "sprite": "SPRITE_POKEFAN_F",
+        "tile": [
+          56,
+          29
+        ],
+        "facing": "east",
+        "lines": [
+          "A little walk between snacks feels good."
+        ],
+        "service": null,
+        "approach": null,
+        "counter_tile": null
+      },
+      {
+        "id": "MnFairGardenRunner",
+        "sprite": "SPRITE_YOUNGSTER",
+        "tile": [
+          55,
+          53
+        ],
+        "facing": "east",
+        "lines": [
+          "Round the flowers and back again!"
+        ],
+        "service": null,
+        "approach": null,
+        "counter_tile": null
+      },
+      {
+        "id": "MnFairLostInNoiseKid",
+        "sprite": "SPRITE_YOUNGSTER",
+        "tile": [
+          40,
+          13
+        ],
+        "facing": "south",
+        "lines": [
+          "I can hear the midway from over here!"
+        ],
+        "service": null,
+        "approach": null,
+        "counter_tile": null
+      },
+      {
+        "id": "MnFairBalloonKid",
+        "sprite": "SPRITE_GAMEBOY_KID",
+        "tile": [
+          24,
+          42
+        ],
+        "facing": "south",
+        "lines": [
+          "I want a balloon as big as the grandstand!"
+        ],
+        "service": null,
+        "approach": null,
+        "counter_tile": null
+      },
+      {
+        "id": "MnFairBarnExplorer",
+        "sprite": "SPRITE_YOUNGSTER",
+        "tile": [
+          11,
+          55
+        ],
+        "facing": "south",
+        "lines": [
+          "I like the barn even more than the rides."
+        ],
+        "service": null,
+        "approach": null,
+        "counter_tile": null
+      },
+      {
+        "id": "MnFairFlowerKid",
+        "sprite": "SPRITE_LASS",
+        "tile": [
+          68,
+          55
+        ],
+        "facing": "south",
+        "lines": [
+          "I picked the flowers for our fair project."
+        ],
+        "service": null,
+        "approach": null,
+        "counter_tile": null
+      },
+      {
+        "id": "MnFairGrandparent",
+        "sprite": "SPRITE_POKEFAN_M",
+        "tile": [
+          9,
+          53
+        ],
+        "facing": "south",
+        "lines": [
+          "We come together every year. The kids know every shortcut."
+        ],
+        "service": null,
+        "approach": null,
+        "counter_tile": null
+      },
+      {
+        "id": "MnFairPatientParent",
+        "sprite": "SPRITE_TEACHER",
+        "tile": [
+          77,
+          43
+        ],
+        "facing": "south",
+        "lines": [
+          "They have energy for three more laps. I need a bench."
+        ],
+        "service": null,
+        "approach": null,
+        "counter_tile": null
+      },
+      {
+        "id": "MnFairExhibit01",
+        "sprite": "SPRITE_OATLET",
+        "tile": [
+          27,
+          48
+        ],
+        "facing": "south",
+        "lines": [
+          "OATLET: Ready for judging.",
+          "OATLET holds still while the judge checks its grain coat."
+        ]
+      },
+      {
+        "id": "MnFairExhibitJudge01",
+        "sprite": "SPRITE_GENTLEMAN",
+        "tile": [
+          28,
+          48
+        ],
+        "facing": "west",
+        "lines": [
+          "OATLET judging.",
+          "OATLET holds still while the judge checks its grain coat.",
+          "Care and handling count toward the ribbon."
+        ]
+      },
+      {
+        "id": "MnFairExhibit02",
+        "sprite": "SPRITE_TOTLIT",
+        "tile": [
+          33,
+          48
+        ],
+        "facing": "south",
+        "lines": [
+          "TOTLIT: Ready for judging.",
+          "TOTLIT finishes a clean lap around the ring."
+        ]
+      },
+      {
+        "id": "MnFairExhibitJudge02",
+        "sprite": "SPRITE_TEACHER",
+        "tile": [
+          34,
+          48
+        ],
+        "facing": "west",
+        "lines": [
+          "TOTLIT judging.",
+          "TOTLIT finishes a clean lap around the ring.",
+          "Care and handling count toward the ribbon."
+        ]
+      },
+      {
+        "id": "MnFairExhibit03",
+        "sprite": "SPRITE_CHISLET",
+        "tile": [
+          36,
+          50
+        ],
+        "facing": "south",
+        "lines": [
+          "CHISLET: Ready for judging.",
+          "CHISLET keeps its butter curls neatly shaped."
+        ]
+      },
+      {
+        "id": "MnFairExhibitJudge03",
+        "sprite": "SPRITE_GENTLEMAN",
+        "tile": [
+          37,
+          50
+        ],
+        "facing": "west",
+        "lines": [
+          "CHISLET judging.",
+          "CHISLET keeps its butter curls neatly shaped.",
+          "Care and handling count toward the ribbon."
+        ]
+      },
+      {
+        "id": "MnFairExhibit04",
+        "sprite": "SPRITE_RICELING",
+        "tile": [
+          27,
+          54
+        ],
+        "facing": "south",
+        "lines": [
+          "RICELING: Ready for judging.",
+          "RICELING has healthy leaves and strong roots."
+        ]
+      },
+      {
+        "id": "MnFairExhibitJudge04",
+        "sprite": "SPRITE_TEACHER",
+        "tile": [
+          28,
+          54
+        ],
+        "facing": "west",
+        "lines": [
+          "RICELING judging.",
+          "RICELING has healthy leaves and strong roots.",
+          "Care and handling count toward the ribbon."
+        ]
+      },
+      {
+        "id": "MnFairExhibit05",
+        "sprite": "SPRITE_BUTTERMUSE",
+        "tile": [
+          35,
+          56
+        ],
+        "facing": "south",
+        "lines": [
+          "BUTTERMUSE: Ready for judging.",
+          "BUTTERMUSE holds its sculpted pose for the judges."
+        ]
+      },
+      {
+        "id": "MnFairExhibitJudge05",
+        "sprite": "SPRITE_GENTLEMAN",
+        "tile": [
+          36,
+          56
+        ],
+        "facing": "west",
+        "lines": [
+          "BUTTERMUSE judging.",
+          "BUTTERMUSE holds its sculpted pose for the judges.",
+          "Care and handling count toward the ribbon."
+        ]
+      },
+      {
+        "id": "MnFairExhibit06",
+        "sprite": "SPRITE_ZAPSAP",
+        "tile": [
+          31,
+          54
+        ],
+        "facing": "south",
+        "lines": [
+          "ZAPSAP: Ready for judging.",
+          "ZAPSAP controls its sparks without startling the crowd."
+        ]
+      },
+      {
+        "id": "MnFairExhibitJudge06",
+        "sprite": "SPRITE_TEACHER",
+        "tile": [
+          32,
+          54
+        ],
+        "facing": "west",
+        "lines": [
+          "ZAPSAP judging.",
+          "ZAPSAP controls its sparks without startling the crowd.",
+          "Care and handling count toward the ribbon."
+        ]
+      },
+      {
+        "id": "MnFairExhibit07",
+        "sprite": "SPRITE_DOUGHLIN",
+        "tile": [
+          14,
+          54
+        ],
+        "facing": "south",
+        "lines": [
+          "DOUGHLIN: Ready for judging.",
+          "DOUGHLIN follows the junior handler through each turn."
+        ]
+      },
+      {
+        "id": "MnFairExhibitJudge07",
+        "sprite": "SPRITE_GENTLEMAN",
+        "tile": [
+          15,
+          54
+        ],
+        "facing": "west",
+        "lines": [
+          "DOUGHLIN judging.",
+          "DOUGHLIN follows the junior handler through each turn.",
+          "Care and handling count toward the ribbon."
+        ]
+      },
+      {
+        "id": "MnFairExhibit08",
+        "sprite": "SPRITE_CURDLET",
+        "tile": [
+          16,
+          56
+        ],
+        "facing": "south",
+        "lines": [
+          "CURDLET: Ready for judging.",
+          "CURDLET keeps its balance through the handling course."
+        ]
+      },
+      {
+        "id": "MnFairExhibitJudge08",
+        "sprite": "SPRITE_TEACHER",
+        "tile": [
+          17,
+          56
+        ],
+        "facing": "west",
+        "lines": [
+          "CURDLET judging.",
+          "CURDLET keeps its balance through the handling course.",
+          "Care and handling count toward the ribbon."
+        ]
+      },
+      {
+        "id": "MnFairExhibit09",
+        "sprite": "SPRITE_PIPCORN",
+        "tile": [
+          74,
+          54
+        ],
+        "facing": "south",
+        "lines": [
+          "PIPCORN: Ready for judging.",
+          "PIPCORN helped tend the prize corn plot."
+        ]
+      },
+      {
+        "id": "MnFairExhibitJudge09",
+        "sprite": "SPRITE_GENTLEMAN",
+        "tile": [
+          75,
+          54
+        ],
+        "facing": "west",
+        "lines": [
+          "PIPCORN judging.",
+          "PIPCORN helped tend the prize corn plot.",
+          "Care and handling count toward the ribbon."
+        ]
+      },
+      {
+        "id": "MnFairExhibit10",
+        "sprite": "SPRITE_CINDERFIN",
+        "tile": [
+          80,
+          56
+        ],
+        "facing": "south",
+        "lines": [
+          "CINDERFIN: Ready for judging.",
+          "CINDERFIN keeps its flame steady during the demonstration."
+        ]
+      },
+      {
+        "id": "MnFairExhibitJudge10",
+        "sprite": "SPRITE_TEACHER",
+        "tile": [
+          81,
+          56
+        ],
+        "facing": "west",
+        "lines": [
+          "CINDERFIN judging.",
+          "CINDERFIN keeps its flame steady during the demonstration.",
+          "Care and handling count toward the ribbon."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest001",
+        "sprite": "SPRITE_YOUNGSTER",
+        "tile": [
+          20,
+          4
+        ],
+        "facing": "south",
+        "lines": [
+          "The blue ribbons are announced at the show ring.",
+          "Our group is number 1. Look for us by the north exhibits."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest002",
+        "sprite": "SPRITE_LASS",
+        "tile": [
+          23,
+          4
+        ],
+        "facing": "east",
+        "lines": [
+          "The blue ribbons are announced at the show ring.",
+          "Our group is number 2. Look for us by the north exhibits."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest003",
+        "sprite": "SPRITE_POKEFAN_M",
+        "tile": [
+          26,
+          4
+        ],
+        "facing": "north",
+        "lines": [
+          "The blue ribbons are announced at the show ring.",
+          "Our group is number 3. Look for us by the north exhibits."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest004",
+        "sprite": "SPRITE_POKEFAN_F",
+        "tile": [
+          29,
+          4
+        ],
+        "facing": "west",
+        "lines": [
+          "The blue ribbons are announced at the show ring.",
+          "Our group is number 4. Look for us by the north exhibits."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest005",
+        "sprite": "SPRITE_TEACHER",
+        "tile": [
+          32,
+          4
+        ],
+        "facing": "south",
+        "lines": [
+          "The blue ribbons are announced at the show ring.",
+          "Our group is number 5. Look for us by the north exhibits."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest006",
+        "sprite": "SPRITE_FISHER",
+        "tile": [
+          35,
+          4
+        ],
+        "facing": "east",
+        "lines": [
+          "The blue ribbons are announced at the show ring.",
+          "Our group is number 6. Look for us by the north exhibits."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest007",
+        "sprite": "SPRITE_GRANNY",
+        "tile": [
+          38,
+          4
+        ],
+        "facing": "north",
+        "lines": [
+          "The blue ribbons are announced at the show ring.",
+          "Our group is number 7. Look for us by the north exhibits."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest008",
+        "sprite": "SPRITE_SUPER_NERD",
+        "tile": [
+          41,
+          4
+        ],
+        "facing": "west",
+        "lines": [
+          "The blue ribbons are announced at the show ring.",
+          "Our group is number 8. Look for us by the north exhibits."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest009",
+        "sprite": "SPRITE_YOUNGSTER",
+        "tile": [
+          18,
+          10
+        ],
+        "facing": "south",
+        "lines": [
+          "The blue ribbons are announced at the show ring.",
+          "Our group is number 9. Look for us by the north exhibits."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest010",
+        "sprite": "SPRITE_LASS",
+        "tile": [
+          21,
+          10
+        ],
+        "facing": "east",
+        "lines": [
+          "The blue ribbons are announced at the show ring.",
+          "Our group is number 10. Look for us by the north exhibits."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest011",
+        "sprite": "SPRITE_POKEFAN_M",
+        "tile": [
+          24,
+          10
+        ],
+        "facing": "north",
+        "lines": [
+          "The blue ribbons are announced at the show ring.",
+          "Our group is number 11. Look for us by the north exhibits."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest012",
+        "sprite": "SPRITE_POKEFAN_F",
+        "tile": [
+          27,
+          10
+        ],
+        "facing": "west",
+        "lines": [
+          "The blue ribbons are announced at the show ring.",
+          "Our group is number 12. Look for us by the north exhibits."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest013",
+        "sprite": "SPRITE_TEACHER",
+        "tile": [
+          30,
+          10
+        ],
+        "facing": "south",
+        "lines": [
+          "The blue ribbons are announced at the show ring.",
+          "Our group is number 13. Look for us by the north exhibits."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest014",
+        "sprite": "SPRITE_FISHER",
+        "tile": [
+          33,
+          10
+        ],
+        "facing": "east",
+        "lines": [
+          "The blue ribbons are announced at the show ring.",
+          "Our group is number 14. Look for us by the north exhibits."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest015",
+        "sprite": "SPRITE_GRANNY",
+        "tile": [
+          36,
+          10
+        ],
+        "facing": "north",
+        "lines": [
+          "The blue ribbons are announced at the show ring.",
+          "Our group is number 15. Look for us by the north exhibits."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest016",
+        "sprite": "SPRITE_SUPER_NERD",
+        "tile": [
+          48,
+          10
+        ],
+        "facing": "west",
+        "lines": [
+          "The blue ribbons are announced at the show ring.",
+          "Our group is number 16. Look for us by the north exhibits."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest017",
+        "sprite": "SPRITE_YOUNGSTER",
+        "tile": [
+          48,
+          16
+        ],
+        "facing": "south",
+        "lines": [
+          "My friend went toward the prize counter.",
+          "Our group is number 17. Look for us by the midway."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest018",
+        "sprite": "SPRITE_LASS",
+        "tile": [
+          51,
+          16
+        ],
+        "facing": "east",
+        "lines": [
+          "I am comparing curds, corn and cookies.",
+          "Our group is number 18. Look for us by the food pavilion."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest019",
+        "sprite": "SPRITE_POKEFAN_M",
+        "tile": [
+          54,
+          16
+        ],
+        "facing": "north",
+        "lines": [
+          "I am comparing curds, corn and cookies.",
+          "Our group is number 19. Look for us by the food pavilion."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest020",
+        "sprite": "SPRITE_POKEFAN_F",
+        "tile": [
+          57,
+          16
+        ],
+        "facing": "west",
+        "lines": [
+          "I am comparing curds, corn and cookies.",
+          "Our group is number 20. Look for us by the food pavilion."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest021",
+        "sprite": "SPRITE_TEACHER",
+        "tile": [
+          60,
+          16
+        ],
+        "facing": "south",
+        "lines": [
+          "I am comparing curds, corn and cookies.",
+          "Our group is number 21. Look for us by the food pavilion."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest022",
+        "sprite": "SPRITE_FISHER",
+        "tile": [
+          63,
+          16
+        ],
+        "facing": "east",
+        "lines": [
+          "I am comparing curds, corn and cookies.",
+          "Our group is number 22. Look for us by the food pavilion."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest023",
+        "sprite": "SPRITE_GRANNY",
+        "tile": [
+          66,
+          16
+        ],
+        "facing": "north",
+        "lines": [
+          "I am comparing curds, corn and cookies.",
+          "Our group is number 23. Look for us by the food pavilion."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest024",
+        "sprite": "SPRITE_SUPER_NERD",
+        "tile": [
+          75,
+          16
+        ],
+        "facing": "west",
+        "lines": [
+          "I am comparing curds, corn and cookies.",
+          "Our group is number 24. Look for us by the food pavilion."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest025",
+        "sprite": "SPRITE_YOUNGSTER",
+        "tile": [
+          6,
+          30
+        ],
+        "facing": "south",
+        "lines": [
+          "My friend went toward the prize counter.",
+          "Our group is number 25. Look for us by the midway."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest026",
+        "sprite": "SPRITE_LASS",
+        "tile": [
+          12,
+          30
+        ],
+        "facing": "east",
+        "lines": [
+          "My friend went toward the prize counter.",
+          "Our group is number 26. Look for us by the midway."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest027",
+        "sprite": "SPRITE_POKEFAN_M",
+        "tile": [
+          21,
+          30
+        ],
+        "facing": "north",
+        "lines": [
+          "My friend went toward the prize counter.",
+          "Our group is number 27. Look for us by the midway."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest028",
+        "sprite": "SPRITE_POKEFAN_F",
+        "tile": [
+          27,
+          30
+        ],
+        "facing": "west",
+        "lines": [
+          "My friend went toward the prize counter.",
+          "Our group is number 28. Look for us by the midway."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest029",
+        "sprite": "SPRITE_TEACHER",
+        "tile": [
+          30,
+          30
+        ],
+        "facing": "south",
+        "lines": [
+          "My friend went toward the prize counter.",
+          "Our group is number 29. Look for us by the midway."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest030",
+        "sprite": "SPRITE_FISHER",
+        "tile": [
+          36,
+          30
+        ],
+        "facing": "east",
+        "lines": [
+          "My friend went toward the prize counter.",
+          "Our group is number 30. Look for us by the midway."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest031",
+        "sprite": "SPRITE_GRANNY",
+        "tile": [
+          39,
+          30
+        ],
+        "facing": "north",
+        "lines": [
+          "My friend went toward the prize counter.",
+          "Our group is number 31. Look for us by the midway."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest032",
+        "sprite": "SPRITE_SUPER_NERD",
+        "tile": [
+          42,
+          30
+        ],
+        "facing": "west",
+        "lines": [
+          "My friend went toward the prize counter.",
+          "Our group is number 32. Look for us by the midway."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest033",
+        "sprite": "SPRITE_YOUNGSTER",
+        "tile": [
+          42,
+          50
+        ],
+        "facing": "south",
+        "lines": [
+          "Our club practiced handling all summer.",
+          "Our group is number 33. Look for us by the 4-H projects."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest034",
+        "sprite": "SPRITE_LASS",
+        "tile": [
+          45,
+          50
+        ],
+        "facing": "east",
+        "lines": [
+          "Our club practiced handling all summer.",
+          "Our group is number 34. Look for us by the 4-H projects."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest035",
+        "sprite": "SPRITE_POKEFAN_M",
+        "tile": [
+          48,
+          50
+        ],
+        "facing": "north",
+        "lines": [
+          "Our club practiced handling all summer.",
+          "Our group is number 35. Look for us by the 4-H projects."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest036",
+        "sprite": "SPRITE_POKEFAN_F",
+        "tile": [
+          51,
+          50
+        ],
+        "facing": "west",
+        "lines": [
+          "The growers brought their best leaves today.",
+          "Our group is number 36. Look for us by the garden."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest037",
+        "sprite": "SPRITE_TEACHER",
+        "tile": [
+          60,
+          50
+        ],
+        "facing": "south",
+        "lines": [
+          "The growers brought their best leaves today.",
+          "Our group is number 37. Look for us by the garden."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest038",
+        "sprite": "SPRITE_FISHER",
+        "tile": [
+          63,
+          50
+        ],
+        "facing": "east",
+        "lines": [
+          "The growers brought their best leaves today.",
+          "Our group is number 38. Look for us by the garden."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest039",
+        "sprite": "SPRITE_GRANNY",
+        "tile": [
+          66,
+          50
+        ],
+        "facing": "north",
+        "lines": [
+          "The growers brought their best leaves today.",
+          "Our group is number 39. Look for us by the garden."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest040",
+        "sprite": "SPRITE_SUPER_NERD",
+        "tile": [
+          69,
+          50
+        ],
+        "facing": "west",
+        "lines": [
+          "The growers brought their best leaves today.",
+          "Our group is number 40. Look for us by the garden."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest041",
+        "sprite": "SPRITE_YOUNGSTER",
+        "tile": [
+          42,
+          56
+        ],
+        "facing": "south",
+        "lines": [
+          "Our club practiced handling all summer.",
+          "Our group is number 41. Look for us by the 4-H projects."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest042",
+        "sprite": "SPRITE_LASS",
+        "tile": [
+          45,
+          56
+        ],
+        "facing": "east",
+        "lines": [
+          "Our club practiced handling all summer.",
+          "Our group is number 42. Look for us by the 4-H projects."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest043",
+        "sprite": "SPRITE_POKEFAN_M",
+        "tile": [
+          48,
+          56
+        ],
+        "facing": "north",
+        "lines": [
+          "Our club practiced handling all summer.",
+          "Our group is number 43. Look for us by the 4-H projects."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest044",
+        "sprite": "SPRITE_POKEFAN_F",
+        "tile": [
+          51,
+          56
+        ],
+        "facing": "west",
+        "lines": [
+          "The growers brought their best leaves today.",
+          "Our group is number 44. Look for us by the garden."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest045",
+        "sprite": "SPRITE_TEACHER",
+        "tile": [
+          54,
+          56
+        ],
+        "facing": "south",
+        "lines": [
+          "The growers brought their best leaves today.",
+          "Our group is number 45. Look for us by the garden."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest046",
+        "sprite": "SPRITE_FISHER",
+        "tile": [
+          57,
+          56
+        ],
+        "facing": "east",
+        "lines": [
+          "The growers brought their best leaves today.",
+          "Our group is number 46. Look for us by the garden."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest047",
+        "sprite": "SPRITE_GRANNY",
+        "tile": [
+          60,
+          56
+        ],
+        "facing": "north",
+        "lines": [
+          "The growers brought their best leaves today.",
+          "Our group is number 47. Look for us by the garden."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest048",
+        "sprite": "SPRITE_SUPER_NERD",
+        "tile": [
+          63,
+          56
+        ],
+        "facing": "west",
+        "lines": [
+          "The growers brought their best leaves today.",
+          "Our group is number 48. Look for us by the garden."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest049",
+        "sprite": "SPRITE_YOUNGSTER",
+        "tile": [
+          48,
+          13
+        ],
+        "facing": "south",
+        "lines": [
+          "My friend went toward the prize counter.",
+          "Our group is number 49. Look for us by the midway."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest050",
+        "sprite": "SPRITE_LASS",
+        "tile": [
+          51,
+          13
+        ],
+        "facing": "east",
+        "lines": [
+          "I am comparing curds, corn and cookies.",
+          "Our group is number 50. Look for us by the food pavilion."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest051",
+        "sprite": "SPRITE_POKEFAN_M",
+        "tile": [
+          54,
+          13
+        ],
+        "facing": "north",
+        "lines": [
+          "I am comparing curds, corn and cookies.",
+          "Our group is number 51. Look for us by the food pavilion."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest052",
+        "sprite": "SPRITE_POKEFAN_F",
+        "tile": [
+          57,
+          13
+        ],
+        "facing": "west",
+        "lines": [
+          "I am comparing curds, corn and cookies.",
+          "Our group is number 52. Look for us by the food pavilion."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest053",
+        "sprite": "SPRITE_TEACHER",
+        "tile": [
+          69,
+          13
+        ],
+        "facing": "south",
+        "lines": [
+          "I am comparing curds, corn and cookies.",
+          "Our group is number 53. Look for us by the food pavilion."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest054",
+        "sprite": "SPRITE_FISHER",
+        "tile": [
+          72,
+          13
+        ],
+        "facing": "east",
+        "lines": [
+          "I am comparing curds, corn and cookies.",
+          "Our group is number 54. Look for us by the food pavilion."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest055",
+        "sprite": "SPRITE_GRANNY",
+        "tile": [
+          75,
+          13
+        ],
+        "facing": "north",
+        "lines": [
+          "I am comparing curds, corn and cookies.",
+          "Our group is number 55. Look for us by the food pavilion."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest056",
+        "sprite": "SPRITE_SUPER_NERD",
+        "tile": [
+          78,
+          13
+        ],
+        "facing": "west",
+        "lines": [
+          "I am comparing curds, corn and cookies.",
+          "Our group is number 56. Look for us by the food pavilion."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest057",
+        "sprite": "SPRITE_YOUNGSTER",
+        "tile": [
+          6,
+          18
+        ],
+        "facing": "south",
+        "lines": [
+          "The next performance starts after judging.",
+          "Our group is number 57. Look for us by the grandstand."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest058",
+        "sprite": "SPRITE_LASS",
+        "tile": [
+          9,
+          18
+        ],
+        "facing": "east",
+        "lines": [
+          "The next performance starts after judging.",
+          "Our group is number 58. Look for us by the grandstand."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest059",
+        "sprite": "SPRITE_POKEFAN_M",
+        "tile": [
+          12,
+          18
+        ],
+        "facing": "north",
+        "lines": [
+          "The next performance starts after judging.",
+          "Our group is number 59. Look for us by the grandstand."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest060",
+        "sprite": "SPRITE_POKEFAN_F",
+        "tile": [
+          21,
+          18
+        ],
+        "facing": "west",
+        "lines": [
+          "The next performance starts after judging.",
+          "Our group is number 60. Look for us by the grandstand."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest061",
+        "sprite": "SPRITE_TEACHER",
+        "tile": [
+          24,
+          18
+        ],
+        "facing": "south",
+        "lines": [
+          "The next performance starts after judging.",
+          "Our group is number 61. Look for us by the grandstand."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest062",
+        "sprite": "SPRITE_FISHER",
+        "tile": [
+          28,
+          20
+        ],
+        "facing": "east",
+        "lines": [
+          "My friend went toward the prize counter.",
+          "Our group is number 62. Look for us by the midway."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest063",
+        "sprite": "SPRITE_GRANNY",
+        "tile": [
+          31,
+          20
+        ],
+        "facing": "north",
+        "lines": [
+          "My friend went toward the prize counter.",
+          "Our group is number 63. Look for us by the midway."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest064",
+        "sprite": "SPRITE_SUPER_NERD",
+        "tile": [
+          34,
+          20
+        ],
+        "facing": "west",
+        "lines": [
+          "My friend went toward the prize counter.",
+          "Our group is number 64. Look for us by the midway."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest065",
+        "sprite": "SPRITE_YOUNGSTER",
+        "tile": [
+          37,
+          20
+        ],
+        "facing": "south",
+        "lines": [
+          "My friend went toward the prize counter.",
+          "Our group is number 65. Look for us by the midway."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest066",
+        "sprite": "SPRITE_LASS",
+        "tile": [
+          43,
+          20
+        ],
+        "facing": "east",
+        "lines": [
+          "My friend went toward the prize counter.",
+          "Our group is number 66. Look for us by the midway."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest067",
+        "sprite": "SPRITE_POKEFAN_M",
+        "tile": [
+          46,
+          20
+        ],
+        "facing": "north",
+        "lines": [
+          "My friend went toward the prize counter.",
+          "Our group is number 67. Look for us by the midway."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest068",
+        "sprite": "SPRITE_POKEFAN_F",
+        "tile": [
+          49,
+          20
+        ],
+        "facing": "west",
+        "lines": [
+          "My friend went toward the prize counter.",
+          "Our group is number 68. Look for us by the midway."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest069",
+        "sprite": "SPRITE_TEACHER",
+        "tile": [
+          6,
+          26
+        ],
+        "facing": "south",
+        "lines": [
+          "My friend went toward the prize counter.",
+          "Our group is number 69. Look for us by the midway."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest070",
+        "sprite": "SPRITE_FISHER",
+        "tile": [
+          12,
+          26
+        ],
+        "facing": "east",
+        "lines": [
+          "My friend went toward the prize counter.",
+          "Our group is number 70. Look for us by the midway."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest071",
+        "sprite": "SPRITE_GRANNY",
+        "tile": [
+          15,
+          26
+        ],
+        "facing": "north",
+        "lines": [
+          "My friend went toward the prize counter.",
+          "Our group is number 71. Look for us by the midway."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest072",
+        "sprite": "SPRITE_SUPER_NERD",
+        "tile": [
+          18,
+          26
+        ],
+        "facing": "west",
+        "lines": [
+          "My friend went toward the prize counter.",
+          "Our group is number 72. Look for us by the midway."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest076",
+        "sprite": "SPRITE_POKEFAN_F",
+        "tile": [
+          39,
+          26
+        ],
+        "facing": "west",
+        "lines": [
+          "My friend went toward the prize counter.",
+          "Our group is number 76. Look for us by the midway."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest078",
+        "sprite": "SPRITE_FISHER",
+        "tile": [
+          68,
+          28
+        ],
+        "facing": "east",
+        "lines": [
+          "My friend went toward the prize counter.",
+          "Our group is number 78. Look for us by the midway."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest079",
+        "sprite": "SPRITE_GRANNY",
+        "tile": [
+          74,
+          28
+        ],
+        "facing": "north",
+        "lines": [
+          "My friend went toward the prize counter.",
+          "Our group is number 79. Look for us by the midway."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest080",
+        "sprite": "SPRITE_SUPER_NERD",
+        "tile": [
+          86,
+          28
+        ],
+        "facing": "west",
+        "lines": [
+          "My friend went toward the prize counter.",
+          "Our group is number 80. Look for us by the midway."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest081",
+        "sprite": "SPRITE_YOUNGSTER",
+        "tile": [
+          89,
+          28
+        ],
+        "facing": "south",
+        "lines": [
+          "My friend went toward the prize counter.",
+          "Our group is number 81. Look for us by the midway."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest083",
+        "sprite": "SPRITE_POKEFAN_M",
+        "tile": [
+          16,
+          34
+        ],
+        "facing": "north",
+        "lines": [
+          "My friend went toward the prize counter.",
+          "Our group is number 83. Look for us by the midway."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest084",
+        "sprite": "SPRITE_POKEFAN_F",
+        "tile": [
+          19,
+          34
+        ],
+        "facing": "west",
+        "lines": [
+          "My friend went toward the prize counter.",
+          "Our group is number 84. Look for us by the midway."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest085",
+        "sprite": "SPRITE_TEACHER",
+        "tile": [
+          22,
+          34
+        ],
+        "facing": "south",
+        "lines": [
+          "My friend went toward the prize counter.",
+          "Our group is number 85. Look for us by the midway."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest086",
+        "sprite": "SPRITE_FISHER",
+        "tile": [
+          25,
+          34
+        ],
+        "facing": "east",
+        "lines": [
+          "My friend went toward the prize counter.",
+          "Our group is number 86. Look for us by the midway."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest087",
+        "sprite": "SPRITE_GRANNY",
+        "tile": [
+          28,
+          34
+        ],
+        "facing": "north",
+        "lines": [
+          "My friend went toward the prize counter.",
+          "Our group is number 87. Look for us by the midway."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest088",
+        "sprite": "SPRITE_SUPER_NERD",
+        "tile": [
+          31,
+          34
+        ],
+        "facing": "west",
+        "lines": [
+          "My friend went toward the prize counter.",
+          "Our group is number 88. Look for us by the midway."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest089",
+        "sprite": "SPRITE_YOUNGSTER",
+        "tile": [
+          34,
+          34
+        ],
+        "facing": "south",
+        "lines": [
+          "My friend went toward the prize counter.",
+          "Our group is number 89. Look for us by the midway."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest090",
+        "sprite": "SPRITE_LASS",
+        "tile": [
+          7,
+          35
+        ],
+        "facing": "east",
+        "lines": [
+          "My friend went toward the prize counter.",
+          "Our group is number 90. Look for us by the midway."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest091",
+        "sprite": "SPRITE_POKEFAN_M",
+        "tile": [
+          10,
+          35
+        ],
+        "facing": "north",
+        "lines": [
+          "My friend went toward the prize counter.",
+          "Our group is number 91. Look for us by the midway."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest092",
+        "sprite": "SPRITE_POKEFAN_F",
+        "tile": [
+          13,
+          35
+        ],
+        "facing": "west",
+        "lines": [
+          "My friend went toward the prize counter.",
+          "Our group is number 92. Look for us by the midway."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest093",
+        "sprite": "SPRITE_TEACHER",
+        "tile": [
+          16,
+          35
+        ],
+        "facing": "south",
+        "lines": [
+          "My friend went toward the prize counter.",
+          "Our group is number 93. Look for us by the midway."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest094",
+        "sprite": "SPRITE_FISHER",
+        "tile": [
+          19,
+          35
+        ],
+        "facing": "east",
+        "lines": [
+          "My friend went toward the prize counter.",
+          "Our group is number 94. Look for us by the midway."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest095",
+        "sprite": "SPRITE_GRANNY",
+        "tile": [
+          22,
+          35
+        ],
+        "facing": "north",
+        "lines": [
+          "My friend went toward the prize counter.",
+          "Our group is number 95. Look for us by the midway."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest096",
+        "sprite": "SPRITE_SUPER_NERD",
+        "tile": [
+          25,
+          35
+        ],
+        "facing": "west",
+        "lines": [
+          "My friend went toward the prize counter.",
+          "Our group is number 96. Look for us by the midway."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest097",
+        "sprite": "SPRITE_YOUNGSTER",
+        "tile": [
+          34,
+          35
+        ],
+        "facing": "south",
+        "lines": [
+          "My friend went toward the prize counter.",
+          "Our group is number 97. Look for us by the midway."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest099",
+        "sprite": "SPRITE_POKEFAN_M",
+        "tile": [
+          31,
+          43
+        ],
+        "facing": "north",
+        "lines": [
+          "We are meeting here after the junior show.",
+          "Our group is number 99. Look for us by the picnic court."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest100",
+        "sprite": "SPRITE_POKEFAN_F",
+        "tile": [
+          34,
+          43
+        ],
+        "facing": "west",
+        "lines": [
+          "We are meeting here after the junior show.",
+          "Our group is number 100. Look for us by the picnic court."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest101",
+        "sprite": "SPRITE_TEACHER",
+        "tile": [
+          37,
+          43
+        ],
+        "facing": "south",
+        "lines": [
+          "We are meeting here after the junior show.",
+          "Our group is number 101. Look for us by the picnic court."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest102",
+        "sprite": "SPRITE_FISHER",
+        "tile": [
+          40,
+          43
+        ],
+        "facing": "east",
+        "lines": [
+          "We are meeting here after the junior show.",
+          "Our group is number 102. Look for us by the picnic court."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest103",
+        "sprite": "SPRITE_GRANNY",
+        "tile": [
+          43,
+          43
+        ],
+        "facing": "north",
+        "lines": [
+          "We are meeting here after the junior show.",
+          "Our group is number 103. Look for us by the picnic court."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest104",
+        "sprite": "SPRITE_SUPER_NERD",
+        "tile": [
+          52,
+          43
+        ],
+        "facing": "west",
+        "lines": [
+          "We are meeting here after the junior show.",
+          "Our group is number 104. Look for us by the picnic court."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest105",
+        "sprite": "SPRITE_YOUNGSTER",
+        "tile": [
+          55,
+          43
+        ],
+        "facing": "south",
+        "lines": [
+          "We are meeting here after the junior show.",
+          "Our group is number 105. Look for us by the picnic court."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest108",
+        "sprite": "SPRITE_POKEFAN_F",
+        "tile": [
+          14,
+          45
+        ],
+        "facing": "west",
+        "lines": [
+          "We are meeting here after the junior show.",
+          "Our group is number 108. Look for us by the picnic court."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest109",
+        "sprite": "SPRITE_TEACHER",
+        "tile": [
+          17,
+          45
+        ],
+        "facing": "south",
+        "lines": [
+          "We are meeting here after the junior show.",
+          "Our group is number 109. Look for us by the picnic court."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest110",
+        "sprite": "SPRITE_FISHER",
+        "tile": [
+          20,
+          45
+        ],
+        "facing": "east",
+        "lines": [
+          "We are meeting here after the junior show.",
+          "Our group is number 110. Look for us by the picnic court."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest111",
+        "sprite": "SPRITE_GRANNY",
+        "tile": [
+          23,
+          45
+        ],
+        "facing": "north",
+        "lines": [
+          "We are meeting here after the junior show.",
+          "Our group is number 111. Look for us by the picnic court."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest112",
+        "sprite": "SPRITE_SUPER_NERD",
+        "tile": [
+          26,
+          45
+        ],
+        "facing": "west",
+        "lines": [
+          "We are meeting here after the junior show.",
+          "Our group is number 112. Look for us by the picnic court."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest113",
+        "sprite": "SPRITE_YOUNGSTER",
+        "tile": [
+          29,
+          45
+        ],
+        "facing": "south",
+        "lines": [
+          "We are meeting here after the junior show.",
+          "Our group is number 113. Look for us by the picnic court."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest115",
+        "sprite": "SPRITE_POKEFAN_M",
+        "tile": [
+          47,
+          55
+        ],
+        "facing": "north",
+        "lines": [
+          "Our club practiced handling all summer.",
+          "Our group is number 115. Look for us by the 4-H projects."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest116",
+        "sprite": "SPRITE_POKEFAN_F",
+        "tile": [
+          50,
+          55
+        ],
+        "facing": "west",
+        "lines": [
+          "The growers brought their best leaves today.",
+          "Our group is number 116. Look for us by the garden."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest117",
+        "sprite": "SPRITE_TEACHER",
+        "tile": [
+          53,
+          55
+        ],
+        "facing": "south",
+        "lines": [
+          "The growers brought their best leaves today.",
+          "Our group is number 117. Look for us by the garden."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest118",
+        "sprite": "SPRITE_FISHER",
+        "tile": [
+          62,
+          55
+        ],
+        "facing": "east",
+        "lines": [
+          "The growers brought their best leaves today.",
+          "Our group is number 118. Look for us by the garden."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest120",
+        "sprite": "SPRITE_SUPER_NERD",
+        "tile": [
+          33,
+          59
+        ],
+        "facing": "west",
+        "lines": [
+          "Our club practiced handling all summer.",
+          "Our group is number 120. Look for us by the 4-H projects."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest121",
+        "sprite": "SPRITE_YOUNGSTER",
+        "tile": [
+          36,
+          59
+        ],
+        "facing": "south",
+        "lines": [
+          "Our club practiced handling all summer.",
+          "Our group is number 121. Look for us by the 4-H projects."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest122",
+        "sprite": "SPRITE_LASS",
+        "tile": [
+          39,
+          59
+        ],
+        "facing": "east",
+        "lines": [
+          "Our club practiced handling all summer.",
+          "Our group is number 122. Look for us by the 4-H projects."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest123",
+        "sprite": "SPRITE_POKEFAN_M",
+        "tile": [
+          42,
+          59
+        ],
+        "facing": "north",
+        "lines": [
+          "Our club practiced handling all summer.",
+          "Our group is number 123. Look for us by the 4-H projects."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest124",
+        "sprite": "SPRITE_POKEFAN_F",
+        "tile": [
+          45,
+          59
+        ],
+        "facing": "west",
+        "lines": [
+          "Our club practiced handling all summer.",
+          "Our group is number 124. Look for us by the 4-H projects."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest125",
+        "sprite": "SPRITE_TEACHER",
+        "tile": [
+          54,
+          59
+        ],
+        "facing": "south",
+        "lines": [
+          "The growers brought their best leaves today.",
+          "Our group is number 125. Look for us by the garden."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest126",
+        "sprite": "SPRITE_FISHER",
+        "tile": [
+          57,
+          59
+        ],
+        "facing": "east",
+        "lines": [
+          "The growers brought their best leaves today.",
+          "Our group is number 126. Look for us by the garden."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest128",
+        "sprite": "SPRITE_SUPER_NERD",
+        "tile": [
+          9,
+          65
+        ],
+        "facing": "west",
+        "lines": [
+          "Our club practiced handling all summer.",
+          "Our group is number 128. Look for us by the 4-H projects."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest129",
+        "sprite": "SPRITE_YOUNGSTER",
+        "tile": [
+          12,
+          65
+        ],
+        "facing": "south",
+        "lines": [
+          "Our club practiced handling all summer.",
+          "Our group is number 129. Look for us by the 4-H projects."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest130",
+        "sprite": "SPRITE_LASS",
+        "tile": [
+          15,
+          65
+        ],
+        "facing": "east",
+        "lines": [
+          "Our club practiced handling all summer.",
+          "Our group is number 130. Look for us by the 4-H projects."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest131",
+        "sprite": "SPRITE_POKEFAN_M",
+        "tile": [
+          18,
+          65
+        ],
+        "facing": "north",
+        "lines": [
+          "Our club practiced handling all summer.",
+          "Our group is number 131. Look for us by the 4-H projects."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest132",
+        "sprite": "SPRITE_POKEFAN_F",
+        "tile": [
+          24,
+          65
+        ],
+        "facing": "west",
+        "lines": [
+          "Our club practiced handling all summer.",
+          "Our group is number 132. Look for us by the 4-H projects."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest133",
+        "sprite": "SPRITE_TEACHER",
+        "tile": [
+          27,
+          65
+        ],
+        "facing": "south",
+        "lines": [
+          "Our club practiced handling all summer.",
+          "Our group is number 133. Look for us by the 4-H projects."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest134",
+        "sprite": "SPRITE_FISHER",
+        "tile": [
+          30,
+          65
+        ],
+        "facing": "east",
+        "lines": [
+          "Our club practiced handling all summer.",
+          "Our group is number 134. Look for us by the 4-H projects."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest135",
+        "sprite": "SPRITE_GRANNY",
+        "tile": [
+          21,
+          68
+        ],
+        "facing": "north",
+        "lines": [
+          "Keep your group together in this crowd.",
+          "Our group is number 135. Look for us by the entry."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest136",
+        "sprite": "SPRITE_SUPER_NERD",
+        "tile": [
+          24,
+          68
+        ],
+        "facing": "west",
+        "lines": [
+          "Keep your group together in this crowd.",
+          "Our group is number 136. Look for us by the entry."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest137",
+        "sprite": "SPRITE_YOUNGSTER",
+        "tile": [
+          27,
+          68
+        ],
+        "facing": "south",
+        "lines": [
+          "Keep your group together in this crowd.",
+          "Our group is number 137. Look for us by the entry."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest138",
+        "sprite": "SPRITE_LASS",
+        "tile": [
+          30,
+          68
+        ],
+        "facing": "east",
+        "lines": [
+          "Keep your group together in this crowd.",
+          "Our group is number 138. Look for us by the entry."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest139",
+        "sprite": "SPRITE_POKEFAN_M",
+        "tile": [
+          33,
+          68
+        ],
+        "facing": "north",
+        "lines": [
+          "Keep your group together in this crowd.",
+          "Our group is number 139. Look for us by the entry."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest140",
+        "sprite": "SPRITE_POKEFAN_F",
+        "tile": [
+          48,
+          68
+        ],
+        "facing": "west",
+        "lines": [
+          "Keep your group together in this crowd.",
+          "Our group is number 140. Look for us by the entry."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest141",
+        "sprite": "SPRITE_TEACHER",
+        "tile": [
+          51,
+          68
+        ],
+        "facing": "south",
+        "lines": [
+          "Keep your group together in this crowd.",
+          "Our group is number 141. Look for us by the entry."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest142",
+        "sprite": "SPRITE_FISHER",
+        "tile": [
+          54,
+          68
+        ],
+        "facing": "east",
+        "lines": [
+          "Keep your group together in this crowd.",
+          "Our group is number 142. Look for us by the entry."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest143",
+        "sprite": "SPRITE_GRANNY",
+        "tile": [
+          70,
+          62
+        ],
+        "facing": "north",
+        "lines": [
+          "Our club practiced handling all summer.",
+          "Our group is number 143. Look for us by the 4-H projects."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest144",
+        "sprite": "SPRITE_SUPER_NERD",
+        "tile": [
+          73,
+          62
+        ],
+        "facing": "west",
+        "lines": [
+          "Our club practiced handling all summer.",
+          "Our group is number 144. Look for us by the 4-H projects."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest145",
+        "sprite": "SPRITE_YOUNGSTER",
+        "tile": [
+          79,
+          62
+        ],
+        "facing": "south",
+        "lines": [
+          "Our club practiced handling all summer.",
+          "Our group is number 145. Look for us by the 4-H projects."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest146",
+        "sprite": "SPRITE_LASS",
+        "tile": [
+          85,
+          62
+        ],
+        "facing": "east",
+        "lines": [
+          "Our club practiced handling all summer.",
+          "Our group is number 146. Look for us by the 4-H projects."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest147",
+        "sprite": "SPRITE_POKEFAN_M",
+        "tile": [
+          88,
+          62
+        ],
+        "facing": "north",
+        "lines": [
+          "Our club practiced handling all summer.",
+          "Our group is number 147. Look for us by the 4-H projects."
+        ]
+      },
+      {
+        "id": "MnFairMazeGuest148",
+        "sprite": "SPRITE_POKEFAN_F",
+        "tile": [
+          91,
+          62
+        ],
+        "facing": "west",
+        "lines": [
+          "Our club practiced handling all summer.",
+          "Our group is number 148. Look for us by the 4-H projects."
+        ]
+      }
+    ],
+    "signs": [
+      {
+        "id": "MnFairGroundsMap",
+        "tile": [
+          18,
+          66
+        ],
+        "lines": [
+          "STATE FAIR",
+          "Northwest: MIDWAY and GRANDSTAND.",
+          "Northeast: FOOD PAVILION.",
+          "South: LIVESTOCK and DAIRY.",
+          "Grass habitats: bakery, dairy, midway, growers, orchard and hotdish. All food families visit!",
+          "Thirty-five trainers want a friendly battle. Visit first aid by the dairy.",
+          "Exit east for PINE COUNTRY and MINNEAPOLIS."
+        ]
+      },
+      {
+        "id": "MnFairGrandstandSign",
+        "tile": [
+          26,
+          18
+        ],
+        "lines": [
+          "GRANDSTAND",
+          "The next show is inside."
+        ]
+      },
+      {
+        "id": "MnFairBarnSign",
+        "tile": [
+          18,
+          50
+        ],
+        "lines": [
+          "LIVESTOCK BARN",
+          "Meet the handler and earn a stamp."
+        ]
+      },
+      {
+        "id": "MnFairDairySign",
+        "tile": [
+          88,
+          50
+        ],
+        "lines": [
+          "DAIRY EXHIBITION",
+          "Butter carving and the dairy stamp.",
+          "CURDLET, CHISLET and their evolved forms gather in the dairy grass."
+        ]
+      },
+      {
+        "id": "MnFairMidwaySign",
+        "tile": [
+          6,
+          22
+        ],
+        "lines": [
+          "MIGHTY MIDWAY",
+          "Free quiz and ring toss.",
+          "TILTAWISP and the PIPCORN family play in the nearby grass."
+        ]
+      },
+      {
+        "id": "MnFairPavilionSign",
+        "tile": [
+          50,
+          12
+        ],
+        "lines": [
+          "FOOD PAVILION",
+          "Eight cooks, one long counter.",
+          "DOUGHLIN grows into CRUMCONE, then PAILBARON. Search the grass behind the pavilion."
+        ]
+      },
+      {
+        "id": "MnFairGardenSign",
+        "tile": [
+          70,
+          54
+        ],
+        "lines": [
+          "HORTICULTURE",
+          "Stroll the beds and meet the growers.",
+          "CRISPIP and the sugarbeet family grow in the orchard grass."
+        ]
+      }
+    ],
+    "doors": [
+      {
+        "id": "MnFairGrandstandDoor",
+        "tile": [
+          11,
+          17
+        ],
+        "return_tile": [
+          11,
+          18
+        ],
+        "target": "MnFairGrandstand",
+        "warp_index": 1,
+        "return_warp_index": 2,
+        "target_warp": 3,
+        "arrival_tile": [
+          5,
+          12
+        ]
+      },
+      {
+        "id": "MnFairBarnDoor",
+        "tile": [
+          7,
+          51
+        ],
+        "return_tile": [
+          7,
+          52
+        ],
+        "target": "MnFairBarn",
+        "warp_index": 3,
+        "return_warp_index": 4,
+        "target_warp": 3,
+        "arrival_tile": [
+          3,
+          6
+        ]
+      },
+      {
+        "id": "MnFairDairyDoor",
+        "tile": [
+          75,
+          51
+        ],
+        "return_tile": [
+          75,
+          52
+        ],
+        "target": "MnFairDairy",
+        "warp_index": 5,
+        "return_warp_index": 6,
+        "target_warp": 3,
+        "arrival_tile": [
+          3,
+          6
+        ]
+      }
+    ],
+    "interiors": [
+      {
+        "id": "MnFairGrandstand",
+        "native_constant": "MN_FAIR_GRANDSTAND",
+        "template": "DanceTheater",
+        "tileset": "traditional_house",
+        "border_block": 0,
+        "dimensions_metatiles": [
+          6,
+          7
+        ],
+        "rows": [],
+        "source_reference": {
+          "map": "DanceTheater",
+          "preserve_exact_layout": true
+        },
+        "passive_arrival": {
+          "index": 3,
+          "tile": [
+            5,
+            12
+          ]
+        },
+        "exits": [
+          {
+            "index": 1,
+            "tile": [
+              5,
+              13
+            ],
+            "target": "MnStateFairgrounds",
+            "target_warp": 2
+          },
+          {
+            "index": 2,
+            "tile": [
+              6,
+              13
+            ],
+            "target": "MnStateFairgrounds",
+            "target_warp": 2
+          }
+        ],
+        "residents": [
+          {
+            "id": "MnFairShowHost",
+            "sprite": "SPRITE_GENTLEMAN",
+            "tile": [
+              5,
+              9
+            ],
+            "facing": "south",
+            "lines": [
+              "The BEMIDJI folk",
+              "group goes on next.",
+              "My daughter keeps",
+              "their old tunes",
+              "in a school book."
+            ],
+            "service": null,
+            "stock": [],
+            "approach": null,
+            "counter_tile": null
+          },
+          {
+            "id": "MnFairFolkPerformer",
+            "sprite": "SPRITE_COOLTRAINER_F",
+            "tile": [
+              4,
+              5
+            ],
+            "approach": [
+              3,
+              5
+            ],
+            "facing": "south",
+            "lines": [
+              "Grandma taught me",
+              "these dance tunes",
+              "in BEMIDJI. Now my",
+              "little brother",
+              "keeps time for me."
+            ]
+          },
+          {
+            "id": "MnFairRangeChorus",
+            "sprite": "SPRITE_GRAMPS",
+            "tile": [
+              8,
+              5
+            ],
+            "approach": [
+              9,
+              5
+            ],
+            "facing": "south",
+            "lines": [
+              "Our IRON RANGE",
+              "choir sings after",
+              "the fiddle group.",
+              "Some voices crack.",
+              "We sing together."
+            ]
+          }
+        ],
+        "signs": [],
+        "pc": null
+      },
+      {
+        "id": "MnFairBarn",
+        "native_constant": "MN_FAIR_BARN",
+        "template": "Route39Barn",
+        "tileset": "traditional_house",
+        "border_block": 0,
+        "dimensions_metatiles": [
+          4,
+          4
+        ],
+        "rows": [],
+        "source_reference": {
+          "map": "Route39Barn",
+          "preserve_exact_layout": true
+        },
+        "passive_arrival": {
+          "index": 3,
+          "tile": [
+            3,
+            6
+          ]
+        },
+        "exits": [
+          {
+            "index": 1,
+            "tile": [
+              3,
+              7
+            ],
+            "target": "MnStateFairgrounds",
+            "target_warp": 4
+          },
+          {
+            "index": 2,
+            "tile": [
+              4,
+              7
+            ],
+            "target": "MnStateFairgrounds",
+            "target_warp": 4
+          }
+        ],
+        "residents": [
+          {
+            "id": "MnFairBarnVolunteer",
+            "sprite": "SPRITE_POKEFAN_F",
+            "tile": [
+              5,
+              3
+            ],
+            "facing": "south",
+            "lines": [
+              "Good care wins",
+              "more than ribbons.",
+              "Here is your",
+              "livestock stamp."
+            ],
+            "service": null,
+            "stock": [],
+            "approach": null,
+            "counter_tile": null
+          },
+          {
+            "id": "MnFairBarnMoomoo",
+            "sprite": "SPRITE_OATLET",
+            "tile": [
+              3,
+              3
+            ],
+            "facing": "south",
+            "lines": [
+              "OATLET rustles its grain coat.",
+              "The handler brushes it before judging."
+            ],
+            "service": null,
+            "stock": []
+          }
+        ],
+        "signs": [],
+        "pc": null
+      },
+      {
+        "id": "MnFairDairy",
+        "native_constant": "MN_FAIR_DAIRY",
+        "template": "CherrygrovePokecenter1F",
+        "tileset": "gate",
+        "border_block": 0,
+        "dimensions_metatiles": [
+          5,
+          4
+        ],
+        "rows": [
+          "39 0e 02 13 39",
+          "01 10 10 10 01",
+          "39 01 01 01 39",
+          "01 26 26 01 01"
+        ],
+        "source_reference": {
+          "map": "CherrygrovePokecenter1F",
+          "preserve_exact_layout": false,
+          "exception": "Replace the unused downstairs stair block with native floor; retain the counter, equipment and other source room blocks."
+        },
+        "passive_arrival": {
+          "index": 3,
+          "tile": [
+            3,
+            6
+          ]
+        },
+        "exits": [
+          {
+            "index": 1,
+            "tile": [
+              2,
+              7
+            ],
+            "target": "MnStateFairgrounds",
+            "target_warp": 6
+          },
+          {
+            "index": 2,
+            "tile": [
+              4,
+              7
+            ],
+            "target": "MnStateFairgrounds",
+            "target_warp": 6
+          }
+        ],
+        "residents": [
+          {
+            "id": "MnFairDairyDemonstrator",
+            "sprite": "SPRITE_LASS",
+            "tile": [
+              3,
+              1
+            ],
+            "facing": "south",
+            "lines": [
+              "Our butter art",
+              "stays cool here.",
+              "Watch BUTTERMUSE",
+              "shape a new curl."
+            ],
+            "service": null,
+            "stock": [],
+            "approach": [
+              3,
+              3
+            ],
+            "counter_tile": [
+              3,
+              2
+            ]
+          },
+          {
+            "id": "MnFairButterArtist",
+            "sprite": "SPRITE_BUTTERMUSE",
+            "tile": [
+              6,
+              1
+            ],
+            "counter_tile": [
+              6,
+              2
+            ],
+            "approach": [
+              6,
+              3
+            ],
+            "facing": "south",
+            "lines": [
+              "BUTTERMUSE smooths",
+              "a curl of butter.",
+              "Its careful work",
+              "keeps the edges",
+              "from melting."
+            ]
+          }
+        ],
+        "signs": [],
+        "pc": null
+      }
+    ]
+  },
+  "native_flags": [
+    "EVENT_MN_FAIR_BARN_STAMP",
+    "EVENT_MN_FAIR_DAIRY_STAMP",
+    "EVENT_MN_FAIR_MIDWAY_STAMP",
+    "EVENT_MN_FAIR_PRIZE_CLAIMED",
+    "EVENT_MN_FAIR_GAME_PRIZE",
+    "EVENT_MN_FAIR_RING_DEFEATED",
+    "EVENT_MN_FAIR_GAME_PENDING",
+    "EVENT_MN_FAIR_JUNIOR_DEFEATED",
+    "EVENT_MN_FAIR_CARE_PRIZE",
+    "EVENT_MN_FAIR_COOKIE_DEFEATED",
+    "EVENT_MN_FAIR_PRETZEL_DEFEATED",
+    "EVENT_MN_FAIR_CURDS_DEFEATED",
+    "EVENT_MN_FAIR_MILK_DEFEATED",
+    "EVENT_MN_FAIR_BAKER_DEFEATED",
+    "EVENT_MN_FAIR_PICNIC_DEFEATED",
+    "EVENT_MN_FAIR_GRAIN_KID_DEFEATED",
+    "EVENT_MN_FAIR_NORTH_KID_DEFEATED",
+    "EVENT_MN_FAIR_RICE_DEFEATED",
+    "EVENT_MN_FAIR_MIDWAY_A_DEFEATED",
+    "EVENT_MN_FAIR_MIDWAY_B_DEFEATED",
+    "EVENT_MN_FAIR_MIDWAY_C_DEFEATED",
+    "EVENT_MN_FAIR_MIDWAY_D_DEFEATED",
+    "EVENT_MN_FAIR_STAGE_DEFEATED",
+    "EVENT_MN_FAIR_WEST_DEFEATED",
+    "EVENT_MN_FAIR_BARN_KID_DEFEATED",
+    "EVENT_MN_FAIR_RING_FAN_DEFEATED",
+    "EVENT_MN_FAIR_GARDEN_DEFEATED",
+    "EVENT_MN_FAIR_DAIRY_KID_DEFEATED",
+    "EVENT_MN_FAIR_ORCHARD_DEFEATED",
+    "EVENT_MN_FAIR_EXHIBITOR_01_DEFEATED",
+    "EVENT_MN_FAIR_EXHIBITOR_02_DEFEATED",
+    "EVENT_MN_FAIR_EXHIBITOR_03_DEFEATED",
+    "EVENT_MN_FAIR_EXHIBITOR_04_DEFEATED",
+    "EVENT_MN_FAIR_EXHIBITOR_05_DEFEATED",
+    "EVENT_MN_FAIR_EXHIBITOR_06_DEFEATED",
+    "EVENT_MN_FAIR_EXHIBITOR_07_DEFEATED",
+    "EVENT_MN_FAIR_EXHIBITOR_08_DEFEATED",
+    "EVENT_MN_FAIR_EXHIBITOR_09_DEFEATED",
+    "EVENT_MN_FAIR_EXHIBITOR_10_DEFEATED",
+    "EVENT_MN_FAIR_EXHIBITOR_11_DEFEATED",
+    "EVENT_MN_FAIR_EXHIBITOR_12_DEFEATED",
+    "EVENT_MN_FAIR_EXHIBITOR_13_DEFEATED"
+  ],
+  "native_trainers": [
+    {
+      "id": "MN_FAIR_SHOW_TRAINER",
+      "tile": [
+        31,
+        51
+      ],
+      "facing": "south",
+      "sprite": "SPRITE_POKEFAN_M",
+      "trainer_class": "POKEFANM",
+      "display_name": "ELI",
+      "party": [
+        {
+          "species": "DOUGHLIN",
+          "level": 14
+        },
+        {
+          "species": "PIPCORN",
+          "level": 14
+        }
+      ],
+      "defeated_flag": "EVENT_MN_FAIR_RING_DEFEATED",
+      "before_lines": [
+        "Care to try a",
+        "friendly show",
+        "ring battle?"
+      ],
+      "after_lines": [
+        "Good care makes",
+        "a great partner."
+      ],
+      "loss_lines": [
+        "We will keep",
+        "practicing too."
+      ],
+      "sight_range": 0
+    },
+    {
+      "id": "MN_FAIR_JUNIOR_TRAINER",
+      "tile": [
+        35,
+        53
+      ],
+      "facing": "south",
+      "sprite": "SPRITE_YOUNGSTER",
+      "trainer_class": "SCHOOLBOY",
+      "display_name": "JAMIE",
+      "party": [
+        {
+          "species": "OATLET",
+          "level": 12
+        }
+      ],
+      "defeated_flag": "EVENT_MN_FAIR_JUNIOR_DEFEATED",
+      "before_lines": [
+        "I raised my partner for the fair! Want a friendly battle?"
+      ],
+      "after_lines": [
+        "We will keep practicing for next year."
+      ],
+      "loss_lines": [
+        "We will keep",
+        "practicing too."
+      ],
+      "sight_range": 0
+    },
+    {
+      "id": "MN_FAIR_COOKIE_TRAINER",
+      "tile": [
+        55,
+        13
+      ],
+      "facing": "south",
+      "sprite": "SPRITE_YOUNGSTER",
+      "trainer_class": "SCHOOLBOY",
+      "display_name": "CAL",
+      "party": [
+        {
+          "species": "DOUGHLIN",
+          "level": 14
+        }
+      ],
+      "defeated_flag": "EVENT_MN_FAIR_COOKIE_DEFEATED",
+      "before_lines": [
+        "Cookies give us energy. Battle before the next batch?"
+      ],
+      "after_lines": [
+        "What a match! Enjoy the rest of the fair."
+      ],
+      "loss_lines": [
+        "We will be here if you want to try again."
+      ],
+      "sight_range": 3
+    },
+    {
+      "id": "MN_FAIR_PRETZEL_TRAINER",
+      "tile": [
+        63,
+        13
+      ],
+      "facing": "east",
+      "sprite": "SPRITE_LASS",
+      "trainer_class": "LASS",
+      "display_name": "LINA",
+      "party": [
+        {
+          "species": "FLAPIP",
+          "level": 14
+        },
+        {
+          "species": "PIPCORN",
+          "level": 14
+        }
+      ],
+      "defeated_flag": "EVENT_MN_FAIR_PRETZEL_DEFEATED",
+      "before_lines": [
+        "Twist your strategy like a pretzel!"
+      ],
+      "after_lines": [
+        "What a match! Enjoy the rest of the fair."
+      ],
+      "loss_lines": [
+        "We will be here if you want to try again."
+      ],
+      "sight_range": 3
+    },
+    {
+      "id": "MN_FAIR_CURDS_TRAINER",
+      "tile": [
+        67,
+        15
+      ],
+      "facing": "west",
+      "sprite": "SPRITE_POKEFAN_F",
+      "trainer_class": "POKEFANF",
+      "display_name": "MAE",
+      "party": [
+        {
+          "species": "CURDLET",
+          "level": 16
+        },
+        {
+          "species": "TOTLIT",
+          "level": 16
+        }
+      ],
+      "defeated_flag": "EVENT_MN_FAIR_CURDS_DEFEATED",
+      "before_lines": [
+        "Fresh curds, fresh challenge!"
+      ],
+      "after_lines": [
+        "What a match! Enjoy the rest of the fair."
+      ],
+      "loss_lines": [
+        "We will be here if you want to try again."
+      ],
+      "sight_range": 3
+    },
+    {
+      "id": "MN_FAIR_MILK_TRAINER",
+      "tile": [
+        65,
+        25
+      ],
+      "facing": "west",
+      "sprite": "SPRITE_YOUNGSTER",
+      "trainer_class": "SCHOOLBOY",
+      "display_name": "EMIL",
+      "party": [
+        {
+          "species": "CHISLET",
+          "level": 15
+        },
+        {
+          "species": "CURDLET",
+          "level": 15
+        }
+      ],
+      "defeated_flag": "EVENT_MN_FAIR_MILK_DEFEATED",
+      "before_lines": [
+        "My partners trained for the dairy show."
+      ],
+      "after_lines": [
+        "What a match! Enjoy the rest of the fair."
+      ],
+      "loss_lines": [
+        "We will be here if you want to try again."
+      ],
+      "sight_range": 3
+    },
+    {
+      "id": "MN_FAIR_BAKER_TRAINER",
+      "tile": [
+        83,
+        25
+      ],
+      "facing": "south",
+      "sprite": "SPRITE_LASS",
+      "trainer_class": "LASS",
+      "display_name": "ADA",
+      "party": [
+        {
+          "species": "DOUGHLIN",
+          "level": 17
+        },
+        {
+          "species": "OATLET",
+          "level": 16
+        }
+      ],
+      "defeated_flag": "EVENT_MN_FAIR_BAKER_DEFEATED",
+      "before_lines": [
+        "The next batch can wait. Let us battle!"
+      ],
+      "after_lines": [
+        "What a match! Enjoy the rest of the fair."
+      ],
+      "loss_lines": [
+        "We will be here if you want to try again."
+      ],
+      "sight_range": 3
+    },
+    {
+      "id": "MN_FAIR_PICNIC_TRAINER",
+      "tile": [
+        61,
+        31
+      ],
+      "facing": "south",
+      "sprite": "SPRITE_GENTLEMAN",
+      "trainer_class": "GENTLEMAN",
+      "display_name": "ORIN",
+      "party": [
+        {
+          "species": "TOTLIT",
+          "level": 18
+        },
+        {
+          "species": "LUTEBRISK",
+          "level": 18
+        }
+      ],
+      "defeated_flag": "EVENT_MN_FAIR_PICNIC_DEFEATED",
+      "before_lines": [
+        "A picnic and a match make a splendid day."
+      ],
+      "after_lines": [
+        "What a match! Enjoy the rest of the fair."
+      ],
+      "loss_lines": [
+        "We will be here if you want to try again."
+      ],
+      "sight_range": 2
+    },
+    {
+      "id": "MN_FAIR_GRAIN_KID_TRAINER",
+      "tile": [
+        65,
+        31
+      ],
+      "facing": "east",
+      "sprite": "SPRITE_GAMEBOY_KID",
+      "trainer_class": "SCHOOLBOY",
+      "display_name": "IVY",
+      "party": [
+        {
+          "species": "OATLET",
+          "level": 13
+        },
+        {
+          "species": "RICELING",
+          "level": 14
+        }
+      ],
+      "defeated_flag": "EVENT_MN_FAIR_GRAIN_KID_DEFEATED",
+      "before_lines": [
+        "I entered the grain show and the battle show!"
+      ],
+      "after_lines": [
+        "What a match! Enjoy the rest of the fair."
+      ],
+      "loss_lines": [
+        "We will be here if you want to try again."
+      ],
+      "sight_range": 3
+    },
+    {
+      "id": "MN_FAIR_NORTH_KID_TRAINER",
+      "tile": [
+        29,
+        13
+      ],
+      "facing": "east",
+      "sprite": "SPRITE_GAMEBOY_KID",
+      "trainer_class": "SCHOOLBOY",
+      "display_name": "LEO",
+      "party": [
+        {
+          "species": "CRISPIP",
+          "level": 15
+        },
+        {
+          "species": "ZAPSAP",
+          "level": 15
+        }
+      ],
+      "defeated_flag": "EVENT_MN_FAIR_NORTH_KID_DEFEATED",
+      "before_lines": [
+        "My garden partners are ready to compete!"
+      ],
+      "after_lines": [
+        "What a match! Enjoy the rest of the fair."
+      ],
+      "loss_lines": [
+        "We will be here if you want to try again."
+      ],
+      "sight_range": 3
+    },
+    {
+      "id": "MN_FAIR_RICE_TRAINER",
+      "tile": [
+        26,
+        13
+      ],
+      "facing": "west",
+      "sprite": "SPRITE_FISHER",
+      "trainer_class": "FISHER",
+      "display_name": "TORI",
+      "party": [
+        {
+          "species": "RICELING",
+          "level": 16
+        },
+        {
+          "species": "CINDERFIN",
+          "level": 16
+        }
+      ],
+      "defeated_flag": "EVENT_MN_FAIR_RICE_DEFEATED",
+      "before_lines": [
+        "These partners grew up around the lake."
+      ],
+      "after_lines": [
+        "What a match! Enjoy the rest of the fair."
+      ],
+      "loss_lines": [
+        "We will be here if you want to try again."
+      ],
+      "sight_range": 3
+    },
+    {
+      "id": "MN_FAIR_MIDWAY_A_TRAINER",
+      "tile": [
+        10,
+        27
+      ],
+      "facing": "east",
+      "sprite": "SPRITE_YOUNGSTER",
+      "trainer_class": "YOUNGSTER",
+      "display_name": "MAX",
+      "party": [
+        {
+          "species": "PIPCORN",
+          "level": 16
+        },
+        {
+          "species": "TILTAWISP",
+          "level": 17
+        }
+      ],
+      "defeated_flag": "EVENT_MN_FAIR_MIDWAY_A_DEFEATED",
+      "before_lines": [
+        "You caught my eye! Show me your best move!"
+      ],
+      "after_lines": [
+        "What a match! Enjoy the rest of the fair."
+      ],
+      "loss_lines": [
+        "We will be here if you want to try again."
+      ],
+      "sight_range": 5
+    },
+    {
+      "id": "MN_FAIR_MIDWAY_B_TRAINER",
+      "tile": [
+        18,
+        27
+      ],
+      "facing": "west",
+      "sprite": "SPRITE_LASS",
+      "trainer_class": "LASS",
+      "display_name": "NELL",
+      "party": [
+        {
+          "species": "PIPCORN",
+          "level": 15
+        },
+        {
+          "species": "FLAPIP",
+          "level": 16
+        }
+      ],
+      "defeated_flag": "EVENT_MN_FAIR_MIDWAY_B_DEFEATED",
+      "before_lines": [
+        "A friendly battle while we wait?"
+      ],
+      "after_lines": [
+        "What a match! Enjoy the rest of the fair."
+      ],
+      "loss_lines": [
+        "We will be here if you want to try again."
+      ],
+      "sight_range": 5
+    },
+    {
+      "id": "MN_FAIR_MIDWAY_C_TRAINER",
+      "tile": [
+        26,
+        27
+      ],
+      "facing": "south",
+      "sprite": "SPRITE_POKEFAN_M",
+      "trainer_class": "POKEFANM",
+      "display_name": "BEAU",
+      "party": [
+        {
+          "species": "TILTAWISP",
+          "level": 21
+        },
+        {
+          "species": "DOUGHLIN",
+          "level": 19
+        }
+      ],
+      "defeated_flag": "EVENT_MN_FAIR_MIDWAY_C_DEFEATED",
+      "before_lines": [
+        "Step right up for a midway match!"
+      ],
+      "after_lines": [
+        "What a match! Enjoy the rest of the fair."
+      ],
+      "loss_lines": [
+        "We will be here if you want to try again."
+      ],
+      "sight_range": 3
+    },
+    {
+      "id": "MN_FAIR_MIDWAY_D_TRAINER",
+      "tile": [
+        34,
+        27
+      ],
+      "facing": "east",
+      "sprite": "SPRITE_TEACHER",
+      "trainer_class": "TEACHER",
+      "display_name": "RUTH",
+      "party": [
+        {
+          "species": "OATLET",
+          "level": 17
+        },
+        {
+          "species": "CURDLET",
+          "level": 17
+        },
+        {
+          "species": "CRISPIP",
+          "level": 17
+        }
+      ],
+      "defeated_flag": "EVENT_MN_FAIR_MIDWAY_D_DEFEATED",
+      "before_lines": [
+        "Let us put our training into practice."
+      ],
+      "after_lines": [
+        "What a match! Enjoy the rest of the fair."
+      ],
+      "loss_lines": [
+        "We will be here if you want to try again."
+      ],
+      "sight_range": 3
+    },
+    {
+      "id": "MN_FAIR_STAGE_TRAINER",
+      "tile": [
+        15,
+        21
+      ],
+      "facing": "south",
+      "sprite": "SPRITE_LASS",
+      "trainer_class": "LASS",
+      "display_name": "ZOE",
+      "party": [
+        {
+          "species": "TILTAWISP",
+          "level": 18
+        },
+        {
+          "species": "FLAPIP",
+          "level": 17
+        }
+      ],
+      "defeated_flag": "EVENT_MN_FAIR_STAGE_DEFEATED",
+      "before_lines": [
+        "We can put on a show right here!"
+      ],
+      "after_lines": [
+        "What a match! Enjoy the rest of the fair."
+      ],
+      "loss_lines": [
+        "We will be here if you want to try again."
+      ],
+      "sight_range": 2
+    },
+    {
+      "id": "MN_FAIR_WEST_TRAINER",
+      "tile": [
+        7,
+        34
+      ],
+      "facing": "east",
+      "sprite": "SPRITE_YOUNGSTER",
+      "trainer_class": "YOUNGSTER",
+      "display_name": "FINN",
+      "party": [
+        {
+          "species": "PIPCORN",
+          "level": 15
+        },
+        {
+          "species": "DOUGHLIN",
+          "level": 15
+        }
+      ],
+      "defeated_flag": "EVENT_MN_FAIR_WEST_DEFEATED",
+      "before_lines": [
+        "I came for the rides and the battles!"
+      ],
+      "after_lines": [
+        "What a match! Enjoy the rest of the fair."
+      ],
+      "loss_lines": [
+        "We will be here if you want to try again."
+      ],
+      "sight_range": 3
+    },
+    {
+      "id": "MN_FAIR_BARN_KID_TRAINER",
+      "tile": [
+        19,
+        54
+      ],
+      "facing": "south",
+      "sprite": "SPRITE_YOUNGSTER",
+      "trainer_class": "YOUNGSTER",
+      "display_name": "MIKO",
+      "party": [
+        {
+          "species": "SODCALF",
+          "level": 17
+        },
+        {
+          "species": "OATLET",
+          "level": 16
+        }
+      ],
+      "defeated_flag": "EVENT_MN_FAIR_BARN_KID_DEFEATED",
+      "before_lines": [
+        "My barn partners love a good match."
+      ],
+      "after_lines": [
+        "What a match! Enjoy the rest of the fair."
+      ],
+      "loss_lines": [
+        "We will be here if you want to try again."
+      ],
+      "sight_range": 3
+    },
+    {
+      "id": "MN_FAIR_RING_FAN_TRAINER",
+      "tile": [
+        43,
+        49
+      ],
+      "facing": "south",
+      "sprite": "SPRITE_GENTLEMAN",
+      "trainer_class": "GENTLEMAN",
+      "display_name": "HUGO",
+      "party": [
+        {
+          "species": "POUCHID",
+          "level": 19
+        },
+        {
+          "species": "TILTAWISP",
+          "level": 20
+        }
+      ],
+      "defeated_flag": "EVENT_MN_FAIR_RING_FAN_DEFEATED",
+      "before_lines": [
+        "Watching the show made me want to battle!"
+      ],
+      "after_lines": [
+        "What a match! Enjoy the rest of the fair."
+      ],
+      "loss_lines": [
+        "We will be here if you want to try again."
+      ],
+      "sight_range": 2
+    },
+    {
+      "id": "MN_FAIR_GARDEN_TRAINER",
+      "tile": [
+        65,
+        55
+      ],
+      "facing": "south",
+      "sprite": "SPRITE_LASS",
+      "trainer_class": "LASS",
+      "display_name": "FERN",
+      "party": [
+        {
+          "species": "CRISPIP",
+          "level": 17
+        },
+        {
+          "species": "POUCHID",
+          "level": 17
+        }
+      ],
+      "defeated_flag": "EVENT_MN_FAIR_GARDEN_DEFEATED",
+      "before_lines": [
+        "A little garden competition is healthy!"
+      ],
+      "after_lines": [
+        "What a match! Enjoy the rest of the fair."
+      ],
+      "loss_lines": [
+        "We will be here if you want to try again."
+      ],
+      "sight_range": 2
+    },
+    {
+      "id": "MN_FAIR_DAIRY_KID_TRAINER",
+      "tile": [
+        84,
+        54
+      ],
+      "facing": "west",
+      "sprite": "SPRITE_YOUNGSTER",
+      "trainer_class": "YOUNGSTER",
+      "display_name": "KAI",
+      "party": [
+        {
+          "species": "CHISLET",
+          "level": 18
+        },
+        {
+          "species": "CURDLET",
+          "level": 18
+        }
+      ],
+      "defeated_flag": "EVENT_MN_FAIR_DAIRY_KID_DEFEATED",
+      "before_lines": [
+        "Our dairy team is ready for you!"
+      ],
+      "after_lines": [
+        "What a match! Enjoy the rest of the fair."
+      ],
+      "loss_lines": [
+        "We will be here if you want to try again."
+      ],
+      "sight_range": 3
+    },
+    {
+      "id": "MN_FAIR_ORCHARD_TRAINER",
+      "tile": [
+        71,
+        43
+      ],
+      "facing": "south",
+      "sprite": "SPRITE_FISHER",
+      "trainer_class": "FISHER",
+      "display_name": "REED",
+      "party": [
+        {
+          "species": "CRISPIP",
+          "level": 19
+        },
+        {
+          "species": "ZAPSAP",
+          "level": 19
+        }
+      ],
+      "defeated_flag": "EVENT_MN_FAIR_ORCHARD_DEFEATED",
+      "before_lines": [
+        "These harvest partners have plenty of spirit!"
+      ],
+      "after_lines": [
+        "What a match! Enjoy the rest of the fair."
+      ],
+      "loss_lines": [
+        "We will be here if you want to try again."
+      ],
+      "sight_range": 3
+    },
+    {
+      "id": "MN_FAIR_EXHIBITOR_01_TRAINER",
+      "tile": [
+        18,
+        8
+      ],
+      "facing": "south",
+      "sprite": "SPRITE_YOUNGSTER",
+      "trainer_class": "SCHOOLBOY",
+      "display_name": "ADA",
+      "party": [
+        {
+          "species": "DOUGHLIN",
+          "level": 14
+        }
+      ],
+      "defeated_flag": "EVENT_MN_FAIR_EXHIBITOR_01_DEFEATED",
+      "before_lines": [
+        "We have been watching the judging. Ready to show your battle skills?"
+      ],
+      "after_lines": [
+        "A fine performance! I am cheering for your team."
+      ],
+      "loss_lines": [
+        "We will be here if you want to try again."
+      ],
+      "sight_range": 0
+    },
+    {
+      "id": "MN_FAIR_EXHIBITOR_02_TRAINER",
+      "tile": [
+        21,
+        8
+      ],
+      "facing": "east",
+      "sprite": "SPRITE_LASS",
+      "trainer_class": "LASS",
+      "display_name": "BO",
+      "party": [
+        {
+          "species": "FLAPIP",
+          "level": 14
+        },
+        {
+          "species": "PIPCORN",
+          "level": 14
+        }
+      ],
+      "defeated_flag": "EVENT_MN_FAIR_EXHIBITOR_02_DEFEATED",
+      "before_lines": [
+        "We have been watching the judging. Ready to show your battle skills?"
+      ],
+      "after_lines": [
+        "A fine performance! I am cheering for your team."
+      ],
+      "loss_lines": [
+        "We will be here if you want to try again."
+      ],
+      "sight_range": 0
+    },
+    {
+      "id": "MN_FAIR_EXHIBITOR_03_TRAINER",
+      "tile": [
+        27,
+        26
+      ],
+      "facing": "west",
+      "sprite": "SPRITE_POKEFAN_F",
+      "trainer_class": "POKEFANF",
+      "display_name": "CORA",
+      "party": [
+        {
+          "species": "CURDLET",
+          "level": 16
+        },
+        {
+          "species": "TOTLIT",
+          "level": 16
+        }
+      ],
+      "defeated_flag": "EVENT_MN_FAIR_EXHIBITOR_03_DEFEATED",
+      "before_lines": [
+        "We have been watching the judging. Ready to show your battle skills?"
+      ],
+      "after_lines": [
+        "A fine performance! I am cheering for your team."
+      ],
+      "loss_lines": [
+        "We will be here if you want to try again."
+      ],
+      "sight_range": 0
+    },
+    {
+      "id": "MN_FAIR_EXHIBITOR_04_TRAINER",
+      "tile": [
+        30,
+        26
+      ],
+      "facing": "west",
+      "sprite": "SPRITE_YOUNGSTER",
+      "trainer_class": "SCHOOLBOY",
+      "display_name": "DALE",
+      "party": [
+        {
+          "species": "CHISLET",
+          "level": 15
+        },
+        {
+          "species": "CURDLET",
+          "level": 15
+        }
+      ],
+      "defeated_flag": "EVENT_MN_FAIR_EXHIBITOR_04_DEFEATED",
+      "before_lines": [
+        "We have been watching the judging. Ready to show your battle skills?"
+      ],
+      "after_lines": [
+        "A fine performance! I am cheering for your team."
+      ],
+      "loss_lines": [
+        "We will be here if you want to try again."
+      ],
+      "sight_range": 0
+    },
+    {
+      "id": "MN_FAIR_EXHIBITOR_05_TRAINER",
+      "tile": [
+        36,
+        26
+      ],
+      "facing": "south",
+      "sprite": "SPRITE_LASS",
+      "trainer_class": "LASS",
+      "display_name": "ELI",
+      "party": [
+        {
+          "species": "DOUGHLIN",
+          "level": 17
+        },
+        {
+          "species": "OATLET",
+          "level": 16
+        }
+      ],
+      "defeated_flag": "EVENT_MN_FAIR_EXHIBITOR_05_DEFEATED",
+      "before_lines": [
+        "We have been watching the judging. Ready to show your battle skills?"
+      ],
+      "after_lines": [
+        "A fine performance! I am cheering for your team."
+      ],
+      "loss_lines": [
+        "We will be here if you want to try again."
+      ],
+      "sight_range": 0
+    },
+    {
+      "id": "MN_FAIR_EXHIBITOR_06_TRAINER",
+      "tile": [
+        62,
+        28
+      ],
+      "facing": "south",
+      "sprite": "SPRITE_GENTLEMAN",
+      "trainer_class": "GENTLEMAN",
+      "display_name": "FAYE",
+      "party": [
+        {
+          "species": "TOTLIT",
+          "level": 18
+        },
+        {
+          "species": "LUTEBRISK",
+          "level": 18
+        }
+      ],
+      "defeated_flag": "EVENT_MN_FAIR_EXHIBITOR_06_DEFEATED",
+      "before_lines": [
+        "We have been watching the judging. Ready to show your battle skills?"
+      ],
+      "after_lines": [
+        "A fine performance! I am cheering for your team."
+      ],
+      "loss_lines": [
+        "We will be here if you want to try again."
+      ],
+      "sight_range": 0
+    },
+    {
+      "id": "MN_FAIR_EXHIBITOR_07_TRAINER",
+      "tile": [
+        13,
+        34
+      ],
+      "facing": "east",
+      "sprite": "SPRITE_GAMEBOY_KID",
+      "trainer_class": "SCHOOLBOY",
+      "display_name": "GUS",
+      "party": [
+        {
+          "species": "OATLET",
+          "level": 13
+        },
+        {
+          "species": "RICELING",
+          "level": 14
+        }
+      ],
+      "defeated_flag": "EVENT_MN_FAIR_EXHIBITOR_07_DEFEATED",
+      "before_lines": [
+        "We have been watching the judging. Ready to show your battle skills?"
+      ],
+      "after_lines": [
+        "A fine performance! I am cheering for your team."
+      ],
+      "loss_lines": [
+        "We will be here if you want to try again."
+      ],
+      "sight_range": 0
+    },
+    {
+      "id": "MN_FAIR_EXHIBITOR_08_TRAINER",
+      "tile": [
+        28,
+        43
+      ],
+      "facing": "east",
+      "sprite": "SPRITE_GAMEBOY_KID",
+      "trainer_class": "SCHOOLBOY",
+      "display_name": "HOPE",
+      "party": [
+        {
+          "species": "CRISPIP",
+          "level": 15
+        },
+        {
+          "species": "ZAPSAP",
+          "level": 15
+        }
+      ],
+      "defeated_flag": "EVENT_MN_FAIR_EXHIBITOR_08_DEFEATED",
+      "before_lines": [
+        "We have been watching the judging. Ready to show your battle skills?"
+      ],
+      "after_lines": [
+        "A fine performance! I am cheering for your team."
+      ],
+      "loss_lines": [
+        "We will be here if you want to try again."
+      ],
+      "sight_range": 0
+    },
+    {
+      "id": "MN_FAIR_EXHIBITOR_09_TRAINER",
+      "tile": [
+        8,
+        45
+      ],
+      "facing": "west",
+      "sprite": "SPRITE_FISHER",
+      "trainer_class": "FISHER",
+      "display_name": "IVY",
+      "party": [
+        {
+          "species": "RICELING",
+          "level": 16
+        },
+        {
+          "species": "CINDERFIN",
+          "level": 16
+        }
+      ],
+      "defeated_flag": "EVENT_MN_FAIR_EXHIBITOR_09_DEFEATED",
+      "before_lines": [
+        "We have been watching the judging. Ready to show your battle skills?"
+      ],
+      "after_lines": [
+        "A fine performance! I am cheering for your team."
+      ],
+      "loss_lines": [
+        "We will be here if you want to try again."
+      ],
+      "sight_range": 0
+    },
+    {
+      "id": "MN_FAIR_EXHIBITOR_10_TRAINER",
+      "tile": [
+        11,
+        45
+      ],
+      "facing": "east",
+      "sprite": "SPRITE_YOUNGSTER",
+      "trainer_class": "YOUNGSTER",
+      "display_name": "JUNE",
+      "party": [
+        {
+          "species": "PIPCORN",
+          "level": 16
+        },
+        {
+          "species": "TILTAWISP",
+          "level": 17
+        }
+      ],
+      "defeated_flag": "EVENT_MN_FAIR_EXHIBITOR_10_DEFEATED",
+      "before_lines": [
+        "We have been watching the judging. Ready to show your battle skills?"
+      ],
+      "after_lines": [
+        "A fine performance! I am cheering for your team."
+      ],
+      "loss_lines": [
+        "We will be here if you want to try again."
+      ],
+      "sight_range": 0
+    },
+    {
+      "id": "MN_FAIR_EXHIBITOR_11_TRAINER",
+      "tile": [
+        44,
+        55
+      ],
+      "facing": "north",
+      "sprite": "SPRITE_LASS",
+      "trainer_class": "LASS",
+      "display_name": "LEE",
+      "party": [
+        {
+          "species": "PIPCORN",
+          "level": 15
+        },
+        {
+          "species": "FLAPIP",
+          "level": 16
+        }
+      ],
+      "defeated_flag": "EVENT_MN_FAIR_EXHIBITOR_11_DEFEATED",
+      "before_lines": [
+        "We have been watching the judging. Ready to show your battle skills?"
+      ],
+      "after_lines": [
+        "A fine performance! I am cheering for your team."
+      ],
+      "loss_lines": [
+        "We will be here if you want to try again."
+      ],
+      "sight_range": 0
+    },
+    {
+      "id": "MN_FAIR_EXHIBITOR_12_TRAINER",
+      "tile": [
+        30,
+        59
+      ],
+      "facing": "south",
+      "sprite": "SPRITE_POKEFAN_M",
+      "trainer_class": "POKEFANM",
+      "display_name": "MAX",
+      "party": [
+        {
+          "species": "TILTAWISP",
+          "level": 21
+        },
+        {
+          "species": "DOUGHLIN",
+          "level": 19
+        }
+      ],
+      "defeated_flag": "EVENT_MN_FAIR_EXHIBITOR_12_DEFEATED",
+      "before_lines": [
+        "We have been watching the judging. Ready to show your battle skills?"
+      ],
+      "after_lines": [
+        "A fine performance! I am cheering for your team."
+      ],
+      "loss_lines": [
+        "We will be here if you want to try again."
+      ],
+      "sight_range": 0
+    },
+    {
+      "id": "MN_FAIR_EXHIBITOR_13_TRAINER",
+      "tile": [
+        6,
+        65
+      ],
+      "facing": "east",
+      "sprite": "SPRITE_TEACHER",
+      "trainer_class": "TEACHER",
+      "display_name": "NORA",
+      "party": [
+        {
+          "species": "OATLET",
+          "level": 17
+        },
+        {
+          "species": "CURDLET",
+          "level": 17
+        },
+        {
+          "species": "CRISPIP",
+          "level": 17
+        }
+      ],
+      "defeated_flag": "EVENT_MN_FAIR_EXHIBITOR_13_DEFEATED",
+      "before_lines": [
+        "We have been watching the judging. Ready to show your battle skills?"
+      ],
+      "after_lines": [
+        "A fine performance! I am cheering for your team."
+      ],
+      "loss_lines": [
+        "We will be here if you want to try again."
+      ],
+      "sight_range": 0
+    }
+  ],
+  "native_city_connection": {
+    "map": "MnR05C00R02",
+    "tileset": "mn_headwaters",
+    "dimensions_metatiles": [
+      32,
+      8
+    ],
+    "fair_to_city_offset": 28,
+    "edits": [
+      {
+        "position": [
+          0,
+          4
+        ],
+        "before": "05",
+        "after": "01"
+      },
+      {
+        "position": [
+          1,
+          4
+        ],
+        "before": "05",
+        "after": "01"
+      },
+      {
+        "position": [
+          2,
+          4
+        ],
+        "before": "05",
+        "after": "01"
+      },
+      {
+        "position": [
+          3,
+          4
+        ],
+        "before": "05",
+        "after": "01"
+      },
+      {
+        "position": [
+          4,
+          4
+        ],
+        "before": "05",
+        "after": "01"
+      },
+      {
+        "position": [
+          5,
+          4
+        ],
+        "before": "05",
+        "after": "01"
+      },
+      {
+        "position": [
+          6,
+          4
+        ],
+        "before": "05",
+        "after": "01"
+      },
+      {
+        "position": [
+          7,
+          4
+        ],
+        "before": "05",
+        "after": "01"
+      },
+      {
+        "position": [
+          8,
+          4
+        ],
+        "before": "05",
+        "after": "01"
+      }
+    ]
+  },
+  "native_room_edits": [
+    {
+      "map": "MnFairDairy",
+      "position": [
+        0,
+        0
+      ],
+      "before": "01",
+      "after": "39"
+    },
+    {
+      "map": "MnFairDairy",
+      "position": [
+        1,
+        0
+      ],
+      "before": "02",
+      "after": "0e"
+    },
+    {
+      "map": "MnFairDairy",
+      "position": [
+        2,
+        0
+      ],
+      "before": "03",
+      "after": "02"
+    },
+    {
+      "map": "MnFairDairy",
+      "position": [
+        4,
+        0
+      ],
+      "before": "08",
+      "after": "39"
+    },
+    {
+      "map": "MnFairDairy",
+      "position": [
+        0,
+        1
+      ],
+      "before": "05",
+      "after": "01"
+    },
+    {
+      "map": "MnFairDairy",
+      "position": [
+        1,
+        1
+      ],
+      "before": "06",
+      "after": "10"
+    },
+    {
+      "map": "MnFairDairy",
+      "position": [
+        2,
+        1
+      ],
+      "before": "07",
+      "after": "10"
+    },
+    {
+      "map": "MnFairDairy",
+      "position": [
+        3,
+        1
+      ],
+      "before": "04",
+      "after": "10"
+    },
+    {
+      "map": "MnFairDairy",
+      "position": [
+        4,
+        1
+      ],
+      "before": "0c",
+      "after": "01"
+    },
+    {
+      "map": "MnFairDairy",
+      "position": [
+        0,
+        2
+      ],
+      "before": "04",
+      "after": "39"
+    },
+    {
+      "map": "MnFairDairy",
+      "position": [
+        1,
+        2
+      ],
+      "before": "04",
+      "after": "01"
+    },
+    {
+      "map": "MnFairDairy",
+      "position": [
+        2,
+        2
+      ],
+      "before": "04",
+      "after": "01"
+    },
+    {
+      "map": "MnFairDairy",
+      "position": [
+        3,
+        2
+      ],
+      "before": "2e",
+      "after": "01"
+    },
+    {
+      "map": "MnFairDairy",
+      "position": [
+        4,
+        2
+      ],
+      "before": "2f",
+      "after": "39"
+    },
+    {
+      "map": "MnFairDairy",
+      "position": [
+        0,
+        3
+      ],
+      "before": "12",
+      "after": "01"
+    },
+    {
+      "map": "MnFairDairy",
+      "position": [
+        1,
+        3
+      ],
+      "before": "11",
+      "after": "26"
+    },
+    {
+      "map": "MnFairDairy",
+      "position": [
+        2,
+        3
+      ],
+      "before": "27",
+      "after": "26"
+    },
+    {
+      "map": "MnFairDairy",
+      "position": [
+        3,
+        3
+      ],
+      "before": "2e",
+      "after": "01"
+    },
+    {
+      "map": "MnFairDairy",
+      "position": [
+        4,
+        3
+      ],
+      "before": "2f",
+      "after": "01"
+    }
+  ],
+  "future_features": [
+    "Animated ride silhouettes require separately reviewed native tile art and animation; large ImageGen rides are rejected."
+  ],
+  "expansion_contract": {
+    "user_request": "Bigger, more vendors, larger multitile structures, denser and more going on; raise the NPC limit rather than splitting the map.",
+    "dimensions_metatiles": [
+      48,
+      36
+    ],
+    "single_exterior_map": true,
+    "entry_core": [
+      93,
+      65
+    ],
+    "staffed_counters": 39,
+    "shops": 32,
+    "long_pavilion_bounds_metatiles": [
+      27,
+      4,
+      43,
+      7
+    ],
+    "large_structures": [
+      "sixteen-metatile open-front food pavilion",
+      "seven-metatile grandstand",
+      "five-metatile livestock barn",
+      "six-metatile dairy exhibition hall",
+      "eight-metatile exhibitors hall",
+      "two4-H and rural-craft pavilion wings"
+    ],
+    "review_views": [
+      {
+        "id": "pavilion-west",
+        "core": [
+          59,
+          12
+        ]
+      },
+      {
+        "id": "pavilion-east",
+        "core": [
+          79,
+          12
+        ]
+      },
+      {
+        "id": "midway",
+        "core": [
+          21,
+          27
+        ]
+      },
+      {
+        "id": "show-ring",
+        "core": [
+          32,
+          55
+        ]
+      },
+      {
+        "id": "garden",
+        "core": [
+          59,
+          55
+        ]
+      },
+      {
+        "id": "entry",
+        "core": [
+          93,
+          65
+        ]
+      },
+      {
+        "id": "exhibitors-hall",
+        "core": [
+          35,
+          18
+        ]
+      },
+      {
+        "id": "four-h-projects",
+        "core": [
+          43,
+          64
+        ]
+      },
+      {
+        "id": "cookie-habitat",
+        "core": [
+          57,
+          4
+        ]
+      },
+      {
+        "id": "midway-habitat",
+        "core": [
+          43,
+          44
+        ]
+      },
+      {
+        "id": "dairy-habitat",
+        "core": [
+          79,
+          44
+        ]
+      },
+      {
+        "id": "growers-habitat",
+        "core": [
+          25,
+          44
+        ]
+      },
+      {
+        "id": "popcorn-habitat",
+        "core": [
+          43,
+          65
+        ]
+      },
+      {
+        "id": "cookie-loop",
+        "core": [
+          78,
+          14
+        ]
+      },
+      {
+        "id": "midway-loop",
+        "core": [
+          18,
+          28
+        ]
+      },
+      {
+        "id": "picnic-loop",
+        "core": [
+          57,
+          28
+        ]
+      },
+      {
+        "id": "garden-loop",
+        "core": [
+          56,
+          52
+        ]
+      },
+      {
+        "id": "barn-judging",
+        "core": [
+          14,
+          55
+        ]
+      },
+      {
+        "id": "dairy-judging",
+        "core": [
+          77,
+          55
+        ]
+      }
+    ],
+    "verification": "PASS: 255 exterior actors, 35 trainers, source connectivity, original four patrol loops and Continue, new ambient movement/dialogue, Rust preservation/rebuild, 19 headless native views and 377 audio programs."
+  },
+  "native_encounters": {
+    "map_name": "MnStateFairgrounds",
+    "grass_rates": {
+      "morning": 25,
+      "day": 25,
+      "night": 25
+    },
+    "grass": {
+      "morning": [
+        {
+          "species": "DOUGHLIN",
+          "level": 10
+        },
+        {
+          "species": "FLAPIP",
+          "level": 10
+        },
+        {
+          "species": "DOUGHLIN",
+          "level": 10
+        },
+        {
+          "species": "CRUMCONE",
+          "level": 23
+        },
+        {
+          "species": "STACKAJACK",
+          "level": 23
+        },
+        {
+          "species": "PAILBARON",
+          "level": 36
+        },
+        {
+          "species": "STACKAJACK",
+          "level": 23
+        }
+      ],
+      "day": [
+        {
+          "species": "DOUGHLIN",
+          "level": 10
+        },
+        {
+          "species": "FLAPIP",
+          "level": 10
+        },
+        {
+          "species": "DOUGHLIN",
+          "level": 10
+        },
+        {
+          "species": "CRUMCONE",
+          "level": 23
+        },
+        {
+          "species": "STACKAJACK",
+          "level": 23
+        },
+        {
+          "species": "PAILBARON",
+          "level": 36
+        },
+        {
+          "species": "STACKAJACK",
+          "level": 23
+        }
+      ],
+      "night": [
+        {
+          "species": "DOUGHLIN",
+          "level": 10
+        },
+        {
+          "species": "FLAPIP",
+          "level": 10
+        },
+        {
+          "species": "DOUGHLIN",
+          "level": 10
+        },
+        {
+          "species": "CRUMCONE",
+          "level": 23
+        },
+        {
+          "species": "STACKAJACK",
+          "level": 23
+        },
+        {
+          "species": "PAILBARON",
+          "level": 36
+        },
+        {
+          "species": "STACKAJACK",
+          "level": 23
+        }
+      ]
+    },
+    "water_rate": null,
+    "water": null,
+    "zones": [
+      {
+        "id": "growers",
+        "minX": 42,
+        "minY": 6,
+        "maxX": 45,
+        "maxY": 11,
+        "grass": {
+          "morning": [
+            {
+              "species": "OATLET",
+              "level": 10
+            },
+            {
+              "species": "RICELING",
+              "level": 10
+            },
+            {
+              "species": "MILLIMP",
+              "level": 23
+            },
+            {
+              "species": "REEDRAFT",
+              "level": 23
+            },
+            {
+              "species": "FLOURGEIST",
+              "level": 36
+            },
+            {
+              "species": "ZIZALITH",
+              "level": 36
+            },
+            {
+              "species": "RICELING",
+              "level": 10
+            }
+          ],
+          "day": [
+            {
+              "species": "OATLET",
+              "level": 10
+            },
+            {
+              "species": "RICELING",
+              "level": 10
+            },
+            {
+              "species": "MILLIMP",
+              "level": 23
+            },
+            {
+              "species": "REEDRAFT",
+              "level": 23
+            },
+            {
+              "species": "FLOURGEIST",
+              "level": 36
+            },
+            {
+              "species": "ZIZALITH",
+              "level": 36
+            },
+            {
+              "species": "RICELING",
+              "level": 10
+            }
+          ],
+          "night": [
+            {
+              "species": "OATLET",
+              "level": 10
+            },
+            {
+              "species": "RICELING",
+              "level": 10
+            },
+            {
+              "species": "MILLIMP",
+              "level": 23
+            },
+            {
+              "species": "REEDRAFT",
+              "level": 23
+            },
+            {
+              "species": "FLOURGEIST",
+              "level": 36
+            },
+            {
+              "species": "ZIZALITH",
+              "level": 36
+            },
+            {
+              "species": "RICELING",
+              "level": 10
+            }
+          ]
+        },
+        "grassRates": {
+          "morning": 25,
+          "day": 25,
+          "night": 25
+        }
+      },
+      {
+        "id": "cookie-side",
+        "minX": 44,
+        "minY": 12,
+        "maxX": 47,
+        "maxY": 19,
+        "grass": {
+          "morning": [
+            {
+              "species": "DOUGHLIN",
+              "level": 10
+            },
+            {
+              "species": "FLAPIP",
+              "level": 10
+            },
+            {
+              "species": "DOUGHLIN",
+              "level": 10
+            },
+            {
+              "species": "CRUMCONE",
+              "level": 23
+            },
+            {
+              "species": "STACKAJACK",
+              "level": 23
+            },
+            {
+              "species": "PAILBARON",
+              "level": 36
+            },
+            {
+              "species": "STACKAJACK",
+              "level": 23
+            }
+          ],
+          "day": [
+            {
+              "species": "DOUGHLIN",
+              "level": 10
+            },
+            {
+              "species": "FLAPIP",
+              "level": 10
+            },
+            {
+              "species": "DOUGHLIN",
+              "level": 10
+            },
+            {
+              "species": "CRUMCONE",
+              "level": 23
+            },
+            {
+              "species": "STACKAJACK",
+              "level": 23
+            },
+            {
+              "species": "PAILBARON",
+              "level": 36
+            },
+            {
+              "species": "STACKAJACK",
+              "level": 23
+            }
+          ],
+          "night": [
+            {
+              "species": "DOUGHLIN",
+              "level": 10
+            },
+            {
+              "species": "FLAPIP",
+              "level": 10
+            },
+            {
+              "species": "DOUGHLIN",
+              "level": 10
+            },
+            {
+              "species": "CRUMCONE",
+              "level": 23
+            },
+            {
+              "species": "STACKAJACK",
+              "level": 23
+            },
+            {
+              "species": "PAILBARON",
+              "level": 36
+            },
+            {
+              "species": "STACKAJACK",
+              "level": 23
+            }
+          ]
+        },
+        "grassRates": {
+          "morning": 25,
+          "day": 25,
+          "night": 25
+        }
+      },
+      {
+        "id": "cookie-back",
+        "minX": 56,
+        "minY": 6,
+        "maxX": 79,
+        "maxY": 7,
+        "grass": {
+          "morning": [
+            {
+              "species": "DOUGHLIN",
+              "level": 10
+            },
+            {
+              "species": "FLAPIP",
+              "level": 10
+            },
+            {
+              "species": "DOUGHLIN",
+              "level": 10
+            },
+            {
+              "species": "CRUMCONE",
+              "level": 23
+            },
+            {
+              "species": "STACKAJACK",
+              "level": 23
+            },
+            {
+              "species": "PAILBARON",
+              "level": 36
+            },
+            {
+              "species": "STACKAJACK",
+              "level": 23
+            }
+          ],
+          "day": [
+            {
+              "species": "DOUGHLIN",
+              "level": 10
+            },
+            {
+              "species": "FLAPIP",
+              "level": 10
+            },
+            {
+              "species": "DOUGHLIN",
+              "level": 10
+            },
+            {
+              "species": "CRUMCONE",
+              "level": 23
+            },
+            {
+              "species": "STACKAJACK",
+              "level": 23
+            },
+            {
+              "species": "PAILBARON",
+              "level": 36
+            },
+            {
+              "species": "STACKAJACK",
+              "level": 23
+            }
+          ],
+          "night": [
+            {
+              "species": "DOUGHLIN",
+              "level": 10
+            },
+            {
+              "species": "FLAPIP",
+              "level": 10
+            },
+            {
+              "species": "DOUGHLIN",
+              "level": 10
+            },
+            {
+              "species": "CRUMCONE",
+              "level": 23
+            },
+            {
+              "species": "STACKAJACK",
+              "level": 23
+            },
+            {
+              "species": "PAILBARON",
+              "level": 36
+            },
+            {
+              "species": "STACKAJACK",
+              "level": 23
+            }
+          ]
+        },
+        "grassRates": {
+          "morning": 25,
+          "day": 25,
+          "night": 25
+        }
+      },
+      {
+        "id": "midway-meadow",
+        "minX": 36,
+        "minY": 36,
+        "maxX": 45,
+        "maxY": 41,
+        "grass": {
+          "morning": [
+            {
+              "species": "PIPCORN",
+              "level": 10
+            },
+            {
+              "species": "TILTAWISP",
+              "level": 10
+            },
+            {
+              "species": "PIPCORN",
+              "level": 10
+            },
+            {
+              "species": "PUFFLARE",
+              "level": 23
+            },
+            {
+              "species": "TILTAWISP",
+              "level": 10
+            },
+            {
+              "species": "POPUMMEL",
+              "level": 36
+            },
+            {
+              "species": "TILTAWISP",
+              "level": 10
+            }
+          ],
+          "day": [
+            {
+              "species": "PIPCORN",
+              "level": 10
+            },
+            {
+              "species": "TILTAWISP",
+              "level": 10
+            },
+            {
+              "species": "PIPCORN",
+              "level": 10
+            },
+            {
+              "species": "PUFFLARE",
+              "level": 23
+            },
+            {
+              "species": "TILTAWISP",
+              "level": 10
+            },
+            {
+              "species": "POPUMMEL",
+              "level": 36
+            },
+            {
+              "species": "TILTAWISP",
+              "level": 10
+            }
+          ],
+          "night": [
+            {
+              "species": "PIPCORN",
+              "level": 10
+            },
+            {
+              "species": "TILTAWISP",
+              "level": 10
+            },
+            {
+              "species": "PIPCORN",
+              "level": 10
+            },
+            {
+              "species": "PUFFLARE",
+              "level": 23
+            },
+            {
+              "species": "TILTAWISP",
+              "level": 10
+            },
+            {
+              "species": "POPUMMEL",
+              "level": 36
+            },
+            {
+              "species": "TILTAWISP",
+              "level": 10
+            }
+          ]
+        },
+        "grassRates": {
+          "morning": 25,
+          "day": 25,
+          "night": 25
+        }
+      },
+      {
+        "id": "midway-lawn",
+        "minX": 24,
+        "minY": 32,
+        "maxX": 35,
+        "maxY": 33,
+        "grass": {
+          "morning": [
+            {
+              "species": "PIPCORN",
+              "level": 10
+            },
+            {
+              "species": "TILTAWISP",
+              "level": 10
+            },
+            {
+              "species": "PIPCORN",
+              "level": 10
+            },
+            {
+              "species": "PUFFLARE",
+              "level": 23
+            },
+            {
+              "species": "TILTAWISP",
+              "level": 10
+            },
+            {
+              "species": "POPUMMEL",
+              "level": 36
+            },
+            {
+              "species": "TILTAWISP",
+              "level": 10
+            }
+          ],
+          "day": [
+            {
+              "species": "PIPCORN",
+              "level": 10
+            },
+            {
+              "species": "TILTAWISP",
+              "level": 10
+            },
+            {
+              "species": "PIPCORN",
+              "level": 10
+            },
+            {
+              "species": "PUFFLARE",
+              "level": 23
+            },
+            {
+              "species": "TILTAWISP",
+              "level": 10
+            },
+            {
+              "species": "POPUMMEL",
+              "level": 36
+            },
+            {
+              "species": "TILTAWISP",
+              "level": 10
+            }
+          ],
+          "night": [
+            {
+              "species": "PIPCORN",
+              "level": 10
+            },
+            {
+              "species": "TILTAWISP",
+              "level": 10
+            },
+            {
+              "species": "PIPCORN",
+              "level": 10
+            },
+            {
+              "species": "PUFFLARE",
+              "level": 23
+            },
+            {
+              "species": "TILTAWISP",
+              "level": 10
+            },
+            {
+              "species": "POPUMMEL",
+              "level": 36
+            },
+            {
+              "species": "TILTAWISP",
+              "level": 10
+            }
+          ]
+        },
+        "grassRates": {
+          "morning": 25,
+          "day": 25,
+          "night": 25
+        }
+      },
+      {
+        "id": "breakfast",
+        "minX": 8,
+        "minY": 42,
+        "maxX": 19,
+        "maxY": 43,
+        "grass": {
+          "morning": [
+            {
+              "species": "DOUGHLIN",
+              "level": 10
+            },
+            {
+              "species": "FLAPIP",
+              "level": 10
+            },
+            {
+              "species": "DOUGHLIN",
+              "level": 10
+            },
+            {
+              "species": "CRUMCONE",
+              "level": 23
+            },
+            {
+              "species": "STACKAJACK",
+              "level": 23
+            },
+            {
+              "species": "PAILBARON",
+              "level": 36
+            },
+            {
+              "species": "STACKAJACK",
+              "level": 23
+            }
+          ],
+          "day": [
+            {
+              "species": "DOUGHLIN",
+              "level": 10
+            },
+            {
+              "species": "FLAPIP",
+              "level": 10
+            },
+            {
+              "species": "DOUGHLIN",
+              "level": 10
+            },
+            {
+              "species": "CRUMCONE",
+              "level": 23
+            },
+            {
+              "species": "STACKAJACK",
+              "level": 23
+            },
+            {
+              "species": "PAILBARON",
+              "level": 36
+            },
+            {
+              "species": "STACKAJACK",
+              "level": 23
+            }
+          ],
+          "night": [
+            {
+              "species": "DOUGHLIN",
+              "level": 10
+            },
+            {
+              "species": "FLAPIP",
+              "level": 10
+            },
+            {
+              "species": "DOUGHLIN",
+              "level": 10
+            },
+            {
+              "species": "CRUMCONE",
+              "level": 23
+            },
+            {
+              "species": "STACKAJACK",
+              "level": 23
+            },
+            {
+              "species": "PAILBARON",
+              "level": 36
+            },
+            {
+              "species": "STACKAJACK",
+              "level": 23
+            }
+          ]
+        },
+        "grassRates": {
+          "morning": 25,
+          "day": 25,
+          "night": 25
+        }
+      },
+      {
+        "id": "cheese",
+        "minX": 74,
+        "minY": 46,
+        "maxX": 85,
+        "maxY": 47,
+        "grass": {
+          "morning": [
+            {
+              "species": "CURDLET",
+              "level": 10
+            },
+            {
+              "species": "CHISLET",
+              "level": 10
+            },
+            {
+              "species": "CURDLET",
+              "level": 10
+            },
+            {
+              "species": "SQUEAKURD",
+              "level": 23
+            },
+            {
+              "species": "BUTTERMUSE",
+              "level": 23
+            },
+            {
+              "species": "LUTEBRISK",
+              "level": 10
+            },
+            {
+              "species": "BUTTERMUSE",
+              "level": 23
+            }
+          ],
+          "day": [
+            {
+              "species": "CURDLET",
+              "level": 10
+            },
+            {
+              "species": "CHISLET",
+              "level": 10
+            },
+            {
+              "species": "CURDLET",
+              "level": 10
+            },
+            {
+              "species": "SQUEAKURD",
+              "level": 23
+            },
+            {
+              "species": "BUTTERMUSE",
+              "level": 23
+            },
+            {
+              "species": "LUTEBRISK",
+              "level": 10
+            },
+            {
+              "species": "BUTTERMUSE",
+              "level": 23
+            }
+          ],
+          "night": [
+            {
+              "species": "CURDLET",
+              "level": 10
+            },
+            {
+              "species": "CHISLET",
+              "level": 10
+            },
+            {
+              "species": "CURDLET",
+              "level": 10
+            },
+            {
+              "species": "SQUEAKURD",
+              "level": 23
+            },
+            {
+              "species": "BUTTERMUSE",
+              "level": 23
+            },
+            {
+              "species": "LUTEBRISK",
+              "level": 10
+            },
+            {
+              "species": "BUTTERMUSE",
+              "level": 23
+            }
+          ]
+        },
+        "grassRates": {
+          "morning": 25,
+          "day": 25,
+          "night": 25
+        }
+      },
+      {
+        "id": "dairy",
+        "minX": 74,
+        "minY": 60,
+        "maxX": 77,
+        "maxY": 63,
+        "grass": {
+          "morning": [
+            {
+              "species": "CURDLET",
+              "level": 10
+            },
+            {
+              "species": "CHISLET",
+              "level": 10
+            },
+            {
+              "species": "CURDLET",
+              "level": 10
+            },
+            {
+              "species": "SQUEAKURD",
+              "level": 23
+            },
+            {
+              "species": "BUTTERMUSE",
+              "level": 23
+            },
+            {
+              "species": "LUTEBRISK",
+              "level": 10
+            },
+            {
+              "species": "BUTTERMUSE",
+              "level": 23
+            }
+          ],
+          "day": [
+            {
+              "species": "CURDLET",
+              "level": 10
+            },
+            {
+              "species": "CHISLET",
+              "level": 10
+            },
+            {
+              "species": "CURDLET",
+              "level": 10
+            },
+            {
+              "species": "SQUEAKURD",
+              "level": 23
+            },
+            {
+              "species": "BUTTERMUSE",
+              "level": 23
+            },
+            {
+              "species": "LUTEBRISK",
+              "level": 10
+            },
+            {
+              "species": "BUTTERMUSE",
+              "level": 23
+            }
+          ],
+          "night": [
+            {
+              "species": "CURDLET",
+              "level": 10
+            },
+            {
+              "species": "CHISLET",
+              "level": 10
+            },
+            {
+              "species": "CURDLET",
+              "level": 10
+            },
+            {
+              "species": "SQUEAKURD",
+              "level": 23
+            },
+            {
+              "species": "BUTTERMUSE",
+              "level": 23
+            },
+            {
+              "species": "LUTEBRISK",
+              "level": 10
+            },
+            {
+              "species": "BUTTERMUSE",
+              "level": 23
+            }
+          ]
+        },
+        "grassRates": {
+          "morning": 25,
+          "day": 25,
+          "night": 25
+        }
+      },
+      {
+        "id": "orchard-east",
+        "minX": 76,
+        "minY": 32,
+        "maxX": 85,
+        "maxY": 33,
+        "grass": {
+          "morning": [
+            {
+              "species": "CRISPIP",
+              "level": 10
+            },
+            {
+              "species": "ZAPSAP",
+              "level": 10
+            },
+            {
+              "species": "CRISPIP",
+              "level": 10
+            },
+            {
+              "species": "TAPACITOR",
+              "level": 23
+            },
+            {
+              "species": "CIDERMAW",
+              "level": 23
+            },
+            {
+              "species": "BEETYNAMO",
+              "level": 36
+            },
+            {
+              "species": "CIDERMAW",
+              "level": 23
+            }
+          ],
+          "day": [
+            {
+              "species": "CRISPIP",
+              "level": 10
+            },
+            {
+              "species": "ZAPSAP",
+              "level": 10
+            },
+            {
+              "species": "CRISPIP",
+              "level": 10
+            },
+            {
+              "species": "TAPACITOR",
+              "level": 23
+            },
+            {
+              "species": "CIDERMAW",
+              "level": 23
+            },
+            {
+              "species": "BEETYNAMO",
+              "level": 36
+            },
+            {
+              "species": "CIDERMAW",
+              "level": 23
+            }
+          ],
+          "night": [
+            {
+              "species": "CRISPIP",
+              "level": 10
+            },
+            {
+              "species": "ZAPSAP",
+              "level": 10
+            },
+            {
+              "species": "CRISPIP",
+              "level": 10
+            },
+            {
+              "species": "TAPACITOR",
+              "level": 23
+            },
+            {
+              "species": "CIDERMAW",
+              "level": 23
+            },
+            {
+              "species": "BEETYNAMO",
+              "level": 36
+            },
+            {
+              "species": "CIDERMAW",
+              "level": 23
+            }
+          ]
+        },
+        "grassRates": {
+          "morning": 25,
+          "day": 25,
+          "night": 25
+        }
+      },
+      {
+        "id": "orchard-north",
+        "minX": 76,
+        "minY": 36,
+        "maxX": 85,
+        "maxY": 37,
+        "grass": {
+          "morning": [
+            {
+              "species": "CRISPIP",
+              "level": 10
+            },
+            {
+              "species": "ZAPSAP",
+              "level": 10
+            },
+            {
+              "species": "CRISPIP",
+              "level": 10
+            },
+            {
+              "species": "TAPACITOR",
+              "level": 23
+            },
+            {
+              "species": "CIDERMAW",
+              "level": 23
+            },
+            {
+              "species": "BEETYNAMO",
+              "level": 36
+            },
+            {
+              "species": "CIDERMAW",
+              "level": 23
+            }
+          ],
+          "day": [
+            {
+              "species": "CRISPIP",
+              "level": 10
+            },
+            {
+              "species": "ZAPSAP",
+              "level": 10
+            },
+            {
+              "species": "CRISPIP",
+              "level": 10
+            },
+            {
+              "species": "TAPACITOR",
+              "level": 23
+            },
+            {
+              "species": "CIDERMAW",
+              "level": 23
+            },
+            {
+              "species": "BEETYNAMO",
+              "level": 36
+            },
+            {
+              "species": "CIDERMAW",
+              "level": 23
+            }
+          ],
+          "night": [
+            {
+              "species": "CRISPIP",
+              "level": 10
+            },
+            {
+              "species": "ZAPSAP",
+              "level": 10
+            },
+            {
+              "species": "CRISPIP",
+              "level": 10
+            },
+            {
+              "species": "TAPACITOR",
+              "level": 23
+            },
+            {
+              "species": "CIDERMAW",
+              "level": 23
+            },
+            {
+              "species": "BEETYNAMO",
+              "level": 36
+            },
+            {
+              "species": "CIDERMAW",
+              "level": 23
+            }
+          ]
+        },
+        "grassRates": {
+          "morning": 25,
+          "day": 25,
+          "night": 25
+        }
+      },
+      {
+        "id": "grain",
+        "minX": 22,
+        "minY": 36,
+        "maxX": 27,
+        "maxY": 41,
+        "grass": {
+          "morning": [
+            {
+              "species": "OATLET",
+              "level": 10
+            },
+            {
+              "species": "RICELING",
+              "level": 10
+            },
+            {
+              "species": "MILLIMP",
+              "level": 23
+            },
+            {
+              "species": "REEDRAFT",
+              "level": 23
+            },
+            {
+              "species": "FLOURGEIST",
+              "level": 36
+            },
+            {
+              "species": "ZIZALITH",
+              "level": 36
+            },
+            {
+              "species": "RICELING",
+              "level": 10
+            }
+          ],
+          "day": [
+            {
+              "species": "OATLET",
+              "level": 10
+            },
+            {
+              "species": "RICELING",
+              "level": 10
+            },
+            {
+              "species": "MILLIMP",
+              "level": 23
+            },
+            {
+              "species": "REEDRAFT",
+              "level": 23
+            },
+            {
+              "species": "FLOURGEIST",
+              "level": 36
+            },
+            {
+              "species": "ZIZALITH",
+              "level": 36
+            },
+            {
+              "species": "RICELING",
+              "level": 10
+            }
+          ],
+          "night": [
+            {
+              "species": "OATLET",
+              "level": 10
+            },
+            {
+              "species": "RICELING",
+              "level": 10
+            },
+            {
+              "species": "MILLIMP",
+              "level": 23
+            },
+            {
+              "species": "REEDRAFT",
+              "level": 23
+            },
+            {
+              "species": "FLOURGEIST",
+              "level": 36
+            },
+            {
+              "species": "ZIZALITH",
+              "level": 36
+            },
+            {
+              "species": "RICELING",
+              "level": 10
+            }
+          ]
+        },
+        "grassRates": {
+          "morning": 25,
+          "day": 25,
+          "night": 25
+        }
+      },
+      {
+        "id": "rice",
+        "minX": 22,
+        "minY": 58,
+        "maxX": 27,
+        "maxY": 61,
+        "grass": {
+          "morning": [
+            {
+              "species": "OATLET",
+              "level": 10
+            },
+            {
+              "species": "RICELING",
+              "level": 10
+            },
+            {
+              "species": "MILLIMP",
+              "level": 23
+            },
+            {
+              "species": "REEDRAFT",
+              "level": 23
+            },
+            {
+              "species": "FLOURGEIST",
+              "level": 36
+            },
+            {
+              "species": "ZIZALITH",
+              "level": 36
+            },
+            {
+              "species": "RICELING",
+              "level": 10
+            }
+          ],
+          "day": [
+            {
+              "species": "OATLET",
+              "level": 10
+            },
+            {
+              "species": "RICELING",
+              "level": 10
+            },
+            {
+              "species": "MILLIMP",
+              "level": 23
+            },
+            {
+              "species": "REEDRAFT",
+              "level": 23
+            },
+            {
+              "species": "FLOURGEIST",
+              "level": 36
+            },
+            {
+              "species": "ZIZALITH",
+              "level": 36
+            },
+            {
+              "species": "RICELING",
+              "level": 10
+            }
+          ],
+          "night": [
+            {
+              "species": "OATLET",
+              "level": 10
+            },
+            {
+              "species": "RICELING",
+              "level": 10
+            },
+            {
+              "species": "MILLIMP",
+              "level": 23
+            },
+            {
+              "species": "REEDRAFT",
+              "level": 23
+            },
+            {
+              "species": "FLOURGEIST",
+              "level": 36
+            },
+            {
+              "species": "ZIZALITH",
+              "level": 36
+            },
+            {
+              "species": "RICELING",
+              "level": 10
+            }
+          ]
+        },
+        "grassRates": {
+          "morning": 25,
+          "day": 25,
+          "night": 25
+        }
+      },
+      {
+        "id": "popcorn",
+        "minX": 36,
+        "minY": 66,
+        "maxX": 47,
+        "maxY": 69,
+        "grass": {
+          "morning": [
+            {
+              "species": "PIPCORN",
+              "level": 10
+            },
+            {
+              "species": "TILTAWISP",
+              "level": 10
+            },
+            {
+              "species": "PIPCORN",
+              "level": 10
+            },
+            {
+              "species": "PUFFLARE",
+              "level": 23
+            },
+            {
+              "species": "TILTAWISP",
+              "level": 10
+            },
+            {
+              "species": "POPUMMEL",
+              "level": 36
+            },
+            {
+              "species": "TILTAWISP",
+              "level": 10
+            }
+          ],
+          "day": [
+            {
+              "species": "PIPCORN",
+              "level": 10
+            },
+            {
+              "species": "TILTAWISP",
+              "level": 10
+            },
+            {
+              "species": "PIPCORN",
+              "level": 10
+            },
+            {
+              "species": "PUFFLARE",
+              "level": 23
+            },
+            {
+              "species": "TILTAWISP",
+              "level": 10
+            },
+            {
+              "species": "POPUMMEL",
+              "level": 36
+            },
+            {
+              "species": "TILTAWISP",
+              "level": 10
+            }
+          ],
+          "night": [
+            {
+              "species": "PIPCORN",
+              "level": 10
+            },
+            {
+              "species": "TILTAWISP",
+              "level": 10
+            },
+            {
+              "species": "PIPCORN",
+              "level": 10
+            },
+            {
+              "species": "PUFFLARE",
+              "level": 23
+            },
+            {
+              "species": "TILTAWISP",
+              "level": 10
+            },
+            {
+              "species": "POPUMMEL",
+              "level": 36
+            },
+            {
+              "species": "TILTAWISP",
+              "level": 10
+            }
+          ]
+        },
+        "grassRates": {
+          "morning": 25,
+          "day": 25,
+          "night": 25
+        }
+      },
+      {
+        "id": "smokehouse",
+        "minX": 54,
+        "minY": 36,
+        "maxX": 69,
+        "maxY": 37,
+        "grass": {
+          "morning": [
+            {
+              "species": "TOTLIT",
+              "level": 10
+            },
+            {
+              "species": "CINDERFIN",
+              "level": 10
+            },
+            {
+              "species": "TOTLIT",
+              "level": 10
+            },
+            {
+              "species": "CINDERFIN",
+              "level": 10
+            },
+            {
+              "species": "CASSEROGRE",
+              "level": 23
+            },
+            {
+              "species": "BRINEBRAZE",
+              "level": 23
+            },
+            {
+              "species": "CASSEROGRE",
+              "level": 23
+            }
+          ],
+          "day": [
+            {
+              "species": "TOTLIT",
+              "level": 10
+            },
+            {
+              "species": "CINDERFIN",
+              "level": 10
+            },
+            {
+              "species": "TOTLIT",
+              "level": 10
+            },
+            {
+              "species": "CINDERFIN",
+              "level": 10
+            },
+            {
+              "species": "CASSEROGRE",
+              "level": 23
+            },
+            {
+              "species": "BRINEBRAZE",
+              "level": 23
+            },
+            {
+              "species": "CASSEROGRE",
+              "level": 23
+            }
+          ],
+          "night": [
+            {
+              "species": "TOTLIT",
+              "level": 10
+            },
+            {
+              "species": "CINDERFIN",
+              "level": 10
+            },
+            {
+              "species": "TOTLIT",
+              "level": 10
+            },
+            {
+              "species": "CINDERFIN",
+              "level": 10
+            },
+            {
+              "species": "CASSEROGRE",
+              "level": 23
+            },
+            {
+              "species": "BRINEBRAZE",
+              "level": 23
+            },
+            {
+              "species": "CASSEROGRE",
+              "level": 23
+            }
+          ]
+        },
+        "grassRates": {
+          "morning": 25,
+          "day": 25,
+          "night": 25
+        }
+      }
+    ]
+  },
+  "native_encounter_families": [
+    {
+      "id": "MN_F005",
+      "members": [
+        "RICELING",
+        "REEDRAFT",
+        "ZIZALITH"
+      ]
+    },
+    {
+      "id": "MN_F010",
+      "members": [
+        "OATLET",
+        "MILLIMP",
+        "FLOURGEIST"
+      ]
+    },
+    {
+      "id": "MN_F016",
+      "members": [
+        "FLAPIP",
+        "STACKAJACK"
+      ]
+    },
+    {
+      "id": "MN_F020",
+      "members": [
+        "CRISPIP",
+        "CIDERMAW"
+      ]
+    },
+    {
+      "id": "MN_F032",
+      "members": [
+        "TOTLIT",
+        "CASSEROGRE"
+      ]
+    },
+    {
+      "id": "MN_F033",
+      "members": [
+        "CURDLET",
+        "SQUEAKURD"
+      ]
+    },
+    {
+      "id": "MN_F038",
+      "members": [
+        "LUTEBRISK"
+      ]
+    },
+    {
+      "id": "MN_F042",
+      "members": [
+        "TILTAWISP"
+      ]
+    },
+    {
+      "id": "MN_F083",
+      "members": [
+        "CINDERFIN",
+        "BRINEBRAZE"
+      ]
+    },
+    {
+      "id": "MN_F090",
+      "members": [
+        "DOUGHLIN",
+        "CRUMCONE",
+        "PAILBARON"
+      ]
+    },
+    {
+      "id": "MN_F098",
+      "members": [
+        "CHISLET",
+        "BUTTERMUSE"
+      ]
+    },
+    {
+      "id": "MN_F101",
+      "members": [
+        "ZAPSAP",
+        "TAPACITOR",
+        "BEETYNAMO"
+      ]
+    },
+    {
+      "id": "MN_F105",
+      "members": [
+        "PIPCORN",
+        "PUFFLARE",
+        "POPUMMEL"
+      ]
+    }
+  ],
+  "grass_contract": {
+    "user_request": "More grass patches; all existing food and fair Pokemon here.",
+    "patches": 14,
+    "metatiles": 108,
+    "habitat_groups": [
+      "grain",
+      "bakery",
+      "dairy",
+      "comfort",
+      "orchard",
+      "midway"
+    ],
+    "species": 29,
+    "all_evolutions": true,
+    "all_times": true,
+    "retired_designs_excluded": true,
+    "roster_authority": "pokemon/roster.json plus pokemon/roster-curation.json",
+    "scope": "Food bodies, edible crop/grain families and State Fair carnival spirit; source roster only.",
+    "verification_pack": "content-packs/minnesota-state-fair-foods-v2.crystalpack"
+  },
+  "battle_contract": {
+    "user_request": "A lot of fairgoers want to battle; the state fair is chaos.",
+    "trainers": 35,
+    "sight_trainers": 20,
+    "talk_trainers": 15,
+    "converted_existing_fairgoers": 20,
+    "vendors_preserved": 39,
+    "outdoor_npcs": 255,
+    "defeat_persistence": "Native once-only defeated flags, after-battle dialogue and Save/Continue.",
+    "traversal": "Crowded, overlapping sight lanes cross walking loops, queues and picnic courts. Vendor staff and physical counter approaches remain intact.",
+    "verification": "PASS: all35 native battles with PP use, rewards and defeat flags; Continue retains defeat; overlapping midway challenges pass. Three controller cases complete177.75s.",
+    "overlap_proof": {
+      "trainers": [
+        "MN_FAIR_MIDWAY_A_TRAINER",
+        "MN_FAIR_MIDWAY_B_TRAINER"
+      ],
+      "core": [
+        13,
+        27
+      ]
+    },
+    "trainer_count": 35
+  },
+  "native_patrols": [
+    {
+      "id": "MnFairCookieRunner",
+      "size_core": [
+        4,
+        2
+      ]
+    },
+    {
+      "id": "MnFairMidwayRunner",
+      "size_core": [
+        3,
+        2
+      ]
+    },
+    {
+      "id": "MnFairPicnicWalker",
+      "size_core": [
+        3,
+        2
+      ]
+    },
+    {
+      "id": "MnFairGardenRunner",
+      "size_core": [
+        3,
+        2
+      ]
+    }
+  ],
+  "crowd_contract": {
+    "added_non_trainers": 157,
+    "clockwise_walkers": 28,
+    "total_outdoor_npcs": 255,
+    "loops": "28 disjoint native-floor circuits: 12 slower walkers and 16 brisk runners. Normal collision, interaction pauses and native wait cadence apply.",
+    "verification": "PASS: source connectivity; all35 native battles; original four patrol loops and Continue; new walking/running/rotating movement and live dialogue; 19 headless native views; all377 audio programs.",
+    "maze_guests": 137,
+    "exhibition_pokemon": 10,
+    "exhibition_judges": 10,
+    "layout": "Distributed small groups across food courts, midway, ring, garden, entry and projects. Clear sight corridors and exhibition pairs.",
+    "standing_people_and_pokemon": 173,
+    "ambient_behaviors": {
+      "walk": 12,
+      "run": 12,
+      "rotate": 54
+    },
+    "battle_trainers": 35,
+    "added_battle_trainers": 13,
+    "kids_and_adults": "Mixed youngsters, families, older visitors, exhibitors and judges; previous 7-kid/3-adult count describes the original ten-person addition."
+  },
+  "food_contract": {
+    "custom_items": 16,
+    "purchasable_items": [
+      "FAIR_HOTDISH",
+      "FAIR_PRONTO_PUP",
+      "FAIR_MINI_DONUTS",
+      "FAIR_FUNNEL_CAKE",
+      "FAIR_FRIED_CANDY",
+      "FAIR_WALLEYE",
+      "FAIR_BEER",
+      "FAIR_COOKIE_PAIL",
+      "FAIR_CORN_STICK",
+      "FAIR_PRETZEL",
+      "FAIR_CHEESE_CURDS",
+      "FAIR_ROOT_BEER",
+      "FAIR_ICE_CREAM",
+      "FAIR_PICKLE",
+      "FAIR_KETTLE_CORN",
+      "FAIR_HONEY"
+    ],
+    "beer": {
+      "item": "FAIR_BEER",
+      "price": 500,
+      "healing_hp": 100,
+      "confusion_turns": 4,
+      "field_use": "Carries confusion into the next battle; switching or ending battle clears it.",
+      "refusal": "No effect or consumption on full HP, fainted Pokemon, or eggs."
+    },
+    "verification_status": "verified: all32 shop menus and16 food purchases, payment, healing and consumption; beer field/Continue/first aid and actual trainer-battle turn/confusion/clearing;78 core regressions",
+    "verification_pack": "content-packs/minnesota-state-fair-foods-v2.crystalpack",
+    "verification_sha256": "bf688621307c6e4805296fa0412b67777327899c507512432200569d0b5f7ee8",
+    "verification_receipt": "renders/state-fair/foods-verification-v1/receipt.json"
+  },
+  "native_ambient": [
+    {
+      "id": "MnFairMazeGuest008",
+      "size_core": [
+        2,
+        1
+      ],
+      "behavior": "run"
+    },
+    {
+      "id": "MnFairMazeGuest016",
+      "size_core": [
+        2,
+        1
+      ],
+      "behavior": "walk"
+    },
+    {
+      "id": "MnFairMazeGuest024",
+      "size_core": [
+        0,
+        0
+      ],
+      "behavior": "rotate"
+    },
+    {
+      "id": "MnFairMazeGuest032",
+      "size_core": [
+        0,
+        0
+      ],
+      "behavior": "rotate"
+    },
+    {
+      "id": "MnFairMazeGuest040",
+      "size_core": [
+        2,
+        1
+      ],
+      "behavior": "run"
+    },
+    {
+      "id": "MnFairMazeGuest048",
+      "size_core": [
+        0,
+        0
+      ],
+      "behavior": "rotate"
+    },
+    {
+      "id": "MnFairMazeGuest056",
+      "size_core": [
+        0,
+        0
+      ],
+      "behavior": "rotate"
+    },
+    {
+      "id": "MnFairMazeGuest064",
+      "size_core": [
+        2,
+        1
+      ],
+      "behavior": "walk"
+    },
+    {
+      "id": "MnFairMazeGuest072",
+      "size_core": [
+        0,
+        0
+      ],
+      "behavior": "rotate"
+    },
+    {
+      "id": "MnFairMazeGuest080",
+      "size_core": [
+        2,
+        1
+      ],
+      "behavior": "run"
+    },
+    {
+      "id": "MnFairMazeGuest088",
+      "size_core": [
+        2,
+        1
+      ],
+      "behavior": "walk"
+    },
+    {
+      "id": "MnFairMazeGuest096",
+      "size_core": [
+        0,
+        0
+      ],
+      "behavior": "rotate"
+    },
+    {
+      "id": "MnFairMazeGuest104",
+      "size_core": [
+        0,
+        0
+      ],
+      "behavior": "rotate"
+    },
+    {
+      "id": "MnFairMazeGuest112",
+      "size_core": [
+        0,
+        0
+      ],
+      "behavior": "rotate"
+    },
+    {
+      "id": "MnFairMazeGuest120",
+      "size_core": [
+        2,
+        1
+      ],
+      "behavior": "run"
+    },
+    {
+      "id": "MnFairMazeGuest128",
+      "size_core": [
+        2,
+        1
+      ],
+      "behavior": "walk"
+    },
+    {
+      "id": "MnFairMazeGuest136",
+      "size_core": [
+        2,
+        1
+      ],
+      "behavior": "run"
+    },
+    {
+      "id": "MnFairMazeGuest144",
+      "size_core": [
+        0,
+        0
+      ],
+      "behavior": "rotate"
+    },
+    {
+      "id": "MnFairMazeGuest001",
+      "size_core": [
+        2,
+        1
+      ],
+      "behavior": "walk"
+    },
+    {
+      "id": "MnFairMazeGuest009",
+      "size_core": [
+        0,
+        0
+      ],
+      "behavior": "rotate"
+    },
+    {
+      "id": "MnFairMazeGuest017",
+      "size_core": [
+        2,
+        1
+      ],
+      "behavior": "run"
+    },
+    {
+      "id": "MnFairMazeGuest025",
+      "size_core": [
+        0,
+        0
+      ],
+      "behavior": "rotate"
+    },
+    {
+      "id": "MnFairMazeGuest033",
+      "size_core": [
+        0,
+        0
+      ],
+      "behavior": "rotate"
+    },
+    {
+      "id": "MnFairMazeGuest041",
+      "size_core": [
+        2,
+        1
+      ],
+      "behavior": "walk"
+    },
+    {
+      "id": "MnFairMazeGuest049",
+      "size_core": [
+        2,
+        1
+      ],
+      "behavior": "run"
+    },
+    {
+      "id": "MnFairMazeGuest057",
+      "size_core": [
+        2,
+        1
+      ],
+      "behavior": "walk"
+    },
+    {
+      "id": "MnFairMazeGuest065",
+      "size_core": [
+        2,
+        1
+      ],
+      "behavior": "run"
+    },
+    {
+      "id": "MnFairMazeGuest081",
+      "size_core": [
+        2,
+        1
+      ],
+      "behavior": "walk"
+    },
+    {
+      "id": "MnFairMazeGuest089",
+      "size_core": [
+        0,
+        0
+      ],
+      "behavior": "rotate"
+    },
+    {
+      "id": "MnFairMazeGuest097",
+      "size_core": [
+        0,
+        0
+      ],
+      "behavior": "rotate"
+    },
+    {
+      "id": "MnFairMazeGuest105",
+      "size_core": [
+        2,
+        1
+      ],
+      "behavior": "run"
+    },
+    {
+      "id": "MnFairMazeGuest113",
+      "size_core": [
+        0,
+        0
+      ],
+      "behavior": "rotate"
+    },
+    {
+      "id": "MnFairMazeGuest121",
+      "size_core": [
+        0,
+        0
+      ],
+      "behavior": "rotate"
+    },
+    {
+      "id": "MnFairMazeGuest129",
+      "size_core": [
+        0,
+        0
+      ],
+      "behavior": "rotate"
+    },
+    {
+      "id": "MnFairMazeGuest137",
+      "size_core": [
+        2,
+        1
+      ],
+      "behavior": "walk"
+    },
+    {
+      "id": "MnFairMazeGuest145",
+      "size_core": [
+        2,
+        1
+      ],
+      "behavior": "run"
+    },
+    {
+      "id": "MnFairMazeGuest002",
+      "size_core": [
+        2,
+        1
+      ],
+      "behavior": "walk"
+    },
+    {
+      "id": "MnFairMazeGuest010",
+      "size_core": [
+        2,
+        1
+      ],
+      "behavior": "run"
+    },
+    {
+      "id": "MnFairMazeGuest018",
+      "size_core": [
+        2,
+        1
+      ],
+      "behavior": "walk"
+    },
+    {
+      "id": "MnFairMazeGuest026",
+      "size_core": [
+        0,
+        0
+      ],
+      "behavior": "rotate"
+    },
+    {
+      "id": "MnFairMazeGuest034",
+      "size_core": [
+        2,
+        1
+      ],
+      "behavior": "run"
+    },
+    {
+      "id": "MnFairMazeGuest042",
+      "size_core": [
+        2,
+        1
+      ],
+      "behavior": "walk"
+    },
+    {
+      "id": "MnFairMazeGuest050",
+      "size_core": [
+        0,
+        0
+      ],
+      "behavior": "rotate"
+    },
+    {
+      "id": "MnFairMazeGuest058",
+      "size_core": [
+        0,
+        0
+      ],
+      "behavior": "rotate"
+    },
+    {
+      "id": "MnFairMazeGuest066",
+      "size_core": [
+        0,
+        0
+      ],
+      "behavior": "rotate"
+    },
+    {
+      "id": "MnFairMazeGuest090",
+      "size_core": [
+        0,
+        0
+      ],
+      "behavior": "rotate"
+    },
+    {
+      "id": "MnFairMazeGuest122",
+      "size_core": [
+        0,
+        0
+      ],
+      "behavior": "rotate"
+    },
+    {
+      "id": "MnFairMazeGuest130",
+      "size_core": [
+        0,
+        0
+      ],
+      "behavior": "rotate"
+    },
+    {
+      "id": "MnFairMazeGuest138",
+      "size_core": [
+        0,
+        0
+      ],
+      "behavior": "rotate"
+    },
+    {
+      "id": "MnFairMazeGuest146",
+      "size_core": [
+        0,
+        0
+      ],
+      "behavior": "rotate"
+    },
+    {
+      "id": "MnFairMazeGuest003",
+      "size_core": [
+        0,
+        0
+      ],
+      "behavior": "rotate"
+    },
+    {
+      "id": "MnFairMazeGuest011",
+      "size_core": [
+        0,
+        0
+      ],
+      "behavior": "rotate"
+    },
+    {
+      "id": "MnFairMazeGuest019",
+      "size_core": [
+        0,
+        0
+      ],
+      "behavior": "rotate"
+    },
+    {
+      "id": "MnFairMazeGuest027",
+      "size_core": [
+        0,
+        0
+      ],
+      "behavior": "rotate"
+    },
+    {
+      "id": "MnFairMazeGuest035",
+      "size_core": [
+        0,
+        0
+      ],
+      "behavior": "rotate"
+    },
+    {
+      "id": "MnFairMazeGuest043",
+      "size_core": [
+        0,
+        0
+      ],
+      "behavior": "rotate"
+    },
+    {
+      "id": "MnFairMazeGuest051",
+      "size_core": [
+        0,
+        0
+      ],
+      "behavior": "rotate"
+    },
+    {
+      "id": "MnFairMazeGuest059",
+      "size_core": [
+        0,
+        0
+      ],
+      "behavior": "rotate"
+    },
+    {
+      "id": "MnFairMazeGuest067",
+      "size_core": [
+        0,
+        0
+      ],
+      "behavior": "rotate"
+    },
+    {
+      "id": "MnFairMazeGuest083",
+      "size_core": [
+        0,
+        0
+      ],
+      "behavior": "rotate"
+    },
+    {
+      "id": "MnFairMazeGuest091",
+      "size_core": [
+        0,
+        0
+      ],
+      "behavior": "rotate"
+    },
+    {
+      "id": "MnFairMazeGuest099",
+      "size_core": [
+        0,
+        0
+      ],
+      "behavior": "rotate"
+    },
+    {
+      "id": "MnFairMazeGuest115",
+      "size_core": [
+        0,
+        0
+      ],
+      "behavior": "rotate"
+    },
+    {
+      "id": "MnFairMazeGuest123",
+      "size_core": [
+        0,
+        0
+      ],
+      "behavior": "rotate"
+    },
+    {
+      "id": "MnFairMazeGuest131",
+      "size_core": [
+        0,
+        0
+      ],
+      "behavior": "rotate"
+    },
+    {
+      "id": "MnFairMazeGuest139",
+      "size_core": [
+        0,
+        0
+      ],
+      "behavior": "rotate"
+    },
+    {
+      "id": "MnFairMazeGuest147",
+      "size_core": [
+        0,
+        0
+      ],
+      "behavior": "rotate"
+    },
+    {
+      "id": "MnFairMazeGuest004",
+      "size_core": [
+        0,
+        0
+      ],
+      "behavior": "rotate"
+    },
+    {
+      "id": "MnFairMazeGuest012",
+      "size_core": [
+        0,
+        0
+      ],
+      "behavior": "rotate"
+    },
+    {
+      "id": "MnFairMazeGuest020",
+      "size_core": [
+        0,
+        0
+      ],
+      "behavior": "rotate"
+    },
+    {
+      "id": "MnFairMazeGuest028",
+      "size_core": [
+        0,
+        0
+      ],
+      "behavior": "rotate"
+    },
+    {
+      "id": "MnFairMazeGuest036",
+      "size_core": [
+        0,
+        0
+      ],
+      "behavior": "rotate"
+    },
+    {
+      "id": "MnFairExhibit01",
+      "size_core": [
+        0,
+        0
+      ],
+      "behavior": "rotate"
+    },
+    {
+      "id": "MnFairExhibit03",
+      "size_core": [
+        0,
+        0
+      ],
+      "behavior": "rotate"
+    },
+    {
+      "id": "MnFairExhibit05",
+      "size_core": [
+        0,
+        0
+      ],
+      "behavior": "rotate"
+    },
+    {
+      "id": "MnFairExhibit06",
+      "size_core": [
+        0,
+        0
+      ],
+      "behavior": "rotate"
+    },
+    {
+      "id": "MnFairExhibit08",
+      "size_core": [
+        0,
+        0
+      ],
+      "behavior": "rotate"
+    },
+    {
+      "id": "MnFairExhibit10",
+      "size_core": [
+        0,
+        0
+      ],
+      "behavior": "rotate"
+    }
+  ]
+}

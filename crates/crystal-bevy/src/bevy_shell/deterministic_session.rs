@@ -655,78 +655,14 @@ fn apply_keyboard_input(
             return;
         }
     }
-    if runtime_shell.visible_fly_animation.is_some() {
-        for _ in 0..elapsed_input_ticks {
-            let Some(animation) = runtime_shell.visible_fly_animation else {
-                break;
-            };
-            let counter = match animation.phase {
-                VisibleFlyAnimationPhase::From => 128_u8.saturating_sub(animation.frame),
-                VisibleFlyAnimationPhase::To => 64_u8.saturating_sub(animation.frame),
-            };
-            if animation.frame > 0 && counter >= 0x40 && counter & 7 == 0 {
-                let BevyRuntimeShell {
-                    shell,
-                    pending_audio,
-                    last_audio_events,
-                    ..
-                } = &mut *runtime_shell;
-                if let Err(error) = queue_visible_sound_effect(
-                    shell.runtime().audio(),
-                    pending_audio,
-                    last_audio_events,
-                    "SFX_FLY",
-                ) {
-                    record_visible_runtime_error(&mut runtime_shell, &error);
-                    runtime_shell.last_error = Some(error.to_string());
-                    return;
-                }
-            }
-            match animation.phase {
-                VisibleFlyAnimationPhase::From => {
-                    if animation.frame >= 128 {
-                        runtime_shell.field_notice_scene = None;
-                        if let Err(error) = settle_visible_overworld_travel(&mut runtime_shell) {
-                            record_visible_runtime_error(&mut runtime_shell, &error);
-                            runtime_shell.last_error = Some(error.to_string());
-                            return;
-                        }
-                        runtime_shell.visible_fly_animation = Some(VisibleFlyAnimation {
-                            phase: VisibleFlyAnimationPhase::To,
-                            frame: 0,
-                            actor_party_index: animation.actor_party_index,
-                        });
-                        let BevyRuntimeShell {
-                            shell,
-                            pending_audio,
-                            last_audio_events,
-                            ..
-                        } = &mut *runtime_shell;
-                        if let Err(error) = queue_visible_sound_effect(
-                            shell.runtime().audio(),
-                            pending_audio,
-                            last_audio_events,
-                            "SFX_FLY",
-                        ) {
-                            record_visible_runtime_error(&mut runtime_shell, &error);
-                            runtime_shell.last_error = Some(error.to_string());
-                            return;
-                        }
-                    } else if let Some(animation) = runtime_shell.visible_fly_animation.as_mut() {
-                        animation.frame = animation.frame.saturating_add(1);
-                    }
-                }
-                VisibleFlyAnimationPhase::To => {
-                    if animation.frame >= 64 {
-                        runtime_shell.visible_fly_animation = None;
-                    } else if let Some(animation) = runtime_shell.visible_fly_animation.as_mut() {
-                        animation.frame = animation.frame.saturating_add(1);
-                    }
-                }
-            }
-            mark_runtime_snapshot_dirty(&mut runtime_shell);
+    match field_fly::advance(&mut runtime_shell, elapsed_input_ticks) {
+        Ok(true) => return,
+        Ok(false) => {}
+        Err(error) => {
+            record_visible_runtime_error(&mut runtime_shell, &error);
+            runtime_shell.last_error = Some(error.to_string());
+            return;
         }
-        return;
     }
     if runtime_shell
         .visible_fishing_animation
@@ -4007,7 +3943,7 @@ fn apply_runtime_hotkeys(
         {
             if keys.just_pressed(KeyCode::KeyZ) || keys.just_pressed(KeyCode::KeyX) {
                 run_bevy_action(&mut runtime_shell, |shell| {
-                    advance_visible_nickname_prompt(shell);
+                    advance_visible_nickname_prompt(shell)?;
                     Ok(())
                 });
             }
@@ -4030,6 +3966,12 @@ fn apply_runtime_hotkeys(
             run_bevy_action(&mut runtime_shell, |shell| {
                 shell.pending_name_choice = None;
                 finish_visible_capture_nickname(shell, None)
+            });
+        }
+        if keys.just_pressed(KeyCode::KeyX) && safari_catch_visible::native_surface_owns(&runtime_shell) {
+            run_bevy_action(&mut runtime_shell, |shell| {
+                safari_catch_visible::decline_choice(shell)?;
+                Ok(())
             });
         }
         if keys.just_pressed(KeyCode::KeyX) && runtime_shell.pending_egg_hatch_nickname.is_some() {

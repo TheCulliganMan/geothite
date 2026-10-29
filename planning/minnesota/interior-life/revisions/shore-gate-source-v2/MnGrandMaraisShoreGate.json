@@ -1,0 +1,334 @@
+{
+  "id": "MnGrandMaraisShoreGate",
+  "native_constant": "MN_GRAND_MARAIS_SHORE_GATE",
+  "template": "IlexForestAzaleaGate",
+  "kind": "gatehouse",
+  "tileset": "gate",
+  "border_block": 0,
+  "dimensions_metatiles": [
+    5,
+    4
+  ],
+  "rows": [
+    "39 0e 02 13 39",
+    "01 0c 0b 3f 01",
+    "23 01 01 01 24",
+    "01 08 10 3e 01"
+  ],
+  "passive_arrival": {
+    "index": 5,
+    "tile": [
+      1,
+      4
+    ]
+  },
+  "exits": [
+    {
+      "index": 1,
+      "tile": [
+        0,
+        4
+      ],
+      "target": "MnMaraisCedarApproach",
+      "target_warp": 3
+    },
+    {
+      "index": 2,
+      "tile": [
+        0,
+        5
+      ],
+      "target": "MnMaraisCedarApproach",
+      "target_warp": 4
+    },
+    {
+      "index": 3,
+      "tile": [
+        9,
+        4
+      ],
+      "target": "MnMaraisCedarApproach",
+      "target_warp": 7
+    },
+    {
+      "index": 4,
+      "tile": [
+        9,
+        5
+      ],
+      "target": "MnMaraisCedarApproach",
+      "target_warp": 8
+    }
+  ],
+  "passive_arrivals": [
+    {
+      "index": 5,
+      "tile": [
+        1,
+        4
+      ],
+      "target": "MnMaraisCedarApproach",
+      "target_warp": 3
+    },
+    {
+      "index": 6,
+      "tile": [
+        1,
+        5
+      ],
+      "target": "MnMaraisCedarApproach",
+      "target_warp": 4
+    },
+    {
+      "index": 7,
+      "tile": [
+        8,
+        4
+      ],
+      "target": "MnMaraisCedarApproach",
+      "target_warp": 7
+    },
+    {
+      "index": 8,
+      "tile": [
+        8,
+        5
+      ],
+      "target": "MnMaraisCedarApproach",
+      "target_warp": 8
+    }
+  ],
+  "residents": [
+    {
+      "id": "MNGRANDMARAISSHOREGATE_NPC1",
+      "sprite": "SPRITE_TEACHER",
+      "tile": [
+        5,
+        2
+      ],
+      "approach": [
+        5,
+        4
+      ],
+      "facing": "south",
+      "lines": [
+        "SHORE WATCH",
+        "That bell rang",
+        "for my grandpa.",
+        "Now it tells us",
+        "who made it back.",
+        "GRAND MARAIS west.",
+        "The shore trail",
+        "runs east, then",
+        "south to DULUTH.",
+        "The lamp stays on",
+        "till you get home."
+      ]
+    },
+    {
+      "id": "MN_MARAIS_GATE_PADDLER",
+      "sprite": "SPRITE_FISHER",
+      "tile": [
+        7,
+        5
+      ],
+      "approach": [
+        7,
+        4
+      ],
+      "facing": "north",
+      "lines": [
+        "I packed dry socks",
+        "beside my agates.",
+        "The lake can keep",
+        "my old wool hat.",
+        "Good thing Grandma",
+        "knits two at once."
+      ]
+    }
+  ],
+  "signs": [],
+  "pc": null,
+  "base_content_hash": "d09cff71ce8b879b5226347e6f430fd7d3ddc2458348a242b5ef8eb36581bf14",
+  "exterior_binding": {
+    "map": "MnMaraisCedarApproach",
+    "expected_dimensions_metatiles": [
+      32,
+      19
+    ],
+    "tileset": "johto",
+    "patches": [
+      {
+        "position": [
+          19,
+          12
+        ],
+        "before": "05",
+        "after": "02"
+      },
+      {
+        "position": [
+          20,
+          12
+        ],
+        "before": "05",
+        "after": "08"
+      },
+      {
+        "position": [
+          21,
+          12
+        ],
+        "before": "05",
+        "after": "09"
+      },
+      {
+        "position": [
+          22,
+          12
+        ],
+        "before": "05",
+        "after": "02"
+      },
+      {
+        "position": [
+          19,
+          13
+        ],
+        "before": "01",
+        "after": "0e"
+      },
+      {
+        "position": [
+          20,
+          13
+        ],
+        "before": "01",
+        "after": "10"
+      },
+      {
+        "position": [
+          21,
+          13
+        ],
+        "before": "01",
+        "after": "11"
+      },
+      {
+        "position": [
+          22,
+          13
+        ],
+        "before": "01",
+        "after": "0b"
+      }
+    ],
+    "sides": [
+      {
+        "name": "town",
+        "entrances": [
+          [
+            39,
+            26
+          ],
+          [
+            39,
+            27
+          ]
+        ],
+        "returns": [
+          [
+            38,
+            26
+          ],
+          [
+            38,
+            27
+          ]
+        ],
+        "active_indices": [
+          1,
+          2
+        ],
+        "passive_indices": [
+          3,
+          4
+        ],
+        "room_passive_indices": [
+          5,
+          6
+        ]
+      },
+      {
+        "name": "shore",
+        "entrances": [
+          [
+            44,
+            26
+          ],
+          [
+            44,
+            27
+          ]
+        ],
+        "returns": [
+          [
+            45,
+            26
+          ],
+          [
+            45,
+            27
+          ]
+        ],
+        "active_indices": [
+          5,
+          6
+        ],
+        "passive_indices": [
+          7,
+          8
+        ],
+        "room_passive_indices": [
+          7,
+          8
+        ]
+      }
+    ],
+    "retained_connections": [
+      {
+        "direction": "west",
+        "target_map": "MnGrandMarais",
+        "offset": 0
+      },
+      {
+        "direction": "south",
+        "target_map": "MnR11C00R00",
+        "offset": 8
+      }
+    ],
+    "west_road_lanes": [
+      [
+        0,
+        12
+      ],
+      [
+        0,
+        13
+      ]
+    ],
+    "south_road_lanes": [
+      [
+        56,
+        37
+      ],
+      [
+        57,
+        37
+      ]
+    ]
+  },
+  "purpose": "A two-sided shore-watch shelter on the existing Cedar Approach. The native counter attendant keeps the last-walker lamp tradition; a returning paddler carries dry socks and agates. The room restores the missing named gate without shortening the winding coastal walk or changing any existing regional checkpoint.",
+  "status": "Source candidate over Winona v03; no publication or native acceptance claimed.",
+  "baseline_reconciliation": "The earlier R11-to-town warp shortcut is obsolete in this lineage. The same named authentic Ilex gate is inserted at the actual Cedar Approach road bend, with both paired mouths in that exterior. Existing town/river/route seams and chapter gates remain exact."
+}

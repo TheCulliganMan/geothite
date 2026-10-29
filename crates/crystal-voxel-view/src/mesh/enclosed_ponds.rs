@@ -460,7 +460,8 @@ mod tests {
             let (mut tiles, g, mut mesh) = fixture();
             match fault {
                 0 => {
-                    for i in [0 * 7 + 3, 1 * 7 + 3] {
+                    for row in 0..2 {
+                        let i = row * 7 + 3;
                         tiles[i].source.metatile_id = 0x43;
                         tiles[i].source.tile_index = 0x14;
                     }

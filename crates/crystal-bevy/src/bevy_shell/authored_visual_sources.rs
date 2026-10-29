@@ -13,7 +13,25 @@ use crystal_render_api::VisualTileSource;
 pub(super) fn tileset_for_block(tileset: &str, block: u16) -> &str {
     match (tileset, block) {
         ("mn_international_falls", 0..=127) => "johto_modern",
+        ("mn_ely_snow", _) => "kanto",
         _ => tileset,
+    }
+}
+
+/// Winter encounter blades and their snow backing share the native grass
+/// geometry. Their colored atlas pixels remain owned by the original tileset.
+fn winter_grass_source(tileset: &str, block: u16) -> Option<(&'static str, u16, u8)> {
+    let snow = match tileset {
+        "mn_winter_outdoor" | "mn_winter_gunflint" => 0x3c,
+        "mn_winter_north_shore" => 0x83,
+        _ => return None,
+    };
+    if block == snow {
+        Some(("johto", 1, 5))
+    } else if block == snow + 1 {
+        Some(("johto", 3, 4))
+    } else {
+        None
     }
 }
 
@@ -21,6 +39,7 @@ pub(super) fn tileset_for_block(tileset: &str, block: u16) -> &str {
 pub(super) struct Projection<'a> {
     names: HashMap<&'a str, Arc<str>>,
     forest: Option<[u8; 16]>,
+    kanto_bridge_posts: Option<[bool; 2]>,
 }
 
 impl<'a> Projection<'a> {
@@ -41,11 +60,38 @@ impl<'a> Projection<'a> {
             column < 4 && row < 4,
             "authored source must address one native metatile"
         );
+        let block = if tileset == "kanto" && matches!(block, 0x80 | 0x82) {
+            if self.kanto_bridge_posts.is_none() {
+                let bytes = crate::read_runtime_asset(
+                    root.runtime_assets()
+                        .join("data/tilesets/kanto_metatiles.bin"),
+                )?;
+                self.kanto_bridge_posts = Some([
+                    same_drawing(&bytes, 0x80, 0x1b),
+                    same_drawing(&bytes, 0x82, 0x5f),
+                ]);
+            }
+            let index = usize::from(block == 0x82);
+            if self
+                .kanto_bridge_posts
+                .context("loaded Kanto bridge drawings")?[index]
+            {
+                [0x1b, 0x5f][index]
+            } else {
+                block
+            }
+        } else {
+            block
+        };
         let canopy = matches!(
             (tileset, block),
-            ("mn_international_falls", 0x81) | ("mn_winter_outdoor" | "mn_winter_gunflint", 0x3f)
+            ("mn_international_falls", 0x81)
+                | ("mn_winter_outdoor" | "mn_winter_gunflint", 0x3f)
+                | ("mn_ely_snow", 0x83)
         );
-        let (name, block, glyph) = if canopy {
+        let (name, block, glyph) = if let Some(source) = winter_grass_source(tileset, block) {
+            source
+        } else if canopy {
             if self.forest.is_none() {
                 let bytes = crate::read_runtime_asset(
                     root.runtime_assets()
@@ -78,6 +124,13 @@ impl<'a> Projection<'a> {
     }
 }
 
+fn same_drawing(bytes: &[u8], authored: usize, native: usize) -> bool {
+    bytes
+        .get(authored * 16..(authored + 1) * 16)
+        .zip(bytes.get(native * 16..(native + 1) * 16))
+        .is_some_and(|(authored, native)| authored == native)
+}
+
 #[cfg(all(test, feature = "voxel-view"))]
 mod tests {
     use std::path::PathBuf;
@@ -87,7 +140,66 @@ mod tests {
     use crystal_render_api::VisualTile;
     use crystal_voxel_view::{CellCoverageKind, audit_cell_coverage_on_map};
 
-    use super::{Projection, tileset_for_block};
+    use super::{Projection, same_drawing, tileset_for_block, winter_grass_source};
+
+    #[test]
+    fn winter_grass_and_snow_use_the_native_grounded_grass_pair() {
+        for (tileset, snow) in [
+            ("mn_winter_outdoor", 0x3c),
+            ("mn_winter_gunflint", 0x3c),
+            ("mn_winter_north_shore", 0x83),
+        ] {
+            assert_eq!(winter_grass_source(tileset, snow), Some(("johto", 1, 5)));
+            assert_eq!(
+                winter_grass_source(tileset, snow + 1),
+                Some(("johto", 3, 4))
+            );
+            let root = AssetRoot::new(std::env::temp_dir());
+            let mut projection = Projection::default();
+            let mut tiles = Vec::new();
+            for row in 0..4 {
+                for column in 0..8 {
+                    let block = if column < 4 { snow } else { snow + 1 };
+                    tiles.push(VisualTile {
+                        column: column as u32,
+                        row: row as u32,
+                        source: projection
+                            .source(&root, tileset, block, column % 4, row, 224)
+                            .expect("winter source projection"),
+                        texture: Handle::default(),
+                        animation_frames: None,
+                        priority: false,
+                    });
+                }
+            }
+            let coverage = audit_cell_coverage_on_map("MN_R12", &tiles, 8, 4)
+                .expect("grounded winter grass coverage");
+            for row in 0..4 {
+                assert!(
+                    coverage[row * 8..row * 8 + 4]
+                        .iter()
+                        .all(|kind| *kind == CellCoverageKind::Flat)
+                );
+                assert!(
+                    coverage[row * 8 + 4..row * 8 + 8]
+                        .iter()
+                        .all(|kind| *kind == CellCoverageKind::Cutout)
+                );
+            }
+            assert_eq!(winter_grass_source(tileset, snow + 2), None);
+            assert_eq!(winter_grass_source(tileset, 3), None);
+        }
+        assert_eq!(winter_grass_source("johto", 0x3d), None);
+    }
+
+    #[test]
+    fn custom_bridge_art_must_match_the_complete_native_drawing() {
+        let mut bytes = vec![0; 0x83 * 16];
+        assert!(same_drawing(&bytes, 0x80, 0x1b));
+        bytes[0x80 * 16 + 15] = 1;
+        assert!(!same_drawing(&bytes, 0x80, 0x1b));
+        assert!(!same_drawing(&bytes[..0x80 * 16 + 15], 0x80, 0x1b));
+    }
 
     #[test]
     #[ignore = "requires CRYSTAL_INTERIOR_PACK containing International Falls"]
@@ -160,6 +272,52 @@ mod tests {
                     && t.source.metatile_id == 0x81),
             "streamed terrain must not replace modeled canopy with a flat fallback"
         );
+        let city = snapshot
+            .maps
+            .iter()
+            .find(|map| map.map_name == "MnStPaul")
+            .expect("city metadata");
+        assert!(
+            destination_preload::source_frame(
+                &snapshot,
+                &shell,
+                city,
+                TilePosition::new(26, 52),
+                "day",
+                &mut RenderedTilesetArt::default(),
+                &mut Assets::<Image>::default(),
+            )
+            .is_err(),
+            "bridges must retain their live three-layer source preparation"
+        );
+        let kanto = crate::read_runtime_asset(
+            shell
+                .asset_root
+                .runtime_assets()
+                .join("data/tilesets/kanto_metatiles.bin"),
+        )
+        .expect("real native bridge art");
+        let mut projection = Projection::default();
+        for (authored, native) in [(0x80, 0x1b), (0x82, 0x5f)] {
+            assert!(same_drawing(&kanto, authored, native));
+            for row in 0..4 {
+                for column in 0..4 {
+                    let glyph = kanto[authored * 16 + row * 4 + column];
+                    let projected = projection
+                        .source(
+                            &shell.asset_root,
+                            "kanto",
+                            authored as u16,
+                            column,
+                            row,
+                            glyph,
+                        )
+                        .expect("live bridge post provenance");
+                    assert_eq!(projected.metatile_id, native as u16);
+                    assert_eq!(projected.tile_index, u16::from(glyph));
+                }
+            }
+        }
         assert_eq!(
             shell
                 .shell

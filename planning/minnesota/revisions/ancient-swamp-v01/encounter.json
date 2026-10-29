@@ -1,0 +1,7 @@
+{
+  "id": "northstar-ancient-swamp-v1",
+  "map": "MnR08C00R00",
+  "creature": [59, 23],
+  "clues": [[47, 33], [55, 29], [60, 25]],
+  "level": 40
+}

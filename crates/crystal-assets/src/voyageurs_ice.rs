@@ -89,6 +89,7 @@ pub fn build_voyageurs_ice_modpack(
     base: &CompiledGamePack,
     source_json: &str,
 ) -> Result<CompiledGamePack> {
+    crate::minnesota_interior_lineage::require_compact_coast(base)?;
     crate::verify_compiled_game_pack_for_runtime(base)?;
     let design: Design = serde_json::from_str(source_json)?;
     ensure!(
@@ -125,6 +126,7 @@ pub fn build_voyageurs_ice_modpack(
     let mut modules = Vec::new();
     for room in &design.rooms {
         let mut map = authoring::blank(&pack, "IcePath1F", &room.id, &room.constant)?;
+        crate::regional_town_fishing::freshwater(&pack, &mut map)?;
         let [width, height] = room.dimensions_metatiles;
         ensure!(
             width <= 32 && height <= 24 && width > 0 && height > 0,
@@ -295,5 +297,6 @@ pub fn build_voyageurs_ice_modpack(
         &pack.report,
     )?;
     crate::verify_compiled_game_pack_for_runtime(&pack)?;
+    crate::minnesota_interior_lineage::require_compact_coast(&pack)?;
     Ok(pack)
 }

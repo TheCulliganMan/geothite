@@ -1,0 +1,58 @@
+[
+  {
+    "id": "clinic-street",
+    "map": "MnInternationalFalls",
+    "core": [
+      9,
+      8
+    ]
+  },
+  {
+    "id": "winter-supplies",
+    "map": "MnInternationalFalls",
+    "core": [
+      23,
+      10
+    ]
+  },
+  {
+    "id": "weather-notebook",
+    "map": "MnInternationalFalls",
+    "core": [
+      7,
+      12
+    ]
+  },
+  {
+    "id": "plow-court",
+    "map": "MnInternationalFalls",
+    "core": [
+      16,
+      14
+    ]
+  },
+  {
+    "id": "southern-road",
+    "map": "MnInternationalFalls",
+    "core": [
+      20,
+      25
+    ]
+  },
+  {
+    "id": "wooded-court",
+    "map": "MnInternationalFalls",
+    "core": [
+      26,
+      14
+    ]
+  },
+  {
+    "id": "winter-outlet",
+    "map": "MnRainyRiverIcefields",
+    "core": [
+      60,
+      45
+    ]
+  }
+]

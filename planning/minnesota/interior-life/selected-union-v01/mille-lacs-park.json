@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "id": "CURRENT_MILLE_LACS_PARK_V01",
+  "parent_content_hash": "e829b1974e3c62c6bceaf76220e67091bf0584d4c9b2874a46282f240cc115cc",
+  "parent_pack": "content-packs/minnesota-interiors-union-r09-v01.crystalpack",
+  "parent_pack_sha256": "eb08b89110a304c9ae935641b6790becfefe03fbe98b819cb3b350275ef4abe7",
+  "layout_sha256": "c9bbfe3e02a4210268b45178e62ebba8dbf1a91795a255101aebe3d3dee4c30a",
+  "town_sha256": "3c9b7ab073b7d9408d7a848cc61fc3fbbfaf5ae4a4e7757be61c45ca3e4e759b",
+  "route_module_sha256": "68db83956e847beae1d8f82679e8f557ba92598c17ab0f33d451b3c8bb3d7cba",
+  "parent_revision": "local_interiors_r09_union",
+  "review": "The complete R18 source module equals the accepted park parent. Retain the 230 inhabited interiors, repaired cities and current story. All park source, route preimage, native IDs, preservation and full geography guards remain enabled."
+}

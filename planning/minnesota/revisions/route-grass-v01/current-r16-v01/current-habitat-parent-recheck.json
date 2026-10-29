@@ -1,0 +1,15 @@
+{
+  "status": "PASS",
+  "kind": "current_parent_regression_of_read_only_acceptance",
+  "previous_acceptance": "acceptance.json",
+  "selected_revision": "species_habitats_cyclists_revision",
+  "pack": "content-packs/minnesota-current-habitats-cyclists-r15-v01.crystalpack",
+  "sha256": "25b7c1dfd8715a90a0675a07e992f0d10a7432e745e0c19e4ebab5890f4957cf",
+  "content_identity": "6173c790bbc7038998cbcfec06b107d25d91aa2fae456a5c8479ac9c81f6d9e0",
+  "all_R16_native_modules_and_wild_tables_exact": "See ../current-r17-v01/habitat-parent-handoff.json",
+  "native_controller_cases_passed": 4,
+  "stdio_calls_passed": 15,
+  "stdio_stderr_bytes": 0,
+  "audio_programs_verified": 377,
+  "terrain_changes": 0
+}

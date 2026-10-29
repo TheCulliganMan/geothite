@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "id": "MN_HARBOR_MECHANIC",
+  "name": "MECHANIC TOBIN",
+  "status": "accepted-native-playable",
+  "overworld_frames": 6,
+  "overworld_size": [
+    16,
+    16
+  ],
+  "battle_size": [
+    56,
+    56
+  ],
+  "palette_rgb555": [
+    32767,
+    22399,
+    18858,
+    0
+  ],
+  "source": "native-pixels-v3.json",
+  "placement": "placement-v1.json",
+  "pack": "content-packs/minnesota-npcs-ref-10-v01.crystalpack",
+  "parent": "content-packs/minnesota-npcs-ref-09-v01.crystalpack",
+  "runtime_checks": {
+    "one_controller_test_passed": true,
+    "talk_and_input_ownership": true,
+    "battle_turn_and_pp": true,
+    "battle_save_load": true,
+    "actual_victory_and_defeat_flag_before_render_capture": true,
+    "post_battle_talk": true,
+    "existing_trainers_and_assets_preserved": true
+  },
+  "manual_visual_review": "Direct actual Crystal Fisher/Gramps/Chris six-pose comparison at equal palette/scale; own-palette 1x/8x and actual Duluth capture reviewed. Bald crown, compact round forehead goggles separate from eyes, cream beard/smile, broad slate overalls with bib/pocket/buckle, rolled pale sleeves and heavy boots. Rebuilt first angled goggle candidate; encoded head rows independently checked against native source. Wrench remains in unchanged battle art only, removing miniature prop clutter. Dedicated rear goggle strap/profile and true lifted-foot stride/arm swing. Full unchanged scaled encounter passed in 15.82s; battle/palette/gameplay/unrelated assets preserved.",
+  "evidence_sha256": {
+    "planning/minnesota/npcs/sprites/10-harbor-mechanic/native-pixels-v3.json": "713e88db09d01183443f86cc09f7e0d4240e0d96bf65ca8f769b7b5a85ad6f4d",
+    "planning/minnesota/npcs/sprites/10-harbor-mechanic/placement-v1.json": "9018bde9826dae673349ea62b85109cea27319d1455bed85858b66b5b456668b",
+    "content-packs/minnesota-npcs-ref-10-v01.crystalpack": "cc03829f05fce710ba53c3dbf9e1ee7e44cc4308286a69c223b003c921e90dd6",
+    "target/npc-sprites/mechanic/controller-reference-v01.log": "709e2158dc8f3428b52fce3046b422596f5de678075b6bf4c375f86789057337",
+    "target/npc-sprites/mechanic/gameplay-reference-v01/original-npc-trainer-intro.png": "ba24068fae698996e826c4a89a61e5395bc4c9bffe3a5b80a6e9a98005b0c1b9",
+    "target/npc-sprites/mechanic/gameplay-reference-v01/original-npc-first-turn.png": "01b4e7f2abdeeb136cd70875c1f5791bfbc61c392b0c96c95086f68f9d32a16e",
+    "target/npc-sprites/mechanic/gameplay-reference-v01/original-npc-overworld-state.png": "472030a484b4c40508b0baa4ba25f9ba1b77d143d0982113caa5c5bc77bd12bc",
+    "target/npc-sprites/hand-review/mechanic-real-comparison-v2.png": "c1cb3c40a113118d4e2362408d4aead92149173f49386de1f14033819f8a6d4e",
+    "target/npc-sprites/mechanic/reference-v2/comparison.png": "cba9636589f041a5d400363aefaf82e53c6c08f45b7af18c1902b1e2c5af7812",
+    "target/npc-sprites/mechanic/reference-v2/verification.json": "1a02021519874569c3f7cf0c0ed88e7ecc5637d486b1c6522aff72c2cb20097a",
+    "target/npc-sprites/mechanic/reference-v2/overworld-review.png": "955ebf8a7088cfbcb52c3234d14452c99f55e2c444112c398ba11d8b99c49429",
+    "target/npc-sprites/mechanic/reference-v2/overworld-review-8x.png": "9db43afb09ca0f9dc375b6de9a65e43bd0ac587078e375ce59faa3d474b92b02"
+  },
+  "overworld_revision": "real-reference-hand-edited-v3",
+  "reference_review": "actual-crystal-sprites-common-palette-and-scale"
+}

@@ -243,79 +243,83 @@ pub(super) fn finale() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
     travel(&mut c, GameButton::Down, CAMP, (43, 20));
     refusal(&mut c, &r);
     enter(&mut c, &r);
-    receiver(&mut c, &r);
-    // Ordinary poison damage on the walk to the console precedes this scene.
-    let before = c.shell.shell.session().state().clone();
-    choice(&mut c, false);
-    assert!(pages(&mut c, "MnBoundarySurveyReceiverDeclinedText").contains("another time"));
-    finish(&mut c);
-    assert!(!event(&c, RESTORED));
-    receiver(&mut c, &r);
-    choice(&mut c, true);
-    assert!(pages(&mut c, "MnBoundarySurveyReceiverRestoreText").contains("align the dial"));
-    let mut picture = false;
-    for _ in 0..96 {
-        assert!(
-            !event(&c, RESTORED),
-            "restoration must wait for the feed and cut-link acknowledgment"
-        );
-        if c.snapshot()
-            .expect("feed")
-            .ui
-            .active_pokemon_picture
-            .as_deref()
-            == Some("KETTLURK")
-        {
-            picture = true;
-            break;
+    if r.data().maps.contains_key("MnBoundaryIntake") {
+        super::northstar_arc_campaign::intake(&mut c, &root, &r);
+    } else {
+        receiver(&mut c, &r);
+        // Ordinary poison damage on the walk to the console precedes this scene.
+        let before = c.shell.shell.session().state().clone();
+        choice(&mut c, false);
+        assert!(pages(&mut c, "MnBoundarySurveyReceiverDeclinedText").contains("another time"));
+        finish(&mut c);
+        assert!(!event(&c, RESTORED));
+        receiver(&mut c, &r);
+        choice(&mut c, true);
+        assert!(pages(&mut c, "MnBoundarySurveyReceiverRestoreText").contains("align the dial"));
+        let mut picture = false;
+        for _ in 0..96 {
+            assert!(
+                !event(&c, RESTORED),
+                "restoration must wait for the feed and cut-link acknowledgment"
+            );
+            if c.snapshot()
+                .expect("feed")
+                .ui
+                .active_pokemon_picture
+                .as_deref()
+                == Some("KETTLURK")
+            {
+                picture = true;
+                break;
+            }
+            press(&mut c, GameButton::A);
         }
+        assert!(picture, "native Kettlurk remote-feed picture");
+        press(&mut c, GameButton::Down);
+        at(&mut c, ROOM, (12, 4));
+        assert_eq!(
+            c.snapshot()
+                .expect("picture owns input")
+                .ui
+                .active_pokemon_picture
+                .as_deref(),
+            Some("KETTLURK")
+        );
+        continue_in_place(&mut c, &root, &r, "campaign-kettlurk-feed");
         press(&mut c, GameButton::A);
-    }
-    assert!(picture, "native Kettlurk remote-feed picture");
-    press(&mut c, GameButton::Down);
-    at(&mut c, ROOM, (12, 4));
-    assert_eq!(
-        c.snapshot()
-            .expect("picture owns input")
-            .ui
-            .active_pokemon_picture
-            .as_deref(),
-        Some("KETTLURK")
-    );
-    continue_in_place(&mut c, &root, &r, "campaign-kettlurk-feed");
-    press(&mut c, GameButton::A);
-    for _ in 0..96 {
-        if c.snapshot()
-            .expect("cut-link text")
-            .ui
-            .text
-            .is_some_and(|t| t.label == "MnNorthstarRelayCutText")
-        {
-            break;
+        for _ in 0..96 {
+            if c.snapshot()
+                .expect("cut-link text")
+                .ui
+                .text
+                .is_some_and(|t| t.label == "MnNorthstarRelayCutText")
+            {
+                break;
+            }
+            assert!(!event(&c, RESTORED));
+            press(&mut c, GameButton::A);
         }
         assert!(!event(&c, RESTORED));
-        press(&mut c, GameButton::A);
+        let text = pages(&mut c, "MnNorthstarRelayCutText");
+        assert!(text.contains("motors coast") && text.contains("cage opens"));
+        finish(&mut c);
+        assert!(event(&c, RESTORED));
+        let off = *c.shell.shell.session().state().map_block_overrides[ROOM]
+            .get(&(6, 1))
+            .expect("native console switched off");
+        assert_ne!(off, r.data().maps[ROOM].blocks[14]);
+        let after = c.shell.shell.session().state();
+        assert_eq!(after.storage, before.storage);
+        assert_eq!(after.bag, before.bag);
+        assert_eq!(after.money, before.money);
+        assert_eq!(after.badges, before.badges);
+        assert!(
+            !after
+                .flags
+                .is_engine_flag_set("ENGINE_SAFARI_ZONE")
+                .expect("optional Safari admission")
+        );
     }
-    assert!(!event(&c, RESTORED));
-    let text = pages(&mut c, "MnNorthstarRelayCutText");
-    assert!(text.contains("motors coast") && text.contains("cage opens"));
-    finish(&mut c);
-    assert!(event(&c, RESTORED));
-    let off = *c.shell.shell.session().state().map_block_overrides[ROOM]
-        .get(&(6, 1))
-        .expect("native console switched off");
-    assert_ne!(off, r.data().maps[ROOM].blocks[14]);
-    let after = c.shell.shell.session().state();
-    assert_eq!(after.storage, before.storage);
-    assert_eq!(after.bag, before.bag);
-    assert_eq!(after.money, before.money);
-    assert_eq!(after.badges, before.badges);
-    assert!(
-        !after
-            .flags
-            .is_engine_flag_set("ENGINE_SAFARI_ZONE")
-            .expect("optional Safari admission")
-    );
     continue_in_place(&mut c, &root, &r, "campaign-survey-restored");
     receiver(&mut c, &r);
     assert_eq!(

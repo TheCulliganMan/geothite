@@ -1,22 +1,24 @@
 // Three presentation modes, one Rust engine and one input/save session.
 const bindings = new WeakMap();
-export function preferredRendererView(location, storage, legacyEnabled = false) {
+export function preferredRendererView(location, storage, legacyEnabled = false, allow3D = true) {
   const requested = new URLSearchParams(location.search).get('view');
-  if (['2d','3d','tui'].includes(requested)) return requested;
+  if (['2d','3d','tui'].includes(requested)) return requested === '3d' && !allow3D ? '2d' : requested;
   if (location.pathname.startsWith('/tui')) return 'tui';
   const saved = storage.getItem('crystal.display.mode');
-  return ['2d','3d','tui'].includes(saved) ? saved : legacyEnabled ? '3d' : '2d';
+  const mode = ['2d','3d','tui'].includes(saved) ? saved : legacyEnabled ? '3d' : '2d';
+  return mode === '3d' && !allow3D ? '2d' : mode;
 }
-export function mountViewNavigation({ document, location, history, setMode, currentMode }) {
+export function mountViewNavigation({ document, location, history, setMode, currentMode, allow3D = true }) {
   const nav = document.querySelector('#view-navigation');
   const existing = bindings.get(nav);
   if (existing) {
-    existing.setMode = setMode; existing.currentMode = currentMode;
+    existing.setMode = setMode; existing.currentMode = currentMode; existing.allow3D = allow3D;
     existing.sync(); return existing.sync;
   }
-  const binding = { setMode, currentMode };
+  const binding = { setMode, currentMode, allow3D };
   const sync = () => {
     for (const link of nav.querySelectorAll('[data-view]')) {
+      link.hidden = link.dataset.view === '3d' && !binding.allow3D;
       if (link.dataset.view === binding.currentMode()) link.setAttribute('aria-current','page');
       else link.removeAttribute('aria-current');
     }
@@ -24,7 +26,9 @@ export function mountViewNavigation({ document, location, history, setMode, curr
   binding.sync = sync; bindings.set(nav,binding);
   nav.addEventListener('click', event => {
     const link = event.target.closest('[data-view]');
-    if (!link || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+    if (!link) return;
+    if (link.dataset.view === '3d' && !binding.allow3D) { event.preventDefault(); return; }
+    if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
     event.preventDefault();
     binding.setMode(link.dataset.view);
     const url = new URL(location.href); url.searchParams.set('view',link.dataset.view);
@@ -35,6 +39,8 @@ export function mountViewNavigation({ document, location, history, setMode, curr
 
 export function mountRendererViews(wasm, viewControls, { document, window, canvas, startIn3D = false }) {
   const {location,history,localStorage:storage}=window;
+  const allow3D = wasm.crystal_voxel_view_allowed?.() !== false;
+  for (const control of document.querySelectorAll('[data-voxel-controls]')) control.hidden = !allow3D;
   if(document.documentElement.classList.contains('flygon-embedded')) {
     wasm.crystal_configure_text_view(false,80,40,true);
     return;
@@ -80,6 +86,7 @@ export function mountRendererViews(wasm, viewControls, { document, window, canva
   };
   const setMode=value=>{
     if(!['2d','3d','tui'].includes(value))return;
+    if(value==='3d'&&!allow3D)value='2d';
     mode=value;
     viewControls.setEnabled(mode==='3d');
     document.body.dataset.view=mode;
@@ -95,7 +102,7 @@ export function mountRendererViews(wasm, viewControls, { document, window, canva
     } else {dispose?.();dispose=undefined;previousHtml=previousDetail=undefined;}
     sync();canvas.focus({preventScroll:true});
   };
-  sync=mountViewNavigation({document,location,history,setMode,currentMode:()=>mode});
+  sync=mountViewNavigation({document,location,history,setMode,currentMode:()=>mode,allow3D});
   styleButton.addEventListener('click',()=>{
     painted=!painted;storage.setItem('geothite.tui.view',painted?'painted':'text');
     previousHtml=previousDetail=undefined;setMode('tui');
@@ -106,6 +113,9 @@ export function mountRendererViews(wasm, viewControls, { document, window, canva
   document.addEventListener('visibilitychange',()=>{configure();sample();});
   window.addEventListener('pagehide',()=>{clearTimeout(timer);dispose?.();});
   const explicit=new URLSearchParams(location.search).get('view');
-  setMode(startIn3D&&!['2d','3d','tui'].includes(explicit)?'3d':preferredRendererView(location,storage,legacyToggle.getAttribute('aria-pressed')==='true'));
+  if(!allow3D&&explicit==='3d') {
+    const url=new URL(location.href);url.searchParams.set('view','2d');history.replaceState(null,'',url);
+  }
+  setMode(allow3D&&startIn3D&&!['2d','3d','tui'].includes(explicit)?'3d':preferredRendererView(location,storage,legacyToggle.getAttribute('aria-pressed')==='true',allow3D));
   return {setMode};
 }

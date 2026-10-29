@@ -21,7 +21,6 @@ struct Journey {
     wild_encounters: usize,
     trainer_opponents: BTreeSet<String>,
     attacks_spent_pp: usize,
-    battle_clock_started: bool,
 }
 
 impl Journey {
@@ -40,17 +39,6 @@ impl Journey {
     }
 
     fn battle(&mut self, controller: &mut VisibleShellController) {
-        if !self.battle_clock_started {
-            // The first grass roll is deterministic. Vary subsequent divider
-            // samples so normal battle rejection sampling can terminate.
-            *controller.shell.shell.session_mut().divider_mut_for_tests() =
-                crystal_core::random::RuntimeDividerSource::replay(
-                    (0_u32..131072)
-                        .map(|n| ((n * 73 + 19) % 256) as u8)
-                        .collect::<Vec<u8>>(),
-                );
-            self.battle_clock_started = true;
-        }
         let initial = controller.snapshot().expect("encounter");
         let wild = matches!(
             initial.battle.as_ref().expect("battle").kind,
@@ -84,7 +72,11 @@ impl Journey {
                             .collect::<Vec<_>>()
                     })
                     .unwrap_or_default();
-            let button = if options.iter().any(|o| o.contains("change <PKMN>")) {
+            let button = if !controller.shell.battle_messages.is_empty()
+                || (s.ui.menu.is_none() && s.ui.text.is_some())
+            {
+                GameButton::A
+            } else if options.iter().any(|o| o.contains("change <PKMN>")) {
                 GameButton::B
             } else if options.iter().any(|o| o.contains("FIGHT")) {
                 let target = if wild { 3 } else { 0 };
@@ -130,7 +122,7 @@ impl Journey {
             } else if let Some(cursor) = &controller.shell.battle_move_cursor {
                 let slot = battle.active_player_party_index.expect("active partner");
                 let pokemon = &s.party.slots[slot].pokemon;
-                let preferred = if pokemon.species.id == "MAREEP" {
+                let preferred = if pokemon.species.id == "ZAPSAP" {
                     "THUNDERSHOCK"
                 } else {
                     "EMBER"
@@ -157,6 +149,9 @@ impl Journey {
                 GameButton::A
             };
             controller.press(button).expect("production battle input");
+            controller
+                .wait_frames(16)
+                .expect("native battle narration presentation");
         }
         let ended = controller.snapshot().expect("battle result");
         assert!(ended.battle.is_none(), "battle did not end: {:?}", ended.ui);
@@ -268,7 +263,7 @@ fn prairie_farm_journey_crosses_grass_bank_bridge_and_wins_all_three_with_saved_
         .expect("name");
     // Source-created levels and learned moves, one badge and a deterministic
     // divider are explicit setup. All subsequent traversal/battle uses input.
-    for (species, level) in [("CYNDAQUIL", 12), ("MAREEP", 9)] {
+    for (species, level) in [("KINDLIT", 12), ("ZAPSAP", 9)] {
         let pokemon = runtime
             .data()
             .create_pokemon(species, level, Dv::default())
@@ -289,7 +284,11 @@ fn prairie_farm_journey_crosses_grass_bank_bridge_and_wins_all_three_with_saved_
     state.sync_party_from_storage();
     state.random_state = Default::default();
     *controller.shell.shell.session_mut().divider_mut_for_tests() =
-        crystal_core::random::RuntimeDividerSource::replay(vec![0; 131072]);
+        crystal_core::random::RuntimeDividerSource::replay(
+            (0_u32..262144)
+                .map(|n| ((n * 73 + 19) % 256) as u8)
+                .collect::<Vec<_>>(),
+        );
     controller.set_runtime_journal_enabled(false);
     mark_runtime_snapshot_dirty(&mut controller.shell);
     let mut journey = Journey::default();
@@ -353,11 +352,11 @@ fn prairie_farm_journey_crosses_grass_bank_bridge_and_wins_all_three_with_saved_
     assert_eq!(
         journey.trainer_opponents,
         BTreeSet::from([
-            "HOPPIP".into(),
-            "SUNKERN".into(),
-            "MAREEP".into(),
-            "PIDGEY".into(),
-            "SENTRET".into()
+            "PODLET".into(),
+            "PINIT".into(),
+            "ZAPSAP".into(),
+            "PECKIT".into(),
+            "NIBBIN".into()
         ])
     );
     let flags = [

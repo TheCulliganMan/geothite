@@ -2359,6 +2359,76 @@
         25
       ],
       "block": "0a"
+    },
+    {
+      "name": "Reclaimed north quarry bench grass crossing",
+      "kind": "block_remap",
+      "bounds": [
+        25,
+        9,
+        27,
+        10
+      ],
+      "from": "71",
+      "to": "03"
+    },
+    {
+      "name": "Upper ore meadow extends to western climbing trail",
+      "kind": "block_remap",
+      "bounds": [
+        19,
+        16,
+        21,
+        17
+      ],
+      "from": "71",
+      "to": "03"
+    },
+    {
+      "name": "Lower reclamation meadow meets the dry haul-track edge",
+      "kind": "block_remap",
+      "bounds": [
+        31,
+        22,
+        33,
+        23
+      ],
+      "from": "02",
+      "to": "03"
+    },
+    {
+      "name": "Reclaimed spoil shoulder before the dry return ledge",
+      "kind": "block_remap",
+      "bounds": [
+        40,
+        15,
+        41,
+        17
+      ],
+      "from": "71",
+      "to": "03"
+    },
+    {
+      "name": "Attached spoil boulders close the grassy shoulder edge",
+      "kind": "block_rect",
+      "bounds": [
+        39,
+        15,
+        40,
+        17
+      ],
+      "block": "0a"
+    },
+    {
+      "name": "Attached spoil boulders close the grassy shoulder edge",
+      "kind": "block_rect",
+      "bounds": [
+        41,
+        15,
+        42,
+        17
+      ],
+      "block": "0a"
     }
   ],
   "status": "Rockier hand-authored source candidate responding to user guidance; existing native publication is the pre-revision baseline.",

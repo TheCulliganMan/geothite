@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "trainers": [
+    {
+      "map": "MnStCloud",
+      "approach": [
+        14,
+        14
+      ],
+      "id": "MN_EXTRA_CYCLE_TOURIST",
+      "display_name": "REN",
+      "trainer_class": "MN_CYCLE_TOURIST",
+      "class_name": "CYCLE TOURIST",
+      "template_class": "COOLTRAINERF",
+      "sprite": "SPRITE_MN_CYCLE_TOURIST",
+      "tile": [
+        14,
+        13
+      ],
+      "facing": "south",
+      "sight_range": 1,
+      "defeated_flag": "EVENT_MN_EXTRA_CYCLE_TOURIST",
+      "party": [
+        {
+          "species": "PUCKLET",
+          "level": 22
+        },
+        {
+          "species": "CLICKIT",
+          "level": 24
+        }
+      ],
+      "before_lines": [
+        "Got time to stop?",
+        "Race me in battle!"
+      ],
+      "after_lines": [
+        "You set the pace!",
+        "Enjoy the trail."
+      ],
+      "loss_lines": [
+        "Keep your pace up.",
+        "Ride safe!"
+      ]
+    }
+  ]
+}

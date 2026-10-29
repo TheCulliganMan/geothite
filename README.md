@@ -4,6 +4,12 @@ A Rust implementation of Pokémon Crystal with browser and desktop clients,
 multiplayer, and an optional 2.5D overworld renderer. Game logic, rendering,
 audio, and networking are implemented in this repository.
 
+The [Minnesota canoe](planning/minnesota/canoe/README.md) adds a reusable key
+item, a St. Paul canoe-shop handoff after the Capitol Badge, and native Chris/Kris
+paddling sprites. Carry it and walk into open water to launch; step onto land to
+portage. Surf remains available. The separate local candidate is
+`content-packs/minnesota-canoe-v04.crystalpack`; see its runbook for verification.
+
 The new [Voyageurs Ice Cavern](planning/minnesota/ice-caves/README.md) adds a
 Minnesota two-floor ice dungeon off R20, using native sliding puzzles, persistent
 rewards and paired return ladders. Its local pack is
@@ -93,15 +99,24 @@ replaces mixed house/clinic assemblies with complete native buildings and
 rebuilds the waterfront banks, quay and working basin while retaining its rooms.
 The [Duluth club pass](planning/minnesota/interior-life/CLUBS.md) adds working
 sail/letter rooms, a timber kitchen, lodge spaces and 16 readable local details.
-The [current interior composition](planning/minnesota/interior-life/INTERNATIONAL-FALLS.md)
-brings 210 non-gym interiors into
-`content-packs/minnesota-international-falls-v02.crystalpack`. It adds winter care,
-supplies and the actual ranger circuit over [Moorhead](planning/minnesota/interior-life/MOORHEAD.md).
-Four new production controller cases, strict preservation, thirteen retained
-native 2D comparisons and all 377 audio checks pass. The repaired St. Paul
-facades, waterfront and protected chapter dialogue remain intact. The older
-shore-gate contract, three planned stations, full Glacier Line service and
-regional quality audit remain open; the fresh city 3D check still times out.
+The [preserved interior composition](planning/minnesota/interior-life/RAIL-STOP-CORRECTION.md)
+uses `content-packs/minnesota-interiors-no-red-wing-v01.crystalpack`
+(719 maps, 217 non-gym interiors). Red Wing's station has been withdrawn by
+user direction and removed from the active sources and rail-stop plan.
+The two native timetables now list the five approved stops. This retains the
+St. Paul facade/waterfront repair, Staples' supplies, Split Rock's clinic/PC,
+fishing homes, shore gate and Winona depot lineage.
+The current visual direction is native 2D only.
+The 719-map interior branch is now **preserved history, not an approved new
+publication parent**: it retains the obsolete coast/Gunflint geometry. Current
+interior publishers refuse it. See [the compact rebase](planning/minnesota/interior-life/COMPACT-REBASE.md) for the protected room work, geometry conflicts
+and pending physical entrance integration. No new stale-geometry pack was published.
+ Canonical coast/Cedar and Ely
+back-trail composition, full five-stop service, the Staples ledger repair and
+regional room-quality review remain open. Counts do not complete that scope.
+The historical
+[city renderer notes](planning/minnesota/interior-life/CITY-COAST-FOLLOW-UP.md)
+record the facade, snowy-tree, bridge/depot and rocky waterfront corrections.
 
 The [smaller, tighter major cities](planning/minnesota/playable/major-cities.md)
 publish whole64×48 Minneapolis, St Paul and Duluth in a660-map review pack,
@@ -297,6 +312,11 @@ relay shutdown. After raising the review minimum to 100 for the last three
 League matches, Hall of Fame and postgame Continue also pass. Earlier saves
 retain their original pack; these reviews do not establish unboosted balance.
 
+The [comprehensive dialogue overhaul](docs/dialogue-overhaul.md) rebuilds the
+family departure, professor introduction, starter handoff and courier staging,
+and adds authored pages and native text timing. Its runbook records candidate
+publication and acceptance separately from the historical text-only revision.
+
 The [dialogue quality revision](planning/minnesota/playable/northstar-relay.md#dialogue-quality-revision--2026-10-27)
 is published as the ignored
 `content-packs/minnesota-northstar-dialogue.crystalpack`. Its opening, rescue,
@@ -315,15 +335,26 @@ slush with Cindore/Cartick coverage and Wrigglet-line boss aces. The runbook
 records the executed Rust publication commands, native and stdio checks,
 paired scene renders, and the separate limits of battle and geometry fixtures.
 
-The later [cross-floor ICE headquarters](planning/minnesota/playable/ice-headquarters.md)
-replaces the linear cargo/relay connection with six dungeon floors, eight
-paired transfer routes, six persistent card doors, isolated offices and
-optional recovery/supply/captive rooms. Its ignored
-`content-packs/minnesota-northstar-complex-story-v5.crystalpack` runtime-verifies
-with 563 maps. The full native card-to-rescue course, actual stdio card replay,
-compiled connection audit and content/audio preservation checks pass. This
-successor addresses the Gen 1 Silph Co. navigation reference; the preserved
-Iron Range remains the simpler industrial maze. Prior packs/saves are retained.
+The [cross-floor ICE headquarters](planning/minnesota/playable/ice-headquarters.md)
+has six dungeon floors, eight paired transfer routes, six persistent card doors,
+isolated offices and optional recovery/supply/captive rooms. The subsequent
+[Iron Range workings](planning/minnesota/playable/iron-workings.md) adds three
+interleaved mine levels, eight ladder pairs, two independent pressure controls,
+and physical crosscuts before the existing working drill. The combined ignored
+`content-packs/minnesota-northstar-complex-story-v6.crystalpack` runtime-verifies
+with 566 maps. Native story courses, Minnesota-only binding, preservation and
+clean-stdio valve replay are documented in the runbooks. Prior packs/saves stay
+unchanged.
+
+The [recurring rival revision](planning/minnesota/playable/rival-arc.md) adds
+Rochester, St Paul and Boundary battles for six Reed battles in total, an acted
+St Cloud intervention, changed return conversations and a physical Kettlurk
+release. Its ignored candidate is
+`content-packs/minnesota-northstar-story-arc-v8.crystalpack` (567 maps), retained
+only as historical story evidence. Its outdoor lineage predates the compact
+canonical coast; new story publication from that parent is now rejected.
+Native acceptance and the ordinary-party full campaign review are in progress;
+the runbook separates completed checks from remaining work.
 
 The [earned northern finale](planning/minnesota/playable/northstar-finale.md)
 now continues that actual arrival save through the chief battle, separate
@@ -786,6 +817,21 @@ The game uses Bevy 0.20 and Rust 1.99.0, pinned in `rust-toolchain.toml`.
 Shared dependency versions and local crate paths live in the workspace
 `Cargo.toml`; each renderer selects its own Bevy features.
 
+Cargo defaults to two build jobs to bound memory use. Development builds keep
+incremental game-crate caches, while tests compile game code without optimization
+and reuse the optimized engine dependencies. The local allocator patch keeps the
+same settings in both profiles so switching to tests does not rebuild Bevy.
+Release optimization is unchanged. Use `-j` or `CARGO_BUILD_JOBS` to override
+parallelism for the build machine; keep a stable target directory and feature
+set for each ongoing task instead of creating a fresh cache per command.
+Serialize memory-intensive Cargo builds on shared hosts: separate target
+directories do not isolate compiler memory or prevent swap thrashing.
+Use the default test profile for regressions: passing `--profile wasm-dev`
+selects the playable renderer's optimization settings instead.
+Radio oracle replay cases are opt-in with `--ignored` and
+`CRYSTAL_RADIO_ORACLE_ROOT` pointing to the external source/capture workspace.
+Normal builds and self-contained radio tests require no oracle captures.
+
 For optional independent PC and Mailbox LCD comparisons, see the
 [menu reference capture guide](docs/menu-oracle.md). Its emulator environment
 and generated references remain external to the repository and game bundle.
@@ -806,7 +852,10 @@ The feature also enables Bevy's development assertions. Compiled game packs
 require a restart after rebuilding. These tools are
 opt-in for the graphical client and work with both renderer modes. Normal
 desktop, browser, and terminal builds do not enable them. Use `cargo bevy-check`
-to check the graphical client and examples, or `cargo bevy-test` to run its tests.
+to check the production graphical client, or `cargo bevy-test` to run its library
+tests. These checks enable the 3D renderer without optional development overlays.
+Use `cargo bevy-tools-check` to also check the development tools and location
+capture examples.
 Existing `F3` view,
 `F6` capture, and `F11` fullscreen controls remain available.
 
@@ -907,3 +956,69 @@ snapshots, saves and audio cue resolution. `crystal-audio::pcm` decodes the same
 packed sounds for custom audio devices. See [the frontend assessment and integration
 guide](docs/FRONTEND_ARCHITECTURE.md) for the headless example and remaining UI
 controller work.
+
+### Minnesota harvests and frozen lakes
+
+The [berry and apricorn runbook](planning/minnesota/fruit-groves/README.md)
+records the renewable fruit-tree overlay, including twenty berry stops across
+the two twenty-trainer Mississippi routes and harvests throughout Minnesota. The
+[frozen-water overlay](planning/minnesota/regions/ice/FROZEN-WATER.md) carries
+those onto the current compact geography with slippery inland lakes and
+solid Crystal Ice Path rock rims. North Shore remains unfrozen.
+
+### Minnesota fishing guru route houses
+
+The [fishing-guru runbook](planning/minnesota/playable/fishing-rods.md) records
+the executed Rust build of the ignored 716-map route-house pack, its
+Old/Good/Super Rod progression and fishermen's post-battle directions. All rod
+controller regressions passed. The [HM runbook](planning/minnesota/playable/hm-progression.md)
+records seven badge-paced handoffs and 18 visit-unlocked Fly hubs. The former
+`minnesota-field-progression-v03.crystalpack` lineage is withdrawn: it retains
+obsolete northern geometry. New publication must use the canonical compact
+coast/Gunflint lineage; the old pack is historical, not a current build parent.
+
+
+### Selected Minnesota outdoor review — 2026-10-28
+
+For missing runtime commands after Minneapolis cyclist battles, the
+[Minnesota script repair](planning/minnesota/trainers/README.md#missing-battle-return-commands)
+provides the verified Rust build/repair commands and the ignored
+`content-packs/minnesota-scripts-repaired-r15-v01.crystalpack` successor. It restores
+all 18 battle-return handlers while preserving the parent content and audio.
+
+The verified game build is
+`content-packs/minnesota-progression-rewards-v04.crystalpack` (705 maps), recorded
+as `progression_rewards_revision` in `planning/minnesota/world.json`. Its parent
+is the [accepted R11 terrain](planning/minnesota/revisions/route-grass-v01/current-r11-v01/README.md).
+Follow `active_local_review_revision` for later terrain successors.
+
+The Minneapolis tool workshop gives a rebuilt bicycle, with native PACK
+registration and SELECT riding. Tamarack awards one Master Ball after Boundary
+Waters restoration. The Winona aide awards Great Balls, Itemfinder, Exp. Share,
+Lucky Egg and Rare Candies for caught Minnesota species milestones. Grand Marais
+can recover a failed Machine Part delivery without giving another starter.
+
+Five native reward cases, the earned opening, three byte-clean production stdio
+replays and all 377 audio checks pass on this exact identity. All terrain,
+actors, warps, teams and encounters are preserved; 701 parent map modules are
+exact. The [full story](planning/minnesota/revisions/current-story-v01/README.md),
+complex lairs, six rival battles, 24 added grunts and written League remain.
+
+```sh
+./target/northstar-story/wasm-dev/geothite play content-packs/minnesota-progression-rewards-v04.crystalpack
+```
+
+Use this newly built client for the regional caught-count query. See the
+[verified reward build/run receipt](planning/minnesota/revisions/comprehensive-game-v01/README.md)
+and [full completion requirements](planning/minnesota/revisions/comprehensive-game-v01/requirements.json).
+The comprehensive-game goal remains active: HM/fishing integration, missing
+species acquisition paths and an uninterrupted full campaign still need work.
+Packs, reached saves and renders remain ignored.
+
+## Minnesota Town Map and Fly
+
+The [native atlas runbook](planning/minnesota/town-map/README.md) records the
+one-screen 160×144 Minnesota Town Map, hand-composed from the original Johto
+tiles and palettes and shared with Fly. It includes the verified ignored flight
+pack, exact build/test commands, production UI renders and a controller flight
+to Grand Marais. Existing artwork and audio remain unchanged.

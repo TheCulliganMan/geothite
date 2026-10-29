@@ -30,7 +30,10 @@ pub(super) fn flee(c: &mut VisibleShellController) {
         let s = c.snapshot().expect("wild encounter");
         if let Some(b) = &s.battle {
             assert!(
-                matches!(b.kind, RuntimeBattleKind::Wild { .. }),
+                matches!(
+                    b.kind,
+                    RuntimeBattleKind::Wild { .. } | RuntimeBattleKind::StaticWild { .. }
+                ),
                 "safe trail planner must not skip a trainer battle"
             );
         } else if s.phase == RuntimeShellPhase::Overworld
@@ -152,6 +155,15 @@ pub(super) fn delivery() -> (
     crystal_runtime::CrystalRuntime,
     VisibleShellController,
 ) {
+    if load()
+        .1
+        .data()
+        .story_event_script_constants
+        .global
+        .contains_key("EVENT_MN_TAMARACK_INTRO")
+    {
+        return super::dialogue_overhaul::delivery(1);
+    }
     let (root, r, mut c) = opening(1, "CYNDAQUIL");
     travel(&mut c, GameButton::Down, "MnWinona", (7, 8));
     indoor_walk(&mut c, &r, (4, 18));

@@ -382,6 +382,7 @@ impl Plugin for VoxelViewPlugin {
         sky::register(app);
         summit_vista::register(app);
         environment_lighting::register(app);
+        environment_fx::register_ely_snow(app);
         render_quality::register(app);
         app.init_resource::<new_bark_actors::ModeledActors>()
             .add_systems(

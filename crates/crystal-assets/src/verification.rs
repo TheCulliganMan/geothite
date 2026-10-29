@@ -5,6 +5,15 @@ fn verify_game_data(
 ) -> ModpackCompileReport {
     let mut diagnostics = Vec::new();
     let map_names = data.maps.keys().cloned().collect::<BTreeSet<_>>();
+    if let Some(zone) = &data.safari_zone
+        && let Err(error) = zone.validate(data)
+    {
+        diagnostics.push(VerificationError::error(
+            "invalid_safari_zone",
+            &zone.id,
+            error.to_string(),
+        ));
+    }
     for (map, indices) in rules.inaccessible_dormant_warps.iter().chain(rules.retired_gs_warps.iter()) {
         for index in indices {
             if !data.maps.get(map).is_some_and(|module| module.events.warps.iter()
@@ -6075,14 +6084,14 @@ fn verify_fly_destinations(data: &GameDataSet, diagnostics: &mut Vec<Verificatio
         }
 
         let spawn_identifier = destination.destination_spawn_identifier;
-        if spawn_identifier
-            >= crystal_core::systems::special_routines::CRYSTAL_NUM_SPAWN_POINTS
-        {
+        if !crystal_core::systems::special_routines::is_runtime_recovery_spawn_identifier(
+            spawn_identifier,
+        ) {
             diagnostics.push(VerificationError::error(
                 "fly_destination_spawn_out_of_range",
                 key,
                 format!(
-                    "fly destination spawn identifier {spawn_identifier} is outside Crystal's SpawnPoints table"
+                    "fly destination spawn identifier {spawn_identifier} is outside source/addon spawn ranges"
                 ),
             ));
         } else if !data

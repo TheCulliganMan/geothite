@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "trainers": [
+    {
+      "map": "MnDuluth",
+      "approach": [
+        54,
+        60
+      ],
+      "id": "MN_EXTRA_NPC_MECHANIC_01",
+      "display_name": "TOBIN",
+      "trainer_class": "MN_HARBOR_MECHANIC",
+      "class_name": "MECHANIC",
+      "template_class": "HIKER",
+      "sprite": "SPRITE_MN_HARBOR_MECHANIC",
+      "tile": [
+        54,
+        59
+      ],
+      "facing": "south",
+      "sight_range": 2,
+      "defeated_flag": "EVENT_MN_EXTRA_NPC_MECHANIC_01",
+      "party": [
+        {
+          "species": "TUGGET",
+          "level": 30
+        },
+        {
+          "species": "LIFTRUSS",
+          "level": 32
+        }
+      ],
+      "before_lines": [
+        "All hands on deck!",
+        "Time for a tuneup."
+      ],
+      "after_lines": [
+        "Running smoothly!",
+        "Keep tools dry."
+      ],
+      "loss_lines": [
+        "A bit more work.",
+        "Try us again soon."
+      ]
+    }
+  ]
+}

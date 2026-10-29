@@ -1,8 +1,14 @@
+[build]
+# Renderer and asset crates are memory intensive. Bound each Cargo invocation's
+# parallelism; callers can override this for larger build machines with -j.
+jobs = 2
+
 [target.wasm32-unknown-unknown]
 rustflags = ["--cfg", "getrandom_backend=\"wasm_js\""]
 
 # Opt-in graphical development tools; supply game arguments after `--`.
 [alias]
 bevy-dev = "run --locked -p crystal-bevy --features dev-tools,voxel-view"
-bevy-check = "check --locked -p crystal-bevy --all-targets --features dev-tools,location-tester"
-bevy-test = "test --locked -p crystal-bevy --features dev-tools,voxel-view"
+bevy-check = "check --locked -p crystal-bevy --all-targets --features voxel-view"
+bevy-test = "test --locked -p crystal-bevy --lib --features voxel-view"
+bevy-tools-check = "check --locked -p crystal-bevy --all-targets --features dev-tools,location-tester"

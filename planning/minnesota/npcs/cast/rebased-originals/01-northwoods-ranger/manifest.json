@@ -1,0 +1,47 @@
+{
+  "name": "RANGER ROWAN",
+  "role": "preserved original NPC",
+  "status": "accepted-native-playable-rebased",
+  "source": "native-pixels-v3.json",
+  "source_path": "planning/minnesota/npcs/sprites/01-northwoods-ranger/native-pixels-v3.json",
+  "integration": "placement-v1.json",
+  "controller": "placement-v1.json",
+  "native": "target/npc-sprites/ranger/reference-v2",
+  "pack": "content-packs/minnesota-trainer-cast-22-v01.crystalpack",
+  "gameplay": "target/trainer-cast/rebase/01-northwoods-ranger/gameplay",
+  "log": "target/trainer-cast/rebase/01-northwoods-ranger/controller.log",
+  "original_placement": "planning/minnesota/npcs/sprites/01-northwoods-ranger/placement-v2.json",
+  "old_map": "MnR01C00R00",
+  "new_map": "MnR01C00R00",
+  "old_tile": [
+    8,
+    24
+  ],
+  "new_tile": [
+    7,
+    24
+  ],
+  "scope": "Exact accepted original art, palette, party, class and dialogue. Placement rebased to safe compact geography; original geography not transplanted.",
+  "evidence_sha256": {
+    "planning/minnesota/npcs/cast/rebased-originals/01-northwoods-ranger/placement-v1.json": "bf478bf8a4e13679da15e609d7fea991492bf0ff37dbdfde287158982a3490d0",
+    "planning/minnesota/npcs/sprites/01-northwoods-ranger/native-pixels-v3.json": "aa3dc55df110063eb8eb4467bda88d133c5b0ffa8a38e53a918eb0f5e6f5b9d5",
+    "planning/minnesota/npcs/sprites/01-northwoods-ranger/manifest.json": "8c07f8bfb5bfff576da4e1ae00da171dd620934bf2ca1fc452389526dea1abf8",
+    "target/trainer-cast/rebase/01-northwoods-ranger/controller.log": "630b478799283ebf3f0376eff119e3054678012b70d6cc11a843b91453eb2be7",
+    "content-packs/minnesota-trainer-cast-22-v01.crystalpack": "f4a2e154f879ebb5a99a603fbe43deb490c9177803cd935fe540b82a215ea6f7",
+    "target/npc-sprites/ranger/reference-v2/verification.json": "fa7c3820f019f59438bc16f57ff30d9af1c21197f4b97eaea6965c197ccb1dff",
+    "target/trainer-cast/rebase/01-northwoods-ranger/gameplay/original-npc-trainer-intro.png": "e8fb90ea6d78a8442e4a7140b14761ffd502bffc424a275c9fca93c123b619ab",
+    "target/trainer-cast/rebase/01-northwoods-ranger/gameplay/original-npc-overworld-state.png": "a408d002443f181ae111e98add5b3a7916e1f747b7f446c112fad09f1bc3ffff",
+    "target/trainer-cast/rebase/01-northwoods-ranger/gameplay/original-npc-first-turn.png": "67a13d64f019bc5019e8d00605ce318da2862d3af06dd3a736177a0d43e0c38d"
+  },
+  "final_pack": "content-packs/minnesota-trainer-cast-36-v01.crystalpack",
+  "final_gameplay": "target/trainer-cast/final-audit/gameplay/rebased-originals-01-northwoods-ranger",
+  "final_log": "target/trainer-cast/final-audit/gameplay/rebased-originals-01-northwoods-ranger/controller.log",
+  "final_status": "accepted-native-playable-final-pack",
+  "final_review": "Actual battle intro and field captures inspected on exact final pack; art retains accepted native sources and palette.",
+  "final_evidence_sha256": {
+    "target/trainer-cast/final-audit/gameplay/rebased-originals-01-northwoods-ranger/controller.log": "12cc90868d4ad12a5f2415a1948cb4de45aa1ab47ac678e991cdff1a4c2e16b8",
+    "target/trainer-cast/final-audit/gameplay/rebased-originals-01-northwoods-ranger/original-npc-trainer-intro.png": "e8fb90ea6d78a8442e4a7140b14761ffd502bffc424a275c9fca93c123b619ab",
+    "target/trainer-cast/final-audit/gameplay/rebased-originals-01-northwoods-ranger/original-npc-overworld-state.png": "a408d002443f181ae111e98add5b3a7916e1f747b7f446c112fad09f1bc3ffff",
+    "target/trainer-cast/final-audit/gameplay/rebased-originals-01-northwoods-ranger/original-npc-first-turn.png": "67a13d64f019bc5019e8d00605ce318da2862d3af06dd3a736177a0d43e0c38d"
+  }
+}

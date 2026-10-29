@@ -9,10 +9,11 @@ mod park_tree;
 mod pine;
 mod ancient;
 mod deciduous;
+mod winter_pine;
 pub(crate) use park_tree::append_park_tree;
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
-pub(crate) enum GroveFamily { JohtoPine, AncientForest, KantoDeciduous, ParkBroadleaf }
+pub(crate) enum GroveFamily { JohtoPine, AncientForest, KantoDeciduous, ParkBroadleaf, WinterPine }
 impl GroveFamily {
     pub(crate) fn from_drawing(tileset: &str, width: usize, height: usize) -> Self {
         // Forest's small 2x2 Headbutt drawing and 4x4 ancient canopy are
@@ -25,7 +26,7 @@ impl GroveFamily {
         match tileset {"forest"=>Self::AncientForest,"kanto"=>Self::KantoDeciduous,"park"=>Self::ParkBroadleaf,_=>Self::JohtoPine}
     }
     pub(crate) fn label(self) -> &'static str {
-        match self { Self::JohtoPine => "johto/tree", Self::AncientForest => "forest/ancient_tree", Self::KantoDeciduous => "world-exterior/kanto_canopy", Self::ParkBroadleaf => "world-exterior/park_tree" }
+        match self { Self::JohtoPine => "johto/tree", Self::AncientForest => "forest/ancient_tree", Self::KantoDeciduous => "world-exterior/kanto_canopy", Self::ParkBroadleaf => "world-exterior/park_tree", Self::WinterPine => "winter/pine" }
     }
 }
 
@@ -82,7 +83,7 @@ pub(crate) fn non_ancient_height_factor([x,z]: [i32;2]) -> f32 {
 pub(crate) fn instance_vertical_ratio(family: GroveFamily, coordinates: [i32;2],
     prototype: [i32;2], neighbors: [bool;4]) -> f32 {
     match family {
-        GroveFamily::JohtoPine => pine::stem_height(1.,coordinates,neighbors)
+        GroveFamily::JohtoPine | GroveFamily::WinterPine => pine::stem_height(1.,coordinates,neighbors)
             / pine::stem_height(1.,prototype,neighbors),
         GroveFamily::AncientForest => variation(coordinates[0],coordinates[1]).height
             / variation(prototype[0],prototype[1]).height,
@@ -119,6 +120,11 @@ pub(crate) fn append_family_grove(mesh: &mut TerrainMeshData, bounds: [f32;4], b
         "coordinates": coordinates, "neighbors": neighbors, "family": family.label()}));
     match family {
         GroveFamily::JohtoPine => pine::append(mesh,bounds,base,tile,coordinates,neighbors),
+        GroveFamily::WinterPine => {
+            let first = mesh.solid.positions.len();
+            winter_pine::append(mesh,bounds,base,tile,coordinates,neighbors);
+            mesh.solid.cutaway_ranges.push(first..mesh.solid.positions.len());
+        },
         GroveFamily::AncientForest => ancient::append(mesh,bounds,base,tile,coordinates,neighbors),
         GroveFamily::ParkBroadleaf => park_tree::append_park_tree(mesh,bounds,base,tile,coordinates),
         GroveFamily::KantoDeciduous => {
@@ -135,6 +141,7 @@ pub(crate) fn append_family_canopy(mesh: &mut TerrainMeshData, bounds: [f32;4], 
     let first = mesh.solid.positions.len();
     match family {
         GroveFamily::JohtoPine => pine::append_canopy(mesh,bounds,base,tile,coordinates,neighbors),
+        GroveFamily::WinterPine => winter_pine::append(mesh,bounds,base,tile,coordinates,neighbors),
         GroveFamily::AncientForest => ancient::append_canopy(mesh,bounds,base,tile,coordinates,neighbors),
         GroveFamily::KantoDeciduous => deciduous::append_canopy(mesh,bounds,base,tile,coordinates,neighbors),
         GroveFamily::ParkBroadleaf => {
@@ -165,7 +172,7 @@ pub(crate) fn instance_canopy_margin(family:GroveFamily,coordinates:[i32;2])->f3
     match family {
         GroveFamily::KantoDeciduous=>deciduous::canopy_margin(coordinates),
         GroveFamily::AncientForest=>1.25,
-        GroveFamily::JohtoPine=>0.75,
+        GroveFamily::JohtoPine | GroveFamily::WinterPine=>0.75,
         GroveFamily::ParkBroadleaf=>2.0,
     }
 }

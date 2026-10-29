@@ -65,13 +65,13 @@ pub(crate) fn install(map: &mut MapModule, quest: &Value) -> Result<()> {
         (
             "Badge",
             vec![
-                "Bring the MINERALBADGE and your three habitat notes. The trail north has the observation signs.",
+                "Bring the MINERALBADGE and your three habitat notes. The observation trail lies west of LAKE ITASCA.",
             ],
         ),
         (
             "Missing",
             vec![
-                "One note each from prairie, pine and wetland. Look along the PRAIRIE FOREST trail north of town. Read all three signs, then return.",
+                "One note each from prairie, pine and wetland. Look along the PRAIRIE FOREST trail west of LAKE ITASCA. Keep the notes and visit when you are back this way.",
             ],
         ),
         (

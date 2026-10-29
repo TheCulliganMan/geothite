@@ -159,6 +159,8 @@ pub(crate) struct Door {
     pub warp_index: u16,
     #[serde(default)]
     pub return_warp_index: Option<u16>,
+    #[serde(default)]
+    pub return_target_warp: Option<i16>,
     pub tile: [u16; 2],
     pub target: String,
     pub target_warp: i16,
@@ -365,7 +367,10 @@ impl RouteDesign {
             ensure!(
                 design.required_flags == ["BADGE_2"]
                     && design.required_grass_crossings.len() == 1
-                    && design.one_way_ledges.len() == 1,
+                    && design
+                        .one_way_ledges
+                        .iter()
+                        .any(|ledge| ledge.id == "TERRACE_DROP"),
                 "retain the second-badge gate, habitat shelf and optional terrace"
             );
             return Ok(design);
@@ -399,6 +404,12 @@ impl RouteDesign {
                 design.required_flags == [badge]
                     && design.required_grass_crossings.len() == 1
                     && (design.one_way_ledges.len() == 1
+                        || (design.id == "MN_R06"
+                            && design
+                                .one_way_ledges
+                                .iter()
+                                .map(|ledge| ledge.id.as_str())
+                                .eq(["PINE_LOOKOUT_RETURN", "BIRD_GLADE_RETURN"]))
                         || (design.id == "MN_R08"
                             && design.one_way_ledges.len() == 2
                             && design.one_way_ledges[0].id == "BIRCH_RETURN_DROP"

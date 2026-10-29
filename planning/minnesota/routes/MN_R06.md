@@ -1,3 +1,37 @@
+# Current704-map grass and ledge review, 2026-10-28
+
+The current game already retains R06's19added grass metatiles, short two-lane
+ledge and side closure. R06 was reviewed without further terrain changes:
+49grass metatiles/196walking tiles,7outward steps through the northern band and
+a dry hop return. Southern shared habitat remains in both directions.
+
+Exact1408-cell/1,441,792-pixel source/native checks, native2D full/camera review,
+5controller cases,12clean production stdio calls and377audio pass on the current
+704-map story pack. Full story and accepted cave work stay intact. See [the
+current identity-bound review and setup limits](../revisions/route-grass-v01/current-r06-audit-v01/README.md).
+R07 onward and the statewide objective remain open.
+
+## Historical source and review milestones
+
+The retained notes below describe earlier source/pack identities. Current proof
+and exact execution bindings are in the review linked above.
+
+# Crystal-reference grass and north-road ledge, 2026-10-28
+
+R06 now has a short eastern grass loop beside a new two-lane south-facing ledge
+on the northern road. It follows Crystal Route29's one-way travel pattern:
+seven grass steps northbound, a dry hop southbound. The ordinary return takes
+nine steps; the hop displaces three. Habitat around camp, the conifer fork and
+bird glade increases total encounter tiles from 120 to 196.
+
+The named review pack passed exact source/native and nonterrain preservation,
+native cameras, both ledge lanes and grassy return, the populated five-trainer
+journey, native Cut/Surf behavior, audio and Save/Continue. The original optional
+Cut-gated lookout, cabin, bridge and fishing pier stay intact. See [the current
+runbook and explicit fixture limits](../revisions/route-grass-v01/R06.md).
+No default game pack is replaced. Earlier source/native milestones below remain
+historical.
+
 # Current garden/pine revision
 
 This route now matches the471-map `minnesota-canopy-review.crystalpack`. See

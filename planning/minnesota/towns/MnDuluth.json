@@ -3,7 +3,7 @@
   "name": "DULUTH",
   "dimensions_metatiles": [
     64,
-    48
+    46
   ],
   "reference_anchor_percent": [
     72,
@@ -18,11 +18,11 @@
       "side": "W",
       "gate_metatile": [
         1,
-        24
+        22
       ],
       "landing_metatile": [
         3,
-        24
+        22
       ]
     },
     {
@@ -5875,7 +5875,7 @@
     "both actual guarded regional walking seams",
     "38 real exterior doors and safe passive returns",
     "41 newly authored rooms plus seven original whole native room modules",
-    "five native outdoor stairs and two new useful short drops",
+    "six native outdoor stairs and two new useful short drops",
     "the original Gym8/care/shop/harbor receiver programs",
     "three-floor co-op vendors and optional trainer reward",
     "cargo requisition with full-bag retry",
@@ -5891,7 +5891,7 @@
       "sprite": "SPRITE_GRAMPS",
       "tile": [
         41,
-        38
+        34
       ],
       "facing": "south",
       "lines": [
@@ -5905,7 +5905,7 @@
       "sprite": "SPRITE_FISHER",
       "tile": [
         56,
-        58
+        54
       ],
       "facing": "south",
       "lines": [
@@ -5919,7 +5919,7 @@
       "sprite": "SPRITE_OFFICER",
       "tile": [
         61,
-        56
+        52
       ],
       "facing": "south",
       "lines": [
@@ -5933,7 +5933,7 @@
       "sprite": "SPRITE_TEACHER",
       "tile": [
         76,
-        62
+        58
       ],
       "facing": "south",
       "lines": [
@@ -5947,7 +5947,7 @@
       "sprite": "SPRITE_FISHER",
       "tile": [
         47,
-        66
+        62
       ],
       "facing": "south",
       "lines": [
@@ -5961,7 +5961,7 @@
       "sprite": "SPRITE_OFFICER",
       "tile": [
         65,
-        29
+        25
       ],
       "facing": "south",
       "lines": [
@@ -5991,7 +5991,7 @@
       "sprite": "SPRITE_LASS",
       "tile": [
         72,
-        37
+        33
       ],
       "facing": "west",
       "lines": [
@@ -6004,7 +6004,7 @@
       "sprite": "SPRITE_GRANNY",
       "tile": [
         45,
-        31
+        27
       ],
       "facing": "east",
       "lines": [
@@ -6030,7 +6030,7 @@
       "map": "MnDuluth",
       "tile": [
         31,
-        79
+        75
       ],
       "sprite": "SPRITE_SAILOR",
       "facing": "south",
@@ -6100,7 +6100,7 @@
       "map": "MnDuluth",
       "tile": [
         107,
-        35
+        31
       ],
       "sprite": "SPRITE_COOLTRAINER_F",
       "facing": "south",
@@ -6134,7 +6134,7 @@
       "id": "MN_DULUTH_X_LINCOLN_LOADER",
       "tile": [
         17,
-        46
+        42
       ],
       "sprite": "SPRITE_FISHER",
       "facing": "south",
@@ -6147,7 +6147,7 @@
       "id": "MN_DULUTH_X_POINT_WALKER",
       "tile": [
         91,
-        77
+        73
       ],
       "sprite": "SPRITE_LASS",
       "facing": "south",
@@ -6160,7 +6160,7 @@
       "id": "MN_DULUTH_X_LAKEWALK_FISHER",
       "tile": [
         121,
-        41
+        37
       ],
       "sprite": "SPRITE_FISHER",
       "facing": "south",
@@ -6173,7 +6173,7 @@
       "id": "MN_DULUTH_X_UNION_READER",
       "tile": [
         9,
-        36
+        32
       ],
       "sprite": "SPRITE_GENTLEMAN",
       "facing": "south",
@@ -6186,7 +6186,7 @@
       "id": "MN_DULUTH_X_DOCK_HAND",
       "tile": [
         20,
-        77
+        73
       ],
       "sprite": "SPRITE_FISHER",
       "facing": "south",
@@ -6201,15 +6201,15 @@
       "id": "HILL_HOUSE",
       "tile": [
         41,
-        35
+        31
       ],
       "return_tile": [
         41,
-        36
+        32
       ],
       "arrival_tile": [
         41,
-        36
+        32
       ],
       "target": "MnDuluthHillHouse",
       "warp_index": 1,
@@ -6220,15 +6220,15 @@
       "id": "GYM",
       "tile": [
         48,
-        35
+        31
       ],
       "return_tile": [
         48,
-        36
+        32
       ],
       "arrival_tile": [
         48,
-        36
+        32
       ],
       "target": "MnDuluthGym",
       "warp_index": 3,
@@ -6239,15 +6239,15 @@
       "id": "CLINIC",
       "tile": [
         69,
-        35
+        31
       ],
       "return_tile": [
         69,
-        36
+        32
       ],
       "arrival_tile": [
         69,
-        36
+        32
       ],
       "target": "MnDuluthPokecenter1F",
       "warp_index": 5,
@@ -6258,15 +6258,15 @@
       "id": "MART",
       "tile": [
         80,
-        43
+        39
       ],
       "return_tile": [
         80,
-        44
+        40
       ],
       "arrival_tile": [
         80,
-        44
+        40
       ],
       "target": "MnDuluthMart",
       "warp_index": 7,
@@ -6277,15 +6277,15 @@
       "id": "HARBOR_HOUSE",
       "tile": [
         39,
-        55
+        51
       ],
       "return_tile": [
         39,
-        56
+        52
       ],
       "arrival_tile": [
         39,
-        56
+        52
       ],
       "target": "MnDuluthHarborHouse",
       "warp_index": 9,
@@ -6296,15 +6296,15 @@
       "id": "HISTORY_HOUSE",
       "tile": [
         51,
-        53
+        49
       ],
       "return_tile": [
         51,
-        54
+        50
       ],
       "arrival_tile": [
         51,
-        54
+        50
       ],
       "target": "MnDuluthHistoryHouse",
       "warp_index": 11,
@@ -6314,16 +6314,16 @@
     {
       "id": "RECEIVER",
       "tile": [
-        80,
-        59
+        72,
+        41
       ],
       "return_tile": [
-        80,
-        60
+        72,
+        42
       ],
       "arrival_tile": [
-        80,
-        60
+        72,
+        42
       ],
       "target": "MnDuluthHarborWorkshop",
       "warp_index": 13,
@@ -6581,15 +6581,15 @@
       "id": "X_FIELDCLINIC",
       "tile": [
         102,
-        29
+        25
       ],
       "return_tile": [
         102,
-        30
+        26
       ],
       "arrival_tile": [
         102,
-        30
+        26
       ],
       "target": "MnDuluthFieldClinic",
       "warp_index": 41,
@@ -6600,15 +6600,15 @@
       "id": "X_BOATBUILDER",
       "tile": [
         102,
-        41
+        37
       ],
       "return_tile": [
         102,
-        42
+        38
       ],
       "arrival_tile": [
         102,
-        42
+        38
       ],
       "target": "MnDuluthBoatBuilder",
       "warp_index": 43,
@@ -6619,15 +6619,15 @@
       "id": "X_UNIONHALL",
       "tile": [
         6,
-        33
+        29
       ],
       "return_tile": [
         6,
-        34
+        30
       ],
       "arrival_tile": [
         6,
-        34
+        30
       ],
       "target": "MnDuluthUnionHall1F",
       "warp_index": 45,
@@ -6638,15 +6638,15 @@
       "id": "X_OREWAREHOUSE",
       "tile": [
         18,
-        41
+        37
       ],
       "return_tile": [
         18,
-        42
+        38
       ],
       "arrival_tile": [
         18,
-        42
+        38
       ],
       "target": "MnDuluthOreWarehouse1F",
       "warp_index": 47,
@@ -6657,15 +6657,15 @@
       "id": "X_TOOLEXCHANGE",
       "tile": [
         24,
-        47
+        43
       ],
       "return_tile": [
         24,
-        48
+        44
       ],
       "arrival_tile": [
         24,
-        48
+        44
       ],
       "target": "MnDuluthToolExchange",
       "warp_index": 49,
@@ -6676,15 +6676,15 @@
       "id": "X_TRAININGANNEX",
       "tile": [
         6,
-        55
+        51
       ],
       "return_tile": [
         6,
-        56
+        52
       ],
       "arrival_tile": [
         6,
-        56
+        52
       ],
       "target": "MnDuluthTrainingAnnex",
       "warp_index": 51,
@@ -6695,15 +6695,15 @@
       "id": "X_FOREMANHOME",
       "tile": [
         23,
-        61
+        57
       ],
       "return_tile": [
         23,
-        62
+        58
       ],
       "arrival_tile": [
         23,
-        62
+        58
       ],
       "target": "MnDuluthForemanHome",
       "warp_index": 53,
@@ -6714,15 +6714,15 @@
       "id": "X_MARITIMECOOP",
       "tile": [
         106,
-        61
+        57
       ],
       "return_tile": [
         106,
-        62
+        58
       ],
       "arrival_tile": [
         106,
-        62
+        58
       ],
       "target": "MnDuluthMaritimeCoop1F",
       "warp_index": 55,
@@ -6733,15 +6733,15 @@
       "id": "X_CARGOOFFICE",
       "tile": [
         8,
-        69
+        65
       ],
       "return_tile": [
         8,
-        70
+        66
       ],
       "arrival_tile": [
         8,
-        70
+        66
       ],
       "target": "MnDuluthCargoOffice",
       "warp_index": 57,
@@ -6752,15 +6752,15 @@
       "id": "X_SAILORCLUB",
       "tile": [
         20,
-        73
+        69
       ],
       "return_tile": [
         20,
-        74
+        70
       ],
       "arrival_tile": [
         20,
-        74
+        70
       ],
       "target": "MnDuluthSailorClub1F",
       "warp_index": 59,
@@ -6771,15 +6771,15 @@
       "id": "X_DOCKSUPPLIES",
       "tile": [
         12,
-        81
+        77
       ],
       "return_tile": [
         12,
-        82
+        78
       ],
       "arrival_tile": [
         12,
-        82
+        78
       ],
       "target": "MnDuluthDockSupplies",
       "warp_index": 61,
@@ -6790,15 +6790,15 @@
       "id": "X_SLIPHOUSE",
       "tile": [
         23,
-        85
+        81
       ],
       "return_tile": [
         23,
-        86
+        82
       ],
       "arrival_tile": [
         23,
-        86
+        82
       ],
       "target": "MnDuluthSlipHouse",
       "warp_index": 63,
@@ -6809,15 +6809,15 @@
       "id": "X_BEACHSHELTER",
       "tile": [
         81,
-        75
+        71
       ],
       "return_tile": [
         81,
-        76
+        72
       ],
       "arrival_tile": [
         81,
-        76
+        72
       ],
       "target": "MnDuluthBeachShelter",
       "warp_index": 65,
@@ -6828,15 +6828,15 @@
       "id": "X_POINTOUTFITTER",
       "tile": [
         90,
-        81
+        77
       ],
       "return_tile": [
         90,
-        82
+        78
       ],
       "arrival_tile": [
         90,
-        82
+        78
       ],
       "target": "MnDuluthPointOutfitter",
       "warp_index": 67,
@@ -6847,15 +6847,15 @@
       "id": "X_SANDHOUSE",
       "tile": [
         99,
-        81
+        77
       ],
       "return_tile": [
         99,
-        82
+        78
       ],
       "arrival_tile": [
         99,
-        82
+        78
       ],
       "target": "MnDuluthSandHouse",
       "warp_index": 69,
@@ -6866,15 +6866,15 @@
       "id": "X_BOATCLUB",
       "tile": [
         106,
-        87
+        83
       ],
       "return_tile": [
         106,
-        88
+        84
       ],
       "arrival_tile": [
         106,
-        88
+        84
       ],
       "target": "MnDuluthBoatClub1F",
       "warp_index": 71,
@@ -6885,15 +6885,15 @@
       "id": "X_FISHERCOTTAGE",
       "tile": [
         117,
-        89
+        85
       ],
       "return_tile": [
         117,
-        90
+        86
       ],
       "arrival_tile": [
         117,
-        90
+        86
       ],
       "target": "MnDuluthFisherCottage",
       "warp_index": 73,
@@ -6904,15 +6904,15 @@
       "id": "X_POINTGARDENHOME",
       "tile": [
         97,
-        87
+        83
       ],
       "return_tile": [
         97,
-        88
+        84
       ],
       "arrival_tile": [
         97,
-        88
+        84
       ],
       "target": "MnDuluthPointGardenHome",
       "warp_index": 75,
@@ -6925,7 +6925,7 @@
       "id": "DULUTH_SIGN",
       "tile": [
         36,
-        46
+        42
       ],
       "lines": [
         "DULUTH",
@@ -6936,7 +6936,7 @@
       "id": "GYM_SIGN",
       "tile": [
         52,
-        38
+        34
       ],
       "lines": [
         "DULUTH GYM",
@@ -6947,7 +6947,7 @@
       "id": "HILL_HOP_SIGN",
       "tile": [
         44,
-        42
+        38
       ],
       "lines": [
         "Downhill shortcut.",
@@ -6959,7 +6959,7 @@
       "id": "NORTH_GATE_SIGN",
       "tile": [
         66,
-        26
+        22
       ],
       "lines": [
         "NORTH SHORE PATH",
@@ -6971,7 +6971,7 @@
       "id": "CANAL_SIGN",
       "tile": [
         60,
-        54
+        50
       ],
       "lines": [
         "CANAL PARK BRIDGE",
@@ -6983,7 +6983,7 @@
       "id": "LAUNCH_SIGN",
       "tile": [
         56,
-        60
+        56
       ],
       "lines": [
         "LOW HARBOR LAUNCH",
@@ -6995,7 +6995,7 @@
       "id": "DOCK_SIGN",
       "tile": [
         44,
-        62
+        58
       ],
       "lines": [
         "PUBLIC LAKE PIER",
@@ -7006,7 +7006,7 @@
       "id": "HISTORY_SIGN",
       "tile": [
         54,
-        54
+        50
       ],
       "lines": [
         "ORE HISTORY HOUSE",
@@ -7018,7 +7018,7 @@
       "id": "CLINIC_SIGN",
       "tile": [
         66,
-        36
+        32
       ],
       "lines": [
         "POKEMON CENTER",
@@ -7029,7 +7029,7 @@
       "id": "MART_SIGN",
       "tile": [
         82,
-        42
+        38
       ],
       "lines": [
         "POKEMON MART",
@@ -7040,7 +7040,7 @@
       "id": "RECEIVER_SIGN",
       "tile": [
         76,
-        60
+        56
       ],
       "lines": [
         "HARBOR WORKSHOP",
@@ -7051,7 +7051,7 @@
       "id": "SUPERIOR_LOOKOUT_SIGN",
       "tile": [
         80,
-        48
+        44
       ],
       "lines": [
         "LAKE SUPERIOR",
@@ -7086,7 +7086,7 @@
       "id": "MN_DULUTH_X_SIGN_LINCOLN",
       "tile": [
         14,
-        48
+        44
       ],
       "lines": [
         "LINCOLN PARK",
@@ -7098,7 +7098,7 @@
       "id": "MN_DULUTH_X_SIGN_LAKEWALK",
       "tile": [
         102,
-        64
+        60
       ],
       "lines": [
         "LAKEWALK",
@@ -7109,7 +7109,7 @@
       "id": "MN_DULUTH_X_SIGN_BAYFRONT",
       "tile": [
         14,
-        82
+        78
       ],
       "lines": [
         "BAYFRONT",
@@ -7120,7 +7120,7 @@
       "id": "MN_DULUTH_X_SIGN_POINT",
       "tile": [
         84,
-        76
+        72
       ],
       "lines": [
         "PARK POINT",
@@ -7131,7 +7131,7 @@
       "id": "MN_DULUTH_X_SIGN_COOP",
       "tile": [
         116,
-        62
+        58
       ],
       "lines": [
         "MARITIME CO-OP",
@@ -7145,40 +7145,40 @@
       "id": "MN_DULUTH_HILL_RETURN",
       "upper_approach": [
         46,
-        43
+        39
       ],
       "hop_core": [
         46,
-        44
+        40
       ],
       "reverse_blocked": [
         46,
-        45
+        41
       ],
       "landing": [
         46,
-        46
-      ],
-      "minimum_return_steps": 24,
-      "return_passage_core": [
-        56,
-        40,
-        58,
         42
       ],
-      "contract": "South hop from upper gym/home shelf to Iron Range service street; return by actual east ramp, never a reverse climb.",
+      "minimum_return_steps": 23,
+      "return_passage_core": [
+        54,
+        37,
+        54,
+        42
+      ],
+      "contract": "South hop from gym shelf; reverse remains blocked. Return by native waterfront stair eight walking tiles east; the ordinary return takes23steps.",
       "source_blocks": [
         [
           22,
-          22
+          20
         ],
         [
           23,
-          22
+          20
         ],
         [
           24,
-          22
+          20
         ]
       ]
     }
@@ -7186,85 +7186,85 @@
   "harbor": {
     "bridge_metatiles": [
       32,
-      27,
+      25,
       36,
-      29
+      27
     ],
     "north_rail_blocks": [
       [
         32,
-        27
+        25
       ],
       [
         33,
-        27
+        25
       ],
       [
         34,
-        27
+        25
       ],
       [
         35,
-        27
+        25
       ]
     ],
     "south_rail_blocks": [
       [
         32,
-        28
+        26
       ],
       [
         33,
-        28
+        26
       ],
       [
         34,
-        28
+        26
       ],
       [
         35,
-        28
+        26
       ]
     ],
     "walking_lane_core_y": [
-      55,
-      56
+      51,
+      52
     ],
     "pier_left_rail": [
       [
         23,
-        32
+        30
       ],
       [
         23,
-        33
+        31
       ]
     ],
     "pier_right_rail": [
       [
         24,
-        32
+        30
       ],
       [
         24,
-        33
+        31
       ]
     ],
     "pier_approach": [
       47,
-      63
+      59
     ],
     "pier_end": [
       47,
-      67
+      63
     ],
     "launch_tile": [
       63,
-      61
+      57
     ],
     "water_target": [
       64,
-      61
+      57
     ],
     "surf_contract": "The six original low-cove launches are preserved. Expanded city adds intentionally unrailed public beach/shore banks; exact full expanded bank-to-Water edge inventory is generated in source proof. Working/public piers have native north/south rails and outward Wall endcaps. All unconnected outer lake edges are visibly closed by native BUOY rocks.",
     "bridge_contract": "Fixed lowered city bridge drawn with original native steel railings; no lifting animation, vessel or schedule mechanic is installed.",
@@ -7272,61 +7272,61 @@
       {
         "bank": [
           60,
-          61
+          57
         ],
         "water": [
           60,
-          62
+          58
         ]
       },
       {
         "bank": [
           61,
-          61
+          57
         ],
         "water": [
           61,
-          62
+          58
         ]
       },
       {
         "bank": [
           62,
-          61
+          57
         ],
         "water": [
           62,
-          62
+          58
         ]
       },
       {
         "bank": [
           63,
-          60
+          56
         ],
         "water": [
           64,
-          60
+          56
         ]
       },
       {
         "bank": [
           63,
-          61
+          57
         ],
         "water": [
           63,
-          62
+          58
         ]
       },
       {
         "bank": [
           63,
-          61
+          57
         ],
         "water": [
           64,
-          61
+          57
         ]
       }
     ],
@@ -7335,36 +7335,36 @@
         "id": "WORKING_PIER",
         "deck_metatiles": [
           13,
-          39,
+          37,
           19,
-          40
+          38
         ],
         "end_block": "46",
         "end_floor": [
           36,
-          79
+          75
         ],
         "outward_wall": [
           37,
-          79
+          75
         ]
       },
       {
         "id": "LAKEWALK_PUBLIC_PIER",
         "deck_metatiles": [
           58,
-          20,
+          18,
           62,
-          21
+          19
         ],
         "end_block": "46",
         "end_floor": [
           122,
-          41
+          37
         ],
         "outward_wall": [
           123,
-          41
+          37
         ]
       }
     ]
@@ -7374,84 +7374,84 @@
       "id": "BLUFF_STREET",
       "tile": [
         49,
-        38
+        34
       ]
     },
     {
       "id": "HILL_HOP",
       "tile": [
         46,
-        43
+        39
       ]
     },
     {
       "id": "CLINIC_CROSSING",
       "tile": [
         65,
-        37
+        33
       ]
     },
     {
       "id": "CANAL_BRIDGE",
       "tile": [
         68,
-        55
+        51
       ]
     },
     {
       "id": "RECEIVER_PORCH",
       "tile": [
-        80,
-        60
+        72,
+        42
       ]
     },
     {
       "id": "PUBLIC_PIER",
       "tile": [
         47,
-        67
+        63
       ]
     },
     {
       "id": "WIDEST_THROUGH_SEGMENT",
       "tile": [
         57,
-        48
+        44
       ]
     },
     {
       "id": "LOWER_BRIDGE_APPROACH",
       "tile": [
         59,
-        59
+        55
       ]
     },
     {
       "id": "WORKSHOP_GATHERING",
       "tile": [
-        77,
-        60
+        76,
+        41
       ]
     },
     {
       "id": "EAST_HARBOR_LOOKOUT",
       "tile": [
         82,
-        50
+        46
       ]
     },
     {
       "id": "HILL_GARDEN",
       "tile": [
         49,
-        31
+        27
       ]
     },
     {
       "id": "WEST_CIVIC_CROSSROAD",
       "tile": [
         63,
-        48
+        44
       ]
     }
   ],
@@ -7514,8 +7514,8 @@
       16,
       12
     ],
-    "native_representation": "single whole MapModule, original MnDuluth identity",
-    "indexed_native_relocations": "../preflight-v01/relocation-matrix.json",
+    "native_representation": "Single64x46 native outdoor module; original expansion provenance retained below; current positions use the indexed recomposition contract.",
+    "indexed_native_relocations": "towns/MnDuluth.recomposition.contract.json",
     "facades": [
       {
         "id": "LookoutLodge",
@@ -7864,7 +7864,7 @@
         "name": "Lakeside field clinic",
         "origin_metatile": [
           50,
-          13
+          11
         ],
         "dimensions_metatiles": [
           3,
@@ -7874,11 +7874,11 @@
         "role": "clinic",
         "door_core": [
           102,
-          29
+          25
         ],
         "return_core": [
           102,
-          30
+          26
         ],
         "target": "MnDuluthFieldClinic",
         "room_ids": [
@@ -7890,7 +7890,7 @@
         "name": "Lakeside boatbuilder",
         "origin_metatile": [
           50,
-          19
+          17
         ],
         "dimensions_metatiles": [
           4,
@@ -7900,11 +7900,11 @@
         "role": "workshop",
         "door_core": [
           102,
-          41
+          37
         ],
         "return_core": [
           102,
-          42
+          38
         ],
         "target": "MnDuluthBoatBuilder",
         "room_ids": [
@@ -7917,7 +7917,7 @@
         "name": "Lincoln Park union hall",
         "origin_metatile": [
           2,
-          14
+          12
         ],
         "dimensions_metatiles": [
           5,
@@ -7927,11 +7927,11 @@
         "role": "hall",
         "door_core": [
           6,
-          33
+          29
         ],
         "return_core": [
           6,
-          34
+          30
         ],
         "target": "MnDuluthUnionHall1F",
         "room_ids": [
@@ -7945,7 +7945,7 @@
         "name": "Ore warehouse",
         "origin_metatile": [
           8,
-          18
+          16
         ],
         "dimensions_metatiles": [
           6,
@@ -7955,11 +7955,11 @@
         "role": "warehouse",
         "door_core": [
           18,
-          41
+          37
         ],
         "return_core": [
           18,
-          42
+          38
         ],
         "target": "MnDuluthOreWarehouse1F",
         "room_ids": [
@@ -7973,7 +7973,7 @@
         "name": "Tool exchange",
         "origin_metatile": [
           11,
-          22
+          20
         ],
         "dimensions_metatiles": [
           3,
@@ -7983,11 +7983,11 @@
         "role": "battle_supply",
         "door_core": [
           24,
-          47
+          43
         ],
         "return_core": [
           24,
-          48
+          44
         ],
         "target": "MnDuluthToolExchange",
         "room_ids": [
@@ -8000,7 +8000,7 @@
         "name": "Lincoln practice annex",
         "origin_metatile": [
           2,
-          26
+          24
         ],
         "dimensions_metatiles": [
           4,
@@ -8010,11 +8010,11 @@
         "role": "practice",
         "door_core": [
           6,
-          55
+          51
         ],
         "return_core": [
           6,
-          56
+          52
         ],
         "target": "MnDuluthTrainingAnnex",
         "room_ids": [
@@ -8027,7 +8027,7 @@
         "name": "Lincoln foreman home",
         "origin_metatile": [
           11,
-          29
+          27
         ],
         "dimensions_metatiles": [
           2,
@@ -8037,11 +8037,11 @@
         "role": "home",
         "door_core": [
           23,
-          61
+          57
         ],
         "return_core": [
           23,
-          62
+          58
         ],
         "target": "MnDuluthForemanHome",
         "room_ids": [
@@ -8053,7 +8053,7 @@
         "name": "Maritime co-op",
         "origin_metatile": [
           52,
-          25
+          23
         ],
         "dimensions_metatiles": [
           6,
@@ -8063,11 +8063,11 @@
         "role": "coop",
         "door_core": [
           106,
-          61
+          57
         ],
         "return_core": [
           106,
-          62
+          58
         ],
         "target": "MnDuluthMaritimeCoop1F",
         "room_ids": [
@@ -8081,7 +8081,7 @@
         "name": "Bayfront cargo office",
         "origin_metatile": [
           3,
-          33
+          31
         ],
         "dimensions_metatiles": [
           3,
@@ -8091,11 +8091,11 @@
         "role": "cargo",
         "door_core": [
           8,
-          69
+          65
         ],
         "return_core": [
           8,
-          70
+          66
         ],
         "target": "MnDuluthCargoOffice",
         "room_ids": [
@@ -8108,7 +8108,7 @@
         "name": "Bayfront sailor club",
         "origin_metatile": [
           9,
-          34
+          32
         ],
         "dimensions_metatiles": [
           4,
@@ -8118,11 +8118,11 @@
         "role": "club",
         "door_core": [
           20,
-          73
+          69
         ],
         "return_core": [
           20,
-          74
+          70
         ],
         "target": "MnDuluthSailorClub1F",
         "room_ids": [
@@ -8135,7 +8135,7 @@
         "name": "Working dock supplies",
         "origin_metatile": [
           5,
-          39
+          37
         ],
         "dimensions_metatiles": [
           3,
@@ -8145,11 +8145,11 @@
         "role": "supply",
         "door_core": [
           12,
-          81
+          77
         ],
         "return_core": [
           12,
-          82
+          78
         ],
         "target": "MnDuluthDockSupplies",
         "room_ids": [
@@ -8161,7 +8161,7 @@
         "name": "Rice Point slip house",
         "origin_metatile": [
           11,
-          42
+          40
         ],
         "dimensions_metatiles": [
           2,
@@ -8171,11 +8171,11 @@
         "role": "home",
         "door_core": [
           23,
-          85
+          81
         ],
         "return_core": [
           23,
-          86
+          82
         ],
         "target": "MnDuluthSlipHouse",
         "room_ids": [
@@ -8187,7 +8187,7 @@
         "name": "Park Point shelter",
         "origin_metatile": [
           40,
-          36
+          34
         ],
         "dimensions_metatiles": [
           2,
@@ -8197,11 +8197,11 @@
         "role": "ranger",
         "door_core": [
           81,
-          75
+          71
         ],
         "return_core": [
           81,
-          76
+          72
         ],
         "target": "MnDuluthBeachShelter",
         "room_ids": [
@@ -8213,7 +8213,7 @@
         "name": "Point outfitters",
         "origin_metatile": [
           44,
-          39
+          37
         ],
         "dimensions_metatiles": [
           3,
@@ -8223,11 +8223,11 @@
         "role": "supply",
         "door_core": [
           90,
-          81
+          77
         ],
         "return_core": [
           90,
-          82
+          78
         ],
         "target": "MnDuluthPointOutfitter",
         "room_ids": [
@@ -8239,7 +8239,7 @@
         "name": "Sand Point home",
         "origin_metatile": [
           49,
-          40
+          38
         ],
         "dimensions_metatiles": [
           2,
@@ -8249,11 +8249,11 @@
         "role": "home",
         "door_core": [
           99,
-          81
+          77
         ],
         "return_core": [
           99,
-          82
+          78
         ],
         "target": "MnDuluthSandHouse",
         "room_ids": [
@@ -8265,7 +8265,7 @@
         "name": "Point boat club",
         "origin_metatile": [
           52,
-          41
+          39
         ],
         "dimensions_metatiles": [
           4,
@@ -8275,11 +8275,11 @@
         "role": "club",
         "door_core": [
           106,
-          87
+          83
         ],
         "return_core": [
           106,
-          88
+          84
         ],
         "target": "MnDuluthBoatClub1F",
         "room_ids": [
@@ -8292,7 +8292,7 @@
         "name": "Point fisher cottage",
         "origin_metatile": [
           58,
-          43
+          41
         ],
         "dimensions_metatiles": [
           2,
@@ -8302,11 +8302,11 @@
         "role": "home",
         "door_core": [
           117,
-          89
+          85
         ],
         "return_core": [
           117,
-          90
+          86
         ],
         "target": "MnDuluthFisherCottage",
         "room_ids": [
@@ -8318,7 +8318,7 @@
         "name": "Point garden home",
         "origin_metatile": [
           48,
-          43
+          41
         ],
         "dimensions_metatiles": [
           2,
@@ -8328,11 +8328,11 @@
         "role": "home",
         "door_core": [
           97,
-          87
+          83
         ],
         "return_core": [
           97,
-          88
+          84
         ],
         "target": "MnDuluthPointGardenHome",
         "room_ids": [
@@ -8345,7 +8345,7 @@
         "id": "MN_DULUTH_RANGE_GUARD_NORTH",
         "tile": [
           2,
-          48
+          44
         ],
         "sprite": "SPRITE_OFFICER",
         "facing": "east",
@@ -8355,7 +8355,7 @@
         "id": "MN_DULUTH_RANGE_GUARD_SOUTH",
         "tile": [
           2,
-          49
+          45
         ],
         "sprite": "SPRITE_OFFICER",
         "facing": "east",
@@ -8401,7 +8401,7 @@
         "map": "MnDuluth",
         "tile": [
           31,
-          79
+          75
         ],
         "sprite": "SPRITE_SAILOR",
         "facing": "south",
@@ -8646,7 +8646,7 @@
         "map": "MnDuluth",
         "tile": [
           107,
-          35
+          31
         ],
         "sprite": "SPRITE_COOLTRAINER_F",
         "facing": "south",
@@ -8683,7 +8683,7 @@
         "quantity": 1,
         "tile": [
           111,
-          43
+          39
         ],
         "event": "EVENT_MN_DULUTH_X_ITEM_02",
         "sprite": "SPRITE_POKE_BALL",
@@ -8695,7 +8695,7 @@
         "quantity": 1,
         "tile": [
           33,
-          79
+          75
         ],
         "event": "EVENT_MN_DULUTH_X_ITEM_03",
         "sprite": "SPRITE_POKE_BALL",
@@ -8707,7 +8707,7 @@
         "quantity": 1,
         "tile": [
           121,
-          91
+          87
         ],
         "event": "EVENT_MN_DULUTH_X_ITEM_04",
         "sprite": "SPRITE_POKE_BALL",
@@ -8719,7 +8719,7 @@
         "quantity": 1,
         "tile": [
           119,
-          41
+          37
         ],
         "event": "EVENT_MN_DULUTH_X_ITEM_05",
         "sprite": "SPRITE_POKE_BALL",
@@ -8766,7 +8766,7 @@
         "full_bag": "no completion flag; retry until grant succeeds"
       }
     ],
-    "runtime_status": "unimplemented optional activity contracts; existing native story remains authoritative",
+    "runtime_status": "Production controller passed all38pairedreturns, bidirectional staircase and retained23step ledge return on combined region-polish-rock-cut-v01; strict preservation and377audio verifications passed on isolatedv04.",
     "no_new_HM_or_rail_or_global_story_flags": true,
     "stairs_metatiles": [
       {
@@ -8808,6 +8808,14 @@
           7
         ],
         "block": "80"
+      },
+      {
+        "id": "GymWaterfront",
+        "at": [
+          27,
+          20
+        ],
+        "block": "81"
       }
     ],
     "new_ledges": [
@@ -8954,7 +8962,7 @@
         "id": "MN_DULUTH_X_SIGN_LINCOLN",
         "tile": [
           14,
-          48
+          44
         ],
         "lines": [
           "LINCOLN PARK",
@@ -8966,7 +8974,7 @@
         "id": "MN_DULUTH_X_SIGN_LAKEWALK",
         "tile": [
           102,
-          64
+          60
         ],
         "lines": [
           "LAKEWALK",
@@ -8977,7 +8985,7 @@
         "id": "MN_DULUTH_X_SIGN_BAYFRONT",
         "tile": [
           14,
-          82
+          78
         ],
         "lines": [
           "BAYFRONT",
@@ -8988,7 +8996,7 @@
         "id": "MN_DULUTH_X_SIGN_POINT",
         "tile": [
           84,
-          76
+          72
         ],
         "lines": [
           "PARK POINT",
@@ -8999,7 +9007,7 @@
         "id": "MN_DULUTH_X_SIGN_COOP",
         "tile": [
           116,
-          62
+          58
         ],
         "lines": [
           "MARITIME CO-OP",
@@ -9013,7 +9021,7 @@
         "ORIGINAL_GYM",
         [
           48,
-          36
+          32
         ]
       ],
       [
@@ -9055,21 +9063,21 @@
         "WEST_GUARD",
         [
           4,
-          48
+          44
         ]
       ],
       [
         "LINCOLN_WORK_STREET",
         [
           19,
-          44
+          40
         ]
       ],
       [
         "UNION_ENTRANCE",
         [
           9,
-          35
+          31
         ]
       ],
       [
@@ -9083,7 +9091,7 @@
         "LAKEWALK_LANDMARK",
         [
           107,
-          63
+          59
         ]
       ],
       [
@@ -9097,49 +9105,49 @@
         "CARGO_ERRAND",
         [
           9,
-          71
+          67
         ]
       ],
       [
         "WORKING_PIER",
         [
           29,
-          79
+          75
         ]
       ],
       [
         "POINT_RETURN",
         [
           85,
-          75
+          71
         ]
       ],
       [
         "POINT_NEIGHBORHOOD",
         [
           101,
-          84
+          80
         ]
       ],
       [
         "COASTAL_ROCK_BOUNDARY",
         [
           122,
-          41
+          37
         ]
       ],
       [
         "WORST_WORK_STREET",
         [
           8,
-          40
+          36
         ]
       ],
       [
         "WORST_LAKESIDE",
         [
           107,
-          31
+          27
         ]
       ],
       [
@@ -9153,7 +9161,21 @@
         "COOP_QUAY",
         [
           110,
-          66
+          62
+        ]
+      ],
+      [
+        "SERVICE_CLUSTER",
+        [
+          76,
+          41
+        ]
+      ],
+      [
+        "GYM_WATERFRONT_STAIR",
+        [
+          54,
+          40
         ]
       ]
     ],
@@ -9165,11 +9187,11 @@
     "connection_lanes": [
       [
         0,
-        48
+        44
       ],
       [
         0,
-        49
+        45
       ],
       [
         64,
@@ -9182,6 +9204,6 @@
     ],
     "native_status": "Root published historical tightv02,623maps; this finalv05 source update is not yet published or controller-accepted."
   },
-  "expansion_contract_file": "towns/MnDuluth.expansion.contract.json",
-  "native_status": "Published660-map tight-final-v02; local controller verification recorded separately; user visual acceptance pending."
+  "expansion_contract_file": "towns/MnDuluth.recomposition.contract.json",
+  "native_status": "Hill-harbor v04 source promoted64x46. All38doors/76pairedwarps, staircase in both directions, native ledge hop/reverse denial and23step ordinary return passed production-controller regression on combined region-polish-rock-cut-v01. Shared world metadata and final pack selection remain integration-owned."
 }

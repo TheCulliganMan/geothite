@@ -1442,6 +1442,15 @@
         16
       ],
       "material": "forest"
+    },
+    {
+      "name": "Continuous native north pine boundary; R19 remains at Itasca",
+      "kind": "point",
+      "position": [
+        12,
+        0
+      ],
+      "block": "05"
     }
   ],
   "extended_graphics": true

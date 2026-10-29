@@ -145,17 +145,9 @@ pub(super) fn try_recruit(c: &mut VisibleShellController, r: &CrystalRuntime) ->
     assert!(before.party.slots.len() < 6);
     assert!(matches!(
         before.battle.as_ref().expect("encounter to recruit").kind,
-        RuntimeBattleKind::Wild { .. }
+        RuntimeBattleKind::Wild { .. } | RuntimeBattleKind::StaticWild { .. }
     ));
-    assert!(
-        c.shell
-            .shell
-            .session()
-            .state()
-            .bag
-            .quantity(&r.data().items["POKE_BALL"])
-            > 0
-    );
+    assert!(before.bag.balls.iter().any(|b| b.quantity > 0));
     let _ = play_battle(c, r, "WILD", Victory::Wild, true);
     c.snapshot()
         .expect("actual recruitment outcome")
@@ -178,13 +170,12 @@ fn play_battle(
     let mut lowered_accuracy = false;
     let mut traced_turn = None;
     let capture = id == "WILD" && (initial.party.slots.len() < 2 || recruit);
-    let initial_balls = c
-        .shell
-        .shell
-        .session()
-        .state()
+    let initial_balls: u32 = initial
         .bag
-        .quantity(&r.data().items["POKE_BALL"]);
+        .balls
+        .iter()
+        .map(|b| u32::from(b.quantity))
+        .sum();
     for _ in 0..1024 {
         let s = c.snapshot().expect("earned battle");
         if let Some(button) = learning_button(c, r) {
@@ -238,7 +229,10 @@ fn play_battle(
                 );
             }
             if id == "WILD" {
-                assert!(matches!(b.kind, RuntimeBattleKind::Wild { .. }));
+                assert!(matches!(
+                    b.kind,
+                    RuntimeBattleKind::Wild { .. } | RuntimeBattleKind::StaticWild { .. }
+                ));
             } else {
                 assert!(
                     matches!(&b.kind, RuntimeBattleKind::Trainer { trainer_id, .. } if trainer_id == id)
@@ -305,20 +299,15 @@ fn play_battle(
         let heal = healing_item.is_some();
         let switch_training = id == "WILD"
             && active == 0
-            && s.party.slots.len() == 2
-            && p.level < 12
-            && s.party.slots[1].pokemon.hp > 0
-            && s.party.slots[1].pokemon.level >= p.level + 2;
+            && s.party.slots.iter().any(|partner| {
+                partner.index != active
+                    && partner.pokemon.hp > 0
+                    && partner.pokemon.level >= p.level + 2
+            });
         let catch = !heal
             && capture
             && (recruit || b.is_some_and(|b| b.enemy_pokemon.hp * 2 <= b.enemy_pokemon.max_hp))
-            && c.shell
-                .shell
-                .session()
-                .state()
-                .bag
-                .quantity(&r.data().items["POKE_BALL"])
-                > 0;
+            && s.bag.balls.iter().any(|b| b.quantity > 0);
         let change_prompt = s.ui.menu.as_ref().is_some_and(|m| {
             m.layout
                 .vertical_menus
@@ -343,7 +332,9 @@ fn play_battle(
                 .party
                 .slots
                 .iter()
-                .position(|s| s.pokemon.hp > 0 && s.index != active)
+                .filter(|s| s.pokemon.hp > 0 && s.index != active)
+                .max_by_key(|s| s.pokemon.level)
+                .map(|s| s.index)
                 .expect("living earned partner");
             if cursor.option_index < target {
                 GameButton::Down
@@ -435,8 +426,11 @@ fn play_battle(
     let after = c.snapshot().expect("earned outcome");
     spent_pp |= spent_move_pp(&initial, &after);
     assert!(after.battle.is_none());
-    if after.overworld.map_name.ends_with("Pokecenter1F")
-        && initial.overworld.map_name != after.overworld.map_name
+    let same_clinic_loss = matches!(victory, Victory::Event(flag) if !flag.is_empty() && !event(c, flag))
+        && c.shell.shell.session().state().battle_result & 0x3f == 1;
+    if same_clinic_loss
+        || (after.overworld.map_name.ends_with("Pokecenter1F")
+            && initial.overworld.map_name != after.overworld.map_name)
     {
         match victory {
             Victory::Event(flag) => {
@@ -533,12 +527,12 @@ fn play_battle(
             "native capture adds one partner"
         );
         assert!(
-            c.shell
-                .shell
-                .session()
-                .state()
+            after
                 .bag
-                .quantity(&r.data().items["POKE_BALL"])
+                .balls
+                .iter()
+                .map(|b| u32::from(b.quantity))
+                .sum::<u32>()
                 < initial_balls
         );
     } else if initial.party.slots.iter().all(|s| s.pokemon.level == 100) {
@@ -727,7 +721,7 @@ pub(super) fn checkout(
         .inventory
         .iter()
         .position(|s| s == id)
-        .expect("purchasable supply");
+        .unwrap_or_else(|| panic!("native mart does not stock {id}"));
     press(c, GameButton::A);
     for _ in 0..32 {
         let index = c
@@ -821,10 +815,6 @@ fn recruit(c: &mut VisibleShellController, r: &CrystalRuntime, root: &crystal_as
             if s.party.slots.len() < 2
                 && b.enemy_pokemon.level >= 8
                 && b.enemy_pokemon.level <= s.party.slots[0].pokemon.level + 1
-                && matches!(
-                    b.enemy_pokemon.species.id.as_str(),
-                    "RATTATA" | "SENTRET" | "HOOTHOOT"
-                )
             {
                 let _ = try_battle(c, r, "WILD", "");
             } else {
@@ -1025,6 +1015,30 @@ pub(super) fn care_badge() -> (
         if id == "MN_GYM_1" {
             recruit(&mut c, &r, &root);
             train_for_care(&mut c, &r, &root, 12);
+            if r.data().maps.contains_key("MnBoundaryIntake")
+                && !event(&c, "EVENT_MN_REED_ROCHESTER_DEFEATED")
+            {
+                if c.snapshot().expect("early rival return").overworld.map_name
+                    != "MnRochesterPokecenter1F"
+                {
+                    indoor_walk(&mut c, &r, (15, 8));
+                    travel(&mut c, GameButton::Up, "MnRochesterPokecenter1F", (10, 13));
+                }
+                heal(&mut c, &r);
+                indoor_walk(&mut c, &r, (8, 10));
+                super::northstar_ice_lair::talk(&mut c, GameButton::Right);
+                super::northstar_ice_lair::choice(&mut c, true);
+                assert!(try_battle(
+                    &mut c,
+                    &r,
+                    "MN_REED_ROCHESTER",
+                    "EVENT_MN_REED_ROCHESTER_DEFEATED"
+                ));
+                finish(&mut c);
+                heal(&mut c, &r);
+                clinic_exit(&mut c, &r);
+                continue_in_place(&mut c, &root, &r, "campaign-rochester-rival-earned");
+            }
             if c.snapshot()
                 .expect("post-training location")
                 .overworld
@@ -1112,7 +1126,7 @@ pub(super) fn care_badge() -> (
     assert_eq!(s.party.slots.len(), 2);
     assert!(matches!(
         s.party.slots[0].pokemon.species.id.as_str(),
-        "CYNDAQUIL" | "QUILAVA"
+        "CYNDAQUIL" | "QUILAVA" | "KINDLIT" | "RIMEPELT"
     ));
     c = continued(c, &root, &r, "rochester-earned-care-badge");
     assert!(event(&c, "EVENT_MN_GYM_1_DEFEATED"));

@@ -1203,11 +1203,17 @@ impl DecorationActionOutcome {
 pub struct GameDataSet {
     #[serde(default, skip_serializing_if = "std::ops::Not::not")]
     pub trainer_rematches: bool,
+    /// Minnesota battles scale to the highest-level currently owned non-egg Pokemon.
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    pub minnesota_trainer_scaling: bool,
     /// Enables the competitive planner and its battle presentation. Absent in stock packs.
     #[serde(default, skip_serializing_if = "std::ops::Not::not")]
     pub competitive_battles: bool,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub wild_challenge: Option<crate::WildChallengeRules>,
+    /// Optional capture expedition; absent source packs retain their identities.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub safari_zone: Option<crate::SafariZone>,
     /// Default modpack enables running from the start; explicit false opts out.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub running_shoes: Option<bool>,
@@ -2622,6 +2628,7 @@ pub struct RuntimeRegisteredKeyItemOutcome {
     deny_unknown_fields
 )]
 pub enum RuntimeMutationCommand {
+    Safari(crate::RuntimeSafariCommand),
     ApplyOverworldInput(RuntimeOverworldInputCommand),
     GrantScriptItem(RuntimeScriptCommandRef),
     CheckScriptItem(RuntimeScriptCommandRef),
@@ -3722,6 +3729,7 @@ fn standard_script_common_command_supported(command: &str) -> bool {
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum RuntimeMutationResult {
+    SafariUpdated(crate::RuntimeSafariOutcome),
     OverworldInputApplied(OverworldInputFrame),
     ScriptItemGranted(ScriptItemGrantOutcome),
     ScriptItemChecked(ScriptItemCheckOutcome),
@@ -3960,6 +3968,7 @@ pub enum RuntimeMutationResult {
 impl RuntimeMutationResult {
     pub const fn result_tag(&self) -> &'static str {
         match self {
+            Self::SafariUpdated(_) => "safari_updated",
             Self::OverworldInputApplied(_) => "overworld_input_applied",
             Self::ScriptItemGranted(_) => "script_item_granted",
             Self::ScriptItemChecked(_) => "script_item_checked",

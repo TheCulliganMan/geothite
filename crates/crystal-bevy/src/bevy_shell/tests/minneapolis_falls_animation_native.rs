@@ -78,6 +78,24 @@ fn minneapolis_falls_native_pixels_and_production_phase_match_cave_scroll() {
     assert!(!a.requires_forest_restless && !a.cave_water_composite);
     assert!(a.additional_schedule.is_empty());
     assert_eq!(city.animated_tiles.len(), original.animated_tiles.len() + 1);
+    // Waterfront imports occupy previously unused logical slots. Native
+    // waterfall scheduling must never animate the new house windows or roofs.
+    for (index, &glyph) in city.metatile_layout.iter().enumerate() {
+        if glyph < 224 {
+            continue;
+        }
+        assert!(!city.animated_tiles.contains_key(&usize::from(glyph)));
+        let block = index / 16;
+        let column = index % 4;
+        let row = index % 16 / 4;
+        let first = city
+            .tile_handle_at_frame(block as u16, column, row, 0, false)
+            .expect("static waterfront frame");
+        let later = city
+            .tile_handle_at_frame(block as u16, column, row, 168, false)
+            .expect("later static waterfront frame");
+        assert_eq!(pixels(&images, &first), pixels(&images, &later));
+    }
     for (id, retained) in &original.animated_tiles {
         let actual = &city.animated_tiles[id];
         assert_eq!(

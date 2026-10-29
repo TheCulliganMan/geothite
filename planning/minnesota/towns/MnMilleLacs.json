@@ -2,8 +2,8 @@
   "id": "MnMilleLacs",
   "name": "MILLE LACS",
   "dimensions_metatiles": [
-    32,
-    24
+    24,
+    20
   ],
   "reference_anchor_percent": [
     57,
@@ -11,27 +11,44 @@
   ],
   "role": "landmark",
   "tileset": "johto",
-  "composition": "Shore park, dock and optional water circuit.",
+  "composition": "A wooded shore park at the actual R18 terminus, with a winding walk, grass-gated bird lookout and short downward return, railed dock, picnic bend, lake launch and Surf-only rocky roost.",
   "ports": [
     {
       "route": "MN_R18",
       "side": "W",
       "gate_metatile": [
-        1,
-        12
+        0,
+        6
       ],
       "landing_metatile": [
-        3,
-        12
+        2,
+        6
       ]
     }
   ],
   "interiors": [],
   "walkable_destinations": [
-    "each port landing",
-    "every visible exterior door",
-    "central square",
-    "local story NPC"
+    "both R18 road lanes",
+    "park ranger and entry board",
+    "grassy bird lookout",
+    "short ledge and ordinary return",
+    "railed fishing dock",
+    "picnic bend",
+    "north-shore wind notice",
+    "lake launch",
+    "Surf-only rocky roost"
   ],
-  "door_contract": "Assign exterior core-tile door coordinates only after selecting authentic facade quadrants; record reciprocal warp indices and indoor floor arrivals before export."
+  "door_contract": "No buildings or door warps in this outdoor park.",
+  "compiled_tileset": "mn_headwaters",
+  "native_exterior": {
+    "revision": "mille_lacs_park_revision",
+    "authoring_file": "mille-lacs-park-v01/town.json",
+    "layout_file": "mille-lacs-park-v01/layout.json",
+    "native_contract": "mille-lacs-park-v01/native.contract.json",
+    "plan": "mille-lacs-park-v01/README.md",
+    "native_group_id": 101,
+    "native_map_id": 1,
+    "initial_spawn_identifier": 282,
+    "status": "Published native705-map R09child; source/native/controller/stdio/atlas/audio checks pass. Original R18 ShoreWatch and GoodRod remain unchanged."
+  }
 }

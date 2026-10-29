@@ -1,0 +1,47 @@
+{
+  "name": "CANOE GUIDE OREN",
+  "role": "preserved original NPC",
+  "status": "accepted-native-playable-rebased",
+  "source": "native-pixels-v3.json",
+  "source_path": "planning/minnesota/npcs/sprites/02-canoe-guide/native-pixels-v3.json",
+  "integration": "placement-v1.json",
+  "controller": "placement-v1.json",
+  "native": "target/npc-sprites/canoe-guide/reference-v1",
+  "pack": "content-packs/minnesota-trainer-cast-23-v01.crystalpack",
+  "gameplay": "target/trainer-cast/rebase/02-canoe-guide/gameplay",
+  "log": "target/trainer-cast/rebase/02-canoe-guide/controller.log",
+  "original_placement": "planning/minnesota/npcs/sprites/02-canoe-guide/placement-v1.json",
+  "old_map": "MnBrainerd",
+  "new_map": "MnBrainerd",
+  "old_tile": [
+    42,
+    21
+  ],
+  "new_tile": [
+    42,
+    21
+  ],
+  "scope": "Exact accepted original art, palette, party, class and dialogue. Placement rebased to safe compact geography; original geography not transplanted.",
+  "evidence_sha256": {
+    "planning/minnesota/npcs/cast/rebased-originals/02-canoe-guide/placement-v1.json": "e494528d7a68898ed6dfe58c69a3c99bc81af503d00bfb599a90afbab6029027",
+    "planning/minnesota/npcs/sprites/02-canoe-guide/native-pixels-v3.json": "01dab3e92950941c5815fa333baf2b69adc3ad002594f3fc4a44ce3fcbfbd12c",
+    "planning/minnesota/npcs/sprites/02-canoe-guide/manifest.json": "add680851271dfdfd532de5d60fcc10d67bec9ccabe8d523f0d0391cc9aa2a60",
+    "target/trainer-cast/rebase/02-canoe-guide/controller.log": "6432001c5b6e34d0ca888bb9655d797d54974f19314764e242ce39564d780506",
+    "content-packs/minnesota-trainer-cast-23-v01.crystalpack": "85208f1a810acf8510a1302c750222b6c80e844a6e1cb22c2eaf8bab2aa21b6f",
+    "target/npc-sprites/canoe-guide/reference-v1/verification.json": "e796f6c6841e40bec76545158f832bafcd2805756eebffde940f06f1cf316fc9",
+    "target/trainer-cast/rebase/02-canoe-guide/gameplay/original-npc-trainer-intro.png": "39f910d54998a32c8c715ef10406014dddaf19fbd52fcf64e01bada52b6339d6",
+    "target/trainer-cast/rebase/02-canoe-guide/gameplay/original-npc-overworld-state.png": "6979d2e9970f7dbd10ce59448daa9d2238881823f6afcba321266fba56d1fdcb",
+    "target/trainer-cast/rebase/02-canoe-guide/gameplay/original-npc-first-turn.png": "91a94ceccd1dcfa3dee809202fbca72f9f12cb88230e68f2422b6ef4413c9806"
+  },
+  "final_pack": "content-packs/minnesota-trainer-cast-36-v01.crystalpack",
+  "final_gameplay": "target/trainer-cast/final-audit/gameplay/rebased-originals-02-canoe-guide",
+  "final_log": "target/trainer-cast/final-audit/gameplay/rebased-originals-02-canoe-guide/controller.log",
+  "final_status": "accepted-native-playable-final-pack",
+  "final_review": "Actual battle intro and field captures inspected on exact final pack; art retains accepted native sources and palette.",
+  "final_evidence_sha256": {
+    "target/trainer-cast/final-audit/gameplay/rebased-originals-02-canoe-guide/controller.log": "28073d865d02bd90da545e39462abea6cc99f3021454c274a0954692f4d6f890",
+    "target/trainer-cast/final-audit/gameplay/rebased-originals-02-canoe-guide/original-npc-trainer-intro.png": "39f910d54998a32c8c715ef10406014dddaf19fbd52fcf64e01bada52b6339d6",
+    "target/trainer-cast/final-audit/gameplay/rebased-originals-02-canoe-guide/original-npc-overworld-state.png": "6979d2e9970f7dbd10ce59448daa9d2238881823f6afcba321266fba56d1fdcb",
+    "target/trainer-cast/final-audit/gameplay/rebased-originals-02-canoe-guide/original-npc-first-turn.png": "91a94ceccd1dcfa3dee809202fbca72f9f12cb88230e68f2422b6ef4413c9806"
+  }
+}

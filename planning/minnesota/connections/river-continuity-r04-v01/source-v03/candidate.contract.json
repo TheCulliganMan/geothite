@@ -1,0 +1,473 @@
+{
+  "schema_version": 1,
+  "status": "DETACHED_REVIEW_CANDIDATE_NOT_NATIVE",
+  "parent_pack_sha256": "92bb645535db23c78491b6982ddf5fa17b72b1f0434dfb6456a395fbf8fdbd33",
+  "native_module_sha256": "ca7e08ba7ec44571661298e28ab8d21560f5287eccfee5d5797983f68d47d6ca",
+  "map": "MnR04C00R00",
+  "dimensions_metatiles": [
+    28,
+    18
+  ],
+  "topology": "Contained fenced civic pond crossed by the original Foot-only park bridge; no Mississippi main-channel or Surf-through claim.",
+  "changes": [
+    {
+      "at_meta": [
+        12,
+        0
+      ],
+      "before": 65,
+      "after": 0
+    },
+    {
+      "at_meta": [
+        13,
+        0
+      ],
+      "before": 7,
+      "after": 0
+    },
+    {
+      "at_meta": [
+        14,
+        0
+      ],
+      "before": 7,
+      "after": 0
+    },
+    {
+      "at_meta": [
+        15,
+        0
+      ],
+      "before": 7,
+      "after": 0
+    },
+    {
+      "at_meta": [
+        16,
+        0
+      ],
+      "before": 66,
+      "after": 0
+    },
+    {
+      "at_meta": [
+        12,
+        1
+      ],
+      "before": 65,
+      "after": 0
+    },
+    {
+      "at_meta": [
+        13,
+        1
+      ],
+      "before": 7,
+      "after": 0
+    },
+    {
+      "at_meta": [
+        14,
+        1
+      ],
+      "before": 7,
+      "after": 0
+    },
+    {
+      "at_meta": [
+        15,
+        1
+      ],
+      "before": 7,
+      "after": 0
+    },
+    {
+      "at_meta": [
+        16,
+        1
+      ],
+      "before": 66,
+      "after": 0
+    },
+    {
+      "at_meta": [
+        12,
+        2
+      ],
+      "before": 65,
+      "after": 0
+    },
+    {
+      "at_meta": [
+        13,
+        2
+      ],
+      "before": 7,
+      "after": 0
+    },
+    {
+      "at_meta": [
+        14,
+        2
+      ],
+      "before": 7,
+      "after": 0
+    },
+    {
+      "at_meta": [
+        15,
+        2
+      ],
+      "before": 7,
+      "after": 0
+    },
+    {
+      "at_meta": [
+        16,
+        2
+      ],
+      "before": 66,
+      "after": 0
+    },
+    {
+      "at_meta": [
+        12,
+        3
+      ],
+      "before": 65,
+      "after": 8
+    },
+    {
+      "at_meta": [
+        13,
+        3
+      ],
+      "before": 7,
+      "after": 68
+    },
+    {
+      "at_meta": [
+        14,
+        3
+      ],
+      "before": 7,
+      "after": 68
+    },
+    {
+      "at_meta": [
+        15,
+        3
+      ],
+      "before": 7,
+      "after": 68
+    },
+    {
+      "at_meta": [
+        16,
+        3
+      ],
+      "before": 66,
+      "after": 9
+    },
+    {
+      "at_meta": [
+        12,
+        13
+      ],
+      "before": 65,
+      "after": 12
+    },
+    {
+      "at_meta": [
+        13,
+        13
+      ],
+      "before": 7,
+      "after": 69
+    },
+    {
+      "at_meta": [
+        14,
+        13
+      ],
+      "before": 7,
+      "after": 69
+    },
+    {
+      "at_meta": [
+        15,
+        13
+      ],
+      "before": 7,
+      "after": 69
+    },
+    {
+      "at_meta": [
+        16,
+        13
+      ],
+      "before": 66,
+      "after": 13
+    },
+    {
+      "at_meta": [
+        12,
+        14
+      ],
+      "before": 65,
+      "after": 0
+    },
+    {
+      "at_meta": [
+        13,
+        14
+      ],
+      "before": 7,
+      "after": 0
+    },
+    {
+      "at_meta": [
+        14,
+        14
+      ],
+      "before": 7,
+      "after": 0
+    },
+    {
+      "at_meta": [
+        15,
+        14
+      ],
+      "before": 7,
+      "after": 0
+    },
+    {
+      "at_meta": [
+        16,
+        14
+      ],
+      "before": 66,
+      "after": 0
+    },
+    {
+      "at_meta": [
+        12,
+        15
+      ],
+      "before": 65,
+      "after": 0
+    },
+    {
+      "at_meta": [
+        13,
+        15
+      ],
+      "before": 7,
+      "after": 0
+    },
+    {
+      "at_meta": [
+        14,
+        15
+      ],
+      "before": 7,
+      "after": 0
+    },
+    {
+      "at_meta": [
+        15,
+        15
+      ],
+      "before": 7,
+      "after": 0
+    },
+    {
+      "at_meta": [
+        16,
+        15
+      ],
+      "before": 66,
+      "after": 0
+    },
+    {
+      "at_meta": [
+        12,
+        16
+      ],
+      "before": 65,
+      "after": 0
+    },
+    {
+      "at_meta": [
+        13,
+        16
+      ],
+      "before": 7,
+      "after": 0
+    },
+    {
+      "at_meta": [
+        14,
+        16
+      ],
+      "before": 7,
+      "after": 0
+    },
+    {
+      "at_meta": [
+        15,
+        16
+      ],
+      "before": 7,
+      "after": 0
+    },
+    {
+      "at_meta": [
+        16,
+        16
+      ],
+      "before": 66,
+      "after": 0
+    },
+    {
+      "at_meta": [
+        12,
+        17
+      ],
+      "before": 65,
+      "after": 0
+    },
+    {
+      "at_meta": [
+        13,
+        17
+      ],
+      "before": 7,
+      "after": 0
+    },
+    {
+      "at_meta": [
+        14,
+        17
+      ],
+      "before": 7,
+      "after": 0
+    },
+    {
+      "at_meta": [
+        15,
+        17
+      ],
+      "before": 7,
+      "after": 0
+    },
+    {
+      "at_meta": [
+        16,
+        17
+      ],
+      "before": 66,
+      "after": 0
+    }
+  ],
+  "native_cap_recipes": [
+    {
+      "id": "44",
+      "source_tileset": "mn_river_park",
+      "source_block": "07",
+      "tile_row_sources": [
+        {
+          "source_block": "3a",
+          "source_row": 0
+        },
+        {
+          "source_block": "07",
+          "source_row": 1
+        },
+        {
+          "source_block": "07",
+          "source_row": 2
+        },
+        {
+          "source_block": "07",
+          "source_row": 3
+        }
+      ],
+      "collision_source_block": "09",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ],
+      "required_native_addition": "Append exact existing native glyph rows only; no glyph/palette changes. Proposed, not installed."
+    },
+    {
+      "id": "45",
+      "source_tileset": "mn_river_park",
+      "source_block": "07",
+      "tile_row_sources": [
+        {
+          "source_block": "07",
+          "source_row": 0
+        },
+        {
+          "source_block": "07",
+          "source_row": 1
+        },
+        {
+          "source_block": "07",
+          "source_row": 2
+        },
+        {
+          "source_block": "3a",
+          "source_row": 3
+        }
+      ],
+      "collision_source_block": "09",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ],
+      "required_native_addition": "Append exact existing native glyph rows only; no glyph/palette changes. Proposed, not installed."
+    }
+  ],
+  "sign_change": {
+    "object_or_background_script": "MN_R04_BRIDGE_SIGN",
+    "before": [
+      "MISSISSIPPI BRIDGE",
+      "Keep to the deck."
+    ],
+    "after": [
+      "PARK POND BRIDGE",
+      "Keep to the deck."
+    ],
+    "all_other_program_commands_text_events_unchanged": true
+  },
+  "dossier_editorial_fields": [
+    "description",
+    "river_continuity_review",
+    "name",
+    "status",
+    "anchor_status",
+    "districts[CIVIC_BRIDGE].purpose"
+  ],
+  "preserve_all_connections": true,
+  "preserve_original_foot_bridge": true,
+  "new_foot_access": false,
+  "new_surf_access": false,
+  "atlas_void_fill": false,
+  "source_hashes": {
+    "planning/minnesota/connections/river-continuity-r04-v01/source-v03/MN_R04.previous.json": "bf8b70b8154f45ee7e9c9317a4340de3e297da2b3f6ee661f7e94e9d1d5f21fe",
+    "planning/minnesota/connections/river-continuity-r04-v01/source-v03/preimage.contract.json": "dc078e8a2b651237619a90b0f895caba8824266ffc81c4ba048e9b7c8dd1c311",
+    "planning/minnesota/connections/river-continuity-r04-v01/source-v03/MN_R04.previous.layout.json": "9780c196a18861966d66aedde38df7b2784f6989a3dd43fa208c351f9704fa21",
+    "planning/minnesota/connections/river-continuity-r04-v01/source-v03/MN_R04.candidate.json": "183d4e5b13c490b921efd7dd12e4bc7d6952ce3ad02b1340667871e5ab88ddef",
+    "planning/minnesota/connections/river-continuity-r04-v01/source-v03/MN_R04.candidate.layout.json": "850278aa65722db70f3ce1f50291fc55a7956b501a5f2d0f492470b215cc339e"
+  },
+  "required_native_work": "Root additive two-block native art append + exact45terraincells and one existing sign firstline only; full native preservation/readback and production traversal regressions remain required.",
+  "preserve_native_location_and_map_name_catalog": true,
+  "planning_name_note": "Human planninglabel changes toTwin Cities River Park; native mapconstant/location/catalog remainexact."
+}

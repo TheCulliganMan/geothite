@@ -261,7 +261,7 @@ fn leaves(out: &mut SurfaceMeshData, p: [Vec3; 3], base: [f32; 4]) {
         .normalize();
     let bitangent = normal.cross(tangent);
     for leaf in 0..3 {
-        let angle = seed * 6.283185 + leaf as f32 * 2.094395;
+        let angle = seed * std::f32::consts::TAU + leaf as f32 * 2.094395;
         let forward = tangent * angle.cos() + bitangent * angle.sin();
         let side = normal.cross(forward) * length * 0.28;
         let mid = root + forward * length * 0.54;

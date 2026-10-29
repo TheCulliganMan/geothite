@@ -1,5 +1,9 @@
 # Physical interior pass
 
+Publication lineage correction: the pack receipts below are retained history.
+Current source refuses their obsolete coastal geometry; preserve the rooms and
+[rebase onto the compact coast](COMPACT-REBASE.md) before further publication.
+
 The current authored layout contract is [layouts.json](layouts.json). It changes
 24 ordinary interiors over the completed 187-room story pack, keeping every
 original actor, script, doorway, stair index and room extent. It adds 25 readable

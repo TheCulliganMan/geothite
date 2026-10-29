@@ -1,0 +1,47 @@
+{
+  "name": "BAKER DOTTIE",
+  "role": "preserved original NPC",
+  "status": "accepted-native-playable-rebased",
+  "source": "native-pixels-v3.json",
+  "source_path": "planning/minnesota/npcs/sprites/12-state-fair-baker/native-pixels-v3.json",
+  "integration": "placement-v1.json",
+  "controller": "placement-v1.json",
+  "native": "target/npc-sprites/baker/reference-v2",
+  "pack": "content-packs/minnesota-trainer-cast-33-v01.crystalpack",
+  "gameplay": "target/trainer-cast/rebase/12-state-fair-baker/gameplay",
+  "log": "target/trainer-cast/rebase/12-state-fair-baker/controller.log",
+  "original_placement": "planning/minnesota/npcs/sprites/12-state-fair-baker/placement-v1.json",
+  "old_map": "MnStPaul",
+  "new_map": "MnStPaul",
+  "old_tile": [
+    27,
+    20
+  ],
+  "new_tile": [
+    26,
+    20
+  ],
+  "scope": "Exact accepted original art, palette, party, class and dialogue. Placement rebased to safe compact geography; original geography not transplanted.",
+  "evidence_sha256": {
+    "planning/minnesota/npcs/cast/rebased-originals/12-state-fair-baker/placement-v1.json": "e908c86f43ea0268d4025011d23b6a41c1fe748acb50d141b3beb4e8989431b3",
+    "planning/minnesota/npcs/sprites/12-state-fair-baker/native-pixels-v3.json": "432bfbd5ca137e9e101c467112f5e79a3d77413fcc715ff0bcf174faf014494f",
+    "planning/minnesota/npcs/sprites/12-state-fair-baker/manifest.json": "1e362edd17df905a6e942854ffa3cf93c249b7a577bf73d2b3de282b3c53e2a0",
+    "target/trainer-cast/rebase/12-state-fair-baker/controller.log": "3a1ff2287f94f55fc86ed8a12f2225f24b79eca67173f1b96308a1a21b61f82c",
+    "content-packs/minnesota-trainer-cast-33-v01.crystalpack": "854203e46876cc289f20cd48d6e0db66ee6fd2f149ced6aabfa244704287cca5",
+    "target/npc-sprites/baker/reference-v2/verification.json": "5e30461fa118366a1fcf0ceda2497de2644730f57e52d04ae611ea1092876e61",
+    "target/trainer-cast/rebase/12-state-fair-baker/gameplay/original-npc-trainer-intro.png": "0a4d1da6bfd8125975d068ab7ef0006dd9afa1947abe56bdf5c4bc6ad7d3af93",
+    "target/trainer-cast/rebase/12-state-fair-baker/gameplay/original-npc-overworld-state.png": "0c8a3e943cda5db04373576aa7d946e164a8fd9885680d572927e5ebb7314b9d",
+    "target/trainer-cast/rebase/12-state-fair-baker/gameplay/original-npc-first-turn.png": "a179659ee5e062b6a3a1e9ea34261719341eb81d722be6f25477552da6a8bb00"
+  },
+  "final_pack": "content-packs/minnesota-trainer-cast-36-v01.crystalpack",
+  "final_gameplay": "target/trainer-cast/final-audit/gameplay/rebased-originals-12-state-fair-baker",
+  "final_log": "target/trainer-cast/final-audit/gameplay/rebased-originals-12-state-fair-baker/controller.log",
+  "final_status": "accepted-native-playable-final-pack",
+  "final_review": "Actual battle intro and field captures inspected on exact final pack; art retains accepted native sources and palette.",
+  "final_evidence_sha256": {
+    "target/trainer-cast/final-audit/gameplay/rebased-originals-12-state-fair-baker/controller.log": "9506bbde6c536740ea7b8fea56402cfbabf0764687f1ca0bfa448742d175d93e",
+    "target/trainer-cast/final-audit/gameplay/rebased-originals-12-state-fair-baker/original-npc-trainer-intro.png": "0a4d1da6bfd8125975d068ab7ef0006dd9afa1947abe56bdf5c4bc6ad7d3af93",
+    "target/trainer-cast/final-audit/gameplay/rebased-originals-12-state-fair-baker/original-npc-overworld-state.png": "0c8a3e943cda5db04373576aa7d946e164a8fd9885680d572927e5ebb7314b9d",
+    "target/trainer-cast/final-audit/gameplay/rebased-originals-12-state-fair-baker/original-npc-first-turn.png": "a179659ee5e062b6a3a1e9ea34261719341eb81d722be6f25477552da6a8bb00"
+  }
+}

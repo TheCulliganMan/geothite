@@ -1,3 +1,36 @@
+# Current Crystal-reference grass climbs, 2026-10-28
+
+R05 now has33additional native grass cells along useful cliff climbs and
+approaches:76 to208walking tiles of habitat. Upper/lower climbs require7/6grass
+steps, with dry ledge returns in both bands. Current R01/R20 cave and League
+work is preserved. All new review is2D only; North Shore stays ice-free.
+
+Eleven native route cases,11production stdio calls, exact source/native
+preservation and all377audio checks pass. See [the selected receipt and explicit
+setup limits](../revisions/route-grass-v01/compact-rebase-v01/R05.md).
+R06 onward and the full statewide grass objective remain open.
+
+## Historical source and review notes
+
+The retained notes below describe earlier source/pack identities and party
+roster templates. The current receipt above supersedes their acceptance bindings.
+
+# Crystal-reference grass and dry ledge returns, 2026-10-28
+
+R05 now follows Crystal Route45's cliff-lane pacing: encounter grass on the
+western climbs, dry southbound ledge returns on the eastern lanes. Habitat
+increases from 76 to 208 walking tiles. The ordinary upper climb requires seven
+grass steps and the lower six, with zero in those bands on the ledge returns.
+The original two-ended cave remains a separate shortcut and healing stop.
+
+The named review pack `minnesota-route-grass-r05-v01.crystalpack` passed exact
+preservation, native cameras, walking/ledge/cave geometry, six wild encounters,
+five trainer wins, native medicine/healing, Save/Continue, Surf fixtures and all
+377 audio checks. See [the current runbook and explicit fixture
+limits](../revisions/route-grass-v01/R05.md). No default pack is replaced.
+
+Earlier quality-review milestones below are historical.
+
 # River Bluffs North: ridge route review
 
 The current hand-authored **32×56-metatile** route spans three native maps and

@@ -1,0 +1,42 @@
+{
+  "name": "HALDEN",
+  "role": "Elite Four 4",
+  "status": "accepted-native-playable",
+  "source": "native-pixels-v2.json",
+  "integration": "binding-v1.json",
+  "controller": "controller-v1.json",
+  "native": "target/trainer-cast/halden/native-v2",
+  "pack": "content-packs/minnesota-trainer-cast-13-v01.crystalpack",
+  "gameplay": "target/trainer-cast/halden/gameplay-v1",
+  "log": "target/trainer-cast/halden/controller-v1.log",
+  "reference_review": "actual-crystal-sprites-common-palette-and-scale",
+  "review_notes": "Current Dragon specialist Halden remains separate from rival Reed. Silver swept hair, angular clean-shaven face, maroon travel coat, high ivory lapels and black boots; hair and face redrawn in native battle pixels after conversion. Field hair/temples/coat tails hand-authored. Actual Crystal Cooltrainer comparisons and production captures reviewed. League counter 3-to-4, PP, save/load, victory, repeat guard and saved progress pass; no Champion or Hall-of-Fame claim.",
+  "fixture": "Three legal level-60 Minnesota starters; adjacent position and explicit prior-access setup. Local encounter/rewards proof, not earned traversal or intended-level balance.",
+  "evidence_sha256": {
+    "planning/minnesota/npcs/cast/13-halden/native-pixels-v2.json": "6c4b6af3859a3e9ebe11d5bdbb8c71bed11ec5d17c37942cd3a11bf13c086691",
+    "planning/minnesota/npcs/cast/13-halden/binding-v1.json": "b0cd97008dbdad0fd9c5b9e05bd27f99d5fbe4636c236640cce1146cb3f6d3c1",
+    "planning/minnesota/npcs/cast/13-halden/controller-v1.json": "cd2cdc3162740dfd42b778923d17eb019471fe8132619f2b4b5d5735ad1576da",
+    "target/trainer-cast/halden/native-v2/verification.json": "a6f5d87ee6932261a2ba7abe17542f39b5fb41b30d0a4ecc7b354eaeab6120fc",
+    "content-packs/minnesota-trainer-cast-13-v01.crystalpack": "2350431885ac90bd8a9a4f925303264df1b713efdc4569b5682f0299e822822e",
+    "target/trainer-cast/halden/controller-v1.log": "ae76efd6b1887d1a8d70a0c1222f976a0c20f79b3c361b7f71f46cf6803f2a32",
+    "target/trainer-cast/halden/gameplay-v1/original-npc-trainer-intro.png": "b798ef698f0a73a65d15a376b2907444e2a8f31661ac833e34ca194aa54945bc",
+    "target/trainer-cast/halden/gameplay-v1/original-npc-overworld-state.png": "e9ad86a2fe2d0986870888b2fed3762dd53648fe6e902d1923b95bebc11a1fb5",
+    "target/trainer-cast/halden/gameplay-v1/original-npc-first-turn.png": "e429c56e02392e616029f19584b8d96046512b533e9d774337193d91c00a06ba",
+    "planning/minnesota/npcs/cast/13-halden/battle-reference-prompt.txt": "24d3d1ec3085399fdf798c5e965cab3efe399de12dcfb7f90d6a0ed20ef0f21f",
+    "planning/minnesota/npcs/cast/13-halden/battle-reference-prompt-v1-rejected.txt": "1d6ae71e5a1b09f085f350d76fc7748eec674bcf6dbb2c7d6797b05ada3b5ab1",
+    "planning/minnesota/npcs/cast/13-halden/battle-reference-v1.png": "aee30714ff0127ddc0a0a38a88b0b84837050555282e3d5ecbcff66321ca680d",
+    "target/trainer-cast/halden/real-comparison.png": "e474abe2c134ea3f3826a656b20d777139d7056efde1c1a5e54741faa63c2617",
+    "target/trainer-cast/halden/battle-real-comparison.png": "4c26df87edb9400aecf87f005e552e69de273e83d3bd584eae8b878b096bf7ed"
+  },
+  "final_pack": "content-packs/minnesota-trainer-cast-36-v01.crystalpack",
+  "final_gameplay": "target/trainer-cast/final-audit/gameplay/13-halden",
+  "final_log": "target/trainer-cast/final-audit/gameplay/13-halden/controller.log",
+  "final_status": "accepted-native-playable-final-pack",
+  "final_review": "Actual battle intro and field captures inspected on exact final pack; art retains accepted native sources and palette.",
+  "final_evidence_sha256": {
+    "target/trainer-cast/final-audit/gameplay/13-halden/controller.log": "96b10ba70d9cc205786b159cf7c9e7fa017c4a1dd57f0d460b737baeb5a60803",
+    "target/trainer-cast/final-audit/gameplay/13-halden/original-npc-trainer-intro.png": "b798ef698f0a73a65d15a376b2907444e2a8f31661ac833e34ca194aa54945bc",
+    "target/trainer-cast/final-audit/gameplay/13-halden/original-npc-overworld-state.png": "e9ad86a2fe2d0986870888b2fed3762dd53648fe6e902d1923b95bebc11a1fb5",
+    "target/trainer-cast/final-audit/gameplay/13-halden/original-npc-first-turn.png": "e429c56e02392e616029f19584b8d96046512b533e9d774337193d91c00a06ba"
+  }
+}

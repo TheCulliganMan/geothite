@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "id": "MN_STATE_FAIR_BAKER",
+  "name": "BAKER DOTTIE",
+  "status": "accepted-native-playable",
+  "overworld_frames": 6,
+  "overworld_size": [
+    16,
+    16
+  ],
+  "battle_size": [
+    56,
+    56
+  ],
+  "palette_rgb555": [
+    32767,
+    22399,
+    8694,
+    0
+  ],
+  "source": "native-pixels-v3.json",
+  "placement": "placement-v1.json",
+  "pack": "content-packs/minnesota-npcs-ref-12-v01.crystalpack",
+  "parent": "content-packs/minnesota-npcs-ref-11-v01.crystalpack",
+  "runtime_checks": {
+    "one_controller_test_passed": true,
+    "talk_and_input_ownership": true,
+    "battle_turn_and_pp": true,
+    "battle_save_load": true,
+    "actual_victory_and_defeat_flag_before_render_capture": true,
+    "post_battle_talk": true,
+    "existing_trainers_and_assets_preserved": true
+  },
+  "manual_visual_review": "Direct actual Crystal Granny/Pokefan F/Chris six-pose comparison at equal palette/scale; own-palette 1x/8x and actual St Paul capture reviewed. Three-puff chef hat, dark bob, friendly face, pale sleeves, fuller brown apron with rear ties, three simple buns on one tray contour, skirt/boot stride. Separated hands from buns after first candidate merged into pale strip. Camera-style arm swing avoided because both hands carry tray steadily. Full unchanged encounter passed in 24.24s using legal counterplay driver; battle/palette/gameplay/unrelated assets preserved.",
+  "evidence_sha256": {
+    "planning/minnesota/npcs/sprites/12-state-fair-baker/native-pixels-v3.json": "432bfbd5ca137e9e101c467112f5e79a3d77413fcc715ff0bcf174faf014494f",
+    "planning/minnesota/npcs/sprites/12-state-fair-baker/placement-v1.json": "75e154ca2142a25ce0cf5e716db5fb7490e706fa12a2a5dfdb986231daf7e908",
+    "content-packs/minnesota-npcs-ref-12-v01.crystalpack": "d1ebb7efc793ea84f3d911bcf18720c4ae55383a0654408334ffa9845c789e04",
+    "target/npc-sprites/baker/controller-reference-v01.log": "9086851aa44f30107b86857b1b6da5ef5eb58f6cf516c7904060527fd20e2ace",
+    "target/npc-sprites/baker/gameplay-reference-v01/original-npc-trainer-intro.png": "0a4d1da6bfd8125975d068ab7ef0006dd9afa1947abe56bdf5c4bc6ad7d3af93",
+    "target/npc-sprites/baker/gameplay-reference-v01/original-npc-first-turn.png": "cfe631bb9eebf4d1860fae5e600fc12a99509783131e4c3a45595472f13cfc79",
+    "target/npc-sprites/baker/gameplay-reference-v01/original-npc-overworld-state.png": "5081a823cdc98a21ff95bbb78cee28b652b34e42e8bdc61a42cfee0ad5f9d24b",
+    "target/npc-sprites/hand-review/baker-real-comparison-v2.png": "d6eada8e2ba00ad5f644c322cb0fb030d5114bb8d1fa7d56effe42bd2f9094be",
+    "target/npc-sprites/baker/reference-v2/comparison.png": "baff1e71d05460700c799aa70adcb129275f17bee94da2fd315e716cecccb2c1",
+    "target/npc-sprites/baker/reference-v2/verification.json": "5e30461fa118366a1fcf0ceda2497de2644730f57e52d04ae611ea1092876e61",
+    "target/npc-sprites/baker/reference-v2/overworld-review.png": "83e24fcd9d7f9fc98b7b0882f681e6c3bf2d9af7e3fda5ff70481b935e02a0d1",
+    "target/npc-sprites/baker/reference-v2/overworld-review-8x.png": "ef8b6dfe1dfeb3a42f146157122e107ca72df6e9533b7cb5e23f02667beb6450"
+  },
+  "overworld_revision": "real-reference-hand-edited-v3",
+  "reference_review": "actual-crystal-sprites-common-palette-and-scale"
+}

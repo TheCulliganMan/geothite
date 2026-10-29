@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "trainers": [
+    {
+      "map": "MnBemidji",
+      "approach": [
+        27,
+        36
+      ],
+      "id": "MN_EXTRA_NPC_ANGLER_01",
+      "display_name": "NETTA",
+      "trainer_class": "MN_LAKESIDE_ANGLER",
+      "class_name": "ANGLER",
+      "template_class": "FISHER",
+      "sprite": "SPRITE_MN_LAKESIDE_ANGLER",
+      "tile": [
+        27,
+        35
+      ],
+      "facing": "south",
+      "sight_range": 2,
+      "defeated_flag": "EVENT_MN_EXTRA_NPC_ANGLER_01",
+      "party": [
+        {
+          "species": "JIGLET",
+          "level": 36
+        },
+        {
+          "species": "PIKELING",
+          "level": 38
+        }
+      ],
+      "before_lines": [
+        "Wait, then pull!",
+        "Ready for a bite?"
+      ],
+      "after_lines": [
+        "A fine catch!",
+        "Keep lakes clean."
+      ],
+      "loss_lines": [
+        "Try a slower cast.",
+        "The lake can wait."
+      ]
+    }
+  ]
+}

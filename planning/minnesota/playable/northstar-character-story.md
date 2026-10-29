@@ -1,4 +1,75 @@
-# Northstar character story
+# Northstar character profiles
+
+The current story sources are summarized in [STORY.md](../STORY.md). These
+profiles describe the roles present in those sources. They do not add biography,
+new quests or validation claims. Follow the final `dialogue_overhaul` text in
+[story.json](../story.json) where it replaces an earlier scene label.
+
+| Person | Concern | What the player sees or does |
+| --- | --- | --- |
+| Mom | The player and their new partner | Lunch before departure, a request to meet the partner and a place to rest on return |
+| Dr Tamarack | River Pokémon, the field crew and the cold egg Reed brings in | Entrusts Ivy's original readings to the player, tends the egg and offers it after delivery |
+| Ivy | Missing Ellis, diverted meters and her crew | Receives the envelope, directs the player to Jo, then helps at the intake |
+| Ellis | Stolen equipment and getting home | Needs the holding power disabled and the cell opened; returns to Jo and gives the St. Paul lead |
+| Jo | Ellis's safety | Explains his disappearance and responds to his return before the story moves on |
+| Mina | The shipment records and Lode's use of the equipment | Challenges the operation, holds the next shipment and asks the player to follow the crew north |
+| Nell | Finn is still beneath the running drill | Asks for shutdown and reacts when he gets out |
+| Finn | The crew under the drill and Ellis's damaged meter | Leaves after shutdown and offers the meter for repair in Grand Rapids |
+| Sera | Refuses a forced transfer | Leaves when the player intervenes between her and Reed |
+| Reed | Paid backing, a stronger team and authority | Seeks ICE work, sees the captive and still accepts; later protects Lode's shipment, drill and intake |
+
+## Character continuity
+
+Reed has six battles: Winona, Rochester, the ICE relay, St. Paul, the mine and
+the Boundary intake. His interview, recruitment and transfer scenes connect
+those encounters. He knowingly stays with the operation as its harm becomes
+clear. Defeat does not redeem him. Halden remains the fourth League trainer;
+other trainers with their own identities must not be cast as Reed.
+
+Ellis's rescue is separate from defeating a guard. Mina's request is separate
+from a depot battle. Finn's handover is separate from stopping the drive.
+Found papers and the empty meter case cannot grant those spoken quest results.
+The old event names remain exact implementation identifiers; they do not make
+an obsolete paper interaction authoritative again.
+
+Tamarack's Gillpup egg is optional. Declining or having a full party preserves
+the offer. Only successful delivery records receipt. It does not require a
+hatch, capture, PC fallback or new story gate.
+
+## Minnesota convention
+
+Use the named characters and relationships established by the sources. Do not
+add a surname, hometown, family tie, job or personal history to make a profile
+seem fuller. Keep dialogue direct and tied to the current scene. Avoid forced
+regional accents, interchangeable quest speeches and claims that the whole
+region is healed when the pumps stop.
+
+The starters are Pouchid, Kindlit and Birchit. The egg is Gillpup; Reed's first
+partner is Crookit. All later parties and visible creatures must resolve through
+[story-pokemon.json](../story-pokemon.json), the active
+[roster](../pokemon/roster.json) and [curation](../pokemon/roster-curation.json).
+Do not copy Johto species from historical fixtures into a current profile.
+Appearance and sprite acceptance belong in the [cast records](../npcs/cast/README.md).
+
+## Implementation and evidence
+
+The [current composition record](../revisions/current-story-v01/README.md)
+describes the compact regional publication and its recorded chapter checks.
+The [rival arc record](rival-arc.md) retains the older publication history;
+[ICE headquarters](ice-headquarters.md) and [Iron Range workings](iron-workings.md)
+retain their layout and local-test details. Their pack identities, fixtures and
+page counts apply to their own versions.
+
+The previous character-story-v5 publication and its chapter/balance results are
+retained in the [historical record below](#historical-character-story-v5-record).
+They do not certify the later recurring-rival composition or final dialogue edits. No new gameplay, visual or
+balance test is claimed by this documentation cleanup. A full uninterrupted
+ordinary-party campaign remains unclaimed.
+
+## Historical character-story-v5 record
+
+The following record retains the earlier publication, source state and test
+fixtures. Its character text and commands are superseded for current authoring.
 
 The authored revision gives Reed an ICE recruitment scene and later paid
 obstruction at the drill. He knows whom ICE is holding. His aftermath keeps

@@ -249,7 +249,7 @@ HTML='''<!doctype html><meta charset="utf-8"><title>North Shore review</title><s
 
 
 def main():
-    parser=argparse.ArgumentParser();parser.add_argument('--pack',type=Path,default=ROOT/'content-packs/minnesota-north-shore-art.crystalpack');parser.add_argument('--watch',action='store_true');parser.add_argument('--serve',action='store_true');parser.add_argument('--port',type=int,default=8790);parser.add_argument('--verify-published',action='store_true');parser.add_argument('--self-test',action='store_true');args=parser.parse_args();pack=load_pack(args.pack);art=SourceArt(pack);state={'ok':False,'error':'Initial source render pending'}
+    parser=argparse.ArgumentParser();parser.add_argument('--pack',type=Path,required=True,help='Explicit source-art pack for historical layout review; no current pack is selected implicitly');parser.add_argument('--watch',action='store_true');parser.add_argument('--serve',action='store_true');parser.add_argument('--port',type=int,default=8790);parser.add_argument('--verify-published',action='store_true');parser.add_argument('--self-test',action='store_true');args=parser.parse_args();pack=load_pack(args.pack);art=SourceArt(pack);state={'ok':False,'error':'Initial source render pending'}
     if args.self_test:
         print(json.dumps(self_test(json.loads(DOSSIER.read_text()),json.loads(LAYOUT.read_text()),pack)));return
     if args.serve:

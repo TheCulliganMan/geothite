@@ -34,7 +34,7 @@
       "last ball resolves",
       "last walking/Surf tile step resolves"
     ],
-    "end_policy": "Finish the current capture/flee result, preserve every caught Pok\u00e9mon and earned item, clear expedition-only resources and return to free ranger basecamp.",
+    "end_policy": "Finish the current capture/flee result, preserve every caught Pokémon and earned item, clear expedition-only resources and return to free ranger basecamp.",
     "special_ball_storage": "Dedicated expedition state, never normal bag inventory.",
     "real_time_limit": false,
     "party_retained": true,
@@ -65,9 +65,9 @@
     "ordinary_bag_items": false,
     "opponent_attacks": false,
     "pokemon_can_flee": true,
-    "bait": "For 2\u20135 wildlife responses: catch-rate factor 1/2 and flee-threshold factor 1/2; replaces prior disposition.",
-    "rock": "For 2\u20135 wildlife responses: catch-rate factor 2 and flee-threshold factor 2; replaces prior disposition.",
-    "storage": "Use authoritative capture/Pok\u00e9dex/party/PC delivery. Validate room before entry and handle storage exhaustion inside an encounter without deleting a catch."
+    "bait": "For 2–5 wildlife responses: catch-rate factor 1/2 and flee-threshold factor 1/2; replaces prior disposition.",
+    "rock": "For 2–5 wildlife responses: catch-rate factor 2 and flee-threshold factor 2; replaces prior disposition.",
+    "storage": "Use authoritative capture/Pokédex/party/PC delivery. Validate room before entry and handle storage exhaustion inside an encounter without deleting a catch."
   },
   "candidate_extent_metatiles": [
     64,
@@ -194,68 +194,15 @@
         ]
       ],
       "play": "Entry lake and reed-fringed shores, pine islands and a protected landing; a short grassy portage changes lakes.",
-      "weighted_encounters": [
-        {
-          "species": "WOOPER",
-          "level": 30,
-          "weight": 30,
-          "surfaces": [
-            "grass",
-            "water"
-          ]
-        },
-        {
-          "species": "QUAGSIRE",
-          "level": 32,
-          "weight": 20,
-          "surfaces": [
-            "grass",
-            "water"
-          ]
-        },
-        {
-          "species": "YANMA",
-          "level": 29,
-          "weight": 15,
-          "surfaces": [
-            "grass"
-          ]
-        },
-        {
-          "species": "PSYDUCK",
-          "level": 30,
-          "weight": 15,
-          "surfaces": [
-            "grass",
-            "water"
-          ]
-        },
-        {
-          "species": "GOLDUCK",
-          "level": 33,
-          "weight": 10,
-          "surfaces": [
-            "grass",
-            "water"
-          ]
-        },
-        {
-          "species": "SUNKERN",
-          "level": 28,
-          "weight": 8,
-          "surfaces": [
-            "grass"
-          ]
-        },
-        {
-          "species": "SUDOWOODO",
-          "level": 33,
-          "weight": 2,
-          "surfaces": [
-            "grass"
-          ]
-        }
-      ]
+      "encounters": {
+        "source": "../revisions/boundary-safari-runtime-v01/zone.json",
+        "habitat_id": "REED_MARSH",
+        "tables": [
+          "grass",
+          "water"
+        ],
+        "authority": "Use the native runtime tables and per-slot flee thresholds. Every species must be active in pokemon/roster.json and not belong to a retired roster-curation.json family."
+      }
     },
     {
       "id": "PINE_PORTAGE",
@@ -271,64 +218,15 @@
         ]
       ],
       "play": "Pine-lined upper lake and grassy shoreline pockets; a real landing-to-landing portage and optional Cut-gated thicket.",
-      "weighted_encounters": [
-        {
-          "species": "STANTLER",
-          "level": 33,
-          "weight": 25,
-          "surfaces": [
-            "grass"
-          ]
-        },
-        {
-          "species": "PINECO",
-          "level": 30,
-          "weight": 20,
-          "surfaces": [
-            "grass"
-          ]
-        },
-        {
-          "species": "ARIADOS",
-          "level": 31,
-          "weight": 15,
-          "surfaces": [
-            "grass"
-          ]
-        },
-        {
-          "species": "NOCTOWL",
-          "level": 32,
-          "weight": 15,
-          "surfaces": [
-            "grass"
-          ]
-        },
-        {
-          "species": "GIRAFARIG",
-          "level": 33,
-          "weight": 12,
-          "surfaces": [
-            "grass"
-          ]
-        },
-        {
-          "species": "TEDDIURSA",
-          "level": 32,
-          "weight": 10,
-          "surfaces": [
-            "grass"
-          ]
-        },
-        {
-          "species": "HERACROSS",
-          "level": 34,
-          "weight": 3,
-          "surfaces": [
-            "grass"
-          ]
-        }
-      ]
+      "encounters": {
+        "source": "../revisions/boundary-safari-runtime-v01/zone.json",
+        "habitat_id": "PINE_PORTAGE",
+        "tables": [
+          "grass",
+          "water"
+        ],
+        "authority": "Use the native runtime tables and per-slot flee thresholds. Every species must be active in pokemon/roster.json and not belong to a retired roster-curation.json family."
+      }
     },
     {
       "id": "GRANITE_SHORE",
@@ -344,64 +242,15 @@
         ]
       ],
       "play": "Rocky Granite shore plus new Northwind two-tier cliff headland, ordinary ascent ramps, native one-way descents and a grassy west/east portage.",
-      "weighted_encounters": [
-        {
-          "species": "PHANPY",
-          "level": 31,
-          "weight": 25,
-          "surfaces": [
-            "grass"
-          ]
-        },
-        {
-          "species": "RHYHORN",
-          "level": 34,
-          "weight": 20,
-          "surfaces": [
-            "grass"
-          ]
-        },
-        {
-          "species": "TEDDIURSA",
-          "level": 32,
-          "weight": 18,
-          "surfaces": [
-            "grass"
-          ]
-        },
-        {
-          "species": "DUNSPARCE",
-          "level": 30,
-          "weight": 15,
-          "surfaces": [
-            "grass"
-          ]
-        },
-        {
-          "species": "SHUCKLE",
-          "level": 32,
-          "weight": 12,
-          "surfaces": [
-            "grass"
-          ]
-        },
-        {
-          "species": "ONIX",
-          "level": 33,
-          "weight": 8,
-          "surfaces": [
-            "grass"
-          ]
-        },
-        {
-          "species": "LARVITAR",
-          "level": 35,
-          "weight": 2,
-          "surfaces": [
-            "grass"
-          ]
-        }
-      ]
+      "encounters": {
+        "source": "../revisions/boundary-safari-runtime-v01/zone.json",
+        "habitat_id": "GRANITE_SHORE",
+        "tables": [
+          "grass",
+          "water"
+        ],
+        "authority": "Use the native runtime tables and per-slot flee thresholds. Every species must be active in pokemon/roster.json and not belong to a retired roster-curation.json family."
+      }
     },
     {
       "id": "QUIET_WATER",
@@ -417,64 +266,15 @@
         ]
       ],
       "play": "Large linked lake basins, navigable narrows and low grassy/pine islands; deliberate optional island landings and visible water boundaries.",
-      "weighted_encounters": [
-        {
-          "species": "SLOWPOKE",
-          "level": 32,
-          "weight": 30,
-          "surfaces": [
-            "water"
-          ]
-        },
-        {
-          "species": "REMORAID",
-          "level": 30,
-          "weight": 25,
-          "surfaces": [
-            "water"
-          ]
-        },
-        {
-          "species": "CORSOLA",
-          "level": 32,
-          "weight": 18,
-          "surfaces": [
-            "water"
-          ]
-        },
-        {
-          "species": "MANTINE",
-          "level": 34,
-          "weight": 12,
-          "surfaces": [
-            "water"
-          ]
-        },
-        {
-          "species": "DRATINI",
-          "level": 34,
-          "weight": 8,
-          "surfaces": [
-            "water"
-          ]
-        },
-        {
-          "species": "LAPRAS",
-          "level": 35,
-          "weight": 5,
-          "surfaces": [
-            "water"
-          ]
-        },
-        {
-          "species": "DRAGONAIR",
-          "level": 36,
-          "weight": 2,
-          "surfaces": [
-            "water"
-          ]
-        }
-      ]
+      "encounters": {
+        "source": "../revisions/boundary-safari-runtime-v01/zone.json",
+        "habitat_id": "QUIET_WATER",
+        "tables": [
+          "grass",
+          "water"
+        ],
+        "authority": "Use the native runtime tables and per-slot flee thresholds. Every species must be active in pokemon/roster.json and not belong to a retired roster-curation.json family."
+      }
     }
   ],
   "navigation_contracts": [
@@ -501,7 +301,7 @@
   "implementation": {
     "existing": [
       "Native Safari Ball capture rule",
-      "Native capture/Pok\u00e9dex/storage path",
+      "Native capture/Pokédex/storage path",
       "Native Surf/Cut/ledges and production controller",
       "Bug Contest lifecycle patterns for reference"
     ],
@@ -522,12 +322,12 @@
     "Actual movement, Surf, ledge and connected-map crossings decrement the documented cost exactly once per transition.",
     "Safari encounters expose Ball/Bait/Rock/Run; normal attack/move/Pack commands are unavailable.",
     "Capture/flee and bait/rock state use deterministic authoritative battle random sources.",
-    "Caught Pok\u00e9mon and earned pickups survive session end and save/Continue.",
+    "Caught Pokémon and earned pickups survive session end and save/Continue.",
     "Exhaustion and early return reach safe free basecamp after the current result without input traps.",
     "Save/Continue cannot refresh the step/ball budget or charge again.",
-    "R12\u2192Q07 shelter\u2192R13 and R20 arrival work with zero money and no active Safari session.",
+    "R12→Q07 shelter→R13 and R20 arrival work with zero money and no active Safari session.",
     "Whole-map/player-camera inspection plus Cut/Surf/ledge collision, native gameplay and clean MCP/TUI checks.",
-    "Older saves without Safari state load inactive with unchanged party/bag/story. Invalid active zone references or impossible counters fail recoverably, without corrupting the save or losing captured Pok\u00e9mon.",
+    "Older saves without Safari state load inactive with unchanged party/bag/story. Invalid active zone references or impossible counters fail recoverably, without corrupting the save or losing captured Pokémon.",
     "Whole-map inspection confirms mostly connected lakes with grass/pines around them; actual portage requires dismount, land traversal and relaunch at another landing, and cannot be replaced by a broad dry ring."
   ],
   "safari_balance": {
@@ -553,13 +353,6 @@
       "rng": "One authoritative unsigned 8-bit draw after every failed Ball or completed Bait/Rock command; flee iff draw < threshold. Successful capture and Run do not draw flee RNG.",
       "denominator": 256,
       "default_threshold": 64,
-      "species_threshold_overrides": {
-        "HERACROSS": 96,
-        "LARVITAR": 128,
-        "LAPRAS": 96,
-        "DRATINI": 96,
-        "DRAGONAIR": 128
-      },
       "threshold_formula": "clamp(1,255,floor(base_threshold*disposition_numerator/disposition_denominator))",
       "normal": [
         1,
@@ -572,7 +365,8 @@
       "rock": [
         2,
         1
-      ]
+      ],
+      "species_threshold_source": "../revisions/boundary-safari-runtime-v01/zone.json:habitats[].grass/water[].flee_threshold"
     },
     "disposition": {
       "states": [
@@ -900,5 +694,6 @@
         ]
       ]
     ]
-  }
+  },
+  "runtime_encounter_authority": "../revisions/boundary-safari-runtime-v01/zone.json; legacy Johto proposals have been removed from this active planning source."
 }

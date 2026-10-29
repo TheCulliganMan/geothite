@@ -12742,6 +12742,105 @@
         32
       ],
       "block": "41"
+    },
+    {
+      "kind": "point",
+      "name": "Northern pine arrival",
+      "position": [
+        17,
+        4
+      ],
+      "block": "3d"
+    },
+    {
+      "kind": "point",
+      "name": "Northern pine arrival",
+      "position": [
+        18,
+        4
+      ],
+      "block": "3d"
+    },
+    {
+      "kind": "point",
+      "name": "Northern pine arrival",
+      "position": [
+        19,
+        4
+      ],
+      "block": "3d"
+    },
+    {
+      "kind": "point",
+      "name": "Northern pine arrival",
+      "position": [
+        20,
+        4
+      ],
+      "block": "3d"
+    },
+    {
+      "kind": "point",
+      "name": "Central pine passage",
+      "position": [
+        20,
+        18
+      ],
+      "block": "3d"
+    },
+    {
+      "kind": "point",
+      "name": "Central pine passage",
+      "position": [
+        20,
+        19
+      ],
+      "block": "3d"
+    },
+    {
+      "kind": "point",
+      "name": "Ordinary marsh trail, bypassed by the native Cut return",
+      "position": [
+        9,
+        39
+      ],
+      "block": "3d"
+    },
+    {
+      "kind": "point",
+      "name": "Ordinary marsh trail, bypassed by the native Cut return",
+      "position": [
+        9,
+        40
+      ],
+      "block": "3d"
+    },
+    {
+      "kind": "point",
+      "name": "Southern green-pine bend",
+      "position": [
+        16,
+        48
+      ],
+      "block": "37"
+    },
+    {
+      "kind": "point",
+      "name": "Southern green-pine bend",
+      "position": [
+        16,
+        49
+      ],
+      "block": "37"
+    },
+    {
+      "kind": "point",
+      "name": "Southern green-pine bend",
+      "position": [
+        15,
+        48
+      ],
+      "block": "37"
     }
   ],
   "source_pixels_modified": false,

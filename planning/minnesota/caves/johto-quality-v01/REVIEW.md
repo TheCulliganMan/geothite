@@ -1,5 +1,21 @@
 # Crystal reference cave pass
 
+The newer compact-coast/Ely/waterfront lineage has sequential native overlays
+for the [R10 rock gallery](../current-iron-v01/README.md),
+[R09 regional-story mine](../current-r09-v01/README.md) and
+[R05 Rock Cut](../current-r05-v01/README.md), followed by the
+[R12 fitted shelter](../current-r12-v01/README.md) on the accepted final-region
+parent. Each preserves all690 other maps
+relative to its exact parent. Check `world.json` for the active revision;
+candidate verification does not itself advance that pointer. The other five
+rooms' integration remains separate. The older complete cave packs and
+evidence below remain historical, immutable results.
+
+R12's latest source extends its attached central shoulder by one native block;
+the prior source remains frozen under `current-r12-v01/source-v01/`. Historical
+nine-cave results below keep their original source/pack binding and do not
+silently claim that later shoulder edit.
+
 The completed eleven-room pack is
 `content-packs/minnesota-voyageurs-ice-v02.crystalpack` (683 maps), SHA-256
 `546f17a16db8e47b409e870f821a826dd5a9b9f6d8dd0c526d8cf5ad397c9f0f`.
@@ -97,6 +113,12 @@ are recorded in `.local/cave-final-controller-turn3-receipt.json`.
 Explicit empty-party position fixtures do not earn access to any cave.
 
 ## Rust publication
+
+The loop below records the completed historical branch. The current
+`revise_authored_cave` CLI now requires the reviewed compact northern geography
+and a fresh ignored/untracked output. It rejects that branch's retired coast;
+use the current overlay runbooks above for publication. The library terrain
+API remains unchanged for historical in-memory fixtures.
 
 Build the two bounded publishers with the pinned toolchain. Each step reads
 the completed prior pack and writes a separate ignored output; R09 certifies

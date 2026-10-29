@@ -1,0 +1,25 @@
+{
+  "trainers": [
+    {
+      "id": "MN_LEAGUE_2",
+      "map": "MnLeagueRoom2",
+      "approach": [
+        5,
+        8
+      ],
+      "facing": "south",
+      "trainer_class": "MN_ELITE_FLINT",
+      "sprite": "SPRITE_MN_ELITE_FLINT",
+      "actor_script": "MnLeagueRoom2Challenge",
+      "fixture_events": [
+        "EVENT_MN_LEAGUE_RUN_ACTIVE"
+      ],
+      "fixture_memory": {
+        "wMnLeagueRun": "1"
+      },
+      "completion_memory": {
+        "wMnLeagueRun": "2"
+      }
+    }
+  ]
+}

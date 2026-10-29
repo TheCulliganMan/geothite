@@ -14,6 +14,14 @@ use crate::authored_town_design::Town;
 use crate::authored_town_publication::{self, CityIdentity};
 use crate::grand_marais_modpack::authoring;
 
+#[path = "state_fair_parent_geometry.rs"]
+mod parent_geometry;
+#[path = "state_fair_woodland_connection.rs"]
+mod woodland_connection;
+#[cfg(test)]
+#[path = "state_fair_woodland_tests.rs"]
+mod woodland_tests;
+
 #[derive(Deserialize)]
 struct FairDesign {
     native_map: Town,
@@ -59,23 +67,29 @@ struct CityEdit {
 /// The parent must already contain the selected regional food and carnival
 /// species. Bounded native grass habitats make every selected evolution available.
 ///
-/// A two-core-wide street and reciprocal connection bind St Paul's north edge
-/// to the fair. Only the declared city border/grass blocks and that
-/// connection change. Other maps, HOME, runtime files and audio are retained.
+/// A two-core-wide street and reciprocal connection bind the fair to its
+/// declared existing approach. The compact region uses the lower Pine Country
+/// road west of Minneapolis; historical St Paul approaches remain guarded.
+/// Only declared approach cells and that connection change. Other maps, HOME,
+/// runtime files and audio are retained.
 /// No badges, plot progress or healing are granted by this publication.
 ///
 /// # Errors
 /// Returns an error for stale identities, missing native art/templates, occupied
 /// flags/items, missing regional species, invalid counter/door or habitat geometry,
-/// or final pack verification failure.
+/// stale northern geometry outside the compact Superior lineage, or final pack
+/// verification failure.
 pub fn build_state_fair_modpack(
     base: &CompiledGamePack,
     layout_json: &str,
     design_json: &str,
 ) -> Result<CompiledGamePack> {
+    crate::validate_compact_superior_geography(base)?;
     crate::verify_compiled_game_pack_for_runtime(base)?;
+    parent_geometry::validate(base)?;
     let source: FairDesign = serde_json::from_str(design_json)?;
     let town = &source.native_map;
+    let woodland = source.native_city_connection.map == "MnR05C00R02";
     let layout: Layout = serde_json::from_str(layout_json)?;
     ensure!(
         town.id == "MnStateFairgrounds"
@@ -97,6 +111,31 @@ pub fn build_state_fair_modpack(
     )?;
     authored_city_expansion_events::flags(&mut pack, &source.native_flags)?;
     install_food(&mut pack)?;
+    let roster = crate::authored_regional_approach::policy()?;
+    for member in source
+        .native_trainers
+        .iter()
+        .flat_map(|trainer| &trainer.party)
+    {
+        ensure!(
+            roster.target(&pack, &member.species, Some(member.level))? == member.species,
+            "fair opponents must use active Minnesota species at legal levels"
+        );
+    }
+    for actor in town
+        .residents
+        .iter()
+        .chain(town.interiors.iter().flat_map(|room| &room.residents))
+    {
+        if let Some(species) = actor.sprite.strip_prefix("SPRITE_")
+            && pack.data.pokemon.contains_key(species)
+        {
+            ensure!(
+                roster.target(&pack, species, None)? == species,
+                "fair exhibits must use active Minnesota species: {species}"
+            );
+        }
+    }
     let names = pack
         .data
         .runtime_map_metadata
@@ -117,6 +156,7 @@ pub fn build_state_fair_modpack(
     exterior.attributes.height = town.dimensions_metatiles[1];
     exterior.attributes.border_block = 5;
     exterior.attributes.tileset_name = town.compiled_tileset.clone();
+    crate::regional_town_fishing::freshwater(&pack, &mut exterior)?;
     exterior.blocks = layout.compile()?;
     authored_city_expansion_events::ordinary(
         &mut pack,
@@ -157,7 +197,7 @@ pub fn build_state_fair_modpack(
             i16::try_from(door.return_warp_index.context("fair return")?)?,
         );
     }
-    let mut modules = vec![(exterior, [16, 68])];
+    let mut modules = vec![(exterior, if woodland { [93, 65] } else { [16, 68] })];
     for room in &town.interiors {
         let mut map = authoring::blank(&pack, &room.template, &room.id, &room.native_constant)?;
         ensure!(
@@ -213,18 +253,18 @@ pub fn build_state_fair_modpack(
     for (map, _) in &mut modules {
         authored_city_expansion_events::finish(&pack, map, &names)?;
     }
-    crate::authored_town_geometry::validate_with_edges(
-        &pack,
-        town,
-        &modules,
-        &BTreeSet::from([[16, 71], [17, 71]]),
-    )?;
+    let edges = if woodland {
+        BTreeSet::from([[95, 64], [95, 65]])
+    } else {
+        BTreeSet::from([[16, 71], [17, 71]])
+    };
+    crate::authored_town_geometry::validate_with_edges(&pack, town, &modules, &edges)?;
     modules[0].0.attributes.connections = vec![MapConnection {
-        direction: "south".into(),
-        target_map: "MnStPaul".into(),
+        direction: if woodland { "east" } else { "south" }.into(),
+        target_map: source.native_city_connection.map.clone(),
         offset: source.native_city_connection.fair_to_city_offset,
     }];
-    modules[0].0.attributes.connection_flags = Some("SOUTH".into());
+    modules[0].0.attributes.connection_flags = Some(if woodland { "EAST" } else { "SOUTH" }.into());
     let parent_landmark = pack
         .data
         .pokegear_landmarks
@@ -268,10 +308,14 @@ pub fn build_state_fair_modpack(
         &pack.report,
     )?;
     crate::verify_compiled_game_pack_for_runtime(&pack)?;
+    crate::validate_compact_superior_geography(&pack)?;
     Ok(pack)
 }
 
 fn bind_city(pack: &mut CompiledGamePack, connection: &CityConnection) -> Result<()> {
+    if connection.map == "MnR05C00R02" {
+        return woodland_connection::bind(pack, connection);
+    }
     let dimensions = connection.dimensions_metatiles.unwrap_or([64, 48]);
     let (street_x, street_length, offset) = match dimensions {
         [64, 48] => (8, 8, 0),

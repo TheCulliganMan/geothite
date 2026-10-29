@@ -1,4 +1,19 @@
+# Current installed quarry grass revision, 2026-10-28
+
+[Selected current-parent revision](../revisions/route-grass-v01/current-r09-v01/README.md) adds8grass metatiles and4attached spoil boulders to the704-map current story/R03 cave child. The quarry circuit requires4grass steps uphill and has a dry ledge/ore-track return. Five native cases,13clean stdio calls and377audio programs pass. North Shore stays ice-free. Older isolated pack results below remain historical.
+
 # Iron Range West — current native geography revision
+
+## Route grass pass — 2026-10-28
+
+Accepted in isolated `minnesota-route-grass-r09-v01.crystalpack`, identity prefix
+`4c5fbe211a9f`. Eight new grass metatiles join useful quarry paths. The upper
+quarry circuit requires four grass steps; its original ledge and lower ore track
+keep a dry return. Four attached spoil boulders close actual cliff-foot bypasses.
+Native geometry, five wild encounters, Cut, battle/PP, healing, Continue, stdio
+and exact terrain/audio preservation passed. See
+[R09 review](../revisions/route-grass-v01/R09.md) for scope and evidence.
+The shared game is unchanged; older native reports below are historical.
 
 The current **471-map** `content-packs/minnesota-geography-review.crystalpack`
 (`f9b04e67f2bf…`) publishes this terrain revision. Root inspected the complete

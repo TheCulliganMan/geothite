@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "trainers": [
+    {
+      "map": "MnGrandMarais",
+      "approach": [
+        16,
+        15
+      ],
+      "id": "MN_EXTRA_SKI_PATROLLER",
+      "display_name": "SLOANE",
+      "trainer_class": "MN_SKI_PATROLLER",
+      "class_name": "SKI PATROLLER",
+      "template_class": "COOLTRAINERF",
+      "sprite": "SPRITE_MN_SKI_PATROLLER",
+      "tile": [
+        16,
+        14
+      ],
+      "facing": "south",
+      "sight_range": 1,
+      "defeated_flag": "EVENT_MN_EXTRA_SKI_PATROLLER",
+      "party": [
+        {
+          "species": "WINKFIN",
+          "level": 38
+        },
+        {
+          "species": "LUTEBRISK",
+          "level": 40
+        }
+      ],
+      "before_lines": [
+        "Stay on the trail.",
+        "Keep a steady pace"
+      ],
+      "after_lines": [
+        "A clean run!",
+        "Check your team."
+      ],
+      "loss_lines": [
+        "Rest and regroup.",
+        "We can try again."
+      ]
+    }
+  ]
+}

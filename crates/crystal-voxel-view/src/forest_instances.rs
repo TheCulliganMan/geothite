@@ -109,13 +109,13 @@ impl Key {
         // Ordinary height uses its own age seed. Grouping by the older
         // variation height could squash a mature prototype into a sapling,
         // flattening foliage along with the trunk.
-        let age=if matches!(family,GroveFamily::JohtoPine|GroveFamily::KantoDeciduous) {
+        let age=if matches!(family,GroveFamily::JohtoPine|GroveFamily::WinterPine|GroveFamily::KantoDeciduous) {
             foliage::non_ancient_height_factor(coordinates)-0.5
         } else {(height-0.9)/0.7};
         let bucket=((age*4.).floor() as usize).min(3);
         let density = if matches!(family,GroveFamily::KantoDeciduous|GroveFamily::ParkBroadleaf) {0} else {neighbors.iter().filter(|&&v| v).count() as u8};
         Self {
-            family: match family {GroveFamily::JohtoPine=>0,GroveFamily::AncientForest=>1,GroveFamily::KantoDeciduous=>2,GroveFamily::ParkBroadleaf=>3},
+            family: match family {GroveFamily::JohtoPine=>0,GroveFamily::AncientForest=>1,GroveFamily::KantoDeciduous=>2,GroveFamily::ParkBroadleaf=>3,GroveFamily::WinterPine=>4},
             density,
             variant: (shape * 4 + bucket) as u8,
         }
@@ -129,7 +129,7 @@ fn seeds(family:GroveFamily) -> &'static [[i32; 2]; VARIANTS] {
     static OTHER: OnceLock<[[i32; 2]; VARIANTS]> = OnceLock::new();
     static PARK: OnceLock<[[i32; 2]; VARIANTS]> = OnceLock::new();
     let cache=match family {
-        GroveFamily::JohtoPine => &PINES,
+        GroveFamily::JohtoPine | GroveFamily::WinterPine => &PINES,
         GroveFamily::KantoDeciduous => &DECIDUOUS,
         GroveFamily::AncientForest => &OTHER,
         GroveFamily::ParkBroadleaf => &PARK,
@@ -188,7 +188,7 @@ impl Library {
                 family,
             );
             let roots = {
-                let count = if family == GroveFamily::JohtoPine { 13 } else { 17 };
+                let count = if matches!(family, GroveFamily::JohtoPine | GroveFamily::WinterPine) { 13 } else { 17 };
                 if family==GroveFamily::ParkBroadleaf {
                     mesh.solid.positions.iter().filter(|p|p[1].abs()<0.000001).copied().collect::<Vec<_>>()
                 } else if family==GroveFamily::KantoDeciduous {
@@ -334,7 +334,7 @@ impl Library {
 
     fn place_canopy(key: Key, source: &Prototype, bounds: [f32;4], base: f32,
         tile: f32, coordinates: [i32;2]) -> Vec<PreparedGroup> {
-        let family = match key.family {0=>GroveFamily::JohtoPine,1=>GroveFamily::AncientForest,2=>GroveFamily::KantoDeciduous,3=>GroveFamily::ParkBroadleaf,_=>unreachable!("validated grove family")};
+        let family = match key.family {0=>GroveFamily::JohtoPine,1=>GroveFamily::AncientForest,2=>GroveFamily::KantoDeciduous,3=>GroveFamily::ParkBroadleaf,4=>GroveFamily::WinterPine,_=>unreachable!("validated grove family")};
         let turn = foliage::instance_turn(family,coordinates);
         let prototype_turn = foliage::instance_turn(family,seeds(family)[key.variant as usize]);
         let vertical_ratio = foliage::instance_vertical_ratio(family,coordinates,

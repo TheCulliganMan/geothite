@@ -1898,6 +1898,138 @@
         55
       ],
       "block": "3a"
+    },
+    {
+      "kind": "block_remap",
+      "name": "Lower western climbing habitat",
+      "bounds": [
+        6,
+        36,
+        9,
+        38
+      ],
+      "from": "01",
+      "to": "03"
+    },
+    {
+      "kind": "block_remap",
+      "name": "Lower western climbing habitat",
+      "bounds": [
+        6,
+        36,
+        9,
+        38
+      ],
+      "from": "02",
+      "to": "03"
+    },
+    {
+      "kind": "block_remap",
+      "name": "Upper western climbing habitat",
+      "bounds": [
+        6,
+        18,
+        10,
+        20
+      ],
+      "from": "01",
+      "to": "03"
+    },
+    {
+      "kind": "block_remap",
+      "name": "Upper western climbing habitat",
+      "bounds": [
+        6,
+        18,
+        10,
+        20
+      ],
+      "from": "71",
+      "to": "03"
+    },
+    {
+      "kind": "block_remap",
+      "name": "Upper grass trail connection",
+      "bounds": [
+        7,
+        14,
+        8,
+        17
+      ],
+      "from": "01",
+      "to": "03"
+    },
+    {
+      "kind": "block_remap",
+      "name": "Sunny meadow western extension",
+      "bounds": [
+        9,
+        30,
+        11,
+        32
+      ],
+      "from": "02",
+      "to": "03"
+    },
+    {
+      "kind": "block_remap",
+      "name": "Southern shelf woodland grass",
+      "bounds": [
+        5,
+        43,
+        6,
+        45
+      ],
+      "from": "02",
+      "to": "03"
+    },
+    {
+      "kind": "block_remap",
+      "name": "Lower climb closes dry cliff-rim bypass",
+      "bounds": [
+        6,
+        34,
+        9,
+        36
+      ],
+      "from": "01",
+      "to": "03"
+    },
+    {
+      "kind": "block_remap",
+      "name": "Lower climb closes dry cliff-rim bypass",
+      "bounds": [
+        6,
+        34,
+        9,
+        36
+      ],
+      "from": "02",
+      "to": "03"
+    },
+    {
+      "kind": "block_remap",
+      "name": "Upper western ramp grass neck",
+      "bounds": [
+        7,
+        21,
+        8,
+        23
+      ],
+      "from": "01",
+      "to": "03"
+    },
+    {
+      "kind": "block_remap",
+      "name": "Lower western ramp grass neck",
+      "bounds": [
+        6,
+        40,
+        7,
+        42
+      ],
+      "from": "01",
+      "to": "03"
     }
   ],
   "crossings": [

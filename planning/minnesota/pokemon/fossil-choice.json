@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "status": "species-compiled-in-local-pack; fossil-choice-and-revival-service-proposed",
+  "status": "implemented-selected-compact-lineage; native-controller-and-evolution-verified",
   "choice_id": "MN_FOSSIL_CHOICE",
   "choice_prompt": "Which ancient creature should we restore?",
   "count_toward_roster": 4,
@@ -68,11 +68,11 @@
   ],
   "acquisition_proposal": {
     "map_basis": "MN_R01 Driftless Trail between Winona and Rochester",
-    "scene": "An optional fossiliferous bluff alcove contains one paired slab. A visiting researcher offers the player one recoverable specimen; selecting one records a single irreversible choice for that run. No random destruction or paid rerolls.",
-    "revival": "A fossil researcher in Rochester clinic courtyard can restore the chosen fossil at level10 after the first badge. This is a proposed NPC service, not an existing authored event.",
-    "inventory": "Check party room before completing revival; if full, leave the fossil with the researcher and allow a later return. Preserve the item until a creature is actually received.",
-    "other_choice": "The unchosen line becomes available through a proposed post-League research exchange, preserving the early choice while allowing collection completion.",
-    "runtime_status": "No map, item ID, script, encounter or save flag has been registered."
+    "scene": "A researcher beside the existing Driftless bluff grass offers one specimen from a paired slab. The player can decline studying it or decline final confirmation. The choice commits only after actual key-item delivery.",
+    "revival": "Rochester courtyard researcher at (20,10), approached from (20,11), restores the chosen specimen at level10 after the Care Badge. A full party leaves the specimen and restoration claim untouched.",
+    "inventory": "Native key items are retained until givepoke succeeds; each living line has its own saved restoration flag. Failed bag grants do not record the initial choice or the later exchange.",
+    "other_choice": "After EVENT_MN_LEAGUE_CHAMPION, return to the Driftless researcher for a free once-only exchange granting the unchosen fossil. A full key pocket retains the exchange claim.",
+    "runtime_status": "Selected fossil_research_revision, content-packs/minnesota-current-fossils-repaired-r15-v01.crystalpack. Three controller cases verify both choices, badge/full-party gates, actual gifts, post-League exchange, level34 evolutions, caught Dex entries and Continue. Earned statewide collection remains unproved."
   },
   "existing_fossil_line": {
     "family_id": "MN_F018",

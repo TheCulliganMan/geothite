@@ -198,7 +198,7 @@
   "trainers": [
     {
       "id": "MN_R13_T01",
-      "display_name": "AVRIN",
+      "display_name": "ADA",
       "trainer_class": "COOLTRAINERF",
       "sprite": "SPRITE_COOLTRAINER_F",
       "tile": [
@@ -213,11 +213,11 @@
       "sight_range": 3,
       "party": [
         {
-          "species": "LANTURN",
+          "species": "BUOYOSTIC",
           "level": 43
         },
         {
-          "species": "TANGELA",
+          "species": "REEDRAFT",
           "level": 43
         }
       ],
@@ -255,15 +255,15 @@
       "sight_range": 3,
       "party": [
         {
-          "species": "GRAVELER",
+          "species": "BANDRAKE",
           "level": 44
         },
         {
-          "species": "MACHOKE",
+          "species": "HELIKNOCK",
           "level": 43
         },
         {
-          "species": "PILOSWINE",
+          "species": "PLOWZER",
           "level": 44
         }
       ],
@@ -301,11 +301,11 @@
       "sight_range": 3,
       "party": [
         {
-          "species": "SKARMORY",
+          "species": "LATCHQUILL",
           "level": 44
         },
         {
-          "species": "NOCTOWL",
+          "species": "BOOMRUFF",
           "level": 44
         }
       ],
@@ -343,11 +343,11 @@
       "sight_range": 4,
       "party": [
         {
-          "species": "HITMONTOP",
+          "species": "GREYTAG",
           "level": 45
         },
         {
-          "species": "PRIMEAPE",
+          "species": "BOUGHLASH",
           "level": 44
         }
       ],
@@ -385,11 +385,11 @@
       "sight_range": 3,
       "party": [
         {
-          "species": "GIRAFARIG",
+          "species": "SOLSTORT",
           "level": 45
         },
         {
-          "species": "ESPEON",
+          "species": "RECALLISK",
           "level": 45
         }
       ],
@@ -427,11 +427,11 @@
       "sight_range": 3,
       "party": [
         {
-          "species": "JUMPLUFF",
+          "species": "PARAFLOSS",
           "level": 46
         },
         {
-          "species": "AZUMARILL",
+          "species": "SLIDEWAKE",
           "level": 45
         }
       ],
@@ -469,15 +469,15 @@
       "sight_range": 3,
       "party": [
         {
-          "species": "PILOSWINE",
+          "species": "PLOWZER",
           "level": 47
         },
         {
-          "species": "CROBAT",
+          "species": "SILOHAWK",
           "level": 47
         },
         {
-          "species": "HERACROSS",
+          "species": "GOUGECREST",
           "level": 48
         }
       ],
@@ -563,115 +563,115 @@
   ],
   "encounters": {
     "grass_rates": {
-      "morning": 10,
       "day": 10,
+      "morning": 10,
       "night": 10
     },
     "grass": {
       "morning": [
         {
-          "species": "URSARING",
-          "level": 43
+          "level": 43,
+          "species": "DOZEBEAR"
         },
         {
-          "species": "GRAVELER",
-          "level": 44
+          "level": 44,
+          "species": "BANDRAKE"
         },
         {
-          "species": "GOLBAT",
-          "level": 45
+          "level": 45,
+          "species": "SKEETEREX"
         },
         {
-          "species": "TANGELA",
-          "level": 46
+          "level": 46,
+          "species": "REEDRAFT"
         },
         {
-          "species": "SNEASEL",
-          "level": 47
+          "level": 47,
+          "species": "CROOKVEIL"
         },
         {
-          "species": "SKARMORY",
-          "level": 48
+          "level": 48,
+          "species": "LATCHQUILL"
         },
         {
-          "species": "DRAGONAIR",
-          "level": 48
+          "level": 48,
+          "species": "LASSERP"
         }
       ],
       "day": [
         {
-          "species": "URSARING",
-          "level": 43
+          "level": 43,
+          "species": "DOZEBEAR"
         },
         {
-          "species": "GRAVELER",
-          "level": 44
+          "level": 44,
+          "species": "BANDRAKE"
         },
         {
-          "species": "GOLBAT",
-          "level": 45
+          "level": 45,
+          "species": "SKEETEREX"
         },
         {
-          "species": "TANGELA",
-          "level": 46
+          "level": 46,
+          "species": "REEDRAFT"
         },
         {
-          "species": "SNEASEL",
-          "level": 47
+          "level": 47,
+          "species": "CROOKVEIL"
         },
         {
-          "species": "SKARMORY",
-          "level": 48
+          "level": 48,
+          "species": "LATCHQUILL"
         },
         {
-          "species": "DRAGONAIR",
-          "level": 48
+          "level": 48,
+          "species": "LASSERP"
         }
       ],
       "night": [
         {
-          "species": "NOCTOWL",
-          "level": 43
+          "level": 43,
+          "species": "BOOMRUFF"
         },
         {
-          "species": "ARIADOS",
-          "level": 44
+          "level": 44,
+          "species": "BARRICANT"
         },
         {
-          "species": "GOLBAT",
-          "level": 45
+          "level": 45,
+          "species": "SKEETEREX"
         },
         {
-          "species": "TANGELA",
-          "level": 46
+          "level": 46,
+          "species": "REEDRAFT"
         },
         {
-          "species": "SNEASEL",
-          "level": 47
+          "level": 47,
+          "species": "CROOKVEIL"
         },
         {
-          "species": "SKARMORY",
-          "level": 48
+          "level": 48,
+          "species": "LATCHQUILL"
         },
         {
-          "species": "DRAGONAIR",
-          "level": 48
+          "level": 48,
+          "species": "LASSERP"
         }
       ]
     },
     "water_rate": 4,
     "water": [
       {
-        "species": "POLIWAG",
-        "level": 43
+        "level": 43,
+        "species": "CHORIP"
       },
       {
-        "species": "WOOPER",
-        "level": 44
+        "level": 44,
+        "species": "GILLPUP"
       },
       {
-        "species": "MARILL",
-        "level": 48
+        "level": 48,
+        "species": "RIVVIT"
       }
     ]
   },
@@ -856,7 +856,13 @@
         "A sheltered bay",
         "under the tor.",
         "The fence marks",
-        "a safe lake view."
+        "a safe lake view.",
+        "Try the ROD GURU!",
+        "His house is above",
+        "the lakeside deck",
+        "on PINE COUNTRY RD",
+        "south of BRAINERD.",
+        "A free SUPER ROD!"
       ]
     },
     {
@@ -898,7 +904,7 @@
       ],
       "facing": "east",
       "lines": [
-        "Noctowl follow",
+        "BOOMRUFF follow",
         "the lake bank.",
         "You can see water",
         "from this rail."
@@ -1124,6 +1130,16 @@
         42,
         22,
         48
+      ],
+      "minimum_grass_steps": 6
+    },
+    {
+      "id": "SOUTHERN_PINE_NECK",
+      "bounds_core": [
+        34,
+        106,
+        36,
+        112
       ],
       "minimum_grass_steps": 6
     }

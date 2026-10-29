@@ -1,0 +1,41 @@
+{
+  "name": "SIVREN",
+  "role": "Gym Leader 6",
+  "status": "accepted-native-playable",
+  "source": "native-pixels-v2.json",
+  "integration": "binding-v1.json",
+  "controller": "controller-v1.json",
+  "native": "target/trainer-cast/sivren/native-v2",
+  "pack": "content-packs/minnesota-trainer-cast-07-v01.crystalpack",
+  "gameplay": "target/trainer-cast/sivren/gameplay-v1",
+  "log": "target/trainer-cast/sivren/controller-v1.log",
+  "reference_review": "actual-crystal-sprites-common-palette-and-scale",
+  "review_notes": "High tied ponytail, teal paddling jacket, pale collar and cropped trousers/sandals distinguish the Water leader. Field rear/side hair mass compared with actual Crystal Clair; rescue rope retained in battle only. Replaced noisy converted rope with two continuous native contours and refined face/tie pixels. Common-palette/native-size reference sheets and actual game captures reviewed. Full native badge/single-TM/repeat/Continue pass.",
+  "fixture": "Three legal level-60 Minnesota starters; adjacent position and explicit prior-access setup. Local encounter/rewards proof, not earned traversal or intended-level balance.",
+  "evidence_sha256": {
+    "planning/minnesota/npcs/cast/07-sivren/native-pixels-v2.json": "eed2484224da383d6314d9b285ffe3548f91ca23ec9f8da1ff107d8641f8a4ae",
+    "planning/minnesota/npcs/cast/07-sivren/binding-v1.json": "51569e9fb663f7a68bc1b03e978cf6f7b16122648921877ca852536a1af14b58",
+    "planning/minnesota/npcs/cast/07-sivren/controller-v1.json": "6a29d61150df82a93776bf5edc2ee83fc8f36cb27e64ffe908c6e857bc0bd6fc",
+    "target/trainer-cast/sivren/native-v2/verification.json": "f3f3b35ae16328dd4e538f626243b8b5fe3badb151d428c25a8d8d8190e3580a",
+    "content-packs/minnesota-trainer-cast-07-v01.crystalpack": "d95857a00f8962250b72188ddd20b34de755c84b87863adfd5d458e6e7c5eecd",
+    "target/trainer-cast/sivren/controller-v1.log": "c647bbb2ae5db372c5add9732f88d4bb66a6bed0a6816e0ea82faef9412f4b43",
+    "target/trainer-cast/sivren/gameplay-v1/original-npc-trainer-intro.png": "6d82c7a0723f219893a7ebe410461de1e598b07a39d435f8b387d336c9e03b57",
+    "target/trainer-cast/sivren/gameplay-v1/original-npc-overworld-state.png": "6c3e396044f4cc1d7e6599c2c004393ec11932f0f00d7d17a35b7cc598deb1b4",
+    "target/trainer-cast/sivren/gameplay-v1/original-npc-first-turn.png": "ab42ff47413fdf8bcf150e561e55cd76d93dfb9ae69961938481e6852d1f1d26",
+    "planning/minnesota/npcs/cast/07-sivren/battle-reference-prompt.txt": "a5ae92ca7ea176f37686fdce4fd25ebfb1ae8dc26dc004197c7585358e5dc2bc",
+    "planning/minnesota/npcs/cast/07-sivren/battle-reference-v1.png": "8c04d8841c2f3271fb7de961ea21f28d2d6eefcbf3221013f07f90dfff51cedf",
+    "target/trainer-cast/sivren/real-comparison.png": "ddf0f9651dc2b8307c0c0ae20b5b279ff9a55b416d6d4c3e2a569ee013ff89fe",
+    "target/trainer-cast/sivren/battle-real-comparison.png": "a1bf84e8512322836035cf2b8c42d6ff2cc12be80060a33258e5b0e5f6470f19"
+  },
+  "final_pack": "content-packs/minnesota-trainer-cast-36-v01.crystalpack",
+  "final_gameplay": "target/trainer-cast/final-audit/gameplay/07-sivren",
+  "final_log": "target/trainer-cast/final-audit/gameplay/07-sivren/controller.log",
+  "final_status": "accepted-native-playable-final-pack",
+  "final_review": "Actual battle intro and field captures inspected on exact final pack; art retains accepted native sources and palette.",
+  "final_evidence_sha256": {
+    "target/trainer-cast/final-audit/gameplay/07-sivren/controller.log": "30c7c6cfab445d0d7a8c0587ae1f6e8613678745a2e5a0fba3e90a4a3484f9ab",
+    "target/trainer-cast/final-audit/gameplay/07-sivren/original-npc-trainer-intro.png": "6d82c7a0723f219893a7ebe410461de1e598b07a39d435f8b387d336c9e03b57",
+    "target/trainer-cast/final-audit/gameplay/07-sivren/original-npc-overworld-state.png": "6c3e396044f4cc1d7e6599c2c004393ec11932f0f00d7d17a35b7cc598deb1b4",
+    "target/trainer-cast/final-audit/gameplay/07-sivren/original-npc-first-turn.png": "ab42ff47413fdf8bcf150e561e55cd76d93dfb9ae69961938481e6852d1f1d26"
+  }
+}

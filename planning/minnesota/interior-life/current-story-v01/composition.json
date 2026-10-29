@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "id": "northstar-current-story-v1",
+  "approved_parents": [
+    {
+      "content_hash": "b6c6615e9b8798e43e402f8e22c8fc4bb3b244ee342fcc64a9c7cad72776beb6",
+      "maps": 716,
+      "review": "Exact local 716-map interior/fair child, retaining accepted R01 cave and R05 grass deltas. Independent comparison against the canonical story parent found no conflicting raw program edits across its sixteen changed existing maps; extra interior text, NPCs and furnishings are preserved by cloning current modules. Duluth workshop furnishing is disjoint from the story cradle cell13. Native story chapters retain all program/layout preimages and allocate fresh flags/map IDs from this parent. Local composition still requires full preservation and production-controller acceptance. Eight text labels across seven ordinary rooms containing legacy species references are now bound to active Minnesota names without changing callers, actors, teams, services or terrain; the grouse observer calls the drawing a bird rather than an owl. The global regional audit remains enabled."
+    }
+  ]
+}

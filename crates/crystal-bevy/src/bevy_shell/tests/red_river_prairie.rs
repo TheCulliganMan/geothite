@@ -15,7 +15,7 @@ use super::super::{
     mark_runtime_snapshot_dirty,
 };
 use super::authored_route_fixture::{
-    Point, RouteGrid, RouteSpec, finish_text, neighbors, opposite, position,
+    Point, RouteGrid, RouteSpec, escape_wild, finish_text, neighbors, opposite, position,
 };
 
 fn fixture(start: Point, populated: bool) -> (AssetRoot, CrystalRuntime, VisibleShellController) {
@@ -598,4 +598,111 @@ fn red_river_controller_wins_real_camper_battle_mutates_pp_and_continues_party_f
             .battle
             .is_none()
     );
+}
+
+fn native_kind(runtime: &CrystalRuntime, at: Point) -> &str {
+    let module = &runtime.data().maps[&format!("MnR16C{:02}R00", at.0 / 64)];
+    let x = usize::try_from(at.0 % 64).expect("nonnegative local x");
+    let y = usize::try_from(at.1).expect("nonnegative y");
+    let block = module.blocks[y / 2 * usize::from(module.attributes.width) + x / 2];
+    &runtime.data().tilesets[&module.attributes.tileset_name].collision[&format!("{block:02x}")]
+        [y % 2 * 2 + x % 2]
+}
+
+fn continue_grass_review(
+    root: AssetRoot,
+    runtime: CrystalRuntime,
+    controller: &mut VisibleShellController,
+    label: &str,
+) {
+    let at = position(controller);
+    let before = controller.snapshot().expect("actual reached prairie state");
+    let save = OwnedSave::new(label);
+    controller
+        .save(&save.0)
+        .expect("save reached prairie state");
+    let mut loaded = VisibleShellController::load_save(root, runtime, save.0.clone(), None)
+        .expect("Continue reached prairie state");
+    let after = loaded.snapshot().expect("continued prairie state");
+    assert_eq!(position(&mut loaded), at);
+    assert_eq!(before.party, after.party);
+    assert_eq!(before.bag, after.bag);
+    if let Some(path) = std::env::var_os("CRYSTAL_RED_RIVER_GRASS_REACHED_SAVE") {
+        loaded
+            .save(PathBuf::from(path))
+            .expect("retain reached prairie state");
+    }
+}
+
+#[test]
+#[ignore = "requires the current selected Minnesota pack"]
+fn red_river_controller_existing_grassy_climb_dry_drop_and_continue() {
+    let (root, runtime, mut controller) = fixture((53, 18), true);
+    let route = grid(&runtime, (53, 18));
+    let mut grass = 0;
+    route.walk_with_actions(
+        &mut controller,
+        (53, 15),
+        |c| {
+            grass += usize::from(native_kind(&runtime, position(c)) == "TALL_GRASS");
+        },
+        escape_wild,
+    );
+    assert!(
+        grass >= 6,
+        "existing hayfield climb must cross its required habitat"
+    );
+    assert_eq!(native_kind(&runtime, (53, 15)), "FLOOR");
+    assert_eq!(native_kind(&runtime, (53, 18)), "FLOOR");
+    for _ in 0..8 {
+        controller
+            .press(GameButton::Down)
+            .expect("native dry hayfield drop");
+        let at = position(&mut controller);
+        assert!(matches!(at, (53, 15) | (53, 16) | (53, 18)));
+        assert!(
+            controller
+                .snapshot()
+                .expect("dry ledge state")
+                .battle
+                .is_none()
+        );
+        if at == (53, 18) {
+            break;
+        }
+    }
+    assert_eq!(position(&mut controller), (53, 18));
+    barrier(&mut controller, (53, 18), GameButton::Up);
+    continue_grass_review(root, runtime, &mut controller, "existing-grass-return");
+}
+
+#[test]
+#[ignore = "requires the current selected Minnesota pack"]
+fn red_river_controller_existing_hayfield_wild_native_run_and_continue() {
+    let (root, runtime, mut controller) = fixture((53, 12), true);
+    assert_eq!(native_kind(&runtime, (53, 12)), "TALL_GRASS");
+    assert_eq!(native_kind(&runtime, (52, 12)), "TALL_GRASS");
+    let route = grid(&runtime, (53, 12));
+    let mut encounters = 0;
+    for index in 0..256 {
+        let target = if index % 2 == 0 { (52, 12) } else { (53, 12) };
+        route.walk_with_actions(
+            &mut controller,
+            target,
+            |_| {},
+            |c| {
+                encounters += 1;
+                escape_wild(c);
+            },
+        );
+        if encounters > 0 {
+            break;
+        }
+    }
+    assert!(
+        encounters > 0,
+        "existing hayfield habitat never started a native wild battle"
+    );
+    route.walk_with_actions(&mut controller, (53, 15), |_| {}, escape_wild);
+    continue_grass_review(root, runtime, &mut controller, "existing-hay-wild");
 }

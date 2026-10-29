@@ -138,13 +138,12 @@ Whole-file SHA-256:
 The final source review passes all eleven counterexamples in 190.7 ms after
 loading, and compares every installed map block and all decoded source colors.
 
-## Regional 3D acceptance still open
+## Renderer follow-up and remaining regional review
 
-The fresh headless St. Paul 2.5D check did not produce an accepted frame. The
-production location tester exited with `capture timed out: Some("building authored
-terrain")`, while repeatedly reporting that a neighboring map exceeded the
-16-slot connected-actor presentation namespace. The attempted command, executable
-hash and full log remain in `renders/interior-life/voxel-follow-up-v01/`.
-That failure is separate from the passing 2D/gameplay receipts. New authored
-art aliases also need their native building provenance checked in 3D. Neither
-issue is counted as visual acceptance or completion of the regional quality audit.
+The [renderer follow-up](RENDERER-FOLLOW-UP.md) resolves the earlier connected-actor
+timeout and verifies both Falls service buildings in fresh 3D captures. The snow
+ground remains genuine source art; the surrounding trees now use smaller,
+snow-covered pines. St. Paul's flat bridge-post fragments and wide depot are also
+corrected. Seven final paired views and full native 2D comparisons pass, with all
+rejected frames retained. These local reviews leave the full regional 3D/interior
+audit and remaining coverage obligations open.

@@ -7,11 +7,12 @@ use crystal_runtime::CrystalRuntime;
 
 use super::super::authored_route_fixture::indoor_walk;
 use super::super::courier_story::acknowledge_manifest;
+use super::super::native_city_ports::city_port;
 use super::super::northstar_earned_gyms;
 use super::super::rochester_earned::{checkout, try_battle};
 use super::super::winona::{at as location, continue_in_place, finish, load, press, travel};
 use super::gym_four_approach::try_crossing;
-use super::northstar_campaign_current::current;
+use super::northstar_campaign_current::{current, st_paul_arrival};
 use super::{VisibleShellController, event, interact, walk_to};
 
 const CITY: &str = "MnStPaul";
@@ -29,7 +30,7 @@ fn arrival() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
         VisibleShellController::load_save(root.clone(), r.clone(), PathBuf::from(path), None)
             .expect("actual earned St Paul arrival with matching pack identity");
     c.set_runtime_journal_enabled(false);
-    location(&mut c, CITY, (1, 24));
+    location(&mut c, CITY, st_paul_arrival(&r));
     assert_eq!(
         c.shell.shell.session().state().badges.johto,
         [true, true, true, false, false, false, false, false]
@@ -50,7 +51,7 @@ fn arrival() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
 
 fn care(c: &mut VisibleShellController, r: &CrystalRuntime) {
     if c.snapshot().expect("care approach").overworld.map_name == CITY {
-        indoor_walk(c, r, (7, 16));
+        indoor_walk(c, r, city_port(r, CITY, CLINIC).0);
         travel(c, GameButton::Up, CLINIC, (3, 5));
     }
     assert_eq!(
@@ -88,7 +89,7 @@ fn care(c: &mut VisibleShellController, r: &CrystalRuntime) {
         Some("MN_ST_PAUL_POKECENTER_1F")
     );
     indoor_walk(c, r, (3, 6));
-    travel(c, GameButton::Down, CITY, (7, 16));
+    travel(c, GameButton::Down, CITY, city_port(r, CITY, CLINIC).0);
 }
 
 fn supplies(c: &mut VisibleShellController, r: &CrystalRuntime) {
@@ -99,14 +100,19 @@ fn supplies(c: &mut VisibleShellController, r: &CrystalRuntime) {
     if quantity == 0 {
         return;
     }
-    indoor_walk(c, r, (23, 16));
+    indoor_walk(c, r, city_port(r, CITY, "MnStPaulMart").0);
     travel(c, GameButton::Up, "MnStPaulMart", (3, 5));
     indoor_walk(c, r, (3, 3));
     press(c, GameButton::Left);
     press(c, GameButton::A);
     checkout(c, r, "SUPER_POTION", quantity);
     indoor_walk(c, r, (3, 6));
-    travel(c, GameButton::Down, CITY, (23, 16));
+    travel(
+        c,
+        GameButton::Down,
+        CITY,
+        city_port(r, CITY, "MnStPaulMart").0,
+    );
 }
 
 #[test]
@@ -118,13 +124,36 @@ fn northstar_campaign_earned_courier_manifest_capitol_and_return() {
 
 pub(super) fn capitol() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
     let (root, r, mut c) = arrival();
+    let staged = r.data().maps[DEPOT]
+        .scripts
+        .contains_key("MnOverhaulDepotEntry");
     for attempt in 0..4 {
         care(&mut c, &r);
         supplies(&mut c, &r);
-        indoor_walk(&mut c, &r, (44, 38));
-        travel(&mut c, GameButton::Up, DEPOT, (15, 21));
-        indoor_walk(&mut c, &r, (19, 16));
-        if attempt == 0 {
+        indoor_walk(&mut c, &r, city_port(&r, CITY, DEPOT).0);
+        let money = c.shell.shell.session().state().money;
+        if staged {
+            for _ in 0..12 {
+                if c.snapshot().expect("depot arrival").overworld.map_name == DEPOT {
+                    break;
+                }
+                press(&mut c, GameButton::Up);
+            }
+            c.wait_frames(512).expect("courier approach animation");
+            location(&mut c, DEPOT, (19, 16));
+            assert!(
+                c.snapshot()
+                    .expect("automatic interception")
+                    .ui
+                    .text_window_open
+            );
+            press(&mut c, GameButton::Down);
+            location(&mut c, DEPOT, (19, 16));
+        } else {
+            travel(&mut c, GameButton::Up, DEPOT, (15, 21));
+            indoor_walk(&mut c, &r, (19, 16));
+        }
+        if attempt == 0 && !staged {
             let before = c.snapshot().expect("guarded manifest");
             press(&mut c, GameButton::Left);
             press(&mut c, GameButton::A);
@@ -137,9 +166,10 @@ pub(super) fn capitol() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
             assert_eq!(before.party, after.party);
             assert_eq!(before.bag, after.bag);
         }
-        let money = c.shell.shell.session().state().money;
-        press(&mut c, GameButton::Right);
-        press(&mut c, GameButton::A);
+        if !staged {
+            press(&mut c, GameButton::Right);
+            press(&mut c, GameButton::A);
+        }
         if try_battle(&mut c, &r, "MN_LODE_COURIER", COURIER) {
             assert!(c.shell.shell.session().state().money > money);
             continue_in_place(&mut c, &root, &r, "campaign-earned-courier-win");
@@ -156,11 +186,45 @@ pub(super) fn capitol() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
         );
     }
     assert!(event(&c, COURIER) && !event(&c, MANIFEST));
-    c = acknowledge_manifest(&root, &r, c);
+    if r.data().maps.contains_key("MnBoundaryIntake") {
+        indoor_walk(&mut c, &r, (15, 21));
+        travel(&mut c, GameButton::Down, CITY, city_port(&r, CITY, DEPOT).0);
+        for attempt in 0..4 {
+            care(&mut c, &r);
+            supplies(&mut c, &r);
+            indoor_walk(&mut c, &r, city_port(&r, CITY, DEPOT).0);
+            travel(&mut c, GameButton::Up, DEPOT, (15, 21));
+            indoor_walk(&mut c, &r, (19, 16));
+            super::super::northstar_ice_lair::talk(&mut c, GameButton::Left);
+            super::super::northstar_ice_lair::choice(&mut c, true);
+            if try_battle(
+                &mut c,
+                &r,
+                "MN_REED_STPAUL",
+                "EVENT_MN_REED_STPAUL_DEFEATED",
+            ) {
+                break;
+            }
+            assert!(!event(&c, MANIFEST));
+            continue_in_place(
+                &mut c,
+                &root,
+                &r,
+                &format!("campaign-reed-depot-loss-{attempt}"),
+            );
+        }
+        assert!(event(&c, "EVENT_MN_REED_STPAUL_DEFEATED"));
+        finish(&mut c);
+        super::super::northstar_ice_lair::talk(&mut c, GameButton::Left);
+        super::super::northstar_ice_lair::choice(&mut c, true);
+        finish(&mut c);
+    } else {
+        c = acknowledge_manifest(&root, &r, c);
+    }
     assert!(event(&c, MANIFEST));
     continue_in_place(&mut c, &root, &r, "campaign-earned-manifest-read");
     indoor_walk(&mut c, &r, (15, 21));
-    travel(&mut c, GameButton::Down, CITY, (44, 38));
+    travel(&mut c, GameButton::Down, CITY, city_port(&r, CITY, DEPOT).0);
     for (tile, id) in [
         ((3, 3), "MN_GYM_4_TRAINER_1"),
         ((11, 12), "MN_GYM_4_TRAINER_2"),
@@ -170,7 +234,7 @@ pub(super) fn capitol() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
         for attempt in 0..4 {
             care(&mut c, &r);
             supplies(&mut c, &r);
-            indoor_walk(&mut c, &r, (54, 16));
+            indoor_walk(&mut c, &r, city_port(&r, CITY, "MnStPaulGym").0);
             travel(&mut c, GameButton::Up, "MnStPaulGym", (2, 17));
             let tile = if northstar_earned_gyms::selected(&r) {
                 northstar_earned_gyms::opponent(&r, 4, id)
@@ -180,10 +244,21 @@ pub(super) fn capitol() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
             interact(&mut c, &r, tile);
             if try_battle(&mut c, &r, id, &flag) {
                 if northstar_earned_gyms::selected(&r) {
-                    northstar_earned_gyms::leave(&mut c, &r, 4, CITY, (54, 16));
+                    northstar_earned_gyms::leave(
+                        &mut c,
+                        &r,
+                        4,
+                        CITY,
+                        city_port(&r, CITY, "MnStPaulGym").0,
+                    );
                 } else {
                     walk_to(&mut c, &r, (2, 18));
-                    travel(&mut c, GameButton::Down, CITY, (54, 16));
+                    travel(
+                        &mut c,
+                        GameButton::Down,
+                        CITY,
+                        city_port(&r, CITY, "MnStPaulGym").0,
+                    );
                 }
                 continue_in_place(&mut c, &root, &r, &format!("campaign-{id}-win"));
                 break;
@@ -210,11 +285,11 @@ pub(super) fn capitol() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
     );
     for attempt in 0..4 {
         care(&mut c, &r);
-        indoor_walk(&mut c, &r, (1, 24));
+        indoor_walk(&mut c, &r, st_paul_arrival(&r));
         travel(&mut c, GameButton::Left, "MnR04C00R00", (55, 18));
         if try_crossing(&mut c, &r, (0, 18)) {
-            travel(&mut c, GameButton::Left, "MnMinneapolis", (63, 24));
-            travel(&mut c, GameButton::Left, "MnMinneapolis", (58, 24));
+            travel(&mut c, GameButton::Left, "MnMinneapolis", (79, 36));
+            travel(&mut c, GameButton::Left, "MnMinneapolis", (76, 36));
             break;
         }
         location(&mut c, CLINIC, (3, 5));
@@ -225,7 +300,7 @@ pub(super) fn capitol() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
             &format!("campaign-manifest-return-loss-{attempt}"),
         );
     }
-    location(&mut c, "MnMinneapolis", (58, 24));
+    location(&mut c, "MnMinneapolis", (76, 36));
     assert!(event(&c, COURIER) && event(&c, MANIFEST));
     for flag in [
         "EVENT_MN_DEPOT_CLEARED",

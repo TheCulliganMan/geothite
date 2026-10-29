@@ -1,0 +1,12 @@
+{
+  "status": "CORRECTIVE_SOURCE_FROZEN_NOT_NATIVE_PUBLISHED",
+  "contract_sha256": "6d58489a641a58173a68dc598cd774b9fcf3ddaaaeac974f13c8fdb7d7a49a85",
+  "source_epoch": "planning/minnesota/renders/minneapolis-houses-v01/join-correction-v04-review-v03",
+  "new_bitmap_glyphs": 0,
+  "old_palette_entries_changed": 0,
+  "new_metatiles": 12,
+  "changed_map_cells": 83,
+  "audited_buildings": 40,
+  "affected_buildings": 32,
+  "grammar_assertions": "No interior side caps; no upper-storey foundations; roof caps at outer edges only; ground-door frames remain native; masonry right ends closed"
+}

@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "trainers": [
+    {
+      "map": "MnGrandRapids",
+      "approach": [
+        22,
+        25
+      ],
+      "id": "MN_EXTRA_NPC_IRON_MINER_01",
+      "display_name": "MARA",
+      "trainer_class": "MN_IRON_RANGE_MINER",
+      "class_name": "MINER",
+      "template_class": "HIKER",
+      "sprite": "SPRITE_MN_IRON_RANGE_MINER",
+      "tile": [
+        22,
+        24
+      ],
+      "facing": "south",
+      "sight_range": 2,
+      "defeated_flag": "EVENT_MN_EXTRA_NPC_IRON_MINER_01",
+      "party": [
+        {
+          "species": "TACONIB",
+          "level": 35
+        },
+        {
+          "species": "PELLETOR",
+          "level": 37
+        }
+      ],
+      "before_lines": [
+        "Hard work pays.",
+        "Show me your grit!"
+      ],
+      "after_lines": [
+        "Solid technique!",
+        "Keep your footing."
+      ],
+      "loss_lines": [
+        "Build up slowly.",
+        "Then try again."
+      ]
+    }
+  ]
+}

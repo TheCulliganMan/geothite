@@ -8,115 +8,115 @@
   "quest": "Q04",
   "encounters": {
     "grass_rates": {
-      "morning": 10,
       "day": 10,
+      "morning": 10,
       "night": 10
     },
     "grass": {
       "morning": [
         {
-          "species": "PINECO",
-          "level": 23
+          "level": 23,
+          "species": "CLINKLAW"
         },
         {
-          "species": "ODDISH",
-          "level": 24
+          "level": 24,
+          "species": "RICELING"
         },
         {
-          "species": "SPINARAK",
-          "level": 25
+          "level": 25,
+          "species": "DEWDANT"
         },
         {
-          "species": "PIDGEOTTO",
-          "level": 26
+          "level": 26,
+          "species": "NOTCHBILL"
         },
         {
-          "species": "SKIPLOOM",
-          "level": 27
+          "level": 27,
+          "species": "FLOSSAIL"
         },
         {
-          "species": "GROWLITHE",
-          "level": 27
+          "level": 27,
+          "species": "HISSIP"
         },
         {
-          "species": "STANTLER",
-          "level": 27
+          "level": 27,
+          "species": "VELVAWN"
         }
       ],
       "day": [
         {
-          "species": "PINECO",
-          "level": 23
+          "level": 23,
+          "species": "CLINKLAW"
         },
         {
-          "species": "ODDISH",
-          "level": 24
+          "level": 24,
+          "species": "RICELING"
         },
         {
-          "species": "SPINARAK",
-          "level": 25
+          "level": 25,
+          "species": "DEWDANT"
         },
         {
-          "species": "PIDGEOTTO",
-          "level": 26
+          "level": 26,
+          "species": "NOTCHBILL"
         },
         {
-          "species": "SKIPLOOM",
-          "level": 27
+          "level": 27,
+          "species": "FLOSSAIL"
         },
         {
-          "species": "GROWLITHE",
-          "level": 27
+          "level": 27,
+          "species": "HISSIP"
         },
         {
-          "species": "STANTLER",
-          "level": 27
+          "level": 27,
+          "species": "VELVAWN"
         }
       ],
       "night": [
         {
-          "species": "NOCTOWL",
-          "level": 23
+          "level": 23,
+          "species": "BOOMRUFF"
         },
         {
-          "species": "ARIADOS",
-          "level": 24
+          "level": 24,
+          "species": "DEWDANT"
         },
         {
-          "species": "SPINARAK",
-          "level": 25
+          "level": 25,
+          "species": "DEWDANT"
         },
         {
-          "species": "PIDGEOTTO",
-          "level": 26
+          "level": 26,
+          "species": "NOTCHBILL"
         },
         {
-          "species": "SKIPLOOM",
-          "level": 27
+          "level": 27,
+          "species": "FLOSSAIL"
         },
         {
-          "species": "GROWLITHE",
-          "level": 27
+          "level": 27,
+          "species": "HISSIP"
         },
         {
-          "species": "STANTLER",
-          "level": 27
+          "level": 27,
+          "species": "VELVAWN"
         }
       ]
     },
     "water_rate": 4,
     "water": [
       {
-        "species": "POLIWAG",
-        "level": 23
+        "level": 23,
+        "species": "CHORIP"
       },
       {
-        "species": "WOOPER",
-        "level": 24
+        "level": 24,
+        "species": "GILLPUP"
       },
       {
-        "species": "MARILL",
-        "level": 27
+        "level": 27,
+        "species": "RIVVIT"
       }
     ]
   },
@@ -141,7 +141,7 @@
     "Route42",
     "Route29"
   ],
-  "description": "Needle Lake fills the west; a timber bridge crosses its outlet from a southern recovery cabin to the eastern pine road. A native Cut tree seals the optional lake-view shelf, Ether and Hiker below its uphill ramp. A fenced fishing pier, battle-or-grass conifer fork, one-way lookout return and short required southern habitat give the road a changing rhythm.",
+  "description": "Needle Lake fills the west; a timber bridge crosses its outlet from a southern recovery cabin to the eastern pine road. A native Cut tree seals the optional lake-view shelf, Ether and Hiker below its uphill ramp. A fenced fishing pier, battle-or-grass conifer fork, one-way lookout return and short required southern habitat give the road a changing rhythm. The eastern pine road bends around a wooded shore promontory; its narrow two-turn opening contrasts with the open lake crossing and the lookout climb.",
   "endpoints": [
     {
       "place": "ST CLOUD",
@@ -191,6 +191,18 @@
     ],
     [
       25,
+      20
+    ],
+    [
+      27,
+      20
+    ],
+    [
+      27,
+      17
+    ],
+    [
+      25,
       17
     ],
     [
@@ -199,7 +211,35 @@
     ],
     [
       21,
+      9
+    ],
+    [
+      20,
+      9
+    ],
+    [
+      20,
+      6
+    ],
+    [
+      24,
+      6
+    ],
+    [
+      24,
       4
+    ],
+    [
+      22,
+      4
+    ],
+    [
+      22,
+      3
+    ],
+    [
+      21,
+      3
     ],
     [
       21,
@@ -342,17 +382,17 @@
       "sight_range": 1,
       "party": [
         {
-          "species": "PINECO",
+          "species": "CLINKLAW",
           "level": 23
         },
         {
-          "species": "ARIADOS",
+          "species": "DEWDANT",
           "level": 23
         }
       ],
       "defeated_flag": "EVENT_MN_R06_TRAINER_01",
       "before_lines": [
-        "PINECO hides in",
+        "CLINKLAW hides in",
         "the camp trees."
       ],
       "after_lines": [
@@ -377,11 +417,11 @@
       "sight_range": 2,
       "party": [
         {
-          "species": "ODDISH",
+          "species": "RICELING",
           "level": 23
         },
         {
-          "species": "GROWLITHE",
+          "species": "HISSIP",
           "level": 24
         }
       ],
@@ -412,7 +452,7 @@
       "sight_range": 1,
       "party": [
         {
-          "species": "SLOWPOKE",
+          "species": "TICKLET",
           "level": 24
         }
       ],
@@ -443,11 +483,11 @@
       "sight_range": 1,
       "party": [
         {
-          "species": "PIDGEOTTO",
+          "species": "NOTCHBILL",
           "level": 24
         },
         {
-          "species": "NOCTOWL",
+          "species": "BOOMRUFF",
           "level": 24
         }
       ],
@@ -478,7 +518,7 @@
       "sight_range": 1,
       "party": [
         {
-          "species": "STANTLER",
+          "species": "VELVAWN",
           "level": 25
         }
       ],
@@ -877,10 +917,55 @@
       ],
       "minimum_return_steps": 19,
       "purpose": "The high lookout drops onto the north lake trail; the only uphill opening remains the eastern source ramp."
+    },
+    {
+      "id": "BIRD_GLADE_RETURN",
+      "bounds_core": [
+        44,
+        10,
+        46,
+        12
+      ],
+      "direction": "south",
+      "source_block": "57",
+      "upper_approach": [
+        45,
+        9
+      ],
+      "hop_from": [
+        45,
+        10
+      ],
+      "landing": [
+        45,
+        12
+      ],
+      "reverse_blocked": [
+        45,
+        11
+      ],
+      "side_barriers": [
+        [
+          43,
+          11
+        ],
+        [
+          46,
+          11
+        ]
+      ],
+      "return_passage_core": [
+        48,
+        10,
+        50,
+        12
+      ],
+      "minimum_return_steps": 9,
+      "purpose": "Northbound travel takes the eastern grass loop; the dry southbound trail uses this hop without Cut."
     }
   ],
-  "status": "Individually authored native overlay published locally. Exact source comparison, production Cut denial/removal/reward/Continue reset and saved reward persistence pass. Populated route journeys, earned regional progression and visual acceptance remain open.",
-  "anchor_status": "Resolved source-quadrant positions; pack exporter and production controller still must execute them.",
+  "status": "Crystal Route29-reference grass/ledge pass accepted in the named R06 review pack 4e1d845335f6. Native encounter habitat is 196 walking tiles. A new northern ledge pairs seven northbound grass steps with a dry southbound hop. Exact preservation, native camera review, both ledge lanes, populated journey, Cut/Surf, audio and Continue passed. Current-game integration and earned regional progression remain separate.",
+  "anchor_status": "All installed actors, cabin/warp records, resources, required bridge, fishing pier, Cut-gated lookout and old lookout ledge are preserved. Six installed arrival caps remain unchanged through exact local source snapshots. The new two-lane bird-glade ledge and nine-step grass return passed native controls; all four relevant controller cases passed including five trainers/eight opponents and saved party/bag/flags.",
   "battle_or_grass_choices": [
     {
       "id": "PINE_PASSING_BAY_CHOICE",
@@ -957,6 +1042,44 @@
       ],
       "mode": "surf",
       "review_only": true
+    }
+  ],
+  "directional_grass_loops": [
+    {
+      "id": "BIRD_GLADE_GRASS_OR_RETURN",
+      "ledge_id": "BIRD_GLADE_RETURN",
+      "grass_regions_core": [
+        [
+          48,
+          8,
+          50,
+          14
+        ],
+        [
+          46,
+          8,
+          48,
+          10
+        ],
+        [
+          46,
+          12,
+          48,
+          14
+        ]
+      ],
+      "northbound_minimum_grass_steps": 7,
+      "southbound_minimum_grass_steps": 0,
+      "dry_trail_core": [
+        [
+          45,
+          9
+        ],
+        [
+          45,
+          12
+        ]
+      ]
     }
   ]
 }

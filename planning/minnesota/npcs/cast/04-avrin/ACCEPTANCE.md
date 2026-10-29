@@ -1,0 +1,5 @@
+# AVRIN
+
+Distinct swept undercut, medium-brown skin, violet jacket with diagonal light inset, cuffed trousers and high-top shoes. Six field poses hand-authored; native face, fingers and hip meter refined after conversion. Same-scale common-palette Crystal comparisons and actual intro/field captures reviewed. Native court has a wall directly south: corrected the test to the actual west-side floor approach; existing geometry is unchanged. Full native badge, single-TM, repeat and saved-state checks pass.
+
+Native source: native-pixels-v2.json. Actual controller encounter passed on `content-packs/minnesota-trainer-cast-04-v01.crystalpack` with PP mutation, battle save/load, legal victory, follow-up and saved victory state. Boss rows additionally assert the native badge and exactly one authored TM, or League progress, as appropriate. Explicit fixture: Three legal level-60 Minnesota starters; adjacent position and explicit prior-access setup. Local encounter/rewards proof, not earned traversal or intended-level balance.

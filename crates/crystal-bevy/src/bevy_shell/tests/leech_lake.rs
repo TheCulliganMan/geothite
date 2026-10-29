@@ -74,6 +74,13 @@ fn fixture() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
     }
     state.badges.johto = [true; 8];
     state.sync_party_from_storage();
+    state.random_state = Default::default();
+    *controller.shell.shell.session_mut().divider_mut_for_tests() =
+        crystal_core::random::RuntimeDividerSource::replay(
+            (0_u32..262144)
+                .map(|n| ((n * 73 + 19) % 256) as u8)
+                .collect::<Vec<u8>>(),
+        );
     mark_runtime_snapshot_dirty(&mut controller.shell);
     controller.set_runtime_journal_enabled(false);
     assert_eq!(position(&mut controller), (20, 88));
@@ -404,6 +411,19 @@ fn step(
 ) {
     let before = position(controller);
     for _ in 0..12 {
+        let owner = controller.snapshot().expect("walking input owner");
+        if owner.phase == RuntimeShellPhase::Text && owner.battle.is_none() {
+            // Ordinary walking can produce native poison/faint notices. Their
+            // visible pages own input just as authored dialogue does; another
+            // direction cannot dismiss them. Acknowledge them through A.
+            eprintln!("R07 walking text at {before:?}: {:?}", owner.ui.text);
+            finish_text(controller);
+            assert_eq!(
+                position(controller),
+                before,
+                "walking notice changed the route position"
+            );
+        }
         controller
             .press(button)
             .expect("native populated-route movement");
@@ -421,7 +441,9 @@ fn step(
             if before.1 / 48 != at.1 / 48 {
                 journey.seam_directions.insert((before.1 / 48, at.1 / 48));
             }
-            if (44..56).contains(&at.0) && (44..48).contains(&at.1) {
+            if ((44..56).contains(&at.0) && (42..50).contains(&at.1))
+                || ((42..44).contains(&at.0) && (48..50).contains(&at.1))
+            {
                 assert_eq!(kind(runtime, at), "TALL_GRASS");
                 journey.meadow_steps += 1;
             }
@@ -432,7 +454,11 @@ fn step(
             "unexpected move {before:?} -> {at:?}, wanted {target:?}"
         );
     }
-    panic!("native route step {before:?} -> {target:?} blocked");
+    let owner = controller.snapshot().expect("blocked walking input owner");
+    panic!(
+        "native route step {before:?} -> {target:?} blocked: phase={:?}; ui={:?}; objects={:?}",
+        owner.phase, owner.ui, owner.visible_object_runtime_tiles
+    );
 }
 
 fn walk(
@@ -481,6 +507,13 @@ fn talk(
         "unexpected trainer instead of interaction at {at:?}"
     );
     assert_eq!(snapshot.phase, RuntimeShellPhase::Text);
+    // Native item presentation retains its actual first page while the LCD
+    // can already show the following "put ... in PACK" page.
+    let first_item_page = controller
+        .shell
+        .visible_field_item_notice
+        .as_ref()
+        .map(|notice| notice.sound_trigger_text.clone());
     controller
         .press(GameButton::Down)
         .expect("try movement while dialogue owns input");
@@ -505,7 +538,11 @@ fn talk(
                     "dialogue at {at:?} skipped an input-gated page in {identity:?}"
                 );
             }
-            let text = printed
+            let text = first_item_page
+                .iter()
+                .chain(printed.iter())
+                .cloned()
+                .collect::<Vec<_>>()
                 .join("\n")
                 .split_whitespace()
                 .collect::<Vec<_>>()
@@ -711,7 +748,7 @@ fn leech_lake_controller_populated_round_trip_battles_resources_cut_and_continue
         &mut journey,
         1,
         (13, 83),
-        [("WOOPER", 27), ("POLIWAG", 27)],
+        [("GILLPUP", 27), ("CHORIP", 27)],
     );
     pickup(
         &mut grid,
@@ -729,7 +766,7 @@ fn leech_lake_controller_populated_round_trip_battles_resources_cut_and_continue
         &mut journey,
         2,
         (19, 63),
-        [("POLIWAG", 27), ("SKIPLOOM", 27)],
+        [("CHORIP", 27), ("FLOSSAIL", 27)],
     );
     // Required journey geometry: actual long southern causeway, native seam
     // through the paid grass neck, and the separate narrow northern crossing.
@@ -743,7 +780,7 @@ fn leech_lake_controller_populated_round_trip_battles_resources_cut_and_continue
         &mut journey,
         3,
         (55, 65),
-        [("SKIPLOOM", 28), ("PINECO", 28)],
+        [("FLOSSAIL", 28), ("CLINKLAW", 28)],
     );
     trainer(
         &grid,
@@ -752,7 +789,7 @@ fn leech_lake_controller_populated_round_trip_battles_resources_cut_and_continue
         &mut journey,
         4,
         (45, 51),
-        [("PINECO", 28), ("ODDISH", 28)],
+        [("CLINKLAW", 28), ("RICELING", 28)],
     );
     for at in [(49, 48), (49, 47)] {
         walk(&grid, &mut controller, &runtime, &mut journey, at);
@@ -768,7 +805,7 @@ fn leech_lake_controller_populated_round_trip_battles_resources_cut_and_continue
         &mut journey,
         5,
         (51, 31),
-        [("ODDISH", 29), ("MARILL", 29)],
+        [("RICELING", 29), ("RIVVIT", 29)],
     );
     pickup(
         &mut grid,
@@ -789,7 +826,7 @@ fn leech_lake_controller_populated_round_trip_battles_resources_cut_and_continue
         &mut journey,
         6,
         (13, 31),
-        [("WOOPER", 29), ("YANMA", 29)],
+        [("GILLPUP", 29), ("WINDHOPPER", 29)],
     );
     trainer(
         &grid,
@@ -798,7 +835,7 @@ fn leech_lake_controller_populated_round_trip_battles_resources_cut_and_continue
         &mut journey,
         7,
         (41, 15),
-        [("POLIWAG", 30), ("WOOPER", 30)],
+        [("CHORIP", 30), ("GILLPUP", 30)],
     );
     trainer(
         &grid,
@@ -807,7 +844,7 @@ fn leech_lake_controller_populated_round_trip_battles_resources_cut_and_continue
         &mut journey,
         8,
         (13, 13),
-        [("SKIPLOOM", 30), ("POLIWAG", 30)],
+        [("FLOSSAIL", 30), ("CHORIP", 30)],
     );
     pickup(
         &mut grid,
@@ -864,7 +901,7 @@ fn leech_lake_controller_populated_round_trip_battles_resources_cut_and_continue
         "all 8 actual trainer battles must spend selected PP"
     );
     assert!(
-        journey.meadow_steps >= 4,
+        journey.meadow_steps >= 8,
         "required route meadow was skipped"
     );
     assert_eq!(journey.seam_directions, BTreeSet::from([(0, 1), (1, 0)]));
@@ -893,6 +930,11 @@ fn leech_lake_controller_populated_round_trip_battles_resources_cut_and_continue
     }
     for i in 1..=4 {
         assert!(flag(&loaded, &format!("EVENT_MN_R07_ITEM_{i:02}")));
+    }
+    if let Some(path) = std::env::var_os("CRYSTAL_LEECH_LAKE_JOURNEY_SAVE") {
+        loaded
+            .save(PathBuf::from(path))
+            .expect("export reached populated R07 save");
     }
     assert!(
         talk(&grid, &mut loaded, &runtime, &mut journey, (13, 83)).contains("Listen before you")

@@ -1,0 +1,1562 @@
+{
+  "id": "MN_R08",
+  "map_prefix": "MnR08",
+  "name": "Northern Lakes and Ancient Mire",
+  "dimensions_metatiles": [
+    40,
+    48
+  ],
+  "chunk_metatiles": [
+    32,
+    24
+  ],
+  "chunk_columns": 2,
+  "chunk_rows": 2,
+  "endpoints": [
+    {
+      "place": "LEECH LAKE",
+      "side": "S",
+      "gate_metatile": [
+        13,
+        47
+      ],
+      "landing_metatile": [
+        13,
+        44
+      ]
+    },
+    {
+      "place": "BEMIDJI",
+      "side": "N",
+      "gate_metatile": [
+        12,
+        0
+      ],
+      "landing_metatile": [
+        15,
+        2
+      ]
+    }
+  ],
+  "required_flags": [
+    "BADGE_6"
+  ],
+  "quest": "Q05",
+  "tileset": "johto",
+  "source_references": [
+    "Route34",
+    "Route42",
+    "Route45"
+  ],
+  "description": "Three unequal northern waters now include an ancient peat mire: blackwater fingers, old cedar roots, reed crossings and a dry cryptid sanctuary interrupt the former Long Lake basin. The optional raised trail branches off the Long Lake saddle; ordinary Leech Lake\u2013Bemidji travel, the Cut-controlled Birch island, native ledges, fishing pier and every existing activity remain intact. Vergloom story publication is a separate guarded overlay.",
+  "main_path_metatiles": [
+    [
+      13,
+      47
+    ],
+    [
+      13,
+      44
+    ],
+    [
+      9,
+      44
+    ],
+    [
+      9,
+      38
+    ],
+    [
+      11,
+      38
+    ],
+    [
+      11,
+      36
+    ],
+    [
+      14,
+      36
+    ],
+    [
+      14,
+      31
+    ],
+    [
+      12,
+      31
+    ],
+    [
+      12,
+      26
+    ],
+    [
+      16,
+      26
+    ],
+    [
+      16,
+      25
+    ],
+    [
+      24,
+      25
+    ],
+    [
+      24,
+      22
+    ],
+    [
+      20,
+      22
+    ],
+    [
+      20,
+      18
+    ],
+    [
+      22,
+      18
+    ],
+    [
+      22,
+      5
+    ],
+    [
+      22,
+      3
+    ],
+    [
+      19,
+      1
+    ],
+    [
+      15,
+      1
+    ],
+    [
+      15,
+      2
+    ],
+    [
+      12,
+      2
+    ],
+    [
+      12,
+      0
+    ]
+  ],
+  "main_lane_width_gameplay_tiles": 2,
+  "districts": [
+    {
+      "id": "D1",
+      "name": "Leech Lake trailhead and Cedar shore",
+      "bounds_metatiles": [
+        5,
+        24,
+        39,
+        48
+      ],
+      "landmark_metatile": [
+        36,
+        36
+      ],
+      "purpose": "Choose short inlet bridge or long grassy shore circuit; actual gated fishing pier and two rewards."
+    },
+    {
+      "id": "D2",
+      "name": "Birch terrace and island pond",
+      "bounds_metatiles": [
+        0,
+        2,
+        22,
+        24
+      ],
+      "landmark_metatile": [
+        7,
+        9
+      ],
+      "purpose": "Accessible bridge island, uphill terrace and native one-way return to lower shore."
+    },
+    {
+      "id": "D3",
+      "name": "Long Lake and Bemidji saddle",
+      "bounds_metatiles": [
+        20,
+        0,
+        39,
+        24
+      ],
+      "landmark_metatile": [
+        33,
+        14
+      ],
+      "purpose": "Northern shore loop with encounter choices and narrow reward peninsula."
+    }
+  ],
+  "loops": [
+    {
+      "id": "CEDAR_SHORE_CIRCUIT",
+      "path_metatiles": [
+        [
+          13,
+          44
+        ],
+        [
+          9,
+          44
+        ],
+        [
+          9,
+          38
+        ],
+        [
+          11,
+          38
+        ],
+        [
+          11,
+          36
+        ],
+        [
+          14,
+          36
+        ],
+        [
+          14,
+          31
+        ],
+        [
+          12,
+          31
+        ],
+        [
+          12,
+          26
+        ],
+        [
+          16,
+          26
+        ],
+        [
+          16,
+          25
+        ],
+        [
+          24,
+          25
+        ],
+        [
+          26,
+          25
+        ],
+        [
+          26,
+          28
+        ],
+        [
+          31,
+          28
+        ],
+        [
+          31,
+          27
+        ],
+        [
+          34,
+          27
+        ],
+        [
+          34,
+          29
+        ],
+        [
+          36,
+          29
+        ],
+        [
+          36,
+          43
+        ],
+        [
+          31,
+          43
+        ],
+        [
+          31,
+          44
+        ],
+        [
+          22,
+          44
+        ],
+        [
+          22,
+          42
+        ],
+        [
+          19,
+          42
+        ],
+        [
+          19,
+          43
+        ],
+        [
+          16,
+          43
+        ],
+        [
+          16,
+          44
+        ],
+        [
+          13,
+          44
+        ]
+      ],
+      "joins_districts": [
+        "D1"
+      ],
+      "entry_rule": "open",
+      "return_rule": "two_way"
+    },
+    {
+      "id": "LONG_LAKE_CIRCUIT",
+      "path_metatiles": [
+        [
+          20,
+          18
+        ],
+        [
+          22,
+          18
+        ],
+        [
+          22,
+          5
+        ],
+        [
+          32,
+          5
+        ],
+        [
+          32,
+          6
+        ],
+        [
+          36,
+          6
+        ],
+        [
+          36,
+          12
+        ],
+        [
+          34,
+          12
+        ],
+        [
+          34,
+          17
+        ],
+        [
+          33,
+          17
+        ],
+        [
+          33,
+          18
+        ],
+        [
+          31,
+          18
+        ],
+        [
+          31,
+          21
+        ],
+        [
+          24,
+          21
+        ],
+        [
+          24,
+          22
+        ],
+        [
+          20,
+          22
+        ],
+        [
+          20,
+          18
+        ]
+      ],
+      "joins_districts": [
+        "D2",
+        "D3"
+      ],
+      "entry_rule": "open",
+      "return_rule": "two_way"
+    }
+  ],
+  "minimum_optional_branches": 4,
+  "trainers": [
+    {
+      "id": "MN_R08_T01",
+      "district": "D1",
+      "facing": "west",
+      "sight_range": 1,
+      "party": [
+        {
+          "species": "CLINKLAW",
+          "level": 29
+        },
+        {
+          "species": "GLISNARE",
+          "level": 29
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R08_TRAINER_01",
+      "block_main_lane": false,
+      "display_name": "SOREN",
+      "trainer_class": "CAMPER",
+      "sprite": "SPRITE_YOUNGSTER",
+      "tile": [
+        21,
+        85
+      ],
+      "before_lines": [
+        "The inlet bridge",
+        "is the short way."
+      ],
+      "after_lines": [
+        "The long shore has",
+        "its own rewards."
+      ],
+      "loss_lines": [
+        "A good lake walk!"
+      ]
+    },
+    {
+      "id": "MN_R08_T02",
+      "district": "D1",
+      "facing": "east",
+      "sight_range": 1,
+      "party": [
+        {
+          "species": "GLISNARE",
+          "level": 29
+        },
+        {
+          "species": "NOTCHBILL",
+          "level": 29
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R08_TRAINER_02",
+      "block_main_lane": false,
+      "display_name": "WILLOW",
+      "trainer_class": "PICNICKER",
+      "sprite": "SPRITE_LASS",
+      "tile": [
+        27,
+        53
+      ],
+      "before_lines": [
+        "Hear the water",
+        "under the boards?"
+      ],
+      "after_lines": [
+        "Rails keep us on",
+        "the safe crossing."
+      ],
+      "loss_lines": [
+        "A good lake walk!"
+      ]
+    },
+    {
+      "id": "MN_R08_T03",
+      "district": "D1",
+      "facing": "west",
+      "sight_range": 2,
+      "party": [
+        {
+          "species": "NOTCHBILL",
+          "level": 30
+        },
+        {
+          "species": "MUDMENDER",
+          "level": 30
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R08_TRAINER_03",
+      "block_main_lane": false,
+      "display_name": "FINN",
+      "trainer_class": "FISHER",
+      "sprite": "SPRITE_FISHER",
+      "tile": [
+        73,
+        63
+      ],
+      "before_lines": [
+        "A long walk makes",
+        "a patient angler."
+      ],
+      "after_lines": [
+        "There is a pier",
+        "around this cove."
+      ],
+      "loss_lines": [
+        "A good lake walk!"
+      ]
+    },
+    {
+      "id": "MN_R08_T04",
+      "district": "D2",
+      "facing": "north",
+      "sight_range": 1,
+      "party": [
+        {
+          "species": "MUDMENDER",
+          "level": 30
+        },
+        {
+          "species": "VELVAWN",
+          "level": 30
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R08_TRAINER_04",
+      "block_main_lane": false,
+      "display_name": "ADA",
+      "trainer_class": "BUG_CATCHER",
+      "sprite": "SPRITE_BUG_CATCHER",
+      "tile": [
+        15,
+        19
+      ],
+      "before_lines": [
+        "Lake bugs like",
+        "this quiet island."
+      ],
+      "after_lines": [
+        "The gate opens",
+        "with a clean Cut."
+      ],
+      "loss_lines": [
+        "A good lake walk!"
+      ]
+    },
+    {
+      "id": "MN_R08_T05",
+      "district": "D3",
+      "facing": "west",
+      "sight_range": 1,
+      "party": [
+        {
+          "species": "VELVAWN",
+          "level": 31
+        },
+        {
+          "species": "NOTCHBILL",
+          "level": 31
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R08_TRAINER_05",
+      "block_main_lane": false,
+      "display_name": "ELI",
+      "trainer_class": "BIRD_KEEPER",
+      "sprite": "SPRITE_YOUNGSTER",
+      "tile": [
+        37,
+        35
+      ],
+      "before_lines": [
+        "Lake wind lifts",
+        "my team skyward!"
+      ],
+      "after_lines": [
+        "The two lake paths",
+        "meet at the saddle"
+      ],
+      "loss_lines": [
+        "A good lake walk!"
+      ]
+    },
+    {
+      "id": "MN_R08_T06",
+      "district": "D3",
+      "facing": "south",
+      "sight_range": 2,
+      "party": [
+        {
+          "species": "CLINKLAW",
+          "level": 31
+        },
+        {
+          "species": "TICKLET",
+          "level": 31
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R08_TRAINER_06",
+      "block_main_lane": false,
+      "display_name": "MARA",
+      "trainer_class": "FISHER",
+      "sprite": "SPRITE_FISHER",
+      "tile": [
+        67,
+        11
+      ],
+      "before_lines": [
+        "The narrow spit",
+        "is worth the walk."
+      ],
+      "after_lines": [
+        "Watch the shore",
+        "before you cast."
+      ],
+      "loss_lines": [
+        "A good lake walk!"
+      ]
+    },
+    {
+      "id": "MN_R08_T07",
+      "district": "D2",
+      "facing": "east",
+      "sight_range": 1,
+      "party": [
+        {
+          "species": "GLISNARE",
+          "level": 32
+        },
+        {
+          "species": "CLINKLAW",
+          "level": 32
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R08_TRAINER_07",
+      "block_main_lane": false,
+      "display_name": "REED",
+      "trainer_class": "CAMPER",
+      "sprite": "SPRITE_YOUNGSTER",
+      "tile": [
+        27,
+        17
+      ],
+      "before_lines": [
+        "Climb up slowly.",
+        "Race me back down!"
+      ],
+      "after_lines": [
+        "The ledge returns",
+        "to the lower path."
+      ],
+      "loss_lines": [
+        "A good lake walk!"
+      ]
+    },
+    {
+      "id": "MN_R08_T08",
+      "district": "D1",
+      "facing": "north",
+      "sight_range": 2,
+      "party": [
+        {
+          "species": "NOTCHBILL",
+          "level": 32
+        },
+        {
+          "species": "GLISNARE",
+          "level": 32
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R08_TRAINER_08",
+      "block_main_lane": false,
+      "display_name": "NELL",
+      "trainer_class": "POKEMANIAC",
+      "sprite": "SPRITE_SUPER_NERD",
+      "tile": [
+        69,
+        85
+      ],
+      "before_lines": [
+        "The long shore is",
+        "full of surprises."
+      ],
+      "after_lines": [
+        "That reward spit",
+        "is just up ahead."
+      ],
+      "loss_lines": [
+        "A good lake walk!"
+      ]
+    }
+  ],
+  "items": [
+    {
+      "id": "MN_R08_ITEM_01",
+      "item": "SUPER_POTION",
+      "quantity": 1,
+      "flag": "EVENT_MN_R08_ITEM_01",
+      "access": "High birch shelf beyond the native ramp, beside Reed; downhill ledge returns to the pond-shore path.",
+      "tile": [
+        31,
+        15
+      ]
+    },
+    {
+      "id": "MN_R08_ITEM_02",
+      "item": "GREAT_BALL",
+      "quantity": 1,
+      "flag": "EVENT_MN_R08_ITEM_02",
+      "access": "Visible island reward reached over a real two-row bridge.",
+      "tile": [
+        15,
+        17
+      ]
+    },
+    {
+      "id": "MN_R08_ITEM_03",
+      "item": "REPEL",
+      "quantity": 1,
+      "flag": "EVENT_MN_R08_ITEM_03",
+      "access": "Actual dry alder spit between two Long Lake bays, approached from the eastern shore.",
+      "tile": [
+        65,
+        27
+      ]
+    },
+    {
+      "id": "MN_R08_ITEM_04",
+      "item": "ETHER",
+      "quantity": 1,
+      "flag": "EVENT_MN_R08_ITEM_04",
+      "access": "Southern Ether spit reached from long Cedar shore.",
+      "tile": [
+        59,
+        89
+      ]
+    }
+  ],
+  "encounters": {
+    "grass_rates": {
+      "day": 10,
+      "morning": 10,
+      "night": 10
+    },
+    "grass": {
+      "morning": [
+        {
+          "level": 29,
+          "species": "CLINKLAW"
+        },
+        {
+          "level": 30,
+          "species": "GLISNARE"
+        },
+        {
+          "level": 31,
+          "species": "NOTCHBILL"
+        },
+        {
+          "level": 32,
+          "species": "MUDMENDER"
+        },
+        {
+          "level": 33,
+          "species": "SHEDSTAG"
+        },
+        {
+          "level": 33,
+          "species": "NOTCHBILL"
+        },
+        {
+          "level": 33,
+          "species": "SOLSTORT"
+        }
+      ],
+      "day": [
+        {
+          "level": 29,
+          "species": "CLINKLAW"
+        },
+        {
+          "level": 30,
+          "species": "GLISNARE"
+        },
+        {
+          "level": 31,
+          "species": "NOTCHBILL"
+        },
+        {
+          "level": 32,
+          "species": "MUDMENDER"
+        },
+        {
+          "level": 33,
+          "species": "SHEDSTAG"
+        },
+        {
+          "level": 33,
+          "species": "NOTCHBILL"
+        },
+        {
+          "level": 33,
+          "species": "SOLSTORT"
+        }
+      ],
+      "night": [
+        {
+          "level": 29,
+          "species": "BOOMRUFF"
+        },
+        {
+          "level": 30,
+          "species": "BARRICANT"
+        },
+        {
+          "level": 31,
+          "species": "NOTCHBILL"
+        },
+        {
+          "level": 32,
+          "species": "MUDMENDER"
+        },
+        {
+          "level": 33,
+          "species": "SHEDSTAG"
+        },
+        {
+          "level": 33,
+          "species": "NOTCHBILL"
+        },
+        {
+          "level": 33,
+          "species": "SOLSTORT"
+        }
+      ]
+    },
+    "water_rate": 4,
+    "water": [
+      {
+        "level": 29,
+        "species": "CHORIP"
+      },
+      {
+        "level": 30,
+        "species": "GILLPUP"
+      },
+      {
+        "level": 33,
+        "species": "RIVVIT"
+      }
+    ]
+  },
+  "interiors": [],
+  "art_constraints": [
+    "Only original packed 8x8 source tiles.",
+    "No painted shadows, enlarged trees or perspective props.",
+    "Fit source shoreline/cliff quadrants; draw source trees in coherent metatile groups."
+  ],
+  "status": "Current eastern-cedar revision published in minnesota-quality-review.crystalpack (471 maps). Strict native read and all377 audio checks pass; production Cut denial/open/reward/reset and populated two-trainer/three-open-resource selected-PP/money/Continue cases pass. Four actual native walking-camera views inspected. Full eight-trainer journey, earned BADGE_6/Q05 and final user visual approval remain open.",
+  "anchor_status": "Exact zero-based core-tile anchors retained through the22-block lawn-to-forest revision. Current471-map native geometry/input checks and four actual Floor-centered engine captures support this revision; regional prerequisites are fixture setup rather than earned progression.",
+  "required_grass_crossings": [
+    {
+      "id": "LEECH_HABITAT",
+      "bounds_core": [
+        22,
+        90,
+        32,
+        94
+      ],
+      "minimum_grass_steps": 4
+    }
+  ],
+  "one_way_ledges": [
+    {
+      "id": "BIRCH_RETURN_DROP",
+      "bounds_core": [
+        28,
+        26,
+        30,
+        28
+      ],
+      "direction": "south",
+      "source_block": "57",
+      "upper_approach": [
+        29,
+        25
+      ],
+      "hop_from": [
+        29,
+        26
+      ],
+      "landing": [
+        29,
+        28
+      ],
+      "reverse_blocked": [
+        29,
+        27
+      ],
+      "side_barriers": [
+        [
+          27,
+          27
+        ],
+        [
+          30,
+          27
+        ]
+      ],
+      "return_passage_core": [
+        34,
+        26,
+        36,
+        28
+      ],
+      "minimum_return_steps": 9,
+      "purpose": "Drop from the high birch bank to the pond-shore path; climb back through the eastern native ramp."
+    },
+    {
+      "id": "CEDAR_PIER_BANK_DROP",
+      "bounds_core": [
+        72,
+        78,
+        74,
+        80
+      ],
+      "direction": "south",
+      "source_block": "57",
+      "upper_approach": [
+        73,
+        77
+      ],
+      "hop_from": [
+        73,
+        78
+      ],
+      "landing": [
+        73,
+        80
+      ],
+      "reverse_blocked": [
+        73,
+        79
+      ],
+      "side_barriers": [
+        [
+          71,
+          79
+        ],
+        [
+          74,
+          79
+        ]
+      ],
+      "return_passage_core": [
+        75,
+        78,
+        76,
+        82
+      ],
+      "return_region_core": [
+        70,
+        74,
+        77,
+        84
+      ],
+      "minimum_return_steps": 11,
+      "purpose": "Short two-lane bank descent south of the pier; local ordinary return follows the permanent outer pine shoulder through four encounter-grass steps. The longer whole-lake route remains available."
+    }
+  ],
+  "doors": [],
+  "residents": [
+    {
+      "id": "MN_R08_FISHER",
+      "sprite": "SPRITE_FISHER",
+      "tile": [
+        65,
+        72
+      ],
+      "facing": "west",
+      "lines": [
+        "These rails leave",
+        "room to cast.",
+        "The lake is deep",
+        "past the boards."
+      ]
+    },
+    {
+      "id": "MN_R08_BIRCH_WALKER",
+      "sprite": "SPRITE_GRAMPS",
+      "tile": [
+        39,
+        39
+      ],
+      "facing": "east",
+      "lines": [
+        "The birch bank",
+        "drops to the path.",
+        "Climb the ramp",
+        "when going north."
+      ]
+    },
+    {
+      "id": "MN_R08_TRAIL_WARDEN",
+      "sprite": "SPRITE_OFFICER",
+      "tile": [
+        29,
+        89
+      ],
+      "facing": "north",
+      "lines": [
+        "BEMIDJI is north.",
+        "The bridge is fast",
+        "The far lake shore",
+        "is a longer walk."
+      ]
+    }
+  ],
+  "signs": [
+    {
+      "id": "MN_R08_SIGN_01",
+      "tile": [
+        28,
+        88
+      ],
+      "lines": [
+        "NORTHERN LAKES",
+        "BEMIDJI: NORTH"
+      ]
+    },
+    {
+      "id": "MN_R08_SIGN_02",
+      "tile": [
+        22,
+        54
+      ],
+      "lines": [
+        "CEDAR INLET",
+        "BRIDGE OR SHORE"
+      ]
+    },
+    {
+      "id": "MN_R08_SIGN_03",
+      "tile": [
+        30,
+        28
+      ],
+      "lines": [
+        "BIRCH BANK",
+        "DROP TO RETURN"
+      ]
+    },
+    {
+      "id": "MN_R08_SIGN_04",
+      "tile": [
+        8,
+        32
+      ],
+      "lines": [
+        "BIRCH POND",
+        "ISLAND WALK"
+      ]
+    },
+    {
+      "id": "MN_R08_SIGN_05",
+      "tile": [
+        70,
+        80
+      ],
+      "lines": [
+        "CEDAR LAKE PIER",
+        "FISH INSIDE RAILS"
+      ]
+    },
+    {
+      "id": "MN_R08_SIGN_06",
+      "tile": [
+        38,
+        4
+      ],
+      "lines": [
+        "BEMIDJI NORTH",
+        "LEECH LAKE SOUTH"
+      ]
+    }
+  ],
+  "viewpoints": [
+    {
+      "id": "TRAILHEAD",
+      "tile": [
+        27,
+        89
+      ]
+    },
+    {
+      "id": "INLET_BRIDGE",
+      "tile": [
+        37,
+        49
+      ]
+    },
+    {
+      "id": "CEDAR_MARSH",
+      "tile": [
+        73,
+        69
+      ]
+    },
+    {
+      "id": "FISHING_PIER",
+      "tile": [
+        67,
+        72
+      ]
+    },
+    {
+      "id": "ETHER_SPIT",
+      "tile": [
+        59,
+        88
+      ]
+    },
+    {
+      "id": "BIRCH_ISLAND",
+      "tile": [
+        13,
+        18
+      ]
+    },
+    {
+      "id": "ISLAND_CUT_GATE",
+      "tile": [
+        6,
+        22
+      ]
+    },
+    {
+      "id": "BIRCH_DROP",
+      "tile": [
+        29,
+        25
+      ]
+    },
+    {
+      "id": "BIRCH_RAMP",
+      "tile": [
+        35,
+        27
+      ]
+    },
+    {
+      "id": "LONG_LAKE_SADDLE",
+      "tile": [
+        41,
+        43
+      ]
+    },
+    {
+      "id": "NORTH_SHORE",
+      "tile": [
+        63,
+        11
+      ]
+    },
+    {
+      "id": "REWARD_PENINSULA",
+      "tile": [
+        65,
+        26
+      ]
+    },
+    {
+      "id": "BEMIDJI",
+      "tile": [
+        41,
+        5
+      ]
+    }
+  ],
+  "route_choices": [
+    {
+      "id": "LONG_LAKE_BANK_OR_SHORE",
+      "short_lane": "West bank: two unavoidable grass steps at the narrow lake neck.",
+      "long_lane": "Northern and eastern fishing shore: longer dry walk with Sivren and her party.",
+      "short_lane_region_core": [
+        40,
+        16,
+        48,
+        36
+      ],
+      "short_lane_from": [
+        45,
+        21
+      ],
+      "short_lane_to": [
+        45,
+        33
+      ],
+      "grass_bounds_core": [
+        44,
+        26,
+        46,
+        28
+      ],
+      "minimum_grass_steps": 2
+    },
+    {
+      "id": "CEDAR_BRIDGE_OR_MARSH",
+      "short_lane": "Railed inlet bridge: quick crossing between the mainland shores.",
+      "long_lane": "Cedar shore: two unavoidable grass steps before the fishing pier, two trainers and Ether.",
+      "short_lane_region_core": [
+        70,
+        64,
+        74,
+        80
+      ],
+      "short_lane_from": [
+        73,
+        65
+      ],
+      "short_lane_to": [
+        73,
+        77
+      ],
+      "grass_bounds_core": [
+        70,
+        68,
+        74,
+        70
+      ],
+      "minimum_grass_steps": 2
+    }
+  ],
+  "cut_gates": [
+    {
+      "id": "MN_R08_SHORTCUT",
+      "kind": "Cut-exclusive Birch Pond island excursion: source shore rails and a water rock prevent Surf landing behind the tree.",
+      "tile": [
+        6,
+        21
+      ],
+      "approach": [
+        6,
+        22
+      ],
+      "requires": [
+        "MOVE_CUT",
+        "ENGINE_HIVEBADGE"
+      ],
+      "required_badge": {
+        "region": "johto",
+        "index": 1
+      },
+      "source_block": "63",
+      "replacement_block": "3f",
+      "rejoins_main_route": false,
+      "mandatory": false,
+      "gated_viewpoints": [
+        "BIRCH_ISLAND"
+      ],
+      "gated_signs": [],
+      "side_barriers": [
+        [
+          5,
+          21
+        ],
+        [
+          8,
+          21
+        ]
+      ],
+      "return_rule": "Native in-visit field-move block override, with save/Continue semantics verified separately; no permanent progression flag invented.",
+      "targets": [
+        [
+          14,
+          17
+        ],
+        [
+          14,
+          19
+        ]
+      ],
+      "gated_actor_ids": [
+        "MN_R08_T04",
+        "MN_R08_ITEM_02"
+      ],
+      "blocks_surf_landing": true,
+      "shore_rail_blocks": [
+        {
+          "position": [
+            6,
+            8
+          ],
+          "block": "41"
+        },
+        {
+          "position": [
+            7,
+            8
+          ],
+          "block": "41"
+        },
+        {
+          "position": [
+            8,
+            8
+          ],
+          "block": "42"
+        },
+        {
+          "position": [
+            6,
+            9
+          ],
+          "block": "49"
+        },
+        {
+          "position": [
+            8,
+            9
+          ],
+          "block": "46"
+        },
+        {
+          "position": [
+            6,
+            10
+          ],
+          "block": "48"
+        },
+        {
+          "position": [
+            7,
+            10
+          ],
+          "block": "49"
+        },
+        {
+          "position": [
+            8,
+            10
+          ],
+          "block": "4a"
+        },
+        {
+          "position": [
+            3,
+            8
+          ],
+          "block": "41"
+        }
+      ],
+      "shore_rock_blocks": [
+        [
+          4,
+          10
+        ]
+      ]
+    }
+  ],
+  "shortcut": null,
+  "terrain_revision": {
+    "id": "route-quality-next-v01",
+    "pack_sha256": "1186a24371251f741db88cf35a7863145ed5423da4ad3d7c6485c8f242753ecb",
+    "native_publication_inputs": "renders/route-quality-next/integration-inputs",
+    "controller_proof": "renders/route-quality-next/controller-v05/controller-proof.json",
+    "runbook": "playable/route-quality-next.md",
+    "scope": "Reviewed bounded terrain only; no full-route final acceptance or earned regional progression claim."
+  },
+  "directional_grass_loops": [
+    {
+      "id": "BIRCH_GRASS_CLIMB_OR_DROP",
+      "ledge_id": "BIRCH_RETURN_DROP",
+      "outbound_start_core": [
+        29,
+        28
+      ],
+      "outbound_end_core": [
+        29,
+        25
+      ],
+      "grass_regions_core": [
+        [
+          34,
+          28,
+          40,
+          30
+        ],
+        [
+          32,
+          30,
+          40,
+          32
+        ]
+      ],
+      "northbound_minimum_grass_steps": 4,
+      "southbound_minimum_grass_steps": 0,
+      "dry_trail_core": [
+        [
+          29,
+          25
+        ],
+        [
+          29,
+          28
+        ]
+      ],
+      "scope": "Birch-bank climb and downhill return; the whole lake circuit remains available."
+    },
+    {
+      "id": "CEDAR_PIER_GRASS_CLIMB_OR_DROP",
+      "ledge_id": "CEDAR_PIER_BANK_DROP",
+      "outbound_start_core": [
+        73,
+        80
+      ],
+      "outbound_end_core": [
+        73,
+        77
+      ],
+      "walk_region_core": [
+        70,
+        74,
+        77,
+        84
+      ],
+      "grass_regions_core": [
+        [
+          74,
+          76,
+          76,
+          78
+        ],
+        [
+          74,
+          82,
+          76,
+          84
+        ]
+      ],
+      "northbound_minimum_grass_steps": 4,
+      "southbound_minimum_grass_steps": 0,
+      "dry_trail_core": [
+        [
+          73,
+          77
+        ],
+        [
+          73,
+          80
+        ]
+      ],
+      "scope": "Existing local permanent-pine shoulder; the longer whole-lake road remains available."
+    }
+  ],
+  "ancient_mire": {
+    "legendary": "VERGLOOM",
+    "family": "MN_F048",
+    "source_identity": "Vergas forest cryptid",
+    "bounds_metatiles": [
+      23,
+      5,
+      38,
+      21
+    ],
+    "entry_core": [
+      45,
+      37
+    ],
+    "trail_core": [
+      [
+        45,
+        37
+      ],
+      [
+        49,
+        37
+      ],
+      [
+        49,
+        33
+      ],
+      [
+        53,
+        33
+      ],
+      [
+        53,
+        29
+      ],
+      [
+        57,
+        29
+      ],
+      [
+        57,
+        25
+      ],
+      [
+        59,
+        25
+      ]
+    ],
+    "creature_map": "MnR08C00R00",
+    "creature_core": [
+      59,
+      23
+    ],
+    "interaction_core": [
+      59,
+      24
+    ],
+    "facing": "north",
+    "main_travel_requires_legendary": false,
+    "status": "Terrain candidate; optional native event owned by northstar_ancient_swamp overlay",
+    "clue_stations": [
+      {
+        "id": "OLD_TIMBER",
+        "target_core": [
+          47,
+          33
+        ],
+        "interaction_core": [
+          48,
+          33
+        ],
+        "facing": "west",
+        "native_block": "0a",
+        "landmark": "Petrified timber marker beside old cedar root remains; WALL avoids contextual Headbutt input"
+      },
+      {
+        "id": "PEAT_FOOTPRINT",
+        "target_core": [
+          55,
+          29
+        ],
+        "interaction_core": [
+          56,
+          29
+        ],
+        "facing": "west",
+        "native_block": "0a"
+      },
+      {
+        "id": "MOSS_SCRAPE",
+        "target_core": [
+          60,
+          25
+        ],
+        "interaction_core": [
+          59,
+          25
+        ],
+        "facing": "east",
+        "native_block": "0a"
+      }
+    ]
+  }
+}

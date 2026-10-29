@@ -123,7 +123,7 @@ def inspect_contracts(design,layout,pack):
         for x,y in [(8,4),(12,14),(21,12),(26,6),(33,9)]:
             assert blocks[y*w+x] in range(0x68,0x76),'Authored native contoured bedrock formation missing'
         assert blocks[5*w+9]==0x6f,'North carrier rib must retain native sculpted face'
-        for x,y in [(5,7),(8,8),(12,8),(18,6)]:
+        for x,y in [(5,11),(8,8),(12,8),(18,6)]:
             assert blocks[y*w+x]==0x01,'Pale gravel haul-road contrast missing'
     return dict(rocky_native_collision_contract_checked=bool(rocky),source_metatile_varieties_used=len(set(blocks)),routine_bench_lane_widths=widths,optional_grass_reward_costs=reward_costs,native_ramp_quadrants_checked=not stairs,native_right_stair_quadrants_and_original128_art_checked=stairs,decorative_cut_tiles=0,lookout_water_tiles_in_native_frame=water_visible,complete_outer_perimeter_tiles=len(perimeter),outer_buoy_tiles=sum(kind(*p)=='BUOY' for p in perimeter),reachable_surf_water_tiles=len(water),reachable_outer_water_tiles=0,open_internal_water_seam_core_y=ys,native_internal_water_neighbors_checked=native)
 

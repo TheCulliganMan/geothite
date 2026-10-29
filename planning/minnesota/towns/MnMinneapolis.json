@@ -1,5 +1,14 @@
 {
   "id": "MnMinneapolis",
+  "native_frontage_revision": {
+    "revision": "minneapolis_waterfront_revision",
+    "plan": "../revisions/minneapolis-waterfront-v01/README.md",
+    "native_contract": "../revisions/minneapolis-waterfront-v01/source-v06/native.contract.json",
+    "compiled_tileset": "mn_minneapolis_city",
+    "frontages": ["BoatHouse", "AnglerHome", "DispatcherHouse", "LakeCabin"],
+    "door_core_tiles": [[9,29], [19,29], [23,41], [7,45]],
+    "scope": "Native-art overlay after the city-wide wall-join repair. Original rooms, door quadrants, collision, actors and story remain exact. Publish through the reviewed overlay rather than rebuilding the older base layout alone."
+  },
   "name": "MINNEAPOLIS",
   "dimensions_metatiles": [
     40,

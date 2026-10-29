@@ -1,3 +1,9 @@
+> Current grass review: [R19 verification](../revisions/route-grass-v01/current-r19-v01/README.md).
+> Four grass metatiles turn the pine approach into seven habitat steps each way.
+> Existing dry ledge drop, three-step grassy uphill return, old ramps and eight-step
+> battle/grass choice remain. Six native cases, 15 stdio, audio and actual 2D pass.
+> Current native Minnesota teams and encounters supersede historical source below.
+
 # Prairie Forest Link — authored ecotone handoff
 
 R19 keeps the **east Lake Itasca → south Detroit Lakes** bend. Its **32×30 metatile** source composition moves from dense pines through native round oak openings and a small spring wetland to prairie habitat. The decisions are a short fenced trainer road versus a measured grass detour, an optional two-ramp inspection spur, a grass-protected meadow reward, and three dry-land observations. It replaces the old 96×96 repeated reserve.

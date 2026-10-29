@@ -8,6 +8,7 @@ use serde_json::json;
 
 use crate::authored_town_geometry::kind;
 use crate::grand_marais_modpack::authoring;
+use crate::interior_read_relocations::{self, ReadRelocation};
 use crate::{CompiledGamePack, MapModule};
 
 #[derive(Deserialize)]
@@ -32,6 +33,8 @@ struct RoomLayout {
     actor_approaches: Vec<Approach>,
     #[serde(default)]
     exhibits: Vec<Exhibit>,
+    #[serde(default)]
+    read_relocations: Vec<ReadRelocation>,
 }
 
 #[derive(Deserialize)]
@@ -54,7 +57,9 @@ struct Exhibit {
 /// Replaces explicitly certified non-gym room terrain with native source art.
 /// The contract must match every old row and the old tileset. Dimensions, actors,
 /// warps and all original scripts stay intact. New read-only furniture details
-/// append to the existing native background-event and script tables. Residents
+/// append to the existing native background-event and script tables. Explicit
+/// read relocations may move ordinary existing read-only details onto solid
+/// furniture, retaining their scripts and requiring reachable floor approaches. Residents
 /// may be approached directly or through one explicitly declared native counter.
 /// No assets, species, rewards, main-story flags, recovery data or audio are
 /// replaced.
@@ -68,6 +73,7 @@ pub fn build_minnesota_interior_layout_modpack(
     base: &CompiledGamePack,
     source: &str,
 ) -> Result<CompiledGamePack> {
+    crate::minnesota_interior_lineage::require_compact_coast(base)?;
     crate::verify_compiled_game_pack_for_runtime(base)?;
     let plan: Layouts = serde_json::from_str(source).context("explicit interior layouts")?;
     ensure!(
@@ -137,6 +143,7 @@ pub fn build_minnesota_interior_layout_modpack(
                 .all(|b| tileset.collision.contains_key(&format!("{b:02x}"))),
             "unknown native room block"
         );
+        interior_read_relocations::apply(base, &mut map, room.arrival, &room.read_relocations)?;
         validate(base, original, &map, room)
             .with_context(|| format!("room layout {}", room.map))?;
         let mut additions = authoring::blank(

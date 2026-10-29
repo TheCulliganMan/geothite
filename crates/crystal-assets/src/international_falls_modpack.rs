@@ -21,7 +21,7 @@ const MART: &str = "MART_MN_INTERNATIONAL_FALLS";
 ///
 /// Adds free care/PC/recovery, priced winter supplies, a remembered check-in and
 /// one retryable PP Up after a genuine eastbound Voyageurs arrival at basecamp.
-/// The eastern trail requires all eight badges, the report and harbor signal;
+/// The actual Rainy River outlet requires all eight badges, report and signal;
 /// inbound travelers retain access to public services. Existing R20, ice puzzles,
 /// audio, source art, gyms and HOME are preserved.
 ///
@@ -33,6 +33,7 @@ pub fn build_international_falls_modpack(
     town_json: &str,
     layout_json: &str,
 ) -> Result<CompiledGamePack> {
+    crate::validate_compact_superior_geography(base)?;
     crate::verify_compiled_game_pack_for_runtime(base)?;
     let raw: Value = serde_json::from_str(town_json).context("InternationalFalls dossier")?;
     let town: Town =
@@ -54,15 +55,11 @@ pub fn build_international_falls_modpack(
                 .iter()
                 .map(|r| r.id.as_str())
                 .eq([CLINIC, "MnInternationalFallsMart"])
-            && town.ports.len() == 2
+            && town.ports.len() == 1
             && town.ports[0].route == "MN_R17"
             && town.ports[0].side == "S"
             && town.ports[0].gate_metatile == [10, 12]
             && town.ports[0].landing_metatile == [10, 10]
-            && town.ports[1].route == "MN_R20"
-            && town.ports[1].side == "E"
-            && town.ports[1].gate_metatile == [14, 7]
-            && town.ports[1].landing_metatile == [12, 7]
             && !base.report.manifests.iter().any(|id| id == MANIFEST),
         "complete uninstalled InternationalFalls and both reserved rooms required"
     );
@@ -132,6 +129,7 @@ pub fn build_international_falls_modpack(
     exterior.attributes.height = 14;
     exterior.attributes.border_block = 0x81;
     exterior.attributes.tileset_name = town.compiled_tileset.clone();
+    crate::regional_town_fishing::freshwater(&pack, &mut exterior)?;
     exterior.blocks = layout.compile()?;
     crate::authored_town_scripts::ordinary(
         &pack,
@@ -170,7 +168,6 @@ pub fn build_international_falls_modpack(
             )?,
         );
     }
-    international_falls_story::gate(&mut exterior, &raw["quest_contract"])?;
     crate::authored_town_scripts::finish(&pack, &mut exterior, &town)?;
     let mut modules = vec![(exterior, [20, 25])];
     for room in &town.interiors {
@@ -195,7 +192,7 @@ pub fn build_international_falls_modpack(
         &pack,
         &town,
         &modules,
-        &BTreeSet::from([[20, 27], [21, 27], [31, 14], [31, 15]]),
+        &BTreeSet::from([[20, 27], [21, 27]]),
     )?;
     for p in reachable(&pack, &modules[0].0, [20, 25], true)? {
         ensure!(
@@ -221,6 +218,7 @@ pub fn build_international_falls_modpack(
         },
     )?;
     international_falls_connections::install(&mut pack)?;
+    international_falls_story::checkpoint(&mut pack, &town, &raw["quest_contract"])?;
     international_falls_story::arrival(&mut pack, &town)?;
     pack.report.manifests.push(MANIFEST.into());
     pack.report.maps = pack.data.maps.len();
@@ -231,6 +229,7 @@ pub fn build_international_falls_modpack(
         &pack.runtime_files,
         &pack.report,
     )?;
+    crate::validate_compact_superior_geography(&pack)?;
     crate::verify_compiled_game_pack_for_runtime(&pack)?;
     Ok(pack)
 }

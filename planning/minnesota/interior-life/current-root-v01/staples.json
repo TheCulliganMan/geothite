@@ -1,0 +1,382 @@
+{
+  "schema_version": 2,
+  "id": "MN_STAPLES_JUNCTION_V2",
+  "base_content_hash": "49c64afd2b80d9b6bfd5c9c0eb839b6249aeddfabd1d185516812ae6051a93d5",
+  "exterior": {
+    "id": "MnStaplesRailJunction",
+    "native_constant": "MN_STAPLES_RAIL_JUNCTION",
+    "template": "NewBarkTown",
+    "tileset": "johto_modern",
+    "border_block": 5,
+    "dimensions_metatiles": [
+      16,
+      10
+    ],
+    "rows": [
+      "05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05",
+      "05 05 7e 7e 7e 7e 7e 7e 7e 7e 7e 7e 7e 7e 05 05",
+      "05 05 05 05 05 02 18 1f 19 02 02 05 05 05 05 05",
+      "05 05 05 05 05 02 1a 0f 11 02 02 05 05 05 05 05",
+      "05 05 05 05 05 01 01 01 01 45 02 05 05 05 05 05",
+      "05 37 02 02 02 02 01 01 02 02 02 05 05 05 05 05",
+      "05 37 02 02 02 02 01 01 02 02 04 04 04 02 02 05",
+      "05 02 02 01 01 01 01 01 02 02 02 02 02 02 02 05",
+      "05 02 02 01 02 02 02 02 02 02 2f 2f 2f 02 02 05",
+      "05 05 05 01 05 05 05 05 05 05 05 05 05 05 05 05"
+    ],
+    "arrival": [
+      6,
+      18
+    ],
+    "residents": [
+      {
+        "id": "MN_STAPLES_JUNCTION_WALKER",
+        "sprite": "SPRITE_FISHER",
+        "tile": [
+          18,
+          14
+        ],
+        "approach": [
+          17,
+          14
+        ],
+        "facing": "west",
+        "lines": [
+          "STAPLES grew up",
+          "around the rails.",
+          "The little road",
+          "south reaches",
+          "CENTRAL LAKES.",
+          "BRAINERD is east;",
+          "DETROIT LAKES",
+          "is west."
+        ]
+      }
+    ],
+    "door": {
+      "tile": [
+        13,
+        7
+      ],
+      "return_tile": [
+        13,
+        8
+      ],
+      "entry_index": 1,
+      "return_index": 2
+    },
+    "sign": {
+      "id": "MN_STAPLES_DEPOT_SIGN",
+      "tile": [
+        18,
+        8
+      ],
+      "approach": [
+        18,
+        9
+      ],
+      "lines": [
+        "STAPLES DEPOT",
+        "Signal room and",
+        "parcel supplies.",
+        "GLACIER LINE"
+      ]
+    }
+  },
+  "room": {
+    "id": "MnStaplesStation",
+    "native_constant": "MN_STAPLES_STATION",
+    "template": "GoldenrodMagnetTrainStation",
+    "tileset": "train_station",
+    "border_block": 15,
+    "dimensions_metatiles": [
+      9,
+      9
+    ],
+    "rows": [
+      "0a 16 0a 16 0a 16 0a 16 0a",
+      "0f 0b 0b 0b 0b 0b 0b 0b 0f",
+      "0f 14 10 11 15 12 13 14 0f",
+      "0f 04 04 04 04 04 04 04 0f",
+      "0f 06 06 06 06 07 06 06 0f",
+      "0f 24 25 24 03 03 03 03 0f",
+      "0f 1c 1c 1c 03 01 01 0c 0f",
+      "0f 1c 1c 1c 03 03 03 03 0f",
+      "0f 0f 0f 0f 09 0f 0f 0f 0f"
+    ],
+    "passive_arrival": {
+      "index": 3,
+      "tile": [
+        9,
+        15
+      ]
+    },
+    "exits": [
+      {
+        "index": 1,
+        "tile": [
+          8,
+          17
+        ],
+        "target": "MnStaplesRailJunction",
+        "target_warp": 2
+      },
+      {
+        "index": 2,
+        "tile": [
+          9,
+          17
+        ],
+        "target": "MnStaplesRailJunction",
+        "target_warp": 2
+      }
+    ],
+    "residents": [
+      {
+        "id": "MN_STAPLES_CONDUCTOR",
+        "sprite": "SPRITE_OFFICER",
+        "tile": [
+          11,
+          9
+        ],
+        "approach": [
+          11,
+          10
+        ],
+        "facing": "south",
+        "lines": [
+          "GLACIER LINE",
+          "The hall is open.",
+          "Passenger service",
+          "is not ready yet."
+        ]
+      },
+      {
+        "id": "MN_STAPLES_SIGNAL_KEEPER",
+        "sprite": "SPRITE_GRAMPS",
+        "tile": [
+          3,
+          11
+        ],
+        "approach": [
+          3,
+          12
+        ],
+        "facing": "south",
+        "lines": [
+          "My dad worked",
+          "the night switch.",
+          "He left a light",
+          "in this window",
+          "for anyone walking",
+          "home from a shift.",
+          "I still light it."
+        ]
+      },
+      {
+        "id": "MN_STAPLES_PARCEL_CLERK",
+        "sprite": "SPRITE_CLERK",
+        "tile": [
+          5,
+          13
+        ],
+        "approach": [
+          5,
+          14
+        ],
+        "facing": "south",
+        "service": "pokemart",
+        "stock": [
+          "REPEL",
+          "SUPER_POTION",
+          "PARLYZ_HEAL",
+          "FLOWER_MAIL"
+        ],
+        "lines": []
+      },
+      {
+        "id": "MN_STAPLES_WAITING_STUDENT",
+        "sprite": "SPRITE_LASS",
+        "tile": [
+          13,
+          14
+        ],
+        "approach": [
+          12,
+          14
+        ],
+        "facing": "west",
+        "lines": [
+          "Grandma mailed me",
+          "a seed packet from",
+          "DETROIT LAKES.",
+          "I sent a picture",
+          "of the bloom.",
+          "Now she writes to",
+          "the flower, too."
+        ]
+      }
+    ],
+    "pc": null,
+    "signs": [
+      {
+        "id": "MN_STAPLES_SIGNAL_BOOK",
+        "tile": [
+          4,
+          10
+        ],
+        "approach": [
+          4,
+          11
+        ],
+        "lines": [
+          "A signal ledger.",
+          "A pencil note:",
+          "No freight is",
+          "worth a life.",
+          "Wait for daylight."
+        ]
+      }
+    ]
+  },
+  "road_binding": {
+    "map": "MnR15C00R00",
+    "dimensions_metatiles": [
+      32,
+      18
+    ],
+    "tileset": "kanto",
+    "patches": [
+      {
+        "position": [
+          9,
+          0
+        ],
+        "before": 15,
+        "after": 81
+      },
+      {
+        "position": [
+          10,
+          0
+        ],
+        "before": 15,
+        "after": 81
+      },
+      {
+        "position": [
+          11,
+          0
+        ],
+        "before": 15,
+        "after": 81
+      },
+      {
+        "position": [
+          12,
+          0
+        ],
+        "before": 15,
+        "after": 81
+      },
+      {
+        "position": [
+          13,
+          0
+        ],
+        "before": 15,
+        "after": 1
+      },
+      {
+        "position": [
+          9,
+          1
+        ],
+        "before": 15,
+        "after": 1
+      },
+      {
+        "position": [
+          9,
+          2
+        ],
+        "before": 15,
+        "after": 1
+      },
+      {
+        "position": [
+          9,
+          3
+        ],
+        "before": 15,
+        "after": 1
+      },
+      {
+        "position": [
+          9,
+          4
+        ],
+        "before": 15,
+        "after": 1
+      }
+    ],
+    "route_edge": [
+      [
+        26,
+        0
+      ],
+      [
+        27,
+        0
+      ]
+    ],
+    "junction_edge": [
+      [
+        6,
+        19
+      ],
+      [
+        7,
+        19
+      ]
+    ],
+    "route_direction": "north",
+    "junction_direction": "south",
+    "route_offset": 10,
+    "junction_offset": -10,
+    "world_origin_relative_to_route": [
+      10,
+      -10
+    ]
+  },
+  "boarding": {
+    "conductor_core": [
+      11,
+      9
+    ],
+    "approach_core": [
+      11,
+      10
+    ],
+    "platform_core": [
+      11,
+      7
+    ],
+    "train_door_core": [
+      6,
+      5
+    ],
+    "other_train_door_core": [
+      11,
+      5
+    ],
+    "ride_arrival_core": [
+      11,
+      11
+    ],
+    "service": "Uninstalled until the full guarded five-stop binder."
+  },
+  "visit_flag": "EVENT_MN_STATION_STAPLES_VISITED",
+  "mart": "MN_STAPLES_PARCELS",
+  "roster_policy": "story-pokemon.json"
+}

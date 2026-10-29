@@ -7,7 +7,12 @@ pub(crate) const FLOOR_TILE: u16 = 0x3d;
 pub(crate) fn supports_map(map_id: &str) -> bool {
     matches!(
         map_id,
-        "GoldenrodMagnetTrainStation" | "SaffronMagnetTrainStation"
+        "GoldenrodMagnetTrainStation"
+            | "SaffronMagnetTrainStation"
+            | "MnDetroitLakesStation"
+            | "MnStCloudStation"
+            | "MnStPaulUnionDepot"
+            | "MnWinonaStation"
     )
 }
 

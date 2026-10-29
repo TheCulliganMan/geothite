@@ -1,3 +1,19 @@
+# Current Crystal-reference grass pass, 2026-10-28
+
+R04 now adds eleven native Park grass cells at the rose-walk neck, bridge
+approach, garden shoulders and picnic entrance/reward paths. Habitat increases
+48 to92walking tiles. The current selected game preserves R17/R13/R12 and the
+warm ice-free North Shore. Native2D visual review, eight route regressions,
+11production stdio calls, exact preservation and all377audio pass.
+
+The park retains its trainer-or-grass loop: avoiding Cole requires14grass steps
+both ways; after victory the dry lane is available. See [the current receipt
+and explicit fixture limits](../revisions/route-grass-v01/compact-rebase-v01/R04.md).
+R05 onward and the statewide grass objective remain open.
+
+Earlier source/native milestones below are retained as history, including their
+old party templates, rail geometry and pack identities.
+
 # Current garden/pine revision
 
 This route now matches the471-map `minnesota-canopy-review.crystalpack`. See

@@ -1,0 +1,47 @@
+{
+  "name": "CAPTAIN LEIF",
+  "role": "preserved original NPC",
+  "status": "accepted-native-playable-rebased",
+  "source": "native-pixels-v3.json",
+  "source_path": "planning/minnesota/npcs/sprites/07-hockey-captain/native-pixels-v3.json",
+  "integration": "placement-v1.json",
+  "controller": "placement-v1.json",
+  "native": "target/npc-sprites/hockey/reference-v2",
+  "pack": "content-packs/minnesota-trainer-cast-28-v01.crystalpack",
+  "gameplay": "target/trainer-cast/rebase/07-hockey-captain/gameplay",
+  "log": "target/trainer-cast/rebase/07-hockey-captain/controller.log",
+  "original_placement": "planning/minnesota/npcs/sprites/07-hockey-captain/placement-v1.json",
+  "old_map": "MnStCloud",
+  "new_map": "MnStCloud",
+  "old_tile": [
+    14,
+    13
+  ],
+  "new_tile": [
+    13,
+    13
+  ],
+  "scope": "Exact accepted original art, palette, party, class and dialogue. Placement rebased to safe compact geography; original geography not transplanted.",
+  "evidence_sha256": {
+    "planning/minnesota/npcs/cast/rebased-originals/07-hockey-captain/placement-v1.json": "59820db66b66d4cd16e80074103dcd235a125fb89946a60655a0cc3bf06b664d",
+    "planning/minnesota/npcs/sprites/07-hockey-captain/native-pixels-v3.json": "47812c97e7f043e3f56fe6283d467bdad22f0ae15103efa8ef002d07ede04581",
+    "planning/minnesota/npcs/sprites/07-hockey-captain/manifest.json": "28c8b6e8bc58b6f7ab59bd66b650971aa8f91edd65cd353d583e716284f9c757",
+    "target/trainer-cast/rebase/07-hockey-captain/controller.log": "360133516a9bf5d6e73d639773b155fda3902a229c55fbbea23c02cdfbbf4fc1",
+    "content-packs/minnesota-trainer-cast-28-v01.crystalpack": "2fb53d8d500d1703ab9c192a3b747e8f279e6e3fef17411f0b70325017c30f68",
+    "target/npc-sprites/hockey/reference-v2/verification.json": "7222447c30c40e6eada7d2d5422552e9954012adfbc86b338409715e4e2994b2",
+    "target/trainer-cast/rebase/07-hockey-captain/gameplay/original-npc-trainer-intro.png": "5105b23bd321f31db51c44808dbe6bbd9db219b536a88e3ac58f3cbcd6dde3d3",
+    "target/trainer-cast/rebase/07-hockey-captain/gameplay/original-npc-overworld-state.png": "e062d92a0c87220c11f6c9ad3d36d3b23f1cc65fd3e9a2a90aa3c3227d9bcbab",
+    "target/trainer-cast/rebase/07-hockey-captain/gameplay/original-npc-first-turn.png": "f0aba3205d6fa964cea34823065b7445e856b0514bf476973f9fc857a171fa1f"
+  },
+  "final_pack": "content-packs/minnesota-trainer-cast-36-v01.crystalpack",
+  "final_gameplay": "target/trainer-cast/final-audit/gameplay/rebased-originals-07-hockey-captain",
+  "final_log": "target/trainer-cast/final-audit/gameplay/rebased-originals-07-hockey-captain/controller.log",
+  "final_status": "accepted-native-playable-final-pack",
+  "final_review": "Actual battle intro and field captures inspected on exact final pack; art retains accepted native sources and palette.",
+  "final_evidence_sha256": {
+    "target/trainer-cast/final-audit/gameplay/rebased-originals-07-hockey-captain/controller.log": "3d35a2c53a1ddb725572a4b8043eade330163b4bb53058cf82203ce276123d61",
+    "target/trainer-cast/final-audit/gameplay/rebased-originals-07-hockey-captain/original-npc-trainer-intro.png": "5105b23bd321f31db51c44808dbe6bbd9db219b536a88e3ac58f3cbcd6dde3d3",
+    "target/trainer-cast/final-audit/gameplay/rebased-originals-07-hockey-captain/original-npc-overworld-state.png": "4f592a79a153a6a07f18bca454ecd2cbf9e999f5a9cfcbefcd94b6fa226e7910",
+    "target/trainer-cast/final-audit/gameplay/rebased-originals-07-hockey-captain/original-npc-first-turn.png": "f0aba3205d6fa964cea34823065b7445e856b0514bf476973f9fc857a171fa1f"
+  }
+}

@@ -265,7 +265,7 @@ def negative_checks(design,layout,pack):
 
 
 def main():
-    parser = argparse.ArgumentParser(); parser.add_argument('--pack',type=Path,default=ROOT/'content-packs/text-tui.crystalpack')
+    parser = argparse.ArgumentParser(); parser.add_argument('--pack',type=Path,required=True,help='Explicit source-art pack for historical layout review; no current pack is selected implicitly')
     parser.add_argument('--watch',action='store_true'); parser.add_argument('--serve',action='store_true'); parser.add_argument('--port',type=int,default=8767)
     parser.add_argument('--verify-published',action='store_true'); parser.add_argument('--negative-checks',action='store_true')
     args = parser.parse_args()

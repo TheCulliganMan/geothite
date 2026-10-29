@@ -1,0 +1,2501 @@
+{
+  "schema_version": 2,
+  "id": "MN_R09",
+  "tileset": "johto",
+  "compiled_tileset": "mn_iron_range",
+  "dimensions_metatiles": [
+    64,
+    36
+  ],
+  "coordinate_units": "32px metatiles; zero-based explicit strokes",
+  "shore_fitting": "johto_8_neighbors",
+  "reject_cliff_cuts": true,
+  "derived_blocks": [
+    {
+      "id": "80",
+      "source_tileset": "kanto",
+      "source_block": "78",
+      "collision": "WATER",
+      "required_typed_extension": "headwaters_art::build_headwaters_art_pack"
+    },
+    {
+      "id": "81",
+      "source_tileset": "kanto",
+      "source_block": "77",
+      "collision": "FLOOR/FLOOR/WALL/WALL",
+      "required_typed_extension": "headwaters_art::build_headwaters_art_pack"
+    },
+    {
+      "id": "82",
+      "source_tileset": "kanto",
+      "source_block": "77",
+      "tile_row_order": [
+        2,
+        3,
+        0,
+        1
+      ],
+      "collision_source_tileset": "johto",
+      "collision_source_block": "75",
+      "required_typed_extension": "headwaters_art::build_headwaters_art_pack"
+    },
+    {
+      "id": "83",
+      "source_tileset": "johto_modern",
+      "source_block": "7e",
+      "required_typed_extension": "iron_range_art::build_iron_range_art_pack"
+    },
+    {
+      "id": "84",
+      "source_tileset": "johto_modern",
+      "source_block": "7f",
+      "required_typed_extension": "iron_range_art::build_iron_range_art_pack"
+    }
+  ],
+  "layers": [
+    {
+      "name": "West spruce lookout clearing",
+      "kind": "polygon",
+      "material": "lawn",
+      "points": [
+        [
+          2,
+          17
+        ],
+        [
+          5,
+          17
+        ],
+        [
+          5,
+          20
+        ],
+        [
+          4,
+          20
+        ],
+        [
+          4,
+          23
+        ],
+        [
+          2,
+          23
+        ]
+      ]
+    },
+    {
+      "name": "West entrance and creek approach",
+      "kind": "path",
+      "material": "lawn",
+      "points": [
+        [
+          0,
+          24
+        ],
+        [
+          10,
+          24
+        ],
+        [
+          10,
+          21
+        ],
+        [
+          18,
+          21
+        ]
+      ],
+      "width_metatiles": 1
+    },
+    {
+      "name": "Spruce lookout side loop",
+      "kind": "path",
+      "material": "lawn",
+      "points": [
+        [
+          2,
+          24
+        ],
+        [
+          2,
+          18
+        ],
+        [
+          4,
+          18
+        ],
+        [
+          4,
+          22
+        ],
+        [
+          2,
+          22
+        ]
+      ],
+      "width_metatiles": 1
+    },
+    {
+      "name": "West lookout optional habitat",
+      "kind": "rect",
+      "material": "encounter",
+      "bounds": [
+        3,
+        19,
+        5,
+        21
+      ]
+    },
+    {
+      "name": "Old sample camp approach",
+      "kind": "path",
+      "material": "lawn",
+      "points": [
+        [
+          6,
+          24
+        ],
+        [
+          6,
+          27
+        ]
+      ],
+      "width_metatiles": 1
+    },
+    {
+      "name": "Old sample camp sealed by one real Cut tree",
+      "kind": "polygon",
+      "material": "lawn",
+      "points": [
+        [
+          4,
+          29
+        ],
+        [
+          7,
+          29
+        ],
+        [
+          7,
+          30
+        ],
+        [
+          8,
+          30
+        ],
+        [
+          8,
+          32
+        ],
+        [
+          3,
+          32
+        ],
+        [
+          3,
+          30
+        ],
+        [
+          4,
+          30
+        ]
+      ]
+    },
+    {
+      "name": "Sample camp fern pocket",
+      "kind": "rect",
+      "material": "encounter",
+      "bounds": [
+        6,
+        30,
+        8,
+        32
+      ]
+    },
+    {
+      "name": "Unavoidable spruce grass neck",
+      "kind": "rect",
+      "material": "encounter",
+      "bounds": [
+        7,
+        23,
+        9,
+        26
+      ]
+    },
+    {
+      "name": "Creek fishing hollow spur",
+      "kind": "path",
+      "material": "lawn",
+      "points": [
+        [
+          17,
+          21
+        ],
+        [
+          17,
+          27
+        ],
+        [
+          19,
+          27
+        ]
+      ],
+      "width_metatiles": 1
+    },
+    {
+      "name": "Creek fishing turnout",
+      "kind": "polygon",
+      "material": "lawn",
+      "points": [
+        [
+          16,
+          26
+        ],
+        [
+          18,
+          26
+        ],
+        [
+          18,
+          27
+        ],
+        [
+          20,
+          27
+        ],
+        [
+          20,
+          29
+        ],
+        [
+          17,
+          29
+        ],
+        [
+          17,
+          28
+        ],
+        [
+          16,
+          28
+        ]
+      ]
+    },
+    {
+      "name": "Quarry floor to rail approach",
+      "kind": "path",
+      "material": "lawn",
+      "points": [
+        [
+          18,
+          21
+        ],
+        [
+          25,
+          21
+        ],
+        [
+          25,
+          23
+        ],
+        [
+          44,
+          23
+        ],
+        [
+          44,
+          19
+        ],
+        [
+          50,
+          19
+        ],
+        [
+          50,
+          12
+        ],
+        [
+          54,
+          12
+        ],
+        [
+          54,
+          10
+        ],
+        [
+          60,
+          10
+        ],
+        [
+          60,
+          12
+        ],
+        [
+          63,
+          12
+        ]
+      ],
+      "width_metatiles": 1
+    },
+    {
+      "name": "Reclaimed quarry inner shore",
+      "kind": "polygon",
+      "material": "lawn",
+      "points": [
+        [
+          24,
+          11
+        ],
+        [
+          35,
+          11
+        ],
+        [
+          35,
+          13
+        ],
+        [
+          37,
+          13
+        ],
+        [
+          37,
+          19
+        ],
+        [
+          34,
+          19
+        ],
+        [
+          34,
+          22
+        ],
+        [
+          26,
+          22
+        ],
+        [
+          26,
+          19
+        ],
+        [
+          23,
+          19
+        ],
+        [
+          23,
+          14
+        ],
+        [
+          24,
+          14
+        ]
+      ]
+    },
+    {
+      "name": "Reclaimed tailings habitat",
+      "kind": "rect",
+      "material": "encounter",
+      "bounds": [
+        27,
+        20,
+        33,
+        22
+      ]
+    },
+    {
+      "name": "Quarry shelf approach",
+      "kind": "path",
+      "material": "lawn",
+      "points": [
+        [
+          24,
+          23
+        ],
+        [
+          24,
+          21
+        ]
+      ],
+      "width_metatiles": 1
+    },
+    {
+      "name": "Eastern spoil ledge landing spur",
+      "kind": "path",
+      "material": "lawn",
+      "points": [
+        [
+          40,
+          23
+        ],
+        [
+          40,
+          21
+        ]
+      ],
+      "width_metatiles": 1
+    },
+    {
+      "name": "Rail keeper small service yard",
+      "kind": "polygon",
+      "material": "lawn",
+      "points": [
+        [
+          47,
+          19
+        ],
+        [
+          51,
+          19
+        ],
+        [
+          51,
+          20
+        ],
+        [
+          52,
+          20
+        ],
+        [
+          52,
+          22
+        ],
+        [
+          47,
+          22
+        ]
+      ]
+    },
+    {
+      "name": "Rail crossing northern service lane",
+      "kind": "path",
+      "material": "lawn",
+      "points": [
+        [
+          47,
+          12
+        ],
+        [
+          54,
+          12
+        ],
+        [
+          54,
+          10
+        ],
+        [
+          60,
+          10
+        ],
+        [
+          60,
+          12
+        ],
+        [
+          63,
+          12
+        ]
+      ],
+      "width_metatiles": 1
+    },
+    {
+      "name": "Eastern pine capture meadow",
+      "kind": "rect",
+      "material": "encounter",
+      "bounds": [
+        55,
+        8,
+        60,
+        11
+      ]
+    },
+    {
+      "name": "Rail approach encounter detour",
+      "kind": "rect",
+      "material": "encounter",
+      "bounds": [
+        52,
+        17,
+        54,
+        22
+      ]
+    },
+    {
+      "name": "Grass detour rejoins before the crossing",
+      "kind": "point",
+      "position": [
+        51,
+        17
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Rail challenge standing bay",
+      "kind": "point",
+      "position": [
+        49,
+        18
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Closed west creek and spring pools",
+      "kind": "polygon",
+      "material": "water",
+      "points": [
+        [
+          12,
+          10
+        ],
+        [
+          15,
+          10
+        ],
+        [
+          15,
+          12
+        ],
+        [
+          16,
+          12
+        ],
+        [
+          16,
+          15
+        ],
+        [
+          14,
+          15
+        ],
+        [
+          14,
+          26
+        ],
+        [
+          16,
+          26
+        ],
+        [
+          16,
+          30
+        ],
+        [
+          14,
+          30
+        ],
+        [
+          14,
+          32
+        ],
+        [
+          12,
+          32
+        ],
+        [
+          12,
+          28
+        ],
+        [
+          11,
+          28
+        ],
+        [
+          11,
+          25
+        ],
+        [
+          12,
+          25
+        ],
+        [
+          12,
+          17
+        ],
+        [
+          11,
+          17
+        ],
+        [
+          11,
+          13
+        ],
+        [
+          12,
+          13
+        ]
+      ]
+    },
+    {
+      "name": "Flooded quarry excavation",
+      "kind": "polygon",
+      "material": "water",
+      "points": [
+        [
+          25,
+          12
+        ],
+        [
+          32,
+          12
+        ],
+        [
+          32,
+          13
+        ],
+        [
+          35,
+          13
+        ],
+        [
+          35,
+          17
+        ],
+        [
+          32,
+          17
+        ],
+        [
+          32,
+          19
+        ],
+        [
+          26,
+          19
+        ],
+        [
+          26,
+          17
+        ],
+        [
+          24,
+          17
+        ],
+        [
+          24,
+          14
+        ],
+        [
+          25,
+          14
+        ]
+      ]
+    },
+    {
+      "name": "Continuous low quarry rim around the excavation",
+      "kind": "cliff_polygon",
+      "points": [
+        [
+          21,
+          8
+        ],
+        [
+          31,
+          8
+        ],
+        [
+          31,
+          10
+        ],
+        [
+          36,
+          10
+        ],
+        [
+          36,
+          12
+        ],
+        [
+          41,
+          12
+        ],
+        [
+          41,
+          20
+        ],
+        [
+          39,
+          20
+        ],
+        [
+          39,
+          14
+        ],
+        [
+          34,
+          14
+        ],
+        [
+          34,
+          12
+        ],
+        [
+          29,
+          12
+        ],
+        [
+          29,
+          10
+        ],
+        [
+          23,
+          10
+        ],
+        [
+          23,
+          11
+        ],
+        [
+          21,
+          11
+        ],
+        [
+          21,
+          17
+        ],
+        [
+          25,
+          17
+        ],
+        [
+          25,
+          20
+        ],
+        [
+          18,
+          20
+        ],
+        [
+          18,
+          10
+        ],
+        [
+          19,
+          10
+        ],
+        [
+          19,
+          9
+        ],
+        [
+          21,
+          9
+        ]
+      ]
+    },
+    {
+      "name": "West creek granite spine",
+      "kind": "cliff_polygon",
+      "points": [
+        [
+          8,
+          8
+        ],
+        [
+          10,
+          8
+        ],
+        [
+          10,
+          11
+        ],
+        [
+          9,
+          11
+        ],
+        [
+          9,
+          18
+        ],
+        [
+          7,
+          18
+        ],
+        [
+          7,
+          14
+        ],
+        [
+          8,
+          14
+        ]
+      ]
+    },
+    {
+      "name": "Spring headwater stepped rock crown",
+      "kind": "cliff_polygon",
+      "points": [
+        [
+          14,
+          5
+        ],
+        [
+          15,
+          5
+        ],
+        [
+          15,
+          7
+        ],
+        [
+          17,
+          7
+        ],
+        [
+          17,
+          8
+        ],
+        [
+          16,
+          8
+        ],
+        [
+          16,
+          9
+        ],
+        [
+          14,
+          9
+        ]
+      ]
+    },
+    {
+      "name": "Northwest ore seam crown",
+      "kind": "cliff_polygon",
+      "points": [
+        [
+          20,
+          5
+        ],
+        [
+          23,
+          5
+        ],
+        [
+          23,
+          4
+        ],
+        [
+          25,
+          4
+        ],
+        [
+          25,
+          5
+        ],
+        [
+          27,
+          5
+        ],
+        [
+          27,
+          6
+        ],
+        [
+          23,
+          6
+        ],
+        [
+          23,
+          7
+        ],
+        [
+          20,
+          7
+        ]
+      ]
+    },
+    {
+      "name": "Northern banded ore ribs",
+      "kind": "cliff_polygon",
+      "points": [
+        [
+          29,
+          5
+        ],
+        [
+          32,
+          5
+        ],
+        [
+          32,
+          4
+        ],
+        [
+          33,
+          4
+        ],
+        [
+          33,
+          5
+        ],
+        [
+          35,
+          5
+        ],
+        [
+          35,
+          7
+        ],
+        [
+          33,
+          7
+        ],
+        [
+          33,
+          6
+        ],
+        [
+          29,
+          6
+        ]
+      ]
+    },
+    {
+      "name": "Northeast quarry headwall",
+      "kind": "cliff_polygon",
+      "points": [
+        [
+          37,
+          6
+        ],
+        [
+          38,
+          6
+        ],
+        [
+          38,
+          8
+        ],
+        [
+          41,
+          8
+        ],
+        [
+          41,
+          10
+        ],
+        [
+          39,
+          10
+        ],
+        [
+          39,
+          9
+        ],
+        [
+          37,
+          9
+        ]
+      ]
+    },
+    {
+      "name": "Rail approach rock cutting",
+      "kind": "cliff_polygon",
+      "points": [
+        [
+          43,
+          7
+        ],
+        [
+          44,
+          7
+        ],
+        [
+          44,
+          10
+        ],
+        [
+          46,
+          10
+        ],
+        [
+          46,
+          12
+        ],
+        [
+          44,
+          12
+        ],
+        [
+          44,
+          11
+        ],
+        [
+          43,
+          11
+        ]
+      ]
+    },
+    {
+      "name": "North siding spoil seam",
+      "kind": "cliff_polygon",
+      "points": [
+        [
+          48,
+          5
+        ],
+        [
+          51,
+          5
+        ],
+        [
+          51,
+          6
+        ],
+        [
+          54,
+          6
+        ],
+        [
+          54,
+          7
+        ],
+        [
+          52,
+          7
+        ],
+        [
+          52,
+          8
+        ],
+        [
+          50,
+          8
+        ],
+        [
+          50,
+          7
+        ],
+        [
+          48,
+          7
+        ]
+      ]
+    },
+    {
+      "name": "Creek hollow eastern ore buttress",
+      "kind": "cliff_polygon",
+      "points": [
+        [
+          20,
+          24
+        ],
+        [
+          23,
+          24
+        ],
+        [
+          23,
+          25
+        ],
+        [
+          25,
+          25
+        ],
+        [
+          25,
+          28
+        ],
+        [
+          24,
+          28
+        ],
+        [
+          24,
+          26
+        ],
+        [
+          22,
+          26
+        ],
+        [
+          22,
+          25
+        ],
+        [
+          20,
+          25
+        ]
+      ]
+    },
+    {
+      "name": "South quarry stepped ore seam",
+      "kind": "cliff_polygon",
+      "points": [
+        [
+          27,
+          25
+        ],
+        [
+          31,
+          25
+        ],
+        [
+          31,
+          26
+        ],
+        [
+          35,
+          26
+        ],
+        [
+          35,
+          28
+        ],
+        [
+          33,
+          28
+        ],
+        [
+          33,
+          27
+        ],
+        [
+          30,
+          27
+        ],
+        [
+          30,
+          26
+        ],
+        [
+          27,
+          26
+        ]
+      ]
+    },
+    {
+      "name": "South rail-cut rock buttress",
+      "kind": "cliff_polygon",
+      "points": [
+        [
+          39,
+          24
+        ],
+        [
+          40,
+          24
+        ],
+        [
+          40,
+          26
+        ],
+        [
+          42,
+          26
+        ],
+        [
+          42,
+          27
+        ],
+        [
+          41,
+          27
+        ],
+        [
+          41,
+          28
+        ],
+        [
+          39,
+          28
+        ]
+      ]
+    },
+    {
+      "name": "Crushed-ore mine apron",
+      "kind": "block_rect",
+      "bounds": [
+        18,
+        21,
+        26,
+        22
+      ],
+      "block": "71"
+    },
+    {
+      "name": "Crushed-ore haul track bend",
+      "kind": "block_rect",
+      "bounds": [
+        25,
+        22,
+        26,
+        24
+      ],
+      "block": "71"
+    },
+    {
+      "name": "Crushed-ore track below the excavation",
+      "kind": "block_rect",
+      "bounds": [
+        26,
+        23,
+        44,
+        24
+      ],
+      "block": "71"
+    },
+    {
+      "name": "Upper quarry shelf reclaimed ore grass",
+      "kind": "rect",
+      "material": "encounter",
+      "bounds": [
+        19,
+        12,
+        21,
+        16
+      ]
+    },
+    {
+      "name": "North rim ore cap narrows the exposed walking bench",
+      "kind": "block_rect",
+      "bounds": [
+        24,
+        8,
+        26,
+        9
+      ],
+      "block": "0a"
+    },
+    {
+      "name": "Western ore collection footing",
+      "kind": "point",
+      "position": [
+        19,
+        14
+      ],
+      "block": "71"
+    },
+    {
+      "name": "West lookout persistent Max Repel footing",
+      "kind": "point",
+      "position": [
+        3,
+        19
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Quarry north-bench spoil pile",
+      "kind": "point",
+      "position": [
+        22,
+        8
+      ],
+      "block": "0a"
+    },
+    {
+      "name": "Quarry east-bench spoil pile",
+      "kind": "point",
+      "position": [
+        40,
+        12
+      ],
+      "block": "0a"
+    },
+    {
+      "name": "Native quarry ramp is the only ordinary climb",
+      "kind": "point",
+      "position": [
+        24,
+        20
+      ],
+      "block": "74"
+    },
+    {
+      "name": "Real mine entrance in the south quarry face",
+      "kind": "point",
+      "position": [
+        20,
+        20
+      ],
+      "block": "73"
+    },
+    {
+      "name": "Eastern spoil one-way descent",
+      "kind": "point",
+      "position": [
+        40,
+        20
+      ],
+      "block": "57"
+    },
+    {
+      "name": "Ledge west shoulder",
+      "kind": "point",
+      "position": [
+        39,
+        20
+      ],
+      "block": "0a"
+    },
+    {
+      "name": "Ledge east shoulder",
+      "kind": "point",
+      "position": [
+        41,
+        20
+      ],
+      "block": "0a"
+    },
+    {
+      "name": "Creek crossing north timber rail",
+      "kind": "point",
+      "position": [
+        12,
+        21
+      ],
+      "block": "82"
+    },
+    {
+      "name": "Creek crossing south timber rail",
+      "kind": "point",
+      "position": [
+        12,
+        22
+      ],
+      "block": "81"
+    },
+    {
+      "name": "Creek crossing north timber rail",
+      "kind": "point",
+      "position": [
+        13,
+        21
+      ],
+      "block": "82"
+    },
+    {
+      "name": "Creek crossing south timber rail",
+      "kind": "point",
+      "position": [
+        13,
+        22
+      ],
+      "block": "81"
+    },
+    {
+      "name": "Creek crossing north timber rail",
+      "kind": "point",
+      "position": [
+        14,
+        21
+      ],
+      "block": "82"
+    },
+    {
+      "name": "Creek crossing south timber rail",
+      "kind": "point",
+      "position": [
+        14,
+        22
+      ],
+      "block": "81"
+    },
+    {
+      "name": "Quarry shoreline fence protects the lower trail",
+      "kind": "point",
+      "position": [
+        27,
+        20
+      ],
+      "block": "41"
+    },
+    {
+      "name": "Quarry shoreline fence protects the lower trail",
+      "kind": "point",
+      "position": [
+        28,
+        20
+      ],
+      "block": "41"
+    },
+    {
+      "name": "Quarry shoreline fence protects the lower trail",
+      "kind": "point",
+      "position": [
+        29,
+        20
+      ],
+      "block": "41"
+    },
+    {
+      "name": "Quarry shoreline fence protects the lower trail",
+      "kind": "point",
+      "position": [
+        30,
+        20
+      ],
+      "block": "41"
+    },
+    {
+      "name": "Quarry shoreline fence protects the lower trail",
+      "kind": "point",
+      "position": [
+        31,
+        20
+      ],
+      "block": "41"
+    },
+    {
+      "name": "Native east-west fenced rail alignment",
+      "kind": "point",
+      "position": [
+        43,
+        15
+      ],
+      "block": "83"
+    },
+    {
+      "name": "Native east-west fenced rail alignment",
+      "kind": "point",
+      "position": [
+        44,
+        15
+      ],
+      "block": "83"
+    },
+    {
+      "name": "Native east-west fenced rail alignment",
+      "kind": "point",
+      "position": [
+        45,
+        15
+      ],
+      "block": "83"
+    },
+    {
+      "name": "Native east-west fenced rail alignment",
+      "kind": "point",
+      "position": [
+        46,
+        15
+      ],
+      "block": "83"
+    },
+    {
+      "name": "Native east-west fenced rail alignment",
+      "kind": "point",
+      "position": [
+        47,
+        15
+      ],
+      "block": "83"
+    },
+    {
+      "name": "Native east-west fenced rail alignment",
+      "kind": "point",
+      "position": [
+        48,
+        15
+      ],
+      "block": "83"
+    },
+    {
+      "name": "Native east-west fenced rail alignment",
+      "kind": "point",
+      "position": [
+        49,
+        15
+      ],
+      "block": "83"
+    },
+    {
+      "name": "Native east-west fenced rail alignment",
+      "kind": "point",
+      "position": [
+        50,
+        15
+      ],
+      "block": "84"
+    },
+    {
+      "name": "Native east-west fenced rail alignment",
+      "kind": "point",
+      "position": [
+        51,
+        15
+      ],
+      "block": "83"
+    },
+    {
+      "name": "Native east-west fenced rail alignment",
+      "kind": "point",
+      "position": [
+        52,
+        15
+      ],
+      "block": "83"
+    },
+    {
+      "name": "Native east-west fenced rail alignment",
+      "kind": "point",
+      "position": [
+        53,
+        15
+      ],
+      "block": "83"
+    },
+    {
+      "name": "Native east-west fenced rail alignment",
+      "kind": "point",
+      "position": [
+        54,
+        15
+      ],
+      "block": "83"
+    },
+    {
+      "name": "Native east-west fenced rail alignment",
+      "kind": "point",
+      "position": [
+        55,
+        15
+      ],
+      "block": "83"
+    },
+    {
+      "name": "North rail corridor fence",
+      "kind": "point",
+      "position": [
+        43,
+        14
+      ],
+      "block": "41"
+    },
+    {
+      "name": "South rail corridor fence",
+      "kind": "point",
+      "position": [
+        43,
+        16
+      ],
+      "block": "49"
+    },
+    {
+      "name": "North rail corridor fence",
+      "kind": "point",
+      "position": [
+        44,
+        14
+      ],
+      "block": "41"
+    },
+    {
+      "name": "South rail corridor fence",
+      "kind": "point",
+      "position": [
+        44,
+        16
+      ],
+      "block": "49"
+    },
+    {
+      "name": "North rail corridor fence",
+      "kind": "point",
+      "position": [
+        45,
+        14
+      ],
+      "block": "41"
+    },
+    {
+      "name": "South rail corridor fence",
+      "kind": "point",
+      "position": [
+        45,
+        16
+      ],
+      "block": "49"
+    },
+    {
+      "name": "North rail corridor fence",
+      "kind": "point",
+      "position": [
+        46,
+        14
+      ],
+      "block": "41"
+    },
+    {
+      "name": "South rail corridor fence",
+      "kind": "point",
+      "position": [
+        46,
+        16
+      ],
+      "block": "49"
+    },
+    {
+      "name": "North rail corridor fence",
+      "kind": "point",
+      "position": [
+        47,
+        14
+      ],
+      "block": "41"
+    },
+    {
+      "name": "South rail corridor fence",
+      "kind": "point",
+      "position": [
+        47,
+        16
+      ],
+      "block": "49"
+    },
+    {
+      "name": "North rail corridor fence",
+      "kind": "point",
+      "position": [
+        48,
+        14
+      ],
+      "block": "41"
+    },
+    {
+      "name": "South rail corridor fence",
+      "kind": "point",
+      "position": [
+        48,
+        16
+      ],
+      "block": "49"
+    },
+    {
+      "name": "North rail corridor fence",
+      "kind": "point",
+      "position": [
+        49,
+        14
+      ],
+      "block": "41"
+    },
+    {
+      "name": "South rail corridor fence",
+      "kind": "point",
+      "position": [
+        49,
+        16
+      ],
+      "block": "49"
+    },
+    {
+      "name": "North rail corridor fence",
+      "kind": "point",
+      "position": [
+        51,
+        14
+      ],
+      "block": "41"
+    },
+    {
+      "name": "South rail corridor fence",
+      "kind": "point",
+      "position": [
+        51,
+        16
+      ],
+      "block": "49"
+    },
+    {
+      "name": "North rail corridor fence",
+      "kind": "point",
+      "position": [
+        52,
+        14
+      ],
+      "block": "41"
+    },
+    {
+      "name": "South rail corridor fence",
+      "kind": "point",
+      "position": [
+        52,
+        16
+      ],
+      "block": "49"
+    },
+    {
+      "name": "North rail corridor fence",
+      "kind": "point",
+      "position": [
+        53,
+        14
+      ],
+      "block": "41"
+    },
+    {
+      "name": "South rail corridor fence",
+      "kind": "point",
+      "position": [
+        53,
+        16
+      ],
+      "block": "49"
+    },
+    {
+      "name": "North rail corridor fence",
+      "kind": "point",
+      "position": [
+        54,
+        14
+      ],
+      "block": "41"
+    },
+    {
+      "name": "South rail corridor fence",
+      "kind": "point",
+      "position": [
+        54,
+        16
+      ],
+      "block": "49"
+    },
+    {
+      "name": "North rail corridor fence",
+      "kind": "point",
+      "position": [
+        55,
+        14
+      ],
+      "block": "41"
+    },
+    {
+      "name": "South rail corridor fence",
+      "kind": "point",
+      "position": [
+        55,
+        16
+      ],
+      "block": "49"
+    },
+    {
+      "name": "Cut seals old survey supplies",
+      "kind": "point",
+      "position": [
+        6,
+        28
+      ],
+      "block": "63"
+    },
+    {
+      "name": "Native safe actor or reward footing",
+      "kind": "point",
+      "position": [
+        3,
+        18
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Native safe actor or reward footing",
+      "kind": "point",
+      "position": [
+        19,
+        27
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Native safe actor or reward footing",
+      "kind": "point",
+      "position": [
+        33,
+        22
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Native safe actor or reward footing",
+      "kind": "point",
+      "position": [
+        49,
+        21
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Native safe actor or reward footing",
+      "kind": "point",
+      "position": [
+        56,
+        9
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Native safe actor or reward footing",
+      "kind": "point",
+      "position": [
+        59,
+        9
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Native safe actor or reward footing",
+      "kind": "point",
+      "position": [
+        5,
+        31
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Native safe actor or reward footing",
+      "kind": "point",
+      "position": [
+        45,
+        26
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Native reading sign",
+      "kind": "point",
+      "position": [
+        2,
+        23
+      ],
+      "block": "45"
+    },
+    {
+      "name": "Native reading sign",
+      "kind": "point",
+      "position": [
+        10,
+        22
+      ],
+      "block": "45"
+    },
+    {
+      "name": "Native reading sign",
+      "kind": "point",
+      "position": [
+        19,
+        21
+      ],
+      "block": "45"
+    },
+    {
+      "name": "Native reading sign",
+      "kind": "point",
+      "position": [
+        30,
+        22
+      ],
+      "block": "45"
+    },
+    {
+      "name": "Native reading sign",
+      "kind": "point",
+      "position": [
+        48,
+        20
+      ],
+      "block": "45"
+    },
+    {
+      "name": "Native reading sign",
+      "kind": "point",
+      "position": [
+        60,
+        11
+      ],
+      "block": "45"
+    },
+    {
+      "name": "Native reading sign",
+      "kind": "point",
+      "position": [
+        7,
+        31
+      ],
+      "block": "45"
+    },
+    {
+      "name": "Safe west approach stays off the native corner",
+      "kind": "path",
+      "material": "lawn",
+      "points": [
+        [
+          0,
+          25
+        ],
+        [
+          5,
+          25
+        ],
+        [
+          5,
+          24
+        ]
+      ],
+      "width_metatiles": 1
+    },
+    {
+      "name": "Survey crew field medic short spur",
+      "kind": "path",
+      "material": "lawn",
+      "points": [
+        [
+          44,
+          23
+        ],
+        [
+          44,
+          26
+        ],
+        [
+          45,
+          26
+        ]
+      ],
+      "width_metatiles": 1
+    },
+    {
+      "name": "Pine-sheltered first aid turnout",
+      "kind": "polygon",
+      "material": "lawn",
+      "points": [
+        [
+          43,
+          25
+        ],
+        [
+          46,
+          25
+        ],
+        [
+          46,
+          28
+        ],
+        [
+          44,
+          28
+        ],
+        [
+          44,
+          27
+        ],
+        [
+          43,
+          27
+        ]
+      ]
+    },
+    {
+      "name": "Survey rest flowers",
+      "kind": "rect",
+      "material": "flowers",
+      "bounds": [
+        44,
+        27,
+        46,
+        28
+      ]
+    },
+    {
+      "name": "Native blocked end of the abandoned ore siding",
+      "kind": "point",
+      "position": [
+        56,
+        15
+      ],
+      "block": "0a"
+    },
+    {
+      "name": "Rail inspection turnout at the crossing",
+      "kind": "rect",
+      "material": "lawn",
+      "bounds": [
+        47,
+        12,
+        50,
+        14
+      ]
+    },
+    {
+      "name": "Rail keeper safe viewing footing",
+      "kind": "point",
+      "position": [
+        47,
+        13
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Rail inspection notice",
+      "kind": "point",
+      "position": [
+        48,
+        13
+      ],
+      "block": "45"
+    },
+    {
+      "name": "Close obsolete west corner opening; planned port is row25 only",
+      "kind": "point",
+      "position": [
+        0,
+        24
+      ],
+      "block": "05"
+    },
+    {
+      "name": "North bench continuous ore cap",
+      "kind": "point",
+      "position": [
+        28,
+        8
+      ],
+      "block": "0a"
+    },
+    {
+      "name": "North bench continuous ore cap",
+      "kind": "point",
+      "position": [
+        29,
+        8
+      ],
+      "block": "0a"
+    },
+    {
+      "name": "Mine-toe broken ore finger",
+      "kind": "point",
+      "position": [
+        21,
+        17
+      ],
+      "block": "0a"
+    },
+    {
+      "name": "Mine-toe broken ore finger",
+      "kind": "point",
+      "position": [
+        22,
+        17
+      ],
+      "block": "0a"
+    },
+    {
+      "name": "Mine-toe broken ore finger",
+      "kind": "point",
+      "position": [
+        23,
+        17
+      ],
+      "block": "0a"
+    },
+    {
+      "name": "East bench spoil crown",
+      "kind": "point",
+      "position": [
+        39,
+        12
+      ],
+      "block": "0a"
+    },
+    {
+      "name": "Western approach granite group",
+      "kind": "point",
+      "position": [
+        4,
+        23
+      ],
+      "block": "0a"
+    },
+    {
+      "name": "Western approach granite group",
+      "kind": "point",
+      "position": [
+        5,
+        23
+      ],
+      "block": "0a"
+    },
+    {
+      "name": "Northwest broken ore crown",
+      "kind": "point",
+      "position": [
+        21,
+        6
+      ],
+      "block": "0a"
+    },
+    {
+      "name": "Northwest broken ore crown",
+      "kind": "point",
+      "position": [
+        22,
+        6
+      ],
+      "block": "0a"
+    },
+    {
+      "name": "Banded ore crown cap",
+      "kind": "point",
+      "position": [
+        33,
+        6
+      ],
+      "block": "0a"
+    },
+    {
+      "name": "Banded ore crown cap",
+      "kind": "point",
+      "position": [
+        34,
+        6
+      ],
+      "block": "0a"
+    },
+    {
+      "name": "Headwall broken corner",
+      "kind": "point",
+      "position": [
+        39,
+        9
+      ],
+      "block": "0a"
+    },
+    {
+      "name": "Headwall broken corner",
+      "kind": "point",
+      "position": [
+        40,
+        9
+      ],
+      "block": "0a"
+    },
+    {
+      "name": "Rail cutting ledge cap",
+      "kind": "point",
+      "position": [
+        45,
+        11
+      ],
+      "block": "0a"
+    },
+    {
+      "name": "Siding dumped-ore group",
+      "kind": "point",
+      "position": [
+        49,
+        6
+      ],
+      "block": "0a"
+    },
+    {
+      "name": "Siding dumped-ore group",
+      "kind": "point",
+      "position": [
+        50,
+        6
+      ],
+      "block": "0a"
+    },
+    {
+      "name": "Siding dumped-ore group",
+      "kind": "point",
+      "position": [
+        51,
+        7
+      ],
+      "block": "0a"
+    },
+    {
+      "name": "South quarry broken ore cap",
+      "kind": "point",
+      "position": [
+        32,
+        27
+      ],
+      "block": "0a"
+    },
+    {
+      "name": "South quarry broken ore cap",
+      "kind": "point",
+      "position": [
+        34,
+        27
+      ],
+      "block": "0a"
+    },
+    {
+      "name": "North rim attached ore toe",
+      "kind": "point",
+      "position": [
+        24,
+        7
+      ],
+      "block": "0a"
+    },
+    {
+      "name": "North rim attached ore toe",
+      "kind": "point",
+      "position": [
+        29,
+        7
+      ],
+      "block": "0a"
+    },
+    {
+      "name": "Mine apron attached rubble toe",
+      "kind": "point",
+      "position": [
+        19,
+        22
+      ],
+      "block": "0a"
+    },
+    {
+      "name": "Mine apron attached rubble toe",
+      "kind": "point",
+      "position": [
+        20,
+        22
+      ],
+      "block": "0a"
+    },
+    {
+      "name": "Mine apron attached rubble toe",
+      "kind": "point",
+      "position": [
+        21,
+        22
+      ],
+      "block": "0a"
+    },
+    {
+      "name": "Mine apron attached rubble toe",
+      "kind": "point",
+      "position": [
+        21,
+        23
+      ],
+      "block": "0a"
+    },
+    {
+      "name": "Quarry haul-track sampling rock",
+      "kind": "point",
+      "position": [
+        28,
+        22
+      ],
+      "block": "0a"
+    },
+    {
+      "name": "Quarry haul-track sampling rock",
+      "kind": "point",
+      "position": [
+        29,
+        22
+      ],
+      "block": "0a"
+    },
+    {
+      "name": "Reclaimed excavation east ore toe",
+      "kind": "point",
+      "position": [
+        35,
+        22
+      ],
+      "block": "0a"
+    },
+    {
+      "name": "Reclaimed excavation east ore toe",
+      "kind": "point",
+      "position": [
+        36,
+        22
+      ],
+      "block": "0a"
+    },
+    {
+      "name": "Reclaimed excavation east ore toe",
+      "kind": "point",
+      "position": [
+        36,
+        21
+      ],
+      "block": "0a"
+    },
+    {
+      "name": "Haul-track toe of the southern ore seam",
+      "kind": "point",
+      "position": [
+        30,
+        24
+      ],
+      "block": "0a"
+    },
+    {
+      "name": "Haul-track toe of the southern ore seam",
+      "kind": "point",
+      "position": [
+        31,
+        24
+      ],
+      "block": "0a"
+    },
+    {
+      "name": "Haul-track toe of the southern ore seam",
+      "kind": "point",
+      "position": [
+        32,
+        24
+      ],
+      "block": "0a"
+    },
+    {
+      "name": "Haul-track toe of the southern ore seam",
+      "kind": "point",
+      "position": [
+        31,
+        25
+      ],
+      "block": "0a"
+    },
+    {
+      "name": "Reclaimed north quarry bench grass crossing",
+      "kind": "block_remap",
+      "bounds": [
+        25,
+        9,
+        27,
+        10
+      ],
+      "from": "71",
+      "to": "03"
+    },
+    {
+      "name": "Upper ore meadow extends to western climbing trail",
+      "kind": "block_remap",
+      "bounds": [
+        19,
+        16,
+        21,
+        17
+      ],
+      "from": "71",
+      "to": "03"
+    },
+    {
+      "name": "Lower reclamation meadow meets the dry haul-track edge",
+      "kind": "block_remap",
+      "bounds": [
+        31,
+        22,
+        33,
+        23
+      ],
+      "from": "02",
+      "to": "03"
+    },
+    {
+      "name": "Reclaimed spoil shoulder before the dry return ledge",
+      "kind": "block_remap",
+      "bounds": [
+        40,
+        15,
+        41,
+        17
+      ],
+      "from": "71",
+      "to": "03"
+    },
+    {
+      "name": "Attached spoil boulders close the grassy shoulder edge",
+      "kind": "block_rect",
+      "bounds": [
+        39,
+        15,
+        40,
+        17
+      ],
+      "block": "0a"
+    },
+    {
+      "name": "Attached spoil boulders close the grassy shoulder edge",
+      "kind": "block_rect",
+      "bounds": [
+        41,
+        15,
+        42,
+        17
+      ],
+      "block": "0a"
+    }
+  ],
+  "status": "Rockier hand-authored source candidate responding to user guidance; existing native publication is the pre-revision baseline.",
+  "source_pixels_modified": false,
+  "crossings": [
+    {
+      "id": "WEST_CREEK_TIMBER_BRIDGE",
+      "north_rail_blocks": [
+        [
+          12,
+          21
+        ],
+        [
+          13,
+          21
+        ],
+        [
+          14,
+          21
+        ]
+      ],
+      "south_rail_blocks": [
+        [
+          12,
+          22
+        ],
+        [
+          13,
+          22
+        ],
+        [
+          14,
+          22
+        ]
+      ],
+      "water_under_rail_blocks": [
+        [
+          12,
+          23
+        ],
+        [
+          13,
+          23
+        ],
+        [
+          14,
+          23
+        ]
+      ]
+    }
+  ],
+  "rail_crossing": {
+    "track_row_metatile": 15,
+    "track_span_metatiles": [
+      43,
+      56
+    ],
+    "crossing_metatile": [
+      50,
+      15
+    ],
+    "blocked_block": "83",
+    "walking_block": "84",
+    "track_status": "Static native rails; no moving train/controller exists or is proposed.",
+    "closed_east_end_metatile": [
+      56,
+      15
+    ]
+  }
+}

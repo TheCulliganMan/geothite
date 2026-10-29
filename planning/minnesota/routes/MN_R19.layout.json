@@ -1461,6 +1461,51 @@
         12
       ],
       "block": "61"
+    },
+    {
+      "kind": "point",
+      "name": "Preserve installed native terrain",
+      "position": [
+        31,
+        6
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Pine bend habitat connects both turns of the walking approach",
+      "position": [
+        23,
+        7
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Pine bend habitat connects both turns of the walking approach",
+      "position": [
+        23,
+        8
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Pine bend habitat connects both turns of the walking approach",
+      "position": [
+        24,
+        8
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Pine bend habitat connects both turns of the walking approach",
+      "position": [
+        24,
+        9
+      ],
+      "block": "03"
     }
   ]
 }

@@ -1,0 +1,2238 @@
+{
+  "schema_version": 2,
+  "id": "MN_R12",
+  "tileset": "forest",
+  "compiled_tileset": "mn_winter_gunflint",
+  "dimensions_metatiles": [
+    32,
+    32
+  ],
+  "materials": {
+    "floor": "3c",
+    "lawn": "3c",
+    "encounter": "3d",
+    "forest": "49",
+    "water": "02",
+    "ice": "3e"
+  },
+  "cliff_blocks": {
+    "68": "29",
+    "69": "2a",
+    "6a": "2b",
+    "6b": "2c",
+    "6c": "2d",
+    "6d": "2e",
+    "6e": "2f",
+    "6f": "30",
+    "70": "31",
+    "71": "32",
+    "72": "33",
+    "73": "34"
+  },
+  "derived_blocks": [
+    {
+      "id": "28",
+      "source_tileset": "johto",
+      "source_block": "0a"
+    },
+    {
+      "id": "29",
+      "source_tileset": "johto",
+      "source_block": "68"
+    },
+    {
+      "id": "2a",
+      "source_tileset": "johto",
+      "source_block": "69"
+    },
+    {
+      "id": "2b",
+      "source_tileset": "johto",
+      "source_block": "6a"
+    },
+    {
+      "id": "2c",
+      "source_tileset": "johto",
+      "source_block": "6b"
+    },
+    {
+      "id": "2d",
+      "source_tileset": "johto",
+      "source_block": "6c"
+    },
+    {
+      "id": "2e",
+      "source_tileset": "johto",
+      "source_block": "6d"
+    },
+    {
+      "id": "2f",
+      "source_tileset": "johto",
+      "source_block": "6e"
+    },
+    {
+      "id": "30",
+      "source_tileset": "johto",
+      "source_block": "6f"
+    },
+    {
+      "id": "31",
+      "source_tileset": "johto",
+      "source_block": "70"
+    },
+    {
+      "id": "32",
+      "source_tileset": "johto",
+      "source_block": "71"
+    },
+    {
+      "id": "33",
+      "source_tileset": "johto",
+      "source_block": "72"
+    },
+    {
+      "id": "34",
+      "source_tileset": "johto",
+      "source_block": "73"
+    },
+    {
+      "id": "35",
+      "source_tileset": "johto",
+      "source_block": "06"
+    },
+    {
+      "id": "36",
+      "source_tileset": "johto",
+      "source_block": "01"
+    },
+    {
+      "id": "37",
+      "source_tileset": "johto",
+      "source_block": "03"
+    },
+    {
+      "id": "38",
+      "source_tileset": "johto",
+      "source_block": "79"
+    },
+    {
+      "id": "39",
+      "source_tileset": "johto",
+      "source_block": "7a"
+    },
+    {
+      "id": "49",
+      "source_tileset": "mn_winter_north_shore",
+      "source_block": "8b",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ]
+    }
+  ],
+  "shore_fitting": "forest_8_neighbors",
+  "layers": [
+    {
+      "kind": "polygon",
+      "name": "South town-side trailhead and ranger forecourt",
+      "points": [
+        [
+          24,
+          31
+        ],
+        [
+          28,
+          31
+        ],
+        [
+          28,
+          28
+        ],
+        [
+          29,
+          28
+        ],
+        [
+          29,
+          25
+        ],
+        [
+          28,
+          25
+        ],
+        [
+          28,
+          23
+        ],
+        [
+          26,
+          23
+        ],
+        [
+          26,
+          22
+        ],
+        [
+          23,
+          22
+        ],
+        [
+          23,
+          24
+        ],
+        [
+          22,
+          24
+        ],
+        [
+          22,
+          26
+        ],
+        [
+          24,
+          26
+        ],
+        [
+          24,
+          28
+        ]
+      ],
+      "material": "floor"
+    },
+    {
+      "kind": "path",
+      "name": "Only actual south town approach",
+      "points": [
+        [
+          27,
+          31
+        ],
+        [
+          27,
+          27
+        ],
+        [
+          25,
+          27
+        ],
+        [
+          25,
+          25
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "kind": "polygon",
+      "name": "Loons Lake walking shore, east landing and main westbound saddle",
+      "points": [
+        [
+          24,
+          25
+        ],
+        [
+          26,
+          25
+        ],
+        [
+          26,
+          23
+        ],
+        [
+          25,
+          23
+        ],
+        [
+          25,
+          20
+        ],
+        [
+          26,
+          20
+        ],
+        [
+          26,
+          17
+        ],
+        [
+          27,
+          17
+        ],
+        [
+          27,
+          13
+        ],
+        [
+          26,
+          13
+        ],
+        [
+          26,
+          11
+        ],
+        [
+          24,
+          11
+        ],
+        [
+          24,
+          14
+        ],
+        [
+          22,
+          14
+        ],
+        [
+          22,
+          16
+        ],
+        [
+          20,
+          16
+        ],
+        [
+          20,
+          17
+        ],
+        [
+          16,
+          17
+        ],
+        [
+          16,
+          16
+        ],
+        [
+          14,
+          16
+        ],
+        [
+          14,
+          14
+        ],
+        [
+          11,
+          14
+        ],
+        [
+          11,
+          16
+        ],
+        [
+          9,
+          16
+        ],
+        [
+          9,
+          18
+        ],
+        [
+          12,
+          18
+        ],
+        [
+          12,
+          19
+        ],
+        [
+          16,
+          19
+        ],
+        [
+          16,
+          18
+        ],
+        [
+          20,
+          18
+        ],
+        [
+          20,
+          20
+        ],
+        [
+          23,
+          20
+        ],
+        [
+          23,
+          22
+        ],
+        [
+          24,
+          22
+        ]
+      ],
+      "material": "floor"
+    },
+    {
+      "kind": "path",
+      "name": "West Boundary Waters physical exit",
+      "points": [
+        [
+          0,
+          14
+        ],
+        [
+          5,
+          14
+        ],
+        [
+          5,
+          16
+        ],
+        [
+          9,
+          16
+        ],
+        [
+          9,
+          17
+        ],
+        [
+          13,
+          17
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "kind": "polygon",
+      "name": "West bank and Windthrow fork",
+      "points": [
+        [
+          4,
+          12
+        ],
+        [
+          6,
+          12
+        ],
+        [
+          6,
+          11
+        ],
+        [
+          9,
+          11
+        ],
+        [
+          9,
+          12
+        ],
+        [
+          11,
+          12
+        ],
+        [
+          11,
+          14
+        ],
+        [
+          12,
+          14
+        ],
+        [
+          12,
+          17
+        ],
+        [
+          10,
+          17
+        ],
+        [
+          10,
+          18
+        ],
+        [
+          7,
+          18
+        ],
+        [
+          7,
+          16
+        ],
+        [
+          4,
+          16
+        ]
+      ],
+      "material": "floor"
+    },
+    {
+      "kind": "polygon",
+      "name": "Loons open-water basin with short south arm",
+      "points": [
+        [
+          12,
+          11
+        ],
+        [
+          14,
+          11
+        ],
+        [
+          14,
+          10
+        ],
+        [
+          18,
+          10
+        ],
+        [
+          18,
+          11
+        ],
+        [
+          22,
+          11
+        ],
+        [
+          22,
+          12
+        ],
+        [
+          24,
+          12
+        ],
+        [
+          24,
+          14
+        ],
+        [
+          22,
+          14
+        ],
+        [
+          22,
+          15
+        ],
+        [
+          20,
+          15
+        ],
+        [
+          20,
+          16
+        ],
+        [
+          18,
+          16
+        ],
+        [
+          18,
+          15
+        ],
+        [
+          15,
+          15
+        ],
+        [
+          15,
+          16
+        ],
+        [
+          13,
+          16
+        ],
+        [
+          13,
+          15
+        ],
+        [
+          12,
+          15
+        ]
+      ],
+      "material": "water"
+    },
+    {
+      "kind": "path",
+      "name": "Actual north lake shore to shelter",
+      "points": [
+        [
+          12,
+          10
+        ],
+        [
+          12,
+          9
+        ],
+        [
+          15,
+          9
+        ],
+        [
+          15,
+          8
+        ],
+        [
+          18,
+          8
+        ],
+        [
+          18,
+          9
+        ],
+        [
+          21,
+          9
+        ],
+        [
+          21,
+          10
+        ],
+        [
+          25,
+          10
+        ],
+        [
+          25,
+          12
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "kind": "rect",
+      "name": "Useful Cut-sealed herb clearing",
+      "bounds": [
+        6,
+        5,
+        8,
+        8
+      ],
+      "material": "floor"
+    },
+    {
+      "kind": "path",
+      "name": "Herb gate approach from west fork",
+      "points": [
+        [
+          8,
+          12
+        ],
+        [
+          8,
+          10
+        ],
+        [
+          7,
+          10
+        ],
+        [
+          7,
+          9
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "kind": "point",
+      "name": "Native Cut gate preserves forest0f replacement",
+      "position": [
+        7,
+        8
+      ],
+      "block": "0f"
+    },
+    {
+      "kind": "cliff_polygon",
+      "name": "Raven Rock jagged shelter brow",
+      "points": [
+        [
+          16,
+          4
+        ],
+        [
+          19,
+          4
+        ],
+        [
+          19,
+          3
+        ],
+        [
+          21,
+          3
+        ],
+        [
+          21,
+          4
+        ],
+        [
+          23,
+          4
+        ],
+        [
+          23,
+          6
+        ],
+        [
+          22,
+          6
+        ],
+        [
+          22,
+          7
+        ],
+        [
+          18,
+          7
+        ],
+        [
+          18,
+          6
+        ],
+        [
+          16,
+          6
+        ]
+      ]
+    },
+    {
+      "kind": "point",
+      "name": "Raven native cave front",
+      "position": [
+        20,
+        7
+      ],
+      "block": "34"
+    },
+    {
+      "kind": "polygon",
+      "name": "Shelter step and interpretation shoulder",
+      "points": [
+        [
+          17,
+          8
+        ],
+        [
+          18,
+          8
+        ],
+        [
+          18,
+          7
+        ],
+        [
+          20,
+          7
+        ],
+        [
+          20,
+          8
+        ],
+        [
+          22,
+          8
+        ],
+        [
+          22,
+          9
+        ],
+        [
+          20,
+          9
+        ],
+        [
+          20,
+          10
+        ],
+        [
+          18,
+          10
+        ],
+        [
+          18,
+          9
+        ],
+        [
+          17,
+          9
+        ]
+      ],
+      "material": "floor"
+    },
+    {
+      "kind": "point",
+      "name": "Restore exact native cave face after shoulder",
+      "position": [
+        20,
+        7
+      ],
+      "block": "34"
+    },
+    {
+      "kind": "path",
+      "name": "Raven ridge cache short climb",
+      "points": [
+        [
+          17,
+          8
+        ],
+        [
+          17,
+          5
+        ],
+        [
+          16,
+          5
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "kind": "polygon",
+      "name": "North frost basin dry rim",
+      "points": [
+        [
+          21,
+          4
+        ],
+        [
+          26,
+          4
+        ],
+        [
+          26,
+          5
+        ],
+        [
+          29,
+          5
+        ],
+        [
+          29,
+          9
+        ],
+        [
+          27,
+          9
+        ],
+        [
+          27,
+          11
+        ],
+        [
+          24,
+          11
+        ],
+        [
+          24,
+          10
+        ],
+        [
+          20,
+          10
+        ],
+        [
+          20,
+          9
+        ],
+        [
+          18,
+          9
+        ],
+        [
+          18,
+          6
+        ],
+        [
+          21,
+          6
+        ]
+      ],
+      "material": "floor"
+    },
+    {
+      "kind": "polygon",
+      "name": "Substantial frost-slick granite basin",
+      "points": [
+        [
+          23,
+          5
+        ],
+        [
+          25,
+          5
+        ],
+        [
+          25,
+          6
+        ],
+        [
+          28,
+          6
+        ],
+        [
+          28,
+          8
+        ],
+        [
+          27,
+          8
+        ],
+        [
+          27,
+          9
+        ],
+        [
+          22,
+          9
+        ],
+        [
+          22,
+          8
+        ],
+        [
+          23,
+          8
+        ]
+      ],
+      "material": "ice"
+    },
+    {
+      "kind": "path",
+      "name": "East frost rim returns without field moves",
+      "points": [
+        [
+          28,
+          9
+        ],
+        [
+          29,
+          9
+        ],
+        [
+          29,
+          5
+        ],
+        [
+          26,
+          5
+        ],
+        [
+          26,
+          4
+        ],
+        [
+          22,
+          4
+        ],
+        [
+          22,
+          5
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "kind": "polygon",
+      "name": "Southern bog shore and hammock clearing",
+      "points": [
+        [
+          7,
+          21
+        ],
+        [
+          9,
+          21
+        ],
+        [
+          9,
+          20
+        ],
+        [
+          12,
+          20
+        ],
+        [
+          12,
+          21
+        ],
+        [
+          15,
+          21
+        ],
+        [
+          15,
+          23
+        ],
+        [
+          17,
+          23
+        ],
+        [
+          17,
+          25
+        ],
+        [
+          15,
+          25
+        ],
+        [
+          15,
+          27
+        ],
+        [
+          13,
+          27
+        ],
+        [
+          13,
+          29
+        ],
+        [
+          10,
+          29
+        ],
+        [
+          10,
+          28
+        ],
+        [
+          8,
+          28
+        ],
+        [
+          8,
+          26
+        ],
+        [
+          7,
+          26
+        ]
+      ],
+      "material": "floor"
+    },
+    {
+      "kind": "path",
+      "name": "Short bog loop joins main trail twice",
+      "points": [
+        [
+          9,
+          17
+        ],
+        [
+          9,
+          21
+        ],
+        [
+          8,
+          21
+        ],
+        [
+          8,
+          25
+        ],
+        [
+          11,
+          25
+        ],
+        [
+          11,
+          27
+        ],
+        [
+          14,
+          27
+        ],
+        [
+          14,
+          24
+        ],
+        [
+          17,
+          24
+        ],
+        [
+          17,
+          21
+        ],
+        [
+          20,
+          21
+        ],
+        [
+          20,
+          19
+        ],
+        [
+          23,
+          19
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "kind": "polygon",
+      "name": "Western bog inlet",
+      "points": [
+        [
+          6,
+          22
+        ],
+        [
+          8,
+          22
+        ],
+        [
+          8,
+          23
+        ],
+        [
+          10,
+          23
+        ],
+        [
+          10,
+          25
+        ],
+        [
+          8,
+          25
+        ],
+        [
+          8,
+          26
+        ],
+        [
+          6,
+          26
+        ],
+        [
+          6,
+          25
+        ],
+        [
+          5,
+          25
+        ],
+        [
+          5,
+          23
+        ],
+        [
+          6,
+          23
+        ]
+      ],
+      "material": "water"
+    },
+    {
+      "kind": "polygon",
+      "name": "Eastern bog pool",
+      "points": [
+        [
+          13,
+          22
+        ],
+        [
+          15,
+          22
+        ],
+        [
+          15,
+          23
+        ],
+        [
+          16,
+          23
+        ],
+        [
+          16,
+          25
+        ],
+        [
+          14,
+          25
+        ],
+        [
+          14,
+          26
+        ],
+        [
+          13,
+          26
+        ]
+      ],
+      "material": "water"
+    },
+    {
+      "kind": "rect",
+      "name": "Bog grass neck makes the short route meaningful",
+      "bounds": [
+        11,
+        22,
+        12,
+        26
+      ],
+      "material": "encounter"
+    },
+    {
+      "kind": "rect",
+      "name": "Windthrow habitat across west route",
+      "bounds": [
+        9,
+        14,
+        11,
+        15
+      ],
+      "material": "encounter"
+    },
+    {
+      "kind": "path",
+      "name": "Ranger porch connects useful bog fork",
+      "points": [
+        [
+          17,
+          24
+        ],
+        [
+          20,
+          24
+        ],
+        [
+          20,
+          25
+        ],
+        [
+          24,
+          25
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "kind": "point",
+      "name": "Original ranger hut native structure",
+      "position": [
+        24,
+        21
+      ],
+      "block": "1d"
+    },
+    {
+      "kind": "point",
+      "name": "Original ranger hut native structure",
+      "position": [
+        25,
+        21
+      ],
+      "block": "1e"
+    },
+    {
+      "kind": "point",
+      "name": "Original ranger hut native structure",
+      "position": [
+        26,
+        21
+      ],
+      "block": "1f"
+    },
+    {
+      "kind": "point",
+      "name": "Original ranger hut native structure",
+      "position": [
+        24,
+        22
+      ],
+      "block": "21"
+    },
+    {
+      "kind": "point",
+      "name": "Original ranger hut native structure",
+      "position": [
+        25,
+        22
+      ],
+      "block": "22"
+    },
+    {
+      "kind": "point",
+      "name": "Original ranger hut native structure",
+      "position": [
+        26,
+        22
+      ],
+      "block": "23"
+    },
+    {
+      "kind": "point",
+      "name": "Original ranger hut native structure",
+      "position": [
+        24,
+        23
+      ],
+      "block": "24"
+    },
+    {
+      "kind": "point",
+      "name": "Original ranger hut native structure",
+      "position": [
+        25,
+        23
+      ],
+      "block": "26"
+    },
+    {
+      "kind": "point",
+      "name": "Original ranger hut native structure",
+      "position": [
+        26,
+        23
+      ],
+      "block": "27"
+    },
+    {
+      "kind": "point",
+      "name": "Deliberate native snow canopy shoulder",
+      "position": [
+        5,
+        11
+      ],
+      "block": "42"
+    },
+    {
+      "kind": "point",
+      "name": "Deliberate native snow canopy shoulder",
+      "position": [
+        10,
+        11
+      ],
+      "block": "43"
+    },
+    {
+      "kind": "point",
+      "name": "Deliberate native snow canopy shoulder",
+      "position": [
+        4,
+        15
+      ],
+      "block": "46"
+    },
+    {
+      "kind": "point",
+      "name": "Deliberate native snow canopy shoulder",
+      "position": [
+        11,
+        17
+      ],
+      "block": "48"
+    },
+    {
+      "kind": "point",
+      "name": "Deliberate native snow canopy shoulder",
+      "position": [
+        15,
+        18
+      ],
+      "block": "42"
+    },
+    {
+      "kind": "point",
+      "name": "Deliberate native snow canopy shoulder",
+      "position": [
+        21,
+        19
+      ],
+      "block": "43"
+    },
+    {
+      "kind": "point",
+      "name": "Deliberate native snow canopy shoulder",
+      "position": [
+        28,
+        20
+      ],
+      "block": "46"
+    },
+    {
+      "kind": "point",
+      "name": "Deliberate native snow canopy shoulder",
+      "position": [
+        23,
+        25
+      ],
+      "block": "48"
+    },
+    {
+      "kind": "point",
+      "name": "Deliberate native snow canopy shoulder",
+      "position": [
+        10,
+        27
+      ],
+      "block": "42"
+    },
+    {
+      "kind": "point",
+      "name": "Deliberate native snow canopy shoulder",
+      "position": [
+        14,
+        28
+      ],
+      "block": "43"
+    },
+    {
+      "kind": "point",
+      "name": "Deliberate native snow canopy shoulder",
+      "position": [
+        17,
+        9
+      ],
+      "block": "46"
+    },
+    {
+      "kind": "polygon",
+      "name": "West shore pine spur",
+      "points": [
+        [
+          6,
+          12
+        ],
+        [
+          8,
+          12
+        ],
+        [
+          8,
+          13
+        ],
+        [
+          9,
+          13
+        ],
+        [
+          9,
+          15
+        ],
+        [
+          8,
+          15
+        ],
+        [
+          8,
+          14
+        ],
+        [
+          6,
+          14
+        ]
+      ],
+      "material": "forest"
+    },
+    {
+      "kind": "polygon",
+      "name": "South lake pine tongue",
+      "points": [
+        [
+          15,
+          17
+        ],
+        [
+          17,
+          17
+        ],
+        [
+          17,
+          18
+        ],
+        [
+          16,
+          18
+        ],
+        [
+          16,
+          19
+        ],
+        [
+          14,
+          19
+        ],
+        [
+          14,
+          18
+        ],
+        [
+          15,
+          18
+        ]
+      ],
+      "material": "forest"
+    },
+    {
+      "kind": "polygon",
+      "name": "Central bog ridge closes empty diagonal lawn",
+      "points": [
+        [
+          13,
+          19
+        ],
+        [
+          16,
+          19
+        ],
+        [
+          16,
+          20
+        ],
+        [
+          17,
+          20
+        ],
+        [
+          17,
+          21
+        ],
+        [
+          15,
+          21
+        ],
+        [
+          15,
+          22
+        ],
+        [
+          13,
+          22
+        ]
+      ],
+      "material": "forest"
+    },
+    {
+      "kind": "polygon",
+      "name": "East shore pine promontory",
+      "points": [
+        [
+          25,
+          14
+        ],
+        [
+          26,
+          14
+        ],
+        [
+          26,
+          15
+        ],
+        [
+          27,
+          15
+        ],
+        [
+          27,
+          17
+        ],
+        [
+          26,
+          17
+        ],
+        [
+          26,
+          16
+        ],
+        [
+          25,
+          16
+        ]
+      ],
+      "material": "forest"
+    },
+    {
+      "kind": "polygon",
+      "name": "Ranger northwood",
+      "points": [
+        [
+          22,
+          20
+        ],
+        [
+          24,
+          20
+        ],
+        [
+          24,
+          21
+        ],
+        [
+          23,
+          21
+        ],
+        [
+          23,
+          23
+        ],
+        [
+          22,
+          23
+        ]
+      ],
+      "material": "forest"
+    },
+    {
+      "kind": "polygon",
+      "name": "South approach west pine mass",
+      "points": [
+        [
+          23,
+          27
+        ],
+        [
+          25,
+          27
+        ],
+        [
+          25,
+          28
+        ],
+        [
+          26,
+          28
+        ],
+        [
+          26,
+          30
+        ],
+        [
+          24,
+          30
+        ],
+        [
+          24,
+          29
+        ],
+        [
+          23,
+          29
+        ]
+      ],
+      "material": "forest"
+    },
+    {
+      "kind": "rect",
+      "name": "South approach east pine shoulder",
+      "bounds": [
+        28,
+        28,
+        30,
+        31
+      ],
+      "material": "forest"
+    },
+    {
+      "kind": "rect",
+      "name": "Porch side pine shoulder",
+      "bounds": [
+        26,
+        25,
+        28,
+        27
+      ],
+      "material": "forest"
+    },
+    {
+      "kind": "path",
+      "name": "Lake south walking bank",
+      "points": [
+        [
+          14,
+          18
+        ],
+        [
+          20,
+          18
+        ],
+        [
+          20,
+          17
+        ],
+        [
+          24,
+          17
+        ],
+        [
+          24,
+          20
+        ],
+        [
+          25,
+          20
+        ],
+        [
+          25,
+          25
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "kind": "path",
+      "name": "Principal visible Loons east shore",
+      "points": [
+        [
+          24,
+          25
+        ],
+        [
+          24,
+          21
+        ],
+        [
+          25,
+          21
+        ],
+        [
+          25,
+          13
+        ],
+        [
+          25,
+          10
+        ],
+        [
+          21,
+          10
+        ],
+        [
+          21,
+          9
+        ],
+        [
+          18,
+          9
+        ],
+        [
+          18,
+          8
+        ],
+        [
+          15,
+          8
+        ],
+        [
+          15,
+          9
+        ],
+        [
+          12,
+          9
+        ],
+        [
+          12,
+          12
+        ],
+        [
+          10,
+          12
+        ],
+        [
+          10,
+          14
+        ],
+        [
+          5,
+          14
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "kind": "path",
+      "name": "South approach bent final path",
+      "points": [
+        [
+          27,
+          31
+        ],
+        [
+          27,
+          27
+        ],
+        [
+          25,
+          27
+        ],
+        [
+          25,
+          25
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "kind": "cliff_polygon",
+      "name": "Raven shelter final native brow",
+      "points": [
+        [
+          16,
+          4
+        ],
+        [
+          19,
+          4
+        ],
+        [
+          19,
+          3
+        ],
+        [
+          21,
+          3
+        ],
+        [
+          21,
+          4
+        ],
+        [
+          23,
+          4
+        ],
+        [
+          23,
+          6
+        ],
+        [
+          22,
+          6
+        ],
+        [
+          22,
+          7
+        ],
+        [
+          18,
+          7
+        ],
+        [
+          18,
+          6
+        ],
+        [
+          16,
+          6
+        ]
+      ]
+    },
+    {
+      "kind": "point",
+      "name": "Raven exact native cave mouth",
+      "position": [
+        20,
+        7
+      ],
+      "block": "34"
+    },
+    {
+      "kind": "point",
+      "name": "Raven safe exterior step",
+      "position": [
+        20,
+        8
+      ],
+      "block": "3c"
+    },
+    {
+      "kind": "rect",
+      "name": "Close superseded southern exterior port",
+      "bounds": [
+        0,
+        30,
+        32,
+        32
+      ],
+      "material": "forest"
+    },
+    {
+      "kind": "path",
+      "name": "Short actual east arrival to ranger junction",
+      "points": [
+        [
+          31,
+          27
+        ],
+        [
+          27,
+          27
+        ],
+        [
+          25,
+          27
+        ],
+        [
+          25,
+          25
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "kind": "rect",
+      "name": "Required west portage habitat",
+      "bounds": [
+        2,
+        14,
+        3,
+        15
+      ],
+      "material": "encounter"
+    },
+    {
+      "kind": "point",
+      "name": "Final intact ranger hut",
+      "position": [
+        24,
+        21
+      ],
+      "block": "1d"
+    },
+    {
+      "kind": "point",
+      "name": "Final intact ranger hut",
+      "position": [
+        25,
+        21
+      ],
+      "block": "1e"
+    },
+    {
+      "kind": "point",
+      "name": "Final intact ranger hut",
+      "position": [
+        26,
+        21
+      ],
+      "block": "1f"
+    },
+    {
+      "kind": "point",
+      "name": "Final intact ranger hut",
+      "position": [
+        24,
+        22
+      ],
+      "block": "21"
+    },
+    {
+      "kind": "point",
+      "name": "Final intact ranger hut",
+      "position": [
+        25,
+        22
+      ],
+      "block": "22"
+    },
+    {
+      "kind": "point",
+      "name": "Final intact ranger hut",
+      "position": [
+        26,
+        22
+      ],
+      "block": "23"
+    },
+    {
+      "kind": "point",
+      "name": "Final intact ranger hut",
+      "position": [
+        24,
+        23
+      ],
+      "block": "24"
+    },
+    {
+      "kind": "point",
+      "name": "Final intact ranger hut",
+      "position": [
+        25,
+        23
+      ],
+      "block": "26"
+    },
+    {
+      "kind": "point",
+      "name": "Final intact ranger hut",
+      "position": [
+        26,
+        23
+      ],
+      "block": "27"
+    },
+    {
+      "kind": "point",
+      "name": "Real native winter sign MN_R12_SIGN_01",
+      "position": [
+        27,
+        29
+      ],
+      "block": "41"
+    },
+    {
+      "kind": "point",
+      "name": "Real native winter sign MN_R12_SIGN_02",
+      "position": [
+        24,
+        16
+      ],
+      "block": "41"
+    },
+    {
+      "kind": "point",
+      "name": "Real native winter sign MN_R12_SIGN_03",
+      "position": [
+        21,
+        8
+      ],
+      "block": "41"
+    },
+    {
+      "kind": "point",
+      "name": "Real native winter sign MN_R12_SIGN_04",
+      "position": [
+        23,
+        24
+      ],
+      "block": "41"
+    },
+    {
+      "kind": "point",
+      "name": "Real native winter sign MN_R12_SIGN_05",
+      "position": [
+        11,
+        22
+      ],
+      "block": "41"
+    },
+    {
+      "kind": "point",
+      "name": "Real native winter sign MN_R12_SIGN_06",
+      "position": [
+        2,
+        13
+      ],
+      "block": "41"
+    },
+    {
+      "kind": "point",
+      "name": "Stable footprint for MN_R12_N01",
+      "position": [
+        27,
+        28
+      ],
+      "block": "3c"
+    },
+    {
+      "kind": "point",
+      "name": "Stable footprint for MN_R12_N02",
+      "position": [
+        24,
+        4
+      ],
+      "block": "3c"
+    },
+    {
+      "kind": "point",
+      "name": "Stable footprint for MN_R12_N03",
+      "position": [
+        12,
+        16
+      ],
+      "block": "3c"
+    },
+    {
+      "kind": "point",
+      "name": "Stable footprint for MN_R12_N04",
+      "position": [
+        11,
+        27
+      ],
+      "block": "3c"
+    },
+    {
+      "kind": "point",
+      "name": "Stable footprint for MN_R12_N05",
+      "position": [
+        25,
+        18
+      ],
+      "block": "3c"
+    },
+    {
+      "kind": "point",
+      "name": "Stable footprint for MN_R12_N06",
+      "position": [
+        11,
+        13
+      ],
+      "block": "3c"
+    },
+    {
+      "kind": "point",
+      "name": "Stable footprint for MN_R12_T01",
+      "position": [
+        27,
+        24
+      ],
+      "block": "3c"
+    },
+    {
+      "kind": "point",
+      "name": "Stable footprint for MN_R12_T02",
+      "position": [
+        25,
+        14
+      ],
+      "block": "3c"
+    },
+    {
+      "kind": "point",
+      "name": "Stable footprint for MN_R12_T03",
+      "position": [
+        25,
+        10
+      ],
+      "block": "3c"
+    },
+    {
+      "kind": "point",
+      "name": "Stable footprint for MN_R12_T04",
+      "position": [
+        18,
+        9
+      ],
+      "block": "3c"
+    },
+    {
+      "kind": "point",
+      "name": "Stable footprint for MN_R12_T05",
+      "position": [
+        9,
+        12
+      ],
+      "block": "3c"
+    },
+    {
+      "kind": "point",
+      "name": "Stable footprint for MN_R12_T06",
+      "position": [
+        19,
+        21
+      ],
+      "block": "3c"
+    },
+    {
+      "kind": "point",
+      "name": "Stable footprint for MN_R12_T07",
+      "position": [
+        12,
+        27
+      ],
+      "block": "3c"
+    },
+    {
+      "kind": "point",
+      "name": "Stable footprint for MN_R12_T08",
+      "position": [
+        12,
+        23
+      ],
+      "block": "3c"
+    },
+    {
+      "kind": "point",
+      "name": "Stable footprint for MN_R12_T09",
+      "position": [
+        8,
+        21
+      ],
+      "block": "3c"
+    },
+    {
+      "kind": "point",
+      "name": "Stable footprint for MN_R12_T10",
+      "position": [
+        8,
+        10
+      ],
+      "block": "3c"
+    },
+    {
+      "kind": "point",
+      "name": "Stable footprint for MN_R12_ITEM_01",
+      "position": [
+        6,
+        5
+      ],
+      "block": "3c"
+    },
+    {
+      "kind": "point",
+      "name": "Stable footprint for MN_R12_ITEM_02",
+      "position": [
+        27,
+        5
+      ],
+      "block": "3c"
+    },
+    {
+      "kind": "point",
+      "name": "Stable footprint for MN_R12_ITEM_03",
+      "position": [
+        11,
+        27
+      ],
+      "block": "3c"
+    },
+    {
+      "kind": "point",
+      "name": "Stable footprint for MN_R12_ITEM_04",
+      "position": [
+        17,
+        4
+      ],
+      "block": "3c"
+    },
+    {
+      "kind": "point",
+      "name": "Native Cut gate",
+      "position": [
+        7,
+        8
+      ],
+      "block": "0f"
+    },
+    {
+      "kind": "point",
+      "name": "Camp stock stable footprint",
+      "position": [
+        25,
+        26
+      ],
+      "block": "3c"
+    },
+    {
+      "kind": "point",
+      "name": "Relocated native camp sign",
+      "position": [
+        27,
+        26
+      ],
+      "block": "41"
+    }
+  ]
+}

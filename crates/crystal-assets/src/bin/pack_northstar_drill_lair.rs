@@ -41,6 +41,7 @@ fn main() -> Result<()> {
         "generated pack must remain untracked"
     );
     let base = crystal_assets::read_verified_compiled_game_pack(input)?;
+    crystal_assets::verify_northstar_publication_geometry(&base)?;
     let result =
         crystal_assets::build_northstar_drill_lair(&base, &events, &approach, &gallery, &core)?;
     result.write_preserving_storage(&output)?;

@@ -130,7 +130,8 @@ def main():
         assert tuple(door["return_tile"]) in seen and kind(door["return_tile"]) == "FLOOR", door
     for tile in seen:
         if tile[0] in (0, width * 2 - 1) or tile[1] in (0, height * 2 - 1):
-            assert tile in {(16, height * 2 - 1), (17, height * 2 - 1)}, ("unbound fair edge", tile)
+            allowed = {(95,64), (95,65)} if design['ports'][0]['side'] == 'E' else {(16, height * 2 - 1), (17, height * 2 - 1)}
+            assert tile in allowed, ("unbound fair edge", tile)
     image = art.render(layout["tileset"], width, height, blocks, derived=layout["derived_blocks"]).convert("RGBA")
     for actor in residents:
         sprite = oriented_sprite(pack, actor["sprite"], actor["facing"])

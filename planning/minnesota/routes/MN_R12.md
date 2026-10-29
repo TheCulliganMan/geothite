@@ -1,3 +1,17 @@
+> Current compact grass revision: see [R12 verification and 2D views](../revisions/route-grass-v01/current-r12-v01/README.md).
+> The selected 705-map reward descendant changes 18 native snow FLOOR metatiles
+> to frosted grass, preserving all existing inland ice, Cut gates, actors and
+> rooms. Native grass grows from 16 to 88 walking tiles. North Shore remains
+> warm and contains zero ice. Seven native cases, Continue, stdio and audio pass.
+> Historical rectangular dimensions and non-Minnesota teams below are retired.
+
+> Historical runbook: the rectangular standalone installer described below is
+> retired. Current geography uses the compact Superior lineage, with direct
+> North Shore–Grand Marais adjacency and shortened Gunflint. Consult
+> `../world.json` → `active_local_review_revision` for the current native pack.
+> Older dimensions, pack commands and acceptance claims below are preserved
+> as historical evidence, not current publication instructions.
+
 # Gunflint Trail — current source review candidate
 
 ## Current executed native evidence — 2026-10-26

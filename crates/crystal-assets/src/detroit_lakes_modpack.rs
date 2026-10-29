@@ -19,9 +19,9 @@ const MART: &str = "MART_MN_DETROIT_LAKES";
 ///
 /// Installs native free care/PC/recovery, priced shopping and the retryable SQ01
 /// observation hand-in. The original wooded approach, trainer activities and
-/// route programs remain intact; reciprocal roads join the town to R15, that
-/// approach and R19. The public lake has a real launch and closed Surf edges.
-/// The station's public hall and residents are installed; six-stop Glacier Line
+/// route programs remain intact; reciprocal roads join the town to R15 and that
+/// approach. R19 retains its existing Lake Itasca connection. The public lake has a real launch and closed Surf edges.
+/// The station's public hall and residents are installed; five-stop Glacier Line
 /// transport remains separate unfinished work. No train or chapter flags are
 /// granted. All original audio, HOME and existing recovery records are retained.
 ///
@@ -35,6 +35,7 @@ pub fn build_detroit_lakes_modpack(
     layout_json: &str,
     station_json: &str,
 ) -> Result<CompiledGamePack> {
+    crate::validate_compact_superior_geography(base)?;
     crate::verify_compiled_game_pack_for_runtime(base)?;
     let (town, raw) = parse(town_json, station_json)?;
     let layout: Layout = serde_json::from_str(layout_json)?;
@@ -120,6 +121,7 @@ pub fn build_detroit_lakes_modpack(
     exterior.attributes.height = 18;
     exterior.attributes.border_block = 5;
     exterior.attributes.tileset_name = town.compiled_tileset.clone();
+    crate::regional_town_fishing::freshwater(&pack, &mut exterior)?;
     exterior.blocks = layout.compile()?;
     crate::authored_town_scripts::ordinary(
         &pack,
@@ -181,7 +183,7 @@ pub fn build_detroit_lakes_modpack(
         }
         modules.push((map, room.passive_arrival.tile));
     }
-    let edges = BTreeSet::from([[0, 18], [0, 19], [47, 18], [47, 19], [24, 0], [25, 0]]);
+    let edges = BTreeSet::from([[0, 18], [0, 19], [47, 18], [47, 19]]);
     crate::authored_town_geometry::validate_with_edges(&pack, &town, &modules, &edges)?;
     let station = &modules[3].0;
     let public = reachable(&pack, station, [11, 17], false)?;
@@ -219,6 +221,7 @@ pub fn build_detroit_lakes_modpack(
         &pack.runtime_files,
         &pack.report,
     )?;
+    crate::validate_compact_superior_geography(&pack)?;
     crate::verify_compiled_game_pack_for_runtime(&pack)?;
     Ok(pack)
 }

@@ -275,7 +275,7 @@ pub(crate) fn battle(
         1 => "I'm FERN. Small changes become strength. Watch how this team works together.",
         2 => "FLINT. Rock remembers every strain. Let's see what your team can withstand.",
         3 => "I'm VEIL. A battle is shaped by what you cannot see coming. Stay attentive.",
-        4 => "REED. Power needs direction. Show me how you guide yours.",
+        4 => "HALDEN. Power needs direction. Show me how you guide yours.",
         _ => {
             "I'm CASEY. You've come a long way together. Let me meet the team that brought you here."
         }

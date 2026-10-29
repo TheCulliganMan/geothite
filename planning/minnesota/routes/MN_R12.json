@@ -1,5 +1,22 @@
 {
   "id": "MN_R12",
+  "native_cave_revision": {
+    "revision": "r12_shelter_revision",
+    "room": "MnR12Cave1F",
+    "plan": "../caves/current-r12-v01/README.md",
+    "contract": "../caves/current-r12-v01/native.contract.json",
+    "source": "../caves/johto-quality-v01/MnR12Cave1F.json",
+    "actual_exterior": "MnR12C00R00",
+    "active_mouth_core": [
+      40,
+      15
+    ],
+    "safe_exterior_core": [
+      40,
+      16
+    ],
+    "scope": "Verified16x12 shelter overlay on the accepted final-region parent. Fitted Otta roof, extended attached shoulder, three stairs, both drops/ordinary returns, original Max Ether/PP/Continue and compact mouth pass. The legacy source66,23 exterior anchor is provenance, not the current native entrance."
+  },
   "map_prefix": "MnR12",
   "name": "Gunflint Trail",
   "dimensions_metatiles": [
@@ -188,15 +205,15 @@
       "sight_range": 2,
       "party": [
         {
-          "species": "GRAVELER",
+          "species": "BANDRAKE",
           "level": 40
         },
         {
-          "species": "ONIX",
+          "species": "PELLETANK",
           "level": 40
         },
         {
-          "species": "URSARING",
+          "species": "DOZEBEAR",
           "level": 39
         }
       ],
@@ -205,7 +222,7 @@
       "before_text": "These stones warm in the noon sun. My team does too!",
       "after_text": "A warm welcome! The hut is west.",
       "loss_text": "Steady your feet. Then try again.",
-      "display_name": "Silas",
+      "display_name": "SILAS",
       "trainer_class": "HIKER",
       "sprite": "SPRITE_POKEFAN_M",
       "tile": [
@@ -237,11 +254,11 @@
       "sight_range": 2,
       "party": [
         {
-          "species": "NOCTOWL",
+          "species": "BOOMRUFF",
           "level": 40
         },
         {
-          "species": "XATU",
+          "species": "SOLSTORT",
           "level": 40
         }
       ],
@@ -250,7 +267,7 @@
       "before_text": "Wings above us, roots below us.",
       "after_text": "Both keep us safe.",
       "loss_text": "Watch the wind.",
-      "display_name": "Milo",
+      "display_name": "MILO",
       "trainer_class": "BIRD_KEEPER",
       "sprite": "SPRITE_YOUNGSTER",
       "tile": [
@@ -279,11 +296,11 @@
       "sight_range": 2,
       "party": [
         {
-          "species": "QUAGSIRE",
+          "species": "MUDMENDER",
           "level": 40
         },
         {
-          "species": "MANTINE",
+          "species": "DRIFTILE",
           "level": 41
         }
       ],
@@ -292,7 +309,7 @@
       "before_text": "Quiet water hides a lively team!",
       "after_text": "A lovely ripple.",
       "loss_text": "The lake is calm. Catch your breath.",
-      "display_name": "Nell",
+      "display_name": "NELL",
       "trainer_class": "COOLTRAINERF",
       "sprite": "SPRITE_COOLTRAINER_F",
       "tile": [
@@ -322,11 +339,11 @@
       "sight_range": 2,
       "party": [
         {
-          "species": "GOLEM",
+          "species": "FORTIGARD",
           "level": 42
         },
         {
-          "species": "SHUCKLE",
+          "species": "TESSLARV",
           "level": 41
         }
       ],
@@ -335,7 +352,7 @@
       "before_text": "That cleft is old. My team is solid!",
       "after_text": "Solid work! The shelter is N.",
       "loss_text": "The stone waits. We can try again.",
-      "display_name": "Toren",
+      "display_name": "TOREN",
       "trainer_class": "HIKER",
       "sprite": "SPRITE_POKEFAN_M",
       "tile": [
@@ -366,11 +383,11 @@
       "sight_range": 2,
       "party": [
         {
-          "species": "SUNFLORA",
+          "species": "PYROPINE",
           "level": 41
         },
         {
-          "species": "PINECO",
+          "species": "CLINKLAW",
           "level": 42
         }
       ],
@@ -379,7 +396,7 @@
       "before_text": "Seeds on the wind! Battle, then tea?",
       "after_text": "You have a bright team of your own.",
       "loss_text": "Rest in the shade.",
-      "display_name": "Anja",
+      "display_name": "ANJA",
       "trainer_class": "PICNICKER",
       "sprite": "SPRITE_LASS",
       "tile": [
@@ -409,11 +426,11 @@
       "sight_range": 2,
       "party": [
         {
-          "species": "STANTLER",
+          "species": "SHEDSTAG",
           "level": 42
         },
         {
-          "species": "SNEASEL",
+          "species": "CROOKVEIL",
           "level": 42
         }
       ],
@@ -422,7 +439,7 @@
       "before_text": "The ranger knows every trail here. I know my team!",
       "after_text": "A new path opens.",
       "loss_text": "Try a new lead.",
-      "display_name": "Elin",
+      "display_name": "ELIN",
       "trainer_class": "COOLTRAINERF",
       "sprite": "SPRITE_COOLTRAINER_F",
       "tile": [
@@ -452,15 +469,15 @@
       "sight_range": 2,
       "party": [
         {
-          "species": "HERACROSS",
+          "species": "GOUGECREST",
           "level": 43
         },
         {
-          "species": "ARIADOS",
+          "species": "BARRICANT",
           "level": 42
         },
         {
-          "species": "PINECO",
+          "species": "CLINKLAW",
           "level": 43
         }
       ],
@@ -469,7 +486,7 @@
       "before_text": "The old trees hide powerful partners!",
       "after_text": "Little partners, great strength.",
       "loss_text": "Look under leaves.",
-      "display_name": "Perry",
+      "display_name": "PERRY",
       "trainer_class": "BUG_CATCHER",
       "sprite": "SPRITE_YOUNGSTER",
       "tile": [
@@ -499,15 +516,15 @@
       "sight_range": 2,
       "party": [
         {
-          "species": "QUAGSIRE",
+          "species": "MUDMENDER",
           "level": 42
         },
         {
-          "species": "SEAKING",
+          "species": "TORROUT",
           "level": 43
         },
         {
-          "species": "POLIWHIRL",
+          "species": "TORROUT",
           "level": 42
         }
       ],
@@ -516,7 +533,7 @@
       "before_text": "A still pool can surprise a fisher!",
       "after_text": "You read the pool.",
       "loss_text": "Let the ripples settle a moment.",
-      "display_name": "Gus",
+      "display_name": "GUS",
       "trainer_class": "FISHER",
       "sprite": "SPRITE_FISHER",
       "tile": [
@@ -546,11 +563,11 @@
       "sight_range": 2,
       "party": [
         {
-          "species": "URSARING",
+          "species": "DOZEBEAR",
           "level": 43
         },
         {
-          "species": "NOCTOWL",
+          "species": "BOOMRUFF",
           "level": 43
         }
       ],
@@ -559,7 +576,7 @@
       "before_text": "Leave no trace. Make a fine match!",
       "after_text": "A fine trail mate.",
       "loss_text": "Use the wide turn.",
-      "display_name": "Owen",
+      "display_name": "OWEN",
       "trainer_class": "CAMPER",
       "sprite": "SPRITE_YOUNGSTER",
       "tile": [
@@ -588,15 +605,15 @@
       "sight_range": 2,
       "party": [
         {
-          "species": "TANGELA",
+          "species": "REEDRAFT",
           "level": 44
         },
         {
-          "species": "SNEASEL",
+          "species": "CROOKVEIL",
           "level": 44
         },
         {
-          "species": "STANTLER",
+          "species": "SHEDSTAG",
           "level": 43
         }
       ],
@@ -605,7 +622,7 @@
       "before_text": "The long way has its own rewards.",
       "after_text": "You earned this view of the lake.",
       "loss_text": "The lake can wait.",
-      "display_name": "Signe",
+      "display_name": "SIGNE",
       "trainer_class": "COOLTRAINERF",
       "sprite": "SPRITE_COOLTRAINER_F",
       "tile": [
@@ -842,7 +859,7 @@
         "2e 2e 20 21 21 30 06 2e 2e 04 06 12 21 21 22 2e",
         "2e 2e 2e 2e 08 02 0a 2e 04 02 0a 02 0a 2e 2e 2e",
         "2e 2e 2e 2e 08 02 02 06 08 02 02 02 0a 2e 2e 2e",
-        "2e 2e 2e 2e 20 02 19 02 02 02 02 22 2e 2e 2e 2e",
+        "2e 2e 2e 2e 20 02 19 19 02 02 02 22 2e 2e 2e 2e",
         "2e 2e 2e 2e 2e 20 21 39 21 12 22 34 3e 27 2e 2e",
         "2e 2e 2e 2e 04 02 05 02 31 02 02 3e 0f 27 2e 2e",
         "2e 2e 2e 2e 34 1c 02 02 0e 02 02 32 25 33 2e 2e",
@@ -1302,7 +1319,7 @@
     {
       "id": "LAKE_WEST_BANK",
       "tile": [
-        23,
+        22,
         27
       ]
     },
@@ -1351,7 +1368,7 @@
     {
       "id": "FROST_RIM",
       "tile": [
-        55,
+        56,
         19
       ]
     }
@@ -1362,12 +1379,12 @@
     {
       "id": "WEST_PINE_SEDGE",
       "bounds_core": [
-        4,
+        2,
         28,
-        6,
+        8,
         30
       ],
-      "minimum_grass_steps": 2
+      "minimum_grass_steps": 6
     }
   ],
   "cut_gates": [

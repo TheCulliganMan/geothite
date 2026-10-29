@@ -51,7 +51,14 @@ fn patch(mesh: &mut SurfaceMeshData, center: Vec3, toward: Vec3, tile: f32, coor
         let root = center + tangent*along - toward*(variation(shoot*4+2)*tile*0.12);
         let height = tile * (0.30 + variation(shoot*4+3)*0.65);
         let tip = root + Vec3::Y*height - toward*tile*0.08;
-        blade(mesh,root,tip,tile*0.013,variation(shoot*4+4)*6.28,[0.12,0.24,0.055]);
+        blade(
+            mesh,
+            root,
+            tip,
+            tile * 0.013,
+            variation(shoot * 4 + 4) * std::f32::consts::TAU,
+            [0.12, 0.24, 0.055],
+        );
         for leaf in 0..3 {
             let turn = variation(100+shoot*3+leaf)*std::f32::consts::TAU;
             let leaf_root = root + Vec3::Y*height*(0.15+leaf as f32*0.15);

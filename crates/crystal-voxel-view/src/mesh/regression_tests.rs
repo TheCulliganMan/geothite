@@ -8,6 +8,45 @@ mod tests {
     use super::*;
 
     #[test]
+    fn headwaters_guru_house_recognizes_the_complete_native_building() {
+        for family in ["johto", "mn_headwaters", "unrelated_custom"] {
+            let mut sources = Vec::new();
+            for y in 0..8_u8 {
+                for x in 0..8_u8 {
+                    let block = [[0x18, 0x19], [0x16, 0x1e]][usize::from(y / 4)][usize::from(x / 4)];
+                    sources.push(source_for_tileset(family, block, x % 4, y % 4, 0x06));
+                }
+            }
+            let frame = frame(8, 8, sources);
+            let cells = frame.tiles.iter().collect::<Vec<_>>();
+            let geometry = GridGeometry {
+                width: 8,
+                height: 8,
+                tile_width: 8.0,
+                tile_height: 8.0,
+                origin_x: 0.0,
+                origin_z: 0.0,
+            };
+            let placements = outdoor_building_placements(&cells, &geometry);
+            if family == "unrelated_custom" {
+                assert!(
+                    placements.is_empty(),
+                    "matching IDs alone do not imply native art"
+                );
+            } else {
+                assert_eq!(placements.len(), 1, "{family}: complete guru facade");
+                let house = placements[0];
+                assert_eq!((house.width, house.height, house.roof_rows), (8, 8, 4));
+                assert_eq!(
+                    cells[0].source.tileset_id.as_ref(),
+                    family,
+                    "model recognition must preserve the actual atlas"
+                );
+            }
+        }
+    }
+
+    #[test]
     fn complete_rock_formation_folds_side_strips_inside_its_plot() {
         let geometry = GridGeometry {
             width: 16,

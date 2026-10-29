@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "id": "MN_PRAIRIE_BOTANIST",
+  "name": "BOTANIST ELDEN",
+  "status": "accepted-native-playable",
+  "overworld_frames": 6,
+  "overworld_size": [
+    16,
+    16
+  ],
+  "battle_size": [
+    56,
+    56
+  ],
+  "palette_rgb555": [
+    32767,
+    23454,
+    6632,
+    0
+  ],
+  "source": "native-pixels-v3.json",
+  "placement": "placement-v1.json",
+  "pack": "content-packs/minnesota-npcs-ref-04-v01.crystalpack",
+  "parent": "content-packs/minnesota-npcs-ref-03-v01.crystalpack",
+  "runtime_checks": {
+    "one_controller_test_passed": true,
+    "talk_and_input_ownership": true,
+    "battle_turn_and_pp": true,
+    "battle_save_load": true,
+    "actual_victory_and_defeat_flag_before_render_capture": true,
+    "post_battle_talk": true,
+    "existing_trainers_and_assets_preserved": true
+  },
+  "manual_visual_review": "Direct actual Crystal Gramps/Scientist/Chris six-pose comparison at common palette/scale; own palette 1x/8x and actual Mankato scene reviewed. Compact rounded lens rims and clear bridge, pale swept hair, elderly chin/collar, olive coat and diagonal satchel strap; flower/notebook remain in unchanged battle art only. Refined lens geometry after first comparison looked angled, separated front satchel bottom from boots and preserved it during walking. Full encounter passed in 16.11s; battle/palette/gameplay/unrelated assets preserved.",
+  "evidence_sha256": {
+    "planning/minnesota/npcs/sprites/04-prairie-botanist/native-pixels-v3.json": "fd7e9f18a17029be1b5cf7875776d25def0ea9f82a06a422cb3d99258d3e6448",
+    "planning/minnesota/npcs/sprites/04-prairie-botanist/placement-v1.json": "c1a1861940f3a46028fcb7bfb742c94369a3aee8c72df238b89ca0a4ee2ae222",
+    "content-packs/minnesota-npcs-ref-04-v01.crystalpack": "0b1fc0a297a0d433f13189478ae3b2e66d9cbf0ed2851681667eaeda152ea14c",
+    "target/npc-sprites/botanist/controller-reference-v01.log": "0bcc9cec7b436e40027bb718ffc02428e3c41f7309ec3cdca510302a3151048e",
+    "target/npc-sprites/botanist/gameplay-reference-v01/original-npc-trainer-intro.png": "34bffd1fc09c703c1dfa9591c0f7a9f99b07d1d9e2bcf1d9eb564c8409759177",
+    "target/npc-sprites/botanist/gameplay-reference-v01/original-npc-first-turn.png": "53a5f5d9603747862a3e71ad80e97f5f4b8716530b317b7dc045117c68a5a631",
+    "target/npc-sprites/botanist/gameplay-reference-v01/original-npc-overworld-state.png": "8c042164e881796533d7e60ca40a00e5e64bb824e7877f62b827d9b9b9144990",
+    "target/npc-sprites/hand-review/botanist-real-comparison-v3.png": "6225b3c336a4021b1b58ffea85d1a916d2d79eac3bb19faf23913c00ce88e761",
+    "target/npc-sprites/botanist/reference-v3/comparison.png": "926a7448fd9e3e58030ae745f36d5b3c4352183d2f66a059aa3d53791718081a",
+    "target/npc-sprites/botanist/reference-v3/verification.json": "5b1c33bb1080b3cbbf3e81fcd8efbef95612e6959a9bba8419b39b0671ecd4b4",
+    "target/npc-sprites/botanist/reference-v3/overworld-review.png": "c61665b1e4ef613edd4d89be7d9a649d8ae06f69fef84420cddd5e6c23ae2908",
+    "target/npc-sprites/botanist/reference-v3/overworld-review-8x.png": "4fcbc57eed9fab6042ee8fd97731aca32ed519b1ccb09172e2fb6e2879c08745"
+  },
+  "overworld_revision": "real-reference-hand-edited-v3",
+  "reference_review": "actual-crystal-sprites-common-palette-and-scale"
+}

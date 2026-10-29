@@ -23,13 +23,41 @@ pub fn build_northstar_regional_cast(
     curation: &str,
     profiles: &str,
 ) -> Result<CompiledGamePack> {
+    bind(base, source, roster, curation, profiles, None)
+}
+
+/// Bind only the new/changed story data, preserving established regional teams.
+pub(crate) fn bind_story_delta(
+    base: &CompiledGamePack,
+    previous: &CompiledGamePack,
+    source: &str,
+    roster: &str,
+    curation: &str,
+    profiles: &str,
+) -> Result<CompiledGamePack> {
+    ensure!(
+        crate::northstar_current_story::is_composing(base),
+        "certified current story composition required"
+    );
+    bind(base, source, roster, curation, profiles, Some(previous))
+}
+
+fn bind(
+    base: &CompiledGamePack,
+    source: &str,
+    roster: &str,
+    curation: &str,
+    profiles: &str,
+    previous: Option<&CompiledGamePack>,
+) -> Result<CompiledGamePack> {
     crate::verify_compiled_game_pack_for_runtime(base)?;
     ensure!(
-        !base
-            .report
-            .manifests
-            .iter()
-            .any(|m| m == "northstar-minnesota-only-v1"),
+        previous.is_some()
+            || !base
+                .report
+                .manifests
+                .iter()
+                .any(|m| m == "northstar-minnesota-only-v1"),
         "regional cast is already bound"
     );
     let policy = RegionalRoster::parse(source, roster, curation, profiles)?;
@@ -40,7 +68,14 @@ pub fn build_northstar_regional_cast(
         .trainers
         .trainers
         .keys()
-        .filter(|id| id.starts_with("MN_"))
+        .filter(|id| {
+            id.starts_with("MN_")
+                && previous.is_none_or(|old| {
+                    old.data.trainers.trainers.get(*id).is_none_or(|trainer| {
+                        trainer.party != pack.data.trainers.trainers[*id].party
+                    })
+                })
+        })
         .cloned()
         .collect::<Vec<_>>();
     for id in trainers {
@@ -81,13 +116,26 @@ pub fn build_northstar_regional_cast(
         .data
         .maps
         .keys()
-        .filter(|name| name.starts_with("Mn"))
+        .filter(|name| {
+            name.starts_with("Mn")
+                && previous.is_none_or(|old| old.data.maps.get(*name) != pack.data.maps.get(*name))
+        })
         .cloned()
         .collect::<Vec<_>>();
     for name in maps {
         let mut map = pack.data.maps[&name].clone();
         let mut changed = false;
         let mut text_changes = Vec::new();
+        for object in &mut map.objects {
+            if let Some(original) = object.sprite.strip_prefix("SPRITE_")
+                && pack.data.pokemon.contains_key(original)
+                && !policy.allowed.contains(original)
+            {
+                let replacement = policy.target(&pack, original, None)?;
+                object.sprite = format!("SPRITE_{replacement}");
+                changed = true;
+            }
+        }
         for (label, program) in &mut map.scripts {
             let Some(rows) = program.as_array_mut() else {
                 continue;
@@ -171,44 +219,48 @@ pub fn build_northstar_regional_cast(
             crate::authored_town_publication::replace(&mut pack, map)?;
         }
     }
-    for name in pack
-        .data
-        .wild_encounters
-        .keys()
-        .filter(|n| n.starts_with("Mn"))
-        .cloned()
-        .collect::<Vec<_>>()
-    {
-        let mut value = serde_json::to_value(&pack.data.wild_encounters[&name])?;
-        rewrite_encounters(&pack, &policy, &mut value)?;
-        pack.data
+    if previous.is_none() {
+        for name in pack
+            .data
             .wild_encounters
-            .insert(name, serde_json::from_value(value)?);
-    }
-    for name in pack
-        .data
-        .field_encounters
-        .keys()
-        .filter(|n| n.starts_with("Mn"))
-        .cloned()
-        .collect::<Vec<_>>()
-    {
-        let mut value = serde_json::to_value(&pack.data.field_encounters[&name])?;
-        rewrite_encounters(&pack, &policy, &mut value)?;
-        pack.data
+            .keys()
+            .filter(|n| n.starts_with("Mn"))
+            .cloned()
+            .collect::<Vec<_>>()
+        {
+            let mut value = serde_json::to_value(&pack.data.wild_encounters[&name])?;
+            rewrite_encounters(&pack, &policy, &mut value)?;
+            pack.data
+                .wild_encounters
+                .insert(name, serde_json::from_value(value)?);
+        }
+        for name in pack
+            .data
             .field_encounters
-            .insert(name, serde_json::from_value(value)?);
+            .keys()
+            .filter(|n| n.starts_with("Mn"))
+            .cloned()
+            .collect::<Vec<_>>()
+        {
+            let mut value = serde_json::to_value(&pack.data.field_encounters[&name])?;
+            rewrite_encounters(&pack, &policy, &mut value)?;
+            pack.data
+                .field_encounters
+                .insert(name, serde_json::from_value(value)?);
+        }
+        // Fishing groups are shared by source regions. Clone the groups used by
+        // Minnesota instead of mutating the original Johto/Kanto fishing tables.
+        regional_fishing(&mut pack, &policy)?;
+        let mut intro = serde_json::to_value(&pack.data.runtime_title_screen.program)?;
+        rewrite_intro(&pack, &policy, &mut intro)?;
+        pack.data.runtime_title_screen.program = serde_json::from_value(intro)?;
     }
-    // Fishing groups are shared by source regions. Clone the groups used by
-    // Minnesota instead of mutating the original Johto/Kanto fishing tables.
-    regional_fishing(&mut pack, &policy)?;
-    let mut intro = serde_json::to_value(&pack.data.runtime_title_screen.program)?;
-    rewrite_intro(&pack, &policy, &mut intro)?;
-    pack.data.runtime_title_screen.program = serde_json::from_value(intro)?;
     audit(&pack, &policy)?;
-    pack.report
-        .manifests
-        .push("northstar-minnesota-only-v1".into());
+    if previous.is_none() {
+        pack.report
+            .manifests
+            .push("northstar-minnesota-only-v1".into());
+    }
     pack.identity = crate::derive_compiled_game_pack_identity_from_manifest(
         pack.format_version,
         &pack.data,
@@ -262,7 +314,18 @@ fn rewrite_encounters(
                         .and_then(Value::as_u64)
                         .map(u8::try_from)
                         .transpose()?;
-                    let replacement = policy.target(pack, original, level)?;
+                    ensure!(level != Some(0), "native encounter levels must be positive");
+                    // An explicitly authored regional wild form may appear
+                    // below its normal evolution level (the fair deliberately
+                    // exposes every selected form). Preserve that choice.
+                    // Imported legacy species still use level-aware binding;
+                    // trainer and gift checks retain their separate rules.
+                    let binding_level = if policy.allowed.contains(original) {
+                        None
+                    } else {
+                        level
+                    };
+                    let replacement = policy.target(pack, original, binding_level)?;
                     object.insert(species.into(), Value::String(replacement));
                 }
             }
@@ -537,3 +600,7 @@ fn audit(pack: &CompiledGamePack, policy: &RegionalRoster) -> Result<()> {
     ensure!(intro == original_intro, "unbound introductory Pokemon");
     Ok(())
 }
+
+#[cfg(test)]
+#[path = "northstar_regional_encounter_tests.rs"]
+mod encounter_tests;

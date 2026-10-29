@@ -1,3 +1,9 @@
+> Current grass review: see [Red River verification](../revisions/route-grass-v01/current-r16-v01/README.md).
+> Existing native terrain is accepted unchanged:1016grass walking tiles,6forced
+> hayfield-climb grass steps, a dry ledge return and4forced main-route grass steps.
+> Both native maps, all regional content and the ice-free North Shore stay intact.
+> Local populated input/Continue, wildRUN, resources, battle PP/flags and stdio pass.
+
 # Red River Prairie — hand-authored source review
 
 ## Current executed native evidence — 2026-10-26

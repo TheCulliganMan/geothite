@@ -1,0 +1,1893 @@
+{
+  "schema_version": 1,
+  "status": "DETACHED_SOURCE_PROPOSAL_NOT_NATIVE_OR_CONTROLLER_PROOF",
+  "base_pack_sha256": "6b36b4b835873e4c4508a7da7727ecb759273c26e219ec026c061c0e66f24775",
+  "map_count_before": 677,
+  "new_maps": [
+    {
+      "id": "MnDetroitLakesApproach",
+      "group_proposal": 83,
+      "id_proposal": 1,
+      "layout_file": "planning/minnesota/connections/state-cohesion-v01/source-v01/MnDetroitLakesApproach.layout.json",
+      "dossier_file": "planning/minnesota/connections/state-cohesion-v01/source-v01/MnDetroitLakesApproach.dossier.json",
+      "dimensions_metatiles": [
+        24,
+        18
+      ],
+      "layout_sha256": "329f30e8f087bef346dbf786e90683a2aa5f38dae0eb38d8e575b488713ab81f",
+      "dossier_sha256": "19701755cfdcfe409a08f2963c3fc79d36c9b582efebfd9fa62492cc24c03065",
+      "map_constant": "MN_DETROIT_LAKES_APPROACH",
+      "map_id": 1,
+      "tileset": "johto",
+      "environment": "ROUTE",
+      "music": "MUSIC_ROUTE_30"
+    },
+    {
+      "id": "MnMaraisCedarApproach",
+      "group_proposal": 83,
+      "id_proposal": 2,
+      "layout_file": "planning/minnesota/connections/state-cohesion-v01/source-v01/MnMaraisCedarApproach.layout.json",
+      "dossier_file": "planning/minnesota/connections/state-cohesion-v01/source-v01/MnMaraisCedarApproach.dossier.json",
+      "dimensions_metatiles": [
+        32,
+        19
+      ],
+      "layout_sha256": "831d10d3d446d4cd6e502ee2370e20d72406e5529e512d3f5989324b773e4b37",
+      "dossier_sha256": "6ecb8e0c3325f46c6ac1e1a3aa927263372ede11c8c21c4d5169b17522abaa5b",
+      "map_constant": "MN_MARAIS_CEDAR_APPROACH",
+      "map_id": 2,
+      "tileset": "johto",
+      "environment": "ROUTE",
+      "music": "MUSIC_ROUTE_30"
+    },
+    {
+      "id": "MnPreservePineEntry",
+      "group_proposal": 83,
+      "id_proposal": 3,
+      "layout_file": "planning/minnesota/connections/state-cohesion-v01/source-v01/MnPreservePineEntry.layout.json",
+      "dossier_file": "planning/minnesota/connections/state-cohesion-v01/source-v01/MnPreservePineEntry.dossier.json",
+      "dimensions_metatiles": [
+        24,
+        16
+      ],
+      "layout_sha256": "6ca25913b3513d54dc012e6bf2e0a7f09666c9912cb6df06e87029160f71e9d1",
+      "dossier_sha256": "80d0e5e40b3984f8df4624bcec7e4c12219ef01f9e9502f2a78bfd4e91810427",
+      "map_constant": "MN_PRESERVE_PINE_ENTRY",
+      "map_id": 3,
+      "tileset": "johto",
+      "environment": "ROUTE",
+      "music": "MUSIC_ROUTE_30"
+    },
+    {
+      "id": "MnBemidjiNorthwoods",
+      "group_proposal": 83,
+      "id_proposal": 4,
+      "layout_file": "planning/minnesota/connections/state-cohesion-v01/source-v01/MnBemidjiNorthwoods.layout.json",
+      "dossier_file": "planning/minnesota/connections/state-cohesion-v01/source-v01/MnBemidjiNorthwoods.dossier.json",
+      "dimensions_metatiles": [
+        8,
+        14
+      ],
+      "layout_sha256": "e138b82e50d118de9adc3f5f5f54447310bae9e4fa6b6d19d3a0b754aabdde3f",
+      "dossier_sha256": "cc1ec9d5b6354d7078e25a6de1ce79ac1777614521e4dcc817e9582a2018367a",
+      "map_constant": "MN_BEMIDJI_NORTHWOODS",
+      "map_id": 4,
+      "tileset": "johto",
+      "environment": "ROUTE",
+      "music": "MUSIC_ROUTE_30"
+    }
+  ],
+  "new_reciprocal_links": [
+    {
+      "from_map": "MnBrainerd",
+      "direction": "west",
+      "to_map": "MnR15C00R00",
+      "offset": 0,
+      "reverse_offset": 0,
+      "from_core": [
+        [
+          0,
+          24
+        ],
+        [
+          0,
+          25
+        ]
+      ],
+      "to_core": [
+        [
+          63,
+          24
+        ],
+        [
+          63,
+          25
+        ]
+      ],
+      "status": "PROPOSED_NOT_INSTALLED"
+    },
+    {
+      "from_map": "MnR15C00R00",
+      "direction": "west",
+      "to_map": "MnDetroitLakesApproach",
+      "offset": 3,
+      "reverse_offset": -3,
+      "from_core": [
+        [
+          0,
+          24
+        ],
+        [
+          0,
+          25
+        ]
+      ],
+      "to_core": [
+        [
+          47,
+          18
+        ],
+        [
+          47,
+          19
+        ]
+      ],
+      "status": "PROPOSED_NOT_INSTALLED"
+    },
+    {
+      "from_map": "MnDetroitLakesApproach",
+      "direction": "west",
+      "to_map": "MnR16C01R00",
+      "offset": -3,
+      "reverse_offset": 3,
+      "from_core": [
+        [
+          0,
+          18
+        ],
+        [
+          0,
+          19
+        ]
+      ],
+      "to_core": [
+        [
+          31,
+          24
+        ],
+        [
+          31,
+          25
+        ]
+      ],
+      "status": "PROPOSED_NOT_INSTALLED"
+    },
+    {
+      "from_map": "MnBrainerd",
+      "direction": "east",
+      "to_map": "MnR18C00R00",
+      "offset": 7,
+      "reverse_offset": -7,
+      "from_core": [
+        [
+          63,
+          24
+        ],
+        [
+          63,
+          25
+        ]
+      ],
+      "to_core": [
+        [
+          0,
+          10
+        ],
+        [
+          0,
+          11
+        ]
+      ],
+      "status": "PROPOSED_NOT_INSTALLED"
+    },
+    {
+      "from_map": "MnBemidji",
+      "direction": "north",
+      "to_map": "MnBemidjiNorthwoods",
+      "offset": 8,
+      "reverse_offset": -8,
+      "from_core": [
+        [
+          24,
+          0
+        ],
+        [
+          25,
+          0
+        ]
+      ],
+      "to_core": [
+        [
+          8,
+          27
+        ],
+        [
+          9,
+          27
+        ]
+      ],
+      "status": "PROPOSED_NOT_INSTALLED"
+    },
+    {
+      "from_map": "MnBemidjiNorthwoods",
+      "direction": "north",
+      "to_map": "MnR17C00R02",
+      "offset": -12,
+      "reverse_offset": 12,
+      "from_core": [
+        [
+          8,
+          0
+        ],
+        [
+          9,
+          0
+        ]
+      ],
+      "to_core": [
+        [
+          32,
+          15
+        ],
+        [
+          33,
+          15
+        ]
+      ],
+      "status": "PROPOSED_NOT_INSTALLED"
+    },
+    {
+      "from_map": "MnLakeItasca",
+      "direction": "west",
+      "to_map": "MnR19C00R00",
+      "offset": 8,
+      "reverse_offset": -8,
+      "from_core": [
+        [
+          0,
+          28
+        ],
+        [
+          0,
+          29
+        ]
+      ],
+      "to_core": [
+        [
+          63,
+          12
+        ],
+        [
+          63,
+          13
+        ]
+      ],
+      "status": "PROPOSED_NOT_INSTALLED"
+    },
+    {
+      "from_map": "MnGrandMarais",
+      "direction": "east",
+      "to_map": "MnMaraisCedarApproach",
+      "offset": 0,
+      "reverse_offset": 0,
+      "from_core": [
+        [
+          39,
+          12
+        ],
+        [
+          39,
+          13
+        ]
+      ],
+      "to_core": [
+        [
+          0,
+          12
+        ],
+        [
+          0,
+          13
+        ]
+      ],
+      "status": "PROPOSED_NOT_INSTALLED"
+    },
+    {
+      "from_map": "MnMaraisCedarApproach",
+      "direction": "south",
+      "to_map": "MnR11C00R00",
+      "offset": 8,
+      "reverse_offset": -8,
+      "from_core": [
+        [
+          56,
+          37
+        ],
+        [
+          57,
+          37
+        ]
+      ],
+      "to_core": [
+        [
+          40,
+          0
+        ],
+        [
+          41,
+          0
+        ]
+      ],
+      "status": "PROPOSED_NOT_INSTALLED"
+    },
+    {
+      "from_map": "MnGrandMarais",
+      "direction": "west",
+      "to_map": "MnR12C01R01",
+      "offset": 0,
+      "reverse_offset": 0,
+      "from_core": [
+        [
+          0,
+          8
+        ],
+        [
+          0,
+          9
+        ]
+      ],
+      "to_core": [
+        [
+          63,
+          8
+        ],
+        [
+          63,
+          9
+        ]
+      ],
+      "status": "PROPOSED_NOT_INSTALLED"
+    },
+    {
+      "from_map": "MnBoundaryWaters",
+      "direction": "north",
+      "to_map": "MnPreservePineEntry",
+      "offset": 8,
+      "reverse_offset": -8,
+      "from_core": [
+        [
+          32,
+          0
+        ],
+        [
+          33,
+          0
+        ]
+      ],
+      "to_core": [
+        [
+          16,
+          31
+        ],
+        [
+          17,
+          31
+        ]
+      ],
+      "status": "PROPOSED_NOT_INSTALLED"
+    },
+    {
+      "from_map": "MnPreservePineEntry",
+      "direction": "north",
+      "to_map": "MnBoundarySafariC00R02",
+      "offset": 1,
+      "reverse_offset": -1,
+      "from_core": [
+        [
+          16,
+          0
+        ],
+        [
+          17,
+          0
+        ]
+      ],
+      "to_core": [
+        [
+          14,
+          15
+        ],
+        [
+          15,
+          15
+        ]
+      ],
+      "status": "PROPOSED_NOT_INSTALLED"
+    },
+    {
+      "from_map": "MnLakeItasca",
+      "direction": "east",
+      "to_map": "MnR14C00R00",
+      "offset": -9,
+      "reverse_offset": 9,
+      "from_core": [
+        [
+          47,
+          20
+        ],
+        [
+          47,
+          21
+        ]
+      ],
+      "to_core": [
+        [
+          0,
+          38
+        ],
+        [
+          0,
+          39
+        ]
+      ],
+      "status": "PROPOSED_NOT_INSTALLED"
+    }
+  ],
+  "existing_connection_updates": [
+    {
+      "map": "MnBemidji",
+      "side": "south",
+      "target": "MnR08C00R00",
+      "old_offset": -8,
+      "new_offset": 0
+    },
+    {
+      "map": "MnR08C00R00",
+      "side": "north",
+      "target": "MnBemidji",
+      "old_offset": 8,
+      "new_offset": 0
+    },
+    {
+      "map": "MnBoundaryWaters",
+      "side": "south",
+      "target": "MnR13C00R00",
+      "old_offset": 1,
+      "new_offset": 0
+    },
+    {
+      "map": "MnR13C00R00",
+      "side": "north",
+      "target": "MnBoundaryWaters",
+      "old_offset": -1,
+      "new_offset": 0
+    }
+  ],
+  "guard_proposals": [
+    {
+      "map": "MnBrainerd",
+      "id": "MnCohesionBrainerdWest",
+      "side": "west",
+      "bodies": [
+        [
+          2,
+          24
+        ],
+        [
+          2,
+          25
+        ]
+      ],
+      "inside": [
+        [
+          3,
+          24
+        ],
+        [
+          3,
+          25
+        ]
+      ],
+      "outside": [
+        [
+          1,
+          24
+        ],
+        [
+          1,
+          25
+        ]
+      ],
+      "flags": [
+        "ENGINE_MINERALBADGE"
+      ],
+      "sprite": "SPRITE_OFFICER",
+      "facing": "RIGHT",
+      "actor_ids": [
+        "MNCOHESIONBRAINERDWEST_A",
+        "MNCOHESIONBRAINERDWEST_B"
+      ],
+      "outbound_only": true,
+      "inbound_free": true,
+      "must_preserve_existing_guards": true,
+      "denial_text": [
+        "LAKE BADGE needed",
+        "for this trail.",
+        "You may return."
+      ]
+    },
+    {
+      "map": "MnBrainerd",
+      "id": "MnCohesionBrainerdEast",
+      "side": "east",
+      "bodies": [
+        [
+          61,
+          24
+        ],
+        [
+          61,
+          25
+        ]
+      ],
+      "inside": [
+        [
+          60,
+          24
+        ],
+        [
+          60,
+          25
+        ]
+      ],
+      "outside": [
+        [
+          62,
+          24
+        ],
+        [
+          62,
+          25
+        ]
+      ],
+      "flags": [
+        "ENGINE_MINERALBADGE"
+      ],
+      "sprite": "SPRITE_OFFICER",
+      "facing": "LEFT",
+      "actor_ids": [
+        "MNCOHESIONBRAINERDEAST_A",
+        "MNCOHESIONBRAINERDEAST_B"
+      ],
+      "outbound_only": true,
+      "inbound_free": true,
+      "must_preserve_existing_guards": true,
+      "denial_text": [
+        "LAKE BADGE needed",
+        "for this trail.",
+        "You may return."
+      ]
+    },
+    {
+      "map": "MnBemidji",
+      "id": "MnCohesionBemidjiNorth",
+      "side": "north",
+      "bodies": [
+        [
+          24,
+          2
+        ],
+        [
+          25,
+          2
+        ]
+      ],
+      "inside": [
+        [
+          24,
+          3
+        ],
+        [
+          25,
+          3
+        ]
+      ],
+      "outside": [
+        [
+          24,
+          1
+        ],
+        [
+          25,
+          1
+        ]
+      ],
+      "flags": [
+        "ENGINE_GLACIERBADGE"
+      ],
+      "sprite": "SPRITE_OFFICER",
+      "facing": "DOWN",
+      "actor_ids": [
+        "MNCOHESIONBEMIDJINORTH_A",
+        "MNCOHESIONBEMIDJINORTH_B"
+      ],
+      "outbound_only": true,
+      "inbound_free": true,
+      "must_preserve_existing_guards": true,
+      "denial_text": [
+        "PINE BADGE needed",
+        "for this trail.",
+        "You may return."
+      ]
+    },
+    {
+      "map": "MnLakeItasca",
+      "id": "MnCohesionItascaWest",
+      "side": "west",
+      "bodies": [
+        [
+          2,
+          28
+        ],
+        [
+          2,
+          29
+        ]
+      ],
+      "inside": [
+        [
+          3,
+          28
+        ],
+        [
+          3,
+          29
+        ]
+      ],
+      "outside": [
+        [
+          1,
+          28
+        ],
+        [
+          1,
+          29
+        ]
+      ],
+      "flags": [
+        "ENGINE_MINERALBADGE"
+      ],
+      "sprite": "SPRITE_OFFICER",
+      "facing": "RIGHT",
+      "actor_ids": [
+        "MNCOHESIONITASCAWEST_A",
+        "MNCOHESIONITASCAWEST_B"
+      ],
+      "outbound_only": true,
+      "inbound_free": true,
+      "must_preserve_existing_guards": true,
+      "denial_text": [
+        "LAKE BADGE needed",
+        "for this trail.",
+        "You may return."
+      ]
+    },
+    {
+      "map": "MnGrandMarais",
+      "id": "MnCohesionMaraisWest",
+      "side": "west",
+      "bodies": [
+        [
+          2,
+          8
+        ],
+        [
+          2,
+          9
+        ]
+      ],
+      "inside": [
+        [
+          3,
+          8
+        ],
+        [
+          3,
+          9
+        ]
+      ],
+      "outside": [
+        [
+          1,
+          8
+        ],
+        [
+          1,
+          9
+        ]
+      ],
+      "flags": [
+        "ENGINE_ZEPHYRBADGE",
+        "ENGINE_HIVEBADGE",
+        "ENGINE_PLAINBADGE",
+        "ENGINE_FOGBADGE",
+        "ENGINE_STORMBADGE",
+        "ENGINE_MINERALBADGE",
+        "ENGINE_GLACIERBADGE",
+        "ENGINE_RISINGBADGE"
+      ],
+      "event": "EVENT_MN_LIGHTHOUSE_SIGNAL",
+      "sprite": "SPRITE_OFFICER",
+      "facing": "RIGHT",
+      "actor_ids": [
+        "MNCOHESIONMARAISWEST_A",
+        "MNCOHESIONMARAISWEST_B"
+      ],
+      "outbound_only": true,
+      "inbound_free": true,
+      "must_preserve_existing_guards": true,
+      "denial_text": [
+        "All 8 BADGES and",
+        "the lit beacon are",
+        "needed to pass."
+      ]
+    },
+    {
+      "map": "MnGrandMarais",
+      "id": "MnCohesionMaraisEast",
+      "side": "east",
+      "bodies": [
+        [
+          37,
+          12
+        ],
+        [
+          37,
+          13
+        ]
+      ],
+      "inside": [
+        [
+          36,
+          12
+        ],
+        [
+          36,
+          13
+        ]
+      ],
+      "outside": [
+        [
+          38,
+          12
+        ],
+        [
+          38,
+          13
+        ]
+      ],
+      "flags": [
+        "ENGINE_ZEPHYRBADGE",
+        "ENGINE_HIVEBADGE",
+        "ENGINE_PLAINBADGE",
+        "ENGINE_FOGBADGE",
+        "ENGINE_STORMBADGE",
+        "ENGINE_MINERALBADGE",
+        "ENGINE_GLACIERBADGE",
+        "ENGINE_RISINGBADGE"
+      ],
+      "event": "EVENT_MN_LIGHTHOUSE_SIGNAL",
+      "sprite": "SPRITE_OFFICER",
+      "facing": "LEFT",
+      "actor_ids": [
+        "MNCOHESIONMARAISEAST_A",
+        "MNCOHESIONMARAISEAST_B"
+      ],
+      "outbound_only": true,
+      "inbound_free": true,
+      "must_preserve_existing_guards": true,
+      "denial_text": [
+        "All 8 BADGES and",
+        "the lit beacon are",
+        "needed to pass."
+      ]
+    }
+  ],
+  "itasca_gatehouse": {
+    "native_module_sha256": "f8c340e0d285551f99efd232f14dbfad5e97823da71dbd117df17468f0565370",
+    "raw_command_kinds": {
+      "jumptextfaceplayer": 2,
+      "text": 2,
+      "line": 4,
+      "para": 2,
+      "done": 2
+    },
+    "coord_event_count": 0,
+    "scene_count": 0,
+    "warp_count": 8,
+    "retained_exact": true,
+    "existing_access": "Bemidji west MineralBadge checkpoint remains exact; marker separately needs GlacierBadge.",
+    "parallel_trail": "New ordinary woodland connection, not a permit bypass."
+  },
+  "proposed_origins_metatiles": {
+    "MnMinneapolis": [
+      0,
+      0
+    ],
+    "MnR03C00R00": [
+      10,
+      32
+    ],
+    "MnR04C00R00": [
+      40,
+      9
+    ],
+    "MnR05C00R02": [
+      9,
+      -8
+    ],
+    "MnR03C00R01": [
+      10,
+      56
+    ],
+    "MnMississippiConfluenceC00R00": [
+      34,
+      32
+    ],
+    "MnStPaul": [
+      68,
+      -6
+    ],
+    "MnR05C00R01": [
+      9,
+      -32
+    ],
+    "MnMississippiUpstreamWoodsC00R02": [
+      41,
+      -26
+    ],
+    "MnMankato": [
+      7,
+      64
+    ],
+    "MnMississippiConfluenceC01R00": [
+      40,
+      28
+    ],
+    "MnMississippiLowerWoodsC00R01": [
+      108,
+      8
+    ],
+    "MnMississippiConfluenceC03R00": [
+      104,
+      28
+    ],
+    "MnR05C00R00": [
+      9,
+      -56
+    ],
+    "MnMississippiUpstreamWoodsC00R01": [
+      41,
+      -50
+    ],
+    "MnMississippiUpstreamWoodsC01R02": [
+      73,
+      -26
+    ],
+    "MnR02C00R00": [
+      31,
+      58
+    ],
+    "MnMississippiConfluenceC02R00": [
+      72,
+      28
+    ],
+    "MnMississippiLowerWoodsC00R00": [
+      108,
+      -16
+    ],
+    "MnMississippiLowerWoodsC01R01": [
+      140,
+      8
+    ],
+    "MnMississippiLowerWoodsC00R02": [
+      108,
+      32
+    ],
+    "MnStCloud": [
+      9,
+      -74
+    ],
+    "MnMississippiUpstreamWoodsC00R00": [
+      41,
+      -74
+    ],
+    "MnMississippiUpstreamWoodsC01R01": [
+      73,
+      -50
+    ],
+    "MnRochester": [
+      61,
+      56
+    ],
+    "MnMississippiLowerWoodsC01R00": [
+      140,
+      -16
+    ],
+    "MnMississippiLowerWoodsC01R02": [
+      140,
+      32
+    ],
+    "MnMississippiWinonaMouth": [
+      113,
+      52
+    ],
+    "MnR06C00R01": [
+      13,
+      -94
+    ],
+    "MnMississippiUpstreamWoodsC01R00": [
+      73,
+      -74
+    ],
+    "MnR01C00R00": [
+      81,
+      53
+    ],
+    "MnWinona": [
+      113,
+      56
+    ],
+    "MnR06C00R00": [
+      13,
+      -118
+    ],
+    "MnBrainerd": [
+      18,
+      -142
+    ],
+    "MnR07C00R01": [
+      24,
+      -166
+    ],
+    "MnR15C00R00": [
+      -14,
+      -142
+    ],
+    "MnR18C00R00": [
+      50,
+      -135
+    ],
+    "MnR07C00R00": [
+      24,
+      -190
+    ],
+    "MnDetroitLakesApproach": [
+      -38,
+      -139
+    ],
+    "MnR18C01R00": [
+      82,
+      -135
+    ],
+    "MnLeechLake": [
+      18,
+      -214
+    ],
+    "MnR16C01R00": [
+      -54,
+      -142
+    ],
+    "MnR08C00R01": [
+      21,
+      -238
+    ],
+    "MnR16C00R00": [
+      -86,
+      -142
+    ],
+    "MnR08C00R00": [
+      21,
+      -262
+    ],
+    "MnR08C01R01": [
+      53,
+      -238
+    ],
+    "MnR08C01R00": [
+      53,
+      -262
+    ],
+    "MnBemidji": [
+      21,
+      -286
+    ],
+    "MnR14C01R00": [
+      5,
+      -287
+    ],
+    "MnR09C00R01": [
+      45,
+      -275
+    ],
+    "MnBemidjiNorthwoods": [
+      29,
+      -300
+    ],
+    "MnR14C01R01": [
+      5,
+      -263
+    ],
+    "MnR14C00R00": [
+      -27,
+      -287
+    ],
+    "MnR09C00R00": [
+      45,
+      -299
+    ],
+    "MnR09C01R01": [
+      77,
+      -275
+    ],
+    "MnR17C00R02": [
+      17,
+      -308
+    ],
+    "MnR14C00R01": [
+      -27,
+      -263
+    ],
+    "MnLakeItasca": [
+      -51,
+      -278
+    ],
+    "MnR09C01R00": [
+      77,
+      -299
+    ],
+    "MnR17C00R01": [
+      17,
+      -332
+    ],
+    "MnR19C00R00": [
+      -83,
+      -270
+    ],
+    "MnGrandRapids": [
+      109,
+      -299
+    ],
+    "MnR17C00R00": [
+      17,
+      -356
+    ],
+    "MnR19C00R01": [
+      -83,
+      -246
+    ],
+    "MnR10C00R00": [
+      133,
+      -292
+    ],
+    "MnR10C01R00": [
+      165,
+      -292
+    ],
+    "MnDuluth": [
+      181,
+      -304
+    ],
+    "MnR11C00R03": [
+      190,
+      -328
+    ],
+    "MnR11C00R02": [
+      190,
+      -352
+    ],
+    "MnR11C01R03": [
+      222,
+      -328
+    ],
+    "MnR11C00R01": [
+      190,
+      -376
+    ],
+    "MnR11C01R02": [
+      222,
+      -352
+    ],
+    "MnR11C00R00": [
+      190,
+      -400
+    ],
+    "MnR11C01R01": [
+      222,
+      -376
+    ],
+    "MnR11C01R00": [
+      222,
+      -400
+    ],
+    "MnMaraisCedarApproach": [
+      182,
+      -419
+    ],
+    "MnGrandMarais": [
+      162,
+      -419
+    ],
+    "MnR12C01R01": [
+      130,
+      -419
+    ],
+    "MnR12C01R00": [
+      130,
+      -443
+    ],
+    "MnR12C01R02": [
+      130,
+      -395
+    ],
+    "MnR12C00R01": [
+      98,
+      -419
+    ],
+    "MnR12C00R00": [
+      98,
+      -443
+    ],
+    "MnR12C00R02": [
+      98,
+      -395
+    ],
+    "MnBoundaryWaters": [
+      66,
+      -427
+    ],
+    "MnR13C00R00": [
+      66,
+      -403
+    ],
+    "MnR20C01R00": [
+      34,
+      -433
+    ],
+    "MnPreservePineEntry": [
+      74,
+      -443
+    ],
+    "MnR13C00R01": [
+      66,
+      -379
+    ],
+    "MnR20C01R01": [
+      34,
+      -409
+    ],
+    "MnR20C00R00": [
+      2,
+      -433
+    ],
+    "MnBoundarySafariC00R02": [
+      75,
+      -451
+    ],
+    "MnR13C00R02": [
+      66,
+      -355
+    ],
+    "MnR20C00R01": [
+      2,
+      -409
+    ],
+    "MnBoundarySafariC01R02": [
+      107,
+      -451
+    ],
+    "MnBoundarySafariC00R01": [
+      75,
+      -475
+    ],
+    "MnBoundarySafariC01R01": [
+      107,
+      -475
+    ],
+    "MnBoundarySafariC00R00": [
+      75,
+      -499
+    ],
+    "MnBoundarySafariC01R00": [
+      107,
+      -499
+    ]
+  },
+  "missing_hubs": [
+    "MnEly",
+    "MnDetroitLakes",
+    "MnMoorhead",
+    "MnInternationalFalls",
+    "MnMilleLacs"
+  ],
+  "explicit_limitations": [
+    "New maps and links are not installed.",
+    "Pending preserve admission remains closed; no capture/session/fee claim.",
+    "New chapter guards require native lowering and controller denial/success/free-return coverage.",
+    "Room warps and all existing event/script records must remain exact.",
+    "Group83 must be rechecked against fresh river parent before publication."
+  ],
+  "native_preimages": [
+    {
+      "map": "MnBemidji",
+      "module_sha256": "fc92fa930f90718206a6224a23f169110866d1eebae74daf9d73f233c8ea8d16",
+      "dimensions_metatiles": [
+        24,
+        24
+      ],
+      "blocks_sha256": "8a8cc5fb8ab17ad99b5408026376fc8e2f857a4b41dd25ac29cef1d9ebecdeab",
+      "attributes_sha256": "c97f8dce36664deb439344f9e3db43d7c98689c13fd88b6ec4a89a40955ad1e7",
+      "connections": [
+        {
+          "direction": "south",
+          "target_map": "MnR08C00R00",
+          "offset": -8
+        },
+        {
+          "direction": "west",
+          "target_map": "MnR14C01R00",
+          "offset": -1
+        },
+        {
+          "direction": "east",
+          "target_map": "MnR09C00R01",
+          "offset": 11
+        }
+      ],
+      "events_sha256": "24010b355bea2064b7f081ca955afa5f5ca111dcfc801deffdb3ac2cb567b633",
+      "objects_sha256": "07f57f8e8e6f013e58a63e479c1e482f6cc01b83363b0d1b087ff0be8a82ff70",
+      "program_fields_sha256": "eb6c18b3168f34b283326b6887dae4ee6696471cdb2280b25bb95d68e44ef459"
+    },
+    {
+      "map": "MnBoundarySafariC00R02",
+      "module_sha256": "ff8226f159ae2c7044b5fb144440181a037a1bf034c66ca1a0132aac9d106442",
+      "dimensions_metatiles": [
+        32,
+        8
+      ],
+      "blocks_sha256": "dbac2f310f8e415810abb2902f171ec20ca6c6923e9c47a92357a8b1635d0fb2",
+      "attributes_sha256": "9fa1f49f57e72153bb74a8e4e0dc32c0f710ce9a5597d5dff7da8ab0a4f714b6",
+      "connections": [
+        {
+          "direction": "east",
+          "target_map": "MnBoundarySafariC01R02",
+          "offset": 0
+        },
+        {
+          "direction": "north",
+          "target_map": "MnBoundarySafariC00R01",
+          "offset": 0
+        }
+      ],
+      "events_sha256": "317460f2fc906c0ce8fc8d9e63b1f894b79e1cdec23035aa66c479e5ac7f37e4",
+      "objects_sha256": "83203a935ef1a06085266db575d2541e4b2b591348fb5de076ce9825e69e69e7",
+      "program_fields_sha256": "3d9584112f528a4f3242df1fb622ba758a8ec5980fe5c77b0bf07fe9ab9b7e70"
+    },
+    {
+      "map": "MnBoundaryWaters",
+      "module_sha256": "4f4883dee614c633e339e3b6734344d66aa57ca504c9e0c856a4a805332dfe42",
+      "dimensions_metatiles": [
+        32,
+        24
+      ],
+      "blocks_sha256": "42db00c068697dca76a82900bcdda044f6072375c5c22dd3da7557c3df621a7a",
+      "attributes_sha256": "d81f0262462e4a8c873a8e28b8b0e7e7063ab378d4fb1e756b07b1e1527861ad",
+      "connections": [
+        {
+          "direction": "east",
+          "target_map": "MnR12C00R01",
+          "offset": 8
+        },
+        {
+          "direction": "south",
+          "target_map": "MnR13C00R00",
+          "offset": 1
+        },
+        {
+          "direction": "west",
+          "target_map": "MnR20C01R00",
+          "offset": -6
+        }
+      ],
+      "events_sha256": "809672ef61a4696735695382ee4b514cec70b3efeb6aedcab837cddee9f6db20",
+      "objects_sha256": "ed5cdcf8d07fb9e5d1c3fc1b1ee7b27aef1484a75c51b783b0e364422fa45a8a",
+      "program_fields_sha256": "b3d2615e5b264b5508cc05d768e4685ac1417c25efcc69e7decef70dfe51c4cc"
+    },
+    {
+      "map": "MnBrainerd",
+      "module_sha256": "f37b6fbd692c5d2807a1d3abe91d2ebcc3e96b8757f97045ca70a75dd023af82",
+      "dimensions_metatiles": [
+        32,
+        24
+      ],
+      "blocks_sha256": "5799a5626c37fcb981c014d7258df28301ac32bca5cc7675003ae52711f97929",
+      "attributes_sha256": "91e278da6a1d885f61e6a1d26b470dc11339fd8357c12abbc762ee7a19a0c5ac",
+      "connections": [
+        {
+          "direction": "south",
+          "target_map": "MnR06C00R00",
+          "offset": -5
+        },
+        {
+          "direction": "north",
+          "target_map": "MnR07C00R01",
+          "offset": 6
+        }
+      ],
+      "events_sha256": "a649ba6558d0447a03066761999497c18562793cc9e1d5dfa156386a27d38712",
+      "objects_sha256": "8bd86b88256b3afb9048dd05c5fc6081427dae6309b96d50570c0f6394f3f212",
+      "program_fields_sha256": "c81660ebabb067f03ebc1eed3e05b9e617ef57473aa3c7888a1d4c6d4edf5c60"
+    },
+    {
+      "map": "MnGrandMarais",
+      "module_sha256": "b3021650580baa957320e45808c538f36b5df3ffe53f778fe35da3ed2fd41c19",
+      "dimensions_metatiles": [
+        20,
+        19
+      ],
+      "blocks_sha256": "a686befa43acbe665f47d6c9f317b737f50c042f5ca6d12f813e75aeeda23d12",
+      "attributes_sha256": "09f6430ae4fa5b8eb201da3a8e492d78fef63c50f97caead24339c60455afe1d",
+      "connections": [],
+      "events_sha256": "cb82993b503c7a745d5c40494776943949db963170eb155d3ab5be2d2db8a44b",
+      "objects_sha256": "518dc11395cc43dc9dd45f1c8d75aebe367b17405e5d29d6d342251502005ca6",
+      "program_fields_sha256": "3232f64664fa9fc2b3e0447bfbc9f2d5d81cf12112dcfeb51d38d096fc42f642"
+    },
+    {
+      "map": "MnLakeItasca",
+      "module_sha256": "84b1c53ce89af1d372c0878a5ed23b304604de6e027fb81644a4ff28102deb45",
+      "dimensions_metatiles": [
+        24,
+        24
+      ],
+      "blocks_sha256": "88fe9221ba0e6683a43b30b8e6bca30c12707de57ba16dbf4f9136d3682a9d9d",
+      "attributes_sha256": "d39e8b3263722bdc8688b709ab780ca5bf20725ed3c7d3e07bc8aef9a2d8c188",
+      "connections": [],
+      "events_sha256": "a268a0ccac038474f25d3319a3f8333b4ccf90a5c109af4706383a02bc66bcd3",
+      "objects_sha256": "4ee8cc8881893186ffec20d746d75dc2a2f3ffbc2498f6b2a6f5d5a4eb46a366",
+      "program_fields_sha256": "30e4d28bcea2fb3577c34bb976d2bbab9df4218d5da3357a8eb63d9a66f198a8"
+    },
+    {
+      "map": "MnR03C00R01",
+      "module_sha256": "de78b7c6be76d8cbda0d56c956cdf2c9a076514dee8e24fd82bf745ecc260fea",
+      "dimensions_metatiles": [
+        24,
+        8
+      ],
+      "blocks_sha256": "c2bff8a7c48638cc38f03f525e8485f8f624ab4d89acc92a33464a62fcc36ef5",
+      "attributes_sha256": "f9f80bd045f9f6fc5936c3d57491fac1283852dc476f7f8366b35b5f794fb843",
+      "connections": [
+        {
+          "direction": "north",
+          "target_map": "MnR03C00R00",
+          "offset": 0
+        },
+        {
+          "direction": "south",
+          "target_map": "MnMankato",
+          "offset": -3
+        }
+      ],
+      "events_sha256": "cdb7549d9bf75f86e70b4a065879650d5090c7c979bc21bcd5d2f19c78f78497",
+      "objects_sha256": "a08de385eba770c5f629985541dc24c3c1ddfff8c09a35ad4920bb92299da8d3",
+      "program_fields_sha256": "af273f75b819fc44587e7346af664e86386e4d95acfb7af4645efbd555488b61"
+    },
+    {
+      "map": "MnR08C00R00",
+      "module_sha256": "eeb7ddcff0f9190fcbc6364dc76f79efb06a9168e2f3567e878efa73dd7b4d18",
+      "dimensions_metatiles": [
+        32,
+        24
+      ],
+      "blocks_sha256": "21d5b554208acd0c7c941a9517891c2b0dbac26e5b3c328b9ce2a40820f7b3b8",
+      "attributes_sha256": "6016c1d237e474116d8531e38c7239daaade077b7288478a141d32272cbadb02",
+      "connections": [
+        {
+          "direction": "south",
+          "target_map": "MnR08C00R01",
+          "offset": 0
+        },
+        {
+          "direction": "east",
+          "target_map": "MnR08C01R00",
+          "offset": 0
+        },
+        {
+          "direction": "north",
+          "target_map": "MnBemidji",
+          "offset": 8
+        }
+      ],
+      "events_sha256": "f6e19fdc05776672fe0ad4e9f7a9953d7a7dbed944d06b0d9e792d7de87212c6",
+      "objects_sha256": "6140e211179880496f61a2230142df5918e2e1b5123578cdbe5e6226f7f9e589",
+      "program_fields_sha256": "5c21f0ef6df2f60a146b453405ba737f89fb8764b0b1847a652a3e096fc67c2e"
+    },
+    {
+      "map": "MnR11C00R00",
+      "module_sha256": "1a46d1c55034f7ae5059fb2d891b278f0e46d2700600fbdffd6a38d0de14f57e",
+      "dimensions_metatiles": [
+        32,
+        24
+      ],
+      "blocks_sha256": "b5ba6789ace533c02a37736aff08668ab73278f1eb187056f698e16a2ef9ad50",
+      "attributes_sha256": "b7b773fd23a340d3dc88e56ac99c308e9a304f115ba970b6fb698f3f3ede0c3c",
+      "connections": [
+        {
+          "direction": "south",
+          "target_map": "MnR11C00R01",
+          "offset": 0
+        },
+        {
+          "direction": "east",
+          "target_map": "MnR11C01R00",
+          "offset": 0
+        }
+      ],
+      "events_sha256": "c2d57e5e9279ed938d875201b2b8cdca7cac9354311581b08d1dd58a98e670fb",
+      "objects_sha256": "a569fce9290358f43bf4c2004354210b62d2c0b02c56bb509e339fb6690674bd",
+      "program_fields_sha256": "d704dd74b7c8631a48097d33027fe9c03429092bc8c5cec87f01471c74510c77"
+    },
+    {
+      "map": "MnR12C01R01",
+      "module_sha256": "6798b808a897805df89322e03ef40b7511d9f0f8c94df6747746c1ba2b48090d",
+      "dimensions_metatiles": [
+        32,
+        24
+      ],
+      "blocks_sha256": "ca9907b67c85637b83cf5444ac9da3a0d60e8600a04e4631af372f35e66c46b1",
+      "attributes_sha256": "0c3bf7fa111910afb273fc66b1eba98c11a7cdaee861be55db4a2646ba21520d",
+      "connections": [
+        {
+          "direction": "north",
+          "target_map": "MnR12C01R00",
+          "offset": 0
+        },
+        {
+          "direction": "south",
+          "target_map": "MnR12C01R02",
+          "offset": 0
+        },
+        {
+          "direction": "west",
+          "target_map": "MnR12C00R01",
+          "offset": 0
+        }
+      ],
+      "events_sha256": "6e00d5622abc03d54c1d7de5801dca932fe8d3f3671302dd50e8f8baa73c4cc4",
+      "objects_sha256": "78b9da8b54c8fd7229c987c4967f3f28b097aa45b9c492070ca2412374d32999",
+      "program_fields_sha256": "5ad4d7c68ab4482b1487a05334edd62fe3a822861d42fb519adc3f6e3815410d"
+    },
+    {
+      "map": "MnR13C00R00",
+      "module_sha256": "35736540e817ec7c067c42be304477b502861bd998f2f35057a4b97d231e2414",
+      "dimensions_metatiles": [
+        32,
+        24
+      ],
+      "blocks_sha256": "fa191fd35a737836aa28a31c1d249cd29c5967960f949223b34a3283b325d7b6",
+      "attributes_sha256": "3b4828e5c9320f219c7a014db5620a6d87c0e105402a88ded24f188b27c25622",
+      "connections": [
+        {
+          "direction": "south",
+          "target_map": "MnR13C00R01",
+          "offset": 0
+        },
+        {
+          "direction": "north",
+          "target_map": "MnBoundaryWaters",
+          "offset": -1
+        }
+      ],
+      "events_sha256": "0a9afdbd3c0e9accba3f210c2146718acea63b6decd9197e3ebae56dbc6d8505",
+      "objects_sha256": "45d7afa416b9721b95ed996d6c16a7db123f5c80e7d929197a0a73ff7e6916ca",
+      "program_fields_sha256": "935a756ef2e7009a66cac1ab1deb6fff58a86edacb2adcc3c9b195662d0b5907"
+    },
+    {
+      "map": "MnR14C00R00",
+      "module_sha256": "e280be9cde8fb3ab649a7648656896a84d1f0a8a37874be084fd9ece1cb1b284",
+      "dimensions_metatiles": [
+        32,
+        24
+      ],
+      "blocks_sha256": "1dbe386a699701b52f20a19e7d4dbd4669ed541ce32dcec80e4321814876dd3a",
+      "attributes_sha256": "7ce8fc82e264ec6d44850d2bd596c3fc00e06afec1779979499a7641db6d151b",
+      "connections": [
+        {
+          "direction": "south",
+          "target_map": "MnR14C00R01",
+          "offset": 0
+        },
+        {
+          "direction": "east",
+          "target_map": "MnR14C01R00",
+          "offset": 0
+        }
+      ],
+      "events_sha256": "21eb0cbc5b315de17d278e09ce81322b2582245c4bddacae07b322d770cebb94",
+      "objects_sha256": "4f8b796eab637ffcd9f1ae0897aecea2d28564eaa071d29209685d20db81dd8d",
+      "program_fields_sha256": "ca3c29332661103967adb05ac36c43a9df177d6c996b27798686eaea9aed25b9"
+    },
+    {
+      "map": "MnR15C00R00",
+      "module_sha256": "38e4c9b511031a675345336e15ad2cf867e63163daad77652295a371373e6803",
+      "dimensions_metatiles": [
+        32,
+        18
+      ],
+      "blocks_sha256": "b9fa035fab02310e7a24d0cced48bbdca7761955093092c0ce9fa5103e87e0dc",
+      "attributes_sha256": "d1d12923196277877ee27dd06f29968654cf645e621c4f9bf8d92df7a2d8d22f",
+      "connections": [],
+      "events_sha256": "913053ae8d6db9e405cf3ac2ada443df89234947bd89d219bddee5d2daf5ec84",
+      "objects_sha256": "4825bc568c29c0bf49e2337c1cb7e0350a409791cf5b1b827a528da4d7a689fd",
+      "program_fields_sha256": "392c6d8dd62f2127300808e6d63f64b85b5e97714ab8347df154ceefb75f137f"
+    },
+    {
+      "map": "MnR16C01R00",
+      "module_sha256": "8d846e6092a13bf1a7d3fc036729b2e8541aa079e6d79d0883110889ca5f0c3b",
+      "dimensions_metatiles": [
+        16,
+        24
+      ],
+      "blocks_sha256": "a7ed37cd80d13e6575c1413e51cc188c4ec6de7fbb7cbcc88fa04ee4e8ed5580",
+      "attributes_sha256": "77bd03b966fcf747d78bcdfe49882297198fea160972a86d85530e3ca435eb15",
+      "connections": [
+        {
+          "direction": "west",
+          "target_map": "MnR16C00R00",
+          "offset": 0
+        }
+      ],
+      "events_sha256": "d8027e27a5e850fa58d563a15ac2cb71177ac7903ad307c657de11d589e3be7c",
+      "objects_sha256": "f4987e830fa5f097771b7206b7c3f27f73cee5d45ad20d9bb44adea86237fa51",
+      "program_fields_sha256": "bb84b1c9ee9b4f8216171287ce05f5ab60b5b3feb71ebef1c9d74bfeb6fbe3cb"
+    },
+    {
+      "map": "MnR17C00R02",
+      "module_sha256": "f85ba5ab22447b8b90278fd4d3823bfd0abdf7ef6a724b2564a4fcccaf1c3b18",
+      "dimensions_metatiles": [
+        32,
+        8
+      ],
+      "blocks_sha256": "f6125fcfe455a9feece3a832521975dbfd438c64f8ceb5972435c8fb17226f29",
+      "attributes_sha256": "9e6dd687222fccc1afe95fc332b265c98e1591f1f2bfa6f30a624fb00d826399",
+      "connections": [
+        {
+          "direction": "north",
+          "target_map": "MnR17C00R01",
+          "offset": 0
+        }
+      ],
+      "events_sha256": "948dcd8c8a3b296329aeefeb031d427f665a8ba4bf71f8802816d000370826f3",
+      "objects_sha256": "98ca64e819cc28863acf9a91eb88fd67085dfbcbe01a5012910bf2b2334b4027",
+      "program_fields_sha256": "9327ceb0c011ad602efbde1588626feafb847a1f06ce493362db3c352fc02c49"
+    },
+    {
+      "map": "MnR18C00R00",
+      "module_sha256": "03c48012d5a2695eca80426f5bd4f796187141e82c8926a924779248e7adc4ca",
+      "dimensions_metatiles": [
+        32,
+        24
+      ],
+      "blocks_sha256": "f76cc5360f850c3989a56e68d06315f8843cae12fa4d034dee6c30dc0427fb27",
+      "attributes_sha256": "7ba7df0545d58b0d0ea2701ad22b05586b6a3442f4ba76b51f67398ec4aa9b58",
+      "connections": [
+        {
+          "direction": "east",
+          "target_map": "MnR18C01R00",
+          "offset": 0
+        }
+      ],
+      "events_sha256": "c03442796ca78333c5a2d3ce6f75c82eaf8dbc8f7c1da3633fc35fed3b16bd88",
+      "objects_sha256": "db67351cb037f7df48530e6ef1bec0aff5ee28d9ffa9da49d691f784bdf737c4",
+      "program_fields_sha256": "3c4f0b6bba234ef086b7306e7499e6f55a446d94fb1a95d04ef76baf1692eff3"
+    },
+    {
+      "map": "MnR19C00R00",
+      "module_sha256": "6c202b9804548fb18dcf32e146d7ee44d053b917afbe4403871ca1c4eb34e4ba",
+      "dimensions_metatiles": [
+        32,
+        24
+      ],
+      "blocks_sha256": "f0c8e7fec3cc2aa2d5aefd83a0488690ba6ed1485a91913de03a7b283a3cb0ae",
+      "attributes_sha256": "d0830572c0573ba9595337be9c7994c2e168c135dbab81770abeb971876cd6d9",
+      "connections": [
+        {
+          "direction": "south",
+          "target_map": "MnR19C00R01",
+          "offset": 0
+        }
+      ],
+      "events_sha256": "fd59223924e89e4cb69d6414e0d47134afc0a050defe6ff5c5a44cd5e5138acf",
+      "objects_sha256": "bdb4cbf7cf10d9bf6b6a0977b193d4b7aae7ff4c487ff571b79818bd86af090a",
+      "program_fields_sha256": "d9d95ceea3291146db606c53b885534e4e9a76944d19d540a113d24347d8b380"
+    }
+  ],
+  "native_port_patches": "planning/minnesota/connections/state-cohesion-v01/source-v01/native-port-patches.contract.json",
+  "river_source_manifest": "planning/minnesota/connections/mississippi-v02/manifest.json",
+  "river_source_manifest_sha256": "449ce63508b11513b187e5741ac8b8dc669d9fe420b1c922907dd301d4e2b814",
+  "rebased_parent_pack": "content-packs/minnesota-mississippi-connected-v02.crystalpack",
+  "rebased_parent_file_sha256": "6b36b4b835873e4c4508a7da7727ecb759273c26e219ec026c061c0e66f24775",
+  "rebased_parent_content_identity": "de528e31f3d06f37c41b47595806d492d8279768f71d7b508ae7ab5315b66b5e",
+  "old_parent_file_sha256": "2fe6fc2a2c59833886b9ffa2fa04584f1f95841efaf87e865f11230cf4cdf54e",
+  "new_map_count_if_published": 681,
+  "new_outdoor_count_if_published": 98,
+  "river_module_preservation_preimages": [
+    {
+      "map": "MnMississippiConfluenceC00R00",
+      "module_sha256": "a871a8e747f26c972e87c78974aab84915430ea6dadc7c0ff7b1ebaeca18d6f2",
+      "dimensions_metatiles": [
+        6,
+        8
+      ]
+    },
+    {
+      "map": "MnMississippiConfluenceC01R00",
+      "module_sha256": "f4d39f7829cdb16f0d75b4140d8713251a5096ecfcfbb91a56f57c2f7681f11e",
+      "dimensions_metatiles": [
+        32,
+        12
+      ]
+    },
+    {
+      "map": "MnMississippiConfluenceC02R00",
+      "module_sha256": "262b51d73e19f1a5168212622f3f44814adbb666de18104be1e76b075f6f1dcb",
+      "dimensions_metatiles": [
+        32,
+        12
+      ]
+    },
+    {
+      "map": "MnMississippiConfluenceC03R00",
+      "module_sha256": "b8e6a1396cf571e6b00981f0e2b02c46f940f10559931f6c970855c3718cd4e9",
+      "dimensions_metatiles": [
+        4,
+        12
+      ]
+    },
+    {
+      "map": "MnMississippiLowerWoodsC00R00",
+      "module_sha256": "1520c81f80d176655dd57f8af1ddfd311a431b5688d1e251914e70c312cce98b",
+      "dimensions_metatiles": [
+        32,
+        24
+      ]
+    },
+    {
+      "map": "MnMississippiLowerWoodsC01R00",
+      "module_sha256": "a369eacb1451ef93fa42aa78e43cb27ae035d03d62271122c93ecf48b853ee3f",
+      "dimensions_metatiles": [
+        32,
+        24
+      ]
+    },
+    {
+      "map": "MnMississippiLowerWoodsC00R01",
+      "module_sha256": "b0e01763b72aa22dd1622127f73b4bb947e419bc4707eafb7e27d1997372cc16",
+      "dimensions_metatiles": [
+        32,
+        24
+      ]
+    },
+    {
+      "map": "MnMississippiLowerWoodsC01R01",
+      "module_sha256": "96408d9ab2ecfc85e75ceb99fb5b62b5958f4e0c6182827097ea2f3034d28b47",
+      "dimensions_metatiles": [
+        32,
+        24
+      ]
+    },
+    {
+      "map": "MnMississippiLowerWoodsC00R02",
+      "module_sha256": "773d7d690472c49c921544203e0fd47d5fbf44e418faf50869df0e644f76e283",
+      "dimensions_metatiles": [
+        32,
+        20
+      ]
+    },
+    {
+      "map": "MnMississippiLowerWoodsC01R02",
+      "module_sha256": "0c9387fe569cde4909e2f8c22bcf2b78b9ca9107bb83e697961c7b77a4b82c66",
+      "dimensions_metatiles": [
+        32,
+        20
+      ]
+    },
+    {
+      "map": "MnMississippiWinonaMouth",
+      "module_sha256": "c9dd79922b1f00d566dc0c1c8ff4499ccedbe97b73075be1d2faf978895d6cb2",
+      "dimensions_metatiles": [
+        16,
+        4
+      ]
+    },
+    {
+      "map": "MnMississippiUpstreamWoodsC00R00",
+      "module_sha256": "8e015954bbabd3592aa242d4db164f1af1965331c356c77394cf16021c467db1",
+      "dimensions_metatiles": [
+        32,
+        24
+      ]
+    },
+    {
+      "map": "MnMississippiUpstreamWoodsC01R00",
+      "module_sha256": "bce795420570d4ca1a2060055684c5ff1303840ac432cb962547621b5a2ce44e",
+      "dimensions_metatiles": [
+        32,
+        24
+      ]
+    },
+    {
+      "map": "MnMississippiUpstreamWoodsC00R01",
+      "module_sha256": "9328c1dceb6c956288c641c0684de2a1db9aced3c4533fa579448bafe52dc810",
+      "dimensions_metatiles": [
+        32,
+        24
+      ]
+    },
+    {
+      "map": "MnMississippiUpstreamWoodsC01R01",
+      "module_sha256": "e69a86f2c609973e60ba008440ae8473b54acaf9b021fad1e1aef1e4fac343aa",
+      "dimensions_metatiles": [
+        32,
+        24
+      ]
+    },
+    {
+      "map": "MnMississippiUpstreamWoodsC00R02",
+      "module_sha256": "1be1a60956735a4e5ca27cfeeba8c5676b5d859d85ca9a7a6a57c2b612b70e35",
+      "dimensions_metatiles": [
+        32,
+        20
+      ]
+    },
+    {
+      "map": "MnMississippiUpstreamWoodsC01R02",
+      "module_sha256": "b47c3a32d245692851f3b8a77a69084659821b71e51f6f553316307f44ab4799",
+      "dimensions_metatiles": [
+        32,
+        20
+      ]
+    }
+  ],
+  "registry": {
+    "group_id": 83,
+    "group_name": "MINNESOTA_COHESION",
+    "map_group_constant": "MAPGROUP_MINNESOTA_COHESION",
+    "native_group_checked_unused": true,
+    "checked_parent_sha256": "6b36b4b835873e4c4508a7da7727ecb759273c26e219ec026c061c0e66f24775"
+  },
+  "historical_map_count_before": 660,
+  "physical_component_count_if_installed": 1,
+  "static_check_note": "Source/native collision geometry only. Existing closed admission remains closed; not a controller or earned-progression proof.",
+  "encounter_bindings_proposed": [
+    {
+      "map": "MnDetroitLakesApproach",
+      "native_reference_map": "MnR15C00R00",
+      "policy": "Reuse installed native grass encounters without changing existing table."
+    },
+    {
+      "map": "MnMaraisCedarApproach",
+      "native_reference_map": "MnR11C00R00",
+      "policy": "Reuse installed north-shore grass encounters without changing existing table."
+    },
+    {
+      "map": "MnBemidjiNorthwoods",
+      "native_reference_map": "MnR17C00R00",
+      "policy": "Reuse installed border-pines grass encounters without changing existing table."
+    }
+  ],
+  "preserve_entry_policy": "No wild encounters, fees, session timers or Safari capture engine added in MnPreservePineEntry. Existing admission closure exact.",
+  "all_old_rooms_actors_scripts_unchanged": true,
+  "overlap_revisions": [
+    {
+      "id": "R03-east-blocking-margin",
+      "map": "MnR03C00R01",
+      "before": [
+        24,
+        8
+      ],
+      "after": [
+        21,
+        8
+      ],
+      "removed_bounds": [
+        21,
+        0,
+        24,
+        8
+      ],
+      "literal_wall_quadrants_removed": 96,
+      "preserve": "All remaining blocks,row origins,objects/events/programs and north connection exact. Existing Great Ball x41 remains inside new42-core width."
+    },
+    {
+      "id": "R08-R14-old-overlap",
+      "maps": [
+        "MnBemidji",
+        "MnR08C00R00"
+      ],
+      "town_south_offset_before": -8,
+      "town_south_offset_after": 0,
+      "preserve": "Bemidji south actors/events unchanged; new R08 outer mouth24/25,0 replaces40/41,0 through the exact bounded port patch. No R14 terrain/actor/reward removed."
+    },
+    {
+      "id": "R12-R13-two-old-overlaps",
+      "maps": [
+        "MnBoundaryWaters",
+        "MnR13C00R00"
+      ],
+      "town_south_offset_before": 1,
+      "town_south_offset_after": 0,
+      "preserve": "R13 north arrival moves30/31,0 to existing Floor32/33,0 through connection projection only. All original blocks/guards/programs unchanged."
+    }
+  ],
+  "landmark_bindings": [
+    {
+      "map": "MnDetroitLakesApproach",
+      "reference_native_map": "MnBrainerd",
+      "landmark_constant": "LANDMARK_MN_BRAINERD",
+      "existing_landmark_id": 121,
+      "required_fields": [
+        "MapModule.attributes.location",
+        "GameData.pokegear_landmarks.map_to_landmark[map]"
+      ],
+      "add_landmark_row": false
+    },
+    {
+      "map": "MnMaraisCedarApproach",
+      "reference_native_map": "MnGrandMarais",
+      "landmark_constant": "LANDMARK_MN_GRAND_MARAIS",
+      "existing_landmark_id": 116,
+      "required_fields": [
+        "MapModule.attributes.location",
+        "GameData.pokegear_landmarks.map_to_landmark[map]"
+      ],
+      "add_landmark_row": false
+    },
+    {
+      "map": "MnPreservePineEntry",
+      "reference_native_map": "MnBoundaryWaters",
+      "landmark_constant": "LANDMARK_MN_BOUNDARY_BASECAMP",
+      "existing_landmark_id": 118,
+      "required_fields": [
+        "MapModule.attributes.location",
+        "GameData.pokegear_landmarks.map_to_landmark[map]"
+      ],
+      "add_landmark_row": false
+    },
+    {
+      "map": "MnBemidjiNorthwoods",
+      "reference_native_map": "MnBemidji",
+      "landmark_constant": "LANDMARK_MN_BEMIDJI",
+      "existing_landmark_id": 122,
+      "required_fields": [
+        "MapModule.attributes.location",
+        "GameData.pokegear_landmarks.map_to_landmark[map]"
+      ],
+      "add_landmark_row": false
+    }
+  ],
+  "landmark_registration_required": true,
+  "future_river_metadata_successor_note": "Repinned to actual corrected river v02; original951 geometry unchanged. Native journey acceptance remains Root-owned.",
+  "id": "MN_STATE_COHESION",
+  "base_content_hash": "de528e31f3d06f37c41b47595806d492d8279768f71d7b508ae7ab5315b66b5e",
+  "native_port_patches_sha256": "717f7744da7a5c1cfc13509144f0d2dd4f8d6f2b0fa0a6359efe4579252957c4"
+}

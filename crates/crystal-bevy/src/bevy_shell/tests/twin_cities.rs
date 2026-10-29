@@ -100,8 +100,8 @@ fn twin_cities_controller_walks_grass_alternative_bridge_rails_and_every_event()
         }
     }
     for (at, button) in [
-        ((28, 17), GameButton::Up),
-        ((28, 20), GameButton::Down),
+        ((28, 18), GameButton::Up),
+        ((28, 19), GameButton::Down),
         ((22, 25), GameButton::Right),
         ((35, 25), GameButton::Left),
         ((10, 30), GameButton::Down),
@@ -117,7 +117,7 @@ fn twin_cities_controller_walks_grass_alternative_bridge_rails_and_every_event()
         ((2, 16), "MINNEAPOLIS"),
         ((52, 16), "ST PAUL"),
         ((12, 8), "ROSE WALK"),
-        ((36, 14), "MISSISSIPPI"),
+        ((36, 14), "PARK POND BRIDGE"),
         ((42, 24), "RIVER PARK"),
         ((7, 25), "flowers"),
         ((23, 23), "stone banks"),

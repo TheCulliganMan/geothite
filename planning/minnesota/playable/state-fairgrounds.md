@@ -1,8 +1,38 @@
 # Expanded native State Fairgrounds
 
-## Regional species correction (2026-10-28)
+## Required northern lineage for new publication
 
-Current candidate: `content-packs/minnesota-state-fair-originals-v1.crystalpack`,
+`build_state_fair_modpack` now rejects a parent unless its northern maps retain
+the canonical compact Superior profile: R11 terminal4×24, lower coast24×24,
+Gunflint32×24 plus32×8, Marais20×19 and Cedar20×12. It also rejects the five
+retired Neck/oversized Gunflint modules. The guard runs before parsing fair
+sources or installing content, and applies to the library and CLI alike.
+It does not change or delete northern geometry.
+Five focused guard checks pass, including real-pack acceptance of the compact
+publication and real-pack rejection of the old fair parent. Scoped Rust formatting
+passes. Standard all-target Clippy remains blocked by the existing core
+`multiplayer/mod.rs:1332` bad-bit-mask error, and workspace formatting reports
+existing offset-allocator differences.
+
+Use `content-packs/minnesota-superior-compact-v03.crystalpack` or a verified
+preserving descendant as the regional parent. Add missing reviewed regional
+species/art through the Rust overlays while preserving the compact modules.
+Do not branch from `minnesota-fair-grass-base-v1.crystalpack`,
+`minnesota-fair-originals-base-v1.crystalpack`, or the earlier fair candidates:
+those retain stale northern geometry. The existing fair video remains a local
+scene showcase; it does not establish that its earlier pack is an acceptable
+regional integration parent. A new compact-lineage fair publication is not
+claimed here. Shared map geometry belongs to the mapping owner.
+
+The sections and executed commands below are retained publication history,
+not alternate supported parent selections. Keep all previous render originals.
+The ignored preservation regression requires an explicitly supplied
+`CRYSTAL_FAIR_BASE` and `CRYSTAL_FAIR_TEST_PACK` for the compact-lineage pair.
+
+
+## Historical regional species showcase (2026-10-28)
+
+Historical showcase: `content-packs/minnesota-state-fair-originals-v1.crystalpack`,
 built from `minnesota-fair-originals-base-v1.crystalpack` with the existing Rust
 `pack_state_fair` binary and this dossier/layout. The parent adds the selected
 accepted native walking banks through `pack_minnesota_overworld`.

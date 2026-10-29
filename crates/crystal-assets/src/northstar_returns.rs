@@ -130,7 +130,8 @@ fn scenes() -> Vec<Scene> {
 pub fn build_northstar_returns(base: &CompiledGamePack, source: &str) -> Result<CompiledGamePack> {
     crate::verify_compiled_game_pack_for_runtime(base)?;
     ensure!(
-        base.identity()?.content_hash == PARENT,
+        base.identity()?.content_hash == PARENT
+            || crate::northstar_current_story::is_composing(base),
         "reviewed Northstar dialogue parent required"
     );
     ensure!(

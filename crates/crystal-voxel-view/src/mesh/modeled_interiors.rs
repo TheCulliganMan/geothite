@@ -78,6 +78,8 @@ impl Placement {
 }
 #[path = "native_clinic.rs"]
 mod native_clinic;
+#[path = "native_station_waiting.rs"]
+mod native_station_waiting;
 #[path = "native_pokecom_seats.rs"]
 mod native_pokecom_seats;
 #[path = "native_pokecom_equipment.rs"]
@@ -625,6 +627,8 @@ pub(super) fn resolve(
                 && source.tileset_id.as_ref()=="players_house" && source.metatile_id==0x20 {
                 (16.0,10.0)
             } else if source.tileset_id.as_ref()=="train_station" && kind==ModelKind::WallClinical
+                && group.width==4 && group.height==2 { (3.,16.)
+            } else if source.tileset_id.as_ref()=="train_station" && kind==ModelKind::WallClinical
                 && group.width==4 && group.height==8 {
                 (3.,32.)
             } else if source.tileset_id.as_ref()=="train_station" && kind==ModelKind::WallPanel
@@ -783,6 +787,13 @@ pub(super) fn resolve(
     });
     add(train_station_seat_placements(map, cells, geometry), &|_| {
         ModelKind::Chair
+    });
+    add(grouped_flat_card_placements(cells, geometry, 0x56, true, |source| {
+        native_station_waiting::local(map, source)
+    }), &|source| {
+        if source.metatile_id == 0x25 {
+            ModelKind::PictureFrame
+        } else { ModelKind::WallClinical }
     });
     add(grouped_flat_card_placements(cells,geometry,crate::train_station::FLOOR_TILE,true,|s| {
         crate::train_station::wall_local(map,s)
@@ -1792,6 +1803,7 @@ fn native_store_vending_source(map:&str,p:&Placement,cells:&[&VisualTile],g:&Gri
         })
 }
 fn native_station_wall_source(map:&str,p:&Placement,cells:&[&VisualTile],g:&GridGeometry)->bool {
+    if p.kind==ModelKind::WallClinical && native_station_waiting::matches(map,p,cells,g) { return true; }
     let block=cells[p.row*g.width+p.column].source.metatile_id;
     p.kind==ModelKind::WallClinical && p.width==4 && p.height==8
         && p.indices(g.width).enumerate().all(|(j,i)|cells[i].source.metatile_id==if j<16 {block}else{0x0b}
@@ -2411,6 +2423,12 @@ pub(super) fn append_with_tables(
             let range=first..mesh.textured.positions.len();
             mesh.textured.cutaway_ranges.push(range.clone());
             mesh.depth_coverage_textured_ranges.push(range);
+        } else if native_station_waiting::matches(map,p,cells,geometry) {
+            if p.kind == ModelKind::PictureFrame {
+                assert!(selected.append_native_picture_frame(&mut mesh.textured,
+                    [left+inset,right-inset,north,south],0.,16.*geometry.tile_height/8.,
+                    native_source_swatches(p,geometry,[[1,1],[2,2],[4,4]])));
+            } else { native_station_waiting::append_wall(&mut mesh.textured,geometry,p,[left,right,north,south]); }
         } else if native_station_wall_source(map,p,cells,geometry) {
             append_native_station_wall(&mut mesh.textured,geometry,p,[left,right,north,south],piece_source.metatile_id==0x0a);
         } else if p.kind==ModelKind::WallPanel && matches!(p.width,2|4) && p.height==2

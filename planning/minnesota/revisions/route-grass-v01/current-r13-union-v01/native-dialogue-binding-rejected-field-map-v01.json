@@ -1,0 +1,111 @@
+{
+  "changes": [
+    {
+      "actor": "MN_R13_T01",
+      "field": "loss_lines",
+      "old": [
+        "The lake is loud",
+        "when we are quiet."
+      ],
+      "native": [
+        "You heard our",
+        "rhythm right away."
+      ]
+    },
+    {
+      "actor": "MN_R13_T02",
+      "field": "loss_lines",
+      "old": [
+        "A deep crack can",
+        "split solid rock."
+      ],
+      "native": [
+        "Even granite",
+        "yields in time."
+      ]
+    },
+    {
+      "actor": "MN_R13_T03",
+      "field": "loss_lines",
+      "old": [
+        "The lake lies low.",
+        "I train up high."
+      ],
+      "native": [
+        "You kept your",
+        "balance up here."
+      ]
+    },
+    {
+      "actor": "MN_R13_T04",
+      "field": "loss_lines",
+      "old": [
+        "Breathe. Then let",
+        "your team move."
+      ],
+      "native": [
+        "Your team gave",
+        "each other space."
+      ]
+    },
+    {
+      "actor": "MN_R13_T05",
+      "field": "loss_lines",
+      "old": [
+        "A safe return is",
+        "part of the plan."
+      ],
+      "native": [
+        "You found a way",
+        "I had not seen."
+      ]
+    },
+    {
+      "actor": "MN_R13_T07",
+      "field": "loss_lines",
+      "old": [
+        "You can follow",
+        "this bank south."
+      ],
+      "native": [
+        "That battle made",
+        "quite a splash!"
+      ]
+    },
+    {
+      "actor": "MN_R13_T10",
+      "field": "loss_lines",
+      "old": [
+        "Trust the partners",
+        "who got you here."
+      ],
+      "native": [
+        "Your team belongs",
+        "at the League."
+      ]
+    },
+    {
+      "actor": "MN_R13_LEIF",
+      "field": "lines",
+      "old": [
+        "A sheltered bay",
+        "under the tor.",
+        "The fence marks",
+        "a safe lake view."
+      ],
+      "native": [
+        "A sheltered bay",
+        "under the tor.",
+        "The fence marks",
+        "a safe lake view.",
+        "Try the ROD GURU!",
+        "His house is above",
+        "the lakeside deck",
+        "on PINE COUNTRY RD",
+        "south of BRAINERD.",
+        "A free SUPER ROD!"
+      ]
+    }
+  ],
+  "native_programs_changed": false
+}

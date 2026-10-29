@@ -1,3 +1,9 @@
+> Current grass review: [R18 verification](../revisions/route-grass-v01/current-r18-v01/README.md).
+> Five metatiles extend the western meadow across its former dry bypass: four grass
+> steps each way, retaining the original six-step neck, docks and public shorewalk.
+> Eight native cases, 15 production stdio calls, audio and actual 2D review pass.
+> Current native Minnesota teams and encounter bindings supersede historical data below.
+
 # Mille Lacs Shore — source authoring handoff
 
 ## Current executed native evidence — 2026-10-26

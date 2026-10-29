@@ -189,11 +189,11 @@
       "sight_range": 1,
       "party": [
         {
-          "species": "POLIWHIRL",
+          "species": "TORROUT",
           "level": 29
         },
         {
-          "species": "GOLDEEN",
+          "species": "RILLBOW",
           "level": 28
         }
       ],
@@ -206,7 +206,13 @@
       ],
       "after_lines": [
         "Take the bridge.",
-        "The cabin is east."
+        "The cabin is east.",
+        "Try the ROD GURU!",
+        "His house is above",
+        "the lakeside deck",
+        "on PINE COUNTRY RD",
+        "south of BRAINERD.",
+        "A free SUPER ROD!"
       ],
       "loss_lines": [
         "The meadow path",
@@ -230,11 +236,11 @@
       "sight_range": 1,
       "party": [
         {
-          "species": "NIDORINO",
+          "species": "BRISTUB",
           "level": 29
         },
         {
-          "species": "PINECO",
+          "species": "CLINKLAW",
           "level": 28
         }
       ],
@@ -288,115 +294,115 @@
   ],
   "encounters": {
     "grass_rates": {
-      "morning": 10,
       "day": 10,
+      "morning": 10,
       "night": 10
     },
     "grass": {
       "morning": [
         {
-          "species": "HOPPIP",
-          "level": 25
+          "level": 25,
+          "species": "PODLET"
         },
         {
-          "species": "PIDGEOTTO",
-          "level": 26
+          "level": 26,
+          "species": "NOTCHBILL"
         },
         {
-          "species": "MAREEP",
-          "level": 27
+          "level": 27,
+          "species": "ZAPSAP"
         },
         {
-          "species": "WOOPER",
-          "level": 28
+          "level": 28,
+          "species": "GILLPUP"
         },
         {
-          "species": "PINECO",
-          "level": 29
+          "level": 29,
+          "species": "CLINKLAW"
         },
         {
-          "species": "MARILL",
-          "level": 30
+          "level": 30,
+          "species": "RIVVIT"
         },
         {
-          "species": "GIRAFARIG",
-          "level": 31
+          "level": 31,
+          "species": "TICKLET"
         }
       ],
       "day": [
         {
-          "species": "HOPPIP",
-          "level": 25
+          "level": 25,
+          "species": "PODLET"
         },
         {
-          "species": "PIDGEOTTO",
-          "level": 26
+          "level": 26,
+          "species": "NOTCHBILL"
         },
         {
-          "species": "MAREEP",
-          "level": 27
+          "level": 27,
+          "species": "ZAPSAP"
         },
         {
-          "species": "WOOPER",
-          "level": 28
+          "level": 28,
+          "species": "GILLPUP"
         },
         {
-          "species": "PINECO",
-          "level": 29
+          "level": 29,
+          "species": "CLINKLAW"
         },
         {
-          "species": "MARILL",
-          "level": 30
+          "level": 30,
+          "species": "RIVVIT"
         },
         {
-          "species": "GIRAFARIG",
-          "level": 31
+          "level": 31,
+          "species": "TICKLET"
         }
       ],
       "night": [
         {
-          "species": "NOCTOWL",
-          "level": 25
+          "level": 25,
+          "species": "BOOMRUFF"
         },
         {
-          "species": "ARIADOS",
-          "level": 26
+          "level": 26,
+          "species": "DEWDANT"
         },
         {
-          "species": "MAREEP",
-          "level": 27
+          "level": 27,
+          "species": "ZAPSAP"
         },
         {
-          "species": "WOOPER",
-          "level": 28
+          "level": 28,
+          "species": "GILLPUP"
         },
         {
-          "species": "PINECO",
-          "level": 29
+          "level": 29,
+          "species": "CLINKLAW"
         },
         {
-          "species": "MARILL",
-          "level": 30
+          "level": 30,
+          "species": "RIVVIT"
         },
         {
-          "species": "GIRAFARIG",
-          "level": 31
+          "level": 31,
+          "species": "TICKLET"
         }
       ]
     },
     "water_rate": 4,
     "water": [
       {
-        "species": "POLIWAG",
-        "level": 25
+        "level": 25,
+        "species": "CHORIP"
       },
       {
-        "species": "WOOPER",
-        "level": 26
+        "level": 26,
+        "species": "GILLPUP"
       },
       {
-        "species": "MARILL",
-        "level": 31
+        "level": 31,
+        "species": "RIVVIT"
       }
     ]
   },
@@ -509,7 +515,13 @@
         "The rail ends",
         "at the dock gate.",
         "A little walk",
-        "gets a lake view."
+        "gets a lake view.",
+        "Try the ROD GURU!",
+        "His house is above",
+        "the lakeside deck",
+        "on PINE COUNTRY RD",
+        "south of BRAINERD.",
+        "A free SUPER ROD!"
       ],
       "anchor_metatile": [
         22,
@@ -729,5 +741,24 @@
     "native_art": "Existing Kanto6b water rocks, unchanged source pixels. No new art.",
     "native_required": "Republish, capture both joins and prove Surf cannot leave the map through production controller.",
     "north_closure": "Kanto forest0f cap at meta row0, x12..19; Kanto6b rocks at row1. No actual boundary WATER remains; the above-rock interior water strip is sealed."
+  },
+  "grass_return_review_contract": {
+    "ledge_id": "MEADOW_RETURN_DROP",
+    "uphill_gate_bounds_core": [
+      14,
+      16,
+      16,
+      20
+    ],
+    "ordinary_climb_minimum_grass_steps": 4,
+    "dry_drop_grass_steps": 0,
+    "southern_lakeshore_grass_bounds_core": [
+      28,
+      26,
+      30,
+      30
+    ],
+    "minimum_extra_shore_grass_steps": 2,
+    "verification": "Local source graph and production-controller checks; existing required WEST_MEADOW_GATE unchanged."
   }
 }

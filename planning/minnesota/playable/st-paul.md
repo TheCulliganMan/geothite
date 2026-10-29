@@ -1,5 +1,16 @@
 # St Paul: native pad gym and public city doors
 
+This is a versioned chapter and verification record. Its commands, parties,
+page counts and results apply to the packs named below. For current narrative,
+character roles and completion actions, read [STORY.md](../STORY.md),
+[PROGRESSION.md](../PROGRESSION.md) and the
+[current composition record](../revisions/current-story-v01/README.md).
+Use the current composition path for new publications. Later source changes
+need their own pack verification. Historical fixtures do not establish an
+uninterrupted ordinary-party campaign.
+
+## Historical chapter record
+
 [Complete town](../renders/st-paul/whole-town.png) ·
 [Native facade](../renders/st-paul/native-gym-facade.png) ·
 [Native entrance](../renders/st-paul/native-gym-interior.png) ·

@@ -1,5 +1,16 @@
 # Duluth, Brainerd and Bemidji native integration
 
+This is a versioned chapter and verification record. Its commands, parties,
+page counts and results apply to the packs named below. For current narrative,
+character roles and completion actions, read [STORY.md](../STORY.md),
+[PROGRESSION.md](../PROGRESSION.md) and the
+[current composition record](../revisions/current-story-v01/README.md).
+Use the current composition path for new publications. Later source changes
+need their own pack verification. Historical fixtures do not establish an
+uninterrupted ordinary-party campaign.
+
+## Historical chapter record
+
 The current combined candidate is
 `content-packs/minnesota-cities-review.crystalpack`: 498 maps, file SHA-256
 `37a09cd52d95b7425711237a4014ec387555a27cc3d4df61e246581b4d108cf6`.

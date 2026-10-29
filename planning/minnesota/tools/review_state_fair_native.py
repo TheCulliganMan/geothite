@@ -46,7 +46,7 @@ def player_origin(actual, player):
 def compare(pack, art, view, actual, folder):
     name = view.get("map", "MnStateFairgrounds")
     x, y = view["core"]
-    regions = sources(pack, name)
+    regions = sources(pack, name, view.get("source_depth", 2))
     module = regions[0][0]
     player = oriented_sprite(pack, "SPRITE_CHRIS", "south")
     scale, px, py, pixels = player_origin(actual, player)
@@ -141,7 +141,7 @@ def main():
             folder.mkdir()
             x, y = view["core"]
             png = folder / "production.png"
-            command = [str(private), "--pack", str(pack_path), "--map", "MnStateFairgrounds", "--x", str(x), "--y", str(y), "--view", "2d", "--hour", "12", "--screenshot", str(png)]
+            command = [str(private), "--pack", str(pack_path), "--map", view.get("map", "MnStateFairgrounds"), "--x", str(x), "--y", str(y), "--view", "2d", "--hour", "12", "--screenshot", str(png)]
             with (folder / "capture.log").open("wb") as log:
                 result = subprocess.run(command, env=env, stdout=log, stderr=subprocess.STDOUT, timeout=120)
             assert result.returncode == 0, (view, result.returncode)

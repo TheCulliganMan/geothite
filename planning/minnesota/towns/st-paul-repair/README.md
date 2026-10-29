@@ -1,5 +1,32 @@
 # St. Paul facade and river repair
 
+Current city-render work is **native 2D only**. The current whole-city and
+production player-view checks are recorded in [2D-REVIEW.md](2D-REVIEW.md).
+
+The selected 730-map
+[interior/terrain union](../../interior-life/selected-union-v01/README.md)
+preserves this complete repaired city. Its three fresh city controller cases
+pass, and both clinics and the river bend were freshly captured and inspected
+in native 2D with zero differing pixels. Red Wing remains excluded.
+
+The current compact-lineage replay uses
+[compact-contract-v01.json](compact-contract-v01.json), retaining the revised
+regional geography and Minnesota fishing tables. Its verified 695-map output is
+`content-packs/minnesota-compact-st-paul-repair-v01.crystalpack`; the build and
+review history below describes the older interior branch. Current native 2D,
+controller, preservation and audio receipts are in [2D-REVIEW.md](2D-REVIEW.md).
+
+```sh
+target/interior-life/wasm-dev/recompose_authored_city \
+  content-packs/minnesota-compact-shore-gate-v01.crystalpack \
+  planning/minnesota/towns/st-paul-repair/layout.json \
+  planning/minnesota/towns/st-paul-repair/compact-contract-v01.json \
+  content-packs/minnesota-compact-st-paul-repair-v01.crystalpack
+```
+
+That completed output already exists. Preserve it and choose a fresh output
+name for another replay.
+
 This revision answers the rejected city render. It replaces 17 malformed or
 misleading facades: both clinics, the two shops, the bakery/cafe/inn and ten
 mixed house assemblies. Ordinary homes use complete native Kanto houses or
@@ -55,12 +82,12 @@ The completed output is an ignored 693-map pack with 251 species, 251 moves and
 the strict verifier. Use a new save for its pack identity. Regeneration should
 choose fresh output names; keep the completed packs and all render history.
 
-The latest composed child is
-`content-packs/minnesota-moorhead-v01.crystalpack` (708 maps). Its complete
+An earlier composed child is
+`content-packs/minnesota-international-falls-v02.crystalpack` (711 maps). Its complete
 St. Paul module equals the reviewed fair/ice v01 module exactly. The
 [harbor-care runbook](../../interior-life/HARBOR-CARE.md) records the parent
 lineage, followed by the [Detroit publication](../../interior-life/DETROIT-LAKES.md)
-and [Moorhead](../../interior-life/MOORHEAD.md). The child retains every repaired facade and the compact fair approach.
+[Moorhead](../../interior-life/MOORHEAD.md), and [International Falls](../../interior-life/INTERNATIONAL-FALLS.md). The child retains every repaired facade and the compact fair approach.
 
 Fresh review of the unchanged 699-map care parent passes fourteen complete native
 frames, with zero differing pixels in every frame. The Detroit child preserves
@@ -170,3 +197,17 @@ The rejected border frame's difference bounds are `(368,480)..(640,576)`;
 all pixels within the active city extent matched even in that old comparison.
 The fresh context evidence above resolves the complete frame without excluding
 that area.
+
+## Historical 3D follow-up
+
+The current user direction is native 2D only. This earlier renderer work is
+retained as history and does not define the current review.
+
+The [renderer follow-up](../../interior-life/RENDERER-FOLLOW-UP.md) records 25
+personally inspected paired city/town views and seven final corrected/control
+views. Both clinics and the ordinary houses are complete models. Native bridge
+post provenance now removes the flat rail fragments, and the eight-block depot
+uses the existing complete brick-building producer instead of falling back to
+source art. All seven final native 2D comparisons and twelve targeted regressions
+pass. The original timeout and every visual rejection remain retained; broader
+regional acceptance remains open.

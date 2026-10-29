@@ -42,7 +42,17 @@ fn central_lakes_controller_walks_bridge_dock_barriers_and_cabin_returns() {
     complete_visible_smoke_player_name_if_needed(&mut controller.shell, Some("CHRIS"))
         .expect("name");
     controller.set_runtime_journal_enabled(false);
-    let grid = RouteGrid::new(
+    // This empty-party geometry tour includes the newly required shore grass.
+    // Populated encounter and persistence checks are separate fixtures.
+    assert!(
+        controller
+            .snapshot()
+            .expect("geometry party")
+            .party
+            .slots
+            .is_empty()
+    );
+    let grid = RouteGrid::new_with_grass(
         &runtime,
         RouteSpec {
             prefix: "MnR15",

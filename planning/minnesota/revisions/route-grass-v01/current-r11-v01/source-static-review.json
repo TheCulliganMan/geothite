@@ -1,0 +1,444 @@
+{
+  "clear_reachable_tiles": 2188,
+  "walkable_reachable_tiles": 2460,
+  "required_grass_crossings": 2,
+  "accessible_encounter_tiles": 272,
+  "map_chunks_retained": 6,
+  "trainers": 10,
+  "residents": 5,
+  "pickups": 6,
+  "signs": 10,
+  "interiors": 2,
+  "ledge_returns": [
+    {
+      "id": "PALISADE_RIDGE_DROP",
+      "return_walk_steps": 29,
+      "hop_displacement_tiles": 3,
+      "saved_walk_steps": 26,
+      "return_path_core": [
+        [
+          18,
+          54
+        ],
+        [
+          19,
+          54
+        ],
+        [
+          20,
+          54
+        ],
+        [
+          21,
+          54
+        ],
+        [
+          22,
+          54
+        ],
+        [
+          23,
+          54
+        ],
+        [
+          24,
+          54
+        ],
+        [
+          25,
+          54
+        ],
+        [
+          26,
+          54
+        ],
+        [
+          27,
+          54
+        ],
+        [
+          28,
+          54
+        ],
+        [
+          28,
+          53
+        ],
+        [
+          28,
+          52
+        ],
+        [
+          28,
+          51
+        ],
+        [
+          28,
+          50
+        ],
+        [
+          28,
+          49
+        ],
+        [
+          27,
+          49
+        ],
+        [
+          26,
+          49
+        ],
+        [
+          26,
+          48
+        ],
+        [
+          25,
+          48
+        ],
+        [
+          24,
+          48
+        ],
+        [
+          23,
+          48
+        ],
+        [
+          22,
+          48
+        ],
+        [
+          21,
+          48
+        ],
+        [
+          20,
+          48
+        ],
+        [
+          19,
+          48
+        ],
+        [
+          18,
+          48
+        ],
+        [
+          18,
+          49
+        ],
+        [
+          18,
+          50
+        ],
+        [
+          18,
+          51
+        ]
+      ],
+      "local_return_walk_steps": 29
+    },
+    {
+      "id": "LESTER_TERRACE_DROP",
+      "return_walk_steps": 15,
+      "hop_displacement_tiles": 3,
+      "saved_walk_steps": 12,
+      "return_path_core": [
+        [
+          35,
+          174
+        ],
+        [
+          36,
+          174
+        ],
+        [
+          37,
+          174
+        ],
+        [
+          38,
+          174
+        ],
+        [
+          39,
+          174
+        ],
+        [
+          40,
+          174
+        ],
+        [
+          40,
+          173
+        ],
+        [
+          40,
+          172
+        ],
+        [
+          40,
+          171
+        ],
+        [
+          39,
+          171
+        ],
+        [
+          39,
+          170
+        ],
+        [
+          38,
+          170
+        ],
+        [
+          37,
+          170
+        ],
+        [
+          36,
+          170
+        ],
+        [
+          35,
+          170
+        ],
+        [
+          35,
+          171
+        ]
+      ],
+      "local_return_walk_steps": 15
+    },
+    {
+      "id": "BIRCH_SWITCHBACK_DROP",
+      "return_walk_steps": 11,
+      "hop_displacement_tiles": 3,
+      "saved_walk_steps": 8,
+      "return_path_core": [
+        [
+          33,
+          92
+        ],
+        [
+          34,
+          92
+        ],
+        [
+          35,
+          92
+        ],
+        [
+          36,
+          92
+        ],
+        [
+          37,
+          92
+        ],
+        [
+          37,
+          91
+        ],
+        [
+          37,
+          90
+        ],
+        [
+          36,
+          90
+        ],
+        [
+          36,
+          89
+        ],
+        [
+          35,
+          89
+        ],
+        [
+          34,
+          89
+        ],
+        [
+          33,
+          89
+        ]
+      ],
+      "local_return_walk_steps": 11
+    }
+  ],
+  "errors": [],
+  "river_catchments": [
+    {
+      "id": "BAPTISM_RIVER",
+      "native_cascade_blocks": [
+        [
+          9,
+          10
+        ],
+        [
+          9,
+          11
+        ],
+        [
+          9,
+          12
+        ]
+      ],
+      "head_to_base_water_connected": true,
+      "ordinary_water_bank_components": 4,
+      "complete_falls_in_walking_frame": true,
+      "optional_bank_minimum_grass_steps": null,
+      "sea_drainage_includes_visual_native06_deck": true,
+      "native_surf_under_deck_proved": false,
+      "extra_HM_controller_proved": false
+    },
+    {
+      "id": "TEMPERANCE_CREEK",
+      "native_cascade_blocks": [
+        [
+          9,
+          50
+        ],
+        [
+          9,
+          52
+        ]
+      ],
+      "head_to_base_water_connected": true,
+      "ordinary_water_bank_components": 4,
+      "complete_falls_in_walking_frame": true,
+      "optional_bank_minimum_grass_steps": 4,
+      "sea_drainage_includes_visual_native06_deck": true,
+      "native_surf_under_deck_proved": false,
+      "extra_HM_controller_proved": false
+    },
+    {
+      "id": "KNIFE_RIVER",
+      "native_cascade_blocks": [
+        [
+          12,
+          59
+        ]
+      ],
+      "head_to_base_water_connected": true,
+      "ordinary_water_bank_components": 1,
+      "complete_falls_in_walking_frame": true,
+      "optional_bank_minimum_grass_steps": null,
+      "sea_drainage_includes_visual_native06_deck": true,
+      "native_surf_under_deck_proved": false,
+      "extra_HM_controller_proved": false
+    },
+    {
+      "id": "STONEY_POINT",
+      "native_cascade_blocks": [
+        [
+          10,
+          74
+        ],
+        [
+          10,
+          75
+        ],
+        [
+          11,
+          77
+        ]
+      ],
+      "head_to_base_water_connected": true,
+      "ordinary_water_bank_components": 3,
+      "complete_falls_in_walking_frame": true,
+      "optional_bank_minimum_grass_steps": null,
+      "sea_drainage_includes_visual_native06_deck": true,
+      "native_surf_under_deck_proved": false,
+      "extra_HM_controller_proved": false
+    },
+    {
+      "id": "LESTER_RIVER",
+      "native_cascade_blocks": [
+        [
+          14,
+          88
+        ],
+        [
+          14,
+          89
+        ],
+        [
+          14,
+          90
+        ]
+      ],
+      "head_to_base_water_connected": true,
+      "ordinary_water_bank_components": 2,
+      "complete_falls_in_walking_frame": true,
+      "optional_bank_minimum_grass_steps": null,
+      "sea_drainage_includes_visual_native06_deck": true,
+      "native_surf_under_deck_proved": false,
+      "extra_HM_controller_proved": false
+    }
+  ],
+  "native_cascade_metatiles": 15,
+  "dimensions_metatiles": [
+    56,
+    96
+  ],
+  "source_only": true,
+  "native_playability_proved": false,
+  "whole_surface_chunks": 8,
+  "walkable_chunks": 6,
+  "reachable_water_core_tiles": 9212,
+  "outer_water_core_tiles": 0,
+  "native_waterfall_metatiles": 15,
+  "native_metatile_varieties": 56,
+  "optional_grass_costs": [
+    {
+      "id": "PALISADE_CACHE_GRASS",
+      "actual_minimum_grass_steps": 6
+    },
+    {
+      "id": "LESTER_TERRACE_GRASS",
+      "actual_minimum_grass_steps": 4
+    }
+  ],
+  "boundary_camera_collision_probes": [
+    {
+      "id": "SUPERIOR_ROCK_BOUNDARY",
+      "visible_buoy_core_tiles": 10
+    },
+    {
+      "id": "SOUTHERN_SEA_BOUNDARY",
+      "visible_buoy_core_tiles": 10
+    },
+    {
+      "id": "COMPACT_BANK",
+      "at": [
+        68,
+        14
+      ],
+      "target": [
+        68,
+        13
+      ],
+      "blocking_collision": "WALL"
+    }
+  ],
+  "negative_cases_rejected": [
+    "opened eastern Surf boundary",
+    "erased original tall fall",
+    "erased offset Stoney lower fall",
+    "removed Stoney bridge",
+    "fake Floor bridge",
+    "incidental decorative Cut",
+    "ordinary Floor replaces directional Birch face",
+    "Palisade cache free upper grass bypass",
+    "removed native Birch return stair",
+    "old boundary camera left inside enlarged lake",
+    "diagonal polygon rejected before rasterization",
+    "diagonal cliff_polygon rejected before rasterization",
+    "diagonal path rejected before rasterization"
+  ]
+}

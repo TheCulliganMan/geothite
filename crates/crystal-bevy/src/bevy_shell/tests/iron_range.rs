@@ -156,6 +156,18 @@ fn iron_range_controller_tours_clipped_seams_rails_drop_rooms_and_open_rewards()
     ] {
         grid.walk(&mut controller, at);
     }
+    for x in [80, 81] {
+        grid.walk(&mut controller, (x, 29));
+        for y in 30..34 {
+            assert_eq!(terrain(&runtime, x as usize, y as usize), "TALL_GRASS");
+            grid.walk(&mut controller, (x, y));
+        }
+    }
+    for x in [78, 79, 82, 83] {
+        for y in 30..34 {
+            assert_eq!(terrain(&runtime, x, y), "WALL");
+        }
+    }
     grid.walk(&mut controller, (81, 39));
     for _ in 0..8 {
         controller
@@ -213,7 +225,7 @@ fn iron_range_controller_tours_clipped_seams_rails_drop_rooms_and_open_rewards()
             .text
             .as_ref()
             .and_then(|t| t.asm_text.as_ref())
-            .is_some_and(|s| s.contains("foreman"))
+            .is_some_and(|s| s.contains("NELL: My partner") && s.contains("is down there."))
     );
     let before = text.overworld.tile;
     controller
@@ -338,7 +350,9 @@ fn battle(controller: &mut VisibleShellController) -> BTreeSet<String> {
                     .collect::<Vec<_>>()
             })
             .unwrap_or_default();
-        let button = if snapshot.ui.menu.is_none() && snapshot.ui.text.is_some() {
+        let button = if !controller.shell.battle_messages.is_empty()
+            || (snapshot.ui.menu.is_none() && snapshot.ui.text.is_some())
+        {
             GameButton::A
         } else if options.iter().any(|s| s.contains("change <PKMN>")) {
             GameButton::B
@@ -463,7 +477,11 @@ fn iron_range_populated_fixture_spends_surf_pp_wins_rests_and_continues() {
     finish_text(&mut controller);
     assert_eq!(
         opponents,
-        BTreeSet::from(["GEODUDE".into(), "SKARMORY".into(), "MACHOP".into()])
+        runtime.data().trainers.trainers["MN_R09_T06"]
+            .party
+            .iter()
+            .map(|pokemon| pokemon.species.clone())
+            .collect::<BTreeSet<_>>()
     );
     let won = controller.snapshot().expect("trainer victory");
     assert!(won.battle.is_none());
@@ -547,4 +565,92 @@ fn iron_range_populated_fixture_spends_surf_pp_wins_rests_and_continues() {
             .expect("export explicit journey fixture");
     }
     std::fs::remove_file(save).expect("remove fixture scratch save");
+}
+
+#[test]
+#[ignore = "requires the published Iron Range grass revision"]
+fn iron_range_reclaimed_spoil_grass_triggers_native_encounters() {
+    let (_, runtime, mut controller) = fixture((80, 29));
+    let partner = runtime
+        .data()
+        .create_pokemon("MEW", 60, Dv::default())
+        .expect("explicit native encounter fixture partner");
+    let state = controller.shell.shell.session_mut().state_mut();
+    assert!(state.storage.party.add_pokemon(partner));
+    state.badges.johto = [true; 8];
+    state.sync_party_from_storage();
+    *controller.shell.shell.session_mut().divider_mut_for_tests() =
+        crystal_core::random::RuntimeDividerSource::replay(
+            (0_u32..262144)
+                .map(|n| ((n * 73 + 19) % 256) as u8)
+                .collect::<Vec<_>>(),
+        );
+    mark_runtime_snapshot_dirty(&mut controller.shell);
+    // All subsequent state changes come from native movement and RUN inputs.
+    let mut encounters = 0;
+    for _ in 0..16 {
+        for (button, y) in (30..34)
+            .map(|y| (GameButton::Down, y))
+            .chain((29..33).rev().map(|y| (GameButton::Up, y)))
+        {
+            let target = (80, y);
+            for _ in 0..8 {
+                controller
+                    .press(button)
+                    .expect("native reclaimed-grass step");
+                let mut active = false;
+                for _ in 0..512 {
+                    let snapshot = controller.snapshot().expect("native grass encounter state");
+                    let input = if let Some(battle) = &snapshot.battle {
+                        assert!(matches!(battle.kind, RuntimeBattleKind::Wild { .. }));
+                        if !active {
+                            encounters += 1;
+                            active = true;
+                        }
+                        if !controller.shell.battle_messages.is_empty()
+                            || snapshot.ui.menu.is_none()
+                        {
+                            GameButton::A
+                        } else if let Some(cursor) = &controller.shell.battle_action_cursor {
+                            match cursor.option_index {
+                                0 | 1 => GameButton::Down,
+                                2 => GameButton::Right,
+                                3 => GameButton::A,
+                                _ => panic!("invalid native action cursor"),
+                            }
+                        } else {
+                            GameButton::A
+                        }
+                    } else if snapshot.phase == RuntimeShellPhase::Text
+                        || controller.has_pending_script_work()
+                        || !controller.shell.battle_messages.is_empty()
+                    {
+                        GameButton::A
+                    } else {
+                        assert_eq!(snapshot.phase, RuntimeShellPhase::Overworld);
+                        break;
+                    };
+                    controller
+                        .press(input)
+                        .expect("native RUN or narration input");
+                    controller
+                        .wait_frames(16)
+                        .expect("native encounter presentation");
+                }
+                if position(&mut controller) == target {
+                    break;
+                }
+            }
+            assert_eq!(position(&mut controller), target);
+        }
+    }
+    assert!(
+        encounters > 0,
+        "new grass never produced an actual native encounter"
+    );
+    assert_eq!(position(&mut controller), (80, 29));
+    assert_eq!(controller.shell.last_error, None);
+    eprintln!(
+        "reclaimed spoil shoulder: {encounters} native wild encounters across 128 grass-loop steps"
+    );
 }

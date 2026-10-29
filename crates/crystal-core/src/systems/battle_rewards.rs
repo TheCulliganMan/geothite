@@ -489,6 +489,19 @@ pub enum ActiveTrainerBattleRewardError {
     Reward(#[from] BattleRewardError),
 }
 
+// Minnesota maps use the authored Mn prefix. Read the battle origin as well
+// so wild rewards remain regional even before scene memory is synchronized.
+fn automatic_party_exp_share(state: &GameState) -> bool {
+    state.scenes.current_map_name.starts_with("Mn")
+        || match &state.battle {
+            BattleMemory::Wild { map_name, .. } => map_name.starts_with("Mn"),
+            BattleMemory::StaticWild {
+                origin_map_name, ..
+            } => origin_map_name.starts_with("Mn"),
+            _ => false,
+        }
+}
+
 fn reward_recipient_count(count: usize) -> Result<i32, BattleRewardError> {
     if count == 0 {
         return Err(BattleRewardError::InvalidRecipientCount { count });
@@ -695,6 +708,11 @@ pub fn claim_active_trainer_battle_rewards(
         participant_indices.push(active_index);
     }
     participant_indices.sort_unstable();
+    let automatic_share = automatic_party_exp_share(state);
+    if automatic_share {
+        participant_indices.clear();
+        participant_indices.push(active_index);
+    }
     let exp_share_indices = state
         .storage
         .party
@@ -704,7 +722,14 @@ pub fn claim_active_trainer_battle_rewards(
         .filter_map(|(index, pokemon)| {
             pokemon
                 .as_ref()
-                .filter(|pokemon| pokemon.hp > 0 && pokemon.item.as_deref() == Some("EXP_SHARE"))
+                .filter(|pokemon| {
+                    pokemon.hp > 0
+                        && if automatic_share {
+                            !pokemon.is_egg && !participant_indices.contains(&index)
+                        } else {
+                            pokemon.item.as_deref() == Some("EXP_SHARE")
+                        }
+                })
                 .map(|_| index)
         })
         .collect::<Vec<_>>();
@@ -714,13 +739,17 @@ pub fn claim_active_trainer_battle_rewards(
     } else {
         Some(reward_recipient_count(exp_share_indices.len())?)
     };
-    let participant_divisor = if exp_share_indices.is_empty() {
+    let participant_divisor = if automatic_share {
+        1
+    } else if exp_share_indices.is_empty() {
         participant_count
     } else {
         participant_count.saturating_mul(2)
     };
     let participant_experience = split_experience_award(rules, &enemy, participant_divisor, true)?;
-    let stat_experience_divisor = if exp_share_indices.is_empty() {
+    let stat_experience_divisor = if automatic_share {
+        1
+    } else if exp_share_indices.is_empty() {
         participant_count
     } else {
         participant_count.saturating_mul(2)
@@ -784,9 +813,13 @@ pub fn claim_active_trainer_battle_rewards(
     for share_index in exp_share_indices {
         let exp_share_count =
             exp_share_count.ok_or(BattleRewardError::InvalidRecipientCount { count: 0 })?;
-        // GiveExperiencePoints restores wBackupEnemyMonBaseStats here, but
-        // that backup was taken after the Exp. Share halving pass.
-        let exp_share_divisor = exp_share_count.saturating_mul(2);
+        // Legacy Exp. Share splits a halved pool among holders; Minnesota
+        // gives every nonparticipant half of the full award instead.
+        let exp_share_divisor = if automatic_share {
+            2
+        } else {
+            exp_share_count.saturating_mul(2)
+        };
         let holder_traded = state.storage.party.pokemon[share_index]
             .as_ref()
             .is_some_and(|pokemon| pokemon.original_trainer_id != state.player_id);
@@ -806,7 +839,11 @@ pub fn claim_active_trainer_battle_rewards(
             time_of_day,
             false,
             holder_traded,
-            split_experience_award(rules, &enemy, exp_share_divisor, true)?,
+            if automatic_share {
+                split_experience_award(rules, &enemy, 1, true)? / 2
+            } else {
+                split_experience_award(rules, &enemy, exp_share_divisor, true)?
+            },
             exp_share_divisor,
         )?;
         if share_outcome.level_after > share_outcome.level_before {
@@ -982,6 +1019,11 @@ where
         participant_indices.push(active_index);
     }
     participant_indices.sort_unstable();
+    let automatic_share = automatic_party_exp_share(state);
+    if automatic_share {
+        participant_indices.clear();
+        participant_indices.push(active_index);
+    }
     let exp_share_indices = state
         .storage
         .party
@@ -991,7 +1033,14 @@ where
         .filter_map(|(index, pokemon)| {
             pokemon
                 .as_ref()
-                .filter(|pokemon| pokemon.hp > 0 && pokemon.item.as_deref() == Some("EXP_SHARE"))
+                .filter(|pokemon| {
+                    pokemon.hp > 0
+                        && if automatic_share {
+                            !pokemon.is_egg && !participant_indices.contains(&index)
+                        } else {
+                            pokemon.item.as_deref() == Some("EXP_SHARE")
+                        }
+                })
                 .map(|_| index)
         })
         .collect::<Vec<_>>();
@@ -1001,13 +1050,17 @@ where
     } else {
         Some(reward_recipient_count(exp_share_indices.len())?)
     };
-    let participant_divisor = if exp_share_indices.is_empty() {
+    let participant_divisor = if automatic_share {
+        1
+    } else if exp_share_indices.is_empty() {
         participant_count
     } else {
         participant_count.saturating_mul(2)
     };
     let participant_experience = split_experience_award(rules, &enemy, participant_divisor, false)?;
-    let stat_experience_divisor = if exp_share_indices.is_empty() {
+    let stat_experience_divisor = if automatic_share {
+        1
+    } else if exp_share_indices.is_empty() {
         participant_count
     } else {
         participant_count.saturating_mul(2)
@@ -1066,9 +1119,13 @@ where
     for share_index in exp_share_indices {
         let exp_share_count =
             exp_share_count.ok_or(BattleRewardError::InvalidRecipientCount { count: 0 })?;
-        // GiveExperiencePoints restores wBackupEnemyMonBaseStats here, but
-        // that backup was taken after the Exp. Share halving pass.
-        let exp_share_divisor = exp_share_count.saturating_mul(2);
+        // Legacy Exp. Share splits a halved pool among holders; Minnesota
+        // gives every nonparticipant half of the full award instead.
+        let exp_share_divisor = if automatic_share {
+            2
+        } else {
+            exp_share_count.saturating_mul(2)
+        };
         let holder_traded = state.storage.party.pokemon[share_index]
             .as_ref()
             .is_some_and(|pokemon| pokemon.original_trainer_id != state.player_id);
@@ -1088,7 +1145,11 @@ where
             time_of_day,
             false,
             holder_traded,
-            split_experience_award(rules, &enemy, exp_share_divisor, false)?,
+            if automatic_share {
+                split_experience_award(rules, &enemy, 1, false)? / 2
+            } else {
+                split_experience_award(rules, &enemy, exp_share_divisor, false)?
+            },
             exp_share_divisor,
         )?;
         if share_outcome.level_after > share_outcome.level_before {
@@ -2539,6 +2600,130 @@ mod tests {
     }
 
     #[test]
+    fn minnesota_automatic_exp_share_awards_full_only_to_active_pokemon() {
+        let growth_rates = crystal_growth_rate_catalog_for_tests();
+        let mut participant = Pokemon::new_for_tests(
+            species("CHIKORITA", 64, growth_rate("GROWTH_MEDIUM_FAST")),
+            50,
+            Dv::default(),
+        );
+        participant.turns_in_battle = 1;
+        let mut second_participant = participant.clone();
+        second_participant.nickname = "SECOND".to_string();
+        let mut holder = participant.clone();
+        holder.nickname = "HOLDER".to_string();
+        holder.turns_in_battle = 0;
+        holder.item = Some("EXP_SHARE".to_string());
+
+        let mut defeated_species = species("PIDGEY", 65, growth_rate("GROWTH_MEDIUM_FAST"));
+        defeated_species.base_stats = BaseStats::new(65, 65, 65, 65, 65, 65);
+        let mut defeated = Pokemon::new_for_tests(defeated_species, 7, Dv::default());
+        defeated.hp = 0;
+        let species = [
+            (participant.species.id.clone(), participant.species.clone()),
+            (defeated.species.id.clone(), defeated.species.clone()),
+        ]
+        .into_iter()
+        .collect();
+        let learnsets = [
+            ("CHIKORITA".to_string(), Vec::new()),
+            ("PIDGEY".to_string(), Vec::new()),
+        ]
+        .into_iter()
+        .collect();
+        let evolutions = EvolutionTable(
+            [
+                ("CHIKORITA".to_string(), Vec::new()),
+                ("PIDGEY".to_string(), Vec::new()),
+            ]
+            .into_iter()
+            .collect(),
+        );
+        let mut state = GameState::default();
+        state.storage.party.pokemon[0] = Some(participant);
+        state.storage.party.pokemon[1] = Some(second_participant);
+        state.storage.party.pokemon[2] = Some(holder);
+        state.battle_active_party_index = Some(1);
+        state.battle = BattleMemory::Wild {
+            battle_type: "BATTLETYPE_NORMAL".to_string(),
+            battle_music: "MUSIC_JOHTO_WILD_BATTLE".to_string(),
+            map_name: "ROUTE_29".to_string(),
+            roaming_slot: None,
+            enemy_pokemon: defeated.clone(),
+            enemy_party: vec![defeated],
+        };
+
+        state.scenes.current_map_name = "MnWinona".into();
+        state.storage.party.pokemon[2].as_mut().unwrap().item = None;
+        let bench = state.storage.party.pokemon[2].as_ref().unwrap().clone();
+        state.storage.party.pokemon[3] = Some(bench.clone());
+        let mut fainted = bench.clone();
+        fainted.hp = 0;
+        state.storage.party.pokemon[4] = Some(fainted);
+        let mut egg = bench;
+        egg.is_egg = true;
+        state.storage.party.pokemon[5] = Some(egg);
+        let excluded_experience = [4, 5].map(|index| {
+            state.storage.party.pokemon[index]
+                .as_ref()
+                .unwrap()
+                .experience
+        });
+        let experience_before = state
+            .storage
+            .party
+            .pokemon
+            .iter()
+            .take(4)
+            .map(|pokemon| pokemon.as_ref().unwrap().experience)
+            .collect::<Vec<_>>();
+        let mut divider = ReplayDivider::new([]);
+        let outcome = claim_active_wild_battle_rewards(
+            &mut state,
+            &reward_rules(),
+            &species,
+            &BTreeMap::new(),
+            &learnsets,
+            &growth_rates,
+            &evolutions,
+            level_up_happiness(),
+            TimeOfDay::Day,
+            &mut divider,
+        )
+        .expect("claim split participant and Exp. Share rewards");
+
+        assert_eq!(
+            outcome
+                .recipient_outcomes
+                .iter()
+                .map(|recipient| (recipient.party_index, recipient.experience_awarded))
+                .collect::<Vec<_>>(),
+            vec![(1, 65), (0, 32), (2, 32), (3, 32)]
+        );
+        for (index, before) in [4, 5].into_iter().zip(excluded_experience) {
+            assert_eq!(
+                state.storage.party.pokemon[index]
+                    .as_ref()
+                    .unwrap()
+                    .experience,
+                before
+            );
+        }
+        for (index, expected_gain) in [(0, 32), (1, 65), (2, 32), (3, 32)] {
+            let rewarded = state.storage.party.pokemon[index].as_ref().unwrap();
+            assert_eq!(
+                rewarded.experience - experience_before[index],
+                expected_gain
+            );
+            assert_eq!(rewarded.hp_exp, expected_gain as u16);
+            assert_eq!(rewarded.attack_exp, expected_gain as u16);
+            assert_eq!(rewarded.defense_exp, expected_gain as u16);
+            assert_eq!(rewarded.speed_exp, expected_gain as u16);
+            assert_eq!(rewarded.special_exp, expected_gain as u16);
+        }
+    }
+
+    #[test]
     fn active_trainer_battle_rewards_follow_party_slot_order_and_commit_enemy() {
         let growth_rates = crystal_growth_rate_catalog_for_tests();
         let mut player = Pokemon::new_for_tests(
@@ -2614,6 +2799,41 @@ mod tests {
             )
             .with_parties(vec![player, previous_participant], vec![defeated])
             .with_party_indices(1, 0),
+        );
+
+        let mut minnesota_state = state.clone();
+        minnesota_state.scenes.current_map_name = "MnWinona".into();
+        minnesota_state.storage.party.pokemon[0]
+            .as_mut()
+            .unwrap()
+            .item = Some("EXP_SHARE".into());
+        let mut bench = minnesota_state.storage.party.pokemon[0]
+            .as_ref()
+            .unwrap()
+            .clone();
+        bench.turns_in_battle = 0;
+        bench.item = Some("EXP_SHARE".into());
+        minnesota_state.storage.party.pokemon[2] = Some(bench);
+        let minnesota_outcome = claim_active_trainer_battle_rewards(
+            &mut minnesota_state,
+            &reward_rules(),
+            &species,
+            &moves,
+            &learnsets,
+            &growth_rates,
+            &evolutions,
+            &battle_stat_multipliers(),
+            level_up_happiness(),
+            TimeOfDay::Day,
+        )
+        .expect("claim automatic Minnesota trainer rewards");
+        assert_eq!(
+            minnesota_outcome
+                .recipient_outcomes
+                .iter()
+                .map(|recipient| (recipient.party_index, recipient.experience_awarded))
+                .collect::<Vec<_>>(),
+            vec![(1, 97), (0, 48), (2, 48)]
         );
 
         let mut tower_state = state.clone();

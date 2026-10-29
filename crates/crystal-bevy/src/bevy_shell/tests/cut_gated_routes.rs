@@ -636,33 +636,22 @@ fn river_bluffs_surf_blocks_at_water_rocks_and_crosses_both_reciprocal_water_sea
     step(&mut controller, GameButton::Right, (61, 87));
     step(&mut controller, GameButton::Right, (62, 87));
     blocked_buoy(&runtime, &mut controller, GameButton::Right);
-    for y in (47..87).rev() {
+    for y in (82..87).rev() {
         step(&mut controller, GameButton::Up, (62, y));
     }
-    assert_eq!(
-        controller
-            .snapshot()
-            .expect("upper river water neighbor")
-            .overworld
-            .map_name,
-        "MnR05C00R00"
-    );
-    step(&mut controller, GameButton::Down, (62, 48));
-    assert_eq!(
-        controller
-            .snapshot()
-            .expect("upper seam reciprocal river return")
-            .overworld
-            .map_name,
-        "MnR05C00R01"
-    );
-    for y in 49..=96 {
+    // The current regional river has a native forest bank through row 81.
+    // This terrain predates the grass pass and is preserved exactly.
+    controller
+        .press(GameButton::Up)
+        .expect("existing cross-river bank");
+    assert_eq!(position(&mut controller), (62, 82));
+    for y in 83..=96 {
         step(&mut controller, GameButton::Down, (62, y));
     }
     assert_eq!(
         controller
             .snapshot()
-            .expect("lower river water neighbor")
+            .expect("lower river seam")
             .overworld
             .map_name,
         "MnR05C00R02"
@@ -671,10 +660,119 @@ fn river_bluffs_surf_blocks_at_water_rocks_and_crosses_both_reciprocal_water_sea
     assert_eq!(
         controller
             .snapshot()
-            .expect("lower seam reciprocal river return")
+            .expect("lower seam reverse")
             .overworld
             .map_name,
         "MnR05C00R01"
+    );
+    // The lower external seam has both a working water lane and a real solid
+    // bank. Both use the actual offset -18 / +18 reciprocal map projection.
+    step(&mut controller, GameButton::Down, (62, 96));
+    step(&mut controller, GameButton::Right, (63, 96));
+    controller
+        .press(GameButton::Right)
+        .expect("existing external river lane");
+    let across = controller.snapshot().expect("actual neighboring river");
+    assert_eq!(
+        across.overworld.map_name,
+        "MnMississippiUpstreamWoodsC00R02"
+    );
+    assert_eq!((across.overworld.tile.x, across.overworld.tile.y), (0, 36));
+    assert_eq!(across.overworld.mode, MovementMode::Surf);
+    for _ in 0..8 {
+        if controller
+            .snapshot()
+            .expect("river return map")
+            .overworld
+            .map_name
+            == "MnR05C00R02"
+        {
+            break;
+        }
+        controller
+            .wait_frames(16)
+            .expect("native seam presentation");
+        controller
+            .press(GameButton::Left)
+            .expect("reciprocal river return");
+        settle_water_activity(&mut controller);
+    }
+    assert_eq!(position(&mut controller), (63, 96));
+    step(&mut controller, GameButton::Down, (63, 97));
+    step(&mut controller, GameButton::Down, (63, 98));
+    for _ in 0..3 {
+        controller
+            .wait_frames(16)
+            .expect("bank presentation frames");
+        controller
+            .press(GameButton::Right)
+            .expect("neighboring tree bank blocks Surf");
+        settle_water_activity(&mut controller);
+    }
+    assert_eq!(position(&mut controller), (63, 98));
+    // Independent initial Surf placement in the actual northern water pocket.
+    // The former upper chunk seam is now forest; never place Surf on that wall
+    // or claim a continuous river through it. Exercise its real east port.
+    let mut upper = fixture(&root, &runtime, "MnR05", (62, 1), &["SURF"], true);
+    upper.shell.shell.session_mut().overworld_mut().player.mode = MovementMode::Surf;
+    mark_runtime_snapshot_dirty(&mut upper.shell);
+    blocked_buoy(&runtime, &mut upper, GameButton::Up);
+    for y in 2..=27 {
+        step(&mut upper, GameButton::Down, (62, y));
+    }
+    upper
+        .press(GameButton::Down)
+        .expect("northern pocket forest bank");
+    assert_eq!(position(&mut upper), (62, 27));
+    for y in (4..27).rev() {
+        step(&mut upper, GameButton::Up, (62, y));
+    }
+    step(&mut upper, GameButton::Right, (63, 4));
+    upper
+        .press(GameButton::Right)
+        .expect("northern live river port");
+    let across = upper.snapshot().expect("northern connected river");
+    assert_eq!(
+        across.overworld.map_name,
+        "MnMississippiUpstreamWoodsC00R00"
+    );
+    assert_eq!((across.overworld.tile.x, across.overworld.tile.y), (0, 40));
+    assert_eq!(across.overworld.mode, MovementMode::Surf);
+    for _ in 0..8 {
+        if upper
+            .snapshot()
+            .expect("north return map")
+            .overworld
+            .map_name
+            == "MnR05C00R00"
+        {
+            break;
+        }
+        upper
+            .wait_frames(16)
+            .expect("native north seam presentation");
+        upper
+            .press(GameButton::Left)
+            .expect("reciprocal northern river return");
+        settle_water_activity(&mut upper);
+    }
+    assert_eq!(position(&mut upper), (63, 4));
+    assert_eq!(
+        upper
+            .snapshot()
+            .expect("north Surf retained")
+            .overworld
+            .mode,
+        MovementMode::Surf
+    );
+
+    assert_eq!(
+        controller
+            .snapshot()
+            .expect("lower connected bank remains in the source map")
+            .overworld
+            .map_name,
+        "MnR05C00R02"
     );
     assert_eq!(
         controller

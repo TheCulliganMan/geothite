@@ -1,0 +1,19 @@
+{
+  "native_tables_unchanged_and_equal_across_three_chunks": true,
+  "source_updated_to_existing_installed_Minnesota_table": true,
+  "species": [
+    "BANDRAKE",
+    "BARRICANT",
+    "BOOMRUFF",
+    "CHORIP",
+    "CROOKVEIL",
+    "DOZEBEAR",
+    "GILLPUP",
+    "LASSERP",
+    "LATCHQUILL",
+    "REEDRAFT",
+    "RIVVIT",
+    "SKEETEREX"
+  ],
+  "native_wild_challenge_scaling_unchanged": true
+}

@@ -3857,6 +3857,176 @@
         31,
         39
       ]
+    },
+    {
+      "kind": "block_remap",
+      "name": "Wet meadow northern trail crossing",
+      "bounds": [
+        22,
+        21,
+        28,
+        22
+      ],
+      "from": "01",
+      "to": "03"
+    },
+    {
+      "kind": "block_remap",
+      "name": "Wet meadow northern trail crossing",
+      "bounds": [
+        22,
+        21,
+        28,
+        22
+      ],
+      "from": "02",
+      "to": "03"
+    },
+    {
+      "kind": "block_remap",
+      "name": "Wet meadow southern trail crossing",
+      "bounds": [
+        22,
+        24,
+        28,
+        25
+      ],
+      "from": "01",
+      "to": "03"
+    },
+    {
+      "kind": "block_remap",
+      "name": "Wet meadow southern trail crossing",
+      "bounds": [
+        22,
+        24,
+        28,
+        25
+      ],
+      "from": "02",
+      "to": "03"
+    },
+    {
+      "kind": "block_remap",
+      "name": "Peninsula trail joins the southern grass",
+      "bounds": [
+        25,
+        30,
+        26,
+        32
+      ],
+      "from": "01",
+      "to": "03"
+    },
+    {
+      "kind": "block_remap",
+      "name": "Southern rest-pocket grass connection",
+      "bounds": [
+        9,
+        41,
+        10,
+        43
+      ],
+      "from": "01",
+      "to": "03"
+    },
+    {
+      "kind": "block_remap",
+      "name": "Southern rest-pocket grass connection",
+      "bounds": [
+        9,
+        41,
+        10,
+        43
+      ],
+      "from": "02",
+      "to": "03"
+    },
+    {
+      "kind": "block_remap",
+      "name": "Bird hollow grass edge beside the west road",
+      "bounds": [
+        7,
+        17,
+        8,
+        19
+      ],
+      "from": "02",
+      "to": "03"
+    },
+    {
+      "kind": "block_remap",
+      "name": "Wet meadow closes the lower bank corner",
+      "bounds": [
+        21,
+        24,
+        22,
+        25
+      ],
+      "from": "02",
+      "to": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Exact installed native preimage",
+      "position": [
+        11,
+        0
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact installed native preimage",
+      "position": [
+        11,
+        47
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "rect",
+      "name": "Southern bay shore forest pushes into broad apron",
+      "material": "forest",
+      "bounds": [
+        10,
+        40,
+        13,
+        41
+      ]
+    },
+    {
+      "kind": "rect",
+      "name": "Peninsula southern headland pines",
+      "material": "forest",
+      "bounds": [
+        27,
+        31,
+        29,
+        32
+      ]
+    },
+    {
+      "kind": "rect",
+      "name": "Peninsula western low cape",
+      "material": "water",
+      "bounds": [
+        20,
+        27,
+        22,
+        29
+      ]
+    },
+    {
+      "kind": "rect",
+      "name": "Long shore road shelter shapes the lower west bank",
+      "material": "forest",
+      "bounds": [
+        10,
+        30,
+        12,
+        32
+      ]
     }
   ],
   "review_contract": {

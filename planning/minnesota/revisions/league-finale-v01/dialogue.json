@@ -1,0 +1,186 @@
+{
+  "id": "northstar-league-finale-v1",
+  "members": [
+    {
+      "id": "MN_LEAGUE_1",
+      "name": "FERN",
+      "map": "MnLeagueRoom1",
+      "role": "Prairie habitat surveyor; patient setups and small openings.",
+      "texts": {
+        "MnLeagueRoom1BeforeText": [
+          "FERN: I count nests in roadside grass. Most people walk straight past them.",
+          "They overlook my team, too. Right up until we find an opening.",
+          "Welcome to the ELITE FOUR. Watch closely!"
+        ],
+        "MnLeagueRoom1WonText": [
+          "There. You saw it before I did. I couldn't close that gap."
+        ],
+        "MnLeagueRoom1LostText": [
+          "One opening was enough. Next time, make me work for it."
+        ],
+        "MnLeagueRoom1AfterText": [
+          "My team can wait all day for a chance. You made your own.",
+          "FLINT is through that door. He won't give ground easily."
+        ],
+        "MnLeagueRoom1NoRunText": [
+          "Speak to the registrar first. We battle in order. Everyone gets their turn."
+        ],
+        "MnLeagueRoom1RematchText": [
+          "FERN: You know my team now. That makes the little changes matter more.",
+          "Let's see which of us notices first!"
+        ]
+      }
+    },
+    {
+      "id": "MN_LEAGUE_2",
+      "name": "FLINT",
+      "map": "MnLeagueRoom2",
+      "role": "Retired underground maintenance worker; deliberate, durable battling.",
+      "texts": {
+        "MnLeagueRoom2BeforeText": [
+          "FLINT. I used to check mine supports before the day shift went down.",
+          "You learn to hear a strain before anything gives.",
+          "My team knows how to hold. Let's see where you put the pressure."
+        ],
+        "MnLeagueRoom2WonText": [
+          "There goes the brace. You found the weak point."
+        ],
+        "MnLeagueRoom2LostText": [
+          "Still holding. There's no shame in stepping back to get your bearings."
+        ],
+        "MnLeagueRoom2AfterText": [
+          "Good work. You changed your approach when the first one didn't take.",
+          "VEIL is next. Don't mistake a quiet room for an empty one."
+        ],
+        "MnLeagueRoom2NoRunText": [
+          "This is the second match. Register, then get past FERN. I'll be here."
+        ],
+        "MnLeagueRoom2RematchText": [
+          "FLINT: We patched the weak points. I expect you've done the same.",
+          "All right. Put us under load."
+        ]
+      }
+    },
+    {
+      "id": "MN_LEAGUE_3",
+      "name": "VEIL",
+      "map": "MnLeagueRoom3",
+      "role": "Night search volunteer; observant, restrained and difficult to read.",
+      "texts": {
+        "MnLeagueRoom3BeforeText": [
+          "I'm VEIL. When a search runs into the night, I take the late shift.",
+          "A branch moves. A sound stops. My partners notice before I do.",
+          "They've noticed you. Shall we begin?"
+        ],
+        "MnLeagueRoom3WonText": [
+          "I was watching for your next move. You had already made it."
+        ],
+        "MnLeagueRoom3LostText": [
+          "You lost sight of us for a moment. That was all we needed."
+        ],
+        "MnLeagueRoom3AfterText": [
+          "You kept looking even when the answer wasn't obvious. I like that.",
+          "HALDEN waits beyond the door. Give him my regards."
+        ],
+        "MnLeagueRoom3NoRunText": [
+          "The first two matches come before mine. The registrar can help you begin."
+        ],
+        "MnLeagueRoom3RematchText": [
+          "VEIL: I remember how you broke through last time.",
+          "Don't worry. I won't ask you to show me the same thing twice."
+        ]
+      }
+    },
+    {
+      "id": "MN_LEAGUE_4",
+      "name": "HALDEN",
+      "map": "MnLeagueRoom4",
+      "role": "Canoe guide; reads momentum and commits when the current turns.",
+      "texts": {
+        "MnLeagueRoom4BeforeText": [
+          "HALDEN. Last of the four. I guide canoe trips when I'm not here.",
+          "A big current doesn't care how strong you are. Pick your moment, then commit.",
+          "You've made it this far. Show me how you finish!"
+        ],
+        "MnLeagueRoom4WonText": [
+          "I committed first. You turned the whole match around."
+        ],
+        "MnLeagueRoom4LostText": [
+          "You fought the current too long. Come back with another way across."
+        ],
+        "MnLeagueRoom4AfterText": [
+          "That's four. Take a breath. Check every partner before you go on.",
+          "CASEY is waiting. And yes, the champion is every bit that good."
+        ],
+        "MnLeagueRoom4NoRunText": [
+          "I'm the fourth match. Get through the other three first. No short carries."
+        ],
+        "MnLeagueRoom4RematchText": [
+          "HALDEN: Back through all three rooms? Good. You haven't skipped the hard part.",
+          "One more crossing before CASEY. Let's go!"
+        ]
+      }
+    },
+    {
+      "id": "MN_CHAMPION",
+      "name": "CASEY",
+      "map": "MnLeagueChampion",
+      "role": "Champion who separates public duty from sporting proof; direct, competitive and generous in defeat.",
+      "texts": {
+        "MnLeagueChampionBeforeText": [
+          "CASEY: The trail to ELY is open again. I've been looking forward to meeting you.",
+          "What you did out there matters. But it won't win this battle for you.",
+          "Here, you and your partners get to show what you can do.",
+          "I'm the CHAMPION. I'm going to make you earn this!"
+        ],
+        "MnLeagueChampionWonText": [
+          "I thought I could turn it around. You never let me. You won!"
+        ],
+        "MnLeagueChampionLostText": [
+          "You reached this room once. You can do it again. I'll be waiting."
+        ],
+        "MnLeagueChampionAfterText": [
+          "I kept one answer in reserve. Then you made me use it. Then you beat it.",
+          "Go north. Every partner who brought you here belongs in that record.",
+          "The next time we battle, I'll be the one coming for your title!"
+        ],
+        "MnLeagueChampionNoRunText": [
+          "CASEY: Beat all four in one registered run. I want to meet that whole team at its best."
+        ],
+        "MnLeagueChampionRematchText": [
+          "CASEY: CHAMPION! That still sounds strange when I'm saying it to someone else.",
+          "I've replayed our match in my head. Now let's see how much that helped!"
+        ]
+      }
+    }
+  ],
+  "support": {
+    "MnLeagueLobby": {
+      "MnElyRegistrationText": [
+        "The ELITE FOUR are FERN, FLINT, VEIL and HALDEN. CASEY holds the title.",
+        "Five battles. Bring your own supplies. Leaving or losing ends this run.",
+        "Ready to register?"
+      ],
+      "MnElyBadgeDeniedText": [
+        "Eight badges earn a place in the League challenge.",
+        "Until then, the clinic and shop are open. Come back when you're ready."
+      ],
+      "MnElySurveyDeniedText": [
+        "The survey link is still down. We can't open the challenge until the trail is safe."
+      ],
+      "MnElyRegistrationDeclinedText": [
+        "No rush. The clinic is free. Check your supplies, too. CASEY can wait."
+      ]
+    },
+    "MnLeagueHallOfFame": {
+      "MnElyRecordText": [
+        "Five victories. One team. Let's put every name in the record.",
+        "The work outside isn't finished. The lakes and the people there will need time.",
+        "But this is yours. Welcome to the HALL OF FAME!"
+      ],
+      "MnElyRecordDeniedText": [
+        "A new record needs five victories in one registered run. Your past records stay here."
+      ]
+    }
+  }
+}

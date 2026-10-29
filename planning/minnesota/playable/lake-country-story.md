@@ -1,5 +1,16 @@
 # Minneapolis → St Cloud → Brainerd
 
+This is a versioned chapter and verification record. Its commands, parties,
+page counts and results apply to the packs named below. For current narrative,
+character roles and completion actions, read [STORY.md](../STORY.md),
+[PROGRESSION.md](../PROGRESSION.md) and the
+[current composition record](../revisions/current-story-v01/README.md).
+Use the current composition path for new publications. Later source changes
+need their own pack verification. Historical fixtures do not establish an
+uninterrupted ordinary-party campaign.
+
+## Historical chapter record
+
 The local chapter pack is `content-packs/minnesota-northstar-lake-country.crystalpack`:
 **538 maps,251 species,251 moves,377 audio programs**. File SHA-256:
 `da27b381f69f64d6530383216077de0802c5b9dc42b12c316319cbc5daeb6d50`.

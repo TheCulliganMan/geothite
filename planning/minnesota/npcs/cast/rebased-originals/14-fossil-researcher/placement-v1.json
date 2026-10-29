@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "trainers": [
+    {
+      "map": "MnWinona",
+      "approach": [
+        15,
+        14
+      ],
+      "id": "MN_EXTRA_NPC_FOSSIL_01",
+      "display_name": "FARA",
+      "trainer_class": "MN_FOSSIL_RESEARCHER",
+      "class_name": "FOSSIL RESEARCHER",
+      "template_class": "SCIENTIST",
+      "sprite": "SPRITE_MN_FOSSIL_RESEARCHER",
+      "tile": [
+        15,
+        13
+      ],
+      "facing": "south",
+      "sight_range": 2,
+      "defeated_flag": "EVENT_MN_EXTRA_NPC_FOSSIL_01",
+      "party": [
+        {
+          "species": "TRILUME",
+          "level": 28
+        },
+        {
+          "species": "SIPHLET",
+          "level": 30
+        }
+      ],
+      "before_lines": [
+        "Layers tell tales.",
+        "Unearth a battle!"
+      ],
+      "after_lines": [
+        "A fine discovery!",
+        "Brush with care."
+      ],
+      "loss_lines": [
+        "Study each layer.",
+        "Try another angle."
+      ]
+    }
+  ]
+}

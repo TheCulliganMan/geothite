@@ -1,5 +1,16 @@
 # Earned Pine report → mine custody → Harbor reveal
 
+This is a versioned chapter and verification record. Its commands, parties,
+page counts and results apply to the packs named below. For current narrative,
+character roles and completion actions, read [STORY.md](../STORY.md),
+[PROGRESSION.md](../PROGRESSION.md) and the
+[current composition record](../revisions/current-story-v01/README.md).
+Use the current composition path for new publications. Later source changes
+need their own pack verification. Historical fixtures do not establish an
+uninterrupted ordinary-party campaign.
+
+## Historical chapter record
+
 The [543-map Itasca pack](itasca-story.md) now has a continuous production-input
 course from the local Brainerd setup through Duluth's ten-page reveal. This
 audit changes test/replay support and corrects planning status; the published

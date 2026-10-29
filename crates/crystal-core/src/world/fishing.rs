@@ -762,6 +762,39 @@ pub fn roll_fishing_encounter(
             bite_roll,
         });
     }
+    let encounter = resolve_fishing_slot(catalog, &group_name, rod, time_of_day, slot_roll)?;
+    Ok(FishingOutcome {
+        bite: true,
+        encounter: Some(encounter),
+        group: Some(group_name),
+        bite_roll,
+    })
+}
+
+/// Resolve a slot in an already selected native fishing group and rod table.
+/// Swarm selection and bite RNG remain owned by the cast transaction.
+///
+/// # Errors
+/// Rejects unknown rods/groups, missing tables/time groups, malformed species
+/// and slot rolls not covered by the compiled table.
+pub fn resolve_fishing_slot(
+    catalog: &FishingCatalog,
+    group: &str,
+    rod: &str,
+    time_of_day: TimeOfDay,
+    slot_roll: u8,
+) -> Result<WildEncounter, FishingError> {
+    validate_rod(rod)?;
+    let group_name = group.to_string();
+    if !is_exact_nonempty_fishing_token(group) {
+        return Err(FishingError::InvalidGroup { group: group_name });
+    }
+    let fishing_group = catalog
+        .groups
+        .get(group)
+        .ok_or_else(|| FishingError::UnknownGroup {
+            group: group_name.clone(),
+        })?;
     let table = fishing_group
         .rod_tables
         .get(rod)
@@ -791,12 +824,7 @@ pub fn roll_fishing_encounter(
                     species,
                 });
             }
-            return Ok(FishingOutcome {
-                bite: true,
-                encounter: Some(WildEncounter { level, species }),
-                group: Some(group_name),
-                bite_roll,
-            });
+            return Ok(WildEncounter { level, species });
         }
     }
     Err(FishingError::UnresolvedSlot {

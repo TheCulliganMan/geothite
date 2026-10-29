@@ -9,6 +9,8 @@ mod map_catalog;
 mod music_catalog;
 mod outdoor_mods;
 mod runtime_presentation_text;
+mod runtime_safari;
+pub use runtime_safari::{safari_result_lines, safari_catch_presentation_lines};
 
 use std::collections::{BTreeMap, BTreeSet};
 use std::path::Path;
@@ -470,6 +472,10 @@ fn reject_unexpected_gift_pokemon_inputs(
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct RuntimeShellSnapshot {
+    /// Capture expedition state; ordinary combat remains independent.
+    pub safari: Option<crystal_core::systems::safari::SafariSession>,
+    pub safari_catch_presentation: Option<crystal_core::systems::safari_catch_presentation::SafariCatchPresentation>,
+    pub safari_prompt: Option<crystal_core::systems::safari_prompt::SafariPrompt>,
     /// Present only for the competitive battle mod, shared by all frontends.
     pub competitive_battle: Option<RuntimeCompetitiveBattleSnapshot>,
     pub boot: RuntimeBootSummary,
@@ -3958,6 +3964,7 @@ pub struct RuntimeFishingCast {
     pub session: FishingSession,
     pub bite: Option<bool>,
     pub wild_battle: Option<WildBattleStart>,
+    pub safari_encounter: Option<core::systems::safari::SafariEncounter>,
     pub state_checksum: StateChecksum,
 }
 

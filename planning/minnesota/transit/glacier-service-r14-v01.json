@@ -1,0 +1,351 @@
+{
+  "schema_version": 1,
+  "base_content_hash": "5cb96c6af6486d03472a1e45514ea915b4d9fa2e468803e2df5ce4dce0b90e1d",
+  "service_event": "EVENT_MN_COURIER_DEFEATED",
+  "stations": [
+    {
+      "id": "DETROIT_LAKES",
+      "map": "MnDetroitLakesStation",
+      "constant": "MN_DETROIT_LAKES_STATION",
+      "visited_flag": "EVENT_MN_STATION_DETROIT_LAKES_VISITED",
+      "menu_label": "DETROIT LAKES",
+      "conductor_script": "MN_DETROIT_GLACIER_CONDUCTOR",
+      "conductor_core": [
+        13,
+        9
+      ],
+      "approach_core": [
+        13,
+        10
+      ],
+      "platform_core": [
+        13,
+        7
+      ],
+      "train_door_core": [
+        6,
+        5
+      ],
+      "other_train_door_core": [
+        11,
+        5
+      ],
+      "ride_arrival_core": [
+        13,
+        11
+      ],
+      "public_arrival_core": [
+        11,
+        17
+      ],
+      "public_arrival_warp": 3,
+      "parent_map": "MnDetroitLakes",
+      "parent_entry_warp": 1,
+      "exit_warp_indices": [
+        1,
+        2
+      ],
+      "blocks_sha256": "a8da7e5a833ba16154b63e392cca089df28cf1d94ccea4b3e7fe770cebe9dd45",
+      "conductor_open_steps": [
+        "UP",
+        "UP",
+        "RIGHT",
+        "RIGHT"
+      ],
+      "player_board_steps": [
+        "UP",
+        "UP",
+        "UP",
+        "LEFT",
+        "LEFT",
+        "LEFT",
+        "LEFT",
+        "LEFT",
+        "LEFT",
+        "LEFT",
+        "UP",
+        "UP"
+      ],
+      "conductor_restore_steps": [
+        "LEFT",
+        "LEFT",
+        "DOWN",
+        "DOWN"
+      ]
+    },
+    {
+      "id": "STAPLES",
+      "map": "MnStaplesStation",
+      "constant": "MN_STAPLES_STATION",
+      "visited_flag": "EVENT_MN_STATION_STAPLES_VISITED",
+      "menu_label": "STAPLES",
+      "conductor_script": "MN_STAPLES_CONDUCTOR",
+      "conductor_core": [
+        11,
+        9
+      ],
+      "approach_core": [
+        11,
+        10
+      ],
+      "platform_core": [
+        11,
+        7
+      ],
+      "train_door_core": [
+        6,
+        5
+      ],
+      "other_train_door_core": [
+        11,
+        5
+      ],
+      "ride_arrival_core": [
+        11,
+        11
+      ],
+      "public_arrival_core": [
+        9,
+        15
+      ],
+      "public_arrival_warp": 3,
+      "parent_map": "MnStaplesRailJunction",
+      "parent_entry_warp": 1,
+      "exit_warp_indices": [
+        1,
+        2
+      ],
+      "blocks_sha256": "d2d061de24c2b411fb157f403f1f0dd47dda423b0b9dbf77ca33b3560144a6c1",
+      "conductor_open_steps": [
+        "UP",
+        "UP",
+        "RIGHT",
+        "RIGHT"
+      ],
+      "player_board_steps": [
+        "UP",
+        "UP",
+        "UP",
+        "LEFT",
+        "LEFT",
+        "LEFT",
+        "LEFT",
+        "LEFT",
+        "UP",
+        "UP"
+      ],
+      "conductor_restore_steps": [
+        "LEFT",
+        "LEFT",
+        "DOWN",
+        "DOWN"
+      ]
+    },
+    {
+      "id": "ST_CLOUD",
+      "map": "MnStCloudStation",
+      "constant": "MN_ST_CLOUD_STATION",
+      "visited_flag": "EVENT_MN_STATION_ST_CLOUD_VISITED",
+      "menu_label": "ST CLOUD",
+      "conductor_script": "MN_ST_CLOUD_GLACIER_CONDUCTOR",
+      "conductor_core": [
+        11,
+        9
+      ],
+      "approach_core": [
+        11,
+        10
+      ],
+      "platform_core": [
+        11,
+        7
+      ],
+      "train_door_core": [
+        6,
+        5
+      ],
+      "other_train_door_core": [
+        11,
+        5
+      ],
+      "ride_arrival_core": [
+        11,
+        11
+      ],
+      "public_arrival_core": [
+        11,
+        17
+      ],
+      "public_arrival_warp": 3,
+      "parent_map": "MnStCloud",
+      "parent_entry_warp": 7,
+      "exit_warp_indices": [
+        1,
+        2
+      ],
+      "blocks_sha256": "90a69fd0578587f0d0e7e0f19c0123f079ab6c8ca43a151f37dfcedcc30001d8",
+      "conductor_open_steps": [
+        "UP",
+        "UP",
+        "RIGHT",
+        "RIGHT"
+      ],
+      "player_board_steps": [
+        "UP",
+        "UP",
+        "UP",
+        "LEFT",
+        "LEFT",
+        "LEFT",
+        "LEFT",
+        "LEFT",
+        "UP",
+        "UP"
+      ],
+      "conductor_restore_steps": [
+        "LEFT",
+        "LEFT",
+        "DOWN",
+        "DOWN"
+      ]
+    },
+    {
+      "id": "ST_PAUL",
+      "map": "MnStPaulUnionDepot",
+      "constant": "MN_ST_PAUL_UNION_DEPOT",
+      "visited_flag": "EVENT_MN_STATION_ST_PAUL_VISITED",
+      "menu_label": "ST PAUL",
+      "conductor_script": "MN_ST_PAUL_GLACIER_CONDUCTOR",
+      "conductor_core": [
+        17,
+        9
+      ],
+      "approach_core": [
+        17,
+        10
+      ],
+      "platform_core": [
+        17,
+        7
+      ],
+      "train_door_core": [
+        12,
+        5
+      ],
+      "other_train_door_core": [
+        17,
+        5
+      ],
+      "ride_arrival_core": [
+        17,
+        11
+      ],
+      "public_arrival_core": [
+        15,
+        21
+      ],
+      "public_arrival_warp": 5,
+      "parent_map": "MnStPaul",
+      "parent_entry_warp": 1,
+      "exit_warp_indices": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "blocks_sha256": "f6a2b41014e4639a3e1bf6ccdbfbd2fb187f7a368b3ddf3b6e3180d83bd9e3b2",
+      "conductor_open_steps": [
+        "UP",
+        "UP",
+        "RIGHT",
+        "RIGHT"
+      ],
+      "player_board_steps": [
+        "UP",
+        "UP",
+        "UP",
+        "LEFT",
+        "LEFT",
+        "LEFT",
+        "LEFT",
+        "LEFT",
+        "UP",
+        "UP"
+      ],
+      "conductor_restore_steps": [
+        "LEFT",
+        "LEFT",
+        "DOWN",
+        "DOWN"
+      ]
+    },
+    {
+      "id": "WINONA",
+      "map": "MnWinonaStation",
+      "constant": "MN_WINONA_STATION",
+      "visited_flag": "EVENT_MN_STATION_WINONA_VISITED",
+      "menu_label": "WINONA",
+      "conductor_script": "MN_WINONA_STATION_CONDUCTOR",
+      "conductor_core": [
+        11,
+        9
+      ],
+      "approach_core": [
+        11,
+        10
+      ],
+      "platform_core": [
+        11,
+        7
+      ],
+      "train_door_core": [
+        6,
+        5
+      ],
+      "other_train_door_core": [
+        11,
+        5
+      ],
+      "ride_arrival_core": [
+        11,
+        11
+      ],
+      "public_arrival_core": [
+        11,
+        15
+      ],
+      "public_arrival_warp": 3,
+      "parent_map": "MnWinona",
+      "parent_entry_warp": 9,
+      "exit_warp_indices": [
+        1,
+        2
+      ],
+      "blocks_sha256": "a0de620beba8a825fd8ef89c3d04d5f2ac56982970835c364ed27a88ab114ffe",
+      "conductor_open_steps": [
+        "UP",
+        "UP",
+        "RIGHT",
+        "RIGHT"
+      ],
+      "player_board_steps": [
+        "UP",
+        "UP",
+        "UP",
+        "LEFT",
+        "LEFT",
+        "LEFT",
+        "LEFT",
+        "LEFT",
+        "UP",
+        "UP"
+      ],
+      "conductor_restore_steps": [
+        "LEFT",
+        "LEFT",
+        "DOWN",
+        "DOWN"
+      ]
+    }
+  ]
+}

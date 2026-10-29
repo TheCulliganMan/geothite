@@ -1032,6 +1032,132 @@
         13
       ],
       "block": "6d"
+    },
+    {
+      "kind": "point",
+      "name": "Preserve installed regional connection",
+      "position": [
+        9,
+        0
+      ],
+      "block": "51"
+    },
+    {
+      "kind": "point",
+      "name": "Preserve installed regional connection",
+      "position": [
+        10,
+        0
+      ],
+      "block": "51"
+    },
+    {
+      "kind": "point",
+      "name": "Preserve installed regional connection",
+      "position": [
+        11,
+        0
+      ],
+      "block": "51"
+    },
+    {
+      "kind": "point",
+      "name": "Preserve installed regional connection",
+      "position": [
+        12,
+        0
+      ],
+      "block": "51"
+    },
+    {
+      "kind": "point",
+      "name": "Preserve installed regional connection",
+      "position": [
+        13,
+        0
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Preserve installed regional connection",
+      "position": [
+        9,
+        1
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Preserve installed regional connection",
+      "position": [
+        9,
+        2
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Preserve installed regional connection",
+      "position": [
+        9,
+        3
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Preserve installed regional connection",
+      "position": [
+        9,
+        4
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Woodland ascent skipped by meadow drop",
+      "position": [
+        7,
+        8
+      ],
+      "block": "0b"
+    },
+    {
+      "kind": "point",
+      "name": "Woodland ascent skipped by meadow drop",
+      "position": [
+        7,
+        9
+      ],
+      "block": "0b"
+    },
+    {
+      "kind": "point",
+      "name": "Southern lakeshore meadow crossing",
+      "position": [
+        14,
+        13
+      ],
+      "block": "0b"
+    },
+    {
+      "kind": "point",
+      "name": "Southern lakeshore meadow crossing",
+      "position": [
+        13,
+        14
+      ],
+      "block": "0b"
+    },
+    {
+      "kind": "point",
+      "name": "Southern lakeshore meadow crossing",
+      "position": [
+        14,
+        14
+      ],
+      "block": "0b"
     }
   ],
   "crossings": [

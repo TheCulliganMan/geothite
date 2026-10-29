@@ -33,7 +33,7 @@ fn arrival() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
     c.set_runtime_journal_enabled(false);
     let snapshot = c.snapshot().expect("actual campaign checkpoint");
     match snapshot.overworld.map_name.as_str() {
-        "MnMinneapolis" => location(&mut c, "MnMinneapolis", (45, 12)),
+        "MnMinneapolis" => location(&mut c, "MnMinneapolis", (63, 26)),
         CITY => location(&mut c, CITY, (24, 34)),
         CLINIC => location(&mut c, CLINIC, (10, 13)),
         _ => panic!("expected an actual four-badge return or earned R05 checkpoint"),
@@ -240,7 +240,14 @@ fn northstar_campaign_earned_r05_recruitment() {
             .as_str(),
         CITY | CLINIC
     ));
-    assert_eq!(c.snapshot().expect("opening partners").party.slots.len(), 2);
+    assert_eq!(
+        c.snapshot().expect("earned partners").party.slots.len(),
+        if r.data().maps.contains_key("MnBoundaryIntake") {
+            4
+        } else {
+            2
+        }
+    );
     let prior_trainers = [
         "EVENT_MN_R05_TRAINER_01",
         "EVENT_MN_R05_TRAINER_02",

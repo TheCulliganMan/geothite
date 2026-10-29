@@ -1,0 +1,27 @@
+{
+  "reason": "Use reachable standing camera positions instead of an NPC body and transient sliding ice. Native terrain and actors unchanged.",
+  "changes": [
+    {
+      "id": "LAKE_WEST_BANK",
+      "before": [
+        23,
+        27
+      ],
+      "after": [
+        22,
+        27
+      ]
+    },
+    {
+      "id": "FROST_RIM",
+      "before": [
+        55,
+        19
+      ],
+      "after": [
+        56,
+        19
+      ]
+    }
+  ]
+}

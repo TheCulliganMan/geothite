@@ -1,0 +1,37 @@
+{
+  "status": "detached authoring only; requires compact-base revalidation",
+  "route": "MN_R11",
+  "grass_rectangles_metatiles": [
+    [
+      16,
+      44,
+      18,
+      45
+    ],
+    [
+      17,
+      69,
+      19,
+      71
+    ],
+    [
+      18,
+      84,
+      19,
+      86
+    ]
+  ],
+  "boulder": {
+    "metatile": [
+      17,
+      45
+    ],
+    "before": "72",
+    "after": "0a"
+  },
+  "constraints": [
+    "2D only",
+    "No ICE collisions on North Shore",
+    "Preserve compact geometry and current roster/story/interiors"
+  ]
+}

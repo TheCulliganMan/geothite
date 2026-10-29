@@ -62,30 +62,32 @@ fn prairie_farm_controller_walks_west_ledge_bridge_dialogue_rewards_and_both_roo
     for point in [(2, 30), (11, 13), (40, 14), (49, 35), (23, 34)] {
         grid.walk(&mut controller, point);
     }
-    grid.walk(&mut controller, (48, 15));
-    for _ in 0..8 {
-        controller
-            .press(GameButton::Left)
-            .expect("native westward drop");
-        assert_ne!(
-            position(&mut controller),
-            (46, 15),
-            "walked through bank wall"
-        );
-        if position(&mut controller) == (45, 15) {
-            break;
+    for y in 14..18 {
+        grid.walk(&mut controller, (48, y));
+        for _ in 0..8 {
+            controller
+                .press(GameButton::Left)
+                .expect("native westward drop");
+            assert_ne!(
+                position(&mut controller),
+                (46, y),
+                "walked through bank wall"
+            );
+            if position(&mut controller) == (45, y) {
+                break;
+            }
         }
-    }
-    assert_eq!(position(&mut controller), (45, 15));
-    for _ in 0..4 {
-        controller
-            .press(GameButton::Right)
-            .expect("try reverse bank");
-    }
-    assert_eq!(position(&mut controller), (45, 15));
-    // The uphill return remains playable after the one-way drop.
-    for at in [(41, 26), (52, 26), (52, 24), (48, 15)] {
-        grid.walk(&mut controller, at);
+        assert_eq!(position(&mut controller), (45, y));
+        for _ in 0..4 {
+            controller
+                .press(GameButton::Right)
+                .expect("try reverse bank");
+        }
+        assert_eq!(position(&mut controller), (45, y));
+        // Every native lane retains an ordinary walking return around the bank.
+        for at in [(41, 26), (52, 26), (52, 24), (48, y)] {
+            grid.walk(&mut controller, at);
+        }
     }
     // Both deck rows work both ways; the rail's inner strips remain walkable.
     for y in [24, 25] {

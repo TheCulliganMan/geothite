@@ -4,25 +4,21 @@ use std::path::PathBuf;
 use crystal_assets::{build_state_fair_modpack, read_verified_compiled_game_pack};
 
 #[test]
-#[ignore = "requires the external fair parent and published native fair pack"]
+#[ignore = "requires an explicit compact-lineage fair parent and published pack"]
 fn state_fair_preserves_other_maps_assets_items_home_and_audio() {
     let root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
         .join("../..")
         .canonicalize()
         .expect("repository root");
-    let base = read_verified_compiled_game_pack(
+    let base = read_verified_compiled_game_pack(PathBuf::from(
         std::env::var_os("CRYSTAL_FAIR_BASE")
-            .map(PathBuf::from)
-            .unwrap_or_else(|| root.join("content-packs/minnesota-fair-grass-base-v1.crystalpack")),
-    )
+            .expect("explicit compact-lineage fair parent required"),
+    ))
     .expect("verified fair parent");
-    let fair = read_verified_compiled_game_pack(
+    let fair = read_verified_compiled_game_pack(PathBuf::from(
         std::env::var_os("CRYSTAL_FAIR_TEST_PACK")
-            .map(PathBuf::from)
-            .unwrap_or_else(|| {
-                root.join("content-packs/minnesota-state-fair-maze-trainers-v7.crystalpack")
-            }),
-    )
+            .expect("explicit compact-lineage fair publication required"),
+    ))
     .expect("verified fair publication");
     let mut source: serde_json::Value = serde_json::from_str(
         &std::fs::read_to_string(root.join("planning/minnesota/zones/state-fairgrounds.json"))

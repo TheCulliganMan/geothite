@@ -78,6 +78,7 @@ pub fn build_minnesota_interior_life_modpack(
     base: &CompiledGamePack,
     source: &str,
 ) -> Result<CompiledGamePack> {
+    crate::minnesota_interior_lineage::require_compact_coast(base)?;
     crate::verify_compiled_game_pack_for_runtime(base)?;
     let plan: InteriorLife = serde_json::from_str(source).context("interior life contract")?;
     ensure!(plan.schema_version == 1, "unsupported interior life schema");
@@ -221,7 +222,10 @@ pub fn build_minnesota_interior_life_modpack(
                 ensure!(
                     base.runtime_files
                         .contains_key(&format!("gfx/sprites/{sprite}.png")),
-                    "missing resident art"
+                    "missing resident art for {} in {}: {}",
+                    conversation.script,
+                    room.map,
+                    actor.sprite
                 );
                 authoring::npc(
                     base,

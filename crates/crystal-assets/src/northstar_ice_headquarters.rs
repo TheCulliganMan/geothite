@@ -73,11 +73,12 @@ pub fn build_northstar_ice_headquarters(
             .manifests
             .iter()
             .any(|m| m == "minnesota-northstar-drill-lair-v2")
-            && !base
+            && (!base
                 .report
                 .manifests
                 .iter()
                 .any(|m| m == "northstar-minnesota-only-v1")
+                || crate::northstar_current_story::is_composing(base))
             && !base.data.maps.contains_key("MnIceOperations"),
         "unbound drilling parent required; do not overwrite a previous headquarters"
     );

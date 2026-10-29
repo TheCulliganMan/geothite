@@ -1,0 +1,41 @@
+{
+  "name": "ORLIS",
+  "role": "Gym Leader 7",
+  "status": "accepted-native-playable",
+  "source": "native-pixels-v3.json",
+  "integration": "binding-v1.json",
+  "controller": "controller-v1.json",
+  "native": "target/trainer-cast/orlis/native-v3",
+  "pack": "content-packs/minnesota-trainer-cast-08-v02.crystalpack",
+  "gameplay": "target/trainer-cast/orlis/gameplay-v1",
+  "log": "target/trainer-cast/orlis/controller-v1.log",
+  "reference_review": "actual-crystal-sprites-common-palette-and-scale",
+  "review_notes": "Wavy shoulder-length hair, closed full beard, broad pale shoulder cape and flowing green tunic create a distinct forest silhouette. Field beard corrected after reference review to avoid a false wide grin. Native battle brow/eyes/mouth and boots refined, leaf twig kept battle-only. Real Crystal coat/beard and Sage battle comparisons plus actual game captures reviewed. Native badge, one TM, repeat and saved state pass.",
+  "fixture": "Three legal level-60 Minnesota starters; adjacent position and explicit prior-access setup. Local encounter/rewards proof, not earned traversal or intended-level balance.",
+  "evidence_sha256": {
+    "planning/minnesota/npcs/cast/08-orlis/native-pixels-v3.json": "3632ba8ff642b2d78bb00e3afd8397528a9b23f4ba0d186cec632e06671160b3",
+    "planning/minnesota/npcs/cast/08-orlis/binding-v1.json": "885a8391b43fdc3c6eb5ef4ff7a1f698dcb65bb59147d3305921e31e41bcc220",
+    "planning/minnesota/npcs/cast/08-orlis/controller-v1.json": "9702f334db172d537c4943770751328cbcb51e9438669a4828007445effc6f83",
+    "target/trainer-cast/orlis/native-v3/verification.json": "abf2e02767fce2718080e238869275054450b32a838bb5482e2565b3a08b21e1",
+    "content-packs/minnesota-trainer-cast-08-v02.crystalpack": "3ad1746492bac0c342cc9c6844f544dbea8d07859899dd62c82544273d1c235f",
+    "target/trainer-cast/orlis/controller-v1.log": "ba241d7572e193d86242ceb2964a575ad997ab25f74920574e491c074b5da507",
+    "target/trainer-cast/orlis/gameplay-v1/original-npc-trainer-intro.png": "54056a3062015a95266768cde44756a04f1c217fada5e8afe1c41383660493bd",
+    "target/trainer-cast/orlis/gameplay-v1/original-npc-overworld-state.png": "edfc0187565601af564bcc1a51b36ab7248eddae92c3c0eda35a050f3c6f621f",
+    "target/trainer-cast/orlis/gameplay-v1/original-npc-first-turn.png": "13d791341f13789d1d4a90483e6bd24889a6a37c074b69617fb56b18e5a30891",
+    "planning/minnesota/npcs/cast/08-orlis/battle-reference-prompt.txt": "819736d28d12f988770c13ec3edcb3ce4b7dabee30c9926002f25ab31261d688",
+    "planning/minnesota/npcs/cast/08-orlis/battle-reference-v1.png": "0a04a0cad6a7b6032cb7ab7bae77c162c20375aec1c4f139c20b26eb95962017",
+    "target/trainer-cast/orlis/real-comparison.png": "dfc1962c83397b19d352e859f35312523dd04eb11117f14651a17fe37032c4a6",
+    "target/trainer-cast/orlis/battle-real-comparison.png": "cfd2d6d2f647cac817bde05023cd8fd4b15e4c492a4de89f00ff918921ba42c9"
+  },
+  "final_pack": "content-packs/minnesota-trainer-cast-36-v01.crystalpack",
+  "final_gameplay": "target/trainer-cast/final-audit/gameplay/08-orlis",
+  "final_log": "target/trainer-cast/final-audit/gameplay/08-orlis/controller.log",
+  "final_status": "accepted-native-playable-final-pack",
+  "final_review": "Actual battle intro and field captures inspected on exact final pack; art retains accepted native sources and palette.",
+  "final_evidence_sha256": {
+    "target/trainer-cast/final-audit/gameplay/08-orlis/controller.log": "ef87144c590a6943fe39c464c2315c64d586d2b579e14003ca8bd78574960177",
+    "target/trainer-cast/final-audit/gameplay/08-orlis/original-npc-trainer-intro.png": "54056a3062015a95266768cde44756a04f1c217fada5e8afe1c41383660493bd",
+    "target/trainer-cast/final-audit/gameplay/08-orlis/original-npc-overworld-state.png": "edfc0187565601af564bcc1a51b36ab7248eddae92c3c0eda35a050f3c6f621f",
+    "target/trainer-cast/final-audit/gameplay/08-orlis/original-npc-first-turn.png": "13d791341f13789d1d4a90483e6bd24889a6a37c074b69617fb56b18e5a30891"
+  }
+}

@@ -1,0 +1,59 @@
+{
+  "objective": "comprehensive game",
+  "scope": "A complete, engaging Minnesota campaign using only active Minnesota Pokemon; preserve other regions and reviewed native geography/art/audio.",
+  "requirements": [
+    {
+      "id": "story",
+      "required": "Earned opening, six motivated rival encounters, ICE/Lode escalation, complex headquarters and mine, rescue, acknowledged Boundary Waters restoration, written Elite Four/Champion/Hall of Fame.",
+      "status": "Chapter verified; genuine unboosted retained R12 journey has two badges, all HQ guards, Reed relay victory, actual enforcer victory and dispatcher returned home. The earned run has reached Minneapolis Gym; final selected-pack full campaign remains unproved.",
+      "evidence": "../current-story-v01/README.md"
+    },
+    {
+      "id": "master-ball",
+      "required": "One earned post-restoration Master Ball; real bag delivery, full-pocket retry, persistent no-duplicate claim.",
+      "status": "Verified on progression-rewards-v04: restoration gate, real bag delivery, all-ball-slots-full refusal, native TOSS/retry, repeated interaction and Continue."
+    },
+    {
+      "id": "bicycle",
+      "required": "A Minneapolis bicycle workshop, clear acquisition directions, real bicycle grant, native registration and outdoor riding, no duplicate after Continue.",
+      "status": "Verified on progression-rewards-v04: first-badge denial, Minneapolis gift, PACK registration, outdoor SELECT riding, repeated interaction and Continue."
+    },
+    {
+      "id": "research",
+      "required": "Caught active Minnesota species milestones at 10/25/50/100/all; exclude seen-only, retired and foreign species; once-only actual rewards, capacity failure retains claim.",
+      "status": "Verified on progression-rewards-v04: all five tiers with native bag mutations, seen/foreign exclusion, authoritative recomputation instead of saved mirrors, repeats and Continue. Full roster acquisition remains incomplete."
+    },
+    {
+      "id": "hms",
+      "required": "All seven HMs acquired in Minnesota at intended badges, directions, legal teaching and actual field use, no inaccessible giver or circular gate.",
+      "status": "Selected current R15 field stage: all seven badge denials, actual gifts, repeats and Continue pass; Brainerd report guard, visit unlocking and actual Fly landing pass. Earned acquisition, legal teaching and actual field use of all seven remain to be proved."
+    },
+    {
+      "id": "fishing",
+      "required": "Accessible Old/Good/Super Rod houses, visible directions, actual fishing with awarded rods, preserved R18 quest, persistent retryable gifts.",
+      "status": "Selected current R15 field stage: three native rod-service cases pass house doors/gifts/repeats/Continue, full-pocket retry and independent rods, and defeated-fisher directions. Actual Good Rod capture and production stdio real bite pass. Earned statewide acquisition and awarded Old/Super Rod fishing remain unverified."
+    },
+    {
+      "id": "key-items",
+      "required": "Every Minnesota key item has a reachable source, clear purpose, authoritative use/check, removal/retention behavior and saved progression; no orphan promises.",
+      "status": "Card key chapter verified. Grand Marais Machine Part failed-delivery recovery and no replacement after repair pass native tests; complete lighthouse hand-in and remaining key-item use audit outstanding."
+    },
+    {
+      "id": "roster",
+      "required": "Every intended catchable active species has a legal Minnesota acquisition path; no foreign species in touched content; completion reward is genuinely achievable.",
+      "status": "Selected730-map fossil research child:135 potential direct species,214 after all evolution edges. Both fossil roots are actually restored, evolved at34, registered caught and continued in native cases. Ten species in nine rare/landmark/prehistoric families still lack acquisition sources. Other evolution conditions and earned full Dex collection remain unproved.",
+      "evidence_command": ".local/minnesota-review-env/bin/python planning/minnesota/tools/audit_species_acquisition.py content-packs/minnesota-current-fossils-repaired-r15-v01.crystalpack"
+    },
+    {
+      "id": "world",
+      "required": "Connected towns/routes/interiors/lairs, useful side quests and services, trainer and encounter density, badge-appropriate teams and safe return routes.",
+      "status": "Selected730-map R15 child preserves accepted terrain and interiors, adds ordinary habitats and18 optional Minneapolis cyclists. Four habitat and three cyclist controller cases pass. Continuous earned journey remains in progress."
+    },
+    {
+      "id": "production",
+      "required": "Selected pack and runnable production controller include all accepted stages, clean stdio MCP, saves/Continue, native visual review and unchanged 377 audio program hashes/frame counts/loops.",
+      "status": "Selected fossil_research_revision inherits the cyclist battle-return repair and19 field/reward cases from recorded parents. Three fossil controller cases, strict parent preservation, current production client Start/Pack/Save/movement/Continue stdio with empty stderr, and377 audio checks pass on the child. Continuous final-pack campaign and full visual acceptance remain unverified."
+    }
+  ],
+  "acceptance_policy": "A source builder, fixture setup, green structural audit or chapter test does not prove an earned full campaign. Keep objective active until every requirement has direct current-state evidence."
+}

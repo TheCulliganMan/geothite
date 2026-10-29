@@ -98,3 +98,19 @@ fn superior_inland_canonical_rust_source_matches_every_published_terrain_cell() 
         );
     }
 }
+
+#[test]
+fn north_shore_grass_source_rejects_winter_tileset_regression() {
+    let path = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        .join("../../planning/minnesota/routes/MN_R11.layout.json");
+    let mut source: serde_json::Value =
+        serde_json::from_str(&std::fs::read_to_string(path).expect("authored warm North Shore"))
+            .expect("native layout JSON");
+    assert_eq!(source["compiled_tileset"], "mn_north_shore");
+    Layout::parse(&source.to_string()).expect("warm authored route");
+    source["compiled_tileset"] = "mn_winter_north_shore".into();
+    assert!(
+        Layout::parse(&source.to_string()).is_err(),
+        "North Shore winter regression accepted"
+    );
+}

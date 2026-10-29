@@ -829,12 +829,17 @@ fn finish_visible_pokegear_menu(runtime_shell: &mut BevyRuntimeShell) {
 }
 
 fn move_visible_pokegear_cursor(runtime_shell: &mut BevyRuntimeShell, delta: isize) -> Result<()> {
-    if runtime_shell.pokegear_map_radio_delay.is_some() { return Ok(()); }
+    if runtime_shell.pokegear_map_radio_delay.is_some() {
+        return Ok(());
+    }
     if let Some(menu) = runtime_shell.pokegear_phone_menu.as_mut() {
         if let Some(cursor) = menu.delete_confirmation.as_mut() {
             *cursor = cursor.saturating_add_signed(delta).min(1);
         } else {
-            menu.cursor = menu.cursor.saturating_add_signed(delta).min(if menu.can_delete { 2 } else { 1 });
+            menu.cursor = menu
+                .cursor
+                .saturating_add_signed(delta)
+                .min(if menu.can_delete { 2 } else { 1 });
         }
         mark_runtime_presentation_dirty(runtime_shell);
         return Ok(());
@@ -873,7 +878,10 @@ fn move_visible_pokegear_cursor(runtime_shell: &mut BevyRuntimeShell, delta: isi
     if runtime_shell.pokegear_page == PokegearPage::Phone {
         visible_pokegear_phone_window(runtime_shell)?;
         visible_pokegear_phone_slots(&snapshot)?;
-        let next = runtime_shell.pokegear_phone_cursor.saturating_add_signed(delta).min(9);
+        let next = runtime_shell
+            .pokegear_phone_cursor
+            .saturating_add_signed(delta)
+            .min(9);
         runtime_shell.pokegear_phone_cursor = next;
         if next < runtime_shell.pokegear_phone_scroll {
             runtime_shell.pokegear_phone_scroll = next;
@@ -885,13 +893,31 @@ fn move_visible_pokegear_cursor(runtime_shell: &mut BevyRuntimeShell, delta: isi
         return Ok(());
     }
     let landmarks = &snapshot.presentation.pokegear_landmarks.landmarks;
-    let region_indices = visible_pokegear_landmark_indices(&snapshot, runtime_shell.pokegear_standalone_map)?;
+    let region_indices =
+        visible_pokegear_landmark_indices(&snapshot, runtime_shell.pokegear_standalone_map)?;
     if region_indices.is_empty() {
         anyhow::bail!("compiled pack has no Pokegear landmarks for the active region");
     }
-    let current = landmarks.get(runtime_shell.pokegear_cursor)
-        .with_context(|| format!("Pokegear landmark cursor {} is outside the catalog", runtime_shell.pokegear_cursor))?;
-    let current_id = u8::try_from(current.id).context("Pokegear landmark ID exceeds a source byte")?;
+    if minnesota_map_active(&snapshot) {
+        let current = region_indices
+            .iter()
+            .position(|index| *index == runtime_shell.pokegear_cursor)
+            .context("Minnesota cursor is outside regional landmarks")?;
+        let next = (current as isize - delta).rem_euclid(region_indices.len() as isize) as usize;
+        runtime_shell.pokegear_cursor = region_indices[next];
+        mark_runtime_presentation_dirty(runtime_shell);
+        return Ok(());
+    }
+    let current = landmarks
+        .get(runtime_shell.pokegear_cursor)
+        .with_context(|| {
+            format!(
+                "Pokegear landmark cursor {} is outside the catalog",
+                runtime_shell.pokegear_cursor
+            )
+        })?;
+    let current_id =
+        u8::try_from(current.id).context("Pokegear landmark ID exceeds a source byte")?;
     let first = landmarks[region_indices[0]].id;
     let last = landmarks[*region_indices.last().unwrap()].id;
     // Both PokegearMap_ContinueMap and _TownMap increment on Up and
@@ -899,20 +925,28 @@ fn move_visible_pokegear_cursor(runtime_shell: &mut BevyRuntimeShell, delta: isi
     // Source Up compares >= the last ID, while Down compares == the first.
     // An initial ship cursor may lie outside the ordinary traversal limits.
     let next_id = if delta < 0 {
-        if current.id >= last { first } else { current.id + 1 }
+        if current.id >= last {
+            first
+        } else {
+            current.id + 1
+        }
     } else if delta > 0 {
-        if current.id == first { last } else { u16::from(current_id.wrapping_sub(1)) }
+        if current.id == first {
+            last
+        } else {
+            u16::from(current_id.wrapping_sub(1))
+        }
     } else {
         return Ok(());
     };
-    let next = landmarks.iter().position(|landmark| landmark.id == next_id)
+    let next = landmarks
+        .iter()
+        .position(|landmark| landmark.id == next_id)
         .with_context(|| format!("source Pokegear cursor landmark {next_id} is missing"))?;
     runtime_shell.pokegear_cursor = next;
     runtime_shell.last_audio_events.push(format!(
         "Pokegear cursor {}->{} {}",
-        current.id,
-        next_id,
-        landmarks[next].constant
+        current.id, next_id, landmarks[next].constant
     ));
     trim_event_log(&mut runtime_shell.last_audio_events);
     Ok(())
@@ -968,19 +1002,50 @@ fn visible_pokegear_region(snapshot: &RuntimeShellSnapshot, standalone_map: bool
     Ok(if standalone_map && constant == "LANDMARK_FAST_SHIP" { "KANTO" } else { landmark.region.as_str() })
 }
 
-fn visible_pokegear_landmark_indices(snapshot: &RuntimeShellSnapshot, standalone_map: bool) -> Result<Vec<usize>> {
+fn visible_pokegear_landmark_indices(
+    snapshot: &RuntimeShellSnapshot,
+    standalone_map: bool,
+) -> Result<Vec<usize>> {
+    if minnesota_map_active(snapshot) {
+        let catalog = &snapshot.presentation.pokegear_landmarks;
+        let indices = catalog
+            .landmarks
+            .iter()
+            .enumerate()
+            .filter(|(_, landmark)| {
+                catalog
+                    .map_to_landmark
+                    .iter()
+                    .any(|(map, constant)| map.starts_with("Mn") && !map.contains("Review") && !map.contains("Gallery")
+                        && constant == &landmark.constant)
+            })
+            .map(|(index, _)| index)
+            .collect::<Vec<_>>();
+        anyhow::ensure!(!indices.is_empty(), "Minnesota has no mapped landmarks");
+        return Ok(indices);
+    }
     let region = visible_pokegear_region(snapshot, standalone_map)?;
     let (first, last) = match region {
         "JOHTO" => ("LANDMARK_NEW_BARK_TOWN", "LANDMARK_SILVER_CAVE"),
-        "KANTO" if snapshot.progression.active_engine_flags.contains("ENGINE_CREDITS_SKIP") =>
-            ("LANDMARK_PALLET_TOWN", "LANDMARK_ROUTE_28"),
+        "KANTO"
+            if snapshot
+                .progression
+                .active_engine_flags
+                .contains("ENGINE_CREDITS_SKIP") =>
+        {
+            ("LANDMARK_PALLET_TOWN", "LANDMARK_ROUTE_28")
+        }
         "KANTO" => ("LANDMARK_VICTORY_ROAD", "LANDMARK_ROUTE_28"),
         _ => unreachable!("visible_pokegear_region validates the region"),
     };
     let landmarks = &snapshot.presentation.pokegear_landmarks.landmarks;
-    let boundary = |constant| landmarks.iter().find(|landmark| landmark.constant == constant)
-        .map(|landmark| landmark.id)
-        .with_context(|| format!("Pokegear cursor boundary {constant} is missing"));
+    let boundary = |constant| {
+        landmarks
+            .iter()
+            .find(|landmark| landmark.constant == constant)
+            .map(|landmark| landmark.id)
+            .with_context(|| format!("Pokegear cursor boundary {constant} is missing"))
+    };
     let first = boundary(first)?;
     let last = boundary(last)?;
     let mut indices = snapshot
@@ -4264,6 +4329,7 @@ fn selected_party_species_label(
 }
 
 fn move_visible_primary_cursor_up(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
+    if safari_visible::press(runtime_shell, GameButton::Up)? { return Ok(()); }
     // PC PrintText/CONT owns directions even when the Bill/save cursor is
     // already retained underneath it. Both keyboard and controller use these
     // direction helpers, so neither frontend can change that hidden choice.
@@ -4278,6 +4344,7 @@ fn move_visible_primary_cursor_up(runtime_shell: &mut BevyRuntimeShell) -> Resul
 }
 
 fn move_visible_primary_cursor_down(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
+    if safari_visible::press(runtime_shell, GameButton::Down)? { return Ok(()); }
     if runtime_shell.pending_mail_read.is_some() || !runtime_shell.battle_messages.is_empty()
         || visible_pokecenter_pc_text_boundary(runtime_shell).is_some() {
         return Ok(());
@@ -4289,6 +4356,7 @@ fn move_visible_primary_cursor_down(runtime_shell: &mut BevyRuntimeShell) -> Res
 }
 
 fn move_visible_primary_cursor_left(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
+    if safari_visible::press(runtime_shell, GameButton::Left)? { return Ok(()); }
     if runtime_shell.pending_mail_read.is_some() || !runtime_shell.battle_messages.is_empty()
         || visible_pokecenter_pc_text_boundary(runtime_shell).is_some() {
         return Ok(());
@@ -4565,6 +4633,7 @@ fn move_visible_primary_cursor_left(runtime_shell: &mut BevyRuntimeShell) -> Res
 }
 
 fn move_visible_primary_cursor_right(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
+    if safari_visible::press(runtime_shell, GameButton::Right)? { return Ok(()); }
     if runtime_shell.pending_mail_read.is_some() || !runtime_shell.battle_messages.is_empty()
         || visible_pokecenter_pc_text_boundary(runtime_shell).is_some() {
         return Ok(());

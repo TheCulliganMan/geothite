@@ -91,7 +91,13 @@ fn grid(runtime: &CrystalRuntime, start: Point) -> RouteGrid {
             rows: 2,
             tileset: "mn_headwaters",
             start,
-            doors: BTreeMap::from([((60, 33), "MnR20Cave1F"), ((76, 31), "MnR20Cave1F")]),
+            // Include the current inland ice-cave mouth so ordinary route planning
+            // cannot accidentally enter it while aiming for a different landmark.
+            doors: BTreeMap::from([
+                ((60, 33), "MnR20Cave1F"),
+                ((76, 31), "MnR20Cave1F"),
+                ((70, 33), "MnVoyageursIce1F"),
+            ]),
         },
     )
 }
@@ -675,4 +681,90 @@ fn voyageurs_controller_wins_real_officer_battle_mutates_pp_and_continues_party_
             .battle
             .is_none()
     );
+}
+
+#[test]
+#[ignore = "requires the current R20 grass candidate"]
+fn voyageurs_controller_new_grass_camp_climb_dry_drop_wild_run_and_continue() {
+    use super::authored_route_fixture::{cleanup_reached_save, escape_wild, reached_save_path};
+
+    // Existing native-created party/badge/position fixtures are setup only.
+    // No state is rewritten after setup; every subsequent action uses input.
+    let (root, runtime, mut controller) = fixture((19, 52), true);
+    let route = grid(&runtime, (19, 52));
+    let mut grass = 0;
+    route.walk_with_actions(
+        &mut controller,
+        (19, 49),
+        |c| grass += usize::from(route_grass_kind(&runtime, position(c)) == "TALL_GRASS"),
+        escape_wild,
+    );
+    assert!(grass >= 6, "ordinary camp climb must cross its new grass");
+    step(&mut controller, GameButton::Down, (19, 50));
+    step(&mut controller, GameButton::Down, (19, 52));
+    assert_eq!(route_grass_kind(&runtime, (19, 49)), "FLOOR");
+    assert_eq!(route_grass_kind(&runtime, (19, 52)), "FLOOR");
+    barrier(&mut controller, (19, 52), GameButton::Up);
+
+    route.walk_with_actions(&mut controller, (13, 50), |_| {}, escape_wild);
+    assert_eq!(route_grass_kind(&runtime, (13, 50)), "TALL_GRASS");
+    assert_eq!(route_grass_kind(&runtime, (13, 49)), "TALL_GRASS");
+    let mut encounters = 0;
+    for index in 0..256 {
+        let target = if index % 2 == 0 { (13, 49) } else { (13, 50) };
+        route.walk_with_actions(
+            &mut controller,
+            target,
+            |_| {},
+            |c| {
+                encounters += 1;
+                escape_wild(c);
+            },
+        );
+        if encounters > 0 {
+            break;
+        }
+    }
+    assert!(
+        encounters > 0,
+        "new camp grass must start a native encounter"
+    );
+    route.walk_with_actions(&mut controller, (19, 36), |_| {}, escape_wild);
+    let mut meadow_grass = 0;
+    route.walk_with_actions(
+        &mut controller,
+        (27, 42),
+        |c| meadow_grass += usize::from(route_grass_kind(&runtime, position(c)) == "TALL_GRASS"),
+        escape_wild,
+    );
+    assert!(meadow_grass >= 3, "western meadow must enter its habitat");
+    let before = controller.snapshot().expect("reached meadow resources");
+    let flags = controller.shell.shell.session().state().flags.clone();
+    let save = reached_save_path(&format!(
+        "geothite-r20-grass-{}.crystalsave",
+        std::process::id()
+    ));
+    controller.save(&save).expect("save actual grass journey");
+    let mut loaded = VisibleShellController::load_save(root, runtime, save.clone(), None)
+        .expect("Continue actual grass journey");
+    let after = loaded.snapshot().expect("continued meadow resources");
+    assert_eq!(position(&mut loaded), (27, 42));
+    assert_eq!(before.party, after.party);
+    assert_eq!(before.bag, after.bag);
+    assert_eq!(loaded.shell.shell.session().state().flags, flags);
+    if let Some(path) = std::env::var_os("CRYSTAL_R20_GRASS_REACHED_SAVE") {
+        loaded
+            .save(PathBuf::from(path))
+            .expect("retain reached save");
+    }
+    cleanup_reached_save(&save);
+}
+
+fn route_grass_kind(runtime: &CrystalRuntime, (x, y): Point) -> &str {
+    let module = &runtime.data().maps[&format!("MnR20C{:02}R{:02}", x / 64, y / 48)];
+    let local_x = usize::try_from(x % 64).expect("nonnegative x");
+    let local_y = usize::try_from(y % 48).expect("nonnegative y");
+    let block = module.blocks[local_y / 2 * usize::from(module.attributes.width) + local_x / 2];
+    &runtime.data().tilesets[&module.attributes.tileset_name].collision[&format!("{block:02x}")]
+        [local_y % 2 * 2 + local_x % 2]
 }

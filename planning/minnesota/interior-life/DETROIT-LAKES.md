@@ -1,5 +1,9 @@
 # Detroit Lakes: five published interiors
 
+Current scope correction: Red Wing's train station is excluded by user direction.
+The [current five-stop publication](RAIL-STOP-CORRECTION.md) supersedes earlier
+station reservations below; historical pack/test receipts remain unchanged.
+
 The Rust publication is
 `content-packs/minnesota-detroit-lakes-v01.crystalpack`, built over the corrected
 `minnesota-harbor-care-v02.crystalpack`. Strict write/read verification passes:

@@ -1,5 +1,22 @@
 # Ely rest camp and native League
 
+This is a versioned chapter and verification record. Its commands, parties,
+page counts and results apply to the packs named below. For current narrative,
+character roles and completion actions, read [STORY.md](../STORY.md),
+[PROGRESSION.md](../PROGRESSION.md) and the
+[current composition record](../revisions/current-story-v01/README.md).
+Use the current composition path for new publications. Later source changes
+need their own pack verification. Historical fixtures do not establish an
+uninterrupted ordinary-party campaign.
+
+## Historical chapter record
+
+The [written League finale](../revisions/league-finale-v01/README.md) adds
+distinct Fern, Flint, Veil, Halden and Casey scenes, title-aware rematches and
+the Hall of Fame ending to the current 691-map regional composition. Its
+authoritative dialogue is `revisions/league-finale-v01/dialogue.json`; the
+554-map publication and earlier fixture results below are historical.
+
 The `554`-map successor is
 `content-packs/minnesota-northstar-ely-league.crystalpack`.
 File SHA-256: `ab049e907b8712f5ee5f174b474c38fcc52460f272e60336aff17445d62cb6c4`.

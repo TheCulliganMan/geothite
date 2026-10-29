@@ -1,0 +1,40 @@
+{
+  "old_parent": {
+    "revision": "species_habitats_cyclists_revision",
+    "pack": "content-packs/minnesota-current-habitats-cyclists-r15-v01.crystalpack",
+    "sha256": "25b7c1dfd8715a90a0675a07e992f0d10a7432e745e0c19e4ebab5890f4957cf"
+  },
+  "new_parent": "field_hm_habitats_cyclists_revision",
+  "native_route_and_rooms": [
+    {
+      "map": "MnR17C00R00",
+      "native_module_exact": true,
+      "scripts_exact": true,
+      "texts_exact": true
+    },
+    {
+      "map": "MnR17C00R01",
+      "native_module_exact": true,
+      "scripts_exact": true,
+      "texts_exact": true
+    },
+    {
+      "map": "MnR17C00R02",
+      "native_module_exact": true,
+      "scripts_exact": true,
+      "texts_exact": true
+    },
+    {
+      "map": "MnR17Cave1F",
+      "native_module_exact": true,
+      "scripts_exact": true,
+      "texts_exact": true
+    },
+    {
+      "map": "MnR17RangerHut",
+      "native_module_exact": true,
+      "scripts_exact": true,
+      "texts_exact": true
+    }
+  ]
+}

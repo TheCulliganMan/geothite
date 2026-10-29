@@ -1,4 +1,8 @@
 //! Local placement/party are fixtures; conversations, errands and care use input.
+#[path = "glacier_line_controller.rs"]
+mod glacier_line;
+#[path = "interior_regional_flavor.rs"]
+mod regional_flavor;
 use std::collections::{BTreeMap, BTreeSet, VecDeque};
 use std::path::PathBuf;
 
@@ -126,7 +130,7 @@ pub(super) fn talk(c: &mut VisibleShellController, actor: Point) -> String {
     panic!("conversation did not release input: {pages}");
 }
 
-fn collision<'a>(r: &'a CrystalRuntime, m: &MapModule, p: Point) -> Option<&'a str> {
+pub(super) fn collision<'a>(r: &'a CrystalRuntime, m: &MapModule, p: Point) -> Option<&'a str> {
     let (x, y) = (u16::try_from(p.0).ok()?, u16::try_from(p.1).ok()?);
     if x >= m.attributes.width * 2 || y >= m.attributes.height * 2 {
         return None;
@@ -301,6 +305,14 @@ pub(super) fn resident(r: &CrystalRuntime, name: &str, script: &str) -> Point {
 #[ignore = "requires CRYSTAL_INTERIOR_PACK"]
 fn interior_life_all_new_residents_talk_without_blocking_room_returns() {
     let (root, r, plan) = load();
+    let relocated: Value = std::env::var_os("CRYSTAL_INTERIOR_ACTOR_RELOCATIONS")
+        .map(|path| {
+            serde_json::from_str(
+                &std::fs::read_to_string(path).expect("explicit resident relocation source"),
+            )
+            .expect("resident relocation contract")
+        })
+        .unwrap_or(Value::Null);
     let mut count = 0;
     for room in plan["rooms"].as_array().expect("rooms") {
         let name = room["map"].as_str().expect("room name");
@@ -308,10 +320,34 @@ fn interior_life_all_new_residents_talk_without_blocking_room_returns() {
             let Some(a) = conversation.get("actor") else {
                 continue;
             };
-            let pos = (
+            let mut pos = (
                 a["approach"][0].as_i64().expect("x") as i16,
                 a["approach"][1].as_i64().expect("y") as i16,
             );
+            if let Some(move_) = relocated["actor_relocations"]
+                .as_array()
+                .into_iter()
+                .flatten()
+                .find(|move_| move_["map"] == name && move_["script"] == conversation["script"])
+            {
+                assert_eq!(
+                    move_["before"], a["tile"],
+                    "preserved original actor source"
+                );
+                pos = (
+                    move_["approach"][0].as_i64().expect("relocated approach x") as i16,
+                    move_["approach"][1].as_i64().expect("relocated approach y") as i16,
+                );
+                let actual = resident(&r, name, conversation["script"].as_str().expect("resident"));
+                assert_eq!(
+                    (
+                        move_["tile"][0].as_i64().expect("resident x") as i16,
+                        move_["tile"][1].as_i64().expect("resident y") as i16
+                    ),
+                    actual,
+                    "actual native resident relocation"
+                );
+            }
             let mut c = fixture(&root, &r, name, pos);
             let pages = talk(
                 &mut c,

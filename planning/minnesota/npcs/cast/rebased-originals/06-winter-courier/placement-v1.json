@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "trainers": [
+    {
+      "map": "MnEly",
+      "approach": [
+        16,
+        19
+      ],
+      "id": "MN_EXTRA_NPC_COURIER_01",
+      "display_name": "IVAR",
+      "trainer_class": "MN_WINTER_COURIER",
+      "class_name": "COURIER",
+      "template_class": "COOLTRAINERM",
+      "sprite": "SPRITE_MN_WINTER_COURIER",
+      "tile": [
+        16,
+        18
+      ],
+      "facing": "south",
+      "sight_range": 2,
+      "defeated_flag": "EVENT_MN_EXTRA_NPC_COURIER_01",
+      "party": [
+        {
+          "species": "WINKFIN",
+          "level": 38
+        },
+        {
+          "species": "TIPULORD",
+          "level": 40
+        }
+      ],
+      "before_lines": [
+        "A letter for you!",
+        "Battle, then mail?"
+      ],
+      "after_lines": [
+        "Express delivery!",
+        "Stay warm, friend."
+      ],
+      "loss_lines": [
+        "Special delivery!",
+        "Catch your breath."
+      ]
+    }
+  ]
+}

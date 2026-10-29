@@ -4262,6 +4262,22 @@ fn update_player_facing_art_in_place(
             "SPRITE_CHRIS_BIKE",
             snapshot.trainer.player_palette_id,
         ),
+        MovementMode::Surf
+            if snapshot
+                .script_events
+                .memory
+                .contains_key(crate::core::systems::field_moves::CANOE_ACTIVE_MEMORY) =>
+        {
+            (
+                if female {
+                    "mn_canoe_kris"
+                } else {
+                    "mn_canoe_chris"
+                },
+                "SPRITE_SURF",
+                1,
+            )
+        }
         MovementMode::Surf => ("surf", "SPRITE_SURF", 1),
         MovementMode::SurfPika => ("surfing_pikachu", "SPRITE_SURFING_PIKACHU", 0),
     };
@@ -4511,6 +4527,10 @@ fn render_playfield(
     #[cfg(feature = "location-tester")] capture_hold: Option<Res<render_capture::PairedCaptureHold>>,
     #[cfg(feature = "voxel-view")] world_status: Option<Res<crystal_voxel_view::VoxelViewStatus>>,
 ) {
+    if let Err(error) = safari_catch_visible::restore(&mut runtime_shell) {
+        record_visible_render_error(&mut commands, &mut runtime_shell, error);
+        return;
+    }
     #[cfg(feature = "voxel-view")]
     let modeled_entry = voxel_settings.as_ref().is_some_and(|settings| settings.enabled)
         && world_status.as_ref().is_some_and(|status| status.active);
@@ -5172,6 +5192,7 @@ fn render_playfield(
             runtime_shell.pending_standard_capture.is_none()
                 && runtime_shell.pending_gift_pokemon_nickname.is_none()
                 && runtime_shell.pending_egg_hatch_nickname.is_none()
+                && !safari_visible::owns(&runtime_shell)
         })
         .cloned();
     let player_name_input = runtime_shell
@@ -5380,8 +5401,13 @@ fn render_playfield(
         record_visible_render_error(&mut commands, &mut runtime_shell, error);
     }
     let state_hash = snapshot.visual_state_hash;
+    let safari_surface_owned = safari_visible::snapshot_owns(&snapshot);
+    let safari_surface_missing = safari_surface_owned && battle_commands.iter().next().is_none();
     runtime_shell.battle_lcd_animation_active = snapshot.battle.is_some();
-    let shell_render_key = battle_animated_shell_render_key(&snapshot, &runtime_shell);
+    let shell_render_key = safari_visible::render_key(
+        &snapshot,
+        battle_animated_shell_render_key(&snapshot, &runtime_shell),
+    );
     let map_block_identity = if cfg!(feature = "voxel-view") && visual_world_enabled {
         connected_world_sources::block_identity(&snapshot.overworld.map_name, &snapshot.maps)
     } else {
@@ -5419,6 +5445,11 @@ fn render_playfield(
                     (&cursor.surface_id,cursor.option_index)).hash(&mut hasher);
             }
         }
+        runtime_shell
+            .field_text_timing
+            .as_ref()
+            .map(|timing| timing.frames_remaining)
+            .hash(&mut hasher);
         field_dialogue_prompt_arrow_visible(&snapshot, &runtime_shell).hash(&mut hasher);
         strict_readonly_cursor_index(&runtime_shell.yes_no_cursor, "ui:yes-no", 2)
             .hash(&mut hasher);
@@ -5463,6 +5494,11 @@ fn render_playfield(
     let stale_healing_effects=runtime_shell.visible_heal_machine.is_none()
         &&healing_effects.iter().next().is_some();
     let dialog_only_update = !stale_healing_effects && rendered.title_active == false
+        // Capture notices belong to the Safari canvas above the field dialog.
+        // Its retained command box must be rebuilt when that notice changes.
+        && snapshot.safari_prompt.is_none()
+        && snapshot.safari.as_ref().is_none_or(|active|
+            matches!(active.phase, crate::core::systems::safari::SafariPhase::Exploring))
         // Returning from a full-LCD PC box list needs one complete field
         // compositor pass. Updating only text leaves its old modal canvas
         // and menu frame alive behind the new source save introduction.
@@ -5617,6 +5653,8 @@ fn render_playfield(
     // and object entities in that case; rebuilding them here was the other
     // major source of frame stalls after the tile layer was composited.
     let world_only_update = !stale_healing_effects && !rendered.title_active
+        && !safari_surface_owned
+        && battle_commands.iter().next().is_none()
         && visual_world_mode_unchanged
         && rendered.map_name.as_ref() == Some(&snapshot.overworld.map_name)
         && rendered.tile == Some(snapshot.overworld.tile)
@@ -5720,6 +5758,7 @@ fn render_playfield(
         return;
     }
     if rendered.map_name.as_ref() == Some(&snapshot.overworld.map_name)
+        && !safari_surface_missing
         && !retained_movement_needs_reconcile
         && visual_world_mode_unchanged
         && rendered.tile == Some(snapshot.overworld.tile)
@@ -6058,6 +6097,8 @@ Transform::from_xyz(0.0, 0.0, 2.7),),
     // cases: despawning it before a replacement GPU texture is available
     // makes macOS present the clear (black) surface for one frame.
     let can_update_positions_in_place = !rendered.title_active
+        && !safari_surface_owned
+        && battle_commands.iter().next().is_none()
         && rendered.map_name.as_ref() == Some(&snapshot.overworld.map_name)
         // Position-only retention cannot choose new directional sprite art.
         // A turn must fall through to the retained-player redraw below, which
@@ -7763,6 +7804,22 @@ Transform::from_xyz(emote_x, emote_y, 3.2),),
                     )
                 }
             }
+            MovementMode::Surf
+                if snapshot
+                    .script_events
+                    .memory
+                    .contains_key(crate::core::systems::field_moves::CANOE_ACTIVE_MEMORY) =>
+            {
+                (
+                    if female {
+                        "mn_canoe_kris"
+                    } else {
+                        "mn_canoe_chris"
+                    },
+                    "SPRITE_SURF",
+                    1,
+                )
+            }
             MovementMode::Surf => ("surf", "SPRITE_SURF", 1),
             MovementMode::SurfPika => ("surfing_pikachu", "SPRITE_SURFING_PIKACHU", 0),
         };
@@ -8499,6 +8556,13 @@ Transform::from_xyz(0.0, 0.0, z),),
         &mut tileset_art,
         &runtime_shell.asset_root,
         &mut images,
+    ) {
+        record_visible_render_error(&mut commands, &mut runtime_shell, error);
+        return;
+    }
+    if let Err(error) = safari_visible::render(
+        &mut commands, &snapshot, &runtime_shell, &mut tileset_art,
+        &runtime_shell.asset_root, &mut images,
     ) {
         record_visible_render_error(&mut commands, &mut runtime_shell, error);
         return;

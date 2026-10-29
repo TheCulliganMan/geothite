@@ -1,0 +1,2882 @@
+{
+  "schema_version": 2,
+  "id": "MN_R06",
+  "tileset": "johto",
+  "compiled_tileset": "mn_headwaters",
+  "dimensions_metatiles": [
+    32,
+    44
+  ],
+  "coordinate_units": "32px metatiles, zero based",
+  "shore_fitting": "johto_8_neighbors",
+  "reject_cliff_cuts": false,
+  "materials": {
+    "floor": "01",
+    "lawn": "02",
+    "encounter": "03",
+    "flowers": "04",
+    "forest": "05",
+    "water": "35",
+    "boulder": "0a",
+    "sign": "45"
+  },
+  "derived_blocks": [
+    {
+      "id": "80",
+      "source_tileset": "kanto",
+      "source_block": "78",
+      "collision": "WATER",
+      "required_typed_extension": "headwaters_art::build_headwaters_art_pack"
+    },
+    {
+      "id": "81",
+      "source_tileset": "kanto",
+      "source_block": "77",
+      "collision": "FLOOR/FLOOR/WALL/WALL",
+      "required_typed_extension": "headwaters_art::build_headwaters_art_pack"
+    },
+    {
+      "id": "82",
+      "source_tileset": "kanto",
+      "source_block": "77",
+      "tile_row_order": [
+        2,
+        3,
+        0,
+        1
+      ],
+      "collision_source_tileset": "johto",
+      "collision_source_block": "75",
+      "required_typed_extension": "headwaters_art::build_headwaters_art_pack"
+    }
+  ],
+  "layers": [
+    {
+      "kind": "polygon",
+      "name": "Camp glade and southern habitat throat",
+      "material": "lawn",
+      "points": [
+        [
+          6,
+          43
+        ],
+        [
+          10,
+          43
+        ],
+        [
+          10,
+          38
+        ],
+        [
+          12,
+          38
+        ],
+        [
+          12,
+          35
+        ],
+        [
+          13,
+          35
+        ],
+        [
+          13,
+          29
+        ],
+        [
+          10,
+          29
+        ],
+        [
+          10,
+          27
+        ],
+        [
+          6,
+          27
+        ],
+        [
+          6,
+          28
+        ],
+        [
+          3,
+          28
+        ],
+        [
+          3,
+          35
+        ],
+        [
+          5,
+          35
+        ],
+        [
+          5,
+          37
+        ],
+        [
+          6,
+          37
+        ]
+      ]
+    },
+    {
+      "kind": "polygon",
+      "name": "Eastern pine road and wide passing bends",
+      "material": "lawn",
+      "points": [
+        [
+          20,
+          35
+        ],
+        [
+          27,
+          35
+        ],
+        [
+          27,
+          34
+        ],
+        [
+          29,
+          34
+        ],
+        [
+          29,
+          30
+        ],
+        [
+          27,
+          30
+        ],
+        [
+          27,
+          25
+        ],
+        [
+          29,
+          25
+        ],
+        [
+          29,
+          16
+        ],
+        [
+          27,
+          16
+        ],
+        [
+          27,
+          12
+        ],
+        [
+          25,
+          12
+        ],
+        [
+          25,
+          6
+        ],
+        [
+          24,
+          6
+        ],
+        [
+          24,
+          0
+        ],
+        [
+          19,
+          0
+        ],
+        [
+          19,
+          5
+        ],
+        [
+          17,
+          5
+        ],
+        [
+          17,
+          11
+        ],
+        [
+          18,
+          11
+        ],
+        [
+          18,
+          16
+        ],
+        [
+          20,
+          16
+        ],
+        [
+          20,
+          25
+        ],
+        [
+          19,
+          25
+        ],
+        [
+          19,
+          29
+        ],
+        [
+          20,
+          29
+        ]
+      ]
+    },
+    {
+      "kind": "polygon",
+      "name": "Northern overlook approach",
+      "material": "lawn",
+      "points": [
+        [
+          15,
+          6
+        ],
+        [
+          20,
+          6
+        ],
+        [
+          20,
+          9
+        ],
+        [
+          19,
+          9
+        ],
+        [
+          19,
+          17
+        ],
+        [
+          14,
+          17
+        ],
+        [
+          14,
+          16
+        ],
+        [
+          9,
+          16
+        ],
+        [
+          9,
+          17
+        ],
+        [
+          8,
+          17
+        ],
+        [
+          8,
+          15
+        ],
+        [
+          14,
+          15
+        ],
+        [
+          14,
+          11
+        ],
+        [
+          15,
+          11
+        ]
+      ]
+    },
+    {
+      "kind": "polygon",
+      "name": "Needle Lake uneven shore",
+      "material": "water",
+      "points": [
+        [
+          0,
+          16
+        ],
+        [
+          3,
+          16
+        ],
+        [
+          3,
+          15
+        ],
+        [
+          7,
+          15
+        ],
+        [
+          7,
+          16
+        ],
+        [
+          12,
+          16
+        ],
+        [
+          12,
+          18
+        ],
+        [
+          16,
+          18
+        ],
+        [
+          16,
+          20
+        ],
+        [
+          19,
+          20
+        ],
+        [
+          19,
+          25
+        ],
+        [
+          17,
+          25
+        ],
+        [
+          17,
+          29
+        ],
+        [
+          13,
+          29
+        ],
+        [
+          13,
+          27
+        ],
+        [
+          9,
+          27
+        ],
+        [
+          9,
+          26
+        ],
+        [
+          4,
+          26
+        ],
+        [
+          4,
+          24
+        ],
+        [
+          1,
+          24
+        ],
+        [
+          1,
+          22
+        ],
+        [
+          0,
+          22
+        ]
+      ]
+    },
+    {
+      "kind": "polygon",
+      "name": "Needle outlet stream",
+      "material": "water",
+      "points": [
+        [
+          14,
+          26
+        ],
+        [
+          18,
+          26
+        ],
+        [
+          18,
+          30
+        ],
+        [
+          17,
+          30
+        ],
+        [
+          17,
+          37
+        ],
+        [
+          18,
+          37
+        ],
+        [
+          18,
+          43
+        ],
+        [
+          14,
+          43
+        ],
+        [
+          14,
+          37
+        ],
+        [
+          13,
+          37
+        ],
+        [
+          13,
+          31
+        ],
+        [
+          14,
+          31
+        ]
+      ]
+    },
+    {
+      "kind": "rect",
+      "name": "Lookout return headland",
+      "material": "lawn",
+      "bounds": [
+        9,
+        16,
+        16,
+        17
+      ]
+    },
+    {
+      "kind": "rect",
+      "name": "Northern pine-road west shoulder",
+      "material": "forest",
+      "bounds": [
+        18,
+        10,
+        20,
+        14
+      ]
+    },
+    {
+      "kind": "rect",
+      "name": "Northern pine-road east shoulder",
+      "material": "forest",
+      "bounds": [
+        26,
+        14,
+        30,
+        17
+      ]
+    },
+    {
+      "kind": "rect",
+      "name": "East shore road western finger",
+      "material": "forest",
+      "bounds": [
+        23,
+        18,
+        25,
+        21
+      ]
+    },
+    {
+      "kind": "rect",
+      "name": "East shore road outer woods",
+      "material": "forest",
+      "bounds": [
+        26,
+        20,
+        30,
+        25
+      ]
+    },
+    {
+      "kind": "rect",
+      "name": "Below-pier forest tongue",
+      "material": "forest",
+      "bounds": [
+        21,
+        22,
+        25,
+        25
+      ]
+    },
+    {
+      "kind": "rect",
+      "name": "Needle Lake lookout cove",
+      "material": "water",
+      "bounds": [
+        3,
+        13,
+        6,
+        16
+      ]
+    },
+    {
+      "kind": "rect",
+      "name": "Connected northwest junction canopy",
+      "bounds": [
+        18,
+        5,
+        20,
+        7
+      ],
+      "material": "forest"
+    },
+    {
+      "kind": "rect",
+      "name": "Connected southwest junction canopy",
+      "bounds": [
+        18,
+        8,
+        20,
+        10
+      ],
+      "material": "forest"
+    },
+    {
+      "kind": "rect",
+      "name": "Northern island reaches eastern shoulder",
+      "bounds": [
+        22,
+        5,
+        24,
+        8
+      ],
+      "material": "forest"
+    },
+    {
+      "kind": "path",
+      "name": "Camp to Brainerd connected road",
+      "points": [
+        [
+          8,
+          43
+        ],
+        [
+          8,
+          33
+        ],
+        [
+          23,
+          33
+        ],
+        [
+          23,
+          25
+        ],
+        [
+          25,
+          25
+        ],
+        [
+          25,
+          17
+        ],
+        [
+          21,
+          17
+        ],
+        [
+          21,
+          4
+        ],
+        [
+          21,
+          0
+        ]
+      ],
+      "material": "floor",
+      "width_metatiles": 1
+    },
+    {
+      "kind": "path",
+      "name": "Cabin porch and fire-ring clearing",
+      "points": [
+        [
+          8,
+          33
+        ],
+        [
+          5,
+          33
+        ],
+        [
+          5,
+          31
+        ]
+      ],
+      "material": "floor",
+      "width_metatiles": 1
+    },
+    {
+      "kind": "path",
+      "name": "Southern berry meadow turnout",
+      "points": [
+        [
+          8,
+          36
+        ],
+        [
+          11,
+          36
+        ]
+      ],
+      "material": "floor",
+      "width_metatiles": 1
+    },
+    {
+      "kind": "path",
+      "name": "East passing bay",
+      "points": [
+        [
+          23,
+          30
+        ],
+        [
+          26,
+          30
+        ],
+        [
+          26,
+          33
+        ],
+        [
+          23,
+          33
+        ]
+      ],
+      "material": "floor",
+      "width_metatiles": 1
+    },
+    {
+      "kind": "path",
+      "name": "Overlook approach",
+      "points": [
+        [
+          21,
+          7
+        ],
+        [
+          17,
+          7
+        ],
+        [
+          17,
+          16
+        ],
+        [
+          14,
+          16
+        ],
+        [
+          10,
+          16
+        ]
+      ],
+      "material": "floor",
+      "width_metatiles": 1
+    },
+    {
+      "kind": "path",
+      "name": "Fishing pier approach",
+      "points": [
+        [
+          25,
+          21
+        ],
+        [
+          20,
+          21
+        ]
+      ],
+      "material": "floor",
+      "width_metatiles": 1
+    },
+    {
+      "kind": "cliff_polygon",
+      "name": "Low pine overlook shelf",
+      "points": [
+        [
+          6,
+          10
+        ],
+        [
+          9,
+          10
+        ],
+        [
+          9,
+          9
+        ],
+        [
+          15,
+          9
+        ],
+        [
+          15,
+          15
+        ],
+        [
+          6,
+          15
+        ]
+      ]
+    },
+    {
+      "kind": "point",
+      "name": "Native ascending ramp",
+      "position": [
+        14,
+        15
+      ],
+      "block": "74"
+    },
+    {
+      "kind": "point",
+      "name": "West one-way ledge",
+      "position": [
+        10,
+        15
+      ],
+      "block": "56"
+    },
+    {
+      "kind": "point",
+      "name": "East one-way ledge",
+      "position": [
+        11,
+        15
+      ],
+      "block": "56"
+    },
+    {
+      "kind": "rect",
+      "name": "Camp western conifers",
+      "material": "forest",
+      "bounds": [
+        3,
+        34,
+        5,
+        36
+      ]
+    },
+    {
+      "kind": "rect",
+      "name": "Cabin rear grove",
+      "material": "forest",
+      "bounds": [
+        6,
+        27,
+        10,
+        29
+      ]
+    },
+    {
+      "kind": "rect",
+      "name": "East southern grove",
+      "material": "forest",
+      "bounds": [
+        24,
+        37,
+        26,
+        41
+      ]
+    },
+    {
+      "kind": "rect",
+      "name": "Passing bay island",
+      "material": "forest",
+      "bounds": [
+        24,
+        31,
+        26,
+        33
+      ]
+    },
+    {
+      "kind": "rect",
+      "name": "Northern road trees",
+      "material": "forest",
+      "bounds": [
+        23,
+        8,
+        25,
+        11
+      ]
+    },
+    {
+      "kind": "rect",
+      "name": "Lake road western pine bank",
+      "material": "forest",
+      "bounds": [
+        19,
+        25,
+        22,
+        30
+      ]
+    },
+    {
+      "kind": "rect",
+      "name": "Battle lane conifer island",
+      "material": "forest",
+      "bounds": [
+        24,
+        26,
+        26,
+        30
+      ]
+    },
+    {
+      "kind": "rect",
+      "name": "Grass alternative around conifer island",
+      "material": "encounter",
+      "bounds": [
+        26,
+        26,
+        29,
+        30
+      ]
+    },
+    {
+      "kind": "path",
+      "name": "Passing bay northern connector",
+      "material": "floor",
+      "points": [
+        [
+          23,
+          25
+        ],
+        [
+          28,
+          25
+        ]
+      ],
+      "width_metatiles": 1
+    },
+    {
+      "kind": "path",
+      "name": "Passing bay southern connector",
+      "material": "floor",
+      "points": [
+        [
+          23,
+          30
+        ],
+        [
+          28,
+          30
+        ]
+      ],
+      "width_metatiles": 1
+    },
+    {
+      "kind": "point",
+      "name": "Camp rock garden",
+      "position": [
+        3,
+        29
+      ],
+      "block": "0a"
+    },
+    {
+      "kind": "point",
+      "name": "Camp rock garden",
+      "position": [
+        3,
+        30
+      ],
+      "block": "0a"
+    },
+    {
+      "kind": "point",
+      "name": "Camp rock garden",
+      "position": [
+        11,
+        29
+      ],
+      "block": "0a"
+    },
+    {
+      "kind": "point",
+      "name": "Far shore granite",
+      "position": [
+        1,
+        25
+      ],
+      "block": "0a"
+    },
+    {
+      "kind": "point",
+      "name": "Far shore granite",
+      "position": [
+        2,
+        25
+      ],
+      "block": "0a"
+    },
+    {
+      "kind": "point",
+      "name": "Far shore granite",
+      "position": [
+        3,
+        26
+      ],
+      "block": "0a"
+    },
+    {
+      "kind": "point",
+      "name": "Southern exit boulders",
+      "position": [
+        6,
+        42
+      ],
+      "block": "0a"
+    },
+    {
+      "kind": "point",
+      "name": "Southern exit boulders",
+      "position": [
+        10,
+        42
+      ],
+      "block": "0a"
+    },
+    {
+      "kind": "point",
+      "name": "Road bend granite",
+      "position": [
+        30,
+        29
+      ],
+      "block": "0a"
+    },
+    {
+      "kind": "point",
+      "name": "Road bend granite",
+      "position": [
+        30,
+        30
+      ],
+      "block": "0a"
+    },
+    {
+      "kind": "rect",
+      "name": "Habitat west shoulder",
+      "material": "forest",
+      "bounds": [
+        3,
+        37,
+        6,
+        41
+      ]
+    },
+    {
+      "kind": "rect",
+      "name": "Habitat east shoulder",
+      "material": "forest",
+      "bounds": [
+        11,
+        37,
+        14,
+        41
+      ]
+    },
+    {
+      "kind": "rect",
+      "name": "Northern western pine shoulder",
+      "material": "forest",
+      "bounds": [
+        17,
+        0,
+        20,
+        5
+      ]
+    },
+    {
+      "kind": "rect",
+      "name": "Northern eastern pine shoulder",
+      "material": "forest",
+      "bounds": [
+        23,
+        0,
+        25,
+        5
+      ]
+    },
+    {
+      "kind": "rect",
+      "name": "East lake road pine finger",
+      "material": "forest",
+      "bounds": [
+        26,
+        18,
+        29,
+        20
+      ]
+    },
+    {
+      "kind": "rect",
+      "name": "South road forest closes unused reserve",
+      "material": "forest",
+      "bounds": [
+        20,
+        36,
+        30,
+        44
+      ]
+    },
+    {
+      "kind": "rect",
+      "name": "Required short pine-edge habitat",
+      "material": "encounter",
+      "bounds": [
+        6,
+        38,
+        11,
+        40
+      ]
+    },
+    {
+      "kind": "rect",
+      "name": "Eastern optional grass glade",
+      "material": "encounter",
+      "bounds": [
+        26,
+        26,
+        29,
+        29
+      ]
+    },
+    {
+      "kind": "rect",
+      "name": "North road bird habitat",
+      "material": "encounter",
+      "bounds": [
+        22,
+        12,
+        25,
+        15
+      ]
+    },
+    {
+      "kind": "rect",
+      "name": "Cabin berry patch",
+      "material": "flowers",
+      "bounds": [
+        10,
+        35,
+        12,
+        37
+      ]
+    },
+    {
+      "kind": "rect",
+      "name": "Camp flower bed",
+      "material": "flowers",
+      "bounds": [
+        3,
+        32,
+        4,
+        34
+      ]
+    },
+    {
+      "kind": "point",
+      "name": "Needle Camp complete native facade quadrant",
+      "position": [
+        4,
+        29
+      ],
+      "block": "18"
+    },
+    {
+      "kind": "point",
+      "name": "Needle Camp complete native facade quadrant",
+      "position": [
+        5,
+        29
+      ],
+      "block": "19"
+    },
+    {
+      "kind": "point",
+      "name": "Needle Camp complete native facade quadrant",
+      "position": [
+        4,
+        30
+      ],
+      "block": "16"
+    },
+    {
+      "kind": "point",
+      "name": "Needle Camp complete native facade quadrant",
+      "position": [
+        5,
+        30
+      ],
+      "block": "1e"
+    },
+    {
+      "kind": "point",
+      "name": "Outlet bridge north rail",
+      "position": [
+        13,
+        32
+      ],
+      "block": "82"
+    },
+    {
+      "kind": "point",
+      "name": "Outlet bridge walking deck",
+      "position": [
+        13,
+        33
+      ],
+      "block": "71"
+    },
+    {
+      "kind": "point",
+      "name": "Outlet bridge south rail",
+      "position": [
+        13,
+        34
+      ],
+      "block": "81"
+    },
+    {
+      "kind": "point",
+      "name": "Water beneath bridge rail",
+      "position": [
+        13,
+        35
+      ],
+      "block": "80"
+    },
+    {
+      "kind": "point",
+      "name": "Outlet bridge north rail",
+      "position": [
+        14,
+        32
+      ],
+      "block": "82"
+    },
+    {
+      "kind": "point",
+      "name": "Outlet bridge walking deck",
+      "position": [
+        14,
+        33
+      ],
+      "block": "71"
+    },
+    {
+      "kind": "point",
+      "name": "Outlet bridge south rail",
+      "position": [
+        14,
+        34
+      ],
+      "block": "81"
+    },
+    {
+      "kind": "point",
+      "name": "Water beneath bridge rail",
+      "position": [
+        14,
+        35
+      ],
+      "block": "80"
+    },
+    {
+      "kind": "point",
+      "name": "Outlet bridge north rail",
+      "position": [
+        15,
+        32
+      ],
+      "block": "82"
+    },
+    {
+      "kind": "point",
+      "name": "Outlet bridge walking deck",
+      "position": [
+        15,
+        33
+      ],
+      "block": "71"
+    },
+    {
+      "kind": "point",
+      "name": "Outlet bridge south rail",
+      "position": [
+        15,
+        34
+      ],
+      "block": "81"
+    },
+    {
+      "kind": "point",
+      "name": "Water beneath bridge rail",
+      "position": [
+        15,
+        35
+      ],
+      "block": "80"
+    },
+    {
+      "kind": "point",
+      "name": "Outlet bridge north rail",
+      "position": [
+        16,
+        32
+      ],
+      "block": "82"
+    },
+    {
+      "kind": "point",
+      "name": "Outlet bridge walking deck",
+      "position": [
+        16,
+        33
+      ],
+      "block": "71"
+    },
+    {
+      "kind": "point",
+      "name": "Outlet bridge south rail",
+      "position": [
+        16,
+        34
+      ],
+      "block": "81"
+    },
+    {
+      "kind": "point",
+      "name": "Water beneath bridge rail",
+      "position": [
+        16,
+        35
+      ],
+      "block": "80"
+    },
+    {
+      "kind": "point",
+      "name": "Outlet bridge north rail",
+      "position": [
+        17,
+        32
+      ],
+      "block": "82"
+    },
+    {
+      "kind": "point",
+      "name": "Outlet bridge walking deck",
+      "position": [
+        17,
+        33
+      ],
+      "block": "71"
+    },
+    {
+      "kind": "point",
+      "name": "Outlet bridge south rail",
+      "position": [
+        17,
+        34
+      ],
+      "block": "81"
+    },
+    {
+      "kind": "point",
+      "name": "Water beneath bridge rail",
+      "position": [
+        17,
+        35
+      ],
+      "block": "80"
+    },
+    {
+      "kind": "point",
+      "name": "Outlet bridge north rail",
+      "position": [
+        18,
+        32
+      ],
+      "block": "82"
+    },
+    {
+      "kind": "point",
+      "name": "Outlet bridge walking deck",
+      "position": [
+        18,
+        33
+      ],
+      "block": "71"
+    },
+    {
+      "kind": "point",
+      "name": "Outlet bridge south rail",
+      "position": [
+        18,
+        34
+      ],
+      "block": "81"
+    },
+    {
+      "kind": "point",
+      "name": "Water beneath bridge rail",
+      "position": [
+        18,
+        35
+      ],
+      "block": "80"
+    },
+    {
+      "kind": "point",
+      "name": "Lake pier north rail",
+      "position": [
+        16,
+        20
+      ],
+      "block": "82"
+    },
+    {
+      "kind": "point",
+      "name": "Lake pier deck",
+      "position": [
+        16,
+        21
+      ],
+      "block": "71"
+    },
+    {
+      "kind": "point",
+      "name": "Lake pier south rail",
+      "position": [
+        16,
+        22
+      ],
+      "block": "81"
+    },
+    {
+      "kind": "point",
+      "name": "Lake beneath pier rail",
+      "position": [
+        16,
+        23
+      ],
+      "block": "80"
+    },
+    {
+      "kind": "point",
+      "name": "Lake pier north rail",
+      "position": [
+        17,
+        20
+      ],
+      "block": "82"
+    },
+    {
+      "kind": "point",
+      "name": "Lake pier deck",
+      "position": [
+        17,
+        21
+      ],
+      "block": "71"
+    },
+    {
+      "kind": "point",
+      "name": "Lake pier south rail",
+      "position": [
+        17,
+        22
+      ],
+      "block": "81"
+    },
+    {
+      "kind": "point",
+      "name": "Lake beneath pier rail",
+      "position": [
+        17,
+        23
+      ],
+      "block": "80"
+    },
+    {
+      "kind": "point",
+      "name": "Lake pier north rail",
+      "position": [
+        18,
+        20
+      ],
+      "block": "82"
+    },
+    {
+      "kind": "point",
+      "name": "Lake pier deck",
+      "position": [
+        18,
+        21
+      ],
+      "block": "71"
+    },
+    {
+      "kind": "point",
+      "name": "Lake pier south rail",
+      "position": [
+        18,
+        22
+      ],
+      "block": "81"
+    },
+    {
+      "kind": "point",
+      "name": "Lake beneath pier rail",
+      "position": [
+        18,
+        23
+      ],
+      "block": "80"
+    },
+    {
+      "kind": "point",
+      "name": "Lake pier north rail",
+      "position": [
+        19,
+        20
+      ],
+      "block": "82"
+    },
+    {
+      "kind": "point",
+      "name": "Lake pier deck",
+      "position": [
+        19,
+        21
+      ],
+      "block": "71"
+    },
+    {
+      "kind": "point",
+      "name": "Lake pier south rail",
+      "position": [
+        19,
+        22
+      ],
+      "block": "81"
+    },
+    {
+      "kind": "point",
+      "name": "Lake beneath pier rail",
+      "position": [
+        19,
+        23
+      ],
+      "block": "80"
+    },
+    {
+      "kind": "point",
+      "name": "Closed western pier end",
+      "position": [
+        15,
+        21
+      ],
+      "block": "44"
+    },
+    {
+      "kind": "point",
+      "name": "Lake bank east fence",
+      "position": [
+        20,
+        18
+      ],
+      "block": "44"
+    },
+    {
+      "kind": "point",
+      "name": "Lake bank east fence",
+      "position": [
+        20,
+        19
+      ],
+      "block": "44"
+    },
+    {
+      "kind": "point",
+      "name": "Lake bank east fence",
+      "position": [
+        20,
+        23
+      ],
+      "block": "44"
+    },
+    {
+      "kind": "point",
+      "name": "Lake bank east fence",
+      "position": [
+        20,
+        24
+      ],
+      "block": "44"
+    },
+    {
+      "kind": "point",
+      "name": "South waymark",
+      "position": [
+        9,
+        41
+      ],
+      "block": "45"
+    },
+    {
+      "kind": "point",
+      "name": "Camp board",
+      "position": [
+        7,
+        32
+      ],
+      "block": "45"
+    },
+    {
+      "kind": "point",
+      "name": "Bridge board",
+      "position": [
+        20,
+        34
+      ],
+      "block": "45"
+    },
+    {
+      "kind": "point",
+      "name": "Pier board",
+      "position": [
+        22,
+        20
+      ],
+      "block": "45"
+    },
+    {
+      "kind": "point",
+      "name": "Lookout board",
+      "position": [
+        15,
+        17
+      ],
+      "block": "45"
+    },
+    {
+      "kind": "point",
+      "name": "North waymark",
+      "position": [
+        22,
+        2
+      ],
+      "block": "45"
+    },
+    {
+      "kind": "point",
+      "name": "Grass cache footing",
+      "position": [
+        28,
+        26
+      ],
+      "block": "02"
+    },
+    {
+      "kind": "point",
+      "name": "Short battle lane west rail",
+      "position": [
+        22,
+        26
+      ],
+      "block": "44"
+    },
+    {
+      "kind": "point",
+      "name": "Short battle lane west rail",
+      "position": [
+        22,
+        27
+      ],
+      "block": "44"
+    },
+    {
+      "kind": "point",
+      "name": "Short battle lane west rail",
+      "position": [
+        22,
+        28
+      ],
+      "block": "44"
+    },
+    {
+      "kind": "point",
+      "name": "Short battle lane west rail",
+      "position": [
+        22,
+        29
+      ],
+      "block": "44"
+    },
+    {
+      "kind": "rect",
+      "name": "Overlook pine meadow",
+      "material": "lawn",
+      "bounds": [
+        7,
+        11,
+        9,
+        13
+      ]
+    },
+    {
+      "kind": "rect",
+      "name": "Overlook small flower patch",
+      "material": "flowers",
+      "bounds": [
+        9,
+        13,
+        11,
+        14
+      ]
+    },
+    {
+      "kind": "point",
+      "name": "Lookout west boulder",
+      "position": [
+        7,
+        10
+      ],
+      "block": "0a"
+    },
+    {
+      "kind": "point",
+      "name": "Lookout east boulder",
+      "position": [
+        14,
+        11
+      ],
+      "block": "0a"
+    },
+    {
+      "kind": "point",
+      "name": "Cut gate seals the optional lake lookout below its ramp",
+      "position": [
+        14,
+        16
+      ],
+      "block": "5b"
+    },
+    {
+      "kind": "point",
+      "name": "West lake native water-rock barrier",
+      "position": [
+        0,
+        16
+      ],
+      "block": "30"
+    },
+    {
+      "kind": "point",
+      "name": "West lake native water-rock barrier",
+      "position": [
+        0,
+        17
+      ],
+      "block": "34"
+    },
+    {
+      "kind": "point",
+      "name": "West lake native water-rock barrier",
+      "position": [
+        0,
+        18
+      ],
+      "block": "34"
+    },
+    {
+      "kind": "point",
+      "name": "West lake native water-rock barrier",
+      "position": [
+        0,
+        19
+      ],
+      "block": "34"
+    },
+    {
+      "kind": "point",
+      "name": "West lake native water-rock barrier",
+      "position": [
+        0,
+        20
+      ],
+      "block": "34"
+    },
+    {
+      "kind": "point",
+      "name": "West lake native water-rock barrier",
+      "position": [
+        0,
+        21
+      ],
+      "block": "34"
+    },
+    {
+      "kind": "point",
+      "name": "West lake native water-rock barrier",
+      "position": [
+        0,
+        22
+      ],
+      "block": "38"
+    },
+    {
+      "kind": "point",
+      "name": "Southern outlet native water-rock barrier",
+      "position": [
+        14,
+        43
+      ],
+      "block": "38"
+    },
+    {
+      "kind": "point",
+      "name": "Southern outlet native water-rock barrier",
+      "position": [
+        15,
+        43
+      ],
+      "block": "39"
+    },
+    {
+      "kind": "point",
+      "name": "Southern outlet native water-rock barrier",
+      "position": [
+        16,
+        43
+      ],
+      "block": "39"
+    },
+    {
+      "kind": "point",
+      "name": "Southern outlet native water-rock barrier",
+      "position": [
+        17,
+        43
+      ],
+      "block": "39"
+    },
+    {
+      "kind": "point",
+      "name": "Southern outlet native water-rock barrier",
+      "position": [
+        18,
+        43
+      ],
+      "block": "3a"
+    },
+    {
+      "kind": "point",
+      "name": "Northern road fitted pine bends v02",
+      "position": [
+        19,
+        3
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Northern road fitted pine bends v02",
+      "position": [
+        20,
+        3
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Northern road fitted pine bends v02",
+      "position": [
+        21,
+        3
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Northern road fitted pine bends v02",
+      "position": [
+        22,
+        3
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Northern road fitted pine bends v02",
+      "position": [
+        23,
+        3
+      ],
+      "block": "65"
+    },
+    {
+      "kind": "point",
+      "name": "Northern road fitted pine bends v02",
+      "position": [
+        24,
+        3
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Northern road fitted pine bends v02",
+      "position": [
+        19,
+        4
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Northern road fitted pine bends v02",
+      "position": [
+        20,
+        4
+      ],
+      "block": "5c"
+    },
+    {
+      "kind": "point",
+      "name": "Northern road fitted pine bends v02",
+      "position": [
+        21,
+        4
+      ],
+      "block": "62"
+    },
+    {
+      "kind": "point",
+      "name": "Northern road fitted pine bends v02",
+      "position": [
+        22,
+        4
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Northern road fitted pine bends v02",
+      "position": [
+        23,
+        4
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Northern road fitted pine bends v02",
+      "position": [
+        24,
+        4
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Northern road fitted pine bends v02",
+      "position": [
+        19,
+        5
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Northern road fitted pine bends v02",
+      "position": [
+        20,
+        5
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Northern road fitted pine bends v02",
+      "position": [
+        21,
+        5
+      ],
+      "block": "60"
+    },
+    {
+      "kind": "point",
+      "name": "Northern road fitted pine bends v02",
+      "position": [
+        22,
+        5
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Northern road fitted pine bends v02",
+      "position": [
+        23,
+        5
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Northern road fitted pine bends v02",
+      "position": [
+        24,
+        5
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Northern road fitted pine bends v02",
+      "position": [
+        19,
+        6
+      ],
+      "block": "60"
+    },
+    {
+      "kind": "point",
+      "name": "Northern road fitted pine bends v02",
+      "position": [
+        20,
+        6
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Northern road fitted pine bends v02",
+      "position": [
+        21,
+        6
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Northern road fitted pine bends v02",
+      "position": [
+        22,
+        6
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Northern road fitted pine bends v02",
+      "position": [
+        23,
+        6
+      ],
+      "block": "62"
+    },
+    {
+      "kind": "point",
+      "name": "Northern road fitted pine bends v02",
+      "position": [
+        24,
+        6
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Northern road fitted pine bends v02",
+      "position": [
+        19,
+        7
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Northern road fitted pine bends v02",
+      "position": [
+        20,
+        7
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Northern road fitted pine bends v02",
+      "position": [
+        21,
+        7
+      ],
+      "block": "5e"
+    },
+    {
+      "kind": "point",
+      "name": "Northern road fitted pine bends v02",
+      "position": [
+        22,
+        7
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Northern road fitted pine bends v02",
+      "position": [
+        23,
+        7
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Northern road fitted pine bends v02",
+      "position": [
+        24,
+        7
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Northern road fitted pine bends v02",
+      "position": [
+        19,
+        8
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Northern road fitted pine bends v02",
+      "position": [
+        20,
+        8
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Northern road fitted pine bends v02",
+      "position": [
+        21,
+        8
+      ],
+      "block": "62"
+    },
+    {
+      "kind": "point",
+      "name": "Northern road fitted pine bends v02",
+      "position": [
+        22,
+        8
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Northern road fitted pine bends v02",
+      "position": [
+        23,
+        8
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Northern road fitted pine bends v02",
+      "position": [
+        24,
+        8
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Northern road fitted pine bends v02",
+      "position": [
+        19,
+        9
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Northern road fitted pine bends v02",
+      "position": [
+        20,
+        9
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Northern road fitted pine bends v02",
+      "position": [
+        21,
+        9
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Northern road fitted pine bends v02",
+      "position": [
+        22,
+        9
+      ],
+      "block": "62"
+    },
+    {
+      "kind": "point",
+      "name": "Northern road fitted pine bends v02",
+      "position": [
+        23,
+        9
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Northern road fitted pine bends v02",
+      "position": [
+        24,
+        9
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Northern road fitted pine bends v02",
+      "position": [
+        19,
+        10
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Northern road fitted pine bends v02",
+      "position": [
+        20,
+        10
+      ],
+      "block": "60"
+    },
+    {
+      "kind": "point",
+      "name": "Northern road fitted pine bends v02",
+      "position": [
+        21,
+        10
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Northern road fitted pine bends v02",
+      "position": [
+        22,
+        10
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Northern road fitted pine bends v02",
+      "position": [
+        23,
+        10
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Northern road fitted pine bends v02",
+      "position": [
+        24,
+        10
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Northern road fitted pine bends v02",
+      "position": [
+        19,
+        11
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Northern road fitted pine bends v02",
+      "position": [
+        20,
+        11
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Northern road fitted pine bends v02",
+      "position": [
+        21,
+        11
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Northern road fitted pine bends v02",
+      "position": [
+        22,
+        11
+      ],
+      "block": "5e"
+    },
+    {
+      "kind": "point",
+      "name": "Northern road fitted pine bends v02",
+      "position": [
+        23,
+        11
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Northern road fitted pine bends v02",
+      "position": [
+        24,
+        11
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "block_rect",
+      "name": "Brainerd approach eastern grass loop",
+      "bounds": [
+        24,
+        4,
+        25,
+        7
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Grass loop north join",
+      "position": [
+        23,
+        4
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Grass loop south join",
+      "position": [
+        23,
+        6
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Ordinary pine seals the ledge west side",
+      "position": [
+        21,
+        5
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Bird glade dry southbound ledge",
+      "position": [
+        22,
+        5
+      ],
+      "block": "57"
+    },
+    {
+      "kind": "block_remap",
+      "name": "Camp eastern woodland habitat",
+      "bounds": [
+        10,
+        30,
+        13,
+        32
+      ],
+      "from": "02",
+      "to": "03"
+    },
+    {
+      "kind": "block_remap",
+      "name": "Warden trail grass edge",
+      "bounds": [
+        7,
+        34,
+        8,
+        36
+      ],
+      "from": "02",
+      "to": "03"
+    },
+    {
+      "kind": "block_remap",
+      "name": "Conifer fork southern habitat",
+      "bounds": [
+        27,
+        31,
+        29,
+        33
+      ],
+      "from": "02",
+      "to": "03"
+    },
+    {
+      "kind": "block_remap",
+      "name": "Bird glade eastern grass edge",
+      "bounds": [
+        25,
+        12,
+        26,
+        14
+      ],
+      "from": "02",
+      "to": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Exact installed native preimage",
+      "position": [
+        20,
+        0
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact installed native preimage",
+      "position": [
+        22,
+        0
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact installed native preimage",
+      "position": [
+        6,
+        43
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact installed native preimage",
+      "position": [
+        7,
+        43
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact installed native preimage",
+      "position": [
+        9,
+        43
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact installed native preimage",
+      "position": [
+        10,
+        43
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "rect",
+      "name": "Pine road old straight throat becomes a wooded promontory",
+      "material": "forest",
+      "bounds": [
+        25,
+        18,
+        26,
+        20
+      ]
+    },
+    {
+      "kind": "path",
+      "name": "Needle shore switch around the promontory",
+      "material": "floor",
+      "width_metatiles": 1,
+      "points": [
+        [
+          25,
+          17
+        ],
+        [
+          27,
+          17
+        ],
+        [
+          27,
+          20
+        ],
+        [
+          25,
+          20
+        ]
+      ]
+    },
+    {
+      "kind": "rect",
+      "name": "South bridge pine shoulder closes spare lawn",
+      "material": "forest",
+      "bounds": [
+        21,
+        34,
+        24,
+        36
+      ]
+    },
+    {
+      "kind": "rect",
+      "name": "Eastern bridge landing forest narrows the turnout",
+      "material": "forest",
+      "bounds": [
+        26,
+        34,
+        29,
+        35
+      ]
+    }
+  ],
+  "crossings": [
+    {
+      "id": "NEEDLE_OUTLET_BRIDGE",
+      "deck_blocks": [
+        [
+          13,
+          33
+        ],
+        [
+          14,
+          33
+        ],
+        [
+          15,
+          33
+        ],
+        [
+          16,
+          33
+        ],
+        [
+          17,
+          33
+        ],
+        [
+          18,
+          33
+        ]
+      ],
+      "north_rail_blocks": [
+        [
+          13,
+          32
+        ],
+        [
+          14,
+          32
+        ],
+        [
+          15,
+          32
+        ],
+        [
+          16,
+          32
+        ],
+        [
+          17,
+          32
+        ],
+        [
+          18,
+          32
+        ]
+      ],
+      "south_rail_blocks": [
+        [
+          13,
+          34
+        ],
+        [
+          14,
+          34
+        ],
+        [
+          15,
+          34
+        ],
+        [
+          16,
+          34
+        ],
+        [
+          17,
+          34
+        ],
+        [
+          18,
+          34
+        ]
+      ],
+      "water_under_rail_blocks": [
+        [
+          13,
+          35
+        ],
+        [
+          14,
+          35
+        ],
+        [
+          15,
+          35
+        ],
+        [
+          16,
+          35
+        ],
+        [
+          17,
+          35
+        ],
+        [
+          18,
+          35
+        ]
+      ],
+      "core_walk_line": [
+        [
+          24,
+          67
+        ],
+        [
+          25,
+          67
+        ],
+        [
+          26,
+          67
+        ],
+        [
+          27,
+          67
+        ],
+        [
+          28,
+          67
+        ],
+        [
+          29,
+          67
+        ],
+        [
+          30,
+          67
+        ],
+        [
+          31,
+          67
+        ],
+        [
+          32,
+          67
+        ],
+        [
+          33,
+          67
+        ],
+        [
+          34,
+          67
+        ],
+        [
+          35,
+          67
+        ],
+        [
+          36,
+          67
+        ],
+        [
+          37,
+          67
+        ],
+        [
+          38,
+          67
+        ],
+        [
+          39,
+          67
+        ],
+        [
+          40,
+          67
+        ]
+      ]
+    },
+    {
+      "id": "NEEDLE_FISHING_PIER",
+      "deck_blocks": [
+        [
+          16,
+          21
+        ],
+        [
+          17,
+          21
+        ],
+        [
+          18,
+          21
+        ],
+        [
+          19,
+          21
+        ]
+      ],
+      "north_rail_blocks": [
+        [
+          16,
+          20
+        ],
+        [
+          17,
+          20
+        ],
+        [
+          18,
+          20
+        ],
+        [
+          19,
+          20
+        ]
+      ],
+      "south_rail_blocks": [
+        [
+          16,
+          22
+        ],
+        [
+          17,
+          22
+        ],
+        [
+          18,
+          22
+        ],
+        [
+          19,
+          22
+        ]
+      ],
+      "water_under_rail_blocks": [
+        [
+          16,
+          23
+        ],
+        [
+          17,
+          23
+        ],
+        [
+          18,
+          23
+        ],
+        [
+          19,
+          23
+        ]
+      ],
+      "core_walk_line": [
+        [
+          31,
+          43
+        ],
+        [
+          32,
+          43
+        ],
+        [
+          33,
+          43
+        ],
+        [
+          34,
+          43
+        ],
+        [
+          35,
+          43
+        ],
+        [
+          36,
+          43
+        ],
+        [
+          37,
+          43
+        ],
+        [
+          38,
+          43
+        ],
+        [
+          39,
+          43
+        ],
+        [
+          40,
+          43
+        ],
+        [
+          41,
+          43
+        ],
+        [
+          42,
+          43
+        ]
+      ]
+    }
+  ],
+  "source_pixels_modified": false,
+  "status": "SOURCE ONLY v02 bounded northern-road corner/canopy candidate; native review and promotion pending.",
+  "additional_water_blocks": [
+    "30",
+    "34",
+    "38",
+    "39",
+    "3a"
+  ],
+  "outer_water_barriers": [
+    {
+      "id": "WEST_NEEDLE_LAKE_ROCKS",
+      "side": "west",
+      "blocks": [
+        [
+          0,
+          16,
+          "30"
+        ],
+        [
+          0,
+          17,
+          "34"
+        ],
+        [
+          0,
+          18,
+          "34"
+        ],
+        [
+          0,
+          19,
+          "34"
+        ],
+        [
+          0,
+          20,
+          "34"
+        ],
+        [
+          0,
+          21,
+          "34"
+        ],
+        [
+          0,
+          22,
+          "38"
+        ]
+      ]
+    },
+    {
+      "id": "SOUTH_NEEDLE_OUTLET_ROCKS",
+      "side": "south",
+      "blocks": [
+        [
+          14,
+          43,
+          "38"
+        ],
+        [
+          15,
+          43,
+          "39"
+        ],
+        [
+          16,
+          43,
+          "39"
+        ],
+        [
+          17,
+          43,
+          "39"
+        ],
+        [
+          18,
+          43,
+          "3a"
+        ]
+      ]
+    }
+  ],
+  "internal_water_connections": [
+    {
+      "from_map": "MnR06C00R00",
+      "direction": "south",
+      "target_map": "MnR06C00R01",
+      "reverse_direction": "north",
+      "offset": 0,
+      "core_boundary_y": 48
+    }
+  ]
+}

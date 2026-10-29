@@ -48,11 +48,12 @@ pub fn build_northstar_drill_lair(
         "install the acted ICE chapter first"
     );
     ensure!(
-        !base
+        (!base
             .report
             .manifests
             .iter()
-            .any(|m| m == "northstar-minnesota-only-v1"),
+            .any(|m| m == "northstar-minnesota-only-v1")
+            || crate::northstar_current_story::is_composing(base)),
         "bind the final regional cast after all story chapters"
     );
     let source: Value = serde_json::from_str(events)?;

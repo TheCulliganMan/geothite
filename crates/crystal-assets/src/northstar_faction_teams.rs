@@ -27,9 +27,13 @@ pub(super) fn install(
         .as_object()
         .context("authored faction teams")?;
     for (id, rows) in teams {
-        // The mine rival is installed by the later drill chapter. All other
-        // authored teams must exist; an absent ordinary guard is a build error.
-        if id == "MN_REED_MINE" && !pack.data.trainers.trainers.contains_key(id) {
+        // Optional chapters are not present in every geography branch. Their
+        // explicit teams apply once installed; ordinary missing guards fail.
+        let optional = source["optional_faction_teams"]
+            .as_array()
+            .is_some_and(|ids| ids.iter().any(|entry| entry.as_str() == Some(id)))
+            || id == "MN_REED_MINE";
+        if optional && !pack.data.trainers.trainers.contains_key(id) {
             continue;
         }
         let members: Vec<Member> = serde_json::from_value(rows.clone())?;

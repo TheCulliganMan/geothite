@@ -10,6 +10,22 @@ pub(super) fn canonical_pages(id: &str, label: &str) -> Vec<String> {
         .join("../../planning/minnesota/story.json");
     let story: Value = serde_json::from_str(&std::fs::read_to_string(path).expect("story source"))
         .expect("canonical JSON");
+    if let Some(pages) = story["dialogue_overhaul"]["texts"]
+        .as_object()
+        .and_then(|maps| maps.values().find_map(|texts| texts[label].as_array()))
+    {
+        return pages
+            .iter()
+            .map(|page| {
+                page.as_array()
+                    .expect("authored page")
+                    .iter()
+                    .map(|line| line.as_str().expect("native line"))
+                    .collect::<Vec<_>>()
+                    .join("\n")
+            })
+            .collect();
+    }
     let milestone = story["milestones"]
         .as_array()
         .expect("milestones")

@@ -16,12 +16,20 @@ from audit_winding_shelter_541 import raw_identity
 from render_reference import layout_blocks, load_pack
 
 
-def grids(layout, prefix):
+def grids(layout, prefix, modules):
     width, height = layout['dimensions_metatiles']
     blocks = layout_blocks(layout)
-    return {f'{prefix}C{cx:02}R{cy:02}': [blocks[(cy*24+y)*width+cx*32+x]
-            for y in range(min(24,height-cy*24)) for x in range(min(32,width-cx*32))]
-            for cy in range((height+23)//24) for cx in range((width+31)//32)}
+    result = {}
+    for cy in range((height + 23) // 24):
+        for cx in range((width + 31) // 32):
+            name = f'{prefix}C{cx:02}R{cy:02}'
+            attrs = modules[name]['attributes']
+            mw, mh = attrs['width'], attrs['height']
+            assert 0 < mw <= min(32, width-cx*32)
+            assert 0 < mh <= min(24, height-cy*24)
+            result[name] = [blocks[(cy*24+y)*width+cx*32+x]
+                            for y in range(mh) for x in range(mw)]
+    return result
 
 
 def audit(before, after, routes):
@@ -35,7 +43,32 @@ def audit(before, after, routes):
     owned = {}
     for previous, revised, dossier in routes:
         equal(dossier['id']+' route identity', previous['id'], revised['id'])
-        old = grids(previous, dossier['map_prefix']); new = grids(revised, dossier['map_prefix'])
+        equal(dossier['id']+' source canvas extent', previous['dimensions_metatiles'], revised['dimensions_metatiles'])
+        old = grids(previous, dossier['map_prefix'], a['maps'])
+        new = grids(revised, dossier['map_prefix'], a['maps'])
+        width, height = previous['dimensions_metatiles']
+        old_source, new_source = layout_blocks(previous), layout_blocks(revised)
+        collision = a['tilesets'][previous['compiled_tileset']]['collision']
+        for cy in range((height+23)//24):
+            for cx in range((width+31)//32):
+                name = f"{dossier['map_prefix']}C{cx:02}R{cy:02}"
+                attrs = a['maps'][name]['attributes']
+                if attrs['tileset_name'] != previous['compiled_tileset']:
+                    native_collision = a['tilesets'][attrs['tileset_name']]['collision']
+                    used = set(old[name]) | set(new[name])
+                    equal(name+' seasonal planning/native collision agreement', True,
+                          all(collision.get(f'{block:02x}') is not None
+                              and collision.get(f'{block:02x}') == native_collision.get(f'{block:02x}')
+                              for block in used))
+                omitted = [(cy*24+y)*width+cx*32+x
+                           for y in range(min(24,height-cy*24))
+                           for x in range(min(32,width-cx*32))
+                           if x >= attrs['width'] or y >= attrs['height']]
+                if omitted:
+                    equal(name+' omitted source padding unchanged',
+                          [old_source[i] for i in omitted], [new_source[i] for i in omitted])
+                    equal(name+' omitted source padding is blocking WALL', True,
+                          all(collision[f'{old_source[i]:02x}'] == ['WALL']*4 for i in omitted))
         assert not set(owned) & set(old), 'repeated route declaration'
         owned.update({name:(old[name], new[name]) for name in old})
     normalized = dict(b, maps=dict(b['maps']), map_blocks=dict(b['map_blocks']))

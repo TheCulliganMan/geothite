@@ -190,7 +190,9 @@ fn course(
 fn route_quality_r19_controller_headland_two_drop_lanes_returns_and_old_ramps() {
     let (runtime, mut controller, grid) = fixture((60, 12), false);
     let headland = [(50, 12), (50, 10), (46, 10), (46, 16), (48, 16), (49, 19)];
-    assert_eq!(course(&runtime, &grid, &mut controller, &headland), (28, 0));
+    // The same 28-step course now crosses the authored pine-bend habitat.
+    // Its waypoints enter nine grass tiles; the independent minimum is seven.
+    assert_eq!(course(&runtime, &grid, &mut controller, &headland), (28, 9));
     grid.walk(&mut controller, (35, 31));
 
     // The eastern course side is approached from its real upper Floor pocket.
@@ -316,4 +318,77 @@ fn route_quality_r19_controller_watch_route_zero_grass_and_eight_grass_alternati
                 .is_empty()
         );
     }
+}
+
+/// Party, initial placement and RNG are local fixtures; encounters and the
+/// journey thereafter use native inputs without rewriting game state.
+#[test]
+#[ignore = "requires the current R19 grass candidate"]
+fn route_quality_r19_controller_pine_grass_wild_run_return_and_continue() {
+    use super::authored_route_fixture::{cleanup_reached_save, escape_wild, reached_save_path};
+
+    let (runtime, mut controller, grid) = fixture((47, 13), false);
+    let partner = runtime
+        .data()
+        .create_pokemon("MEW", 60, crystal_core::models::Dv::default())
+        .expect("explicit native fixture partner; not authored Minnesota content");
+    let state = controller.shell.shell.session_mut().state_mut();
+    assert!(state.storage.party.add_pokemon(partner));
+    state.sync_party_from_storage();
+    mark_runtime_snapshot_dirty(&mut controller.shell);
+
+    let mut grass = 0;
+    grid.walk_with_actions(
+        &mut controller,
+        (49, 20),
+        |c| grass += usize::from(collision(&runtime, position(c)) == "TALL_GRASS"),
+        escape_wild,
+    );
+    assert!(grass >= 7, "pine approach must cross the new habitat");
+    grid.walk_with_actions(&mut controller, (49, 17), |_| {}, escape_wild);
+    assert_eq!(collision(&runtime, (49, 17)), "TALL_GRASS");
+    assert_eq!(collision(&runtime, (49, 18)), "TALL_GRASS");
+    let mut encounters = 0;
+    for index in 0..256 {
+        let target = if index % 2 == 0 { (49, 18) } else { (49, 17) };
+        grid.walk_with_actions(
+            &mut controller,
+            target,
+            |_| {},
+            |c| {
+                encounters += 1;
+                escape_wild(c);
+            },
+        );
+        if encounters > 0 {
+            break;
+        }
+    }
+    assert!(
+        encounters > 0,
+        "new grass must start a native wild encounter"
+    );
+    grid.walk_with_actions(&mut controller, (47, 13), |_| {}, escape_wild);
+    let before = controller.snapshot().expect("actual reached pine return");
+    let flags = controller.shell.shell.session().state().flags.clone();
+    let save = reached_save_path(&format!(
+        "geothite-r19-grass-{}.crystalsave",
+        std::process::id()
+    ));
+    controller.save(&save).expect("save actual pine return");
+    let pack = PathBuf::from(std::env::var_os("CRYSTAL_R19_QUALITY_TEST_PACK").expect("R19 pack"));
+    let root = AssetRoot::new(pack.parent().expect("external pack parent"));
+    let mut loaded = VisibleShellController::load_save(root, runtime, save.clone(), None)
+        .expect("Continue actual pine return");
+    let after = loaded.snapshot().expect("continued resources");
+    assert_eq!(position(&mut loaded), (47, 13));
+    assert_eq!(before.party, after.party);
+    assert_eq!(before.bag, after.bag);
+    assert_eq!(loaded.shell.shell.session().state().flags, flags);
+    if let Some(path) = std::env::var_os("CRYSTAL_R19_GRASS_REACHED_SAVE") {
+        loaded
+            .save(PathBuf::from(path))
+            .expect("retain reached save");
+    }
+    cleanup_reached_save(&save);
 }

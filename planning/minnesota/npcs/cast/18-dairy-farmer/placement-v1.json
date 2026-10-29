@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "trainers": [
+    {
+      "map": "MnMankato",
+      "approach": [
+        32,
+        25
+      ],
+      "id": "MN_EXTRA_DAIRY_FARMER",
+      "display_name": "EDDA",
+      "trainer_class": "MN_DAIRY_FARMER",
+      "class_name": "DAIRY FARMER",
+      "template_class": "POKEFANF",
+      "sprite": "SPRITE_MN_DAIRY_FARMER",
+      "tile": [
+        32,
+        24
+      ],
+      "facing": "south",
+      "sight_range": 1,
+      "defeated_flag": "EVENT_MN_EXTRA_DAIRY_FARMER",
+      "party": [
+        {
+          "species": "CHISLET",
+          "level": 18
+        },
+        {
+          "species": "POUCHID",
+          "level": 20
+        }
+      ],
+      "before_lines": [
+        "Chores are done.",
+        "Time for a match!"
+      ],
+      "after_lines": [
+        "A fine team!",
+        "You earned a rest."
+      ],
+      "loss_lines": [
+        "Rise early!",
+        "Try again soon."
+      ]
+    }
+  ]
+}

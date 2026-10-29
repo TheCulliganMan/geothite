@@ -111,6 +111,17 @@ def check():
         assert authored['ports']==t['ports'],t['id']+': stale town ports'
         doors={d['target']:d for d in authored['doors']}
         assert len(doors)==len(authored['doors']),t['id']+': ambiguous facade pairing'
+        overlays=authored.get('transit_overlays',[])
+        assert overlays==t.get('transit_overlays',[]),t['id']+': stale transit overlay registration'
+        for overlay in overlays:
+            source=read(ROOT/overlay['source_file'])
+            room=overlay['room_id'];binding=source['exterior_binding'];door=binding['door']
+            assert source['id']==room and binding['hub']==t['id']
+            assert binding['expected_dimensions_metatiles']==authored['dimensions_metatiles']
+            assert room not in doors and door['target']==room,t['id']+': duplicate overlay door'
+            assert room_contracts[room]['source_file']==overlay['source_file']
+            assert next(r for r in t['interiors'] if r['id']==room)['authoring_file']==overlay['source_file']
+            doors[room]=door
         roster={r['id']:r for r in t['interiors']}
         assert set(doors)<=set(roster),t['id']+': unregistered authored room'
         expansion_rooms=set()
@@ -132,6 +143,10 @@ def check():
             if interior['id'] in expansion_rooms:
                 # The strict expansion adapter checks every indexed incoming
                 # and return pair, including upper floors with no street door.
+                continue
+            if interior.get('access_kind')=='published_road_gatehouse':
+                from check_shore_gate_plan import validate as validate_gate
+                validate_gate(ROOT,t,interior,room,contract)
                 continue
             if interior.get('access_kind')=='side_gatehouse':
                 gate=authored['gatehouse_contract']

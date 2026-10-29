@@ -1,0 +1,18 @@
+{
+  "accepted": true,
+  "mode": "2D",
+  "pack_sha256": "73bd0948be600b55d93842e1348c1fdcdd93423ef74295650d9cfa33b49badf1",
+  "reviewed": [
+    "native-before-v01/whole-route.png",
+    "source-candidate-v01/whole-route.png",
+    "source-candidate-v01/southern-shore-4x.png",
+    "native-v01/woodland-ascent.png",
+    "native-v01/southern-shore.png"
+  ],
+  "findings": [
+    "Woodland grass fills existing narrow ascent without changing path or canopy.",
+    "Small L-shaped shore patch crosses the path between existing forest and lake bank.",
+    "Native buoys, dock rails, cabin, flowers and existing route silhouette retained."
+  ],
+  "scope": "Visual acceptance only; gameplay, source/native pixel matching, audio, stdio, lint and current-parent selection guards remain required."
+}

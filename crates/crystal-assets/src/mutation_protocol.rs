@@ -1979,9 +1979,10 @@ fn insert_fly_destination(
     destination: FlyDestination,
 ) -> Result<()> {
     anyhow::ensure!(
-        destination.destination_spawn_identifier
-            < crystal_core::systems::special_routines::CRYSTAL_NUM_SPAWN_POINTS,
-        "fly destination '{flypoint_flag}' spawn identifier {} is outside Crystal's SpawnPoints table",
+        crystal_core::systems::special_routines::is_runtime_recovery_spawn_identifier(
+            destination.destination_spawn_identifier,
+        ),
+        "fly destination '{flypoint_flag}' spawn identifier {} is outside source/addon spawn ranges",
         destination.destination_spawn_identifier
     );
     if flypoint_flag != destination.flypoint_flag {
@@ -2531,7 +2532,10 @@ fn validate_map_module_extracted_script_commands(map_id: &str, map: &MapModule) 
             ),
         )?;
     }
-    for issue in script_variable_command_issues(&map.script_variable_commands) {
+    if let Some(issue) = script_variable_command_issues(&map.script_variable_commands)
+        .into_iter()
+        .next()
+    {
         anyhow::bail!(
             "map '{map_id}' script variable command {} in '{}' is malformed: {:?}",
             issue.command_index,
@@ -2742,6 +2746,7 @@ fn is_static_wild_battle_type(battle_type: &str) -> bool {
             | "BATTLETYPE_SUICUNE"
             | "BATTLETYPE_TRAP"
             | "BATTLETYPE_CELEBI"
+            | crystal_core::battle::capture::OPTIONAL_LEGENDARY_BATTLE_TYPE
             | "BATTLETYPE_TUTORIAL"
     )
 }
@@ -2796,7 +2801,10 @@ fn validate_script_text_command_shapes(map_id: &str, map: &MapModule) -> Result<
                 command.command_index
             ),
         )?;
-        for issue in script_text_command_issues(command, &text_labels) {
+        if let Some(issue) = script_text_command_issues(command, &text_labels)
+            .into_iter()
+            .next()
+        {
             anyhow::bail!(
                 "map '{map_id}' script text command {} in '{}' is malformed: {:?}",
                 command.command_index,
@@ -2810,7 +2818,7 @@ fn validate_script_text_command_shapes(map_id: &str, map: &MapModule) -> Result<
 
 fn validate_script_text_body_shapes(map_id: &str, map: &MapModule) -> Result<()> {
     for (label, body) in &map.script_text_bodies {
-        for issue in script_text_body_issues(label, body) {
+        if let Some(issue) = script_text_body_issues(label, body).into_iter().next() {
             anyhow::bail!(
                 "map '{map_id}' script text body '{label}' is malformed: {:?}",
                 issue
@@ -2833,7 +2841,10 @@ fn validate_script_text_body_shapes(map_id: &str, map: &MapModule) -> Result<()>
 
 fn validate_script_menu_definition_shapes(map_id: &str, map: &MapModule) -> Result<()> {
     for (label, menu) in &map.script_menu_definitions {
-        for issue in script_menu_definition_issues(label, menu) {
+        if let Some(issue) = script_menu_definition_issues(label, menu)
+            .into_iter()
+            .next()
+        {
             anyhow::bail!(
                 "map '{map_id}' script menu definition '{label}' is malformed: {:?}",
                 issue
@@ -2961,7 +2972,10 @@ fn validate_script_control_command_shapes(map_id: &str, map: &MapModule) -> Resu
                 command.command_index
             ),
         )?;
-        for issue in script_control_command_issues(command, &script_labels) {
+        if let Some(issue) = script_control_command_issues(command, &script_labels)
+            .into_iter()
+            .next()
+        {
             anyhow::bail!(
                 "map '{map_id}' script control command {} in '{}' is malformed: {:?}",
                 command.command_index,
@@ -3072,7 +3086,7 @@ fn validate_script_movement_shape(map_id: &str, movement: &ScriptMovement) -> Re
                 movement.label, step.index
             ),
         )?;
-        for issue in script_movement_step_issues(step) {
+        if let Some(issue) = script_movement_step_issues(step).into_iter().next() {
             anyhow::bail!(
                 "map '{map_id}' script movement '{}' step {} is malformed: {}",
                 movement.label,
@@ -3109,12 +3123,15 @@ fn validate_script_block_change_shape(
             change.command_index
         ),
     )?;
-    for issue in script_block_change_issues(
+    if let Some(issue) = script_block_change_issues(
         std::slice::from_ref(change),
         map.attributes.width,
         map.attributes.height,
         map.blocks.len(),
-    ) {
+    )
+    .into_iter()
+    .next()
+    {
         anyhow::bail!(
             "map '{map_id}' script block change command {} in '{}' is malformed: {:?}",
             change.command_index,
@@ -3155,12 +3172,15 @@ fn validate_script_object_command_shapes(map_id: &str, map: &MapModule) -> Resul
                 command.command_index
             ),
         )?;
-        for issue in script_object_command_issues(
+        if let Some(issue) = script_object_command_issues(
             command,
             &object_event_flags,
             &hideable_event_flags,
             &movements,
-        ) {
+        )
+        .into_iter()
+        .next()
+        {
             anyhow::bail!(
                 "map '{map_id}' script object command {} in '{}' is malformed: {}",
                 command.command_index,
@@ -3254,7 +3274,7 @@ fn validate_script_field_pickup_shape(map_id: &str, pickup: &ScriptFieldPickup) 
 }
 
 fn validate_script_flag_command_shape(map_id: &str, command: &ScriptFlagCommand) -> Result<()> {
-    for issue in script_flag_command_issues(command) {
+    if let Some(issue) = script_flag_command_issues(command).into_iter().next() {
         anyhow::bail!(
             "map '{map_id}' script flag command {} in '{}' is malformed: {:?}",
             command.command_index,
@@ -3273,7 +3293,7 @@ fn validate_script_flag_command_shape(map_id: &str, command: &ScriptFlagCommand)
 }
 
 fn validate_script_scene_command_shape(map_id: &str, command: &ScriptSceneCommand) -> Result<()> {
-    for issue in script_scene_command_issues(command) {
+    if let Some(issue) = script_scene_command_issues(command).into_iter().next() {
         anyhow::bail!(
             "map '{map_id}' script scene command {} in '{}' is malformed: {:?}",
             command.command_index,

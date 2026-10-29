@@ -46,6 +46,7 @@ struct Cell {
 /// changed external boundary, erased water, occupied actor or invalid pack.
 pub fn build_river_route_fun(base: &CompiledGamePack, source: &str) -> Result<CompiledGamePack> {
     crate::verify_compiled_game_pack_for_runtime(base)?;
+    crate::river_content_lineage::validate(base)?;
     let revision: Revision = serde_json::from_str(source)?;
     ensure!(
         revision.schema_version == 1 && revision.maps.len() == 12,
@@ -293,6 +294,7 @@ pub fn build_river_route_fun(base: &CompiledGamePack, source: &str) -> Result<Co
         &pack.runtime_files,
         &pack.report,
     )?;
+    crate::river_content_lineage::validate(&pack)?;
     crate::verify_compiled_game_pack_for_runtime(&pack)?;
     Ok(pack)
 }

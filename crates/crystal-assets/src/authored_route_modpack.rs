@@ -20,6 +20,10 @@ pub(crate) fn build_authored_route(
     dossier_json: &str,
     expected_route: &str,
 ) -> Result<CompiledGamePack> {
+    ensure!(
+        !matches!(expected_route, "MN_R11" | "MN_R12"),
+        "rectangular standalone North Shore/Gunflint builders are retired; use build_compact_superior and the current compact-lineage parent instead"
+    );
     let design = RouteDesign::parse(dossier_json)?;
     ensure!(design.id == expected_route, "wrong route dossier");
     let spec = match expected_route {
@@ -428,7 +432,12 @@ pub(crate) fn build_authored_route(
             // FLOOR does not trigger a warp during movement. This ordinary
             // native event is only a destination for the interior's return.
             let [x, y] = events::local(door.arrival_tile);
-            authoring::warp(exterior, (x, y), &events::constant(&room.id), 1);
+            authoring::warp(
+                exterior,
+                (x, y),
+                &events::constant(&room.id),
+                door.return_target_warp.unwrap_or(1),
+            );
         }
     }
     events::apply(&mut pack, &design, &mut modules)?;
@@ -746,14 +755,18 @@ pub(crate) fn validate_geometry(
     let occupied = bodies.iter().copied().collect::<BTreeSet<_>>();
     ensure!(occupied.len() == bodies.len(), "overlapping route actors");
     let [width, height] = design.dimensions_metatiles;
-    let kind = |tile| collision(pack, blocks, width, tile, tileset);
+    // Bridge permissions retain a separate Surf-underpass interpretation at
+    // runtime. This graph certifies ordinary walking over their unchanged deck.
+    let walking_kind = |kind| match kind {
+        "BRIDGE_NS_DECK" | "BRIDGE_EW_DECK" => "FLOOR",
+        "BRIDGE_NS_RAIL" | "BRIDGE_EW_RAIL" => "WALL",
+        other => other,
+    };
+    let kind = |tile| collision(pack, blocks, width, tile, tileset).map(walking_kind);
     crate::authored_route_traversal::validate_ledges(design, kind)?;
     for tile in bodies {
-        let [x, y] = events::local(tile);
-        ensure!(
-            x > 0 && x < 63 && y > 0 && y < 47,
-            "actor {tile:?} touches a chunk boundary; native talk cannot cross that boundary"
-        );
+        // Edge actors are usable from their own map. The reachable-approach
+        // check below rejects interactions that would require crossing a seam.
         ensure!(
             kind(tile)? == "FLOOR",
             "route actor {tile:?} is not on clear floor"
@@ -765,12 +778,23 @@ pub(crate) fn validate_geometry(
     let mut queue = VecDeque::from([start]);
     ensure!(kind(start)? == "FLOOR", "route arrival is blocked");
     while let Some([x, y]) = queue.pop_front() {
-        for [nx, ny] in [
+        for [mut nx, mut ny] in [
             [i32::from(x) + 1, i32::from(y)],
             [i32::from(x) - 1, i32::from(y)],
             [i32::from(x), i32::from(y) + 1],
             [i32::from(x), i32::from(y) - 1],
         ] {
+            let dx = nx - i32::from(x);
+            let dy = ny - i32::from(y);
+            // Certify straight crossings to land without allowing turns on a
+            // transient ice tile. Wall stops still need native controller proof.
+            while (0..i32::from(width) * 2).contains(&nx)
+                && (0..i32::from(height) * 2).contains(&ny)
+                && kind([u16::try_from(nx)?, u16::try_from(ny)?])? == "ICE"
+            {
+                nx += dx;
+                ny += dy;
+            }
             if !(0..i32::from(width) * 2).contains(&nx) || !(0..i32::from(height) * 2).contains(&ny)
             {
                 continue;
@@ -813,9 +837,9 @@ pub(crate) fn validate_geometry(
     let after_blocks = cut
         .as_ref()
         .map_or(blocks, |cut| cut.after_blocks.as_slice());
-    let after_kind = |tile| collision(pack, after_blocks, width, tile, tileset);
-    crate::authored_route_traversal::validate_grass_crossings(design, &seen)?;
-    crate::authored_route_traversal::validate_grass_crossings(design, all_seen)?;
+    let after_kind = |tile| collision(pack, after_blocks, width, tile, tileset).map(walking_kind);
+    crate::authored_route_traversal::validate_grass_crossings(design, &seen, kind)?;
+    crate::authored_route_traversal::validate_grass_crossings(design, all_seen, after_kind)?;
     crate::authored_route_traversal::validate_ledge_returns(design, all_seen, after_kind)?;
     crate::authored_route_traversal::validate_battle_grass_choices(design, &seen, kind)?;
     crate::authored_route_traversal::validate_battle_grass_choices(design, all_seen, after_kind)?;
@@ -902,7 +926,11 @@ pub(crate) fn validate_geometry(
         );
     }
     for viewpoint in &design.viewpoints {
-        ensure!(all_seen.contains(&viewpoint.tile), "unreachable viewpoint");
+        ensure!(
+            all_seen.contains(&viewpoint.tile),
+            "unreachable viewpoint at {:?}",
+            viewpoint.tile
+        );
     }
     if let Some(shortcut) = &design.shortcut {
         ensure!(

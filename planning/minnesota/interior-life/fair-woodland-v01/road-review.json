@@ -1,0 +1,24 @@
+{
+  "expansion_contract": {
+    "review_views": [
+      {
+        "id": "fair-east-gate",
+        "map": "MnStateFairgrounds",
+        "core": [
+          93,
+          65
+        ],
+        "source_depth": 2
+      },
+      {
+        "id": "pine-country-west-trail",
+        "map": "MnR05C00R02",
+        "core": [
+          1,
+          8
+        ],
+        "source_depth": 2
+      }
+    ]
+  }
+}

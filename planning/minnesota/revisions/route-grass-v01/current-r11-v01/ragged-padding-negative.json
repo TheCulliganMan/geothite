@@ -1,0 +1,7 @@
+{
+  "rejected": true,
+  "failed_checks": [
+    "MnR11C01R00 omitted source padding unchanged"
+  ],
+  "native_pack_unchanged": true
+}

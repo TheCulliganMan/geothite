@@ -1,0 +1,439 @@
+{
+  "version": 1,
+  "id": "MN_BOUNDARY_WATERS_SAFARI",
+  "fishing_flee_threshold": 64,
+  "admission_map": "MnBoundaryWaters",
+  "admission_script": "MN_BOUNDARY_ADMISSION_RANGER",
+  "admission_actor_core": [
+    30,
+    9
+  ],
+  "entry": {
+    "map_name": "MnBoundarySafariC00R02",
+    "tile": {
+      "x": 15,
+      "y": 9
+    },
+    "facing": "up"
+  },
+  "return_to": {
+    "map_name": "MnBoundaryWaters",
+    "tile": {
+      "x": 30,
+      "y": 10
+    },
+    "facing": "up"
+  },
+  "maps": {
+    "MnBoundarySafariC00R00": {
+      "origin_core": [
+        0,
+        0
+      ]
+    },
+    "MnBoundarySafariC01R00": {
+      "origin_core": [
+        64,
+        0
+      ]
+    },
+    "MnBoundarySafariC00R01": {
+      "origin_core": [
+        0,
+        48
+      ]
+    },
+    "MnBoundarySafariC01R01": {
+      "origin_core": [
+        64,
+        48
+      ]
+    },
+    "MnBoundarySafariC00R02": {
+      "origin_core": [
+        0,
+        96
+      ]
+    },
+    "MnBoundarySafariC01R02": {
+      "origin_core": [
+        64,
+        96
+      ]
+    },
+    "MnBoundaryRootBeerCabin": {
+      "origin_core": null
+    }
+  },
+  "habitats": [
+    {
+      "id": "REED_MARSH",
+      "bounds_core": [
+        [
+          0,
+          72
+        ],
+        [
+          64,
+          112
+        ]
+      ],
+      "grass_rate": 48,
+      "water_rate": 12,
+      "grass": [
+        {
+          "species": "WRIGGLET",
+          "level": 32,
+          "weight": 25,
+          "flee_threshold": 64
+        },
+        {
+          "species": "GILLPUP",
+          "level": 30,
+          "weight": 20,
+          "flee_threshold": 64
+        },
+        {
+          "species": "TAPDUCK",
+          "level": 31,
+          "weight": 15,
+          "flee_threshold": 64
+        },
+        {
+          "species": "TICKLET",
+          "level": 30,
+          "weight": 15,
+          "flee_threshold": 64
+        },
+        {
+          "species": "CLINKLAW",
+          "level": 32,
+          "weight": 12,
+          "flee_threshold": 64
+        },
+        {
+          "species": "MUDMENDER",
+          "level": 34,
+          "weight": 10,
+          "flee_threshold": 96
+        },
+        {
+          "species": "MOSQUITAN",
+          "level": 55,
+          "weight": 3,
+          "flee_threshold": 128
+        }
+      ],
+      "water": [
+        {
+          "species": "GILLPUP",
+          "level": 30,
+          "weight": 35,
+          "flee_threshold": 64
+        },
+        {
+          "species": "TICKLET",
+          "level": 31,
+          "weight": 25,
+          "flee_threshold": 64
+        },
+        {
+          "species": "WINKFIN",
+          "level": 30,
+          "weight": 20,
+          "flee_threshold": 64
+        },
+        {
+          "species": "RIVVIT",
+          "level": 32,
+          "weight": 15,
+          "flee_threshold": 64
+        },
+        {
+          "species": "MUDMENDER",
+          "level": 35,
+          "weight": 5,
+          "flee_threshold": 96
+        }
+      ]
+    },
+    {
+      "id": "PINE_PORTAGE",
+      "bounds_core": [
+        [
+          0,
+          0
+        ],
+        [
+          64,
+          72
+        ]
+      ],
+      "grass_rate": 48,
+      "water_rate": 12,
+      "grass": [
+        {
+          "species": "PINIT",
+          "level": 30,
+          "weight": 25,
+          "flee_threshold": 64
+        },
+        {
+          "species": "NOTCHBILL",
+          "level": 33,
+          "weight": 25,
+          "flee_threshold": 64
+        },
+        {
+          "species": "DENSY",
+          "level": 32,
+          "weight": 20,
+          "flee_threshold": 64
+        },
+        {
+          "species": "BARRICANT",
+          "level": 33,
+          "weight": 15,
+          "flee_threshold": 64
+        },
+        {
+          "species": "SHEDSTAG",
+          "level": 36,
+          "weight": 10,
+          "flee_threshold": 96
+        },
+        {
+          "species": "GOUGECREST",
+          "level": 38,
+          "weight": 5,
+          "flee_threshold": 96
+        }
+      ],
+      "water": [
+        {
+          "species": "GILLPUP",
+          "level": 31,
+          "weight": 30,
+          "flee_threshold": 64
+        },
+        {
+          "species": "RIVVIT",
+          "level": 32,
+          "weight": 25,
+          "flee_threshold": 64
+        },
+        {
+          "species": "WINKFIN",
+          "level": 32,
+          "weight": 25,
+          "flee_threshold": 64
+        },
+        {
+          "species": "CLINKLAW",
+          "level": 32,
+          "weight": 15,
+          "flee_threshold": 64
+        },
+        {
+          "species": "DRIFTILE",
+          "level": 35,
+          "weight": 5,
+          "flee_threshold": 96
+        }
+      ]
+    },
+    {
+      "id": "GRANITE_SHORE",
+      "bounds_core": [
+        [
+          64,
+          0
+        ],
+        [
+          128,
+          56
+        ]
+      ],
+      "grass_rate": 48,
+      "water_rate": 12,
+      "grass": [
+        {
+          "species": "TESSLARV",
+          "level": 32,
+          "weight": 30,
+          "flee_threshold": 64
+        },
+        {
+          "species": "AGATOT",
+          "level": 31,
+          "weight": 25,
+          "flee_threshold": 64
+        },
+        {
+          "species": "CLINKLAW",
+          "level": 33,
+          "weight": 20,
+          "flee_threshold": 64
+        },
+        {
+          "species": "NOTCHBILL",
+          "level": 34,
+          "weight": 15,
+          "flee_threshold": 64
+        },
+        {
+          "species": "BANDRAKE",
+          "level": 36,
+          "weight": 8,
+          "flee_threshold": 96
+        },
+        {
+          "species": "GOUGECREST",
+          "level": 38,
+          "weight": 2,
+          "flee_threshold": 96
+        }
+      ],
+      "water": [
+        {
+          "species": "WINKFIN",
+          "level": 32,
+          "weight": 35,
+          "flee_threshold": 64
+        },
+        {
+          "species": "CLINKLAW",
+          "level": 32,
+          "weight": 25,
+          "flee_threshold": 64
+        },
+        {
+          "species": "SCUTLET",
+          "level": 33,
+          "weight": 25,
+          "flee_threshold": 64
+        },
+        {
+          "species": "GLACIRIS",
+          "level": 36,
+          "weight": 15,
+          "flee_threshold": 96
+        }
+      ]
+    },
+    {
+      "id": "QUIET_WATER",
+      "bounds_core": [
+        [
+          64,
+          56
+        ],
+        [
+          128,
+          112
+        ]
+      ],
+      "grass_rate": 48,
+      "water_rate": 12,
+      "grass": [
+        {
+          "species": "TESSLARV",
+          "level": 32,
+          "weight": 25,
+          "flee_threshold": 64
+        },
+        {
+          "species": "TICKLET",
+          "level": 32,
+          "weight": 25,
+          "flee_threshold": 64
+        },
+        {
+          "species": "RIVVIT",
+          "level": 33,
+          "weight": 20,
+          "flee_threshold": 64
+        },
+        {
+          "species": "PINIT",
+          "level": 31,
+          "weight": 15,
+          "flee_threshold": 64
+        },
+        {
+          "species": "SHEDSTAG",
+          "level": 36,
+          "weight": 10,
+          "flee_threshold": 96
+        },
+        {
+          "species": "SOLSTORT",
+          "level": 36,
+          "weight": 5,
+          "flee_threshold": 96
+        }
+      ],
+      "water": [
+        {
+          "species": "WINKFIN",
+          "level": 32,
+          "weight": 25,
+          "flee_threshold": 64
+        },
+        {
+          "species": "SCUTLET",
+          "level": 34,
+          "weight": 25,
+          "flee_threshold": 64
+        },
+        {
+          "species": "RIVVIT",
+          "level": 34,
+          "weight": 20,
+          "flee_threshold": 64
+        },
+        {
+          "species": "DRIFTILE",
+          "level": 35,
+          "weight": 15,
+          "flee_threshold": 96
+        },
+        {
+          "species": "GLACIRIS",
+          "level": 38,
+          "weight": 12,
+          "flee_threshold": 96
+        },
+        {
+          "species": "TIPULORD",
+          "level": 44,
+          "weight": 3,
+          "flee_threshold": 128
+        }
+      ]
+    }
+  ],
+  "gate_court": {
+    "map_name": "MnBoundarySafariC00R02",
+    "free_bounds_core": [
+      [
+        8,
+        5
+      ],
+      [
+        18,
+        16
+      ]
+    ],
+    "approach_map": "MnPreservePineEntry",
+    "guard_identifiers": [
+      "BWS_PENDING_GATE_WEST",
+      "BWS_PENDING_GATE_EAST"
+    ]
+  },
+  "retire_scripts": [
+    "BWS_REED_RETURN_RANGER",
+    "BWS_GRANITE_RETURN_RANGER",
+    "BWS_QUIET_RETURN_RANGER"
+  ]
+}

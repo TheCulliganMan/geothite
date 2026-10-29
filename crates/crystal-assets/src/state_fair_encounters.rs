@@ -19,6 +19,7 @@ pub(crate) fn install(
     encounters: WildEncounterData,
     families: &[Family],
 ) -> Result<()> {
+    let roster = crate::authored_regional_approach::policy()?;
     let name = "MnStateFairgrounds";
     ensure!(
         encounters.map_name == name && !pack.data.wild_encounters.contains_key(name),
@@ -71,8 +72,8 @@ pub(crate) fn install(
             );
             for slot in slots {
                 ensure!(
-                    pack.data.pokemon.contains_key(&slot.species),
-                    "install the regional species overlay before the fair: {}",
+                    roster.target(pack, &slot.species, None)? == slot.species,
+                    "fair grass needs active Minnesota species: {}",
                     slot.species
                 );
                 available[index].insert(slot.species.as_str());

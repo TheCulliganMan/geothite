@@ -1,0 +1,109 @@
+[
+  {
+    "label": "MN_R15_T02Seen",
+    "source_field": "before_lines",
+    "lines": [
+      "The short road",
+      "passes my spot.",
+      "Let us battle!"
+    ]
+  },
+  {
+    "label": "MN_R15_T02Won",
+    "source_field": "after_lines",
+    "lines": [
+      "Take the bridge.",
+      "The cabin is east.",
+      "Try the ROD GURU!",
+      "His house is above",
+      "the lakeside deck",
+      "on PINE COUNTRY RD",
+      "south of BRAINERD.",
+      "A free SUPER ROD!"
+    ]
+  },
+  {
+    "label": "MN_R15_T02Lost",
+    "source_field": "loss_lines",
+    "lines": [
+      "The meadow path",
+      "goes round me."
+    ]
+  },
+  {
+    "label": "MN_R15_T03Seen",
+    "source_field": "before_lines",
+    "lines": [
+      "Rested from camp?",
+      "Try my team!"
+    ]
+  },
+  {
+    "label": "MN_R15_T03Won",
+    "source_field": "after_lines",
+    "lines": [
+      "The lake is a",
+      "fine rest stop."
+    ]
+  },
+  {
+    "label": "MN_R15_T03Lost",
+    "source_field": "loss_lines",
+    "lines": [
+      "Ida runs the",
+      "office up north."
+    ]
+  },
+  {
+    "label": "MN_R15_PIER_WATCHERText",
+    "source_field": "residents.lines",
+    "lines": [
+      "The rail ends",
+      "at the dock gate.",
+      "A little walk",
+      "gets a lake view.",
+      "Try the ROD GURU!",
+      "His house is above",
+      "the lakeside deck",
+      "on PINE COUNTRY RD",
+      "south of BRAINERD.",
+      "A free SUPER ROD!"
+    ]
+  },
+  {
+    "label": "MN_R15_ROAD_WALKERText",
+    "source_field": "residents.lines",
+    "lines": [
+      "Eli lives here.",
+      "You may go inside.",
+      "The road west",
+      "uses the bridge."
+    ]
+  },
+  {
+    "label": "MN_R15_SIGN_01Text",
+    "source_field": "signs.lines",
+    "lines": [
+      "CENTRAL LAKES",
+      "WEST: DETROIT",
+      "EAST: BRAINERD"
+    ]
+  },
+  {
+    "label": "MN_R15_SIGN_02Text",
+    "source_field": "signs.lines",
+    "lines": [
+      "SHINER LAKE",
+      "DOCK: NORTH",
+      "KEEP TO THE RAILS"
+    ]
+  },
+  {
+    "label": "MN_R15_SIGN_03Text",
+    "source_field": "signs.lines",
+    "lines": [
+      "LAKE CABIN",
+      "VISITORS WELCOME"
+    ]
+  }
+]

@@ -27,17 +27,25 @@ from review_boundary_basecamp_native import actor_scene
 ROOT = Path(__file__).resolve().parents[3]
 OUTPUT = ROOT / 'planning/minnesota/renders/terrain-revisions'
 IDENTITY_FIELDS = ('format_version', 'data', 'audio_manifest', 'runtime_files', 'report')
-CAMERAS = {'MN_R04': [('east_gardens', (45, 17)), ('old_forecourt', (45, 19)),
+CAMERAS = {'MN_R03': [('bird_meadow_drop', (11, 19)), ('bird_meadow_return', (16, 20)),
+                     ('lower_east_bank', (39, 49))],
+           'MN_R04': [('east_gardens', (45, 17)), ('old_forecourt', (45, 19)),
                      ('bridge_arrival', (39, 19))],
-           'MN_R06': [('north_junction', (39, 15)), ('southern_shoulder', (39, 19))],
-           'MN_R07': [('north_elbow', (20, 14)), ('trainer_pocket', (14, 13))],
-           'MN_R05': [('current_walk', (24, 21))],
-           'MN_R08': [('main', (49, 47)), ('north', (50, 43)), ('south', (55, 51))],
-           'MN_R09': [('north_bench', (53, 19)), ('haul_track', (65, 47)),
+           'MN_R06': [('new_drop', (45, 9)), ('grass_return', (48, 11)),
+                     ('camp_habitat', (23, 63)), ('north_junction', (39, 15)),
+                     ('southern_shoulder', (39, 19))],
+           'MN_R07': [('wet_meadow', (49, 47)), ('meadow_corner', (44, 49)),
+                     ('peninsula_trail', (51, 63)), ('north_elbow', (20, 14)),
+                     ('trainer_pocket', (14, 13))],
+           'MN_R05': [('upper_climb', (15, 39)), ('lower_climb', (13, 73)),
+                     ('lower_ramp_neck', (13, 81)), ('current_walk', (24, 21))],
+           'MN_R08': [('birch_grass_ramp', (35, 29)), ('cedar_grass_approach', (73, 67)),
+                     ('main', (49, 47)), ('north', (50, 43)), ('south', (55, 51))],
+           'MN_R09': [('spoil_grass_shoulder', (80, 31)), ('north_bench', (53, 19)), ('haul_track', (65, 47)),
                       ('mine_apron', (45, 43)), ('rail_cutting', (94, 27))],
-           'MN_R10': [('carrier_bend', (17, 17)), ('grass_neck', (53, 19)),
+           'MN_R10': [('grass_climb', (11, 16)), ('carrier_bend', (17, 17)), ('grass_neck', (53, 19)),
                       ('weakest_shoulder', (60, 20))],
-           'MN_R11': [('north_cascade', (23, 24)), ('south_cascade', (23, 103)),
+           'MN_R11': [('birch_grass_climb', (34, 89)), ('stoney_grass_neck', (35, 140)), ('lester_grass_crown', (36, 170)), ('north_cascade', (23, 24)), ('south_cascade', (23, 103)),
                       ('north_bridge', (41, 39)), ('south_bridge', (41, 109))]}
 
 
@@ -112,13 +120,22 @@ def read_revision(paths):
                for i, (a, b) in enumerate(zip(before, after)) if a != b]
     require(changed, 'Declared source revision has no terrain change')
     chunks = []
+    extents = old.get('native_chunk_extents', {})
     for row in range(dossier['chunk_rows']):
         for column in range(dossier['chunk_columns']):
             x, y = column*32, row*24
             cw, ch = min(32, w-x), min(24, h-y)
+            name = f'{dossier["map_prefix"]}C{column:02}R{row:02}'
+            native_w, native_h = extents.get(name, [cw, ch])
+            require(0 < native_w <= cw and 0 < native_h <= ch, 'Invalid native edge extent')
+            padding = [yy*w+xx for yy in range(y, y+ch) for xx in range(x, x+cw)
+                       if xx >= x+native_w or yy >= y+native_h]
+            require(all(before[i] == after[i] for i in padding), 'Omitted native padding changed')
+            cw, ch = native_w, native_h
             clip = lambda blocks: [value for yy in range(y, y+ch) for value in blocks[yy*w+x:yy*w+x+cw]]
-            chunks.append(dict(name=f'{dossier["map_prefix"]}C{column:02}R{row:02}', origin=[x, y],
+            chunks.append(dict(name=name, origin=[x, y], padding=padding,
                                size=[cw, ch], before=clip(before), after=clip(after)))
+    require(set(extents) <= {c['name'] for c in chunks}, 'Unknown native edge extent owner')
     return dict(id=dossier['id'], old=old, new=new, dossier=dossier, before=before, after=after,
                 chunks=chunks, changed=changed,
                 source_files=[dict(path=str(path.resolve()), sha256=hashlib.sha256(path.read_bytes()).hexdigest())
@@ -132,6 +149,10 @@ def validate_chunk(pack, revision, chunk, state):
     require(module['id'] == name, name+': native module identity mismatch')
     require([attrs['width'], attrs['height']] == chunk['size'], name+': clipped native extent mismatch')
     require(attrs['tileset_name'] == revision['old']['compiled_tileset'], name+': native tileset mismatch')
+    collision = pack['data']['tilesets'][attrs['tileset_name']]['collision']
+    for index in chunk.get('padding', []):
+        require(collision[f'{revision[state][index]:02x}'] == ['WALL']*4,
+                name+': omitted native padding is traversable')
     require(pack['data']['map_attributes'][name] == attrs, name+': split map attributes differ')
     labels = [attrs[key] for key in ['blocks_label', 'map_scripts_label', 'map_events_label']]
     require(all(isinstance(label, str) and label for label in labels) and len(set(labels)) == 3,
@@ -221,19 +242,34 @@ class Images:
         return render_stage(image, operation, self.directory, label, *args)
 
 
+def source_terrain(art, layout, width, height, blocks):
+    """Rebuild recipes from the original prefix, even if the pack extended it."""
+    recipes = layout.get('derived_blocks', [])
+    source_art = copy(art)
+    source_art.cache = dict(art.cache)
+    if recipes:
+        first = int(recipes[0]['id'], 16)
+        base = art.blocks(layout['tileset'])
+        require(first <= len(base), 'Source recipe begins beyond native art')
+        source_art.cache[layout['tileset'], 'day', None] = list(base[:first])
+    return source_art.render(layout['tileset'], width, height, blocks, derived=recipes)
+
+
 def whole(pack, revision, state, art, source=False):
     w, h = revision['old']['dimensions_metatiles']
     actors = []
     if source:
         layout = revision['old' if state == 'before' else 'new']
-        terrain = art.render(layout['tileset'], w, h, revision[state], derived=layout.get('derived_blocks', []))
-    else:
-        terrain = Image.new('RGB', (w*32, h*32))
+        complete = source_terrain(art, layout, w, h, revision[state])
+    terrain = Image.new('RGB', (w*32, h*32))
     for chunk in revision['chunks']:
         module = pack['data']['maps'][chunk['name']]
         attrs = module['attributes']
         x, y = chunk['origin']
-        if not source:
+        if source:
+            cw, ch = chunk['size']
+            terrain.paste(complete.crop((x*32, y*32, (x+cw)*32, (y+ch)*32)), (x*32, y*32))
+        else:
             terrain.paste(art.render(attrs['tileset_name'], attrs['width'], attrs['height'], module['blocks']), (x*32, y*32))
         actors.extend(dict(actor, x=actor['x']+x*2, y=actor['y']+y*2) for actor in module['objects'])
     return terrain, actors
@@ -244,7 +280,7 @@ def validate_recipes(pack, revision):
     layout = revision['old']
     for recipe in layout.get('derived_blocks', []):
         block = int(recipe['id'], 16)
-        expected = art.render(layout['tileset'], 1, 1, [block], derived=layout['derived_blocks'])
+        expected = source_terrain(art, layout, 1, 1, [block])
         actual = art.render(layout['compiled_tileset'], 1, 1, [block])
         require(actual.tobytes() == expected.tobytes(), revision['id']+': native glyph differs from exact source recipe '+recipe['id'])
         if 'collision_source_block' in recipe:

@@ -200,7 +200,7 @@ fn iron_range_descent_controller_walks_geometry_events_and_cave() {
     }
     assert_eq!(position(&mut controller), (25, 22));
     blocked(&mut controller, GameButton::Up);
-    assert_eq!(grid.path((25, 22), (25, 19)).len(), 33);
+    assert_eq!(grid.path((25, 22), (25, 19)).len(), 39);
     grid.walk(&mut controller, (25, 19));
 
     for (at, expected) in [
@@ -369,7 +369,9 @@ fn iron_range_descent_controller_wins_calder_and_continues() {
             matches!(&battle.kind, RuntimeBattleKind::Trainer { trainer_id, event_flag, .. } if trainer_id == "MN_R10_T01" && event_flag == "EVENT_MN_R10_TRAINER_01")
         );
         opponents.insert(battle.enemy_pokemon.species.id.clone());
-        let button = if snapshot.ui.menu.is_none() && snapshot.ui.text.is_some() {
+        let button = if !controller.shell.battle_messages.is_empty()
+            || (snapshot.ui.menu.is_none() && snapshot.ui.text.is_some())
+        {
             controller
                 .wait_frames(30)
                 .expect("battle text presentation");
@@ -420,7 +422,11 @@ fn iron_range_descent_controller_wins_calder_and_continues() {
     );
     assert_eq!(
         opponents,
-        BTreeSet::from(["GRAVELER".into(), "MACHOKE".into()])
+        runtime.data().trainers.trainers["MN_R10_T01"]
+            .party
+            .iter()
+            .map(|pokemon| pokemon.species.clone())
+            .collect::<BTreeSet<_>>()
     );
     assert!(event(&controller, "EVENT_MN_R10_TRAINER_01"));
     let nonce = SystemTime::now()
@@ -632,4 +638,78 @@ fn iron_range_descent_controller_native_outdoor_stair_both_directions_and_side_w
     grid.walk(&mut controller, (11, 22));
     assert_eq!(position(&mut controller), (11, 22));
     assert_eq!(controller.shell.last_error, None);
+}
+
+#[test]
+#[ignore = "requires the published carrier-bank grass revision"]
+fn iron_range_descent_carrier_grass_triggers_native_encounters() {
+    let (_, _, mut controller) = fixture((11, 18), true);
+    // All subsequent state changes come from native movement and RUN inputs.
+    let mut encounters = 0;
+    for _ in 0..16 {
+        for (button, y) in (14..18)
+            .rev()
+            .map(|y| (GameButton::Up, y))
+            .chain((15..19).map(|y| (GameButton::Down, y)))
+        {
+            let target = (11, y);
+            for _ in 0..8 {
+                controller
+                    .press(button)
+                    .expect("native reclaimed-grass step");
+                let mut active = false;
+                for _ in 0..512 {
+                    let snapshot = controller.snapshot().expect("native grass encounter state");
+                    let input = if let Some(battle) = &snapshot.battle {
+                        assert!(matches!(battle.kind, RuntimeBattleKind::Wild { .. }));
+                        if !active {
+                            encounters += 1;
+                            active = true;
+                        }
+                        if !controller.shell.battle_messages.is_empty()
+                            || snapshot.ui.menu.is_none()
+                        {
+                            GameButton::A
+                        } else if let Some(cursor) = &controller.shell.battle_action_cursor {
+                            match cursor.option_index {
+                                0 | 1 => GameButton::Down,
+                                2 => GameButton::Right,
+                                3 => GameButton::A,
+                                _ => panic!("invalid native action cursor"),
+                            }
+                        } else {
+                            GameButton::A
+                        }
+                    } else if snapshot.phase == RuntimeShellPhase::Text
+                        || controller.has_pending_script_work()
+                        || !controller.shell.battle_messages.is_empty()
+                    {
+                        GameButton::A
+                    } else {
+                        assert_eq!(snapshot.phase, RuntimeShellPhase::Overworld);
+                        break;
+                    };
+                    controller
+                        .press(input)
+                        .expect("native RUN or narration input");
+                    controller
+                        .wait_frames(16)
+                        .expect("native encounter presentation");
+                }
+                if position(&mut controller) == target {
+                    break;
+                }
+            }
+            assert_eq!(position(&mut controller), target);
+        }
+    }
+    assert!(
+        encounters > 0,
+        "new grass never produced an actual native encounter"
+    );
+    assert_eq!(position(&mut controller), (11, 18));
+    assert_eq!(controller.shell.last_error, None);
+    eprintln!(
+        "carrier-bank climb: {encounters} native wild encounters across 128 grass-loop steps"
+    );
 }

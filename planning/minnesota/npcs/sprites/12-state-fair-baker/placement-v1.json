@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "trainers": [
+    {
+      "map": "MnStPaul",
+      "approach": [
+        27,
+        21
+      ],
+      "id": "MN_EXTRA_NPC_BAKER_01",
+      "display_name": "DOTTIE",
+      "trainer_class": "MN_STATE_FAIR_BAKER",
+      "class_name": "BAKER",
+      "template_class": "POKEFANF",
+      "sprite": "SPRITE_MN_STATE_FAIR_BAKER",
+      "tile": [
+        27,
+        20
+      ],
+      "facing": "south",
+      "sight_range": 2,
+      "defeated_flag": "EVENT_MN_EXTRA_NPC_BAKER_01",
+      "party": [
+        {
+          "species": "CHISLET",
+          "level": 28
+        },
+        {
+          "species": "BUTTERMUSE",
+          "level": 30
+        }
+      ],
+      "before_lines": [
+        "Freshly baked!",
+        "A warm challenge!"
+      ],
+      "after_lines": [
+        "A winning recipe!",
+        "Bake with care."
+      ],
+      "loss_lines": [
+        "One more helping?",
+        "Try another batch."
+      ]
+    }
+  ]
+}

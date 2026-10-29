@@ -9848,6 +9848,5433 @@
         7
       ],
       "block": "76"
+    },
+    {
+      "name": "Birch return-bank grass joins the upper stair path",
+      "kind": "block_remap",
+      "bounds": [
+        16,
+        44,
+        18,
+        45
+      ],
+      "from": "01",
+      "to": "03"
+    },
+    {
+      "name": "Birch return-bank grass joins the upper stair path",
+      "kind": "block_remap",
+      "bounds": [
+        16,
+        44,
+        18,
+        45
+      ],
+      "from": "02",
+      "to": "03"
+    },
+    {
+      "name": "Birch return-bank grass joins the upper stair path",
+      "kind": "block_remap",
+      "bounds": [
+        16,
+        44,
+        18,
+        45
+      ],
+      "from": "71",
+      "to": "03"
+    },
+    {
+      "name": "Stoney Point woodland grass crosses the walking neck",
+      "kind": "block_remap",
+      "bounds": [
+        17,
+        69,
+        19,
+        71
+      ],
+      "from": "01",
+      "to": "03"
+    },
+    {
+      "name": "Stoney Point woodland grass crosses the walking neck",
+      "kind": "block_remap",
+      "bounds": [
+        17,
+        69,
+        19,
+        71
+      ],
+      "from": "02",
+      "to": "03"
+    },
+    {
+      "name": "Stoney Point woodland grass crosses the walking neck",
+      "kind": "block_remap",
+      "bounds": [
+        17,
+        69,
+        19,
+        71
+      ],
+      "from": "71",
+      "to": "03"
+    },
+    {
+      "name": "Lester terrace grass reaches its eastern climbing lane",
+      "kind": "block_remap",
+      "bounds": [
+        18,
+        84,
+        19,
+        86
+      ],
+      "from": "01",
+      "to": "03"
+    },
+    {
+      "name": "Lester terrace grass reaches its eastern climbing lane",
+      "kind": "block_remap",
+      "bounds": [
+        18,
+        84,
+        19,
+        86
+      ],
+      "from": "02",
+      "to": "03"
+    },
+    {
+      "name": "Lester terrace grass reaches its eastern climbing lane",
+      "kind": "block_remap",
+      "bounds": [
+        18,
+        84,
+        19,
+        86
+      ],
+      "from": "71",
+      "to": "03"
+    },
+    {
+      "name": "Birch attached retaining boulder closes the cliff-foot grass bypass",
+      "kind": "point",
+      "position": [
+        17,
+        45
+      ],
+      "block": "0a"
+    },
+    {
+      "name": "Retain the clear native Lester stair landing",
+      "kind": "point",
+      "position": [
+        18,
+        85
+      ],
+      "block": "71"
+    },
+    {
+      "name": "Lester grassy crown includes the landing beyond the native stair",
+      "kind": "point",
+      "position": [
+        18,
+        85
+      ],
+      "block": "03"
+    },
+    {
+      "name": "installed warm compact cell 39,3",
+      "kind": "point",
+      "position": [
+        39,
+        3
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 40,3",
+      "kind": "point",
+      "position": [
+        40,
+        3
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 41,3",
+      "kind": "point",
+      "position": [
+        41,
+        3
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 42,3",
+      "kind": "point",
+      "position": [
+        42,
+        3
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 43,3",
+      "kind": "point",
+      "position": [
+        43,
+        3
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 44,3",
+      "kind": "point",
+      "position": [
+        44,
+        3
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 45,3",
+      "kind": "point",
+      "position": [
+        45,
+        3
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 39,4",
+      "kind": "point",
+      "position": [
+        39,
+        4
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 45,4",
+      "kind": "point",
+      "position": [
+        45,
+        4
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 46,4",
+      "kind": "point",
+      "position": [
+        46,
+        4
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 47,4",
+      "kind": "point",
+      "position": [
+        47,
+        4
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 48,4",
+      "kind": "point",
+      "position": [
+        48,
+        4
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 49,4",
+      "kind": "point",
+      "position": [
+        49,
+        4
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 50,4",
+      "kind": "point",
+      "position": [
+        50,
+        4
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 51,4",
+      "kind": "point",
+      "position": [
+        51,
+        4
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 52,4",
+      "kind": "point",
+      "position": [
+        52,
+        4
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 53,4",
+      "kind": "point",
+      "position": [
+        53,
+        4
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 54,4",
+      "kind": "point",
+      "position": [
+        54,
+        4
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 55,4",
+      "kind": "point",
+      "position": [
+        55,
+        4
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 39,5",
+      "kind": "point",
+      "position": [
+        39,
+        5
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 48,5",
+      "kind": "point",
+      "position": [
+        48,
+        5
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 49,5",
+      "kind": "point",
+      "position": [
+        49,
+        5
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 50,5",
+      "kind": "point",
+      "position": [
+        50,
+        5
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 36,6",
+      "kind": "point",
+      "position": [
+        36,
+        6
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 37,6",
+      "kind": "point",
+      "position": [
+        37,
+        6
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 38,6",
+      "kind": "point",
+      "position": [
+        38,
+        6
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 39,6",
+      "kind": "point",
+      "position": [
+        39,
+        6
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 48,6",
+      "kind": "point",
+      "position": [
+        48,
+        6
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 49,6",
+      "kind": "point",
+      "position": [
+        49,
+        6
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 50,6",
+      "kind": "point",
+      "position": [
+        50,
+        6
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 48,7",
+      "kind": "point",
+      "position": [
+        48,
+        7
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 49,7",
+      "kind": "point",
+      "position": [
+        49,
+        7
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 50,7",
+      "kind": "point",
+      "position": [
+        50,
+        7
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 36,8",
+      "kind": "point",
+      "position": [
+        36,
+        8
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 37,8",
+      "kind": "point",
+      "position": [
+        37,
+        8
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 38,8",
+      "kind": "point",
+      "position": [
+        38,
+        8
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 39,8",
+      "kind": "point",
+      "position": [
+        39,
+        8
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 40,8",
+      "kind": "point",
+      "position": [
+        40,
+        8
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 41,8",
+      "kind": "point",
+      "position": [
+        41,
+        8
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 48,8",
+      "kind": "point",
+      "position": [
+        48,
+        8
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 49,8",
+      "kind": "point",
+      "position": [
+        49,
+        8
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 50,8",
+      "kind": "point",
+      "position": [
+        50,
+        8
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 51,8",
+      "kind": "point",
+      "position": [
+        51,
+        8
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 52,8",
+      "kind": "point",
+      "position": [
+        52,
+        8
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 53,8",
+      "kind": "point",
+      "position": [
+        53,
+        8
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 54,8",
+      "kind": "point",
+      "position": [
+        54,
+        8
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 55,8",
+      "kind": "point",
+      "position": [
+        55,
+        8
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 36,9",
+      "kind": "point",
+      "position": [
+        36,
+        9
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 37,9",
+      "kind": "point",
+      "position": [
+        37,
+        9
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 38,9",
+      "kind": "point",
+      "position": [
+        38,
+        9
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 39,9",
+      "kind": "point",
+      "position": [
+        39,
+        9
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 40,9",
+      "kind": "point",
+      "position": [
+        40,
+        9
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 41,9",
+      "kind": "point",
+      "position": [
+        41,
+        9
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 48,9",
+      "kind": "point",
+      "position": [
+        48,
+        9
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 49,9",
+      "kind": "point",
+      "position": [
+        49,
+        9
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 50,9",
+      "kind": "point",
+      "position": [
+        50,
+        9
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 51,9",
+      "kind": "point",
+      "position": [
+        51,
+        9
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 52,9",
+      "kind": "point",
+      "position": [
+        52,
+        9
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 53,9",
+      "kind": "point",
+      "position": [
+        53,
+        9
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 54,9",
+      "kind": "point",
+      "position": [
+        54,
+        9
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 55,9",
+      "kind": "point",
+      "position": [
+        55,
+        9
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 36,10",
+      "kind": "point",
+      "position": [
+        36,
+        10
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 37,10",
+      "kind": "point",
+      "position": [
+        37,
+        10
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 38,10",
+      "kind": "point",
+      "position": [
+        38,
+        10
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 39,10",
+      "kind": "point",
+      "position": [
+        39,
+        10
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 40,10",
+      "kind": "point",
+      "position": [
+        40,
+        10
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 41,10",
+      "kind": "point",
+      "position": [
+        41,
+        10
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 42,10",
+      "kind": "point",
+      "position": [
+        42,
+        10
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 43,10",
+      "kind": "point",
+      "position": [
+        43,
+        10
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 44,10",
+      "kind": "point",
+      "position": [
+        44,
+        10
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 45,10",
+      "kind": "point",
+      "position": [
+        45,
+        10
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 46,10",
+      "kind": "point",
+      "position": [
+        46,
+        10
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 47,10",
+      "kind": "point",
+      "position": [
+        47,
+        10
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 48,10",
+      "kind": "point",
+      "position": [
+        48,
+        10
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 49,10",
+      "kind": "point",
+      "position": [
+        49,
+        10
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 50,10",
+      "kind": "point",
+      "position": [
+        50,
+        10
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 51,10",
+      "kind": "point",
+      "position": [
+        51,
+        10
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 52,10",
+      "kind": "point",
+      "position": [
+        52,
+        10
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 53,10",
+      "kind": "point",
+      "position": [
+        53,
+        10
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 54,10",
+      "kind": "point",
+      "position": [
+        54,
+        10
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 55,10",
+      "kind": "point",
+      "position": [
+        55,
+        10
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 36,11",
+      "kind": "point",
+      "position": [
+        36,
+        11
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 37,11",
+      "kind": "point",
+      "position": [
+        37,
+        11
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 38,11",
+      "kind": "point",
+      "position": [
+        38,
+        11
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 39,11",
+      "kind": "point",
+      "position": [
+        39,
+        11
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 40,11",
+      "kind": "point",
+      "position": [
+        40,
+        11
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 41,11",
+      "kind": "point",
+      "position": [
+        41,
+        11
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 42,11",
+      "kind": "point",
+      "position": [
+        42,
+        11
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 43,11",
+      "kind": "point",
+      "position": [
+        43,
+        11
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 44,11",
+      "kind": "point",
+      "position": [
+        44,
+        11
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 45,11",
+      "kind": "point",
+      "position": [
+        45,
+        11
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 46,11",
+      "kind": "point",
+      "position": [
+        46,
+        11
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 47,11",
+      "kind": "point",
+      "position": [
+        47,
+        11
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 48,11",
+      "kind": "point",
+      "position": [
+        48,
+        11
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 49,11",
+      "kind": "point",
+      "position": [
+        49,
+        11
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 50,11",
+      "kind": "point",
+      "position": [
+        50,
+        11
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 51,11",
+      "kind": "point",
+      "position": [
+        51,
+        11
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 52,11",
+      "kind": "point",
+      "position": [
+        52,
+        11
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 53,11",
+      "kind": "point",
+      "position": [
+        53,
+        11
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 54,11",
+      "kind": "point",
+      "position": [
+        54,
+        11
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 55,11",
+      "kind": "point",
+      "position": [
+        55,
+        11
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 36,12",
+      "kind": "point",
+      "position": [
+        36,
+        12
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 37,12",
+      "kind": "point",
+      "position": [
+        37,
+        12
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 38,12",
+      "kind": "point",
+      "position": [
+        38,
+        12
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 39,12",
+      "kind": "point",
+      "position": [
+        39,
+        12
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 40,12",
+      "kind": "point",
+      "position": [
+        40,
+        12
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 41,12",
+      "kind": "point",
+      "position": [
+        41,
+        12
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 42,12",
+      "kind": "point",
+      "position": [
+        42,
+        12
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 43,12",
+      "kind": "point",
+      "position": [
+        43,
+        12
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 44,12",
+      "kind": "point",
+      "position": [
+        44,
+        12
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 45,12",
+      "kind": "point",
+      "position": [
+        45,
+        12
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 46,12",
+      "kind": "point",
+      "position": [
+        46,
+        12
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 47,12",
+      "kind": "point",
+      "position": [
+        47,
+        12
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 48,12",
+      "kind": "point",
+      "position": [
+        48,
+        12
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 49,12",
+      "kind": "point",
+      "position": [
+        49,
+        12
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 50,12",
+      "kind": "point",
+      "position": [
+        50,
+        12
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 51,12",
+      "kind": "point",
+      "position": [
+        51,
+        12
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 52,12",
+      "kind": "point",
+      "position": [
+        52,
+        12
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 53,12",
+      "kind": "point",
+      "position": [
+        53,
+        12
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 54,12",
+      "kind": "point",
+      "position": [
+        54,
+        12
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 55,12",
+      "kind": "point",
+      "position": [
+        55,
+        12
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 36,13",
+      "kind": "point",
+      "position": [
+        36,
+        13
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 37,13",
+      "kind": "point",
+      "position": [
+        37,
+        13
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 38,13",
+      "kind": "point",
+      "position": [
+        38,
+        13
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 39,13",
+      "kind": "point",
+      "position": [
+        39,
+        13
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 40,13",
+      "kind": "point",
+      "position": [
+        40,
+        13
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 41,13",
+      "kind": "point",
+      "position": [
+        41,
+        13
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 42,13",
+      "kind": "point",
+      "position": [
+        42,
+        13
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 43,13",
+      "kind": "point",
+      "position": [
+        43,
+        13
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 44,13",
+      "kind": "point",
+      "position": [
+        44,
+        13
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 45,13",
+      "kind": "point",
+      "position": [
+        45,
+        13
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 46,13",
+      "kind": "point",
+      "position": [
+        46,
+        13
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 47,13",
+      "kind": "point",
+      "position": [
+        47,
+        13
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 48,13",
+      "kind": "point",
+      "position": [
+        48,
+        13
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 49,13",
+      "kind": "point",
+      "position": [
+        49,
+        13
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 50,13",
+      "kind": "point",
+      "position": [
+        50,
+        13
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 51,13",
+      "kind": "point",
+      "position": [
+        51,
+        13
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 52,13",
+      "kind": "point",
+      "position": [
+        52,
+        13
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 53,13",
+      "kind": "point",
+      "position": [
+        53,
+        13
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 54,13",
+      "kind": "point",
+      "position": [
+        54,
+        13
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 55,13",
+      "kind": "point",
+      "position": [
+        55,
+        13
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 36,14",
+      "kind": "point",
+      "position": [
+        36,
+        14
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 37,14",
+      "kind": "point",
+      "position": [
+        37,
+        14
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 38,14",
+      "kind": "point",
+      "position": [
+        38,
+        14
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 39,14",
+      "kind": "point",
+      "position": [
+        39,
+        14
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 40,14",
+      "kind": "point",
+      "position": [
+        40,
+        14
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 41,14",
+      "kind": "point",
+      "position": [
+        41,
+        14
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 42,14",
+      "kind": "point",
+      "position": [
+        42,
+        14
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 43,14",
+      "kind": "point",
+      "position": [
+        43,
+        14
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 44,14",
+      "kind": "point",
+      "position": [
+        44,
+        14
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 45,14",
+      "kind": "point",
+      "position": [
+        45,
+        14
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 46,14",
+      "kind": "point",
+      "position": [
+        46,
+        14
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 47,14",
+      "kind": "point",
+      "position": [
+        47,
+        14
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 48,14",
+      "kind": "point",
+      "position": [
+        48,
+        14
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 49,14",
+      "kind": "point",
+      "position": [
+        49,
+        14
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 50,14",
+      "kind": "point",
+      "position": [
+        50,
+        14
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 51,14",
+      "kind": "point",
+      "position": [
+        51,
+        14
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 52,14",
+      "kind": "point",
+      "position": [
+        52,
+        14
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 53,14",
+      "kind": "point",
+      "position": [
+        53,
+        14
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 54,14",
+      "kind": "point",
+      "position": [
+        54,
+        14
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 55,14",
+      "kind": "point",
+      "position": [
+        55,
+        14
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 36,15",
+      "kind": "point",
+      "position": [
+        36,
+        15
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 37,15",
+      "kind": "point",
+      "position": [
+        37,
+        15
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 38,15",
+      "kind": "point",
+      "position": [
+        38,
+        15
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 39,15",
+      "kind": "point",
+      "position": [
+        39,
+        15
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 40,15",
+      "kind": "point",
+      "position": [
+        40,
+        15
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 41,15",
+      "kind": "point",
+      "position": [
+        41,
+        15
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 42,15",
+      "kind": "point",
+      "position": [
+        42,
+        15
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 43,15",
+      "kind": "point",
+      "position": [
+        43,
+        15
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 44,15",
+      "kind": "point",
+      "position": [
+        44,
+        15
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 45,15",
+      "kind": "point",
+      "position": [
+        45,
+        15
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 46,15",
+      "kind": "point",
+      "position": [
+        46,
+        15
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 47,15",
+      "kind": "point",
+      "position": [
+        47,
+        15
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 48,15",
+      "kind": "point",
+      "position": [
+        48,
+        15
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 49,15",
+      "kind": "point",
+      "position": [
+        49,
+        15
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 50,15",
+      "kind": "point",
+      "position": [
+        50,
+        15
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 51,15",
+      "kind": "point",
+      "position": [
+        51,
+        15
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 52,15",
+      "kind": "point",
+      "position": [
+        52,
+        15
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 53,15",
+      "kind": "point",
+      "position": [
+        53,
+        15
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 54,15",
+      "kind": "point",
+      "position": [
+        54,
+        15
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 55,15",
+      "kind": "point",
+      "position": [
+        55,
+        15
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 36,16",
+      "kind": "point",
+      "position": [
+        36,
+        16
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 37,16",
+      "kind": "point",
+      "position": [
+        37,
+        16
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 38,16",
+      "kind": "point",
+      "position": [
+        38,
+        16
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 39,16",
+      "kind": "point",
+      "position": [
+        39,
+        16
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 40,16",
+      "kind": "point",
+      "position": [
+        40,
+        16
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 41,16",
+      "kind": "point",
+      "position": [
+        41,
+        16
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 42,16",
+      "kind": "point",
+      "position": [
+        42,
+        16
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 43,16",
+      "kind": "point",
+      "position": [
+        43,
+        16
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 44,16",
+      "kind": "point",
+      "position": [
+        44,
+        16
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 45,16",
+      "kind": "point",
+      "position": [
+        45,
+        16
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 46,16",
+      "kind": "point",
+      "position": [
+        46,
+        16
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 47,16",
+      "kind": "point",
+      "position": [
+        47,
+        16
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 48,16",
+      "kind": "point",
+      "position": [
+        48,
+        16
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 49,16",
+      "kind": "point",
+      "position": [
+        49,
+        16
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 50,16",
+      "kind": "point",
+      "position": [
+        50,
+        16
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 51,16",
+      "kind": "point",
+      "position": [
+        51,
+        16
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 52,16",
+      "kind": "point",
+      "position": [
+        52,
+        16
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 53,16",
+      "kind": "point",
+      "position": [
+        53,
+        16
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 54,16",
+      "kind": "point",
+      "position": [
+        54,
+        16
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 55,16",
+      "kind": "point",
+      "position": [
+        55,
+        16
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 36,17",
+      "kind": "point",
+      "position": [
+        36,
+        17
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 37,17",
+      "kind": "point",
+      "position": [
+        37,
+        17
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 38,17",
+      "kind": "point",
+      "position": [
+        38,
+        17
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 39,17",
+      "kind": "point",
+      "position": [
+        39,
+        17
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 40,17",
+      "kind": "point",
+      "position": [
+        40,
+        17
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 41,17",
+      "kind": "point",
+      "position": [
+        41,
+        17
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 42,17",
+      "kind": "point",
+      "position": [
+        42,
+        17
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 43,17",
+      "kind": "point",
+      "position": [
+        43,
+        17
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 44,17",
+      "kind": "point",
+      "position": [
+        44,
+        17
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 45,17",
+      "kind": "point",
+      "position": [
+        45,
+        17
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 46,17",
+      "kind": "point",
+      "position": [
+        46,
+        17
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 47,17",
+      "kind": "point",
+      "position": [
+        47,
+        17
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 48,17",
+      "kind": "point",
+      "position": [
+        48,
+        17
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 49,17",
+      "kind": "point",
+      "position": [
+        49,
+        17
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 50,17",
+      "kind": "point",
+      "position": [
+        50,
+        17
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 51,17",
+      "kind": "point",
+      "position": [
+        51,
+        17
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 52,17",
+      "kind": "point",
+      "position": [
+        52,
+        17
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 53,17",
+      "kind": "point",
+      "position": [
+        53,
+        17
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 54,17",
+      "kind": "point",
+      "position": [
+        54,
+        17
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 55,17",
+      "kind": "point",
+      "position": [
+        55,
+        17
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 36,18",
+      "kind": "point",
+      "position": [
+        36,
+        18
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 37,18",
+      "kind": "point",
+      "position": [
+        37,
+        18
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 38,18",
+      "kind": "point",
+      "position": [
+        38,
+        18
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 39,18",
+      "kind": "point",
+      "position": [
+        39,
+        18
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 40,18",
+      "kind": "point",
+      "position": [
+        40,
+        18
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 41,18",
+      "kind": "point",
+      "position": [
+        41,
+        18
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 42,18",
+      "kind": "point",
+      "position": [
+        42,
+        18
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 43,18",
+      "kind": "point",
+      "position": [
+        43,
+        18
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 44,18",
+      "kind": "point",
+      "position": [
+        44,
+        18
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 45,18",
+      "kind": "point",
+      "position": [
+        45,
+        18
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 46,18",
+      "kind": "point",
+      "position": [
+        46,
+        18
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 47,18",
+      "kind": "point",
+      "position": [
+        47,
+        18
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 48,18",
+      "kind": "point",
+      "position": [
+        48,
+        18
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 49,18",
+      "kind": "point",
+      "position": [
+        49,
+        18
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 50,18",
+      "kind": "point",
+      "position": [
+        50,
+        18
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 51,18",
+      "kind": "point",
+      "position": [
+        51,
+        18
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 52,18",
+      "kind": "point",
+      "position": [
+        52,
+        18
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 53,18",
+      "kind": "point",
+      "position": [
+        53,
+        18
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 54,18",
+      "kind": "point",
+      "position": [
+        54,
+        18
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 55,18",
+      "kind": "point",
+      "position": [
+        55,
+        18
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 36,19",
+      "kind": "point",
+      "position": [
+        36,
+        19
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 37,19",
+      "kind": "point",
+      "position": [
+        37,
+        19
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 38,19",
+      "kind": "point",
+      "position": [
+        38,
+        19
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 39,19",
+      "kind": "point",
+      "position": [
+        39,
+        19
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 40,19",
+      "kind": "point",
+      "position": [
+        40,
+        19
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 41,19",
+      "kind": "point",
+      "position": [
+        41,
+        19
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 42,19",
+      "kind": "point",
+      "position": [
+        42,
+        19
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 43,19",
+      "kind": "point",
+      "position": [
+        43,
+        19
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 44,19",
+      "kind": "point",
+      "position": [
+        44,
+        19
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 45,19",
+      "kind": "point",
+      "position": [
+        45,
+        19
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 46,19",
+      "kind": "point",
+      "position": [
+        46,
+        19
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 47,19",
+      "kind": "point",
+      "position": [
+        47,
+        19
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 48,19",
+      "kind": "point",
+      "position": [
+        48,
+        19
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 49,19",
+      "kind": "point",
+      "position": [
+        49,
+        19
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 50,19",
+      "kind": "point",
+      "position": [
+        50,
+        19
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 51,19",
+      "kind": "point",
+      "position": [
+        51,
+        19
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 52,19",
+      "kind": "point",
+      "position": [
+        52,
+        19
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 53,19",
+      "kind": "point",
+      "position": [
+        53,
+        19
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 54,19",
+      "kind": "point",
+      "position": [
+        54,
+        19
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 55,19",
+      "kind": "point",
+      "position": [
+        55,
+        19
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 36,20",
+      "kind": "point",
+      "position": [
+        36,
+        20
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 37,20",
+      "kind": "point",
+      "position": [
+        37,
+        20
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 38,20",
+      "kind": "point",
+      "position": [
+        38,
+        20
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 39,20",
+      "kind": "point",
+      "position": [
+        39,
+        20
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 40,20",
+      "kind": "point",
+      "position": [
+        40,
+        20
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 41,20",
+      "kind": "point",
+      "position": [
+        41,
+        20
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 42,20",
+      "kind": "point",
+      "position": [
+        42,
+        20
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 43,20",
+      "kind": "point",
+      "position": [
+        43,
+        20
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 44,20",
+      "kind": "point",
+      "position": [
+        44,
+        20
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 45,20",
+      "kind": "point",
+      "position": [
+        45,
+        20
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 46,20",
+      "kind": "point",
+      "position": [
+        46,
+        20
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 47,20",
+      "kind": "point",
+      "position": [
+        47,
+        20
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 48,20",
+      "kind": "point",
+      "position": [
+        48,
+        20
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 49,20",
+      "kind": "point",
+      "position": [
+        49,
+        20
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 50,20",
+      "kind": "point",
+      "position": [
+        50,
+        20
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 51,20",
+      "kind": "point",
+      "position": [
+        51,
+        20
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 52,20",
+      "kind": "point",
+      "position": [
+        52,
+        20
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 53,20",
+      "kind": "point",
+      "position": [
+        53,
+        20
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 54,20",
+      "kind": "point",
+      "position": [
+        54,
+        20
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 55,20",
+      "kind": "point",
+      "position": [
+        55,
+        20
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 36,21",
+      "kind": "point",
+      "position": [
+        36,
+        21
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 37,21",
+      "kind": "point",
+      "position": [
+        37,
+        21
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 38,21",
+      "kind": "point",
+      "position": [
+        38,
+        21
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 39,21",
+      "kind": "point",
+      "position": [
+        39,
+        21
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 40,21",
+      "kind": "point",
+      "position": [
+        40,
+        21
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 41,21",
+      "kind": "point",
+      "position": [
+        41,
+        21
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 42,21",
+      "kind": "point",
+      "position": [
+        42,
+        21
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 43,21",
+      "kind": "point",
+      "position": [
+        43,
+        21
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 44,21",
+      "kind": "point",
+      "position": [
+        44,
+        21
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 45,21",
+      "kind": "point",
+      "position": [
+        45,
+        21
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 46,21",
+      "kind": "point",
+      "position": [
+        46,
+        21
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 47,21",
+      "kind": "point",
+      "position": [
+        47,
+        21
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 48,21",
+      "kind": "point",
+      "position": [
+        48,
+        21
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 49,21",
+      "kind": "point",
+      "position": [
+        49,
+        21
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 50,21",
+      "kind": "point",
+      "position": [
+        50,
+        21
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 51,21",
+      "kind": "point",
+      "position": [
+        51,
+        21
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 52,21",
+      "kind": "point",
+      "position": [
+        52,
+        21
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 53,21",
+      "kind": "point",
+      "position": [
+        53,
+        21
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 54,21",
+      "kind": "point",
+      "position": [
+        54,
+        21
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 55,21",
+      "kind": "point",
+      "position": [
+        55,
+        21
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 36,22",
+      "kind": "point",
+      "position": [
+        36,
+        22
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 37,22",
+      "kind": "point",
+      "position": [
+        37,
+        22
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 38,22",
+      "kind": "point",
+      "position": [
+        38,
+        22
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 39,22",
+      "kind": "point",
+      "position": [
+        39,
+        22
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 40,22",
+      "kind": "point",
+      "position": [
+        40,
+        22
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 41,22",
+      "kind": "point",
+      "position": [
+        41,
+        22
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 42,22",
+      "kind": "point",
+      "position": [
+        42,
+        22
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 43,22",
+      "kind": "point",
+      "position": [
+        43,
+        22
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 44,22",
+      "kind": "point",
+      "position": [
+        44,
+        22
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 45,22",
+      "kind": "point",
+      "position": [
+        45,
+        22
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 46,22",
+      "kind": "point",
+      "position": [
+        46,
+        22
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 47,22",
+      "kind": "point",
+      "position": [
+        47,
+        22
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 48,22",
+      "kind": "point",
+      "position": [
+        48,
+        22
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 49,22",
+      "kind": "point",
+      "position": [
+        49,
+        22
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 50,22",
+      "kind": "point",
+      "position": [
+        50,
+        22
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 51,22",
+      "kind": "point",
+      "position": [
+        51,
+        22
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 52,22",
+      "kind": "point",
+      "position": [
+        52,
+        22
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 53,22",
+      "kind": "point",
+      "position": [
+        53,
+        22
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 54,22",
+      "kind": "point",
+      "position": [
+        54,
+        22
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 55,22",
+      "kind": "point",
+      "position": [
+        55,
+        22
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 36,23",
+      "kind": "point",
+      "position": [
+        36,
+        23
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 37,23",
+      "kind": "point",
+      "position": [
+        37,
+        23
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 38,23",
+      "kind": "point",
+      "position": [
+        38,
+        23
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 39,23",
+      "kind": "point",
+      "position": [
+        39,
+        23
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 40,23",
+      "kind": "point",
+      "position": [
+        40,
+        23
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 41,23",
+      "kind": "point",
+      "position": [
+        41,
+        23
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 42,23",
+      "kind": "point",
+      "position": [
+        42,
+        23
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 43,23",
+      "kind": "point",
+      "position": [
+        43,
+        23
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 44,23",
+      "kind": "point",
+      "position": [
+        44,
+        23
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 45,23",
+      "kind": "point",
+      "position": [
+        45,
+        23
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 46,23",
+      "kind": "point",
+      "position": [
+        46,
+        23
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 47,23",
+      "kind": "point",
+      "position": [
+        47,
+        23
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 48,23",
+      "kind": "point",
+      "position": [
+        48,
+        23
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 49,23",
+      "kind": "point",
+      "position": [
+        49,
+        23
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 50,23",
+      "kind": "point",
+      "position": [
+        50,
+        23
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 51,23",
+      "kind": "point",
+      "position": [
+        51,
+        23
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 52,23",
+      "kind": "point",
+      "position": [
+        52,
+        23
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 53,23",
+      "kind": "point",
+      "position": [
+        53,
+        23
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 54,23",
+      "kind": "point",
+      "position": [
+        54,
+        23
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 55,23",
+      "kind": "point",
+      "position": [
+        55,
+        23
+      ],
+      "block": "05"
+    },
+    {
+      "name": "installed warm compact cell 16,44",
+      "kind": "point",
+      "position": [
+        16,
+        44
+      ],
+      "block": "01"
+    },
+    {
+      "name": "installed warm compact cell 17,44",
+      "kind": "point",
+      "position": [
+        17,
+        44
+      ],
+      "block": "01"
+    },
+    {
+      "name": "installed warm compact cell 17,45",
+      "kind": "point",
+      "position": [
+        17,
+        45
+      ],
+      "block": "72"
+    },
+    {
+      "name": "installed warm compact cell 2,61",
+      "kind": "point",
+      "position": [
+        2,
+        61
+      ],
+      "block": "01"
+    },
+    {
+      "name": "installed warm compact cell 3,61",
+      "kind": "point",
+      "position": [
+        3,
+        61
+      ],
+      "block": "03"
+    },
+    {
+      "name": "installed warm compact cell 4,61",
+      "kind": "point",
+      "position": [
+        4,
+        61
+      ],
+      "block": "03"
+    },
+    {
+      "name": "installed warm compact cell 5,61",
+      "kind": "point",
+      "position": [
+        5,
+        61
+      ],
+      "block": "01"
+    },
+    {
+      "name": "installed warm compact cell 2,62",
+      "kind": "point",
+      "position": [
+        2,
+        62
+      ],
+      "block": "03"
+    },
+    {
+      "name": "installed warm compact cell 5,62",
+      "kind": "point",
+      "position": [
+        5,
+        62
+      ],
+      "block": "03"
+    },
+    {
+      "name": "installed warm compact cell 6,62",
+      "kind": "point",
+      "position": [
+        6,
+        62
+      ],
+      "block": "03"
+    },
+    {
+      "name": "installed warm compact cell 7,62",
+      "kind": "point",
+      "position": [
+        7,
+        62
+      ],
+      "block": "03"
+    },
+    {
+      "name": "installed warm compact cell 8,62",
+      "kind": "point",
+      "position": [
+        8,
+        62
+      ],
+      "block": "01"
+    },
+    {
+      "name": "installed warm compact cell 0,63",
+      "kind": "point",
+      "position": [
+        0,
+        63
+      ],
+      "block": "01"
+    },
+    {
+      "name": "installed warm compact cell 1,63",
+      "kind": "point",
+      "position": [
+        1,
+        63
+      ],
+      "block": "01"
+    },
+    {
+      "name": "installed warm compact cell 2,63",
+      "kind": "point",
+      "position": [
+        2,
+        63
+      ],
+      "block": "01"
+    },
+    {
+      "name": "installed warm compact cell 3,63",
+      "kind": "point",
+      "position": [
+        3,
+        63
+      ],
+      "block": "01"
+    },
+    {
+      "name": "installed warm compact cell 8,63",
+      "kind": "point",
+      "position": [
+        8,
+        63
+      ],
+      "block": "01"
+    },
+    {
+      "name": "installed warm compact cell 9,63",
+      "kind": "point",
+      "position": [
+        9,
+        63
+      ],
+      "block": "01"
+    },
+    {
+      "name": "installed warm compact cell 10,63",
+      "kind": "point",
+      "position": [
+        10,
+        63
+      ],
+      "block": "03"
+    },
+    {
+      "name": "installed warm compact cell 11,63",
+      "kind": "point",
+      "position": [
+        11,
+        63
+      ],
+      "block": "01"
+    },
+    {
+      "name": "installed warm compact cell 15,63",
+      "kind": "point",
+      "position": [
+        15,
+        63
+      ],
+      "block": "01"
+    },
+    {
+      "name": "installed warm compact cell 16,63",
+      "kind": "point",
+      "position": [
+        16,
+        63
+      ],
+      "block": "18"
+    },
+    {
+      "name": "installed warm compact cell 17,63",
+      "kind": "point",
+      "position": [
+        17,
+        63
+      ],
+      "block": "19"
+    },
+    {
+      "name": "installed warm compact cell 18,63",
+      "kind": "point",
+      "position": [
+        18,
+        63
+      ],
+      "block": "01"
+    },
+    {
+      "name": "installed warm compact cell 3,64",
+      "kind": "point",
+      "position": [
+        3,
+        64
+      ],
+      "block": "01"
+    },
+    {
+      "name": "installed warm compact cell 7,64",
+      "kind": "point",
+      "position": [
+        7,
+        64
+      ],
+      "block": "0a"
+    },
+    {
+      "name": "installed warm compact cell 11,64",
+      "kind": "point",
+      "position": [
+        11,
+        64
+      ],
+      "block": "01"
+    },
+    {
+      "name": "installed warm compact cell 12,64",
+      "kind": "point",
+      "position": [
+        12,
+        64
+      ],
+      "block": "03"
+    },
+    {
+      "name": "installed warm compact cell 13,64",
+      "kind": "point",
+      "position": [
+        13,
+        64
+      ],
+      "block": "01"
+    },
+    {
+      "name": "installed warm compact cell 14,64",
+      "kind": "point",
+      "position": [
+        14,
+        64
+      ],
+      "block": "01"
+    },
+    {
+      "name": "installed warm compact cell 15,64",
+      "kind": "point",
+      "position": [
+        15,
+        64
+      ],
+      "block": "01"
+    },
+    {
+      "name": "installed warm compact cell 16,64",
+      "kind": "point",
+      "position": [
+        16,
+        64
+      ],
+      "block": "1a"
+    },
+    {
+      "name": "installed warm compact cell 17,64",
+      "kind": "point",
+      "position": [
+        17,
+        64
+      ],
+      "block": "1b"
+    },
+    {
+      "name": "installed warm compact cell 18,64",
+      "kind": "point",
+      "position": [
+        18,
+        64
+      ],
+      "block": "01"
+    },
+    {
+      "name": "installed warm compact cell 3,65",
+      "kind": "point",
+      "position": [
+        3,
+        65
+      ],
+      "block": "01"
+    },
+    {
+      "name": "installed warm compact cell 4,65",
+      "kind": "point",
+      "position": [
+        4,
+        65
+      ],
+      "block": "01"
+    },
+    {
+      "name": "installed warm compact cell 5,65",
+      "kind": "point",
+      "position": [
+        5,
+        65
+      ],
+      "block": "01"
+    },
+    {
+      "name": "installed warm compact cell 6,65",
+      "kind": "point",
+      "position": [
+        6,
+        65
+      ],
+      "block": "01"
+    },
+    {
+      "name": "installed warm compact cell 7,65",
+      "kind": "point",
+      "position": [
+        7,
+        65
+      ],
+      "block": "01"
+    },
+    {
+      "name": "installed warm compact cell 8,65",
+      "kind": "point",
+      "position": [
+        8,
+        65
+      ],
+      "block": "01"
+    },
+    {
+      "name": "installed warm compact cell 9,65",
+      "kind": "point",
+      "position": [
+        9,
+        65
+      ],
+      "block": "04"
+    },
+    {
+      "name": "installed warm compact cell 10,65",
+      "kind": "point",
+      "position": [
+        10,
+        65
+      ],
+      "block": "01"
+    },
+    {
+      "name": "installed warm compact cell 11,65",
+      "kind": "point",
+      "position": [
+        11,
+        65
+      ],
+      "block": "4c"
+    },
+    {
+      "name": "installed warm compact cell 12,65",
+      "kind": "point",
+      "position": [
+        12,
+        65
+      ],
+      "block": "01"
+    },
+    {
+      "name": "installed warm compact cell 13,65",
+      "kind": "point",
+      "position": [
+        13,
+        65
+      ],
+      "block": "01"
+    },
+    {
+      "name": "installed warm compact cell 14,65",
+      "kind": "point",
+      "position": [
+        14,
+        65
+      ],
+      "block": "01"
+    },
+    {
+      "name": "installed warm compact cell 15,65",
+      "kind": "point",
+      "position": [
+        15,
+        65
+      ],
+      "block": "01"
+    },
+    {
+      "name": "installed warm compact cell 16,65",
+      "kind": "point",
+      "position": [
+        16,
+        65
+      ],
+      "block": "01"
+    },
+    {
+      "name": "installed warm compact cell 17,65",
+      "kind": "point",
+      "position": [
+        17,
+        65
+      ],
+      "block": "01"
+    },
+    {
+      "name": "installed warm compact cell 18,65",
+      "kind": "point",
+      "position": [
+        18,
+        65
+      ],
+      "block": "01"
+    },
+    {
+      "name": "installed warm compact cell 15,66",
+      "kind": "point",
+      "position": [
+        15,
+        66
+      ],
+      "block": "01"
+    },
+    {
+      "name": "installed warm compact cell 16,66",
+      "kind": "point",
+      "position": [
+        16,
+        66
+      ],
+      "block": "01"
+    },
+    {
+      "name": "installed warm compact cell 18,66",
+      "kind": "point",
+      "position": [
+        18,
+        66
+      ],
+      "block": "01"
+    },
+    {
+      "name": "installed warm compact cell 17,69",
+      "kind": "point",
+      "position": [
+        17,
+        69
+      ],
+      "block": "01"
+    },
+    {
+      "name": "installed warm compact cell 18,69",
+      "kind": "point",
+      "position": [
+        18,
+        69
+      ],
+      "block": "02"
+    },
+    {
+      "name": "installed warm compact cell 17,70",
+      "kind": "point",
+      "position": [
+        17,
+        70
+      ],
+      "block": "01"
+    },
+    {
+      "name": "installed warm compact cell 18,70",
+      "kind": "point",
+      "position": [
+        18,
+        70
+      ],
+      "block": "02"
+    },
+    {
+      "name": "installed warm compact cell 18,84",
+      "kind": "point",
+      "position": [
+        18,
+        84
+      ],
+      "block": "71"
+    },
+    {
+      "name": "installed warm compact cell 18,85",
+      "kind": "point",
+      "position": [
+        18,
+        85
+      ],
+      "block": "71"
+    },
+    {
+      "name": "coastal cove native cell 24,30",
+      "kind": "point",
+      "position": [
+        24,
+        30
+      ],
+      "block": "05"
+    },
+    {
+      "name": "coastal cove native cell 25,30",
+      "kind": "point",
+      "position": [
+        25,
+        30
+      ],
+      "block": "54"
+    },
+    {
+      "name": "coastal cove native cell 24,31",
+      "kind": "point",
+      "position": [
+        24,
+        31
+      ],
+      "block": "05"
+    },
+    {
+      "name": "coastal cove native cell 25,31",
+      "kind": "point",
+      "position": [
+        25,
+        31
+      ],
+      "block": "05"
+    },
+    {
+      "name": "coastal cove native cell 26,31",
+      "kind": "point",
+      "position": [
+        26,
+        31
+      ],
+      "block": "05"
+    },
+    {
+      "name": "coastal cove native cell 27,31",
+      "kind": "point",
+      "position": [
+        27,
+        31
+      ],
+      "block": "58"
+    },
+    {
+      "name": "coastal cove native cell 24,32",
+      "kind": "point",
+      "position": [
+        24,
+        32
+      ],
+      "block": "05"
+    },
+    {
+      "name": "coastal cove native cell 25,32",
+      "kind": "point",
+      "position": [
+        25,
+        32
+      ],
+      "block": "05"
+    },
+    {
+      "name": "coastal cove native cell 26,32",
+      "kind": "point",
+      "position": [
+        26,
+        32
+      ],
+      "block": "05"
+    },
+    {
+      "name": "coastal cove native cell 27,32",
+      "kind": "point",
+      "position": [
+        27,
+        32
+      ],
+      "block": "05"
+    },
+    {
+      "name": "coastal cove native cell 28,32",
+      "kind": "point",
+      "position": [
+        28,
+        32
+      ],
+      "block": "05"
+    },
+    {
+      "name": "coastal cove native cell 29,32",
+      "kind": "point",
+      "position": [
+        29,
+        32
+      ],
+      "block": "58"
+    },
+    {
+      "name": "coastal cove native cell 21,33",
+      "kind": "point",
+      "position": [
+        21,
+        33
+      ],
+      "block": "01"
+    },
+    {
+      "name": "coastal cove native cell 23,33",
+      "kind": "point",
+      "position": [
+        23,
+        33
+      ],
+      "block": "01"
+    },
+    {
+      "name": "coastal cove native cell 24,33",
+      "kind": "point",
+      "position": [
+        24,
+        33
+      ],
+      "block": "01"
+    },
+    {
+      "name": "coastal cove native cell 25,33",
+      "kind": "point",
+      "position": [
+        25,
+        33
+      ],
+      "block": "01"
+    },
+    {
+      "name": "coastal cove native cell 26,33",
+      "kind": "point",
+      "position": [
+        26,
+        33
+      ],
+      "block": "03"
+    },
+    {
+      "name": "coastal cove native cell 27,33",
+      "kind": "point",
+      "position": [
+        27,
+        33
+      ],
+      "block": "03"
+    },
+    {
+      "name": "coastal cove native cell 28,33",
+      "kind": "point",
+      "position": [
+        28,
+        33
+      ],
+      "block": "02"
+    },
+    {
+      "name": "coastal cove native cell 29,33",
+      "kind": "point",
+      "position": [
+        29,
+        33
+      ],
+      "block": "02"
+    },
+    {
+      "name": "coastal cove native cell 30,33",
+      "kind": "point",
+      "position": [
+        30,
+        33
+      ],
+      "block": "05"
+    },
+    {
+      "name": "coastal cove native cell 31,33",
+      "kind": "point",
+      "position": [
+        31,
+        33
+      ],
+      "block": "05"
+    },
+    {
+      "name": "coastal cove native cell 32,33",
+      "kind": "point",
+      "position": [
+        32,
+        33
+      ],
+      "block": "58"
+    },
+    {
+      "name": "coastal cove native cell 23,34",
+      "kind": "point",
+      "position": [
+        23,
+        34
+      ],
+      "block": "05"
+    },
+    {
+      "name": "coastal cove native cell 24,34",
+      "kind": "point",
+      "position": [
+        24,
+        34
+      ],
+      "block": "05"
+    },
+    {
+      "name": "coastal cove native cell 25,34",
+      "kind": "point",
+      "position": [
+        25,
+        34
+      ],
+      "block": "05"
+    },
+    {
+      "name": "coastal cove native cell 26,34",
+      "kind": "point",
+      "position": [
+        26,
+        34
+      ],
+      "block": "05"
+    },
+    {
+      "name": "coastal cove native cell 27,34",
+      "kind": "point",
+      "position": [
+        27,
+        34
+      ],
+      "block": "05"
+    },
+    {
+      "name": "coastal cove native cell 28,34",
+      "kind": "point",
+      "position": [
+        28,
+        34
+      ],
+      "block": "01"
+    },
+    {
+      "name": "coastal cove native cell 29,34",
+      "kind": "point",
+      "position": [
+        29,
+        34
+      ],
+      "block": "02"
+    },
+    {
+      "name": "coastal cove native cell 30,34",
+      "kind": "point",
+      "position": [
+        30,
+        34
+      ],
+      "block": "05"
+    },
+    {
+      "name": "coastal cove native cell 31,34",
+      "kind": "point",
+      "position": [
+        31,
+        34
+      ],
+      "block": "05"
+    },
+    {
+      "name": "coastal cove native cell 32,34",
+      "kind": "point",
+      "position": [
+        32,
+        34
+      ],
+      "block": "58"
+    },
+    {
+      "name": "coastal cove native cell 23,35",
+      "kind": "point",
+      "position": [
+        23,
+        35
+      ],
+      "block": "05"
+    },
+    {
+      "name": "coastal cove native cell 24,35",
+      "kind": "point",
+      "position": [
+        24,
+        35
+      ],
+      "block": "05"
+    },
+    {
+      "name": "coastal cove native cell 25,35",
+      "kind": "point",
+      "position": [
+        25,
+        35
+      ],
+      "block": "05"
+    },
+    {
+      "name": "coastal cove native cell 26,35",
+      "kind": "point",
+      "position": [
+        26,
+        35
+      ],
+      "block": "05"
+    },
+    {
+      "name": "coastal cove native cell 27,35",
+      "kind": "point",
+      "position": [
+        27,
+        35
+      ],
+      "block": "05"
+    },
+    {
+      "name": "coastal cove native cell 28,35",
+      "kind": "point",
+      "position": [
+        28,
+        35
+      ],
+      "block": "05"
+    },
+    {
+      "name": "coastal cove native cell 29,35",
+      "kind": "point",
+      "position": [
+        29,
+        35
+      ],
+      "block": "05"
+    },
+    {
+      "name": "coastal cove native cell 30,35",
+      "kind": "point",
+      "position": [
+        30,
+        35
+      ],
+      "block": "54"
+    },
+    {
+      "name": "coastal cove native cell 31,35",
+      "kind": "point",
+      "position": [
+        31,
+        35
+      ],
+      "block": "76"
+    },
+    {
+      "name": "coastal cove native cell 32,35",
+      "kind": "point",
+      "position": [
+        32,
+        35
+      ],
+      "block": "79"
+    },
+    {
+      "name": "coastal cove native cell 24,36",
+      "kind": "point",
+      "position": [
+        24,
+        36
+      ],
+      "block": "05"
+    },
+    {
+      "name": "coastal cove native cell 25,36",
+      "kind": "point",
+      "position": [
+        25,
+        36
+      ],
+      "block": "05"
+    },
+    {
+      "name": "coastal cove native cell 26,36",
+      "kind": "point",
+      "position": [
+        26,
+        36
+      ],
+      "block": "05"
+    },
+    {
+      "name": "coastal cove native cell 27,36",
+      "kind": "point",
+      "position": [
+        27,
+        36
+      ],
+      "block": "05"
+    },
+    {
+      "name": "coastal cove native cell 28,36",
+      "kind": "point",
+      "position": [
+        28,
+        36
+      ],
+      "block": "54"
+    },
+    {
+      "name": "coastal cove native cell 29,36",
+      "kind": "point",
+      "position": [
+        29,
+        36
+      ],
+      "block": "76"
+    },
+    {
+      "name": "coastal cove native cell 30,36",
+      "kind": "point",
+      "position": [
+        30,
+        36
+      ],
+      "block": "79"
+    },
+    {
+      "name": "coastal cove native cell 24,37",
+      "kind": "point",
+      "position": [
+        24,
+        37
+      ],
+      "block": "05"
+    },
+    {
+      "name": "coastal cove native cell 25,37",
+      "kind": "point",
+      "position": [
+        25,
+        37
+      ],
+      "block": "54"
+    },
+    {
+      "name": "coastal cove native cell 26,37",
+      "kind": "point",
+      "position": [
+        26,
+        37
+      ],
+      "block": "76"
+    },
+    {
+      "name": "coastal cove native cell 27,37",
+      "kind": "point",
+      "position": [
+        27,
+        37
+      ],
+      "block": "76"
+    },
+    {
+      "name": "coastal cove native cell 28,37",
+      "kind": "point",
+      "position": [
+        28,
+        37
+      ],
+      "block": "79"
+    },
+    {
+      "name": "coastal cove native cell 21,38",
+      "kind": "point",
+      "position": [
+        21,
+        38
+      ],
+      "block": "54"
+    },
+    {
+      "name": "coastal cove native cell 24,38",
+      "kind": "point",
+      "position": [
+        24,
+        38
+      ],
+      "block": "76"
+    },
+    {
+      "name": "coastal cove native cell 25,38",
+      "kind": "point",
+      "position": [
+        25,
+        38
+      ],
+      "block": "79"
+    },
+    {
+      "name": "coastal cove native cell 23,39",
+      "kind": "point",
+      "position": [
+        23,
+        39
+      ],
+      "block": "58"
+    },
+    {
+      "name": "coastal cove native cell 24,39",
+      "kind": "point",
+      "position": [
+        24,
+        39
+      ],
+      "block": "35"
+    },
+    {
+      "name": "coastal cove native cell 22,40",
+      "kind": "point",
+      "position": [
+        22,
+        40
+      ],
+      "block": "54"
+    },
+    {
+      "name": "coastal cove native cell 23,40",
+      "kind": "point",
+      "position": [
+        23,
+        40
+      ],
+      "block": "79"
+    },
+    {
+      "name": "coastal cove native cell 24,40",
+      "kind": "point",
+      "position": [
+        24,
+        40
+      ],
+      "block": "35"
+    },
+    {
+      "name": "coastal cove native cell 22,41",
+      "kind": "point",
+      "position": [
+        22,
+        41
+      ],
+      "block": "58"
+    },
+    {
+      "name": "coastal cove native cell 23,41",
+      "kind": "point",
+      "position": [
+        23,
+        41
+      ],
+      "block": "35"
+    },
+    {
+      "name": "coastal cove native cell 24,41",
+      "kind": "point",
+      "position": [
+        24,
+        41
+      ],
+      "block": "35"
+    },
+    {
+      "name": "coastal cove native cell 23,42",
+      "kind": "point",
+      "position": [
+        23,
+        42
+      ],
+      "block": "58"
+    },
+    {
+      "name": "coastal cove native cell 24,42",
+      "kind": "point",
+      "position": [
+        24,
+        42
+      ],
+      "block": "35"
+    },
+    {
+      "name": "coastal cove native cell 24,65",
+      "kind": "point",
+      "position": [
+        24,
+        65
+      ],
+      "block": "05"
+    },
+    {
+      "name": "coastal cove native cell 25,65",
+      "kind": "point",
+      "position": [
+        25,
+        65
+      ],
+      "block": "54"
+    },
+    {
+      "name": "coastal cove native cell 24,66",
+      "kind": "point",
+      "position": [
+        24,
+        66
+      ],
+      "block": "05"
+    },
+    {
+      "name": "coastal cove native cell 25,66",
+      "kind": "point",
+      "position": [
+        25,
+        66
+      ],
+      "block": "05"
+    },
+    {
+      "name": "coastal cove native cell 26,66",
+      "kind": "point",
+      "position": [
+        26,
+        66
+      ],
+      "block": "05"
+    },
+    {
+      "name": "coastal cove native cell 27,66",
+      "kind": "point",
+      "position": [
+        27,
+        66
+      ],
+      "block": "05"
+    },
+    {
+      "name": "coastal cove native cell 28,66",
+      "kind": "point",
+      "position": [
+        28,
+        66
+      ],
+      "block": "58"
+    },
+    {
+      "name": "coastal cove native cell 24,67",
+      "kind": "point",
+      "position": [
+        24,
+        67
+      ],
+      "block": "05"
+    },
+    {
+      "name": "coastal cove native cell 25,67",
+      "kind": "point",
+      "position": [
+        25,
+        67
+      ],
+      "block": "05"
+    },
+    {
+      "name": "coastal cove native cell 26,67",
+      "kind": "point",
+      "position": [
+        26,
+        67
+      ],
+      "block": "05"
+    },
+    {
+      "name": "coastal cove native cell 27,67",
+      "kind": "point",
+      "position": [
+        27,
+        67
+      ],
+      "block": "05"
+    },
+    {
+      "name": "coastal cove native cell 28,67",
+      "kind": "point",
+      "position": [
+        28,
+        67
+      ],
+      "block": "02"
+    },
+    {
+      "name": "coastal cove native cell 29,67",
+      "kind": "point",
+      "position": [
+        29,
+        67
+      ],
+      "block": "02"
+    },
+    {
+      "name": "coastal cove native cell 30,67",
+      "kind": "point",
+      "position": [
+        30,
+        67
+      ],
+      "block": "05"
+    },
+    {
+      "name": "coastal cove native cell 31,67",
+      "kind": "point",
+      "position": [
+        31,
+        67
+      ],
+      "block": "05"
+    },
+    {
+      "name": "coastal cove native cell 32,67",
+      "kind": "point",
+      "position": [
+        32,
+        67
+      ],
+      "block": "58"
+    },
+    {
+      "name": "coastal cove native cell 18,68",
+      "kind": "point",
+      "position": [
+        18,
+        68
+      ],
+      "block": "01"
+    },
+    {
+      "name": "coastal cove native cell 19,68",
+      "kind": "point",
+      "position": [
+        19,
+        68
+      ],
+      "block": "01"
+    },
+    {
+      "name": "coastal cove native cell 20,68",
+      "kind": "point",
+      "position": [
+        20,
+        68
+      ],
+      "block": "01"
+    },
+    {
+      "name": "coastal cove native cell 21,68",
+      "kind": "point",
+      "position": [
+        21,
+        68
+      ],
+      "block": "01"
+    },
+    {
+      "name": "coastal cove native cell 22,68",
+      "kind": "point",
+      "position": [
+        22,
+        68
+      ],
+      "block": "01"
+    },
+    {
+      "name": "coastal cove native cell 23,68",
+      "kind": "point",
+      "position": [
+        23,
+        68
+      ],
+      "block": "01"
+    },
+    {
+      "name": "coastal cove native cell 24,68",
+      "kind": "point",
+      "position": [
+        24,
+        68
+      ],
+      "block": "01"
+    },
+    {
+      "name": "coastal cove native cell 25,68",
+      "kind": "point",
+      "position": [
+        25,
+        68
+      ],
+      "block": "01"
+    },
+    {
+      "name": "coastal cove native cell 26,68",
+      "kind": "point",
+      "position": [
+        26,
+        68
+      ],
+      "block": "03"
+    },
+    {
+      "name": "coastal cove native cell 27,68",
+      "kind": "point",
+      "position": [
+        27,
+        68
+      ],
+      "block": "03"
+    },
+    {
+      "name": "coastal cove native cell 28,68",
+      "kind": "point",
+      "position": [
+        28,
+        68
+      ],
+      "block": "02"
+    },
+    {
+      "name": "coastal cove native cell 29,68",
+      "kind": "point",
+      "position": [
+        29,
+        68
+      ],
+      "block": "01"
+    },
+    {
+      "name": "coastal cove native cell 30,68",
+      "kind": "point",
+      "position": [
+        30,
+        68
+      ],
+      "block": "01"
+    },
+    {
+      "name": "coastal cove native cell 31,68",
+      "kind": "point",
+      "position": [
+        31,
+        68
+      ],
+      "block": "05"
+    },
+    {
+      "name": "coastal cove native cell 32,68",
+      "kind": "point",
+      "position": [
+        32,
+        68
+      ],
+      "block": "05"
+    },
+    {
+      "name": "coastal cove native cell 33,68",
+      "kind": "point",
+      "position": [
+        33,
+        68
+      ],
+      "block": "58"
+    },
+    {
+      "name": "coastal cove native cell 24,69",
+      "kind": "point",
+      "position": [
+        24,
+        69
+      ],
+      "block": "05"
+    },
+    {
+      "name": "coastal cove native cell 25,69",
+      "kind": "point",
+      "position": [
+        25,
+        69
+      ],
+      "block": "05"
+    },
+    {
+      "name": "coastal cove native cell 26,69",
+      "kind": "point",
+      "position": [
+        26,
+        69
+      ],
+      "block": "05"
+    },
+    {
+      "name": "coastal cove native cell 27,69",
+      "kind": "point",
+      "position": [
+        27,
+        69
+      ],
+      "block": "05"
+    },
+    {
+      "name": "coastal cove native cell 28,69",
+      "kind": "point",
+      "position": [
+        28,
+        69
+      ],
+      "block": "05"
+    },
+    {
+      "name": "coastal cove native cell 29,69",
+      "kind": "point",
+      "position": [
+        29,
+        69
+      ],
+      "block": "05"
+    },
+    {
+      "name": "coastal cove native cell 30,69",
+      "kind": "point",
+      "position": [
+        30,
+        69
+      ],
+      "block": "05"
+    },
+    {
+      "name": "coastal cove native cell 31,69",
+      "kind": "point",
+      "position": [
+        31,
+        69
+      ],
+      "block": "05"
+    },
+    {
+      "name": "coastal cove native cell 32,69",
+      "kind": "point",
+      "position": [
+        32,
+        69
+      ],
+      "block": "54"
+    },
+    {
+      "name": "coastal cove native cell 33,69",
+      "kind": "point",
+      "position": [
+        33,
+        69
+      ],
+      "block": "79"
+    },
+    {
+      "name": "coastal cove native cell 24,70",
+      "kind": "point",
+      "position": [
+        24,
+        70
+      ],
+      "block": "05"
+    },
+    {
+      "name": "coastal cove native cell 25,70",
+      "kind": "point",
+      "position": [
+        25,
+        70
+      ],
+      "block": "05"
+    },
+    {
+      "name": "coastal cove native cell 26,70",
+      "kind": "point",
+      "position": [
+        26,
+        70
+      ],
+      "block": "05"
+    },
+    {
+      "name": "coastal cove native cell 27,70",
+      "kind": "point",
+      "position": [
+        27,
+        70
+      ],
+      "block": "05"
+    },
+    {
+      "name": "coastal cove native cell 28,70",
+      "kind": "point",
+      "position": [
+        28,
+        70
+      ],
+      "block": "54"
+    },
+    {
+      "name": "coastal cove native cell 29,70",
+      "kind": "point",
+      "position": [
+        29,
+        70
+      ],
+      "block": "76"
+    },
+    {
+      "name": "coastal cove native cell 30,70",
+      "kind": "point",
+      "position": [
+        30,
+        70
+      ],
+      "block": "76"
+    },
+    {
+      "name": "coastal cove native cell 31,70",
+      "kind": "point",
+      "position": [
+        31,
+        70
+      ],
+      "block": "76"
+    },
+    {
+      "name": "coastal cove native cell 32,70",
+      "kind": "point",
+      "position": [
+        32,
+        70
+      ],
+      "block": "79"
+    },
+    {
+      "name": "coastal cove native cell 24,71",
+      "kind": "point",
+      "position": [
+        24,
+        71
+      ],
+      "block": "54"
+    },
+    {
+      "name": "coastal cove native cell 25,71",
+      "kind": "point",
+      "position": [
+        25,
+        71
+      ],
+      "block": "76"
+    },
+    {
+      "name": "coastal cove native cell 26,71",
+      "kind": "point",
+      "position": [
+        26,
+        71
+      ],
+      "block": "76"
+    },
+    {
+      "name": "coastal cove native cell 27,71",
+      "kind": "point",
+      "position": [
+        27,
+        71
+      ],
+      "block": "76"
+    },
+    {
+      "name": "coastal cove native cell 28,71",
+      "kind": "point",
+      "position": [
+        28,
+        71
+      ],
+      "block": "79"
+    },
+    {
+      "name": "coastal cove native cell 29,85",
+      "kind": "point",
+      "position": [
+        29,
+        85
+      ],
+      "block": "05"
+    },
+    {
+      "name": "coastal cove native cell 30,85",
+      "kind": "point",
+      "position": [
+        30,
+        85
+      ],
+      "block": "58"
+    },
+    {
+      "name": "coastal cove native cell 27,86",
+      "kind": "point",
+      "position": [
+        27,
+        86
+      ],
+      "block": "05"
+    },
+    {
+      "name": "coastal cove native cell 28,86",
+      "kind": "point",
+      "position": [
+        28,
+        86
+      ],
+      "block": "05"
+    },
+    {
+      "name": "coastal cove native cell 29,86",
+      "kind": "point",
+      "position": [
+        29,
+        86
+      ],
+      "block": "05"
+    },
+    {
+      "name": "coastal cove native cell 30,86",
+      "kind": "point",
+      "position": [
+        30,
+        86
+      ],
+      "block": "05"
+    },
+    {
+      "name": "coastal cove native cell 31,86",
+      "kind": "point",
+      "position": [
+        31,
+        86
+      ],
+      "block": "05"
+    },
+    {
+      "name": "coastal cove native cell 32,86",
+      "kind": "point",
+      "position": [
+        32,
+        86
+      ],
+      "block": "58"
+    },
+    {
+      "name": "coastal cove native cell 27,87",
+      "kind": "point",
+      "position": [
+        27,
+        87
+      ],
+      "block": "05"
+    },
+    {
+      "name": "coastal cove native cell 28,87",
+      "kind": "point",
+      "position": [
+        28,
+        87
+      ],
+      "block": "05"
+    },
+    {
+      "name": "coastal cove native cell 29,87",
+      "kind": "point",
+      "position": [
+        29,
+        87
+      ],
+      "block": "05"
+    },
+    {
+      "name": "coastal cove native cell 30,87",
+      "kind": "point",
+      "position": [
+        30,
+        87
+      ],
+      "block": "05"
+    },
+    {
+      "name": "coastal cove native cell 31,87",
+      "kind": "point",
+      "position": [
+        31,
+        87
+      ],
+      "block": "05"
+    },
+    {
+      "name": "coastal cove native cell 32,87",
+      "kind": "point",
+      "position": [
+        32,
+        87
+      ],
+      "block": "05"
+    },
+    {
+      "name": "coastal cove native cell 33,87",
+      "kind": "point",
+      "position": [
+        33,
+        87
+      ],
+      "block": "05"
+    },
+    {
+      "name": "coastal cove native cell 34,87",
+      "kind": "point",
+      "position": [
+        34,
+        87
+      ],
+      "block": "58"
+    },
+    {
+      "name": "coastal cove native cell 27,88",
+      "kind": "point",
+      "position": [
+        27,
+        88
+      ],
+      "block": "05"
+    },
+    {
+      "name": "coastal cove native cell 28,88",
+      "kind": "point",
+      "position": [
+        28,
+        88
+      ],
+      "block": "05"
+    },
+    {
+      "name": "coastal cove native cell 29,88",
+      "kind": "point",
+      "position": [
+        29,
+        88
+      ],
+      "block": "05"
+    },
+    {
+      "name": "coastal cove native cell 30,88",
+      "kind": "point",
+      "position": [
+        30,
+        88
+      ],
+      "block": "05"
+    },
+    {
+      "name": "coastal cove native cell 31,88",
+      "kind": "point",
+      "position": [
+        31,
+        88
+      ],
+      "block": "02"
+    },
+    {
+      "name": "coastal cove native cell 32,88",
+      "kind": "point",
+      "position": [
+        32,
+        88
+      ],
+      "block": "02"
+    },
+    {
+      "name": "coastal cove native cell 33,88",
+      "kind": "point",
+      "position": [
+        33,
+        88
+      ],
+      "block": "05"
+    },
+    {
+      "name": "coastal cove native cell 34,88",
+      "kind": "point",
+      "position": [
+        34,
+        88
+      ],
+      "block": "05"
+    },
+    {
+      "name": "coastal cove native cell 35,88",
+      "kind": "point",
+      "position": [
+        35,
+        88
+      ],
+      "block": "05"
+    },
+    {
+      "name": "coastal cove native cell 36,88",
+      "kind": "point",
+      "position": [
+        36,
+        88
+      ],
+      "block": "58"
+    },
+    {
+      "name": "coastal cove native cell 25,89",
+      "kind": "point",
+      "position": [
+        25,
+        89
+      ],
+      "block": "01"
+    },
+    {
+      "name": "coastal cove native cell 26,89",
+      "kind": "point",
+      "position": [
+        26,
+        89
+      ],
+      "block": "01"
+    },
+    {
+      "name": "coastal cove native cell 27,89",
+      "kind": "point",
+      "position": [
+        27,
+        89
+      ],
+      "block": "03"
+    },
+    {
+      "name": "coastal cove native cell 28,89",
+      "kind": "point",
+      "position": [
+        28,
+        89
+      ],
+      "block": "03"
+    },
+    {
+      "name": "coastal cove native cell 29,89",
+      "kind": "point",
+      "position": [
+        29,
+        89
+      ],
+      "block": "01"
+    },
+    {
+      "name": "coastal cove native cell 30,89",
+      "kind": "point",
+      "position": [
+        30,
+        89
+      ],
+      "block": "01"
+    },
+    {
+      "name": "coastal cove native cell 31,89",
+      "kind": "point",
+      "position": [
+        31,
+        89
+      ],
+      "block": "02"
+    },
+    {
+      "name": "coastal cove native cell 32,89",
+      "kind": "point",
+      "position": [
+        32,
+        89
+      ],
+      "block": "01"
+    },
+    {
+      "name": "coastal cove native cell 33,89",
+      "kind": "point",
+      "position": [
+        33,
+        89
+      ],
+      "block": "05"
+    },
+    {
+      "name": "coastal cove native cell 34,89",
+      "kind": "point",
+      "position": [
+        34,
+        89
+      ],
+      "block": "05"
+    },
+    {
+      "name": "coastal cove native cell 35,89",
+      "kind": "point",
+      "position": [
+        35,
+        89
+      ],
+      "block": "54"
+    },
+    {
+      "name": "coastal cove native cell 36,89",
+      "kind": "point",
+      "position": [
+        36,
+        89
+      ],
+      "block": "79"
+    },
+    {
+      "name": "coastal cove native cell 27,90",
+      "kind": "point",
+      "position": [
+        27,
+        90
+      ],
+      "block": "05"
+    },
+    {
+      "name": "coastal cove native cell 28,90",
+      "kind": "point",
+      "position": [
+        28,
+        90
+      ],
+      "block": "05"
+    },
+    {
+      "name": "coastal cove native cell 29,90",
+      "kind": "point",
+      "position": [
+        29,
+        90
+      ],
+      "block": "05"
+    },
+    {
+      "name": "coastal cove native cell 30,90",
+      "kind": "point",
+      "position": [
+        30,
+        90
+      ],
+      "block": "05"
+    },
+    {
+      "name": "coastal cove native cell 31,90",
+      "kind": "point",
+      "position": [
+        31,
+        90
+      ],
+      "block": "05"
+    },
+    {
+      "name": "coastal cove native cell 32,90",
+      "kind": "point",
+      "position": [
+        32,
+        90
+      ],
+      "block": "05"
+    },
+    {
+      "name": "coastal cove native cell 33,90",
+      "kind": "point",
+      "position": [
+        33,
+        90
+      ],
+      "block": "54"
+    },
+    {
+      "name": "coastal cove native cell 34,90",
+      "kind": "point",
+      "position": [
+        34,
+        90
+      ],
+      "block": "76"
+    },
+    {
+      "name": "coastal cove native cell 35,90",
+      "kind": "point",
+      "position": [
+        35,
+        90
+      ],
+      "block": "79"
+    },
+    {
+      "name": "coastal cove native cell 29,91",
+      "kind": "point",
+      "position": [
+        29,
+        91
+      ],
+      "block": "05"
+    },
+    {
+      "name": "coastal cove native cell 30,91",
+      "kind": "point",
+      "position": [
+        30,
+        91
+      ],
+      "block": "05"
+    },
+    {
+      "name": "coastal cove native cell 31,91",
+      "kind": "point",
+      "position": [
+        31,
+        91
+      ],
+      "block": "54"
+    },
+    {
+      "name": "coastal cove native cell 32,91",
+      "kind": "point",
+      "position": [
+        32,
+        91
+      ],
+      "block": "76"
+    },
+    {
+      "name": "coastal cove native cell 33,91",
+      "kind": "point",
+      "position": [
+        33,
+        91
+      ],
+      "block": "79"
+    },
+    {
+      "name": "coastal cove native cell 29,92",
+      "kind": "point",
+      "position": [
+        29,
+        92
+      ],
+      "block": "54"
+    },
+    {
+      "name": "coastal cove native cell 30,92",
+      "kind": "point",
+      "position": [
+        30,
+        92
+      ],
+      "block": "76"
+    },
+    {
+      "name": "coastal cove native cell 31,92",
+      "kind": "point",
+      "position": [
+        31,
+        92
+      ],
+      "block": "79"
+    },
+    {
+      "kind": "point",
+      "name": "Native grass on shore climb",
+      "position": [
+        16,
+        44
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Native grass on shore climb",
+      "position": [
+        17,
+        44
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Attached birch spoil closes cliff-foot bypass",
+      "position": [
+        17,
+        45
+      ],
+      "block": "0a"
+    },
+    {
+      "kind": "point",
+      "name": "Native grass on shore climb",
+      "position": [
+        17,
+        69
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Native grass on shore climb",
+      "position": [
+        18,
+        69
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Native grass on shore climb",
+      "position": [
+        17,
+        70
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Native grass on shore climb",
+      "position": [
+        18,
+        70
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Native grass on shore climb",
+      "position": [
+        18,
+        84
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Native grass on shore climb",
+      "position": [
+        18,
+        85
+      ],
+      "block": "03"
     }
   ],
   "crossings": [

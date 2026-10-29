@@ -103,7 +103,7 @@ def inspect(design, layout, pack, blocks):
     probes=design['expansion_contract']['controller_probes']
     for stair in probes['stair_lanes']:
         path=[stair['before']]+stair['steps']+[stair['after']]
-        if any(kind(*p)!='FLOOR' for p in path) or any(abs(a[0]-b[0])+abs(a[1]-b[1])!=1 for a,b in zip(path,path[1:])):
+        if stair.get('after_collision','FLOOR') not in {'FLOOR','TALL_GRASS'} or any(kind(*p)!='FLOOR' for p in path[:-1]) or kind(*path[-1])!=stair.get('after_collision','FLOOR') or any(abs(a[0]-b[0])+abs(a[1]-b[1])!=1 for a,b in zip(path,path[1:])):
             report['errors'].append(stair['id']+': stair path invalid')
         if kind(*stair['blocked_side']['target_core'])!='WALL':
             report['errors'].append(stair['id']+': native stair wall lost')
@@ -118,16 +118,30 @@ def inspect(design, layout, pack, blocks):
     if any(kind(*p)!='WATER' for p in sea_route) or len({(x//64,y//48) for x,y in sea_route})!=8:
         report['errors'].append('Ordinary Water probe does not safely visit every chunk')
     for probe in probes['sea_boundary_probes']:
-        if kind(*probe['at'])!='WATER' or kind(*probe['target'])!='BUOY':
+        if probe.get('expected', 'BUOY') not in {'WALL', 'BUOY'} or kind(*probe['at'])!='WATER' or kind(*probe['target'])!=probe.get('expected','BUOY'):
             report['errors'].append('Sea boundary probe has invalid water/rock collision')
     boundary_views=[]
-    for identifier in ['SUPERIOR_ROCK_BOUNDARY','SOUTHERN_SEA_BOUNDARY','NORTHERN_SEA_ROCK_BOUNDARY']:
+    boundary_ids = ['SUPERIOR_ROCK_BOUNDARY', 'SOUTHERN_SEA_BOUNDARY']
+    if 'compact_terminal' not in design:
+        boundary_ids.append('NORTHERN_SEA_ROCK_BOUNDARY')
+    for identifier in boundary_ids:
         view=next(v for v in design['surf_viewpoints'] if v['id']==identifier)
         x,y=view['tile']
         visible=sum(kind(cx,cy)=='BUOY' for cy in range(max(0,y-5),min(height*2,y+5))
                     for cx in range(max(0,x-5),min(width*2,x+5)))
         if visible<8:report['errors'].append(identifier+': camera does not show the actual blocking rock boundary')
         boundary_views.append(dict(id=identifier,visible_buoy_core_tiles=visible))
+    if 'compact_terminal' in design:
+        assert design['compact_terminal']['native_width_metatiles'] == 4
+        compact_probes = [p for p in probes['sea_boundary_probes'] if p.get('expected') == 'WALL']
+        assert len(compact_probes) == 1, 'One exact compact-bank collision probe required'
+        probe = compact_probes[0]
+        x, y = probe['at']
+        assert 64 <= x < 72 and y < 48, 'Compact water probe must remain in its real native chunk'
+        assert sum(abs(a-b) for a,b in zip(probe['at'],probe['target'])) == 1
+        assert kind(x,y) == 'WATER' and kind(*probe['target']) == 'WALL'
+        boundary_views.append(dict(id='COMPACT_BANK', at=probe['at'],
+                                   target=probe['target'], blocking_collision='WALL'))
     report.update(dimensions_metatiles=[width, height],source_only=True,native_playability_proved=False,
                   whole_surface_chunks=len(chunks),walkable_chunks=len({(x//64,y//48) for x,y in seen}),
                   reachable_water_core_tiles=len(surf & water),outer_water_core_tiles=len(water & outer),

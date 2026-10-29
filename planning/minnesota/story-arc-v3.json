@@ -1,0 +1,817 @@
+{
+  "schema_version": 1,
+  "id": "northstar-rival-arc-v3",
+  "texts": {
+    "MnNSEReedArrivalText": [
+      "REED: You got a partner for carrying a parcel?",
+      "I want a team that wins. And work that pays for it."
+    ],
+    "MnNSEReedAfterText": [
+      "People remember the trainer who wins.",
+      "You can keep doing their errands. I will find a better offer."
+    ],
+    "MnArcRCWaitingText": [
+      "REED: I asked about a contract. They sent me to this waiting room."
+    ],
+    "MnArcRCPathsText": [
+      "REED: They trusted you with the originals.",
+      "I asked for the escort job. They said I needed experience.",
+      "An ICE recruiter in Minneapolis did not ask for references. They pay for a team."
+    ],
+    "MnArcRCChallengeText": [
+      "Show me what they saw in you. Battle?"
+    ],
+    "MnArcRCBeforeText": [
+      "REED: No one is going to carry me."
+    ],
+    "MnArcRCWonText": [
+      "A delivery does not make you better than me."
+    ],
+    "MnArcRCAfterText": [
+      "REED: My interview is at the dispatch office.",
+      "When I have a proper team, we will do this again."
+    ],
+    "MnArcRCDeclinedText": [
+      "REED: The nurse is right there. I can wait."
+    ],
+    "MnNICEReedQuestionText": [
+      "REED: I came for the security interview.",
+      "And ELLIS? What did they do?"
+    ],
+    "MnNICEReedAcceptText": [
+      "REED: Pay me every Friday.",
+      "And I choose who comes downstairs."
+    ],
+    "MnNICEReedAfterText": [
+      "REED: You made me look useless in front of them.",
+      "LODE has a shipment at Union Depot. I am taking that escort.",
+      "You can take ELLIS home. Stay away from my next job."
+    ],
+    "MnNICEReedWonText": [
+      "You had to do that in front of everyone."
+    ],
+    "MnArcSPBeforeText": [
+      "REED: The crew and this load go north.",
+      "MINA: FINN needs that meter. He is not your cargo.",
+      "REED: He signed. Stay out of the aisle."
+    ],
+    "MnArcSPReadyText": [
+      "REED: Get your team ready. I am not leaving without my load. Battle?"
+    ],
+    "MnArcSPDeclinedText": [
+      "MINA: Go to the clinic. I will keep him here."
+    ],
+    "MnArcSPWonText": [
+      "REED: The northbound load left while you were here.",
+      "They can still use me at the mine."
+    ],
+    "MnArcSPAfterText": [
+      "MINA: He did not take our copy. He cannot make us forget.",
+      "Let me tell you where FINN was sent."
+    ],
+    "MnArcSCBeforeText": [
+      "REED: That worker left a contracted shift. I am taking them back.",
+      "SERA: The lift cage jammed. I went for help.",
+      "REED: I decide what goes in the report."
+    ],
+    "MnArcSCChoiceText": [
+      "SERA has not agreed to go with him. Stand beside SERA?"
+    ],
+    "MnArcSCDeclinedText": [
+      "SERA: Please do not leave me alone with him."
+    ],
+    "MnArcSCStandText": [
+      "SERA: You are not police. I am going to the ranger.",
+      "REED: Keep your witness. I am due at the drill."
+    ],
+    "MnArcSCReleasedText": [
+      "SERA: The path is clear. I will get help for the other shift."
+    ],
+    "MnArcSCAfterText": [
+      "SERA: The ranger took my account. They cannot call us missing now."
+    ],
+    "MnNDrillReedWorkText": [
+      "REED: I signed for this run. Keep the drive moving."
+    ],
+    "MnNDrillReedSeenText": [
+      "REED: They said I could run the next shift.",
+      "FINN: We are still under the head!",
+      "REED: I heard him. The foreman gave the order.",
+      "You do not get to take this from me too."
+    ],
+    "MnNDrillReedWonText": [
+      "They saw that. There goes the promotion."
+    ],
+    "MnNDrillReedAfterText": [
+      "REED: The Boundary job is still on.",
+      "When the chief gets that Pokemon, nobody will care about this shift."
+    ],
+    "MnArcHarborIntakeText": [
+      "WORKER: That is a locking cradle.",
+      "The radio crackles.",
+      "IVY: I found my crew at the intake. We cannot clear it while the drive runs.",
+      "Send the live readings. ELLIS will hold the line."
+    ],
+    "MnArcLinkReadyText": [
+      "The chief cannot stop you using the receiver now.",
+      "Send the live readings to ELLIS and the intake crew?"
+    ],
+    "MnArcLinkText": [
+      "ELLIS: I have the readings. JO is beside me.",
+      "IVY: The intake is still live. REED has the local drive.",
+      "ELLIS: I can hold the public line. Go through the service hatch. We will stay with you."
+    ],
+    "MnArcLinkAfterText": [
+      "ELLIS: The intake crew is waiting. The hatch is on your right."
+    ],
+    "MnArcFinalBeforeText": [
+      "REED: The chief promised a team nobody could beat.",
+      "You get applause for every job I lose.",
+      "IVY: You saw what was in the cage.",
+      "REED: I know what is in it. I am not walking away empty-handed."
+    ],
+    "MnArcFinalReadyText": [
+      "REED is holding the local drive. Your team ready?"
+    ],
+    "MnArcFinalDeclinedText": [
+      "IVY: The medic is upstairs. We will hold here."
+    ],
+    "MnArcFinalWonText": [
+      "REED: I kept getting stronger. You kept getting in."
+    ],
+    "MnArcFinalAfterText": [
+      "REED: Fine. Touch it. See who gets paid for this mess."
+    ],
+    "MnArcFinalLockedText": [
+      "REED: The chief is at the receiver. This floor is closed."
+    ],
+    "MnArcIntakeSeenText": [
+      "The drive hammers. A pale shape pulls against the intake bars.",
+      "IVY: KETTLURK is caught in its own current. Shut the drive before we open the gate."
+    ],
+    "MnArcIntakeReadyText": [
+      "Stop the drive and release the intake gate?"
+    ],
+    "MnArcIntakeDeniedText": [
+      "REED is still guarding the local drive."
+    ],
+    "MnArcIntakeOpenText": [
+      "The drive stops. The intake gate lifts.",
+      "IVY: Clear the channel. Give it room."
+    ],
+    "MnArcIntakeEscapeText": [
+      "KETTLURK folds into the returning water. The cage is empty.",
+      "IVY: The pull has eased. The crew can cross."
+    ],
+    "MnArcIntakeCrewText": [
+      "FINN: The last crew is clear. NELL knows we are out.",
+      "ELLIS: I have the pump crews. North line off. South line off.",
+      "JO: Tell them they can come home."
+    ],
+    "MnArcIntakeReedExitText": [
+      "IVY: Leave the badge here. You cannot use it on anyone else.",
+      "REED: It was their badge. They can come and collect it."
+    ],
+    "MnArcIntakeDoneText": [
+      "The current settles. The lakes are no longer feeding the pumps.",
+      "ELLIS: The readings are public. We will keep the line open."
+    ],
+    "MnArcIntakeAfterText": [
+      "IVY: The cage stays open. We are removing the winch next."
+    ],
+    "MnArcIntakeIvyText": [
+      "IVY: I came to find my crew. They sent us to build this.",
+      "Now we get everyone home."
+    ],
+    "MnArcIntakeFinnText": [
+      "FINN: The repaired meter matches ELLIS now.",
+      "This time we get to stop when the gauge says stop."
+    ],
+    "MnArcAftermathText": [
+      "REED: They kept the last pay. Said the equipment was my responsibility.",
+      "I wanted a team that made people listen.",
+      "Now every station knows my name.",
+      "Do not ask me to thank you."
+    ],
+    "MnArcSeraWaitingText": [
+      "SERA: I left the lift to find help. REED followed me here."
+    ],
+    "MnArcTamarackAfterText": [
+      "TAMARACK: The river eggs are back in warm nests.",
+      "One journey did not fix every bank. It gave us time to care for them."
+    ],
+    "MnArcEllisAfterText": [
+      "ELLIS: The crew calls come here now. No one has to ask ICE for a line.",
+      "JO kept the kettle on through the last shutdown call.",
+      "We will do the work of putting this right."
+    ],
+    "MnArcJoAfterText": [
+      "JO: ELLIS finally slept.",
+      "The light stays on for the crews coming home."
+    ],
+    "MnArcMinaAfterText": [
+      "MINA: FINN called from the intake. They let the last crew out.",
+      "You can sit down this time. I will carry the next message."
+    ],
+    "MnArcNellAfterText": [
+      "NELL: FINN is coming home after the intake shift.",
+      "We are not going to talk about work tonight."
+    ],
+    "MnArcHabitatText": [
+      "The GILLPUP huddles away from the dry channel.",
+      "IVY: The test pulled the water out from under its nest.",
+      "My crew went to check the gauge. They have not called back."
+    ],
+    "MnArcHabitatAfterText": [
+      "IVY: The water is holding now. That GILLPUP went back to its nest."
+    ],
+    "MnArcSPBattleText": [
+      "REED: Move MINA away from the load.",
+      "MINA: I am staying here."
+    ]
+  },
+  "scene_contracts": [
+    {
+      "chapter": "Winona",
+      "purpose": "Competition over trust and status; Reed wants a paid training contract.",
+      "battle": "MN_REED_WINONA",
+      "consequence": "Player earns the delivery responsibility Reed wanted."
+    },
+    {
+      "chapter": "Rochester",
+      "purpose": "Reed names the Minneapolis interview before traveling there. Ivy tends displaced Gillpup and worries about her missing crew.",
+      "battle": "MN_REED_ROCHESTER",
+      "consequence": "Refusal preserves the challenge; defeat never grants victory. The interview remains his destination."
+    },
+    {
+      "chapter": "Minneapolis office",
+      "purpose": "The appointment becomes recruitment. Reed knowingly identifies Ellis to ICE.",
+      "consequence": "Ellis is held in the headquarters; the player must reach the relay and physically free them."
+    },
+    {
+      "chapter": "ICE headquarters",
+      "purpose": "Reed defends the institution that gave him authority.",
+      "battle": "MN_REED_RELAY",
+      "consequence": "Power shutdown and Ellis release are separate actions. Reed leaves for the St Paul transfer."
+    },
+    {
+      "chapter": "St Paul",
+      "purpose": "Mina confronts Reed about Finn and the northbound crew.",
+      "battle": "MN_REED_STPAUL",
+      "consequence": "Victory does not accept Mina's request; the player must acknowledge that separately."
+    },
+    {
+      "chapter": "St Cloud",
+      "purpose": "The player interrupts Sera's forced transfer before the fifth badge.",
+      "consequence": "Sera visibly leaves custody; Reed withdraws without apologizing. Refusal leaves the scene retryable."
+    },
+    {
+      "chapter": "Iron Range",
+      "purpose": "Reed knowingly guards the endangered lift crew in exchange for promotion.",
+      "battle": "MN_REED_MINE",
+      "consequence": "Independent haulage, ventilation, feed and drive operations lead to Finn and Nell's rescue."
+    },
+    {
+      "chapter": "Duluth harbor",
+      "purpose": "A physical locking cradle and Ivy's live radio call connect the mine machinery to Kettlurk's confinement.",
+      "consequence": "The crew awaits shutdown at the Boundary intake; evidence alone cannot release them."
+    },
+    {
+      "chapter": "Boundary shelter",
+      "purpose": "The chief falls and Ellis establishes a live radio link.",
+      "consequence": "The hatch opens only after acknowledgment; neither the chief battle nor the link restores the survey."
+    },
+    {
+      "chapter": "Boundary intake",
+      "purpose": "The player sees Kettlurk and the trapped crew, defeats Reed, and separately operates the local drive.",
+      "battle": "MN_REED_BOUNDARY",
+      "consequence": "The gate opens; Kettlurk visibly reaches water; Ivy and Finn move clear. Reed loses authority. Restoration waits for all acknowledgments."
+    },
+    {
+      "chapter": "Return visits",
+      "purpose": "Tamarack, Ellis, Jo, Mina and Nell react to the changed region.",
+      "consequence": "Optional Reed encounter at St Cloud station is unrepentant; League member Halden and route trainers retain separate identities."
+    }
+  ],
+  "acceptance_contracts": [
+    "Only active Minnesota species in Minnesota appearances; legal native moves and evolution levels.",
+    "No victory, release or restoration flags on refusal or loss.",
+    "Continue restores actor visibility, local gate state and completed crew movements.",
+    "No new paper-fetch gates; preserve the existing authored lairs and routes.",
+    "Ordinary-party campaign evidence must be earned through production controller input and kept separate from chapter fixtures."
+  ],
+  "grunts": [
+    {
+      "map": "MnIceCargoBasement",
+      "id": "MN_ICE_HQ_CARGO_SEARCH",
+      "at": [
+        5,
+        9
+      ],
+      "facing": "DOWN",
+      "sight": 3,
+      "party": [
+        [
+          "SLUDGESKI",
+          18
+        ],
+        [
+          "MIDGEBIT",
+          19
+        ]
+      ],
+      "seen": "Open your bag. We decide what counts as evidence."
+    },
+    {
+      "map": "MnIceCargoBasement",
+      "id": "MN_ICE_HQ_CARGO_MANIFEST",
+      "at": [
+        24,
+        13
+      ],
+      "facing": "LEFT",
+      "sight": 3,
+      "party": [
+        [
+          "CARTICK",
+          19
+        ],
+        [
+          "LEECHIMP",
+          19
+        ]
+      ],
+      "seen": "The passenger list travels with the ore."
+    },
+    {
+      "map": "MnIceOperations",
+      "id": "MN_ICE_HQ_DISPATCH",
+      "at": [
+        8,
+        5
+      ],
+      "facing": "LEFT",
+      "sight": 3,
+      "party": [
+        [
+          "MIDGEBIT",
+          20
+        ],
+        [
+          "CINDORE",
+          19
+        ]
+      ],
+      "seen": "I sent the van. I knew who was inside."
+    },
+    {
+      "map": "MnIceOperations",
+      "id": "MN_ICE_HQ_OPERATIONS_PATROL",
+      "at": [
+        26,
+        11
+      ],
+      "facing": "DOWN",
+      "sight": 3,
+      "party": [
+        [
+          "SLUDGESKI",
+          20
+        ],
+        [
+          "CARTICK",
+          20
+        ]
+      ],
+      "seen": "A closed office is still our office."
+    },
+    {
+      "map": "MnIceRecords",
+      "id": "MN_ICE_HQ_ARCHIVE",
+      "at": [
+        8,
+        6
+      ],
+      "facing": "RIGHT",
+      "sight": 3,
+      "party": [
+        [
+          "LEECHIMP",
+          20
+        ],
+        [
+          "MIDGEBIT",
+          21
+        ]
+      ],
+      "seen": "A complaint is a name and an address. Useful things."
+    },
+    {
+      "map": "MnIceMaintenance",
+      "id": "MN_ICE_HQ_WORKSHOP",
+      "at": [
+        28,
+        15
+      ],
+      "facing": "LEFT",
+      "sight": 3,
+      "party": [
+        [
+          "CINDORE",
+          21
+        ],
+        [
+          "CARTICK",
+          21
+        ]
+      ],
+      "seen": "I keep their vans running. They keep me paid."
+    },
+    {
+      "map": "MnIceTransfer",
+      "id": "MN_ICE_HQ_ESCORT",
+      "at": [
+        8,
+        7
+      ],
+      "facing": "RIGHT",
+      "sight": 3,
+      "party": [
+        [
+          "SLUDGESKI",
+          21
+        ],
+        [
+          "LEECHIMP",
+          21
+        ]
+      ],
+      "seen": "No calls. No visitors. Keep walking."
+    },
+    {
+      "map": "MnIceRelayFloor",
+      "id": "MN_ICE_HQ_RELAY_PATROL",
+      "at": [
+        5,
+        6
+      ],
+      "facing": "DOWN",
+      "sight": 3,
+      "party": [
+        [
+          "MIDGEBIT",
+          21
+        ],
+        [
+          "CARTICK",
+          21
+        ]
+      ],
+      "seen": "You are not getting a signal out."
+    },
+    {
+      "map": "MnIronDrillApproach",
+      "id": "MN_LODE_ARC_ACCESS",
+      "at": [
+        10,
+        12
+      ],
+      "facing": "LEFT",
+      "sight": 3,
+      "party": [
+        [
+          "AGATOT",
+          36
+        ],
+        [
+          "CARTICK",
+          36
+        ]
+      ],
+      "seen": "The notices went up after we started. That is your warning."
+    },
+    {
+      "map": "MnIronDrillApproach",
+      "id": "MN_LODE_ARC_SPOIL",
+      "at": [
+        26,
+        18
+      ],
+      "facing": "UP",
+      "sight": 3,
+      "party": [
+        [
+          "CINDORE",
+          36
+        ],
+        [
+          "LEECHIMP",
+          36
+        ]
+      ],
+      "seen": "The runoff goes downhill. So do the complaints."
+    },
+    {
+      "map": "MnIronHaulage",
+      "id": "MN_LODE_ARC_WEIGH",
+      "at": [
+        14,
+        7
+      ],
+      "facing": "LEFT",
+      "sight": 3,
+      "party": [
+        [
+          "PELLETOR",
+          37
+        ],
+        [
+          "CARTICK",
+          37
+        ]
+      ],
+      "seen": "Every loaded truck has a bonus on it. Move."
+    },
+    {
+      "map": "MnIronHaulage",
+      "id": "MN_LODE_ARC_CONVEYOR",
+      "at": [
+        30,
+        13
+      ],
+      "facing": "LEFT",
+      "sight": 3,
+      "party": [
+        [
+          "AGATOT",
+          37
+        ],
+        [
+          "SLUDGESKI",
+          37
+        ]
+      ],
+      "seen": "There is no stop code on my orders."
+    },
+    {
+      "map": "MnIronPumpGallery",
+      "id": "MN_LODE_ARC_PUMP",
+      "at": [
+        12,
+        5
+      ],
+      "facing": "DOWN",
+      "sight": 3,
+      "party": [
+        [
+          "LEECHURGE",
+          38
+        ],
+        [
+          "PELLETOR",
+          38
+        ]
+      ],
+      "seen": "The gauges are red. The pumps stay on."
+    },
+    {
+      "map": "MnIronPumpGallery",
+      "id": "MN_LODE_ARC_INTAKE",
+      "at": [
+        25,
+        13
+      ],
+      "facing": "RIGHT",
+      "sight": 3,
+      "party": [
+        [
+          "CARTICK",
+          38
+        ],
+        [
+          "GOOSNIDE",
+          38
+        ]
+      ],
+      "seen": "Nobody measures the water until we finish."
+    },
+    {
+      "map": "MnIronSump",
+      "id": "MN_LODE_ARC_SUMP",
+      "at": [
+        14,
+        10
+      ],
+      "facing": "UP",
+      "sight": 3,
+      "party": [
+        [
+          "SLUDGESKI",
+          38
+        ],
+        [
+          "LEECHURGE",
+          39
+        ]
+      ],
+      "seen": "That water was clear when we got here. So what?"
+    },
+    {
+      "map": "MnIronSump",
+      "id": "MN_LODE_ARC_DRAIN",
+      "at": [
+        25,
+        17
+      ],
+      "facing": "RIGHT",
+      "sight": 3,
+      "party": [
+        [
+          "PELLETOR",
+          39
+        ],
+        [
+          "CARTICK",
+          38
+        ]
+      ],
+      "seen": "They can drink bottled water. We have a deadline."
+    },
+    {
+      "map": "MnIronVentilation",
+      "id": "MN_LODE_ARC_VENT",
+      "at": [
+        10,
+        10
+      ],
+      "facing": "RIGHT",
+      "sight": 3,
+      "party": [
+        [
+          "GOOSNIDE",
+          39
+        ],
+        [
+          "LEECHURGE",
+          39
+        ]
+      ],
+      "seen": "The crew asked for air. Management asked for output."
+    },
+    {
+      "map": "MnIronVentilation",
+      "id": "MN_LODE_ARC_SHIFT",
+      "at": [
+        29,
+        8
+      ],
+      "facing": "LEFT",
+      "sight": 3,
+      "party": [
+        [
+          "PELLETOR",
+          39
+        ],
+        [
+          "SLUDGESKI",
+          39
+        ]
+      ],
+      "seen": "My shift ends when that vein is empty."
+    },
+    {
+      "map": "MnIronDrillCore",
+      "id": "MN_LODE_ARC_CORE_WEST",
+      "at": [
+        5,
+        11
+      ],
+      "facing": "DOWN",
+      "sight": 3,
+      "party": [
+        [
+          "CARTICK",
+          40
+        ],
+        [
+          "LEECHURGE",
+          40
+        ]
+      ],
+      "seen": "We heard them calling from the lower shaft."
+    },
+    {
+      "map": "MnIronDrillCore",
+      "id": "MN_LODE_ARC_CORE_EAST",
+      "at": [
+        18,
+        12
+      ],
+      "facing": "UP",
+      "sight": 3,
+      "party": [
+        [
+          "PELLETOR",
+          40
+        ],
+        [
+          "GOOSNIDE",
+          40
+        ]
+      ],
+      "seen": "The boss said to keep people away. That includes the crew."
+    },
+    {
+      "map": "MnBoundaryIntake",
+      "id": "MN_ICE_ARC_INTAKE_WEST",
+      "at": [
+        3,
+        13
+      ],
+      "facing": "UP",
+      "sight": 3,
+      "party": [
+        [
+          "LEECHURGE",
+          42
+        ],
+        [
+          "CARTICK",
+          42
+        ]
+      ],
+      "seen": "No names. No report. You came here alone."
+    },
+    {
+      "map": "MnBoundaryIntake",
+      "id": "MN_LODE_ARC_INTAKE_EAST",
+      "at": [
+        27,
+        19
+      ],
+      "facing": "UP",
+      "sight": 3,
+      "party": [
+        [
+          "MESABLAST",
+          42
+        ],
+        [
+          "SLUDGESKI",
+          42
+        ]
+      ],
+      "seen": "The water leaves. The minerals stay. That is the contract."
+    },
+    {
+      "map": "MnBoundaryIntake",
+      "id": "MN_ICE_ARC_INTAKE_RECORDS",
+      "at": [
+        5,
+        7
+      ],
+      "facing": "RIGHT",
+      "sight": 2,
+      "party": [
+        [
+          "MIDGEBIT",
+          43
+        ],
+        [
+          "LEECHURGE",
+          42
+        ],
+        [
+          "CARTICK",
+          42
+        ]
+      ],
+      "seen": "We took the people who could identify the site."
+    },
+    {
+      "map": "MnBoundaryIntake",
+      "id": "MN_LODE_ARC_INTAKE_CONTROL",
+      "at": [
+        28,
+        5
+      ],
+      "facing": "DOWN",
+      "sight": 3,
+      "party": [
+        [
+          "PELLETOR",
+          43
+        ],
+        [
+          "GOOSNIDE",
+          42
+        ],
+        [
+          "SLUDGESKI",
+          42
+        ]
+      ],
+      "seen": "They promised protection. We promised production."
+    }
+  ]
+}

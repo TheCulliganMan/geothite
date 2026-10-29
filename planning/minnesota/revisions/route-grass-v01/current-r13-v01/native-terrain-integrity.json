@@ -1,0 +1,24 @@
+{
+  "status": "PASS",
+  "parent_pack": "content-packs/minnesota-current-grass-r12-v01.crystalpack",
+  "parent_sha256": "8c9a01edf629270392e43ae8761fd0ea78d57035b0cb4b097bf9eebc3fc38717",
+  "pack": "content-packs/minnesota-current-grass-r13-v01.crystalpack",
+  "sha256": "9c1813ad83c35f0cfa0c54bcb422efbd49a107ad12b22293b8fbb5f839a9eccf",
+  "changed_metatiles": 19,
+  "all_floor_to_native_grass": true,
+  "ice_Cut_ledge_metatiles_exact": 6,
+  "coast_exact_and_zero_ice_including_script_changes": [
+    "MnDuluth",
+    "MnGrandMarais",
+    "MnR11C00R00",
+    "MnR11C00R01",
+    "MnR11C00R02",
+    "MnR11C00R03",
+    "MnR11C01R00",
+    "MnR11C01R01",
+    "MnR11C01R02",
+    "MnR11C01R03"
+  ],
+  "current_prose_bound_typed_revalidation_byte_identical": true,
+  "maps": 705
+}

@@ -1,0 +1,47 @@
+{
+  "name": "RICE HARVESTER SEDGE",
+  "role": "preserved original NPC",
+  "status": "accepted-native-playable-rebased",
+  "source": "native-pixels-v3.json",
+  "source_path": "planning/minnesota/npcs/sprites/09-wild-rice-harvester/native-pixels-v3.json",
+  "integration": "placement-v1.json",
+  "controller": "placement-v1.json",
+  "native": "target/npc-sprites/rice/reference-v2",
+  "pack": "content-packs/minnesota-trainer-cast-30-v01.crystalpack",
+  "gameplay": "target/trainer-cast/rebase/09-wild-rice-harvester/gameplay",
+  "log": "target/trainer-cast/rebase/09-wild-rice-harvester/controller.log",
+  "original_placement": "planning/minnesota/npcs/sprites/09-wild-rice-harvester/placement-v1.json",
+  "old_map": "MnLeechLake",
+  "new_map": "MnLeechLake",
+  "old_tile": [
+    24,
+    19
+  ],
+  "new_tile": [
+    24,
+    19
+  ],
+  "scope": "Exact accepted original art, palette, party, class and dialogue. Placement rebased to safe compact geography; original geography not transplanted.",
+  "evidence_sha256": {
+    "planning/minnesota/npcs/cast/rebased-originals/09-wild-rice-harvester/placement-v1.json": "573e8d2a83bd96daf25e2d1c722e16204a99ea5e9f9476031b5045c9c15e3ab2",
+    "planning/minnesota/npcs/sprites/09-wild-rice-harvester/native-pixels-v3.json": "0a2027d4718f64e46752fcab8609e2d56f9e027c634ff0088129771e30c762cd",
+    "planning/minnesota/npcs/sprites/09-wild-rice-harvester/manifest.json": "7e2f7c186f1c301f94cd3badd66ecbd43278d497f418406d46de879e4fb71e21",
+    "target/trainer-cast/rebase/09-wild-rice-harvester/controller.log": "fe1590bcf3546d87251bedd436608b8bb30eb23cada2b46b624bce93d9f834df",
+    "content-packs/minnesota-trainer-cast-30-v01.crystalpack": "d1a4cfa643fa62315d4989c4aa9d2d3bd200b0acd7dced9d58b9d5254ec7daa1",
+    "target/npc-sprites/rice/reference-v2/verification.json": "c3cc69104b9d90fa9ef165efe549a2ae30f070e0a47ab28509ae418682e71bdd",
+    "target/trainer-cast/rebase/09-wild-rice-harvester/gameplay/original-npc-trainer-intro.png": "462388adc3c073e7ceb8756c9f22c82e81219ab628a774612ad0d1446bbabc88",
+    "target/trainer-cast/rebase/09-wild-rice-harvester/gameplay/original-npc-overworld-state.png": "fc691b37e5b709d297722eaaa6c8fc33430f2ea27d8910c4fcdfd2d619e62113",
+    "target/trainer-cast/rebase/09-wild-rice-harvester/gameplay/original-npc-first-turn.png": "91d72b6ed2410a0e5dda4cab9945bd66f1a585709d7924066f48b4642817ab1a"
+  },
+  "final_pack": "content-packs/minnesota-trainer-cast-36-v01.crystalpack",
+  "final_gameplay": "target/trainer-cast/final-audit/gameplay/rebased-originals-09-wild-rice-harvester",
+  "final_log": "target/trainer-cast/final-audit/gameplay/rebased-originals-09-wild-rice-harvester/controller.log",
+  "final_status": "accepted-native-playable-final-pack",
+  "final_review": "Actual battle intro and field captures inspected on exact final pack; art retains accepted native sources and palette.",
+  "final_evidence_sha256": {
+    "target/trainer-cast/final-audit/gameplay/rebased-originals-09-wild-rice-harvester/controller.log": "4c9a1174d08c7d5486117ccca168433ab4f83501b41a177f2608862b495f3556",
+    "target/trainer-cast/final-audit/gameplay/rebased-originals-09-wild-rice-harvester/original-npc-trainer-intro.png": "462388adc3c073e7ceb8756c9f22c82e81219ab628a774612ad0d1446bbabc88",
+    "target/trainer-cast/final-audit/gameplay/rebased-originals-09-wild-rice-harvester/original-npc-overworld-state.png": "fc691b37e5b709d297722eaaa6c8fc33430f2ea27d8910c4fcdfd2d619e62113",
+    "target/trainer-cast/final-audit/gameplay/rebased-originals-09-wild-rice-harvester/original-npc-first-turn.png": "91d72b6ed2410a0e5dda4cab9945bd66f1a585709d7924066f48b4642817ab1a"
+  }
+}

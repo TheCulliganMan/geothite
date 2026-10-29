@@ -16,7 +16,7 @@ from render_reference import SourceArt, load_pack, npc_palette_pack, room_sheet
 from review_north_shore import oriented_sprite
 
 
-def inspect(pack, directory, output, published):
+def inspect(pack, directory, output, published, room_id=None):
     output.mkdir(parents=True, exist_ok=True)
     art = SourceArt(pack)
     rooms = []
@@ -25,6 +25,8 @@ def inspect(pack, directory, output, published):
         if source.name.endswith('.previous.json'):
             continue
         room = json.loads(source.read_text())
+        if room_id is not None and room['id'] != room_id:
+            continue
         native = pack['data']['maps'][room['id']]
         width, height = room['dimensions_metatiles']
         blocks = [int(word, 16) for row in room['rows'] for word in row.split()]
@@ -97,8 +99,8 @@ def inspect(pack, directory, output, published):
         reports.append({'id': room['id'], 'ordinary_floor': len(floor),
                         'water_tiles': len(water), 'actors': len(bodies),
                         'mouths': len(exits), 'published_rows_match': published})
-    assert len(rooms) == 9, 'review every Minnesota cave'
-    save_render(room_sheet(rooms, columns=3), output/'all-nine-whole.png')
+    assert len(rooms) == (1 if room_id else 9), 'review every selected Minnesota cave'
+    save_render(room_sheet(rooms, columns=3), output/('selected-room-whole.png' if room_id else 'all-nine-whole.png'))
     (output/'source-proof.json').write_text(json.dumps(reports, indent=2)+'\n')
     print(json.dumps(reports, indent=2))
 
@@ -110,5 +112,6 @@ if __name__ == '__main__':
                         default=Path('planning/minnesota/caves/johto-quality-v01'))
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--published', action='store_true')
+    parser.add_argument('--room', help='Review one complete room; default remains all nine.')
     args = parser.parse_args()
-    inspect(load_pack(args.pack), args.directory, args.output, args.published)
+    inspect(load_pack(args.pack), args.directory, args.output, args.published, args.room)

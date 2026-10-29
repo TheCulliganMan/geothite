@@ -744,6 +744,26 @@ fn press_visible_pokedex_search_a(shell: &mut BevyRuntimeShell) -> Result<()> {
     record_visible_runtime_action(shell, "pokedex:search:confirm")
 }
 
+// Local grass habitats must appear in AREA alongside the map's fallback tables.
+fn wild_encounters_include_species(
+    encounters: &crate::core::world::encounters::WildEncounterData,
+    species: &str,
+) -> bool {
+    encounters
+        .grass
+        .iter()
+        .chain(&encounters.water)
+        .chain(encounters.zones.iter().map(|zone| &zone.grass))
+        .any(|table| {
+            table
+                .morning
+                .iter()
+                .chain(&table.day)
+                .chain(&table.night)
+                .any(|entry| entry.species == species)
+        })
+}
+
 fn visible_pokedex_nests(
     shell: &BevyRuntimeShell,
     snapshot: &RuntimeShellSnapshot,
@@ -753,18 +773,7 @@ fn visible_pokedex_nests(
     let data = shell.shell.runtime().data();
     let mut maps = std::collections::BTreeSet::new();
     for (map, encounters) in &data.wild_encounters {
-        if [&encounters.grass, &encounters.water]
-            .into_iter()
-            .flatten()
-            .any(|table| {
-                table
-                    .morning
-                    .iter()
-                    .chain(&table.day)
-                    .chain(&table.night)
-                    .any(|entry| &entry.species == species)
-            })
-        {
+        if wild_encounters_include_species(encounters, species) {
             maps.insert(map.clone());
         }
     }

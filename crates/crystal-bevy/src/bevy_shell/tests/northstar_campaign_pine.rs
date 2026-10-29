@@ -166,19 +166,26 @@ fn gym(c: &mut VisibleShellController, r: &CrystalRuntime, root: &AssetRoot) {
         travel(c, GameButton::Up, GYM, northstar_earned_gyms::arrival(r, 7));
     }
     let design = northstar_earned_gyms::design(r, 7);
-    if !c.snapshot().expect("actual Cut knowledge").party.slots[0]
-        .pokemon
-        .moves
+    if !c
+        .snapshot()
+        .expect("actual Cut knowledge")
+        .party
+        .slots
         .iter()
-        .any(|m| m.name == "CUT")
+        .any(|p| p.pokemon.moves.iter().any(|m| m.name == "CUT"))
     {
         assert!(
-            c.snapshot().expect("legal Cut recipient").party.slots[0]
-                .pokemon
-                .species
-                .tmhm_learnset
+            c.snapshot()
+                .expect("legal Cut recipient")
+                .party
+                .slots
                 .iter()
-                .any(|name| name == "CUT")
+                .any(|p| p
+                    .pokemon
+                    .species
+                    .tmhm_learnset
+                    .iter()
+                    .any(|name| name == "CUT"))
         );
         learn_gym_cut_replacing(c, r, design, Some("SMOKESCREEN"));
         assert!(

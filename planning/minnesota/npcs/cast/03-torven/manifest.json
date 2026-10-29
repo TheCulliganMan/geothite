@@ -1,0 +1,39 @@
+{
+  "name": "TORVEN",
+  "role": "Gym Leader 2",
+  "status": "accepted-native-playable",
+  "source": "native-pixels-v3.json",
+  "integration": "binding-v1.json",
+  "controller": "controller-v2.json",
+  "native": "target/trainer-cast/torven/native-v3",
+  "pack": "content-packs/minnesota-trainer-cast-03-v02.crystalpack",
+  "gameplay": "target/trainer-cast/torven/gameplay-v2",
+  "log": "target/trainer-cast/torven/controller-v2.log",
+  "reference_review": "actual-crystal-sprites-common-palette-and-scale",
+  "review_notes": "Broad ochre workwear, pale striped helmet, moustache, diagonal strap and separate boot strides compared directly with Crystal references. Native face/helmet, solid skin and boot details refined after conversion. Actual intro and field captures reviewed. The first test expected the wrong TM; corrected fixture expectation to the unchanged native TM_MUD_SLAP, then badge/single-TM/repeat/Continue checks passed.",
+  "fixture": "Three legal level-60 Minnesota starters; adjacent position and explicit prior-access setup. Local encounter/rewards proof, not earned traversal or intended-level balance.",
+  "evidence_sha256": {
+    "planning/minnesota/npcs/cast/03-torven/native-pixels-v3.json": "5a005a55f4852a2d53133dba290885e0c9bb62d88dce78ea09ab20975b6a122f",
+    "planning/minnesota/npcs/cast/03-torven/binding-v1.json": "c91feddeed888ec182b95d74758b06452d64055e06f4b5bad7bad95cef932c41",
+    "planning/minnesota/npcs/cast/03-torven/controller-v2.json": "894bfde78ebce5f13f7d760cea587653eef9bca783b0f1e1e8f3dc6785f40c28",
+    "target/trainer-cast/torven/native-v3/verification.json": "193d7fbba76d49bbe3e4fbf41bf8de2a27b6382d8a319fd00bdf483410acc829",
+    "content-packs/minnesota-trainer-cast-03-v02.crystalpack": "8c1606eadefb1a21dd39e49449e6f7490cf538fcc96cb407138a2b1776fa65c3",
+    "target/trainer-cast/torven/controller-v2.log": "9272959a56abea850be0ed80edea6fb1d46e91b412b8e085bcb922187283c2fc",
+    "target/trainer-cast/torven/gameplay-v2/original-npc-trainer-intro.png": "8441335b998b994adc328eaf90f147aa39cece301b5a85575ce5fb6e193c305c",
+    "target/trainer-cast/torven/gameplay-v2/original-npc-overworld-state.png": "2e11c81e37aeb7d0166f21697d1ecea7c0341b1050b7d4a36862e3f522d3f350",
+    "target/trainer-cast/torven/gameplay-v2/original-npc-first-turn.png": "2b6c56e6bc26048e489d9cfe1e8f536efd0279842f3086bfb81a99ae7a0596db",
+    "planning/minnesota/npcs/cast/03-torven/battle-reference-v1.png": "2072e838ef4fac1cf46d6baa4272cbce711c44691a806d8a9ac558c04fab232a",
+    "target/trainer-cast/torven/battle-real-comparison.png": "6b2b811a9c2874698dff7a537f4a4c4179d786bdf7f82ed56c426902ed2eb600"
+  },
+  "final_pack": "content-packs/minnesota-trainer-cast-36-v01.crystalpack",
+  "final_gameplay": "target/trainer-cast/final-audit/gameplay/03-torven",
+  "final_log": "target/trainer-cast/final-audit/gameplay/03-torven/controller.log",
+  "final_status": "accepted-native-playable-final-pack",
+  "final_review": "Actual battle intro and field captures inspected on exact final pack; art retains accepted native sources and palette.",
+  "final_evidence_sha256": {
+    "target/trainer-cast/final-audit/gameplay/03-torven/controller.log": "ca9b40b40d01218856efa71b6c8b439c220ae5bb7b7ce47a0af097570f1620d6",
+    "target/trainer-cast/final-audit/gameplay/03-torven/original-npc-trainer-intro.png": "8441335b998b994adc328eaf90f147aa39cece301b5a85575ce5fb6e193c305c",
+    "target/trainer-cast/final-audit/gameplay/03-torven/original-npc-overworld-state.png": "2e11c81e37aeb7d0166f21697d1ecea7c0341b1050b7d4a36862e3f522d3f350",
+    "target/trainer-cast/final-audit/gameplay/03-torven/original-npc-first-turn.png": "2b6c56e6bc26048e489d9cfe1e8f536efd0279842f3086bfb81a99ae7a0596db"
+  }
+}

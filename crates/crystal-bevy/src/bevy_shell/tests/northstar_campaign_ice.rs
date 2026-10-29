@@ -36,7 +36,7 @@ fn arrival() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
         .map_name
         .as_str()
     {
-        "MnMinneapolis" => location(&mut c, "MnMinneapolis", (32, 46)),
+        "MnMinneapolis" => location(&mut c, "MnMinneapolis", (40, 62)),
         "MnMinneapolisPokecenter1F" => location(&mut c, "MnMinneapolisPokecenter1F", (10, 13)),
         _ => panic!("expected an earned Minneapolis arrival or native blackout recovery"),
     }
@@ -59,7 +59,7 @@ fn arrival() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
 
 pub(super) fn care(c: &mut VisibleShellController, r: &CrystalRuntime) {
     if c.snapshot().expect("city care").overworld.map_name == "MnMinneapolis" {
-        indoor_walk(c, r, (45, 12));
+        indoor_walk(c, r, (63, 26));
         travel(c, GameButton::Up, "MnMinneapolisPokecenter1F", (10, 13));
     }
     indoor_walk(c, r, (7, 5));
@@ -91,7 +91,7 @@ pub(super) fn care(c: &mut VisibleShellController, r: &CrystalRuntime) {
         Some("MN_MINNEAPOLIS_POKECENTER_1F")
     );
     indoor_walk(c, r, (10, 14));
-    travel(c, GameButton::Down, "MnMinneapolis", (45, 12));
+    travel(c, GameButton::Down, "MnMinneapolis", (63, 26));
 }
 
 pub(super) fn supplies(c: &mut VisibleShellController, r: &CrystalRuntime) {
@@ -102,14 +102,14 @@ pub(super) fn supplies(c: &mut VisibleShellController, r: &CrystalRuntime) {
     if quantity == 0 {
         return;
     }
-    indoor_walk(c, r, (55, 16));
+    indoor_walk(c, r, (73, 26));
     travel(c, GameButton::Up, "MnMinneapolisMart", (6, 5));
     indoor_walk(c, r, (3, 3));
     press(c, GameButton::Left);
     press(c, GameButton::A);
     checkout(c, r, "SUPER_POTION", quantity);
     indoor_walk(c, r, (6, 6));
-    travel(c, GameButton::Down, "MnMinneapolis", (55, 16));
+    travel(c, GameButton::Down, "MnMinneapolis", (73, 26));
 }
 
 fn return_to_city(c: &mut VisibleShellController, r: &CrystalRuntime) {
@@ -120,8 +120,7 @@ fn return_to_city(c: &mut VisibleShellController, r: &CrystalRuntime) {
         .starts_with("MnR03")
         && try_road_with(c, r, (20, 0), flee)
     {
-        travel(c, GameButton::Up, "MnMinneapolis", (32, 47));
-        travel(c, GameButton::Up, "MnMinneapolis", (32, 46));
+        super::northstar_campaign::enter_minneapolis(c, r);
     } else {
         location(c, "MnMinneapolisPokecenter1F", (10, 13));
     }
@@ -159,7 +158,7 @@ fn road_trainers(c: &mut VisibleShellController, r: &CrystalRuntime, root: &Asse
                 break;
             }
             care(c, r);
-            indoor_walk(c, r, (32, 46));
+            indoor_walk(c, r, (40, 62));
             travel(c, GameButton::Down, "MnR03C00R00", (20, 0));
             if try_road_with(c, r, tile, flee) {
                 press(c, facing);
@@ -179,7 +178,7 @@ pub(super) fn train(
     root: &AssetRoot,
     level: u8,
 ) {
-    for outing in 0..32 {
+    for outing in 0..96 {
         if c.snapshot().expect("earned level").party.slots[0]
             .pokemon
             .level
@@ -188,7 +187,7 @@ pub(super) fn train(
             return;
         }
         care(c, r);
-        indoor_walk(c, r, (32, 46));
+        indoor_walk(c, r, (40, 62));
         travel(c, GameButton::Down, "MnR03C00R00", (20, 0));
         let mut fought = false;
         for step in 0..64 {
@@ -196,7 +195,16 @@ pub(super) fn train(
             let arrived = try_road_with(c, r, target, |c| {
                 let s = c.snapshot().expect("wild training");
                 let b = s.battle.as_ref().expect("actual encounter");
-                if !fought && b.enemy_pokemon.level <= s.party.slots[0].pokemon.level + 1 {
+                if !fought
+                    && b.enemy_pokemon.level
+                        <= s.party
+                            .slots
+                            .iter()
+                            .map(|p| p.pokemon.level)
+                            .max()
+                            .expect("carried training partner")
+                            + 1
+                {
                     let _ = try_battle(c, r, "WILD", "");
                     fought = true;
                 } else {
@@ -231,6 +239,29 @@ fn northstar_campaign_earned_party_defeats_ice_and_releases_dispatcher() {
 }
 
 pub(super) fn ice() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
+    if let Some(path) = std::env::var_os("CRYSTAL_NORTHSTAR_RELAY_SAVE") {
+        let (root, r) = load();
+        let mut c =
+            VisibleShellController::load_save(root.clone(), r.clone(), PathBuf::from(path), None)
+                .expect("genuine same-pack earned relay checkpoint");
+        c.set_runtime_journal_enabled(false);
+        assert_eq!(
+            c.shell.shell.session().state().badges.johto,
+            [true, true, false, false, false, false, false, false]
+        );
+        for flag in [
+            "EVENT_MN_GYM_1_DEFEATED",
+            "EVENT_MN_GYM_2_DEFEATED",
+            "EVENT_MN_DELIVERED_ROCHESTER_PARCEL",
+            "EVENT_MN_REED_RELAY_DEFEATED",
+        ] {
+            assert!(event(&c, flag), "earned relay prerequisite {flag}");
+        }
+        // No party, item, position, flags or RNG rewrites after Continue.
+        c = super::super::northstar_ice_headquarters::resume_from_relay(c, &root, &r);
+        c = super::northstar_arc_campaign::ellis_home(c, &root, &r);
+        return (root, r, c);
+    }
     let (root, r, mut c) = arrival();
     super::northstar_campaign_review::boost(&mut c, &r);
     care(&mut c, &r);
@@ -244,7 +275,18 @@ pub(super) fn ice() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
     } else {
         "QUICK_ATTACK"
     };
-    learn_tm(&mut c, &r, "TM_MUD_SLAP", "MUD_SLAP", forgotten);
+    if c.snapshot()
+        .expect("legal earned TM compatibility")
+        .party
+        .slots[0]
+        .pokemon
+        .species
+        .tmhm_learnset
+        .iter()
+        .any(|m| m == "MUD_SLAP")
+    {
+        learn_tm(&mut c, &r, "TM_MUD_SLAP", "MUD_SLAP", forgotten);
+    }
     assert!(
         c.snapshot().expect("preserved first gym move").party.slots[0]
             .pokemon
@@ -252,7 +294,7 @@ pub(super) fn ice() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
             .iter()
             .any(|m| m.name == "HEADBUTT")
     );
-    indoor_walk(&mut c, &r, (27, 14));
+    indoor_walk(&mut c, &r, (23, 42));
     travel(
         &mut c,
         GameButton::Up,
@@ -264,13 +306,30 @@ pub(super) fn ice() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
     press(&mut c, GameButton::A);
     finish(&mut c);
     indoor_walk(&mut c, &r, (5, 6));
-    travel(&mut c, GameButton::Down, "MnMinneapolis", (27, 14));
+    travel(&mut c, GameButton::Down, "MnMinneapolis", (23, 42));
     road_trainers(&mut c, &r, &root);
     train(&mut c, &r, &root, 18);
+    if r.data().maps.contains_key("MnBoundaryIntake") {
+        super::northstar_arc_campaign::recruit_party(&mut c, &r, &root);
+        super::northstar_arc_campaign::prepare_cut_carrier(&mut c, &r, &root);
+        train(&mut c, &r, &root, 23);
+        care(&mut c, &r);
+        supplies(&mut c, &r);
+        indoor_walk(&mut c, &r, (25, 34));
+        travel(
+            &mut c,
+            GameButton::Up,
+            "MnMinneapolisDispatchOffice",
+            (10, 14),
+        );
+        c = super::super::northstar_ice_headquarters::play_chapter(c, &root, &r, true, true);
+        c = super::northstar_arc_campaign::ellis_home(c, &root, &r);
+        return (root, r, c);
+    }
     for attempt in 0..4 {
         care(&mut c, &r);
         supplies(&mut c, &r);
-        indoor_walk(&mut c, &r, (27, 34));
+        indoor_walk(&mut c, &r, (25, 34));
         travel(
             &mut c,
             GameButton::Up,

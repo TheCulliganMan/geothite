@@ -1,4 +1,18 @@
+# Current installed grass revision, 2026-10-28
+
+[Selected R10 revision](../revisions/route-grass-v01/current-r10-v01/README.md) adds7grass metatiles and5attached boulders on the705-map park/current-story child. The carrier circuit requires4grass steps up and0on the dry ledge return; the existing stair and all5city-mouth cells are preserved. Six native cases,13clean stdio calls and377audio programs pass. Selected as route_grass_r10_revision; accepted park and all earlier revisions are retained. Older isolated pack results below are historical.
+
 # Iron Range Descent — current native geography revision
+
+## Grass climb and dry carrier return — 2026-10-28
+
+Accepted in isolated `minnesota-route-grass-r10-v01.crystalpack`, identity prefix
+`3d7362f74a63`. Seven new grass metatiles join useful trails. The carrier-bank
+circuit requires four grass steps climbing; the original ledge and lower road
+keep a dry return. Five attached boulders close native cliff-foot bypasses.
+Native grass encounters, stair, ledge, mine, Surf, Calder battle/PP, Continue,
+stdio and audio checks pass. See [R10 review](../revisions/route-grass-v01/R10.md).
+The shared game remains unchanged; earlier publication reports below are historical.
 
 The current **471-map** `content-packs/minnesota-geography-review.crystalpack`
 (`f9b04e67f2bf…`) publishes this terrain revision. Root inspected the complete

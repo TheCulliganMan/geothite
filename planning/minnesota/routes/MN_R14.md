@@ -1,3 +1,9 @@
+> Current grass revision: see [Headwaters verification](../revisions/route-grass-v01/current-r14-v01/README.md).
+> The selected730-map R13 descendant adds native grass across the western survey
+> climb: four grass steps uphill and a dry southbound ledge return. All13installed
+> Lake Itasca port metatiles and the native gatehouse remain exact. Current native
+> Minnesota parties, encounters and dialogue supersede the historical source below.
+
 # Headwaters Trail — revised source candidate
 
 The old96×72 native route had long camera-sized gaps of empty lawn, broad geometric circuits, incidental Cut canopy and river water reaching unconnected outer edges. Its historical native captures do not verify this replacement. The current route is a young-river woodland journey: a survey-pond landing and native bank on the west, a single protected river crossing, a mature-pine return circuit on the east and a smaller fen observation loop. All geography is explicitly authored; the old map generator is not used.

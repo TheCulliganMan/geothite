@@ -221,7 +221,9 @@ impl Journey {
                         .collect::<Vec<_>>()
                 })
                 .unwrap_or_default();
-            let button = if snapshot.ui.menu.is_none() && snapshot.ui.text.is_some() {
+            let button = if !controller.shell.battle_messages.is_empty()
+                || (snapshot.ui.menu.is_none() && snapshot.ui.text.is_some())
+            {
                 GameButton::A
             } else if options
                 .iter()
@@ -272,7 +274,10 @@ impl Journey {
                     GameButton::A
                 }
             } else if let Some(cursor) = &controller.shell.battle_move_cursor {
-                let target = ["PSYCHIC_M", "SURF", "THUNDERPUNCH"]
+                // The current Minnesota teams include Dark-type Glisnare.
+                // Select the legal Surf fixture move rather than exhausting
+                // Psychic against an immune opponent before every victory.
+                let target = ["SURF", "PSYCHIC_M", "THUNDERPUNCH"]
                     .into_iter()
                     .find_map(|name| {
                         battle
@@ -412,7 +417,8 @@ fn northern_lakes_populated_journey_spends_selected_pp_collects_open_resources_a
     let initial = controller
         .snapshot()
         .expect("initial legal partner fixture");
-    let initial_pp = initial.party.slots[0].pokemon.moves[0].current_pp;
+    assert_eq!(initial.party.slots[0].pokemon.moves[1].name, "SURF");
+    let initial_pp = initial.party.slots[0].pokemon.moves[1].current_pp;
     let initial_money = controller.shell.shell.session().state().money;
     assert!(
         journey
@@ -421,16 +427,12 @@ fn northern_lakes_populated_journey_spends_selected_pp_collects_open_resources_a
     );
     assert_eq!(
         journey.trainer(&mut controller, &grid, (21, 85), "EVENT_MN_R08_TRAINER_01"),
-        BTreeSet::from(["PINECO".into(), "WEEPINBELL".into()])
+        BTreeSet::from(["CLINKLAW".into(), "GLISNARE".into()])
     );
     assert!(
-        controller
-            .snapshot()
-            .expect("selected Psychic PP")
-            .party
-            .slots[0]
+        controller.snapshot().expect("selected Surf PP").party.slots[0]
             .pokemon
-            .moves[0]
+            .moves[1]
             .current_pp
             < initial_pp
     );
@@ -446,21 +448,21 @@ fn northern_lakes_populated_journey_spends_selected_pp_collects_open_resources_a
         .party
         .slots[0]
         .pokemon
-        .moves[0]
+        .moves[1]
         .current_pp;
     let money_before_nell = controller.shell.shell.session().state().money;
     assert_eq!(
         journey.trainer(&mut controller, &grid, (69, 85), "EVENT_MN_R08_TRAINER_08"),
-        BTreeSet::from(["PIDGEOTTO".into(), "WEEPINBELL".into()])
+        BTreeSet::from(["NOTCHBILL".into(), "GLISNARE".into()])
     );
     assert!(
         controller
             .snapshot()
-            .expect("second selected Psychic PP")
+            .expect("second selected Surf PP")
             .party
             .slots[0]
             .pokemon
-            .moves[0]
+            .moves[1]
             .current_pp
             < before_nell
     );
@@ -573,7 +575,7 @@ fn northern_lakes_cedar_shore_walk_and_shorter_meadow_route_use_real_inputs() {
     assert_eq!(dry.last(), grass.last());
     journey.walk(&mut controller, &grid, dry[0]);
     let reverse_grass = grass.iter().copied().rev().collect::<Vec<_>>();
-    for (path, expected_grass) in [(&dry, 0), (&reverse_grass, 15)] {
+    for (path, expected_grass) in [(&dry, 0), (&reverse_grass, 19)] {
         assert_eq!(position(&mut controller), path[0]);
         let mut grass_tiles = 0;
         for pair in path.windows(2) {
@@ -594,5 +596,45 @@ fn northern_lakes_cedar_shore_walk_and_shorter_meadow_route_use_real_inputs() {
         assert_eq!(grass_tiles, expected_grass);
     }
     assert_eq!(position(&mut controller), dry[0]);
+    assert_eq!(controller.shell.last_error, None);
+}
+
+#[test]
+#[ignore = "requires the published Northern Lake grass and ledge revision"]
+fn northern_lakes_birch_and_cedar_grass_climbs_keep_dry_hops() {
+    let (_, runtime, mut controller) = fixture();
+    let grid = grid(&runtime);
+    let mut journey = Journey::default();
+    for (lanes, upper_y, landing_y, return_points) in [
+        ([28, 29], 25, 28, vec![(35, 31), (35, 25)]),
+        ([72, 73], 77, 80, vec![(73, 82), (75, 82), (75, 77)]),
+    ] {
+        for x in lanes {
+            journey.walk(&mut controller, &grid, (x, upper_y));
+            for _ in 0..8 {
+                controller
+                    .press(GameButton::Down)
+                    .expect("native downhill hop");
+                journey.settle(&mut controller, None);
+                let at = position(&mut controller);
+                assert_ne!(at, (x, upper_y + 2), "stood inside reverse wall");
+                if at == (x, landing_y) {
+                    break;
+                }
+            }
+            assert_eq!(position(&mut controller), (x, landing_y));
+            for _ in 0..4 {
+                controller
+                    .press(GameButton::Up)
+                    .expect("native reverse denial");
+                journey.settle(&mut controller, None);
+                assert_eq!(position(&mut controller), (x, landing_y));
+            }
+            for &point in &return_points {
+                journey.walk(&mut controller, &grid, point);
+            }
+            journey.walk(&mut controller, &grid, (x, upper_y));
+        }
+    }
     assert_eq!(controller.shell.last_error, None);
 }

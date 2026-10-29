@@ -1,0 +1,199 @@
+{
+  "schema_version": 1,
+  "status": "FROZEN_SOURCE_CANDIDATE_NATIVE_PUBLICATION_PENDING",
+  "parent_pack": "content-packs/minnesota-city-river-bend-v01.crystalpack",
+  "parent_pack_sha256": "57eefb675b9cb32ac66a01819f56961392e51678a6f9dd959888fbb9427e4e62",
+  "parent_identity": "6ba03931721e00e50adbf8f058ef81f0ab9a94b75c2b8899ded9a198c75ffb2b",
+  "candidate_contract_file": "candidate.contract.json",
+  "candidate_contract_sha256": "c2b9f311cab6107e1a7dec5ebb10e044faf15a2a56534b913aa5480d0aa01f76",
+  "changed_metatiles": 1668,
+  "maps": [
+    {
+      "map": "MnMississippiLowerWoodsC00R00",
+      "file": "MnMississippiLowerWoodsC00R00.layout.json",
+      "source_sha256": "fc0646fe963db7d118174ff7c39e0785f276042b3f611b5283b89b177a1e32de",
+      "native_module_preimage_sha256": "1520c81f80d176655dd57f8af1ddfd311a431b5688d1e251914e70c312cce98b",
+      "dimensions_metatiles": [
+        32,
+        24
+      ],
+      "changed_metatiles": 48
+    },
+    {
+      "map": "MnMississippiLowerWoodsC00R01",
+      "file": "MnMississippiLowerWoodsC00R01.layout.json",
+      "source_sha256": "533f2b6bc645f8e13cad97b7db80139c65354a53fbb47d4dab612b3b74fed7c5",
+      "native_module_preimage_sha256": "b0e01763b72aa22dd1622127f73b4bb947e419bc4707eafb7e27d1997372cc16",
+      "dimensions_metatiles": [
+        32,
+        24
+      ],
+      "changed_metatiles": 144
+    },
+    {
+      "map": "MnMississippiLowerWoodsC00R02",
+      "file": "MnMississippiLowerWoodsC00R02.layout.json",
+      "source_sha256": "02872f286a4d50b41ead23bed9a63c708bdaca68815f5ced6182a7e95de39521",
+      "native_module_preimage_sha256": "773d7d690472c49c921544203e0fd47d5fbf44e418faf50869df0e644f76e283",
+      "dimensions_metatiles": [
+        32,
+        20
+      ],
+      "changed_metatiles": 79
+    },
+    {
+      "map": "MnMississippiLowerWoodsC01R00",
+      "file": "MnMississippiLowerWoodsC01R00.layout.json",
+      "source_sha256": "b70caa9b736bedbce9f977a46c35c4ef6992af0efc706efb5ffbe0ead5244acf",
+      "native_module_preimage_sha256": "a369eacb1451ef93fa42aa78e43cb27ae035d03d62271122c93ecf48b853ee3f",
+      "dimensions_metatiles": [
+        32,
+        24
+      ],
+      "changed_metatiles": 199
+    },
+    {
+      "map": "MnMississippiLowerWoodsC01R01",
+      "file": "MnMississippiLowerWoodsC01R01.layout.json",
+      "source_sha256": "0278f447fd59c21d219a74ae9ea565c28f9e994ae25e306235ee65b46f7e9343",
+      "native_module_preimage_sha256": "96408d9ab2ecfc85e75ceb99fb5b62b5958f4e0c6182827097ea2f3034d28b47",
+      "dimensions_metatiles": [
+        32,
+        24
+      ],
+      "changed_metatiles": 187
+    },
+    {
+      "map": "MnMississippiLowerWoodsC01R02",
+      "file": "MnMississippiLowerWoodsC01R02.layout.json",
+      "source_sha256": "2288f434c5c05a4d26147f805175b37bc4ab56d00a94de03e423bf98490e39c6",
+      "native_module_preimage_sha256": "0c9387fe569cde4909e2f8c22bcf2b78b9ca9107bb83e697961c7b77a4b82c66",
+      "dimensions_metatiles": [
+        32,
+        20
+      ],
+      "changed_metatiles": 109
+    },
+    {
+      "map": "MnMississippiUpstreamWoodsC00R00",
+      "file": "MnMississippiUpstreamWoodsC00R00.layout.json",
+      "source_sha256": "6e595caaf9d666520e234141cb2cbfba4a3523d56f5d7c764432fabc3438c93c",
+      "native_module_preimage_sha256": "8e015954bbabd3592aa242d4db164f1af1965331c356c77394cf16021c467db1",
+      "dimensions_metatiles": [
+        32,
+        24
+      ],
+      "changed_metatiles": 85
+    },
+    {
+      "map": "MnMississippiUpstreamWoodsC00R01",
+      "file": "MnMississippiUpstreamWoodsC00R01.layout.json",
+      "source_sha256": "98fad0bf5bd7401dbc63f177f4c9e24562317490215158732a4d44340ed3415e",
+      "native_module_preimage_sha256": "9328c1dceb6c956288c641c0684de2a1db9aced3c4533fa579448bafe52dc810",
+      "dimensions_metatiles": [
+        32,
+        24
+      ],
+      "changed_metatiles": 17
+    },
+    {
+      "map": "MnMississippiUpstreamWoodsC00R02",
+      "file": "MnMississippiUpstreamWoodsC00R02.layout.json",
+      "source_sha256": "8f914f3e44f065a6a1a8799bcb4851fb7a48d033d3b2fdf1e83f075d5e77629f",
+      "native_module_preimage_sha256": "1be1a60956735a4e5ca27cfeeba8c5676b5d859d85ca9a7a6a57c2b612b70e35",
+      "dimensions_metatiles": [
+        32,
+        20
+      ],
+      "changed_metatiles": 67
+    },
+    {
+      "map": "MnMississippiUpstreamWoodsC01R00",
+      "file": "MnMississippiUpstreamWoodsC01R00.layout.json",
+      "source_sha256": "153eab00770a9475050dca7cf5dc98f733b34b3ff1f6adef33a1305d75c3bdd3",
+      "native_module_preimage_sha256": "bce795420570d4ca1a2060055684c5ff1303840ac432cb962547621b5a2ce44e",
+      "dimensions_metatiles": [
+        32,
+        24
+      ],
+      "changed_metatiles": 172
+    },
+    {
+      "map": "MnMississippiUpstreamWoodsC01R01",
+      "file": "MnMississippiUpstreamWoodsC01R01.layout.json",
+      "source_sha256": "e904b4bfe52cef2f956a0470e30da09518f449c0004a9c56ea9ad67cf97e700d",
+      "native_module_preimage_sha256": "e69a86f2c609973e60ba008440ae8473b54acaf9b021fad1e1aef1e4fac343aa",
+      "dimensions_metatiles": [
+        32,
+        24
+      ],
+      "changed_metatiles": 254
+    },
+    {
+      "map": "MnMississippiUpstreamWoodsC01R02",
+      "file": "MnMississippiUpstreamWoodsC01R02.layout.json",
+      "source_sha256": "30e3f82f8bca75385bd777530f69a9dc4d805e72491e14ac1da6f1d28eb05bd4",
+      "native_module_preimage_sha256": "b47c3a32d245692851f3b8a77a69084659821b71e51f6f553316307f44ab4799",
+      "dimensions_metatiles": [
+        32,
+        20
+      ],
+      "changed_metatiles": 181
+    },
+    {
+      "map": "MnR05C00R00",
+      "file": "MnR05C00R00.layout.json",
+      "source_sha256": "eff505b365d71c53135ce075ced6a46010ecda1206254092df6f10e3f449d72f",
+      "native_module_preimage_sha256": "ab501c95c65a17ac25c2da9a3ca7a410bbb7154d0753467651ba1b8f2bd6e81d",
+      "dimensions_metatiles": [
+        32,
+        24
+      ],
+      "changed_metatiles": 34
+    },
+    {
+      "map": "MnR05C00R01",
+      "file": "MnR05C00R01.layout.json",
+      "source_sha256": "a5c6d86d7d5821abb64b3bac859d5490f87582aa9622f865b3976a6324a80c0f",
+      "native_module_preimage_sha256": "75de71bd92e856bcba50de0f0868b4b68ea3a65e682a2b3ce28938002352d28e",
+      "dimensions_metatiles": [
+        32,
+        24
+      ],
+      "changed_metatiles": 92
+    },
+    {
+      "map": "MnR05C00R02",
+      "file": "MnR05C00R02.layout.json",
+      "source_sha256": "09290bcd001a05ca5c77871eaf52abce7fb3db43a82b54ade17b348fa74480fe",
+      "native_module_preimage_sha256": "56ecc8ef543c5c5cc81fd0d8e9e1d0f6cf79d38e974e840e874a16a0b1214c93",
+      "dimensions_metatiles": [
+        32,
+        8
+      ],
+      "changed_metatiles": 0
+    }
+  ],
+  "source_proof": "planning/minnesota/renders/river-continuity-long-v01/physical-v02/proof-b85213259ae33d06d9d3c6d16b2c9a0671ea55a29cd77c0c66c118085d76f872.json",
+  "preservation": "Only listed map block cells. All other per-map fields and complete residual GameData, including native programs, scripts, objects, events, connections, registries, tilesets, audio, homes, recovery, report and rooms, must be equal. No generalized script reparsing or metadata normalization.",
+  "required_native_followup": [
+    "Strict Rust publication with exact current57eefb file hash and every native module preimage; write fresh ignored pack, read back, rehash identity and prove full residual equality.",
+    "Follow both long rivers in both directions through production controller input and all actual reciprocal water seams; pass all seven existing river bridges in permitted orientations.",
+    "Validate all four unchanged bank trainers through real PP, battle outcomes, once-only flags/rewards and legal manual interaction approaches.",
+    "Prove original R05 landmark, fisher, item, bridge, ledge and cave access, including actual native Surf mount/dismount and paired returns.",
+    "Retain original city Waterfall/HM/badge gates, native waterfall animation, Cut denial/removal/reset, source-art priority and Save/Continue.",
+    "Capture actual native city handoffs, all four bank destinations, and ordinary widest quiet reaches at the review coordinates; compare by sight with source and authentic maps."
+  ],
+  "world_contract": "No map dimension, placement, map identity or native reciprocal connection changes are authorized; retain the existing world/interiors/manifest verbatim.",
+  "historical_render_epochs_retained": [
+    "pass01",
+    "pass02",
+    "pass03",
+    "pass04",
+    "pass05",
+    "combined-firstbend-v01",
+    "physical-v01",
+    "physical-v02",
+    "handoffs-v01"
+  ]
+}

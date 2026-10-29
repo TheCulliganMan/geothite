@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "id": "MN_TRAIL_PHOTOGRAPHER",
+  "name": "PHOTOGRAPHER LARK",
+  "status": "accepted-native-playable",
+  "overworld_frames": 6,
+  "overworld_size": [
+    16,
+    16
+  ],
+  "battle_size": [
+    56,
+    56
+  ],
+  "palette_rgb555": [
+    32767,
+    22399,
+    6583,
+    0
+  ],
+  "source": "native-pixels-v3.json",
+  "placement": "placement-v1.json",
+  "pack": "content-packs/minnesota-npcs-ref-11-v01.crystalpack",
+  "parent": "content-packs/minnesota-npcs-ref-10-v01.crystalpack",
+  "runtime_checks": {
+    "one_controller_test_passed": true,
+    "talk_and_input_ownership": true,
+    "battle_turn_and_pp": true,
+    "battle_save_load": true,
+    "actual_victory_and_defeat_flag_before_render_capture": true,
+    "post_battle_talk": true,
+    "existing_trainers_and_assets_preserved": true
+  },
+  "manual_visual_review": "Direct actual Crystal Cooltrainer/Youngster/Chris six-pose comparison at equal palette/scale, own-palette 1x/8x and actual Ely capture reviewed. Messy pale hair with connected warm shadow cluster, young face, rust vest, camera/lens held in both hands, squared rear/profile daypack, shorts/socks/boots and lifted-foot stride. Three earlier test runs blacked out and are retained. Actual saved battle showed Perish Song and Destiny Bond; legal-input test driver now switches before Perish expires and takes a safe turn after announced Destiny Bond, with immediate-attack/HP tiebreaks for equally safe partners. Unchanged pack/teams passed in 9.48s; trace shows Destiny Bond counterplay and actual victory. Tobin regression also passed. Battle/palette/gameplay/unrelated assets preserved.",
+  "evidence_sha256": {
+    "planning/minnesota/npcs/sprites/11-trail-photographer/native-pixels-v3.json": "701972396256bfea8663c6572cf3a7d37175d7075f95fa514e33349b79812ba1",
+    "planning/minnesota/npcs/sprites/11-trail-photographer/placement-v1.json": "cc9afa3536ae9e3d54c42bcd0e425e28ba9b39560a0aabc12fa5e3d270e92e50",
+    "content-packs/minnesota-npcs-ref-11-v01.crystalpack": "3390194df39b98dcd97e1033dec7224b356f83d13a71c4fd49e660ff11c04fd1",
+    "target/npc-sprites/photo/controller-reference-v04.log": "1b3452d3ae7810b37f572ad8e281a171817eff6d68711a95e7be011e9b64e9e3",
+    "target/npc-sprites/photo/gameplay-reference-v04/original-npc-trainer-intro.png": "e3d88ef3406f9c66e0d034a060b251b8de4fb376bc86a6c057eec88f831906f4",
+    "target/npc-sprites/photo/gameplay-reference-v04/original-npc-first-turn.png": "172f71cae1cba7f5bfe971a94c536280525e883869b6600a7b00fe81e6b87738",
+    "target/npc-sprites/photo/gameplay-reference-v04/original-npc-overworld-state.png": "600e3ea1234a2458e8612e2d35e55746f3acd7124b6657ac4f7c0a5cd6f9bfaf",
+    "target/npc-sprites/hand-review/photo-real-comparison-v1.png": "dd84b22c35065db4f55c147bb2dea529f99b23073db99fedfd6358db95a50bfc",
+    "target/npc-sprites/photo/reference-v1/comparison.png": "390181429751b4e20fa5d646dfe3ff19ec81e9c978682386bf85ef1297dc82f6",
+    "target/npc-sprites/photo/reference-v1/verification.json": "858a65d435b2fbab0feb7c3b5c7e48aeb5064177d57db738c3d08a186eac481b",
+    "target/npc-sprites/photo/reference-v1/overworld-review.png": "0ea1e3ac670abdb237096aaedcea56657dcf52dd1470d461a5b4911fd0337265",
+    "target/npc-sprites/photo/reference-v1/overworld-review-8x.png": "894a60cbf4bfd96fe97ec0895f353b9adefa56b8ac82565a72ffbedce0ac575e",
+    "target/npc-sprites/photo/controller-source-counterplay-v1.rs": "3f8d5671acd8d7379e6eca34201811004305768aa740de5a045e08d4807ae4de",
+    "target/npc-sprites/photo/controller-reference-v01.log": "1d2ec262894898dffc9007cffe66232ee5c161cc2a85edb678d1f147eead2545",
+    "target/npc-sprites/photo/controller-reference-v02.log": "68a42fe6755e9ba3df5894eba5c1eebb998fd9d789f68eb9bf3cc0555ae4994c",
+    "target/npc-sprites/photo/controller-reference-v03.log": "1a3abae24437c6e4343733ab02e245821a7e8a97c0d55cfb0ea9441d3ad3cc4a",
+    "target/npc-sprites/mechanic/controller-counterplay-v01.log": "6bd31fba11b4f029ee6ed6cec985cb522b9bb48ec80ad36ebdf7c40f4e5791b4",
+    "target/npc-sprites/photo/battle-diagnostic-save.txt": "0c2de6ee2652777b81c8f2f1c31fdb14cceaea1aa71c0c8052f1aebb1f8dba7d"
+  },
+  "overworld_revision": "real-reference-hand-edited-v3",
+  "reference_review": "actual-crystal-sprites-common-palette-and-scale"
+}

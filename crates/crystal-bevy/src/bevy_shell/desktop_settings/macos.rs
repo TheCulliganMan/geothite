@@ -121,6 +121,7 @@ unsafe fn item(title: &str, action: Option<Action>, target: &AnyObject) -> Retai
 struct Menu {
     root: Retained<AnyObject>,
     items: Vec<(Action, Retained<AnyObject>)>,
+    camera_menu_item: Option<Retained<AnyObject>>,
 }
 
 impl Menu {
@@ -130,6 +131,7 @@ impl Menu {
             let mut result = Self {
                 root,
                 items: Vec::new(),
+                camera_menu_item: None,
             };
             if popup {
                 result.add("Settings", None, target);
@@ -147,6 +149,7 @@ impl Menu {
             let camera = menu("Camera");
             let camera_item = result.add("Camera", None, target);
             let _: () = msg_send![&camera_item, setSubmenu: &*camera];
+            result.camera_menu_item = Some(camera_item);
             for (label, preset) in [
                 ("Default Orbit", Preset::Default),
                 ("Close Orbit", Preset::Close),
@@ -216,6 +219,13 @@ impl Menu {
             unsafe {
                 let _: () = msg_send![item, setState: isize::from(checked)];
                 let _: () = msg_send![item, setEnabled: enabled];
+                let _: () = msg_send![item, setHidden: !enabled];
+            }
+        }
+        if let Some(item) = &self.camera_menu_item {
+            // SAFETY: This is the retained NSMenuItem created with the Camera submenu.
+            unsafe {
+                let _: () = msg_send![item, setHidden: !supports_3d];
             }
         }
     }

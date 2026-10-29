@@ -1,6 +1,6 @@
 {
   "purpose": "Explicit playtest inputs for the hand-authored Cedar Lake shore walk and existing shorter meadow crossing; this does not generate terrain.",
-  "layout_candidate_sha256": "8726e94af84f408395a19cbd5e1334be9f92eeb886bba215b3b2ce08ca30b3c7",
+  "layout_candidate_sha256": "f46366f8f66398600e607716dfd52275a5ba9c619a88b011162059a43b68a236",
   "dry_path_global": [
     [
       24,
@@ -271,5 +271,7 @@
   ],
   "dry_steps": 36,
   "grass_steps": 28,
-  "grass_tiles": 15
+  "grass_tiles": 19,
+  "expected_dry_grass_steps": 0,
+  "expected_grass_route_steps": 19
 }

@@ -23,7 +23,7 @@ fn arrival() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
         VisibleShellController::load_save(root.clone(), r.clone(), PathBuf::from(path), None)
             .expect("actual earned dispatcher-home checkpoint with matching pack identity");
     c.set_runtime_journal_enabled(false);
-    location(&mut c, "MnMinneapolisDispatcherHouse", (6, 4));
+    location(&mut c, "MnMinneapolisDispatcherHouse", (6, 5));
     assert_eq!(
         c.shell.shell.session().state().badges.johto,
         [true, true, false, false, false, false, false, false]
@@ -54,20 +54,6 @@ fn design(r: &CrystalRuntime) -> Value {
     gyms["gyms"][2].clone()
 }
 
-fn retain_earned_moves(c: &mut VisibleShellController) {
-    let s = c.snapshot().expect("earned TM preservation");
-    for name in ["HEADBUTT", "MUD_SLAP"] {
-        assert!(
-            s.party.slots[0]
-                .pokemon
-                .moves
-                .iter()
-                .any(|m| m.name == name),
-            "natural learning must retain the earned {name}"
-        );
-    }
-}
-
 #[test]
 #[ignore = "earned campaign; optional CRYSTAL_NORTHSTAR_CURRENT_SAVE is the actual dispatcher-home save"]
 fn northstar_campaign_earned_current_badge_and_walks_to_st_paul() {
@@ -76,10 +62,29 @@ fn northstar_campaign_earned_current_badge_and_walks_to_st_paul() {
 }
 
 pub(super) fn current() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
+    if let Some(path) = std::env::var_os("CRYSTAL_NORTHSTAR_CURRENT_EXIT_SAVE") {
+        let (root, r) = load();
+        let mut c =
+            VisibleShellController::load_save(root.clone(), r.clone(), PathBuf::from(path), None)
+                .expect("genuine same-pack Current Badge victory checkpoint");
+        c.set_runtime_journal_enabled(false);
+        location(&mut c, "MnMinneapolis", (64, 34));
+        for flag in [
+            "EVENT_MN_GYM_1_DEFEATED",
+            "EVENT_MN_GYM_2_DEFEATED",
+            "EVENT_MN_GYM_3_DEFEATED",
+            "EVENT_MN_ICE_CAPTIVE_RESCUED",
+            "EVENT_MN_DISPATCH_NOTE",
+        ] {
+            assert!(event(&c, flag), "earned Current exit prerequisite {flag}");
+        }
+        let gym = design(&r);
+        return depart(root, r, c, gym);
+    }
     let (root, r, mut c) = arrival();
     let gym = design(&r);
     indoor_walk(&mut c, &r, (5, 6));
-    travel(&mut c, GameButton::Down, "MnMinneapolis", (27, 14));
+    travel(&mut c, GameButton::Down, "MnMinneapolis", (23, 42));
     for (tile, id) in [
         ((1, 13), "MN_GYM_3_TRAINER_1"),
         ((8, 10), "MN_GYM_3_TRAINER_2"),
@@ -89,7 +94,7 @@ pub(super) fn current() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
         for attempt in 0..4 {
             care(&mut c, &r);
             supplies(&mut c, &r);
-            indoor_walk(&mut c, &r, (42, 24));
+            indoor_walk(&mut c, &r, (64, 34));
             travel(&mut c, GameButton::Up, "MnMinneapolisGym", (4, 15));
             let selected = northstar_earned_gyms::selected(&r);
             if selected && id != "MN_GYM_3_TRAINER_1" {
@@ -115,9 +120,10 @@ pub(super) fn current() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
             };
             interact(&mut c, &r, tile);
             if try_battle(&mut c, &r, id, &flag) {
-                retain_earned_moves(&mut c);
+                // Native move-learning choices remain in force. Victory and
+                // the saved trainer flag below establish the earned battle.
                 walk_to(&mut c, &r, (4, 16));
-                travel(&mut c, GameButton::Down, "MnMinneapolis", (42, 24));
+                travel(&mut c, GameButton::Down, "MnMinneapolis", (64, 34));
                 continue_in_place(&mut c, &root, &r, &format!("campaign-{id}-win"));
                 break;
             }
@@ -130,6 +136,29 @@ pub(super) fn current() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
         }
         assert!(event(&c, &flag));
     }
+    depart(root, r, c, gym)
+}
+
+pub(super) fn st_paul_arrival(r: &CrystalRuntime) -> (i16, i16) {
+    let offset = r.data().maps["MnR04C00R00"]
+        .attributes
+        .connections
+        .iter()
+        .find(|link| link.direction == "east" && link.target_map == "MnStPaul")
+        .expect("native St Paul road connection")
+        .offset;
+    (
+        1,
+        i16::try_from(18 - offset * 2).expect("native St Paul arrival coordinate"),
+    )
+}
+
+fn depart(
+    root: AssetRoot,
+    r: CrystalRuntime,
+    mut c: VisibleShellController,
+    gym: Value,
+) -> (AssetRoot, CrystalRuntime, VisibleShellController) {
     assert_eq!(
         c.shell.shell.session().state().badges.johto,
         [true, true, true, false, false, false, false, false]
@@ -145,17 +174,18 @@ pub(super) fn current() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
     );
     for attempt in 0..4 {
         care(&mut c, &r);
-        walk_to(&mut c, &r, (58, 24));
+        indoor_walk(&mut c, &r, (78, 36));
         travel(&mut c, GameButton::Right, "MnR04C00R00", (0, 18));
         if try_crossing(&mut c, &r, (55, 18)) {
-            travel(&mut c, GameButton::Right, "MnStPaul", (0, 24));
-            travel(&mut c, GameButton::Right, "MnStPaul", (1, 24));
+            let arrival = st_paul_arrival(&r);
+            travel(&mut c, GameButton::Right, "MnStPaul", (0, arrival.1));
+            travel(&mut c, GameButton::Right, "MnStPaul", arrival);
             break;
         }
         location(&mut c, "MnMinneapolisPokecenter1F", (10, 13));
         continue_in_place(&mut c, &root, &r, &format!("campaign-r04-loss-{attempt}"));
     }
-    location(&mut c, "MnStPaul", (1, 24));
+    location(&mut c, "MnStPaul", st_paul_arrival(&r));
     assert!(!event(&c, "EVENT_MN_COURIER_DEFEATED"));
     assert!(!event(&c, "EVENT_MN_DEEP_BORE_MANIFEST_READ"));
     assert!(!event(&c, "EVENT_MN_GYM_4_DEFEATED"));

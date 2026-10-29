@@ -181,7 +181,8 @@ fn append_with_detail(
     // Unequal staggered limbs, rather than rotationally identical whorls.
     for level in 0..courses {
         for bough in 0..4 {
-            let seed = phase + level as f32 * 2.399963 + bough as f32 * 1.618034;
+            let seed =
+                phase + level as f32 * 2.399963 + bough as f32 * std::f32::consts::GOLDEN_RATIO;
             if (seed * 3.7).sin() > 0.92 {
                 continue;
             }

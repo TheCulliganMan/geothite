@@ -143,8 +143,11 @@ pub(crate) fn shortest_path_distance(
 /// fence is not an escape. An outer directional buoy is accepted only where
 /// its real departure mask closes every outward direction at that cell.
 ///
-/// This checks the global route perimeter, not internal chunk seams. It does
-/// not follow interior warps; native neighbor/room validation remains separate.
+/// This checks the global route perimeter, not internal chunk seams. An already
+/// installed native neighbor may continue or close a water edge with an exact
+/// reciprocal projection. A real solid neighboring bank blocks movement; a
+/// passable neighbor permits native Surf travel or dismounting onto land. It does not follow
+/// interior warps; room validation remains separate.
 ///
 /// # Errors
 /// Returns an error for invalid geometry, undeclared native Cut replacement,
@@ -159,7 +162,49 @@ pub(crate) fn validate_outer_boundary(
     let opened = opened_cut_blocks(pack, design, blocks, tileset)?;
     let surface = Surface::new(pack, design, &opened, tileset)?;
     let seen = surface.reachable(arrival(design)?, &BTreeSet::new())?;
-    surface.validate_outer(&seen)
+    surface.validate_outer_connected(&seen, |tile, direction| {
+        connected_water_boundary(pack, design, tile, direction)
+    })
+}
+
+fn connected_water_boundary(
+    pack: &CompiledGamePack,
+    design: &RouteDesign,
+    tile: [u16; 2],
+    direction: Direction,
+) -> Result<bool> {
+    use crate::authored_river_connections_validation::crossing;
+    let name = crate::authored_route_events::chunk(&design.map_prefix, tile);
+    let Some(source) = pack.data.maps.get(&name) else {
+        return Ok(false);
+    };
+    let local = crate::authored_route_events::local(tile);
+    let (side, reverse) = match direction {
+        Direction::Up => ("north", "south"),
+        Direction::Down => ("south", "north"),
+        Direction::Left => ("west", "east"),
+        Direction::Right => ("east", "west"),
+    };
+    let Some((target_name, destination)) = crossing(pack, source, local, side)? else {
+        return Ok(false);
+    };
+    let target = pack
+        .data
+        .maps
+        .get(&target_name)
+        .context("connected river neighbor")?;
+    let surface = Surface::from_blocks(
+        pack,
+        &target.id,
+        [target.attributes.width, target.attributes.height],
+        &target.blocks,
+        &target.attributes.tileset_name,
+    )?;
+    // A real neighboring bank closes the edge through native collision. It
+    // need not be water: Surf may also dismount onto ordinary connected land.
+    // Sample the actual target surface, then require the exact return mapping.
+    surface.permission(destination)?;
+    Ok(crossing(pack, target, destination, reverse)? == Some((name, local)))
 }
 
 fn arrival(design: &RouteDesign) -> Result<[u16; 2]> {
@@ -425,7 +470,16 @@ impl Surface {
         Ok(edges)
     }
 
+    #[cfg(test)]
     fn validate_outer(&self, seen: &BTreeSet<[u16; 2]>) -> Result<()> {
+        self.validate_outer_connected(seen, |_, _| Ok(false))
+    }
+
+    fn validate_outer_connected(
+        &self,
+        seen: &BTreeSet<[u16; 2]>,
+        connected: impl Fn([u16; 2], Direction) -> Result<bool>,
+    ) -> Result<()> {
         let (width, height) = self
             .map
             .checked_tile_bounds()
@@ -442,7 +496,9 @@ impl Surface {
                 (y + 1 == height, Direction::Down),
             ] {
                 ensure!(
-                    !on_edge || is_direction_blocked_leaving(permission, direction),
+                    !on_edge
+                        || is_direction_blocked_leaving(permission, direction)
+                        || connected([x, y], direction)?,
                     "reachable outer water is unclosed at {x},{y} toward {direction:?}"
                 );
             }
@@ -461,8 +517,8 @@ mod tests {
     use crystal_core::world::map::OverworldMapData;
 
     use super::{
-        Surface, opened_cut_blocks, reachable_with_surf, shortest_path_distance,
-        validate_outer_boundary,
+        Surface, connected_water_boundary, opened_cut_blocks, reachable_with_surf,
+        shortest_path_distance, validate_outer_boundary,
     };
     use crate::CompiledGamePack;
     use crate::authored_route_design::{CutGate, RouteDesign, Shortcut};
@@ -512,6 +568,119 @@ mod tests {
             .expect("numeric reachability");
         assert!(seen.contains(&[7, 2]));
         assert!(surface.validate_outer(&seen).is_err());
+        surface
+            .validate_outer_connected(&seen, |tile, direction| {
+                Ok(tile == [7, 2] && direction == crystal_core::world::map::Direction::Right)
+            })
+            .expect("only the actual connected outward direction is permitted");
+        assert!(
+            surface
+                .validate_outer_connected(&seen, |_, direction| {
+                    Ok(direction == crystal_core::world::map::Direction::Up)
+                })
+                .is_err(),
+            "a connection on another side cannot hide an open edge"
+        );
+    }
+
+    #[test]
+    fn native_water_boundary_requires_actual_reciprocal_projection() {
+        use crystal_core::map::MapConnection;
+        use crystal_core::world::map::Direction;
+        let root = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+        let mut design = RouteDesign::parse(
+            &std::fs::read_to_string(root.join("../../planning/minnesota/routes/MN_R01.json"))
+                .expect("typed route fixture"),
+        )
+        .expect("route");
+        design.map_prefix = "BoundaryFixture".into();
+        let name = "BoundaryFixtureC00R00";
+        let target = "BoundaryNeighbor";
+        let mut pack = source().clone();
+        for (id, side, neighbor) in [(name, "east", target), (target, "west", name)] {
+            let mut map = pack.data.maps["Route29"].clone();
+            map.id = id.into();
+            map.attributes.width = 2;
+            map.attributes.height = 2;
+            map.blocks = vec![0x35; 4];
+            map.attributes.connections = vec![MapConnection {
+                direction: side.into(),
+                target_map: neighbor.into(),
+                offset: 0,
+            }];
+            pack.data
+                .map_attributes
+                .insert(id.into(), map.attributes.clone());
+            pack.data.maps.insert(id.into(), map);
+        }
+        assert!(
+            connected_water_boundary(&pack, &design, [3, 2], Direction::Right)
+                .expect("paired seam")
+        );
+        pack.data
+            .maps
+            .get_mut(target)
+            .expect("neighbor")
+            .attributes
+            .connections
+            .clear();
+        assert!(
+            !connected_water_boundary(&pack, &design, [3, 2], Direction::Right)
+                .expect("missing back seam")
+        );
+        pack.data
+            .maps
+            .get_mut(target)
+            .expect("neighbor")
+            .attributes
+            .connections
+            .push(MapConnection {
+                direction: "west".into(),
+                target_map: name.into(),
+                offset: 1,
+            });
+        assert!(
+            !connected_water_boundary(&pack, &design, [3, 2], Direction::Right)
+                .expect("wrong back projection")
+        );
+        pack.data
+            .maps
+            .get_mut(target)
+            .expect("neighbor")
+            .attributes
+            .connections[0]
+            .offset = 0;
+        pack.data
+            .maps
+            .get_mut(target)
+            .expect("neighbor")
+            .blocks
+            .fill(0x05);
+        assert!(
+            connected_water_boundary(&pack, &design, [3, 2], Direction::Right)
+                .expect("real solid neighboring bank closes the edge")
+        );
+        pack.data
+            .maps
+            .get_mut(target)
+            .expect("neighbor")
+            .blocks
+            .fill(0x01);
+        assert!(
+            connected_water_boundary(&pack, &design, [3, 2], Direction::Right)
+                .expect("real connected land permits native dismount")
+        );
+        pack.data
+            .maps
+            .get_mut(target)
+            .expect("neighbor")
+            .attributes
+            .connections
+            .clear();
+        assert!(
+            !connected_water_boundary(&pack, &design, [3, 2], Direction::Right)
+                .expect("land without reciprocal projection is not an accepted boundary")
+        );
     }
 
     #[test]

@@ -400,10 +400,27 @@
         4
       ],
       "requires": [],
-      "scene": "MnGrandMaraisShoreGateAttendant",
-      "repeat": "Native counter conversation; no reward or story result.",
-      "source_file": "towns/MnGrandMarais.connections.json",
+      "scene": "MNGRANDMARAISSHOREGATE_NPC1",
+      "repeat": "Native counter conversation about the shore-watch family bell and last-walker lamp; no reward or story mutation.",
+      "source_file": "towns/MnGrandMaraisShoreGate.json",
       "native_object_id": "MNGRANDMARAISSHOREGATE_NPC1"
+    },
+    {
+      "id": "MN_MARAIS_GATE_PADDLER",
+      "map": "MnGrandMaraisShoreGate",
+      "anchor_core": [
+        7,
+        5
+      ],
+      "approach_core": [
+        7,
+        4
+      ],
+      "requires": [],
+      "scene": "MN_MARAIS_GATE_PADDLER",
+      "repeat": "Returning paddler with dry socks, agates and Grandma\u2019s spare wool hat; ordinary repeatable native conversation.",
+      "source_file": "towns/MnGrandMaraisShoreGate.json",
+      "native_object_id": "MN_MARAIS_GATE_PADDLER"
     },
     {
       "id": "MNGRANDMARAISFIELDSTATION_NPC1",
@@ -416,6 +433,146 @@
       "scene": "MnGrandMaraisWelcome",
       "repeat": "Optional spare part; decline/full-pocket retry; receipt flag only after acknowledgment; no demo starter or supply bundle.",
       "source_file": "towns/MnGrandMarais.connections.json"
+    },
+    {
+      "id": "MnSplitRockNurse",
+      "map": "MnSplitRockPokecenter1F",
+      "anchor_core": [
+        3,
+        1
+      ],
+      "approach_core": [
+        3,
+        3
+      ],
+      "requires": [],
+      "scene": "MnSplitRockNurse",
+      "native_object_id": "MnSplitRockNurse",
+      "source_file": "interior-life/split-rock-clinic.json",
+      "repeat": "Production nurse/PC clinic service.",
+      "counter_core": [
+        3,
+        2
+      ]
+    },
+    {
+      "id": "MN_SPLIT_ROCK_SHORE_GRANDPA",
+      "map": "MnSplitRockPokecenter1F",
+      "anchor_core": [
+        1,
+        5
+      ],
+      "approach_core": [
+        2,
+        5
+      ],
+      "requires": [],
+      "scene": "MN_SPLIT_ROCK_SHORE_GRANDPA",
+      "native_object_id": "MN_SPLIT_ROCK_SHORE_GRANDPA",
+      "source_file": "interior-life/split-rock-clinic.json",
+      "repeat": "My granddaughter cleans the lens. I mend her mittens while she works. Lake wind finds a loose stitch. When she comes in, we walk home slow."
+    },
+    {
+      "id": "MN_SPLIT_ROCK_DECKHAND",
+      "map": "MnSplitRockPokecenter1F",
+      "anchor_core": [
+        6,
+        4
+      ],
+      "approach_core": [
+        6,
+        5
+      ],
+      "requires": [],
+      "scene": "MN_SPLIT_ROCK_DECKHAND",
+      "native_object_id": "MN_SPLIT_ROCK_DECKHAND",
+      "source_file": "interior-life/split-rock-clinic.json",
+      "repeat": "Our boat turned back in the fog. I felt foolish coming in early. The nurse said, Coming home is what matters. I told my crew."
+    },
+    {
+      "id": "MN_STAPLES_JUNCTION_WALKER",
+      "map": "MnStaplesRailJunction",
+      "anchor_core": [
+        18,
+        14
+      ],
+      "approach_core": [
+        17,
+        14
+      ],
+      "requires": [],
+      "scene": "MN_STAPLES_JUNCTION_WALKER",
+      "native_object_id": "MN_STAPLES_JUNCTION_WALKER",
+      "source_file": "transit/MnStaplesStation.json",
+      "repeat": "STAPLES grew up around the rails. The little road south reaches CENTRAL LAKES. BRAINERD is east; DETROIT LAKES is west."
+    },
+    {
+      "id": "MN_STAPLES_CONDUCTOR",
+      "map": "MnStaplesStation",
+      "anchor_core": [
+        11,
+        9
+      ],
+      "approach_core": [
+        11,
+        10
+      ],
+      "requires": [],
+      "scene": "MN_STAPLES_CONDUCTOR",
+      "native_object_id": "MN_STAPLES_CONDUCTOR",
+      "source_file": "transit/MnStaplesStation.json",
+      "repeat": "GLACIER LINE The hall is open. Passenger service is not ready yet."
+    },
+    {
+      "id": "MN_STAPLES_SIGNAL_KEEPER",
+      "map": "MnStaplesStation",
+      "anchor_core": [
+        3,
+        11
+      ],
+      "approach_core": [
+        3,
+        12
+      ],
+      "requires": [],
+      "scene": "MN_STAPLES_SIGNAL_KEEPER",
+      "native_object_id": "MN_STAPLES_SIGNAL_KEEPER",
+      "source_file": "transit/MnStaplesStation.json",
+      "repeat": "My dad worked the night switch. He left a light in this window for anyone walking home from a shift. I still light it."
+    },
+    {
+      "id": "MN_STAPLES_PARCEL_CLERK",
+      "map": "MnStaplesStation",
+      "anchor_core": [
+        5,
+        13
+      ],
+      "approach_core": [
+        5,
+        14
+      ],
+      "requires": [],
+      "scene": "MN_STAPLES_PARCEL_CLERK",
+      "native_object_id": "MN_STAPLES_PARCEL_CLERK",
+      "source_file": "transit/MnStaplesStation.json",
+      "repeat": "Native parcel supply shop: REPEL, SUPER POTION, PARLYZ HEAL and FLOWER MAIL at existing item prices."
+    },
+    {
+      "id": "MN_STAPLES_WAITING_STUDENT",
+      "map": "MnStaplesStation",
+      "anchor_core": [
+        13,
+        14
+      ],
+      "approach_core": [
+        12,
+        14
+      ],
+      "requires": [],
+      "scene": "MN_STAPLES_WAITING_STUDENT",
+      "native_object_id": "MN_STAPLES_WAITING_STUDENT",
+      "source_file": "transit/MnStaplesStation.json",
+      "repeat": "Grandma mailed me a seed packet from DETROIT LAKES. I sent a picture of the bloom. Now she writes to the flower, too."
     }
   ],
   "dialogue_rules": [

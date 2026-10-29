@@ -3028,6 +3028,7 @@ fn write_compiled_game_pack(path: impl AsRef<Path>, pack: &CompiledGamePack) -> 
 }
 
 fn write_serialized_compiled_game_pack(path: &Path, serialized_pack: &CompiledGamePack) -> Result<()> {
+    crate::minnesota_geometry_publication::validate(serialized_pack)?;
     let mut encoded = Vec::new();
     ciborium::into_writer(serialized_pack, &mut encoded)
         .context("encode compiled game pack")?;

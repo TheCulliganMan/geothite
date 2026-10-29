@@ -70,6 +70,68 @@ fn walk(c: &mut VisibleShellController, module: &MapModule, floor: &BTreeSet<Poi
 #[test]
 #[ignore = "requires the published nine-cave pack; local fixtures do not earn regional access"]
 fn cave_quality_controller_all_nine_cameras_stairs_drops_mouths_and_continue() {
+    run_cave_quality_rooms(&[
+        "MnR01Cave1F",
+        "MnR03Cave1F",
+        "MnR05RockCut",
+        "MnR09Cave1F",
+        "MnR10Cave1F",
+        "MnR12Cave1F",
+        "MnR13Cave1F",
+        "MnR17Cave1F",
+        "MnR20Cave1F",
+    ]);
+}
+
+#[test]
+#[ignore = "requires the current R10 cave publication; local fixture does not earn access"]
+fn cave_quality_controller_r10_cameras_stairs_drops_mouth_and_continue() {
+    run_cave_quality_rooms(&["MnR10Cave1F"]);
+}
+
+#[test]
+#[ignore = "requires the current regional R09 publication; local fixture does not earn access"]
+fn cave_quality_controller_current_r09_cameras_stairs_drops_mouth_and_continue() {
+    run_cave_quality_rooms(&["MnR09Cave1F"]);
+}
+
+#[test]
+#[ignore = "requires the current R05 Rock Cut publication; local fixture does not earn access"]
+fn cave_quality_controller_current_r05_cameras_stair_mouths_pickup_and_continue() {
+    run_cave_quality_rooms(&["MnR05RockCut"]);
+}
+
+#[test]
+#[ignore = "requires the current compact Gunflint shelter publication; local fixture does not earn access"]
+fn cave_quality_controller_current_r12_cameras_stairs_drops_mouth_pickup_and_continue() {
+    run_cave_quality_rooms(&["MnR12Cave1F"]);
+}
+
+#[test]
+#[ignore = "requires the current R13 spring shelter publication; local fixture does not earn access"]
+fn cave_quality_controller_current_r13_cameras_stairs_mouth_pickup_and_continue() {
+    run_cave_quality_rooms(&["MnR13Cave1F"]);
+}
+
+#[test]
+#[ignore = "requires the current R17 talus den publication; local fixture does not earn access"]
+fn cave_quality_controller_current_r17_cameras_mouth_pickup_and_continue() {
+    run_cave_quality_rooms(&["MnR17Cave1F"]);
+}
+
+#[test]
+#[ignore = "requires the current R20 two-mouth cleft publication; local fixture does not earn access"]
+fn cave_quality_controller_current_r20_cameras_stairs_hops_mouths_pickup_and_continue() {
+    run_cave_quality_rooms(&["MnR20Cave1F"]);
+}
+
+#[test]
+#[ignore = "requires the current R01 limestone hollows publication; local fixture does not earn access"]
+fn cave_quality_controller_current_r01_cameras_stairs_mouth_pickup_and_continue() {
+    run_cave_quality_rooms(&["MnR01Cave1F"]);
+}
+
+fn run_cave_quality_rooms(rooms: &[&str]) {
     let path = PathBuf::from(
         std::env::var_os("CRYSTAL_CAVE_QUALITY_PACK").expect("actual nine-cave publication"),
     )
@@ -83,17 +145,7 @@ fn cave_quality_controller_all_nine_cameras_stairs_drops_mouths_and_continue() {
     .expect("native runtime");
     let directory = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
         .join("../../planning/minnesota/caves/johto-quality-v01");
-    for room in [
-        "MnR01Cave1F",
-        "MnR03Cave1F",
-        "MnR05RockCut",
-        "MnR09Cave1F",
-        "MnR10Cave1F",
-        "MnR12Cave1F",
-        "MnR13Cave1F",
-        "MnR17Cave1F",
-        "MnR20Cave1F",
-    ] {
+    for &room in rooms {
         let source: Value = serde_json::from_str(
             &std::fs::read_to_string(directory.join(format!("{room}.json")))
                 .expect("explicit authored room"),
@@ -101,13 +153,47 @@ fn cave_quality_controller_all_nine_cameras_stairs_drops_mouths_and_continue() {
         .expect("source JSON");
         let arrival = point(&source["clear_arrival"]);
         let module = &runtime.data().maps[room];
-        let expected_blocks = source["rows"]
+        let mut expected_blocks = source["rows"]
             .as_array()
             .expect("complete authored cave rows")
             .iter()
             .flat_map(|row| row.as_str().expect("source row").split_whitespace())
             .map(|value| u16::from_str_radix(value, 16).expect("native block"))
             .collect::<Vec<_>>();
+        // The current story adds a prerequisite-gated lower shaft to the
+        // reviewed public mine. Keep the original terrain contract intact;
+        // certify this exact overlay rather than accepting arbitrary drift.
+        let story_mine =
+            room == "MnR09Cave1F" && module.scripts.contains_key("MnNDrillPublicTiles");
+        if story_mine {
+            assert_eq!(
+                [module.attributes.width, module.attributes.height],
+                [12, 11]
+            );
+            assert_eq!(expected_blocks[5 * 12 + 9], 2);
+            expected_blocks[5 * 12 + 9] = 0x2d;
+            assert_eq!(
+                module.scripts["MnNDrillPublicTiles"],
+                serde_json::json!([
+                    {"command": "checkevent", "args": ["EVENT_MN_DEPOT_FOREMAN_DEFEATED"]},
+                    {"command": "iffalse", "args": ["MnNDrillPublicEnd"]},
+                    {"command": "changeblock", "args": ["18", "10", "7"]},
+                    {"command": "endcallback", "args": []}
+                ])
+            );
+            assert_eq!(module.events.warps.len(), 3);
+            for (warp, at) in module.events.warps[1..].iter().zip([(19, 9), (19, 11)]) {
+                assert_eq!((warp.x, warp.y), at);
+                assert_eq!(warp.target_warp_id, 2);
+                assert_eq!(
+                    runtime
+                        .data()
+                        .map_name_for_constant(&warp.target_map_constant)
+                        .expect("story shaft destination"),
+                    "MnIronDrillApproach"
+                );
+            }
+        }
         assert_eq!(module.blocks, expected_blocks, "{room}: published source");
         assert_eq!(
             u64::from(module.attributes.border_block),
@@ -150,11 +236,32 @@ fn cave_quality_controller_all_nine_cameras_stairs_drops_mouths_and_continue() {
                 }
             }
         }
+        if story_mine {
+            assert_eq!(kind(&runtime, module, (19, 10)), "WALL");
+            assert_eq!(kind(&runtime, module, (19, 11)), "WALL");
+            walk(&mut c, module, &floor, (19, 9));
+            for _ in 0..3 {
+                press(&mut c, GameButton::Down);
+                assert_eq!(map(&mut c), room, "closed shaft cannot enter the lair");
+                assert_eq!(tile(&mut c), (19, 9));
+            }
+            c.wait_frames(60).expect("passive story-shaft arrival");
+            assert_eq!(map(&mut c), room);
+            assert_eq!(tile(&mut c), (19, 9));
+        }
         for view in source["review_contract"]["viewpoints"]
             .as_array()
             .expect("every camera")
         {
             walk(&mut c, module, &floor, point(&view["tile"]));
+            if let Some(directory) = std::env::var_os("CRYSTAL_CAVE_QUALITY_SAVES") {
+                let directory = PathBuf::from(directory);
+                std::fs::create_dir_all(&directory).expect("retained cave camera checkpoints");
+                let label = view["id"].as_str().expect("named cave viewpoint");
+                let path = directory.join(format!("{room}-{label}.crystalsave"));
+                assert!(!path.exists(), "preserve previous reached cave checkpoints");
+                c.save(path).expect("save actual reached cave camera");
+            }
         }
         for (index, block) in module.blocks.iter().enumerate() {
             let x = (index % usize::from(module.attributes.width)) as i16 * 2;
@@ -288,6 +395,12 @@ fn cave_quality_controller_all_nine_cameras_stairs_drops_mouths_and_continue() {
         walk(&mut c, module, &floor, arrival);
         c = continue_save(root.clone(), runtime.clone(), &mut c);
         for warp in &module.events.warps {
+            if story_mine && warp.index > 1 {
+                // Both story-shaft records are certified above. Opening and
+                // traversing that shaft requires the separate battle chapter;
+                // this empty-party geometry fixture verifies its closed state.
+                continue;
+            }
             let exterior_name = runtime
                 .data()
                 .map_name_for_constant(&warp.target_map_constant)

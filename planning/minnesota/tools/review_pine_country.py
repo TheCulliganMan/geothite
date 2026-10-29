@@ -80,7 +80,7 @@ def check_piers(design,layout,pack):
     for a,b in [(approach,exit),(exit,approach)]:
         n=cost(a,b,{(46,55),(47,55)})
         assert n is not None and n>=choice['minimum_grass_steps'],'Both battle and grass can be freely bypassed'
-    return {'source_metatile_varieties_used':len(set(blocks)),'necessary_bridge_checked':True,'closed_fishing_pier_checked':True,'native_ledge_faces_checked':1,'battle_or_grass_choices_checked':1,'lookout_water_core_tiles_in_native_frame':visible_water}
+    return {'source_metatile_varieties_used':len(set(blocks)),'necessary_bridge_checked':True,'closed_fishing_pier_checked':True,'native_ledge_faces_checked':len(design['one_way_ledges']),'battle_or_grass_choices_checked':1,'lookout_water_core_tiles_in_native_frame':visible_water}
 
 
 def cut_states(design,layout,pack):

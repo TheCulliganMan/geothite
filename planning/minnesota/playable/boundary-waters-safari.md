@@ -1,8 +1,43 @@
 # Boundary Waters Safari Preserve
 
-The native terrain and hospitality slice is published in the ignored **450-map** `content-packs/minnesota-boundary-waters.crystalpack`: one continuous **48×40-metatile preserve** in four clipped native chunks, plus the actual **5×4 Root Beer Cabin**. All five production-controller cases pass, including the cabin door/both carpets/passive returns/Continue, outside Dorothy services, grassy portages, Surf seams/barriers and closed admission. Seven selected asset/core-warp tests and all 377 audio checks also pass. **Expedition admission remains closed: Safari fees, session balls/steps, capture-only encounters and retirement are not implemented.** The optional preserve remains separate from the free 32×24 [Boundary Waters basecamp story contract](../towns/MnBoundaryWaters.json); these fixtures do not claim earned regional progression.
+The historical terrain and hospitality baseline was published in the ignored **450-map** `content-packs/minnesota-boundary-waters.crystalpack`: one continuous **48×40-metatile preserve** in four clipped native chunks, plus the actual **5×4 Root Beer Cabin**. All five production-controller cases pass, including the cabin door/both carpets/passive returns/Continue, outside Dorothy services, grassy portages, Surf seams/barriers and closed admission. Seven selected asset/core-warp tests and all 377 audio checks also pass. **Expedition admission remains closed in the selected pack. Native runtime components now exist, with production-controller and visual acceptance still pending as detailed below.** The optional preserve remains separate from the free 32×24 [Boundary Waters basecamp story contract](../towns/MnBoundaryWaters.json); these fixtures do not claim earned regional progression.
 
 The user’s latest direction makes water the primary geography: **mostly connected lakes with grass and pines around them, including real portages**. The experience follows navigable lake narrows, pine-lined coves, grassy shore pockets and low islands. It is not a broad dry route with decorative ponds. Current rangers truthfully announce closed expeditions and charge nothing. Future admission/return services and **Safari Ball / Bait / Rock / Run** encounters, with neither Pokémon attacking, are the remaining gameplay goal. There is **no ordinary trainer gauntlet or substitute ordinary wild table inside**. Canoe is the visual theme; water travel uses the existing native **Surf** permission and movement system. No new boat controller, free HM bypass or painted-water floor is implied.
+
+## Native expedition implementation in progress
+
+Safari encounters must look like battles: a complete native battle screen,
+the selected trainer's back sprite facing the actual wild Pokemon, its native
+HUD, and Ball/Bait/Rock/Run below. Keep that composition while presenting a
+result. Use the trainer's actual Chris or Kris source art, with counters beside
+the trainer. The capture engine owns the encounter; no party member is sent out.
+
+The [native runtime revision](../revisions/boundary-safari-runtime-v01/README.md)
+now adds a typed saved session, capture-only Ball/Bait/Rock/Run resolver, real
+party/current-box/Pokédex delivery, deferred result/exhaustion, and strict
+binary-save compatibility checks. Native staged fee/entry/return transactions,
+permit-controlled guard bodies, travel debits and mutation/RNG replay now have
+actual-pack component coverage. Committed walking/Surf habitat generation and
+saved ranger/capture selections now have component tests on the current730-map
+interior union. A first production-controller ranger-to-retirement journey now
+passes, with generated wildlife, all four commands and saved choices/results.
+The battle UI has reviewed native command/result captures, matching source-art
+pixels, distinct trainer back sprites and fullscreen/cursor/cleanup regressions.
+Caught-area metadata now resolves the actual native landmark, and a successful
+controller catch retains it through storage and Continue. Native rods now open
+the same capture battle using the original Minnesota rod/time tables and real
+shore/water contact; the Good Rod casting/capture/Continue journey passes.
+Native Pokédex/nickname screens, real party/selected-PC delivery and their
+saved pages/choices/name drafts now pass production-controller Continue and
+clean-stdio checks. The native YES/NO window also has a corrected reviewed
+battle composition. Remaining movement/travel/exhaustion journeys, canoe input,
+and complete throw animation/audio presentation still need work. The authoritative runtime
+habitats and Minnesota-only wildlife tables are in
+[zone.json](../revisions/boundary-safari-runtime-v01/zone.json); older dimensions,
+habitat proposals and species examples below are historical design notes.
+The selected pack's gate therefore remains closed and charges nothing. The gap analysis below
+records the original engine audit; use the runtime revision for the current
+implementation boundary and remaining work.
 
 ## Free story contract and future paid preserve
 

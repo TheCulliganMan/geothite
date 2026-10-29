@@ -352,6 +352,7 @@ fn visible_pc_printer_status(runtime_shell: &BevyRuntimeShell) -> bool {
 }
 
 fn press_visible_a_button(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
+    if safari_visible::press(runtime_shell, GameButton::A)? { return Ok(()); }
     if runtime_shell.visible_battle_sliding_intro.is_some() {
         return Ok(());
     }
@@ -1586,6 +1587,7 @@ fn press_visible_a_button(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
 }
 
 fn has_visible_shell_a_action(runtime_shell: &mut BevyRuntimeShell) -> Result<bool> {
+    if safari_visible::owns(runtime_shell) { return Ok(true); }
     if runtime_shell.mailbox_cursor.is_some() || runtime_shell.mailbox_action_cursor.is_some() {
         return Ok(true);
     }
@@ -1882,6 +1884,7 @@ fn press_visible_pokedex_a_button(runtime_shell: &mut BevyRuntimeShell) -> Resul
         {
             record_visible_runtime_action(runtime_shell, "pokedex:scripted_entry:close")?;
             close_visible_pokedex_menu(runtime_shell);
+            if safari_catch_visible::finish_dex(runtime_shell)? { return Ok(()); }
             if runtime_shell.pending_standard_capture.is_some() {
                 continue_visible_capture_after_owned_surface(runtime_shell)?;
                 return Ok(());
@@ -1890,6 +1893,7 @@ fn press_visible_pokedex_a_button(runtime_shell: &mut BevyRuntimeShell) -> Resul
             return Ok(());
         }
         runtime_shell.pokedex_detail_page = (runtime_shell.pokedex_detail_page + 1) % page_count;
+        safari_catch_visible::sync_dex_page(runtime_shell)?;
         let page_number = runtime_shell.pokedex_detail_page + 1;
         record_visible_runtime_action(runtime_shell, format!("pokedex:detail:page:{page_number}"))?;
         return Ok(());
@@ -1898,6 +1902,7 @@ fn press_visible_pokedex_a_button(runtime_shell: &mut BevyRuntimeShell) -> Resul
 }
 
 fn press_visible_b_button(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
+    if safari_visible::press(runtime_shell, GameButton::B)? { return Ok(()); }
     let menu_snapshot = runtime_shell.shell.snapshot()?;
     // A source menu can remain underneath a purchase/PC notice. Let its
     // existing modal handler own B, as it already owns A, before cancelling
@@ -1985,9 +1990,10 @@ fn press_visible_b_button(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
         return close_visible_mail_read(runtime_shell);
     }
     if runtime_shell.pending_name_choice.is_some() {
-        if advance_visible_nickname_prompt(runtime_shell) {
+        if advance_visible_nickname_prompt(runtime_shell)? {
             return Ok(());
         }
+        if safari_catch_visible::decline_choice(runtime_shell)? { return Ok(()); }
         if runtime_shell
             .pending_name_choice
             .as_ref()
@@ -2675,6 +2681,7 @@ fn press_visible_b_button(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
                 );
                 if runtime_shell.pokedex_detail_page + 1 < page_count {
                     runtime_shell.pokedex_detail_page += 1;
+                    safari_catch_visible::sync_dex_page(runtime_shell)?;
                     let page_number = runtime_shell.pokedex_detail_page + 1;
                     record_visible_runtime_action(
                         runtime_shell,
@@ -2684,6 +2691,7 @@ fn press_visible_b_button(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
                     return Ok(());
                 }
                 close_visible_pokedex_menu(runtime_shell);
+                if safari_catch_visible::finish_dex(runtime_shell)? { return Ok(()); }
                 if runtime_shell.pending_standard_capture.is_some() {
                     continue_visible_capture_after_owned_surface(runtime_shell)?;
                     return Ok(());
@@ -3144,6 +3152,9 @@ fn move_visible_mom_bank(runtime_shell: &mut BevyRuntimeShell, delta: isize, hor
 }
 
 fn press_visible_select_button(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
+    if safari_visible::press(runtime_shell, GameButton::Select)? {
+        return Ok(());
+    }
     if runtime_shell.mailbox_confirmation_response.is_some() {return Ok(());}
     // ReadMailMessage waits for A/B; retain every covered menu unchanged.
     if runtime_shell.pending_mail_read.is_some() { return Ok(()); }
@@ -3387,6 +3398,7 @@ fn switch_visible_pack_item(runtime_shell: &mut BevyRuntimeShell) -> Result<()> 
 }
 
 fn press_visible_start_button(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
+    if safari_visible::press(runtime_shell, GameButton::Start)? { return Ok(()); }
     if runtime_shell.mailbox_confirmation_response.is_some() {return Ok(());}
     // ReadMailMessage waits for A/B; retain every covered menu unchanged.
     if runtime_shell.pending_mail_read.is_some() { return Ok(()); }
@@ -3489,6 +3501,7 @@ fn press_visible_start_button(runtime_shell: &mut BevyRuntimeShell) -> Result<()
 }
 
 fn has_visible_shell_b_action(runtime_shell: &mut BevyRuntimeShell) -> bool {
+    if safari_visible::owns(runtime_shell) { return true; }
     if runtime_shell.pending_name_choice.is_some() {
         return true;
     }
@@ -3715,6 +3728,7 @@ fn has_visible_shell_select_action(runtime_shell: &mut BevyRuntimeShell) -> bool
 }
 
 fn has_visible_shell_start_action(runtime_shell: &mut BevyRuntimeShell) -> bool {
+    if safari_visible::owns(runtime_shell) { return true; }
     if runtime_shell.pokedex_menu_open {
         return true;
     }
@@ -3834,6 +3848,7 @@ fn visible_script_or_dialogue_owns_start_input(
 }
 
 fn has_visible_shell_direction_action(runtime_shell: &mut BevyRuntimeShell) -> bool {
+    if safari_visible::owns(runtime_shell) { return true; }
     if runtime_shell.mailbox_cursor.is_some() || runtime_shell.mailbox_action_cursor.is_some() {
         return true;
     }

@@ -8,6 +8,10 @@ use serde::Deserialize;
 #[path = "superior_inland_source_tests.rs"]
 mod superior_inland_source_tests;
 
+#[cfg(test)]
+#[path = "border_pines_layout_tests.rs"]
+mod border_pines_layout_tests;
+
 #[derive(Deserialize)]
 pub(crate) struct Layout {
     pub id: String,
@@ -172,11 +176,12 @@ impl Layout {
                             | ("MN_R10", "mn_r10_rockstairs")
                             | ("MN_R12", "mn_winter_gunflint")
                             | ("MN_R13", "mn_winter_north_shore")
+                            | ("MN_R17", "mn_winter_outdoor")
                     ))
                 && (layout.shore_fitting == expected.2
                     || (matches!(
                         layout.id.as_str(),
-                        "MN_R03" | "MN_R11" | "MN_R12" | "MN_R13"
+                        "MN_R03" | "MN_R05" | "MN_R11" | "MN_R12" | "MN_R13" | "MN_R17"
                     ) && layout.shore_fitting == "explicit_source_edges")),
             "retain the complete authored route and native art fitting"
         );

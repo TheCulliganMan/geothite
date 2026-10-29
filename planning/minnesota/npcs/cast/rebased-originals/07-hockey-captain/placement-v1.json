@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "trainers": [
+    {
+      "map": "MnStCloud",
+      "approach": [
+        13,
+        14
+      ],
+      "id": "MN_EXTRA_NPC_HOCKEY_01",
+      "display_name": "LEIF",
+      "trainer_class": "MN_HOCKEY_CAPTAIN",
+      "class_name": "CAPTAIN",
+      "template_class": "COOLTRAINERM",
+      "sprite": "SPRITE_MN_HOCKEY_CAPTAIN",
+      "tile": [
+        13,
+        13
+      ],
+      "facing": "south",
+      "sight_range": 2,
+      "defeated_flag": "EVENT_MN_EXTRA_NPC_HOCKEY_01",
+      "party": [
+        {
+          "species": "PUCKLET",
+          "level": 22
+        },
+        {
+          "species": "SKATUFF",
+          "level": 24
+        }
+      ],
+      "before_lines": [
+        "Face off with us!",
+        "We play as a team."
+      ],
+      "after_lines": [
+        "Great teamwork!",
+        "See you next game."
+      ],
+      "loss_lines": [
+        "Keep your balance!",
+        "Try another shift."
+      ]
+    }
+  ]
+}

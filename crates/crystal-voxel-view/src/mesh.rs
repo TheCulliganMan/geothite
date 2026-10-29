@@ -28,6 +28,7 @@ pub(crate) fn pier_over_water(map: &str, source: &VisualTileSource, north: Optio
 mod kanto_paving;
 #[path = "mesh/kanto_shore.rs"]
 mod kanto_shore;
+mod rocky_shore_cap;
 #[path = "mesh/enclosed_ponds.rs"]
 mod enclosed_ponds;
 #[path = "mesh/pebbles.rs"]
@@ -4508,8 +4509,11 @@ fn outdoor_building_placements(
 ) -> Vec<BuildingPlacement> {
     let mut metatiles = HashMap::new();
     for tile in cells {
-        if !matches!(
+        let model_tileset = crate::building_style::native_structure_tileset(
             tile.source.tileset_id.as_ref(),
+        );
+        if !matches!(
+            model_tileset,
             "johto" | "johto_modern" | "kanto" | "forest" | "battle_tower_outside"
         ) {
             continue;
@@ -4520,7 +4524,7 @@ fn outdoor_building_placements(
         );
         metatiles
             .entry(origin)
-            .or_insert((tile.source.tileset_id.as_ref(), tile.source.metatile_id));
+            .or_insert((model_tileset, tile.source.metatile_id));
     }
 
     let mut placements = Vec::new();
@@ -4937,7 +4941,7 @@ fn append_kanto_building_placements(
         // connected-run idea used by the reference renderer, expressed in
         // Crystal's stable metatile identities rather than collision.
         if first == 0x20 {
-            for width_blocks in 2..=5 {
+            for width_blocks in 2..=8 {
                 let last_x = x + ((width_blocks - 1) * 4) as isize;
                 if at(last_x, y) != Some(0x21)
                     || (1..width_blocks - 1)
@@ -5985,7 +5989,8 @@ fn append_pixel_building(
         roof_pixels,
         darkest,
     );
-    if first_building_source.tileset_id.as_ref() == "johto"
+    if crate::building_style::native_structure_tileset(first_building_source.tileset_id.as_ref())
+        == "johto"
         && tower_storeys == 1
         && !tall_lighthouse
         && !cliff_mound

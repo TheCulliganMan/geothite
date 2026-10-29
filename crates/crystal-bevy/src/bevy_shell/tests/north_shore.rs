@@ -395,7 +395,7 @@ fn north_shore_controller_walks_bridges_seams_events_and_both_keeper_room_return
 #[test]
 #[ignore = "requires the republished three-chunk external North Shore pack"]
 fn north_shore_controller_wins_will_spends_thunderbolt_pp_and_continues() {
-    let (root, runtime, mut controller) = fixture((43, 14), &["THUNDERBOLT"]);
+    let (root, runtime, mut controller) = fixture((43, 14), &["THUNDERBOLT", "SURF"]);
     let grid = grid(&runtime, (43, 14));
     grid.walk(&mut controller, (43, 14));
     controller.press(GameButton::Up).expect("face Will");
@@ -407,6 +407,10 @@ fn north_shore_controller_wins_will_spends_thunderbolt_pp_and_continues() {
         .slots[0]
         .pokemon
         .moves[0]
+        .current_pp;
+    let initial_surf_pp = controller.snapshot().expect("initial Surf PP").party.slots[0]
+        .pokemon
+        .moves[1]
         .current_pp;
     let mut opponents = BTreeSet::new();
     let mut selected_thunderbolt = 0;
@@ -439,12 +443,25 @@ fn north_shore_controller_wins_will_spends_thunderbolt_pp_and_continues() {
         }) {
             GameButton::B
         } else if let Some(cursor) = &controller.shell.battle_move_cursor {
-            assert_eq!(battle.player_moves[0].name, "THUNDERBOLT");
-            assert!(battle.player_moves[0].current_pp > 0);
-            if cursor.option_index > 0 {
+            let active = battle
+                .active_player_party_index
+                .expect("active fixture partner");
+            let pokemon = &snapshot
+                .party
+                .slots
+                .iter()
+                .find(|slot| slot.index == active)
+                .expect("active partner remains in the native party")
+                .pokemon;
+            let target = super::rochester_earned::best_attack(&runtime, battle, pokemon);
+            if cursor.option_index > target {
                 GameButton::Up
+            } else if cursor.option_index < target {
+                GameButton::Down
             } else {
-                selected_thunderbolt += 1;
+                if battle.player_moves[target].name == "THUNDERBOLT" {
+                    selected_thunderbolt += 1;
+                }
                 GameButton::A
             }
         } else if let Some(cursor) = &controller.shell.battle_action_cursor {
@@ -474,9 +491,17 @@ fn north_shore_controller_wins_will_spends_thunderbolt_pp_and_continues() {
         before.party.slots[0].pokemon.moves[0].current_pp < initial_pp,
         "selected Thunderbolt must actually spend PP"
     );
+    assert!(
+        before.party.slots[0].pokemon.moves[1].current_pp < initial_surf_pp,
+        "selected Surf must spend PP against the Ground opponent"
+    );
     assert_eq!(
         opponents,
-        BTreeSet::from(["PIDGEOT".into(), "NOCTOWL".into()])
+        runtime.data().trainers.trainers["MN_R11_T10"]
+            .party
+            .iter()
+            .map(|pokemon| pokemon.species.clone())
+            .collect::<BTreeSet<_>>()
     );
     assert!(event(&controller, "EVENT_MN_R11_TRAINER_10"));
     let nonce = SystemTime::now()
@@ -534,6 +559,9 @@ pub(super) fn settle_water(controller: &mut VisibleShellController) {
             controller
                 .press(button)
                 .expect("RUN from incidental water encounter");
+            controller
+                .wait_frames(16)
+                .expect("native wild battle presentation");
         } else if snapshot.phase == RuntimeShellPhase::Text
             || controller.has_pending_script_work()
             || controller.shell.field_notice.is_some()

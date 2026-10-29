@@ -2579,7 +2579,7 @@ fn validate_manifest_item(item: &Item) -> Result<()> {
 }
 
 fn validate_manifest_item_references(item: &Item, move_ids: &BTreeSet<String>) -> Result<()> {
-    for issue in item_reference_issues(item, move_ids) {
+    if let Some(issue) = item_reference_issues(item, move_ids).into_iter().next() {
         match issue {
             ItemReferenceIssue::UnknownTmhmMove { move_id } => {
                 anyhow::bail!(

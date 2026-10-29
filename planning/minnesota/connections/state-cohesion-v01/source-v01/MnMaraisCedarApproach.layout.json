@@ -1,0 +1,142 @@
+{
+  "schema_version": 2,
+  "id": "MnMaraisCedarApproach",
+  "tileset": "johto",
+  "compiled_tileset": "johto",
+  "dimensions_metatiles": [
+    32,
+    19
+  ],
+  "shore_fitting": "explicit_source_edges",
+  "reject_cliff_cuts": true,
+  "source_pixels_modified": false,
+  "layers": [
+    {
+      "name": "West reading turnout attached to path",
+      "kind": "rect",
+      "bounds": [
+        2,
+        4,
+        5,
+        8
+      ],
+      "material": "lawn"
+    },
+    {
+      "name": "Cedar crossing small occupied meadow",
+      "kind": "rect",
+      "bounds": [
+        14,
+        8,
+        18,
+        11
+      ],
+      "material": "lawn"
+    },
+    {
+      "name": "Coastal cedar trail around attached forest fingers",
+      "kind": "path",
+      "points": [
+        [
+          0,
+          6
+        ],
+        [
+          6,
+          6
+        ],
+        [
+          6,
+          4
+        ],
+        [
+          11,
+          4
+        ],
+        [
+          11,
+          9
+        ],
+        [
+          17,
+          9
+        ],
+        [
+          17,
+          13
+        ],
+        [
+          23,
+          13
+        ],
+        [
+          23,
+          16
+        ],
+        [
+          28,
+          16
+        ],
+        [
+          28,
+          18
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "name": "Required west grass neck",
+      "kind": "rect",
+      "bounds": [
+        9,
+        4,
+        10,
+        5
+      ],
+      "material": "encounter"
+    },
+    {
+      "name": "Full cedar-meadow grass strip",
+      "kind": "rect",
+      "bounds": [
+        16,
+        8,
+        17,
+        11
+      ],
+      "material": "encounter"
+    },
+    {
+      "name": "Return-side flower bank",
+      "kind": "rect",
+      "bounds": [
+        14,
+        8,
+        15,
+        9
+      ],
+      "material": "flowers"
+    },
+    {
+      "name": "South approach attached turnout",
+      "kind": "rect",
+      "bounds": [
+        26,
+        15,
+        28,
+        17
+      ],
+      "material": "lawn"
+    },
+    {
+      "name": "MN_COHESION_MARAIS_SIGN authentic signpost",
+      "kind": "point",
+      "position": [
+        3,
+        4
+      ],
+      "block": "45"
+    }
+  ]
+}

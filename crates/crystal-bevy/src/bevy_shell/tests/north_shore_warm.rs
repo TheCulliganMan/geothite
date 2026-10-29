@@ -18,8 +18,8 @@ use super::super::north_shore::climb_added_cascade;
 use super::super::r10_gallery::flags;
 use super::grand_marais_harbor::use_max_repel;
 use super::{
-    Point, VisibleShellController, at, collision, fixture_with_items_on_runtime, mount,
-    settle, step,
+    Point, VisibleShellController, at, collision, fixture_with_items_on_runtime,
+    mark_runtime_snapshot_dirty, mount, settle, step,
 };
 
 const WARM: &str = "mn_north_shore";
@@ -526,4 +526,77 @@ fn north_shore_warm_controller_superior_buoy_blocks_surf_and_legal_bank_return()
     );
     assert_eq!(original, flags(&c));
     continue_game(&root, &r, &mut c, "warm-superior-ordinary-bank-return");
+}
+
+#[test]
+#[ignore = "requires completed coastal-coves pack; Floor/Repel/prior-defeated R11 trainer fixtures"]
+fn north_shore_coves_controller_walks_three_grass_capes_and_continues_at_water_views() {
+    let courses: &[(&str, Point, &[Point])] = &[
+        ("split-rock-cape", (40, 66), &[(58, 66), (58, 68)]),
+        ("sheltered-middle-cape", (34, 136), &[(60, 136)]),
+        ("southern-pine-cape", (48, 178), &[(64, 178)]),
+    ];
+    for (label, start, turns) in courses {
+        let (root, r, mut c) = fixture(*start, false, false);
+        // Reed's existing south-facing one-tile sight at (43,65) crosses
+        // this course at (43,66): this is an ordinary native Trainer battle,
+        // not a wild/static encounter. This scoped terrain fixture represents
+        // a return visit after the route's trainers were already defeated.
+        // It does not claim earned battle or regional progression.
+        let reed = &r.data().maps["MnR11C00R01"].trainer_scripts["MN_R11_T05"];
+        assert_eq!(reed.battle_type, "BATTLETYPE_TRAINER");
+        assert_eq!(reed.trainer_id, "MN_R11_T05");
+        assert_eq!(reed.event_flag, "EVENT_MN_R11_TRAINER_05");
+        let defeated = r
+            .data()
+            .maps
+            .iter()
+            .filter(|(name, _)| name.starts_with("MnR11C"))
+            .flat_map(|(_, module)| {
+                module
+                    .trainer_scripts
+                    .values()
+                    .map(|trainer| trainer.event_flag.clone())
+            })
+            .collect::<BTreeSet<_>>();
+        assert!(!defeated.is_empty(), "actual native route trainer fixture");
+        for flag in defeated {
+            c.shell
+                .shell
+                .session_mut()
+                .state_mut()
+                .flags
+                .set_event_flag(&flag, true)
+                .expect("explicit initial prior-defeated coast trainer fixture");
+        }
+        mark_runtime_snapshot_dirty(&mut c.shell);
+        // All fixture writes end here; traversal, Save and Continue below use
+        // production controller inputs and must preserve these starting flags.
+        let original = flags(&c);
+        let before = c.snapshot().expect("legal cape fixture");
+        let mut visited = BTreeSet::new();
+        let mut stops = vec![*start];
+        for target in *turns {
+            foot_line(&mut c, &r, *target, &mut visited);
+            stops.push(*target);
+        }
+        assert!(
+            visited.iter().any(|&p| kind(&r, p) == "TALL_GRASS"),
+            "{label}: native grass saddle was actually crossed"
+        );
+        let tip = global(&mut c);
+        assert!(
+            (-5..=5).any(|dx| (-4..=4).any(|dy| kind(&r, (tip.0 + dx, tip.1 + dy)) == "WATER")),
+            "{label}: actual Superior must appear in the native player camera"
+        );
+        continue_game(&root, &r, &mut c, label);
+        for target in stops.iter().rev().skip(1) {
+            foot_line(&mut c, &r, *target, &mut visited);
+        }
+        assert_eq!(global(&mut c), *start);
+        assert_eq!(original, flags(&c), "coastal spur changes no story gates");
+        let after = c.snapshot().expect("cape return");
+        assert_eq!(before.party, after.party);
+        assert_eq!(before.bag, after.bag);
+    }
 }

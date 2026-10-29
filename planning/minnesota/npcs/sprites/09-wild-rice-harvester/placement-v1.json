@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "trainers": [
+    {
+      "map": "MnLeechLake",
+      "approach": [
+        24,
+        20
+      ],
+      "id": "MN_EXTRA_NPC_RICE_01",
+      "display_name": "SEDGE",
+      "trainer_class": "MN_RICE_HARVESTER",
+      "class_name": "RICE HARVESTER",
+      "template_class": "POKEFANF",
+      "sprite": "SPRITE_MN_RICE_HARVESTER",
+      "tile": [
+        24,
+        19
+      ],
+      "facing": "south",
+      "sight_range": 2,
+      "defeated_flag": "EVENT_MN_EXTRA_NPC_RICE_01",
+      "party": [
+        {
+          "species": "RICELING",
+          "level": 26
+        },
+        {
+          "species": "REEDRAFT",
+          "level": 28
+        }
+      ],
+      "before_lines": [
+        "Watch the water.",
+        "Move with care."
+      ],
+      "after_lines": [
+        "A gentle touch!",
+        "Keep water clean."
+      ],
+      "loss_lines": [
+        "Patience pays off.",
+        "There is time yet."
+      ]
+    }
+  ]
+}

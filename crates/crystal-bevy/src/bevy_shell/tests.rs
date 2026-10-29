@@ -1,4 +1,14 @@
 include!("tests/shell_basics.rs");
+#[path = "tests/native_city_ports.rs"]
+mod native_city_ports;
+#[path = "tests/minnesota_fossils.rs"]
+mod minnesota_fossils;
+#[path = "tests/minnesota_castorock.rs"]
+mod minnesota_castorock;
+#[path = "tests/dialogue_overhaul.rs"]
+mod dialogue_overhaul;
+#[path = "tests/dialogue_scene_fixtures.rs"]
+mod dialogue_scene_fixtures;
 #[cfg(feature = "location-tester")]
 include!("tests/party_follower.rs");
 include!("tests/multiplayer_rendering.rs");
@@ -213,6 +223,8 @@ mod iron_range_story;
 mod iron_range_descent;
 #[path = "tests/r10_gallery.rs"]
 mod r10_gallery;
+#[path = "tests/compact_interior_stories.rs"]
+mod compact_interior_stories;
 #[path = "tests/interior_life.rs"]
 mod interior_life;
 #[path = "tests/interior_layouts.rs"]
@@ -223,6 +235,14 @@ mod city_refinement;
 mod detroit_lakes;
 #[path = "tests/international_falls.rs"]
 mod international_falls;
+#[path = "tests/winona_station.rs"]
+mod winona_station;
+#[path = "tests/minnesota_fishing_rods.rs"]
+mod minnesota_fishing_rods;
+#[path = "tests/minnesota_hm_progression.rs"]
+mod minnesota_hm_progression;
+#[path = "tests/shore_gate.rs"]
+mod shore_gate;
 #[path = "tests/moorhead.rs"]
 mod moorhead;
 #[path = "tests/cave_quality.rs"]
@@ -247,6 +267,8 @@ mod r17_tor_cave;
 mod r05_rockcut;
 #[path = "tests/mille_lacs_shore.rs"]
 mod mille_lacs_shore;
+#[path = "tests/mille_lacs_park.rs"]
+mod mille_lacs_park;
 #[path = "tests/leech_lake.rs"]
 mod leech_lake;
 #[path = "tests/northern_lakes.rs"]
@@ -322,6 +344,10 @@ mod northstar_ice_balance;
 mod northstar_ice_headquarters;
 #[path = "tests/northstar_drill_lair.rs"]
 mod northstar_drill_lair;
+#[path = "tests/northstar_rival_arc.rs"]
+mod northstar_rival_arc;
+#[path = "tests/northstar_iron_workings.rs"]
+mod northstar_iron_workings;
 #[path = "tests/northstar_story_bridges.rs"]
 mod northstar_story_bridges;
 #[path = "tests/winona.rs"]
@@ -361,6 +387,45 @@ mod root_beer_lady;
 mod boundary_waters;
 #[path = "tests/boundary_safari_expansion.rs"]
 mod boundary_safari_expansion;
+#[path = "tests/safari_expedition.rs"]
+mod safari_expedition;
 
 #[path = "tests/bridge_overlay_rendering.rs"]
 mod bridge_overlay_rendering;
+
+#[cfg(feature = "voxel-view")]
+#[path = "tests/city_exteriors.rs"]
+mod city_exteriors;
+
+#[path = "tests/minnesota_trainers.rs"]
+mod minnesota_trainers;
+#[path = "tests/original_ranger.rs"]
+mod original_ranger;
+
+#[path = "tests/ely_shore_pass.rs"]
+mod ely_shore_pass;
+#[path = "tests/ely_pine_knolls.rs"]
+mod ely_pine_knolls;
+#[path = "tests/split_rock_clinic.rs"]
+mod split_rock_clinic;
+#[path = "tests/staples_station.rs"]
+mod staples_station;
+
+#[path = "tests/northstar_ancient_swamp.rs"]
+mod northstar_ancient_swamp;
+
+#[path = "tests/northstar_progression_rewards.rs"]
+mod northstar_progression_rewards;
+
+#[path = "tests/pokedex_habitats.rs"]
+mod pokedex_habitats;
+
+#[path = "tests/minnesota_habitats.rs"]
+mod minnesota_habitats;
+
+#[path = "tests/canoe.rs"]
+mod canoe;
+
+
+#[path = "tests/central_lakes_grass.rs"]
+mod central_lakes_grass;

@@ -81,6 +81,14 @@ fn drill_lair_native_maze_witnessed_piston_rival_shutdown_crew_quest_and_continu
     c.set_runtime_journal_enabled(false);
     mark_runtime_snapshot_dirty(&mut c.shell);
     c.wait_frames(64).expect("fixture ready");
+    let _ = play_chapter(c, &root, &r);
+}
+
+pub(super) fn play_chapter(
+    mut c: VisibleShellController,
+    root: &crystal_assets::AssetRoot,
+    r: &crystal_runtime::CrystalRuntime,
+) -> VisibleShellController {
     // No progression, position, party, move, HP or RNG writes after this line.
     for flag in [FOREMAN, FEED, SEEN, WON, OFF, RECOVERED] {
         assert!(!event(&c, flag));
@@ -110,8 +118,13 @@ fn drill_lair_native_maze_witnessed_piston_rival_shutdown_crew_quest_and_continu
     assert!(!event(&c, OFF) && !event(&c, RECOVERED));
     walk(&mut c, &r, (19, 10));
     travel(&mut c, GameButton::Down, APPROACH, (6, 21));
-    walk(&mut c, &r, (25, 6));
-    travel(&mut c, GameButton::Up, GALLERY, (4, 19));
+    let expanded = r.data().maps.contains_key("MnIronHaulage");
+    if expanded {
+        super::northstar_iron_workings::enter_gallery(&mut c, &r, &root);
+    } else {
+        walk(&mut c, &r, (25, 6));
+        travel(&mut c, GameButton::Up, GALLERY, (4, 19));
+    }
     assert!(
         path(&mut c, &r, (25, 4)).is_none(),
         "core stair physically sealed"
@@ -227,12 +240,17 @@ fn drill_lair_native_maze_witnessed_piston_rival_shutdown_crew_quest_and_continu
     finish(&mut c);
     walk(&mut c, &r, (4, 14));
     travel(&mut c, GameButton::Right, GALLERY, (24, 5));
-    walk(&mut c, &r, (4, 18));
-    travel(&mut c, GameButton::Right, APPROACH, (24, 5));
+    if expanded {
+        super::northstar_iron_workings::leave_gallery(&mut c, &r);
+    } else {
+        walk(&mut c, &r, (4, 18));
+        travel(&mut c, GameButton::Right, APPROACH, (24, 5));
+    }
     walk(&mut c, &r, (6, 21));
     travel(&mut c, GameButton::Right, MINE, (19, 9));
     walk(&mut c, &r, (19, 8));
     talk(&mut c, GameButton::Up);
     page(&mut c, "MnNDrillPublicAfterText");
     finish(&mut c);
+    c
 }

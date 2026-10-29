@@ -1,0 +1,1075 @@
+{
+  "id": "MN_R07",
+  "map_prefix": "MnR07",
+  "name": "Leech Lake Approach",
+  "dimensions_metatiles": [
+    32,
+    48
+  ],
+  "chunk_metatiles": [
+    32,
+    24
+  ],
+  "chunk_columns": 1,
+  "chunk_rows": 2,
+  "endpoints": [
+    {
+      "place": "BRAINERD",
+      "side": "S",
+      "gate_metatile": [
+        10,
+        46
+      ],
+      "landing_metatile": [
+        10,
+        44
+      ]
+    },
+    {
+      "place": "LEECH LAKE",
+      "side": "N",
+      "gate_metatile": [
+        10,
+        1
+      ],
+      "landing_metatile": [
+        10,
+        3
+      ]
+    }
+  ],
+  "required_flags": [
+    "BADGE_6"
+  ],
+  "quest": "Q04",
+  "tileset": "johto",
+  "source_references": [
+    "Route30",
+    "Route42",
+    "Route29"
+  ],
+  "description": "A hand-authored wooded outlet journey: a railed southern causeway reaches the pine peninsula, short wet meadow leads to an upper bridge, and the west bank reaches a closed-ended fishing landing. A low native south-drop cuts the return across the forest divide. No main-path SURF. The lower peninsula has sheltered pine shoulders and a recessed west cove, contrasting with Pine Country\u2019s enclosed forest bends and the ancient mire farther north.",
+  "main_path_metatiles": [
+    [
+      10,
+      46
+    ],
+    [
+      10,
+      41
+    ],
+    [
+      8,
+      41
+    ],
+    [
+      8,
+      34
+    ],
+    [
+      25,
+      34
+    ],
+    [
+      25,
+      29
+    ],
+    [
+      24,
+      29
+    ],
+    [
+      24,
+      25
+    ],
+    [
+      25,
+      25
+    ],
+    [
+      25,
+      20
+    ],
+    [
+      23,
+      20
+    ],
+    [
+      23,
+      18
+    ],
+    [
+      8,
+      18
+    ],
+    [
+      8,
+      7
+    ],
+    [
+      10,
+      7
+    ],
+    [
+      10,
+      1
+    ]
+  ],
+  "main_lane_width_gameplay_tiles": 2,
+  "districts": [
+    {
+      "id": "SOUTH_REST",
+      "name": "Brainerd rest and outlet causeway",
+      "bounds_metatiles": [
+        3,
+        28,
+        24,
+        48
+      ],
+      "landmark_metatile": [
+        16,
+        34
+      ],
+      "purpose": "A short rest pocket leads to the first required railed crossing; drop landing joins the southern return."
+    },
+    {
+      "id": "PINE_PENINSULA",
+      "name": "Pines and wet meadow",
+      "bounds_metatiles": [
+        21,
+        12,
+        30,
+        38
+      ],
+      "landmark_metatile": [
+        25,
+        23
+      ],
+      "purpose": "A narrow dry peninsula changes direction, with required grass and two reward clearings."
+    },
+    {
+      "id": "NORTH_LANDING",
+      "name": "Bird hollow, sandbank and lake landing",
+      "bounds_metatiles": [
+        4,
+        0,
+        24,
+        28
+      ],
+      "landmark_metatile": [
+        19,
+        7
+      ],
+      "purpose": "Second crossing, a fenced fishing deck, a tucked-away bird hollow and the one-way return bank."
+    }
+  ],
+  "loops": [
+    {
+      "id": "OUTLET_RETURN",
+      "path_metatiles": [
+        [
+          8,
+          22
+        ],
+        [
+          8,
+          27
+        ],
+        [
+          8,
+          34
+        ],
+        [
+          25,
+          34
+        ],
+        [
+          25,
+          29
+        ],
+        [
+          24,
+          29
+        ],
+        [
+          24,
+          25
+        ],
+        [
+          25,
+          25
+        ],
+        [
+          25,
+          20
+        ],
+        [
+          23,
+          20
+        ],
+        [
+          23,
+          18
+        ],
+        [
+          8,
+          18
+        ],
+        [
+          8,
+          22
+        ]
+      ],
+      "joins_districts": [
+        "SOUTH_REST",
+        "PINE_PENINSULA",
+        "NORTH_LANDING"
+      ],
+      "entry_rule": "southbound_native_ledge",
+      "return_rule": "two_bridges_and_wet_meadow"
+    }
+  ],
+  "minimum_optional_branches": 4,
+  "trainers": [
+    {
+      "id": "MN_R07_T01",
+      "display_name": "MARA",
+      "trainer_class": "FISHER",
+      "sprite": "SPRITE_FISHER",
+      "tile": [
+        13,
+        83
+      ],
+      "facing": "east",
+      "sight_range": 1,
+      "party": [
+        {
+          "species": "GILLPUP",
+          "level": 27
+        },
+        {
+          "species": "CHORIP",
+          "level": 27
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R07_TRAINER_01",
+      "block_main_lane": false,
+      "before_lines": [
+        "The reeds hide",
+        "a patient team."
+      ],
+      "after_lines": [
+        "Listen before you",
+        "cast your line."
+      ],
+      "loss_lines": [
+        "A lively team!"
+      ]
+    },
+    {
+      "id": "MN_R07_T02",
+      "display_name": "DEAN",
+      "trainer_class": "CAMPER",
+      "sprite": "SPRITE_YOUNGSTER",
+      "tile": [
+        19,
+        63
+      ],
+      "facing": "west",
+      "sight_range": 1,
+      "party": [
+        {
+          "species": "CHORIP",
+          "level": 27
+        },
+        {
+          "species": "FLOSSAIL",
+          "level": 27
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R07_TRAINER_02",
+      "block_main_lane": false,
+      "before_lines": [
+        "I hike round the",
+        "bay the long way."
+      ],
+      "after_lines": [
+        "That bank is a",
+        "southbound drop."
+      ],
+      "loss_lines": [
+        "A lively team!"
+      ]
+    },
+    {
+      "id": "MN_R07_T03",
+      "display_name": "FERN",
+      "trainer_class": "PICNICKER",
+      "sprite": "SPRITE_LASS",
+      "tile": [
+        55,
+        65
+      ],
+      "facing": "west",
+      "sight_range": 1,
+      "party": [
+        {
+          "species": "FLOSSAIL",
+          "level": 28
+        },
+        {
+          "species": "CLINKLAW",
+          "level": 28
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R07_TRAINER_03",
+      "block_main_lane": false,
+      "before_lines": [
+        "The pines shelter",
+        "my little team!"
+      ],
+      "after_lines": [
+        "The lake wind is",
+        "gentler in here."
+      ],
+      "loss_lines": [
+        "A lively team!"
+      ]
+    },
+    {
+      "id": "MN_R07_T04",
+      "display_name": "OSCAR",
+      "trainer_class": "BUG_CATCHER",
+      "sprite": "SPRITE_BUG_CATCHER",
+      "tile": [
+        45,
+        51
+      ],
+      "facing": "east",
+      "sight_range": 1,
+      "party": [
+        {
+          "species": "CLINKLAW",
+          "level": 28
+        },
+        {
+          "species": "RICELING",
+          "level": 28
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R07_TRAINER_04",
+      "block_main_lane": false,
+      "before_lines": [
+        "The wet meadow",
+        "is full of bugs."
+      ],
+      "after_lines": [
+        "Wet boots are",
+        "part of the walk."
+      ],
+      "loss_lines": [
+        "A lively team!"
+      ]
+    },
+    {
+      "id": "MN_R07_T05",
+      "display_name": "NELL",
+      "trainer_class": "PICNICKER",
+      "sprite": "SPRITE_LASS",
+      "tile": [
+        51,
+        31
+      ],
+      "facing": "west",
+      "sight_range": 1,
+      "party": [
+        {
+          "species": "RICELING",
+          "level": 29
+        },
+        {
+          "species": "RIVVIT",
+          "level": 29
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R07_TRAINER_05",
+      "block_main_lane": false,
+      "before_lines": [
+        "This pine spit",
+        "is worth a walk."
+      ],
+      "after_lines": [
+        "The lake wind",
+        "parts the pines."
+      ],
+      "loss_lines": [
+        "A lively team!"
+      ]
+    },
+    {
+      "id": "MN_R07_T06",
+      "display_name": "PAUL",
+      "trainer_class": "BIRD_KEEPER",
+      "sprite": "SPRITE_YOUNGSTER",
+      "tile": [
+        13,
+        31
+      ],
+      "facing": "east",
+      "sight_range": 1,
+      "party": [
+        {
+          "species": "GILLPUP",
+          "level": 29
+        },
+        {
+          "species": "WINDHOPPER",
+          "level": 29
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R07_TRAINER_06",
+      "block_main_lane": false,
+      "before_lines": [
+        "Hear wings above",
+        "the quiet outlet?"
+      ],
+      "after_lines": [
+        "A bird sees both",
+        "sides of the bay."
+      ],
+      "loss_lines": [
+        "A lively team!"
+      ]
+    },
+    {
+      "id": "MN_R07_T07",
+      "display_name": "SILAS",
+      "trainer_class": "FISHER",
+      "sprite": "SPRITE_FISHER",
+      "tile": [
+        41,
+        15
+      ],
+      "facing": "west",
+      "sight_range": 1,
+      "party": [
+        {
+          "species": "CHORIP",
+          "level": 30
+        },
+        {
+          "species": "GILLPUP",
+          "level": 30
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R07_TRAINER_07",
+      "block_main_lane": false,
+      "before_lines": [
+        "One last cast,",
+        "then a battle!"
+      ],
+      "after_lines": [
+        "The lake opens",
+        "past these reeds."
+      ],
+      "loss_lines": [
+        "A lively team!"
+      ]
+    },
+    {
+      "id": "MN_R07_T08",
+      "display_name": "WREN",
+      "trainer_class": "PICNICKER",
+      "sprite": "SPRITE_LASS",
+      "tile": [
+        13,
+        13
+      ],
+      "facing": "south",
+      "sight_range": 1,
+      "party": [
+        {
+          "species": "FLOSSAIL",
+          "level": 30
+        },
+        {
+          "species": "CHORIP",
+          "level": 30
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R07_TRAINER_08",
+      "block_main_lane": false,
+      "before_lines": [
+        "A picnic tastes",
+        "better after rain."
+      ],
+      "after_lines": [
+        "Leech Lake is",
+        "a little farther."
+      ],
+      "loss_lines": [
+        "A lively team!"
+      ]
+    }
+  ],
+  "residents": [
+    {
+      "id": "MN_R07_WARDEN",
+      "sprite": "SPRITE_OFFICER",
+      "tile": [
+        23,
+        89
+      ],
+      "facing": "west",
+      "lines": [
+        "The lake trail",
+        "starts at the",
+        "railed crossing.",
+        "Keep off the bank."
+      ]
+    },
+    {
+      "id": "MN_R07_BIRDER",
+      "sprite": "SPRITE_GRAMPS",
+      "tile": [
+        13,
+        39
+      ],
+      "facing": "east",
+      "lines": [
+        "Two bridges take",
+        "you round the bay.",
+        "The low bank drops",
+        "south to return."
+      ]
+    },
+    {
+      "id": "MN_R07_LAKE_WALKER",
+      "sprite": "SPRITE_POKEFAN_F",
+      "tile": [
+        51,
+        39
+      ],
+      "facing": "west",
+      "lines": [
+        "A narrow meadow",
+        "links the dry",
+        "pine peninsula.",
+        "No SURF is needed."
+      ]
+    }
+  ],
+  "items": [
+    {
+      "id": "MN_R07_ITEM_01",
+      "item": "SUPER_POTION",
+      "quantity": 1,
+      "tile": [
+        11,
+        79
+      ],
+      "flag": "EVENT_MN_R07_ITEM_01",
+      "access": "Southern rest pocket"
+    },
+    {
+      "id": "MN_R07_ITEM_02",
+      "item": "GREAT_BALL",
+      "quantity": 1,
+      "tile": [
+        49,
+        27
+      ],
+      "flag": "EVENT_MN_R07_ITEM_02",
+      "access": "Northern pine spit past Nell"
+    },
+    {
+      "id": "MN_R07_ITEM_03",
+      "item": "REPEL",
+      "quantity": 1,
+      "tile": [
+        25,
+        13
+      ],
+      "flag": "EVENT_MN_R07_ITEM_03",
+      "access": "Open northern bank reward"
+    },
+    {
+      "id": "MN_R07_ITEM_04",
+      "item": "ETHER",
+      "quantity": 1,
+      "tile": [
+        13,
+        23
+      ],
+      "flag": "EVENT_MN_R07_ITEM_04",
+      "access": "Sealed bird hollow; CUT plus native Johto BADGE_2 required"
+    }
+  ],
+  "signs": [
+    {
+      "id": "MN_R07_SOUTH_SIGN",
+      "tile": [
+        22,
+        90
+      ],
+      "lines": [
+        "LEECH LAKE TRAIL",
+        "BRAINERD SOUTH"
+      ]
+    },
+    {
+      "id": "MN_R07_REST_SIGN",
+      "tile": [
+        12,
+        78
+      ],
+      "lines": [
+        "OUTLET REST",
+        "BRIDGE TO THE EAST"
+      ]
+    },
+    {
+      "id": "MN_R07_DROP_SIGN",
+      "tile": [
+        20,
+        40
+      ],
+      "lines": [
+        "LOW SANDBANK",
+        "SOUTHBOUND DROP"
+      ]
+    },
+    {
+      "id": "MN_R07_CAUSEWAY_SIGN",
+      "tile": [
+        44,
+        64
+      ],
+      "lines": [
+        "PINE PENINSULA",
+        "STAY ON THE DECK"
+      ]
+    },
+    {
+      "id": "MN_R07_MEADOW_SIGN",
+      "tile": [
+        54,
+        50
+      ],
+      "lines": [
+        "REED MEADOW",
+        "A SHORT WET WALK"
+      ]
+    },
+    {
+      "id": "MN_R07_NORTH_SIGN",
+      "tile": [
+        22,
+        4
+      ],
+      "lines": [
+        "LEECH LAKE NORTH",
+        "BRAINERD SOUTH"
+      ]
+    },
+    {
+      "id": "MN_R07_LANDING_SIGN",
+      "tile": [
+        28,
+        12
+      ],
+      "lines": [
+        "FISHING LANDING",
+        "KEEP INSIDE RAILS"
+      ]
+    }
+  ],
+  "doors": [],
+  "encounters": {
+    "grass_rates": {
+      "day": 10,
+      "morning": 10,
+      "night": 10
+    },
+    "grass": {
+      "morning": [
+        {
+          "level": 27,
+          "species": "GILLPUP"
+        },
+        {
+          "level": 28,
+          "species": "CHORIP"
+        },
+        {
+          "level": 29,
+          "species": "FLOSSAIL"
+        },
+        {
+          "level": 30,
+          "species": "CLINKLAW"
+        },
+        {
+          "level": 31,
+          "species": "RICELING"
+        },
+        {
+          "level": 31,
+          "species": "RIVVIT"
+        },
+        {
+          "level": 31,
+          "species": "WINDHOPPER"
+        }
+      ],
+      "day": [
+        {
+          "level": 27,
+          "species": "GILLPUP"
+        },
+        {
+          "level": 28,
+          "species": "CHORIP"
+        },
+        {
+          "level": 29,
+          "species": "FLOSSAIL"
+        },
+        {
+          "level": 30,
+          "species": "CLINKLAW"
+        },
+        {
+          "level": 31,
+          "species": "RICELING"
+        },
+        {
+          "level": 31,
+          "species": "RIVVIT"
+        },
+        {
+          "level": 31,
+          "species": "WINDHOPPER"
+        }
+      ],
+      "night": [
+        {
+          "level": 27,
+          "species": "BOOMRUFF"
+        },
+        {
+          "level": 28,
+          "species": "BARRICANT"
+        },
+        {
+          "level": 29,
+          "species": "FLOSSAIL"
+        },
+        {
+          "level": 30,
+          "species": "CLINKLAW"
+        },
+        {
+          "level": 31,
+          "species": "RICELING"
+        },
+        {
+          "level": 31,
+          "species": "RIVVIT"
+        },
+        {
+          "level": 31,
+          "species": "WINDHOPPER"
+        }
+      ]
+    },
+    "water_rate": 4,
+    "water": [
+      {
+        "level": 27,
+        "species": "CHORIP"
+      },
+      {
+        "level": 28,
+        "species": "GILLPUP"
+      },
+      {
+        "level": 31,
+        "species": "RIVVIT"
+      }
+    ]
+  },
+  "interiors": [],
+  "one_way_ledges": [
+    {
+      "id": "SANDBANK_RETURN",
+      "bounds_core": [
+        16,
+        54,
+        20,
+        56
+      ],
+      "direction": "south",
+      "source_block": "56",
+      "upper_approach": [
+        17,
+        53
+      ],
+      "hop_from": [
+        17,
+        54
+      ],
+      "landing": [
+        17,
+        56
+      ],
+      "reverse_blocked": [
+        17,
+        55
+      ],
+      "side_barriers": [
+        [
+          15,
+          55
+        ],
+        [
+          20,
+          55
+        ]
+      ],
+      "return_passage_core": [
+        26,
+        66,
+        28,
+        72
+      ],
+      "minimum_return_steps": 70,
+      "purpose": "Southbound return across the wooded divide; uphill travel must cross the outlet twice."
+    }
+  ],
+  "required_grass_crossings": [
+    {
+      "id": "PENINSULA_MEADOW",
+      "bounds_core": [
+        44,
+        42,
+        56,
+        50
+      ],
+      "minimum_grass_steps": 7
+    }
+  ],
+  "viewpoints": [
+    {
+      "id": "SOUTH_REST",
+      "tile": [
+        17,
+        83
+      ]
+    },
+    {
+      "id": "SOUTH_BRIDGE",
+      "tile": [
+        35,
+        69
+      ]
+    },
+    {
+      "id": "PENINSULA",
+      "tile": [
+        51,
+        67
+      ]
+    },
+    {
+      "id": "WET_MEADOW",
+      "tile": [
+        49,
+        49
+      ]
+    },
+    {
+      "id": "NORTH_BRIDGE",
+      "tile": [
+        35,
+        37
+      ]
+    },
+    {
+      "id": "BIRD_BANK",
+      "tile": [
+        15,
+        31
+      ]
+    },
+    {
+      "id": "SANDBANK",
+      "tile": [
+        17,
+        53
+      ]
+    },
+    {
+      "id": "FISHING_LANDING",
+      "tile": [
+        43,
+        15
+      ]
+    },
+    {
+      "id": "NORTH_GATE",
+      "tile": [
+        21,
+        7
+      ]
+    },
+    {
+      "id": "BANK_APPROACH",
+      "tile": [
+        17,
+        43
+      ]
+    },
+    {
+      "id": "PINE_SPIT",
+      "tile": [
+        49,
+        31
+      ]
+    },
+    {
+      "id": "CUT_GATE",
+      "tile": [
+        16,
+        23
+      ]
+    },
+    {
+      "id": "LAKE_BOUNDARY",
+      "tile": [
+        59,
+        65
+      ]
+    }
+  ],
+  "art_constraints": [
+    "Only original packed 8x8 source tiles.",
+    "No painted shadows, enlarged trees or perspective props.",
+    "Fit source shoreline/cliff quadrants; draw source trees in coherent metatile groups."
+  ],
+  "status": "Crystal Route42-reference grass pass accepted in named R07 review pack 73eee2da63ba. Native habitat is 196 walking tiles; outward meadow exposure is eight grass steps including the lower bank corner, with zero in those bands on the sandbank return. Source/pre-post-Cut geometry, exact preservation, native cameras, eight-trainer journey, Cut/Surf, audio and Continue passed. Current-game integration and earned regional progression remain open.",
+  "anchor_status": "All installed actor/resource/sign positions, source footing, Cut gate, both crossings, fishing landing and sandbank ledge remain unchanged. Two installed arrival caps are retained through exact local preimages. The native review lineage retains its existing T01 name MARA; canonical SIVREN remains unchanged. All native mechanics/journey cases passed, including eight victories/six wild battles, pickups, selected PP, money and party/bag/flag persistence.",
+  "reserved_flags": {
+    "trainer_flags": "All eight trainer identities, parties and EVENT_MN_R07_TRAINER_01..08 retained.",
+    "pickup_flags": "All four original item identities, contents and EVENT_MN_R07_ITEM_01..04 retained."
+  },
+  "shortcut": null,
+  "cut_gates": [
+    {
+      "id": "BIRD_HOLLOW_CACHE",
+      "tile": [
+        15,
+        23
+      ],
+      "approach": [
+        16,
+        23
+      ],
+      "replacement_block": "3d",
+      "targets": [
+        [
+          12,
+          23
+        ],
+        [
+          14,
+          23
+        ],
+        [
+          13,
+          22
+        ],
+        [
+          13,
+          24
+        ]
+      ],
+      "gated_actor_ids": [
+        "MN_R07_ITEM_04"
+      ],
+      "requires": [
+        "MOVE_CUT",
+        "BADGE_2"
+      ],
+      "native_badge": {
+        "region": "johto",
+        "index": 1
+      },
+      "purpose": "Open the sealed bird hollow and its once-only Ether resource without bypassing the required route habitat, bridges or directed return.",
+      "native_source_block": "5f",
+      "native_reset_status": "Native removal, save override, map re-entry/callback and Continue behavior require production verification; no permanent clearing is claimed."
+    }
+  ],
+  "surf_boundary": {
+    "closed_outer_edges": [
+      "east"
+    ],
+    "blocked_core_line": {
+      "x": 63,
+      "y_start": 24,
+      "y_end_inclusive": 79
+    },
+    "native_water_rock_blocks": [
+      "32",
+      "36",
+      "3a"
+    ],
+    "open_internal_seam": {
+      "upper_map": "MnR07C00R00",
+      "lower_map": "MnR07C00R01",
+      "directions": [
+        "south",
+        "north"
+      ],
+      "offset": 0,
+      "global_core_rows": [
+        47,
+        48
+      ],
+      "requires": "Published map attributes must contain both reciprocal connections; source reservation alone is not proof."
+    },
+    "native_execution_status": "Production Surf initiation, blocked outward input and reciprocal water-seam crossing remain integration tests."
+  },
+  "directional_grass_loops": [
+    {
+      "id": "WET_MEADOW_OR_SANDBANK_RETURN",
+      "ledge_id": "SANDBANK_RETURN",
+      "grass_regions_core": [
+        [
+          44,
+          42,
+          56,
+          50
+        ],
+        [
+          42,
+          48,
+          44,
+          50
+        ]
+      ],
+      "northbound_minimum_grass_steps": 8,
+      "southbound_minimum_grass_steps": 0,
+      "dry_trail_core": [
+        [
+          17,
+          53
+        ],
+        [
+          17,
+          56
+        ]
+      ]
+    }
+  ]
+}

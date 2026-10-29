@@ -954,7 +954,7 @@ mod tests {
                         "{name} loop pops at movement weight {weight}"
                     );
                 }
-                for phase in [0.2, 1.5, 3.14, 5.0] {
+                for phase in [0.2, 1.5, std::f32::consts::PI, 5.0] {
                     rig.sample_locomotion(0., phase, weight, &mut pose);
                     rig.skin_matrices_into(&pose, &mut matrices).unwrap();
                     for v in 0..rig.neutral.positions.len() {
@@ -979,7 +979,7 @@ mod tests {
             let rig = world_rig(crate::species_rig::for_species(name).unwrap());
             let mut moving = vec![Transform::IDENTITY; rig.joints.len()];
             let mut stopped = moving.clone();
-            for phase in [0.4, 3.14, 5.7] {
+            for phase in [0.4, std::f32::consts::PI, 5.7] {
                 rig.sample_locomotion(0., phase, 1., &mut moving);
                 rig.sample_locomotion(0., phase, 0., &mut stopped);
                 assert!(
