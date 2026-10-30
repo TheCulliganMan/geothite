@@ -140,6 +140,18 @@ pub(super) fn revealed_dialogue_page(
 /// These menus belong to the production controller while PCScript retains its
 /// suspended core chooser. Observe that owner; never seed a review cursor.
 pub(super) fn retained_pc_review_menu(runtime:&BevyRuntimeShell,wanted:&str)->Result<Option<Vec<String>>> {
+    if runtime.field_notice.is_none() && runtime.pc_notice.is_none() {
+        if wanted == "field:fly-destinations" && runtime.fly_cursor.is_some() {
+            let snapshot = runtime.shell.presentation_snapshot()?;
+            return Ok(Some(visible_fly_destination_entries(&snapshot, runtime)?));
+        }
+        if wanted == "field:party-actions" && runtime.party_menu_open
+            && runtime.party_action_cursor.is_some() && runtime.fly_cursor.is_none()
+        {
+            let snapshot = runtime.shell.presentation_snapshot()?;
+            return Ok(Some(visible_party_menu_entries(&snapshot, runtime)?));
+        }
+    }
     // A read-only hold after ordinary Name Rater script/party/YES inputs.
     // Naming owns the full LCD, so the dormant room is not its readiness gate.
     if wanted=="service:name-rater-entry" {
@@ -154,14 +166,22 @@ pub(super) fn retained_pc_review_menu(runtime:&BevyRuntimeShell,wanted:&str)->Re
     }
     // Field Save is a shell-owned YesNoBox above the actual room. Observe
     // its production flow/cursor rather than the suspended core menu below it.
-    if wanted=="field:save-confirmation" && runtime.save_menu_open
+    let save_stage = if wanted == "field:save-overwrite" {
+        VisibleSaveFlowStage::OverwritePrompt
+    } else {
+        VisibleSaveFlowStage::Prompt
+    };
+    if matches!(wanted, "field:save-confirmation" | "field:save-overwrite")
+        && runtime.save_menu_open
         && runtime.special_boundary.is_none()
-        && runtime.save_flow.as_ref().is_some_and(|flow|flow.stage==VisibleSaveFlowStage::Prompt
-            &&matches!(flow.origin,VisibleSaveFlowOrigin::StartMenu)) {
-        let mut entries=Vec::new();
-        let snapshot=runtime.shell.presentation_snapshot()?;
-        scene_dialog_yes_no_cursor_index(&snapshot,runtime)?;
-        push_visible_save_dialog_entries(&mut entries,&snapshot,runtime)?;
+        && runtime.save_flow.as_ref().is_some_and(|flow| {
+            flow.stage == save_stage && matches!(flow.origin, VisibleSaveFlowOrigin::StartMenu)
+        })
+    {
+        let mut entries = Vec::new();
+        let snapshot = runtime.shell.presentation_snapshot()?;
+        scene_dialog_yes_no_cursor_index(&snapshot, runtime)?;
+        push_visible_save_dialog_entries(&mut entries, &snapshot, runtime)?;
         return Ok(Some(entries));
     }
     if runtime.pc_hub_session_open && let Some(boundary)=runtime.special_boundary.as_ref() {
@@ -252,7 +272,7 @@ pub(super) fn retained_pc_review_menu(runtime:&BevyRuntimeShell,wanted:&str)->Re
 // Full-LCD PC captures require an explicitly named, actually reached owner.
 // This observer neither opens a surface nor changes a cursor/session.
 pub(super) fn pc_lcd_review_ready(runtime:&BevyRuntimeShell,wanted:&str)->bool {
-    matches!(wanted,"pc:move-carry"|"pc:mail-read"|"pc:items"|"pc:quantity"|"pc:toss-confirmation"|"pc:oak-confirmation"|"pc:oak-shutdown"|"pc:oak-counts"|"pc:oak-closing"|"pc:toss-closing"|"service:name-rater-entry")
+    matches!(wanted,"pc:move-carry"|"pc:mail-read"|"pc:items"|"pc:quantity"|"pc:toss-confirmation"|"pc:oak-confirmation"|"pc:oak-shutdown"|"pc:oak-counts"|"pc:oak-closing"|"pc:toss-closing"|"service:name-rater-entry"|"field:party-actions"|"field:fly-destinations")
         &&retained_pc_review_menu(runtime,wanted).expect("observe current PC LCD owner").is_some()
 }
 
@@ -476,7 +496,8 @@ pub(super) fn drive(
         if let Some(hold)=paired_hold.as_mut() {hold.frozen=true;virtual_time.pause();}
     }
     if walk.started()&&!walk.held_menu&&let Some(id)=walk.hold_menu_id.as_deref()
-        &&((status.active&&frame.active)||pc_lcd_review_ready(&runtime,id))
+        &&((status.active&&frame.active)||pc_lcd_review_ready(&runtime,id)
+            ||(matches!(id,"field:save-confirmation"|"field:save-overwrite")&&runtime.save_menu_open))
         &&let Some(entries)=retained_pc_review_menu(&runtime,id).expect("read current PC review menu")
     {
         if walk.pc_mail_review {
@@ -656,10 +677,14 @@ pub(super) fn drive(
             times[times.len() * 95 / 100]
         );
         if walk.route.iter().any(|key| matches!(key, KeyCode::ArrowRight | KeyCode::ArrowLeft | KeyCode::ArrowUp | KeyCode::ArrowDown)) {
-        assert!(
-            walk.origins.len() > 1 || walk.maps.len() > 1 || walk.player_moved,
-            "movement QA requires player translation, a tile-origin change, or a map boundary"
-        );
+        if settings.enabled {
+            assert!(
+                walk.origins.len() > 1 || walk.maps.len() > 1 || walk.player_moved,
+                "movement QA requires player translation, a tile-origin change, or a map boundary"
+            );
+        }
+        // Classic captures have no active voxel frame. They still require
+        // movement of the same authoritative production map/tile identity.
         assert!(
             walk.authoritative_moved,
             "movement QA requires authoritative production tile coordinates to change"
@@ -716,8 +741,9 @@ pub(super) fn drive(
     // Hold through the source menu's BG upload, then leave an actual release
     // between presses, as required by its JoyTextDelay history.
     let pulse_pc=walk.pc_input_pulse && (runtime.pc_hub_session_open
+        || runtime.party_menu_open || runtime.start_menu_cursor.is_some() || runtime.fly_cursor.is_some()
         || walk.hold_menu_id.as_deref()==Some("service:name-rater-entry")
-        || (walk.hold_menu_id.as_deref()==Some("field:save-confirmation")
+        || (matches!(walk.hold_menu_id.as_deref(),Some("field:save-confirmation"|"field:save-overwrite"))
             &&(runtime.start_menu_cursor.is_some()||runtime.save_menu_open)));
     // Reaching the source move owner is enough to stop choosing actions while
     // the native menu finishes rendering; the capture still waits for it.

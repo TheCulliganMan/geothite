@@ -125,6 +125,7 @@ pub fn build_northstar_ice_lair(
     crate::ely_league_rooms::finish(&pack, &mut office)?;
     crate::authored_town_publication::replace(&mut pack, office)?;
     install_home(&mut pack, &source)?;
+    crate::northstar_dispatch_revision::install(&mut pack)?;
     pack.report.maps = pack.data.maps.len();
     pack.report
         .manifests

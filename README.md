@@ -323,7 +323,9 @@ retain their original pack; these reviews do not establish unboosted balance.
 
 The [comprehensive dialogue overhaul](docs/dialogue-overhaul.md) rewrites the
 required story from Winona through the Boundary Waters and Hall of Fame:
-279 conversations across 36 maps, including refusals, reminders and returns.
+279 conversations across 36 maps and 829 authored pages, including refusals,
+reminders and returns. The unselected v19 candidate retains the current Fair
+buildings and Duluth stairs, and uses a gray fence for the holding area.
 It stages the opening and courier encounter, preserves authored pages and
 native text timing, and gives each handoff a clear speaker, reason and next
 destination. Its 2D runbook records candidate publication and acceptance
@@ -436,6 +438,12 @@ maps. The [fair runbook](planning/minnesota/playable/state-fairgrounds.md) recor
 current gameplay, preservation and native visual verification. The candidate
 pack stays separate from later regional integration lineages. All source/native
 render generations are retained for reuse.
+
+The [current fair building repair](planning/minnesota/playable/state-fairgrounds.md#contiguous-building-repair-2026-10-29)
+joins the grandstand, livestock barn and dairy hall facades in the selected local
+730-map pack. Its Rust publisher changes15 solid cells while preserving all
+entrances and walking collision. Six actual2D captures, room returns,
+Save/Continue, exact content preservation and all377 audio checks pass.
 
 The [preceding terrain quality pass](planning/minnesota/playable/terrain-quality-revisions.md)
 adds a hand-authored limestone cleft in River Bluffs and a connected pine

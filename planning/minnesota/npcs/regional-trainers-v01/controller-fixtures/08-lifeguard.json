@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "trainers": [
+    {
+      "id": "MN_RIVER_UPSTREAM_BANK_FISHER",
+      "map": "MnMississippiUpstreamWoodsC00R02",
+      "actor_script": "MN_RIVER_UPSTREAM_BANK_FISHER",
+      "trainer_class": "MN_LIFEGUARD",
+      "sprite": "SPRITE_MN_LIFEGUARD",
+      "facing": "south",
+      "approach": [
+        33,
+        36
+      ],
+      "defeated_flag": "EVENT_MN_RIVER_UPSTREAM_BANK_FISHER_DEFEATED"
+    }
+  ]
+}

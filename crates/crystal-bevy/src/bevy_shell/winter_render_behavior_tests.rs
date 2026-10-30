@@ -421,3 +421,106 @@ fn winter_rustle_uses_authored_colors_preserves_native_oam_and_retains_green_pre
         );
     }
 }
+
+#[test]
+#[ignore = "requires CRYSTAL_OUTDOOR_STAIR_ANIMATION_PACK with all four outdoor stair aliases and R10 rock stairs"]
+fn outdoor_stair_aliases_preserve_native_animation_and_icy_rustle_pixels() {
+    let path = PathBuf::from(
+        std::env::var_os("CRYSTAL_OUTDOOR_STAIR_ANIMATION_PACK")
+            .expect("completed native stair pack"),
+    );
+    let assets = AssetRoot::new(path.parent().expect("stair pack parent"));
+    let runtime = CrystalRuntime::from_loaded_compiled_pack(
+        &assets,
+        read_loaded_verified_compiled_game_pack(&path).expect("verified native stair pack"),
+    )
+    .expect("stair runtime");
+    let root = runtime
+        .materialize_runtime_files()
+        .expect("actual native alias art");
+    let mut images = Assets::<Image>::default();
+    let mut rendered = RenderedTilesetArt::default();
+    for time in TIMES {
+        for (alias, source) in [
+            ("mn_outdoor_johto_stairs", "johto"),
+            ("mn_outdoor_modern_stairs", "johto_modern"),
+            ("mn_outdoor_headwaters_stairs", "mn_headwaters"),
+            ("mn_outdoor_winter_stairs", "mn_winter_north_shore"),
+            ("mn_r10_rockstairs", "johto"),
+        ] {
+            let original = load_tileset_art(
+                &root,
+                source,
+                time,
+                &runtime.data().tilesets[source].palette_map,
+                &mut images,
+            )
+            .expect("source animation art");
+            let cloned = load_tileset_art(
+                &root,
+                alias,
+                time,
+                &runtime.data().tilesets[alias].palette_map,
+                &mut images,
+            )
+            .expect("stair alias animation art");
+            assert_eq!(
+                original.animated_tiles.len(),
+                cloned.animated_tiles.len(),
+                "{alias} {time} must retain every native animation"
+            );
+            assert!(
+                original.animated_tiles.contains_key(&0x14),
+                "actual water animation is required"
+            );
+            assert!(
+                original.animated_tiles.contains_key(&0x03),
+                "actual flower animation is required"
+            );
+            for (glyph, a) in &original.animated_tiles {
+                let b = &cloned.animated_tiles[glyph];
+                assert_eq!(a.frame_ticks, b.frame_ticks);
+                assert_eq!(a.phase_offset, b.phase_offset);
+                assert_eq!(a.requires_forest_restless, b.requires_forest_restless);
+                assert_eq!(a.cave_water_composite, b.cave_water_composite);
+                assert_eq!(a.advance_on_phase_offset, b.advance_on_phase_offset);
+                assert_eq!(a.additional_schedule, b.additional_schedule);
+                assert_eq!(a.frames.len(), b.frames.len());
+                for (before, after) in a.frames.iter().zip(b.frames.iter()) {
+                    assert_eq!(
+                        images.get(before).expect("native animation frame").data,
+                        images.get(after).expect("alias animation frame").data,
+                        "{alias} {time} glyph{glyph:02x}"
+                    );
+                }
+            }
+            if alias == "mn_outdoor_winter_stairs" {
+                assert!(has_north_shore_waterfall(alias));
+                assert_eq!(
+                    grass_palette(&root, alias, time).expect("alias icy palette"),
+                    grass_palette(&root, source, time).expect("source icy palette")
+                );
+                let icy =
+                    grass_rustle_frames_for_art(&mut rendered, &root, alias, time, &mut images)
+                        .expect("actual icy alias rustle");
+                let original_icy =
+                    grass_rustle_frames_for_art(&mut rendered, &root, source, time, &mut images)
+                        .expect("actual original icy rustle");
+                for (a, b) in icy.iter().zip(&original_icy) {
+                    assert_eq!(frame_pixels(a, &images), frame_pixels(b, &images));
+                }
+                let green_id = rustle_tileset(alias, Some(3));
+                let original_green_id = rustle_tileset(source, Some(3));
+                assert_eq!(green_id, original_green_id);
+                let green =
+                    grass_rustle_frames_for_art(&mut rendered, &root, green_id, time, &mut images)
+                        .expect("green prefix rustle");
+                assert_ne!(
+                    frame_pixels(&icy[0], &images),
+                    frame_pixels(&green[0], &images),
+                    "icy grass must not reuse the green rustle"
+                );
+            }
+        }
+    }
+}

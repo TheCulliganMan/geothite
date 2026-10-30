@@ -34,7 +34,7 @@ mod north_shore_journey;
 #[path = "north_shore_story.rs"]
 mod north_shore_story;
 #[path = "northstar_arc_campaign.rs"]
-mod northstar_arc_campaign;
+pub(super) mod northstar_arc_campaign;
 #[path = "northstar_campaign.rs"]
 mod northstar_campaign;
 #[path = "northstar_campaign_courier.rs"]

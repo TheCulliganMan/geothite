@@ -58,9 +58,17 @@ def actors(pack, terrain, module):
         # This source layer records authored starting positions. Clockwise
         # patrols start facing right; a later moving pose must still fail the
         # full-frame comparison if it enters the captured viewport.
-        facing = "east" if obj["spritemovedata"] == "SPRITEMOVEDATA_PATROL_CLOCKWISE" else {
-            "UP": "north", "DOWN": "south", "LEFT": "west", "RIGHT": "east"
-        }[obj["spritemovedata"].rsplit("_", 1)[-1]]
+        # Native object_event_initial_facing gives STILL actors the south pose.
+        # Static paper/notebook objects use that frame too; unknown movements
+        # continue to fail instead of silently inventing a pose.
+        movement = obj["spritemovedata"]
+        if movement == "SPRITEMOVEDATA_STILL":
+            facing = "south"
+        elif movement == "SPRITEMOVEDATA_PATROL_CLOCKWISE":
+            facing = "east"
+        else:
+            facing = {"UP": "north", "DOWN": "south", "LEFT": "west", "RIGHT": "east"}[
+                movement.rsplit("_", 1)[-1]]
         # The production source-art sprite origin is the gameplay-tile origin.
         image.alpha_composite(oriented_sprite(pack, obj["sprite"], facing),
                               (obj["x"] * 16, obj["y"] * 16))

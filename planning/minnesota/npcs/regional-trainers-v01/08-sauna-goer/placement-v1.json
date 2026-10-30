@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "trainers": [
+    {
+      "map": "MnGrandMarais",
+      "approach": [
+        18,
+        25
+      ],
+      "id": "MN_EXTRA_SAUNA_GOER",
+      "display_name": "HILDA",
+      "trainer_class": "MN_SAUNA_GOER",
+      "class_name": "SAUNA GOER",
+      "template_class": "POKEFANF",
+      "sprite": "SPRITE_MN_SAUNA_GOER",
+      "tile": [
+        18,
+        24
+      ],
+      "facing": "south",
+      "sight_range": 1,
+      "defeated_flag": "EVENT_MN_EXTRA_SAUNA_GOER",
+      "party": [
+        {
+          "species": "KINDLIT",
+          "level": 34
+        },
+        {
+          "species": "GLACIRIS",
+          "level": 35
+        }
+      ],
+      "before_lines": [
+        "A little hot, eh?",
+        "How about a match?"
+      ],
+      "after_lines": [
+        "Time to cool off!"
+      ],
+      "loss_lines": [
+        "One more ladle!"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "trainers": [
+    {
+      "id": "MN_R09_T08",
+      "map": "MnR09C01R00",
+      "actor_script": "MN_R09_T08",
+      "trainer_class": "MN_HOCKEY_CAPTAIN",
+      "sprite": "SPRITE_MN_HOCKEY_CAPTAIN",
+      "facing": "west",
+      "approach": [
+        48,
+        19
+      ],
+      "defeated_flag": "EVENT_MN_R09_TRAINER_08"
+    }
+  ]
+}

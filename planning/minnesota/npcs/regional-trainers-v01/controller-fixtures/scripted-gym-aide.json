@@ -1,0 +1,17 @@
+{
+  "trainers": [
+    {
+      "id": "MN_GYM_1_TRAINER_1",
+      "map": "MnRochesterGym",
+      "actor_script": "MN_GYM_1_TRAINER_1",
+      "approach": [
+        5,
+        17
+      ],
+      "facing": "south",
+      "trainer_class": "MN_CURLER",
+      "sprite": "SPRITE_MN_CURLER",
+      "defeated_flag": "EVENT_MN_GYM_1_TRAINER_1_DEFEATED"
+    }
+  ]
+}

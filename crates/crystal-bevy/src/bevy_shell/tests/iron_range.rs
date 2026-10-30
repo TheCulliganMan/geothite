@@ -654,3 +654,6 @@ fn iron_range_reclaimed_spoil_grass_triggers_native_encounters() {
         "reclaimed spoil shoulder: {encounters} native wild encounters across 128 grass-loop steps"
     );
 }
+
+#[path = "iron_cliff_stairs.rs"]
+mod iron_cliff_stairs;

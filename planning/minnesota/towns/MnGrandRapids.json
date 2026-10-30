@@ -415,8 +415,8 @@
     {
       "id": "MN_GR_WEST_SIGN",
       "tile": [
-        7,
-        23
+        14,
+        22
       ],
       "lines": [
         "IRON RANGE WEST",
@@ -426,8 +426,8 @@
     {
       "id": "MN_GR_EAST_SIGN",
       "tile": [
-        39,
-        23
+        38,
+        22
       ],
       "lines": [
         "IRON RANGE DESCENT",
@@ -437,8 +437,8 @@
     {
       "id": "MN_GR_DEPOT_SIGN",
       "tile": [
-        23,
-        13
+        22,
+        12
       ],
       "lines": [
         "FIELD SURVEY DEPOT",

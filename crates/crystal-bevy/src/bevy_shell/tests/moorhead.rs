@@ -65,6 +65,25 @@ fn moorhead_controller_all_people_rooms_returns_and_both_prairie_lanes() {
     )
     .expect("native source");
     let mut c = fixture(&root, &r, CITY, (30, 12));
+    let mut partner = r
+        .data()
+        .create_pokemon("MEW", 50, Dv::default())
+        .expect("legal Surf fixture");
+    partner.moves = vec![LearnedMove {
+        name: "SURF".into(),
+        current_pp: r.data().moves["SURF"].pp,
+        pp_ups: 0,
+    }];
+    let state = c.shell.shell.session_mut().state_mut();
+    assert!(state.storage.party.add_pokemon(partner));
+    state.sync_party_from_storage();
+    state.badges.johto[3] = true;
+    state
+        .flags
+        .set_engine_flag("ENGINE_FOGBADGE", true)
+        .expect("consistent initial Surf badge");
+    mark_runtime_snapshot_dirty(&mut c.shell);
+    // Native input begins here; the Surf party is present throughout the tour.
     for actor in plan["residents"].as_array().expect("town residents") {
         walk(&mut c, &r, point(&actor["approach"]));
         assert!(!talk(&mut c, point(&actor["tile"])).is_empty());
@@ -109,24 +128,6 @@ fn moorhead_controller_all_people_rooms_returns_and_both_prairie_lanes() {
         }
         travel(&mut c, &r, CITY);
     }
-    let mut partner = r
-        .data()
-        .create_pokemon("MEW", 50, Dv::default())
-        .expect("legal Surf fixture");
-    partner.moves = vec![LearnedMove {
-        name: "SURF".into(),
-        current_pp: r.data().moves["SURF"].pp,
-        pp_ups: 0,
-    }];
-    let state = c.shell.shell.session_mut().state_mut();
-    assert!(state.storage.party.add_pokemon(partner));
-    state.sync_party_from_storage();
-    state.badges.johto[3] = true;
-    state
-        .flags
-        .set_engine_flag("ENGINE_FOGBADGE", true)
-        .expect("consistent initial Surf badge");
-    mark_runtime_snapshot_dirty(&mut c.shell);
     for y in 2..22 {
         walk(&mut c, &r, (11, y));
         press(&mut c, GameButton::Left);
@@ -176,7 +177,7 @@ fn moorhead_controller_free_care_pc_poison_recovery_and_priced_stock() {
     let mut c = fixture(&root, &r, CLINIC, (3, 6));
     let mut partner = r
         .data()
-        .create_pokemon("CHIKORITA", 20, Dv::default())
+        .create_pokemon("GILLPUP", 20, Dv::default())
         .expect("care fixture");
     partner.hp = 10;
     partner.status = Some("POISON".into());
@@ -220,6 +221,22 @@ fn moorhead_controller_free_care_pc_poison_recovery_and_priced_stock() {
     }
     c = continue_save(root.clone(), r.clone(), &mut c);
     travel(&mut c, &r, CITY);
+    // Start a separate declared poison scenario from the actual reached,
+    // registered-clinic save. The original healthy checkpoint is unchanged.
+    let nonce = std::time::SystemTime::now()
+        .duration_since(std::time::UNIX_EPOCH)
+        .expect("clock")
+        .as_nanos();
+    let path = super::authored_route_fixture::reached_save_path(&format!(
+        "moorhead-earned-clinic-poison-scenario-{}-{nonce}.crystalsave",
+        std::process::id()
+    ));
+    c.save(&path)
+        .expect("reached native clinic registration checkpoint");
+    c = VisibleShellController::load_save(root.clone(), r.clone(), path.clone(), None)
+        .expect("fresh local poison scenario");
+    super::authored_route_fixture::cleanup_reached_save(&path);
+    // Initial damage and money are fixtures; all later recovery uses input.
     let state = c.shell.shell.session_mut().state_mut();
     let battle_result = state.battle_result;
     let p = state.storage.party.pokemon[0].as_mut().expect("partner");

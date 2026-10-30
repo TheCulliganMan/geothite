@@ -137,8 +137,24 @@ pub(super) fn opening(index: usize) -> (AssetRoot, CrystalRuntime, VisibleShellC
         press(&mut c, GameButton::A);
     }
     assert!(!event(&c, "EVENT_MN_STARTER_RECEIVED"));
-    press(&mut c, GameButton::Down);
-    press(&mut c, GameButton::A);
+    if index == 1 {
+        press(&mut c, GameButton::A);
+        assert!(c.shell.pending_name_input.is_some());
+        assert!(!event(&c, "EVENT_MN_STARTER_RECEIVED"));
+        press(&mut c, GameButton::A);
+        press(&mut c, GameButton::Start);
+        press(&mut c, GameButton::Start);
+        assert_eq!(
+            c.snapshot().expect("actually named starter").party.slots[0]
+                .pokemon
+                .nickname,
+            "A"
+        );
+        assert!(!event(&c, "EVENT_MN_STARTER_RECEIVED"));
+    } else {
+        press(&mut c, GameButton::Down);
+        press(&mut c, GameButton::A);
+    }
     // The received-partner page precedes completion and automatic repositioning.
     finish(&mut c);
     assert!(event(&c, "EVENT_MN_STARTER_RECEIVED"));

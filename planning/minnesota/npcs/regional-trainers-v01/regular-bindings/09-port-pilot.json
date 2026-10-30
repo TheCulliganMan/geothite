@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "trainer_class": "MN_PORT_PILOT",
+  "class_name": "PORT PILOT",
+  "trainer_ids": [
+    "MN_DULUTH_X_T02"
+  ],
+  "actors": [
+    {
+      "map": "MnDuluthQuarryPractice",
+      "script": "MN_DULUTH_X_T02",
+      "tile": [
+        10,
+        5
+      ],
+      "previous_sprite": "SPRITE_COOLTRAINER_F"
+    }
+  ]
+}

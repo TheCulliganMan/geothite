@@ -2402,6 +2402,13 @@ fn open_visible_save_menu(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
             .is_ok(),
         yes_no_index: 0,
     });
+    let snapshot = runtime_shell.shell.presentation_snapshot()?;
+    save_prompt_pages::begin(
+        runtime_shell,
+        &snapshot,
+        SAVE_TEXT_WOULD_YOU_LIKE,
+        SAVE_TEXT_WOULD_YOU_LIKE,
+    )?;
     close_visible_party_detail_state(runtime_shell);
     runtime_shell.pokedex_menu_open = false;
     runtime_shell.pokedex_detail_open = false;
@@ -2432,6 +2439,9 @@ fn close_visible_save_menu(runtime_shell: &mut BevyRuntimeShell) {
 }
 
 fn confirm_visible_save_menu(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
+    if runtime_shell.special_boundary.is_some() {
+        return close_visible_special_boundary(runtime_shell);
+    }
     let Some(flow) = runtime_shell.save_flow.as_ref().cloned() else {
         anyhow::bail!("Save confirmation requested without an active Save flow");
     };
@@ -2446,6 +2456,18 @@ fn confirm_visible_save_menu(runtime_shell: &mut BevyRuntimeShell) -> Result<()>
                     active_flow.stage = VisibleSaveFlowStage::OverwritePrompt;
                     active_flow.yes_no_index = 0;
                 }
+                let snapshot = runtime_shell.shell.presentation_snapshot()?;
+                let display_label = match flow.origin {
+                    VisibleSaveFlowOrigin::StartMenu => "StartMenuOverwriteWarning",
+                    VisibleSaveFlowOrigin::BillsPcMove => "PokecenterMoveSaveText",
+                    VisibleSaveFlowOrigin::BillsPcChangeBox { .. } => "PokecenterChangeBoxSaveText",
+                };
+                save_prompt_pages::begin(
+                    runtime_shell,
+                    &snapshot,
+                    SAVE_TEXT_ALREADY_EXISTS,
+                    display_label,
+                )?;
                 record_visible_runtime_action(runtime_shell, "menu:save:overwrite_prompt")?;
                 return Ok(());
             }
@@ -2510,6 +2532,9 @@ fn confirm_visible_save_menu(runtime_shell: &mut BevyRuntimeShell) -> Result<()>
 }
 
 fn cancel_visible_save_menu(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
+    if runtime_shell.special_boundary.is_some() {
+        return close_visible_special_boundary(runtime_shell);
+    }
     let Some(flow) = runtime_shell.save_flow.as_ref().cloned() else {
         anyhow::bail!("Save cancel requested without an active Save flow");
     };
@@ -2564,6 +2589,9 @@ fn move_visible_save_prompt_cursor(
     runtime_shell: &mut BevyRuntimeShell,
     delta: isize,
 ) -> Result<()> {
+    if runtime_shell.special_boundary.is_some() {
+        return Ok(());
+    }
     let Some(flow) = runtime_shell.save_flow.as_mut() else {
         anyhow::bail!("Save cursor requested without an active Save flow");
     };
@@ -4224,7 +4252,17 @@ fn open_visible_fly_destination_menu(runtime_shell: &mut BevyRuntimeShell) -> Re
 }
 
 fn confirm_visible_fly_destination(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
-    let result = use_visible_fly(runtime_shell);
+    let result = match use_visible_fly(runtime_shell) {
+        Err(error) if party_field_move_error_is_play_refusal(&error) => {
+            handle_visible_field_action_refusal(
+                runtime_shell,
+                "FLY",
+                "FLY CAN'T BE USED HERE",
+                error,
+            )
+        }
+        result => result,
+    };
     if result.is_ok() {
         runtime_shell.party_menu_open = false;
         runtime_shell.party_summary_open = false;

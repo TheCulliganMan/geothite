@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "trainers": [
+    {
+      "map": "MnStPaul",
+      "approach": [
+        40,
+        41
+      ],
+      "id": "MN_EXTRA_TRANSIT_DRIVER",
+      "display_name": "OTIS",
+      "trainer_class": "MN_TRANSIT_DRIVER",
+      "class_name": "TRANSIT DRIVER",
+      "template_class": "GENTLEMAN",
+      "sprite": "SPRITE_MN_TRANSIT_DRIVER",
+      "tile": [
+        40,
+        40
+      ],
+      "facing": "south",
+      "sight_range": 1,
+      "defeated_flag": "EVENT_MN_EXTRA_TRANSIT_DRIVER",
+      "party": [
+        {
+          "species": "SCRAPLOW",
+          "level": 21
+        },
+        {
+          "species": "HATCHIT",
+          "level": 22
+        }
+      ],
+      "before_lines": [
+        "Free transfers!",
+        "Next stop: battle!"
+      ],
+      "after_lines": [
+        "Thanks for riding!"
+      ],
+      "loss_lines": [
+        "Mind the step!"
+      ]
+    }
+  ]
+}

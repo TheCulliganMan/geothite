@@ -4,8 +4,12 @@
 mod capture_delivery;
 #[path = "safari_fishing_controller.rs"]
 mod fishing_controller;
+#[path = "safari_free_approach.rs"]
+mod free_approach;
 #[path = "safari_postcatch_controller.rs"]
 mod postcatch_controller;
+#[path = "safari_public_guidance.rs"]
+mod public_guidance;
 #[path = "safari_travel_controller.rs"]
 mod travel_controller;
 
@@ -180,8 +184,24 @@ fn publish_review_pack_if_requested() {
         .chain(&zone.retire_scripts)
         .map(|root| format!("{root}Text"))
         .chain(["BWS_SIGN_01Text".into(), "BWS_SIGN_06Text".into()])
+        .chain([
+            "MN_COHESION_PRESERVE_NOTICEText".into(),
+            "MN_BOUNDARY_GATE_NOTICEText".into(),
+            "MN_BOUNDARY_PENDING_GATE_WESTText".into(),
+            "MN_BOUNDARY_PENDING_GATE_EASTText".into(),
+            format!("{}Text", zone.admission_script),
+        ])
         .collect::<BTreeSet<_>>();
-    for name in zone.maps.keys() {
+    let names = zone
+        .maps
+        .keys()
+        .cloned()
+        .chain([
+            zone.admission_map.clone(),
+            zone.gate_court.approach_map.clone(),
+        ])
+        .collect::<BTreeSet<_>>();
+    for name in &names {
         let old = &base.data().maps[name];
         let new = &candidate.data().maps[name];
         assert_eq!(
@@ -195,6 +215,15 @@ fn publish_review_pack_if_requested() {
         let mut normalized = new.clone();
         normalized.scripts = old.scripts.clone();
         normalized.script_text_bodies = old.script_text_bodies.clone();
+        if name == &zone.admission_map {
+            let mut retained = old.objects.clone();
+            let removed = retained.drain(3..5).collect::<Vec<_>>();
+            assert_eq!(retained, new.objects);
+            assert_eq!(removed[0].script, "MN_BOUNDARY_PENDING_GATE_WEST");
+            assert_eq!(removed[1].script, "MN_BOUNDARY_PENDING_GATE_EAST");
+            normalized.objects = old.objects.clone();
+            normalized.map_event_section_commands = old.map_event_section_commands.clone();
+        }
         assert_eq!(
             &normalized, old,
             "terrain, actors, events and executable commands remain exact"
@@ -217,6 +246,13 @@ fn publish_review_pack_if_requested() {
             }
         }
         expected.maps.insert(name.clone(), new.clone());
+    }
+    let header = format!("{}_MapEvents", zone.admission_map);
+    if base.data().map_scripts.contains_key(&header) {
+        expected.map_scripts.insert(
+            header.clone(),
+            candidate.data().map_scripts[&header].clone(),
+        );
     }
     assert_eq!(
         candidate.data(),

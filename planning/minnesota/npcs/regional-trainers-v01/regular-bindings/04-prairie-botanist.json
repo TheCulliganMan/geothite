@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "trainer_class": "MN_PRAIRIE_BOTANIST",
+  "class_name": "BOTANIST",
+  "trainer_ids": [
+    "MN_FAIR_RING_FAN_TRAINER"
+  ],
+  "actors": [
+    {
+      "map": "MnStateFairgrounds",
+      "script": "MN_FAIR_RING_FAN_TRAINER",
+      "tile": [
+        43,
+        49
+      ],
+      "previous_sprite": "SPRITE_GENTLEMAN"
+    }
+  ]
+}

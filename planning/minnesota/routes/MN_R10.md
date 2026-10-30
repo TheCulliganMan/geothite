@@ -1,3 +1,7 @@
+# Current cliff composition, 2026-10-29
+
+The selected Descent revision broadens five native bedrock formations and removes repetitive crown boulders. It retains the existing cave12 stair, four-grass uphill/dry-hop loop, narrow roads, all activities and lake access. [Current acceptance](../revisions/iron-descent-cliffs-v01/README.md). Older records below remain historical.
+
 # Current installed grass revision, 2026-10-28
 
 [Selected R10 revision](../revisions/route-grass-v01/current-r10-v01/README.md) adds7grass metatiles and5attached boulders on the705-map park/current-story child. The carrier circuit requires4grass steps up and0on the dry ledge return; the existing stair and all5city-mouth cells are preserved. Six native cases,13clean stdio calls and377audio programs pass. Selected as route_grass_r10_revision; accepted park and all earlier revisions are retained. Older isolated pack results below are historical.

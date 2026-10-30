@@ -68,6 +68,21 @@ fn run_reach(reach: &str) {
         let landing = point(&first["point"]);
         let (root, r, mut c) =
             fixture_with_items(map, landing, false, false, false, &[("MAX_REPEL", 3)]);
+        // Current regional wilds scale to the whole party. These two legal
+        // initial partners keep a genuinely used Repel below the strong lead,
+        // including the injured medic fixture; no field RNG or HP is rewritten.
+        if std::env::var_os("CRYSTAL_RIVER_FUN_THREE_MEMBER_FIXTURE").is_some() {
+            for species in ["VOYAGEAR", "DOZEBEAR"] {
+                let partner = r
+                    .data()
+                    .create_pokemon(species, 40, crystal_core::models::Dv::default())
+                    .expect("initial regional partner fixture");
+                let state = c.shell.shell.session_mut().state_mut();
+                assert!(state.storage.party.add_pokemon(partner));
+                state.sync_party_from_storage();
+            }
+            mark_runtime_snapshot_dirty(&mut c.shell);
+        }
         let healer = case["kind"] == "healer";
         if healer {
             // Explicit injured, low-PP initial fixture; setup ends before any input.
@@ -205,7 +220,7 @@ fn river_fun_new_grass_runs_native_wild_encounters() {
         .expect("grass reward course");
     let path = case["path"].as_array().expect("Foot path");
     let first = &path[0];
-    let (_, r, mut c) = fixture_with_items(
+    let (root, r, mut c) = fixture_with_items(
         first["map"].as_str().expect("map"),
         point(&first["point"]),
         false,
@@ -233,6 +248,7 @@ fn river_fun_new_grass_runs_native_wild_encounters() {
                     battle.kind,
                     crystal_runtime::RuntimeBattleKind::Wild { .. }
                 ));
+                finish_wild_course(root, r, &mut c, path);
                 return;
             }
         }
@@ -280,9 +296,75 @@ fn river_fun_new_grass_runs_native_wild_encounters() {
                     battle.kind,
                     crystal_runtime::RuntimeBattleKind::Wild { .. }
                 ));
+                finish_wild_course(root, r, &mut c, path);
                 return;
             }
         }
     }
     panic!("new tall grass did not produce a native wild encounter");
+}
+
+// Finish the actual wild encounter and walk the reached path back to its real
+// dry landing before Save/Continue. Historical callers may use a fresh temp
+// save; current reviews name their retained production-client checkpoint.
+fn finish_wild_course(
+    root: super::AssetRoot,
+    r: super::CrystalRuntime,
+    c: &mut super::VisibleShellController,
+    course: &[Value],
+) {
+    super::super::authored_route_fixture::escape_wild(c);
+    settle(c);
+    let reached = at(c);
+    let index = course
+        .iter()
+        .position(|v| {
+            (
+                v["map"].as_str().expect("course map").to_owned(),
+                point(&v["point"]),
+            ) == reached
+        })
+        .expect("actual reached grass step on native course");
+    for i in (1..=index).rev() {
+        step(
+            c,
+            button(global(&course[i]), global(&course[i - 1])),
+            course[i - 1]["map"].as_str().expect("return map"),
+            point(&course[i - 1]["point"]),
+            "ordinary wild return to dry landing",
+        );
+    }
+    assert_eq!(super::collision(&r, c, point(&course[0]["point"])), "FLOOR");
+    let before = c.snapshot().expect("wild resolved at actual landing");
+    let path = std::env::var_os("CRYSTAL_RIVER_FUN_REACHED_SAVE")
+        .map(PathBuf::from)
+        .unwrap_or_else(|| {
+            std::env::temp_dir().join(format!(
+                "river-grass-wild-{}-{}.crystalsave",
+                std::process::id(),
+                std::time::SystemTime::now()
+                    .duration_since(std::time::UNIX_EPOCH)
+                    .expect("clock")
+                    .as_nanos()
+            ))
+        });
+    assert!(!path.exists(), "retain previous wild checkpoints");
+    c.save(&path).expect("native reached landing save");
+    let mut loaded = super::VisibleShellController::load_save(root, r, path, None)
+        .expect("native wild Continue");
+    let after = loaded.snapshot().expect("continued landing");
+    assert_eq!(before.overworld.map_name, after.overworld.map_name);
+    assert_eq!(before.overworld.tile, after.overworld.tile);
+    assert_eq!(before.overworld.mode, after.overworld.mode);
+    assert_eq!(before.party, after.party);
+    assert_eq!(before.bag, after.bag);
+    assert_eq!(before.progression.badges, after.progression.badges);
+    assert_eq!(
+        before.progression.active_event_flags,
+        after.progression.active_event_flags
+    );
+    assert_eq!(
+        before.progression.active_engine_flags,
+        after.progression.active_engine_flags
+    );
 }

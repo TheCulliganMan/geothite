@@ -1,0 +1,2564 @@
+{
+  "schema_version": 2,
+  "id": "MN_R10",
+  "tileset": "johto",
+  "compiled_tileset": "mn_r10_rockstairs",
+  "dimensions_metatiles": [
+    48,
+    20
+  ],
+  "coordinate_units": "32px metatiles, zero based",
+  "materials": {
+    "floor": "01",
+    "lawn": "02",
+    "encounter": "03",
+    "flowers": "04",
+    "forest": "05",
+    "water": "35",
+    "boulder": "0a",
+    "sign": "45"
+  },
+  "shore_fitting": "johto_8_neighbors",
+  "reject_cliff_cuts": true,
+  "additional_water_blocks": [
+    "32",
+    "36",
+    "38",
+    "39",
+    "3a"
+  ],
+  "layers": [
+    {
+      "kind": "polygon",
+      "name": "Ore bench foot and mine approach",
+      "material": "lawn",
+      "points": [
+        [
+          2,
+          8
+        ],
+        [
+          24,
+          8
+        ],
+        [
+          24,
+          15
+        ],
+        [
+          22,
+          15
+        ],
+        [
+          22,
+          16
+        ],
+        [
+          16,
+          16
+        ],
+        [
+          16,
+          14
+        ],
+        [
+          10,
+          14
+        ],
+        [
+          10,
+          15
+        ],
+        [
+          3,
+          15
+        ],
+        [
+          3,
+          13
+        ],
+        [
+          1,
+          13
+        ],
+        [
+          1,
+          10
+        ],
+        [
+          2,
+          10
+        ]
+      ]
+    },
+    {
+      "kind": "polygon",
+      "name": "Duluth pine neck and coastal road",
+      "material": "lawn",
+      "points": [
+        [
+          28,
+          6
+        ],
+        [
+          32,
+          6
+        ],
+        [
+          32,
+          8
+        ],
+        [
+          37,
+          8
+        ],
+        [
+          37,
+          10
+        ],
+        [
+          43,
+          10
+        ],
+        [
+          43,
+          9
+        ],
+        [
+          46,
+          9
+        ],
+        [
+          46,
+          10
+        ],
+        [
+          47,
+          10
+        ],
+        [
+          47,
+          13
+        ],
+        [
+          45,
+          13
+        ],
+        [
+          45,
+          14
+        ],
+        [
+          39,
+          14
+        ],
+        [
+          39,
+          15
+        ],
+        [
+          35,
+          15
+        ],
+        [
+          35,
+          14
+        ],
+        [
+          28,
+          14
+        ],
+        [
+          28,
+          12
+        ],
+        [
+          27,
+          12
+        ],
+        [
+          27,
+          9
+        ],
+        [
+          28,
+          9
+        ]
+      ]
+    },
+    {
+      "kind": "polygon",
+      "name": "Superior glimpse below the road",
+      "material": "water",
+      "points": [
+        [
+          22,
+          15
+        ],
+        [
+          27,
+          15
+        ],
+        [
+          27,
+          14
+        ],
+        [
+          34,
+          14
+        ],
+        [
+          34,
+          15
+        ],
+        [
+          40,
+          15
+        ],
+        [
+          40,
+          14
+        ],
+        [
+          47,
+          14
+        ],
+        [
+          47,
+          19
+        ],
+        [
+          21,
+          19
+        ],
+        [
+          21,
+          17
+        ],
+        [
+          22,
+          17
+        ]
+      ]
+    },
+    {
+      "kind": "path",
+      "name": "Two-way lower carrier road",
+      "points": [
+        [
+          5,
+          11
+        ],
+        [
+          23,
+          11
+        ],
+        [
+          23,
+          10
+        ],
+        [
+          29,
+          10
+        ],
+        [
+          29,
+          12
+        ],
+        [
+          46,
+          12
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "kind": "path",
+      "name": "Mine cleft approach",
+      "points": [
+        [
+          18,
+          11
+        ],
+        [
+          18,
+          9
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "kind": "path",
+      "name": "West rest turnout",
+      "points": [
+        [
+          5,
+          11
+        ],
+        [
+          5,
+          13
+        ],
+        [
+          8,
+          13
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "kind": "path",
+      "name": "Central field cache spur",
+      "points": [
+        [
+          23,
+          11
+        ],
+        [
+          23,
+          14
+        ],
+        [
+          20,
+          14
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "kind": "path",
+      "name": "Coastal north turnout",
+      "points": [
+        [
+          36,
+          12
+        ],
+        [
+          36,
+          10
+        ],
+        [
+          41,
+          10
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "kind": "path",
+      "name": "Protected Surf landing",
+      "points": [
+        [
+          36,
+          12
+        ],
+        [
+          36,
+          14
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "kind": "block_rect",
+      "name": "Western scree apron around the lower haul-road rest turnout \u2014 native71 apron section 1",
+      "block": "71",
+      "bounds": [
+        3,
+        11,
+        11,
+        14
+      ]
+    },
+    {
+      "kind": "block_rect",
+      "name": "Western scree apron around the lower haul-road rest turnout \u2014 native71 apron section 2",
+      "block": "71",
+      "bounds": [
+        4,
+        14,
+        11,
+        15
+      ]
+    },
+    {
+      "kind": "block_rect",
+      "name": "Western scree apron around the lower haul-road rest turnout \u2014 native71 apron section 3",
+      "block": "71",
+      "bounds": [
+        4,
+        15,
+        10,
+        16
+      ]
+    },
+    {
+      "kind": "block_rect",
+      "name": "Mine-foot exposed ore apron between the two bedrock ribs \u2014 native71 apron section 1",
+      "block": "71",
+      "bounds": [
+        16,
+        11,
+        24,
+        14
+      ]
+    },
+    {
+      "kind": "block_rect",
+      "name": "Mine-foot exposed ore apron between the two bedrock ribs \u2014 native71 apron section 2",
+      "block": "71",
+      "bounds": [
+        16,
+        14,
+        23,
+        16
+      ]
+    },
+    {
+      "kind": "block_rect",
+      "name": "Western Superior bedrock shoulder above the protected rail \u2014 native71 apron section 1",
+      "block": "71",
+      "bounds": [
+        28,
+        9,
+        32,
+        11
+      ]
+    },
+    {
+      "kind": "block_rect",
+      "name": "Western Superior bedrock shoulder above the protected rail \u2014 native71 apron section 2",
+      "block": "71",
+      "bounds": [
+        28,
+        11,
+        35,
+        14
+      ]
+    },
+    {
+      "kind": "point",
+      "name": "Existing gravel road retained through exposed-rock apron",
+      "position": [
+        5,
+        11
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Existing gravel road retained through exposed-rock apron",
+      "position": [
+        6,
+        11
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Existing gravel road retained through exposed-rock apron",
+      "position": [
+        7,
+        11
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Existing gravel road retained through exposed-rock apron",
+      "position": [
+        8,
+        11
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Existing gravel road retained through exposed-rock apron",
+      "position": [
+        9,
+        11
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Existing gravel road retained through exposed-rock apron",
+      "position": [
+        10,
+        11
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Existing gravel road retained through exposed-rock apron",
+      "position": [
+        5,
+        12
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Existing gravel road retained through exposed-rock apron",
+      "position": [
+        5,
+        13
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Existing gravel road retained through exposed-rock apron",
+      "position": [
+        6,
+        13
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Existing gravel road retained through exposed-rock apron",
+      "position": [
+        7,
+        13
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Existing gravel road retained through exposed-rock apron",
+      "position": [
+        8,
+        13
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Existing gravel road retained through exposed-rock apron",
+      "position": [
+        16,
+        11
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Existing gravel road retained through exposed-rock apron",
+      "position": [
+        17,
+        11
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Existing gravel road retained through exposed-rock apron",
+      "position": [
+        18,
+        11
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Existing gravel road retained through exposed-rock apron",
+      "position": [
+        19,
+        11
+      ],
+      "block": "04"
+    },
+    {
+      "kind": "point",
+      "name": "Existing gravel road retained through exposed-rock apron",
+      "position": [
+        20,
+        11
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Existing gravel road retained through exposed-rock apron",
+      "position": [
+        21,
+        11
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Existing gravel road retained through exposed-rock apron",
+      "position": [
+        22,
+        11
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Existing gravel road retained through exposed-rock apron",
+      "position": [
+        23,
+        11
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Existing gravel road retained through exposed-rock apron",
+      "position": [
+        23,
+        12
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Existing gravel road retained through exposed-rock apron",
+      "position": [
+        23,
+        13
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Existing gravel road retained through exposed-rock apron",
+      "position": [
+        20,
+        14
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Existing gravel road retained through exposed-rock apron",
+      "position": [
+        21,
+        14
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Existing gravel road retained through exposed-rock apron",
+      "position": [
+        22,
+        14
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Existing gravel road retained through exposed-rock apron",
+      "position": [
+        28,
+        10
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Existing gravel road retained through exposed-rock apron",
+      "position": [
+        29,
+        10
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Existing gravel road retained through exposed-rock apron",
+      "position": [
+        29,
+        11
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Existing gravel road retained through exposed-rock apron",
+      "position": [
+        29,
+        12
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Existing gravel road retained through exposed-rock apron",
+      "position": [
+        30,
+        12
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Existing gravel road retained through exposed-rock apron",
+      "position": [
+        31,
+        12
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Existing gravel road retained through exposed-rock apron",
+      "position": [
+        32,
+        12
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Existing gravel road retained through exposed-rock apron",
+      "position": [
+        33,
+        12
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Existing gravel road retained through exposed-rock apron",
+      "position": [
+        34,
+        12
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "cliff_polygon",
+      "name": "Stepped carrier road, inspection spur and dry mine cleft",
+      "points": [
+        [
+          0,
+          4
+        ],
+        [
+          6,
+          4
+        ],
+        [
+          6,
+          7
+        ],
+        [
+          10,
+          7
+        ],
+        [
+          10,
+          6
+        ],
+        [
+          11,
+          6
+        ],
+        [
+          11,
+          3
+        ],
+        [
+          14,
+          3
+        ],
+        [
+          14,
+          4
+        ],
+        [
+          17,
+          4
+        ],
+        [
+          17,
+          5
+        ],
+        [
+          20,
+          5
+        ],
+        [
+          20,
+          8
+        ],
+        [
+          17,
+          8
+        ],
+        [
+          17,
+          7
+        ],
+        [
+          14,
+          7
+        ],
+        [
+          14,
+          8
+        ],
+        [
+          12,
+          8
+        ],
+        [
+          12,
+          9
+        ],
+        [
+          14,
+          9
+        ],
+        [
+          14,
+          10
+        ],
+        [
+          11,
+          10
+        ],
+        [
+          11,
+          9
+        ],
+        [
+          7,
+          9
+        ],
+        [
+          7,
+          10
+        ],
+        [
+          4,
+          10
+        ],
+        [
+          4,
+          6
+        ],
+        [
+          0,
+          6
+        ]
+      ]
+    },
+    {
+      "kind": "rect",
+      "name": "Ore inspection habitat threshold",
+      "material": "encounter",
+      "bounds": [
+        12,
+        5,
+        17,
+        7
+      ]
+    },
+    {
+      "kind": "rect",
+      "name": "Lower pine finger",
+      "material": "forest",
+      "bounds": [
+        11,
+        12,
+        15,
+        15
+      ]
+    },
+    {
+      "kind": "rect",
+      "name": "Cleft east shoulder",
+      "material": "forest",
+      "bounds": [
+        21,
+        12,
+        23,
+        14
+      ]
+    },
+    {
+      "kind": "rect",
+      "name": "Pine neck continuous barrier",
+      "material": "forest",
+      "bounds": [
+        25,
+        0,
+        28,
+        16
+      ]
+    },
+    {
+      "kind": "rect",
+      "name": "North coastal grove",
+      "material": "forest",
+      "bounds": [
+        32,
+        8,
+        35,
+        12
+      ]
+    },
+    {
+      "kind": "rect",
+      "name": "East shore northern trees",
+      "material": "forest",
+      "bounds": [
+        38,
+        11,
+        44,
+        12
+      ]
+    },
+    {
+      "kind": "rect",
+      "name": "Necessary six-step pine habitat",
+      "material": "encounter",
+      "bounds": [
+        25,
+        9,
+        28,
+        11
+      ]
+    },
+    {
+      "kind": "rect",
+      "name": "Roadside coastal habitat",
+      "material": "encounter",
+      "bounds": [
+        39,
+        8,
+        43,
+        10
+      ]
+    },
+    {
+      "kind": "rect",
+      "name": "West turnout flowers",
+      "material": "flowers",
+      "bounds": [
+        3,
+        13,
+        5,
+        14
+      ]
+    },
+    {
+      "kind": "rect",
+      "name": "Mine cleft moss flowers",
+      "material": "flowers",
+      "bounds": [
+        19,
+        11,
+        20,
+        12
+      ]
+    },
+    {
+      "kind": "point",
+      "name": "Native two-way carrier ramp",
+      "position": [
+        5,
+        10
+      ],
+      "block": "74"
+    },
+    {
+      "kind": "point",
+      "name": "West return drop",
+      "position": [
+        12,
+        10
+      ],
+      "block": "56"
+    },
+    {
+      "kind": "point",
+      "name": "East return drop",
+      "position": [
+        13,
+        10
+      ],
+      "block": "56"
+    },
+    {
+      "kind": "point",
+      "name": "Mine gallery entrance",
+      "position": [
+        18,
+        8
+      ],
+      "block": "73"
+    },
+    {
+      "kind": "point",
+      "name": "Promenade rail west corner",
+      "position": [
+        27,
+        13
+      ],
+      "block": "48"
+    },
+    {
+      "kind": "point",
+      "name": "Promenade continuous lower rail",
+      "position": [
+        28,
+        13
+      ],
+      "block": "49"
+    },
+    {
+      "kind": "point",
+      "name": "Promenade continuous lower rail",
+      "position": [
+        29,
+        13
+      ],
+      "block": "49"
+    },
+    {
+      "kind": "point",
+      "name": "Promenade continuous lower rail",
+      "position": [
+        30,
+        13
+      ],
+      "block": "49"
+    },
+    {
+      "kind": "point",
+      "name": "Promenade continuous lower rail",
+      "position": [
+        31,
+        13
+      ],
+      "block": "49"
+    },
+    {
+      "kind": "point",
+      "name": "Promenade continuous lower rail",
+      "position": [
+        32,
+        13
+      ],
+      "block": "49"
+    },
+    {
+      "kind": "point",
+      "name": "Promenade continuous lower rail",
+      "position": [
+        33,
+        13
+      ],
+      "block": "49"
+    },
+    {
+      "kind": "point",
+      "name": "Promenade rail east corner",
+      "position": [
+        34,
+        13
+      ],
+      "block": "4a"
+    },
+    {
+      "kind": "point",
+      "name": "Promenade rail west corner",
+      "position": [
+        40,
+        13
+      ],
+      "block": "48"
+    },
+    {
+      "kind": "point",
+      "name": "Promenade continuous lower rail",
+      "position": [
+        41,
+        13
+      ],
+      "block": "49"
+    },
+    {
+      "kind": "point",
+      "name": "Promenade continuous lower rail",
+      "position": [
+        42,
+        13
+      ],
+      "block": "49"
+    },
+    {
+      "kind": "point",
+      "name": "Promenade continuous lower rail",
+      "position": [
+        43,
+        13
+      ],
+      "block": "49"
+    },
+    {
+      "kind": "point",
+      "name": "Promenade continuous lower rail",
+      "position": [
+        44,
+        13
+      ],
+      "block": "49"
+    },
+    {
+      "kind": "point",
+      "name": "Promenade continuous lower rail",
+      "position": [
+        45,
+        13
+      ],
+      "block": "49"
+    },
+    {
+      "kind": "point",
+      "name": "Promenade rail east corner",
+      "position": [
+        46,
+        13
+      ],
+      "block": "4a"
+    },
+    {
+      "kind": "point",
+      "name": "Surf landing west bollard",
+      "position": [
+        35,
+        14
+      ],
+      "block": "44"
+    },
+    {
+      "kind": "point",
+      "name": "Surf landing east bollard",
+      "position": [
+        37,
+        14
+      ],
+      "block": "46"
+    },
+    {
+      "kind": "point",
+      "name": "Southern blue-water rock boundary",
+      "position": [
+        21,
+        19
+      ],
+      "block": "38"
+    },
+    {
+      "kind": "point",
+      "name": "Southern blue-water rock boundary",
+      "position": [
+        22,
+        19
+      ],
+      "block": "39"
+    },
+    {
+      "kind": "point",
+      "name": "Southern blue-water rock boundary",
+      "position": [
+        23,
+        19
+      ],
+      "block": "39"
+    },
+    {
+      "kind": "point",
+      "name": "Southern blue-water rock boundary",
+      "position": [
+        24,
+        19
+      ],
+      "block": "39"
+    },
+    {
+      "kind": "point",
+      "name": "Southern blue-water rock boundary",
+      "position": [
+        25,
+        19
+      ],
+      "block": "39"
+    },
+    {
+      "kind": "point",
+      "name": "Southern blue-water rock boundary",
+      "position": [
+        26,
+        19
+      ],
+      "block": "39"
+    },
+    {
+      "kind": "point",
+      "name": "Southern blue-water rock boundary",
+      "position": [
+        27,
+        19
+      ],
+      "block": "39"
+    },
+    {
+      "kind": "point",
+      "name": "Southern blue-water rock boundary",
+      "position": [
+        28,
+        19
+      ],
+      "block": "39"
+    },
+    {
+      "kind": "point",
+      "name": "Southern blue-water rock boundary",
+      "position": [
+        29,
+        19
+      ],
+      "block": "39"
+    },
+    {
+      "kind": "point",
+      "name": "Southern blue-water rock boundary",
+      "position": [
+        30,
+        19
+      ],
+      "block": "39"
+    },
+    {
+      "kind": "point",
+      "name": "Southern blue-water rock boundary",
+      "position": [
+        31,
+        19
+      ],
+      "block": "39"
+    },
+    {
+      "kind": "point",
+      "name": "Southern blue-water rock boundary",
+      "position": [
+        32,
+        19
+      ],
+      "block": "39"
+    },
+    {
+      "kind": "point",
+      "name": "Southern blue-water rock boundary",
+      "position": [
+        33,
+        19
+      ],
+      "block": "39"
+    },
+    {
+      "kind": "point",
+      "name": "Southern blue-water rock boundary",
+      "position": [
+        34,
+        19
+      ],
+      "block": "39"
+    },
+    {
+      "kind": "point",
+      "name": "Southern blue-water rock boundary",
+      "position": [
+        35,
+        19
+      ],
+      "block": "39"
+    },
+    {
+      "kind": "point",
+      "name": "Southern blue-water rock boundary",
+      "position": [
+        36,
+        19
+      ],
+      "block": "39"
+    },
+    {
+      "kind": "point",
+      "name": "Southern blue-water rock boundary",
+      "position": [
+        37,
+        19
+      ],
+      "block": "39"
+    },
+    {
+      "kind": "point",
+      "name": "Southern blue-water rock boundary",
+      "position": [
+        38,
+        19
+      ],
+      "block": "39"
+    },
+    {
+      "kind": "point",
+      "name": "Southern blue-water rock boundary",
+      "position": [
+        39,
+        19
+      ],
+      "block": "39"
+    },
+    {
+      "kind": "point",
+      "name": "Southern blue-water rock boundary",
+      "position": [
+        40,
+        19
+      ],
+      "block": "39"
+    },
+    {
+      "kind": "point",
+      "name": "Southern blue-water rock boundary",
+      "position": [
+        41,
+        19
+      ],
+      "block": "39"
+    },
+    {
+      "kind": "point",
+      "name": "Southern blue-water rock boundary",
+      "position": [
+        42,
+        19
+      ],
+      "block": "39"
+    },
+    {
+      "kind": "point",
+      "name": "Southern blue-water rock boundary",
+      "position": [
+        43,
+        19
+      ],
+      "block": "39"
+    },
+    {
+      "kind": "point",
+      "name": "Southern blue-water rock boundary",
+      "position": [
+        44,
+        19
+      ],
+      "block": "39"
+    },
+    {
+      "kind": "point",
+      "name": "Southern blue-water rock boundary",
+      "position": [
+        45,
+        19
+      ],
+      "block": "39"
+    },
+    {
+      "kind": "point",
+      "name": "Southern blue-water rock boundary",
+      "position": [
+        46,
+        19
+      ],
+      "block": "39"
+    },
+    {
+      "kind": "point",
+      "name": "Southern blue-water rock boundary",
+      "position": [
+        47,
+        19
+      ],
+      "block": "3a"
+    },
+    {
+      "kind": "point",
+      "name": "Eastern blue-water rock boundary",
+      "position": [
+        47,
+        14
+      ],
+      "block": "32"
+    },
+    {
+      "kind": "point",
+      "name": "Eastern blue-water rock boundary",
+      "position": [
+        47,
+        15
+      ],
+      "block": "36"
+    },
+    {
+      "kind": "point",
+      "name": "Eastern blue-water rock boundary",
+      "position": [
+        47,
+        16
+      ],
+      "block": "36"
+    },
+    {
+      "kind": "point",
+      "name": "Eastern blue-water rock boundary",
+      "position": [
+        47,
+        17
+      ],
+      "block": "36"
+    },
+    {
+      "kind": "point",
+      "name": "Eastern blue-water rock boundary",
+      "position": [
+        47,
+        18
+      ],
+      "block": "36"
+    },
+    {
+      "kind": "point",
+      "name": "Grand Rapids board",
+      "position": [
+        2,
+        6
+      ],
+      "block": "45"
+    },
+    {
+      "kind": "point",
+      "name": "Carrier ramp board",
+      "position": [
+        4,
+        12
+      ],
+      "block": "45"
+    },
+    {
+      "kind": "point",
+      "name": "Mine gallery board",
+      "position": [
+        19,
+        12
+      ],
+      "block": "45"
+    },
+    {
+      "kind": "point",
+      "name": "Pine neck board",
+      "position": [
+        24,
+        11
+      ],
+      "block": "45"
+    },
+    {
+      "kind": "point",
+      "name": "Duluth board",
+      "position": [
+        45,
+        11
+      ],
+      "block": "45"
+    },
+    {
+      "kind": "point",
+      "name": "Shore landing board",
+      "position": [
+        38,
+        14
+      ],
+      "block": "45"
+    },
+    {
+      "kind": "point",
+      "name": "Coastal cache footing",
+      "position": [
+        42,
+        9
+      ],
+      "block": "02"
+    },
+    {
+      "kind": "point",
+      "name": "Inspection pocket ore face",
+      "position": [
+        15,
+        4
+      ],
+      "block": "0a"
+    },
+    {
+      "kind": "point",
+      "name": "Inspection pocket ore face",
+      "position": [
+        16,
+        4
+      ],
+      "block": "0a"
+    },
+    {
+      "kind": "point",
+      "name": "Inspection pocket ore face",
+      "position": [
+        16,
+        5
+      ],
+      "block": "0a"
+    },
+    {
+      "kind": "point",
+      "name": "Inspection reward dry footing",
+      "position": [
+        13,
+        4
+      ],
+      "block": "71"
+    },
+    {
+      "kind": "point",
+      "name": "Old gallery upper ore face",
+      "position": [
+        18,
+        5
+      ],
+      "block": "0a"
+    },
+    {
+      "kind": "point",
+      "name": "Old gallery upper ore face",
+      "position": [
+        19,
+        5
+      ],
+      "block": "0a"
+    },
+    {
+      "kind": "point",
+      "name": "Old gallery upper ore face",
+      "position": [
+        19,
+        6
+      ],
+      "block": "0a"
+    },
+    {
+      "kind": "point",
+      "name": "Inspection pocket rib ore",
+      "position": [
+        11,
+        5
+      ],
+      "block": "0a"
+    },
+    {
+      "kind": "point",
+      "name": "Inspection pocket rib ore",
+      "position": [
+        11,
+        6
+      ],
+      "block": "0a"
+    },
+    {
+      "kind": "cliff_polygon",
+      "name": "North carrier bedrock rib connected to the ore rise",
+      "points": [
+        [
+          7,
+          1
+        ],
+        [
+          9,
+          1
+        ],
+        [
+          9,
+          4
+        ],
+        [
+          10,
+          4
+        ],
+        [
+          10,
+          5
+        ],
+        [
+          9,
+          5
+        ],
+        [
+          9,
+          6
+        ],
+        [
+          7,
+          6
+        ]
+      ]
+    },
+    {
+      "kind": "cliff_polygon",
+      "name": "Contoured rock rib south of the carrier road",
+      "points": [
+        [
+          11,
+          12
+        ],
+        [
+          14,
+          12
+        ],
+        [
+          14,
+          13
+        ],
+        [
+          17,
+          13
+        ],
+        [
+          17,
+          15
+        ],
+        [
+          11,
+          15
+        ]
+      ]
+    },
+    {
+      "kind": "cliff_polygon",
+      "name": "Dry mine-foot compact rock rib inside the cache return",
+      "points": [
+        [
+          21,
+          12
+        ],
+        [
+          23,
+          12
+        ],
+        [
+          23,
+          14
+        ],
+        [
+          21,
+          14
+        ]
+      ]
+    },
+    {
+      "kind": "cliff_polygon",
+      "name": "Exposed neck buttress ending above the required grass saddle",
+      "points": [
+        [
+          25,
+          1
+        ],
+        [
+          28,
+          1
+        ],
+        [
+          28,
+          5
+        ],
+        [
+          29,
+          5
+        ],
+        [
+          29,
+          7
+        ],
+        [
+          27,
+          7
+        ],
+        [
+          27,
+          8
+        ],
+        [
+          25,
+          8
+        ]
+      ]
+    },
+    {
+      "kind": "cliff_polygon",
+      "name": "Superior headland rock rib replacing the rectangular coastal grove",
+      "points": [
+        [
+          31,
+          7
+        ],
+        [
+          34,
+          7
+        ],
+        [
+          34,
+          9
+        ],
+        [
+          35,
+          9
+        ],
+        [
+          35,
+          11
+        ],
+        [
+          31,
+          11
+        ]
+      ]
+    },
+    {
+      "kind": "block_rect",
+      "name": "Continuous native rocky headwall between the upper turnout and shore road",
+      "block": "72",
+      "bounds": [
+        38,
+        11,
+        44,
+        12
+      ]
+    },
+    {
+      "kind": "point",
+      "name": "Joined ore erratic at bedrock toe",
+      "position": [
+        14,
+        12
+      ],
+      "block": "0a"
+    },
+    {
+      "kind": "point",
+      "name": "Joined ore erratic at bedrock toe",
+      "position": [
+        7,
+        5
+      ],
+      "block": "0a"
+    },
+    {
+      "kind": "point",
+      "name": "Joined ore erratic at bedrock toe",
+      "position": [
+        7,
+        6
+      ],
+      "block": "0a"
+    },
+    {
+      "kind": "point",
+      "name": "Joined ore erratic at bedrock toe",
+      "position": [
+        8,
+        6
+      ],
+      "block": "0a"
+    },
+    {
+      "kind": "point",
+      "name": "Joined ore erratic at bedrock toe",
+      "position": [
+        25,
+        7
+      ],
+      "block": "0a"
+    },
+    {
+      "kind": "point",
+      "name": "Joined ore erratic at bedrock toe",
+      "position": [
+        25,
+        8
+      ],
+      "block": "0a"
+    },
+    {
+      "kind": "point",
+      "name": "Joined ore erratic at bedrock toe",
+      "position": [
+        26,
+        8
+      ],
+      "block": "0a"
+    },
+    {
+      "kind": "point",
+      "name": "Pale gravel haul-road bed on proven level native rock Floor",
+      "position": [
+        1,
+        5
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Pale gravel haul-road bed on proven level native rock Floor",
+      "position": [
+        2,
+        5
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Pale gravel haul-road bed on proven level native rock Floor",
+      "position": [
+        3,
+        5
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Pale gravel haul-road bed on proven level native rock Floor",
+      "position": [
+        4,
+        5
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Pale gravel haul-road bed on proven level native rock Floor",
+      "position": [
+        5,
+        5
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Pale gravel haul-road bed on proven level native rock Floor",
+      "position": [
+        5,
+        6
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Pale gravel haul-road bed on proven level native rock Floor",
+      "position": [
+        5,
+        7
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Pale gravel haul-road bed on proven level native rock Floor",
+      "position": [
+        5,
+        8
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Pale gravel haul-road bed on proven level native rock Floor",
+      "position": [
+        5,
+        9
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Pale gravel haul-road bed on proven level native rock Floor",
+      "position": [
+        6,
+        8
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Pale gravel haul-road bed on proven level native rock Floor",
+      "position": [
+        7,
+        8
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Pale gravel haul-road bed on proven level native rock Floor",
+      "position": [
+        8,
+        8
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Pale gravel haul-road bed on proven level native rock Floor",
+      "position": [
+        9,
+        8
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Pale gravel haul-road bed on proven level native rock Floor",
+      "position": [
+        10,
+        8
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Pale gravel haul-road bed on proven level native rock Floor",
+      "position": [
+        11,
+        8
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Pale gravel haul-road bed on proven level native rock Floor",
+      "position": [
+        12,
+        8
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Pale gravel haul-road bed on proven level native rock Floor",
+      "position": [
+        12,
+        9
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Pale gravel haul-road bed on proven level native rock Floor",
+      "position": [
+        13,
+        9
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Pale gravel haul-road bed on proven level native rock Floor",
+      "position": [
+        13,
+        7
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Pale gravel haul-road bed on proven level native rock Floor",
+      "position": [
+        18,
+        7
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Pale gravel haul-road bed on proven level native rock Floor",
+      "position": [
+        18,
+        6
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Exact native outdoor stone stair at retained western climb",
+      "position": [
+        5,
+        10
+      ],
+      "block": "80"
+    },
+    {
+      "kind": "point",
+      "name": "Attached rock shoulder below western carrier bench",
+      "position": [
+        4,
+        11
+      ],
+      "block": "0a"
+    },
+    {
+      "name": "Carrier-bank reclaimed grass above the stair",
+      "kind": "block_remap",
+      "bounds": [
+        5,
+        7,
+        7,
+        9
+      ],
+      "from": "01",
+      "to": "03"
+    },
+    {
+      "name": "Carrier-bank reclaimed grass above the stair",
+      "kind": "block_remap",
+      "bounds": [
+        5,
+        7,
+        7,
+        9
+      ],
+      "from": "71",
+      "to": "03"
+    },
+    {
+      "name": "Upper cache grass joins the carrier-bank trail",
+      "kind": "block_remap",
+      "bounds": [
+        12,
+        7,
+        13,
+        8
+      ],
+      "from": "71",
+      "to": "03"
+    },
+    {
+      "name": "Pine-neck habitat extends onto the western trail",
+      "kind": "block_remap",
+      "bounds": [
+        24,
+        9,
+        25,
+        11
+      ],
+      "from": "01",
+      "to": "03"
+    },
+    {
+      "name": "Pine-neck habitat extends onto the western trail",
+      "kind": "block_remap",
+      "bounds": [
+        24,
+        9,
+        25,
+        11
+      ],
+      "from": "02",
+      "to": "03"
+    },
+    {
+      "name": "Attached carrier-bank boulder closes the lower grass shoulder",
+      "kind": "point",
+      "position": [
+        7,
+        8
+      ],
+      "block": "0a"
+    },
+    {
+      "name": "Attached carrier-bank toe closes the cliff-foot bypass",
+      "kind": "point",
+      "position": [
+        6,
+        10
+      ],
+      "block": "0a"
+    },
+    {
+      "name": "Attached carrier-bank toe closes the cliff-foot bypass",
+      "kind": "point",
+      "position": [
+        7,
+        9
+      ],
+      "block": "0a"
+    },
+    {
+      "name": "Attached stair shoulder seals the short grass-side bypass",
+      "kind": "point",
+      "position": [
+        6,
+        9
+      ],
+      "block": "0a"
+    },
+    {
+      "name": "West stair rock shoulder closes the exposed cliff-foot strip",
+      "kind": "point",
+      "position": [
+        4,
+        9
+      ],
+      "block": "0a"
+    },
+    {
+      "kind": "point",
+      "name": "Preserve accepted installed city mouth",
+      "position": [
+        0,
+        5
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Preserve accepted installed city mouth",
+      "position": [
+        47,
+        10
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Preserve accepted installed city mouth",
+      "position": [
+        47,
+        11
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Preserve accepted installed city mouth",
+      "position": [
+        47,
+        12
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Preserve accepted installed city mouth",
+      "position": [
+        47,
+        13
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Retain previously native-published outdoor cliff and boulder repair",
+      "position": [
+        12,
+        10
+      ],
+      "block": "72"
+    },
+    {
+      "kind": "point",
+      "name": "Retain previously native-published outdoor cliff and boulder repair",
+      "position": [
+        13,
+        10
+      ],
+      "block": "72"
+    },
+    {
+      "kind": "point",
+      "name": "Retain previously native-published outdoor cliff and boulder repair",
+      "position": [
+        8,
+        6
+      ],
+      "block": "72"
+    },
+    {
+      "kind": "point",
+      "name": "Retain previously native-published outdoor cliff and boulder repair",
+      "position": [
+        8,
+        5
+      ],
+      "block": "0a"
+    },
+    {
+      "kind": "point",
+      "name": "Retain previously native-published outdoor cliff and boulder repair",
+      "position": [
+        26,
+        8
+      ],
+      "block": "72"
+    },
+    {
+      "kind": "point",
+      "name": "Retain previously native-published outdoor cliff and boulder repair",
+      "position": [
+        26,
+        7
+      ],
+      "block": "0a"
+    },
+    {
+      "kind": "point",
+      "name": "Continuous native top rim joins the cache and mine terrace",
+      "position": [
+        14,
+        3
+      ],
+      "block": "70"
+    },
+    {
+      "kind": "point",
+      "name": "Continuous native top rim joins the cache and mine terrace",
+      "position": [
+        15,
+        3
+      ],
+      "block": "70"
+    },
+    {
+      "kind": "point",
+      "name": "Continuous native top rim joins the cache and mine terrace",
+      "position": [
+        16,
+        3
+      ],
+      "block": "70"
+    },
+    {
+      "kind": "point",
+      "name": "Continuous native top rim joins the cache and mine terrace",
+      "position": [
+        17,
+        3
+      ],
+      "block": "70"
+    },
+    {
+      "kind": "point",
+      "name": "Continuous native top rim joins the cache and mine terrace",
+      "position": [
+        18,
+        3
+      ],
+      "block": "70"
+    },
+    {
+      "kind": "point",
+      "name": "Continuous native top rim joins the cache and mine terrace",
+      "position": [
+        19,
+        3
+      ],
+      "block": "70"
+    },
+    {
+      "kind": "point",
+      "name": "Actual northeast corner above the existing east wall",
+      "position": [
+        20,
+        3
+      ],
+      "block": "6b"
+    },
+    {
+      "kind": "point",
+      "name": "Carry encounter grass to the native right cliff face without opening its wall",
+      "position": [
+        20,
+        4
+      ],
+      "block": "81"
+    },
+    {
+      "kind": "point",
+      "name": "Carry encounter grass to the native right cliff face without opening its wall",
+      "position": [
+        20,
+        5
+      ],
+      "block": "81"
+    },
+    {
+      "kind": "point",
+      "name": "Four-step northern forecourt grass threshold protects the cache approach",
+      "position": [
+        17,
+        4
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Four-step northern forecourt grass threshold protects the cache approach",
+      "position": [
+        18,
+        4
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Four-step northern forecourt grass threshold protects the cache approach",
+      "position": [
+        19,
+        4
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Four-step northern forecourt grass threshold protects the cache approach",
+      "position": [
+        18,
+        5
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Four-step northern forecourt grass threshold protects the cache approach",
+      "position": [
+        19,
+        5
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Remove internal cliff or boulder clutter inside the joined terrace",
+      "position": [
+        19,
+        6
+      ],
+      "block": "71"
+    },
+    {
+      "kind": "point",
+      "name": "Restore grass below the retained rear boulder row",
+      "position": [
+        16,
+        5
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Join both parts of the encounter threshold",
+      "position": [
+        17,
+        5
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Native gray cave12 treads retain matching brown outdoor landing",
+      "position": [
+        5,
+        10
+      ],
+      "block": "82"
+    }
+  ],
+  "status": "Explicit source art/strokes visually reviewed; native terrain, six-step grass neck, ordinary ramp return and complete Surf perimeter checked. Native publication pending.",
+  "water_boundaries": {
+    "south": {
+      "y": 19,
+      "x_range": [
+        21,
+        47
+      ],
+      "blocks": [
+        "38",
+        "39",
+        "3a"
+      ]
+    },
+    "east": {
+      "x": 47,
+      "y_range": [
+        14,
+        18
+      ],
+      "blocks": [
+        "32",
+        "36"
+      ]
+    }
+  },
+  "internal_water_neighbor": {
+    "a": "MnR10C00R00",
+    "direction": "east",
+    "b": "MnR10C01R00",
+    "reverse": "west",
+    "offset": 0,
+    "core_seam_x": 64
+  },
+  "derived_blocks": [
+    {
+      "id": "80",
+      "source_tileset": "cave",
+      "source_block": "12",
+      "collision": "FLOOR/FLOOR/WALL/FLOOR",
+      "required_typed_extension": "r10_stairs_revision::revise_r10_rock_stairs"
+    },
+    {
+      "id": "81",
+      "source_tileset": "johto",
+      "source_block": "69",
+      "tile_column_sources": [
+        {
+          "source_block": "03",
+          "source_column": 0
+        },
+        {
+          "source_block": "03",
+          "source_column": 1
+        },
+        {
+          "source_block": "69",
+          "source_column": 2
+        },
+        {
+          "source_block": "69",
+          "source_column": 3
+        }
+      ],
+      "collision": [
+        "TALL_GRASS",
+        "WALL",
+        "TALL_GRASS",
+        "WALL"
+      ],
+      "required_typed_extension": "r10_cache_grass_art::add_r10_cache_art"
+    },
+    {
+      "id": "82",
+      "source_tileset": "cave",
+      "source_block": "12",
+      "tile_row_sources": [
+        {
+          "source_tileset": "johto",
+          "source_block": "72",
+          "source_row": 0
+        },
+        {
+          "source_tileset": "johto",
+          "source_block": "72",
+          "source_row": 1
+        },
+        {
+          "source_tileset": "cave",
+          "source_block": "12",
+          "source_row": 2
+        },
+        {
+          "source_tileset": "cave",
+          "source_block": "12",
+          "source_row": 3
+        }
+      ],
+      "collision": [
+        "FLOOR",
+        "FLOOR",
+        "WALL",
+        "FLOOR"
+      ],
+      "required_typed_extension": "r10_cache_grass_art::add_r10_cache_art"
+    },
+    {
+      "id": "83",
+      "source_tileset": "johto",
+      "source_block": "68",
+      "tile_column_sources": [
+        {
+          "source_block": "68",
+          "source_column": 0
+        },
+        {
+          "source_block": "68",
+          "source_column": 1
+        },
+        {
+          "source_block": "03",
+          "source_column": 2
+        },
+        {
+          "source_block": "03",
+          "source_column": 3
+        }
+      ],
+      "collision": [
+        "WALL",
+        "TALL_GRASS",
+        "WALL",
+        "TALL_GRASS"
+      ],
+      "required_typed_extension": "r10_cache_grass_art::add_r10_west_terrace_art"
+    },
+    {
+      "id": "84",
+      "source_tileset": "johto",
+      "source_block": "72",
+      "tile_row_sources": [
+        {
+          "source_block": "03",
+          "source_row": 0
+        },
+        {
+          "source_block": "03",
+          "source_row": 1
+        },
+        {
+          "source_block": "72",
+          "source_row": 2
+        },
+        {
+          "source_block": "72",
+          "source_row": 3
+        }
+      ],
+      "collision": [
+        "TALL_GRASS",
+        "TALL_GRASS",
+        "WALL",
+        "WALL"
+      ],
+      "required_typed_extension": "r10_cache_grass_art::add_r10_west_terrace_art"
+    }
+  ]
+}

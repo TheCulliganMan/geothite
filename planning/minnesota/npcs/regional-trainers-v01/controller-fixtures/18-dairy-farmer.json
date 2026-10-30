@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "trainers": [
+    {
+      "id": "MN_FAIR_CURDS_TRAINER",
+      "map": "MnStateFairgrounds",
+      "actor_script": "MN_FAIR_CURDS_TRAINER",
+      "trainer_class": "MN_DAIRY_FARMER",
+      "sprite": "SPRITE_MN_DAIRY_FARMER",
+      "facing": "west",
+      "approach": [
+        66,
+        15
+      ],
+      "defeated_flag": "EVENT_MN_FAIR_CURDS_DEFEATED"
+    }
+  ]
+}

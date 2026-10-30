@@ -1,13 +1,24 @@
 //! Compare reviewed dialogue with actual production pages and input ownership.
 use crystal_core::input::GameButton;
+use crystal_runtime::CrystalRuntime;
 use serde_json::Value;
 
 use super::super::{VisibleShellController, visible_field_dialog_pages};
 use super::duluth_story::press;
 
+pub(super) fn timely_evidence(runtime: &CrystalRuntime) -> bool {
+    runtime.data().maps["MnLakeItasca"]
+        .scripts
+        .contains_key("MnOverhaulItascaCompared")
+}
+
 pub(super) fn canonical_pages(id: &str, label: &str) -> Vec<String> {
-    let path = std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("../../planning/minnesota/story.json");
+    let path = std::env::var_os("CRYSTAL_NORTHSTAR_CANONICAL_STORY_SOURCE")
+        .map(std::path::PathBuf::from)
+        .unwrap_or_else(|| {
+            std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+                .join("../../planning/minnesota/story.json")
+        });
     let story: Value = serde_json::from_str(&std::fs::read_to_string(path).expect("story source"))
         .expect("canonical JSON");
     if let Some(pages) = story["dialogue_overhaul"]["texts"]

@@ -1,4 +1,7 @@
 //! New Game to the Care Badge using earned partners and production input only.
+#[path = "earned_mine_choices.rs"]
+mod mine_choices;
+
 use crystal_core::battle::damage::{calculate_type_effectiveness_multiplier, is_physical_move};
 use crystal_core::battle::stats::apply_stage;
 use crystal_core::battle::turn::move_priority;
@@ -28,7 +31,11 @@ pub(super) fn best_attack(
     b.player_moves
         .iter()
         .enumerate()
-        .filter(|(_, m)| m.current_pp > 0 && r.data().moves[&m.name].power > 0)
+        .filter(|(_, m)| {
+            m.current_pp > 0
+                && b.player_disabled_move.as_deref() != Some(m.name.as_str())
+                && r.data().moves[&m.name].power > 0
+        })
         .max_by_key(|(_, learned)| {
             let m = &r.data().moves[&learned.name];
             let physical =
@@ -120,7 +127,12 @@ pub(super) fn try_battle(
     id: &str,
     win: &str,
 ) -> bool {
-    play_battle(c, r, id, Victory::Event(win), false)
+    play_battle(c, r, id, Victory::Event(win), false, true)
+}
+
+/// Fight a visible wild opponent with the chosen training lead kept in place.
+pub(super) fn train_wild(c: &mut VisibleShellController, r: &CrystalRuntime) -> bool {
+    play_battle(c, r, "WILD", Victory::Wild, false, false)
 }
 
 enum Victory<'a> {
@@ -135,7 +147,7 @@ pub(super) fn try_league_battle(
     id: &str,
     completed: u8,
 ) -> bool {
-    play_battle(c, r, id, Victory::League(completed), false)
+    play_battle(c, r, id, Victory::League(completed), false, false)
 }
 
 /// Attempt an ordinary wild capture, including throwing at full health.
@@ -148,7 +160,7 @@ pub(super) fn try_recruit(c: &mut VisibleShellController, r: &CrystalRuntime) ->
         RuntimeBattleKind::Wild { .. } | RuntimeBattleKind::StaticWild { .. }
     ));
     assert!(before.bag.balls.iter().any(|b| b.quantity > 0));
-    let _ = play_battle(c, r, "WILD", Victory::Wild, true);
+    let _ = play_battle(c, r, "WILD", Victory::Wild, true, false);
     c.snapshot()
         .expect("actual recruitment outcome")
         .party
@@ -163,11 +175,17 @@ fn play_battle(
     id: &str,
     victory: Victory<'_>,
     recruit: bool,
+    allow_training_switch: bool,
 ) -> bool {
     let initial = c.snapshot().expect("before earned battle");
+    let mine = matches!(
+        id,
+        "MN_LODE_FOREMAN" | "MN_REED_MINE" | "MN_LODE_CHIEF" | "MN_REED_BOUNDARY"
+    ) || id.starts_with("MN_LODE_ARC_");
     let mut saw_battle = false;
     let mut spent_pp = false;
     let mut lowered_accuracy = false;
+    let mut switched_since_attack = false;
     let mut traced_turn = None;
     let capture = id == "WILD" && (initial.party.slots.len() < 2 || recruit);
     let initial_balls: u32 = initial
@@ -205,8 +223,10 @@ fn play_battle(
                 .state()
                 .bag
                 .quantity(&r.data().items["POTION"]);
-            if (matches!(id, "MN_GYM_1" | "MN_ICE_ENFORCER" | "MN_GYM_5")
-                || matches!(&victory, Victory::League(_)))
+            if (matches!(
+                id,
+                "MN_GYM_1" | "MN_ICE_ENFORCER" | "MN_GYM_5" | "MN_GYM_6" | "MN_LODE_FOREMAN"
+            ) || matches!(&victory, Victory::League(_)))
                 && traced_turn != Some(b.player_turns_taken)
             {
                 traced_turn = Some(b.player_turns_taken);
@@ -282,7 +302,7 @@ fn play_battle(
                             "POTION",
                         ]
                     } else {
-                        &["SUPER_POTION", "POTION"]
+                        &["HYPER_POTION", "SUPER_POTION", "POTION"]
                     };
                     choices.iter().copied().find(|id| {
                         c.shell
@@ -297,7 +317,8 @@ fn play_battle(
                 .flatten()
         });
         let heal = healing_item.is_some();
-        let switch_training = id == "WILD"
+        let switch_training = allow_training_switch
+            && id == "WILD"
             && active == 0
             && s.party.slots.iter().any(|partner| {
                 partner.index != active
@@ -315,10 +336,25 @@ fn play_battle(
                 .flat_map(|m| &m.options)
                 .any(|o| o.contains("change <PKMN>"))
         });
+        let mine_partner = mine.then(|| mine_choices::partner(r, &s)).flatten();
         let button = if s.ui.menu.is_none() && s.ui.text.is_some() {
             GameButton::A
         } else if change_prompt {
-            GameButton::B
+            if mine_partner.is_some_and(|target| target != active) {
+                if c.shell
+                    .battle_shift_prompt_cursor
+                    .as_ref()
+                    .expect("native Shift cursor")
+                    .option_index
+                    == 0
+                {
+                    GameButton::A
+                } else {
+                    GameButton::Up
+                }
+            } else {
+                GameButton::B
+            }
         } else if c.shell.battle_pack_target_mode.is_some() {
             if c.shell.party_cursor < active {
                 GameButton::Down
@@ -328,13 +364,16 @@ fn play_battle(
                 GameButton::A
             }
         } else if let Some(cursor) = &c.shell.battle_switch_cursor {
-            let target = s
-                .party
-                .slots
-                .iter()
-                .filter(|s| s.pokemon.hp > 0 && s.index != active)
-                .max_by_key(|s| s.pokemon.level)
-                .map(|s| s.index)
+            let target = mine_partner
+                .filter(|&target| target != active)
+                .or_else(|| {
+                    s.party
+                        .slots
+                        .iter()
+                        .filter(|s| s.pokemon.hp > 0 && s.index != active)
+                        .max_by_key(|s| s.pokemon.level)
+                        .map(|s| s.index)
+                })
                 .expect("living earned partner");
             if cursor.option_index < target {
                 GameButton::Down
@@ -347,6 +386,7 @@ fn play_battle(
             if cursor.option_index > 0 {
                 GameButton::Up
             } else {
+                switched_since_attack = true;
                 GameButton::A
             }
         } else if c.shell.field_pack_action_cursor.is_some() {
@@ -390,6 +430,19 @@ fn play_battle(
                             && b.enemy_pokemon.stat_boosts[&Stat::Defense] > -1))
             });
             let target = support.unwrap_or_else(|| best_attack(r, b, p));
+            if cursor.option_index == target {
+                switched_since_attack = false;
+            }
+            if mine && cursor.option_index == target {
+                eprintln!(
+                    "mine attack: {} uses {}, disabled={:?}, previous={:?}, status={:?}",
+                    p.species.id,
+                    b.player_moves[target].name,
+                    b.player_disabled_move,
+                    b.player_last_move,
+                    p.status
+                );
+            }
             if cursor.option_index < target {
                 GameButton::Down
             } else if cursor.option_index > target {
@@ -400,7 +453,9 @@ fn play_battle(
         } else if let Some(cursor) = &c.shell.battle_action_cursor {
             let target = if heal || catch {
                 2
-            } else if switch_training {
+            } else if switch_training
+                || (!switched_since_attack && mine_partner.is_some_and(|target| target != active))
+            {
                 1
             } else {
                 0
@@ -426,8 +481,11 @@ fn play_battle(
     let after = c.snapshot().expect("earned outcome");
     spent_pp |= spent_move_pp(&initial, &after);
     assert!(after.battle.is_none());
-    let same_clinic_loss = matches!(victory, Victory::Event(flag) if !flag.is_empty() && !event(c, flag))
-        && c.shell.shell.session().state().battle_result & 0x3f == 1;
+    let same_clinic_loss = c.shell.shell.session().state().battle_result & 0x3f == 1
+        && match &victory {
+            Victory::Event(flag) => flag.is_empty() || !event(c, flag),
+            Victory::Wild | Victory::League(_) => true,
+        };
     if same_clinic_loss
         || (after.overworld.map_name.ends_with("Pokecenter1F")
             && initial.overworld.map_name != after.overworld.map_name)
@@ -448,6 +506,10 @@ fn play_battle(
                 "a native League loss resets its run"
             ),
             Victory::Wild => {}
+        }
+        if std::env::var_os("CRYSTAL_WINONA_SAVE_DIR").is_some() {
+            let root = c.shell.asset_root.clone();
+            continue_in_place(c, &root, r, &format!("campaign-{id}-native-loss"));
         }
         return false;
     }

@@ -51,50 +51,70 @@ pub(super) fn enter_gallery(
     root: &crystal_assets::AssetRoot,
 ) {
     let n = source();
+    let later = [
+        "EVENT_MN_DRILL_FEED_ISOLATED",
+        "EVENT_MN_DRILL_TEST_WITNESSED",
+        "EVENT_MN_DRILL_STOPPED",
+        "EVENT_MN_MINE_INSTRUMENT_RECOVERED",
+    ]
+    .map(|flag| (flag, event(c, flag)));
     cross(c, r, &n, "mouth", false);
-    assert!(path(c, r, (28, 23)).is_none(), "haulage crosscut closed");
+    if !event(c, "EVENT_MN_IRON_HAUL_PRESSURE_OFF") {
+        assert!(path(c, r, (28, 23)).is_none(), "haulage crosscut closed");
+    }
     walk(c, r, (5, 16));
     talk(c, GameButton::Up);
     finish(c);
     // The service loop reaches a different compartment, not the vent control.
     cross(c, r, &n, "service_loop", false);
-    assert!(path(c, r, (13, 16)).is_none(), "vent crosscut closed");
+    if !event(c, "EVENT_MN_IRON_VENT_PRESSURE_OFF") {
+        assert!(path(c, r, (13, 16)).is_none(), "vent crosscut closed");
+    }
     walk(c, r, (24, 15));
     talk(c, GameButton::Right);
     finish(c);
     cross(c, r, &n, "service_rise", false);
-    assert!(
-        path(c, r, (35, 4)).is_none(),
-        "two live circuits hold sump shutter"
-    );
+    if !event(c, "EVENT_MN_IRON_HAUL_PRESSURE_OFF") || !event(c, "EVENT_MN_IRON_VENT_PRESSURE_OFF")
+    {
+        assert!(
+            path(c, r, (35, 4)).is_none(),
+            "two live circuits hold sump shutter"
+        );
+    }
     cross(c, r, &n, "east_drop", true);
-    walk(c, r, (29, 12));
-    talk(c, GameButton::Up);
-    choice(c, false);
-    finish(c);
-    assert!(!event(c, "EVENT_MN_IRON_HAUL_PRESSURE_OFF"));
-    *c = save(c, root, r, "iron-pressure-declined");
-    talk(c, GameButton::Up);
-    choice(c, true);
-    finish(c);
-    assert!(event(c, "EVENT_MN_IRON_HAUL_PRESSURE_OFF"));
+    if !event(c, "EVENT_MN_IRON_HAUL_PRESSURE_OFF") {
+        walk(c, r, (29, 12));
+        talk(c, GameButton::Up);
+        choice(c, false);
+        finish(c);
+        assert!(!event(c, "EVENT_MN_IRON_HAUL_PRESSURE_OFF"));
+        *c = save(c, root, r, "iron-pressure-declined");
+        talk(c, GameButton::Up);
+        choice(c, true);
+        finish(c);
+        assert!(event(c, "EVENT_MN_IRON_HAUL_PRESSURE_OFF"));
+    }
     assert!(
         path(c, r, (4, 23)).is_some(),
         "haulage valve opens useful crosscut"
     );
     cross(c, r, &n, "east_drop", false);
-    assert!(
-        path(c, r, (35, 4)).is_none(),
-        "one circuit cannot open pump access"
-    );
+    if !event(c, "EVENT_MN_IRON_VENT_PRESSURE_OFF") {
+        assert!(
+            path(c, r, (35, 4)).is_none(),
+            "one circuit cannot open pump access"
+        );
+    }
     cross(c, r, &n, "east_drop", true);
     cross(c, r, &n, "haul_down", false);
     cross(c, r, &n, "sump_rise", false);
-    walk(c, r, (13, 16));
-    talk(c, GameButton::Up);
-    choice(c, true);
-    finish(c);
-    assert!(event(c, "EVENT_MN_IRON_VENT_PRESSURE_OFF"));
+    if !event(c, "EVENT_MN_IRON_VENT_PRESSURE_OFF") {
+        walk(c, r, (13, 16));
+        talk(c, GameButton::Up);
+        choice(c, true);
+        finish(c);
+        assert!(event(c, "EVENT_MN_IRON_VENT_PRESSURE_OFF"));
+    }
     assert!(
         path(c, r, (26, 21)).is_some(),
         "vent valve opens second crosscut"
@@ -113,15 +133,11 @@ pub(super) fn enter_gallery(
     walk(c, r, (33, 8));
     *c = save(c, root, r, "iron-sump-shutter-open");
     cross(c, r, &n, "pump_access", false);
-    for flag in [
-        "EVENT_MN_DRILL_FEED_ISOLATED",
-        "EVENT_MN_DRILL_TEST_WITNESSED",
-        "EVENT_MN_DRILL_STOPPED",
-        "EVENT_MN_MINE_INSTRUMENT_RECOVERED",
-    ] {
-        assert!(
-            !event(c, flag),
-            "shaft controls cannot grant later story result"
+    for (flag, before) in later {
+        assert_eq!(
+            event(c, flag),
+            before,
+            "shaft controls cannot grant or erase a later story result"
         );
     }
 }

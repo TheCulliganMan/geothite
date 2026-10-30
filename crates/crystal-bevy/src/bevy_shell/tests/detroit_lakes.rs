@@ -3,7 +3,7 @@ use std::collections::BTreeMap;
 use std::path::PathBuf;
 
 use crystal_core::input::GameButton;
-use crystal_core::models::Dv;
+use crystal_core::models::{Dv, LearnedMove};
 use crystal_runtime::CrystalRuntime;
 use serde_json::Value;
 
@@ -104,6 +104,40 @@ fn detroit_lakes_controller_all_rooms_residents_carpets_and_two_real_roads() {
     )
     .expect("station JSON");
     let mut c = fixture(&root, &r, CITY, (6, 18));
+    let mut partner = r
+        .data()
+        .create_pokemon("MEW", 50, Dv::default())
+        .expect("initial legal Surf fixture");
+    partner.moves = vec![LearnedMove {
+        name: "SURF".into(),
+        current_pp: r.data().moves["SURF"].pp,
+        pp_ups: 0,
+    }];
+    let state = c.shell.shell.session_mut().state_mut();
+    assert!(state.storage.party.add_pokemon(partner));
+    state.sync_party_from_storage();
+    state.badges.johto[3] = true;
+    state
+        .flags
+        .set_engine_flag("ENGINE_FOGBADGE", true)
+        .expect("initial Surf permission");
+    mark_runtime_snapshot_dirty(&mut c.shell);
+    // Every later change in this town tour is native input.
+    for actor in plan["residents"].as_array().expect("five town residents") {
+        let target = point(&actor["tile"]);
+        let approach = match actor["facing"].as_str().expect("native facing") {
+            "west" => (target.0 - 1, target.1),
+            "east" => (target.0 + 1, target.1),
+            _ => panic!("unreviewed town resident facing"),
+        };
+        walk(&mut c, &r, approach);
+        assert!(!talk(&mut c, target).is_empty());
+    }
+    for sign in plan["signs"].as_array().expect("public town signs") {
+        let target = point(&sign["tile"]);
+        walk(&mut c, &r, (target.0, target.1 + 1));
+        assert!(!talk(&mut c, target).is_empty());
+    }
     for door in plan["doors"].as_array().expect("five facades") {
         let name = door["target"].as_str().expect("room");
         let room = if name == "MnDetroitLakesStation" {
@@ -155,6 +189,20 @@ fn detroit_lakes_controller_all_rooms_residents_carpets_and_two_real_roads() {
             (47, 18),
             GameButton::Right,
         ),
+        (
+            (47, 19),
+            GameButton::Right,
+            "MnR15C00R00",
+            (0, 25),
+            GameButton::Left,
+        ),
+        (
+            (0, 19),
+            GameButton::Left,
+            "MnDetroitLakesApproach",
+            (47, 19),
+            GameButton::Right,
+        ),
     ] {
         walk(&mut c, &r, edge);
         for _ in 0..8 {
@@ -187,6 +235,43 @@ fn detroit_lakes_controller_all_rooms_residents_carpets_and_two_real_roads() {
             CITY
         );
     }
+    walk(&mut c, &r, (13, 23));
+    press(&mut c, GameButton::Down);
+    for _ in 0..96 {
+        let s = c.snapshot().expect("native beach Surf prompt/launch");
+        if s.overworld.mode == crystal_core::world::movement::MovementMode::Surf
+            && (s.overworld.tile.x, s.overworld.tile.y) == (13, 24)
+            && !s.ui.text_window_open
+            && c.shell.field_notice.is_none()
+            && !c.has_pending_script_work()
+        {
+            break;
+        }
+        press(&mut c, GameButton::A);
+    }
+    for (input, target) in [
+        (GameButton::Right, (14, 24)),
+        (GameButton::Left, (13, 24)),
+        (GameButton::Up, (13, 23)),
+    ] {
+        for _ in 0..8 {
+            press(&mut c, input);
+            let s = c
+                .snapshot()
+                .expect("native public lake movement settles")
+                .overworld;
+            if (s.tile.x, s.tile.y) == target {
+                break;
+            }
+        }
+        let s = c.snapshot().expect("native public lake movement").overworld;
+        assert_eq!(s.map_name, CITY);
+        assert_eq!((s.tile.x, s.tile.y), target);
+    }
+    assert_eq!(
+        c.snapshot().expect("real beach dismount").overworld.mode,
+        crystal_core::world::movement::MovementMode::Normal
+    );
     walk(&mut c, &r, (24, 2));
     for _ in 0..4 {
         press(&mut c, GameButton::Up);
@@ -210,7 +295,7 @@ fn detroit_lakes_controller_native_care_pc_and_priced_shop() {
     let mut c = fixture(&root, &r, "MnDetroitLakesPokecenter1F", (8, 13));
     let mut partner = r
         .data()
-        .create_pokemon("CHIKORITA", 20, Dv::default())
+        .create_pokemon("GILLPUP", 20, Dv::default())
         .expect("legal care partner");
     partner.hp = 10;
     partner.status = Some("POISON".into());
@@ -255,9 +340,23 @@ fn detroit_lakes_controller_native_care_pc_and_priced_shop() {
     }
     c = super::r10_gallery::continue_save(root.clone(), r.clone(), &mut c);
     travel(&mut c, &r, CITY);
+    // A fresh local poison scenario inherits the actually earned clinic
+    // registration. The healthy reached checkpoint is never rewritten.
+    let nonce = std::time::SystemTime::now()
+        .duration_since(std::time::UNIX_EPOCH)
+        .expect("clock")
+        .as_nanos();
+    let path = super::authored_route_fixture::reached_save_path(&format!(
+        "detroit-earned-clinic-poison-scenario-{}-{nonce}.crystalsave",
+        std::process::id()
+    ));
+    c.save(&path)
+        .expect("reached native Detroit clinic checkpoint");
+    c = VisibleShellController::load_save(root.clone(), r.clone(), path.clone(), None)
+        .expect("fresh declared poison scenario");
+    super::authored_route_fixture::cleanup_reached_save(&path);
     let last_battle_result = c.shell.shell.session().state().battle_result;
-    // Native poison blackout after an explicit reinjury fixture must use the
-    // clinic that the real nurse bound, including after Save/Continue.
+    // Initial HP/status and money are fixtures; all later recovery uses input.
     let state = c.shell.shell.session_mut().state_mut();
     let partner = state.storage.party.pokemon[0].as_mut().expect("partner");
     partner.hp = 1;

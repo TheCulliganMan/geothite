@@ -79,6 +79,28 @@ pub(crate) fn validate_ledges<'a>(
             );
         }
     }
+    for cliff in &design.closed_high_cliffs {
+        let [x0, y0, x1, y1] = cliff.bounds_core;
+        ensure!(
+            x0 < x1 && y0 < y1 && y1 - y0 == 2 && x1 <= width * 2 && y1 <= height * 2,
+            "{}: invalid closed high-cliff bounds",
+            cliff.id
+        );
+        ensure!(
+            cliff.direction == "south"
+                && matches!(kind(cliff.upper_approach)?, "FLOOR" | "TALL_GRASS")
+                && matches!(kind(cliff.landing)?, "FLOOR" | "TALL_GRASS"),
+            "{}: closed cliff must retain safe approaches",
+            cliff.id
+        );
+        for x in x0..x1 {
+            ensure!(
+                kind([x, y0])? == "FLOOR" && kind([x, y0 + 1])? == "WALL",
+                "{}: high cliff must remain a retaining face without a hop",
+                cliff.id
+            );
+        }
+    }
     Ok(())
 }
 
@@ -179,7 +201,11 @@ pub(crate) fn validate_ledge_returns<'a>(
     }
     let [width, height] = design.dimensions_metatiles;
     let extent = [0, 0, width * 2, height * 2];
-    for ledge in &design.one_way_ledges {
+    for ledge in design
+        .one_way_ledges
+        .iter()
+        .chain(&design.closed_high_cliffs)
+    {
         let [x0, y0, x1, y1] = ledge.return_passage_core;
         ensure!(
             x0 < x1

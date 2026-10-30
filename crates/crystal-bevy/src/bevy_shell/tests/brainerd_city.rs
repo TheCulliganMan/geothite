@@ -18,7 +18,12 @@ use super::super::{
     complete_visible_smoke_player_name_if_needed, initialize_bevy_runtime_shell,
     mark_runtime_snapshot_dirty,
 };
-use super::authored_route_fixture::{Point, indoor_walk, neighbors};
+use super::authored_route_fixture::{
+    Point, cleanup_reached_save, indoor_walk, neighbors, reached_save_path,
+};
+
+#[path = "town_exterior_review.rs"]
+mod town_exterior_review;
 
 const TOWN: &str = "MnBrainerd";
 const SURF_EVENT: &str = "EVENT_MN_SURF_GIFT_RECEIVED";
@@ -186,7 +191,7 @@ fn continue_save(
         .duration_since(std::time::UNIX_EPOCH)
         .expect("clock")
         .as_nanos();
-    let path = std::env::temp_dir().join(format!(
+    let path = reached_save_path(&format!(
         "brainerd-{}-{stamp}.crystalsave",
         std::process::id()
     ));
@@ -194,7 +199,7 @@ fn continue_save(
     let mut loaded =
         VisibleShellController::load_save(root.clone(), runtime.clone(), path.clone(), None)
             .expect("production Continue");
-    std::fs::remove_file(path).expect("remove owned scratch save");
+    cleanup_reached_save(&path);
     let after = loaded.snapshot().expect("continued state");
     assert_eq!(before.party, after.party);
     assert_eq!(before.bag, after.bag);
@@ -212,7 +217,26 @@ fn continue_save(
 #[ignore = "requires the published external three-city pack"]
 fn brainerd_city_controller_all_facades_both_carpets_and_safe_arrivals() {
     let (root, runtime) = load();
-    let gym = canonical_gym();
+    let source: Value = serde_json::from_str(
+        &std::fs::read_to_string(repo().join("planning/minnesota/gyms/brainerd-winch.json"))
+            .expect("current installed winch Gym source"),
+    )
+    .expect("winch Gym JSON");
+    let gym = &source["gyms"][0];
+    let actual = &runtime.data().maps["MnBrainerdGym"];
+    for (index, expected) in [
+        (3, point(&gym["arrival_core"])),
+        (1, point(&gym["exit_tiles_core"][0])),
+        (2, point(&gym["exit_tiles_core"][1])),
+    ] {
+        let warp = actual
+            .events
+            .warps
+            .iter()
+            .find(|w| w.index == index)
+            .expect("native Gym warp");
+        assert_eq!((warp.x as i16, warp.y as i16), expected);
+    }
     for (room, exterior, arrival, carpets) in [
         (
             "MnBrainerdPokecenter1F",

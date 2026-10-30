@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "trainers": [
+    {
+      "map": "MnDetroitLakes",
+      "approach": [
+        15,
+        19
+      ],
+      "id": "MN_EXTRA_SNOWPLOW_DRIVER",
+      "display_name": "ROWENA",
+      "trainer_class": "MN_SNOWPLOW_DRIVER",
+      "class_name": "SNOWPLOW DRIVER",
+      "template_class": "POKEFANF",
+      "sprite": "SPRITE_MN_SNOWPLOW_DRIVER",
+      "tile": [
+        15,
+        18
+      ],
+      "facing": "south",
+      "sight_range": 1,
+      "defeated_flag": "EVENT_MN_EXTRA_SNOWPLOW_DRIVER",
+      "party": [
+        {
+          "species": "SCRAPLOW",
+          "level": 22
+        },
+        {
+          "species": "SKATUFF",
+          "level": 24
+        }
+      ],
+      "before_lines": [
+        "Roads are clear!",
+        "Time for a battle!"
+      ],
+      "after_lines": [
+        "A clean sweep!",
+        "Keep warm!"
+      ],
+      "loss_lines": [
+        "Take it slowly.",
+        "There is time yet."
+      ]
+    }
+  ]
+}

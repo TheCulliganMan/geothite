@@ -841,6 +841,10 @@ pub(crate) fn validate_geometry(
     crate::authored_route_traversal::validate_grass_crossings(design, &seen, kind)?;
     crate::authored_route_traversal::validate_grass_crossings(design, all_seen, after_kind)?;
     crate::authored_route_traversal::validate_ledge_returns(design, all_seen, after_kind)?;
+    crate::authored_route_reward_grass::validate(pack, design, blocks, tileset)?;
+    if cut.is_some() {
+        crate::authored_route_reward_grass::validate(pack, design, after_blocks, tileset)?;
+    }
     crate::authored_route_traversal::validate_battle_grass_choices(design, &seen, kind)?;
     crate::authored_route_traversal::validate_battle_grass_choices(design, all_seen, after_kind)?;
     let surf_only = design

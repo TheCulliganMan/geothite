@@ -1,0 +1,58 @@
+[
+  {
+    "id": "MnBoundarySafariC01R00-corner-20-16",
+    "map": "MnBoundarySafariC01R00",
+    "core": [
+      41,
+      32
+    ]
+  },
+  {
+    "id": "MnBoundarySafariC01R01-corner-17-16",
+    "map": "MnBoundarySafariC01R01",
+    "core": [
+      35,
+      32
+    ]
+  },
+  {
+    "id": "MnR08C00R00-corner-12-13",
+    "map": "MnR08C00R00",
+    "core": [
+      25,
+      26
+    ]
+  },
+  {
+    "id": "MnR08C00R00-corner-21-13",
+    "map": "MnR08C00R00",
+    "core": [
+      42,
+      26
+    ]
+  },
+  {
+    "id": "MnR09C01R00-corner-7-20",
+    "map": "MnR09C01R00",
+    "core": [
+      15,
+      40
+    ]
+  },
+  {
+    "id": "MnR09C01R00-corner-9-20",
+    "map": "MnR09C01R00",
+    "core": [
+      18,
+      40
+    ]
+  },
+  {
+    "id": "MnR13C00R00-corner-18-12",
+    "map": "MnR13C00R00",
+    "core": [
+      37,
+      24
+    ]
+  }
+]

@@ -571,16 +571,8 @@ fn load_tileset_art(
     let source_tile_count =
         (width as usize / SOURCE_TILE_SIZE) * (height as usize / SOURCE_TILE_SIZE);
     let palette_bank = load_tileset_palette_bank(asset_root, tileset_id, time_of_day)?;
-    let foreground_path = runtime_assets
-        .join("data/tilesets")
-        .join(format!("{tileset_id}_foregrounds.json"));
-    let foregrounds: std::collections::BTreeMap<usize, [[u8; 3]; 3]> =
-        if crate::runtime_asset_exists(&foreground_path) {
-            serde_json::from_str(&crate::read_runtime_asset_to_string(&foreground_path)?)
-                .context("parse authored tile foreground colors")?
-        } else {
-            std::collections::BTreeMap::new()
-        };
+    let foregrounds =
+        seasonal_palette::load_foregrounds(asset_root, tileset_id, palette_bank.as_deref())?;
     let renderable_tile_count = source_tile_count.max(palette_map.len()).max(1);
     let mut tile_handles = Vec::with_capacity(renderable_tile_count);
     let mut priority_tile_handles = Vec::with_capacity(renderable_tile_count);
@@ -1319,9 +1311,33 @@ fn load_tileset_palette_bank(
             .with_context(|| format!("read tileset palette {}", tileset_palette_path.display()))?;
         let palettes = parse_palette_file(&content, None)?;
         if !palettes.is_empty() {
-            return Ok(Some(palettes.into_iter().take(8).collect()));
+            let mut bank: Vec<Palette> = palettes.into_iter().take(8).collect();
+            if seasonal_palette::is_winter(tileset_id) {
+                let day = load_shared_tileset_palette_bank(asset_root, "day")?
+                    .context("winter palette requires the native daylight bank")?;
+                let current = load_shared_tileset_palette_bank(asset_root, time_of_day)?
+                    .context("winter palette requires the native clock bank")?;
+                seasonal_palette::light_winter_bank(&mut bank, &day, &current);
+            }
+            return Ok(Some(bank));
         }
     }
+    let mut bank = load_shared_tileset_palette_bank(asset_root, time_of_day)?;
+    if seasonal_palette::is_prairie(tileset_id)
+        && let Some(bank) = &mut bank
+    {
+        let day = load_shared_tileset_palette_bank(asset_root, "day")?
+            .context("harvest palette requires the native daylight bank")?;
+        seasonal_palette::light_prairie_bank(bank, &day);
+    }
+    Ok(bank)
+}
+
+fn load_shared_tileset_palette_bank(
+    asset_root: &AssetRoot,
+    time_of_day: &str,
+) -> Result<Option<Vec<Palette>>> {
+    let runtime_assets = asset_root.runtime_assets();
     let bg_palette_path = runtime_assets.join("gfx/tilesets/bg_tiles.pal");
     if !crate::runtime_asset_exists(&bg_palette_path) {
         return Ok(None);

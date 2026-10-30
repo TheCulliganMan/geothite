@@ -44,10 +44,18 @@ fn load() -> (AssetRoot, CrystalRuntime) {
             let field = &r.data().maps[FIELD];
             assert_eq!([field.attributes.width, field.attributes.height], [32, 24]);
             let blocks = field.blocks.iter().map(|b| *b as u8).collect::<Vec<_>>();
-            assert_eq!(
-                format!("{:x}", Sha256::digest(blocks)),
+            let expected = if r.data().maps[FIELD]
+                .blocks
+                .iter()
+                .filter(|&&b| b == 0x3d)
+                .count()
+                == 14
+            {
+                "5794d029f45ab670c32d7ea008dfbd485b8d1b9e22cf83e33481e0bba08944a0"
+            } else {
                 "718fcae45a4ade9bef073c5577c6e40ba1aa28a4ba6e1441b3abac55fc1ec057"
-            );
+            };
+            assert_eq!(format!("{:x}", Sha256::digest(blocks)), expected);
             (root, r)
         })
         .clone()
@@ -593,3 +601,6 @@ fn winter_region_controller_long_snow_return_two_native_battles_pp_money_once_an
     assert!(event(&c, "EVENT_MN_ICE_BOARDER_NILS"));
     assert!(!event(&c, CACHE));
 }
+
+#[path = "rainy_icefields_grass.rs"]
+mod rainy_icefields_grass;

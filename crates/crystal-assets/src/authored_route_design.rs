@@ -29,7 +29,12 @@ pub(crate) struct RouteDesign {
     #[serde(default)]
     pub required_grass_crossings: Vec<GrassCrossing>,
     #[serde(default)]
+    pub optional_grass_rewards: Vec<GrassReward>,
+    #[serde(default)]
     pub one_way_ledges: Vec<OneWayLedge>,
+    /// Former hop faces explicitly replaced by tall retaining walls.
+    #[serde(default)]
+    pub closed_high_cliffs: Vec<OneWayLedge>,
     #[serde(default)]
     pub battle_or_grass_choices: Vec<BattleGrassChoice>,
     #[serde(default)]
@@ -76,6 +81,16 @@ pub(crate) struct OneWayLedge {
 pub(crate) struct GrassCrossing {
     pub id: String,
     pub bounds_core: [u16; 4],
+    pub minimum_grass_steps: u16,
+}
+
+#[derive(Deserialize)]
+pub(crate) struct GrassReward {
+    pub actor_id: String,
+    pub bounds_core: [u16; 4],
+    /// Additional parts of the same encounter threshold, including solid edges.
+    #[serde(default)]
+    pub additional_bounds_core: Vec<[u16; 4]>,
     pub minimum_grass_steps: u16,
 }
 
@@ -218,6 +233,22 @@ pub(crate) struct Encounters {
 impl RouteDesign {
     pub fn parse(text: &str) -> Result<Self> {
         let design: Self = serde_json::from_str(text)?;
+        let closed_r10_carrier = design.id == "MN_R10"
+            && design.one_way_ledges.is_empty()
+            && design.closed_high_cliffs.len() == 1
+            && design.closed_high_cliffs[0].id == "CARRIER_BANK_DROP"
+            && design.closed_high_cliffs[0].direction == "south"
+            && design.closed_high_cliffs[0].bounds_core == [24, 20, 28, 22]
+            && design.closed_high_cliffs[0].upper_approach == [25, 19]
+            && design.closed_high_cliffs[0].hop_from == [25, 20]
+            && design.closed_high_cliffs[0].landing == [25, 22]
+            && design.closed_high_cliffs[0].reverse_blocked == [25, 21]
+            && design.closed_high_cliffs[0].return_passage_core == [10, 20, 12, 22]
+            && design.closed_high_cliffs[0].minimum_return_steps >= 25;
+        ensure!(
+            design.closed_high_cliffs.is_empty() || closed_r10_carrier,
+            "closed high cliffs must retain the explicit R10 carrier wall and stair return"
+        );
         let (dimensions, columns, rows, trainers, residents, rooms, prefix) =
             match design.id.as_str() {
                 "MN_R01" => ([32, 20], 1, 1, 3, 2, 2, "MnR01"),
@@ -425,10 +456,20 @@ impl RouteDesign {
                 "MN_R10" => &["BADGE_7", "EVENT_MN_DEPOT_CLEARED"],
                 _ => &["BADGE_6"],
             };
+            let retained_or_mine_apron_ledges = closed_r10_carrier
+                || design.one_way_ledges.len() == 1
+                || (design.id == "MN_R09"
+                    && design.one_way_ledges.len() == 2
+                    && design.one_way_ledges[0].id == "MN_R09_SPOIL_RETURN"
+                    && design.one_way_ledges[1].id == "MN_R09_MINE_APRON_RETURN"
+                    && design.one_way_ledges[1].bounds_core == [38, 34, 40, 36]
+                    && design.one_way_ledges[1].upper_approach == [39, 33]
+                    && design.one_way_ledges[1].landing == [39, 36]
+                    && design.one_way_ledges[1].return_passage_core == [36, 34, 37, 36]);
             ensure!(
                 design.required_flags == expected_flags
                     && design.required_grass_crossings.len() == 1
-                    && design.one_way_ledges.len() == 1
+                    && retained_or_mine_apron_ledges
                     && design.cut_gates.len() == usize::from(design.id == "MN_R09")
                     && design.battle_or_grass_choices.len() == usize::from(design.id != "MN_R10"),
                 "retain the authored regional gates and distinct terrain choices"

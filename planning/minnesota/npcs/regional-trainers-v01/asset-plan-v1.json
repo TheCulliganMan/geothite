@@ -1,0 +1,469 @@
+{
+  "schema_version": 1,
+  "assets": [
+    {
+      "mode": "bind",
+      "source": "planning/minnesota/npcs/regional-trainers-v01/field-repairs/01-northwoods-ranger/native-pixels-v5.json",
+      "integration": "planning/minnesota/npcs/regional-trainers-v01/regular-bindings/01-northwoods-ranger.json",
+      "native_art": "target/regional-trainers-v01/field-repairs/01-northwoods-ranger/native-v5",
+      "field_base": "sailor",
+      "controller_fixture": "planning/minnesota/npcs/regional-trainers-v01/controller-fixtures/01-northwoods-ranger.json"
+    },
+    {
+      "mode": "bind",
+      "source": "planning/minnesota/npcs/regional-trainers-v01/field-repairs/02-canoe-guide/native-pixels-v2.json",
+      "integration": "planning/minnesota/npcs/regional-trainers-v01/regular-bindings/02-canoe-guide.json",
+      "native_art": "target/regional-trainers-v01/field-repairs/02-canoe-guide/native-v2",
+      "field_base": "fisher",
+      "controller_fixture": "planning/minnesota/npcs/regional-trainers-v01/controller-fixtures/02-canoe-guide.json"
+    },
+    {
+      "mode": "bind",
+      "source": "planning/minnesota/npcs/regional-trainers-v01/field-repairs/03-iron-range-miner/native-pixels-v3.json",
+      "integration": "planning/minnesota/npcs/regional-trainers-v01/regular-bindings/03-iron-range-miner.json",
+      "native_art": "target/regional-trainers-v01/field-repairs/03-iron-range-miner/native-v3",
+      "field_base": "receptionist",
+      "controller_fixture": "planning/minnesota/npcs/regional-trainers-v01/controller-fixtures/03-iron-range-miner.json"
+    },
+    {
+      "mode": "bind",
+      "source": "planning/minnesota/npcs/regional-trainers-v01/field-repairs/04-prairie-botanist/native-pixels-v2.json",
+      "integration": "planning/minnesota/npcs/regional-trainers-v01/regular-bindings/04-prairie-botanist.json",
+      "native_art": "target/regional-trainers-v01/field-repairs/04-prairie-botanist/native-v2",
+      "field_base": "oak",
+      "controller_fixture": "planning/minnesota/npcs/regional-trainers-v01/controller-fixtures/04-prairie-botanist.json"
+    },
+    {
+      "mode": "bind",
+      "source": "planning/minnesota/npcs/regional-trainers-v01/field-repairs/05-lakeside-angler/native-pixels-v2.json",
+      "integration": "planning/minnesota/npcs/regional-trainers-v01/regular-bindings/05-lakeside-angler.json",
+      "native_art": "target/regional-trainers-v01/field-repairs/05-lakeside-angler/native-v2",
+      "field_base": "receptionist",
+      "controller_fixture": "planning/minnesota/npcs/regional-trainers-v01/controller-fixtures/05-lakeside-angler.json"
+    },
+    {
+      "mode": "bind",
+      "source": "planning/minnesota/npcs/regional-trainers-v01/field-repairs/06-winter-courier/native-pixels-v2.json",
+      "integration": "planning/minnesota/npcs/regional-trainers-v01/regular-bindings/06-winter-courier.json",
+      "native_art": "target/regional-trainers-v01/field-repairs/06-winter-courier/native-v2",
+      "field_base": "cal",
+      "controller_fixture": "planning/minnesota/npcs/regional-trainers-v01/controller-fixtures/06-winter-courier.json"
+    },
+    {
+      "mode": "bind",
+      "source": "planning/minnesota/npcs/regional-trainers-v01/field-repairs/07-hockey-captain/native-pixels-v3.json",
+      "integration": "planning/minnesota/npcs/regional-trainers-v01/regular-bindings/07-hockey-captain.json",
+      "native_art": "target/regional-trainers-v01/field-repairs/07-hockey-captain/native-v3",
+      "field_base": "janine",
+      "controller_fixture": "planning/minnesota/npcs/regional-trainers-v01/controller-fixtures/07-hockey-captain.json"
+    },
+    {
+      "mode": "bind",
+      "source": "planning/minnesota/npcs/regional-trainers-v01/field-repairs/08-orchard-keeper/native-pixels-v2.json",
+      "integration": "planning/minnesota/npcs/regional-trainers-v01/regular-bindings/08-orchard-keeper.json",
+      "native_art": "target/regional-trainers-v01/field-repairs/08-orchard-keeper/native-v2",
+      "field_base": "granny",
+      "controller_fixture": "planning/minnesota/npcs/regional-trainers-v01/controller-fixtures/08-orchard-keeper.json"
+    },
+    {
+      "mode": "bind",
+      "source": "planning/minnesota/npcs/regional-trainers-v01/field-repairs/09-wild-rice-harvester/native-pixels-v2.json",
+      "integration": "planning/minnesota/npcs/regional-trainers-v01/regular-bindings/09-wild-rice-harvester.json",
+      "native_art": "target/regional-trainers-v01/field-repairs/09-wild-rice-harvester/native-v2",
+      "field_base": "cooltrainer_f",
+      "controller_fixture": "planning/minnesota/npcs/regional-trainers-v01/controller-fixtures/09-wild-rice-harvester.json"
+    },
+    {
+      "mode": "bind",
+      "source": "planning/minnesota/npcs/regional-trainers-v01/field-repairs/10-harbor-mechanic/native-pixels-v2.json",
+      "integration": "planning/minnesota/npcs/regional-trainers-v01/regular-bindings/10-harbor-mechanic.json",
+      "native_art": "target/regional-trainers-v01/field-repairs/10-harbor-mechanic/native-v2",
+      "field_base": "elder",
+      "controller_fixture": "planning/minnesota/npcs/regional-trainers-v01/controller-fixtures/10-harbor-mechanic.json"
+    },
+    {
+      "mode": "bind",
+      "source": "planning/minnesota/npcs/regional-trainers-v01/field-repairs/11-trail-photographer/native-pixels-v2.json",
+      "integration": "planning/minnesota/npcs/regional-trainers-v01/regular-bindings/11-trail-photographer.json",
+      "native_art": "target/regional-trainers-v01/field-repairs/11-trail-photographer/native-v2",
+      "field_base": "daisy",
+      "controller_fixture": "planning/minnesota/npcs/regional-trainers-v01/controller-fixtures/11-trail-photographer.json"
+    },
+    {
+      "mode": "bind",
+      "source": "planning/minnesota/npcs/regional-trainers-v01/field-repairs/12-state-fair-baker/native-pixels-v2.json",
+      "integration": "planning/minnesota/npcs/regional-trainers-v01/regular-bindings/12-state-fair-baker.json",
+      "native_art": "target/regional-trainers-v01/field-repairs/12-state-fair-baker/native-v2",
+      "field_base": "pokefan_f",
+      "controller_fixture": "planning/minnesota/npcs/regional-trainers-v01/controller-fixtures/12-state-fair-baker.json"
+    },
+    {
+      "mode": "bind",
+      "source": "planning/minnesota/npcs/regional-trainers-v01/field-repairs/13-storm-watcher/native-pixels-v2.json",
+      "integration": "planning/minnesota/npcs/regional-trainers-v01/regular-bindings/13-storm-watcher.json",
+      "native_art": "target/regional-trainers-v01/field-repairs/13-storm-watcher/native-v2",
+      "field_base": "morty",
+      "controller_fixture": "planning/minnesota/npcs/regional-trainers-v01/controller-fixtures/13-storm-watcher.json"
+    },
+    {
+      "mode": "bind",
+      "source": "planning/minnesota/npcs/regional-trainers-v01/field-repairs/14-fossil-researcher/native-pixels-v2.json",
+      "integration": "planning/minnesota/npcs/regional-trainers-v01/regular-bindings/14-fossil-researcher.json",
+      "native_art": "target/regional-trainers-v01/field-repairs/14-fossil-researcher/native-v2",
+      "field_base": "kimono_girl",
+      "controller_fixture": "planning/minnesota/npcs/regional-trainers-v01/controller-fixtures/14-fossil-researcher.json"
+    },
+    {
+      "mode": "bind",
+      "source": "planning/minnesota/npcs/regional-trainers-v01/field-repairs/15-night-sky-observer/native-pixels-v4.json",
+      "integration": "planning/minnesota/npcs/regional-trainers-v01/regular-bindings/15-night-sky-observer.json",
+      "native_art": "target/regional-trainers-v01/field-repairs/15-night-sky-observer/native-v4",
+      "field_base": "oak",
+      "controller_fixture": "planning/minnesota/npcs/regional-trainers-v01/controller-fixtures/15-night-sky-observer.json"
+    },
+    {
+      "mode": "bind",
+      "source": "planning/minnesota/npcs/regional-trainers-v01/field-repairs/14-cycle-tourist/native-pixels-v1.json",
+      "integration": "planning/minnesota/npcs/regional-trainers-v01/regular-bindings/14-cycle-tourist-v2.json",
+      "native_art": "target/regional-trainers-v01/field-repairs/14-cycle-tourist/native-v1",
+      "field_base": "kris",
+      "controller_fixture": "planning/minnesota/npcs/regional-trainers-v01/controller-fixtures/14-cycle-tourist.json"
+    },
+    {
+      "mode": "bind",
+      "source": "planning/minnesota/npcs/regional-trainers-v01/field-repairs/15-beekeeper/native-pixels-v2.json",
+      "integration": "planning/minnesota/npcs/regional-trainers-v01/regular-bindings/15-beekeeper.json",
+      "native_art": "target/regional-trainers-v01/field-repairs/15-beekeeper/native-v2",
+      "field_base": "pharmacist",
+      "controller_fixture": "planning/minnesota/npcs/regional-trainers-v01/controller-fixtures/15-beekeeper.json"
+    },
+    {
+      "mode": "bind",
+      "source": "planning/minnesota/npcs/regional-trainers-v01/field-repairs/16-lumberjack/native-pixels-v2.json",
+      "integration": "planning/minnesota/npcs/regional-trainers-v01/regular-bindings/16-lumberjack.json",
+      "native_art": "target/regional-trainers-v01/field-repairs/16-lumberjack/native-v2",
+      "field_base": "fishing_guru",
+      "controller_fixture": "planning/minnesota/npcs/regional-trainers-v01/controller-fixtures/16-lumberjack.json"
+    },
+    {
+      "mode": "bind",
+      "source": "planning/minnesota/npcs/regional-trainers-v01/field-repairs/17-bird-watcher/native-pixels-v2.json",
+      "integration": "planning/minnesota/npcs/regional-trainers-v01/regular-bindings/17-bird-watcher.json",
+      "native_art": "target/regional-trainers-v01/field-repairs/17-bird-watcher/native-v2",
+      "field_base": "receptionist",
+      "controller_fixture": "planning/minnesota/npcs/regional-trainers-v01/controller-fixtures/17-bird-watcher.json"
+    },
+    {
+      "mode": "bind",
+      "source": "planning/minnesota/npcs/regional-trainers-v01/field-repairs/18-dairy-farmer/native-pixels-v2.json",
+      "integration": "planning/minnesota/npcs/regional-trainers-v01/regular-bindings/18-dairy-farmer.json",
+      "native_art": "target/regional-trainers-v01/field-repairs/18-dairy-farmer/native-v2",
+      "field_base": "granny",
+      "controller_fixture": "planning/minnesota/npcs/regional-trainers-v01/controller-fixtures/18-dairy-farmer.json"
+    },
+    {
+      "mode": "bind",
+      "source": "planning/minnesota/npcs/regional-trainers-v01/field-repairs/19-mushroom-forager/native-pixels-v1.json",
+      "integration": "planning/minnesota/npcs/regional-trainers-v01/regular-bindings/19-mushroom-forager.json",
+      "native_art": "target/regional-trainers-v01/field-repairs/19-mushroom-forager/native-v1",
+      "field_base": "fishing_guru",
+      "controller_fixture": "planning/minnesota/npcs/regional-trainers-v01/controller-fixtures/19-mushroom-forager.json"
+    },
+    {
+      "mode": "bind",
+      "source": "planning/minnesota/npcs/regional-trainers-v01/field-repairs/20-volunteer/native-pixels-v2.json",
+      "integration": "planning/minnesota/npcs/regional-trainers-v01/regular-bindings/20-volunteer.json",
+      "native_art": "target/regional-trainers-v01/field-repairs/20-volunteer/native-v2",
+      "field_base": "lass",
+      "controller_fixture": "planning/minnesota/npcs/regional-trainers-v01/controller-fixtures/20-volunteer.json"
+    },
+    {
+      "mode": "bind",
+      "source": "planning/minnesota/npcs/regional-trainers-v01/field-repairs/21-ski-patroller/native-pixels-v3.json",
+      "integration": "planning/minnesota/npcs/regional-trainers-v01/regular-bindings/21-ski-patroller.json",
+      "native_art": "target/regional-trainers-v01/field-repairs/21-ski-patroller/native-v3",
+      "field_base": "clair",
+      "controller_fixture": "planning/minnesota/npcs/regional-trainers-v01/controller-fixtures/21-ski-patroller.json"
+    },
+    {
+      "mode": "bind",
+      "source": "planning/minnesota/npcs/tamarack-ice/05-maple-tapper/native-pixels-v3.json",
+      "integration": "planning/minnesota/npcs/regional-trainers-v01/regular-bindings/05-maple-tapper.json",
+      "native_art": "target/regional-trainers-v01/reused-normal/05-maple-tapper/native",
+      "field_base": "fisher",
+      "controller_fixture": "planning/minnesota/npcs/regional-trainers-v01/controller-fixtures/05-maple-tapper.json"
+    },
+    {
+      "mode": "bind",
+      "source": "planning/minnesota/npcs/tamarack-ice/06-roller-skater/native-pixels-v1.json",
+      "integration": "planning/minnesota/npcs/regional-trainers-v01/regular-bindings/06-roller-skater.json",
+      "native_art": "target/regional-trainers-v01/reused-normal/06-roller-skater/native",
+      "field_base": "lass",
+      "controller_fixture": "planning/minnesota/npcs/regional-trainers-v01/controller-fixtures/06-roller-skater.json"
+    },
+    {
+      "mode": "bind",
+      "source": "planning/minnesota/npcs/tamarack-ice/07-curler/native-pixels-v1.json",
+      "integration": "planning/minnesota/npcs/regional-trainers-v01/regular-bindings/07-curler.json",
+      "native_art": "target/regional-trainers-v01/reused-normal/07-curler/native",
+      "field_base": "cooltrainer_m",
+      "controller_fixture": "planning/minnesota/npcs/regional-trainers-v01/controller-fixtures/07-curler.json"
+    },
+    {
+      "mode": "bind",
+      "source": "planning/minnesota/npcs/tamarack-ice/08-lifeguard/native-pixels-v2.json",
+      "integration": "planning/minnesota/npcs/regional-trainers-v01/regular-bindings/08-lifeguard.json",
+      "native_art": "target/regional-trainers-v01/reused-normal/08-lifeguard/native",
+      "field_base": "sailor",
+      "controller_fixture": "planning/minnesota/npcs/regional-trainers-v01/controller-fixtures/08-lifeguard.json"
+    },
+    {
+      "mode": "bind",
+      "source": "planning/minnesota/npcs/tamarack-ice/09-port-pilot/native-pixels-v1.json",
+      "integration": "planning/minnesota/npcs/regional-trainers-v01/regular-bindings/09-port-pilot.json",
+      "native_art": "target/regional-trainers-v01/reused-normal/09-port-pilot/native",
+      "field_base": "teacher",
+      "controller_fixture": "planning/minnesota/npcs/regional-trainers-v01/controller-fixtures/09-port-pilot.json"
+    },
+    {
+      "mode": "bind",
+      "source": "planning/minnesota/npcs/tamarack-ice/10-trail-runner/native-pixels-v1.json",
+      "integration": "planning/minnesota/npcs/regional-trainers-v01/regular-bindings/10-trail-runner.json",
+      "native_art": "target/regional-trainers-v01/reused-normal/10-trail-runner/native",
+      "field_base": "cooltrainer_f",
+      "controller_fixture": "planning/minnesota/npcs/regional-trainers-v01/controller-fixtures/10-trail-runner.json"
+    },
+    {
+      "mode": "bind",
+      "source": "planning/minnesota/npcs/tamarack-ice/11-camp-cook/native-pixels-v2.json",
+      "integration": "planning/minnesota/npcs/regional-trainers-v01/regular-bindings/11-camp-cook.json",
+      "native_art": "target/regional-trainers-v01/reused-normal/11-camp-cook/native",
+      "field_base": "pokefan_m",
+      "controller_fixture": "planning/minnesota/npcs/regional-trainers-v01/controller-fixtures/11-camp-cook.json"
+    },
+    {
+      "mode": "bind",
+      "source": "planning/minnesota/npcs/tamarack-ice/12-dog-musher/native-pixels-v1.json",
+      "integration": "planning/minnesota/npcs/regional-trainers-v01/regular-bindings/12-dog-musher.json",
+      "native_art": "target/regional-trainers-v01/reused-normal/12-dog-musher/native",
+      "field_base": "super_nerd",
+      "controller_fixture": "planning/minnesota/npcs/regional-trainers-v01/controller-fixtures/12-dog-musher.json"
+    },
+    {
+      "mode": "bind",
+      "source": "planning/minnesota/npcs/tamarack-ice/01-tamarack/native-pixels-v4.json",
+      "integration": "planning/minnesota/npcs/tamarack-ice/01-tamarack/binding-v1.json",
+      "native_art": "target/regional-trainers-v01/reused-story/01-tamarack/native",
+      "field_base": "granny",
+      "controller_fixture": null
+    },
+    {
+      "mode": "bind",
+      "source": "planning/minnesota/npcs/tamarack-ice/02-ice-agent/native-pixels-v3.json",
+      "integration": "planning/minnesota/npcs/tamarack-ice/02-ice-agent/binding-v1.json",
+      "native_art": "target/regional-trainers-v01/reused-story/02-ice-agent/native",
+      "field_base": "rocket",
+      "controller_fixture": null
+    },
+    {
+      "mode": "bind",
+      "source": "planning/minnesota/npcs/tamarack-ice/03-ice-operative/native-pixels-v2.json",
+      "integration": "planning/minnesota/npcs/tamarack-ice/03-ice-operative/binding-v1.json",
+      "native_art": "target/regional-trainers-v01/reused-story/03-ice-operative/native",
+      "field_base": "rocket_girl",
+      "controller_fixture": null
+    },
+    {
+      "mode": "bind",
+      "source": "planning/minnesota/npcs/tamarack-ice/04-ice-enforcer/native-pixels-v3.json",
+      "integration": "planning/minnesota/npcs/tamarack-ice/04-ice-enforcer/binding-v1.json",
+      "native_art": "target/regional-trainers-v01/reused-story/04-ice-enforcer/native",
+      "field_base": "surge",
+      "controller_fixture": null
+    },
+    {
+      "mode": "new",
+      "source": "planning/minnesota/npcs/regional-trainers-v01/01-snowplow-driver/native-pixels-v4.json",
+      "integration": "planning/minnesota/npcs/regional-trainers-v01/01-snowplow-driver/placement-v1.json",
+      "native_art": "target/regional-trainers-v01/01-snowplow-driver/native-v4",
+      "field_base": "pokefan_f",
+      "controller_fixture": "planning/minnesota/npcs/regional-trainers-v01/01-snowplow-driver/placement-v1.json"
+    },
+    {
+      "mode": "new",
+      "source": "planning/minnesota/npcs/regional-trainers-v01/02-rail-worker/native-pixels-v2.json",
+      "integration": "planning/minnesota/npcs/regional-trainers-v01/02-rail-worker/placement-v1.json",
+      "native_art": "target/regional-trainers-v01/02-rail-worker/native-v2",
+      "field_base": "sailor",
+      "controller_fixture": "planning/minnesota/npcs/regional-trainers-v01/02-rail-worker/placement-v1.json"
+    },
+    {
+      "mode": "new",
+      "source": "planning/minnesota/npcs/regional-trainers-v01/03-lake-diver/native-pixels-v5.json",
+      "integration": "planning/minnesota/npcs/regional-trainers-v01/03-lake-diver/placement-v1.json",
+      "native_art": "target/regional-trainers-v01/03-lake-diver/native-v5",
+      "field_base": "misty",
+      "controller_fixture": "planning/minnesota/npcs/regional-trainers-v01/03-lake-diver/placement-v1.json"
+    },
+    {
+      "mode": "new",
+      "source": "planning/minnesota/npcs/regional-trainers-v01/04-disc-golfer/native-pixels-v4.json",
+      "integration": "planning/minnesota/npcs/regional-trainers-v01/04-disc-golfer/placement-v1.json",
+      "native_art": "target/regional-trainers-v01/04-disc-golfer/native-v4",
+      "field_base": "youngster",
+      "controller_fixture": "planning/minnesota/npcs/regional-trainers-v01/04-disc-golfer/placement-v1.json"
+    },
+    {
+      "mode": "new",
+      "source": "planning/minnesota/npcs/regional-trainers-v01/05-prairie-painter/native-pixels-v2.json",
+      "integration": "planning/minnesota/npcs/regional-trainers-v01/05-prairie-painter/placement-v1.json",
+      "native_art": "target/regional-trainers-v01/05-prairie-painter/native-v2",
+      "field_base": "gramps",
+      "controller_fixture": "planning/minnesota/npcs/regional-trainers-v01/05-prairie-painter/placement-v1.json"
+    },
+    {
+      "mode": "new",
+      "source": "planning/minnesota/npcs/regional-trainers-v01/06-conservation-officer/native-pixels-v2.json",
+      "integration": "planning/minnesota/npcs/regional-trainers-v01/06-conservation-officer/placement-v1.json",
+      "native_art": "target/regional-trainers-v01/06-conservation-officer/native-v2",
+      "field_base": "officer",
+      "controller_fixture": "planning/minnesota/npcs/regional-trainers-v01/06-conservation-officer/placement-v1.json"
+    },
+    {
+      "mode": "new",
+      "source": "planning/minnesota/npcs/regional-trainers-v01/07-transit-driver/native-pixels-v2.json",
+      "integration": "planning/minnesota/npcs/regional-trainers-v01/07-transit-driver/placement-v1.json",
+      "native_art": "target/regional-trainers-v01/07-transit-driver/native-v2",
+      "field_base": "clerk",
+      "controller_fixture": "planning/minnesota/npcs/regional-trainers-v01/07-transit-driver/placement-v1.json"
+    },
+    {
+      "mode": "new",
+      "source": "planning/minnesota/npcs/regional-trainers-v01/08-sauna-goer/native-pixels-v2.json",
+      "integration": "planning/minnesota/npcs/regional-trainers-v01/08-sauna-goer/placement-v1.json",
+      "native_art": "target/regional-trainers-v01/08-sauna-goer/native-v2",
+      "field_base": "granny",
+      "controller_fixture": "planning/minnesota/npcs/regional-trainers-v01/08-sauna-goer/placement-v1.json"
+    },
+    {
+      "mode": "new",
+      "source": "planning/minnesota/npcs/regional-trainers-v01/09-rock-hound/native-pixels-v2.json",
+      "integration": "planning/minnesota/npcs/regional-trainers-v01/09-rock-hound/placement-v1.json",
+      "native_art": "target/regional-trainers-v01/09-rock-hound/native-v2",
+      "field_base": "bug_catcher",
+      "controller_fixture": "planning/minnesota/npcs/regional-trainers-v01/09-rock-hound/placement-v1.json"
+    },
+    {
+      "mode": "new",
+      "source": "planning/minnesota/npcs/regional-trainers-v01/10-snowmobile-rider/native-pixels-v2.json",
+      "integration": "planning/minnesota/npcs/regional-trainers-v01/10-snowmobile-rider/placement-v1.json",
+      "native_art": "target/regional-trainers-v01/10-snowmobile-rider/native-v2",
+      "field_base": "biker",
+      "controller_fixture": "planning/minnesota/npcs/regional-trainers-v01/10-snowmobile-rider/placement-v1.json"
+    },
+    {
+      "mode": "bind",
+      "source": "planning/minnesota/npcs/regional-trainers-v01/story-field-repairs/01-reed/native-pixels-v2.json",
+      "integration": "planning/minnesota/npcs/regional-trainers-v01/story-bindings/01-reed.json",
+      "native_art": "target/regional-trainers-v01/story-field-repairs/01-reed/native-v2",
+      "field_base": "pokefan_m",
+      "controller_fixture": "planning/minnesota/npcs/regional-trainers-v01/controller-fixtures/reed-rochester.json"
+    },
+    {
+      "mode": "bind",
+      "source": "planning/minnesota/npcs/regional-trainers-v01/story-field-repairs/02-varel/native-pixels-v2.json",
+      "integration": "planning/minnesota/npcs/regional-trainers-v01/story-bindings/02-varel.json",
+      "native_art": "target/regional-trainers-v01/story-field-repairs/02-varel/native-v2",
+      "field_base": "teacher",
+      "controller_fixture": "planning/minnesota/npcs/regional-trainers-v01/story-field-repairs/02-varel/controller-v1.json"
+    },
+    {
+      "mode": "bind",
+      "source": "planning/minnesota/npcs/regional-trainers-v01/story-field-repairs/03-torven/native-pixels-v3.json",
+      "integration": "planning/minnesota/npcs/regional-trainers-v01/story-bindings/03-torven.json",
+      "native_art": "target/regional-trainers-v01/story-field-repairs/03-torven/native-v3",
+      "field_base": "officer",
+      "controller_fixture": "planning/minnesota/npcs/regional-trainers-v01/story-field-repairs/03-torven/controller-v1.json"
+    },
+    {
+      "mode": "bind",
+      "source": "planning/minnesota/npcs/regional-trainers-v01/story-field-repairs/04-avrin/native-pixels-v3.json",
+      "integration": "planning/minnesota/npcs/regional-trainers-v01/story-bindings/04-avrin.json",
+      "native_art": "target/regional-trainers-v01/story-field-repairs/04-avrin/native-v3",
+      "field_base": "janine",
+      "controller_fixture": "planning/minnesota/npcs/regional-trainers-v01/story-field-repairs/04-avrin/controller-v1.json"
+    },
+    {
+      "mode": "bind",
+      "source": "planning/minnesota/npcs/regional-trainers-v01/story-field-repairs/05-brannic/native-pixels-v3.json",
+      "integration": "planning/minnesota/npcs/regional-trainers-v01/story-bindings/05-brannic.json",
+      "native_art": "target/regional-trainers-v01/story-field-repairs/05-brannic/native-v3",
+      "field_base": "oak",
+      "controller_fixture": "planning/minnesota/npcs/regional-trainers-v01/story-field-repairs/05-brannic/controller-v1.json"
+    },
+    {
+      "mode": "bind",
+      "source": "planning/minnesota/npcs/regional-trainers-v01/story-field-repairs/06-saven/native-pixels-v3.json",
+      "integration": "planning/minnesota/npcs/regional-trainers-v01/story-bindings/06-saven.json",
+      "native_art": "target/regional-trainers-v01/story-field-repairs/06-saven/native-v3",
+      "field_base": "falkner",
+      "controller_fixture": "planning/minnesota/npcs/regional-trainers-v01/story-field-repairs/06-saven/controller-v1.json"
+    },
+    {
+      "mode": "bind",
+      "source": "planning/minnesota/npcs/regional-trainers-v01/story-field-repairs/07-sivren/native-pixels-v2.json",
+      "integration": "planning/minnesota/npcs/regional-trainers-v01/story-bindings/07-sivren.json",
+      "native_art": "target/regional-trainers-v01/story-field-repairs/07-sivren/native-v2",
+      "field_base": "clair",
+      "controller_fixture": "planning/minnesota/npcs/regional-trainers-v01/story-field-repairs/07-sivren/controller-v1.json"
+    },
+    {
+      "mode": "bind",
+      "source": "planning/minnesota/npcs/regional-trainers-v01/story-field-repairs/08-orlis/native-pixels-v3.json",
+      "integration": "planning/minnesota/npcs/regional-trainers-v01/story-bindings/08-orlis.json",
+      "native_art": "target/regional-trainers-v01/story-field-repairs/08-orlis/native-v3",
+      "field_base": "bill",
+      "controller_fixture": "planning/minnesota/npcs/regional-trainers-v01/story-field-repairs/08-orlis/controller-v1.json"
+    },
+    {
+      "mode": "bind",
+      "source": "planning/minnesota/npcs/regional-trainers-v01/story-field-repairs/09-norek/native-pixels-v2.json",
+      "integration": "planning/minnesota/npcs/regional-trainers-v01/story-bindings/09-norek.json",
+      "native_art": "target/regional-trainers-v01/story-field-repairs/09-norek/native-v2",
+      "field_base": "sailor",
+      "controller_fixture": "planning/minnesota/npcs/regional-trainers-v01/story-field-repairs/09-norek/controller-v1.json"
+    },
+    {
+      "mode": "bind",
+      "source": "planning/minnesota/npcs/regional-trainers-v01/story-field-repairs/10-fern/native-pixels-v3.json",
+      "integration": "planning/minnesota/npcs/regional-trainers-v01/story-bindings/10-fern.json",
+      "native_art": "target/regional-trainers-v01/story-field-repairs/10-fern/native-v3",
+      "field_base": "jasmine",
+      "controller_fixture": "planning/minnesota/npcs/regional-trainers-v01/story-field-repairs/10-fern/controller-v1.json"
+    },
+    {
+      "mode": "bind",
+      "source": "planning/minnesota/npcs/regional-trainers-v01/story-field-repairs/11-flint/native-pixels-v2.json",
+      "integration": "planning/minnesota/npcs/regional-trainers-v01/story-bindings/11-flint.json",
+      "native_art": "target/regional-trainers-v01/story-field-repairs/11-flint/native-v2",
+      "field_base": "bruno",
+      "controller_fixture": "planning/minnesota/npcs/regional-trainers-v01/story-field-repairs/11-flint/controller-v1.json"
+    },
+    {
+      "mode": "bind",
+      "source": "planning/minnesota/npcs/regional-trainers-v01/story-field-repairs/12-veil/native-pixels-v3.json",
+      "integration": "planning/minnesota/npcs/regional-trainers-v01/story-bindings/12-veil.json",
+      "native_art": "target/regional-trainers-v01/story-field-repairs/12-veil/native-v3",
+      "field_base": "sage",
+      "controller_fixture": "planning/minnesota/npcs/regional-trainers-v01/story-field-repairs/12-veil/controller-v1.json"
+    },
+    {
+      "mode": "bind",
+      "source": "planning/minnesota/npcs/regional-trainers-v01/story-field-repairs/13-halden/native-pixels-v4.json",
+      "integration": "planning/minnesota/npcs/regional-trainers-v01/story-bindings/13-halden.json",
+      "native_art": "target/regional-trainers-v01/story-field-repairs/13-halden/native-v4",
+      "field_base": "blue",
+      "controller_fixture": "planning/minnesota/npcs/regional-trainers-v01/story-field-repairs/13-halden/controller-v1.json"
+    }
+  ]
+}

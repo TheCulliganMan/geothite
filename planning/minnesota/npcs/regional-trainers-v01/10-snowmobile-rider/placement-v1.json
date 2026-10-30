@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "trainers": [
+    {
+      "map": "MnEly",
+      "approach": [
+        26,
+        23
+      ],
+      "id": "MN_EXTRA_SNOWMOBILE_RIDER",
+      "display_name": "INGA",
+      "trainer_class": "MN_SNOWMOBILE_RIDER",
+      "class_name": "SNOWMOBILE RIDER",
+      "template_class": "BOARDER",
+      "sprite": "SPRITE_MN_SNOWMOBILE_RIDER",
+      "tile": [
+        26,
+        22
+      ],
+      "facing": "south",
+      "sight_range": 1,
+      "defeated_flag": "EVENT_MN_EXTRA_SNOWMOBILE_RIDER",
+      "party": [
+        {
+          "species": "PLOWZER",
+          "level": 44
+        },
+        {
+          "species": "FENCICLE",
+          "level": 45
+        }
+      ],
+      "before_lines": [
+        "Fresh tracks!",
+        "Let us warm up!"
+      ],
+      "after_lines": [
+        "What a wild ride!"
+      ],
+      "loss_lines": [
+        "Keep your grip!"
+      ]
+    }
+  ]
+}

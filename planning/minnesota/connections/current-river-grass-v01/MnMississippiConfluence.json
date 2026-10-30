@@ -1,0 +1,315 @@
+{
+  "id": "MnMississippiConfluence",
+  "name": "MISSISSIPPI CONFLUENCE",
+  "compiled_tileset": "johto",
+  "dimensions_metatiles": [
+    74,
+    12
+  ],
+  "map_prefix": "MnMississippiConfluence",
+  "current_revision": "route_grass_confluence_revision",
+  "current_native_source": "planning/minnesota/connections/current-river-grass-v01/MnMississippiConfluence.layout.json",
+  "composition": "A Surf corridor with a grassy approach to Reed and an eastern encounter bank with a dry southward ledge return.",
+  "native_maps": [
+    {
+      "id": "MnMississippiConfluenceC00R00",
+      "attributes": {
+        "tileset_name": "johto",
+        "border_block": 5,
+        "width": 6,
+        "height": 8,
+        "connections": [
+          {
+            "direction": "west",
+            "target_map": "MnR03C00R00",
+            "offset": 0
+          },
+          {
+            "direction": "east",
+            "target_map": "MnMississippiConfluenceC01R00",
+            "offset": -4
+          }
+        ],
+        "time_of_day": null,
+        "phone_service": 0,
+        "phone_flag": false,
+        "environment": "ROUTE",
+        "location": "LANDMARK_MN_MINNEAPOLIS",
+        "music": "MUSIC_ROUTE_30",
+        "palette": "PALETTE_AUTO",
+        "fishing_group": "FISHGROUP_MN_POND",
+        "map_constant": "MN_MISSISSIPPI_CONFLUENCE_C00R00",
+        "map_group_constant": "MAPGROUP_MINNESOTA_MISSISSIPPI",
+        "blocks_label": "MnMississippiConfluenceC00R00_Blocks",
+        "map_scripts_label": "MnMississippiConfluenceC00R00_MapScripts",
+        "map_events_label": "MnMississippiConfluenceC00R00_MapEvents",
+        "connection_flags": "WEST | EAST"
+      },
+      "objects": [],
+      "events": {
+        "warps": [],
+        "coord_events": [],
+        "bg_events": []
+      },
+      "trainer_scripts": {},
+      "native_trainers": {}
+    },
+    {
+      "id": "MnMississippiConfluenceC01R00",
+      "attributes": {
+        "tileset_name": "johto",
+        "border_block": 5,
+        "width": 32,
+        "height": 12,
+        "connections": [
+          {
+            "direction": "west",
+            "target_map": "MnMississippiConfluenceC00R00",
+            "offset": 4
+          },
+          {
+            "direction": "east",
+            "target_map": "MnMississippiConfluenceC02R00",
+            "offset": 0
+          }
+        ],
+        "time_of_day": null,
+        "phone_service": 0,
+        "phone_flag": false,
+        "environment": "ROUTE",
+        "location": "LANDMARK_MN_MINNEAPOLIS",
+        "music": "MUSIC_ROUTE_30",
+        "palette": "PALETTE_AUTO",
+        "fishing_group": "FISHGROUP_MN_POND",
+        "map_constant": "MN_MISSISSIPPI_CONFLUENCE_C01R00",
+        "map_group_constant": "MAPGROUP_MINNESOTA_MISSISSIPPI",
+        "blocks_label": "MnMississippiConfluenceC01R00_Blocks",
+        "map_scripts_label": "MnMississippiConfluenceC01R00_MapScripts",
+        "map_events_label": "MnMississippiConfluenceC01R00_MapEvents",
+        "connection_flags": "WEST | EAST"
+      },
+      "objects": [
+        {
+          "sprite": "SPRITE_FISHER",
+          "sprite_has_facings": true,
+          "x": 13,
+          "y": 3,
+          "spritemovedata": "SPRITEMOVEDATA_STANDING_DOWN",
+          "move_range_x": 0,
+          "move_range_y": 0,
+          "hram_x": -1,
+          "hram_y": -1,
+          "pal": 0,
+          "object_type": "OBJECTTYPE_TRAINER",
+          "radius": 0,
+          "script": "MN_RIVER_CONFLUENCE_FISHER",
+          "label": null,
+          "event_flag": "-1",
+          "object_identifier": "MN_RIVER_CONFLUENCE_FISHER",
+          "sightline_direction_override": null
+        }
+      ],
+      "events": {
+        "warps": [],
+        "coord_events": [],
+        "bg_events": []
+      },
+      "trainer_scripts": {
+        "MN_RIVER_CONFLUENCE_FISHER": {
+          "battle_type": "BATTLETYPE_TRAINER",
+          "trainer_class": "FISHER",
+          "trainer_id": "MN_RIVER_CONFLUENCE_FISHER",
+          "event_flag": "EVENT_MN_RIVER_CONFLUENCE_FISHER_DEFEATED",
+          "seen_text": "MN_RIVER_CONFLUENCE_FISHERSeen",
+          "win_text": "MN_RIVER_CONFLUENCE_FISHERWon",
+          "loss_text": "MN_RIVER_CONFLUENCE_FISHERLost",
+          "callback": "MN_RIVER_CONFLUENCE_FISHERAfter",
+          "source_script": "MN_RIVER_CONFLUENCE_FISHER"
+        }
+      },
+      "native_trainers": {
+        "MN_RIVER_CONFLUENCE_FISHER": {
+          "name": "REED",
+          "trainer_id": "MN_RIVER_CONFLUENCE_FISHER",
+          "trainer_class": "FISHER",
+          "party": [
+            {
+              "species": "RILLBOW",
+              "level": 29,
+              "item": null,
+              "moves": [
+                {
+                  "name": "ENDURE",
+                  "current_pp": 10,
+                  "pp_ups": 0
+                },
+                {
+                  "name": "LOW_KICK",
+                  "current_pp": 20,
+                  "pp_ups": 0
+                },
+                {
+                  "name": "WATER_PULSE",
+                  "current_pp": 20,
+                  "pp_ups": 0
+                },
+                {
+                  "name": "COUNTER",
+                  "current_pp": 20,
+                  "pp_ups": 0
+                }
+              ],
+              "dvs": {
+                "attack": 9,
+                "defense": 8,
+                "speed": 8,
+                "special": 8,
+                "hp": 8
+              }
+            },
+            {
+              "species": "MUDMENDER",
+              "level": 30,
+              "item": null,
+              "moves": [
+                {
+                  "name": "CONFUSION",
+                  "current_pp": 25,
+                  "pp_ups": 0
+                },
+                {
+                  "name": "SAFEGUARD",
+                  "current_pp": 25,
+                  "pp_ups": 0
+                },
+                {
+                  "name": "BUBBLEBEAM",
+                  "current_pp": 20,
+                  "pp_ups": 0
+                },
+                {
+                  "name": "LIGHT_SCREEN",
+                  "current_pp": 30,
+                  "pp_ups": 0
+                }
+              ],
+              "dvs": {
+                "attack": 9,
+                "defense": 8,
+                "speed": 8,
+                "special": 8,
+                "hp": 8
+              }
+            }
+          ],
+          "win_quote": "",
+          "lose_quote": "",
+          "items": [
+            null,
+            null
+          ],
+          "base_reward": 10,
+          "ai_move_flags": 421,
+          "ai_item_switch_flags": 65,
+          "encounter_music": "MUSIC_HIKER_ENCOUNTER",
+          "ai_layers": [
+            "AI_BASIC",
+            "AI_TYPES",
+            "AI_OPPORTUNIST",
+            "AI_CAUTIOUS",
+            "AI_STATUS"
+          ]
+        }
+      }
+    },
+    {
+      "id": "MnMississippiConfluenceC02R00",
+      "attributes": {
+        "tileset_name": "johto",
+        "border_block": 5,
+        "width": 32,
+        "height": 12,
+        "connections": [
+          {
+            "direction": "west",
+            "target_map": "MnMississippiConfluenceC01R00",
+            "offset": 0
+          },
+          {
+            "direction": "east",
+            "target_map": "MnMississippiConfluenceC03R00",
+            "offset": 0
+          }
+        ],
+        "time_of_day": null,
+        "phone_service": 0,
+        "phone_flag": false,
+        "environment": "ROUTE",
+        "location": "LANDMARK_MN_MINNEAPOLIS",
+        "music": "MUSIC_ROUTE_30",
+        "palette": "PALETTE_AUTO",
+        "fishing_group": "FISHGROUP_MN_POND",
+        "map_constant": "MN_MISSISSIPPI_CONFLUENCE_C02R00",
+        "map_group_constant": "MAPGROUP_MINNESOTA_MISSISSIPPI",
+        "blocks_label": "MnMississippiConfluenceC02R00_Blocks",
+        "map_scripts_label": "MnMississippiConfluenceC02R00_MapScripts",
+        "map_events_label": "MnMississippiConfluenceC02R00_MapEvents",
+        "connection_flags": "WEST | EAST"
+      },
+      "objects": [],
+      "events": {
+        "warps": [],
+        "coord_events": [],
+        "bg_events": []
+      },
+      "trainer_scripts": {},
+      "native_trainers": {}
+    },
+    {
+      "id": "MnMississippiConfluenceC03R00",
+      "attributes": {
+        "tileset_name": "johto",
+        "border_block": 5,
+        "width": 4,
+        "height": 12,
+        "connections": [
+          {
+            "direction": "west",
+            "target_map": "MnMississippiConfluenceC02R00",
+            "offset": 0
+          },
+          {
+            "direction": "north",
+            "target_map": "MnStPaul",
+            "offset": -36
+          }
+        ],
+        "time_of_day": null,
+        "phone_service": 0,
+        "phone_flag": false,
+        "environment": "ROUTE",
+        "location": "LANDMARK_MN_MINNEAPOLIS",
+        "music": "MUSIC_ROUTE_30",
+        "palette": "PALETTE_AUTO",
+        "fishing_group": "FISHGROUP_MN_POND",
+        "map_constant": "MN_MISSISSIPPI_CONFLUENCE_C03R00",
+        "map_group_constant": "MAPGROUP_MINNESOTA_MISSISSIPPI",
+        "blocks_label": "MnMississippiConfluenceC03R00_Blocks",
+        "map_scripts_label": "MnMississippiConfluenceC03R00_MapScripts",
+        "map_events_label": "MnMississippiConfluenceC03R00_MapEvents",
+        "connection_flags": "WEST | NORTH"
+      },
+      "objects": [],
+      "events": {
+        "warps": [],
+        "coord_events": [],
+        "bg_events": []
+      },
+      "trainer_scripts": {},
+      "native_trainers": {}
+    }
+  ],
+  "pack": "content-packs/minnesota-current-grass-confluence-v01.crystalpack",
+  "pack_sha256": "ce04fbe0e78eb0b47502b6f32f62619bf160f35f8ded9b63287cb3dfe8b03226",
+  "status": "Accepted grassy Reed approach and eastern bank excursion with dry native southward return; actual wild/RUN/Continue, four-chunk water course, St Paul, bridge, exact 2D and full preservation."
+}

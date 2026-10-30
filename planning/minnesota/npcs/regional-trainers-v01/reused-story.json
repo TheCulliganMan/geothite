@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "assets": [
+    {
+      "mode": "bind",
+      "source": "planning/minnesota/npcs/tamarack-ice/01-tamarack/native-pixels-v4.json",
+      "integration": "planning/minnesota/npcs/tamarack-ice/01-tamarack/binding-v1.json",
+      "native_art": "target/regional-trainers-v01/reused-story/01-tamarack/native"
+    },
+    {
+      "mode": "bind",
+      "source": "planning/minnesota/npcs/tamarack-ice/02-ice-agent/native-pixels-v3.json",
+      "integration": "planning/minnesota/npcs/tamarack-ice/02-ice-agent/binding-v1.json",
+      "native_art": "target/regional-trainers-v01/reused-story/02-ice-agent/native"
+    },
+    {
+      "mode": "bind",
+      "source": "planning/minnesota/npcs/tamarack-ice/03-ice-operative/native-pixels-v2.json",
+      "integration": "planning/minnesota/npcs/tamarack-ice/03-ice-operative/binding-v1.json",
+      "native_art": "target/regional-trainers-v01/reused-story/03-ice-operative/native"
+    },
+    {
+      "mode": "bind",
+      "source": "planning/minnesota/npcs/tamarack-ice/04-ice-enforcer/native-pixels-v3.json",
+      "integration": "planning/minnesota/npcs/tamarack-ice/04-ice-enforcer/binding-v1.json",
+      "native_art": "target/regional-trainers-v01/reused-story/04-ice-enforcer/native"
+    }
+  ]
+}

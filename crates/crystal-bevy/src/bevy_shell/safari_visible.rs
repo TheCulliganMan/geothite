@@ -234,9 +234,13 @@ pub(super) fn open_ranger(shell: &mut BevyRuntimeShell, script: &str) -> Result<
 
 fn show_outcome(shell: &mut BevyRuntimeShell, outcome: &RuntimeSafariOutcome) {
     let line = match outcome {
-        RuntimeSafariOutcome::Admission(SafariAdmissionOutcome::NeedSurf) => {
-            Some("Bring a CANOE or\na SURF partner\nwith its badge.")
-        }
+        RuntimeSafariOutcome::Admission(SafariAdmissionOutcome::NeedSurf) => Some(
+            if shell.shell.runtime().data().items.contains_key("CANOE") {
+                "Bring a CANOE or\na SURF partner\nwith its badge."
+            } else {
+                "Bring a SURF\npartner with\nits badge."
+            },
+        ),
         RuntimeSafariOutcome::Admission(SafariAdmissionOutcome::InsufficientMoney) => {
             Some("Entry costs 500.\nYou need more money.")
         }

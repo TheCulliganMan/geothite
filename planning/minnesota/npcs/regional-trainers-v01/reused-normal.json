@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "bindings": [
+    {
+      "source": "planning/minnesota/npcs/tamarack-ice/05-maple-tapper/native-pixels-v3.json",
+      "binding": "planning/minnesota/npcs/regional-trainers-v01/regular-bindings/05-maple-tapper.json",
+      "fixture": "planning/minnesota/npcs/regional-trainers-v01/controller-fixtures/05-maple-tapper.json",
+      "native_art": "target/regional-trainers-v01/reused-normal/05-maple-tapper/native",
+      "original_field": "fisher"
+    },
+    {
+      "source": "planning/minnesota/npcs/tamarack-ice/06-roller-skater/native-pixels-v1.json",
+      "binding": "planning/minnesota/npcs/regional-trainers-v01/regular-bindings/06-roller-skater.json",
+      "fixture": "planning/minnesota/npcs/regional-trainers-v01/controller-fixtures/06-roller-skater.json",
+      "native_art": "target/regional-trainers-v01/reused-normal/06-roller-skater/native",
+      "original_field": "lass"
+    },
+    {
+      "source": "planning/minnesota/npcs/tamarack-ice/07-curler/native-pixels-v1.json",
+      "binding": "planning/minnesota/npcs/regional-trainers-v01/regular-bindings/07-curler.json",
+      "fixture": "planning/minnesota/npcs/regional-trainers-v01/controller-fixtures/07-curler.json",
+      "native_art": "target/regional-trainers-v01/reused-normal/07-curler/native",
+      "original_field": "cooltrainer_m"
+    },
+    {
+      "source": "planning/minnesota/npcs/tamarack-ice/08-lifeguard/native-pixels-v2.json",
+      "binding": "planning/minnesota/npcs/regional-trainers-v01/regular-bindings/08-lifeguard.json",
+      "fixture": "planning/minnesota/npcs/regional-trainers-v01/controller-fixtures/08-lifeguard.json",
+      "native_art": "target/regional-trainers-v01/reused-normal/08-lifeguard/native",
+      "original_field": "sailor"
+    },
+    {
+      "source": "planning/minnesota/npcs/tamarack-ice/09-port-pilot/native-pixels-v1.json",
+      "binding": "planning/minnesota/npcs/regional-trainers-v01/regular-bindings/09-port-pilot.json",
+      "fixture": "planning/minnesota/npcs/regional-trainers-v01/controller-fixtures/09-port-pilot.json",
+      "native_art": "target/regional-trainers-v01/reused-normal/09-port-pilot/native",
+      "original_field": "teacher"
+    },
+    {
+      "source": "planning/minnesota/npcs/tamarack-ice/10-trail-runner/native-pixels-v1.json",
+      "binding": "planning/minnesota/npcs/regional-trainers-v01/regular-bindings/10-trail-runner.json",
+      "fixture": "planning/minnesota/npcs/regional-trainers-v01/controller-fixtures/10-trail-runner.json",
+      "native_art": "target/regional-trainers-v01/reused-normal/10-trail-runner/native",
+      "original_field": "cooltrainer_f"
+    },
+    {
+      "source": "planning/minnesota/npcs/tamarack-ice/11-camp-cook/native-pixels-v2.json",
+      "binding": "planning/minnesota/npcs/regional-trainers-v01/regular-bindings/11-camp-cook.json",
+      "fixture": "planning/minnesota/npcs/regional-trainers-v01/controller-fixtures/11-camp-cook.json",
+      "native_art": "target/regional-trainers-v01/reused-normal/11-camp-cook/native",
+      "original_field": "pokefan_m"
+    },
+    {
+      "source": "planning/minnesota/npcs/tamarack-ice/12-dog-musher/native-pixels-v1.json",
+      "binding": "planning/minnesota/npcs/regional-trainers-v01/regular-bindings/12-dog-musher.json",
+      "fixture": "planning/minnesota/npcs/regional-trainers-v01/controller-fixtures/12-dog-musher.json",
+      "native_art": "target/regional-trainers-v01/reused-normal/12-dog-musher/native",
+      "original_field": "super_nerd"
+    }
+  ]
+}

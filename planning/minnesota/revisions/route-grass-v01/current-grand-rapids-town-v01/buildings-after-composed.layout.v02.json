@@ -1,0 +1,774 @@
+{
+  "schema_version": 2,
+  "id": "MnGrandRapids",
+  "tileset": "johto_modern",
+  "compiled_tileset": "johto_modern",
+  "dimensions_metatiles": [
+    24,
+    24
+  ],
+  "coordinate_units": "32px metatiles; actors/warps use 16px core tiles",
+  "shore_fitting": "johto_8_neighbors",
+  "reject_cliff_cuts": true,
+  "source_pixels_modified": false,
+  "layers": [
+    {
+      "name": "Asymmetric civic clearing",
+      "kind": "polygon",
+      "points": [
+        [
+          2,
+          6
+        ],
+        [
+          3,
+          6
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          10,
+          3
+        ],
+        [
+          10,
+          4
+        ],
+        [
+          16,
+          4
+        ],
+        [
+          16,
+          6
+        ],
+        [
+          21,
+          6
+        ],
+        [
+          21,
+          11
+        ],
+        [
+          22,
+          11
+        ],
+        [
+          22,
+          14
+        ],
+        [
+          20,
+          14
+        ],
+        [
+          20,
+          17
+        ],
+        [
+          8,
+          17
+        ],
+        [
+          8,
+          15
+        ],
+        [
+          2,
+          15
+        ]
+      ],
+      "material": "lawn"
+    },
+    {
+      "name": "Narrow west to east working street",
+      "kind": "path",
+      "points": [
+        [
+          1,
+          12
+        ],
+        [
+          22,
+          12
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "name": "Clinic spur",
+      "kind": "path",
+      "points": [
+        [
+          4,
+          12
+        ],
+        [
+          4,
+          6
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "name": "Depot forecourt",
+      "kind": "path",
+      "points": [
+        [
+          13,
+          12
+        ],
+        [
+          13,
+          6
+        ]
+      ],
+      "width_metatiles": 2,
+      "material": "floor"
+    },
+    {
+      "name": "Store spur",
+      "kind": "path",
+      "points": [
+        [
+          19,
+          12
+        ],
+        [
+          19,
+          8
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "name": "River walk down from depot",
+      "kind": "path",
+      "points": [
+        [
+          13,
+          12
+        ],
+        [
+          13,
+          16
+        ],
+        [
+          18,
+          16
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "name": "Small clinic turnout",
+      "kind": "rect",
+      "bounds": [
+        4,
+        7,
+        7,
+        9
+      ],
+      "material": "floor"
+    },
+    {
+      "name": "Depot working turnout",
+      "kind": "rect",
+      "bounds": [
+        11,
+        7,
+        16,
+        9
+      ],
+      "material": "floor"
+    },
+    {
+      "name": "Useful destination sign",
+      "kind": "point",
+      "position": [
+        7,
+        11
+      ],
+      "block": "45"
+    },
+    {
+      "name": "Useful destination sign",
+      "kind": "point",
+      "position": [
+        19,
+        11
+      ],
+      "block": "45"
+    },
+    {
+      "name": "Useful destination sign",
+      "kind": "point",
+      "position": [
+        11,
+        6
+      ],
+      "block": "45"
+    },
+    {
+      "name": "Joined western street shoulder",
+      "kind": "rect",
+      "bounds": [
+        2,
+        13,
+        7,
+        16
+      ],
+      "material": "forest"
+    },
+    {
+      "name": "Archive grove beside the forecourt",
+      "kind": "rect",
+      "bounds": [
+        8,
+        3,
+        11,
+        6
+      ],
+      "material": "forest"
+    },
+    {
+      "name": "Joined pine shoulder west of river spur",
+      "kind": "rect",
+      "bounds": [
+        9,
+        14,
+        12,
+        17
+      ],
+      "material": "forest"
+    },
+    {
+      "name": "Joined pine shoulder east of river spur",
+      "kind": "rect",
+      "bounds": [
+        15,
+        13,
+        19,
+        16
+      ],
+      "material": "forest"
+    },
+    {
+      "name": "Clinic complete native facade",
+      "kind": "point",
+      "position": [
+        4,
+        4
+      ],
+      "block": "18"
+    },
+    {
+      "name": "Clinic complete native facade",
+      "kind": "point",
+      "position": [
+        5,
+        4
+      ],
+      "block": "19"
+    },
+    {
+      "name": "Clinic complete native facade",
+      "kind": "point",
+      "position": [
+        4,
+        5
+      ],
+      "block": "1a"
+    },
+    {
+      "name": "Clinic complete native facade",
+      "kind": "point",
+      "position": [
+        5,
+        5
+      ],
+      "block": "1b"
+    },
+    {
+      "name": "River reach curves around the old survey bank",
+      "kind": "polygon",
+      "points": [
+        [
+          3,
+          17
+        ],
+        [
+          8,
+          17
+        ],
+        [
+          8,
+          18
+        ],
+        [
+          20,
+          18
+        ],
+        [
+          20,
+          20
+        ],
+        [
+          18,
+          20
+        ],
+        [
+          18,
+          21
+        ],
+        [
+          7,
+          21
+        ],
+        [
+          7,
+          20
+        ],
+        [
+          3,
+          20
+        ]
+      ],
+      "material": "water"
+    },
+    {
+      "name": "Continuous native riverbank rail",
+      "kind": "point",
+      "position": [
+        9,
+        17
+      ],
+      "block": "49"
+    },
+    {
+      "name": "Continuous native riverbank rail",
+      "kind": "point",
+      "position": [
+        10,
+        17
+      ],
+      "block": "49"
+    },
+    {
+      "name": "Continuous native riverbank rail",
+      "kind": "point",
+      "position": [
+        11,
+        17
+      ],
+      "block": "49"
+    },
+    {
+      "name": "Continuous native riverbank rail",
+      "kind": "point",
+      "position": [
+        12,
+        17
+      ],
+      "block": "49"
+    },
+    {
+      "name": "Continuous native riverbank rail",
+      "kind": "point",
+      "position": [
+        13,
+        17
+      ],
+      "block": "49"
+    },
+    {
+      "name": "Continuous native riverbank rail",
+      "kind": "point",
+      "position": [
+        14,
+        17
+      ],
+      "block": "49"
+    },
+    {
+      "name": "Continuous native riverbank rail",
+      "kind": "point",
+      "position": [
+        15,
+        17
+      ],
+      "block": "49"
+    },
+    {
+      "name": "Continuous native riverbank rail",
+      "kind": "point",
+      "position": [
+        16,
+        17
+      ],
+      "block": "49"
+    },
+    {
+      "name": "Continuous native riverbank rail",
+      "kind": "point",
+      "position": [
+        17,
+        17
+      ],
+      "block": "49"
+    },
+    {
+      "name": "Continuous native riverbank rail",
+      "kind": "point",
+      "position": [
+        18,
+        17
+      ],
+      "block": "49"
+    },
+    {
+      "name": "Continuous native riverbank rail",
+      "kind": "point",
+      "position": [
+        19,
+        17
+      ],
+      "block": "49"
+    },
+    {
+      "name": "Bank cap and joined forest boundary",
+      "kind": "point",
+      "position": [
+        8,
+        16
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Bank cap and joined forest boundary",
+      "kind": "point",
+      "position": [
+        8,
+        17
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Bank cap and joined forest boundary",
+      "kind": "point",
+      "position": [
+        20,
+        16
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Bank cap and joined forest boundary",
+      "kind": "point",
+      "position": [
+        20,
+        17
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Bank cap and joined forest boundary",
+      "kind": "point",
+      "position": [
+        2,
+        18
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Bank cap and joined forest boundary",
+      "kind": "point",
+      "position": [
+        2,
+        19
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Bank cap and joined forest boundary",
+      "kind": "point",
+      "position": [
+        21,
+        19
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Bank cap and joined forest boundary",
+      "kind": "point",
+      "position": [
+        18,
+        22
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Native shade canopy",
+      "kind": "point",
+      "position": [
+        3,
+        10
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Native shade canopy",
+      "kind": "point",
+      "position": [
+        8,
+        5
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Native shade canopy",
+      "kind": "point",
+      "position": [
+        9,
+        9
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Native shade canopy",
+      "kind": "point",
+      "position": [
+        16,
+        10
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Native shade canopy",
+      "kind": "point",
+      "position": [
+        20,
+        9
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Native shade canopy",
+      "kind": "point",
+      "position": [
+        10,
+        15
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Native shade canopy",
+      "kind": "point",
+      "position": [
+        19,
+        15
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Civic flower beds",
+      "kind": "rect",
+      "bounds": [
+        3,
+        7,
+        4,
+        9
+      ],
+      "material": "flowers"
+    },
+    {
+      "name": "Civic flower beds",
+      "kind": "rect",
+      "bounds": [
+        7,
+        7,
+        8,
+        9
+      ],
+      "material": "flowers"
+    },
+    {
+      "name": "Clear the duplicated left facade column",
+      "kind": "point",
+      "position": [
+        12,
+        5
+      ],
+      "block": "02"
+    },
+    {
+      "name": "Restore the depot sign approach",
+      "kind": "point",
+      "position": [
+        12,
+        6
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Survey depot complete native Goldenrod facade",
+      "kind": "point",
+      "position": [
+        13,
+        5
+      ],
+      "block": "18"
+    },
+    {
+      "name": "Survey depot complete native Goldenrod facade",
+      "kind": "point",
+      "position": [
+        14,
+        5
+      ],
+      "block": "1f"
+    },
+    {
+      "name": "Survey depot complete native Goldenrod facade",
+      "kind": "point",
+      "position": [
+        15,
+        5
+      ],
+      "block": "19"
+    },
+    {
+      "name": "Survey depot complete native Goldenrod facade",
+      "kind": "point",
+      "position": [
+        13,
+        6
+      ],
+      "block": "1a"
+    },
+    {
+      "name": "Survey depot complete native Goldenrod facade",
+      "kind": "point",
+      "position": [
+        14,
+        6
+      ],
+      "block": "0f"
+    },
+    {
+      "name": "Survey depot complete native Goldenrod facade",
+      "kind": "point",
+      "position": [
+        15,
+        6
+      ],
+      "block": "11"
+    },
+    {
+      "name": "Clear the reversed mart left column",
+      "kind": "point",
+      "position": [
+        18,
+        6
+      ],
+      "block": "02"
+    },
+    {
+      "name": "Clear the reversed mart left column",
+      "kind": "point",
+      "position": [
+        18,
+        7
+      ],
+      "block": "02"
+    },
+    {
+      "name": "Mart complete native facade with sign to the right",
+      "kind": "point",
+      "position": [
+        19,
+        6
+      ],
+      "block": "18"
+    },
+    {
+      "name": "Mart complete native facade with sign to the right",
+      "kind": "point",
+      "position": [
+        20,
+        6
+      ],
+      "block": "19"
+    },
+    {
+      "name": "Mart complete native facade with sign to the right",
+      "kind": "point",
+      "position": [
+        19,
+        7
+      ],
+      "block": "1a"
+    },
+    {
+      "name": "Mart complete native facade with sign to the right",
+      "kind": "point",
+      "position": [
+        20,
+        7
+      ],
+      "block": "33"
+    },
+    {
+      "name": "Preserved installed connection mouth/guard patch",
+      "kind": "point",
+      "position": [
+        0,
+        12
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Preserved installed connection mouth/guard patch",
+      "kind": "point",
+      "position": [
+        23,
+        12
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Preserved installed connection mouth/guard patch",
+      "kind": "point",
+      "position": [
+        22,
+        11
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Preserved installed connection mouth/guard patch",
+      "kind": "point",
+      "position": [
+        22,
+        13
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Preserved installed connection mouth/guard patch",
+      "kind": "point",
+      "position": [
+        22,
+        14
+      ],
+      "block": "05"
+    }
+  ]
+}

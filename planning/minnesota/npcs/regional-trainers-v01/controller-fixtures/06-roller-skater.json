@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "trainers": [
+    {
+      "id": "MN_R11_T03",
+      "map": "MnR11C00R02",
+      "actor_script": "MN_R11_T03",
+      "trainer_class": "MN_ROLLER_SKATER",
+      "sprite": "SPRITE_MN_ROLLER_SKATER",
+      "facing": "south",
+      "approach": [
+        49,
+        8
+      ],
+      "defeated_flag": "EVENT_MN_R11_TRAINER_03"
+    }
+  ]
+}

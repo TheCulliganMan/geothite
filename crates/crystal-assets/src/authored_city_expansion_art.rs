@@ -25,6 +25,23 @@ struct Recipe {
     collision: Vec<String>,
     palette_override: Option<u8>,
     tile_row_order: Option<Vec<usize>>,
+    tile_order: Option<[usize; 16]>,
+}
+
+/// Rearrange native glyphs only when every source and destination quadrant is solid.
+pub(super) fn order_solid_glyphs(
+    glyphs: &[u8],
+    collision: &[String],
+    order: &[usize; 16],
+) -> Result<[u8; 16]> {
+    ensure!(
+        glyphs.len() == 16
+            && collision.len() == 4
+            && collision.iter().all(|kind| kind == "WALL")
+            && order.iter().all(|&index| index < 16),
+        "native glyph composition requires sixteen valid glyphs and four solid quadrants"
+    );
+    Ok(order.map(|index| glyphs[index]))
 }
 
 fn slot(glyph: u8, palette: u8, count: usize) -> Result<usize> {
@@ -83,7 +100,16 @@ pub(super) fn install(
         .context("city native graphics")?
         .clone();
     let source_count = graphics.len() / 16;
-    ensure!(source_count == 192, "city source graphics extent differs");
+    ensure!(
+        matches!(source_count, 192 | 256),
+        "city source graphics extent differs"
+    );
+    let inherited_foregrounds: BTreeMap<u8, [[u8; 3]; 3]> = files
+        .get(&format!("data/tilesets/{expected}_foregrounds.json"))
+        .map(|bytes| serde_json::from_slice(bytes))
+        .transpose()
+        .context("city base foreground colors")?
+        .unwrap_or_default();
     let referenced = metatiles.iter().copied().collect::<BTreeSet<_>>();
     if art.extended_graphics {
         // Give each original bank 128 physical slots. Copy referenced source
@@ -129,15 +155,13 @@ pub(super) fn install(
             } else {
                 ((physical - count / 2) as u8 | 0x80, 8)
             };
-            (!referenced.contains(&glyph) && usize::from(glyph) < palette_count)
+            (!referenced.contains(&glyph)
+                && !inherited_foregrounds.contains_key(&glyph)
+                && usize::from(glyph) < palette_count)
                 .then_some((glyph, physical, bank))
         });
     let mut matching = BTreeMap::new();
-    let mut foregrounds = BTreeMap::<u8, [[u8; 3]; 3]>::new();
-    ensure!(
-        !files.contains_key(&format!("data/tilesets/{expected}_foregrounds.json")),
-        "city base art requires ordinary native foregrounds"
-    );
+    let mut foregrounds = inherited_foregrounds.clone();
     for &glyph in &referenced {
         // These inherited destinations animate. Identical static imported
         // pixels must not accidentally become flowers or water at runtime.
@@ -150,7 +174,7 @@ pub(super) fn install(
             (
                 graphics[physical * 16..(physical + 1) * 16].to_vec(),
                 palette & 7,
-                None,
+                inherited_foregrounds.get(&glyph).copied(),
             ),
             glyph,
         );
@@ -208,7 +232,11 @@ pub(super) fn install(
         let glyphs = source_blocks
             .get(source_id * 16..(source_id + 1) * 16)
             .context("city imported block extent")?;
-        for &glyph in glyphs {
+        let glyphs = match &recipe.tile_order {
+            Some(order) => order_solid_glyphs(glyphs, collision, order)?.to_vec(),
+            None => glyphs.to_vec(),
+        };
+        for glyph in glyphs {
             let palette = *source
                 .palette_map
                 .get(usize::from(glyph))
@@ -273,4 +301,26 @@ pub(super) fn install(
         crate::verify_compiled_game_pack_for_runtime(&pack)?;
     }
     Ok(pack)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::order_solid_glyphs;
+
+    #[test]
+    fn solid_composition_rejects_doors_and_invalid_glyph_addresses() {
+        let glyphs = std::array::from_fn::<_, 16, _>(|index| index as u8);
+        let mut order = std::array::from_fn(|index| index);
+        let mut collision = vec!["WALL".to_owned(); 4];
+        order[3] = 0;
+        assert_eq!(
+            order_solid_glyphs(&glyphs, &collision, &order).expect("solid wall composition")[3],
+            0
+        );
+        collision[3] = "DOOR".into();
+        assert!(order_solid_glyphs(&glyphs, &collision, &order).is_err());
+        collision[3] = "WALL".into();
+        order[3] = 16;
+        assert!(order_solid_glyphs(&glyphs, &collision, &order).is_err());
+    }
 }

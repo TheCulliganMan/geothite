@@ -24,7 +24,8 @@ fn item_happiness_change_code(item: &Item) -> Option<&'static str> {
     }
 }
 
-/// ASM `data/trainers/leaders.asm`: battle/victory music and happiness classes.
+/// ASM `data/trainers/leaders.asm` and Minnesota's private leader art classes:
+/// battle/victory music and happiness classes.
 pub fn is_gym_leader_class(trainer_class: &str) -> bool {
     matches!(
         trainer_class,
@@ -50,7 +51,42 @@ pub fn is_gym_leader_class(trainer_class: &str) -> bool {
             | "SABRINA"
             | "BLAINE"
             | "BLUE"
+            | "MN_LEADER_VAREL"
+            | "MN_LEADER_TORVEN"
+            | "MN_LEADER_AVRIN"
+            | "MN_LEADER_BRANNIC"
+            | "MN_LEADER_SAVEN"
+            | "MN_LEADER_SIVREN"
+            | "MN_LEADER_ORLIS"
+            | "MN_LEADER_NOREK"
+            | "MN_ELITE_FERN"
+            | "MN_ELITE_FLINT"
+            | "MN_ELITE_VEIL"
+            | "MN_ELITE_HALDEN"
     )
+}
+
+#[test]
+fn minnesota_private_leader_art_retains_gym_battle_effects() {
+    for class in [
+        "MN_LEADER_VAREL",
+        "MN_LEADER_TORVEN",
+        "MN_LEADER_AVRIN",
+        "MN_LEADER_BRANNIC",
+        "MN_LEADER_SAVEN",
+        "MN_LEADER_SIVREN",
+        "MN_LEADER_ORLIS",
+        "MN_LEADER_NOREK",
+        "MN_ELITE_FERN",
+        "MN_ELITE_FLINT",
+        "MN_ELITE_VEIL",
+        "MN_ELITE_HALDEN",
+    ] {
+        assert!(is_gym_leader_class(class), "{class}");
+    }
+    for class in ["MN_RIVAL_REED", "MN_ICE_ENFORCER", "MN_CYCLE_TOURIST"] {
+        assert!(!is_gym_leader_class(class), "{class}");
+    }
 }
 
 fn apply_normal_vblank_divider_trace(

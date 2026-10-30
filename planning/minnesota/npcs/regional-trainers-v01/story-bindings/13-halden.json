@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "trainer_class": "MN_ELITE_HALDEN",
+  "class_name": "ELITE FOUR",
+  "trainer_ids": [
+    "MN_LEAGUE_4"
+  ],
+  "actors": [
+    {
+      "map": "MnLeagueRoom4",
+      "script": "MnLeagueRoom4Challenge",
+      "tile": [
+        5,
+        7
+      ],
+      "previous_sprite": "SPRITE_COOLTRAINER_M"
+    }
+  ]
+}

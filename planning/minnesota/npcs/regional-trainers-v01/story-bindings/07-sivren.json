@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "trainer_class": "MN_LEADER_SIVREN",
+  "class_name": "LEADER",
+  "trainer_ids": [
+    "MN_GYM_6"
+  ],
+  "actors": [
+    {
+      "map": "MnBrainerdGym",
+      "script": "MnBrainerdGymLeader",
+      "tile": [
+        5,
+        3
+      ],
+      "previous_sprite": "SPRITE_COOLTRAINER_F"
+    }
+  ]
+}

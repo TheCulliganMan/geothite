@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "trainers": [
+    {
+      "id": "MN_R14_T04",
+      "map": "MnR14C00R01",
+      "actor_script": "MN_R14_T04",
+      "trainer_class": "MN_BIRD_WATCHER",
+      "sprite": "SPRITE_MN_BIRD_WATCHER",
+      "facing": "south",
+      "approach": [
+        29,
+        6
+      ],
+      "defeated_flag": "EVENT_MN_R14_TRAINER_04"
+    }
+  ]
+}

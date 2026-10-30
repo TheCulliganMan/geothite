@@ -73,6 +73,42 @@ struct Revision {
 pub fn revise_northstar_story(base: &CompiledGamePack, source: &str) -> Result<CompiledGamePack> {
     crate::verify_compiled_game_pack_for_runtime(base)?;
     crate::verify_northstar_publication_geometry(base)?;
+    crate::validate_compact_superior_geography(base)
+        .context("dialogue parent outdoor placement")?;
+    let revision = read_revision(base, source)?;
+    ensure!(
+        revision
+            .approved_parents
+            .contains(&base.identity()?.content_hash),
+        "reviewed current regional dialogue parent required"
+    );
+    let pack = install_revision(base, revision)?;
+    crate::validate_compact_superior_geography(&pack)
+        .context("revised dialogue outdoor placement")?;
+    Ok(pack)
+}
+
+// The original exact-parent composer precedes the later climate/grass overlays.
+// Share its final scenes without making that intermediate a current-world
+// publication parent. The composer separately preserves every outdoor cell
+// except the guarded League turnout and verifies its original compact ports.
+pub(crate) fn finish_composition(
+    base: &CompiledGamePack,
+    source: &str,
+) -> Result<CompiledGamePack> {
+    ensure!(
+        crate::northstar_current_story::is_composing(base),
+        "active guarded story composition required"
+    );
+    crate::verify_compiled_game_pack_for_runtime(base)?;
+    crate::verify_northstar_publication_geometry(base)?;
+    let revision = read_revision(base, source)?;
+    let pack = install_revision(base, revision)?;
+    crate::verify_northstar_publication_geometry(&pack)?;
+    Ok(pack)
+}
+
+fn read_revision(base: &CompiledGamePack, source: &str) -> Result<Revision> {
     let root: serde_json::Value = serde_json::from_str(source)?;
     let revision: Revision = serde_json::from_value(root["dialogue_overhaul"].clone())
         .context("canonical dialogue overhaul")?;
@@ -84,13 +120,10 @@ pub fn revise_northstar_story(base: &CompiledGamePack, source: &str) -> Result<C
         !base.report.manifests.iter().any(|m| m == MANIFEST),
         "dialogue overhaul already installed"
     );
-    ensure!(
-        revision
-            .approved_parents
-            .contains(&base.identity()?.content_hash)
-            || crate::northstar_current_story::is_composing(base),
-        "reviewed current regional dialogue parent required"
-    );
+    Ok(revision)
+}
+
+fn install_revision(base: &CompiledGamePack, revision: Revision) -> Result<CompiledGamePack> {
     let mut pack = base.clone();
     crate::northstar_opening_revision::install(&mut pack)?;
     crate::northstar_courier_revision::install(&mut pack)?;
@@ -146,8 +179,13 @@ pub fn revise_northstar_story(base: &CompiledGamePack, source: &str) -> Result<C
         publish(&mut pack, map)?;
     }
     crate::northstar_clinic_revision::install(&mut pack)?;
+    crate::northstar_dispatch_revision::install(&mut pack)?;
+    let mut officer = pack.data.maps["MnBemidji"].clone();
+    crate::northstar_report_revision::install(&mut officer)?;
+    publish(&mut pack, officer)?;
     crate::northstar_story_connections::install(&mut pack)?;
     stage_harbor(&mut pack)?;
+    crate::northstar_story_pacing::install(&mut pack)?;
     pack.report.manifests.push(MANIFEST.into());
     pack.identity = crate::derive_compiled_game_pack_identity_from_manifest(
         pack.format_version,
@@ -223,9 +261,39 @@ pub(crate) fn publish(pack: &mut CompiledGamePack, mut map: MapModule) -> Result
 }
 
 #[cfg(test)]
+#[path = "northstar_story_wording_tests.rs"]
+mod wording_tests;
+
+#[cfg(test)]
 mod tests {
     use std::collections::BTreeSet;
     use std::path::PathBuf;
+
+    #[test]
+    #[ignore = "requires the frozen shifted-seam CRYSTAL_STORY_SHIFTED_REVIEW_PACK"]
+    fn dialogue_rejects_the_historical_shifted_league_placement_cycle() {
+        let pack = crate::read_verified_compiled_game_pack(PathBuf::from(
+            std::env::var_os("CRYSTAL_STORY_SHIFTED_REVIEW_PACK")
+                .expect("explicit historical shifted-seam review pack"),
+        ))
+        .expect("readable historical review pack");
+        let identity = pack.identity().expect("unchanged historical identity");
+        let error = crate::validate_compact_superior_geography(&pack)
+            .expect_err("local walking offsets cannot contradict the regional cycle");
+        assert!(error.to_string().contains("inconsistent outdoor placement"));
+        let source = std::fs::read_to_string(
+            PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../planning/minnesota/story.json"),
+        )
+        .expect("canonical source");
+        let error = super::revise_northstar_story(&pack, &source)
+            .expect_err("publication must reject the inconsistent parent before mutation");
+        assert!(
+            error
+                .to_string()
+                .contains("dialogue parent outdoor placement")
+        );
+        assert_eq!(pack.identity().expect("borrowed input retained"), identity);
+    }
 
     #[test]
     fn dialogue_canonical_pages_cover_the_campaign_and_are_protected() {
@@ -296,12 +364,15 @@ mod tests {
             .expect("story maps")
             .keys()
         {
-            if name == "MnLakeItasca" {
+            if matches!(
+                name.as_str(),
+                "MnLakeItasca" | "MnRainyRiverIcefields" | "MnDuluth"
+            ) {
                 let mut expected = before.data.maps[name].clone();
                 expected.blocks.clone_from(&after.data.maps[name].blocks);
                 assert_eq!(
                     expected, after.data.maps[name],
-                    "reviewed Itasca grass only"
+                    "reviewed native terrain only {name}"
                 );
                 continue;
             }
@@ -349,6 +420,32 @@ mod tests {
         }
         for (name, map) in &before.data.maps {
             if map != &after.data.maps[name] {
+                if matches!(
+                    name.as_str(),
+                    "MnR09C00R00"
+                        | "MnR09C00R01"
+                        | "MnR09C01R00"
+                        | "MnR09C01R01"
+                        | "MnR10C00R00"
+                        | "MnR10C01R00"
+                        | "MnMississippiUpstreamWoodsC01R00"
+                        | "MnMississippiConfluenceC01R00"
+                        | "MnMississippiConfluenceC02R00"
+                        | "MnRainyRiverIcefields"
+                        | "MnDuluth"
+                        | "MnStateFairgrounds"
+                        | "MnGrandRapids"
+                        | "MnGrandMarais"
+                        | "MnRochester"
+                ) {
+                    let mut expected = map.clone();
+                    expected.blocks.clone_from(&after.data.maps[name].blocks);
+                    assert_eq!(
+                        expected, after.data.maps[name],
+                        "reviewed terrain only {name}"
+                    );
+                    continue;
+                }
                 assert!(
                     matches!(
                         name.as_str(),
@@ -364,6 +461,7 @@ mod tests {
                             | "MnGrandMaraisFieldStation"
                             | "MnLakeItasca"
                             | "MnPreservePineEntry"
+                            | "MnMississippiLowerWoodsC01R01"
                     ),
                     "unreviewed parent change {name}"
                 );
@@ -385,6 +483,28 @@ mod tests {
         .expect("canonical story");
         let child = super::revise_northstar_story(&base, &source).expect("staged revision");
         crate::northstar_holding_fence::assert_enclosure(&child);
+        if let Some(path) = std::env::var_os("CRYSTAL_STORY_FROZEN_CAMPAIGN") {
+            let frozen = crate::read_verified_compiled_game_pack(PathBuf::from(path))
+                .expect("frozen campaign pack");
+            let frozen = super::wording_tests::reauthor_frozen(frozen, &source);
+            assert_eq!(frozen.data.maps.len(), child.data.maps.len());
+            for (name, map) in &frozen.data.maps {
+                let revised = &child.data.maps[name];
+                assert_eq!(
+                    map.scripts, revised.scripts,
+                    "frozen campaign programs {name}"
+                );
+                assert_eq!(
+                    map.script_text_bodies, revised.script_text_bodies,
+                    "frozen campaign pages {name}"
+                );
+                assert_eq!(
+                    map.objects, revised.objects,
+                    "frozen campaign participants {name}"
+                );
+                assert_eq!(map.events, revised.events, "frozen campaign events {name}");
+            }
+        }
         if let Some(path) = std::env::var_os("CRYSTAL_STORY_REVISION_PACK") {
             let published = crate::read_verified_compiled_game_pack(PathBuf::from(path))
                 .expect("published dialogue candidate");
@@ -465,14 +585,17 @@ mod tests {
                     expected_blocks[y * 10 + x] = id;
                 }
             }
+            if name == "MnR13C00R00" {
+                expected_blocks[16] = expected_blocks[15];
+            }
             assert_eq!(expected_blocks, after.blocks, "terrain {name}");
             let mut expected_attributes = before.attributes.clone();
             if name == "MnMinneapolisDispatchOffice" {
                 expected_attributes.tileset_name = crate::northstar_holding_fence::TILESET.into();
             }
             for (map, direction, target, offset) in [
-                ("MnBoundaryWaters", "south", "MnR13C00R00", 1),
-                ("MnR13C00R00", "north", "MnBoundaryWaters", -1),
+                ("MnBoundaryWaters", "south", "MnR13C00R00", 0),
+                ("MnR13C00R00", "north", "MnBoundaryWaters", 0),
             ] {
                 if name == map {
                     expected_attributes
@@ -490,9 +613,10 @@ mod tests {
             if name == "MnR13C00R00" {
                 let mut expected = before.clone();
                 expected.attributes = expected_attributes;
+                expected.blocks = expected_blocks;
                 assert_eq!(
                     &expected, after,
-                    "League approach changes only its reciprocal offset"
+                    "League approach changes only its one native floor turnout and canonical offset"
                 );
             }
             assert_eq!(before.events.warps, after.events.warps, "warps {name}");

@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "trainer_class": "MN_CANOE_GUIDE",
+  "class_name": "CANOE GUIDE",
+  "trainer_ids": [
+    "MN_RIVER_FUN_LOWER_WADE"
+  ],
+  "actors": [
+    {
+      "map": "MnMississippiLowerWoodsC01R01",
+      "script": "MN_RIVER_FUN_LOWER_WADE",
+      "tile": [
+        53,
+        15
+      ],
+      "previous_sprite": "SPRITE_FISHER"
+    }
+  ]
+}

@@ -19,6 +19,9 @@ const REPORT: &str = "EVENT_MN_BRAINERD_REPORT";
 const SURF: &str = "EVENT_MN_SURF_GIFT_RECEIVED";
 const WON: &str = "EVENT_MN_GYM_6_DEFEATED";
 
+#[path = "northstar_lake_training.rs"]
+mod training;
+
 fn arrival() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
     let Some(path) = std::env::var_os("CRYSTAL_NORTHSTAR_LAKE_SAVE") else {
         return wind();
@@ -41,7 +44,16 @@ fn arrival() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
         .as_str()
     {
         CITY if won => at(&mut c, CITY, (12, 36)),
-        CITY => at(&mut c, CITY, (32, 46)),
+        CITY => {
+            let tile = c.snapshot().expect("actual Lake recovery").overworld.tile;
+            if (tile.x, tile.y) == (9, 22) {
+                assert!(event(&c, "EVENT_MN_GYM_6_TRAINER_2_DEFEATED"));
+            } else if (tile.x, tile.y) == (12, 36) {
+                assert!(event(&c, "EVENT_MN_GYM_6_TRAINER_1_DEFEATED"));
+            } else {
+                at(&mut c, CITY, (32, 46));
+            }
+        }
         CLINIC => at(&mut c, CLINIC, (10, 13)),
         _ => panic!("expected a real Brainerd arrival, gym return or native recovery"),
     }
@@ -236,6 +248,12 @@ pub(super) fn lake() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
                 continue;
             }
             for attempt in 0..4 {
+                if id == "MN_GYM_6" && std::env::var_os("CRYSTAL_NORTHSTAR_REVIEW_LEVEL").is_none()
+                {
+                    // A native loss needs a new preparation, rather than four
+                    // identical retries with the same underprepared party.
+                    training::prepare(&mut c, &r, &root, 32 + 2 * attempt);
+                }
                 care(&mut c, &r);
                 supplies(&mut c, &r);
                 let party = c.snapshot().expect("choose an earned Lake partner").party;

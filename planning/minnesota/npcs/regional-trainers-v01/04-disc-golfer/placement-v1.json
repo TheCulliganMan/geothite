@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "trainers": [
+    {
+      "map": "MnStCloud",
+      "approach": [
+        25,
+        26
+      ],
+      "id": "MN_EXTRA_DISC_GOLFER",
+      "display_name": "FINN",
+      "trainer_class": "MN_DISC_GOLFER",
+      "class_name": "DISC GOLFER",
+      "template_class": "YOUNGSTER",
+      "sprite": "SPRITE_MN_DISC_GOLFER",
+      "tile": [
+        25,
+        25
+      ],
+      "facing": "south",
+      "sight_range": 1,
+      "defeated_flag": "EVENT_MN_EXTRA_DISC_GOLFER",
+      "party": [
+        {
+          "species": "BLUESTIP",
+          "level": 18
+        },
+        {
+          "species": "BOOMRUFF",
+          "level": 20
+        }
+      ],
+      "before_lines": [
+        "One more round?",
+        "I can go all day!"
+      ],
+      "after_lines": [
+        "A birdie for you!"
+      ],
+      "loss_lines": [
+        "Try a soft throw!"
+      ]
+    }
+  ]
+}

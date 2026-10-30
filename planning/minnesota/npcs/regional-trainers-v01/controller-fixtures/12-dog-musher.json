@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "trainers": [
+    {
+      "id": "MN_R17_T04",
+      "map": "MnR17C00R00",
+      "actor_script": "MN_R17_T04",
+      "trainer_class": "MN_DOG_MUSHER",
+      "sprite": "SPRITE_MN_DOG_MUSHER",
+      "facing": "south",
+      "approach": [
+        11,
+        46
+      ],
+      "defeated_flag": "EVENT_MN_R17_TRAINER_04"
+    }
+  ]
+}

@@ -46,3 +46,57 @@ pub(super) fn city_port(runtime: &CrystalRuntime, city: &str, room: &str) -> (Po
     assert_eq!(collision(runtime, inside, interior), Some("FLOOR"));
     (outside, interior)
 }
+
+/// Finds a reachable dry approach to an authored eastern road connection.
+/// Planning reads live collision and actors; crossing still uses controller input.
+pub(super) fn east_road_port(
+    controller: &mut super::super::VisibleShellController,
+    runtime: &CrystalRuntime,
+    road: &str,
+) -> (Point, Point) {
+    let name = controller
+        .snapshot()
+        .expect("current city departure")
+        .overworld
+        .map_name;
+    let city = &runtime.data().maps[&name];
+    let target = &runtime.data().maps[road];
+    let connection = city
+        .attributes
+        .connections
+        .iter()
+        .find(|link| link.direction == "east" && link.target_map == road)
+        .expect("authored eastern road connection");
+    let edge_x =
+        i16::try_from(i32::from(city.attributes.width) * 2 - 1).expect("native city east edge");
+    let mut best: Option<(usize, Point, Point)> = None;
+    for y in 1..i32::from(city.attributes.height) * 2 - 1 {
+        let target_y = y - connection.offset * 2;
+        if target_y < 0 || target_y >= i32::from(target.attributes.height) * 2 {
+            continue;
+        }
+        let y = i16::try_from(y).expect("native city edge row");
+        let target_y = i16::try_from(target_y).expect("native road arrival row");
+        let approach = (edge_x - 1, y);
+        let arrival = (0, target_y);
+        if collision(runtime, city, (edge_x, y)) != Some("FLOOR")
+            || collision(runtime, city, approach) != Some("FLOOR")
+            || !matches!(
+                collision(runtime, target, arrival),
+                Some("FLOOR" | "TALL_GRASS")
+            )
+        {
+            continue;
+        }
+        if let Some(path) = super::northstar_ice_lair::path(controller, runtime, approach)
+            && super::northstar_ice_lair::path(controller, runtime, (edge_x, y)).is_some()
+            && best
+                .as_ref()
+                .is_none_or(|(length, _, _)| path.len() < *length)
+        {
+            best = Some((path.len(), approach, arrival));
+        }
+    }
+    let (_, approach, arrival) = best.expect("reachable native city-to-road departure");
+    (approach, arrival)
+}

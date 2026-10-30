@@ -1,4 +1,7 @@
 //! Continue the carried party through custody, Harbor and its reveal.
+#[path = "northstar_mine_training.rs"]
+mod training;
+
 use std::path::PathBuf;
 
 use crystal_assets::AssetRoot;
@@ -7,7 +10,7 @@ use crystal_runtime::CrystalRuntime;
 
 use super::super::super::visible_field_dialog_pages;
 use super::super::northstar_earned_gyms;
-use super::super::rochester_earned::try_battle;
+use super::super::rochester_earned::{checkout, try_battle};
 use super::super::winona::{at, continue_in_place, finish, load, press, travel};
 use super::gym_eight_approach::{accept, care, road};
 use super::northstar_campaign_pine::pine;
@@ -18,6 +21,25 @@ const FOREMAN: &str = "EVENT_MN_DEPOT_FOREMAN_DEFEATED";
 const METER: &str = "EVENT_MN_MINE_INSTRUMENT_RECOVERED";
 const DEPOT: &str = "EVENT_MN_DEPOT_CLEARED";
 const SIGNAL: &str = "EVENT_MN_LIGHTHOUSE_SIGNAL";
+
+fn supplies(c: &mut VisibleShellController, r: &CrystalRuntime) {
+    let item = &r.data().items["HYPER_POTION"];
+    let state = c.shell.shell.session().state();
+    let quantity = 2_u16
+        .saturating_sub(state.bag.quantity(item))
+        .min((state.money / u32::from(item.price)) as u16);
+    if quantity == 0 {
+        return;
+    }
+    walk_to(c, r, (42, 20));
+    travel(c, GameButton::Up, "MnBemidjiMart", (6, 5));
+    walk_to(c, r, (3, 3));
+    press(c, GameButton::Left);
+    press(c, GameButton::A);
+    checkout(c, r, "HYPER_POTION", quantity);
+    walk_to(c, r, (6, 6));
+    travel(c, GameButton::Down, "MnBemidji", (42, 20));
+}
 
 fn arrival() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
     let Some(path) = std::env::var_os("CRYSTAL_NORTHSTAR_IRON_SAVE") else {
@@ -41,6 +63,7 @@ fn arrival() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
     assert!(matches!(
         s.overworld.map_name.as_str(),
         "MnBemidji"
+            | "MnBemidjiPokecenter1F"
             | "MnR09Cave1F"
             | "MnIronDrillCore"
             | "MnGrandRapidsSurveyDepot"
@@ -52,6 +75,15 @@ fn arrival() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
 }
 
 fn mine(c: &mut VisibleShellController, r: &CrystalRuntime, root: &AssetRoot) {
+    if c.snapshot()
+        .expect("native mine loss recovery")
+        .overworld
+        .map_name
+        == "MnBemidjiPokecenter1F"
+    {
+        walk_to(c, r, (10, 14));
+        travel(c, GameButton::Down, "MnBemidji", (31, 10));
+    }
     if c.snapshot()
         .expect("completed drill Continue")
         .overworld
@@ -66,6 +98,33 @@ fn mine(c: &mut VisibleShellController, r: &CrystalRuntime, root: &AssetRoot) {
     }
     if c.snapshot().expect("mine approach").overworld.map_name == "MnBemidji" {
         care(c, r, "MnBemidji", (31, 10));
+        if event(c, FOREMAN) {
+            training::prepare(c, r, root);
+            care(c, r, "MnBemidji", (31, 10));
+        }
+        if event(c, FOREMAN)
+            && let Some(slot) = c
+                .snapshot()
+                .expect("carried mine retry team")
+                .party
+                .slots
+                .iter()
+                .filter(|slot| {
+                    slot.pokemon.moves.iter().any(|learned| {
+                        let definition = &r.data().moves[&learned.name];
+                        learned.current_pp > 0
+                            && definition.power >= 60
+                            && definition.move_type == "GROUND"
+                    })
+                })
+                .max_by_key(|slot| slot.pokemon.level)
+                .map(|slot| slot.index)
+        {
+            // This guard's Fire/Steel partner has already been encountered.
+            // Choose the carried Ground coverage through the native Party UI.
+            super::northstar_arc_campaign::switch_lead(c, slot);
+        }
+        supplies(c, r);
         walk_to(c, r, (43, 25));
         travel(c, GameButton::Right, "MnR09C00R01", (0, 3));
         road(c, r, 9, (40, 42));
@@ -241,7 +300,7 @@ pub(super) fn iron() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
             .overworld
             .map_name
             .as_str(),
-        "MnBemidji" | "MnR09Cave1F" | "MnIronDrillCore"
+        "MnBemidji" | "MnBemidjiPokecenter1F" | "MnR09Cave1F" | "MnIronDrillCore"
     ) {
         mine(&mut c, &r, &root);
     }

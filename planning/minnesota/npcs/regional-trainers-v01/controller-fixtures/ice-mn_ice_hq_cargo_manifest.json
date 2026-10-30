@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "trainers": [
+    {
+      "approach": [
+        24,
+        14
+      ],
+      "defeated_flag": "EVENT_MN_ICE_HQ_CARGO_MANIFEST_DEFEATED",
+      "facing": "south",
+      "id": "MN_ICE_HQ_CARGO_MANIFEST",
+      "map": "MnIceCargoBasement",
+      "sprite": "SPRITE_MN_ICE_AGENT",
+      "tile": [
+        24,
+        13
+      ],
+      "trainer_class": "MN_ICE_AGENT"
+    }
+  ]
+}

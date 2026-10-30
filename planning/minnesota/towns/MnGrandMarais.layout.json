@@ -4442,6 +4442,15 @@
         17
       ],
       "block": "86"
+    },
+    {
+      "name": "Complete native mart wall and endcap repair",
+      "kind": "point",
+      "position": [
+        10,
+        4
+      ],
+      "block": "1a"
     }
   ]
 }

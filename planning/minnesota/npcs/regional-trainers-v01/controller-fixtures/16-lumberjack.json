@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "trainers": [
+    {
+      "id": "MN_R13_T04",
+      "map": "MnR13C00R01",
+      "actor_script": "MN_R13_T04",
+      "trainer_class": "MN_LUMBERJACK",
+      "sprite": "SPRITE_MN_LUMBERJACK",
+      "facing": "west",
+      "approach": [
+        46,
+        37
+      ],
+      "defeated_flag": "EVENT_MN_R13_TRAINER_04"
+    }
+  ]
+}

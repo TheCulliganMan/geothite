@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "trainer_class": "MN_DAIRY_FARMER",
+  "class_name": "DAIRY FARMER",
+  "trainer_ids": [
+    "MN_FAIR_CURDS_TRAINER"
+  ],
+  "actors": [
+    {
+      "map": "MnStateFairgrounds",
+      "script": "MN_FAIR_CURDS_TRAINER",
+      "tile": [
+        67,
+        15
+      ],
+      "previous_sprite": "SPRITE_POKEFAN_F"
+    }
+  ]
+}

@@ -1,18 +1,26 @@
 include!("tests/shell_basics.rs");
-#[path = "tests/native_city_ports.rs"]
-mod native_city_ports;
-#[path = "tests/minnesota_fossils.rs"]
-mod minnesota_fossils;
-#[path = "tests/minnesota_castorock.rs"]
-mod minnesota_castorock;
-#[path = "tests/minnesota_starter_return.rs"]
-mod minnesota_starter_return;
-#[path = "tests/grand_marais_partner_retry.rs"]
-mod grand_marais_partner_retry;
+#[path = "tests/dialogue_clock_presentation.rs"]
+mod dialogue_clock_presentation;
+#[path = "tests/dialogue_native_transitions.rs"]
+mod dialogue_native_transitions;
 #[path = "tests/dialogue_overhaul.rs"]
 mod dialogue_overhaul;
+#[path = "tests/dialogue_save_prompt.rs"]
+mod dialogue_save_prompt;
 #[path = "tests/dialogue_scene_fixtures.rs"]
 mod dialogue_scene_fixtures;
+#[path = "tests/grand_marais_partner_retry.rs"]
+mod grand_marais_partner_retry;
+#[path = "tests/minnesota_castorock.rs"]
+mod minnesota_castorock;
+#[path = "tests/minnesota_fossils.rs"]
+mod minnesota_fossils;
+#[path = "tests/minnesota_starter_return.rs"]
+mod minnesota_starter_return;
+#[path = "tests/native_city_ports.rs"]
+mod native_city_ports;
+#[path = "tests/northstar_dispatch_course.rs"]
+mod northstar_dispatch_course;
 #[cfg(feature = "location-tester")]
 include!("tests/party_follower.rs");
 include!("tests/multiplayer_rendering.rs");
@@ -433,3 +441,9 @@ mod canoe;
 
 #[path = "tests/central_lakes_grass.rs"]
 mod central_lakes_grass;
+
+#[path = "tests/verdigrim_scene.rs"]
+mod verdigrim_scene;
+
+#[path = "tests/league_entrance_alignment.rs"]
+mod league_entrance_alignment;

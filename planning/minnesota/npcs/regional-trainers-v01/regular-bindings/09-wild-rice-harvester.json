@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "trainer_class": "MN_RICE_HARVESTER",
+  "class_name": "RICE HARVESTER",
+  "trainer_ids": [
+    "MN_RIVER_FUN_UPSTREAM_HOLLY"
+  ],
+  "actors": [
+    {
+      "map": "MnMississippiUpstreamWoodsC01R00",
+      "script": "MN_RIVER_FUN_UPSTREAM_HOLLY",
+      "tile": [
+        29,
+        45
+      ],
+      "previous_sprite": "SPRITE_COOLTRAINER_F"
+    }
+  ]
+}

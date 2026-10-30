@@ -91,151 +91,186 @@ pub(super) fn play_chapter(
     r: &crystal_runtime::CrystalRuntime,
 ) -> VisibleShellController {
     // No progression, position, party, move, HP or RNG writes after this line.
-    for flag in [FOREMAN, FEED, SEEN, WON, OFF, RECOVERED] {
-        assert!(!event(&c, flag));
+    for (later, required) in [
+        (FEED, FOREMAN),
+        (SEEN, FEED),
+        (WON, SEEN),
+        (OFF, WON),
+        (RECOVERED, OFF),
+    ] {
+        assert!(
+            !event(&c, later) || event(&c, required),
+            "native chapter order"
+        );
     }
-    walk(&mut c, &r, (19, 8));
-    talk(&mut c, GameButton::Up);
-    page(&mut c, "MnNDrillScoutQuestText");
-    finish(&mut c);
-    walk(&mut c, &r, (7, 4));
-    talk(&mut c, GameButton::Down);
-    page(&mut c, "MnNDrillMeterDeniedText");
-    finish(&mut c);
-    assert!(!event(&c, RECOVERED));
-    assert!(
-        path(&mut c, &r, (19, 11)).is_none(),
-        "lower workings sealed before foreman win"
-    );
-    walk(&mut c, &r, (9, 4));
-    talk(&mut c, GameButton::Down);
-    assert!(super::rochester_earned::try_battle(
-        &mut c,
-        &r,
-        "MN_LODE_FOREMAN",
-        FOREMAN
-    ));
-    finish(&mut c);
-    assert!(!event(&c, OFF) && !event(&c, RECOVERED));
-    walk(&mut c, &r, (19, 10));
+    if !event(&c, FOREMAN) {
+        walk(&mut c, r, (19, 8));
+        talk(&mut c, GameButton::Up);
+        page(&mut c, "MnNDrillScoutQuestText");
+        finish(&mut c);
+        walk(&mut c, r, (7, 4));
+        talk(&mut c, GameButton::Down);
+        page(&mut c, "MnNDrillMeterDeniedText");
+        finish(&mut c);
+        assert!(!event(&c, RECOVERED));
+        assert!(
+            path(&mut c, r, (19, 11)).is_none(),
+            "lower workings sealed before foreman win"
+        );
+        if let Some(slot) = c
+            .snapshot()
+            .expect("choose a carried mine partner")
+            .party
+            .slots
+            .iter()
+            .position(|slot| {
+                slot.pokemon.species.type1 == "GRASS" || slot.pokemon.species.type2 == "GRASS"
+            })
+        {
+            super::minnesota_gyms::northstar_arc_campaign::switch_lead(&mut c, slot);
+        }
+        walk(&mut c, r, (9, 4));
+        talk(&mut c, GameButton::Down);
+        assert!(super::rochester_earned::try_battle(
+            &mut c,
+            r,
+            "MN_LODE_FOREMAN",
+            FOREMAN
+        ));
+        finish(&mut c);
+        assert!(!event(&c, OFF) && !event(&c, RECOVERED));
+        c = save(&mut c, root, r, "mine-foreman-won");
+    }
+    walk(&mut c, r, (19, 10));
     travel(&mut c, GameButton::Down, APPROACH, (6, 21));
     let expanded = r.data().maps.contains_key("MnIronHaulage");
     if expanded {
-        super::northstar_iron_workings::enter_gallery(&mut c, &r, &root);
+        super::northstar_iron_workings::enter_gallery(&mut c, r, root);
     } else {
-        walk(&mut c, &r, (25, 6));
+        walk(&mut c, r, (25, 6));
         travel(&mut c, GameButton::Up, GALLERY, (4, 19));
     }
-    assert!(
-        path(&mut c, &r, (25, 4)).is_none(),
-        "core stair physically sealed"
-    );
-    let long = path(&mut c, &r, (25, 18)).expect("real pump maze").len();
-    assert!(long > 25, "feed must require winding through pump banks");
-    walk(&mut c, &r, (25, 18));
-    talk(&mut c, GameButton::Up);
-    choice(&mut c, false);
-    finish(&mut c);
-    assert!(!event(&c, FEED));
-    c = save(&mut c, &root, &r, "pump-feed-declined");
-    talk(&mut c, GameButton::Up);
-    choice(&mut c, true);
-    finish(&mut c);
-    assert!(event(&c, FEED) && !event(&c, SEEN) && !event(&c, OFF));
-    assert!(path(&mut c, &r, (4, 19)).expect("service return").len() < long);
-    c = save(&mut c, &root, &r, "pump-feed-isolated");
-    walk(&mut c, &r, (25, 5));
-    travel(&mut c, GameButton::Up, CORE, (4, 15));
-    walk(&mut c, &r, (4, 13));
-    press(&mut c, GameButton::Up);
-    for (label, expected) in [
-        ("MnNDrillCrewCallText", 0x16),
-        ("MnNDrillForemanText", 0x12),
-    ] {
-        page(&mut c, label);
-        assert!(!event(&c, SEEN));
-        press(&mut c, GameButton::Left);
-        at(&mut c, CORE, (9, 9));
-        let map = &c.shell.shell.session().overworld().map;
-        let block = map.metatile_ids[4 * map.width as usize + 5];
-        assert_eq!(
-            block, expected,
-            "the visible stroke must change as the native scene advances"
+    if !event(&c, FEED) {
+        assert!(
+            path(&mut c, r, (25, 4)).is_none(),
+            "core stair physically sealed"
         );
-        let directory = std::path::PathBuf::from(
-            std::env::var_os("CRYSTAL_NORTHSTAR_EVENTS_SAVE_DIR")
-                .expect("actual scene capture folder"),
-        );
-        std::fs::create_dir_all(&directory).expect("capture folder");
-        // These actual acted frames are for render review, not Continue.
-        c.save(directory.join(format!("drill-piston-{block:02x}.crystalsave")))
-            .expect("actual native piston frame");
+        let long = path(&mut c, r, (25, 18)).expect("real pump maze").len();
+        assert!(long > 25, "feed must require winding through pump banks");
+        walk(&mut c, r, (25, 18));
+        talk(&mut c, GameButton::Up);
+        choice(&mut c, false);
+        finish(&mut c);
+        assert!(!event(&c, FEED));
+        c = save(&mut c, root, r, "pump-feed-declined");
+        talk(&mut c, GameButton::Up);
+        choice(&mut c, true);
+        finish(&mut c);
+        assert!(event(&c, FEED) && !event(&c, SEEN) && !event(&c, OFF));
+        assert!(path(&mut c, r, (4, 19)).expect("service return").len() < long);
+        c = save(&mut c, root, r, "pump-feed-isolated");
     }
-    assert!(
-        c.shell
-            .last_audio_events
-            .iter()
-            .any(|e| e.contains("drained runtime earthquakes")),
-        "the production controller must finish the actual shaking presentation"
-    );
-    finish(&mut c);
-    assert!(event(&c, SEEN) && !event(&c, WON) && !event(&c, OFF));
-    c = save(&mut c, &root, &r, "drill-witnessed");
-    walk(&mut c, &r, (16, 3));
-    talk(&mut c, GameButton::Up);
-    page(&mut c, "MnNDrillReedBlocksText");
-    finish(&mut c);
-    walk(&mut c, &r, (8, 9));
-    talk(&mut c, GameButton::Up);
-    assert!(super::rochester_earned::try_battle(
-        &mut c,
-        &r,
-        "MN_REED_MINE",
-        WON
-    ));
-    finish(&mut c);
-    assert!(!event(&c, OFF) && !event(&c, RECOVERED));
-    c = save(&mut c, &root, &r, "mine-rival-won");
-    walk(&mut c, &r, (16, 3));
-    talk(&mut c, GameButton::Up);
-    choice(&mut c, false);
-    finish(&mut c);
-    assert!(!event(&c, OFF));
-    talk(&mut c, GameButton::Up);
-    choice(&mut c, true);
-    finish(&mut c);
-    assert!(event(&c, OFF) && !event(&c, RECOVERED));
-    c = save(&mut c, &root, &r, "drill-stopped");
-    assert!(
-        c.snapshot()
-            .expect("rescued crew")
-            .visible_objects
-            .iter()
-            .any(|o| o.object_identifier.as_deref() == Some("MN_NDRILL_FINN"))
-    );
-    // Snapshot object events retain authored coordinates; movement and
-    // Continue restore the authoritative object-struct position separately.
-    assert_eq!(
-        c.shell
-            .shell
-            .session()
-            .overworld()
-            .object_runtime_tile_by_id("MN_NDRILL_FINN")
-            .expect("rescued crew position"),
-        crystal_core::world::map::TilePosition::new(8, 7)
-    );
-    walk(&mut c, &r, (8, 6));
-    talk(&mut c, GameButton::Down);
-    choice(&mut c, false);
-    finish(&mut c);
-    assert!(!event(&c, RECOVERED));
-    talk(&mut c, GameButton::Down);
-    choice(&mut c, true);
-    page(&mut c, "MnNDrillMeterQuestText");
-    assert!(!event(&c, RECOVERED));
-    finish(&mut c);
-    assert!(event(&c, RECOVERED));
-    c = save(&mut c, &root, &r, "crew-meter-quest-acknowledged");
+    walk(&mut c, r, (25, 5));
+    travel(&mut c, GameButton::Up, CORE, (4, 15));
+    if !event(&c, SEEN) {
+        walk(&mut c, r, (4, 13));
+        press(&mut c, GameButton::Up);
+        for (label, expected) in [
+            ("MnNDrillCrewCallText", 0x16),
+            ("MnNDrillForemanText", 0x12),
+        ] {
+            page(&mut c, label);
+            assert!(!event(&c, SEEN));
+            press(&mut c, GameButton::Left);
+            at(&mut c, CORE, (9, 9));
+            let map = &c.shell.shell.session().overworld().map;
+            let block = map.metatile_ids[4 * map.width as usize + 5];
+            assert_eq!(
+                block, expected,
+                "the visible stroke must change as the native scene advances"
+            );
+            let directory = std::path::PathBuf::from(
+                std::env::var_os("CRYSTAL_NORTHSTAR_EVENTS_SAVE_DIR")
+                    .expect("actual scene capture folder"),
+            );
+            std::fs::create_dir_all(&directory).expect("capture folder");
+            // These actual acted frames are for render review, not Continue.
+            c.save(directory.join(format!("drill-piston-{block:02x}.crystalsave")))
+                .expect("actual native piston frame");
+        }
+        assert!(
+            c.shell
+                .last_audio_events
+                .iter()
+                .any(|e| e.contains("drained runtime earthquakes")),
+            "the production controller must finish the actual shaking presentation"
+        );
+        finish(&mut c);
+        assert!(event(&c, SEEN) && !event(&c, WON) && !event(&c, OFF));
+        c = save(&mut c, root, r, "drill-witnessed");
+    }
+    if !event(&c, WON) {
+        walk(&mut c, r, (16, 3));
+        talk(&mut c, GameButton::Up);
+        page(&mut c, "MnNDrillReedBlocksText");
+        finish(&mut c);
+        walk(&mut c, r, (8, 9));
+        talk(&mut c, GameButton::Up);
+        assert!(super::rochester_earned::try_battle(
+            &mut c,
+            r,
+            "MN_REED_MINE",
+            WON
+        ));
+        finish(&mut c);
+        assert!(!event(&c, OFF) && !event(&c, RECOVERED));
+        c = save(&mut c, root, r, "mine-rival-won");
+    }
+    if !event(&c, OFF) {
+        walk(&mut c, r, (16, 3));
+        talk(&mut c, GameButton::Up);
+        choice(&mut c, false);
+        finish(&mut c);
+        assert!(!event(&c, OFF));
+        talk(&mut c, GameButton::Up);
+        choice(&mut c, true);
+        finish(&mut c);
+        assert!(event(&c, OFF) && !event(&c, RECOVERED));
+        c = save(&mut c, root, r, "drill-stopped");
+    }
+    if !event(&c, RECOVERED) {
+        assert!(
+            c.snapshot()
+                .expect("rescued crew")
+                .visible_objects
+                .iter()
+                .any(|o| o.object_identifier.as_deref() == Some("MN_NDRILL_FINN"))
+        );
+        // Snapshot object events retain authored coordinates; movement and
+        // Continue restore the authoritative object-struct position separately.
+        assert_eq!(
+            c.shell
+                .shell
+                .session()
+                .overworld()
+                .object_runtime_tile_by_id("MN_NDRILL_FINN")
+                .expect("rescued crew position"),
+            crystal_core::world::map::TilePosition::new(8, 7)
+        );
+        walk(&mut c, r, (8, 6));
+        talk(&mut c, GameButton::Down);
+        choice(&mut c, false);
+        finish(&mut c);
+        assert!(!event(&c, RECOVERED));
+        talk(&mut c, GameButton::Down);
+        choice(&mut c, true);
+        page(&mut c, "MnNDrillMeterQuestText");
+        assert!(!event(&c, RECOVERED));
+        finish(&mut c);
+        assert!(event(&c, RECOVERED));
+        c = save(&mut c, root, r, "crew-meter-quest-acknowledged");
+    }
+    walk(&mut c, r, (8, 6));
     talk(&mut c, GameButton::Down);
     page(&mut c, "MnNDrillMeterAfterText");
     finish(&mut c);

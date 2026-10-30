@@ -300,3 +300,6 @@ pub(super) fn mankato_arrival() -> (AssetRoot, CrystalRuntime, VisibleShellContr
     assert!(event(&c, NOTE));
     (root, r, c)
 }
+
+#[path = "mankato_notebook_review.rs"]
+mod mankato_notebook_review;

@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "trainers": [
+    {
+      "map": "MnBemidji",
+      "approach": [
+        25,
+        26
+      ],
+      "id": "MN_EXTRA_PRAIRIE_PAINTER",
+      "display_name": "ALDEN",
+      "trainer_class": "MN_PRAIRIE_PAINTER",
+      "class_name": "PRAIRIE PAINTER",
+      "template_class": "GENTLEMAN",
+      "sprite": "SPRITE_MN_PRAIRIE_PAINTER",
+      "tile": [
+        25,
+        25
+      ],
+      "facing": "south",
+      "sight_range": 1,
+      "defeated_flag": "EVENT_MN_EXTRA_PRAIRIE_PAINTER",
+      "party": [
+        {
+          "species": "BLUESTIP",
+          "level": 27
+        },
+        {
+          "species": "PRAIRION",
+          "level": 28
+        }
+      ],
+      "before_lines": [
+        "Such fine colors!",
+        "Hold that pose!"
+      ],
+      "after_lines": [
+        "A work of art!"
+      ],
+      "loss_lines": [
+        "A bold first coat!"
+      ]
+    }
+  ]
+}

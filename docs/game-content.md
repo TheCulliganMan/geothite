@@ -6,6 +6,17 @@ exports runtime catalogs, compiles and verifies the packs, and publishes local
 agent inputs. Source checkouts, ROMs, intermediate exports, PCM, and packs stay
 outside tracked source.
 
+## State Fair building repair (2026-10-29)
+
+The [fair runbook](../planning/minnesota/playable/state-fairgrounds.md#contiguous-building-repair-2026-10-29)
+records the executed `revise_state_fair_buildings PACK LAYOUT OUTPUT` Rust
+publication over the selected730-map regional pack. It fixes15 solid building
+cells using three explicit native glyph compositions, preserving all entrances,
+walking collision, existing art, actors, encounters and audio. Six actual2D
+captures, every room return, Save/Continue, full preservation and all377 audio
+programs pass. The repaired local pack remains ignored; no web deployment is
+claimed.
+
 ## Combined Minnesota browser publication (2026-10-29)
 
 The [live release record](deployment.md#combined-minnesota-release-2026-10-29)

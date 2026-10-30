@@ -1,0 +1,15 @@
+# Brainerd town exterior review
+
+Accepted unchanged against selected Duluth v03, SHA `6878059cebf9826b319b840bbcb2a8f243a73556c68d00cc0d135ad4a597265f`. `acceptance.json` and `publication.json` bind the review. No terrain, pack bytes or active selector changed; `world.json` adds only `route_grass_brainerd_town_review`.
+
+The native 32x24 town retains safe developed streets, its eastward Gym hop and a 27-step ordinary southern ramp return. All four directly connected route modules contain encounter grass: R06 64, R07 88, R15 92 and R18 228 quadrants. Public approaches for six residents, seven signs and five buildings are connected with actual actor bodies subtracted.
+
+Five scoped native cases pass: the four contract-based checks cover all five current room arrivals/both return carpets/Continue, six missing-requirement guard lanes/free inbound, the actual hop/reverse denial/ramp return, and public conversations/signs/eight qualified road lanes/pier fence/real Surf launch and dismount. The updated original facade test separately passes. The old facade oracle read the historical 12x11 Gym; it now checks the installed 5x8 Winch source and its three native warp anchors. Full Gym battle/reward and campaign acceptance remain separate.
+
+Seven actual production 2D images were visually inspected and match source pixels exactly, including the lake bank. A fresh production MCP process continued a reached facade save at `(9,22)`, walked to `(8,22)`, opened Items/Balls and returned to walking in 15 calls with no stderr. Both source save and copied input bytes remain unchanged. Six-map regional wild/trainer/fishing roster audit, leaf formatting and final scoped Clippy pass.
+
+The first native run passed three cases but rejected normal first-arrival `ENGINE_FLYPOINT_MN_BRAINERD` registration during inbound travel. The exact full flag diff, failed run, original code and v01 contract remain retained. The frozen native NEWMAP callback is independently verified to contain only that Fly setflag and endcallback, with a real Brainerd destination. The corrected v02 contract/helper expects precisely that discovery and compares every remaining event/engine flag exactly; it never writes live session state. The first callback audit used a snake_case key for a camelCase serialized spawn; both failed and corrected read-only attempts remain retained.
+
+Mew60/Surf, prior badges and any listed prerequisites are declared initial local QA fixtures. All later actions use actual controller inputs; no position, terrain, clock, party, badge, mode or menu state is repaired. Fifty created native save/backup files, the production copy, source/binary/contract fingerprints, captures and all logs are retained. Heavy Cargo checks use the shared advisory slot; no own Cargo job remains after the passing terminal result.
+
+Use `current-scope-inventory-after-brainerd-town-v01.json` and `remaining-outdoor-review-inventory-after-brainerd-town-v01.json`: fourteen town reviews and final current-story integration/coverage remain open.

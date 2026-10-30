@@ -1,0 +1,26 @@
+[
+  {
+    "id": "street-foot",
+    "map": "MnDuluth",
+    "core": [
+      58,
+      37
+    ]
+  },
+  {
+    "id": "upper-garden",
+    "map": "MnDuluth",
+    "core": [
+      55,
+      33
+    ]
+  },
+  {
+    "id": "forced-flight",
+    "map": "MnDuluth",
+    "core": [
+      56,
+      35
+    ]
+  }
+]

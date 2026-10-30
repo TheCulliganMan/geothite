@@ -15,6 +15,69 @@ fn fixture() -> RouteDesign {
     .expect("explicit ledge contract");
     design
 }
+
+#[test]
+fn authored_closed_high_cliff_requires_wall_and_safe_approaches() {
+    let mut design = fixture();
+    design.closed_high_cliffs = std::mem::take(&mut design.one_way_ledges);
+    let collision = |tile: [u16; 2]| match tile {
+        [4 | 5, 4] | [4, 3] | [4, 6] => "FLOOR",
+        _ => "WALL",
+    };
+    validate_ledges(&design, |tile| Ok(collision(tile))).expect("closed retaining face");
+    for (tile, replacement) in [
+        ([4, 4], "HOP_DOWN"),
+        ([4, 5], "FLOOR"),
+        ([4, 3], "WATER"),
+        ([4, 6], "DOOR"),
+    ] {
+        assert!(
+            validate_ledges(&design, |at| Ok(if at == tile {
+                replacement
+            } else {
+                collision(at)
+            }))
+            .is_err()
+        );
+    }
+}
+
+#[test]
+fn authored_closed_high_cliff_still_requires_ordinary_return() {
+    let mut design = fixture();
+    design.one_way_ledges[0].return_passage_core = [8, 4, 9, 5];
+    design.one_way_ledges[0].return_region_core = Some([4, 1, 10, 8]);
+    design.closed_high_cliffs = std::mem::take(&mut design.one_way_ledges);
+    let mut floor = walking_loops();
+    validate_ledge_returns(&design, &floor, |_| Ok("FLOOR"))
+        .expect("closed cliff retains the ordinary stair circuit");
+    floor.remove(&[8, 4]);
+    assert!(validate_ledge_returns(&design, &floor, |_| Ok("FLOOR")).is_err());
+}
+
+#[test]
+fn authored_closed_high_cliff_dossier_cannot_remove_other_route_contracts() {
+    let mut value: serde_json::Value = serde_json::from_str(include_str!(
+        "../../../planning/minnesota/routes/MN_R10.json"
+    ))
+    .expect("current R10 authoring dossier");
+    value["closed_high_cliffs"] = value["one_way_ledges"].take();
+    value["one_way_ledges"] = json!([]);
+    let encode = |value: &serde_json::Value| serde_json::to_string(value).expect("dossier JSON");
+    RouteDesign::parse(&encode(&value)).expect("explicit closed carrier cliff");
+    for (field, replacement) in [
+        ("closed_high_cliffs", json!([])),
+        ("required_flags", json!(["BADGE_7"])),
+        ("required_grass_crossings", json!([])),
+        ("id", json!("MN_R09")),
+    ] {
+        let mut invalid = value.clone();
+        invalid[field] = replacement;
+        assert!(RouteDesign::parse(&encode(&invalid)).is_err());
+    }
+    value["closed_high_cliffs"][0]["bounds_core"] = json!([22, 20, 28, 22]);
+    assert!(RouteDesign::parse(&encode(&value)).is_err());
+}
 fn kind(tile: [u16; 2], approach: &'static str, landing: &'static str) -> &'static str {
     match tile {
         [4, 3] => approach,

@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "trainers": [
+    {
+      "id": "MN_RIVER_FUN_UPSTREAM_HOLLY",
+      "map": "MnMississippiUpstreamWoodsC01R00",
+      "actor_script": "MN_RIVER_FUN_UPSTREAM_HOLLY",
+      "trainer_class": "MN_RICE_HARVESTER",
+      "sprite": "SPRITE_MN_RICE_HARVESTER",
+      "facing": "west",
+      "approach": [
+        28,
+        45
+      ],
+      "defeated_flag": "EVENT_MN_RIVER_FUN_UPSTREAM_HOLLY"
+    }
+  ]
+}

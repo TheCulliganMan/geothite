@@ -1,0 +1,7 @@
+[
+  {"id": "r10-cache-preserved-reward", "map": "MnR10C00R00", "core": [26, 9]},
+  {"id": "r10-cache-northern-grass-threshold", "map": "MnR10C00R00", "core": [35, 10]},
+  {"id": "r10-cache-native-grass-cliff", "map": "MnR10C00R00", "core": [40, 9]},
+  {"id": "r10-mine-paved-iva-approach", "map": "MnR10C00R00", "core": [36, 15]},
+  {"id": "r10-matching-outdoor-cave12-stair", "map": "MnR10C00R00", "core": [11, 20]}
+]

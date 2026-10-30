@@ -1,0 +1,764 @@
+{
+  "id": "MnMississippiLowerWoods",
+  "name": "LOWER MISSISSIPPI WOODS",
+  "compiled_tileset": "johto",
+  "dimensions_metatiles": [
+    64,
+    68
+  ],
+  "map_prefix": "MnMississippiLowerWoods",
+  "current_revision": "route_grass_lower_woods_revision",
+  "current_native_source": "planning/minnesota/connections/current-river-grass-v01/MnMississippiLowerWoods.layout.json",
+  "composition": "Quiet winding wooded river, grassy landing walks and twenty regional trainers. A small pine-bank ledge beside the medic gives a dry return and grassy uphill shoulder.",
+  "construction_sources": [
+    "connections/mississippi-fun-v01/",
+    "connections/mississippi-bank-refinement-v01/"
+  ],
+  "native_maps": [
+    {
+      "id": "MnMississippiLowerWoodsC00R00",
+      "attributes": {
+        "tileset_name": "johto",
+        "border_block": 5,
+        "width": 32,
+        "height": 24,
+        "connections": [
+          {
+            "direction": "east",
+            "target_map": "MnMississippiLowerWoodsC01R00",
+            "offset": 0
+          },
+          {
+            "direction": "south",
+            "target_map": "MnMississippiLowerWoodsC00R01",
+            "offset": 0
+          }
+        ],
+        "time_of_day": null,
+        "phone_service": 0,
+        "phone_flag": false,
+        "environment": "ROUTE",
+        "location": "LANDMARK_MN_WINONA",
+        "music": "MUSIC_ROUTE_30",
+        "palette": "PALETTE_AUTO",
+        "fishing_group": "FISHGROUP_MN_POND",
+        "map_constant": "MNMISSISSIPPILOWERWOODSC00R00",
+        "map_group_constant": "MAPGROUP_MINNESOTA_MISSISSIPPI",
+        "blocks_label": "MnMississippiLowerWoodsC00R00_Blocks",
+        "map_scripts_label": "MnMississippiLowerWoodsC00R00_MapScripts",
+        "map_events_label": "MnMississippiLowerWoodsC00R00_MapEvents",
+        "connection_flags": "EAST | SOUTH"
+      },
+      "events": {
+        "warps": [],
+        "coord_events": [],
+        "bg_events": []
+      },
+      "actors": [
+        {
+          "sprite": "SPRITE_FALKNER",
+          "sprite_has_facings": true,
+          "x": 47,
+          "y": 39,
+          "spritemovedata": "SPRITEMOVEDATA_STANDING_LEFT",
+          "move_range_x": 0,
+          "move_range_y": 0,
+          "hram_x": -1,
+          "hram_y": -1,
+          "pal": 0,
+          "object_type": "OBJECTTYPE_TRAINER",
+          "radius": 2,
+          "script": "MN_RIVER_FUN_LOWER_REED",
+          "label": null,
+          "event_flag": "-1",
+          "object_identifier": "MN_RIVER_FUN_LOWER_REED",
+          "sightline_direction_override": null
+        },
+        {
+          "sprite": "SPRITE_YOUNGSTER",
+          "sprite_has_facings": true,
+          "x": 41,
+          "y": 47,
+          "spritemovedata": "SPRITEMOVEDATA_STANDING_LEFT",
+          "move_range_x": 0,
+          "move_range_y": 0,
+          "hram_x": -1,
+          "hram_y": -1,
+          "pal": 0,
+          "object_type": "OBJECTTYPE_TRAINER",
+          "radius": 2,
+          "script": "MN_RIVER_FUN_LOWER_TOM",
+          "label": null,
+          "event_flag": "-1",
+          "object_identifier": "MN_RIVER_FUN_LOWER_TOM",
+          "sightline_direction_override": null
+        },
+        {
+          "sprite": "SPRITE_LASS",
+          "sprite_has_facings": true,
+          "x": 49,
+          "y": 35,
+          "spritemovedata": "SPRITEMOVEDATA_STANDING_LEFT",
+          "move_range_x": 0,
+          "move_range_y": 0,
+          "hram_x": -1,
+          "hram_y": -1,
+          "pal": 0,
+          "object_type": "OBJECTTYPE_TRAINER",
+          "radius": 2,
+          "script": "MN_RIVER_FUN_LOWER_RORY",
+          "label": null,
+          "event_flag": "-1",
+          "object_identifier": "MN_RIVER_FUN_LOWER_RORY",
+          "sightline_direction_override": null
+        }
+      ]
+    },
+    {
+      "id": "MnMississippiLowerWoodsC00R01",
+      "attributes": {
+        "tileset_name": "johto",
+        "border_block": 5,
+        "width": 32,
+        "height": 24,
+        "connections": [
+          {
+            "direction": "north",
+            "target_map": "MnMississippiLowerWoodsC00R00",
+            "offset": 0
+          },
+          {
+            "direction": "east",
+            "target_map": "MnMississippiLowerWoodsC01R01",
+            "offset": 0
+          },
+          {
+            "direction": "south",
+            "target_map": "MnMississippiLowerWoodsC00R02",
+            "offset": 0
+          },
+          {
+            "direction": "west",
+            "target_map": "MnStPaul",
+            "offset": -14
+          }
+        ],
+        "time_of_day": null,
+        "phone_service": 0,
+        "phone_flag": false,
+        "environment": "ROUTE",
+        "location": "LANDMARK_MN_WINONA",
+        "music": "MUSIC_ROUTE_30",
+        "palette": "PALETTE_AUTO",
+        "fishing_group": "FISHGROUP_MN_POND",
+        "map_constant": "MNMISSISSIPPILOWERWOODSC00R01",
+        "map_group_constant": "MAPGROUP_MINNESOTA_MISSISSIPPI",
+        "blocks_label": "MnMississippiLowerWoodsC00R01_Blocks",
+        "map_scripts_label": "MnMississippiLowerWoodsC00R01_MapScripts",
+        "map_events_label": "MnMississippiLowerWoodsC00R01_MapEvents",
+        "connection_flags": "NORTH | EAST | SOUTH | WEST"
+      },
+      "events": {
+        "warps": [],
+        "coord_events": [],
+        "bg_events": []
+      },
+      "actors": [
+        {
+          "sprite": "SPRITE_FISHER",
+          "sprite_has_facings": true,
+          "x": 21,
+          "y": 13,
+          "spritemovedata": "SPRITEMOVEDATA_STANDING_DOWN",
+          "move_range_x": 0,
+          "move_range_y": 0,
+          "hram_x": -1,
+          "hram_y": -1,
+          "pal": 0,
+          "object_type": "OBJECTTYPE_TRAINER",
+          "radius": 0,
+          "script": "MN_RIVER_LOWER_BANK_FISHER",
+          "label": null,
+          "event_flag": "-1",
+          "object_identifier": "MN_RIVER_LOWER_BANK_FISHER",
+          "sightline_direction_override": null
+        },
+        {
+          "sprite": "SPRITE_LASS",
+          "sprite_has_facings": true,
+          "x": 37,
+          "y": 3,
+          "spritemovedata": "SPRITEMOVEDATA_STANDING_LEFT",
+          "move_range_x": 0,
+          "move_range_y": 0,
+          "hram_x": -1,
+          "hram_y": -1,
+          "pal": 0,
+          "object_type": "OBJECTTYPE_TRAINER",
+          "radius": 2,
+          "script": "MN_RIVER_FUN_LOWER_MIRA",
+          "label": null,
+          "event_flag": "-1",
+          "object_identifier": "MN_RIVER_FUN_LOWER_MIRA",
+          "sightline_direction_override": null
+        },
+        {
+          "sprite": "SPRITE_FISHER",
+          "sprite_has_facings": true,
+          "x": 17,
+          "y": 11,
+          "spritemovedata": "SPRITEMOVEDATA_STANDING_LEFT",
+          "move_range_x": 0,
+          "move_range_y": 0,
+          "hram_x": -1,
+          "hram_y": -1,
+          "pal": 0,
+          "object_type": "OBJECTTYPE_TRAINER",
+          "radius": 2,
+          "script": "MN_RIVER_FUN_LOWER_LENA",
+          "label": null,
+          "event_flag": "-1",
+          "object_identifier": "MN_RIVER_FUN_LOWER_LENA",
+          "sightline_direction_override": null
+        },
+        {
+          "sprite": "SPRITE_POKE_BALL",
+          "sprite_has_facings": true,
+          "x": 17,
+          "y": 15,
+          "spritemovedata": "SPRITEMOVEDATA_STANDING_DOWN",
+          "move_range_x": 0,
+          "move_range_y": 0,
+          "hram_x": -1,
+          "hram_y": -1,
+          "pal": 0,
+          "object_type": "OBJECTTYPE_ITEMBALL",
+          "radius": 0,
+          "script": "MN_RIVER_FUN_LOWER_SUPER_POTION",
+          "label": null,
+          "event_flag": "EVENT_MN_RIVER_FUN_LOWER_SUPER_POTION",
+          "object_identifier": "MN_RIVER_FUN_LOWER_SUPER_POTION",
+          "sightline_direction_override": null
+        }
+      ]
+    },
+    {
+      "id": "MnMississippiLowerWoodsC00R02",
+      "attributes": {
+        "tileset_name": "johto",
+        "border_block": 5,
+        "width": 32,
+        "height": 20,
+        "connections": [
+          {
+            "direction": "north",
+            "target_map": "MnMississippiLowerWoodsC00R01",
+            "offset": 0
+          },
+          {
+            "direction": "east",
+            "target_map": "MnMississippiLowerWoodsC01R02",
+            "offset": 0
+          },
+          {
+            "direction": "south",
+            "target_map": "MnMississippiWinonaMouth",
+            "offset": 5
+          }
+        ],
+        "time_of_day": null,
+        "phone_service": 0,
+        "phone_flag": false,
+        "environment": "ROUTE",
+        "location": "LANDMARK_MN_WINONA",
+        "music": "MUSIC_ROUTE_30",
+        "palette": "PALETTE_AUTO",
+        "fishing_group": "FISHGROUP_MN_POND",
+        "map_constant": "MNMISSISSIPPILOWERWOODSC00R02",
+        "map_group_constant": "MAPGROUP_MINNESOTA_MISSISSIPPI",
+        "blocks_label": "MnMississippiLowerWoodsC00R02_Blocks",
+        "map_scripts_label": "MnMississippiLowerWoodsC00R02_MapScripts",
+        "map_events_label": "MnMississippiLowerWoodsC00R02_MapEvents",
+        "connection_flags": "NORTH | EAST | SOUTH"
+      },
+      "events": {
+        "warps": [],
+        "coord_events": [],
+        "bg_events": []
+      },
+      "actors": [
+        {
+          "sprite": "SPRITE_COOLTRAINER_F",
+          "sprite_has_facings": true,
+          "x": 33,
+          "y": 23,
+          "spritemovedata": "SPRITEMOVEDATA_STANDING_LEFT",
+          "move_range_x": 0,
+          "move_range_y": 0,
+          "hram_x": -1,
+          "hram_y": -1,
+          "pal": 0,
+          "object_type": "OBJECTTYPE_TRAINER",
+          "radius": 2,
+          "script": "MN_RIVER_FUN_LOWER_BROOK",
+          "label": null,
+          "event_flag": "-1",
+          "object_identifier": "MN_RIVER_FUN_LOWER_BROOK",
+          "sightline_direction_override": null
+        },
+        {
+          "sprite": "SPRITE_POKEFAN_M",
+          "sprite_has_facings": true,
+          "x": 37,
+          "y": 17,
+          "spritemovedata": "SPRITEMOVEDATA_STANDING_LEFT",
+          "move_range_x": 0,
+          "move_range_y": 0,
+          "hram_x": -1,
+          "hram_y": -1,
+          "pal": 0,
+          "object_type": "OBJECTTYPE_TRAINER",
+          "radius": 2,
+          "script": "MN_RIVER_FUN_LOWER_LARK",
+          "label": null,
+          "event_flag": "-1",
+          "object_identifier": "MN_RIVER_FUN_LOWER_LARK",
+          "sightline_direction_override": null
+        }
+      ]
+    },
+    {
+      "id": "MnMississippiLowerWoodsC01R00",
+      "attributes": {
+        "tileset_name": "johto",
+        "border_block": 5,
+        "width": 32,
+        "height": 24,
+        "connections": [
+          {
+            "direction": "west",
+            "target_map": "MnMississippiLowerWoodsC00R00",
+            "offset": 0
+          },
+          {
+            "direction": "south",
+            "target_map": "MnMississippiLowerWoodsC01R01",
+            "offset": 0
+          }
+        ],
+        "time_of_day": null,
+        "phone_service": 0,
+        "phone_flag": false,
+        "environment": "ROUTE",
+        "location": "LANDMARK_MN_WINONA",
+        "music": "MUSIC_ROUTE_30",
+        "palette": "PALETTE_AUTO",
+        "fishing_group": "FISHGROUP_MN_POND",
+        "map_constant": "MNMISSISSIPPILOWERWOODSC01R00",
+        "map_group_constant": "MAPGROUP_MINNESOTA_MISSISSIPPI",
+        "blocks_label": "MnMississippiLowerWoodsC01R00_Blocks",
+        "map_scripts_label": "MnMississippiLowerWoodsC01R00_MapScripts",
+        "map_events_label": "MnMississippiLowerWoodsC01R00_MapEvents",
+        "connection_flags": "WEST | SOUTH"
+      },
+      "events": {
+        "warps": [],
+        "coord_events": [],
+        "bg_events": []
+      },
+      "actors": [
+        {
+          "sprite": "SPRITE_YOUNGSTER",
+          "sprite_has_facings": true,
+          "x": 5,
+          "y": 25,
+          "spritemovedata": "SPRITEMOVEDATA_STANDING_LEFT",
+          "move_range_x": 0,
+          "move_range_y": 0,
+          "hram_x": -1,
+          "hram_y": -1,
+          "pal": 0,
+          "object_type": "OBJECTTYPE_TRAINER",
+          "radius": 2,
+          "script": "MN_RIVER_FUN_LOWER_FERN",
+          "label": null,
+          "event_flag": "-1",
+          "object_identifier": "MN_RIVER_FUN_LOWER_FERN",
+          "sightline_direction_override": null
+        },
+        {
+          "sprite": "SPRITE_POKEFAN_M",
+          "sprite_has_facings": true,
+          "x": 27,
+          "y": 35,
+          "spritemovedata": "SPRITEMOVEDATA_STANDING_LEFT",
+          "move_range_x": 0,
+          "move_range_y": 0,
+          "hram_x": -1,
+          "hram_y": -1,
+          "pal": 0,
+          "object_type": "OBJECTTYPE_TRAINER",
+          "radius": 2,
+          "script": "MN_RIVER_FUN_LOWER_BEAU",
+          "label": null,
+          "event_flag": "-1",
+          "object_identifier": "MN_RIVER_FUN_LOWER_BEAU",
+          "sightline_direction_override": null
+        },
+        {
+          "sprite": "SPRITE_YOUNGSTER",
+          "sprite_has_facings": true,
+          "x": 11,
+          "y": 23,
+          "spritemovedata": "SPRITEMOVEDATA_STANDING_LEFT",
+          "move_range_x": 0,
+          "move_range_y": 0,
+          "hram_x": -1,
+          "hram_y": -1,
+          "pal": 0,
+          "object_type": "OBJECTTYPE_TRAINER",
+          "radius": 2,
+          "script": "MN_RIVER_FUN_LOWER_IVY",
+          "label": null,
+          "event_flag": "-1",
+          "object_identifier": "MN_RIVER_FUN_LOWER_IVY",
+          "sightline_direction_override": null
+        },
+        {
+          "sprite": "SPRITE_POKEFAN_M",
+          "sprite_has_facings": true,
+          "x": 31,
+          "y": 33,
+          "spritemovedata": "SPRITEMOVEDATA_STANDING_LEFT",
+          "move_range_x": 0,
+          "move_range_y": 0,
+          "hram_x": -1,
+          "hram_y": -1,
+          "pal": 0,
+          "object_type": "OBJECTTYPE_TRAINER",
+          "radius": 2,
+          "script": "MN_RIVER_FUN_LOWER_BIRCH",
+          "label": null,
+          "event_flag": "-1",
+          "object_identifier": "MN_RIVER_FUN_LOWER_BIRCH",
+          "sightline_direction_override": null
+        },
+        {
+          "sprite": "SPRITE_POKE_BALL",
+          "sprite_has_facings": true,
+          "x": 1,
+          "y": 25,
+          "spritemovedata": "SPRITEMOVEDATA_STANDING_DOWN",
+          "move_range_x": 0,
+          "move_range_y": 0,
+          "hram_x": -1,
+          "hram_y": -1,
+          "pal": 0,
+          "object_type": "OBJECTTYPE_ITEMBALL",
+          "radius": 0,
+          "script": "MN_RIVER_FUN_LOWER_GREAT_BALL",
+          "label": null,
+          "event_flag": "EVENT_MN_RIVER_FUN_LOWER_GREAT_BALL",
+          "object_identifier": "MN_RIVER_FUN_LOWER_GREAT_BALL",
+          "sightline_direction_override": null
+        }
+      ]
+    },
+    {
+      "id": "MnMississippiLowerWoodsC01R01",
+      "attributes": {
+        "tileset_name": "johto",
+        "border_block": 5,
+        "width": 32,
+        "height": 24,
+        "connections": [
+          {
+            "direction": "north",
+            "target_map": "MnMississippiLowerWoodsC01R00",
+            "offset": 0
+          },
+          {
+            "direction": "west",
+            "target_map": "MnMississippiLowerWoodsC00R01",
+            "offset": 0
+          },
+          {
+            "direction": "south",
+            "target_map": "MnMississippiLowerWoodsC01R02",
+            "offset": 0
+          }
+        ],
+        "time_of_day": null,
+        "phone_service": 0,
+        "phone_flag": false,
+        "environment": "ROUTE",
+        "location": "LANDMARK_MN_WINONA",
+        "music": "MUSIC_ROUTE_30",
+        "palette": "PALETTE_AUTO",
+        "fishing_group": "FISHGROUP_MN_POND",
+        "map_constant": "MNMISSISSIPPILOWERWOODSC01R01",
+        "map_group_constant": "MAPGROUP_MINNESOTA_MISSISSIPPI",
+        "blocks_label": "MnMississippiLowerWoodsC01R01_Blocks",
+        "map_scripts_label": "MnMississippiLowerWoodsC01R01_MapScripts",
+        "map_events_label": "MnMississippiLowerWoodsC01R01_MapEvents",
+        "connection_flags": "NORTH | WEST | SOUTH"
+      },
+      "events": {
+        "warps": [],
+        "coord_events": [],
+        "bg_events": []
+      },
+      "actors": [
+        {
+          "sprite": "SPRITE_YOUNGSTER",
+          "sprite_has_facings": true,
+          "x": 39,
+          "y": 35,
+          "spritemovedata": "SPRITEMOVEDATA_STANDING_DOWN",
+          "move_range_x": 0,
+          "move_range_y": 0,
+          "hram_x": -1,
+          "hram_y": -1,
+          "pal": 0,
+          "object_type": "OBJECTTYPE_TRAINER",
+          "radius": 0,
+          "script": "MN_RIVER_LOWER_PINE_KEEPER",
+          "label": null,
+          "event_flag": "-1",
+          "object_identifier": "MN_RIVER_LOWER_PINE_KEEPER",
+          "sightline_direction_override": null
+        },
+        {
+          "sprite": "SPRITE_FISHER",
+          "sprite_has_facings": true,
+          "x": 53,
+          "y": 15,
+          "spritemovedata": "SPRITEMOVEDATA_STANDING_LEFT",
+          "move_range_x": 0,
+          "move_range_y": 0,
+          "hram_x": -1,
+          "hram_y": -1,
+          "pal": 0,
+          "object_type": "OBJECTTYPE_TRAINER",
+          "radius": 2,
+          "script": "MN_RIVER_FUN_LOWER_WADE",
+          "label": null,
+          "event_flag": "-1",
+          "object_identifier": "MN_RIVER_FUN_LOWER_WADE",
+          "sightline_direction_override": null
+        },
+        {
+          "sprite": "SPRITE_FISHER",
+          "sprite_has_facings": true,
+          "x": 57,
+          "y": 9,
+          "spritemovedata": "SPRITEMOVEDATA_STANDING_LEFT",
+          "move_range_x": 0,
+          "move_range_y": 0,
+          "hram_x": -1,
+          "hram_y": -1,
+          "pal": 0,
+          "object_type": "OBJECTTYPE_TRAINER",
+          "radius": 2,
+          "script": "MN_RIVER_FUN_LOWER_MARSH",
+          "label": null,
+          "event_flag": "-1",
+          "object_identifier": "MN_RIVER_FUN_LOWER_MARSH",
+          "sightline_direction_override": null
+        },
+        {
+          "sprite": "SPRITE_YOUNGSTER",
+          "sprite_has_facings": true,
+          "x": 41,
+          "y": 29,
+          "spritemovedata": "SPRITEMOVEDATA_STANDING_LEFT",
+          "move_range_x": 0,
+          "move_range_y": 0,
+          "hram_x": -1,
+          "hram_y": -1,
+          "pal": 0,
+          "object_type": "OBJECTTYPE_TRAINER",
+          "radius": 2,
+          "script": "MN_RIVER_FUN_LOWER_EDDY",
+          "label": null,
+          "event_flag": "-1",
+          "object_identifier": "MN_RIVER_FUN_LOWER_EDDY",
+          "sightline_direction_override": null
+        },
+        {
+          "sprite": "SPRITE_NURSE",
+          "sprite_has_facings": true,
+          "x": 33,
+          "y": 33,
+          "spritemovedata": "SPRITEMOVEDATA_STANDING_DOWN",
+          "move_range_x": 0,
+          "move_range_y": 0,
+          "hram_x": -1,
+          "hram_y": -1,
+          "pal": 0,
+          "object_type": "OBJECTTYPE_SCRIPT",
+          "radius": 0,
+          "script": "MN_RIVER_FUN_LOWER_MEDIC",
+          "label": null,
+          "event_flag": "-1",
+          "object_identifier": "MN_RIVER_FUN_LOWER_MEDIC",
+          "sightline_direction_override": null
+        }
+      ]
+    },
+    {
+      "id": "MnMississippiLowerWoodsC01R02",
+      "attributes": {
+        "tileset_name": "johto",
+        "border_block": 5,
+        "width": 32,
+        "height": 20,
+        "connections": [
+          {
+            "direction": "north",
+            "target_map": "MnMississippiLowerWoodsC01R01",
+            "offset": 0
+          },
+          {
+            "direction": "west",
+            "target_map": "MnMississippiLowerWoodsC00R02",
+            "offset": 0
+          }
+        ],
+        "time_of_day": null,
+        "phone_service": 0,
+        "phone_flag": false,
+        "environment": "ROUTE",
+        "location": "LANDMARK_MN_WINONA",
+        "music": "MUSIC_ROUTE_30",
+        "palette": "PALETTE_AUTO",
+        "fishing_group": "FISHGROUP_MN_POND",
+        "map_constant": "MNMISSISSIPPILOWERWOODSC01R02",
+        "map_group_constant": "MAPGROUP_MINNESOTA_MISSISSIPPI",
+        "blocks_label": "MnMississippiLowerWoodsC01R02_Blocks",
+        "map_scripts_label": "MnMississippiLowerWoodsC01R02_MapScripts",
+        "map_events_label": "MnMississippiLowerWoodsC01R02_MapEvents",
+        "connection_flags": "NORTH | WEST"
+      },
+      "events": {
+        "warps": [],
+        "coord_events": [],
+        "bg_events": []
+      },
+      "actors": [
+        {
+          "sprite": "SPRITE_LASS",
+          "sprite_has_facings": true,
+          "x": 19,
+          "y": 5,
+          "spritemovedata": "SPRITEMOVEDATA_STANDING_LEFT",
+          "move_range_x": 0,
+          "move_range_y": 0,
+          "hram_x": -1,
+          "hram_y": -1,
+          "pal": 0,
+          "object_type": "OBJECTTYPE_TRAINER",
+          "radius": 2,
+          "script": "MN_RIVER_FUN_LOWER_IRIS",
+          "label": null,
+          "event_flag": "-1",
+          "object_identifier": "MN_RIVER_FUN_LOWER_IRIS",
+          "sightline_direction_override": null
+        },
+        {
+          "sprite": "SPRITE_POKEFAN_M",
+          "sprite_has_facings": true,
+          "x": 5,
+          "y": 19,
+          "spritemovedata": "SPRITEMOVEDATA_STANDING_LEFT",
+          "move_range_x": 0,
+          "move_range_y": 0,
+          "hram_x": -1,
+          "hram_y": -1,
+          "pal": 0,
+          "object_type": "OBJECTTYPE_TRAINER",
+          "radius": 2,
+          "script": "MN_RIVER_FUN_LOWER_CLAY",
+          "label": null,
+          "event_flag": "-1",
+          "object_identifier": "MN_RIVER_FUN_LOWER_CLAY",
+          "sightline_direction_override": null
+        },
+        {
+          "sprite": "SPRITE_LASS",
+          "sprite_has_facings": true,
+          "x": 23,
+          "y": 1,
+          "spritemovedata": "SPRITEMOVEDATA_STANDING_LEFT",
+          "move_range_x": 0,
+          "move_range_y": 0,
+          "hram_x": -1,
+          "hram_y": -1,
+          "pal": 0,
+          "object_type": "OBJECTTYPE_TRAINER",
+          "radius": 2,
+          "script": "MN_RIVER_FUN_LOWER_ROSE",
+          "label": null,
+          "event_flag": "-1",
+          "object_identifier": "MN_RIVER_FUN_LOWER_ROSE",
+          "sightline_direction_override": null
+        },
+        {
+          "sprite": "SPRITE_YOUNGSTER",
+          "sprite_has_facings": true,
+          "x": 11,
+          "y": 15,
+          "spritemovedata": "SPRITEMOVEDATA_STANDING_LEFT",
+          "move_range_x": 0,
+          "move_range_y": 0,
+          "hram_x": -1,
+          "hram_y": -1,
+          "pal": 0,
+          "object_type": "OBJECTTYPE_TRAINER",
+          "radius": 2,
+          "script": "MN_RIVER_FUN_LOWER_BANKS",
+          "label": null,
+          "event_flag": "-1",
+          "object_identifier": "MN_RIVER_FUN_LOWER_BANKS",
+          "sightline_direction_override": null
+        },
+        {
+          "sprite": "SPRITE_POKE_BALL",
+          "sprite_has_facings": true,
+          "x": 15,
+          "y": 3,
+          "spritemovedata": "SPRITEMOVEDATA_STANDING_DOWN",
+          "move_range_x": 0,
+          "move_range_y": 0,
+          "hram_x": -1,
+          "hram_y": -1,
+          "pal": 0,
+          "object_type": "OBJECTTYPE_ITEMBALL",
+          "radius": 0,
+          "script": "MN_RIVER_FUN_LOWER_ETHER",
+          "label": null,
+          "event_flag": "EVENT_MN_RIVER_FUN_LOWER_ETHER",
+          "object_identifier": "MN_RIVER_FUN_LOWER_ETHER",
+          "sightline_direction_override": null
+        }
+      ]
+    }
+  ],
+  "current_native_activities": "revisions/route-grass-v01/current-lower-woods-v01/current-controller-plan-v02.json",
+  "grass_and_ledge_contract": {
+    "grass_before": 952,
+    "grass_after": 960,
+    "ordinary_uphill_grass": 3,
+    "ordinary_uphill_distance": 5,
+    "native_downhill_grass": 0,
+    "native_downhill_distance": 3,
+    "medic_minimum_grass_from_any_native_surf_dismount": 3,
+    "supply_minimum_grass": {
+      "GREAT_BALL": 2,
+      "SUPER_POTION": 2,
+      "ETHER": 3
+    }
+  },
+  "revision_runbook": "revisions/route-grass-v01/current-lower-woods-v01/README.md",
+  "status": "Accepted native grassy bank climb/dry return, stronger medic approach, all 24 current activities, new-grass production wild/RUN/Continue, exact 2D, audio and residual preservation."
+}

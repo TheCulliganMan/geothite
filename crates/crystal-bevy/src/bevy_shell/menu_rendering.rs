@@ -650,7 +650,7 @@ fn load_visible_title_main_menu_frame(
         let y = visible_title_main_menu_item_tile_y(title, index) * SOURCE_TILE_SIZE;
         if index == selected {
             draw_time_set_text(
-                &font,
+                font,
                 "▶",
                 (title.main_menu.left + 1) * SOURCE_TILE_SIZE,
                 y,
@@ -658,7 +658,7 @@ fn load_visible_title_main_menu_frame(
             )?;
         }
         draw_time_set_text(
-            &font,
+            font,
             visible_title_menu_option_label(option),
             (title.main_menu.left + 2) * SOURCE_TILE_SIZE,
             y,
@@ -678,14 +678,14 @@ fn load_visible_title_main_menu_frame(
         let snapshot = runtime_shell.shell.snapshot()?;
         let (day_text, time_text) = visible_title_main_menu_clock_strings(&snapshot);
         draw_time_set_text(
-            &font,
+            font,
             &day_text,
             (TITLE_MAIN_MENU_TIME_BOX_X + 1) * SOURCE_TILE_SIZE,
             (TITLE_MAIN_MENU_TIME_BOX_Y + 1) * SOURCE_TILE_SIZE,
             &mut data,
         )?;
         draw_time_set_text(
-            &font,
+            font,
             &time_text,
             (TITLE_MAIN_MENU_TIME_BOX_X + 4) * SOURCE_TILE_SIZE,
             (TITLE_MAIN_MENU_TIME_BOX_Y + 2) * SOURCE_TILE_SIZE,
@@ -2400,9 +2400,7 @@ fn load_time_set_frame(
         );
     }
     let assets = asset_root.runtime_assets();
-    let font = crate::open_runtime_image(assets.join("gfx/font/font.png"))
-        .context("decode time-set font PNG")?
-        .to_rgba8();
+    let font = boot_font::BootFont::load(asset_root)?;
     let frame = crate::open_runtime_image(assets.join("gfx/frames/1.png"))
         .context("decode time-set textbox frame PNG")?
         .to_rgba8();
@@ -2581,7 +2579,7 @@ fn visible_time_set_palette_black_alpha(step: u8, steps: u8, fade_in: bool) -> u
 }
 
 fn draw_time_set_textbox(
-    font: &image::RgbaImage,
+    font: &impl boot_font::BootFontSource,
     frame: &image::RgbaImage,
     text: &str,
     x_tiles: usize,
@@ -2875,7 +2873,7 @@ fn draw_time_set_arrows(
 }
 
 fn draw_time_set_text(
-    font: &image::RgbaImage,
+    font: &impl boot_font::BootFontSource,
     text: &str,
     x_px: usize,
     y_px: usize,
@@ -2885,7 +2883,7 @@ fn draw_time_set_text(
 }
 
 fn draw_time_set_text_clipped(
-    font: &image::RgbaImage,
+    font: &impl boot_font::BootFontSource,
     text: &str,
     x_px: usize,
     y_px: usize,
@@ -2900,8 +2898,9 @@ fn draw_time_set_text_clipped(
             cursor_y += SOURCE_TILE_SIZE;
             continue;
         }
-        let tile_id = name_entry_token_tile(&token)
-            .with_context(|| format!("unsupported time-set glyph {token:?}"))?;
+        let tile_id = font
+            .token_tile(&token)
+            .with_context(|| format!("unsupported boot text glyph {token:?}"))?;
         draw_time_set_font_tile_clipped(font, tile_id, cursor_x, cursor_y, clip, target)?;
         cursor_x += SOURCE_TILE_SIZE;
     }
@@ -2909,7 +2908,7 @@ fn draw_time_set_text_clipped(
 }
 
 fn draw_time_set_font_tile_clipped(
-    font: &image::RgbaImage,
+    font: &impl boot_font::BootFontSource,
     tile_id: u8,
     dest_x: usize,
     dest_y: usize,
@@ -2919,10 +2918,7 @@ fn draw_time_set_font_tile_clipped(
     if tile_id == 0 || tile_id == NAME_ENTRY_SPACE_TILE {
         return Ok(());
     }
-    if tile_id < 0x80 {
-        anyhow::bail!("time-set glyph tile 0x{tile_id:02x} is outside font.png");
-    }
-    let font_index = usize::from(tile_id - 0x80);
+    let (font, font_index) = font.glyph(tile_id)?;
     let tiles_per_row = font.width() as usize / SOURCE_TILE_SIZE;
     if tiles_per_row == 0 {
         anyhow::bail!("time-set font has invalid width {}", font.width());
@@ -3126,9 +3122,7 @@ fn load_oak_intro_screen_frame(
     images: &mut Assets<Image>,
 ) -> Result<SpriteFrame> {
     let assets = asset_root.runtime_assets();
-    let font = crate::open_runtime_image(assets.join("gfx/font/font.png"))
-        .context("decode Oak intro font PNG")?
-        .to_rgba8();
+    let font = boot_font::BootFont::load(asset_root)?;
     let textbox_frame = crate::open_runtime_image(assets.join("gfx/frames/1.png"))
         .context("decode Oak intro textbox frame PNG")?
         .to_rgba8();

@@ -1,7 +1,32 @@
-# Duluth — native ice-course revision
+# Duluth — cliff stairs and connected streets
 
-Status: **current local city/gym publication and focused controller checks pass**.
-The current 480-map candidate binds the remade 7×10 ice room to its actual
+The current exterior is 64×46 metatiles, with 38 real doors and 76 paired exterior
+warps. The cliff repair gives eleven native cave36 stair flights real upper and
+lower landings, joins the western upper streets at one height, and closes the
+garden's flat side-wall bypass. All ten ledge lanes have clear dry landings,
+reverse denial and ordinary stair returns of 11–27 steps. Existing activities,
+rooms, story, Gym8, services and regional connections are retained.
+
+[Whole town](../renders/duluth-cliff-physics-v01/whole-town-v04.png)
+· [Numbered stair plan](../renders/duluth-cliff-physics-v01/eleven-stair-flight-plan-v02.png)
+· [Implementation and verification](../revisions/duluth-cliff-physics-v01/README.md)
+
+The western native seam retains town tiles(0,44)/(0,45),
+`MnR10C01R00` tiles(31,24)/(31,25), offset10. The northern seam retains
+(64,0)/(65,0), `MnR11C00R03` tiles(46,47)/(47,47), offset9. Outdoor spawn513
+remains(41,32). These are implemented walking connections, rather than the old
+gatehouse reservations recorded below. Final selection follows
+`world.json.active_local_review_revision`; the selected cliff repair preserves the State Fair building parent.
+
+## Historical city and ice-course notes
+
+The following sections retain older named publications and their evidence.
+Their32×24/480-map geometry, planned seam reservations and old pack hashes do
+not describe the current exterior. Use the linked cliff dossier and current
+world selection for new work.
+
+Historical status: local city/gym publication and focused controller checks passed.
+The then-current 480-map candidate binds the remade 7×10 ice room to its actual
 facade. [Review the complete gym](../renders/gyms/duluth-og/Duluth-review.png)
 and [current commands/evidence](../gyms/README.md#duluth-review-loop).
 The room and city preserve the hand-authored 32×24 exterior, six ordinary

@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "trainers": [
+    {
+      "map": "MnGrandRapids",
+      "approach": [
+        22,
+        26
+      ],
+      "id": "MN_EXTRA_RAIL_WORKER",
+      "display_name": "HOBB",
+      "trainer_class": "MN_RAIL_WORKER",
+      "class_name": "RAIL WORKER",
+      "template_class": "SAILOR",
+      "sprite": "SPRITE_MN_RAIL_WORKER",
+      "tile": [
+        22,
+        25
+      ],
+      "facing": "south",
+      "sight_range": 1,
+      "defeated_flag": "EVENT_MN_EXTRA_RAIL_WORKER",
+      "party": [
+        {
+          "species": "SCRAPLOW",
+          "level": 25
+        },
+        {
+          "species": "HATCHIT",
+          "level": 26
+        }
+      ],
+      "before_lines": [
+        "All aboard!",
+        "Next stop: battle!"
+      ],
+      "after_lines": [
+        "Right on time!",
+        "Safe travels!"
+      ],
+      "loss_lines": [
+        "Watch the signal!"
+      ]
+    }
+  ]
+}

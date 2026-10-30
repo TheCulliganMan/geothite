@@ -1,7 +1,14 @@
 //! Paid ranger-to-lake journeys, without beyond-gate or budget injection.
 
+#[path = "safari_cut_controller.rs"]
+mod cut_gate;
+#[path = "safari_departure_controller.rs"]
+mod departures;
+
 #[path = "safari_ledge_exit_controller.rs"]
 mod ledges_and_exit;
+#[path = "safari_northern_journeys.rs"]
+mod northern_journeys;
 
 use std::collections::{BTreeMap, BTreeSet, VecDeque};
 

@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "trainer_class": "MN_IRON_RANGE_MINER",
+  "class_name": "MINER",
+  "trainer_ids": [
+    "MN_R09_T03"
+  ],
+  "actors": [
+    {
+      "map": "MnR09C00R00",
+      "script": "MN_R09_T03",
+      "tile": [
+        41,
+        37
+      ],
+      "previous_sprite": "SPRITE_POKEFAN_M"
+    }
+  ]
+}

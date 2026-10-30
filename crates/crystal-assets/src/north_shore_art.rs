@@ -123,15 +123,27 @@ pub(crate) fn append_native_cave_stairs(
     ensure!(
         matches!(
             (tileset, first_block),
-            ("mn_north_shore", 0x81) | ("mn_boundary_safari", 0x84) | ("mn_r10_rockstairs", 0x80)
+            ("mn_north_shore", 0x81)
+                | ("mn_north_shore", 0x83)
+                | ("mn_boundary_safari", 0x84)
+                | ("mn_r10_rockstairs", 0x80)
+                | ("mn_iron_range", 0x85)
+                | ("mn_duluth_expanded", 0x8c)
+                | ("mn_duluth_expanded", 0x8d)
         ),
         "unsupported bounded native stair destination"
     );
     ensure!(
         match tileset {
+            "mn_north_shore" if first_block == 0x83 => stair_blocks == [0x36],
             "mn_north_shore" => stair_blocks == [0x12, 0x30] || stair_blocks == [0x12, 0x30, 0x36],
             "mn_boundary_safari" => stair_blocks == [0x12],
             "mn_r10_rockstairs" => stair_blocks == [0x12],
+            "mn_iron_range" => stair_blocks == [0x12, 0x30, 0x36],
+            "mn_duluth_expanded" if first_block == 0x8d => {
+                stair_blocks == [0x12, 0x30, 0x36]
+            }
+            "mn_duluth_expanded" => stair_blocks == [0x36],
             _ => false,
         },
         "unsupported bounded stone stair source recipe"
@@ -241,7 +253,20 @@ pub(crate) fn append_native_cave_stairs(
         let glyphs = source_blocks
             .get(block * 16..(block + 1) * 16)
             .context("native stair block pixels")?;
-        for source_tile in glyphs {
+        for (index, source_tile) in glyphs.iter().enumerate() {
+            // This Duluth family joins outdoor landings to native stone steps.
+            // Keep both upper glyph rows from the existing outdoor cliff: the
+            // cave floor is a different color, and 36 must retain its right wall.
+            if tileset == "mn_duluth_expanded" && first_block == 0x8d && index < 8 {
+                let landing = if source_block == 0x36 { 0x69 } else { 0x72 };
+                let glyph = base
+                    .runtime_files
+                    .get(&metatile_path)
+                    .and_then(|blocks| blocks.get(landing * 16 + index))
+                    .context("Duluth outdoor stair landing glyph")?;
+                metatiles.push(*glyph);
+                continue;
+            }
             let destination = if let Some(tile) = allocation.get(source_tile) {
                 *tile
             } else {

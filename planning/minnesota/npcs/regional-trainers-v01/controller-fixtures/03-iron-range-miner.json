@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "trainers": [
+    {
+      "id": "MN_R09_T03",
+      "map": "MnR09C00R00",
+      "actor_script": "MN_R09_T03",
+      "trainer_class": "MN_IRON_RANGE_MINER",
+      "sprite": "SPRITE_MN_IRON_RANGE_MINER",
+      "facing": "north",
+      "approach": [
+        41,
+        36
+      ],
+      "defeated_flag": "EVENT_MN_R09_TRAINER_03"
+    }
+  ]
+}

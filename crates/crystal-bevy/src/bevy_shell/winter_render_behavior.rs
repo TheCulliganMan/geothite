@@ -5,34 +5,49 @@ use anyhow::{Context, Result, ensure};
 use crystal_assets::AssetRoot;
 use crystal_core::world::map::TilePosition;
 
-use super::{Palette, load_tileset_palette_bank, tile_foreground};
+use super::{Palette, load_tileset_palette_bank, seasonal_palette, tile_foreground};
+
+fn stair_source(tileset: &str) -> &str {
+    match tileset {
+        "mn_outdoor_johto_stairs" => "johto",
+        "mn_outdoor_modern_stairs" => "johto_modern",
+        "mn_outdoor_headwaters_stairs" => "mn_headwaters",
+        "mn_outdoor_winter_stairs" => "mn_winter_north_shore",
+        "mn_r10_rockstairs" => "johto",
+        _ => tileset,
+    }
+}
 
 /// Preserve only the animation behavior already owned by the cloned tileset.
 /// Border Pines currently has no common animation registrations; do not alias it
 /// to forest and accidentally add new water, flowers or restless-tree animation.
 pub(super) fn animation_source(tileset: &str) -> &str {
-    match tileset {
+    let source = stair_source(tileset);
+    match source {
         "mn_winter_north_shore" => "mn_north_shore",
         "mn_winter_outdoor" => "mn_border_pines",
         "mn_winter_gunflint" => "mn_gunflint",
-        _ => tileset,
+        _ => source,
     }
 }
 
 pub(super) fn has_north_shore_waterfall(tileset: &str) -> bool {
-    matches!(tileset, "mn_north_shore" | "mn_winter_north_shore")
+    matches!(
+        stair_source(tileset),
+        "mn_north_shore" | "mn_winter_north_shore"
+    )
 }
 
 /// Cache exact winter palettes independently from native and prairie.
 pub(super) fn grass_cache_style(tileset: &str) -> Option<&str> {
-    match tileset {
+    match stair_source(tileset) {
         "mn_winter_outdoor" | "mn_winter_north_shore" | "mn_winter_gunflint" => Some(tileset),
         _ => None,
     }
 }
 
 fn grass_block(tileset: &str) -> Option<usize> {
-    match tileset {
+    match stair_source(tileset) {
         "mn_winter_outdoor" | "mn_winter_gunflint" => Some(0x3d),
         "mn_winter_north_shore" => Some(0x84),
         _ => None,
@@ -94,13 +109,9 @@ pub(super) fn grass_palette(
         assets.join(format!("data/tilesets/{tileset}_palette_map.json")),
     )?)
     .context("icy grass palette addresses")?;
-    let foregrounds: BTreeMap<usize, [[u8; 3]; 3]> =
-        serde_json::from_str(&crate::read_runtime_asset_to_string(
-            assets.join(format!("data/tilesets/{tileset}_foregrounds.json")),
-        )?)
-        .context("icy grass authored foreground colors")?;
     let bank = load_tileset_palette_bank(root, tileset, time)?
         .context("icy grass has no native time palette bank")?;
+    let foregrounds = seasonal_palette::load_foregrounds(root, tileset, Some(&bank))?;
     resolve_grass_palette(glyphs, &palette_map, &foregrounds, &bank).map(Some)
 }
 

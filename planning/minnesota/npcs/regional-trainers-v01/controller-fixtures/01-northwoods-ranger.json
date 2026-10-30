@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "trainers": [
+    {
+      "id": "MN_R02_T01",
+      "map": "MnR02C00R00",
+      "actor_script": "MN_R02_T01",
+      "trainer_class": "MN_NORTHWOODS_RANGER",
+      "sprite": "SPRITE_MN_NORTHWOODS_RANGER",
+      "facing": "west",
+      "approach": [
+        50,
+        21
+      ],
+      "defeated_flag": "EVENT_MN_R02_TRAINER_01"
+    }
+  ]
+}

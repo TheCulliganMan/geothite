@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "trainers": [
+    {
+      "id": "MN_DULUTH_X_T07",
+      "map": "MnDuluth",
+      "actor_script": "MN_DULUTH_X_T07",
+      "trainer_class": "MN_HARBOR_MECHANIC",
+      "sprite": "SPRITE_MN_HARBOR_MECHANIC",
+      "facing": "south",
+      "approach": [
+        35,
+        20
+      ],
+      "defeated_flag": "EVENT_MN_DULUTH_X_TRAINER_07"
+    }
+  ]
+}

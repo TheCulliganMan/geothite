@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "trainer_class": "MN_BEEKEEPER",
+  "class_name": "BEEKEEPER",
+  "trainer_ids": [
+    "MN_R12_T03"
+  ],
+  "actors": [
+    {
+      "map": "MnR12C00R00",
+      "script": "MN_R12_T03",
+      "tile": [
+        51,
+        21
+      ],
+      "previous_sprite": "SPRITE_COOLTRAINER_F"
+    }
+  ]
+}

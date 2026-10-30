@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "trainer_class": "MN_CYCLE_TOURIST",
+  "class_name": "CYCLE TOURIST",
+  "trainer_ids": [
+    "MN_R11_T02",
+    "MN_EXTRA_MPLS_CYCLE_01",
+    "MN_EXTRA_MPLS_CYCLE_02",
+    "MN_EXTRA_MPLS_CYCLE_03",
+    "MN_EXTRA_MPLS_CYCLE_04",
+    "MN_EXTRA_MPLS_CYCLE_05",
+    "MN_EXTRA_MPLS_CYCLE_06",
+    "MN_EXTRA_MPLS_CYCLE_07",
+    "MN_EXTRA_MPLS_CYCLE_08",
+    "MN_EXTRA_MPLS_CYCLE_09",
+    "MN_EXTRA_MPLS_CYCLE_10",
+    "MN_EXTRA_MPLS_CYCLE_11",
+    "MN_EXTRA_MPLS_CYCLE_12",
+    "MN_EXTRA_MPLS_CYCLE_13",
+    "MN_EXTRA_MPLS_CYCLE_14",
+    "MN_EXTRA_MPLS_CYCLE_15",
+    "MN_EXTRA_MPLS_CYCLE_16",
+    "MN_EXTRA_MPLS_CYCLE_17",
+    "MN_EXTRA_MPLS_CYCLE_18"
+  ],
+  "actors": [
+    {
+      "map": "MnR11C00R02",
+      "script": "MN_R11_T02",
+      "tile": [
+        41,
+        25
+      ],
+      "previous_sprite": "SPRITE_COOLTRAINER_F"
+    }
+  ]
+}

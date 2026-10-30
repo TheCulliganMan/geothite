@@ -1,3 +1,7 @@
+# Native cliff stairs revision, 2026-10-29
+
+The current selected Iron Range West revision repairs fragmented rock ribs and uses native cave12/30/36 ledge stairs for ordinary two-way terrace access. A separate mine-apron ledge gives a dry return after a grassy climb. See [current acceptance](../revisions/iron-cliffs-v01/README.md). All older results below are historical.
+
 # Current installed quarry grass revision, 2026-10-28
 
 [Selected current-parent revision](../revisions/route-grass-v01/current-r09-v01/README.md) adds8grass metatiles and4attached spoil boulders to the704-map current story/R03 cave child. The quarry circuit requires4grass steps uphill and has a dry ledge/ore-track return. Five native cases,13clean stdio calls and377audio programs pass. North Shore stays ice-free. Older isolated pack results below remain historical.

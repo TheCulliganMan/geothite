@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "trainers": [
+    {
+      "id": "MN_FAIR_RING_FAN_TRAINER",
+      "map": "MnStateFairgrounds",
+      "actor_script": "MN_FAIR_RING_FAN_TRAINER",
+      "trainer_class": "MN_PRAIRIE_BOTANIST",
+      "sprite": "SPRITE_MN_PRAIRIE_BOTANIST",
+      "facing": "south",
+      "approach": [
+        43,
+        50
+      ],
+      "defeated_flag": "EVENT_MN_FAIR_RING_FAN_DEFEATED"
+    }
+  ]
+}

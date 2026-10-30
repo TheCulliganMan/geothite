@@ -123,6 +123,36 @@ class SourceArt:
                     image=self.blocks(entry.get('source_tileset',source['source_tileset']),group,entry.get('palette_override',source.get('palette_override')))[int(entry['source_block'],16)]
                     arranged.paste(image.crop((0,original*8,32,original*8+8)),(0,row*8))
                 block=arranged
+            if 'tile_order' in source:
+                order=source['tile_order']
+                assert len(order)==16 and all(isinstance(i,int) and 0<=i<16 for i in order)
+                assert source['collision']==['WALL']*4,'glyph composition requires solid quadrants'
+                arranged=Image.new('RGB',(32,32))
+                for i,original in enumerate(order):
+                    x,y=original%4*8,original//4*8
+                    arranged.paste(block.crop((x,y,x+8,y+8)),(i%4*8,i//4*8))
+                block=arranged
+            if 'tile_column_sources' in source:
+                columns=source['tile_column_sources']
+                assert len(columns)==4,'derived metatile needs four exact source glyph columns'
+                arranged=Image.new('RGB',(32,32))
+                for column,entry in enumerate(columns):
+                    original=entry['source_column']
+                    assert isinstance(original,int) and 0<=original<4,'source glyph column'
+                    image=self.blocks(entry.get('source_tileset',source['source_tileset']),group,entry.get('palette_override',source.get('palette_override')))[int(entry['source_block'],16)]
+                    arranged.paste(image.crop((original*8,0,original*8+8,32)),(column*8,0))
+                block=arranged
+            if 'tile_quadrant_sources' in source:
+                quadrants=source['tile_quadrant_sources']
+                assert len(quadrants)==4,'derived metatile needs four exact native quadrants'
+                arranged=Image.new('RGB',(32,32))
+                for quadrant,entry in enumerate(quadrants):
+                    original=entry['source_quadrant']
+                    assert isinstance(original,int) and 0<=original<4,'source native quadrant'
+                    image=self.blocks(entry.get('source_tileset',source['source_tileset']),group,entry.get('palette_override',source.get('palette_override')))[int(entry['source_block'],16)]
+                    x,y=original%2*16,original//2*16
+                    arranged.paste(image.crop((x,y,x+16,y+16)),(quadrant%2*16,quadrant//2*16))
+                block=arranged
             art.append(block)
         assert len(blocks) == width*height
         result = Image.new('RGB',(width*32,height*32))

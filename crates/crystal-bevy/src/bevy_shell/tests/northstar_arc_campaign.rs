@@ -13,18 +13,34 @@ pub(super) fn ellis_home(
     root: &AssetRoot,
     r: &CrystalRuntime,
 ) -> VisibleShellController {
+    let physical_copy = super::super::northstar_dispatch_course::has_physical_copy(r);
+    let (office_outside, _) = super::super::native_city_ports::city_port(
+        r,
+        "MnMinneapolis",
+        "MnMinneapolisDispatchOffice",
+    );
+    let (home_outside, home_inside) = super::super::native_city_ports::city_port(
+        r,
+        "MnMinneapolis",
+        "MnMinneapolisDispatcherHouse",
+    );
     walk(&mut c, r, (10, 14));
-    travel(&mut c, GameButton::Down, "MnMinneapolis", (25, 34));
-    indoor_walk(&mut c, r, (23, 42));
+    travel(&mut c, GameButton::Down, "MnMinneapolis", office_outside);
+    indoor_walk(&mut c, r, home_outside);
     travel(
         &mut c,
         GameButton::Up,
         "MnMinneapolisDispatcherHouse",
-        (5, 6),
+        home_inside,
     );
     walk(&mut c, r, (6, 5));
     talk(&mut c, GameButton::Right);
     finish(&mut c);
+    if physical_copy {
+        assert!(!event(&c, "EVENT_MN_DISPATCH_NOTE"));
+        super::super::northstar_dispatch_course::read_copy_and_return_home(&mut c, root, r);
+        walk(&mut c, r, (6, 5));
+    }
     assert!(event(&c, "EVENT_MN_DISPATCH_NOTE"));
     continue_in_place(&mut c, root, r, "campaign-arc-ellis-home");
     c
@@ -166,7 +182,7 @@ pub(super) fn recruit_party(c: &mut VisibleShellController, r: &CrystalRuntime, 
 }
 
 /// Change the lead through the real Start/Party/Switch menus.
-pub(super) fn switch_lead(c: &mut VisibleShellController, slot: usize) {
+pub(in crate::bevy_shell::tests) fn switch_lead(c: &mut VisibleShellController, slot: usize) {
     use super::super::super::{
         PartyAction, StartMenuOption, has_visible_shell_direction_action, visible_party_actions,
         visible_start_menu_options,

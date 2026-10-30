@@ -1,0 +1,66 @@
+[
+  {
+    "id": "carrier-joined-western-porch",
+    "map": "MnR10C00R00",
+    "core": [
+      11,
+      12
+    ]
+  },
+  {
+    "id": "carrier-inset-rock-and-pines",
+    "map": "MnR10C00R00",
+    "core": [
+      17,
+      11
+    ]
+  },
+  {
+    "id": "carrier-inward-north-corner",
+    "map": "MnR10C00R00",
+    "core": [
+      18,
+      14
+    ]
+  },
+  {
+    "id": "carrier-wraparound-front",
+    "map": "MnR10C00R00",
+    "core": [
+      17,
+      16
+    ]
+  },
+  {
+    "id": "carrier-grass-cove",
+    "map": "MnR10C00R00",
+    "core": [
+      19,
+      19
+    ]
+  },
+  {
+    "id": "carrier-clear-west-stair",
+    "map": "MnR10C00R00",
+    "core": [
+      11,
+      22
+    ]
+  },
+  {
+    "id": "carrier-front-return-corner",
+    "map": "MnR10C00R00",
+    "core": [
+      23,
+      18
+    ]
+  },
+  {
+    "id": "carrier-retained-cache-stair",
+    "map": "MnR10C00R00",
+    "core": [
+      33,
+      12
+    ]
+  }
+]

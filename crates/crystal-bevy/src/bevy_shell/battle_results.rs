@@ -1678,7 +1678,10 @@ fn integrate_visible_script_mutation_outcome(
                     // can make the following pause execute before this label
                     // has initialized its own printer.
                     runtime_shell.field_text_reveal = None;
-                    mark_runtime_presentation_dirty(runtime_shell);
+                    // Write changes the core text body too. An autonomous
+                    // continuation after pause may still cache the preceding
+                    // closed window; a presentation-only revision retains it.
+                    mark_runtime_snapshot_dirty(runtime_shell);
                 }
                 crate::core::systems::script_text::ScriptTextAction::YesNo { .. } => {
                     runtime_shell.yes_no_cursor = Some(MenuCursor {

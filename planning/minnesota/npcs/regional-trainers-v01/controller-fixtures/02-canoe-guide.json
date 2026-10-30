@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "trainers": [
+    {
+      "id": "MN_RIVER_FUN_LOWER_WADE",
+      "map": "MnMississippiLowerWoodsC01R01",
+      "actor_script": "MN_RIVER_FUN_LOWER_WADE",
+      "trainer_class": "MN_CANOE_GUIDE",
+      "sprite": "SPRITE_MN_CANOE_GUIDE",
+      "facing": "west",
+      "approach": [
+        52,
+        15
+      ],
+      "defeated_flag": "EVENT_MN_RIVER_FUN_LOWER_WADE"
+    }
+  ]
+}

@@ -1,14 +1,15 @@
 # Paid Boundary Waters travel review
 
 The main pack's paid entrance remains closed. The current unselected review is
-`content-packs/minnesota-safari-runtime-review-itasca-v06.crystalpack`, SHA256
-`cf799e822151f62d0078936bf317dd39403a2f79b93debc37ed7221ef8061bc5`.
-It is a direct overlay of the accepted Lake Itasca parent at SHA256
-`89c70e8f5df7c53c9d74bbf9c5197ae22c6580cb4c0d193538f24e439fc9af22`.
-All 730 maps retain exact terrain, actors, events and executable commands.
-The only data changes are Safari configuration and seven related native
-closure-text bodies with their existing split mirrors; 727 whole maps, all
-other data, runtime art and compiled audio remain exact.
+`content-packs/minnesota-safari-runtime-review-thicket-confluence-v14.crystalpack`, SHA256
+`c18e90caa089bf72e77c5b51b4a0f2351316d44fd356c8a770ae107407e93eba`.
+It is a direct overlay of the accepted Confluence parent at SHA256
+`ce04fbe0e78eb0b47502b6f32f62619bf160f35f8ded9b63287cb3dfe8b03226`.
+All730 maps retain exact terrain and executable commands. Publication v4 changes
+Safari configuration,12 related text bodies/split mirrors and the two obsolete
+hub guard objects/event rows. All retained actors,725 whole maps, other data,
+runtime art and compiled audio remain exact. [NORTHERN.md](NORTHERN.md) adds
+the native free approach, all remaining portages/cliffs and measured alternatives.
 
 The published terrain has six exterior chunks, each at most 64×48 walking
 tiles, arranged as a 128×112 walking-tile preserve. The bottom row is clipped
@@ -62,8 +63,13 @@ the actual free-hub return `(30,10)` in ordinary walking mode. The original fee
 remains the only debit. Continue again after return; the permit must stay absent.
 
 These journeys supplement the existing full-body closed-gate, full-perimeter
-water-barrier and terrain tests. They do not replace the remaining ledges,
-other portages, outward-field-move, final-ball, canoe and animation/audio checks.
+water-barrier and terrain tests. All other portages and ledges now have paid
+native journeys in [NORTHERN.md](NORTHERN.md). [THICKET.md](THICKET.md) adds the
+complete paid Cut approach, denials, cancellation, rare wildlife and native
+Continue/map-reset exit. Outward field moves,
+final-ball/final-grass and throw/shake/audio presentation remain open. The
+current parent has no CANOE item; native Surf with its badge is the implemented
+entrance requirement and the denial text states that available route.
 The free Pine Entry → court walking connection is now part of the current
 terrain. Older whole-map verification assumes a sealed outer perimeter and
 therefore rejects this newer connection; do not delete the legitimate free
@@ -73,8 +79,9 @@ Pine Entry, with no outer water openings. Static actor-body floods preserve the
 free court/approach, deny lake access without admission and reach the lake and
 cabin approach with the two permit guards removed. These static checks do not
 replace native controller travel. The current actual-map composite is retained
-under `renders/boundary-safari-runtime-v09/itasca-whole-v01/`. The Itasca rebase
-preserves all seven configured maps exactly against the Marais-parent review.
+under `renders/boundary-safari-runtime-v11/connected-confluence-v01/`, including
+the whole public approach and hub at actual native connection offsets. The
+earlier Itasca render remains historical evidence.
 See [LEDGES-EXIT.md](LEDGES-EXIT.md) for the detailed native input contracts.
 
 ## Review publication

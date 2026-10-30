@@ -196,10 +196,15 @@ fn save_continue(
         .duration_since(UNIX_EPOCH)
         .expect("clock")
         .as_nanos();
-    let path = std::env::temp_dir().join(format!(
+    let retained =
+        std::env::var_os("CRYSTAL_BOUNDARY_SAFARI_EXPANSION_SAVE_DIR").map(PathBuf::from);
+    let directory = retained.clone().unwrap_or_else(std::env::temp_dir);
+    std::fs::create_dir_all(&directory).expect("native checkpoint directory");
+    let path = directory.join(format!(
         "geothite-expanded-preserve-{}-{nonce}.crystalsave",
         std::process::id()
     ));
+    assert!(!path.exists(), "preserve every prior reached save");
     c.save(&path).expect("native save");
     let mut loaded = VisibleShellController::load_save(root, runtime, path.clone(), None)
         .expect("production Continue");
@@ -211,7 +216,11 @@ fn save_continue(
     assert_eq!(flags(&loaded), before_flags);
     assert_eq!(loaded.shell.shell.session().state().money, money);
     assert_no_expedition(&loaded);
-    std::fs::remove_file(path).expect("remove temporary save");
+    if retained.is_some() {
+        eprintln!("retained expanded preserve save: {}", path.display());
+    } else {
+        std::fs::remove_file(path).expect("remove temporary save");
+    }
     loaded
 }
 fn native_hop(
@@ -653,11 +662,34 @@ fn expanded_safari_controller_surfs_six_chunks_and_rejects_real_closed_water_bou
         .chain((0..112).flat_map(|y| [(0, y), (127, y)]))
         .collect::<BTreeSet<_>>();
     assert_eq!(perimeter.len(), 476);
+    let source = &runtime.data().maps["MnBoundarySafariC00R02"];
+    let pine = &runtime.data().maps["MnPreservePineEntry"];
+    assert!(
+        source
+            .attributes
+            .connections
+            .iter()
+            .any(|c| c.direction == "south"
+                && c.target_map == "MnPreservePineEntry"
+                && c.offset == -1)
+    );
+    assert!(
+        pine.attributes
+            .connections
+            .iter()
+            .any(|c| c.direction == "north"
+                && c.target_map == "MnBoundarySafariC00R02"
+                && c.offset == 1)
+    );
     for at in perimeter {
-        assert!(
-            matches!(kind(&runtime, at), "WALL" | "BUOY"),
-            "unclosed native outer edge {at:?}"
-        );
+        if matches!(at, (14 | 15, 111)) {
+            assert_eq!(kind(&runtime, at), "FLOOR", "declared public walking port");
+        } else {
+            assert!(
+                matches!(kind(&runtime, at), "WALL" | "BUOY"),
+                "unclosed native outer edge {at:?}"
+            );
+        }
     }
     paddle(&runtime, &mut c, launch, &mut visited);
     step(&mut c, direction(launch, bank), bank);
@@ -668,3 +700,6 @@ fn expanded_safari_controller_surfs_six_chunks_and_rejects_real_closed_water_bou
     assert_no_expedition(&c);
     let _continued = save_continue(root, runtime, &mut c);
 }
+
+#[path = "boundary_safari_grass_review.rs"]
+mod boundary_safari_grass_review;

@@ -50,6 +50,24 @@
       "source_tileset": "johto_modern",
       "source_block": "7f",
       "required_typed_extension": "iron_range_art::build_iron_range_art_pack"
+    },
+    {
+      "id": "85",
+      "source_tileset": "cave",
+      "source_block": "12",
+      "required_typed_extension": "iron_cliff_stairs::revise_iron_cliff_stairs"
+    },
+    {
+      "id": "86",
+      "source_tileset": "cave",
+      "source_block": "30",
+      "required_typed_extension": "iron_cliff_stairs::revise_iron_cliff_stairs"
+    },
+    {
+      "id": "87",
+      "source_tileset": "cave",
+      "source_block": "36",
+      "required_typed_extension": "iron_cliff_stairs::revise_iron_cliff_stairs"
     }
   ],
   "layers": [
@@ -789,7 +807,7 @@
       "kind": "cliff_polygon",
       "points": [
         [
-          8,
+          7,
           8
         ],
         [
@@ -811,14 +829,6 @@
         [
           7,
           18
-        ],
-        [
-          7,
-          14
-        ],
-        [
-          8,
-          14
         ]
       ]
     },
@@ -828,19 +838,19 @@
       "points": [
         [
           14,
-          5
+          4
         ],
         [
-          15,
-          5
+          16,
+          4
         ],
         [
-          15,
-          7
+          16,
+          6
         ],
         [
           17,
-          7
+          6
         ],
         [
           17,
@@ -866,38 +876,30 @@
       "points": [
         [
           20,
-          5
+          3
         ],
         [
-          23,
-          5
-        ],
-        [
-          23,
-          4
+          25,
+          3
         ],
         [
           25,
           4
         ],
         [
-          25,
+          28,
+          4
+        ],
+        [
+          28,
           5
         ],
         [
-          27,
+          35,
           5
         ],
         [
-          27,
-          6
-        ],
-        [
-          23,
-          6
-        ],
-        [
-          23,
+          35,
           7
         ],
         [
@@ -907,70 +909,24 @@
       ]
     },
     {
-      "name": "Northern banded ore ribs",
-      "kind": "cliff_polygon",
-      "points": [
-        [
-          29,
-          5
-        ],
-        [
-          32,
-          5
-        ],
-        [
-          32,
-          4
-        ],
-        [
-          33,
-          4
-        ],
-        [
-          33,
-          5
-        ],
-        [
-          35,
-          5
-        ],
-        [
-          35,
-          7
-        ],
-        [
-          33,
-          7
-        ],
-        [
-          33,
-          6
-        ],
-        [
-          29,
-          6
-        ]
-      ]
-    },
-    {
       "name": "Northeast quarry headwall",
       "kind": "cliff_polygon",
       "points": [
         [
           37,
-          6
+          5
         ],
         [
-          38,
-          6
+          39,
+          5
         ],
         [
-          38,
-          8
+          39,
+          7
         ],
         [
           41,
-          8
+          7
         ],
         [
           41,
@@ -996,19 +952,19 @@
       "points": [
         [
           43,
-          7
+          6
         ],
         [
-          44,
-          7
+          45,
+          6
         ],
         [
-          44,
-          10
+          45,
+          9
         ],
         [
           46,
-          10
+          9
         ],
         [
           46,
@@ -1034,19 +990,19 @@
       "points": [
         [
           48,
-          5
+          4
+        ],
+        [
+          51,
+          4
         ],
         [
           51,
           5
-        ],
-        [
-          51,
-          6
         ],
         [
           54,
-          6
+          5
         ],
         [
           54,
@@ -1059,18 +1015,10 @@
         [
           52,
           8
-        ],
-        [
-          50,
-          8
-        ],
-        [
-          50,
-          7
         ],
         [
           48,
-          7
+          8
         ]
       ]
     },
@@ -1099,24 +1047,24 @@
           28
         ],
         [
-          24,
+          23,
           28
         ],
         [
-          24,
-          26
+          23,
+          27
         ],
         [
-          22,
-          26
+          21,
+          27
         ],
         [
-          22,
-          25
+          21,
+          26
         ],
         [
           20,
-          25
+          26
         ]
       ]
     },
@@ -1145,24 +1093,16 @@
           28
         ],
         [
-          33,
+          30,
           28
         ],
         [
-          33,
-          27
-        ],
-        [
           30,
           27
-        ],
-        [
-          30,
-          26
         ],
         [
           27,
-          26
+          27
         ]
       ]
     },
@@ -1175,27 +1115,19 @@
           24
         ],
         [
-          40,
+          41,
           24
         ],
         [
-          40,
-          26
+          41,
+          25
         ],
         [
           42,
-          26
+          25
         ],
         [
           42,
-          27
-        ],
-        [
-          41,
-          27
-        ],
-        [
-          41,
           28
         ],
         [
@@ -2118,42 +2050,6 @@
       "block": "0a"
     },
     {
-      "name": "Northwest broken ore crown",
-      "kind": "point",
-      "position": [
-        21,
-        6
-      ],
-      "block": "0a"
-    },
-    {
-      "name": "Northwest broken ore crown",
-      "kind": "point",
-      "position": [
-        22,
-        6
-      ],
-      "block": "0a"
-    },
-    {
-      "name": "Banded ore crown cap",
-      "kind": "point",
-      "position": [
-        33,
-        6
-      ],
-      "block": "0a"
-    },
-    {
-      "name": "Banded ore crown cap",
-      "kind": "point",
-      "position": [
-        34,
-        6
-      ],
-      "block": "0a"
-    },
-    {
       "name": "Headwall broken corner",
       "kind": "point",
       "position": [
@@ -2168,60 +2064,6 @@
       "position": [
         40,
         9
-      ],
-      "block": "0a"
-    },
-    {
-      "name": "Rail cutting ledge cap",
-      "kind": "point",
-      "position": [
-        45,
-        11
-      ],
-      "block": "0a"
-    },
-    {
-      "name": "Siding dumped-ore group",
-      "kind": "point",
-      "position": [
-        49,
-        6
-      ],
-      "block": "0a"
-    },
-    {
-      "name": "Siding dumped-ore group",
-      "kind": "point",
-      "position": [
-        50,
-        6
-      ],
-      "block": "0a"
-    },
-    {
-      "name": "Siding dumped-ore group",
-      "kind": "point",
-      "position": [
-        51,
-        7
-      ],
-      "block": "0a"
-    },
-    {
-      "name": "South quarry broken ore cap",
-      "kind": "point",
-      "position": [
-        32,
-        27
-      ],
-      "block": "0a"
-    },
-    {
-      "name": "South quarry broken ore cap",
-      "kind": "point",
-      "position": [
-        34,
-        27
       ],
       "block": "0a"
     },
@@ -2429,6 +2271,87 @@
         17
       ],
       "block": "0a"
+    },
+    {
+      "kind": "point",
+      "name": "Reclaimed grass closes the western dry shoulder above the mine drop",
+      "position": [
+        18,
+        16
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Attached wall prevents walking around the stone stair",
+      "position": [
+        17,
+        17
+      ],
+      "block": "0a"
+    },
+    {
+      "kind": "point",
+      "name": "Native cave30 left-lane ledge stair to the mine apron",
+      "position": [
+        18,
+        17
+      ],
+      "block": "86"
+    },
+    {
+      "kind": "point",
+      "name": "Native cave12 right-lane ledge stair to the quarry rim",
+      "position": [
+        24,
+        20
+      ],
+      "block": "85"
+    },
+    {
+      "kind": "point",
+      "name": "Native cave36 lower flight continues the mine-apron stone stairs",
+      "position": [
+        18,
+        18
+      ],
+      "block": "87"
+    },
+    {
+      "kind": "point",
+      "name": "Rock shoulder closes the side of the lower stair flight",
+      "position": [
+        17,
+        18
+      ],
+      "block": "0a"
+    },
+    {
+      "kind": "point",
+      "name": "Eastern lane of native mine-apron return ledge",
+      "position": [
+        19,
+        17
+      ],
+      "block": "56"
+    },
+    {
+      "kind": "point",
+      "name": "Attached right wall separates Mina from the return drop",
+      "position": [
+        20,
+        17
+      ],
+      "block": "0a"
+    },
+    {
+      "kind": "point",
+      "name": "Native inside cliff corner joins the lower stair landing",
+      "position": [
+        18,
+        19
+      ],
+      "block": "6e"
     }
   ],
   "status": "Rockier hand-authored source candidate responding to user guidance; existing native publication is the pre-revision baseline.",

@@ -7,12 +7,13 @@ Committed walking/Surf and native rods now generate actual wildlife through
 native held-item and DV routines. Saved ranger confirmation and capture cursors
 use the shared controller, bitmap renderer and read-only TUI projection.
 Production-controller journeys now cover ranger-to-retirement, native fishing,
-party and selected-PC capture, Dex/nickname screens, two actual grassy portages,
+party and selected-PC capture, Dex/nickname screens, all six actual grassy portages,
 Surf launches/dismounts, walking/water seams, the real cabin and 500-step expiry.
-The earlier nine-case replay and newer ten-case Itasca-parent replay pass using
-the default test profile. Final page-persistence changes have separate affected
-travel/ending and original Johto controller checks. See [VERIFICATION.md](VERIFICATION.md)
-for exact execution epochs and limits.
+The Lower Woods review verifies16 distinct default-profile cases, with the
+ending compositor run separately against its required reached checkpoint.
+The Cut thicket now has native denial, cancellation, traversal and reset coverage,
+plus a rare forest encounter table. See [THICKET.md](THICKET.md) and [VERIFICATION.md](VERIFICATION.md)
+for exact execution epochs, complete parent preservation and limits.
 Remaining movement/travel paths and throw/shake/audio presentation still
 require acceptance before enabling admission.
 The battle display now has native command/result captures, matching source-art
@@ -21,13 +22,22 @@ See [VERIFICATION.md](VERIFICATION.md) for exact inputs and limits. The free Bou
 Q07 shelter and R12/R13/R20 junction remain outside the expedition.
 
 The current unselected review is
-`content-packs/minnesota-safari-runtime-review-itasca-v06.crystalpack`, derived from
-`minnesota-current-grass-itasca-v01.crystalpack`. Rust publication
-verified exact preservation of unrelated data, runtime art and compiled audio,
-plus strict readback. All terrain, actors, events and executable commands remain
-exact. In addition to the Safari configuration, v2 publication replaces seven
-related closure-text bodies and their existing split mirrors with native
-permit/check-in directions. It does not change the main regional selector.
+`content-packs/minnesota-safari-runtime-review-departure-rainy-v15.crystalpack`, derived
+directly from `minnesota-current-grass-rainy-icefields-v01.crystalpack`. Rust publication
+and independent preservation verification pass, including strict readback and
+all377 audio PCM/frame/loop checks. All terrain, executable programs, retained
+actors and unrelated content remain exact;725 whole maps are unchanged.
+Publication v4 updates12 related native text bodies and split mirrors, and
+retires only the two obsolete hub officers at `(32,6)`/`(33,6)` with their event
+rows. Later story guards remain; the real permit court still blocks unpaid
+lake access. The public hub/Pine/court/return circuit passes native input and
+Continue before an actual paid admission. It does not change the main selector.
+See [NORTHERN.md](NORTHERN.md) for the complete free circuit, all portage choices,
+five cliff returns, seven separate paid trips and a connected whole-area render.
+The Rainy rebase preserves the accepted river-bank, R09/R10 cliff/stair,
+Upstream Woods and Rainy Icefields changes. All nine Safari/cabin/public modules
+remain exact against the tested thicket v14 review. Historical broad-suite results retain their original
+pack and executable bindings; they are not relabeled as fresh v14 runs.
 See [TRAVEL.md](TRAVEL.md) for exact lake/portage/cabin coordinates, the executed
 publication path and remaining travel work. Promotion requires checking the
 live [world selector](../../world.json) and rebasing if it has advanced. Older
@@ -99,15 +109,18 @@ controller. Native command/result screenshots are retained for review.
 ## Native maps, admission and replay
 
 [zone.json](zone.json) binds the six exterior chunks covering64×56metatiles and
-Dorothy's actual cabin to four geographic habitats. Its45 weighted entries use23 active
+Dorothy's actual cabin to seven habitat rectangles. Three retain the former Pine
+Portage table around the fourth, Cut-gated Pine Thicket; reeds, granite and quiet
+water retain their prior tables. The configuration uses23 active
 Minnesota species with separate grass/water tables. Reeds include mudpuppies,
 crayfish and mosquito wildlife; pines include deer, bears and woodpeckers;
 granite shores include caddisflies and agates; quiet lakes include otters,
 turtles, duckweed and perch/walleye. Rare Mosquitan55, Gougecrest38 and
 Tipulord44 meet their actual evolution thresholds. No source Johto replacements,
 unavailable Cragcloak or underlevel rare evolutions are silently substituted.
-Grass checks are authored48/256 and water12/256; these rates are configuration
-for the pending encounter generator, not already executed encounters.
+Grass checks use48/256 and water12/256. Native walking, Surf and the new Cut
+thicket journeys execute the configured encounters; local fixtures do not
+establish statewide difficulty or earned progression.
 
 `safari_zone.rs` validates native maps/collision/actors, reciprocal seams,
 interior warps, complete habitat coverage, hundred-weight tables and evolution
@@ -139,7 +152,8 @@ events can bypass normal `CountStep`. Turns, bumps and idle frames do not spend
 steps; capture/result/ending input cannot continue walking. Scripted Surf's
 actual committed movement has the corresponding hook. The focused native test
 proves ordinary movement, zero-cost turning/waits, final-step refusal and real
-return. Surf, ledge, seam and outward-field-travel coverage remains required.
+return. Surf, ledge, seam and Cut coverage is recorded in the linked itineraries;
+outward-field-move settlement remains required before promotion.
 
 `safari_mutation.rs` and `runtime_safari.rs` bind admission, capture action,
 acknowledgement, retirement and return to the existing mutation/checksum/journal
@@ -183,18 +197,25 @@ targets, must belong to the active Minnesota roster after retirement curation.
 
 ## Remaining integration before opening admission
 
-1. Prove the complete before/after walking and paddling gate boundaries while
-   preserving the free pine approach and court. Actual ranger admission,
-   refusals, retirement and generated encounters already have controller tests.
-2. Complete native throw/shake animation and audio presentation around the
+The paid Pine Thicket Cut prerequisite denials, cancellation, removal, traversal
+and map-return/Continue reset now pass; see [THICKET.md](THICKET.md). The public
+hub/Pine/court circuit and actual unpaid permit guards also pass. All exterior
+water edges have visible blocking collision or a real neighboring connection.
+
+1. Complete native throw/shake animation and audio presentation around the
    existing saved capture resolver and trainer-backed battle display.
-3. Prove native Surf launch/dismount, ledges, internal seams, cabin travel and
-   final-step encounter suppression. Settle outward court seams, Fly/Teleport/
-   Dig/Escape Rope and other outward warps without leaving a live permit outside
-   or displaying a field-move destination that differs from its actual arrival.
-4. Exercise the completed flow: admission, budgets, all four commands, storage,
-   pending result Continue, final step/ball, retirement/outward travel and safe
-   free Q07/route traversal through the production controller and clean stdio.
+2. Finish final-step grass/encounter edge cases. Native Fly/Teleport now reach
+   their real selected destinations from both shore and Surf, clear the permit
+   and retain that arrival through Continue. Invalid Dig/Escape Rope and indoor
+   Fly/Teleport produce normal native refusals without spending resources;
+   [DEPARTURES.md](DEPARTURES.md) records the three passing controller cases and
+   the remaining stdio/visual review. Do not infer arbitrary unauthored warps.
+   Native launch/dismount, all five ledges, six portages, internal walking/water
+   seams, cabin travel, floor-step expiry and the actual outward court seam
+   already have production input coverage.
+3. Complete native final-ball and remaining ending combinations, preserving
+   admission/budgets, all four commands, storage, result Continue, retirement,
+   free Q07/route traversal and clean stdio behavior already covered locally.
    Inspect the actual native views, verify preservation/audio, then publish a
    fresh external pack from the latest selected parent. Keep the gate closed
    until this complete path passes.

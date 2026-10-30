@@ -52,7 +52,8 @@ fn layouts(directory: &Path, prefix: &str, names: &[&str]) -> Result<Vec<String>
 /// The certified parent is the compact regional R20/R04 successor, already
 /// bound to Minnesota species. Its binder marker is retained throughout. Only
 /// newly authored/changed story data is bound, preserving established ordinary
-/// teams, grass, caves, optional Vergloom and the other source regions. Installs
+/// teams, grass, caves, optional Vergloom and the other source regions. The
+/// guarded League entrance receives its single native floor turnout. Installs
 /// reviewed native Kettlurk/Gillpup banks and the written League ending.
 ///
 /// # Errors
@@ -206,8 +207,8 @@ pub fn build_northstar_current_story_from_composition(
         &curation,
     )
     .context("current written League ending")?;
-    pack =
-        crate::revise_northstar_story(&pack, &story).context("current staged dialogue overhaul")?;
+    pack = crate::northstar_story_revision::finish_composition(&pack, &story)
+        .context("current staged dialogue overhaul")?;
     pack.report.manifests.retain(|m| m != COMPOSING);
     pack.report.manifests.push(MANIFEST.into());
     ensure!(
@@ -256,8 +257,17 @@ pub fn build_northstar_current_story_from_composition(
             Some("ROUTE" | "TOWN")
         ) {
             let after = &pack.data.maps[name];
+            let turnout_blocks = (name == "MnR13C00R00").then(|| {
+                // The final shared scene builder validates the native wall,
+                // adjacent floor and absence of actors/events before opening
+                // this one metatile at the canonical connection offset.
+                let mut blocks = before.blocks.clone();
+                blocks[16] = blocks[15];
+                blocks
+            });
+            let expected_blocks = turnout_blocks.as_ref().unwrap_or(&before.blocks);
             ensure!(
-                before.blocks == after.blocks && before.attributes == after.attributes,
+                *expected_blocks == after.blocks && before.attributes == after.attributes,
                 "story composition changed outdoor geography: {name}"
             );
         }

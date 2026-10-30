@@ -15,6 +15,36 @@
 - Verify audio changes against the pack's PCM hashes, frame counts, and loop
   ranges. Preserve unaffected audio and unrelated game content.
 
+## Cargo build cache and disk space
+
+- Check free disk space with `df -h .` at task start, before substantial Cargo
+  builds, and at least hourly during long sessions. Check the sizes of `target/`,
+  agent-specific `CARGO_TARGET_DIR` directories, and any external
+  `CRYSTAL_PACK_BUILD_DIR`; separate target directories duplicate dependencies.
+- Keep at least 15% of the build volume free, and at least 100 GiB free on
+  volumes of 500 GiB or larger. Below either limit, stop starting new builds and
+  remove inactive build output before continuing. Do not wait for an out-of-space
+  error or create another target directory to work around it.
+- Clean up your Cargo build output when the task finishes and it is no longer
+  needed. Review abandoned agent caches and unused profiles daily during active
+  development; remove them periodically instead of accumulating every task's
+  dependency graph, incremental cache, and binaries indefinitely.
+- Check running Cargo, rustc, exporter, test, renderer, and server processes
+  before cleanup. Never remove an active build directory or an executable still
+  needed by a running review. Clean it after its owner finishes; never delete
+  another agent's cache to bypass a Cargo lock.
+- Use `cargo clean --target-dir DIRECTORY` only when that directory contains
+  exclusively disposable Cargo output. This repository also stores local review
+  material under `target/`: otherwise remove only confirmed inactive Cargo
+  profile directories (`debug`, `release`, `wasm-dev`, `web-release`, and
+  target-triple build directories). Preserve retained review evidence, source
+  inputs, packs, saves, and publication state.
+- For one-off checks that will be cleaned immediately, set
+  `CARGO_INCREMENTAL=0` to avoid retaining an unnecessary incremental cache.
+  Recheck `df -h .` after cleanup and report the recovered space. Build caches,
+  cleanup logs, captures, and generated verification reports remain ignored and
+  must never enter a code commit.
+
 ## Minnesota Pokemon roster
 
 - Minnesota is native 2D only. Do not expose or enable 3D, voxel or 2.5D views

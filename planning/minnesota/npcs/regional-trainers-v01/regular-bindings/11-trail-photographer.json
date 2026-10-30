@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "trainer_class": "MN_TRAIL_PHOTOGRAPHER",
+  "class_name": "PHOTOGRAPHER",
+  "trainer_ids": [
+    "MN_RIVER_FUN_LOWER_LARK"
+  ],
+  "actors": [
+    {
+      "map": "MnMississippiLowerWoodsC00R02",
+      "script": "MN_RIVER_FUN_LOWER_LARK",
+      "tile": [
+        37,
+        17
+      ],
+      "previous_sprite": "SPRITE_POKEFAN_M"
+    }
+  ]
+}

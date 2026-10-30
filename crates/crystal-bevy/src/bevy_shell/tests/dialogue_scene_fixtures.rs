@@ -1,8 +1,17 @@
 //! Declared chapter setups supplement the separate earned New Game course.
-#[path = "dialogue_retry_fixture.rs"]
-mod retry;
+#[cfg(feature = "fullscreen-scaling")]
+#[path = "dialogue_actor_visibility.rs"]
+mod actor_visibility;
+#[path = "dialogue_dispatch_copy.rs"]
+mod dispatch_copy;
 #[path = "dialogue_holding_fence.rs"]
 mod holding_fence;
+#[path = "dialogue_report_comparison.rs"]
+mod report_comparison;
+#[path = "dialogue_retry_fixture.rs"]
+mod retry;
+#[path = "dialogue_story_pacing.rs"]
+mod story_pacing;
 
 use crystal_assets::AssetRoot;
 use crystal_core::input::GameButton;
@@ -680,6 +689,12 @@ fn overhaul_harbor_refusals_and_relay_return_describe_actual_progress() {
         };
         let (root, r, mut c) = fixture("MnDuluthHarborWorkshop", (8, 9), &flags);
         let state = c.shell.shell.session_mut().state_mut();
+        if stage == 0 && super::northstar_dialogue::timely_evidence(&r) {
+            state
+                .flags
+                .set_event_flag("EVENT_MN_LIGHTHOUSE_SIGNAL", true)
+                .expect("evidence already accepted; only travel preparation remains");
+        }
         for (i, flag) in BADGE_ENGINE_FLAGS[..8].iter().enumerate() {
             state.badges.johto[i] = stage != 0 || i < 7;
             state
@@ -780,7 +795,7 @@ fn overhaul_league_road_matches_both_border_lanes_and_requires_shutdown() {
                     "MnBoundaryWaters",
                     (32 + lane, 47),
                 );
-                super::winona::travel(&mut c, GameButton::Down, "MnR13C00R00", (30 + lane, 0));
+                super::winona::travel(&mut c, GameButton::Down, "MnR13C00R00", (32 + lane, 0));
                 continue_in_place(&mut c, &root, &r, &format!("overhaul-league-seam-{lane}"));
                 super::winona::travel(&mut c, GameButton::Up, "MnBoundaryWaters", (32 + lane, 47));
                 super::winona::travel(&mut c, GameButton::Up, "MnBoundaryWaters", (32 + lane, 42));

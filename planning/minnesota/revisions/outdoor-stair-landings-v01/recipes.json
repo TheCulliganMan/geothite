@@ -1,0 +1,63 @@
+{
+  "scope": "Minnesota exterior stair upper artwork only; authored Duluth terrace revision is a prerequisite",
+  "source_rows": [
+    0,
+    1
+  ],
+  "keep_stair_rows": [
+    2,
+    3
+  ],
+  "recipes": [
+    {
+      "tileset": "mn_boundary_safari",
+      "stair": "84",
+      "native_stair": "12",
+      "outdoor_landing": "72"
+    },
+    {
+      "tileset": "mn_iron_range",
+      "stair": "85",
+      "native_stair": "12",
+      "outdoor_landing": "72"
+    },
+    {
+      "tileset": "mn_iron_range",
+      "stair": "86",
+      "native_stair": "30",
+      "outdoor_landing": "72"
+    },
+    {
+      "tileset": "mn_iron_range",
+      "stair": "87",
+      "native_stair": "36",
+      "outdoor_landing": "69"
+    },
+    {
+      "tileset": "mn_r10_rockstairs",
+      "stair": "80",
+      "native_stair": "12",
+      "outdoor_landing": "72"
+    },
+    {
+      "tileset": "mn_north_shore",
+      "stair": "81",
+      "native_stair": "12",
+      "outdoor_landing": "72"
+    },
+    {
+      "tileset": "mn_north_shore",
+      "stair": "82",
+      "native_stair": "30",
+      "outdoor_landing": "72"
+    },
+    {
+      "tileset": "mn_north_shore",
+      "stair": "83",
+      "native_stair": "36",
+      "outdoor_landing": "69",
+      "newly_imported": true,
+      "reason": "Selected North Shore has131 blocks; native36 at83 must first be appended by Rust, then joined to outdoor69."
+    }
+  ]
+}

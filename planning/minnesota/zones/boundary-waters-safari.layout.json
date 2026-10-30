@@ -4366,6 +4366,42 @@
         ]
       ],
       "gated_habitat": "PINE_THICKET",
+      "habitat_bounds_core": [
+        [
+          0,
+          30
+        ],
+        [
+          16,
+          38
+        ]
+      ],
+      "gated_grass_tiles": 52,
+      "main_lake_water_approach": [
+        30,
+        21
+      ],
+      "pocket_portage_landings": [
+        [
+          29,
+          21
+        ],
+        [
+          22,
+          21
+        ]
+      ],
+      "pocket_lake_launch": [
+        21,
+        21
+      ],
+      "water_before_cut": [
+        10,
+        29
+      ],
+      "purpose": "Reach the enclosed thicket through Pine Pocket's grassy portage and native Cut gate. Its actual Safari table favors Shedstag and Gougecrest; ordinary Pine Portage rates, levels and flee thresholds remain unchanged outside this clearing.",
+      "native_return_contract": "Continue and ordinary map return regenerate the temporary tree. A player inside can recut from core(10,32) facing north, walk out and relaunch; no permanent Cut event flag is invented.",
+      "controller_case": "safari_paid_cut_gate_denies_permissions_opens_habitat_and_resets_safely",
       "blocks_surf_landing": true
     }
   ],
@@ -4948,7 +4984,15 @@
       "minimum_grass_steps": 6,
       "water_relation": "connected_arms_shortcut",
       "minimum_water_detour_steps": 35,
-      "role": "West/east lake arms cross below two stepped native cliff viewpoints and the shelter camp; paddle around the southern pine tip instead."
+      "minimum_grass_direction": "west_to_east",
+      "east_to_west_ledge_return": {
+        "walking_commits": 38,
+        "grass_commits": 1,
+        "water_bank_to_bank_commits": 40,
+        "contract": "Longer native down-hop return around the grass neck; saves five steps against the 45-step paddle. Direct bank-to-bank grass crossing costs 27 commits and six grass tiles in either direction.",
+        "native_controller_test": "safari_paid_northern_portages_pocket_and_connected_arm_choices"
+      },
+      "role": "West/east lake arms cross below two stepped native cliff shelves and the shelter camp. Choose the short grass neck, a longer drier one-way return east to west, or the southern paddle."
     }
   ],
   "surf_landings": [

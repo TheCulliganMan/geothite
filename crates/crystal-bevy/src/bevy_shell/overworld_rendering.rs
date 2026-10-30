@@ -11817,14 +11817,20 @@ fn visible_field_notice_pages(notice: &str) -> Vec<String> {
         .collect()
 }
 
-// The PC special suspends PCScript with an active core menu. Its messages
-// belong to the field printer, above that menu and any retained script text.
+// Save warnings and the PC special own the field printer above their pending
+// answer or suspended core menu.
 fn visible_pokecenter_pc_text_boundary(
     shell: &BevyRuntimeShell,
 ) -> Option<&SpecialBoundaryDisplay> {
     shell.special_boundary.as_ref().filter(|boundary| {
         (shell.pc_hub_session_open && boundary.label != "HallOfFamePC")
-            || matches!(boundary.label.as_str(), "PokecenterPCCantUseText" | "ProfOaksPcBoot" | "PokecenterMoveMailText")
+            || matches!(
+                boundary.label.as_str(),
+                "PokecenterPCCantUseText"
+                    | "ProfOaksPcBoot"
+                    | "PokecenterMoveMailText"
+                    | "StartMenuOverwriteWarning"
+            )
     })
 }
 
@@ -12628,10 +12634,11 @@ fn push_visible_save_dialog_entries(
         VisibleSaveFlowStage::Saved => SAVE_TEXT_SAVED,
         VisibleSaveFlowStage::Error => SAVE_TEXT_CORRUPTED,
     };
-    let text = if runtime_shell.pc_hub_session_open && flow.stage==VisibleSaveFlowStage::Prompt
-        && matches!(flow.origin,VisibleSaveFlowOrigin::BillsPcChangeBox{..}|VisibleSaveFlowOrigin::BillsPcMove) {
-        visible_bill_pc_save_pages(runtime_shell,snapshot,label)?.pop()
-            .context("Bill's PC save prompt has no final source page")?
+    let text = if matches!(
+        flow.stage,
+        VisibleSaveFlowStage::Prompt | VisibleSaveFlowStage::OverwritePrompt
+    ) {
+        save_prompt_pages::final_page(runtime_shell, snapshot, label)?
     } else {visible_asm_text(snapshot, label)?};
     push_wrapped_scene_dialog_lines(entries, &text);
     if matches!(

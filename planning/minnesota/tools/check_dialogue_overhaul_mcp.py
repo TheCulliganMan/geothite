@@ -38,10 +38,13 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--client', type=Path, required=True)
     parser.add_argument('--pack', type=Path, required=True)
+    parser.add_argument('--story-source', type=Path,
+                        help='Matching frozen canonical source for an older review pack')
     args = parser.parse_args()
     pack = load_pack(args.pack)
     root = Path(__file__).resolve().parents[3]
-    texts = json.loads((root / 'planning/minnesota/story.json').read_text())['dialogue_overhaul']['texts']
+    source = args.story_source or root / 'planning/minnesota/story.json'
+    texts = json.loads(source.read_text())['dialogue_overhaul']['texts']
     with tempfile.TemporaryFile() as stderr:
         process = subprocess.Popen(
             [str(args.client.resolve()), 'mcp', str(args.pack.resolve())],

@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "trainer_class": "MN_LUMBERJACK",
+  "class_name": "LUMBERJACK",
+  "trainer_ids": [
+    "MN_R13_T04"
+  ],
+  "actors": [
+    {
+      "map": "MnR13C00R01",
+      "script": "MN_R13_T04",
+      "tile": [
+        47,
+        37
+      ],
+      "previous_sprite": "SPRITE_BLACK_BELT"
+    }
+  ]
+}

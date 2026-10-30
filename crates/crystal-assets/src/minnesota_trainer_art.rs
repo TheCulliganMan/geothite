@@ -5,7 +5,7 @@ use anyhow::{Context, Result, ensure};
 use serde::Deserialize;
 
 use crate::grand_marais_modpack::authoring;
-use crate::{CompiledGamePack, authored_town_publication};
+use crate::{CompiledGamePack, MapModule, authored_town_publication};
 
 #[derive(Deserialize)]
 #[serde(deny_unknown_fields)]
@@ -26,6 +26,45 @@ struct Actor {
     script: String,
     tile: [u16; 2],
     previous_sprite: String,
+}
+
+/// Updates an existing raw event-source mirror for one exact field actor.
+///
+/// # Errors
+/// Rejects an existing event source without exactly one matching actor.
+pub(crate) fn rebind_actor_event_source(
+    map: &mut MapModule,
+    script: &str,
+    tile: [u16; 2],
+    sprite: &str,
+) -> Result<()> {
+    let Some(label) = &map.attributes.map_events_label else {
+        return Ok(());
+    };
+    let Some(source) = map.scripts.get_mut(label) else {
+        return Ok(());
+    };
+    let commands = source.as_array_mut().context("raw actor event source")?;
+    let x = tile[0].to_string();
+    let y = tile[1].to_string();
+    let mut matched = 0;
+    for command in commands {
+        if command["command"].as_str() != Some("object_event") {
+            continue;
+        }
+        let args = command["args"]
+            .as_array_mut()
+            .context("object event operands")?;
+        if args.first().and_then(serde_json::Value::as_str) == Some(x.as_str())
+            && args.get(1).and_then(serde_json::Value::as_str) == Some(y.as_str())
+            && args.get(11).and_then(serde_json::Value::as_str) == Some(script)
+        {
+            args[2] = sprite.into();
+            matched += 1;
+        }
+    }
+    ensure!(matched == 1, "one exact raw event actor required: {script}");
+    Ok(())
 }
 
 /// Installs matched native art for one existing Minnesota character.
@@ -108,7 +147,7 @@ pub fn bind_minnesota_trainer_art(
     for original in base.data.maps.values() {
         let mut map = original.clone();
         let mut changed = false;
-        for actor in binding.actors.iter().filter(|a| a.map == map.id) {
+        for actor in binding.actors.iter().filter(|a| a.map == original.id) {
             let matches: Vec<_> = map
                 .objects
                 .iter_mut()
@@ -127,6 +166,7 @@ pub fn bind_minnesota_trainer_art(
                 object.sprite.clone_from(&sprite);
                 object.sprite_has_facings = true;
             }
+            rebind_actor_event_source(&mut map, &actor.script, actor.tile, &sprite)?;
             matched_actors += 1;
             changed = true;
         }
@@ -304,8 +344,30 @@ mod tests {
                     }
                 }
             }
-            assert_eq!(
-                revised.scripts, expected_scripts,
+            if let Some(label) = &original.attributes.map_events_label
+                && let Some(commands) = expected_scripts
+                    .get_mut(label)
+                    .and_then(serde_json::Value::as_array_mut)
+            {
+                for actor in row["actors"].as_array().expect("actors") {
+                    if actor["map"].as_str() != Some(id) {
+                        continue;
+                    }
+                    let x = actor["tile"][0].to_string();
+                    let y = actor["tile"][1].to_string();
+                    for command in commands.iter_mut() {
+                        if command["command"].as_str() == Some("object_event")
+                            && command["args"][0].as_str() == Some(x.as_str())
+                            && command["args"][1].as_str() == Some(y.as_str())
+                            && command["args"][11] == actor["script"]
+                        {
+                            command["args"][2] = format!("SPRITE_{class}").into();
+                        }
+                    }
+                }
+            }
+            assert!(
+                revised.scripts == expected_scripts,
                 "only art-class operands change: {id}"
             );
             let mut expected_objects = original.objects.clone();

@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "trainer_class": "MN_STORM_WATCHER",
+  "class_name": "STORM WATCHER",
+  "trainer_ids": [
+    "MN_SPX_TRAINER_3"
+  ],
+  "actors": [
+    {
+      "map": "MnStPaulEastWorkshop",
+      "script": "MN_SPX_TRAINER_3",
+      "tile": [
+        9,
+        7
+      ],
+      "previous_sprite": "SPRITE_SUPER_NERD"
+    }
+  ]
+}

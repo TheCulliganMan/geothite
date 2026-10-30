@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "trainers": [
+    {
+      "approach": [
+        3,
+        14
+      ],
+      "defeated_flag": "EVENT_MN_ICE_ARC_INTAKE_WEST_DEFEATED",
+      "facing": "south",
+      "id": "MN_ICE_ARC_INTAKE_WEST",
+      "map": "MnBoundaryIntake",
+      "sprite": "SPRITE_MN_ICE_AGENT",
+      "tile": [
+        3,
+        13
+      ],
+      "trainer_class": "MN_ICE_AGENT"
+    }
+  ]
+}

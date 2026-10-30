@@ -9,12 +9,13 @@
 //! review. Interior warp networks, earned flags, NPC movement and field-move
 //! presentation are outside this static check.
 use std::cmp::Reverse;
-use std::collections::{BTreeMap, BTreeSet, BinaryHeap};
+use std::collections::{BTreeMap, BTreeSet, BinaryHeap, VecDeque};
 
 use anyhow::{Context, Result, ensure};
 use crystal_core::world::collision::{
     PlayerTraversalState, Terrain, TilesetCollision, describe_collision,
-    is_direction_blocked_leaving, is_permission_passable, sample_collision,
+    is_direction_blocked_leaving, is_permission_passable, is_warp_permission, permissions,
+    sample_collision,
 };
 use crystal_core::world::map::{Direction, OverworldMapData, TilePosition};
 use crystal_core::world::movement::{
@@ -100,6 +101,27 @@ pub(crate) fn walking_map_distances(
         &module.attributes.tileset_name,
     )?
     .shortest_paths(start, occupied, false, None)
+}
+
+/// Counts encounter tiles on the cheapest native walking approach to every cell.
+///
+/// Uses the existing surface's numeric entry/departure and native hop rules.
+/// Directional cliff rims remain walkable laterally. Surf and warp cells are
+/// excluded: an exterior warp is not an ordinary shortcut through its mouth.
+/// Only declared cells with actual TALL_GRASS permission contribute cost.
+/// Forced surface presentation and earned access still require native input.
+///
+/// # Errors
+/// Rejects invalid collision, bounds, arrival, occupied cells or non-grass cost cells.
+pub(crate) fn walking_grass_costs(
+    pack: &CompiledGamePack,
+    design: &RouteDesign,
+    blocks: &[u16],
+    tileset: &str,
+    occupied: &BTreeSet<[u16; 2]>,
+    grass: &BTreeSet<[u16; 2]>,
+) -> Result<BTreeMap<[u16; 2], u32>> {
+    Surface::new(pack, design, blocks, tileset)?.grass_costs(arrival(design)?, occupied, grass)
 }
 
 /// Returns the shortest geometric tile distance between explicit route points.
@@ -405,6 +427,60 @@ impl Surface {
         Ok(distances)
     }
 
+    fn grass_costs(
+        &self,
+        start: [u16; 2],
+        occupied: &BTreeSet<[u16; 2]>,
+        grass: &BTreeSet<[u16; 2]>,
+    ) -> Result<BTreeMap<[u16; 2], u32>> {
+        ensure!(
+            describe_collision(self.permission(start)?).terrain == Terrain::Land
+                && !is_warp_permission(self.permission(start)?)
+                && !occupied.contains(&start),
+            "reward approach arrival is blocked"
+        );
+        for &tile in occupied {
+            self.permission(tile)?;
+        }
+        for &tile in grass {
+            ensure!(
+                self.permission(tile)? == permissions::TALL_GRASS,
+                "reward cost cell is not native encounter grass"
+            );
+        }
+        let bodies = occupied
+            .iter()
+            .map(|[x, y]| {
+                Ok(OccupiedTile {
+                    tile: TilePosition::new(i16::try_from(*x)?, i16::try_from(*y)?),
+                    object_identifier: None,
+                })
+            })
+            .collect::<Result<Vec<_>>>()?;
+        let mut costs = BTreeMap::from([(start, 0_u32)]);
+        let mut queue = VecDeque::from([start]);
+        while let Some(tile) = queue.pop_front() {
+            for (target, _) in self.edges(tile, occupied, &bodies, false)? {
+                if is_warp_permission(self.permission(target)?) {
+                    continue;
+                }
+                let crossing = grass.contains(&target);
+                let next = costs[&tile]
+                    .checked_add(u32::from(crossing))
+                    .context("reward grass cost overflow")?;
+                if costs.get(&target).is_none_or(|old| next < *old) {
+                    costs.insert(target, next);
+                    if crossing {
+                        queue.push_back(target);
+                    } else {
+                        queue.push_front(target);
+                    }
+                }
+            }
+        }
+        Ok(costs)
+    }
+
     fn edges(
         &self,
         tile: [u16; 2],
@@ -555,6 +631,62 @@ mod tests {
             collision: TilesetCollision { metatiles },
             blocked_mounts: Vec::new(),
         }
+    }
+
+    #[test]
+    fn reward_grass_cost_detects_native_rim_bypass_and_actor_removal() {
+        let mut grid = vec![vec![permissions::WALL; 8]; 8];
+        grid[4][2..=6].fill(permissions::FLOOR);
+        grid[4][3..=4].fill(permissions::TALL_GRASS);
+        let grass = BTreeSet::from([[3, 4], [4, 4]]);
+        let costs = surface(&grid)
+            .grass_costs([2, 4], &BTreeSet::new(), &grass)
+            .expect("required encounter strip");
+        assert_eq!(costs.get(&[6, 4]), Some(&2));
+        grid[3][2..=6].fill(permissions::UP_WALL);
+        let numeric = surface(&grid);
+        assert_eq!(
+            numeric
+                .grass_costs([2, 4], &BTreeSet::new(), &grass)
+                .expect("native lateral rim")
+                .get(&[6, 4]),
+            Some(&0)
+        );
+        assert_eq!(
+            numeric
+                .grass_costs([2, 4], &BTreeSet::from([[3, 3]]), &grass)
+                .expect("body blocks this temporary route")
+                .get(&[6, 4]),
+            Some(&2)
+        );
+        assert!(!costs.contains_key(&[2, 2]));
+    }
+
+    #[test]
+    fn reward_grass_cost_does_not_walk_through_warps_or_count_decorative_floor() {
+        let mut grid = vec![vec![permissions::WALL; 8]; 8];
+        grid[4][2..=6].fill(permissions::FLOOR);
+        grid[4][3..=4].fill(permissions::TALL_GRASS);
+        grid[6][2..=6].fill(permissions::FLOOR);
+        grid[5][2] = permissions::CAVE_74;
+        grid[5][6] = permissions::FLOOR;
+        let numeric = surface(&grid);
+        let grass = BTreeSet::from([[3, 4], [4, 4]]);
+        let costs = numeric
+            .grass_costs([2, 4], &BTreeSet::new(), &grass)
+            .expect("local mouth is a warp, not a free exterior path");
+        assert_eq!(costs.get(&[6, 4]), Some(&2));
+        assert!(!costs.contains_key(&[2, 5]));
+        assert!(
+            numeric
+                .grass_costs([2, 4], &BTreeSet::new(), &BTreeSet::from([[2, 4]]))
+                .is_err()
+        );
+        assert!(
+            numeric
+                .grass_costs([2, 4], &BTreeSet::from([[20, 20]]), &grass)
+                .is_err()
+        );
     }
 
     #[test]

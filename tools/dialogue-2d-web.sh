@@ -3,7 +3,7 @@
 # Outputs, content packs and server state remain ignored. No deployment occurs.
 set -eu
 cd "$(dirname "$0")/.."
-PACK=${CRYSTAL_PACK:-content-packs/minnesota-dialogue-overhaul-v13.crystalpack}
+PACK=${CRYSTAL_PACK:-content-packs/minnesota-dialogue-overhaul-v19.crystalpack}
 OUT=${CRYSTAL_WEB_OUT:-target/dialogue-overhaul-2d-web}
 TARGET=${CARGO_TARGET_DIR:-target/northstar-story}
 BINDGEN=${WASM_BINDGEN:-wasm-bindgen}

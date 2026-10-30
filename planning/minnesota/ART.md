@@ -85,6 +85,26 @@ verify their real bidirectional collision. Review cave interiors as distinct
 places with coherent chambers, elevation, loops and discoveries; a rectangular
 hollow with scattered boulders remains unfinished.
 
+### Outdoor stair shape and palette
+
+Choose the native cave stair for its actual cliff join. The user specifically
+identified **36 for right corners**: its vertical right rock face must continue
+the side wall into the front edge. Native12 has right-aligned treads and a left
+front lip;30 has left-aligned treads and a right front lip. A locally referenced
+30 is not an instruction to replace every flight. Inspect the neighboring
+metatiles and real Floor/Wall quadrants; move a flight to a fitting corner when
+necessary instead of painting a road through rock.
+
+Use the existing outdoor terrain for the two upper glyph rows; do not carry
+the pale cave-floor landing into an outdoor road. In Duluth, right-corner36
+retains the outdoor69 side wall above its native lower steps. Straight-front12/30
+use the outdoor72 landing above their lower stair rows. Preserve per-glyph native
+palettes, including gray stone treads against brown rock. A blanket brown palette changes the stairs themselves and was rejected.
+Render every changed join at native scale and exercise both directions and
+side-wall blocking through production input. Do not splice a short hop ledge
+into a tall rock cliff: continue the full retaining face and descend by stairs.
+Native hops belong on coherent low banks with matching landings.
+
 Roads must physically join. Include short intentional grass crossings rather than making every habitat freely avoidable. Use fences and bollards to frame the road, mark entrances and control water access; gaps must be deliberate and wide enough to use. Docks have real walking decks, closed ends, rail collision and water below. Review the whole map and the actual viewport before adding more area.
 
 The user clarified that compactness is not required for every map. The rejected quality was sparse, overdesigned space without worthwhile features. MN_R15's one-chunk replacement is one iteration, pending review. R11–R14 retain useful implementation evidence and need fresh feature-density, pacing and visual review; they do not automatically need to shrink. Their size and circuit counts are not templates.
@@ -119,3 +139,68 @@ soil and `0b` habitat. The native blue house is `38 39` over `3c 3d`; mixing
 `02 03` beneath that roof creates a visibly doubled roof line. The tool shed
 uses `20 54 21` over `37 3a 7e` and a separate traditional-house workshop. These
 are source facade recipes, not copied map geography.
+
+Exterior ledge repairs must follow the intended height of the whole bank.
+A freestanding low bank keeps native one-way ledges and matching low ends;
+remove oversized cliff or rock caps rather than raising it into a wall.
+Tall terraces use continuous cliff faces and appropriate native stair descents.
+Do not put a hop strip above or inside a tall cliff face.
+
+## Contiguous outdoor plateaus and cliff orientation
+
+The plateau correction uses the actual Johto/Johto Modern cliff family, rather
+than guessing that consecutive metatile numbers are interchangeable. In Johto
+Modern,64..67 are building pieces, not extra cliff corners. Check the source
+art and collision in the actual tileset used by the map; the same ID can mean
+something different in another tileset.
+
+The labeled native reference is saved at
+`renders/outdoor-stair-landings-v01/native-cliff-reference-v58/all-native-cliffs-and-stairs.png`.
+Its `ledger.json` binds the actual pack hash and exact collision quadrants for
+six outdoor families and the12/30/36/90 stair variants. Original32px source
+tiles are retained beside the labeled enlargements. Use it to choose actual
+turns and joins; it is a source-art reference, not a production camera capture.
+
+| Native metatile | Placement | Quadrants: NW, NE, SW, SE |
+| --- | --- | --- |
+|68|West face|WALL, FLOOR, WALL, FLOOR|
+|69|East face|FLOOR, WALL, FLOOR, WALL|
+|6a|Northwest outer corner|WALL, UP_WALL, WALL, FLOOR|
+|6b|Northeast outer corner|UP_WALL, WALL, FLOOR, WALL|
+|6c|Southwest outer corner|WALL, FLOOR, WALL, WALL|
+|6d|Southeast outer corner|FLOOR, WALL, WALL, WALL|
+|6e|Southwest concave join|FLOOR, FLOOR, WALL, FLOOR|
+|6f|Southeast concave join|FLOOR, FLOOR, FLOOR, WALL|
+|70|North back edge|UP_WALL, UP_WALL, FLOOR, FLOOR|
+|71|Interior rock ground|FLOOR, FLOOR, FLOOR, FLOOR|
+|72|South front face|FLOOR, FLOOR, WALL, WALL|
+|74|Existing north-facing ramp|WALL, FLOOR, FLOOR, FLOOR|
+
+Use the matching orientation along the complete contour, with real corner
+transitions. Pines can sit inside the plateau, but must not replace pieces of
+its retaining face and leave isolated wall fragments. Keep boulders back from
+the rim instead of merging their bottoms with the cliff. When a shelf reaches
+a map edge, its visible side/corner collision must still close unconnected
+walking and Surf exits. Do not disable the compiler's boundary checks.
+
+UP_WALL is directional. It blocks entering southward and departing northward;
+standing or moving horizontally along the inside lip is legal. A Floor-only
+flood is not a complete movement proof for that edge. Test the actual
+production controller in both crossing directions. South-facing stair side
+walls and the traversable inside lip of a north-facing staircase are different
+geometries and must not share a blanket side-denial expectation.
+
+The reviewed Duluth north flight is private90, not a new global cave tile. It
+uses native cave12's unchanged lower gray step rows in its north half, and
+native70's unchanged lower landing rows in its south half. The entrance is at
+metatile(23,13), street core(47,25), step(47,26), inside landing(47,27).
+The three south/front recipes8d/8e/8f still use native12/30/36 respectively.
+Source recipes, native pack hashes, full-town originals, player views and
+rejected passes live in the Duluth terrace and outdoor-stair revision folders.
+
+Private stair aliases must preserve presentation behavior as well as static
+pixels: native water, flowers and waterfalls must keep their frames/schedules;
+icy grass must keep its authored rustle colors and opacity while unchanged
+green grass uses the original green rustle. Validate the production art loaders
+against the cloned source tileset across morn/day/nite/dark. A matching static
+screenshot cannot prove that an animation remains active.

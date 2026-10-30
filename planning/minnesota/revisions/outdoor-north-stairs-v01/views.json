@@ -1,0 +1,34 @@
+[
+  {
+    "id": "MnR05C00R00-north-gray-12-7",
+    "map": "MnR05C00R00",
+    "core": [
+      25,
+      15
+    ]
+  },
+  {
+    "id": "MnR05C00R00-north-gray-18-13",
+    "map": "MnR05C00R00",
+    "core": [
+      37,
+      27
+    ]
+  },
+  {
+    "id": "MnR05C00R01-north-gray-14-2",
+    "map": "MnR05C00R01",
+    "core": [
+      29,
+      5
+    ]
+  },
+  {
+    "id": "MnR07C00R00-north-gray-8-21",
+    "map": "MnR07C00R00",
+    "core": [
+      17,
+      43
+    ]
+  }
+]

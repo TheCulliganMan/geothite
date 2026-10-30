@@ -8,7 +8,7 @@ use std::time::{SystemTime, UNIX_EPOCH};
 
 use crystal_assets::{AssetRoot, read_loaded_verified_compiled_game_pack};
 use crystal_core::input::GameButton;
-use crystal_core::models::Dv;
+use crystal_core::models::{Dv, LearnedMove};
 use crystal_core::state::EventFlagMemory;
 use crystal_core::systems::script_flags::reconcile_saved_badge_flags;
 use crystal_runtime::{CrystalRuntime, RuntimeShellPhase};
@@ -19,7 +19,7 @@ use super::super::{
     initialize_bevy_runtime_shell, mark_runtime_snapshot_dirty, visible_party_actions,
     visible_start_menu_options,
 };
-use super::authored_route_fixture::{Point, indoor_walk};
+use super::authored_route_fixture::{Point, cleanup_reached_save, indoor_walk, reached_save_path};
 
 const TOWN: &str = "MnBemidji";
 const CLINIC: &str = "MnBemidjiPokecenter1F";
@@ -58,6 +58,7 @@ enum Partners {
     Injured,
     Splash,
     Teleport,
+    RouteReview,
 }
 
 fn fixture(
@@ -93,6 +94,7 @@ fn fixture(
         // before the losing battle's automatic healing and recovery.
         Partners::Splash => vec![("MAGIKARP", 70)],
         Partners::Teleport => vec![("ABRA", 10)],
+        Partners::RouteReview => vec![("MEW", 50)],
         Partners::Healthy | Partners::Injured => vec![("MEW", 45), ("CYNDAQUIL", 12)],
     };
     let state = controller.shell.shell.session_mut().state_mut();
@@ -101,6 +103,13 @@ fn fixture(
             .data()
             .create_pokemon(species, level, Dv::default())
             .expect("legal native fixture partner");
+        if matches!(partners, Partners::RouteReview) {
+            pokemon.moves = vec![LearnedMove {
+                name: "SURF".into(),
+                current_pp: runtime.data().moves["SURF"].pp,
+                pp_ups: 0,
+            }];
+        }
         if matches!(partners, Partners::Splash) {
             // This legal initial injury persists until either the authored
             // nurse or native whiteout cures it. Burn does not poison-tick
@@ -118,8 +127,24 @@ fn fixture(
     }
     state.sync_party_from_storage();
     state.money = 10_000;
-    state.badges.johto = std::array::from_fn(|slot| slot < 6);
+    state.badges.johto = std::array::from_fn(|slot| {
+        slot < if matches!(partners, Partners::RouteReview) {
+            7
+        } else {
+            6
+        }
+    });
     reconcile_saved_badge_flags(state);
+    if matches!(partners, Partners::RouteReview) {
+        // Declared prior qualifications for the local road tour, not earned
+        // story progress. No state is changed after the first gameplay input.
+        for flag in ["EVENT_MN_HEADWATERS_READING", "EVENT_MN_HEADWATERS_REPORT"] {
+            state
+                .flags
+                .set_event_flag(flag, true)
+                .expect("prior report fixture");
+        }
+    }
     state.random_state = Default::default();
     *controller.shell.shell.session_mut().divider_mut_for_tests() =
         crystal_core::random::RuntimeDividerSource::replay(
@@ -267,7 +292,7 @@ fn continue_save(
         .duration_since(UNIX_EPOCH)
         .expect("nonce")
         .as_nanos();
-    let path = std::env::temp_dir().join(format!(
+    let path = reached_save_path(&format!(
         "bemidji-{}-{nonce}.crystalsave",
         std::process::id()
     ));
@@ -275,7 +300,7 @@ fn continue_save(
     let mut loaded =
         VisibleShellController::load_save(root.clone(), runtime.clone(), path.clone(), None)
             .expect("production Continue");
-    std::fs::remove_file(path).expect("remove only owned scratch save");
+    cleanup_reached_save(&path);
     let after = loaded.snapshot().expect("continued city state");
     assert_eq!(before.party, after.party);
     assert_eq!(before.bag, after.bag);
@@ -348,6 +373,169 @@ fn bemidji_city_controller_downhill_hop_reverse_wall_and_ordinary_return() {
     // This planner includes only ordinary FLOOR/carpet, never HOP/WALL.
     walk(&mut c, &runtime, (20, 24));
     walk(&mut c, &runtime, (11, 19));
+}
+
+fn exterior_travel(c: &mut VisibleShellController, button: GameButton, map: &str, target: Point) {
+    for _ in 0..32 {
+        press(c, button);
+        let snapshot = c.snapshot().expect("native road transition");
+        if snapshot.overworld.map_name == map
+            && (snapshot.overworld.tile.x, snapshot.overworld.tile.y) == target
+        {
+            assert_at(c, map, target);
+            return;
+        }
+        assert!(!snapshot.ui.text_window_open, "qualified road must be open");
+        assert!(snapshot.battle.is_none(), "public lane must stay dry");
+    }
+    assert_at(c, map, target);
+}
+
+#[test]
+#[ignore = "requires current Minnesota pack; initial seven badges/report/Surf partner are local fixtures"]
+fn bemidji_city_controller_exterior_residents_signs_eight_road_lanes_and_real_surf() {
+    let (root, runtime) = load();
+    let source = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        .join("../../planning/minnesota/towns/MnBemidji.json");
+    let plan: serde_json::Value =
+        serde_json::from_str(&std::fs::read_to_string(source).expect("current Bemidji dossier"))
+            .expect("Bemidji JSON");
+    let mut c = fixture(&root, &runtime, TOWN, (20, 24), Partners::RouteReview);
+    for resident in plan["residents"].as_array().expect("outside residents") {
+        let x = i16::try_from(resident["tile"][0].as_i64().expect("x")).unwrap();
+        let y = i16::try_from(resident["tile"][1].as_i64().expect("y")).unwrap();
+        let (approach, facing) = match resident["facing"].as_str().expect("facing") {
+            "north" => ((x, y - 1), GameButton::Down),
+            "south" => ((x, y + 1), GameButton::Up),
+            "east" => ((x + 1, y), GameButton::Left),
+            "west" => ((x - 1, y), GameButton::Right),
+            _ => panic!("cardinal resident facing"),
+        };
+        walk(&mut c, &runtime, approach);
+        talk(&mut c, facing);
+        assert!(!finish_text(&mut c).is_empty(), "actual resident dialogue");
+    }
+    for sign in plan["signs"].as_array().expect("public signs") {
+        let x = i16::try_from(sign["tile"][0].as_i64().expect("x")).unwrap();
+        let y = i16::try_from(sign["tile"][1].as_i64().expect("y")).unwrap();
+        walk(&mut c, &runtime, (x, y + 1));
+        talk(&mut c, GameButton::Up);
+        assert!(!finish_text(&mut c).is_empty(), "actual sign text");
+    }
+    let flags = semantic_flags(&c.shell.shell.session().state().flags);
+    for lane in 0..2 {
+        for (start, outward, neighbor, there, inward) in [
+            (
+                (4, 24 + lane),
+                GameButton::Left,
+                "MnR14C01R00",
+                (31, 26 + lane),
+                GameButton::Right,
+            ),
+            (
+                (43, 24 + lane),
+                GameButton::Right,
+                "MnR09C00R01",
+                (0, 2 + lane),
+                GameButton::Left,
+            ),
+            (
+                (24 + lane, 44),
+                GameButton::Down,
+                "MnR08C00R00",
+                (24 + lane, 0),
+                GameButton::Up,
+            ),
+            (
+                (24 + lane, 4),
+                GameButton::Up,
+                "MnBemidjiNorthwoods",
+                (8 + lane, 27),
+                GameButton::Down,
+            ),
+        ] {
+            walk(&mut c, &runtime, start);
+            exterior_travel(&mut c, outward, neighbor, there);
+            exterior_travel(&mut c, inward, TOWN, start);
+        }
+    }
+    assert_eq!(
+        semantic_flags(&c.shell.shell.session().state().flags),
+        flags
+    );
+    walk(&mut c, &runtime, (29, 41));
+    press(&mut c, GameButton::Right);
+    for _ in 0..96 {
+        let s = c.snapshot().expect("native low-launch Surf prompt");
+        if s.overworld.mode == crystal_core::world::movement::MovementMode::Surf
+            && (s.overworld.tile.x, s.overworld.tile.y) == (30, 41)
+            && !s.ui.text_window_open
+            && !c.has_pending_script_work()
+            && c.shell.field_notice.is_none()
+        {
+            break;
+        }
+        press(&mut c, GameButton::A);
+    }
+    assert_at(&mut c, TOWN, (30, 41));
+    assert_eq!(
+        c.snapshot().unwrap().overworld.mode,
+        crystal_core::world::movement::MovementMode::Surf
+    );
+    for (button, target) in [
+        (GameButton::Down, (30, 42)),
+        (GameButton::Up, (30, 41)),
+        (GameButton::Left, (29, 41)),
+    ] {
+        for _ in 0..8 {
+            press(&mut c, button);
+            if position(&mut c) == target {
+                break;
+            }
+        }
+        assert_at(&mut c, TOWN, target);
+    }
+    assert_eq!(
+        c.snapshot().unwrap().overworld.mode,
+        crystal_core::world::movement::MovementMode::Normal
+    );
+    walk(&mut c, &runtime, (20, 24));
+    let _loaded = continue_save(&mut c, &root, &runtime);
+}
+
+#[test]
+#[ignore = "requires current Minnesota pack; initial six badges are local fixtures"]
+fn bemidji_city_controller_north_guard_denies_outbound_and_allows_unqualified_return() {
+    let (root, runtime) = load();
+    for lane in 0..2 {
+        let mut c = fixture(&root, &runtime, TOWN, (24 + lane, 4), Partners::Healthy);
+        let before = semantic_flags(&c.shell.shell.session().state().flags);
+        for _ in 0..8 {
+            press(&mut c, GameButton::Up);
+            if c.snapshot().unwrap().ui.text_window_open {
+                break;
+            }
+        }
+        assert!(!finish_text(&mut c).is_empty(), "native PINE BADGE refusal");
+        assert_at(&mut c, TOWN, (24 + lane, 4));
+        assert_eq!(
+            semantic_flags(&c.shell.shell.session().state().flags),
+            before
+        );
+        let mut inbound = fixture(
+            &root,
+            &runtime,
+            "MnBemidjiNorthwoods",
+            (8 + lane, 27),
+            Partners::Healthy,
+        );
+        exterior_travel(&mut inbound, GameButton::Down, TOWN, (24 + lane, 4));
+        assert_eq!(
+            semantic_flags(&inbound.shell.shell.session().state().flags),
+            before
+        );
+        let _loaded = continue_save(&mut inbound, &root, &runtime);
+    }
 }
 
 #[test]

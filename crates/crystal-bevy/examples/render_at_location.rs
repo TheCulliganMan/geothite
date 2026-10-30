@@ -3,6 +3,7 @@ use std::{env, path::PathBuf, process::Command};
 use anyhow::{bail, Context, Result};
 use crystal_assets::{read_loaded_verified_compiled_game_pack, AssetRoot};
 use crystal_bevy::{BevyShellConfig, BevyShellStart};
+use crystal_bevy::bevy_shell::runtime_supports_voxel_view;
 use crystal_runtime::CrystalRuntime;
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -90,12 +91,9 @@ fn main() -> Result<()> {
         bail!("--preview-flag requires --map/--screenshot or an explicit --maps list/--output-dir; it seeds disposable visual fixtures");
     }
     if args.walk.is_some()
-        && (args.view == ViewMode::TwoD
-            || args.all_maps
-            || !args.maps.is_empty()
-            || args.screenshot.is_none())
+        && (args.all_maps || !args.maps.is_empty() || args.screenshot.is_none())
     {
-        bail!("--walk requires a single map, --view 2.5d or both and --screenshot");
+        bail!("--walk requires a single map or save and --screenshot");
     }
     if args.live
         && (args.view != ViewMode::Both
@@ -147,6 +145,9 @@ fn main() -> Result<()> {
     if args.list_maps {
         print_map_catalog(&runtime);
         return Ok(());
+    }
+    if !runtime_supports_voxel_view(&runtime) && args.view != ViewMode::TwoD {
+        bail!("this content pack supports native 2D previews only; use --view 2d");
     }
 
     if args.all_maps || !args.maps.is_empty() {
@@ -210,7 +211,9 @@ fn render_single_map(
         "rendering {map} at ({tile_x}, {tile_y}) in {} [{width}x{height}, {tileset}, {environment}]",
         args.view.label()
     );
-    println!("press F3 to toggle faithful 2D / optional 2.5D at the same location");
+    if runtime_supports_voxel_view(&runtime) {
+        println!("press F3 to toggle faithful 2D / optional 2.5D at the same location");
+    }
 
     let pair = args.view == ViewMode::Both || temporal_3d;
     let first = args.screenshot.as_ref().map(|path| {
@@ -272,7 +275,7 @@ fn render_single_map(
             // comparison order remain 2D reference / native.
             voxel_view_enabled: Some(args.view != ViewMode::TwoD),
             window_title: Some(format!(
-                "Crystal Render Tester — {map} ({tile_x}, {tile_y}) — {} — F3 toggles",
+                "Crystal Render Tester — {map} ({tile_x}, {tile_y}) — {}",
                 args.view.label()
             )),
             render_test_screenshot: if args.view==ViewMode::Both {second.clone()} else {first.clone()},

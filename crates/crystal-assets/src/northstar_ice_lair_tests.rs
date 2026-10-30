@@ -139,9 +139,9 @@ fn ice_lair_preserves_unrelated_data_and_every_original_audio_program() {
     }
     let office = &result.data().maps["MnMinneapolisDispatchOffice"];
     assert!(
-        !office.scripts["MnMPDispatchCopy"]
+        office.scripts["MnMPDispatchCopy"]
             .as_array()
-            .expect("flavor program")
+            .expect("physical desk-copy program")
             .iter()
             .any(|row| row == &c("setevent", &["EVENT_MN_DISPATCH_NOTE"]))
     );
@@ -154,16 +154,27 @@ fn ice_lair_preserves_unrelated_data_and_every_original_audio_program() {
     let witness = home.scripts["MN_MP_RESCUED_DISPATCHER"]
         .as_array()
         .expect("witness quest");
-    let text = witness
-        .iter()
-        .position(|row| row == &c("writetext", &["MnNICEEllisQuestText"]))
-        .expect("actual witness conversation");
-    let result_index = witness
+    assert!(witness.contains(&c("writetext", &["MnNICEEllisQuestText"])));
+    assert!(!witness.contains(&c("setevent", &["EVENT_MN_DISPATCH_NOTE"])));
+    let copy = office.scripts["MnMPDispatchCopy"]
+        .as_array()
+        .expect("desk copy");
+    for flag in [
+        "EVENT_MN_ICE_CAPTIVE_RESCUED",
+        "EVENT_MN_ICE_HOLDING_POWER_OFF",
+        "EVENT_MN_ICE_ENFORCER_DEFEATED",
+    ] {
+        assert!(copy.contains(&c("checkevent", &[flag])));
+    }
+    let result_index = copy
         .iter()
         .position(|row| row == &c("setevent", &["EVENT_MN_DISPATCH_NOTE"]))
-        .expect("acknowledged witness result");
-    assert!(result_index > text);
-    assert_eq!(witness[result_index - 1], c("waitbutton", &[]));
+        .expect("acknowledged desk-copy result");
+    assert_eq!(copy[result_index - 1], c("promptbutton", &[]));
+    assert_eq!(
+        copy[result_index - 2],
+        c("writetext", &["MnMPDispatchReadText"])
+    );
     assert!(
         crate::build_northstar_ice_lair(
             &result,

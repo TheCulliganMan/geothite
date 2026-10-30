@@ -1,0 +1,26 @@
+[
+  {
+    "id": "southern-public-northeast-corner",
+    "map": "MnR10C00R00",
+    "core": [
+      28,
+      23
+    ]
+  },
+  {
+    "id": "southern-boulder-inset-and-inner-turn",
+    "map": "MnR10C00R00",
+    "core": [
+      30,
+      25
+    ]
+  },
+  {
+    "id": "southern-public-offset-north-rim",
+    "map": "MnR10C00R00",
+    "core": [
+      32,
+      25
+    ]
+  }
+]

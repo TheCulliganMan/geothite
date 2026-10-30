@@ -1,5 +1,318 @@
 # Native core verification
 
+## Current Rainy parent and native field departures
+
+Current unselected candidate:
+`content-packs/minnesota-safari-runtime-review-departure-rainy-v15.crystalpack`,
+SHA256 `8a3e5db6734898bd0cc9edc420d2adb840bbab84b05ba33cdb3daa08005b9f4b`.
+Its exact selected parent is Rainy Icefields
+`2bd46f3452af8ea3699a75938862d07e62771fc64dab7096648fa6509f0f03b8`.
+The zone source stays at
+`4b31f5ce29f34f9302e769a4ddc4834c6dc6eea749d7561b607fc3a2671e3e7a`.
+All nine Safari/cabin/public modules and the zone remain exact against v14;
+the complete connected eight-map source image is pixel-identical. Independent
+current-parent preservation passes, including725 exact whole maps, the Cut
+thicket contract and23 active configured species. Rust desktop validation and
+all377 PCM/frame/loop comparisons pass. No selected pointer or paid main
+admission was changed.
+
+[DEPARTURES.md](DEPARTURES.md) records the actual native menu and terrain paths.
+The fresh default-profile invocation passes all three cases in140.24s:
+
+- Four separately paid departures: Fly and Teleport, each from shore and Surf,
+  reach the exact chosen native town spawn, resume ordinary walking, clear the
+  permit and preserve party/bag/money. Continue retains the real arrival.
+- Six-partner admission with available PC space keeps the selected field action
+  and both native Cancel paths visible. The action submenu scrolls and neither
+  cancel spends Safari resources or changes the team.
+- The complete paid cabin trip verifies outdoor Dig/Rope and indoor Dig/Rope/
+  Fly/Teleport refusals, source/input ownership, unchanged budgets/party/bag,
+  real cabin Continue/exit and real Reed-ranger retirement.
+
+Four fresh production stdio sessions additionally pass76 RPCs, with zero stderr
+and immutable inputs. They navigate actual visible partner/action/destination
+menus, make both land/water departures and reopen production Start on arrival.
+They use the same `VisibleShellController::press` boundary; no dispatcher,
+position/RNG/budget repair or unsupported battle shortcut was added.
+
+Two production defects were fixed: a large roster left no text rows for its
+action submenu, and an indoor Fly destination selection escaped as an error
+instead of showing the native refusal. The menu now reserves action rows and
+gives the actual Fly chooser ownership above the suspended party submenu.
+Classified Fly refusals use the existing field notice without spending resources.
+
+Earlier attempts remain distinct and retained. v01 used an invalid initial
+clinic interior spawn constant; native clinic entry records the outdoor town.
+v02 incorrectly required an intermediate Teleport frame after its timed native
+presentation had already committed. v03 passed all outward trips and all six
+refusals, then its cabin itinerary missed the second native Down input. v05
+uses the real exit and passes all three cases. The first stdio timing probe sent
+only48 flight frames; the passing76-call run advances real presentation with
+the bounded existing button-hold tool. The original party-render regression
+stops in its pre-existing intro fixture before reaching a party menu; it is not
+counted as passing. The six-partner native case covers the changed menu paths.
+
+The native screenshot QA was also corrected for actual menu inputs and classic
+rendering. Its opt-in short input pulse now covers party/Start/Fly menus. Classic
+movement checks require authoritative map/tile displacement; inactive voxel
+coordinates no longer reject a genuine2D walk. Rejected UI frames and traces
+are retained. Fresh final images still require visual inspection before their
+acceptance is recorded.
+
+This closes the native field-departure controller gap, not the full Safari or
+Minnesota goal. Final-ball/final-grass endings, full throw/shake/audio presentation
+and the recorded indoor cast reconciliation remain required before promotion.
+The independent grass/geometry review does not accept paid capture or story.
+
+## Previous Cut thicket and Confluence parent
+
+Current unselected review:
+`content-packs/minnesota-safari-runtime-review-thicket-confluence-v14.crystalpack`,
+SHA256 `c18e90caa089bf72e77c5b51b4a0f2351316d44fd356c8a770ae107407e93eba`.
+It directly overlays selected Confluence
+`ce04fbe0e78eb0b47502b6f32f62619bf160f35f8ded9b63287cb3dfe8b03226`.
+The live selector remains untouched and paid main admission remains closed.
+
+[THICKET.md](THICKET.md) records the complete two-lake Cut itinerary, actual
+coordinates and native reset behavior. The gate now rewards its detour with
+52 grass tiles weighted toward Shedstag/Gougecrest. All14,208 cells outside the
+thicket retain their old encounter behavior; native levels/flee/rates and water
+tables stay unchanged. The source zone is now
+`4b31f5ce29f34f9302e769a4ddc4834c6dc6eea749d7561b607fc3a2671e3e7a`.
+The earlier972c source remains archived with its original evidence; do not use
+its historical publication command against the changed canonical file.
+
+The current Cut controller case passes in218.94s. It plays three separately
+paid expeditions: missing move, missing Hive Badge and allowed Cut. It verifies
+both real denials, native NO cancellation, YES removal, physical traversal,
+generated rare-thicket wildlife, inside Continue/recut, real map-seam reset and
+ranger retirement. Trips spend334/334/354 actual movement commits and retain30
+balls plus original HP/status/PP/bag. Explicit party/badge/noon fixtures end
+before input; no state, position, RNG or budget repair follows.
+
+The independent current-parent publication/thicket audit passes:725 whole maps
+are exact, all other terrain/art/actors/programs are preserved except the
+declared12 text bodies and two obsolete public hub guards. Its graph includes
+Surf and down-hop candidates; closed access reaches none of52 grass tiles,
+the exact native63→3f replacement reaches all52, and its other three collision
+quadrants remain exact. Five mutated contracts are rejected independently.
+Current Rust verification passes all377 audio PCM hashes/frame counts/loop
+ranges and production desktop validation. The complete connected eight-map
+render uses real connection offsets.
+
+Execution epochs are distinct:
+
+- Before the contextual menu projection fix, the v13 Upstream review passed
+  all15 selected broad default-profile cases in524.58s. Its old executable SHA
+  was saved before rebuilding. Its separate three-trip Cut replay passed in113.82s.
+- After that read-only projection fix, v13 Cut passes in143.33s, Surf/portage/
+  cabin/Continue in26.61s, the reached-checkpoint ending compositor in13.52s,
+  and the external core Mom/New Bark controller check in16.11s.
+- Production v13 stdio has47 successful RPCs, zero stderr and unchanged inputs:
+  both denials, actual visible YES→NO cancellation and YES traversal, rare
+  Shedstag capture-screen ownership, Run and production Start.
+- v14 adds the fresh218.94s three-trip Cut replay above and another47 successful
+  production RPCs with zero stderr and immutable newly reached saves. Earlier
+  broad-suite logs remain v13 evidence, not a fresh full-suite v14 claim.
+- A fresh v14 ranger/commands/Continue/retirement journey passes in23.01s.
+  Its genuinely reached Run-selected checkpoint supplies the Chris/Kris
+  compositor, which passes in14.11s. Both native back sprites were inspected;
+  switching trainers preserves the wild picture and returning to exploration
+  removes the battle portrait. The first compositor invocation used a new
+  Ball-selected thicket checkpoint against this case's required Run-selected
+  input and failed its cursor precondition. That attempt remains retained;
+  no save/state repair or relaxed assertion was used to obtain the passing run.
+
+The production fix projects the existing contextual Cut/Surf cursor into a
+read-only `field:move-confirm` menu. It preserves text and authoritative input;
+it does not introduce a second dispatcher. The renderer's existing ordinary
+keyboard QA now accepts native2D. Its content guard rejects Minnesota2.5D
+previews before rendering and removes the misleading F3 hint. A first compile
+attempt used the helper's wrong export path; the corrected build and final
+all-target Bevy Clippy check pass. Existing warnings remain. Scoped new-leaf
+rustfmt passes; whole-workspace formatting still reports unrelated differences
+beginning in `offset-allocator`. A whole-diff whitespace check also found an
+unrelated extra EOF blank line in assets `lib.rs`; the scoped Safari check passes.
+
+The matched noon closed/opened frames differ in1395 pixels inside a48×48 tree
+footprint; all367,245 other pixels match. Earlier unset-clock comparisons are
+retained and excluded from that claim. Denial stills show the retained tree;
+actual transient denial notices are proved by controller/MCP readbacks.
+
+Evidence and exact commands/logs are bound in the
+[current receipt](../../renders/boundary-safari-runtime-v11/receipt-v01.json),
+[current preservation](../../renders/boundary-safari-runtime-v11/thicket-contract-confluence-v01.json),
+[pixel comparison](../../renders/boundary-safari-runtime-v11/pixel-verification-v01.json)
+and [whole connected render](../../renders/boundary-safari-runtime-v11/connected-confluence-v01/whole-original.png).
+Outward field moves, final-ball/final-grass edges and complete throw/shake/audio
+presentation still require acceptance. The larger Minnesota map/story goal
+also remains open. Neither this review nor local setup proves earned access.
+
+## Historical Iron parent rebase
+
+While the Lower Woods review was closing, the selected parent advanced to
+`iron_cliff_stairs_revision`. The current unselected candidate is therefore
+`content-packs/minnesota-safari-runtime-review-iron-v10.crystalpack`, SHA256
+`31210b86a72ee08349785f83d5f966cc65cc2157b1986f6ee60ebc5285665717`.
+It directly overlays accepted `minnesota-current-iron-cliffs-v02.crystalpack`,
+SHA256 `9181eba4c44d85e840e99d29c6284ecaebe6aa099ccb373d6c703364ff205e98`.
+The same guarded Rust publisher verifies strict readback; the independent
+preservation audit passes against that exact parent, including all new R09
+terrain, private cave-stair art and every unrelated field. A separate four-pack
+comparison proves that the review-to-review difference is exactly the accepted
+parent delta. All nine Safari/cabin/public modules, their scripts and capture
+configuration remain exact; this does not rerun the earlier16-case suite under
+a different label.
+
+Fresh current-candidate default-profile ranger-to-retirement, unpaid circuit
+and native compositor checks pass in8.19s,11.26s and5.66s. Another25 stdio calls
+pass with zero stderr and immutable newly reached saves. All377 current-pack
+audio PCM/frame/loop checks and desktop presentation validation pass. Three
+fresh native field captures plus the new Kris battle were inspected. The complete
+eight-map connected source render is refreshed under
+`renders/boundary-safari-runtime-v10/connected-iron-v01/`. Earlier original
+renders, rejected outputs and v09 source-document snapshots remain retained.
+
+- [Current preservation](../../renders/boundary-safari-runtime-v10/preservation-iron-v01.json)
+- [Exact rebase equivalence](../../renders/boundary-safari-runtime-v10/iron-rebase-equivalence-v02.json)
+- [Current stdio validation](../../renders/boundary-safari-runtime-v10/iron-stdio-validation-v01.json)
+- [Current receipt](../../renders/boundary-safari-runtime-v10/receipt-iron-v01.json)
+
+Publication uses the same zone SHA and CLI as the earlier executed command,
+substituting the exact Iron parent/hash above and the fresh v10 output path.
+No Rust source changed after the passing Clippy/scoped-format epoch below;
+only the parent data and documentation changed. Paid admission remains closed
+in the selected main pack. The remaining acceptance list is unchanged.
+
+## Lower Woods parent, northern journeys and continuous public circuit
+
+The unselected v09 review is
+`content-packs/minnesota-safari-runtime-review-public-trail-v09.crystalpack`,
+SHA256 `102d285c1e48b3fc7f95e9101edee563dff7ca555794c4ffbd420e6fd6bfc380`.
+Its direct disabled parent is `minnesota-current-grass-lower-woods-v01.crystalpack`
+at `6cb0c84e8b41436185a98c1afdaf7c43fdc0c5ccb147b950459f2a55f96d77f7`.
+The authored zone remains at
+`972c39632f0248e58ed98639fde682a81baed6cf81950d70b11b62dae71bbda7`.
+Rust publication and strict readback pass. The independent read-only
+`audit_safari_expedition.py` verifies all terrain, retained NPCs, executable
+programs and unrelated data/art/audio exactly. Its only permitted deltas are
+Safari config,12 narrowly bound text bodies/split mirrors, two obsolete hub
+officers and corresponding native event rows. All725 other whole maps are exact.
+All377 Rust audio programs again match PCM hashes, frame counts and loop ranges;
+production desktop presentation validation passes.
+
+The free approach defect was found in native field captures: old hub officers
+at `(32,6)` and `(33,6)` blocked the entire public path. They are roster slots3/4,
+followed by a guide and later story guards. Removing the trailing two actors
+would be wrong; that first guarded publication failed and wrote no candidate.
+The corrected publisher removes exactly slots3/4, preserves every retained actor
+and relative order, retains the actual ranger at slot2, rejects numeric object
+references, and refreshes only the native event rows and existing mirror.
+
+The standalone default-profile public circuit passes in19.29s: actual Max Repel
+use, unpaid hub→Pine→court→hub, both actual unpaid guard collisions, Continue,
+unchanged money/team, then native ranger confirmation and correct30/500 budgets
+with one500 fee. Fixtures declare a legal initial GILLPUP/VOYAGEAR/DOZEBEAR party,
+Surf badge, one Repel and money before any input; they do not prove earned access.
+Four fresh native640×576 captures were retained. The open throat, closed unpaid
+court and admitted court were visually inspected. The eight-map source overview
+includes the complete public approach at real reciprocal offsets, with original
+2336×3072 pixels and its preview both retained.
+
+Three stdio sessions make25 successful production calls with zero stderr and
+immutable reached-save inputs. They verify former blocker tiles, both unpaid
+permit guards, Start and actual ranger offer/payment/arrival. The harness was
+corrected to inspect the actual `MENU` heading and projected Safari prompt:
+the compact status dialogue flag covers ordinary text, and exploration does not
+display capture counters. Controller assertions separately prove those budgets.
+Raw earlier harness outputs are retained; no product workaround was introduced.
+
+Seven separate northern trips previously passed on v08 in the default profile:
+Pine416, North Pine309, Northwind368, Granite254, upper298, lower294 and Eagle242
+commits, all30 balls. All seven preserve/cabin maps are byte-for-field exact
+between v08 and v09. Native coverage includes all five cliff hops/blocked
+reverses/ordinary returns, all six portages, four connected-water price choices,
+the two-way clipped southern Surf seam and all three remote return rangers.
+Northwind's native east→west drier return uses38 walking/hop commits and one
+grass tile; the direct route uses25 and six. Source metadata and [NORTHERN.md](NORTHERN.md)
+now state that directional choice rather than claiming six grass tiles both ways.
+
+The v09 default-profile invocation passes15 cases in566.46s. Its ending compositor
+case fails only because that invocation omitted the explicitly required
+`CRYSTAL_SAFARI_ENDING_SAVE`; it does not run without a reached checkpoint. The
+actual500-step case then generates that save. Rerunning the compositor with
+that exact save passes in7.79s, completing all16 distinct cases. No source or
+game-state repair was needed. A fresh Rust publication/controller replay passes
+in30.23s and produces byte-identical v09 pack bytes. The free hub-to-shelter
+regression passes in23.87s, including all three public approaches, actual free
+care, both carpet exits and Continue. That pre-existing test declares an initial
+review-party fixture; it does not prove earned Q07 progression.
+
+Affected `crystal-assets`/`crystal-bevy` all-target Clippy with
+`--features location-tester` passes in1m56s; no diagnostics point to the Safari
+implementation/test leaves. Scoped Rust formatting and changed-file whitespace
+checks pass. Whole-workspace `cargo fmt --all -- --check` still fails on existing
+unrelated differences starting in `offset-allocator`; those files were preserved.
+Exact inputs, binaries, logs, immutable renders and per-invocation outcomes are
+bound by [the v10 receipt](../../renders/boundary-safari-runtime-v10/receipt-v01.json).
+
+Prior v07/v08 packs remain immutable evidence; v08 still has the old
+hub blockers and is not an accepted continuous public-trail candidate.
+Cut, outward field moves, native final-ball/final-grass edge cases and complete
+throw/shake/audio presentation remain open. The main selector was observed at
+`route_grass_lower_woods_revision`; this work does not enable paid main admission.
+
+Executed publication command:
+
+```sh
+RUST_MIN_STACK=67108864 target/runtime-fps/debug/pack_safari_expedition \
+  content-packs/minnesota-current-grass-lower-woods-v01.crystalpack \
+  6cb0c84e8b41436185a98c1afdaf7c43fdc0c5ccb147b950459f2a55f96d77f7 \
+  planning/minnesota/revisions/boundary-safari-runtime-v01/zone.json \
+  972c39632f0248e58ed98639fde682a81baed6cf81950d70b11b62dae71bbda7 \
+  content-packs/minnesota-safari-runtime-review-public-trail-v09.crystalpack
+```
+
+Read-only audit and complete connected source render:
+
+```sh
+.local/minnesota-review-env/bin/python planning/minnesota/tools/audit_safari_expedition.py \
+  --parent content-packs/minnesota-current-grass-lower-woods-v01.crystalpack \
+  --candidate content-packs/minnesota-safari-runtime-review-public-trail-v09.crystalpack \
+  --zone planning/minnesota/revisions/boundary-safari-runtime-v01/zone.json \
+  --output planning/minnesota/renders/boundary-safari-runtime-v10/preservation-v02.json
+.local/minnesota-review-env/bin/python planning/minnesota/tools/render_safari_runtime.py \
+  --pack content-packs/minnesota-safari-runtime-review-public-trail-v09.crystalpack \
+  --include-approach \
+  --output planning/minnesota/renders/boundary-safari-runtime-v10/connected-public-v01
+```
+
+All outputs must be fresh when replaying these commands. Existing outputs,
+rejected captures, original resolutions, reached saves and conversions remain
+immutable. See [NORTHERN.md](NORTHERN.md) for native coordinates and price tables.
+
+Default-profile replay uses the completed pack and fresh reached-save directory:
+
+```sh
+CRYSTAL_INTERIOR_PACK="$PWD/content-packs/minnesota-safari-runtime-review-public-trail-v09.crystalpack" \
+CRYSTAL_SAFARI_REACHED_SAVES="$PWD/planning/minnesota/renders/boundary-safari-runtime-v10/final-suite-v01" \
+CRYSTAL_SAFARI_RENDER_SAVE="$PWD/planning/minnesota/renders/boundary-safari-runtime-v10/final-suite-v01/wildlife-menu.crystalsave" \
+CRYSTAL_SAFARI_BATTLE_RENDER_DIR="$PWD/planning/minnesota/renders/boundary-safari-runtime-v10/final-suite-backs-v01" \
+RUST_MIN_STACK=67108864 target/runtime-fps/debug/deps/crystal_bevy-87227860eb49cc28 \
+  safari_expedition --ignored --nocapture --test-threads=1 \
+  --skip safari_paid_ending_keeps_field_instead_of_empty_battle_canvas
+CRYSTAL_INTERIOR_PACK="$PWD/content-packs/minnesota-safari-runtime-review-public-trail-v09.crystalpack" \
+CRYSTAL_SAFARI_ENDING_SAVE="$PWD/planning/minnesota/renders/boundary-safari-runtime-v10/final-suite-v01/paid-step-limit.crystalsave" \
+RUST_MIN_STACK=67108864 target/runtime-fps/debug/deps/crystal_bevy-87227860eb49cc28 \
+  safari_paid_ending_keeps_field_instead_of_empty_battle_canvas \
+  --ignored --nocapture --test-threads=1
+```
+
+The recorded initial invocation omitted `--skip`; its failed prerequisite is
+retained in the receipt. The commands above separate that external-save consumer
+from its producer so future runs do not depend on test-name ordering. Use fresh
+output paths and rebuild the test executable after source changes.
+
 ## Itasca-parent ledges, walking exit and saved native dialogue pages
 
 The unselected v06 review is

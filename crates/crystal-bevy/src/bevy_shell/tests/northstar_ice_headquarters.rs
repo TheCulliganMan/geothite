@@ -1,4 +1,6 @@
 //! Prior cargo access is explicit; every new floor/action uses native input.
+#[path = "northstar_ice_headquarters_current.rs"]
+mod current;
 #[path = "northstar_ice_headquarters_ports.rs"]
 mod ports;
 use crystal_core::input::GameButton;

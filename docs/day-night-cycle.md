@@ -17,6 +17,33 @@ source-authored. Those discrete palette changes are preserved; the continuous
 3D lighting does not change encounter periods or advance the game clock.
 Indoor, cave, and explicitly fixed map palettes retain their existing lighting.
 
+## Minnesota winter and harvest palettes
+
+Minnesota remains native 2D. Its five winter tilesets and two golden prairie
+tilesets follow the existing RTC palette periods: morning at 04:00, day at
+10:00, and night at 18:00. Winter foregrounds and harvest gold receive the
+native neutral palette's light relative to daylight. Daytime colors stay exact;
+night no longer leaves white snow or yellow fields at daytime brightness.
+Terrain, authored animation frames, and grass rustles share those lit colors.
+Unrelated native palettes and emissive prop colors retain their existing behavior.
+
+This is a renderer change that works with existing packs. The external pack
+regression exercises all seven variants, checks actual terrain and rustle
+pixels across morning/day/night/darkness, and preserves the native palette banks:
+
+```sh
+CRYSTAL_SEASONAL_RENDER_TEST_PACK="$PWD/content-packs/minnesota-current-grass-rainy-icefields-v01.crystalpack" \
+RUST_MIN_STACK=67108864 CARGO_TARGET_DIR=target/seasonal-cycle \
+  cargo test --locked -p crystal-bevy --lib seasonal_palette::tests:: \
+  -- --include-ignored --test-threads=1
+```
+
+Verified on 2026-10-29 with that pack: four seasonal regressions and all four
+existing winter animation/rustle regressions passed. Seven headless native
+captures cover winter and harvest at 06:00/12:00/23:00 and Ely at 23:00.
+Both daytime viewport captures match their pre-change pixels exactly.
+Ignored render history is under `planning/minnesota/renders/seasonal-cycle-v01/`.
+
 ## Reproduce the comparison
 
 Use the ignored local browser pack and the production render-at-location

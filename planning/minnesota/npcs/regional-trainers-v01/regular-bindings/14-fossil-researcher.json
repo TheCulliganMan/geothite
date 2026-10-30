@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "trainer_class": "MN_FOSSIL_RESEARCHER",
+  "class_name": "FOSSIL RESEARCHER",
+  "trainer_ids": [
+    "MN_R13_T01"
+  ],
+  "actors": [
+    {
+      "map": "MnR13C00R00",
+      "script": "MN_R13_T01",
+      "tile": [
+        23,
+        25
+      ],
+      "previous_sprite": "SPRITE_COOLTRAINER_F"
+    }
+  ]
+}

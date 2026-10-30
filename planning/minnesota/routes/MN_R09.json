@@ -201,15 +201,15 @@
       "sight_range": 3,
       "party": [
         {
-          "species": "GEODUDE",
+          "species": "AGATOT",
           "level": 32
         },
         {
-          "species": "MACHOP",
+          "species": "AUGRUB",
           "level": 32
         },
         {
-          "species": "GRAVELER",
+          "species": "BANDRAKE",
           "level": 31
         }
       ],
@@ -242,15 +242,15 @@
       "sight_range": 3,
       "party": [
         {
-          "species": "MACHOP",
+          "species": "AUGRUB",
           "level": 32
         },
         {
-          "species": "MAGNEMITE",
+          "species": "CARTICK",
           "level": 32
         },
         {
-          "species": "TEDDIURSA",
+          "species": "DENSY",
           "level": 31
         }
       ],
@@ -282,15 +282,15 @@
       "sight_range": 3,
       "party": [
         {
-          "species": "MAGNEMITE",
+          "species": "CARTICK",
           "level": 33
         },
         {
-          "species": "GRAVELER",
+          "species": "BANDRAKE",
           "level": 33
         },
         {
-          "species": "ONIX",
+          "species": "PELLETANK",
           "level": 32
         }
       ],
@@ -322,15 +322,15 @@
       "sight_range": 3,
       "party": [
         {
-          "species": "GRAVELER",
+          "species": "BANDRAKE",
           "level": 33
         },
         {
-          "species": "TEDDIURSA",
+          "species": "DENSY",
           "level": 33
         },
         {
-          "species": "SKARMORY",
+          "species": "LATCHQUILL",
           "level": 32
         }
       ],
@@ -362,15 +362,15 @@
       "sight_range": 3,
       "party": [
         {
-          "species": "TEDDIURSA",
+          "species": "DENSY",
           "level": 34
         },
         {
-          "species": "ONIX",
+          "species": "PELLETANK",
           "level": 34
         },
         {
-          "species": "GEODUDE",
+          "species": "AGATOT",
           "level": 33
         }
       ],
@@ -403,15 +403,15 @@
       "sight_range": 4,
       "party": [
         {
-          "species": "GEODUDE",
+          "species": "AGATOT",
           "level": 34
         },
         {
-          "species": "SKARMORY",
+          "species": "LATCHQUILL",
           "level": 34
         },
         {
-          "species": "MACHOP",
+          "species": "AUGRUB",
           "level": 33
         }
       ],
@@ -444,15 +444,15 @@
       "sight_range": 3,
       "party": [
         {
-          "species": "MACHOP",
+          "species": "AUGRUB",
           "level": 35
         },
         {
-          "species": "GEODUDE",
+          "species": "AGATOT",
           "level": 35
         },
         {
-          "species": "MAGNEMITE",
+          "species": "CARTICK",
           "level": 34
         }
       ],
@@ -485,15 +485,15 @@
       "sight_range": 3,
       "party": [
         {
-          "species": "MAGNEMITE",
+          "species": "CARTICK",
           "level": 35
         },
         {
-          "species": "MACHOP",
+          "species": "AUGRUB",
           "level": 35
         },
         {
-          "species": "GRAVELER",
+          "species": "BANDRAKE",
           "level": 34
         }
       ],
@@ -691,7 +691,7 @@
         "2e 2e 08 02 02 0a 2e 2e 04 05 06 2e",
         "2e 2e 20 21 30 02 06 2e 08 02 0a 2e",
         "2e 2e 2e 04 0a 39 2f 2d 08 02 0a 2e",
-        "2e 2e 08 02 02 02 0a 2e 30 02 0a 2e",
+        "2e 2e 08 02 02 02 0a 2e 30 2d 0a 2e",
         "2e 2e 20 21 20 02 2b 21 21 22 2e 2e",
         "2e 2e 2e 2e 04 30 2f 2e 2e 2e 2e 2e",
         "2e 2e 2e 2e 08 08 2e 2e 2e 2e 2e 2e",
@@ -996,6 +996,49 @@
         40,
         50,
         42
+      ],
+      "minimum_return_steps": 9
+    },
+    {
+      "id": "MN_R09_MINE_APRON_RETURN",
+      "bounds_core": [
+        38,
+        34,
+        40,
+        36
+      ],
+      "direction": "south",
+      "upper_approach": [
+        39,
+        33
+      ],
+      "hop_from": [
+        39,
+        34
+      ],
+      "landing": [
+        39,
+        36
+      ],
+      "reverse_blocked": [
+        39,
+        35
+      ],
+      "side_barriers": [
+        [
+          37,
+          35
+        ],
+        [
+          40,
+          35
+        ]
+      ],
+      "return_passage_core": [
+        36,
+        34,
+        37,
+        36
       ],
       "minimum_return_steps": 9
     }
@@ -1437,6 +1480,35 @@
         ]
       ],
       "scope": "Quarry shelf circuit: ordinary upper-bench climb versus existing spoil drop and lower ore track."
+    },
+    {
+      "id": "MINE_APRON_GRASS_RETURN",
+      "ledge_id": "MN_R09_MINE_APRON_RETURN",
+      "outbound_start_core": [
+        39,
+        36
+      ],
+      "outbound_end_core": [
+        39,
+        33
+      ],
+      "grass_regions_core": [
+        [
+          36,
+          32,
+          40,
+          34
+        ]
+      ],
+      "northbound_minimum_grass_steps": 3,
+      "southbound_minimum_grass_steps": 0,
+      "dry_trail_core": [
+        [
+          41,
+          36
+        ]
+      ],
+      "scope": "Mine apron grassy ordinary climb and dry native return; Native cave12/30/36 stairs provide ordinary two-way terrace access; ledges provide the dry return."
     }
   ]
 }

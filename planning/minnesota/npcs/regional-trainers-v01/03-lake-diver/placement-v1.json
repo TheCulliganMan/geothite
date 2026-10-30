@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "trainers": [
+    {
+      "map": "MnLeechLake",
+      "approach": [
+        30,
+        25
+      ],
+      "id": "MN_EXTRA_LAKE_DIVER",
+      "display_name": "NAIA",
+      "trainer_class": "MN_LAKE_DIVER",
+      "class_name": "LAKE DIVER",
+      "template_class": "SWIMMERF",
+      "sprite": "SPRITE_MN_LAKE_DIVER",
+      "tile": [
+        30,
+        24
+      ],
+      "facing": "south",
+      "sight_range": 1,
+      "defeated_flag": "EVENT_MN_EXTRA_LAKE_DIVER",
+      "party": [
+        {
+          "species": "BIRCHIT",
+          "level": 30
+        },
+        {
+          "species": "GLACIRIS",
+          "level": 31
+        }
+      ],
+      "before_lines": [
+        "The lake is clear!",
+        "Want to dive in?"
+      ],
+      "after_lines": [
+        "What a splash!",
+        "See you on shore!"
+      ],
+      "loss_lines": [
+        "Come up for air!"
+      ]
+    }
+  ]
+}

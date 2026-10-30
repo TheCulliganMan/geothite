@@ -27,6 +27,18 @@ const WORKSHOP: &str = "MnDuluthHarborWorkshop";
 const SIGNAL: &str = "EVENT_MN_LIGHTHOUSE_SIGNAL";
 const DEPOT: &str = "EVENT_MN_DEPOT_CLEARED";
 
+#[path = "duluth_cliff_stairs.rs"]
+mod cliff_stairs;
+
+#[path = "outdoor_cliff_corners.rs"]
+mod cliff_corners;
+
+#[path = "outdoor_trainer_sightlines.rs"]
+mod sightlines;
+
+#[path = "outdoor_terrain_repairs.rs"]
+mod outdoor_repairs;
+
 fn load() -> (AssetRoot, CrystalRuntime) {
     let path = std::env::var_os("CRYSTAL_DULUTH_CITY_CONTROLLER_PACK")
         .map(PathBuf::from)

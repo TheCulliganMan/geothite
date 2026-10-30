@@ -323,11 +323,11 @@
       "sight_range": 1,
       "party": [
         {
-          "species": "GRAVELER",
+          "species": "BANDRAKE",
           "level": 34
         },
         {
-          "species": "MACHOKE",
+          "species": "HELIKNOCK",
           "level": 34
         }
       ],
@@ -357,11 +357,11 @@
       "sight_range": 1,
       "party": [
         {
-          "species": "SLUGMA",
+          "species": "EMBERM",
           "level": 34
         },
         {
-          "species": "VULPIX",
+          "species": "KINDLIT",
           "level": 35
         }
       ],
@@ -391,11 +391,11 @@
       "sight_range": 1,
       "party": [
         {
-          "species": "PIDGEOTTO",
+          "species": "NOTCHBILL",
           "level": 35
         },
         {
-          "species": "SKARMORY",
+          "species": "LATCHQUILL",
           "level": 36
         }
       ],
@@ -425,11 +425,11 @@
       "sight_range": 1,
       "party": [
         {
-          "species": "MAGNEMITE",
+          "species": "CARTICK",
           "level": 35
         },
         {
-          "species": "MACHOKE",
+          "species": "HELIKNOCK",
           "level": 35
         }
       ],
@@ -459,11 +459,11 @@
       "sight_range": 1,
       "party": [
         {
-          "species": "GLIGAR",
+          "species": "WHIRLNUT",
           "level": 36
         },
         {
-          "species": "ONIX",
+          "species": "PELLETANK",
           "level": 35
         }
       ],
@@ -493,11 +493,11 @@
       "sight_range": 1,
       "party": [
         {
-          "species": "STANTLER",
+          "species": "SHEDSTAG",
           "level": 36
         },
         {
-          "species": "TEDDIURSA",
+          "species": "DENSY",
           "level": 36
         }
       ],

@@ -166,6 +166,249 @@
         ],
         [
           64,
+          30
+        ]
+      ],
+      "grass_rate": 48,
+      "water_rate": 12,
+      "grass": [
+        {
+          "species": "PINIT",
+          "level": 30,
+          "weight": 25,
+          "flee_threshold": 64
+        },
+        {
+          "species": "NOTCHBILL",
+          "level": 33,
+          "weight": 25,
+          "flee_threshold": 64
+        },
+        {
+          "species": "DENSY",
+          "level": 32,
+          "weight": 20,
+          "flee_threshold": 64
+        },
+        {
+          "species": "BARRICANT",
+          "level": 33,
+          "weight": 15,
+          "flee_threshold": 64
+        },
+        {
+          "species": "SHEDSTAG",
+          "level": 36,
+          "weight": 10,
+          "flee_threshold": 96
+        },
+        {
+          "species": "GOUGECREST",
+          "level": 38,
+          "weight": 5,
+          "flee_threshold": 96
+        }
+      ],
+      "water": [
+        {
+          "species": "GILLPUP",
+          "level": 31,
+          "weight": 30,
+          "flee_threshold": 64
+        },
+        {
+          "species": "RIVVIT",
+          "level": 32,
+          "weight": 25,
+          "flee_threshold": 64
+        },
+        {
+          "species": "WINKFIN",
+          "level": 32,
+          "weight": 25,
+          "flee_threshold": 64
+        },
+        {
+          "species": "CLINKLAW",
+          "level": 32,
+          "weight": 15,
+          "flee_threshold": 64
+        },
+        {
+          "species": "DRIFTILE",
+          "level": 35,
+          "weight": 5,
+          "flee_threshold": 96
+        }
+      ]
+    },
+    {
+      "id": "PINE_THICKET",
+      "bounds_core": [
+        [
+          0,
+          30
+        ],
+        [
+          16,
+          38
+        ]
+      ],
+      "grass_rate": 48,
+      "water_rate": 12,
+      "grass": [
+        {
+          "species": "PINIT",
+          "level": 30,
+          "weight": 15,
+          "flee_threshold": 64
+        },
+        {
+          "species": "NOTCHBILL",
+          "level": 33,
+          "weight": 10,
+          "flee_threshold": 64
+        },
+        {
+          "species": "SHEDSTAG",
+          "level": 36,
+          "weight": 45,
+          "flee_threshold": 96
+        },
+        {
+          "species": "GOUGECREST",
+          "level": 38,
+          "weight": 30,
+          "flee_threshold": 96
+        }
+      ],
+      "water": [
+        {
+          "species": "GILLPUP",
+          "level": 31,
+          "weight": 30,
+          "flee_threshold": 64
+        },
+        {
+          "species": "RIVVIT",
+          "level": 32,
+          "weight": 25,
+          "flee_threshold": 64
+        },
+        {
+          "species": "WINKFIN",
+          "level": 32,
+          "weight": 25,
+          "flee_threshold": 64
+        },
+        {
+          "species": "CLINKLAW",
+          "level": 32,
+          "weight": 15,
+          "flee_threshold": 64
+        },
+        {
+          "species": "DRIFTILE",
+          "level": 35,
+          "weight": 5,
+          "flee_threshold": 96
+        }
+      ]
+    },
+    {
+      "id": "PINE_PORTAGE_MIDDLE",
+      "bounds_core": [
+        [
+          16,
+          30
+        ],
+        [
+          64,
+          38
+        ]
+      ],
+      "grass_rate": 48,
+      "water_rate": 12,
+      "grass": [
+        {
+          "species": "PINIT",
+          "level": 30,
+          "weight": 25,
+          "flee_threshold": 64
+        },
+        {
+          "species": "NOTCHBILL",
+          "level": 33,
+          "weight": 25,
+          "flee_threshold": 64
+        },
+        {
+          "species": "DENSY",
+          "level": 32,
+          "weight": 20,
+          "flee_threshold": 64
+        },
+        {
+          "species": "BARRICANT",
+          "level": 33,
+          "weight": 15,
+          "flee_threshold": 64
+        },
+        {
+          "species": "SHEDSTAG",
+          "level": 36,
+          "weight": 10,
+          "flee_threshold": 96
+        },
+        {
+          "species": "GOUGECREST",
+          "level": 38,
+          "weight": 5,
+          "flee_threshold": 96
+        }
+      ],
+      "water": [
+        {
+          "species": "GILLPUP",
+          "level": 31,
+          "weight": 30,
+          "flee_threshold": 64
+        },
+        {
+          "species": "RIVVIT",
+          "level": 32,
+          "weight": 25,
+          "flee_threshold": 64
+        },
+        {
+          "species": "WINKFIN",
+          "level": 32,
+          "weight": 25,
+          "flee_threshold": 64
+        },
+        {
+          "species": "CLINKLAW",
+          "level": 32,
+          "weight": 15,
+          "flee_threshold": 64
+        },
+        {
+          "species": "DRIFTILE",
+          "level": 35,
+          "weight": 5,
+          "flee_threshold": 96
+        }
+      ]
+    },
+    {
+      "id": "PINE_PORTAGE_SOUTH",
+      "bounds_core": [
+        [
+          0,
+          38
+        ],
+        [
+          64,
           72
         ]
       ],

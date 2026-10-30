@@ -23,6 +23,14 @@ fn current_story_composition_retains_room_life_and_rejects_unreviewed_parents() 
         std::env::var_os("CRYSTAL_INTERIOR_STORY_COMPOSITION").expect("explicit reviewed parent"),
     )
     .expect("composition source");
+    let canonical = std::fs::read_to_string(root.join("story.json")).expect("canonical story");
+    let error = crate::northstar_story_revision::finish_composition(&base, &canonical)
+        .expect_err("only the exact-parent composer owns its final scene step");
+    assert!(
+        error
+            .to_string()
+            .contains("active guarded story composition")
+    );
     let rebuilt = super::build_northstar_current_story_from_composition(&base, &root, &source)
         .expect("whole authored story replay on the room branch");
     assert!(
@@ -53,7 +61,8 @@ fn current_story_composition_retains_room_life_and_rejects_unreviewed_parents() 
             "old numeric identity {name}"
         );
     }
-    let story_maps = BTreeSet::from([
+    let story: Value = serde_json::from_str(&canonical).expect("canonical story JSON");
+    let mut story_maps = BTreeSet::from([
         "MnBemidji",
         "MnBoundaryWatersSurveyShelter",
         "MnBrainerd",
@@ -77,7 +86,15 @@ fn current_story_composition_retains_room_life_and_rejects_unreviewed_parents() 
         "MnLeagueRoom4",
         "MnLeagueChampion",
         "MnLeagueHallOfFame",
+        "MnR13C00R00",
     ]);
+    story_maps.extend(
+        story["dialogue_overhaul"]["texts"]
+            .as_object()
+            .expect("canonical story maps")
+            .keys()
+            .map(String::as_str),
+    );
     for (name, original) in &base.data.maps {
         let new = &child.data.maps[name];
         if !story_maps.contains(name.as_str()) {
@@ -91,7 +108,16 @@ fn current_story_composition_retains_room_life_and_rejects_unreviewed_parents() 
                 new.attributes, original.attributes,
                 "outdoor geography {name}"
             );
-            assert_eq!(new.blocks, original.blocks, "outdoor terrain {name}");
+            let turnout_blocks = (name == "MnR13C00R00").then(|| {
+                let mut blocks = original.blocks.clone();
+                blocks[16] = blocks[15];
+                blocks
+            });
+            assert_eq!(
+                &new.blocks,
+                turnout_blocks.as_ref().unwrap_or(&original.blocks),
+                "outdoor terrain {name}"
+            );
         }
     }
     // Check every authored flavor label against its already-normalized parent,
@@ -137,7 +163,7 @@ fn current_story_composition_retains_room_life_and_rejects_unreviewed_parents() 
                         .objects
                         .iter()
                         .find(|o| o.script == script)
-                        .expect("authored resident");
+                        .unwrap_or_else(|| panic!("authored resident {name}/{script}"));
                     assert!(
                         new.objects.contains(actor),
                         "resident identity and position {name}/{script}"

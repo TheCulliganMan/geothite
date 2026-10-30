@@ -424,6 +424,9 @@ fn visible_party_menu_entries(
     if runtime_shell.party_summary_open {
         return visible_party_summary_entries(snapshot, runtime_shell);
     }
+    if runtime_shell.fly_cursor.is_some() {
+        return visible_fly_destination_entries(snapshot, runtime_shell);
+    }
     if let Some(action_cursor) = &runtime_shell.party_action_cursor {
         let actions = visible_party_actions(snapshot, runtime_shell)
             .context("party action menu has no authoritative actions")?;
@@ -438,7 +441,12 @@ fn visible_party_menu_entries(
             "party action cursor points at CANCEL"
         );
         let selected_row = runtime_shell.party_cursor;
-        let mut entries = windowed_index_range(selected_row, row_count)
+        // Keep the selected partner in view while reserving room for the
+        // actual submenu. A full roster otherwise consumes every visible row.
+        let party_rows = SCENE_MENU_VISIBLE_ROWS.saturating_sub(1 + actions.len().min(3));
+        let party_start = visible_window_start(selected_row, row_count, party_rows);
+        let party_end = (party_start + party_rows).min(row_count);
+        let mut entries = (party_start..party_end)
             .map(|index| {
                 if index >= snapshot.party.slots.len() {
                     party_cancel_entry(index == selected_row)
@@ -459,9 +467,6 @@ fn visible_party_menu_entries(
             party_submenu_action_entry(action, marker)
         }));
         return Ok(entries.into_iter().take(SCENE_MENU_VISIBLE_ROWS).collect());
-    }
-    if runtime_shell.fly_cursor.is_some() {
-        return visible_fly_destination_entries(snapshot, runtime_shell);
     }
     let selected_row = runtime_shell.party_cursor;
     Ok(windowed_index_range(selected_row, row_count)

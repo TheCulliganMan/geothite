@@ -1,5 +1,9 @@
+mod boot_font;
+mod save_prompt_pages;
 mod minnesota_town_map;
 mod renderer_policy;
+#[cfg(not(target_arch = "wasm32"))]
+mod preview_audio_policy;
 pub use renderer_policy::runtime_supports_voxel_view;
 #[cfg(any(test, feature = "intro-certification"))]
 mod intro_certification;
@@ -26,6 +30,7 @@ mod model_preview;
 mod battle_anim_graphics;
 mod field_fly;
 mod field_waterfall;
+mod field_move_prompt_projection;
 mod ely_snow;
 #[cfg(not(target_arch = "wasm32"))]
 mod native_tasks;
@@ -1704,8 +1709,11 @@ impl NativeAudioBackend {
             },
             // Ordinary native gameplay plays sound in development and shipped
             // builds. Capture tools and an explicit preview mute stay silent.
-            preview_muted: cfg!(any(feature = "location-tester", feature = "dev-tools"))
-                || std::env::var_os("CRYSTAL_PREVIEW_MUTE").is_some(),
+            preview_muted: preview_audio_policy::muted(
+                cfg!(any(feature = "location-tester", feature = "dev-tools")),
+                std::env::var_os("CRYSTAL_PREVIEW_MUTE").is_some(),
+                std::env::var("CRYSTAL_PREVIEW_AUDIO").ok().as_deref(),
+            )?,
             music_sink: None,
             music_volume: 1.0,
             master_volume: 1.0,
@@ -9195,6 +9203,7 @@ include!("bevy_shell/overworld_rendering.rs");
 include!("bevy_shell/start_menu.rs");
 include!("bevy_shell/competitive_battle.rs");
 mod minneapolis_falls_animation;
+mod seasonal_palette;
 mod tile_foreground;
 mod winter_render_behavior;
 include!("bevy_shell/bitmap_font.rs");
@@ -9434,6 +9443,7 @@ fn visible_controller_snapshot(runtime_shell: &mut BevyRuntimeShell) -> Result<R
                 }
             }
         }
+        field_move_prompt_projection::project(runtime_shell, &mut snapshot)?;
         Ok(snapshot)
     }
 

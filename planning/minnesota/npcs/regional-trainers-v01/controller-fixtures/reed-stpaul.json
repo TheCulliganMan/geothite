@@ -1,0 +1,22 @@
+{
+  "trainers": [
+    {
+      "id": "MN_REED_STPAUL",
+      "map": "MnStPaulUnionDepot",
+      "actor_script": "MN_ARC_SP_REED",
+      "approach": [
+        19,
+        16
+      ],
+      "facing": "east",
+      "trainer_class": "MN_RIVAL_REED",
+      "sprite": "SPRITE_MN_RIVAL_REED",
+      "fixture_events": [
+        "EVENT_MN_COURIER_DEFEATED",
+        "EVENT_MN_DISPATCH_NOTE"
+      ],
+      "fixture_badges": 3,
+      "defeated_flag": "EVENT_MN_REED_STPAUL_DEFEATED"
+    }
+  ]
+}

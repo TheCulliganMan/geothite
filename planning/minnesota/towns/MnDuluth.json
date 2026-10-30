@@ -11,7 +11,7 @@
   ],
   "role": "gym_8",
   "tileset": "johto_modern",
-  "composition": "A compact inhabited bluff and winding hillside street meet Lincoln Park work blocks, the original civic/canal quarter, a large enterable maritime co-op, Bayfront slips and a bent Park Point neighborhood.",
+  "composition": "Continuous inhabited upper bluffs descend by eleven native cave stair flights to the garden shelf, civic streets and Superior harbor. Rock edges close flat cliff cuts; ten one-way ledge lanes have dry landings and ordinary stair returns. Lincoln Park, the maritime co-op, Bayfront and Park Point retain their existing destinations.",
   "ports": [
     {
       "route": "MN_R10",
@@ -7163,8 +7163,8 @@
       "return_passage_core": [
         54,
         37,
-        54,
-        42
+        55,
+        43
       ],
       "contract": "South hop from gym shelf; reverse remains blocked. Return by native waterfront stair eight walking tiles east; the ordinary return takes23steps.",
       "source_blocks": [
@@ -9205,5 +9205,5 @@
     "native_status": "Root published historical tightv02,623maps; this finalv05 source update is not yet published or controller-accepted."
   },
   "expansion_contract_file": "towns/MnDuluth.recomposition.contract.json",
-  "native_status": "Hill-harbor v04 source promoted64x46. All38doors/76pairedwarps, staircase in both directions, native ledge hop/reverse denial and23step ordinary return passed production-controller regression on combined region-polish-rock-cut-v01. Shared world metadata and final pack selection remain integration-owned."
+  "native_status": "Cliff-stair v03 is selected on the State Fair building parent. Eleven stairs in both directions and Continue, all 38 doors and both returns, ten native ledge lanes with reverse denial and walking returns, production stdio and exact native2D pass. Both affected-crate all-target Clippy checks pass; the workspace formatter has existing unrelated differences. Local fixtures do not establish an earned campaign."
 }

@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "trainers": [
+    {
+      "id": "MN_R05_T05",
+      "map": "MnR05C00R00",
+      "actor_script": "MN_R05_T05",
+      "trainer_class": "MN_MAPLE_TAPPER",
+      "sprite": "SPRITE_MN_MAPLE_TAPPER",
+      "facing": "south",
+      "approach": [
+        33,
+        30
+      ],
+      "defeated_flag": "EVENT_MN_R05_TRAINER_05"
+    }
+  ]
+}

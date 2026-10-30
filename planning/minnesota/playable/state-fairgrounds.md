@@ -1,5 +1,58 @@
 # Expanded native State Fairgrounds
 
+## Contiguous building repair (2026-10-29)
+
+The current local review pack is
+`content-packs/minnesota-current-state-fair-buildings-v01.crystalpack`, a child of
+the selected Rainy River Icefields revision. It retains all730 maps and repairs
+15 solid exterior cells: five grandstand wall sections, four dairy hall wall
+sections and six livestock barn roof/facade sections. Repeated right-hand caps
+are replaced with middle sections assembled from original Johto8px glyphs.
+The barn's roof bands now extend continuously between its original end caps.
+No source pixels, palettes, walking collision, doors, actors, counters, habitats,
+trainer teams or room content change. Minnesota remains native2D only.
+
+Executed publication commands, using the pinned toolchain:
+
+```sh
+CARGO_TARGET_DIR=target/fair-buildings cargo build --locked -p crystal-assets \
+  --bin revise_state_fair_buildings
+target/fair-buildings/debug/revise_state_fair_buildings \
+  content-packs/minnesota-current-grass-rainy-icefields-v01.crystalpack \
+  planning/minnesota/zones/state-fairgrounds.layout.json \
+  content-packs/minnesota-current-state-fair-buildings-v01.crystalpack
+target/fishing-rods/debug/verify_crystalpack \
+  content-packs/minnesota-current-state-fair-buildings-v01.crystalpack --audio --desktop
+```
+
+The publisher requires a fresh output path and the exact existing fair terrain.
+It refuses stale layouts, repeated application, invalid glyph addresses and
+non-solid source recipes. Fresh fair publication also understands the same
+layout recipes through the native city-art installer.
+
+Verification passed: the complete exterior still has255 actors and4,870 reachable
+walking tiles; every customer approach and real door remains connected. The
+production controller visited all three rooms, read seven residents' stories,
+used all six return carpets and saved/continued. The preservation regression in
+`crates/crystal-assets/tests/state_fair_buildings.rs` passed against the compiled
+production library using the default Rust test runner. It checks the rebuilt
+identity, every unrelated catalog/map/runtime file, original graphics/palettes,
+compiled audio and invalid-source rejection. All377 audio PCM hashes, frame
+counts and loop ranges match.
+
+Six headless production views at noon, facing south, match their source pixels
+exactly outside explicitly reported moving-actor regions. Both ends of all three
+buildings were visually inspected. All whole-map, before/after and original GPU
+renders are retained under `renders/state-fair-buildings-v01`. Local placement
+and party are declared fixtures; this is not an earned campaign or web deployment.
+The pack's SHA256 is
+`69f162aa4e8fc2b6ff35b9ad13e0dae90a99387bf5dd6fb1cb19f9ddeb498156`.
+
+`cargo clippy --locked -p crystal-assets --all-targets` passes with existing
+warnings and none reported in the changed files. Changed Rust files pass scoped
+rustfmt. `cargo fmt --all -- --check` still reports existing formatting differences,
+including `offset-allocator` and the `pack_core` exporters; those were left intact.
+
 ## Required northern lineage for new publication
 
 `build_state_fair_modpack` now rejects a parent unless its northern maps retain

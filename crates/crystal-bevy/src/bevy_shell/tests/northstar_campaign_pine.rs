@@ -60,10 +60,20 @@ fn arrival() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
         .as_str()
     {
         "MnBrainerd" => at(&mut c, "MnBrainerd", (25, 20)),
+        CITY if !won
+            && event(&c, REPORT)
+            && super::super::northstar_dialogue::timely_evidence(&r) =>
+        {
+            at(&mut c, CITY, (21, 20));
+        }
         CITY if won => at(&mut c, CITY, (10, 10)),
         CITY => at(&mut c, CITY, (24, 46)),
         CLINIC => at(&mut c, CLINIC, (10, 13)),
-        PARK if won && event(&c, READING) => at(&mut c, PARK, (19, 22)),
+        PARK if event(&c, READING)
+            && (won || super::super::northstar_dialogue::timely_evidence(&r)) =>
+        {
+            at(&mut c, PARK, (19, 22));
+        }
         GYM => {
             let snapshot = c.snapshot().expect("native gym checkpoint");
             assert!(
@@ -84,7 +94,10 @@ fn arrival() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
     ] {
         assert!(event(&c, flag), "played prerequisite {flag}");
     }
-    assert!(!event(&c, REPORT));
+    assert!(
+        !event(&c, REPORT)
+            || (super::super::northstar_dialogue::timely_evidence(&r) && event(&c, READING))
+    );
     later(&c);
     (root, r, c)
 }
@@ -259,7 +272,8 @@ fn gym(c: &mut VisibleShellController, r: &CrystalRuntime, root: &AssetRoot) {
             .state()
             .bag
             .quantity(&r.data().items["HM_CUT"]),
-        1
+        u16::from(event(c, "EVENT_MN_GYM_7_CUT_HM_RECEIVED")),
+        "a partner that learned Cut naturally need not collect the guide's HM"
     );
     northstar_earned_gyms::leave(c, r, 7, CITY, (10, 10));
     continue_in_place(c, root, r, "campaign-pine-city-return");
@@ -288,33 +302,44 @@ pub(super) fn pine() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
         }
         if c.snapshot().expect("early park visit").overworld.map_name == CITY
             && !event(&c, "EVENT_MN_GYM_7_TRAINER_1_DEFEATED")
+            && !event(&c, READING)
         {
             from_bemidji(&mut c, &r, 0);
-            marker(&mut c, &r);
-            if r.data()
-                .story_event_script_constants
-                .global
-                .contains_key("EVENT_MN_TAMARACK_INTRO")
-            {
-                super::super::northstar_dialogue::acknowledge(
-                    &mut c,
-                    "MS06",
-                    "MnItascaMarkerBeforeText",
-                    READING,
-                );
+            let timely = super::super::northstar_dialogue::timely_evidence(&r);
+            if timely {
+                acknowledge_marker(&mut c, &r);
             } else {
-                assert!(
-                    c.snapshot()
-                        .expect("early marker refusal")
-                        .ui
-                        .text
-                        .and_then(|t| t.asm_text)
-                        .is_some_and(|text| text.contains("PINE"))
-                );
+                marker(&mut c, &r);
+                if r.data()
+                    .story_event_script_constants
+                    .global
+                    .contains_key("EVENT_MN_TAMARACK_INTRO")
+                {
+                    super::super::northstar_dialogue::acknowledge(
+                        &mut c,
+                        "MS06",
+                        "MnItascaMarkerBeforeText",
+                        READING,
+                    );
+                } else {
+                    assert!(
+                        c.snapshot()
+                            .expect("early marker refusal")
+                            .ui
+                            .text
+                            .and_then(|t| t.asm_text)
+                            .is_some_and(|text| text.contains("PINE"))
+                    );
+                }
             }
             finish(&mut c);
-            assert!(!event(&c, READING) && !event(&c, REPORT));
+            assert_eq!(event(&c, READING), timely);
+            assert!(!event(&c, REPORT));
             from_itasca(&mut c, &r, 1);
+            if timely {
+                acknowledge_report(&mut c, &r);
+                continue_in_place(&mut c, &root, &r, "campaign-early-independent-report");
+            }
         }
         gym(&mut c, &r, &root);
     } else if c
@@ -335,24 +360,35 @@ pub(super) fn pine() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
         acknowledge_marker(&mut c, &r);
         continue_in_place(&mut c, &root, &r, "campaign-itasca-reading");
     }
-    at(&mut c, PARK, (19, 22));
-    from_itasca(&mut c, &r, 1);
-    indoor_walk(&mut c, &r, (43, 25));
-    refusal(
-        &mut c,
-        true,
-        1,
-        if r.data()
-            .story_event_script_constants
-            .global
-            .contains_key("EVENT_MN_TAMARACK_INTRO")
-        {
-            "ITASCA"
-        } else {
-            "marker"
-        },
-    );
-    acknowledge_report(&mut c, &r);
+    if c.snapshot()
+        .expect("actual reference return")
+        .overworld
+        .map_name
+        == PARK
+    {
+        at(&mut c, PARK, (19, 22));
+        from_itasca(&mut c, &r, 1);
+    }
+    if !event(&c, REPORT) {
+        indoor_walk(&mut c, &r, (43, 25));
+        refusal(
+            &mut c,
+            true,
+            1,
+            if r.data()
+                .story_event_script_constants
+                .global
+                .contains_key("EVENT_MN_TAMARACK_INTRO")
+            {
+                "ITASCA"
+            } else {
+                "marker"
+            },
+        );
+        acknowledge_report(&mut c, &r);
+    } else {
+        indoor_walk(&mut c, &r, (21, 20));
+    }
     assert!(event(&c, READING) && event(&c, REPORT));
     later(&c);
     continue_in_place(&mut c, &root, &r, "campaign-headwaters-report");

@@ -31,6 +31,13 @@ fn capture_battle(controller: VisibleShellController, name: &str) -> VisibleShel
 }
 
 fn capture_overworld(controller: VisibleShellController) -> VisibleShellController {
+    capture_overworld_named(controller, "original-npc-overworld-state.png")
+}
+
+fn capture_overworld_named(
+    controller: VisibleShellController,
+    name: &str,
+) -> VisibleShellController {
     let Some(directory) = std::env::var_os("POKEGEAR_PC_RENDER_DIR") else {
         return controller;
     };
@@ -44,9 +51,7 @@ fn capture_overworld(controller: VisibleShellController) -> VisibleShellControll
     world.insert_resource(images);
     let directory = std::path::PathBuf::from(directory);
     std::fs::create_dir_all(&directory).unwrap();
-    canvas
-        .save(directory.join("original-npc-overworld-state.png"))
-        .unwrap();
+    canvas.save(directory.join(name)).unwrap();
     VisibleShellController {
         shell: world
             .remove_resource::<BevyRuntimeShell>()
@@ -717,7 +722,27 @@ fn original_npc_controller_talk_battle_turn_and_save() {
             c.shell.shell.session().state().script_runtime.memory,
             "League progress survives Continue"
         );
-        let _controller = capture_overworld(c);
+        c = capture_overworld(c);
+        if std::env::var_os("CRYSTAL_NPC_CAPTURE_CLEAR").is_some() {
+            for _ in 0..160 {
+                let snapshot = c.snapshot().expect("post-victory field state");
+                if visible_field_dialog_text(&snapshot, &c.shell).is_none() {
+                    break;
+                }
+                c.press(GameButton::A).expect("close the repeat dialogue");
+                c.wait_frames(16).expect("settle the repeat dialogue");
+            }
+            assert!(
+                visible_field_dialog_text(
+                    &c.snapshot().expect("clear field review state"),
+                    &c.shell,
+                )
+                .is_none(),
+                "repeat dialogue closes for an unobstructed field review"
+            );
+            c = capture_overworld_named(c, "original-npc-overworld-clear.png");
+        }
+        let _controller = c;
 
         std::fs::remove_file(&path).unwrap();
         let _ = std::fs::remove_file(crystal_core::save::save_backup_path(&path));

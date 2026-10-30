@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "trainers": [
+    {
+      "id": "MN_R16_T08",
+      "map": "MnR16C01R00",
+      "actor_script": "MN_R16_T08",
+      "trainer_class": "MN_ORCHARD_KEEPER",
+      "sprite": "SPRITE_MN_ORCHARD_KEEPER",
+      "facing": "north",
+      "approach": [
+        11,
+        38
+      ],
+      "defeated_flag": "EVENT_MN_R16_TRAINER_08"
+    }
+  ]
+}

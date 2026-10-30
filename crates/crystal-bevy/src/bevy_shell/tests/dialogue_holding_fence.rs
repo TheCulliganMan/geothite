@@ -49,6 +49,73 @@ fn capture(c: &mut VisibleShellController, stage: &str) {
 }
 
 #[test]
+#[ignore = "declared rescue prerequisites; requires the current candidate and isolated saves"]
+fn overhaul_unanswered_rescue_choice_preserves_no_through_continue() {
+    let (root, r, mut c) = fixture(ROOM, (11, 6), &[JOINED, POWER, ENFORCER]);
+    talk(&mut c, GameButton::Right);
+    let mut owns_choice = false;
+    for _ in 0..96 {
+        c.wait_frames(128).expect("ordinary prompt presentation");
+        if let Some(before) = c
+            .shell
+            .yes_no_cursor
+            .as_ref()
+            .map(|cursor| cursor.option_index)
+        {
+            press(
+                &mut c,
+                if before == 0 {
+                    GameButton::Down
+                } else {
+                    GameButton::Up
+                },
+            );
+            if c.shell
+                .yes_no_cursor
+                .as_ref()
+                .is_some_and(|cursor| cursor.option_index != before)
+            {
+                owns_choice = true;
+                break;
+            }
+        }
+        press(&mut c, GameButton::A);
+    }
+    assert!(
+        owns_choice,
+        "rescue prompt must accept a cursor move before saving"
+    );
+    if c.shell
+        .yes_no_cursor
+        .as_ref()
+        .expect("owned prompt")
+        .option_index
+        == 0
+    {
+        press(&mut c, GameButton::Down);
+    }
+    assert!(!event(&c, RESCUED) && !event(&c, NOTE));
+    assert_eq!(gate(&c), 0x38);
+    continue_in_place(&mut c, &root, &r, "overhaul-unanswered-rescue-no");
+    assert_eq!(
+        c.shell
+            .yes_no_cursor
+            .as_ref()
+            .expect("continued prompt")
+            .option_index,
+        1
+    );
+    assert!(!event(&c, RESCUED) && !event(&c, NOTE));
+    assert_eq!(gate(&c), 0x38);
+    press(&mut c, GameButton::A);
+    page(&mut c, "MnMPCellDeclinedText");
+    finish(&mut c);
+    assert!(!event(&c, RESCUED) && !event(&c, NOTE));
+    assert_eq!(gate(&c), 0x38);
+    at(&mut c, ROOM, (11, 6));
+}
+
+#[test]
 #[ignore = "declared rescue prerequisites; requires the gray-fence candidate and isolated saves"]
 fn overhaul_holding_fence_requires_shutdown_and_battle_then_opens_on_acknowledgment() {
     for (flags, label) in [

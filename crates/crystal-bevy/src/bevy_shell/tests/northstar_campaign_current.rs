@@ -7,6 +7,7 @@ use crystal_runtime::CrystalRuntime;
 use serde_json::Value;
 
 use super::super::authored_route_fixture::indoor_walk;
+use super::super::native_city_ports::east_road_port;
 use super::super::northstar_earned_gyms;
 use super::super::rochester_earned::try_battle;
 use super::super::winona::{at as location, continue_in_place, load, travel};
@@ -34,10 +35,18 @@ fn arrival() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
         "EVENT_MN_GYM_2_DEFEATED",
         "EVENT_MN_ICE_ENFORCER_DEFEATED",
         "EVENT_MN_ICE_CAPTIVE_RESCUED",
-        "EVENT_MN_DISPATCH_NOTE",
     ] {
         assert!(event(&c, flag), "earned prerequisite {flag}");
     }
+    if !event(&c, "EVENT_MN_DISPATCH_NOTE") {
+        assert!(super::super::northstar_dispatch_course::has_physical_copy(
+            &r
+        ));
+        assert!(event(&c, "EVENT_MN_ICE_HOLDING_POWER_OFF"));
+        super::super::northstar_dispatch_course::read_copy_and_return_home(&mut c, &root, &r);
+        indoor_walk(&mut c, &r, (6, 5));
+    }
+    assert!(event(&c, "EVENT_MN_DISPATCH_NOTE"));
     assert!(!event(&c, "EVENT_MN_COURIER_DEFEATED"));
     assert!(!event(&c, "EVENT_MN_DEEP_BORE_MANIFEST_READ"));
     (root, r, c)
@@ -174,8 +183,9 @@ fn depart(
     );
     for attempt in 0..4 {
         care(&mut c, &r);
-        indoor_walk(&mut c, &r, (78, 36));
-        travel(&mut c, GameButton::Right, "MnR04C00R00", (0, 18));
+        let (approach, arrival) = east_road_port(&mut c, &r, "MnR04C00R00");
+        indoor_walk(&mut c, &r, approach);
+        travel(&mut c, GameButton::Right, "MnR04C00R00", arrival);
         if try_crossing(&mut c, &r, (55, 18)) {
             let arrival = st_paul_arrival(&r);
             travel(&mut c, GameButton::Right, "MnStPaul", (0, arrival.1));

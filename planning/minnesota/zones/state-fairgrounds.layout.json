@@ -131,6 +131,93 @@
         "WALL",
         "WALL"
       ]
+    },
+    {
+      "id": "8b",
+      "source_tileset": "johto",
+      "source_block": "1e",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ],
+      "tile_order": [
+        0,
+        1,
+        2,
+        0,
+        4,
+        5,
+        6,
+        4,
+        8,
+        9,
+        10,
+        8,
+        12,
+        13,
+        14,
+        12
+      ]
+    },
+    {
+      "id": "8c",
+      "source_tileset": "johto",
+      "source_block": "2b",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ],
+      "tile_order": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        9,
+        9,
+        9,
+        9,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "id": "8d",
+      "source_tileset": "johto",
+      "source_block": "2b",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ],
+      "tile_order": [
+        9,
+        9,
+        9,
+        9,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ]
     }
   ],
   "layers": [
@@ -1629,7 +1716,7 @@
         6,
         8
       ],
-      "block": "1e"
+      "block": "8b"
     },
     {
       "name": "Grandstand native facade",
@@ -1638,7 +1725,7 @@
         7,
         8
       ],
-      "block": "1e"
+      "block": "8b"
     },
     {
       "name": "Grandstand native facade",
@@ -1647,7 +1734,7 @@
         8,
         8
       ],
-      "block": "1e"
+      "block": "8b"
     },
     {
       "name": "Grandstand native facade",
@@ -1656,7 +1743,7 @@
         9,
         8
       ],
-      "block": "1e"
+      "block": "8b"
     },
     {
       "name": "Grandstand native facade",
@@ -1665,7 +1752,7 @@
         10,
         8
       ],
-      "block": "1e"
+      "block": "8b"
     },
     {
       "name": "Grandstand native facade",
@@ -1708,7 +1795,7 @@
         4,
         24
       ],
-      "block": "24"
+      "block": "8c"
     },
     {
       "name": "Livestock barn native roof",
@@ -1717,7 +1804,7 @@
         5,
         24
       ],
-      "block": "24"
+      "block": "8c"
     },
     {
       "name": "Livestock barn native roof",
@@ -1726,7 +1813,7 @@
         6,
         24
       ],
-      "block": "24"
+      "block": "8c"
     },
     {
       "name": "Livestock barn native roof",
@@ -1753,7 +1840,7 @@
         4,
         25
       ],
-      "block": "29"
+      "block": "8d"
     },
     {
       "name": "Livestock barn native facade",
@@ -1762,7 +1849,7 @@
         5,
         25
       ],
-      "block": "29"
+      "block": "8d"
     },
     {
       "name": "Livestock barn native facade",
@@ -1771,7 +1858,7 @@
         6,
         25
       ],
-      "block": "29"
+      "block": "8d"
     },
     {
       "name": "Livestock barn native facade",
@@ -1868,7 +1955,7 @@
         38,
         25
       ],
-      "block": "1e"
+      "block": "8b"
     },
     {
       "name": "Dairy exhibition hall native facade",
@@ -1877,7 +1964,7 @@
         39,
         25
       ],
-      "block": "1e"
+      "block": "8b"
     },
     {
       "name": "Dairy exhibition hall native facade",
@@ -1886,7 +1973,7 @@
         40,
         25
       ],
-      "block": "1e"
+      "block": "8b"
     },
     {
       "name": "Dairy exhibition hall native facade",
@@ -1895,7 +1982,7 @@
         41,
         25
       ],
-      "block": "1e"
+      "block": "8b"
     },
     {
       "name": "Dairy exhibition hall native facade",

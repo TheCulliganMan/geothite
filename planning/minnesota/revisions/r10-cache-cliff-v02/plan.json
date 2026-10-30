@@ -1,0 +1,173 @@
+{
+  "route": "MN_R10",
+  "map": "MnR10C00R00",
+  "parent": "content-packs/minnesota-current-outdoor-north-stairs-v01.crystalpack",
+  "parent_sha256": "694e0700d4777b4bc1c06065e92a3ca58f8140ef94a33412120ddec05bf27ca0",
+  "scope": "Continuous cache/mine plateau with a real four-step habitat barrier and native grass cliff; retain paved Iva lane and match the outdoor stair landing.",
+  "changes": [
+    {
+      "position": [
+        14,
+        3
+      ],
+      "before": "6b",
+      "after": "70",
+      "reason": "Continuous native top rim joins the cache and mine terrace"
+    },
+    {
+      "position": [
+        15,
+        3
+      ],
+      "before": "05",
+      "after": "70",
+      "reason": "Continuous native top rim joins the cache and mine terrace"
+    },
+    {
+      "position": [
+        16,
+        3
+      ],
+      "before": "05",
+      "after": "70",
+      "reason": "Continuous native top rim joins the cache and mine terrace"
+    },
+    {
+      "position": [
+        17,
+        3
+      ],
+      "before": "05",
+      "after": "70",
+      "reason": "Continuous native top rim joins the cache and mine terrace"
+    },
+    {
+      "position": [
+        18,
+        3
+      ],
+      "before": "05",
+      "after": "70",
+      "reason": "Continuous native top rim joins the cache and mine terrace"
+    },
+    {
+      "position": [
+        19,
+        3
+      ],
+      "before": "05",
+      "after": "70",
+      "reason": "Continuous native top rim joins the cache and mine terrace"
+    },
+    {
+      "position": [
+        20,
+        3
+      ],
+      "before": "05",
+      "after": "6b",
+      "reason": "Actual northeast corner above the existing east wall"
+    },
+    {
+      "position": [
+        20,
+        4
+      ],
+      "before": "05",
+      "after": "81",
+      "reason": "Carry encounter grass to the native right cliff face without opening its wall"
+    },
+    {
+      "position": [
+        20,
+        5
+      ],
+      "before": "6b",
+      "after": "81",
+      "reason": "Carry encounter grass to the native right cliff face without opening its wall"
+    },
+    {
+      "position": [
+        17,
+        4
+      ],
+      "before": "6b",
+      "after": "03",
+      "reason": "Four-step northern forecourt grass threshold protects the cache approach"
+    },
+    {
+      "position": [
+        18,
+        4
+      ],
+      "before": "05",
+      "after": "03",
+      "reason": "Four-step northern forecourt grass threshold protects the cache approach"
+    },
+    {
+      "position": [
+        19,
+        4
+      ],
+      "before": "05",
+      "after": "03",
+      "reason": "Four-step northern forecourt grass threshold protects the cache approach"
+    },
+    {
+      "position": [
+        18,
+        5
+      ],
+      "before": "0a",
+      "after": "03",
+      "reason": "Four-step northern forecourt grass threshold protects the cache approach"
+    },
+    {
+      "position": [
+        19,
+        5
+      ],
+      "before": "0a",
+      "after": "03",
+      "reason": "Four-step northern forecourt grass threshold protects the cache approach"
+    },
+    {
+      "position": [
+        19,
+        6
+      ],
+      "before": "0a",
+      "after": "71",
+      "reason": "Remove internal cliff or boulder clutter inside the joined terrace"
+    },
+    {
+      "position": [
+        16,
+        5
+      ],
+      "before": "0a",
+      "after": "03",
+      "reason": "Restore grass below the retained rear boulder row"
+    },
+    {
+      "position": [
+        17,
+        5
+      ],
+      "before": "71",
+      "after": "03",
+      "reason": "Join both parts of the encounter threshold"
+    },
+    {
+      "position": [
+        5,
+        10
+      ],
+      "before": "80",
+      "after": "82",
+      "reason": "Native gray cave12 treads retain matching brown outdoor landing"
+    }
+  ],
+  "unresolved": "The western stacked boulders at x7..11 require a separate contour; this patch does not claim to repair them.",
+  "status": "Source/native publication and input review required"
+}

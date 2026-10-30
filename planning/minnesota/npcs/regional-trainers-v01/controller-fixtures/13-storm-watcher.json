@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "trainers": [
+    {
+      "id": "MN_SPX_TRAINER_3",
+      "map": "MnStPaulEastWorkshop",
+      "actor_script": "MN_SPX_TRAINER_3",
+      "trainer_class": "MN_STORM_WATCHER",
+      "sprite": "SPRITE_MN_STORM_WATCHER",
+      "facing": "south",
+      "approach": [
+        9,
+        8
+      ],
+      "defeated_flag": "EVENT_MN_SPX_TRAINER_3"
+    }
+  ]
+}

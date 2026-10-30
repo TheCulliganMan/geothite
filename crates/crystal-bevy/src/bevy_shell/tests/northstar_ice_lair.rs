@@ -453,10 +453,16 @@ fn ice_lair_acted_recruitment_two_floors_actual_battles_switches_rescue_witness_
     finish(&mut c);
     assert!(event(&c, RESCUED) && !event(&c, NOTE));
     c = save(&mut c, &root, &r, "ellis-released");
-    walk(&mut c, &r, (10, 11));
-    talk(&mut c, GameButton::Left);
-    finish(&mut c);
-    assert!(!event(&c, NOTE), "a found copy cannot award the quest");
+    let physical_copy = super::northstar_dispatch_course::has_physical_copy(&r);
+    if !physical_copy {
+        walk(&mut c, &r, (10, 11));
+        talk(&mut c, GameButton::Left);
+        finish(&mut c);
+        assert!(
+            !event(&c, NOTE),
+            "historical flavor copy grants no evidence"
+        );
+    }
     walk(&mut c, &r, (10, 14));
     travel(&mut c, GameButton::Down, "MnMinneapolis", (27, 34));
     super::authored_route_fixture::indoor_walk(&mut c, &r, (27, 14));
@@ -478,6 +484,14 @@ fn ice_lair_acted_recruitment_two_floors_actual_battles_switches_rescue_witness_
     page(&mut c, "MnNICEEllisQuestText");
     assert!(!event(&c, NOTE));
     finish(&mut c);
+    if physical_copy {
+        assert!(
+            !event(&c, NOTE),
+            "Ellis gives directions, not the hidden copy"
+        );
+        super::northstar_dispatch_course::read_copy_and_return_home(&mut c, &root, &r);
+        walk(&mut c, &r, (ellis.x as i16, ellis.y as i16 + 1));
+    }
     assert!(event(&c, NOTE));
     c = save(&mut c, &root, &r, "witness-quest-acknowledged");
     talk(&mut c, GameButton::Up);

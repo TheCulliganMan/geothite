@@ -24,6 +24,22 @@ fn settle_visible_continue_summary_for_test(runtime_shell: &mut BevyRuntimeShell
 }
 
 fn skip_intro_for_test(app: &mut App) {
+    {
+        let mut runtime_shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+        // SplashScreen owns the title input before CrystalIntro. Let that
+        // source program return before asking the intro to skip itself.
+        for _ in 0..4096 {
+            if runtime_shell.splash_screen.is_none() {
+                break;
+            }
+            tick_visible_splash_screen(&mut runtime_shell)
+                .expect("advance source splash before title-only test setup");
+        }
+        assert!(
+            runtime_shell.splash_screen.is_none(),
+            "source splash must return"
+        );
+    }
     if app
         .world()
         .resource::<BevyRuntimeShell>()

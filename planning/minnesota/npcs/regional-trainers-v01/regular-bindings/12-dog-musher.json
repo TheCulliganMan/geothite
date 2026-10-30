@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "trainer_class": "MN_DOG_MUSHER",
+  "class_name": "DOG MUSHER",
+  "trainer_ids": [
+    "MN_R17_T04"
+  ],
+  "actors": [
+    {
+      "map": "MnR17C00R00",
+      "script": "MN_R17_T04",
+      "tile": [
+        11,
+        45
+      ],
+      "previous_sprite": "SPRITE_COOLTRAINER_F"
+    }
+  ]
+}

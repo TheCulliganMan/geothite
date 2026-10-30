@@ -1,0 +1,15 @@
+# Confluence bank review
+
+Accepted and selected as `route_grass_confluence_revision`. Parent is the accepted Upstream Woods revision recorded in `parent.json`.
+
+This is a Surf corridor. Two grass metatiles now cover the approaches to Reed without changing his position, party, sight or scripts. The east bank adds a small grassy excursion and a native southward dry return. Both lanes have an ordinary grassy walk around the lip; reverse entry into the drop remains blocked. The river channel, shores, buoys, bridge, all actors and all four native connections remain intact.
+
+`source-proof-v01.json` records the ten exact edits, all four map extents and legal Surf landing reachability. Full source uses the current C00 bend, preserving its ten changes from the historical source. The two ordinary bank walks take 11/9 tiles and 5/4 grass steps; each native return takes three tiles and zero grass. Reed requires at least one grass step from a legal Surf landing. Grass quadrants increase from 56 to 84.
+
+`preservation-v01.json` independently verifies 763 comparisons, including all 728 other maps and every residual pack field, five deliberately rejected mutations, and raw encoded identity. `active-species-proof-v01.json` checks all four current encounter tables, Reed's party, fishing and time groups against the active original Minnesota roster.
+
+The native controller cases use explicit strong-party, badge and position fixtures. Every step after setup is production input. These establish local walking, Surf, ledge, trainer and save behavior; they do not establish earned regional access or encounter balance. The separate reached wild checkpoint uses no Repel. Production MCP observed a real new-grass wild battle, the RUN cursor and successful escape in 46 requests with empty stderr. A fresh process continued the actual reached save, walked on the dry bank and opened both Pack pockets in 15 requests with empty stderr.
+
+All source, failed attempts, native GPU captures and saves remain retained. The first upper-bank source comparison omitted the ordinary compositor's St Paul two-hop context; its mismatch is retained. The bounded retry requests source depth two. The two water captures also exposed a source-only animation-order error: water variants repainted the source player. The retained v03 comparison composites the native Surf rider after terrain animation, as production does. All GPU images remain unchanged; all seven comparisons now have zero differing pixels.
+
+Four focused native cases and two existing bridge/Surf continuity cases pass, including all four river chunks and the actual St Paul mouth. All 377 audio programs verify. Scoped Rust formatting passes; full workspace formatting retains pre-existing differences. Fresh affected-crate Clippy v02 passed after removing one redundant conversion. The guarded finalizer selected the pack, saved the previous world file, and updated both inventories and the current canonical source/dossier. The global goal additionally retains Boundary Safari, Rainy River Icefields, eighteen relevant town exteriors and final current-story coverage.

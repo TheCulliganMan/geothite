@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "trainer_class": "MN_NORTHWOODS_RANGER",
+  "class_name": "RANGER",
+  "trainer_ids": [
+    "MN_R02_T01"
+  ],
+  "actors": [
+    {
+      "map": "MnR02C00R00",
+      "script": "MN_R02_T01",
+      "tile": [
+        51,
+        21
+      ],
+      "previous_sprite": "SPRITE_LASS"
+    }
+  ]
+}

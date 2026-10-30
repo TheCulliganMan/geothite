@@ -1279,10 +1279,14 @@ fn apply_keyboard_input(
     // text. The core shell has a cheap pending-work predicate which is true
     // for an open textbox and false for normal standing-still frames. The
     // authoritative input transaction still owns its atomic staging clone.
+    // Shell-owned notices and Save questions can start without core work or
+    // a previous printer, so their first frame must also enter this path.
     if runtime_shell.shell.has_pending_script_work()
         || runtime_shell.field_text_reveal.is_some()
         || runtime_shell.field_notice.is_some()
         || runtime_shell.pc_notice.is_some()
+        || visible_pokecenter_pc_text_boundary(&runtime_shell).is_some()
+        || runtime_shell.save_menu_open
         || runtime_shell.visible_wait_sfx_boundary
     {
         let mut text_changed = false;

@@ -1,4 +1,4 @@
-//! Continue the same boosted party along the coast and through the relay finale.
+//! Continue the same carried party along the coast and through the relay finale.
 use std::path::PathBuf;
 
 use crystal_assets::AssetRoot;
@@ -307,7 +307,17 @@ fn departure(c: &mut VisibleShellController, r: &CrystalRuntime, root: &AssetRoo
     // Walk the authored clearance trigger through input before planning any
     // road travel. The local planner deliberately avoids coordinate events.
     travel(c, GameButton::Down, CAMP, (32, 44));
-    travel(c, GameButton::Down, "MnR13C00R00", (30, 0));
+    let offset = r.data().maps[CAMP]
+        .attributes
+        .connections
+        .iter()
+        .find(|link| link.direction == "south" && link.target_map == "MnR13C00R00")
+        .expect("published League exit")
+        .offset;
+    // Frozen earned saves retain their historical pack. New candidates use
+    // the unshifted turnout, without migrating those saves to a new identity.
+    let landing_x = i16::try_from(32 - offset * 2).expect("native League landing extent");
+    travel(c, GameButton::Down, "MnR13C00R00", (landing_x, 0));
     continue_in_place(c, root, r, "campaign-league-road");
     road(c, r, 13, (34, 126));
     at(c, "MnR13C00R02", (34, 30));

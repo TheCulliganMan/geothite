@@ -88,7 +88,7 @@ def inspect_boundaries(pack, modules):
     }
 
 
-def render(pack_path, output):
+def render(pack_path, output, include_approach=False):
     started = time.perf_counter()
     world = json.loads((ROOT / "planning/minnesota/world.json").read_text())
     selection_observed_at = datetime.now(timezone.utc).isoformat()
@@ -109,21 +109,42 @@ def render(pack_path, output):
         raise ValueError("Expected the current six clipped preserve chunks")
     boundaries = inspect_boundaries(pack, modules)
     art = SourceArt(pack)
-    terrain = Image.new("RGB", (2048, 1792))
+    placed = {}
+    for (column, row), (name, module) in modules.items():
+        attributes = module["attributes"]
+        if (attributes["width"], attributes["height"]) != (32, 8 if row == 2 else 24):
+            raise ValueError(f"Unexpected native chunk dimensions: {name}")
+        placed[name] = (module, (column * 64, row * 48))
+    if include_approach:
+        # Place the complete public trail and basecamp from their real walking
+        # seams. Negative origins are preserved; no invented connector terrain.
+        previous = "MnBoundarySafariC00R02"
+        for name in ("MnPreservePineEntry", "MnBoundaryWaters"):
+            source, (x, y) = placed[previous]
+            edges = [edge for edge in source["attributes"]["connections"]
+                     if edge["direction"] == "south" and edge["target_map"] == name]
+            if len(edges) != 1:
+                raise ValueError(f"Expected one actual south walking seam: {previous}->{name}")
+            placed[name] = (pack["data"]["maps"][name],
+                            (x + edges[0]["offset"] * 2, y + source["attributes"]["height"] * 2))
+            previous = name
+    left = min(origin[0] for _, origin in placed.values())
+    top = min(origin[1] for _, origin in placed.values())
+    right = max(origin[0] + module["attributes"]["width"] * 2 for module, origin in placed.values())
+    bottom = max(origin[1] + module["attributes"]["height"] * 2 for module, origin in placed.values())
+    terrain = Image.new("RGB", ((right - left) * 16, (bottom - top) * 16), (40, 44, 48))
     actors, connections = [], []
     zone = pack["data"].get("safari_zone")
-    for (column, row), (name, module) in sorted(modules.items()):
+    for name, (module, (x, y)) in placed.items():
         attributes = module["attributes"]
         width, height = attributes["width"], attributes["height"]
-        if (width, height) != (32, 8 if row == 2 else 24):
-            raise ValueError(f"Unexpected native chunk dimensions: {name}")
         if len(module["blocks"]) != width * height:
             raise ValueError(f"Incomplete native block array: {name}")
-        if zone and zone["maps"][name]["origin_core"] != [column * 64, row * 48]:
+        if zone and name in zone["maps"] and zone["maps"][name]["origin_core"] != [x, y]:
             raise ValueError(f"Habitat placement differs from native chunk grid: {name}")
         terrain.paste(
             art.render(attributes["tileset_name"], width, height, module["blocks"]),
-            (column * 1024, row * 768),
+            ((x - left) * 16, (y - top) * 16),
         )
         for edge in attributes["connections"]:
             back = pack["data"]["maps"][edge["target_map"]]["attributes"]["connections"]
@@ -139,7 +160,7 @@ def render(pack_path, output):
             facing = actor["spritemovedata"].rsplit("_", 1)[-1]
             if actor["pal"] != 0 or facing not in FACING:
                 raise ValueError(f"Actor needs a deliberate palette/pose review: {name}")
-            actors.append((actor, column * 64 + actor["x"], row * 48 + actor["y"], facing))
+            actors.append((actor, x - left + actor["x"], y - top + actor["y"], facing))
     scene = terrain.convert("RGBA")
     for actor, x, y, facing in actors:
         scene.alpha_composite(
@@ -148,13 +169,15 @@ def render(pack_path, output):
     output.mkdir(parents=True, exist_ok=False)
     terrain.save(output / "terrain-original.png")
     scene.save(output / "whole-original.png")
-    scene.resize((1024, 896), Image.Resampling.NEAREST).save(output / "whole-preview.png")
+    scene.resize((scene.width // 2, scene.height // 2), Image.Resampling.NEAREST).save(output / "whole-preview.png")
     report = {
         "pack": str(pack_path), "pack_sha256": pack_hash, "selected": is_selected,
         "selection_observed_at_utc": selection_observed_at,
         "selected_revision_observed": world["active_local_review_revision"],
         "expedition_configured": zone is not None,
-        "maps": [name for name, _ in modules.values()],
+        "maps": list(placed),
+        "origins_core": {name: origin for name, (_, origin) in placed.items()},
+        "canvas_origin_core": [left, top], "includes_public_approach": include_approach,
         "dimensions_pixels": scene.size, "connections": connections,
         "static_actor_count": len(actors), "gameplay_verified_by_this_preview": False,
         "boundary_audit": boundaries,
@@ -168,9 +191,11 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--pack", type=Path, help="Defaults to the live world selector")
     parser.add_argument("--output", type=Path)
+    parser.add_argument("--include-approach", action="store_true",
+                        help="Include complete Pine Entry and basecamp at actual connection offsets")
     args = parser.parse_args()
     output = args.output or ROOT / f"planning/minnesota/renders/safari-runtime-preview/run-{time.time_ns()}"
-    print(json.dumps({"output": str(output), **render(args.pack, output)}, indent=2))
+    print(json.dumps({"output": str(output), **render(args.pack, output, args.include_approach)}, indent=2))
 
 
 if __name__ == "__main__":

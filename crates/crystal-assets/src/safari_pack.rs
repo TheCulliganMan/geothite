@@ -7,10 +7,11 @@ use crate::{CompiledGamePack, SafariZone};
 impl CompiledGamePack {
     /// Bind capture expeditions to validated native habitats and ranger actors.
     ///
-    /// Derives a fresh identity while preserving terrain, executable scripts,
-    /// source art, audio and recovery. Replaces only the preserve's obsolete
-    /// closure text with native permit/check-in directions. This is a
-    /// publication primitive; callers must separately verify production input
+    /// Derives a fresh identity while preserving terrain, executable story
+    /// scripts, source art, audio and recovery. Replaces obsolete closure text
+    /// with permit/check-in directions and retires the two placeholder
+    /// basecamp guards so the public approach reaches the real permit court.
+    /// This is a publication primitive; callers must separately verify production input
     /// and presentation before selecting the result as the playable regional
     /// pack.
     ///
@@ -27,10 +28,11 @@ impl CompiledGamePack {
         zone.validate(&self.data)?;
         let mut pack = self.clone();
         crate::safari_guidance::install(&mut pack, &zone)?;
+        crate::safari_public_trail::install(&mut pack, &zone)?;
         pack.data.safari_zone = Some(zone);
         pack.report
             .manifests
-            .push("native-safari-expedition-v2".into());
+            .push("native-safari-expedition-v4".into());
         pack.identity = crate::derive_compiled_game_pack_identity_from_manifest(
             pack.format_version,
             &pack.data,

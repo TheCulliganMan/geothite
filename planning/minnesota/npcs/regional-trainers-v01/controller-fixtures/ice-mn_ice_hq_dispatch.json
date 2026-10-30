@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "trainers": [
+    {
+      "approach": [
+        8,
+        6
+      ],
+      "defeated_flag": "EVENT_MN_ICE_HQ_DISPATCH_DEFEATED",
+      "facing": "south",
+      "id": "MN_ICE_HQ_DISPATCH",
+      "map": "MnIceOperations",
+      "sprite": "SPRITE_MN_ICE_AGENT",
+      "tile": [
+        8,
+        5
+      ],
+      "trainer_class": "MN_ICE_AGENT"
+    }
+  ]
+}

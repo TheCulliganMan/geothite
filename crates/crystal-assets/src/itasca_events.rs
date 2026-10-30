@@ -217,5 +217,5 @@ pub(crate) fn officer(map: &mut MapModule, story: &Value) -> Result<()> {
             c("jumptext", &["MnBemidjiReportAfterText"])
         ]),
     );
-    Ok(())
+    crate::northstar_report_revision::install(map)
 }

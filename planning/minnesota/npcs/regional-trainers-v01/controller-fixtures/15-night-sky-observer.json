@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "trainers": [
+    {
+      "id": "MN_SPX_TRAINER_5",
+      "map": "MnStPaulSummitExhibitionClub",
+      "actor_script": "MN_SPX_TRAINER_5",
+      "trainer_class": "MN_NIGHT_SKY_OBSERVER",
+      "sprite": "SPRITE_MN_NIGHT_SKY_OBSERVER",
+      "facing": "south",
+      "approach": [
+        9,
+        8
+      ],
+      "defeated_flag": "EVENT_MN_SPX_TRAINER_5"
+    }
+  ]
+}

@@ -32,6 +32,14 @@
     "bypass_approach": [
       13,
       12
+    ],
+    "exposure_camera": [
+      19,
+      11
+    ],
+    "pinned_wolf": [
+      23,
+      11
     ]
   },
   "controls": {
@@ -130,6 +138,10 @@
   "exposure_replacement": "07",
   "wolf_retreat_steps": [
     [
+      "JUMP_UP",
+      2
+    ],
+    [
       "RIGHT",
       2
     ],
@@ -141,21 +153,21 @@
   "bypass_camera_steps": [
     [
       "RIGHT",
-      5
+      6
     ],
     [
       "UP",
-      3
+      1
     ]
   ],
   "return_to_original_outflow_start_steps": [
     [
       "DOWN",
-      3
+      1
     ],
     [
       "LEFT",
-      1
+      2
     ]
   ],
   "kettlurk_failed_push_steps": [
@@ -171,11 +183,52 @@
   "preservation_contract": [
     "Preserve all existing warp indices, 24-guard story bindings and original Reed/crew/Kettlurk movement paths.",
     "Lower outlet control must not obstruct the entry camera walk along x19 from y17 to y9.",
-    "BYPASS approach moves to entry camera18,9 before wolf retreat, then returns to17,12 before the original outflow/crew continuation.",
+    "BYPASS approach moves to outflow camera19,11 before wolf retreat, then returns to17,12 before the original outflow/crew continuation.",
     "Keep the contaminated sump green after clean return; do not instantly purify the whole map.",
     "Only a private map tileset may gain green glyph/palette variants; retain native water collision, Surf and animation.",
     "All acknowledged control and actor/water states must persist on reentry and Continue.",
     "Only acknowledged crew clearance grants containment/restoration; capture never gates the story."
   ],
-  "acceptance_status": "Floor anchors checked against current composed pack; imported rock/machine art, animated green water, authored scripts and native scene verification remain to implement."
+  "acceptance_status": "Scene source integrated into the shared repository; fresh publication against the released combined parent and current native/controller acceptance pending. Prior isolated proofs are documented separately.",
+  "exposure_camera_steps": [
+    [
+      "RIGHT",
+      1
+    ],
+    [
+      "DOWN",
+      2
+    ]
+  ],
+  "wolf_platform_jump": {
+    "from": [
+      23,
+      9
+    ],
+    "over": [
+      23,
+      10
+    ],
+    "landing": [
+      23,
+      11
+    ],
+    "command": "jump_step DOWN",
+    "collision_after_break": [
+      "WALL",
+      "WALL",
+      "WALL",
+      "FLOOR"
+    ],
+    "floor_quadrant": "southeast"
+  },
+  "outflow_boundary": {
+    "metatile": [
+      15,
+      6
+    ],
+    "native_block": 23,
+    "collision": "WALL",
+    "action": "Preserve the existing native wall; no eastern water connection."
+  }
 }
