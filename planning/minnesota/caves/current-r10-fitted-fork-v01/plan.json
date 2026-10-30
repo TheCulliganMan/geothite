@@ -1,0 +1,125 @@
+{
+  "parent_revision": "outdoor_terrain_integrated_revision",
+  "parent_pack": "content-packs/minnesota-current-outdoor-composed-towns-v01.crystalpack",
+  "parent_sha256": "fcac136e08876c25d5c8b6250fc7c0fa1aedbfc6977e165504505b2b4d02016f",
+  "map": "MnR10Cave1F",
+  "changes": [
+    {
+      "metatile": [
+        1,
+        4
+      ],
+      "before": "04",
+      "after": "2e",
+      "reason": "Fill the redundant western ceiling spur with native bedrock"
+    },
+    {
+      "metatile": [
+        2,
+        4
+      ],
+      "before": "05",
+      "after": "04",
+      "reason": "Turn the attached northwest shoulder inward"
+    },
+    {
+      "metatile": [
+        1,
+        5
+      ],
+      "before": "08",
+      "after": "2e",
+      "reason": "Carry the bedrock shoulder down to the mouth alcove"
+    },
+    {
+      "metatile": [
+        2,
+        5
+      ],
+      "before": "02",
+      "after": "08",
+      "reason": "Native west face narrows the entrance fork"
+    },
+    {
+      "metatile": [
+        4,
+        5
+      ],
+      "before": "02",
+      "after": "0a",
+      "reason": "Bring the attached central spine one metatile west"
+    },
+    {
+      "metatile": [
+        5,
+        5
+      ],
+      "before": "0a",
+      "after": "2e",
+      "reason": "Fill behind the relocated spine face"
+    },
+    {
+      "metatile": [
+        4,
+        6
+      ],
+      "before": "02",
+      "after": "0a",
+      "reason": "Continue the spine to the retained lower flight"
+    },
+    {
+      "metatile": [
+        5,
+        6
+      ],
+      "before": "0a",
+      "after": "2e",
+      "reason": "Keep the narrowed spine solid"
+    }
+  ],
+  "retained": {
+    "mouth": [
+      3,
+      13
+    ],
+    "clear_arrival": [
+      3,
+      12
+    ],
+    "reader": [
+      9,
+      5
+    ],
+    "revive": [
+      29,
+      23
+    ],
+    "native_stairs": [
+      [
+        10,
+        3
+      ],
+      [
+        3,
+        4
+      ],
+      [
+        10,
+        4
+      ],
+      [
+        3,
+        7
+      ]
+    ],
+    "drop_lanes": [
+      12,
+      13
+    ],
+    "ordinary_return_steps": [
+      13,
+      15
+    ]
+  },
+  "status": "Source preview pending"
+}
