@@ -263,7 +263,7 @@
           ]
         ]
       },
-      "status": "Original Crystal art only; custom campfire, table and marker props removed; v04 publication and current runtime acceptance pending"
+      "status": "Installed in the selected fauna/progression successor. Native local clue, capture, physical-reentry retry and Continue checks pass. This establishes local quest functionality; an uninterrupted earned statewide campaign remains unverified."
     },
     {
       "id": "pepin-three-wakes",
@@ -480,7 +480,7 @@
           ]
         ]
       },
-      "status": "Sixteen native dialogue entries and native script lowering implemented privately: acknowledged three observations, actual Surf-state guard, independent optional capture/refusal/visit retry callbacks. Current-parent geometry binding, pack publication and runtime acceptance remain pending; not yet catchable through this quest.",
+      "status": "Installed in the selected fauna/progression successor. Native local clue, capture, physical-reentry retry and Continue checks pass. This establishes local quest functionality; an uninterrupted earned statewide campaign remains unverified.",
       "current_geometry_audit": "The verified v02 review parent contains no map named MnMississippiPepin. That old layout is historical authoring, not an installed quest site. Inspect the actual MnMississippiLowerWoods chunks, preserve their river/fishing content, and derive any safe connection from their current native geometry before installation."
     },
     {
@@ -711,7 +711,7 @@
           ]
         ]
       },
-      "status": "Native witness programs and guarded hall/service-room publisher are implemented privately. The corrected layout passes15 source collision/reachability checks and its terrain renders are inspected; the publisher, independent preservation audit and actual scene/actor/warp/capture/Continue checks have not run. No acquisition is installed."
+      "status": "Installed in the selected fauna/progression successor. Native local clue, capture, physical-reentry retry and Continue checks pass. This establishes local quest functionality; an uninterrupted earned statewide campaign remains unverified."
     },
     {
       "id": "fen-memory",
@@ -922,7 +922,7 @@
           ]
         ]
       },
-      "status": "Native dialogue/lowerer, reviewed native closed/open fen geometry, guarded Rust publisher with returning terrain hook and tiles restoration, independent audit and three controller cases authored privately. Static closed379/open446 dry reach, six clues and Surf-safe gate pass. Compilation/publication/native gameplay/MCP/recovery and native presentation pending; no acquisition installed."
+      "status": "Installed in the selected fauna/progression successor. Native local clue, capture, physical-reentry retry and Continue checks pass. This establishes local quest functionality; an uninterrupted earned statewide campaign remains unverified."
     },
     {
       "id": "three-former-shores",
@@ -1168,7 +1168,7 @@
           ]
         ]
       },
-      "status": "Native dialogue/lowerer, reviewed three-terrace exterior and isolated cave geometry, guarded two-map Rust publisher, independent preservation/collision audit and three controller cases authored privately. Static ridge482/closed333/open432 reach and Surf-safe sill pass. Nine local changes drain only the fictional chamber. Compilation/publication/native gameplay/MCP/recovery and native visual acceptance pending; no acquisition installed."
+      "status": "Installed in the selected fauna/progression successor. Native local clue, capture, physical-reentry retry and Continue checks pass. This establishes local quest functionality; an uninterrupted earned statewide campaign remains unverified."
     },
     {
       "id": "field-margin-markers",
@@ -1379,7 +1379,7 @@
           ]
         ]
       },
-      "status": "Native dialogue, physical-revisit lowerer, reviewed native field-margin geometry, guarded Rust publisher, independent preservation audit and three controller cases authored privately. Static 399-tile dry connectivity and solid clue targets pass. Compilation/publication/gameplay/MCP/native presentation and KO/blackout recovery remain pending; no acquisition installed."
+      "status": "Installed in the selected fauna/progression successor. Native local clue, capture, physical-reentry retry and Continue checks pass. This establishes local quest functionality; an uninterrupted earned statewide campaign remains unverified."
     }
   ]
 }

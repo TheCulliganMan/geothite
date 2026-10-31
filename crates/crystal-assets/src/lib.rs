@@ -719,6 +719,8 @@ mod northstar_iron_workings_tests;
 pub use northstar_iron_workings::build_northstar_iron_workings;
 mod northstar_progression_rewards;
 pub use northstar_progression_rewards::build_northstar_progression_rewards;
+mod northstar_legendary_completion;
+pub use northstar_legendary_completion::build_northstar_legendary_completion;
 mod minnesota_fossils;
 pub use minnesota_fossils::build_minnesota_fossils;
 mod minnesota_fossil_lab;

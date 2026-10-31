@@ -456,6 +456,7 @@ mod northstar_ancient_swamp;
 
 #[path = "tests/northstar_progression_rewards.rs"]
 mod northstar_progression_rewards;
+mod legendary_master_ball;
 #[path = "tests/northstar_research_share.rs"]
 mod northstar_research_share;
 
