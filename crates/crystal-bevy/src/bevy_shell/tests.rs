@@ -533,3 +533,6 @@ include!("tests/northstar_title.rs");
 
 #[path = "tests/minnesota_daycares.rs"]
 mod minnesota_daycares;
+
+#[path = "tests/dialogue_public_roads.rs"]
+mod dialogue_public_roads;

@@ -1514,3 +1514,6 @@ pub use encounter_refinement_composition::compose_minnesota_encounter_refinement
 
 mod northstar_story_consolidation;
 pub use northstar_story_consolidation::consolidate_northstar_story;
+
+mod northstar_public_roads;
+pub use northstar_public_roads::open_northstar_public_roads;
