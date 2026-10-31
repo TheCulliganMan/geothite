@@ -92,6 +92,70 @@ fn finish(c: &mut VisibleShellController, r: &CrystalRuntime) {
     panic!("Master Ball reward did not complete");
 }
 
+fn throw_until_confirmed(c: &mut VisibleShellController) {
+    for _ in 0..256 {
+        if c.shell.pending_standard_capture.is_some() {
+            if c.shell
+                .battle_messages
+                .front()
+                .is_some_and(|text| text.contains("Gotcha!"))
+            {
+                return;
+            }
+            press(c, GameButton::A);
+            continue;
+        }
+        let snapshot = c.snapshot().expect("native capture input");
+        let button = if !c.shell.battle_messages.is_empty()
+            || (snapshot.ui.menu.is_none() && snapshot.ui.text.is_some())
+            || c.shell.field_pack_action_cursor.is_some()
+            || c.shell.ball_cursor.is_some()
+        {
+            GameButton::A
+        } else if c.shell.bag_cursor.is_some() {
+            GameButton::Right
+        } else if let Some(cursor) = &c.shell.battle_action_cursor {
+            match cursor.option_index {
+                0 | 1 => GameButton::Down,
+                3 => GameButton::Left,
+                _ => GameButton::A,
+            }
+        } else {
+            GameButton::A
+        };
+        press(c, button);
+    }
+    panic!("native carried Master Ball did not resolve a catch");
+}
+
+fn finish_catch(c: &mut VisibleShellController) {
+    for _ in 0..256 {
+        if c.shell.pending_name_input.is_some() {
+            press(c, GameButton::Start);
+            press(c, GameButton::A);
+            continue;
+        }
+        if let Some(choice) = &c.shell.pending_name_choice {
+            if choice.nickname_pages.len() > 1 {
+                press(c, GameButton::A);
+            } else {
+                press(c, GameButton::Down);
+                press(c, GameButton::A);
+            }
+            continue;
+        }
+        let snapshot = c.snapshot().expect("capture continuation");
+        if snapshot.battle.is_none()
+            && !c.has_pending_script_work()
+            && !snapshot.ui.text_window_open
+        {
+            return;
+        }
+        press(c, GameButton::A);
+    }
+    panic!("capture result did not finish after Continue");
+}
+
 #[test]
 #[ignore = "requires CRYSTAL_WINONA_TEST_PACK with restoration rewards"]
 fn legendary_master_ball_interrupted_offer_and_claim_continue_once() {
@@ -208,18 +272,159 @@ fn legendary_master_ball_earned_reward_walks_to_wild_capture_and_stays_spent() {
             .expect("ordinary encounter timing");
     }
     let species = species.expect("ordinary opening grass must produce a wild battle");
-    assert!(super::rochester_earned::try_recruit_with_ball(
-        &mut c,
-        &r,
-        "MASTER_BALL"
-    ));
-    super::winona::finish(&mut c);
+    throw_until_confirmed(&mut c);
+    let resolved = c
+        .shell
+        .pending_standard_capture
+        .as_ref()
+        .expect("confirmed native catch")
+        .outcome
+        .clone();
+    assert_eq!(quantity(&c, &r), 0);
+    c = continued(&mut c, &root, &r, "master-pending-wild-result");
+    assert_eq!(
+        c.shell
+            .pending_standard_capture
+            .as_ref()
+            .expect("restored catch")
+            .outcome,
+        resolved
+    );
+    finish_catch(&mut c);
     assert_eq!(quantity(&c, &r), 0);
     assert!(c.shell.shell.session().state().pokedex.has_caught(&species));
     c = continued(&mut c, &root, &r, "master-earned-capture");
     assert_eq!(quantity(&c, &r), 0);
     assert!(event(&c, CLAIM));
     assert!(c.shell.shell.session().state().pokedex.has_caught(&species));
+}
+
+#[test]
+#[ignore = "requires CRYSTAL_WINONA_TEST_PACK with the native Kettlurk branch"]
+fn legendary_master_ball_static_pending_catch_party_pc_and_repeated_continue_once() {
+    use crystal_core::models::PcBox;
+    for full in [false, true] {
+        let (root, r) = load();
+        let mut c = fixture(&root, &r, "MnDevilsKettle", (20, 13));
+        let state = c.shell.shell.session_mut().state_mut();
+        for flag in ["EVENT_MN_KETTLURK_RELEASED", "EVENT_MN_SURVEY_RESTORED"] {
+            state
+                .flags
+                .set_event_flag(flag, true)
+                .expect("declared restored story");
+        }
+        for _ in 0..if full { 6 } else { 1 } {
+            assert!(
+                state.storage.party.add_pokemon(
+                    r.data()
+                        .create_pokemon("POUCHID", 60, Dv::default())
+                        .expect("native initial party")
+                )
+            );
+        }
+        state.current_pc_box = 3;
+        while state.storage.pc_boxes.len() <= 3 {
+            state
+                .storage
+                .pc_boxes
+                .push(PcBox::new(state.storage.pc_boxes.len()));
+        }
+        state.sync_party_from_storage();
+        assert!(
+            state
+                .bag
+                .add_item(&r.data().items["MASTER_BALL"], 1)
+                .expect("explicit capture fixture ball")
+        );
+        let (state, overworld) = c.shell.shell.session_mut().state_and_overworld_mut();
+        r.data()
+            .apply_map_setup_callbacks(state, overworld, "MnDevilsKettle", "MAPSETUP_WARP")
+            .expect("native initial actor callbacks");
+        mark_runtime_snapshot_dirty(&mut c.shell);
+        // No mutations after declared setup; throw, naming and storage use input.
+        press(&mut c, GameButton::Up);
+        press(&mut c, GameButton::A);
+        super::northstar_ice_lair::choice(&mut c, true);
+        throw_until_confirmed(&mut c);
+        assert_eq!(quantity(&c, &r), 0);
+        let outcome = c
+            .shell
+            .pending_standard_capture
+            .as_ref()
+            .expect("resolved static catch")
+            .outcome
+            .clone();
+        let caught = "EVENT_MN_DEVILS_KETTLE_CAUGHT";
+        assert!(!event(&c, caught));
+        for retry in 0..2 {
+            c = continued(
+                &mut c,
+                &root,
+                &r,
+                &format!("master-static-pending-{full}-{retry}"),
+            );
+            assert_eq!(quantity(&c, &r), 0);
+            assert_eq!(
+                c.shell
+                    .pending_standard_capture
+                    .as_ref()
+                    .expect("same resolved catch")
+                    .outcome,
+                outcome
+            );
+            assert!(!event(&c, caught));
+        }
+        if !full {
+            for _ in 0..16 {
+                if c.shell.pending_name_input.is_some() {
+                    break;
+                }
+                press(&mut c, GameButton::A);
+            }
+            assert!(c.shell.pending_name_input.is_some());
+            press(&mut c, GameButton::A);
+            press(&mut c, GameButton::Right);
+            let input = c
+                .shell
+                .pending_name_input
+                .as_ref()
+                .expect("real typed capture name")
+                .clone();
+            c = continued(&mut c, &root, &r, "master-static-partial-name");
+            assert_eq!(
+                c.shell
+                    .pending_name_input
+                    .as_ref()
+                    .expect("restored typed name"),
+                &input
+            );
+        }
+        finish_catch(&mut c);
+        assert!(event(&c, caught));
+        let state = c.shell.shell.session().state();
+        assert!(state.pokedex.has_caught("KETTLURK"));
+        assert_eq!(state.current_pc_box, 3);
+        if full {
+            assert_eq!(state.storage.party.filled_slots(), 6);
+            assert_eq!(state.storage.pc_boxes[3].filled_slots(), 1);
+            assert_eq!(
+                state.storage.pc_boxes[3].pokemon[0]
+                    .as_ref()
+                    .expect("selected PC capture")
+                    .species
+                    .id,
+                "KETTLURK"
+            );
+        } else {
+            assert_eq!(state.storage.party.filled_slots(), 2);
+            assert_eq!(state.storage.pc_boxes[3].filled_slots(), 0);
+        }
+        let storage = state.storage.clone();
+        c = continued(&mut c, &root, &r, &format!("master-static-complete-{full}"));
+        assert!(event(&c, caught));
+        assert_eq!(c.shell.shell.session().state().storage, storage);
+        assert_eq!(quantity(&c, &r), 0);
+    }
 }
 
 #[test]

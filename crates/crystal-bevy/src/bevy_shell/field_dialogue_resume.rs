@@ -36,6 +36,7 @@ struct SavedChoice {
 /// Saves without that owner retain their existing representation. The live
 /// state, script continuation and printer are never changed by saving.
 pub(super) fn save(shell: &mut BevyRuntimeShell, path: &Path) -> Result<()> {
+    let capture = super::standard_capture_resume::encode(shell)?;
     let snapshot = shell.shell.presentation_snapshot()?;
     let page = if snapshot.battle.is_none()
         && shell.field_notice.is_none()
@@ -76,11 +77,14 @@ pub(super) fn save(shell: &mut BevyRuntimeShell, path: &Path) -> Result<()> {
             })
         })
         .transpose()?;
-    if page.is_none() && choice.is_none() {
+    if page.is_none() && choice.is_none() && capture.is_none() {
         return shell.shell.save(path);
     }
     let mut checkpoint = shell.shell.clone();
     let memory = &mut checkpoint.session_mut().state_mut().script_runtime.memory;
+    if let Some(capture) = capture {
+        memory.insert(super::standard_capture_resume::KEY.into(), capture);
+    }
     if let Some(page) = page {
         memory.insert(
             PAGE_KEY.into(),
@@ -120,7 +124,8 @@ pub(super) fn restore(shell: &mut BevyRuntimeShell) -> Result<()> {
         arm_visible_active_script_cursor(shell, &script, next);
     }
     restore_choice(shell)?;
-    restore_page(shell)
+    restore_page(shell)?;
+    super::standard_capture_resume::restore(shell)
 }
 
 fn restore_choice(shell: &mut BevyRuntimeShell) -> Result<()> {
