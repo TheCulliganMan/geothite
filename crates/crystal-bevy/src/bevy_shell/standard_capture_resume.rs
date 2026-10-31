@@ -18,7 +18,7 @@ struct SavedCapture {
     species: String,
     level: u8,
     outcome: crystal_core::battle::capture::CaptureOutcome,
-    origin: Option<crystal_runtime::RuntimeStaticWildBattleOrigin>,
+    origin: Option<crystal_assets::RuntimeStaticWildBattleOrigin>,
     default_name: String,
     prompt_for_nickname: bool,
     choice: Option<(usize, usize)>,
@@ -138,7 +138,7 @@ pub(super) fn restore(shell: &mut BevyRuntimeShell) -> Result<()> {
             .data()
             .items
             .get(ball)
-            .is_some_and(|item| item.battle_capture_ball && item.battle_usable),
+            .is_some_and(|item| item.battle_capture_ball == Some(true) && item.battle_usable),
         "saved catch references an invalid capture ball"
     );
     if let Some(name) = &saved.name {
