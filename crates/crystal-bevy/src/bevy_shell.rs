@@ -9299,7 +9299,6 @@ mod field_text_program;
 mod card_flip_art;
 mod field_text_timing;
 mod field_dialogue_resume;
-mod legendary_reward_resume;
 mod natural_movement;
 #[cfg(feature = "voxel-view")]
 mod mouse_movement;

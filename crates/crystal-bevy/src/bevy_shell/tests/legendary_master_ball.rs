@@ -218,22 +218,23 @@ fn legendary_master_ball_earned_reward_walks_to_wild_capture_and_stays_spent() {
 
 #[test]
 #[ignore = "requires repaired CRYSTAL_WINONA_TEST_PACK and actual CRYSTAL_LEGENDARY_LEGACY_RECEIPT_SAVE"]
-fn legendary_master_ball_old_interrupted_receipt_migrates_without_another_grant() {
+fn legendary_master_ball_old_receipt_keeps_its_original_pack_identity() {
     let (root, r) = load();
     let save = std::env::var_os("CRYSTAL_LEGENDARY_LEGACY_RECEIPT_SAVE")
         .expect("native receipt autosave from the old reward");
-    let mut c = VisibleShellController::load_save(root.clone(), r.clone(), save.into(), None)
-        .expect("legacy native receipt Continue");
-    assert_eq!(quantity(&c, &r), 1);
+    let result = VisibleShellController::load_save(root, r, save.into(), None);
+    let error = result
+        .err()
+        .expect("a different compiled pack must not silently take an old save");
     assert!(
-        event(&c, CLAIM),
-        "the already delivered reward must be claimed before presentation"
+        error.chain().any(|cause| matches!(
+            cause.downcast_ref::<crystal_core::save::SaveError>(),
+            Some(
+                crystal_core::save::SaveError::ModpackIdMismatch { .. }
+                    | crystal_core::save::SaveError::ModpackHashMismatch { .. }
+                    | crystal_core::save::SaveError::PackContentHashMismatch { .. }
+            )
+        )),
+        "expected an explicit pack-identity boundary: {error:#}"
     );
-    finish(&mut c, &r);
-    talk(&mut c, (5, 2));
-    assert_eq!(quantity(&c, &r), 1);
-    c = continued(&mut c, &root, &r, "master-migrated-receipt");
-    talk(&mut c, (5, 2));
-    assert!(event(&c, CLAIM));
-    assert_eq!(quantity(&c, &r), 1);
 }
