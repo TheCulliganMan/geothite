@@ -20,6 +20,16 @@ use super::{fixture, mark_runtime_snapshot_dirty, walk};
 
 const SERVICE: &str = "EVENT_MN_COURIER_DEFEATED";
 
+// Keep historical service packs usable as fixtures, while the public-roads
+// candidate must pass every visit-mask/ride case without a courier victory.
+// Detect the road revision independently of the train permission being tested,
+// so accidentally restoring that permission cannot make these tests pass.
+fn service_fixture(runtime: &CrystalRuntime) -> bool {
+    !runtime.data().maps["MnMinneapolis"]
+        .scripts
+        .contains_key("MnPublicRoadsMinneapolisOpen")
+}
+
 fn load() -> (AssetRoot, CrystalRuntime, Vec<Value>) {
     static LOADED: OnceLock<(AssetRoot, CrystalRuntime, Vec<Value>)> = OnceLock::new();
     LOADED
@@ -380,8 +390,9 @@ fn glacier_line_controller_five_real_foot_entries_set_only_their_visit_and_conti
 #[ignore = "requires the published Glacier service in CRYSTAL_INTERIOR_PACK"]
 fn glacier_line_controller_denials_twenty_locked_rows_and_both_cancel_paths_release_input() {
     let (root, r, stops) = load();
+    let service = service_fixture(&r);
     for (origin, stop) in stops.iter().enumerate() {
-        for (service, mask) in [(false, 31), (true, 1 << origin)] {
+        for (service, mask) in [(false, 1 << origin), (true, 1 << origin)] {
             let mut c = setup(&r, &root, &stops, origin, service, mask);
             let state = c.shell.shell.session().state().clone();
             assert!(ticket(&mut c, &r, stop).0.is_none());
@@ -397,7 +408,7 @@ fn glacier_line_controller_denials_twenty_locked_rows_and_both_cancel_paths_rele
                 .find(|d| *d != destination)
                 .expect("another stop");
             let mask = (1 << origin) | (1 << unlocked);
-            let mut c = setup(&r, &root, &stops, origin, true, mask);
+            let mut c = setup(&r, &root, &stops, origin, service, mask);
             let state = c.shell.shell.session().state().clone();
             let (options, _) = ticket(&mut c, &r, stop);
             assert!(options.expect("native marked choices")[row].ends_with(" X"));
@@ -412,7 +423,7 @@ fn glacier_line_controller_denials_twenty_locked_rows_and_both_cancel_paths_rele
             assert!(c.shell.visible_magnet_train.is_none());
         }
         for explicit_cancel in [false, true] {
-            let mut c = setup(&r, &root, &stops, origin, true, 31);
+            let mut c = setup(&r, &root, &stops, origin, service, 31);
             let state = c.shell.shell.session().state().clone();
             assert!(ticket(&mut c, &r, stop).0.is_some());
             if explicit_cancel {
@@ -433,6 +444,7 @@ fn glacier_line_controller_denials_twenty_locked_rows_and_both_cancel_paths_rele
 #[ignore = "requires the published Glacier service in CRYSTAL_INTERIOR_PACK"]
 fn glacier_line_controller_every_visit_mask_has_correct_native_labels_and_cancels() {
     let (root, r, stops) = load();
+    let service = service_fixture(&r);
     for (origin, stop) in stops.iter().enumerate() {
         let destinations: Vec<_> = stops
             .iter()
@@ -446,7 +458,7 @@ fn glacier_line_controller_every_visit_mask_has_correct_native_labels_and_cancel
                 .fold(1 << origin, |bits, (row, (i, _))| {
                     bits | if mask & (1 << row) == 0 { 0 } else { 1 << i }
                 });
-            let mut c = setup(&r, &root, &stops, origin, true, visits);
+            let mut c = setup(&r, &root, &stops, origin, service, visits);
             let flags = c.shell.shell.session().state().flags.clone();
             let (options, _) = ticket(&mut c, &r, stop);
             if mask == 0 {
@@ -486,10 +498,11 @@ fn glacier_line_controller_every_visit_mask_has_correct_native_labels_and_cancel
 #[ignore = "requires the published Glacier service in CRYSTAL_INTERIOR_PACK"]
 fn glacier_line_controller_all_twenty_real_rides_restore_conductors_resources_and_continue() {
     let (root, r, stops) = load();
+    let service = service_fixture(&r);
     for (origin, _) in stops.iter().enumerate() {
         let destinations: Vec<_> = (0..5).filter(|i| *i != origin).collect();
         for (row, destination) in destinations.iter().copied().enumerate() {
-            let mut c = setup(&r, &root, &stops, origin, true, 31);
+            let mut c = setup(&r, &root, &stops, origin, service, 31);
             let before = c.snapshot().expect("local travel fixture");
             let flags = c.shell.shell.session().state().flags.clone();
             let (options, _) = ticket(&mut c, &r, &stops[origin]);
@@ -562,7 +575,7 @@ fn glacier_line_controller_all_twenty_real_rides_restore_conductors_resources_an
 }
 
 #[test]
-#[ignore = "local legal Minnesota party/upstream prerequisites, then actual Q03 victory and train"]
+#[ignore = "local legal Minnesota party/upstream prerequisites, then actual Q03 victory and train; public-road return service is independent"]
 fn glacier_line_controller_actual_courier_win_unlocks_a_guarded_ride_without_granting_manifest() {
     let (root, r, stops) = load();
     let stop = &stops[3];
@@ -607,7 +620,21 @@ fn glacier_line_controller_actual_courier_win_unlocks_a_guarded_ride_without_gra
     state.sync_party_from_storage();
     mark_runtime_snapshot_dirty(&mut c.shell);
     assert!(event(&c, visited(stop)) && !event(&c, SERVICE));
-    assert!(ticket(&mut c, &r, stop).0.is_none());
+    let (options, _) = ticket(&mut c, &r, stop);
+    if service_fixture(&r) {
+        assert!(options.is_none(), "historical service awaits the courier");
+    } else {
+        assert!(
+            options.is_some(),
+            "public-road service must work before the courier victory"
+        );
+        press(&mut c, GameButton::B);
+        drain(&mut c);
+        assert!(
+            !event(&c, SERVICE),
+            "opening/cancelling a train menu cannot win the courier battle"
+        );
+    }
     walk(&mut c, &r, (19, 16));
     press(&mut c, GameButton::Right);
     press(&mut c, GameButton::A);

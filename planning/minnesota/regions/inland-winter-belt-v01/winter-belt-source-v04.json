@@ -1,0 +1,1014 @@
+{
+  "schema_version": 1,
+  "status": "Explicit isolated full-place source proposal; not installed or selected. Native Rust publication and renderer seasonal integration remain pending.",
+  "selected_parent_revision": "north_shore_passing_width_revision",
+  "selected_parent_pack": "content-packs/minnesota-north-shore-passing-width-fauna-v02.crystalpack",
+  "selected_parent_sha256": "e951fddafee3a0c09a2356d4dd683890ac498e23daeb266d08c5f12d79ec1167",
+  "source_parent_pack": "content-packs/minnesota-bemidji-roof-plateau-v01.crystalpack",
+  "source_parent_sha256": "d14d30be991a78440e802bae1b5b5670be837e9c2dddef7017978952c3215fdd",
+  "geometry_dependency": "planning/minnesota/towns/bemidji-roof-plateau-v01/INTEGRATION.json",
+  "art": [
+    {
+      "source": "mn_bemidji_plateau_stairs",
+      "target": "mn_winter_bemidji",
+      "source_blocks": 135,
+      "source_definition_sha256": "43b3e32783f3a0270cd9168e0f971cd4b82672b2682151b5e9403b2441a23825",
+      "source_runtime_sha256": {
+        "data/tilesets/mn_bemidji_plateau_stairs.json": "9dedf27bd8b0d717591110533ffd5c68750e1b5015226acc25b4b449142fb6b2",
+        "data/tilesets/mn_bemidji_plateau_stairs_metatiles.bin": "941f72ac35f76d50055344cbe18aa0fefa8d77d99828b9490b995c8056e5da1e",
+        "data/tilesets/mn_bemidji_plateau_stairs_palette_map.json": "ce445e6c023a412d0a131647c75ae53d81a7ccc0f0bf102bc19cc6cd118f7629",
+        "gfx/tilesets/mn_bemidji_plateau_stairs.2bpp": "d2c3db814e434b5d80151abd8cb1e930bf2de2097a267a558b560bd96ae24b77",
+        "gfx/tilesets/mn_bemidji_plateau_stairs.png": "af9f5452c3b7b690c1b566706a503762465113648aadb5051b3775f9bce82f5f"
+      },
+      "ground_reference_block": "02",
+      "recipes": [
+        {
+          "block": "02",
+          "kind": "native_copy",
+          "collision": [
+            "FLOOR",
+            "FLOOR",
+            "FLOOR",
+            "FLOOR"
+          ],
+          "donor_tileset": "mn_winter_outdoor",
+          "donor_block": "3c"
+        },
+        {
+          "block": "05",
+          "kind": "native_copy",
+          "collision": [
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL"
+          ],
+          "donor_tileset": "mn_winter_north_shore",
+          "donor_block": "8b"
+        },
+        {
+          "block": "04",
+          "kind": "frost_flowers",
+          "collision": [
+            "FLOOR",
+            "FLOOR",
+            "FLOOR",
+            "FLOOR"
+          ]
+        },
+        {
+          "block": "6a",
+          "kind": "mixed_foliage",
+          "collision": [
+            "WALL",
+            "UP_WALL",
+            "WALL",
+            "FLOOR"
+          ]
+        },
+        {
+          "block": "6b",
+          "kind": "mixed_foliage",
+          "collision": [
+            "UP_WALL",
+            "WALL",
+            "FLOOR",
+            "WALL"
+          ]
+        },
+        {
+          "block": "85",
+          "kind": "mixed_foliage",
+          "collision": [
+            "HEADBUTT_TREE",
+            "HEADBUTT_TREE",
+            "WALL",
+            "WALL"
+          ]
+        },
+        {
+          "block": "86",
+          "kind": "mixed_foliage",
+          "collision": [
+            "HEADBUTT_TREE",
+            "HEADBUTT_TREE",
+            "WALL",
+            "WALL"
+          ]
+        }
+      ],
+      "native_behavior_source": "mn_bemidji_plateau_stairs",
+      "maps": [
+        "MnBemidji"
+      ]
+    },
+    {
+      "source": "johto",
+      "target": "mn_winter_bemidji_northwoods",
+      "source_blocks": 128,
+      "source_definition_sha256": "d49be2437d396e1a5f69905a3297254b30d6b73d04bbba49ec4e39383dcc1c40",
+      "source_runtime_sha256": {
+        "data/tilesets/johto_metatiles.bin": "4af44f22edf06b8c4dd949c0acfad0a74a05554d63278d8f5791ba0e7bf13017",
+        "data/tilesets/johto_modern_metatiles.bin": "0535f624615df55771b15283d6ae8e20c0b2ce3d8cc9fac802e5098684ac2209",
+        "data/tilesets/mn_outdoor_johto_stairs.json": "dd15866f12bd0e6d5fd4b6186c6b44177044411d6f6832ec20dc18ea18a5b4a0",
+        "data/tilesets/mn_outdoor_johto_stairs_metatiles.bin": "b52dace925867a74ac7ccccf83f7b4ff28444a464aecac1ebfb3c0bfe17df04c",
+        "data/tilesets/mn_outdoor_johto_stairs_palette_map.json": "2119e0c6eb0880481f1ec73199c3e8b53b0dcb32986eecab4dd266c66114766c",
+        "gfx/tilesets/johto.2bpp": "da7c80d2d52999f84deb38789eba3758a8a3aba25aaf24d1d2da699683cfd019",
+        "gfx/tilesets/johto.png": "1d6ef5d49b5937a1dddeafea52e306544aab210cde10e2e0a7f22d0a6d644f6e",
+        "gfx/tilesets/johto_modern.2bpp": "5973df9f5ea9af83bf4b85929d7731f9e73d866e072684a2a8221705f9287c1a",
+        "gfx/tilesets/johto_modern.png": "1e311d8dfe5df8aa82a3a3b05c8b95d5df3db9e308507f06d9de13f9a1d33708",
+        "gfx/tilesets/mn_outdoor_johto_stairs.2bpp": "266b37101f15f57c1772fa57d13b53c2115ce76c82d39b8c61b126b56753cd38",
+        "gfx/tilesets/mn_outdoor_johto_stairs.png": "a698210f846380fc511db63ecce0ffc37861d1b4b52f284406af22ba093e114a"
+      },
+      "ground_reference_block": "02",
+      "recipes": [
+        {
+          "block": "02",
+          "kind": "native_copy",
+          "collision": [
+            "FLOOR",
+            "FLOOR",
+            "FLOOR",
+            "FLOOR"
+          ],
+          "donor_tileset": "mn_winter_outdoor",
+          "donor_block": "3c"
+        },
+        {
+          "block": "03",
+          "kind": "native_copy",
+          "collision": [
+            "TALL_GRASS",
+            "TALL_GRASS",
+            "TALL_GRASS",
+            "TALL_GRASS"
+          ],
+          "donor_tileset": "mn_winter_outdoor",
+          "donor_block": "3d"
+        },
+        {
+          "block": "05",
+          "kind": "native_copy",
+          "collision": [
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL"
+          ],
+          "donor_tileset": "mn_winter_north_shore",
+          "donor_block": "8b"
+        }
+      ],
+      "native_behavior_source": "johto",
+      "maps": [
+        "MnBemidjiNorthwoods"
+      ]
+    },
+    {
+      "source": "mn_grand_rapids_riverfront",
+      "target": "mn_winter_grand_rapids",
+      "source_blocks": 131,
+      "source_definition_sha256": "49a5da9cfcad1190f69c5e44a6e68058eecad80693ee6f39aa9a011f647ab1de",
+      "source_runtime_sha256": {
+        "data/tilesets/mn_grand_rapids_riverfront.json": "cad5db5ed0b30906b837c9d9e94de2666fa484c1385ec2bc4c99a70ba6d5cbe6",
+        "data/tilesets/mn_grand_rapids_riverfront_metatiles.bin": "911cb5b0bff1531e208bb2ff7e06334a9cad9a0404c2664c4404733e97c820e0",
+        "data/tilesets/mn_grand_rapids_riverfront_palette_map.json": "889201d630ddfb99eb9fd72e160784e6edc3c81d7a8639751162816b52eab6a3",
+        "gfx/tilesets/mn_grand_rapids_riverfront.2bpp": "9ca922d7b7cce8678a33b2fead0c1d601b603e7082c0fbaf95e947d6ba9144ac",
+        "gfx/tilesets/mn_grand_rapids_riverfront.png": "4848550fc24460fdb7d7772bab36ffc69f2ba9a67a89a4d429b93905f7677f5d"
+      },
+      "ground_reference_block": "02",
+      "recipes": [
+        {
+          "block": "02",
+          "kind": "native_copy",
+          "collision": [
+            "FLOOR",
+            "FLOOR",
+            "FLOOR",
+            "FLOOR"
+          ],
+          "donor_tileset": "mn_winter_outdoor",
+          "donor_block": "3c"
+        },
+        {
+          "block": "05",
+          "kind": "native_copy",
+          "collision": [
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL"
+          ],
+          "donor_tileset": "mn_winter_north_shore",
+          "donor_block": "8b"
+        },
+        {
+          "block": "04",
+          "kind": "frost_flowers",
+          "collision": [
+            "FLOOR",
+            "FLOOR",
+            "FLOOR",
+            "FLOOR"
+          ]
+        }
+      ],
+      "native_behavior_source": "mn_grand_rapids_riverfront",
+      "maps": [
+        "MnGrandRapids"
+      ]
+    },
+    {
+      "source": "mn_iron_range",
+      "target": "mn_winter_iron_range",
+      "source_blocks": 136,
+      "source_definition_sha256": "5576677f0b0d82896f7cd6e2466928e884fe76392b2d098e120a2bdee2225f08",
+      "source_runtime_sha256": {
+        "data/tilesets/mn_iron_range.json": "1d8d605e3a350e56a7f714004a5bba94b459afde407e9ad98cbdbabb6e908f83",
+        "data/tilesets/mn_iron_range_metatiles.bin": "eb950ec8dc193052974b3962910e4e0bdfaf0fbd528207eac56d32b82b68ac3b",
+        "data/tilesets/mn_iron_range_palette_map.json": "643c14af4c88841a53181a58c94938a7a456e36a1e233b00917d8ea0c23eadff",
+        "gfx/tilesets/mn_iron_range.2bpp": "8744f6c586787ce01a3a7ad6c8893a38e2afa998f3b5234d24b1f6d7c3696e87",
+        "gfx/tilesets/mn_iron_range.png": "055911e9472f0b7c359086c4cc554aed9d860c58eab665f505c42dfbcd02a359"
+      },
+      "ground_reference_block": "02",
+      "recipes": [
+        {
+          "block": "02",
+          "kind": "native_copy",
+          "collision": [
+            "FLOOR",
+            "FLOOR",
+            "FLOOR",
+            "FLOOR"
+          ],
+          "donor_tileset": "mn_winter_outdoor",
+          "donor_block": "3c"
+        },
+        {
+          "block": "03",
+          "kind": "native_copy",
+          "collision": [
+            "TALL_GRASS",
+            "TALL_GRASS",
+            "TALL_GRASS",
+            "TALL_GRASS"
+          ],
+          "donor_tileset": "mn_winter_outdoor",
+          "donor_block": "3d"
+        },
+        {
+          "block": "05",
+          "kind": "native_copy",
+          "collision": [
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL"
+          ],
+          "donor_tileset": "mn_winter_north_shore",
+          "donor_block": "8b"
+        },
+        {
+          "block": "04",
+          "kind": "frost_flowers",
+          "collision": [
+            "FLOOR",
+            "FLOOR",
+            "FLOOR",
+            "FLOOR"
+          ]
+        },
+        {
+          "block": "3f",
+          "kind": "mixed_foliage",
+          "collision": [
+            "FLOOR",
+            "FLOOR",
+            "FLOOR",
+            "HEADBUTT_TREE"
+          ]
+        },
+        {
+          "block": "63",
+          "kind": "mixed_foliage",
+          "collision": [
+            "FLOOR",
+            "FLOOR",
+            "CUT_TREE",
+            "HEADBUTT_TREE"
+          ]
+        }
+      ],
+      "native_behavior_source": "mn_iron_range",
+      "maps": [
+        "MnR09C00R00",
+        "MnR09C00R01",
+        "MnR09C01R00",
+        "MnR09C01R01"
+      ]
+    },
+    {
+      "source": "mn_winter_outdoor",
+      "target": "mn_winter_border_pines",
+      "source_blocks": 73,
+      "source_definition_sha256": "026daef45738fd1f7bcb4d6d8a5e8b8cef20d5e47f4ae19849b9084d6ee1679b",
+      "source_runtime_sha256": {
+        "data/tilesets/mn_winter_outdoor.json": "fd911e71065175d8ef1aa6939215abae416d3eee4cdcc8405e014b2eb84356b9",
+        "data/tilesets/mn_winter_outdoor_foregrounds.json": "0c0fddb047477cf597e4a2578f3530c4f35266a98c61488abf36b52092ff0f52",
+        "data/tilesets/mn_winter_outdoor_metatiles.bin": "64c816184c270411717d123a89c189188da5f843642b4e0815a59d165164a9ed",
+        "data/tilesets/mn_winter_outdoor_palette_map.json": "485f4937ee6159f702058a9bff6ce996e2b3b0fd0733061d428851bd01768fc4",
+        "gfx/tilesets/mn_winter_outdoor.2bpp": "93fbec10e71d2d7af81d39588a8ea4221d08fdc2ba14d0d788af65bfa1d5c3fd",
+        "gfx/tilesets/mn_winter_outdoor.png": "fb898acbdd9a754d082c0c3af58446f776bab3c95ba0dc09cee5dabe70e0c8db"
+      },
+      "ground_reference_block": "01",
+      "recipes": [
+        {
+          "block": "00",
+          "kind": "native_copy",
+          "donor_tileset": "mn_winter_outdoor",
+          "donor_block": "3f",
+          "collision": [
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL"
+          ]
+        },
+        {
+          "block": "01",
+          "kind": "native_copy",
+          "donor_tileset": "mn_winter_outdoor",
+          "donor_block": "3c",
+          "collision": [
+            "FLOOR",
+            "FLOOR",
+            "FLOOR",
+            "FLOOR"
+          ]
+        },
+        {
+          "block": "05",
+          "kind": "native_copy",
+          "donor_tileset": "mn_winter_outdoor",
+          "donor_block": "3f",
+          "collision": [
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL"
+          ]
+        },
+        {
+          "block": "0f",
+          "kind": "mixed_foliage",
+          "collision": [
+            "FLOOR",
+            "FLOOR",
+            "CUT_TREE",
+            "HEADBUTT_TREE"
+          ]
+        },
+        {
+          "block": "10",
+          "kind": "native_copy",
+          "donor_tileset": "mn_winter_outdoor",
+          "donor_block": "43",
+          "collision": [
+            "HEADBUTT_TREE",
+            "FLOOR",
+            "HEADBUTT_TREE",
+            "HEADBUTT_TREE"
+          ]
+        },
+        {
+          "block": "13",
+          "kind": "native_copy",
+          "donor_tileset": "mn_winter_outdoor",
+          "donor_block": "41",
+          "collision": [
+            "FLOOR",
+            "FLOOR",
+            "FLOOR",
+            "WALL"
+          ]
+        },
+        {
+          "block": "17",
+          "kind": "mixed_foliage",
+          "collision": [
+            "FLOOR",
+            "FLOOR",
+            "FLOOR",
+            "HEADBUTT_TREE"
+          ]
+        },
+        {
+          "block": "37",
+          "kind": "native_copy",
+          "donor_tileset": "mn_winter_outdoor",
+          "donor_block": "3d",
+          "collision": [
+            "TALL_GRASS",
+            "TALL_GRASS",
+            "TALL_GRASS",
+            "TALL_GRASS"
+          ]
+        }
+      ],
+      "native_behavior_source": "mn_winter_outdoor",
+      "maps": [
+        "MnR17C00R00",
+        "MnR17C00R01"
+      ]
+    },
+    {
+      "source": "mn_border_pines",
+      "target": "mn_winter_border_pines_south",
+      "source_blocks": 60,
+      "source_definition_sha256": "6ce701854287c8bcb3798b9dc336bfad8090ecde9ad0e6e6466efb89a4bf9765",
+      "source_runtime_sha256": {
+        "data/tilesets/mn_border_pines.json": "6f89c3a6281c680e4d41f70bc7e68065d2a63fb90fc39a862403e504c7436d8b",
+        "data/tilesets/mn_border_pines_metatiles.bin": "db9244ac11a8cb27b0ca64c35500904323fb6c58e73e5a6c1efd46bff7c97e8d",
+        "data/tilesets/mn_border_pines_palette_map.json": "e90e6b34640a8a8c9add2919f330d3e4cf3f8c8c724442f123a9fc0d56d526cf",
+        "gfx/tilesets/mn_border_pines.2bpp": "69ae9730105cec8d1a80fde5c2dbece8668b82b0574f761582ba993e44960146",
+        "gfx/tilesets/mn_border_pines.png": "3c635e9dec88e0aa6f2834598d4f95212680e9556890995e2313bdadf4b90e3a"
+      },
+      "ground_reference_block": "01",
+      "recipes": [
+        {
+          "block": "01",
+          "kind": "native_copy",
+          "donor_tileset": "mn_winter_outdoor",
+          "donor_block": "3c",
+          "collision": [
+            "FLOOR",
+            "FLOOR",
+            "FLOOR",
+            "FLOOR"
+          ]
+        },
+        {
+          "block": "05",
+          "kind": "native_copy",
+          "donor_tileset": "mn_winter_outdoor",
+          "donor_block": "3f",
+          "collision": [
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL"
+          ]
+        },
+        {
+          "block": "0e",
+          "kind": "native_copy",
+          "donor_tileset": "mn_winter_outdoor",
+          "donor_block": "42",
+          "collision": [
+            "FLOOR",
+            "HEADBUTT_TREE",
+            "FLOOR",
+            "HEADBUTT_TREE"
+          ]
+        },
+        {
+          "block": "13",
+          "kind": "native_copy",
+          "donor_tileset": "mn_winter_outdoor",
+          "donor_block": "41",
+          "collision": [
+            "FLOOR",
+            "FLOOR",
+            "FLOOR",
+            "WALL"
+          ]
+        },
+        {
+          "block": "14",
+          "kind": "native_copy",
+          "donor_tileset": "mn_winter_outdoor",
+          "donor_block": "46",
+          "collision": [
+            "HEADBUTT_TREE",
+            "FLOOR",
+            "FLOOR",
+            "FLOOR"
+          ]
+        },
+        {
+          "block": "37",
+          "kind": "native_copy",
+          "donor_tileset": "mn_winter_outdoor",
+          "donor_block": "3d",
+          "collision": [
+            "TALL_GRASS",
+            "TALL_GRASS",
+            "TALL_GRASS",
+            "TALL_GRASS"
+          ]
+        }
+      ],
+      "native_behavior_source": "mn_border_pines",
+      "maps": [
+        "MnR17C00R02"
+      ]
+    }
+  ],
+  "maps": [
+    {
+      "id": "MnBemidji",
+      "dimensions_metatiles": [
+        24,
+        24
+      ],
+      "source_tileset": "mn_bemidji_plateau_stairs",
+      "target_tileset": "mn_winter_bemidji",
+      "native_module_sha256": "d2b6b0b25ee3b20a1d23e9d7d33e85ef0e1009ef1427882dfff31c44322af4ee",
+      "rows": [
+        "05 05 05 05 05 05 05 05 05 05 05 05 01 05 05 05 05 05 05 05 05 05 05 05",
+        "05 05 05 05 05 05 05 05 05 05 05 05 01 05 02 05 05 05 05 05 05 05 05 05",
+        "05 05 6a 70 70 70 70 70 6b 05 05 05 01 45 04 04 04 04 05 05 05 05 05 05",
+        "05 05 68 05 18 1f 19 05 02 6b 05 05 01 02 02 18 19 02 05 05 05 05 05 05",
+        "05 05 68 05 1c 1d 1e 05 02 69 05 05 01 02 02 1a 1b 02 05 05 05 05 05 05",
+        "05 05 68 04 01 01 01 45 01 69 05 05 01 01 01 01 01 01 05 05 05 05 05 05",
+        "05 05 68 18 19 04 04 05 01 69 05 05 01 05 05 05 05 05 05 05 05 05 05 05",
+        "05 05 68 1a 11 04 04 02 01 69 05 02 01 05 05 05 18 19 05 05 05 05 05 05",
+        "05 05 68 01 01 01 01 01 01 69 04 01 01 05 05 05 1a 11 05 05 18 19 05 05",
+        "05 05 68 05 05 02 02 05 05 69 01 01 01 01 01 01 01 01 05 05 1a 33 05 05",
+        "05 05 6c 72 72 84 72 72 72 6d 02 02 01 05 05 04 04 05 05 05 02 01 02 05",
+        "05 05 02 05 05 01 01 05 05 02 02 45 01 05 05 02 02 05 05 05 02 01 05 05",
+        "01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01",
+        "05 05 05 04 04 04 04 02 02 02 02 02 01 02 02 49 49 49 49 49 49 49 05 05",
+        "05 05 05 04 02 01 01 01 45 02 02 02 01 01 46 54 76 76 76 76 76 76 76 32",
+        "05 05 05 04 02 02 02 02 05 05 05 05 01 45 46 58 35 35 35 35 35 35 35 36",
+        "05 05 05 05 85 86 02 02 05 05 05 05 01 05 46 58 35 35 35 35 35 35 35 36",
+        "05 05 05 05 80 81 02 02 05 05 05 05 01 01 41 41 41 41 41 0a 58 35 35 36",
+        "05 05 05 05 82 83 02 02 05 05 02 02 01 02 49 49 49 49 49 0a 58 35 35 36",
+        "05 05 05 05 02 01 01 01 01 01 01 01 01 02 46 54 76 76 76 76 79 35 35 36",
+        "05 05 05 02 04 04 04 04 04 05 05 02 01 45 01 58 35 35 35 35 35 35 35 36",
+        "05 05 05 05 05 05 05 05 05 05 05 02 01 05 46 58 35 35 35 35 35 35 35 36",
+        "05 05 05 05 05 05 05 05 05 05 05 05 01 05 46 58 35 35 35 35 35 35 35 36",
+        "05 05 05 05 05 05 05 05 05 05 05 05 01 05 05 38 39 39 39 39 39 39 39 3a"
+      ],
+      "connections": [
+        {
+          "direction": "south",
+          "target_map": "MnR08C00R00",
+          "offset": 0
+        },
+        {
+          "direction": "west",
+          "target_map": "MnR14C01R00",
+          "offset": -1
+        },
+        {
+          "direction": "east",
+          "target_map": "MnR09C00R01",
+          "offset": 11
+        },
+        {
+          "direction": "north",
+          "target_map": "MnBemidjiNorthwoods",
+          "offset": 8
+        }
+      ],
+      "all_original_module_fields_except_tileset_must_remain_exact": true
+    },
+    {
+      "id": "MnBemidjiNorthwoods",
+      "dimensions_metatiles": [
+        8,
+        14
+      ],
+      "source_tileset": "johto",
+      "target_tileset": "mn_winter_bemidji_northwoods",
+      "native_module_sha256": "4fac2c8fbcfad239ff36bb53f799e1147eebf57ba427f4b02732e06275924026",
+      "rows": [
+        "05 05 05 05 01 05 05 05",
+        "05 05 05 05 03 05 05 05",
+        "05 05 05 01 03 05 05 05",
+        "05 05 05 01 05 05 05 05",
+        "05 05 05 01 05 05 08 09",
+        "05 05 05 03 01 01 1a 11",
+        "05 05 05 01 05 03 01 05",
+        "05 05 05 56 05 03 05 05",
+        "01 01 01 01 01 01 05 05",
+        "05 05 01 05 05 05 05 05",
+        "05 05 03 05 05 05 05 05",
+        "05 05 03 01 01 05 05 05",
+        "05 05 05 05 01 05 05 05",
+        "05 05 05 05 01 05 05 05"
+      ],
+      "connections": [
+        {
+          "direction": "south",
+          "target_map": "MnBemidji",
+          "offset": -8
+        },
+        {
+          "direction": "north",
+          "target_map": "MnR17C00R02",
+          "offset": -12
+        },
+        {
+          "direction": "west",
+          "target_map": "MnLayeredFen",
+          "offset": 0
+        }
+      ],
+      "all_original_module_fields_except_tileset_must_remain_exact": true
+    },
+    {
+      "id": "MnGrandRapids",
+      "dimensions_metatiles": [
+        24,
+        24
+      ],
+      "source_tileset": "mn_grand_rapids_riverfront",
+      "target_tileset": "mn_winter_grand_rapids",
+      "native_module_sha256": "288157a9d4b4c3bc892c0d3ae45d0056b39bf65cdda354cd1f4c76698d166e26",
+      "rows": [
+        "05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05",
+        "05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05",
+        "05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05",
+        "05 05 05 04 00 00 04 04 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05",
+        "05 05 05 00 18 19 00 00 05 05 05 00 00 00 00 00 00 05 05 05 05 05 05 05",
+        "05 05 05 00 1a 1b 00 00 05 05 05 00 00 18 1f 19 00 05 04 00 00 05 05 05",
+        "05 05 02 00 06 06 00 04 05 05 05 45 00 1a 0f 11 00 05 00 18 19 02 05 05",
+        "05 05 02 00 01 00 00 00 05 05 01 01 06 06 06 06 01 05 00 1a 33 02 05 05",
+        "05 05 02 00 01 01 01 01 01 01 01 00 06 06 06 06 01 01 01 06 06 02 05 05",
+        "05 05 02 05 01 05 05 05 05 05 05 04 00 01 00 00 00 05 00 01 04 02 05 05",
+        "05 05 02 05 01 05 05 05 05 05 05 05 01 01 05 05 05 05 00 01 00 02 05 05",
+        "05 05 02 05 01 05 05 45 05 05 05 05 01 05 05 05 05 05 05 45 05 02 05 05",
+        "01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01",
+        "05 05 05 05 05 05 05 05 01 05 05 05 05 05 05 05 05 05 01 05 05 02 05 05",
+        "05 05 05 05 05 05 05 05 01 01 05 05 05 05 05 05 05 05 01 05 05 02 05 05",
+        "05 05 05 05 05 05 05 05 05 01 01 05 05 05 05 05 05 05 01 05 05 05 05 05",
+        "05 05 05 05 05 05 05 05 05 05 01 01 01 01 01 01 01 01 01 05 05 05 05 05",
+        "05 05 05 54 76 76 76 55 05 49 49 49 80 81 49 49 49 49 49 49 05 05 05 05",
+        "05 05 05 58 35 35 35 7a 76 76 76 76 80 81 76 76 76 76 76 76 55 05 05 05",
+        "05 05 05 58 35 35 35 35 35 35 35 35 82 82 35 35 35 35 35 35 59 05 05 05",
+        "05 05 05 58 35 35 35 35 35 35 35 35 35 35 35 35 35 35 35 35 59 05 05 05",
+        "05 05 05 05 05 05 05 58 35 35 35 35 35 35 35 35 35 35 59 05 05 05 05 05",
+        "05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05",
+        "05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05"
+      ],
+      "connections": [
+        {
+          "direction": "west",
+          "target_map": "MnR09C01R00",
+          "offset": 0
+        },
+        {
+          "direction": "east",
+          "target_map": "MnR10C00R00",
+          "offset": 7
+        }
+      ],
+      "all_original_module_fields_except_tileset_must_remain_exact": true
+    },
+    {
+      "id": "MnR09C00R00",
+      "dimensions_metatiles": [
+        32,
+        24
+      ],
+      "source_tileset": "mn_iron_range",
+      "target_tileset": "mn_winter_iron_range",
+      "native_module_sha256": "ad954bd2d9eec3d706910fc164a81875c83cdcde3fc392c228c815b98ea34c82",
+      "rows": [
+        "05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05",
+        "05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05",
+        "05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05",
+        "05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 6a 70 70 70 70 6b 05 05 05 05 05 05",
+        "05 05 05 05 05 05 05 05 05 05 05 05 05 05 6a 70 6b 05 05 05 68 71 71 71 71 71 70 70 6b 05 05 05",
+        "05 05 05 05 05 05 05 05 05 05 05 05 05 05 68 71 69 05 05 05 68 71 71 71 71 71 71 71 71 70 70 70",
+        "05 05 05 05 05 05 05 05 05 05 05 05 05 05 68 71 71 6b 05 05 68 71 71 71 71 71 71 71 71 71 71 71",
+        "05 05 05 05 05 05 05 05 05 05 05 05 05 05 68 71 71 69 05 05 6c 72 72 72 0a 72 72 72 72 0a 72 72",
+        "05 05 05 05 05 05 05 6a 70 70 6b 05 05 05 68 71 6f 6d 05 05 05 6a 0a 70 0a 0a 70 70 0a 0a 70 6b",
+        "05 05 05 05 05 05 05 68 71 71 69 05 05 05 6c 72 6d 05 05 6a 70 71 71 71 71 03 03 71 71 71 71 69",
+        "05 05 05 05 05 05 05 68 71 71 69 05 54 76 76 55 05 05 6a 71 71 71 71 6f 72 72 72 72 72 6e 71 71",
+        "05 05 05 05 05 05 05 68 71 6f 6d 05 58 35 35 59 05 05 68 71 71 6f 72 6d 02 02 02 02 02 68 71 71",
+        "05 05 05 05 05 05 05 68 71 69 05 05 58 35 35 7a 55 05 68 03 03 69 05 05 02 54 76 76 55 6c 72 72",
+        "05 05 05 05 05 05 05 68 71 69 05 54 79 35 35 35 59 05 68 03 03 69 05 05 02 58 35 35 7a 76 76 76",
+        "05 05 05 05 05 05 05 68 71 69 05 58 35 35 35 35 59 05 68 71 03 69 05 02 54 79 35 35 35 35 35 35",
+        "05 05 05 05 05 05 05 68 71 69 05 58 35 35 35 35 59 05 68 03 03 69 05 02 58 35 35 35 35 35 35 35",
+        "05 05 05 05 05 05 05 68 71 69 05 58 35 35 59 05 05 05 03 03 0a 69 05 02 58 35 35 35 35 35 35 35",
+        "05 05 02 02 02 02 05 68 71 69 05 58 35 35 59 05 05 0a 86 72 72 0a 0a 0a 70 6b 58 35 35 35 35 35",
+        "05 05 02 01 02 02 05 6c 72 6d 05 05 58 35 59 05 05 0a 87 71 71 71 71 71 71 69 58 35 35 35 35 35",
+        "05 05 02 01 03 02 05 05 05 05 05 05 58 35 59 05 05 05 6e 71 71 71 71 71 71 69 58 35 35 35 35 35",
+        "05 05 02 03 03 02 05 05 05 05 05 05 58 35 59 05 05 05 6c 72 73 72 72 72 85 6d 02 41 41 41 41 41",
+        "05 05 02 02 02 05 05 05 05 05 02 02 82 82 82 02 02 02 71 45 71 71 71 71 71 71 02 03 03 03 03 03",
+        "05 05 02 02 02 05 05 05 05 05 45 05 81 81 81 05 05 02 05 0a 0a 0a 05 05 02 71 02 02 0a 0a 45 03",
+        "05 05 45 02 0a 0a 05 03 03 05 02 05 54 76 55 05 05 02 05 05 05 0a 05 05 02 71 71 71 71 71 71 71"
+      ],
+      "connections": [
+        {
+          "direction": "south",
+          "target_map": "MnR09C00R01",
+          "offset": 0
+        },
+        {
+          "direction": "east",
+          "target_map": "MnR09C01R00",
+          "offset": 0
+        }
+      ],
+      "all_original_module_fields_except_tileset_must_remain_exact": true
+    },
+    {
+      "id": "MnR09C00R01",
+      "dimensions_metatiles": [
+        32,
+        12
+      ],
+      "source_tileset": "mn_iron_range",
+      "target_tileset": "mn_winter_iron_range",
+      "native_module_sha256": "3a219730faf7e86a825a730538b855dc562218670e5a9b0db077d3854eac5883",
+      "rows": [
+        "05 02 02 02 02 02 02 03 03 02 02 05 58 35 59 05 05 02 05 05 6a 70 70 6b 05 05 05 05 05 05 0a 0a",
+        "02 02 02 02 02 02 02 03 03 05 05 54 79 35 59 05 05 02 05 05 68 71 71 71 70 6b 05 6a 70 70 70 0a",
+        "05 05 05 05 05 05 02 05 05 05 05 58 35 35 7a 76 55 02 02 05 6c 6e 71 71 71 69 05 68 71 71 71 71",
+        "05 05 05 05 05 05 03 05 05 05 05 58 35 35 35 35 59 02 02 01 02 6c 72 6e 71 69 05 6c 72 72 6e 71",
+        "05 05 05 05 05 05 63 05 05 05 05 58 35 35 35 35 59 02 02 02 02 05 05 6c 72 6d 05 05 05 05 6c 72",
+        "05 05 05 05 02 02 02 02 05 05 05 05 58 35 35 35 59 02 02 02 02 05 05 05 05 05 05 05 05 05 05 05",
+        "05 05 05 02 02 03 03 03 02 05 05 05 58 35 35 35 59 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05",
+        "05 05 05 02 02 03 03 45 02 05 05 05 58 35 59 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05",
+        "05 05 05 02 02 02 02 02 02 05 05 05 58 35 59 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05",
+        "05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05",
+        "05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05",
+        "05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05"
+      ],
+      "connections": [
+        {
+          "direction": "north",
+          "target_map": "MnR09C00R00",
+          "offset": 0
+        },
+        {
+          "direction": "east",
+          "target_map": "MnR09C01R01",
+          "offset": 0
+        },
+        {
+          "direction": "west",
+          "target_map": "MnBemidji",
+          "offset": -11
+        }
+      ],
+      "all_original_module_fields_except_tileset_must_remain_exact": true
+    },
+    {
+      "id": "MnR09C01R00",
+      "dimensions_metatiles": [
+        32,
+        24
+      ],
+      "source_tileset": "mn_iron_range",
+      "target_tileset": "mn_winter_iron_range",
+      "native_module_sha256": "d4d7a07050ceaee05cbe757b82d8c8933e59492285eae6f0737135ee10db288a",
+      "rows": [
+        "05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05",
+        "05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05",
+        "05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05",
+        "05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05",
+        "05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 6a 70 70 6b 05 05 05 05 05 05 05 05 05 05 05 05",
+        "70 70 70 6b 05 6a 70 6b 05 05 05 05 05 05 05 05 68 71 71 71 70 70 6b 05 05 05 05 05 05 05 05 05",
+        "71 71 71 69 05 68 71 69 05 05 05 6a 70 6b 05 05 68 71 71 71 71 71 69 05 05 05 05 05 05 05 05 05",
+        "72 72 72 6d 05 68 71 71 70 6b 05 68 71 69 05 05 68 71 71 71 6f 72 6d 05 05 05 05 05 05 05 05 05",
+        "05 05 05 05 05 68 71 71 71 69 05 68 71 69 05 05 6c 72 72 72 6d 05 05 03 03 03 03 03 05 05 05 05",
+        "05 05 05 05 05 6c 72 0a 0a 69 05 68 71 71 6b 05 05 05 05 05 05 05 05 03 01 03 03 01 05 05 05 05",
+        "70 70 70 70 6b 05 05 6c 72 6d 05 68 71 71 69 05 05 05 05 05 05 05 02 03 03 03 03 03 02 05 05 05",
+        "71 71 71 71 69 05 05 05 05 05 05 6c 6e 71 69 05 05 05 05 05 05 05 02 05 05 05 05 05 45 05 05 05",
+        "72 72 6e 71 71 70 70 0a 0a 6b 05 05 6c 72 6d 02 02 02 02 02 02 02 02 05 05 05 05 05 02 02 02 02",
+        "76 55 68 71 71 71 71 71 71 69 05 05 05 05 05 01 45 02 02 05 05 05 05 05 05 05 05 05 05 05 05 05",
+        "35 59 6c 72 72 72 72 6e 71 69 05 41 41 41 41 41 41 41 02 41 41 41 41 41 05 05 05 05 05 05 05 05",
+        "35 7a 76 55 02 02 05 0a 03 0a 05 83 83 83 83 83 83 83 84 83 83 83 83 83 0a 05 05 05 05 05 05 05",
+        "35 35 35 59 02 02 05 0a 03 0a 05 49 49 49 49 49 49 49 02 49 49 49 49 49 05 05 05 05 05 05 05 05",
+        "35 35 35 59 02 02 05 68 71 69 05 05 05 05 05 05 05 05 02 01 03 03 05 05 05 05 05 05 05 05 05 05",
+        "59 02 02 02 02 02 05 68 71 69 05 05 05 05 05 05 05 01 02 05 03 03 05 05 05 05 05 05 05 05 05 05",
+        "59 02 02 02 02 02 05 68 71 69 05 05 02 02 02 02 02 02 02 02 03 03 05 05 05 05 05 05 05 05 05 05",
+        "03 02 02 05 05 05 05 6c 72 6d 05 05 02 05 05 02 45 02 02 02 03 03 05 05 05 05 05 05 05 05 05 05",
+        "03 02 02 05 0a 05 05 05 02 05 05 05 02 05 05 02 02 01 02 02 03 03 05 05 05 05 05 05 05 05 05 05",
+        "03 01 02 0a 0a 05 05 05 02 05 05 05 02 05 05 02 02 02 02 02 02 05 05 05 05 05 05 05 05 05 05 05",
+        "71 71 71 71 71 71 71 71 71 71 71 71 02 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05"
+      ],
+      "connections": [
+        {
+          "direction": "south",
+          "target_map": "MnR09C01R01",
+          "offset": 0
+        },
+        {
+          "direction": "west",
+          "target_map": "MnR09C00R00",
+          "offset": 0
+        },
+        {
+          "direction": "east",
+          "target_map": "MnGrandRapids",
+          "offset": 0
+        }
+      ],
+      "all_original_module_fields_except_tileset_must_remain_exact": true
+    },
+    {
+      "id": "MnR09C01R01",
+      "dimensions_metatiles": [
+        32,
+        12
+      ],
+      "source_tileset": "mn_iron_range",
+      "target_tileset": "mn_winter_iron_range",
+      "native_module_sha256": "f7bca51f842c359e4f146d860c9d7089aaefc4dcbd4f4c2343ba8adfd17ad9de",
+      "rows": [
+        "0a 05 05 05 05 05 05 6a 70 6b 05 05 02 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05",
+        "05 05 05 05 05 05 05 68 71 71 6b 02 02 02 02 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05",
+        "70 70 70 6b 05 05 05 68 71 71 69 02 02 02 02 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05",
+        "71 71 71 69 05 05 05 68 71 71 69 02 04 04 02 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05",
+        "72 72 72 6d 05 05 05 6c 72 72 6d 05 02 02 02 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05",
+        "05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05",
+        "05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05",
+        "05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05",
+        "05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05",
+        "05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05",
+        "05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05",
+        "05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05"
+      ],
+      "connections": [
+        {
+          "direction": "north",
+          "target_map": "MnR09C01R00",
+          "offset": 0
+        },
+        {
+          "direction": "west",
+          "target_map": "MnR09C00R01",
+          "offset": 0
+        }
+      ],
+      "all_original_module_fields_except_tileset_must_remain_exact": true
+    },
+    {
+      "id": "MnR17C00R00",
+      "dimensions_metatiles": [
+        32,
+        24
+      ],
+      "source_tileset": "mn_winter_outdoor",
+      "target_tileset": "mn_winter_border_pines",
+      "native_module_sha256": "e2bf55fa514063577068d28c60b0a5e421a8a69c77830f4b810ccbda72951743",
+      "rows": [
+        "3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3c 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f",
+        "3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3c 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f",
+        "3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3c 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f",
+        "3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 41 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f",
+        "3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3d 3d 3d 3d 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f",
+        "3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3c 3c 3c 3c 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f",
+        "3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3c 3c 3c 42 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f",
+        "3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 47 3c 3c 3c 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f",
+        "3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3c 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f",
+        "3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3c 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f",
+        "3f 3f 3f 3f 3f 3f 3f 40 3c 40 3c 3f 3c 3c 3c 3c 3c 3c 3c 3c 3c 3c 3c 3c 3c 3f 3f 3f 3f 3f 3f 3f",
+        "3f 3f 3f 3f 3f 3f 3f 3c 3d 3d 3d 3c 3c 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3e 3f 3f 3f 3f 3f 3f 3f",
+        "3f 3f 3f 3f 3f 3f 3f 3c 3c 3d 3d 3c 41 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3e 3f 3c 3c 3c 3f 3f 3f",
+        "3f 3f 3f 3f 3f 3f 3f 3c 3d 3d 40 3c 3c 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3e 3f 3c 3c 3c 3f 3f 3f",
+        "3f 3f 3f 3f 3f 3f 3f 3f 3c 3c 3c 3c 3c 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3c 3d 41 3c 3c 3f 3f 3f",
+        "3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3e 3f 3c 3c 3c 3f 3f 3f",
+        "3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3c 43 3f 3f 3f 3f 3f 3f",
+        "3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3c 3e 3e 3e 3c 3f 3f 3f 3f 3f 3f 3f",
+        "3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3d 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f",
+        "3f 3f 3f 2b 31 31 2c 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3d 42 3f 48 3f 3f 3f 3f 3f 3f 3f 3f",
+        "3f 3f 3f 29 3c 3c 3c 2c 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3c 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f",
+        "3f 3f 3f 2d 33 34 41 2e 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3c 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f",
+        "3f 3f 3f 3f 3f 3c 3c 3c 3c 3c 3c 3c 3c 41 3c 3c 3c 3c 3c 3c 3c 3f 1d 1e 1f 3f 3f 3f 3f 3f 3f 3f",
+        "3f 3f 3f 3f 3f 3c 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3c 3f 21 22 23 3f 3f 3f 3f 3f 3f 3f"
+      ],
+      "connections": [
+        {
+          "direction": "south",
+          "target_map": "MnR17C00R01",
+          "offset": 0
+        },
+        {
+          "direction": "north",
+          "target_map": "MnInternationalFalls",
+          "offset": 8
+        }
+      ],
+      "all_original_module_fields_except_tileset_must_remain_exact": true
+    },
+    {
+      "id": "MnR17C00R01",
+      "dimensions_metatiles": [
+        32,
+        24
+      ],
+      "source_tileset": "mn_winter_outdoor",
+      "target_tileset": "mn_winter_border_pines",
+      "native_module_sha256": "d3bc6bb5756df442b3da2ee748727b5bc0c1d569dd4ba633b56515082f83cdb5",
+      "rows": [
+        "3f 3f 3f 3f 3c 3c 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3c 3f 24 26 27 3f 3f 3f 3f 3f 3f 3f",
+        "3f 3f 3f 3f 3c 3f 3c 3c 3c 3c 3c 3f 3f 3f 3f 3f 3f 3f 3f 3f 3c 3c 3c 41 3c 3f 3f 3f 3f 3f 3f 3f",
+        "3f 3f 3f 3f 3c 3f 3c 3e 3e 3e 3c 3f 3f 3f 3f 3c 3c 3c 3c 3c 3c 3c 3c 3c 3c 3c 3f 3f 3f 3f 3f 3f",
+        "3f 3f 3f 3f 3d 3d 3c 3e 3e 3e 3e 3c 3c 3c 3f 3c 3f 3f 3f 3f 3c 46 3c 3c 3c 3c 3f 3f 3f 3f 3f 3f",
+        "3f 3f 3f 3f 3d 3d 3c 3c 3e 3e 3e 3e 3e 3c 3f 3c 44 3c 3f 3f 3f 3f 3c 3c 3c 3c 3f 3f 3f 3f 3f 3f",
+        "3f 3f 3f 3f 3d 3c 3d 3f 3c 3e 3e 3e 3c 28 3c 3c 3c 3c 3c 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f",
+        "3f 3f 3f 3f 3f 3f 3f 3f 3c 3c 3c 3e 3c 28 3c 3c 3c 45 3c 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f",
+        "3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3c 3c 3c 3c 3c 3c 3c 3c 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f",
+        "3f 3f 3f 3f 3f 3f 3f 3f 3f 41 3f 3c 3c 3c 3c 3c 3f 3f 3c 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f",
+        "3f 3f 3f 3f 3f 3f 3f 3f 3f 3c 3c 3c 3c 3c 3c 3c 3f 3f 3c 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f",
+        "3f 3f 3f 3f 3f 3f 3f 3f 3f 3c 3f 07 03 03 0d 3f 3f 3f 0f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f",
+        "3f 3f 3f 3f 3f 3f 3f 3f 3f 3c 3f 0a 02 02 39 03 0d 3f 3c 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f 3f",
+        "3f 3f 3f 3f 3f 3f 3f 3f 3f 3c 3f 0a 02 02 02 02 0b 3f 3c 3f 3f 3f 3f 3f 3f 3f 3f 05 05 05 05 05",
+        "3f 3f 3f 3f 3f 3f 3f 3f 3f 3c 3f 0a 02 02 02 02 0b 3f 3c 3f 3f 3f 3f 3f 3f 3f 3f 05 05 05 05 05",
+        "3f 3f 3f 3f 3f 3f 3f 3f 3f 3c 3f 3f 3f 0a 02 02 0b 3f 3c 3f 3f 3f 3f 05 05 05 05 05 05 05 05 05",
+        "3f 3f 3f 3f 3f 3f 3f 3f 3f 3d 3f 3f 3f 0a 02 02 0b 3f 3c 05 05 05 05 05 05 05 05 05 05 05 05 05",
+        "3f 3f 3f 3f 3f 3f 3f 3f 3f 3d 3f 3f 3f 3f 3f 3f 3f 3f 3c 05 05 05 05 05 05 05 05 05 05 05 05 05",
+        "3f 3f 3f 3f 3f 3f 3f 3f 3f 3c 3c 3c 3c 3c 3c 01 01 01 01 05 05 05 05 05 05 05 05 05 05 05 05 05",
+        "05 05 05 05 05 3f 3f 3f 3f 3f 3f 05 01 13 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05",
+        "05 05 05 05 05 3f 3f 3f 3f 3f 3f 05 01 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05",
+        "05 05 05 05 05 05 01 00 01 01 05 37 37 37 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05",
+        "05 05 05 05 05 05 37 37 01 01 01 37 37 37 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05",
+        "05 05 05 05 05 05 00 37 01 01 10 05 01 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05",
+        "05 05 05 05 05 05 01 01 01 01 01 01 01 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05"
+      ],
+      "connections": [
+        {
+          "direction": "north",
+          "target_map": "MnR17C00R00",
+          "offset": 0
+        },
+        {
+          "direction": "south",
+          "target_map": "MnR17C00R02",
+          "offset": 0
+        }
+      ],
+      "all_original_module_fields_except_tileset_must_remain_exact": true
+    },
+    {
+      "id": "MnR17C00R02",
+      "dimensions_metatiles": [
+        32,
+        8
+      ],
+      "source_tileset": "mn_border_pines",
+      "target_tileset": "mn_winter_border_pines_south",
+      "native_module_sha256": "ba66295dc016bcecca698a866d968e3d71c6159c92106b82943887029430ecb0",
+      "rows": [
+        "05 05 05 05 05 05 05 05 05 05 05 05 01 01 01 37 37 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05",
+        "05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 37 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05",
+        "05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 01 14 01 01 05 05 05 05 05 05 05 05 05 05 05 05 05",
+        "05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 01 01 01 01 01 05 05 05 05 05 05 05 05 05 05 05 05",
+        "05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 01 01 01 0e 01 05 05 05 05 05 05 05 05 05 05 05 05",
+        "05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 01 01 13 01 01 05 05 05 05 05 05 05 05 05 05 05 05",
+        "05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 01 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05",
+        "05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 01 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05"
+      ],
+      "connections": [
+        {
+          "direction": "north",
+          "target_map": "MnR17C00R01",
+          "offset": 0
+        },
+        {
+          "direction": "south",
+          "target_map": "MnBemidjiNorthwoods",
+          "offset": 12
+        }
+      ],
+      "all_original_module_fields_except_tileset_must_remain_exact": true
+    }
+  ],
+  "climate_exclusions": [
+    "MnBoundaryWaters",
+    "MnBoundarySafari*",
+    "MnPreservePineEntry",
+    "MnR11*",
+    "MnGrandMarais",
+    "MnMaraisCedarApproach"
+  ],
+  "contracts": {
+    "preserve_all_original_block_ids": true,
+    "preserve_all_collision_quadrants": true,
+    "new_sliding_ice_quadrants": 0,
+    "preserve_existing_ice_quadrants": true,
+    "copy_original_cut_whirlpool_behavior_for_new_aliases": true,
+    "preserve_tree_and_after_cut_block_art": true,
+    "preserve_native_icy_grass_indices_and_zero_holes": true,
+    "snow_background0_5bit": [
+      29,
+      31,
+      31
+    ],
+    "preserve_original_roof_rock_water_and_dock_inks": true
+  },
+  "pending": [
+    "Visual review of whole towns, whole R09 and full R17 plus cold/warm seam views",
+    "Author Tamarack/Rainy River and fitted thaws toward Duluth, Leech Lake, Itasca and the green Boundary Waters",
+    "Rust-only native publication with complete parent/module/art guards",
+    "Register seasonal clock palette, water animation and grass-rustle behavior for each alias",
+    "Production GPU, input/encounters/resources/rooms/field-moves/Continue acceptance on actual composed parent"
+  ]
+}

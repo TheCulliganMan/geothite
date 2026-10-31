@@ -1,0 +1,164 @@
+{
+  "schema_version": 1,
+  "status": "Read-only whole-town native-art prototype. No crystalpack, renderer alias registration, terrain publication or controller acceptance yet. Full inland belt remains required.",
+  "selected_parent_revision": "north_shore_passing_width_revision",
+  "selected_parent_pack": "content-packs/minnesota-north-shore-passing-width-fauna-v02.crystalpack",
+  "selected_parent_sha256": "e951fddafee3a0c09a2356d4dd683890ac498e23daeb266d08c5f12d79ec1167",
+  "art": {
+    "source": "mn_grand_rapids_riverfront",
+    "target": "mn_winter_grand_rapids",
+    "source_blocks": 131,
+    "new_blocks": 134,
+    "new_glyphs": 11,
+    "logical_glyphs": [
+      224,
+      225,
+      226,
+      227,
+      228,
+      229,
+      230,
+      231,
+      232,
+      233,
+      234
+    ],
+    "recipes": [
+      {
+        "source_block": "02",
+        "target_block": "83",
+        "kind": "native_winter_copy",
+        "donor_tileset": "mn_winter_outdoor",
+        "donor_block": "3c",
+        "collision": [
+          "FLOOR",
+          "FLOOR",
+          "FLOOR",
+          "FLOOR"
+        ]
+      },
+      {
+        "source_block": "05",
+        "target_block": "84",
+        "kind": "native_winter_copy",
+        "donor_tileset": "mn_winter_north_shore",
+        "donor_block": "8b",
+        "collision": [
+          "WALL",
+          "WALL",
+          "WALL",
+          "WALL"
+        ]
+      },
+      {
+        "source_block": "04",
+        "target_block": "85",
+        "kind": "native_frost_flower_indices_unchanged",
+        "donor_tileset": "mn_grand_rapids_riverfront",
+        "donor_block": "04",
+        "collision": [
+          "FLOOR",
+          "FLOOR",
+          "FLOOR",
+          "FLOOR"
+        ]
+      }
+    ],
+    "snow_background0_5bit": [
+      29,
+      31,
+      31
+    ],
+    "preserved_original_palette1_3": true,
+    "preserved_all_original_glyph_addresses": true,
+    "cold_tree_index_map": [
+      1,
+      2,
+      3,
+      3
+    ],
+    "grass_indices_preserved": true,
+    "requires_native_behavior_alias": "mn_grand_rapids_riverfront"
+  },
+  "town": {
+    "id": "MnGrandRapids",
+    "dimensions_metatiles": [
+      24,
+      24
+    ],
+    "source_tileset": "mn_grand_rapids_riverfront",
+    "target_tileset": "mn_winter_grand_rapids",
+    "before_rows": [
+      "05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05",
+      "05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05",
+      "05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05",
+      "05 05 05 04 00 00 04 04 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05",
+      "05 05 05 00 18 19 00 00 05 05 05 00 00 00 00 00 00 05 05 05 05 05 05 05",
+      "05 05 05 00 1a 1b 00 00 05 05 05 00 00 18 1f 19 00 05 04 00 00 05 05 05",
+      "05 05 02 00 06 06 00 04 05 05 05 45 00 1a 0f 11 00 05 00 18 19 02 05 05",
+      "05 05 02 00 01 00 00 00 05 05 01 01 06 06 06 06 01 05 00 1a 33 02 05 05",
+      "05 05 02 00 01 01 01 01 01 01 01 00 06 06 06 06 01 01 01 06 06 02 05 05",
+      "05 05 02 05 01 05 05 05 05 05 05 04 00 01 00 00 00 05 00 01 04 02 05 05",
+      "05 05 02 05 01 05 05 05 05 05 05 05 01 01 05 05 05 05 00 01 00 02 05 05",
+      "05 05 02 05 01 05 05 45 05 05 05 05 01 05 05 05 05 05 05 45 05 02 05 05",
+      "01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01",
+      "05 05 05 05 05 05 05 05 01 05 05 05 05 05 05 05 05 05 01 05 05 02 05 05",
+      "05 05 05 05 05 05 05 05 01 01 05 05 05 05 05 05 05 05 01 05 05 02 05 05",
+      "05 05 05 05 05 05 05 05 05 01 01 05 05 05 05 05 05 05 01 05 05 05 05 05",
+      "05 05 05 05 05 05 05 05 05 05 01 01 01 01 01 01 01 01 01 05 05 05 05 05",
+      "05 05 05 54 76 76 76 55 05 49 49 49 80 81 49 49 49 49 49 49 05 05 05 05",
+      "05 05 05 58 35 35 35 7a 76 76 76 76 80 81 76 76 76 76 76 76 55 05 05 05",
+      "05 05 05 58 35 35 35 35 35 35 35 35 82 82 35 35 35 35 35 35 59 05 05 05",
+      "05 05 05 58 35 35 35 35 35 35 35 35 35 35 35 35 35 35 35 35 59 05 05 05",
+      "05 05 05 05 05 05 05 58 35 35 35 35 35 35 35 35 35 35 59 05 05 05 05 05",
+      "05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05",
+      "05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05"
+    ],
+    "after_rows": [
+      "84 84 84 84 84 84 84 84 84 84 84 84 84 84 84 84 84 84 84 84 84 84 84 84",
+      "84 84 84 84 84 84 84 84 84 84 84 84 84 84 84 84 84 84 84 84 84 84 84 84",
+      "84 84 84 84 84 84 84 84 84 84 84 84 84 84 84 84 84 84 84 84 84 84 84 84",
+      "84 84 84 85 00 00 85 85 84 84 84 84 84 84 84 84 84 84 84 84 84 84 84 84",
+      "84 84 84 00 18 19 00 00 84 84 84 00 00 00 00 00 00 84 84 84 84 84 84 84",
+      "84 84 84 00 1a 1b 00 00 84 84 84 00 00 18 1f 19 00 84 85 00 00 84 84 84",
+      "84 84 83 00 06 06 00 85 84 84 84 45 00 1a 0f 11 00 84 00 18 19 83 84 84",
+      "84 84 83 00 01 00 00 00 84 84 01 01 06 06 06 06 01 84 00 1a 33 83 84 84",
+      "84 84 83 00 01 01 01 01 01 01 01 00 06 06 06 06 01 01 01 06 06 83 84 84",
+      "84 84 83 84 01 84 84 84 84 84 84 85 00 01 00 00 00 84 00 01 85 83 84 84",
+      "84 84 83 84 01 84 84 84 84 84 84 84 01 01 84 84 84 84 00 01 00 83 84 84",
+      "84 84 83 84 01 84 84 45 84 84 84 84 01 84 84 84 84 84 84 45 84 83 84 84",
+      "01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01",
+      "84 84 84 84 84 84 84 84 01 84 84 84 84 84 84 84 84 84 01 84 84 83 84 84",
+      "84 84 84 84 84 84 84 84 01 01 84 84 84 84 84 84 84 84 01 84 84 83 84 84",
+      "84 84 84 84 84 84 84 84 84 01 01 84 84 84 84 84 84 84 01 84 84 84 84 84",
+      "84 84 84 84 84 84 84 84 84 84 01 01 01 01 01 01 01 01 01 84 84 84 84 84",
+      "84 84 84 54 76 76 76 55 84 49 49 49 80 81 49 49 49 49 49 49 84 84 84 84",
+      "84 84 84 58 35 35 35 7a 76 76 76 76 80 81 76 76 76 76 76 76 55 84 84 84",
+      "84 84 84 58 35 35 35 35 35 35 35 35 82 82 35 35 35 35 35 35 59 84 84 84",
+      "84 84 84 58 35 35 35 35 35 35 35 35 35 35 35 35 35 35 35 35 59 84 84 84",
+      "84 84 84 84 84 84 84 58 35 35 35 35 35 35 35 35 35 35 59 84 84 84 84 84",
+      "84 84 84 84 84 84 84 84 84 84 84 84 84 84 84 84 84 84 84 84 84 84 84 84",
+      "84 84 84 84 84 84 84 84 84 84 84 84 84 84 84 84 84 84 84 84 84 84 84 84"
+    ]
+  },
+  "verification": {
+    "collision_quadrants_preserved": true,
+    "original_programs_actors_doors_warps_connections_preserved": true,
+    "allocated_glyphs_within32_slot_limit": true
+  },
+  "winter_exclusions": [
+    "MnBoundaryWaters",
+    "MnBoundarySafari*",
+    "MnPreservePineEntry",
+    "MnR11*",
+    "MnGrandMarais",
+    "MnMaraisCedarApproach"
+  ],
+  "pending": [
+    "Review whole town and ordinary street/door/shore views",
+    "Extend snow art/icy grass to Bemidji, Northwoods and connecting Iron Range/Border Pines/Tamarack maps with fitted warm transitions",
+    "Register native day/night palette, water animation and actual icy-grass rustle aliases",
+    "Rust-only additive pack publication with field-move replacements and guarded original source art",
+    "Native GPU views and controller input/encounters/resources/doors/gates/Continue; source review alone is not completion"
+  ]
+}

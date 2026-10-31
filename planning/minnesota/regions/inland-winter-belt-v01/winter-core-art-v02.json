@@ -1,0 +1,622 @@
+{
+  "schema_version": 1,
+  "status": "Isolated source-art proposal, not an installed pack. Entire Bemidji, Northwoods, Grand Rapids and four R09 chunks reviewed together. Native registration, thaw edges, other northern routes and gameplay acceptance remain pending.",
+  "selected_parent_revision": "north_shore_passing_width_revision",
+  "selected_parent_pack": "content-packs/minnesota-north-shore-passing-width-fauna-v02.crystalpack",
+  "selected_parent_sha256": "e951fddafee3a0c09a2356d4dd683890ac498e23daeb266d08c5f12d79ec1167",
+  "art": [
+    {
+      "source": "mn_bemidji_plateau_stairs",
+      "target": "mn_winter_bemidji",
+      "source_blocks": 133,
+      "new_blocks": 136,
+      "new_glyphs": 11,
+      "logical_glyphs": [
+        224,
+        225,
+        226,
+        227,
+        228,
+        229,
+        230,
+        231,
+        232,
+        233,
+        234
+      ],
+      "recipes": [
+        {
+          "source_block": "02",
+          "kind": "native_winter_copy",
+          "donor_tileset": "mn_winter_outdoor",
+          "donor_block": "3c",
+          "collision": [
+            "FLOOR",
+            "FLOOR",
+            "FLOOR",
+            "FLOOR"
+          ],
+          "cold_block": "02",
+          "warm_mirror_block": "85"
+        },
+        {
+          "source_block": "05",
+          "kind": "native_winter_copy",
+          "donor_tileset": "mn_winter_north_shore",
+          "donor_block": "8b",
+          "collision": [
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL"
+          ],
+          "cold_block": "05",
+          "warm_mirror_block": "86"
+        },
+        {
+          "source_block": "04",
+          "kind": "native_frost_flower_indices_unchanged",
+          "donor_tileset": "mn_bemidji_plateau_stairs",
+          "donor_block": "04",
+          "collision": [
+            "FLOOR",
+            "FLOOR",
+            "FLOOR",
+            "FLOOR"
+          ],
+          "cold_block": "04",
+          "warm_mirror_block": "87"
+        }
+      ],
+      "snow_background0_5bit": [
+        29,
+        31,
+        31
+      ],
+      "preserved_original_palette1_3": true,
+      "preserved_all_original_glyph_addresses": true,
+      "cold_tree_index_map": [
+        1,
+        2,
+        3,
+        3
+      ],
+      "grass_indices_preserved": true,
+      "requires_native_behavior_alias": "mn_bemidji_plateau_stairs",
+      "original_block_ids_preserved": true,
+      "runtime_replacement_art": "Original IDs retain cold recipes; native command and field-move identities stay unchanged."
+    },
+    {
+      "source": "johto",
+      "target": "mn_winter_bemidji_northwoods",
+      "source_blocks": 128,
+      "new_blocks": 130,
+      "new_glyphs": 7,
+      "logical_glyphs": [
+        224,
+        225,
+        226,
+        227,
+        228,
+        229,
+        230
+      ],
+      "recipes": [
+        {
+          "source_block": "03",
+          "kind": "native_winter_copy",
+          "donor_tileset": "mn_winter_outdoor",
+          "donor_block": "3d",
+          "collision": [
+            "TALL_GRASS",
+            "TALL_GRASS",
+            "TALL_GRASS",
+            "TALL_GRASS"
+          ],
+          "cold_block": "03",
+          "warm_mirror_block": "80"
+        },
+        {
+          "source_block": "05",
+          "kind": "native_winter_copy",
+          "donor_tileset": "mn_winter_north_shore",
+          "donor_block": "8b",
+          "collision": [
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL"
+          ],
+          "cold_block": "05",
+          "warm_mirror_block": "81"
+        }
+      ],
+      "snow_background0_5bit": [
+        29,
+        31,
+        31
+      ],
+      "preserved_original_palette1_3": true,
+      "preserved_all_original_glyph_addresses": true,
+      "cold_tree_index_map": [
+        1,
+        2,
+        3,
+        3
+      ],
+      "grass_indices_preserved": true,
+      "requires_native_behavior_alias": "johto",
+      "original_block_ids_preserved": true,
+      "runtime_replacement_art": "Original IDs retain cold recipes; native command and field-move identities stay unchanged."
+    },
+    {
+      "source": "mn_grand_rapids_riverfront",
+      "target": "mn_winter_grand_rapids",
+      "source_blocks": 131,
+      "new_blocks": 134,
+      "new_glyphs": 11,
+      "logical_glyphs": [
+        224,
+        225,
+        226,
+        227,
+        228,
+        229,
+        230,
+        231,
+        232,
+        233,
+        234
+      ],
+      "recipes": [
+        {
+          "source_block": "02",
+          "kind": "native_winter_copy",
+          "donor_tileset": "mn_winter_outdoor",
+          "donor_block": "3c",
+          "collision": [
+            "FLOOR",
+            "FLOOR",
+            "FLOOR",
+            "FLOOR"
+          ],
+          "cold_block": "02",
+          "warm_mirror_block": "83"
+        },
+        {
+          "source_block": "05",
+          "kind": "native_winter_copy",
+          "donor_tileset": "mn_winter_north_shore",
+          "donor_block": "8b",
+          "collision": [
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL"
+          ],
+          "cold_block": "05",
+          "warm_mirror_block": "84"
+        },
+        {
+          "source_block": "04",
+          "kind": "native_frost_flower_indices_unchanged",
+          "donor_tileset": "mn_grand_rapids_riverfront",
+          "donor_block": "04",
+          "collision": [
+            "FLOOR",
+            "FLOOR",
+            "FLOOR",
+            "FLOOR"
+          ],
+          "cold_block": "04",
+          "warm_mirror_block": "85"
+        }
+      ],
+      "snow_background0_5bit": [
+        29,
+        31,
+        31
+      ],
+      "preserved_original_palette1_3": true,
+      "preserved_all_original_glyph_addresses": true,
+      "cold_tree_index_map": [
+        1,
+        2,
+        3,
+        3
+      ],
+      "grass_indices_preserved": true,
+      "requires_native_behavior_alias": "mn_grand_rapids_riverfront",
+      "original_block_ids_preserved": true,
+      "runtime_replacement_art": "Original IDs retain cold recipes; native command and field-move identities stay unchanged."
+    },
+    {
+      "source": "mn_iron_range",
+      "target": "mn_winter_iron_range",
+      "source_blocks": 136,
+      "new_blocks": 140,
+      "new_glyphs": 12,
+      "logical_glyphs": [
+        224,
+        225,
+        226,
+        227,
+        228,
+        229,
+        230,
+        231,
+        232,
+        233,
+        234,
+        235
+      ],
+      "recipes": [
+        {
+          "source_block": "02",
+          "kind": "native_winter_copy",
+          "donor_tileset": "mn_winter_outdoor",
+          "donor_block": "3c",
+          "collision": [
+            "FLOOR",
+            "FLOOR",
+            "FLOOR",
+            "FLOOR"
+          ],
+          "cold_block": "02",
+          "warm_mirror_block": "88"
+        },
+        {
+          "source_block": "03",
+          "kind": "native_winter_copy",
+          "donor_tileset": "mn_winter_outdoor",
+          "donor_block": "3d",
+          "collision": [
+            "TALL_GRASS",
+            "TALL_GRASS",
+            "TALL_GRASS",
+            "TALL_GRASS"
+          ],
+          "cold_block": "03",
+          "warm_mirror_block": "89"
+        },
+        {
+          "source_block": "05",
+          "kind": "native_winter_copy",
+          "donor_tileset": "mn_winter_north_shore",
+          "donor_block": "8b",
+          "collision": [
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL"
+          ],
+          "cold_block": "05",
+          "warm_mirror_block": "8a"
+        },
+        {
+          "source_block": "04",
+          "kind": "native_frost_flower_indices_unchanged",
+          "donor_tileset": "mn_iron_range",
+          "donor_block": "04",
+          "collision": [
+            "FLOOR",
+            "FLOOR",
+            "FLOOR",
+            "FLOOR"
+          ],
+          "cold_block": "04",
+          "warm_mirror_block": "8b"
+        }
+      ],
+      "snow_background0_5bit": [
+        29,
+        31,
+        31
+      ],
+      "preserved_original_palette1_3": true,
+      "preserved_all_original_glyph_addresses": true,
+      "cold_tree_index_map": [
+        1,
+        2,
+        3,
+        3
+      ],
+      "grass_indices_preserved": true,
+      "requires_native_behavior_alias": "mn_iron_range",
+      "original_block_ids_preserved": true,
+      "runtime_replacement_art": "Original IDs retain cold recipes; native command and field-move identities stay unchanged."
+    }
+  ],
+  "maps": [
+    {
+      "id": "MnBemidji",
+      "dimensions_metatiles": [
+        24,
+        24
+      ],
+      "source_tileset": "mn_bemidji_plateau_stairs",
+      "target_tileset": "mn_winter_bemidji",
+      "rows": [
+        "05 05 05 05 05 05 05 05 05 05 05 05 01 05 05 05 05 05 05 05 05 05 05 05",
+        "05 05 05 05 05 05 05 05 05 05 05 05 01 05 02 05 05 05 05 05 05 05 05 05",
+        "05 05 6a 70 70 70 70 70 6b 05 05 05 01 45 04 04 04 04 05 05 05 05 05 05",
+        "05 05 68 05 18 1f 19 05 02 6b 05 05 01 02 02 18 19 02 05 05 05 05 05 05",
+        "05 05 68 05 1c 1d 1e 05 02 69 05 05 01 02 02 1a 1b 02 05 05 05 05 05 05",
+        "05 05 68 04 01 01 01 45 01 69 05 05 01 01 01 01 01 01 05 05 05 05 05 05",
+        "05 05 68 18 19 04 04 05 01 69 05 05 01 05 05 05 05 05 05 05 05 05 05 05",
+        "05 05 68 1a 11 04 04 02 01 69 05 02 01 05 05 05 18 19 05 05 05 05 05 05",
+        "05 05 68 01 01 01 01 01 01 04 04 01 01 05 05 05 1a 11 05 05 18 19 05 05",
+        "05 05 68 05 05 02 02 05 05 69 01 01 01 01 01 01 01 01 05 05 1a 33 05 05",
+        "05 05 6c 72 72 84 72 72 72 6d 02 02 01 05 05 04 04 05 05 05 02 01 02 05",
+        "05 05 02 05 05 01 01 05 05 02 02 45 01 05 05 02 02 05 05 05 02 01 05 05",
+        "01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01",
+        "05 05 05 04 04 04 04 02 02 02 02 02 01 02 02 49 49 49 49 49 49 49 05 05",
+        "05 05 05 04 02 01 01 01 45 02 02 02 01 01 46 54 76 76 76 76 76 76 76 32",
+        "05 05 05 04 02 02 02 02 05 05 05 05 01 45 46 58 35 35 35 35 35 35 35 36",
+        "05 05 05 05 02 01 02 02 05 05 05 05 01 05 46 58 35 35 35 35 35 35 35 36",
+        "05 05 05 05 80 81 02 02 05 05 05 05 01 01 41 41 41 41 41 0a 58 35 35 36",
+        "05 05 05 05 82 83 02 02 05 05 02 02 01 02 49 49 49 49 49 0a 58 35 35 36",
+        "05 05 05 05 02 01 01 01 01 01 01 01 01 02 46 54 76 76 76 76 79 35 35 36",
+        "05 05 05 02 04 04 04 04 04 05 05 02 01 45 01 58 35 35 35 35 35 35 35 36",
+        "05 05 05 05 05 05 05 05 05 05 05 02 01 05 46 58 35 35 35 35 35 35 35 36",
+        "05 05 05 05 05 05 05 05 05 05 05 05 01 05 46 58 35 35 35 35 35 35 35 36",
+        "05 05 05 05 05 05 05 05 05 05 05 05 01 05 05 38 39 39 39 39 39 39 39 3a"
+      ],
+      "collision_histogram": {
+        "WALL": 1181,
+        "FLOOR": 784,
+        "UP_WALL": 13,
+        "DOOR": 6,
+        "WATER": 281,
+        "BUOY": 39
+      },
+      "preserved_all_module_fields_except_tileset": true
+    },
+    {
+      "id": "MnBemidjiNorthwoods",
+      "dimensions_metatiles": [
+        8,
+        14
+      ],
+      "source_tileset": "johto",
+      "target_tileset": "mn_winter_bemidji_northwoods",
+      "rows": [
+        "05 05 05 05 01 05 05 05",
+        "05 05 05 05 03 05 05 05",
+        "05 05 05 01 03 05 05 05",
+        "05 05 05 01 05 05 05 05",
+        "05 05 05 01 05 05 08 09",
+        "05 05 05 03 01 01 1a 11",
+        "05 05 05 01 05 03 01 05",
+        "05 05 05 56 05 03 05 05",
+        "01 01 01 01 01 01 05 05",
+        "05 05 01 05 05 05 05 05",
+        "05 05 03 05 05 05 05 05",
+        "05 05 03 01 01 05 05 05",
+        "05 05 05 05 01 05 05 05",
+        "05 05 05 05 01 05 05 05"
+      ],
+      "collision_histogram": {
+        "WALL": 341,
+        "FLOOR": 76,
+        "TALL_GRASS": 28,
+        "DOOR": 1,
+        "HOP_DOWN": 2
+      },
+      "preserved_all_module_fields_except_tileset": true
+    },
+    {
+      "id": "MnGrandRapids",
+      "dimensions_metatiles": [
+        24,
+        24
+      ],
+      "source_tileset": "mn_grand_rapids_riverfront",
+      "target_tileset": "mn_winter_grand_rapids",
+      "rows": [
+        "05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05",
+        "05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05",
+        "05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05",
+        "05 05 05 04 00 00 04 04 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05",
+        "05 05 05 00 18 19 00 00 05 05 05 00 00 00 00 00 00 05 05 05 05 05 05 05",
+        "05 05 05 00 1a 1b 00 00 05 05 05 00 00 18 1f 19 00 05 04 00 00 05 05 05",
+        "05 05 02 00 06 06 00 04 05 05 05 45 00 1a 0f 11 00 05 00 18 19 02 05 05",
+        "05 05 02 00 01 00 00 00 05 05 01 01 06 06 06 06 01 05 00 1a 33 02 05 05",
+        "05 05 02 00 01 01 01 01 01 01 01 00 06 06 06 06 01 01 01 06 06 02 05 05",
+        "05 05 02 05 01 05 05 05 05 05 05 04 00 01 00 00 00 05 00 01 04 02 05 05",
+        "05 05 02 05 01 05 05 05 05 05 05 05 01 01 05 05 05 05 00 01 00 02 05 05",
+        "05 05 02 05 01 05 05 45 05 05 05 05 01 05 05 05 05 05 05 45 05 02 05 05",
+        "01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01",
+        "05 05 05 05 05 05 05 05 01 05 05 05 05 05 05 05 05 05 01 05 05 02 05 05",
+        "05 05 05 05 05 05 05 05 01 01 05 05 05 05 05 05 05 05 01 05 05 02 05 05",
+        "05 05 05 05 05 05 05 05 05 01 01 05 05 05 05 05 05 05 01 05 05 05 05 05",
+        "05 05 05 05 05 05 05 05 05 05 01 01 01 01 01 01 01 01 01 05 05 05 05 05",
+        "05 05 05 54 76 76 76 55 05 49 49 49 80 81 49 49 49 49 49 49 05 05 05 05",
+        "05 05 05 58 35 35 35 7a 76 76 76 76 80 81 76 76 76 76 76 76 55 05 05 05",
+        "05 05 05 58 35 35 35 35 35 35 35 35 82 82 35 35 35 35 35 35 59 05 05 05",
+        "05 05 05 58 35 35 35 35 35 35 35 35 35 35 35 35 35 35 35 35 59 05 05 05",
+        "05 05 05 05 05 05 05 58 35 35 35 35 35 35 35 35 35 35 59 05 05 05 05 05",
+        "05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05",
+        "05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05"
+      ],
+      "collision_histogram": {
+        "WALL": 1442,
+        "FLOOR": 579,
+        "DOOR": 3,
+        "WATER": 280
+      },
+      "preserved_all_module_fields_except_tileset": true
+    },
+    {
+      "id": "MnR09C00R00",
+      "dimensions_metatiles": [
+        32,
+        24
+      ],
+      "source_tileset": "mn_iron_range",
+      "target_tileset": "mn_winter_iron_range",
+      "rows": [
+        "05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05",
+        "05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05",
+        "05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05",
+        "05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 6a 70 70 70 70 6b 05 05 05 05 05 05",
+        "05 05 05 05 05 05 05 05 05 05 05 05 05 05 6a 70 6b 05 05 05 68 71 71 71 71 71 70 70 6b 05 05 05",
+        "05 05 05 05 05 05 05 05 05 05 05 05 05 05 68 71 69 05 05 05 68 71 71 71 71 71 71 71 71 70 70 70",
+        "05 05 05 05 05 05 05 05 05 05 05 05 05 05 68 71 71 6b 05 05 68 71 71 71 71 71 71 71 71 71 71 71",
+        "05 05 05 05 05 05 05 05 05 05 05 05 05 05 68 71 71 69 05 05 6c 72 72 72 0a 72 72 72 72 0a 72 72",
+        "05 05 05 05 05 05 05 6a 70 70 6b 05 05 05 68 71 6f 6d 05 05 05 6a 0a 70 0a 0a 70 70 0a 0a 70 6b",
+        "05 05 05 05 05 05 05 68 71 71 69 05 05 05 6c 72 6d 05 05 6a 70 71 71 71 71 03 03 71 71 71 71 69",
+        "05 05 05 05 05 05 05 68 71 71 69 05 54 76 76 55 05 05 6a 71 71 71 71 6f 72 72 72 72 72 6e 71 71",
+        "05 05 05 05 05 05 05 68 71 6f 6d 05 58 35 35 59 05 05 68 71 71 6f 72 6d 02 02 02 02 02 68 71 71",
+        "05 05 05 05 05 05 05 68 71 69 05 05 58 35 35 7a 55 05 68 03 03 69 05 05 02 54 76 76 55 6c 72 72",
+        "05 05 05 05 05 05 05 68 71 69 05 54 79 35 35 35 59 05 68 03 03 69 05 05 02 58 35 35 7a 76 76 76",
+        "05 05 05 05 05 05 05 68 71 69 05 58 35 35 35 35 59 05 68 71 03 69 05 02 54 79 35 35 35 35 35 35",
+        "05 05 05 05 05 05 05 68 71 69 05 58 35 35 35 35 59 05 68 03 03 69 05 02 58 35 35 35 35 35 35 35",
+        "05 05 05 05 05 05 05 68 71 69 05 58 35 35 59 05 05 05 03 03 0a 69 05 02 58 35 35 35 35 35 35 35",
+        "05 05 02 02 02 02 05 68 71 69 05 58 35 35 59 05 05 0a 86 72 72 0a 0a 0a 70 6b 58 35 35 35 35 35",
+        "05 05 02 01 02 02 05 6c 72 6d 05 05 58 35 59 05 05 0a 87 71 71 71 71 71 71 69 58 35 35 35 35 35",
+        "05 05 02 01 03 02 05 05 05 05 05 05 58 35 59 05 05 05 6e 71 71 71 71 71 71 69 58 35 35 35 35 35",
+        "05 05 02 03 03 02 05 05 05 05 05 05 58 35 59 05 05 05 6c 72 73 72 72 72 85 6d 02 41 41 41 41 41",
+        "05 05 02 02 02 05 05 05 05 05 02 02 82 82 82 02 02 02 71 45 71 71 71 71 71 71 02 03 03 03 03 03",
+        "05 05 02 02 02 05 05 05 05 05 45 05 81 81 81 05 05 02 05 0a 0a 0a 05 05 02 71 02 02 0a 0a 45 03",
+        "05 05 45 02 0a 0a 05 03 03 05 02 05 54 76 55 05 05 02 05 05 05 0a 05 05 02 71 71 71 71 71 71 71"
+      ],
+      "collision_histogram": {
+        "WALL": 1742,
+        "UP_WALL": 49,
+        "FLOOR": 776,
+        "TALL_GRASS": 88,
+        "WATER": 416,
+        "CAVE": 1
+      },
+      "preserved_all_module_fields_except_tileset": true
+    },
+    {
+      "id": "MnR09C00R01",
+      "dimensions_metatiles": [
+        32,
+        12
+      ],
+      "source_tileset": "mn_iron_range",
+      "target_tileset": "mn_winter_iron_range",
+      "rows": [
+        "05 02 02 02 02 02 02 03 03 02 02 05 58 35 59 05 05 02 05 05 6a 70 70 6b 05 05 05 05 05 05 0a 0a",
+        "02 02 02 02 02 02 02 03 03 05 05 54 79 35 59 05 05 02 05 05 68 71 71 71 70 6b 05 6a 70 70 70 0a",
+        "05 05 05 05 05 05 02 05 05 05 05 58 35 35 7a 76 55 02 02 05 6c 6e 71 71 71 69 05 68 71 71 71 71",
+        "05 05 05 05 05 05 03 05 05 05 05 58 35 35 35 35 59 02 02 01 02 6c 72 6e 71 69 05 6c 72 72 6e 71",
+        "05 05 05 05 05 05 63 05 05 05 05 58 35 35 35 35 59 02 02 02 02 05 05 6c 72 6d 05 05 05 05 6c 72",
+        "05 05 05 05 02 02 02 02 05 05 05 05 58 35 35 35 59 02 02 02 02 05 05 05 05 05 05 05 05 05 05 05",
+        "05 05 05 02 02 03 03 03 02 05 05 05 58 35 35 35 59 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05",
+        "05 05 05 02 02 03 03 45 02 05 05 05 58 35 59 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05",
+        "05 05 05 02 02 02 02 02 02 05 05 05 58 35 59 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05",
+        "05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05",
+        "05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05",
+        "05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05"
+      ],
+      "collision_histogram": {
+        "WALL": 1020,
+        "FLOOR": 294,
+        "TALL_GRASS": 40,
+        "WATER": 164,
+        "UP_WALL": 16,
+        "CUT_TREE": 1,
+        "HEADBUTT_TREE": 1
+      },
+      "preserved_all_module_fields_except_tileset": true
+    },
+    {
+      "id": "MnR09C01R00",
+      "dimensions_metatiles": [
+        32,
+        24
+      ],
+      "source_tileset": "mn_iron_range",
+      "target_tileset": "mn_winter_iron_range",
+      "rows": [
+        "05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05",
+        "05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05",
+        "05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05",
+        "05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05",
+        "05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 6a 70 70 6b 05 05 05 05 05 05 05 05 05 05 05 05",
+        "70 70 70 6b 05 6a 70 6b 05 05 05 05 05 05 05 05 68 71 71 71 70 70 6b 05 05 05 05 05 05 05 05 05",
+        "71 71 71 69 05 68 71 69 05 05 05 6a 70 6b 05 05 68 71 71 71 71 71 69 05 05 05 05 05 05 05 05 05",
+        "72 72 72 6d 05 68 71 71 70 6b 05 68 71 69 05 05 68 71 71 71 6f 72 6d 05 05 05 05 05 05 05 05 05",
+        "05 05 05 05 05 68 71 71 71 69 05 68 71 69 05 05 6c 72 72 72 6d 05 05 03 03 03 03 03 05 05 05 05",
+        "05 05 05 05 05 6c 72 0a 0a 69 05 68 71 71 6b 05 05 05 05 05 05 05 05 03 01 03 03 01 05 05 05 05",
+        "70 70 70 70 6b 05 05 6c 72 6d 05 68 71 71 69 05 05 05 05 05 05 05 02 03 03 03 03 03 02 05 05 05",
+        "71 71 71 71 69 05 05 05 05 05 05 6c 6e 71 69 05 05 05 05 05 05 05 02 05 05 05 05 05 45 05 05 05",
+        "72 72 6e 71 71 70 70 0a 0a 6b 05 05 6c 72 6d 02 02 02 02 02 02 02 02 05 05 05 05 05 02 02 02 02",
+        "76 55 68 71 71 71 71 71 71 69 05 05 05 05 05 01 45 02 02 05 05 05 05 05 05 05 05 05 05 05 05 05",
+        "35 59 6c 72 72 72 72 6e 71 69 05 41 41 41 41 41 41 41 02 41 41 41 41 41 05 05 05 05 05 05 05 05",
+        "35 7a 76 55 02 02 05 0a 03 0a 05 83 83 83 83 83 83 83 84 83 83 83 83 83 0a 05 05 05 05 05 05 05",
+        "35 35 35 59 02 02 05 0a 03 0a 05 49 49 49 49 49 49 49 02 49 49 49 49 49 05 05 05 05 05 05 05 05",
+        "35 35 35 59 02 02 05 68 71 69 05 05 05 05 05 05 05 05 02 01 03 03 05 05 05 05 05 05 05 05 05 05",
+        "59 02 02 02 02 02 05 68 71 69 05 05 05 05 05 05 05 01 02 05 03 03 05 05 05 05 05 05 05 05 05 05",
+        "59 02 02 02 02 02 05 68 71 69 05 05 02 02 02 02 02 02 02 02 03 03 05 05 05 05 05 05 05 05 05 05",
+        "03 02 02 05 05 05 05 6c 72 6d 05 05 02 05 05 02 45 02 02 02 03 03 05 05 05 05 05 05 05 05 05 05",
+        "03 02 02 05 0a 05 05 05 02 05 05 05 02 05 05 02 02 01 02 02 03 03 05 05 05 05 05 05 05 05 05 05",
+        "03 01 02 0a 0a 05 05 05 02 05 05 05 02 05 05 02 02 02 02 02 02 05 05 05 05 05 05 05 05 05 05 05",
+        "71 71 71 71 71 71 71 71 71 71 71 71 02 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05"
+      ],
+      "collision_histogram": {
+        "WALL": 2094,
+        "UP_WALL": 44,
+        "FLOOR": 750,
+        "TALL_GRASS": 112,
+        "WATER": 72
+      },
+      "preserved_all_module_fields_except_tileset": true
+    },
+    {
+      "id": "MnR09C01R01",
+      "dimensions_metatiles": [
+        32,
+        12
+      ],
+      "source_tileset": "mn_iron_range",
+      "target_tileset": "mn_winter_iron_range",
+      "rows": [
+        "0a 05 05 05 05 05 05 6a 70 6b 05 05 02 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05",
+        "05 05 05 05 05 05 05 68 71 71 6b 02 02 02 02 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05",
+        "70 70 70 6b 05 05 05 68 71 71 69 02 02 02 02 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05",
+        "71 71 71 69 05 05 05 68 71 71 69 02 04 04 02 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05",
+        "72 72 72 6d 05 05 05 6c 72 72 6d 05 02 02 02 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05",
+        "05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05",
+        "05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05",
+        "05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05",
+        "05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05",
+        "05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05",
+        "05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05",
+        "05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05"
+      ],
+      "collision_histogram": {
+        "WALL": 1387,
+        "UP_WALL": 12,
+        "FLOOR": 137
+      },
+      "preserved_all_module_fields_except_tileset": true
+    }
+  ],
+  "unchanged_terrain_semantics": {
+    "new_ice_quadrants": 0,
+    "all_collision_quadrants_exact": true,
+    "all_module_fields_except_tileset_exact": true,
+    "original_block_ids_exact": true,
+    "existing_native_ice_not_removed": true
+  },
+  "climate_exclusions": [
+    "MnBoundaryWaters",
+    "MnBoundarySafari*",
+    "MnPreservePineEntry",
+    "MnR11*",
+    "MnGrandMarais",
+    "MnMaraisCedarApproach"
+  ],
+  "pending": [
+    "Inspect full native-art renders and correct residual green mixed blocks or icy grass holes",
+    "Author southern/western/eastern thaw edges and join northern Border Pines/Tamarack climate",
+    "Rust pack publication with exact parent guards and original field-move/block-command art",
+    "Renderer palette/day-night/grass-rustle/water-animation support",
+    "Native GPU and production-controller traversal, resources, rooms and Continue"
+  ]
+}

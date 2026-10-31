@@ -1110,6 +1110,8 @@ mod bemidji_mart_facade;
 pub use bemidji_mart_facade::revise_bemidji_mart_facade;
 mod bemidji_plateau_stairs;
 pub use bemidji_plateau_stairs::revise_bemidji_plateau_stairs;
+mod bemidji_roof_plateau;
+pub use bemidji_roof_plateau::rebuild_bemidji_roof_plateau;
 mod duluth_mart_facade;
 pub use duluth_mart_facade::revise_duluth_mart_facade;
 mod st_cloud_service_fronts;
