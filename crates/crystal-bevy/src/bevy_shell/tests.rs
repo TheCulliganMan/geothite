@@ -528,3 +528,6 @@ mod iron_drill_core;
 mod r19_detroit_gate;
 
 include!("tests/northstar_title.rs");
+
+#[path = "tests/minnesota_daycares.rs"]
+mod minnesota_daycares;

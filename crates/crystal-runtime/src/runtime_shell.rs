@@ -1367,6 +1367,12 @@ impl RuntimeGameShell {
                 // service left a party-slot variable behind. The production
                 // controller must ask this visit's player for every choice.
                 Some("NameRater") => Some(RuntimeCompiledScriptBoundary::NameRaterPrompt),
+                // Deposits, withdrawals and egg collection require a fresh
+                // visible offer. Composed runs must not execute the service
+                // before the controller has obtained that visit's choices.
+                Some("DayCareMan" | "DayCareLady" | "DayCareManOutside") => {
+                    Some(RuntimeCompiledScriptBoundary::DayCarePrompt)
+                }
                 _ => None,
             };
             if let Some(prompt) = prompt {

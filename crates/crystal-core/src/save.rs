@@ -16,10 +16,12 @@ use crate::state::GameState;
 
 const SAVE_MAGIC: &[u8; 12] = b"CRYSTALSAVE\0";
 pub const SAVE_EXTENSION: &str = "crystalsave";
-pub const SAVE_FORMAT_VERSION: u16 = 25;
+pub const SAVE_FORMAT_VERSION: u16 = 26;
+const PRE_REGIONAL_DAY_CARE_SAVE_VERSION: u16 = 25;
 const PRE_SCALED_ROAMING_SAVE_VERSION: u16 = 24;
 
 std::thread_local! {
+    static DAY_CARE_SAVE_V25_WIRE: std::cell::Cell<bool> = const { std::cell::Cell::new(false) };
     static ROAMING_SAVE_V24_WIRE: std::cell::Cell<bool> = const { std::cell::Cell::new(false) };
 }
 
@@ -37,6 +39,21 @@ fn with_v24_roaming_wire<T>(operation: impl FnOnce() -> T) -> T {
     let _restore = Restore(ROAMING_SAVE_V24_WIRE.with(|value| value.replace(true)));
     operation()
 }
+pub(crate) fn pre_regional_day_care_wire() -> bool {
+    roaming_save_v24_wire() || DAY_CARE_SAVE_V25_WIRE.with(std::cell::Cell::get)
+}
+
+fn with_v25_day_care_wire<T>(operation: impl FnOnce() -> T) -> T {
+    struct Restore(bool);
+    impl Drop for Restore {
+        fn drop(&mut self) {
+            DAY_CARE_SAVE_V25_WIRE.with(|value| value.set(self.0));
+        }
+    }
+    let _restore = Restore(DAY_CARE_SAVE_V25_WIRE.with(|value| value.replace(true)));
+    operation()
+}
+
 const SAVE_VERSION_OFFSET: usize = SAVE_MAGIC.len();
 const SAVE_PAYLOAD_LENGTH_OFFSET: usize = SAVE_VERSION_OFFSET + 2;
 const SAVE_PAYLOAD_HASH_OFFSET: usize = SAVE_PAYLOAD_LENGTH_OFFSET + 4;
@@ -316,6 +333,8 @@ impl SaveGame {
     pub fn validate(&self) -> Result<(), SaveError> {
         if self.format_version != SAVE_FORMAT_VERSION
             && !(roaming_save_v24_wire() && self.format_version == PRE_SCALED_ROAMING_SAVE_VERSION)
+            && !(pre_regional_day_care_wire()
+                && self.format_version == PRE_REGIONAL_DAY_CARE_SAVE_VERSION)
         {
             return Err(SaveError::UnsupportedVersion(self.format_version));
         }
@@ -961,7 +980,10 @@ fn read_save_game_bytes(
         return Err(SaveError::FrameTooShort);
     }
     let version = u16::from_be_bytes([bytes[SAVE_VERSION_OFFSET], bytes[SAVE_VERSION_OFFSET + 1]]);
-    if version != SAVE_FORMAT_VERSION && version != PRE_SCALED_ROAMING_SAVE_VERSION {
+    if !matches!(
+        version,
+        SAVE_FORMAT_VERSION | PRE_SCALED_ROAMING_SAVE_VERSION | PRE_REGIONAL_DAY_CARE_SAVE_VERSION
+    ) {
         return Err(SaveError::UnsupportedVersion(version));
     }
     let declared = u32::from_be_bytes([
@@ -999,6 +1021,8 @@ fn read_save_game_bytes(
         // Validate the original state's checksum using its original wire
         // layout before upgrading. The guard is local to this decoding thread.
         with_v24_roaming_wire(decode)?
+    } else if version == PRE_REGIONAL_DAY_CARE_SAVE_VERSION {
+        with_v25_day_care_wire(decode)?
     } else {
         decode()?
     };
@@ -1008,7 +1032,7 @@ fn read_save_game_bytes(
     if save.format_version != version {
         return Err(SaveError::UnsupportedVersion(save.format_version));
     }
-    if version == PRE_SCALED_ROAMING_SAVE_VERSION {
+    if version != SAVE_FORMAT_VERSION {
         save.format_version = SAVE_FORMAT_VERSION;
         save.metadata.saved_state_hash = game_state_checksum(&save.state)
             .map_err(|error| SaveError::InvalidState(error.to_string()))?
@@ -1247,6 +1271,45 @@ mod tests {
         corrupt.extend_from_slice(&payload);
         assert!(matches!(read_save_game_bytes(&corrupt, "corrupt-v24.crystalsave"), Err(SaveError::Decode(_))));
         assert!(!roaming_save_v24_wire());
+    }
+
+    #[test]
+    fn binary_save_migrates_v25_without_reassigning_legacy_custody() {
+        let mut state = GameState {
+            money: 4523,
+            ..GameState::default()
+        };
+        state.day_care.man.active = true;
+        let mut old = test_save(
+            state,
+            SaveModpackIdentity::new("core", pack_content_hash()).unwrap(),
+        );
+        old.format_version = PRE_REGIONAL_DAY_CARE_SAVE_VERSION;
+        old.metadata.saved_state_hash = with_v25_day_care_wire(|| game_state_checksum(&old.state))
+            .unwrap()
+            .hash();
+        let mut bytes = with_v25_day_care_wire(|| encode_save_game_bytes(&old)).unwrap();
+        bytes[SAVE_VERSION_OFFSET..SAVE_VERSION_OFFSET + 2]
+            .copy_from_slice(&PRE_REGIONAL_DAY_CARE_SAVE_VERSION.to_be_bytes());
+        let loaded = read_save_game_bytes(&bytes, "v25.crystalsave").unwrap();
+        assert_eq!(loaded.state, old.state);
+        assert_eq!(loaded.format_version, SAVE_FORMAT_VERSION);
+        assert!(loaded.state.day_care_locations.is_empty());
+        assert!(!pre_regional_day_care_wire());
+        old.metadata.saved_state_hash ^= 1;
+        let payload =
+            with_v25_day_care_wire(|| bincode::serde::encode_to_vec(&old, save_binary_config()))
+                .unwrap();
+        let mut corrupt = SAVE_MAGIC.to_vec();
+        corrupt.extend_from_slice(&PRE_REGIONAL_DAY_CARE_SAVE_VERSION.to_be_bytes());
+        corrupt.extend_from_slice(&(payload.len() as u32).to_be_bytes());
+        corrupt.extend_from_slice(&fnv1a32_bytes(&payload).to_be_bytes());
+        corrupt.extend_from_slice(&payload);
+        assert!(matches!(
+            read_save_game_bytes(&corrupt, "corrupt-v25.crystalsave"),
+            Err(SaveError::Decode(_))
+        ));
+        assert!(!pre_regional_day_care_wire());
     }
 
     #[test]

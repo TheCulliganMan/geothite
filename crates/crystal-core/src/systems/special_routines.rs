@@ -10059,10 +10059,10 @@ where
     S: DividerSource,
 {
     let Some(mut egg) = state
-        .day_care
+        .current_day_care()
         .egg
         .clone()
-        .filter(|_| state.day_care.egg_present)
+        .filter(|_| state.current_day_care().egg_present)
     else {
         return Ok(crate::state::DayCareInteractionState {
             caretaker: "man".to_string(),
@@ -10098,12 +10098,12 @@ where
         });
     }
     state.sync_party_from_storage();
-    state.day_care.egg = None;
-    state.day_care.egg_present = false;
+    state.current_day_care_mut().egg = None;
+    state.current_day_care_mut().egg_present = false;
     // DayCare_GiveEgg immediately calls DayCare_InitBreeding, which always
     // chooses a fresh 150..=255 countdown rather than retaining the egg
     // check's previous random reset byte.
-    state.day_care.steps_until_next_egg = 0;
+    state.current_day_care_mut().steps_until_next_egg = 0;
     update_day_care_compatibility(state, rng).map_err(RandomSpecialRoutineError::Divider)?;
     Ok(crate::state::DayCareInteractionState {
         caretaker: "man".to_string(),
@@ -13141,8 +13141,8 @@ fn day_care_resident<'a>(
     caretaker: &str,
 ) -> Result<&'a crate::state::DayCareResidentState, SpecialRoutineError> {
     match caretaker {
-        "man" => Ok(&state.day_care.man),
-        "lady" => Ok(&state.day_care.lady),
+        "man" => Ok(&state.current_day_care().man),
+        "lady" => Ok(&state.current_day_care().lady),
         exact => Err(SpecialRoutineError::InvalidDayCareCaretaker {
             routine: routine.to_string(),
             caretaker: exact.to_string(),
@@ -13156,8 +13156,8 @@ fn day_care_resident_mut<'a>(
     caretaker: &str,
 ) -> Result<&'a mut crate::state::DayCareResidentState, SpecialRoutineError> {
     match caretaker {
-        "man" => Ok(&mut state.day_care.man),
-        "lady" => Ok(&mut state.day_care.lady),
+        "man" => Ok(&mut state.current_day_care_mut().man),
+        "lady" => Ok(&mut state.current_day_care_mut().lady),
         exact => Err(SpecialRoutineError::InvalidDayCareCaretaker {
             routine: routine.to_string(),
             caretaker: exact.to_string(),
@@ -13199,6 +13199,44 @@ where
         });
     }
     let pokemon = required_party_pokemon(state, routine, party_slot)?.clone();
+    let reason = if state.storage.party.pokemon.iter().flatten().count() < 2 {
+        Some("only_one_mon")
+    } else if pokemon.is_egg || pokemon.species.id == "EGG" {
+        Some("egg")
+    } else if pokemon.mail.is_some()
+        || pokemon
+            .item
+            .as_deref()
+            .is_some_and(crate::models::item::is_mail_item_id)
+    {
+        Some("mail")
+    } else if !state
+        .storage
+        .party
+        .pokemon
+        .iter()
+        .enumerate()
+        .any(|(slot, other)| {
+            slot != party_slot
+                && other
+                    .as_ref()
+                    .is_some_and(|other| other.hp > 0 && !other.is_egg)
+        })
+    {
+        Some("last_healthy_mon")
+    } else {
+        None
+    };
+    if let Some(reason) = reason {
+        return Ok(crate::state::DayCareInteractionState {
+            caretaker: caretaker.to_owned(),
+            action: "deposit".into(),
+            success: false,
+            pokemon: Some(pokemon.species.id),
+            level: Some(pokemon.level),
+            reason: Some(reason.into()),
+        });
+    }
     remove_party_member(state, party_slot);
     let resident = day_care_resident_mut(state, routine, caretaker)?;
     resident.pokemon = Some(pokemon.clone());
@@ -13405,13 +13443,19 @@ fn update_day_care_compatibility<S>(
 where
     S: DividerSource,
 {
-    state.day_care.compatibility_score = day_care_compatibility_score(
-        state.day_care.man.pokemon.as_ref(),
-        state.day_care.lady.pokemon.as_ref(),
+    state.current_day_care_mut().compatibility_score = day_care_compatibility_score(
+        state.current_day_care().man.pokemon.as_ref(),
+        state.current_day_care().lady.pokemon.as_ref(),
     );
-    if matches!(state.day_care.compatibility_score, 0 | 255) {
-        state.day_care.steps_until_next_egg = 0;
-    } else if state.day_care.steps_until_next_egg == 0 {
+    if state.current_day_care().egg_present {
+        // A ready egg belongs to this site even when a parent is collected.
+        state.current_day_care_mut().steps_until_next_egg = 0;
+        return Ok(());
+    }
+    if matches!(state.current_day_care().compatibility_score, 0 | 255) {
+        state.current_day_care_mut().steps_until_next_egg = 0;
+        state.current_day_care_mut().egg = None;
+    } else if state.current_day_care_mut().steps_until_next_egg == 0 {
         // DayCare_InitBreeding calls Random until a byte in 150..=255 is
         // produced.  This is intentionally independent of the compatibility
         // score; the score controls whether breeding is possible, while the
@@ -13425,7 +13469,7 @@ where
             // The rejected `cp 150; jr c` feeds carry into the retry.
             carry_in = true;
         };
-        state.day_care.steps_until_next_egg = steps;
+        state.current_day_care_mut().steps_until_next_egg = steps;
         initialize_day_care_egg(state, rng)?;
     }
     Ok(())
@@ -13441,8 +13485,8 @@ where
     S: DividerSource,
 {
     let parents = (
-        state.day_care.man.pokemon.as_ref(),
-        state.day_care.lady.pokemon.as_ref(),
+        state.current_day_care().man.pokemon.as_ref(),
+        state.current_day_care().lady.pokemon.as_ref(),
     );
     let parent = match parents {
         (Some(man), Some(lady)) if man.species.id == "DITTO" => lady,
@@ -13557,7 +13601,7 @@ where
     egg.focus_energy = false;
     egg.turns_in_battle = 0;
     egg.stat_boosts = crate::models::pokemon::default_stat_boosts();
-    state.day_care.egg = Some(egg);
+    state.current_day_care_mut().egg = Some(egg);
     Ok(())
 }
 
@@ -13580,13 +13624,27 @@ pub fn advance_day_care_step<S>(
 where
     S: DividerSource,
 {
-    advance_day_care_resident_step(&mut state.day_care.man);
-    let countdown_carry = advance_day_care_resident_step(&mut state.day_care.lady);
-    if matches!(state.day_care.compatibility_score, 0 | 255) || state.day_care.egg_present {
+    advance_day_care_site_step(&mut state.day_care, rng)?;
+    for site in state.day_care_locations.values_mut() {
+        advance_day_care_site_step(site, rng)?;
+    }
+    Ok(())
+}
+
+fn advance_day_care_site_step<S>(
+    day_care: &mut crate::state::DayCareState,
+    rng: &mut CrystalRandom<S>,
+) -> Result<(), DayCareStepError<S::Error>>
+where
+    S: DividerSource,
+{
+    advance_day_care_resident_step(&mut day_care.man);
+    let countdown_carry = advance_day_care_resident_step(&mut day_care.lady);
+    if matches!(day_care.compatibility_score, 0 | 255) || day_care.egg_present {
         return Ok(());
     }
-    let countdown = state.day_care.steps_until_next_egg.wrapping_sub(1);
-    state.day_care.steps_until_next_egg = countdown;
+    let countdown = day_care.steps_until_next_egg.wrapping_sub(1);
+    day_care.steps_until_next_egg = countdown;
     if countdown != 0 {
         return Ok(());
     }
@@ -13594,11 +13652,11 @@ where
     // With both breeding residents present, the lady branch owns the carry
     // entering this Random call. The level `cp` leaves it set on ordinary
     // sub-level-100 increments; the rare high-byte cap comparison can clear it.
-    state.day_care.steps_until_next_egg = rng
+    day_care.steps_until_next_egg = rng
         .random(countdown_carry)
         .map_err(DayCareStepError::Divider)?
         .value;
-    let compatibility = state.day_care.compatibility_score;
+    let compatibility = day_care.compatibility_score;
     let egg_threshold = match compatibility {
         255 | 0 => 0,
         230..=254 => 80,
@@ -13618,8 +13676,8 @@ where
         return Ok(());
     }
 
-    debug_assert!(state.day_care.egg.is_some());
-    state.day_care.egg_present = true;
+    debug_assert!(day_care.egg.is_some());
+    day_care.egg_present = true;
     Ok(())
 }
 

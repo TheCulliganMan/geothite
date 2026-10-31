@@ -4745,7 +4745,7 @@ impl RuntimeGameShell {
             progression: RuntimeProgressionSnapshot::from_state(&self.session.state),
             roaming_pokemon: self.session.state.roaming_pokemon.clone(),
             map_name_sign: self.session.state.map_name_sign,
-            day_care: self.session.state.day_care.clone(),
+            day_care: self.session.state.current_day_care().clone(),
             bug_contest: self.session.state.bug_contest.clone(),
             magikarp_record: self.session.state.magikarp_record.clone(),
             buenas_password: self.session.state.buenas_password.clone(),

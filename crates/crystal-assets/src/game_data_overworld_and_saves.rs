@@ -1853,13 +1853,13 @@ impl GameDataSet {
         let cry_by_species = self.cry_by_species();
         let context = self.special_routine_context(&cry_by_species);
         let mut next = state.clone();
-        let egg_before = next.day_care.egg.clone();
+        let egg_before = next.current_day_care().egg.clone();
         let outcome =
             apply_random_special_routine_with_context(&mut next, context, routine, divider)
                 .map_err(|error| {
                     anyhow::anyhow!("apply random special routine {routine}: {error}")
                 })?;
-        if next.day_care.egg != egg_before {
+        if next.current_day_care().egg != egg_before {
             self.normalize_day_care_egg_species(&mut next)?;
         }
         *state = next;

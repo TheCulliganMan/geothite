@@ -1501,3 +1501,8 @@ pub use comprehensive_iron_crosscut::integrate_comprehensive_iron_crosscut;
 mod northstar_title;
 mod northstar_title_art;
 pub use northstar_title::{NORTHSTAR_TITLE_IMAGE, build_northstar_title};
+
+mod minnesota_daycares;
+#[cfg(test)]
+mod minnesota_daycares_tests;
+pub use minnesota_daycares::build_minnesota_daycares;

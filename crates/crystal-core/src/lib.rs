@@ -1,4 +1,5 @@
 pub mod battle;
+pub mod day_care;
 pub mod input;
 pub mod map;
 pub mod models;

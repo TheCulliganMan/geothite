@@ -157,6 +157,9 @@ pub struct GameState {
     pub pending_special_battle_type: Option<String>,
     pub magikarp_record: MagikarpRecordState,
     pub day_care: DayCareState,
+    /// Independent regional sites, keyed by stable daycare identity.
+    #[serde(skip_serializing_if = "crate::day_care::omit_locations_for_legacy_save")]
+    pub day_care_locations: BTreeMap<String, DayCareState>,
     pub bug_contest: BugContestState,
     pub link_session: LinkSessionState,
     pub battle_tower: BattleTowerState,
@@ -261,6 +264,8 @@ impl<'de> Deserialize<'de> for GameState {
             pending_special_battle_type: Option<String>,
             magikarp_record: MagikarpRecordState,
             day_care: DayCareState,
+            #[serde(default, deserialize_with = "crate::day_care::deserialize_locations")]
+            day_care_locations: BTreeMap<String, DayCareState>,
             bug_contest: BugContestState,
             link_session: LinkSessionState,
             battle_tower: BattleTowerState,
@@ -350,6 +355,7 @@ impl<'de> Deserialize<'de> for GameState {
             pending_special_battle_type: raw.pending_special_battle_type,
             magikarp_record: raw.magikarp_record,
             day_care: raw.day_care,
+            day_care_locations: raw.day_care_locations,
             bug_contest: raw.bug_contest,
             link_session: raw.link_session,
             battle_tower: raw.battle_tower,
@@ -486,6 +492,7 @@ impl GameState {
                 best_owner_name: "RALPH".to_string(),
             },
             day_care: DayCareState::default(),
+            day_care_locations: BTreeMap::new(),
             bug_contest: BugContestState::default(),
             link_session: LinkSessionState::default(),
             battle_tower: BattleTowerState::default(),
@@ -1553,11 +1560,6 @@ impl DayCareState {
         }
         if self.egg.as_ref().is_some_and(|egg| !egg.is_egg) {
             return Err("day_care.egg must retain egg identity".to_string());
-        }
-        if self.egg_present && !both_residents_active {
-            return Err(
-                "day_care.egg_present cannot be saved without both residents active".to_string(),
-            );
         }
         if self.compatibility_score != 0 && !both_residents_active {
             return Err(format!(
@@ -9194,6 +9196,16 @@ impl GameState {
         self.bug_contest.validate_saved_state()?;
         self.mystery_gift.validate_saved_state()?;
         self.day_care.validate_saved_state()?;
+        for (id, site) in &self.day_care_locations {
+            if !matches!(
+                id.as_str(),
+                crate::day_care::MANKATO_DAY_CARE | crate::day_care::BEMIDJI_DAY_CARE
+            ) {
+                return Err(format!("unknown daycare identity {id}"));
+            }
+            site.validate_saved_state()
+                .map_err(|error| format!("day_care_locations[{id}]: {error}"))?;
+        }
         self.mobile_link.validate_saved_state()?;
         self.magikarp_record.validate_saved_state()?;
         Ok(())
@@ -11556,10 +11568,7 @@ mod tests {
         );
         prebuilt_egg.is_egg = true;
         state.day_care.egg = Some(prebuilt_egg);
-        assert_eq!(
-            state.validate_saved_state(),
-            Err("day_care.egg_present cannot be saved without both residents active".to_string())
-        );
+        state.validate_saved_state().expect("a ready egg survives parent withdrawal");
 
         state = GameState::default();
         state.day_care.compatibility_score = 70;

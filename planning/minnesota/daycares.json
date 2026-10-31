@@ -1,0 +1,24 @@
+[
+  {
+    "id": "minnesota-mankato",
+    "exterior": "MnMankato",
+    "room": "MnMankatoDayCare",
+    "constant": "MN_MANKATO_DAY_CARE",
+    "facade_metatile": [
+      10,
+      12
+    ],
+    "settlement": "MANKATO"
+  },
+  {
+    "id": "minnesota-bemidji",
+    "exterior": "MnBemidji",
+    "room": "MnBemidjiDayCare",
+    "constant": "MN_BEMIDJI_DAY_CARE",
+    "facade_metatile": [
+      6,
+      15
+    ],
+    "settlement": "BEMIDJI"
+  }
+]

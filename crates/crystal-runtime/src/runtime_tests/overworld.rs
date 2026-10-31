@@ -6849,3 +6849,75 @@ fn runtime_composed_script_leaves_uncompleted_trades_for_controller_choices() {
     );
     std::fs::remove_dir_all(root).expect("remove temporary fixture");
 }
+
+#[test]
+fn runtime_composed_script_leaves_day_care_services_for_fresh_controller_choices() {
+    let root = temp_repository_root("composed-day-care");
+    write_floor_tileset(&root, "johto");
+    for routine in ["DayCareMan", "DayCareLady", "DayCareManOutside"] {
+        let asset_root = AssetRoot::new(&root);
+        let mut data = minimal_runtime_data();
+        let map = data.maps.get_mut("RuntimeMap").expect("runtime map");
+        map.scripts.insert(
+            "DayCareService".into(),
+            serde_json::json!([
+                {"command":"closetext", "args":[]},
+                {"command":"special", "args":[routine]},
+                {"command":"end", "args":[]}
+            ]),
+        );
+        map.script_text_commands.push(ScriptTextCommand {
+            command: "closetext".into(),
+            text_label: None,
+            source_script: "DayCareService".into(),
+            command_index: 0,
+        });
+        let runtime = CrystalRuntime::from_compiled_pack(
+            &asset_root,
+            CompiledGamePack::new_unchecked_for_tests(data, report()),
+            identity(),
+        )
+        .expect("runtime");
+        let mut shell = RuntimeGameShell::new_game(asset_root, runtime, 0).expect("game shell");
+        shell
+            .session_mut()
+            .state_mut()
+            .script_runtime
+            .pending_day_care_input = Some(crystal_core::state::DayCareInput::Withdraw {});
+        let before = shell.session().state().clone();
+        let run = shell
+            .run_compiled_script_until_boundary(
+                RuntimeCompiledScriptCursor {
+                    origin_map_name: "RuntimeMap".into(),
+                    source_script: "DayCareService".into(),
+                    command_index: 0,
+                },
+                8,
+                ScriptRuntimeInputs {
+                    selected_party_index: Some(0),
+                    ..Default::default()
+                },
+                ScriptPhoneInputs::default(),
+            )
+            .expect("stop before daycare even with stale service and party choices");
+        assert_eq!(run.steps.len(), 1);
+        assert_eq!(
+            run.boundary,
+            Some(RuntimeCompiledScriptBoundary::DayCarePrompt)
+        );
+        assert_eq!(
+            run.next_cursor.expect("unexecuted daycare").command_index,
+            1
+        );
+        assert!(!run.ended);
+        let after = shell.session().state();
+        assert_eq!(after.storage, before.storage);
+        assert_eq!(after.day_care, before.day_care);
+        assert_eq!(after.day_care_locations, before.day_care_locations);
+        assert_eq!(
+            after.script_runtime.pending_day_care_input,
+            before.script_runtime.pending_day_care_input
+        );
+    }
+    std::fs::remove_dir_all(root).expect("remove temporary fixture");
+}

@@ -239,7 +239,7 @@ impl GameDataSet {
             .map(|landmark| landmark.id);
         let metadata = self.runtime_map_metadata_for_name(map_name)?;
         let mut next = state.clone();
-        let egg_before = next.day_care.egg.clone();
+        let egg_before = next.current_day_care().egg.clone();
         let result = core_process_overworld_step(
             &mut next,
             &self.step_event_rules,
@@ -252,7 +252,7 @@ impl GameDataSet {
             rng,
         )
         .context("process Day Care and party step events from compiled rules")?;
-        if next.day_care.egg != egg_before {
+        if next.current_day_care().egg != egg_before {
             self.normalize_day_care_egg_species(&mut next)?;
         }
         *state = next;
@@ -793,7 +793,7 @@ impl GameDataSet {
     /// not own the compiled evolution/learnset catalogs, so normalize the
     /// concrete egg here at the pack boundary.
     fn normalize_day_care_egg_species(&self, state: &mut GameState) -> Result<()> {
-        let Some(existing) = state.day_care.egg.clone() else {
+        let Some(existing) = state.current_day_care().egg.clone() else {
             return Ok(());
         };
         if !existing.is_egg {
@@ -844,14 +844,12 @@ impl GameDataSet {
             .collect::<Result<BTreeSet<_>>>()?;
         let level_up_moves = level_up_moves_for_species(&self.learnsets, &species_id)
             .with_context(|| format!("load Day Care level-up moves for {species_id}"))?;
-        let man = state
-            .day_care
+        let man = state.current_day_care()
             .man
             .pokemon
             .as_ref()
             .context("Day Care egg normalization requires the man resident")?;
-        let lady = state
-            .day_care
+        let lady = state.current_day_care()
             .lady
             .pokemon
             .as_ref()
@@ -910,7 +908,7 @@ impl GameDataSet {
         egg.original_trainer_name = existing.original_trainer_name.clone();
         egg.original_trainer_id = existing.original_trainer_id;
         egg.happiness = existing.happiness;
-        state.day_care.egg = Some(egg);
+        state.current_day_care_mut().egg = Some(egg);
         Ok(())
     }
 

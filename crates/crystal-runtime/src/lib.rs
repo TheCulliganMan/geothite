@@ -2361,6 +2361,8 @@ pub enum RuntimeCompiledScriptBoundary {
     NpcTrade,
     DayOfWeekPrompt,
     NameRaterPrompt,
+    /// The controller must present this visit's daycare choices before mutation.
+    DayCarePrompt,
     PhoneNumberPrompt,
     TextLabel(String),
     TextWait(ScriptTextWait),

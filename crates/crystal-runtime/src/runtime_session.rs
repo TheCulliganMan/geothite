@@ -4336,6 +4336,9 @@ fn validate_save_references_for_runtime_pack(state: &GameState, data: &GameDataS
     data.validate_saved_storage_references(&state.storage)?;
     data.validate_saved_bug_contest_references(&state.bug_contest)?;
     data.validate_saved_day_care_references(&state.day_care)?;
+    for site in state.day_care_locations.values() {
+        data.validate_saved_day_care_references(site)?;
+    }
     data.validate_saved_roaming_references(&state.roaming_pokemon, &state.roaming_map_history)?;
     data.validate_saved_mystery_gift_references(&state.mystery_gift)?;
     data.validate_saved_magikarp_record_references(&state.magikarp_record)?;
@@ -5125,4 +5128,3 @@ fn validate_saved_battle_references(data: &GameDataSet, state: &GameState) -> Re
         }
     }
 }
-

@@ -9247,6 +9247,10 @@ fn day_care_deposit_is_atomic_when_countdown_trace_is_exhausted() {
         .storage
         .register_capture_in_box(0, male)
         .expect("store second parent");
+    state
+        .storage
+        .register_capture_in_box(0, pokemon("TOTODILE"))
+        .expect("retain a healthy traveling partner");
     state.sync_party_from_storage();
     state.script_runtime.pending_day_care_input = Some(DayCareInput::Deposit { party_slot: 0 });
     let before = state.clone();
@@ -9506,7 +9510,9 @@ fn day_care_shiny_ditto_preserves_random_special_bit_and_derives_hp() {
 
 #[test]
 fn bred_shiny_survives_collection_hatching_and_pokemon_save_round_trip() {
-    use crate::systems::step_events::{process_overworld_step, OverworldStepContext, StepEventRules};
+    use crate::systems::step_events::{
+        OverworldStepContext, StepEventRules, process_overworld_step,
+    };
     let mut state = GameState::default();
     state.player_name = "CHRIS".to_string();
     state.player_id = 1234;
@@ -12528,3 +12534,6 @@ fn special_routine_issue_json_rejects_unknown_fallback_fields() {
         "{source_error}"
     );
 }
+
+#[path = "day_care_locations_tests.rs"]
+mod day_care_locations_tests;
