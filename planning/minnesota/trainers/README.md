@@ -1,5 +1,18 @@
 # Minnesota trainers: compact geography required
 
+## Minneapolis cycling dialogue
+
+The 18 optional riders in `minneapolis-cyclists.json` now have individual
+conversations about commuting, errands, repairs, river rides, hills and meeting
+friends. Their native lines are at most 18 columns. Teams, patrols, approaches,
+sprites, flags and optional-battle settings are unchanged. The focused
+[cycling text publisher](CYCLING-DIALOGUE.md) installs this revision on an
+existing cast; its unselected local pack passes preservation, audio and four
+controller regressions. The actor-adding cyclist builder must not be rerun on an
+already installed cast. The existing progression-reward builder
+already gives a free rebuilt Bicycle at the Minneapolis workshop after the first
+badge; its installed reward must be retained when revising the dialogue.
+
 ## Missing battle-return commands
 
 The optional Minneapolis cyclist builder previously emitted `reloadmapafterbattle`

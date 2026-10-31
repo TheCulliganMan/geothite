@@ -30,16 +30,14 @@
         }
       ],
       "before_lines": [
-        "Mill loop!",
-        "Want to battle?"
+        "Mill loop done!",
+        "Battle, then work?"
       ],
       "after_lines": [
-        "Great ride!",
-        "Great battle!"
+        "You broke my pace!"
       ],
       "loss_lines": [
-        "Keep training!",
-        "See you next lap!"
+        "Next lap is yours!"
       ],
       "patrol_size": [
         1,
@@ -76,16 +74,14 @@
         }
       ],
       "before_lines": [
-        "River air and",
-        "Want to battle?"
+        "I bike to work.",
+        "Battle on break?"
       ],
       "after_lines": [
-        "Great ride!",
-        "Great battle!"
+        "My shift is soon."
       ],
       "loss_lines": [
-        "Keep training!",
-        "See you next lap!"
+        "A good morning!"
       ],
       "patrol_size": [
         1,
@@ -122,16 +118,14 @@
         }
       ],
       "before_lines": [
-        "One more lap,",
-        "Want to battle?"
+        "One more lap?",
+        "Battle first?"
       ],
       "after_lines": [
-        "Great ride!",
-        "Great battle!"
+        "Time for a rest!"
       ],
       "loss_lines": [
-        "Keep training!",
-        "See you next lap!"
+        "Now for that lap!"
       ],
       "patrol_size": [
         15,
@@ -168,16 +162,14 @@
         }
       ],
       "before_lines": [
-        "Falls ahead!",
-        "Want to battle?"
+        "Hear those falls?",
+        "My team roars too!"
       ],
       "after_lines": [
-        "Great ride!",
-        "Great battle!"
+        "That woke us up!"
       ],
       "loss_lines": [
-        "Keep training!",
-        "See you next lap!"
+        "What a sound!"
       ],
       "patrol_size": [
         1,
@@ -214,16 +206,14 @@
         }
       ],
       "before_lines": [
-        "My wheels spin.",
-        "Want to battle?"
+        "I fixed this bike.",
+        "Now to train us!"
       ],
       "after_lines": [
-        "Great ride!",
-        "Great battle!"
+        "More practice!"
       ],
       "loss_lines": [
-        "Keep training!",
-        "See you next lap!"
+        "Repairs paid off!"
       ],
       "patrol_size": [
         1,
@@ -260,16 +250,14 @@
         }
       ],
       "before_lines": [
-        "City riding takes",
-        "Want to battle?"
+        "Ride with care.",
+        "Battle with skill!"
       ],
       "after_lines": [
-        "Great ride!",
-        "Great battle!"
+        "I rushed my turn!"
       ],
       "loss_lines": [
-        "Keep training!",
-        "See you next lap!"
+        "Good timing, team!"
       ],
       "patrol_size": [
         1,
@@ -306,16 +294,14 @@
         }
       ],
       "before_lines": [
-        "I brake for",
-        "Want to battle?"
+        "I brake for folks.",
+        "Battle at a stop?"
       ],
       "after_lines": [
-        "Great ride!",
-        "Great battle!"
+        "Thanks for that!"
       ],
       "loss_lines": [
-        "Keep training!",
-        "See you next lap!"
+        "Enjoy the trail!"
       ],
       "patrol_size": [
         15,
@@ -352,16 +338,16 @@
         }
       ],
       "before_lines": [
-        "No hands? No way!",
-        "Want to battle?"
+        "Hands on the bars!",
+        "No riding tricks.",
+        "My team's tricks?",
+        "Let's battle!"
       ],
       "after_lines": [
-        "Great ride!",
-        "Great battle!"
+        "You earned that!"
       ],
       "loss_lines": [
-        "Keep training!",
-        "See you next lap!"
+        "A steady win!"
       ],
       "patrol_size": [
         14,
@@ -399,15 +385,13 @@
       ],
       "before_lines": [
         "Chain oiled.",
-        "Want to battle?"
+        "Team ready. You?"
       ],
       "after_lines": [
-        "Great ride!",
-        "Great battle!"
+        "Training next!"
       ],
       "loss_lines": [
-        "Keep training!",
-        "See you next lap!"
+        "A smooth ride!"
       ],
       "patrol_size": [
         6,
@@ -444,16 +428,14 @@
         }
       ],
       "before_lines": [
-        "Meet me by",
-        "Want to battle?"
+        "Friends are late.",
+        "Battle as we wait?"
       ],
       "after_lines": [
-        "Great ride!",
-        "Great battle!"
+        "I'll tell my pals!"
       ],
       "loss_lines": [
-        "Keep training!",
-        "See you next lap!"
+        "That passed time!"
       ],
       "patrol_size": [
         15,
@@ -490,16 +472,14 @@
         }
       ],
       "before_lines": [
-        "Bridge sprint!",
-        "Want to battle?"
+        "Bridge lap done!",
+        "A fast battle?"
       ],
       "after_lines": [
-        "Great ride!",
-        "Great battle!"
+        "Out of steam!"
       ],
       "loss_lines": [
-        "Keep training!",
-        "See you next lap!"
+        "Some speed left!"
       ],
       "patrol_size": [
         15,
@@ -536,16 +516,14 @@
         }
       ],
       "before_lines": [
-        "Just a quick",
-        "Want to battle?"
+        "Just one errand.",
+        "And one battle?"
       ],
       "after_lines": [
-        "Great ride!",
-        "Great battle!"
+        "Off for groceries!"
       ],
       "loss_lines": [
-        "Keep training!",
-        "See you next lap!"
+        "One more detour?"
       ],
       "patrol_size": [
         14,
@@ -582,16 +560,14 @@
         }
       ],
       "before_lines": [
-        "Long ride today.",
-        "Want to battle?"
+        "My legs need rest.",
+        "My team disagrees!"
       ],
       "after_lines": [
-        "Great ride!",
-        "Great battle!"
+        "Now we all agree."
       ],
       "loss_lines": [
-        "Keep training!",
-        "See you next lap!"
+        "They go all day!"
       ],
       "patrol_size": [
         15,
@@ -629,15 +605,13 @@
       ],
       "before_lines": [
         "Market loop done!",
-        "Want to battle?"
+        "Time for a battle?"
       ],
       "after_lines": [
-        "Great ride!",
-        "Great battle!"
+        "Hope my eggs held!"
       ],
       "loss_lines": [
-        "Keep training!",
-        "See you next lap!"
+        "Home for dinner!"
       ],
       "patrol_size": [
         1,
@@ -674,16 +648,14 @@
         }
       ],
       "before_lines": [
-        "Pedal, coast,",
-        "Want to battle?"
+        "Pedal, then coast.",
+        "Battle at a stop?"
       ],
       "after_lines": [
-        "Great ride!",
-        "Great battle!"
+        "Coasting home!"
       ],
       "loss_lines": [
-        "Keep training!",
-        "See you next lap!"
+        "Back up to speed!"
       ],
       "patrol_size": [
         15,
@@ -720,16 +692,14 @@
         }
       ],
       "before_lines": [
-        "Lake breeze!",
-        "Want to battle?"
+        "Love that breeze!",
+        "A lakeside battle?"
       ],
       "after_lines": [
-        "Great ride!",
-        "Great battle!"
+        "A fair win!"
       ],
       "loss_lines": [
-        "Keep training!",
-        "See you next lap!"
+        "A strong finish!"
       ],
       "patrol_size": [
         15,
@@ -766,16 +736,14 @@
         }
       ],
       "before_lines": [
-        "Uphill training",
-        "Want to battle?"
+        "Hills train legs.",
+        "Battles train us!"
       ],
       "after_lines": [
-        "Great ride!",
-        "Great battle!"
+        "That was a climb!"
       ],
       "loss_lines": [
-        "Keep training!",
-        "See you next lap!"
+        "Getting stronger!"
       ],
       "patrol_size": [
         15,
@@ -813,15 +781,13 @@
       ],
       "before_lines": [
         "Last lap!",
-        "Want to battle?"
+        "One last battle?"
       ],
       "after_lines": [
-        "Great ride!",
-        "Great battle!"
+        "What a finish!"
       ],
       "loss_lines": [
-        "Keep training!",
-        "See you next lap!"
+        "See you next ride!"
       ],
       "patrol_size": [
         15,

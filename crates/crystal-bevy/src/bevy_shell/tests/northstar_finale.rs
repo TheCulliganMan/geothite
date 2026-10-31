@@ -223,7 +223,7 @@ fn northstar_finale_controller_earned_chief_separate_receiver_and_league_release
     walk_to(&mut c, &r, (9, 10));
     travel(&mut c, GameButton::Down, CAMP, (43, 20));
     walk_to(&mut c, &r, (32, 41));
-    travel(&mut c, GameButton::Down, "MnR13C00R00", (30, 0));
+    travel(&mut c, GameButton::Down, "MnR13C00R00", (32, 0));
     c = continued(c, &root, &r, "northstar-earned-league-road");
     super::north_shore_journey::road(&mut c, &r, 13, (34, 126));
     at(&mut c, "MnR13C00R02", (34, 30));
