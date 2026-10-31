@@ -1508,3 +1508,6 @@ mod minnesota_daycares;
 #[cfg(test)]
 mod minnesota_daycares_tests;
 pub use minnesota_daycares::build_minnesota_daycares;
+
+mod encounter_refinement_composition;
+pub use encounter_refinement_composition::compose_minnesota_encounter_refinements;

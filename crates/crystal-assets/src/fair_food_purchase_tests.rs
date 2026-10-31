@@ -438,12 +438,25 @@ fn fair_food_purchase_real_victory_and_blackout_do_not_repeat_purchase() {
                     .hp,
                 0
             );
+            // A terminal turn retains the active battle until the controller
+            // presents the faint and commits ExitBattle. Exercise that same
+            // authoritative cleanup before the ordinary whiteout mutation.
+            assert!(matches!(state.battle, BattleMemory::Wild { .. }));
+            let ids = data.audio_ids().into_iter().map(str::to_string).collect();
+            data.apply_runtime_mutation_command(
+                &mut state,
+                &mut session,
+                RuntimeMutationCommand::CompleteBattleLoss,
+                &ids,
+                &ids,
+                &ids,
+            )
+            .expect("production ExitBattle loss cleanup after the real faint");
             assert!(
                 matches!(state.battle, BattleMemory::Inactive),
                 "normal loss cleanup"
             );
             assert_eq!(state.battle_result & 0x3f, 1);
-            let ids = data.audio_ids().into_iter().map(str::to_string).collect();
             data.apply_runtime_mutation_command(
                 &mut state,
                 &mut session,
