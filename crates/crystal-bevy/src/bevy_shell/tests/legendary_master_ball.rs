@@ -305,7 +305,7 @@ fn legendary_master_ball_static_pending_catch_party_pc_and_repeated_continue_onc
     use crystal_core::models::PcBox;
     for full in [false, true] {
         let (root, r) = load();
-        let mut c = fixture(&root, &r, "MnDevilsKettle", (20, 13));
+        let mut c = fixture(&root, &r, "MnMaraisCedarApproach", (14, 9));
         let state = c.shell.shell.session_mut().state_mut();
         for flag in ["EVENT_MN_KETTLURK_RELEASED", "EVENT_MN_SURVEY_RESTORED"] {
             state
@@ -336,13 +336,13 @@ fn legendary_master_ball_static_pending_catch_party_pc_and_repeated_continue_onc
                 .add_item(&r.data().items["MASTER_BALL"], 1)
                 .expect("explicit capture fixture ball")
         );
-        let (state, overworld) = c.shell.shell.session_mut().state_and_overworld_mut();
-        r.data()
-            .apply_map_setup_callbacks(state, overworld, "MnDevilsKettle", "MAPSETUP_WARP")
-            .expect("native initial actor callbacks");
         mark_runtime_snapshot_dirty(&mut c.shell);
-        // No mutations after declared setup; throw, naming and storage use input.
-        press(&mut c, GameButton::Up);
+        // No mutations after declared setup; enter through the real falls trail.
+        walk(&mut c, &r, (14, 8));
+        travel(&mut c, GameButton::Left, "MnDevilsKettle", (30, 32));
+        travel(&mut c, GameButton::Up, "MnDevilsKettle", (30, 30));
+        walk(&mut c, &r, (21, 12));
+        press(&mut c, GameButton::Left);
         press(&mut c, GameButton::A);
         super::northstar_ice_lair::choice(&mut c, true);
         throw_until_confirmed(&mut c);

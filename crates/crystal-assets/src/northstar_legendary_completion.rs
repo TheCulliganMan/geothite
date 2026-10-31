@@ -370,13 +370,22 @@ mod tests {
                         grant.verbose = false;
                     }
                 }
-                assert_eq!(after.script_item_grants, expected);
+                let mut actual = after.script_item_grants.clone();
+                actual.sort_by_key(|grant| (grant.source_script.clone(), grant.command_index));
+                expected.sort_by_key(|grant| (grant.source_script.clone(), grant.command_index));
+                assert_eq!(actual, expected);
                 restored.script_item_grants = before.script_item_grants.clone();
             }
-            assert_eq!(
-                &restored, before,
-                "only reviewed text and atomic grant may change: {name}"
-            );
+            if &restored != before {
+                let before = comparable_module(before);
+                let after = comparable_module(&restored);
+                for (field, value) in before.as_object().expect("module fields") {
+                    assert!(
+                        value == &after[field],
+                        "unrelated map field changed: {name}/{field}"
+                    );
+                }
+            }
         }
         let mut before = serde_json::to_value(&base.data).expect("parent data");
         let mut after = serde_json::to_value(&result.data).expect("result data");
@@ -400,5 +409,40 @@ mod tests {
         assert!(
             build_northstar_legendary_completion(&base, &missing.to_string(), &curation).is_err()
         );
+    }
+
+    fn comparable_module(module: &crate::MapModule) -> Value {
+        let mut value = serde_json::to_value(module).expect("native module");
+        // These are lookup indexes, not instruction sequences. The publisher
+        // may canonically reorder rows after earlier overlays appended them.
+        // Require unique source/index keys before allowing that normalization;
+        // preserve the order inside each row and every raw gameplay program.
+        for field in [
+            "script_item_grants",
+            "gift_pokemon_scripts",
+            "script_flag_commands",
+            "script_audio_commands",
+            "script_map_commands",
+            "script_control_commands",
+            "script_runtime_commands",
+            "script_object_commands",
+            "script_variable_commands",
+        ] {
+            let rows = value[field].as_array_mut().expect("typed command rows");
+            let mut keys = BTreeSet::new();
+            for row in rows.iter() {
+                let source = row["source_script"]
+                    .as_str()
+                    .expect("indexed source")
+                    .to_owned();
+                let index = row["command_index"].as_u64().expect("indexed command");
+                assert!(
+                    keys.insert((source, index)),
+                    "ambiguous duplicate lookup key in {field}"
+                );
+            }
+            rows.sort_by_key(Value::to_string);
+        }
+        value
     }
 }
