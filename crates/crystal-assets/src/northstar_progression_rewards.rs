@@ -100,7 +100,9 @@ pub fn build_northstar_progression_rewards(
             c("opentext", &[]),
             c("writetext", &["MnRewardMasterIntroText"]),
             c("waitbutton", &[]),
-            c("verbosegiveitem", &["MASTER_BALL", "1"]),
+            // Commit the saved claim before the next visible boundary. A
+            // verbose grant yields while its item has already entered the bag.
+            c("giveitem", &["MASTER_BALL", "1"]),
             c("iffalse", &["MnRewardStationFull"]),
             c("setevent", &["EVENT_MN_MASTER_BALL_RECEIVED"]),
             c("writetext", &["MnRewardMasterGivenText"]),
@@ -120,7 +122,10 @@ pub fn build_northstar_progression_rewards(
     authoring::text(
         &mut station,
         "MnRewardMasterGivenText",
-        &["It catches without fail. You decide when to use it. The wetlands still hold mysteries."],
+        &[
+            "You received a MASTER BALL!",
+            "It catches without fail. You decide when to use it. The wetlands still hold mysteries.",
+        ],
     );
     wrap(&mut station, "MN_W_AIDE", "MnRewardDex")?;
     // Keep existing reward flag identities so saved claims remain valid.

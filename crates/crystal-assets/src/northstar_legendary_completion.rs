@@ -92,6 +92,7 @@ const ENCOUNTERS: [Encounter; 9] = [
 /// Every battle keeps the native optional-legendary capture policy and saved
 /// caught/withdrawal state.
 /// Restoration's final page points home to the existing one-time Master Ball.
+/// Item delivery and its saved claim complete before confirmation is shown.
 /// Existing claim flags and saved script instruction offsets stay unchanged.
 ///
 /// # Errors
@@ -208,8 +209,8 @@ pub fn build_northstar_legendary_completion(
     let mut station = map(&pack, "MnWinonaFieldStation")?;
     let reward = station
         .scripts
-        .get("MnRewardTamarack")
-        .and_then(Value::as_array)
+        .get_mut("MnRewardTamarack")
+        .and_then(Value::as_array_mut)
         .context("restoration reward root")?;
     ensure!(
         reward
@@ -217,7 +218,8 @@ pub fn build_northstar_legendary_completion(
             .any(|r| r == &c("checkevent", &["EVENT_MN_SURVEY_RESTORED"]))
             && reward
                 .iter()
-                .any(|r| r == &c("verbosegiveitem", &["MASTER_BALL", "1"]))
+                .any(|r| r == &c("verbosegiveitem", &["MASTER_BALL", "1"])
+                    || r == &c("giveitem", &["MASTER_BALL", "1"]))
             && reward
                 .iter()
                 .any(|r| r == &c("iffalse", &["MnRewardStationFull"]))
@@ -226,6 +228,37 @@ pub fn build_northstar_legendary_completion(
                 .any(|r| r == &c("setevent", &["EVENT_MN_MASTER_BALL_RECEIVED"])),
         "existing one-time restoration reward required"
     );
+    // Preserve offsets in the old root for saves holding its continuation.
+    // A nonverbose native grant does not yield before the following claim.
+    for row in reward {
+        if *row == c("verbosegiveitem", &["MASTER_BALL", "1"]) {
+            *row = c("giveitem", &["MASTER_BALL", "1"]);
+        }
+    }
+    let given = station
+        .scripts
+        .get_mut("MnRewardMasterGivenText")
+        .and_then(Value::as_array_mut)
+        .context("Master Ball confirmation")?;
+    if !given.iter().any(|row| {
+        row["args"].as_array().is_some_and(|args| {
+            args.iter()
+                .any(|arg| arg.as_str().is_some_and(|s| s.contains("received")))
+        })
+    }) {
+        ensure!(
+            given.first().is_some_and(|row| row["command"] == "text"),
+            "native confirmation first line"
+        );
+        given[0]["command"] = Value::String("para".into());
+        given.splice(
+            0..0,
+            [
+                c("text", &["\"You received a\""]),
+                c("line", &["\"MASTER BALL!\""]),
+            ],
+        );
+    }
     append_pages(
         &mut station,
         "MnRewardMasterGivenText",
@@ -305,7 +338,15 @@ mod tests {
                 allowed.insert("MnRewardMasterGivenText");
             }
             for (label, script) in &before.scripts {
-                if !allowed.contains(label.as_str()) {
+                if name == "MnWinonaFieldStation" && label == "MnRewardTamarack" {
+                    let mut expected = script.clone();
+                    for row in expected.as_array_mut().expect("reward program") {
+                        if *row == c("verbosegiveitem", &["MASTER_BALL", "1"]) {
+                            *row = c("giveitem", &["MASTER_BALL", "1"]);
+                        }
+                    }
+                    assert_eq!(&expected, &after.scripts[label]);
+                } else if !allowed.contains(label.as_str()) {
                     assert_eq!(
                         script, &after.scripts[label],
                         "gameplay program changed: {name}/{label}"
@@ -316,7 +357,21 @@ mod tests {
             restored.scripts = before.scripts.clone();
             restored.script_text_bodies = before.script_text_bodies.clone();
             restored.script_text_commands = before.script_text_commands.clone();
-            assert_eq!(&restored, before, "only reviewed text may change: {name}");
+            if name == "MnWinonaFieldStation" {
+                let mut expected = before.script_item_grants.clone();
+                for grant in &mut expected {
+                    if grant.source_script == "MnRewardTamarack" && grant.item_id == "MASTER_BALL" {
+                        grant.command = "giveitem".into();
+                        grant.verbose = false;
+                    }
+                }
+                assert_eq!(after.script_item_grants, expected);
+                restored.script_item_grants = before.script_item_grants.clone();
+            }
+            assert_eq!(
+                &restored, before,
+                "only reviewed text and atomic grant may change: {name}"
+            );
         }
         let mut before = serde_json::to_value(&base.data).expect("parent data");
         let mut after = serde_json::to_value(&result.data).expect("result data");

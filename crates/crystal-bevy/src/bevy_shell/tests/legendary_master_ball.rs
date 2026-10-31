@@ -90,8 +90,8 @@ fn finish(c: &mut VisibleShellController, r: &CrystalRuntime) {
 
 #[test]
 #[ignore = "requires CRYSTAL_WINONA_TEST_PACK with restoration rewards"]
-fn legendary_master_ball_interrupted_offer_receipt_and_claim_continue_once() {
-    for stage in ["offer", "receipt", "explanation"] {
+fn legendary_master_ball_interrupted_offer_and_claim_continue_once() {
+    for stage in ["offer", "explanation"] {
         let (root, r, mut c) = setup();
         press(&mut c, GameButton::Up);
         press(&mut c, GameButton::A);
@@ -99,6 +99,12 @@ fn legendary_master_ball_interrupted_offer_receipt_and_claim_continue_once() {
         for _ in 0..128 {
             let s = c.snapshot().expect("native reward boundary");
             let q = quantity(&c, &r);
+            if q == 1 {
+                assert!(
+                    event(&c, CLAIM),
+                    "delivery must commit before its next input boundary"
+                );
+            }
             reached = match stage {
                 "offer" => {
                     q == 0
@@ -107,7 +113,6 @@ fn legendary_master_ball_interrupted_offer_receipt_and_claim_continue_once() {
                             .as_ref()
                             .is_some_and(|t| t.label == "MnRewardMasterIntroText")
                 }
-                "receipt" => q == 1 && c.shell.field_notice.is_some(),
                 _ => {
                     q == 1
                         && event(&c, CLAIM)
@@ -209,4 +214,26 @@ fn legendary_master_ball_earned_reward_walks_to_wild_capture_and_stays_spent() {
     assert_eq!(quantity(&c, &r), 0);
     assert!(event(&c, CLAIM));
     assert!(c.shell.shell.session().state().pokedex.has_caught(&species));
+}
+
+#[test]
+#[ignore = "requires repaired CRYSTAL_WINONA_TEST_PACK and actual CRYSTAL_LEGENDARY_LEGACY_RECEIPT_SAVE"]
+fn legendary_master_ball_old_interrupted_receipt_migrates_without_another_grant() {
+    let (root, r) = load();
+    let save = std::env::var_os("CRYSTAL_LEGENDARY_LEGACY_RECEIPT_SAVE")
+        .expect("native receipt autosave from the old reward");
+    let mut c = VisibleShellController::load_save(root.clone(), r.clone(), save.into(), None)
+        .expect("legacy native receipt Continue");
+    assert_eq!(quantity(&c, &r), 1);
+    assert!(
+        event(&c, CLAIM),
+        "the already delivered reward must be claimed before presentation"
+    );
+    finish(&mut c, &r);
+    talk(&mut c, (5, 2));
+    assert_eq!(quantity(&c, &r), 1);
+    c = continued(&mut c, &root, &r, "master-migrated-receipt");
+    talk(&mut c, (5, 2));
+    assert!(event(&c, CLAIM));
+    assert_eq!(quantity(&c, &r), 1);
 }

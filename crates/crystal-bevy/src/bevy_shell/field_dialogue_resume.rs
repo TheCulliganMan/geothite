@@ -97,6 +97,7 @@ pub(super) fn save(shell: &mut BevyRuntimeShell, path: &Path) -> Result<()> {
 }
 
 pub(super) fn restore(shell: &mut BevyRuntimeShell) -> Result<()> {
+    super::legendary_reward_resume::restore_legacy_receipt(shell)?;
     let memory = &shell.shell.session().state().script_runtime;
     let continuation = if let Some(wait) = &memory.pending_text_wait {
         Some((wait.source_script.clone(), wait.command_index))
