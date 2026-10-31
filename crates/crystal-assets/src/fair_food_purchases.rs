@@ -17,7 +17,9 @@ impl GameDataSet {
     {
         use crystal_core::systems::fair_food::{self, PendingFairFood};
         anyhow::ensure!(
-            state.pending_fair_food.is_none(),
+            PendingFairFood::read(state)
+                .map_err(anyhow::Error::msg)?
+                .is_none(),
             "acknowledge the pending food surprise before another purchase"
         );
         let mut next = state.clone();
@@ -77,7 +79,7 @@ impl GameDataSet {
                         &mut rng,
                     )
                     .map_err(|error| anyhow::anyhow!("materialize Fair food surprise: {error}"))?;
-                    next.pending_fair_food = Some(PendingFairFood {
+                    let pending = PendingFairFood {
                         item_id: item_id.into(),
                         battle: WildBattleStart {
                             battle_type: "BATTLETYPE_NORMAL".into(),
@@ -89,7 +91,8 @@ impl GameDataSet {
                             enemy_party: vec![enemy.clone()],
                             enemy_pokemon: enemy,
                         },
-                    });
+                    };
+                    pending.write(&mut next).map_err(anyhow::Error::msg)?;
                 }
                 next.random_state = rng.state();
             }
@@ -105,7 +108,8 @@ impl GameDataSet {
         state: &mut GameState,
         session: &OverworldSession,
     ) -> Result<bool> {
-        let Some(pending) = state.pending_fair_food.as_ref() else {
+        use crystal_core::systems::fair_food::PendingFairFood;
+        let Some(pending) = PendingFairFood::read(state).map_err(anyhow::Error::msg)? else {
             return Ok(false);
         };
         pending.validate(state).map_err(anyhow::Error::msg)?;
@@ -121,14 +125,11 @@ impl GameDataSet {
             "food surprise left the Fair"
         );
         if crystal_core::systems::fair_food::usable_party_index(state).is_none() {
-            state.pending_fair_food = None;
+            PendingFairFood::clear(state);
             return Ok(false);
         }
         let mut next = state.clone();
-        let pending = next
-            .pending_fair_food
-            .take()
-            .expect("pending encounter checked above");
+        PendingFairFood::clear(&mut next);
         next.script_runtime
             .memory
             .insert("wBattleScriptFlags".into(), "0".into());

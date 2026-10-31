@@ -5,6 +5,13 @@ use crystal_runtime::RuntimeBattleKind;
 use super::{counter, cursor, fixture_options, flee, press, quantity};
 use crate::bevy_shell::VisibleShellController;
 
+fn pending(
+    c: &VisibleShellController,
+) -> Option<crystal_core::systems::fair_food::PendingFairFood> {
+    crystal_core::systems::fair_food::PendingFairFood::read(c.shell.shell.session().state())
+        .expect("valid saved food extension")
+}
+
 fn buy_receipt(c: &mut VisibleShellController, quantity_value: u16) {
     press(c, GameButton::A); // BUY
     cursor(c, 0, |c| {
@@ -51,7 +58,7 @@ fn fair_food_surprise_native_purchase_pending_continue_and_flee() {
         assert_eq!(quantity(&c, &r, "FAIR_CHEESE_CURDS"), before + 2);
         assert_eq!(c.shell.shell.session().state().money, money - 800);
         assert!(c.snapshot().expect("receipt").battle.is_none());
-        if c.shell.shell.session().state().pending_fair_food.is_some() {
+        if pending(&c).is_some() {
             break;
         }
         press(&mut c, GameButton::A); // receipt
@@ -63,14 +70,8 @@ fn fair_food_surprise_native_purchase_pending_continue_and_flee() {
             press(&mut c, GameButton::A);
         }
     }
-    let pending = c
-        .shell
-        .shell
-        .session()
-        .state()
-        .pending_fair_food
-        .clone()
-        .expect("deterministic trace produces surprise within 32 purchases");
+    let saved_pending =
+        pending(&c).expect("deterministic trace produces surprise within 32 purchases");
     let path = std::env::temp_dir().join(format!(
         "fair-food-pending-{}.crystalsave",
         std::process::id()
@@ -79,10 +80,7 @@ fn fair_food_surprise_native_purchase_pending_continue_and_flee() {
     c = VisibleShellController::load_save(root, r.clone(), path.clone(), None)
         .expect("Continue paid surprise");
     std::fs::remove_file(path).expect("remove disposable save");
-    assert_eq!(
-        c.shell.shell.session().state().pending_fair_food,
-        Some(pending.clone())
-    );
+    assert_eq!(pending(&c), Some(saved_pending.clone()));
     for _ in 0..128 {
         if c.snapshot().expect("shop exit").battle.is_some() {
             break;
@@ -102,9 +100,9 @@ fn fair_food_surprise_native_purchase_pending_continue_and_flee() {
     );
     let battle = snapshot.battle.expect("normal catchable battle");
     assert!(matches!(battle.kind, RuntimeBattleKind::Wild { .. }));
-    assert_eq!(battle.enemy_pokemon, pending.battle.enemy_pokemon);
+    assert_eq!(battle.enemy_pokemon, saved_pending.battle.enemy_pokemon);
     assert_eq!(battle.enemy_pokemon.level, 10);
-    assert!(c.shell.shell.session().state().pending_fair_food.is_none());
+    assert!(pending(&c).is_none());
     let money = c.shell.shell.session().state().money;
     flee(&mut c, false);
     assert!(c.snapshot().expect("after RUN").battle.is_none());
@@ -129,7 +127,7 @@ fn fair_food_surprise_native_cancel_confirmation_does_not_charge_or_roll() {
     press(&mut c, GameButton::A);
     assert_eq!(c.shell.shell.session().state().money, money);
     assert_eq!(quantity(&c, &r, "FAIR_CHEESE_CURDS"), 0);
-    assert!(c.shell.shell.session().state().pending_fair_food.is_none());
+    assert!(pending(&c).is_none());
     assert!(
         c.snapshot()
             .expect("cancelled transaction")

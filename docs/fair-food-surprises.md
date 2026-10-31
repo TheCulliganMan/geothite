@@ -21,7 +21,8 @@ the purchase still succeeds and no battle starts.
 
 The deterministic Crystal RNG rejects byte values 250–255, then treats 0–49 as
 a win: exactly 50 of 250 accepted results. The complete Pokémon is materialized
-and saved with the purchase, so continuing a paid pending surprise never rerolls
+and saved in the existing runtime memory extension with the purchase, preserving
+the binary GameState layout, so continuing a paid pending surprise never rerolls
 its outcome or attributes. Consuming that pending state and activating battle
 form one mutation. The normal catch, escape, victory and blackout paths own the
 result, without additional purchase charges or item delivery.

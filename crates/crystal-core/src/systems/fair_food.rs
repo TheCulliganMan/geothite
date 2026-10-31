@@ -7,6 +7,7 @@ use crate::state::GameState;
 
 pub const FAIR_MAP: &str = "MnStateFairgrounds";
 pub const SURPRISE_LEVEL: u8 = 10;
+const PENDING_KEY: &str = "GEOTHITE_FAIR_FOOD_PENDING_V1";
 
 /// A resolved encounter, including its random attributes, saved with payment.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -65,6 +66,36 @@ pub fn usable_party_index(state: &GameState) -> Option<usize> {
 }
 
 impl PendingFairFood {
+    /// Read the existing saved memory extension without changing binary WRAM shape.
+    /// Malformed pending data is rejected instead of silently rerolling it.
+    pub fn read(state: &GameState) -> Result<Option<Self>, String> {
+        state
+            .script_runtime
+            .memory
+            .get(PENDING_KEY)
+            .map(|encoded| {
+                serde_json::from_str(encoded)
+                    .map_err(|error| format!("invalid saved Fair food surprise: {error}"))
+            })
+            .transpose()
+    }
+
+    /// Persist the already resolved encounter with its completed transaction.
+    pub fn write(&self, state: &mut GameState) -> Result<(), String> {
+        let encoded = serde_json::to_string(self)
+            .map_err(|error| format!("encode Fair food surprise: {error}"))?;
+        state
+            .script_runtime
+            .memory
+            .insert(PENDING_KEY.into(), encoded);
+        Ok(())
+    }
+
+    /// Clear a consumed event; repeating this operation has no effect.
+    pub fn clear(state: &mut GameState) {
+        state.script_runtime.memory.remove(PENDING_KEY);
+    }
+
     pub fn reveal(&self) -> &'static str {
         match self.item_id.as_str() {
             "FAIR_CHEESE_CURDS" => "The bag squeaked!\nIt's a CURDLET!",

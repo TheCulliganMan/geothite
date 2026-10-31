@@ -1,11 +1,9 @@
 // Restore from authoritative pending state, never from a presentation-only flag.
 fn settle_visible_pending_fair_food(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
-    let Some(pending) = runtime_shell
-        .shell
-        .session()
-        .state()
-        .pending_fair_food
-        .as_ref()
+    let Some(pending) = crate::core::systems::fair_food::PendingFairFood::read(
+        runtime_shell.shell.session().state(),
+    )
+    .map_err(anyhow::Error::msg)?
     else {
         return Ok(());
     };

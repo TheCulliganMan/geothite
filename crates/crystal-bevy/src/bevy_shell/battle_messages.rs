@@ -7148,7 +7148,7 @@ fn finalize_visible_shop_close(runtime_shell: &mut BevyRuntimeShell) -> Result<(
 fn dismiss_visible_shop_notice(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
     queue_visible_shell_sound_effect(runtime_shell, "SFX_READ_TEXT_2")?;
     if !runtime_shell.shop_close_after_notice
-        && let Some(pending) = runtime_shell.shell.session().state().pending_fair_food.as_ref()
+        && let Some(pending) = crate::core::systems::fair_food::PendingFairFood::read(runtime_shell.shell.session().state()).map_err(anyhow::Error::msg)?
     {
         runtime_shell.shop_notice = Some(pending.reveal().into());
         runtime_shell.shop_close_after_notice = true;

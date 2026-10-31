@@ -2,12 +2,37 @@ use std::sync::OnceLock;
 
 use crystal_core::random::{CrystalRandomState, ReplayDivider};
 use crystal_core::state::{BattleMemory, GameState};
-use crystal_core::systems::fair_food::{FAIR_MAP, species_for_purchase};
+use crystal_core::systems::fair_food::{FAIR_MAP, PendingFairFood, species_for_purchase};
 use crystal_core::systems::shop::{apply_script_shop_command, close_active_shop};
 use crystal_core::world::map::TilePosition;
 use crystal_core::world::session::OverworldSession;
 
 use crate::{CompiledGamePack, GameDataSet, read_verified_compiled_game_pack};
+
+fn saved_food(state: &GameState) -> Option<PendingFairFood> {
+    PendingFairFood::read(state).expect("valid saved food extension")
+}
+
+fn binary_roundtrip(state: &GameState, stage: &str) -> GameState {
+    use crystal_core::save::{
+        SaveModpackIdentity, erase_save_game, read_save_game_for_modpack,
+        write_save_game_for_modpack,
+    };
+    let identity =
+        SaveModpackIdentity::new("fair_food_test", "1".repeat(64)).expect("test identity");
+    let content_hash = "2".repeat(64);
+    let path = std::env::temp_dir().join(format!(
+        "fair-food-binary-{stage}-{}.crystalsave",
+        std::process::id()
+    ));
+    write_save_game_for_modpack(&path, state.clone(), &identity, &content_hash)
+        .expect("production binary save");
+    let restored = read_save_game_for_modpack(&path, &identity, &content_hash)
+        .expect("production binary Continue")
+        .into_state();
+    erase_save_game(path).expect("remove disposable save generations");
+    restored
+}
 
 fn fixture(item: &str, party: bool) -> (&'static GameDataSet, GameState, OverworldSession) {
     static PACK: OnceLock<CompiledGamePack> = OnceLock::new();
@@ -70,6 +95,10 @@ fn random_trace() -> ReplayDivider {
 fn fair_food_purchase_bulk_accounting_pending_save_and_single_consumption() {
     let (data, mut state, session) = fixture("FAIR_CHEESE_CURDS", true);
     let before = state.clone();
+    let ordinary = binary_roundtrip(&state, "ordinary");
+    assert!(saved_food(&ordinary).is_none());
+    assert_eq!(ordinary.money, state.money);
+    assert_eq!(ordinary.bag, state.bag);
     let mut rng = random_trace();
     let result = data
         .buy_shop_item_with_surprise(&mut state, &session, "FAIR_CHEESE_CURDS", 5, &mut rng)
@@ -77,24 +106,29 @@ fn fair_food_purchase_bulk_accounting_pending_save_and_single_consumption() {
     assert!(result.success);
     assert_eq!(state.money, 98_000);
     assert_eq!(state.bag.quantity(&data.items["FAIR_CHEESE_CURDS"]), 5);
-    let pending = state.pending_fair_food.clone().expect("winning reveal");
+    let pending = saved_food(&state).expect("winning reveal");
     assert_eq!(pending.battle.enemy_pokemon.species.id, "CURDLET");
     assert_eq!(
         pending.battle.enemy_pokemon.level, 10,
         "level-80 partner does not scale the basic form"
     );
     assert!(matches!(state.battle, BattleMemory::Inactive));
+    let binary_restored = binary_roundtrip(&state, "pending");
+    assert_eq!(saved_food(&binary_restored), Some(pending.clone()));
+    assert_eq!(binary_restored.money, state.money);
+    assert_eq!(binary_restored.bag, state.bag);
+    assert_eq!(binary_restored.random_state, state.random_state);
     let encoded = serde_json::to_string(&state).expect("serialize pending purchase");
     let mut restored: GameState =
         serde_json::from_str(&encoded).expect("continue pending purchase");
-    assert_eq!(restored.pending_fair_food, Some(pending.clone()));
+    assert_eq!(saved_food(&restored), Some(pending.clone()));
     assert_eq!(restored.random_state, state.random_state);
     assert!(
         data.start_pending_fair_food_battle(&mut restored, &session)
             .is_err(),
         "shop must close first"
     );
-    assert_eq!(restored.pending_fair_food, Some(pending.clone()));
+    assert_eq!(saved_food(&restored), Some(pending.clone()));
     assert!(
         data.buy_shop_item_with_surprise(
             &mut restored,
@@ -116,7 +150,7 @@ fn fair_food_purchase_bulk_accounting_pending_save_and_single_consumption() {
         data.start_pending_fair_food_battle(&mut restored, &session)
             .expect("start battle")
     );
-    assert!(restored.pending_fair_food.is_none());
+    assert!(saved_food(&restored).is_none());
     assert!(matches!(restored.battle, BattleMemory::Wild { .. }));
     assert!(
         !data
@@ -136,7 +170,7 @@ fn fair_food_purchase_bulk_accounting_pending_save_and_single_consumption() {
         rng.consumed(),
         "bulk quantity gets one roll and one materialization"
     );
-    assert_eq!(one.pending_fair_food, Some(pending));
+    assert_eq!(saved_food(&one), Some(pending));
 }
 
 #[test]
@@ -199,7 +233,7 @@ fn fair_food_purchase_losing_roll_no_party_and_ordinary_purchases() {
             .success
     );
     assert_eq!(state.money, 99_200);
-    assert!(state.pending_fair_food.is_none());
+    assert!(saved_food(&state).is_none());
     assert_eq!(rng.consumed(), 2);
     let (_, mut state, _) = fixture("FAIR_CHEESE_CURDS", true);
     state.random_state.sub = 50;
@@ -209,7 +243,7 @@ fn fair_food_purchase_losing_roll_no_party_and_ordinary_purchases() {
             .expect("losing roll")
             .success
     );
-    assert!(state.pending_fair_food.is_none());
+    assert!(saved_food(&state).is_none());
     assert_eq!(rng.consumed(), 2);
     let (_, mut state, _) = fixture("POTION", true);
     let before_rng = state.random_state;
@@ -221,7 +255,7 @@ fn fair_food_purchase_losing_roll_no_party_and_ordinary_purchases() {
     );
     assert_eq!(state.random_state, before_rng);
     assert_eq!(rng.consumed(), 0);
-    assert!(state.pending_fair_food.is_none());
+    assert!(saved_food(&state).is_none());
     let (_, mut state, mut session) = fixture("FAIR_CHEESE_CURDS", true);
     session.map.name = "CherrygroveMart".into();
     assert!(
@@ -230,7 +264,7 @@ fn fair_food_purchase_losing_roll_no_party_and_ordinary_purchases() {
             .success
     );
     assert_eq!(rng.consumed(), 0);
-    assert!(state.pending_fair_food.is_none());
+    assert!(saved_food(&state).is_none());
     for command in &data
         .map_module(FAIR_MAP)
         .expect("Fair")
@@ -261,7 +295,7 @@ fn fair_food_purchase_all_mappings_and_party_lost_before_reveal() {
         let (data, mut state, session) = fixture(item, true);
         data.buy_shop_item_with_surprise(&mut state, &session, item, 1, &mut random_trace())
             .expect("mapped purchase");
-        let pending = state.pending_fair_food.as_ref().expect("winning food roll");
+        let pending = saved_food(&state).expect("winning food roll");
         assert_eq!(pending.battle.enemy_pokemon.species.id, species);
         assert_eq!(pending.battle.enemy_pokemon.level, 10);
         state
@@ -280,7 +314,7 @@ fn fair_food_purchase_all_mappings_and_party_lost_before_reveal() {
                 .start_pending_fair_food_battle(&mut state, &session)
                 .expect("no usable partner")
         );
-        assert!(state.pending_fair_food.is_none());
+        assert!(saved_food(&state).is_none());
         assert_eq!(state.money, money);
         assert_eq!(state.bag.quantity(&data.items[item]), 1);
         assert!(matches!(state.battle, BattleMemory::Inactive));
@@ -435,7 +469,7 @@ fn fair_food_purchase_real_victory_and_blackout_do_not_repeat_purchase() {
                 "wild victory cannot reapply shop payment"
             );
         }
-        assert!(state.pending_fair_food.is_none());
+        assert!(saved_food(&state).is_none());
         assert_eq!(state.bag.quantity(&data.items["FAIR_CHEESE_CURDS"]), 1);
         assert!(
             !data

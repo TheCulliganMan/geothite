@@ -178,9 +178,6 @@ pub struct GameState {
     /// deliberately is not packed into this persistent state.
     pub random_state: CrystalRandomState,
     pub has_seen_intro: bool,
-    /// Resolved purchase surprise, retained until the shop has closed.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub pending_fair_food: Option<crate::systems::fair_food::PendingFairFood>,
 }
 
 impl<'de> Deserialize<'de> for GameState {
@@ -283,8 +280,6 @@ impl<'de> Deserialize<'de> for GameState {
             vblank_counter: u8,
             random_state: CrystalRandomState,
             has_seen_intro: bool,
-            #[serde(default)]
-            pending_fair_food: Option<crate::systems::fair_food::PendingFairFood>,
         }
 
         let raw = RawGameState::deserialize(deserializer)?;
@@ -375,7 +370,6 @@ impl<'de> Deserialize<'de> for GameState {
             vblank_counter: raw.vblank_counter,
             random_state: raw.random_state,
             has_seen_intro: raw.has_seen_intro,
-            pending_fair_food: raw.pending_fair_food,
         };
         state.validate_saved_state().map_err(D::Error::custom)?;
         Ok(state)
@@ -513,7 +507,6 @@ impl GameState {
             vblank_counter: 0,
             random_state: CrystalRandomState::default(),
             has_seen_intro: false,
-            pending_fair_food: None,
         }
     }
 
@@ -8632,7 +8625,7 @@ impl GameState {
     }
 
     pub fn validate_saved_state(&self) -> Result<(), String> {
-        if let Some(pending) = &self.pending_fair_food {
+        if let Some(pending) = crate::systems::fair_food::PendingFairFood::read(self)? {
             pending.validate(self)?;
         }
         validate_saved_player_name(&self.player_name)?;
