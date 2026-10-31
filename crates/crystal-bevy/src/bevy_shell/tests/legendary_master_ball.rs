@@ -47,6 +47,10 @@ fn setup() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
     partner.item = Some("SMOKE_BALL".into());
     assert!(state.storage.party.add_pokemon(partner));
     state.sync_party_from_storage();
+    state
+        .flags
+        .set_engine_flag("STATUSFLAGS_NO_WILD_ENCOUNTERS_F", false)
+        .expect("ordinary field encounters");
     mark_runtime_snapshot_dirty(&mut c.shell);
     assert_eq!(
         quantity(&c, &r),
@@ -63,7 +67,7 @@ fn continued(
     r: &CrystalRuntime,
     name: &str,
 ) -> VisibleShellController {
-    let save = reached_save_path(name);
+    let save = reached_save_path(&format!("{name}.crystalsave"));
     c.save(&save)
         .expect("save the actual pending reward boundary");
     let loaded = VisibleShellController::load_save(root.clone(), r.clone(), save.clone(), None)
@@ -193,11 +197,13 @@ fn legendary_master_ball_earned_reward_walks_to_wild_capture_and_stays_spent() {
     };
     let mut species = None;
     for step in 0..1024 {
-        if let Some(battle) = c.snapshot().expect("ordinary field step").battle {
+        let field = c.snapshot().expect("ordinary field step");
+        if let Some(battle) = field.battle {
             species = Some(battle.enemy_pokemon.species.id);
             break;
         }
-        press(&mut c, if step % 2 == 0 { toward_grass } else { away });
+        let here = (field.overworld.tile.x, field.overworld.tile.y);
+        press(&mut c, if here == approach { toward_grass } else { away });
         c.wait_frames(17 + step % 11)
             .expect("ordinary encounter timing");
     }

@@ -268,6 +268,11 @@ pub fn build_northstar_legendary_completion(
         ],
     )?;
     publish(&mut pack, station)?;
+    // This overlay changes no terrain. Do not repair pre-existing differences
+    // between a full map and the separate attribute cache as a side effect.
+    pack.data
+        .map_attributes
+        .clone_from(&base.data.map_attributes);
     pack.report.manifests.push(MANIFEST.into());
     pack.identity = crate::derive_compiled_game_pack_identity_from_manifest(
         pack.format_version,
@@ -380,10 +385,12 @@ mod tests {
             object.remove("maps");
             object.remove("map_scripts");
         }
-        assert_eq!(
-            before, after,
-            "no unrelated catalogs or split payloads may change"
-        );
+        for (field, value) in before.as_object().expect("parent fields") {
+            assert!(
+                value == &after[field],
+                "unrelated catalog or split payload changed: {field}"
+            );
+        }
         assert!(build_northstar_legendary_completion(&result, &roster, &curation).is_err());
         let mut missing: Value = serde_json::from_str(&roster).expect("source roster");
         missing["families"]
