@@ -320,6 +320,7 @@ where
 include!("game_data_scripts.rs");
 include!("game_data_mutations.rs");
 include!("game_data_overworld_and_saves.rs");
+include!("fair_food_purchases.rs");
 include!("game_data_connections.rs");
 include!("game_data_items_and_battles.rs");
 include!("game_data_encounters_and_loading.rs");

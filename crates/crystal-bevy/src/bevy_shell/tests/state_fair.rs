@@ -5,6 +5,8 @@ mod crowd;
 mod food;
 #[path = "state_fair_rooms.rs"]
 mod rooms;
+#[path = "fair_food_surprise.rs"]
+mod surprise;
 use std::path::PathBuf;
 use std::sync::OnceLock;
 

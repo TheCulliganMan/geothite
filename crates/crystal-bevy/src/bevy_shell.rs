@@ -9193,6 +9193,7 @@ include!("bevy_shell/script_callbacks.rs");
 include!("bevy_shell/economy.rs");
 include!("bevy_shell/battle_sound.rs");
 include!("bevy_shell/battle_messages.rs");
+include!("bevy_shell/fair_food_surprises.rs");
 include!("bevy_shell/battle_results.rs");
 include!("bevy_shell/battle_origin.rs");
 include!("bevy_shell/encounter_anchor.rs");

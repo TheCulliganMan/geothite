@@ -1031,6 +1031,42 @@ impl RuntimeOverworldSession {
         })
     }
 
+    fn stage_shop_purchase(
+        &mut self,
+        runtime: &CrystalRuntime,
+        item_id: &str,
+        quantity: u16,
+    ) -> Result<RecordedRuntimeMutation> {
+        let mut state = self.state.clone();
+        let overworld = self.overworld.clone();
+        let mut divider_after = self.divider.clone();
+        let mut recording = RecordingDivider::new(&mut divider_after);
+        let result = runtime.data.buy_shop_item_with_surprise(
+            &mut state,
+            &overworld,
+            item_id,
+            quantity,
+            &mut recording,
+        )?;
+        let divider_trace = RuntimeDividerTrace::new(recording.samples().iter().copied());
+        drop(recording);
+        let outcome = RuntimeMutationOutcome {
+            result: RuntimeMutationResult::ShopItemBought(result),
+            state_checksum: game_state_checksum(&state)?,
+        };
+        Ok(RecordedRuntimeMutation {
+            command: RuntimeMutationCommand::BuyShopItem(RuntimeShopTransactionCommand {
+                item_id: item_id.into(),
+                quantity,
+                divider_trace,
+            }),
+            state,
+            overworld,
+            outcome,
+            divider_after: Some(divider_after),
+        })
+    }
+
     fn stage_scripted_wild_battle_start(
         &mut self,
         runtime: &CrystalRuntime,
@@ -3800,13 +3836,8 @@ impl RuntimeOverworldSession {
         item_id: &str,
         quantity: u16,
     ) -> Result<RuntimeShopTransaction> {
-        let mutation = self.apply_runtime_mutation_command(
-            runtime,
-            RuntimeMutationCommand::BuyShopItem(RuntimeShopTransactionCommand {
-                item_id: item_id.to_string(),
-                quantity,
-            }),
-        )?;
+        let recorded = self.stage_shop_purchase(runtime, item_id, quantity)?;
+        let mutation = self.commit_recorded_mutation(recorded);
         let RuntimeMutationResult::ShopItemBought(outcome) = mutation.result else {
             anyhow::bail!("runtime mutation returned non-shop-purchase result");
         };
@@ -3827,6 +3858,7 @@ impl RuntimeOverworldSession {
             RuntimeMutationCommand::SellShopItem(RuntimeShopTransactionCommand {
                 item_id: item_id.to_string(),
                 quantity,
+                divider_trace: RuntimeDividerTrace::new([]),
             }),
         )?;
         let RuntimeMutationResult::ShopItemSold(outcome) = mutation.result else {

@@ -1975,12 +1975,8 @@ impl RuntimeGameShell {
         item_id: &str,
         quantity: u16,
     ) -> Result<RuntimeShopTransaction> {
-        let mutation = self.apply_runtime_mutation_command(RuntimeMutationCommand::BuyShopItem(
-            RuntimeShopTransactionCommand {
-                item_id: item_id.to_string(),
-                quantity,
-            },
-        ))?;
+        let recorded = self.session.stage_shop_purchase(&self.runtime, item_id, quantity)?;
+        let mutation = self.apply_recorded_runtime_mutation(recorded)?;
         let RuntimeMutationResult::ShopItemBought(outcome) = mutation.result else {
             anyhow::bail!("runtime mutation returned non-shop-purchase result");
         };
@@ -1988,6 +1984,16 @@ impl RuntimeGameShell {
             outcome,
             state_checksum: mutation.state_checksum,
         })
+    }
+
+    /// Starts a resolved Fair purchase encounter once the shop and text close.
+    pub fn start_pending_fair_food_battle(&mut self) -> Result<bool> {
+        let mutation = self
+            .apply_runtime_mutation_command(RuntimeMutationCommand::StartPendingFairFoodBattle)?;
+        let RuntimeMutationResult::FairFoodBattleStarted(started) = mutation.result else {
+            anyhow::bail!("runtime mutation returned non-food-battle result");
+        };
+        Ok(started)
     }
 
     pub fn sell_shop_item(
@@ -1999,6 +2005,7 @@ impl RuntimeGameShell {
             RuntimeMutationCommand::SellShopItem(RuntimeShopTransactionCommand {
                 item_id: item_id.to_string(),
                 quantity,
+                divider_trace: RuntimeDividerTrace::new([]),
             }),
         )?;
         let RuntimeMutationResult::ShopItemSold(outcome) = mutation.result else {

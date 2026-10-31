@@ -5655,6 +5655,7 @@ fn restore_visible_loaded_runtime_state(
     let snapshot = runtime_shell.shell.snapshot()?;
     runtime_shell.visible_map_name_sign = None;
     field_dialogue_resume::restore(runtime_shell)?;
+    settle_visible_pending_fair_food(runtime_shell)?;
     // The graphical host may draw immediately after Continue, before its first
     // input tick. Restore the ordinary battle chooser at that same boundary.
     sync_visible_battle_action_cursor(runtime_shell);

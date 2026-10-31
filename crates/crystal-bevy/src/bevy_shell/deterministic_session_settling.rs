@@ -4994,6 +4994,7 @@ fn continue_visible_script_after_prompt(runtime_shell: &mut BevyRuntimeShell) ->
             continue;
         }
         if runtime_shell.active_script_cursor.is_none() {
+            settle_visible_pending_fair_food(runtime_shell)?;
             return Ok(());
         }
         // `writetext` leaves the text window open while the script immediately

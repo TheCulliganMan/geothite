@@ -872,9 +872,25 @@ impl GameDataSet {
                 core_close_active_shop(state)
                     .map_err(|error| anyhow::anyhow!("close script shop: {error}"))?,
             ),
-            RuntimeMutationCommand::BuyShopItem(command) => RuntimeMutationResult::ShopItemBought(
-                self.buy_shop_item(state, &command.item_id, command.quantity)?,
-            ),
+            RuntimeMutationCommand::StartPendingFairFoodBattle => {
+                RuntimeMutationResult::FairFoodBattleStarted(
+                    self.start_pending_fair_food_battle(state, session)?,
+                )
+            }
+            RuntimeMutationCommand::BuyShopItem(command) => {
+                let mut next = state.clone();
+                let mut divider = ReplayDivider::new(command.divider_trace.samples.iter().copied());
+                let result = self.buy_shop_item_with_surprise(
+                    &mut next,
+                    session,
+                    &command.item_id,
+                    command.quantity,
+                    &mut divider,
+                )?;
+                require_consumed_divider_trace("Fair food purchase", &divider)?;
+                *state = next;
+                RuntimeMutationResult::ShopItemBought(result)
+            }
             RuntimeMutationCommand::SellShopItem(command) => RuntimeMutationResult::ShopItemSold(
                 self.sell_shop_item(state, &command.item_id, command.quantity)?,
             ),

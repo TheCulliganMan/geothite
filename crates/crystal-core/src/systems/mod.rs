@@ -6,6 +6,7 @@ pub mod battle_rewards;
 pub mod economy;
 pub mod evolution;
 pub mod experience;
+pub mod fair_food;
 pub mod field_items;
 pub mod field_moves;
 pub mod flee_mons;

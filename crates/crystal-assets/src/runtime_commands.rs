@@ -1604,7 +1604,7 @@ pub struct RuntimePartyPokemonCommand {
     pub dvs: Dv,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Default, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct RuntimeDividerTrace {
     pub samples: Vec<u8>,
@@ -1750,6 +1750,8 @@ pub enum RuntimeMapTrainerInteractionOutcome {
 pub struct RuntimeShopTransactionCommand {
     pub item_id: String,
     pub quantity: u16,
+    #[serde(default)]
+    pub divider_trace: RuntimeDividerTrace,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -2684,6 +2686,7 @@ pub enum RuntimeMutationCommand {
     CloseTextWindow,
     CloseActivePokemonPicture,
     CloseScriptShop,
+    StartPendingFairFoodBattle,
     BuyShopItem(RuntimeShopTransactionCommand),
     SellShopItem(RuntimeShopTransactionCommand),
     ApplySpecialRoutine {
@@ -3776,6 +3779,7 @@ pub enum RuntimeMutationResult {
     ActivePokemonPictureClosed(String),
     ScriptShopClosed(crystal_core::state::ScriptShopRequest),
     ShopItemBought(ShopResult),
+    FairFoodBattleStarted(bool),
     ShopItemSold(ShopResult),
     SpecialRoutineApplied(SpecialRoutineOutcome),
     ScriptedGiftPokemonGranted(GiftPokemonOutcome),
@@ -4012,6 +4016,7 @@ impl RuntimeMutationResult {
             Self::ActivePokemonPictureClosed(_) => "active_pokemon_picture_closed",
             Self::ScriptShopClosed(_) => "script_shop_closed",
             Self::ShopItemBought(_) => "shop_item_bought",
+            Self::FairFoodBattleStarted(_) => "fair_food_battle_started",
             Self::ShopItemSold(_) => "shop_item_sold",
             Self::SpecialRoutineApplied(_) => "special_routine_applied",
             Self::ScriptedGiftPokemonGranted(_) => "scripted_gift_pokemon_granted",

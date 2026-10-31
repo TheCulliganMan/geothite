@@ -1637,6 +1637,15 @@ impl GameDataSet {
     }
 
     pub fn saved_wild_encounter_exists(&self, map_name: &str, species: &str, level: u8) -> bool {
+        // Purchase encounters retain their authored basic form and level even
+        // when a later habitat publication changes the surrounding grass.
+        if map_name == crystal_core::systems::fair_food::FAIR_MAP
+            && level == crystal_core::systems::fair_food::SURPRISE_LEVEL
+            && matches!(species, "CURDLET" | "DOUGHLIN" | "PIPCORN" | "TOTLIT")
+            && self.pokemon.contains_key(species)
+        {
+            return true;
+        }
         if self.wild_challenge.is_some() && (1..=100).contains(&level) {
             return (1..=level).any(|authored| self.authored_wild_encounter_exists(map_name, species, authored));
         }
