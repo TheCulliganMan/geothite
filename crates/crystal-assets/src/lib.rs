@@ -1511,3 +1511,6 @@ pub use minnesota_daycares::build_minnesota_daycares;
 
 mod encounter_refinement_composition;
 pub use encounter_refinement_composition::compose_minnesota_encounter_refinements;
+
+mod northstar_story_consolidation;
+pub use northstar_story_consolidation::consolidate_northstar_story;

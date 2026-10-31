@@ -7,9 +7,6 @@ use serde::Deserialize;
 
 use crate::CompiledGamePack;
 
-#[path = "minnesota_young_grass.rs"]
-mod young_grass;
-
 const MANIFEST: &str = "minnesota-encounter-progression-v1";
 
 #[derive(Deserialize)]
@@ -37,8 +34,6 @@ struct Group {
     zone_replacements: BTreeMap<String, BTreeMap<String, String>>,
     #[serde(default)]
     residents: BTreeMap<String, [String; 7]>,
-    #[serde(default)]
-    young_grass_zones: Vec<young_grass::YoungGrassHabitat>,
 }
 
 /// Authors a complete Minnesota encounter curve without changing geography.
@@ -184,7 +179,6 @@ pub fn build_minnesota_encounter_progression(
                     )?;
                 }
             }
-            young_grass::install(base, name, &mut data, &group.young_grass_zones)?;
             pack.data.wild_encounters.insert(name.clone(), data);
             if let Some(mut field) = pack.data.field_encounters.get(name).cloned() {
                 for table in field.tables.values_mut() {
@@ -358,10 +352,8 @@ fn validate_group(group: &Group) -> Result<()> {
         "reviewed early farm power correction required"
     );
     ensure!(
-        group.residents.is_empty()
-            || group.maps == ["MnGrandMarais"]
-            || group.maps.iter().all(|name| name.starts_with("MnR11")),
-        "explicit residents belong to their reviewed North Shore tables"
+        group.residents.is_empty() || group.maps == ["MnGrandMarais"],
+        "explicit town residents belong to their reviewed table"
     );
     ensure!(
         group.residents.is_empty()
@@ -371,7 +363,7 @@ fn validate_group(group: &Group) -> Result<()> {
                 .map(String::as_str)
                 .collect::<BTreeSet<_>>()
                 == BTreeSet::from(["morning", "day", "night"]),
-        "all three resident periods must be authored"
+        "all three town periods must be authored"
     );
     Ok(())
 }

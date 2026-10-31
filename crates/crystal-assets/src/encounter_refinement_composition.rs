@@ -1,16 +1,16 @@
-//! Carry only the reviewed three-habitat correction into the current full game.
+//! Carry only the reviewed two-habitat correction into the current full game.
 use anyhow::{Result, ensure};
 
 use crate::CompiledGamePack;
 
 const BEFORE: &str = "e6972fb736c8efd788b0f7d5ac942550a7dc99c7aecd429dad4ca0f1c4c1ac04";
 const MARKER: &str = "minnesota-encounter-refinements-v1";
-const MAPS: [&str; 3] = ["MnGrandMarais", "MnR11C00R00", "MnR11C00R01"];
+const MAPS: [&str; 2] = ["MnR11C00R00", "MnR11C00R01"];
 
 /// Composes the saved habitat correction without republishing current geography.
 ///
 /// `before` is the exact original complete progression child. `after` must be
-/// its freshly rebuilt successor with precisely three changed wild habitats.
+/// its freshly rebuilt successor with precisely two changed wild habitats.
 /// Every other data field and all art/audio must match. Current title, maps,
 /// story, services, teams and optional discoveries remain authoritative.
 ///
@@ -62,7 +62,7 @@ pub fn compose_minnesota_encounter_refinements(
         .collect::<std::collections::BTreeSet<_>>();
     ensure!(
         changed == std::collections::BTreeSet::from(MAPS),
-        "expected three reviewed habitat changes"
+        "expected two reviewed habitat changes"
     );
     ensure!(
         before.data.wild_encounters.len() == after.data.wild_encounters.len(),

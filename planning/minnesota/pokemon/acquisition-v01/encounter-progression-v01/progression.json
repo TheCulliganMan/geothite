@@ -723,7 +723,7 @@
     {
       "id": "grand-marais",
       "minimum_badges": 8,
-      "access": "Rest stop after all eight badges and Harbor signal. Main grass follows the late North Shore level band; a small western cedar margin retains young residents at levels 3\u20137.",
+      "access": "Rest stop after all eight badges and Harbor signal. Town wildlife shares the late North Shore level band.",
       "maps": [
         "MnGrandMarais"
       ],
@@ -769,119 +769,7 @@
           "PINIT",
           "SKEETEREX"
         ]
-      },
-      "young_grass_zones": [
-        {
-          "zone": {
-            "id": "young-cedar-margin",
-            "minX": 4,
-            "minY": 10,
-            "maxX": 5,
-            "maxY": 13,
-            "grassRates": {
-              "morning": 25,
-              "day": 25,
-              "night": 25
-            },
-            "grass": {
-              "morning": [
-                {
-                  "level": 3,
-                  "species": "PECKIT"
-                },
-                {
-                  "level": 4,
-                  "species": "BRISTUB"
-                },
-                {
-                  "level": 5,
-                  "species": "PECKIT"
-                },
-                {
-                  "level": 4,
-                  "species": "BRISTUB"
-                },
-                {
-                  "level": 5,
-                  "species": "BRISTUB"
-                },
-                {
-                  "level": 6,
-                  "species": "PODLET"
-                },
-                {
-                  "level": 7,
-                  "species": "PODLET"
-                }
-              ],
-              "day": [
-                {
-                  "level": 3,
-                  "species": "PECKIT"
-                },
-                {
-                  "level": 4,
-                  "species": "BRISTUB"
-                },
-                {
-                  "level": 5,
-                  "species": "PECKIT"
-                },
-                {
-                  "level": 4,
-                  "species": "BRISTUB"
-                },
-                {
-                  "level": 5,
-                  "species": "BRISTUB"
-                },
-                {
-                  "level": 6,
-                  "species": "PODLET"
-                },
-                {
-                  "level": 7,
-                  "species": "PODLET"
-                }
-              ],
-              "night": [
-                {
-                  "level": 3,
-                  "species": "PINIT"
-                },
-                {
-                  "level": 4,
-                  "species": "BRISTUB"
-                },
-                {
-                  "level": 5,
-                  "species": "PINIT"
-                },
-                {
-                  "level": 4,
-                  "species": "BRISTUB"
-                },
-                {
-                  "level": 5,
-                  "species": "BRISTUB"
-                },
-                {
-                  "level": 6,
-                  "species": "BRISTUB"
-                },
-                {
-                  "level": 7,
-                  "species": "MIDGEBIT"
-                }
-              ]
-            }
-          },
-          "entrance": [
-            15,
-            10
-          ]
-        }
-      ]
+      }
     },
     {
       "id": "fair-food-and-exhibits",
