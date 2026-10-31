@@ -154,6 +154,7 @@ use crate::{
 mod intro_renderer;
 #[path = "bevy_shell/static_title.rs"]
 mod static_title;
+mod startup_policy;
 
 const GAME_TICK_SECONDS: f32 = GB_FRAME_DURATION_SECONDS as f32;
 const VIEWPORT_TILES_X: i16 = 20;
@@ -8552,11 +8553,13 @@ fn initialize_bevy_runtime_shell(
         )?),
         _ => None,
     };
-    let source_opening = runtime
-        .data()
-        .runtime_title_screen
-        .static_title_image
-        .is_none();
+    let skip_title_sequence = startup_policy::skips_title_sequence(&runtime);
+    let source_opening = !skip_title_sequence
+        && runtime
+            .data()
+            .runtime_title_screen
+            .static_title_image
+            .is_none();
     let intro_parameters = (source_opening && matches!(&start, BevyShellStart::Title { .. }))
         .then(|| {
             RuntimeIntroPresentationParameters::from_program(runtime.title_presentation_program())
@@ -9162,6 +9165,9 @@ fn initialize_bevy_runtime_shell(
                     "sale preview callback did not apply its declared block change");
             }
         }
+    }
+    if skip_title_sequence && runtime_shell.title_menu.is_some() {
+        startup_policy::open_main_menu(&mut runtime_shell)?;
     }
     // Initialization may execute callbacks through direct shell mutations;
     // never carry an intermediate routing snapshot into the first joypad

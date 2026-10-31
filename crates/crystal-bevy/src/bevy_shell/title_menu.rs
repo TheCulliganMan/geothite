@@ -8271,6 +8271,9 @@ fn press_visible_title_cancel_button(runtime_shell: &mut BevyRuntimeShell) -> Re
         .as_ref()
         .is_some_and(visible_title_main_menu_ready)
     {
+        if startup_policy::skips_title_sequence(&runtime_shell.runtime) {
+            return record_visible_runtime_action(runtime_shell, "input:main_menu:B:ignored");
+        }
         anyhow::ensure!(
             resume_visible_main_menu_input(runtime_shell, true)?.is_none(),
             "exported MainMenu B input did not return with cancel"

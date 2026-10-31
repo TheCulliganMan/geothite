@@ -4,9 +4,9 @@ A Rust implementation of Pokémon Crystal with browser and desktop clients,
 multiplayer, and an optional 2.5D overworld renderer. Game logic, rendering,
 audio, and networking are implemented in this repository.
 
-The [Pokémon Northstar opening](planning/minnesota/title/README.md) gives Minnesota
-one native Kettlurk title card over the muted new state flag. Professor Tamarack
-introduces Jiglet; the local title, New Game flow and native screenshots are verified.
+The [Pokémon Northstar opening](planning/minnesota/title/README.md) opens Minnesota
+directly at New Game/Continue, with no title sequence. Professor Tamarack
+introduces Jiglet during new-game setup.
 
 The [current browser release](docs/deployment.md#combined-minnesota-release-2026-10-29)
 combines the reviewed Minnesota world/dialogue, starter signature moves and all

@@ -1,6 +1,21 @@
 # Pokémon Northstar opening
 
-The Minnesota opening uses one still 160×144 native title card: Kettlurk over
+Minnesota now opens directly at the production New Game/Continue menu, without
+a title card, splashes, movie or Start prompt. B remains in that menu. This
+runtime rule applies to Minnesota content regardless of pack filename or title
+art; existing packs need no rebuild. Continue, options and new-game setup still
+use their production flows. Other regions retain their authored startup.
+
+The opt-in `northstar_title_and_tamarack_opening` regression now checks immediate
+menu entry, idle/B behavior and the Tamarack welcome through Winona arrival.
+`minnesota_direct_menu_preserves_continue` checks the immediate menu with a real
+save, summary cancellation and loading the saved trainer and position. Both use
+`CRYSTAL_NORTHSTAR_TITLE_PACK`; the Continue case also supports older Minnesota
+packs without regional opening art.
+
+## Historical title-art publication
+
+The earlier Minnesota opening used one still 160×144 native title card: Kettlurk over
 muted new Minnesota flag geometry, with an eight-point star, split falls,
 original pixel lettering and a permanent Start prompt. The flag reference is the
 [Minnesota Secretary of State's official design](https://www.sos.mn.gov/about-minnesota/state-symbols/state-flag).

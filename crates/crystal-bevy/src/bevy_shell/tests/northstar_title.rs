@@ -24,64 +24,34 @@ fn northstar_title_and_tamarack_opening() {
     .expect("production title");
     let mut app = integrated_shell_test_app(shell);
     let mut images = Assets::<Image>::default();
-    let first = {
+    {
         let shell = app.world().resource::<BevyRuntimeShell>();
         assert!(
             shell.splash_screen.is_none(),
             "no copyright or studio splash"
         );
         assert!(shell.intro_screen.is_none(), "no source movie");
-        let frame = load_title_screen_frame(
-            &shell.asset_root,
-            shell.title_menu.as_ref().expect("title"),
-            &mut images,
-        )
-        .expect("native title");
-        review_northstar_frame(&images, &frame, "00-title");
-        images
-            .get(&frame.handle)
-            .expect("title pixels")
-            .data
-            .clone()
-    };
-    // More than the source attract-mode timeout must retain the same still.
-    northstar_wait(&mut app, 4096);
-    {
-        let shell = app.world().resource::<BevyRuntimeShell>();
-        let title = shell.title_menu.as_ref().expect("retained title");
-        assert_eq!(title.source_phase(), VisibleTitlePhase::PressStart);
-        let frame =
-            load_title_screen_frame(&shell.asset_root, title, &mut images).expect("retained frame");
-        assert_eq!(
-            first,
-            images.get(&frame.handle).expect("retained pixels").data
-        );
+        assert!(visible_title_main_menu_ready(
+            shell.title_menu.as_ref().expect("game menu")
+        ));
+        assert!(shell.pending_audio.iter().all(|command| {
+            !matches!(
+                command.audio_id.as_str(),
+                "MUSIC_TITLE" | "SFX_TITLE_SCREEN_ENTRANCE"
+            )
+        }));
     }
-    press_key_for_runtime_hotkey_app(&mut app, KeyCode::Enter);
-    northstar_wait(&mut app, 64);
-    assert!(visible_title_main_menu_ready(
-        app.world()
-            .resource::<BevyRuntimeShell>()
-            .title_menu
-            .as_ref()
-            .expect("main menu")
-    ));
+    // Idle and B must never restore the removed title sequence.
+    northstar_wait(&mut app, 4096);
     press_key_for_runtime_hotkey_app(&mut app, KeyCode::KeyX);
     northstar_wait(&mut app, 32);
     {
         let shell = app.world().resource::<BevyRuntimeShell>();
         assert!(shell.intro_screen.is_none() && shell.splash_screen.is_none());
-        assert_eq!(
-            shell
-                .title_menu
-                .as_ref()
-                .expect("returned title")
-                .source_phase(),
-            VisibleTitlePhase::PressStart
-        );
+        assert!(visible_title_main_menu_ready(
+            shell.title_menu.as_ref().expect("retained game menu")
+        ));
     }
-    press_key_for_runtime_hotkey_app(&mut app, KeyCode::Enter);
-    northstar_wait(&mut app, 64);
     let mut art = RenderedTilesetArt::default();
     {
         let shell = app.world().resource::<BevyRuntimeShell>();
@@ -92,12 +62,12 @@ fn northstar_title_and_tamarack_opening() {
             &mut images,
         )
         .expect("menu frame");
-        review_northstar_frame(&images, &frame, "01-main-menu");
+        review_northstar_frame(&images, &frame, "00-main-menu");
     }
     press_key_for_runtime_hotkey_app(&mut app, KeyCode::KeyZ);
     let mut pages = BTreeSet::new();
     let mut sprites = BTreeSet::new();
-    let mut capture = 2;
+    let mut capture = 1;
     let mut picked_name = false;
     for _ in 0..128 {
         northstar_wait(&mut app, 96);
@@ -188,6 +158,80 @@ fn northstar_title_and_tamarack_opening() {
             .expect("Start entries")
             .is_empty()
     );
+}
+
+#[test]
+#[ignore = "requires CRYSTAL_NORTHSTAR_TITLE_PACK pointing to any completed Minnesota pack"]
+fn minnesota_direct_menu_preserves_continue() {
+    let path =
+        PathBuf::from(std::env::var_os("CRYSTAL_NORTHSTAR_TITLE_PACK").expect("Minnesota pack"));
+    let root = AssetRoot::new(path.parent().expect("pack parent"));
+    let loaded = crystal_assets::read_loaded_verified_compiled_game_pack(&path)
+        .expect("verified Minnesota pack");
+    let runtime = CrystalRuntime::from_loaded_compiled_pack(&root, loaded).expect("runtime");
+    let spawn_identifier = runtime
+        .title_new_game_spawn_identifier()
+        .expect("regional spawn");
+    let save_path = std::env::temp_dir().join(format!(
+        "minnesota-direct-menu-{}.crystalsave",
+        uuid::Uuid::new_v4()
+    ));
+    let mut controller =
+        VisibleShellController::new_game(root.clone(), runtime.clone(), "REED", None)
+            .expect("new regional game");
+    let saved = controller.snapshot().expect("saved position");
+    controller.save(&save_path).expect("save regional game");
+    let shell = initialize_bevy_runtime_shell(
+        root,
+        runtime,
+        BevyShellStart::Title {
+            spawn_identifier,
+            save_path: Some(save_path.clone()),
+        },
+        BevyShellConfig::default(),
+    )
+    .expect("direct game menu");
+    let mut app = integrated_shell_test_app(shell);
+    {
+        let shell = app.world().resource::<BevyRuntimeShell>();
+        assert!(shell.intro_screen.is_none() && shell.splash_screen.is_none());
+        let title = shell.title_menu.as_ref().expect("game menu");
+        assert!(visible_title_main_menu_ready(title));
+        assert!(
+            visible_title_menu_entries(shell, title)
+                .expect("menu entries")
+                .iter()
+                .any(|entry| entry.contains("CONTINUE"))
+        );
+    }
+    press_key_for_runtime_hotkey_app(&mut app, KeyCode::KeyZ);
+    northstar_wait(&mut app, 32);
+    assert!(
+        app.world()
+            .resource::<BevyRuntimeShell>()
+            .visible_continue_screen
+            .is_some()
+    );
+    press_key_for_runtime_hotkey_app(&mut app, KeyCode::KeyX);
+    assert!(
+        app.world()
+            .resource::<BevyRuntimeShell>()
+            .title_menu
+            .as_ref()
+            .is_some_and(visible_title_main_menu_ready)
+    );
+    press_key_for_runtime_hotkey_app(&mut app, KeyCode::KeyZ);
+    northstar_wait(&mut app, 32);
+    press_key_for_runtime_hotkey_app(&mut app, KeyCode::KeyZ);
+    northstar_wait(&mut app, 32);
+    let shell = app.world().resource::<BevyRuntimeShell>();
+    assert_eq!(shell.last_error, None);
+    assert!(shell.title_menu.is_none());
+    let resumed = shell.shell.snapshot().expect("resumed game");
+    assert_eq!(resumed.trainer.player_name, "REED");
+    assert_eq!(resumed.overworld.map_name, saved.overworld.map_name);
+    assert_eq!(resumed.overworld.tile, saved.overworld.tile);
+    std::fs::remove_file(save_path).expect("remove test save");
 }
 
 fn northstar_wait(app: &mut App, frames: usize) {

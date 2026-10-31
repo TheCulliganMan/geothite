@@ -6,15 +6,15 @@ exports runtime catalogs, compiles and verifies the packs, and publishes local
 agent inputs. Source checkouts, ROMs, intermediate exports, PCM, and packs stay
 outside tracked source.
 
-## Pokémon Northstar title and Tamarack welcome
+## Minnesota startup and Tamarack welcome
 
-The [opening runbook](../planning/minnesota/title/README.md) records the verified
-Rust publisher, current local pack and runnable client. A native Kettlurk still
-uses the muted new Minnesota flag; Tamarack introduces single-hook Jiglet with
-its matching cry. Studio/copyright/movie startup screens are skipped for this
-pack. The full New Game flow, 25 reviewed frames, exact native GPU title and all
-377 audio contracts pass; existing world content and source-region opening data
-are preserved. This is a local review selection.
+Minnesota opens directly at the production New Game/Continue menu. The title
+card, studio/copyright splashes and opening movie are skipped, including in older
+Minnesota packs without regional title art. B stays in the game menu. Continue,
+options and new-game setup retain their production owners; Tamarack introduces
+single-hook Jiglet with its matching cry. Other regions keep their authored
+startup. The [opening runbook](../planning/minnesota/title/README.md) also retains
+the historical title-art publisher and its verification record.
 
 ## Early research partners and both fossils (2026-10-31)
 
