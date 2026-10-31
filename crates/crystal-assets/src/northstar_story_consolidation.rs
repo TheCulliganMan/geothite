@@ -7,7 +7,6 @@ use serde::Deserialize;
 use serde_json::Value;
 
 use crate::authored_dialogue::{self, AuthoredDialoguePage};
-use crate::grand_marais_modpack::authoring;
 use crate::{CompiledGamePack, MapModule};
 
 const CURRENT: &str = "544539b3c51802c03cc284ae7ec3d683ea251596af80c71ef6f886ef4888aa16";
@@ -765,7 +764,10 @@ mod tests {
     #[test]
     #[ignore = "requires exact current coast/fauna, Minneapolis cycling parent and v27 packs in ignored content-packs"]
     fn consolidation_keeps_current_services_and_all_three_authored_opening_scenes() {
-        let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../..");
+        let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
+            .join("../..")
+            .canonicalize()
+            .expect("repository root");
         let load = |name: &str| {
             crate::read_verified_compiled_game_pack(root.join("content-packs").join(name))
                 .expect("explicit exact external story fixture")
